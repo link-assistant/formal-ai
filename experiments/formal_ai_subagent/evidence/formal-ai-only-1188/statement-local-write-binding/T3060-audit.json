@@ -1,0 +1,10 @@
+{
+  "id": "T3060",
+  "originalPromptUnchanged": true,
+  "sourceUnchanged": true,
+  "tools": [
+    "read"
+  ],
+  "answer": "Left `rust/src/agentic_coding/general_planner/literal_request.rs` unchanged: it already has content, and the request does not say to replace the whole file.",
+  "stop": "final"
+}

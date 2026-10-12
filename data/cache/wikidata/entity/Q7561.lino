@@ -4,11 +4,13 @@ Q7561
     ru ("снегопад")
   descriptions
     en "precipitation in the form of ice crystal flakes"
+    es "precipitación en forma de hielo de agua cristalina"
     ru "атмосферные осадки в виде многочисленных мелких кристаллов льда"
     zh "從雲中降落的結晶狀固體冰"
   id Q7561
   labels
     en snow
+    es nieve
     hi "हिम"
     ru "снег"
     zh "雪"

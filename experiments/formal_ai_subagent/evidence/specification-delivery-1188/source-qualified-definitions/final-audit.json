@@ -1,0 +1,15 @@
+{
+  "cutoff": "T2458",
+  "invocations": 59,
+  "observedToolCalls": 125,
+  "repositoryWriteToolCalls": 34,
+  "repositoryFormatBashCalls": 5,
+  "sharedRecordGeneratorBashCalls": 1,
+  "evidenceCopyEncodingBashCalls": 5,
+  "repositoryMutationToolCalls": 45,
+  "excludedHistoryAppendBashCalls": 34,
+  "actualModelTokensMeasured": false,
+  "moneyMeasured": false,
+  "sourceCommit": "7de1ef3545af1079163ac219ed9e0dfd382a80f6",
+  "rawTranscriptGitNote": "All transcripts throughT2457 archived losslessly; finalpackagerT2458 raw remains scratch for coordinator."
+}

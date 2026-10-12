@@ -1,0 +1,25 @@
+view
+  id M-3e51ccc8d2a0
+  lemma solution
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a homogeneous mixture of two or more substances; frequently (but not necessarily) a liquid solution"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a statement that solves a problem or explains how to solve the problem"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a method for solving a problem"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the set of values that give a true statement when substituted into an equation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the successful action of solving a problem"
+    provenance (wordnet)

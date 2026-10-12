@@ -1,0 +1,45 @@
+view
+  id M-1ae712e94454
+  lemma trimmed
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "made neat and tidy by trimming"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove the edges from and cut down to the desired size"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "decorate, as with ornaments"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cut down on; make a reduction in"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "balance in flight by regulating the control surfaces"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be in equilibrium during a flight"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "decorate (food), as with parsley or other ornamental foods"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cultivate, tend, and cut back the growth of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cut closely"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "adjust (sails on a ship) so that the wind is optimally used"
+    provenance (wordnet)

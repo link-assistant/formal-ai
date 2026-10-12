@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "碗"
+        },
+        "es": {
+          "language": "es",
+          "value": "cuenco"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "глубокая посуда в виде маленького таза или глубокого блюда"
+        },
+        "es": {
+          "language": "es",
+          "value": "recipiente redondo con la parte superior abierta que se utiliza frecuentemente como vajilla"
         }
       },
       "aliases": {
@@ -40,6 +48,20 @@
           {
             "language": "zh",
             "value": "碗公"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "bol"
+          },
+          {
+            "language": "es",
+            "value": "tazón"
+          },
+          {
+            "language": "es",
+            "value": "escudilla"
           }
         ]
       }

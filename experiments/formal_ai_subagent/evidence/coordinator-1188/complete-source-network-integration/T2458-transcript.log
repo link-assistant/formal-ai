@@ -1,0 +1,28 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/retain-citation-fixture-relocation.mjs"}
+   Output: {"observedBefore":"rootT1981 specialization gate matched unchanged native parser test prompt in production source","after":"T2456 0/0","audit":{"cutoff":"T2458","invocations":59,"observedToolCalls":125,"repositoryWriteToolCalls":34,"repositoryFormatBashCalls":5,"sharedRecordGeneratorBashCalls":1,"evidenceCopyEncodingBashCalls":5,"repositoryMutationToolCalls":45,"excludedHistoryAppendBashCalls":34,"actualModelTokensMeasured":false,"moneyMeasured":false,"sourceCommit":"7de1ef3545af1079163ac219ed9e0dfd382a80f6","rawTranscriptGitNote":"All transcripts throughT2457 archived losslessly; finalpackagerT2458 raw remains scratch for coordinator."}}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/retain-citation-fixture-relocation.mjs` command completed. Output:
+
+```json
+{
+  "after": "T2456 0/0",
+  "audit": {
+    "actualModelTokensMeasured": false,
+    "cutoff": "T2458",
+    "evidenceCopyEncodingBashCalls": 5,
+    "excludedHistoryAppendBashCalls": 34,
+    "invocations": 59,
+    "moneyMeasured": false,
+    "observedToolCalls": 125,
+    "rawTranscriptGitNote": "All transcripts throughT2457 archived losslessly; finalpackagerT2458 raw remains scratch for coordinator.",
+    "repositoryFormatBashCalls": 5,
+    "repositoryMutationToolCalls": 45,
+    "repositoryWriteToolCalls": 34,
+    "sharedRecordGeneratorBashCalls": 1,
+    "sourceCommit": "7de1ef3545af1079163ac219ed9e0dfd382a80f6"
+  },
+  "observedBefore": "rootT1981 specialization gate matched unchanged native parser test prompt in production source"
+}
+```

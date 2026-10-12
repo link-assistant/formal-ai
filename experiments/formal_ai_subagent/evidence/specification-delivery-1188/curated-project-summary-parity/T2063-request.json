@@ -1,0 +1,5 @@
+{
+  "taskId": "T2063",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run `node --test rust/tests/web/issue-0133-search-fusion.test.mjs`"
+}

@@ -2,16 +2,16 @@ self_ast_census
   target src/cli_clients.rs
   language rust
   fidelity signature
-  byte_len 10446
-  line_count 282
-  content_id source_module_e5308e1d904ff599
+  byte_len 12435
+  line_count 322
+  content_id source_module_2aea395fa5b259e6
   symbol_count 8
   symbols
     enum ClientsFormat 25 30
     enum ClientsAction 33 52
     function render_clients 56 65
     function config_format_name 67 73
-    function client_json 75 164
-    function client_text 166 242
-    function verification_surface 244 251
-    function run_clients 253 282
+    function client_json 75 196
+    function client_text 198 282
+    function verification_surface 284 291
+    function run_clients 293 322

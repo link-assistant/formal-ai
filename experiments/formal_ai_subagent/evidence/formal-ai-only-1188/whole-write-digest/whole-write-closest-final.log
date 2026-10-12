@@ -1,0 +1,526 @@
+TAP version 13
+# Subtest: R848-2/R848-7: source creation renders executable bytes and observes them
+    # Subtest: function, constant and test requests write exact source
+    ok 1 - function, constant and test requests write exact source
+      ---
+      duration_ms: 1585.278041
+      ...
+    # Subtest: the same request in russian, chinese and hindi generates the same shape of source
+    ok 2 - the same request in russian, chinese and hindi generates the same shape of source
+      ---
+      duration_ms: 136.6255
+      ...
+    1..2
+ok 1 - R848-2/R848-7: source creation renders executable bytes and observes them
+  ---
+  duration_ms: 2010.078916
+  type: 'suite'
+  ...
+# Subtest: R848-5: repository search uses the named code subject
+    # Subtest: seven subject shapes each become one focused grep
+    ok 1 - seven subject shapes each become one focused grep
+      ---
+      duration_ms: 1715.110625
+      ...
+    1..1
+ok 2 - R848-5: repository search uses the named code subject
+  ---
+  duration_ms: 1715.201125
+  type: 'suite'
+  ...
+# Subtest: R848-6: a structured collection edit transforms the workspace bytes
+    # Subtest: read, transform, write and observe the excluded_folders array
+    ok 1 - read, transform, write and observe the excluded_folders array
+      ---
+      duration_ms: 34.132542
+      ...
+    1..1
+ok 3 - R848-6: a structured collection edit transforms the workspace bytes
+  ---
+  duration_ms: 34.217959
+  type: 'suite'
+  ...
+# Subtest: R848-10: symbol refactors and composite module requests terminate verified
+    # Subtest: an identifier rename is a grounded rewrite, not a file move
+    ok 1 - an identifier rename is a grounded rewrite, not a file move
+      ---
+      duration_ms: 65.510584
+      ...
+    # Subtest: an Agent CLI absolute read path gets one bounded whole-word rewrite and a digest check
+    ok 2 - an Agent CLI absolute read path gets one bounded whole-word rewrite and a digest check
+      ---
+      duration_ms: 41.86575
+      ...
+    # Subtest: a composite request writes the module, then registers it, observing both
+    ok 3 - a composite request writes the module, then registers it, observing both
+      ---
+      duration_ms: 39.608667
+      ...
+    # Subtest: an Agent CLI composite registers the module with a compact edit and a digest check
+    ok 4 - an Agent CLI composite registers the module with a compact edit and a digest check
+      ---
+      duration_ms: 40.137083
+      ...
+    1..4
+ok 4 - R848-10: symbol refactors and composite module requests terminate verified
+  ---
+  duration_ms: 187.407958
+  type: 'suite'
+  ...
+# Subtest: L07 derives a real canonical greeting edit and fulfills every whole-node obligation
+ok 5 - L07 derives a real canonical greeting edit and fulfills every whole-node obligation
+  ---
+  duration_ms: 2436.290917
+  ...
+# Subtest: the changed Links Notation greeting lexeme reaches the production greeting caller
+ok 6 - the changed Links Notation greeting lexeme reaches the production greeting caller
+  ---
+  duration_ms: 859.857416
+  ...
+# Subtest: digest normalization preserves Unicode and line-ending byte identities
+ok 7 - digest normalization preserves Unicode and line-ending byte identities
+  ---
+  duration_ms: 1096.666333
+  ...
+# Subtest: failed receipts cannot verify even when stdout contains the exact digest
+ok 8 - failed receipts cannot verify even when stdout contains the exact digest
+  ---
+  duration_ms: 1.255375
+  ...
+# Subtest: grounded workspace edit verifies receipt payload, preserving actual failed status
+ok 9 - grounded workspace edit verifies receipt payload, preserving actual failed status
+  ---
+  duration_ms: 382.646625
+  ...
+# Subtest: an advertised multi_edit capability receives every explicitly named path
+ok 10 - an advertised multi_edit capability receives every explicitly named path
+  ---
+  duration_ms: 1851.6485
+  ...
+# Subtest: G104: an edit naming files listed with `and` or commas is declined, naming every file
+    # Subtest: `In a.mjs and b.mjs, …` names both files and changes neither
+    ok 1 - `In a.mjs and b.mjs, …` names both files and changes neither
+      ---
+      duration_ms: 123.858583
+      ...
+    # Subtest: a comma list of three files names all three
+    ok 2 - a comma list of three files names all three
+      ---
+      duration_ms: 6.4785
+      ...
+    # Subtest: a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+    ok 3 - a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+      ---
+      duration_ms: 719.153875
+      ...
+    # Subtest: one file followed by a comma and the edit is still one edit
+    ok 4 - one file followed by a comma and the edit is still one edit
+      ---
+      duration_ms: 22.878541
+      ...
+    1..4
+ok 11 - G104: an edit naming files listed with `and` or commas is declined, naming every file
+  ---
+  duration_ms: 872.7165
+  type: 'suite'
+  ...
+# Subtest: G99: edits joined by a sequence cue are planned step by step
+    # Subtest: `…, then delete …` inserts and then deletes, each over the file the step before left
+    not ok 1 - `…, then delete …` inserts and then deletes, each over the file the step before left
+      ---
+      duration_ms: 76.856083
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/pull-request-1188-fix-gaps.test.mjs:134:3'
+      failureType: 'testCodeFailure'
+      error: 'sha256Hex is not defined'
+      code: 'ERR_TEST_FAILURE'
+      name: 'ReferenceError'
+      stack: |-
+        planInsertSequenceStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/workspace_change.mjs:493:32)
+        Module.planWorkspaceChangeStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/workspace_change.mjs:66:23)
+        planWorkspaceChangeArm (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:136:31)
+        async planSettledRoutes (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:285:18)
+        async planChatStepResolved (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:203:27)
+        async Module.planRequestSequenceStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/request_sequence.mjs:155:20)
+        async planWorkspaceChangeArm (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:135:11)
+        async planSettledRoutes (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:285:18)
+        async planChatStepResolved (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:203:27)
+        async planChatStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:192:22)
+      ...
+    # Subtest: a step that names no file takes the file the other names
+    not ok 2 - a step that names no file takes the file the other names
+      ---
+      duration_ms: 136.736791
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/pull-request-1188-fix-gaps.test.mjs:141:3'
+      failureType: 'testCodeFailure'
+      error: 'sha256Hex is not defined'
+      code: 'ERR_TEST_FAILURE'
+      name: 'ReferenceError'
+      stack: |-
+        planInsertSequenceStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/workspace_change.mjs:493:32)
+        Module.planWorkspaceChangeStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/workspace_change.mjs:66:23)
+        planWorkspaceChangeArm (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:136:31)
+        async planSettledRoutes (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:285:18)
+        async planChatStepResolved (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:203:27)
+        async Module.planRequestSequenceStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/request_sequence.mjs:155:20)
+        async planWorkspaceChangeArm (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:135:11)
+        async planSettledRoutes (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:285:18)
+        async planChatStepResolved (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:203:27)
+        async planChatStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:192:22)
+      ...
+    # Subtest: the Russian cue `затем` is a step too, answered in Russian
+    not ok 3 - the Russian cue `затем` is a step too, answered in Russian
+      ---
+      duration_ms: 104.355083
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/pull-request-1188-fix-gaps.test.mjs:147:3'
+      failureType: 'testCodeFailure'
+      error: 'sha256Hex is not defined'
+      code: 'ERR_TEST_FAILURE'
+      name: 'ReferenceError'
+      stack: |-
+        planInsertSequenceStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/workspace_change.mjs:493:32)
+        Module.planWorkspaceChangeStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/workspace_change.mjs:66:23)
+        planWorkspaceChangeArm (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:136:31)
+        async planSettledRoutes (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:285:18)
+        async planChatStepResolved (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:203:27)
+        async Module.planRequestSequenceStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/request_sequence.mjs:155:20)
+        async planWorkspaceChangeArm (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:135:11)
+        async planSettledRoutes (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:285:18)
+        async planChatStepResolved (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:203:27)
+        async planChatStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs:192:22)
+      ...
+    # Subtest: a cue that opens no clause, or a step without a quoted text, is no sequence
+    ok 4 - a cue that opens no clause, or a step without a quoted text, is no sequence
+      ---
+      duration_ms: 1.094292
+      ...
+    1..4
+not ok 12 - G99: edits joined by a sequence cue are planned step by step
+  ---
+  duration_ms: 319.58825
+  type: 'suite'
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/pull-request-1188-fix-gaps.test.mjs:133:1'
+  failureType: 'subtestsFailed'
+  error: '3 subtests failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: G106: several Replaces apply all or decline, never drop one
+    # Subtest: `and then replace` applies both
+    ok 1 - `and then replace` applies both
+      ---
+      duration_ms: 293.702
+      ...
+    # Subtest: a second clause that is no quoted replacement is named, and nothing changes
+    ok 2 - a second clause that is no quoted replacement is named, and nothing changes
+      ---
+      duration_ms: 4.446834
+      ...
+    1..2
+ok 13 - G106: several Replaces apply all or decline, never drop one
+  ---
+  duration_ms: 298.261167
+  type: 'suite'
+  ...
+# Subtest: G90: a quoted text holding its own quote mark is declined, naming the quote
+    # Subtest: single-quoted texts holding single quotes (T471)
+    ok 1 - single-quoted texts holding single quotes (T471)
+      ---
+      duration_ms: 2.726541
+      ...
+    # Subtest: double-quoted texts ending in a double quote of their own (T377)
+    ok 2 - double-quoted texts ending in a double quote of their own (T377)
+      ---
+      duration_ms: 2.302542
+      ...
+    # Subtest: the same texts in «» are edited
+    ok 3 - the same texts in «» are edited
+      ---
+      duration_ms: 31.355166
+      ...
+    1..3
+ok 14 - G90: a quoted text holding its own quote mark is declined, naming the quote
+  ---
+  duration_ms: 36.683292
+  type: 'suite'
+  ...
+# Subtest: G107: a backticked payload whose inner spans pair runs to its own close
+    # Subtest: a sentence end inside the payload keeps the whole replacement
+    ok 1 - a sentence end inside the payload keeps the whole replacement
+      ---
+      duration_ms: 33.575166
+      ...
+    # Subtest: the T794 shape: paths, a semicolon and a sentence end inside the payload
+    ok 2 - the T794 shape: paths, a semicolon and a sentence end inside the payload
+      ---
+      duration_ms: 39.221125
+      ...
+    # Subtest: the payload ends where its own mark closes, before a later sentence
+    ok 3 - the payload ends where its own mark closes, before a later sentence
+      ---
+      duration_ms: 0.146292
+      ...
+    1..3
+ok 15 - G107: a backticked payload whose inner spans pair runs to its own close
+  ---
+  duration_ms: 73.062709
+  type: 'suite'
+  ...
+# Subtest: G102: a file described rather than given is never written from a failed or refused step
+    # Subtest: a create request whose names and values are «» fragments writes nothing
+    ok 1 - a create request whose names and values are «» fragments writes nothing
+      ---
+      duration_ms: 971.736125
+      ...
+    1..1
+ok 16 - G102: a file described rather than given is never written from a failed or refused step
+  ---
+  duration_ms: 971.797334
+  type: 'suite'
+  ...
+# Subtest: G109: copy then comma-joined replacements preserves the source
+ok 17 - G109: copy then comma-joined replacements preserves the source
+  ---
+  duration_ms: 3194.212541
+  ...
+# Subtest: G109: move then a quoted edit runs in order
+ok 18 - G109: move then a quoted edit runs in order
+  ---
+  duration_ms: 3164.002333
+  ...
+# Subtest: G108: scalar payload code spans keep comma-separated backticks whole
+ok 19 - G108: scalar payload code spans keep comma-separated backticks whole
+  ---
+  duration_ms: 0.351333
+  ...
+# Subtest: G110: payload file paths and cues cannot become the creation target
+ok 20 - G110: payload file paths and cues cannot become the creation target
+  ---
+  duration_ms: 51.638958
+  ...
+# Subtest: G113: exact quoted content retains indentation and terminal newline
+ok 21 - G113: exact quoted content retains indentation and terminal newline
+  ---
+  duration_ms: 67.988209
+  ...
+# Subtest: G114: an objective label in quoted source is data
+ok 22 - G114: an objective label in quoted source is data
+  ---
+  duration_ms: 0.620708
+  ...
+# Subtest: G115: replacement preserves a new-only source newline escape
+ok 23 - G115: replacement preserves a new-only source newline escape
+  ---
+  duration_ms: 32.105417
+  ...
+# Subtest: formal rewrite queries validate escaped literals before the prose quote guard
+ok 24 - formal rewrite queries validate escaped literals before the prose quote guard
+  ---
+  duration_ms: 26.627375
+  ...
+# Subtest: G132: an underspecified test stays a clarification and creates no evidence
+ok 25 - G132: an underspecified test stays a clarification and creates no evidence
+  ---
+  duration_ms: 13.928166
+  ...
+# Subtest: G132: an observed file finding can still be delivered
+ok 26 - G132: an observed file finding can still be delivered
+  ---
+  duration_ms: 484.794916
+  ...
+# Subtest: G132: another sentence acceptance command is no test-authoring question
+ok 27 - G132: another sentence acceptance command is no test-authoring question
+  ---
+  duration_ms: 0.70125
+  ...
+# Subtest: G132: unknown finals and observed failures cannot be delivery findings
+ok 28 - G132: unknown finals and observed failures cannot be delivery findings
+  ---
+  duration_ms: 14.577208
+  ...
+# Subtest: G132: a certificate belongs only to its selected final bytes
+ok 29 - G132: a certificate belongs only to its selected final bytes
+  ---
+  duration_ms: 0.13425
+  ...
+# Subtest: numbered lines are removed (T30)
+    # Subtest: a range, a "to" range and one line
+    ok 1 - a range, a "to" range and one line
+      ---
+      duration_ms: 880.550209
+      ...
+    # Subtest: every registered language names the range
+    ok 2 - every registered language names the range
+      ---
+      duration_ms: 107.57425
+      ...
+    # Subtest: a line past the end is an honest failure and the file is untouched
+    ok 3 - a line past the end is an honest failure and the file is untouched
+      ---
+      duration_ms: 5.919791
+      ...
+    # Subtest: a numbered line and the line above it (T29 shape, numbered)
+    ok 4 - a numbered line and the line above it (T29 shape, numbered)
+      ---
+      duration_ms: 18.893083
+      ...
+    1..4
+ok 30 - numbered lines are removed (T30)
+  ---
+  duration_ms: 1302.446084
+  type: 'suite'
+  ...
+# Subtest: a quoted line and its neighbour are removed together (T29)
+    # Subtest: the line and the named line directly above it
+    ok 1 - the line and the named line directly above it
+      ---
+      duration_ms: 26.702041
+      ...
+    # Subtest: each removed line is a list value even when it contains backticks
+    ok 2 - each removed line is a list value even when it contains backticks
+      ---
+      duration_ms: 26.614875
+      ...
+    # Subtest: a scalar removal payload retains placeholder-shaped text
+    ok 3 - a scalar removal payload retains placeholder-shaped text
+      ---
+      duration_ms: 20.035542
+      ...
+    # Subtest: a neighbour that is not the named line is refused, never guessed
+    ok 4 - a neighbour that is not the named line is refused, never guessed
+      ---
+      duration_ms: 7.818292
+      ...
+    # Subtest: a removal is never routed to a whole-file write
+    ok 5 - a removal is never routed to a whole-file write
+      ---
+      duration_ms: 106.593542
+      ...
+    1..5
+ok 31 - a quoted line and its neighbour are removed together (T29)
+  ---
+  duration_ms: 188.219416
+  type: 'suite'
+  ...
+# Subtest: an insert anchored at a numbered line (T33)
+    # Subtest: after and before line N
+    ok 1 - after and before line N
+      ---
+      duration_ms: 93.872916
+      ...
+    # Subtest: in Russian
+    ok 2 - in Russian
+      ---
+      duration_ms: 32.193834
+      ...
+    1..2
+ok 32 - an insert anchored at a numbered line (T33)
+  ---
+  duration_ms: 126.217875
+  type: 'suite'
+  ...
+# Subtest: a quoted path is the payload when the file is named unquoted (T35)
+    # Subtest: every line containing the path goes from the named file
+    ok 1 - every line containing the path goes from the named file
+      ---
+      duration_ms: 644.298459
+      ...
+    1..1
+ok 33 - a quoted path is the payload when the file is named unquoted (T35)
+  ---
+  duration_ms: 644.448083
+  type: 'suite'
+  ...
+# Subtest: a line is moved, never duplicated (G4)
+    # Subtest: to the top, to the end, after another line
+    ok 1 - to the top, to the end, after another line
+      ---
+      duration_ms: 70.522125
+      ...
+    1..1
+ok 34 - a line is moved, never duplicated (G4)
+  ---
+  duration_ms: 70.738875
+  type: 'suite'
+  ...
+# Subtest: two lines are swapped (G3)
+    # Subtest: the two whole lines exchange places
+    ok 1 - the two whole lines exchange places
+      ---
+      duration_ms: 32.694709
+      ...
+    1..1
+ok 35 - two lines are swapped (G3)
+  ---
+  duration_ms: 32.802416
+  type: 'suite'
+  ...
+# Subtest: a computed change never leaves a fragment of the file (T29)
+    # Subtest: a removal by content that would drop most of the file is refused
+    ok 1 - a removal by content that would drop most of the file is refused
+      ---
+      duration_ms: 13.806959
+      ...
+    # Subtest: a numbered range states its extent and may
+    ok 2 - a numbered range states its extent and may
+      ---
+      duration_ms: 18.370125
+      ...
+    1..2
+ok 36 - a computed change never leaves a fragment of the file (T29)
+  ---
+  duration_ms: 32.328
+  type: 'suite'
+  ...
+# Subtest: whole Write fallback performs read, actual mutation, fresh digest, and exact final answer
+ok 37 - whole Write fallback performs read, actual mutation, fresh digest, and exact final answer
+  ---
+  duration_ms: 1537.717917
+  ...
+# Subtest: bare digest and explicit successful receipts preserve the existing digest contract
+ok 38 - bare digest and explicit successful receipts preserve the existing digest contract
+  ---
+  duration_ms: 2.318625
+  ...
+# Subtest: wrong digest, explicit nonzero, transport error, and outer failure cannot certify current bytes
+ok 39 - wrong digest, explicit nonzero, transport error, and outer failure cannot certify current bytes
+  ---
+  duration_ms: 2.012208
+  ...
+# Subtest: digest observations and command calls before the mutation remain stale
+ok 40 - digest observations and command calls before the mutation remain stale
+  ---
+  duration_ms: 0.351083
+  ...
+# Subtest: latest failed or changed-content writes invalidate an earlier success
+ok 41 - latest failed or changed-content writes invalidate an earlier success
+  ---
+  duration_ms: 0.512875
+  ...
+# Subtest: relative suffix paths and unrelated commands cannot donate receipt evidence
+ok 42 - relative suffix paths and unrelated commands cannot donate receipt evidence
+  ---
+  duration_ms: 0.741417
+  ...
+# Subtest: Unicode, BOM, CRLF and large expected sources are hashed as full UTF8 bytes
+ok 43 - Unicode, BOM, CRLF and large expected sources are hashed as full UTF8 bytes
+  ---
+  duration_ms: 17.084125
+  ...
+# Subtest: unchanged actual Agent CLI source task advances via a genuine fresh digest: 1.1.1.1.1
+ok 44 - unchanged actual Agent CLI source task advances via a genuine fresh digest: 1.1.1.1.1
+  ---
+  duration_ms: 1076.363958
+  ...
+# Subtest: unchanged actual Agent CLI source task advances via a genuine fresh digest: 1.1.2.1.2
+ok 45 - unchanged actual Agent CLI source task advances via a genuine fresh digest: 1.1.2.1.2
+  ---
+  duration_ms: 427.479
+  ...
+1..45
+# tests 69
+# suites 17
+# pass 66
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11690.53325

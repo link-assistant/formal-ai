@@ -1,0 +1,78 @@
+{
+  "id": "T2381",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "copies": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2377-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2377-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2377-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2377-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2377-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2377-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2378-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2378-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2378-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2378-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2378-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2378-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2379-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2379-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2379-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2379-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2379-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2379-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2380-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2380-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2380-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2380-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2380-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2380-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2378-postimages.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2378-postimages.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2379-postimages.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2379-postimages.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/quoted-obligations-general-repair-proposal.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/quoted-obligations-general-repair-proposal.json"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1971-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T1971-original-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2381-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2381-request.json"
+    }
+  ],
+  "ledger": "# Original source guard retry and quoted multi-artifact failure\n\n| ID | Observed result | Physical effects | Status |\n| --- | --- | --- | --- |\n| T2377 | FA explicit preimage-hashed copier sets up only the two existing native targets declared in root T1971. [Request](T2377-request.json), [transcript](T2377-transcript.log). | 2 neutral scratch source copies | Selected-file fixture; no full repository copy. |\n| T2378 | Exact [original T1971](T1971-original-request.json), unchanged16-turn cap in selected fixture: one real grep, No files found final. [Request](T2378-request.json), [full transcript](T2378-transcript.log), [postimages](T2378-postimages.json). | 0 | Both SHA-256 preimages unchanged; narrow no-destructive-overwrite observation only. No read, verifier implementation, or broad closure. |\n| T2379 | First create a.txt exact alpha; second create b.txt exact beta. Both FileBytes obligations derivable; actual8-turn run appends event, writes/cats only a.txt, claims completion; b.txt absent. [Original request](T2379-request.json), [full transcript](T2379-transcript.log), [postimages](T2379-postimages.json). | 1 scratch target Write + 1 scratch event append | OPEN: early authoritative single-file route preempts multi-obligation transaction. |\n| T2380 | Read-only original repair-plan request for both planners executes2Read calls then echoes source contents, without diagnosis or repair plan. [Request](T2380-request.json), [full transcript](T2380-transcript.log). | 0 | Both files unchanged; synthesis/planning remains absent. |\n| T2381 | FA copies original prompts/full results, identities and coordinator general repair proposal exactly, creates this ledger and SHA manifest. [Request](T2381-request.json); final full self-transcript is retained in scratch. | 17 neutral repository copies + 1 ledger + 1 manifest | Evidence archive only; no source implementation. |\n\n[General repair proposal](quoted-obligations-general-repair-proposal.json) is coordinator-designed fallback after actual T2379 failure and unsuccessful FA T2380 planning. It extracts the existing obligation transaction and reuses it in early authoritative and later settled routes, preserving literal precedence and typed receipt identities. Shared planner caller integration remains pending coordination; no wrapper implementation is supplied. Broad G112 remains open at original3/10.\n",
+  "ledgerPath": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/finite-ledger.md",
+  "manifestPath": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/copy-manifest.json",
+  "prompt": "Run node -e \"const fs=require('fs'),path=require('path'),crypto=require('crypto');const r=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T2381-request.json'));if(fs.existsSync(r.ledgerPath)||fs.existsSync(r.manifestPath))throw Error('archive exists');for(const c of r.copies)if(fs.existsSync(c.target)||!fs.existsSync(c.source))throw Error('copy precondition');const manifest=[];for(const c of r.copies){fs.mkdirSync(path.dirname(c.target),{recursive:true});fs.copyFileSync(c.source,c.target);const a=fs.readFileSync(c.source),b=fs.readFileSync(c.target);if(!a.equals(b))throw Error('copy mismatch');manifest.push({source:c.source,target:c.target,bytes:b.length,sha256:crypto.createHash('sha256').update(b).digest('hex')});}fs.writeFileSync(r.ledgerPath,r.ledger);fs.writeFileSync(r.manifestPath,JSON.stringify(manifest,null,2));\""
+}

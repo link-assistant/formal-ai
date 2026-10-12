@@ -492,6 +492,31 @@ const FEATURE_CAPABILITY_LANGUAGE_CASES: &[FeatureCapabilityLanguageCase] = &[
         prompt: "支持项目计划吗？",
         expected_fragment: "项目计划",
     },
+    // R1188-U1: Spanish reads its own seeded cues, like every cued language.
+    FeatureCapabilityLanguageCase {
+        feature: "web_search",
+        language: "es",
+        prompt: "¿Puedes buscar en internet?",
+        expected_fragment: "búsqueda web",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "javascript_execution",
+        language: "es",
+        prompt: "¿Puedes ejecutar JavaScript?",
+        expected_fragment: "«ejecución de JavaScript»",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "translation",
+        language: "es",
+        prompt: "¿Puedes traducir?",
+        expected_fragment: "«traducción»",
+    },
+    FeatureCapabilityLanguageCase {
+        feature: "agent_mode",
+        language: "es",
+        prompt: "¿Tienes modo agente?",
+        expected_fragment: "«modo agente»",
+    },
 ];
 
 #[test]

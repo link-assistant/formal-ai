@@ -1,0 +1,57 @@
+{
+  "request": "/private/tmp/spec-recurrence-1188/T2944-request.json",
+  "sha256": "cff5793417451db5effc17621b5d63cbdfd68aec2c18ebbeada83a3ef741a90d",
+  "characters": 7837,
+  "quotedSpans": [
+    [
+      85,
+      7837
+    ]
+  ],
+  "authoritative": true,
+  "fullPlan": {
+    "mode": "literal_file",
+    "target": "compiled-first-slice-production-plan.md",
+    "contentBytes": 7723
+  },
+  "clauses": [
+    {
+      "span": [
+        0,
+        5266
+      ],
+      "chars": 5266,
+      "head": "Set the contents of compiled-first-slice-production-plan.md to ex",
+      "tail": "es exact native answer including its closing newline. Use real history and assert one genuine package counted."
+    },
+    {
+      "span": [
+        5267,
+        6733
+      ],
+      "chars": 1466,
+      "head": "Also check two canonical-equivalent descriptions deduplicate and ",
+      "tail": "er allowed standalone rustfmt; no local cargo/rustc. Keep fixture identities and raw original before failures."
+    },
+    {
+      "span": [
+        6734,
+        7837
+      ],
+      "chars": 1103,
+      "head": "Then rerun the actual production specification checker; report it",
+      "tail": "937 payload-scope failure also remains open despite successful changed-command archival recovery.\n````````````"
+    }
+  ],
+  "leaves": 12,
+  "next": {
+    "kind": "observe",
+    "chars": 5266,
+    "span": [
+      0,
+      5266
+    ],
+    "tail": "og_local_runtime_rules exact native answer including its closing newline. Use real history and assert one genuine package counted."
+  },
+  "limit": "Pure read-only function calls, no original retry or source mutation."
+}

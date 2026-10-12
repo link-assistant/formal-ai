@@ -1,0 +1,74 @@
+{
+  "lemma": "statement",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06735202-n",
+      "partOfSpeech": "n",
+      "definition": "a message that is stated or declared; a communication (oral or written) setting forth particulars or facts etc",
+      "examples": [
+        "according to his statement he was in London on that day"
+      ]
+    },
+    {
+      "id": "oewn-06661469-n",
+      "partOfSpeech": "n",
+      "definition": "a fact or assertion offered as evidence that something is true",
+      "examples": [
+        "it was a strong argument that his hypothesis was true"
+      ],
+      "synonyms": [
+        "argument"
+      ]
+    },
+    {
+      "id": "oewn-07043306-n",
+      "partOfSpeech": "n",
+      "definition": "(music) the presentation of a musical theme",
+      "examples": [
+        "the initial statement of the sonata"
+      ]
+    },
+    {
+      "id": "oewn-06736201-n",
+      "partOfSpeech": "n",
+      "definition": "a nonverbal message",
+      "examples": [
+        "a Cadillac makes a statement about who you are",
+        "his tantrums are a statement of his need for attention"
+      ]
+    },
+    {
+      "id": "oewn-07217786-n",
+      "partOfSpeech": "n",
+      "definition": "the act of affirming or asserting or stating something",
+      "synonyms": [
+        "affirmation",
+        "assertion"
+      ]
+    },
+    {
+      "id": "oewn-06597067-n",
+      "partOfSpeech": "n",
+      "definition": "(computer science) a line of code written as part of a computer program",
+      "synonyms": [
+        "instruction",
+        "command",
+        "program line"
+      ]
+    },
+    {
+      "id": "oewn-06528586-n",
+      "partOfSpeech": "n",
+      "definition": "a document showing credits and debits",
+      "synonyms": [
+        "financial statement"
+      ]
+    }
+  ]
+}

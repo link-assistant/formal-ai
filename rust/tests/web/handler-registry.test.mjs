@@ -27,7 +27,7 @@ test("reordering the seed reorders synchronous browser dispatch", () => {
   );
   context.testContext = { prompt: "from seed" };
   context.testRegistry = parse(
-    "browser_handler_precedence\n  handler firstHandler\n    argument_prompt\n  handler secondHandler\n    argument_prompt\n",
+    "browser-handler-precedence\n  handler firstHandler\n    argument_prompt\n  handler secondHandler\n    argument_prompt\n",
   );
   assert.deepEqual(
     plain(evaluate(context, "synchronousHandlerCandidates(testContext, testRegistry).map((entry) => entry.name)")),
@@ -39,7 +39,7 @@ test("reordering the seed reorders synchronous browser dispatch", () => {
   );
 
   context.testRegistry = parse(
-    "browser_handler_precedence\n  handler secondHandler\n    argument_prompt\n  handler firstHandler\n    argument_prompt\n",
+    "browser-handler-precedence\n  handler secondHandler\n    argument_prompt\n  handler firstHandler\n    argument_prompt\n",
   );
   assert.deepEqual(
     plain(evaluate(context, "synchronousHandlerCandidates(testContext, testRegistry).map((entry) => entry.name)")),

@@ -99,6 +99,17 @@ pub const ROLE_CALENDAR_TODAY: &str = "calendar_today";
 /// Semantic role: a reference to a day, date, or week — the noun a calendar
 /// question is about (day, weekday, date, week, день, неделя, 星期, …).
 pub const ROLE_CALENDAR_DAY_REFERENCE: &str = "calendar_day_reference";
+/// Semantic role: a named month of the year (January … December).
+///
+/// The meaning slug is the English month name so the month-offset reader can resolve a
+/// matched lexeme back to its number in the twelve-month cycle (issue #1176).
+pub const ROLE_CALENDAR_MONTH_NAME: &str = "calendar_month_name";
+/// Semantic role: a question asking which weekday a date falls on.
+///
+/// ("day of the week", "weekday", "какой день", 星期几.) Read by the date-weekday reader
+/// of the calendar handler so "What day of the week was 2024-02-29?" is
+/// computed from the stated date rather than looked up (R1017).
+pub const ROLE_CALENDAR_WEEKDAY_QUERY: &str = "calendar_weekday_query";
 /// Semantic role: a relative period measured in hours (the last few hours,
 /// часа, घंटे, 小时) — the noun a fresh-period digest asks about.
 ///
@@ -172,6 +183,51 @@ pub const ROLE_SOFTWARE_AUTHORING_ACTION: &str = "software_authoring_action";
 /// is `defined_by` the `software_artifact` genus; a handler resolves a matched
 /// lexeme back to its slug and maps the slug to a canonical English label.
 pub const ROLE_SOFTWARE_ARTIFACT_KIND: &str = "software_artifact_kind";
+/// Semantic role: a word that closes the object noun phrase of a
+/// software-authoring verb (about, and, with, чтобы, में, …).
+///
+/// The artifact kind of a software-project request is the *head* noun the
+/// verb governs, so the object phrase ends at the first of these boundary
+/// words (issue #1175). Vocabulary lives in
+/// `data/seed/software-project-phrases.lino`.
+pub const ROLE_SOFTWARE_OBJECT_BOUNDARY_WORD: &str = "software_object_boundary_word";
+/// Semantic role: a determiner, benefactive or politeness word that may lead
+/// the object phrase without belonging to it (a, the, me, please, …).
+///
+/// Skipped before the head noun is read ("build **me a** web app"). Vocabulary
+/// lives in `data/seed/software-project-phrases.lino`.
+pub const ROLE_SOFTWARE_OBJECT_LEAD_WORD: &str = "software_object_lead_word";
+/// Semantic role: a two-word benefactive form whose first word is otherwise a
+/// boundary token ("for me", "to us", …).
+///
+/// Matched whole so the lead skip does not stop at the boundary word inside
+/// it ("write **for me** a poem"). Vocabulary lives in
+/// `data/seed/software-project-phrases.lino`.
+pub const ROLE_SOFTWARE_OBJECT_LEAD_BIGRAM: &str = "software_object_lead_bigram";
+/// Semantic role: a punctuation character that ends an object phrase where it
+/// appears (comma, period, CJK comma, …).
+///
+/// ASCII members cut a token only at its edges (a period inside "Node.js" is
+/// part of a name); the word-internal subset is the separate
+/// [`ROLE_SOFTWARE_OBJECT_WORD_INTERNAL_CHARACTER`]. Vocabulary lives in
+/// `data/seed/software-project-phrases.lino`.
+pub const ROLE_SOFTWARE_OBJECT_BOUNDARY_CHARACTER: &str = "software_object_boundary_character";
+/// Semantic role: a punctuation character that cuts a token at any position
+/// (CJK comma, Devanagari danda, …).
+///
+/// Unspaced script runs hide phrase boundaries inside one token, so these
+/// separators end a segment mid-token where ASCII punctuation would be part
+/// of a name. Vocabulary lives in
+/// `data/seed/software-project-phrases.lino`.
+pub const ROLE_SOFTWARE_OBJECT_WORD_INTERNAL_CHARACTER: &str =
+    "software_object_word_internal_character";
+/// Semantic role: a punctuation character that ends a sentence (period,
+/// question mark, CJK period, danda, …).
+///
+/// Bounds the pre-verbal object of a verb-final (subject-object-verb) request
+/// from the left. Vocabulary lives in
+/// `data/seed/software-project-phrases.lino`.
+pub const ROLE_SOFTWARE_SENTENCE_END_CHARACTER: &str = "software_sentence_end_character";
 /// Semantic role: a category a software feature requirement falls into.
 ///
 /// Examples are state tracking, data exchange, automation, validation,

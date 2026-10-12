@@ -1,0 +1,252 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/issue_1021_verified_move.rs","file_path":"rust/tests/unit/agentic-coding/issue_1021_verified_move.rs","path":"rust/tests/unit/agentic-coding/issue_1021_verified_move.rs"}
+   <file>
+   00001| //! Issue #1021 / #944 (E92): a move is *performed and verified*, not issued.
+   00002| //!
+   00003| //! Issue #824 reported *"Move <dir> to <dir>"* being refused. The routing half
+   00004| //! of that was answered on this branch — the request lowers to a concrete `mv
+   00005| //! SOURCE DESTINATION` — and issue #944 asks for the other half: "verify source
+   00006| //! exists, verify/create destination parent (mkdir -p), perform the move, verify
+   00007| //! the result, and confirm to the user".
+   00008| //!
+   00009| //! So these tests do not assert that a command was *planned*. They drive the
+   00010| //! planner's own tool loop with the results a shell would return and assert the
+   00011| //! ordered recipe it walks, that a check which fails stops the recipe before the
+   00012| //! action, and that the answer afterwards names what it rests on. The same
+   00013| //! recipe is exercised end to end against a real filesystem by the write-effect
+   00014| //! ladder rungs `824.L1`-`824.L5`.
+   00015| 
+   00016| use formal_ai::agentic_coding::mutating_action::verified_recipe;
+   00017| use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
+   00018| use formal_ai::{ChatMessage, ToolCall};
+   00019| 
+   00020| const TOOLS: [&str; 2] = ["write_file", "run_shell_command"];
+   00021| 
+   00022| /// The qwen-code shell envelope, the shape the #902-#909 corpus recorded and the
+   00023| /// one the write-effect ladder replays.
+   00024| fn shell_result(command: &str, stdout: &str, exit_code: i32) -> String {
+   00025|     format!(
+   00026|         "Command: {command}\nDirectory: (root)\nOutput: {}\nError: (none)\nExit Code: {exit_code}\nSignal: 0\nProcess Group PGID: 0",
+   00027|         if stdout.is_empty() { "(empty)" } else { stdout }
+   00028|     )
+   00029| }
+   00030| 
+   00031| fn next_call(messages: &[ChatMessage]) -> Option<PlannedToolCall> {
+   00032|     match plan_chat_step(messages, &TOOLS)? {
+   00033|         AgenticPlan::ToolCalls(mut calls) if calls.len() == 1 => Some(calls.remove(0)),
+   00034|         AgenticPlan::Final(_) => None,
+   00035|         other @ AgenticPlan::ToolCalls(_) => {
+   00036|             panic!("expected one tool call or a final answer, got {other:?}")
+   00037|         }
+   00038|     }
+   00039| }
+   00040| 
+   00041| fn final_answer(messages: &[ChatMessage]) -> String {
+   00042|     match plan_chat_step(messages, &TOOLS) {
+   00043|         Some(AgenticPlan::Final(answer)) => answer,
+   00044|         other => panic!("expected a final answer, got {other:?}"),
+   00045|     }
+   00046| }
+   00047| 
+   00048| fn record(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str) {
+   00049|     let id = format!("call_{}", messages.len());
+   00050|     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00051|         id.clone(),
+   00052|         call.tool.clone(),
+   00053|         call.arguments.clone(),
+   00054|     )]));
+   00055|     messages.push(ChatMessage::tool_result(id, &call.tool, result));
+   00056| }
+   00057| 
+   00058| fn command_of(call: &PlannedToolCall) -> String {
+   00059|     let arguments: serde_json::Value =
+   00060|         serde_json::from_str(&call.arguments).expect("tool arguments");
+   00061|     arguments["command"]
+   00062|         .as_str()
+   00063|         .unwrap_or_else(|| panic!("a shell step should carry a command: {}", call.arguments))
+   00064|         .to_owned()
+   00065| }
+   00066| 
+   00067| /// Drive the planner until it answers, returning every command it ran and the
+   00068| /// answer it finished with. `exit_codes` supplies the status of each step in
+   00069| /// order; a missing entry means the step succeeded.
+   00070| fn drive(prompt: &str, exit_codes: &[i32]) -> (Vec<String>, String) {
+   00071|     let mut messages = vec![ChatMessage::user(prompt)];
+   00072|     let mut commands = Vec::new();
+   00073|     for step in 0..10 {
+   00074|         let Some(call) = next_call(&messages) else {
+   00075|             break;
+   00076|         };
+   00077|         let command = command_of(&call);
+   00078|         let code = exit_codes.get(step).copied().unwrap_or(0);
+   00079|         record(&mut messages, &call, &shell_result(&command, "", code));
+   00080|         commands.push(command);
+   00081|     }
+   00082|     (commands, final_answer(&messages))
+   00083| }
+   00084| 
+   00085| /// The recipe is derived from the seed effect table, so it is the same list the
+   00086| /// planner walks and the same list a maintainer edits.
+   00087| #[test]
+   00088| fn a_move_expands_into_preconditions_preparation_action_and_postconditions() {
+   00089|     assert_eq!(
+   00090|         verified_recipe("mv report.txt archive/report.txt"),
+   00091|         Some(vec![
+   00092|             String::from("test -e report.txt"),
+   00093|             String::from("test ! -e archive/report.txt"),
+   00094|             String::from("mkdir -p -- archive"),
+   00095|             String::from("mv report.txt archive/report.txt"),
+   00096|             String::from("test -e archive/report.txt"),
+   00097|             String::from("test ! -e report.txt"),
+   00098|         ])
+   00099|     );
+   00100| }
+   00101| 
+   00102| /// A copy keeps its source, and nothing in the planner names `cp`: the
+   00103| /// difference is one line of `data/seed/shell-intents.lino`.
+   00104| #[test]
+   00105| fn a_copy_declares_the_same_shape_with_a_source_that_survives() {
+   00106|     assert_eq!(
+   00107|         verified_recipe("cp a.txt backup/a.txt"),
+   00108|         Some(vec![
+   00109|             String::from("test -e a.txt"),
+   00110|             String::from("test ! -e backup/a.txt"),
+   00111|             String::from("mkdir -p -- backup"),
+   00112|             String::from("cp a.txt backup/a.txt"),
+   00113|             String::from("test -e backup/a.txt"),
+   00114|             String::from("test -e a.txt"),
+   00115|         ])
+   00116|     );
+   00117| }
+   00118| 
+   00119| /// A destination with no directory component still has a parent, and `mkdir -p
+   00120| /// -- .` is the no-op that keeps the recipe one shape instead of two.
+   00121| #[test]
+   00122| fn a_destination_in_the_working_directory_prepares_the_working_directory() {
+   00123|     let recipe = verified_recipe("mv old.txt new.txt").expect("recipe");
+   00124|     assert!(
+   00125|         recipe.contains(&String::from("mkdir -p -- .")),
+   00126|         "{recipe:?}"
+   00127|     );
+   00128| }
+   00129| 
+   00130| /// Read-only intents keep their single-shot path: the effect table is what makes
+   00131| /// a command a recipe, and nothing declares one for `ls` or `cat`.
+   00132| #[test]
+   00133| fn a_command_with_no_declared_effect_is_not_a_recipe() {
+   00134|     for command in ["ls", "cat note.txt", "git status", "rm old.txt"] {
+   00135|         assert_eq!(verified_recipe(command), None, "{command}");
+   00136|     }
+   00137| }
+   00138| 
+   00139| #[test]
+   00140| fn a_requested_move_runs_its_checks_around_the_action() {
+   00141|     let (commands, answer) = drive("move the file report.txt to archive/report.txt", &[]);
+   00142| 
+   00143|     assert_eq!(
+   00144|         commands,
+   00145|         vec![
+   00146|             String::from("test -e report.txt"),
+   00147|             String::from("test ! -e archive/report.txt"),
+   00148|             String::from("mkdir -p -- archive"),
+   00149|             String::from("mv report.txt archive/report.txt"),
+   00150|             String::from("test -e archive/report.txt"),
+   00151|             String::from("test ! -e report.txt"),
+   00152|         ]
+   00153|     );
+   00154|     assert!(
+   00155|         answer.contains("mv report.txt archive/report.txt"),
+   00156|         "the answer should name the action it took: {answer}"
+   00157|     );
+   00158|     assert!(
+   00159|         answer.contains("test -e archive/report.txt"),
+   00160|         "and the checks the claim rests on: {answer}"
+   00161|     );
+   00162| }
+   00163| 
+   00164| /// The conflict case: the destination is occupied, so the recipe stops on the
+   00165| /// precondition and the action never runs.
+   00166| #[test]
+   00167| fn a_move_onto_an_occupied_destination_stops_before_it_acts() {
+   00168|     let (commands, answer) = drive("move the file report.txt to archive/report.txt", &[0, 1]);
+   00169| 
+   00170|     assert_eq!(
+   00171|         commands,
+   00172|         vec![
+   00173|             String::from("test -e report.txt"),
+   00174|             String::from("test ! -e archive/report.txt"),
+   00175|         ],
+   00176|         "a failed precondition ends the recipe where it stopped"
+   00177|     );
+   00178|     assert!(
+   00179|         answer.contains("test ! -e archive/report.txt"),
+   00180|         "the answer should name the check that stopped it: {answer}"
+   00181|     );
+   00182|     assert!(
+   00183|         answer.contains('1'),
+   00184|         "and the status the workspace answered with: {answer}"
+   00185|     );
+   00186|     assert!(
+   00187|         !answer.to_lowercase().contains("completed the"),
+   00188|         "a blocked move must not claim completion: {answer}"
+   00189|     );
+   00190| }
+   00191| 
+   00192| /// A missing source is the other precondition, and it stops the recipe on step
+   00193| /// one — before `mkdir -p` has created anything.
+   00194| #[test]
+   00195| fn a_move_of_a_missing_source_stops_on_the_first_check() {
+   00196|     let (commands, answer) = drive("move the file report.txt to archive/report.txt", &[1]);
+   00197| 
+   00198|     assert_eq!(commands, vec![String::from("test -e report.txt")]);
+   00199|     assert!(!answer.to_lowercase().contains("completed the"), "{answer}");
+   00200| }
+   00201| 
+   
+   (End of file - total 201 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/issue_1021_verified_move.rs","file_path":"rust/tests/unit/agentic-coding/issue_1021_verified_move.rs","new":"#[test]\nfn a_move_of_a_missing_source_stops_on_the_first_check() {\n    let (commands, answer) = drive(\"move the file report.txt to archive/report.txt\", &[1]);\n\n    assert_eq!(commands, vec![String::from(\"test -e report.txt\")]);\n    assert!(!answer.to_lowercase().contains(\"completed the\"), \"{answer}\");\n}\n\n#[test]\nfn declared_directory_options_bind_paths_without_leaking_flags() {\n    let command = \"mkdir -p -m 700 -- \\\"evidence rows/nested\\\"\";\n    assert_eq!(verified_recipe(command), Some(vec![\n        String::from(\"test ! -e \\\"evidence rows/nested\\\" || test -d \\\"evidence rows/nested\\\"\"),\n        command.to_owned(),\n        String::from(\"test -d \\\"evidence rows/nested\\\"\"),\n    ]));\n}\n\n#[test]\nfn source_collections_check_each_expanded_destination_without_implicit_overwrite() {\n    let recipe = verified_recipe(\"cp logs/*.log evidence/\").expect(\"collection recipe\");\n    assert_eq!(recipe.len(), 6);\n    assert!(recipe[0].starts_with(\"for formal_ai_source in logs/*.log;\"));\n    assert!(recipe[0].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n    assert!(recipe[1].contains(\"test ! -e \\\"$formal_ai_destination\\\"\"));\n    assert_eq!(recipe[3], \"cp logs/*.log evidence/\");\n    assert!(recipe[4].contains(\"test -e \\\"$formal_ai_destination\\\"\"));\n    assert!(recipe[5].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n    let forced = verified_recipe(\"cp -f logs/*.log evidence/\").expect(\"consented recipe\");\n    assert_eq!(forced.len(), 5);\n    assert!(!forced.iter().any(|step| step.contains(\"test ! -e\")));\n    assert!(forced[0].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n}\n","newString":"#[test]\nfn a_move_of_a_missing_source_stops_on_the_first_check() {\n    let (commands, answer) = drive(\"move the file report.txt to archive/report.txt\", &[1]);\n\n    assert_eq!(commands, vec![String::from(\"test -e report.txt\")]);\n    assert!(!answer.to_lowercase().contains(\"completed the\"), \"{answer}\");\n}\n\n#[test]\nfn declared_directory_options_bind_paths_without_leaking_flags() {\n    let command = \"mkdir -p -m 700 -- \\\"evidence rows/nested\\\"\";\n    assert_eq!(verified_recipe(command), Some(vec![\n        String::from(\"test ! -e \\\"evidence rows/nested\\\" || test -d \\\"evidence rows/nested\\\"\"),\n        command.to_owned(),\n        String::from(\"test -d \\\"evidence rows/nested\\\"\"),\n    ]));\n}\n\n#[test]\nfn source_collections_check_each_expanded_destination_without_implicit_overwrite() {\n    let recipe = verified_recipe(\"cp logs/*.log evidence/\").expect(\"collection recipe\");\n    assert_eq!(recipe.len(), 6);\n    assert!(recipe[0].starts_with(\"for formal_ai_source in logs/*.log;\"));\n    assert!(recipe[0].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n    assert!(recipe[1].contains(\"test ! -e \\\"$formal_ai_destination\\\"\"));\n    assert_eq!(recipe[3], \"cp logs/*.log evidence/\");\n    assert!(recipe[4].contains(\"test -e \\\"$formal_ai_destination\\\"\"));\n    assert!(recipe[5].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n    let forced = verified_recipe(\"cp -f logs/*.log evidence/\").expect(\"consented recipe\");\n    assert_eq!(forced.len(), 5);\n    assert!(!forced.iter().any(|step| step.contains(\"test ! -e\")));\n    assert!(forced[0].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n}\n","new_str":"#[test]\nfn a_move_of_a_missing_source_stops_on_the_first_check() {\n    let (commands, answer) = drive(\"move the file report.txt to archive/report.txt\", &[1]);\n\n    assert_eq!(commands, vec![String::from(\"test -e report.txt\")]);\n    assert!(!answer.to_lowercase().contains(\"completed the\"), \"{answer}\");\n}\n\n#[test]\nfn declared_directory_options_bind_paths_without_leaking_flags() {\n    let command = \"mkdir -p -m 700 -- \\\"evidence rows/nested\\\"\";\n    assert_eq!(verified_recipe(command), Some(vec![\n        String::from(\"test ! -e \\\"evidence rows/nested\\\" || test -d \\\"evidence rows/nested\\\"\"),\n        command.to_owned(),\n        String::from(\"test -d \\\"evidence rows/nested\\\"\"),\n    ]));\n}\n\n#[test]\nfn source_collections_check_each_expanded_destination_without_implicit_overwrite() {\n    let recipe = verified_recipe(\"cp logs/*.log evidence/\").expect(\"collection recipe\");\n    assert_eq!(recipe.len(), 6);\n    assert!(recipe[0].starts_with(\"for formal_ai_source in logs/*.log;\"));\n    assert!(recipe[0].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n    assert!(recipe[1].contains(\"test ! -e \\\"$formal_ai_destination\\\"\"));\n    assert_eq!(recipe[3], \"cp logs/*.log evidence/\");\n    assert!(recipe[4].contains(\"test -e \\\"$formal_ai_destination\\\"\"));\n    assert!(recipe[5].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n    let forced = verified_recipe(\"cp -f logs/*.log evidence/\").expect(\"consented recipe\");\n    assert_eq!(forced.len(), 5);\n    assert!(!forced.iter().any(|step| step.contains(\"test ! -e\")));\n    assert!(forced[0].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n}\n","new_string":"#[test]\nfn a_move_of_a_missing_source_stops_on_the_first_check() {\n    let (commands, answer) = drive(\"move the file report.txt to archive/report.txt\", &[1]);\n\n    assert_eq!(commands, vec![String::from(\"test -e report.txt\")]);\n    assert!(!answer.to_lowercase().contains(\"completed the\"), \"{answer}\");\n}\n\n#[test]\nfn declared_directory_options_bind_paths_without_leaking_flags() {\n    let command = \"mkdir -p -m 700 -- \\\"evidence rows/nested\\\"\";\n    assert_eq!(verified_recipe(command), Some(vec![\n        String::from(\"test ! -e \\\"evidence rows/nested\\\" || test -d \\\"evidence rows/nested\\\"\"),\n        command.to_owned(),\n        String::from(\"test -d \\\"evidence rows/nested\\\"\"),\n    ]));\n}\n\n#[test]\nfn source_collections_check_each_expanded_destination_without_implicit_overwrite() {\n    let recipe = verified_recipe(\"cp logs/*.log evidence/\").expect(\"collection recipe\");\n    assert_eq!(recipe.len(), 6);\n    assert!(recipe[0].starts_with(\"for formal_ai_source in logs/*.log;\"));\n    assert!(recipe[0].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n    assert!(recipe[1].contains(\"test ! -e \\\"$formal_ai_destination\\\"\"));\n    assert_eq!(recipe[3], \"cp logs/*.log evidence/\");\n    assert!(recipe[4].contains(\"test -e \\\"$formal_ai_destination\\\"\"));\n    assert!(recipe[5].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n    let forced = verified_recipe(\"cp -f logs/*.log evidence/\").expect(\"consented recipe\");\n    assert_eq!(forced.len(), 5);\n    assert!(!forced.iter().any(|step| step.contains(\"test ! -e\")));\n    assert!(forced[0].contains(\"test -e \\\"$formal_ai_source\\\"\"));\n}\n","old":"#[test]\nfn a_move_of_a_missing_source_stops_on_the_first_check() {\n    let (commands, answer) = drive(\"move the file report.txt to archive/report.txt\", &[1]);\n\n    assert_eq!(commands, vec![String::from(\"test -e report.txt\")]);\n    assert!(!answer.to_lowercase().contains(\"completed the\"), \"{answer}\");\n}\n","oldString":"#[test]\nfn a_move_of_a_missing_source_stops_on_the_first_check() {\n    let (commands, answer) = drive(\"move the file report.txt to archive/report.txt\", &[1]);\n\n    assert_eq!(commands, vec![String::from(\"test -e report.txt\")]);\n    assert!(!answer.to_lowercase().contains(\"completed the\"), \"{answer}\");\n}\n","old_str":"#[test]\nfn a_move_of_a_missing_source_stops_on_the_first_check() {\n    let (commands, answer) = drive(\"move the file report.txt to archive/report.txt\", &[1]);\n\n    assert_eq!(commands, vec![String::from(\"test -e report.txt\")]);\n    assert!(!answer.to_lowercase().contains(\"completed the\"), \"{answer}\");\n}\n","old_string":"#[test]\nfn a_move_of_a_missing_source_stops_on_the_first_check() {\n    let (commands, answer) = drive(\"move the file report.txt to archive/report.txt\", &[1]);\n\n    assert_eq!(commands, vec![String::from(\"test -e report.txt\")]);\n    assert!(!answer.to_lowercase().contains(\"completed the\"), \"{answer}\");\n}\n","path":"rust/tests/unit/agentic-coding/issue_1021_verified_move.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/issue_1021_verified_move.rs"}
+   c84be28db725425dfb195fcf260dffb7afbdbc4fb3797c5041349639c8e3f880  rust/tests/unit/agentic-coding/issue_1021_verified_move.rs
+   
+== answer ==
+Replaced `#[test]
+fn a_move_of_a_missing_source_stops_on_the_first_check() {
+    let (commands, answer) = drive("move the file report.txt to archive/report.txt", &[1]);
+
+    assert_eq!(commands, vec![String::from("test -e report.txt")]);
+    assert!(!answer.to_lowercase().contains("completed the"), "{answer}");
+}
+` with `#[test]
+fn a_move_of_a_missing_source_stops_on_the_first_check() {
+    let (commands, answer) = drive("move the file report.txt to archive/report.txt", &[1]);
+
+    assert_eq!(commands, vec![String::from("test -e report.txt")]);
+    assert!(!answer.to_lowercase().contains("completed the"), "{answer}");
+}
+
+#[test]
+fn declared_directory_options_bind_paths_without_leaking_flags() {
+    let command = "mkdir -p -m 700 -- \"evidence rows/nested\"";
+    assert_eq!(verified_recipe(command), Some(vec![
+        String::from("test ! -e \"evidence rows/nested\" || test -d \"evidence rows/nested\""),
+        command.to_owned(),
+        String::from("test -d \"evidence rows/nested\""),
+    ]));
+}
+
+#[test]
+fn source_collections_check_each_expanded_destination_without_implicit_overwrite() {
+    let recipe = verified_recipe("cp logs/*.log evidence/").expect("collection recipe");
+    assert_eq!(recipe.len(), 6);
+    assert!(recipe[0].starts_with("for formal_ai_source in logs/*.log;"));
+    assert!(recipe[0].contains("test -e \"$formal_ai_source\""));
+    assert!(recipe[1].contains("test ! -e \"$formal_ai_destination\""));
+    assert_eq!(recipe[3], "cp logs/*.log evidence/");
+    assert!(recipe[4].contains("test -e \"$formal_ai_destination\""));
+    assert!(recipe[5].contains("test -e \"$formal_ai_source\""));
+    let forced = verified_recipe("cp -f logs/*.log evidence/").expect("consented recipe");
+    assert_eq!(forced.len(), 5);
+    assert!(!forced.iter().any(|step| step.contains("test ! -e")));
+    assert!(forced[0].contains("test -e \"$formal_ai_source\""));
+}
+` in `rust/tests/unit/agentic-coding/issue_1021_verified_move.rs` and observed the result.

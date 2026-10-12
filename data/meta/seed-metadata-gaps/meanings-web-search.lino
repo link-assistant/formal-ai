@@ -1,0 +1,35 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-web-search.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-59791cc78b902934
+    record "act_find_weak"
+  gap seed-metadata-gap-2534cc34e9d5d81e
+    record "act_search_strong"
+  gap seed-metadata-gap-5001dfe52d383183
+    record "github_repository_platform"
+  gap seed-metadata-gap-5ac47cdd8e816d82
+    record "github_repository_traffic_question"
+  gap seed-metadata-gap-02122bb1c0c624da
+    record "github_repository_traffic_signal"
+  gap seed-metadata-gap-005c0c5ad7794602
+    record "news_recency_request"
+  gap seed-metadata-gap-0adc06f6498e9497
+    record "reference_encyclopedia"
+  gap seed-metadata-gap-5655ac787f32368f
+    record "reference_information"
+  gap seed-metadata-gap-b7222b6f2dc315d6
+    record "reference_internet"
+  gap seed-metadata-gap-7a699bd4f5cf0318
+    record "reference_news"
+  gap seed-metadata-gap-df1fecdefbe32dde
+    record "reference_public_events"
+  gap seed-metadata-gap-e835ee31dbeafa7b
+    record "reference_records"
+  gap seed-metadata-gap-00c287b2fec409a7
+    record "repository_reference"
+  gap seed-metadata-gap-5dff425ab11b5836
+    record "web_search"
+  gap seed-metadata-gap-b4e615a66180b40b
+    record "web_search_mention"

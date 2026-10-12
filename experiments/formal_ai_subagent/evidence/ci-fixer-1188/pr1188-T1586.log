@@ -1,0 +1,22 @@
+>> read {"filePath":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","file_path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+   <file>
+   00001| ### Fixed
+   00002| 
+   00003| - Repair Rust test lints and pin complete scalar editing summaries.
+   00004| - Run macOS archived tests from the Cargo workspace source root and keep platform selection assertions current.
+   00005| - Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.
+   00006| 
+   
+   (End of file - total 6 lines)
+   </file>
+>> edit {"filePath":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","file_path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md","new":"- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n- Preserve variable-backed template keys during notation migration and fully render procedural install answers.\n- Render explicitly listed replacement lines separately and route multiple-file edits through advertised capabilities.\n- Match workflow jobs at their real indentation even when dispatch inputs share their names.\n","newString":"- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n- Preserve variable-backed template keys during notation migration and fully render procedural install answers.\n- Render explicitly listed replacement lines separately and route multiple-file edits through advertised capabilities.\n- Match workflow jobs at their real indentation even when dispatch inputs share their names.\n","new_str":"- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n- Preserve variable-backed template keys during notation migration and fully render procedural install answers.\n- Render explicitly listed replacement lines separately and route multiple-file edits through advertised capabilities.\n- Match workflow jobs at their real indentation even when dispatch inputs share their names.\n","new_string":"- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n- Preserve variable-backed template keys during notation migration and fully render procedural install answers.\n- Render explicitly listed replacement lines separately and route multiple-file edits through advertised capabilities.\n- Match workflow jobs at their real indentation even when dispatch inputs share their names.\n","old":"- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n","oldString":"- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n","old_str":"- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n","old_string":"- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.\n","path":"changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+>> bash {"command":"sha256sum -- changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+   aba4f4d26ae51c555629a18f8ac07a717586a3b0fcf21b965f57f86549315aaa  changelog.d/20261009_045000_native-ci-and-macos-repairs.md
+   
+== answer ==
+Replaced `- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.
+` with `- Keep prebuilt test execution on stable interfaces while preserving existing shard duration inputs.
+- Preserve variable-backed template keys during notation migration and fully render procedural install answers.
+- Render explicitly listed replacement lines separately and route multiple-file edits through advertised capabilities.
+- Match workflow jobs at their real indentation even when dispatch inputs share their names.
+` in `changelog.d/20261009_045000_native-ci-and-macos-repairs.md` and observed the result.

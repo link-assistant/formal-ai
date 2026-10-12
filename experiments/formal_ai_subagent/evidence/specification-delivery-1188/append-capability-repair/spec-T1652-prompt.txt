@@ -1,0 +1,1 @@
+In rust/src/agentic_coding/general_planner.rs, replace «action: format!("write the composed plan to {PLAN_PATH}"),» with «action: format!("append the composed plan to {PLAN_PATH}"),».

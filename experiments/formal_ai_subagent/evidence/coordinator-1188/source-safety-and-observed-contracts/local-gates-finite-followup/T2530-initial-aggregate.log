@@ -1,0 +1,126 @@
+FAIL check-abbreviations 0.6s -> experiments/formal_ai_subagent/sandboxes/gates/check-abbreviations.log
+PASS check-architecture-contents 0.1s
+PASS check-architecture-principles 0.1s
+PASS check-assemble-requirements-js-twin 0.2s
+SKIP check-associative-terminology (compiles a Rust script with no JS twin (CI only))
+SKIP check-bootstrap-deletability (needs a Rust build (CI only))
+SKIP check-cache-budget (compiles a Rust script with no JS twin (CI only))
+SKIP check-capability-routing (needs a Rust build (CI only))
+SKIP check-cargo-lock-is-synchronized (needs a Rust build (CI only))
+PASS check-changelog-fragment-js-twin 0.3s
+SKIP check-ci-gate-registry (compiles a Rust script with no JS twin (CI only))
+PASS check-ci-speed 0.1s
+SKIP check-ci-wall-clock (compiles a Rust script with no JS twin (CI only))
+FAIL check-closure-audit 0.4s -> experiments/formal_ai_subagent/sandboxes/gates/check-closure-audit.log
+SKIP check-condition-source-parity (needs a Rust build (CI only))
+PASS check-conversational-variation-floor 0.3s
+SKIP check-coverage-ratchet (compiles script unit tests (CI only))
+PASS check-debt-ratchet-js-twin 0.3s
+PASS check_debt_ratchet 0.4s
+PASS check-debug-stage-sources 0.2s
+SKIP check-dependencies-latest (compiles a Rust script with no JS twin (CI only))
+PASS check-dependency-direction 0.2s
+FAIL check-desktop-library 0.2s -> experiments/formal_ai_subagent/sandboxes/gates/check-desktop-library.log
+PASS check-desktop-packaging 0.1s
+SKIP check-disk-usage-policy (compiles a Rust script with no JS twin (CI only))
+SKIP check-docs-rs-dependency-profile (needs a Rust build (CI only))
+PASS check-fact-captures 0.1s
+FAIL check-file-size-js-twin 1.4s -> experiments/formal_ai_subagent/sandboxes/gates/check-file-size-js-twin.log
+FAIL check-file-size 0.6s -> experiments/formal_ai_subagent/sandboxes/gates/check-file-size.log
+SKIP check-formal-ai-contribution (compiles script unit tests (CI only))
+FAIL check-formal-ai-tally 0.2s -> experiments/formal_ai_subagent/sandboxes/gates/check-formal-ai-tally.log
+SKIP check-formatting (needs a Rust build (CI only))
+PASS check-fragment-release-map 92.3s
+PASS check-generate-requirement-status-js-twin 0.4s
+PASS check-generated-files 1.8s
+SKIP check-generated-version-literals (compiles a Rust script with no JS twin (CI only))
+PASS check-hardcoded-language-js-twin 0.4s
+PASS check-hardcoded-language 0.3s
+SKIP check-head-pipeline-coverage (compiles script unit tests (CI only))
+FAIL check-i18n-catalog-coverage 0.3s -> experiments/formal_ai_subagent/sandboxes/gates/check-i18n-catalog-coverage.log
+SKIP check-issue-citations (compiles a Rust script with no JS twin (CI only))
+FAIL check-javascript-dependencies 11.0s -> experiments/formal_ai_subagent/sandboxes/gates/check-javascript-dependencies.log
+SKIP check_job_headroom (compiles script unit tests (CI only))
+FAIL check_js_rust_translation 1.2s -> experiments/formal_ai_subagent/sandboxes/gates/check_js_rust_translation.log
+PASS check-language-change-parity 0.9s
+PASS check-language-parity-js-twin 3.1s
+PASS check-language-parity 0.2s
+PASS check-language-test-coverage 13.7s
+SKIP check-llm-task-parity (compiles a Rust script with no JS twin (CI only))
+SKIP check-merge-conflict-policy (compiles a Rust script with no JS twin (CI only))
+FAIL check-minimal-core-boundary-js-twin 13.9s -> experiments/formal_ai_subagent/sandboxes/gates/check-minimal-core-boundary-js-twin.log
+FAIL check-minimal-core-boundary 0.1s -> experiments/formal_ai_subagent/sandboxes/gates/check-minimal-core-boundary.log
+PASS check-multilingual-intent-coverage 0.4s
+PASS check-notation 5.0s
+SKIP check-ordered-lists-are-canonical (compiles a Rust script with no JS twin (CI only))
+SKIP check-package-self-containment (compiles a Rust script with no JS twin (CI only))
+PASS check-planner-twins 0.3s
+PASS check-progressive-plan 0.1s
+PASS check-prompt-specialization 1.6s
+SKIP check-pull-request-link (compiles a Rust script with no JS twin (CI only))
+FAIL check-readable-code 2.4s -> experiments/formal_ai_subagent/sandboxes/gates/check-readable-code.log
+PASS check-reconstructed-changelog 80.7s
+SKIP check-release-changelog-collection (compiles script unit tests (CI only))
+FAIL check_rename_map 22.7s -> experiments/formal_ai_subagent/sandboxes/gates/check_rename_map.log
+PASS check-render-status-js-twin 0.5s
+PASS check-requirement-coverage 13.8s
+PASS check-requirement-extraction 1.5s
+PASS check-requirement-status-js-twin 0.3s
+PASS check-requirement-status 0.3s
+PASS check-requirements-document 0.1s
+PASS check-response-parity-debt 0.1s
+FAIL check-round-trip-translation 1.2s -> experiments/formal_ai_subagent/sandboxes/gates/check-round-trip-translation.log
+SKIP check-rust-api-documentation (needs a Rust build (CI only))
+SKIP check-seed-answer-duplicates (compiles a Rust script with no JS twin (CI only))
+PASS check-seed-registry-js-twin 0.1s
+PASS check-seed-registry 0.1s
+PASS check-self-translation 0.1s
+SKIP check-semantic-grounding (needs a Rust build (CI only))
+PASS check-specification-in-javascript 8.6s
+PASS check-status-render 0.2s
+SKIP check-step-budget-headroom (compiles script unit tests (CI only))
+PASS check-system-diagrams 0.1s
+SKIP check-test-partition-balance (compiles a Rust script with no JS twin (CI only))
+SKIP check-tests-as-docs (compiles a Rust script with no JS twin (CI only))
+PASS check-text-summarization 5.5s
+PASS check-twin-citations 1.0s
+SKIP check-vscode-extension (needs a Rust build (CI only))
+PASS check_wasm_worker_current 0.1s
+SKIP check-wasm-worker-size (compiles a Rust script with no JS twin (CI only))
+PASS check-web-formalization 0.6s
+PASS check-web-hardcoded-ui 0.4s
+PASS check-web-tdz 0.2s
+PASS check-worker-crate-modules 0.1s
+PASS check-worker-handler-registry 0.8s
+FAIL check-worker-line-budget-js-twin 0.2s -> experiments/formal_ai_subagent/sandboxes/gates/check-worker-line-budget-js-twin.log
+FAIL check-worker-line-budget 0.1s -> experiments/formal_ai_subagent/sandboxes/gates/check-worker-line-budget.log
+PASS check-worker-terminal-vocabulary 0.1s
+SKIP coding-ladder (compiles a Rust script with no JS twin (CI only))
+PASS lint-shell-scripts 2.1s
+SKIP repository_workspace_protocol (needs a Rust build (CI only))
+SKIP run_clippy (needs a Rust build (CI only))
+SKIP test-script-suites (compiles script unit tests (CI only))
+SKIP benchmark-corpus-gate (reads CI context (secrets, variables or artifacts))
+SKIP coding-ladder#2 (compiles a Rust script with no JS twin (CI only))
+SKIP coverage#2 (compiles a Rust script with no JS twin (CI only))
+SKIP coverage#3 (compiles a Rust script with no JS twin (CI only))
+SKIP dependencies-latest (compiles a Rust script with no JS twin (CI only))
+SKIP evidence-check (reads CI context (secrets, variables or artifacts))
+SKIP job-headroom#1 (compiles a Rust script with no JS twin (CI only))
+SKIP job-headroom#2 (compiles a Rust script with no JS twin (CI only))
+PASS layered-ci#1 0.1s
+FAIL layered-ci#2 0.4s -> experiments/formal_ai_subagent/sandboxes/gates/layered-ci#2.log
+SKIP layered-ci#3 (needs a Rust build (CI only))
+SKIP links (reads CI context (secrets, variables or artifacts))
+SKIP question-necessity-ratchet (compiles script unit tests (CI only))
+PASS release#1 0.4s
+FAIL release#2 141.1s -> experiments/formal_ai_subagent/sandboxes/gates/release#2.log
+SKIP release#3 (compiles a Rust script with no JS twin (CI only))
+SKIP release#4 (needs a Rust build (CI only))
+SKIP release#6 (compiles a Rust script with no JS twin (CI only))
+SKIP security (reads CI context (secrets, variables or artifacts))
+PASS self-development-status#1 0.5s
+SKIP self-development-status#2 (compiles a Rust script with no JS twin (CI only))
+FAIL web-ui-boundary 0.1s -> experiments/formal_ai_subagent/sandboxes/gates/web-ui-boundary.log
+
+105/124 passed or skipped; failed: check-abbreviations, check-closure-audit, check-desktop-library, check-file-size-js-twin, check-file-size, check-formal-ai-tally, check-i18n-catalog-coverage, check-javascript-dependencies, check_js_rust_translation, check-minimal-core-boundary-js-twin, check-minimal-core-boundary, check-readable-code, check_rename_map, check-round-trip-translation, check-worker-line-budget-js-twin, check-worker-line-budget, layered-ci#2, release#2, web-ui-boundary

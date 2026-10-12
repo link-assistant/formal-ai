@@ -1,0 +1,31 @@
+{
+  "lemma": "contents",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07971643-n",
+      "partOfSpeech": "n",
+      "definition": "(usually plural) everything that is included in a collection and that is held or included in something",
+      "examples": [
+        "he emptied the contents of his pockets",
+        "the two groups were similar in content"
+      ],
+      "synonyms": [
+        "content"
+      ]
+    },
+    {
+      "id": "oewn-06501650-n",
+      "partOfSpeech": "n",
+      "definition": "a list of divisions (chapters or articles) and the pages on which they start",
+      "synonyms": [
+        "table of contents"
+      ]
+    }
+  ]
+}

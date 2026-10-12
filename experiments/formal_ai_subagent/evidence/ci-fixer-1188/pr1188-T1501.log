@@ -1,0 +1,137 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/codex_patch_writes.rs","file_path":"rust/tests/unit/agentic-coding/codex_patch_writes.rs","path":"rust/tests/unit/agentic-coding/codex_patch_writes.rs"}
+   <file>
+   00001| //! Issue #859: Codex workspace writes use apply_patch instead of process input.
+   00002| 
+   00003| use formal_ai::agentic_coding::planner::tool_capability;
+   00004| use formal_ai::agentic_coding::{AgenticPlan, plan_symbolic_command_reroute};
+   00005| use formal_ai::protocol::ChatMessage;
+   00006| use formal_ai::seed::response_for;
+   00007| use formal_ai::solver::{SolverConfig, UniversalSolver};
+   00008| use serde_json::Value;
+   00009| 
+   00010| #[test]
+   00011| fn codex_process_input_is_not_a_workspace_file_writer() {
+   00012|     assert_eq!(
+   00013|         tool_capability("write_stdin"),
+   00014|         None,
+   00015|         "writing to a running process must not satisfy a file-write recipe"
+   00016|     );
+   00017| }
+   00018| 
+   00019| #[test]
+   00020| fn codex_hello_world_starts_with_apply_patch_instead_of_write_stdin() {
+   00021|     let solver = UniversalSolver::new(SolverConfig {
+   00022|         agent_mode: true,
+   00023|         ..SolverConfig::default()
+   00024|     });
+   00025|     let answer = solver.solve("Give me hello world program in Rust");
+   00026|     let plan = plan_symbolic_command_reroute(
+   00027|         &[ChatMessage::user("Give me hello world program in Rust")],
+   00028|         &["exec_command", "write_stdin", "apply_patch"],
+   00029|         &answer,
+   00030|     );
+   00031|     let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+   00032|         panic!("Codex should receive a workspace creation tool call: {plan:?}");
+   00033|     };
+   00034| 
+   00035|     assert_eq!(calls.len(), 1);
+   00036|     assert_eq!(calls[0].tool, "apply_patch");
+   00037| }
+   00038| 
+   00039| #[test]
+   00040| fn compile_and_run_narration_is_seeded_in_every_supported_language() {
+   00041|     struct NarrationCase {
+   00042|         language: &'static str,
+   00043|         compile: &'static str,
+   00044|         run: &'static str,
+   00045|     }
+   00046| 
+   00047|     let cases = [
+   00048|         NarrationCase {
+   00049|             language: "en",
+   00050|             compile: "Let me run a compile this program for you.",
+   00051|             run: "Let me run the compiled program for you.",
+   00052|         },
+   00053|         NarrationCase {
+   00054|             language: "ru",
+   00055|             compile: "Скомпилирую эту программу для вас.",
+   00056|             run: "Запущу скомпилированную программу для вас.",
+   00057|         },
+   00058|         NarrationCase {
+   00059|             language: "hi",
+   00060|             compile: "मैं आपके लिए इस प्रोग्राम को कंपाइल करता हूँ।",
+   00061|             run: "मैं आपके लिए कंपाइल किया हुआ प्रोग्राम चलाता हूँ।",
+   00062|         },
+   00063|         NarrationCase {
+   00064|             language: "zh",
+   00065|             compile: "我来为你编译这个程序。",
+   00066|             run: "我来为你运行编译后的程序。",
+   00067|         },
+   00068|         NarrationCase {
+   00069|             language: "es",
+   00070|             compile: "Voy a compilar este programa por ti.",
+   00071|             run: "Voy a ejecutar el programa compilado por ti.",
+   00072|         },
+   00073|     ];
+   00074| 
+   00075|     for case in cases {
+   00076|         assert_eq!(
+   00077|             response_for("agentic_action_compile_program", case.language).as_deref(),
+   00078|             Some(case.compile),
+   00079|             "{} compile narration",
+   00080|             case.language
+   00081|         );
+   00082|         assert_eq!(
+   00083|             response_for("agentic_action_run_program", case.language).as_deref(),
+   00084|             Some(case.run),
+   00085|             "{} run narration",
+   00086|             case.language
+   00087|         );
+   00088|     }
+   00089| }
+   00090| 
+   00091| #[test]
+   00092| fn changelog_bytes_match_the_agent_cli_write_call() {
+   00093|     const SESSION_ID: &str = "ses_040c62ea9ffe21iqJOIzaJL4Xe";
+   00094|     const TARGET: &str = "/changelog.d/20260801_212200_codex_tool_routing.md";
+   00095|     let log = include_str!(
+   00096|         "../../../../docs/case-studies/issue-859/raw-data/agent-cli-changelog-session.log"
+   00097|     );
+   00098|     let rows = log
+   00099|         .lines()
+   00100|         .filter_map(|line| serde_json::from_str::<Value>(line).ok())
+   00101|         .collect::<Vec<_>>();
+   00102|     assert!(
+   00103|         rows.iter()
+   00104|             .any(|row| row.get("session_id").and_then(Value::as_str) == Some(SESSION_ID)),
+   00105|         "the evidence must name the authored session"
+   00106|     );
+   00107|     let authored = rows
+   00108|         .iter()
+   00109|         .find(|row| {
+   00110|             row.get("type").and_then(Value::as_str) == Some("tool_use")
+   00111|                 && row.get("name").and_then(Value::as_str) == Some("write")
+   00112|                 && row
+   00113|                     .pointer("/input/filePath")
+   00114|                     .and_then(Value::as_str)
+   00115|                     .is_some_and(|path| path.ends_with(TARGET))
+   00116|         })
+   00117|         .and_then(|row| row.pointer("/input/content"))
+   00118|         .and_then(Value::as_str)
+   00119|         .expect("Agent write call for the changelog");
+   00120| 
+   00121|     assert!(
+   00122|         crate::assembled_docs::changelog().contains(authored),
+   00123|         "the released changelog must preserve the exact Agent-authored entry"
+   00124|     );
+   00125| }
+   00126| 
+   
+   (End of file - total 126 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/codex_patch_writes.rs","file_path":"rust/tests/unit/agentic-coding/codex_patch_writes.rs","new":"writes use `apply_patch` instead","newString":"writes use `apply_patch` instead","new_str":"writes use `apply_patch` instead","new_string":"writes use `apply_patch` instead","old":"writes use apply_patch instead","oldString":"writes use apply_patch instead","old_str":"writes use apply_patch instead","old_string":"writes use apply_patch instead","path":"rust/tests/unit/agentic-coding/codex_patch_writes.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/codex_patch_writes.rs"}
+   cf4ba9ea0b90ca9a66a0d8a8c6b3e0473d654b664dc428bf79bca77ce9d061b9  rust/tests/unit/agentic-coding/codex_patch_writes.rs
+   
+== answer ==
+Replaced `writes use apply_patch instead` with ``writes use `apply_patch` instead`` in `rust/tests/unit/agentic-coding/codex_patch_writes.rs` and observed the result.

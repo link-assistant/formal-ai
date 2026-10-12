@@ -1,0 +1,112 @@
+self_ast_census
+  target src/agentic_coding/module_function/source_candidate_consumer.rs
+  language rust
+  fidelity full_ast
+  byte_len 11271
+  line_count 281
+  content_id source_module_5f154a9a8447e494
+  symbol_count 12
+  symbols
+    trait SourceCompositionHost 20 30
+    function request_seed 21 21
+    function composition_seed 22 22
+    function operation_descriptor 23 29
+    struct PreparedSourceCandidate 31 41
+    function prepare_source_candidate 43 163
+    function finish_source_candidate 166 210
+    function authorize_source_candidate_write 213 217
+    function record_prepared_source_write 218 222
+    function abort_source_candidate 225 232
+    struct SourceCandidateContext 236 241
+    function execute_source_candidate 242 281
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 8500
+    named_node_count 1727
+    distinct_node_kinds 82
+    node_kinds
+      arguments 108
+      array_type 4
+      assignment_expression 2
+      attribute 1
+      attribute_item 1
+      binary_expression 12
+      block 21
+      boolean_literal 11
+      call_expression 108
+      closure_expression 10
+      closure_parameters 10
+      crate 4
+      declaration_list 1
+      doc_comment 7
+      expression_statement 22
+      field_declaration 13
+      field_declaration_list 2
+      field_expression 97
+      field_identifier 115
+      field_initializer 5
+      field_initializer_list 1
+      field_pattern 4
+      for_expression 1
+      function_item 6
+      function_signature_item 3
+      function_type 2
+      generic_type 20
+      identifier 365
+      if_expression 5
+      index_expression 17
+      inner_doc_comment_marker 1
+      integer_literal 7
+      let_condition 1
+      let_declaration 42
+      lifetime 25
+      lifetime_parameter 3
+      line_comment 8
+      macro_invocation 11
+      match_arm 6
+      match_block 3
+      match_expression 3
+      match_pattern 6
+      mutable_specifier 17
+      outer_doc_comment_marker 6
+      parameter 24
+      parameters 11
+      primitive_type 22
+      reference_expression 25
+      reference_type 41
+      return_expression 6
+      scoped_identifier 24
+      scoped_type_identifier 9
+      scoped_use_list 5
+      self 4
+      self_parameter 3
+      shorthand_field_identifier 4
+      shorthand_field_initializer 4
+      source_file 1
+      string_content 77
+      string_literal 77
+      struct_expression 1
+      struct_item 2
+      struct_pattern 1
+      super 7
+      token_tree 29
+      trait_bounds 13
+      trait_item 1
+      try_expression 31
+      tuple_pattern 1
+      tuple_struct_pattern 7
+      tuple_type 1
+      type_arguments 20
+      type_identifier 96
+      type_parameter 12
+      type_parameters 8
+      unary_expression 3
+      unit_type 1
+      use_declaration 9
+      use_list 5
+      visibility_modifier 17
+      where_clause 2
+      where_predicate 6

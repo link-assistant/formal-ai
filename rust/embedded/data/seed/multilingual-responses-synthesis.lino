@@ -3,22 +3,102 @@ multilingual_responses
     intent capability_gap
     language en
     text "This request routes to the `{needed}` capability, but this chat surface does not expose the required `{missing}` tool. Use an agent client that advertises it."
+  response response_capability_gap_ru
+    intent capability_gap
+    language ru
+    text "Этот запрос направляется к возможности `{needed}`, но эта чат-поверхность не предоставляет нужный инструмент `{missing}`. Используйте агентский клиент, который его объявляет."
+  response response_capability_gap_hi
+    intent capability_gap
+    language hi
+    text "यह अनुरोध `{needed}` क्षमता की ओर जाता है, लेकिन यह chat surface ज़रूरी `{missing}` tool उपलब्ध नहीं कराता। ऐसा agent client इस्तेमाल करें जो इसे उपलब्ध कराता हो।"
+  response response_capability_gap_zh
+    intent capability_gap
+    language zh
+    text "此请求会路由到 `{needed}` 能力，但当前聊天界面没有提供所需的 `{missing}` 工具。请使用声明了该工具的代理客户端。"
+  response response_capability_gap_es
+    intent capability_gap
+    language es
+    text "Esta solicitud se dirige a la capacidad `{needed}`, pero esta interfaz de chat no expone la herramienta `{missing}` necesaria. Usa un cliente de agente que la ofrezca."
   response response_capability_gap_anchors_en
     intent capability_gap_anchors
     language en
     text "\nRequest anchors preserved for that client: {anchors}."
+  response response_capability_gap_anchors_ru
+    intent capability_gap_anchors
+    language ru
+    text "\nОпорные элементы запроса, сохранённые для этого клиента: {anchors}."
+  response response_capability_gap_anchors_hi
+    intent capability_gap_anchors
+    language hi
+    text "\nउस client के लिए सुरक्षित रखे गए अनुरोध anchors: {anchors}।"
+  response response_capability_gap_anchors_zh
+    intent capability_gap_anchors
+    language zh
+    text "\n为该客户端保留的请求锚点：{anchors}。"
+  response response_capability_gap_anchors_es
+    intent capability_gap_anchors
+    language es
+    text "\nAnclas de la solicitud conservadas para ese cliente: {anchors}."
   response response_language_demonstration_en
     intent response_language_demonstration
     language en
+    text "{canonical} ({surface}): {demonstration}"
+  response response_response_language_demonstration_ru
+    intent response_language_demonstration
+    language ru
+    text "{canonical} ({surface}): {demonstration}"
+  response response_response_language_demonstration_hi
+    intent response_language_demonstration
+    language hi
+    text "{canonical} ({surface}): {demonstration}"
+  response response_response_language_demonstration_zh
+    intent response_language_demonstration
+    language zh
+    text "{canonical}（{surface}）：{demonstration}"
+  response response_response_language_demonstration_es
+    intent response_language_demonstration
+    language es
     text "{canonical} ({surface}): {demonstration}"
   response response_explain_previous_turn_empty_en
     intent explain_previous_turn_empty
     language en
     text "There is no previous assistant turn available to explain yet."
+  response response_explain_previous_turn_empty_ru
+    intent explain_previous_turn_empty
+    language ru
+    text "Пока нет предыдущей реплики ассистента, которую можно объяснить."
+  response response_explain_previous_turn_empty_hi
+    intent explain_previous_turn_empty
+    language hi
+    text "अभी समझाने के लिए assistant का कोई पिछला turn उपलब्ध नहीं है।"
+  response response_explain_previous_turn_empty_zh
+    intent explain_previous_turn_empty
+    language zh
+    text "目前还没有可供解释的上一轮助手回复。"
+  response response_explain_previous_turn_empty_es
+    intent explain_previous_turn_empty
+    language es
+    text "Todavía no hay ningún turno anterior del asistente que explicar."
   response response_explain_previous_turn_answer_en
     intent explain_previous_turn_answer
     language en
     text "Here is the previous answer in a simpler form:\n\n{previous}"
+  response response_explain_previous_turn_answer_ru
+    intent explain_previous_turn_answer
+    language ru
+    text "Вот предыдущий ответ в более простой форме:\n\n{previous}"
+  response response_explain_previous_turn_answer_hi
+    intent explain_previous_turn_answer
+    language hi
+    text "पिछला जवाब आसान रूप में:\n\n{previous}"
+  response response_explain_previous_turn_answer_zh
+    intent explain_previous_turn_answer
+    language zh
+    text "下面是上一个回答的简化版本：\n\n{previous}"
+  response response_explain_previous_turn_answer_es
+    intent explain_previous_turn_answer
+    language es
+    text "Aquí tienes la respuesta anterior de forma más sencilla:\n\n{previous}"
   response response_code_execution_refused_en
     intent code_execution_refused
     language en
@@ -719,3 +799,628 @@ multilingual_responses
     intent coding_rosetta_capture_fetched
     language es
     text "Captura de fuente: se obtuvo {sha256}."
+  response response_meta_explanation_why_en
+    intent meta_explanation_why
+    language en
+    text "I answered that way because the prompt matched a deterministic Links Notation rule. The evidence links and trace events are appended to the log; see the trace link for the full chain."
+  response response_meta_explanation_why_ru
+    intent meta_explanation_why
+    language ru
+    text "Я ответил так, потому что запрос совпал с детерминированным правилом Links Notation. Evidence-ссылки и trace-события добавлены в журнал; по trace-ссылке можно проверить всю цепочку."
+  response response_meta_explanation_why_hi
+    intent meta_explanation_why
+    language hi
+    text "मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt deterministic Links Notation rule से मेल खाता था. evidence links और trace events log में जोड़े गए हैं; पूरी chain देखने के लिए trace link देखें."
+  response response_meta_explanation_why_zh
+    intent meta_explanation_why
+    language zh
+    text "我这样回答是因为该提示匹配了确定性的 Links Notation 规则。evidence links 和 trace events 已追加到日志中; 可通过 trace link 检查完整链路。"
+  response response_meta_explanation_why_es
+    intent meta_explanation_why
+    language es
+    text "Respondí así porque la consulta coincidió con una regla determinista de Links Notation. Los enlaces de evidencia y los eventos de traza se añaden al registro; consulta el enlace de traza para ver la cadena completa."
+  response response_how_it_works_en
+    intent how_it_works
+    language en
+    text "Mechanism discovery plan for `{subject}`.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {providers}. If no source explains the mechanism, it should ask for a source or a narrower term instead of inventing details."
+  response response_how_it_works_ru
+    intent how_it_works
+    language ru
+    text "План поиска механизма для `{subject}`.\n\nЯ не отвечаю на это из зашитого факта. Решатель трактует запрос как вопрос о том, как устроен или работает `{subject}`: сначала проверяет Wikipedia для обзорного источника, затем Wikidata для связей сущности, затем веб-поиск через {providers}. Если источники не объясняют механизм, ответ должен попросить источник или более узкий термин, а не выдумывать детали."
+  response response_how_it_works_hi
+    intent how_it_works
+    language hi
+    text "`{subject}` के लिए mechanism discovery plan.\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {providers}. If no source explains the mechanism, it should ask for a source or a narrower term."
+  response response_how_it_works_zh
+    intent how_it_works
+    language zh
+    text "`{subject}` 的机制发现计划。\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {providers}. If no source explains the mechanism, it should ask for a source or a narrower term."
+  response response_how_it_works_es
+    intent how_it_works
+    language es
+    text "Plan de descubrimiento del mecanismo de `{subject}`.\n\nNo respondo a esto con un hecho memorizado. El solucionador trata la consulta como una pregunta sobre cómo funciona `{subject}`: consulta Wikipedia para obtener un resumen respaldado por fuentes, Wikidata para las relaciones entre entidades y luego la búsqueda web en {providers}. Si ninguna fuente explica el mecanismo, debe pedir una fuente o un término más concreto en lugar de inventar detalles."
+  response response_how_it_works_prior_topic_en
+    intent how_it_works_prior_topic
+    language en
+    text "To explain how {term} works: I know the term from the prior conversation but do not have a detailed symbolic rule for it yet. Add a Links Notation fact with the mechanism description, then ask again."
+  response response_how_it_works_prior_topic_ru
+    intent how_it_works_prior_topic
+    language ru
+    text "Чтобы объяснить, как работает {term}: я знаю этот термин из предыдущего разговора, но подробного символьного правила для него пока нет. Добавьте факт Links Notation с описанием механизма и спросите снова."
+  response response_how_it_works_prior_topic_hi
+    intent how_it_works_prior_topic
+    language hi
+    text "{term} कैसे काम करता है, यह समझाने के लिए: मैं यह शब्द पिछली बातचीत से जानता हूँ, लेकिन इसके लिए अभी कोई विस्तृत symbolic नियम नहीं है। तंत्र के विवरण के साथ एक Links Notation तथ्य जोड़ें, फिर दोबारा पूछें।"
+  response response_how_it_works_prior_topic_zh
+    intent how_it_works_prior_topic
+    language zh
+    text "关于 {term} 如何运作：我从之前的对话中知道这个术语，但还没有针对它的详细符号规则。请添加一条描述其机制的 Links Notation 事实，然后再问一次。"
+  response response_how_it_works_prior_topic_es
+    intent how_it_works_prior_topic
+    language es
+    text "Para explicar cómo funciona {term}: conozco el término por la conversación anterior, pero todavía no tengo una regla simbólica detallada para él. Añade un hecho de Links Notation con la descripción del mecanismo y vuelve a preguntar."
+  response response_how_it_works_no_context_en
+    intent how_it_works_no_context
+    language en
+    text 'I answered that way because the prompt matched a deterministic Links Notation rule. To ask about a specific topic, try "how does X work?" where X is a concept I know (e.g. "how does Wikipedia work?"). The evidence and trace events are appended to the log; see the trace link for the full chain.'
+  response response_how_it_works_no_context_ru
+    intent how_it_works_no_context
+    language ru
+    text "Я ответил так, потому что запрос совпал с детерминированным правилом Links Notation. Чтобы спросить о конкретной теме, попробуйте «как работает X?», где X — известное мне понятие (например, «как работает Wikipedia?»). Доказательства и события трассировки добавлены в журнал; полную цепочку смотрите по ссылке на трассировку."
+  response response_how_it_works_no_context_hi
+    intent how_it_works_no_context
+    language hi
+    text "मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt एक deterministic Links Notation नियम से मेल खाता था। किसी खास विषय के बारे में पूछने के लिए «X कैसे काम करता है?» आज़माएँ, जहाँ X ऐसी अवधारणा हो जिसे मैं जानता हूँ (जैसे «Wikipedia कैसे काम करता है?»)। सबूत और trace events log में जोड़े गए हैं; पूरी chain के लिए trace link देखें।"
+  response response_how_it_works_no_context_zh
+    intent how_it_works_no_context
+    language zh
+    text "我这样回答是因为该提示匹配了确定性的 Links Notation 规则。若想询问具体主题，可以试试「X 是如何运作的？」，其中 X 是我已知的概念（例如「Wikipedia 是如何运作的？」）。证据和轨迹事件已追加到日志中；完整链路请查看轨迹链接。"
+  response response_how_it_works_no_context_es
+    intent how_it_works_no_context
+    language es
+    text "Respondí así porque la consulta coincidió con una regla determinista de Links Notation. Para preguntar por un tema concreto, prueba «¿cómo funciona X?», donde X sea un concepto que conozco (por ejemplo «¿cómo funciona Wikipedia?»). La evidencia y los eventos de traza se añaden al registro; consulta el enlace de traza para ver la cadena completa."
+  response response_network_snapshot_en
+    intent network_snapshot
+    language en
+    text "Here is the current link network as a links-notation snapshot:\n\n```links\n{snapshot}\n```"
+  response response_network_snapshot_ru
+    intent network_snapshot
+    language ru
+    text "Вот текущая сеть связей в виде снимка links-notation:\n\n```links\n{snapshot}\n```"
+  response response_network_snapshot_hi
+    intent network_snapshot
+    language hi
+    text "यह वर्तमान link network का links-notation snapshot है:\n\n```links\n{snapshot}\n```"
+  response response_network_snapshot_zh
+    intent network_snapshot
+    language zh
+    text "这是当前链接网络的 links-notation 快照：\n\n```links\n{snapshot}\n```"
+  response response_network_snapshot_es
+    intent network_snapshot
+    language es
+    text "Esta es la red de enlaces actual como instantánea en links-notation:\n\n```links\n{snapshot}\n```"
+  response response_source_refresh_en
+    intent source_refresh
+    language en
+    text "Cached source {target} has been queued for refresh against its origin URL. The refresh event is appended to the audit log and a fresh fetched_at timestamp will be recorded once the new copy is verified."
+  response response_source_refresh_ru
+    intent source_refresh
+    language ru
+    text "Кэшированный источник {target} поставлен в очередь на обновление с исходного URL. Событие обновления добавлено в журнал аудита, а новая метка fetched_at будет записана после проверки новой копии."
+  response response_source_refresh_hi
+    intent source_refresh
+    language hi
+    text "कैश किया गया स्रोत {target} अपने मूल URL से ताज़ा करने के लिए कतार में रखा गया है। ताज़ा करने की घटना ऑडिट लॉग में जोड़ी गई है, और नई प्रति सत्यापित होने पर नया fetched_at समय-चिह्न दर्ज किया जाएगा।"
+  response response_source_refresh_zh
+    intent source_refresh
+    language zh
+    text "缓存来源 {target} 已排队，将从其原始 URL 刷新。刷新事件已追加到审计日志，新副本验证后将记录新的 fetched_at 时间戳。"
+  response response_source_refresh_es
+    intent source_refresh
+    language es
+    text "La fuente en caché {target} se ha puesto en cola para actualizarse desde su URL de origen. El evento de actualización se añade al registro de auditoría y se registrará una nueva marca fetched_at cuando se verifique la nueva copia."
+  response response_execution_failure_en
+    intent execution_failure
+    language en
+    text "Execution status: failed in isolated sandbox.\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nThe failure trace is appended to the action log; see the trace link."
+  response response_execution_failure_ru
+    intent execution_failure
+    language ru
+    text "Статус выполнения: сбой в изолированной песочнице.\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nТрассировка сбоя добавлена в журнал действий; см. ссылку на трассировку."
+  response response_execution_failure_hi
+    intent execution_failure
+    language hi
+    text "निष्पादन स्थिति: isolated sandbox में विफल।\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nविफलता का trace action log में जोड़ा गया है; trace link देखें।"
+  response response_execution_failure_zh
+    intent execution_failure
+    language zh
+    text "执行状态：在隔离沙箱中失败。\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\n失败轨迹已追加到操作日志中；请查看轨迹链接。"
+  response response_execution_failure_es
+    intent execution_failure
+    language es
+    text "Estado de ejecución: falló en el entorno aislado.\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nLa traza del fallo se añadió al registro de acciones; consulta el enlace de la traza."
+  response response_unit_incompatibility_en
+    intent unit_incompatibility
+    language en
+    text "{unit_a} measures {dim_a}; {unit_b} measures {dim_b}. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network."
+  response response_unit_incompatibility_ru
+    intent unit_incompatibility
+    language ru
+    text "{unit_a} измеряет {dim_a}; {unit_b} измеряет {dim_b}. Это разные физические размерности, и их нельзя перевести друг в друга. Несовместимость записана в сети как связь `unit_incompatibility`."
+  response response_unit_incompatibility_hi
+    intent unit_incompatibility
+    language hi
+    text "{unit_a} {dim_a} मापता है; {unit_b} {dim_b} मापता है। ये अलग-अलग भौतिक आयाम हैं और इन्हें एक-दूसरे में बदला नहीं जा सकता। यह असंगति network में `unit_incompatibility` link के रूप में दर्ज है।"
+  response response_unit_incompatibility_zh
+    intent unit_incompatibility
+    language zh
+    text "{unit_a} 度量的是{dim_a}；{unit_b} 度量的是{dim_b}。这是不同的物理量纲，无法相互换算。该不兼容性已作为 `unit_incompatibility` 链接记录在网络中。"
+  response response_unit_incompatibility_es
+    intent unit_incompatibility
+    language es
+    text "{unit_a} mide {dim_a}; {unit_b} mide {dim_b}. Son dimensiones físicas distintas y no se pueden convertir entre sí. La incompatibilidad queda registrada como un enlace `unit_incompatibility` en la red."
+  response response_compound_interest_report_en
+    intent compound_interest_report
+    language en
+    text "Compound interest calculation\n\nFormula: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% annual)\nn = {periods_per_year} ({frequency})\nt = {years} years\n\nStep 1: periodic rate = r/n = {rate}/{periods_per_year} = {periodic_rate}\nStep 2: number of periods = n*t = {periods_per_year}*{years} = {periods}\nStep 3: A = {principal} * (1 + {periodic_rate})^{periods}\nFinal amount: {final_amount} USD"
+  response response_compound_interest_report_ru
+    intent compound_interest_report
+    language ru
+    text "Расчёт сложных процентов\n\nФормула: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% годовых)\nn = {periods_per_year} ({frequency})\nt = {years} лет\n\nШаг 1: ставка за период = r/n = {rate}/{periods_per_year} = {periodic_rate}\nШаг 2: число периодов = n*t = {periods_per_year}*{years} = {periods}\nШаг 3: A = {principal} * (1 + {periodic_rate})^{periods}\nИтоговая сумма: {final_amount} USD"
+  response response_compound_interest_report_hi
+    intent compound_interest_report
+    language hi
+    text "चक्रवृद्धि ब्याज की गणना\n\nसूत्र: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% वार्षिक)\nn = {periods_per_year} ({frequency})\nt = {years} वर्ष\n\nचरण 1: आवधिक दर = r/n = {rate}/{periods_per_year} = {periodic_rate}\nचरण 2: अवधियों की संख्या = n*t = {periods_per_year}*{years} = {periods}\nचरण 3: A = {principal} * (1 + {periodic_rate})^{periods}\nअंतिम राशि: {final_amount} USD"
+  response response_compound_interest_report_zh
+    intent compound_interest_report
+    language zh
+    text "复利计算\n\n公式：A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate}（年利率 {percent}%）\nn = {periods_per_year}（{frequency}）\nt = {years} 年\n\n第 1 步：每期利率 = r/n = {rate}/{periods_per_year} = {periodic_rate}\n第 2 步：期数 = n*t = {periods_per_year}*{years} = {periods}\n第 3 步：A = {principal} * (1 + {periodic_rate})^{periods}\n最终金额：{final_amount} USD"
+  response response_compound_interest_report_es
+    intent compound_interest_report
+    language es
+    text "Cálculo de interés compuesto\n\nFórmula: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% anual)\nn = {periods_per_year} ({frequency})\nt = {years} años\n\nPaso 1: tasa por periodo = r/n = {rate}/{periods_per_year} = {periodic_rate}\nPaso 2: número de periodos = n*t = {periods_per_year}*{years} = {periods}\nPaso 3: A = {principal} * (1 + {periodic_rate})^{periods}\nImporte final: {final_amount} USD"
+  response response_compound_interest_final_amount_conversion_en
+    intent compound_interest_final_amount_conversion
+    language en
+    text "Final amount conversion\nSource amount: {amount} {source}"
+  response response_compound_interest_final_amount_conversion_ru
+    intent compound_interest_final_amount_conversion
+    language ru
+    text "Конвертация итоговой суммы\nИсходная сумма: {amount} {source}"
+  response response_compound_interest_final_amount_conversion_hi
+    intent compound_interest_final_amount_conversion
+    language hi
+    text "अंतिम राशि का रूपांतरण\nमूल राशि: {amount} {source}"
+  response response_compound_interest_final_amount_conversion_zh
+    intent compound_interest_final_amount_conversion
+    language zh
+    text "最终金额换算\n原始金额：{amount} {source}"
+  response response_compound_interest_final_amount_conversion_es
+    intent compound_interest_final_amount_conversion
+    language es
+    text "Conversión del importe final\nImporte de origen: {amount} {source}"
+  response response_compound_interest_conversion_en
+    intent compound_interest_conversion
+    language en
+    text "Conversion: {source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_conversion_ru
+    intent compound_interest_conversion
+    language ru
+    text "Конвертация: {source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_conversion_hi
+    intent compound_interest_conversion
+    language hi
+    text "रूपांतरण: {source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_conversion_zh
+    intent compound_interest_conversion
+    language zh
+    text "换算：{source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_conversion_es
+    intent compound_interest_conversion
+    language es
+    text "Conversión: {source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_rate_detail_en
+    intent compound_interest_rate_detail
+    language en
+    text "Rate detail: Exchange rate: 1 {source} = {rate} {target} (source: default (hardcoded))"
+  response response_compound_interest_rate_detail_ru
+    intent compound_interest_rate_detail
+    language ru
+    text "Подробности курса: Обменный курс: 1 {source} = {rate} {target} (источник: по умолчанию (зашит в код))"
+  response response_compound_interest_rate_detail_hi
+    intent compound_interest_rate_detail
+    language hi
+    text "दर का विवरण: विनिमय दर: 1 {source} = {rate} {target} (स्रोत: default (hardcoded))"
+  response response_compound_interest_rate_detail_zh
+    intent compound_interest_rate_detail
+    language zh
+    text "汇率详情：汇率：1 {source} = {rate} {target}（来源：默认（硬编码））"
+  response response_compound_interest_rate_detail_es
+    intent compound_interest_rate_detail
+    language es
+    text "Detalle del tipo: Tipo de cambio: 1 {source} = {rate} {target} (fuente: predeterminada (fijada en el código))"
+  response response_compound_interest_live_rate_note_en
+    intent compound_interest_live_rate_note
+    language en
+    text "Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator."
+  response response_compound_interest_live_rate_note_ru
+    intent compound_interest_live_rate_note
+    language ru
+    text "Актуальность данных из сети здесь независимо не проверяется; используется источник курса валют, доступный через локальный калькулятор."
+  response response_compound_interest_live_rate_note_hi
+    intent compound_interest_live_rate_note
+    language hi
+    text "Live web की ताज़गी यहाँ स्वतंत्र रूप से सत्यापित नहीं है; यह local calculator के ज़रिए उपलब्ध exchange-rate स्रोत का उपयोग करता है।"
+  response response_compound_interest_live_rate_note_zh
+    intent compound_interest_live_rate_note
+    language zh
+    text "此处未独立验证网络数据的时效性；这里使用的是本地计算器可用的汇率来源。"
+  response response_compound_interest_live_rate_note_es
+    intent compound_interest_live_rate_note
+    language es
+    text "Aquí no se verifica de forma independiente la actualidad de los datos de la web; se usa la fuente de tipos de cambio disponible mediante la calculadora local."
+  response response_compound_interest_rate_unavailable_en
+    intent compound_interest_rate_unavailable
+    language en
+    text "I calculated the USD amount, but no {source}->{target} exchange rate is available locally."
+  response response_compound_interest_rate_unavailable_ru
+    intent compound_interest_rate_unavailable
+    language ru
+    text "Я рассчитал сумму в USD, но локально нет обменного курса {source}->{target}."
+  response response_compound_interest_rate_unavailable_hi
+    intent compound_interest_rate_unavailable
+    language hi
+    text "मैंने USD राशि की गणना कर ली, लेकिन स्थानीय रूप से {source}->{target} की कोई विनिमय दर उपलब्ध नहीं है।"
+  response response_compound_interest_rate_unavailable_zh
+    intent compound_interest_rate_unavailable
+    language zh
+    text "我已算出美元金额，但本地没有 {source}->{target} 的汇率。"
+  response response_compound_interest_rate_unavailable_es
+    intent compound_interest_rate_unavailable
+    language es
+    text "Calculé el importe en USD, pero no hay ningún tipo de cambio {source}->{target} disponible localmente."
+  response response_playwright_script_clarification_en
+    intent playwright_script_clarification
+    language en
+    text "I can write a Playwright script. Please provide the page URL, the actions to perform, and the expected assertion. If you want a default example, I can use the starter scenario from the Playwright docs."
+  response response_playwright_script_clarification_ru
+    intent playwright_script_clarification
+    language ru
+    text "Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright."
+  response response_playwright_script_clarification_hi
+    intent playwright_script_clarification
+    language hi
+    text "मैं Playwright script लिख सकता हूँ। कृपया पेज का URL, किए जाने वाले actions और अपेक्षित assertion बताएँ। अगर आपको default उदाहरण चाहिए, तो मैं Playwright docs का starter scenario इस्तेमाल कर सकता हूँ।"
+  response response_playwright_script_clarification_zh
+    intent playwright_script_clarification
+    language zh
+    text "我可以编写 Playwright 脚本。请提供页面 URL、要执行的操作以及预期的断言。如果需要默认示例，我可以使用 Playwright 文档中的入门场景。"
+  response response_playwright_script_clarification_es
+    intent playwright_script_clarification
+    language es
+    text "Puedo escribir un script de Playwright. Indica la URL de la página, las acciones que hay que realizar y la aserción esperada. Si quieres un ejemplo predeterminado, puedo usar el escenario inicial de la documentación de Playwright."
+  response response_playwright_script_lead_en
+    intent playwright_script_lead
+    language en
+    text "I will use a starter TypeScript example based on the Playwright docs."
+  response response_playwright_script_lead_ru
+    intent playwright_script_lead
+    language ru
+    text "Даю стартовый TypeScript-пример по документации Playwright."
+  response response_playwright_script_lead_hi
+    intent playwright_script_lead
+    language hi
+    text "मैं Playwright docs पर आधारित एक starter TypeScript उदाहरण इस्तेमाल करूँगा।"
+  response response_playwright_script_lead_zh
+    intent playwright_script_lead
+    language zh
+    text "我将使用基于 Playwright 文档的 TypeScript 入门示例。"
+  response response_playwright_script_lead_es
+    intent playwright_script_lead
+    language es
+    text "Usaré un ejemplo inicial en TypeScript basado en la documentación de Playwright."
+  response response_playwright_script_lead_corrected_en
+    intent playwright_script_lead_corrected
+    language en
+    text "I interpret `Playright` as `Playwright` and will use a starter TypeScript example based on the Playwright docs."
+  response response_playwright_script_lead_corrected_ru
+    intent playwright_script_lead_corrected
+    language ru
+    text "Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright."
+  response response_playwright_script_lead_corrected_hi
+    intent playwright_script_lead_corrected
+    language hi
+    text "मैं `Playright` को `Playwright` समझ रहा हूँ और Playwright docs पर आधारित एक starter TypeScript उदाहरण इस्तेमाल करूँगा।"
+  response response_playwright_script_lead_corrected_zh
+    intent playwright_script_lead_corrected
+    language zh
+    text "我将 `Playright` 理解为 `Playwright`，并使用基于 Playwright 文档的 TypeScript 入门示例。"
+  response response_playwright_script_lead_corrected_es
+    intent playwright_script_lead_corrected
+    language es
+    text "Interpreto `Playright` como `Playwright` y usaré un ejemplo inicial en TypeScript basado en la documentación de Playwright."
+  response response_playwright_script_starter_en
+    intent playwright_script_starter
+    language en
+    text "{lead}\n\nSource: {source}\n\n```typescript\n{code}\n```\n\nCheck it with:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nProvide the URL, actions, and expected result if you want a site-specific script."
+  response response_playwright_script_starter_ru
+    intent playwright_script_starter
+    language ru
+    text "{lead}\n\nSource: {source}\n\n```typescript\n{code}\n```\n\nПроверка:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nУточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт."
+  response response_playwright_script_starter_hi
+    intent playwright_script_starter
+    language hi
+    text "{lead}\n\nस्रोत: {source}\n\n```typescript\n{code}\n```\n\nइसे इस तरह जाँचें:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nअगर आपको किसी खास साइट के लिए script चाहिए, तो URL, actions और अपेक्षित परिणाम बताएँ।"
+  response response_playwright_script_starter_zh
+    intent playwright_script_starter
+    language zh
+    text "{lead}\n\n来源：{source}\n\n```typescript\n{code}\n```\n\n用以下命令检查：\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\n如果需要针对特定网站的脚本，请提供 URL、操作和预期结果。"
+  response response_playwright_script_starter_es
+    intent playwright_script_starter
+    language es
+    text "{lead}\n\nFuente: {source}\n\n```typescript\n{code}\n```\n\nCompruébalo con:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nIndica la URL, las acciones y el resultado esperado si quieres un script para un sitio concreto."
+  response response_playwright_starter_typescript_en
+    intent playwright_starter_typescript
+    language en
+    audience machine
+    text "import { test, expect } from '@playwright/test';\n\ntest('opens the Playwright docs', async ({ page }) => {\n  await page.goto('https://playwright.dev/');\n  await expect(page).toHaveTitle(/Playwright/);\n\n  await page.getByRole('link', { name: 'Docs' }).click();\n  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();\n});"
+  response response_concept_introspection_en
+    intent concept_introspection
+    language en
+    text "Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links."
+  response response_concept_introspection_ru
+    intent concept_introspection
+    language ru
+    text "Вот что я знаю о «{concept}»:\n\nintent: {concept}\nроль: сеть записывает «{concept}» как понятие с правилами и связями-примерами."
+  response response_concept_introspection_hi
+    intent concept_introspection
+    language hi
+    text "«{concept}» के बारे में मैं यह जानता हूँ:\n\nintent: {concept}\nभूमिका: network «{concept}» को नियमों और उदाहरण links वाली एक अवधारणा के रूप में दर्ज करता है।"
+  response response_concept_introspection_zh
+    intent concept_introspection
+    language zh
+    text "关于「{concept}」，我知道的是：\n\nintent：{concept}\n角色：网络将「{concept}」记录为一个带有规则和示例链接的概念。"
+  response response_concept_introspection_es
+    intent concept_introspection
+    language es
+    text "Esto es lo que sé sobre «{concept}»:\n\nintent: {concept}\nrol: la red registra «{concept}» como un concepto con reglas y enlaces de ejemplo."
+  response response_filter_user_en
+    intent filter_user
+    language en
+    text "No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list."
+  response response_filter_user_ru
+    intent filter_user
+    language ru
+    text "Под вашим пользовательским фильтром пока не записано ни одного факта. Отправьте запрос «запомни этот факт», чтобы начать свой личный список вкладов."
+  response response_filter_user_hi
+    intent filter_user
+    language hi
+    text "आपके user filter के अंतर्गत अभी तक कोई तथ्य दर्ज नहीं हुआ है। अपनी निजी योगदान सूची शुरू करने के लिए «यह तथ्य सिखाओ» अनुरोध भेजें।"
+  response response_filter_user_zh
+    intent filter_user
+    language zh
+    text "你的用户筛选下还没有记录任何事实。提交「记住这个事实」请求，开始你的个人贡献列表。"
+  response response_filter_user_es
+    intent filter_user
+    language es
+    text "Todavía no se ha registrado ningún hecho con tu filtro de usuario. Envía una solicitud de «aprende este hecho» para empezar tu lista personal de aportaciones."
+  response response_source_conflict_en
+    intent source_conflict
+    language en
+    text "The sources you cite disagree: {first}; {second}. The disagreement is recorded as a conflict:source_disagreement link in the network rather than silently resolved."
+  response response_source_conflict_ru
+    intent source_conflict
+    language ru
+    text "Указанные вами источники расходятся: {first}; {second}. Расхождение записано в сети как связь conflict:source_disagreement, а не разрешено молча."
+  response response_source_conflict_hi
+    intent source_conflict
+    language hi
+    text "आपके बताए स्रोत असहमत हैं: {first}; {second}। असहमति को चुपचाप सुलझाने के बजाय नेटवर्क में conflict:source_disagreement लिंक के रूप में दर्ज किया गया है।"
+  response response_source_conflict_zh
+    intent source_conflict
+    language zh
+    text "你引用的来源说法不一致：{first}；{second}。这一分歧作为 conflict:source_disagreement 链接记录在网络中，而不是被悄悄消解。"
+  response response_source_conflict_es
+    intent source_conflict
+    language es
+    text "Las fuentes que citas no coinciden: {first}; {second}. El desacuerdo se registra en la red como un enlace conflict:source_disagreement en lugar de resolverse en silencio."
+  response response_source_conflict_unattributed_en
+    intent source_conflict_unattributed
+    language en
+    text "No source is named for either answer, so no disagreement between sources can be recorded. Name each source and what it states, for example: Wikipedia says 1880, but Britannica says 1881."
+  response response_source_conflict_unattributed_ru
+    intent source_conflict_unattributed
+    language ru
+    text "Ни для одного из ответов не назван источник, поэтому расхождение между источниками записать нельзя. Назовите каждый источник и то, что он утверждает, например: по данным Википедии 1880, а по данным Британники 1881."
+  response response_source_conflict_unattributed_hi
+    intent source_conflict_unattributed
+    language hi
+    text "किसी भी उत्तर के लिए स्रोत नहीं बताया गया, इसलिए स्रोतों के बीच असहमति दर्ज नहीं की जा सकती। हर स्रोत और उसका कथन बताइए, जैसे: विकिपीडिया के अनुसार 1880, लेकिन ब्रिटानिका के अनुसार 1881।"
+  response response_source_conflict_unattributed_zh
+    intent source_conflict_unattributed
+    language zh
+    text "两个答案都没有注明来源，因此无法记录来源之间的分歧。请写明每个来源及其说法，例如：维基百科说1880年，但大英百科说1881年。"
+  response response_source_conflict_unattributed_es
+    intent source_conflict_unattributed
+    language es
+    text "Ninguna respuesta nombra su fuente, así que no se puede registrar un desacuerdo entre fuentes. Nombra cada fuente y lo que afirma, por ejemplo: según Wikipedia 1880, pero según Britannica 1881."
+  response response_nl_tool_requested_source_en
+    intent nl_tool_requested_source
+    language en
+    text "{denial}\n\nRequested source:\n```js\n{program}\n```"
+  response response_nl_tool_requested_source_ru
+    intent nl_tool_requested_source
+    language ru
+    text "{denial}\n\nЗапрошенный исходный код:\n```js\n{program}\n```"
+  response response_nl_tool_requested_source_hi
+    intent nl_tool_requested_source
+    language hi
+    text "{denial}\n\nअनुरोधित source:\n```js\n{program}\n```"
+  response response_nl_tool_requested_source_zh
+    intent nl_tool_requested_source
+    language zh
+    text "{denial}\n\n请求的源代码：\n```js\n{program}\n```"
+  response response_nl_tool_requested_source_es
+    intent nl_tool_requested_source
+    language es
+    text "{denial}\n\nCódigo fuente solicitado:\n```js\n{program}\n```"
+  response response_nl_tool_javascript_report_en
+    intent nl_tool_javascript_report
+    language en
+    text "Execution status: {status}.\nTool call: javascript_execution\nOutput: {result}"
+  response response_nl_tool_javascript_report_ru
+    intent nl_tool_javascript_report
+    language ru
+    text "Статус выполнения: {status}.\nВызов инструмента: javascript_execution\nВывод: {result}"
+  response response_nl_tool_javascript_report_hi
+    intent nl_tool_javascript_report
+    language hi
+    text "निष्पादन स्थिति: {status}।\nटूल कॉल: javascript_execution\nआउटपुट: {result}"
+  response response_nl_tool_javascript_report_zh
+    intent nl_tool_javascript_report
+    language zh
+    text "执行状态：{status}。\n工具调用：javascript_execution\n输出：{result}"
+  response response_nl_tool_javascript_report_es
+    intent nl_tool_javascript_report
+    language es
+    text "Estado de ejecución: {status}.\nLlamada a herramienta: javascript_execution\nSalida: {result}"
+  response response_nl_tool_calculator_executed_en
+    intent nl_tool_calculator_executed
+    language en
+    text "Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {result}"
+  response response_nl_tool_calculator_executed_ru
+    intent nl_tool_calculator_executed
+    language ru
+    text "Статус выполнения: выполнено.\nВызов инструмента: calculator\nВвод: `{expression}`\nРезультат: {result}"
+  response response_nl_tool_calculator_executed_hi
+    intent nl_tool_calculator_executed
+    language hi
+    text "निष्पादन स्थिति: निष्पादित।\nटूल कॉल: calculator\nइनपुट: `{expression}`\nपरिणाम: {result}"
+  response response_nl_tool_calculator_executed_zh
+    intent nl_tool_calculator_executed
+    language zh
+    text "执行状态：已执行。\n工具调用：calculator\n输入：`{expression}`\n结果：{result}"
+  response response_nl_tool_calculator_executed_es
+    intent nl_tool_calculator_executed
+    language es
+    text "Estado de ejecución: ejecutado.\nLlamada a herramienta: calculator\nEntrada: `{expression}`\nResultado: {result}"
+  response response_nl_tool_calculator_failed_en
+    intent nl_tool_calculator_failed
+    language en
+    text "Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}"
+  response response_nl_tool_calculator_failed_ru
+    intent nl_tool_calculator_failed
+    language ru
+    text "Статус выполнения: сбой.\nВызов инструмента: calculator\nВвод: `{expression}`\nОшибка: {error}"
+  response response_nl_tool_calculator_failed_hi
+    intent nl_tool_calculator_failed
+    language hi
+    text "निष्पादन स्थिति: विफल।\nटूल कॉल: calculator\nइनपुट: `{expression}`\nत्रुटि: {error}"
+  response response_nl_tool_calculator_failed_zh
+    intent nl_tool_calculator_failed
+    language zh
+    text "执行状态：失败。\n工具调用：calculator\n输入：`{expression}`\n错误：{error}"
+  response response_nl_tool_calculator_failed_es
+    intent nl_tool_calculator_failed
+    language es
+    text "Estado de ejecución: fallido.\nLlamada a herramienta: calculator\nEntrada: `{expression}`\nError: {error}"
+  response response_nl_tool_web_search_planned_en
+    intent nl_tool_web_search_planned
+    language en
+    text "Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {k})."
+  response response_nl_tool_web_search_planned_ru
+    intent nl_tool_web_search_planned
+    language ru
+    text "Статус выполнения: запланировано.\nВызов инструмента: web_search\nЗапрос: `{query}`\nРезультат: план поиска записан с провайдерами {providers}; общее ранжирование использует reciprocal rank fusion (k = {k})."
+  response response_nl_tool_web_search_planned_hi
+    intent nl_tool_web_search_planned
+    language hi
+    text "निष्पादन स्थिति: नियोजित।\nटूल कॉल: web_search\nQuery: `{query}`\nपरिणाम: providers {providers} के साथ search plan दर्ज किया गया; संयुक्त ranking reciprocal rank fusion (k = {k}) का उपयोग करती है।"
+  response response_nl_tool_web_search_planned_zh
+    intent nl_tool_web_search_planned
+    language zh
+    text "执行状态：已计划。\n工具调用：web_search\n查询：`{query}`\n结果：已记录使用提供方 {providers} 的搜索计划；综合排序使用 reciprocal rank fusion（k = {k}）。"
+  response response_nl_tool_web_search_planned_es
+    intent nl_tool_web_search_planned
+    language es
+    text "Estado de ejecución: planificado.\nLlamada a herramienta: web_search\nConsulta: `{query}`\nResultado: plan de búsqueda registrado con los proveedores {providers}; la clasificación combinada usa reciprocal rank fusion (k = {k})."
+  response response_nl_tool_agent_mode_required_en
+    intent nl_tool_agent_mode_required
+    language en
+    text "Execution status: refused. Natural-language tool calls require explicit agent mode before `{capability}` can run."
+  response response_nl_tool_agent_mode_required_ru
+    intent nl_tool_agent_mode_required
+    language ru
+    text "Статус выполнения: отказ. Вызовы инструментов на естественном языке требуют явно включённого режима агента, прежде чем `{capability}` сможет запуститься."
+  response response_nl_tool_agent_mode_required_hi
+    intent nl_tool_agent_mode_required
+    language hi
+    text "निष्पादन स्थिति: अस्वीकृत। प्राकृतिक भाषा से टूल कॉल के लिए `{capability}` चलाने से पहले स्पष्ट रूप से agent mode चालू होना चाहिए।"
+  response response_nl_tool_agent_mode_required_zh
+    intent nl_tool_agent_mode_required
+    language zh
+    text "执行状态：已拒绝。自然语言工具调用需要先明确开启代理模式，`{capability}` 才能运行。"
+  response response_nl_tool_agent_mode_required_es
+    intent nl_tool_agent_mode_required
+    language es
+    text "Estado de ejecución: rechazado. Las llamadas a herramientas en lenguaje natural requieren activar explícitamente el modo agente antes de que `{capability}` pueda ejecutarse."
+  response response_nl_tool_package_denied_en
+    intent nl_tool_package_denied
+    language en
+    text "Execution status: refused. Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool."
+  response response_nl_tool_package_denied_ru
+    intent nl_tool_package_denied
+    language ru
+    text "Статус выполнения: отказ. Вызовы инструментов для `{capability}` не разрешены: {reason}. Прежде чем включать инструмент, установите или импортируйте ассоциативный пакет, который предоставляет эту возможность."
+  response response_nl_tool_package_denied_hi
+    intent nl_tool_package_denied
+    language hi
+    text "निष्पादन स्थिति: अस्वीकृत। `{capability}` के लिए टूल कॉल की अनुमति नहीं है: {reason}। टूल सक्षम करने से पहले वह associative package इंस्टॉल या import करें जो यह क्षमता देता है।"
+  response response_nl_tool_package_denied_zh
+    intent nl_tool_package_denied
+    language zh
+    text "执行状态：已拒绝。`{capability}` 不允许工具调用：{reason}。启用该工具前，请安装或导入授予此能力的关联包。"
+  response response_nl_tool_package_denied_es
+    intent nl_tool_package_denied
+    language es
+    text "Estado de ejecución: rechazado. Las llamadas a herramientas no están permitidas para `{capability}`: {reason}. Instala o importa un paquete asociativo que conceda esta capacidad antes de habilitar la herramienta."
+  response response_nl_tool_local_shell_unavailable_en
+    intent nl_tool_local_shell_unavailable
+    language en
+    text "Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor."
+  response response_nl_tool_local_shell_unavailable_ru
+    intent nl_tool_local_shell_unavailable
+    language ru
+    text "Статус выполнения: отказ. Для local_shell есть разрешение, но это ядро Rust не предоставляет исполнителя оболочки."
+  response response_nl_tool_local_shell_unavailable_hi
+    intent nl_tool_local_shell_unavailable
+    language hi
+    text "निष्पादन स्थिति: अस्वीकृत। local_shell की अनुमति है, लेकिन यह Rust core कोई shell executor प्रदान नहीं करता।"
+  response response_nl_tool_local_shell_unavailable_zh
+    intent nl_tool_local_shell_unavailable
+    language zh
+    text "执行状态：已拒绝。local_shell 已获授权，但此 Rust 核心不提供 shell 执行器。"
+  response response_nl_tool_local_shell_unavailable_es
+    intent nl_tool_local_shell_unavailable
+    language es
+    text "Estado de ejecución: rechazado. local_shell tiene permiso, pero este núcleo de Rust no ofrece un ejecutor de shell."
+  response response_nl_tool_browser_unavailable_en
+    intent nl_tool_browser_unavailable
+    language en
+    text "Execution status: refused. This browser session has no executor for the `{tool}` tool, so the call cannot run here. Ask the native Formal AI (the CLI or the server) in agent mode to run it."
+  response response_nl_tool_browser_unavailable_ru
+    intent nl_tool_browser_unavailable
+    language ru
+    text "Статус выполнения: отказ. В этом сеансе браузера нет исполнителя для инструмента `{tool}`, поэтому вызов здесь выполнить нельзя. Попросите нативный Formal AI (CLI или сервер) в режиме агента выполнить его."
+  response response_nl_tool_browser_unavailable_hi
+    intent nl_tool_browser_unavailable
+    language hi
+    text "निष्पादन स्थिति: अस्वीकृत। इस ब्राउज़र सत्र में `{tool}` टूल के लिए कोई executor नहीं है, इसलिए यह कॉल यहाँ नहीं चल सकती। इसे चलाने के लिए agent mode में native Formal AI (CLI या server) से कहें।"
+  response response_nl_tool_browser_unavailable_zh
+    intent nl_tool_browser_unavailable
+    language zh
+    text "执行状态：已拒绝。此浏览器会话没有 `{tool}` 工具的执行器，因此无法在这里运行该调用。请在代理模式下让原生 Formal AI（CLI 或服务器）运行它。"
+  response response_nl_tool_browser_unavailable_es
+    intent nl_tool_browser_unavailable
+    language es
+    text "Estado de ejecución: rechazado. Esta sesión del navegador no tiene un ejecutor para la herramienta `{tool}`, así que la llamada no puede ejecutarse aquí. Pide al Formal AI nativo (la CLI o el servidor) en modo agente que la ejecute."

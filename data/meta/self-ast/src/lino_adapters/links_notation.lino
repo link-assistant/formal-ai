@@ -1,0 +1,15 @@
+self_ast_census
+  target src/lino_adapters/links_notation.rs
+  language rust
+  fidelity signature
+  byte_len 4696
+  line_count 119
+  content_id source_module_0a6d5efc33a25355
+  symbol_count 6
+  symbols
+    function parse_lino 18 32
+    function located_error 38 44
+    function unsupported 49 51
+    function convert 55 88
+    function format_lino 93 119
+    function emit 94 105

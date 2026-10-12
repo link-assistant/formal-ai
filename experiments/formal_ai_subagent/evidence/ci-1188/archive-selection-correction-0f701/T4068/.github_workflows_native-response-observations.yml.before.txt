@@ -1,0 +1,60 @@
+name: Native whole-response observations
+on:
+  workflow_call:
+    inputs:
+      source-commit:
+        required: true
+        type: string
+permissions:
+  contents: read
+env:
+  RUSTFLAGS: -Dwarnings
+jobs:
+  observe:
+    name: Capture unchanged original native test answers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Validate actual producer source pin before checkout
+        env:
+          SOURCE_COMMIT: ${{ inputs.source-commit }}
+        run: |
+          set -euo pipefail
+          [[ "$SOURCE_COMMIT" =~ ^[a-f0-9]{40}$ ]]
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          ref: ${{ inputs.source-commit }}
+      - name: Require the exact producer commit, never a moving preview or base
+        env:
+          SOURCE_COMMIT: ${{ inputs.source-commit }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$SOURCE_COMMIT"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/download-artifact@v8
+        with:
+          name: formal-ai-release-binary
+          path: dist
+      - uses: actions/download-artifact@v8
+        with:
+          name: formal-ai-test-executables
+          path: dist/tests
+      - name: Observe unchanged source-selected native test programs
+        env:
+          CAPTURE_DIRECTORY: ${{ runner.temp }}/native-response-observations
+        run: >-
+          node scripts/capture-native-responses.mjs dist/tests dist/formal-ai
+          "$CAPTURE_DIRECTORY" data/meta/native-response-capture-cases.json release all
+      - name: Retain successful and failed observations without updating expected answers
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-response-observations
+          path: ${{ runner.temp }}/native-response-observations
+          retention-days: 7
+          if-no-files-found: warn

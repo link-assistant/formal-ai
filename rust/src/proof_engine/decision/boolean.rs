@@ -3,6 +3,7 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use super::sat::{CnfFormula, Literal, SatOutcome};
+use crate::proof_engine::library::phrase;
 use crate::proof_engine::types::{Proof, ProofMethod, ProofOutcome, ProofStep, StepKind};
 
 /// Largest variable count the exhaustive truth-table audit will enumerate.
@@ -60,7 +61,7 @@ enum BoolToken {
     RParen,
 }
 
-pub(super) fn attempt_boolean_claim(claim: &str, _language: &str) -> Option<ProofOutcome> {
+pub(super) fn attempt_boolean_claim(claim: &str, language: &str) -> Option<ProofOutcome> {
     let rewritten = rewrite_boolean_if_then(claim);
     let tokens = tokenize_boolean(&rewritten)?;
     let expression = BoolParser::new(tokens).parse()?;
@@ -71,7 +72,7 @@ pub(super) fn attempt_boolean_claim(claim: &str, _language: &str) -> Option<Proo
     }
     let variable_list = variables.into_iter().collect::<Vec<_>>();
     if variable_list.len() > TRUTH_TABLE_VARIABLE_LIMIT {
-        return attempt_boolean_via_sat(&expression, &variable_list);
+        return attempt_boolean_via_sat(&expression, &variable_list, language);
     }
     let mut rows = Vec::new();
     let mut first_false = None;
@@ -90,16 +91,13 @@ pub(super) fn attempt_boolean_claim(claim: &str, _language: &str) -> Option<Proo
     let formula = format_bool_expr(&expression);
     if let Some(counterexample) = first_false {
         return Some(ProofOutcome::Disproven {
-            counterexample: format!(
-                "{} makes {formula} false.",
-                format_bool_assignment(&counterexample)
-            ),
+            counterexample: falsified(&counterexample, &formula, language),
             method: ProofMethod::DecisionProcedure,
-            partial_proof: Some(boolean_disproof(&formula, &rows, &counterexample)),
+            partial_proof: Some(boolean_disproof(&formula, &rows, &counterexample, language)),
         });
     }
     Some(ProofOutcome::Proven {
-        proof: boolean_tautology_proof(&formula, &rows),
+        proof: boolean_tautology_proof(&formula, &rows, language),
     })
 }
 
@@ -114,6 +112,7 @@ pub(super) fn attempt_boolean_claim(claim: &str, _language: &str) -> Option<Proo
 fn attempt_boolean_via_sat(
     expression: &BoolExpr,
     variable_list: &[String],
+    language: &str,
 ) -> Option<ProofOutcome> {
     if variable_list.len() > MAX_SAT_VARIABLES {
         return None;
@@ -133,21 +132,19 @@ fn attempt_boolean_via_sat(
     let variable_count = variable_list.len();
     match cnf.solve() {
         SatOutcome::Unsatisfiable => Some(ProofOutcome::Proven {
-            proof: sat_tautology_proof(&formula, variable_count, clause_count),
+            proof: sat_tautology_proof(&formula, variable_count, clause_count, language),
         }),
         SatOutcome::Satisfiable(model) => {
             let counterexample = decode_named_model(variable_list, &model);
             Some(ProofOutcome::Disproven {
-                counterexample: format!(
-                    "{} makes {formula} false.",
-                    format_bool_assignment(&counterexample)
-                ),
+                counterexample: falsified(&counterexample, &formula, language),
                 method: ProofMethod::DecisionProcedure,
                 partial_proof: Some(sat_disproof(
                     &formula,
                     &counterexample,
                     variable_count,
                     clause_count,
+                    language,
                 )),
             })
         }
@@ -247,38 +244,48 @@ impl<'a> TseitinEncoder<'a> {
     }
 }
 
-fn sat_tautology_proof(formula: &str, variable_count: usize, clause_count: usize) -> Proof {
+/// `{assignment} makes {formula} false.` in `language`.
+fn falsified(assignment: &BTreeMap<String, bool>, formula: &str, language: &str) -> String {
+    phrase(
+        "boolean_falsified",
+        language,
+        &[
+            ("assignment", &format_bool_assignment(assignment)),
+            ("formula", formula),
+        ],
+    )
+}
+
+fn sat_tautology_proof(
+    formula: &str,
+    variable_count: usize,
+    clause_count: usize,
+    language: &str,
+) -> Proof {
+    let variable_count = variable_count.to_string();
+    let clause_count = clause_count.to_string();
+    let values = [
+        ("formula", formula),
+        ("variable_count", variable_count.as_str()),
+        ("clause_count", clause_count.as_str()),
+    ];
     Proof {
         statement: formula.to_owned(),
         steps: vec![
             ProofStep {
                 kind: StepKind::Hypothesis,
-                text: format!(
-                    "Delegate the formula to the relative-meta-logic / SMT decision procedure. \
-                     With {variable_count} variables an exhaustive truth table (2^{variable_count} \
-                     rows) is infeasible, so the verified backend is a DPLL satisfiability search."
-                ),
+                text: phrase("boolean_sat_delegate_tautology", language, &values),
             },
             ProofStep {
                 kind: StepKind::Definition,
-                text: format!(
-                    "Negate the goal and Tseitin-encode ¬({formula}) into conjunctive normal \
-                     form: {clause_count} clauses over the propositional variables plus gate \
-                     auxiliaries."
-                ),
+                text: phrase("boolean_tseitin_negate", language, &values),
             },
             ProofStep {
                 kind: StepKind::Inference,
-                text: String::from(
-                    "DPLL with unit propagation, pure-literal elimination, and backtracking \
-                     finds the negation unsatisfiable.",
-                ),
+                text: phrase("boolean_dpll_unsat", language, &values),
             },
         ],
-        conclusion: format!(
-            "Because ¬({formula}) is unsatisfiable, every assignment satisfies {formula}, \
-             so it is a tautology. ∎"
-        ),
+        conclusion: phrase("boolean_sat_tautology", language, &values),
         method: ProofMethod::DecisionProcedure,
     }
 }
@@ -288,34 +295,34 @@ fn sat_disproof(
     counterexample: &BTreeMap<String, bool>,
     variable_count: usize,
     clause_count: usize,
+    language: &str,
 ) -> Proof {
+    let variable_count = variable_count.to_string();
+    let clause_count = clause_count.to_string();
+    let assignment = format_bool_assignment(counterexample);
+    let values = [
+        ("formula", formula),
+        ("variable_count", variable_count.as_str()),
+        ("clause_count", clause_count.as_str()),
+        ("assignment", assignment.as_str()),
+    ];
     Proof {
         statement: formula.to_owned(),
         steps: vec![
             ProofStep {
                 kind: StepKind::Hypothesis,
-                text: format!(
-                    "Delegate the formula to the relative-meta-logic / SMT decision procedure. \
-                     With {variable_count} variables a truth table is infeasible, so the verified \
-                     backend is a DPLL satisfiability search."
-                ),
+                text: phrase("boolean_sat_delegate_countermodel", language, &values),
             },
             ProofStep {
                 kind: StepKind::Definition,
-                text: format!(
-                    "Tseitin-encode ¬({formula}) into {clause_count} CNF clauses and search for \
-                     an assignment that makes the formula false."
-                ),
+                text: phrase("boolean_tseitin_search", language, &values),
             },
             ProofStep {
                 kind: StepKind::Inference,
-                text: format!(
-                    "DPLL returns the satisfying assignment {}, a countermodel.",
-                    format_bool_assignment(counterexample)
-                ),
+                text: phrase("boolean_dpll_countermodel", language, &values),
             },
         ],
-        conclusion: format!("Therefore {formula} is not a tautology. ∎"),
+        conclusion: phrase("boolean_not_tautology", language, &values),
         method: ProofMethod::DecisionProcedure,
     }
 }
@@ -479,30 +486,30 @@ impl BoolParser {
     }
 }
 
-fn boolean_tautology_proof(formula: &str, rows: &[(BTreeMap<String, bool>, bool)]) -> Proof {
+fn boolean_tautology_proof(
+    formula: &str,
+    rows: &[(BTreeMap<String, bool>, bool)],
+    language: &str,
+) -> Proof {
+    let rows = format_truth_rows(rows);
+    let values = [("formula", formula), ("rows", rows.as_str())];
     Proof {
         statement: formula.to_owned(),
         steps: vec![
             ProofStep {
                 kind: StepKind::Hypothesis,
-                text: String::from(
-                    "Delegate the formula to the relative-meta-logic / SMT decision procedure. \
-                     For the propositional fragment, the verified backend is an exhaustive \
-                     truth-table audit over every assignment.",
-                ),
+                text: phrase("boolean_truth_table_delegate", language, &values),
             },
             ProofStep {
                 kind: StepKind::Definition,
-                text: format!("Normalized formula: {formula}."),
+                text: phrase("boolean_normalized", language, &values),
             },
             ProofStep {
                 kind: StepKind::Inference,
-                text: format!("Truth table: {}.", format_truth_rows(rows)),
+                text: phrase("boolean_truth_table", language, &values),
             },
         ],
-        conclusion: format!(
-            "Every assignment makes {formula} true, so the formula is a tautology. ∎"
-        ),
+        conclusion: phrase("boolean_tautology", language, &values),
         method: ProofMethod::DecisionProcedure,
     }
 }
@@ -511,30 +518,32 @@ fn boolean_disproof(
     formula: &str,
     rows: &[(BTreeMap<String, bool>, bool)],
     counterexample: &BTreeMap<String, bool>,
+    language: &str,
 ) -> Proof {
+    let rows = format_truth_rows(rows);
+    let assignment = format_bool_assignment(counterexample);
+    let values = [
+        ("formula", formula),
+        ("rows", rows.as_str()),
+        ("assignment", assignment.as_str()),
+    ];
     Proof {
         statement: formula.to_owned(),
         steps: vec![
             ProofStep {
                 kind: StepKind::Hypothesis,
-                text: String::from(
-                    "Delegate the formula to the relative-meta-logic / SMT decision procedure \
-                     and enumerate the finite Boolean model space.",
-                ),
+                text: phrase("boolean_enumerate_delegate", language, &values),
             },
             ProofStep {
                 kind: StepKind::Inference,
-                text: format!("Truth table: {}.", format_truth_rows(rows)),
+                text: phrase("boolean_truth_table", language, &values),
             },
             ProofStep {
                 kind: StepKind::Inference,
-                text: format!(
-                    "The assignment {} is a countermodel.",
-                    format_bool_assignment(counterexample)
-                ),
+                text: phrase("boolean_countermodel", language, &values),
             },
         ],
-        conclusion: format!("Therefore {formula} is not a tautology. ∎"),
+        conclusion: phrase("boolean_not_tautology", language, &values),
         method: ProofMethod::DecisionProcedure,
     }
 }

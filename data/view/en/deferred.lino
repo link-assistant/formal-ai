@@ -1,0 +1,13 @@
+view
+  id M-6b483c404ce8
+  lemma deferred
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "hold back to a later time"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "yield to another's wish or opinion"
+    provenance (wordnet)

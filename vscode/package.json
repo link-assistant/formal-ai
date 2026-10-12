@@ -22,7 +22,8 @@
   "browser": "./src/extension.web.cjs",
   "activationEvents": [
     "onView:formal-ai.chatView",
-    "onCommand:formal-ai.openChat"
+    "onCommand:formal-ai.openChat",
+    "onCommand:formal-ai.openDebugger"
   ],
   "capabilities": {
     "virtualWorkspaces": true,
@@ -51,6 +52,11 @@
       {
         "command": "formal-ai.openNetworkView",
         "title": "Open Network View",
+        "category": "formal-ai"
+      },
+      {
+        "command": "formal-ai.openDebugger",
+        "title": "Open Debugger",
         "category": "formal-ai"
       }
     ],
@@ -108,7 +114,7 @@
         },
         "formal-ai.docker.image": {
           "type": "string",
-          "default": "konard/box-dind:2.1.1",
+          "default": "konard/box-dind:2.10.2",
           "description": "Docker image used to sandbox code-execution tool calls (desktop host only, when a permitted tool runs)."
         },
         "formal-ai.tools.allowByDefault": {
@@ -120,6 +126,11 @@
           "type": "boolean",
           "default": false,
           "description": "Enable agent mode (which drives tool grants) by default when the chat view opens."
+        },
+        "formal-ai.debugger.stepping": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Start the local server with `--debug-session` (loopback hosts only) so **Formal AI: Open Debugger** can pause a solved turn and step through its stages. Requires `formal-ai.server.enabled`; desktop (Node) host only."
         }
       }
     }
@@ -130,26 +141,28 @@
     "vscode:prepublish": "node scripts/prepare-resources.mjs",
     "package": "vsce package",
     "smoke": "node scripts/smoke.mjs",
-    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs && node scripts/smoke.mjs",
+    "test": "node --test scripts/config.test.mjs scripts/bridge.test.mjs scripts/webview-html.test.mjs scripts/chat-view.test.mjs scripts/server-process.test.mjs scripts/debugger-panes.test.mjs && node scripts/smoke.mjs",
     "test:package": "node --test scripts/bundle-web-tools.test.mjs"
   },
   "devDependencies": {
     "@vscode/test-web": "^0.0.81",
-    "@vscode/vsce": "^3.9.2",
+    "@vscode/vsce": "^4.0.0",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "@link-assistant/web-capture": "^1.11.2",
-    "@link-assistant/web-search": "^0.11.0",
-    "playwright": "^1.62.1"
+    "@link-assistant/web-capture": "^1.12.0",
+    "@link-assistant/web-search": "^0.11.1",
+    "playwright": "^1.64.0"
   },
+  "browser-commander//": "blocked: https://github.com/link-assistant/web-capture/issues/160 (0.21+ launches the installed Chrome over CDP by default; web-capture 1.11.2 does not pass launch: 'engine', so 0.20.0 is the newest override it runs on)",
+  "@kreuzberg/html-to-markdown-node//": "blocked: https://github.com/xberg-io/html-to-markdown/issues/459 (every release after 3.5.5, through 3.7.2, declares linux musl optional packages that npm does not have)",
   "overrides": {
     "@link-assistant/web-capture": {
       "@kreuzberg/html-to-markdown-node": "3.5.5",
-      "browser-commander": "0.16.1",
-      "puppeteer": "^25.9.0",
-      "puppeteer-core": "^25.9.0",
+      "browser-commander": "0.20.0",
+      "puppeteer": "^25.12.0",
+      "puppeteer-core": "^25.12.0",
       "qs": "^6.16.0"
     }
   },
@@ -159,5 +172,22 @@
     "esbuild": true,
     "keytar": true,
     "puppeteer": true
-  }
+  },
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#175f4f",
+    "theme": "dark"
+  },
+  "keywords": [
+    "symbolic AI",
+    "Links Notation",
+    "deterministic",
+    "WebAssembly",
+    "agent",
+    "chat"
+  ],
+  "bugs": {
+    "url": "https://github.com/link-assistant/formal-ai/issues"
+  },
+  "homepage": "https://github.com/link-assistant/formal-ai/tree/main/vscode"
 }

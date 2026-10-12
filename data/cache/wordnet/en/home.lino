@@ -1,0 +1,97 @@
+language en
+lemma home
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "used of your own ground"
+    examples ("a home game")
+    id oewn-01222498-a
+    partOfSpeech a
+  entry
+    definition "relating to or being where one lives or where one's roots are"
+    examples ("my home town")
+    id oewn-02753598-a
+    partOfSpeech a
+  entry
+    definition "where you live at a particular time"
+    examples ("deliver the package to my home" "he doesn't have a home to go to" "your place or mine?")
+    id oewn-08577045-n
+    partOfSpeech n
+    synonyms (place)
+  entry
+    definition "housing that someone is living in"
+    examples ("he built a modest dwelling near the pond" "they raise money to provide homes for the homeless")
+    id oewn-03264208-n
+    partOfSpeech n
+    synonyms (dwelling domicile abode habitation "dwelling house")
+  entry
+    definition "the country or state or city where you live"
+    examples ("Canadian tariffs enabled United States lumber companies to raise prices at home" "his home is New Jersey")
+    id oewn-08507209-n
+    partOfSpeech n
+  entry
+    definition "(baseball) base consisting of a rubber slab where the batter stands; it must be touched by a base runner in order to score"
+    examples ("he ruled that the runner failed to touch home")
+    id oewn-03534081-n
+    partOfSpeech n
+    synonyms ("home plate" "home base" plate)
+  entry
+    definition "the place where you are stationed and from which missions start and end"
+    id oewn-08507412-n
+    partOfSpeech n
+    synonyms (base)
+  entry
+    definition "place where something began and flourished"
+    examples ("the United States is the home of basketball")
+    id oewn-08602685-n
+    partOfSpeech n
+  entry
+    definition "an environment offering affection and security"
+    examples ("home is where the heart is" "he grew up in a good Christian home" "there's no place like home")
+    id oewn-14537296-n
+    partOfSpeech n
+  entry
+    definition "a social unit living together"
+    examples ("he moved his family to Virginia" "It was a good Christian household" "I waited until the whole house was asleep" "the teacher asked how many people made up his home" "the family refused to accept his will")
+    id oewn-08094856-n
+    partOfSpeech n
+    synonyms (family household house menage)
+  entry
+    definition "an institution where people are cared for"
+    examples ("a home for the elderly")
+    id oewn-03533280-n
+    partOfSpeech n
+    synonyms ("nursing home" "rest home")
+  entry
+    definition "at or to or in the direction of one's home or family"
+    examples ("He stays home on weekends" "after the game the children brought friends home for supper" "I'll be home tomorrow" "came riding home in style" "I hope you will come home for Christmas" "I'll take her home" "don't forget to write home")
+    id oewn-00098390-r
+    partOfSpeech r
+  entry
+    definition "on or to the point aimed at"
+    examples ("the arrow struck home")
+    id oewn-00099070-r
+    partOfSpeech r
+  entry
+    definition "to the fullest extent; to the heart"
+    examples ("drove the nail home" "drove his point home" "his comments hit home")
+    id oewn-00098930-r
+    partOfSpeech r
+  entry
+    definition "inside the country"
+    examples ("the British Home Office has broader responsibilities than the United States Department of the Interior" "the nation's internal politics")
+    id oewn-01042014-s
+    partOfSpeech s
+    synonyms (interior internal national)
+  entry
+    definition "provide with, or send to, a home"
+    id oewn-02465056-v
+    partOfSpeech v
+  entry
+    definition "return home accurately from a long distance"
+    examples ("homing pigeons")
+    id oewn-02009361-v
+    partOfSpeech v
+source "oewn:2024"

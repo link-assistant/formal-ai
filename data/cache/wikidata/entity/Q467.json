@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "成年女性"
+        },
+        "es": {
+          "language": "es",
+          "value": "mujer"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "成年雌性人類"
+        },
+        "es": {
+          "language": "es",
+          "value": "persona adulta de sexo femenino"
         }
       },
       "aliases": {
@@ -88,6 +96,24 @@
           {
             "language": "zh",
             "value": "女子"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "humana"
+          },
+          {
+            "language": "es",
+            "value": "ser humano femenino"
+          },
+          {
+            "language": "es",
+            "value": "dama"
+          },
+          {
+            "language": "es",
+            "value": "persona"
           }
         ]
       }

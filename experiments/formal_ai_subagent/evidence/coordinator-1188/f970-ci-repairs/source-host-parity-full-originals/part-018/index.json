@@ -1,0 +1,162 @@
+{
+  "ok": true,
+  "configSha256": "ff3c1a81c9330fc0e6c75b90ed9d63a20daab2987449b4c3bab09ac91f60e39c",
+  "runnerSha256": "c099269be4597224eba48fd420690cb615719c2b4f578e770610d74abe7d9e5a",
+  "uniqueSelectedAndAuthorityPhysicalBytes": 30492889,
+  "selectedAuthorityFiles": 2035,
+  "inputCap": 33554432,
+  "historicalReuseVerifiedPhysicalBytes": 81339937,
+  "historicalReuseFiles": 8298,
+  "historicalDecodedBytes": 470292716,
+  "historicalScope": "prior archive verification separately disclosed; not selected-input exemption",
+  "logicalMembers": 2495,
+  "uniqueOriginalBlobs": 1678,
+  "reusedPriorBlobs": 97,
+  "newCompressedBytes": 12767933,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-002.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-003.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-004.jsonl",
+      "count": 395
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "blobs-002.jsonl",
+      "count": 700
+    },
+    {
+      "path": "blobs-003.jsonl",
+      "count": 278
+    }
+  ],
+  "encodedOriginalIdentityValidation": true,
+  "immutablePostReadGuards": true,
+  "recoveries": [],
+  "knownLosses": [
+    {
+      "id": "nativeobserver6084",
+      "state": "irrecoverableKnownLoss",
+      "reconstructed": false
+    },
+    {
+      "id": "first-alias-commit",
+      "state": "Codex transcript only; standalone original not reconstructed"
+    }
+  ],
+  "deferred": [],
+  "rootWrites": 0,
+  "actualCost": "Unknown",
+  "nativeExecution": false,
+  "readGuardShards": {
+    "selectedAuthorityReadGuards": [
+      {
+        "path": "guards-selected-authority-001.jsonl",
+        "count": 700,
+        "bytes": 122044,
+        "sha256": "c7771e58e35f21d46418e3996e5607a0da2e121dc3dc7c7ff427ae04f0156fb7"
+      },
+      {
+        "path": "guards-selected-authority-002.jsonl",
+        "count": 700,
+        "bytes": 129660,
+        "sha256": "342b8cde70dd2d29899e00ede6892643aaf0dc9c8fa8af90047e116f260590c3"
+      },
+      {
+        "path": "guards-selected-authority-003.jsonl",
+        "count": 635,
+        "bytes": 137664,
+        "sha256": "de04122d8d3ba36356278cbad996781a9e367b6f742c1aa1eed9802e5a1f68e9"
+      }
+    ],
+    "historicalReadGuards": [
+      {
+        "path": "guards-historical-reuse-001.jsonl",
+        "count": 700,
+        "bytes": 225926,
+        "sha256": "40dd58c62e44839ad2eb934e0974a9e7b0dc38d204a4b5275d7042f6efa9136a"
+      },
+      {
+        "path": "guards-historical-reuse-002.jsonl",
+        "count": 700,
+        "bytes": 236838,
+        "sha256": "61723b9a6eef6dd14243b976917320e0d60fad322e24faa7a27826f99108b259"
+      },
+      {
+        "path": "guards-historical-reuse-003.jsonl",
+        "count": 700,
+        "bytes": 237811,
+        "sha256": "925546154a3cf2960458832c33bb552fa854b08df25b08779fdfde955336bf0f"
+      },
+      {
+        "path": "guards-historical-reuse-004.jsonl",
+        "count": 700,
+        "bytes": 237761,
+        "sha256": "26a81cfb3f5afddb8fd821d7d8fd8a94adb9b86388e68803ed5679da06da1dcb"
+      },
+      {
+        "path": "guards-historical-reuse-005.jsonl",
+        "count": 700,
+        "bytes": 237460,
+        "sha256": "b84693415f1ef20af1d9dce32a81ac85cd862eecc7ee9f5a915356119a144b5b"
+      },
+      {
+        "path": "guards-historical-reuse-006.jsonl",
+        "count": 700,
+        "bytes": 237227,
+        "sha256": "7b562e3137ae9566c158254bf7ac5ea62741fdb022533a7de31b8e041b922775"
+      },
+      {
+        "path": "guards-historical-reuse-007.jsonl",
+        "count": 700,
+        "bytes": 237346,
+        "sha256": "223353f71e0929634cf74fffa62d28de598d05c55d94bd7ce1d7b6c2e61de401"
+      },
+      {
+        "path": "guards-historical-reuse-008.jsonl",
+        "count": 700,
+        "bytes": 237445,
+        "sha256": "c3f9f0819063a76d65beb6205b38f72035866140bd088d703681a5c577985cae"
+      },
+      {
+        "path": "guards-historical-reuse-009.jsonl",
+        "count": 700,
+        "bytes": 237527,
+        "sha256": "95a6280c6c0ceb72453c371475c6629012e53a62fbc4f40e77f78529693a9c34"
+      },
+      {
+        "path": "guards-historical-reuse-010.jsonl",
+        "count": 700,
+        "bytes": 237186,
+        "sha256": "6d8b8805fc2c6af30cc0613d92ad1f43ed764dc3f140a332ad46cd5ae3db7627"
+      },
+      {
+        "path": "guards-historical-reuse-011.jsonl",
+        "count": 700,
+        "bytes": 237419,
+        "sha256": "e141e11ac0f9ee208acdc67ec8a1c714548ac928d05d83377356346fa8416c3c"
+      },
+      {
+        "path": "guards-historical-reuse-012.jsonl",
+        "count": 598,
+        "bytes": 202792,
+        "sha256": "6afee2207a77b46de173036c90467c9186b0e83f4c7ce0381928b6a1232ab73e"
+      }
+    ]
+  }
+}

@@ -1,0 +1,122 @@
+language en
+lemma lost
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "no longer in your possession or control; unable to be found or recovered"
+    examples ("a lost child" "lost friends" "his lost book" "lost opportunities")
+    id oewn-01452455-a
+    partOfSpeech a
+  entry
+    definition "spiritually or physically doomed or destroyed"
+    examples ("lost souls" "a lost generation" "a lost ship" "the lost platoon")
+    id oewn-01453748-a
+    partOfSpeech a
+  entry
+    definition "not gained or won"
+    examples ("a lost battle" "a lost prize")
+    id oewn-01455045-a
+    partOfSpeech a
+  entry
+    definition "people who are destined to die soon"
+    examples ("the agony of the doomed was in his voice")
+    id oewn-07963280-n
+    partOfSpeech n
+    synonyms (doomed)
+  entry
+    definition "having lost your bearings; confused as to time or place or personal identity"
+    examples ("I frequently find myself disoriented when I come up out of the subway" "the anesthetic left her completely disoriented")
+    id oewn-01688793-s
+    partOfSpeech s
+    synonyms (confused disoriented)
+  entry
+    definition "cannot be recovered or regained"
+    examples ("his lost honor")
+    id oewn-01963677-s
+    partOfSpeech s
+  entry
+    definition "not caught with the senses or the mind"
+    examples ("words lost in the din")
+    id oewn-00537393-s
+    partOfSpeech s
+    synonyms (missed)
+  entry
+    definition "deeply absorbed in thought"
+    examples ("as distant and bemused as a professor listening to the prattling of his freshman class" "lost in thought" "a preoccupied frown")
+    id oewn-02427955-s
+    partOfSpeech s
+    synonyms (bemused preoccupied)
+  entry
+    definition "perplexed by many conflicting situations or statements; filled with bewilderment"
+    examples ("obviously bemused by his questions" "bewildered and confused" "a cloudy and confounded philosopher" "just a mixed-up kid" "she felt lost on the first day of school")
+    id oewn-01770645-s
+    partOfSpeech s
+    synonyms (baffled befuddled bemused bewildered confounded confused mazed mixed-up "at sea")
+  entry
+    definition "unable to function; without help"
+    id oewn-01233489-s
+    partOfSpeech s
+    synonyms (helpless)
+  entry
+    definition "fail to keep or to maintain; cease to have, either physically or in an abstract sense"
+    examples ("She lost her purse when she left it unattended on her seat")
+    id oewn-02292634-v
+    partOfSpeech v
+    synonyms (lose)
+  entry
+    definition "fail to win"
+    examples ("We lost the battle but we won the war")
+    id oewn-01102003-v
+    partOfSpeech v
+    synonyms (lose)
+  entry
+    definition "suffer the loss of a person through death or removal"
+    examples ("She lost her husband in the war" "The couple that wanted to adopt the child lost her when the biological parents claimed her")
+    id oewn-01799093-v
+    partOfSpeech v
+    synonyms (lose)
+  entry
+    definition "miss from one's possessions; lose sight of"
+    examples ("I've lost my glasses again!")
+    id oewn-02292463-v
+    partOfSpeech v
+    synonyms (lose)
+  entry
+    definition "allow to go out of sight or mind"
+    examples ("The detective lost the man he was shadowing after he had to stop at a red light" "lose the crowds by climbing a mountain" "the lost tribe")
+    id oewn-02201537-v
+    partOfSpeech v
+    synonyms (lose)
+  entry
+    definition "fail to make money in a business; make a loss or fail to profit"
+    examples ("I lost thousands of dollars on that bad investment!" "The company turned a loss after the first year")
+    id oewn-02293733-v
+    partOfSpeech v
+    synonyms (lose "turn a loss")
+  entry
+    definition "fail to get or obtain"
+    examples ("I lost the opportunity to spend a year abroad")
+    id oewn-02293000-v
+    partOfSpeech v
+    synonyms (lose)
+  entry
+    definition "fail to perceive or to catch with the senses or the mind"
+    examples ("I missed that remark" "She missed his point" "We lost part of what he said")
+    id oewn-02132318-v
+    partOfSpeech v
+    synonyms (miss lose)
+  entry
+    definition "withdraw, as from reality"
+    examples ("he lost himself in his music")
+    id oewn-00497220-v
+    partOfSpeech v
+    synonyms (lose)
+  entry
+    definition "be set at a disadvantage"
+    examples ("This author really suffers in translation" "The painting loses something in this light")
+    id oewn-00205234-v
+    partOfSpeech v
+    synonyms (suffer lose)
+source "oewn:2024"

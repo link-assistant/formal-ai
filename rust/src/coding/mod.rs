@@ -31,6 +31,7 @@ pub mod fragment_catalog;
 pub mod function_catalog;
 pub mod guidance;
 pub mod ir_lowering;
+pub mod operand_program;
 pub mod program_contract;
 pub mod program_ir;
 pub mod python_render;

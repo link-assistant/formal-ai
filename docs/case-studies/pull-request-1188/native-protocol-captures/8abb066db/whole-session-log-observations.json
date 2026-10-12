@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "pull_request_head": "8abb066dbe9895ba843ca690e0d9e9f21c12e571",
+  "observations": [
+    {
+      "id": "diagram",
+      "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/diagram.json",
+      "sha256": "8f58288aa5032e8109fdf636ed30f26f50111e21640d5d9b8fc90bdf06a6f685",
+      "bytes": 12780,
+      "legacy": "docs/case-studies/issue-538/agent-cli-session-diagram.json",
+      "legacy_sha256": "dae8321f9563b4b6a423d86e91565705b60972da654f01baeea5cec07f37b4e6",
+      "native_job": 113928931968,
+      "full_official_log_sha256": "cbe5bc5938c333814b30590978bb1f5bc12f95d74589b3c9d81d93e4f804a41d",
+      "line": 1487,
+      "raw_line_path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/diagram.json.raw-operand-line.gz",
+      "raw_line_sha256": "7f4cc1a7dfacccda559ee632782b8a48759e9fd5bcc98a10028b955a8a3e43b9",
+      "representation": "Exact complete fresh native operand decoded from the official assertion log; no session fields authored or truncated.",
+      "fresh_final_head": false
+    },
+    {
+      "id": "associative",
+      "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/associative.json",
+      "sha256": "b62b87512ecd11b748f7e99eed8e5773f54b09ed2ae2096f8c2ceb0c789e1331",
+      "bytes": 4830,
+      "legacy": "docs/case-studies/issue-686/agent-cli-session-associative-learning.json",
+      "legacy_sha256": "62cc50fc50bd9fc455ca6c2d498777e2ddb2f326af59561d83ce03c63056d2ef",
+      "native_job": 113928931968,
+      "full_official_log_sha256": "cbe5bc5938c333814b30590978bb1f5bc12f95d74589b3c9d81d93e4f804a41d",
+      "line": 1494,
+      "raw_line_path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/associative.json.raw-operand-line.gz",
+      "raw_line_sha256": "6f8b3021d53d8af80fefe196eb30246548237529671943dbcbd452b173c95f76",
+      "representation": "Exact complete fresh native operand decoded from the official assertion log; no session fields authored or truncated.",
+      "fresh_final_head": false
+    }
+  ],
+  "acceptance": "Exact historical-to-receipt protocol transition; fresh native full-session replay required.",
+  "native_run": 37957603076,
+  "native_job": 113928931968,
+  "source_commit": "96e579831186bb93c657e807056cd7e41ea4bdd4",
+  "source_tree": "21e50375d2de386a9932cdee34c9450ca4d09828",
+  "original_job_result": "failure",
+  "official_identities": [
+    {
+      "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/coverage16-job-api.json.gz",
+      "bytes": 4176,
+      "sha256": "388ee1a9bf20cbbc3fd3ac1f3a101bc23dbec88234a0a81d82e736aadf395ce0",
+      "gzip_sha256": "7ad91a7be470600b5ec8904555de4360a5db52b66f1e1332edc0da816d0c0464"
+    },
+    {
+      "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/coverage16-run-api.json.gz",
+      "bytes": 13308,
+      "sha256": "72eef29d77100f834c30eeaafb0b53f181947ed372cd85037ba65ebbd444ec7e",
+      "gzip_sha256": "6c0e5611009db873e970127ed660362c40fe63d682aea6a904477d768bc3433d"
+    },
+    {
+      "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/coverage16-official.log.gz",
+      "bytes": 196593,
+      "sha256": "cbe5bc5938c333814b30590978bb1f5bc12f95d74589b3c9d81d93e4f804a41d",
+      "gzip_sha256": "854f841f6c6af4a7719ee56e1e770844ec08e09c43b72c5eda3fab1ef47128ea"
+    }
+  ]
+}

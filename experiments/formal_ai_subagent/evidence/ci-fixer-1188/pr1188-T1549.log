@@ -1,0 +1,171 @@
+>> read {"filePath":"rust/tests/unit/issue_1165_documented_commands.rs","file_path":"rust/tests/unit/issue_1165_documented_commands.rs","path":"rust/tests/unit/issue_1165_documented_commands.rs"}
+   <file>
+   00001| //! Issue #1165 R1165-6: no language row hard-codes a compile or run command
+   00002| //! that a captured documentation page states.
+   00003| //!
+   00004| //! The policy seed's `command_procedure` rows name, per language and role,
+   00005| //! the captured page and the `command_verb` its command line starts with;
+   00006| //! `documented_language_commands` derives the command from that page with
+   00007| //! the page's file name bound to the catalog's, and the catalog's language
+   00008| //! rows take it from there. The browser twins are in
+   00009| //! `rust/tests/web/issue-1165-documented-commands.test.mjs`.
+   00010| 
+   00011| use formal_ai::discovery_production::{
+   00012|     SourcedCommand, command_procedures, documented_language_commands, documented_pairs,
+   00013|     documented_run_commands,
+   00014| };
+   00015| 
+   00016| const RUST_BOOK: &str = "https://doc.rust-lang.org/book/ch01-02-hello-world.html";
+   00017| const TS_HANDBOOK: &str = "https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md";
+   00018| const ORACLE: &str = "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html";
+   00019| const KOTLINLANG: &str = "https://kotlinlang.org/docs/command-line.html";
+   00020| 
+   00021| /// Every command the procedure rows derive, as
+   00022| /// `(language, save_as, role, command, page)`.
+   00023| const DERIVED: [(&str, &str, &str, &str, &str); 6] = [
+   00024|     ("rust", "main.rs", "run", "./main", RUST_BOOK),
+   00025|     (
+   00026|         "typescript",
+   00027|         "hello.ts",
+   00028|         "check",
+   00029|         "tsc hello.ts",
+   00030|         TS_HANDBOOK,
+   00031|     ),
+   00032|     ("java", "Main.java", "check", "javac Main.java", ORACLE),
+   00033|     ("java", "Main.java", "run", "java Main", ORACLE),
+   00034|     (
+   00035|         "kotlin",
+   00036|         "Main.kt",
+   00037|         "check",
+   00038|         "kotlinc Main.kt -include-runtime -d Main.jar",
+   00039|         KOTLINLANG,
+   00040|     ),
+   00041|     ("kotlin", "Main.kt", "run", "java -jar Main.jar", KOTLINLANG),
+   00042| ];
+   00043| 
+   00044| /// The catalog's language table, read as source text.
+   00045| const LANGUAGES_SOURCE: &str = include_str!("../../src/coding/catalog/languages.rs");
+   00046| 
+   00047| /// R1165-6: each `command_procedure` row derives the catalog command from
+   00048| /// its captured page, the page's file name bound to the catalog's
+   00049| /// (kotlinlang's `hello.kt` and Oracle's `HelloWorldApp` become `Main`).
+   00050| #[test]
+   00051| fn each_command_procedure_row_derives_the_catalog_command_from_its_page() {
+   00052|     for (language, save_as) in [
+   00053|         ("rust", "main.rs"),
+   00054|         ("typescript", "hello.ts"),
+   00055|         ("java", "Main.java"),
+   00056|         ("kotlin", "Main.kt"),
+   00057|     ] {
+   00058|         let expected: Vec<SourcedCommand> = DERIVED
+   00059|             .iter()
+   00060|             .filter(|row| row.0 == language)
+   00061|             .map(|&(_, _, role, command, page)| SourcedCommand {
+   00062|                 role,
+   00063|                 command: command.to_owned(),
+   00064|                 source: page.to_owned(),
+   00065|             })
+   00066|             .collect();
+   00067|         assert_eq!(
+   00068|             documented_language_commands(language, save_as),
+   00069|             expected,
+   00070|             "{language}"
+   00071|         );
+   00072|     }
+   00073|     assert_eq!(documented_language_commands("go", "main.go"), []);
+   00074| }
+   00075| 
+   00076| /// R1165-6: the catalog rows run with the derived commands, for a task the
+   00077| /// page never documented too (Kotlin `FizzBuzz`).
+   00078| #[test]
+   00079| fn a_derived_command_is_the_catalog_command_of_every_task() {
+   00080|     let kotlin: Vec<String> = documented_run_commands("kotlin", "hello_world")
+   00081|         .into_iter()
+   00082|         .map(|command| command.catalog)
+   00083|         .collect();
+   00084|     assert_eq!(
+   00085|         kotlin,
+   00086|         [
+   00087|             "kotlinc Main.kt -include-runtime -d Main.jar",
+   00088|             "java -jar Main.jar"
+   00089|         ]
+   00090|     );
+   00091|     let response =
+   00092|         formal_ai::UniversalSolver::default().solve("Write a Kotlin program that prints FizzBuzz");
+   00093|     let recipe = response
+   00094|         .execution_recipe
+   00095|         .expect("a program answer carries its execution recipe");
+   00096|     assert_eq!(recipe.path, "Main.kt");
+   00097|     assert_eq!(
+   00098|         recipe.commands,
+   00099|         [
+   00100|             "kotlinc Main.kt -include-runtime -d Main.jar",
+   00101|             "java -jar Main.jar"
+   00102|         ]
+   00103|     );
+   00104| }
+   00105| 
+   00106| /// The source text of one row of the language table, from its `slug` line
+   00107| /// to the next row.
+   00108| fn row_text(slug: &str) -> &'static str {
+   00109|     let opening = format!("slug: \"{slug}\",");
+   00110|     let start = LANGUAGES_SOURCE
+   00111|         .find(&opening)
+   00112|         .unwrap_or_else(|| panic!("no row for {slug}"));
+   00113|     let rest = &LANGUAGES_SOURCE[start..];
+   00114|     rest.find("ProgramLanguage {")
+   00115|         .map_or(rest, |end| &rest[..end])
+   00116| }
+   00117| 
+   00118| /// R1165-6: every command a captured page states is derived by a
+   00119| /// `command_procedure` row, and the language table states none of them.
+   00120| #[test]
+   00121| fn no_language_row_hard_codes_a_command_a_captured_page_states() {
+   00122|     let procedures: Vec<(String, String)> = command_procedures()
+   00123|         .into_iter()
+   00124|         .map(|row| (row.language, row.role))
+   00125|         .collect();
+   00126|     assert_eq!(
+   00127|         procedures,
+   00128|         DERIVED
+   00129|             .iter()
+   00130|             .map(|row| (row.0.to_owned(), row.2.to_owned()))
+   00131|             .collect::<Vec<_>>()
+   00132|     );
+   00133|     let mut stated = 0;
+   00134|     for (task, language) in documented_pairs() {
+   00135|         let commands = documented_run_commands(&language, &task);
+   00136|         let last = commands.len().saturating_sub(1);
+   00137|         for (index, command) in commands.iter().enumerate() {
+   00138|             if command.documented.is_none() {
+   00139|                 continue;
+   00140|             }
+   00141|             stated += 1;
+   00142|             let role = if index == last { "run" } else { "check" };
+   00143|             assert!(
+   00144|                 procedures.contains(&(language.clone(), role.to_owned())),
+   00145|                 "{language} {role}: its page states it, so a command_procedure row must derive it"
+   00146|             );
+   00147|         }
+   00148|     }
+   00149|     assert!(stated >= DERIVED.len());
+   00150|     for (language, _, _, command, _) in DERIVED {
+   00151|         assert!(
+   00152|             !row_text(language).contains(&format!("\"{command}\"")),
+   00153|             "the {language} row still states \"{command}\""
+   00154|         );
+   00155|     }
+   00156| }
+   00157| 
+   
+   (End of file - total 157 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/issue_1165_documented_commands.rs","file_path":"rust/tests/unit/issue_1165_documented_commands.rs","new":"assert_eq!(\n        documented_language_commands(\"go\", \"main.go\"),\n        Vec::<formal_ai::discovery_production::SourcedCommand>::new()\n    );","newString":"assert_eq!(\n        documented_language_commands(\"go\", \"main.go\"),\n        Vec::<formal_ai::discovery_production::SourcedCommand>::new()\n    );","new_str":"assert_eq!(\n        documented_language_commands(\"go\", \"main.go\"),\n        Vec::<formal_ai::discovery_production::SourcedCommand>::new()\n    );","new_string":"assert_eq!(\n        documented_language_commands(\"go\", \"main.go\"),\n        Vec::<formal_ai::discovery_production::SourcedCommand>::new()\n    );","old":"assert_eq!(documented_language_commands(\"go\", \"main.go\"), []);","oldString":"assert_eq!(documented_language_commands(\"go\", \"main.go\"), []);","old_str":"assert_eq!(documented_language_commands(\"go\", \"main.go\"), []);","old_string":"assert_eq!(documented_language_commands(\"go\", \"main.go\"), []);","path":"rust/tests/unit/issue_1165_documented_commands.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/issue_1165_documented_commands.rs"}
+   e7de34831823660763b56072b8c48c137c7b6b55cd61e67f399f0b735e2308da  rust/tests/unit/issue_1165_documented_commands.rs
+   
+== answer ==
+Replaced `assert_eq!(documented_language_commands("go", "main.go"), []);` with `assert_eq!(
+        documented_language_commands("go", "main.go"),
+        Vec::<formal_ai::discovery_production::SourcedCommand>::new()
+    );` in `rust/tests/unit/issue_1165_documented_commands.rs` and observed the result.

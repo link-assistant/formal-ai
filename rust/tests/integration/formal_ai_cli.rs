@@ -233,7 +233,7 @@ fn cli_environments_command_lists_every_supported_surface() {
         "npm run desktop:dev",
         "agent_permission_gate",
         "Docker-in-Docker Telegram bot image",
-        "konard/box-dind:2.1.1",
+        "konard/box-dind:2.10.2",
         "start_command, docker_isolation",
     ] {
         assert!(

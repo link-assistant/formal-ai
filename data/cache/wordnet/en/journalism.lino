@@ -1,0 +1,16 @@
+language en
+lemma journalism
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "newspapers and magazines collectively"
+    id oewn-06277070-n
+    partOfSpeech n
+    synonyms ("news media")
+  entry
+    definition "the profession of reporting or photographing or editing news stories for one of the media"
+    id oewn-00612961-n
+    partOfSpeech n
+source "oewn:2024"

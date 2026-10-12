@@ -1,0 +1,16 @@
+{
+  "cutoff": "root T2526; CI T2847; strict T2391; Spec scratch T2932",
+  "copiesTotal": 333,
+  "parts": [
+    "copy-manifest-part-01.json",
+    "copy-manifest-part-02.json",
+    "copy-manifest-part-03.json",
+    "copy-manifest-part-04.json"
+  ],
+  "originalManifest": {
+    "path": "copy-manifest.json.gz",
+    "encoding": "gzip",
+    "bytes": 115471,
+    "sha256": "b5d317d5342b5b6578027e8743b341a53c640f74ceead980de213f794c0dc1e6"
+  }
+}

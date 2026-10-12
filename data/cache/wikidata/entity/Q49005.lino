@@ -5,11 +5,13 @@ Q49005
     zh ("窗帘" "窗簾")
   descriptions
     en "cloth used to block out light"
+    es "trozo de tela destinado a bloquear u oscurecer la luz o similar"
     ru "портьера, оконная или дверная занавесь"
     zh "挂在建筑物的窗户上，具有遮阳、隔热、调节室内光线、吸声隔声等作用的室内装饰品"
   id Q49005
   labels
     en curtain
+    es cortina
     hi "पर्दा"
     ru "штора"
     zh "簾"

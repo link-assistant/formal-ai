@@ -99,7 +99,7 @@ handler_family_case_zh_procedure_interpreter_01
   id "zh_procedure_interpreter_01"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "把这个 README 的安装部分改写成 PowerShell 脚本。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_02
@@ -107,7 +107,7 @@ handler_family_case_zh_procedure_interpreter_02
   id "zh_procedure_interpreter_02"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "请把这个 README 里的安装步骤整理成 Makefile 目标。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_03
@@ -115,7 +115,7 @@ handler_family_case_zh_procedure_interpreter_03
   id "zh_procedure_interpreter_03"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "拿这个 README 的入门部分，给我 fish 函数。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_04
@@ -123,7 +123,7 @@ handler_family_case_zh_procedure_interpreter_04
   id "zh_procedure_interpreter_04"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "我想要这个 README 的安装说明，形式是 Dockerfile 阶段。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_05
@@ -131,7 +131,7 @@ handler_family_case_zh_procedure_interpreter_05
   id "zh_procedure_interpreter_05"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "把这个 README 的安装部分改写成 fish 函数。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_06
@@ -139,7 +139,7 @@ handler_family_case_zh_procedure_interpreter_06
   id "zh_procedure_interpreter_06"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "请把这个 README 里的安装步骤整理成 Dockerfile 阶段。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_07
@@ -147,7 +147,7 @@ handler_family_case_zh_procedure_interpreter_07
   id "zh_procedure_interpreter_07"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "拿这个 README 的入门部分，给我 Ansible 任务清单。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_08
@@ -155,7 +155,7 @@ handler_family_case_zh_procedure_interpreter_08
   id "zh_procedure_interpreter_08"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "我想要这个 README 的安装说明，形式是 PowerShell 脚本。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_09
@@ -163,7 +163,7 @@ handler_family_case_zh_procedure_interpreter_09
   id "zh_procedure_interpreter_09"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "把这个 README 的安装部分改写成 Ansible 任务清单。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_10
@@ -171,7 +171,7 @@ handler_family_case_zh_procedure_interpreter_10
   id "zh_procedure_interpreter_10"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "请把这个 README 里的安装步骤整理成 fish 函数。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_11
@@ -179,7 +179,7 @@ handler_family_case_zh_procedure_interpreter_11
   id "zh_procedure_interpreter_11"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "拿这个 README 的入门部分，给我 PowerShell 脚本。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_procedure_interpreter_12
@@ -187,7 +187,7 @@ handler_family_case_zh_procedure_interpreter_12
   id "zh_procedure_interpreter_12"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "我想要这个 README 的安装说明，形式是 Ansible 任务清单。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_01
@@ -195,7 +195,7 @@ handler_family_case_zh_structural_operator_01
   id "zh_structural_operator_01"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "把这些数字倒过来排，并给出 Go 代码：4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_02
@@ -203,7 +203,7 @@ handler_family_case_zh_structural_operator_02
   id "zh_structural_operator_02"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "把它们从小到大排好，并给出 Kotlin 代码：12 5 5 30 8"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_03
@@ -211,7 +211,7 @@ handler_family_case_zh_structural_operator_03
   id "zh_structural_operator_03"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "按奇偶把它们分开，并给出 Swift 代码：7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_04
@@ -219,7 +219,7 @@ handler_family_case_zh_structural_operator_04
   id "zh_structural_operator_04"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "只留下重复出现的，并给出 Elixir 代码：31 4 18 4 6"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_05
@@ -227,7 +227,7 @@ handler_family_case_zh_structural_operator_05
   id "zh_structural_operator_05"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "把这些数字倒过来排，并给出 Swift 代码：7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_06
@@ -235,7 +235,7 @@ handler_family_case_zh_structural_operator_06
   id "zh_structural_operator_06"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "把它们从小到大排好，并给出 Elixir 代码：31 4 18 4 6"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_07
@@ -243,7 +243,7 @@ handler_family_case_zh_structural_operator_07
   id "zh_structural_operator_07"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "按奇偶把它们分开，并给出 Ruby 代码：2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_08
@@ -251,7 +251,7 @@ handler_family_case_zh_structural_operator_08
   id "zh_structural_operator_08"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "只留下重复出现的，并给出 Go 代码：4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_09
@@ -259,7 +259,7 @@ handler_family_case_zh_structural_operator_09
   id "zh_structural_operator_09"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "把这些数字倒过来排，并给出 Ruby 代码：2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_10
@@ -267,7 +267,7 @@ handler_family_case_zh_structural_operator_10
   id "zh_structural_operator_10"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "把它们从小到大排好，并给出 Swift 代码：7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_11
@@ -275,7 +275,7 @@ handler_family_case_zh_structural_operator_11
   id "zh_structural_operator_11"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "按奇偶把它们分开，并给出 Go 代码：4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_structural_operator_12
@@ -283,7 +283,7 @@ handler_family_case_zh_structural_operator_12
   id "zh_structural_operator_12"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "只留下重复出现的，并给出 Ruby 代码：2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_01
@@ -291,7 +291,7 @@ handler_family_case_zh_dialogue_state_query_01
   id "zh_dialogue_state_query_01"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "我之前问过的那些里，哪一个没有找到来源？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_02
@@ -299,7 +299,7 @@ handler_family_case_zh_dialogue_state_query_02
   id "zh_dialogue_state_query_02"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "这次对话里我最先问的是什么？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_03
@@ -307,7 +307,7 @@ handler_family_case_zh_dialogue_state_query_03
   id "zh_dialogue_state_query_03"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "提醒我一下，我之前哪个问题你还没回答。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_04
@@ -315,7 +315,7 @@ handler_family_case_zh_dialogue_state_query_04
   id "zh_dialogue_state_query_04"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "到目前为止，你对哪个回答自己也不确定？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_05
@@ -323,7 +323,7 @@ handler_family_case_zh_dialogue_state_query_05
   id "zh_dialogue_state_query_05"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "我们到现在一共聊了多少个不同的话题？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_06
@@ -331,7 +331,7 @@ handler_family_case_zh_dialogue_state_query_06
   id "zh_dialogue_state_query_06"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "我第一次写给你时用的是哪种语言？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_07
@@ -339,7 +339,7 @@ handler_family_case_zh_dialogue_state_query_07
   id "zh_dialogue_state_query_07"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "回到我上一件事之前提到的那件，告诉我那是什么。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_08
@@ -347,7 +347,7 @@ handler_family_case_zh_dialogue_state_query_08
   id "zh_dialogue_state_query_08"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "这个我是不是已经问过了，还是我在重复？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_09
@@ -355,7 +355,7 @@ handler_family_case_zh_dialogue_state_query_09
   id "zh_dialogue_state_query_09"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "我最后给你的文件名是什么？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_10
@@ -363,7 +363,7 @@ handler_family_case_zh_dialogue_state_query_10
   id "zh_dialogue_state_query_10"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "把我问过的问题按顺序念回给我。"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_11
@@ -371,7 +371,7 @@ handler_family_case_zh_dialogue_state_query_11
   id "zh_dialogue_state_query_11"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "我对你之前哪个回答提出过异议？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_dialogue_state_query_12
@@ -379,7 +379,7 @@ handler_family_case_zh_dialogue_state_query_12
   id "zh_dialogue_state_query_12"
   source "self_authored_multilingual_variation"
   language "zh"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "我换话题之前正在问什么？"
   prohibited_answer_source "seed_body_field"
 handler_family_case_zh_rule_interpreter_01

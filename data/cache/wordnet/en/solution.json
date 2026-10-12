@@ -1,0 +1,59 @@
+{
+  "lemma": "solution",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14613403-n",
+      "partOfSpeech": "n",
+      "definition": "a homogeneous mixture of two or more substances; frequently (but not necessarily) a liquid solution",
+      "examples": [
+        "he used a solution of peroxide and water"
+      ]
+    },
+    {
+      "id": "oewn-06756201-n",
+      "partOfSpeech": "n",
+      "definition": "a statement that solves a problem or explains how to solve the problem",
+      "examples": [
+        "they were trying to find a peaceful solution",
+        "the answers were in the back of the book",
+        "he computed the result to four decimal places"
+      ],
+      "synonyms": [
+        "answer",
+        "result",
+        "resolution",
+        "solvent"
+      ]
+    },
+    {
+      "id": "oewn-05669513-n",
+      "partOfSpeech": "n",
+      "definition": "a method for solving a problem",
+      "examples": [
+        "the easy solution is to look it up in the handbook"
+      ]
+    },
+    {
+      "id": "oewn-08022396-n",
+      "partOfSpeech": "n",
+      "definition": "the set of values that give a true statement when substituted into an equation",
+      "synonyms": [
+        "root"
+      ]
+    },
+    {
+      "id": "oewn-00191632-n",
+      "partOfSpeech": "n",
+      "definition": "the successful action of solving a problem",
+      "examples": [
+        "the solution took three hours"
+      ]
+    }
+  ]
+}

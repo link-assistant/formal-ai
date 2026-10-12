@@ -1,5 +1,8 @@
 //! Parsing of data-owned handler rules into the interpreter's runtime model.
 
+use std::collections::BTreeMap;
+
+use super::values::{Table, TableLookup};
 use super::{
     Condition, Fallback, Node, Response, RoleMode, Rule, Shape, Step, Subject, ValueRef,
     ValueSource,
@@ -16,7 +19,7 @@ impl Node {
     pub(super) fn error(&self, reason: &str) -> String {
         let line = self.line;
         let name = &self.name;
-        format!("handler_rules:{line}:{reason}:{name}")
+        format!("handler-rules:{line}:{reason}:{name}")
     }
 }
 
@@ -87,6 +90,49 @@ fn tokenize(line: &str) -> Vec<String> {
     tokens
 }
 
+/// The value a `policy <handler>` block of a rule document declares for `key`.
+pub(super) fn policy_value(text: &str, handler: &str, key: &str) -> Option<String> {
+    parse_tree(text)
+        .iter()
+        .find(|node| node.name == "handler-rules")?
+        .children
+        .iter()
+        .find(|node| {
+            node.name == "policy" && node.args.first().is_some_and(|name| name == handler)
+        })?
+        .children
+        .iter()
+        .find(|node| node.name == key)?
+        .args
+        .first()
+        .cloned()
+}
+
+/// The `table <name>` blocks of a rule document: ordered `row <key> <value>`
+/// pairs and an optional `default` value, by table name.
+pub(super) fn tables(text: &str) -> BTreeMap<String, Table> {
+    let mut tables = BTreeMap::new();
+    let roots = parse_tree(text);
+    let Some(root) = roots.iter().find(|node| node.name == "handler-rules") else {
+        return tables;
+    };
+    for node in root.children.iter().filter(|node| node.name == "table") {
+        let Some(name) = node.args.first() else {
+            continue;
+        };
+        let mut table = Table::default();
+        for child in &node.children {
+            match (child.name.as_str(), child.args.as_slice()) {
+                ("row", [key, value, ..]) => table.rows.push((key.clone(), value.clone())),
+                ("default", [value, ..]) => table.default = Some(value.clone()),
+                _ => {}
+            }
+        }
+        tables.insert(name.clone(), table);
+    }
+    tables
+}
+
 pub(super) fn parse_rule(node: &Node) -> Result<Rule, String> {
     let name = node.first_arg()?;
     let mut when = None;
@@ -142,7 +188,7 @@ pub(super) fn parse_rule(node: &Node) -> Result<Rule, String> {
                     texts,
                 });
             }
-            "respond_unknown" => response = Some(Response::Unknown),
+            "respond-unknown" => response = Some(Response::Unknown),
             "intent" => intent = Some(child.first_arg()?),
             "link" => link = Some(child.first_arg()?),
             "confidence" => {
@@ -189,18 +235,21 @@ fn parse_condition(node: &Node) -> Result<Condition, String> {
             };
             Condition::Role(node.first_arg()?, mode, subject)
         }
-        "role_lead" => Condition::RoleLead(node.first_arg()?, subject),
-        "role_prefix" => Condition::RolePrefix(node.first_arg()?, subject),
-        "role_padded" => Condition::RolePadded(node.first_arg()?, subject),
+        "role-lead" => Condition::RoleLead(node.first_arg()?, subject),
+        "role-prefix" => Condition::RolePrefix(node.first_arg()?, subject),
+        "role-padded" => Condition::RolePadded(node.first_arg()?, subject),
         "word" => Condition::Word(node.first_arg()?, subject),
         "substring" => Condition::Substring(node.first_arg()?, subject),
         "prefix" => Condition::Prefix(node.first_arg()?, subject),
         "cue_set" => Condition::CueSet(node.first_arg()?, subject),
-        "only_characters" => Condition::OnlyCharacters(node.first_arg()?),
-        "unbalanced_parentheses" => Condition::UnbalancedParentheses,
-        "route_exact" => Condition::RouteExact(node.first_arg()?),
-        "history_role" => Condition::HistoryRole(node.first_arg()?),
+        "only-characters" => Condition::OnlyCharacters(node.first_arg()?),
+        "unbalanced-parentheses" => Condition::UnbalancedParentheses,
+        "route-exact" => Condition::RouteExact(node.first_arg()?),
+        "history-role" => Condition::HistoryRole(node.first_arg()?),
+        "prior_turn" => Condition::PriorTurn(node.first_arg()?),
+        "evidence" => Condition::Evidence(node.first_arg()?),
         "shape" => Condition::Shape(parse_shape(node, &node.first_arg()?)?, subject),
+        "operation" => Condition::Operation(node.first_arg()?, subject),
         _ => return Err(node.error("unknown_condition")),
     })
 }
@@ -222,7 +271,7 @@ fn split_subject(args: &[String]) -> (Vec<String>, Option<&str>) {
 fn parse_shape(node: &Node, name: &str) -> Result<Shape, String> {
     Ok(match name {
         "digit" => Shape::Digit,
-        "time_separator" => Shape::TimeSeparator,
+        "time-separator" => Shape::TimeSeparator,
         "url" => Shape::Url,
         "path" => Shape::Path,
         "quoted" => Shape::Quoted,
@@ -238,6 +287,7 @@ fn parse_subject(node: &Node, name: &str) -> Result<Subject, String> {
         "prompt" => Subject::Prompt,
         "trimmed" => Subject::Trimmed,
         "padded" => Subject::Padded,
+        "command_head" => Subject::CommandHead,
         _ => return Err(node.error("unknown_subject")),
     })
 }
@@ -250,12 +300,65 @@ fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
         .ok_or_else(|| node.error("value_without_source"))?;
     let source = match kind.as_str() {
         "backticks" => ValueSource::Backticks,
-        "trimmed_prompt" => ValueSource::TrimmedPrompt,
+        "trimmed-prompt" => ValueSource::TrimmedPrompt,
+        "quoted" => ValueSource::Quoted,
+        "network_snapshot" => ValueSource::NetworkSnapshot,
         "literal" => ValueSource::Literal(
             node.args
                 .get(2)
                 .cloned()
                 .ok_or_else(|| node.error("literal_without_text"))?,
+        ),
+        "stable_id" => ValueSource::StableId(
+            node.args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("stable_id_without_prefix"))?,
+        ),
+        "role_slot" => ValueSource::RoleSlot(
+            node.args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("role_slot_without_role"))?,
+        ),
+        "operand" => ValueSource::Operand {
+            kind: node
+                .args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("operand_without_kind"))?,
+            index: match node.args.get(3) {
+                Some(index) => index
+                    .parse()
+                    .map_err(|_| node.error("operand_index_not_a_number"))?,
+                None => 0,
+            },
+        },
+        "table" => ValueSource::Table {
+            table: node
+                .args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("table_without_name"))?,
+            lookup: match (node.args.get(3).map(String::as_str), node.args.get(4)) {
+                (Some("of"), Some(subject)) => {
+                    TableLookup::Contained(parse_subject(node, subject)?)
+                }
+                (Some("key"), Some(capture)) => TableLookup::Key(capture.clone()),
+                _ => return Err(node.error("table_without_lookup")),
+            },
+        },
+        "response" => ValueSource::Response(
+            node.args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("response_without_intent"))?,
+        ),
+        "transform" => ValueSource::Transform(
+            node.args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("transform_without_name"))?,
         ),
         "agent_info" => {
             let key = node

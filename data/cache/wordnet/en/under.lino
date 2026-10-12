@@ -1,0 +1,59 @@
+language en
+lemma under
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "down to defeat, death, or ruin"
+    examples ("their competitors went under")
+    id oewn-00488707-r
+    partOfSpeech r
+  entry
+    definition "through a range downward"
+    examples ("children six and under will be admitted free")
+    id oewn-00488892-r
+    partOfSpeech r
+  entry
+    definition "into unconsciousness"
+    examples ("this will put the patient under")
+    id oewn-00488803-r
+    partOfSpeech r
+  entry
+    definition "in or into a state of subordination or subjugation"
+    examples ("we must keep our disappointment under")
+    id oewn-00488582-r
+    partOfSpeech r
+  entry
+    definition "below some quantity or limit"
+    examples ("fifty dollars or under")
+    id oewn-00488494-r
+    partOfSpeech r
+  entry
+    definition "below the horizon"
+    examples ("the sun went under")
+    id oewn-00488421-r
+    partOfSpeech r
+  entry
+    definition "down below"
+    examples ("get under quickly!")
+    id oewn-00488355-r
+    partOfSpeech r
+  entry
+    definition "further down"
+    examples ("see under for further discussion")
+    id oewn-00488265-r
+    partOfSpeech r
+    synonyms (below)
+  entry
+    definition "located below or beneath something else"
+    examples ("nether garments" "the under parts of a machine")
+    id oewn-01210218-s
+    partOfSpeech s
+    synonyms (nether)
+  entry
+    definition "lower in rank, power, or authority"
+    examples ("an under secretary")
+    id oewn-00797237-s
+    partOfSpeech s
+source "oewn:2024"

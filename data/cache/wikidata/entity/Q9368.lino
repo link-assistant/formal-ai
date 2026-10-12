@@ -1,14 +1,17 @@
 Q9368
   aliases
     en (hepar)
+    es (higado)
   descriptions
     en "vertebrate organ involved in metabolism"
+    es "órgano glandular"
     hi "चयापचय में शामिल कशेरुक अंग"
     ru "непарный орган брюшной полости позвоночных животных, участвующий в метаболизме и ряде других внутренних процессов"
     zh "器官"
   id Q9368
   labels
     en liver
+    es "hígado"
     hi "यकृत"
     ru "печень"
     zh "肝臟"

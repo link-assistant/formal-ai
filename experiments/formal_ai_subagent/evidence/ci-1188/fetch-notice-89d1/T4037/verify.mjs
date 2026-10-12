@@ -1,0 +1,7 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {spawnSync,execFileSync} from 'node:child_process';
+const dir='/private/tmp/pr1188-ci-T4037',r=JSON.parse(fs.readFileSync('/private/tmp/pr1188-ci-T4036/request.json'));
+for(const i of r.changes)assert.equal(fs.readFileSync(i.path,'utf8').replace(/\s+/gu,''),i.content.replace(/\s+/gu,''));
+const test='rust/tests/web/fetch-work-item-observations.test.mjs';assert.ok(fs.readFileSync(test,'utf8').startsWith(execFileSync('git',['show','HEAD:'+test],{encoding:'utf8'})),'Every original operation and assertion exact');
+const checks=[['closest',process.execPath,['--test','rust/tests/web/agentic-recipes-a.test.mjs','rust/tests/web/fetch-work-item-observations.test.mjs','rust/tests/web/source-read-consumers.test.mjs','rust/tests/web/source-byte-readback.test.mjs','rust/tests/web/literal-payload-first-line-constraints.test.mjs']],['debt',process.execPath,['scripts/check-debt-ratchet.mjs','--base','d209aac6461b355f1a527831202af3423135f7e6']],['format','rustfmt',['--check','--edition','2024','--config','skip_children=true','rust/src/agentic_coding/progress.rs']],['whitespace','git',['diff','--check','--','rust/src/agentic_coding/progress.rs','js/agentic/progress.mjs',test]]];
+for(const [name,prog,args]of checks){let c=spawnSync(prog,args,{encoding:'utf8',timeout:45000,maxBuffer:12e6});fs.writeFileSync(dir+'/'+name+'.log',(c.stdout??'')+(c.stderr??''));assert.equal(c.status,0,name+':'+c.error);}
+console.log('PR1188_FETCH_FAILURE_VERIFIED');

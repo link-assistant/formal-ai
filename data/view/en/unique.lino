@@ -1,0 +1,21 @@
+view
+  id M-a2323da8485b
+  lemma unique
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "radically distinctive and without equal"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(followed by ‘to’) applying exclusively to a given category or condition or locality"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "the single one of its kind"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "highly unusual or rare but not the single instance"
+    provenance (wordnet)

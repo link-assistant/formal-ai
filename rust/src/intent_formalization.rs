@@ -23,9 +23,16 @@ use crate::seed;
 use crate::solver::{ConversationTurn, UniversalSolver};
 use crate::translation::{FormalizationAnchorKind, FormalizationCandidate, FormalizationRole};
 
+mod obligations;
 mod prompt_relevants;
 mod requirements;
 mod write_program_request;
+pub use obligations::{
+    OBLIGATION_GAP_KIND, ObligationGraph, ObligationKind, bound_output_literals, coreference_pass,
+    formalize_request, obligation_gap_lines, record_obligation_gaps,
+    request_carries_work_obligations, request_demands,
+};
+pub(crate) use obligations::{describes_a_value, unquoted_utterance};
 use prompt_relevants::append_prompt_relevants;
 pub use requirements::{OrderedRequirementSpan, ordered_requirement_spans};
 pub(crate) use requirements::{requirement_list_spans, requirement_operand_spans};
@@ -332,7 +339,12 @@ fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
             response_link: String::from("response:write_program"),
         });
     }
-    if crate::coding::task_spec::recognise(raw).is_some() {
+    // A pasted `def` under a review, explanation, refactoring or debugging
+    // instruction is the code that instruction acts on, not a task to
+    // synthesize (issue #1177), so it does not promote program synthesis.
+    if crate::coding::task_spec::recognise(raw).is_some()
+        && !crate::solver_dispatch::code_artifact_task_claims(raw)
+    {
         return Some(MatchedRoute {
             slug: String::from("program_synthesis"),
             response_link: String::from("response:write_program:synthesis"),

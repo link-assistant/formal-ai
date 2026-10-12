@@ -1,0 +1,14 @@
+{
+  "id": "T3558",
+  "stop": "final",
+  "tools": [
+    "read",
+    "read",
+    "read"
+  ],
+  "disposition": "unknown",
+  "answerUtf8Bytes": 60160,
+  "sourcePreimagesUnchanged": true,
+  "sourceEffects": 0,
+  "nativeCommandsRun": false
+}

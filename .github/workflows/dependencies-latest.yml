@@ -1,0 +1,145 @@
+# Every dependency at its latest release (issue #1169).
+#
+# A gate can only say "this drifted"; something has to move the manifests
+# forward the day a release lands. This job is that something: once a day it
+# refreshes the registry snapshot, lets the gate rewrite every manifest that
+# is behind (blocked pins are annotated in-tree and stay put), re-resolves
+# the lockfiles from the rewritten manifests, re-runs the CI gates against
+# the result, and opens one pull request carrying whatever moved. An empty
+# day produces no PR at all.
+name: dependencies-latest
+
+on:
+  schedule:
+    # Off the :00/:30 marks: a fleet-wide cron stampede is a self-inflicted
+    # outage (issue #1021's retry rule exists for the same reason).
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: dependencies-latest
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # Three CI-gate stages (with the WASM worker and web bundle builds they
+    # need) over a re-resolved tree plus the lockfile re-resolutions; the cap
+    # keeps a hung registry from inheriting the 360-minute default (issue
+    # #1017).
+    timeout-minutes: 90
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      # Issue #1079: this checkout keeps persist-credentials (the default)
+      # because peter-evans/create-pull-request below commits and pushes the
+      # `dependencies/latest` branch from this working tree.
+      - uses: actions/checkout@v7.0.1
+
+      - uses: ./.github/actions/automation-token
+        with:
+          app-id: ${{ secrets.AUTOMATION_APP_ID }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          automation-token: ${{ secrets.AUTOMATION_TOKEN }}
+        id: automation
+
+      # The same toolchain set the release workflow's gate job uses, so the
+      # re-run below executes the gates exactly as CI does.
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      # Live registry answers; a registry that does not answer exits 3 and
+      # fails this run loudly instead of opening a PR from a partial view.
+      - name: Refresh the registry snapshot the gate reads
+        env:
+          GH_TOKEN: ${{ steps.automation.outputs.token }}
+        run: rust-script scripts/check-dependencies-latest.rs --refresh-snapshot
+
+      # Exit 1 means "findings", which is exactly what --apply just moved;
+      # any other non-zero status (2 usage, 3 unverifiable) fails the job.
+      - name: Let the gate move every unblocked manifest forward
+        run: |
+          status=0
+          rust-script scripts/check-dependencies-latest.rs --apply --offline || status=$?
+          if [ "$status" -ne 0 ] && [ "$status" -ne 1 ]; then
+            exit "$status"
+          fi
+
+      - name: Re-resolve the Rust lockfile from the rewritten manifest
+        working-directory: rust
+        run: cargo update --workspace
+
+      # Each directory is re-resolved by the tool that owns its lockfile:
+      # bun.lock by bun, package-lock.json by npm. Lock-only modes rewrite the
+      # resolution without installing; a resolver failure fails the job.
+      - name: Re-resolve the JavaScript lockfiles from the rewritten manifests
+        run: |
+          set -euo pipefail
+          while IFS= read -r lock; do
+            directory="$(dirname "$lock")"
+            case "$lock" in
+              */bun.lock)
+                (cd "$directory" && bun install --lockfile-only)
+                ;;
+              */package-lock.json)
+                (cd "$directory" && npm install --package-lock-only --ignore-scripts --no-audit --no-fund)
+                ;;
+            esac
+          done < <(git ls-files -- '*bun.lock' '*package-lock.json')
+
+      - name: Run registered gates (stage rust)
+        run: rust-script scripts/run-ci-gates.rs --stage rust
+
+      - name: Build Rust→WASM worker
+        run: sh js/wasm-worker/build.sh
+
+      - name: Run registered gates (stage wasm)
+        run: rust-script scripts/run-ci-gates.rs --stage wasm
+
+      - name: Install web bundle dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build web vendor bundle
+        run: bun run build:web
+
+      - name: Install web test dependencies
+        run: npm ci --prefix rust/tests/e2e --no-audit --no-fund
+
+      - name: Run registered gates (stage web)
+        run: rust-script scripts/run-ci-gates.rs --stage web
+
+      - name: Open one pull request with everything that moved
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ steps.automation.outputs.token }}
+          commit-message: "chore(dependencies): move every unblocked dependency to its latest release"
+          title: "chore(dependencies): every dependency at its latest release"
+          body: |
+            Daily pass of `scripts/check-dependencies-latest.rs --apply`
+            (issue #1169). Every pin moved here was behind its publisher's
+            latest release and carried no `# blocked:` annotation; pins that
+            do carry one are untouched by design. The registry snapshot under
+            `data/meta/` is the same run's live answer, so reviewers can see
+            what "latest" meant when the branch was cut.
+          branch: dependencies/latest
+          delete-branch: true
+          labels: dependencies

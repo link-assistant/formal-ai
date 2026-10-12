@@ -1,18 +1,18 @@
-adoption_effect_ratchet
-  record_type ratchet_ledger
+adoption-effect-ratchet
+  record_type ratchet-ledger
   schema_version 1
   owner docs/case-studies/issue-1138/plans/07-learning-loops-that-change-behavior.md
-  measure adopted_items
+  measure adopted-items
     direction up
     value 1
     measured_by tests/unit/issue_1138_learning_ratchet.rs
     note "Only status adopted counts. The shipped method has a five-language verified execution effect."
-  measure adopted_items_with_qualifying_effect
+  measure adopted-items-with-qualifying-effect
     direction up
     value 1
     measured_by tests/unit/issue_1138_learning_ratchet.rs
-    invariant "equals adopted_items"
-  measure learned_items_never_read_back
+    invariant "equals adopted-items"
+  measure learned-items-never-read-back
     direction down
     value 0
     measured_by tests/unit/issue_1138_learning_ratchet.rs

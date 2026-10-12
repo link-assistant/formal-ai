@@ -1,0 +1,45 @@
+view
+  id M-c987d6bed5e8
+  lemma complete
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "having every necessary or normal part or component or step"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "perfect and complete in every respect; having all necessary qualities"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "highly skilled"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "without qualification; used informally as (often pejorative) intensifiers"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "having come or been brought to a conclusion"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "come or bring to a finish or an end"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring to a whole, with all the necessary parts or elements"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "complete or carry out"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "complete a pass"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "write all the required information onto a form"
+    provenance (wordnet)

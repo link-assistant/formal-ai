@@ -1,0 +1,26 @@
+{
+  "lemma": "plagiarism",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07291863-n",
+      "partOfSpeech": "n",
+      "definition": "a piece of writing that has been copied from someone else and is presented as being your own work"
+    },
+    {
+      "id": "oewn-00751748-n",
+      "partOfSpeech": "n",
+      "definition": "the act of plagiarizing; taking someone's words or ideas as if they were your own",
+      "synonyms": [
+        "plagiarization",
+        "plagiarisation",
+        "piracy"
+      ]
+    }
+  ]
+}

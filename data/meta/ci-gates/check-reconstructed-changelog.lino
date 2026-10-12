@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_reconstructed_changelog
+ci_gate check-reconstructed-changelog
   stage rust
   description "The changelog rebuilt from git history matches the committed one."
   run "node experiments/issue_711_rebuild_changelog.mjs --check"
+  justification "A changelog hand-edited out of sync with the actual release history caused release notes to reference the wrong version; the reconstruction check was introduced for #711 to keep the changelog atomically derivable from release history."

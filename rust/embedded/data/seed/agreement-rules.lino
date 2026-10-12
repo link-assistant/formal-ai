@@ -1,0 +1,94 @@
+# Subject-verb agreement and numeral-noun pluralization rules (issue #1174).
+#
+# The grammar-correction handler reads this file. action_cue records name the
+# request shapes that ask for a correction (the cue must appear in the command
+# head); subject_verb_rule records one wrong verb form, its agreed form, and
+# the third-person subjects that require it; numeral_noun_rule records the
+# plural suffix with the numerals that require a plural noun;
+# plural_exception and uncountable_noun records carry the irregular and mass
+# nouns the suffix rule must skip. The rules are data; the handler only
+# applies them token by token and reports each fix with the rule that fired.
+
+agreement_rules
+  action_cue
+    language en
+    cue "correct the grammar"
+    cue "fix the grammar"
+    cue "check the grammar"
+    cue "proofread this"
+  action_cue
+    language ru
+    cue "исправь грамматику"
+    cue "проверь грамматику"
+  subject_verb_rule
+    language en
+    name "third_person_do_not"
+    subject "she"
+    subject "he"
+    subject "it"
+    wrong "don't"
+    right "doesn't"
+  subject_verb_rule
+    language en
+    name "third_person_have"
+    subject "she"
+    subject "he"
+    subject "it"
+    wrong "have"
+    right "has"
+  numeral_noun_rule
+    language en
+    name "plural_noun_after_numeral"
+    suffix "s"
+    numeral "two"
+    numeral "three"
+    numeral "four"
+    numeral "five"
+    numeral "six"
+    numeral "seven"
+    numeral "eight"
+    numeral "nine"
+    numeral "ten"
+  plural_exception
+    language en
+    singular "man"
+    plural "men"
+  plural_exception
+    language en
+    singular "woman"
+    plural "women"
+  plural_exception
+    language en
+    singular "child"
+    plural "children"
+  plural_exception
+    language en
+    singular "person"
+    plural "people"
+  uncountable_noun
+    language en
+    noun "water"
+  uncountable_noun
+    language en
+    noun "bread"
+  uncountable_noun
+    language en
+    noun "money"
+  uncountable_noun
+    language en
+    noun "information"
+  uncountable_noun
+    language en
+    noun "advice"
+  uncountable_noun
+    language en
+    noun "equipment"
+  uncountable_noun
+    language en
+    noun "milk"
+  uncountable_noun
+    language en
+    noun "rice"
+  uncountable_noun
+    language en
+    noun "time"

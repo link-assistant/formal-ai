@@ -1,0 +1,37 @@
+[
+  {
+    "path": "js/agentic/planner.mjs",
+    "bytes": 25651,
+    "sha256": "02fec6676de1f7ff5c890c150311a97dfc90cee7e27f71464cc777953b7e6b12"
+  },
+  {
+    "path": "js/agentic/planner/obligations.mjs",
+    "bytes": 1367,
+    "sha256": "b0bef30ac2b40ad41471de44cf33a52df0bcb0519bbb6fa40d2952c8e7dca9b4"
+  },
+  {
+    "path": "rust/src/agentic_coding/planner.rs",
+    "bytes": 46937,
+    "sha256": "c2c28b22dc8decf81e80bfef4ea663da2fb06c8712849e7e5cca06480ebd554f"
+  },
+  {
+    "path": "rust/src/agentic_coding/planner/obligations.rs",
+    "bytes": 2371,
+    "sha256": "350f8f0e0d7d5baec69dd7bf714d9a4d34ebd6ee2b3d5bd205e146a99df8531f"
+  },
+  {
+    "path": "rust/tests/web/literal-obligation-transaction.test.mjs",
+    "bytes": 5815,
+    "sha256": "8efeb90a146c6ed7db703cfd9288e0981c0259456dbf8e0d0f93d54b3d4f53cb"
+  },
+  {
+    "path": "rust/tests/fixtures/literal-obligation-transaction.rs",
+    "bytes": 5917,
+    "sha256": "f27bbdbf9f82f4ec9918e60e488b81589a7320f7285fae970100aba3a9108438"
+  },
+  {
+    "path": "rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs",
+    "bytes": 10073,
+    "sha256": "767794471eb9d42d52f12a8217963cade46ceb7e8d26adedf1648e27c3e24f1b"
+  }
+]

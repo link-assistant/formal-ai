@@ -19,10 +19,15 @@ use crate::language::detect as detect_language;
 use crate::seed::{self, HANDLER_RULES_LINO, Slot};
 use crate::seed_links::SeedLinkNetwork;
 use crate::solver_handlers::finalize_simple;
+use crate::solver_handlers::text_rewrite::command_head;
 
 mod parser;
+mod shape;
+mod values;
 
-use parser::{parse_rule, parse_tree};
+use parser::{parse_rule, parse_tree, policy_value};
+use values::TableLookup;
+pub use values::{handler_table_row, handler_table_rows, handler_table_value};
 
 /// Every handler rule set declared in `data/seed/handler-rules.lino`.
 #[derive(Debug)]
@@ -60,13 +65,17 @@ enum Subject {
     /// surface whose seeded form carries a word boundary matches at the edges
     /// of the input as well as inside it (issue #1138 B9, plan 09 leaf 9).
     ///
-    /// `role_padded` built this shape privately for one condition; as a subject
+    /// `role-padded` built this shape privately for one condition; as a subject
     /// every condition can ask for it, which is what lets the Russian
     /// preposition test in
     /// `src/intent_formalization/prompt_relevants.rs` become
-    /// `role temporal_preposition of padded` — seed data in every language
+    /// `role temporal-preposition of padded` — seed data in every language
     /// rather than one Russian preposition compiled into Rust.
     Padded,
+    /// The normalized command head: the request before its free-text payload
+    /// (`crate::solver_handlers::text_rewrite::command_head`), so a cue inside
+    /// the pasted text never decides the route (R1188-U20).
+    CommandHead,
 }
 
 /// A structural property of the input that carries no natural language
@@ -124,7 +133,16 @@ enum Condition {
     UnbalancedParentheses,
     RouteExact(String),
     HistoryRole(String),
+    /// An earlier turn of this role (`user`, `assistant`, or `any`) exists.
+    PriorTurn(String),
     Shape(Shape, Subject),
+    /// The claim-evidence kind the capability table admits a handler on holds
+    /// (`crate::capability_routing::claim_evidence_holds_in_dialogue`), so a
+    /// rule's refusal lane reads the same reader its admission does.
+    Evidence(String),
+    /// The seeded operation vocabulary requests the operation with this
+    /// canonical token in any supported language (issue #918).
+    Operation(String, Subject),
 }
 
 /// One lexical surface read by the condition evaluator. Both backends expose
@@ -160,9 +178,43 @@ pub struct LinkStoreSource {
 #[derive(Debug)]
 enum ValueSource {
     Backticks,
-    AgentInfo { key: String, default: String },
+    AgentInfo {
+        key: String,
+        default: String,
+    },
     Literal(String),
     TrimmedPrompt,
+    /// The FNV-1a identity `crate::engine::stable_id` derives from the raw
+    /// prompt under this prefix.
+    StableId(String),
+    /// The text filling the open slot of this role's prefix surface; the rule
+    /// does not match when no surface opens the subject.
+    RoleSlot(String),
+    /// The first quoted phrase of the prompt; the rule does not match without one.
+    Quoted,
+    /// The runtime's own link network as a Links Notation snapshot.
+    NetworkSnapshot,
+    /// The operand at `index` a claim-evidence reader extracts
+    /// (`crate::capability_routing::claim_operands`); the rule does not match
+    /// without it (issue #1175 R3).
+    Operand {
+        kind: String,
+        index: usize,
+    },
+    /// The value of a row of a `table` block (issue #918): the first row whose
+    /// key occurs in a subject, or the row keyed by an earlier capture; the
+    /// table's `default` otherwise.
+    Table {
+        table: String,
+        lookup: TableLookup,
+    },
+    /// The seeded response whose intent this template names once earlier
+    /// captures fill it, in the prompt language (issue #918).
+    Response(String),
+    /// The named text transform (`values::TEXT_TRANSFORMS`) applied to the
+    /// request's free-text payload; the rule does not match without a payload
+    /// or when the transform declines it (R1188-U20).
+    Transform(String),
 }
 
 #[derive(Debug)]
@@ -211,6 +263,8 @@ struct Context<'a> {
     /// The normalized prompt with one leading and one trailing space; see
     /// [`Subject::Padded`].
     padded: String,
+    /// The normalized command head; see [`Subject::CommandHead`].
+    command_head: String,
     language: String,
 }
 
@@ -305,7 +359,7 @@ impl LinkStoreSource {
                     // A family that retired its rows onto a declared role
                     // (`role_surface`, issue #1138 plan 10 leaf 20) keeps its
                     // exact-match semantics: the role's surfaces are the
-                    // route's surfaces, so `route_exact` conditions keep
+                    // route's surfaces, so `route-exact` conditions keep
                     // deciding on the same whole prompts.
                     for role in store.field_values(&intent.index, "role_surface") {
                         if let Some(entries) = roles.get(&role) {
@@ -413,6 +467,23 @@ pub fn handler_matches(name: &str, prompt: &str) -> bool {
     })
 }
 
+/// Whether any rule behind `name` accepts `prompt` over the dispatcher's
+/// `normalized` text: the claim-evidence probe a migrated handler's
+/// recognition answers through.
+#[must_use]
+pub fn handler_claims(name: &str, prompt: &str, normalized: &str) -> bool {
+    rules()
+        .handler(name)
+        .is_some_and(|set| set.matches_with_source(LinkStoreSource::shared(), prompt, normalized))
+}
+
+/// A policy value the rule document declares for a handler (`policy <handler>`
+/// then `<key> <value>`), such as a limit a native handler reads from data.
+#[must_use]
+pub fn handler_policy(handler: &str, key: &str) -> Option<String> {
+    policy_value(HANDLER_RULES_LINO, handler, key)
+}
+
 /// One rule-condition result, before value capture or response rendering.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ConditionVerdict {
@@ -425,14 +496,14 @@ impl HandlerRules {
     ///
     /// # Errors
     ///
-    /// Returns a `handler_rules:<line>:<reason>` code for the first malformed
+    /// Returns a `handler-rules:<line>:<reason>` code for the first malformed
     /// line.
     pub fn parse(text: &str) -> Result<Self, String> {
         let nodes = parse_tree(text);
         let root = nodes
             .iter()
-            .find(|node| node.name == "handler_rules")
-            .ok_or_else(|| String::from("handler_rules:0:missing_root"))?;
+            .find(|node| node.name == "handler-rules")
+            .ok_or_else(|| String::from("handler-rules:0:missing_root"))?;
         let mut handlers = Vec::new();
         for node in root.children.iter().filter(|node| node.name == "handler") {
             let name = node.first_arg()?;
@@ -553,6 +624,7 @@ impl<'a> Context<'a> {
                 padded.push(' ');
                 padded
             },
+            command_head: normalize_prompt(command_head(prompt)),
             language: language.to_owned(),
         }
     }
@@ -565,6 +637,7 @@ impl<'a> Context<'a> {
             Subject::Prompt => self.prompt,
             Subject::Trimmed => self.normalized.trim(),
             Subject::Padded => &self.padded,
+            Subject::CommandHead => &self.command_head,
         }
     }
 
@@ -593,54 +666,22 @@ impl Rule {
             }
         }
         let body = self.response.render(context, &values)?;
-        let intent = self.intent.as_deref().unwrap_or(&self.name);
+        // An intent may name a captured value (`concept_introspection_{concept}`).
+        let pairs: Vec<(&str, &str)> = values
+            .iter()
+            .map(|(name, value)| (name.as_str(), value.as_str()))
+            .collect();
+        let intent = substitute(self.intent.as_deref().unwrap_or(&self.name), &pairs);
         let default_link = format!("response:{intent}");
         let link = self.link.as_deref().unwrap_or(&default_link);
         Some(finalize_simple(
             context.prompt,
             log,
-            intent,
+            &intent,
             link,
             &body,
             self.confidence,
         ))
-    }
-
-    fn resolve_values(&self, context: &Context<'_>) -> Option<Vec<(String, String)>> {
-        let mut resolved = Vec::with_capacity(self.values.len());
-        for (name, source) in &self.values {
-            let value = match source {
-                ValueSource::Backticks => context
-                    .prompt
-                    .split('`')
-                    .nth(1)
-                    .map(str::trim)
-                    .filter(|term| !term.is_empty())?
-                    .to_owned(),
-                ValueSource::AgentInfo { key, default } => seed::agent_info()
-                    .get(key)
-                    .cloned()
-                    .unwrap_or_else(|| default.clone()),
-                ValueSource::Literal(text) => text.clone(),
-                ValueSource::TrimmedPrompt => context.prompt.trim().to_owned(),
-            };
-            resolved.push((name.clone(), value));
-        }
-        Some(resolved)
-    }
-}
-
-impl ValueRef {
-    fn resolve(&self, context: &Context<'_>, values: &[(String, String)]) -> Option<String> {
-        match self {
-            Self::Prompt => Some(context.prompt.to_owned()),
-            Self::Trimmed => Some(context.prompt.trim().to_owned()),
-            Self::Capture(name) => values
-                .iter()
-                .find(|(candidate, _)| candidate == name)
-                .map(|(_, value)| value.clone()),
-            Self::Literal(text) => Some(text.clone()),
-        }
     }
 }
 
@@ -798,7 +839,23 @@ impl Condition {
                         })
                     })
             }
+            Self::PriorTurn(role) => log.events().iter().any(|event| match event.kind {
+                "prior_turn:user" => role == "user" || role == "any",
+                "prior_turn:assistant" => role == "assistant" || role == "any",
+                _ => false,
+            }),
             Self::Shape(shape, subject) => shape.holds(context.text(*subject)),
+            Self::Operation(canonical, subject) => {
+                seed::operation_vocabulary().matches(canonical, context.text(*subject))
+            }
+            Self::Evidence(kind) => {
+                crate::capability_routing::claim_evidence_holds_in_dialogue(
+                    kind,
+                    context.prompt,
+                    context.normalized,
+                    log,
+                ) == Some(true)
+            }
         }
     }
 }
@@ -913,52 +970,4 @@ fn separated_surface_present(text: &str, surface: &str) -> bool {
 
 fn before_slot(text: &str) -> &str {
     text.split_once('…').map_or(text, |(before, _)| before)
-}
-
-/// Quotation marks that open and close a span, paired.
-///
-/// Seed data, not prose: these are the delimiter pairs the five registered
-/// languages write quotations with. A `shape quoted` asks whether a span is
-/// delimited, never what it says.
-const QUOTE_PAIRS: [(char, char); 6] = [
-    ('"', '"'),
-    ('\'', '\''),
-    ('\u{ab}', '\u{bb}'),
-    ('\u{201c}', '\u{201d}'),
-    ('\u{300c}', '\u{300d}'),
-    ('\u{2018}', '\u{2019}'),
-];
-
-impl Shape {
-    /// Whether the subject text has this structural property.
-    fn holds(self, text: &str) -> bool {
-        match self {
-            Self::Digit => text.chars().any(char::is_numeric),
-            Self::TimeSeparator => text.contains(':') || text.contains('\u{ff1a}'),
-            Self::Url => text
-                .split_whitespace()
-                .any(|token| is_url(&token.to_lowercase())),
-            Self::Path => text.split_whitespace().any(|token| {
-                let lowered = token.to_lowercase();
-                !is_url(&lowered) && (token.contains('/') || token.contains('\\'))
-            }),
-            Self::Quoted => QUOTE_PAIRS.iter().any(|(open, close)| {
-                if open == close {
-                    text.matches(*open).count() >= 2
-                } else {
-                    text.find(*open)
-                        .is_some_and(|start| text[start..].chars().skip(1).any(|ch| ch == *close))
-                }
-            }),
-        }
-    }
-}
-
-/// How an absolute web address begins. Structural tokens, not prose: a scheme
-/// and the conventional bare host, neither of which is written in any language.
-const URL_PREFIXES: [&str; 3] = ["http://", "https://", "www."];
-
-/// Whether one whitespace-delimited, already lowercased token is a web address.
-fn is_url(token: &str) -> bool {
-    URL_PREFIXES.iter().any(|prefix| token.starts_with(*prefix))
 }

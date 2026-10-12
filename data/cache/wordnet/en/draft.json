@@ -1,0 +1,146 @@
+{
+  "lemma": "draft",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13398441-n",
+      "partOfSpeech": "n",
+      "definition": "a document ordering the payment of money; drawn by one person or bank on another",
+      "synonyms": [
+        "bill of exchange",
+        "order of payment"
+      ]
+    },
+    {
+      "id": "oewn-11542881-n",
+      "partOfSpeech": "n",
+      "definition": "a current of air (usually coming into a chimney or room or vehicle)",
+      "synonyms": [
+        "draught"
+      ]
+    },
+    {
+      "id": "oewn-03235488-n",
+      "partOfSpeech": "n",
+      "definition": "a preliminary sketch of a design or picture",
+      "synonyms": [
+        "rough drawing"
+      ]
+    },
+    {
+      "id": "oewn-07899955-n",
+      "partOfSpeech": "n",
+      "definition": "a serving of drink (usually alcoholic) drawn from a keg",
+      "examples": [
+        "they served beer on draft"
+      ],
+      "synonyms": [
+        "draught",
+        "potation",
+        "tipple"
+      ]
+    },
+    {
+      "id": "oewn-06402605-n",
+      "partOfSpeech": "n",
+      "definition": "any of the various versions in the development of a written work",
+      "examples": [
+        "a preliminary draft",
+        "the final draft of the constitution"
+      ],
+      "synonyms": [
+        "draft copy"
+      ]
+    },
+    {
+      "id": "oewn-05142420-n",
+      "partOfSpeech": "n",
+      "definition": "the depth of a vessel's keel below the surface (especially when loaded)",
+      "synonyms": [
+        "draught"
+      ]
+    },
+    {
+      "id": "oewn-03235617-n",
+      "partOfSpeech": "n",
+      "definition": "a regulator for controlling the flow of air in a fireplace"
+    },
+    {
+      "id": "oewn-03235373-n",
+      "partOfSpeech": "n",
+      "definition": "a dose of liquid medicine",
+      "examples": [
+        "he took a sleeping draft"
+      ],
+      "synonyms": [
+        "draught"
+      ]
+    },
+    {
+      "id": "oewn-01160337-n",
+      "partOfSpeech": "n",
+      "definition": "compulsory military service",
+      "synonyms": [
+        "conscription",
+        "muster",
+        "selective service"
+      ]
+    },
+    {
+      "id": "oewn-00841850-n",
+      "partOfSpeech": "n",
+      "definition": "a large and hurried swallow",
+      "examples": [
+        "he finished it at a single gulp"
+      ],
+      "synonyms": [
+        "gulp",
+        "draught",
+        "swig"
+      ]
+    },
+    {
+      "id": "oewn-00116487-n",
+      "partOfSpeech": "n",
+      "definition": "the act of moving a load by drawing or pulling",
+      "synonyms": [
+        "draught",
+        "drawing"
+      ]
+    },
+    {
+      "id": "oewn-01705493-v",
+      "partOfSpeech": "v",
+      "definition": "draw up an outline or sketch for something",
+      "examples": [
+        "draft a speech"
+      ],
+      "synonyms": [
+        "outline"
+      ]
+    },
+    {
+      "id": "oewn-01099911-v",
+      "partOfSpeech": "v",
+      "definition": "engage somebody to enter the army",
+      "synonyms": [
+        "enlist",
+        "muster in"
+      ]
+    },
+    {
+      "id": "oewn-01687477-v",
+      "partOfSpeech": "v",
+      "definition": "make a blueprint of",
+      "synonyms": [
+        "blueprint",
+        "draught"
+      ]
+    }
+  ]
+}

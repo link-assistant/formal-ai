@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/composition.rs
   language rust
   fidelity signature
-  byte_len 33096
-  line_count 918
-  content_id source_module_2364eba4be6c4009
+  byte_len 33608
+  line_count 933
+  content_id source_module_6188ec46359d015e
   symbol_count 31
   symbols
     struct DraftAttempt 16 20
@@ -27,14 +27,14 @@ self_ast_census
     function echo_signature_line 464 491
     function source_referenced_parameters 497 503
     function candidate_drafts 505 517
-    function candidate_draft 519 607
-    function source_examples 609 623
-    function adapt_implementation 625 656
-    function verify 658 744
-    function program_stdout_expectation 746 766
-    function derived_examples 768 821
-    function first_positive_integer 823 842
-    function render_comparison 844 856
-    function render_failure_trail 858 893
-    function blocked_fragment_need 895 901
-    function template 903 918
+    function candidate_draft 519 622
+    function source_examples 624 638
+    function adapt_implementation 640 671
+    function verify 673 759
+    function program_stdout_expectation 761 781
+    function derived_examples 783 836
+    function first_positive_integer 838 857
+    function render_comparison 859 871
+    function render_failure_trail 873 908
+    function blocked_fragment_need 910 916
+    function template 918 933

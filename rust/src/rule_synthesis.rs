@@ -440,7 +440,7 @@ fn verification_trace(
         .iter()
         .any(|modifier| modifier == "cancel_reverse_sort");
     let reverses_sort = modifiers.iter().any(|modifier| modifier == "reverse_sort");
-    let descending = template_has_descending_order(spec.template.code);
+    let descending = template_has_descending_order(&spec.template.code);
     // Issue #386: verify the rendered program actually matches the operation.
     // A reverse_sort must leave the output descending; its inverse,
     // cancel_reverse_sort, must leave NO descending order — otherwise the cancel

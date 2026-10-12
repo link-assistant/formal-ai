@@ -1,13 +1,16 @@
 Q81054
   aliases
+    es ("tormenta electrica" tormentas tempestad)
     ru ("шторм" "ураган" "сильный шторм")
     zh ("風暴")
   descriptions
     en "any disturbed state of an astronomical body's atmosphere"
+    es "estado perturbado de la atmósfera de un cuerpo astronómico"
     ru "очень сильный ветер"
   id Q81054
   labels
     en storm
+    es tormenta
     hi "तूफ़ान"
     ru "буря"
     zh "风暴"

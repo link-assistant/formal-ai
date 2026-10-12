@@ -8,25 +8,11 @@ meanings
     effect "records a typed relation between formalized concepts"
     unit "not applicable"
     example "precondition relates a method to what must hold before it runs"
-    lexeme en
-      surface
-        text "formalization relation"
-    lexeme ru
-      surface
-        text связь
-      surface
-        text "отношение формализации"
-    lexeme hi
-      surface
-        text "औपचारिकता संबंध"
-    lexeme zh
-      surface
-        text 形式化关系
-    lexeme es
-      surface
-        text "relacion de formalizacion"
-      surface
-        text relación
+    lexeme en "formalization relation"
+    lexeme ru связь "отношение формализации"
+    lexeme hi "औपचारिकता संबंध"
+    lexeme zh 形式化关系
+    lexeme es "relacion de formalizacion" relación
   taxonomic
     defined-by formalization-relation
     denotation relation
@@ -36,21 +22,11 @@ meanings
     effect "places a concept in a generalization hierarchy"
     unit "not applicable"
     example "a litre is classified under a volume unit"
-    lexeme en
-      surface
-        text taxonomic
-    lexeme ru
-      surface
-        text таксономический
-    lexeme hi
-      surface
-        text वर्गीकरण
-    lexeme zh
-      surface
-        text 分类的
-    lexeme es
-      surface
-        text taxonómico
+    lexeme en taxonomic
+    lexeme ru таксономический
+    lexeme hi वर्गीकरण
+    lexeme zh 分类的
+    lexeme es taxonómico
   subsumes
     defined-by formalization-relation
     denotation relation
@@ -60,21 +36,11 @@ meanings
     effect "records that the broader concept includes the narrower concept"
     unit "not applicable"
     example "a measurement unit subsumes a volume unit"
-    lexeme en
-      surface
-        text subsumes
-    lexeme ru
-      surface
-        text обобщает
-    lexeme hi
-      surface
-        text समाहित
-    lexeme zh
-      surface
-        text 涵盖
-    lexeme es
-      surface
-        text subsume
+    lexeme en subsumes
+    lexeme ru обобщает
+    lexeme hi समाहित
+    lexeme zh 涵盖
+    lexeme es subsume
   attributive
     defined-by formalization-relation
     denotation relation
@@ -84,21 +50,11 @@ meanings
     effect "attaches the descriptive value to the entity"
     unit "not applicable"
     example "a source is attributed with its license"
-    lexeme en
-      surface
-        text attributive
-    lexeme ru
-      surface
-        text атрибутивный
-    lexeme hi
-      surface
-        text विशेषणात्मक
-    lexeme zh
-      surface
-        text 属性的
-    lexeme es
-      surface
-        text atributivo
+    lexeme en attributive
+    lexeme ru атрибутивный
+    lexeme hi विशेषणात्मक
+    lexeme zh 属性的
+    lexeme es atributivo
   property_of
     defined-by formalization-relation
     denotation relation
@@ -108,21 +64,11 @@ meanings
     effect "records which concept owns the property"
     unit "not applicable"
     example "runtime size is a property of an execution environment"
-    lexeme en
-      surface
-        text "property of"
-    lexeme ru
-      surface
-        text "свойство чего-либо"
-    lexeme hi
-      surface
-        text "का गुण"
-    lexeme zh
-      surface
-        text 的属性
-    lexeme es
-      surface
-        text "propiedad de"
+    lexeme en "property of"
+    lexeme ru "свойство чего-либо"
+    lexeme hi "का गुण"
+    lexeme zh 的属性
+    lexeme es "propiedad de"
   meronymic
     defined-by formalization-relation
     denotation relation
@@ -132,21 +78,11 @@ meanings
     effect "records a typed part-whole relation"
     unit "not applicable"
     example "a prerequisite step is part of a setup recipe"
-    lexeme en
-      surface
-        text meronymic
-    lexeme ru
-      surface
-        text партитивный
-    lexeme hi
-      surface
-        text अवयवी
-    lexeme zh
-      surface
-        text 部分整体的
-    lexeme es
-      surface
-        text meronímico
+    lexeme en meronymic
+    lexeme ru партитивный
+    lexeme hi अवयवी
+    lexeme zh 部分整体的
+    lexeme es meronímico
   has_part
     defined-by formalization-relation
     denotation relation
@@ -156,21 +92,11 @@ meanings
     effect "records the candidate as a part of the whole"
     unit "not applicable"
     example "a procedure has an ordered verification step"
-    lexeme en
-      surface
-        text "has part"
-    lexeme ru
-      surface
-        text "имеет часть"
-    lexeme hi
-      surface
-        text "भाग रखता है"
-    lexeme zh
-      surface
-        text 含有部分
-    lexeme es
-      surface
-        text "tiene parte"
+    lexeme en "has part"
+    lexeme ru "имеет часть"
+    lexeme hi "भाग रखता है"
+    lexeme zh 含有部分
+    lexeme es "tiene parte"
   precondition
     defined-by formalization-relation
     denotation relation
@@ -180,21 +106,11 @@ meanings
     effect "records what must hold before the method applies"
     unit "not applicable"
     example "a repository edit requires a writable workspace"
-    lexeme en
-      surface
-        text precondition
-    lexeme ru
-      surface
-        text предусловие
-    lexeme hi
-      surface
-        text पूर्वशर्त
-    lexeme zh
-      surface
-        text 前提条件
-    lexeme es
-      surface
-        text precondición
+    lexeme en precondition
+    lexeme ru предусловие
+    lexeme hi पूर्वशर्त
+    lexeme zh 前提条件
+    lexeme es precondición
   required_by
     defined-by formalization-relation
     denotation relation
@@ -204,21 +120,11 @@ meanings
     effect "records the operation that needs the prerequisite"
     unit "not applicable"
     example "a compiler is required by a compilation step"
-    lexeme en
-      surface
-        text "required by"
-    lexeme ru
-      surface
-        text "требуется для"
-    lexeme hi
-      surface
-        text "के लिए आवश्यक"
-    lexeme zh
-      surface
-        text 被需要
-    lexeme es
-      surface
-        text "requerido por"
+    lexeme en "required by"
+    lexeme ru "требуется для"
+    lexeme hi "के लिए आवश्यक"
+    lexeme zh 被需要
+    lexeme es "requerido por"
   production
     defined-by formalization-relation
     denotation relation
@@ -228,21 +134,11 @@ meanings
     effect "records the artifact produced by the operation"
     unit "not applicable"
     example "a renderer produces a generated document"
-    lexeme en
-      surface
-        text production
-    lexeme ru
-      surface
-        text порождение
-    lexeme hi
-      surface
-        text उत्पादन
-    lexeme zh
-      surface
-        text 生成
-    lexeme es
-      surface
-        text producción
+    lexeme en production
+    lexeme ru порождение
+    lexeme hi उत्पादन
+    lexeme zh 生成
+    lexeme es producción
   produced_by
     defined-by formalization-relation
     denotation relation
@@ -252,21 +148,11 @@ meanings
     effect "records the operation that produced the artifact"
     unit "not applicable"
     example "a status page is produced by its ledger renderer"
-    lexeme en
-      surface
-        text "produced by"
-    lexeme ru
-      surface
-        text "порождается чем-либо"
-    lexeme hi
-      surface
-        text "द्वारा उत्पन्न"
-    lexeme zh
-      surface
-        text 由此产生
-    lexeme es
-      surface
-        text "producido por"
+    lexeme en "produced by"
+    lexeme ru "порождается чем-либо"
+    lexeme hi "द्वारा उत्पन्न"
+    lexeme zh 由此产生
+    lexeme es "producido por"
   follows
     defined-by formalization-relation
     denotation relation
@@ -276,21 +162,11 @@ meanings
     effect "records that one step occurs after the other"
     unit "not applicable"
     example "verification follows an edit"
-    lexeme en
-      surface
-        text follows
-    lexeme ru
-      surface
-        text следует
-    lexeme hi
-      surface
-        text अनुसरण
-    lexeme zh
-      surface
-        text 随后
-    lexeme es
-      surface
-        text sigue
+    lexeme en follows
+    lexeme ru следует
+    lexeme hi अनुसरण
+    lexeme zh 随后
+    lexeme es sigue
   exclusion
     defined-by formalization-relation
     denotation relation
@@ -300,21 +176,11 @@ meanings
     effect "records that the alternatives cannot both apply"
     unit "not applicable"
     example "offline-only execution excludes network access"
-    lexeme en
-      surface
-        text exclusion
-    lexeme ru
-      surface
-        text исключение
-    lexeme hi
-      surface
-        text अपवर्जन
-    lexeme zh
-      surface
-        text 排除
-    lexeme es
-      surface
-        text exclusión
+    lexeme en exclusion
+    lexeme ru исключение
+    lexeme hi अपवर्जन
+    lexeme zh 排除
+    lexeme es exclusión
   excluded_by
     defined-by formalization-relation
     denotation relation
@@ -324,21 +190,11 @@ meanings
     effect "records the condition that prevents the option"
     unit "not applicable"
     example "network access is excluded by an offline-only capability"
-    lexeme en
-      surface
-        text "excluded by"
-    lexeme ru
-      surface
-        text "исключается чем-либо"
-    lexeme hi
-      surface
-        text "द्वारा वर्जित"
-    lexeme zh
-      surface
-        text 被排除
-    lexeme es
-      surface
-        text "excluido por"
+    lexeme en "excluded by"
+    lexeme ru "исключается чем-либо"
+    lexeme hi "द्वारा वर्जित"
+    lexeme zh 被排除
+    lexeme es "excluido por"
   measure
     defined-by formalization-relation
     denotation relation
@@ -348,21 +204,11 @@ meanings
     effect "records the unit used to interpret the concept"
     unit "not applicable"
     example "elapsed time has the measure second"
-    lexeme en
-      surface
-        text measure
-    lexeme ru
-      surface
-        text мера
-    lexeme hi
-      surface
-        text माप
-    lexeme zh
-      surface
-        text 度量
-    lexeme es
-      surface
-        text medida
+    lexeme en measure
+    lexeme ru мера
+    lexeme hi माप
+    lexeme zh 度量
+    lexeme es medida
   measures
     defined-by formalization-relation
     denotation relation
@@ -372,18 +218,8 @@ meanings
     effect "records the concept quantified by the unit"
     unit "not applicable"
     example "a second measures elapsed time"
-    lexeme en
-      surface
-        text measures
-    lexeme ru
-      surface
-        text измеряет
-    lexeme hi
-      surface
-        text मापता
-    lexeme zh
-      surface
-        text 计量
-    lexeme es
-      surface
-        text mide
+    lexeme en measures
+    lexeme ru измеряет
+    lexeme hi मापता
+    lexeme zh 计量
+    lexeme es mide

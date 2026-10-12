@@ -1,0 +1,1 @@
+Run node -e 'require("fs").copyFileSync("/tmp/spec-append-awk-reviewed.lino","data/meta/work-item-steps.lino")'

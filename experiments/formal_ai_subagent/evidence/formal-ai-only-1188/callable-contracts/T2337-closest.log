@@ -1,0 +1,221 @@
+TAP version 13
+# Subtest: an audit finding satisfies a report operand but cannot author source
+ok 1 - an audit finding satisfies a report operand but cannot author source
+  ---
+  duration_ms: 0.593375
+  ...
+# Subtest: source delivery requires an actual complete-payload syntax receipt
+ok 2 - source delivery requires an actual complete-payload syntax receipt
+  ---
+  duration_ms: 53.210875
+  ...
+# Subtest: source authoring operands reject audit text while ordinary reports retain findings
+ok 3 - source authoring operands reject audit text while ordinary reports retain findings
+  ---
+  duration_ms: 1537.622541
+  ...
+# Subtest: explicit successful stdout observations preserve compact JSON and whitespace
+ok 4 - explicit successful stdout observations preserve compact JSON and whitespace
+  ---
+  duration_ms: 0.533875
+  ...
+# Subtest: complete Unicode declaration spans retain source and both coordinate systems
+ok 5 - complete Unicode declaration spans retain source and both coordinate systems
+  ---
+  duration_ms: 2.002917
+  ...
+# Subtest: bounded bodies establish Optional and scalar constraints without caller-supplied types
+ok 6 - bounded bodies establish Optional and scalar constraints without caller-supplied types
+  ---
+  duration_ms: 0.548875
+  ...
+# Subtest: an actual observed pair produces a guarded typed graph, without a wrapper or write
+ok 7 - an actual observed pair produces a guarded typed graph, without a wrapper or write
+  ---
+  duration_ms: 1.311292
+  ...
+# Subtest: nested Optional type parameters are instantiated from the observed operand
+ok 8 - nested Optional type parameters are instantiated from the observed operand
+  ---
+  duration_ms: 0.487792
+  ...
+# Subtest: stale identities and unobserved exports cannot produce a graph
+ok 9 - stale identities and unobserved exports cannot produce a graph
+  ---
+  duration_ms: 0.678875
+  ...
+# Subtest: unknown calls, field schemas, input writes and local mutation remain contract gaps
+ok 10 - unknown calls, field schemas, input writes and local mutation remain contract gaps
+  ---
+  duration_ms: 1.864625
+  ...
+# Subtest: real module initialization and transitive import effects remain separate obligations
+ok 11 - real module initialization and transitive import effects remain separate obligations
+  ---
+  duration_ms: 1.165959
+  ...
+# Subtest: ASI line terminators, incompatible branches and unsupported async are not certified
+ok 12 - ASI line terminators, incompatible branches and unsupported async are not certified
+  ---
+  duration_ms: 0.49475
+  ...
+# Subtest: duplicate bindings and malformed balanced source do not masquerade as provenance
+ok 13 - duplicate bindings and malformed balanced source do not masquerade as provenance
+  ---
+  duration_ms: 0.348209
+  ...
+# Subtest: actual original callees retain exact declarations and honest unsupported contract reasons
+ok 14 - actual original callees retain exact declarations and honest unsupported contract reasons
+  ---
+  duration_ms: 11.863041
+  ...
+# Subtest: production discovery records supported graphs but cannot certify an unbound requested goal
+ok 15 - production discovery records supported graphs but cannot certify an unbound requested goal
+  ---
+  duration_ms: 558.722875
+  ...
+# Subtest: balanced but invalid binding/export forms do not certify a module contract
+not ok 16 - balanced but invalid binding/export forms do not certify a module contract
+  ---
+  duration_ms: 1.032292
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:136:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'UnsupportedStatement'
+    - 'ReturnLineTerminator'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ReturnLineTerminator'
+  actual: 'UnsupportedStatement'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:143:10)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: destination, immutable inputs and acceptance are declaration-scoped
+ok 17 - destination, immutable inputs and acceptance are declaration-scoped
+  ---
+  duration_ms: 60.656875
+  ...
+# Subtest: adjacent declared module and alias signature bind the same reusable discovery
+ok 18 - adjacent declared module and alias signature bind the same reusable discovery
+  ---
+  duration_ms: 0.75725
+  ...
+# Subtest: ambiguous destinations and quoted call shapes are not guessed
+ok 19 - ambiguous destinations and quoted call shapes are not guessed
+  ---
+  duration_ms: 0.3905
+  ...
+# Subtest: existing arithmetic module/test request remains on its original route
+ok 20 - existing arithmetic module/test request remains on its original route
+  ---
+  duration_ms: 62.739166
+  ...
+# Subtest: actual planner reads all operands, reports exact missing contracts, and changes no bytes
+ok 21 - actual planner reads all operands, reports exact missing contracts, and changes no bytes
+  ---
+  duration_ms: 318.858792
+  ...
+# Subtest: an absent destination is observed without creating it
+ok 22 - an absent destination is observed without creating it
+  ---
+  duration_ms: 55.990542
+  ...
+# Subtest: missing input is a failed read, never an empty source or a writing fallback
+ok 23 - missing input is a failed read, never an empty source or a writing fallback
+  ---
+  duration_ms: 32.825167
+  ...
+# Subtest: permission errors on the destination retain typed failure rather than absence
+ok 24 - permission errors on the destination retain typed failure rather than absence
+  ---
+  duration_ms: 0.535709
+  ...
+# Subtest: missing read capability is an exact typed gap, not a declined route
+ok 25 - missing read capability is an exact typed gap, not a declined route
+  ---
+  duration_ms: 0.559583
+  ...
+# Subtest: old request evidence is not reused for a new discovery request
+ok 26 - old request evidence is not reused for a new discovery request
+  ---
+  duration_ms: 0.480958
+  ...
+# Subtest: explicit client error flags stay bound to the observed read
+ok 27 - explicit client error flags stay bound to the observed read
+  ---
+  duration_ms: 0.464708
+  ...
+# Subtest: numbered source payload failure words remain data
+ok 28 - numbered source payload failure words remain data
+  ---
+  duration_ms: 54.226792
+  ...
+# Subtest: signature identifiers and path components cannot supply instruction verbs
+ok 29 - signature identifiers and path components cannot supply instruction verbs
+  ---
+  duration_ms: 0.620792
+  ...
+# Subtest: Unicode comments and identifiers: lossless byte spans preserve the existing public tree
+ok 30 - Unicode comments and identifiers: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 1.420542
+  ...
+# Subtest: BOM preimage: lossless byte spans preserve the existing public tree
+ok 31 - BOM preimage: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 0.258125
+  ...
+# Subtest: nested template and comments: lossless byte spans preserve the existing public tree
+ok 32 - nested template and comments: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 0.905708
+  ...
+# Subtest: regex and escaped literal: lossless byte spans preserve the existing public tree
+ok 33 - regex and escaped literal: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 0.201333
+  ...
+# Subtest: malformed observed source retains the same exact tokenizer failure
+ok 34 - malformed observed source retains the same exact tokenizer failure
+  ---
+  duration_ms: 0.224084
+  ...
+# Subtest: source catalog excludes commented/string exports and keeps full Unicode spans
+ok 35 - source catalog excludes commented/string exports and keeps full Unicode spans
+  ---
+  duration_ms: 1.560375
+  ...
+# Subtest: source catalog resolves actual import/export aliases and refuses unobserved origin
+ok 36 - source catalog resolves actual import/export aliases and refuses unobserved origin
+  ---
+  duration_ms: 0.466958
+  ...
+# Subtest: source catalog does not certify types/effects or silently bind shadowed aliases
+ok 37 - source catalog does not certify types/effects or silently bind shadowed aliases
+  ---
+  duration_ms: 0.318708
+  ...
+# Subtest: real formalization callables retain observed bodies and unknown composition contracts
+ok 38 - real formalization callables retain observed bodies and unknown composition contracts
+  ---
+  duration_ms: 6.094125
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 37
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1649.290625

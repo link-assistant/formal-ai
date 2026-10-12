@@ -1,0 +1,1 @@
+Explicit module paths now scope requirement declaration resolution before ranking. File-qualified scalar literal edits can bind a unique initializer from identity-checked source; ambiguous unqualified declarations still refuse. Closest JS controls pass; the independent L09 native census freshness blocker remains.

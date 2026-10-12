@@ -2,13 +2,13 @@ self_ast_census
   target src/seed/brainstorm.rs
   language rust
   fidelity signature
-  byte_len 3695
-  line_count 101
-  content_id source_module_aa065095c7719901
+  byte_len 4116
+  line_count 113
+  content_id source_module_191a906c8cf587e8
   symbol_count 5
   symbols
     struct BrainstormCategory 19 24
-    struct BrainstormSeeds 29 32
-    function matches_trigger 38 42
-    function pick_category 48 60
-    function brainstorm_seeds 64 101
+    struct BrainstormSeeds 33 38
+    function matches_trigger 44 48
+    function pick_category 54 66
+    function brainstorm_seeds 70 113

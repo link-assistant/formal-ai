@@ -1,0 +1,37 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-local-search.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-ac0a523f877c8a7e
+    record "comparison_infix"
+  gap seed-metadata-gap-5ebd139e18ec3a51
+    record "comparison_query_noise"
+  gap seed-metadata-gap-2d7099c121b3744a
+    record "comparison_rhs_marker"
+  gap seed-metadata-gap-1b641230b0878e36
+    record "definition_antecedent_followup"
+  gap seed-metadata-gap-1b9e7298813d16a8
+    record "definition_example_request"
+  gap seed-metadata-gap-bfc7167aa5834f22
+    record "local_path_contents_request"
+  gap seed-metadata-gap-6ca58d50336b578c
+    record "local_path_directory_kind"
+  gap seed-metadata-gap-0a50206a9c41dfaf
+    record "local_path_file_kind"
+  gap seed-metadata-gap-bee63e682988cbb1
+    record "local_path_list_action"
+  gap seed-metadata-gap-2410afac0c08c1cf
+    record "local_path_query_noise"
+  gap seed-metadata-gap-f9cf638b8ffb1878
+    record "local_path_route_question"
+  gap seed-metadata-gap-64dfd4d0f0ad0884
+    record "local_path_scope_current"
+  gap seed-metadata-gap-7c7963cf0c517619
+    record "local_path_scope_desktop"
+  gap seed-metadata-gap-b1683b54ce6da298
+    record "local_path_scope_home"
+  gap seed-metadata-gap-222a634cdd2e5945
+    record "local_path_search_action"
+  gap seed-metadata-gap-c73c2d2ffc954238
+    record "local_path_type_request"

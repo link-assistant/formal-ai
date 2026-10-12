@@ -6,15 +6,16 @@
 
 use serde_json::json;
 
+use super::algorithm_learning::command_payload;
 use super::capability_router::tool_for;
-use super::planner::{plan_one, write_arguments, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one, write_arguments};
 use super::progress::Progress;
 use crate::language::detect as detect_language;
 use crate::protocol::ChatMessage;
 use crate::seed;
 use crate::skill_procedure::{
-    compile_procedure, extract_compiled_procedure_artifact, CompiledProcedure,
-    PROCEDURE_CONFORMANCE_TRIGGER,
+    CompiledProcedure, PROCEDURE_CONFORMANCE_TRIGGER, compile_procedure,
+    extract_compiled_procedure_artifact,
 };
 
 pub const COMPILED_PROCEDURE_PATH: &str = "compiled-procedure.lino";
@@ -46,11 +47,9 @@ pub(super) fn plan_step(
     }
 
     let run_tool = tool_for(tool_names, Capability::Run);
-    if let Some(tool) = run_tool.filter(|_| progress.run_outputs.is_empty()) {
-        let mut command = String::from("cat");
-        command.push(' ');
-        command.push_str(COMPILED_PROCEDURE_PATH);
-        return plan_one(tool, json!({ "command": command }).to_string());
+    let readback = ["cat", COMPILED_PROCEDURE_PATH].join(" ");
+    if let Some(tool) = run_tool.filter(|_| !progress.has_run(&readback)) {
+        return plan_one(tool, json!({ "command": readback }).to_string());
     }
     if run_tool.is_none() {
         return AgenticPlan::Final(render_response(
@@ -61,10 +60,8 @@ pub(super) fn plan_step(
         ));
     }
 
-    let artifact_verified = progress
-        .run_outputs
-        .first()
-        .and_then(|output| extract_compiled_procedure_artifact(output).ok())
+    let artifact_verified = command_payload(messages, &readback, None)
+        .and_then(|output| extract_compiled_procedure_artifact(&output).ok())
         .is_some_and(|restored| restored == *procedure);
     if !artifact_verified {
         return AgenticPlan::Final(render_response(
@@ -76,26 +73,25 @@ pub(super) fn plan_step(
     }
 
     let expected_execution = procedure.conformance_links_notation(PROCEDURE_CONFORMANCE_TRIGGER);
-    if progress.run_outputs.len() == 1 {
-        let command = [
-            "formal-ai",
-            "procedure",
-            "conformance",
-            "--artifact",
-            COMPILED_PROCEDURE_PATH,
-            "--trigger",
-            PROCEDURE_CONFORMANCE_TRIGGER,
-        ]
-        .join(" ");
+    let command = [
+        "formal-ai",
+        "procedure",
+        "conformance",
+        "--artifact",
+        COMPILED_PROCEDURE_PATH,
+        "--trigger",
+        PROCEDURE_CONFORMANCE_TRIGGER,
+    ]
+    .join(" ");
+    if !progress.has_run(&command) {
         return plan_one(
             run_tool.expect("run tool was checked above"),
             json!({ "command": command }).to_string(),
         );
     }
-    let execution_verified = progress
-        .run_outputs
-        .get(1)
-        .is_some_and(|output| output.trim() == expected_execution.trim());
+    let execution_verified =
+        command_payload(messages, &command, Some("procedure-command-receipt/v1")).as_deref()
+            == Some(expected_execution.as_str());
     if !execution_verified {
         return AgenticPlan::Final(render_response(
             "agent_procedure_execution_failed",

@@ -1,0 +1,32 @@
+{
+  "lemma": "definite",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00703896-a",
+      "partOfSpeech": "a",
+      "definition": "precise; explicit and clearly defined",
+      "examples": [
+        "I want a definite answer",
+        "a definite statement of the terms of the will",
+        "a definite amount",
+        "definite restrictions on the sale of alcohol",
+        "the wedding date is now definite",
+        "a definite drop in attendance"
+      ]
+    },
+    {
+      "id": "oewn-00336666-s",
+      "partOfSpeech": "s",
+      "definition": "known for certain",
+      "examples": [
+        "it is definite that they have won"
+      ]
+    }
+  ]
+}

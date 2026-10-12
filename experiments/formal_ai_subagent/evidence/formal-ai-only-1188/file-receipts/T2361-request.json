@@ -1,0 +1,11 @@
+{
+  "id": "T2361",
+  "dir": "/private/tmp/formal-ai-only-1188/multiple-artifacts-retry-OSU10U",
+  "prompt": "Two files. First, create file notes/attribution.md containing Gemfile.lock. Second, create file changelog/fragment.md containing bump patch.",
+  "steps": 8,
+  "original": "T2356",
+  "initial": {
+    "notes/attribution.md": "absent",
+    "changelog/fragment.md": "absent"
+  }
+}

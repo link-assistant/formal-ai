@@ -1,0 +1,25 @@
+{
+  "id": "T3506",
+  "stop": "final",
+  "answer": "The `node -e 'const fs=require('\\''fs'\\'');const changes=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3506-request.json'\\'','\\''utf8'\\'')).changes;for(const change of changes){if((fs.existsSync(change.path)?fs.readFileSync(change.path,'\\''utf8'\\''):null)!==change.before)throw Error('\\''preimage changed '\\''+change.path);}for(const change of changes){fs.mkdirSync(require('\\''path'\\'').dirname(change.path),{recursive:true});fs.writeFileSync(change.path,change.expected);}console.log(JSON.stringify({writes:changes.map(change=>change.path)}));'` command completed. Output:\n\n```json\n{\n  \"writes\": [\n    \"rust/tests/web/source-read-provenance.test.mjs\",\n    \"rust/tests/fixtures/source-read-provenance.rs\",\n    \"rust/tests/unit/mod.rs\"\n  ]\n}\n```",
+  "calls": [
+    "bash"
+  ],
+  "matches": [
+    {
+      "path": "rust/tests/web/source-read-provenance.test.mjs",
+      "exact": true,
+      "sha256": "bc79fcf6bcf05dfd842bf7abf566834eb8c1f9a03660935e3d45656ecfd3eb06"
+    },
+    {
+      "path": "rust/tests/fixtures/source-read-provenance.rs",
+      "exact": true,
+      "sha256": "c98fab4934bd3e2dbaffc4db31bb7ae658483afd47aa2f544f6794c0d743a882"
+    },
+    {
+      "path": "rust/tests/unit/mod.rs",
+      "exact": true,
+      "sha256": "c450a8c8f941565a8543a3441e284c4838a5add76125ca63ba75ee1b360d4f4f"
+    }
+  ]
+}

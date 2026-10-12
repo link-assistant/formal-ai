@@ -508,21 +508,45 @@ fn the_relation_seed_declares_how_a_gloss_is_read_and_never_what_a_word_means() 
     }
 }
 
-#[test]
-fn no_seed_template_is_a_whole_algorithm() {
-    let root = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .parent()
-        .expect("the repository root sits one level above the crate");
-    let seed = fs::read_to_string(root.join(RUNTIME_TEMPLATE_SEED))
-        .unwrap_or_else(|error| panic!("{RUNTIME_TEMPLATE_SEED}: {error}"));
+/// The seed surfaces the nine code-task handlers of issue #1177 render their
+/// answers from: response templates, explanation meanings, review rules,
+/// manual pages and recognition cues.
+const CODE_TASK_OUTPUT_SURFACES: [&str; 5] = [
+    "data/seed/multilingual-responses-code-tasks.lino",
+    "data/seed/meanings-code-structure-explanations.lino",
+    "data/seed/code-review-rules.lino",
+    "data/seed/manual-pages.lino",
+    "data/seed/code-task-cues.lino",
+];
 
+/// The nine code-task handlers of issue #1177.
+const CODE_TASK_HANDLERS: [&str; 9] = [
+    "src/solver_handlers/code_debugging.rs",
+    "src/solver_handlers/regex_synthesis.rs",
+    "src/solver_handlers/sql_synthesis.rs",
+    "src/solver_handlers/shell_command_compose.rs",
+    "src/solver_handlers/code_explanation.rs",
+    "src/solver_handlers/code_review.rs",
+    "src/solver_handlers/test_generation.rs",
+    "src/solver_handlers/code_refactoring.rs",
+    "src/solver_handlers/format_conversion.rs",
+];
+
+/// Every quoted value of `seed` (`key "value"` lines) that is a whole
+/// algorithm: more than one statement, at least one loop and a return.
+fn whole_algorithm_values(seed: &str) -> Vec<String> {
     let mut offenders = Vec::new();
     for line in seed.lines() {
-        let trimmed = line.trim();
-        let Some(body) = trimmed.strip_prefix("text ") else {
+        let Some((_, rest)) = line.trim().split_once(' ') else {
             continue;
         };
-        let body = body.trim().trim_matches('"');
+        let rest = rest.trim();
+        let Some(body) = rest
+            .strip_prefix('"')
+            .and_then(|value| value.strip_suffix('"'))
+        else {
+            continue;
+        };
         let statements = body
             .split("\\n")
             .map(str::trim)
@@ -540,11 +564,378 @@ fn no_seed_template_is_a_whole_algorithm() {
             offenders.push(body.to_owned());
         }
     }
+    offenders
+}
 
+fn repository_root() -> &'static Path {
+    Path::new(env!("CARGO_MANIFEST_DIR"))
+        .parent()
+        .expect("the repository root sits one level above the crate")
+}
+
+#[test]
+fn no_seed_template_is_a_whole_algorithm() {
+    let root = repository_root();
+    let seed = fs::read_to_string(root.join(RUNTIME_TEMPLATE_SEED))
+        .unwrap_or_else(|error| panic!("{RUNTIME_TEMPLATE_SEED}: {error}"));
+    let offenders = whole_algorithm_values(&seed);
     assert!(
         offenders.is_empty(),
         "a seed template is a bootstrap fragment, never a whole algorithm; \
          these carry a loop and a return:\n{}",
         offenders.join("\n")
     );
+}
+
+/// Issue #1177 R11: the code-task handlers' output surfaces are held to the
+/// same rule as the runtime template seed, so no explanation, review, fix or
+/// generated test can be a memorized whole program.
+#[test]
+fn code_task_output_surfaces_carry_no_whole_algorithm() {
+    let root = repository_root();
+    let mut offenders = Vec::new();
+    for surface in CODE_TASK_OUTPUT_SURFACES {
+        let seed = fs::read_to_string(root.join(surface))
+            .unwrap_or_else(|error| panic!("{surface}: {error}"));
+        offenders.extend(
+            whole_algorithm_values(&seed)
+                .into_iter()
+                .map(|body| format!("{surface}: {body}")),
+        );
+    }
+    assert!(
+        offenders.is_empty(),
+        "a code-task answer surface is composed per request, never a stored \
+         whole program; these carry a loop and a return:\n{}",
+        offenders.join("\n")
+    );
+}
+
+/// Issue #1177 R11: the verbatim Rosetta Code rendering belongs to the
+/// "example" intent alone; none of the nine code-task handlers reaches it.
+#[test]
+fn code_task_handlers_never_recite_rosetta_examples() {
+    let crate_root = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let mut offenders = Vec::new();
+    for handler in CODE_TASK_HANDLERS {
+        let source = fs::read_to_string(crate_root.join(handler))
+            .unwrap_or_else(|error| panic!("{handler}: {error}"));
+        for needle in ["rosetta_request", "render_example"] {
+            if source.contains(needle) {
+                offenders.push(format!("{handler} reaches {needle}"));
+            }
+        }
+    }
+    assert!(
+        offenders.is_empty(),
+        "the code-task handlers compose from seed meanings and must not recite \
+         a fetched example:\n{}",
+        offenders.join("\n")
+    );
+}
+
+/// Issue #1186 R9: the formalization grammar and its runtime twins.
+const FORMALIZATION_GRAMMAR_SEED: &str = "data/seed/formal-targets.lino";
+const FORMALIZATION_RUNTIME: [&str; 5] = [
+    "rust/src/solver_handlers/formalization_task.rs",
+    "rust/src/solver_handlers/formalization_task_render.rs",
+    "rust/src/solver_handlers/formalization_task_targets.rs",
+    "js/worker/formal_ai_worker_formalization_request.js",
+    "js/worker/formal_ai_worker_formalization_targets.js",
+];
+const FORMALIZATION_PROBE_LANGUAGES: [&str; 4] = ["en", "ru", "hi", "zh"];
+
+/// Every `(expected_predicates, expected_fol)` pair of the issue #1186 probe
+/// set, across its four languages.
+fn formalization_probes(root: &Path) -> Vec<(Vec<String>, String)> {
+    let mut probes = Vec::new();
+    for language in FORMALIZATION_PROBE_LANGUAGES {
+        let path = format!("data/benchmarks/formalization/{language}.lino");
+        let text =
+            fs::read_to_string(root.join(&path)).unwrap_or_else(|error| panic!("{path}: {error}"));
+        let mut predicates = Vec::new();
+        for line in text.lines().map(str::trim) {
+            let Some((key, value)) = line.split_once(' ') else {
+                continue;
+            };
+            let value = value.trim().trim_matches('"');
+            match key {
+                "expected_predicates" => {
+                    predicates = value.split('|').map(str::to_lowercase).collect();
+                }
+                "expected_fol" => probes.push((std::mem::take(&mut predicates), value.to_owned())),
+                _ => {}
+            }
+        }
+    }
+    probes
+}
+
+/// Lowercased word tokens of every quoted value in a seed (comment lines
+/// skipped), plus each whole value for scripts written without spaces.
+fn quoted_seed_words(seed: &str) -> (BTreeSet<String>, Vec<String>) {
+    let mut words = BTreeSet::new();
+    let mut values = Vec::new();
+    for line in seed.lines().map(str::trim) {
+        if line.starts_with('#') {
+            continue;
+        }
+        let Some((_, rest)) = line.split_once(' ') else {
+            continue;
+        };
+        let Some(value) = rest
+            .trim()
+            .strip_prefix('"')
+            .and_then(|value| value.strip_suffix('"'))
+        else {
+            continue;
+        };
+        let lowered = value.to_lowercase();
+        words.extend(
+            lowered
+                .split(|character: char| {
+                    character.is_whitespace()
+                        || (character.is_ascii_punctuation() && character != '_')
+                })
+                .filter(|word| !word.is_empty())
+                .map(str::to_owned),
+        );
+        values.push(lowered);
+    }
+    (words, values)
+}
+
+/// True for a word in a script written without spaces (CJK ideographs).
+fn is_unspaced_script(word: &str) -> bool {
+    word.chars()
+        .all(|character| ('\u{4e00}'..='\u{9fff}').contains(&character))
+}
+
+/// Issue #1186 R9: no formalization is memorized per input. The grammar seed
+/// names no predicate of any probe sentence (predicate symbols must come
+/// from the sentence's own words), and neither the seed nor the Rust and
+/// JavaScript handlers carry any probe's whole first-order clause.
+#[test]
+fn formalization_grammar_and_runtime_memorize_no_probe_clause() {
+    let root = repository_root();
+    let probes = formalization_probes(root);
+    assert!(
+        probes.len() >= 40,
+        "the four-language probe set should carry ten probes per language, found {}",
+        probes.len()
+    );
+    let seed = fs::read_to_string(root.join(FORMALIZATION_GRAMMAR_SEED))
+        .unwrap_or_else(|error| panic!("{FORMALIZATION_GRAMMAR_SEED}: {error}"));
+    let (seed_words, seed_values) = quoted_seed_words(&seed);
+    let surfaces: Vec<(&str, String)> = std::iter::once(FORMALIZATION_GRAMMAR_SEED)
+        .chain(FORMALIZATION_RUNTIME)
+        .map(|surface| {
+            let text = fs::read_to_string(root.join(surface))
+                .unwrap_or_else(|error| panic!("{surface}: {error}"));
+            (surface, text)
+        })
+        .collect();
+    let mut offenders = Vec::new();
+    for (predicates, fol) in &probes {
+        for predicate in predicates {
+            let named = seed_words.contains(predicate)
+                || (is_unspaced_script(predicate)
+                    && seed_values
+                        .iter()
+                        .any(|value| value.contains(predicate.as_str())));
+            if named {
+                offenders.push(format!(
+                    "{FORMALIZATION_GRAMMAR_SEED} names the probe predicate {predicate}"
+                ));
+            }
+        }
+        for (surface, text) in &surfaces {
+            if text.contains(fol.as_str()) {
+                offenders.push(format!("{surface} carries the whole clause {fol}"));
+            }
+        }
+    }
+    assert!(
+        offenders.is_empty(),
+        "a formalization is derived from the sentence, never stored per probe:\n{}",
+        offenders.join("\n")
+    );
+}
+
+/// Verbatim Hello World program literals still stored under `data/` (issue
+/// #1165 R8). Each is the output literal of one per-language Hello World
+/// template in `data/seed/hello-world-programs.lino`, the seed bundle the
+/// Rust catalog tests hold equal to the catalog tables. The JavaScript
+/// catalog (`data/meta/agentic-coding-catalog.lino`) used to carry a second
+/// copy of every program; it now names its templates and reads their text
+/// from that bundle, so each program is stored once. The ceiling only goes
+/// down: a verified procedure that reproduces a language's program replaces
+/// its stored template, and the ceiling drops with it until it reaches zero.
+/// It fell from 14 to 11 when the Rust, Go and Kotlin rows moved to the
+/// documentation route (R1165-4): their programs are rediscovered from the
+/// documentation captures at answer time and no longer stored. It fell from
+/// 11 to 4 when the Python, JavaScript, TypeScript, C, C++, C# and Ruby rows
+/// followed them, and from 4 to 1 when Java and Scala bound their documented
+/// class and object names into the run contract and PHP's page example was
+/// answered with its missing trailing newline recorded as a deviation. The
+/// one left is Laravel: the Laravel docs show no Hello World command (their
+/// routing page returns `Hello World` as an HTTP response body, not the
+/// standard output the catalog's `php artisan hello:world` contract checks)
+/// and the catalog carries no Laravel grammar.
+const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
+
+/// Data captured from a source, each with the Hello World literals it may
+/// hold: source data, not programs. A path ending in `/` names a directory.
+///
+/// The documentation captures seed (R1165-1) holds the code blocks the page
+/// formalizer reads from byte-for-byte captures of documentation pages, each
+/// pinned by SHA-256 and re-derived from the capture by
+/// `documentation_captures_are_the_formalized_fixtures`, so a Hello World it
+/// holds is what a real page shows, not an authored answer. Its ceiling rose
+/// from 7 to 19 with the eight captures of 2026-10-08 (Python wiki, MDN, the
+/// TypeScript handbook, Microsoft's C, C++ and C# pages, ruby-lang.org and
+/// the Swift book), to 22 with Oracle's Java tutorial and php.net's first
+/// page, and to 23 with lua.org's Programming in Lua.
+///
+/// The requirement-extraction corpus (PR #1188 R1188-U20) holds issue bodies
+/// as their authors wrote them; the 5 are code the issues quote (issues 408,
+/// 1156 and 1188), read as requirements and never answered from.
+///
+/// Each is counted on its own ratchet so the source data stays visible and
+/// cannot grow without a new capture.
+const SOURCE_CAPTURES: [(&str, usize); 2] = [
+    ("data/seed/coding-documentation-captures.lino", 23),
+    ("data/benchmarks/issue-requirements/", 5),
+];
+
+/// The index of the capture a repository-relative path belongs to (mirrors
+/// `sourceCapture`).
+fn source_capture(relative: &str) -> Option<usize> {
+    SOURCE_CAPTURES.iter().position(|&(capture, _)| {
+        if capture.ends_with('/') {
+            relative.starts_with(capture)
+        } else {
+            relative == capture
+        }
+    })
+}
+
+/// The quote spellings a stored program may wrap its literal in: an escaped
+/// double quote, a single quote, the `\x27` escape of a single quote, and a
+/// plain double quote inside a larger value.
+const PROGRAM_QUOTES: [&str; 4] = ["\\\"", "'", "\\x27", "\""];
+
+/// Hello World output literals written as a *code* string, in any quote
+/// spelling a stored program uses. A plain Links Notation or JSON value that
+/// is the literal alone (`output "Hello, world!"`, `"expected": "Hello,
+/// world!"`) is an expected output, not a program.
+fn hello_world_program_literals(text: &str) -> usize {
+    const LINE_FEED: &str = "\\\\n";
+    let mut count = 0;
+    for line in text.to_lowercase().lines() {
+        for quote in PROGRAM_QUOTES {
+            for (start, _) in line.match_indices(quote) {
+                if quote == "\"" && line[..start].ends_with('\\') {
+                    continue;
+                }
+                let rest = &line[start + quote.len()..];
+                let Some(rest) = rest.strip_prefix("hello") else {
+                    continue;
+                };
+                let rest = rest.strip_prefix(',').unwrap_or(rest);
+                let Some(rest) = rest.strip_prefix(" world") else {
+                    continue;
+                };
+                let rest = rest.strip_prefix('!').unwrap_or(rest);
+                let rest = rest.strip_prefix(LINE_FEED).unwrap_or(rest);
+                if !rest.starts_with(quote) {
+                    continue;
+                }
+                if quote == "\"" && is_expectation_value(line[..start].trim()) {
+                    continue;
+                }
+                count += 1;
+            }
+        }
+    }
+    count
+}
+
+/// Whether the text before a double-quoted literal makes it a field's whole
+/// value: nothing, an opening bracket, a single field name, or a JSON key or
+/// list separator.
+fn is_expectation_value(before: &str) -> bool {
+    matches!(before, "" | "[" | "(")
+        || before.ends_with([':', ','])
+        || before
+            .chars()
+            .all(|character| character.is_alphanumeric() || matches!(character, '_' | '-'))
+}
+
+/// The counter sees a stored program in every quote spelling the data files
+/// use, and leaves an expected-output value alone.
+#[test]
+fn the_hello_world_counter_reads_every_program_quote_spelling() {
+    let programs = concat!(
+        "  code `fn main() {\\n    println!(\\\"Hello, world!\\\");\\n}`\n",
+        "  code 'print(\"Hello, world!\")'\n",
+        "  code 'puts \"Hello, world!\"'\n",
+        "  code \"$this->line(\\x27Hello, world!\\x27);\"\n",
+        "  code \"echo 'Hello, world!';\"\n",
+    );
+    assert_eq!(hello_world_program_literals(programs), 5);
+    let expectations = concat!(
+        "  output \"Hello, world!\"\n",
+        "  {\"expectedOutput\": \"Hello, world!\"}\n",
+        "  [\"Hello, world!\", \"Hello\"]\n",
+    );
+    assert_eq!(hello_world_program_literals(expectations), 0);
+}
+
+#[test]
+fn data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet() {
+    let root = repository_root();
+    let mut stack = vec![root.join("data")];
+    let mut offenders = Vec::new();
+    let mut total = 0;
+    let mut captured = [0; SOURCE_CAPTURES.len()];
+    while let Some(directory) = stack.pop() {
+        for entry in fs::read_dir(&directory).expect("data/ is readable") {
+            let path = entry.expect("a data/ entry").path();
+            if path.is_dir() {
+                stack.push(path);
+                continue;
+            }
+            let Ok(text) = fs::read_to_string(&path) else {
+                continue;
+            };
+            // A concise lexeme's words are `text` values, read as the long form.
+            let found =
+                hello_world_program_literals(&formal_ai::seed::expand_concise_lexemes(&text));
+            let relative = path
+                .strip_prefix(root)
+                .unwrap_or(path.as_path())
+                .components()
+                .map(|component| component.as_os_str().to_string_lossy())
+                .collect::<Vec<_>>()
+                .join("/");
+            if let Some(index) = source_capture(&relative) {
+                captured[index] += found;
+            } else if found > 0 {
+                total += found;
+                offenders.push(format!("{} ({found})", path.display()));
+            }
+        }
+    }
+    assert!(
+        total <= HELLO_WORLD_PROGRAM_LITERALS_MAX,
+        "data/ stores {total} verbatim Hello World program literals, above the ratchet of \
+         {HELLO_WORLD_PROGRAM_LITERALS_MAX}: {offenders:?}"
+    );
+    for (count, (capture, maximum)) in captured.into_iter().zip(SOURCE_CAPTURES) {
+        assert!(
+            count <= maximum,
+            "{capture} holds {count} Hello World literals, above its ratchet of {maximum}"
+        );
+    }
 }

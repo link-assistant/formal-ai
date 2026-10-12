@@ -91,16 +91,14 @@ pub fn answer_unknown_prompt(
         .any(|supported| supported == language.slug());
     // Wave F (issue #1138, plan 01): when the consult walk has already asked
     // the sources and recorded its misses, the web-search handoff below would
-    // answer with a description of the search machinery — the provider list
-    // and the fusion formula — standing exactly where the walk's own evidence
-    // belongs. A question that turns on an unresolved word has already been
-    // looked up by the time this arm is reached; describing a search that
-    // already ran and found nothing replaces the honest refusal with a
-    // brochure. Two shapes escape: a bare term is itself a lookup request —
-    // the prompt is the term and nothing else — so the search is the answer
-    // in every language and the walk's verdict does not outrank it; and an
-    // instruction (issue #873, R873-1) names no single looked-up word for the
-    // walk's evidence to answer for, so an unresolved imperative stays a
+    // answer for the very focus the walk just missed — the walk's own evidence
+    // must not be outranked by a second opinion on the same word. A question
+    // that turns on an unresolved word has already been looked up by the time
+    // this arm is reached. Two shapes escape: a bare term is itself a lookup
+    // request — the prompt is the term and nothing else — so the search is the
+    // answer in every language and the walk's verdict does not outrank it; and
+    // an instruction (issue #873, R873-1) names no single looked-up word for
+    // the walk's evidence to answer for, so an unresolved imperative stays a
     // research trigger. The question shape is `?` in either width or a
     // seed-carried interrogative opener fronting the prompt.
     let consult_walk_ran = log.events().iter().any(|event| {
@@ -120,7 +118,16 @@ pub fn answer_unknown_prompt(
         };
         log.append("reasoning:candidate_source", "web_search".to_owned());
         log.append("reasoning:gather_attempt", format!("web_search:{focus}"));
-        return answer_web_search_query(prompt, focus, kind, log);
+        // Issue #1173 (E138): this handoff used to return the canned
+        // description of the browser demo's search machinery ("Web search
+        // requested for …") as the final answer. It now executes the search
+        // for the focus through the process source cache: captured sources
+        // answer from their statements with citations, and an offline or
+        // cache-miss run degrades to the localized `web_search_unavailable`
+        // response that names the focus. Live provider fetches stay behind
+        // the `FORMAL_AI_LIVE_FETCH` opt-in, so the runtime's offline mode
+        // keeps its no-network boundary.
+        return answer_web_search_query(prompt, focus, kind, log, config.offline);
     }
 
     log.append(
@@ -528,6 +535,7 @@ fn public_concepts() -> &'static [ConceptRecord] {
 
 fn public_concept_candidate_terms(focus: &str) -> Vec<String> {
     let focus_normalized = normalize_search_surface(focus);
+    let padded_focus = format!(" {focus_normalized} ");
     let mut scored = Vec::new();
     for record in public_concepts() {
         for candidate in concept_candidate_surfaces(record) {
@@ -535,7 +543,13 @@ fn public_concept_candidate_terms(focus: &str) -> Vec<String> {
             if normalized.len() < 3 {
                 continue;
             }
-            let matches = focus_normalized.contains(&normalized) || normalized == focus_normalized;
+            // A surface names the focus as whole words: "colour" inside
+            // "colourless" is no mention of colour (issue #1175 p329). A
+            // script written without spaces keeps the substring reading.
+            let matches = normalized == focus_normalized
+                || padded_focus.contains(&format!(" {normalized} "))
+                || (normalized.chars().any(is_unspaced_script)
+                    && focus_normalized.contains(&normalized));
             if matches {
                 scored.push((normalized.len(), candidate));
             }
@@ -811,6 +825,14 @@ fn normalize_fact_subject(value: &str) -> String {
         .or_else(|| cleaned.strip_prefix("an "))
         .unwrap_or(cleaned.as_str());
     normalize_search_surface(stripped)
+}
+
+/// Whether `ch` belongs to a script written without spaces (kana, CJK, hangul).
+const fn is_unspaced_script(ch: char) -> bool {
+    matches!(
+        ch,
+        '\u{3040}'..='\u{30ff}' | '\u{3400}'..='\u{9fff}' | '\u{ac00}'..='\u{d7af}'
+    )
 }
 
 fn normalize_search_surface(value: &str) -> String {

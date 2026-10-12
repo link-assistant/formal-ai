@@ -51,7 +51,9 @@ mod coding_modification_benchmarks;
 mod computer_use_meta_algorithm;
 mod concept_lookup_meta_algorithm;
 mod conversation_history;
+mod conversational_reverification;
 mod cue_lexicon;
+mod debug_session;
 mod definition_fusion;
 mod desktop_surface;
 mod document_verification_meta_algorithm;
@@ -59,23 +61,14 @@ mod dreaming_meta_algorithm;
 mod equation_corpus;
 mod execution_evidence;
 mod external_benchmarks;
+mod film_release_order;
 mod forced_language_seam;
 mod formalization;
 mod formalization_depth_meta_algorithm;
+mod free_time_small_talk;
 mod github_repository_traffic;
 mod grounded_action_meta_algorithm;
 mod intent_formalization;
-mod issue_146;
-mod issue_402;
-mod issue_435;
-mod issue_436;
-mod issue_462;
-mod issue_465;
-mod issue_467;
-mod issue_595;
-mod issue_682;
-mod issue_710;
-mod issue_892;
 mod issue_893_summarization_validation;
 mod links_network;
 mod links_network_terminology_meta_algorithm;
@@ -86,6 +79,7 @@ mod meta_construction;
 mod meta_frame;
 mod meta_reasoning;
 mod meta_self_improvement;
+mod metatheory_concept;
 mod method_registry;
 mod multilingual;
 mod natural_language_access;
@@ -93,6 +87,7 @@ mod natural_language_skill_compilation;
 mod needs;
 mod nemotron_training_samples;
 mod network_visualization;
+mod null_content_tool_calls;
 mod obligation_ledger;
 mod openai_compatibility;
 mod prerequisite_recipe;
@@ -100,6 +95,8 @@ mod probabilistic_reasoning;
 mod procedural_howto_benchmarks;
 mod project_lookups;
 mod prompt_variations;
+mod prompt_variations_facts;
+mod pronoun_topic_follow_up;
 mod question_generation_lexicon;
 mod reasoning_loop;
 mod reasoning_paths;
@@ -108,6 +105,8 @@ mod reasoning_standard_meta_algorithm;
 mod recipe_interpreter;
 mod recursive_core_recipe;
 mod refutation_search;
+mod relative_date_scheduling;
+mod release_order_snapshot;
 mod repository_workspace_protocol;
 mod response_language_followup;
 mod response_language_meta_algorithm;
@@ -115,6 +114,7 @@ mod route_method_alias;
 mod routing_precedence;
 mod selection;
 mod selection_heuristics;
+mod self_awareness_prompts;
 mod self_hosting_metric;
 mod self_improvement;
 mod shared_dialog_replay;
@@ -122,6 +122,8 @@ mod skill_ledger;
 mod solution_evidence;
 mod source_cache;
 mod source_reconstruction;
+mod spoken_hour_scheduling;
+mod stroller_baggage_fact;
 mod substitution_rules;
 mod summarization_pipeline;
 mod synthesis;
@@ -137,3 +139,54 @@ mod unit_incompatibility;
 mod unknown_reasoning;
 mod vscode_surface;
 mod world_state_benchmarks;
+
+/// Every JSX module of the web front-end (`js/app/*.jsx`), concatenated. The
+/// front-end is split into feature modules and bundled by bun into the served
+/// `js/app.js`; source-level surface assertions read all of them so they hold
+/// wherever a helper lives. `web_app_sources_cover_every_jsx_module` keeps
+/// this list in step with the directory.
+pub const WEB_APP_SOURCES: &str = concat!(
+    include_str!("../../../../js/app/agent-plan.jsx"),
+    include_str!("../../../../js/app/application-constants.js"),
+    include_str!("../../../../js/app/application-conversation-hooks.jsx"),
+    include_str!("../../../../js/app/application-desktop-hooks.jsx"),
+    include_str!("../../../../js/app/application-layout-hooks.jsx"),
+    include_str!("../../../../js/app/application-memory-hooks.jsx"),
+    include_str!("../../../../js/app/application-worker-hooks.jsx"),
+    include_str!("../../../../js/app/application.jsx"),
+    include_str!("../../../../js/app/attachments.jsx"),
+    include_str!("../../../../js/app/conversations.jsx"),
+    include_str!("../../../../js/app/debugger-view.jsx"),
+    include_str!("../../../../js/app/demo-mode.jsx"),
+    include_str!("../../../../js/app/desktop-bridge.jsx"),
+    include_str!("../../../../js/app/glyphs.jsx"),
+    include_str!("../../../../js/app/interface-commands.jsx"),
+    include_str!("../../../../js/app/issue-reporting.jsx"),
+    include_str!("../../../../js/app/main.jsx"),
+    include_str!("../../../../js/app/markdown-render.jsx"),
+    include_str!("../../../../js/app/memory-events.jsx"),
+    include_str!("../../../../js/app/message-view.jsx"),
+    include_str!("../../../../js/app/preferences.jsx"),
+    include_str!("../../../../js/app/recall-query.jsx"),
+    include_str!("../../../../js/app/sidebar-section.jsx"),
+    include_str!("../../../../js/app/thinking-steps.jsx"),
+    include_str!("../../../../js/app/toolbar-icons.jsx"),
+    include_str!("../../../../js/app/user-context.jsx"),
+);
+
+#[test]
+fn web_app_sources_cover_every_jsx_module() {
+    let app_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/../js/app");
+    for entry in std::fs::read_dir(app_dir).unwrap() {
+        let path = entry.unwrap().path();
+        if path.extension().and_then(|ext| ext.to_str()) != Some("jsx") {
+            continue;
+        }
+        let source = std::fs::read_to_string(&path).unwrap();
+        assert!(
+            WEB_APP_SOURCES.contains(&source),
+            "{} must be listed in WEB_APP_SOURCES",
+            path.display()
+        );
+    }
+}

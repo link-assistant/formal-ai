@@ -1,0 +1,36 @@
+{
+  "lemma": "impersonation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06792908-n",
+      "partOfSpeech": "n",
+      "definition": "a representation of a person that is exaggerated for comic effect",
+      "synonyms": [
+        "caricature",
+        "imitation"
+      ]
+    },
+    {
+      "id": "oewn-00757684-n",
+      "partOfSpeech": "n",
+      "definition": "pretending to be another person",
+      "synonyms": [
+        "imposture"
+      ]
+    },
+    {
+      "id": "oewn-00550321-n",
+      "partOfSpeech": "n",
+      "definition": "imitating the mannerisms of another person",
+      "synonyms": [
+        "personation"
+      ]
+    }
+  ]
+}

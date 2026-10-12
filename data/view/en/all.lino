@@ -1,0 +1,17 @@
+view
+  id M-dcdeebb9f483
+  lemma all
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(quantifier) used with either mass or count nouns to indicate the whole number or amount of or every one of a class"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "to a complete degree or to the full or entire extent; Completely or entirely"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "completely given to or absorbed by"
+    provenance (wordnet)

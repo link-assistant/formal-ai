@@ -1,0 +1,33 @@
+{
+  "lemma": "containment",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05995833-n",
+      "partOfSpeech": "n",
+      "definition": "a policy of creating strategic alliances in order to check the expansion of a hostile power or ideology or to force it to negotiate peacefully",
+      "examples": [
+        "containment of communist expansion was a central principle of United States' foreign policy from 1947 to the 1975"
+      ]
+    },
+    {
+      "id": "oewn-03100616-n",
+      "partOfSpeech": "n",
+      "definition": "(physics) a system designed to prevent the accidental release of radioactive material from a reactor"
+    },
+    {
+      "id": "oewn-01149964-n",
+      "partOfSpeech": "n",
+      "definition": "the act of containing; keeping something from spreading",
+      "examples": [
+        "the containment of the AIDS epidemic",
+        "the containment of the rebellion"
+      ]
+    }
+  ]
+}

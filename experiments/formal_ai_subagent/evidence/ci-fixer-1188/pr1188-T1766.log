@@ -1,0 +1,8 @@
+>> bash {"command":"test -e rust/tests/unit/cli_paths.rs"}
+>> bash {"command":"test ! -e rust/tests/unit/pull_request_1188_line_moves.rs"}
+>> bash {"command":"mkdir -p -- rust/tests/unit"}
+>> bash {"command":"cp rust/tests/unit/cli_paths.rs rust/tests/unit/pull_request_1188_line_moves.rs"}
+>> bash {"command":"test -e rust/tests/unit/pull_request_1188_line_moves.rs"}
+>> bash {"command":"test -e rust/tests/unit/cli_paths.rs"}
+== answer ==
+Completed the action `cp rust/tests/unit/cli_paths.rs rust/tests/unit/pull_request_1188_line_moves.rs` and verified it with `test -e rust/tests/unit/pull_request_1188_line_moves.rs`, `test -e rust/tests/unit/cli_paths.rs`.

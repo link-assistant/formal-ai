@@ -4,13 +4,13 @@
 //! file well under the repository's per-file line limit; the groups are
 //! concatenated in [`super`].
 
-use super::types::ProgramTemplate;
+use super::types::CompiledTemplate;
 
-pub(super) const TEMPLATES_LISTING: &[ProgramTemplate] = &[
+pub(super) const TEMPLATES_LISTING: &[CompiledTemplate] = &[
     // Issue #358: reverse-sort variants are ordinary catalog tasks reached by
     // data-defined program-plan modifiers. The templates keep the same file
     // filtering as `list_files` / `list_files_arg`, but emit descending names.
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "rust",
         code: r#"use std::fs;
@@ -28,7 +28,7 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "python",
         code: r#"import os
@@ -40,7 +40,7 @@ names = sorted(
 for name in names:
     print(name)"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "javascript",
         code: r#"const fs = require("fs");
@@ -55,7 +55,7 @@ for (const name of names) {
   console.log(name);
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "typescript",
         code: r#"import * as fs from "fs";
@@ -70,7 +70,7 @@ for (const name of names) {
   console.log(name);
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "go",
         code: r#"package main
@@ -98,7 +98,7 @@ func main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "c",
         code: r#"#include <dirent.h>
@@ -134,7 +134,7 @@ int main(void) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "cpp",
         code: r#"#include <algorithm>
@@ -157,7 +157,7 @@ int main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "java",
         code: r#"import java.io.File;
@@ -181,7 +181,7 @@ public class Main {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "csharp",
         code: r#"using System;
@@ -199,13 +199,13 @@ class Program {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "ruby",
         code: r#"names = Dir.entries(".").select { |name| File.file?(name) }.sort.reverse
 names.each { |name| puts name }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "scala",
         code: r#"import java.io.File
@@ -217,7 +217,7 @@ object Main {
   }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "kotlin",
         code: r#"import java.io.File
@@ -227,7 +227,7 @@ fun main() {
     entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_reverse_sort",
         language_slug: "php",
         code: r#"<?php
@@ -238,7 +238,7 @@ foreach ($names as $name) {
     echo $name, PHP_EOL;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "rust",
         code: r#"use std::env;
@@ -258,7 +258,7 @@ fn main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "python",
         code: r#"import os
@@ -276,7 +276,7 @@ names = sorted(
 for name in names:
     print(name)"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "javascript",
         code: r#"const fs = require("fs");
@@ -293,7 +293,7 @@ for (const name of names) {
   console.log(name);
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "typescript",
         code: r#"import * as fs from "fs";
@@ -310,7 +310,7 @@ for (const name of names) {
   console.log(name);
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "go",
         code: r#"package main
@@ -342,7 +342,7 @@ func main() {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "c",
         code: r#"#include <dirent.h>
@@ -381,7 +381,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "cpp",
         code: r#"#include <algorithm>
@@ -405,7 +405,7 @@ int main(int argc, char *argv[]) {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "java",
         code: r#"import java.io.File;
@@ -430,7 +430,7 @@ public class Main {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "csharp",
         code: r#"using System;
@@ -449,14 +449,14 @@ class Program {
     }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "ruby",
         code: r#"path = ARGV[0] || "."
 names = Dir.entries(path).select { |name| File.file?(File.join(path, name)) }.sort.reverse
 names.each { |name| puts name }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "scala",
         code: r#"import java.io.File
@@ -469,7 +469,7 @@ object Main {
   }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "kotlin",
         code: r#"import java.io.File
@@ -480,7 +480,7 @@ fun main(args: Array<String>) {
     entries.filter { it.isFile }.map { it.name }.sortedDescending().forEach { println(it) }
 }"#,
     },
-    ProgramTemplate {
+    CompiledTemplate {
         task_slug: "list_files_arg_reverse_sort",
         language_slug: "php",
         code: r#"<?php

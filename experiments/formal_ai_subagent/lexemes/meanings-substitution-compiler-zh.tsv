@@ -1,0 +1,8 @@
+export_substitution_rule	导出替换规则
+substitution	替换
+substitution_rule_export	替换规则导出
+target_javascript	目标 javascript
+target_rust	目标 rust
+target_webassembly	目标 webassembly
+wasm	wasm
+webassembly	webassembly

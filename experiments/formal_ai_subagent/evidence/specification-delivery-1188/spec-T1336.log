@@ -1,0 +1,126 @@
+>> read {"filePath":"js/worker/formal_ai_worker_crate_modules.js","file_path":"js/worker/formal_ai_worker_crate_modules.js","path":"js/worker/formal_ai_worker_crate_modules.js"}
+   <file>
+   00001| // The crate modules in the browser worker (R1188-U18, U19, U21).
+   00002| //
+   00003| // scripts/generate-worker-crate-modules.mjs writes every module of
+   00004| // js/agentic/crate/ that a chat route calls, with its imports, to a
+   00005| // formal_ai_worker_crate_*.js factory. `crateModule(name)` runs a factory once,
+   00006| // on first use, and hands it the modules it imports, so the browser runs the
+   00007| // same code as the JavaScript root instead of a second port.
+   00008| //
+   00009| // js/agentic/host.mjs is installed over the worker's own seed:
+   00010| // - a repository seed path reads the text the worker loaded (`SEED_RAW`), or,
+   00011| //   for a meaning seed the worker itself does not load, the text
+   00012| //   `loadCrateSeeds` fetched beside it (`CRATE_SEED_RAW`), so the crate modules
+   00013| //   read the whole meaning lexicon, as the Rust engine does;
+   00014| // - the seed registry is the meaning seeds of
+   00015| //   formal_ai_worker_crate_seed_registry.js, the only part a crate module reads;
+   00016| // - Links Notation is parsed by the seed loader the worker already runs
+   00017| //   (`FormalAiSeed.parse`), the parser the Node host uses.
+   00018| // The host is installed again whenever the worker reloads its seed (each load
+   00019| // sets `CRATE_SEED_RAW` anew), which clears the caches of the crate modules.
+   00020| 
+   00021| const CRATE_HOST_MODULE = "host.mjs";
+   00022| const CRATE_SEED_REGISTRY = "data/meta/seed-registry.lino";
+   00023| const crateInstances = new Map();
+   00024| let crateHostSeed = null;
+   00025| let CRATE_SEED_RAW = {};
+   00026| 
+   00027| /** The crate meaning seeds `present(fileName)` does not hold, as seed paths. */
+   00028| function missingCrateSeeds(present) {
+   00029|   const files = (self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((seed) => `seed/${seed}.lino`);
+   00030|   return files.filter((file) => !present(seedFileBaseName(file)));
+   00031| }
+   00032| 
+   00033| /**
+   00034|  * Fetch the meaning seeds the worker's own seed list leaves out.
+   00035|  * `loadSeed` awaits it once the worker seed is loaded; the first load takes the
+   00036|  * fetch started at boot (below), so it adds no round trip before ready.
+   00037|  * @param {Record<string, string>} raw the worker's seed texts
+   00038|  * @returns {Promise<void>}
+   00039|  */
+   00040| async function loadCrateSeeds(raw) {
+   00041|   const missing = missingCrateSeeds((file) => Boolean(seedRawText(raw, file)));
+   00042|   const prefetch = crateSeedPrefetch;
+   00043|   crateSeedPrefetch = null;
+   00044|   const fetchNow = () => (missing.length > 0 ? self.FormalAiSeed.loadAll(missing) : null);
+   00045|   const reuse = prefetch && prefetch.files.join("\n") === missing.join("\n");
+   00046|   const loaded = await (reuse ? prefetch.promise : fetchNow());
+   00047|   CRATE_SEED_RAW = (loaded && loaded.raw) || {};
+   00048| }
+   00049| 
+   00050| // Once every module has loaded, fetch the meaning seeds missing from the
+   00051| // worker's list (FORMAL_AI_SEED_FILES, what `loadAll()` fetches) beside it.
+   00052| let crateSeedPrefetch = null;
+   00053| Promise.resolve().then(() => {
+   00054|   const listed = new Set((self.FORMAL_AI_SEED_FILES || []).map(seedFileBaseName));
+   00055|   const files = self.FormalAiSeed ? missingCrateSeeds((file) => listed.has(file)) : [];
+   00056|   if (files.length === 0) return;
+   00057|   crateSeedPrefetch = { files, promise: self.FormalAiSeed.loadAll(files) };
+   00058|   crateSeedPrefetch.promise.catch(() => {}); // reported where `loadSeed` awaits it
+   00059| });
+   00060| 
+   00061| /**
+   00062|  * The seed registry as the crate modules read it: its meaning seeds, in order.
+   00063|  * @returns {string}
+   00064|  */
+   00065| function crateSeedRegistryText() {
+   00066|   const seeds = self.FORMAL_AI_CRATE_MEANING_SEEDS || [];
+   00067|   const records = seeds.map((seed) => `  seed ${seed}\n    lexicon meaning`);
+   00068|   return ["seed_registry", ...records].join("\n");
+   00069| }
+   00070| 
+   00071| /**
+   00072|  * A repository file as the crate modules read it.
+   00073|  * @param {string} relative
+   00074|  * @returns {string}
+   00075|  */
+   00076| function crateHostReadText(relative) {
+   00077|   if (relative === CRATE_SEED_REGISTRY) return crateSeedRegistryText();
+   00078|   const file = seedFileBaseName(relative);
+   00079|   return seedRawText(SEED_RAW, file) || seedRawText(CRATE_SEED_RAW, file);
+   00080| }
+   00081| 
+   00082| /**
+   00083|  * The exports of the crate module `name`, its factory run on first use.
+   00084|  * @param {string} name
+   00085|  * @returns {object}
+   00086|  */
+   00087| function crateInstance(name) {
+   00088|   if (!crateInstances.has(name)) {
+   00089|     const factory = (self.FORMAL_AI_CRATE_FACTORIES || {})[name];
+   00090|     if (typeof factory !== "function") throw new Error(`crate_module_missing:${name}`);
+   00091|     crateInstances.set(name, factory(crateInstance));
+   00092|   }
+   00093|   return crateInstances.get(name);
+   00094| }
+   00095| 
+   00096| /**
+   00097|  * The exports of the crate module `name` (`crate/dependency_summarization.mjs`),
+   00098|  * with the worker installed as its host.
+   00099|  * @param {string} name
+   00100|  * @returns {object}
+   00101|  */
+   00102| function crateModule(name) {
+   00103|   if (crateHostSeed !== CRATE_SEED_RAW) {
+   00104|     crateInstance(CRATE_HOST_MODULE).installHost({
+   00105|       readText: crateHostReadText,
+   00106|       parseLino: (text) => self.FormalAiSeed.parse(text),
+   00107|       realm: self,
+   00108|     });
+   00109|     crateHostSeed = CRATE_SEED_RAW;
+   00110|   }
+   00111|   return crateInstance(name);
+   00112| }
+   00113| 
+   
+   (End of file - total 113 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_crate_modules.js","file_path":"js/worker/formal_ai_worker_crate_modules.js","new":"  const seeds = [...new Set([...(self.FORMAL_AI_CRATE_MEANING_SEEDS || []), ...(self.FORMAL_AI_CRATE_RESPONSE_SEEDS || [])])];\n  const files = seeds.map((seed) => `seed/${seed}.lino`);\n","newString":"  const seeds = [...new Set([...(self.FORMAL_AI_CRATE_MEANING_SEEDS || []), ...(self.FORMAL_AI_CRATE_RESPONSE_SEEDS || [])])];\n  const files = seeds.map((seed) => `seed/${seed}.lino`);\n","new_str":"  const seeds = [...new Set([...(self.FORMAL_AI_CRATE_MEANING_SEEDS || []), ...(self.FORMAL_AI_CRATE_RESPONSE_SEEDS || [])])];\n  const files = seeds.map((seed) => `seed/${seed}.lino`);\n","new_string":"  const seeds = [...new Set([...(self.FORMAL_AI_CRATE_MEANING_SEEDS || []), ...(self.FORMAL_AI_CRATE_RESPONSE_SEEDS || [])])];\n  const files = seeds.map((seed) => `seed/${seed}.lino`);\n","old":"  const files = (self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((seed) => `seed/${seed}.lino`);","oldString":"  const files = (self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((seed) => `seed/${seed}.lino`);","old_str":"  const files = (self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((seed) => `seed/${seed}.lino`);","old_string":"  const files = (self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((seed) => `seed/${seed}.lino`);","path":"js/worker/formal_ai_worker_crate_modules.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_crate_modules.js"}
+   33bd6d48f1fd216fb2fa10e4f66d5722ff98505fdb4c764f12107e0505eaa944  js/worker/formal_ai_worker_crate_modules.js
+   
+== answer ==
+Replaced ``  const files = (self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((seed) => `seed/${seed}.lino`);`` with ``  const seeds = [...new Set([...(self.FORMAL_AI_CRATE_MEANING_SEEDS || []), ...(self.FORMAL_AI_CRATE_RESPONSE_SEEDS || [])])];
+  const files = seeds.map((seed) => `seed/${seed}.lino`);
+`` in `js/worker/formal_ai_worker_crate_modules.js` and observed the result.

@@ -1,0 +1,26 @@
+{
+  "task": "T4193",
+  "prompt": "Run node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/validate-scratch.mjs",
+  "started": "2026-10-09T21:11:33.251Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/validate-scratch.mjs\"}",
+        "result": "Output: {\"schema\":\"release-runtime-fixture-scratch-controls/v1\",\"checks\":[{\"command\":\"node\",\"status\":0},{\"command\":\"node\",\"status\":0},{\"command\":\"/opt/homebrew/bin/actionlint\",\"status\":0}],\"files\":[{\"file\":\"release-runtime-fixture.yml\",\"bytes\":6934,\"sha256\":\"e6394ca8319e6cc3357ac109ef6b60320a6630e54a6a83a202f08e36b3bf35c2\"},{\"file\":\"release-runtime-fixture-callee.yml\",\"bytes\":5298,\"sha256\":\"d004a1a5d03ca56c2c9766739317f40712f495121dc3991093dc720e2ddee8b0\"},{\"file\":\"release-runtime-fixture.mjs\",\"bytes\":14605,\"sha256\":\"38dfe388fef3a811dfa921b75a770230dc3a82e7e05220032df02b061b3fec2c\"},{\"file\":\"release-runtime-fixture.test.mjs\",\"bytes\":9422,\"sha256\":\"0a9dc6f8f761b97b384f8372e61e820186d1eb44b8cec0c871d19e3eab769f98\"}],\"tests\":4,\"queueRefusals\":8,\"outputRefusals\":6,\"graphRefusals\":11,\"githubExecuted\":false,\"actualArtifactService\":false,\"actualLease\":false,\"nativeExecutable\":false,\"compilerInvoked\":false,\"productionAuthority\":false,\"publication\":false,\"autonomousCredit\":0,\"amplificationCredit\":0,\"actionlintQueueException\":\"Only exact unsupported queue:max syntax diagnostic ignored; preserves private queue behavior, installed1.7.12 limitation\",\"actionlintShellcheck\":false,\"actionlintPyflakes\":false}\nT4193_RUNTIME_FIXTURE_CONTROLS_PASS\n\nExit Code: 0"
+      }
+    ],
+    "answer": "The `node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/validate-scratch.mjs` command completed. Output:\n\n```text\n{\"schema\":\"release-runtime-fixture-scratch-controls/v1\",\"checks\":[{\"command\":\"node\",\"status\":0},{\"command\":\"node\",\"status\":0},{\"command\":\"/opt/homebrew/bin/actionlint\",\"status\":0}],\"files\":[{\"file\":\"release-runtime-fixture.yml\",\"bytes\":6934,\"sha256\":\"e6394ca8319e6cc3357ac109ef6b60320a6630e54a6a83a202f08e36b3bf35c2\"},{\"file\":\"release-runtime-fixture-callee.yml\",\"bytes\":5298,\"sha256\":\"d004a1a5d03ca56c2c9766739317f40712f495121dc3991093dc720e2ddee8b0\"},{\"file\":\"release-runtime-fixture.mjs\",\"bytes\":14605,\"sha256\":\"38dfe388fef3a811dfa921b75a770230dc3a82e7e05220032df02b061b3fec2c\"},{\"file\":\"release-runtime-fixture.test.mjs\",\"bytes\":9422,\"sha256\":\"0a9dc6f8f761b97b384f8372e61e820186d1eb44b8cec0c871d19e3eab769f98\"}],\"tests\":4,\"queueRefusals\":8,\"outputRefusals\":6,\"graphRefusals\":11,\"githubExecuted\":false,\"actualArtifactService\":false,\"actualLease\":false,\"nativeExecutable\":false,\"compilerInvoked\":false,\"productionAuthority\":false,\"publication\":false,\"autonomousCredit\":0,\"amplificationCredit\":0,\"actionlintQueueException\":\"Only exact unsupported queue:max syntax diagnostic ignored; preserves private queue behavior, installed1.7.12 limitation\",\"actionlintShellcheck\":false,\"actionlintPyflakes\":false}\nT4193_RUNTIME_FIXTURE_CONTROLS_PASS\n```",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": true,
+  "finished": "2026-10-09T21:11:34.645Z"
+}

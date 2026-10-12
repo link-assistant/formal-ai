@@ -1,0 +1,9 @@
+view
+  id M-e3dde8fdfcff
+  lemma credibility
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the quality of being believable or trustworthy"
+    provenance (wordnet)

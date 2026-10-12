@@ -1,0 +1,34 @@
+self_ast_census
+  target src/server/debug_stage_sources.rs
+  language rust
+  fidelity signature
+  byte_len 12578
+  line_count 357
+  content_id source_module_22ca7adf543a6247
+  symbol_count 25
+  symbols
+    const STAGE_SOURCES 22 22
+    const REACH_DEPTH 24 24
+    const DEFINITION_MODIFIERS 25 25
+    const BODY_LINES 34 34
+    const ROW_INDENT 36 36
+    struct Site 40 45
+    struct Runtime 49 56
+    struct StageSources 60 65
+    function read_text 69 71
+    function is_identifier 73 78
+    function defined_name 82 102
+    function defines 106 108
+    function tree_files 112 132
+    function body_end 135 150
+    function unquote 152 157
+    function site 159 164
+    function read_stage_sources 169 171
+    function parse_stage_sources 175 225
+    struct FunctionIndex 230 232
+    function called_names 235 260
+    function new 265 281
+    function nearest 286 310
+    function function_index 314 327
+    static INDEXES 315 315
+    function stage_emitter 333 357

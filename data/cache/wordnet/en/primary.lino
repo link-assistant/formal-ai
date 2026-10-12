@@ -1,0 +1,49 @@
+language en
+lemma primary
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of first rank or importance or value; direct and immediate rather than secondary"
+    examples ("primary goals" "a primary effect" "primary sources" "a primary interest")
+    id oewn-01858102-a
+    partOfSpeech a
+  entry
+    definition "a preliminary election where delegates or nominees are chosen"
+    id oewn-00183420-n
+    partOfSpeech n
+    synonyms ("primary election")
+  entry
+    definition "one of the main flight feathers projecting along the outer edge of a bird's wing"
+    id oewn-02471711-n
+    partOfSpeech n
+    synonyms ("primary feather" "primary quill")
+  entry
+    definition "(astronomy) a celestial body (especially a star) relative to other objects in orbit around it"
+    id oewn-09421644-n
+    partOfSpeech n
+  entry
+    definition "coil forming the part of an electrical circuit such that changing current in it induces a current in a neighboring circuit"
+    examples ("current through the primary coil induces current in the secondary coil")
+    id oewn-04008987-n
+    partOfSpeech n
+    synonyms ("primary coil" "primary winding")
+  entry
+    definition "not derived from or reducible to something else; basic"
+    examples ("a primary instinct")
+    id oewn-00702966-s
+    partOfSpeech s
+  entry
+    definition "most important element"
+    examples ("the chief aim of living" "the main doors were of solid glass" "the principal rivers of America" "the principal example" "policemen were primary targets" "the master bedroom" "a master switch")
+    id oewn-01280536-s
+    partOfSpeech s
+    synonyms (chief main principal master)
+  entry
+    definition "of or being the essential or basic part"
+    examples ("an elementary need for love and nurturing" "a basal reader")
+    id oewn-01862151-s
+    partOfSpeech s
+    synonyms (elementary elemental basal)
+source "oewn:2024"

@@ -1,0 +1,5 @@
+{
+  "taskId": "T2435",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run `node scripts/check-hardcoded-language.mjs`"
+}

@@ -1,0 +1,5 @@
+{
+  "taskId": "T2070",
+  "target": "rust/tests/web/project-summary-parity.test.mjs",
+  "byteEqual": true
+}

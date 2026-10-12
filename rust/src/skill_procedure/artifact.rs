@@ -10,7 +10,7 @@ use crate::seed::{
 
 use super::{
     CompiledProcedure, MINIMUM_STEPS, ProcedureArtifactError, ProcedureRequirement, ProcedureStep,
-    ProcedureTrigger, canonical_program, meaning_has_role, requirement_id,
+    ProcedureTrigger, canonical_program, meaning_has_role, requirement_id, step_id,
 };
 
 impl CompiledProcedure {
@@ -284,16 +284,7 @@ impl CompiledProcedure {
             ));
         }
         for step in &self.steps {
-            let expected = stable_id(
-                "compiled_procedure_step",
-                &format!(
-                    "{}:{}:{}:{}",
-                    self.id,
-                    step.index,
-                    step.kind,
-                    step.arguments().join("+")
-                ),
-            );
+            let expected = step_id(&self.id, step);
             if step.id != expected {
                 return Err(ProcedureArtifactError::new(format!(
                     "step_id_integrity_failure:{}",

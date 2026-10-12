@@ -1,0 +1,91 @@
+# Manual-page extracts for shell-command composition (issue #1177).
+#
+# Each `command` record carries the flag surface the composer may emit plus
+# the upstream GNU manual that documents it, so every composed command can
+# cite its source. Only the small flag set the composer actually uses lives
+# here; the full manuals remain the authority. Read by
+# `rust/src/solver_handlers/shell_command_compose.rs` through
+# `crate::seed::seed_files()`. `wc` is the pipe stage a counting request
+# (a `count` role word in data/seed/code-task-cues.lino) appends; `sed` is
+# composed for a substitution request (`substitute` and `substitute_with`
+# role words).
+command
+  name find
+    package findutils
+    summary "search for files in a directory hierarchy"
+    url "https://www.gnu.org/software/findutils/manual/html_node/find.html"
+    flag
+      spelling "-name pattern"
+      meaning "match the base name of the file against the shell pattern; quote the pattern so the shell does not expand it"
+    flag
+      spelling "-size +N[kMG]"
+      meaning "match files that use more than N units of space; k means kibibytes, M mebibytes, G gibibytes; the leading + means strictly greater than"
+    flag
+      spelling "-mtime N"
+      meaning "match files whose data was last modified N*24 hours ago; +N means more than, -N means less than"
+    flag
+      spelling "-type f"
+      meaning "match files of type f (regular file); use d for directories"
+command
+  name ls
+    package coreutils
+    summary "list directory contents"
+    url "https://www.gnu.org/software/coreutils/manual/html_node/ls-invocation.html"
+    flag
+      spelling "-l"
+      meaning "use the long listing format"
+    flag
+      spelling "-a"
+      meaning "do not ignore entries starting with a dot"
+    flag
+      spelling "-R"
+      meaning "list subdirectories recursively"
+command
+  name head
+    package coreutils
+    summary "output the first part of files"
+    url "https://www.gnu.org/software/coreutils/manual/html_node/head-invocation.html"
+    flag
+      spelling "-n N"
+      meaning "output the first N lines instead of the default 10"
+command
+  name tail
+    package coreutils
+    summary "output the last part of files"
+    url "https://www.gnu.org/software/coreutils/manual/html_node/tail-invocation.html"
+    flag
+      spelling "-n N"
+      meaning "output the last N lines instead of the default 10"
+command
+  name grep
+    package grep
+    summary "print lines that match a pattern"
+    url "https://www.gnu.org/software/grep/manual/grep.html"
+    flag
+      spelling "-r"
+      meaning "recursively search all files under each directory"
+    flag
+      spelling "-i"
+      meaning "ignore case distinctions in the pattern and the input"
+    flag
+      spelling "-l"
+      meaning "suppress normal output; print only the name of each file with a match"
+command
+  name wc
+    package coreutils
+    summary "print newline, word, and byte counts"
+    url "https://www.gnu.org/software/coreutils/manual/html_node/wc-invocation.html"
+    flag
+      spelling "-l"
+      meaning "print only the newline counts; fed one path per line, that is the number of paths"
+command
+  name sed
+    package sed
+    summary "stream editor for filtering and transforming text"
+    url "https://www.gnu.org/software/sed/manual/sed.html"
+    flag
+      spelling "-i"
+      meaning "edit the file in place (a GNU extension); without it sed prints the edited text and leaves the file unchanged"
+    flag
+      spelling "s/regexp/replacement/g"
+      meaning "replace each match of the basic regular expression with the replacement; the trailing g replaces every match on a line, not only the first"

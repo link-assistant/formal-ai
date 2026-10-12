@@ -105,26 +105,44 @@ pub const HANDLER_PRECEDENCE_PATH: &str = "data/seed/handler-precedence.lino";
 #[must_use]
 pub fn browser_only_handlers() -> &'static [String] {
     static CELL: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
-    CELL.get_or_init(|| {
-        let network = crate::seed_links::network();
-        let Some(root) = network
-            .top_level(HANDLER_PRECEDENCE_PATH)
-            .into_iter()
-            .next()
-        else {
-            return Vec::new();
-        };
-        network
-            .nodes_under(&root.index)
-            .into_iter()
-            .filter(|row| {
-                network
-                    .field(&row.index, "browser_only")
-                    .is_some_and(|mark| mark == "true")
-            })
-            .filter_map(|row| network.value_of(&row.index).map(str::to_owned))
-            .collect()
-    })
+    CELL.get_or_init(|| rows_marked("browser-only"))
+}
+
+/// The precedence rows the seed marks `before-promotion true` (issue #1175
+/// p133): handlers the browser worker asks in its fixed early phase, before
+/// the walk a prompt's promotions reorder.
+///
+/// The native dispatcher asks them right after the prelude, so a promoted
+/// method (a search act read off "can I see") never preempts them either. The
+/// browser twin is the early `claimRouteRun` call `solve()` makes in
+/// `js/worker/formal_ai_worker_solve.js` before `synchronousHandlerCandidates`.
+#[must_use]
+pub fn before_promotion_handlers() -> &'static [String] {
+    static CELL: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
+    CELL.get_or_init(|| rows_marked("before-promotion"))
+}
+
+/// The handler names of the precedence rows whose `field` is `true`, in seed
+/// order.
+fn rows_marked(field: &str) -> Vec<String> {
+    let network = crate::seed_links::network();
+    let Some(root) = network
+        .top_level(HANDLER_PRECEDENCE_PATH)
+        .into_iter()
+        .next()
+    else {
+        return Vec::new();
+    };
+    network
+        .nodes_under(&root.index)
+        .into_iter()
+        .filter(|row| {
+            network
+                .field(&row.index, field)
+                .is_some_and(|mark| mark == "true")
+        })
+        .filter_map(|row| network.value_of(&row.index).map(str::to_owned))
+        .collect()
 }
 
 /// Parse a handler-precedence document into its rank-ordered handler names.

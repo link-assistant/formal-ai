@@ -1,0 +1,11 @@
+language en
+lemma museum
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a depository for collecting and displaying objects having scientific or historical or artistic value"
+    id oewn-03806085-n
+    partOfSpeech n
+source "oewn:2024"

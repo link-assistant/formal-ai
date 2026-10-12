@@ -1,0 +1,13 @@
+view
+  id M-a37f0cd367e1
+  lemma twelve
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the cardinal number that is the sum of eleven and one"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being one more than eleven"
+    provenance (wordnet)

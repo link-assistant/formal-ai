@@ -1,0 +1,9 @@
+view
+  id M-8bf59a803704
+  lemma kilocalorie
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of heat equal to the amount of heat required to raise the temperature of one kilogram of water by one degree at one atmosphere pressure; used by nutritionists to characterize the energy-producing potential in food"
+    provenance (wordnet)

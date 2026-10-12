@@ -1,0 +1,99 @@
+{
+  "lemma": "weight",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05034009-n",
+      "partOfSpeech": "n",
+      "definition": "the vertical force exerted by a mass as a result of gravity"
+    },
+    {
+      "id": "oewn-04578578-n",
+      "partOfSpeech": "n",
+      "definition": "sports equipment used in calisthenic exercises and weightlifting; it is not attached to anything and is raised and lowered by use of the hands and arms",
+      "synonyms": [
+        "free weight",
+        "exercising weight"
+      ]
+    },
+    {
+      "id": "oewn-05179849-n",
+      "partOfSpeech": "n",
+      "definition": "the relative importance granted to something",
+      "examples": [
+        "his opinion carries great weight",
+        "the progression implied an increasing weightiness of the items listed"
+      ],
+      "synonyms": [
+        "weightiness"
+      ]
+    },
+    {
+      "id": "oewn-04578374-n",
+      "partOfSpeech": "n",
+      "definition": "an artifact that is heavy"
+    },
+    {
+      "id": "oewn-07554200-n",
+      "partOfSpeech": "n",
+      "definition": "an oppressive feeling of heavy force",
+      "examples": [
+        "bowed down by the weight of responsibility"
+      ]
+    },
+    {
+      "id": "oewn-13737860-n",
+      "partOfSpeech": "n",
+      "definition": "a system of units used to express the weight of something",
+      "synonyms": [
+        "system of weights"
+      ]
+    },
+    {
+      "id": "oewn-13630031-n",
+      "partOfSpeech": "n",
+      "definition": "a unit used to measure weight",
+      "examples": [
+        "he placed two weights in the scale pan"
+      ],
+      "synonyms": [
+        "weight unit"
+      ]
+    },
+    {
+      "id": "oewn-13610524-n",
+      "partOfSpeech": "n",
+      "definition": "(statistics) a coefficient assigned to elements of a frequency distribution in order to represent their relative importance",
+      "synonyms": [
+        "weighting"
+      ]
+    },
+    {
+      "id": "oewn-01489937-v",
+      "partOfSpeech": "v",
+      "definition": "weight down with a load",
+      "synonyms": [
+        "burden",
+        "burthen",
+        "weight down"
+      ]
+    },
+    {
+      "id": "oewn-00682404-v",
+      "partOfSpeech": "v",
+      "definition": "present with a bias",
+      "examples": [
+        "He biased his presentation so as to please the share holders"
+      ],
+      "synonyms": [
+        "slant",
+        "angle"
+      ]
+    }
+  ]
+}

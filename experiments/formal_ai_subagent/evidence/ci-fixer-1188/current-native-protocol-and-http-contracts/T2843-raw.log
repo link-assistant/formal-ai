@@ -1,0 +1,227 @@
+>> read {"filePath":"rust/tests/integration/issue_712_intent_routing.rs","file_path":"rust/tests/integration/issue_712_intent_routing.rs","path":"rust/tests/integration/issue_712_intent_routing.rs"}
+   <file>
+   00001| //! Issue #712: reported natural phrasings route to tools over every supported API.
+   00002| 
+   00003| use crate::http_server::{
+   00004|     http_post_json, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
+   00005| };
+   00006| use std::sync::{Mutex, MutexGuard};
+   00007| 
+   00008| #[path = "../support/http_auxiliary_workspace.rs"]
+   00009| mod auxiliary_workspace;
+   00010| 
+   00011| const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
+   00012| static SERVER_TEST_LOCK: Mutex<()> = Mutex::new(());
+   00013| 
+   00014| #[test]
+   00015| fn chat_completions_get_contents_routes_to_web_fetch() {
+   00016|     let _guard = server_test_lock();
+   00017|     let response = chat(
+   00018|         "get contents https://example.com/data.json",
+   00019|         &["web_fetch", "web_search"],
+   00020|     );
+   00021|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00022|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00023|     assert_eq!(call["function"]["name"], "web_fetch");
+   00024|     let arguments = chat_arguments(call);
+   00025|     assert_eq!(arguments["url"], "https://example.com/data.json");
+   00026| }
+   00027| 
+   00028| #[test]
+   00029| fn responses_google_request_routes_to_web_search() {
+   00030|     let _guard = server_test_lock();
+   00031|     let port = reserve_loopback_port();
+   00032|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00033|     let response = http_post_json(
+   00034|         port,
+   00035|         "/api/openai/v1/responses",
+   00036|         TOKEN,
+   00037|         &serde_json::json!({
+   00038|             "model": "formal-ai",
+   00039|             "input": "google what is a monad",
+   00040|             "tools": [{
+   00041|                 "type": "function",
+   00042|                 "name": "web_search",
+   00043|                 "parameters": {"type": "object"}
+   00044|             }]
+   00045|         }),
+   00046|     );
+   00047|     let call = response["output"]
+   00048|         .as_array()
+   00049|         .expect("Responses output should be an array")
+   00050|         .iter()
+   00051|         .find(|item| item["type"] == "function_call")
+   00052|         .expect("Responses output should include a function_call item");
+   00053|     assert_eq!(call["name"], "web_search");
+   00054|     assert!(
+   00055|         call["arguments"]
+   00056|             .as_str()
+   00057|             .is_some_and(|arguments| arguments.to_ascii_lowercase().contains("monad")),
+   00058|         "search call should preserve the subject: {call}"
+   00059|     );
+   00060| }
+   00061| 
+   00062| #[test]
+   00063| fn gemini_update_request_routes_to_edit() {
+   00064|     let _guard = server_test_lock();
+   00065|     let port = reserve_loopback_port();
+   00066|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00067|     let response = http_post_json(
+   00068|         port,
+   00069|         "/api/gemini/v1beta/models/formal-ai:generateContent",
+   00070|         TOKEN,
+   00071|         &serde_json::json!({
+   00072|             "contents": [{
+   00073|                 "role": "user",
+   00074|                 "parts": [{"text": "update main.rs and change foo to bar"}]
+   00075|             }],
+   00076|             "tools": [{
+   00077|                 "functionDeclarations": [
+   00078|                     {"name": "replace", "parameters": {"type": "object"}}
+   00079|                 ]
+   00080|             }]
+   00081|         }),
+   00082|     );
+   00083|     let call = response["candidates"][0]["content"]["parts"]
+   00084|         .as_array()
+   00085|         .expect("Gemini parts should be an array")
+   00086|         .iter()
+   00087|         .find_map(|part| part.get("functionCall"))
+   00088|         .expect("Gemini content should include a functionCall part");
+   00089|     assert_eq!(call["name"], "replace");
+   00090|     assert_eq!(call["args"]["path"], "main.rs");
+   00091|     assert_eq!(call["args"]["oldString"], "foo");
+   00092|     assert_eq!(call["args"]["new_string"], "bar");
+   00093| }
+   00094| 
+   00095| #[test]
+   00096| fn declarative_new_file_routes_to_write_and_never_read() {
+   00097|     let _guard = server_test_lock();
+   00098|     let port = reserve_loopback_port();
+   00099|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00100|     let response = write_on_port(port, "new file: notes.txt, contents: hello", &["write_file", "read_file"]);
+   00101|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00102|     let calls = response["choices"][0]["message"]["tool_calls"]
+   00103|         .as_array()
+   00104|         .expect("tool_calls should be an array");
+   00105|     assert_eq!(calls.len(), 1);
+   00106|     assert_eq!(calls[0]["function"]["name"], "write_file");
+   00107|     let arguments = chat_arguments(&calls[0]);
+   00108|     assert_eq!(arguments["path"], "notes.txt");
+   00109|     assert_eq!(arguments["content"], "hello");
+   00110|     assert!(
+   00111|         calls[0]["function"]["arguments"]
+   00112|             .as_str()
+   00113|             .is_some_and(|arguments| arguments.contains("notes.txt")),
+   00114|         "write call should preserve the target: {}",
+   00115|         calls[0]
+   00116|     );
+   00117| }
+   00118| 
+   00119| #[test]
+   00120| fn all_reported_capability_classes_route_in_one_matrix() {
+   00121|     let _guard = server_test_lock();
+   00122|     let port = reserve_loopback_port();
+   00123|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00124|     let cases = [
+   00125|         ("visit https://example.com and summarize it", "web_fetch"),
+   00126|         ("what does the web say about serde", "web_search"),
+   00127|         // Editing clients may require a grounding read before mutation; the
+   00128|         // dedicated Gemini test above verifies the direct edit call shape.
+   00129|         ("rewrite main.rs and change foo to bar", "read_file"),
+   00130|         ("new file: notes.txt, contents: hello", "write_file"),
+   00131|     ];
+   00132|     for (prompt, expected) in cases {
+   00133|         let tools = ["web_fetch", "web_search", "edit", "write_file", "read_file"];
+   00134|         let response = if expected == "write_file" {
+   00135|             write_on_port(port, prompt, &tools)
+   00136|         } else {
+   00137|             chat_on_port(port, prompt, &tools)
+   00138|         };
+   00139|         let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00140|         assert_eq!(call["function"]["name"], expected, "prompt: {prompt}");
+   00141|     }
+   00142| }
+   00143| 
+   00144| #[test]
+   00145| fn leading_edit_action_is_language_general() {
+   00146|     let _guard = server_test_lock();
+   00147|     let port = reserve_loopback_port();
+   00148|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00149|     let cases = [
+   00150|         ("English", "update main.rs and change foo to bar"),
+   00151|         ("Russian", "измени main.rs и замени foo на bar"),
+   00152|         ("Hindi", "बदलो main.rs और बदलो foo से bar"),
+   00153|         ("Chinese", "修改 main.rs 并 替换 foo 为 bar"),
+   00154|     ];
+   00155|     for (language, prompt) in cases {
+   00156|         let response = chat_on_port(port, prompt, &["edit"]);
+   00157|         let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00158|         assert_eq!(call["function"]["name"], "edit", "{language}: {prompt}");
+   00159|         let arguments = chat_arguments(call);
+   00160|         assert_eq!(arguments["path"], "main.rs", "{language}: {prompt}");
+   00161|         assert_eq!(arguments["oldString"], "foo", "{language}: {prompt}");
+   00162|         assert_eq!(arguments["new_string"], "bar", "{language}: {prompt}");
+   00163|     }
+   00164| }
+   00165| 
+   00166| fn chat(prompt: &str, tools: &[&str]) -> serde_json::Value {
+   00167|     let port = reserve_loopback_port();
+   00168|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00169|     chat_on_port(port, prompt, tools)
+   00170| }
+   00171| 
+   00172| fn chat_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
+   00173|     http_post_json(
+   00174|         port,
+   00175|         "/api/openai/v1/chat/completions",
+   00176|         TOKEN,
+   00177|         &serde_json::json!({
+   00178|             "model": "formal-ai",
+   00179|             "stream": false,
+   00180|             "messages": [{"role": "user", "content": prompt}],
+   00181|             "tools": tools.iter().map(|name| function_tool(name)).collect::<Vec<_>>()
+   00182|         }),
+   00183|     )
+   00184| }
+   00185| 
+   00186| fn write_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
+   00187|     auxiliary_workspace::observed_target_write(prompt, "notes.txt", &mut |messages| {
+   00188|         http_post_json(port, "/api/openai/v1/chat/completions", TOKEN, &serde_json::json!({
+   00189|             "model": "formal-ai", "stream": false, "messages": messages,
+   00190|             "tools": tools.iter().map(|name| function_tool(name)).collect::<Vec<_>>()
+   00191|         }))
+   00192|     })
+   00193| }
+   00194| 
+   00195| fn chat_arguments(call: &serde_json::Value) -> serde_json::Value {
+   00196|     serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap()
+   00197| }
+   00198| 
+   00199| fn function_tool(name: &str) -> serde_json::Value {
+   00200|     serde_json::json!({
+   00201|         "type": "function",
+   00202|         "function": {
+   00203|             "name": name,
+   00204|             "description": format!("The {name} capability"),
+   00205|             "parameters": {"type": "object"}
+   00206|         }
+   00207|     })
+   00208| }
+   00209| 
+   00210| fn server_test_lock() -> MutexGuard<'static, ()> {
+   00211|     SERVER_TEST_LOCK
+   00212|         .lock()
+   00213|         .unwrap_or_else(std::sync::PoisonError::into_inner)
+   00214| }
+   00215| 
+   
+   (End of file - total 215 lines)
+   </file>
+>> edit {"filePath":"rust/tests/integration/issue_712_intent_routing.rs","file_path":"rust/tests/integration/issue_712_intent_routing.rs","new":"observed_target_write(prompt, \"notes.txt\", \"earlier observed fixture event\\n\", &mut","newString":"observed_target_write(prompt, \"notes.txt\", \"earlier observed fixture event\\n\", &mut","new_str":"observed_target_write(prompt, \"notes.txt\", \"earlier observed fixture event\\n\", &mut","new_string":"observed_target_write(prompt, \"notes.txt\", \"earlier observed fixture event\\n\", &mut","old":"observed_target_write(prompt, \"notes.txt\", &mut","oldString":"observed_target_write(prompt, \"notes.txt\", &mut","old_str":"observed_target_write(prompt, \"notes.txt\", &mut","old_string":"observed_target_write(prompt, \"notes.txt\", &mut","path":"rust/tests/integration/issue_712_intent_routing.rs"}
+>> bash {"command":"sha256sum -- rust/tests/integration/issue_712_intent_routing.rs"}
+   Output: 7fc657d81dd8e1e0ae9865529d074e1e7e788a1f705d9505910897c8d6714642  rust/tests/integration/issue_712_intent_routing.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `observed_target_write(prompt, "notes.txt", &mut` with `observed_target_write(prompt, "notes.txt", "earlier observed fixture event\n", &mut` in `rust/tests/integration/issue_712_intent_routing.rs` and observed the result.

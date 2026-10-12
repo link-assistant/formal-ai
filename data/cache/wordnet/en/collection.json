@@ -1,0 +1,52 @@
+{
+  "lemma": "collection",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07968050-n",
+      "partOfSpeech": "n",
+      "definition": "several things grouped together or considered as a whole",
+      "synonyms": [
+        "aggregation",
+        "accumulation",
+        "assemblage"
+      ]
+    },
+    {
+      "id": "oewn-06603723-n",
+      "partOfSpeech": "n",
+      "definition": "a publication containing a variety of works",
+      "synonyms": [
+        "compendium"
+      ]
+    },
+    {
+      "id": "oewn-06525755-n",
+      "partOfSpeech": "n",
+      "definition": "request for a sum of money",
+      "examples": [
+        "an appeal to raise money for starving children"
+      ],
+      "synonyms": [
+        "solicitation",
+        "appeal",
+        "ingathering"
+      ]
+    },
+    {
+      "id": "oewn-01016008-n",
+      "partOfSpeech": "n",
+      "definition": "the act of gathering something together",
+      "synonyms": [
+        "collecting",
+        "assembling",
+        "aggregation"
+      ]
+    }
+  ]
+}

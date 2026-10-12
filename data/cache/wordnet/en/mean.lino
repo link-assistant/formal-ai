@@ -1,0 +1,99 @@
+language en
+lemma mean
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an average of n numbers computed by adding some function of the numbers and dividing by some function of n"
+    id oewn-06033377-n
+    partOfSpeech n
+    synonyms ("mean value")
+  entry
+    definition "approximating the statistical norm or average or expected value"
+    examples ("the average income in New England is below that of the nation" "of average height for his age" "the mean annual rainfall")
+    id oewn-01598728-s
+    partOfSpeech s
+    synonyms (average)
+  entry
+    definition "characterized by malice"
+    examples ("a hateful thing to do" "in a mean mood")
+    id oewn-01592194-s
+    partOfSpeech s
+    synonyms (hateful)
+  entry
+    definition "having or showing an ignoble lack of honor or morality"
+    examples ("that liberal obedience without which your army would be a base rabble" "taking a mean advantage" "chok'd with ambition of the meaner sort" "something essentially vulgar and meanspirited in politics")
+    id oewn-01594057-s
+    partOfSpeech s
+    synonyms (base meanspirited)
+  entry
+    definition "marked by poverty befitting a beggar"
+    examples ("a beggarly existence in the slums" "a mean hut")
+    id oewn-02033096-s
+    partOfSpeech s
+    synonyms (beggarly)
+  entry
+    definition "(used of persons or behavior) characterized by or indicative of lack of generosity"
+    examples ("a mean person" "he left a miserly tip")
+    id oewn-01117549-s
+    partOfSpeech s
+    synonyms (mingy miserly tight)
+  entry
+    definition "(used of sums of money) so small in amount as to deserve contempt"
+    id oewn-01116711-s
+    partOfSpeech s
+    synonyms (beggarly)
+  entry
+    definition "of no value or worth"
+    examples ("I was caught in the bastardly traffic")
+    id oewn-00908261-s
+    partOfSpeech s
+    synonyms (bastardly)
+  entry
+    definition "very good; of the highest quality"
+    examples ("made an excellent speech" "he was a splendid teacher" "a first-class mind" "famous for a mean backhand")
+    id oewn-02351216-s
+    partOfSpeech s
+    synonyms (excellent first-class fantabulous splendid ripping)
+  entry
+    definition "mean or intend to express or convey"
+    examples ("You never understand what I mean!" "what do his words intend?")
+    id oewn-00957180-v
+    partOfSpeech v
+    synonyms (intend)
+  entry
+    definition "have as a logical consequence"
+    examples ("The water shortage means that we have to stop taking long showers")
+    id oewn-02641270-v
+    partOfSpeech v
+    synonyms (entail imply)
+  entry
+    definition "denote or connote"
+    examples ("‘maison’ means ‘house’ in French" "An example sentence would show what this word means")
+    id oewn-00933814-v
+    partOfSpeech v
+    synonyms (intend signify "stand for")
+  entry
+    definition "have in mind as a purpose"
+    examples ("I mean no harm" "I only meant to help you" "She didn't think to harm me" "We thought to return early that night")
+    id oewn-00710367-v
+    partOfSpeech v
+    synonyms (intend think)
+  entry
+    definition "have a specified degree of importance"
+    examples ("My ex-husband means nothing to me" "Happiness means everything")
+    id oewn-02748357-v
+    partOfSpeech v
+  entry
+    definition "intend to refer to"
+    examples ("I'm thinking of good food when I talk about France" "Yes, I meant you when I complained about people who gossip!")
+    id oewn-00732037-v
+    partOfSpeech v
+    synonyms ("think of" "have in mind")
+  entry
+    definition "destine or designate for a certain purpose"
+    examples ("These flowers were meant for you")
+    id oewn-00710669-v
+    partOfSpeech v
+source "oewn:2024"

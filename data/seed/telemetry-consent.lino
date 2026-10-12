@@ -1,0 +1,18 @@
+# Issue 861 consent and diagnostic schema; registry integration pending.
+telemetry_consent
+  default off
+  choice github_account
+  choice anonymous_once
+  choice anonymous_automatic
+  choice decline
+  setting FORMAL_AI_TELEMETRY_MODE
+  endpoint_setting FORMAL_AI_SENTRY_DSN
+  allow diagnostic_kind
+  allow diagnostic_code
+  allow retryable
+  allow release
+  deny prompt
+  deny username
+  deny file_path
+  deny environment
+  deny stacktrace

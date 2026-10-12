@@ -1,0 +1,4 @@
+Cutoff T2635: 136 complete raw transcripts; missing=[].
+Actual outer trusted tool headers: {'bash': 161, 'read': 99, 'edit': 99}.
+Verified repository-source Edit calls99. Neutral template Copy Bash5 (T2201/2203/2205/2237/2628). Neutral formatter Bash5 (T2274 targets5;T2600 targets4;T2618 targets1;T2627 targets3;T2633 targets1). Neutral generated metadata Bash1 T2291. Remote control Bash3 T2283/2284/2285, excluded source authorship. All digest SHA commands read-only. Manual repository mutations0.
+Selected unchanged sandbox replay T2635:27 complete child logs including22 original false-rejected edits,4 bootstrap corrections,SpecT2704; actual child tool headers {'read': 27, 'edit': 27, 'bash': 27}. These27 scratch edits are separate from99 repository source edits. Original26 falseverification FAIL retained, After Fixed names general status-aware digest repair and T2635 unchanged actual27/27 +T2634 focused19/19.

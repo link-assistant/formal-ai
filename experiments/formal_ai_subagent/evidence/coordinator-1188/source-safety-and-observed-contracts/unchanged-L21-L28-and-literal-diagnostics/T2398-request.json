@@ -1,0 +1,16 @@
+{
+  "id": "T2398",
+  "dir": "/private/tmp/formal-ai-only-1188/L28-eight-JERsfl",
+  "prompt": "Read rust/src/client_integrations.rs and rust/src/client_integrations/global_config.rs. Explain whether the old constant identifier still has a declaration for its imports and uses after this rename. Propose a general bounded validation and scope-reconciliation plan from the observed source. Do not modify files or invent compiler results.",
+  "steps": 8,
+  "preimages": [
+    {
+      "path": "rust/src/client_integrations.rs",
+      "sha256": "7781f69fc993eb91d6348735bd02254616a934f883d41b6e409b599af7228363"
+    },
+    {
+      "path": "rust/src/client_integrations/global_config.rs",
+      "sha256": "0f62ad674340813a9f3a391e3374048290f498f07b29ae69cf521c5b63d30961"
+    }
+  ]
+}

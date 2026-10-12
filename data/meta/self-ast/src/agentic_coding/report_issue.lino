@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/report_issue.rs
   language rust
   fidelity full_ast
-  byte_len 21912
-  line_count 592
-  content_id source_module_b1666384afca59cb
+  byte_len 21891
+  line_count 590
+  content_id source_module_d8fbd0ce7210d0be
   symbol_count 48
   symbols
     const REPORT_BODY_COMMAND 14 14
@@ -53,18 +53,18 @@ self_ast_census
     function title_turns 505 515
     function report_finished 518 576
     function formal_ai_repo 578 580
-    function config 582 586
-    function render 588 592
+    function config 582 584
+    function render 586 590
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15377
-    named_node_count 3111
+    total_link_count 15356
+    named_node_count 3107
     distinct_node_kinds 77
     node_kinds
-      arguments 276
+      arguments 275
       array_expression 7
       array_type 14
       assignment_expression 1
@@ -74,7 +74,7 @@ self_ast_census
       binary_expression 25
       block 60
       boolean_literal 10
-      call_expression 276
+      call_expression 275
       closure_expression 41
       closure_parameters 41
       const_item 20
@@ -86,8 +86,8 @@ self_ast_census
       enum_variant_list 2
       escape_sequence 16
       expression_statement 59
-      field_expression 207
-      field_identifier 207
+      field_expression 206
+      field_identifier 206
       field_initializer 1
       field_initializer_list 1
       for_expression 1

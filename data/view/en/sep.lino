@@ -1,0 +1,9 @@
+view
+  id M-ccc9c93ad47f
+  lemma sep
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the month following August and preceding October"
+    provenance (wordnet)

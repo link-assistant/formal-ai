@@ -1,0 +1,34 @@
+{
+  "transcript": [
+    {
+      "tool": "read",
+      "arguments": "{\"filePath\":\"error-keys.json\",\"file_path\":\"error-keys.json\",\"path\":\"error-keys.json\"}",
+      "result": "{\n  \"success\": false,\n  \"complete\": false,\n  \"error\": \"failed\",\n  \"is_error\": true,\n  \"exit_code\": 9,\n  \"signal\": \"SIGTERM\",\n  \"content\": \"actual source\"\n}\n",
+      "source_read": {
+        "path": "error-keys.json",
+        "success": true,
+        "complete": true,
+        "format": "raw"
+      }
+    }
+  ],
+  "answer": "The command failed: `error-keys.json` exited with code 9.\n\n```text\nfailed\n```\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+  "stop": "final",
+  "toolsAdvertised": [
+    "read"
+  ],
+  "selected": [
+    {
+      "kind": "tool_calls",
+      "result": null
+    },
+    {
+      "kind": "final",
+      "result": {
+        "text": "The command failed: `error-keys.json` exited with code 9.\n\n```text\nfailed\n```\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+        "disposition": "unknown",
+        "origin": null
+      }
+    }
+  ]
+}

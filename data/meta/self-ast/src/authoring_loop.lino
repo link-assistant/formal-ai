@@ -2,21 +2,37 @@ self_ast_census
   target src/authoring_loop.rs
   language rust
   fidelity signature
-  byte_len 18123
-  line_count 468
-  content_id source_module_80624adfbc7ca0ad
-  symbol_count 13
+  byte_len 26640
+  line_count 653
+  content_id source_module_8387a3b98cde5257
+  symbol_count 29
   symbols
-    struct AuthoringOutcome 37 48
-    function canonical_pull_request 53 79
-    function unique_scratch 81 88
-    static SEQUENCE 82 82
-    struct Scratch 90 92
-    function new 95 100
-    function drop 104 106
-    function differs 109 116
-    function run_authoring 127 435
-    function contains_bytes 437 444
-    function copy_dir 446 459
-    struct ServerGuard 461 461
-    function drop 464 467
+    struct AuthoringOutcome 49 60
+    function canonical_pull_request 65 91
+    function unique_scratch 93 100
+    static SEQUENCE 94 94
+    struct Scratch 102 104
+    function new 107 112
+    function drop 116 118
+    function run_authoring 135 137
+    function run_authoring_with 150 181
+    const AUTHORING_CALLER 184 184
+    const TRACE_FILE 187 187
+    struct Baseline 191 194
+    struct AuthoringRun 197 220
+    function new 223 286
+    function stage 290 318
+    function write_trace 322 327
+    function open 329 339
+    function read_baseline 341 352
+    function serve 354 385
+    function edit 387 464
+    function harvest_session 466 491
+    function verify_contract 493 516
+    function land 518 557
+    function commit 559 611
+    function read_if_file 614 620
+    function contains_bytes 622 629
+    function copy_dir 631 644
+    struct ServerGuard 646 646
+    function drop 649 652

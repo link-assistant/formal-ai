@@ -1,0 +1,25 @@
+view
+  id M-a057db7d9067
+  lemma article
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "nonfictional prose forming an independent part of a publication"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one of a class of artifacts"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a separate section of a legal document (as a statute or contract or will)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(grammar) a determiner that may indicate the specificity of reference of a noun phrase"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bind by a contract; especially for a training period"
+    provenance (wordnet)

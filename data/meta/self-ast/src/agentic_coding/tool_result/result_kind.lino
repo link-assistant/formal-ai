@@ -1,0 +1,70 @@
+self_ast_census
+  target src/agentic_coding/tool_result/result_kind.rs
+  language rust
+  fidelity full_ast
+  byte_len 2700
+  line_count 83
+  content_id source_module_696535833ed081f4
+  symbol_count 6
+  symbols
+    function command_words 17 43
+    static WORDS 18 18
+    function is_command 46 48
+    function command_kind 51 57
+    function is_listing 60 69
+    function is_search 72 83
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2059
+    named_node_count 420
+    distinct_node_kinds 46
+    node_kinds
+      arguments 38
+      array_expression 1
+      array_type 1
+      binary_expression 6
+      block 13
+      boolean_literal 2
+      call_expression 38
+      closure_expression 9
+      closure_parameters 9
+      crate 2
+      doc_comment 14
+      expression_statement 8
+      field_expression 36
+      field_identifier 36
+      function_item 5
+      generic_type 3
+      identifier 70
+      if_expression 4
+      inner_doc_comment_marker 8
+      integer_literal 1
+      let_condition 2
+      let_declaration 4
+      lifetime 2
+      line_comment 14
+      outer_doc_comment_marker 6
+      parameter 4
+      parameters 5
+      primitive_type 8
+      reference_expression 4
+      reference_type 6
+      return_expression 4
+      scoped_identifier 8
+      source_file 1
+      static_item 1
+      string_content 11
+      string_literal 11
+      super 2
+      try_expression 1
+      tuple_expression 1
+      tuple_pattern 2
+      tuple_struct_pattern 2
+      tuple_type 2
+      type_arguments 3
+      type_identifier 7
+      use_declaration 3
+      visibility_modifier 2

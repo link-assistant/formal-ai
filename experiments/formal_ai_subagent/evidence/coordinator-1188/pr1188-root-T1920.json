@@ -1,0 +1,72 @@
+{
+  "identifier": "T1920",
+  "purpose": "Correct coordinator test assumptions to the existing native translation intent and object-slot semantics, without source behavior change.",
+  "observations": [
+    {
+      "prompt": "In rust/tests/web/shared-solver-formalization-evidence.test.mjs replace «assert.equal(answer.intent, 'translation');» with «assert.equal(answer.intent, 'translate_en_to_ru');»",
+      "result": {
+        "transcript": [
+          {
+            "tool": "read",
+            "arguments": "{\"filePath\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\",\"file_path\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\",\"path\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\"}",
+            "result": "<file>\n00001| // Shared formalization evidence and lossless native projection (R1013, R1188-U29).\n00002| import assert from 'node:assert/strict';\n00003| import { before, test } from 'node:test';\n00004| import { WorkerHost } from '../../../js/server/worker-host.mjs';\n00005| import { installNodeHost } from '../../../js/agentic/node-host.mjs';\n00006| import { nativeSolverLog } from '../../../js/server/solver-log.mjs';\n00007| let host;\n00008| before(async () => { host = new WorkerHost(); await installNodeHost(host); });\n00009| \n00010| test('browser translation evidence carries real formalization property and item anchors', async () => {\n00011|   const answer = await host.solve('translate apple to Russian');\n00012|   assert.equal(answer.intent, 'translation');\n00013|   assert.ok(answer.evidence.includes('formalization:predicate_p:wikidata:P5972'));\n00014|   assert.ok(answer.evidence.includes('formalization:subject_q:wikidata:Q89'));\n00015|   assert.ok(answer.rawSolverEvents.length < answer.solverEvents.length);\n00016| });\n00017| \n00018| test('repeat server projection preserves raw events and yields the same complete log', async () => {\n00019|   const answer = await host.solve('What is 2 + 2?');\n00020|   const raw = JSON.stringify(answer.rawSolverEvents);\n00021|   const once = nativeSolverLog(answer);\n00022|   const twice = nativeSolverLog({ ...answer, solverEvents: once });\n00023|   assert.deepEqual(twice, once);\n00024|   assert.equal(JSON.stringify(answer.rawSolverEvents), raw);\n00025|   assert.ok(once.some((event) => event.kind === 'problem_frame'));\n00026|   assert.ok(once.some((event) => event.kind === 'obligation_ledger'));\n00027| });\n00028| \n00029| test('a log without a solver prelude remains unchanged', () => {\n00030|   assert.deepEqual(nativeSolverLog({ solverEvents: [{ kind: 'observed', payload: 'data' }] }), [{ kind: 'observed', payload: 'data' }]);\n00031| });\n00032| \n\n(End of file - total 32 lines)\n</file>"
+          },
+          {
+            "tool": "edit",
+            "arguments": "{\"filePath\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\",\"file_path\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\",\"new\":\"assert.equal(answer.intent, 'translate_en_to_ru');\",\"newString\":\"assert.equal(answer.intent, 'translate_en_to_ru');\",\"new_str\":\"assert.equal(answer.intent, 'translate_en_to_ru');\",\"new_string\":\"assert.equal(answer.intent, 'translate_en_to_ru');\",\"old\":\"assert.equal(answer.intent, 'translation');\",\"oldString\":\"assert.equal(answer.intent, 'translation');\",\"old_str\":\"assert.equal(answer.intent, 'translation');\",\"old_string\":\"assert.equal(answer.intent, 'translation');\",\"path\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\"}",
+            "result": ""
+          },
+          {
+            "tool": "bash",
+            "arguments": "{\"command\":\"sha256sum -- rust/tests/web/shared-solver-formalization-evidence.test.mjs\"}",
+            "result": "40b393e8747c36dbeaf5ba4b83b5eb4f6771b35dc42098a10c8c5e8f0a09ca86  rust/tests/web/shared-solver-formalization-evidence.test.mjs\n"
+          }
+        ],
+        "answer": "Replaced `assert.equal(answer.intent, 'translation');` with `assert.equal(answer.intent, 'translate_en_to_ru');` in `rust/tests/web/shared-solver-formalization-evidence.test.mjs` and observed the result.",
+        "stop": "final"
+      },
+      "ok": true
+    },
+    {
+      "prompt": "In rust/tests/web/shared-solver-formalization-evidence.test.mjs replace «formalization:subject_q:wikidata:Q89» with «formalization:object_q:wikidata:Q89»",
+      "result": {
+        "transcript": [
+          {
+            "tool": "read",
+            "arguments": "{\"filePath\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\",\"file_path\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\",\"path\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\"}",
+            "result": "<file>\n00001| // Shared formalization evidence and lossless native projection (R1013, R1188-U29).\n00002| import assert from 'node:assert/strict';\n00003| import { before, test } from 'node:test';\n00004| import { WorkerHost } from '../../../js/server/worker-host.mjs';\n00005| import { installNodeHost } from '../../../js/agentic/node-host.mjs';\n00006| import { nativeSolverLog } from '../../../js/server/solver-log.mjs';\n00007| let host;\n00008| before(async () => { host = new WorkerHost(); await installNodeHost(host); });\n00009| \n00010| test('browser translation evidence carries real formalization property and item anchors', async () => {\n00011|   const answer = await host.solve('translate apple to Russian');\n00012|   assert.equal(answer.intent, 'translate_en_to_ru');\n00013|   assert.ok(answer.evidence.includes('formalization:predicate_p:wikidata:P5972'));\n00014|   assert.ok(answer.evidence.includes('formalization:subject_q:wikidata:Q89'));\n00015|   assert.ok(answer.rawSolverEvents.length < answer.solverEvents.length);\n00016| });\n00017| \n00018| test('repeat server projection preserves raw events and yields the same complete log', async () => {\n00019|   const answer = await host.solve('What is 2 + 2?');\n00020|   const raw = JSON.stringify(answer.rawSolverEvents);\n00021|   const once = nativeSolverLog(answer);\n00022|   const twice = nativeSolverLog({ ...answer, solverEvents: once });\n00023|   assert.deepEqual(twice, once);\n00024|   assert.equal(JSON.stringify(answer.rawSolverEvents), raw);\n00025|   assert.ok(once.some((event) => event.kind === 'problem_frame'));\n00026|   assert.ok(once.some((event) => event.kind === 'obligation_ledger'));\n00027| });\n00028| \n00029| test('a log without a solver prelude remains unchanged', () => {\n00030|   assert.deepEqual(nativeSolverLog({ solverEvents: [{ kind: 'observed', payload: 'data' }] }), [{ kind: 'observed', payload: 'data' }]);\n00031| });\n00032| \n\n(End of file - total 32 lines)\n</file>"
+          },
+          {
+            "tool": "edit",
+            "arguments": "{\"filePath\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\",\"file_path\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\",\"new\":\"formalization:object_q:wikidata:Q89\",\"newString\":\"formalization:object_q:wikidata:Q89\",\"new_str\":\"formalization:object_q:wikidata:Q89\",\"new_string\":\"formalization:object_q:wikidata:Q89\",\"old\":\"formalization:subject_q:wikidata:Q89\",\"oldString\":\"formalization:subject_q:wikidata:Q89\",\"old_str\":\"formalization:subject_q:wikidata:Q89\",\"old_string\":\"formalization:subject_q:wikidata:Q89\",\"path\":\"rust/tests/web/shared-solver-formalization-evidence.test.mjs\"}",
+            "result": ""
+          },
+          {
+            "tool": "bash",
+            "arguments": "{\"command\":\"sha256sum -- rust/tests/web/shared-solver-formalization-evidence.test.mjs\"}",
+            "result": "0ccbe6fb1814cefbdbb60689bb9ca5d02372744327c24283af79f90172c88e46  rust/tests/web/shared-solver-formalization-evidence.test.mjs\n"
+          }
+        ],
+        "answer": "Replaced `formalization:subject_q:wikidata:Q89` with `formalization:object_q:wikidata:Q89` in `rust/tests/web/shared-solver-formalization-evidence.test.mjs` and observed the result.",
+        "stop": "final"
+      },
+      "ok": true
+    },
+    {
+      "prompt": "Run node --test rust/tests/web/worker-crate-reexports.test.mjs rust/tests/web/shared-solver-formalization-evidence.test.mjs",
+      "result": {
+        "transcript": [
+          {
+            "tool": "bash",
+            "arguments": "{\"command\":\"node --test rust/tests/web/worker-crate-reexports.test.mjs rust/tests/web/shared-solver-formalization-evidence.test.mjs\"}",
+            "result": "TAP version 13\n# Subtest: browser translation evidence carries real formalization property and item anchors\nok 1 - browser translation evidence carries real formalization property and item anchors\n  ---\n  duration_ms: 535.787667\n  ...\n# Subtest: repeat server projection preserves raw events and yields the same complete log\nok 2 - repeat server projection preserves raw events and yields the same complete log\n  ---\n  duration_ms: 256.165\n  ...\n# Subtest: a log without a solver prelude remains unchanged\nok 3 - a log without a solver prelude remains unchanged\n  ---\n  duration_ms: 0.085166\n  ...\n# Subtest: a named re-export retains its public name and dependency in a generated factory\nok 4 - a named re-export retains its public name and dependency in a generated factory\n  ---\n  duration_ms: 1.706042\n  ...\n# Subtest: local export aliases retain the existing callable binding\nok 5 - local export aliases retain the existing callable binding\n  ---\n  duration_ms: 0.3265\n  ...\n# Subtest: an imported binding can be exposed through a local export clause\nok 6 - an imported binding can be exposed through a local export clause\n  ---\n  duration_ms: 0.361209\n  ...\n# Subtest: unsupported module syntax is rejected before browser artifacts can be written\nok 7 - unsupported module syntax is rejected before browser artifacts can be written\n  ---\n  duration_ms: 0.399041\n  ...\n1..7\n# tests 7\n# suites 0\n# pass 7\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 912.901125\n"
+          }
+        ],
+        "answer": "The `node --test rust/tests/web/worker-crate-reexports.test.mjs rust/tests/web/shared-solver-formalization-evidence.test.mjs` command completed. Output:\n\n```text\nTAP version 13\n# Subtest: browser translation evidence carries real formalization property and item anchors\nok 1 - browser translation evidence carries real formalization property and item anchors\n  ---\n  duration_ms: 535.787667\n  ...\n# Subtest: repeat server projection preserves raw events and yields the same complete log\nok 2 - repeat server projection preserves raw events and yields the same complete log\n  ---\n  duration_ms: 256.165\n  ...\n# Subtest: a log without a solver prelude remains unchanged\nok 3 - a log without a solver prelude remains unchanged\n  ---\n  duration_ms: 0.085166\n  ...\n# Subtest: a named re-export retains its public name and dependency in a generated factory\nok 4 - a named re-export retains its public name and dependency in a generated factory\n  ---\n  duration_ms: 1.706042\n  ...\n# Subtest: local export aliases retain the existing callable binding\nok 5 - local export aliases retain the existing callable binding\n  ---\n  duration_ms: 0.3265\n  ...\n# Subtest: an imported binding can be exposed through a local export clause\nok 6 - an imported binding can be exposed through a local export clause\n  ---\n  duration_ms: 0.361209\n  ...\n# Subtest: unsupported module syntax is rejected before browser artifacts can be written\nok 7 - unsupported module syntax is rejected before browser artifacts can be written\n  ---\n  duration_ms: 0.399041\n  ...\n1..7\n# tests 7\n# suites 0\n# pass 7\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 912.901125\n```",
+        "stop": "final"
+      },
+      "ok": true
+    }
+  ],
+  "ok": true
+}

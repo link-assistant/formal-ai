@@ -1,14 +1,17 @@
 Q527
   aliases
     en ("celestial dome" "celestial vault" firmament)
+    es ("bóveda celeste" firmamento cielos)
     ru ("небеса")
   descriptions
     en "region of the atmosphere and outer space visible from the surface of the Earth"
+    es "región de la atmósfera y del espacio exterior visible desde la superficie de la Tierra"
     ru "пространство над поверхностью астрономического объекта"
     zh "天体表面的观测者看到的大气层或太空的部分"
   id Q527
   labels
     en sky
+    es cielo
     hi "आकाश"
     ru "небо"
     zh "天空"

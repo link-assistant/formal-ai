@@ -1,0 +1,15 @@
+language en
+lemma directory
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an alphabetical list of names and addresses"
+    id oewn-06435262-n
+    partOfSpeech n
+  entry
+    definition "(computer science) a listing of the files stored in memory (usually on a hard disk)"
+    id oewn-06502442-n
+    partOfSpeech n
+source "oewn:2024"

@@ -1,0 +1,10 @@
+term_information_request_opener	háblame de …	háblame sobre …	cuéntame sobre …	cuéntame de …	puedes hablarme de …
+research_question_opener	define …	da una definición de …	qué es el …	qué es la …	qué es un …	qué es una …	qué es …	qué son los …	qué son las …	qué son …	cuál es el …	cuál es la …	cuáles son …	hay …	quién es …	quiénes son …	dónde está …	dónde …	cuándo es …	cuándo …	por qué …	puedes decirme …	sabes …	qué significa …
+document_originality_document	texto	documento	archivo	adjunto	manuscrito	artículo	ensayo	pasaje	afirmación	este texto
+research_superlative_modifier	 mejor 	 mejores 	 principal 	 estándar 	 popular 	 recomendado 	 recomendada 	 actual 	 más reciente 	 último 	 última 
+research_evidence_domain	 conjunto de datos 	 benchmark 	 corpus 	 métrica 	 métricas 	 framework 	 artículo 	 artículos 	 estudio 	 estudios 
+commercial_subscription_evidence	 suscripción 	 suscripciones 	 plan 	 planes 	 tarifa 	 precios 	 facturación 	 mensual 	 anual 
+research_evaluation_domain	 evaluación 	 evaluar 	 validación 	 validar 	 calidad 	 traducción 	 comparar 	 comparación 
+commercial_pricing_evaluation	 descuento 	 descuentos 	 precio 	 precios 	 costo 	 coste 	 más barato 	 ahorro 	 oferta 	 ofertas 
+enumeration_request_opener	enumera todos los …	enumera todas las …	lista todos los …	lista todas las …	muestra todos los …	muéstrame todos los …	dame todos los …	nombra todos los …
+enumeration_constraint	 con 	 que 	 cuyo 	 cuya 	 donde 	 que tienen 	 capaces de 	 para 	 en 

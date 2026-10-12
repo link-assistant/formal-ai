@@ -1,0 +1,5 @@
+{
+  "taskId": "T2414",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Set the contents of data/meta/worker-line-budget/formal_ai_worker_source_qualified_definition.lino to exactly this content:\n````````````text\nworker-module-budget\n  module \"formal_ai_worker_source_qualified_definition.js\"\n  ceiling 107\n  rationale \"Generic two-slot source-qualified definition observer, registry binding, disambiguation projection and provenance renderer; native solver_handlers/source_qualified_definition.rs twin.\"\n````````````"
+}

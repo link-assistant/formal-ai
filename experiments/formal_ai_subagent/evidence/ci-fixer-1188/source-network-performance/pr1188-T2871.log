@@ -1,0 +1,168 @@
+>> bash {"command":"scripts/run-with-budget-warning.sh 90 \"bounded actual source serializer shard\" node scripts/check-source-networks.mjs --meta-language /var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-meta-language/eb0574d5528babd3b4aadece81590d8e2230b99b --shard-count 8 --shard-index 1"}
+   Output: 
+   Error: {"event":"source-network-start","shardIndex":1,"path":"js/agentic/associative_learning.mjs","sourceBytes":2115}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/associative_learning.mjs","elapsedMilliseconds":272.66912499999995,"serializedBytes":95116,"compressedBytes":15397}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/code_task/target_guard.mjs","sourceBytes":2030}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/code_task/target_guard.mjs","elapsedMilliseconds":339.4966250000001,"serializedBytes":134508,"compressedBytes":22286}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/calculation.mjs","sourceBytes":861}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/calculation.mjs","elapsedMilliseconds":53.03620799999999,"serializedBytes":29252,"compressedBytes":4422}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/computer_use_induction.mjs","sourceBytes":11645}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/computer_use_induction.mjs","elapsedMilliseconds":4342.914666000001,"serializedBytes":1044867,"compressedBytes":164627}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/dependency_summarization.mjs","sourceBytes":8874}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/dependency_summarization.mjs","elapsedMilliseconds":1117.437,"serializedBytes":513098,"compressedBytes":81114}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/event_log.mjs","sourceBytes":8407}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/event_log.mjs","elapsedMilliseconds":1031.5933750000004,"serializedBytes":503623,"compressedBytes":80003}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/history_github.mjs","sourceBytes":10854}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/history_github.mjs","elapsedMilliseconds":2160.6237499999997,"serializedBytes":1015451,"compressedBytes":160437}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/issue_report.mjs","sourceBytes":487}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/issue_report.mjs","elapsedMilliseconds":57.67279200000121,"serializedBytes":30222,"compressedBytes":4519}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/meta_frame.mjs","sourceBytes":17666}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/meta_frame.mjs","elapsedMilliseconds":3474.7009580000013,"serializedBytes":1632813,"compressedBytes":253974}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/orchestration_dispatch.mjs","sourceBytes":12697}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/orchestration_dispatch.mjs","elapsedMilliseconds":2402.1837499999983,"serializedBytes":1049592,"compressedBytes":165467}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/orchestration_workspace.mjs","sourceBytes":10717}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/orchestration_workspace.mjs","elapsedMilliseconds":1779.1399580000016,"serializedBytes":820325,"compressedBytes":130497}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/relative_meta_logic.mjs","sourceBytes":6942}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/relative_meta_logic.mjs","elapsedMilliseconds":781.7794589999976,"serializedBytes":405215,"compressedBytes":64084}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/rust_ast_census.mjs","sourceBytes":3802}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/rust_ast_census.mjs","elapsedMilliseconds":387.0816659999982,"serializedBytes":164737,"compressedBytes":26604}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/seed_learning_sources.mjs","sourceBytes":1928}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/seed_learning_sources.mjs","elapsedMilliseconds":293.1275829999977,"serializedBytes":135401,"compressedBytes":22116}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/self_ast_census.mjs","sourceBytes":4949}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/self_ast_census.mjs","elapsedMilliseconds":782.0626249999987,"serializedBytes":364516,"compressedBytes":57693}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/solver_formalization.mjs","sourceBytes":10914}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/solver_formalization.mjs","elapsedMilliseconds":1706.3884590000016,"serializedBytes":792747,"compressedBytes":125040}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/spelling.mjs","sourceBytes":2785}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/spelling.mjs","elapsedMilliseconds":610.5443750000013,"serializedBytes":261375,"compressedBytes":41744}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/summarization_markdown.mjs","sourceBytes":6897}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/summarization_markdown.mjs","elapsedMilliseconds":1106.1116250000014,"serializedBytes":526546,"compressedBytes":83723}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/tool_scope.mjs","sourceBytes":7025}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/tool_scope.mjs","elapsedMilliseconds":1199.4116250000006,"serializedBytes":566659,"compressedBytes":89770}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/document_recipe.mjs","sourceBytes":7486}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/document_recipe.mjs","elapsedMilliseconds":894.4663330000003,"serializedBytes":465845,"compressedBytes":72287}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/file_read.mjs","sourceBytes":22778}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/file_read.mjs","elapsedMilliseconds":4351.980916,"serializedBytes":2048490,"compressedBytes":315829}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/formalize.mjs","sourceBytes":12291}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/formalize.mjs","elapsedMilliseconds":2571.4473749999997,"serializedBytes":1140880,"compressedBytes":179224}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/host.mjs","sourceBytes":4375}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/host.mjs","elapsedMilliseconds":332.74375000000146,"serializedBytes":176780,"compressedBytes":28475}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/learning_report/self_hosting_learning.mjs","sourceBytes":2318}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/learning_report/self_hosting_learning.mjs","elapsedMilliseconds":155.21474999999919,"serializedBytes":95997,"compressedBytes":15555}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/meaning_detail.mjs","sourceBytes":12711}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/meaning_detail.mjs","elapsedMilliseconds":2294.8107079999972,"serializedBytes":1134641,"compressedBytes":177696}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/narration.mjs","sourceBytes":4233}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/narration.mjs","elapsedMilliseconds":715.1260830000028,"serializedBytes":348545,"compressedBytes":55274}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/positional_edit.mjs","sourceBytes":25297}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/positional_edit.mjs","elapsedMilliseconds":4491.928332999996,"serializedBytes":1918420,"compressedBytes":297211}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/repair_apply.mjs","sourceBytes":4648}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/repair_apply.mjs","elapsedMilliseconds":1006.4494169999962,"serializedBytes":453525,"compressedBytes":71280}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/restart_feedback.mjs","sourceBytes":4858}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/restart_feedback.mjs","elapsedMilliseconds":1160.8771659999984,"serializedBytes":458887,"compressedBytes":72674}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/stated_request.mjs","sourceBytes":550}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/stated_request.mjs","elapsedMilliseconds":56.46129099999962,"serializedBytes":29174,"compressedBytes":4444}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/test_file_runner.mjs","sourceBytes":1903}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/test_file_runner.mjs","elapsedMilliseconds":216.93187500000204,"serializedBytes":106771,"compressedBytes":17625}
+   {"event":"source-network-start","shardIndex":1,"path":"js/agentic/workspace_search.mjs","sourceBytes":15612}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/agentic/workspace_search.mjs","elapsedMilliseconds":3268.6792090000017,"serializedBytes":1486706,"compressedBytes":231080}
+   {"event":"source-network-start","shardIndex":1,"path":"js/app/application-conversation-hooks.jsx","sourceBytes":18476}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/app/application-conversation-hooks.jsx","elapsedMilliseconds":2693.5967910000036,"serializedBytes":1182877,"compressedBytes":186307}
+   {"event":"source-network-start","shardIndex":1,"path":"js/app/conversations.jsx","sourceBytes":8441}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/app/conversations.jsx","elapsedMilliseconds":1732.2819999999992,"serializedBytes":759741,"compressedBytes":120497}
+   {"event":"source-network-start","shardIndex":1,"path":"js/app/issue-report.js","sourceBytes":12713}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/app/issue-report.js","elapsedMilliseconds":2849.5207500000033,"serializedBytes":1259973,"compressedBytes":197828}
+   {"event":"source-network-start","shardIndex":1,"path":"js/app/rust-ui-bridge.js","sourceBytes":994}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/app/rust-ui-bridge.js","elapsedMilliseconds":155.58916699999827,"serializedBytes":65756,"compressedBytes":10206}
+   {"event":"source-network-start","shardIndex":1,"path":"js/distribution/service-worker.js","sourceBytes":2099}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/distribution/service-worker.js","elapsedMilliseconds":422.1783329999962,"serializedBytes":171716,"compressedBytes":28143}
+   {"event":"source-network-start","shardIndex":1,"path":"js/preferences.js","sourceBytes":3384}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/preferences.js","elapsedMilliseconds":716.507875000003,"serializedBytes":317371,"compressedBytes":50241}
+   {"event":"source-network-start","shardIndex":1,"path":"js/server/anticipation-expansion.mjs","sourceBytes":6385}
+   {"event":"source-network-complete","shardIndex":1,"path":"js/server/anticipation-expansion.mjs","elapsedMilliseconds":1282.157834000005,"serializedBytes":505064,"compressedBytes":80007}
+   {"event":"source-network-start","shardIndex":1,"path":"js/server/dialog-log-summary.mjs","sourceBytes":14085}
+   
+   Signal: SIGPIPE
+   Timeout: 60000 ms
+== answer ==
+The command failed: {"event":"source-network-start","shardIndex":1,"path":"js/agentic/associative_learning.mjs","sourceBytes":2115}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/associative_learning.mjs","elapsedMilliseconds":272.66912499999995,"serializedBytes":95116,"compressedBytes":15397}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/code_task/target_guard.mjs","sourceBytes":2030}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/code_task/target_guard.mjs","elapsedMilliseconds":339.4966250000001,"serializedBytes":134508,"compressedBytes":22286}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/calculation.mjs","sourceBytes":861}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/calculation.mjs","elapsedMilliseconds":53.03620799999999,"serializedBytes":29252,"compressedBytes":4422}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/computer_use_induction.mjs","sourceBytes":11645}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/computer_use_induction.mjs","elapsedMilliseconds":4342.914666000001,"serializedBytes":1044867,"compressedBytes":164627}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/dependency_summarization.mjs","sourceBytes":8874}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/dependency_summarization.mjs","elapsedMilliseconds":1117.437,"serializedBytes":513098,"compressedBytes":81114}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/event_log.mjs","sourceBytes":8407}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/event_log.mjs","elapsedMilliseconds":1031.5933750000004,"serializedBytes":503623,"compressedBytes":80003}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/history_github.mjs","sourceBytes":10854}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/history_github.mjs","elapsedMilliseconds":2160.6237499999997,"serializedBytes":1015451,"compressedBytes":160437}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/issue_report.mjs","sourceBytes":487}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/issue_report.mjs","elapsedMilliseconds":57.67279200000121,"serializedBytes":30222,"compressedBytes":4519}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/meta_frame.mjs","sourceBytes":17666}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/meta_frame.mjs","elapsedMilliseconds":3474.7009580000013,"serializedBytes":1632813,"compressedBytes":253974}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/orchestration_dispatch.mjs","sourceBytes":12697}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/orchestration_dispatch.mjs","elapsedMilliseconds":2402.1837499999983,"serializedBytes":1049592,"compressedBytes":165467}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/orchestration_workspace.mjs","sourceBytes":10717}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/orchestration_workspace.mjs","elapsedMilliseconds":1779.1399580000016,"serializedBytes":820325,"compressedBytes":130497}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/relative_meta_logic.mjs","sourceBytes":6942}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/relative_meta_logic.mjs","elapsedMilliseconds":781.7794589999976,"serializedBytes":405215,"compressedBytes":64084}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/rust_ast_census.mjs","sourceBytes":3802}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/rust_ast_census.mjs","elapsedMilliseconds":387.0816659999982,"serializedBytes":164737,"compressedBytes":26604}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/seed_learning_sources.mjs","sourceBytes":1928}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/seed_learning_sources.mjs","elapsedMilliseconds":293.1275829999977,"serializedBytes":135401,"compressedBytes":22116}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/self_ast_census.mjs","sourceBytes":4949}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/self_ast_census.mjs","elapsedMilliseconds":782.0626249999987,"serializedBytes":364516,"compressedBytes":57693}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/solver_formalization.mjs","sourceBytes":10914}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/solver_formalization.mjs","elapsedMilliseconds":1706.3884590000016,"serializedBytes":792747,"compressedBytes":125040}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/spelling.mjs","sourceBytes":2785}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/spelling.mjs","elapsedMilliseconds":610.5443750000013,"serializedBytes":261375,"compressedBytes":41744}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/summarization_markdown.mjs","sourceBytes":6897}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/summarization_markdown.mjs","elapsedMilliseconds":1106.1116250000014,"serializedBytes":526546,"compressedBytes":83723}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/crate/tool_scope.mjs","sourceBytes":7025}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/crate/tool_scope.mjs","elapsedMilliseconds":1199.4116250000006,"serializedBytes":566659,"compressedBytes":89770}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/document_recipe.mjs","sourceBytes":7486}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/document_recipe.mjs","elapsedMilliseconds":894.4663330000003,"serializedBytes":465845,"compressedBytes":72287}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/file_read.mjs","sourceBytes":22778}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/file_read.mjs","elapsedMilliseconds":4351.980916,"serializedBytes":2048490,"compressedBytes":315829}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/formalize.mjs","sourceBytes":12291}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/formalize.mjs","elapsedMilliseconds":2571.4473749999997,"serializedBytes":1140880,"compressedBytes":179224}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/host.mjs","sourceBytes":4375}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/host.mjs","elapsedMilliseconds":332.74375000000146,"serializedBytes":176780,"compressedBytes":28475}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/learning_report/self_hosting_learning.mjs","sourceBytes":2318}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/learning_report/self_hosting_learning.mjs","elapsedMilliseconds":155.21474999999919,"serializedBytes":95997,"compressedBytes":15555}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/meaning_detail.mjs","sourceBytes":12711}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/meaning_detail.mjs","elapsedMilliseconds":2294.8107079999972,"serializedBytes":1134641,"compressedBytes":177696}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/narration.mjs","sourceBytes":4233}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/narration.mjs","elapsedMilliseconds":715.1260830000028,"serializedBytes":348545,"compressedBytes":55274}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/positional_edit.mjs","sourceBytes":25297}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/positional_edit.mjs","elapsedMilliseconds":4491.928332999996,"serializedBytes":1918420,"compressedBytes":297211}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/repair_apply.mjs","sourceBytes":4648}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/repair_apply.mjs","elapsedMilliseconds":1006.4494169999962,"serializedBytes":453525,"compressedBytes":71280}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/restart_feedback.mjs","sourceBytes":4858}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/restart_feedback.mjs","elapsedMilliseconds":1160.8771659999984,"serializedBytes":458887,"compressedBytes":72674}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/stated_request.mjs","sourceBytes":550}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/stated_request.mjs","elapsedMilliseconds":56.46129099999962,"serializedBytes":29174,"compressedBytes":4444}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/test_file_runner.mjs","sourceBytes":1903}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/test_file_runner.mjs","elapsedMilliseconds":216.93187500000204,"serializedBytes":106771,"compressedBytes":17625}
+{"event":"source-network-start","shardIndex":1,"path":"js/agentic/workspace_search.mjs","sourceBytes":15612}
+{"event":"source-network-complete","shardIndex":1,"path":"js/agentic/workspace_search.mjs","elapsedMilliseconds":3268.6792090000017,"serializedBytes":1486706,"compressedBytes":231080}
+{"event":"source-network-start","shardIndex":1,"path":"js/app/application-conversation-hooks.jsx","sourceBytes":18476}
+{"event":"source-network-complete","shardIndex":1,"path":"js/app/application-conversation-hooks.jsx","elapsedMilliseconds":2693.5967910000036,"serializedBytes":1182877,"compressedBytes":186307}
+{"event":"source-network-start","shardIndex":1,"path":"js/app/conversations.jsx","sourceBytes":8441}
+{"event":"source-network-complete","shardIndex":1,"path":"js/app/conversations.jsx","elapsedMilliseconds":1732.2819999999992,"serializedBytes":759741,"compressedBytes":120497}
+{"event":"source-network-start","shardIndex":1,"path":"js/app/issue-report.js","sourceBytes":12713}
+{"event":"source-network-complete","shardIndex":1,"path":"js/app/issue-report.js","elapsedMilliseconds":2849.5207500000033,"serializedBytes":1259973,"compressedBytes":197828}
+{"event":"source-network-start","shardIndex":1,"path":"js/app/rust-ui-bridge.js","sourceBytes":994}
+{"event":"source-network-complete","shardIndex":1,"path":"js/app/rust-ui-bridge.js","elapsedMilliseconds":155.58916699999827,"serializedBytes":65756,"compressedBytes":10206}
+{"event":"source-network-start","shardIndex":1,"path":"js/distribution/service-worker.js","sourceBytes":2099}
+{"event":"source-network-complete","shardIndex":1,"path":"js/distribution/service-worker.js","elapsedMilliseconds":422.1783329999962,"serializedBytes":171716,"compressedBytes":28143}
+{"event":"source-network-start","shardIndex":1,"path":"js/preferences.js","sourceBytes":3384}
+{"event":"source-network-complete","shardIndex":1,"path":"js/preferences.js","elapsedMilliseconds":716.507875000003,"serializedBytes":317371,"compressedBytes":50241}
+{"event":"source-network-start","shardIndex":1,"path":"js/server/anticipation-expansion.mjs","sourceBytes":6385}
+{"event":"source-network-complete","shardIndex":1,"path":"js/server/anticipation-expansion.mjs","elapsedMilliseconds":1282.157834000005,"serializedBytes":505064,"compressedBytes":80007}
+{"event":"source-network-start","shardIndex":1,"path":"js/server/dialog-log-summary.mjs","sourceBytes":14085}
+Signal: SIGPIPE
+Timeout: 60000 ms
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

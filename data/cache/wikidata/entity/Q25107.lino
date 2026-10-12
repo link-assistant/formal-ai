@@ -5,12 +5,14 @@ Q25107
     zh ("权力")
   descriptions
     en "ability to influence the behavior of others"
+    es "capacidad de ejercer dominio o influencia el comportamiento de personas"
     hi "अगर कोई किसी से अपनी मर्ज़ी के आधार पर कुछ ऐसे काम करवा सकता है जो वह अन्यथा नहीं करता"
     ru "способность влиять на поведение людей"
     zh "影響他人行為的能力"
   id Q25107
   labels
     en power
+    es poder
     hi "शक्ति"
     ru "власть"
     zh "權力"

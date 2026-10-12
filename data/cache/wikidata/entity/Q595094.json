@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "姐妹"
+        },
+        "es": {
+          "language": "es",
+          "value": "hermana"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "महिला सहोदर"
+        },
+        "es": {
+          "language": "es",
+          "value": "pariente sanguínea"
         }
       },
       "aliases": {

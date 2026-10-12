@@ -1,0 +1,1 @@
+Fallback Write routing now retains the original request block and requires the shared statement-bound literal contract. Classification text cannot join completed statement cues into writable operands. Fifty-two focused JavaScript controls pass, including full-planner negative ownership and exact positive bytes; native execution remains for CI.

@@ -1,15 +1,18 @@
 Q7565
   aliases
     en (dad daddy papa fathers pop pa "Ahnentafel 2" "old man")
+    es ("papá" papi papito pa papa)
     ru ("папа" "батя" "папочка" "папуля" "тятя" "батько" "батюшка" "отче" "папаша" "папка" "пап" "па")
     zh ("爸爸" "阿爸" "父" "爹" "父亲" "爸" "老爸" "爹爹" "老爹" "爹地")
   descriptions
     en "male parent"
+    es "ser vivo masculino que ha tenido descendencia directa"
     ru "мужчина-родитель и/или вырастивший ребёнка"
     zh "亲属"
   id Q7565
   labels
     en father
+    es padre
     hi "पिता"
     ru "отец"
     zh "父親"

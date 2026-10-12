@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_coreference.js"
+  ceiling 118
+  rationale "Generic seeded conversation references extracted from translation and recall; normalized Unicode surfaces use the existing bounded matcher, and actual resolution carries native typed events. Original worker ceiling only decreases."

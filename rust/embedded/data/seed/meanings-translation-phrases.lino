@@ -1,0 +1,184 @@
+# Whole phrases the browser translates offline (R1188-U1).
+#
+# Each meaning carries the role `translation_phrase`; the first surface of a
+# language is the form a translation answers with, the others are the
+# phrasings it recognizes (compared by their letters and digits only). The
+# browser worker read them from a table in js/worker/formal_ai_worker_capabilities_and_runtime_rules.js
+# before; it now reads them by role (meaningsWithRole).
+meanings
+  translation_phrase
+    defined-by concept
+    precondition "a whole phrase is quoted for translation"
+    effect "the phrase is translated as a unit, not word by word"
+    unit "not applicable"
+    example "translate 'What is your name?' to Russian"
+  translation_phrase_greeting
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes a greeting in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'Hello' to Russian"
+    lexeme en "Hello" "hi" "hey"
+    lexeme ru "Привет" "здравствуйте" "здравствуй"
+    lexeme hi "नमस्ते" "नमस्कार"
+    lexeme zh "你好" "您好"
+    lexeme es "Hola" "buenas"
+  translation_phrase_how_are_you
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes a question about how someone is in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'How are you?' to Russian"
+    lexeme en "How are you?" "hello how are you" "hi how are you"
+    lexeme ru
+      words "Как у тебя дела?" "как дела" "как у вас дела" "как ваши дела" "как твои дела" "привет как дела"
+      words "здравствуйте как ваши дела"
+    lexeme hi "आप कैसे हैं?" "तुम कैसे हो"
+    lexeme zh "你好吗？" "你怎么样"
+    lexeme es "¿Cómo estás?" "cómo está" "qué tal"
+  translation_phrase_thank_you
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes thanks in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'Thank you' to Russian"
+    lexeme en "Thank you" "thanks" "thank you very much"
+    lexeme ru "Спасибо" "благодарю" "большое спасибо"
+    lexeme hi "धन्यवाद" "शुक्रिया"
+    lexeme zh "谢谢" "多谢" "感谢"
+    lexeme es "Gracias" "muchas gracias"
+  translation_phrase_you_are_welcome
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes an answer to thanks in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'You are welcome' to Russian"
+    lexeme en "You are welcome" "you're welcome" "not to worry"
+    lexeme ru "Пожалуйста" "не за что"
+    lexeme hi "आपका स्वागत है" "कोई बात नहीं"
+    lexeme zh "不客气" "不用谢"
+    lexeme es "De nada" "no hay de qué"
+  translation_phrase_goodbye
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes a farewell in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'Goodbye' to Russian"
+    lexeme en "Goodbye" "bye" "see you" "bye bye"
+    lexeme ru "До свидания" "пока" "прощай"
+    lexeme hi "अलविदा" "फिर मिलेंगे"
+    lexeme zh "再见" "拜拜"
+    lexeme es "Adiós" "hasta luego" "chao"
+  translation_phrase_good_morning
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes a morning greeting in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'Good morning' to Russian"
+    lexeme en "Good morning"
+    lexeme ru "Доброе утро"
+    lexeme hi "सुप्रभात" "शुभ प्रभात"
+    lexeme zh "早上好" "早安"
+    lexeme es "Buenos días"
+  translation_phrase_good_evening
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes an evening greeting in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'Good evening' to Russian"
+    lexeme en "Good evening"
+    lexeme ru "Добрый вечер"
+    lexeme hi "शुभ संध्या"
+    lexeme zh "晚上好" "晚安"
+    lexeme es "Buenas noches" "buenas tardes"
+  translation_phrase_what_is_your_name
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes a question for a name in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'What is your name?' to Russian"
+    lexeme en "What is your name?" "what's your name"
+    lexeme ru "Как тебя зовут?" "как вас зовут"
+    lexeme hi "तुम्हारा नाम क्या है?" "आपका नाम क्या है"
+    lexeme zh "你叫什么名字？" "您叫什么名字"
+    lexeme es "¿Cómo te llamas?" "cómo se llama" "cuál es tu nombre"
+  translation_phrase_who_are_you
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes a question for an identity in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'Who are you?' to Russian"
+    lexeme en "Who are you?"
+    lexeme ru "Кто ты такой?" "кто ты" "кто ты такая" "кто вы" "кто вы такой" "кто вы такая"
+    lexeme hi "तुम कौन हो?" "आप कौन हैं"
+    lexeme zh "你是谁？" "您是谁"
+    lexeme es "¿Quién eres?" "quién es usted"
+  translation_phrase_what_is_this
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes a question about a thing in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'What is this?' to Russian"
+    lexeme en "What is this?" "what is it"
+    lexeme ru "Что это такое?" "что это"
+    lexeme hi "यह क्या है?" "ये क्या है"
+    lexeme zh "这是什么？" "這是什麼"
+    lexeme es "¿Qué es esto?" "qué es eso"
+  translation_phrase_i_am_fine
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes an answer that one is well in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'I am fine' to Russian"
+    lexeme en "I am fine" "I'm fine" "I'm doing fine" "I'm doing well"
+    lexeme ru "У меня всё хорошо" "у меня все хорошо" "всё хорошо"
+    lexeme hi "मैं ठीक हूँ" "मैं ठीक हूं"
+    lexeme zh "我很好" "我挺好的"
+    lexeme es "Estoy bien" "muy bien"
+  translation_phrase_yes
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes an agreement in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'Yes' to Russian"
+    lexeme en "Yes" "yeah" "yep" "aye"
+    lexeme ru "Да" "ага" "конечно"
+    lexeme hi "हाँ" "हां" "जी"
+    lexeme zh "是" "是的" "对"
+    lexeme es "Sí" "claro"
+  translation_phrase_no
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes a refusal in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'No' to Russian"
+    lexeme en "No" "nope" "nah"
+    lexeme ru "Нет" "неа"
+    lexeme hi "नहीं" "ना"
+    lexeme zh "不" "不是"
+    lexeme es "No"
+  translation_phrase_apple
+    defined-by concept
+    role translation_phrase
+    precondition "a translation request quotes the apple fruit in one supported language"
+    effect "the translation answers with the first form of the target language"
+    unit "not applicable"
+    example "translate 'apple' to Russian"
+    lexeme en "apple" "apples"
+    lexeme ru "яблоко" "яблока" "яблоку" "яблоком" "яблоке" "яблоки" "яблок" "яблокам" "яблоками" "яблоках"
+    lexeme hi "सेब"
+    lexeme zh "苹果"
+    lexeme es "manzana" "manzanas"

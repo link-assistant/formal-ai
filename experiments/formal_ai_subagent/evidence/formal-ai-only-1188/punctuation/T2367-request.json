@@ -1,0 +1,7 @@
+{
+  "id": "T2367",
+  "dir": "/private/tmp/formal-ai-only-1188/explicit-punctuation-8j0nSw",
+  "prompt": "Create a file punctuation.txt containing exactly: !!!",
+  "steps": 8,
+  "expected": "!!!"
+}

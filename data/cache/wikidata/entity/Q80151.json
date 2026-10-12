@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "帽子"
+        },
+        "es": {
+          "language": "es",
+          "value": "sombrero"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "головной убор из тульи и полей"
+        },
+        "es": {
+          "language": "es",
+          "value": "prenda para la cabeza con forma, que tiene ala y corona, o una de estas"
         }
       },
       "aliases": {
@@ -36,6 +44,12 @@
           {
             "language": "ru",
             "value": "тулья"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "sombreros"
           }
         ]
       }

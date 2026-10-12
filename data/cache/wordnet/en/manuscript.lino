@@ -1,0 +1,17 @@
+language en
+lemma manuscript
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the form of a literary work submitted for publication"
+    id oewn-06418622-n
+    partOfSpeech n
+    synonyms (ms)
+  entry
+    definition "handwritten book or document"
+    id oewn-06418864-n
+    partOfSpeech n
+    synonyms (holograph)
+source "oewn:2024"

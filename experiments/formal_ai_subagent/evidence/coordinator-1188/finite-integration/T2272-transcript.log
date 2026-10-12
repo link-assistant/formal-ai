@@ -1,0 +1,788 @@
+>> read {"filePath":"rust/src/agentic_coding/general_execution.rs","file_path":"rust/src/agentic_coding/general_execution.rs","path":"rust/src/agentic_coding/general_execution.rs"}
+   <file>
+   00001| //! Execution state machine for a composed general change plan.
+   00002| 
+   00003| use serde_json::json;
+   00004| 
+   00005| use super::capability_router::shell_command_tool;
+   00006| use super::final_result::{FinalDisposition, FinalResult, record};
+   00007| use super::general_planner::{
+   00008|     GeneralChangePlan, GeneralPlanMode, PLAN_PATH, compose_general_change_plan,
+   00009| };
+   00010| use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
+   00011| use super::progress::Progress;
+   00012| use super::tool_result;
+   00013| use crate::protocol::ChatMessage;
+   00014| 
+   00015| const EXPECTED_PLACEHOLDER: &str = concat!("{", "expected", "}");
+   00016| const OBSERVED_PLACEHOLDER: &str = concat!("{", "observed", "}");
+   00017| const PLAN_PLACEHOLDER: &str = concat!("{", "plan", "}");
+   00018| const PLAN_PATH_PLACEHOLDER: &str = concat!("{", "plan_path", "}");
+   00019| 
+   00020| pub(super) fn plan_general_change_step(
+   00021|     messages: &[ChatMessage],
+   00022|     tool_names: &[&str],
+   00023|     plan: &GeneralChangePlan,
+   00024|     result: &mut Option<FinalResult>,
+   00025| ) -> AgenticPlan {
+   00026|     general_change_step(messages, tool_names, plan, false, result)
+   00027| }
+   00028| 
+   00029| /// The same state machine entered from a resolved work item. Every step is
+   00030| /// identical; only the completion differs — the harness voice instead of the
+   00031| /// conversational one — because a user who hands over an issue reference
+   00032| /// commissioned an artifact, while a user who types the task asked for a
+   00033| /// conversation about a change (issue #1133, the literal-file run).
+   00034| pub(super) fn plan_work_item_change_step(
+   00035|     messages: &[ChatMessage],
+   00036|     tool_names: &[&str],
+   00037|     plan: &GeneralChangePlan,
+   00038| ) -> AgenticPlan {
+   00039|     general_change_step(messages, tool_names, plan, true, &mut None)
+   00040| }
+   00041| 
+   00042| fn general_change_step(
+   00043|     messages: &[ChatMessage],
+   00044|     tool_names: &[&str],
+   00045|     plan: &GeneralChangePlan,
+   00046|     resolved_from_work_item: bool,
+   00047|     result: &mut Option<FinalResult>,
+   00048| ) -> AgenticPlan {
+   00049|     // A literal-file write reads its target first unless the request names a
+   00050|     // whole-file write, and never replaces an existing file unasked (PR #1188 T96).
+   00051|     if let Some(guarded) = super::literal_write_guard::guarded_step(plan, messages, tool_names) {
+   00052|         return guarded;
+   00053|     }
+   00054|     let progress = Progress::scan(messages);
+   00055|     // Reading the work item is an attempt to find out whether anything *can* be
+   00056|     // executed, not a step the request named. A read that comes back missing or
+   00057|     // empty therefore answers that question — the capability is unavailable —
+   00058|     // and the run continues to record the reference. Reporting the fetch as the
+   00059|     // run's failure would replace the honest terminal state of issue #904 with
+   00060|     // a transport message about a URL the user never asked to see.
+   00061|     let work_item_unreadable = plan.mode == GeneralPlanMode::RepositoryWorkItem
+   00062|         && progress.latest_failure().is_some_and(|failure| {
+   00063|             failure.capability == Capability::Fetch || failure.is_work_item_read()
+   00064|         });
+   00065|     let target_missing = progress.latest_failure().is_some_and(|failure| {
+   00066|         super::literal_write_guard::is_guard_read(
+   00067|             plan,
+   00068|             failure
+   00069|                 .arguments
+   00070|                 .as_deref()
+   00071|                 .and_then(tool_argument_path)
+   00072|                 .as_deref(),
+   00073|             failure.capability,
+   00074|         )
+   00075|     });
+   00076|     let event_missing = progress.latest_failure().is_some_and(|failure| {
+   00077|         failure.capability == Capability::Read
+   00078|             && failure
+   00079|                 .arguments
+   00080|                 .as_deref()
+   00081|                 .and_then(tool_argument_path)
+   00082|                 .as_deref()
+   00083|                 == Some(PLAN_PATH)
+   00084|             && absent_plan_event(&failure.detail)
+   00085|     });
+   00086|     if let Some(failure) = progress
+   00087|         .latest_failure()
+   00088|         .filter(|_| !work_item_unreadable && !target_missing && !event_missing)
+   00089|     {
+   00090|         if failure.capability == Capability::Write {
+   00091|             let path = failure.arguments.as_deref().and_then(tool_argument_path);
+   00092|             if let (Some(path), Some(read_tool)) =
+   00093|                 (path.as_deref(), tool_for(tool_names, Capability::Read))
+   00094|                 && progress.failed_write_count_for(path) == 1
+   00095|             {
+   00096|                 return plan_one(read_tool, read_arguments(path));
+   00097|             }
+   00098|             // The plan event is auxiliary. A write-only client cannot perform
+   00099|             // the preferred read-before-retry recovery, but its failure must
+   00100|             // not swallow the user's primary literal-file write.
+   00101|             if path.as_deref() == Some(PLAN_PATH)
+   00102|                 && plan.mode == GeneralPlanMode::LiteralFile
+   00103|                 && tool_for(tool_names, Capability::Read).is_none()
+   00104|                 && progress.failed_write_count_for(PLAN_PATH) == 1
+   00105|                 && let Some(write_tool) = tool_for(tool_names, Capability::Write)
+   00106|             {
+   00107|                 return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
+   00108|             }
+   00109|             // Recovery is exhausted, but the failed call is not the last word:
+   00110|             // run the check the plan itself named so the report can carry the
+   00111|             // status the workspace answered with rather than a transport
+   00112|             // message alone (issue #916, rung R916-01).
+   00113|             if plan.mode != GeneralPlanMode::RepositoryWorkItem
+   00114|                 && !plan.verification_command.trim().is_empty()
+   00115|                 && progress.run_count_for(&plan.verification_command) == 0
+   00116|                 && let Some(run_tool) = shell_command_tool(tool_names)
+   00117|             {
+   00118|                 return plan_one(
+   00119|                     run_tool,
+   00120|                     json!({ "command": plan.verification_command }).to_string(),
+   00121|                 );
+   00122|             }
+   00123|             return AgenticPlan::Final(tool_result::render_failure(
+   00124|                 path.as_deref().unwrap_or("write"),
+   00125|                 &failure.detail,
+   00126|                 &plan.goal,
+   00127|             ));
+   00128|         }
+   00129|         // A failed run is reported as the command that failed and the status it
+   00130|         // exited with, not as an anonymous "run" step (issues #905 and #908).
+   00131|         if failure.capability == Capability::Run
+   00132|             && let Some(output) = progress.latest_run_output_for(&plan.verification_command)
+   00133|             && let Some(report) = tool_result::failed_verification(
+   00134|                 std::slice::from_ref(output),
+   00135|                 &plan.verification_command,
+   00136|                 &plan.goal,
+   00137|             )
+   00138|         {
+   00139|             return AgenticPlan::Final(report);
+   00140|         }
+   00141|         // A client may require an attempted read before creating a missing
+   00142|         // file. Whether that read found bytes or reported absence, retry the
+   00143|         // original write once; its per-target failure budget remains bounded.
+   00144|         let recovering_missing_write = failure.capability == Capability::Read
+   00145|             && progress.previous_attempt().is_some_and(|previous| {
+   00146|                 previous.capability == Capability::Write && !previous.succeeded
+   00147|             });
+   00148|         if !recovering_missing_write {
+   00149|             return AgenticPlan::Final(tool_result::render_failure(
+   00150|                 capability_label(failure.capability),
+   00151|                 &failure.detail,
+   00152|                 &plan.goal,
+   00153|             ));
+   00154|         }
+   00155|     }
+   00156|     let recovering_write = progress.last() == Some(Capability::Read)
+   00157|         && progress.previous_attempt().is_some_and(|previous| {
+   00158|             previous.capability == Capability::Write && !previous.succeeded
+   00159|         });
+   00160|     if recovering_write
+   00161|         && let (Some(tool), Some(arguments)) = (
+   00162|             tool_for(tool_names, Capability::Write),
+   00163|             progress
+   00164|                 .previous_attempt()
+   00165|                 .and_then(|attempt| attempt.arguments.as_deref()),
+   00166|         )
+   00167|     {
+   00168|         return plan_one(tool, arguments.to_owned());
+   00169|     }
+   00170|     // A repository work item names an issue, not an artifact. Recording the
+   00171|     // reference and stopping is what issue #904 reported: nothing the request
+   00172|     // asked for was ever produced. The issue itself is where the artifact is
+   00173|     // named, so read it before concluding that nothing can be executed — the
+   00174|     // capability is only genuinely unavailable once the fetch has been tried.
+   00175|     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+   00176|         if let Some(fetched) = repository_work_item_objective(plan, &progress) {
+   00177|             if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
+   00178|                 return step;
+   00179|             }
+   00180|         } else if let Some(step) =
+   00181|             plan_work_item_read(messages, tool_names, &plan.target, &progress)
+   00182|         {
+   00183|             return step;
+   00184|         }
+   00185|     }
+   00186|     // Never spend the only write this mode produces on a plan record when the
+   00187|     // goal could not be read (issue #1155): the record would claim a session
+   00188|     // engaged with an issue it never saw one line of. The reads tried, each
+   00189|     // with its result, are the answer instead.
+   00190|     if plan.mode == GeneralPlanMode::RepositoryWorkItem
+   00191|         && let Some(report) = work_item_read_failure_report(plan, &progress)
+   00192|     {
+   00193|         return AgenticPlan::Final(report);
+   00194|     }
+   00195|     if let Some(step) = plan_event_step(plan, &progress, tool_names) {
+   00196|         return step;
+   00197|     }
+   00198|     if let Some(tool) = tool_for(tool_names, Capability::Write)
+   00199|         && plan.mode == GeneralPlanMode::LiteralFile
+   00200|         && !progress.successful_write_for(&plan.target)
+   00201|     {
+   00202|         return plan_one(tool, write_arguments(&plan.target, &plan.content));
+   00203|     }
+   00204|     if let Some(tool) = shell_command_tool(tool_names) {
+   00205|         match plan.mode {
+   00206|             GeneralPlanMode::CommandOutput => {
+   00207|                 if let Some(generation) = plan.steps.get(1).and_then(|step| step.command.as_deref())
+   00208|                 {
+   00209|                     if progress.successful_run_count_for(generation) == 0 {
+   00210|                         return plan_one(tool, json!({ "command": generation }).to_string());
+   00211|                     }
+   00212|                     if progress.successful_run_count_for(&plan.verification_command) == 0 {
+   00213|                         return plan_one(
+   00214|                             tool,
+   00215|                             json!({ "command": plan.verification_command }).to_string(),
+   00216|                         );
+   00217|                     }
+   00218|                 }
+   00219|             }
+   00220|             GeneralPlanMode::LiteralFile
+   00221|                 if progress.successful_run_count_for(&plan.verification_command) == 0 =>
+   00222|             {
+   00223|                 return plan_one(
+   00224|                     tool,
+   00225|                     json!({ "command": plan.verification_command }).to_string(),
+   00226|                 );
+   00227|             }
+   00228|             // A repository work item names no verification command: the only
+   00229|             // file this run writes is the plan record, and reading it back
+   00230|             // would verify nothing but the write itself (issue #904).
+   00231|             GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
+   00232|         }
+   00233|     }
+   00234|     finish_general_change(plan, &progress, resolved_from_work_item, result)
+   00235| }
+   00236| 
+   00237| // Write is an overwrite operation. Preserve observed history and read back the
+   00238| // entire expected stream before treating its new event as recorded.
+   00239| fn absent_plan_event(detail: &str) -> bool {
+   00240|     crate::seed::lexicon().mentions_role_raw(
+   00241|         "filesystem-absent-result",
+   00242|         &crate::engine::normalize_prompt(detail),
+   00243|     )
+   00244| }
+   00245| 
+   00246| fn plan_event_append_command(plan: &GeneralChangePlan) -> String {
+   00247|     let event = plan.links_notation();
+   00248|     let identity = event.lines().nth(1).unwrap_or_default();
+   00249|     let path = super::general_planner::shell_quote(PLAN_PATH);
+   00250|     let identity = super::general_planner::shell_quote(identity);
+   00251|     let event = super::general_planner::shell_quote(&event);
+   00252|     super::work_item_steps::fill(
+   00253|         "plan-event-append-command",
+   00254|         &[
+   00255|             (
+   00256|                 concat!("{", "lock_path", "}"),
+   00257|                 &super::general_planner::shell_quote(&format!("{PLAN_PATH}.lock")),
+   00258|             ),
+   00259|             ("{path}", &path),
+   00260|             (concat!("{", "identity", "}"), &identity),
+   00261|             (concat!("{", "event", "}"), &event),
+   00262|         ],
+   00263|     )
+   00264| }
+   00265| 
+   00266| fn unverified_plan_event(plan: &GeneralChangePlan) -> AgenticPlan {
+   00267|     let mut evidence = plan.clone();
+   00268|     PLAN_PATH.clone_into(&mut evidence.target);
+   00269|     evidence.verification_command = format!("cat {PLAN_PATH}");
+   00270|     AgenticPlan::Final(general_plan_unverified(&evidence))
+   00271| }
+   00272| 
+   00273| fn plan_event_step(
+   00274|     plan: &GeneralChangePlan,
+   00275|     progress: &Progress,
+   00276|     tool_names: &[&str],
+   00277| ) -> Option<AgenticPlan> {
+   00278|     let event = plan.links_notation();
+   00279|     let identity = event.lines().nth(1).unwrap_or_default();
+   00280|     let run = shell_command_tool(tool_names);
+   00281|     let aliases = super::work_item_steps::fill("plan-event-shell-aliases", &[]);
+   00282|     let atomic_shell = run.is_some_and(|name| {
+   00283|         let leaf = name
+   00284|             .rsplit("__")
+   00285|             .next()
+   00286|             .unwrap_or(name)
+   00287|             .rsplit(['.', '/', ':'])
+   00288|             .next()
+   00289|             .unwrap_or(name);
+   00290|         aliases
+   00291|             .split_whitespace()
+   00292|             .any(|alias| leaf.eq_ignore_ascii_case(alias))
+   00293|     });
+   00294|     if let (Some(read), Some(write)) = (
+   00295|         tool_for(tool_names, Capability::Read),
+   00296|         tool_for(tool_names, Capability::Write),
+   00297|     ) && !atomic_shell
+   00298|     {
+   00299|         let prior = progress
+   00300|             .successful_read_output_for(PLAN_PATH)
+   00301|             .map(super::code_artifact::source_from_read_result);
+   00302|         if let Some(expected) = progress.successful_write_content_for(PLAN_PATH) {
+   00303|             if prior
+   00304|                 .as_deref()
+   00305|                 .is_some_and(|prior| prior.starts_with(&expected))
+   00306|             {
+   00307|                 return None;
+   00308|             }
+   00309|             if progress.last() == Some(Capability::Read)
+   00310|                 && progress
+   00311|                     .latest_successful_arguments(Capability::Read)
+   00312|                     .and_then(tool_argument_path)
+   00313|                     .as_deref()
+   00314|                     == Some(PLAN_PATH)
+   00315|             {
+   00316|                 return Some(unverified_plan_event(plan));
+   00317|             }
+   00318|             return Some(plan_one(read, read_arguments(PLAN_PATH)));
+   00319|         }
+   00320|         if prior
+   00321|             .as_deref()
+   00322|             .is_some_and(|prior| prior.lines().any(|line| line == identity))
+   00323|         {
+   00324|             return (!prior.as_deref().is_some_and(|prior| prior.contains(&event)))
+   00325|                 .then(|| unverified_plan_event(plan));
+   00326|         }
+   00327|         let missing = progress.latest_failure().is_some_and(|failure| {
+   00328|             failure.capability == Capability::Read
+   00329|                 && failure
+   00330|                     .arguments
+   00331|                     .as_deref()
+   00332|                     .and_then(tool_argument_path)
+   00333|                     .as_deref()
+   00334|                     == Some(PLAN_PATH)
+   00335|                 && absent_plan_event(&failure.detail)
+   00336|         });
+   00337|         if prior.is_none() && !missing {
+   00338|             return Some(plan_one(read, read_arguments(PLAN_PATH)));
+   00339|         }
+   00340|         let mut stream = prior.unwrap_or_default();
+   00341|         if !stream.is_empty() && !stream.ends_with('\n') {
+   00342|             stream.push('\n');
+   00343|         }
+   00344|         stream.push_str(&event);
+   00345|         return Some(plan_one(write, write_arguments(PLAN_PATH, &stream)));
+   00346|     }
+   00347|     let Some(run) = run else {
+   00348|         return Some(AgenticPlan::Final(plan.planned_not_executed_answer()));
+   00349|     };
+   00350|     let append = plan_event_append_command(plan);
+   00351|     if progress.successful_run_count_for(&append) == 0 {
+   00352|         return Some(plan_one(run, json!({"command": append}).to_string()));
+   00353|     }
+   00354|     let observed = progress
+   00355|         .latest_successful_run_output_for(&append)
+   00356|         .and_then(tool_result::observed_payload);
+   00357|     (!observed.is_some_and(|observed| observed.contains(event.trim_end())))
+   00358|         .then(|| unverified_plan_event(plan))
+   00359| }
+   00360| 
+   00361| /// Plan the next step from what the fetched work item actually asks for.
+   00362| ///
+   00363| /// The real corpus decides the shape here. The issues Hive Mind dispatches say
+   00364| /// *"implement a Hello World program in Scala"* — a described artifact in a
+   00365| /// named language, not literal bytes — so the same coding catalog that answers
+   00366| /// that request when a user types it directly answers it here, through the
+   00367| /// execution recipe its [`SymbolicAnswer`](crate::solver::SymbolicAnswer)
+   00368| /// carries. The literal-file composer follows, for a work item that does spell
+   00369| /// out a path and its contents.
+   00370| ///
+   00371| /// Returning [`None`] means the work item named nothing this sandbox can
+   00372| /// produce — an unsupported language, or prose with no artifact in it at all —
+   00373| /// which keeps `planned_not_executed` truthful rather than inventing an
+   00374| /// artifact the issue never asked for.
+   00375| fn plan_work_item_execution(
+   00376|     objective: &str,
+   00377|     messages: &[ChatMessage],
+   00378|     tool_names: &[&str],
+   00379| ) -> Option<AgenticPlan> {
+   00380|     // The default configuration is the right one: the recipe wanted here is the
+   00381|     // same `write_program` answer a user typing this request directly would get,
+   00382|     // and the client — not this solver — owns execution. Opting into agent mode
+   00383|     // would only add the policy branches that answer *about* agent actions.
+   00384|     let mut answer = crate::solver::UniversalSolver::default().solve(objective);
+   00385|     // The issue that asks for the program may also ask for the workflow that
+   00386|     // runs it (issue #1133, requirement 6 of every Hello World task): the
+   00387|     // recipe then carries the workflow as a supporting file, running the same
+   00388|     // commands the harness verifies.
+   00389|     if let Some(recipe) = answer.execution_recipe.as_mut()
+   00390|         && super::ci_workflow::requested_in(objective)
+   00391|     {
+   00392|         super::ci_workflow::attach(recipe);
+   00393|     }
+   00394|     if let Some(step) =
+   00395|         super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+   00396|     {
+   00397|         return Some(step);
+   00398|     }
+   00399|     let executable = compose_general_change_plan(objective)
+   00400|         .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
+   00401|     Some(plan_work_item_change_step(
+   00402|         messages,
+   00403|         tool_names,
+   00404|         &executable,
+   00405|     ))
+   00406| }
+   00407| 
+   00408| /// The step that reads the work item, through whichever client tool reaches it.
+   00409| ///
+   00410| /// GitHub's structured CLI read comes first when the client can run it. Unlike
+   00411| /// model-backed `WebFetch` tools, it returns source bytes rather than asking a
+   00412| /// nested model to interpret the whole solve request. This keeps the read in
+   00413| /// the checkout's credential and prevents a fetched issue from being solved
+   00414| /// once inside the fetch tool and then misread as issue text by the outer plan.
+   00415| ///
+   00416| /// A client with no run capability falls back to its fetch tool. That call
+   00417| /// carries a data-declared extraction instruction rather than the user's solve
+   00418| /// request, so required `prompt` fields cannot recursively execute the task.
+   00419| /// A protocol-hosted fetch tool runs server-side, so the fetch itself is the
+   00420| /// read and `gh` is never planned ahead of it (issue #904).
+   00421| fn plan_work_item_read(
+   00422|     messages: &[ChatMessage],
+   00423|     tool_names: &[&str],
+   00424|     target: &str,
+   00425|     progress: &Progress,
+   00426| ) -> Option<AgenticPlan> {
+   00427|     let fetch = tool_for(tool_names, Capability::Fetch);
+   00428|     if fetch.is_some_and(super::capability_router::is_hosted_research_tool) {
+   00429|         return fetch
+   00430|             .filter(|_| !progress.attempted_fetch_of(target))
+   00431|             .map(|tool| plan_one(tool, work_item_fetch_arguments(target)));
+   00432|     }
+   00433|     if !progress.attempted_work_item_read_of(target)
+   00434|         && let Some(run) = shell_command_tool(tool_names)
+   00435|     {
+   00436|         return Some(plan_one(
+   00437|             run,
+   00438|             json!({ "command": issue_view_command(target) }).to_string(),
+   00439|         ));
+   00440|     }
+   00441|     // A read that failed — or one a client echoed without its status, which
+   00442|     // the sentinel now exposes (issue #1155) — must not end the retrieval
+   00443|     // while another route to the same text is untried. The fallbacks walk in
+   00444|     // the issue's order: the client's fetch tool on the issue URL, the
+   00445|     // credential-free REST read (`curl` needs no `gh` and no token for a
+   00446|     // public repository — exactly the case an unauthenticated `gh` used to
+   00447|     // end a session for), the authenticated REST read, and last the prepared
+   00448|     // pull request's own page, whose title and body restate the issue.
+   00449|     if !progress.attempted_fetch_of(target)
+   00450|         && let Some(tool) = fetch
+   00451|     {
+   00452|         return Some(plan_one(tool, work_item_fetch_arguments(target)));
+   00453|     }
+   00454|     if let Some(run) = shell_command_tool(tool_names) {
+   00455|         for fallback in [
+   00456|             issue_rest_read_command(target),
+   00457|             issue_api_read_command(target),
+   00458|         ]
+   00459|         .into_iter()
+   00460|         .flatten()
+   00461|         {
+   00462|             if !progress.has_run(&fallback) {
+   00463|                 return Some(plan_one(run, json!({ "command": fallback }).to_string()));
+   00464|             }
+   00465|         }
+   00466|     }
+   00467|     if let Some(prepared_pull) = prepared_pull_reference(messages)
+   00468|         && prepared_pull != target
+   00469|         && !progress.attempted_fetch_of(&prepared_pull)
+   00470|         && let Some(tool) = fetch
+   00471|     {
+   00472|         return Some(plan_one(tool, work_item_fetch_arguments(&prepared_pull)));
+   00473|     }
+   00474|     None
+   00475| }
+   00476| 
+   00477| /// The pull-request URL the prompt names beside the work item ("Your prepared
+   00478| /// Pull Request: …"), when it names one. It is the last resort of the read
+   00479| /// fallbacks (issue #1155): the PR's title and body restate the issue it
+   00480| /// resolves.
+   00481| fn prepared_pull_reference(messages: &[ChatMessage]) -> Option<String> {
+   00482|     let prompt = messages
+   00483|         .iter()
+   00484|         .rev()
+   00485|         .find(|message| message.role.eq_ignore_ascii_case("user"))?
+   00486|         .content
+   00487|         .plain_text();
+   00488|     prompt.split_whitespace().find_map(|token| {
+   00489|         let reference = super::general_planner::repository_work_reference(token)?;
+   00490|         (reference.rsplit('/').nth(1) == Some("pull")).then_some(reference)
+   00491|     })
+   00492| }
+   00493| 
+   00494| fn work_item_fetch_arguments(target: &str) -> String {
+   00495|     json!({
+   00496|         "url": target,
+   00497|         "format": "text",
+   00498|         "prompt": super::work_item_steps::fill("issue_fetch_prompt", &[]),
+   00499|     })
+   00500|     .to_string()
+   00501| }
+   00502| 
+   00503| /// The `gh` command that prints a work item as its title followed by its body.
+   00504| #[allow(clippy::literal_string_with_formatting_args)]
+   00505| pub(super) fn issue_view_command(target: &str) -> String {
+   00506|     // `…/owner/repo/pull/7` reads through `gh pr`, everything else through
+   00507|     // `gh issue`; the segment before the number says which.
+   00508|     let kind = match target.trim_end_matches('/').rsplit('/').nth(1) {
+   00509|         Some("pull") => "pr",
+   00510|         _ => "issue",
+   00511|     };
+   00512|     let quoted_target = super::general_planner::shell_quote(target);
+   00513|     super::work_item_steps::fill(
+   00514|         "issue_view_command",
+   00515|         &[("{kind}", kind), ("{target}", &quoted_target)],
+   00516|     )
+   00517| }
+   00518| 
+   00519| /// The REST segments of a GitHub work-item URL — `{owner}`, `{repo}`, the REST
+   00520| /// spelling of the kind (`issues` / `pulls`), and the number. `None` for a
+   00521| /// URL that is not one, in which case the REST fallbacks are simply not
+   00522| /// planned for it.
+   00523| fn rest_segments(target: &str) -> Option<(String, String, &'static str, String)> {
+   00524|     let mut segments = target.trim_end_matches('/').rsplit('/');
+   00525|     let number = segments.next()?.to_owned();
+   00526|     let kind = match segments.next()? {
+   00527|         "issue" | "issues" => "issues",
+   00528|         "pull" | "pulls" => "pulls",
+   00529|         _ => return None,
+   00530|     };
+   00531|     let repo = segments.next()?.to_owned();
+   00532|     let owner = segments.next()?.to_owned();
+   00533|     (!number.is_empty() && number.chars().all(|character| character.is_ascii_digit()))
+   00534|         .then_some((owner, repo, kind, number))
+   00535| }
+   00536| 
+   00537| /// The work-item read that needs no `gh` and no credential: GitHub's REST API
+   00538| /// returns the raw body to `curl` for a public repository (issue #1155). It
+   00539| /// is the route that serves the very case an unauthenticated `gh` used to end
+   00540| /// a session for.
+   00541| fn issue_rest_read_command(target: &str) -> Option<String> {
+   00542|     let (owner, repo, kind, number) = rest_segments(target)?;
+   00543|     Some(super::work_item_steps::fill(
+   00544|         "issue_rest_read_command",
+   00545|         &[
+   00546|             (concat!("{", "owner}"), &owner),
+   00547|             (concat!("{", "repo}"), &repo),
+   00548|             (concat!("{", "kind}"), kind),
+   00549|             (concat!("{", "number}"), &number),
+   00550|         ],
+   00551|     ))
+   00552| }
+   00553| 
+   00554| /// The authenticated REST read, for a checkout whose `gh` answers `api` but
+   00555| /// could not render the view (issue #1155). Same two-call shape as the view
+   00556| /// read, so its output carries the title-and-body form the reader validates.
+   00557| fn issue_api_read_command(target: &str) -> Option<String> {
+   00558|     let (owner, repo, kind, number) = rest_segments(target)?;
+   00559|     Some(super::work_item_steps::fill(
+   00560|         "issue_api_read_command",
+   00561|         &[
+   00562|             (concat!("{", "owner}"), &owner),
+   00563|             (concat!("{", "repo}"), &repo),
+   00564|             (concat!("{", "kind}"), kind),
+   00565|             (concat!("{", "number}"), &number),
+   00566|         ],
+   00567|     ))
+   00568| }
+   00569| 
+   00570| /// The honest close of a work item no read could deliver (issue #1155).
+   00571| ///
+   00572| /// `None` while any read route is still untried — [`plan_work_item_read`]
+   00573| /// owns that order — so the report exists only once the retrieval is
+   00574| /// genuinely exhausted, and then lists every read attempted for the target
+   00575| /// with the result each one answered with.
+   00576| fn work_item_read_failure_report(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
+   00577|     progress.failed_work_item_read_of(&plan.target)?;
+   00578|     let attempts = progress.work_item_read_attempts(&plan.target);
+   00579|     (!attempts.is_empty()).then(|| {
+   00580|         super::work_item_steps::fill(
+   00581|             "read_failed_report",
+   00582|             &[
+   00583|                 ("{target}", &plan.target),
+   00584|                 (concat!("{", "attempts}"), &attempts.join("\n")),
+   00585|             ],
+   00586|         )
+   00587|     })
+   00588| }
+   00589| 
+   00590| /// The text of the issue this work item names, once the client has fetched it.
+   00591| ///
+   00592| /// Only the page fetched from the plan's own target counts. A repository work
+   00593| /// item carries one URL, and answering it with whatever page happened to be
+   00594| /// fetched for some other reason this turn would plan against the wrong issue.
+   00595| fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
+   00596|     progress
+   00597|         .fetched_pages
+   00598|         .iter()
+   00599|         .find(|(url, _)| url == &plan.target)
+   00600|         .map(|(_, text)| text.clone())
+   00601|         .filter(|text| !text.trim().is_empty())
+   00602| }
+   00603| 
+   00604| // Exact declared data can describe failures without reporting an execution failure.
+   00605| // Explicit harness errors and nonzero status always remain authoritative.
+   00606| fn literal_verification_matches(plan: &GeneralChangePlan, output: &str) -> bool {
+   00607|     plan.mode == GeneralPlanMode::LiteralFile
+   00608|         && !tool_result::harness_reported_failure(output)
+   00609|         && tool_result::reported_exit_code(output).is_none_or(|code| code == 0)
+   00610|         && output.trim() == plan.content.trim()
+   00611| }
+   00612| 
+   00613| fn finish_general_change(
+   00614|     plan: &GeneralChangePlan,
+   00615|     progress: &Progress,
+   00616|     resolved_from_work_item: bool,
+   00617|     result: &mut Option<FinalResult>,
+   00618| ) -> AgenticPlan {
+   00619|     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+   00620|         return record(
+   00621|             AgenticPlan::Final(plan.planned_not_executed_answer()),
+   00622|             FinalDisposition::Gap,
+   00623|             "repository_work_not_executed",
+   00624|             result,
+   00625|         );
+   00626|     }
+   00627|     // The workspace gets the last word over a completion claim: a verification
+   00628|     // command that exited non-zero replaces the claim with its own report.
+   00629|     if let Some(report) = progress
+   00630|         .latest_run_output_for(&plan.verification_command)
+   00631|         .filter(|output| !literal_verification_matches(plan, output))
+   00632|         .and_then(|output| {
+   00633|             tool_result::failed_verification(
+   00634|                 std::slice::from_ref(output),
+   00635|                 &plan.verification_command,
+   00636|                 &plan.goal,
+   00637|             )
+   00638|         })
+   00639|     {
+   00640|         return AgenticPlan::Final(report);
+   00641|     }
+   00642|     if progress.successful_run_count_for(&plan.verification_command) == 0 {
+   00643|         return AgenticPlan::Final(general_plan_unverified(plan));
+   00644|     }
+   00645|     if plan.mode == GeneralPlanMode::LiteralFile {
+   00646|         let observed = progress
+   00647|             .latest_successful_run_output_for(&plan.verification_command)
+   00648|             .and_then(tool_result::observed_payload);
+   00649|         let exact_literal = progress
+   00650|             .latest_successful_run_output_for(&plan.verification_command)
+   00651|             .is_some_and(|output| literal_verification_matches(plan, output));
+   00652|         if !exact_literal && observed.as_deref().map(str::trim) != Some(plan.content.trim()) {
+   00653|             return AgenticPlan::Final(general_plan_mismatch(
+   00654|                 plan,
+   00655|                 observed.as_deref().unwrap_or_default(),
+   00656|             ));
+   00657|         }
+   00658|     }
+   00659|     if resolved_from_work_item && plan.mode == GeneralPlanMode::LiteralFile {
+   00660|         return record(
+   00661|             AgenticPlan::Final(work_item_completion(plan, progress)),
+   00662|             FinalDisposition::Finding,
+   00663|             "work_item_completion_verified",
+   00664|             result,
+   00665|         );
+   00666|     }
+   00667|     record(
+   00668|         AgenticPlan::Final(general_plan_completed(plan)),
+   00669|         FinalDisposition::Finding,
+   00670|         "general_plan_completed_verified",
+   00671|         result,
+   00672|     )
+   00673| }
+   00674| 
+   00675| /// The completion a resolved work item earns: the harness voice the execution
+   00676| /// recipe already uses — the artifact created, the command that verified it,
+   00677| /// the output that command produced. A literal file the work item spelled out
+   00678| /// is an artifact whose side effects belong to the requesting client, so it is
+   00679| /// reported through the same recipe shape a composed program is (issue #1133,
+   00680| /// the literal-file run). A task the user typed into the conversation keeps
+   00681| /// the seeded conversational claim; its words are pinned by issues #905
+   00682| /// and #916.
+   00683| fn work_item_completion(plan: &GeneralChangePlan, progress: &Progress) -> String {
+   00684|     let recipe = crate::engine::ExecutionRecipe {
+   00685|         language: "text".to_owned(),
+   00686|         source: plan.content.clone(),
+   00687|         path: plan.target.clone(),
+   00688|         supporting_files: Vec::new(),
+   00689|         commands: vec![plan.verification_command.clone()],
+   00690|     };
+   00691|     let outputs = progress
+   00692|         .latest_successful_run_output_for(&plan.verification_command)
+   00693|         .map(|output| vec![output.to_owned()])
+   00694|         .unwrap_or_default();
+   00695|     recipe.final_answer(&outputs, None)
+   00696| }
+   00697| 
+   00698| /// The completion claim is the sentence the issue quotes as the false report,
+   00699| /// so it is seeded like every other outcome of this state machine rather than
+   00700| /// typed into Rust: the words live in `data/seed/`, and the reply follows the
+   00701| /// language the request was written in.
+   00702| fn general_plan_completed(plan: &GeneralChangePlan) -> String {
+   00703|     let language = crate::language::detect(&plan.goal).slug();
+   00704|     let mut answer =
+   00705|         crate::seed::localized_response("general_plan_completed", language).unwrap_or_default();
+   00706|     answer = answer.replace("{target}", &plan.target);
+   00707|     answer = answer.replace("{command}", &plan.verification_command);
+   00708|     answer = answer.replace(PLAN_PATH_PLACEHOLDER, PLAN_PATH);
+   00709|     answer.replace(
+   00710|         PLAN_PLACEHOLDER,
+   00711|         &crate::issue_report::fenced_block(
+   00712|             crate::issue_report::LINO_FENCE_LANGUAGE,
+   00713|             &plan.links_notation(),
+   00714|         ),
+   00715|     )
+   00716| }
+   00717| 
+   00718| fn tool_argument_path(arguments: &str) -> Option<String> {
+   00719|     let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
+   00720|     ["path", "filePath", "file_path"]
+   00721|         .iter()
+   00722|         .find_map(|key| value.get(*key).and_then(serde_json::Value::as_str))
+   00723|         .map(str::to_owned)
+   00724| }
+   00725| 
+   00726| fn read_arguments(path: &str) -> String {
+   00727|     json!({
+   00728|         "path": path,
+   00729|         "filePath": path,
+   00730|         "file_path": path,
+   00731|     })
+   00732|     .to_string()
+   00733| }
+   00734| 
+   00735| const fn capability_label(capability: Capability) -> &'static str {
+   00736|     match capability {
+   00737|         Capability::Search => "search",
+   00738|         Capability::Fetch => "fetch",
+   00739|         Capability::Read => "read",
+   00740|         Capability::Write => "write",
+   00741|         Capability::Edit => "edit",
+   00742|         Capability::Run => "run",
+   00743|         Capability::Grep => "grep",
+   00744|         Capability::Glob => "glob",
+   00745|         Capability::ListDir => "list directory",
+   00746|         Capability::Todo => "todo",
+   00747|         Capability::Subagent => "subagent",
+   00748|         Capability::ReadMany => "read many",
+   00749|         Capability::MultiEdit => "multi-edit",
+   00750|         Capability::AskUser => "ask user",
+   00751|     }
+   00752| }
+   00753| 
+   00754| fn general_plan_mismatch(plan: &GeneralChangePlan, observed: &str) -> String {
+   00755|     let language = crate::language::detect(&plan.goal).slug();
+   00756|     let mut answer =
+   00757|         crate::seed::localized_response("general_plan_verification_mismatch", language)
+   00758|             .unwrap_or_default();
+   00759|     answer = answer.replace("{target}", &plan.target);
+   00760|     let expected = if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+   00761|         plan.links_notation()
+   00762|     } else {
+   00763|         plan.content.clone()
+   00764|     };
+   00765|     answer = answer.replace(EXPECTED_PLACEHOLDER, expected.trim());
+   00766|     answer.replace(OBSERVED_PLACEHOLDER, observed.trim())
+   00767| }
+   00768| 
+   00769| fn general_plan_unverified(plan: &GeneralChangePlan) -> String {
+   00770|     let language = crate::language::detect(&plan.goal).slug();
+   00771|     let mut answer =
+   00772|         crate::seed::localized_response("general_plan_unverified", language).unwrap_or_default();
+   00773|     answer = answer.replace("{target}", &plan.target);
+   00774|     answer.replace("{command}", &plan.verification_command)
+   00775| }
+   00776| 
+   
+   (End of file - total 776 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/general_execution.rs","file_path":"rust/src/agentic_coding/general_execution.rs","new":"            (concat!(\"{\", \"path\", \"}\"), &path),","newString":"            (concat!(\"{\", \"path\", \"}\"), &path),","new_str":"            (concat!(\"{\", \"path\", \"}\"), &path),","new_string":"            (concat!(\"{\", \"path\", \"}\"), &path),","old":"            (\"{path}\", &path),","oldString":"            (\"{path}\", &path),","old_str":"            (\"{path}\", &path),","old_string":"            (\"{path}\", &path),","path":"rust/src/agentic_coding/general_execution.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/general_execution.rs"}
+   Output: 10d6f1616c9f59ad36ec1099de3d645448694c310e4be196ab4d9dfc7bbbd05a  rust/src/agentic_coding/general_execution.rs
+   
+   Exit Code: 0
+== answer ==
+Verification failed for `rust/src/agentic_coding/general_execution.rs`: the observed bytes differ from the planned workspace effect.

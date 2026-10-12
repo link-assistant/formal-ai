@@ -1,0 +1,348 @@
+>> bash {"command":"node --test rust/tests/web/issue-1028-all-mode-sharding.test.mjs"}
+   Output: TAP version 13
+   # Subtest: all mode plans exactly 63 original corpus nodes in 31 independent and 16 dependent legs
+   ok 1 - all mode plans exactly 63 original corpus nodes in 31 independent and 16 dependent legs
+     ---
+     duration_ms: 72.77875
+     ...
+   # Subtest: every binary subtree preserves its exact all-mode count and leg membership
+   ok 2 - every binary subtree preserves its exact all-mode count and leg membership
+     ---
+     duration_ms: 252.675791
+     ...
+   # Subtest: depth-five plan preserves 32 leaves in 16 pairs and a filtered single leaf
+   ok 3 - depth-five plan preserves 32 leaves in 16 pairs and a filtered single leaf
+     ---
+     duration_ms: 100.495334
+     ...
+   # Subtest: invalid depths, filters and empty selections fail rather than validate no work
+   ok 4 - invalid depths, filters and empty selections fail rather than validate no work
+     ---
+     duration_ms: 130.118792
+     ...
+   # Subtest: the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=true
+   ok 5 - the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=true
+     ---
+     duration_ms: 291.924459
+     ...
+   # Subtest: the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=false
+   ok 6 - the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=false
+     ---
+     duration_ms: 279.954834
+     ...
+   # Subtest: join rejects missing leg
+   ok 7 - join rejects missing leg
+     ---
+     duration_ms: 244.67825
+     ...
+   # Subtest: join rejects repeated depth/subtree
+   ok 8 - join rejects repeated depth/subtree
+     ---
+     duration_ms: 250.990958
+     ...
+   # Subtest: join rejects missing selected node
+   ok 9 - join rejects missing selected node
+     ---
+     duration_ms: 229.93225
+     ...
+   # Subtest: join rejects foreign node disposition
+   ok 10 - join rejects foreign node disposition
+     ---
+     duration_ms: 227.752542
+     ...
+   # Subtest: join rejects duplicate node disposition
+   ok 11 - join rejects duplicate node disposition
+     ---
+     duration_ms: 229.670167
+     ...
+   # Subtest: join rejects foreign source tree
+   ok 12 - join rejects foreign source tree
+     ---
+     duration_ms: 231.231708
+     ...
+   # Subtest: join rejects foreign source commit
+   ok 13 - join rejects foreign source commit
+     ---
+     duration_ms: 231.744709
+     ...
+   # Subtest: join rejects consistently foreign source tree
+   ok 14 - join rejects consistently foreign source tree
+     ---
+     duration_ms: 237.611542
+     ...
+   # Subtest: join rejects repeated planned node
+   ok 15 - join rejects repeated planned node
+     ---
+     duration_ms: 238.668209
+     ...
+   # Subtest: join rejects extra planned node
+   ok 16 - join rejects extra planned node
+     ---
+     duration_ms: 241.103334
+     ...
+   # Subtest: join rejects mixed rule mode
+   ok 17 - join rejects mixed rule mode
+     ---
+     duration_ms: 239.682791
+     ...
+   # Subtest: join rejects conflicting corpus bytes
+   ok 18 - join rejects conflicting corpus bytes
+     ---
+     duration_ms: 237.981917
+     ...
+   # Subtest: join rejects false result counts
+   ok 19 - join rejects false result counts
+     ---
+     duration_ms: 242.447875
+     ...
+   # Subtest: join rejects missing actual elapsed rows
+   ok 20 - join rejects missing actual elapsed rows
+     ---
+     duration_ms: 230.795333
+     ...
+   # Subtest: join rejects a lossy or repeated plan
+   ok 21 - join rejects a lossy or repeated plan
+     ---
+     duration_ms: 227.755667
+     ...
+   # Subtest: join rejects passing node without effect
+   ok 22 - join rejects passing node without effect
+     ---
+     duration_ms: 241.667958
+     ...
+   # Subtest: a filtered all-mode join retains the complete requested subtree
+   ok 23 - a filtered all-mode join retains the complete requested subtree
+     ---
+     duration_ms: 186.5935
+     ...
+   # Subtest: child import copies only the two declared leaves and rejects foreign source identity
+   ok 24 - child import copies only the two declared leaves and rejects foreign source identity
+     ---
+     duration_ms: 302.307917
+     ...
+   # Subtest: failed leaf evidence remains a measured failure and is never imported as verified
+   ok 25 - failed leaf evidence remains a measured failure and is never imported as verified
+     ---
+     duration_ms: 251.056625
+     ...
+   # Subtest: child import rejects wrong node effect
+   ok 26 - child import rejects wrong node effect
+     ---
+     duration_ms: 247.773333
+     ...
+   # Subtest: child import rejects empty diff
+   ok 27 - child import rejects empty diff
+     ---
+     duration_ms: 265.779542
+     ...
+   # Subtest: child import rejects missing diff
+   ok 28 - child import rejects missing diff
+     ---
+     duration_ms: 253.046792
+     ...
+   # Subtest: the real verdict shell requires all declared waves and allows an all-mode single-leaf selection
+   ok 29 - the real verdict shell requires all declared waves and allows an all-mode single-leaf selection
+     ---
+     duration_ms: 248.356666
+     ...
+   # Subtest: the complete artifact DAG stays at225 static minutes without retiring an unmeasured exception
+   ok 30 - the complete artifact DAG stays at225 static minutes without retiring an unmeasured exception
+     ---
+     duration_ms: 0.94425
+     ...
+   # Subtest: a filtered all-mode green cannot skip the complete63-node measurement
+   ok 31 - a filtered all-mode green cannot skip the complete63-node measurement
+     ---
+     duration_ms: 171.607334
+     ...
+   # Subtest: full-corpus cache preserves exact source and never proves a differently filtered run
+   ok 32 - full-corpus cache preserves exact source and never proves a differently filtered run
+     ---
+     duration_ms: 101.259167
+     ...
+   1..32
+   # tests 32
+   # suites 0
+   # pass 32
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 6988.346834
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/issue-1028-all-mode-sharding.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: all mode plans exactly 63 original corpus nodes in 31 independent and 16 dependent legs
+ok 1 - all mode plans exactly 63 original corpus nodes in 31 independent and 16 dependent legs
+  ---
+  duration_ms: 72.77875
+  ...
+# Subtest: every binary subtree preserves its exact all-mode count and leg membership
+ok 2 - every binary subtree preserves its exact all-mode count and leg membership
+  ---
+  duration_ms: 252.675791
+  ...
+# Subtest: depth-five plan preserves 32 leaves in 16 pairs and a filtered single leaf
+ok 3 - depth-five plan preserves 32 leaves in 16 pairs and a filtered single leaf
+  ---
+  duration_ms: 100.495334
+  ...
+# Subtest: invalid depths, filters and empty selections fail rather than validate no work
+ok 4 - invalid depths, filters and empty selections fail rather than validate no work
+  ---
+  duration_ms: 130.118792
+  ...
+# Subtest: the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=true
+ok 5 - the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=true
+  ---
+  duration_ms: 291.924459
+  ...
+# Subtest: the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=false
+ok 6 - the 47-leg join preserves all 63 nodes and actual corpus bytes with rules=false
+  ---
+  duration_ms: 279.954834
+  ...
+# Subtest: join rejects missing leg
+ok 7 - join rejects missing leg
+  ---
+  duration_ms: 244.67825
+  ...
+# Subtest: join rejects repeated depth/subtree
+ok 8 - join rejects repeated depth/subtree
+  ---
+  duration_ms: 250.990958
+  ...
+# Subtest: join rejects missing selected node
+ok 9 - join rejects missing selected node
+  ---
+  duration_ms: 229.93225
+  ...
+# Subtest: join rejects foreign node disposition
+ok 10 - join rejects foreign node disposition
+  ---
+  duration_ms: 227.752542
+  ...
+# Subtest: join rejects duplicate node disposition
+ok 11 - join rejects duplicate node disposition
+  ---
+  duration_ms: 229.670167
+  ...
+# Subtest: join rejects foreign source tree
+ok 12 - join rejects foreign source tree
+  ---
+  duration_ms: 231.231708
+  ...
+# Subtest: join rejects foreign source commit
+ok 13 - join rejects foreign source commit
+  ---
+  duration_ms: 231.744709
+  ...
+# Subtest: join rejects consistently foreign source tree
+ok 14 - join rejects consistently foreign source tree
+  ---
+  duration_ms: 237.611542
+  ...
+# Subtest: join rejects repeated planned node
+ok 15 - join rejects repeated planned node
+  ---
+  duration_ms: 238.668209
+  ...
+# Subtest: join rejects extra planned node
+ok 16 - join rejects extra planned node
+  ---
+  duration_ms: 241.103334
+  ...
+# Subtest: join rejects mixed rule mode
+ok 17 - join rejects mixed rule mode
+  ---
+  duration_ms: 239.682791
+  ...
+# Subtest: join rejects conflicting corpus bytes
+ok 18 - join rejects conflicting corpus bytes
+  ---
+  duration_ms: 237.981917
+  ...
+# Subtest: join rejects false result counts
+ok 19 - join rejects false result counts
+  ---
+  duration_ms: 242.447875
+  ...
+# Subtest: join rejects missing actual elapsed rows
+ok 20 - join rejects missing actual elapsed rows
+  ---
+  duration_ms: 230.795333
+  ...
+# Subtest: join rejects a lossy or repeated plan
+ok 21 - join rejects a lossy or repeated plan
+  ---
+  duration_ms: 227.755667
+  ...
+# Subtest: join rejects passing node without effect
+ok 22 - join rejects passing node without effect
+  ---
+  duration_ms: 241.667958
+  ...
+# Subtest: a filtered all-mode join retains the complete requested subtree
+ok 23 - a filtered all-mode join retains the complete requested subtree
+  ---
+  duration_ms: 186.5935
+  ...
+# Subtest: child import copies only the two declared leaves and rejects foreign source identity
+ok 24 - child import copies only the two declared leaves and rejects foreign source identity
+  ---
+  duration_ms: 302.307917
+  ...
+# Subtest: failed leaf evidence remains a measured failure and is never imported as verified
+ok 25 - failed leaf evidence remains a measured failure and is never imported as verified
+  ---
+  duration_ms: 251.056625
+  ...
+# Subtest: child import rejects wrong node effect
+ok 26 - child import rejects wrong node effect
+  ---
+  duration_ms: 247.773333
+  ...
+# Subtest: child import rejects empty diff
+ok 27 - child import rejects empty diff
+  ---
+  duration_ms: 265.779542
+  ...
+# Subtest: child import rejects missing diff
+ok 28 - child import rejects missing diff
+  ---
+  duration_ms: 253.046792
+  ...
+# Subtest: the real verdict shell requires all declared waves and allows an all-mode single-leaf selection
+ok 29 - the real verdict shell requires all declared waves and allows an all-mode single-leaf selection
+  ---
+  duration_ms: 248.356666
+  ...
+# Subtest: the complete artifact DAG stays at225 static minutes without retiring an unmeasured exception
+ok 30 - the complete artifact DAG stays at225 static minutes without retiring an unmeasured exception
+  ---
+  duration_ms: 0.94425
+  ...
+# Subtest: a filtered all-mode green cannot skip the complete63-node measurement
+ok 31 - a filtered all-mode green cannot skip the complete63-node measurement
+  ---
+  duration_ms: 171.607334
+  ...
+# Subtest: full-corpus cache preserves exact source and never proves a differently filtered run
+ok 32 - full-corpus cache preserves exact source and never proves a differently filtered run
+  ---
+  duration_ms: 101.259167
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 32
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6988.346834
+```

@@ -46,7 +46,7 @@ fn answers_are_repeatable_for_the_same_prompt() {
 #[test]
 fn answers_expose_their_intent_explicitly() {
     let response = answer("Hi");
-    assert!(!response.intent.is_empty());
+    assert_ne!(response.intent, "");
 }
 
 #[test]
@@ -244,7 +244,7 @@ fn step_8_full_trace_is_stored_and_linked() {
 #[test]
 fn step_9_reply_is_returned_with_trace_pointer() {
     let response = answer("Hi");
-    assert!(!response.answer.is_empty());
+    assert_ne!(response.answer, "");
     assert!(
         response
             .evidence_links

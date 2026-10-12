@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "诗人"
+        },
+        "es": {
+          "language": "es",
+          "value": "poeta"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "編寫詩詞的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "persona que escribe poesía"
         }
       },
       "aliases": {
@@ -76,6 +84,20 @@
           {
             "language": "zh",
             "value": "詩人"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "poetisa"
+          },
+          {
+            "language": "es",
+            "value": "autor de poesía"
+          },
+          {
+            "language": "es",
+            "value": "autora de poesía"
           }
         ]
       }

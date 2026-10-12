@@ -1,0 +1,319 @@
+{
+  "run": 37870805740,
+  "source": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "skip_build": false,
+  "mode": "all",
+  "filter": "none",
+  "authored_rules": false,
+  "all_execution_legs": 47,
+  "jobs": [
+    {
+      "job": 113628217059,
+      "name": "Plan the Agent CLI ladder",
+      "seconds": 340,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433181,
+      "name": "Agent CLI ladder depth-5-1.1.1.2",
+      "seconds": 528,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433210,
+      "name": "Agent CLI ladder depth-5-2.1.2.1",
+      "seconds": 647,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433218,
+      "name": "Agent CLI ladder depth-5-1.2.1.1",
+      "seconds": 78,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433225,
+      "name": "Agent CLI ladder depth-5-1.2.2.1",
+      "seconds": 797,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433228,
+      "name": "Agent CLI ladder depth-3-1.1.2",
+      "seconds": 62,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433229,
+      "name": "Agent CLI ladder depth-5-1.2.1.2",
+      "seconds": 753,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433241,
+      "name": "Agent CLI ladder depth-5-1.1.1.1",
+      "seconds": 67,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433246,
+      "name": "Agent CLI ladder depth-3-1.2.2",
+      "seconds": 51,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433250,
+      "name": "Agent CLI ladder depth-5-2.2.2.1",
+      "seconds": 724,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433251,
+      "name": "Agent CLI ladder depth-5-2.1.1.1",
+      "seconds": 1110,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433267,
+      "name": "Agent CLI ladder depth-5-2.2.2.2",
+      "seconds": 890,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433287,
+      "name": "Agent CLI ladder depth-3-2.1.2",
+      "seconds": 56,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433304,
+      "name": "Agent CLI ladder depth-5-1.2.2.2",
+      "seconds": 812,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433307,
+      "name": "Agent CLI ladder depth-5-1.1.2.1",
+      "seconds": 77,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433315,
+      "name": "Agent CLI ladder depth-5-2.1.2.2",
+      "seconds": 957,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433321,
+      "name": "Agent CLI ladder depth-5-2.2.1.2",
+      "seconds": 555,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433328,
+      "name": "Agent CLI ladder depth-5-1.1.2.2",
+      "seconds": 703,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433355,
+      "name": "Agent CLI ladder depth-5-2.2.1.1",
+      "seconds": 1036,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433371,
+      "name": "Agent CLI ladder depth-5-2.1.1.2",
+      "seconds": 837,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433377,
+      "name": "Agent CLI ladder depth-3-2.1.1",
+      "seconds": 67,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433398,
+      "name": "Agent CLI ladder depth-3-1.2.1",
+      "seconds": 44,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433411,
+      "name": "Agent CLI ladder depth-3-1.1.1",
+      "seconds": 55,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433453,
+      "name": "Agent CLI ladder depth-2-1.2",
+      "seconds": 55,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433454,
+      "name": "Agent CLI ladder depth-1-1",
+      "seconds": 66,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433460,
+      "name": "Agent CLI ladder depth-3-2.2.2",
+      "seconds": 63,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433478,
+      "name": "Agent CLI ladder depth-1-2",
+      "seconds": 62,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433506,
+      "name": "Agent CLI ladder depth-3-2.2.1",
+      "seconds": 66,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433513,
+      "name": "Agent CLI ladder depth-2-2.1",
+      "seconds": 58,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433551,
+      "name": "Agent CLI ladder depth-2-2.2",
+      "seconds": 60,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433582,
+      "name": "Agent CLI ladder depth-0-R",
+      "seconds": 68,
+      "conclusion": "success"
+    },
+    {
+      "job": 113632433616,
+      "name": "Agent CLI ladder depth-2-1.1",
+      "seconds": 63,
+      "conclusion": "success"
+    },
+    {
+      "job": 113665453806,
+      "name": "Validate the current-run leaf evidence",
+      "seconds": 23,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968537,
+      "name": "Agent CLI composite depth-4-1.1.2.2",
+      "seconds": 46,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968546,
+      "name": "Agent CLI composite depth-4-1.2.1.2",
+      "seconds": 45,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968552,
+      "name": "Agent CLI composite depth-4-1.2.1.1",
+      "seconds": 35,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968556,
+      "name": "Agent CLI composite depth-4-1.1.1.1",
+      "seconds": 44,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968566,
+      "name": "Agent CLI composite depth-4-1.2.2.2",
+      "seconds": 49,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968588,
+      "name": "Agent CLI composite depth-4-1.1.1.2",
+      "seconds": 36,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968607,
+      "name": "Agent CLI composite depth-4-1.1.2.1",
+      "seconds": 43,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968611,
+      "name": "Agent CLI composite depth-4-2.1.1.2",
+      "seconds": 263,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968616,
+      "name": "Agent CLI composite depth-4-2.1.1.1",
+      "seconds": 300,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968626,
+      "name": "Agent CLI composite depth-4-2.2.2.1",
+      "seconds": 247,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968647,
+      "name": "Agent CLI composite depth-4-2.2.1.1",
+      "seconds": 218,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968678,
+      "name": "Agent CLI composite depth-4-2.1.2.1",
+      "seconds": 44,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968681,
+      "name": "Agent CLI composite depth-4-2.2.1.2",
+      "seconds": 41,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968741,
+      "name": "Agent CLI composite depth-4-2.2.2.2",
+      "seconds": 206,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968754,
+      "name": "Agent CLI composite depth-4-1.2.2.1",
+      "seconds": 275,
+      "conclusion": "success"
+    },
+    {
+      "job": 113666968793,
+      "name": "Agent CLI composite depth-4-2.1.2.2",
+      "seconds": 44,
+      "conclusion": "success"
+    },
+    {
+      "job": 113673385915,
+      "name": "Compare the measured ladder with the record",
+      "seconds": 30,
+      "conclusion": "success"
+    }
+  ],
+  "classification_workflow": "success",
+  "actual_nodes_passing": 25,
+  "actual_nodes_selected": 63,
+  "actual_leaves_passing": 19,
+  "actual_leaves_selected": 32,
+  "deepest_passing_level": null,
+  "artifact_id": 11596306627,
+  "artifact_root": "/private/tmp/pr1188-ladder-disabled-all63-4a560"
+}

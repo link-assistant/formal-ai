@@ -4,11 +4,28 @@ on:
   push:
     branches: [main]
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
   schedule:
     - cron: '0 6 * * 1'
   # Issue #1017: the js pipeline template exposes a manual trigger so a security
   # sweep can be re-run without waiting for Monday's cron or pushing a commit.
+  # Issue #1187 R2: a bot pull request's checks start through dispatch
+  # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
 
 # Keep the workflow read-only unless a job explicitly needs an additional scope.
 permissions:

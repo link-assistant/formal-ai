@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "手"
+        },
+        "es": {
+          "language": "es",
+          "value": "mano"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "手臂或前肢末端的四肢"
+        },
+        "es": {
+          "language": "es",
+          "value": "porción terminal de una extremidad delantera (brazo o pata delantera)"
         }
       },
       "aliases": {

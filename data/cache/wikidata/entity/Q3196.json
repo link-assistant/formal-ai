@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "火"
+        },
+        "es": {
+          "language": "es",
+          "value": "fuego"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "किसी पदार्थ का तीव्र ऑक्सीकरण; प्रकाश और ऊष्मा उत्सर्जित करने वाली घटना"
+        },
+        "es": {
+          "language": "es",
+          "value": "oxidación rápida de un material; fenómeno que emite luz y calor"
         }
       },
       "aliases": {

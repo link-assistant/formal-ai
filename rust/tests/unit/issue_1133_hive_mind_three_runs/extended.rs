@@ -118,7 +118,7 @@ fn the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin() {
     for path in [
         "Main.kt",
         "tests/verify-output.sh",
-        ".github/workflows/run.yml",
+        ".github/workflows/Main.yml",
     ] {
         assert!(
             planned.iter().any(|call| path_of(call) == path),
@@ -139,7 +139,9 @@ fn the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin() {
 #[test]
 fn a_gh_read_does_not_count_as_literal_file_verification() {
     let mut messages = vec![ChatMessage::user(prompt())];
-    let objective = "Create a file note.txt containing exactly: hello";
+    // A `gh` read prints the title, a blank line, then the body; output
+    // without that shape is a failed read since issue #1155.
+    let objective = "Small task\n\nCreate a file note.txt containing exactly: hello";
     let (planned, answer) = drive(
         &["Bash", "Write"],
         &mut messages,
@@ -347,7 +349,7 @@ fn a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands() 
     );
     let workflow = planned
         .iter()
-        .find(|call| call.tool == "write" && path_of(call) == ".github/workflows/run.yml")
+        .find(|call| call.tool == "write" && path_of(call).starts_with(".github/workflows/"))
         .expect("the workflow is written beside the program");
     assert!(
         workflow.arguments.contains("pull_request")
@@ -614,7 +616,7 @@ fn a_workflow_requirement_adds_the_workflow_in_every_language() {
         assert!(
             planned
                 .iter()
-                .any(|call| call.tool == "write" && path_of(call) == ".github/workflows/run.yml"),
+                .any(|call| call.tool == "write" && path_of(call).starts_with(".github/workflows/")),
             "{language}: {planned:?}"
         );
     }
@@ -677,3 +679,6 @@ fn positional_inserts_compose_in_every_language() {
         assert_eq!(new, "# generated\non:", "{language}");
     }
 }
+
+#[path = "../../fixtures/commit-cue-masking.rs"]
+mod commit_cue_masking;

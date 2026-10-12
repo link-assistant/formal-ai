@@ -1,3 +1,5 @@
+include!("../fixtures/literal-protocol-observation.rs");
+
 #[test]
 fn formal_ai_agent_authored_leaves_and_sessions_replay_byte_for_byte() {
     let cases = [
@@ -19,14 +21,24 @@ fn formal_ai_agent_authored_leaves_and_sessions_replay_byte_for_byte() {
         ),
     ];
 
-    for (task, expected_leaf, committed_leaf, committed_session) in cases {
+    let observed_contract = include_str!(
+        "../../../docs/case-studies/issue-982/self-hosting/contract/session-v3-observed-8abb066db.json"
+    );
+    assert_literal_capture_transition(cases[0].3, observed_contract);
+
+    for (index, (task, expected_leaf, committed_leaf, committed_session)) in
+        cases.into_iter().enumerate()
+    {
         assert_eq!(committed_leaf, expected_leaf);
         let fresh = formal_ai::agentic_coding::run_agentic_task(task).expect("replay agent task");
         let rendered = format!(
             "{}\n",
             serde_json::to_string_pretty(&fresh.session_json()).expect("render session JSON")
         );
-        assert_eq!(committed_session, rendered);
+        assert_literal_capture_transition(committed_session, &rendered);
+        if index == 0 {
+            assert_eq!(observed_contract, rendered);
+        }
         let written_leaf = fresh
             .steps
             .iter()

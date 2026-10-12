@@ -1,0 +1,29 @@
+view
+  id M-2c406aca254f
+  lemma buys
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an advantageous purchase"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "obtain by purchase; acquire by means of a financial transaction"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make illegal payments to in exchange for favors or influence"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be worth or be capable of buying"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "acquire by trade or sacrifice or exchange"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "accept as true"
+    provenance (wordnet)

@@ -1,0 +1,1444 @@
+# Response-template intents for the quantity and calendar handlers (issues
+# #1176 and #1174). Each record names one `intent` key that
+# data/seed/multilingual-responses-quantities.lino carries response records
+# for, so the closure audit resolves the key to an authored definition rather
+# than an open reference. The shape follows the localized_response_template
+# records in meanings-intent.lino; lexeme blocks are deliberately absent
+# because these are template identifiers, not conversational vocabulary.
+#
+# The later records define the response intents of the creative-composition,
+# formalization, legality, repair, product-search and TRIZ response files
+# (issues #1178, #1186, #836, #1185, #800, #901), plus the two routing intents
+# product_search and triz_resolution that product-search-cues.lino and
+# triz-principles.lino name, each pointing at the file that uses it.
+#
+# The R1017 records define the small-math intents (calendar_date_weekday,
+# the numeric_list_result and number_primality families) and the synthesis
+# response intents (meta_explanation_why, the how_it_works follow-ups,
+# network_snapshot, source_refresh) the bulk-fixes batch moved into seed data.
+
+meanings
+  statistics
+    defined-by answer
+    role localized_response_template
+    precondition "a statistics request over an explicit numeric dataset is answered"
+    effect "the dataset is echoed with its size and each requested measure is computed and listed"
+    unit "not applicable"
+    example "The values are 3, 5, 7 (n = 3). mean = 5, median = 5."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  unit_conversion_multiply
+    defined-by answer
+    role localized_response_template
+    precondition "a unit conversion is answered whose factor multiplies the source value"
+    effect "the converted value is stated with the multiplication that produced it"
+    unit "not applicable"
+    example "3 km is 3000 m. 3 x 1000 = 3000, because 1 km = 1000 m."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  unit_conversion_wikidata
+    defined-by answer
+    role localized_response_template
+    precondition "a linear unit conversion whose two units both resolve to a Wikidata item with a captured conversion to SI unit"
+    effect "the factor is cited as the quotient of the two items' P2370 amounts"
+    unit "not applicable"
+    example "1609.344 / 1000 = 1.609344 for the mile and the kilometre"
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  unit_conversion_divide
+    defined-by answer
+    role localized_response_template
+    precondition "a unit conversion is answered whose factor divides the source value"
+    effect "the converted value is stated with the division that produced it"
+    unit "not applicable"
+    example "3000 m is 3 km. 3000 / 1000 = 3, because 1 km = 1000 m."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  unit_conversion_formula
+    defined-by answer
+    role localized_response_template
+    precondition "a compound unit conversion is answered through a multi-step formula"
+    effect "the converted value is stated with the derivation steps that produced it"
+    unit "not applicable"
+    example "100 F is 37.8 C. subtract 32, multiply 5/9."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_split_next
+    defined-by answer
+    role localized_response_template
+    precondition "a weekday-offset request forward in time is answered with a non-whole-week day count"
+    effect "the resulting weekday is stated with the week-plus-day split of the offset"
+    unit "not applicable"
+    example "100 days after Monday is Wednesday. 100 days = 14 weeks + 2 days."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_split_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a weekday-offset request backward in time is answered with a non-whole-week day count"
+    effect "the resulting weekday is stated with the week-plus-day split of the offset"
+    unit "not applicable"
+    example "100 days before Monday is Saturday. 100 days = 14 weeks + 2 days."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_exact_next
+    defined-by answer
+    role localized_response_template
+    precondition "a forward weekday-offset request is answered with a whole number of weeks"
+    effect "the unchanged weekday is stated with the exact week-to-day equivalence"
+    unit "not applicable"
+    example "14 weeks after Tuesday is Tuesday. 14 weeks = 98 days exactly."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_exact_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a backward weekday-offset request is answered with a whole number of weeks"
+    effect "the unchanged weekday is stated with the exact week-to-day equivalence"
+    unit "not applicable"
+    example "14 weeks before Tuesday is Tuesday. 14 weeks = 98 days exactly."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_exact_one_next
+    defined-by answer
+    role localized_response_template
+    precondition "a one-week forward weekday-offset request is answered"
+    effect "the unchanged weekday is stated with the single-week day equivalence"
+    unit "not applicable"
+    example "1 week after Friday is Friday. 1 week = 7 days exactly."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_offset_exact_one_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a one-week backward weekday-offset request is answered"
+    effect "the unchanged weekday is stated with the single-week day equivalence"
+    unit "not applicable"
+    example "1 week before Friday is Friday. 1 week = 7 days exactly."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  statistics_percentile_derivation
+    defined-by answer
+    role localized_response_template
+    precondition "a percentile of an explicit numeric dataset is computed by linear interpolation between closest ranks"
+    effect "the rank 1 + (n - 1) x p / 100 and the interpolation between the two neighbouring sorted values are stated"
+    unit "not applicable"
+    example "p = 90; rank = 1 + (5 - 1) x 90 / 100 = 4.6; 4 + 0.6 x (5 - 4) = 4.6"
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_month_offset_next
+    defined-by answer
+    role localized_response_template
+    precondition "a month-offset request forward in time from a named month is answered"
+    effect "the resulting month is stated with its modulo-12 month-number arithmetic"
+    unit "not applicable"
+    example "2 months after January is March. January is month 1; 1 + 2 = 3, and 3 is March mod 12."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_month_offset_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a month-offset request backward in time from a named month is answered"
+    effect "the resulting month is stated with its modulo-12 month-number arithmetic"
+    unit "not applicable"
+    example "3 months before February is November. February is month 2; 2 - 3 = -1, and -1 is 11 mod 12."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_month_offset_unresolved_next
+    defined-by answer
+    role localized_response_template
+    precondition "a forward month offset from a weekday is asked, which no fixed day count represents"
+    effect "the request is answered with a clarification naming the day span the months can cover and asking for a starting date"
+    unit "not applicable"
+    example "3 months after Monday has no single weekday answer, because 3 months span 89 to 92 days."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_month_offset_unresolved_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a backward month offset from a weekday is asked, which no fixed day count represents"
+    effect "the request is answered with a clarification naming the day span the months can cover and asking for a starting date"
+    unit "not applicable"
+    example "3 months before Monday has no single weekday answer, because 3 months span 89 to 92 days."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  brainstorming_candidates
+    defined-by answer
+    role localized_response_template
+    precondition "a brainstorming request yields topic words from which candidates were composed"
+    effect "the composed name candidates are listed with the stated ranking metric, constraints, and composition rules"
+    unit "not applicable"
+    example "5 name candidates for the concepts coffee, university: ..."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  brainstorming_refusal
+    defined-by answer
+    role localized_response_template
+    precondition "a brainstorming request leaves no topic words after extraction"
+    effect "the request is declined without guessing and the user is asked to name the subject"
+    unit "not applicable"
+    example "This reads as a brainstorming request, but no topic words survived extraction, so I will not guess."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_poem
+    defined-by answer
+    role localized_response_template
+    precondition "a rhymed poem was composed and passed its line-count, rhyme-scheme, and topic checks"
+    effect "the poem is returned with the constraint check that was run on it and the method that composed it"
+    unit "not applicable"
+    example "a four-line poem about the sea followed by its line, rhyme, and topic checks"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_unrhymed
+    defined-by answer
+    role localized_response_template
+    precondition "a poem was requested with no rhyme scheme and passed its line-count and topic checks"
+    effect "the poem is returned with its constraint check and no rhyme claim"
+    unit "not applicable"
+    example "an unrhymed three-line poem about autumn with its line and topic checks"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_gap
+    defined-by answer
+    role localized_response_template
+    precondition "a rhymed poem was requested but the rhyme lexicon could not fill the scheme"
+    effect "free verse meeting the other constraints is returned with the rhyme gap stated"
+    unit "not applicable"
+    example "a free-verse poem with a note that the requested rhyme scheme could not be filled"
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  creative_writing_refusal
+    defined-by answer
+    role localized_response_template
+    precondition "no composition satisfied the stated form constraints"
+    effect "no constraint-violating poem is returned and the user is asked to relax a constraint"
+    unit "not applicable"
+    example "I could not satisfy the stated form constraints (lines: 14, scheme: ABAB, topic: sleep)."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_itinerary
+    defined-by answer
+    role localized_response_template
+    precondition "a trip-planning request names a cached destination and the schedule passed its feasibility check"
+    effect "a day-by-day itinerary is returned with each item citing the fact it depends on"
+    unit "not applicable"
+    example "2-day itinerary for Rome: ..."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_refusal
+    defined-by answer
+    role localized_response_template
+    precondition "a trip-planning request names a destination with no places in the seeded cache"
+    effect "no uncited plan is returned and the cached destinations are listed"
+    unit "not applicable"
+    example "This reads as a planning request, but the destination has no places in the seeded cache."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  planning_infeasible
+    defined-by answer
+    role localized_response_template
+    precondition "a composed schedule failed its own feasibility check"
+    effect "the failing schedule is withheld and the failed checks are reported"
+    unit "not applicable"
+    example "The 5-day schedule for Rome did not pass its own feasibility check."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  advice_guidance
+    defined-by answer
+    role localized_response_template
+    precondition "an advice request names a topic with formalized recommendations in the seeded table"
+    effect "evidence-graded recommendations are listed with their citations and stated weighting"
+    unit "not applicable"
+    example "Evidence-graded guidance for sleep: ..."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  advice_refusal
+    defined-by answer
+    role localized_response_template
+    precondition "an advice request names a topic with no formalized recommendations"
+    effect "no uncited advice is returned and the covered topics are named"
+    unit "not applicable"
+    example "This reads as an advice request, but the topic has no formalized recommendations in the seeded table."
+    grounding "data/seed/multilingual-responses-creative-tasks.lino"
+  formalization_result
+    defined-by answer
+    role localized_response_template
+    precondition "a natural-language statement was parsed into a quantified formula"
+    effect "the rendered formal statement is returned with its honesty note and derivation"
+    unit "not applicable"
+    example "Formalized statement: forall x (human(x) -> mortal(x))"
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_unparsed
+    defined-by answer
+    role localized_response_template
+    precondition "a formalization request contained no parseable quantified clause"
+    effect "the parse failure reason is stated with what a formalizable sentence needs"
+    unit "not applicable"
+    example "no quantified clause could be parsed from it: no quantifier word found."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_no_statement
+    defined-by answer
+    role localized_response_template
+    precondition "a formalization request names no statement beyond its cue"
+    effect "the request is refused by name and the statement is asked for"
+    unit "not applicable"
+    example "it names no statement to formalize"
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_deformalized
+    defined-by answer
+    role localized_response_template
+    precondition "a formal statement was read back into natural language"
+    effect "the natural-language reading is returned with its round-trip result and honesty note"
+    unit "not applicable"
+    example "Natural-language reading: every human is mortal."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_honesty
+    defined-by answer
+    role localized_response_template
+    precondition "a formalization or deformalization answer is rendered"
+    effect "the answer states which theorem provers ran or that none was invoked, and what the Lean and Rocq texts are"
+    unit "not applicable"
+    example "No theorem prover was invoked."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_prover_none
+    defined-by answer
+    role localized_response_template
+    precondition "no theorem prover binary named by a prover record is found in PATH"
+    effect "the honesty block opens by stating that no theorem prover was invoked"
+    unit "not applicable"
+    example "No theorem prover was invoked."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_prover_invoked
+    defined-by answer
+    role localized_response_template
+    precondition "at least one theorem prover binary was found in PATH and run on its compile unit"
+    effect "the honesty block opens by naming the theorem provers that were run"
+    unit "not applicable"
+    example "A theorem prover was invoked: lean."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_prover_present
+    defined-by answer
+    role localized_response_template
+    precondition "the prover binary is found in PATH and run on the rendered compile unit"
+    effect "the honesty block states the compile unit's path and the prover's exit status"
+    unit "not applicable"
+    example "lean was found in PATH and ran on /tmp/formal-ai-prover/clause_0123456789abcdef.lean; it exited with status 0."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  formalization_prover_absent
+    defined-by answer
+    role localized_response_template
+    precondition "the prover binary is not found in PATH"
+    effect "the honesty block states that the rendered text was not compiled"
+    unit "not applicable"
+    example "coqc was not found in PATH, so the coqc text was not compiled."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  legality_warn
+    defined-by answer
+    role localized_response_template
+    precondition "a request matched a warn-disposition pattern of the seeded legality catalogue"
+    effect "an advisory caution names the matched category, its jurisdiction note, and leaves the decision to the user"
+    unit "not applicable"
+    example "A caution before I continue: this request appears to touch copyright."
+    grounding "data/seed/multilingual-responses-legality.lino"
+  legality_refuse
+    defined-by answer
+    role localized_response_template
+    precondition "a request matched a refuse-disposition pattern of the narrow prohibited set"
+    effect "the request is declined with the matched category and reason, stating it is not legal advice"
+    unit "not applicable"
+    example "I will not help with this: it falls under a category the seeded catalogue refuses without exception."
+    grounding "data/seed/multilingual-responses-legality.lino"
+  repair_ladder_exhausted
+    defined-by answer
+    role localized_response_template
+    precondition "the error-driven repair loop reached its rung bound without resolving the failure"
+    effect "the loop stops and reports the rungs climbed instead of retrying without a bound"
+    unit "not applicable"
+    example "The error-driven repair loop climbed rung 3 of at most 3 without resolving the failure."
+    grounding "data/seed/multilingual-responses-repair.lino"
+  repair_unresolved_need
+    defined-by answer
+    role localized_response_template
+    precondition "the diagnostic search found no fetched source addressing the exact error"
+    effect "no candidate fix is retained and the gap is reported as an unresolved need"
+    unit "not applicable"
+    example "The diagnostic search found no fetched source that addresses this exact error."
+    grounding "data/seed/multilingual-responses-repair.lino"
+  repository_lineage
+    defined-by answer
+    role localized_response_template
+    precondition "a lineage question named a path that exists in the working repository"
+    effect "the path's commits are listed oldest first with the issue and pull request of the introducing commit"
+    unit "not applicable"
+    example "scripts/check-self-development-release.rs has 6 commits in this repository's history, oldest first."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_lineage_unrecorded
+    defined-by answer
+    role localized_response_template
+    precondition "the introducing commit carries no issue trailer or no delivering merge"
+    effect "the missing issue or pull request is said to be unrecorded instead of guessed"
+    unit "not applicable"
+    example "(not recorded in the history)"
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_status_explanation
+    defined-by answer
+    role localized_response_template
+    precondition "a status question named the self-development status of the working repository"
+    effect "the status rule is explained from its checking script, the measured commit range and the self-hosting ledger"
+    unit "not applicable"
+    example "The self-development status is checked by scripts/check-self-development-release.rs, introduced for issue #1014."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_definition
+    defined-by answer
+    role localized_response_template
+    precondition "a definition question named a symbol the self-AST census records"
+    effect "the symbol is located in its file and described from its documentation comment and the commit that introduced it"
+    unit "not applicable"
+    example "`evaluate_calculation` is a function in rust/src/calculation.rs, lines 427 to 445."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_definition_documented
+    defined-by answer
+    role localized_response_template
+    precondition "the located symbol carries a documentation comment"
+    effect "the comment is quoted as what the symbol does"
+    unit "not applicable"
+    example "Its documentation comment reads: Evaluate an expression."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  repository_definition_undocumented
+    defined-by answer
+    role localized_response_template
+    precondition "the located symbol carries no documentation comment"
+    effect "the answer says so instead of inventing a description"
+    unit "not applicable"
+    example "It carries no documentation comment, so what it does is stated only by its source."
+    grounding "data/seed/multilingual-responses-formalization.lino"
+  product_search_result
+    defined-by answer
+    role localized_response_template
+    precondition "a product-search request named a product and a marketplace"
+    effect "the composed site-scoped search link is returned with the constraints and buying advice, stated as not fetched"
+    unit "not applicable"
+    example "Here is the search I composed for a laptop charger on the named marketplace."
+    grounding "data/seed/multilingual-responses-product-search.lino"
+  product_search_marketplace_needed
+    defined-by answer
+    role localized_response_template
+    precondition "a product-search request named a product but no marketplace the catalogue knows"
+    effect "the answer names the catalogued marketplaces and asks for one instead of guessing a store"
+    unit "not applicable"
+    example "Name one of the marketplaces I know and I will compose the exact search link."
+    grounding "data/seed/multilingual-responses-product-search.lino"
+  learn_from_source_browser_summary
+    defined-by answer
+    role localized_response_template
+    precondition "a learning directive named a declared learnable source in the browser worker"
+    effect "the answer says the learning loop for that source runs in the native engine and that nothing was learned in the browser"
+    unit "not applicable"
+    example "This browser worker records the source but does not run that loop."
+    grounding "data/seed/multilingual-responses-parity.lino"
+  triz_resolution_map
+    defined-by answer
+    role localized_response_template
+    precondition "a contradiction or paradox request was recognized by the TRIZ cues"
+    effect "the resolution families and benchmark precedents are listed with the link-value note"
+    unit "not applicable"
+    example "A contradiction is a link with a value, not a wall. Ways through: ..."
+    grounding "data/seed/multilingual-responses-triz.lino"
+  product_search
+    defined-by method
+    role action
+    precondition "a request asks to find or choose a product to buy"
+    effect "routes the request to the product-search handler that composes a site-scoped search"
+    unit "not applicable"
+    example "find me a laptop charger on the marketplace"
+    grounding "data/seed/product-search-cues.lino"
+  triz_resolution
+    defined-by method
+    role action
+    precondition "a request states a contradiction, paradox, or trade-off to resolve"
+    effect "routes the request to the TRIZ solver that maps it to resolution families"
+    unit "not applicable"
+    example "how do I resolve the trade-off between strength and weight"
+    grounding "data/seed/triz-principles.lino"
+  calendar_date_weekday
+    defined-by answer
+    role localized_response_template
+    precondition "a stated calendar date is asked for its day of the week"
+    effect "the weekday is stated with its day count from 1970-01-01 split into whole weeks and a remainder"
+    unit "not applicable"
+    example "2024-02-29 is a Thursday. Counting from 1970-01-01, a Thursday, it is day 19782."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  numeric_list_result_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a stated list of numbers is asked to be sorted without a request for code"
+    effect "the list is restated in ascending order"
+    unit "not applicable"
+    example "5, 2, 9, 1 sorted in ascending order: 1, 2, 5, 9."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  numeric_list_result_reverse_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a stated list of numbers is asked to be sorted from largest to smallest without a request for code"
+    effect "the list is restated in descending order"
+    unit "not applicable"
+    example "5, 2, 9, 1 sorted in descending order: 9, 5, 2, 1."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  numeric_list_result_reverse
+    defined-by answer
+    role localized_response_template
+    precondition "a stated list of numbers is asked to be reversed without a request for code"
+    effect "the list is restated in reverse order"
+    unit "not applicable"
+    example "5, 2, 9, 1 in reverse order: 1, 9, 2, 5."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_primality_prime
+    defined-by answer
+    role localized_response_template
+    precondition "a stated whole number above the trial-division threshold is asked whether it is prime and it is"
+    effect "the number is confirmed prime with the trial-division bound that no divisor reaches"
+    unit "not applicable"
+    example "Yes, 97 is a prime number: no integer from 2 to 9 divides it."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_primality_prime_small
+    defined-by answer
+    role localized_response_template
+    precondition "a stated small whole number is asked whether it is prime and it is"
+    effect "the number is confirmed prime by naming its only divisors"
+    unit "not applicable"
+    example "Yes, 7 is a prime number: its only divisors are 1 and 7."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_primality_composite
+    defined-by answer
+    role localized_response_template
+    precondition "a stated whole number is asked whether it is prime and it has a proper factor"
+    effect "the number is declared composite with its smallest factor and cofactor"
+    unit "not applicable"
+    example "No, 91 is not a prime number: 91 = 7 x 13, so 7 divides it."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  number_primality_below_two
+    defined-by answer
+    role localized_response_template
+    precondition "a stated whole number below two is asked whether it is prime"
+    effect "the number is declared not prime by restating that a prime is greater than 1"
+    unit "not applicable"
+    example "No, 1 is not a prime number: a prime is a whole number greater than 1."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  meta_explanation_why
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks why the previous answer was given"
+    effect "the answer names the deterministic Links Notation rule that matched and points at the appended evidence and trace"
+    unit "not applicable"
+    example "I answered that way because the prompt matched a deterministic Links Notation rule."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  how_it_works_prior_topic
+    defined-by answer
+    role localized_response_template
+    precondition "a how-does-it-work question names a term known only from the prior conversation"
+    effect "the answer admits no mechanism rule exists for the term yet and asks for a Links Notation fact describing it"
+    unit "not applicable"
+    example "To explain how the term works I need a Links Notation fact with the mechanism description."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  how_it_works_no_context
+    defined-by answer
+    role localized_response_template
+    precondition "a how-does-it-work follow-up names no topic and the conversation supplies none"
+    effect "the answer explains the matched rule and suggests asking about a concrete known concept"
+    unit "not applicable"
+    example "To ask about a specific topic, try how does X work where X is a concept I know."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  network_snapshot
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks to show or export the link network the runtime loaded"
+    effect "the seeded link network is returned as a Links Notation snapshot"
+    unit "not applicable"
+    example "Here is the link network this runtime has loaded from its seed data."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  source_refresh
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks to refresh a cached source page"
+    effect "the cached source is queued for refresh against its origin and the refresh is logged"
+    unit "not applicable"
+    example "Cached source wikipedia has been queued for refresh against its origin URL."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  source_conflict
+    defined-by answer
+    role localized_response_template
+    precondition "a request names two alternatives each attributed to a source and says the sources disagree"
+    effect "the two attributed alternatives are named and the disagreement is recorded as a conflict link instead of being resolved silently"
+    unit "not applicable"
+    example "The sources you cite disagree."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  source_conflict_unattributed
+    defined-by answer
+    role localized_response_template
+    precondition "a source conflict is cued but no alternative is attributed to a source"
+    effect "the request is refused by name and each source and its statement are asked for"
+    unit "not applicable"
+    example "No source is named for either answer."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  github_repository_traffic_unnamed
+    defined-by answer
+    role localized_response_template
+    precondition "a repository traffic question names no repository"
+    effect "the platform's aggregate traffic policy is stated for any repository without naming one"
+    unit "not applicable"
+    example "You did not name a repository."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  compound_interest_report
+    defined-by answer
+    role localized_response_template
+    precondition "a request states a principal, an annual rate, a compounding frequency and a term"
+    effect "the answer shows the compound-interest formula, each substituted value, the three steps and the final amount"
+    unit "US dollars"
+    example "Final amount: 1489.85 USD"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_final_amount_conversion
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up asks to convert the final amount an earlier report stated"
+    effect "the answer restates the source amount before converting it"
+    unit "the source currency"
+    example "Source amount: 1489.85 USD"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_conversion
+    defined-by answer
+    role localized_response_template
+    precondition "a report converts an amount at a seeded default exchange rate"
+    effect "the answer names the currency pair, the rate and the converted amount"
+    unit "the target currency"
+    example "1489.85 USD * 0.92 = 1370.66 EUR"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_rate_detail
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion used a seeded default exchange rate"
+    effect "the answer states the rate and that it is a default, not a fetched rate"
+    unit "the target currency per source unit"
+    example "Exchange rate: 1 USD = 0.92 EUR"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_live_rate_note
+    defined-by answer
+    role localized_response_template
+    precondition "the request asked for a current or web exchange rate"
+    effect "the answer says the rate's live freshness is not verified"
+    unit "not applicable"
+    example "Live web freshness is not independently verified here."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  compound_interest_rate_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "no seeded default rate links the source and target currencies"
+    effect "the answer says the source amount was calculated but no rate is available to convert it"
+    unit "not applicable"
+    example "no USD->CHF exchange rate is available locally"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_script_clarification
+    defined-by answer
+    role localized_response_template
+    precondition "a Playwright script request arrives while the guess probability is below one half"
+    effect "the answer asks for the page URL, the actions and the expected assertion before writing a script"
+    unit "not applicable"
+    example "Please provide the page URL, the actions to perform, and the expected assertion."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_script_lead
+    defined-by answer
+    role localized_response_template
+    precondition "a Playwright script request spells the tool name correctly"
+    effect "the answer opens by saying it uses the starter TypeScript example from the Playwright docs"
+    unit "not applicable"
+    example "I will use a starter TypeScript example based on the Playwright docs."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_script_lead_corrected
+    defined-by answer
+    role localized_response_template
+    precondition "a Playwright script request misspells the tool name"
+    effect "the answer opens by naming the spelling correction and the starter example it uses"
+    unit "not applicable"
+    example "I interpret Playright as Playwright."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_script_starter
+    defined-by answer
+    role localized_response_template
+    precondition "a Playwright script request is answered with the starter example"
+    effect "the answer lays out the lead, the docs source, the starter code and the commands that check it"
+    unit "not applicable"
+    example "Check it with: npx playwright test"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  playwright_starter_typescript
+    defined-by answer
+    role localized_response_template
+    precondition "the starter answer needs its example program"
+    effect "the answer embeds the starter TypeScript test from the Playwright docs"
+    unit "not applicable"
+    example "await page.goto('https://playwright.dev/');"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  web_frame_policy_reason_target_url_unparsed
+    defined-by answer
+    role localized_response_template
+    precondition "the requested URL cannot be parsed"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the target URL could not be parsed"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_xfo_deny_and_csp_none
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends both X-Frame-Options DENY and CSP frame-ancestors none"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the page sends X-Frame-Options: DENY and CSP frame-ancestors none"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_xfo_deny
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends X-Frame-Options DENY"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the page sends X-Frame-Options: DENY"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_xfo_sameorigin
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends X-Frame-Options SAMEORIGIN for another origin"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the page sends X-Frame-Options: SAMEORIGIN"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_embedder_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the web app cannot read its own origin"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the current web app origin is unavailable"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_csp_none
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends CSP frame-ancestors none"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the page sends CSP frame-ancestors none"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_csp_excludes_embedder
+    defined-by answer
+    role localized_response_template
+    precondition "the page's CSP frame-ancestors list omits the web app origin"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the pages CSP frame-ancestors directive does not include this web app"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_no_blocking_policy
+    defined-by answer
+    role localized_response_template
+    precondition "the page sends no blocking frame policy"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "no blocking X-Frame-Options or CSP frame-ancestors policy was detected"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_fetch_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the browser offers no fetch function"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "browser fetch is not available"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_non_public_url
+    defined-by answer
+    role localized_response_template
+    precondition "the URL is not a public HTTP or HTTPS address"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "only public HTTP(S) URLs are checked by the frame-policy service"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_service_http_status
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy service answers with an error status"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the frame-policy service returned HTTP 503"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_service_no_headers
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy service answers without response headers"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the frame-policy service did not return response headers"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_reason_service_unreachable
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy service cannot be reached"
+    effect "the answer names this reason inside the frame-policy verdict sentence"
+    unit "not applicable"
+    example "the frame-policy service could not be reached from this browser"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_open_in_new_tab
+    defined-by answer
+    role localized_response_template
+    precondition "a navigation or a failed fetch cannot be shown embedded"
+    effect "the answer suggests opening the URL in a new tab with a direct link"
+    unit "not applicable"
+    example "I suggest opening this in a new tab."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_url_navigate_native_note
+    defined-by answer
+    role localized_response_template
+    precondition "the native runtime answers a navigation request without a browser"
+    effect "the answer explains that the web app checks frame policy before any embedded preview"
+    unit "not applicable"
+    example "the web app keeps the direct external link instead."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_blocked
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy check reports a blocking policy"
+    effect "the answer says embedding is not allowed and names the reason"
+    unit "not applicable"
+    example "it does not allow embedding here"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_unknown
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy check cannot reach a verdict"
+    effect "the answer says embedding could not be verified and names the reason"
+    unit "not applicable"
+    example "I could not verify that this page allows embedding here."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_unverified
+    defined-by answer
+    role localized_response_template
+    precondition "no frame-policy verdict is available"
+    effect "the answer says embedding could not be verified"
+    unit "not applicable"
+    example "I could not verify that this page allows embedding here."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_cors_note
+    defined-by answer
+    role localized_response_template
+    precondition "a page is offered only as an external link"
+    effect "the answer explains that browser JavaScript cannot read the page without CORS"
+    unit "not applicable"
+    example "the direct external link is the reliable option."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_frame_policy_allowed
+    defined-by answer
+    role localized_response_template
+    precondition "the frame-policy check allows embedding"
+    effect "the answer shows the page embedded and gives the direct link"
+    unit "not applicable"
+    example "I checked the page's frame policy and can show it here."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_http_fetch_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the environment has no fetch function"
+    effect "the answer says the fetch cannot run and links the URL"
+    unit "not applicable"
+    example "HTTP fetch is not available in this environment."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_http_fetch_truncated
+    defined-by answer
+    role localized_response_template
+    precondition "a fetched text body is longer than the display limit"
+    effect "the answer shows the first part of the body and the total byte count"
+    unit "bytes"
+    example "truncated, 2100 bytes total"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_http_fetch_body
+    defined-by answer
+    role localized_response_template
+    precondition "a fetch returns a text or JSON body"
+    effect "the answer gives the status and shows the body in a code block"
+    unit "not applicable"
+    example "Fetched example.com, status 200."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_http_fetch_binary
+    defined-by answer
+    role localized_response_template
+    precondition "a fetch returns a binary or empty body"
+    effect "the answer gives the status and content type and links the URL instead of the body"
+    unit "not applicable"
+    example "binary or empty body, not shown."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_http_fetch_failed_cors
+    defined-by answer
+    role localized_response_template
+    precondition "a fetch is blocked by the CORS policy"
+    effect "the answer says the URL could not be fetched because of CORS"
+    unit "not applicable"
+    example "Could not fetch example.com directly."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_http_fetch_failed_network
+    defined-by answer
+    role localized_response_template
+    precondition "a fetch fails with a network error"
+    effect "the answer says the URL could not be fetched because of a network error"
+    unit "not applicable"
+    example "Could not fetch example.com directly."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_http_fetch_iframe
+    defined-by answer
+    role localized_response_template
+    precondition "a failed fetch can still be shown under the frame policy"
+    effect "the answer says the page is shown in the embedded frame"
+    unit "not applicable"
+    example "I can show it in the embedded frame below."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_search_results_header
+    defined-by answer
+    role localized_response_template
+    precondition "a browser web search returns fused results"
+    effect "the answer heads the results with the query, the result count and the fusion constant"
+    unit "not applicable"
+    example "Search results for rust, top 10 after reciprocal rank fusion."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_search_other_sources
+    defined-by answer
+    role localized_response_template
+    precondition "a fused result has further sources"
+    effect "the answer labels the further sources"
+    unit "not applicable"
+    example "Other sources"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_search_via
+    defined-by answer
+    role localized_response_template
+    precondition "a result names the provider it came through"
+    effect "the answer joins the result to its provider"
+    unit "not applicable"
+    example "via"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_search_read_more
+    defined-by answer
+    role localized_response_template
+    precondition "a result links to its full page"
+    effect "the answer labels the link to the full page"
+    unit "not applicable"
+    example "Read more"
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_search_no_results
+    defined-by answer
+    role localized_response_template
+    precondition "no CORS-readable provider returns a result"
+    effect "the answer names the query and the providers tried"
+    unit "not applicable"
+    example "No CORS-enabled web search results were returned."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_search_all_disabled
+    defined-by answer
+    role localized_response_template
+    precondition "every CORS-readable provider is disabled in the session"
+    effect "the answer says the providers are disabled and names them"
+    unit "not applicable"
+    example "All CORS-readable search providers are disabled for this session."
+    grounding "data/seed/multilingual-responses-web.lino"
+  web_search_wikinews_article
+    defined-by answer
+    role localized_response_template
+    precondition "a Wikinews result has no description"
+    effect "the answer describes the result as a Wikinews article with its title"
+    unit "not applicable"
+    example "Wikinews has a news article titled Mars rover lands."
+    grounding "data/seed/multilingual-responses-web.lino"
+  procedural_how_to_plan
+    defined-by answer
+    role localized_response_template
+    precondition "the native runtime answers a procedural how-to request it cannot execute offline"
+    effect "the answer describes the source-backed discovery plan for the task, its action and object"
+    unit "not applicable"
+    example "Procedural discovery plan for make tea."
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_install_gate
+    defined-by answer
+    role localized_response_template
+    precondition "a native procedural plan concerns an install task"
+    effect "the answer says official documentation is searched before community how-to sources"
+    unit "not applicable"
+    example "the first source gate prefers the product's official documentation"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_heading
+    defined-by answer
+    role localized_response_template
+    precondition "the browser runs a procedural how-to plan"
+    effect "the answer heads the plan with the task, its action and object"
+    unit "not applicable"
+    example "Procedural discovery plan for make tea."
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_live_install_gate
+    defined-by answer
+    role localized_response_template
+    precondition "the browser plan concerns an install task"
+    effect "the answer says the official-documentation search runs first and names the fallback query"
+    unit "not applicable"
+    example "It starts with docker install official documentation."
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_source_path_install_wikihow
+    defined-by answer
+    role localized_response_template
+    precondition "an install plan runs with wikiHow enabled"
+    effect "the answer lists the source path with the official-documentation stage and the wikiHow fallback"
+    unit "not applicable"
+    example "Source path: Wikipedia -> Wikidata -> official documentation web search"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_source_path_install_no_wikihow
+    defined-by answer
+    role localized_response_template
+    precondition "an install plan runs with wikiHow disabled"
+    effect "the answer lists the source path without the wikiHow stage"
+    unit "not applicable"
+    example "wikiHow disabled in settings"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_source_path_wikihow
+    defined-by answer
+    role localized_response_template
+    precondition "a plan runs with wikiHow enabled"
+    effect "the answer lists the source path through the wikiHow API"
+    unit "not applicable"
+    example "Source path: Wikipedia -> Wikidata -> wikiHow API"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_source_path_no_wikihow
+    defined-by answer
+    role localized_response_template
+    precondition "a plan runs with wikiHow disabled"
+    effect "the answer lists the source path without the wikiHow stage"
+    unit "not applicable"
+    example "Source path: Wikipedia -> Wikidata -> web search fallback"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_official_search
+    defined-by answer
+    role localized_response_template
+    precondition "the official-documentation search returned ranked guidance"
+    effect "the answer introduces the official search results"
+    unit "not applicable"
+    example "Official-documentation web search for docker install official documentation:"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_official_search_miss
+    defined-by answer
+    role localized_response_template
+    precondition "the official-documentation search returned no ranked guidance"
+    effect "the answer says so and keeps the general how-to query as fallback"
+    unit "not applicable"
+    example "did not return ranked guidance"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_wikihow_returned
+    defined-by answer
+    role localized_response_template
+    precondition "the wikiHow API returned a page with steps"
+    effect "the answer names the returned page and the candidate before the steps"
+    unit "not applicable"
+    example "wikiHow API returned Make Tea for candidate Make-Tea."
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_wikihow_miss
+    defined-by answer
+    role localized_response_template
+    precondition "the wikiHow candidate returned no explicit steps"
+    effect "the answer names the candidate and the error"
+    unit "not applicable"
+    example "wikiHow candidate Make-Tea did not return explicit steps."
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_wikihow_disabled
+    defined-by answer
+    role localized_response_template
+    precondition "wikiHow is disabled in the settings"
+    effect "the answer says the wikiHow stage was skipped"
+    unit "not applicable"
+    example "wikiHow is disabled in settings."
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_fallback_search
+    defined-by answer
+    role localized_response_template
+    precondition "the fallback web search returned results"
+    effect "the answer introduces the fallback search results"
+    unit "not applicable"
+    example "Fallback web search for how to make tea:"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  procedural_how_to_fallback_search_plan
+    defined-by answer
+    role localized_response_template
+    precondition "the fallback web search could not run"
+    effect "the answer names the providers and the fusion constant the search should use"
+    unit "not applicable"
+    example "Fallback web search should use reciprocal rank fusion."
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
+  feature_capability_available
+    defined-by answer
+    role localized_response_template
+    precondition "a capability question names a seeded feature whose runtime switch is on"
+    effect "the answer says yes and gives the feature's localized label and example message"
+    unit "not applicable"
+    example "Yes. agent mode is available in this configuration."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "a capability question names a seeded feature whose runtime switch is off"
+    effect "the answer says no, names the reason, and gives the example message for after enabling it"
+    unit "not applicable"
+    example "No. diagnostic trace is not available in this configuration."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_reason_agent_mode_off
+    defined-by answer
+    role localized_response_template
+    precondition "agent mode is off"
+    effect "the answer says multi-step actions need an explicit opt-in"
+    unit "not applicable"
+    example "agent mode is off; multi-step actions require explicit opt-in"
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_reason_diagnostic_mode_off
+    defined-by answer
+    role localized_response_template
+    precondition "diagnostics are off"
+    effect "the answer says diagnostics must be enabled to show traces"
+    unit "not applicable"
+    example "diagnostics are off; enable them to show traces"
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_reason_definition_fusion_explicit
+    defined-by answer
+    role localized_response_template
+    precondition "definition fusion runs only on explicit request"
+    effect "the answer says automatic definition fusion is explicit-only"
+    unit "not applicable"
+    example "automatic definition fusion is set to explicit-only"
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_web_search_available
+    defined-by answer
+    role localized_response_template
+    precondition "a capability question asks about web search and providers are available"
+    effect "the answer says web search is enabled and names the providers and the fusion constant"
+    unit "not applicable"
+    example "Yes. Web search is enabled in this configuration."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_web_search_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "the native runtime is offline or has no search providers"
+    effect "the answer says web search is disabled by the configuration and local rules still answer"
+    unit "not applicable"
+    example "No. Web search is disabled by this configuration's offline mode."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  feature_capability_web_search_unavailable_browser
+    defined-by answer
+    role localized_response_template
+    precondition "the browser is offline or every provider is disabled"
+    effect "the answer says web search is unavailable in this browser session"
+    unit "not applicable"
+    example "No. Web search is unavailable in this browser session."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  unit_incompatibility
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion is asked between two units the lexicon places in different physical dimensions"
+    effect "the answer names both units and their dimensions and records the incompatibility instead of converting"
+    unit "not applicable"
+    example "meters measures length; kilogram measures mass."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  research_result_followup_no_results
+    defined-by answer
+    role localized_response_template
+    precondition "the prior research step returned no CORS-readable web search results"
+    effect "the answer reports that no verified source data exists yet and names the prior research task and the next step"
+    unit "not applicable"
+    example "Prior research task: the economic impact of replacing C++ with Rust."
+    grounding "data/seed/multilingual-responses-web.lino"
+  research_result_followup_all_providers_disabled
+    defined-by answer
+    role localized_response_template
+    precondition "the prior research step could not search because every CORS-readable provider was disabled"
+    effect "the answer reports that no research result was produced and asks for a provider or source links"
+    unit "not applicable"
+    example "Prior research task: the economic impact of replacing C++ with Rust."
+    grounding "data/seed/multilingual-responses-web.lino"
+  research_result_followup_search_plan_only
+    defined-by answer
+    role localized_response_template
+    precondition "the prior turn only set up the research search step"
+    effect "the answer reports that no final result exists yet and points at running the source search"
+    unit "not applicable"
+    example "Prior research task: the economic impact of replacing C++ with Rust."
+    grounding "data/seed/multilingual-responses-web.lino"
+  research_result_followup_open_research
+    defined-by answer
+    role localized_response_template
+    precondition "the prior research request has no completed source-backed answer"
+    effect "the answer reports that there is no verified final result yet and names the next step"
+    unit "not applicable"
+    example "Prior research task: the economic impact of replacing C++ with Rust."
+    grounding "data/seed/multilingual-responses-web.lino"
+  concept_introspection
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks what the system knows about a quoted concept"
+    effect "the answer names the concept as a network intent with its rules and example links"
+    unit "not applicable"
+    example "Here is what I know about 'greeting'."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  filter_user
+    defined-by answer
+    role localized_response_template
+    precondition "the user asks to list the facts they contributed"
+    effect "the answer applies the user filter and reports that no personal contribution is recorded yet"
+    unit "not applicable"
+    example "No facts have been recorded under your user filter yet."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  fact_comparison
+    defined-by answer
+    role localized_response_template
+    precondition "a comparison of two subjects that both have seeded fact records is answered"
+    effect "both subjects' seeded properties are aligned by relation and the differences are stated"
+    unit "not applicable"
+    example "Japan and Russia, compared on their seeded facts. Difference in capital: Tokyo for Japan, Moscow for Russia."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_row
+    defined-by answer
+    role localized_response_template
+    precondition "one relation row of a seeded-fact comparison is rendered"
+    effect "the relation is listed with each subject's seeded value"
+    unit "not applicable"
+    example "- capital: Japan — Tokyo; Russia — Moscow"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_known_row
+    defined-by answer
+    role localized_response_template
+    precondition "one relation row of the side a comparison gap does know is rendered"
+    effect "the relation is listed with its seeded value"
+    unit "not applicable"
+    example "- capital: Tokyo"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_missing_value
+    defined-by answer
+    role localized_response_template
+    precondition "a comparison row lacks a seeded value for one subject"
+    effect "the missing side is marked instead of guessed"
+    unit "not applicable"
+    example "no seeded value"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_difference
+    defined-by answer
+    role localized_response_template
+    precondition "a relation seeded for both compared subjects carries different values"
+    effect "the difference is stated with both values"
+    unit "not applicable"
+    example "Difference in capital: Tokyo for Japan, Moscow for Russia."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_same
+    defined-by answer
+    role localized_response_template
+    precondition "a relation seeded for both compared subjects carries the same value"
+    effect "the shared value is stated once"
+    unit "not applicable"
+    example "Same capital for both: Tokyo."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_unaligned
+    defined-by answer
+    role localized_response_template
+    precondition "a relation is seeded for only one compared subject"
+    effect "the relation is named as not comparable yet"
+    unit "not applicable"
+    example "capital is seeded only for Japan, so it cannot be compared yet."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_comparison_gap
+    defined-by answer
+    role localized_response_template
+    precondition "a comparison names one subject with seeded facts and one without"
+    effect "the missing side is named and the known side's facts are listed"
+    unit "not applicable"
+    example "I can compare Japan and Australia only from seeded facts, and I have none for Australia."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_answer
+    defined-by answer
+    role localized_response_template
+    precondition "a question over prompt-supplied text is answered from that text alone"
+    effect "the sentence of the text that covers the question is quoted"
+    unit "not applicable"
+    example "The text answers this: «The meeting moved to Thursday at 3 pm in room 204.»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_gap
+    defined-by answer
+    role localized_response_template
+    precondition "no sentence of the prompt-supplied text covers the question"
+    effect "the answer says the text does not say, naming the uncovered words"
+    unit "not applicable"
+    example "The given text does not say: none of its sentences mentions ceo."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_answer
+    defined-by answer
+    role localized_response_template
+    precondition "the question asks a slot (time, place or subject) the covering sentence's statement fills"
+    effect "the asked slots of the projected statement are stated first"
+    unit "not applicable"
+    example "From the text — time «from Tuesday to Thursday at 3 pm»; place «in room 204»."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_statement
+    defined-by answer
+    role localized_response_template
+    precondition "the covering sentence of a prompt-supplied text projects into a statement"
+    effect "the statement's filled slots are listed after the quoted sentence"
+    unit "not applicable"
+    example "As a statement: subject «The meeting»; predicate «moved»; time «from Tuesday to Thursday at 3 pm»; place «in room 204»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_subject
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has a subject"
+    effect "the subject slot is named with its words"
+    unit "not applicable"
+    example "subject «The meeting»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_predicate
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has a predicate"
+    effect "the predicate slot is named with its words"
+    unit "not applicable"
+    example "predicate «moved»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_object
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has an object"
+    effect "the object slot is named with its words"
+    unit "not applicable"
+    example "object «the report»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_time
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has a time phrase"
+    effect "the time slot is named with its phrases"
+    unit "not applicable"
+    example "time «from Tuesday to Thursday at 3 pm»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  prompt_text_slot_place
+    defined-by answer
+    role localized_response_template
+    precondition "a projected statement has a place phrase"
+    effect "the place slot is named with its phrases"
+    unit "not applicable"
+    example "place «in room 204»"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_live_answer
+    defined-by answer
+    role localized_response_template
+    precondition "no seeded fact answers the question and Wikidata states a value for the asked relation of the subject"
+    effect "the value is stated with the reference URL the claim cites, else the subject snapshot it was read from"
+    unit "not applicable"
+    example "Wikidata states that the capital of Australia is Canberra, with the page its claim cites as the source."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  fact_live_answer_author_of_book
+    defined-by answer
+    role localized_response_template
+    precondition "no seeded fact answers an authorship question and Wikidata states the author of the work"
+    effect "the author is stated as the writer of the work, with the reference URL the claim cites, else the work snapshot it was read from"
+    unit "not applicable"
+    example "War and Peace was written by Leo Tolstoy, with the page its claim cites as the source."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  explanation_research_answer
+    defined-by answer
+    role localized_response_template
+    precondition "an explanation request names a concept and retrieved pages state something about it"
+    effect "the statements of the retrieved pages that mention the concept are listed"
+    unit "not applicable"
+    example "What the retrieved pages say about kotlin compiler, followed by one row per statement"
+    grounding "data/seed/multilingual-responses-entities.lino"
+  explanation_research_row
+    defined-by answer
+    role localized_response_template
+    precondition "a retrieved page states something about the explained concept"
+    effect "the statement is quoted with the page URL and the SHA-256 of its bytes"
+    unit "not applicable"
+    example "One retrieved statement about the compiler, followed by its page address and digest."
+    grounding "data/seed/multilingual-responses-entities.lino"
+  numbered_lines_removed
+    defined-by answer
+    role localized_response_template
+    precondition "a request deleted numbered lines of a file and the digest check confirmed it"
+    effect "the removed line numbers or range and the file are stated"
+    unit "not applicable"
+    example "Deleted line(s) 2-3 of `f.txt` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  numbered_line_insert_after
+    defined-by answer
+    role localized_response_template
+    precondition "a request inserted text after a numbered line of a file and the digest check confirmed it"
+    effect "the inserted text, the line number and the file are stated"
+    unit "not applicable"
+    example "Inserted `X` after line 2 of `f.txt` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  numbered_line_insert_before
+    defined-by answer
+    role localized_response_template
+    precondition "a request inserted text before a numbered line of a file and the digest check confirmed it"
+    effect "the inserted text, the line number and the file are stated"
+    unit "not applicable"
+    example "Inserted `X` before line 1 of `f.txt` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_moved_start
+    defined-by answer
+    role localized_response_template
+    precondition "a request moved a quoted line to the start of a file and the digest check confirmed it"
+    effect "the moved line and the file are stated"
+    unit "not applicable"
+    example "Moved `gamma = 3` to the start of `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_moved_end
+    defined-by answer
+    role localized_response_template
+    precondition "a request moved a quoted line to the end of a file and the digest check confirmed it"
+    effect "the moved line and the file are stated"
+    unit "not applicable"
+    example "Moved `alpha = 1` to the end of `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_moved_after
+    defined-by answer
+    role localized_response_template
+    precondition "a request moved a quoted line after an anchor line and the digest check confirmed it"
+    effect "the moved line, the anchor and the file are stated"
+    unit "not applicable"
+    example "Moved `alpha = 1` after `beta = 2` in `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_moved_before
+    defined-by answer
+    role localized_response_template
+    precondition "a request moved a quoted line before an anchor line and the digest check confirmed it"
+    effect "the moved line, the anchor and the file are stated"
+    unit "not applicable"
+    example "Moved `alpha = 1` before `gamma = 3` in `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  lines_swapped
+    defined-by answer
+    role localized_response_template
+    precondition "a request exchanged two quoted lines of a file and the digest check confirmed it"
+    effect "the two lines and the file are stated"
+    unit "not applicable"
+    example "Swapped `alpha = 1` and `beta = 2` in `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_workspace_fragment_refused
+    defined-by answer
+    role localized_response_template
+    precondition "a computed change would drop most of a file and the request does not state that extent"
+    effect "the change is refused and the file is left untouched"
+    unit "not applicable"
+    example "Refused to change `f.txt`: the computed result would drop most of the file."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  page_formalization_summary
+    defined-by answer
+    role localized_response_template
+    precondition "a page asked to be formalized was fetched and read into statements"
+    effect "the answer states the page counts before the statements"
+    unit "sentences"
+    example "Formalized `https://example.org`: 4 sentences became 9 statements."
+    grounding "data/seed/multilingual-responses-web.lino"
+  page_formalization_more
+    defined-by answer
+    role localized_response_template
+    precondition "a formalized page holds more statements than the answer lists"
+    effect "the answer says how many statements were left out"
+    unit "statements"
+    example "… and 12 more statements."
+    grounding "data/seed/multilingual-responses-web.lino"
+  page_formalization_empty
+    defined-by answer
+    role localized_response_template
+    precondition "a page asked to be formalized was fetched but holds no sentence"
+    effect "the answer says the page held nothing to formalize"
+    unit "not applicable"
+    example "`https://example.org` was fetched, but it holds no sentence I could formalize."
+    grounding "data/seed/multilingual-responses-web.lino"
+  page_formalization_offline
+    defined-by answer
+    role localized_response_template
+    precondition "a page asked to be formalized is not cached and live fetching is off"
+    effect "the answer says nothing was fetched and why"
+    unit "not applicable"
+    example "I cannot formalize `https://example.org`: the page is not in the source cache."
+    grounding "data/seed/multilingual-responses-web.lino"
+  page_formalization_fetch_failed
+    defined-by answer
+    role localized_response_template
+    precondition "fetching a page asked to be formalized failed"
+    effect "the answer names the URL and the failure"
+    unit "not applicable"
+    example "I could not fetch `https://example.org` to formalize it: network error."
+    grounding "data/seed/multilingual-responses-web.lino"

@@ -1,0 +1,58 @@
+{
+  "lemma": "fraud",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00770581-n",
+      "partOfSpeech": "n",
+      "definition": "intentional deception resulting in injury to another person"
+    },
+    {
+      "id": "oewn-10221154-n",
+      "partOfSpeech": "n",
+      "definition": "a person who makes deceitful pretenses",
+      "synonyms": [
+        "imposter",
+        "impostor",
+        "pretender",
+        "fake",
+        "faker",
+        "sham",
+        "shammer",
+        "pseudo",
+        "pseud",
+        "role player"
+      ]
+    },
+    {
+      "id": "oewn-00755028-n",
+      "partOfSpeech": "n",
+      "definition": "something intended to deceive; deliberate trickery intended to gain an advantage",
+      "synonyms": [
+        "fraudulence",
+        "dupery",
+        "hoax",
+        "humbug",
+        "put-on"
+      ]
+    },
+    {
+      "id": "oewn-00781784-n",
+      "partOfSpeech": "n",
+      "definition": "the act of swindling by some fraudulent scheme",
+      "examples": [
+        "that book is a fraud"
+      ],
+      "synonyms": [
+        "swindle",
+        "cheat",
+        "rig"
+      ]
+    }
+  ]
+}

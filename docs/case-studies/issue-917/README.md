@@ -66,7 +66,7 @@ five natural-to-FOL and all five FOL-to-natural projections retain
 `every_seed_language_round_trips_through_first_order_logic` places the same
 contract directly in issue #526's round-trip suite. The whole-engine test
 checks user-facing intent, answer, and evidence in both directions.
-`tests/e2e/tests/issue-917.spec.js`
+`tests/e2e/tests/formal-language-projections.spec.js`
 repeats the complete matrix in Chromium against the local application.
 
 `experiments/issue_917_agent_cli.sh` boots the real OpenAI-compatible server,

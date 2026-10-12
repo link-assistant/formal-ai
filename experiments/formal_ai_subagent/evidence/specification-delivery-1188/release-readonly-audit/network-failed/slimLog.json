@@ -1,0 +1,7 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/actions/jobs/113646808260/logs",
+  "observedAt": "2026-10-09T05:00:41.262Z",
+  "status": "unavailable",
+  "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/jobs/113646808260/logs\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+  "stderr": "error connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"
+}

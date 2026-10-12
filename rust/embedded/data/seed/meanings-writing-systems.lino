@@ -21,11 +21,7 @@ meanings
         text लेखन प्रणाली
       surface
         text लिपि
-    lexeme zh
-      surface
-        text 书写系统
-      surface
-        text 文字
+    lexeme zh 书写系统 文字
     lexeme es
       surface
         text sistema de escritura
@@ -40,9 +36,7 @@ meanings
     effect "classifies the surface as Latin script"
     unit "not applicable"
     example "English and Spanish commonly use Latin script"
-    lexeme en
-      surface
-        text latin
+    lexeme en latin
     lexeme ru
       surface
         text латиница
@@ -53,11 +47,7 @@ meanings
         text लैटिन लिपि
       surface
         text रोमन लिपि
-    lexeme zh
-      surface
-        text 拉丁字母
-      surface
-        text 罗马字母
+    lexeme zh 拉丁字母 罗马字母
     lexeme es
       surface
         text alfabeto latino
@@ -72,9 +62,7 @@ meanings
     effect "classifies the surface as Cyrillic script"
     unit "not applicable"
     example "Russian commonly uses Cyrillic script"
-    lexeme en
-      surface
-        text cyrillic
+    lexeme en cyrillic
     lexeme ru
       surface
         text кириллица
@@ -85,11 +73,7 @@ meanings
         text सिरिलिक लिपि
       surface
         text सिरिलिक वर्णमाला
-    lexeme zh
-      surface
-        text 西里尔字母
-      surface
-        text 斯拉夫字母
+    lexeme zh 西里尔字母 斯拉夫字母
     lexeme es
       surface
         text alfabeto cirílico
@@ -104,9 +88,7 @@ meanings
     effect "classifies the surface as Devanagari script"
     unit "not applicable"
     example "Hindi commonly uses Devanagari script"
-    lexeme en
-      surface
-        text devanagari
+    lexeme en devanagari
     lexeme ru
       surface
         text деванагари
@@ -117,11 +99,7 @@ meanings
         text देवनागरी लिपि
       surface
         text नागरी
-    lexeme zh
-      surface
-        text 天城文
-      surface
-        text 天城体
+    lexeme zh 天城文 天城体
     lexeme es
       surface
         text escritura devanagari
@@ -136,9 +114,7 @@ meanings
     effect "classifies the surface as Han script"
     unit "not applicable"
     example "Chinese commonly uses Han characters"
-    lexeme en
-      surface
-        text han
+    lexeme en han
     lexeme ru
       surface
         text китайское письмо
@@ -149,11 +125,7 @@ meanings
         text चीनी लिपि
       surface
         text हान अक्षर
-    lexeme zh
-      surface
-        text 汉字
-      surface
-        text 漢字
+    lexeme zh 汉字 漢字
     lexeme es
       surface
         text caracteres han

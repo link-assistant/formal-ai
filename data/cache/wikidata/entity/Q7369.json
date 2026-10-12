@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "海豚"
+        },
+        "es": {
+          "language": "es",
+          "value": "delfín"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "智商較高的小型鯨類動物"
+        },
+        "es": {
+          "language": "es",
+          "value": "familia de cetáceos odontocetos"
         }
       },
       "aliases": {

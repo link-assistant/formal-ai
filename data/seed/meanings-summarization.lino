@@ -1,0 +1,89 @@
+# Free-text summarization and sentence-translation vocabulary (issue #1174).
+#
+# Three concept groups live here. The text_summarization_action role names the
+# act of summarizing a text the request itself carries (a paragraph after a
+# colon, a line break, or quotes), which is a different act from summarizing
+# the running conversation (meanings-intent.lino) or a seeded topic
+# (summary-topics.lino), so both of those handlers keep their prompts. The
+# compositional_lemma records give the offline sentence translator its everyday
+# vocabulary, and the translation_stop_word role names the function words a
+# word-by-word rendering leaves out instead of echoing them in the source
+# script.
+#
+# Surface forms are stored the way normalize_prompt renders them, so a
+# punctuation-folded cue such as "tl dr" (tl;dr) still matches.
+
+meanings
+  text_summarization_action
+    defined-by action
+    role text_summarization_action
+    lexeme en summarize summarise "give me a summary" "tl dr"
+    lexeme ru резюмируй резюмируйте "кратко перескажи"
+    lexeme hi "सारांशित करें" "संक्षेप में लिखें"
+    lexeme zh 总结一下 概括一下
+    lexeme es "haz un resumen" "resume esto"
+  weather
+    grounded-in Q11663
+    defined-by entity
+    role compositional_lemma
+    lexeme en weather
+    lexeme ru погода
+    lexeme hi मौसम
+    lexeme zh 天气
+    lexeme es tiempo
+  nice
+    defined-by entity
+    role compositional_lemma
+    lexeme en nice
+    lexeme ru приятный
+    lexeme hi अच्छा
+    lexeme zh 好
+    lexeme es agradable
+  today
+    grounded-in Q3151690
+    defined-by entity
+    role compositional_lemma
+    lexeme en today
+    lexeme ru сегодня
+    lexeme hi आज
+    lexeme zh 今天
+    lexeme es hoy
+  go
+    defined-by entity
+    role compositional_lemma
+    lexeme en go
+    lexeme ru идти
+    lexeme hi जाना
+    lexeme zh 去
+    lexeme es ir
+  walk
+    defined-by entity
+    role compositional_lemma
+    lexeme en walk
+    lexeme ru прогулка
+    lexeme hi सैर
+    lexeme zh 散步
+    lexeme es paseo
+  lets
+    defined-by entity
+    role compositional_lemma
+    lexeme en "let's" "let’s" lets
+    lexeme ru давай
+    lexeme hi चलो
+    lexeme zh 让我们
+    lexeme es vamos
+  translation_stop_word
+    defined-by concept
+    role translation_stop_word
+    lexeme en
+      words "a" "an" "the" "and" "or" "but" "if" "of" "in" "on" "at" "to" "for" "with" "by" "from" "as" "is" "are" "was"
+      words "were" "be" "been" "being" "am" "do" "does" "did" "let" "us" "so" "than" "then" "this" "that" "these"
+      words "those" "there" "here" "its" "his" "her" "their" "our" "my" "your"
+    lexeme ru
+      words "и" "или" "в" "во" "на" "к" "ко" "для" "из" "с" "со" "о" "об" "от" "по" "за" "это" "был" "была" "было"
+      words "были" "есть" "же" "ли"
+    lexeme hi "और" "या" "में" "का" "की" "के" "को" "से" "एक" "है" "हैं" "था" "थे" "ने" "पर" "कि" "हूँ" "हो"
+    lexeme zh "的" "是" "了" "在" "和" "或" "一" "吧"
+    lexeme es
+      words "y" "o" "el" "la" "los" "las" "un" "una" "en" "a" "para" "con" "de" "por" "del" "al" "es" "son" "era" "eran"
+      words "sea" "ser" "su" "sus" "mi" "tu" "nuestro"

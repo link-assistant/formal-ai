@@ -1,0 +1,25 @@
+view
+  id M-2fd9c7f71057
+  lemma constant
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "steadfast in purpose or devotion or affection"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a quantity that does not vary"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a number representing a quantity assumed to have a fixed value in a specified mathematical context"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "unvarying in nature"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "uninterrupted in time and indefinitely long continuing"
+    provenance (wordnet)

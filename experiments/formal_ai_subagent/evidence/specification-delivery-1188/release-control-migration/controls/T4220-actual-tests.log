@@ -1,0 +1,121 @@
+TAP version 13
+# Subtest: the actual inventory retains all original seventeen obligations and new artifact families
+ok 1 - the actual inventory retains all original seventeen obligations and new artifact families
+  ---
+  duration_ms: 0.539875
+  ...
+# Subtest: only complete actual resolver fixture evidence permits the automatic skip
+ok 2 - only complete actual resolver fixture evidence permits the automatic skip
+  ---
+  duration_ms: 1273.929334
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-macos-arm64-0.201.0.dmg
+ok 3 - the original missing asset forces a healing build: formal-ai-desktop-macos-arm64-0.201.0.dmg
+  ---
+  duration_ms: 367.930208
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-macos-arm64-0.201.0.zip
+ok 4 - the original missing asset forces a healing build: formal-ai-desktop-macos-arm64-0.201.0.zip
+  ---
+  duration_ms: 333.62625
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-macos-x64-0.201.0.dmg
+ok 5 - the original missing asset forces a healing build: formal-ai-desktop-macos-x64-0.201.0.dmg
+  ---
+  duration_ms: 336.415
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-macos-x64-0.201.0.zip
+ok 6 - the original missing asset forces a healing build: formal-ai-desktop-macos-x64-0.201.0.zip
+  ---
+  duration_ms: 335.962791
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-windows-installer-x64-0.201.0.exe
+ok 7 - the original missing asset forces a healing build: formal-ai-desktop-windows-installer-x64-0.201.0.exe
+  ---
+  duration_ms: 324.113334
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-windows-installer-arm64-0.201.0.exe
+ok 8 - the original missing asset forces a healing build: formal-ai-desktop-windows-installer-arm64-0.201.0.exe
+  ---
+  duration_ms: 325.608917
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-windows-portable-x64-0.201.0.exe
+ok 9 - the original missing asset forces a healing build: formal-ai-desktop-windows-portable-x64-0.201.0.exe
+  ---
+  duration_ms: 337.855042
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-windows-portable-arm64-0.201.0.exe
+ok 10 - the original missing asset forces a healing build: formal-ai-desktop-windows-portable-arm64-0.201.0.exe
+  ---
+  duration_ms: 328.216
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-linux-x64-0.201.0.AppImage
+ok 11 - the original missing asset forces a healing build: formal-ai-desktop-linux-x64-0.201.0.AppImage
+  ---
+  duration_ms: 325.848916
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-linux-arm64-0.201.0.AppImage
+ok 12 - the original missing asset forces a healing build: formal-ai-desktop-linux-arm64-0.201.0.AppImage
+  ---
+  duration_ms: 327.598584
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-linux-x64-0.201.0.deb
+ok 13 - the original missing asset forces a healing build: formal-ai-desktop-linux-x64-0.201.0.deb
+  ---
+  duration_ms: 329.852541
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-linux-arm64-0.201.0.deb
+ok 14 - the original missing asset forces a healing build: formal-ai-desktop-linux-arm64-0.201.0.deb
+  ---
+  duration_ms: 349.525375
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-linux-x64-0.201.0.tar.gz
+ok 15 - the original missing asset forces a healing build: formal-ai-desktop-linux-x64-0.201.0.tar.gz
+  ---
+  duration_ms: 324.759709
+  ...
+# Subtest: the original missing asset forces a healing build: formal-ai-desktop-linux-arm64-0.201.0.tar.gz
+ok 16 - the original missing asset forces a healing build: formal-ai-desktop-linux-arm64-0.201.0.tar.gz
+  ---
+  duration_ms: 328.75325
+  ...
+# Subtest: the original missing asset forces a healing build: latest.yml
+ok 17 - the original missing asset forces a healing build: latest.yml
+  ---
+  duration_ms: 333.231917
+  ...
+# Subtest: the original missing asset forces a healing build: latest-mac.yml
+ok 18 - the original missing asset forces a healing build: latest-mac.yml
+  ---
+  duration_ms: 321.04325
+  ...
+# Subtest: the original missing asset forces a healing build: latest-linux.yml
+ok 19 - the original missing asset forces a healing build: latest-linux.yml
+  ---
+  duration_ms: 328.618125
+  ...
+# Subtest: unknown asset API or authentication refuses the automatic skip {"unknownAssets":true}
+ok 20 - unknown asset API or authentication refuses the automatic skip {"unknownAssets":true}
+  ---
+  duration_ms: 317.544041
+  ...
+# Subtest: unknown asset API or authentication refuses the automatic skip {"unknownEvidence":true}
+ok 21 - unknown asset API or authentication refuses the automatic skip {"unknownEvidence":true}
+  ---
+  duration_ms: 515.291417
+  ...
+# Subtest: all seven original release operations retain publication gates and actual metadata binding
+ok 22 - all seven original release operations retain publication gates and actual metadata binding
+  ---
+  duration_ms: 27.862208
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7843.333333
+

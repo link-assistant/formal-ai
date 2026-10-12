@@ -1,0 +1,27 @@
+{
+  "schema": "candidate-release-controls/v1",
+  "candidateSha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d",
+  "helperSha256": "ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc",
+  "originalOperations": 52,
+  "convertedReferences": 104,
+  "realJobs": 16,
+  "graphPositive": 1,
+  "graphRefusals": 11,
+  "transferPositive": 1,
+  "transferRefusals": 15,
+  "sourcePositive": 1,
+  "sourceRefusals": 5,
+  "actionlint": {
+    "status": 0,
+    "queueMaxCompatibilityException": "Installed1.7.12 rejects unchanged source-existing queue:max; only exact unsupported queue syntax diagnostic excluded",
+    "shellcheck": false,
+    "pyflakes": false
+  },
+  "physicalWrites": 1,
+  "githubExecuted": false,
+  "nativeExecuted": false,
+  "publication": false,
+  "coldTiming": false,
+  "autonomousCredit": 0,
+  "amplificationCredit": 0
+}

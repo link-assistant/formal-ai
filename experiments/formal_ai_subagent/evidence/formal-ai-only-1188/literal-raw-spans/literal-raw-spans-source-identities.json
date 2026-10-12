@@ -1,0 +1,38 @@
+{
+  "js/agentic/write_request/lowercase_spans.mjs": {
+    "bytes": 1768,
+    "sha256": "b085c83fef0b620ae38d0ace0f9dbdd23d8254db741aef33c8c711bfd70235a7"
+  },
+  "rust/src/agentic_coding/write_request/lowercase_spans.rs": {
+    "bytes": 1977,
+    "sha256": "f0564460b23e1a214852064d3992ebe0a0e76f3b0dffa8a5f8ec61ce2d0d3281"
+  },
+  "js/agentic/write_request.mjs": {
+    "bytes": 26882,
+    "sha256": "a5fbc5552921d921a079fa15b5572952dd2e3d1bd0a8f2e73fc20fdc7a9941fa"
+  },
+  "rust/src/agentic_coding/write_request.rs": {
+    "bytes": 45709,
+    "sha256": "c5c13b54ffbe9056fbef2236f92322384b7ec0fdca629f2076d1d81b36a2984e"
+  },
+  "js/agentic/general_planner.mjs": {
+    "bytes": 26571,
+    "sha256": "4e67e54c37928e87cc80d8a8eeac34a97fc3c8246f8b505b77064343aa1f9045"
+  },
+  "rust/src/agentic_coding/general_planner.rs": {
+    "bytes": 27076,
+    "sha256": "5cf4365528defbf49876d735d038e09d7296859cdefa8379c8e19061c58799ac"
+  },
+  "rust/src/agentic_coding/general_planner/literal_request.rs": {
+    "bytes": 19320,
+    "sha256": "1d24a1f07f4bd7c5769496c9fa5a9ed53498436e3e70a045f678247854bd9254"
+  },
+  "rust/tests/web/literal-write-request-scope.test.mjs": {
+    "bytes": 11855,
+    "sha256": "7cd85f60b56282d255b582a1928c92f40f0b5146731c274a59dec3a77d036730"
+  },
+  "rust/tests/fixtures/literal-obligation-transaction.rs": {
+    "bytes": 23107,
+    "sha256": "c4f1d8063f428b7f00fe5e2bb86371c7b89101ede6addcb212126ba0d2933df9"
+  }
+}

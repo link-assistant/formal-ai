@@ -1,0 +1,230 @@
+[
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2366-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2366-request.json",
+    "bytes": 164,
+    "sha256": "6ee766a4d81b5a46c85d2c3e5d7d12f661a24d09636a278806ef38ebbc0e134b"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2366-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2366-transcript.json",
+    "bytes": 161,
+    "sha256": "b03b146dc4d669881dddb6d65629650a22f6ff7dd9cb97c2a28c04c90601d2e1"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2366-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2366-transcript.log",
+    "bytes": 161,
+    "sha256": "b03b146dc4d669881dddb6d65629650a22f6ff7dd9cb97c2a28c04c90601d2e1"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2367-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2367-request.json",
+    "bytes": 196,
+    "sha256": "6ee820c4da51e7cddd536fb85f99123cc0bb22d4b0b5bde4d466284d1d036cba"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2367-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2367-transcript.json",
+    "bytes": 362,
+    "sha256": "6d101ba614d136f52dd3e769ffc1c4e48f5475f1d5b6ba0b40091e9a4b52f5a6"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2367-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2367-transcript.log",
+    "bytes": 362,
+    "sha256": "6d101ba614d136f52dd3e769ffc1c4e48f5475f1d5b6ba0b40091e9a4b52f5a6"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2368-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2368-request.json",
+    "bytes": 122417,
+    "sha256": "d560d137ada4fc0c179a1a8cb304d67dcd3058109380ad1b5c6afc7b99804083"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2368-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2368-transcript.json",
+    "bytes": 665,
+    "sha256": "9649145e883247139f5c60999a72fd26c812553bb15f4bdf9b888f92e4ea57cf"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2368-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2368-transcript.log",
+    "bytes": 665,
+    "sha256": "9649145e883247139f5c60999a72fd26c812553bb15f4bdf9b888f92e4ea57cf"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2369-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2369-request.json",
+    "bytes": 193,
+    "sha256": "8ffbf1924e2abcc523ab26022fc8e6f64e42f9c15cc3442ac151be8d77001bb1"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2369-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2369-transcript.json",
+    "bytes": 161,
+    "sha256": "b03b146dc4d669881dddb6d65629650a22f6ff7dd9cb97c2a28c04c90601d2e1"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2369-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2369-transcript.log",
+    "bytes": 161,
+    "sha256": "b03b146dc4d669881dddb6d65629650a22f6ff7dd9cb97c2a28c04c90601d2e1"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2370-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2370-request.json",
+    "bytes": 216,
+    "sha256": "4bff5c4fd428ea5472cbcf5742a015cfa1c2ccac365df04864ac50f81cda6595"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2370-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2370-transcript.json",
+    "bytes": 4098,
+    "sha256": "1863b54857f73c77bbe45135409164bc43904bd25fa2fff0da2a6f1dfdeb60c3"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2370-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2370-transcript.log",
+    "bytes": 4098,
+    "sha256": "1863b54857f73c77bbe45135409164bc43904bd25fa2fff0da2a6f1dfdeb60c3"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2371-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2371-request.json",
+    "bytes": 91625,
+    "sha256": "d551b40366f6336f921f7ebe755e0295e7202d7360766ae2a858288e22f310ba"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2371-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2371-transcript.json",
+    "bytes": 627,
+    "sha256": "26ffb22a73799d876e6c7ced585ae545fdeb1fb6f0870b742448c9a0d17d2a24"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2371-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2371-transcript.log",
+    "bytes": 627,
+    "sha256": "26ffb22a73799d876e6c7ced585ae545fdeb1fb6f0870b742448c9a0d17d2a24"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2372-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2372-request.json",
+    "bytes": 199,
+    "sha256": "984a912899134beb64d0f92b7d601690668d395181e66e295220c9c28a9eadd6"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2372-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2372-transcript.json",
+    "bytes": 4027,
+    "sha256": "98778060adde5cdf16c104ce23fa1c541e9c56af370edeb7e33c257e1cb00bb7"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2372-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2372-transcript.log",
+    "bytes": 4027,
+    "sha256": "98778060adde5cdf16c104ce23fa1c541e9c56af370edeb7e33c257e1cb00bb7"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2373-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2373-request.json",
+    "bytes": 222,
+    "sha256": "34f382edbff20612b8da4f5c120eee188aede9adbbd2834afc48ed11bfd8d749"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2373-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2373-transcript.json",
+    "bytes": 4098,
+    "sha256": "1863b54857f73c77bbe45135409164bc43904bd25fa2fff0da2a6f1dfdeb60c3"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2373-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2373-transcript.log",
+    "bytes": 4098,
+    "sha256": "1863b54857f73c77bbe45135409164bc43904bd25fa2fff0da2a6f1dfdeb60c3"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2374-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2374-request.json",
+    "bytes": 4998,
+    "sha256": "e1d11930cb91f7988b955bafe73feded10f29118e9562e784a1eadb91d565a44"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2374-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2374-transcript.json",
+    "bytes": 598,
+    "sha256": "ac02aa12e0bf2efe1f8cb9be824168e98b8e02b17ccbccf4b56113dbd8473252"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2374-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2374-transcript.log",
+    "bytes": 598,
+    "sha256": "ac02aa12e0bf2efe1f8cb9be824168e98b8e02b17ccbccf4b56113dbd8473252"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2368-closest.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2368-closest.log",
+    "bytes": 7477,
+    "sha256": "aa473c1f62e6eabc405dbdabd73789b00a9a5876563d9d55ea85b8351ecd6cba"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2371-closest.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2371-closest.log",
+    "bytes": 8619,
+    "sha256": "8768de7c8c0035a3a8d958808192a0581dd82136c7d1d271103615e71da51cc3"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2373-twins.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2373-twins.log",
+    "bytes": 53,
+    "sha256": "09429d6660a4f6f0e51f09665788ff34e2685455ae3cd42008ff2799324c637b"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2373-language.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2373-language.log",
+    "bytes": 195,
+    "sha256": "7cd99856a264a831a4cf3fe877221685e94b0e7206a7dcb58b62771af198d5d2"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/punctuation-source-manifest.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/punctuation-source-manifest.json",
+    "bytes": 884,
+    "sha256": "877d3bd6ad0ee04996d1146529f3ec1a9ab133831c3a511dff19c6aef2c9ef02"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/explicit-punctuation-8j0nSw/punctuation.txt",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2367-wrong-bytes.log",
+    "bytes": 7,
+    "sha256": "24065231df1b28929df88139f986d509bc2aed39f17c7566cea5d0f25e7f299f"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/punctuation-finite-ledger.md",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/finite-ledger.md",
+    "bytes": 4049,
+    "sha256": "e174fbb1da1c48a5b2f46f262b2984b92650fc6b35ecb6ad7f296adb435a1d9e"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2375-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2375-request.json",
+    "bytes": 16221,
+    "sha256": "8fd429d773fcdd407443fad6088acd0c45b172e5baee2fb47b63c9e4b3f02679"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2375-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2375-transcript.json",
+    "bytes": 1164,
+    "sha256": "91f2abb1122fb386ac8c17508a55569b2f7a4b1b79e68dbf60d9080e41b1cdbd"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2375-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2375-transcript.log",
+    "bytes": 1164,
+    "sha256": "91f2abb1122fb386ac8c17508a55569b2f7a4b1b79e68dbf60d9080e41b1cdbd"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2376-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/punctuation/T2376-request.json",
+    "bytes": 12413,
+    "sha256": "d6aa0e524a3b618b5176124b121593983fcd1ae9677a9e32b65f19e82aaff874"
+  }
+]

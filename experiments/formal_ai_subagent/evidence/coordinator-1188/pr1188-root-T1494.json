@@ -1,0 +1,6 @@
+{
+  "identifier": "T1494",
+  "observation": "The first source request created the closest JS quote tests and byte equality passed. The orchestration script then tried nonexistent rust/tests/unit/issue_749_shell_routing.rs and threw ENOENT before a native Formal AI call; full first-call raw transcript was not retained. No native mutation occurred.",
+  "outcome": "partial",
+  "rawTranscriptRetained": false
+}

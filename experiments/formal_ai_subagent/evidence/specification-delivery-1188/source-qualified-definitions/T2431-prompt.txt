@@ -1,0 +1,37 @@
+Set the contents of rust/tests/fixtures/source-cache-seed-contract.rs to exactly this content:
+````````````text
+use super::*;
+#[test]
+fn arbitrary_capture_is_verified_before_replay() {
+    let body = "arbitrary captured bytes";
+    let digest = sha256_hex(body.as_bytes());
+    let raw = format!(
+        "source-captures\n  capture {digest}\n    url https://example.test/entry\n    fetched-at 1720000000\n    sha256 {digest}\n    body \"{body}\"\n"
+    );
+    let capture = read_seed_capture("https://example.test/entry", &raw)
+        .unwrap()
+        .unwrap();
+    assert_eq!(capture.bytes(), body.as_bytes());
+    assert_eq!(capture.fetched_at(), "1720000000");
+    assert!(capture.cached());
+    assert!(
+        read_seed_capture("https://example.test/other", &raw)
+            .unwrap()
+            .is_none()
+    );
+    assert!(
+        read_seed_capture(
+            "https://example.test/entry",
+            &raw.replace(body, "tampered bytes")
+        )
+        .is_err()
+    );
+    assert!(
+        read_seed_capture(
+            "https://example.test/entry",
+            &raw.replace("1720000000", "0")
+        )
+        .is_err()
+    );
+}
+````````````

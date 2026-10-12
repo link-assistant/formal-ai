@@ -1,0 +1,4 @@
+node_path=1.1.2.2.1
+node_depth=5
+node_kind=leaf
+result=Replaced `good evening` with `good day` in `data/seed/meanings-conversation.lino` and observed the result.

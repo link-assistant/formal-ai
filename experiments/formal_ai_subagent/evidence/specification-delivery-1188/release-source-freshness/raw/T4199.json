@@ -1,0 +1,20 @@
+{
+  "task": "T4199",
+  "prompt": "Implement a safe production release source freshness repair. Existing scripts/version-and-commit.rs sync_with_remote and push retry rebase can move actual source away from original GitHub main run head; downstream resolve-package-release.mjs correctly rejects tags not equal to run head or immediate child, and GITHUB_TOKEN suppresses release event. Do not broaden resolver ancestry or alter release.yml events/floors/caller/projection. Add small readable Node source freshness guard called only for actual GitHub Actions release jobs before initial sync and each push retry. Independently require actual main release event/caller/job/repository/ref/head and exact remote main, refuse newly rebased source. Permit retry only unchanged original main or identical already-pushed release child; never pull/rebase in guarded CI. General non-CI version CLI behavior remains. Add independent physical Git and refusal controls and preserve complete original resolver failing observation. No compiler/native runs, no publication. Implement full fix, use testable explicit dependencies and source guards.",
+  "started": "2026-10-09T21:22:16.578Z",
+  "result": {
+    "transcript": [],
+    "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement a safe production release source freshness repair. Existing scripts/version-and-commit.rs sync_with_remote and push retry rebase can move actual source away from original GitHub main run head; downstream resolve-package-release.mjs correctly rejects tags not equal to run head or immediate child, and GITHUB_TOKEN suppresses release event. Do not broaden resolver ancestry or alter release.yml events/floors/caller/projection. Add small readable Node source freshness guard called only for actual GitHub Actions release jobs before initial sync and each push retry. Independently require actual main release event/caller/job/repository/ref/head and exact remote main, refuse newly rebased source. Permit retry only unchanged original main or identical already-pushed release child; never pull/rebase in guarded CI. General non-CI version CLI behavior remains. Add independent physical Git and refusal controls and preserve complete original resolver failing observation. No compiler/native runs, no publication. Implement full fix, use testable explicit dependencies and source guards.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": false,
+  "finished": "2026-10-09T21:22:18.070Z"
+}

@@ -18,6 +18,7 @@ const vscode = require("vscode");
 
 const { statusFromConfig } = require("./lib/config.cjs");
 const { createBridge } = require("./lib/bridge.cjs");
+const { registerDebugger } = require("./lib/debugger-view.cjs");
 const { createChatViewProvider } = require("./lib/chat-view.cjs");
 
 const SHELL = "VS Code Web";
@@ -45,6 +46,7 @@ function activate(context) {
 
   const host = { appVersion, getStatus: () => status, bridge };
 
+  context.subscriptions.push(registerDebugger({ vscode, context, host }));
   const provider = createChatViewProvider({ vscode, context, host });
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(VIEW_ID, provider, {

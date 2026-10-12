@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "金"
+        },
+        "es": {
+          "language": "es",
+          "value": "oro"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "原子序數為79的化學元素"
+        },
+        "es": {
+          "language": "es",
+          "value": "elemento químico con número atómico 79"
         }
       },
       "aliases": {

@@ -18,13 +18,13 @@ module.exports = defineConfig({
   testDir: './tests',
   testMatch: [
     '**/demo.spec.js',
-    '**/multilingual.spec.js',
+    '**/multilingual-*.spec.js',
     '**/connectivity.spec.js',
-    '**/issue-157.spec.js',
-    '**/issue-193.spec.js',
-    '**/issue-205.spec.js',
-    '**/issue-209.spec.js',
-    '**/issue-335.spec.js',
+    '**/creator-question.spec.js',
+    '**/offline-bundled-runtime.spec.js',
+    '**/ocr-image-attachments.spec.js',
+    '**/prime-proof-prompts.spec.js',
+    '**/composite-wikipedia-research.spec.js',
     // The landing + docs chooser pages navigate relative to the /app/ baseURL
     // (../, ../docs/), so the same spec verifies them on the live Pages site.
     '**/issue-479-site.spec.js',

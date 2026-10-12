@@ -1,0 +1,5 @@
+{
+  "taskId": "T2065",
+  "target": "changelog.d/20261010_005000_curated-project-summary-parity.md",
+  "byteEqual": true
+}

@@ -1,0 +1,33 @@
+view
+  id M-f402800b9ecc
+  lemma secondary
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being of second rank or importance or value; not direct or immediate"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the defensive football players who line up behind the linemen"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "coil such that current is induced in it by passing a current through the primary coil"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "inferior in rank or status"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "depending on or incidental to what is original or primary"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not of major importance"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "belonging to a lower class or rank"
+    provenance (wordnet)

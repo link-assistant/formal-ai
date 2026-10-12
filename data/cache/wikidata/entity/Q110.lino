@@ -1,0 +1,20 @@
+Q110
+  aliases
+    en (Mar "3. month")
+    es (Mar. "3" "3.º mes" "mes 3" "mes 3.º" "mes de Marte" "mes del dios Marte" "mes tercero" "tercer mes" "mes del dios de la guerra")
+    ru ("марта" "мар.")
+  descriptions
+    en "third month in the Julian and Gregorian calendars"
+    es "tercer mes del año en los calendarios juliano y gregoriano"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में तीसरा महीना"
+    ru "третий месяц года в юлианском и григорианском календарях"
+    zh "公历及儒略历中第三个月份"
+  id Q110
+  labels
+    en March
+    es marzo
+    hi "मार्च"
+    ru "март"
+    zh "3月"
+  type item
+success 1

@@ -1,0 +1,71 @@
+{
+  "project": {
+    "org": "example-org",
+    "name": "arbitrary",
+    "displayName": "Arbitrary project",
+    "description": "Fallback description.",
+    "statements": [
+      {
+        "text": "Install instructions.",
+        "kind": "install",
+        "weight": 255
+      },
+      {
+        "text": "Highest statement.",
+        "kind": "purpose",
+        "weight": 90
+      },
+      {
+        "text": "First tied statement.",
+        "kind": "feature",
+        "weight": 70
+      },
+      {
+        "text": "Second tied statement.",
+        "kind": "feature",
+        "weight": 70
+      },
+      {
+        "text": "Middle statement.",
+        "kind": "feature",
+        "weight": 50
+      },
+      {
+        "text": "Low statement.",
+        "kind": "misc",
+        "weight": 20
+      },
+      {
+        "text": "Zero statement.",
+        "kind": "misc",
+        "weight": 0
+      }
+    ],
+    "localized": []
+  },
+  "observations": [
+    {
+      "mode": "short",
+      "actual": "Highest statement. First tied statement. Second tied statement.",
+      "expectedFromSharedCore": "Highest statement.",
+      "equal": false
+    },
+    {
+      "mode": "standard",
+      "actual": "Highest statement. First tied statement. Second tied statement.",
+      "expectedFromSharedCore": "Highest statement. First tied statement. Second tied statement.",
+      "equal": true
+    },
+    {
+      "mode": "full",
+      "actual": "Highest statement. First tied statement. Second tied statement.",
+      "expectedFromSharedCore": "Highest statement. First tied statement. Second tied statement. Middle statement. Low statement. Zero statement.",
+      "equal": false
+    },
+    {
+      "mode": "short-empty",
+      "actual": "Fallback description.",
+      "expectedFromSharedCore": ""
+    }
+  ]
+}

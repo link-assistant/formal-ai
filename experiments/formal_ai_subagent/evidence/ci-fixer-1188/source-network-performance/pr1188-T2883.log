@@ -1,0 +1,140 @@
+>> read {"filePath":"rust/tests/web/source-network-packets.test.mjs","file_path":"rust/tests/web/source-network-packets.test.mjs","path":"rust/tests/web/source-network-packets.test.mjs"}
+   <file>
+   00001| import assert from 'node:assert/strict';
+   00002| import test from 'node:test';
+   00003| import { gzipSync } from 'node:zlib';
+   00004| import { workflowPin } from '../../../scripts/translate-js-rust.mjs';
+   00005| import { partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket, verifySourceDistribution } from '../../../scripts/lib/source-network-packets.mjs';
+   00006| 
+   00007| test('every source has exactly one stable shard, including non-ASCII paths', () => {
+   00008|   const paths = ['rust/src/α.rs', 'js/a.mjs', 'ts/a.mts', 'rust/src/z.rs', 'js/😀.js'];
+   00009|   const shards = Array.from({ length: 8 }, (_, index) => partitionSourcePaths(paths, index, 8));
+   00010|   assert.deepEqual(shards.flat().sort(), [...paths].sort());
+   00011|   assert.equal(new Set(shards.flat()).size, paths.length);
+   00012|   assert.deepEqual(shards, Array.from({ length: 8 }, (_, index) => partitionSourcePaths([...paths].reverse(), index, 8)));
+   00013| });
+   00014| 
+   00015| test('duplicate paths and invalid shard identities refuse before serialization', () => {
+   00016|   for (const [paths, index, count] of [[['a', 'a'], 0, 1], [[], -1, 2], [[], 2, 2], [[], 0, 0], [[], 0.1, 2]]) {
+   00017|     assert.throws(() => partitionSourcePaths(paths, index, count));
+   00018|   }
+   00019| });
+   00020| 
+   00021| test('receipt records serialized bytes and exact UTF-8 source, independently of line endings', () => {
+   00022|   const source = '\uFEFF// 😀\r\nconst value = "α";';
+   00023|   const LinkNetwork = {
+   00024|     parse: (text) => ({ toLino: () => '(1: (meta: (def: ' + encodeURIComponent(text) + ')))\n' }),
+   00025|     fromLino: (document) => ({ reconstructText: () => decodeURIComponent(document.match(/\(def: ([^)]*)\)/u)[1]) }),
+   00026|   };
+   00027|   const result = serializeSourceNetwork({ path: 'js/arbitrary.mjs', language: 'JavaScript', source }, LinkNetwork);
+   00028|   assert.equal(result.receipt.sourceBytes, Buffer.byteLength(source));
+   00029|   assert.equal(result.receipt.serializedBytes, Buffer.byteLength(result.document));
+   00030|   assert.notEqual(result.receipt.sourceSha256, result.receipt.serializedSha256);
+   00031|   assert.equal(result.receipt.fidelity, 'lossless-network-serialization');
+   00032| });
+   00033| 
+   00034| test('a source digest or altered reconstruction never counts as a complete network', () => {
+   00035|   const source = 'let value = 2;\n';
+   00036|   for (const restored of ['let value = 3;\n', source.trimEnd(), '', null]) {
+   00037|     assert.throws(() => serializeSourceNetwork({ path: 'arbitrary.rs', language: 'rust', source }, {
+   00038|       parse: () => ({ toLino: () => 'source_digest only' }),
+   00039|       fromLino: () => ({ reconstructText: () => restored }),
+   00040|     }), /round trip differs/u);
+   00041|   }
+   00042| });
+   00043| 
+   00044| test('decoder failures are propagated without a success receipt', () => {
+   00045|   assert.throws(() => serializeSourceNetwork({ path: 'arbitrary.rs', language: 'rust', source: 'fn f() {}' }, {
+   00046|     parse: () => ({ toLino: () => 'invalid serialized schema' }),
+   00047|     fromLino: () => { throw new Error('malformed network'); },
+   00048|   }), /malformed network/u);
+   00049| });
+   00050| 
+   00051| test('all workflow serializer checkouts share one verified pin', () => {
+   00052|   const first = 'a'.repeat(40), second = 'b'.repeat(40);
+   00053|   const checkout = (commit) => 'repository: link-foundation/meta-language\n  ref: ' + commit + '\n';
+   00054|   assert.equal(workflowPin(checkout(first) + checkout(first)), first);
+   00055|   assert.equal(workflowPin(checkout(first) + checkout(second)), null);
+   00056|   assert.equal(workflowPin('no upstream checkout'), null);
+   00057| });
+   00058| 
+   00059| test('downloaded gzip packet reconstructs the exact source and refuses identity corruption', () => {
+   00060|   const source = '// 😀\r\nconst value = 9;';
+   00061|   const document = '(1: (meta: (def: ' + encodeURIComponent(source) + ')))\n';
+   00062|   const compressed = gzipSync(Buffer.from(document));
+   00063|   const receipt = {
+   00064|     path: 'js/arbitrary.mjs', sourceBytes: Buffer.byteLength(source), sourceSha256: sourceDigest(Buffer.from(source)),
+   00065|     serializedBytes: Buffer.byteLength(document), serializedSha256: sourceDigest(Buffer.from(document)),
+   00066|     compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed),
+   00067|   };
+   00068|   const LinkNetwork = { fromLino: (text) => ({ reconstructText: () => decodeURIComponent(text.match(/\(def: ([^)]*)\)/u)[1]) }) };
+   00069|   assert.equal(verifySourcePacket(receipt, compressed, LinkNetwork), source);
+   00070|   assert.throws(() => verifySourcePacket(receipt, Buffer.from('corrupt compressed bytes'), LinkNetwork), /compressed packet identity/u);
+   00071|   assert.throws(() => verifySourcePacket({ ...receipt, serializedSha256: '0'.repeat(64) }, compressed, LinkNetwork),
+   00072|     /serialized network identity/u);
+   00073|   assert.throws(() => verifySourcePacket({ ...receipt, sourceBytes: receipt.sourceBytes - 1 }, compressed, LinkNetwork),
+   00074|     /reconstructed source identity/u);
+   00075|   assert.throws(() => verifySourcePacket(receipt, compressed, { fromLino: () => ({ reconstructText: () => source + '\n' }) }),
+   00076|     /reconstructed source identity/u);
+   00077| });
+   00078| 
+   00079| 
+   00080| test('release distribution rejects missing, duplicate, stale, forged and corrupt source packets', () => {
+   00081|   const sourceHead = 'a'.repeat(40), upstreamCommit = 'b'.repeat(40);
+   00082|   const sourcePaths = Array.from({ length: 16 }, (_, index) => 'js/module-' + index + '.mjs');
+   00083|   const sources = new Map(sourcePaths.map((path, index) => [path, Buffer.from('export const value = ' + index + ';\n')]));
+   00084|   const packets = new Map();
+   00085|   const reports = Array.from({ length: 8 }, (_, shardIndex) => {
+   00086|     const paths = partitionSourcePaths(sourcePaths, shardIndex, 8);
+   00087|     const receipts = paths.map((path) => {
+   00088|       const source = sources.get(path), document = Buffer.from('(1: (def: ' + source.toString('base64') + '))\n');
+   00089|       const packet = path + '.lino.gz', compressed = gzipSync(document);
+   00090|       packets.set(shardIndex + '/' + packet, compressed);
+   00091|       return { path, packet, sourceBytes: source.length, sourceSha256: sourceDigest(source),
+   00092|         serializedBytes: document.length, serializedSha256: sourceDigest(document),
+   00093|         compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed),
+   00094|         fidelity: 'lossless-network-serialization' };
+   00095|     });
+   00096|     return { sourceHead, baseHead: sourceHead, inputState: 'committed-head', upstreamCommit,
+   00097|       shardIndex, shardCount: 8, totalOwnedSources: 16, checkedSources: paths.length,
+   00098|       fidelity: 'lossless-network-serialization', sources: receipts };
+   00099|   });
+   00100|   const options = { reports, sourcePaths, sourceHead, upstreamCommit,
+   00101|     sourceBytes: (path) => sources.get(path), packetBytes: (index, path) => packets.get(index + '/' + path) };
+   00102|   assert.equal(verifySourceDistribution(options).checkedSources, 16);
+   00103|   assert.throws(() => verifySourceDistribution({ ...options, reports: reports.slice(1) }), /missing a shard/u);
+   00104|   assert.throws(() => verifySourceDistribution({ ...options, reports: [reports[0], ...reports.slice(0, 7)] }), /shard identity/u);
+   00105|   for (const change of [
+   00106|     (copy) => { copy[0].sourceHead = 'c'.repeat(40); },
+   00107|     (copy) => { copy[0].upstreamCommit = 'c'.repeat(40); },
+   00108|     (copy) => { copy[0].sources[0].path = '../outside.mjs'; },
+   00109|     (copy) => { copy[0].sources[0].sourceSha256 = '0'.repeat(64); },
+   00110|     (copy) => { copy[0].sources.reverse(); },
+   00111|   ]) {
+   00112|     const copy = structuredClone(reports); change(copy);
+   00113|     assert.throws(() => verifySourceDistribution({ ...options, reports: copy }));
+   00114|   }
+   00115|   assert.throws(() => verifySourceDistribution({ ...options, packetBytes: () => Buffer.from('corrupt') }), /compressed packet/u);
+   00116|   assert.throws(() => verifySourceDistribution({ ...options, sourceBytes: () => Buffer.from('changed source') }), /source identity/u);
+   00117| });
+   00118| 
+   00119| test('production source producer imports without launching serialization and enumerates tracked production roots', async () => {
+   00120|   const { main, ownedProductionSources } = await import('../../../scripts/check-source-networks.mjs');
+   00121|   assert.equal(typeof main, 'function');
+   00122|   const paths = ownedProductionSources();
+   00123|   for (const root of ['rust/src/', 'js/', 'ts/']) assert.ok(paths.some((path) => path.startsWith(root)));
+   00124|   assert.equal(paths.length, new Set(paths).size);
+   00125|   assert.ok(paths.every((path) => !path.startsWith('rust/tests/') && !path.startsWith('js/vendor/')
+   00126|     && !path.startsWith('js/seed/') && !path.endsWith('.bundle.js')));
+   00127| });
+   00128| 
+   
+   (End of file - total 128 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/source-network-packets.test.mjs","file_path":"rust/tests/web/source-network-packets.test.mjs","new":"partitionSourcePaths, serializeSourceNetwork, createSourcePacket, sourceDigest, verifySourcePacket, verifySourceDistribution","newString":"partitionSourcePaths, serializeSourceNetwork, createSourcePacket, sourceDigest, verifySourcePacket, verifySourceDistribution","new_str":"partitionSourcePaths, serializeSourceNetwork, createSourcePacket, sourceDigest, verifySourcePacket, verifySourceDistribution","new_string":"partitionSourcePaths, serializeSourceNetwork, createSourcePacket, sourceDigest, verifySourcePacket, verifySourceDistribution","old":"partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket, verifySourceDistribution","oldString":"partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket, verifySourceDistribution","old_str":"partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket, verifySourceDistribution","old_string":"partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket, verifySourceDistribution","path":"rust/tests/web/source-network-packets.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/source-network-packets.test.mjs"}
+   Output: d40aa488d7070c862ded797ee0bd4aace3a556e2eca079417b0f3ba82c3fbf5c  rust/tests/web/source-network-packets.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket, verifySourceDistribution` with `partitionSourcePaths, serializeSourceNetwork, createSourcePacket, sourceDigest, verifySourcePacket, verifySourceDistribution` in `rust/tests/web/source-network-packets.test.mjs` and observed the result.

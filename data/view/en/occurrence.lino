@@ -1,0 +1,13 @@
+view
+  id M-0c43e9706bdf
+  lemma occurrence
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an event that happens"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an instance of something occurring"
+    provenance (wordnet)

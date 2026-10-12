@@ -113,6 +113,12 @@ agent_info
     value "Failed to record report: {error}"
   field context_command_failed
     value "Command failed with {status}: {error}"
+  field compaction_summary_marker
+    value "Conversation summary:"
+  field compaction_title_marker
+    value "Title:"
+  field compaction_turns_marker
+    value "User turns:"
   field client_server_health_invalid
     value "Existing Formal AI server at {address} returned an invalid health response."
   field client_server_version_missing

@@ -1,13 +1,16 @@
 Q13276
   aliases
+    es (bizcocho torta)
     ru ("пирожные" "пироженое" "торт")
     zh ("卵清糕")
   descriptions
     en "baked dessert"
+    es "masa de harina y manteca y otros ingredientes cocida al horno"
     ru "десерт из муки, масла и сахара"
   id Q13276
   labels
     en cake
+    es pastel
     hi "केक"
     ru "пирожное"
     zh "蛋糕"

@@ -1,0 +1,286 @@
+{
+  "id": "T2308",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run node -e \"const fs=require('fs');const crypto=require('crypto');const r=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T2308-request.json','utf8'));for(const c of r.copies){if(crypto.createHash('sha256').update(fs.readFileSync(c.source)).digest('hex')!==c.sha256)throw new Error('evidence source digest mismatch');if(fs.existsSync(c.target))throw new Error('immutable target exists');}for(const c of r.copies)fs.copyFileSync(c.source,c.target);fs.copyFileSync('/private/tmp/formal-ai-only-1188/T2308-request.json',r.manifestTarget);\"",
+  "copies": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1892-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1892-request.json",
+      "sha256": "c4b85629853f512f3e3c07f7c9b43ded18ab7431fa16ca13d21888f6a4a774e9"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1892-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1892-transcript.json",
+      "sha256": "a29d7c14582503788cffdc25ff582755e8728dbfa245e2966d53b2c1f4623a97"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1892.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1892.log",
+      "sha256": "a29d7c14582503788cffdc25ff582755e8728dbfa245e2966d53b2c1f4623a97"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1893-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1893-request.json",
+      "sha256": "f6db531205f131d7e1ba2d1e8b7400fe596f4bdfb76572432a8f4b8ced43e062"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1893-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1893-transcript.json",
+      "sha256": "27879f3a814eb63dca8124f7db79464a77e63586fc7b58a70819fa763e084a66"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1893-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1893-transcript.log",
+      "sha256": "27879f3a814eb63dca8124f7db79464a77e63586fc7b58a70819fa763e084a66"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1894-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1894-request.json",
+      "sha256": "6f54456bd239b4ebeddf9491c693678a6bef77b939f0b60fde8c0bf9bfcf27c8"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1894-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1894-transcript.json",
+      "sha256": "4dc0f01d3dc71c6732c4039dcca194860ee443b7a816aeb60cfd98db7df27e6e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1894-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1894-transcript.log",
+      "sha256": "4dc0f01d3dc71c6732c4039dcca194860ee443b7a816aeb60cfd98db7df27e6e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1895-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1895-request.json",
+      "sha256": "8211618665e84ae42a55014e1eae24bb33c641f97ef27e5d5ae866acd112e11e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1895-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1895-transcript.json",
+      "sha256": "e3b8b8d7d1dab4d1ce139eda537304a00bc6040d8b8228dbe320f822201cc140"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1895-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1895-transcript.log",
+      "sha256": "e3b8b8d7d1dab4d1ce139eda537304a00bc6040d8b8228dbe320f822201cc140"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1896-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1896-request.json",
+      "sha256": "86f78401b4accf4be4834b1ecfcf1735e52b0e352c7869492cdcbd1cf8221165"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1896-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1896-transcript.json",
+      "sha256": "74c2bfaa606a182a23936b6910fd29cb67fbd37486e8bea605bc059bc8cf26b5"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1896-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1896-transcript.log",
+      "sha256": "74c2bfaa606a182a23936b6910fd29cb67fbd37486e8bea605bc059bc8cf26b5"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1897-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1897-request.json",
+      "sha256": "f68da5bf8a3742d4ce75af0e1e52595fa507eb2916581d86d88d33ffd61ba6c9"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1897-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1897-transcript.json",
+      "sha256": "913981864f9f74a1ea4694edb0c3923eb7ac72bd043e202d9bc201e61f20e3b8"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1897-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1897-transcript.log",
+      "sha256": "913981864f9f74a1ea4694edb0c3923eb7ac72bd043e202d9bc201e61f20e3b8"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1898-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1898-request.json",
+      "sha256": "7107dc57370ada39ac7bae8922887f661e88d2a57a3afc3ecd07933a0e9c63ce"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1898-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1898-transcript.json",
+      "sha256": "423f4640f4eb4317086297be3164d6dd5eac8502f147bad331b5d3c9b31b6a62"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1898-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1898-transcript.log",
+      "sha256": "423f4640f4eb4317086297be3164d6dd5eac8502f147bad331b5d3c9b31b6a62"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1899-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1899-request.json",
+      "sha256": "b9691e712589a8a38c81d5779f714aeadf9e158f1917bb04547b5eb358cbd07c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1899-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1899-transcript.json",
+      "sha256": "1a98a03596c149cc29d4b9b868e4db6a6e4ba09051132c77fd03d3c5e6de70d6"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1899-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1899-transcript.log",
+      "sha256": "1a98a03596c149cc29d4b9b868e4db6a6e4ba09051132c77fd03d3c5e6de70d6"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2300-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2300-request.json",
+      "sha256": "4db5b67b38d216f9e366ca9ff56c90f1ece7415c5861d23855989d12f21283be"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2300-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2300-transcript.json",
+      "sha256": "3bae07b5579c71027dd14778b4f74c1635cbbdfcd1ba79793430d005449ae803"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2300-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2300-transcript.log",
+      "sha256": "3bae07b5579c71027dd14778b4f74c1635cbbdfcd1ba79793430d005449ae803"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2301-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2301-request.json",
+      "sha256": "eb7dcd1566ad2a982047bde1b87efef082f7c071c900326dd381afd22bd70a8e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2301-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2301-transcript.json",
+      "sha256": "6537ec007c1f4b2eedfbeaf48c6d69001cb729d2fee0d7d2f2b63488050b8d0c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2301-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2301-transcript.log",
+      "sha256": "6537ec007c1f4b2eedfbeaf48c6d69001cb729d2fee0d7d2f2b63488050b8d0c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2302-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2302-request.json",
+      "sha256": "32af16e39e70c181fa897296623b298c2b943338c6c55aa0716bf2a96f73a5f6"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2302-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2302-transcript.json",
+      "sha256": "422d7000aac4a552e3c5aa397ab67df33be9a9bde40e7c57b2067aa44cd1a7ba"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2302-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2302-transcript.log",
+      "sha256": "422d7000aac4a552e3c5aa397ab67df33be9a9bde40e7c57b2067aa44cd1a7ba"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2303-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2303-request.json",
+      "sha256": "f91906d9aa7440fc91328eeb144db989cc26534a19ad0751c7c0f25b83083afd"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2303-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2303-transcript.json",
+      "sha256": "a29d7c14582503788cffdc25ff582755e8728dbfa245e2966d53b2c1f4623a97"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2303-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2303-transcript.log",
+      "sha256": "a29d7c14582503788cffdc25ff582755e8728dbfa245e2966d53b2c1f4623a97"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2304-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2304-request.json",
+      "sha256": "6305dbb24958f3dfcd2a82a1393cc907690e613c1cf6dab323729336b8acf42a"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2304-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2304-transcript.json",
+      "sha256": "4d8f654dfc2d85ed722d2cceb5689e2c14538cd08ae6116e47f42ff83ce78f4c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2304-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2304-transcript.log",
+      "sha256": "4d8f654dfc2d85ed722d2cceb5689e2c14538cd08ae6116e47f42ff83ce78f4c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2305-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2305-request.json",
+      "sha256": "d49bb0f9551f02046c2b9416035eb3d1c85fe5e279e5ac279a1e3634225b022d"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2305-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2305-transcript.json",
+      "sha256": "fcc9f827dff6d9d3d5e1c02252c06530c3ed8e6ba6cab10e419f51eb176c5c37"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2305-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2305-transcript.log",
+      "sha256": "fcc9f827dff6d9d3d5e1c02252c06530c3ed8e6ba6cab10e419f51eb176c5c37"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2306-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2306-request.json",
+      "sha256": "483d71c92973336533b91904f0f9c1ca6efe28e79797d2a5e5237215b4e0c583"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2306-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2306-transcript.json",
+      "sha256": "a29d7c14582503788cffdc25ff582755e8728dbfa245e2966d53b2c1f4623a97"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2306-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2306-transcript.log",
+      "sha256": "a29d7c14582503788cffdc25ff582755e8728dbfa245e2966d53b2c1f4623a97"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2307-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2307-request.json",
+      "sha256": "fab81c0e8f2552b480676e72ae552be7d427fc1dd6f21a4492541c4397f4d764"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2307-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2307-transcript.json",
+      "sha256": "7de3a471db31ee6040323df6bfb25a8c71837acc264f3c612d21bfe2849fc6ff"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2307-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2307-transcript.log",
+      "sha256": "7de3a471db31ee6040323df6bfb25a8c71837acc264f3c612d21bfe2849fc6ff"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1892-after.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1892-after.json",
+      "sha256": "889744e7945dc4746b13bc4db4f1781ee3a3b28f2201fafb9fc5f063b3524f79"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1892-fixture.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T1892-fixture.log",
+      "sha256": "8ac063e4a32a6fcf01905ccf68c6d0391896d5162449749566ef12df355813ea"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2303-after.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2303-after.json",
+      "sha256": "ba30389771ec236fdf9ca2fc3bd5f0ced7be18b23d7a53aadaa2029fc7f03e8e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2303-fixture.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2303-fixture.log",
+      "sha256": "72c03afc3cb3a73fdc7b5990a4740f69a266e39e976e7a656b91bcf9cfb7ca30"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2302-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2302-closest.log",
+      "sha256": "a69edaf38aa9150975c2bcb2e10fc3329f0831b70d97930c69afce71b77085f0"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2304-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2304-closest.log",
+      "sha256": "fbe230b7fe443fa899c5b875af70b17c2a854c7a6165cc4578aba6d34ad1f10a"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2305-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/T2305-closest.log",
+      "sha256": "dd46f06486367d06b310a50bb549541fab6fde3d1f472763f6f606ce3c4de8a7"
+    }
+  ],
+  "manifestTarget": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-catalog/copy-manifest.json",
+  "sourceEffects": 0,
+  "neutralCopies": 56,
+  "note": "Full raw invocation evidence and finite copy manifest. Copier own transcript remains scratch for parent serialized integration; no infinite evidence-copy chain."
+}

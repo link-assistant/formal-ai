@@ -1,0 +1,5 @@
+>> bash {"command":"rustfmt --edition 2024 rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "盒子"
+        },
+        "es": {
+          "language": "es",
+          "value": "caja"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "Вид ёмкости или ящика из плотного материала"
+        },
+        "es": {
+          "language": "es",
+          "value": "recipiente de cartón, de madera, de metal, etc., generalmente con tapa, que sirve para guardar y transportar cosas."
         }
       },
       "aliases": {
@@ -74,6 +82,12 @@
           {
             "language": "zh",
             "value": "整理箱"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Cajas"
           }
         ]
       }

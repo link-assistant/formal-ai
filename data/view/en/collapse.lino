@@ -1,0 +1,49 @@
+view
+  id M-5ad568bd7d5c
+  lemma collapse
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an abrupt failure of function or complete physical exhaustion"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a natural event caused by something suddenly falling down or caving in"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of throwing yourself down; collapse; sink"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a sudden large decline of business or the prices of stocks (especially one that causes additional failures)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "break down, literally or metaphorically"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "collapse due to fatigue, an illness, or a sudden attack"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "fold or close up"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "fall apart"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to burst"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "suffer a nervous breakdown"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "lose significance, effectiveness, or value"
+    provenance (wordnet)

@@ -1,0 +1,37 @@
+view
+  id M-f122468f1c34
+  lemma now
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the momentary present"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in the historical present; at this point in the narration of a series of past events"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in these times"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "used to preface a command or reproof or request"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "at the present moment"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "without delay or hesitation; with no time intervening"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "(prefatory or transitional) indicates a change of subject or activity"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in the immediate past"
+    provenance (wordnet)

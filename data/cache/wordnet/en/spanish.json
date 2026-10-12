@@ -1,0 +1,35 @@
+{
+  "lemma": "spanish",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02970122-a",
+      "partOfSpeech": "a",
+      "definition": "of or relating to or characteristic of Spain or the people of Spain",
+      "examples": [
+        "Spanish music"
+      ]
+    },
+    {
+      "id": "oewn-06979499-n",
+      "partOfSpeech": "n",
+      "definition": "the Romance language spoken in most of Spain and the countries colonized by Spain",
+      "synonyms": [
+        "Spanish language"
+      ]
+    },
+    {
+      "id": "oewn-09752657-n",
+      "partOfSpeech": "n",
+      "definition": "the people of Spain",
+      "synonyms": [
+        "Spanish people"
+      ]
+    }
+  ]
+}

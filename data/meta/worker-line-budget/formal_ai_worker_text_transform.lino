@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_text_transform.js"
+  ceiling 903
+  rationale "Issue #1174 text-transform family, browser twin (issue #1188 JS parity). JavaScript-first twin of native handler keys (summarization_text, text_rewrite), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling 992 (2026-10-07): handler trace events become answer evidence, as in Rust build_evidence_links, so the browser runs the cross-runtime parity case (R1172-12). Ceiling lowered 992 to 903 for R1188-U20 (2026-10-08): the command head and free-text payload readers moved to formal_ai_worker_text_payload.js, shared with the handler-rule transform value source."

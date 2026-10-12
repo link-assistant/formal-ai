@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "匙"
+        },
+        "es": {
+          "language": "es",
+          "value": "cuchara"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "由一个小浅碗组成的器具，椭圆形或圆形，位于手柄末端"
+        },
+        "es": {
+          "language": "es",
+          "value": "utensilio usado para servir o comer un alimento"
         }
       },
       "aliases": {

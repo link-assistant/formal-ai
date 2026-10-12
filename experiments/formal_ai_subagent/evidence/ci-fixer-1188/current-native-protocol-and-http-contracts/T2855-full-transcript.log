@@ -1,0 +1,95 @@
+>> read {"filePath":"rust/tests/web/seed-routing-ci-regressions.test.mjs","file_path":"rust/tests/web/seed-routing-ci-regressions.test.mjs","path":"rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+   <file>
+   00001| // Exact CI semantic failures and the general boundaries their repairs retain.
+   00002| import assert from 'node:assert/strict';
+   00003| import { before, test } from 'node:test';
+   00004| import { meaning, wordIn } from '../../../js/agentic/crate/seed_meanings.mjs';
+   00005| import { resolveSurface } from '../../../js/agentic/crate/text_formalization.mjs';
+   00006| import { roundTrip } from '../../../js/agentic/crate/round_trip_translation.mjs';
+   00007| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00008| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00009| import { planChatStep } from '../../../js/agentic/planner.mjs';
+   00010| import { planCommitStep } from '../../../js/agentic/git_commit.mjs';
+   00011| import { mentionsRole } from '../../../js/agentic/write_lexicon.mjs';
+   00012| import { realm, solve } from '../../../js/agentic/host.mjs';
+   00013| import { objectType, routePlaced } from '../../../js/agentic/crate/capability_routing.mjs';
+   00014| import { EventLog, buildEvidenceLinks } from '../../../js/agentic/crate/event_log.mjs';
+   00015| before(async () => { await installNodeHost(new WorkerHost()); });
+   00016| const tools = ['bash', 'read', 'grep', 'write', 'edit'];
+   00017| const newline = String.fromCharCode(10);
+   00018| 
+   00019| test('complete commit cues own an existing-tree commit in every seeded language', async () => {
+   00020|   for (const instruction of ['Please review these changes and commit them.', 'Проверь изменения и закоммить изменения.', 'इन परिवर्तनों की समीक्षा करें और बदलाव कमिट करें।', '请检查并提交这些更改。', 'Revisa los cambios y haz commit.']) {
+   00021|     const prompt = instruction + newline + '?? Main.scala';
+   00022|     const plan = await planChatStep([{ role: 'user', content: prompt }], tools);
+   00023|     assert.equal(plan.calls[0].tool, 'bash', instruction);
+   00024|     assert.match(JSON.parse(plan.calls[0].arguments).command, /git commit/u);
+   00025|   }
+   00026| });
+   00027| 
+   00028| test('commit cue masking preserves independent authoring and token boundaries', () => {
+   00029|   for (const prompt of ['Implement a parser and haz commit.', 'Revisa haz committer y haz commit.', 'Revisa src/haz-committer.mjs y haz commit.', 'Append "haz commit" to notes.txt.']) {
+   00030|     assert.equal(planCommitStep(prompt, [{ role: 'user', content: prompt }], tools), null, prompt);
+   00031|   }
+   00032| });
+   00033| 
+   00034| test('avoidance aliases cover contracted and expanded seeded instruction forms', async () => {
+   00035|   for (const instruction of ['do not use', 'don t use', "don't use", 'don’t use']) {
+   00036|     assert.ok(mentionsRole('conversation_preference_avoid', 'please ' + instruction + ' these anymore'));
+   00037|     const result = await solve('`quick` is subjective opinion, please ' + instruction + ' these anymore.');
+   00038|     assert.equal(result.intent, 'conversation_preference');
+   00039|     assert.equal(result.answer, "Understood. I'll avoid `quick` in this dialog.");
+   00040|   }
+   00041| });
+   00042| 
+   00043| test('named transform metadata retains the original content-addressed provenance', () => {
+   00044|   for (const name of ['requirement_list', 'custom_transform']) {
+   00045|     const log = new EventLog();
+   00046|     const id = log.append('text_transform', name);
+   00047|     const links = buildEvidenceLinks('payload', log, 'response:result');
+   00048|     assert.ok(links.includes('text_transform:' + name));
+   00049|     assert.ok(links.includes('text_transform:' + id));
+   00050|   }
+   00051| });
+   00052| 
+   00053| test('proof promotion belongs to leading proof directives, not embedded test wording', () => {
+   00054|   for (const prompt of ['Prove that there are infinitely many primes.', 'Докажи что простых чисел бесконечно много.', 'साबित करो कि अभाज्य संख्याएँ अनंत हैं।', '证明素数无穷。', 'Demuestra que hay infinitos números primos.']) {
+   00055|     assert.ok(realm().solverPromotedHandlers(prompt).includes('proof_request'), prompt);
+   00056|   }
+   00057|   const prompt = 'Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto.';
+   00058|   assert.ok(!realm().solverPromotedHandlers(prompt).includes('proof_request'));
+   00059|   assert.deepEqual(routePlaced(prompt, []), { kind: 'honest_gap', needed: 'grep', missing: 'shell' });
+   00060|   assert.ok(objectType(prompt).includes('bare_term'));
+   00061| });
+   00062| 
+   
+   (End of file - total 62 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/seed-routing-ci-regressions.test.mjs","file_path":"rust/tests/web/seed-routing-ci-regressions.test.mjs","new":"missing: 'shell' });\n  assert.ok(objectType(prompt).includes('bare_term'));\n});\n\ntest('authored returning concept loads all five languages and distinguishes return from equality', () => {\n  const loaded = meaning('returning');\n  assert.deepEqual(loaded.defined_by, ['coding_return']);\n  assert.deepEqual(loaded.roles, ['coding_return_action']);\n  for (const [language, surface] of [['en', 'returning'], ['ru', 'возвращая'], ['hi', 'लौटाते हुए'], ['zh', '正在返回'], ['es', 'devolviendo']]) {\n    assert.equal(wordIn(loaded, language), surface);\n    assert.equal(resolveSurface(surface, language), 'returning');\n  }\n  assert.equal(resolveSurface('返回结果', 'zh'), 'coding_return');\n  assert.equal(resolveSurface('等于', 'zh'), 'coding_assertion_equality');\n  for (const surface of ['return', 'returning', 'equals']) {\n    assert.ok(roundTrip(surface, 'en', 'zh').survives, surface);\n  }\n});\n","newString":"missing: 'shell' });\n  assert.ok(objectType(prompt).includes('bare_term'));\n});\n\ntest('authored returning concept loads all five languages and distinguishes return from equality', () => {\n  const loaded = meaning('returning');\n  assert.deepEqual(loaded.defined_by, ['coding_return']);\n  assert.deepEqual(loaded.roles, ['coding_return_action']);\n  for (const [language, surface] of [['en', 'returning'], ['ru', 'возвращая'], ['hi', 'लौटाते हुए'], ['zh', '正在返回'], ['es', 'devolviendo']]) {\n    assert.equal(wordIn(loaded, language), surface);\n    assert.equal(resolveSurface(surface, language), 'returning');\n  }\n  assert.equal(resolveSurface('返回结果', 'zh'), 'coding_return');\n  assert.equal(resolveSurface('等于', 'zh'), 'coding_assertion_equality');\n  for (const surface of ['return', 'returning', 'equals']) {\n    assert.ok(roundTrip(surface, 'en', 'zh').survives, surface);\n  }\n});\n","new_str":"missing: 'shell' });\n  assert.ok(objectType(prompt).includes('bare_term'));\n});\n\ntest('authored returning concept loads all five languages and distinguishes return from equality', () => {\n  const loaded = meaning('returning');\n  assert.deepEqual(loaded.defined_by, ['coding_return']);\n  assert.deepEqual(loaded.roles, ['coding_return_action']);\n  for (const [language, surface] of [['en', 'returning'], ['ru', 'возвращая'], ['hi', 'लौटाते हुए'], ['zh', '正在返回'], ['es', 'devolviendo']]) {\n    assert.equal(wordIn(loaded, language), surface);\n    assert.equal(resolveSurface(surface, language), 'returning');\n  }\n  assert.equal(resolveSurface('返回结果', 'zh'), 'coding_return');\n  assert.equal(resolveSurface('等于', 'zh'), 'coding_assertion_equality');\n  for (const surface of ['return', 'returning', 'equals']) {\n    assert.ok(roundTrip(surface, 'en', 'zh').survives, surface);\n  }\n});\n","new_string":"missing: 'shell' });\n  assert.ok(objectType(prompt).includes('bare_term'));\n});\n\ntest('authored returning concept loads all five languages and distinguishes return from equality', () => {\n  const loaded = meaning('returning');\n  assert.deepEqual(loaded.defined_by, ['coding_return']);\n  assert.deepEqual(loaded.roles, ['coding_return_action']);\n  for (const [language, surface] of [['en', 'returning'], ['ru', 'возвращая'], ['hi', 'लौटाते हुए'], ['zh', '正在返回'], ['es', 'devolviendo']]) {\n    assert.equal(wordIn(loaded, language), surface);\n    assert.equal(resolveSurface(surface, language), 'returning');\n  }\n  assert.equal(resolveSurface('返回结果', 'zh'), 'coding_return');\n  assert.equal(resolveSurface('等于', 'zh'), 'coding_assertion_equality');\n  for (const surface of ['return', 'returning', 'equals']) {\n    assert.ok(roundTrip(surface, 'en', 'zh').survives, surface);\n  }\n});\n","old":"missing: 'shell' });\n  assert.ok(objectType(prompt).includes('bare_term'));\n});\n","oldString":"missing: 'shell' });\n  assert.ok(objectType(prompt).includes('bare_term'));\n});\n","old_str":"missing: 'shell' });\n  assert.ok(objectType(prompt).includes('bare_term'));\n});\n","old_string":"missing: 'shell' });\n  assert.ok(objectType(prompt).includes('bare_term'));\n});\n","path":"rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+   Output: 2d7c735ce2bfdf5f2dc1ef4b6e2670076061e590c6a429ea4471fc31c5f9eb75  rust/tests/web/seed-routing-ci-regressions.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `missing: 'shell' });
+  assert.ok(objectType(prompt).includes('bare_term'));
+});
+` with `missing: 'shell' });
+  assert.ok(objectType(prompt).includes('bare_term'));
+});
+
+test('authored returning concept loads all five languages and distinguishes return from equality', () => {
+  const loaded = meaning('returning');
+  assert.deepEqual(loaded.defined_by, ['coding_return']);
+  assert.deepEqual(loaded.roles, ['coding_return_action']);
+  for (const [language, surface] of [['en', 'returning'], ['ru', 'возвращая'], ['hi', 'लौटाते हुए'], ['zh', '正在返回'], ['es', 'devolviendo']]) {
+    assert.equal(wordIn(loaded, language), surface);
+    assert.equal(resolveSurface(surface, language), 'returning');
+  }
+  assert.equal(resolveSurface('返回结果', 'zh'), 'coding_return');
+  assert.equal(resolveSurface('等于', 'zh'), 'coding_assertion_equality');
+  for (const surface of ['return', 'returning', 'equals']) {
+    assert.ok(roundTrip(surface, 'en', 'zh').survives, surface);
+  }
+});
+` in `rust/tests/web/seed-routing-ci-regressions.test.mjs` and observed the result.

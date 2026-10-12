@@ -111,7 +111,10 @@ fn download(url: &str, destination: &Path) -> Result<(), String> {
     create_parent(destination)?;
     let partial = destination.with_extension("partial");
     let status = Command::new("curl")
-        .args(["-fSL", "--retry", "3", "--retry-delay", "2", "-o"])
+        .args(["-fSL", "--retry", "3", "--retry-delay", "2"])
+        // A stalled transfer must fail rather than hold the run until the
+        // job cap cancels it with nothing recorded.
+        .args(["--connect-timeout", "20", "--max-time", "600", "-o"])
         .arg(&partial)
         .arg(url)
         .status()

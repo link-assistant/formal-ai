@@ -325,16 +325,10 @@ pub fn cache_key(url: &str) -> String {
     format!("{hash:016x}")
 }
 
-/// Read the cache truthiness flag from the environment. Accepts `1`,
-/// `true`, `yes`, `on` (case-insensitive). Anything else is treated as
-/// disabled.
+/// Read the cache truthiness flag from the environment. Accepts `1`, `true`,
+/// `yes`, `on` (case-insensitive). Anything else is treated as disabled.
 fn live_api_enabled() -> bool {
-    std::env::var("FORMAL_AI_LIVE_API").is_ok_and(|value| {
-        matches!(
-            value.trim().to_ascii_lowercase().as_str(),
-            "1" | "true" | "yes" | "on"
-        )
-    })
+    crate::cli_env::flag_enabled("FORMAL_AI_LIVE_API")
 }
 
 impl<T: HttpClient> HttpClient for CachedHttpClient<T> {

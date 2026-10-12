@@ -1,0 +1,13 @@
+language en
+lemma cumulative
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "increasing by successive addition"
+    examples ("the benefits are cumulative" "the eventual accumulative effect of these substances")
+    id oewn-00048680-s
+    partOfSpeech s
+    synonyms (accumulative)
+source "oewn:2024"

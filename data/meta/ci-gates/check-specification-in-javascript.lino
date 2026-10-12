@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-specification-in-javascript
+  stage web
+  description "R1188-U29, R1188-U30: the Rust specification tests of the simple shape (a prompt, then assertions on the answer, the intent or the evidence links) are carried to JavaScript by scripts/lib/rust-specification-cases.mjs and asked of the browser worker; data/meta/specification-javascript-gaps.lino lists every carried case the worker fails, and the number that pass never falls."
+  run "node scripts/check-specification-in-javascript.mjs --check"
+  justification "PR #1188 (R1188-U29: the JavaScript requirements pass first; R1188-U30: the rust → js direction is automated where a test has a simple shape): the native engine's specification becomes a measured parity target for the browser worker."

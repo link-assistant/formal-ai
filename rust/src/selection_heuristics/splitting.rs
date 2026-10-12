@@ -334,5 +334,5 @@ pub(super) fn complete_layers(task: &str) -> u8 {
     if segments < 2 {
         return 0;
     }
-    u8::try_from(usize::BITS - segments.leading_zeros() - 1).unwrap_or(u8::MAX)
+    u8::try_from(segments.bit_width() - 1).unwrap_or(u8::MAX)
 }

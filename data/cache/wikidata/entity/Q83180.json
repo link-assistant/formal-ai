@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "屋顶"
+        },
+        "es": {
+          "language": "es",
+          "value": "cubierta"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "房屋的頂蓋"
+        },
+        "es": {
+          "language": "es",
+          "value": "elemento constructivo que protege la parte superior de un edificio frente a la intemperie"
         }
       },
       "aliases": {
@@ -54,6 +62,24 @@
           {
             "language": "zh",
             "value": "厝頂"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "tejado"
+          },
+          {
+            "language": "es",
+            "value": "techo"
+          },
+          {
+            "language": "es",
+            "value": "techumbre"
+          },
+          {
+            "language": "es",
+            "value": "cubierta arquitectónica"
           }
         ]
       }

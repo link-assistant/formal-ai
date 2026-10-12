@@ -1,0 +1,19 @@
+{
+  "lemma": "percentile",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05745697-n",
+      "partOfSpeech": "n",
+      "definition": "(statistics) any of the 99 numbered points that divide an ordered set of scores into 100 parts each of which contains one-hundredth of the total",
+      "synonyms": [
+        "centile"
+      ]
+    }
+  ]
+}

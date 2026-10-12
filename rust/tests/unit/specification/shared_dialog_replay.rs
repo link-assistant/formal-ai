@@ -137,3 +137,14 @@ fn shared_screen_followup_supports_all_prompt_languages() {
         );
     }
 }
+
+#[test]
+fn prose_lead_before_a_colon_is_not_part_of_the_looped_command() {
+    let response = solver().solve("Make this a single line loop: sleep 5m && cleanup -f");
+
+    assert_eq!(response.intent, "shell_command_transform");
+    assert_eq!(
+        response.answer,
+        "while true; do sleep 5m && cleanup -f; done"
+    );
+}

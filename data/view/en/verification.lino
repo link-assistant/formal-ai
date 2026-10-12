@@ -1,0 +1,13 @@
+view
+  id M-86eb5b8a0d47
+  lemma verification
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "additional proof that something that was believed (some fact or hypothesis or theory) is correct"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(law) an affidavit attached to a statement confirming the truth of that statement"
+    provenance (wordnet)

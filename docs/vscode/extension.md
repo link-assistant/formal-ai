@@ -63,7 +63,7 @@ The six `formal-ai.*` settings map directly onto the status shape in `config.cjs
 | `formal-ai.server.enabled` | `false` | Node host only: start `formal-ai serve` and route chat through `POST /v1/chat/completions`. Ignored on the web host. |
 | `formal-ai.server.host` | `127.0.0.1` | Loopback bind host. |
 | `formal-ai.server.port` | `18080` | Loopback bind port. |
-| `formal-ai.docker.image` | `konard/box-dind:2.1.1` | Image used to sandbox code-execution tool calls (Node host, permitted tool). |
+| `formal-ai.docker.image` | `konard/box-dind:2.10.2` | Image used to sandbox code-execution tool calls (Node host, permitted tool). |
 | `formal-ai.tools.allowByDefault` | `false` | Grant tool calls by default; off means default-deny until opt-in. |
 | `formal-ai.agent.defaultOn` | `false` | Open the chat with agent mode on. |
 

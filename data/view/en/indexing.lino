@@ -1,0 +1,9 @@
+view
+  id M-d323d5cde408
+  lemma indexing
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of classifying and providing an index in order to make items easier to retrieve"
+    provenance (wordnet)

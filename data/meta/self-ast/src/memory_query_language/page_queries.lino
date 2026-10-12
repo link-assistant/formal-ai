@@ -1,0 +1,21 @@
+self_ast_census
+  target src/memory_query_language/page_queries.rs
+  language rust
+  fidelity signature
+  byte_len 5574
+  line_count 150
+  content_id source_module_9b8caa8d27254185
+  symbol_count 12
+  symbols
+    const SLOT_QUOTES 18 18
+    const QUERY_END_PUNCTUATION 20 20
+    const SLOT_OPEN 22 22
+    const SLOT_CLOSE 23 23
+    enum PageQuery 27 32
+    function execute 37 42
+    function parse_page_query 48 70
+    function run_page_query 74 76
+    function run_page_query_in_working_memory 81 84
+    enum TemplatePiece 87 90
+    function template_pieces 93 110
+    function match_template 115 150

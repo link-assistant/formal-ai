@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2916-request.json",
+  "sha256": "63c670771de23d48dd6f05714d0e0ddd802a30bfe24181f3364b52fd16453a2a",
+  "rawUtf8": "{\n  \"taskId\": \"T2916\",\n  \"directory\": \"/private/tmp/spec-recurrence-1188/typed-reader-next\",\n  \"prompt\": \"Run node typed-spec-inventory.mjs\"\n}\n"
+}

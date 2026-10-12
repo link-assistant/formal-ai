@@ -1,0 +1,212 @@
+>> read {"filePath":"rust/tests/unit/issue_499_learn_from_source.rs","file_path":"rust/tests/unit/issue_499_learn_from_source.rs","path":"rust/tests/unit/issue_499_learn_from_source.rs"}
+   <file>
+   00001| //! Issue #499: a user teaching the engine where to learn from — e.g.
+   00002| //! "Обратясь сюда ты узнаешь актуальные темы <Google Trends URL>" — must be
+   00003| //! recognized as a *learn from this data source* directive and routed into the
+   00004| //! matching auto-learning capability, instead of returning `intent: unknown`.
+   00005| //!
+   00006| //! These tests pin one behaviour per requirement plus one whole-task check, and
+   00007| //! deliberately vary the natural-language wording each time (CONTRIBUTING rule 4)
+   00008| //! so a passing run proves the routing is general, not hardcoded to one phrase.
+   00009| 
+   00010| use formal_ai::agentic_coding::{
+   00011|     GOOGLE_TRENDS_LEARNING_PATH, google_trends_learning as recipe, is_google_trends_learning_task,
+   00012|     run_agentic_task,
+   00013| };
+   00014| use formal_ai::engine::FormalAiEngine;
+   00015| use formal_ai::{response_for, seed, supported_languages, trending_learning_report};
+   00016| 
+   00017| /// The exact prompt reported in issue #499 (Russian, with the Google Trends URL).
+   00018| const REPORTED_PROMPT: &str =
+   00019|     "Обратясь сюда ты узнаешь актуальные темы https://trends.google.com/trending?hl=ru&&geo=US";
+   00020| 
+   00021| fn answer(prompt: &str) -> formal_ai::SymbolicAnswer {
+   00022|     FormalAiEngine.answer(prompt)
+   00023| }
+   00024| 
+   00025| // R499-1: the reported prompt no longer falls to the unknown opener.
+   00026| #[test]
+   00027| fn the_reported_prompt_no_longer_returns_unknown() {
+   00028|     let result = answer(REPORTED_PROMPT);
+   00029|     assert_ne!(
+   00030|         result.intent, "unknown",
+   00031|         "issue #499: the reported learn-from-source directive must be recognized",
+   00032|     );
+   00033|     assert_eq!(result.intent, "learn_from_source");
+   00034|     assert!(
+   00035|         result.confidence >= 0.9,
+   00036|         "a directly recognized source directive should answer with high confidence",
+   00037|     );
+   00038| }
+   00039| 
+   00040| // R499-2: the directive is recognized across every supported language, each with a
+   00041| // different wording, so the routing is not tied to a single phrase or locale.
+   00042| #[test]
+   00043| fn learn_from_source_is_recognized_in_every_supported_language() {
+   00044|     let prompts = [
+   00045|         // en — "learn from" cue + host
+   00046|         "Learn from popular Google searches at https://trends.google.com/trending/rss?geo=US",
+   00047|         // ru — "тут видны" cue + host
+   00048|         "Тут видны темы кототорые интересуют людей https://trends.google.com/trending?hl=ru&&geo=US",
+   00049|         // hi — "यहाँ से सीख" cue + host
+   00050|         "यहाँ से सीख सकते हो कि लोग क्या खोज रहे हैं https://trends.google.com/trending?geo=IN",
+   00051|         // zh — "在这里了解" cue + "谷歌趋势" keyword + host
+   00052|         "在这里了解谷歌趋势的热门话题 https://trends.google.com/trending?geo=CN",
+   00053|     ];
+   00054|     for prompt in prompts {
+   00055|         assert_eq!(
+   00056|             answer(prompt).intent,
+   00057|             "learn_from_source",
+   00058|             "every supported language must route the directive: {prompt}",
+   00059|         );
+   00060|     }
+   00061|     // Every supported language also has its own localized acknowledgement, so no
+   00062|     // locale silently falls back to English.
+   00063|     for language in supported_languages() {
+   00064|         assert!(
+   00065|             response_for("learn_from_source", &language).is_some(),
+   00066|             "the learn_from_source response must exist for language {language}",
+   00067|         );
+   00068|     }
+   00069| }
+   00070| 
+   00071| // R499-3: routing is data-driven — it needs both a learning-directive cue *and* a
+   00072| // reference to a seed-declared source. A directive alone, or a source alone, does
+   00073| // not trigger it, and unrelated prompts are untouched.
+   00074| #[test]
+   00075| fn routing_requires_both_a_directive_and_a_known_source() {
+   00076|     // A bare navigation request to the same host carries no learning cue → not ours.
+   00077|     assert_ne!(
+   00078|         answer("Open https://trends.google.com/trending?geo=US").intent,
+   00079|         "learn_from_source",
+   00080|         "a plain open/navigate request must not be treated as a learning directive",
+   00081|     );
+   00082|     // A learning cue with no known data source is not a learn-from-source request.
+   00083|     assert_ne!(
+   00084|         answer("You can learn a lot from reading books").intent,
+   00085|         "learn_from_source",
+   00086|         "a learning cue without a declared source must not trigger the handler",
+   00087|     );
+   00088|     // The registry actually declares the source the handler keys on, and the
+   00089|     // production match is on the declared capability slug, never a literal URL.
+   00090|     let registry = seed::learning_sources();
+   00091|     let google = registry
+   00092|         .sources
+   00093|         .iter()
+   00094|         .find(|source| source.id == "google_trends")
+   00095|         .expect("the seed must declare the Google Trends learnable source");
+   00096|     assert_eq!(google.capability, "google_trends_learning");
+   00097|     assert_eq!(google.host, "trends.google.com");
+   00098|     assert_ne!(registry.directive_cues, [] as [std::string::String; 0]);
+   00099| }
+   00100| 
+   00101| // R499-4: the acknowledgement is rendered in the prompt's language.
+   00102| #[test]
+   00103| fn the_acknowledgement_is_localized_to_the_prompt_language() {
+   00104|     let russian = answer(REPORTED_PROMPT);
+   00105|     assert!(
+   00106|         russian.answer.contains("источник данных"),
+   00107|         "a Russian directive should be acknowledged in Russian: {}",
+   00108|         russian.answer,
+   00109|     );
+   00110|     let english = answer(
+   00111|         "Here you can learn the current trending topics https://trends.google.com/trending?geo=US",
+   00112|     );
+   00113|     assert!(
+   00114|         english.answer.contains("data source I can learn from"),
+   00115|         "an English directive should be acknowledged in English: {}",
+   00116|         english.answer,
+   00117|     );
+   00118| }
+   00119| 
+   00120| // R499-5 / whole task: the directive routes into the Google Trends learning
+   00121| // frontier — the same human-gated, proposal-only loop the rest of the system uses
+   00122| // — and the answer reflects that report faithfully (counts, and adopts nothing).
+   00123| #[test]
+   00124| fn the_directive_routes_into_the_human_gated_learning_frontier() {
+   00125|     let report = trending_learning_report();
+   00126|     assert_eq!(report.adopted_count(), 0, "the loop stays proposal-only");
+   00127| 
+   00128|     let result = answer(REPORTED_PROMPT);
+   00129|     assert_eq!(result.intent, "learn_from_source");
+   00130|     // The answer names Google Trends and quotes the report's own coverage split,
+   00131|     // proving it is derived from trending_learning_report(), not a canned string.
+   00132|     assert!(result.answer.contains("Google Trends"));
+   00133|     assert!(result.answer.contains(&report.total_prompts.to_string()));
+   00134|     assert!(result.answer.contains(&report.frontier_count().to_string()));
+   00135|     assert!(
+   00136|         result.answer.contains("human-gated"),
+   00137|         "the answer must state the frontier flows into the human-gated loop: {}",
+   00138|         result.answer,
+   00139|     );
+   00140| }
+   00141| 
+   00142| // R499-6: the *same* teaching directive that the chat handler recognizes also
+   00143| // drives the Agent CLI learning recipe — one seed-declared source, two entry
+   00144| // points. The directive routes into the same `write_file -> run_command -> final`
+   00145| // loop the operator-worded task uses and writes the committed learning artifact.
+   00146| #[test]
+   00147| fn the_reported_directive_drives_the_learning_recipe_via_agent_cli() {
+   00148|     // The literal user directive is enough to select the learning recipe; no
+   00149|     // English operator framing ("learning frontier" / "self-improvement loop") is
+   00150|     // required, because routing consults the seed `learning_sources` registry.
+   00151|     assert!(
+   00152|         is_google_trends_learning_task(REPORTED_PROMPT),
+   00153|         "the reported learn-from-source directive must drive the Agent CLI learning recipe",
+   00154|     );
+   00155|     // A learning cue with no declared source must not select the recipe, so the
+   00156|     // Agent CLI stays as data-driven as the chat handler.
+   00157|     assert!(!is_google_trends_learning_task(
+   00158|         "Here you can learn a lot from reading books"
+   00159|     ));
+   00160| 
+   00161|     let outcome = run_agentic_task(REPORTED_PROMPT).expect("workspace");
+   00162|     assert!(!outcome.hit_turn_cap, "the loop must finish");
+   00163|     let write = outcome
+   00164|         .steps
+   00165|         .iter()
+   00166|         .find(|step| step.tool == "write_file")
+   00167|         .expect("the directive must drive a write step");
+   00168|     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+   00169|     assert_eq!(written["path"], GOOGLE_TRENDS_LEARNING_PATH);
+   00170|     assert_eq!(written["content"], recipe::render_document());
+   00171| }
+   00172| 
+   00173| // R499-7: the Agent CLI session driven by the reported directive is pinned
+   00174| // byte-for-byte, so a routing or report change can never silently drift the
+   00175| // committed transcript the case study links to.
+   00176| #[test]
+   00177| fn committed_agent_cli_session_matches_a_fresh_learn_from_source_run() {
+   00178|     let committed = include_str!(
+   00179|         "../../../docs/case-studies/issue-499/agent-cli-session-learn-from-source.json"
+   00180|     );
+   00181|     let fresh = run_agentic_task(REPORTED_PROMPT).expect("workspace");
+   00182|     let rendered = format!(
+   00183|         "{}\n",
+   00184|         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+   00185|     );
+   00186|     assert_eq!(
+   00187|         committed, rendered,
+   00188|         "the committed issue-499 learn-from-source Agent CLI session is stale; regenerate it with \
+   00189|          `cargo run --example issue_499_dump_agent_cli_session`",
+   00190|     );
+   00191| }
+   00192| 
+   
+   (End of file - total 192 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/issue_499_learn_from_source.rs","file_path":"rust/tests/unit/issue_499_learn_from_source.rs","new":"    let captured: serde_json::Value = serde_json::from_str(committed).expect(\"captured session JSON\");\n    let tools: Vec<&str> = captured[\"tools_advertised\"]\n        .as_array()\n        .expect(\"captured tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"captured tool name\"))\n        .collect();\n    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(REPORTED_PROMPT, &tools)\n        .expect(\"workspace under the captured tool schema\");","newString":"    let captured: serde_json::Value = serde_json::from_str(committed).expect(\"captured session JSON\");\n    let tools: Vec<&str> = captured[\"tools_advertised\"]\n        .as_array()\n        .expect(\"captured tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"captured tool name\"))\n        .collect();\n    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(REPORTED_PROMPT, &tools)\n        .expect(\"workspace under the captured tool schema\");","new_str":"    let captured: serde_json::Value = serde_json::from_str(committed).expect(\"captured session JSON\");\n    let tools: Vec<&str> = captured[\"tools_advertised\"]\n        .as_array()\n        .expect(\"captured tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"captured tool name\"))\n        .collect();\n    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(REPORTED_PROMPT, &tools)\n        .expect(\"workspace under the captured tool schema\");","new_string":"    let captured: serde_json::Value = serde_json::from_str(committed).expect(\"captured session JSON\");\n    let tools: Vec<&str> = captured[\"tools_advertised\"]\n        .as_array()\n        .expect(\"captured tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"captured tool name\"))\n        .collect();\n    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(REPORTED_PROMPT, &tools)\n        .expect(\"workspace under the captured tool schema\");","old":"    let fresh = run_agentic_task(REPORTED_PROMPT).expect(\"workspace\");","oldString":"    let fresh = run_agentic_task(REPORTED_PROMPT).expect(\"workspace\");","old_str":"    let fresh = run_agentic_task(REPORTED_PROMPT).expect(\"workspace\");","old_string":"    let fresh = run_agentic_task(REPORTED_PROMPT).expect(\"workspace\");","path":"rust/tests/unit/issue_499_learn_from_source.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/issue_499_learn_from_source.rs"}
+   Output: 83a77061e8a2e25a29813f6bf8b241da91924fb9af7521c79c9e5d9b117817f5  rust/tests/unit/issue_499_learn_from_source.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    let fresh = run_agentic_task(REPORTED_PROMPT).expect("workspace");` with `    let captured: serde_json::Value = serde_json::from_str(committed).expect("captured session JSON");
+    let tools: Vec<&str> = captured["tools_advertised"]
+        .as_array()
+        .expect("captured tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("captured tool name"))
+        .collect();
+    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(REPORTED_PROMPT, &tools)
+        .expect("workspace under the captured tool schema");` in `rust/tests/unit/issue_499_learn_from_source.rs` and observed the result.

@@ -1,0 +1,21 @@
+self_ast_census
+  target src/solver_handlers/formalization_task_rml.rs
+  language rust
+  fidelity signature
+  byte_len 11406
+  line_count 310
+  content_id source_module_5ac2b5264a936b63
+  symbol_count 12
+  symbols
+    struct RmlTemplates 28 38
+    function rml_templates 41 62
+    static TEMPLATES 42 42
+    function rml_identifier 65 76
+    function rml_atom 79 94
+    function rml_source 101 158
+    enum RmlExport 162 175
+    function rml_command 179 188
+    function rml_file_stem 192 199
+    function run_rml_export_with 203 236
+    function rml_export 239 248
+    function record_rml_fragment 252 310

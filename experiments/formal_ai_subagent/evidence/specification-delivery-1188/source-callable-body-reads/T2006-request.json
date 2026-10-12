@@ -1,0 +1,6 @@
+{
+  "taskId": "T2006",
+  "purpose": "Format reviewed scratch Rust draft through FA; no compiler",
+  "scratch": "/private/tmp/spec-recurrence-1188",
+  "prompt": "Run rustfmt --edition 2024 callable-body-reads.rs"
+}

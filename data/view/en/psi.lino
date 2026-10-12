@@ -1,0 +1,13 @@
+view
+  id M-88a34ba4d8be
+  lemma psi
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of pressure"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the 23rd letter of the Greek alphabet"
+    provenance (wordnet)

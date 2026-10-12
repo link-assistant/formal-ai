@@ -1,0 +1,25 @@
+view
+  id M-c034b1dafa75
+  lemma padded
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "softened by the addition of cushions or padding"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "add details to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "walk heavily and firmly, as when weary, or through mud"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "line or stuff with soft material"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "add padding to"
+    provenance (wordnet)

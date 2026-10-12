@@ -1,0 +1,12 @@
+language en
+lemma kilohertz
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "one thousand periods per second"
+    id oewn-15304776-n
+    partOfSpeech n
+    synonyms (kHz "kilocycle per second" kilocycle kc)
+source "oewn:2024"

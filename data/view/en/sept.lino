@@ -1,0 +1,13 @@
+view
+  id M-b03b459d47ec
+  lemma sept
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the month following August and preceding October"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "people descended from a common ancestor"
+    provenance (wordnet)

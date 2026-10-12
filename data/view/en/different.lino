@@ -1,0 +1,21 @@
+view
+  id M-85315afb6921
+  lemma different
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "unlike in nature or quality or form or degree"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "distinctly separate from the first"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "differing from all others; not ordinary"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "distinct or separate"
+    provenance (wordnet)

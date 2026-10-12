@@ -1,0 +1,44 @@
+{
+  "lemma": "inspect",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02169987-v",
+      "partOfSpeech": "v",
+      "definition": "look over carefully",
+      "examples": [
+        "Please inspect your father's will carefully"
+      ]
+    },
+    {
+      "id": "oewn-01847990-v",
+      "partOfSpeech": "v",
+      "definition": "come to see in an official or professional capacity",
+      "examples": [
+        "The governor visited the prison",
+        "The grant administrator visited the laboratory"
+      ],
+      "synonyms": [
+        "visit"
+      ]
+    },
+    {
+      "id": "oewn-00698828-v",
+      "partOfSpeech": "v",
+      "definition": "examine carefully for accuracy with the intent of verification",
+      "examples": [
+        "audit accounts and tax returns"
+      ],
+      "synonyms": [
+        "audit",
+        "scrutinize",
+        "scrutinise"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+view
+  id M-090c462dcb4a
+  lemma learn
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "gain knowledge or skills"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "get to know or become aware of, usually accidentally"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "commit to memory; learn by heart"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be a student of a certain subject"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "impart skills or knowledge to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "find out, learn, or determine with certainty, usually by making an inquiry or other effort"
+    provenance (wordnet)

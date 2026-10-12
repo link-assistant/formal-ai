@@ -1,0 +1,138 @@
+{
+  "lemma": "sight",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05941790-n",
+      "partOfSpeech": "n",
+      "definition": "an instance of visual perception",
+      "examples": [
+        "the sight of his wife brought him back to reality",
+        "the train was an unexpected sight"
+      ]
+    },
+    {
+      "id": "oewn-06901994-n",
+      "partOfSpeech": "n",
+      "definition": "anything that is seen",
+      "examples": [
+        "he was a familiar sight on the television",
+        "they went to Paris to see the sights"
+      ]
+    },
+    {
+      "id": "oewn-05662207-n",
+      "partOfSpeech": "n",
+      "definition": "the ability to see; the visual faculty",
+      "synonyms": [
+        "vision",
+        "visual sense",
+        "visual modality"
+      ]
+    },
+    {
+      "id": "oewn-06220699-n",
+      "partOfSpeech": "n",
+      "definition": "a range of mental vision",
+      "examples": [
+        "in his sight, she could do no wrong"
+      ]
+    },
+    {
+      "id": "oewn-05631601-n",
+      "partOfSpeech": "n",
+      "definition": "the range of vision",
+      "examples": [
+        "out of sight of land"
+      ],
+      "synonyms": [
+        "ken"
+      ]
+    },
+    {
+      "id": "oewn-00883327-n",
+      "partOfSpeech": "n",
+      "definition": "the act of looking or seeing or observing",
+      "examples": [
+        "he tried to get a better view of it",
+        "his survey of the battlefield was limited"
+      ],
+      "synonyms": [
+        "view",
+        "survey"
+      ]
+    },
+    {
+      "id": "oewn-13796604-n",
+      "partOfSpeech": "n",
+      "definition": "(often followed by ‘of’) a large number or amount or extent",
+      "examples": [
+        "a batch of letters",
+        "a deal of trouble",
+        "a lot of money",
+        "he made a mint on the stock market",
+        "see the rest of the winners in our huge passel of photos",
+        "it must have cost plenty",
+        "a slew of journalists",
+        "a wad of money"
+      ],
+      "synonyms": [
+        "batch",
+        "deal",
+        "flock",
+        "good deal",
+        "great deal",
+        "hatful",
+        "heap",
+        "lot",
+        "mass",
+        "mess",
+        "mickle",
+        "mint",
+        "mountain",
+        "muckle",
+        "passel",
+        "peck",
+        "pile",
+        "plenty",
+        "pot",
+        "quite a little",
+        "raft",
+        "slew",
+        "spate",
+        "stack",
+        "tidy sum",
+        "wad"
+      ]
+    },
+    {
+      "id": "oewn-82981785-n",
+      "partOfSpeech": "n",
+      "definition": "a place of interest, especially to visitors",
+      "examples": [
+        "we spent a week in Rome looking at all the sights"
+      ]
+    },
+    {
+      "id": "oewn-02168177-v",
+      "partOfSpeech": "v",
+      "definition": "catch sight of; to perceive with the eyes",
+      "examples": [
+        "he caught sight of the king's men coming over the ridge"
+      ],
+      "synonyms": [
+        "spy"
+      ]
+    },
+    {
+      "id": "oewn-02203821-v",
+      "partOfSpeech": "v",
+      "definition": "take aim by looking through the sights of a gun (or other device)"
+    }
+  ]
+}

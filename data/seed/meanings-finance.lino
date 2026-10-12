@@ -4,204 +4,101 @@ meanings
     defined-by money
     defined-by action
     role investment_cue
-    lexeme en
-      surface
-        text invest
-      surface
-        text investment
-    lexeme ru
-      surface
-        text инвестир
-      surface
-        text инвестиц
-    lexeme hi
-      surface
-        text निवेश
-    lexeme zh
-      surface
-        text 投资
+    lexeme en invest investment
+    lexeme ru инвестир инвестиц
+    lexeme hi निवेश
+    lexeme zh 投资
+    lexeme es invert inviert inversión
   interest_finance
     grounded-in Q170924
     defined-by money
     role interest_cue
-    lexeme en
-      surface
-        text interest
-    lexeme ru
-      surface
-        text процент
-    lexeme hi
-      surface
-        text ब्याज
-    lexeme zh
-      surface
-        text 利息
+    lexeme en interest
+    lexeme ru процент
+    lexeme hi ब्याज
+    lexeme zh 利息
+    lexeme es interés intereses
   compounding
     grounded-in Q959606
     defined-by action
     defined-by money
     role compounding_action_cue
-    lexeme en
-      surface
-        text compound
-    lexeme ru
-      surface
-        text "сложный процент"
-      surface
-        text капитализаци
-    lexeme hi
-      surface
-        text चक्रवृद्धि
-    lexeme zh
-      surface
-        text 复利
+    lexeme en compound
+    lexeme ru "сложный процент" капитализаци
+    lexeme hi चक्रवृद्धि
+    lexeme zh 复利
+    lexeme es compuesto capitaliza
   compounding_monthly
     defined-by compounding
     role compounding_frequency_cue
-    lexeme en
-      surface
-        text monthly
-    lexeme ru
-      surface
-        text ежемесячн
-    lexeme hi
-      surface
-        text मासिक
-    lexeme zh
-      surface
-        text 每月
+    lexeme en monthly
+    lexeme ru ежемесячн
+    lexeme hi मासिक
+    lexeme zh 每月
+    lexeme es mensual
   compounding_quarterly
     defined-by compounding
     role compounding_frequency_cue
-    lexeme en
-      surface
-        text quarterly
-    lexeme ru
-      surface
-        text ежеквартальн
-    lexeme hi
-      surface
-        text त्रैमासिक
-    lexeme zh
-      surface
-        text 每季度
+    lexeme en quarterly
+    lexeme ru ежеквартальн
+    lexeme hi त्रैमासिक
+    lexeme zh 每季度
+    lexeme es trimestral
   compounding_weekly
     defined-by compounding
     role compounding_frequency_cue
-    lexeme en
-      surface
-        text weekly
-    lexeme ru
-      surface
-        text еженедельн
-    lexeme hi
-      surface
-        text साप्ताहिक
-    lexeme zh
-      surface
-        text 每周
+    lexeme en weekly
+    lexeme ru еженедельн
+    lexeme hi साप्ताहिक
+    lexeme zh 每周
+    lexeme es semanal
   compounding_daily
     defined-by compounding
     role compounding_frequency_cue
-    lexeme en
-      surface
-        text daily
-    lexeme ru
-      surface
-        text ежедневн
-    lexeme hi
-      surface
-        text दैनिक
-    lexeme zh
-      surface
-        text 每日
+    lexeme en daily
+    lexeme ru ежедневн
+    lexeme hi दैनिक
+    lexeme zh 每日
+    lexeme es diari
   compounding_annual
     defined-by compounding
     role compounding_frequency_cue
-    lexeme en
-      surface
-        text annually
-      surface
-        text yearly
-    lexeme ru
-      surface
-        text ежегодн
-    lexeme hi
-      surface
-        text वार्षिक
-    lexeme zh
-      surface
-        text 每年
+    lexeme en annually yearly
+    lexeme ru ежегодн
+    lexeme hi वार्षिक
+    lexeme zh 每年
+    lexeme es anual
   live_rate_freshness
     defined-by exchange_rate
     defined-by concept
     role live_rate_freshness_cue
-    lexeme en
-      surface
-        text web
-      surface
-        text "current exchange"
-      surface
-        text "current rate"
-      surface
-        text "exchange rate"
-    lexeme ru
-      surface
-        text "текущий курс"
-      surface
-        text "актуальный курс"
-    lexeme hi
-      surface
-        text "वर्तमान दर"
-    lexeme zh
-      surface
-        text 实时汇率
+    lexeme en web "current exchange" "current rate" "exchange rate"
+    lexeme ru "текущий курс" "актуальный курс"
+    lexeme hi "वर्तमान दर"
+    lexeme zh 实时汇率
   year_period
     grounded-in Q577
     defined-by concept
     role year_unit_cue
-    lexeme en
-      surface
-        text year
-    lexeme ru
-      surface
-        text год
-      surface
-        text лет
-    lexeme hi
-      surface
-        text वर्ष
-    lexeme zh
-      surface
-        text 年
+    lexeme en year
+    lexeme ru год лет
+    lexeme hi वर्ष
+    lexeme zh 年
+    lexeme es año
   conversion_action
     defined-by action
     defined-by money
     role conversion_action_cue
-    lexeme en
-      surface
-        text convert
-    lexeme ru
-      surface
-        text конвертир
-    lexeme hi
-      surface
-        text परिवर्तित
-    lexeme zh
-      surface
-        text 转换
+    lexeme en convert
+    lexeme ru конвертир
+    lexeme hi परिवर्तित
+    lexeme zh 转换
+    lexeme es convert conviert
   final_amount
     defined-by money
     role final_amount_reference
-    lexeme en
-      surface
-        text "final amount"
-    lexeme ru
-      surface
-        text "итоговая сумма"
-    lexeme hi
-      surface
-        text "अंतिम राशि"
-    lexeme zh
-      surface
-        text 最终金额
+    lexeme en "final amount"
+    lexeme ru "итоговая сумма"
+    lexeme hi "अंतिम राशि"
+    lexeme zh 最终金额
+    lexeme es "monto final" "importe final" "cantidad final"

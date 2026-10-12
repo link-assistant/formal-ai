@@ -1,0 +1,41 @@
+view
+  id M-22d679feaf12
+  lemma paper
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a material made of cellulose pulp derived mainly from wood or rags or certain grasses"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an essay (especially one written as an assignment)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a daily or weekly publication on folded sheets; contains news and articles and advertisements"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a medium for written communication"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a scholarly article describing the results of observations or stating hypotheses"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a business firm that publishes newspapers"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the physical object that is the product of a newspaper publisher"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cover with paper"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cover with wallpaper"
+    provenance (wordnet)

@@ -1,0 +1,8 @@
+2026-10-09T10:49:39.8164907Z ---- agentic_coding::issue_1099_multiple_obligations::literal_obligation_transaction::literal_bindings_use_local_actions_with_exact_unicode_content stdout ----
+2026-10-09T10:49:39.8165882Z 
+2026-10-09T10:49:39.8166872Z thread 'agentic_coding::issue_1099_multiple_obligations::literal_obligation_transaction::literal_bindings_use_local_actions_with_exact_unicode_content' (3874) panicked at tests/unit/agentic-coding/../../fixtures/literal-obligation-transaction.rs:511:9:
+2026-10-09T10:49:39.8168535Z assertion `left == right` failed: Note İK𐐷 😀 café.
+2026-10-09T10:49:39.8168962Z Create file x.txt containing «hello».
+2026-10-09T10:49:39.8169280Z   left: "g «hello»."
+2026-10-09T10:49:39.8169565Z  right: "hello"
+2026-10-09T10:49:39.8169721Z 

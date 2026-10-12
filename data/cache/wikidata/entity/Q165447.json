@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "硬筆"
+        },
+        "es": {
+          "language": "es",
+          "value": "pluma"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "लिख ने का परिकर"
+        },
+        "es": {
+          "language": "es",
+          "value": "dispositivo usado para entintar una superficie con el propósito de escribir o dibujar"
         }
       },
       "aliases": {
@@ -56,6 +64,12 @@
           {
             "language": "zh",
             "value": "笔"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "instrumento de tinta"
           }
         ]
       }

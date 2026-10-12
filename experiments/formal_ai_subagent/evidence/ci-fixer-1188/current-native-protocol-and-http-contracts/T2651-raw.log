@@ -1,0 +1,96 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs","file_path":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs","path":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs"}
+   <file>
+   00001| use formal_ai::agentic_coding::{
+   00002|     ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,
+   00003|     is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,
+   00004| };
+   00005| 
+   00006| #[test]
+   00007| fn associative_report_is_derived_from_persisted_usage_not_canned() {
+   00008|     let baseline = include_str!("../../../../data/meta/associative-learning-case.lino");
+   00009|     let hotter = baseline.replace("accessCount \"2\"", "accessCount \"8\"");
+   00010| 
+   00011|     let first = associative_learning::render_document_from(baseline);
+   00012|     let second = associative_learning::render_document_from(&hotter);
+   00013| 
+   00014|     assert_ne!(first, second);
+   00015|     assert!(
+   00016|         first.contains("retention_formula \"reads + writes + incoming_links + outgoing_links\"")
+   00017|     );
+   00018|     assert!(second.contains("reads \"9\""));
+   00019|     assert!(second.contains("multi_hop_recall"));
+   00020| }
+   00021| 
+   00022| #[test]
+   00023| fn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {
+   00024|     for prompt in [
+   00025|         ASSOCIATIVE_LEARNING_TASK,
+   00026|         "Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.",
+   00027|         "Rank our linked facts, then save associative-learning-report.lino",
+   00028|     ] {
+   00029|         assert!(is_associative_learning_task(prompt), "{prompt}");
+   00030|     }
+   00031|     assert!(!is_associative_learning_task(
+   00032|         "Explain associative memory without writing an artifact"
+   00033|     ));
+   00034| }
+   00035| 
+   00036| #[test]
+   00037| fn formal_ai_executes_associative_learning_through_agent_cli() {
+   00038|     let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("agent workspace");
+   00039| 
+   00040|     assert!(!outcome.hit_turn_cap);
+   00041|     assert_eq!(outcome.turns, 3);
+   00042|     assert_eq!(outcome.steps.len(), 2);
+   00043|     assert_eq!(outcome.steps[0].tool, "write_file");
+   00044|     let arguments: serde_json::Value =
+   00045|         serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
+   00046|     assert_eq!(arguments["path"], ASSOCIATIVE_LEARNING_PATH);
+   00047|     assert_eq!(
+   00048|         arguments["content"],
+   00049|         associative_learning::render_document()
+   00050|     );
+   00051|     assert_eq!(outcome.steps[1].tool, "run_command");
+   00052|     assert!(
+   00053|         outcome
+   00054|             .final_answer
+   00055|             .contains("persisted and ranked 3 expressions")
+   00056|     );
+   00057| }
+   00058| 
+   00059| #[test]
+   00060| fn committed_agent_cli_session_is_byte_reproducible() {
+   00061|     let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("agent workspace");
+   00062|     let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");
+   00063|     let committed = include_str!(
+   00064|         "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
+   00065|     );
+   00066| 
+   00067|     assert_eq!(format!("{fresh}\n"), committed);
+   00068| }
+   00069| 
+   
+   (End of file - total 69 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs","file_path":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs","new":"    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");","newString":"    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");","new_str":"    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");","new_string":"    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");","old":"    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );","oldString":"    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );","old_str":"    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );","old_string":"    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );","path":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/issue_686_agent_cli.rs"}
+   Output: 1e6f6065fcd76fba49c2152484d5b81e8dc6bfa05bd1a0e40dbc509bac3dff5e  rust/tests/unit/agentic-coding/issue_686_agent_cli.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("agent workspace");
+    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");
+    let committed = include_str!(
+        "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
+    );` with `    let committed = include_str!(
+        "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
+    );
+    let recorded: serde_json::Value = serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect("agent workspace");
+    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");` in `rust/tests/unit/agentic-coding/issue_686_agent_cli.rs` and observed the result.

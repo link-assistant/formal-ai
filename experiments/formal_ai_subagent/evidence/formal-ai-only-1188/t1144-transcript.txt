@@ -1,0 +1,779 @@
+>> read {"filePath":"rust/tests/web/seed-routing-ci-regressions.test.mjs","file_path":"rust/tests/web/seed-routing-ci-regressions.test.mjs","path":"rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+   <file>
+   00001| // Exact CI semantic failures and the general boundaries their repairs retain.
+   00002| import assert from 'node:assert/strict';
+   00003| import { before, test } from 'node:test';
+   00004| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00005| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00006| import { planChatStep } from '../../../js/agentic/planner.mjs';
+   00007| import { planCommitStep } from '../../../js/agentic/git_commit.mjs';
+   00008| import { mentionsRole } from '../../../js/agentic/write_lexicon.mjs';
+   00009| import { realm, solve } from '../../../js/agentic/host.mjs';
+   00010| import { objectType, routePlaced } from '../../../js/agentic/crate/capability_routing.mjs';
+   00011| import { EventLog, buildEvidenceLinks } from '../../../js/agentic/crate/event_log.mjs';
+   00012| before(async () => { await installNodeHost(new WorkerHost()); });
+   00013| const tools = ['bash', 'read', 'grep', 'write', 'edit'];
+   00014| const newline = String.fromCharCode(10);
+   00015| 
+   00016| test('complete commit cues own an existing-tree commit in every seeded language', async () => {
+   00017|   for (const instruction of ['Please review these changes and commit them.', 'Проверь изменения и закоммить изменения.', 'इन परिवर्तनों की समीक्षा करें और बदलाव कमिट करें।', '请检查并提交这些更改。', 'Revisa los cambios y haz commit.']) {
+   00018|     const prompt = instruction + newline + '?? Main.scala';
+   00019|     const plan = await planChatStep([{ role: 'user', content: prompt }], tools);
+   00020|     assert.equal(plan.calls[0].tool, 'bash', instruction);
+   00021|     assert.match(JSON.parse(plan.calls[0].arguments).command, /git commit/u);
+   00022|   }
+   00023| });
+   00024| 
+   00025| test('commit cue masking preserves independent authoring and token boundaries', () => {
+   00026|   for (const prompt of ['Implement a parser and haz commit.', 'Revisa haz committer y haz commit.', 'Revisa src/hazcommit.mjs y haz commit.', 'Append "haz commit" to notes.txt.']) {
+   00027|     assert.equal(planCommitStep(prompt, [{ role: 'user', content: prompt }], tools), null, prompt);
+   00028|   }
+   00029| });
+   00030| 
+   00031| test('avoidance aliases cover contracted and expanded seeded instruction forms', async () => {
+   00032|   for (const instruction of ['do not use', 'don t use', "don't use", 'don’t use']) {
+   00033|     assert.ok(mentionsRole('conversation_preference_avoid', 'please ' + instruction + ' these anymore'));
+   00034|     const result = await solve('`quick` is subjective opinion, please ' + instruction + ' these anymore.');
+   00035|     assert.equal(result.intent, 'conversation_preference');
+   00036|     assert.equal(result.answer, "Understood. I'll avoid `quick` in this dialog.");
+   00037|   }
+   00038| });
+   00039| 
+   00040| test('named transform metadata retains the original content-addressed provenance', () => {
+   00041|   for (const name of ['requirement_list', 'custom_transform']) {
+   00042|     const log = new EventLog();
+   00043|     const id = log.append('text_transform', name);
+   00044|     const links = buildEvidenceLinks('payload', log, 'response:result');
+   00045|     assert.ok(links.includes('text_transform:' + name));
+   00046|     assert.ok(links.includes('text_transform:' + id));
+   00047|   }
+   00048| });
+   00049| 
+   00050| test('proof promotion belongs to leading proof directives, not embedded test wording', () => {
+   00051|   for (const prompt of ['Prove that there are infinitely many primes.', 'Докажи что простых чисел бесконечно много.', 'साबित करो कि अभाज्य संख्याएँ अनंत हैं।', '证明素数无穷。', 'Demuestra que hay infinitos números primos.']) {
+   00052|     assert.ok(realm().solverPromotedHandlers(prompt).includes('proof_request'), prompt);
+   00053|   }
+   00054|   const prompt = 'Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto.';
+   00055|   assert.ok(!realm().solverPromotedHandlers(prompt).includes('proof_request'));
+   00056|   assert.deepEqual(routePlaced(prompt, []), { kind: 'honest_gap', needed: 'grep', missing: 'shell' });
+   00057|   assert.ok(objectType(prompt).includes('bare_term'));
+   00058| });
+   00059| 
+   
+   (End of file - total 59 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/seed-routing-ci-regressions.test.mjs","file_path":"rust/tests/web/seed-routing-ci-regressions.test.mjs","new":"Revisa src/haz-committer.mjs y haz commit.","newString":"Revisa src/haz-committer.mjs y haz commit.","new_str":"Revisa src/haz-committer.mjs y haz commit.","new_string":"Revisa src/haz-committer.mjs y haz commit.","old":"Revisa src/hazcommit.mjs y haz commit.","oldString":"Revisa src/hazcommit.mjs y haz commit.","old_str":"Revisa src/hazcommit.mjs y haz commit.","old_string":"Revisa src/hazcommit.mjs y haz commit.","path":"rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+   c2fffac6f86d58b389a804427e6cb5a4318205addc56d5509efa424d2515ba01  rust/tests/web/seed-routing-ci-regressions.test.mjs
+   
+== answer ==
+Replaced `Revisa src/hazcommit.mjs y haz commit.` with `Revisa src/haz-committer.mjs y haz commit.` in `rust/tests/web/seed-routing-ci-regressions.test.mjs` and observed the result.
+>> read {"filePath":"rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs","file_path":"rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs","path":"rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs"}
+   <file>
+   00001| use super::*;
+   00002| 
+   00003| #[test]
+   00004| fn the_claude_code_tool_set_reads_the_issue_with_gh_not_a_nested_model() {
+   00005|     let messages = vec![ChatMessage::user(prompt())];
+   00006|     let calls = calls(plan_chat_step(&messages, CLAUDE_TOOLS.as_slice()));
+   00007|     assert_eq!(calls[0].tool, "Bash", "{calls:?}");
+   00008|     assert!(
+   00009|         command_of(&calls[0]).starts_with(&format!("gh issue view '{ISSUE}'")),
+   00010|         "{calls:?}"
+   00011|     );
+   00012| }
+   00013| 
+   00014| #[test]
+   00015| fn a_fetch_only_client_gets_an_extraction_prompt_not_the_solve_request() {
+   00016|     let messages = vec![ChatMessage::user(prompt())];
+   00017|     let calls = calls(plan_chat_step(&messages, &["Write", "WebFetch"]));
+   00018|     assert_eq!(calls[0].tool, "WebFetch", "{calls:?}");
+   00019|     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+   00020|     assert_eq!(arguments["url"], ISSUE);
+   00021|     let fetch_prompt = arguments["prompt"].as_str().unwrap();
+   00022|     assert!(
+   00023|         fetch_prompt.contains("work-item title and body"),
+   00024|         "{fetch_prompt}"
+   00025|     );
+   00026|     assert!(fetch_prompt.contains("Do not solve"), "{fetch_prompt}");
+   00027|     assert_ne!(fetch_prompt, prompt());
+   00028| }
+   00029| 
+   00030| #[test]
+   00031| fn a_non_shell_run_alias_does_not_displace_the_fetch_tool() {
+   00032|     for run_alias in ["computer_use", "code_interpreter"] {
+   00033|         let messages = vec![ChatMessage::user(prompt())];
+   00034|         let calls = calls(plan_chat_step(&messages, &["Write", run_alias, "WebFetch"]));
+   00035|         assert_eq!(calls[0].tool, "WebFetch", "{run_alias}: {calls:?}");
+   00036|     }
+   00037| }
+   00038| 
+   00039| #[test]
+   00040| fn a_failed_or_empty_gh_read_falls_back_to_fetch_once() {
+   00041|     for result in ["Error: gh: repository unavailable", ""] {
+   00042|         let mut messages = vec![ChatMessage::user(prompt())];
+   00043|         let gh = calls(plan_chat_step(&messages, CLAUDE_TOOLS.as_slice()))
+   00044|             .into_iter()
+   00045|             .next()
+   00046|             .expect("gh read");
+   00047|         record(&mut messages, "gh", &gh, &gh.arguments, result);
+   00048|         let fallback = calls(plan_chat_step(&messages, CLAUDE_TOOLS.as_slice()));
+   00049|         assert_eq!(fallback[0].tool, "WebFetch", "{result:?}: {fallback:?}");
+   00050|         assert_eq!(
+   00051|             serde_json::from_str::<serde_json::Value>(&fallback[0].arguments).unwrap()["url"],
+   00052|             ISSUE
+   00053|         );
+   00054|     }
+   00055| }
+   00056| 
+   00057| #[test]
+   00058| fn a_fetch_only_client_progresses_past_the_read_without_refetching() {
+   00059|     let mut messages = vec![ChatMessage::user(prompt())];
+   00060|     let kotlin = page("Kotlin");
+   00061|     let (planned, answer) = drive(
+   00062|         &["Write", "WebFetch"],
+   00063|         &mut messages,
+   00064|         |tool, _| {
+   00065|             if tool == "WebFetch" {
+   00066|                 kotlin.clone()
+   00067|             } else {
+   00068|                 String::new()
+   00069|             }
+   00070|         },
+   00071|         12,
+   00072|     );
+   00073|     assert_eq!(
+   00074|         planned
+   00075|             .iter()
+   00076|             .filter(|call| call.tool == "WebFetch")
+   00077|             .count(),
+   00078|         1,
+   00079|         "{planned:?}"
+   00080|     );
+   00081|     assert!(
+   00082|         planned.iter().any(|call| {
+   00083|             call.tool == "Write" && path_of(call) == ".formal-ai/general-change-plan.lino"
+   00084|         }),
+   00085|         "{planned:?}"
+   00086|     );
+   00087|     assert!(answer.is_some(), "fetch-only planning must terminate");
+   00088| }
+   00089| 
+   00090| #[test]
+   00091| fn the_full_claude_code_drive_reads_builds_verifies_and_pushes_kotlin() {
+   00092|     let mut messages = vec![ChatMessage::user(prompt())];
+   00093|     let kotlin = page("Kotlin");
+   00094|     let (planned, answer) = drive(
+   00095|         CLAUDE_TOOLS.as_slice(),
+   00096|         &mut messages,
+   00097|         |tool, arguments| {
+   00098|             if is_work_item_read(tool, arguments) {
+   00099|                 kotlin.clone()
+   00100|             } else if tool == "Bash" && arguments.contains("git push") {
+   00101|                 "feed1234\n".to_owned()
+   00102|             } else if tool == "Bash" {
+   00103|                 "Hello, World!\n".to_owned()
+   00104|             } else {
+   00105|                 String::new()
+   00106|             }
+   00107|         },
+   00108|         24,
+   00109|     );
+   00110|     assert_eq!(
+   00111|         planned
+   00112|             .iter()
+   00113|             .filter(|call| is_work_item_read(&call.tool, &call.arguments))
+   00114|             .count(),
+   00115|         1,
+   00116|         "{planned:?}"
+   00117|     );
+   00118|     for path in [
+   00119|         "Main.kt",
+   00120|         "tests/verify-output.sh",
+   00121|         ".github/workflows/Main.yml",
+   00122|     ] {
+   00123|         assert!(
+   00124|             planned.iter().any(|call| path_of(call) == path),
+   00125|             "{path}: {planned:?}"
+   00126|         );
+   00127|     }
+   00128|     assert!(
+   00129|         planned
+   00130|             .iter()
+   00131|             .map(command_of)
+   00132|             .any(|command| command.contains("git push")),
+   00133|         "{planned:?}"
+   00134|     );
+   00135|     let answer = answer.expect("full Claude drive terminates");
+   00136|     assert!(answer.contains("Committed and pushed"), "{answer}");
+   00137| }
+   00138| 
+   00139| #[test]
+   00140| fn a_gh_read_does_not_count_as_literal_file_verification() {
+   00141|     let mut messages = vec![ChatMessage::user(prompt())];
+   00142|     // A `gh` read prints the title, a blank line, then the body; output
+   00143|     // without that shape is a failed read since issue #1155.
+   00144|     let objective = "Small task\n\nCreate a file note.txt containing exactly: hello";
+   00145|     let (planned, answer) = drive(
+   00146|         &["Bash", "Write"],
+   00147|         &mut messages,
+   00148|         |tool, arguments| {
+   00149|             if is_work_item_read(tool, arguments) {
+   00150|                 objective.to_owned()
+   00151|             } else if tool == "Bash" && arguments.contains("cat note.txt") {
+   00152|                 "hello\n".to_owned()
+   00153|             } else {
+   00154|                 String::new()
+   00155|             }
+   00156|         },
+   00157|         8,
+   00158|     );
+   00159|     let commands: Vec<String> = planned.iter().map(command_of).collect();
+   00160|     assert!(
+   00161|         commands
+   00162|             .iter()
+   00163|             .any(|command| command.contains("gh issue view")),
+   00164|         "{commands:?}"
+   00165|     );
+   00166|     assert!(
+   00167|         commands.iter().any(|command| command == "cat note.txt"),
+   00168|         "{commands:?}"
+   00169|     );
+   00170|     assert!(
+   00171|         answer
+   00172|             .expect("literal file drive terminates")
+   00173|             .contains("Created and verified"),
+   00174|         "{planned:?}"
+   00175|     );
+   00176| }
+   00177| 
+   00178| #[test]
+   00179| fn pull_request_fetch_prompts_for_the_description_not_an_issue_body() {
+   00180|     let request = format!(
+   00181|         "Resolve the GitHub pull request at {PR} in this repository.\nImplement and verify the solution before reporting completion."
+   00182|     );
+   00183|     let messages = vec![ChatMessage::user(request)];
+   00184|     let calls = calls(plan_chat_step(&messages, &["Write", "WebFetch"]));
+   00185|     assert_eq!(calls[0].tool, "WebFetch", "{calls:?}");
+   00186|     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+   00187|     assert_eq!(arguments["url"], PR);
+   00188|     assert!(
+   00189|         arguments["prompt"]
+   00190|             .as_str()
+   00191|             .unwrap()
+   00192|             .contains("pull request, the body is its description"),
+   00193|         "{arguments}"
+   00194|     );
+   00195| }
+   00196| 
+   00197| #[test]
+   00198| fn a_fetch_the_harness_echoed_without_its_url_is_not_planned_again() {
+   00199|     // Before the fix the harness echoed `{"target":""}` for the click and the
+   00200|     // planner, finding no `url` in it, planned the same fetch forever.
+   00201|     let mut messages = vec![ChatMessage::user(prompt())];
+   00202|     let click = PlannedToolCall {
+   00203|         tool: "mcp__playwright__browser_click".to_owned(),
+   00204|         arguments: String::new(),
+   00205|     };
+   00206|     let error =
+   00207|         "Error: browserBackend.callTool: Unexpected token \"\" while parsing css selector \"\".";
+   00208|     record(&mut messages, "c0", &click, "{\"target\":\"\"}", error);
+   00209|     record(&mut messages, "c1", &click, "{\"target\":\"\"}", error);
+   00210|     let tools = [
+   00211|         "Bash",
+   00212|         "Write",
+   00213|         "mcp__playwright__browser_click",
+   00214|         "mcp__playwright__browser_navigate",
+   00215|     ];
+   00216|     match plan_chat_step(&messages, tools.as_slice()) {
+   00217|         Some(AgenticPlan::ToolCalls(calls)) => {
+   00218|             assert!(
+   00219|                 calls
+   00220|                     .iter()
+   00221|                     .all(|call| !call.tool.starts_with("mcp__playwright__")),
+   00222|                 "a browser tool is not a fetch tool: {calls:?}"
+   00223|             );
+   00224|         }
+   00225|         Some(AgenticPlan::Final(_)) | None => {}
+   00226|     }
+   00227| }
+   00228| 
+   00229| #[test]
+   00230| fn a_tool_that_failed_twice_with_the_same_report_is_not_called_a_third_time() {
+   00231|     let mut messages = vec![ChatMessage::user(prompt())];
+   00232|     let fetch = PlannedToolCall {
+   00233|         tool: "WebFetch".to_owned(),
+   00234|         arguments: format!("{{\"url\":\"{ISSUE}\",\"format\":\"text\"}}"),
+   00235|     };
+   00236|     let error = "Error: fetch failed: connect ECONNREFUSED";
+   00237|     record(&mut messages, "c0", &fetch, &fetch.arguments, error);
+   00238|     record(&mut messages, "c1", &fetch, &fetch.arguments, error);
+   00239|     match plan_chat_step(&messages, CLAUDE_TOOLS.as_slice()) {
+   00240|         Some(AgenticPlan::ToolCalls(calls)) => {
+   00241|             assert!(
+   00242|                 calls.iter().all(|call| call.tool != "WebFetch"),
+   00243|                 "{calls:?}"
+   00244|             );
+   00245|         }
+   00246|         Some(AgenticPlan::Final(answer)) => {
+   00247|             assert!(!answer.contains("Created and verified"), "{answer}");
+   00248|         }
+   00249|         None => panic!("the work item still has a plan after a failed read"),
+   00250|     }
+   00251| }
+   00252| 
+   00253| // ---- F2 + F3: the Scala run ----------------------------------------------
+   00254| 
+   00255| #[test]
+   00256| fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified() {
+   00257|     let mut messages = vec![ChatMessage::user(prompt())];
+   00258|     let scala = page("Scala");
+   00259|     let (planned, answer) = drive(
+   00260|         AGENT_TOOLS.as_slice(),
+   00261|         &mut messages,
+   00262|         |tool, arguments| match tool {
+   00263|             _ if is_work_item_read(tool, arguments) => scala.clone(),
+   00264|             // The Agent CLI hands the model the process text only; `exit: 127`
+   00265|             // stays in metadata it never sends.
+   00266|             "bash" => "/bin/sh: 1: scalac: not found\n".to_owned(),
+   00267|             _ => String::new(),
+   00268|         },
+   00269|         8,
+   00270|     );
+   00271|     let answer = answer.expect("the run must end in a final answer");
+   00272|     assert!(
+   00273|         planned
+   00274|             .iter()
+   00275|             .any(|call| call.tool == "write" && path_of(call) == "Main.scala"),
+   00276|         "{planned:?}"
+   00277|     );
+   00278|     assert!(!answer.contains("Created and verified"), "{answer}");
+   00279|     assert!(
+   00280|         answer.contains("scalac Main.scala") && answer.contains("not found"),
+   00281|         "{answer}"
+   00282|     );
+   00283| }
+   00284| 
+   00285| #[test]
+   00286| fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
+   00287|     let mut messages = vec![ChatMessage::user(prompt())];
+   00288|     let scala = page("Scala");
+   00289|     let (planned, answer) = drive(
+   00290|         AGENT_TOOLS.as_slice(),
+   00291|         &mut messages,
+   00292|         |tool, arguments| match tool {
+   00293|             _ if is_work_item_read(tool, arguments) => scala.clone(),
+   00294|             "bash" if arguments.contains("git push") => "abc123def\n".to_owned(),
+   00295|             "bash" if arguments.contains("scala Main") => "Hello, World!\n".to_owned(),
+   00296|             _ => String::new(),
+   00297|         },
+   00298|         10,
+   00299|     );
+   00300|     let commit = planned
+   00301|         .iter()
+   00302|         .map(command_of)
+   00303|         .find(|command| command.starts_with("git add --") && command.contains("git commit --only"))
+   00304|         .expect("the recipe ends with a commit step");
+   00305|     assert!(
+   00306|         commit.contains(&format!("git push -q origin '{BRANCH}'")),
+   00307|         "{commit}"
+   00308|     );
+   00309|     assert!(
+   00310|         commit.contains("feat: add Main.scala") && commit.contains(ISSUE),
+   00311|         "{commit}"
+   00312|     );
+   00313|     let answer = answer.expect("final answer");
+   00314|     assert!(
+   00315|         answer.contains("Committed and pushed") && answer.contains("abc123def"),
+   00316|         "{answer}"
+   00317|     );
+   00318|     // The verification commands come before the commit, never after it.
+   00319|     let commands: Vec<String> = planned
+   00320|         .iter()
+   00321|         .map(command_of)
+   00322|         .filter(|c| !c.is_empty())
+   00323|         .collect();
+   00324|     assert_eq!(
+   00325|         commands
+   00326|             .last()
+   00327|             .map(String::as_str)
+   00328|             .map(|c| c.starts_with("git add")),
+   00329|         Some(true),
+   00330|         "{commands:?}"
+   00331|     );
+   00332| }
+   00333| 
+   00334| #[test]
+   00335| fn a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands() {
+   00336|     let mut messages = vec![ChatMessage::user(prompt())];
+   00337|     let scala = page("Scala");
+   00338|     let (planned, _) = drive(
+   00339|         AGENT_TOOLS.as_slice(),
+   00340|         &mut messages,
+   00341|         |tool, arguments| {
+   00342|             if is_work_item_read(tool, arguments) {
+   00343|                 scala.clone()
+   00344|             } else {
+   00345|                 "Hello, World!\n".to_owned()
+   00346|             }
+   00347|         },
+   00348|         10,
+   00349|     );
+   00350|     let workflow = planned
+   00351|         .iter()
+   00352|         .find(|call| call.tool == "write" && path_of(call).starts_with(".github/workflows/"))
+   00353|         .expect("the workflow is written beside the program");
+   00354|     assert!(
+   00355|         workflow.arguments.contains("pull_request")
+   00356|             && workflow.arguments.contains("scalac Main.scala"),
+   00357|         "{workflow:?}"
+   00358|     );
+   00359| }
+   00360| 
+   00361| #[test]
+   00362| fn a_request_to_commit_the_tree_is_a_git_step_not_a_web_search() {
+   00363|     let restart = "🔄 Auto-restart: resume the previous session and handle its uncommitted changes.\n\nUncommitted files (1):\n?? Main.scala\n\nChanges summary:\nNo tracked-file diff summary available.\n\nPlease review these changes and commit them with an appropriate commit message.\nFollow the repository's commit message conventions from previous commits.";
+   00364|     let messages = vec![ChatMessage::user(restart)];
+   00365|     let calls = calls(plan_chat_step(&messages, AGENT_TOOLS.as_slice()));
+   00366|     assert_eq!(calls[0].tool, "bash", "{calls:?}");
+   00367|     let command = command_of(&calls[0]);
+   00368|     assert!(
+   00369|         command.starts_with("git add -A && git commit -q -m 'feat: add Main.scala'"),
+   00370|         "{command}"
+   00371|     );
+   00372|     assert!(command.contains("git push -q origin HEAD"), "{command}");
+   00373| }
+   00374| 
+   00375| // ---- F4: the Rust run -----------------------------------------------------
+   00376| 
+   00377| #[test]
+   00378| fn codex_reads_the_issue_through_gh_when_the_only_fetch_tool_is_a_remote_connector() {
+   00379|     let messages = vec![ChatMessage::user(prompt())];
+   00380|     let calls = calls(plan_chat_step(&messages, CODEX_TOOLS.as_slice()));
+   00381|     assert_eq!(calls[0].tool, "shell", "{calls:?}");
+   00382|     let command = command_of(&calls[0]);
+   00383|     assert!(
+   00384|         command.starts_with(&format!("gh issue view '{ISSUE}' --json title")),
+   00385|         "{command}"
+   00386|     );
+   00387| }
+   00388| 
+   00389| #[test]
+   00390| fn codex_plans_the_work_item_and_never_narrates_the_connector_placeholder() {
+   00391|     let mut messages = vec![ChatMessage::user(prompt().replace("Scala", "Rust"))];
+   00392|     let rust = page("Rust");
+   00393|     let (planned, answer) = drive(
+   00394|         CODEX_TOOLS.as_slice(),
+   00395|         &mut messages,
+   00396|         |tool, arguments| match tool {
+   00397|             "shell" if arguments.contains("gh issue view") => rust.clone(),
+   00398|             "shell" if arguments.contains("git push") => "0123abcd\n".to_owned(),
+   00399|             "shell" => "Hello, World!\n".to_owned(),
+   00400|             _ => String::new(),
+   00401|         },
+   00402|         10,
+   00403|     );
+   00404|     assert!(
+   00405|         planned.iter().any(|call| call.tool == "apply_patch"),
+   00406|         "{planned:?}"
+   00407|     );
+   00408|     let answer = answer.expect("final answer");
+   00409|     assert!(!answer.contains("command completed. Output"), "{answer}");
+   00410|     assert!(answer.contains("Committed and pushed"), "{answer}");
+   00411| }
+   00412| 
+   00413| #[test]
+   00414| fn a_connector_result_keeps_its_structured_content() {
+   00415|     // The connector answered `Action completed.` in `content` and the issue in
+   00416|     // `structuredContent`; the issue is what the planner reads.
+   00417|     let mut messages = vec![ChatMessage::user(prompt().replace("Scala", "Rust"))];
+   00418|     let fetch = PlannedToolCall {
+   00419|         tool: "mcp__codex_apps__github_fetch".to_owned(),
+   00420|         arguments: format!("{{\"url\":\"{ISSUE}\"}}"),
+   00421|     };
+   00422|     let envelope = "{\"content\":[{\"type\":\"text\",\"text\":\"Action completed.\"}],\"structuredContent\":{\"content\":\"{\\\"number\\\":1,\\\"title\\\":\\\"Implement Hello World in Rust\\\",\\\"body\\\":\\\"## Task\\\\nPlease implement a Hello World program in Rust.\\\"}\"}}";
+   00423|     record(&mut messages, "c0", &fetch, &fetch.arguments, envelope);
+   00424|     let tools = ["write", "bash", "mcp__codex_apps__github_fetch"];
+   00425|     let calls = calls(plan_chat_step(&messages, tools.as_slice()));
+   00426|     assert_eq!(calls[0].tool, "write", "{calls:?}");
+   00427|     assert!(calls[0].arguments.contains("fn main()"), "{calls:?}");
+   00428| }
+   00429| 
+   00430| // ---- F5: the harness summary envelope ------------------------------------
+   00431| 
+   00432| #[test]
+   00433| fn a_text_to_summarize_envelope_is_summarized_never_executed() {
+   00434|     let envelope = format!(
+   00435|         "\n              The following is the text to summarize:\n              <text>\n              {}              </text>\n            ",
+   00436|         prompt()
+   00437|     );
+   00438|     let messages = vec![ChatMessage::user(envelope)];
+   00439|     let summary = final_text(plan_chat_step(&messages, AGENT_TOOLS.as_slice()));
+   00440|     assert_eq!(
+   00441|         summary,
+   00442|         format!("Resolve the GitHub issue at {ISSUE} in this repository.")
+   00443|     );
+   00444| }
+   00445| 
+   00446| // ---- F6: #1115 / #1116 ------------------------------------------------------
+   00447| 
+   00448| #[test]
+   00449| fn an_additive_edit_composes_to_an_edit_of_its_anchor_line() {
+   00450|     let (target, old, new) = compose_edit_request(
+   00451|         "Edit the tracked file self-development-status.yml: add a line \"  pull_request:\" directly after the line \"on:\"",
+   00452|     )
+   00453|     .expect("an additive edit composes");
+   00454|     assert_eq!(target, "self-development-status.yml");
+   00455|     assert_eq!(old, "on:");
+   00456|     assert_eq!(new, "on:\n  pull_request:");
+   00457| }
+   00458| 
+   00459| #[test]
+   00460| fn an_escaped_newline_in_edit_prose_is_a_newline() {
+   00461|     let (_, old, new) = compose_edit_request(
+   00462|         "In the file self-development-status.yml replace \"  schedule:\" with \"  pull_request:\\n  schedule:\"",
+   00463|     )
+   00464|     .expect("a replacement composes");
+   00465|     assert_eq!(old, "  schedule:");
+   00466|     assert_eq!(new, "  pull_request:\n  schedule:");
+   00467| }
+   00468| 
+   00469| #[test]
+   00470| fn an_edit_instruction_is_never_routed_to_web_search() {
+   00471|     let messages = vec![ChatMessage::user(
+   00472|         "Edit the tracked file self-hosting-attribution.rs: add \"Gemfile.lock\" to the LOCKFILE_NAMES list.",
+   00473|     )];
+   00474|     if let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, AGENT_TOOLS.as_slice()) {
+   00475|         assert!(
+   00476|             calls
+   00477|                 .iter()
+   00478|                 .all(|call| call.tool != "websearch" && call.tool != "webfetch"),
+   00479|             "{calls:?}"
+   00480|         );
+   00481|     }
+   00482| }
+   00483| 
+   00484| // ---- The seeded words, in every registered language ------------------------
+   00485| 
+   00486| /// A request to commit, in each language: English, Russian, Hindi, Chinese,
+   00487| /// Spanish. Each is a git step.
+   00488| #[test]
+   00489| fn a_commit_request_is_a_git_step_in_every_language() {
+   00490|     let requests = [
+   00491|         (
+   00492|             "english",
+   00493|             "Please review these changes and commit them.\n?? Main.scala",
+   00494|         ),
+   00495|         (
+   00496|             "russian",
+   00497|             "Проверь изменения и закоммить изменения.\n?? Main.scala",
+   00498|         ),
+   00499|         (
+   00500|             "hindi",
+   00501|             "इन परिवर्तनों की समीक्षा करें और बदलाव कमिट करें।\n?? Main.scala",
+   00502|         ),
+   00503|         ("chinese", "请检查并提交这些更改。\n?? Main.scala"),
+   00504|         ("spanish", "Revisa los cambios y haz commit.\n?? Main.scala"),
+   00505|     ];
+   00506|     for (language, request) in requests {
+   00507|         let messages = vec![ChatMessage::user(request)];
+   00508|         let calls = calls(plan_chat_step(&messages, AGENT_TOOLS.as_slice()));
+   00509|         assert_eq!(calls[0].tool, "bash", "{language}: {calls:?}");
+   00510|         assert!(
+   00511|             command_of(&calls[0]).contains("git commit"),
+   00512|             "{language}: {calls:?}"
+   00513|         );
+   00514|     }
+   00515| }
+   00516| 
+   00517| /// The branch cue in each language names where the work item is pushed.
+   00518| #[test]
+   00519| fn the_named_branch_is_pushed_to_in_every_language() {
+   00520|     let prompts = [
+   00521|         (
+   00522|             "english",
+   00523|             format!(
+   00524|                 "Resolve the GitHub issue at {ISSUE} in this repository.\nKeep the solution on branch {BRANCH}."
+   00525|             ),
+   00526|         ),
+   00527|         (
+   00528|             "russian",
+   00529|             format!(
+   00530|                 "Реши задачу GitHub {ISSUE} в этом репозитории.\nДержи решение в ветке {BRANCH}."
+   00531|             ),
+   00532|         ),
+   00533|         (
+   00534|             "hindi",
+   00535|             format!("इस रिपॉज़िटरी में GitHub इश्यू {ISSUE} को हल करें।\nसमाधान को शाखा {BRANCH} पर रखें।"),
+   00536|         ),
+   00537|         (
+   00538|             "chinese",
+   00539|             format!("在此仓库中解决 GitHub 问题 {ISSUE}。\n将解决方案保留在分支 {BRANCH} 上。"),
+   00540|         ),
+   00541|         (
+   00542|             "spanish",
+   00543|             format!(
+   00544|                 "Resuelve el issue de GitHub {ISSUE} en este repositorio.\nMantén la solución en la rama {BRANCH}."
+   00545|             ),
+   00546|         ),
+   00547|     ];
+   00548|     let scala = page("Scala");
+   00549|     for (language, request) in prompts {
+   00550|         let mut messages = vec![ChatMessage::user(request)];
+   00551|         let (planned, _) = drive(
+   00552|             AGENT_TOOLS.as_slice(),
+   00553|             &mut messages,
+   00554|             |tool, arguments| {
+   00555|                 if is_work_item_read(tool, arguments) {
+   00556|                     scala.clone()
+   00557|                 } else {
+   00558|                     "Hello, World!\n".to_owned()
+   00559|                 }
+   00560|             },
+   00561|             10,
+   00562|         );
+   00563|         let commit = planned
+   00564|             .iter()
+   00565|             .map(command_of)
+   00566|             .find(|command| {
+   00567|                 command.starts_with("git add --") && command.contains("git commit --only")
+   00568|             })
+   00569|             .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
+   00570|         assert!(
+   00571|             commit.contains(&format!("git push -q origin '{BRANCH}'")),
+   00572|             "{language}: {commit}"
+   00573|         );
+   00574|     }
+   00575| }
+   00576| 
+   00577| /// A workflow requirement in each language adds the workflow file.
+   00578| #[test]
+   00579| fn a_workflow_requirement_adds_the_workflow_in_every_language() {
+   00580|     let bodies = [
+   00581|         (
+   00582|             "english",
+   00583|             "Please implement a Hello World program in Scala. Create a GitHub Actions workflow that runs it.",
+   00584|         ),
+   00585|         (
+   00586|             "russian",
+   00587|             "Реализуй программу Hello World на Scala. Создай рабочий процесс GitHub Actions, который её запускает.",
+   00588|         ),
+   00589|         (
+   00590|             "hindi",
+   00591|             "Scala में Hello World प्रोग्राम लागू करें। एक GitHub Actions वर्कफ़्लो बनाएँ जो उसे चलाए।",
+   00592|         ),
+   00593|         (
+   00594|             "chinese",
+   00595|             "请用 Scala 实现 Hello World 程序。创建一个运行它的 GitHub Actions 工作流。",
+   00596|         ),
+   00597|         (
+   00598|             "spanish",
+   00599|             "Implementa un programa Hello World en Scala. Crea un flujo de trabajo de GitHub Actions que lo ejecute.",
+   00600|         ),
+   00601|     ];
+   00602|     for (language, body) in bodies {
+   00603|         let mut messages = vec![ChatMessage::user(prompt())];
+   00604|         let (planned, _) = drive(
+   00605|             AGENT_TOOLS.as_slice(),
+   00606|             &mut messages,
+   00607|             |tool, arguments| {
+   00608|                 if is_work_item_read(tool, arguments) {
+   00609|                     body.to_owned()
+   00610|                 } else {
+   00611|                     "Hello, World!\n".to_owned()
+   00612|                 }
+   00613|             },
+   00614|             10,
+   00615|         );
+   00616|         assert!(
+   00617|             planned
+   00618|                 .iter()
+   00619|                 .any(|call| call.tool == "write" && path_of(call).starts_with(".github/workflows/")),
+   00620|             "{language}: {planned:?}"
+   00621|         );
+   00622|     }
+   00623| }
+   00624| 
+   00625| /// The position cues in each language place the new line after or before its
+   00626| /// anchor.
+   00627| #[test]
+   00628| fn positional_inserts_compose_in_every_language() {
+   00629|     let after = [
+   00630|         (
+   00631|             "english",
+   00632|             "In config.yml add the line \"  pull_request:\" directly after the line \"on:\"",
+   00633|         ),
+   00634|         (
+   00635|             "russian",
+   00636|             "В файле config.yml добавь строку \"  pull_request:\" сразу после строки \"on:\"",
+   00637|         ),
+   00638|         (
+   00639|             "hindi",
+   00640|             "config.yml में पंक्ति \"on:\" के बाद \"  pull_request:\" जोड़ें",
+   00641|         ),
+   00642|         (
+   00643|             "chinese",
+   00644|             "在 config.yml 中，在 \"on:\" 行后添加 \"  pull_request:\"",
+   00645|         ),
+   00646|         (
+   00647|             "spanish",
+   00648|             "En config.yml añade la línea \"  pull_request:\" justo después de la línea \"on:\"",
+   00649|         ),
+   00650|     ];
+   00651|     for (language, request) in after {
+   00652|         let (target, old, new) =
+   00653|             compose_edit_request(request).unwrap_or_else(|| panic!("{language}: {request}"));
+   00654|         assert_eq!(target, "config.yml", "{language}");
+   00655|         assert_eq!(old, "on:", "{language}");
+   00656|         assert!(
+   00657|             new == "on:\n  pull_request:" || new == "  pull_request:\non:",
+   00658|             "{language}: {new:?}"
+   00659|         );
+   00660|     }
+   00661|     let before = [
+   00662|         (
+   00663|             "english",
+   00664|             "In config.yml insert \"# generated\" right before the line \"on:\"",
+   00665|         ),
+   00666|         (
+   00667|             "russian",
+   00668|             "В файле config.yml вставь \"# generated\" прямо перед строкой \"on:\"",
+   00669|         ),
+   00670|         (
+   00671|             "spanish",
+   00672|             "En config.yml inserta \"# generated\" justo antes de la línea \"on:\"",
+   00673|         ),
+   00674|     ];
+   00675|     for (language, request) in before {
+   00676|         let (_, old, new) =
+   00677|             compose_edit_request(request).unwrap_or_else(|| panic!("{language}: {request}"));
+   00678|         assert_eq!(old, "on:", "{language}");
+   00679|         assert_eq!(new, "# generated\non:", "{language}");
+   00680|     }
+   00681| }
+   00682| 
+   00683| #[test]
+   00684| fn commit_cue_masking_preserves_independent_authoring_and_word_boundaries() {
+   00685|     for request in [
+   00686|         "Implement a parser and haz commit.",
+   00687|         "Revisa haz committer y haz commit.",
+   00688|         "Revisa src/hazcommit.mjs y haz commit.",
+   00689|         "Append \"haz commit\" to notes.txt.",
+   00690|     ] {
+   00691|         let messages = vec![ChatMessage::user(request)];
+   00692|         let planned = calls(plan_chat_step(&messages, AGENT_TOOLS.as_slice()));
+   00693|         assert!(planned.iter().all(|call| {
+   00694|             call.tool != "bash" || !command_of(call).contains("git commit")
+   00695|         }), "{request}: {planned:?}");
+   00696|     }
+   00697| }
+   00698| 
+   
+   (End of file - total 698 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs","file_path":"rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs","new":"Revisa src/haz-committer.mjs y haz commit.","newString":"Revisa src/haz-committer.mjs y haz commit.","new_str":"Revisa src/haz-committer.mjs y haz commit.","new_string":"Revisa src/haz-committer.mjs y haz commit.","old":"Revisa src/hazcommit.mjs y haz commit.","oldString":"Revisa src/hazcommit.mjs y haz commit.","old_str":"Revisa src/hazcommit.mjs y haz commit.","old_string":"Revisa src/hazcommit.mjs y haz commit.","path":"rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs"}
+   3e24832507bc4da0024d8716d9d1294f5bd9d46edb56c3782b560fb2977a3cf3  rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs
+   
+== answer ==
+Replaced `Revisa src/hazcommit.mjs y haz commit.` with `Revisa src/haz-committer.mjs y haz commit.` in `rust/tests/unit/issue_1133_hive_mind_three_runs/extended.rs` and observed the result.

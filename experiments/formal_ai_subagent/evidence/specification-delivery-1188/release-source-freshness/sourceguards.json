@@ -1,0 +1,18 @@
+[
+  {
+    "path": "scripts/version-and-commit.rs",
+    "sha256": "335fa92f6ddf437346bb49ce0f341eeb74ea9f8a059bcd87ff3e45ad5e9ae8e9"
+  },
+  {
+    "path": "scripts/resolve-package-release.mjs",
+    "sha256": "ca6cc146c3b11feca5f3fe260fe179b46d507cfacde2b3d6471cc6c51962ab00"
+  },
+  {
+    "path": ".github/workflows/release.yml",
+    "sha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253"
+  },
+  {
+    "path": "rust/tests/web/release-stage-transfer.test.mjs",
+    "sha256": "169f758848bb2f60c67b52f8d174b5b3e2b7ab940a4ab6ebff224ebaa623ba38"
+  }
+]

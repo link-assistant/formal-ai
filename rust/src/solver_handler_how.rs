@@ -4,7 +4,7 @@
 use crate::concepts::{extract_concept_query, lookup_concept_query};
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
-use crate::language::{Language, detect as detect_language};
+use crate::language::detect as detect_language;
 use crate::seed;
 use crate::solver_handlers::{finalize_simple, try_concept_lookup};
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
@@ -32,11 +32,16 @@ struct SpellingCorrection {
 /// same discovery plan that the browser worker can execute: local
 /// decomposition first, Wikimedia/wikiHow candidates next, then web search
 /// and recursive fetch checks only as the fallback path.
+/// A request the legality catalogue flags is declined, so `legality_warning`
+/// answers it even when the `procedural_how_to` promotion hoisted this row.
 pub fn try_how_to_procedure(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if crate::legality_warning::assess(prompt, normalized).is_some() {
+        return None;
+    }
     let task = extract_procedural_how_to_task(normalized)?;
     for correction in &task.corrections {
         log.append(
@@ -45,7 +50,11 @@ pub fn try_how_to_procedure(
         );
     }
     let is_install_procedure = task.action == "install";
-    let fallback_query = format!("how to {}", task.task);
+    let fallback_query = how_policy(
+        "procedural_how_to",
+        "fallback-query",
+        &[("task", &task.task)],
+    );
     let search_query = procedural_search_query(&task);
     let wikihow_candidate = wikihow_page_title(&task.task);
     let wikihow_api_url = format!(
@@ -116,7 +125,7 @@ pub fn try_how_to_procedure(
         &search_query,
         &fallback_query,
         &provider_summary,
-        detect_language(prompt),
+        detect_language(prompt).slug(),
     );
 
     Some(finalize_simple(
@@ -219,7 +228,7 @@ pub fn try_how_it_works(
             "followup:subject",
             format!("inline:{}", term.to_lowercase()),
         );
-        let concept_prompt = format!("what is {term}");
+        let concept_prompt = how_policy("how_it_works", "concept-query", &[("term", term)]);
         if let Some(concept_query) = extract_concept_query(&concept_prompt)
             && lookup_concept_query(&concept_query).is_some()
         {
@@ -227,7 +236,7 @@ pub fn try_how_it_works(
             return try_concept_lookup(&concept_prompt, log);
         }
         record_mechanism_query(log, term);
-        let body = render_mechanism_discovery_answer(term, detect_language(prompt));
+        let body = render_mechanism_discovery_answer(term, detect_language(prompt).slug());
         return Some(finalize_simple(
             prompt,
             log,
@@ -245,19 +254,16 @@ pub fn try_how_it_works(
         // (typically the term in "Term (category): …" format).
         if let Some(term) = extract_topic_from_prior_reply(&prior) {
             use crate::concepts::{extract_concept_query, lookup_concept_query};
-            if let Some(query) = extract_concept_query(&format!("what is {term}"))
+            let concept_prompt = how_policy("how_it_works", "concept-query", &[("term", &term)]);
+            if let Some(query) = extract_concept_query(&concept_prompt)
                 && lookup_concept_query(&query).is_some()
             {
                 log.append("followup:subject", format!("prior_reply:{term}"));
-                return try_concept_lookup(&format!("what is {term}"), log);
+                return try_concept_lookup(&concept_prompt, log);
             }
             // Topic is known from history but not in the concept corpus —
             // return a helpful explanation that names the topic.
-            let body = format!(
-                "To explain how {term} works: I know the term from the prior conversation \
-                 but do not have a detailed symbolic rule for it yet. Add a Links Notation \
-                 fact with the mechanism description, then ask again."
-            );
+            let body = how_response("how_it_works_prior_topic", "en", &[("term", &term)]);
             log.append("followup:subject", format!("prior_reply_no_record:{term}"));
             return Some(finalize_simple(
                 prompt,
@@ -270,13 +276,12 @@ pub fn try_how_it_works(
         }
     }
 
-    // No context at all — route to meta_explanation.
-    let body = String::from(
-        "I answered that way because the prompt matched a deterministic Links Notation rule. \
-         To ask about a specific topic, try \"how does X work?\" where X is a concept I know \
-         (e.g. \"how does Wikipedia work?\"). The evidence and trace events are appended to \
-         the log; see the trace link for the full chain.",
+    // No context at all — route to meta_explanation, the claim row's refusal lane.
+    log.append(
+        "how_it_works:refusal",
+        "no subject and no prior reply".to_owned(),
     );
+    let body = how_response("how_it_works_no_context", "en", &[]);
     Some(finalize_simple(
         prompt,
         log,
@@ -299,6 +304,20 @@ fn extract_how_it_works_query(prompt: &str, _normalized: &str) -> Option<HowItWo
     extract_how_it_works_subject(&original, &lower).map(|subject| HowItWorksQuery {
         subject: Some(subject),
     })
+}
+
+/// Whether the mechanism question names its subject.
+///
+/// The `mechanism_subject` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_mechanism_subject(prompt: &str) -> bool {
+    mechanism_subject_term(prompt).is_some()
+}
+
+/// The subject a mechanism question names, if any.
+#[must_use]
+pub fn mechanism_subject_term(prompt: &str) -> Option<String> {
+    extract_how_it_works_query(prompt, "").and_then(|query| query.subject)
 }
 
 /// Is `lower` a bare "how it works" form — a fixed phrase carrying no subject?
@@ -470,7 +489,10 @@ fn record_mechanism_query(log: &mut EventLog, subject: &str) {
     for stage in ["wikipedia", "wikidata", "web_search"] {
         log.append("mechanism_query:stage", stage.to_owned());
     }
-    log.append("web_search:request", format!("how {subject} works"));
+    log.append(
+        "web_search:request",
+        how_policy("how_it_works", "mechanism_query", &[("subject", subject)]),
+    );
     for provider in WEB_SEARCH_PROVIDERS {
         log.append("web_search:provider_planned", (*provider).to_owned());
     }
@@ -484,44 +506,13 @@ fn record_mechanism_query(log: &mut EventLog, subject: &str) {
     );
 }
 
-fn render_mechanism_discovery_answer(subject: &str, language: Language) -> String {
-    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
-    match language {
-        Language::Russian => format!(
-            "План поиска механизма для `{subject}`.\n\n\
-             Я не отвечаю на это из зашитого факта. Решатель трактует запрос \
-             как вопрос о том, как устроен или работает `{subject}`: сначала \
-             проверяет Wikipedia для обзорного источника, затем Wikidata для \
-             связей сущности, затем веб-поиск через {provider_summary}. Если \
-             источники не объясняют механизм, ответ должен попросить источник \
-             или более узкий термин, а не выдумывать детали."
-        ),
-        Language::Hindi => format!(
-            "`{subject}` के लिए mechanism discovery plan.\n\n\
-             I do not answer this from a memoized fact. The solver treats the \
-             prompt as a question about how `{subject}` works, checks Wikipedia \
-             for a source-backed overview, Wikidata for entity relationships, \
-             then web search across {provider_summary}. If no source explains \
-             the mechanism, it should ask for a source or a narrower term."
-        ),
-        Language::Chinese => format!(
-            "`{subject}` 的机制发现计划。\n\n\
-             I do not answer this from a memoized fact. The solver treats the \
-             prompt as a question about how `{subject}` works, checks Wikipedia \
-             for a source-backed overview, Wikidata for entity relationships, \
-             then web search across {provider_summary}. If no source explains \
-             the mechanism, it should ask for a source or a narrower term."
-        ),
-        _ => format!(
-            "Mechanism discovery plan for `{subject}`.\n\n\
-             I do not answer this from a memoized fact. The solver treats the \
-             prompt as a question about how `{subject}` works, checks Wikipedia \
-             for a source-backed overview, Wikidata for entity relationships, \
-             then web search across {provider_summary}. If no source explains \
-             the mechanism, it should ask for a source or a narrower term \
-             instead of inventing details."
-        ),
-    }
+fn render_mechanism_discovery_answer(subject: &str, language: &str) -> String {
+    let providers = WEB_SEARCH_PROVIDERS.join(", ");
+    how_response(
+        "how_it_works",
+        language,
+        &[("providers", &providers), ("subject", subject)],
+    )
 }
 
 /// Detect a procedural "how to X" request and split it into task/action/object.
@@ -592,9 +583,13 @@ fn procedural_search_query(task: &ProceduralHowToTask) -> String {
         } else {
             task.object.as_str()
         };
-        return format!("{target} install official documentation");
+        return how_policy("procedural_how_to", "install-query", &[("target", target)]);
     }
-    format!("how to {}", task.task)
+    how_policy(
+        "procedural_how_to",
+        "fallback-query",
+        &[("task", &task.task)],
+    )
 }
 
 fn split_known_procedural_action_object(task: &str) -> Option<(String, String)> {
@@ -749,146 +744,52 @@ fn render_procedural_how_to_body(
     search_query: &str,
     fallback_query: &str,
     provider_summary: &str,
-    language: Language,
+    language: &str,
 ) -> String {
-    let is_install_procedure = task.action == "install";
-    match language {
-        Language::Russian => {
-            let official_docs_gate = if is_install_procedure {
-                format!(
-                    "Для задач установки первый source gate ищет официальную \
-                     документацию продукта или официальную страницу установки в \
-                     репозитории, а уже потом переходит к общим how-to источникам. \
-                     Он начинает с web search запроса `{search_query}` и держит \
-                     общий how-to запрос `{fallback_query}` как fallback. "
-                )
-            } else {
-                String::new()
-            };
-            format!(
-                "План поиска процедуры для `{}` (действие `{}`, объект `{}`).\n\n\
-             {}Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет \
-             Wikipedia для контекста темы и Wikidata для подсказок сущности, действия \
-             и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow \
-             для кандидата `{}` через `{}`. Если эти источники не дают пригодные шаги, \
-             fallback запускает web search по `{}` через {} и объединяет верхние \
-             результаты reciprocal rank fusion (k = {}). Финальная recursive fetch \
-             check принимает только страницы с явными упорядоченными или \
-             инструкционными шагами для `{}`.",
-                task.task,
-                task.action,
-                task.object,
-                official_docs_gate,
-                wikihow_candidate,
-                wikihow_api_url,
-                search_query,
-                provider_summary,
-                WEB_SEARCH_RRF_K,
-                task.task,
-            )
-        }
-        Language::Hindi => {
-            let official_docs_gate = if is_install_procedure {
-                format!(
-                    "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक \
-                     documentation या official repository install page को प्राथमिकता \
-                     देता है; उसके बाद ही community how-to sources देखे जाते हैं. \
-                     Solver official-source web search query `{search_query}` \
-                     पहले चलाता है और general how-to query `{fallback_query}` \
-                     को fallback रखता है. "
-                )
-            } else {
-                String::new()
-            };
-            format!(
-                "`{}` के लिए procedural discovery plan (action `{}`, object `{}`).\n\n\
-                 {}मैं इसे memorized recipe से answer नहीं करता. Solver पहले topic \
-                 context के लिए Wikipedia और entity/action/object hints के लिए \
-                 Wikidata जांचता है. फिर वह candidate `{}` के लिए wikiHow का \
-                 CORS-readable MediaWiki parse API `{}` से आजमाता है. अगर ये \
-                 sources usable steps नहीं देते, fallback `{}` के लिए {} पर \
-                 web search चलाता है और top results को reciprocal rank fusion \
-                 (k = {}) से merge करता है. अंतिम recursive fetch check केवल \
-                 उन pages को स्वीकार करता है जिनमें `{}` के explicit ordered \
-                 या instructional steps हों.",
-                task.task,
-                task.action,
-                task.object,
-                official_docs_gate,
-                wikihow_candidate,
-                wikihow_api_url,
-                search_query,
-                provider_summary,
-                WEB_SEARCH_RRF_K,
-                task.task,
-            )
-        }
-        Language::Chinese => {
-            let official_docs_gate = if is_install_procedure {
-                format!(
-                    "对于安装类任务，第一个 source gate 优先查找产品官方 documentation \
-                     或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行官方来源 \
-                     web search query `{search_query}`，并把通用 how-to query \
-                     `{fallback_query}` 保留为 fallback。"
-                )
-            } else {
-                String::new()
-            };
-            format!(
-                "`{}` 的过程发现计划（action `{}`, object `{}`）。\n\n\
-                 {}我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia \
-                 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 \
-                 wikiHow 的 CORS-readable MediaWiki parse API candidate `{}`，URL 为 `{}`。\
-                 如果这些来源没有可用步骤，fallback 会对 `{}` 通过 {} 运行 web search，\
-                 并用 reciprocal rank fusion (k = {}) 合并顶部结果。最后的 recursive \
-                 fetch check 只接受真正包含 `{}` 的明确有序步骤或 instructional steps 的页面。",
-                task.task,
-                task.action,
-                task.object,
-                official_docs_gate,
-                wikihow_candidate,
-                wikihow_api_url,
-                search_query,
-                provider_summary,
-                WEB_SEARCH_RRF_K,
-                task.task,
-            )
-        }
-        _ => {
-            let official_docs_gate = if is_install_procedure {
-                format!(
-                    "For install tasks, the first source gate prefers the product's \
-                     official documentation or official repository install page \
-                     before community how-to sources. It starts with the \
-                     official-source web search query `{search_query}` and keeps \
-                     the general how-to query `{fallback_query}` as fallback.\n\n"
-                )
-            } else {
-                String::new()
-            };
-            format!(
-                "Procedural discovery plan for `{}` (action `{}`, object `{}`).\n\n\
-         {}I do not answer this from a memoized recipe. The solver first checks \
-         Wikipedia for topic context and Wikidata for entity/action/object hints. \
-         It then tries wikiHow's CORS-readable MediaWiki parse API candidate \
-         `{}` via `{}`. If those sources do not expose usable steps, the fallback \
-         path runs web search for `{}` across {} and merges the top results with \
-         reciprocal rank fusion (k = {}). The final recursive fetch check only \
-         accepts pages that actually contain explicit ordered or instructional \
-         steps for `{}`.",
-                task.task,
-                task.action,
-                task.object,
-                official_docs_gate,
-                wikihow_candidate,
-                wikihow_api_url,
-                search_query,
-                provider_summary,
-                WEB_SEARCH_RRF_K,
-                task.task,
-            )
-        }
-    }
+    let install_gate = if task.action == "install" {
+        how_response(
+            "procedural_how_to_install_gate",
+            language,
+            &[
+                ("search_query", search_query),
+                ("fallback_query", fallback_query),
+            ],
+        )
+    } else {
+        String::new()
+    };
+    how_response(
+        "procedural_how_to_plan",
+        language,
+        &[
+            ("task", &task.task),
+            ("action", &task.action),
+            ("object", &task.object),
+            ("install_gate", &install_gate),
+            ("candidate", wikihow_candidate),
+            ("api_url", wikihow_api_url),
+            ("search_query", search_query),
+            ("providers", provider_summary),
+            ("k", &WEB_SEARCH_RRF_K.to_string()),
+        ],
+    )
+}
+
+/// A seeded response with its `{name}` slots filled in one pass, so a value
+/// that itself contains braces (a user's task text) is never re-filled.
+/// Issue #918: the how-to and how-it-works wording is seed data the browser
+/// twin renders too.
+fn how_response(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    seed::render_localized_once(intent, language, values)
+}
+
+/// A `policy <handler>` template of `data/seed/handler-rules.lino` (the
+/// search-query and concept-query frames), filled in one pass.
+fn how_policy(handler: &str, key: &str, values: &[(&str, &str)]) -> String {
+    seed::fill_template_once(
+        &crate::rule_interpreter::handler_policy(handler, key).unwrap_or_default(),
+        values,
+    )
 }
 
 fn capitalize_word(word: &str) -> String {

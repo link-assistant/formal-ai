@@ -6,6 +6,9 @@ intent_routing
   intent intent_greeting
     slug greeting
     response_link "response:greeting"
+    example "Hi"
+    example "Hello"
+    example "Hey"
     token greet
     role_surface social_greeting
   intent intent_farewell
@@ -15,14 +18,22 @@ intent_routing
   intent intent_courtesy_response
     slug courtesy_response
     response_link "response:courtesy_response"
+    example "I am fine, thank you"
+    example "thanks"
     role_surface social_courtesy_response
   intent intent_assistant_free_time
     slug assistant_free_time
     response_link "response:assistant_free_time"
+    example "What do you do in your free time?"
+    example "Что делаешь в свободное время?"
     role_surface social_assistant_free_time
   intent intent_test_status
     slug test_status
     response_link "response:test_status"
+    example "Test"
+    example "Test passed"
+    example "I'm here"
+    example "test passed, I'm here"
     role_surface social_test_status
     combo test+passed
     combo test+here
@@ -35,6 +46,11 @@ intent_routing
   intent intent_assistant_name
     slug assistant_name
     response_link "response:assistant_name"
+    example "What is your name?"
+    example "Как твое имя?"
+    example "Как тебя зовут?"
+    example "आपका नाम क्या है?"
+    example "你叫什么名字?"
     role_surface social_assistant_name
     combo what+your+name
     combo you+have+name
@@ -43,6 +59,10 @@ intent_routing
   intent intent_identity
     slug identity
     response_link "response:identity"
+    example "Who are you?"
+    example "What are you?"
+    example "Tell me about yourself"
+    example "What is formal-ai?"
     role_surface social_identity
     combo who+you
     combo what+you
@@ -66,6 +86,8 @@ intent_routing
   intent intent_write_program
     slug write_program
     response_link "response:write_program"
+    example "Write me hello world program in Rust"
+    example "Write a Python program that counts to three"
     keyword hello
     keyword world
     keyword хелло
@@ -164,6 +186,7 @@ intent_routing
   intent intent_unknown
     slug unknown
     response_link "response:unknown"
+    example "Any prompt without a matching symbolic rule"
   article "the "
   article "a "
   article "an "

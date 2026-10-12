@@ -1,0 +1,14 @@
+(node:98979) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/private/tmp/pr1188-coreference-boot-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:160
+  let source = readFileSync(absolute, "utf8"); if(relativePath.endsWith("worker-modules.js")){ const marker="self.FORMAL_AI_WORKER_MODULES = Object.freeze(["; source=source.slice(0,source.indexOf(marker))+marker+"
+                                                                                                                                                                                                                    ^
+
+SyntaxError: Invalid or unexpected token
+    at compileSourceTextModule (node:internal/modules/esm/utils:346:16)
+    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:146:18)
+    at #translate (node:internal/modules/esm/loader:431:12)
+    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:478:27)
+
+Node.js v20.19.4

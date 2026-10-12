@@ -1,0 +1,9 @@
+# Completed source union and observer evidence
+
+This finite cut preserves full arithmetic/cardinality producer and independent review originals, unchanged physical retries, source preimages/inverses, prior failed observers, CLI slow-consumer truncation evidence, disk guidance, all completed root operations3471–3478 and census selector/formatting sources. Root3476 passes117 nearest tests and31 unchanged whole workspace tests. Independent79 controls overlap those tests. Root3477 passes56 original producer controls but fails readability; root3478 preserves complete AST, tokens, raw comments/literals/assertions and passes readability. None establishes hosted native execution or green CI.
+
+Existing exact gzip inputs stay byte-identical. Member records include raw and encoded SHA-256/lengths. Reused blobs point into the preceding archive and are not copied again. The completed previous archive controller actual launch is separately matched to its semantic qualification and all stored effects. This controller/selector are retained; its own running result is outside the cut.
+
+T6175 failed after genuine physical effects because its observer targeted a directory; the full raw drive transcript was never stored and is unavailable. All surviving originals, error, program and physical outputs remain, with no reconstructed transcript. Earlier historical losses remain declared in their own cuts.
+
+Remote f9708d9afa98aa118a83e68a15377becb6deef48 remains181 terminal checks:61 success,81 failure,39 skipped. Ongoing append/create/parser/parity/source-host work is outside this cut. Installed production inventory stays214/1182 with968 unsupported. Autonomous authorship, amplification and native execution credit are zero; costs, future credentials, production writer lease and publication remain Unknown/Pending.

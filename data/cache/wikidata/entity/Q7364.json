@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "眼"
+        },
+        "es": {
+          "language": "es",
+          "value": "ojo"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "感知光線並將其轉換成神經訊號的器官"
+        },
+        "es": {
+          "language": "es",
+          "value": "órgano de la vista"
         }
       },
       "aliases": {
@@ -88,6 +96,12 @@
           {
             "language": "zh",
             "value": "目"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "órbita"
           }
         ]
       }

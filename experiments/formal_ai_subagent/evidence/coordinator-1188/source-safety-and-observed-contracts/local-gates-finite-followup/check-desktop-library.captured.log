@@ -1,0 +1,707 @@
+$ bash scripts/run-desktop-lib-tests.sh
+Running 14 test file(s)
+TAP version 13
+# Subtest: agent NDJSON events map onto the existing chat answer contract
+ok 1 - agent NDJSON events map onto the existing chat answer contract
+  ---
+  duration_ms: 2.132166
+  ...
+# Subtest: Agent lifecycle logs stay out of chat while nested text parts render
+ok 2 - Agent lifecycle logs stay out of chat while nested text parts render
+  ---
+  duration_ms: 4.458417
+  ...
+# Subtest: the default desktop agent provider is the hermetic in-process provider
+ok 3 - the default desktop agent provider is the hermetic in-process provider
+  ---
+  duration_ms: 0.400208
+  ...
+# Subtest: in-process provider executes a granted read-only shell command through the local gate
+ok 4 - in-process provider executes a granted read-only shell command through the local gate
+  ---
+  duration_ms: 1.677459
+  ...
+# Subtest: in-process provider drives the existing formal-ai agentic loop for tasks
+ok 5 - in-process provider drives the existing formal-ai agentic loop for tasks
+  ---
+  duration_ms: 0.581542
+  ...
+# Subtest: commander provider streams the org-owned agent backend through the agent-commander JS API
+ok 6 - commander provider streams the org-owned agent backend through the agent-commander JS API
+  ---
+  duration_ms: 0.696208
+  ...
+# Subtest: commander controller options point Codex and Claude at the same local server
+ok 7 - commander controller options point Codex and Claude at the same local server
+  ---
+  duration_ms: 0.307417
+  ...
+# Subtest: commander provider maps non-read-only agent mode to approve-each
+ok 8 - commander provider maps non-read-only agent mode to approve-each
+  ---
+  duration_ms: 0.38025
+  ...
+# Subtest: commander provider maps read-only mode for all backends to read-only
+ok 9 - commander provider maps read-only mode for all backends to read-only
+  ---
+  duration_ms: 0.193542
+  ...
+# Subtest: commander provider maps desktop grants to coarse execution flags
+ok 10 - commander provider maps desktop grants to coarse execution flags
+  ---
+  duration_ms: 0.155875
+  ...
+# Subtest: read-only shell command detection covers the first terminal journey
+ok 11 - read-only shell command detection covers the first terminal journey
+  ---
+  duration_ms: 0.067833
+  ...
+# Subtest: desktop code does not spawn host agent, claude, or codex binaries directly
+ok 12 - desktop code does not spawn host agent, claude, or codex binaries directly
+  ---
+  duration_ms: 23.136417
+  ...
+# Subtest: auto-update controller exposes packaged app version and disables autoDownload
+ok 13 - auto-update controller exposes packaged app version and disables autoDownload
+  ---
+  duration_ms: 1.195416
+  ...
+# Subtest: checkForUpdates records an available update for the renderer notification
+ok 14 - checkForUpdates records an available update for the renderer notification
+  ---
+  duration_ms: 3.963709
+  ...
+# Subtest: installUpdate downloads the available release and calls quitAndInstall
+ok 15 - installUpdate downloads the available release and calls quitAndInstall
+  ---
+  duration_ms: 0.955667
+  ...
+# Subtest: auto-update is disabled for unpackaged development runs
+ok 16 - auto-update is disabled for unpackaged development runs
+  ---
+  duration_ms: 0.769042
+  ...
+# Subtest: pinAppName pins the app name to the stable productName-independent value
+ok 17 - pinAppName pins the app name to the stable productName-independent value
+  ---
+  duration_ms: 2.463792
+  ...
+# Subtest: legacy candidates include the pre-pin default name plus known historical names
+ok 18 - legacy candidates include the pre-pin default name plus known historical names
+  ---
+  duration_ms: 0.310459
+  ...
+# Subtest: fresh install with no legacy profile copies nothing and stamps the version
+ok 19 - fresh install with no legacy profile copies nothing and stamps the version
+  ---
+  duration_ms: 1.178167
+  ...
+# Subtest: upgrading user: legacy conversations are copied into the pinned profile and the legacy copy is preserved
+ok 20 - upgrading user: legacy conversations are copied into the pinned profile and the legacy copy is preserved
+  ---
+  duration_ms: 0.565542
+  ...
+# Subtest: never overwrites a pinned profile that already holds data
+ok 21 - never overwrites a pinned profile that already holds data
+  ---
+  duration_ms: 0.162
+  ...
+# Subtest: per-subtree guard: only the missing subtrees are copied, present ones are left intact
+ok 22 - per-subtree guard: only the missing subtrees are copied, present ones are left intact
+  ---
+  duration_ms: 0.284375
+  ...
+# Subtest: idempotent: a profile already stamped at the current version is left untouched
+ok 23 - idempotent: a profile already stamped at the current version is left untouched
+  ---
+  duration_ms: 0.231417
+  ...
+# Subtest: v2 copies the authentication state Chromium keeps outside the canonical subtrees
+ok 24 - v2 copies the authentication state Chromium keeps outside the canonical subtrees
+  ---
+  duration_ms: 2.629917
+  ...
+# Subtest: derived caches are deliberately excluded from the copied set
+ok 25 - derived caches are deliberately excluded from the copied set
+  ---
+  duration_ms: 0.467125
+  ...
+# Subtest: v1 → v2 top-up: an already-migrated profile still receives the newly covered subtrees
+ok 26 - v1 → v2 top-up: an already-migrated profile still receives the newly covered subtrees
+  ---
+  duration_ms: 0.361208
+  ...
+# Subtest: subtreesAddedAfter reports only the entries a later version introduced
+ok 27 - subtreesAddedAfter reports only the entries a later version introduced
+  ---
+  duration_ms: 0.082
+  ...
+# Subtest: replay: force re-runs the copy for a stamped profile and fills only the gaps
+ok 28 - replay: force re-runs the copy for a stamped profile and fills only the gaps
+  ---
+  duration_ms: 0.245166
+  ...
+# Subtest: replay is safe when there is nothing left to copy
+ok 29 - replay is safe when there is nothing left to copy
+  ---
+  duration_ms: 0.138167
+  ...
+# Subtest: migrates from a non-standard pre-pin name captured via app.getName()
+ok 30 - migrates from a non-standard pre-pin name captured via app.getName()
+  ---
+  duration_ms: 0.189542
+  ...
+# Subtest: candidateDockerPaths puts absolute install locations before the bare PATH fallback (unix)
+ok 31 - candidateDockerPaths puts absolute install locations before the bare PATH fallback (unix)
+  ---
+  duration_ms: 0.924417
+  ...
+# Subtest: candidateDockerPaths uses Docker Desktop's Windows install path
+ok 32 - candidateDockerPaths uses Docker Desktop's Windows install path
+  ---
+  duration_ms: 0.163375
+  ...
+# Subtest: FORMAL_AI_DOCKER_BIN override is probed first
+ok 33 - FORMAL_AI_DOCKER_BIN override is probed first
+  ---
+  duration_ms: 2.001834
+  ...
+# Subtest: detects an installed+running Docker even when PATH does not contain docker (GUI launch)
+ok 34 - detects an installed+running Docker even when PATH does not contain docker (GUI launch)
+  ---
+  duration_ms: 0.586125
+  ...
+# Subtest: reports unavailable when the CLI exists but the daemon is down
+ok 35 - reports unavailable when the CLI exists but the daemon is down
+  ---
+  duration_ms: 0.098875
+  ...
+# Subtest: re-probes after the failure TTL so a later-started daemon becomes available
+ok 36 - re-probes after the failure TTL so a later-started daemon becomes available
+  ---
+  duration_ms: 0.107292
+  ...
+# Subtest: caches a positive result within the ok TTL (does not spawn on every call)
+ok 37 - caches a positive result within the ok TTL (does not spawn on every call)
+  ---
+  duration_ms: 0.072292
+  ...
+# Subtest: falls back to the bare PATH lookup when no absolute install location exists
+ok 38 - falls back to the bare PATH lookup when no absolute install location exists
+  ---
+  duration_ms: 0.065292
+  ...
+# Subtest: invalidate() forces a fresh binary resolution and probe
+ok 39 - invalidate() forces a fresh binary resolution and probe
+  ---
+  duration_ms: 0.135417
+  ...
+# Subtest: desktop dreaming is enabled by default and accepts explicit opt-out
+ok 40 - desktop dreaming is enabled by default and accepts explicit opt-out
+  ---
+  duration_ms: 0.598167
+  ...
+# Subtest: memory dream candidates reuse desktop binary resolution and stay plan-only by default
+ok 41 - memory dream candidates reuse desktop binary resolution and stay plan-only by default
+  ---
+  duration_ms: 0.889167
+  ...
+# Subtest: low priority wrapping uses nice on Unix-like platforms
+ok 42 - low priority wrapping uses nice on Unix-like platforms
+  ---
+  duration_ms: 0.120625
+  ...
+# Subtest: runDreamingOnce captures successful plan output
+ok 43 - runDreamingOnce captures successful plan output
+  ---
+  duration_ms: 1.040042
+  ...
+# Subtest: scheduler yields while foreground work is active
+ok 44 - scheduler yields while foreground work is active
+  ---
+  duration_ms: 0.187875
+  ...
+# Subtest: a running dreaming child yields when foreground work arrives
+ok 45 - a running dreaming child yields when foreground work arrives
+  ---
+  duration_ms: 0.162625
+  ...
+# Subtest: a spawned dreaming child is dropped to PRIORITY_LOW (issue \#540 §6)
+ok 46 - a spawned dreaming child is dropped to PRIORITY_LOW (issue \#540 §6)
+  ---
+  duration_ms: 0.296708
+  ...
+# Subtest: storage pressure asks consent, applies it, and surfaces migration
+ok 47 - storage pressure asks consent, applies it, and surfaces migration
+  ---
+  duration_ms: 0.175625
+  ...
+# Subtest: auto-apply keeps an explicitly configured backup path
+ok 48 - auto-apply keeps an explicitly configured backup path
+  ---
+  duration_ms: 0.218333
+  ...
+# Subtest: declined automatic cleanup is persisted without applying removals
+ok 49 - declined automatic cleanup is persisted without applying removals
+  ---
+  duration_ms: 0.170667
+  ...
+# Subtest: scheduler starts with an unrefed low-priority timer
+ok 50 - scheduler starts with an unrefed low-priority timer
+  ---
+  duration_ms: 2.474375
+  ...
+# Subtest: detects only installed passthrough engines and always offers out-of-box
+ok 51 - detects only installed passthrough engines and always offers out-of-box
+  ---
+  duration_ms: 1.375667
+  ...
+# Subtest: agent is the default when installed and out-of-box is the fallback
+ok 52 - agent is the default when installed and out-of-box is the fallback
+  ---
+  duration_ms: 0.13475
+  ...
+# Subtest: an available saved choice wins and an unavailable one is ignored
+ok 53 - an available saved choice wins and an unavailable one is ignored
+  ---
+  duration_ms: 0.070417
+  ...
+# Subtest: persists an explicit override and restores it on the next launch
+ok 54 - persists an explicit override and restores it on the next launch
+  ---
+  duration_ms: 0.334166
+  ...
+# Subtest: passthrough server candidates opt into agent protocol handling
+ok 55 - passthrough server candidates opt into agent protocol handling
+  ---
+  duration_ms: 0.679292
+  ...
+# Subtest: ensure starts the local OpenAI-compatible server and exposes provider apiBase
+ok 56 - ensure starts the local OpenAI-compatible server and exposes provider apiBase
+  ---
+  duration_ms: 0.918125
+  ...
+# Subtest: ensure reuses an already healthy server instead of starting twice
+ok 57 - ensure reuses an already healthy server instead of starting twice
+  ---
+  duration_ms: 0.125417
+  ...
+# Subtest: ensure restarts when the remembered server is no longer healthy
+ok 58 - ensure restarts when the remembered server is no longer healthy
+  ---
+  duration_ms: 0.105625
+  ...
+# Subtest: concurrent ensure calls share one start operation
+ok 59 - concurrent ensure calls share one start operation
+  ---
+  duration_ms: 8.778
+  ...
+# Subtest: ensure records startup failures without losing the reserved apiBase
+ok 60 - ensure records startup failures without losing the reserved apiBase
+  ---
+  duration_ms: 0.219833
+  ...
+# Subtest: server opt-in accepts truthy values only
+ok 61 - server opt-in accepts truthy values only
+  ---
+  duration_ms: 0.091416
+  ...
+# Subtest: child server environment is loopback-only and scrubs API bearer tokens
+ok 62 - child server environment is loopback-only and scrubs API bearer tokens
+  ---
+  duration_ms: 0.129625
+  ...
+# Subtest: eventIdsFromLino reads ids in order from a demo_memory document
+ok 63 - eventIdsFromLino reads ids in order from a demo_memory document
+  ---
+  duration_ms: 1.625542
+  ...
+# Subtest: memoryUrl joins base and path without doubling slashes
+ok 64 - memoryUrl joins base and path without doubling slashes
+  ---
+  duration_ms: 0.135917
+  ...
+# Subtest: pullSince requests the delta endpoint with the watermark
+ok 65 - pullSince requests the delta endpoint with the watermark
+  ---
+  duration_ms: 0.109667
+  ...
+# Subtest: push posts Links-Notation text to the import endpoint
+ok 66 - push posts Links-Notation text to the import endpoint
+  ---
+  duration_ms: 0.104834
+  ...
+# Subtest: createMemorySync advances the watermark as it pulls deltas
+ok 67 - createMemorySync advances the watermark as it pulls deltas
+  ---
+  duration_ms: 0.472083
+  ...
+# Subtest: pull surfaces a non-OK HTTP response as an error
+ok 68 - pull surfaces a non-OK HTTP response as an error
+  ---
+  duration_ms: 1.163625
+  ...
+# Subtest: host toolsets are selected the way electron-builder selects them
+ok 69 - host toolsets are selected the way electron-builder selects them
+  ---
+  duration_ms: 1.202208
+  ...
+# Subtest: macOS x64 requires both the 7za and dmgbuild archives
+ok 70 - macOS x64 requires both the 7za and dmgbuild archives
+  ---
+  duration_ms: 0.758833
+  ...
+# Subtest: cache directory matches the one electron-builder reads
+ok 71 - cache directory matches the one electron-builder reads
+  ---
+  duration_ms: 0.392667
+  ...
+# Subtest: archive path is <cacheDir>/<releaseName>/<filename>
+ok 72 - archive path is <cacheDir>/<releaseName>/<filename>
+  ---
+  duration_ms: 1.798167
+  ...
+# Subtest: an upstream version bump is reported instead of silently seeding a dead file
+ok 73 - an upstream version bump is reported instead of silently seeding a dead file
+  ---
+  duration_ms: 0.356167
+  ...
+# Subtest: constants agree with the installed electron-builder, when it is installed
+ok 74 - constants agree with the installed electron-builder, when it is installed # SKIP
+  ---
+  duration_ms: 0.045167
+  ...
+# Subtest: a completed prefetch lands where downloadAndExtract looks for it
+ok 75 - a completed prefetch lands where downloadAndExtract looks for it
+  ---
+  duration_ms: 45.040292
+  ...
+# Subtest: a stalled connection is abandoned and retried instead of held open
+ok 76 - a stalled connection is abandoned and retried instead of held open
+  ---
+  duration_ms: 260.92275
+  ...
+# Subtest: a corrupted download is rejected rather than cached
+ok 77 - a corrupted download is rejected rather than cached
+  ---
+  duration_ms: 6.747167
+  ...
+# Subtest: prefetch failures warn and never fail packaging
+ok 78 - prefetch failures warn and never fail packaging
+  ---
+  duration_ms: 7.423542
+  ...
+# Subtest: per-attempt tracing is available but off by default
+ok 79 - per-attempt tracing is available but off by default
+  ---
+  duration_ms: 7.085417
+  ...
+# Subtest: browser runtime copies keep symbolic links verbatim
+ok 80 - browser runtime copies keep symbolic links verbatim
+  ---
+  duration_ms: 1.905834
+  ...
+# Subtest: verbatimSymlinks preserves relative framework aliases
+ok 81 - verbatimSymlinks preserves relative framework aliases
+  ---
+  duration_ms: 10.727958
+  ...
+# Subtest: resolveImage falls back to the GHCR default and honors the override
+ok 82 - resolveImage falls back to the GHCR default and honors the override
+  ---
+  duration_ms: 0.937958
+  ...
+# Subtest: resolveServerPort defaults to 8080 and accepts a valid override
+ok 83 - resolveServerPort defaults to 8080 and accepts a valid override
+  ---
+  duration_ms: 0.08125
+  ...
+# Subtest: serviceKeys exposes telegram, server, and agent environment services
+ok 84 - serviceKeys exposes telegram, server, and agent environment services
+  ---
+  duration_ms: 0.32075
+  ...
+# Subtest: telegram run args keep the default command and inject the token
+ok 85 - telegram run args keep the default command and inject the token
+  ---
+  duration_ms: 0.168333
+  ...
+# Subtest: server run args publish a loopback port and override the command to serve
+ok 86 - server run args publish a loopback port and override the command to serve
+  ---
+  duration_ms: 0.160167
+  ...
+# Subtest: agent environment run args keep an idle ready container with its own Docker volume
+ok 87 - agent environment run args keep an idle ready container with its own Docker volume
+  ---
+  duration_ms: 0.121792
+  ...
+# Subtest: describeService advertises a loopback URL for the server only
+ok 88 - describeService advertises a loopback URL for the server only
+  ---
+  duration_ms: 0.072
+  ...
+# Subtest: statusAll reports running, stopped, and absent containers
+ok 89 - statusAll reports running, stopped, and absent containers
+  ---
+  duration_ms: 0.315417
+  ...
+# Subtest: status reports docker-unavailable without shelling out
+ok 90 - status reports docker-unavailable without shelling out
+  ---
+  duration_ms: 0.173208
+  ...
+# Subtest: start refuses the telegram bot when the token is missing
+ok 91 - start refuses the telegram bot when the token is missing
+  ---
+  duration_ms: 0.395583
+  ...
+# Subtest: start reaps a stale container then runs the telegram bot with the token
+ok 92 - start reaps a stale container then runs the telegram bot with the token
+  ---
+  duration_ms: 0.420042
+  ...
+# Subtest: start is idempotent when the container is already running
+ok 93 - start is idempotent when the container is already running
+  ---
+  duration_ms: 0.506208
+  ...
+# Subtest: start surfaces a docker run failure as an error with the reason
+ok 94 - start surfaces a docker run failure as an error with the reason
+  ---
+  duration_ms: 0.440709
+  ...
+# Subtest: installAgentEnvironment pulls, recreates, and health-checks the agent container
+ok 95 - installAgentEnvironment pulls, recreates, and health-checks the agent container
+  ---
+  duration_ms: 0.333792
+  ...
+# Subtest: installAgentEnvironment accepts an already-built local image when pull fails
+ok 96 - installAgentEnvironment accepts an already-built local image when pull fails
+  ---
+  duration_ms: 3.079875
+  ...
+# Subtest: installAgentEnvironment surfaces a health-check failure
+ok 97 - installAgentEnvironment surfaces a health-check failure
+  ---
+  duration_ms: 0.469167
+  ...
+# Subtest: stop stops and removes the container
+ok 98 - stop stops and removes the container
+  ---
+  duration_ms: 0.153209
+  ...
+# Subtest: stop treats an already-absent container as success
+ok 99 - stop treats an already-absent container as success
+  ---
+  duration_ms: 0.196083
+  ...
+# Subtest: createServiceControl rejects a missing runDocker dependency
+ok 100 - createServiceControl rejects a missing runDocker dependency
+  ---
+  duration_ms: 0.188917
+  ...
+# Subtest: unknown service keys raise a clear error
+ok 101 - unknown service keys raise a clear error
+  ---
+  duration_ms: 0.216333
+  ...
+# Subtest: desktop shared path honors overrides and platform defaults
+ok 102 - desktop shared path honors overrides and platform defaults
+  ---
+  duration_ms: 0.736125
+  ...
+# Subtest: desktop and VS Code child servers receive the shared host memory file
+ok 103 - desktop and VS Code child servers receive the shared host memory file
+  ---
+  duration_ms: 0.172667
+  ...
+# Subtest: all desktop Docker services share one memory mount and container path
+ok 104 - all desktop Docker services share one memory mount and container path
+  ---
+  duration_ms: 0.249625
+  ...
+# Subtest: default-deny: an ungranted write-capable tool is refused and nothing executes
+ok 105 - default-deny: an ungranted write-capable tool is refused and nothing executes
+  ---
+  duration_ms: 1.119083
+  ...
+# Subtest: default-deny: empty grants refuse every supported tool before side effects
+ok 106 - default-deny: empty grants refuse every supported tool before side effects
+  ---
+  duration_ms: 0.979625
+  ...
+# Subtest: specialized common file tools provide read-only inspection and granted edits
+ok 107 - specialized common file tools provide read-only inspection and granted edits
+  ---
+  duration_ms: 14.670625
+  ...
+# Subtest: web search and rendered fetch run with agent permission off
+ok 108 - web search and rendered fetch run with agent permission off
+  ---
+  duration_ms: 0.269041
+  ...
+# Subtest: common frontend aliases route by capability instead of tool name
+ok 109 - common frontend aliases route by capability instead of tool name
+  ---
+  duration_ms: 0.29275
+  ...
+# Subtest: permission-free http_fetch is served by the local process
+ok 110 - permission-free http_fetch is served by the local process
+  ---
+  duration_ms: 0.219458
+  ...
+# Subtest: an `all` grant opts every tool in at once
+ok 111 - an `all` grant opts every tool in at once
+  ---
+  duration_ms: 0.224083
+  ...
+# Subtest: a partial grant map only permits the named tool
+ok 112 - a partial grant map only permits the named tool
+  ---
+  duration_ms: 0.130333
+  ...
+# Subtest: with permission granted, shell runs on the host by default
+ok 113 - with permission granted, shell runs on the host by default
+  ---
+  duration_ms: 0.244708
+  ...
+# Subtest: with permission granted, code_exec runs inside the box-dind container with logs captured
+ok 114 - with permission granted, code_exec runs inside the box-dind container with logs captured
+  ---
+  duration_ms: 0.195875
+  ...
+# Subtest: shell can still opt into Docker isolation
+ok 115 - shell can still opt into Docker isolation
+  ---
+  duration_ms: 0.208083
+  ...
+# Subtest: code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)
+ok 116 - code_exec gracefully refuses when Docker is unavailable (never runs unsandboxed)
+  ---
+  duration_ms: 0.188791
+  ...
+# Subtest: read_local_file is confined to the allowed root
+ok 117 - read_local_file is confined to the allowed root
+  ---
+  duration_ms: 0.259458
+  ...
+# Subtest: read_local_file rejects a sibling directory that shares the root prefix
+ok 118 - read_local_file rejects a sibling directory that shares the root prefix
+  ---
+  duration_ms: 0.134167
+  ...
+# Subtest: unknown tools are rejected without executing
+ok 119 - unknown tools are rejected without executing
+  ---
+  duration_ms: 0.190375
+  ...
+# Subtest: computer-use calls require explicit verification context before effects
+ok 120 - computer-use calls require explicit verification context before effects
+  ---
+  duration_ms: 0.219416
+  ...
+# Subtest: computer-use postconditions fail when an adapter claims an effect without changing state
+ok 121 - computer-use postconditions fail when an adapter claims an effect without changing state
+  ---
+  duration_ms: 0.806667
+  ...
+# Subtest: computer-use paths are confined to an isolated plan workspace
+ok 122 - computer-use paths are confined to an isolated plan workspace
+  ---
+  duration_ms: 3.6345
+  ...
+# Subtest: computer-use archive entries cannot escape their extraction directory
+ok 123 - computer-use archive entries cannot escape their extraction directory
+  ---
+  duration_ms: 2.489959
+  ...
+# Subtest: computer-use primitives are permissioned, confirmed, isolated, and verified
+ok 124 - computer-use primitives are permissioned, confirmed, isolated, and verified
+  ---
+  duration_ms: 8.37925
+  ...
+# Subtest: VSIX_ASSET_PATTERN matches the packaged extension filename only
+ok 125 - VSIX_ASSET_PATTERN matches the packaged extension filename only
+  ---
+  duration_ms: 0.618375
+  ...
+# Subtest: LATEST_RELEASE_API targets the canonical repo
+ok 126 - LATEST_RELEASE_API targets the canonical repo
+  ---
+  duration_ms: 0.0645
+  ...
+# Subtest: resolveCliCandidates honors the override first, then the known editors
+ok 127 - resolveCliCandidates honors the override first, then the known editors
+  ---
+  duration_ms: 0.337375
+  ...
+# Subtest: selectVsixAsset picks the .vsix and ignores checksum/other assets
+ok 128 - selectVsixAsset picks the .vsix and ignores checksum/other assets
+  ---
+  duration_ms: 0.1375
+  ...
+# Subtest: selectVsixAsset returns null when no extension is published
+ok 129 - selectVsixAsset returns null when no extension is published
+  ---
+  duration_ms: 0.057042
+  ...
+# Subtest: the factory requires its side-effecting dependencies
+ok 130 - the factory requires its side-effecting dependencies
+  ---
+  duration_ms: 0.202167
+  ...
+# Subtest: detectCli returns the first editor that answers --version
+ok 131 - detectCli returns the first editor that answers --version
+  ---
+  duration_ms: 0.279417
+  ...
+# Subtest: detectCli returns null when no VS Code CLI is present
+ok 132 - detectCli returns null when no VS Code CLI is present
+  ---
+  duration_ms: 0.147125
+  ...
+# Subtest: install: detect → resolve → download → install-extension happy path
+ok 133 - install: detect → resolve → download → install-extension happy path
+  ---
+  duration_ms: 0.25775
+  ...
+# Subtest: install: no VS Code CLI yields an actionable no-vscode-cli state
+ok 134 - install: no VS Code CLI yields an actionable no-vscode-cli state
+  ---
+  duration_ms: 0.187
+  ...
+# Subtest: install: a release without a .vsix yields no-release-asset
+ok 135 - install: a release without a .vsix yields no-release-asset
+  ---
+  duration_ms: 0.131875
+  ...
+# Subtest: install: a failed release lookup is reported, not thrown
+ok 136 - install: a failed release lookup is reported, not thrown
+  ---
+  duration_ms: 0.114417
+  ...
+# Subtest: install: a download error surfaces as download-failed
+ok 137 - install: a download error surfaces as download-failed
+  ---
+  duration_ms: 0.093
+  ...
+# Subtest: install: a non-zero code --install-extension is reported as install-failed
+ok 138 - install: a non-zero code --install-extension is reported as install-failed
+  ---
+  duration_ms: 0.6185
+  ...
+# Subtest: install: a bundled vsixPath skips the network entirely
+ok 139 - install: a bundled vsixPath skips the network entirely
+  ---
+  duration_ms: 0.197208
+  ...
+1..139
+# tests 139
+# suites 0
+# pass 138
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 425.870458

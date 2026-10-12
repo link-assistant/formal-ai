@@ -1,0 +1,17 @@
+{
+  "actual": {
+    "a.txt": "When `input` then `output`",
+    "b.txt": "rename a.txt to gone.txt and replace alpha with wrong",
+    "gone.txt": null
+  },
+  "cats": [
+    {
+      "command": "cat a.txt",
+      "result": "Output: When `input` then `output`\nExit Code: 0"
+    },
+    {
+      "command": "cat b.txt",
+      "result": "Output: rename a.txt to gone.txt and replace alpha with wrong\nExit Code: 0"
+    }
+  ]
+}

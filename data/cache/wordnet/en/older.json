@@ -1,0 +1,50 @@
+{
+  "lemma": "older",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01648667-s",
+      "partOfSpeech": "s",
+      "definition": "advanced in years; (‘aged’ is pronounced as two syllables)",
+      "examples": [
+        "aged members of the society",
+        "elderly residents could remember the construction of the first skyscraper",
+        "senior citizen"
+      ],
+      "synonyms": [
+        "aged",
+        "elderly",
+        "senior"
+      ]
+    },
+    {
+      "id": "oewn-02107311-s",
+      "partOfSpeech": "s",
+      "definition": "used of the older of two persons of the same name especially used to distinguish a father from his son",
+      "examples": [
+        "Bill Adams, Sr."
+      ],
+      "synonyms": [
+        "elder",
+        "sr."
+      ]
+    },
+    {
+      "id": "oewn-00939566-s",
+      "partOfSpeech": "s",
+      "definition": "skilled through long experience",
+      "examples": [
+        "an old offender",
+        "the older soldiers"
+      ],
+      "synonyms": [
+        "old"
+      ]
+    }
+  ]
+}

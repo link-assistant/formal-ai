@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "瀑布"
+        },
+        "es": {
+          "language": "es",
+          "value": "cascada"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "从河床纵剖面陡坡或悬崖处倾泻下来的水流"
+        },
+        "es": {
+          "language": "es",
+          "value": "lugar donde el agua fluye sobre una caída vertical en el curso de un río"
         }
       },
       "aliases": {
@@ -70,6 +78,16 @@
           {
             "language": "zh",
             "value": "跌水"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "salto de agua"
+          },
+          {
+            "language": "es",
+            "value": "catarata"
           }
         ]
       }

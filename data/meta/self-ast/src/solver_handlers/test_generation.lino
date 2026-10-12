@@ -1,0 +1,33 @@
+self_ast_census
+  target src/solver_handlers/test_generation.rs
+  language rust
+  fidelity signature
+  byte_len 20966
+  line_count 617
+  content_id source_module_d3f879541ad0d92d
+  symbol_count 24
+  symbols
+    const CUES_PATH 25 25
+    const INTENT 26 26
+    function seed_text 29 34
+    function cue_phrases 38 69
+    function word_entries 72 92
+    function template 95 101
+    function mapping_rows 105 114
+    struct TestCase 117 123
+    struct Shape 126 130
+    function shapes 132 181
+    function identifier_at 184 189
+    function inside_parens 192 207
+    function paren_span 211 226
+    function function_spec 230 253
+    function names_function_under_test 259 261
+    function python_literal 265 271
+    function case_id 274 284
+    function case_lines 287 315
+    function normalize_helper 319 359
+    function literal_at 364 401
+    struct StatedExample 405 409
+    function stated_examples 414 463
+    function example_assertion 466 475
+    function handle_test_generation 482 617

@@ -15,3 +15,4 @@ ci_gate check_job_headroom
   stage rust
   description "Every declared job cap can still be read and matched to the job it bounds."
   run "rust-script --test scripts/check-job-headroom.rs"
+  justification "A renamed or misconfigured job silently drops out of the weekly headroom audit, hiding timeout budget violations; the gate catches broken job-to-cap mappings at commit time, introduced in #1076 (commit 6c2d5790c)."

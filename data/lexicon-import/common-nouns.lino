@@ -4,7 +4,9 @@
 # resolves to a committed entity cache record. Feed to
 # `formal-ai import lexemes --concepts <file> --offline`.
 # The violin moved to data/seed/meanings-membership.lino where its
-# Wikidata subclass edge lives with it (issue 1138).
+# Wikidata subclass edge lives with it (issue 1138). The foot moved to
+# data/seed/meanings-units.lino, where it is a measurement unit with the
+# same grounding (Q3710).
 concepts
   actor Q33999
   anchor Q168432
@@ -77,7 +79,6 @@ concepts
   floor Q217164
   flour Q36465
   flower Q506
-  foot Q3710
   forest Q4421
   fox Q8331
   garlic Q21546392

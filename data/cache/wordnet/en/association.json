@@ -1,0 +1,81 @@
+{
+  "lemma": "association",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08066153-n",
+      "partOfSpeech": "n",
+      "definition": "a formal organization of people or groups of people",
+      "examples": [
+        "he joined the Modern Language Association"
+      ]
+    },
+    {
+      "id": "oewn-01083552-n",
+      "partOfSpeech": "n",
+      "definition": "the act of consorting with or joining with others",
+      "examples": [
+        "you cannot be convicted of criminal guilt by association"
+      ]
+    },
+    {
+      "id": "oewn-14444543-n",
+      "partOfSpeech": "n",
+      "definition": "the state of being connected together as in memory or imagination",
+      "examples": [
+        "his association of his father with being beaten was too strong to break"
+      ]
+    },
+    {
+      "id": "oewn-05771913-n",
+      "partOfSpeech": "n",
+      "definition": "the process of bringing ideas or events together in memory or imagination",
+      "examples": [
+        "conditioning is a form of learning by association"
+      ],
+      "synonyms": [
+        "connection",
+        "connexion"
+      ]
+    },
+    {
+      "id": "oewn-13953418-n",
+      "partOfSpeech": "n",
+      "definition": "a social or business relationship",
+      "examples": [
+        "a valuable financial affiliation",
+        "he was sorry he had to sever his ties with other members of the team",
+        "many close associations with England"
+      ],
+      "synonyms": [
+        "affiliation",
+        "tie",
+        "tie-up"
+      ]
+    },
+    {
+      "id": "oewn-13804981-n",
+      "partOfSpeech": "n",
+      "definition": "a relation resulting from interaction or dependence",
+      "examples": [
+        "flints were found in association with the prehistoric remains of the bear",
+        "the host is not always injured by association with a parasite"
+      ]
+    },
+    {
+      "id": "oewn-13456325-n",
+      "partOfSpeech": "n",
+      "definition": "(chemistry) any process of combination (especially in solution) that depends on relatively weak chemical bonding"
+    },
+    {
+      "id": "oewn-08006819-n",
+      "partOfSpeech": "n",
+      "definition": "(ecology) a group of organisms (plants and animals) that live together in a certain geographical region and constitute a community with a few dominant species"
+    }
+  ]
+}

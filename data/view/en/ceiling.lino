@@ -1,0 +1,21 @@
+view
+  id M-dfc27427b7e0
+  lemma ceiling
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the overhead upper surface of a covered space"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(meteorology) altitude of the lowest layer of clouds"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an upper limit on what is allowed"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "maximum altitude at which a plane can fly (under specified conditions)"
+    provenance (wordnet)

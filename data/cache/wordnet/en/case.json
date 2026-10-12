@@ -1,0 +1,242 @@
+{
+  "lemma": "case",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07323507-n",
+      "partOfSpeech": "n",
+      "definition": "an occurrence of something",
+      "examples": [
+        "it was a case of bad judgment",
+        "another instance occurred yesterday",
+        "but there is always the famous example of the Smiths"
+      ],
+      "synonyms": [
+        "instance",
+        "example"
+      ]
+    },
+    {
+      "id": "oewn-13966452-n",
+      "partOfSpeech": "n",
+      "definition": "a special set of circumstances",
+      "examples": [
+        "in that event, the first possibility is excluded",
+        "it may rain in which case the picnic will be canceled"
+      ],
+      "synonyms": [
+        "event"
+      ]
+    },
+    {
+      "id": "oewn-01185144-n",
+      "partOfSpeech": "n",
+      "definition": "a comprehensive term for any proceeding in a court of law whereby an individual seeks a legal remedy",
+      "examples": [
+        "the family brought suit against the landlord"
+      ],
+      "synonyms": [
+        "lawsuit",
+        "suit",
+        "cause",
+        "causa"
+      ]
+    },
+    {
+      "id": "oewn-05825869-n",
+      "partOfSpeech": "n",
+      "definition": "the actual state of things",
+      "examples": [
+        "that was not the case"
+      ]
+    },
+    {
+      "id": "oewn-02978156-n",
+      "partOfSpeech": "n",
+      "definition": "a portable container for carrying several objects",
+      "examples": [
+        "the musicians left their instrument cases backstage"
+      ]
+    },
+    {
+      "id": "oewn-09918344-n",
+      "partOfSpeech": "n",
+      "definition": "a person requiring professional services",
+      "examples": [
+        "a typical case was the suburban housewife described by a marriage counselor"
+      ]
+    },
+    {
+      "id": "oewn-10688105-n",
+      "partOfSpeech": "n",
+      "definition": "a person who is subjected to experimental or other observational procedures; someone who is an object of investigation",
+      "examples": [
+        "the subjects for this investigation were selected randomly",
+        "the cases that we studied were drawn from two different communities"
+      ],
+      "synonyms": [
+        "subject",
+        "guinea pig"
+      ]
+    },
+    {
+      "id": "oewn-06797823-n",
+      "partOfSpeech": "n",
+      "definition": "a problem requiring investigation",
+      "examples": [
+        "Perry Mason solved the case of the missing heir"
+      ]
+    },
+    {
+      "id": "oewn-06662171-n",
+      "partOfSpeech": "n",
+      "definition": "a statement of facts and reasons used to support an argument",
+      "examples": [
+        "he stated his case clearly"
+      ]
+    },
+    {
+      "id": "oewn-13788576-n",
+      "partOfSpeech": "n",
+      "definition": "the quantity contained in a case",
+      "synonyms": [
+        "caseful"
+      ]
+    },
+    {
+      "id": "oewn-06321935-n",
+      "partOfSpeech": "n",
+      "definition": "nouns or pronouns or adjectives (often marked by inflection) related in some way to other words in a sentence",
+      "synonyms": [
+        "grammatical case"
+      ]
+    },
+    {
+      "id": "oewn-14039467-n",
+      "partOfSpeech": "n",
+      "definition": "a specific state of mind that is temporary",
+      "examples": [
+        "a case of the jitters"
+      ]
+    },
+    {
+      "id": "oewn-09928518-n",
+      "partOfSpeech": "n",
+      "definition": "a person of a specified kind (usually with many eccentricities)",
+      "examples": [
+        "a real character",
+        "a strange character",
+        "a friendly eccentric",
+        "the capable type",
+        "a mental case"
+      ],
+      "synonyms": [
+        "character",
+        "eccentric",
+        "type"
+      ]
+    },
+    {
+      "id": "oewn-06838449-n",
+      "partOfSpeech": "n",
+      "definition": "a specific size and style of type within a type family",
+      "synonyms": [
+        "font",
+        "fount",
+        "typeface",
+        "face"
+      ]
+    },
+    {
+      "id": "oewn-05245366-n",
+      "partOfSpeech": "n",
+      "definition": "an enveloping structure or covering enclosing an animal or plant organ or part",
+      "synonyms": [
+        "sheath"
+      ]
+    },
+    {
+      "id": "oewn-04197790-n",
+      "partOfSpeech": "n",
+      "definition": "the housing or outer covering of something",
+      "examples": [
+        "the clock has a walnut case"
+      ],
+      "synonyms": [
+        "shell",
+        "casing"
+      ]
+    },
+    {
+      "id": "oewn-02981078-n",
+      "partOfSpeech": "n",
+      "definition": "the enclosing frame around a door or window opening",
+      "examples": [
+        "the casings had rotted away and had to be replaced"
+      ],
+      "synonyms": [
+        "casing"
+      ]
+    },
+    {
+      "id": "oewn-02979048-n",
+      "partOfSpeech": "n",
+      "definition": "(printing) the receptacle in which a compositor has their type, which is divided into compartments for the different letters, spaces, or numbers",
+      "examples": [
+        "for English, a compositor will ordinarily have two such cases, the upper case containing the capitals and the lower case containing the small letters"
+      ],
+      "synonyms": [
+        "compositor's case",
+        "typesetter's case"
+      ]
+    },
+    {
+      "id": "oewn-02978871-n",
+      "partOfSpeech": "n",
+      "definition": "bed linen consisting of a cover for a pillow",
+      "examples": [
+        "the burglar carried his loot in a pillowcase"
+      ],
+      "synonyms": [
+        "pillowcase",
+        "slip",
+        "pillow slip"
+      ]
+    },
+    {
+      "id": "oewn-02978671-n",
+      "partOfSpeech": "n",
+      "definition": "a glass container used to store and display items in a shop or museum or home",
+      "synonyms": [
+        "display case",
+        "showcase",
+        "vitrine"
+      ]
+    },
+    {
+      "id": "oewn-02170426-v",
+      "partOfSpeech": "v",
+      "definition": "look over, usually with the intention to rob",
+      "examples": [
+        "The men cased the house"
+      ]
+    },
+    {
+      "id": "oewn-01488938-v",
+      "partOfSpeech": "v",
+      "definition": "enclose in, or as if in, a case",
+      "examples": [
+        "my feet were encased in mud"
+      ],
+      "synonyms": [
+        "encase",
+        "incase"
+      ]
+    }
+  ]
+}

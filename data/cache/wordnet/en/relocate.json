@@ -1,0 +1,27 @@
+{
+  "lemma": "relocate",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00415552-v",
+      "partOfSpeech": "v",
+      "definition": "become established in a new location",
+      "examples": [
+        "Our company relocated to the Midwest"
+      ]
+    },
+    {
+      "id": "oewn-00415334-v",
+      "partOfSpeech": "v",
+      "definition": "move or establish in a new location",
+      "examples": [
+        "We had to relocate the office because the rent was too high"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "lemma": "howdy",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06645018-n",
+      "partOfSpeech": "n",
+      "definition": "an expression of greeting",
+      "examples": [
+        "every morning they exchanged polite hellos"
+      ],
+      "synonyms": [
+        "hello",
+        "hullo",
+        "hi",
+        "how-do-you-do"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+view
+  id M-4b749389a3a1
+  lemma museum
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a depository for collecting and displaying objects having scientific or historical or artistic value"
+    provenance (wordnet)

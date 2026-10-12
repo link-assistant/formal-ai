@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_capabilities_and_runtime_rules.js"
+  ceiling 648
+  rationale "The typed behavior-rule compiler declines before the seeded general procedure compiler is tried, matching the native handler. Only this three-line dispatch bridge was added. All teaching, catalog, history replay and events share the generated skill compiler package; removing the duplicate local constructor lowers this module to 648."

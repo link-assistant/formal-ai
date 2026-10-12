@@ -155,10 +155,32 @@ migration are recorded in the 2026-09-24 standing doctrine in
 [`REQUIREMENTS.md`](REQUIREMENTS.md) and planned in
 [plan 16](docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md).
 
+### Code shape (2026-10-08)
+
+The 2026-10-08 instructions, recorded verbatim in [the 2026-10-08 architect note](docs/architect-notes/2026-10-08-architecture-naming-ci-speed-and-text-understanding.md) ([R1188-U14](docs/requirements/issue-1188-user-requirements.md)):
+
+- Generalize, don't specialize: specific tests are fine, but they all pass through smaller, more universal code; a fix that adds a case for one prompt is wrong (R1188-U1).
+- Code follows [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles); [`docs/architecture/principles.md`](docs/architecture/principles.md) maps each principle to its gate (R1188-U2).
+- Names are full English words, and file and directory names say what they hold, with no numbered parts where a meaningful category exists (R1188-U4, R1188-U5).
+- The links notation we own prefers `-` over `_`, stays human readable, and is deduplicated: shared structure is stated once and referenced (R1188-U6, R1188-U7).
+- Bulk changes are automated as rules; small edits are delegated to Formal AI, and Formal AI is fixed when it fails (R1188-U8, R1188-U13).
+- CI: no job or step runs over 15-30 minutes, long-running jobs and tests start first, and work runs in parallel at job and test level, enforced by a gate (R1188-U9 to R1188-U12).
+- Formal AI understands real text without an LLM: it formalizes web pages, translates by the round trip that survives every language, lists the exact requirements of an issue, and summarizes by keeping the statements others depend on (R1188-U18 to R1188-U21).
+- Every regular source file in `js/`, `ts/` and `rust/` is readable multi-line code; only distribution bundles may be exempt (R1188-U23).
+- Locally, Formal AI runs from its JavaScript source, Rust is not built, only the tests next to a change run, and disk space is kept free; CI checks the rest (R1188-U24, R1188-U25).
+
+### Method (2026-10-08)
+
+The 2026-10-08 method, recorded verbatim in [the progressive JPEG architect note](docs/architect-notes/2026-10-08-progressive-jpeg-javascript-first-and-automated-translation.md):
+
+- Every problem, and the development of each pull request, follows the progressive JPEG method of [§ 167](https://www.artlebedev.ru/kovodstvo/sections/167/). The whole is complete at every moment at some resolution, and each pass raises everything, lowest level first; [`docs/progressive-plan.md`](docs/progressive-plan.md) is generated from the requirement ledger (R1188-U28).
+- More of the work goes through Formal AI from its JavaScript source, and the JavaScript requirements pass first (R1188-U29).
+- Translation between JavaScript, TypeScript, Rust and the meta language is automated. Temporary, recorded workarounds cover what relative meta logic and the meta language cannot translate yet, and they are retired as those improve in parallel (R1188-U30, [`docs/progressive-delivery.md`](docs/progressive-delivery.md)).
+
 ### Where the architect's notes live
 
 This section is kept up to date from
-[`docs/architect-notes/`](docs/architect-notes/), which records his statements in
+[`docs/architect-notes/`](docs/architect-notes/), which records the architect's statements in
 chronological order, quoted and referenced. Where a document, gate, requirement
 or plan contradicts the latest note, the document is wrong and must be fixed. Do
 not invent terminology the architect does not use.
@@ -365,7 +387,7 @@ recipes' facts now flow through links. The representation layer is issue
 #558's delivery (PR #637): a committed `.lino` census covers every owned file
 under `rust/src/`, one to one on every merged pull request, and the lossless
 round-trip (`source → links → source`, byte for byte) exists in
-`rust/tests/unit/issue_558_source_links.rs` -- it is exhaustive, so it is
+`rust/tests/unit/agentic-coding/issue_558_source_links.rs` -- it is exhaustive, so it is
 `#[ignore]`d there and runs on demand with `--ignored`, not on every CI run;
 until it runs by default the committed census is a signature, not the source.
 The direction is unchanged: the meta-language
@@ -385,7 +407,7 @@ Issue #710's dynamic coding discovery shipped in PR #888 (merged 2026-09-16): in
 
 The foundation batches E1-E20, the reasoning batch E21-E27, the synthesis batch E28-E32, and the parity batch E33-E34 are merged (PRs #305-#311, #319-#323, #328-#329). Every user message is now formalized into a Links Notation intent before routing, unmatched prompts run a reasoning-under-unknowns loop instead of falling through to "I can't answer that", narrow per-language intents are collapsed into a parametric `write a program` intent, behavior can be expressed as substitution rules (`replace x y`, `when n do m`) over link CRUD, natural language can query memory / call APIs / execute code under the permission model, a bounded isolated agent runs allowlisted commands, and progress is measured against an imported industry benchmark slice (HumanEval, MBPP, GSM8K, MATH, BIG-bench).
 
-The synthesis step is now **general**: instead of resolving answers from seeded handlers, the universal 11-step loop **derives** them by composing decomposed sub-results over the links network. The benchmark suite makes this concrete — it grew to a 13-case curated slice and passes **13/13** with a `minimum_pass_count` ratchet: the solver writes HumanEval/MBPP Python functions from parsed structure, source-grounded meanings, composed schemas, and bounded execution, and computes the three curated GSM8K (`18`), MATH (`11`), and BIG-bench object-counting (`3`) answers. A no-memorization gate rejects benchmark case names, task sentences, assertions, and canonical solutions in production source or seed data. The latest committed upstream rows (run of 2026-09-18, solver `0.350.0`) are, per suite and per slice: HumanEval 14/164 on the full upstream slice with `--online` (a cold-offline run in the same session scored 9/164; the 2026-09-15 first-20 row stays as the regression control at HumanEval 20/20); MBPP 49/500 cold-offline and 60/500 with `--online` on the full upstream slice (the 2026-09-15 first-20 row stays as the regression control at MBPP 20/20 and explicitly records `--online`); GSM8K 2/20; MATH 0/20; BIG-bench object counting 0/20; CoEdIT 0/20; egg rewrite laws 20/20; Ascent closure assertions 5/5; and SWE-bench Lite 0/1. A first-20 score is not a suite score and is never cited without its slice. An empty-source-cache control scored HumanEval 20/20 and MBPP 18/20 at the first-20 slice because two cases require externally defined sequence knowledge, which the live path discovers from official OEIS data, formalizes under a strict grammar, and verifies against examples without persisting benchmark answers. The rewrite-engine rows are not coding-task scores. `NON-GOALS.md` makes this standing: a curated benchmark number is never cited without the upstream number beside it (originally issue [#1085](https://github.com/link-assistant/formal-ai/issues/1085) D5.4).
+The synthesis step is now **general**: instead of resolving answers from seeded handlers, the universal 11-step loop **derives** them by composing decomposed sub-results over the links network. The benchmark suite makes this concrete — it grew to a 13-case curated slice and passes **13/13** with a `minimum_pass_count` ratchet: the solver writes HumanEval/MBPP Python functions from parsed structure, source-grounded meanings, composed schemas, and bounded execution, and computes the three curated GSM8K (`18`), MATH (`11`), and BIG-bench object-counting (`3`) answers. A no-memorization gate rejects benchmark case names, task sentences, assertions, and canonical solutions in production source or seed data. The latest committed upstream rows (run of 2026-10-07, solver `0.352.1`) are, per suite and per slice: HumanEval 21/164 on the full upstream slice with `--online`, graded in concurrent shards (up from 14/164 on 2026-09-17, when a cold-offline run scored 9/164; the 2026-09-15 first-20 row stays as the regression control at HumanEval 20/20); MBPP 68/500 with `--online` on the full upstream slice, graded in concurrent shards (up from 49/500 cold-offline and 60/500 `--online` on 2026-09-18; the 2026-09-15 first-20 row stays as the regression control at MBPP 20/20 and explicitly records `--online`); GSM8K 2/20; MATH 0/20; BIG-bench object counting 0/20; CoEdIT 0/20; egg rewrite laws 20/20; Ascent closure assertions 5/5; and SWE-bench Lite 0/1. A first-20 score is not a suite score and is never cited without its slice. An empty-source-cache control scored HumanEval 20/20 and MBPP 18/20 at the first-20 slice because two cases require externally defined sequence knowledge, which the live path discovers from official OEIS data, formalizes under a strict grammar, and verifies against examples without persisting benchmark answers. The rewrite-engine rows are not coding-task scores. `NON-GOALS.md` makes this standing: a curated benchmark number is never cited without the upstream number beside it (originally issue [#1085](https://github.com/link-assistant/formal-ai/issues/1085) D5.4).
 
 The **parity** gap surfaced by the issue [#244](https://github.com/link-assistant/formal-ai/issues/244) PR feedback — "all Rust and JavaScript logic are in sync" and "all languages are supported equally" — is now **closed** by the merged parity batch (E33-E34): the text-manipulation handler triggers from a single shared, data-driven multilingual operation vocabulary (`data/seed/operation-vocabulary.lino`) so every operation is recognised equally in `en|ru|hi|zh`, and the JavaScript browser worker derives the same synthesis/numeric/program/text answers as the Rust core, pinned by the shared fixture `data/parity/cross-runtime-synthesis.json`. With E1-E34 all merged, no vision-planning epic remains open for issue #244. See [`ROADMAP.md`](ROADMAP.md) for the gap-by-gap record.
 
@@ -435,9 +457,9 @@ winner won through `rust/src/draft_portfolio.rs` (issue
 following the drafts→selection→composition shape of
 [konard/problem-solving](https://github.com/konard/problem-solving)); and the
 meta-algorithm's anticipatory loop ships its first-order slice — deterministic
-request-class transitions with proposal-only frontier integration — while issue
-[#705](https://github.com/link-assistant/formal-ai/issues/705) remains open for
-higher-order and organic-log quality. Language
+request-class transitions with proposal-only frontier integration — while
+higher-order and organic-log quality stay future work (issue
+[#705](https://github.com/link-assistant/formal-ai/issues/705), closed on 2026-09-26). Language
 breadth grows by data alone through the meta language — the any-language
 protocol shipped in PR #880 (issue
 [#706](https://github.com/link-assistant/formal-ai/issues/706)) — and

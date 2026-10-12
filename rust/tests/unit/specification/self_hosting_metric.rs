@@ -317,6 +317,20 @@ fn release_target_ratchets_and_records_each_self_authored_pull_request() {
             )),
         "the ledger must record every contributing pull request"
     );
+    // Issue #924 R924-3: the release notes name the reviewed pull requests and
+    // the target the release was held to.
+    let note =
+        metric_script::release_note_for_tag(&ledger, "v1.1.0").expect("release note must render");
+    assert!(
+        note.contains(&format!(
+            "Formal AI-authored pull requests: {first_pull_request}."
+        )),
+        "the release notes must name every contributing pull request: {note}"
+    );
+    assert!(
+        note.contains("The release target in force was **0.00%**."),
+        "the release notes must name the target in force: {note}"
+    );
     git(&repo, &["tag", "v1.1.0"]);
 
     fs::write(repo.join("human-code.txt"), "human\n".repeat(100))
@@ -877,8 +891,7 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let workflow = fs::read_to_string(root.join(".github/workflows/release.yml"))
-        .expect("release workflow must be readable");
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
     let version_script = fs::read_to_string(root.join("scripts/version-and-commit.rs"))
         .expect("version script must be readable");
     let release_script = fs::read_to_string(root.join("scripts/create-github-release.rs"))

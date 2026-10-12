@@ -1,0 +1,19 @@
+{
+  "id": "T3063",
+  "exactTask": true,
+  "taskBytes": 2730,
+  "taskSha256": "8126966c318bc091ce331e47dbd6a6a1f3005f0cc6ea6d9c0045cdfb0c46982f",
+  "originalTools": [
+    "read_file",
+    "grep_search",
+    "glob",
+    "run_shell_command",
+    "write_file",
+    "edit"
+  ],
+  "threw": false,
+  "plan": null,
+  "physicalEffects": 0,
+  "nativeRetry": "CI pending",
+  "memoryCompletion": "not claimed"
+}

@@ -1,0 +1,22 @@
+language en
+lemma hertz
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "German physicist who was the first to produce electromagnetic waves artificially (1857-1894)"
+    id oewn-11066929-n
+    partOfSpeech n
+    synonyms ("Heinrich Hertz" "Heinrich Rudolph Hertz")
+  entry
+    definition "the unit of frequency; one hertz has a periodic interval of one second (named for Heinrich Rudolph Hertz)"
+    id oewn-15304090-n
+    partOfSpeech n
+    synonyms (Hz "cycle per second" "cycles/second" cps cycle)
+  entry
+    definition "German physicist who with James Franck proved the existence of the stationary energy states postulated by Bohr (1887-1975)"
+    id oewn-11066717-n
+    partOfSpeech n
+    synonyms ("Gustav Hertz" "Gustav Ludwig Hertz")
+source "oewn:2024"

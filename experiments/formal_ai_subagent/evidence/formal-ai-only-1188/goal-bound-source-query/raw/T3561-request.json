@@ -1,0 +1,65 @@
+{
+  "id": "T3561",
+  "dir": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations",
+  "prompt": "Implement a reusable goal-bound source observation bridge in goal-bound-bridge.mjs in this selected scratch workspace. Reuse the observed request clause, loaded role, Read provider provenance and typed final-result contracts. Plain full-file reads must still return exact full text; reads requested as inputs to an unsupported source-backed design must produce a bounded typed MissingContract Gap, not echo the inputs as the requested design. Retain explicit verified-Run status obligations without executing commands. Add independent closest controls for quoted goals, wrong-path/window/incomplete source evidence and exact plain reads. Do not implement repository-specific native answers or use Cargo or Rust compilation.",
+  "taskUtf8Bytes": 723,
+  "before": [
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/cli_solve.rs",
+      "sha256": "ed7399c8e83d81376c0498af473b007cf5d54781fcbbcbbf2b556eeb670a144e"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/main.rs",
+      "sha256": "6b4d62c53e8f7b0858e73efc5f7f6728821cae13e3708ed9a2b6210fa46caee4"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/repository_workspace/mod.rs",
+      "sha256": "578d2c1181b3de300c6833103214aabbc25f13386d9c1fd6b440e8df3b76be7a"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/repository_workspace/locate.rs",
+      "sha256": "66ea65ae3f81419964a37fb33bc7e9439e5868ef57e54f29242c5cc8f88a8211"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/repository_workspace/verify.rs",
+      "sha256": "3fbf6f6baef4c5f0fdd3d6d0269de490fbf187aac32ff28cf5e8c4e60a8f495d"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/agentic_coding/driver.rs",
+      "sha256": "768493cbbd800577547e658d87a0cdc3ae475e393a316c80dab9262113424c0a"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/agent.rs",
+      "sha256": "c6e161c906dc0d0432fe532428b01e4fc4ca5d60f543cbbf70c162cba82385ff"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/agentic_coding/shell_command.rs",
+      "sha256": "092c96d50ec79e427367e26c97be063a43021452fd0921e9f8a866c68ce6704c"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/agentic_coding/local_search.rs",
+      "sha256": "724a04cf64b7e38ebda90b2e5bcb0d45068d23d81387fde7723d648192d7a0f6"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/data/meta/repository-workspace-protocol.lino",
+      "sha256": "92662ba6917419c328f08e2e1d25dc044d327af254e82ddee0b7a27e3904a641"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/data/seed/repository-command-allowlist.lino",
+      "sha256": "59c2e25c59b24667e4dbeb8a36de479c63770e15b4dcfe5c601511e650f09285"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/experiments/issue_847_coding_ladder/run_coding_ladder.sh",
+      "sha256": "0c07ce609480f417bf0664c1abf59c225fbf1a23b3dfe2fd9591db08ab646fcb"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/source-witness.json",
+      "sha256": "3c79bf81773e80d0002f6e4339b69b1ddee1e2a1d078d78e20c3df56a3387af3"
+    }
+  ],
+  "productionWritesPermitted": false,
+  "nativeCompilationPermitted": false,
+  "provenance": "Original general capability ask; no implementation literal supplied",
+  "unchangedOriginal": "T3560",
+  "instrumentationRepair": "Await async resolved planner before recording typed metadata; original T3560 actual output retained"
+}

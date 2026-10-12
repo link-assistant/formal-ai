@@ -1,0 +1,21 @@
+{
+  "id": "T2378",
+  "dir": "/private/tmp/formal-ai-only-1188/T1971-selected-TOrqiq",
+  "prompt": "Implement a general exhaustive source serialization verification for R1188-U3. Existing rust/src/agentic_coding/self_ast.rs already exposes network_lino and render_network_source through meta-language, while rust/tests/unit/agentic-coding/issue_558_source_links.rs checks only a twenty-file sample by default. Add a bounded family of unconditional disjoint shards covering every owned Rust source, each proving source to network serialization to parsed network to reconstructed source is exactly byte-for-byte, with current-source path identity and explicit missing-engine refusal. Preserve every existing assertion and avoid local native compilation. Add the JavaScript-first nearest contract test and a checked generated coverage manifest if useful, without mistaking a digest for full serialization or using a prewritten full requirement wrapper. Limit this first finite batch to the general verification mechanism; persisted full-network release artifacts follow separately.",
+  "steps": 16,
+  "originalRequest": "/private/tmp/pr1188-root-T1971-request.json",
+  "preimages": [
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/self_ast.rs",
+      "target": "/private/tmp/formal-ai-only-1188/T1971-selected-TOrqiq/rust/src/agentic_coding/self_ast.rs",
+      "sha256": "56741f6837d16474f513793e190e7992c964ea1fbc3ee41b7128e266a0df7610",
+      "bytes": 15971
+    },
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/unit/agentic-coding/issue_558_source_links.rs",
+      "target": "/private/tmp/formal-ai-only-1188/T1971-selected-TOrqiq/rust/tests/unit/agentic-coding/issue_558_source_links.rs",
+      "sha256": "df52fd53d1dc0c9b5899be16913f3b1524ad8088e71836e0c989a20e623f26b5",
+      "bytes": 16559
+    }
+  ]
+}

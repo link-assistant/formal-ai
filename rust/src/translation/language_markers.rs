@@ -47,6 +47,35 @@ pub fn detect_response_language(normalized: &str) -> Option<&'static str> {
     detect_marker_language(ROLE_RESPONSE_LANGUAGE_MARKER, normalized)
 }
 
+/// Whether a sentence of `text` that names a response language forbids it.
+///
+/// "Never answer in Russian" names Russian through the response-language marker
+/// but opens with a forbidden surface of the statement-audit registry
+/// (`data/seed/statement-audit-registry.lino`), so it is a requirement against
+/// answering in Russian, not a request to. Each sentence is read on its own, so
+/// "Never use slang. Answer in Russian." still asks for Russian.
+#[must_use]
+pub fn forbids_response_language(text: &str) -> bool {
+    text.split(['.', '!', '?', '\n', '。', '！', '？', '।'])
+        .any(|sentence| {
+            crate::statement_audit::forbids(sentence)
+                && detect_response_language(&sentence.to_lowercase()).is_some()
+        })
+}
+
+/// The response language `text` asks for, if any.
+///
+/// It is the marker [`detect_response_language`] reads in `normalized`, unless
+/// the sentence naming it forbids it ([`forbids_response_language`]), so "never
+/// answer in Russian" asks for none.
+#[must_use]
+pub fn requested_response_language(text: &str, normalized: &str) -> Option<&'static str> {
+    if forbids_response_language(text) {
+        return None;
+    }
+    detect_response_language(normalized)
+}
+
 /// Detect whether the user reports they cannot understand the prior answer's
 /// language (issue #556).
 ///

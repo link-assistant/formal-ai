@@ -1,0 +1,17 @@
+view
+  id M-ff23042f4ee7
+  lemma acre
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a state in western Brazil bordering on Bolivia and Peru"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of area (4840 square yards) used in English-speaking countries"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a town and port in northwestern Israel in the eastern Mediterranean"
+    provenance (wordnet)

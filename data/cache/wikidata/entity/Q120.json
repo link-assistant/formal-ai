@@ -1,0 +1,105 @@
+{
+  "entities": {
+    "Q120": {
+      "type": "item",
+      "id": "Q120",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "June"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "июнь"
+        },
+        "es": {
+          "language": "es",
+          "value": "junio"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जून"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "6月"
+        }
+      },
+      "descriptions": {
+        "ru": {
+          "language": "ru",
+          "value": "шестой месяц года в юлианском и григорианском календарях"
+        },
+        "en": {
+          "language": "en",
+          "value": "sixth month of the year in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "sexto mes del año en los calendarios juliano y gregoriano"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公历及儒略历中第六个月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में छठा महीना"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Jun"
+          },
+          {
+            "language": "en",
+            "value": "6. month"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "июня"
+          },
+          {
+            "language": "ru",
+            "value": "июн."
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Jun"
+          },
+          {
+            "language": "es",
+            "value": "Jun."
+          },
+          {
+            "language": "es",
+            "value": "6"
+          },
+          {
+            "language": "es",
+            "value": "mes de Juno"
+          },
+          {
+            "language": "es",
+            "value": "mes 6"
+          },
+          {
+            "language": "es",
+            "value": "sexto mes"
+          },
+          {
+            "language": "es",
+            "value": "mes sexto"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

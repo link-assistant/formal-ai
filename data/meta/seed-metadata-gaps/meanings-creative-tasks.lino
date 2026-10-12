@@ -1,0 +1,13 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-creative-tasks.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-a12eebad1153cc30
+    record "advice_request"
+  gap seed-metadata-gap-1ed2ee3e680def03
+    record "brainstorming_request"
+  gap seed-metadata-gap-222a3acbaae758d2
+    record "creative_writing_request"
+  gap seed-metadata-gap-97980202961f9391
+    record "planning_request"

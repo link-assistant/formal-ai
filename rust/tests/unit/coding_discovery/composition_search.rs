@@ -43,11 +43,22 @@ fn an_unseen_combination_of_seeded_meanings_composes() {
         first.type_check(&FragmentCatalog::bootstrap()).is_ok(),
         "every enumerated candidate is well-typed"
     );
+    // More task inputs read first, then cheapest first: a candidate that
+    // ignores an input agrees with the examples only by coincidence.
+    let reads = |program: &ProgramIr| {
+        let shape = format!("{:?}", program.body);
+        program
+            .parameters
+            .iter()
+            .filter(|(name, _)| shape.contains(&format!("Parameter {{ name: {name:?}")))
+            .count()
+    };
     assert!(
-        found
-            .windows(2)
-            .all(|pair| pair[0].action_cost() <= pair[1].action_cost()),
-        "candidates are enumerated cheapest first"
+        found.windows(2).all(|pair| {
+            let (left, right) = (reads(&pair[0]), reads(&pair[1]));
+            left > right || (left == right && pair[0].action_cost() <= pair[1].action_cost())
+        }),
+        "candidates are enumerated by inputs read, then cheapest first"
     );
     assert!(
         !first.fragments.is_empty(),
@@ -62,7 +73,7 @@ fn search_is_deterministic_across_runs() {
 
     assert_eq!(
         first, second,
-        "same prompt, same catalog, same order — enumeration is by cost then id"
+        "same prompt, same catalog, same order — enumeration is by inputs read, cost, then id"
     );
     let mut sorted = first.clone();
     sorted.sort();
@@ -134,6 +145,9 @@ fn recursive_reduction_is_discovered_and_lowered_from_typed_fragments() {
     let spec = CodingTaskSpec {
         language: "python".to_owned(),
         artifact_shape: ArtifactShape::Function,
+        callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+            signature: String::new(),
+        },
         name: "least_weight_to_coordinate".to_owned(),
         parameters: vec![
             Parameter {
@@ -181,4 +195,91 @@ fn recursive_reduction_is_discovered_and_lowered_from_typed_fragments() {
 
     assert!(source.contains("lambda self"));
     assert!(recursive.fragments.iter().any(|id| id == "reduce_min"));
+}
+
+/// PR #1188 dogfooding: "their sum" of two scalar parameters is their binary
+/// sum, not the reduction of the first one. The seeded `integer_add` /
+/// `integer_multiply` fragments realize `reduce_sum` / `reduce_product` for two
+/// values, and the ranking prefers the candidate that reads both parameters.
+#[test]
+fn a_reduction_over_two_scalar_parameters_reads_both() {
+    let catalog = FragmentCatalog::bootstrap();
+    for (prompt, structure, fragment, source) in [
+        (
+            "Write a Python function add(a, b) that returns their sum.",
+            "reduce_sum",
+            "integer_add",
+            "a + b",
+        ),
+        (
+            "Write a Python function multiply(a, b) that returns a times b.",
+            "reduce_product",
+            "integer_multiply",
+            "a * b",
+        ),
+    ] {
+        let spec = recognise(prompt).expect("the request is a coding task");
+        let programs = search_with_structures(
+            &spec,
+            &catalog,
+            SearchBounds::default(),
+            &[structure.to_owned()],
+        );
+        let first = programs.first().expect("the reduction composes");
+        let reads_both = matches!(
+            &first.body,
+            formal_ai::program_ir::IrNode::Apply { fragment: applied, arguments }
+                if applied == fragment
+                    && matches!(
+                        arguments.as_slice(),
+                        [
+                            formal_ai::program_ir::IrNode::Parameter { name: left, .. },
+                            formal_ai::program_ir::IrNode::Parameter { name: right, .. },
+                        ] if left == "a" && right == "b"
+                    )
+        );
+        assert!(reads_both, "{prompt}: {:#?}", first.body);
+        let lowered = lowering_for("python")
+            .expect("Python lowering exists")
+            .lower(first, &catalog)
+            .expect("the binary reduction lowers");
+        assert!(lowered.contains(&format!("return {source}\n")), "{lowered}");
+    }
+}
+
+/// A single sequence parameter keeps the reduction itself.
+#[test]
+fn a_reduction_over_one_sequence_parameter_stays_a_reduction() {
+    let catalog = FragmentCatalog::bootstrap();
+    let spec = recognise("Write a Python function total(items) that returns the sum of the items.")
+        .expect("the request is a coding task");
+    let programs = search_with_structures(
+        &spec,
+        &catalog,
+        SearchBounds::default(),
+        &["reduce_sum".to_owned()],
+    );
+    let first = programs.first().expect("the reduction composes");
+    assert_eq!(first.fragments, ["reduce_sum"]);
+}
+
+/// PR #1188 dogfooding: a reduction over three scalar parameters reads all
+/// three (`a + b + c`), not the first two.
+#[test]
+fn a_reduction_over_three_scalar_parameters_reads_all_three() {
+    let catalog = FragmentCatalog::bootstrap();
+    let spec = recognise("Write a Python function add3(a, b, c) that returns their sum.")
+        .expect("the request is a coding task");
+    let programs = search_with_structures(
+        &spec,
+        &catalog,
+        SearchBounds::default(),
+        &["reduce_sum".to_owned()],
+    );
+    let first = programs.first().expect("the reduction composes");
+    let lowered = lowering_for("python")
+        .expect("Python lowering exists")
+        .lower(first, &catalog)
+        .expect("the reduction lowers");
+    assert!(lowered.contains("return a + b + c\n"), "{lowered}");
 }

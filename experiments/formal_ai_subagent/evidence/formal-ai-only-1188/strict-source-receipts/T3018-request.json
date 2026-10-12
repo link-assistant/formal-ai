@@ -1,0 +1,10 @@
+{
+  "id": "T3018",
+  "dir": "/private/tmp/formal-ai-only-1188/T3018-T2971-final",
+  "prompt": "In rust/tests/web/compiled-skill-packages.test.mjs replace all occurrences of `result.evidence_notation` with `result.links_notation`.",
+  "original": "T2971",
+  "target": "rust/tests/web/compiled-skill-packages.test.mjs",
+  "preimageSha256": "9b7d9dd18f20665fdd5cff1c1d17e58854f0e89ad2e418d8aae26dc8dbdc4c0a",
+  "expectedSha256": "1888b97785a19da3a6f4aa980cc1fadbe19b92745fe0ba3d8c0db9c05b610a08",
+  "steps": 8
+}

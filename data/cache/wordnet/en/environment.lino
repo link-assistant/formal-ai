@@ -1,0 +1,18 @@
+language en
+lemma environment
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the totality of surrounding conditions"
+    examples ("he longed for the comfortable environment of his living room")
+    id oewn-13957629-n
+    partOfSpeech n
+  entry
+    definition "the area in which something exists or lives"
+    examples ("the country — the flat agricultural surround")
+    id oewn-08584764-n
+    partOfSpeech n
+    synonyms (environs surroundings surround)
+source "oewn:2024"

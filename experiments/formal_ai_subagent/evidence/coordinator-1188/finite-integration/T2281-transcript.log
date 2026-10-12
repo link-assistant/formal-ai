@@ -1,0 +1,169 @@
+>> read {"filePath":"rust/tests/web/general-plan-event-append.test.mjs","file_path":"rust/tests/web/general-plan-event-append.test.mjs","path":"rust/tests/web/general-plan-event-append.test.mjs"}
+   <file>
+   00001| // Real append persistence for general change events, including read-back evidence.
+   00002| import assert from 'node:assert/strict';
+   00003| import { before, test } from 'node:test';
+   00004| import { execFile, execFileSync } from 'node:child_process';
+   00005| import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+   00006| import { tmpdir } from 'node:os';
+   00007| import { join } from 'node:path';
+   00008| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00009| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00010| import { composeGeneralChangePlan, planLinksNotation, PLAN_PATH } from '../../../js/agentic/general_planner.mjs';
+   00011| import { planGeneralChangeStep } from '../../../js/agentic/general_execution.mjs';
+   00012| import { reportedExitCode, harnessReportedFailure, observedPayload } from '../../../js/agentic/tool_result.mjs';
+   00013| 
+   00014| before(async () => { await installNodeHost(new WorkerHost()); });
+   00015| const request = 'Set the contents of result.txt to «hello»';
+   00016| function result(messages, call, output) {
+   00017|   const id = `event-${messages.length}`;
+   00018|   messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
+   00019|   messages.push({ role: 'tool', tool_call_id: id, content: output });
+   00020| }
+   00021| function readWriteSession(files, options = {}) {
+   00022|   const plan = composeGeneralChangePlan(request);
+   00023|   const messages = [{ role: 'user', content: request }];
+   00024|   const tools = ['read', 'write', 'run_command'];
+   00025|   const calls = [];
+   00026|   for (let turn = 0; turn < 12; turn += 1) {
+   00027|     const step = planGeneralChangeStep(messages, tools, plan);
+   00028|     if (step.kind === 'final') return { calls, answer: step.answer, event: planLinksNotation(plan) };
+   00029|     const [call] = step.calls;
+   00030|     const args = JSON.parse(call.arguments);
+   00031|     calls.push({ tool: call.tool, args });
+   00032|     const path = args.path ?? args.filePath;
+   00033|     let output;
+   00034|     if (call.tool === 'read') {
+   00035|       output = files.has(path) ? files.get(path) : `Error: File not found: ${path}`;
+   00036|       if (path === PLAN_PATH && options.denied) output = 'Error: Permission denied';
+   00037|       if (path === PLAN_PATH && options.corrupt && calls.some((entry) => entry.tool === 'write' && entry.args.path === PLAN_PATH)) output = planLinksNotation(plan);
+   00038|     } else if (call.tool === 'write') {
+   00039|       files.set(path, args.content); output = '';
+   00040|     } else { assert.equal(args.command, 'cat result.txt'); output = files.get('result.txt'); }
+   00041|     result(messages, call, output);
+   00042|   }
+   00043|   assert.fail('append session exhausted its turn budget');
+   00044| }
+   00045| 
+   00046| test('read clients preserve earlier bytes, verify the stream and deduplicate a replay', () => {
+   00047|   const earlier = 'general_change_plan\n  id "earlier"\n  target "before.txt"';
+   00048|   const files = new Map([[PLAN_PATH, earlier]]);
+   00049|   const first = readWriteSession(files);
+   00050|   assert.equal(files.get(PLAN_PATH), earlier + '\n' + first.event);
+   00051|   assert.equal(files.get('result.txt'), 'hello');
+   00052|   assert.deepEqual(first.calls.filter((call) => call.args.path === PLAN_PATH).map((call) => call.tool), ['read', 'write', 'read']);
+   00053|   const second = readWriteSession(files);
+   00054|   assert.equal(files.get(PLAN_PATH), earlier + '\n' + first.event);
+   00055|   assert.equal(second.calls.filter((call) => call.tool === 'write' && call.args.path === PLAN_PATH).length, 0);
+   00056|   assert.match(second.answer, /Completed the general change request/u);
+   00057| });
+   00058| 
+   00059| test('an absent log is created, while a permission failure never overwrites it', () => {
+   00060|   const files = new Map();
+   00061|   const created = readWriteSession(files);
+   00062|   assert.equal(files.get(PLAN_PATH), created.event);
+   00063|   const deniedFiles = new Map([[PLAN_PATH, 'retained']]);
+   00064|   const denied = readWriteSession(deniedFiles, { denied: true });
+   00065|   assert.equal(deniedFiles.get(PLAN_PATH), 'retained');
+   00066|   assert.equal(denied.calls.filter((call) => call.tool === 'write').length, 0);
+   00067|   assert.match(denied.answer, /Permission denied/u);
+   00068| });
+   00069| 
+   00070| test('read-back that loses earlier events cannot authorize the requested write', () => {
+   00071|   const files = new Map([[PLAN_PATH, 'earlier\n']]);
+   00072|   const run = readWriteSession(files, { corrupt: true });
+   00073|   assert.ok(!files.has('result.txt'));
+   00074|   assert.match(run.answer, /could not verify/u);
+   00075| });
+   00076| 
+   00077| test('run-only clients execute a quoted append and preserve history on retries', () => {
+   00078|   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-events-'));
+   00079|   try {
+   00080|     mkdirSync(join(directory, '.formal-ai'));
+   00081|     const earlier = 'earlier-event-without-final-newline';
+   00082|     writeFileSync(join(directory, PLAN_PATH), earlier);
+   00083|     const plan = composeGeneralChangePlan('Set the contents of result.txt to «quote \' and $HOME and `echo nope`»');
+   00084|     const event = planLinksNotation(plan);
+   00085|     for (let replay = 0; replay < 2; replay += 1) {
+   00086|       const messages = [{ role: 'user', content: plan.goal }];
+   00087|       const first = planGeneralChangeStep(messages, ['bash', 'read', 'write'], plan);
+   00088|       assert.equal(first.kind, 'tool_calls');
+   00089|       const call = first.calls[0];
+   00090|       assert.equal(call.tool, 'bash');
+   00091|       const output = execFileSync('/bin/sh', ['-c', JSON.parse(call.arguments).command], { cwd: directory, encoding: 'utf8', timeout: 5000 });
+   00092|       result(messages, call, output);
+   00093|       const next = planGeneralChangeStep(messages, ['bash', 'read', 'write'], plan);
+   00094|       assert.equal(next.calls[0].tool, 'write');
+   00095|       assert.equal(JSON.parse(next.calls[0].arguments).content, plan.content);
+   00096|       assert.equal(readFileSync(join(directory, PLAN_PATH), 'utf8'), earlier + '\n' + event);
+   00097|     }
+   00098|   } finally { rmSync(directory, { recursive: true, force: true }); }
+   00099| });
+   00100| 
+   00101| test('write-only clients cannot overwrite an unobserved event stream', () => {
+   00102|   const plan = composeGeneralChangePlan(request);
+   00103|   const step = planGeneralChangeStep([{ role: 'user', content: request }], ['write'], plan);
+   00104|   assert.equal(step.kind, 'final');
+   00105|   assert.match(step.answer, /not executed/u);
+   00106| });
+   00107| 
+   00108| 
+   00109| test('simultaneous retries take the bounded lock and retain exactly one event', async () => {
+   00110|   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-events-concurrent-'));
+   00111|   try {
+   00112|     mkdirSync(join(directory, '.formal-ai'));
+   00113|     const before = 'prior-event';
+   00114|     writeFileSync(join(directory, PLAN_PATH), before);
+   00115|     const plan = composeGeneralChangePlan(request);
+   00116|     const step = planGeneralChangeStep([{ role: 'user', content: request }], ['bash', 'read', 'write'], plan);
+   00117|     const command = JSON.parse(step.calls[0].arguments).command;
+   00118|     const run = () => new Promise((resolve, reject) => execFile('/bin/sh', ['-c', command], { cwd: directory, encoding: 'utf8', timeout: 5000 }, (error, output) => error ? reject(error) : resolve(output)));
+   00119|     const results = await Promise.all([run(), run()]);
+   00120|     const event = planLinksNotation(plan);
+   00121|     assert.equal(readFileSync(join(directory, PLAN_PATH), 'utf8'), before + '\n' + event);
+   00122|     assert.ok(results.every((output) => output === event));
+   00123|     mkdirSync(join(directory, PLAN_PATH + '.lock'));
+   00124|     assert.throws(() => execFileSync('/bin/sh', ['-c', command], { cwd: directory, encoding: 'utf8', timeout: 5000 }), (error) => error.status === 75);
+   00125|     assert.equal(readFileSync(join(directory, PLAN_PATH), 'utf8'), before + '\n' + event);
+   00126|   } finally { rmSync(directory, { recursive: true, force: true }); }
+   00127| });
+   00128| 
+   00129| test('repository-root shell events use the same sandbox as file tools', async () => {
+   00130|   const { execute, REPOSITORY_ROOT, PLAN_EVENTS_SANDBOX } = await import('../../../experiments/js_dogfood/drive.mjs');
+   00131|   const committed = join(REPOSITORY_ROOT, PLAN_PATH);
+   00132|   const before = readFileSync(committed, 'utf8');
+   00133|   const plan = composeGeneralChangePlan('Set the contents of mapper-proof.txt to «sandboxed plan event»');
+   00134|   const step = planGeneralChangeStep([{ role: 'user', content: plan.goal }], ['bash', 'read', 'write'], plan);
+   00135|   const output = execute(REPOSITORY_ROOT, step.calls[0]);
+   00136|   assert.equal(output, planLinksNotation(plan));
+   00137|   assert.equal(readFileSync(committed, 'utf8'), before);
+   00138|   assert.ok(readFileSync(join(PLAN_EVENTS_SANDBOX, 'general-change-plan.lino'), 'utf8').includes(planLinksNotation(plan)));
+   00139| });
+   00140| 
+   00141| 
+   00142| test('cached event readback excludes the separator before a later canonical record', async () => {
+   00143|   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-events-middle-'));
+   00144|   try {
+   00145|     mkdirSync(join(directory, '.formal-ai'));
+   00146|     const first = composeGeneralChangePlan(request);
+   00147|     const later = composeGeneralChangePlan('Set the contents of later.txt to «second event»');
+   00148|     const before = planLinksNotation(first) + '\n' + planLinksNotation(later);
+   00149|     writeFileSync(join(directory, PLAN_PATH), before);
+   00150|     const step = planGeneralChangeStep([{ role: 'user', content: request }], ['bash', 'read', 'write'], first);
+   00151|     const command = JSON.parse(step.calls[0].arguments).command;
+   00152|     const output = execFileSync('/bin/sh', ['-c', command], { cwd: directory, encoding: 'utf8', timeout: 5000 });
+   00153|     assert.equal(output, planLinksNotation(first));
+   00154|     assert.equal(readFileSync(join(directory, PLAN_PATH), 'utf8'), before);
+   00155|   } finally { rmSync(directory, { recursive: true, force: true }); }
+   00156| });
+   00157| 
+   
+   (End of file - total 157 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/general-plan-event-append.test.mjs","file_path":"rust/tests/web/general-plan-event-append.test.mjs","new":"  assert.equal(reportedExitCode(output), 0);\n  assert.equal(harnessReportedFailure(output), false);\n  assert.equal(observedPayload(output), planLinksNotation(plan));","newString":"  assert.equal(reportedExitCode(output), 0);\n  assert.equal(harnessReportedFailure(output), false);\n  assert.equal(observedPayload(output), planLinksNotation(plan));","new_str":"  assert.equal(reportedExitCode(output), 0);\n  assert.equal(harnessReportedFailure(output), false);\n  assert.equal(observedPayload(output), planLinksNotation(plan));","new_string":"  assert.equal(reportedExitCode(output), 0);\n  assert.equal(harnessReportedFailure(output), false);\n  assert.equal(observedPayload(output), planLinksNotation(plan));","old":"  assert.equal(output, planLinksNotation(plan));","oldString":"  assert.equal(output, planLinksNotation(plan));","old_str":"  assert.equal(output, planLinksNotation(plan));","old_string":"  assert.equal(output, planLinksNotation(plan));","path":"rust/tests/web/general-plan-event-append.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/general-plan-event-append.test.mjs"}
+   Output: 8694b15da4a27ed56ee13dddbb17eedbb53aa61bf4abc6a7732df5928097aa94  rust/tests/web/general-plan-event-append.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Verification failed for `rust/tests/web/general-plan-event-append.test.mjs`: the observed bytes differ from the planned workspace effect.

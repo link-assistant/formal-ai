@@ -1,0 +1,58 @@
+{
+  "lemma": "depth",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05141812-n",
+      "partOfSpeech": "n",
+      "definition": "the extent downward or backward or inward",
+      "examples": [
+        "the depth of the water",
+        "depth of a shelf",
+        "depth of a closet"
+      ],
+      "synonyms": [
+        "deepness"
+      ]
+    },
+    {
+      "id": "oewn-05101987-n",
+      "partOfSpeech": "n",
+      "definition": "degree of psychological or intellectual profundity"
+    },
+    {
+      "id": "oewn-14464549-n",
+      "partOfSpeech": "n",
+      "definition": "(usually plural) a low moral state",
+      "examples": [
+        "he had sunk to the depths of addiction"
+      ]
+    },
+    {
+      "id": "oewn-05621745-n",
+      "partOfSpeech": "n",
+      "definition": "the intellectual ability to penetrate deeply into ideas",
+      "synonyms": [
+        "astuteness",
+        "profundity",
+        "profoundness",
+        "deepness"
+      ]
+    },
+    {
+      "id": "oewn-05141618-n",
+      "partOfSpeech": "n",
+      "definition": "the attribute or quality of being deep, strong, or intense",
+      "examples": [
+        "the depth of his breathing",
+        "the depth of his sighs",
+        "the depth of his emotion"
+      ]
+    }
+  ]
+}

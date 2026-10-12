@@ -252,18 +252,16 @@ fn an_empty_search_is_not_an_error_and_offline_never_calls_the_transport() {
     let online = CachedSourceClient::new(&cache, transport.clone())
         .with_online(true)
         .with_clock(|| 1_789_344_000);
-    assert!(
-        search_functions(&online, "qzxjvkplmnbvcx", "en")
-            .expect("empty search")
-            .is_empty()
+    assert_eq!(
+        search_functions(&online, "qzxjvkplmnbvcx", "en").expect("empty search"),
+        [] as [formal_ai::coding_function_catalog::wikifunctions::FunctionMatch; 0]
     );
     let live_calls = requests.load(Ordering::SeqCst);
 
     let offline = CachedSourceClient::new(&cache, transport);
-    assert!(
-        search_functions(&offline, "qzxjvkplmnbvcx", "en")
-            .expect("cached empty search")
-            .is_empty()
+    assert_eq!(
+        search_functions(&offline, "qzxjvkplmnbvcx", "en").expect("cached empty search"),
+        [] as [formal_ai::coding_function_catalog::wikifunctions::FunctionMatch; 0]
     );
     assert_eq!(requests.load(Ordering::SeqCst), live_calls);
     fs::remove_dir_all(cache).expect("remove temporary cache");

@@ -1,0 +1,16 @@
+{
+  "lemma": "haiku",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06392118-n",
+      "partOfSpeech": "n",
+      "definition": "an epigrammatic Japanese verse form of three short lines"
+    }
+  ]
+}

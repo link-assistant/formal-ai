@@ -64,32 +64,70 @@ pub(super) fn continued_agent_task(messages: &[ChatMessage], latest: &str) -> Op
 
 /// Restore the objective carried through Agent's compaction protocol from the
 /// turns before the continuation.
+///
+/// Agent may compact an already compacted conversation, and each compaction
+/// summarizes the previous summary turn, so envelopes nest; every
+/// `Conversation summary:` envelope is read, the latest first, until one names
+/// a standing task (PR #1188 dogfooding: the second compaction listed "What did
+/// we do so far?" first and the task was lost).
 pub(super) fn compacted_agent_task(earlier: &[ChatMessage]) -> Option<String> {
     earlier.iter().rev().find_map(|message| {
         if !message.role.eq_ignore_ascii_case("assistant") {
             return None;
         }
-        let envelope = message.content.plain_text();
-        // Agent may compact an already compacted conversation. In that
-        // case its new summary repeats the protocol continuation before
-        // embedding the prior `Conversation summary:` envelope. The
-        // continuation remains trusted only as a protocol trigger; recover
-        // the objective from the last summary marker in the assistant's
-        // compaction response rather than requiring that marker at byte 0.
-        let summary = envelope
-            .rsplit_once("Conversation summary:")?
-            .1
-            .trim_start();
-        preserved_first_user_turn(summary)
-            .or_else(|| {
-                summary
-                    .split_once("\n\nTitle:")
-                    .map(|(task, _)| task.trim())
-                    .filter(|task| !task.is_empty())
-                    .map(str::to_owned)
+        let text = message.content.plain_text();
+        text.split("Conversation summary:")
+            .skip(1)
+            .collect::<Vec<_>>()
+            .into_iter()
+            .rev()
+            .find_map(|envelope| {
+                let summary = envelope.trim_start();
+                preserved_first_user_turn(summary)
+                    .or_else(|| {
+                        summary
+                            .split_once("\n\nTitle:")
+                            .and_then(|(head, _)| standing_sentences(head.trim()))
+                    })
+                    .map(repair_compacted_dot_paths)
             })
-            .map(repair_compacted_dot_paths)
     })
+}
+
+/// The summary head's sentences that state work, joined: a re-summarized head
+/// trails the client's own residue (`… What did we do so far? Title: … User
+/// turns:.`) after the task.
+fn standing_sentences(head: &str) -> Option<String> {
+    let kept: Vec<&str> = crate::agentic_coding::shell_command_policy::prose_sentences(head)
+        .into_iter()
+        .filter(|sentence| {
+            is_standing_task(sentence.text)
+                && !mentions_envelope_marker(sentence.text, "compaction_title_marker")
+                && !mentions_envelope_marker(sentence.text, "compaction_turns_marker")
+        })
+        .map(|sentence| head[sentence.span].trim())
+        .collect();
+    (!kept.is_empty()).then(|| kept.join(" "))
+}
+
+/// A turn that states work, not the client's own protocol: a continuation cue,
+/// a seeded request to summarize the conversation, or a nested summary
+/// envelope.
+fn is_standing_task(text: &str) -> bool {
+    !is_continuation_cue(text)
+        && !crate::seed::lexicon().mentions_role(
+            crate::seed::ROLE_CONVERSATION_SUMMARY_PHRASE,
+            &crate::engine::normalize_prompt(text),
+        )
+        && !mentions_envelope_marker(text, "compaction_summary_marker")
+}
+
+/// Whether `text` carries one of the compaction envelope's labels, read from
+/// `data/seed/agent-info.lino` (an absent or empty label never matches).
+fn mentions_envelope_marker(text: &str, key: &str) -> bool {
+    crate::seed::agent_info()
+        .get(key)
+        .is_some_and(|marker| !marker.is_empty() && text.contains(marker.as_str()))
 }
 
 /// Repair a Markdown dotfile path spaced apart by Agent's prose summarizer.
@@ -139,21 +177,29 @@ pub(super) fn repair_compacted_dot_paths(mut task: String) -> String {
 /// the lossless copy, so prefer its first task turn and fall back to the prose
 /// only for older summaries that did not include the appendix.
 pub(super) fn preserved_first_user_turn(summary: &str) -> Option<String> {
-    let turns = summary.split_once("\n\nUser turns:\n")?.1;
-    let first = turns.strip_prefix("  1. ")?;
-    let end = first.find("\n  2.").unwrap_or(first.len());
-    let task = first[..end].trim();
-    (!task.is_empty()).then(|| task.to_owned())
+    let mut rest = summary.split_once("\n\nUser turns:\n")?.1;
+    let mut number = 1;
+    loop {
+        let body = rest.strip_prefix(format!("  {number}. ").as_str())?;
+        let next = body.find(format!("\n  {}.", number + 1).as_str());
+        let end = next.unwrap_or(body.len());
+        let task = body[..end].trim();
+        if !task.is_empty() && is_standing_task(task) {
+            return Some(task.to_owned());
+        }
+        rest = &body[next? + 1..];
+        number += 1;
+    }
 }
 
 /// Emit a `route=value` planner-routing trace line to stderr when
-/// `FORMAL_AI_TRACE_REQUESTS=1`.
+/// `FORMAL_AI_TRACE_REQUESTS` is set to a true spelling (issue #1181).
 ///
 /// Mirrors the request tracing in
 /// `crate::protocol`. Off by default; issue #956 asked for visibility into how
 /// a received task was routed.
 pub fn trace_route(route: &str, value: &str) {
-    if std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1") {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
         eprintln!("[trace] {route}={value}");
     }
 }

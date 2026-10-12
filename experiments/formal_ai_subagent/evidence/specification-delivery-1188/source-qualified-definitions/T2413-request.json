@@ -1,0 +1,5 @@
+{
+  "taskId": "T2413",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Set the contents of data/meta/worker-line-budget/formal_ai_worker_seed_captures.lino to exactly this content:\n````````````text\nworker-module-budget\n  module \"formal_ai_worker_seed_captures.js\"\n  ceiling 20\n  rationale \"Generic source registry replay verifies actual captured body content address, URL and observed timestamp before provenance; native source_fetch/seed_captures.rs twin.\"\n````````````"
+}

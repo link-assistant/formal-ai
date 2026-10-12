@@ -1,0 +1,48 @@
+Q17
+  aliases
+    en ("State of Japan" "Land of the Rising Sun" Nippon-koku Nihon-koku Iapan Iapon "Land of Rising Sun")
+    hi ("निप्पोन" "निहोन" "उगते सूरज की भूमि" "उदयवर्ष")
+    ru ("Страна восходящего солнца" "Ниппон")
+    zh ("扶桑" "扶桑國" "日")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q1490
+              numeric-id 1490
+          hash 43881ed6ee36522acb9bb4893c1523709e3c4856
+          property P36
+          snaktype value
+        rank preferred
+  id Q17
+  labels
+    en Japan
+    hi "जापान"
+    ru "Япония"
+    zh "日本"
+    zh-hans "日本"
+  sitelinks
+    enwiki
+      site enwiki
+      title Japan
+    hiwiki
+      site hiwiki
+      title "जापान"
+    ruwiki
+      site ruwiki
+      title "Япония"
+    zhwiki
+      site zhwiki
+      title "日本"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

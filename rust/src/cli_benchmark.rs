@@ -30,6 +30,12 @@ pub enum BenchmarkAction {
         #[arg(long, default_value_t = DEFAULT_SLICE)]
         slice: usize,
 
+        /// Skip this many upstream cases first, so one suite can be split
+        /// into concurrent shards. A shard covers only part of the suite, so
+        /// it cannot append to the ledger or rewrite the failure frontier.
+        #[arg(long, default_value_t = 0)]
+        offset: usize,
+
         /// Append the honest result to the committed ledger.
         #[arg(long, default_value_t = false)]
         append: bool,
@@ -88,6 +94,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
         BenchmarkAction::Run {
             suite,
             slice,
+            offset,
             append,
             online,
             allow_install,
@@ -103,6 +110,7 @@ pub fn run_benchmark(action: BenchmarkAction) -> Result<(), Box<dyn Error>> {
                 &suite,
                 RunSuiteOptions {
                     slice,
+                    offset,
                     append,
                     ledger_path: &root.join(&ledger),
                     date: &date,
@@ -150,6 +158,7 @@ fn list_suites() {
 #[derive(Clone, Copy)]
 struct RunSuiteOptions<'a> {
     slice: usize,
+    offset: usize,
     append: bool,
     ledger_path: &'a Path,
     date: &'a str,
@@ -163,6 +172,7 @@ struct RunSuiteOptions<'a> {
 fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dyn Error>> {
     let RunSuiteOptions {
         slice,
+        offset,
         append,
         ledger_path,
         date,
@@ -172,6 +182,13 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
         learning_report,
         frontier_record,
     } = options;
+    if offset > 0 && (append || frontier_record.is_some()) {
+        return Err(vocabulary::render(
+            "external_benchmark_shard_cannot_record",
+            &[("offset", &offset.to_string())],
+        )
+        .into());
+    }
     let selected: Vec<&manifest::SuiteManifest> = if selector == "all" {
         manifest::SUITES.iter().collect()
     } else {
@@ -185,13 +202,17 @@ fn run_suites(selector: &str, options: RunSuiteOptions<'_>) -> Result<(), Box<dy
 
     let mut runs = Vec::new();
     for suite in selected {
-        let run = external_benchmarks::run_suite_with_options(
+        let run = external_benchmarks::run_suite_window(
             suite,
+            offset,
             slice,
             repository_root,
             online,
             allow_install,
         )?;
+        if offset > 0 {
+            println!("shard suite={} offset={offset} slice={slice}", run.suite);
+        }
         println!("{}", run.report());
         runs.push(run);
     }

@@ -1,0 +1,14 @@
+
+Checking rust/src/ for hardcoded user-facing natural language (R379)...
+
+Detected prose literals: 682 | allowlisted: 685
+
+Stale allowlist rows (no longer present in rust/src/ — prune them):
+
+  rust/src/agentic_coding/driver.rs: "command exited with status {code}\nstdout:\n{}\nstderr:\n{}"
+  rust/src/agentic_coding/driver.rs: "command terminated without an exit status\nstderr:\n{}"
+  rust/src/agentic_coding/driver.rs: "command timed out: {}"
+
+These strings were migrated or changed. Regenerate the allowlist with:
+rust-script scripts/check-hardcoded-language.rs --write
+

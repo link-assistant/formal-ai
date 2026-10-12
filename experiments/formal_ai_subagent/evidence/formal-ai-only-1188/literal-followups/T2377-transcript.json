@@ -1,0 +1,19 @@
+{
+  "transcript": [
+    {
+      "tool": "bash",
+      "arguments": "{\"command\":\"node -e \\\"const fs=require('fs'),path=require('path'),crypto=require('crypto');const r=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T2377-request.json'));for(const c of r.copies)if(fs.existsSync(c.target)||crypto.createHash('sha256').update(fs.readFileSync(c.source)).digest('hex')!==c.sha256)throw Error('preimage mismatch');for(const c of r.copies){fs.mkdirSync(path.dirname(c.target),{recursive:true});fs.copyFileSync(c.source,c.target);if(!fs.readFileSync(c.source).equals(fs.readFileSync(c.target)))throw Error('copy mismatch');}\\\"\"}",
+      "result": "Output: \nExit Code: 0"
+    }
+  ],
+  "answer": "The command completed successfully without output.",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

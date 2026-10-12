@@ -1,0 +1,44 @@
+/* The generated manifest is a deployment artifact keyed by every asset's bytes. */
+importScripts("precache-manifest.js");
+const CACHE = `formal-ai-offline-${self.FORMAL_AI_PRECACHE.version}`;
+const ROOT = new URL("./", self.location.href);
+self.addEventListener("install", event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    // Installation fails atomically when the seed or WASM artifact is absent.
+    await cache.addAll(self.FORMAL_AI_PRECACHE.files.map(path => new URL(path, ROOT).href));
+  })());
+});
+self.addEventListener("activate", event => {
+  event.waitUntil((async () => {
+    for (const name of await caches.keys()) {
+      if (name.startsWith("formal-ai-offline-") && name !== CACHE) await caches.delete(name);
+    }
+    await self.clients.claim();
+  })());
+});
+self.addEventListener("fetch", event => {
+  const url = new URL(event.request.url);
+  if (event.request.method !== "GET" || url.origin !== ROOT.origin || !url.pathname.startsWith(ROOT.pathname)) return;
+  const relative = decodeURIComponent(url.pathname.slice(ROOT.pathname.length));
+  // Cache only declared immutable public resources, never APIs or user data.
+  const key = relative === "app/" ? "app/index.html" : relative;
+  if (!self.FORMAL_AI_PRECACHE.files.includes(key)) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    const cached = await cache.match(new URL(key, ROOT).href, { ignoreSearch: true });
+    return cached ? unredirected(cached) : fetch(event.request);
+  })());
+});
+// A static server may answer `app/index.html` with a redirect to `app/` (clean
+// URLs), so the precached response is marked `redirected`. A navigation's
+// redirect mode is `manual`, and the browser rejects a redirected response for
+// it with net::ERR_FAILED; serve the same bytes as a fresh, unredirected body.
+async function unredirected(response) {
+  if (!response.redirected) return response;
+  return new Response(await response.blob(), {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers,
+  });
+}

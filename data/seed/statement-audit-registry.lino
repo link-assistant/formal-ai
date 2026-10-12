@@ -1,0 +1,41 @@
+statement_audit_registry
+  record_type "repository_statement_audit"
+  requirement_required "always"
+  requirement_required "must"
+  requirement_required "should"
+  requirement_required "ensure"
+  requirement_required "всегда"
+  requirement_required "должен"
+  requirement_required "следует"
+  requirement_required "हमेशा"
+  requirement_required "चाहिए"
+  requirement_required "必须"
+  requirement_required "始终"
+  requirement_forbidden "never"
+  requirement_forbidden "must not"
+  requirement_forbidden "do not"
+  requirement_forbidden "don't"
+  requirement_forbidden "никогда не"
+  requirement_forbidden "не должен"
+  requirement_forbidden "कभी नहीं"
+  requirement_forbidden "永远不要"
+  resolution_action "retract the lower-weight statement and append its replacement"
+  request-contract repository-audit
+    source "rust/src/cli_statement_audit.rs"
+    operation "statement-audit"
+    command-template "formal-ai statement-audit --root . --output {output}"
+    explicit-output-when
+      requires-role audit
+      requires-role deliver
+    explicit-output-when
+      requires-role audit
+      requires-role weigh
+      requires-role persist
+    role audit
+      pattern "audit (?:all )?(?:statement-bearing repository prose, code comments, and structured facts|repository statements|repository requirements)"
+    role weigh
+      pattern "weigh (?:conflicting requirements and captured original-source evidence|requirements and evidence) with probabilities"
+    role persist
+      pattern "persist (?:findings and associations|audit findings and associations)"
+    role deliver
+      pattern "(?:and )?write ([A-Za-z0-9_./-]+[.]lino)"

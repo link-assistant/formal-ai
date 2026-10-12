@@ -1,0 +1,160 @@
+{
+  "scope": "finite reviewed general conditional source-contract capability repair; original composition remains Open",
+  "wholeCapabilityFailure": "T3892 four Reads, no implementation",
+  "reviewedPatch": "T3894 FormalAI bash execution, zero autonomous credit",
+  "unchangedWholeAsk": {
+    "id": "T3895",
+    "taskBytes": 955,
+    "taskSha256": "7192f9d006bc785e05b59614a7ddd2bc9d0214c7e465bb00f68cd010ebff41ae",
+    "tools": [
+      "read",
+      "read",
+      "read",
+      "read"
+    ],
+    "authored": false,
+    "verified": false,
+    "goal": "unbound",
+    "conditionalGraphs": 1,
+    "destinationAbsent": true
+  },
+  "exactOriginalAcceptance": {
+    "id": "T3896",
+    "tests": 10,
+    "pass": 3,
+    "fail": 7,
+    "compositionPassed": 0,
+    "fixturesPassed": 3
+  },
+  "suppliedGeneratorEvidence": {
+    "ids": [
+      "T3885",
+      "T3886",
+      "T3889",
+      "T3890"
+    ],
+    "isolatedMainAcceptance": 10,
+    "isolatedAliasAAcceptance": 10,
+    "isolatedAliasBAcceptance": 10,
+    "autonomousCredit": 0,
+    "originalDestinationWritten": false
+  },
+  "validation": {
+    "closestSourceCallableTests": 54,
+    "existingTests": 44,
+    "newTests": 10,
+    "pass": 54,
+    "plannerNoTwinCount": 0,
+    "dependencyOutwardCount": 38,
+    "dependencyPortBypasses": 19,
+    "ratchetChanged": false,
+    "twinCitationsResolved": 1181,
+    "independentScratchControls": 52,
+    "nativeCompilationPerformed": false
+  },
+  "originalInputs": [
+    {
+      "name": "selected-summary.test.mjs",
+      "sha256": "fffe6e3f5fc510f0a84ece6d75885431d413c3ed420c0b6928c370c4fed30656",
+      "bytes": 5548,
+      "unchanged": true
+    },
+    {
+      "name": "solver_formalization.mjs",
+      "sha256": "46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c",
+      "bytes": 10914,
+      "unchanged": true
+    },
+    {
+      "name": "translation_formalization.mjs",
+      "sha256": "f4161079a1e37708915bef76e0ddab96a4104745668c051a3d0b0f7330db822b",
+      "bytes": 20319,
+      "unchanged": true
+    }
+  ],
+  "nativeCensus": {
+    "baselineCommit": "7e38111c3",
+    "currentFreshness": false,
+    "reason": "four baseline source identities changed; two new native modules have no official producer observation",
+    "requires": "next genuine official native producer; no fake local regeneration",
+    "changedSources": [
+      {
+        "path": "rust/src/agentic_coding/module_function/conditional_ir.rs",
+        "beforeSha256": null,
+        "afterSha256": "283f22208580e2cc7e2fa6852e72f71d5b17d7f9ea504cf83a8d6e2c0ca233cc"
+      },
+      {
+        "path": "rust/src/agentic_coding/module_function/conditional_schema.rs",
+        "beforeSha256": null,
+        "afterSha256": "1f7b347bc04a39b7adde8453167e09dbbe3bd224f32706a39ab3c6f401e9c85c"
+      },
+      {
+        "path": "rust/src/agentic_coding/module_function/source_contract.rs",
+        "beforeSha256": "8248ee70a01bb3276c7a4ab714226d5b2e9b8db696d85820f3b7fd3970dbade9",
+        "afterSha256": "aad089332cf7227bbc50cbfb42d2cfdbaa23b6cf0e39531fb6e201f7d4748d26"
+      },
+      {
+        "path": "rust/src/agentic_coding/module_function/callable_catalog.rs",
+        "beforeSha256": "e6e2f4c279fbb116554d06379b17dd20b6a6df9d7ed9fcd206f3223abb85cc63",
+        "afterSha256": "5915971eedec0513f10e76a56e4398d9db2a82c7a951881e38ee2da064eb5fd9"
+      },
+      {
+        "path": "rust/src/agentic_coding/module_function/discovery.rs",
+        "beforeSha256": "168f633378aa1cdc52e689d060c64c40c1ad2fb42f8cf4b5ceaa0265d11d2bf8",
+        "afterSha256": "d56802d5ed22d75d83065637dad9f33f1e970ab4b23c6c3dd4498c6e0e46746e"
+      },
+      {
+        "path": "rust/src/agentic_coding/module_function.rs",
+        "beforeSha256": "3eb1b27276f4af51392efe3b2f10c7077c2d199e7c9db5fda11622fbb96692b7",
+        "afterSha256": "c4dd4cfb49b52ee088dc51f89c330a77aeae2117d7ed1d10cf9d8459f68ec151"
+      }
+    ]
+  },
+  "retainedUnknown": [
+    "arbitrary getters/Proxy and replaced intrinsics",
+    "source-owned plain-data domain proof for arbitrary real callers",
+    "module syntax/initialization/transitive import effects",
+    "natural-language requested projection semantics",
+    "autonomous Goal/Need authoring transaction"
+  ],
+  "genuineFailedPreimage": {
+    "engineSha256": "de884e965a5129a1342330822ec9c12dc791a2df892ad55254c9b2401fb63e29",
+    "native": true,
+    "oldInterpreted": false,
+    "correction": "UnsupportedComparisonChain; target correction through T3889 FormalAI"
+  },
+  "accounting": {
+    "taskBytes": 955,
+    "actualReadResultBytes": 36923,
+    "finalAnswerBytes": 82602,
+    "beforeFinalAnswerBytes": 72019,
+    "usefulAutonomousOutputBytes": 0,
+    "autonomousCredit": 0,
+    "actualTokens": null,
+    "actualCost": null,
+    "sourcePadding": false
+  },
+  "preflightNote": "T3893 same unchanged read-only preflight request was reissued; retained raw is latest execution; zero writes/credit",
+  "archive": {
+    "name": "packet.json.gz",
+    "sha256": "e1d5df6a47da1a437adaef1a14fda7c60c94d53545aefa1d1809d65c21b85657",
+    "bytes": 383598,
+    "files": 68,
+    "encoding": "lossless per-file base64 inside gzip JSON"
+  },
+  "ownedSourceTargets": [
+    "js/agentic/module_function/conditional_ir.mjs",
+    "js/agentic/module_function/conditional_schema.mjs",
+    "js/agentic/module_function/source_contract.mjs",
+    "js/agentic/module_function/callable_catalog.mjs",
+    "js/agentic/module_function/discovery.mjs",
+    "rust/src/agentic_coding/module_function/conditional_ir.rs",
+    "rust/src/agentic_coding/module_function/conditional_schema.rs",
+    "rust/src/agentic_coding/module_function/source_contract.rs",
+    "rust/src/agentic_coding/module_function/callable_catalog.rs",
+    "rust/src/agentic_coding/module_function/discovery.rs",
+    "rust/src/agentic_coding/module_function.rs",
+    "rust/tests/web/source-callable-conditional-contracts.test.mjs",
+    "CHANGELOG.md"
+  ]
+}

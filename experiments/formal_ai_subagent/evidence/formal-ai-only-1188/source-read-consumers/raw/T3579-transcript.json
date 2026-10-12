@@ -1,0 +1,35 @@
+{
+  "transcript": [
+    {
+      "tool": "bash",
+      "arguments": "{\"command\":\"node -e 'const fs=require('\\\\''fs'\\\\'');const path=require('\\\\''path'\\\\'');const crypto=require('\\\\''crypto'\\\\'');const r=JSON.parse(fs.readFileSync('\\\\''/private/tmp/formal-ai-only-1188/T3579-request.json'\\\\'','\\\\''utf8'\\\\''));const hash=b=>crypto.createHash('\\\\''sha256'\\\\'').update(b).digest('\\\\''hex'\\\\'');for(const c of r.copies)if(hash(fs.readFileSync(c.source))!==c.sha256)throw Error('\\\\''evidence drift'\\\\'');for(const s of r.manifest.sourceIdentities)if(hash(fs.readFileSync(s.path))!==s.sha256)throw Error('\\\\''source drift'\\\\'');for(const c of r.copies){fs.mkdirSync(path.dirname(c.target),{recursive:true});fs.copyFileSync(c.source,c.target);}for(const d of r.docs)fs.writeFileSync(d.path,d.expected);fs.writeFileSync(r.manifestPath,JSON.stringify(r.manifest,null,2)+'\\\\''\\\\n'\\\\'');console.log(JSON.stringify({neutralCopies:r.copies.length,docs:r.docs.length,manifest:1}));'\"}",
+      "result": "Output: {\"neutralCopies\":44,\"docs\":2,\"manifest\":1}\n\nExit Code: 0"
+    }
+  ],
+  "answer": "The `node -e 'const fs=require('\\''fs'\\'');const path=require('\\''path'\\'');const crypto=require('\\''crypto'\\'');const r=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3579-request.json'\\'','\\''utf8'\\''));const hash=b=>crypto.createHash('\\''sha256'\\'').update(b).digest('\\''hex'\\'');for(const c of r.copies)if(hash(fs.readFileSync(c.source))!==c.sha256)throw Error('\\''evidence drift'\\'');for(const s of r.manifest.sourceIdentities)if(hash(fs.readFileSync(s.path))!==s.sha256)throw Error('\\''source drift'\\'');for(const c of r.copies){fs.mkdirSync(path.dirname(c.target),{recursive:true});fs.copyFileSync(c.source,c.target);}for(const d of r.docs)fs.writeFileSync(d.path,d.expected);fs.writeFileSync(r.manifestPath,JSON.stringify(r.manifest,null,2)+'\\''\\n'\\'');console.log(JSON.stringify({neutralCopies:r.copies.length,docs:r.docs.length,manifest:1}));'` command completed. Output:\n\n```json\n{\n  \"docs\": 2,\n  \"manifest\": 1,\n  \"neutralCopies\": 44\n}\n```",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ],
+  "selected": [
+    {
+      "kind": "tool_calls",
+      "result": null
+    },
+    {
+      "kind": "final",
+      "result": {
+        "text": "The `node -e 'const fs=require('\\''fs'\\'');const path=require('\\''path'\\'');const crypto=require('\\''crypto'\\'');const r=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3579-request.json'\\'','\\''utf8'\\''));const hash=b=>crypto.createHash('\\''sha256'\\'').update(b).digest('\\''hex'\\'');for(const c of r.copies)if(hash(fs.readFileSync(c.source))!==c.sha256)throw Error('\\''evidence drift'\\'');for(const s of r.manifest.sourceIdentities)if(hash(fs.readFileSync(s.path))!==s.sha256)throw Error('\\''source drift'\\'');for(const c of r.copies){fs.mkdirSync(path.dirname(c.target),{recursive:true});fs.copyFileSync(c.source,c.target);}for(const d of r.docs)fs.writeFileSync(d.path,d.expected);fs.writeFileSync(r.manifestPath,JSON.stringify(r.manifest,null,2)+'\\''\\n'\\'');console.log(JSON.stringify({neutralCopies:r.copies.length,docs:r.docs.length,manifest:1}));'` command completed. Output:\n\n```json\n{\n  \"docs\": 2,\n  \"manifest\": 1,\n  \"neutralCopies\": 44\n}\n```",
+        "disposition": "finding",
+        "origin": "shell_result_observed",
+        "payloadRole": "finding",
+        "artifact": null
+      }
+    }
+  ]
+}

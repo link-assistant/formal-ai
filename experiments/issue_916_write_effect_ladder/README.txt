@@ -121,7 +121,7 @@ THE RUNGS
   824.L5   #944  a copy is carried out the same way without naming copy anywhere
 
 The same identifiers name the in-process regression tests in
-tests/unit/issue_916.rs, so a defect, its fix, its unit test and its ladder rung
+tests/unit/coding_ladder_rungs.rs, so a defect, its fix, its unit test and its ladder rung
 all carry one name. R916-08a/b are `kind: "cli"` rungs: they run the wrapper CLI
 with a throwaway HOME and read the configuration files back, then run `--undo`
 and check the workspace was restored. A configuration that cannot be taken back
@@ -189,7 +189,7 @@ a recorded reason, each fix tied to a named ladder rung. This is that record.
         document is where the artifact is named — and keeps
         `planned_not_executed` for a genuinely unavailable capability.  The
         rungs here judge workspace effects from a prompt, so this one is pinned
-        by tests/unit/issue_904.rs instead: its effect depends on a fetched
+        by tests/unit/agentic-coding/work_item_planning.rs instead: its effect depends on a fetched
         document rather than on the prompt alone.
   #905  "Completed ... and verified it with `cat hello.txt`" after exit 1
         FIXED here.  R916-01, R916-04, R916-05.

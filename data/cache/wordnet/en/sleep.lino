@@ -1,0 +1,40 @@
+language en
+lemma sleep
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a natural and periodic state of rest during which consciousness of the world is suspended"
+    examples ("he didn't get enough sleep last night" "calm as a child in dreamless slumber")
+    id oewn-14048353-n
+    partOfSpeech n
+    synonyms (slumber)
+  entry
+    definition "a torpid state resembling deep sleep"
+    id oewn-14049464-n
+    partOfSpeech n
+    synonyms (sopor)
+  entry
+    definition "a period of time spent sleeping"
+    examples ("he felt better after a little sleep" "there wasn't time for a nap")
+    id oewn-15298612-n
+    partOfSpeech n
+    synonyms (nap)
+  entry
+    definition "euphemisms for death (based on an analogy between lying in a bed and in a tomb)"
+    examples ("she was laid to rest beside her husband" "they had to put their family pet to sleep")
+    id oewn-13986101-n
+    partOfSpeech n
+    synonyms (rest "eternal rest" "eternal sleep" quietus)
+  entry
+    definition "be asleep"
+    id oewn-00014735-v
+    partOfSpeech v
+    synonyms (kip slumber "log Z's" "catch some Z's")
+  entry
+    definition "be able to accommodate for sleeping"
+    examples ("This tent sleeps six people")
+    id oewn-02707305-v
+    partOfSpeech v
+source "oewn:2024"

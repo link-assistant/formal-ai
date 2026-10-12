@@ -1,0 +1,11 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-policy.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-9a5c3383abf63248
+    record "circular_joke_idiom"
+  gap seed-metadata-gap-fa3380b0fce75cc9
+    record "physical_action_query"
+  gap seed-metadata-gap-4b6ada3e2bdf8233
+    record "vulgar_content"

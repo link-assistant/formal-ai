@@ -1,0 +1,87 @@
+{
+  "lemma": "preferred",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00737286-s",
+      "partOfSpeech": "s",
+      "definition": "more desirable than another",
+      "examples": [
+        "coffee is preferable to tea",
+        "Danny's preferred name is ‘Dan’"
+      ],
+      "synonyms": [
+        "preferable"
+      ]
+    },
+    {
+      "id": "oewn-01465804-s",
+      "partOfSpeech": "s",
+      "definition": "preferred above all others and treated with partiality",
+      "examples": [
+        "the favored child"
+      ],
+      "synonyms": [
+        "favored",
+        "favorite",
+        "favourite",
+        "best-loved",
+        "pet",
+        "preferent",
+        "favoured"
+      ]
+    },
+    {
+      "id": "oewn-01830440-v",
+      "partOfSpeech": "v",
+      "definition": "like better; value more highly",
+      "examples": [
+        "Some people prefer camping to staying in hotels",
+        "We prefer sleeping outside"
+      ],
+      "synonyms": [
+        "prefer"
+      ]
+    },
+    {
+      "id": "oewn-00681308-v",
+      "partOfSpeech": "v",
+      "definition": "select as an alternative over another",
+      "examples": [
+        "I always choose the fish over the meat courses in this restaurant",
+        "She opted for the job on the East coast"
+      ],
+      "synonyms": [
+        "choose",
+        "prefer",
+        "opt"
+      ]
+    },
+    {
+      "id": "oewn-02405179-v",
+      "partOfSpeech": "v",
+      "definition": "promote over another",
+      "examples": [
+        "he favors his second daughter"
+      ],
+      "synonyms": [
+        "prefer",
+        "favor",
+        "favour"
+      ]
+    },
+    {
+      "id": "oewn-02405393-v",
+      "partOfSpeech": "v",
+      "definition": "give preference to one creditor over another",
+      "synonyms": [
+        "prefer"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+directory                            files  characters  underscore-names  dash-names  abbreviated-names  duplicated-blocks  repeated-fields
+data/meta                              153     1312811              2055         574                197                  9               82
+data/meta/ci-gates                     102       88615                 8          95                  3                  0                0
+data/meta/rename-map                     2       36738                 0           3                  0                  0                0
+data/meta/requirement-status-ledger    150      232012                 2           0                  1                  0                2
+data/meta/seed-metadata-gaps            68       89759                 0        1071                  0                  0                0
+data/meta/self-translation               1        6295                 2          10                  2                  0                0
+data/meta/worker-line-budget           140      123941                 1           1                  0                  0                0
+data/seed                              244     3210614              9420         398                245                 27              184
+data/meta (scope)                      616     1890171              2067        1716                201                  9               84
+data/seed (scope)                      244     3210614              9420         398                245                 27              184
+data/meta underscore-names fell from 2071 to 2067; lower the ceiling with --write.
+::error file=data/meta/notation-ratchet.lino::data/meta abbreviated-names rose from 200 to 201: write new names with `-` and full English words, and state shared structure once (docs/links-notation-style.md; list them with --list).
+::error file=data/meta/notation-ratchet.lino::data/meta repeated-fields rose from 80 to 84: write new names with `-` and full English words, and state shared structure once (docs/links-notation-style.md; list them with --list).

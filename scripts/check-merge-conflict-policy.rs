@@ -504,7 +504,7 @@ mod tests {
     const SAMPLE_LEDGER: &str = "merge_conflict_ledger\n  \
         path \"src/lib.rs\"\n    \
         events 59\n  \
-        path \"js/worker/formal_ai_worker_07.js\"\n    \
+        path \"js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js\"\n    \
         events 11\n";
 
     fn always_exists(_path: &str) -> bool {

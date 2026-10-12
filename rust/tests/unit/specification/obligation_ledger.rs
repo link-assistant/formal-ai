@@ -327,3 +327,51 @@ fn every_obligation_discharged_is_false_while_any_node_is_unattempted() {
         "an underivable expectation still serializes, so the gap is reportable"
     );
 }
+
+/// Closed literals are operands in every seeded language, including UTF-8 text.
+#[test]
+fn quoted_enumeration_surfaces_do_not_open_obligation_clauses() {
+    let quote = char::from(96).to_string();
+    let wrappers = [
+        ("«".to_owned(), "»".to_owned()),
+        (quote.clone(), quote.clone()),
+        (
+            format!("{}text\n", quote.repeat(4)),
+            format!("\n{}", quote.repeat(4)),
+        ),
+        (
+            format!("{}text\n", quote.repeat(12)),
+            format!("\n{}", quote.repeat(12)),
+        ),
+    ];
+    let surfaces = formal_ai::seed::lexicon().words_for_role(formal_ai::seed::ROLE_ENUMERATION_CUE);
+    assert_eq!(surfaces.len(), 34);
+    for surface in surfaces {
+        for (opening, closing) in &wrappers {
+            let request = format!(
+                "Create a.txt with exactly this content {opening}λ🙂 Alpha. {surface} beta.{closing}"
+            );
+            let clauses = clauses_with_spans(&request);
+            assert_eq!(clauses.len(), 1, "{surface} remains literal payload");
+            assert_eq!(clauses[0].0, request);
+            assert_eq!(clauses[0].1, (0, request.len()));
+        }
+    }
+}
+/// Real outer cues still split; the clause spans index the original UTF-8 bytes.
+#[test]
+fn outer_enumerations_preserve_complete_literals_and_byte_spans() {
+    for surface in formal_ai::seed::lexicon().words_for_role(formal_ai::seed::ROLE_ENUMERATION_CUE)
+    {
+        let request = format!(
+            "First, create a.txt with exactly this content «λ🙂 Alpha. Next beta.». {surface}, create b.txt with exactly this content «Gamma. Then delta». "
+        );
+        let clauses = clauses_with_spans(&request);
+        assert_eq!(clauses.len(), 2, "{surface} opens an outer obligation");
+        for (clause, (start, end)) in &clauses {
+            assert_eq!(&request[*start..*end], clause);
+        }
+        assert!(clauses[0].0.contains("«λ🙂 Alpha. Next beta.»"));
+        assert!(clauses[1].0.contains("«Gamma. Then delta»"));
+    }
+}

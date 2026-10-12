@@ -1,0 +1,25 @@
+view
+  id M-6e7b444dba80
+  lemma words
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the words that are spoken"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the text of a popular song or musical-comedy number"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "language that is spoken or written"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an angry dispute"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "words making up the dialogue of a play"
+    provenance (wordnet)

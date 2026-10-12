@@ -1,7 +1,7 @@
 //! Total reference-closure and multi-source infrastructure CI gates (issue #398, PR #399).
 //!
 //! PR #399 review (comment 4668929105) requires two things the narrower
-//! `reference_closure.rs` backbone gate does not cover, and asks that CI fail
+//! `seed/reference_closure.rs` backbone gate does not cover, and asks that CI fail
 //! immediately if either is missing or not working:
 //!
 //!   1. **Total closure** — every semantic reference anywhere in

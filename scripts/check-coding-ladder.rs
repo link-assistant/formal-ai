@@ -91,13 +91,16 @@ fn full_result(text: &str) -> Result<Measurement, String> {
     })
 }
 
+const CORRECTION_MARKER: &str = "corrected overcount";
+
 #[cfg(not(test))]
 fn ratchet_value(text: &str, field: &str) -> Result<u64, String> {
+    // The field name reads in its `-` spelling, so a base revision that still
+    // spells it with `_` compares with this one (R1188-U6).
     text.lines()
         .find_map(|line| {
-            line.trim()
-                .strip_prefix(&format!("{field} "))
-                .map(str::trim)
+            let (name, value) = line.trim().split_once(' ')?;
+            (name.replace('_', "-") == field).then(|| value.trim())
         })
         .ok_or_else(|| format!("{RATCHET} has no `{field}`"))?
         .parse()
@@ -107,10 +110,10 @@ fn ratchet_value(text: &str, field: &str) -> Result<u64, String> {
 #[cfg(not(test))]
 fn ratchet_measurement(text: &str) -> Result<Measurement, String> {
     Ok(Measurement {
-        total: ratchet_value(text, "coding_ladder_tasks")?,
-        passed: ratchet_value(text, "coding_ladder_passing")?,
-        l1_total: ratchet_value(text, "coding_ladder_l1_tasks")?,
-        l1_passed: ratchet_value(text, "coding_ladder_l1_passing")?,
+        total: ratchet_value(text, "coding-ladder-tasks")?,
+        passed: ratchet_value(text, "coding-ladder-passing")?,
+        l1_total: ratchet_value(text, "coding-ladder-l1-tasks")?,
+        l1_passed: ratchet_value(text, "coding-ladder-l1-passing")?,
     })
 }
 
@@ -142,6 +145,23 @@ fn compare_with_ratchet(
         ));
     }
     Ok(())
+}
+
+/// A lower floor than the base is accepted only as an honest measurement
+/// correction: the ratchet's `coding-ladder-correction` note must say
+/// "corrected overcount" and name the previous floor, so a spurious pass
+/// that a later run exposed is removed in the open, never silently.
+fn floor_fall_is_corrected(ratchet_text: &str, previous_passed: u64) -> bool {
+    ratchet_text.lines().any(|line| {
+        line.trim()
+            .strip_prefix("coding-ladder-correction ")
+            .is_some_and(|note| {
+                note.contains(CORRECTION_MARKER)
+                    && note
+                        .split(|c: char| !c.is_ascii_digit())
+                        .any(|number| number == previous_passed.to_string())
+            })
+    })
 }
 
 #[cfg(not(test))]
@@ -200,7 +220,10 @@ fn check(root: &Path, result: &Path, base: Option<&str>) -> Result<(), String> {
                 "coding ladder task counts differ from {base}: {recorded:?} versus {previous:?}"
             ));
         }
-        if recorded.passed < previous.passed || recorded.l1_passed < previous.l1_passed {
+        if (recorded.passed < previous.passed
+            && !floor_fall_is_corrected(&ratchet_text, previous.passed))
+            || recorded.l1_passed < previous.l1_passed
+        {
             return Err(format!(
                 "coding ladder floor fell from {previous:?} at {base} to {recorded:?}"
             ));
@@ -299,5 +322,17 @@ mod tests {
             )
             .is_err()
         );
+    }
+
+    #[test]
+    fn a_floor_fall_needs_a_correction_naming_the_old_floor() {
+        let note = "coding-ladder-correction `corrected overcount. 24 counted a spurious pass.`";
+        assert!(floor_fall_is_corrected(note, 24));
+        assert!(!floor_fall_is_corrected(note, 25));
+        assert!(!floor_fall_is_corrected(
+            "coding-ladder-correction `24 fell.`",
+            24
+        ));
+        assert!(!floor_fall_is_corrected("coding-ladder-passing 23", 24));
     }
 }

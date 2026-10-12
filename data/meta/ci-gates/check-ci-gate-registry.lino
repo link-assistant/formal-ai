@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_ci_gate_registry
+ci_gate check-ci-gate-registry
   stage rust
   description "No gate is run inline in the workflow, so the step list stops being an append point (issue #991)."
   run "rust-script --test scripts/run-ci-gates.rs && rust-script scripts/run-ci-gates.rs --check"
+  justification "run-ci-gates.rs was introduced in #991 as the enforcement layer for the per-file gate registry; without it, a gate file change goes unnoticed because CI ran a hardcoded list rather than the directory."

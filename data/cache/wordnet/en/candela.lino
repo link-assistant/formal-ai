@@ -1,0 +1,12 @@
+language en
+lemma candela
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the basic unit of luminous intensity adopted under the Systeme International d'Unites; equal to 1/60 of the luminous intensity per square centimeter of a black body radiating at the temperature of 2,046 degrees Kelvin"
+    id oewn-13663013-n
+    partOfSpeech n
+    synonyms (candle cd "standard candle")
+source "oewn:2024"

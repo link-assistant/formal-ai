@@ -1,0 +1,13 @@
+view
+  id M-3b68d6ca3040
+  lemma newton
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "English mathematician and physicist; remembered for developing the calculus and for his law of gravitation and his three laws of motion (1642-1726)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of force equal to the force that imparts an acceleration of 1 m/sec/sec to a mass of 1 kilogram; equal to 100,000 dynes"
+    provenance (wordnet)

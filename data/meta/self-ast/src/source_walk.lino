@@ -2,36 +2,38 @@ self_ast_census
   target src/source_walk.rs
   language rust
   fidelity signature
-  byte_len 22351
+  byte_len 22359
   line_count 577
-  content_id source_module_e317b6151b8ef9a2
-  symbol_count 28
+  content_id source_module_c71ffd19c69c92e4
+  symbol_count 30
   symbols
-    struct LookupBounds 34 48
-    function default 58 66
-    function trace_payload 72 86
-    struct Extracted 98 105
-    function default 108 114
-    trait CaptureExtractor 119 138
-    type Item 121 121
-    function entry_url 125 125
-    function read 130 137
-    struct WalkSourceOutcome 142 154
-    function new 159 167
-    struct WalkOutcome 173 182
-    trait SourceLookup 186 193
-    function lookup 188 192
-    function page_title 198 205
-    function is_word_boundary 215 218
-    function capitalize 220 225
-    function entry_url 235 237
-    function entry_url_in 249 270
-    function select_sources 281 314
-    function candidates 319 324
-    function skipped_sources 332 357
-    struct Walk 360 367
-    function walk_source 374 441
-    function walk_sources 447 508
-    function endpoint_key 518 530
-    function observe_failure 534 568
+    struct LookupBounds 20 34
+    function default 44 52
+    function trace_payload 58 72
+    struct Extracted 84 91
+    function default 94 100
+    trait CaptureExtractor 105 128
+    type Item 107 107
+    function entry_url 111 111
+    function fallback_entry_url 113 115
+    function read 120 127
+    struct WalkSourceOutcome 131 143
+    function new 147 155
+    struct WalkOutcome 160 169
+    trait SourceLookup 172 179
+    function lookup 174 178
+    function page_title 183 190
+    function is_word_boundary 199 202
+    function capitalize 203 208
+    function entry_url 217 219
+    function entry_url_in 225 246
+    function fallback_entry_url_in 249 261
+    function select_sources 271 304
+    function candidates 308 313
+    function skipped_sources 320 345
+    struct Walk 347 354
+    function walk_source 360 446
+    function walk_sources 451 512
+    function endpoint_key 521 533
+    function observe_failure 536 569
     function trusted_sources 575 577

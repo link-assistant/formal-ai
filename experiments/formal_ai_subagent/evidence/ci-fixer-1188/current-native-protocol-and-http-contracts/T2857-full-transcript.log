@@ -1,0 +1,14 @@
+>> bash {"command":"python3 scripts/check-closure-audit.py"}
+   Output: closure audit (data/meta/closure-audit.lino):
+     unresolved_distinct_honest: measured 1035 / reviewed 1035
+   closure audit holds
+   
+   Exit Code: 0
+== answer ==
+The `python3 scripts/check-closure-audit.py` command completed. Output:
+
+```text
+closure audit (data/meta/closure-audit.lino):
+  unresolved_distinct_honest: measured 1035 / reviewed 1035
+closure audit holds
+```

@@ -1,0 +1,36 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/observe-compiled-consumer-baseline.mjs"}
+   Output: {
+     "sourceHead": "3cecc094f60df95d7fa9eea251955520972857fd",
+     "scope": "actual unmodified production WorkerHost; genuine sequential user/assistant history",
+     "facts": {
+       "teachHasCompiledPackage": false,
+       "teachLogsActualPackage": false,
+       "countActualDialogLocalOne": true,
+       "countNativeClosingNewline": false,
+       "listHasActualPackageAndLegacyId": false,
+       "replayContentCorrect": true,
+       "replayHasCompiledPackageEvent": false,
+       "replayHasCacheHit": false
+     }
+   }
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/observe-compiled-consumer-baseline.mjs` command completed. Output:
+
+```json
+{
+  "facts": {
+    "countActualDialogLocalOne": true,
+    "countNativeClosingNewline": false,
+    "listHasActualPackageAndLegacyId": false,
+    "replayContentCorrect": true,
+    "replayHasCacheHit": false,
+    "replayHasCompiledPackageEvent": false,
+    "teachHasCompiledPackage": false,
+    "teachLogsActualPackage": false
+  },
+  "scope": "actual unmodified production WorkerHost; genuine sequential user/assistant history",
+  "sourceHead": "3cecc094f60df95d7fa9eea251955520972857fd"
+}
+```

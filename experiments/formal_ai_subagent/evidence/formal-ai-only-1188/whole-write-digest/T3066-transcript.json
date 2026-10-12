@@ -1,0 +1,8 @@
+{
+  "id": "T3066",
+  "plan": {
+    "kind": "final",
+    "answer": "Verification failed for `rust/src/web_search_core.rs`: the observed bytes differ from the planned workspace effect."
+  },
+  "physicalEffects": 0
+}

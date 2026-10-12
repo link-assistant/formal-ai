@@ -1,0 +1,115 @@
+TAP version 13
+# Subtest: an audit finding satisfies a report operand but cannot author source
+ok 1 - an audit finding satisfies a report operand but cannot author source
+  ---
+  duration_ms: 0.847959
+  ...
+# Subtest: source delivery requires an actual complete-payload syntax receipt
+ok 2 - source delivery requires an actual complete-payload syntax receipt
+  ---
+  duration_ms: 50.230542
+  ...
+# Subtest: source authoring operands reject audit text while ordinary reports retain findings
+ok 3 - source authoring operands reject audit text while ordinary reports retain findings
+  ---
+  duration_ms: 1497.344417
+  ...
+# Subtest: explicit successful stdout observations preserve compact JSON and whitespace
+ok 4 - explicit successful stdout observations preserve compact JSON and whitespace
+  ---
+  duration_ms: 0.528041
+  ...
+# Subtest: destination, immutable inputs and acceptance are declaration-scoped
+ok 5 - destination, immutable inputs and acceptance are declaration-scoped
+  ---
+  duration_ms: 55.158666
+  ...
+# Subtest: adjacent declared module and alias signature bind the same reusable discovery
+ok 6 - adjacent declared module and alias signature bind the same reusable discovery
+  ---
+  duration_ms: 0.66425
+  ...
+# Subtest: ambiguous destinations and quoted call shapes are not guessed
+ok 7 - ambiguous destinations and quoted call shapes are not guessed
+  ---
+  duration_ms: 0.357292
+  ...
+# Subtest: existing arithmetic module/test request remains on its original route
+ok 8 - existing arithmetic module/test request remains on its original route
+  ---
+  duration_ms: 68.237208
+  ...
+# Subtest: actual planner reads all operands, reports exact missing contracts, and changes no bytes
+ok 9 - actual planner reads all operands, reports exact missing contracts, and changes no bytes
+  ---
+  duration_ms: 307.852209
+  ...
+# Subtest: an absent destination is observed without creating it
+ok 10 - an absent destination is observed without creating it
+  ---
+  duration_ms: 57.440916
+  ...
+# Subtest: missing input is a failed read, never an empty source or a writing fallback
+ok 11 - missing input is a failed read, never an empty source or a writing fallback
+  ---
+  duration_ms: 32.986
+  ...
+# Subtest: permission errors on the destination retain typed failure rather than absence
+ok 12 - permission errors on the destination retain typed failure rather than absence
+  ---
+  duration_ms: 0.836792
+  ...
+# Subtest: missing read capability is an exact typed gap, not a declined route
+ok 13 - missing read capability is an exact typed gap, not a declined route
+  ---
+  duration_ms: 0.549959
+  ...
+# Subtest: old request evidence is not reused for a new discovery request
+ok 14 - old request evidence is not reused for a new discovery request
+  ---
+  duration_ms: 0.498292
+  ...
+# Subtest: explicit client error flags stay bound to the observed read
+ok 15 - explicit client error flags stay bound to the observed read
+  ---
+  duration_ms: 0.470541
+  ...
+# Subtest: numbered source payload failure words remain data
+ok 16 - numbered source payload failure words remain data
+  ---
+  duration_ms: 53.702166
+  ...
+# Subtest: signature identifiers and path components cannot supply instruction verbs
+ok 17 - signature identifiers and path components cannot supply instruction verbs
+  ---
+  duration_ms: 0.639958
+  ...
+# Subtest: source catalog excludes commented/string exports and keeps full Unicode spans
+ok 18 - source catalog excludes commented/string exports and keeps full Unicode spans
+  ---
+  duration_ms: 1.671791
+  ...
+# Subtest: source catalog resolves actual import/export aliases and refuses unobserved origin
+ok 19 - source catalog resolves actual import/export aliases and refuses unobserved origin
+  ---
+  duration_ms: 0.5205
+  ...
+# Subtest: source catalog does not certify types/effects or silently bind shadowed aliases
+ok 20 - source catalog does not certify types/effects or silently bind shadowed aliases
+  ---
+  duration_ms: 0.319083
+  ...
+# Subtest: real formalization callables retain observed bodies and unknown composition contracts
+ok 21 - real formalization callables retain observed bodies and unknown composition contracts
+  ---
+  duration_ms: 5.394666
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1597.647583

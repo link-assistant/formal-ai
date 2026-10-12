@@ -1,0 +1,67 @@
+{
+  "lemma": "derivation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08525126-n",
+      "partOfSpeech": "n",
+      "definition": "the source or origin from which something derives (i.e. comes or issues)",
+      "examples": [
+        "he prefers shoes of Italian derivation",
+        "music of Turkish derivation"
+      ]
+    },
+    {
+      "id": "oewn-06756849-n",
+      "partOfSpeech": "n",
+      "definition": "(historical linguistics) an explanation of the historical origins of a word or phrase",
+      "synonyms": [
+        "deriving",
+        "etymologizing"
+      ]
+    },
+    {
+      "id": "oewn-05788715-n",
+      "partOfSpeech": "n",
+      "definition": "a line of reasoning that shows how a conclusion follows logically from accepted propositions"
+    },
+    {
+      "id": "oewn-13483590-n",
+      "partOfSpeech": "n",
+      "definition": "(descriptive linguistics) the process whereby new words are formed from existing words or bases by affixation",
+      "examples": [
+        "‘singer’ from ‘sing’ or ‘undo’ from ‘do’ are examples of derivations"
+      ]
+    },
+    {
+      "id": "oewn-04929964-n",
+      "partOfSpeech": "n",
+      "definition": "inherited properties shared with others of your bloodline",
+      "synonyms": [
+        "ancestry",
+        "lineage",
+        "filiation"
+      ]
+    },
+    {
+      "id": "oewn-00393390-n",
+      "partOfSpeech": "n",
+      "definition": "drawing of fluid or inflammation away from a diseased part of the body"
+    },
+    {
+      "id": "oewn-00393276-n",
+      "partOfSpeech": "n",
+      "definition": "drawing off water from its main channel as for irrigation"
+    },
+    {
+      "id": "oewn-00393143-n",
+      "partOfSpeech": "n",
+      "definition": "the act of deriving something or obtaining something from a source or origin"
+    }
+  ]
+}

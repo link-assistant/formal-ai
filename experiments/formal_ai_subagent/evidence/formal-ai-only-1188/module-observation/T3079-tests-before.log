@@ -1,0 +1,157 @@
+TAP version 13
+# Subtest: complete Unicode declaration spans retain source and both coordinate systems
+ok 1 - complete Unicode declaration spans retain source and both coordinate systems
+  ---
+  duration_ms: 1.778833
+  ...
+# Subtest: bounded bodies establish Optional and scalar constraints without caller-supplied types
+ok 2 - bounded bodies establish Optional and scalar constraints without caller-supplied types
+  ---
+  duration_ms: 0.995459
+  ...
+# Subtest: an actual observed pair produces a guarded typed graph, without a wrapper or write
+ok 3 - an actual observed pair produces a guarded typed graph, without a wrapper or write
+  ---
+  duration_ms: 0.588958
+  ...
+# Subtest: nested Optional type parameters are instantiated from the observed operand
+ok 4 - nested Optional type parameters are instantiated from the observed operand
+  ---
+  duration_ms: 0.372167
+  ...
+# Subtest: stale identities and unobserved exports cannot produce a graph
+ok 5 - stale identities and unobserved exports cannot produce a graph
+  ---
+  duration_ms: 0.565416
+  ...
+# Subtest: unknown calls, field schemas, input writes and local mutation remain contract gaps
+ok 6 - unknown calls, field schemas, input writes and local mutation remain contract gaps
+  ---
+  duration_ms: 1.604041
+  ...
+# Subtest: real module initialization and transitive import effects remain separate obligations
+ok 7 - real module initialization and transitive import effects remain separate obligations
+  ---
+  duration_ms: 0.998667
+  ...
+# Subtest: ASI line terminators, incompatible branches and unsupported async are not certified
+ok 8 - ASI line terminators, incompatible branches and unsupported async are not certified
+  ---
+  duration_ms: 0.393583
+  ...
+# Subtest: duplicate bindings and malformed balanced source do not masquerade as provenance
+ok 9 - duplicate bindings and malformed balanced source do not masquerade as provenance
+  ---
+  duration_ms: 0.324333
+  ...
+# Subtest: actual original callees retain exact declarations and honest unsupported contract reasons
+ok 10 - actual original callees retain exact declarations and honest unsupported contract reasons
+  ---
+  duration_ms: 12.702792
+  ...
+# Subtest: production discovery records supported graphs but cannot certify an unbound requested goal
+ok 11 - production discovery records supported graphs but cannot certify an unbound requested goal
+  ---
+  duration_ms: 577.948791
+  ...
+# Subtest: balanced but invalid binding/export forms do not certify a module contract
+ok 12 - balanced but invalid binding/export forms do not certify a module contract
+  ---
+  duration_ms: 0.25425
+  ...
+# Subtest: deferred unknown callable effects cannot contaminate module initialization
+not ok 13 - deferred unknown callable effects cannot contaminate module initialization
+  ---
+  duration_ms: 0.72225
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:150:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'unknown'
+    - 'none'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'none'
+  actual: 'unknown'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:153:10)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: actual initialization and import regions retain independent complete byte witnesses
+not ok 14 - actual initialization and import regions retain independent complete byte witnesses
+  ---
+  duration_ms: 0.158
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:159:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading '0')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:162:40)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: structural return access witnesses retain dynamic indices without schema or purity certification
+not ok 15 - structural return access witnesses retain dynamic indices without schema or purity certification
+  ---
+  duration_ms: 0.125625
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:176:1'
+  failureType: 'testCodeFailure'
+  error: "Cannot read properties of undefined (reading 'map')"
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:182:52)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: unknown closures and structural writes cannot acquire read-only contracts
+not ok 16 - unknown closures and structural writes cannot acquire read-only contracts
+  ---
+  duration_ms: 0.408917
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:191:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + undefined
+    - []
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-callable-contracts.test.mjs:197:12)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 12
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 655.345584

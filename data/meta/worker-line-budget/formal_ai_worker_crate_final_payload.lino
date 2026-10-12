@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_final_payload.js"
+  ceiling 29
+  rationale "Generated shared payload-role guards preserve exact observed source bytes and distinguish source artifacts from reports. Initial measured ceiling for a new module; existing ceilings remain unchanged (R1188-U29, 2026-10-10)."

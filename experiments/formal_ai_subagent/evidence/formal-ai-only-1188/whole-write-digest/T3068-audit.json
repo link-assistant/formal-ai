@@ -1,0 +1,25 @@
+{
+  "id": "T3068",
+  "tools": [
+    "bash"
+  ],
+  "exact": [
+    {
+      "path": "js/agentic/workspace_change.mjs",
+      "exact": true
+    },
+    {
+      "path": "js/agentic/workspace_change/digest_verification.mjs",
+      "exact": true
+    },
+    {
+      "path": "rust/src/agentic_coding/workspace_change.rs",
+      "exact": true
+    },
+    {
+      "path": "rust/src/agentic_coding/workspace_change/digest_verification.rs",
+      "exact": true
+    }
+  ],
+  "effects": 4
+}

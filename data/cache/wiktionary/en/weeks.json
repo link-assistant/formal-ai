@@ -1,0 +1,64 @@
+[
+  {
+    "word": "weeks",
+    "phonetic": "/wiːks/",
+    "phonetics": [
+      {
+        "text": "/wiːks/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/weeks-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1230774",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Any period of seven consecutive days.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A period of seven days beginning with Sunday or Monday.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A period of five days beginning with Monday.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A subdivision of the month into longer periods of work days punctuated by shorter weekend periods of days for markets, rest, or religious observation such as a sabbath.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A 4-day week consists of Monday, Tuesday, Wednesday, and Thursday."
+          },
+          {
+            "definition": "Seven days after (sometimes before) a specified date.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'll see you Thursday week."
+          }
+        ],
+        "synonyms": [
+          "hebdomad",
+          "sennight"
+        ],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/week",
+      "https://en.wiktionary.org/wiki/weeks"
+    ]
+  }
+]

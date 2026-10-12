@@ -1,0 +1,1 @@
+Reuse the base image account that owns UID1000 as the slim runtime box account, preserving its UID and group ownership while moving its home to /home/box. Create the account only when that UID is unallocated, and verify the final account identity during the image build. This repairs the actual Ubuntu26.10 useradd collision without running the service as root.

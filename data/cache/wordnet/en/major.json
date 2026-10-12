@@ -1,0 +1,121 @@
+{
+  "lemma": "major",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01475771-a",
+      "partOfSpeech": "a",
+      "definition": "of greater importance or stature or rank",
+      "examples": [
+        "a major artist",
+        "a major role",
+        "major highways"
+      ]
+    },
+    {
+      "id": "oewn-01474453-a",
+      "partOfSpeech": "a",
+      "definition": "greater in scope or effect",
+      "examples": [
+        "a major contribution",
+        "a major improvement",
+        "a major break with tradition",
+        "a major misunderstanding"
+      ]
+    },
+    {
+      "id": "oewn-01473917-a",
+      "partOfSpeech": "a",
+      "definition": "greater in number or size or amount",
+      "examples": [
+        "a major portion (a majority) of the population",
+        "Ursa Major",
+        "a major portion of the winnings"
+      ]
+    },
+    {
+      "id": "oewn-01475494-a",
+      "partOfSpeech": "a",
+      "definition": "of the field of academic study in which one concentrates or specializes",
+      "examples": [
+        "his major field was mathematics"
+      ]
+    },
+    {
+      "id": "oewn-01475013-a",
+      "partOfSpeech": "a",
+      "definition": "(of a scale or mode) having half steps between the third and fourth degrees and the seventh and eighth degrees",
+      "examples": [
+        "major scales",
+        "the key of D major"
+      ]
+    },
+    {
+      "id": "oewn-01476823-a",
+      "partOfSpeech": "a",
+      "definition": "of greater seriousness or danger",
+      "examples": [
+        "a major earthquake",
+        "a major hurricane",
+        "a major illness"
+      ]
+    },
+    {
+      "id": "oewn-01474763-a",
+      "partOfSpeech": "a",
+      "definition": "of full legal age"
+    },
+    {
+      "id": "oewn-11170624-n",
+      "partOfSpeech": "n",
+      "definition": "British statesman who was prime minister from 1990 until 1997 (born in 1943)",
+      "synonyms": [
+        "John Major",
+        "John R. Major",
+        "John Roy Major"
+      ]
+    },
+    {
+      "id": "oewn-10302867-n",
+      "partOfSpeech": "n",
+      "definition": "a commissioned military officer in the United States Army or Air Force or Marines; below lieutenant colonel and above captain"
+    },
+    {
+      "id": "oewn-10303063-n",
+      "partOfSpeech": "n",
+      "definition": "a university student who is studying a particular field as the principal subject",
+      "examples": [
+        "she is a linguistics major"
+      ]
+    },
+    {
+      "id": "oewn-06006837-n",
+      "partOfSpeech": "n",
+      "definition": "the principal field of study of a student at a university",
+      "examples": [
+        "her major is linguistics"
+      ]
+    },
+    {
+      "id": "oewn-02107516-s",
+      "partOfSpeech": "s",
+      "definition": "of the elder of two boys with the same family name",
+      "examples": [
+        "Jones major"
+      ]
+    },
+    {
+      "id": "oewn-00609022-v",
+      "partOfSpeech": "v",
+      "definition": "have as one's principal field of study",
+      "examples": [
+        "She is majoring in linguistics"
+      ]
+    }
+  ]
+}

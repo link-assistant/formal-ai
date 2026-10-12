@@ -1,0 +1,1 @@
+product_search_marketplace_needed	"我只会在请求指明的电商平台上组合商品搜索，而这个请求没有指明任何平台，所以我不会为 {product} 猜测商店。请说出我已知的平台之一（{marketplaces}），我会组合出准确的搜索链接。\n你提出的条件：{constraints}"

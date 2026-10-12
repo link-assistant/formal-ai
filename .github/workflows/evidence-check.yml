@@ -8,7 +8,26 @@ name: Self-hosting evidence
 # live where their name says they do.
 
 on:
+  # Issue #1187 R2: a bot pull request pushed with github.token gets its
+  # checks through dispatch (.github/actions/dispatch-checks), which needs no
+  # approval; the inputs are the ones that action passes.
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
 
 permissions:
   contents: read
@@ -36,9 +55,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
+      # A dispatched run (issue #1187 R2) has no `github.base_ref`; it checks
+      # the branch against the default branch, which is every bot pull
+      # request's base.
       - name: Validate Formal-AI trailers on this pull request
         env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_BASE_REF: ${{ github.base_ref || github.event.repository.default_branch }}
         run: |
           set -euo pipefail
           base="origin/${GITHUB_BASE_REF}"
@@ -53,7 +75,7 @@ jobs:
       # thing issue #1066 actually objected to.
       - name: Formal AI authored part of this pull request
         env:
-          GITHUB_BASE_REF: ${{ github.base_ref }}
+          GITHUB_BASE_REF: ${{ github.base_ref || github.event.repository.default_branch }}
           PULL_REQUEST_CREATED_AT: ${{ github.event.pull_request.created_at }}
         run: |
           set -euo pipefail

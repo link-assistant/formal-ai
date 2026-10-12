@@ -3,11 +3,12 @@ seed_metadata_schema
   record_kind problem_solving_concept
   audit_scope "direct children of every concept record in a data/seed meanings root"
   completeness "each required field has a non-empty direct value"
-  gap_data_prefix "data/meta/seed-metadata-gaps-"
+  gap_data_directory "data/meta/seed-metadata-gaps"
   unit_not_applicable "not applicable"
   complete_source "data/seed/meanings-coding-catalog.lino"
   complete_source "data/seed/meanings-coding-config.lino"
   complete_source "data/seed/meanings-coding-tasks.lino"
+  complete_source "data/seed/meanings-decomposition-ladder.lino"
   required_field role
     value_kind "meaning reference or stable role identifier"
     semantics "the participant, function, or problem-solving slot filled by the concept"

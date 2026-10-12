@@ -1,0 +1,21 @@
+view
+  id M-3e3d624cbfe0
+  lemma median
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the number midway between the two middle numbers in a series containing an even or odd number of items"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relating to or constituting the middle value of an ordered set of values (or the average of the middle two in a set with an even number of values)"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "dividing an animal into right and left halves"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relating to or situated in or extending toward the middle"
+    provenance (wordnet)

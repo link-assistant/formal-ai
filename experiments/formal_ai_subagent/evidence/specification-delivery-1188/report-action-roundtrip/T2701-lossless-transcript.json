@@ -1,0 +1,16 @@
+{
+  "taskId": "T2701",
+  "request": {
+    "taskId": "T2701",
+    "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "prompt": "Run node /private/tmp/spec-recurrence-1188/diagnose-roundtrip-quality.mjs"
+  },
+  "observation": {
+    "taskId": "T2701",
+    "calls": [
+      "bash"
+    ]
+  },
+  "rawSha256": "4f267b07aec7da85519b6532b9539e485f6a22c0e30d7c154b875d2977075f5f",
+  "rawUtf8": ">> bash {\"command\":\"node /private/tmp/spec-recurrence-1188/diagnose-roundtrip-quality.mjs\"}\n   Output: {\n     \"immutableCorpus\": true,\n     \"sourceFilesCompared\": [\n       \"data/seed/meanings-coding-request.lino\",\n       \"data/seed/meanings-engine-report-intents.lino\"\n     ],\n     \"comparisonCommit\": \"72e8e1d92054d48c053d4ea30087ce0b0141684f\",\n     \"counts\": {\n       \"beforeArtifactMeanings\": {\n         \"ru\": {\n           \"total\": 64,\n           \"surviving\": 8\n         },\n         \"hi\": {\n           \"total\": 64,\n           \"surviving\": 6\n         },\n         \"zh\": {\n           \"total\": 64,\n           \"surviving\": 7\n         }\n       },\n       \"actualCurrent\": {\n         \"ru\": {\n           \"total\": 64,\n           \"surviving\": 8\n         },\n         \"hi\": {\n           \"total\": 64,\n           \"surviving\": 6\n         },\n         \"zh\": {\n           \"total\": 64,\n           \"surviving\": 7\n         }\n       }\n     },\n     \"regressions\": []\n   }\n   \n   Exit Code: 0\n== answer ==\nThe `node /private/tmp/spec-recurrence-1188/diagnose-roundtrip-quality.mjs` command completed. Output:\n\n```json\n{\n  \"comparisonCommit\": \"72e8e1d92054d48c053d4ea30087ce0b0141684f\",\n  \"counts\": {\n    \"actualCurrent\": {\n      \"hi\": {\n        \"surviving\": 6,\n        \"total\": 64\n      },\n      \"ru\": {\n        \"surviving\": 8,\n        \"total\": 64\n      },\n      \"zh\": {\n        \"surviving\": 7,\n        \"total\": 64\n      }\n    },\n    \"beforeArtifactMeanings\": {\n      \"hi\": {\n        \"surviving\": 6,\n        \"total\": 64\n      },\n      \"ru\": {\n        \"surviving\": 8,\n        \"total\": 64\n      },\n      \"zh\": {\n        \"surviving\": 7,\n        \"total\": 64\n      }\n    }\n  },\n  \"immutableCorpus\": true,\n  \"regressions\": [],\n  \"sourceFilesCompared\": [\n    \"data/seed/meanings-coding-request.lino\",\n    \"data/seed/meanings-engine-report-intents.lino\"\n  ]\n}\n```\n"
+}

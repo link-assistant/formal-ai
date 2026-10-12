@@ -1,0 +1,25 @@
+{
+  "lemma": "detailed",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00311231-s",
+      "partOfSpeech": "s",
+      "definition": "developed or executed with care and in minute detail",
+      "examples": [
+        "a detailed plan",
+        "the elaborate register of the inhabitants prevented tax evasion",
+        "the carefully elaborated theme"
+      ],
+      "synonyms": [
+        "elaborate",
+        "elaborated"
+      ]
+    }
+  ]
+}

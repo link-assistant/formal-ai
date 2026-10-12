@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_type": "issue_916_write_effect_rungs",
   "epic": "916",
-  "note": "Every rung names one defect from the #902-#909 family and pins the workspace effect that closes it. Rung ids match tests/unit/issue_916.rs so a fix, its regression test and its ladder rung carry one name. The 824.L* rungs are the mutating ladder issue #944 asks for: each declares the state it starts from, the sandbox is reset to exactly that state and read back before the rung runs, and the effect is judged off disk afterwards.",
+  "note": "Every rung names one defect from the #902-#909 family and pins the workspace effect that closes it. Rung ids match tests/unit/coding_ladder_rungs.rs so a fix, its regression test and its ladder rung carry one name. The 824.L* rungs are the mutating ladder issue #944 asks for: each declares the state it starts from, the sandbox is reset to exactly that state and read back before the rung runs, and the effect is judged off disk afterwards.",
   "rungs": [
     {
       "id": "R916-01",

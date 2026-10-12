@@ -22,6 +22,9 @@ use super::planner::{AgenticPlan, Capability, Progress, plan_one, tool_for};
 use super::tool_result;
 use crate::protocol::ChatMessage;
 
+const OLD_SLOT: &str = concat!("{", "old", "}");
+const NEW_SLOT: &str = concat!("{", "new", "}");
+
 /// General web-search routing (issue #680): when the request carries web-search
 /// intent (any phrasing, any supported language) *and* the CLI advertised a
 /// search tool, emit a real search `tool_call` for the extracted query. Returns
@@ -133,7 +136,20 @@ pub(super) fn plan_edit_step(
     let tool = tool_for(tool_names, Capability::Edit)?;
     let progress = Progress::scan(messages);
     if progress.done(Capability::Edit) {
-        return tool_result::latest_turn_answer(messages, tool_names, task).map(AgenticPlan::Final);
+        let answer = tool_result::latest_turn_answer(messages, tool_names, task)?;
+        // An edit tool's quiet reply is its success: the answer names the
+        // replacement, not the empty output (PR #1188 T181).
+        let stated = if tool_result::latest_turn_quiet_success(messages) {
+            super::code_task::render_seeded_change(
+                "coding_text_replaced_unchecked",
+                task,
+                &target,
+                &[(OLD_SLOT, &old), (NEW_SLOT, &new)],
+            )
+        } else {
+            None
+        };
+        return Some(AgenticPlan::Final(stated.unwrap_or(answer)));
     }
     if let Some(read_tool) =
         tool_for(tool_names, Capability::Read).filter(|_| !progress.done(Capability::Read))

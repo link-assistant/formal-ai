@@ -9,7 +9,8 @@
 # 23 passing test cases that no job executed -- a suite nobody runs is a false
 # negative wearing a green tick. This gate runs exactly the suites the other
 # two mechanisms miss; `scripts/test-scripts.sh --list` names them.
-ci_gate test_script_suites
+ci_gate test-script-suites
   stage rust
   description "Every standalone script's inline test suite runs somewhere in CI, including the ones no other mechanism compiles."
   run "scripts/test-scripts.sh"
+  justification "Four scripts carried 23 passing test cases that no CI job ever executed — a suite nobody runs is a false negative wearing a green tick; this was the defect #1081 was opened about (commit 17a6e1782)."

@@ -34,6 +34,7 @@ fn solution() -> (
         language: Some("python".to_owned()),
         code: None,
         callable_name: None,
+        callable_contract: None,
         source_tests: Vec::new(),
         license: "PSF-2.0".to_owned(),
         source_url: "https://docs.python.org/3.12/library/math.html#math.gcd".to_owned(),

@@ -1,0 +1,101 @@
+{
+  "lemma": "ate",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09580418-n",
+      "partOfSpeech": "n",
+      "definition": "goddess of criminal rashness and its punishment"
+    },
+    {
+      "id": "oewn-01170802-v",
+      "partOfSpeech": "v",
+      "definition": "take in solid food",
+      "examples": [
+        "She was eating a banana",
+        "What did you eat for dinner last night?"
+      ],
+      "synonyms": [
+        "eat"
+      ]
+    },
+    {
+      "id": "oewn-01168667-v",
+      "partOfSpeech": "v",
+      "definition": "eat a meal; take a meal",
+      "examples": [
+        "We did not eat until 10 P.M. because there were so many phone calls",
+        "I didn't eat yet, so I gladly accept your invitation"
+      ],
+      "synonyms": [
+        "eat"
+      ]
+    },
+    {
+      "id": "oewn-01182162-v",
+      "partOfSpeech": "v",
+      "definition": "take in food; used of animals only",
+      "examples": [
+        "This dog doesn't eat certain kinds of meat",
+        "What do whales eat?"
+      ],
+      "synonyms": [
+        "feed",
+        "eat"
+      ]
+    },
+    {
+      "id": "oewn-01770125-v",
+      "partOfSpeech": "v",
+      "definition": "worry or cause anxiety in a persistent way",
+      "examples": [
+        "What's eating you?"
+      ],
+      "synonyms": [
+        "eat",
+        "eat on"
+      ]
+    },
+    {
+      "id": "oewn-01159815-v",
+      "partOfSpeech": "v",
+      "definition": "use up (resources or materials)",
+      "examples": [
+        "this car consumes a lot of gas",
+        "We exhausted our savings",
+        "They run through 20 bottles of wine a week"
+      ],
+      "synonyms": [
+        "consume",
+        "eat up",
+        "use up",
+        "eat",
+        "deplete",
+        "exhaust",
+        "run through",
+        "wipe out",
+        "use",
+        "expend"
+      ]
+    },
+    {
+      "id": "oewn-00275082-v",
+      "partOfSpeech": "v",
+      "definition": "cause to deteriorate due to the action of water, air, or an acid",
+      "examples": [
+        "The acid corroded the metal",
+        "The steady dripping of water rusted the metal stopper in the sink"
+      ],
+      "synonyms": [
+        "corrode",
+        "eat",
+        "rust"
+      ]
+    }
+  ]
+}

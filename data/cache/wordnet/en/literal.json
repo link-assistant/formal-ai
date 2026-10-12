@@ -1,0 +1,62 @@
+{
+  "lemma": "literal",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01421662-a",
+      "partOfSpeech": "a",
+      "definition": "limited to the explicit meaning of a word or text",
+      "examples": [
+        "a literal translation"
+      ]
+    },
+    {
+      "id": "oewn-06782461-n",
+      "partOfSpeech": "n",
+      "definition": "a mistake in printed matter resulting from mechanical failures of some kind",
+      "synonyms": [
+        "misprint",
+        "erratum",
+        "typographical error",
+        "typo",
+        "literal error"
+      ]
+    },
+    {
+      "id": "oewn-02470192-s",
+      "partOfSpeech": "s",
+      "definition": "being or reflecting the essential or genuine character of something",
+      "examples": [
+        "her actual motive",
+        "a literal solitude like a desert",
+        "a genuine dilemma"
+      ],
+      "synonyms": [
+        "actual",
+        "genuine",
+        "real"
+      ]
+    },
+    {
+      "id": "oewn-00918097-s",
+      "partOfSpeech": "s",
+      "definition": "without interpretation or embellishment",
+      "examples": [
+        "a literal depiction of the scene before him"
+      ]
+    },
+    {
+      "id": "oewn-01798183-s",
+      "partOfSpeech": "s",
+      "definition": "avoiding embellishment or exaggeration (used for emphasis)",
+      "examples": [
+        "it's the literal truth"
+      ]
+    }
+  ]
+}

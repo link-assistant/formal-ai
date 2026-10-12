@@ -3,7 +3,7 @@
 //! The bulk lexeme importer (issue #660) and the curation helper
 //! `experiments/gather_common_nouns.py` write trimmed `data/cache/wikidata/…`
 //! `.json` snapshots. Every cache record must also carry its canonical `.lino`
-//! sibling (enforced by `tests/unit/semantic_grounding.rs`). This tool walks a
+//! sibling (enforced by `tests/unit/seed/semantic_grounding.rs`). This tool walks a
 //! cache directory and writes the missing `.lino` files with
 //! [`json_cache_file`], so a freshly gathered batch becomes closure-complete.
 //!

@@ -1,0 +1,372 @@
+{
+  "schema": "release-advertisement/v1",
+  "files": [
+    {
+      "path": ".github/workflows/container-images.yml"
+    },
+    {
+      "path": ".github/workflows/desktop-release.yml"
+    },
+    {
+      "path": ".github/workflows/publish-engine.yml"
+    },
+    {
+      "path": ".github/workflows/publish-vscode.yml"
+    },
+    {
+      "path": ".github/workflows/release-staged.yml"
+    },
+    {
+      "path": ".github/workflows/release.yml"
+    },
+    {
+      "path": "desktop/package.json"
+    },
+    {
+      "path": "packages/formal-ai-engine/package.json"
+    },
+    {
+      "path": "rust/Cargo.toml"
+    },
+    {
+      "path": "scripts/browser-engine-cold-install.mjs"
+    },
+    {
+      "path": "scripts/browser-engine-deadline.mjs"
+    },
+    {
+      "path": "scripts/build-container-image.sh"
+    },
+    {
+      "path": "scripts/build-selected-wasm.mjs"
+    },
+    {
+      "path": "scripts/configure-dockerhub-publishing.sh"
+    },
+    {
+      "path": "scripts/container-image-receipt.mjs"
+    },
+    {
+      "path": "scripts/free-runner-disk.sh"
+    },
+    {
+      "path": "scripts/github-artifact-by-identifier.mjs"
+    },
+    {
+      "path": "scripts/lib/native-response-capture.mjs"
+    },
+    {
+      "path": "scripts/lib/native-session-projections.mjs"
+    },
+    {
+      "path": "scripts/lib/release-completion-producer.mjs"
+    },
+    {
+      "path": "scripts/native-release-artifact.mjs"
+    },
+    {
+      "path": "scripts/native-release-evidence.mjs"
+    },
+    {
+      "path": "scripts/native-release-source.mjs"
+    },
+    {
+      "path": "scripts/native-release-trust.mjs"
+    },
+    {
+      "path": "scripts/prepared-release-binary.mjs"
+    },
+    {
+      "path": "scripts/publish-browser-engine.mjs"
+    },
+    {
+      "path": "scripts/qualified-data-artifact-profiles.mjs"
+    },
+    {
+      "path": "scripts/release-extension-dispatch.mjs"
+    },
+    {
+      "path": "scripts/release-extension-github.mjs"
+    },
+    {
+      "path": "scripts/release-extension-policy.mjs"
+    },
+    {
+      "path": "scripts/release-extension-publication.mjs"
+    },
+    {
+      "path": "scripts/release-extension-selection.mjs"
+    },
+    {
+      "path": "scripts/release-extension-transfer.mjs"
+    },
+    {
+      "path": "scripts/release-image-factory.mjs"
+    },
+    {
+      "path": "scripts/release-native-publication.mjs"
+    },
+    {
+      "path": "scripts/release-producer-output-receipt.mjs"
+    },
+    {
+      "path": "scripts/release-protocol.mjs"
+    },
+    {
+      "path": "scripts/release-publication-observation.mjs"
+    },
+    {
+      "path": "scripts/resolve-package-release.mjs"
+    },
+    {
+      "path": "scripts/verify-anonymous-image-manifest.mjs"
+    },
+    {
+      "path": "scripts/verify-published-native-image.mjs"
+    },
+    {
+      "path": "vscode/package.json"
+    }
+  ],
+  "distribution": {
+    "crate": {
+      "name": "formal-ai",
+      "required": true
+    },
+    "dockerHub": {
+      "repositoryExpression": "${{ vars.DOCKERHUB_IMAGE || 'konard/formal-ai' }}",
+      "policy": "required-if-configured",
+      "policySource": "scripts/configure-dockerhub-publishing.sh"
+    },
+    "ghcr": {
+      "repositoryExpression": "ghcr.io/${{ github.repository }}",
+      "required": true
+    }
+  },
+  "targets": {
+    "native": [
+      {
+        "target": "aarch64-apple-darwin"
+      },
+      {
+        "target": "aarch64-pc-windows-msvc"
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu"
+      },
+      {
+        "target": "aarch64-unknown-linux-musl"
+      },
+      {
+        "target": "x86_64-apple-darwin"
+      },
+      {
+        "target": "x86_64-pc-windows-msvc"
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      {
+        "target": "x86_64-unknown-linux-musl"
+      }
+    ],
+    "desktop": [
+      {
+        "label": "linux-arm64",
+        "target": "aarch64-unknown-linux-gnu",
+        "ebflag": "--linux"
+      },
+      {
+        "label": "linux-x64",
+        "target": "x86_64-unknown-linux-gnu",
+        "ebflag": "--linux"
+      },
+      {
+        "label": "macos-arm64",
+        "target": "aarch64-apple-darwin",
+        "ebflag": "--mac"
+      },
+      {
+        "label": "macos-x64",
+        "target": "x86_64-apple-darwin",
+        "ebflag": "--mac"
+      },
+      {
+        "label": "windows-arm64",
+        "target": "aarch64-pc-windows-msvc",
+        "ebflag": "--win"
+      },
+      {
+        "label": "windows-x64",
+        "target": "x86_64-pc-windows-msvc",
+        "ebflag": "--win"
+      }
+    ],
+    "desktopAssets": [
+      {
+        "label": "linux-arm64",
+        "builder": "AppImage",
+        "template": "formal-ai-desktop-linux-arm64-${version}.AppImage"
+      },
+      {
+        "label": "linux-arm64",
+        "builder": "deb",
+        "template": "formal-ai-desktop-linux-arm64-${version}.deb"
+      },
+      {
+        "label": "linux-arm64",
+        "builder": "tar.gz",
+        "template": "formal-ai-desktop-linux-arm64-${version}.tar.gz"
+      },
+      {
+        "label": "linux-x64",
+        "builder": "AppImage",
+        "template": "formal-ai-desktop-linux-x64-${version}.AppImage"
+      },
+      {
+        "label": "linux-x64",
+        "builder": "deb",
+        "template": "formal-ai-desktop-linux-x64-${version}.deb"
+      },
+      {
+        "label": "linux-x64",
+        "builder": "tar.gz",
+        "template": "formal-ai-desktop-linux-x64-${version}.tar.gz"
+      },
+      {
+        "label": "macos-arm64",
+        "builder": "dmg",
+        "template": "formal-ai-desktop-macos-arm64-${version}.dmg"
+      },
+      {
+        "label": "macos-arm64",
+        "builder": "zip",
+        "template": "formal-ai-desktop-macos-arm64-${version}.zip"
+      },
+      {
+        "label": "macos-x64",
+        "builder": "dmg",
+        "template": "formal-ai-desktop-macos-x64-${version}.dmg"
+      },
+      {
+        "label": "macos-x64",
+        "builder": "zip",
+        "template": "formal-ai-desktop-macos-x64-${version}.zip"
+      },
+      {
+        "label": "windows-arm64",
+        "builder": "nsis",
+        "template": "formal-ai-desktop-windows-installer-arm64-${version}.exe"
+      },
+      {
+        "label": "windows-arm64",
+        "builder": "portable",
+        "template": "formal-ai-desktop-windows-portable-arm64-${version}.exe"
+      },
+      {
+        "label": "windows-x64",
+        "builder": "nsis",
+        "template": "formal-ai-desktop-windows-installer-x64-${version}.exe"
+      },
+      {
+        "label": "windows-x64",
+        "builder": "portable",
+        "template": "formal-ai-desktop-windows-portable-x64-${version}.exe"
+      }
+    ],
+    "cli": [
+      {
+        "label": "cli-linux-arm64",
+        "target": "aarch64-unknown-linux-musl",
+        "archive": "tar.gz",
+        "template": "formal-ai-cli-aarch64-unknown-linux-musl.tar.gz"
+      },
+      {
+        "label": "cli-linux-x64",
+        "target": "x86_64-unknown-linux-musl",
+        "archive": "tar.gz",
+        "template": "formal-ai-cli-x86_64-unknown-linux-musl.tar.gz"
+      },
+      {
+        "label": "cli-macos-arm64",
+        "target": "aarch64-apple-darwin",
+        "archive": "tar.gz",
+        "template": "formal-ai-cli-aarch64-apple-darwin.tar.gz"
+      },
+      {
+        "label": "cli-macos-x64",
+        "target": "x86_64-apple-darwin",
+        "archive": "tar.gz",
+        "template": "formal-ai-cli-x86_64-apple-darwin.tar.gz"
+      },
+      {
+        "label": "cli-windows-x64",
+        "target": "x86_64-pc-windows-msvc",
+        "archive": "zip",
+        "template": "formal-ai-cli-x86_64-pc-windows-msvc.zip"
+      }
+    ],
+    "containers": [
+      {
+        "variant": "full",
+        "arch": "amd64",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      {
+        "variant": "full",
+        "arch": "arm64",
+        "target": "aarch64-unknown-linux-gnu"
+      },
+      {
+        "variant": "slim",
+        "arch": "amd64",
+        "target": "x86_64-unknown-linux-gnu"
+      },
+      {
+        "variant": "slim",
+        "arch": "arm64",
+        "target": "aarch64-unknown-linux-gnu"
+      }
+    ],
+    "browser": {
+      "package": "@link-assistant/formal-ai-engine",
+      "releaseAttachment": "required",
+      "npm": "required-if-configured"
+    },
+    "extensions": {
+      "publisher": "link-assistant",
+      "package": "formal-ai-vscode",
+      "template": "formal-ai-vscode-${version}.vsix",
+      "releaseAttachment": "required",
+      "registries": [
+        {
+          "name": "marketplace",
+          "policy": "required-if-configured",
+          "credential": "VSCE_PAT",
+          "workflow": ".github/workflows/publish-vscode.yml",
+          "job": "authoritative-publication"
+        },
+        {
+          "name": "open-vsx",
+          "policy": "required-if-configured",
+          "credential": "OVSX_PAT",
+          "workflow": ".github/workflows/publish-vscode.yml",
+          "job": "authoritative-publication"
+        }
+      ],
+      "outcomes": {
+        "schema": "formal-ai-extension-publication-outcome/v1",
+        "statuses": [
+          "skipped-unconfigured",
+          "publication-command-completed",
+          "publication-failed",
+          "existing-publication-unverified",
+          "not-attempted"
+        ],
+        "delivery": "Unknown",
+        "publicationComplete": false
+      }
+    }
+  },
+  "publicationAuthority": false
+}

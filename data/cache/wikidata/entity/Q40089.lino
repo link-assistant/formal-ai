@@ -1,14 +1,17 @@
 Q40089
   aliases
     en (bricks)
+    es (ladriello ladrillazo ladrilloso ladrillos)
     zh ("砖" "板砖" "砖头" "磚塊" "甓")
   descriptions
     en "block or a single unit of a ceramic material used in masonry construction"
+    es "bloque o unidad única de material cerámico utilizado en la albañilería"
     ru "прямоугольный брусок из обожжённой или реже необожжённой глины с различными добавками, который используется для строительных работ"
     zh "建筑材料"
   id Q40089
   labels
     en brick
+    es ladrillo
     hi "ईंट"
     ru "кирпич"
     zh "磚"

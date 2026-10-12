@@ -1,0 +1,9 @@
+view
+  id M-d32d39a23bfe
+  lemma verbose
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "using or containing too many words"
+    provenance (wordnet)

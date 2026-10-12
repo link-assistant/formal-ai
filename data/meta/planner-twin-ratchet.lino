@@ -1,0 +1,25 @@
+# Planner twin ratchet (R1188-U16).
+#
+# The ceiling on functions that a module under js/agentic/ exports with no Rust
+# twin: no `fn` in rust/src/ spelled as the snake_case form of the name, and no
+# `fn`, `const`, `static`, `struct` or `enum` its doc comment cites in a
+# `Mirrors` line, unless its doc comment says it stands for a Rust built-in or
+# for an item of a crate the Rust root depends on: "Rust built-in" or "Rust
+# dependency", then the feature in backticks, such as str::char_indices or
+# serde_json::from_str. Every exported planner function has a twin since R1188-U16
+# reached 0, so a new one cannot land in JavaScript alone.
+# scripts/check-planner-twins.mjs fails above the ceiling and asks for the
+# ceiling to be lowered below it, so the number only falls.
+#
+# `exempt` lists a module that exists only on the JavaScript side by design,
+# with the reason. A module that ports a Rust module is never exempt.
+planner-twin-ratchet
+  no-twin-ceiling 0
+  exempt js/agentic/host.mjs
+    reason "The host port the planner reads files, the clock and the network through; native Rust calls std directly."
+  exempt js/agentic/node-host.mjs
+    reason "The Node.js adapter behind the host port (node:fs, fetch); native Rust needs no adapter."
+  exempt js/agentic/write_str.mjs
+    reason "Rust str and char semantics for JavaScript strings (UTF-8 offsets, Unicode trimming); Rust has them built in."
+  exempt js/agentic/crate/rust_str.mjs
+    reason "Rust str and char semantics for JavaScript strings (split_whitespace, is_alphanumeric); Rust has them built in."

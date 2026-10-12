@@ -1,0 +1,5 @@
+{
+  "taskId": "T2418",
+  "target": "rust/src/solver_handlers/text_rewrite.rs",
+  "byteEqual": true
+}

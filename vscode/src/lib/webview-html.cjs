@@ -197,7 +197,7 @@ function buildWebviewHtml(options = {}) {
 
   // 4. Inject the bridge + worker shim at the very top of <body>, so it runs
   //    before the app scripts at the bottom of the document.
-  const shim = `<script nonce="${nonce}">\n${bridgeShimSource(webRootUri, seedRootUri, status)}\n</script>`;
+  const shim = `<script nonce="${nonce}">\n${bridgeShimSource(webRootUri, seedRootUri, status)}\nwindow.FORMAL_AI_DEBUG_VIEW = ${Boolean(options.debuggerView)};\n</script>`;
   html = html.replace(/<body(\s[^>]*)?>/i, (match) => `${match}\n    ${shim}`);
 
   return html;

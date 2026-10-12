@@ -1,0 +1,13 @@
+view
+  id M-19c9920a8818
+  lemma literally
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in a literal sense"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "(intensifier before a figurative expression) without exaggeration"
+    provenance (wordnet)

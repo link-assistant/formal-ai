@@ -1,0 +1,1143 @@
+>> read {"filePath":"scripts/lib/rust-specification-cases.mjs","file_path":"scripts/lib/rust-specification-cases.mjs","path":"scripts/lib/rust-specification-cases.mjs"}
+   <file>
+   00001| // Rust specification tests → JavaScript cases (R1188-U29, R1188-U30): the
+   00002| // rust → js direction of the automated translation, as a recorded workaround
+   00003| // until the meta language reads Rust tests.
+   00004| //
+   00005| // The specification suite under rust/tests/unit/specification/ pins most
+   00006| // requirements through the native engine only. Many of its tests have one
+   00007| // shape: ask the engine a prompt, then assert that the answer contains (or
+   00008| // does not contain) a text, or that the intent is a name. Such a test means
+   00009| // the same thing for the browser worker, so this module reads it into a case
+   00010| // that a JavaScript runner can ask the worker. A test with any other
+   00011| // statement is left to Rust and counted.
+   00012| //
+   00013| // The reader is a small tokenizer (strings, raw strings, identifiers,
+   00014| // punctuation; comments dropped) and a matcher of whole statements.
+   00015| 
+   00016| import { readdirSync, readFileSync } from 'node:fs';
+   00017| import { join } from 'node:path';
+   00018| 
+   00019| /**
+   00020|  * The tokens of a Rust source, comments dropped.
+   00021|  * @param {string} source
+   00022|  * @returns {Array<{kind: string, text: string}>}
+   00023|  */
+   00024| export function tokenize(source) {
+   00025|   const tokens = [];
+   00026|   let index = 0;
+   00027|   while (index < source.length) {
+   00028|     const rest = source.slice(index);
+   00029|     const space = /^\s+/u.exec(rest);
+   00030|     if (space) {
+   00031|       index += space[0].length;
+   00032|       continue;
+   00033|     }
+   00034|     if (rest.startsWith('//')) {
+   00035|       const end = source.indexOf('\n', index);
+   00036|       index = end < 0 ? source.length : end;
+   00037|       continue;
+   00038|     }
+   00039|     if (rest.startsWith('/*')) {
+   00040|       const end = source.indexOf('*/', index + 2);
+   00041|       index = end < 0 ? source.length : end + 2;
+   00042|       continue;
+   00043|     }
+   00044|     const raw = /^r(#*)"/u.exec(rest);
+   00045|     if (raw) {
+   00046|       const close = `"${raw[1]}`;
+   00047|       const end = source.indexOf(close, index + raw[0].length);
+   00048|       tokens.push({ kind: 'string', text: source.slice(index + raw[0].length, end) });
+   00049|       index = end + close.length;
+   00050|       continue;
+   00051|     }
+   00052|     if (rest.startsWith('"')) {
+   00053|       const { value, length } = readString(rest);
+   00054|       tokens.push({ kind: 'string', text: value });
+   00055|       index += length;
+   00056|       continue;
+   00057|     }
+   00058|     const char = /^'(?:\\.|[^\\'])'/u.exec(rest);
+   00059|     if (char) {
+   00060|       tokens.push({ kind: 'char', text: char[0] });
+   00061|       index += char[0].length;
+   00062|       continue;
+   00063|     }
+   00064|     const word = /^[A-Za-z_][A-Za-z0-9_]*/u.exec(rest);
+   00065|     if (word) {
+   00066|       tokens.push({ kind: 'word', text: word[0] });
+   00067|       index += word[0].length;
+   00068|       continue;
+   00069|     }
+   00070|     const number = /^[0-9][0-9_.a-z]*/u.exec(rest);
+   00071|     if (number) {
+   00072|       tokens.push({ kind: 'number', text: number[0] });
+   00073|       index += number[0].length;
+   00074|       continue;
+   00075|     }
+   00076|     tokens.push({ kind: 'punct', text: rest[0] });
+   00077|     index += 1;
+   00078|   }
+   00079|   return tokens;
+   00080| }
+   00081| 
+   00082| /**
+   00083|  * Read one double-quoted Rust string literal at the start of `text`.
+   00084|  * @param {string} text
+   00085|  * @returns {{value: string, length: number}}
+   00086|  */
+   00087| function readString(text) {
+   00088|   let value = '';
+   00089|   let index = 1;
+   00090|   while (index < text.length && text[index] !== '"') {
+   00091|     if (text[index] !== '\\') {
+   00092|       value += text[index];
+   00093|       index += 1;
+   00094|       continue;
+   00095|     }
+   00096|     const next = text[index + 1];
+   00097|     if (next === 'u') {
+   00098|       const close = text.indexOf('}', index);
+   00099|       value += String.fromCodePoint(Number.parseInt(text.slice(index + 3, close), 16));
+   00100|       index = close + 1;
+   00101|     } else if (next === '\n') {
+   00102|       index += 2;
+   00103|       while (/\s/u.test(text[index])) {
+   00104|         index += 1;
+   00105|       }
+   00106|     } else {
+   00107|       value += { n: '\n', t: '\t', r: '\r', 0: '\0' }[next] ?? next;
+   00108|       index += 2;
+   00109|     }
+   00110|   }
+   00111|   return { value, length: index + 1 };
+   00112| }
+   00113| 
+   00114| /**
+   00115|  * The `#[test]` functions of a token list, with their body tokens.
+   00116|  * Ignored tests (`#[ignore]`) are left out.
+   00117|  * @param {Array<{kind: string, text: string}>} tokens
+   00118|  * @returns {Array<{name: string, body: Array<{kind: string, text: string}>}>}
+   00119|  */
+   00120| export function testFunctions(tokens) {
+   00121|   const tests = [];
+   00122|   for (let index = 0; index < tokens.length; index += 1) {
+   00123|     if (!isAttribute(tokens, index, 'test')) {
+   00124|       continue;
+   00125|     }
+   00126|     let cursor = index + 4;
+   00127|     let ignored = false;
+   00128|     while (tokens[cursor]?.text === '#') {
+   00129|       ignored ||= tokens[cursor + 2]?.text === 'ignore';
+   00130|       cursor = closing(tokens, cursor + 1) + 1;
+   00131|     }
+   00132|     if (tokens[cursor]?.text !== 'fn') {
+   00133|       continue;
+   00134|     }
+   00135|     const name = tokens[cursor + 1].text;
+   00136|     let open = cursor;
+   00137|     while (tokens[open].text !== '{') {
+   00138|       open += 1;
+   00139|     }
+   00140|     const end = closing(tokens, open);
+   00141|     if (!ignored) {
+   00142|       tests.push({ name, body: tokens.slice(open + 1, end) });
+   00143|     }
+   00144|     index = end;
+   00145|   }
+   00146|   return tests;
+   00147| }
+   00148| 
+   00149| function isAttribute(tokens, index, name) {
+   00150|   return tokens[index]?.text === '#' && tokens[index + 1]?.text === '[' && tokens[index + 2]?.text === name
+   00151|     && tokens[index + 3]?.text === ']';
+   00152| }
+   00153| 
+   00154| /**
+   00155|  * The index of the bracket that closes the one at `open`.
+   00156|  * @param {Array<{kind: string, text: string}>} tokens
+   00157|  * @param {number} open
+   00158|  * @returns {number}
+   00159|  */
+   00160| function closing(tokens, open) {
+   00161|   const pairs = { '(': ')', '[': ']', '{': '}' };
+   00162|   const stack = [];
+   00163|   for (let index = open; index < tokens.length; index += 1) {
+   00164|     const { kind, text } = tokens[index];
+   00165|     if (kind !== 'punct') {
+   00166|       continue;
+   00167|     }
+   00168|     if (pairs[text]) {
+   00169|       stack.push(pairs[text]);
+   00170|     } else if (text === stack.at(-1)) {
+   00171|       stack.pop();
+   00172|       if (stack.length === 0) {
+   00173|         return index;
+   00174|       }
+   00175|     }
+   00176|   }
+   00177|   return tokens.length;
+   00178| }
+   00179| 
+   00180| /**
+   00181|  * Split a body into statements at top-level `;`.
+   00182|  * @param {Array<{kind: string, text: string}>} body
+   00183|  * @returns {Array<Array<{kind: string, text: string}>>}
+   00184|  */
+   00185| function statements(body) {
+   00186|   const result = [[]];
+   00187|   let depth = 0;
+   00188|   // A trailing comma before a closing bracket (rustfmt's layout) means nothing.
+   00189|   const tokens = body.filter((token, index) => !(token.text === ',' && token.kind === 'punct'
+   00190|     && [')', ']', '}'].includes(body[index + 1]?.text)));
+   00191|   for (const token of tokens) {
+   00192|     if (token.kind === 'punct' && '([{'.includes(token.text)) {
+   00193|       depth += 1;
+   00194|     } else if (token.kind === 'punct' && ')]}'.includes(token.text)) {
+   00195|       depth -= 1;
+   00196|     }
+   00197|     if (depth === 0 && token.text === ';' && token.kind === 'punct') {
+   00198|       result.push([]);
+   00199|     } else {
+   00200|       result.at(-1).push(token);
+   00201|     }
+   00202|   }
+   00203|   return result.filter((statement) => statement.length > 0);
+   00204| }
+   00205| 
+   00206| /**
+   00207|  * Whether `tokens` spell `pattern` exactly. A pattern element is a literal
+   00208|  * text, or `STR` (any string) or `ID` (any word), which are captured.
+   00209|  * @param {Array<{kind: string, text: string}>} tokens
+   00210|  * @param {Array<string>} pattern
+   00211|  * @returns {Array<string> | null}
+   00212|  */
+   00213| function match(tokens, pattern) {
+   00214|   if (tokens.length !== pattern.length) {
+   00215|     return null;
+   00216|   }
+   00217|   const captured = [];
+   00218|   for (let index = 0; index < pattern.length; index += 1) {
+   00219|     const element = pattern[index];
+   00220|     const token = tokens[index];
+   00221|     if (element === 'STR' && token.kind === 'string') {
+   00222|       captured.push(token.text);
+   00223|     } else if (element === 'ID' && token.kind === 'word') {
+   00224|       captured.push(token.text);
+   00225|     } else if (element !== token.text || token.kind === 'string') {
+   00226|       return null;
+   00227|     }
+   00228|   }
+   00229|   return captured;
+   00230| }
+   00231| 
+   00232| const FIELDS = { answer: 'content', intent: 'intent' };
+   00233| 
+   00234| /**
+   00235|  * The assertion of one statement, without its message arguments.
+   00236|  * @param {Array<{kind: string, text: string}>} statement
+   00237|  * @param {Map<string, string>} bindings name → `response` or `content`
+   00238|  * @returns {{binding: string, field: string, op: string, value: string, lower: boolean} | null}
+   00239|  */
+   00240| function assertion(statement, bindings) {
+   00241|   const macro = match(statement.slice(0, 3), ['ID', '!', '(']);
+   00242|   if (!macro || statement.at(-1).text !== ')') {
+   00243|     return null;
+   00244|   }
+   00245|   const args = splitArguments(statement.slice(3, -1));
+   00246|   if (macro[0] === 'assert') {
+   00247|     return condition(args[0], bindings);
+   00248|   }
+   00249|   if ((macro[0] === 'assert_eq' || macro[0] === 'assert_ne') && args.length >= 2) {
+   00250|     const [left, right] = args;
+   00251|     const value = match(right, ['STR']);
+   00252|     const field = fieldOf(left, bindings);
+   00253|     if (!value || !field) {
+   00254|       return null;
+   00255|     }
+   00256|     return { ...field, value: value[0], lower: false, op: macro[0] === 'assert_eq' ? 'equals' : 'differs' };
+   00257|   }
+   00258|   return null;
+   00259| }
+   00260| 
+   00261| /**
+   00262|  * A boolean condition: one test, or tests joined by `&&` (every one holds)
+   00263|  * or by `||` (one of them holds).
+   00264|  * @returns {object | null}
+   00265|  */
+   00266| function condition(tokens, bindings) {
+   00267|   for (const [operator, op] of [['|', 'any'], ['&', 'all']]) {
+   00268|     const parts = splitOperator(tokens, operator);
+   00269|     if (parts.length > 1) {
+   00270|       const checks = parts.map((part) => condition(part, bindings));
+   00271|       return checks.every(Boolean) ? { op, checks } : null;
+   00272|     }
+   00273|   }
+   00274|   const negated = tokens[0]?.text === '!';
+   00275|   const expression = negated ? tokens.slice(1) : tokens;
+   00276|   const evidence = evidenceOf(expression, bindings);
+   00277|   if (evidence) {
+   00278|     return { ...evidence, op: negated ? `lacks-${evidence.op}` : `has-${evidence.op}` };
+   00279|   }
+   00280|   const subject = subjectOf(expression, bindings);
+   00281|   return subject ? { ...subject, op: negated ? 'excludes' : 'includes' } : null;
+   00282| }
+   00283| 
+   00284| /**
+   00285|  * Split at a top-level doubled operator (`||` or `&&`).
+   00286|  */
+   00287| function splitOperator(tokens, operator) {
+   00288|   const parts = [[]];
+   00289|   let depth = 0;
+   00290|   for (let index = 0; index < tokens.length; index += 1) {
+   00291|     const { kind, text } = tokens[index];
+   00292|     if (kind === 'punct' && '([{'.includes(text)) {
+   00293|       depth += 1;
+   00294|     } else if (kind === 'punct' && ')]}'.includes(text)) {
+   00295|       depth -= 1;
+   00296|     }
+   00297|     if (depth === 0 && kind === 'punct' && text === operator && tokens[index + 1]?.text === operator) {
+   00298|       parts.push([]);
+   00299|       index += 1;
+   00300|     } else {
+   00301|       parts.at(-1).push(tokens[index]);
+   00302|     }
+   00303|   }
+   00304|   return parts;
+   00305| }
+   00306| 
+   00307| /**
+   00308|  * The response field an expression reads: `name.answer`, `name.intent`, or a
+   00309|  * bound content string.
+   00310|  */
+   00311| function fieldOf(tokens, bindings) {
+   00312|   const bound = match(tokens, ['ID']);
+   00313|   if (bound && bindings.get(bound[0]) === 'content') {
+   00314|     return { binding: bound[0], field: 'content' };
+   00315|   }
+   00316|   const read = match(tokens, ['ID', '.', 'ID']);
+   00317|   if (read && bindings.get(read[0]) === 'response' && FIELDS[read[1]]) {
+   00318|     return { binding: read[0], field: FIELDS[read[1]] };
+   00319|   }
+   00320|   return null;
+   00321| }
+   00322| 
+   00323| const ANY_LINK = ['ID', '.', 'evidence_links', '.', 'iter', '(', ')', '.', 'any', '(', '|', 'ID', '|'];
+   00324| 
+   00325| /**
+   00326|  * `<response>.evidence_links.iter().any(|link| link == "…")`, or with
+   00327|  * `link.starts_with("…")`: an evidence link equal to, or starting with, a text.
+   00328|  */
+   00329| function evidenceOf(tokens, bindings) {
+   00330|   for (const [suffix, op] of [
+   00331|     [['ID', '=', '=', 'STR', ')'], 'evidence'],
+   00332|     [['ID', '.', 'starts_with', '(', 'STR', ')', ')'], 'evidence-prefix'],
+   00333|   ]) {
+   00334|     const captured = match(tokens, [...ANY_LINK, ...suffix]);
+   00335|     if (captured && bindings.get(captured[0]) === 'response' && captured[1] === captured[2]) {
+   00336|       return { binding: captured[0], field: 'evidence', value: captured[3], lower: false, op };
+   00337|     }
+   00338|   }
+   00339|   return null;
+   00340| }
+   00341| 
+   00342| /**
+   00343|  * `<field>.contains("…")` or `<field>.to_lowercase().contains("…")`.
+   00344|  */
+   00345| function subjectOf(tokens, bindings) {
+   00346|   for (const [suffix, lower] of [
+   00347|     [['.', 'contains', '(', 'STR', ')'], false],
+   00348|     [['.', 'to_lowercase', '(', ')', '.', 'contains', '(', 'STR', ')'], true],
+   00349|   ]) {
+   00350|     const head = tokens.slice(0, tokens.length - suffix.length);
+   00351|     const tail = match(tokens.slice(tokens.length - suffix.length), suffix);
+   00352|     const field = tail && fieldOf(head, bindings);
+   00353|     if (field) {
+   00354|       return { ...field, value: tail[0], lower };
+   00355|     }
+   00356|   }
+   00357|   return null;
+   00358| }
+   00359| 
+   00360| function splitArguments(tokens) {
+   00361|   const args = [[]];
+   00362|   let depth = 0;
+   00363|   for (const token of tokens) {
+   00364|     if (token.kind === 'punct' && '([{'.includes(token.text)) {
+   00365|       depth += 1;
+   00366|     } else if (token.kind === 'punct' && ')]}'.includes(token.text)) {
+   00367|       depth -= 1;
+   00368|     }
+   00369|     if (depth === 0 && token.kind === 'punct' && token.text === ',') {
+   00370|       args.push([]);
+   00371|     } else {
+   00372|       args.at(-1).push(token);
+   00373|     }
+   00374|   }
+   00375|   return args.filter((arg) => arg.length > 0);
+   00376| }
+   00377| 
+   00378| /** An offline solver with the default configuration, as the worker runs. */
+   00379| const SOLVERS = [
+   00380|   ['let', 'ID', '=', 'UniversalSolver', ':', ':', 'default', '(', ')'],
+   00381|   ['let', 'ID', '=', 'UniversalSolver', ':', ':', 'new', '(', 'SolverConfig', '{', 'offline', ':', 'true', ',', '.',
+   00382|     '.', 'SolverConfig', ':', ':', 'default', '(', ')', '}', ')'],
+   00383| ];
+   00384| 
+   00385| /**
+   00386|  * A prompt asked of the engine: `let r = <helper>("…")`,
+   00387|  * `let r = FormalAiEngine.answer("…")` or `let r = <solver>.solve("…")`,
+   00388|  * each optionally followed by `.answer` (the bound value is then the text).
+   00389|  */
+   00390| function askOf(statement, bindings, helper) {
+   00391|   const calls = [['FormalAiEngine', '.', 'answer'], ['ID', '.', 'solve']];
+   00392|   if (helper) {
+   00393|     calls.push([helper]);
+   00394|   }
+   00395|   for (const call of calls) {
+   00396|     for (const [tail, kind] of [[[], 'response'], [['.', 'answer'], 'content']]) {
+   00397|       const captured = match(statement, ['let', 'ID', '=', ...call, '(', 'STR', ')', ...tail]);
+   00398|       if (!captured) {
+   00399|         continue;
+   00400|       }
+   00401|       if (call[0] === 'ID' && bindings.get(captured[1]) !== 'solver') {
+   00402|         continue;
+   00403|       }
+   00404|       return { binding: captured[0], prompt: captured.at(-1), kind };
+   00405|     }
+   00406|   }
+   00407|   return null;
+   00408| }
+   00409| 
+   00410| /**
+   00411|  * The JavaScript case of one test, or why it stays in Rust.
+   00412|  * @param {Array<{kind: string, text: string}>} body
+   00413|  * @param {string} helper the file's `fn <helper>(prompt: &str) -> SymbolicAnswer`
+   00414|  * @returns {{case?: {asks: Array<{binding: string, prompt: string}>, checks: Array<object>}, reason?: string}}
+   00415|  */
+   00416| export function caseOf(body, helper) {
+   00417|   const bindings = new Map();
+   00418|   const asks = [];
+   00419|   const checks = [];
+   00420|   for (const statement of statements(body)) {
+   00421|     const solver = SOLVERS.map((pattern) => match(statement, pattern)).find(Boolean);
+   00422|     if (solver) {
+   00423|       bindings.set(solver[0], 'solver');
+   00424|       continue;
+   00425|     }
+   00426|     const ask = askOf(statement, bindings, helper);
+   00427|     if (ask) {
+   00428|       bindings.set(ask.binding, ask.kind);
+   00429|       asks.push({ binding: ask.binding, prompt: ask.prompt });
+   00430|       continue;
+   00431|     }
+   00432|     const check = assertion(statement, bindings);
+   00433|     if (!check) {
+   00434|       return { reason: statement.slice(0, 4).map((token) => token.text).join(' ') };
+   00435|     }
+   00436|     checks.push(check);
+   00437|   }
+   00438|   if (asks.length === 0 || checks.length === 0) {
+   00439|     return { reason: 'no prompt or no check' };
+   00440|   }
+   00441|   return { case: { asks, checks } };
+   00442| }
+   00443| 
+   00444| /**
+   00445|  * The name of a file's prompt helper: a `fn <name>(<arg>: &str) ->
+   00446|  * SymbolicAnswer`, or null.
+   00447|  * @param {string} source
+   00448|  * @returns {string | null}
+   00449|  */
+   00450| export function promptHelper(source) {
+   00451|   return /\bfn ([a-z_]+)\(\s*[a-z_]+: &str\s*\)\s*->\s*SymbolicAnswer\b/u.exec(source)?.[1] ?? null;
+   00452| }
+   00453| 
+   00454| export const SPECIFICATION = 'rust/tests/unit/specification';
+   00455| 
+   00456| /**
+   00457|  * The prompt helper a specification file calls: its own, or its parent
+   00458|  * module's when it imports it with `use super::`.
+   00459|  * @param {string} root
+   00460|  * @param {string} name the file's path under the specification directory
+   00461|  * @param {string} source
+   00462|  * @returns {string | null}
+   00463|  */
+   00464| export function helperOf(root, name, source) {
+   00465|   const own = promptHelper(source);
+   00466|   if (own || !name.includes('/')) {
+   00467|     return own;
+   00468|   }
+   00469|   const parent = join(root, SPECIFICATION, `${name.split('/').slice(0, -1).join('/')}.rs`);
+   00470|   let inherited = null;
+   00471|   try {
+   00472|     inherited = promptHelper(readFileSync(parent, 'utf8'));
+   00473|   } catch {
+   00474|     return null;
+   00475|   }
+   00476|   const imported = new RegExp(`use super::(?:\\*|\\{[^}]*\\b${inherited}\\b|${inherited}\\b)`, 'u');
+   00477|   return inherited && imported.test(source) ? inherited : null;
+   00478| }
+   00479| 
+   00480| /**
+   00481|  * Every specification test the extractor carries, and how many there are.
+   00482|  * @param {string} root
+   00483|  * @returns {{total: number, cases: Array<{id: string, asks: Array<object>, checks: Array<object>}>}}
+   00484|  */
+   00485| export function specificationCases(root = '.') {
+   00486|   const files = readdirSync(join(root, SPECIFICATION), { recursive: true })
+   00487|     .map(String)
+   00488|     .filter((name) => name.endsWith('.rs'))
+   00489|     .sort();
+   00490|   const cases = [];
+   00491|   let total = 0;
+   00492|   for (const name of files) {
+   00493|     const source = readFileSync(join(root, SPECIFICATION, name), 'utf8');
+   00494|     const helper = helperOf(root, name, source);
+   00495|     for (const test of testFunctions(tokenize(source))) {
+   00496|       total += 1;
+   00497|       const result = caseOf(test.body, helper);
+   00498|       if (result.case) {
+   00499|         cases.push({ id: `${SPECIFICATION}/${name}::${test.name}`, ...result.case });
+   00500|       }
+   00501|     }
+   00502|   }
+   00503|   return { total, cases };
+   00504| }
+   00505| 
+   00506| const HOLDS = {
+   00507|   includes: (subject, value) => subject.includes(value),
+   00508|   excludes: (subject, value) => !subject.includes(value),
+   00509|   equals: (subject, value) => subject === value,
+   00510|   differs: (subject, value) => subject !== value,
+   00511|   'has-evidence': (links, value) => links.includes(value),
+   00512|   'lacks-evidence': (links, value) => !links.includes(value),
+   00513|   'has-evidence-prefix': (links, value) => links.some((link) => link.startsWith(value)),
+   00514|   'lacks-evidence-prefix': (links, value) => !links.some((link) => link.startsWith(value)),
+   00515| };
+   00516| 
+   00517| /**
+   00518|  * Null when one check holds for the worker responses (`{content, intent,
+   00519|  * evidence}` by binding); otherwise what was expected and what came.
+   00520|  * @param {{binding?: string, field?: string, op: string, value?: string, lower?: boolean, checks?: Array<object>}} check
+   00521|  * @param {Map<string, {content?: string, intent?: string, evidence?: Array<string>}>} responses
+   00522|  * @returns {string | null}
+   00523|  */
+   00524| export function checkFailure(check, responses) {
+   00525|   if (check.op === 'all') {
+   00526|     return check.checks.map((part) => checkFailure(part, responses)).find(Boolean) ?? null;
+   00527|   }
+   00528|   if (check.op === 'any') {
+   00529|     const failures = check.checks.map((part) => checkFailure(part, responses));
+   00530|     return failures.some((failure) => failure === null) ? null : failures.join(' or ');
+   00531|   }
+   00532|   const response = responses.get(check.binding);
+   00533|   const values = {
+   00534|     content: String(response.content ?? ''),
+   00535|     intent: String(response.intent ?? ''),
+   00536|     evidence: response.evidence ?? [],
+   00537|   };
+   00538|   const subject = check.lower ? values[check.field].toLowerCase() : values[check.field];
+   00539|   if (HOLDS[check.op](subject, check.value)) {
+   00540|     return null;
+   00541|   }
+   00542|   const got = check.field === 'content' ? values.content.slice(0, 160) : values[check.field];
+   00543|   return `${check.field} ${check.op} ${JSON.stringify(check.value)}; got ${JSON.stringify(got)}`;
+   00544| }
+   00545| 
+   00546| /**
+   00547|  * Ask the worker every case and return the failing ones with their first
+   00548|  * failed check.
+   00549|  * @param {{solve: (prompt: string) => Promise<object>}} host
+   00550|  * @param {Array<{id: string, asks: Array<{binding: string, prompt: string}>, checks: Array<object>}>} cases
+   00551|  * @returns {Promise<Map<string, string>>}
+   00552|  */
+   00553| export async function failingCases(host, cases) {
+   00554|   const failing = new Map();
+   00555|   for (const item of cases) {
+   00556|     const responses = new Map();
+   00557|     for (const ask of item.asks) {
+   00558|       responses.set(ask.binding, await host.solve(ask.prompt));
+   00559|     }
+   00560|     const failure = item.checks.map((check) => checkFailure(check, responses)).find(Boolean);
+   00561|     if (failure) {
+   00562|       failing.set(item.id, failure);
+   00563|     }
+   00564|   }
+   00565|   return failing;
+   00566| }
+   00567| 
+   
+   (End of file - total 567 lines)
+   </file>
+== answer ==
+Contents of `scripts/lib/rust-specification-cases.mjs`:
+
+```text
+// Rust specification tests → JavaScript cases (R1188-U29, R1188-U30): the
+// rust → js direction of the automated translation, as a recorded workaround
+// until the meta language reads Rust tests.
+//
+// The specification suite under rust/tests/unit/specification/ pins most
+// requirements through the native engine only. Many of its tests have one
+// shape: ask the engine a prompt, then assert that the answer contains (or
+// does not contain) a text, or that the intent is a name. Such a test means
+// the same thing for the browser worker, so this module reads it into a case
+// that a JavaScript runner can ask the worker. A test with any other
+// statement is left to Rust and counted.
+//
+// The reader is a small tokenizer (strings, raw strings, identifiers,
+// punctuation; comments dropped) and a matcher of whole statements.
+
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+/**
+ * The tokens of a Rust source, comments dropped.
+ * @param {string} source
+ * @returns {Array<{kind: string, text: string}>}
+ */
+export function tokenize(source) {
+  const tokens = [];
+  let index = 0;
+  while (index < source.length) {
+    const rest = source.slice(index);
+    const space = /^\s+/u.exec(rest);
+    if (space) {
+      index += space[0].length;
+      continue;
+    }
+    if (rest.startsWith('//')) {
+      const end = source.indexOf('\n', index);
+      index = end < 0 ? source.length : end;
+      continue;
+    }
+    if (rest.startsWith('/*')) {
+      const end = source.indexOf('*/', index + 2);
+      index = end < 0 ? source.length : end + 2;
+      continue;
+    }
+    const raw = /^r(#*)"/u.exec(rest);
+    if (raw) {
+      const close = `"${raw[1]}`;
+      const end = source.indexOf(close, index + raw[0].length);
+      tokens.push({ kind: 'string', text: source.slice(index + raw[0].length, end) });
+      index = end + close.length;
+      continue;
+    }
+    if (rest.startsWith('"')) {
+      const { value, length } = readString(rest);
+      tokens.push({ kind: 'string', text: value });
+      index += length;
+      continue;
+    }
+    const char = /^'(?:\\.|[^\\'])'/u.exec(rest);
+    if (char) {
+      tokens.push({ kind: 'char', text: char[0] });
+      index += char[0].length;
+      continue;
+    }
+    const word = /^[A-Za-z_][A-Za-z0-9_]*/u.exec(rest);
+    if (word) {
+      tokens.push({ kind: 'word', text: word[0] });
+      index += word[0].length;
+      continue;
+    }
+    const number = /^[0-9][0-9_.a-z]*/u.exec(rest);
+    if (number) {
+      tokens.push({ kind: 'number', text: number[0] });
+      index += number[0].length;
+      continue;
+    }
+    tokens.push({ kind: 'punct', text: rest[0] });
+    index += 1;
+  }
+  return tokens;
+}
+
+/**
+ * Read one double-quoted Rust string literal at the start of `text`.
+ * @param {string} text
+ * @returns {{value: string, length: number}}
+ */
+function readString(text) {
+  let value = '';
+  let index = 1;
+  while (index < text.length && text[index] !== '"') {
+    if (text[index] !== '\\') {
+      value += text[index];
+      index += 1;
+      continue;
+    }
+    const next = text[index + 1];
+    if (next === 'u') {
+      const close = text.indexOf('}', index);
+      value += String.fromCodePoint(Number.parseInt(text.slice(index + 3, close), 16));
+      index = close + 1;
+    } else if (next === '\n') {
+      index += 2;
+      while (/\s/u.test(text[index])) {
+        index += 1;
+      }
+    } else {
+      value += { n: '\n', t: '\t', r: '\r', 0: '\0' }[next] ?? next;
+      index += 2;
+    }
+  }
+  return { value, length: index + 1 };
+}
+
+/**
+ * The `#[test]` functions of a token list, with their body tokens.
+ * Ignored tests (`#[ignore]`) are left out.
+ * @param {Array<{kind: string, text: string}>} tokens
+ * @returns {Array<{name: string, body: Array<{kind: string, text: string}>}>}
+ */
+export function testFunctions(tokens) {
+  const tests = [];
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (!isAttribute(tokens, index, 'test')) {
+      continue;
+    }
+    let cursor = index + 4;
+    let ignored = false;
+    while (tokens[cursor]?.text === '#') {
+      ignored ||= tokens[cursor + 2]?.text === 'ignore';
+      cursor = closing(tokens, cursor + 1) + 1;
+    }
+    if (tokens[cursor]?.text !== 'fn') {
+      continue;
+    }
+    const name = tokens[cursor + 1].text;
+    let open = cursor;
+    while (tokens[open].text !== '{') {
+      open += 1;
+    }
+    const end = closing(tokens, open);
+    if (!ignored) {
+      tests.push({ name, body: tokens.slice(open + 1, end) });
+    }
+    index = end;
+  }
+  return tests;
+}
+
+function isAttribute(tokens, index, name) {
+  return tokens[index]?.text === '#' && tokens[index + 1]?.text === '[' && tokens[index + 2]?.text === name
+    && tokens[index + 3]?.text === ']';
+}
+
+/**
+ * The index of the bracket that closes the one at `open`.
+ * @param {Array<{kind: string, text: string}>} tokens
+ * @param {number} open
+ * @returns {number}
+ */
+function closing(tokens, open) {
+  const pairs = { '(': ')', '[': ']', '{': '}' };
+  const stack = [];
+  for (let index = open; index < tokens.length; index += 1) {
+    const { kind, text } = tokens[index];
+    if (kind !== 'punct') {
+      continue;
+    }
+    if (pairs[text]) {
+      stack.push(pairs[text]);
+    } else if (text === stack.at(-1)) {
+      stack.pop();
+      if (stack.length === 0) {
+        return index;
+      }
+    }
+  }
+  return tokens.length;
+}
+
+/**
+ * Split a body into statements at top-level `;`.
+ * @param {Array<{kind: string, text: string}>} body
+ * @returns {Array<Array<{kind: string, text: string}>>}
+ */
+function statements(body) {
+  const result = [[]];
+  let depth = 0;
+  // A trailing comma before a closing bracket (rustfmt's layout) means nothing.
+  const tokens = body.filter((token, index) => !(token.text === ',' && token.kind === 'punct'
+    && [')', ']', '}'].includes(body[index + 1]?.text)));
+  for (const token of tokens) {
+    if (token.kind === 'punct' && '([{'.includes(token.text)) {
+      depth += 1;
+    } else if (token.kind === 'punct' && ')]}'.includes(token.text)) {
+      depth -= 1;
+    }
+    if (depth === 0 && token.text === ';' && token.kind === 'punct') {
+      result.push([]);
+    } else {
+      result.at(-1).push(token);
+    }
+  }
+  return result.filter((statement) => statement.length > 0);
+}
+
+/**
+ * Whether `tokens` spell `pattern` exactly. A pattern element is a literal
+ * text, or `STR` (any string) or `ID` (any word), which are captured.
+ * @param {Array<{kind: string, text: string}>} tokens
+ * @param {Array<string>} pattern
+ * @returns {Array<string> | null}
+ */
+function match(tokens, pattern) {
+  if (tokens.length !== pattern.length) {
+    return null;
+  }
+  const captured = [];
+  for (let index = 0; index < pattern.length; index += 1) {
+    const element = pattern[index];
+    const token = tokens[index];
+    if (element === 'STR' && token.kind === 'string') {
+      captured.push(token.text);
+    } else if (element === 'ID' && token.kind === 'word') {
+      captured.push(token.text);
+    } else if (element !== token.text || token.kind === 'string') {
+      return null;
+    }
+  }
+  return captured;
+}
+
+const FIELDS = { answer: 'content', intent: 'intent' };
+
+/**
+ * The assertion of one statement, without its message arguments.
+ * @param {Array<{kind: string, text: string}>} statement
+ * @param {Map<string, string>} bindings name → `response` or `content`
+ * @returns {{binding: string, field: string, op: string, value: string, lower: boolean} | null}
+ */
+function assertion(statement, bindings) {
+  const macro = match(statement.slice(0, 3), ['ID', '!', '(']);
+  if (!macro || statement.at(-1).text !== ')') {
+    return null;
+  }
+  const args = splitArguments(statement.slice(3, -1));
+  if (macro[0] === 'assert') {
+    return condition(args[0], bindings);
+  }
+  if ((macro[0] === 'assert_eq' || macro[0] === 'assert_ne') && args.length >= 2) {
+    const [left, right] = args;
+    const value = match(right, ['STR']);
+    const field = fieldOf(left, bindings);
+    if (!value || !field) {
+      return null;
+    }
+    return { ...field, value: value[0], lower: false, op: macro[0] === 'assert_eq' ? 'equals' : 'differs' };
+  }
+  return null;
+}
+
+/**
+ * A boolean condition: one test, or tests joined by `&&` (every one holds)
+ * or by `||` (one of them holds).
+ * @returns {object | null}
+ */
+function condition(tokens, bindings) {
+  for (const [operator, op] of [['|', 'any'], ['&', 'all']]) {
+    const parts = splitOperator(tokens, operator);
+    if (parts.length > 1) {
+      const checks = parts.map((part) => condition(part, bindings));
+      return checks.every(Boolean) ? { op, checks } : null;
+    }
+  }
+  const negated = tokens[0]?.text === '!';
+  const expression = negated ? tokens.slice(1) : tokens;
+  const evidence = evidenceOf(expression, bindings);
+  if (evidence) {
+    return { ...evidence, op: negated ? `lacks-${evidence.op}` : `has-${evidence.op}` };
+  }
+  const subject = subjectOf(expression, bindings);
+  return subject ? { ...subject, op: negated ? 'excludes' : 'includes' } : null;
+}
+
+/**
+ * Split at a top-level doubled operator (`||` or `&&`).
+ */
+function splitOperator(tokens, operator) {
+  const parts = [[]];
+  let depth = 0;
+  for (let index = 0; index < tokens.length; index += 1) {
+    const { kind, text } = tokens[index];
+    if (kind === 'punct' && '([{'.includes(text)) {
+      depth += 1;
+    } else if (kind === 'punct' && ')]}'.includes(text)) {
+      depth -= 1;
+    }
+    if (depth === 0 && kind === 'punct' && text === operator && tokens[index + 1]?.text === operator) {
+      parts.push([]);
+      index += 1;
+    } else {
+      parts.at(-1).push(tokens[index]);
+    }
+  }
+  return parts;
+}
+
+/**
+ * The response field an expression reads: `name.answer`, `name.intent`, or a
+ * bound content string.
+ */
+function fieldOf(tokens, bindings) {
+  const bound = match(tokens, ['ID']);
+  if (bound && bindings.get(bound[0]) === 'content') {
+    return { binding: bound[0], field: 'content' };
+  }
+  const read = match(tokens, ['ID', '.', 'ID']);
+  if (read && bindings.get(read[0]) === 'response' && FIELDS[read[1]]) {
+    return { binding: read[0], field: FIELDS[read[1]] };
+  }
+  return null;
+}
+
+const ANY_LINK = ['ID', '.', 'evidence_links', '.', 'iter', '(', ')', '.', 'any', '(', '|', 'ID', '|'];
+
+/**
+ * `<response>.evidence_links.iter().any(|link| link == "…")`, or with
+ * `link.starts_with("…")`: an evidence link equal to, or starting with, a text.
+ */
+function evidenceOf(tokens, bindings) {
+  for (const [suffix, op] of [
+    [['ID', '=', '=', 'STR', ')'], 'evidence'],
+    [['ID', '.', 'starts_with', '(', 'STR', ')', ')'], 'evidence-prefix'],
+  ]) {
+    const captured = match(tokens, [...ANY_LINK, ...suffix]);
+    if (captured && bindings.get(captured[0]) === 'response' && captured[1] === captured[2]) {
+      return { binding: captured[0], field: 'evidence', value: captured[3], lower: false, op };
+    }
+  }
+  return null;
+}
+
+/**
+ * `<field>.contains("…")` or `<field>.to_lowercase().contains("…")`.
+ */
+function subjectOf(tokens, bindings) {
+  for (const [suffix, lower] of [
+    [['.', 'contains', '(', 'STR', ')'], false],
+    [['.', 'to_lowercase', '(', ')', '.', 'contains', '(', 'STR', ')'], true],
+  ]) {
+    const head = tokens.slice(0, tokens.length - suffix.length);
+    const tail = match(tokens.slice(tokens.length - suffix.length), suffix);
+    const field = tail && fieldOf(head, bindings);
+    if (field) {
+      return { ...field, value: tail[0], lower };
+    }
+  }
+  return null;
+}
+
+function splitArguments(tokens) {
+  const args = [[]];
+  let depth = 0;
+  for (const token of tokens) {
+    if (token.kind === 'punct' && '([{'.includes(token.text)) {
+      depth += 1;
+    } else if (token.kind === 'punct' && ')]}'.includes(token.text)) {
+      depth -= 1;
+    }
+    if (depth === 0 && token.kind === 'punct' && token.text === ',') {
+      args.push([]);
+    } else {
+      args.at(-1).push(token);
+    }
+  }
+  return args.filter((arg) => arg.length > 0);
+}
+
+/** An offline solver with the default configuration, as the worker runs. */
+const SOLVERS = [
+  ['let', 'ID', '=', 'UniversalSolver', ':', ':', 'default', '(', ')'],
+  ['let', 'ID', '=', 'UniversalSolver', ':', ':', 'new', '(', 'SolverConfig', '{', 'offline', ':', 'true', ',', '.',
+    '.', 'SolverConfig', ':', ':', 'default', '(', ')', '}', ')'],
+];
+
+/**
+ * A prompt asked of the engine: `let r = <helper>("…")`,
+ * `let r = FormalAiEngine.answer("…")` or `let r = <solver>.solve("…")`,
+ * each optionally followed by `.answer` (the bound value is then the text).
+ */
+function askOf(statement, bindings, helper) {
+  const calls = [['FormalAiEngine', '.', 'answer'], ['ID', '.', 'solve']];
+  if (helper) {
+    calls.push([helper]);
+  }
+  for (const call of calls) {
+    for (const [tail, kind] of [[[], 'response'], [['.', 'answer'], 'content']]) {
+      const captured = match(statement, ['let', 'ID', '=', ...call, '(', 'STR', ')', ...tail]);
+      if (!captured) {
+        continue;
+      }
+      if (call[0] === 'ID' && bindings.get(captured[1]) !== 'solver') {
+        continue;
+      }
+      return { binding: captured[0], prompt: captured.at(-1), kind };
+    }
+  }
+  return null;
+}
+
+/**
+ * The JavaScript case of one test, or why it stays in Rust.
+ * @param {Array<{kind: string, text: string}>} body
+ * @param {string} helper the file's `fn <helper>(prompt: &str) -> SymbolicAnswer`
+ * @returns {{case?: {asks: Array<{binding: string, prompt: string}>, checks: Array<object>}, reason?: string}}
+ */
+export function caseOf(body, helper) {
+  const bindings = new Map();
+  const asks = [];
+  const checks = [];
+  for (const statement of statements(body)) {
+    const solver = SOLVERS.map((pattern) => match(statement, pattern)).find(Boolean);
+    if (solver) {
+      bindings.set(solver[0], 'solver');
+      continue;
+    }
+    const ask = askOf(statement, bindings, helper);
+    if (ask) {
+      bindings.set(ask.binding, ask.kind);
+      asks.push({ binding: ask.binding, prompt: ask.prompt });
+      continue;
+    }
+    const check = assertion(statement, bindings);
+    if (!check) {
+      return { reason: statement.slice(0, 4).map((token) => token.text).join(' ') };
+    }
+    checks.push(check);
+  }
+  if (asks.length === 0 || checks.length === 0) {
+    return { reason: 'no prompt or no check' };
+  }
+  return { case: { asks, checks } };
+}
+
+/**
+ * The name of a file's prompt helper: a `fn <name>(<arg>: &str) ->
+ * SymbolicAnswer`, or null.
+ * @param {string} source
+ * @returns {string | null}
+ */
+export function promptHelper(source) {
+  return /\bfn ([a-z_]+)\(\s*[a-z_]+: &str\s*\)\s*->\s*SymbolicAnswer\b/u.exec(source)?.[1] ?? null;
+}
+
+export const SPECIFICATION = 'rust/tests/unit/specification';
+
+/**
+ * The prompt helper a specification file calls: its own, or its parent
+ * module's when it imports it with `use super::`.
+ * @param {string} root
+ * @param {string} name the file's path under the specification directory
+ * @param {string} source
+ * @returns {string | null}
+ */
+export function helperOf(root, name, source) {
+  const own = promptHelper(source);
+  if (own || !name.includes('/')) {
+    return own;
+  }
+  const parent = join(root, SPECIFICATION, `${name.split('/').slice(0, -1).join('/')}.rs`);
+  let inherited = null;
+  try {
+    inherited = promptHelper(readFileSync(parent, 'utf8'));
+  } catch {
+    return null;
+  }
+  const imported = new RegExp(`use super::(?:\\*|\\{[^}]*\\b${inherited}\\b|${inherited}\\b)`, 'u');
+  return inherited && imported.test(source) ? inherited : null;
+}
+
+/**
+ * Every specification test the extractor carries, and how many there are.
+ * @param {string} root
+ * @returns {{total: number, cases: Array<{id: string, asks: Array<object>, checks: Array<object>}>}}
+ */
+export function specificationCases(root = '.') {
+  const files = readdirSync(join(root, SPECIFICATION), { recursive: true })
+    .map(String)
+    .filter((name) => name.endsWith('.rs'))
+    .sort();
+  const cases = [];
+  let total = 0;
+  for (const name of files) {
+    const source = readFileSync(join(root, SPECIFICATION, name), 'utf8');
+    const helper = helperOf(root, name, source);
+    for (const test of testFunctions(tokenize(source))) {
+      total += 1;
+      const result = caseOf(test.body, helper);
+      if (result.case) {
+        cases.push({ id: `${SPECIFICATION}/${name}::${test.name}`, ...result.case });
+      }
+    }
+  }
+  return { total, cases };
+}
+
+const HOLDS = {
+  includes: (subject, value) => subject.includes(value),
+  excludes: (subject, value) => !subject.includes(value),
+  equals: (subject, value) => subject === value,
+  differs: (subject, value) => subject !== value,
+  'has-evidence': (links, value) => links.includes(value),
+  'lacks-evidence': (links, value) => !links.includes(value),
+  'has-evidence-prefix': (links, value) => links.some((link) => link.startsWith(value)),
+  'lacks-evidence-prefix': (links, value) => !links.some((link) => link.startsWith(value)),
+};
+
+/**
+ * Null when one check holds for the worker responses (`{content, intent,
+ * evidence}` by binding); otherwise what was expected and what came.
+ * @param {{binding?: string, field?: string, op: string, value?: string, lower?: boolean, checks?: Array<object>}} check
+ * @param {Map<string, {content?: string, intent?: string, evidence?: Array<string>}>} responses
+ * @returns {string | null}
+ */
+export function checkFailure(check, responses) {
+  if (check.op === 'all') {
+    return check.checks.map((part) => checkFailure(part, responses)).find(Boolean) ?? null;
+  }
+  if (check.op === 'any') {
+    const failures = check.checks.map((part) => checkFailure(part, responses));
+    return failures.some((failure) => failure === null) ? null : failures.join(' or ');
+  }
+  const response = responses.get(check.binding);
+  const values = {
+    content: String(response.content ?? ''),
+    intent: String(response.intent ?? ''),
+    evidence: response.evidence ?? [],
+  };
+  const subject = check.lower ? values[check.field].toLowerCase() : values[check.field];
+  if (HOLDS[check.op](subject, check.value)) {
+    return null;
+  }
+  const got = check.field === 'content' ? values.content.slice(0, 160) : values[check.field];
+  return `${check.field} ${check.op} ${JSON.stringify(check.value)}; got ${JSON.stringify(got)}`;
+}
+
+/**
+ * Ask the worker every case and return the failing ones with their first
+ * failed check.
+ * @param {{solve: (prompt: string) => Promise<object>}} host
+ * @param {Array<{id: string, asks: Array<{binding: string, prompt: string}>, checks: Array<object>}>} cases
+ * @returns {Promise<Map<string, string>>}
+ */
+export async function failingCases(host, cases) {
+  const failing = new Map();
+  for (const item of cases) {
+    const responses = new Map();
+    for (const ask of item.asks) {
+      responses.set(ask.binding, await host.solve(ask.prompt));
+    }
+    const failure = item.checks.map((check) => checkFailure(check, responses)).find(Boolean);
+    if (failure) {
+      failing.set(item.id, failure);
+    }
+  }
+  return failing;
+}
+```

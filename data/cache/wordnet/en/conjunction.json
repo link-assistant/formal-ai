@@ -1,0 +1,65 @@
+{
+  "lemma": "conjunction",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05055452-n",
+      "partOfSpeech": "n",
+      "definition": "the temporal property of two things happening at the same time",
+      "examples": [
+        "the interval determining the coincidence gate is adjustable"
+      ],
+      "synonyms": [
+        "concurrence",
+        "coincidence",
+        "co-occurrence"
+      ]
+    },
+    {
+      "id": "oewn-14444358-n",
+      "partOfSpeech": "n",
+      "definition": "the state of being joined together",
+      "synonyms": [
+        "junction",
+        "conjugation",
+        "colligation"
+      ]
+    },
+    {
+      "id": "oewn-06336819-n",
+      "partOfSpeech": "n",
+      "definition": "an uninflected function word that serves to conjoin words or phrases or clauses or sentences",
+      "synonyms": [
+        "conjunctive",
+        "connective",
+        "continuative"
+      ]
+    },
+    {
+      "id": "oewn-13821604-n",
+      "partOfSpeech": "n",
+      "definition": "the grammatical relation between linguistic units (words or phrases or clauses) that are connected by a conjunction"
+    },
+    {
+      "id": "oewn-07429767-n",
+      "partOfSpeech": "n",
+      "definition": "(astronomy) apparent meeting or passing of two or more celestial bodies in the same degree of the zodiac",
+      "synonyms": [
+        "alignment"
+      ]
+    },
+    {
+      "id": "oewn-03611128-n",
+      "partOfSpeech": "n",
+      "definition": "something that joins or connects",
+      "synonyms": [
+        "junction"
+      ]
+    }
+  ]
+}

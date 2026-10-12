@@ -1,0 +1,33 @@
+view
+  id M-d79cfab035f3
+  lemma total
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the whole amount"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a quantity obtained by the addition of a group of numbers"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "constituting the full quantity or extent; complete"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "complete in extent or degree and in every particular"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "add up in number or quantity"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine the sum of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "damage beyond the point of repair"
+    provenance (wordnet)

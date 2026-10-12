@@ -5,6 +5,8 @@ use crate::http_server::{
 };
 use std::sync::{Mutex, MutexGuard};
 
+use crate::auxiliary_workspace;
+
 const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
 static SERVER_TEST_LOCK: Mutex<()> = Mutex::new(());
 
@@ -92,7 +94,10 @@ fn gemini_update_request_routes_to_edit() {
 #[test]
 fn declarative_new_file_routes_to_write_and_never_read() {
     let _guard = server_test_lock();
-    let response = chat(
+    let port = reserve_loopback_port();
+    let _server = spawn_formal_ai_server_agent_mode(port);
+    let response = write_on_port(
+        port,
         "new file: notes.txt, contents: hello",
         &["write_file", "read_file"],
     );
@@ -102,6 +107,9 @@ fn declarative_new_file_routes_to_write_and_never_read() {
         .expect("tool_calls should be an array");
     assert_eq!(calls.len(), 1);
     assert_eq!(calls[0]["function"]["name"], "write_file");
+    let arguments = chat_arguments(&calls[0]);
+    assert_eq!(arguments["path"], "notes.txt");
+    assert_eq!(arguments["content"], "hello");
     assert!(
         calls[0]["function"]["arguments"]
             .as_str()
@@ -125,11 +133,12 @@ fn all_reported_capability_classes_route_in_one_matrix() {
         ("new file: notes.txt, contents: hello", "write_file"),
     ];
     for (prompt, expected) in cases {
-        let response = chat_on_port(
-            port,
-            prompt,
-            &["web_fetch", "web_search", "edit", "write_file", "read_file"],
-        );
+        let tools = ["web_fetch", "web_search", "edit", "write_file", "read_file"];
+        let response = if expected == "write_file" {
+            write_on_port(port, prompt, &tools)
+        } else {
+            chat_on_port(port, prompt, &tools)
+        };
         let call = &response["choices"][0]["message"]["tool_calls"][0];
         assert_eq!(call["function"]["name"], expected, "prompt: {prompt}");
     }
@@ -174,6 +183,25 @@ fn chat_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
             "messages": [{"role": "user", "content": prompt}],
             "tools": tools.iter().map(|name| function_tool(name)).collect::<Vec<_>>()
         }),
+    )
+}
+
+fn write_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
+    auxiliary_workspace::observed_target_write(
+        prompt,
+        "notes.txt",
+        "earlier observed fixture event\n",
+        &mut |messages| {
+            http_post_json(
+                port,
+                "/api/openai/v1/chat/completions",
+                TOKEN,
+                &serde_json::json!({
+                    "model": "formal-ai", "stream": false, "messages": messages,
+                    "tools": tools.iter().map(|name| function_tool(name)).collect::<Vec<_>>()
+                }),
+            )
+        },
     )
 }
 

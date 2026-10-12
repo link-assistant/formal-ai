@@ -1,0 +1,57 @@
+view
+  id M-2b52dddc7685
+  lemma uses
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of using"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "what something is used for"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a particular service"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(economics) the utilization of economic goods to satisfy needs or in manufacturing"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(psychology) an automatic pattern of behavior in reaction to a specific situation; may be inherited or acquired through frequent repetition"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "exerting shrewd or devious influence especially for one's own advantage"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(law) the exercise of the legal right to enjoy the benefits of owning property"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put into service; make work or employ for a particular purpose or for its inherent or natural purpose"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "take or consume (regularly or habitually)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "seek or achieve an end by using to one's advantage"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "avail oneself to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "habitually do something or be in a certain state or place (use only in the past tense)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "use up (resources or materials)"
+    provenance (wordnet)

@@ -1,0 +1,17 @@
+view
+  id M-9667aaf2bc78
+  lemma genuine
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not fake or counterfeit"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not pretended; sincerely felt or expressed"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being or reflecting the essential or genuine character of something"
+    provenance (wordnet)

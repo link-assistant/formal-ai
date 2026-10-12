@@ -1,0 +1,1010 @@
+>> read {"filePath":"rust/tests/unit/ci-cd/workflow_release.rs","file_path":"rust/tests/unit/ci-cd/workflow_release.rs","path":"rust/tests/unit/ci-cd/workflow_release.rs"}
+   <file>
+   00001| //! Release-workflow structure + issue #479 Pages deploy / landing-page
+   00002| //! assertions. The desktop-gating half lives in `workflow_release_desktop`,
+   00003| //! split out when this file crossed the 1000-line cap. Shared helpers live in
+   00004| //! `workflow_fixtures`.
+   00005| 
+   00006| use std::fs;
+   00007| 
+   00008| use super::workflow_fixtures::*;
+   00009| 
+   00010| #[test]
+   00011| fn pages_deploy_waits_for_release_ref_before_pages_upload() {
+   00012|     let workflow = release_workflow();
+   00013|     let auto_release = job_block(&workflow, "auto-release");
+   00014|     let manual_release = job_block(&workflow, "manual-release");
+   00015|     let build_pages = job_block(&workflow, "build-pages");
+   00016|     let pages_artifact = pages_artifact_workflow();
+   00017|     let pages_build = job_block(&pages_artifact, "build");
+   00018| 
+   00019|     assert!(auto_release.contains("outputs:\n      pages_sha:"));
+   00020|     assert!(auto_release.contains("Resolve Pages deploy ref"));
+   00021|     assert!(manual_release.contains("outputs:\n      pages_sha:"));
+   00022|     assert!(manual_release.contains("Resolve Pages deploy ref"));
+   00023|     assert!(build_pages.contains("needs: [build, auto-release, manual-release]"));
+   00024|     assert!(build_pages.contains("needs.build.result == 'success'"));
+   00025|     assert!(build_pages.contains("github.ref == 'refs/heads/main'"));
+   00026|     assert!(build_pages.contains("needs.auto-release.result == 'success'"));
+   00027|     assert!(build_pages.contains("needs.manual-release.result == 'success'"));
+   00028|     assert!(build_pages.contains("uses: ./.github/workflows/pages-artifact.yml"));
+   00029|     assert!(build_pages.contains(
+   00030|         "sha: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}"
+   00031|     ));
+   00032|     assert!(job_block(&workflow, "deploy-pages").contains("needs: [build-pages]"));
+   00033|     assert!(pages_build.contains("Select Pages deployment ref"));
+   00034|     assert!(pages_build.contains("PAGES_DEPLOY_SHA: ${{ inputs.sha }}"));
+   00035|     assert!(pages_build.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));
+   00036| }
+   00037| 
+   00038| #[test]
+   00039| fn rust_script_install_steps_use_retry_wrapper() {
+   00040|     let workflow = release_workflow();
+   00041|     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+   00042|     let install_script =
+   00043|         fs::read_to_string(format!("{manifest_dir}/scripts/install-rust-script.sh")).unwrap();
+   00044| 
+   00045|     assert!(
+   00046|         !workflow.contains("run: cargo install rust-script"),
+   00047|         "workflow should not call cargo install directly because crates.io HTTP failures are transient"
+   00048|     );
+   00049|     assert_eq!(
+   00050|         workflow
+   00051|             .matches("run: bash scripts/install-rust-script.sh")
+   00052|             .count(),
+   00053|         // The evidence-check job (issue #808) moved to its own workflow when
+   00054|         // extracting it brought `release.yml` back under the 1500-line warning
+   00055|         // band (issues #999, #1012); its install step is counted by
+   00056|         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
+   00057|         // PR #1188 moved the Pages build's install into pages-artifact.yml,
+   00058|         // asserted by `pages_deploy_generates_api_docs_and_copies_them_after_stamping`.
+   00059|         8,
+   00060|         "each rust-script install step should use the retry wrapper"
+   00061|     );
+   00062|     assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
+   00063|     assert!(install_script.contains("cargo install rust-script --locked"));
+   00064|     assert!(install_script.contains("sleep \"$delay\""));
+   00065| }
+   00066| 
+   00067| #[test]
+   00068| fn pages_deploy_uses_github_pages_workflow_artifact() {
+   00069|     let workflow = release_workflow();
+   00070|     let deploy_demo = job_block(&workflow, "deploy-pages");
+   00071| 
+   00072|     assert!(deploy_demo.contains("pages: write"));
+   00073|     assert!(deploy_demo.contains("id-token: write"));
+   00074|     assert!(deploy_demo.contains("environment:\n      name: github-pages"));
+   00075|     assert!(deploy_demo.contains("url: ${{ steps.deployment.outputs.page_url }}"));
+   00076|     assert!(deploy_demo.contains("actions/configure-pages@v6"));
+   00077|     let pages_artifact = pages_artifact_workflow();
+   00078|     let pages_build = job_block(&pages_artifact, "build");
+   00079|     assert!(pages_build.contains("actions/upload-pages-artifact@v5"));
+   00080|     assert!(pages_build.contains("path: js"));
+   00081|     assert!(deploy_demo.contains("id: deployment"));
+   00082|     assert!(deploy_demo.contains("actions/deploy-pages@v5"));
+   00083|     assert!(!deploy_demo.contains("peaceiris/actions-gh-pages"));
+   00084|     assert!(!deploy_demo.contains("publish_dir: js"));
+   00085|     assert!(!deploy_demo.contains("publish_branch: gh-pages"));
+   00086| }
+   00087| 
+   00088| /// PR #965 review: "All CI/CD warnings, and errors must be also fixed.
+   00089| /// Including all false positives and false negatives."
+   00090| ///
+   00091| /// `actions/deploy-pages` accepts at most a 600 000 ms wait. On `main` run
+   00092| /// 31090830031 the artifact uploaded successfully (15.7 MB, id 8966823763) and
+   00093| /// the action then reported `Current status: deployment_queued` for that entire
+   00094| /// default before `Timeout reached, aborting!` — a red pipeline caused by
+   00095| /// GitHub's Pages deployment queue rather than by anything in the commit. The
+   00096| /// next push deployed green with no code change, which is the signature of a
+   00097| /// false positive. Pin the documented maximum rather than supplying the
+   00098| /// unsupported 1 200 000 ms value that the action silently clamps, and keep
+   00099| /// the job's own budget above it.
+   00100| #[test]
+   00101| fn pages_deploy_uses_the_actions_maximum_supported_wait() {
+   00102|     const DEPLOY_ACTION_MAXIMUM_MS: u64 = 600_000;
+   00103| 
+   00104|     let workflow = release_workflow();
+   00105|     let deploy_demo = job_block(&workflow, "deploy-pages");
+   00106| 
+   00107|     let timeout_ms = deploy_demo
+   00108|         .split("actions/deploy-pages@v5")
+   00109|         .nth(1)
+   00110|         .and_then(|after| after.split_once("timeout: "))
+   00111|         .and_then(|(_, rest)| rest.split_whitespace().next())
+   00112|         .and_then(|value| value.parse::<u64>().ok())
+   00113|         .expect("the deploy-pages step should pin an explicit `timeout:` in milliseconds");
+   00114| 
+   00115|     assert!(
+   00116|         timeout_ms == DEPLOY_ACTION_MAXIMUM_MS,
+   00117|         "deploy-pages accepts at most {DEPLOY_ACTION_MAXIMUM_MS} ms, got {timeout_ms} ms"
+   00118|     );
+   00119| 
+   00120|     let job_budget_ms = job_block(&workflow, "deploy-pages")
+   00121|         .split_once("timeout-minutes: ")
+   00122|         .and_then(|(_, rest)| rest.split_whitespace().next())
+   00123|         .and_then(|value| value.parse::<u64>().ok())
+   00124|         .map(|minutes| minutes * 60_000)
+   00125|         .expect("deploy-pages should declare timeout-minutes");
+   00126| 
+   00127|     assert!(
+   00128|         job_budget_ms > timeout_ms,
+   00129|         "the deploy-pages job budget ({job_budget_ms} ms) must exceed the deployment wait \
+   00130|          ({timeout_ms} ms), or `timeout-minutes` kills the job before the wait can help"
+   00131|     );
+   00132| }
+   00133| 
+   00134| #[test]
+   00135| fn pages_e2e_uses_deployment_output_url() {
+   00136|     let workflow = release_workflow();
+   00137|     let deploy_demo = job_block(&workflow, "deploy-pages");
+   00138|     let pages_e2e = job_block(&workflow, "test-e2e-pages");
+   00139| 
+   00140|     assert!(deploy_demo.contains("page_url: ${{ steps.deployment.outputs.page_url }}"));
+   00141|     assert!(pages_e2e.contains("needs.deploy-pages.outputs.page_url"));
+   00142|     assert!(!pages_e2e.contains("PAGES_URL=https://link-assistant.github.io/formal-ai"));
+   00143| }
+   00144| 
+   00145| #[test]
+   00146| fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
+   00147|     let workflow = release_workflow();
+   00148|     let pages_artifact = pages_artifact_workflow();
+   00149|     let deploy_demo = job_block(&pages_artifact, "build");
+   00150|     let pages_e2e = job_block(&workflow, "test-e2e-pages");
+   00151| 
+   00152|     assert!(
+   00153|         job_block(&workflow, "deploy-pages")
+   00154|             .contains("pages_sha: ${{ needs.build-pages.outputs.pages_sha }}"),
+   00155|         "deploy-pages should report the SHA the Pages build stamped"
+   00156|     );
+   00157|     assert!(
+   00158|         deploy_demo.contains("ref: ${{ steps.pages_ref.outputs.sha }}"),
+   00159|         "Pages deployment should use the selected Pages SHA, which is the release child commit when auto-release creates one"
+   00160|     );
+   00161|     assert!(
+   00162|         deploy_demo.contains("Stamp GitHub Pages artifact"),
+   00163|         "Pages deployment should stamp a per-commit asset marker before upload"
+   00164|     );
+   00165|     assert!(
+   00166|         deploy_demo
+   00167|             .contains("scripts/stamp-pages-artifact.sh js \"${{ steps.pages_ref.outputs.sha }}\""),
+   00168|         "Pages deployment should stamp js with the selected Pages deployment SHA"
+   00169|     );
+   00170|     assert!(
+   00171|         pages_e2e.contains("scripts/wait-for-pages-deployment.sh"),
+   00172|         "live Pages e2e should poll for the deployed commit before Playwright starts"
+   00173|     );
+   00174|     assert!(
+   00175|         pages_e2e.contains("needs.deploy-pages.outputs.page_url"),
+   00176|         "live Pages e2e should probe the resolved Pages URL"
+   00177|     );
+   00178|     assert!(
+   00179|         pages_e2e.contains(
+   00180|             "PAGES_DEPLOY_SHA: ${{ needs.deploy-pages.outputs.pages_sha || github.sha }}"
+   00181|         ),
+   00182|         "live Pages e2e should wait for the same selected SHA that deploy-pages stamped"
+   00183|     );
+   00184|     assert!(
+   00185|         !pages_e2e.contains("run: sleep 30"),
+   00186|         "a fixed sleep can still test stale GitHub Pages assets"
+   00187|     );
+   00188| }
+   00189| 
+   00190| #[test]
+   00191| fn wait_for_pages_deployment_is_marker_authoritative() {
+   00192|     // Issue #479 (root cause, take 2): the live-Pages freshness probe used to
+   00193|     // require the raw deploy SHA to appear in the served index BODY
+   00194|     // (`grep -Fq "$expected_sha" "$index_file"`). That coupled the probe to every
+   00195|     // root page embedding the commit SHA verbatim. When the issue #479 landing
+   00196|     // page shipped at `/` WITHOUT cache-busted asset refs, the stamped index
+   00197|     // never contained the SHA, so the probe ran the full 300s and timed out --
+   00198|     // failing the whole pipeline and (via the desktop-release gate) suppressing
+   00199|     // every desktop build. The probe is now marker-authoritative: GitHub Pages
+   00200|     // deploys atomically, so deployment.json advertising "sha":"<expected_sha>"
+   00201|     // is sufficient proof the matching stamped index is live.
+   00202|     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+   00203|     let wait_script = fs::read_to_string(format!(
+   00204|         "{manifest_dir}/scripts/wait-for-pages-deployment.sh"
+   00205|     ))
+   00206|     .unwrap();
+   00207| 
+   00208|     // The marker SHA is the authoritative freshness signal.
+   00209|     assert!(
+   00210|         wait_script.contains("${expected_sha}") && wait_script.contains("\"$marker_file\""),
+   00211|         "wait script should require the deployment.json marker to advertise the expected SHA"
+   00212|     );
+   00213|     // The brittle "index body must contain the SHA" requirement must be gone.
+   00214|     assert!(
+   00215|         !wait_script.contains("-Fq \"$expected_sha\" \"$index_file\""),
+   00216|         "issue #479 regression: the probe must NOT hard-require the raw SHA in the index body -- \
+   00217|          a valid root page without cache-busted asset refs would hang the probe for the full timeout"
+   00218|     );
+   00219|     // But the defensive placeholder guards (catch a half-run stamp step) remain.
+   00220|     assert!(
+   00221|         wait_script.contains("__FORMAL_AI_ASSET_VERSION__")
+   00222|             && wait_script.contains("__FORMAL_AI_VERSION__"),
+   00223|         "wait script should still reject an index that retains un-stamped placeholders"
+   00224|     );
+   00225| }
+   00226| 
+   00227| #[test]
+   00228| fn pages_e2e_navigation_preserves_repository_subpath() {
+   00229|     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+   00230|     let pages_config = fs::read_to_string(format!(
+   00231|         "{manifest_dir}/rust/tests/e2e/playwright.pages.config.js"
+   00232|     ))
+   00233|     .unwrap();
+   00234|     let demo_spec =
+   00235|         fs::read_to_string(format!("{manifest_dir}/rust/tests/e2e/tests/demo.spec.js")).unwrap();
+   00236|     // The multilingual suite is split across `multilingual-*.spec.js`
+   00237|     // (repository line budget); every part must keep the relative navigation.
+   00238|     let multilingual_specs = [
+   00239|         "multilingual-chat.spec.js",
+   00240|         "multilingual-wikipedia.spec.js",
+   00241|         "multilingual-memory-settings.spec.js",
+   00242|         "multilingual-issue-27.spec.js",
+   00243|     ]
+   00244|     .map(|name| {
+   00245|         let spec =
+   00246|             fs::read_to_string(format!("{manifest_dir}/rust/tests/e2e/tests/{name}")).unwrap();
+   00247|         (format!("tests/e2e/tests/{name}"), spec)
+   00248|     });
+   00249|     let connectivity_spec = fs::read_to_string(format!(
+   00250|         "{manifest_dir}/rust/tests/e2e/tests/connectivity.spec.js"
+   00251|     ))
+   00252|     .unwrap();
+   00253| 
+   00254|     assert!(
+   00255|         pages_config.contains("normalizeBaseUrl"),
+   00256|         "Pages e2e should normalize PAGES_URL with a trailing slash so ./ resolves inside /formal-ai/"
+   00257|     );
+   00258|     assert!(
+   00259|         pages_config.contains("https://link-assistant.github.io/formal-ai/"),
+   00260|         "default Pages URL should include the repository subpath and trailing slash"
+   00261|     );
+   00262| 
+   00263|     // The app moved to /app/ (issue #479), so the Pages baseURL targets /app/.
+   00264|     // The app specs navigate with a relative './' (→ /app/), while connectivity
+   00265|     // reaches its sibling harness with a relative '../tests/' (→ /tests/). Both
+   00266|     // are relative, so the /formal-ai/ repository subpath is always preserved;
+   00267|     // an absolute '/…' would drop it.
+   00268|     let mut navigation_cases = vec![
+   00269|         (
+   00270|             "tests/e2e/tests/demo.spec.js",
+   00271|             demo_spec.as_str(),
+   00272|             "page.goto('./')",
+   00273|         ),
+   00274|         (
+   00275|             "tests/e2e/tests/connectivity.spec.js",
+   00276|             connectivity_spec.as_str(),
+   00277|             "page.goto('../tests/')",
+   00278|         ),
+   00279|     ];
+   00280|     for (path, spec) in &multilingual_specs {
+   00281|         navigation_cases.push((path.as_str(), spec.as_str(), "page.goto('./')"));
+   00282|     }
+   00283|     for (path, spec, expected_nav) in navigation_cases {
+   00284|         assert!(
+   00285|             !spec.contains("page.goto('/');"),
+   00286|             "{path} should not navigate to / because URL resolution drops the /formal-ai/ subpath"
+   00287|         );
+   00288|         assert!(
+   00289|             spec.contains(expected_nav),
+   00290|             "{path} should navigate with a relative {expected_nav} so Pages tests stay under the repository subpath"
+   00291|         );
+   00292|     }
+   00293| }
+   00294| 
+   00295| #[test]
+   00296| fn test_job_skips_non_code_changes() {
+   00297|     // Issue #442: the `test` job ran whenever the `changelog` job was *skipped*.
+   00298|     // `changelog` is skipped precisely when there are no code changes (docs-only
+   00299|     // commits, .gitkeep edits, changelog-fragment-only commits), so the
+   00300|     // `needs.changelog.result == 'skipped'` clause turned "nothing relevant
+   00301|     // changed" into "run the entire test suite". This regression guard pins the
+   00302|     // corrected gating: `test` keys off the detect-changes outputs, exactly like
+   00303|     // `lint` and `coverage`, and never resurrects the changelog-skip escape.
+   00304|     let workflow = release_workflow();
+   00305|     let test = job_block(&workflow, "test");
+   00306| 
+   00307|     assert!(
+   00308|         !test.contains("needs.changelog.result == 'skipped'"),
+   00309|         "test job must not run merely because the changelog check was skipped; \
+   00310|          a skipped changelog means there were no code changes (issue #442)"
+   00311|     );
+   00312|     assert!(
+   00313|         !test.contains("needs.changelog.result == 'success'"),
+   00314|         "test job should be decoupled from the changelog check and gate on the \
+   00315|          change detector instead (issue #442)"
+   00316|     );
+   00317|     // Issue #1017 added `base`, which resolves the base-branch commit once so
+   00318|     // every gate merges the same one. Assert the dependency rather than the
+   00319|     // exact list, so adding a dependency cannot break a contract that is about
+   00320|     // `detect-changes`.
+   00321|     assert!(
+   00322|         test.contains("needs: [detect-changes")
+   00323|             && test.lines().any(|line| {
+   00324|                 line.trim().starts_with("needs:") && line.contains("detect-changes")
+   00325|             }),
+   00326|         "test job should depend on detect-changes so it can gate on its outputs"
+   00327|     );
+   00328|     assert!(
+   00329|         test.contains("needs.detect-changes.outputs.any-code-changed == 'true'"),
+   00330|         "test job should run when code files changed"
+   00331|     );
+   00332|     assert!(
+   00333|         test.contains("needs.detect-changes.outputs.rs-changed == 'true'"),
+   00334|         "test job should run when Rust sources changed"
+   00335|     );
+   00336|     assert!(
+   00337|         test.contains("needs.detect-changes.outputs.toml-changed == 'true'"),
+   00338|         "test job should run when Cargo manifests changed"
+   00339|     );
+   00340|     // Issue #1107: `workflow-changed` is true for any file under
+   00341|     // `.github/workflows/`, so gating the compiled test matrix on it made an
+   00342|     // edit to a scheduled benchmark pay for the whole suite. What the matrix
+   00343|     // cares about is the pipeline it runs inside -- its own definition, a
+   00344|     // composite action it calls, or a script those run.
+   00345|     assert!(
+   00346|         test.contains("needs.detect-changes.outputs.pipeline-changed == 'true'"),
+   00347|         "test job should run when the pipeline it runs inside changed"
+   00348|     );
+   00349|     assert!(
+   00350|         !test.contains("github.event_name == 'push'")
+   00351|             && test.contains("github.event_name == 'workflow_dispatch'"),
+   00352|         "issue #846 requires pushes to obey detect-changes while manual \
+   00353|          dispatch remains unconditional"
+   00354|     );
+   00355|     assert!(
+   00356|         // Issue #808 / CI-CD-BEST-PRACTICES.md section 10: `always()` also runs
+   00357|         // the job when the *run* is cancelled, which is not what this gate wants.
+   00358|         // `!cancelled()` is enough to stop a skipped `detect-changes` from
+   00359|         // cascading -- any status-check function disables the auto-skip.
+   00360|         test.contains("!cancelled()") && !test.contains("always()"),
+   00361|         "test job needs !cancelled() so the skipped detect-changes dependency \
+   00362|          does not cascade on workflow_dispatch"
+   00363|     );
+   00364| }
+   00365| 
+   00366| #[test]
+   00367| fn change_gated_jobs_never_depend_on_a_skipped_changelog() {
+   00368|     // Generalises issue #442 across every change-gated job: none of them should
+   00369|     // treat a *skipped* changelog/version check as a signal to run. A skipped
+   00370|     // upstream check means "no code changed", which must never widen coverage.
+   00371|     // The `coverage` job moved to `.github/workflows/coverage.yml` for issue
+   00372|     // #895; `coverage_jobs_never_depend_on_a_skipped_upstream_check` in
+   00373|     // `workflow_coverage.rs` pins this same property for it there.
+   00374|     let workflow = release_workflow();
+   00375|     for job_name in ["lint", "test", "test-e2e-local"] {
+   00376|         let job = job_block(&workflow, job_name);
+   00377|         // Inspect only effective YAML (skip `#` comment lines) so the rationale
+   00378|         // comments that quote the old buggy clause don't trip the guard.
+   00379|         let has_skip_dependency = job
+   00380|             .lines()
+   00381|             .filter(|line| !line.trim_start().starts_with('#'))
+   00382|             .any(|line| line.contains("result == 'skipped'"));
+   00383|         assert!(
+   00384|             !has_skip_dependency,
+   00385|             "{job_name} job must not run because an upstream check was skipped (issue #442)"
+   00386|         );
+   00387|     }
+   00388| }
+   00389| 
+   00390| /// Issue #812: both release jobs gated on `[lint, test, build]` alone, so a red
+   00391| /// `Secrets Scan` or E2E suite on `main` did not stop the crate, the Docker
+   00392| /// image and the GitHub Release from publishing.
+   00393| #[test]
+   00394| fn releases_do_not_publish_past_a_failing_secrets_scan_or_e2e_suite() {
+   00395|     let workflow = release_workflow();
+   00396| 
+   00397|     for job_name in ["auto-release", "manual-release"] {
+   00398|         let job = job_block(&workflow, job_name);
+   00399|         let effective: String = job
+   00400|             .lines()
+   00401|             .filter(|line| !line.trim_start().starts_with('#'))
+   00402|             .collect::<Vec<_>>()
+   00403|             .join("\n");
+   00404| 
+   00405|         for gate in ["secrets-scan", "test-e2e-local", "test-agent-cli-e2e"] {
+   00406|             // The acceptable results must be enumerated, not excluded. A job
+   00407|             // killed by its own `timeout-minutes` reports as 'cancelled', which
+   00408|             // a `!= 'failure'` guard would wave through -- run 29767811026 is
+   00409|             // the observed instance of exactly that result value.
+   00410|             assert!(
+   00411|                 effective.contains(&format!(
+   00412|                     "(needs.{gate}.result == 'success' || needs.{gate}.result == 'skipped')"
+   00413|                 )),
+   00414|                 "{job_name} must gate on {gate} being success-or-skipped, so a \
+   00415|                  timed-out (cancelled) job cannot release (issue #812)"
+   00416|             );
+   00417|             assert!(
+   00418|                 !effective.contains(&format!("needs.{gate}.result != 'failure'")),
+   00419|                 "{job_name} must not use `!= 'failure'` for {gate}: a timeout \
+   00420|                  reports as 'cancelled' and would pass that check (issue #812)"
+   00421|             );
+   00422|             assert!(
+   00423|                 effective.contains(gate),
+   00424|                 "{job_name} must declare {gate} in needs: (issue #812)"
+   00425|             );
+   00426|         }
+   00427|     }
+   00428| }
+   00429| 
+   00430| /// Issue #812: run 29767811026 reported `Test (ubuntu-latest)` as failed with
+   00431| /// every test passing -- the suite finished 1.1 s before `timeout-minutes: 15`
+   00432| /// killed the job. The budget must exceed the measured cost, and the step must
+   00433| /// say so out loud before the margin is eaten again.
+   00434| #[test]
+   00435| fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten() {
+   00436|     let workflow = release_workflow();
+   00437|     let test_job = job_block(&workflow, "test");
+   00438| 
+   00439|     // Issue #1017: the cap has to clear the budget by more than the job's
+   00440|     // unbudgeted setup -- checkout, disk cleanup, the data-file and self-AST
+   00441|     // census gates and the doc tests measured 455s on run 31937348472 -- or the
+   00442|     // job clock still wins and the overrun is reported as `cancelled`.
+   00443|     //
+   00444|     // Issue #1081 replaced the two exact numbers this used to pin with floors,
+   00445|     // and both moved the same day. Pinning an exact budget is what makes a
+   00446|     // budget unable to grow when the work under it grows, which is how the
+   00447|     // macOS specification shard reached 100.1% of its budget twice with no
+   00448|     // warning; the arithmetic that decides what the numbers should be now
+   00449|     // lives in `tests/unit/ci-cd/job_budget_fit.rs`, which recomputes the whole
+   00450|     // job from the workflow instead of memorising one figure from it. What
+   00451|     // this test still defends is the shape: a plain-number cap, a budget on
+   00452|     // the suite, and the wrapper that makes the overrun red rather than grey.
+   00453|     let cap_minutes: u64 = test_job
+   00454|         .lines()
+   00455|         .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+   00456|         .and_then(|value| value.trim().parse().ok())
+   00457|         .expect("the test job declares a plain-number timeout-minutes");
+   00458|     // PR #1188 (R1188-U9) runs the suite as five shards of prebuilt
+   00459|     // executables, a fifth of it about 450s (run 37802763478), so the floors
+   00460|     // are per shard: 15 minutes of shard work behind a 25-minute backstop.
+   00461|     assert!(
+   00462|         cap_minutes >= 25,
+   00463|         "the test job's cap is {cap_minutes}m; a shard of the suite plus its \
+   00464|          setup needs at least 25m of backstop behind it"
+   00465|     );
+   00466|     let suite_budget: u64 = workflow_step_block(test_job, "Run tests")
+   00467|         .lines()
+   00468|         .find_map(|line| line.trim().strip_prefix("TEST_BUDGET_SECONDS:"))
+   00469|         .and_then(|value| value.trim().parse().ok())
+   00470|         .expect("the full-suite step declares a plain-number execution budget");
+   00471|     assert!(
+   00472|         suite_budget >= 900,
+   00473|         "the full suite's execution budget is {suite_budget}s, below the 900s \
+   00474|          that twice a measured shard needs"
+   00475|     );
+   00476|     assert!(
+   00477|         suite_budget <= cap_minutes * 60,
+   00478|         "the full suite's {suite_budget}s budget cannot expire before the          {cap_minutes}m cap that is supposed to be its backstop"
+   00479|     );
+   00480|     assert!(
+   00481|         test_job.contains("scripts/run-with-budget-warning.sh"),
+   00482|         "creeping back toward the cap must be visible in the run summary rather \
+   00483|          than resurfacing as a mystery cancellation (issue #812)"
+   00484|     );
+   00485| }
+   00486| 
+   00487| /// Run 31428625331 passed all 2,629 tests on macOS, then exceeded the job
+   00488| /// budget during cleanup. The focused data-integrity gates had already run the
+   00489| /// same tests before the full suite, consuming more than 90 seconds twice.
+   00490| #[test]
+   00491| fn full_suite_does_not_repeat_focused_data_integrity_checks() {
+   00492|     let workflow = release_workflow();
+   00493|     let test_job = job_block(&workflow, "test");
+   00494|     let full_suite = workflow_step_block(test_job, "Run tests");
+   00495|     let macos = fs::read_to_string(format!(
+   00496|         "{}/../.github/workflows/macos-core-tests.yml",
+   00497|         env!("CARGO_MANIFEST_DIR")
+   00498|     ))
+   00499|     .expect("macOS core workflow");
+   00500|     let core_suite = workflow_step_block(&macos, "Run macOS platform tests");
+   00501| 
+   00502|     assert!(test_job.contains(
+   00503|         "cargo test --manifest-path rust/Cargo.toml --test unit data_files -- --nocapture"
+   00504|     ));
+   00505|     assert!(test_job.contains(
+   00506|         "cargo test --manifest-path rust/Cargo.toml --test unit self_ast_census -- --nocapture"
+   00507|     ));
+   00508|     // Issue #1055 moved the skip flags into the runner script the lane invokes.
+   00509|     let runner = fs::read_to_string(concat!(
+   00510|         env!("CARGO_MANIFEST_DIR"),
+   00511|         "/../scripts/run-prebuilt-tests.sh"
+   00512|     ))
+   00513|     .expect("read the runner");
+   00514|     assert!(full_suite.contains("run-prebuilt-tests.sh"));
+   00515|     assert!(
+   00516|         runner.contains("--skip data_files::") && runner.contains("--skip self_ast_census"),
+   00517|         "the full suite must skip integrity groups already exercised by their focused gates"
+   00518|     );
+   00519|     assert!(
+   00520|         core_suite.contains("test(data_files::)")
+   00521|             && core_suite.contains("test(self_ast_census)")
+   00522|             && core_suite.contains("test(specification::)"),
+   00523|         "the macOS core shard must skip focused gates and the separately executed specification shard"
+   00524|     );
+   00525| }
+   00526| 
+   00527| /// Run 30087447926 exhausted `/` twice while the test job rebuilt the package
+   00528| /// on top of its restored, target-heavy cache. The first attempt killed the
+   00529| /// runner worker; the second could not create a rustc temp directory and made
+   00530| /// the linker crash with SIGBUS.
+   00531| #[test]
+   00532| fn test_job_reclaims_runner_disk_before_restoring_the_target_cache() {
+   00533|     let workflow = release_workflow();
+   00534|     let test_job = job_block(&workflow, "test");
+   00535|     let cleanup_name = "- name: Free up runner disk space";
+   00536|     // Issue #1076 moved this to the shared action, so the ordering anchors on
+   00537|     // its path. Same invariant: reclaim the disk before unpacking onto it.
+   00538|     let cache_name = "- uses: ./.github/actions/cache-cargo-registry";
+   00539| 
+   00540|     assert!(
+   00541|         test_job.contains(cleanup_name),
+   00542|         "the test job must reclaim disposable hosted-runner SDKs before a \
+   00543|          target-heavy build can exhaust the root filesystem"
+   00544|     );
+   00545| 
+   00546|     let cleanup = workflow_step_block(test_job, "Free up runner disk space");
+   00547|     assert!(
+   00548|         cleanup.contains("run: bash scripts/free-runner-disk.sh"),
+   00549|         "the test job must use the repository's established, observable disk cleanup"
+   00550|     );
+   00551|     assert!(
+   00552|         test_job.find(cleanup_name) < test_job.find(cache_name),
+   00553|         "runner cleanup must happen before restoring the multi-gigabyte target cache"
+   00554|     );
+   00555| }
+   00556| 
+   00557| /// Issue #812: nothing validated the pipeline definitions themselves, and
+   00558| /// `cargo clippy` ran without `-D warnings` while every lint in `[lints.clippy]`
+   00559| /// is set to `warn` -- so clippy printed findings and exited 0.
+   00560| #[test]
+   00561| fn lint_job_gates_on_workflow_shell_and_clippy_findings() {
+   00562|     // Clippy and the shell lint are registered gates since issue #991.
+   00563|     // actionlint left this job in issue #1076: as a bare binary it skips every
+   00564|     // `run:` check and exits 0 when ShellCheck is absent, so it runs as the
+   00565|     // Docker image in `workflows.yml` now. `issue_999` owns the assertion.
+   00566|     let workflow = ci_surface();
+   00567|     let lint = job_block(&workflow, "lint");
+   00568| 
+   00569|     assert!(
+   00570|         lint.contains("cargo clippy --manifest-path rust/Cargo.toml --lib --bins --tests --all-features -- -D warnings"),
+   00571|         "clippy must lint executable test targets and fail the job on findings"
+   00572|     );
+   00573|     assert!(
+   00574|         lint.contains("cargo check --manifest-path rust/Cargo.toml --examples --all-features"),
+   00575|         "examples must be compile-checked without linking every standalone binary (issue #534)"
+   00576|     );
+   00577|     assert!(
+   00578|         !lint.contains("actionlint"),
+   00579|         "workflow linting belongs to .github/workflows/workflows.yml since issue \
+   00580|          #1076; a second copy here would drift from the Docker-image form that \
+   00581|          guarantees ShellCheck is present"
+   00582|     );
+   00583|     assert!(
+   00584|         lint.contains("scripts/lint-shell-scripts.sh"),
+   00585|         "standalone shell scripts must be linted (issue #812)"
+   00586|     );
+   00587| 
+   00588|     // Issue #977 moved the selector into a script; the empty-list guard is the
+   00589|     // part that actually keeps the step from passing vacuously.
+   00590|     let shell_lint = std::fs::read_to_string(format!(
+   00591|         "{}/../scripts/lint-shell-scripts.sh",
+   00592|         env!("CARGO_MANIFEST_DIR")
+   00593|     ))
+   00594|     .expect("lint-shell-scripts.sh");
+   00595|     assert!(shell_lint.contains("shellcheck --severity=warning"));
+   00596|     assert!(
+   00597|         shell_lint.contains("the lint selector is broken"),
+   00598|         "an empty selector must fail rather than lint nothing (issue #812)"
+   00599|     );
+   00600| }
+   00601| 
+   00602| /// The real Agent CLI ships a network-backed `websearch` tool. A temporary
+   00603| /// outage of that provider used to abort both meaning-detail scenarios before
+   00604| /// Formal AI could observe the search result, making this repository's gate
+   00605| /// depend on an unrelated hosted service. Keep the complete research recipe,
+   00606| /// but execute its search and fetch through the repository-owned MCP fixture.
+   00607| #[test]
+   00608| fn meaning_detail_e2e_uses_the_local_research_fixture() {
+   00609|     // Issue #1081 moved these steps into `.github/workflows/agent-cli-e2e.yml`.
+   00610|     // The spliced surface keeps them inside the job that calls them, so this
+   00611|     // still reads what CI runs for `test-agent-cli-e2e`.
+   00612|     let workflow = crate::ci_gates::pipeline_workflows();
+   00613|     let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
+   00614|     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+   00615|     let harness = fs::read_to_string(format!(
+   00616|         "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+   00617|     ))
+   00618|     .expect("Agent CLI E2E harness");
+   00619|     let fixture = fs::read_to_string(format!(
+   00620|         "{manifest_dir}/experiments/agent_cli_e2e/mock-meaning-mcp.mjs"
+   00621|     ))
+   00622|     .expect("meaning research MCP fixture");
+   00623| 
+   00624|     for step_name in [
+   00625|         "Run agent CLI E2E — tomato meaning (search → fetch → write → verify)",
+   00626|         "Run agent CLI E2E — potato meaning (different wording, same recipe)",
+   00627|     ] {
+   00628|         let step = workflow_step_block(agent_e2e, step_name);
+   00629|         assert!(
+   00630|             step.contains("RESEARCH_MCP_FIXTURE: experiments/agent_cli_e2e/mock-meaning-mcp.mjs"),
+   00631|             "{step_name} must not depend on Agent's hosted websearch provider"
+   00632|         );
+   00633|     }
+   00634|     assert!(harness.contains("config.tools = { websearch: false, webfetch: false }"));
+   00635|     assert!(harness.contains("command: [\"node\", process.argv[2]]"));
+   00636|     for lexeme in ["L170542.json", "L3784.json"] {
+   00637|         assert!(
+   00638|             fixture.contains(&format!("sourcePath(\"{lexeme}\")")),
+   00639|             "fixture must serve the committed {lexeme} evidence"
+   00640|         );
+   00641|     }
+   00642| }
+   00643| 
+   00644| /// A research harness that declares no MCP tool-call timeout makes the Agent
+   00645| /// CLI compute its per-tool deadline as `NaN`, so a call the mock answers in
+   00646| /// milliseconds aborts with `timed out after NaN seconds`. Run 32107664418
+   00647| /// failed exactly that way: `run_issue_781.sh` ended after one fetch and
+   00648| /// tripped its own `[ "$fetches" -ge 3 ]` assertion.
+   00649| ///
+   00650| /// Pinned for `run_issue_781.sh` only, which is where the fault was observed.
+   00651| /// `run_issue_687.sh` and `run_issue_771.sh` look similarly exposed but have
+   00652| /// never produced a `NaN` deadline, and adding the same keys to them broke
+   00653| /// them -- so they are left as they are rather than "fixed" against a fault
+   00654| /// they do not have.
+   00655| ///
+   00656| /// `mcp_defaults` is added for the Agent CLI only. `OpenCode` reads the same
+   00657| /// file and validates it against its own schema, which rejects that key
+   00658| /// outright ("Configuration is invalid ... Unrecognized key: `mcp_defaults`"),
+   00659| /// so writing it unconditionally trades one red client for another.
+   00660| #[test]
+   00661| fn the_research_harness_declares_an_mcp_tool_call_timeout() {
+   00662|     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+   00663|     let harness = fs::read_to_string(format!(
+   00664|         "{manifest_dir}/experiments/agent_cli_e2e/run_issue_781.sh"
+   00665|     ))
+   00666|     .expect("research E2E harness should be readable");
+   00667| 
+   00668|     assert!(
+   00669|         harness.contains(r#""tool_call_timeout": 120000"#),
+   00670|         "run_issue_781.sh must give its MCP server an explicit tool-call \
+   00671|          timeout, or the Agent CLI computes it as NaN and aborts the call"
+   00672|     );
+   00673|     assert!(
+   00674|         harness.contains("max_tool_call_timeout: 600000"),
+   00675|         "run_issue_781.sh must declare mcp_defaults.max_tool_call_timeout"
+   00676|     );
+   00677|     assert!(
+   00678|         harness.contains(r#"if [ "$for_client" = agent ]"#),
+   00679|         "mcp_defaults must be written only for the Agent CLI: OpenCode reads \
+   00680|          the same file and its schema rejects that key"
+   00681|     );
+   00682| }
+   00683| 
+   00684| /// Issue #534 forbids caching `target/` in CI, and the reason is disk rather
+   00685| /// than taste: a hosted ubuntu runner ships ~14 GB free, seven jobs already run
+   00686| /// `scripts/free-runner-disk.sh` to survive, and a job that exhausts `/` takes
+   00687| /// the runner down with no failed step and no log to download. A cached target
+   00688| /// tree measured 930 MB per job on top of that.
+   00689| ///
+   00690| /// The guard read three hand-listed files, so `agentic-cli-matrix.yml` and
+   00691| /// `external-benchmarks.yml` cached it unnoticed. It now reads every workflow;
+   00692| /// this test pins that it does, because a policy enforced over part of the tree
+   00693| /// reports compliance it has not checked.
+   00694| #[test]
+   00695| fn the_disk_policy_reads_every_workflow_not_a_hand_listed_few() {
+   00696|     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+   00697|     let guard = fs::read_to_string(format!("{manifest_dir}/scripts/check-disk-usage-policy.rs"))
+   00698|         .expect("disk usage policy guard should be readable");
+   00699| 
+   00700|     assert!(
+   00701|         guard.contains(r#"fs::read_dir(".github/workflows")"#),
+   00702|         "the disk policy must sweep the workflow directory, or a workflow it \
+   00703|          does not list can cache the target tree unnoticed"
+   00704|     );
+   00705| 
+   00706|     let dir = format!("{manifest_dir}/.github/workflows");
+   00707|     let mut checked = 0;
+   00708|     for entry in fs::read_dir(&dir).expect("workflow directory should be readable") {
+   00709|         let path = entry.expect("directory entry").path();
+   00710|         if path.extension().is_none_or(|ext| ext != "yml") {
+   00711|             continue;
+   00712|         }
+   00713|         let workflow = fs::read_to_string(&path).expect("workflow should be readable");
+   00714|         assert!(
+   00715|             !workflow.lines().any(|line| line.trim() == "target"),
+   00716|             "{} caches the target tree, which issue #534 forbids",
+   00717|             path.display()
+   00718|         );
+   00719|         checked += 1;
+   00720|     }
+   00721|     assert!(checked > 0, "the sweep must actually find workflows");
+   00722| }
+   00723| 
+   00724| /// Agent can otherwise launch its hosted `opencode/big-pickle` summarizer
+   00725| /// between tool turns. If that unrelated provider is unavailable, the client
+   00726| /// exits before returning the tool result to Formal AI.
+   00727| #[test]
+   00728| fn agent_cli_e2e_disables_hosted_session_summarization() {
+   00729|     // Issue #1081: the job now delegates to a reusable workflow, and the
+   00730|     // `env:` that disables hosted summarization moved with the steps it
+   00731|     // protects. Read the spliced surface so the guard is checked where CI
+   00732|     // applies it.
+   00733|     let workflow = crate::ci_gates::pipeline_workflows();
+   00734|     let agent_e2e = job_block(&workflow, "test-agent-cli-e2e");
+   00735|     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+   00736|     let harness = fs::read_to_string(format!(
+   00737|         "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+   00738|     ))
+   00739|     .expect("Agent CLI E2E harness");
+   00740| 
+   00741|     assert!(harness.contains(
+   00742|         "--no-summarize-session \\\n    --compaction-models \"(same)\" \\\n    --model \"formal-ai/formal-ai\""
+   00743|     ));
+   00744|     assert!(agent_e2e.contains("LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: \"false\""));
+   00745| 
+   00746|     for script in ["run_issue_687.sh", "run_issue_771.sh", "run_issue_781.sh"] {
+   00747|         let research_harness =
+   00748|             fs::read_to_string(format!("{manifest_dir}/experiments/agent_cli_e2e/{script}"))
+   00749|                 .expect("research E2E harness should be readable");
+   00750| 
+   00751|         assert!(
+   00752|             research_harness.contains("mock-research-mcp.mjs")
+   00753|                 && research_harness.contains("\"websearch\": false")
+   00754|                 && research_harness.contains("\"webfetch\": false"),
+   00755|             "{script} must disable Agent's hosted research tools"
+   00756|         );
+   00757|     }
+   00758| }
+   00759| 
+   00760| #[test]
+   00761| fn agent_cli_e2e_does_not_call_an_unrelated_summary_provider() {
+   00762|     // Run 29911330673 completed the self-AST recipe and wrote its validated
+   00763|     // artifact, then the external Agent CLI tried to summarize the session
+   00764|     // through `opencode/big-pickle`. That unrelated provider was unavailable,
+   00765|     // turning a successful formal-ai round-trip into exit code 1. Keep the
+   00766|     // harness focused on the provider under test and preserve its strict
+   00767|     // zero-exit assertion by disabling the optional post-run summary.
+   00768|     let manifest_dir = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
+   00769|     let harness = fs::read_to_string(format!(
+   00770|         "{manifest_dir}/experiments/agent_cli_e2e/run_agent_cli.sh"
+   00771|     ))
+   00772|     .unwrap();
+   00773| 
+   00774|     assert_eq!(
+   00775|         harness
+   00776|             .matches("\n        --no-summarize-session \\\n")
+   00777|             .count()
+   00778|             + harness.matches("\n    --no-summarize-session \\\n").count(),
+   00779|         2,
+   00780|         "both the initial and resumed Agent CLI turns must disable summarization"
+   00781|     );
+   00782| }
+   00783| 
+   00784| #[test]
+   00785| fn release_workflow_jobs_have_explicit_timeouts() {
+   00786|     let workflow = release_workflow();
+   00787|     let expected_timeouts = [
+   00788|         ("detect-changes", 5),
+   00789|         ("changelog", 10),
+   00790|         // Issue #808's evidence-check job now lives in
+   00791|         // `.github/workflows/evidence-check.yml`; its timeout is asserted by
+   00792|         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
+   00793|         ("docker-build", 30),
+   00794|         ("secrets-scan", 10),
+   00795|         ("version-check", 5),
+   00796|         // Issue #1081 (D15): probes every publishing credential with a write
+   00797|         // before the pipeline spends 90 minutes building what it cannot
+   00798|         // publish. Five probes over HTTP against five registries; the cap is a
+   00799|         // backstop for a hung TLS handshake, not a work budget.
+   00800|         ("release-preflight", 5),
+   00801|         // Issue #1017: resolves the base-branch commit once so `lint`, `test`
+   00802|         // and the macOS lane all merge the same one instead of each resolving
+   00803|         // the tip at its own start time. A reusable workflow, so it owns its
+   00804|         // own cap -- and so `release.yml` does not pay lines for it against the
+   00805|         // 1500-line band this same file pins below.
+   00806|         ("base", 0),
+   00807|         // Issue #812: raised from 10; the job grew from ~3.3 to ~7.8 minutes.
+   00808|         // Issue #1076 (D5): raised from 15. Over 400 `main` runs the worst
+   00809|         // case was 12.7 min, 84.4% of that cap and trending up (6.0 -> 12.7
+   00810|         // across the window) -- the deadline, not the backstop, and a cap kills
+   00811|         // as `cancelled`. No single step dominates here, so the cap is the only
+   00812|         // mechanism available; 25 puts the same worst case at 50.7%.
+   00813|         // Issue #1138: raised from 25. The gate set kept growing and run
+   00814|         // 35806556194 consumed the full 25 minutes, killed mid-gate inside
+   00815|         // repository_workspace_protocol and reported as `cancelled` -- the red
+   00816|         // hidden behind a cancelled job, every gate that did run passing. The
+   00817|         // measured demand of at least 25.2 min sits under 56% of 45, back
+   00818|         // below the 70% warn line of check-job-headroom.rs.
+   00819|         // PR #1188: instead of a fourth raise, the gates run as four parallel
+   00820|         // lanes (`lane` in data/meta/ci-gates/); 30 holds the slowest (~15).
+   00821|         ("lint", 30),
+   00822|         // Issue #812: raised from 15 after run 29767811026 was killed 1.1 s
+   00823|         // after the suite passed. See
+   00824|         // `test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten`.
+   00825|         // Issue #1012 partitions the macOS core suite so every slice retains
+   00826|         // this baseline rather than extending a monolithic timeout.
+   00827|         // Issue #1017 raised this from 25: 455s of the job runs outside the
+   00828|         // budgeted step, so a 20-minute budget under a 25-minute cap could
+   00829|         // never expire first.
+   00830|         // Issue #1081 raised this from 35. The job is a matrix, and its two
+   00831|         // legs are budgeted separately: the `full` leg now declares 2640s
+   00832|         // across four steps and the `specification` leg 2460s across two, after
+   00833|         // the compile that was 86% of `Run specification tests` was split into
+   00834|         // a step of its own. One cap covers both legs, so it has to hold the
+   00835|         // larger sum at or under the 70% share
+   00836|         // `job_budget_fit::the_budgets_a_job_can_spend_together_fit_inside_its_cap`
+   00837|         // enforces: 2640/3900 is 67.7%.
+   00838|         // The same fix raised the cap from 65 to 90: the spec lane's worst
+   00839|         // budgeted group is 3600s, and 3600/5400 leaves it at 66% of the cap
+   00840|         // instead of 92% of the old one -- the budget, not the cap, stays the
+   00841|         // real deadline.
+   00842|         // Issue #1138 raised the full leg's `Run tests` budget from 1440 to
+   00843|         // 2400 (measured demand ~1520s: unit 1251-1315s + integration ~200s),
+   00844|         // which lifts that leg's sum to 3600s -- the same 66% of this cap.
+   00845|         // PR #1188 (R1188-U9) lowered it to 30: both suites run prebuilt
+   00846|         // executables in shards (full five, specification four), and each
+   00847|         // budgeted group is 1080s, 60% of the cap.
+   00848|         ("test", 30),
+   00849|         // Issue #1014 compiles one nextest archive and fans it out to five
+   00850|         // macOS runners. The reusable workflow owns both internal timeouts.
+   00851|         ("macos-core-tests", 0),
+   00852|         // Issue #896: raised from 10; the published web-search/web-capture
+   00853|         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
+   00854|         // build after a Cargo.lock change hit the former cap.
+   00855|         // Issue #1076 (D5): raised from 15. The run that missed its cargo
+   00856|         // cache took 11.6 min, 77.0% of the cap; 20 puts it at 57.8%.
+   00857|         ("build", 20),
+   00858|         // R1015: the JavaScript server answers the parity corpus as the
+   00859|         // release binary does; it reuses build-artifacts' binary, so no compile.
+   00860|         ("server-parity", 15),
+   00861|         // Issue #1076 (D5): raised from 60. Worst case 50.6 min over 400
+   00862|         // `main` runs, 84.4% of that cap -- and the 45-minute GHCR budget that
+   00863|         // owns the real deadline could never have fired inside it, since the
+   00864|         // rest of the job costs ~18 min. A budget the cap pre-empts is not a
+   00865|         // budget: the run still ends `cancelled`.
+   00866|         ("auto-release", 90),
+   00867|         // Same image, same steps, same budgets, same backstop (issue #1076).
+   00868|         ("manual-release", 90),
+   00869|         ("changelog-pr", 10),
+   00870|         // Issue #1138 moved the steps, and the 40-minute cap with them, into
+   00871|         // `.github/workflows/e2e-local.yml`; what is left here is the call.
+   00872|         ("test-e2e-local", 0),
+   00873|         // Issue #538: real Agent CLI ↔ formal-ai OpenAI-compatible round-trip.
+   00874|         // Boots `formal-ai serve`, drives it with `@link-assistant/agent`, and
+   00875|         // asserts the CLI writes the enriched meaning file. The extra headroom
+   00876|         // over test-e2e-local absorbs a cold cargo build of the release binary.
+   00877|         // Raised from 20 (PR #965 review): 16m16s and 17m30s green left ~2
+   00878|         // minutes of headroom, and run 31097339962 tipped over into a
+   00879|         // *cancelled* job that looked like a regression but was only variance.
+   00880|         // Raised from 32 (issue #1069): 19m54s green, of which the two
+   00881|         // computer-use steps cost 5m32s, is 39m24s at their 900s+600s budgets.
+   00882|         // Issue #1081 moved those 324 steps, and the 45-minute cap with them,
+   00883|         // into `.github/workflows/agent-cli-e2e.yml`; what is left here is the
+   00884|         // call. See that file's header for why.
+   00885|         ("test-agent-cli-e2e", 0),
+   00886|         // Issue #1012: the shared release binary is built once before the seven
+   00887|         // Box image legs, avoiding seven identical cache restores and builds.
+   00888|         ("build-artifacts", 20),
+   00889|         // Issue #932: per-language matrix leg that pulls one link-foundation/box
+   00890|         // image, generates the project from solver answers and runs the
+   00891|         // language's traditional init commands inside it. The budget covers a
+   00892|         // cold release build plus the image pull.
+   00893|         ("box-language-projects", 30),
+   00894|         // The Pages build runs `cargo doc` for the /docs/api reference (issue
+   00895|         // #479) in pages-artifact.yml under its own 30-minute cap (R1188-U9).
+   00896|         ("build-pages", 0),
+   00897|         // deploy-pages only waits in the GitHub Pages deployment queue, which
+   00898|         // can stall for many minutes (PR #965 review) — see
+   00899|         // `pages_deploy_uses_the_actions_maximum_supported_wait`.
+   00900|         ("deploy-pages", 15),
+   00901|         ("test-e2e-pages", 15),
+   00902|         // Issue #977: the terminal gate that turns a silently-`cancelled` run
+   00903|         // (the shape a `timeout-minutes` kill takes) into a red failure.
+   00904|         ("pipeline-status", 5),
+   00905|     ];
+   00906| 
+   00907|     let actual_jobs = workflow_job_names(&workflow);
+   00908|     let expected_jobs = expected_timeouts
+   00909|         .iter()
+   00910|         .map(|(job_name, _)| *job_name)
+   00911|         .collect::<Vec<_>>();
+   00912|     assert_eq!(actual_jobs, expected_jobs);
+   00913| 
+   00914|     for (job_name, timeout_minutes) in expected_timeouts {
+   00915|         let job = job_block(&workflow, job_name);
+   00916|         if timeout_minutes == 0 {
+   00917|             // A reusable call declares no cap of its own; the called workflow's
+   00918|             // jobs own them. Read whichever workflow this job actually calls,
+   00919|             // so a second delegating job cannot be checked against the first
+   00920|             // one's file (issue #1017 added `base`).
+   00921|             let called = job
+   00922|                 .lines()
+   00923|                 .find_map(|line| line.trim().strip_prefix("uses: ./"))
+   00924|                 .unwrap_or_else(|| {
+   00925|                     panic!("{job_name} is listed as delegating but calls no reusable workflow")
+   00926|                 })
+   00927|                 .trim();
+   00928|             let reusable =
+   00929|                 fs::read_to_string(format!("{}/../{called}", env!("CARGO_MANIFEST_DIR")))
+   00930|                     .unwrap_or_else(|error| panic!("read {called}: {error}"));
+   00931|             for inner_job in workflow_job_names(&reusable) {
+   00932|                 assert!(
+   00933|                     job_block(&reusable, inner_job).contains("    timeout-minutes:"),
+   00934|                     "{inner_job} should declare an explicit timeout"
+   00935|                 );
+   00936|             }
+   00937|             continue;
+   00938|         }
+   00939|         let expected = format!("    timeout-minutes: {timeout_minutes}\n");
+   00940|         assert!(
+   00941|             job.contains(&expected),
+   00942|             "{job_name} should declare {expected:?}"
+   00943|         );
+   00944|     }
+   00945| }
+   00946| 
+   00947| /// Issue #479: the docs hub links to a Rust API reference at `/docs/api/`. The
+   00948| /// deploy-pages job generates it with `cargo doc` and copies it into the Pages
+   00949| /// artifact — and the copy must run *after* stamping (rustdoc HTML carries no
+   00950| /// version placeholders, so copying post-stamp keeps the large generated tree
+   00951| /// out of the placeholder scan).
+   00952| #[test]
+   00953| fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
+   00954|     let workflow = pages_artifact_workflow();
+   00955|     let deploy = job_block(&workflow, "build");
+   00956| 
+   00957|     assert!(
+   00958|         deploy.contains("bash scripts/install-rust-script.sh"),
+   00959|         "the Pages build should install rust-script with the retry wrapper"
+   00960|     );
+   00961|     assert!(
+   00962|         deploy.contains("bash scripts/build-rust-api-docs.sh"),
+   00963|         "deploy-pages should invoke the API-docs builder"
+   00964|     );
+   00965|     assert!(
+   00966|         deploy.contains("cp -R target/doc/. js/docs/api/"),
+   00967|         "deploy-pages should copy the generated docs into js/docs/api/"
+   00968|     );
+   00969| 
+   00970|     let stamp_pos = deploy
+   00971|         .find("Stamp GitHub Pages artifact")
+   00972|         .expect("deploy-pages should stamp the Pages artifact");
+   00973|     let copy_pos = deploy
+   00974|         .find("Copy Rust API docs into the Pages artifact")
+   00975|         .expect("deploy-pages should copy the API docs");
+   00976|     assert!(
+   00977|         stamp_pos < copy_pos,
+   00978|         "the API-docs copy must run after the stamp step so rustdoc HTML is not scanned for placeholders"
+   00979|     );
+   00980| 
+   00981|     // cargo doc emits the crate root under target/doc/formal_ai/ (lib name
+   00982|     // formal_ai); a redirect at the doc root keeps /docs/api/ from 404ing.
+   00983|     let docs_script = std::fs::read_to_string(format!(
+   00984|         "{}/../scripts/build-rust-api-docs.sh",
+   00985|         env!("CARGO_MANIFEST_DIR")
+   00986|     ))
+   00987|     .expect("build-rust-api-docs.sh");
+   00988|     assert!(
+   00989|         docs_script.contains("cargo doc --no-deps --lib"),
+   00990|         "the API-docs builder should run cargo doc"
+   00991|     );
+   00992|     assert!(
+   00993|         docs_script.contains("url=formal_ai/index.html"),
+   00994|         "a redirect should point /docs/api/ at the crate root"
+   00995|     );
+   00996| }
+   00997| 
+   
+   (End of file - total 997 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/ci-cd/workflow_release.rs","file_path":"rust/tests/unit/ci-cd/workflow_release.rs","new":"    assert!(pages_build.contains(\"ref: ${{ github.ref }}\"));\n    assert!(pages_build.contains(\"git rev-parse HEAD\"));\n    assert!(!pages_build.contains(\"ref: ${{ steps.pages_ref.outputs.sha }}\"));","newString":"    assert!(pages_build.contains(\"ref: ${{ github.ref }}\"));\n    assert!(pages_build.contains(\"git rev-parse HEAD\"));\n    assert!(!pages_build.contains(\"ref: ${{ steps.pages_ref.outputs.sha }}\"));","new_str":"    assert!(pages_build.contains(\"ref: ${{ github.ref }}\"));\n    assert!(pages_build.contains(\"git rev-parse HEAD\"));\n    assert!(!pages_build.contains(\"ref: ${{ steps.pages_ref.outputs.sha }}\"));","new_string":"    assert!(pages_build.contains(\"ref: ${{ github.ref }}\"));\n    assert!(pages_build.contains(\"git rev-parse HEAD\"));\n    assert!(!pages_build.contains(\"ref: ${{ steps.pages_ref.outputs.sha }}\"));","old":"    assert!(pages_build.contains(\"ref: ${{ steps.pages_ref.outputs.sha }}\"));","oldString":"    assert!(pages_build.contains(\"ref: ${{ steps.pages_ref.outputs.sha }}\"));","old_str":"    assert!(pages_build.contains(\"ref: ${{ steps.pages_ref.outputs.sha }}\"));","old_string":"    assert!(pages_build.contains(\"ref: ${{ steps.pages_ref.outputs.sha }}\"));","path":"rust/tests/unit/ci-cd/workflow_release.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/ci-cd/workflow_release.rs"}
+   8a721903685f0c44c5233236cfaf7cdc29821ffe8c3533f731c59f2006c06313  rust/tests/unit/ci-cd/workflow_release.rs
+   
+== answer ==
+Replaced `    assert!(pages_build.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));` with `    assert!(pages_build.contains("ref: ${{ github.ref }}"));
+    assert!(pages_build.contains("git rev-parse HEAD"));
+    assert!(!pages_build.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));` in `rust/tests/unit/ci-cd/workflow_release.rs` and observed the result.

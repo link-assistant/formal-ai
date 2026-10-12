@@ -1,0 +1,13 @@
+view
+  id M-291e4c658113
+  lemma provider
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "someone whose business is to supply a particular service or commodity"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "someone who provides the means for subsistence"
+    provenance (wordnet)

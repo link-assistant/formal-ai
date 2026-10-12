@@ -1,0 +1,43 @@
+>> bash {"command":"actionlint .github/workflows/issue-1028-agent-ladder.yml"}
+   Output: .github/workflows/issue-1028-agent-ladder.yml:227:9: shellcheck reported issue in this script: SC2155:warning:4:8: Declare and assign separately to avoid masking return values [shellcheck]
+       |
+   227 |         run: |
+       |         ^~~~
+   .github/workflows/issue-1028-agent-ladder.yml:227:9: shellcheck reported issue in this script: SC2155:warning:5:8: Declare and assign separately to avoid masking return values [shellcheck]
+       |
+   227 |         run: |
+       |         ^~~~
+   .github/workflows/issue-1028-agent-ladder.yml:379:9: shellcheck reported issue in this script: SC2155:warning:3:8: Declare and assign separately to avoid masking return values [shellcheck]
+       |
+   379 |         run: |
+       |         ^~~~
+   .github/workflows/issue-1028-agent-ladder.yml:379:9: shellcheck reported issue in this script: SC2155:warning:4:8: Declare and assign separately to avoid masking return values [shellcheck]
+       |
+   379 |         run: |
+       |         ^~~~
+   
+   Error: 
+   Exit Code: 1
+== answer ==
+The command failed: `actionlint .github/workflows/issue-1028-agent-ladder.yml` exited with code 1.
+
+```text
+.github/workflows/issue-1028-agent-ladder.yml:227:9: shellcheck reported issue in this script: SC2155:warning:4:8: Declare and assign separately to avoid masking return values [shellcheck]
+    |
+227 |         run: |
+    |         ^~~~
+.github/workflows/issue-1028-agent-ladder.yml:227:9: shellcheck reported issue in this script: SC2155:warning:5:8: Declare and assign separately to avoid masking return values [shellcheck]
+    |
+227 |         run: |
+    |         ^~~~
+.github/workflows/issue-1028-agent-ladder.yml:379:9: shellcheck reported issue in this script: SC2155:warning:3:8: Declare and assign separately to avoid masking return values [shellcheck]
+    |
+379 |         run: |
+    |         ^~~~
+.github/workflows/issue-1028-agent-ladder.yml:379:9: shellcheck reported issue in this script: SC2155:warning:4:8: Declare and assign separately to avoid masking return values [shellcheck]
+    |
+379 |         run: |
+    |         ^~~~
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

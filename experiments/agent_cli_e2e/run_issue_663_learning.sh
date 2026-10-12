@@ -48,5 +48,6 @@ grep -q 'promotion_gate "routing_precedence_from_seed_and_parity_fixture_pass"' 
 # The Agent-CLI-authored artifact must match the byte-for-byte committed
 # evidence that `cargo test committed_agent_cli_artifact_is_byte_reproducible`
 # also pins, so the tool — not a hand-edit — is the author.
-diff -u "$OUT/handler-precedence-learning-report.lino" "$report"
+diff -u "$ROOT/docs/case-studies/issue-663/agent-cli-evidence/handler-precedence-learning-report.lino" "$report"
+cp "$report" "$OUT/handler-precedence-learning-report.lino"
 echo "issue #663 handler-precedence-learning Agent CLI E2E OK"

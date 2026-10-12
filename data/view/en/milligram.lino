@@ -1,0 +1,9 @@
+view
+  id M-42e5ca87d36d
+  lemma milligram
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one thousandth (1/1,000) gram"
+    provenance (wordnet)

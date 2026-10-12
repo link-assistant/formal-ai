@@ -1,0 +1,21 @@
+{
+  "entities": {
+    "Q3816639": {
+      "id": "Q3816639",
+      "labels": { "en": { "language": "en", "value": "Kotlin" } },
+      "descriptions": { "en": { "language": "en", "value": "general-purpose programming language" } },
+      "claims": {
+        "P856": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P856",
+              "datavalue": { "value": "https://kotlinlang.org/", "type": "string" }
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  }
+}

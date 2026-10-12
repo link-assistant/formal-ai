@@ -1,0 +1,57 @@
+language en
+lemma off
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not in operation or operational"
+    examples ("the oven is off" "the lights are off")
+    id oewn-01655911-a
+    partOfSpeech a
+  entry
+    definition "(of events) no longer planned or scheduled"
+    examples ("the wedding is definitely off")
+    id oewn-01656338-a
+    partOfSpeech a
+    synonyms (cancelled)
+  entry
+    definition "from a particular thing or place or position (‘forth’ is obsolete)"
+    examples ("ran away from the lion" "wanted to get away from there" "sent the children away to boarding school" "the teacher waved the children away from the dead animal" "went off to school" "they drove off" "go forth and preach")
+    id oewn-00234667-r
+    partOfSpeech r
+    synonyms (away forth)
+  entry
+    definition "at a distance in space or time"
+    examples ("the boat was 5 miles off (or away)" "the party is still 2 weeks off (or away)" "away back in the 18th century")
+    id oewn-00236984-r
+    partOfSpeech r
+    synonyms (away)
+  entry
+    definition "no longer on or in contact or attached"
+    examples ("clean off the dirt" "he shaved off his mustache")
+    id oewn-00194904-r
+    partOfSpeech r
+  entry
+    definition "below a satisfactory level"
+    examples ("an off year for tennis" "his performance was off")
+    id oewn-02090070-s
+    partOfSpeech s
+  entry
+    definition "in an unpalatable state"
+    examples ("sour milk")
+    id oewn-02378437-s
+    partOfSpeech s
+    synonyms (sour turned)
+  entry
+    definition "not performing or scheduled for duties"
+    examples ("He's off every Tuesday")
+    id oewn-00035367-s
+    partOfSpeech s
+  entry
+    definition "kill intentionally and with premeditation"
+    examples ("The mafia boss ordered his enemies murdered")
+    id oewn-02488014-v
+    partOfSpeech v
+    synonyms (murder slay hit dispatch "bump off" "polish off" remove)
+source "oewn:2024"

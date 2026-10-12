@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "冰"
+        },
+        "es": {
+          "language": "es",
+          "value": "hielo"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "處於固體狀態的水"
+        },
+        "es": {
+          "language": "es",
+          "value": "agua congelada, uno de los tres estados naturales del agua"
         }
       },
       "aliases": {
@@ -82,6 +90,16 @@
           {
             "language": "zh",
             "value": "仌"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "agua congelada"
+          },
+          {
+            "language": "es",
+            "value": "agua cristalina"
           }
         ]
       }

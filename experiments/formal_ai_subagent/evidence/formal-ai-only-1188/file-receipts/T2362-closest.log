@@ -1,0 +1,194 @@
+TAP version 13
+# Subtest: a successful shell envelope advances the exact file obligation and preserves raw records
+ok 1 - a successful shell envelope advances the exact file obligation and preserves raw records
+  ---
+  duration_ms: 997.68975
+  ...
+# Subtest: bare successful readback remains supported
+ok 2 - bare successful readback remains supported
+  ---
+  duration_ms: 13.677625
+  ...
+# Subtest: write acknowledgements and auxiliary commands do not certify file contents
+ok 3 - write acknowledgements and auxiliary commands do not certify file contents
+  ---
+  duration_ms: 46.997084
+  ...
+# Subtest: mismatch, nonzero status and a later failed receipt cannot reuse an older success
+ok 4 - mismatch, nonzero status and a later failed receipt cannot reuse an older success
+  ---
+  duration_ms: 28.97025
+  ...
+# Subtest: a different path sharing a filename suffix cannot fulfill the declared file
+ok 5 - a different path sharing a filename suffix cannot fulfill the declared file
+  ---
+  duration_ms: 18.975667
+  ...
+# Subtest: the unchanged issue1099 request persists both artifacts through real shell receipts
+ok 6 - the unchanged issue1099 request persists both artifacts through real shell receipts
+  ---
+  duration_ms: 770.723709
+  ...
+# Subtest: exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+ok 7 - exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+  ---
+  duration_ms: 9.87125
+  ...
+# Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+ok 8 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+  ---
+  duration_ms: 1031.898125
+  ...
+# Subtest: an absent log is created, while a permission failure never overwrites it
+ok 9 - an absent log is created, while a permission failure never overwrites it
+  ---
+  duration_ms: 14.287458
+  ...
+# Subtest: read-back that loses earlier events cannot authorize the requested write
+ok 10 - read-back that loses earlier events cannot authorize the requested write
+  ---
+  duration_ms: 2.827916
+  ...
+# Subtest: run-only clients execute a quoted append and preserve history on retries
+ok 11 - run-only clients execute a quoted append and preserve history on retries
+  ---
+  duration_ms: 32.613334
+  ...
+# Subtest: write-only clients deliver the target without overwriting an unobserved event stream
+ok 12 - write-only clients deliver the target without overwriting an unobserved event stream
+  ---
+  duration_ms: 2.745917
+  ...
+# Subtest: simultaneous retries take the bounded lock and retain exactly one event
+ok 13 - simultaneous retries take the bounded lock and retain exactly one event
+  ---
+  duration_ms: 1432.089875
+  ...
+# Subtest: repository-root shell events use the same sandbox as file tools
+ok 14 - repository-root shell events use the same sandbox as file tools
+  ---
+  duration_ms: 53.753292
+  ...
+# Subtest: cached event readback excludes the separator before a later canonical record
+ok 15 - cached event readback excludes the separator before a later canonical record
+  ---
+  duration_ms: 14.578917
+  ...
+# Subtest: ci_workflow_demand_is_read_from_the_obligation_graph
+ok 16 - ci_workflow_demand_is_read_from_the_obligation_graph
+  ---
+  duration_ms: 787.944958
+  ...
+# Subtest: issue \#1166 obligation graph (agentic JavaScript root)
+    # Subtest: the canonical body anchors its output literal once
+    ok 1 - the canonical body anchors its output literal once
+      ---
+      duration_ms: 234.972
+      ...
+    # Subtest: R1166-2: two identical output clauses produce one node
+    ok 2 - R1166-2: two identical output clauses produce one node
+      ---
+      duration_ms: 12.347917
+      ...
+    # Subtest: distinct literals stay distinct nodes and have no unique literal
+    ok 3 - distinct literals stay distinct nodes and have no unique literal
+      ---
+      duration_ms: 2.937916
+      ...
+    # Subtest: coreference does not merge a filename with an output literal
+    ok 4 - coreference does not merge a filename with an output literal
+      ---
+      duration_ms: 3.237833
+      ...
+    # Subtest: the canonical body yields CI, naming, style and badge obligations
+    ok 5 - the canonical body yields CI, naming, style and badge obligations
+      ---
+      duration_ms: 12.36875
+      ...
+    # Subtest: R1166-5: an unknown clause yields an underivable node with its span, reported
+    ok 6 - R1166-5: an unknown clause yields an underivable node with its span, reported
+      ---
+      duration_ms: 2.407041
+      ...
+    # Subtest: R1166-6: ru, hi, zh and es bodies yield the same graph modulo the language tag
+    ok 7 - R1166-6: ru, hi, zh and es bodies yield the same graph modulo the language tag
+      ---
+      duration_ms: 72.207542
+      ...
+    # Subtest: R1166-7: a paraphrase yields an equivalent graph
+    ok 8 - R1166-7: a paraphrase yields an equivalent graph
+      ---
+      duration_ms: 264.9135
+      ...
+    # Subtest: R1166-3: request_demands reads the CI clause from the graph
+    ok 9 - R1166-3: request_demands reads the CI clause from the graph
+      ---
+      duration_ms: 10.233167
+      ...
+    1..9
+ok 17 - issue \#1166 obligation graph (agentic JavaScript root)
+  ---
+  duration_ms: 801.310167
+  type: 'suite'
+  ...
+# Subtest: issue \#1166 R1166-8 routing by the formalized request
+    # Subtest: work-obligation requests carry work; command lines do not
+    ok 1 - work-obligation requests carry work; command lines do not
+      ---
+      duration_ms: 8.442042
+      ...
+    # Subtest: the browser worker agrees with the agentic root
+    ok 2 - the browser worker agrees with the agentic root
+      ---
+      duration_ms: 37.522584
+      ...
+    # Subtest: the worker terminal router keeps commands and refuses sentences about building something
+    ok 3 - the worker terminal router keeps commands and refuses sentences about building something
+      ---
+      duration_ms: 2.837042
+      ...
+    1..3
+ok 18 - issue \#1166 R1166-8 routing by the formalized request
+  ---
+  duration_ms: 48.919625
+  type: 'suite'
+  ...
+# Subtest: the original repair instruction does not become destructive source contents
+ok 19 - the original repair instruction does not become destructive source contents
+  ---
+  duration_ms: 610.097709
+  ...
+# Subtest: a later write does not license an earlier read with a content-like preposition
+ok 20 - a later write does not license an earlier read with a content-like preposition
+  ---
+  duration_ms: 286.044292
+  ...
+# Subtest: payload write vocabulary cannot turn an explicit read into a whole-file write
+ok 21 - payload write vocabulary cannot turn an explicit read into a whole-file write
+  ---
+  duration_ms: 0.663333
+  ...
+# Subtest: declarative creation and a real write action retain their original bytes
+ok 22 - declarative creation and a real write action retain their original bytes
+  ---
+  duration_ms: 95.478917
+  ...
+# Subtest: a write-only client receives the actual target and a truthful auxiliary gap
+ok 23 - a write-only client receives the actual target and a truthful auxiliary gap
+  ---
+  duration_ms: 19.796875
+  ...
+# Subtest: write-only target transport failure remains an actual failure
+ok 24 - write-only target transport failure remains an actual failure
+  ---
+  duration_ms: 12.55625
+  ...
+1..24
+# tests 34
+# suites 2
+# pass 34
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2773.482458

@@ -1,14 +1,17 @@
 Q3031
   aliases
     en (lass lassie "👧")
+    es (chica muchacha chiquilla)
     zh ("幼女")
   descriptions
     en "young female human"
+    es "ser humano de género femenino y poca edad"
     ru "ребёнок женского пола"
     zh "年幼雌性人類"
   id Q3031
   labels
     en girl
+    es "niña"
     hi "लड़की"
     ru "девочка"
     zh "女孩"

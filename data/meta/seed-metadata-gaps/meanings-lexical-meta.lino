@@ -1,0 +1,23 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-lexical-meta.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-76c6d5099b28610c
+    record "grammatical_number"
+  gap seed-metadata-gap-8f4c09b844e317cd
+    record "lexical_form"
+  gap seed-metadata-gap-ef448db421ea7c43
+    record "lexical_sense"
+  gap seed-metadata-gap-c7a08869d458a2fa
+    record "noun"
+  gap seed-metadata-gap-9f972c929dd9ebe2
+    record "noun_phrase"
+  gap seed-metadata-gap-d7cf3c0668625300
+    record "part_of_speech"
+  gap seed-metadata-gap-b75a4083210f7688
+    record "plural"
+  gap seed-metadata-gap-c5e3cede5ef7e9eb
+    record "singular"
+  gap seed-metadata-gap-269a454896cfdef2
+    record "word_surface"

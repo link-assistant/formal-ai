@@ -104,7 +104,10 @@ fn held_out_constant_drift_is_preserved_as_a_failed_candidate() {
         trace("run-gamma", "gamma", "xml"),
     ]);
 
-    assert!(run.validated_candidates().is_empty());
+    assert_eq!(
+        run.validated_candidates(),
+        [] as [&formal_ai::algorithm_discovery::AlgorithmCandidate; 0]
+    );
     let candidate = run
         .candidates
         .iter()
@@ -249,7 +252,10 @@ fn oversized_observation_sets_fail_closed_without_partial_candidates() {
     let run = discover_algorithms(&[trace]);
 
     assert!(run.observation_limit_exceeded);
-    assert!(run.candidates.is_empty());
+    assert_eq!(
+        run.candidates,
+        [] as [formal_ai::algorithm_discovery::AlgorithmCandidate; 0]
+    );
     assert!(!run.associative_compression_lossless);
     assert!(
         run.links_notation()
@@ -485,7 +491,13 @@ fn public_cli_mines_and_conformance_checks_a_portable_memory_file() {
     )
     .expect("write portable observations");
 
-    let learned = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+    // Nextest archives relocate executables; compile-time paths name the producer.
+    // https://nexte.st/docs/ci-features/archiving/
+    let executable = std::env::var_os("NEXTEST_BIN_EXE_formal_ai")
+        .or_else(|| std::env::var_os("NEXTEST_BIN_EXE_formal-ai"))
+        .or_else(|| std::env::var_os("CARGO_BIN_EXE_formal-ai"))
+        .unwrap_or_else(|| env!("CARGO_BIN_EXE_formal-ai").into());
+    let learned = Command::new(&executable)
         .args([
             "learn",
             "algorithms",
@@ -501,7 +513,7 @@ fn public_cli_mines_and_conformance_checks_a_portable_memory_file() {
     let document = fs::read_to_string(&artifact).expect("read learned artifact");
     assert!(document.contains("algorithm_candidate"));
 
-    let conformance = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+    let conformance = Command::new(&executable)
         .args([
             "algorithm",
             "conformance",
@@ -543,13 +555,62 @@ fn formal_ai_agent_cli_discovers_reads_back_and_conformance_checks_the_same_task
             .arguments
             .contains("formal-ai learn algorithms")
     );
-    assert!(run.steps[2].result.contains("algorithm_candidate"));
+    let artifact: serde_json::Value =
+        serde_json::from_str(&run.steps[2].result).expect("artifact command receipt");
+    assert_eq!(artifact["exit_code"], 0);
+    assert_eq!(artifact["complete"], true);
+    assert_eq!(artifact["schema"], "command-execution-receipt/v1");
+    assert_eq!(artifact["timed_out"], false);
+    assert_eq!(artifact["truncated"], false);
+    assert_eq!(artifact["stderr"], "");
+    assert_eq!(artifact["command"], "cat discovered-algorithms.lino");
+    assert!(
+        artifact["stdout"]
+            .as_str()
+            .expect("artifact source")
+            .contains("algorithm_candidate")
+    );
     assert!(
         run.steps[3]
             .arguments
             .contains("formal-ai algorithm conformance")
     );
-    assert!(run.steps[3].result.contains("side_effects \"false\""));
+    let conformance: serde_json::Value =
+        serde_json::from_str(&run.steps[3].result).expect("conformance command receipt");
+    assert!(conformance["exit_code"].is_null());
+    assert_eq!(conformance["operation_success"], true);
+    assert_eq!(conformance["complete"], true);
+    assert_eq!(conformance["schema"], "algorithm-command-receipt/v1");
+    assert_eq!(conformance["timed_out"], false);
+    assert_eq!(conformance["truncated"], false);
+    assert_eq!(conformance["stderr"], "");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&run.steps[3].arguments).expect("command arguments");
+    assert_eq!(conformance["command"], arguments["command"]);
+    assert!(
+        conformance["stdout"]
+            .as_str()
+            .expect("conformance output")
+            .contains("side_effects \"false\"")
+    );
+    let compiled = formal_ai::agentic_coding::algorithm_learning::compile_task(&task)
+        .expect("observed memory has a validated candidate");
+    let observed = formal_ai::algorithm_discovery::AlgorithmCandidate::from_links_notation(
+        artifact["stdout"]
+            .as_str()
+            .expect("complete observed artifact"),
+    )
+    .expect("observed artifact parses without its transport wrapper");
+    assert_eq!(observed, compiled.candidate);
+    assert_eq!(
+        conformance["stdout"].as_str(),
+        Some(
+            formal_ai::agentic_coding::algorithm_learning::expected_conformance(
+                &compiled.candidate
+            )
+            .as_str()
+        )
+    );
     assert!(run.final_answer.contains("status \"conformance_passed\""));
     assert!(run.final_answer.contains("human_gated \"true\""));
 

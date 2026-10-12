@@ -1,0 +1,21 @@
+view
+  id M-27a31354dbd2
+  lemma location
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a point or extent in space; a point or extent in space"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of putting something in a certain place"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a determination of the place where something is"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a workplace away from a studio at which some or all of a movie may be made"
+    provenance (wordnet)

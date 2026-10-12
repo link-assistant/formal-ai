@@ -354,8 +354,8 @@ is data-driven and configurable through the seed.
   [`VISION.md`](../VISION.md) is the claim; this is where a user meets it.
 - **Status:** Supported today (`benchmark run` and the `coding_discovery`
   tests); the measured upstream rows it earns are published per slice in
-  [`docs/benchmarks.md`](benchmarks.md) — full-slice HumanEval 14/164
-  (`--online`) and MBPP 49/500 cold-offline — with most of each suite still
+  [`docs/benchmarks.md`](benchmarks.md) — full-slice HumanEval 21/164
+  and MBPP 68/500 (`--online`, sharded) — with most of each suite still
   honestly unsolved.
 
 ### J13 — Formal AI authors a change in its own repository

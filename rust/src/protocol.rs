@@ -32,6 +32,7 @@ pub use content::{
 mod output;
 mod recording;
 mod responses_input;
+mod tokens;
 pub use output::*;
 use recording::response_prompt;
 pub use recording::{
@@ -39,6 +40,7 @@ pub use recording::{
     responses_exchange_to_record,
 };
 pub(crate) use recording::{chat_message_to_turn, chat_prompt_and_history};
+use tokens::{message_input_tokens, responses_input_tokens};
 
 fn resolved_request_model(model: Option<&str>) -> String {
     crate::seed::resolve_model_id(model)
@@ -168,6 +170,13 @@ pub struct ChatMessage {
     /// infer failure from provider-specific prose.
     #[serde(default, alias = "isError", skip_serializing_if = "is_false")]
     pub is_error: bool,
+    /// Provider-owned Read metadata; content remains exact source bytes.
+    #[serde(default, alias = "sourceRead", skip_serializing_if = "Option::is_none")]
+    pub source_read: Option<Value>,
+    #[serde(default, skip_deserializing, skip_serializing_if = "Option::is_none")]
+    pub append_contract: Option<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub append_receipt: Option<Value>,
     /// Ordered solver-thinking projection attached to assistant answers.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,
@@ -282,24 +291,6 @@ impl Default for MessageContent {
     fn default() -> Self {
         Self::Text(String::new())
     }
-}
-
-fn message_content_tokens(content: &MessageContent) -> u32 {
-    match content {
-        MessageContent::Text(text) => estimate_tokens(text),
-        MessageContent::Parts(parts) => parts.iter().fold(0, |total, part| {
-            total.saturating_add(part.text.as_deref().map_or(0, estimate_tokens))
-        }),
-    }
-}
-
-/// Count only role-visible message content. Tool call names and arguments are
-/// excluded from input usage because they are protocol metadata, while tool
-/// result content is included like every other message body.
-fn message_input_tokens(messages: &[ChatMessage]) -> u32 {
-    messages.iter().fold(0, |total, message| {
-        total.saturating_add(message_content_tokens(&message.content))
-    })
 }
 
 /// Deserialize [`ChatMessage::content`], mapping an explicit JSON `null` to the
@@ -445,10 +436,6 @@ impl ResponsesRequest {
     }
 }
 
-fn responses_input_tokens(request: &ResponsesRequest) -> u32 {
-    message_input_tokens(&request.to_chat_completion_request().messages)
-}
-
 #[must_use]
 pub fn create_chat_completion(request: &ChatCompletionRequest) -> ChatCompletion {
     create_chat_completion_with_solver(request, &UniversalSolver::default())
@@ -530,7 +517,7 @@ enum AgenticOutcome {
 /// [`plan_chat_step`] drive the loop. An unrecognised task yields
 /// [`AgenticOutcome::Fallthrough`] so ordinary chat stays untouched.
 fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> AgenticOutcome {
-    let trace = std::env::var("FORMAL_AI_TRACE_REQUESTS").as_deref() == Ok("1");
+    let trace = crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS");
     if !request.requests_tool_execution() {
         // A client that speaks no function calling can still ground a file
         // read: `aider` puts the file's bytes in the conversation itself
@@ -587,7 +574,15 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         eprintln!("[trace] agentic_outcome: withheld ungroundable tools: {withheld:?}");
     }
     let tool_names: Vec<&str> = grounded.iter().map(String::as_str).collect();
-    let outcome = plan_chat_step(&request.messages, &tool_names)
+    // Issue #1154 R1: a shell tool whose schema names its command property
+    // something else than `command`/`cmd`/`script` is read through that key.
+    let messages = crate::agentic_coding::tool_result::project_declared_command_keys(
+        &request.messages,
+        &request.tools,
+    );
+    let messages =
+        crate::agentic_coding::append_contract::project_append_contracts(&messages, &request.tools);
+    let outcome = plan_chat_step(&messages, &tool_names)
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
     if trace {
         match &outcome {
@@ -933,6 +928,7 @@ fn response_from_plan(
             total_tokens: input_tokens.saturating_add(output_tokens),
         },
         evidence_links: Vec::new(),
+        derivation_id: None,
         thinking_steps: Vec::new(),
     }
 }
@@ -945,6 +941,7 @@ fn response_from_symbolic(
     let model = resolved_request_model(request.model.as_deref());
     let input_tokens = responses_input_tokens(request);
     let output_tokens = estimate_tokens(&symbolic_answer.answer);
+    let derivation_id = symbolic_answer.derivation_id();
     let answer = symbolic_answer.answer;
     let thinking_steps = symbolic_answer.thinking_steps;
     let mut output = vec![ResponseOutputItem::Message(ResponseOutputMessage {
@@ -974,6 +971,7 @@ fn response_from_symbolic(
             total_tokens: input_tokens.saturating_add(output_tokens),
         },
         evidence_links: symbolic_answer.evidence_links,
+        derivation_id: Some(derivation_id),
         thinking_steps,
     }
 }

@@ -1,0 +1,13 @@
+view
+  id M-961613ba4ba4
+  lemma blocked
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "closed to traffic"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "completely obstructed or closed off"
+    provenance (wordnet)

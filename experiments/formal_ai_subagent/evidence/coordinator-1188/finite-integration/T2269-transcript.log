@@ -1,0 +1,988 @@
+>> read {"filePath":"rust/src/agentic_coding/evidence_record.rs","file_path":"rust/src/agentic_coding/evidence_record.rs","path":"rust/src/agentic_coding/evidence_record.rs"}
+   <file>
+   00001| //! Deliver only conclusive observed findings to an explicitly bound evidence file.
+   00002| //!
+   00003| //! Recursive investigation retains typed provenance; authoring operands are not
+   00004| //! evidence destinations, and clarifications, gaps and failures remain chat answers.
+   00005| 
+   00006| use std::cell::RefCell;
+   00007| use std::collections::HashMap;
+   00008| 
+   00009| use super::capability_router::tool_for;
+   00010| use super::final_result::{FinalDisposition, FinalPayloadRole, FinalResult, record};
+   00011| use super::general_planner::compose_general_change_plan;
+   00012| use super::planner::{
+   00013|     AgenticPlan, Capability, plan_chat_step_resolved, plan_one, plan_settled_routes, trace_route,
+   00014|     write_arguments,
+   00015| };
+   00016| use super::progress::Progress;
+   00017| use super::shell_command::carries_authoring_task;
+   00018| use super::shell_command_policy::sentences;
+   00019| use super::write_request::{
+   00020|     bare_surfaces, delivered_write_target, first_action_cue_start, pinned_first_line, tokens,
+   00021| };
+   00022| use crate::obligation_ledger::ObligationOutcome;
+   00023| use crate::protocol::{ChatMessage, MessageContent, ToolCall};
+   00024| 
+   00025| /// The delivery half of a request, separated from the work it asks for.
+   00026| struct DeliveryBinding {
+   00027|     /// The path the answer has to be written to.
+   00028|     target: String,
+   00029|     /// The exact opening line the caller pinned, when it pinned one.
+   00030|     first_line: Option<String>,
+   00031|     /// Exact `key=value` lines declared in the delivery sentence.
+   00032|     field_lines: Vec<String>,
+   00033|     /// Everything the request says that is not about delivery.
+   00034|     residual: String,
+   00035| }
+   00036| 
+   00037| /// `text` with every quoted segment that holds whitespace replaced, delimiters
+   00038| /// included, by as many `x` as it has bytes, so spans still index the
+   00039| /// original.
+   00040| ///
+   00041| /// A single-token quote -- a backticked path or name -- stays readable. The
+   00042| /// lines under a colon-ended first line are the request's payload, whatever
+   00043| /// they say, so they are masked the same way, line breaks kept (PR #1188 G95:
+   00044| /// a row that read "append ... to gaps.md" was taken for a delivery, and the
+   00045| /// answer was written over that file).
+   00046| fn masked_multi_word_quotes(text: &str) -> String {
+   00047|     let mut masked = text.to_owned();
+   00048|     for segment in crate::normal_markov::quoted_segment_spans(text) {
+   00049|         if segment.text.chars().any(char::is_whitespace) {
+   00050|             masked.replace_range(
+   00051|                 segment.start..segment.end,
+   00052|                 &"x".repeat(segment.end - segment.start),
+   00053|             );
+   00054|         }
+   00055|     }
+   00056|     let end = super::positional_edit::instruction_end(text);
+   00057|     let payload: String = masked[end..]
+   00058|         .chars()
+   00059|         .map(|character| {
+   00060|             if character.is_whitespace() {
+   00061|                 character.to_string()
+   00062|             } else {
+   00063|                 "x".repeat(character.len_utf8())
+   00064|             }
+   00065|         })
+   00066|         .collect();
+   00067|     masked.replace_range(end.., &payload);
+   00068|     masked
+   00069| }
+   00070| 
+   00071| /// Split a request into its delivery obligation and the investigation left over.
+   00072| ///
+   00073| /// The obligation is read one sentence at a time, and a sentence carries it only
+   00074| /// when it applies a seed-defined write action *to* a seed-cued target path. Both
+   00075| /// halves are required and both must be in the same sentence: "Read the file
+   00076| /// `Cargo.toml`. Record what you find in `notes/report.md`." cues two paths, and
+   00077| /// only the second one is being written to. Scoping the pair to a sentence is
+   00078| /// what tells them apart, and it is the same scoping
+   00079| /// [`super::shell_command`] uses to tell a command that is named from one that
+   00080| /// is ordered (issue #907).
+   00081| ///
+   00082| /// A sentence that asks for an artifact to be authored is never the delivery
+   00083| /// half, however write-shaped it looks. "Today's date is Sunday. Create a file
+   00084| /// `main.py` that prints Hello, world!" applies a write action to a cued path,
+   00085| /// and reading it as delivery inverts the request: the caller's work becomes the
+   00086| /// destination and their passing statement becomes the investigation, so the
+   00087| /// Python file was written with prose about the date. The authoring test is
+   00088| /// [`super::shell_command::carries_authoring_task`], the one requirement 3 of
+   00089| /// issue #907 already states in exactly these terms.
+   00090| ///
+   00091| /// Declines when the residual is empty: a request whose every sentence is about
+   00092| /// delivery states no work to do, so there is nothing to record.
+   00093| /// A call-shaped authoring request binds its path as a code operand.
+   00094| fn names_callable_artifact(sentence: &str, target: &str) -> bool {
+   00095|     let normalized = crate::engine::normalize_prompt(sentence);
+   00096|     let lexicon = crate::seed::lexicon();
+   00097|     let operand = normalized.split_whitespace().find(|word| {
+   00098|         lexicon.mentions_role("coding-source-artifact-kind", word)
+   00099|             || lexicon.mentions_role("evidence-report-artifact-kind", word)
+   00100|     });
+   00101|     if operand.is_some_and(|word| lexicon.mentions_role("coding-source-artifact-kind", word))
+   00102|         && (lexicon.mentions_role("coding_request_verb", &normalized)
+   00103|             || lexicon.mentions_role("coding_member_add_action", &normalized))
+   00104|     {
+   00105|         return true;
+   00106|     }
+   00107|     let Some(call) = super::module_function::signature(sentence) else {
+   00108|         return false;
+   00109|     };
+   00110|     if !super::module_function::paths_in(&sentence[call.at..])
+   00111|         .iter()
+   00112|         .any(|path| path == target)
+   00113|     {
+   00114|         return false;
+   00115|     }
+   00116|     let prefix = crate::engine::normalize_prompt(&sentence[..call.at]);
+   00117|     let lexicon = crate::seed::lexicon();
+   00118|     lexicon.mentions_role("coding_request_verb", &prefix)
+   00119|         || lexicon.mentions_role("coding_member_add_action", &prefix)
+   00120| }
+   00121| 
+   00122| fn parse_obligation(request: &str) -> Option<DeliveryBinding> {
+   00123|     let mut target = None;
+   00124|     let mut first_line = None;
+   00125|     let mut field_lines = Vec::new();
+   00126|     let mut residual = String::new();
+   00127|     let mut later_obligation = false;
+   00128|     // Sentences and delivery cues are read with every multi-word quoted
+   00129|     // payload masked: `Append "/// Append an empty line to notes.txt." to
+   00130|     // src/lib.rs.` is one sentence about src/lib.rs, not a delivery to the
+   00131|     // notes.txt its payload mentions (PR #1188 sub-agent gap 2). The pinned
+   00132|     // line, field lines and the work before the delivery are read from the
+   00133|     // request itself, where the quoted text is intact.
+   00134|     let masked = masked_multi_word_quotes(request);
+   00135|     for sentence in sentences(&masked) {
+   00136|         let start = masked[sentence.span.clone()]
+   00137|             .find(sentence.text)
+   00138|             .map_or(sentence.span.start, |at| sentence.span.start + at);
+   00139|         let text = request
+   00140|             .get(start..start + sentence.text.len())
+   00141|             .unwrap_or(sentence.text);
+   00142|         if let Some(line) = pinned_first_line(text) {
+   00143|             if target.is_some() && !later_obligation {
+   00144|                 first_line = first_line.or(Some(line));
+   00145|                 continue;
+   00146|             }
+   00147|             residual.push_str(&request[sentence.span]);
+   00148|             continue;
+   00149|         }
+   00150|         // A sentence states the work rather than a place to put it when it
+   00151|         // asks for an artifact to be authored, or when the path it names is
+   00152|         // where the work happens rather than where an answer goes. Both make
+   00153|         // that path an operand, and reading either as a delivery is
+   00154|         // destructive: the ladder's leaf says "Edit the tracked file
+   00155|         // `src/engine_responses.rs`: add \"Good morning\" to the
+   00156|         // GREETING_EXAMPLES list", so delivery wrote its own status line over
+   00157|         // the source, the write returned success, and the node reported done
+   00158|         // having deleted the file it was asked to edit.
+   00159|         let delivered = (!carries_authoring_task(&crate::engine::normalize_prompt(sentence.text)))
+   00160|             .then(|| delivered_write_target(sentence.text))
+   00161|             .flatten()
+   00162|             .filter(|target| {
+   00163|                 !names_callable_artifact(text, target)
+   00164|                     && super::function_expectation::test_expectation_question(text, &mut None)
+   00165|                         .is_none()
+   00166|             });
+   00167|         if let Some(named) = delivered {
+   00168|             if target.is_none() {
+   00169|                 field_lines = exact_field_lines(text, &named);
+   00170|                 target = Some(named);
+   00171|                 if let Some(work) = work_before_delivery(text) {
+   00172|                     residual.push_str(work);
+   00173|                     residual.push_str(". ");
+   00174|                 }
+   00175|                 continue;
+   00176|             }
+   00177|             // A constraint in the next sentence belongs to this later output,
+   00178|             // not to the first output selected by this recursive pass. Leave
+   00179|             // both sentences in the residual so the nested pass sees them
+   00180|             // together and can bind them correctly.
+   00181|             later_obligation = true;
+   00182|         }
+   00183|         residual.push_str(&request[sentence.span]);
+   00184|     }
+   00185|     let residual = residual.trim().to_owned();
+   00186|     (!residual.is_empty())
+   00187|         .then_some(())
+   00188|         .and(target)
+   00189|         .map(|target| DeliveryBinding {
+   00190|             target,
+   00191|             first_line,
+   00192|             field_lines,
+   00193|             residual,
+   00194|         })
+   00195| }
+   00196| 
+   00197| /// Literal `key=value` field constraints carried by one delivery sentence.
+   00198| fn exact_field_lines(sentence: &str, target: &str) -> Vec<String> {
+   00199|     let fields = sentence
+   00200|         .split('`')
+   00201|         .enumerate()
+   00202|         .filter(|(index, _)| index % 2 == 1)
+   00203|         .map(|(_, quoted)| quoted.trim())
+   00204|         .filter(|quoted| *quoted != target)
+   00205|         .filter(|quoted| !quoted.chars().any(char::is_whitespace))
+   00206|         .filter(|quoted| {
+   00207|             quoted.split_once('=').is_some_and(|(key, _)| {
+   00208|                 key.chars()
+   00209|                     .next()
+   00210|                     .is_some_and(|character| character.is_ascii_alphabetic())
+   00211|                     && key
+   00212|                         .chars()
+   00213|                         .all(|character| character.is_ascii_alphanumeric() || character == '_')
+   00214|             })
+   00215|         })
+   00216|         .map(str::to_owned)
+   00217|         .collect::<Vec<_>>();
+   00218| 
+   00219|     // A field may be quoted once as a source reference and again as the output
+   00220|     // field the caller declares: "`left_result=` followed by the child's
+   00221|     // `result=` value, and `result=` followed by the composition". The final
+   00222|     // occurrence is the declaration's position in the output list. Keep that
+   00223|     // occurrence only, so the source reference cannot create an extra field or
+   00224|     // move the aggregate ahead of later child fields.
+   00225|     fields
+   00226|         .iter()
+   00227|         .enumerate()
+   00228|         .filter(|(index, field)| !fields[index + 1..].contains(field))
+   00229|         .map(|(_, field)| field.clone())
+   00230|         .collect()
+   00231| }
+   00232| 
+   00233| /// The part of a delivery sentence that is not about delivery.
+   00234| ///
+   00235| /// Two sentences are the tidy way to ask for work and its delivery, and the
+   00236| /// ladder's own nodes are written that way. English does not require it: "Break
+   00237| /// the customer import rewrite into sub-tasks and record what you work out in
+   00238| /// `import-split.md`" coordinates both halves into one sentence, and the
+   00239| /// delivery half starts at the write action cue. Reading the sentence as
+   00240| /// delivery and stopping there drops the work along with it, the residual comes
+   00241| /// out empty, and the request is answered in the transcript with nothing
+   00242| /// written -- which is the same silence issue #1066 is about, arrived at from
+   00243| /// the other side.
+   00244| ///
+   00245| /// Returns [`None`] when the sentence opens with its cue, which is the shape
+   00246| /// where there is genuinely no work in front of the delivery.
+   00247| fn work_before_delivery(sentence: &str) -> Option<&str> {
+   00248|     let start = first_action_cue_start(&tokens(sentence))?;
+   00249|     let work = without_trailing_separator(sentence.get(..start)?.trim());
+   00250|     work.chars().any(char::is_alphanumeric).then_some(work)
+   00251| }
+   00252| 
+   00253| /// `work` with the connective that introduced the delivery clause removed.
+   00254| ///
+   00255| /// The connective belongs to the clause it opens, so it is delivery's, not the
+   00256| /// work's. Which words those are is not a fact about writing files: it is the
+   00257| /// vocabulary that ends one clause and starts the next, which the seed already
+   00258| /// spells out in every registered language under
+   00259| /// [`crate::seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR`].
+   00260| ///
+   00261| /// The separator has to be a whole word. "Run the import command record it in
+   00262| /// `x.md`" ends its work on *command*, and a match on the last three letters
+   00263| /// would hand back "Run the import comm".
+   00264| fn without_trailing_separator(work: &str) -> &str {
+   00265|     let lowered = work.to_lowercase();
+   00266|     bare_surfaces(crate::seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR)
+   00267|         .iter()
+   00268|         .filter(|separator| lowered.ends_with(separator.as_str()))
+   00269|         .filter_map(|separator| work.get(..work.len() - separator.len()))
+   00270|         .filter(|kept| kept.ends_with(char::is_whitespace))
+   00271|         .map(str::trim_end)
+   00272|         .min_by_key(|kept| kept.len())
+   00273|         .unwrap_or(work)
+   00274| }
+   00275| 
+   00276| /// Plan the next step of a "find this out and record it at PATH" request.
+   00277| ///
+   00278| /// Three states, in the order they occur:
+   00279| ///
+   00280| /// * the write has already been attempted — report what happened, truthfully;
+   00281| /// * the router still wants tool calls for the residual — pass them through, so
+   00282| ///   the investigation runs under the ordinary routes;
+   00283| /// * the router has an answer — write it to the named path, under the pinned
+   00284| ///   first line when the caller pinned one.
+   00285| pub(super) fn plan_evidence_record_step(
+   00286|     task: &str,
+   00287|     messages: &[ChatMessage],
+   00288|     tool_names: &[&str],
+   00289|     result: &mut Option<FinalResult>,
+   00290| ) -> Option<AgenticPlan> {
+   00291|     let obligation = parse_obligation(task)?;
+   00292|     // A later producer of the same target owns its bytes.
+   00293|     if let Some(reason) = later_route_delivering(task, &obligation, tool_names) {
+   00294|         trace_route("evidence_record", reason);
+   00295|         return None;
+   00296|     }
+   00297|     let write_tool = tool_for(tool_names, Capability::Write)?;
+   00298|     let progress = Progress::scan(messages);
+   00299|     match super::task_obligations::observed_file_outcome(task, &obligation.target, messages) {
+   00300|         ObligationOutcome::Satisfied { .. } => {
+   00301|             trace_route("evidence_record", "already_written");
+   00302|             return Some(record(
+   00303|                 AgenticPlan::Final(
+   00304|                     progress
+   00305|                         .successful_write_content_for(&obligation.target)
+   00306|                         .map(|content| written_observation(&obligation, &content))
+   00307|                         .filter(|answer| !answer.is_empty())
+   00308|                         .unwrap_or_else(|| {
+   00309|                             format!("Recorded the findings in `{}`.", obligation.target)
+   00310|                         }),
+   00311|                 ),
+   00312|                 FinalDisposition::Finding,
+   00313|                 "evidence_record_observed",
+   00314|                 result,
+   00315|             ));
+   00316|         }
+   00317|         ObligationOutcome::Refuted { .. } | ObligationOutcome::Unsatisfiable { .. } => {
+   00318|             trace_route("evidence_record", "write_not_observed");
+   00319|             return Some(record(
+   00320|                 AgenticPlan::Final(format!(
+   00321|                     "The findings could not be recorded in `{}`: the write step failed.",
+   00322|                     obligation.target
+   00323|                 )),
+   00324|                 FinalDisposition::Failure,
+   00325|                 "evidence_record_write_failed",
+   00326|                 result,
+   00327|             ));
+   00328|         }
+   00329|         ObligationOutcome::Unattempted => {}
+   00330|     }
+   00331|     // A successful checkout inspection is already the grounded answer this
+   00332|     // delivery exists to persist. Optional research prose elsewhere in a
+   00333|     // harness must not reopen the question on the web before the result is
+   00334|     // written. Preserve recursive delivery ordering, though: when the residual
+   00335|     // names another output, let that inner obligation consume the observation
+   00336|     // first so one result still reaches every requested artifact.
+   00337|     let observed = parse_obligation(&obligation.residual)
+   00338|         .is_none()
+   00339|         .then(|| {
+   00340|             super::workspace_inspection::workspace_inspection_search_for_task(&obligation.residual)
+   00341|         })
+   00342|         .flatten()
+   00343|         .and_then(|_| progress.latest_successful_output(Capability::Grep))
+   00344|         .filter(|answer| !substantive_result_line(answer, &obligation.residual).is_empty())
+   00345|         .map(str::to_owned);
+   00346|     let residual_messages = with_residual_request(messages, &obligation.residual)?;
+   00347|     let is_workspace_observation = observed.is_some();
+   00348|     let answer = match observed {
+   00349|         Some(answer) => answer,
+   00350|         None => match plan_chat_step_resolved(&residual_messages, tool_names) {
+   00351|             Some(resolved) => {
+   00352|                 if !resolved.can_deliver() {
+   00353|                     trace_route("evidence_record", "residual_not_finding");
+   00354|                     return Some(resolved.into_plan(result));
+   00355|                 }
+   00356|                 let AgenticPlan::Final(answer) = resolved.plan else {
+   00357|                     unreachable!()
+   00358|                 };
+   00359|                 if progress.latest_failure().is_some() {
+   00360|                     return Some(record(
+   00361|                         AgenticPlan::Final(answer),
+   00362|                         FinalDisposition::Failure,
+   00363|                         "evidence_record_residual_failed",
+   00364|                         result,
+   00365|                     ));
+   00366|                 }
+   00367|                 answer
+   00368|             }
+   00369|             None => {
+   00370|                 trace_route("evidence_record", "symbolic_residual");
+   00371|                 symbolic_answer(&obligation.residual)?.text
+   00372|             }
+   00373|         },
+   00374|     };
+   00375|     trace_route("evidence_record", &obligation.target);
+   00376|     let delivered_answer = if is_workspace_observation {
+   00377|         substantive_result_line(&answer, &obligation.residual)
+   00378|     } else {
+   00379|         &answer
+   00380|     };
+   00381|     let content = render_obligation(&obligation, delivered_answer);
+   00382|     Some(plan_one(
+   00383|         write_tool,
+   00384|         write_arguments(&obligation.target, &content),
+   00385|     ))
+   00386| }
+   00387| 
+   00388| /// How far the probe below follows a route before concluding it delivers
+   00389| /// nothing.
+   00390| ///
+   00391| /// A route reaches the file the caller named early or not at all: the recipes
+   00392| /// write their artifact first, and the literal-file composer records its plan
+   00393| /// and then writes it. The bound is what keeps a routing question from costing
+   00394| /// a whole run.
+   00395| const DELIVERY_PROBE_TURNS: usize = 4;
+   00396| 
+   00397| /// How a route below this one already produces `target` from the whole request,
+   00398| /// or `None` when none of them does.
+   00399| ///
+   00400| /// A composed change plan states the file it was compiled for, so asking it is
+   00401| /// exact and costs nothing -- and it is the only one of the two that sees a file
+   00402| /// a shell *redirect* produces, since "Run 'printf learned-output' and write its
+   00403| /// exact stdout to reports/learned.txt" is delivered by `>` and never by a write
+   00404| /// call at all.
+   00405| ///
+   00406| /// Everything else is asked by running it rather than by listing it: plan the
+   00407| /// request through the routes below, answer each planned call with a bare
+   00408| /// success, and see whether `target` is among the files they write. That is what
+   00409| /// reaches the recipes, which declare nothing and are recognised from the
+   00410| /// artifact they write. A route's own state machine is what decides --
+   00411| /// `plan_general_change_step` records its plan before writing the file the
+   00412| /// caller named, so a first step alone would report that nobody owns
+   00413| /// `policy/retention.md`, and a table of routes that "own an artifact" would
+   00414| /// have to carry that knowledge secondhand and go stale.
+   00415| ///
+   00416| /// The probe starts from a conversation holding the request and nothing else, so
+   00417| /// the answer depends on the request alone and does not drift as the real run
+   00418| /// accumulates results: a recipe that owns a destination owns it on every turn,
+   00419| /// and its mid-run plan to read the file back would otherwise look like nobody
+   00420| /// owning it.
+   00421| fn later_route_delivering(
+   00422|     task: &str,
+   00423|     obligation: &DeliveryBinding,
+   00424|     tool_names: &[&str],
+   00425| ) -> Option<&'static str> {
+   00426|     // A schema or opening-line declaration constrains bytes that still have to
+   00427|     // be derived from the residual investigation; it is not itself the file's
+   00428|     // payload. The broad literal parser can nevertheless recover the words
+   00429|     // after "with"/"exactly" as content. Do not let that lossy interpretation
+   00430|     // displace the evidence transaction. A true literal write has no residual
+   00431|     // finding to derive, so it never reaches this function.
+   00432|     let derived_delivery = obligation.first_line.is_some() || !obligation.field_lines.is_empty();
+   00433|     if derived_delivery {
+   00434|         return None;
+   00435|     }
+   00436|     if let Some(plan) = compose_general_change_plan(task)
+   00437|         && plan.target == obligation.target
+   00438|     {
+   00439|         return Some("declined_composed_target");
+   00440|     }
+   00441|     settled_route_delivers(task, &obligation.target, tool_names).then_some("declined_settled_route")
+   00442| }
+   00443| 
+   00444| /// Whether planning the whole request through the routes below this one walks
+   00445| /// into a call that writes `target`.
+   00446| fn settled_route_delivers(task: &str, target: &str, tool_names: &[&str]) -> bool {
+   00447|     let key = (
+   00448|         task.to_owned(),
+   00449|         target.to_owned(),
+   00450|         tool_names.join("\u{1f}"),
+   00451|     );
+   00452|     if let Some(known) = DELIVERY_PROBE_ANSWERS.with_borrow(|answers| answers.get(&key).copied()) {
+   00453|         return known;
+   00454|     }
+   00455|     let answer = probe_settled_routes(task, target, tool_names);
+   00456|     DELIVERY_PROBE_ANSWERS.with_borrow_mut(|answers| {
+   00457|         // The router is consulted once per turn with the same request, and a
+   00458|         // long-lived server sees many requests. Recomputing per turn made the
+   00459|         // issue #1028 ladder suite ten times slower; keeping every answer it
+   00460|         // ever gave would trade that for unbounded memory. Start over instead --
+   00461|         // the answers are derived, so losing them costs one recomputation.
+   00462|         if answers.len() >= DELIVERY_PROBE_MEMO_CAPACITY {
+   00463|             answers.clear();
+   00464|         }
+   00465|         answers.insert(key, answer);
+   00466|     });
+   00467|     answer
+   00468| }
+   00469| 
+   00470| thread_local! {
+   00471|     /// Probe answers already computed on this thread, keyed by the inputs they
+   00472|     /// were computed from.
+   00473|     static DELIVERY_PROBE_ANSWERS: RefCell<HashMap<(String, String, String), bool>> =
+   00474|         RefCell::new(HashMap::new());
+   00475| }
+   00476| 
+   00477| /// How many probe answers one thread remembers before starting over.
+   00478| const DELIVERY_PROBE_MEMO_CAPACITY: usize = 512;
+   00479| 
+   00480| fn probe_settled_routes(task: &str, target: &str, tool_names: &[&str]) -> bool {
+   00481|     let mut probe = vec![ChatMessage::user(task)];
+   00482|     for turn in 0..DELIVERY_PROBE_TURNS {
+   00483|         let Some(AgenticPlan::ToolCalls(calls)) =
+   00484|             plan_settled_routes(task, &probe, tool_names, &mut None)
+   00485|         else {
+   00486|             return false;
+   00487|         };
+   00488|         for (index, call) in calls.iter().enumerate() {
+   00489|             if planned_destination(&call.arguments).is_some_and(|path| path == target) {
+   00490|                 return true;
+   00491|             }
+   00492|             let id = format!("delivery-probe-{turn}-{index}");
+   00493|             probe.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00494|                 &id,
+   00495|                 &call.tool,
+   00496|                 call.arguments.clone(),
+   00497|             )]));
+   00498|             probe.push(ChatMessage::tool_result(id, &call.tool, "ok"));
+   00499|         }
+   00500|     }
+   00501|     false
+   00502| }
+   00503| 
+   00504| /// The file a planned call names as its destination, whether the call writes
+   00505| /// those bytes itself or runs a command that writes them.
+   00506| fn planned_destination(arguments: &str) -> Option<String> {
+   00507|     planned_write_path(arguments).or_else(|| planned_command_output_path(arguments))
+   00508| }
+   00509| 
+   00510| /// The destination a planned command names for its own output.
+   00511| ///
+   00512| /// A command carries its destination in the option that names it, exactly as a
+   00513| /// write call carries it in `path`, and `formal-ai statement-audit --root .
+   00514| /// --output statement-audit.lino` produces that file as surely as a write would.
+   00515| /// A delivery that cannot see it peels "and write statement-audit.lino" off the
+   00516| /// request and records its own status line over the report the command had just
+   00517| /// written -- which is what issue #1069's agent-CLI audit run did, on the turn
+   00518| /// after the audit succeeded.
+   00519| fn planned_command_output_path(arguments: &str) -> Option<String> {
+   00520|     let command = super::tool_result::command_argument(arguments)?;
+   00521|     let parts = command.split_whitespace().collect::<Vec<_>>();
+   00522|     let index = parts.iter().position(|part| *part == OUTPUT_OPTION)?;
+   00523|     parts.get(index + 1).map(|path| (*path).to_owned())
+   00524| }
+   00525| 
+   00526| /// The option a command names its output destination with.
+   00527| const OUTPUT_OPTION: &str = "--output";
+   00528| 
+   00529| /// The file a planned call writes, under whichever key its client expects.
+   00530| fn planned_write_path(arguments: &str) -> Option<String> {
+   00531|     let value = serde_json::from_str::<serde_json::Value>(arguments).ok()?;
+   00532|     ["path", "filePath", "file_path", "absolute_path"]
+   00533|         .iter()
+   00534|         .find_map(|key| {
+   00535|             value
+   00536|                 .get(*key)
+   00537|                 .and_then(serde_json::Value::as_str)
+   00538|                 .map(str::to_owned)
+   00539|         })
+   00540| }
+   00541| 
+   00542| /// Render an answer under the constraints attached to its destination.
+   00543| fn render_obligation(obligation: &DeliveryBinding, answer: &str) -> String {
+   00544|     if !obligation.field_lines.is_empty() {
+   00545|         let result = substantive_result_line(answer, &obligation.residual);
+   00546|         let observed_results = exact_field_values(answer, "result");
+   00547|         let mut next_observed = observed_results.iter();
+   00548|         let mut rendered = String::new();
+   00549|         for field in &obligation.field_lines {
+   00550|             rendered.push_str(field);
+   00551|             if field.ends_with('=') {
+   00552|                 if field == "result=" {
+   00553|                     let combined = combined_observation(&observed_results, &obligation.residual)
+   00554|                         .unwrap_or_else(|| result.to_owned());
+   00555|                     rendered.push_str(&non_hollow_result(&combined, &obligation.residual));
+   00556|                 } else {
+   00557|                     rendered.push_str(next_observed.next().map_or(result, String::as_str));
+   00558|                 }
+   00559|             }
+   00560|             rendered.push('\n');
+   00561|         }
+   00562|         return rendered;
+   00563|     }
+   00564|     let answer = non_hollow_result(answer, &obligation.residual);
+   00565|     obligation.first_line.as_ref().map_or_else(
+   00566|         || format!("{}\n", answer.trim_end()),
+   00567|         |line| format!("{line}\n\n{}\n", answer.trim_end()),
+   00568|     )
+   00569| }
+   00570| 
+   00571| /// Values carried on exact machine-readable lines in an observation.
+   00572| ///
+   00573| /// Multi-file reads deliberately render one bare `key=value` line per input so
+   00574| /// a later delivery can preserve those bytes. Display headings and prose are
+   00575| /// ignored; only a line whose prefix is exact participates.
+   00576| fn exact_field_values(answer: &str, key: &str) -> Vec<String> {
+   00577|     let prefix = format!("{key}=");
+   00578|     answer
+   00579|         .lines()
+   00580|         .map(str::trim)
+   00581|         .filter_map(|line| line.strip_prefix(&prefix))
+   00582|         .map(str::to_owned)
+   00583|         .collect()
+   00584| }
+   00585| 
+   00586| /// State how multiple exact observations compose while retaining each value.
+   00587| fn combined_observation(values: &[String], request: &str) -> Option<String> {
+   00588|     match values {
+   00589|         [] => None,
+   00590|         [only] => Some(only.clone()),
+   00591|         many => {
+   00592|             let values = many.join("; ");
+   00593|             let language = crate::language::detect(request);
+   00594|             crate::seed::render_response(
+   00595|                 "evidence_exact_composition",
+   00596|                 language.slug(),
+   00597|                 &[("values", &values)],
+   00598|             )
+   00599|             .or(Some(values))
+   00600|         }
+   00601|     }
+   00602| }
+   00603| 
+   00604| /// Keep a terse but decisive source token machine-checkable as a concrete result.
+   00605| ///
+   00606| /// Structured result consumers reasonably distinguish an observation from a
+   00607| /// placeholder by requiring a short natural-language statement. A source line
+   00608| /// can still answer the question completely with only a path and one sentinel,
+   00609| /// so retain it verbatim and add context instead of discarding or paraphrasing
+   00610| /// the evidence.
+   00611| fn non_hollow_result(result: &str, task: &str) -> String {
+   00612|     let result = result.trim_end();
+   00613|     let language = crate::language::detect(task).slug();
+   00614|     let intent = if result.ends_with(':') || result.ends_with('：') {
+   00615|         "coding_repository_source_observation"
+   00616|     } else if result.split_whitespace().count() >= 4 {
+   00617|         return result.to_owned();
+   00618|     } else {
+   00619|         "coding_repository_result_observation"
+   00620|     };
+   00621|     crate::seed::render_response(intent, language, &[("result", result)])
+   00622|         .unwrap_or_else(|| result.to_owned())
+   00623| }
+   00624| 
+   00625| /// The observation carried by a successfully written evidence artifact.
+   00626| ///
+   00627| /// Remove only the destination's machine header. The remaining bytes are the
+   00628| /// grounded answer the nested delivery wrote and can feed another artifact.
+   00629| fn written_observation(obligation: &DeliveryBinding, content: &str) -> String {
+   00630|     let mut lines = content.lines();
+   00631|     if obligation.first_line.as_deref().is_some_and(|first_line| {
+   00632|         lines
+   00633|             .clone()
+   00634|             .next()
+   00635|             .is_some_and(|line| line.trim() == first_line)
+   00636|     }) {
+   00637|         lines.next();
+   00638|     }
+   00639|     lines.collect::<Vec<_>>().join("\n").trim().to_owned()
+   00640| }
+   00641| 
+   00642| /// The concrete line of an answer that best addresses the requested fact.
+   00643| ///
+   00644| /// Grouped grep output is transport-ordered, not relevance-ordered. Release
+   00645| /// notes can therefore precede the source declaration a workspace question
+   00646| /// asked for. Rank otherwise substantive lines by overlap with the request's
+   00647| /// seed-derived fact terms. The final fact term is the requested property, and
+   00648| /// a declaration answers a storage/representation question more directly than
+   00649| /// a later method that happens to use that property.
+   00650| fn substantive_result_line<'a>(answer: &'a str, task: &str) -> &'a str {
+   00651|     let mut current_source_authority = 0;
+   00652|     let mut candidates = Vec::new();
+   00653|     for raw_line in answer.lines() {
+   00654|         let line = raw_line.trim();
+   00655|         if looks_like_result_path_heading(line) {
+   00656|             current_source_authority = source_authority(line);
+   00657|             continue;
+   00658|         }
+   00659|         if !line.is_empty()
+   00660|             && line != "```text"
+   00661|             && line != "```"
+   00662|             && !line.ends_with("command completed. Output:")
+   00663|             && !is_match_count(line)
+   00664|         {
+   00665|             candidates.push((line, current_source_authority.max(source_authority(line))));
+   00666|         }
+   00667|     }
+   00668|     let terms = super::workspace_inspection::workspace_inspection_terms_for_task(task);
+   00669|     let lexicon = crate::seed::lexicon();
+   00670|     let condition_requested =
+   00671|         lexicon.mentions_role(crate::seed::ROLE_CODING_CONDITION_SUBJECT_KIND, task);
+   00672|     let implementation_requested = lexicon.mentions_role(
+   00673|         crate::seed::ROLE_CODING_SOURCE_IMPLEMENTATION_SUBJECT_KIND,
+   00674|         task,
+   00675|     );
+   00676|     let serialized_relationship = super::workspace_inspection::serialized_relationship_term(task);
+   00677|     trace_route(
+   00678|         "evidence_record_relationship",
+   00679|         serialized_relationship.as_deref().unwrap_or("none"),
+   00680|     );
+   00681|     trace_route("evidence_record_terms", &terms.join(","));
+   00682|     let Some(&(mut selected, selected_authority)) = candidates.first() else {
+   00683|         return "";
+   00684|     };
+   00685|     let mut selected_score = relevance_score(
+   00686|         selected,
+   00687|         &terms,
+   00688|         condition_requested,
+   00689|         implementation_requested,
+   00690|         serialized_relationship.as_deref(),
+   00691|         selected_authority,
+   00692|     );
+   00693|     for (candidate, authority) in candidates.into_iter().skip(1) {
+   00694|         let score = relevance_score(
+   00695|             candidate,
+   00696|             &terms,
+   00697|             condition_requested,
+   00698|             implementation_requested,
+   00699|             serialized_relationship.as_deref(),
+   00700|             authority,
+   00701|         );
+   00702|         if score > selected_score {
+   00703|             selected = candidate;
+   00704|             selected_score = score;
+   00705|         }
+   00706|     }
+   00707|     trace_route("evidence_record_selected", selected);
+   00708|     selected
+   00709| }
+   00710| 
+   00711| fn relevance_score(
+   00712|     line: &str,
+   00713|     terms: &[String],
+   00714|     condition_requested: bool,
+   00715|     implementation_requested: bool,
+   00716|     serialized_relationship: Option<&str>,
+   00717|     source_authority: usize,
+   00718| ) -> (
+   00719|     usize,
+   00720|     usize,
+   00721|     usize,
+   00722|     usize,
+   00723|     usize,
+   00724|     usize,
+   00725|     usize,
+   00726|     usize,
+   00727|     usize,
+   00728|     usize,
+   00729| ) {
+   00730|     let words = line
+   00731|         .split(|character: char| !character.is_ascii_alphanumeric())
+   00732|         .filter(|word| !word.is_empty())
+   00733|         .map(str::to_ascii_lowercase)
+   00734|         .collect::<Vec<_>>();
+   00735|     let matches = |term: &str| {
+   00736|         words.iter().any(|word| word == term)
+   00737|             || term
+   00738|                 .split('_')
+   00739|                 .all(|part| words.iter().any(|word| word == part))
+   00740|     };
+   00741|     let overlap = terms.iter().filter(|term| matches(term)).count();
+   00742|     let requested_property = usize::from(terms.last().is_some_and(|term| matches(term)));
+   00743|     let declaration_shape = if looks_like_declaration(line) {
+   00744|         1 + usize::from(!looks_like_local_binding(line))
+   00745|             + usize::from(looks_like_exposed_declaration(line))
+   00746|     } else {
+   00747|         0
+   00748|     };
+   00749|     let bound_requested = terms
+   00750|         .iter()
+   00751|         .any(|term| crate::seed::lexicon().mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, term));
+   00752|     let semantic_overlap = usize::from(
+   00753|         bound_requested
+   00754|             && words.iter().any(|word| {
+   00755|                 crate::seed::lexicon().mentions_role(crate::seed::ROLE_CODING_BOUND_CUE, word)
+   00756|             }),
+   00757|     );
+   00758|     let code_shape = usize::from(line.contains(['{', '}', '(', ')', ';', '=', '<', '>']));
+   00759|     let direct_serialized_identity =
+   00760|         usize::from(serialized_relationship.is_some_and(|relationship| {
+   00761|             words
+   00762|                 .windows(2)
+   00763|                 .any(|pair| pair[0] == relationship && pair[1] == "id")
+   00764|         }));
+   00765|     (
+   00766|         usize::from(implementation_requested && !is_quoted_or_commented_source(source_text(line))),
+   00767|         direct_serialized_identity,
+   00768|         requested_property,
+   00769|         usize::from(condition_requested && looks_like_condition(line)),
+   00770|         source_authority,
+   00771|         usize::from(condition_requested && looks_like_instance_condition(line)),
+   00772|         declaration_shape,
+   00773|         semantic_overlap,
+   00774|         overlap,
+   00775|         code_shape,
+   00776|     )
+   00777| }
+   00778| 
+   00779| /// Whether a source quotation is shaped as a boolean decision.
+   00780| ///
+   00781| /// This intentionally recognises syntax classes rather than identifiers: a
+   00782| /// condition may begin with a control-flow keyword or continue a compound
+   00783| /// expression on its own line. Calls and declarations without a decision
+   00784| /// operator remain ordinary source facts.
+   00785| fn looks_like_condition(line: &str) -> bool {
+   00786|     let source = source_text(line);
+   00787|     if is_quoted_or_commented_source(source) {
+   00788|         return false;
+   00789|     }
+   00790|     ["if ", "while ", "match ", "when "]
+   00791|         .iter()
+   00792|         .any(|prefix| source.starts_with(prefix))
+   00793|         || ["&&", "||", "==", "!=", ">=", "<="]
+   00794|             .iter()
+   00795|             .any(|operator| source.contains(operator))
+   00796|         || source.starts_with('!')
+   00797| }
+   00798| 
+   00799| /// An instance-qualified predicate describes the invariant of the inspected
+   00800| /// object more directly than a construction-time check of a similarly named
+   00801| /// local value. Recognize common member-access syntax without depending on a
+   00802| /// project identifier or a particular natural-language request.
+   00803| fn looks_like_instance_condition(line: &str) -> bool {
+   00804|     let source = source_text(line);
+   00805|     ["self.", "this.", "self->", "this->", "$this->"]
+   00806|         .iter()
+   00807|         .any(|receiver| source.contains(receiver))
+   00808| }
+   00809| 
+   00810| /// Local bindings can repeat the type of the model field a representation
+   00811| /// question asks about. They are declarations, but a public/type-level
+   00812| /// declaration is the more authoritative description when both are present.
+   00813| fn looks_like_local_binding(line: &str) -> bool {
+   00814|     let source = source_text(line);
+   00815|     ["let ", "var ", "auto ", "local "]
+   00816|         .iter()
+   00817|         .any(|prefix| source.starts_with(prefix))
+   00818| }
+   00819| 
+   00820| /// An exposed declaration describes the model's supported representation more
+   00821| /// authoritatively than an unqualified function parameter with the same name
+   00822| /// and type.
+   00823| fn looks_like_exposed_declaration(line: &str) -> bool {
+   00824|     let source = source_text(line);
+   00825|     source.split_whitespace().next().is_some_and(|keyword| {
+   00826|         matches!(keyword, "pub" | "public" | "export" | "exported") || keyword.starts_with("pub(")
+   00827|     })
+   00828| }
+   00829| 
+   00830| /// Recognize a source declaration without assuming a particular language.
+   00831| ///
+   00832| /// Grep renders matches as `Line N: source`; discard that transport prefix,
+   00833| /// then recognize an identifier-bearing left side followed by a single colon.
+   00834| /// Namespace/generic punctuation such as `sum::<usize>()` is deliberately not
+   00835| /// a declaration.
+   00836| fn looks_like_declaration(line: &str) -> bool {
+   00837|     let source = source_text(line);
+   00838|     if is_quoted_or_commented_source(source) {
+   00839|         return false;
+   00840|     }
+   00841|     let Some((left, right)) = source.split_once(':') else {
+   00842|         return false;
+   00843|     };
+   00844|     !right.starts_with(':')
+   00845|         && !left.contains(['(', ')', '=', '+'])
+   00846|         && left.split_whitespace().next_back().is_some_and(|name| {
+   00847|             !name.is_empty()
+   00848|                 && name
+   00849|                     .chars()
+   00850|                     .all(|character| character.is_ascii_alphanumeric() || character == '_')
+   00851|         })
+   00852| }
+   00853| 
+   00854| fn source_text(line: &str) -> &str {
+   00855|     line.split_once(": ")
+   00856|         .map_or(line, |(_, source)| source)
+   00857|         .trim()
+   00858| }
+   00859| 
+   00860| fn is_quoted_or_commented_source(source: &str) -> bool {
+   00861|     source.starts_with("//")
+   00862|         || source.starts_with("/*")
+   00863|         || source.starts_with('*')
+   00864|         || source.starts_with('#')
+   00865|         || source.starts_with("<!--")
+   00866|         || source
+   00867|             .chars()
+   00868|             .next()
+   00869|             .is_some_and(|character| matches!(character, '"' | '\'' | '`'))
+   00870| }
+   00871| 
+   00872| fn is_match_count(line: &str) -> bool {
+   00873|     line.strip_prefix("Found ")
+   00874|         .and_then(|rest| rest.strip_suffix(" matches"))
+   00875|         .is_some_and(|count| count.chars().all(|character| character.is_ascii_digit()))
+   00876| }
+   00877| 
+   00878| fn looks_like_result_path_heading(line: &str) -> bool {
+   00879|     line.ends_with(':') && (line.starts_with('/') || line.starts_with("./"))
+   00880| }
+   00881| 
+   00882| /// Prefer a production source fact when an otherwise equivalent test merely
+   00883| /// asserts that fact. If every match is outside `src`, the ordinary semantic
+   00884| /// ranking remains decisive.
+   00885| fn source_authority(path_or_line: &str) -> usize {
+   00886|     usize::from(
+   00887|         path_or_line
+   00888|             .trim_end_matches(':')
+   00889|             .split(['/', '\\'])
+   00890|             .any(|component| component == "src"),
+   00891|     )
+   00892| }
+   00893| 
+   00894| /// What Formal AI answers about the residual, when it reaches a conclusion.
+   00895| ///
+   00896| /// The layering is the one [`super::general_execution`] already uses: the
+   00897| /// agentic planner is a client of the symbolic engine, not a replacement for
+   00898| /// it. Declining on an inconclusive answer is what keeps the delivery honest --
+   00899| /// the caller asked for what was found out, and "nothing was" is not something
+   00900| /// to write to a file and call evidence.
+   00901| ///
+   00902| /// An answer that defers to the open web
+   00903| /// ([`crate::engine::SymbolicAnswer::defers_to_the_open_web`]) is declined for
+   00904| /// the same reason, and it is the sharper of the two cases because the text
+   00905| /// reads like prose about the subject. "Today's date is Sunday. Create a file
+   00906| /// `main.py` that prints Hello, world!" put the first sentence to the engine,
+   00907| /// which described the search it would run for it; delivering that description
+   00908| /// wrote a paragraph about `DuckDuckGo` into the caller's Python file. Where the
+   00909| /// engine would search, this route has nothing to record and stands aside, and
+   00910| /// the request goes on to the routes that recognise it.
+   00911| ///
+   00912| /// An answer that announces an enumeration and enumerates nothing
+   00913| /// ([`crate::engine::SymbolicAnswer::announces_a_list_it_does_not_make`]) is
+   00914| /// declined last, and it is the case this whole route is most exposed to: the
+   00915| /// text is non-empty, so it survives every check made of the file afterwards,
+   00916| /// and a harness reading the file finds a heading with no list and calls the
+   00917| /// node proved.
+   00918| fn symbolic_answer(residual: &str) -> Option<FinalResult> {
+   00919|     // Any gap (`capability_gap`, `write_program_skill_gap`) is such a refusal
+   00920|     // (PR #1188 G102).
+   00921|     let answer = crate::engine::FormalAiEngine.answer(residual);
+   00922|     // A gap refusal is a definite statement about the surface, not a finding
+   00923|     // to record: left through, the delivery wrote the refusal into the file
+   00924|     // the caller named (issue #1138).
+   00925|     if answer.intent.ends_with(GAP_INTENT_SUFFIX)
+   00926|         || answer.is_inconclusive()
+   00927|         || answer.defers_to_the_open_web()
+   00928|         || answer.announces_a_list_it_does_not_make()
+   00929|     {
+   00930|         return None;
+   00931|     }
+   00932|     let text = answer.answer.trim().to_owned();
+   00933|     (!text.is_empty()).then_some(FinalResult {
+   00934|         text,
+   00935|         disposition: FinalDisposition::Finding,
+   00936|         origin: answer.intent,
+   00937|         payload_role: FinalPayloadRole::Finding,
+   00938|         artifact: None,
+   00939|     })
+   00940| }
+   00941| 
+   00942| /// The suffix of an intent that reports a gap: a refusal, never content.
+   00943| const GAP_INTENT_SUFFIX: &str = "_gap";
+   00944| 
+   00945| /// The same conversation with the served request reduced to `residual`.
+   00946| ///
+   00947| /// Only the request text changes: every tool result the investigation has
+   00948| /// already collected stays in place, so the residual is re-planned with the
+   00949| /// progress it has actually made rather than from scratch. The turn reduced is
+   00950| /// the request the run is serving -- the last user message that is not a
+   00951| /// continuation cue. Reducing the cue itself (issue #1138) put the residual at
+   00952| /// the end of the transcript, where every evidence window opened after it and
+   00953| /// the investigation re-read what it had already read, forever.
+   00954| fn with_residual_request(messages: &[ChatMessage], residual: &str) -> Option<Vec<ChatMessage>> {
+   00955|     let index = messages.iter().rposition(|message| {
+   00956|         message.role == "user"
+   00957|             && !super::planner::is_continuation_cue(&message.content.plain_text())
+   00958|     })?;
+   00959|     let mut residual_messages = messages.to_vec();
+   00960|     residual_messages[index].content = MessageContent::Text(residual.to_owned());
+   00961|     // Every user message after the served request is a continuation ping
+   00962|     // (the rposition above makes it so). Dropping them -- while keeping every
+   00963|     // assistant turn and tool result in between -- leaves the residual as the
+   00964|     // transcript's last user message. Left in place, the ping resumed the
+   00965|     // standing task through its summary envelope, which re-entered this peel
+   00966|     // with an identical residual and overflowed the stack (issue #1069).
+   00967|     residual_messages.truncate(index + 1);
+   00968|     residual_messages.extend(
+   00969|         messages[index + 1..]
+   00970|             .iter()
+   00971|             .filter(|message| !message.role.eq_ignore_ascii_case("user"))
+   00972|             .cloned(),
+   00973|     );
+   00974|     Some(residual_messages)
+   00975| }
+   00976| 
+   
+   (End of file - total 976 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/evidence_record.rs","file_path":"rust/src/agentic_coding/evidence_record.rs","new":"        None => {\n            if let Some(resolved) = plan_chat_step_resolved(&residual_messages, tool_names) {\n                if !resolved.can_deliver() {\n                    trace_route(\"evidence_record\", \"residual_not_finding\");\n                    return Some(resolved.into_plan(result));\n                }\n                let AgenticPlan::Final(answer) = resolved.plan else {\n                    unreachable!()\n                };\n                if progress.latest_failure().is_some() {\n                    return Some(record(\n                        AgenticPlan::Final(answer),\n                        FinalDisposition::Failure,\n                        \"evidence_record_residual_failed\",\n                        result,\n                    ));\n                }\n                answer\n            } else {\n                trace_route(\"evidence_record\", \"symbolic_residual\");\n                symbolic_answer(&obligation.residual)?.text\n            }\n        },","newString":"        None => {\n            if let Some(resolved) = plan_chat_step_resolved(&residual_messages, tool_names) {\n                if !resolved.can_deliver() {\n                    trace_route(\"evidence_record\", \"residual_not_finding\");\n                    return Some(resolved.into_plan(result));\n                }\n                let AgenticPlan::Final(answer) = resolved.plan else {\n                    unreachable!()\n                };\n                if progress.latest_failure().is_some() {\n                    return Some(record(\n                        AgenticPlan::Final(answer),\n                        FinalDisposition::Failure,\n                        \"evidence_record_residual_failed\",\n                        result,\n                    ));\n                }\n                answer\n            } else {\n                trace_route(\"evidence_record\", \"symbolic_residual\");\n                symbolic_answer(&obligation.residual)?.text\n            }\n        },","new_str":"        None => {\n            if let Some(resolved) = plan_chat_step_resolved(&residual_messages, tool_names) {\n                if !resolved.can_deliver() {\n                    trace_route(\"evidence_record\", \"residual_not_finding\");\n                    return Some(resolved.into_plan(result));\n                }\n                let AgenticPlan::Final(answer) = resolved.plan else {\n                    unreachable!()\n                };\n                if progress.latest_failure().is_some() {\n                    return Some(record(\n                        AgenticPlan::Final(answer),\n                        FinalDisposition::Failure,\n                        \"evidence_record_residual_failed\",\n                        result,\n                    ));\n                }\n                answer\n            } else {\n                trace_route(\"evidence_record\", \"symbolic_residual\");\n                symbolic_answer(&obligation.residual)?.text\n            }\n        },","new_string":"        None => {\n            if let Some(resolved) = plan_chat_step_resolved(&residual_messages, tool_names) {\n                if !resolved.can_deliver() {\n                    trace_route(\"evidence_record\", \"residual_not_finding\");\n                    return Some(resolved.into_plan(result));\n                }\n                let AgenticPlan::Final(answer) = resolved.plan else {\n                    unreachable!()\n                };\n                if progress.latest_failure().is_some() {\n                    return Some(record(\n                        AgenticPlan::Final(answer),\n                        FinalDisposition::Failure,\n                        \"evidence_record_residual_failed\",\n                        result,\n                    ));\n                }\n                answer\n            } else {\n                trace_route(\"evidence_record\", \"symbolic_residual\");\n                symbolic_answer(&obligation.residual)?.text\n            }\n        },","old":"        None => match plan_chat_step_resolved(&residual_messages, tool_names) {\n            Some(resolved) => {\n                if !resolved.can_deliver() {\n                    trace_route(\"evidence_record\", \"residual_not_finding\");\n                    return Some(resolved.into_plan(result));\n                }\n                let AgenticPlan::Final(answer) = resolved.plan else {\n                    unreachable!()\n                };\n                if progress.latest_failure().is_some() {\n                    return Some(record(\n                        AgenticPlan::Final(answer),\n                        FinalDisposition::Failure,\n                        \"evidence_record_residual_failed\",\n                        result,\n                    ));\n                }\n                answer\n            }\n            None => {\n                trace_route(\"evidence_record\", \"symbolic_residual\");\n                symbolic_answer(&obligation.residual)?.text\n            }\n        },","oldString":"        None => match plan_chat_step_resolved(&residual_messages, tool_names) {\n            Some(resolved) => {\n                if !resolved.can_deliver() {\n                    trace_route(\"evidence_record\", \"residual_not_finding\");\n                    return Some(resolved.into_plan(result));\n                }\n                let AgenticPlan::Final(answer) = resolved.plan else {\n                    unreachable!()\n                };\n                if progress.latest_failure().is_some() {\n                    return Some(record(\n                        AgenticPlan::Final(answer),\n                        FinalDisposition::Failure,\n                        \"evidence_record_residual_failed\",\n                        result,\n                    ));\n                }\n                answer\n            }\n            None => {\n                trace_route(\"evidence_record\", \"symbolic_residual\");\n                symbolic_answer(&obligation.residual)?.text\n            }\n        },","old_str":"        None => match plan_chat_step_resolved(&residual_messages, tool_names) {\n            Some(resolved) => {\n                if !resolved.can_deliver() {\n                    trace_route(\"evidence_record\", \"residual_not_finding\");\n                    return Some(resolved.into_plan(result));\n                }\n                let AgenticPlan::Final(answer) = resolved.plan else {\n                    unreachable!()\n                };\n                if progress.latest_failure().is_some() {\n                    return Some(record(\n                        AgenticPlan::Final(answer),\n                        FinalDisposition::Failure,\n                        \"evidence_record_residual_failed\",\n                        result,\n                    ));\n                }\n                answer\n            }\n            None => {\n                trace_route(\"evidence_record\", \"symbolic_residual\");\n                symbolic_answer(&obligation.residual)?.text\n            }\n        },","old_string":"        None => match plan_chat_step_resolved(&residual_messages, tool_names) {\n            Some(resolved) => {\n                if !resolved.can_deliver() {\n                    trace_route(\"evidence_record\", \"residual_not_finding\");\n                    return Some(resolved.into_plan(result));\n                }\n                let AgenticPlan::Final(answer) = resolved.plan else {\n                    unreachable!()\n                };\n                if progress.latest_failure().is_some() {\n                    return Some(record(\n                        AgenticPlan::Final(answer),\n                        FinalDisposition::Failure,\n                        \"evidence_record_residual_failed\",\n                        result,\n                    ));\n                }\n                answer\n            }\n            None => {\n                trace_route(\"evidence_record\", \"symbolic_residual\");\n                symbolic_answer(&obligation.residual)?.text\n            }\n        },","path":"rust/src/agentic_coding/evidence_record.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/evidence_record.rs"}
+   Output: 7ab446bfc4d5f54b1359a449df580256de965915eeae3071683c231817e25591  rust/src/agentic_coding/evidence_record.rs
+   
+   Exit Code: 0
+== answer ==
+Verification failed for `rust/src/agentic_coding/evidence_record.rs`: the observed bytes differ from the planned workspace effect.

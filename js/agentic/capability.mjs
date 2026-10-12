@@ -1,0 +1,52 @@
+// The tool capabilities the planner's recipes rely on
+// (rust/src/agentic_coding/planner.rs `Capability`).
+//
+// A capability is its permission suffix string; `permissionKey` and
+// `registryId` mirror the Rust methods of the same names.
+
+export const Capability = Object.freeze({
+  Search: 'search',
+  Fetch: 'fetch',
+  Read: 'read',
+  Write: 'write',
+  Edit: 'edit',
+  Run: 'run',
+  Grep: 'grep',
+  Glob: 'glob',
+  ListDir: 'list_dir',
+  Todo: 'todo',
+  Subagent: 'subagent',
+  ReadMany: 'read_many',
+  MultiEdit: 'multi_edit',
+  AskUser: 'ask_user',
+});
+
+/** Every capability in declaration order. */
+export const CAPABILITIES = Object.freeze(Object.values(Capability));
+
+const REGISTRY_IDS = Object.freeze({
+  search: 'web_search',
+  fetch: 'web_fetch',
+  read: 'read_file',
+  write: 'write_file',
+  edit: 'edit_file',
+  run: 'shell',
+  grep: 'grep',
+  glob: 'glob',
+  list_dir: 'list_dir',
+  todo: 'todo',
+  subagent: 'subagent',
+  read_many: 'read_many',
+  multi_edit: 'multi_edit',
+  ask_user: 'ask_user',
+});
+
+/** Mirrors `Capability::permission_key`. */
+export function permissionKey(capability) {
+  return `tool:capability:${capability}`;
+}
+
+/** Mirrors `Capability::registry_id`. */
+export function registryId(capability) {
+  return REGISTRY_IDS[capability];
+}

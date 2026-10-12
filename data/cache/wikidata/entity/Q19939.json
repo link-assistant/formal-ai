@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "虎"
+        },
+        "es": {
+          "language": "es",
+          "value": "tigre"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "猫科豹属哺乳动物"
+        },
+        "es": {
+          "language": "es",
+          "value": "especie de mamíferos"
         }
       },
       "aliases": {
@@ -74,6 +82,16 @@
           {
             "language": "zh",
             "value": "老虎"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Panthera tigris"
+          },
+          {
+            "language": "es",
+            "value": "P. tigris"
           }
         ]
       }

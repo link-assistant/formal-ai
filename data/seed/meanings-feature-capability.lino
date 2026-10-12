@@ -3,790 +3,168 @@ meanings
     defined-by concept
     role feature_capability_alias
     lexeme en
-      surface
-        text "web search"
-      surface
-        text "internet search"
-      surface
-        text "search engines"
-      surface
-        text "can you search the internet"
-      surface
-        text "can you search internet"
-      surface
-        text "can you search the web"
-      surface
-        text "can you search web"
-      surface
-        text "can you search online"
-      surface
-        text "do you have internet search"
-      surface
-        text "do you have web search"
-      surface
-        text "do you have internet access"
-      surface
-        text "are you connected to search engines"
-      surface
-        text "can you use search engines"
-      surface
-        text "can you browse the web"
+      words "web search" "internet search" "search engines" "can you search the internet" "can you search internet"
+      words "can you search the web" "can you search web" "can you search online" "do you have internet search"
+      words "do you have web search" "do you have internet access" "are you connected to search engines"
+      words "can you use search engines" "can you browse the web"
     lexeme ru
-      surface
-        text веб-поиск
-      surface
-        text "веб поиск"
-      surface
-        text "поиск в интернете"
-      surface
-        text поисковик
-      surface
-        text "поисковые системы"
-      surface
-        text "можешь искать в интернете"
-      surface
-        text "можешь искать интернет"
-      surface
-        text "умеешь искать в интернете"
-      surface
-        text "умеешь искать интернет"
-      surface
-        text "можешь искать онлайн"
-      surface
-        text "умеешь искать онлайн"
-      surface
-        text "у тебя есть веб-поиск"
-      surface
-        text "у тебя есть веб поиск"
-      surface
-        text "у тебя есть поиск в интернете"
-      surface
-        text "есть доступ к интернету"
-      surface
-        text "подключен к поисковикам"
-      surface
-        text "подключена к поисковикам"
-      surface
-        text "подключен к поисковым системам"
-      surface
-        text "можешь пользоваться интернетом"
+      words веб-поиск "веб поиск" "поиск в интернете" поисковик "поисковые системы" "можешь искать в интернете"
+      words "можешь искать интернет" "умеешь искать в интернете" "умеешь искать интернет" "можешь искать онлайн"
+      words "умеешь искать онлайн" "у тебя есть веб-поиск" "у тебя есть веб поиск" "у тебя есть поиск в интернете"
+      words "есть доступ к интернету" "подключен к поисковикам" "подключена к поисковикам"
+      words "подключен к поисковым системам" "можешь пользоваться интернетом"
     lexeme hi
-      surface
-        text "web search"
-      surface
-        text "internet search"
-      surface
-        text "search engine"
-      surface
-        text "इंटरनेट पर खोज सकते"
-      surface
-        text "ऑनलाइन खोज सकते"
-      surface
-        text "इंटरनेट खोज है"
-      surface
-        text "वेब खोज है"
-      surface
-        text "सर्च इंजन से जुड़े"
-      surface
-        text "खोज इंजन से जुड़े"
-    lexeme zh
-      surface
-        text "web search"
-      surface
-        text 搜索引擎
-      surface
-        text 上网搜索
-      surface
-        text 搜索互联网
-      surface
-        text 搜索网络
-      surface
-        text 联网搜索
-      surface
-        text 用搜索引擎
-      surface
-        text 使用搜索引擎
-      surface
-        text 网络搜索
+      words "web search" "internet search" "search engine" "इंटरनेट पर खोज सकते" "ऑनलाइन खोज सकते" "इंटरनेट खोज है"
+      words "वेब खोज है" "सर्च इंजन से जुड़े" "खोज इंजन से जुड़े"
+    lexeme zh "web search" 搜索引擎 上网搜索 搜索互联网 搜索网络 联网搜索 用搜索引擎 使用搜索引擎 网络搜索
+    lexeme es
+      words "búsqueda web" "búsqueda en internet" "motores de búsqueda" "puedes buscar en internet"
+      words "puedes buscar en la web" "tienes búsqueda web" "tienes acceso a internet"
   feature_capability_diagnostics
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text diagnostics
-      surface
-        text diagnostic
-      surface
-        text trace
-      surface
-        text "reasoning trace"
-      surface
-        text "show diagnostics"
-    lexeme ru
-      surface
-        text диагностика
-      surface
-        text диагност
-      surface
-        text трассировка
-      surface
-        text trace
-    lexeme hi
-      surface
-        text diagnostics
-      surface
-        text निदान
-      surface
-        text trace
-    lexeme zh
-      surface
-        text 诊断
-      surface
-        text trace
-      surface
-        text 推理跟踪
+    lexeme en diagnostics diagnostic trace "reasoning trace" "show diagnostics"
+    lexeme ru диагностика диагност трассировка trace
+    lexeme hi diagnostics निदान trace
+    lexeme zh 诊断 trace 推理跟踪
+    lexeme es diagnóstico diagnósticos "traza de razonamiento"
   feature_capability_agent_mode
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text "agent mode"
-      surface
-        text agent
-      surface
-        text multi-step
-      surface
-        text autonomous
-    lexeme ru
-      surface
-        text "agent mode"
-      surface
-        text агент
-      surface
-        text многошаг
-      surface
-        text автоном
-    lexeme hi
-      surface
-        text "agent mode"
-      surface
-        text एजेंट
-      surface
-        text multi-step
-    lexeme zh
-      surface
-        text "agent mode"
-      surface
-        text 代理
-      surface
-        text 多步骤
+    lexeme en "agent mode" agent multi-step autonomous
+    lexeme ru "agent mode" агент многошаг автоном
+    lexeme hi "agent mode" एजेंट multi-step
+    lexeme zh "agent mode" 代理 多步骤
+    lexeme es "modo agente" agente "varios pasos" autónomo
   feature_capability_definition_fusion
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text "definition fusion"
-      surface
-        text "merge definitions"
-      surface
-        text "automatic definition"
-    lexeme ru
-      surface
-        text "слияние определений"
-      surface
-        text "объединение определений"
-    lexeme hi
-      surface
-        text "definition fusion"
-      surface
-        text "merge definitions"
-      surface
-        text "परिभाषा विलय"
-    lexeme zh
-      surface
-        text "definition fusion"
-      surface
-        text 合并定义
+    lexeme en "definition fusion" "merge definitions" "automatic definition"
+    lexeme ru "слияние определений" "объединение определений"
+    lexeme hi "definition fusion" "merge definitions" "परिभाषा विलय"
+    lexeme zh "definition fusion" 合并定义
+    lexeme es "fusión de definiciones" "combinar definiciones"
   feature_capability_configuration
     defined-by concept
     role feature_capability_alias
     lexeme en
-      surface
-        text settings
-      surface
-        text configuration
-      surface
-        text "configure settings"
-      surface
-        text theme
-      surface
-        text language
-      surface
-        text "chat style"
-      surface
-        text configure
-      surface
-        text preferences
-      surface
-        text "composer style"
-      surface
-        text "ui skin"
-    lexeme ru
-      surface
-        text настройки
-      surface
-        text настройка
-      surface
-        text конфигурация
-      surface
-        text тема
-      surface
-        text язык
-      surface
-        text "стиль чата"
-      surface
-        text оформление
-      surface
-        text настрой
-      surface
-        text конфигурац
-      surface
-        text параметр
-    lexeme hi
-      surface
-        text settings
-      surface
-        text configuration
-      surface
-        text theme
-      surface
-        text language
-      surface
-        text सेटिंग
-    lexeme zh
-      surface
-        text 设置
-      surface
-        text 配置
-      surface
-        text 主题
-      surface
-        text 语言
-      surface
-        text 聊天样式
+      words settings configuration "configure settings" theme language "chat style" configure preferences
+      words "composer style" "ui skin"
+    lexeme ru настройки настройка конфигурация тема язык "стиль чата" оформление настрой конфигурац параметр
+    lexeme hi settings configuration theme language सेटिंग
+    lexeme zh 设置 配置 主题 语言 聊天样式
+    lexeme es configuración ajustes tema idioma "estilo del chat" preferencias
   feature_capability_memory_actions
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text "export memory"
-      surface
-        text "import memory"
-      surface
-        text "memory export"
-      surface
-        text "memory import"
-    lexeme ru
-      surface
-        text "экспорт памяти"
-      surface
-        text "импорт памяти"
-      surface
-        text "память экспорт"
-      surface
-        text "память импорт"
-    lexeme hi
-      surface
-        text "memory export"
-      surface
-        text "memory import"
-      surface
-        text "स्मृति निर्यात"
-      surface
-        text "स्मृति आयात"
-    lexeme zh
-      surface
-        text 导出记忆
-      surface
-        text 导入记忆
-      surface
-        text "memory export"
-      surface
-        text "memory import"
+    lexeme en "export memory" "import memory" "memory export" "memory import"
+    lexeme ru "экспорт памяти" "импорт памяти" "память экспорт" "память импорт"
+    lexeme hi "memory export" "memory import" "स्मृति निर्यात" "स्मृति आयात"
+    lexeme zh 导出记忆 导入记忆 "memory export" "memory import"
+    lexeme es "exportar memoria" "importar memoria" "exportación de memoria" "importación de memoria"
   feature_capability_greeting
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text greeting
-      surface
-        text greetings
-      surface
-        text "say hello"
-      surface
-        text "respond to hello"
-    lexeme ru
-      surface
-        text приветствие
-      surface
-        text приветствия
-      surface
-        text здороваться
-      surface
-        text привет
-    lexeme hi
-      surface
-        text अभिवादन
-      surface
-        text नमस्ते
-      surface
-        text hello
-    lexeme zh
-      surface
-        text 问候
-      surface
-        text 打招呼
-      surface
-        text 你好
+    lexeme en greeting greetings "say hello" "respond to hello"
+    lexeme ru приветствие приветствия здороваться привет
+    lexeme hi अभिवादन नमस्ते hello
+    lexeme zh 问候 打招呼 你好
+    lexeme es saludo saludos saludar hola
   feature_capability_write_program
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text "hello world"
-      surface
-        text "write code"
-      surface
-        text "generate code"
-      surface
-        text "write program"
-      surface
-        text program
-    lexeme ru
-      surface
-        text "hello world"
-      surface
-        text код
-      surface
-        text программу
-      surface
-        text программа
-    lexeme hi
-      surface
-        text "hello world"
-      surface
-        text code
-      surface
-        text program
-      surface
-        text प्रोग्राम
-    lexeme zh
-      surface
-        text "hello world"
-      surface
-        text 代码
-      surface
-        text 程序
+    lexeme en "hello world" "write code" "generate code" "write program" program
+    lexeme ru "hello world" код программу программа
+    lexeme hi "hello world" code program प्रोग्राम
+    lexeme zh "hello world" 代码 程序
+    lexeme es "hola mundo" "escribir código" "generar código" "escribir un programa" programa
   feature_capability_concept_lookup
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text "concept lookup"
-      surface
-        text concept
-      surface
-        text "wikipedia lookup"
-    lexeme ru
-      surface
-        text "поиск понятий"
-      surface
-        text понятие
-    lexeme hi
-      surface
-        text concept
-      surface
-        text अवधारणा
-    lexeme zh
-      surface
-        text 概念
+    lexeme en "concept lookup" concept "wikipedia lookup"
+    lexeme ru "поиск понятий" понятие
+    lexeme hi concept अवधारणा
+    lexeme zh 概念
+    lexeme es "búsqueda de conceptos" concepto
   feature_capability_arithmetic
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text arithmetic
-      surface
-        text calculate
-      surface
-        text math
-      surface
-        text "2 + 2"
-    lexeme ru
-      surface
-        text арифмет
-      surface
-        text считать
-      surface
-        text посчитать
-      surface
-        text "2 + 2"
-    lexeme hi
-      surface
-        text अंकगणित
-      surface
-        text गणना
-      surface
-        text math
-      surface
-        text "2 + 2"
-    lexeme zh
-      surface
-        text 算术
-      surface
-        text 计算
-      surface
-        text 数学
-      surface
-        text "2 + 2"
+    lexeme en arithmetic calculate math "2 + 2"
+    lexeme ru арифмет считать посчитать "2 + 2"
+    lexeme hi अंकगणित गणना math "2 + 2"
+    lexeme zh 算术 计算 数学 "2 + 2"
+    lexeme es aritmética calcular matemáticas "2 + 2"
   feature_capability_translation
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text translation
-      surface
-        text translate
-      surface
-        text "language translation"
-    lexeme ru
-      surface
-        text перевод
-      surface
-        text переводить
-      surface
-        text перевести
-    lexeme hi
-      surface
-        text अनुवाद
-      surface
-        text translate
-      surface
-        text translation
-    lexeme zh
-      surface
-        text 翻译
-      surface
-        text translation
-      surface
-        text translate
+    lexeme en translation translate "language translation"
+    lexeme ru перевод переводить перевести
+    lexeme hi अनुवाद translate translation
+    lexeme zh 翻译 translation translate
+    lexeme es traducción traducir
   feature_capability_memory
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text memory
-      surface
-        text remember
-      surface
-        text recall
-      surface
-        text "conversation context"
-    lexeme ru
-      surface
-        text память
-      surface
-        text помнить
-      surface
-        text запомнить
-      surface
-        text контекст
-    lexeme hi
-      surface
-        text स्मृति
-      surface
-        text याद
-      surface
-        text memory
-      surface
-        text context
-    lexeme zh
-      surface
-        text 记忆
-      surface
-        text 记住
-      surface
-        text 回忆
-      surface
-        text 上下文
+    lexeme en memory remember recall "conversation context"
+    lexeme ru память помнить запомнить контекст
+    lexeme hi स्मृति याद memory context
+    lexeme zh 记忆 记住 回忆 上下文
+    lexeme es memoria recordar "contexto de la conversación"
   feature_capability_demo_mode
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text "demo mode"
-      surface
-        text demo
-      surface
-        text "scripted demo"
-    lexeme ru
-      surface
-        text демо
-      surface
-        text демо-режим
-      surface
-        text "сценарный демо"
-    lexeme hi
-      surface
-        text demo
-      surface
-        text डेमो
-    lexeme zh
-      surface
-        text demo
-      surface
-        text 演示
+    lexeme en "demo mode" demo "scripted demo"
+    lexeme ru демо демо-режим "сценарный демо"
+    lexeme hi demo डेमो
+    lexeme zh demo 演示
+    lexeme es "modo demo" demo demostración
   feature_capability_http_url
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text "http fetch"
-      surface
-        text "fetch url"
-      surface
-        text "open url"
-      surface
-        text "navigate to url"
-      surface
-        text "visit url"
-      surface
-        text "url navigation"
-    lexeme ru
-      surface
-        text "http запрос"
-      surface
-        text "открыть url"
-      surface
-        text "перейти на"
-      surface
-        text "сделать запрос"
-      surface
-        text url-навигация
-      surface
-        text "url навигация"
-    lexeme hi
-      surface
-        text "http fetch"
-      surface
-        text url
-      surface
-        text navigate
-      surface
-        text लिंक
-      surface
-        text यूआरएल
-    lexeme zh
-      surface
-        text "http fetch"
-      surface
-        text url
-      surface
-        text 打开链接
-      surface
-        text 访问链接
+    lexeme en "http fetch" "fetch url" "open url" "navigate to url" "visit url" "url navigation"
+    lexeme ru "http запрос" "открыть url" "перейти на" "сделать запрос" url-навигация "url навигация"
+    lexeme hi "http fetch" url navigate लिंक यूआरएल
+    lexeme zh "http fetch" url 打开链接 访问链接
+    lexeme es "petición http" "abrir url" "abrir un enlace" "visitar url" "navegar a la url"
   feature_capability_javascript_execution
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text javascript
-      surface
-        text "run javascript"
-      surface
-        text "execute javascript"
-      surface
-        text js
-    lexeme ru
-      surface
-        text javascript
-      surface
-        text js
-      surface
-        text "выполнить javascript"
-    lexeme hi
-      surface
-        text javascript
-      surface
-        text js
-      surface
-        text स्क्रिप्ट
-    lexeme zh
-      surface
-        text javascript
-      surface
-        text js
-      surface
-        text 脚本执行
-      surface
-        text 执行脚本
+    lexeme en javascript "run javascript" "execute javascript" js
+    lexeme ru javascript js "выполнить javascript"
+    lexeme hi javascript js स्क्रिप्ट
+    lexeme zh javascript js 脚本执行 执行脚本
+    lexeme es javascript "ejecutar javascript" js
   feature_capability_planning
     defined-by concept
     role feature_capability_alias
-    lexeme en
-      surface
-        text summarize
-      surface
-        text brainstorm
-      surface
-        text roleplay
-      surface
-        text "software project"
-      surface
-        text "project plan"
-    lexeme ru
-      surface
-        text резюмировать
-      surface
-        text брейншторм
-      surface
-        text роль
-      surface
-        text проект
-      surface
-        text "план проекта"
-    lexeme hi
-      surface
-        text summary
-      surface
-        text brainstorm
-      surface
-        text roleplay
-      surface
-        text "project plan"
-      surface
-        text "परियोजना योजना"
-    lexeme zh
-      surface
-        text 总结
-      surface
-        text 头脑风暴
-      surface
-        text 角色扮演
-      surface
-        text 项目计划
+    lexeme en summarize brainstorm roleplay "software project" "project plan"
+    lexeme ru резюмировать брейншторм роль проект "план проекта"
+    lexeme hi summary brainstorm roleplay "project plan" "परियोजना योजना"
+    lexeme zh 总结 头脑风暴 角色扮演 项目计划
+    lexeme es resumir "lluvia de ideas" "juego de rol" "proyecto de software" "plan de proyecto"
   feature_capability_question
     defined-by action
     role feature_capability_question
-    lexeme en
-      surface
-        text "can you"
-      surface
-        text "can formal-ai"
-      surface
-        text "are you able"
-      surface
-        text "are you connected"
-      surface
-        text "do you support"
-      surface
-        text "do you have"
-      surface
-        text "can i"
+    lexeme en "can you" "can formal-ai" "are you able" "are you connected" "do you support" "do you have" "can i"
     lexeme ru
-      surface
-        text можешь
-      surface
-        text умеешь
-      surface
-        text поддерживаешь
-      surface
-        text "у тебя есть"
-      surface
-        text "есть ли"
-      surface
-        text доступен
-      surface
-        text доступна
-      surface
-        text включен
-      surface
-        text включена
-      surface
-        text подключен
-      surface
-        text подключена
-      surface
-        text "можно ли"
-    lexeme hi
-      surface
-        text क्या
-      surface
-        text सकते
-      surface
-        text सकती
-      surface
-        text समर्थन
-      surface
-        text उपलब्ध
-    lexeme zh
-      surface
-        text 能
-      surface
-        text 可以
-      surface
-        text 支持
-      surface
-        text 你有
-      surface
-        text 您有
-      surface
-        text 有没有
-      surface
-        text 是否有
-      surface
-        text 启用
-      surface
-        text 可用
+      words можешь умеешь поддерживаешь "у тебя есть" "есть ли" доступен доступна включен включена подключен подключена
+      words "можно ли"
+    lexeme hi क्या सकते सकती समर्थन उपलब्ध
+    lexeme zh 能 可以 支持 你有 您有 有没有 是否有 启用 可用
+    lexeme es puedes puede sabes "eres capaz" admites tienes "está disponible" "está activado"
   feature_action_arithmetic
     defined-by action
     role feature_action_arithmetic
-    lexeme en
-      surface
-        text "can you calculate"
-      surface
-        text "can you compute"
-    lexeme ru
-      surface
-        text "можешь вычислить"
-      surface
-        text "можешь посчитать"
-    lexeme hi
-      surface
-        text "क्या आप गणना कर सकते"
-    lexeme zh
-      surface
-        text 你能计算
+    lexeme en "can you calculate" "can you compute"
+    lexeme ru "можешь вычислить" "можешь посчитать"
+    lexeme hi "क्या आप गणना कर सकते"
+    lexeme zh 你能计算
+    lexeme es "puedes calcular" "puedes computar"
   feature_action_planning
     defined-by action
     role feature_action_planning
-    lexeme en
-      surface
-        text "can you summarize"
-      surface
-        text "can you brainstorm"
-      surface
-        text "can you roleplay"
-    lexeme ru
-      surface
-        text "можешь резюмировать"
-      surface
-        text "можешь провести мозговой штурм"
-      surface
-        text "можешь сыграть роль"
-    lexeme hi
-      surface
-        text "क्या आप सारांश कर सकते"
-    lexeme zh
-      surface
-        text 你能总结
+    lexeme en "can you summarize" "can you brainstorm" "can you roleplay"
+    lexeme ru "можешь резюмировать" "можешь провести мозговой штурм" "можешь сыграть роль"
+    lexeme hi "क्या आप सारांश कर सकते"
+    lexeme zh 你能总结
+    lexeme es "puedes resumir" "puedes hacer una lluvia de ideas" "puedes hacer un juego de rol"

@@ -1,0 +1,39 @@
+| T3241 | Correct external regression to existing public general_planner API, preserving every assertion | JavaScript Formal AI | PASS | /tmp/pr1188-T3241.log; exact requested outcome verified |
+| T3242 | Create bounded js/worker/formal_ai_worker_conversation_history.js through copied template | JavaScript Formal AI | PASS | /tmp/pr1188-T3242.log; exact requested outcome verified |
+| T3243 | Set reviewed js/worker/formal_ai_worker_conversation_history.js content | JavaScript Formal AI | PASS | /tmp/pr1188-T3243.log; exact requested outcome verified |
+| T3244 | Create bounded data/seed/multilingual-responses-conversation-recall.lino through copied template | JavaScript Formal AI | PASS | /tmp/pr1188-T3244.log; exact requested outcome verified |
+| T3245 | Set reviewed data/seed/multilingual-responses-conversation-recall.lino content | JavaScript Formal AI | PASS | /tmp/pr1188-T3245.log; exact requested outcome verified |
+| T3246 | Migrate native dialog recall report to shared loaded response templates preserving exact English bytes | JavaScript Formal AI | PASS | /tmp/pr1188-T3246.log; exact requested outcome verified |
+| T3247 | Format only owned conversation memory source after template migration | JavaScript Formal AI | PASS | /tmp/pr1188-T3247.log; exact requested outcome verified |
+| T3248 | Create bounded rust/tests/web/worker-conversation-history.test.mjs through copied template | JavaScript Formal AI | PASS | /tmp/pr1188-T3248.log; exact requested outcome verified |
+| T3249 | Set reviewed rust/tests/web/worker-conversation-history.test.mjs content | JavaScript Formal AI | PASS | /tmp/pr1188-T3249.log; exact requested outcome verified |
+| T3250 | Bind frozen source helper to actual linked public seeded rule interpreter rather than absent harness module | JavaScript Formal AI | PASS | /tmp/pr1188-T3250.log; exact requested outcome verified |
+| T3251 | Render recall seed fields once, preserving literal slot-like bytes in actual history | JavaScript Formal AI | PASS | /tmp/pr1188-T3251.log; exact requested outcome verified |
+| T3252 | Use canonical localized single-pass native rendering and preserve existing fallback and inserted literal bytes | JavaScript Formal AI | PASS | /tmp/pr1188-T3252.log; exact requested outcome verified |
+| T3253 | Preserve native recall report final whitespace policy exactly while event payloads retain source bytes | JavaScript Formal AI | PASS | /tmp/pr1188-T3253.log; exact requested outcome verified |
+| T3254 | Match native recall report final whitespace policy without altering matching turn events | JavaScript Formal AI | PASS | /tmp/pr1188-T3254.log; exact requested outcome verified |
+| T3255 | Enable loaded seeded history recall after previous-message recognizers, preserving original precedence | JavaScript Formal AI | PASS | /tmp/pr1188-T3255.log; exact requested outcome verified |
+| T3256 | Execute unchanged six original native history assertions and true event/empty-scope guards | JavaScript Formal AI | FAIL | /tmp/pr1188-T3256.log; unchanged retry or correction required |
+| T3257 | Author shared canonical summary-envelope responses while retaining native language selection | JavaScript Formal AI | PASS | /tmp/pr1188-T3257.log; exact requested outcome verified |
+| T3258 | Expose actual shared summary record/title and load its envelope through canonical seeded single-pass rendering | JavaScript Formal AI | PASS | /tmp/pr1188-T3258.log; exact requested outcome verified |
+| T3259 | Migrate only native summary envelope templates preserving existing language policy and exact output bytes | JavaScript Formal AI | PASS | /tmp/pr1188-T3259.log; exact requested outcome verified |
+| T3260 | Bind browser historical recall to the same actual query-term evidence as native conversation memory, retaining empty-query refusal | JavaScript Formal AI | PASS | /tmp/pr1188-T3260.log; exact requested outcome verified |
+| T3261 | Replace statistics-only worker summary with existing native-equivalent shared record and actual summary events | JavaScript Formal AI | PASS | /tmp/pr1188-T3261.log; exact requested outcome verified |
+| T3262 | Bind actual summary request to shared native-equivalent history projection | JavaScript Formal AI | PASS | /tmp/pr1188-T3262.log; exact requested outcome verified |
+| T3263 | Create bounded js/worker/formal_ai_worker_conversation_followups.js through copied template | JavaScript Formal AI | PASS | /tmp/pr1188-T3263.log; exact requested outcome verified |
+| T3264 | Set reviewed js/worker/formal_ai_worker_conversation_followups.js content | JavaScript Formal AI | PASS | /tmp/pr1188-T3264.log; exact requested outcome verified |
+| T3265 | Preserve genuine literal braces in matched messages and cover independent Spanish seeded query forms | JavaScript Formal AI | PASS | /tmp/pr1188-T3265.log; exact requested outcome verified |
+| T3266 | Atomically extract loaded conversation followup functions and bind actual request without any unrelated source changes | JavaScript Formal AI | PASS | /tmp/pr1188-T3266.log; exact requested outcome verified |
+| T3267 | Verify unchanged native recall/parity originals and actual empty-history/literal/Spanish controls after fresh projections | JavaScript Formal AI | FAIL | /tmp/pr1188-T3267.log; unchanged retry or correction required |
+| T3268 | Separate actual existing ASCII language selection from an unambiguous Spanish heldout, preserving both seeded query requests and all original assertions | JavaScript Formal AI | PASS | /tmp/pr1188-T3268.log; exact requested outcome verified |
+| T3269 | Rerun unchanged native recall/parity originals and honest empty-history/literal/Spanish controls | JavaScript Formal AI | PASS | /tmp/pr1188-T3269.log; exact requested outcome verified |
+| T3270 | Replay unchanged18 original native history programs with actual histories and full typed events | JavaScript Formal AI | PASS | /tmp/pr1188-T3270.log; exact requested outcome verified |
+| T3271 | Retain exact whole browser claim table comparison with newly implemented term-only history admission | JavaScript Formal AI | PASS | /tmp/pr1188-T3271.log; exact requested outcome verified |
+| T3272 | Retain exact whole native claim table comparison with same grounded history query-term admission | JavaScript Formal AI | PASS | /tmp/pr1188-T3272.log; exact requested outcome verified |
+| T3273 | Format exactly three owned native files without traversing child modules or compiling locally | JavaScript Formal AI | PASS | /tmp/pr1188-T3273.log; exact requested outcome verified |
+| T3274 | Verify unchanged meaningful concept-history/refusal cases and exact updated whole claim table plus all existing negative guards | JavaScript Formal AI | PASS | /tmp/pr1188-T3274.log; exact requested outcome verified |
+| T3275 | Preserve original server compaction envelope and actual full task bytes after shared seeded renderer migration | JavaScript Formal AI | PASS | /tmp/pr1188-T3275.log; exact requested outcome verified |
+| T3276 | Remove trailing blank EOF reported by actual scoped diff check, leaving moved behavior byte-identical | JavaScript Formal AI | PASS | /tmp/pr1188-T3276.log; exact requested outcome verified |
+| T3277 | Replay complete201 actual source-derived native cases after both finite runtime phases, keeping all original180 and21new assertions | JavaScript Formal AI | FAIL | /tmp/pr1188-T3277.log; unchanged retry or correction required |
+| T3278 | Validate actual T3277 exit0 full201PASS artifact without rerunning or altering original assertions; preserve wrapper false-FAIL observation | JavaScript Formal AI | PASS | /tmp/pr1188-T3278.log; exact requested outcome verified |
+| T3279 | Replay unchanged full201 original cases against final stable conversation and procedural producers; preserve977unsupported without suppression | JavaScript Formal AI | PASS | /tmp/pr1188-T3279.log; exact requested outcome verified |

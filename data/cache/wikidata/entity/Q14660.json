@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "旗幟"
+        },
+        "es": {
+          "language": "es",
+          "value": "bandera"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "印有獨特設計的布料"
+        },
+        "es": {
+          "language": "es",
+          "value": "pieza de tela con un diseño distintivo"
         }
       },
       "aliases": {
@@ -46,6 +54,24 @@
           {
             "language": "zh",
             "value": "旌旗"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "banderas"
+          },
+          {
+            "language": "es",
+            "value": "lábaro"
+          },
+          {
+            "language": "es",
+            "value": "estandarte"
+          },
+          {
+            "language": "es",
+            "value": "insignia"
           }
         ]
       }

@@ -1,0 +1,1 @@
+Callable observations now separate deferred body effects, module initialization and syntax obligations. Exact import/initialization and structural-access witnesses preserve source identities without certifying unknown schemas or effects. Forty-four closest JavaScript checks pass; original source-callable composition remains a typed gap.

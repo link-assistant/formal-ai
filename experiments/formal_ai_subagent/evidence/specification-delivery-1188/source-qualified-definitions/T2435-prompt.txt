@@ -1,0 +1,1 @@
+Run `node scripts/check-hardcoded-language.mjs`

@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2918-request.json",
+  "sha256": "830b007c881fd46bd3e55260b00a4a2eb6771425aef1393e3dc19e2a58442618",
+  "rawUtf8": "{\n  \"taskId\": \"T2918\",\n  \"directory\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"prompt\": \"Read rust/src/skill_compiler.rs\"\n}\n"
+}

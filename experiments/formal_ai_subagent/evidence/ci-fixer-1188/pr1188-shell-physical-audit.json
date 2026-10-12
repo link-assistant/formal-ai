@@ -1,0 +1,311 @@
+{
+  "cutoff": 1750,
+  "edits": 38,
+  "writes": 0,
+  "commands": [
+    {
+      "id": 1703,
+      "command": "sha256sum -- js/worker/formal_ai_worker_meaning_lexicon.js"
+    },
+    {
+      "id": 1704,
+      "command": "sha256sum -- js/worker/formal_ai_worker_meaning_lexicon.js"
+    },
+    {
+      "id": 1705,
+      "command": "sha256sum -- rust/src/seed/shell_intents.rs"
+    },
+    {
+      "id": 1706,
+      "command": "sha256sum -- rust/src/seed/shell_intents.rs"
+    },
+    {
+      "id": 1707,
+      "command": "sha256sum -- js/agentic/crate/seed_shell_intents.mjs"
+    },
+    {
+      "id": 1708,
+      "command": "sha256sum -- js/agentic/mutating_action.mjs"
+    },
+    {
+      "id": 1709,
+      "command": "sha256sum -- js/agentic/mutating_action.mjs"
+    },
+    {
+      "id": 1711,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1712,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1713,
+      "command": "sha256sum -- data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1714,
+      "command": "sha256sum -- data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1715,
+      "command": "sha256sum -- data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1716,
+      "command": "sha256sum -- js/agentic/mutating_action.mjs"
+    },
+    {
+      "id": 1717,
+      "command": "sha256sum -- js/agentic/mutating_action.mjs"
+    },
+    {
+      "id": 1718,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1719,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1720,
+      "command": "sha256sum -- data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1721,
+      "command": "sha256sum -- js/agentic/mutating_action.mjs"
+    },
+    {
+      "id": 1722,
+      "command": "sha256sum -- rust/src/seed/shell_intents.rs"
+    },
+    {
+      "id": 1723,
+      "command": "test -e rust/tests/web/prompt-specialization.test.mjs"
+    },
+    {
+      "id": 1723,
+      "command": "test ! -e rust/tests/web/mutating-action-bindings.test.mjs"
+    },
+    {
+      "id": 1723,
+      "command": "mkdir -p -- rust/tests/web"
+    },
+    {
+      "id": 1723,
+      "command": "cp rust/tests/web/prompt-specialization.test.mjs rust/tests/web/mutating-action-bindings.test.mjs"
+    },
+    {
+      "id": 1723,
+      "command": "test -e rust/tests/web/mutating-action-bindings.test.mjs"
+    },
+    {
+      "id": 1723,
+      "command": "test -e rust/tests/web/prompt-specialization.test.mjs"
+    },
+    {
+      "id": 1724,
+      "command": "sha256sum -- rust/tests/web/mutating-action-bindings.test.mjs"
+    },
+    {
+      "id": 1725,
+      "command": "sha256sum -- rust/tests/unit/agentic-coding/issue_1021_verified_move.rs"
+    },
+    {
+      "id": 1726,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1727,
+      "command": "sha256sum -- changelog.d/20261009_045000_native-ci-and-macos-repairs.md"
+    },
+    {
+      "id": 1728,
+      "command": "rustfmt --edition 2024 rust/src/agentic_coding/mutating_action.rs rust/src/seed/shell_intents.rs rust/tests/unit/agentic-coding/issue_1021_verified_move.rs"
+    },
+    {
+      "id": 1729,
+      "command": "test -e data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1729,
+      "command": "mkdir -p -- rust/embedded/data/seed"
+    },
+    {
+      "id": 1729,
+      "command": "cp -f data/seed/shell-intents.lino rust/embedded/data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1729,
+      "command": "test -e rust/embedded/data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1729,
+      "command": "test -e data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1730,
+      "command": "test -e data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1730,
+      "command": "mkdir -p -- rust/embedded/data/seed"
+    },
+    {
+      "id": 1730,
+      "command": "cp -f data/seed/multilingual-responses-agentic-tools.lino rust/embedded/data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1730,
+      "command": "test -e rust/embedded/data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1730,
+      "command": "test -e data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1731,
+      "command": "test ! -e experiments/formal_ai_subagent/evidence/specification-delivery-1188 || test -d experiments/formal_ai_subagent/evidence/specification-delivery-1188"
+    },
+    {
+      "id": 1731,
+      "command": "mkdir -p experiments/formal_ai_subagent/evidence/specification-delivery-1188"
+    },
+    {
+      "id": 1731,
+      "command": "test -d experiments/formal_ai_subagent/evidence/specification-delivery-1188"
+    },
+    {
+      "id": 1732,
+      "command": "for formal_ai_source in /tmp/spec-T*.log; do formal_ai_destination=experiments/formal_ai_subagent/evidence/specification-delivery-1188/; if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; formal_ai_parent=\"${formal_ai_destination%/*}\"; if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; test -e \"$formal_ai_source\" || exit $?; done"
+    },
+    {
+      "id": 1732,
+      "command": "for formal_ai_source in /tmp/spec-T*.log; do formal_ai_destination=experiments/formal_ai_subagent/evidence/specification-delivery-1188/; if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; formal_ai_parent=\"${formal_ai_destination%/*}\"; if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; test ! -e \"$formal_ai_destination\" || exit $?; done"
+    },
+    {
+      "id": 1733,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1734,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1735,
+      "command": "sha256sum -- data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1736,
+      "command": "sha256sum -- js/agentic/mutating_action.mjs"
+    },
+    {
+      "id": 1737,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1738,
+      "command": "sha256sum -- rust/tests/web/mutating-action-bindings.test.mjs"
+    },
+    {
+      "id": 1739,
+      "command": "sha256sum -- rust/tests/unit/agentic-coding/issue_1021_verified_move.rs"
+    },
+    {
+      "id": 1740,
+      "command": "test -e data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1740,
+      "command": "mkdir -p -- rust/embedded/data/seed"
+    },
+    {
+      "id": 1740,
+      "command": "cp -f data/seed/shell-intents.lino rust/embedded/data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1740,
+      "command": "test -e rust/embedded/data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1740,
+      "command": "test -e data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1741,
+      "command": "sha256sum -- data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1742,
+      "command": "sha256sum -- data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1743,
+      "command": "sha256sum -- data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1744,
+      "command": "sha256sum -- data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1745,
+      "command": "sha256sum -- js/agentic/crate/seed_shell_intents.mjs"
+    },
+    {
+      "id": 1746,
+      "command": "sha256sum -- rust/src/seed/shell_intents.rs"
+    },
+    {
+      "id": 1747,
+      "command": "sha256sum -- js/agentic/mutating_action.mjs"
+    },
+    {
+      "id": 1748,
+      "command": "sha256sum -- rust/src/agentic_coding/mutating_action.rs"
+    },
+    {
+      "id": 1749,
+      "command": "test -e data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1749,
+      "command": "mkdir -p -- rust/embedded/data/seed"
+    },
+    {
+      "id": 1749,
+      "command": "cp -f data/seed/shell-intents.lino rust/embedded/data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1749,
+      "command": "test -e rust/embedded/data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1749,
+      "command": "test -e data/seed/shell-intents.lino"
+    },
+    {
+      "id": 1750,
+      "command": "test -e data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1750,
+      "command": "mkdir -p -- rust/embedded/data/seed"
+    },
+    {
+      "id": 1750,
+      "command": "cp -f data/seed/multilingual-responses-agentic-tools.lino rust/embedded/data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1750,
+      "command": "test -e rust/embedded/data/seed/multilingual-responses-agentic-tools.lino"
+    },
+    {
+      "id": 1750,
+      "command": "test -e data/seed/multilingual-responses-agentic-tools.lino"
+    }
+  ],
+  "excludedTruncatedMutationEvidence": [
+    1710
+  ],
+  "manualSourceFallback": 0
+}

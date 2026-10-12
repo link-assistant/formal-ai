@@ -127,6 +127,14 @@ fn extract_definition_merge_term(prompt: &str, normalized: &str) -> Option<Strin
     extract_concept_query(prompt).map(|query| query.term)
 }
 
+/// Whether the request names the term whose definitions are merged.
+///
+/// The `definition_merge_term` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_definition_merge_term(prompt: &str, normalized: &str) -> bool {
+    extract_definition_merge_term(prompt, normalized).is_some()
+}
+
 fn trim_definition_merge_tail(value: &str) -> String {
     // The boundary words that end the term ("from", "using", "with", …) are
     // definition_merge_tail_boundary meanings; we reconstruct each as a

@@ -2,52 +2,53 @@ self_ast_census
   target src/concepts.rs
   language rust
   fidelity signature
-  byte_len 28238
-  line_count 760
-  content_id source_module_68336a3894eecb16
-  symbol_count 44
+  byte_len 28892
+  line_count 773
+  content_id source_module_50423fdc6a88a5df
+  symbol_count 45
   symbols
-    function concepts 30 33
-    static CELL 31 31
-    function concept_contexts 35 38
-    static CELL 36 36
-    function resolve_context_label 44 52
-    function concept_prefixes 54 66
-    static CELL 55 55
-    function concept_suffixes 68 80
-    static CELL 69 69
-    function concept_context_delimiters 82 94
-    static CELL 83 83
-    function concept_response_language_markers 96 116
-    static CELL 97 97
-    function meaning_defined_language_code 118 123
-    function language_code 125 129
-    struct ConceptQuery 138 142
-    function extract_concept_query 151 194
-    function strip_leading_request 196 215
-    const REQUEST_PREFIXES 197 197
-    const QUESTION_STARTS 198 198
-    function strip_inverted_who_is 217 227
-    function meaning_question_subject 236 240
-    function strip_meaning_question_body 242 277
-    function clean_meaning_candidate 279 295
-    function finalize_concept_query_with_response_language 297 330
-    function strip_concept_idiom_suffix 332 337
-    function strip_trailing_response_language_marker 339 348
-    function strip_trailing_marker 350 364
-    function is_response_language_marker_boundary 366 370
-    function is_cjk 372 384
-    function split_term_and_context 389 400
-    function strip_suffix_pattern 402 409
-    struct ConceptLookup 418 422
-    function lookup_concept_query 436 448
-    function rank_for_pair 450 493
-    function record_matches_query_term 495 508
-    function record_matches_term 510 527
-    function record_has_context 529 552
-    function normalize_concept_term 554 568
-    function try_concept_lookup 577 579
-    function try_concept_lookup_with_response_language 588 657
-    function render_concept_plain 662 685
-    function render_source_link 690 697
-    function render_concept_in_context 714 760
+    function concepts 31 34
+    static CELL 32 32
+    function concept_contexts 36 39
+    static CELL 37 37
+    function resolve_context_label 45 53
+    const QUERY_CUE_ROLES 56 56
+    function query_cues 74 89
+    static CELL 75 75
+    function concept_prefixes 91 103
+    static CELL 92 92
+    function concept_suffixes 105 117
+    static CELL 106 106
+    function concept_context_delimiters 119 131
+    static CELL 120 120
+    function concept_response_language_markers 133 153
+    static CELL 134 134
+    function meaning_defined_language_code 155 160
+    function language_code 162 166
+    struct ConceptQuery 175 179
+    function extract_concept_query 188 231
+    function strip_leading_request 233 250
+    function strip_inverted_who_is 252 262
+    function meaning_question_subject 271 275
+    function strip_meaning_question_body 277 298
+    function clean_meaning_candidate 300 312
+    function finalize_concept_query_with_response_language 314 347
+    function strip_concept_idiom_suffix 349 355
+    function strip_trailing_response_language_marker 357 366
+    function strip_trailing_marker 368 382
+    function is_response_language_marker_boundary 384 388
+    function is_cjk 390 402
+    function split_term_and_context 407 418
+    function strip_suffix_pattern 420 427
+    struct ConceptLookup 436 440
+    function lookup_concept_query 454 466
+    function rank_for_pair 468 511
+    function record_matches_query_term 513 526
+    function record_matches_term 528 545
+    function record_has_context 547 570
+    function normalize_concept_term 572 586
+    function try_concept_lookup 595 597
+    function try_concept_lookup_with_response_language 606 675
+    function render_concept_plain 680 703
+    function render_source_link 708 715
+    function render_concept_in_context 732 773

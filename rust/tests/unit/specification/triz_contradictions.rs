@@ -7,13 +7,19 @@
 //! never guessed, and it is stored as integer basis points so a content id stays
 //! exactly comparable and hashable.
 //!
+//! Also pins R901-3: contradiction resolution is registry-selected (the seeded
+//! `heuristic_triz` row at order 3 with `applies_when contradiction_detected`)
+//! and the ranking call sites resolve the ranker through `heuristics_for`.
+//!
 //! Written before the leaves that make them pass (plan 14 wave T).
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use formal_ai::method_registry::MethodRegistry;
 use formal_ai::selection_heuristics::{
-    ActionCost, CandidateScore, ContradictionDerivation, TrizResolution, contradictions_in,
+    ActionCost, CandidateRanker, CandidateScore, ContradictionDerivation, HeuristicRole,
+    LeastActionRanker, TrizRanker, TrizResolution, contradictions_in,
 };
 
 fn repo_root() -> PathBuf {
@@ -182,5 +188,153 @@ fn the_forty_principles_are_seed_data_and_survive_forget_and_rediscover() {
         text.contains("source "),
         "each principle names the source it is rediscoverable from, which is what makes \
          the seed forgettable"
+    );
+}
+
+// ── R901-3: registry-selected ranking ────────────────────────────────────────
+
+/// The candidate pair used to test registry selection: index 0 wins on steps,
+/// index 1 wins on `code_size`, so each wins on a different dimension.
+fn contradicted_pair_for_registry() -> Vec<CandidateScore> {
+    vec![
+        CandidateScore {
+            candidate_id: "fast_but_large".to_owned(),
+            checks: (4, 4),
+            cost: ActionCost {
+                steps: 5,
+                code_size: 200,
+                resource_units: 0,
+                leaf_count: 1,
+            },
+        },
+        CandidateScore {
+            candidate_id: "slow_but_small".to_owned(),
+            checks: (4, 4),
+            cost: ActionCost {
+                steps: 10,
+                code_size: 100,
+                resource_units: 0,
+                leaf_count: 1,
+            },
+        },
+    ]
+}
+
+#[test]
+fn the_seeded_catalog_declares_a_triz_rank_row_at_order_3() {
+    // R901-3: `data/meta/selection-heuristics.lino` must declare a `rank` row
+    // with slug `triz`, `order 3`, and `applies_when contradiction_detected`.
+    let path = repo_root().join("data/meta/selection-heuristics.lino");
+    let text = fs::read_to_string(&path)
+        .unwrap_or_else(|error| panic!("selection-heuristics.lino readable: {error}"));
+
+    let catalog =
+        formal_ai::selection_heuristics::catalog_from(&text).expect("the heuristic catalog parses");
+
+    let triz = catalog
+        .iter()
+        .find(|h| h.parameter("slug") == Some("triz"))
+        .unwrap_or_else(|| panic!("no `triz` slug in data/meta/selection-heuristics.lino"));
+
+    assert_eq!(
+        triz.role,
+        HeuristicRole::Rank,
+        "the triz heuristic must have the `rank` role"
+    );
+    assert_eq!(triz.order, 3, "the triz heuristic must be at order 3");
+    assert!(
+        triz.applies_when
+            .iter()
+            .any(|s| s == "contradiction_detected"),
+        "the triz heuristic must declare `applies_when contradiction_detected`; \
+         got {:?}",
+        triz.applies_when
+    );
+}
+
+#[test]
+fn registry_selects_triz_when_contradiction_detected() {
+    // R901-3: `heuristics_for(HeuristicRole::Rank, "contradiction_detected")`
+    // must include `heuristic_triz` and that must be the most-specific one
+    // (highest order) returned.
+    let registry = MethodRegistry::shared();
+    let heuristics = registry.heuristics_for(HeuristicRole::Rank, "contradiction_detected");
+    let last = heuristics
+        .last()
+        .expect("at least one rank heuristic applies in contradiction_detected");
+
+    assert_eq!(
+        last.parameter("slug"),
+        Some("triz"),
+        "the most-specific rank heuristic for `contradiction_detected` must be \
+         `triz`; got {:?}",
+        last.parameter("slug")
+    );
+}
+
+#[test]
+fn registry_keeps_least_action_when_no_contradiction() {
+    // R901-3: without a contradiction the situation is empty, and the registry
+    // must still select the default `least_action` ranker, so every other
+    // situation keeps today's behaviour exactly.
+    let registry = MethodRegistry::shared();
+    let heuristics = registry.heuristics_for(HeuristicRole::Rank, "");
+    let last = heuristics
+        .last()
+        .expect("at least one rank heuristic applies with empty situation");
+
+    assert_eq!(
+        last.parameter("slug"),
+        Some("least_action"),
+        "with no contradiction the most-specific rank heuristic must be \
+         `least_action`; got {:?}",
+        last.parameter("slug")
+    );
+}
+
+#[test]
+fn triz_ranker_and_least_action_ranker_disagree_on_the_contradicted_pair() {
+    // R901-3: TrizRanker must produce a different ranking than LeastActionRanker
+    // for the contradicted pair (fast_but_large vs slow_but_small), demonstrating
+    // that selecting TrizRanker through the registry changes the outcome.
+    //
+    // fast_but_large (index 0): code_size=200, steps=5
+    // slow_but_small (index 1): code_size=100, steps=10
+    //
+    // LeastActionRanker (key_order code_size,...): slow_but_small (100) first.
+    // TrizRanker (no key_order in heuristic_triz params): identity order → fast_but_large first.
+    let scores = contradicted_pair_for_registry();
+
+    // LeastActionRanker uses heuristic_least_action's parameters.
+    let registry = MethodRegistry::shared();
+    let least_action_params = registry
+        .heuristics_for(HeuristicRole::Rank, "")
+        .last()
+        .map(|h| h.parameters.clone())
+        .unwrap_or_default();
+    let la_ranked = LeastActionRanker.rank(&scores, &least_action_params);
+
+    // TrizRanker uses heuristic_triz's parameters.
+    let triz_params = registry
+        .heuristics_for(HeuristicRole::Rank, "contradiction_detected")
+        .last()
+        .map(|h| h.parameters.clone())
+        .unwrap_or_default();
+    let triz_ranked = TrizRanker.rank(&scores, &triz_params);
+
+    assert_ne!(
+        la_ranked, triz_ranked,
+        "TrizRanker and LeastActionRanker must disagree on the contradicted pair, \
+         proving the registry selection changes the outcome"
+    );
+    assert_eq!(
+        la_ranked.first().copied(),
+        Some(1),
+        "LeastActionRanker puts slow_but_small (smaller code_size) first"
+    );
+    assert_eq!(
+        triz_ranked.first().copied(),
+        Some(0),
+        "TrizRanker (identity, no key_order) puts fast_but_large (index 0) first"
     );
 }

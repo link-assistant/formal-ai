@@ -1,0 +1,25 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-membership.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-94648e1f5322f8cb
+    record "aerophone"
+  gap seed-metadata-gap-fc5210e841e44669
+    record "bowed-string-instrument"
+  gap seed-metadata-gap-591c40a96144ada1
+    record "chordophone"
+  gap seed-metadata-gap-daac7e150677819a
+    record "clarinet"
+  gap seed-metadata-gap-dd12340a2fa9b31e
+    record "flute"
+  gap seed-metadata-gap-a84ba830cb78e618
+    record "musical-instrument"
+  gap seed-metadata-gap-cdabdcca92461659
+    record "string-instrument"
+  gap seed-metadata-gap-82c838438536e2be
+    record "transposing-instrument"
+  gap seed-metadata-gap-0cbc1f3b16cb5411
+    record "violin"
+  gap seed-metadata-gap-e9bee6a7a4abc2c0
+    record "wind-instrument"

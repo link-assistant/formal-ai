@@ -1,0 +1,208 @@
+{
+  "lemma": "fit",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01024009-a",
+      "partOfSpeech": "a",
+      "definition": "meeting adequate standards for a purpose",
+      "examples": [
+        "a fit subject for discussion",
+        "it is fit and proper that you be there",
+        "water fit to drink",
+        "fit for duty",
+        "do as you see fit to"
+      ]
+    },
+    {
+      "id": "oewn-01020753-a",
+      "partOfSpeech": "a",
+      "definition": "physically and mentally sound or healthy",
+      "examples": [
+        "felt relaxed and fit after their holiday",
+        "keeps fit with diet and exercise"
+      ]
+    },
+    {
+      "id": "oewn-14429707-n",
+      "partOfSpeech": "n",
+      "definition": "a display of bad temper",
+      "examples": [
+        "he had a fit",
+        "she threw a tantrum",
+        "he made a scene"
+      ],
+      "synonyms": [
+        "tantrum",
+        "scene",
+        "conniption"
+      ]
+    },
+    {
+      "id": "oewn-14106270-n",
+      "partOfSpeech": "n",
+      "definition": "a sudden uncontrollable attack",
+      "examples": [
+        "a paroxysm of giggling",
+        "a fit of coughing",
+        "convulsions of laughter"
+      ],
+      "synonyms": [
+        "paroxysm",
+        "convulsion"
+      ]
+    },
+    {
+      "id": "oewn-04937484-n",
+      "partOfSpeech": "n",
+      "definition": "the manner in which something fits",
+      "examples": [
+        "I admired the fit of her coat"
+      ]
+    },
+    {
+      "id": "oewn-00556362-n",
+      "partOfSpeech": "n",
+      "definition": "a sudden flurry of activity (often for no obvious reason)",
+      "examples": [
+        "a burst of applause",
+        "a fit of housecleaning"
+      ],
+      "synonyms": [
+        "burst"
+      ]
+    },
+    {
+      "id": "oewn-01937602-s",
+      "partOfSpeech": "s",
+      "definition": "(usually followed by ‘to’ or ‘for’) on the point of or strongly disposed",
+      "examples": [
+        "in no fit state to continue",
+        "fit to drop",
+        "laughing fit to burst",
+        "she was fit to scream",
+        "primed for a fight",
+        "we are set to go at any time"
+      ],
+      "synonyms": [
+        "primed",
+        "set"
+      ]
+    },
+    {
+      "id": "oewn-02708690-v",
+      "partOfSpeech": "v",
+      "definition": "be agreeable or acceptable to",
+      "examples": [
+        "This suits my needs"
+      ],
+      "synonyms": [
+        "suit",
+        "accommodate"
+      ]
+    },
+    {
+      "id": "oewn-02665841-v",
+      "partOfSpeech": "v",
+      "definition": "be the right size or shape; fit correctly or as desired",
+      "examples": [
+        "This piece won't fit into the puzzle"
+      ],
+      "synonyms": [
+        "go"
+      ]
+    },
+    {
+      "id": "oewn-00301318-v",
+      "partOfSpeech": "v",
+      "definition": "make fit",
+      "examples": [
+        "fit a dress",
+        "He fitted other pieces of paper to his cut-out"
+      ]
+    },
+    {
+      "id": "oewn-00300894-v",
+      "partOfSpeech": "v",
+      "definition": "insert or adjust several objects or people",
+      "examples": [
+        "Can you fit the toy into the box?",
+        "This man can't fit himself into our work environment"
+      ]
+    },
+    {
+      "id": "oewn-02663315-v",
+      "partOfSpeech": "v",
+      "definition": "be compatible, similar or consistent; coincide in their characteristics",
+      "examples": [
+        "The two stories don't agree in many details",
+        "The handwriting checks with the signature on the form",
+        "The suspect's fingerprints don't match those on the gun"
+      ],
+      "synonyms": [
+        "match",
+        "correspond",
+        "check",
+        "jibe",
+        "gibe",
+        "tally",
+        "agree"
+      ]
+    },
+    {
+      "id": "oewn-02741628-v",
+      "partOfSpeech": "v",
+      "definition": "conform to some shape or size",
+      "examples": [
+        "How does this shirt fit?"
+      ]
+    },
+    {
+      "id": "oewn-02344409-v",
+      "partOfSpeech": "v",
+      "definition": "provide with (something) usually for a specific purpose",
+      "examples": [
+        "The expedition was equipped with proper clothing, food, and other necessities"
+      ],
+      "synonyms": [
+        "equip",
+        "fit out",
+        "outfit"
+      ]
+    },
+    {
+      "id": "oewn-01185870-v",
+      "partOfSpeech": "v",
+      "definition": "fill, satisfy or meet a want or need or condition or restriction",
+      "examples": [
+        "does this paper meet the requirements for the degree?",
+        "This job doesn't match my dreams",
+        "meet a need"
+      ],
+      "synonyms": [
+        "conform to",
+        "meet",
+        "satisfy",
+        "fill",
+        "fulfill",
+        "fulfil"
+      ]
+    },
+    {
+      "id": "oewn-00457695-v",
+      "partOfSpeech": "v",
+      "definition": "make correspond or harmonize",
+      "examples": [
+        "Match my sweater"
+      ],
+      "synonyms": [
+        "match"
+      ]
+    }
+  ]
+}

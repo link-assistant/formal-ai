@@ -1,0 +1,7 @@
+{
+  "taskId": "T2446",
+  "encoding": "utf8",
+  "sha256": "8fbb630f459cbf67335d50f6b7e5ac0ff8e57c62194e41fce273020dc3f5b8d1",
+  "byteLength": 384,
+  "rawUtf8": ">> bash {\"command\":\"node scripts/check-specification-in-javascript.mjs --check\"}\n   Output: specification in JavaScript: 1171 tests, 136 carried, 136 pass in the worker\n   \n   Exit Code: 0\n== answer ==\nThe `node scripts/check-specification-in-javascript.mjs --check` command completed. Output:\n\n```text\nspecification in JavaScript: 1171 tests, 136 carried, 136 pass in the worker\n```\n"
+}

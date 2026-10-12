@@ -1,0 +1,61 @@
+language en
+lemma bump
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a lump on the body caused by a blow"
+    id oewn-14313006-n
+    partOfSpeech n
+  entry
+    definition "something that bulges out or is protuberant or projects from its surroundings"
+    examples ("the gun in his pocket made an obvious bulge" "the hump of a camel" "he stood on the rocky prominence" "the occipital protuberance was well developed" "the bony excrescence between its horns")
+    id oewn-13917127-n
+    partOfSpeech n
+    synonyms (bulge hump swelling gibbosity gibbousness jut prominence protuberance protrusion extrusion excrescence)
+  entry
+    definition "an impact (as from a collision)"
+    examples ("the bump threw him off the bicycle")
+    id oewn-07353281-n
+    partOfSpeech n
+    synonyms (blow)
+  entry
+    definition "knock against with force or violence"
+    examples ("My car bumped into the tree")
+    id oewn-01242183-v
+    partOfSpeech v
+    synonyms (knock)
+  entry
+    definition "come upon, as if by accident; meet with"
+    examples ("We find this idea in Plato" "I happened upon the most wonderful bakery not very far from here" "She chanced upon an interesting book in the bookstore the other day")
+    id oewn-02253273-v
+    partOfSpeech v
+    synonyms (find happen chance encounter)
+  entry
+    definition "dance erotically or dance with the pelvis thrust forward"
+    examples ("bump and grind")
+    id oewn-01899376-v
+    partOfSpeech v
+  entry
+    definition "assign to a lower position; reduce in rank"
+    examples ("She was demoted because she always speaks up" "He was broken down to Sergeant")
+    id oewn-02404473-v
+    partOfSpeech v
+    synonyms (demote relegate break "kick downstairs")
+  entry
+    definition "remove or force from a position of dwelling previously occupied"
+    examples ("The new employee dislodged her by moving into her office space")
+    id oewn-01530296-v
+    partOfSpeech v
+    synonyms (dislodge)
+  entry
+    definition "to enjoy some music greatly"
+    id oewn-90019492-v
+    partOfSpeech v
+  entry
+    definition "to play music at loud volume"
+    id oewn-90019491-v
+    partOfSpeech v
+    synonyms (slap)
+source "oewn:2024"

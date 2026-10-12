@@ -59,26 +59,36 @@ pub fn normalize(prompt: &str) -> String {
 /// neither of them language-specific:
 ///
 ///   * an indented line continues a structured block, so it is payload; and
-///   * a double-quoted span is a literal the speaker is quoting, not naming.
+///   * a quoted span is a literal the speaker is quoting, not naming — every
+///     pair [`crate::solver_handlers::text_outside_quoted_segments`] reads, so
+///     the single-quoted payloads of a `Replace 'X' with 'Y'` edit request too
+///     (PR #1188 dogfooding: a payload naming a precedence "order" and a
+///     "list" was planned as a computer-use order listing), and a span that
+///     runs over several lines as a whole (G105).
 ///
 /// Recognition therefore runs over the remainder. A request written as ordinary
 /// prose — one line, unquoted, in any of the four languages — is unaffected.
 #[must_use]
 pub fn instruction_surface(prompt: &str) -> String {
+    // A quoted payload that spans lines (a multi-line «…» replacement) is one
+    // literal: line by line, its pairs would not close (PR #1188 G105).
+    let mut unquoted = String::with_capacity(prompt.len());
+    let mut cursor = 0usize;
+    for segment in crate::normal_markov::quoted_segment_spans(prompt) {
+        if segment.start < cursor || !prompt[segment.start..segment.end].contains('\n') {
+            continue;
+        }
+        unquoted.push_str(&prompt[cursor..segment.start]);
+        unquoted.push(' ');
+        cursor = segment.end;
+    }
+    unquoted.push_str(&prompt[cursor..]);
     let mut instruction = String::with_capacity(prompt.len());
-    for line in prompt.lines() {
+    for line in unquoted.lines() {
         if line.starts_with(' ') || line.starts_with('\t') {
             continue;
         }
-        let mut quoted = false;
-        for character in line.chars() {
-            if character == '"' {
-                quoted = !quoted;
-                instruction.push(' ');
-            } else if !quoted {
-                instruction.push(character);
-            }
-        }
+        instruction.push_str(&crate::solver_handlers::text_outside_quoted_segments(line));
         instruction.push('\n');
     }
     instruction

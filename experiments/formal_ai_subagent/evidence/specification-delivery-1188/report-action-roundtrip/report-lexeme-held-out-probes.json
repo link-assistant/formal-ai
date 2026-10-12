@@ -1,0 +1,599 @@
+{
+  "scratchOnly": true,
+  "repositoryMutations": 0,
+  "source": "data/seed/meanings-agent-actions.lino",
+  "addition": "上报",
+  "ratchetUnchanged": true,
+  "observed": [
+    {
+      "mode": "before",
+      "measures": [
+        [
+          "sentences",
+          320
+        ],
+        [
+          "sentence-survival",
+          0.105
+        ],
+        [
+          "term-survival",
+          0.436
+        ],
+        [
+          "en-ru-sentence-survival",
+          0.093
+        ],
+        [
+          "en-ru-term-survival",
+          0.505
+        ],
+        [
+          "en-hi-sentence-survival",
+          0.093
+        ],
+        [
+          "en-hi-term-survival",
+          0.448
+        ],
+        [
+          "en-zh-sentence-survival",
+          0.093
+        ],
+        [
+          "en-zh-term-survival",
+          0.454
+        ],
+        [
+          "en-es-sentence-survival",
+          0.109
+        ],
+        [
+          "en-es-term-survival",
+          0.505
+        ],
+        [
+          "ru-en-sentence-survival",
+          0.125
+        ],
+        [
+          "ru-en-term-survival",
+          0.365
+        ],
+        [
+          "ru-hi-sentence-survival",
+          0.109
+        ],
+        [
+          "ru-hi-term-survival",
+          0.336
+        ],
+        [
+          "ru-zh-sentence-survival",
+          0.125
+        ],
+        [
+          "ru-zh-term-survival",
+          0.35
+        ],
+        [
+          "ru-es-sentence-survival",
+          0.125
+        ],
+        [
+          "ru-es-term-survival",
+          0.361
+        ],
+        [
+          "hi-en-sentence-survival",
+          0.093
+        ],
+        [
+          "hi-en-term-survival",
+          0.384
+        ],
+        [
+          "hi-ru-sentence-survival",
+          0.093
+        ],
+        [
+          "hi-ru-term-survival",
+          0.401
+        ],
+        [
+          "hi-zh-sentence-survival",
+          0.093
+        ],
+        [
+          "hi-zh-term-survival",
+          0.388
+        ],
+        [
+          "hi-es-sentence-survival",
+          0.093
+        ],
+        [
+          "hi-es-term-survival",
+          0.396
+        ],
+        [
+          "zh-en-sentence-survival",
+          0.109
+        ],
+        [
+          "zh-en-term-survival",
+          0.501
+        ],
+        [
+          "zh-ru-sentence-survival",
+          0.109
+        ],
+        [
+          "zh-ru-term-survival",
+          0.515
+        ],
+        [
+          "zh-hi-sentence-survival",
+          0.109
+        ],
+        [
+          "zh-hi-term-survival",
+          0.505
+        ],
+        [
+          "zh-es-sentence-survival",
+          0.109
+        ],
+        [
+          "zh-es-term-survival",
+          0.512
+        ],
+        [
+          "es-en-sentence-survival",
+          0.109
+        ],
+        [
+          "es-en-term-survival",
+          0.42
+        ],
+        [
+          "es-ru-sentence-survival",
+          0.109
+        ],
+        [
+          "es-ru-term-survival",
+          0.442
+        ],
+        [
+          "es-hi-sentence-survival",
+          0.093
+        ],
+        [
+          "es-hi-term-survival",
+          0.418
+        ],
+        [
+          "es-zh-sentence-survival",
+          0.109
+        ],
+        [
+          "es-zh-term-survival",
+          0.42
+        ]
+      ],
+      "falls": [
+        {
+          "measure": "en-zh-term-survival",
+          "recorded": 0.459,
+          "value": 0.454
+        },
+        {
+          "measure": "ru-zh-term-survival",
+          "recorded": 0.352,
+          "value": 0.35
+        },
+        {
+          "measure": "hi-zh-term-survival",
+          "recorded": 0.392,
+          "value": 0.388
+        }
+      ],
+      "probes": [
+        {
+          "surface": "report",
+          "source": "en",
+          "trip": {
+            "source": "report",
+            "forward": "报告",
+            "backward": "reports",
+            "statements": [
+              {
+                "forward": "报告",
+                "backward": "reports",
+                "surviving": 0,
+                "known": 1,
+                "survives": false
+              }
+            ],
+            "survivingTerms": 0,
+            "knownTerms": 1,
+            "survives": false
+          }
+        },
+        {
+          "surface": "submit",
+          "source": "en",
+          "trip": {
+            "source": "submit",
+            "forward": "提交",
+            "backward": "submit",
+            "statements": [
+              {
+                "forward": "提交",
+                "backward": "submit",
+                "surviving": 1,
+                "known": 1,
+                "survives": true
+              }
+            ],
+            "survivingTerms": 1,
+            "knownTerms": 1,
+            "survives": true
+          }
+        },
+        {
+          "surface": "сообщить",
+          "source": "ru",
+          "trip": {
+            "source": "сообщить",
+            "forward": "报告",
+            "backward": "отчёты",
+            "statements": [
+              {
+                "forward": "报告",
+                "backward": "отчёты",
+                "surviving": 0,
+                "known": 1,
+                "survives": false
+              }
+            ],
+            "survivingTerms": 0,
+            "knownTerms": 1,
+            "survives": false
+          }
+        },
+        {
+          "surface": "रिपोर्ट",
+          "source": "hi",
+          "trip": {
+            "source": "रिपोर्ट",
+            "forward": "报告",
+            "backward": "रिपोर्टें",
+            "statements": [
+              {
+                "forward": "报告",
+                "backward": "रिपोर्टें",
+                "surviving": 0,
+                "known": 1,
+                "survives": false
+              }
+            ],
+            "survivingTerms": 0,
+            "knownTerms": 1,
+            "survives": false
+          }
+        },
+        {
+          "surface": "reports",
+          "source": "en",
+          "trip": {
+            "source": "reports",
+            "forward": "报告",
+            "backward": "reports",
+            "statements": [
+              {
+                "forward": "报告",
+                "backward": "reports",
+                "surviving": 1,
+                "known": 1,
+                "survives": true
+              }
+            ],
+            "survivingTerms": 1,
+            "knownTerms": 1,
+            "survives": true
+          }
+        }
+      ],
+      "actionIdentity": null,
+      "nounIdentity": "reports"
+    },
+    {
+      "mode": "scratchCandidate",
+      "measures": [
+        [
+          "sentences",
+          320
+        ],
+        [
+          "sentence-survival",
+          0.105
+        ],
+        [
+          "term-survival",
+          0.436
+        ],
+        [
+          "en-ru-sentence-survival",
+          0.093
+        ],
+        [
+          "en-ru-term-survival",
+          0.505
+        ],
+        [
+          "en-hi-sentence-survival",
+          0.093
+        ],
+        [
+          "en-hi-term-survival",
+          0.448
+        ],
+        [
+          "en-zh-sentence-survival",
+          0.093
+        ],
+        [
+          "en-zh-term-survival",
+          0.459
+        ],
+        [
+          "en-es-sentence-survival",
+          0.109
+        ],
+        [
+          "en-es-term-survival",
+          0.505
+        ],
+        [
+          "ru-en-sentence-survival",
+          0.125
+        ],
+        [
+          "ru-en-term-survival",
+          0.365
+        ],
+        [
+          "ru-hi-sentence-survival",
+          0.109
+        ],
+        [
+          "ru-hi-term-survival",
+          0.336
+        ],
+        [
+          "ru-zh-sentence-survival",
+          0.125
+        ],
+        [
+          "ru-zh-term-survival",
+          0.352
+        ],
+        [
+          "ru-es-sentence-survival",
+          0.125
+        ],
+        [
+          "ru-es-term-survival",
+          0.361
+        ],
+        [
+          "hi-en-sentence-survival",
+          0.093
+        ],
+        [
+          "hi-en-term-survival",
+          0.384
+        ],
+        [
+          "hi-ru-sentence-survival",
+          0.093
+        ],
+        [
+          "hi-ru-term-survival",
+          0.401
+        ],
+        [
+          "hi-zh-sentence-survival",
+          0.093
+        ],
+        [
+          "hi-zh-term-survival",
+          0.392
+        ],
+        [
+          "hi-es-sentence-survival",
+          0.093
+        ],
+        [
+          "hi-es-term-survival",
+          0.396
+        ],
+        [
+          "zh-en-sentence-survival",
+          0.109
+        ],
+        [
+          "zh-en-term-survival",
+          0.501
+        ],
+        [
+          "zh-ru-sentence-survival",
+          0.109
+        ],
+        [
+          "zh-ru-term-survival",
+          0.515
+        ],
+        [
+          "zh-hi-sentence-survival",
+          0.109
+        ],
+        [
+          "zh-hi-term-survival",
+          0.505
+        ],
+        [
+          "zh-es-sentence-survival",
+          0.109
+        ],
+        [
+          "zh-es-term-survival",
+          0.512
+        ],
+        [
+          "es-en-sentence-survival",
+          0.109
+        ],
+        [
+          "es-en-term-survival",
+          0.42
+        ],
+        [
+          "es-ru-sentence-survival",
+          0.109
+        ],
+        [
+          "es-ru-term-survival",
+          0.442
+        ],
+        [
+          "es-hi-sentence-survival",
+          0.093
+        ],
+        [
+          "es-hi-term-survival",
+          0.418
+        ],
+        [
+          "es-zh-sentence-survival",
+          0.109
+        ],
+        [
+          "es-zh-term-survival",
+          0.42
+        ]
+      ],
+      "falls": [],
+      "probes": [
+        {
+          "surface": "report",
+          "source": "en",
+          "trip": {
+            "source": "report",
+            "forward": "上报",
+            "backward": "report",
+            "statements": [
+              {
+                "forward": "上报",
+                "backward": "report",
+                "surviving": 1,
+                "known": 1,
+                "survives": true
+              }
+            ],
+            "survivingTerms": 1,
+            "knownTerms": 1,
+            "survives": true
+          }
+        },
+        {
+          "surface": "submit",
+          "source": "en",
+          "trip": {
+            "source": "submit",
+            "forward": "提交",
+            "backward": "submit",
+            "statements": [
+              {
+                "forward": "提交",
+                "backward": "submit",
+                "surviving": 1,
+                "known": 1,
+                "survives": true
+              }
+            ],
+            "survivingTerms": 1,
+            "knownTerms": 1,
+            "survives": true
+          }
+        },
+        {
+          "surface": "сообщить",
+          "source": "ru",
+          "trip": {
+            "source": "сообщить",
+            "forward": "上报",
+            "backward": "сообщи",
+            "statements": [
+              {
+                "forward": "上报",
+                "backward": "сообщи",
+                "surviving": 1,
+                "known": 1,
+                "survives": true
+              }
+            ],
+            "survivingTerms": 1,
+            "knownTerms": 1,
+            "survives": true
+          }
+        },
+        {
+          "surface": "रिपोर्ट",
+          "source": "hi",
+          "trip": {
+            "source": "रिपोर्ट",
+            "forward": "上报",
+            "backward": "रिपोर्ट",
+            "statements": [
+              {
+                "forward": "上报",
+                "backward": "रिपोर्ट",
+                "surviving": 1,
+                "known": 1,
+                "survives": true
+              }
+            ],
+            "survivingTerms": 1,
+            "knownTerms": 1,
+            "survives": true
+          }
+        },
+        {
+          "surface": "reports",
+          "source": "en",
+          "trip": {
+            "source": "reports",
+            "forward": "报告",
+            "backward": "reports",
+            "statements": [
+              {
+                "forward": "报告",
+                "backward": "reports",
+                "surviving": 1,
+                "known": 1,
+                "survives": true
+              }
+            ],
+            "survivingTerms": 1,
+            "knownTerms": 1,
+            "survives": true
+          }
+        }
+      ],
+      "actionIdentity": "report_issue_action",
+      "nounIdentity": "reports"
+    }
+  ]
+}

@@ -1,0 +1,263 @@
+{
+  "lemma": "short",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01445077-a",
+      "partOfSpeech": "a",
+      "definition": "primarily temporal sense; indicating or being or seeming to be limited in duration",
+      "examples": [
+        "a short life",
+        "a short flight",
+        "a short holiday",
+        "a short story",
+        "only a few short months"
+      ]
+    },
+    {
+      "id": "oewn-01438878-a",
+      "partOfSpeech": "a",
+      "definition": "(primarily spatial sense) having little length or lacking in length",
+      "examples": [
+        "short skirts",
+        "short hair",
+        "the board was a foot short",
+        "a short toss"
+      ]
+    },
+    {
+      "id": "oewn-02395180-a",
+      "partOfSpeech": "a",
+      "definition": "low in stature; not tall; describing something or someone with a stature less than normal",
+      "examples": [
+        "he was short and stocky",
+        "short in stature",
+        "a short smokestack",
+        "a little man"
+      ],
+      "synonyms": [
+        "little"
+      ]
+    },
+    {
+      "id": "oewn-02013127-a",
+      "partOfSpeech": "a",
+      "definition": "(of memory) deficient in retentiveness or range",
+      "examples": [
+        "a short memory"
+      ],
+      "synonyms": [
+        "unretentive",
+        "forgetful"
+      ]
+    },
+    {
+      "id": "oewn-01447511-a",
+      "partOfSpeech": "a",
+      "definition": "not holding securities or commodities that one sells in expectation of a fall in prices",
+      "examples": [
+        "a short sale",
+        "short in cotton"
+      ]
+    },
+    {
+      "id": "oewn-01447121-a",
+      "partOfSpeech": "a",
+      "definition": "of speech sounds or syllables of relatively short duration",
+      "examples": [
+        "the English vowel sounds in ‘pat’, ‘pet’, ‘pit’, ‘pot’, ‘putt’ are short"
+      ]
+    },
+    {
+      "id": "oewn-04211665-n",
+      "partOfSpeech": "n",
+      "definition": "the location on a baseball field where the shortstop is stationed"
+    },
+    {
+      "id": "oewn-04211801-n",
+      "partOfSpeech": "n",
+      "definition": "accidental contact between two points in an electric circuit that have a potential difference",
+      "synonyms": [
+        "short circuit"
+      ]
+    },
+    {
+      "id": "oewn-00725235-n",
+      "partOfSpeech": "n",
+      "definition": "the fielding position of the player on a baseball team who is stationed between second and third base",
+      "synonyms": [
+        "shortstop"
+      ]
+    },
+    {
+      "id": "oewn-00455064-r",
+      "partOfSpeech": "r",
+      "definition": "clean across",
+      "examples": [
+        "the car's axle snapped short"
+      ]
+    },
+    {
+      "id": "oewn-00455142-r",
+      "partOfSpeech": "r",
+      "definition": "without possessing something at the time it is contractually sold",
+      "examples": [
+        "he made his fortune by selling short just before the crash"
+      ]
+    },
+    {
+      "id": "oewn-00454943-r",
+      "partOfSpeech": "r",
+      "definition": "at some point or distance before a goal is reached",
+      "examples": [
+        "he fell short of our expectations"
+      ]
+    },
+    {
+      "id": "oewn-00454841-r",
+      "partOfSpeech": "r",
+      "definition": "so as to interrupt",
+      "examples": [
+        "She took him up short before he could continue"
+      ]
+    },
+    {
+      "id": "oewn-00454757-r",
+      "partOfSpeech": "r",
+      "definition": "at a disadvantage",
+      "examples": [
+        "I was caught short"
+      ],
+      "synonyms": [
+        "unawares"
+      ]
+    },
+    {
+      "id": "oewn-00298575-r",
+      "partOfSpeech": "r",
+      "definition": "in a curt, abrupt and discourteous manner",
+      "examples": [
+        "he told me curtly to get on with it",
+        "he talked short with everyone",
+        "he said shortly that he didn't like it"
+      ],
+      "synonyms": [
+        "curtly",
+        "shortly"
+      ]
+    },
+    {
+      "id": "oewn-81484980-r",
+      "partOfSpeech": "r",
+      "definition": "quickly and without warning",
+      "examples": [
+        "he stopped suddenly",
+        "suddenly she felt a sharp pain in her side",
+        "he decided to go to Chicago on the spur of the moment",
+        "he made up his mind suddenly"
+      ],
+      "synonyms": [
+        "suddenly",
+        "all of a sudden",
+        "on the spur of the moment",
+        "of a sudden",
+        "abruptly",
+        "dead"
+      ]
+    },
+    {
+      "id": "oewn-02344882-s",
+      "partOfSpeech": "s",
+      "definition": "of insufficient quantity to meet a need",
+      "examples": [
+        "an inadequate income",
+        "a poor salary",
+        "money is short",
+        "on short rations",
+        "food is in short supply",
+        "short on experience",
+        "the jejune diets of the very poor"
+      ],
+      "synonyms": [
+        "inadequate",
+        "poor",
+        "jejune"
+      ]
+    },
+    {
+      "id": "oewn-02345399-s",
+      "partOfSpeech": "s",
+      "definition": "less than the correct or legal or full amount often deliberately so",
+      "examples": [
+        "a light pound",
+        "a scant cup of sugar",
+        "regularly gives short weight"
+      ],
+      "synonyms": [
+        "light",
+        "scant"
+      ]
+    },
+    {
+      "id": "oewn-01902113-s",
+      "partOfSpeech": "s",
+      "definition": "lacking foresight or scope",
+      "examples": [
+        "a short view of the problem",
+        "shortsighted policies",
+        "shortsighted critics derided the plan",
+        "myopic thinking"
+      ],
+      "synonyms": [
+        "shortsighted",
+        "unforesightful",
+        "myopic"
+      ]
+    },
+    {
+      "id": "oewn-00712466-s",
+      "partOfSpeech": "s",
+      "definition": "tending to crumble or break into flakes due to a large amount of shortening",
+      "examples": [
+        "shortbread is a short crumbly cookie",
+        "a short flaky pie crust"
+      ]
+    },
+    {
+      "id": "oewn-00643682-s",
+      "partOfSpeech": "s",
+      "definition": "marked by rude or peremptory shortness",
+      "examples": [
+        "try to cultivate a less brusque manner",
+        "a curt reply",
+        "the salesgirl was very short with him"
+      ],
+      "synonyms": [
+        "brusque",
+        "brusk",
+        "curt"
+      ]
+    },
+    {
+      "id": "oewn-02578724-v",
+      "partOfSpeech": "v",
+      "definition": "cheat someone by not returning them enough money",
+      "synonyms": [
+        "short-change"
+      ]
+    },
+    {
+      "id": "oewn-01621903-v",
+      "partOfSpeech": "v",
+      "definition": "create a short circuit in",
+      "synonyms": [
+        "short-circuit"
+      ]
+    }
+  ]
+}

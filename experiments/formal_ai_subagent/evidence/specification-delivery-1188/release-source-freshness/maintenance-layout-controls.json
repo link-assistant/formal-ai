@@ -1,0 +1,51 @@
+{
+  "task": "T4205",
+  "originalGate": {
+    "status": 1,
+    "stdout": "rust/tests/web/release-source-freshness.test.mjs: long line: 1 line(s) over 300 code characters, at 39 (307)\nreadable code: 1 unreadable file(s) of 1; break the lines (fix the generator for a generated file), or list a true bundle with its reason in data/meta/readable-code-exemptions.lino\n",
+    "stderr": ""
+  },
+  "before": {
+    "readability": [
+      "long line: 1 line(s) over 300 code characters, at 39 (307)"
+    ],
+    "coverageLines": 1841
+  },
+  "after": {
+    "readability": [],
+    "coverageLines": 185,
+    "testTokenAndLiteralSequenceIdentical": true,
+    "coverageParsedValueIdentical": true
+  },
+  "checks": [
+    {
+      "command": "node",
+      "args": [
+        "scripts/check-readable-code.mjs",
+        "scripts/release-source-freshness.mjs",
+        "rust/tests/web/release-source-freshness.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "readable code: 2 code files are multi-line and readable (0 exemption(s) in use)\n",
+      "stderr": ""
+    },
+    {
+      "command": "node",
+      "args": [
+        "--test",
+        "rust/tests/web/release-source-freshness.test.mjs",
+        "rust/tests/web/package-release-publication.test.mjs",
+        "rust/tests/web/release-stage-transfer.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "TAP version 13\n# Subtest: the release child commit of a completed main run resolves for publication\nok 1 - the release child commit of a completed main run resolves for publication\n  ---\n  duration_ms: 0.899292\n  ...\n# Subtest: an exact-head release resolves too, including when a later pipeline job failed\nok 2 - an exact-head release resolves too, including when a later pipeline job failed\n  ---\n  duration_ms: 0.12525\n  ...\n# Subtest: a main run cannot publish an unrelated latest release\nok 3 - a main run cannot publish an unrelated latest release\n  ---\n  duration_ms: 0.060208\n  ...\n# Subtest: untrusted runs and cancelled runs do not make any API request\nok 4 - untrusted runs and cancelled runs do not make any API request\n  ---\n  duration_ms: 0.064958\n  ...\n# Subtest: PRs and default dispatches build without publishing or querying releases\nok 5 - PRs and default dispatches build without publishing or querying releases\n  ---\n  duration_ms: 0.118417\n  ...\n# Subtest: manual publication requires main and a published stable tag\nok 6 - manual publication requires main and a published stable tag\n  ---\n  duration_ms: 0.204833\n  ...\n# Subtest: drafts and prereleases never resolve; a completion requires the full commit\nok 7 - drafts and prereleases never resolve; a completion requires the full commit\n  ---\n  duration_ms: 0.0635\n  ...\n# Subtest: a repeated npm publication verifies the immutable tarball bytes\nok 8 - a repeated npm publication verifies the immutable tarball bytes\n  ---\n  duration_ms: 0.141042\n  ...\n# Subtest: npm publishes only on a real missing-version response; transport/auth errors fail\nok 9 - npm publishes only on a real missing-version response; transport/auth errors fail\n  ---\n  duration_ms: 0.19975\n  ...\n# Subtest: both package workflows admit automated releases, check PRs, and attach installable artifacts\nok 10 - both package workflows admit automated releases, check PRs, and attach installable artifacts\n  ---\n  duration_ms: 1.656208\n  ...\n# Subtest: each release path publishes and verifies slim before creating its GitHub release\nok 11 - each release path publishes and verifies slim before creating its GitHub release\n  ---\n  duration_ms: 1.159417\n  ...\n# Subtest: the full original resolver rejects a release rebased onto newer main; no ancestor fallback\nok 12 - the full original resolver rejects a release rebased onto newer main; no ancestor fallback\n  ---\n  duration_ms: 1048.611292\n  ...\n# Subtest: physical exact main and recorded own version child survive a harmless retry or already completed push\nok 13 - physical exact main and recorded own version child survive a harmless retry or already completed push\n  ---\n  duration_ms: 1991.216541\n  ...\n# Subtest: physical stale main refuses before mutation, before commit and before retry; changed child/tree refuse\nok 14 - physical stale main refuses before mutation, before commit and before retry; changed child/tree refuse\n  ---\n  duration_ms: 9173.781292\n  ...\n# Subtest: spoofed caller, identity, event, origin and recorded source fail closed\nok 15 - spoofed caller, identity, event, origin and recorded source fail closed\n  ---\n  duration_ms: 824.591834\n  ...\n# Subtest: original Rust producer invokes guards before mutations and keeps rebase confined to non-CI CLI\nok 16 - original Rust producer invokes guards before mutations and keeps rebase confined to non-CI CLI\n  ---\n  duration_ms: 0.420959\n  ...\n# Subtest: staged executable source or Cargo dependency drift cannot be recorded as the own version child\nok 17 - staged executable source or Cargo dependency drift cannot be recorded as the own version child\n  ---\n  duration_ms: 2028.615708\n  ...\n# Subtest: immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input\nok 18 - immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input\n  ---\n  duration_ms: 420.920292\n  ...\n# Subtest: independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers\nok 19 - independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers\n  ---\n  duration_ms: 7.789416\n  ...\n# Subtest: dormant workflow is a checked exact canonical operation/order/output/authority projection\nok 20 - dormant workflow is a checked exact canonical operation/order/output/authority projection\n  ---\n  duration_ms: 43.702084\n  ...\n# Subtest: canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail\nok 21 - canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail\n  ---\n  duration_ms: 103.955916\n  ...\n1..21\n# tests 21\n# suites 0\n# pass 21\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 15112.534208\n",
+      "stderr": ""
+    }
+  ],
+  "originalNodeTests": 21,
+  "callerResolverProjectionUnchanged": true,
+  "localNative": false,
+  "publication": false
+}

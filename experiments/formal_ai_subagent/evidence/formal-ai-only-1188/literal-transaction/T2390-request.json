@@ -1,0 +1,152 @@
+{
+  "id": "T2390",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "copies": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2382-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2382-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2382-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2382-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2382-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2382-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2383-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2383-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2383-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2383-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2383-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2383-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2384-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2384-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2384-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2384-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2384-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2384-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2385-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2385-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2385-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2385-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2385-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2385-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2386-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2386-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2386-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2386-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2386-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2386-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2387-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2387-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2387-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2387-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2387-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2387-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2388-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2388-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2388-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2388-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2388-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2388-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2389-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2389-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2389-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2389-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2389-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2389-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2383-postimages.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2383-postimages.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2386-postimages.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2386-postimages.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2387-postimages.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2387-postimages.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2384-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2384-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2385-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2385-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2384-twins.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2384-twins.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2384-language.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2384-language.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2388-citations.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2388-citations.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2388-route-arm-audit.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2388-route-arm-audit.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/literal-transaction-source-manifest.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/literal-transaction-source-manifest.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/literal-transaction-finite-ledger.md",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/finite-ledger.md"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2390-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/T2390-request.json"
+    }
+  ],
+  "manifestPath": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-transaction/copy-manifest.json",
+  "prompt": "Run node -e \"const fs=require('fs'),path=require('path'),crypto=require('crypto');const r=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T2390-request.json'));if(fs.existsSync(r.manifestPath))throw Error('manifest exists');for(const c of r.copies)if(fs.existsSync(c.target)||!fs.existsSync(c.source))throw Error('copy precondition');const manifest=[];for(const c of r.copies){fs.mkdirSync(path.dirname(c.target),{recursive:true});fs.copyFileSync(c.source,c.target);const a=fs.readFileSync(c.source),b=fs.readFileSync(c.target);if(!a.equals(b))throw Error('copy mismatch');manifest.push({source:c.source,target:c.target,bytes:b.length,sha256:crypto.createHash('sha256').update(b).digest('hex')});}fs.writeFileSync(r.manifestPath,JSON.stringify(manifest,null,2));\""
+}

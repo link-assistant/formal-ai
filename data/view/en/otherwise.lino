@@ -1,0 +1,17 @@
+view
+  id M-60aad27f15fe
+  lemma otherwise
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in other respects or ways"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in another and different manner"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "other than as supposed or expected"
+    provenance (wordnet)

@@ -166,7 +166,7 @@ fn russian_meters_in_kilobyte_returns_unit_incompatibility() {
     let response = answer("Сколько метров в килобайте?");
     assert_eq!(
         response.answer,
-        "метр measures length; байт measures data storage. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network."
+        "метр измеряет length; байт измеряет data storage. Это разные физические размерности, и их нельзя перевести друг в друга. Несовместимость записана в сети как связь `unit_incompatibility`."
     );
     assert_eq!(
         response.intent, "unit_incompatibility",

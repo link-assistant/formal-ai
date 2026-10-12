@@ -1,0 +1,29 @@
+view
+  id M-f4543b981548
+  lemma conjunction
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the temporal property of two things happening at the same time"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the state of being joined together"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an uninflected function word that serves to conjoin words or phrases or clauses or sentences"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the grammatical relation between linguistic units (words or phrases or clauses) that are connected by a conjunction"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(astronomy) apparent meeting or passing of two or more celestial bodies in the same degree of the zodiac"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something that joins or connects"
+    provenance (wordnet)

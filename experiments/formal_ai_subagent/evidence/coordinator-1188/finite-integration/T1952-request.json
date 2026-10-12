@@ -1,0 +1,6 @@
+{
+  "task": "T1952",
+  "prompt": "Run node --input-type=module -e 'const fs=await import('\\''node:fs'\\''),cp=await import('\\''node:child_process'\\'');const file='\\''rust/tests/web/worker-program-execution-provenance.test.mjs'\\'';let text=fs.readFileSync(file,'\\''utf8'\\'');const old='\\''  assert.ok(answer.evidence.some((link) => link.includes(\"program_verification\") && link.includes(\"verification=decomposition\")));'\\'';const replacement='\\''  const verification = answer.rawSolverEvents.find((event) => event.kind === \"program_verification\");\\n  assert.ok(verification.payload.includes(\"verification=decomposition\"));\\n  assert.ok(verification.payload.includes(answer.programExecution.rediscoveredFrom));\\n  assert.ok(answer.evidence.some((link) => link.startsWith(\"program_verification:\")));'\\'';if(text.split(old).length!==2)throw Error('\\''verification fixture preimage'\\'');text=text.replace(old,replacement);fs.writeFileSync(file,text);cp.execFileSync('\\''node'\\'',['\\''--test'\\'',file],{stdio:'\\''inherit'\\''});console.log('\\''PR1188_T1952_PROGRAM_PROVENANCE_PASS'\\'');'",
+  "marker": "PR1188_T1952_PROGRAM_PROVENANCE_PASS",
+  "steps": 16
+}

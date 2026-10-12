@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_desktop_library
+ci_gate check-desktop-library
   stage web
   description "The desktop library tests pass."
   run "bash scripts/run-desktop-lib-tests.sh"
+  justification "Desktop UI tests can timeout and report cancelled rather than failed, hiding regressions; run-desktop-lib-tests.sh was added in #977 as part of fixing the timeout-hidden-as-cancelled class of CI defect."

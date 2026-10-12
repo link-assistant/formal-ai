@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2920-prompt.txt",
+  "sha256": "bb4f4095a90f7eb1a68878ecef0d3c8447b4dc51366205213baeee4a49ad1a82",
+  "rawUtf8": "Run node /private/tmp/spec-recurrence-1188/seal-reader-packet.mjs\n"
+}

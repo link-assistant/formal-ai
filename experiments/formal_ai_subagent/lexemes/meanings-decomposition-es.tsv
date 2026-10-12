@@ -1,0 +1,6 @@
+task_decomposition_action	divide	dividir	descompón	descomponer	descomposición	subdivide	desglosa
+subtask_unit_noun	subtarea	subtareas	paso	pasos	partes más pequeñas
+decomposable_task_noun	tarea	tareas	problema	plan
+task_atomicity_predicate	atómica	atómico	atomicidad	indivisible	irreducible
+task_first_step_cue	primer paso	siguiente paso	empieza con	comienza con
+unobservable_task_action	entiende	entender	explora	investiga	estudia	aprende	familiarízate	considera	piensa	analiza

@@ -1,0 +1,11 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/learned-request-openers.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-7ee4576429b1e4ae
+    record "concept_lookup_request_opener"
+  gap seed-metadata-gap-28dd1f4e2bf1b8dd
+    record "tell_me_about_request_opener"
+  gap seed-metadata-gap-c1a2508ebee02b07
+    record "trends_context_request_opener"

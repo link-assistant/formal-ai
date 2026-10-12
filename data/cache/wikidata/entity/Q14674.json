@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鉛筆"
+        },
+        "es": {
+          "language": "es",
+          "value": "lápiz"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "書寫工具"
+        },
+        "es": {
+          "language": "es",
+          "value": "instrumento para escribir, dibujar o marcar que consiste o contiene un cilindro delgado o una tira de una sustancia sólida para marcar"
         }
       },
       "aliases": {
@@ -48,6 +56,12 @@
           {
             "language": "en",
             "value": "Writing Pencils"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "lapiz"
           }
         ]
       }

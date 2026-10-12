@@ -1,0 +1,20 @@
+{
+  "id": "T3048",
+  "label": "L21",
+  "node": "2.1.2.1.1",
+  "path": "rust/src/solver_handler_how_synthesis.rs",
+  "prompt": "Atomic task L21: In the file rust/src/solver_handler_how_synthesis.rs, replace \"FORMAL_AI_SOURCE_CACHE_DIR\" with \"FORMAL_AI_HOW_SOURCE_CACHE_DIR\". Change only that file and keep it valid Rust.\n\nThis is recursive binary-tree node 2.1.2.1.1 at depth 5. Solve only this node's task in this fresh temporary repository. Its harness-evaluated completion criterion is: tracked_source_change. Apply the change to the tracked file `rust/src/solver_handler_how_synthesis.rs` itself -- the file has to end up modified in the Git worktree, and nothing else may change. Then create `agent-ladder-effects/node-2.1.2.1.1.lino` with these exact field lines: `node_path=2.1.2.1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text FORMAL_AI_HOW_SOURCE_CACHE_DIR. Leave supporting evidence in .agent-ladder/node-2.1.2.1.1-proof.md. The first line must be exactly node_path=2.1.2.1.1 and the body must state the concrete result. The harness rejects proof without the separate Git effect. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n",
+  "dir": "/private/tmp/formal-ai-only-1188/L21-T3048",
+  "sha256": "3d1e003c54afc20e3b85f1620e04c1bca94087415607d22694c9d6e8863cd342",
+  "bytes": 5808,
+  "originalStream": "/private/tmp/pr1188-ladder-disabled-all-leaves-4a560/2.1.2.1.1/agent-stream.jsonl",
+  "sourceCommit": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "steps": 16,
+  "sourcePreimage": "3d1e003c54afc20e3b85f1620e04c1bca94087415607d22694c9d6e8863cd342",
+  "originalId": "T2393",
+  "precondition": {
+    "sourceSha256": "3d1e003c54afc20e3b85f1620e04c1bca94087415607d22694c9d6e8863cd342",
+    "effectAbsent": true,
+    "proofAbsent": true
+  }
+}

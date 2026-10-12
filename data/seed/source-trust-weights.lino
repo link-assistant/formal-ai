@@ -1,0 +1,41 @@
+# Source trust weights (issue #1163, E128).
+#
+# The trust score attached to every formalized page is computed from the
+# weights in this file, never from constants in Rust (R7). The score ranks
+# sources; it never excludes one -- a low score sorts later, it does not
+# disappear.
+source_trust_weights
+  feature official_site
+    weight 0.30
+    claim_property P856
+    note "The page sits on the subject's official website (Wikidata P856 of the formalized subject, e.g. kotlinlang.org for Kotlin)."
+  feature https
+    weight 0.10
+    note "The page was served over HTTPS."
+  feature primacy
+    weight 0.20
+    grade
+      name first_hand_record
+      factor 1.00
+    grade
+      name self_published
+      factor 0.80
+    grade
+      name editorial_synthesis
+      factor 0.60
+    grade
+      name citation
+      factor 0.40
+    note "The registry primacy of a matching registered source; an unregistered page grades 0."
+  feature open_license
+    weight 0.15
+    license_marker "creativecommons.org/licenses/"
+    license_marker "creativecommons.org/publicdomain/"
+    license_marker "opensource.org/licenses/"
+    license_marker "gnu.org/licenses/"
+    note "The page declares an open license: its text carries one of the license_marker strings (a Creative Commons, OSI or GNU license URL)."
+  feature cross_page_agreement
+    weight 0.25
+    agreement_scale 3
+    note "The extracted statement is confirmed by independently fetched pages; the fraction agreement/(agreement_scale) saturates this weight."
+  note "Weights sum to 1.0 over a fully-featured page; the score is the weighted sum scaled to 0..=100. Ranks order the results, never gate them."

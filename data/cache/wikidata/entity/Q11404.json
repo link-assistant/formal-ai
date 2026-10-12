@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鼓"
+        },
+        "es": {
+          "language": "es",
+          "value": "tambor"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "打击乐器或通讯工具"
+        },
+        "es": {
+          "language": "es",
+          "value": "tipo de instrumento musical de la familia de la percusión"
         }
       },
       "aliases": {

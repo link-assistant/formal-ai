@@ -18,4 +18,4 @@ case study under `docs/case-studies/issue-482`.
 | R441 | Index the new benchmark in the central catalog and license provenance. | Implemented by updates to `docs/benchmarks.md` and `data/benchmarks/LICENSES.md`. |
 | R442 | Preserve issue data, online research, and solution planning under the required case-study directory. | Implemented by `docs/case-studies/issue-482/README.md`, `requirements.md`, `solution-plan.md`, and `raw-data/`. |
 | R443 | Be explicit that this PR adds a training-data ingestion ratchet, not arbitrary legal-domain answering. | Implemented by the issue #482 README and solution plan; future legal QA/classification solving is listed as expansion work. |
-| R444 | Protect the issue #482 documentation contract with automated traceability. | Implemented by `rust/tests/unit/docs_requirements/issue_482.rs`, wired through `rust/tests/unit/mod.rs`. |
+| R444 | Protect the issue #482 documentation contract with automated traceability. | Implemented by `rust/tests/unit/docs_requirements/nemotron_training_documents.rs`, wired through `rust/tests/unit/mod.rs`. |

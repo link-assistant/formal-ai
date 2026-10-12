@@ -232,6 +232,8 @@ meanings
     defined-by reduction
     role coding_fragment
     idiom "{left} + {right}"
+    realization
+      javascript "{left} + {right}"
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
     license "PSF-2.0"
     bootstrap true
@@ -239,13 +241,34 @@ meanings
     fragment_signature (integer integer)
     fragment_result integer
     supports grid_minimum_cost_path
+    supports reduce_sum
   integer_multiply
     defined-by reduction
     role coding_fragment
     idiom "{left} * {right}"
+    realization
+      javascript "{left} * {right}"
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
     license "PSF-2.0"
     bootstrap true
     rediscovery_query "multiplication of two integers"
     fragment_signature (integer integer)
     fragment_result integer
+    supports reduce_product
+  integer_subtract
+    defined-by reduction
+    role coding_fragment
+    idiom "{left} - {right}"
+    realization
+      javascript "{left} - {right}"
+    grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
+    license "PSF-2.0"
+    precondition "two integers, the minuend and the subtrahend, in that order"
+    effect "the minuend less the subtrahend"
+    unit "the unit of the operands"
+    example "5 - 3 is 2"
+    bootstrap true
+    rediscovery_query "subtraction of two integers"
+    fragment_signature (integer integer)
+    fragment_result integer
+    supports arithmetic_difference

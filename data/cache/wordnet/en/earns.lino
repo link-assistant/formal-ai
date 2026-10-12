@@ -1,0 +1,19 @@
+language en
+lemma earns
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "earn on some commercial or business transaction; earn as salary or wages"
+    examples ("How much do you make a month in your new job?" "She earns a lot in her new job" "this merger brought in lots of money" "He clears $5,000 each month")
+    id oewn-02294200-v
+    partOfSpeech v
+    synonyms (gain "take in" clear make earn realize realise "pull in" "bring in")
+  entry
+    definition "acquire or deserve by one's efforts or actions"
+    examples ("its beauty won Paris the name ‘City of Lights’")
+    id oewn-02295101-v
+    partOfSpeech v
+    synonyms (earn garner win)
+source "oewn:2024"

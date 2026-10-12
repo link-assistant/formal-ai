@@ -4,293 +4,208 @@ meanings
     defined-by knowledge_value
     defined-by relation
     role knowledge_relation
-    lexeme en
-      surface
-        text relation
-      surface
-        text property
-    lexeme ru
-      surface
-        text отношение
-      surface
-        text свойство
-    lexeme hi
-      surface
-        text संबंध
-      surface
-        text गुण
-    lexeme zh
-      surface
-        text 关系
-      surface
-        text 属性
+    lexeme en relation property
+    lexeme ru отношение свойство
+    lexeme hi संबंध गुण
+    lexeme zh 关系 属性
+    lexeme es relación propiedad
   knowledge_subject
     defined-by knowledge_relation
     role knowledge_subject
-    lexeme en
-      surface
-        text subject
-      surface
-        text entity
-      surface
-        text topic
-    lexeme ru
-      surface
-        text субъект
-      surface
-        text сущность
-      surface
-        text предмет
-    lexeme hi
-      surface
-        text विषय
-      surface
-        text इकाई
-    lexeme zh
-      surface
-        text 主体
-      surface
-        text 实体
+    lexeme en subject entity topic
+    lexeme ru субъект сущность предмет
+    lexeme hi विषय इकाई
+    lexeme zh 主体 实体
+    lexeme es sujeto entidad tema
   knowledge_value
     defined-by knowledge_relation
     role knowledge_value
-    lexeme en
-      surface
-        text value
-      surface
-        text answer
-    lexeme ru
-      surface
-        text значение
-      surface
-        text ответ
-    lexeme hi
-      surface
-        text मान
-      surface
-        text उत्तर
-    lexeme zh
-      surface
-        text 值
-      surface
-        text 答案
+    lexeme en value answer
+    lexeme ru значение ответ
+    lexeme hi मान उत्तर
+    lexeme zh 值 答案
+    lexeme es valor respuesta
   capital
     grounded-in P36
     defined-by knowledge_relation
     role fact_relation
-    lexeme en
-      surface
-        text capital
-    lexeme ru
-      surface
-        text столица
-      surface
-        text столицы
-      surface
-        text столицей
-    lexeme hi
-      surface
-        text राजधानी
-    lexeme zh
-      surface
-        text 首都
+    lexeme en capital
+    lexeme ru столица столицы столицей
+    lexeme hi राजधानी
+    lexeme zh 首都
+    lexeme es capital
   population
     grounded-in P1082
     defined-by knowledge_relation
     role fact_relation
-    lexeme en
-      surface
-        text population
-      surface
-        text "how many people"
-    lexeme ru
-      surface
-        text население
-    lexeme hi
-      surface
-        text जनसंख्या
-      surface
-        text आबादी
-    lexeme zh
-      surface
-        text 人口
+    lexeme en population "how many people"
+    lexeme ru население
+    lexeme hi जनसंख्या आबादी
+    lexeme zh 人口
+    lexeme es población "cuántas personas" "cuántos habitantes"
   currency
     grounded-in P38
     defined-by knowledge_relation
     role fact_relation
-    lexeme en
-      surface
-        text currency
-    lexeme ru
-      surface
-        text валюта
-    lexeme hi
-      surface
-        text मुद्रा
-    lexeme zh
-      surface
-        text 货币
-      surface
-        text 貨幣
+    lexeme en currency
+    lexeme ru валюта
+    lexeme hi मुद्रा
+    lexeme zh 货币 貨幣
+    lexeme es moneda divisa
   official_language
     grounded-in P37
     defined-by knowledge_relation
     role fact_relation
-    lexeme en
-      surface
-        text "official language"
-      surface
-        text "what language"
-    lexeme ru
-      surface
-        text "государственный язык"
-      surface
-        text "официальный язык"
-    lexeme hi
-      surface
-        text राजभाषा
-      surface
-        text "आधिकारिक भाषा"
-    lexeme zh
-      surface
-        text 官方语言
-      surface
-        text 官方語言
+    lexeme en "official language" "what language"
+    lexeme ru "государственный язык" "официальный язык"
+    lexeme hi राजभाषा "आधिकारिक भाषा"
+    lexeme zh 官方语言 官方語言
+    lexeme es "idioma oficial" "lengua oficial" "qué idioma"
   continent
     grounded-in P30
     defined-by knowledge_relation
     role fact_relation
-    lexeme en
-      surface
-        text continent
-    lexeme ru
-      surface
-        text континент
-    lexeme hi
-      surface
-        text महाद्वीप
-    lexeme zh
-      surface
-        text 大洲
+    lexeme en continent
+    lexeme ru континент
+    lexeme hi महाद्वीप
+    lexeme zh 大洲
+    lexeme es continente
   author_of_book
     grounded-in P50
     defined-by knowledge_relation
     role fact_relation
-    lexeme en
-      surface
-        text "who wrote"
-      surface
-        text author
-      surface
-        text "written by"
-    lexeme ru
-      surface
-        text "кто написал"
-      surface
-        text написал
-      surface
-        text автор
-    lexeme hi
-      surface
-        text "किसने लिखी"
-      surface
-        text "किसने लिखा"
-      surface
-        text लेखक
-    lexeme zh
-      surface
-        text 是谁写的
-      surface
-        text 作者
+    lexeme en "who wrote" author "written by"
+    lexeme ru "кто написал" написал автор
+    lexeme hi "किसने लिखी" "किसने लिखा" लेखक
+    lexeme zh 是谁写的 作者
+    lexeme es "quién escribió" autor autora "escrito por"
   painter_of_painting
     grounded-in P170
     defined-by knowledge_relation
     role fact_relation
-    lexeme en
-      surface
-        text "who painted"
-      surface
-        text painted
-      surface
-        text painter
-      surface
-        text artist
-    lexeme ru
-      surface
-        text "кто написал"
-      surface
-        text написал
-      surface
-        text художник
-    lexeme hi
-      surface
-        text "किसने बनाई"
-      surface
-        text चित्रकार
-      surface
-        text कलाकार
-    lexeme zh
-      surface
-        text 谁画的
-      surface
-        text 画家
+    lexeme en "who painted" painted painter artist
+    lexeme ru "кто написал" написал художник
+    lexeme hi "किसने बनाई" चित्रकार कलाकार
+    lexeme zh 谁画的 画家
+    lexeme es "quién pintó" pintó pintor pintora artista
   built_year
     grounded-in P571
     defined-by knowledge_relation
     role fact_relation
-    lexeme en
-      surface
-        text when
-      surface
-        text built
-      surface
-        text construction
-    lexeme ru
-      surface
-        text когда
-      surface
-        text построена
-      surface
-        text построили
-    lexeme hi
-      surface
-        text बनी
-      surface
-        text बनाई
-      surface
-        text कब
-    lexeme zh
-      surface
-        text 何时
-      surface
-        text 建于
-      surface
-        text 建造
+    lexeme en when built construction
+    lexeme ru когда построена построили
+    lexeme hi बनी बनाई कब
+    lexeme zh 何时 建于 建造
+    lexeme es cuándo construido construida construcción
   physical_constant
     grounded-in Q173227
     defined-by knowledge_relation
     role fact_relation
+    lexeme en "speed of light" "what is" "how fast"
+    lexeme ru "скорость света" какова "чему равна"
+    lexeme hi "प्रकाश की गति" कितनी
+    lexeme zh 光速 是多少
+    lexeme es "velocidad de la luz" "cuál es" "qué tan rápido"
+  fact_comparison_request
+    defined-by compare
+    defined-by knowledge_relation
+    role fact_comparison_cue
+    lexeme en "compare" "comparison of" "difference between" "differences between"
+    lexeme ru сравни сравните сравнить "разница между"
+    lexeme hi "की तुलना करें" "की तुलना कीजिए" "की तुलना करो" तुलना
+    lexeme zh 比较 对比
+    lexeme es compara comparar "diferencia entre"
+  fact_comparison_joiner
+    defined-by knowledge_subject
+    role fact_comparison_joiner
+    lexeme en "and" "vs" "versus" "with"
+    lexeme ru и с против
+    lexeme hi और तथा बनाम
+    lexeme zh 和 与 跟
+    lexeme es y con
+  prompt_text_question_cue
+    defined-by knowledge_subject
+    defined-by inquiry
+    role prompt_text_question_cue
     lexeme en
-      surface
-        text "speed of light"
-      surface
-        text "what is"
-      surface
-        text "how fast"
-    lexeme ru
-      surface
-        text "скорость света"
-      surface
-        text какова
-      surface
-        text "чему равна"
-    lexeme hi
-      surface
-        text "प्रकाश की गति"
-      surface
-        text कितनी
-    lexeme zh
-      surface
-        text 光速
-      surface
-        text 是多少
+      words "given the text" "read this and answer" "according to the text" "based on the text" "from the text"
+      words "in the text"
+    lexeme ru "дан текст" "прочитай и ответь" "согласно тексту" "по тексту" "в тексте"
+    lexeme hi "दिया गया पाठ" "पढ़ें और उत्तर दें" "पाठ के अनुसार" "पाठ में"
+    lexeme zh 根据文本 阅读并回答 给定文本 根据这段话
+    lexeme es "dado el texto" "lee esto y responde" "según el texto" "en el texto"
+  statement_time_preposition
+    defined-by time
+    defined-by concept
+    role statement_time_preposition
+    precondition "a sentence of a prompt-supplied text carries a phrase this word opens"
+    effect "the phrase is a candidate time slot of the sentence's statement"
+    unit "a phrase whose words name a weekday, month, hour or clock suffix is a time"
+    example "from Tuesday"
+    lexeme en "from" "to" "until" "till" "since" "during" "before" "after"
+    lexeme ru "с" "со" "до" "после" "к" "ко"
+    lexeme es "desde" "hasta" "durante" "tras"
+    lexeme hi "से" "तक" "दौरान" "पहले" "बाद"
+    lexeme zh "直到" "自从" "期间" "之前" "之后"
+  statement_place_preposition
+    defined-by concept
+    role statement_place_preposition
+    precondition "a sentence of a prompt-supplied text carries a phrase this word opens"
+    effect "the phrase is the place slot of the statement unless its words name a time"
+    unit "not applicable"
+    example "in room 204"
+    lexeme en "in" "at" "on" "near" "inside" "outside" "behind" "under" "above" "beside"
+    lexeme ru "в" "во" "на" "у" "около" "возле" "под" "над" "за"
+    lexeme es "en" "junto" "cerca" "sobre" "bajo" "detrás"
+    lexeme hi "में" "पर" "पास" "अंदर" "बाहर" "पीछे" "नीचे" "ऊपर"
+    lexeme zh "附近" "后面" "下面" "里面" "上面"
+  statement_clock_suffix
+    defined-by time
+    defined-by calendar_day
+    role statement_clock_suffix
+    precondition "a phrase of a sentence carries a clock reading"
+    effect "the phrase is read as a time slot"
+    unit "hour of the day"
+    example "at 3 pm"
+    lexeme en "am" "pm" "o'clock"
+    lexeme ru "утра" "дня" "вечера" "ночи"
+    lexeme hi "बजे"
+    lexeme es "am" "pm"
+    lexeme zh "上午" "下午" "点钟"
+  statement_time_question
+    defined-by time
+    defined-by inquiry
+    role statement_time_question
+    precondition "a question over a prompt-supplied text asks when"
+    effect "the statement's time slot is stated first"
+    unit "not applicable"
+    example "When is the meeting?"
+    lexeme en "when"
+    lexeme ru "когда"
+    lexeme hi "कब"
+    lexeme zh "什么时候" "何时"
+    lexeme es "cuándo" "cuando"
+  statement_place_question
+    defined-by inquiry
+    role statement_place_question
+    precondition "a question over a prompt-supplied text asks where"
+    effect "the statement's place slot is stated first"
+    unit "not applicable"
+    example "Where is the meeting?"
+    lexeme en "where"
+    lexeme ru "где" "куда"
+    lexeme hi "कहाँ" "कहां"
+    lexeme zh "哪里" "在哪"
+    lexeme es "dónde" "donde"
+  statement_subject_question
+    defined-by inquiry
+    role statement_subject_question
+    precondition "a question over a prompt-supplied text asks who"
+    effect "the statement's subject slot is stated first when the question does not already name it"
+    unit "not applicable"
+    example "Who chairs the meeting?"
+    lexeme en "who"
+    lexeme ru "кто"
+    lexeme hi "कौन"
+    lexeme zh "谁"
+    lexeme es "quién" "quien"

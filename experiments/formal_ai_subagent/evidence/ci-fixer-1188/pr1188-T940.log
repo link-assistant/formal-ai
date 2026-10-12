@@ -1,0 +1,13 @@
+>> bash {"command":"cat '/support/browser-runtime.mjs'"}
+   Output: 
+   Error: cat: /support/browser-runtime.mjs: No such file or directory
+   
+   Exit Code: 1
+== answer ==
+The command failed: `cat '/support/browser-runtime.mjs'` exited with code 1.
+
+```text
+cat: /support/browser-runtime.mjs: No such file or directory
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

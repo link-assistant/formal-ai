@@ -2,17 +2,17 @@ self_ast_census
   target src/skill_procedure/artifact.rs
   language rust
   fidelity signature
-  byte_len 13688
-  line_count 354
-  content_id source_module_e950895cf13b53e7
+  byte_len 13434
+  line_count 345
+  content_id source_module_0183078a783035d6
   symbol_count 9
   symbols
     function artifact_links_notation 20 108
     function from_artifact_links_notation 111 190
-    function validate_artifact 192 305
-    function extract_compiled_procedure_artifact 309 319
-    function artifact_child 321 331
-    function optional_artifact_child 333 336
-    function artifact_usize 338 342
-    function child_values 344 350
-    function span_matches 352 354
+    function validate_artifact 192 296
+    function extract_compiled_procedure_artifact 300 310
+    function artifact_child 312 322
+    function optional_artifact_child 324 327
+    function artifact_usize 329 333
+    function child_values 335 341
+    function span_matches 343 345

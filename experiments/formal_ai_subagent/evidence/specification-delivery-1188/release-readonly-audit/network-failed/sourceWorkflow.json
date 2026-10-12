@@ -1,0 +1,7 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5",
+  "observedAt": "2026-10-09T05:00:41.261Z",
+  "status": "unavailable",
+  "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+  "stderr": "error connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"
+}

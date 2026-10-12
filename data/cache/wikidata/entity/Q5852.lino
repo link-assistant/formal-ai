@@ -1,12 +1,15 @@
 Q5852
   aliases
+    es (manta cobertor cobija)
     zh ("毛毯")
   descriptions
     en "a large piece of woven fabric used as a bed covering or other covering"
+    es "prenda textil larga y rectangular, utilizada en la cama para protección del frío"
     ru "постельная принадлежность"
   id Q5852
   labels
     en blanket
+    es frazada
     hi "कम्बल"
     ru "одеяло"
     zh "毯子"

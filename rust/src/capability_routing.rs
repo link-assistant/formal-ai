@@ -39,7 +39,17 @@ use crate::seed::{
 };
 use crate::web_engine_core::normalize_prompt;
 
+mod claim_evidence;
+mod claim_operands;
+mod claims;
 mod evidence;
+pub use claim_evidence::{content_beyond_roles, without_answer_shape_directive};
+pub use claim_operands::{claim_operands, only_frame_words, without_surfaces};
+pub use claims::{
+    CLAIM_EVIDENCE_KINDS, ClaimAdmission, ClaimRow, claim_admission, claim_admission_in_dialogue,
+    claim_admitted, claim_evidence_holds, claim_evidence_holds_in_dialogue, claim_rows,
+    claim_rows_from, refusal_recorded,
+};
 pub use evidence::*;
 
 /// The capability table rows the symbolic solver itself can place a prompt on.
@@ -365,6 +375,39 @@ pub fn table_routing_enabled() -> bool {
     true
 }
 
+/// The `dialogue_utterance_role` fields of the shipped table: the roles whose
+/// surfaces, said on their own, are an exchange with the assistant itself.
+#[must_use]
+pub fn dialogue_utterance_roles() -> Vec<String> {
+    let tree = parse_lino(CAPABILITY_ROUTING_LINO);
+    tree.children
+        .iter()
+        .flat_map(|document| document.children.iter())
+        .filter(|child| child.name == "dialogue_utterance_role" && !child.id.is_empty())
+        .map(|child| child.id.clone())
+        .collect()
+}
+
+/// Whether the request is only a dialogue act -- a greeting, a thank-you, a
+/// how-are-you -- that the engine answers in the reply.
+///
+/// Every word belongs to a seeded `dialogue_utterance_role` surface or to the
+/// function words, and at least one such role is mentioned. A bare term
+/// otherwise reads as `(bare_term, retrieve, web)`, which is how the opencode
+/// greeting leg searched the web for "hi" and read a dictionary page before
+/// it answered.
+#[must_use]
+pub fn is_dialogue_utterance(prompt: &str) -> bool {
+    let owned = dialogue_utterance_roles();
+    let roles: Vec<&str> = owned.iter().map(String::as_str).collect();
+    let normalized = normalize_prompt(prompt);
+    let lexicon = crate::seed::lexicon();
+    roles
+        .iter()
+        .any(|role| lexicon.mentions_role(role, &normalized))
+        && !content_beyond_roles(&normalized, &roles)
+}
+
 /// Every object the prompt carries, ranked; the table is consulted for the
 /// highest-ranked first.
 #[must_use]
@@ -426,7 +469,7 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     note(
         ObjectType::TimeExpression,
         has_clock_time(prompt)
-            || evidences(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
+            || seed::lexicon().mentions_role(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
             || evidences(ROLE_CAPABILITY_CLOCK_REFERENCE, &normalized),
         &mut found,
     );
@@ -442,7 +485,7 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     note(
         ObjectType::RelativePeriod,
         crate::seed::lexicon().mentions_role(ROLE_CALENDAR_HOUR_REFERENCE, &normalized)
-            && !evidences(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
+            && !seed::lexicon().mentions_role(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
             && !has_clock_time(prompt)
             && !evidences(ROLE_CAPABILITY_CLOCK_REFERENCE, &normalized)
             && !evidences(ROLE_CALENDAR_SCHEDULE_ACTION, &normalized),

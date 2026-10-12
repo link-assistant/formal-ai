@@ -1,0 +1,215 @@
+>> read {"filePath":"rust/tests/integration/issue_712_intent_routing.rs","file_path":"rust/tests/integration/issue_712_intent_routing.rs","path":"rust/tests/integration/issue_712_intent_routing.rs"}
+   <file>
+   00001| //! Issue #712: reported natural phrasings route to tools over every supported API.
+   00002| 
+   00003| use crate::http_server::{
+   00004|     http_post_json, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
+   00005| };
+   00006| use std::sync::{Mutex, MutexGuard};
+   00007| 
+   00008| const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
+   00009| static SERVER_TEST_LOCK: Mutex<()> = Mutex::new(());
+   00010| 
+   00011| #[test]
+   00012| fn chat_completions_get_contents_routes_to_web_fetch() {
+   00013|     let _guard = server_test_lock();
+   00014|     let response = chat(
+   00015|         "get contents https://example.com/data.json",
+   00016|         &["web_fetch", "web_search"],
+   00017|     );
+   00018|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00019|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00020|     assert_eq!(call["function"]["name"], "web_fetch");
+   00021|     let arguments = chat_arguments(call);
+   00022|     assert_eq!(arguments["url"], "https://example.com/data.json");
+   00023| }
+   00024| 
+   00025| #[test]
+   00026| fn responses_google_request_routes_to_web_search() {
+   00027|     let _guard = server_test_lock();
+   00028|     let port = reserve_loopback_port();
+   00029|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00030|     let response = http_post_json(
+   00031|         port,
+   00032|         "/api/openai/v1/responses",
+   00033|         TOKEN,
+   00034|         &serde_json::json!({
+   00035|             "model": "formal-ai",
+   00036|             "input": "google what is a monad",
+   00037|             "tools": [{
+   00038|                 "type": "function",
+   00039|                 "name": "web_search",
+   00040|                 "parameters": {"type": "object"}
+   00041|             }]
+   00042|         }),
+   00043|     );
+   00044|     let call = response["output"]
+   00045|         .as_array()
+   00046|         .expect("Responses output should be an array")
+   00047|         .iter()
+   00048|         .find(|item| item["type"] == "function_call")
+   00049|         .expect("Responses output should include a function_call item");
+   00050|     assert_eq!(call["name"], "web_search");
+   00051|     assert!(
+   00052|         call["arguments"]
+   00053|             .as_str()
+   00054|             .is_some_and(|arguments| arguments.to_ascii_lowercase().contains("monad")),
+   00055|         "search call should preserve the subject: {call}"
+   00056|     );
+   00057| }
+   00058| 
+   00059| #[test]
+   00060| fn gemini_update_request_routes_to_edit() {
+   00061|     let _guard = server_test_lock();
+   00062|     let port = reserve_loopback_port();
+   00063|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00064|     let response = http_post_json(
+   00065|         port,
+   00066|         "/api/gemini/v1beta/models/formal-ai:generateContent",
+   00067|         TOKEN,
+   00068|         &serde_json::json!({
+   00069|             "contents": [{
+   00070|                 "role": "user",
+   00071|                 "parts": [{"text": "update main.rs and change foo to bar"}]
+   00072|             }],
+   00073|             "tools": [{
+   00074|                 "functionDeclarations": [
+   00075|                     {"name": "replace", "parameters": {"type": "object"}}
+   00076|                 ]
+   00077|             }]
+   00078|         }),
+   00079|     );
+   00080|     let call = response["candidates"][0]["content"]["parts"]
+   00081|         .as_array()
+   00082|         .expect("Gemini parts should be an array")
+   00083|         .iter()
+   00084|         .find_map(|part| part.get("functionCall"))
+   00085|         .expect("Gemini content should include a functionCall part");
+   00086|     assert_eq!(call["name"], "replace");
+   00087|     assert_eq!(call["args"]["path"], "main.rs");
+   00088|     assert_eq!(call["args"]["oldString"], "foo");
+   00089|     assert_eq!(call["args"]["new_string"], "bar");
+   00090| }
+   00091| 
+   00092| #[test]
+   00093| fn declarative_new_file_routes_to_write_and_never_read() {
+   00094|     let _guard = server_test_lock();
+   00095|     let response = chat(
+   00096|         "new file: notes.txt, contents: hello",
+   00097|         &["write_file", "read_file"],
+   00098|     );
+   00099|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00100|     let calls = response["choices"][0]["message"]["tool_calls"]
+   00101|         .as_array()
+   00102|         .expect("tool_calls should be an array");
+   00103|     assert_eq!(calls.len(), 1);
+   00104|     assert_eq!(calls[0]["function"]["name"], "write_file");
+   00105|     assert!(
+   00106|         calls[0]["function"]["arguments"]
+   00107|             .as_str()
+   00108|             .is_some_and(|arguments| arguments.contains("notes.txt")),
+   00109|         "write call should preserve the target: {}",
+   00110|         calls[0]
+   00111|     );
+   00112| }
+   00113| 
+   00114| #[test]
+   00115| fn all_reported_capability_classes_route_in_one_matrix() {
+   00116|     let _guard = server_test_lock();
+   00117|     let port = reserve_loopback_port();
+   00118|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00119|     let cases = [
+   00120|         ("visit https://example.com and summarize it", "web_fetch"),
+   00121|         ("what does the web say about serde", "web_search"),
+   00122|         // Editing clients may require a grounding read before mutation; the
+   00123|         // dedicated Gemini test above verifies the direct edit call shape.
+   00124|         ("rewrite main.rs and change foo to bar", "read_file"),
+   00125|         ("new file: notes.txt, contents: hello", "write_file"),
+   00126|     ];
+   00127|     for (prompt, expected) in cases {
+   00128|         let response = chat_on_port(
+   00129|             port,
+   00130|             prompt,
+   00131|             &["web_fetch", "web_search", "edit", "write_file", "read_file"],
+   00132|         );
+   00133|         let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00134|         assert_eq!(call["function"]["name"], expected, "prompt: {prompt}");
+   00135|     }
+   00136| }
+   00137| 
+   00138| #[test]
+   00139| fn leading_edit_action_is_language_general() {
+   00140|     let _guard = server_test_lock();
+   00141|     let port = reserve_loopback_port();
+   00142|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00143|     let cases = [
+   00144|         ("English", "update main.rs and change foo to bar"),
+   00145|         ("Russian", "измени main.rs и замени foo на bar"),
+   00146|         ("Hindi", "बदलो main.rs और बदलो foo से bar"),
+   00147|         ("Chinese", "修改 main.rs 并 替换 foo 为 bar"),
+   00148|     ];
+   00149|     for (language, prompt) in cases {
+   00150|         let response = chat_on_port(port, prompt, &["edit"]);
+   00151|         let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00152|         assert_eq!(call["function"]["name"], "edit", "{language}: {prompt}");
+   00153|         let arguments = chat_arguments(call);
+   00154|         assert_eq!(arguments["path"], "main.rs", "{language}: {prompt}");
+   00155|         assert_eq!(arguments["oldString"], "foo", "{language}: {prompt}");
+   00156|         assert_eq!(arguments["new_string"], "bar", "{language}: {prompt}");
+   00157|     }
+   00158| }
+   00159| 
+   00160| fn chat(prompt: &str, tools: &[&str]) -> serde_json::Value {
+   00161|     let port = reserve_loopback_port();
+   00162|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00163|     chat_on_port(port, prompt, tools)
+   00164| }
+   00165| 
+   00166| fn chat_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
+   00167|     http_post_json(
+   00168|         port,
+   00169|         "/api/openai/v1/chat/completions",
+   00170|         TOKEN,
+   00171|         &serde_json::json!({
+   00172|             "model": "formal-ai",
+   00173|             "stream": false,
+   00174|             "messages": [{"role": "user", "content": prompt}],
+   00175|             "tools": tools.iter().map(|name| function_tool(name)).collect::<Vec<_>>()
+   00176|         }),
+   00177|     )
+   00178| }
+   00179| 
+   00180| fn chat_arguments(call: &serde_json::Value) -> serde_json::Value {
+   00181|     serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap()
+   00182| }
+   00183| 
+   00184| fn function_tool(name: &str) -> serde_json::Value {
+   00185|     serde_json::json!({
+   00186|         "type": "function",
+   00187|         "function": {
+   00188|             "name": name,
+   00189|             "description": format!("The {name} capability"),
+   00190|             "parameters": {"type": "object"}
+   00191|         }
+   00192|     })
+   00193| }
+   00194| 
+   00195| fn server_test_lock() -> MutexGuard<'static, ()> {
+   00196|     SERVER_TEST_LOCK
+   00197|         .lock()
+   00198|         .unwrap_or_else(std::sync::PoisonError::into_inner)
+   00199| }
+   00200| 
+   
+   (End of file - total 200 lines)
+   </file>
+>> edit {"filePath":"rust/tests/integration/issue_712_intent_routing.rs","file_path":"rust/tests/integration/issue_712_intent_routing.rs","new":"#[path = \"../support/http_auxiliary_workspace.rs\"]\nmod auxiliary_workspace;\n\nconst TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","newString":"#[path = \"../support/http_auxiliary_workspace.rs\"]\nmod auxiliary_workspace;\n\nconst TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","new_str":"#[path = \"../support/http_auxiliary_workspace.rs\"]\nmod auxiliary_workspace;\n\nconst TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","new_string":"#[path = \"../support/http_auxiliary_workspace.rs\"]\nmod auxiliary_workspace;\n\nconst TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","old":"const TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","oldString":"const TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","old_str":"const TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","old_string":"const TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","path":"rust/tests/integration/issue_712_intent_routing.rs"}
+>> bash {"command":"sha256sum -- rust/tests/integration/issue_712_intent_routing.rs"}
+   Output: 4e7fd23aa30d36f98ae80ad8f0e0ce7ea12014ba999df15f2dcf70b0f135316b  rust/tests/integration/issue_712_intent_routing.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `const TOKEN: Option<&str> = Some("sk-local-agentic-tools");` with `#[path = "../support/http_auxiliary_workspace.rs"]
+mod auxiliary_workspace;
+
+const TOKEN: Option<&str> = Some("sk-local-agentic-tools");` in `rust/tests/integration/issue_712_intent_routing.rs` and observed the result.

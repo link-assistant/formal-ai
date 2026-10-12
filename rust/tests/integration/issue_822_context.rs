@@ -350,7 +350,7 @@ exit 1
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
-    assert!(output.stdout.is_empty());
+    assert_eq!(output.stdout, [] as [u8; 0]);
     assert!(
         !args_capture.exists(),
         "rendering an inline report body must not contact GitHub"

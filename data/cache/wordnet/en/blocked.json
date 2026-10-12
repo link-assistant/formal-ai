@@ -1,0 +1,31 @@
+{
+  "lemma": "blocked",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01658299-s",
+      "partOfSpeech": "s",
+      "definition": "closed to traffic",
+      "examples": [
+        "the repaving results in many blocked streets"
+      ]
+    },
+    {
+      "id": "oewn-01625261-s",
+      "partOfSpeech": "s",
+      "definition": "completely obstructed or closed off",
+      "examples": [
+        "the storm was responsible for many blocked roads and bridges",
+        "the drain was plugged"
+      ],
+      "synonyms": [
+        "plugged"
+      ]
+    }
+  ]
+}

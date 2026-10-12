@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "湯"
+        },
+        "es": {
+          "language": "es",
+          "value": "sopa"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "一种食物"
+        },
+        "es": {
+          "language": "es",
+          "value": "alimento líquido a base de verduras o pastas cocidas"
         }
       },
       "aliases": {
@@ -54,6 +62,20 @@
           {
             "language": "zh",
             "value": "汤"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "sopa enlatada"
+          },
+          {
+            "language": "es",
+            "value": "sopero"
+          },
+          {
+            "language": "es",
+            "value": "sopar"
           }
         ]
       }

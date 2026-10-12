@@ -1,0 +1,20 @@
+{
+  "rootInvocations": 21,
+  "rootTasks": "T1942-T1962",
+  "ciInvocations": 83,
+  "ciAuthoredEdits": 63,
+  "ciNeutralTemplateCopies": 4,
+  "ciNeutralFormatterCalls": 1,
+  "ciFormattedFiles": 5,
+  "strictAuthoredPhysicalEffects": 41,
+  "strictEarlierNeutralCopies": 56,
+  "specInvocations": 36,
+  "specPhysicalMutations": 25,
+  "manualRepositorySourceWrites": 0,
+  "limitations": [
+    "General repairs were coordinator-designed after actual Formal AI failures.",
+    "G112 original composition remains3/10 and target absent.",
+    "Raw token counts and money were not observed.",
+    "Derived generation, neutral evidence persistence and copies are separate from authored source effects."
+  ]
+}

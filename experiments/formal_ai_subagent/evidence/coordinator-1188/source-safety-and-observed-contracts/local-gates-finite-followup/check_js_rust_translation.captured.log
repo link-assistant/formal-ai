@@ -1,0 +1,5 @@
+$ node scripts/translate-js-rust.mjs --verify
+::error::js/agentic/crate/es_tokenizer.mjs changed since its translation
+::error::js/agentic/crate/seed_meanings.mjs changed since its translation
+::error::js/agentic/crate/seed_shell_intents.mjs changed since its translation
+regenerate with: node scripts/translate-js-rust.mjs --write --fetch js/agentic/crate/es_tokenizer.mjs js/agentic/crate/seed_meanings.mjs js/agentic/crate/seed_shell_intents.mjs

@@ -1,0 +1,33 @@
+language en
+lemma overlap
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a representation of common ground between theories or phenomena"
+    examples ("there was no overlap between their proposals")
+    id oewn-05772362-n
+    partOfSpeech n
+    synonyms (convergence intersection)
+  entry
+    definition "the property of partial coincidence in time"
+    id oewn-05055984-n
+    partOfSpeech n
+  entry
+    definition "a flap that lies over another part"
+    examples ("the lap of the shingles should be at least ten inches")
+    id oewn-03647020-n
+    partOfSpeech n
+    synonyms (lap)
+  entry
+    definition "coincide partially or wholly"
+    examples ("Our vacations overlap")
+    id oewn-02666709-v
+    partOfSpeech v
+  entry
+    definition "extend over and cover a part of"
+    examples ("The roofs of the houses overlap in this crowded city")
+    id oewn-02694636-v
+    partOfSpeech v
+source "oewn:2024"

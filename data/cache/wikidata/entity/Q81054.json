@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "风暴"
+        },
+        "es": {
+          "language": "es",
+          "value": "tormenta"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "очень сильный ветер"
+        },
+        "es": {
+          "language": "es",
+          "value": "estado perturbado de la atmósfera de un cuerpo astronómico"
         }
       },
       "aliases": {
@@ -50,6 +58,20 @@
           {
             "language": "zh",
             "value": "風暴"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "tormenta electrica"
+          },
+          {
+            "language": "es",
+            "value": "tormentas"
+          },
+          {
+            "language": "es",
+            "value": "tempestad"
           }
         ]
       }

@@ -1,0 +1,3 @@
+formalization_rml_absent	"在 PATH 中找不到 rml，FORMAL_AI_RML 也没有指定可执行文件，因此该子句没有通过 relative-meta-logic 导出。"
+formalization_rml_outside_subset	"{quantifier} 这种解读超出了 relative-meta-logic 导出子集，该子集没有对应的约束符，因此没有运行 rml。"
+formalization_rml_ran	"已对 {source} 运行 rml export lean，退出状态为 {exit}；其 Lean 输出路径为 {output}。"

@@ -1,0 +1,31 @@
+{
+  "canonicalSha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8",
+  "originalOperations": 52,
+  "bindings": 104,
+  "coverageLines": 185,
+  "permissionsOnly": true,
+  "preserved": [
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+      "sha256": "e0af47e74cc71ba2dc11a27a4390fffbc1c700f6424e21d0da29a22650c4b237"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+      "sha256": "5972098cdae938d1bfcc2d8498e49c9b9bb45ac0b2b883f2bf624a482279e05c"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+      "sha256": "6788f39405b01029f21c9395db5aba8cf317240e37a9a2970f059edfeffe95b4"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+      "sha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8"
+    },
+    {
+      "path": "rust/tests/web/release-stage-transfer.test.mjs",
+      "sha256": "309e3f1605f441dbcbcab19c163711c433289d0b33696ad64b3df37d1c3d7243"
+    }
+  ],
+  "workflowBefore": "7cc7a0daabe48d734a827baaa117be3eb0f42b52f0ea8d3fc41763ac333d3762",
+  "workflowAfter": "6cdaf5872212a6d9f0322282decae2b4e730f4ec58e942816f5f0f240a243472"
+}

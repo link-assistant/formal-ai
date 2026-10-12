@@ -1,0 +1,12 @@
+language en
+lemma bounds
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the line or plane indicating the limit or extent of something"
+    id oewn-08529331-n
+    partOfSpeech n
+    synonyms (boundary bound)
+source "oewn:2024"

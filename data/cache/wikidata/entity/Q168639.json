@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "梯子"
+        },
+        "es": {
+          "language": "es",
+          "value": "escalera de mano"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "攀登工具"
+        },
+        "es": {
+          "language": "es",
+          "value": "escalera vertical y, normalmente, portable"
         }
       },
       "aliases": {
@@ -46,6 +54,24 @@
           {
             "language": "zh",
             "value": "梯"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "escalera portátil"
+          },
+          {
+            "language": "es",
+            "value": "escalera portatil"
+          },
+          {
+            "language": "es",
+            "value": "escalera portable"
+          },
+          {
+            "language": "es",
+            "value": "escala"
           }
         ]
       }

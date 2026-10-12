@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_shell_command_policy.js"
+  ceiling 198
+  rationale "Exact classic-worker projection of js/agentic/shell_command_policy.mjs; no headroom beyond current faithful generated source."

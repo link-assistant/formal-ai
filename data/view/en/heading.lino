@@ -1,0 +1,17 @@
+view
+  id M-7c0bd7b0e662
+  lemma heading
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a line of text serving to indicate what the passage below it is about"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the direction or path along which something moves or along which it lies"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a horizontal (or nearly horizontal) passageway in a mine"
+    provenance (wordnet)

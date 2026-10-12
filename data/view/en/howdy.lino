@@ -1,0 +1,9 @@
+view
+  id M-4004ba6b7293
+  lemma howdy
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an expression of greeting"
+    provenance (wordnet)

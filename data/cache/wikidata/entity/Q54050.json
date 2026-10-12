@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "丘"
+        },
+        "es": {
+          "language": "es",
+          "value": "colina"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "微許隆起的地方"
+        },
+        "es": {
+          "language": "es",
+          "value": "forma de relieve que se extiende por encima del terreno circundante"
         }
       },
       "aliases": {
@@ -56,6 +64,68 @@
           {
             "language": "zh",
             "value": "山丘"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "alcor"
+          },
+          {
+            "language": "es",
+            "value": "collado"
+          },
+          {
+            "language": "es",
+            "value": "loma"
+          },
+          {
+            "language": "es",
+            "value": "otero"
+          },
+          {
+            "language": "es",
+            "value": "altozano"
+          },
+          {
+            "language": "es",
+            "value": "montículo"
+          },
+          {
+            "language": "es",
+            "value": "cerro"
+          },
+          {
+            "language": "es",
+            "value": "monticulo"
+          },
+          {
+            "language": "es",
+            "value": "cabezo"
+          },
+          {
+            "language": "es",
+            "value": "tozal"
+          },
+          {
+            "language": "es",
+            "value": "mota"
+          },
+          {
+            "language": "es",
+            "value": "teso"
+          },
+          {
+            "language": "es",
+            "value": "tesa"
+          },
+          {
+            "language": "es",
+            "value": "colinas"
+          },
+          {
+            "language": "es",
+            "value": "cerros"
           }
         ]
       }

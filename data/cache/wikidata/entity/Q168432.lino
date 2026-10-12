@@ -1,15 +1,18 @@
 Q168432
   aliases
     en ("⚓")
+    es ("⚓" "áncoras" "áncora")
     ru ("якорь корабельный" "якоря" "корабельный якорь")
     zh ("錨" "小移船錨")
   descriptions
     en "mooring device"
+    es "amarradero náutico"
     ru "швартовное устройство"
     zh "系泊设备"
   id Q168432
   labels
     en anchor
+    es ancla
     hi "लंगर"
     ru "якорь"
     zh "锚"

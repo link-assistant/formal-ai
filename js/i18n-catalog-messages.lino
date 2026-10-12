@@ -5,6 +5,12 @@
 
 en
   message
+    conversationSummary
+      title "Conversation summary"
+      role "Role"
+      intent "Recorded intent"
+      content "Message"
+      unrecorded "Not recorded"
     author
       user "You"
     detectedFailureReport "I detected a failure while working on this request. Would you like to report it?"
@@ -163,6 +169,12 @@ en
     diagnosticsProviderError "error"
 ru
   message
+    conversationSummary
+      title "Резюме разговора"
+      role "Роль"
+      intent "Сохранённое намерение"
+      content "Сообщение"
+      unrecorded "Не сохранено"
     author
       user "Вы"
     detectedFailureReport "Я обнаружил сбой при выполнении этого запроса. Хотите сообщить о нём?"
@@ -321,6 +333,12 @@ ru
     diagnosticsProviderError "ошибка"
 zh
   message
+    conversationSummary
+      title "对话摘要"
+      role "角色"
+      intent "已记录的意图"
+      content "消息"
+      unrecorded "未记录"
     author
       user "你"
     detectedFailureReport "我在处理此请求时检测到故障。要报告此问题吗？"
@@ -479,6 +497,12 @@ zh
     diagnosticsProviderError "错误"
 hi
   message
+    conversationSummary
+      title "वार्तालाप सारांश"
+      role "भूमिका"
+      intent "दर्ज किया गया आशय"
+      content "संदेश"
+      unrecorded "दर्ज नहीं किया गया"
     author
       user "आप"
     detectedFailureReport "इस अनुरोध पर काम करते समय मुझे एक विफलता मिली। क्या आप इसकी रिपोर्ट करना चाहेंगे?"

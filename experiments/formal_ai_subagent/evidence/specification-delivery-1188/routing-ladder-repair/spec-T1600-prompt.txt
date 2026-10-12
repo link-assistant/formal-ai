@@ -1,0 +1,1 @@
+Fix the production routing of Spanish directory listing requests: Lista los archivos de este directorio must execute the shared object act locus list_dir capability rather than write_program. Preserve requests to write programs that list files, and use the existing seed driven semantic distinction in both JavaScript and Rust.

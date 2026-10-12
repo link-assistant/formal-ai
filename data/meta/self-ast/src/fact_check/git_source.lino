@@ -1,0 +1,17 @@
+self_ast_census
+  target src/fact_check/git_source.rs
+  language rust
+  fidelity signature
+  byte_len 6719
+  line_count 190
+  content_id source_module_a5b37d98343d4af0
+  symbol_count 8
+  symbols
+    const HISTORY_LIMIT 18 18
+    struct GitHistoryEntry 22 29
+    enum GitQuery 33 38
+    function git_log_for_path 45 78
+    function last_revision_containing 85 89
+    function blame_commit_for_line 94 113
+    function git_history_evidence_for 122 170
+    function revision_contains 175 190

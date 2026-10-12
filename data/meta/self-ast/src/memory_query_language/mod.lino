@@ -2,58 +2,59 @@ self_ast_census
   target src/memory_query_language/mod.rs
   language rust
   fidelity signature
-  byte_len 23654
-  line_count 756
-  content_id source_module_27b3c789561b8a8c
-  symbol_count 50
+  byte_len 23918
+  line_count 762
+  content_id source_module_9d33e427c7b971a1
+  symbol_count 51
   symbols
     module execution 30 30
     module graphql 31 31
     module learning 33 33
     module lowering 35 35
-    module sql 36 36
-    module syntax 37 37
-    function links_notation 52 70
-    function memory_query_halt 74 85
-    enum QueryDialect 89 98
-    function as_str 102 113
-    function meta_language_label 116 127
-    function is_sql 129 139
-    function detect_exact_memory_query 145 167
-    enum MemoryField 171 187
-    const ALL 190 190
-    function as_str 209 227
-    function parse 229 245
-    function is_numeric 247 249
-    enum MemoryQueryValue 254 261
-    function canonical 264 280
-    function display_text 282 295
-    enum ComparisonOperator 299 310
-    function as_str 313 326
-    enum FilterExpression 330 339
-    function canonical 342 372
-    enum AggregateFunction 376 384
-    function as_str 387 397
-    struct AggregateExpression 401 405
-    enum SortDirection 408 411
-    struct SortExpression 414 417
-    enum MemoryQueryOperation 420 425
-    function as_str 428 435
-    struct MemoryQueryPlan 440 450
-    function empty 453 465
-    function canonical 467 514
-    struct ParserEvidence 519 525
-    struct CompiledMemoryQuery 530 539
-    function canonical_semantics 544 546
-    function links_notation 549 569
-    struct MemoryQueryError 573 575
-    function new 578 582
-    function fmt 586 588
-    function parse_memory_query_plan 598 611
-    function compile_memory_query 615 621
-    function compile_exact_memory_query 624 649
-    function validate_plan 651 676
-    function validate_filter_values 678 689
-    function validate_query_value 691 708
-    function validate_exact_syntax 711 739
-    function validate_exact_syntax 742 756
+    module page_queries 37 37
+    module sql 38 38
+    module syntax 39 39
+    function links_notation 58 76
+    function memory_query_halt 80 91
+    enum QueryDialect 95 104
+    function as_str 108 119
+    function meta_language_label 122 133
+    function is_sql 135 145
+    function detect_exact_memory_query 151 173
+    enum MemoryField 177 193
+    const ALL 196 196
+    function as_str 215 233
+    function parse 235 251
+    function is_numeric 253 255
+    enum MemoryQueryValue 260 267
+    function canonical 270 286
+    function display_text 288 301
+    enum ComparisonOperator 305 316
+    function as_str 319 332
+    enum FilterExpression 336 345
+    function canonical 348 378
+    enum AggregateFunction 382 390
+    function as_str 393 403
+    struct AggregateExpression 407 411
+    enum SortDirection 414 417
+    struct SortExpression 420 423
+    enum MemoryQueryOperation 426 431
+    function as_str 434 441
+    struct MemoryQueryPlan 446 456
+    function empty 459 471
+    function canonical 473 520
+    struct ParserEvidence 525 531
+    struct CompiledMemoryQuery 536 545
+    function canonical_semantics 550 552
+    function links_notation 555 575
+    struct MemoryQueryError 579 581
+    function new 584 588
+    function fmt 592 594
+    function parse_memory_query_plan 604 617
+    function compile_memory_query 621 627
+    function compile_exact_memory_query 630 655
+    function validate_plan 657 682
+    function validate_filter_values 684 695
+    function validate_query_value 697 714
+    function validate_exact_syntax 717 745
+    function validate_exact_syntax 748 762

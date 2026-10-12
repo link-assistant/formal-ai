@@ -1,0 +1,7 @@
+>> bash {"command":"test -e data/meta/work-item-steps.lino"}
+>> bash {"command":"mkdir -p -- rust/embedded/data/meta"}
+>> bash {"command":"cp -f data/meta/work-item-steps.lino rust/embedded/data/meta/work-item-steps.lino"}
+>> bash {"command":"test -e rust/embedded/data/meta/work-item-steps.lino"}
+>> bash {"command":"test -e data/meta/work-item-steps.lino"}
+== answer ==
+Completed the action `cp -f data/meta/work-item-steps.lino rust/embedded/data/meta/work-item-steps.lino` and verified it with `test -e rust/embedded/data/meta/work-item-steps.lino`, `test -e data/meta/work-item-steps.lino`.

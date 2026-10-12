@@ -1,0 +1,5 @@
+>> bash {"command":"shellcheck --severity=warning experiments/issue_1028_agent_cli_ladder/run.sh"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

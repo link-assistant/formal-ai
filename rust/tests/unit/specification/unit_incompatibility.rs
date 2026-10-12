@@ -11,7 +11,7 @@ fn russian_meters_in_kilogram_returns_unit_incompatibility() {
     let response = answer("Сколько метров в килограмме?");
     assert_eq!(
         response.answer,
-        "метр measures length; килограмм measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network."
+        "метр измеряет length; килограмм измеряет mass. Это разные физические размерности, и их нельзя перевести друг в друга. Несовместимость записана в сети как связь `unit_incompatibility`."
     );
     assert_eq!(
         response.intent, "unit_incompatibility",

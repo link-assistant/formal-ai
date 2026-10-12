@@ -1,17 +1,20 @@
 Q152
   aliases
     en ("Рыбы" "рыбы")
+    es (peces)
     hi ("मीन")
     ru (Pisces "рыба")
     zh ("魚類" "魚綱" "魚兒")
   descriptions
     en "vertebrate animal that lives in water and (typically) has gills"
+    es "animal vertebrado acuático"
     hi "कशेरुका जानवर जो पानी में रहता है और (आमतौर पर) में गिल होती है"
     ru "парафилетическая группа водных позвоночных животных"
     zh "水生變溫脊椎動物，種類極多，卵生或卵胎生，絕大部分用鰓呼吸"
   id Q152
   labels
     en fish
+    es pez
     hi "मछली"
     ru "рыбы"
     zh "魚"

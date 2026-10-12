@@ -1,0 +1,12 @@
+# Known content divergences between the JavaScript and Rust servers (R1013).
+#
+# scripts/check-server-parity.mjs sends the corpus in
+# rust/tests/fixtures/server-parity/requests.lino to both servers. A request
+# listed here answers with the same protocol shape on both but different
+# content - answer text, thinking sentences, token counts or Links Notation -
+# because the JavaScript solver has not caught up there yet. Shape
+# differences are never listed, they fail outright. The list must match the
+# run exactly, so the ceiling only falls - regenerate it with
+# `node scripts/check-server-parity.mjs --write-ratchet` once a twin closes.
+server-parity-ratchet
+  answer-divergence-ceiling 0

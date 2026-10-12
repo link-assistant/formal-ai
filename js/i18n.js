@@ -3,14 +3,14 @@
 
   var DEFAULT_LANGUAGE = "en";
   var SUPPORTED_LANGUAGES = ["en", "ru", "zh", "hi"];
-  var PUBLISHED_RUNTIME_SOURCE = "lino-i18n@0.1.1";
+  var PUBLISHED_RUNTIME_SOURCE = "lino-i18n@0.3.0";
   var LOADING_RUNTIME_SOURCE = "lino-i18n-loading";
   var UNAVAILABLE_RUNTIME_SOURCE = "lino-i18n-unavailable";
   var CATALOG_URL = "i18n-catalog.lino";
   // Permission/Services and per-message strings live in companion files so each
   // catalog stays under the Links Notation line limit (see
-  // scripts/check-file-size.rs). Every file is fetched and their per-locale keys
-  // merged before parsing.
+  // scripts/check-file-size.rs). lino-i18n's `loadCatalogs` fetches them
+  // concurrently and merges their per-locale keys in this order.
   var CATALOG_URLS = [
     CATALOG_URL,
     "i18n-catalog-permissions.lino",
@@ -101,83 +101,30 @@
     return Promise.resolve(module);
   }
 
-  function fetchOneCatalog(url) {
-    return global
-      .fetch(cacheBustedUrl(url), { cache: "no-cache" })
-      .then(function (response) {
-        if (!response || !response.ok) {
-          var status = response ? "HTTP " + response.status : "no response";
-          throw new Error("failed to load " + url + ": " + status);
-        }
-        return response.text();
-      });
-  }
-
-  function fetchCatalogTexts() {
-    if (typeof global.fetch !== "function") {
-      return Promise.reject(new Error("fetch is not available"));
-    }
-    return Promise.all(CATALOG_URLS.map(fetchOneCatalog));
-  }
-
-  function mergeCatalogObjects(target, source) {
-    Object.keys(source).forEach(function (locale) {
-      var existing = target[locale] || {};
-      var incoming = source[locale] || {};
-      Object.keys(incoming).forEach(function (key) {
-        existing[key] = incoming[key];
-      });
-      target[locale] = existing;
-    });
-    return target;
-  }
-
-  function catalogObjectFromParsed(parsed) {
-    var output = {};
-    if (Array.isArray(parsed)) {
-      parsed.forEach(function (entry) {
-        if (entry && entry.locale && entry.translations) {
-          output[entry.locale] = entry.translations;
-        }
-      });
-      return output;
-    }
-    if (
-      parsed &&
-      typeof parsed.forEach === "function" &&
-      typeof parsed.get === "function"
-    ) {
-      parsed.forEach(function (translations, locale) {
-        output[locale] = translations;
-      });
-      return output;
-    }
-    if (parsed && typeof parsed === "object") {
-      Object.keys(parsed).forEach(function (locale) {
-        output[locale] = parsed[locale];
-      });
-    }
-    return output;
-  }
-
   function loadPublishedRuntime() {
-    return Promise.all([bundledRuntimeModule(), fetchCatalogTexts()])
-      .then(function (results) {
-        var module = results[0];
-        var catalogTexts = results[1];
+    return bundledRuntimeModule()
+      .then(function (module) {
         if (!module || typeof module.createI18n !== "function") {
           throw new Error("lino-i18n did not export createI18n");
         }
-        if (typeof module.parseLinoCatalogs !== "function") {
-          throw new Error("lino-i18n did not export parseLinoCatalogs");
+        if (typeof module.loadCatalogs !== "function") {
+          throw new Error("lino-i18n did not export loadCatalogs");
         }
-        CATALOG = {};
-        catalogTexts.forEach(function (catalogText) {
-          mergeCatalogObjects(
-            CATALOG,
-            catalogObjectFromParsed(module.parseLinoCatalogs(catalogText)),
-          );
-        });
+        if (typeof global.fetch !== "function") {
+          throw new Error("fetch is not available");
+        }
+        return module
+          .loadCatalogs(CATALOG_URLS.map(cacheBustedUrl), {
+            fetch: global.fetch.bind(global),
+            requestInit: { cache: "no-cache" },
+          })
+          .then(function (catalog) {
+            return [module, catalog];
+          });
+      })
+      .then(function (results) {
+        var module = results[0];
+        CATALOG = results[1];
         runtimeEngine = module.createI18n({
           locales: CATALOG,
           defaultLocale: DEFAULT_LANGUAGE,

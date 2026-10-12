@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "荒漠"
+        },
+        "es": {
+          "language": "es",
+          "value": "desierto"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "貧瘠的土地，幾乎沒有降水"
+        },
+        "es": {
+          "language": "es",
+          "value": "zona terrestre en la cual las precipitaciones casi nunca superan los 250 mm al año y el terreno es árido"
         }
       },
       "aliases": {
@@ -48,6 +56,28 @@
           {
             "language": "en",
             "value": "🏜️"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "desiertos"
+          },
+          {
+            "language": "es",
+            "value": "región desértica"
+          },
+          {
+            "language": "es",
+            "value": "region desertica"
+          },
+          {
+            "language": "es",
+            "value": "zona desértica"
+          },
+          {
+            "language": "es",
+            "value": "zona desertica"
           }
         ]
       }

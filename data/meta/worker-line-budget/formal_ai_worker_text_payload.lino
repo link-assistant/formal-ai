@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_text_payload.js"
+  ceiling 122
+  rationale "The command head and free-text payload readers of rust/src/solver_handlers/text_rewrite.rs, moved unchanged out of formal_ai_worker_text_transform.js for R1188-U20 (2026-10-08) so the summarizer, the text transforms and the handler-rule transform value source read one payload; the move added the full-width colon of CJK text as a command colon and counts a CJK character as a payload word, in both roots."

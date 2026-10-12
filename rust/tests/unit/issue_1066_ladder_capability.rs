@@ -21,6 +21,7 @@ use formal_ai::protocol::ToolCall;
 
 mod canonical_facts;
 mod tool_results;
+use crate::tool_workspace;
 mod written_files;
 
 /// The fourteen tool names `@link-assistant/agent` advertises, in the order the
@@ -178,25 +179,9 @@ fn final_answer(prompt: &str) -> Option<String> {
     }
 }
 
-/// Every `content` argument a plan carries, whatever key the tool names it under.
+/// Every physically written content across the bounded requested run.
 fn planned_writes(prompt: &str) -> Vec<String> {
-    let Some(AgenticPlan::ToolCalls(calls)) = plan(prompt) else {
-        return Vec::new();
-    };
-    calls
-        .iter()
-        .filter_map(|call| serde_json::from_str::<serde_json::Value>(&call.arguments).ok())
-        .filter_map(|value| {
-            ["content", "contents", "text", "new_string"]
-                .iter()
-                .find_map(|key| {
-                    value
-                        .get(*key)
-                        .and_then(serde_json::Value::as_str)
-                        .map(str::to_owned)
-                })
-        })
-        .collect()
+    planned_writes_to(prompt, "")
 }
 
 /// Every `content` the run writes to `target`, across the turns it takes to
@@ -211,26 +196,35 @@ fn planned_writes(prompt: &str) -> Vec<String> {
 fn planned_writes_to(prompt: &str, target: &str) -> Vec<String> {
     let mut messages = vec![ChatMessage::user(prompt)];
     let mut written = Vec::new();
+    let mut workspace = tool_workspace::ToolWorkspace::new(prompt);
     for turn in 0..LADDER_TURN_CAP {
         let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &LADDER_TOOLS) else {
             break;
         };
         for (index, call) in calls.iter().enumerate() {
-            if let Ok(value) = serde_json::from_str::<serde_json::Value>(&call.arguments)
-                && argument(&value, &["path", "filePath", "file_path", "absolute_path"])
-                    .is_some_and(|path| path.ends_with(target))
-                && let Some(content) =
-                    argument(&value, &["content", "contents", "text", "new_string"])
-            {
-                written.push(content);
-            }
             let id = format!("ladder-turn-{turn}-{index}");
             messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
                 &id,
                 &call.tool,
                 call.arguments.clone(),
             )]));
-            messages.push(ChatMessage::tool_result(id, &call.tool, "ok"));
+            let receipt = workspace.execute(&id, call);
+            if formal_ai::agentic_coding::planner::tool_capability(&call.tool)
+                == Some(formal_ai::agentic_coding::planner::Capability::Write)
+                && let Ok(value) = serde_json::from_str::<serde_json::Value>(&call.arguments)
+                && let Some(path) =
+                    argument(&value, &["path", "filePath", "file_path", "absolute_path"])
+                && path.ends_with(target)
+                && let Some(content) =
+                    argument(&value, &["content", "contents", "text", "new_string"])
+            {
+                assert_eq!(
+                    workspace.read(&path).expect("physical target bytes"),
+                    content
+                );
+                written.push(content);
+            }
+            messages.push(receipt);
         }
     }
     written

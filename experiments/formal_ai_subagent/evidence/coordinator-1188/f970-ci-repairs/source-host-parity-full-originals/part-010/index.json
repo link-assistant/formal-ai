@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "part": 10,
+  "totalParts": 10,
+  "originalUnionIndexSHA256": null,
+  "originalLogicalMembersAcrossThisFiniteSelection": 568,
+  "logicalMembersThisPart": 568,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 355,
+  "sourceAndControllerInputBytes": 30831388,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 334,
+  "newEncodedBlobs": 162,
+  "reusedPreviousEncodedBlobs": 172,
+  "newCompressedBytes": 4451127,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 570
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 334
+    }
+  ],
+  "selectionSHA256": "e7d2c64fdd4b0f5d55cb1e692f914edccb6839ec62752c1ff674c5fefa8e8a48",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [],
+  "pending": [
+    "Own running archive receipt excluded nonrecursively; all current known source repair must be committed before push; final hosted/runtime/native/release acceptance pending",
+    "Completion inventory:120 definitions,153 active scoped rows,30 unfinished acceptance rows.477 external code witnesses are referenced by exact digests but are not archived by this packet. No requirement promotion or overall completion percentage.",
+    "Original four shards all finish under136s/unchanged360000 cap, but initial semantic failures remain. Reviewed witness retry shard2 passes1461 plus3 original skips; permission-capable shard3 passes1548 plus1 original skip. Mixed-source lineage explicit, not single-revision/all-four green or hosted acceptance. Original shard4 report and32 network EPERM failures await a repaired permission-capable retry. No original skip/TODO/assertion/cap is changed. Native compilation is not executed locally; source-only native8/Desktop6/CLI5 and actual future credentials/lease/publication remain distinct and Unknown/Pending."
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "墙"
+        },
+        "es": {
+          "language": "es",
+          "value": "pared"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "建筑物"
+        },
+        "es": {
+          "language": "es",
+          "value": "estructura vertical y sólida que separa dos espacios"
         }
       },
       "aliases": {
@@ -86,6 +94,16 @@
           {
             "language": "zh",
             "value": "壁堵"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "tapia"
+          },
+          {
+            "language": "es",
+            "value": "muro"
           }
         ]
       }

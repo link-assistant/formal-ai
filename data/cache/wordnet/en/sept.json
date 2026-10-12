@@ -1,0 +1,36 @@
+{
+  "lemma": "sept",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15237535-n",
+      "partOfSpeech": "n",
+      "definition": "the month following August and preceding October",
+      "synonyms": [
+        "September",
+        "Sep"
+      ]
+    },
+    {
+      "id": "oewn-07987168-n",
+      "partOfSpeech": "n",
+      "definition": "people descended from a common ancestor",
+      "examples": [
+        "his family has lived in Massachusetts since the Mayflower"
+      ],
+      "synonyms": [
+        "family",
+        "family line",
+        "folk",
+        "kinfolk",
+        "kinsfolk",
+        "phratry"
+      ]
+    }
+  ]
+}

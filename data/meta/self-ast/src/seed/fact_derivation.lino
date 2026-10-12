@@ -1,0 +1,44 @@
+self_ast_census
+  target src/seed/fact_derivation.rs
+  language rust
+  fidelity signature
+  byte_len 19512
+  line_count 536
+  content_id source_module_1ab0c2ba9faf1bff
+  symbol_count 35
+  symbols
+    const SUBJECT_SLOT 20 20
+    const VALUE_SLOT 21 21
+    const DEFINITE_FORM 22 22
+    const LANGUAGE_SLOT 23 23
+    const TITLE_SLOT 24 24
+    struct Claim 28 31
+    struct Entity 35 40
+    function label 43 45
+    struct Article 49 53
+    struct CaseRule 56 59
+    struct Morphology 62 67
+    struct Relation 70 79
+    struct SourceRule 82 86
+    struct Rules 89 99
+    function lookup 101 106
+    function children 108 110
+    function child_list 112 114
+    function seed_root 117 123
+    function keyed_lists 126 133
+    function captured_entities 135 161
+    function case_rule 163 175
+    function relation 177 195
+    function realization_rules 197 248
+    function surface 253 268
+    function definite 270 284
+    function inflect 286 323
+    function form 325 331
+    function realize 335 364
+    function source_url 367 378
+    function label_surfaces 381 434
+    function record 436 490
+    function is_acronym 494 500
+    function build_derived_facts 502 528
+    function derived_facts 533 536
+    static RECORDS 534 534

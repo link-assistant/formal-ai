@@ -1,0 +1,90 @@
+{
+  "lemma": "bundle",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08024575-n",
+      "partOfSpeech": "n",
+      "definition": "a collection of things wrapped or boxed together",
+      "synonyms": [
+        "package",
+        "packet",
+        "parcel"
+      ]
+    },
+    {
+      "id": "oewn-02922798-n",
+      "partOfSpeech": "n",
+      "definition": "a package of several things tied together for carrying or storing",
+      "synonyms": [
+        "sheaf"
+      ]
+    },
+    {
+      "id": "oewn-13271579-n",
+      "partOfSpeech": "n",
+      "definition": "a large sum of money (especially as pay or profit)",
+      "examples": [
+        "she made a bundle selling real estate",
+        "they sank megabucks into their new house"
+      ],
+      "synonyms": [
+        "pile",
+        "big bucks",
+        "megabucks",
+        "big money"
+      ]
+    },
+    {
+      "id": "oewn-01489634-v",
+      "partOfSpeech": "v",
+      "definition": "make into a bundle",
+      "examples": [
+        "he bundled up his few possessions"
+      ],
+      "synonyms": [
+        "bundle up",
+        "roll up"
+      ]
+    },
+    {
+      "id": "oewn-01487029-v",
+      "partOfSpeech": "v",
+      "definition": "gather or cause to gather into a cluster",
+      "examples": [
+        "She bunched her fingers into a fist"
+      ],
+      "synonyms": [
+        "bunch",
+        "cluster",
+        "clump"
+      ]
+    },
+    {
+      "id": "oewn-01486416-v",
+      "partOfSpeech": "v",
+      "definition": "compress into a wad",
+      "examples": [
+        "wad paper into the box"
+      ],
+      "synonyms": [
+        "pack",
+        "wad",
+        "compact"
+      ]
+    },
+    {
+      "id": "oewn-00015156-v",
+      "partOfSpeech": "v",
+      "definition": "sleep fully clothed in the same bed with one's betrothed",
+      "synonyms": [
+        "practice bundling"
+      ]
+    }
+  ]
+}

@@ -103,6 +103,28 @@ never touches the memory file.
 | Real old/candidate volume lifecycle | `experiments/issue_982_memory_upgrade/run_container_upgrade.sh` in the Docker CI job |
 | Agent-authored output/session replay | `formal_ai_agent_authored_leaves_and_sessions_replay_byte_for_byte` |
 
+### The JavaScript server twin
+
+`node js/server/main.mjs memory upgrade-status|migrate` takes the same flags.
+It prints the same JSON: the full status, the receipt, or the
+`{error, status}` refusal. `rust/tests/web/server-memory-upgrade.test.mjs` and
+`server-memory-schema.test.mjs` pin it case for case against the cases above,
+over the same `tests/fixtures/memory/` fixtures. The writer lock is the same
+`flock` that `fs2` takes. Node has no `flock`, so a `perl` helper process
+holds it for the transaction, and where no helper can run the migration fails
+closed with `memory_locked`.
+
+What the JavaScript twin still lacks, and why:
+
+- Ordinary JavaScript-server writes (`writeAtomic`) create the shared lock
+  file but do not hold the lock. A JavaScript migration excludes Rust
+  writers, but not a concurrent JavaScript-server write.
+- Refusal reasons that embed an operating-system error (`memory_unreadable`,
+  `memory_locked`, staging failures) carry Node's error text rather than
+  Rust's `io::Error` text.
+- The two-image container proof (`run_container_upgrade.sh`) exercises the
+  released and candidate native images only.
+
 ## Operator reproduction
 
 ```bash

@@ -1,0 +1,18 @@
+{
+  "id": "T3087",
+  "dir": "/private/tmp/formal-ai-only-1188/T3087-fixture-L2rb8G",
+  "prompt": "Note İK𐐷 😀 café.\nCreate file x.txt containing «hello».",
+  "tools": [
+    "write"
+  ],
+  "steps": 8,
+  "originalCI": {
+    "head": "d7437d4bcfc6d94823ebeba634de016f25561b41",
+    "job": 113779140028,
+    "source": "rust/tests/fixtures/literal-obligation-transaction.rs:511",
+    "nativeObservedWrongBytes": "g «hello»."
+  },
+  "before": {
+    "targetAbsent": true
+  }
+}

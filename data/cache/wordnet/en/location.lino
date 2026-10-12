@@ -1,0 +1,27 @@
+language en
+lemma location
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a point or extent in space; a point or extent in space"
+    id oewn-00027365-n
+    partOfSpeech n
+  entry
+    definition "the act of putting something in a certain place"
+    id oewn-01053255-n
+    partOfSpeech n
+    synonyms (placement locating position positioning emplacement)
+  entry
+    definition "a determination of the place where something is"
+    examples ("he got a good fix on the target")
+    id oewn-00156307-n
+    partOfSpeech n
+    synonyms (localization localisation locating fix)
+  entry
+    definition "a workplace away from a studio at which some or all of a movie may be made"
+    examples ("they shot the film on location in Nevada")
+    id oewn-03687515-n
+    partOfSpeech n
+source "oewn:2024"

@@ -7,13 +7,17 @@
 //! the plan-16 leaf that owes it — the same honesty the capability table
 //! practices: a gap is stated, never papered over with a silent no-op.
 //!
-//! Live legs: `rust → meta` (the self-AST signature projection) and, since
-//! plan 16 L2, the whole ES quadrant — `js ↔ meta`, `ts ↔ meta`,
-//! `js → ts`, `ts → js` — carried by the token-tree pivot in
-//! [`crate::es_meta`] under the seed's projection rules. Every other
-//! direction runs through the pivot in principle and is owed by exactly one
-//! leaf: the dogfood back-translation into Rust by L3, and the
-//! CST-equal round trip including the full `meta → rust` inverse by L5.
+//! Live legs: since plan 16 L7 every directed pair among the four roots is
+//! live — `rust ↔ meta` (the self-AST signature projection and the network
+//! serialization read back with `reconstruct_text`), the whole ES quadrant
+//! (`js ↔ meta`, `ts ↔ meta`, `js → ts`, `ts → js`) carried by the token-tree
+//! pivot in [`crate::es_meta`] under the seed's projection rules, and the L8
+//! grammar projection legs both ways between rust and the ES roots. The legs
+//! beyond the four roots are the CST render legs ([`render_cst_source`],
+//! issue #1167): every language `data/seed/program-cst-grammars.lino`
+//! registers is an emit target reached through the network serialization
+//! wire, not a fifth root — the three-roots doctrine governs
+//! Rust/JS/TS/Meta and those targets alike.
 //! `L0` marks a same-root non-direction: no leaf owes it because it is not
 //! a translation, and callers reject it before listing.
 
@@ -23,6 +27,9 @@ use alloc::string::String;
 use alloc::vec::Vec;
 
 use crate::es_meta::{ProjectionTarget, Refusal, SourceLanguage, render_document, render_source};
+
+#[cfg(feature = "meta-language")]
+use meta_language::LinkNetwork;
 
 /// The four trees the pivot connects; `Meta` is the pivot itself.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -349,6 +356,41 @@ impl SourceRoot {
             Self::Rust | Self::Meta => None,
         }
     }
+
+    /// The extension this root's ES-module sources carry inside a
+    /// [`MODULE_SUBTREES`] subtree (`.mjs` ↔ `.mts`).
+    #[must_use]
+    pub const fn module_extension(self) -> Option<&'static str> {
+        match self {
+            Self::JavaScript => Some("mjs"),
+            Self::TypeScript => Some("mts"),
+            Self::Rust | Self::Meta => None,
+        }
+    }
+}
+
+/// The subtrees of the ES roots whose ES-module sources gain a module twin.
+///
+/// The agentic planner port, `js/agentic/**/*.mjs` ↔ `ts/agentic/**/*.mts`
+/// (issue #1180 R11). The JavaScript translator names the same set
+/// `MODULE_ROOTS` in `scripts/translate-es.mjs`, so the native `--write`
+/// and the script render one file set.
+pub const MODULE_SUBTREES: &[&str] = &["agentic"];
+
+/// The `(stem, extension)` a path under an ES root maps by: an owned file
+/// anywhere under the root, or an ES module inside a [`MODULE_SUBTREES`]
+/// subtree. `None` for anything else.
+fn es_source_stem(root: SourceRoot, sub: &str) -> Option<(&str, bool)> {
+    let owned = format!(".{}", root.owned_extension()?);
+    if let Some(stem) = sub.strip_suffix(&owned) {
+        return Some((stem, false));
+    }
+    let module = format!(".{}", root.module_extension()?);
+    let stem = sub.strip_suffix(&module)?;
+    MODULE_SUBTREES
+        .iter()
+        .any(|subtree| sub.starts_with(&format!("{subtree}/")))
+        .then_some((stem, true))
 }
 
 /// Map one repo-relative source path to its write target under the sibling
@@ -371,20 +413,22 @@ pub fn write_target(
         return Err(WriteTargetError::UnsupportedLeg { from, to });
     }
     let directory = from.directory();
-    let extension = from
-        .owned_extension()
-        .expect("the ES roots declare their owned extension");
-    let mapped = repo_relative
+    let (mapped, module) = repo_relative
         .strip_prefix(&format!("{directory}/"))
-        .and_then(|sub| sub.strip_suffix(&format!(".{extension}")))
+        .and_then(|sub| es_source_stem(from, sub))
         .filter(|_| !escapes_root(repo_relative))
         .ok_or_else(|| WriteTargetError::WrongRoot {
             path: repo_relative.to_owned(),
         })?;
+    let extension = if module {
+        to.module_extension()
+    } else {
+        to.owned_extension()
+    };
     Ok(format!(
         "{}/{mapped}.{}",
         to.directory(),
-        to.owned_extension().expect("the ES roots declare one")
+        extension.expect("the ES roots declare both extensions")
     ))
 }
 
@@ -418,14 +462,15 @@ pub fn source_tree_request(prompt: &str) -> Option<SourceTreeRequest> {
     // itself, not by another literal here.
     let es_roots = [SourceRoot::JavaScript, SourceRoot::TypeScript];
     let mut path_token = None;
-    for token in folded.split_whitespace() {
+    for token in prompt.split_whitespace() {
+        let folded_token = token.to_ascii_lowercase();
         for root in es_roots {
             let prefix = format!("{}/", root.directory());
             let suffix = format!(
                 ".{}",
                 root.owned_extension().expect("an ES root owns files")
             );
-            if token.starts_with(&prefix) && token.ends_with(&suffix) {
+            if folded_token.starts_with(&prefix) && folded_token.ends_with(&suffix) {
                 path_token = Some((root, token));
                 break;
             }
@@ -477,4 +522,219 @@ pub fn describe_leg(from: SourceRoot, to: SourceRoot, pending: Option<&'static s
             },
         )
         .unwrap_or_else(|| "translate_leg".to_string())
+}
+
+/// Why a CST render leg refused, named so no caller can confuse a missing
+/// leg with an empty program (issue #1167, R1: a gap is stated, never a
+/// silent skip).
+#[allow(dead_code)] // which variants construct depends on the `meta-language` feature
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CstRenderGap {
+    /// `program-cst-grammars.lino` declares no `cst_grammar` block for the
+    /// slug — the language is not a registered emit target.
+    NoGrammarEntry { language_slug: String },
+    /// The grammar entry names an engine other than the sole CST engine
+    /// (`meta_language`); rendering through it is not implemented.
+    UnknownEngine {
+        language_slug: String,
+        engine: String,
+    },
+    /// The optional parsing engine is compiled out, so no leg can render.
+    EngineDisabled { language_slug: String },
+    /// The document is not the network serialization dialect of lino (the
+    /// output side of `LinkNetwork::to_lino`); a census or token-tree pivot
+    /// document cannot render, and the reason says so.
+    NotNetworkLino { reason: String },
+}
+
+impl CstRenderGap {
+    /// The stable, human-readable name of the gap for error paths.
+    #[must_use]
+    pub fn describe(&self) -> String {
+        match self {
+            Self::NoGrammarEntry { language_slug } => crate::seed::report_text(
+                "cst_render_gap_no_grammar_entry",
+                &[("language", language_slug)],
+            ),
+            Self::UnknownEngine {
+                language_slug,
+                engine,
+            } => crate::seed::report_text(
+                "cst_render_gap_unknown_engine",
+                &[("language", language_slug), ("engine", engine)],
+            ),
+            Self::EngineDisabled { language_slug } => crate::seed::report_text(
+                "cst_render_gap_engine_disabled",
+                &[("language", language_slug)],
+            ),
+            Self::NotNetworkLino { reason } => format!(
+                "cst render legs read only the network serialization dialect of lino (the output side of LinkNetwork::to_lino): {reason}"
+            ),
+        }
+    }
+}
+
+/// Render a serialized `LinkNetwork` (lino text) back to source for a named
+/// CST language — the render leg every `program-cst-grammars.lino` entry
+/// owes (issue #1167, R1).
+///
+/// `SourceRoot` stays at the four roots the three-roots doctrine governs;
+/// CST-only targets (Kotlin, Scala, Swift, R, …) are emit targets reached
+/// through the network serialization wire, not new roots. Returns `None`
+/// when the language is not a registered grammar entry or the document is
+/// not a network serialization; the named gap is available from
+/// [`try_render_cst_source`] so a missing leg is never confused with an
+/// empty program.
+#[must_use]
+pub fn render_cst_source(network_text: &str, language_slug: &str) -> Option<String> {
+    try_render_cst_source(network_text, language_slug).ok()
+}
+
+/// The named-gap shape of [`render_cst_source`].
+pub fn try_render_cst_source(
+    network_text: &str,
+    language_slug: &str,
+) -> Result<String, CstRenderGap> {
+    try_render_cst_source_impl(network_text, language_slug)
+}
+
+#[cfg(feature = "meta-language")]
+fn try_render_cst_source_impl(
+    network_text: &str,
+    language_slug: &str,
+) -> Result<String, CstRenderGap> {
+    let grammar = crate::coding::cst::grammar_metadata(language_slug).ok_or_else(|| {
+        CstRenderGap::NoGrammarEntry {
+            language_slug: language_slug.to_owned(),
+        }
+    })?;
+    if grammar.engine != crate::coding::cst::META_LANGUAGE_ENGINE {
+        return Err(CstRenderGap::UnknownEngine {
+            language_slug: language_slug.to_owned(),
+            engine: grammar.engine,
+        });
+    }
+    LinkNetwork::from_lino(network_text)
+        .map(|network| network.reconstruct_text())
+        .map_err(|error| CstRenderGap::NotNetworkLino {
+            reason: error.to_string(),
+        })
+}
+
+/// The engine-disabled shape: without the optional parsing engine no leg
+/// renders, and the honest answer is the named gap, not a guess.
+#[cfg(not(feature = "meta-language"))]
+fn try_render_cst_source_impl(
+    _network_text: &str,
+    language_slug: &str,
+) -> Result<String, CstRenderGap> {
+    Err(CstRenderGap::EngineDisabled {
+        language_slug: language_slug.to_owned(),
+    })
+}
+
+/// A completely consumed seeded request owns its path and write policy.
+pub struct OwnedSourceTreeRequest {
+    pub source_unit: &'static str,
+    pub source_span: [usize; 2],
+    pub request_span: [usize; 2],
+    pub request: SourceTreeRequest,
+    pub write: bool,
+}
+
+/// Bind the complete source operation before any tool or source effect.
+#[must_use]
+pub fn owned_source_tree_request(prompt: &str) -> Option<OwnedSourceTreeRequest> {
+    if prompt.chars().any(|character| {
+        (character.is_whitespace() || character == '\u{feff}') && !character.is_ascii_whitespace()
+    }) {
+        return None;
+    }
+    let parsed = crate::seed::parser::parse_lino(include_str!(
+        "../embedded/data/seed/meanings-translate-cycle.lino"
+    ));
+    let root = parsed.children.first()?;
+    let contract = root
+        .children
+        .iter()
+        .find(|node| node.name == "source-tree-translation-contract")?;
+    let placeholders = regex::Regex::new(r"\{([a-z]+(?:-[a-z]+)*)\}").ok()?;
+    for form in contract.children.iter().filter(|node| node.name == "form") {
+        let field = |name: &str| {
+            form.children
+                .iter()
+                .find(|node| node.name == name)
+                .map(|node| node.id.as_str())
+        };
+        let (Some(pattern), Some(writes)) = (field("pattern"), field("writes")) else {
+            continue;
+        };
+        if !["true", "false"].contains(&writes) {
+            continue;
+        }
+        let mut missing = false;
+        let pattern = placeholders.replace_all(pattern, |captures: &regex::Captures<'_>| {
+            let role = &captures[1];
+            if ["source", "target"].contains(&role) {
+                return format!(r"(?P<{role}>[^ \t\n\r\v\f]+)");
+            }
+            let surfaces = crate::seed::lexicon().words_for_role(&role.replace('-', "_"));
+            if surfaces.is_empty() {
+                missing = true;
+            }
+            format!(
+                "(?:{})",
+                surfaces
+                    .iter()
+                    .map(|surface| regex::escape(surface))
+                    .collect::<Vec<_>>()
+                    .join("|")
+            )
+        });
+        if missing {
+            continue;
+        }
+        let Ok(expression) = regex::RegexBuilder::new(&pattern)
+            .case_insensitive(true)
+            .build()
+        else {
+            continue;
+        };
+        let Some(captures) = expression.captures(prompt) else {
+            continue;
+        };
+        if captures.get(0)?.as_str().len() != prompt.len() {
+            continue;
+        }
+        let source_match = captures.name("source")?;
+        let path = source_match.as_str();
+        let from = [SourceRoot::JavaScript, SourceRoot::TypeScript]
+            .into_iter()
+            .find(|root| {
+                path.starts_with(&format!("{}/", root.directory()))
+                    && path.ends_with(&format!(".{}", root.owned_extension().unwrap_or_default()))
+            })?;
+        let to = SourceRoot::parse(captures.name("target")?.as_str())?;
+        if ![SourceRoot::JavaScript, SourceRoot::TypeScript].contains(&to)
+            || from == to
+            || escapes_root(path)
+            || path
+                .chars()
+                .any(|character| character <= ' ' || ['\"', '\'', '`', '\\'].contains(&character))
+        {
+            continue;
+        }
+        return Some(OwnedSourceTreeRequest {
+            source_unit: "utf8",
+            source_span: [source_match.start(), source_match.end()],
+            request_span: [0, prompt.len()],
+            request: SourceTreeRequest {
+                from,
+                to,
+                path: path.to_owned(),
+            },
+            write: writes == "true",
+        });
+    }
+    None
 }

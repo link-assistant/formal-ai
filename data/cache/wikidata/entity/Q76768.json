@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "襯衫"
+        },
+        "es": {
+          "language": "es",
+          "value": "camisa"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "शरीर के ऊपरी भाग पर पहना जाने वाला कपड़ा"
+        },
+        "es": {
+          "language": "es",
+          "value": "prenda de vestir que cubre el torso"
         }
       },
       "aliases": {

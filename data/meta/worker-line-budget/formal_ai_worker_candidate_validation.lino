@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_candidate_validation.js"
+  ceiling 27
+  rationale "Prime-interval validation uses seeded property meanings and real divisibility, retaining rejected candidates and honest empty ranges. Initial measured ceiling for a new module; existing ceilings remain unchanged (R1188-U29, 2026-10-10)."

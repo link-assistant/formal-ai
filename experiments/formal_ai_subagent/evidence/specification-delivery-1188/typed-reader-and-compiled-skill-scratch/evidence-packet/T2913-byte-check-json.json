@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2913-byte-check.json",
+  "sha256": "1b195e5ea1489862ee77b6aca594010c2605c5ef2b43869588f73d6882f4b687",
+  "rawUtf8": "{\n  \"taskId\": \"T2913\",\n  \"target\": \"typed-spec-reader.test.mjs\",\n  \"byteEqual\": true\n}\n"
+}

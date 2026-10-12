@@ -9,7 +9,7 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::proof_engine::ProofRenderConfig;
 use crate::solver::ConversationTurn;
-use crate::solver_handler_docs::try_docs_method_explanation;
+use crate::solver_handler_documentation::try_docs_method_explanation;
 use crate::solver_handler_how::{try_how_it_works, try_how_to_procedure};
 use crate::solver_handler_units::try_incompatible_units;
 use crate::solver_handlers::{

@@ -1,0 +1,17 @@
+view
+  id M-4d823f2ce202
+  lemma spend
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "use up a period of time in a specific way"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "pay out"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "spend completely"
+    provenance (wordnet)

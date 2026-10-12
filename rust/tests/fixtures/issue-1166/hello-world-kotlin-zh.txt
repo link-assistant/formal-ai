@@ -1,0 +1,9 @@
+创建一个小型 Kotlin 程序，在控制台打印 "Hello, World!"。
+
+首先，程序必须打印出确切内容："Hello, World!"
+然后，预期输出：
+  "Hello, World!"
+接着，添加一个 GitHub Actions 工作流，在每次 push 到 main 分支时运行构建
+接着，为 workflow 文件取一个有意义的名字，例如 test-hello-world.yml
+接着，添加清晰的注释并遵循 Kotlin 最佳实践
+最后，CI 徽章（可选）

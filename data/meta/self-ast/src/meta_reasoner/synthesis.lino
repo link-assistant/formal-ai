@@ -1,0 +1,35 @@
+self_ast_census
+  target src/meta_reasoner/synthesis.rs
+  language rust
+  fidelity signature
+  byte_len 26534
+  line_count 744
+  content_id source_module_1520b5aa8419e216
+  symbol_count 26
+  symbols
+    const ENUMERATION_CEILING 25 25
+    struct ExampleProgram 29 38
+    struct MeaningProgram 42 51
+    struct Verification 55 62
+    function program_label 69 75
+    function distinct_ops 78 94
+    function evidence_score 100 108
+    function verify 115 136
+    struct Candidate 140 144
+    function steps 147 149
+    function eq 153 155
+    function partial_cmp 161 163
+    function cmp 168 173
+    function json_or_undefined 176 178
+    function synthesize_from_examples 184 344
+    struct MeaningGoal 347 368
+    struct NamedValue 373 378
+    function bind_values 386 399
+    struct InternedClause 401 405
+    type Interned 407 407
+    function intern_all 409 413
+    function intern_words 415 430
+    function coverage_score 436 448
+    struct Order 451 455
+    function clause_order 462 517
+    function synthesize_from_meaning 523 744

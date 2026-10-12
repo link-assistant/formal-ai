@@ -1,0 +1,16 @@
+{
+  "lemma": "screenshot",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-90009391-v",
+      "partOfSpeech": "v",
+      "definition": "to capture an image from a computer's display"
+    }
+  ]
+}

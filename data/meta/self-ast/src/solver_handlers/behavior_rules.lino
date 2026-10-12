@@ -2,33 +2,28 @@ self_ast_census
   target src/solver_handlers/behavior_rules.rs
   language rust
   fidelity signature
-  byte_len 44528
-  line_count 961
-  content_id source_module_35704861c0b92138
-  symbol_count 25
+  byte_len 15829
+  line_count 459
+  content_id source_module_e3b73c9818edf020
+  symbol_count 20
   symbols
-    struct BehaviorRuleRecord 36 45
-    function try_behavior_rules_with_runtime 47 159
-    function behavior_rule_records 161 281
-    function topic_order 283 295
-    function localized_text 297 310
-    function topic_label 312 348
-    function list_intro 350 358
-    function behavior_rule_counts 360 364
-    function log_behavior_rule_count 366 379
-    function render_behavior_rule_list 381 420
-    function runtime_rules_heading 422 430
-    function rule_list_footer 432 488
-    function localized_response 490 495
-    function rule_label 497 560
-    function rule_matches 562 625
-    function rule_response 627 666
-    function rule_when_then 668 759
-    function runtime_rule_when_then 761 777
-    function collect_runtime_rules 779 790
-    function render_behavior_rule_detail 792 837
-    function render_runtime_rule_update 839 898
-    function detail_query 900 922
-    function clean_rule_query 924 934
-    function find_behavior_rule 936 946
-    function runtime_rule_for_prompt 948 961
+    struct BehaviorRuleRecord 37 42
+    const ROLE_RULE_DETAIL_REQUEST 45 45
+    const SEEDED_RESPONSES_SOURCE 47 47
+    const BEHAVIOR_RULES 50 50
+    function try_behavior_rules_with_runtime 101 213
+    function catalog_text 217 219
+    function behavior_rule_counts 221 225
+    function log_behavior_rule_count 227 240
+    function render_behavior_rule_list 242 278
+    function rule_text 280 285
+    function rule_response 289 293
+    function rule_when_then 295 302
+    function runtime_rule_when_then 304 313
+    function collect_runtime_rules 315 326
+    function render_behavior_rule_detail 328 360
+    function render_runtime_rule_update 362 397
+    function detail_query 401 418
+    function clean_rule_query 420 430
+    function find_behavior_rule 432 444
+    function runtime_rule_for_prompt 446 459

@@ -1,0 +1,6 @@
+{
+  "task": "T1926",
+  "prompt": "Run node -e 'const fs=require('\\''node:fs'\\'');fs.copyFileSync('\\''data/meta/work-item-steps.lino'\\'','\\''rust/embedded/data/meta/work-item-steps.lino'\\'');if(!fs.readFileSync('\\''data/meta/work-item-steps.lino'\\'').equals(fs.readFileSync('\\''rust/embedded/data/meta/work-item-steps.lino'\\'')))throw Error('\\''mirror mismatch'\\'');console.log('\\''PR1188_T1926_APPEND_MIRROR_PASS'\\'');'",
+  "marker": "PR1188_T1926_APPEND_MIRROR_PASS",
+  "steps": 16
+}

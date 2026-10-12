@@ -2,29 +2,40 @@ self_ast_census
   target src/meta_translate.rs
   language rust
   fidelity signature
-  byte_len 18965
-  line_count 480
-  content_id source_module_10afa91cf577335d
-  symbol_count 21
+  byte_len 28936
+  line_count 740
+  content_id source_module_50c69ac229a3eeeb
+  symbol_count 32
   symbols
-    enum SourceRoot 29 34
-    function parse 40 48
-    function name 52 59
-    enum TranslationOutcome 68 79
-    function pending_leg 95 108
-    function translate 116 204
-    function es_language 206 211
-    function es_grammar_label 215 220
-    function projection_target 222 229
-    function es_render 231 245
-    function directions 250 266
-    struct RootProjection 272 282
-    function root_projections 291 316
-    enum WriteTargetError 320 328
-    function directory 334 341
-    function owned_extension 345 351
-    function write_target 361 389
-    struct SourceTreeRequest 394 398
-    function escapes_root 402 404
-    function source_tree_request 414 456
-    function describe_leg 461 480
+    enum SourceRoot 36 41
+    function parse 47 55
+    function name 59 66
+    enum TranslationOutcome 75 86
+    function pending_leg 102 115
+    function translate 123 211
+    function es_language 213 218
+    function es_grammar_label 222 227
+    function projection_target 229 236
+    function es_render 238 252
+    function directions 257 273
+    struct RootProjection 279 289
+    function root_projections 298 323
+    enum WriteTargetError 327 335
+    function directory 341 348
+    function owned_extension 352 358
+    function module_extension 363 369
+    const MODULE_SUBTREES 378 378
+    function es_source_stem 383 394
+    function write_target 403 433
+    struct SourceTreeRequest 438 442
+    function escapes_root 446 448
+    function source_tree_request 458 501
+    function describe_leg 506 525
+    enum CstRenderGap 532 548
+    function describe 553 574
+    function render_cst_source 589 591
+    function try_render_cst_source 594 599
+    function try_render_cst_source_impl 602 622
+    function try_render_cst_source_impl 627 634
+    struct OwnedSourceTreeRequest 637 643
+    function owned_source_tree_request 647 740

@@ -1,0 +1,16 @@
+language en
+lemma conditional
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "imposing or depending on or containing a condition"
+    examples ("conditional acceptance of the terms" "lent conditional support" "the conditional sale will not be complete until the full purchase price is paid")
+    id oewn-00557545-a
+    partOfSpeech a
+  entry
+    definition "qualified by reservations"
+    id oewn-01919794-s
+    partOfSpeech s
+source "oewn:2024"

@@ -161,3 +161,29 @@ test("a program composed from a retrieved meaning is labelled unverified", async
     );
   }
 });
+
+
+test("a declared resource fallback preserves both actual attempts and the genuine capture", async () => {
+  const captures = loadCaptures(), requested = [];
+  const context = await bootWorker(captures, requested);
+  const expected = JSON.parse(readFileSync(path.join(FIXTURE_DIR, "expected-senses.json"), "utf8"))
+    .find(sense => sense.language === "es" && sense.surface === "isograma");
+  assert.ok(expected);
+  const outcome = await lookup(context, expected.surface, expected.language);
+  const endpoints = plain(evaluate(context, `(() => {
+    const record = sourceWalkRegistry().find(source => source.id === "wikipedia");
+    return [sourceWalkEntryUrl(record, "isograma", "es"), sourceWalkFallbackEntryUrl(record, "isograma", "es")];
+  })()`));
+  assert.equal(captures.has(endpoints[0]), false);
+  assert.equal(captures.has(endpoints[1]), true);
+  assert.equal(requested.indexOf(endpoints[1]), requested.indexOf(endpoints[0]) + 1);
+  const sense = outcome.items.find(item => item.contentId === expected.contentId);
+  assert.ok(sense);
+  assert.equal(sense.sourceUrl, endpoints[1]);
+  assert.equal(sense.sha256, captures.get(endpoints[1]).sha256);
+  const source = outcome.outcomes.find(item => item.sourceId === "wikipedia");
+  assert.equal(source.status, "contributed");
+  assert.equal(source.pages, 1);
+  assert.ok(source.detail.includes("http_404"));
+  assert.ok(source.detail.includes(endpoints[0]) && source.detail.includes(endpoints[1]));
+});

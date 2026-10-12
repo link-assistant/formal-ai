@@ -1,0 +1,355 @@
+{
+  "phase": "scratch-source-goal-projection",
+  "ids": "T3582-T3588",
+  "createdAt": "2026-10-09T17:03:51.111Z",
+  "productionSourceHold": true,
+  "sourceIdentities": [
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection/source-goal-projection.mjs",
+      "packetPath": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/source-goal-projection.mjs",
+      "sha256": "f54ff7fe74599a06352865c84d8c50f6d0aa776e33b9f145ca5170e9cdcc4712",
+      "utf8Bytes": 5281,
+      "role": "reviewed-generic-projection"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection/source-goal-projection.test.mjs",
+      "packetPath": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/source-goal-projection.test.mjs",
+      "sha256": "ab5d1ab73562fae6462e53da137225cfe889d7d8b9ffef282b305fd79158b375",
+      "utf8Bytes": 11014,
+      "role": "reviewed-generic-projection"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection/goal-bound-bridge.mjs",
+      "packetPath": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/goal-bound-bridge.mjs",
+      "sha256": "fc34e09247dd6e8dac748760145203362d27ebeb15e27660184adbd96c984310",
+      "utf8Bytes": 6276,
+      "role": "neutral-observed-source-copy"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection/solver_formalization.mjs",
+      "packetPath": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/solver_formalization.mjs",
+      "sha256": "46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c",
+      "utf8Bytes": 10914,
+      "role": "neutral-observed-source-copy"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection/translation_formalization.mjs",
+      "packetPath": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/translation_formalization.mjs",
+      "sha256": "f4161079a1e37708915bef76e0ddab96a4104745668c051a3d0b0f7330db822b",
+      "utf8Bytes": 20319,
+      "role": "neutral-observed-source-copy"
+    }
+  ],
+  "copies": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3582-request.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3582-request.json",
+      "sha256": "efa2c28e68896408c60ca613df8fd1fa2532816bc8dd67ff7035e87d652dc72a"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3582-transcript.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3582-transcript.json",
+      "sha256": "52450d83dbb5ba13661605f842d4715b933e4f3ecd645b832eafceb7331ee83b"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3582.log",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3582.log",
+      "sha256": "52450d83dbb5ba13661605f842d4715b933e4f3ecd645b832eafceb7331ee83b"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3583-request.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3583-request.json",
+      "sha256": "17e11155bc2f91f1ba57da5943a487343230469263b5df22e750b2f3d7ac9504"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3583-transcript.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3583-transcript.json",
+      "sha256": "0b45c6817c449db97039dc0ef3efe282467267a9271b0fba3c2d21daf6dce8a0"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3583.log",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3583.log",
+      "sha256": "0b45c6817c449db97039dc0ef3efe282467267a9271b0fba3c2d21daf6dce8a0"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3584-request.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584-request.json",
+      "sha256": "183b32ec67d0d38fb12562700fdb8a731b5850e6a11d80852bb517c1a2949285"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3584-transcript.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584-transcript.json",
+      "sha256": "194af8527be9556ad4cb866c0726f9c5612a21f5d7bde6aaf47de19068dcb035"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3584.log",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584.log",
+      "sha256": "194af8527be9556ad4cb866c0726f9c5612a21f5d7bde6aaf47de19068dcb035"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3584-tests.log",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584-tests.log",
+      "sha256": "d1285c68f7e31224201d645730bd3476869492f2b045c1b4f5cf1bf34de4686c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3585-request.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3585-request.json",
+      "sha256": "cb764f03ff63ce38c63230421e42d3b290e8366d0fb0f29a97d3df288660bc3e"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3585-transcript.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3585-transcript.json",
+      "sha256": "742f589a506931352ce1320a66318763a7f2ad84721fb5380624c1aafc36ca63"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3585.log",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3585.log",
+      "sha256": "742f589a506931352ce1320a66318763a7f2ad84721fb5380624c1aafc36ca63"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3585-tests.log",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3585-tests.log",
+      "sha256": "6dd6a50a2a2ede6f50bcc89c74d9865e2a22ec99348e0fc55efa294b76c40b98"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3586-request.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3586-request.json",
+      "sha256": "e4949f4b0379f1650f7bf2d397fca193e6efec31ac42010b8f201912796db6c7"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3586-transcript.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3586-transcript.json",
+      "sha256": "0b45c6817c449db97039dc0ef3efe282467267a9271b0fba3c2d21daf6dce8a0"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3586.log",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3586.log",
+      "sha256": "0b45c6817c449db97039dc0ef3efe282467267a9271b0fba3c2d21daf6dce8a0"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3587-request.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3587-request.json",
+      "sha256": "4084b586f9cbddf40ef6e93cf78ba48e09e3ab3552ddaf93564d49eb280db3e7"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3587-transcript.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3587-transcript.json",
+      "sha256": "ae35a4ac5857f5c726ffb3c9922285630caa22dafd74b82a5bddf96fc9a5ffd7"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3587.log",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3587.log",
+      "sha256": "ae35a4ac5857f5c726ffb3c9922285630caa22dafd74b82a5bddf96fc9a5ffd7"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3587-audit.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3587-audit.json",
+      "sha256": "f29db4d2bdeee044645d6595ec507ec8a6caad6f271fe34574880e146ec7492d"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T3584-request-construction-error.json",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584-request-construction-error.json",
+      "sha256": "32a4367f0495074f072605a4288fb89d897238b87cb584510ecc8d3797f5b10d"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/source-goal-projection/source-goal-projection.mjs",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/source-goal-projection.mjs",
+      "sha256": "f54ff7fe74599a06352865c84d8c50f6d0aa776e33b9f145ca5170e9cdcc4712"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/source-goal-projection/source-goal-projection.test.mjs",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/source-goal-projection.test.mjs",
+      "sha256": "ab5d1ab73562fae6462e53da137225cfe889d7d8b9ffef282b305fd79158b375"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/source-goal-projection/goal-bound-bridge.mjs",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/goal-bound-bridge.mjs",
+      "sha256": "fc34e09247dd6e8dac748760145203362d27ebeb15e27660184adbd96c984310"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/source-goal-projection/solver_formalization.mjs",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/solver_formalization.mjs",
+      "sha256": "46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/source-goal-projection/translation_formalization.mjs",
+      "target": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/translation_formalization.mjs",
+      "sha256": "f4161079a1e37708915bef76e0ddab96a4104745668c051a3d0b0f7330db822b"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3582-request.json",
+      "sha256": "efa2c28e68896408c60ca613df8fd1fa2532816bc8dd67ff7035e87d652dc72a"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3582-transcript.json",
+      "sha256": "52450d83dbb5ba13661605f842d4715b933e4f3ecd645b832eafceb7331ee83b"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3582.log",
+      "sha256": "52450d83dbb5ba13661605f842d4715b933e4f3ecd645b832eafceb7331ee83b"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3583-request.json",
+      "sha256": "17e11155bc2f91f1ba57da5943a487343230469263b5df22e750b2f3d7ac9504"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3583-transcript.json",
+      "sha256": "0b45c6817c449db97039dc0ef3efe282467267a9271b0fba3c2d21daf6dce8a0"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3583.log",
+      "sha256": "0b45c6817c449db97039dc0ef3efe282467267a9271b0fba3c2d21daf6dce8a0"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584-request.json",
+      "sha256": "183b32ec67d0d38fb12562700fdb8a731b5850e6a11d80852bb517c1a2949285"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584-transcript.json",
+      "sha256": "194af8527be9556ad4cb866c0726f9c5612a21f5d7bde6aaf47de19068dcb035"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584.log",
+      "sha256": "194af8527be9556ad4cb866c0726f9c5612a21f5d7bde6aaf47de19068dcb035"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584-tests.log",
+      "sha256": "d1285c68f7e31224201d645730bd3476869492f2b045c1b4f5cf1bf34de4686c"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3585-request.json",
+      "sha256": "cb764f03ff63ce38c63230421e42d3b290e8366d0fb0f29a97d3df288660bc3e"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3585-transcript.json",
+      "sha256": "742f589a506931352ce1320a66318763a7f2ad84721fb5380624c1aafc36ca63"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3585.log",
+      "sha256": "742f589a506931352ce1320a66318763a7f2ad84721fb5380624c1aafc36ca63"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3585-tests.log",
+      "sha256": "6dd6a50a2a2ede6f50bcc89c74d9865e2a22ec99348e0fc55efa294b76c40b98"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3586-request.json",
+      "sha256": "e4949f4b0379f1650f7bf2d397fca193e6efec31ac42010b8f201912796db6c7"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3586-transcript.json",
+      "sha256": "0b45c6817c449db97039dc0ef3efe282467267a9271b0fba3c2d21daf6dce8a0"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3586.log",
+      "sha256": "0b45c6817c449db97039dc0ef3efe282467267a9271b0fba3c2d21daf6dce8a0"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3587-request.json",
+      "sha256": "4084b586f9cbddf40ef6e93cf78ba48e09e3ab3552ddaf93564d49eb280db3e7"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3587-transcript.json",
+      "sha256": "ae35a4ac5857f5c726ffb3c9922285630caa22dafd74b82a5bddf96fc9a5ffd7"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3587.log",
+      "sha256": "ae35a4ac5857f5c726ffb3c9922285630caa22dafd74b82a5bddf96fc9a5ffd7"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3587-audit.json",
+      "sha256": "f29db4d2bdeee044645d6595ec507ec8a6caad6f271fe34574880e146ec7492d"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/raw/T3584-request-construction-error.json",
+      "sha256": "32a4367f0495074f072605a4288fb89d897238b87cb584510ecc8d3797f5b10d"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/source-goal-projection.mjs",
+      "sha256": "f54ff7fe74599a06352865c84d8c50f6d0aa776e33b9f145ca5170e9cdcc4712"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/source-goal-projection.test.mjs",
+      "sha256": "ab5d1ab73562fae6462e53da137225cfe889d7d8b9ffef282b305fd79158b375"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/goal-bound-bridge.mjs",
+      "sha256": "fc34e09247dd6e8dac748760145203362d27ebeb15e27660184adbd96c984310"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/solver_formalization.mjs",
+      "sha256": "46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/source/translation_formalization.mjs",
+      "sha256": "f4161079a1e37708915bef76e0ddab96a4104745668c051a3d0b0f7330db822b"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/ledger.md",
+      "sha256": "f0b126c50bd07ac1bcfe11ec759ee504fedd5529d5d411c11a1aa1bbccfc6136"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-goal-projection-packet/report.md",
+      "sha256": "20e8752a3d008c910c1d84e5c7586e71b2f007d0104e2af9fdb8fbb20d936e7c"
+    }
+  ],
+  "validation": {
+    "projectionControls": 27,
+    "originalBridgeControls": 14,
+    "totalPass": 41,
+    "totalFail": 0,
+    "nativeInvocations": 0
+  },
+  "effects": {
+    "reviewedScratchSourceTestWrites": 3,
+    "uniqueReviewedSourceTestPaths": 2,
+    "neutralSelectedSourceCopies": 3,
+    "neutralTestLogWrites": 2,
+    "neutralSealCopies": 27,
+    "authoredSealEvidenceDocs": 2,
+    "sealManifest": 1,
+    "productionWrites": 0,
+    "manualSourceWrites": 0,
+    "autonomousUsefulCodeBytes": 0
+  },
+  "invocationInputs": [
+    {
+      "id": "T3582",
+      "taskUtf8Bytes": 723,
+      "reviewedSourceContextBytes": 0
+    },
+    {
+      "id": "T3583",
+      "taskUtf8Bytes": 743,
+      "reviewedSourceContextBytes": 0
+    },
+    {
+      "id": "T3584",
+      "taskUtf8Bytes": 1031,
+      "reviewedSourceContextBytes": 14275
+    },
+    {
+      "id": "T3585",
+      "taskUtf8Bytes": 904,
+      "reviewedSourceContextBytes": 20008
+    },
+    {
+      "id": "T3586",
+      "taskUtf8Bytes": 743,
+      "reviewedSourceContextBytes": 0
+    },
+    {
+      "id": "T3587",
+      "taskUtf8Bytes": 445,
+      "reviewedSourceContextBytes": 0
+    }
+  ],
+  "open": [
+    "G112 original semantic implementation requests",
+    "Natural-language terminal query classification/selector ownership",
+    "Goal-bound source composition",
+    "Rust source declaration grammar/typed source-contract transfer"
+  ]
+}

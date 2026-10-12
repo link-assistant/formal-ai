@@ -1,0 +1,52 @@
+# Response templates for the TRIZ/contradiction solver (issue #901).
+#
+# The answer teaches the resolution shapes as data — the families come from
+# data/seed/triz-principles.lino (twelve general paradox-resolution
+# families plus the forty inventive principles), the precedents are the
+# top-20 benchmark tasks, and the link note explains that a contradiction
+# is a link whose 0-1 value is chosen from the requirement's own clauses
+# (computed in basis points by the selection heuristic, no default 50 %).
+# Placeholders in braces are filled by the handler in
+# rust/src/triz_solver.rs.
+
+multilingual_responses
+  response response_triz_resolution_en
+    intent triz_resolution_map
+    language en
+    text "A contradiction is a link with a value, not a wall. Ways through:\n{families}\nPrecedent from the benchmark corpus:\n{precedents}\n{link_note}"
+  response response_triz_resolution_ru
+    intent triz_resolution_map
+    language ru
+    text "Противоречие — это связь со значением, а не стена. Пути решения:\n{families}\nПрецеденты из эталонного набора задач:\n{precedents}\n{link_note}"
+  response response_triz_resolution_hi
+    intent triz_resolution_map
+    language hi
+    text "अंतर्विरोध एक मूल्य वाला लिंक है, दीवार नहीं। रास्ते:\n{families}\nबेंचमार्क संग्रह से उदाहरण:\n{precedents}\n{link_note}"
+  response response_triz_resolution_zh
+    intent triz_resolution_map
+    language zh
+    text "矛盾是一个带值的链接，而不是一堵墙。出路：\n{families}\n基准任务集的先例：\n{precedents}\n{link_note}"
+  response response_triz_resolution_es
+    intent triz_resolution_map
+    language es
+    text "Una contradicción es un enlace con valor, no un muro. Salidas:\n{families}\nPrecedentes del corpus de referencia:\n{precedents}\n{link_note}"
+  response response_triz_link_note_en
+    intent triz_link_note
+    language en
+    text "A contradiction is a link whose value (0-1) is chosen from the requirement's own clauses — basis points in the selection heuristic, with no default 50 %. Say which side the requirements favor and the point on the range follows."
+  response response_triz_link_note_ru
+    intent triz_link_note
+    language ru
+    text "Противоречие — это связь, значение которой (0–1) выбирается по собственным условиям требования: в эвристике выбора это базисные пункты, без значения 50 % по умолчанию. Скажите, какую сторону поддерживают требования, и точка на шкале определится из этого."
+  response response_triz_link_note_hi
+    intent triz_link_note
+    language hi
+    text "विरोधाभास एक link है जिसका मान (0-1) आवश्यकता की अपनी शर्तों से चुना जाता है — selection heuristic में basis points, बिना किसी default 50 % के। बताइए कि आवश्यकताएँ किस पक्ष के अनुकूल हैं, और सीमा पर बिंदु उसी से तय होगा।"
+  response response_triz_link_note_zh
+    intent triz_link_note
+    language zh
+    text "矛盾是一条链接，其值（0-1）由需求自身的条款选定——在选择启发式中以基点表示，没有默认的 50 %。说明需求偏向哪一方，范围上的取值点就随之确定。"
+  response response_triz_link_note_es
+    intent triz_link_note
+    language es
+    text "Una contradicción es un enlace cuyo valor (0-1) se elige a partir de las propias cláusulas del requisito: puntos básicos en la heurística de selección, sin un 50 % por defecto. Di qué lado favorecen los requisitos y el punto del rango se deduce de ello."

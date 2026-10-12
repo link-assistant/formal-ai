@@ -91,7 +91,7 @@ fn the_store_this_binary_resolves_is_not_in_the_home_directory() {
 
 #[test]
 fn an_explicit_memory_path_still_wins() {
-    // `tests/issue_756.rs` pins the exact path `resolve_memory_path_from`
+    // `tests/shared_memory_path.rs` pins the exact path `resolve_memory_path_from`
     // derives from a given HOME, so the test fallback must never reach it.
     let explicit = std::ffi::OsStr::new("/tmp/explicit-store.lino");
     assert_eq!(
@@ -107,7 +107,7 @@ fn an_explicit_memory_path_still_wins() {
 
 #[test]
 fn a_test_that_relocates_home_keeps_the_store_it_asked_for() {
-    // `tests/issue_756.rs` moves `HOME` to a temporary directory and asserts
+    // `tests/shared_memory_path.rs` moves `HOME` to a temporary directory and asserts
     // the store is created under it. Redirecting that too would break a test
     // that is already isolating itself correctly, so the redirect covers only
     // the unmanaged default. Regression pin: an earlier version of this guard

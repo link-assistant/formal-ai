@@ -1,0 +1,120 @@
+TAP version 13
+# Subtest: exact declaration retains independent UTF8/UTF16 spans and hashes without module authoring
+ok 1 - exact declaration retains independent UTF8/UTF16 spans and hashes without module authoring
+  ---
+  duration_ms: 78.974167
+  ...
+# Subtest: export alias resolves actual local declaration
+ok 2 - export alias resolves actual local declaration
+  ---
+  duration_ms: 0.844292
+  ...
+# Subtest: local declaration is available without fabricated export
+ok 3 - local declaration is available without fabricated export
+  ---
+  duration_ms: 0.529375
+  ...
+# Subtest: bare cannot certify a projection
+ok 4 - bare cannot certify a projection
+  ---
+  duration_ms: 0.266917
+  ...
+# Subtest: partial cannot certify a projection
+ok 5 - partial cannot certify a projection
+  ---
+  duration_ms: 0.313375
+  ...
+# Subtest: wrong provider path cannot certify a projection
+ok 6 - wrong provider path cannot certify a projection
+  ---
+  duration_ms: 0.211958
+  ...
+# Subtest: outer actual failure owns Failure
+ok 7 - outer actual failure owns Failure
+  ---
+  duration_ms: 0.248625
+  ...
+# Subtest: wrong call requires fresh Read
+ok 8 - wrong call requires fresh Read
+  ---
+  duration_ms: 0.626083
+  ...
+# Subtest: wrong tool requires fresh Read
+ok 9 - wrong tool requires fresh Read
+  ---
+  duration_ms: 0.575833
+  ...
+# Subtest: new window requires fresh Read
+ok 10 - new window requires fresh Read
+  ---
+  duration_ms: 0.264958
+  ...
+# Subtest: conflicting paths requires fresh Read
+ok 11 - conflicting paths requires fresh Read
+  ---
+  duration_ms: 0.175542
+  ...
+# Subtest: source and request drift refuse stale query
+ok 12 - source and request drift refuse stale query
+  ---
+  duration_ms: 0.299583
+  ...
+# Subtest: arbitrary JSON remains data in both source-query Gap and complete plain Read
+ok 13 - arbitrary JSON remains data in both source-query Gap and complete plain Read
+  ---
+  duration_ms: 1.185541
+  ...
+# Subtest: member/index access never receives getter or proxy purity inference
+ok 14 - member/index access never receives getter or proxy purity inference
+  ---
+  duration_ms: 0.554208
+  ...
+# Subtest: import alias never manufactures unobserved dependency declaration
+ok 15 - import alias never manufactures unobserved dependency declaration
+  ---
+  duration_ms: 0.392208
+  ...
+# Subtest: invalid or duplicate source refuses projection 35
+ok 16 - invalid or duplicate source refuses projection 35
+  ---
+  duration_ms: 0.455917
+  ...
+# Subtest: invalid or duplicate source refuses projection 55
+ok 17 - invalid or duplicate source refuses projection 55
+  ---
+  duration_ms: 0.410708
+  ...
+# Subtest: invalid or duplicate source refuses projection 59
+ok 18 - invalid or duplicate source refuses projection 59
+  ---
+  duration_ms: 0.420084
+  ...
+# Subtest: unsupported design/composition/Run cannot masquerade as source declaration
+ok 19 - unsupported design/composition/Run cannot masquerade as source declaration
+  ---
+  duration_ms: 0.063083
+  ...
+# Subtest: independent complete full Read still delegates exactly
+ok 20 - independent complete full Read still delegates exactly
+  ---
+  duration_ms: 206.003125
+  ...
+# Subtest: actual source selectedCandidate projects whole declaration with unknown effects
+ok 21 - actual source selectedCandidate projects whole declaration with unknown effects
+  ---
+  duration_ms: 4.598208
+  ...
+# Subtest: actual source candidateCompactSummary projects whole declaration with unknown effects
+ok 22 - actual source candidateCompactSummary projects whole declaration with unknown effects
+  ---
+  duration_ms: 5.225458
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 823.479792

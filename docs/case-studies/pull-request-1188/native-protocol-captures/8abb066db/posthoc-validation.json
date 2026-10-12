@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "artifact": {
+    "id": 11633701303,
+    "run": 37957603176,
+    "job": 113921198584,
+    "zip_sha256": "992ea65a635fc680d9f1bc52dd4c7adab46bd2b3f6ef2f537198245b92f83855"
+  },
+  "provenance": {
+    "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/original-producer-provenance.json",
+    "sha256": "95f535f9ee97e0e54c552676944a417b4fcca834208d1119336cafb77e8945b1"
+  },
+  "source_commit": "96e579831186bb93c657e807056cd7e41ea4bdd4",
+  "source_tree": "21e50375d2de386a9932cdee34c9450ca4d09828",
+  "original_producer_result": "failed-legacy-raw-stdout-comparison",
+  "validation": "posthoc-only-fresh-CI-still-required",
+  "captures": [
+    {
+      "id": "self-coding",
+      "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/self-coding.json",
+      "sha256": "77d21a6a86d45e750d80195e3ece1151e04bc1e53a16e12cd74a3f196579981a",
+      "bytes": 4879,
+      "exit": 0,
+      "signal": null,
+      "posthoc": "validated-exact-original-target-command-and-complete-process-receipt"
+    },
+    {
+      "id": "ci-diagnostic",
+      "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/ci-diagnostic.json",
+      "sha256": "7a12e3480ebc6eb51bb8bc434117901b710ae945f18dbd03f00c62b7225ea1aa",
+      "bytes": 5979,
+      "exit": 0,
+      "signal": null,
+      "posthoc": "validated-exact-original-target-command-and-complete-process-receipt"
+    },
+    {
+      "id": "ci-template",
+      "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/ci-template.json",
+      "sha256": "82606d8ee83c167b3bc637abebccc30a1a44fd7327776fa22a6632ff05f01cbc",
+      "bytes": 5915,
+      "exit": 0,
+      "signal": null,
+      "posthoc": "validated-exact-original-target-command-and-complete-process-receipt"
+    }
+  ]
+}

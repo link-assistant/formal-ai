@@ -2,8 +2,11 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
+      # Verbatim upstream captures are pinned by SHA-256; never rewrite them.
       - id: trailing-whitespace
+        exclude: ^rust/tests/fixtures/coding-discovery/captured/
       - id: end-of-file-fixer
+        exclude: ^rust/tests/fixtures/coding-discovery/captured/
       - id: check-yaml
       - id: check-added-large-files
       - id: check-merge-conflict

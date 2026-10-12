@@ -1,0 +1,6 @@
+program_synthesis	síntesis de programas	síntesis de funciones
+synthesis_domain_python	python
+synthesis_domain_tuple	tupla	tuplas
+synthesis_domain_numbers	números
+synthesis_domain_vowels	vocales	vocal
+synthesis_action_return	devuelve	devolver	retorna	retornar

@@ -16,6 +16,17 @@ const DOCUMENTS: &[&str] = &[
     "NON-GOALS.md",
     "ROADMAP.md",
     "ARCHITECTURE.md",
+    // ARCHITECTURE.md is an overview; its detailed sections are these topic files.
+    "docs/architecture/system-and-pipeline.md",
+    "docs/architecture/memory.md",
+    "docs/architecture/formalization-and-selection.md",
+    "docs/architecture/problem-solver.md",
+    "docs/architecture/translation.md",
+    "docs/architecture/runtime-and-surfaces.md",
+    "docs/architecture/audit-history.md",
+    "docs/architecture/references.md",
+    "docs/architecture/module-map.md",
+    "docs/architecture/self-development-release-loop.md",
     "README.md",
     "CONTRIBUTING.md",
     "REQUIREMENTS.md",
@@ -25,6 +36,28 @@ const DOCUMENTS: &[&str] = &[
     "docs/philosophy.md",
     "docs/USER-JOURNEYS.md",
 ];
+
+/// `REQUIREMENTS.md` is an index; the register it indexes is split into these
+/// parts by `scripts/assemble-requirements.rs`, and every part is scanned too.
+const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
+
+/// Every authority document, the requirement register's parts included.
+fn documents(root: &Path) -> Vec<String> {
+    let mut parts: Vec<String> = fs::read_dir(root.join(REQUIREMENT_PARTS))
+        .map(|entries| {
+            entries
+                .filter_map(Result::ok)
+                .filter_map(|entry| entry.file_name().into_string().ok())
+                .filter(|name| name.ends_with(".md"))
+                .map(|name| format!("{REQUIREMENT_PARTS}/{name}"))
+                .collect()
+        })
+        .unwrap_or_default();
+    parts.sort();
+    let mut documents: Vec<String> = DOCUMENTS.iter().map(|path| (*path).to_string()).collect();
+    documents.extend(parts);
+    documents
+}
 
 fn open_issues(source: &str) -> BTreeSet<u64> {
     let mut open = BTreeSet::new();
@@ -98,7 +131,8 @@ fn main() {
         .unwrap_or_else(|error| panic!("{} readable: {error}", snapshot_path.display()));
     let open = open_issues(&snapshot);
     let mut failures = Vec::new();
-    for relative in DOCUMENTS {
+    let documents = documents(root);
+    for relative in &documents {
         let source = fs::read_to_string(root.join(relative))
             .unwrap_or_else(|error| panic!("{relative} readable: {error}"));
         for (index, line) in source.lines().enumerate() {
@@ -115,7 +149,7 @@ fn main() {
     if failures.is_empty() {
         println!(
             "issue-citation parity holds across {} authority documents and {} open items",
-            DOCUMENTS.len(),
+            documents.len(),
             open.len()
         );
     } else {

@@ -1,0 +1,49 @@
+view
+  id M-6fa23de6dee2
+  lemma print
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the text appearing in a book, newspaper, or other printed publication"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a picture or design printed from an engraving"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a visible indication made on a surface"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "availability in printed form"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a copy of a movie on film (especially a particular version of it)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a fabric with a dyed pattern pressed onto it (usually by engraved rollers)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a printed picture produced from a photographic negative"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put into print"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "write as if with print; not cursive"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make into a print"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "reproduce by printing"
+    provenance (wordnet)

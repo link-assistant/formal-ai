@@ -1,0 +1,19 @@
+/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_implementation_language.js:43
+export { oracleKnowsLanguage };
+^^^^^^
+
+SyntaxError: Unexpected token 'export'
+    at new Script (node:vm:117:7)
+    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:3)
+    at context.importScripts (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:220:7)
+    at importScripts (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:41:32)
+    at /Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:87:3
+    at Script.runInContext (node:vm:149:12)
+    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:49)
+    at createWorkerContext (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:226:3)
+    at WorkerHost.boot (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:267:22)
+    at installNodeHost (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/node-host.mjs:90:32)
+
+Node.js v20.19.4
+
+process_status=1

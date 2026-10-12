@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "護理人員"
+        },
+        "es": {
+          "language": "es",
+          "value": "enfermero"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "zh": {
           "language": "zh",
           "value": "提供醫療專業的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "profesional de la salud"
         }
       },
       "aliases": {
@@ -76,6 +84,24 @@
           {
             "language": "zh",
             "value": "护师"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "enfermera"
+          },
+          {
+            "language": "es",
+            "value": "enfermeros"
+          },
+          {
+            "language": "es",
+            "value": "enfermeras"
+          },
+          {
+            "language": "es",
+            "value": "nurse"
           }
         ]
       }

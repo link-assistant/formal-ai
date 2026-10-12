@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "P2370": {
+      "type": "property",
+      "datatype": "quantity",
+      "id": "P2370",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "conversion to SI unit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "преобразования к основной единице СИ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "转换为国际单位制单位"
+        },
+        "es": {
+          "language": "es",
+          "value": "conversión a unidad del SI"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "conversion of the unit into a coherent SI unit"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "величина в единицах СИ"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "将单位转换为国际单位制（SI）单位"
+        },
+        "es": {
+          "language": "es",
+          "value": "conversión de la unidad en la unidad coherente del SI"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "conversion to SI base unit"
+          },
+          {
+            "language": "en",
+            "value": "conversion to coherent SI unit"
+          },
+          {
+            "language": "en",
+            "value": "SI unit equivalent"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "國際單位制單位轉換"
+          },
+          {
+            "language": "zh",
+            "value": "转换为国际单位制单位"
+          },
+          {
+            "language": "zh",
+            "value": "国际单位制单位转换"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "conversión a unidad básica del Sistema Internacional"
+          },
+          {
+            "language": "es",
+            "value": "conversión a unidad básica del SI"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

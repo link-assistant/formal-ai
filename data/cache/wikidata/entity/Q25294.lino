@@ -4,12 +4,14 @@ Q25294
     zh ("鐵鎚" "榔头" "榔" "槌子" "鎚" "錘子" "鎚子")
   descriptions
     en "tool meant to deliver an impact to an object"
+    es "herramienta con una cabeza de metal pesado montada en ángulo recto en el extremo de un mango, utilizada para trabajos como romper cosas y clavar clavos"
     hi "जोर से प्रहार करने के लिए एक औजार"
     ru "ударный ручной инструмент"
     zh "敲打工具"
   id Q25294
   labels
     en hammer
+    es martillo
     hi "हथौड़ा"
     ru "молоток"
     zh "槌"

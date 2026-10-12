@@ -1,0 +1,148 @@
+>> bash {"command":"node --test rust/tests/web/source-network-packets.test.mjs rust/tests/web/source-network-workers.test.mjs"}
+   Output: TAP version 13
+   # Subtest: every source has exactly one stable shard, including non-ASCII paths
+   ok 1 - every source has exactly one stable shard, including non-ASCII paths
+     ---
+     duration_ms: 1.092083
+     ...
+   # Subtest: duplicate paths and invalid shard identities refuse before serialization
+   ok 2 - duplicate paths and invalid shard identities refuse before serialization
+     ---
+     duration_ms: 0.126291
+     ...
+   # Subtest: receipt records serialized bytes and exact UTF-8 source, independently of line endings
+   ok 3 - receipt records serialized bytes and exact UTF-8 source, independently of line endings
+     ---
+     duration_ms: 0.374416
+     ...
+   # Subtest: a source digest or altered reconstruction never counts as a complete network
+   ok 4 - a source digest or altered reconstruction never counts as a complete network
+     ---
+     duration_ms: 0.203875
+     ...
+   # Subtest: decoder failures are propagated without a success receipt
+   ok 5 - decoder failures are propagated without a success receipt
+     ---
+     duration_ms: 0.13875
+     ...
+   # Subtest: all workflow serializer checkouts share one verified pin
+   ok 6 - all workflow serializer checkouts share one verified pin
+     ---
+     duration_ms: 0.122541
+     ...
+   # Subtest: downloaded gzip packet reconstructs the exact source and refuses identity corruption
+   ok 7 - downloaded gzip packet reconstructs the exact source and refuses identity corruption
+     ---
+     duration_ms: 1.045375
+     ...
+   # Subtest: release distribution rejects missing, duplicate, stale, forged and corrupt source packets
+   ok 8 - release distribution rejects missing, duplicate, stale, forged and corrupt source packets
+     ---
+     duration_ms: 2.902083
+     ...
+   # Subtest: production source producer imports without launching serialization and enumerates tracked production roots
+   ok 9 - production source producer imports without launching serialization and enumerates tracked production roots
+     ---
+     duration_ms: 90.205416
+     ...
+   # Subtest: compressed producer reconstructs its actual network once and preserves all source bytes
+   ok 10 - compressed producer reconstructs its actual network once and preserves all source bytes
+     ---
+     duration_ms: 1.004334
+     ...
+   # Subtest: bounded pool preserves complete input order across actual asynchronous workers
+   ok 11 - bounded pool preserves complete input order across actual asynchronous workers
+     ---
+     duration_ms: 87.963416
+     ...
+   # Subtest: worker errors, early exits and mismatched receipt identity never produce complete reports
+   ok 12 - worker errors, early exits and mismatched receipt identity never produce complete reports
+     ---
+     duration_ms: 45.578292
+     ...
+   1..12
+   # tests 12
+   # suites 0
+   # pass 12
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 175.8815
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/source-network-packets.test.mjs rust/tests/web/source-network-workers.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: every source has exactly one stable shard, including non-ASCII paths
+ok 1 - every source has exactly one stable shard, including non-ASCII paths
+  ---
+  duration_ms: 1.092083
+  ...
+# Subtest: duplicate paths and invalid shard identities refuse before serialization
+ok 2 - duplicate paths and invalid shard identities refuse before serialization
+  ---
+  duration_ms: 0.126291
+  ...
+# Subtest: receipt records serialized bytes and exact UTF-8 source, independently of line endings
+ok 3 - receipt records serialized bytes and exact UTF-8 source, independently of line endings
+  ---
+  duration_ms: 0.374416
+  ...
+# Subtest: a source digest or altered reconstruction never counts as a complete network
+ok 4 - a source digest or altered reconstruction never counts as a complete network
+  ---
+  duration_ms: 0.203875
+  ...
+# Subtest: decoder failures are propagated without a success receipt
+ok 5 - decoder failures are propagated without a success receipt
+  ---
+  duration_ms: 0.13875
+  ...
+# Subtest: all workflow serializer checkouts share one verified pin
+ok 6 - all workflow serializer checkouts share one verified pin
+  ---
+  duration_ms: 0.122541
+  ...
+# Subtest: downloaded gzip packet reconstructs the exact source and refuses identity corruption
+ok 7 - downloaded gzip packet reconstructs the exact source and refuses identity corruption
+  ---
+  duration_ms: 1.045375
+  ...
+# Subtest: release distribution rejects missing, duplicate, stale, forged and corrupt source packets
+ok 8 - release distribution rejects missing, duplicate, stale, forged and corrupt source packets
+  ---
+  duration_ms: 2.902083
+  ...
+# Subtest: production source producer imports without launching serialization and enumerates tracked production roots
+ok 9 - production source producer imports without launching serialization and enumerates tracked production roots
+  ---
+  duration_ms: 90.205416
+  ...
+# Subtest: compressed producer reconstructs its actual network once and preserves all source bytes
+ok 10 - compressed producer reconstructs its actual network once and preserves all source bytes
+  ---
+  duration_ms: 1.004334
+  ...
+# Subtest: bounded pool preserves complete input order across actual asynchronous workers
+ok 11 - bounded pool preserves complete input order across actual asynchronous workers
+  ---
+  duration_ms: 87.963416
+  ...
+# Subtest: worker errors, early exits and mismatched receipt identity never produce complete reports
+ok 12 - worker errors, early exits and mismatched receipt identity never produce complete reports
+  ---
+  duration_ms: 45.578292
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 175.8815
+```

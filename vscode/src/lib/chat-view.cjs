@@ -99,6 +99,7 @@ async function renderChatWebview({ vscode, context, host, webviewView }) {
     status: host.getStatus(),
     assetVersion: appVersion,
     appVersion,
+    debuggerView: Boolean(host.debuggerView),
   });
 }
 

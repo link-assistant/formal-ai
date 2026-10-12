@@ -1,0 +1,61 @@
+Q183
+  aliases
+    en ("Federal Republic of Germany" DE DEU FRG BRD)
+    ru ("Федеративная Республика Германия" "ФРГ" "Дойчланд")
+    zh ("德意志" "德意志联邦" "德意志联邦共和国" "德意志聯邦" "德意志聯邦共和國" "德国")
+    zh-hans ("德意志" "德意志联邦" "德意志联邦共和国")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q64
+              numeric-id 64
+          hash 95677e2e7ca09191a3702fbbd6bd5833b1c6487e
+          property P36
+          snaktype value
+        rank preferred
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q64
+              numeric-id 64
+          hash 95677e2e7ca09191a3702fbbd6bd5833b1c6487e
+          property P36
+          snaktype value
+        rank preferred
+  id Q183
+  labels
+    en Germany
+    hi "जर्मनी"
+    ru "Германия"
+    zh "德國"
+    zh-hans "德国"
+  sitelinks
+    enwiki
+      site enwiki
+      title Germany
+    hiwiki
+      site hiwiki
+      title "जर्मनी"
+    ruwiki
+      site ruwiki
+      title "Германия"
+    zhwiki
+      site zhwiki
+      title "德国"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

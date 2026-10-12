@@ -1,0 +1,21 @@
+view
+  id M-fc6cb7de8ecc
+  lemma locate
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "discover the location of; determine the place of; find by searching or examining"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "determine or indicate the place, site, or limits of, as if by an instrument or by a survey"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "assign a location to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "take up residence and become established"
+    provenance (wordnet)

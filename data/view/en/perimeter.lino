@@ -1,0 +1,17 @@
+view
+  id M-5169e8181994
+  lemma perimeter
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the boundary line or the area immediately inside the boundary"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a line enclosing a plane areas"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the size of something as given by the distance around it"
+    provenance (wordnet)

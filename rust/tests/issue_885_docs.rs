@@ -1,3 +1,6 @@
+#[path = "support/assembled_docs.rs"]
+mod assembled_docs;
+
 use std::fs;
 use std::path::PathBuf;
 
@@ -279,7 +282,8 @@ fn whole_solution_is_linked_and_has_release_notes() {
         );
         ("issue 885 release fragment", fragment)
     } else {
-        let changelog = read("CHANGELOG.md");
+        // CHANGELOG.md and the archive its older releases roll into.
+        let changelog = crate::assembled_docs::changelog();
         let release = changelog
             .split_once("## [0.318.0]")
             .expect("released issue 885 notes must remain under v0.318.0")

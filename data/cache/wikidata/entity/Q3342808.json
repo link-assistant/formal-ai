@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "椰子"
+        },
+        "es": {
+          "language": "es",
+          "value": "coco"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "椰子树的果实"
+        },
+        "es": {
+          "language": "es",
+          "value": "fruto de la palmera cocotero utilizado como alimento y materia prima"
         }
       },
       "aliases": {
@@ -66,6 +74,20 @@
           {
             "language": "ru",
             "value": "кокос (орех)"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "coco (nuez)"
+          },
+          {
+            "language": "es",
+            "value": "nuez de coco"
+          },
+          {
+            "language": "es",
+            "value": "fruto del cocotero"
           }
         ]
       }

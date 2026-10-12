@@ -1,0 +1,31 @@
+{
+  "provenance": "Exact prompt reconstructed from reviewed committed before/after file bytes and unchanged helper replace interpolation, not an original request capture.",
+  "characters": 8594,
+  "objectiveUnchanged": true,
+  "quotes": [
+    {
+      "start": 63,
+      "end": 3803,
+      "characters": 3738
+    },
+    {
+      "start": 3809,
+      "end": 8594,
+      "characters": 4783
+    }
+  ],
+  "edit": {
+    "target": "rust/tests/web/seed-routing-ci-regressions.test.mjs",
+    "oldCharacters": 3738,
+    "newCharacters": 4783
+  },
+  "authoritativeWrite": false,
+  "rawConversationControl": true,
+  "instructionConversationControl": true,
+  "continuationRaw": false,
+  "instructionCharacters": 8594,
+  "limit": "Read-only predicates; reconstructed request, no unchanged original runtime retry.",
+  "quotedOperandMaskedConversationControl": false,
+  "maskedInstruction": "In rust/tests/web/seed-routing-ci-regressions.test.mjs replace with",
+  "ownTextLimitation": "ownText only removes colon-led trailing payload, not old/new quoted operands."
+}

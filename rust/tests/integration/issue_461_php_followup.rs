@@ -48,11 +48,23 @@ fn russian_capabilities_follow_up_can_request_php_hello_world() {
         "answer must carry the catalogued PHP template, got: {}",
         response.answer
     );
-    // A real `php` toolchain verified the catalogued templates, so the answer
-    // reports execution rather than borrowing an unverified claim.
+    // A real `php` toolchain verified the catalog's earlier template, not
+    // php.net's page example the answer now carries (issue #1165), so the
+    // answer reports the program as rediscovered from its page, with the
+    // output it is expected to print, rather than borrowing that run.
     assert!(
-        response.answer.contains("Вывод:"),
-        "answer must report the program's output, got: {}",
+        response.answer.contains(
+            "Статус выполнения: не запускалась; программа заново найдена на странице \
+             https://www.php.net/manual/en/tutorial.firstpage.php"
+        ),
+        "answer must report the program as rediscovered, not run, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .answer
+            .contains("Ожидаемый вывод после проверки:\n```text\nHello, world!\n```"),
+        "answer must state the expected output, got: {}",
         response.answer
     );
 }

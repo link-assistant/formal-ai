@@ -1,0 +1,9 @@
+view
+  id M-640d1d151261
+  lemma apr
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the month following March and preceding May"
+    provenance (wordnet)

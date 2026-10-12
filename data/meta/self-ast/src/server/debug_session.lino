@@ -1,0 +1,60 @@
+self_ast_census
+  target src/server/debug_session.rs
+  language rust
+  fidelity signature
+  byte_len 23296
+  line_count 635
+  content_id source_module_38d5e7b68493b912
+  symbol_count 51
+  symbols
+    const DEBUG_TOKEN_ENV 41 41
+    const STAGE_PAUSED 43 43
+    const STAGE_ADVANCED 44 44
+    const TURN_RELEASED 45 45
+    const IMPULSE 46 46
+    const IMPULSE_LEVEL 47 47
+    const DEBUG_ROUTE_PREFIX 48 48
+    const DEBUG_ACTIONS 49 49
+    const LIVENESS_POLL 52 52
+    function is_loopback_host 56 73
+    struct DebugToken 77 82
+    function generate_debug_token 87 107
+    function debug_token_from_env 111 125
+    struct Turn 128 137
+    struct State 140 145
+    function stage_fields 153 183
+    function record 186 197
+    function finish 199 210
+    function holds 213 217
+    function start 220 235
+    struct DebugSession 241 246
+    function new 251 259
+    function id 263 265
+    function authorizes 269 280
+    function lock 282 284
+    function pause 287 289
+    function hold 293 318
+    function begin 328 337
+    function resume 343 363
+    function gate 368 375
+    function abandon 378 381
+    function advance 387 414
+    function release 417 430
+    function snapshot 434 460
+    static SESSION 463 463
+    function enable_debug_session 470 475
+    function active_debug_session 479 481
+    function debug_session_banner 486 492
+    type Liveness 494 494
+    static CONNECTION 497 497
+    static OPEN_TURN 499 499
+    static SOLVE_DEPTH 501 501
+    function with_connection_scope 507 515
+    function with_liveness 519 525
+    struct SolveTurn 530 532
+    function drop 535 546
+    function begin_turn 554 565
+    function gate_turn 570 579
+    function field_text 582 586
+    function handle_debug_route 591 597
+    function handle_debug_request 601 635

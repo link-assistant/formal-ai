@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "卵"
+        },
+        "es": {
+          "language": "es",
+          "value": "huevo"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "胚胎的一种"
+        },
+        "es": {
+          "language": "es",
+          "value": "envase orgánico en donde se desarrolla un embrión"
         }
       }
     }

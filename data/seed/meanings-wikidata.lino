@@ -73,6 +73,11 @@ meanings
     lexeme zh
       surface
         text 排序算法
+    lexeme es
+      surface
+        text "algoritmo de ordenamiento"
+      surface
+        text "algoritmo de ordenación"
   wikidata_item_water
     grounded-in Q283
     defined-by entity
@@ -89,6 +94,9 @@ meanings
     lexeme zh
       surface
         text 水
+    lexeme es
+      surface
+        text agua
   wikidata_item_bread
     grounded-in Q7802
     defined-by entity
@@ -107,6 +115,9 @@ meanings
         text 面包
       surface
         text 麵包
+    lexeme es
+      surface
+        text pan
   wikidata_item_carrot
     grounded-in Q81
     defined-by entity
@@ -127,6 +138,11 @@ meanings
         text 胡萝卜
       surface
         text 胡蘿蔔
+    lexeme es
+      surface
+        text zanahoria
+      surface
+        text zanahorias
   wikidata_item_wikidata
     grounded-in Q2013
     defined-by entity
@@ -209,6 +225,13 @@ meanings
     lexeme zh
       surface
         text 子类
+    lexeme es
+      surface
+        text "subclase de"
+      surface
+        text "es un tipo de"
+      surface
+        text "es una clase de"
   wikidata_property_instance_of
     grounded-in P31
     defined-by relation
@@ -266,6 +289,13 @@ meanings
     lexeme zh
       surface
         text 属于
+    lexeme es
+      surface
+        text "parte de"
+      surface
+        text "es parte de"
+      surface
+        text "pertenece a"
   wikidata_property_has_part
     grounded-in P527
     defined-by relation
@@ -288,6 +318,13 @@ meanings
     lexeme zh
       surface
         text 包含
+    lexeme es
+      surface
+        text "tiene parte"
+      surface
+        text contiene
+      surface
+        text incluye
   wikidata_property_capital
     grounded-in P36
     defined-by relation
@@ -310,6 +347,13 @@ meanings
     lexeme zh
       surface
         text 首都
+    lexeme es
+      surface
+        text capital
+      surface
+        text "es la capital de"
+      surface
+        text "capital de"
   wikidata_property_named_after
     grounded-in P138
     defined-by relation
@@ -328,6 +372,11 @@ meanings
     lexeme zh
       surface
         text 命名自
+    lexeme es
+      surface
+        text "nombrado en honor a"
+      surface
+        text "lleva el nombre de"
   wikidata_property_translation
     grounded-in P5972
     defined-by relation
@@ -352,6 +401,13 @@ meanings
         text 翻译
       surface
         text 翻譯
+    lexeme es
+      surface
+        text traducción
+      surface
+        text traduce
+      surface
+        text traducir
   wikidata_property_item_for_this_sense
     grounded-in P5137
     defined-by relation
@@ -376,3 +432,8 @@ meanings
     lexeme zh
       surface
         text 意思
+    lexeme es
+      surface
+        text significa
+      surface
+        text "significado de"

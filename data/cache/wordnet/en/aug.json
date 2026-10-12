@@ -1,0 +1,19 @@
+{
+  "lemma": "aug",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15237251-n",
+      "partOfSpeech": "n",
+      "definition": "the month following July and preceding September",
+      "synonyms": [
+        "August"
+      ]
+    }
+  ]
+}

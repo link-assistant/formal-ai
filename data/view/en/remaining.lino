@@ -1,0 +1,9 @@
+view
+  id M-5585d28cd966
+  lemma remaining
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not used up"
+    provenance (wordnet)

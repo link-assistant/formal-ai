@@ -1,0 +1,13 @@
+language en
+lemma remaining
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not used up"
+    examples ("leftover meatloaf" "she had a little money left over so she went to a movie" "some odd dollars left" "saved the remaining sandwiches for supper" "unexpended provisions")
+    id oewn-00929746-s
+    partOfSpeech s
+    synonyms (leftover "left over" left odd unexpended)
+source "oewn:2024"

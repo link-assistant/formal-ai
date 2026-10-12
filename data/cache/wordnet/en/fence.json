@@ -1,0 +1,66 @@
+{
+  "lemma": "fence",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03332179-n",
+      "partOfSpeech": "n",
+      "definition": "a barrier that serves to enclose an area",
+      "synonyms": [
+        "fencing"
+      ]
+    },
+    {
+      "id": "oewn-10104870-n",
+      "partOfSpeech": "n",
+      "definition": "a dealer in stolen property"
+    },
+    {
+      "id": "oewn-01591055-v",
+      "partOfSpeech": "v",
+      "definition": "enclose with a fence",
+      "examples": [
+        "we fenced in our yard"
+      ],
+      "synonyms": [
+        "fence in"
+      ]
+    },
+    {
+      "id": "oewn-02215536-v",
+      "partOfSpeech": "v",
+      "definition": "receive stolen goods"
+    },
+    {
+      "id": "oewn-01149384-v",
+      "partOfSpeech": "v",
+      "definition": "fight with fencing swords"
+    },
+    {
+      "id": "oewn-01133033-v",
+      "partOfSpeech": "v",
+      "definition": "surround with a wall in order to fortify",
+      "synonyms": [
+        "wall",
+        "palisade",
+        "fence in",
+        "surround"
+      ]
+    },
+    {
+      "id": "oewn-00775477-v",
+      "partOfSpeech": "v",
+      "definition": "have an argument about something",
+      "synonyms": [
+        "argue",
+        "contend",
+        "debate"
+      ]
+    }
+  ]
+}

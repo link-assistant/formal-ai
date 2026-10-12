@@ -1,0 +1,7 @@
+# Exact020be4 finite CI followup
+
+Actual primary failures on the pushed020be4 source are preserved. The scanner fix reuses the existing generic lowercase digest byte encoder at all three unchanged SHA operands;31 original controls, exact inverse and original full fixture hashes pass. The dormant permission fix preserves canonical52 operations and104 bindings, current source SHA and185-line coverage layout; original26 controls and final24 permission plus4 projection checks pass. Actual new-head native compilation, original CI Zizmor1.29 and whole CI remain pending. Local Zizmor1.30 removed permission findings while retaining four new low advisories; no suppression was used. Changed test workspace prevents historical whole-workspace capture certification.
+
+The root annotation candidate stays scratch-only:43 unchanged controls and29 schema/refusal/conservation controls pass, all original203 objects remain unchanged, and no new case is carried. The separate twenty-task predeclared calculation cohort has0/20strict numeric-only acceptance despite all20raw replies being shorter. Full replies and all failure observations are retained without cropping. It is not a coding or native-equivalence baseline. Complete coordinating model token/cost usage is unknown.
+
+The archive verifies complete original bytes, SHA256 and gzip round trips. Each manifest record retains its source and cut. Own outer T2800 result is beyond this frozen cut. Remaining requirements, all six U9exceptions, G112original0/7 composition and production publication remain open.

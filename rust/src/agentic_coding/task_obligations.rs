@@ -55,10 +55,7 @@ pub fn next_step(request: &str, messages: &[ChatMessage]) -> Option<ObligationSt
         .into_iter()
         .filter(|node| !node.discharged())
         .collect();
-    if let Some(node) = open
-        .iter()
-        .find(|node| node.expectation.is_observable())
-    {
+    if let Some(node) = open.iter().find(|node| node.expectation.is_observable()) {
         return Some(ObligationStep::Observe((*node).clone()));
     }
     if let Some(node) = open.iter().find(|node| {
@@ -230,8 +227,9 @@ fn observed_ledger(request: &str, messages: &[ChatMessage]) -> ObligationLedger 
         root: agentic_root(request),
     };
     for record in super::transcript_evidence::records(messages) {
-        ledger.observe(&record);
+        observe_non_file_record(&mut ledger.root, &record);
     }
+    reconcile_file_observations(&mut ledger.root, &super::progress::Progress::scan(messages));
     ledger
 }
 
@@ -266,4 +264,68 @@ fn align_file_expectations(node: &mut ObligationNode) {
     for child in &mut node.children {
         align_file_expectations(child);
     }
+}
+
+/// Exact verification receipts judge only their declared file leaf, leaving raw evidence records intact.
+fn reconcile_file_observations(node: &mut ObligationNode, progress: &super::progress::Progress) {
+    for child in &mut node.children {
+        reconcile_file_observations(child, progress);
+    }
+    if !node.children.is_empty() {
+        return;
+    }
+    let ObligationExpectation::FileBytes { path, .. } = &node.expectation else {
+        return;
+    };
+    let Some(plan) = super::general_planner::compose_general_change_plan(&node.clause) else {
+        return;
+    };
+    if plan.mode != super::general_planner::GeneralPlanMode::LiteralFile || &plan.target != path {
+        return;
+    }
+    let Some(raw) = progress.latest_run_output_for(&plan.verification_command) else {
+        return;
+    };
+    if Some(raw.as_str()) != progress.latest_successful_run_output_for(&plan.verification_command) {
+        return;
+    }
+    let Some(payload) = super::tool_result::observed_payload(raw) else {
+        return;
+    };
+    let record = Evidence::observed(
+        &plan.verification_command,
+        vec![plan.target.clone()],
+        super::tool_result::reported_exit_code(raw),
+        payload.as_bytes(),
+        ObservationKind::FileBytes,
+        EvidenceSource::Harness,
+    );
+    let mut isolated = ObligationLedger {
+        frame_id: stable_id("file_observation", &node.node_id),
+        root: node.clone(),
+    };
+    isolated.observe(&record);
+    node.outcome = isolated.root.outcome;
+}
+
+/// Raw acknowledgements and incidental path mentions are not file-byte receipts.
+fn observe_non_file_record(node: &mut ObligationNode, record: &Evidence) -> bool {
+    if !node.children.is_empty() {
+        return node
+            .children
+            .iter_mut()
+            .any(|child| observe_non_file_record(child, record));
+    }
+    if matches!(node.expectation, ObligationExpectation::FileBytes { .. }) {
+        return false;
+    }
+    let mut isolated = ObligationLedger {
+        frame_id: stable_id("non_file_observation", &node.node_id),
+        root: node.clone(),
+    };
+    if isolated.observe(record).is_some() {
+        node.outcome = isolated.root.outcome;
+        return true;
+    }
+    false
 }

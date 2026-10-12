@@ -1,0 +1,31 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-skill-procedure.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-8342afd70668c4e4
+    record "skill_procedure_condition"
+  gap seed-metadata-gap-0c5138f572b3de2d
+    record "skill_procedure_fetch"
+  gap seed-metadata-gap-74dd49b973d59902
+    record "skill_procedure_object_both"
+  gap seed-metadata-gap-01e2430fd774cc62
+    record "skill_procedure_object_content"
+  gap seed-metadata-gap-ba2feec62ba75069
+    record "skill_procedure_object_link"
+  gap seed-metadata-gap-285a04d9656d4409
+    record "skill_procedure_object_title"
+  gap seed-metadata-gap-d352bb231ceead8c
+    record "skill_procedure_object_translation"
+  gap seed-metadata-gap-b3946a357c3bfa85
+    record "skill_procedure_reply"
+  gap seed-metadata-gap-45d3f796b71783ee
+    record "skill_procedure_separator"
+  gap seed-metadata-gap-01d401b580c91c5c
+    record "skill_procedure_store"
+  gap seed-metadata-gap-42e7efb1b34ee9f5
+    record "skill_procedure_transform"
+  gap seed-metadata-gap-0d78558240f393a3
+    record "skill_procedure_translate"
+  gap seed-metadata-gap-539ce1dc24fc528d
+    record "skill_procedure_trigger"

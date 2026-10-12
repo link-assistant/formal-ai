@@ -1,0 +1,1 @@
+check-debt-ratchet: --base <rev> is required: without it the ceilings are compared against nothing and a raised ceiling passes. Use --base origin/main locally; CI supplies GITHUB_BASE_REF.

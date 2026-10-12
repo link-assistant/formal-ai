@@ -1,0 +1,125 @@
+{
+  "entities": {
+    "Q124": {
+      "type": "item",
+      "id": "Q124",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "October"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "октябрь"
+        },
+        "es": {
+          "language": "es",
+          "value": "octubre"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अक्टूबर"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "10月"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "tenth month in the Julian and Gregorian calendars"
+        },
+        "es": {
+          "language": "es",
+          "value": "décimo mes del año"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "десятый месяц года в юлианском и григорианском календарях"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "公历及儒略历中第十个月份"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जूलियन और ग्रेगोरियन कैलेंडर में दसवां महीना"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Oct"
+          },
+          {
+            "language": "en",
+            "value": "10. month"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "октября"
+          },
+          {
+            "language": "ru",
+            "value": "окт."
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "otubre"
+          },
+          {
+            "language": "es",
+            "value": "Oct."
+          },
+          {
+            "language": "es",
+            "value": "otu."
+          },
+          {
+            "language": "es",
+            "value": "ot."
+          },
+          {
+            "language": "es",
+            "value": "oct."
+          },
+          {
+            "language": "es",
+            "value": "décimo mes"
+          },
+          {
+            "language": "es",
+            "value": "10.° mes"
+          },
+          {
+            "language": "es",
+            "value": "mes décimo"
+          },
+          {
+            "language": "es",
+            "value": "mes 10.°"
+          },
+          {
+            "language": "es",
+            "value": "10"
+          },
+          {
+            "language": "es",
+            "value": "ochubre"
+          },
+          {
+            "language": "es",
+            "value": "mes 10"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

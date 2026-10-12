@@ -1,0 +1,356 @@
+{
+  "records": [
+    {
+      "leaf": "L01",
+      "originalTask": "Edit the tracked file `rust/src/web_search_core.rs`: add \"wikiquote\" to the WEB_SEARCH_PROVIDERS list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/web_search_core.rs",
+      "requirement": "Add wikiquote as a web search provider.",
+      "target": {
+        "module_path": "src/web_search_core.rs",
+        "symbol": "WEB_SEARCH_PROVIDERS",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L02",
+      "originalTask": "Edit the tracked file `rust/src/thinking.rs`: add \"sensor_fusion\" to the PLAIN_STEPS list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/thinking.rs",
+      "requirement": "Add sensor_fusion to the plain thinking steps.",
+      "target": {
+        "module_path": "src/thinking.rs",
+        "symbol": "PLAIN_STEPS",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L03",
+      "originalTask": "Edit the tracked file `rust/src/seed/meanings/parse.rs`: add \"provenance\" to the FACET_KINDS list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/seed/meanings/parse.rs",
+      "requirement": "Add provenance to the semantic facet kinds.",
+      "target": {
+        "module_path": "src/seed/meanings/parse.rs",
+        "symbol": "FACET_KINDS",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L04",
+      "originalTask": "In the file data/seed/meanings-verifiable-task.lino, replace \"continue this\" with \"alternating\". Change only that file and keep it valid Links Notation.",
+      "path": "data/seed/meanings-verifiable-task.lino",
+      "requirement": "Change the MEANINGS_VERIFIABLE_TASK_LINO seed's English pattern expectation surface from continue this to alternating.",
+      "target": {
+        "module_path": "src/seed/embedded_registry.rs",
+        "symbol": "MEANINGS_VERIFIABLE_TASK_LINO",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L05",
+      "originalTask": "Edit the tracked file `rust/src/how_to_guide.rs`: add \"about\" to the TOPIC_STOPWORDS list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/how_to_guide.rs",
+      "requirement": "Add about to the how-to topic stopwords.",
+      "target": {
+        "module_path": "src/how_to_guide.rs",
+        "symbol": "TOPIC_STOPWORDS",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L06",
+      "originalTask": "Edit the tracked file `rust/src/solver_handlers/web_requests.rs`: add \"deep-foundation\" to the PROMOTED_PROJECT_ORGS list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/solver_handlers/web_requests.rs",
+      "requirement": "Add deep-foundation to the promoted project orgs.",
+      "target": {
+        "module_path": "src/solver_handlers/web_requests.rs",
+        "symbol": "PROMOTED_PROJECT_ORGS",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L07",
+      "originalTask": "In the file data/seed/meanings-conversation.lino, replace \"good evening\" with \"good day\". Change only that file and keep it valid Links Notation.",
+      "path": "data/seed/meanings-conversation.lino",
+      "requirement": "Change the canonical English greeting surface from good evening to good day.",
+      "target": {
+        "module_path": "src/seed/embedded_registry.rs",
+        "symbol": "MEANINGS_CONVERSATION_LINO",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L08",
+      "originalTask": "Edit the tracked file `rust/src/solver_dispatch.rs`: add \"workspace_change\" to the CONTEXTUAL_HANDLER_NAMES list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/solver_dispatch.rs",
+      "requirement": "Add workspace_change to the contextual handler names.",
+      "target": {
+        "module_path": "src/solver_dispatch.rs",
+        "symbol": "CONTEXTUAL_HANDLER_NAMES",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L09",
+      "originalTask": "Edit the tracked file `rust/src/agentic_coding/shell_command_policy.rs`: add \"kindly\" to the PROSE_WORDS list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/agentic_coding/shell_command_policy.rs",
+      "requirement": "Add kindly to the shell command policy prose words.",
+      "target": null
+    },
+    {
+      "leaf": "L10",
+      "originalTask": "Edit the tracked file `rust/src/solver_handlers/shell_command_compose.rs`: add \"reformat\" to the OTHER_INTENTS list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/solver_handlers/shell_command_compose.rs",
+      "requirement": "Add reformat as a shell command compose intent to the OTHER_INTENTS list.",
+      "target": {
+        "module_path": "src/solver_handlers/shell_command_compose.rs",
+        "symbol": "OTHER_INTENTS",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L11",
+      "originalTask": "Edit the tracked file `rust/src/program_skill_gap.rs`: add \"structured_edit\" to the SYNTHESIS_ROUTES list. Change only that file and keep it valid Rust.",
+      "path": "rust/src/program_skill_gap.rs",
+      "requirement": "Add structured_edit to the program skill gap synthesis routes.",
+      "target": {
+        "module_path": "src/program_skill_gap.rs",
+        "symbol": "SYNTHESIS_ROUTES",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L12",
+      "originalTask": "In the file rust/src/protocol_memory.rs, replace \"request_history\" with \"conversation_history\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/protocol_memory.rs",
+      "requirement": "Change the value of REQUEST_HISTORY_CONVERSATION_ID from request_history to conversation_history.",
+      "target": {
+        "module_path": "src/protocol_memory.rs",
+        "symbol": "REQUEST_HISTORY_CONVERSATION_ID",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L13",
+      "originalTask": "In the file rust/src/dialog_log.rs, replace \"x-formal-ai-dialog-id\" with \"x-formal-ai-conversation-id\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/dialog_log.rs",
+      "requirement": "Change the value of DIALOG_ID_HEADER from x-formal-ai-dialog-id to x-formal-ai-conversation-id.",
+      "target": {
+        "module_path": "src/dialog_log.rs",
+        "symbol": "DIALOG_ID_HEADER",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L14",
+      "originalTask": "In the file rust/src/world_model_dialog.rs, replace \"world_sync_root\" with \"world_sync_chain_root\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/world_model_dialog.rs",
+      "requirement": "Change the value of SYNC_CHAIN_ROOT from world_sync_root to world_sync_chain_root.",
+      "target": {
+        "module_path": "src/world_model_dialog.rs",
+        "symbol": "SYNC_CHAIN_ROOT",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L15",
+      "originalTask": "In the file rust/src/cli_context.rs, replace \"FORMAL_AI_DIALOG_ID\" with \"FORMAL_AI_SESSION_ID\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/cli_context.rs",
+      "requirement": "Change the value of SESSION_ENV from FORMAL_AI_DIALOG_ID to FORMAL_AI_SESSION_ID.",
+      "target": {
+        "module_path": "src/cli_context.rs",
+        "symbol": "SESSION_ENV",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L16",
+      "originalTask": "In the file rust/src/service_accessibility.rs, replace \"ttl_seconds\" with \"time_to_live_seconds\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/service_accessibility.rs",
+      "requirement": "Change the value of FIELD_TTL_SECONDS from ttl_seconds to time_to_live_seconds.",
+      "target": {
+        "module_path": "src/service_accessibility.rs",
+        "symbol": "FIELD_TTL_SECONDS",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L17",
+      "originalTask": "In the file rust/src/web_search_fusion_core.rs, replace \"statement_negation_cue\" with \"statement_negation_marker\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/web_search_fusion_core.rs",
+      "requirement": "Change the value of NEGATION_ROLE from statement_negation_cue to statement_negation_marker.",
+      "target": {
+        "module_path": "src/web_search_fusion_core.rs",
+        "symbol": "NEGATION_ROLE",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L18",
+      "originalTask": "In the file rust/src/client_integrations.rs, replace \"http://127.0.0.1:8080\" with \"http://127.0.0.1:8099\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/client_integrations.rs",
+      "requirement": "Change the value of DEFAULT_BASE_URL in the client integrations module from http://127.0.0.1:8080 to http://127.0.0.1:8099.",
+      "target": {
+        "module_path": "src/client_integrations.rs",
+        "symbol": "DEFAULT_BASE_URL",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L19",
+      "originalTask": "In the file rust/src/cli_report.rs, replace \"agentic-cli\" with \"agentic-command-line\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/cli_report.rs",
+      "requirement": "Change the value of DEFAULT_SURFACE from agentic-cli to agentic-command-line.",
+      "target": {
+        "module_path": "src/cli_report.rs",
+        "symbol": "DEFAULT_SURFACE",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L20",
+      "originalTask": "In the file rust/src/entity_resolution.rs, replace \"{term}\" with \"{entity_term}\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/entity_resolution.rs",
+      "requirement": "Change the value of TERM_PLACEHOLDER in the entity resolution module from {term} to {entity_term}.",
+      "target": {
+        "module_path": "src/entity_resolution.rs",
+        "symbol": "TERM_PLACEHOLDER",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L21",
+      "originalTask": "In the file rust/src/solver_handler_how_synthesis.rs, replace \"FORMAL_AI_SOURCE_CACHE_DIR\" with \"FORMAL_AI_HOW_SOURCE_CACHE_DIR\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/solver_handler_how_synthesis.rs",
+      "requirement": "Change the value of CACHE_DIR_ENV from FORMAL_AI_SOURCE_CACHE_DIR to FORMAL_AI_HOW_SOURCE_CACHE_DIR.",
+      "target": {
+        "module_path": "src/solver_handler_how_synthesis.rs",
+        "symbol": "CACHE_DIR_ENV",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L22",
+      "originalTask": "In the file rust/src/skill_procedure.rs, replace \"https://example.com/article\" with \"https://example.com/document\". Change only that file and keep it valid Rust.",
+      "path": "rust/src/skill_procedure.rs",
+      "requirement": "Change the value of PROCEDURE_CONFORMANCE_TRIGGER from https://example.com/article to https://example.com/document.",
+      "target": {
+        "module_path": "src/skill_procedure.rs",
+        "symbol": "PROCEDURE_CONFORMANCE_TRIGGER",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L23",
+      "originalTask": "In the file rust/src/cli_context.rs, rename the constant ERROR_JOIN to ERROR_LIST_JOIN. Change only that file and keep it valid Rust.",
+      "path": "rust/src/cli_context.rs",
+      "requirement": "Rename the constant ERROR_JOIN to ERROR_LIST_JOIN.",
+      "target": {
+        "module_path": "src/cli_context.rs",
+        "symbol": "ERROR_JOIN",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L24",
+      "originalTask": "In the file rust/src/issue_report.rs, rename the constant TITLE_JOIN to TITLE_SEGMENT_JOIN. Change only that file and keep it valid Rust.",
+      "path": "rust/src/issue_report.rs",
+      "requirement": "Rename the constant TITLE_JOIN to TITLE_SEGMENT_JOIN.",
+      "target": {
+        "module_path": "src/issue_report.rs",
+        "symbol": "TITLE_JOIN",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L25",
+      "originalTask": "In the file rust/src/service_accessibility.rs, rename the constant RECORD_INDENT to RECORD_LINE_INDENT. Change only that file and keep it valid Rust.",
+      "path": "rust/src/service_accessibility.rs",
+      "requirement": "Rename the constant RECORD_INDENT to RECORD_LINE_INDENT.",
+      "target": {
+        "module_path": "src/service_accessibility.rs",
+        "symbol": "RECORD_INDENT",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L26",
+      "originalTask": "In the file rust/src/web_search_fusion_core.rs, rename the constant ENTITY_ROLE to WIKIDATA_ENTITY_ROLE. Change only that file and keep it valid Rust.",
+      "path": "rust/src/web_search_fusion_core.rs",
+      "requirement": "Rename the constant ENTITY_ROLE to WIKIDATA_ENTITY_ROLE.",
+      "target": {
+        "module_path": "src/web_search_fusion_core.rs",
+        "symbol": "ENTITY_ROLE",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L27",
+      "originalTask": "In the file rust/src/cli_report.rs, rename the constant TRACE_SEPARATOR to TRACE_FIELD_SEPARATOR. Change only that file and keep it valid Rust.",
+      "path": "rust/src/cli_report.rs",
+      "requirement": "Rename the constant TRACE_SEPARATOR to TRACE_FIELD_SEPARATOR.",
+      "target": {
+        "module_path": "src/cli_report.rs",
+        "symbol": "TRACE_SEPARATOR",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L28",
+      "originalTask": "In the file rust/src/client_integrations.rs, rename the constant EMPTY_BACKUP_SENTINEL to EMPTY_CONFIG_BACKUP_SENTINEL. Change only that file and keep it valid Rust.",
+      "path": "rust/src/client_integrations.rs",
+      "requirement": "Rename the constant EMPTY_BACKUP_SENTINEL to EMPTY_CONFIG_BACKUP_SENTINEL.",
+      "target": {
+        "module_path": "src/client_integrations.rs",
+        "symbol": "EMPTY_BACKUP_SENTINEL",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L29",
+      "originalTask": "In the file rust/src/conversation_context.rs, rename the constant DIALOG_LOG_DIRECTORY_ENV to DIALOG_LOG_DIR_ENV. Change only that file and keep it valid Rust.",
+      "path": "rust/src/conversation_context.rs",
+      "requirement": "Rename the constant DIALOG_LOG_DIRECTORY_ENV to DIALOG_LOG_DIR_ENV.",
+      "target": {
+        "module_path": "src/conversation_context.rs",
+        "symbol": "DIALOG_LOG_DIRECTORY_ENV",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L30",
+      "originalTask": "In the file rust/src/entity_resolution.rs, rename the constant CORRECTED_PLACEHOLDER to CORRECTED_TERM_PLACEHOLDER. Change only that file and keep it valid Rust.",
+      "path": "rust/src/entity_resolution.rs",
+      "requirement": "Rename the constant CORRECTED_PLACEHOLDER to CORRECTED_TERM_PLACEHOLDER.",
+      "target": {
+        "module_path": "src/entity_resolution.rs",
+        "symbol": "CORRECTED_PLACEHOLDER",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L31",
+      "originalTask": "In the file rust/src/learning_adoption_ledger.rs, rename the constant UNKNOWN_INTENT to UNKNOWN_INTENT_NAME. Change only that file and keep it valid Rust.",
+      "path": "rust/src/learning_adoption_ledger.rs",
+      "requirement": "Rename the constant UNKNOWN_INTENT in the learning adoption ledger to UNKNOWN_INTENT_NAME.",
+      "target": {
+        "module_path": "src/learning_adoption_ledger.rs",
+        "symbol": "UNKNOWN_INTENT",
+        "kind": "const"
+      }
+    },
+    {
+      "leaf": "L32",
+      "originalTask": "In the file rust/src/links_format.rs, rename the constant PROBE to NOTATION_PROBE. Change only that file and keep it valid Rust.",
+      "path": "rust/src/links_format.rs",
+      "requirement": "Rename the constant PROBE to NOTATION_PROBE.",
+      "target": {
+        "module_path": "src/links_format.rs",
+        "symbol": "PROBE",
+        "kind": "const"
+      }
+    }
+  ],
+  "resolved": 31,
+  "unresolved": [
+    "L09"
+  ]
+}

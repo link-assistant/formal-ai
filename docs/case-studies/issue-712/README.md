@@ -46,7 +46,7 @@ The resulting routing model is:
 Natural-language surfaces remain in `data/seed`, including `google` as a search
 action and `contents` as a write-content lead. Rust and the browser worker apply
 the same structural algorithms in `web_search_intent.rs` and the worker modules
-`formal_ai_worker_16.js` / `formal_ai_worker_17.js`. The three reported search
+`formal_ai_worker_write_program_and_research.js` / `formal_ai_worker_search_queries_and_how_to.js`. The three reported search
 sentences are no longer explicit templates. File-write classification now calls
 the exact parser that composes the executable write plan, eliminating a separate
 English/Russian verb gate that could disagree with execution.

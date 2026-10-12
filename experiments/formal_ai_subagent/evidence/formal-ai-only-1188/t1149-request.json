@@ -1,0 +1,34 @@
+[
+  {
+    "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "steps": 8,
+    "source": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1138-transcript.txt",
+    "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1138-transcript.log",
+    "sha256": "16b6f6a4cfc0ddb975171c4bccdf0a3a51572b31f969d742135bd3a85211642f",
+    "prompt": "Move experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1138-transcript.txt to experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1138-transcript.log"
+  },
+  {
+    "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "steps": 8,
+    "source": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1139-transcript.txt",
+    "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1139-transcript.log",
+    "sha256": "386b7df8e16406696d86d7473b25673923f1a3692c70d11ed00e6c4a68918d57",
+    "prompt": "Move experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1139-transcript.txt to experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1139-transcript.log"
+  },
+  {
+    "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "steps": 8,
+    "source": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1143-transcript.txt",
+    "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1143-transcript.log",
+    "sha256": "868fd4b09fa71fe20ce29ff1ae818b3590227904bcedfd0bfb9f239ab98fa9a6",
+    "prompt": "Move experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1143-transcript.txt to experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1143-transcript.log"
+  },
+  {
+    "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "steps": 8,
+    "source": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1145-transcript.txt",
+    "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1145-transcript.log",
+    "sha256": "cec8e856401c0b46f3182be66c55a814b779b7bcf031713795f34db59a2c42a7",
+    "prompt": "Move experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1145-transcript.txt to experiments/formal_ai_subagent/evidence/formal-ai-only-1188/t1145-transcript.log"
+  }
+]

@@ -1,0 +1,25 @@
+language en
+lemma delete
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "remove or make invisible"
+    examples ("Please delete my name from your list")
+    id oewn-01551969-v
+    partOfSpeech v
+    synonyms (cancel)
+  entry
+    definition "wipe out digitally or magnetically recorded information"
+    examples ("Who erased the files from my hard disk?")
+    id oewn-01001860-v
+    partOfSpeech v
+    synonyms (erase)
+  entry
+    definition "cut or eliminate"
+    examples ("she edited the juiciest scenes")
+    id oewn-00201227-v
+    partOfSpeech v
+    synonyms (edit blue-pencil)
+source "oewn:2024"

@@ -1,0 +1,25 @@
+view
+  id M-7f23f08f6a95
+  lemma literal
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "limited to the explicit meaning of a word or text"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a mistake in printed matter resulting from mechanical failures of some kind"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being or reflecting the essential or genuine character of something"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "without interpretation or embellishment"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "avoiding embellishment or exaggeration (used for emphasis)"
+    provenance (wordnet)

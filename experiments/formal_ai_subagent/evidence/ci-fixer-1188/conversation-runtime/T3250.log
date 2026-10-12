@@ -1,0 +1,975 @@
+>> read {"filePath":"rust/tests/source/solver_helpers.rs","file_path":"rust/tests/source/solver_helpers.rs","path":"rust/tests/source/solver_helpers.rs"}
+   <file>
+   00001| //! Free-function helpers extracted from `solver.rs` to keep that module under
+   00002| //! the 1000-line cap enforced by `scripts/check-file-size.rs`. These helpers
+   00003| //! are pure: they do not access any solver state. Items are declared `pub`
+   00004| //! inside the `pub(crate)` module so the universal solver in `crate::solver`
+   00005| //! can call them directly without exposing them outside the crate.
+   00006| //!
+   00007| //! Arithmetic evaluation lives in [`crate::arithmetic`] and the offline
+   00008| //! concept knowledge base lives in [`crate::concepts`]; this module
+   00009| //! re-exports nothing — callers import those modules directly.
+   00010| 
+   00011| use crate::engine::{ExecutionStatus, ProgramSpec, SelectedRule, normalize_prompt};
+   00012| use crate::event_log::EventLog;
+   00013| use crate::intent_formalization::{IntentKind, formalize_intent};
+   00014| use crate::language::{Language, detect as detect_language};
+   00015| 
+   00016| #[derive(Debug, Clone, PartialEq, Eq)]
+   00017| pub struct DecomposedSubImpulse {
+   00018|     pub id: String,
+   00019|     pub text: String,
+   00020|     pub independent: bool,
+   00021| }
+   00022| 
+   00023| pub const fn confidence_for(rule: &SelectedRule, validation: Option<&ValidationChoice>) -> f32 {
+   00024|     if validation.is_some() {
+   00025|         return 1.0;
+   00026|     }
+   00027|     match rule {
+   00028|         SelectedRule::Unknown => 0.0,
+   00029|         SelectedRule::UnsupportedWriteProgram { .. } => 0.4,
+   00030|         _ => 1.0,
+   00031|     }
+   00032| }
+   00033| 
+   00034| pub fn is_unbounded_autonomy(normalized: &str) -> bool {
+   00035|     let triggers = [
+   00036|         "forever",
+   00037|         "continuously",
+   00038|         "non-stop",
+   00039|         "nonstop",
+   00040|         "indefinitely",
+   00041|         "without stopping",
+   00042|         "until i tell you to stop",
+   00043|     ];
+   00044|     triggers.iter().any(|trigger| normalized.contains(trigger))
+   00045| }
+   00046| 
+   00047| pub fn is_forget_request(normalized: &str) -> bool {
+   00048|     normalized.contains("forget ")
+   00049|         || normalized.starts_with("forget")
+   00050|         || normalized.contains("delete the greeting concept")
+   00051| }
+   00052| 
+   00053| pub fn is_cache_flush_request(normalized: &str) -> bool {
+   00054|     (normalized.contains("flush") || normalized.contains("clear")) && normalized.contains("cache")
+   00055| }
+   00056| 
+   00057| pub fn is_agent_request(normalized: &str) -> bool {
+   00058|     normalized.contains("[agent]")
+   00059|         || normalized.contains("enable agent")
+   00060|         || normalized.contains("agent mode")
+   00061| }
+   00062| 
+   00063| pub fn is_agent_opt_in(normalized: &str) -> bool {
+   00064|     normalized.contains("[agent]")
+   00065|         || normalized.contains("enable agent")
+   00066|         || normalized.contains("agent mode")
+   00067| }
+   00068| 
+   00069| pub fn is_destructive_action(normalized: &str) -> bool {
+   00070|     let triggers = [
+   00071|         "rm -rf",
+   00072|         "delete the .git",
+   00073|         "drop table",
+   00074|         "delete /",
+   00075|         "delete the database",
+   00076|     ];
+   00077|     triggers.iter().any(|trigger| normalized.contains(trigger))
+   00078| }
+   00079| 
+   00080| pub fn is_unbounded_loop(normalized: &str) -> bool {
+   00081|     normalized.contains("while true")
+   00082|         || normalized.contains("infinite loop")
+   00083|         || normalized.contains("for one hour")
+   00084|         || normalized.contains("forever")
+   00085| }
+   00086| 
+   00087| pub fn is_inappropriate_content(normalized: &str) -> bool {
+   00088|     // The vulgar/obscene surfaces — Russian mat and English profanity migrated
+   00089|     // verbatim from the original hardcoded lists, plus Hindi and Chinese
+   00090|     // equivalents — live in `data/seed/meanings-policy.lino` under the
+   00091|     // [`vulgar_content_marker`](crate::seed::ROLE_VULGAR_CONTENT_MARKER) role.
+   00092|     // They are matched as raw substrings, so the screen stays language-
+   00093|     // independent and tolerant of inflection without listing any profanity in
+   00094|     // code.
+   00095|     crate::seed::lexicon().mentions_role_raw(crate::seed::ROLE_VULGAR_CONTENT_MARKER, normalized)
+   00096| }
+   00097| 
+   00098| pub fn requires_external_lookup(prompt: &str) -> bool {
+   00099|     let lower = prompt.to_lowercase();
+   00100|     lower.contains("capital of")
+   00101|         || lower.contains("cite a definition")
+   00102|         || lower.contains("define associative memory")
+   00103|         || lower.contains("from wikipedia")
+   00104|         || lower.contains("born in")
+   00105| }
+   00106| 
+   00107| pub fn record_decomposition(
+   00108|     log: &mut EventLog,
+   00109|     prompt: &str,
+   00110|     max_depth: u8,
+   00111| ) -> Vec<DecomposedSubImpulse> {
+   00112|     if max_depth == 0 {
+   00113|         return Vec::new();
+   00114|     }
+   00115| 
+   00116|     // Multiple explicit questions are independently actionable even when the
+   00117|     // whole prompt happens to match the first one. Previously that whole-prompt
+   00118|     // match (for example, `capabilities`) suppressed decomposition and silently
+   00119|     // discarded every following question. Mixed sentences keep their existing
+   00120|     // whole-prompt semantics: "Hello. Prove ..." is one proof request, and a
+   00121|     // greeting followed by an identity question remains an identity request.
+   00122|     let independent_parts = independent_actionable_segments(prompt);
+   00123|     if independent_parts.len() > 1
+   00124|         && independent_parts.iter().all(|part| {
+   00125|             part.trim_end()
+   00126|                 .chars()
+   00127|                 .next_back()
+   00128|                 .is_some_and(|ch| matches!(ch, '?' | '？'))
+   00129|         })
+   00130|     {
+   00131|         return record_sub_impulses(log, independent_parts, true);
+   00132|     }
+   00133|     // A question asking the assistant's opinion is one utterance: the clause
+   00134|     // after its lead ("Как ты думаешь, …") is what the opinion is about, not a
+   00135|     // second request (the browser worker splits only at sentence ends).
+   00136|     if crate::rule_interpreter::handler_matches("opinion_question", prompt) {
+   00137|         return Vec::new();
+   00138|     }
+   00139| 
+   00140|     if courtesy_context_for_single_directive(&independent_parts) {
+   00141|         return Vec::new();
+   00142|     }
+   00143| 
+   00144|     let language = detect_language(prompt);
+   00145|     let whole_intent = formalize_intent(prompt, language.slug(), None);
+   00146|     if (whole_intent.route.is_none() || whole_intent.kind == IntentKind::Courtesy)
+   00147|         && independent_parts.len() > 1
+   00148|     {
+   00149|         return record_sub_impulses(log, independent_parts, true);
+   00150|     }
+   00151| 
+   00152|     let lower = prompt.to_lowercase();
+   00153|     let triggers = [" and ", " with tests", " with benchmarks", "; "];
+   00154|     if !triggers.iter().any(|trigger| lower.contains(trigger)) {
+   00155|         return Vec::new();
+   00156|     }
+   00157| 
+   00158|     let parts: Vec<String> = prompt
+   00159|         .split([',', ';'])
+   00160|         .flat_map(|chunk| chunk.split(" and "))
+   00161|         .flat_map(|chunk| chunk.split(" with "))
+   00162|         .map(str::trim)
+   00163|         .filter(|chunk| !chunk.is_empty())
+   00164|         .map(str::to_owned)
+   00165|         .collect();
+   00166|     record_sub_impulses(log, parts, false)
+   00167| }
+   00168| 
+   00169| fn record_sub_impulses(
+   00170|     log: &mut EventLog,
+   00171|     parts: Vec<String>,
+   00172|     independent: bool,
+   00173| ) -> Vec<DecomposedSubImpulse> {
+   00174|     let mut sub_impulses = Vec::new();
+   00175|     for sub_impulse in parts {
+   00176|         let id = log.append("sub_impulse", sub_impulse.clone());
+   00177|         sub_impulses.push(DecomposedSubImpulse {
+   00178|             id,
+   00179|             text: sub_impulse,
+   00180|             independent,
+   00181|         });
+   00182|     }
+   00183|     sub_impulses
+   00184| }
+   00185| 
+   00186| /// The substantive clause after an actually bound leading courtesy.
+   00187| /// Keep the full original utterance in the log; this is only a parser view.
+   00188| pub fn request_after_leading_courtesy(prompt: &str) -> Option<&str> {
+   00189|     let (at, delimiter) = prompt.char_indices().find(|&(at, character)| {
+   00190|         matches!(
+   00191|             character,
+   00192|             ',' | ';' | '；' | '，' | '、' | '\n' | '。' | '！' | '？'
+   00193|         ) || (matches!(character, '.' | '!' | '?')
+   00194|             && prompt[at + character.len_utf8()..]
+   00195|                 .chars()
+   00196|                 .next()
+   00197|                 .is_some_and(char::is_whitespace))
+   00198|     })?;
+   00199|     let lead = prompt[..at].trim();
+   00200|     let language = detect_language(lead);
+   00201|     if formalize_intent(lead, language.slug(), None).kind != IntentKind::Courtesy {
+   00202|         return None;
+   00203|     }
+   00204|     let tail = strip_leading_coordinator(prompt[at + delimiter.len_utf8()..].trim());
+   00205|     (!tail.is_empty()).then_some(tail)
+   00206| }
+   00207| 
+   00208| // Courtesy is context for one directed operation, not an extra operation.
+   00209| // Explicit question lists and procedure questions retain their composition.
+   00210| fn courtesy_context_for_single_directive(parts: &[String]) -> bool {
+   00211|     let mut courtesies = 0;
+   00212|     let mut directives = 0;
+   00213|     for part in parts {
+   00214|         let language = detect_language(part);
+   00215|         let binding = formalize_intent(part, language.slug(), None);
+   00216|         if binding.kind == IntentKind::Courtesy {
+   00217|             courtesies += 1;
+   00218|         } else if binding.route.is_some() && binding.kind != IntentKind::Question {
+   00219|             directives += 1;
+   00220|         } else {
+   00221|             return false;
+   00222|         }
+   00223|     }
+   00224|     courtesies > 0 && directives == 1
+   00225| }
+   00226| 
+   00227| fn independent_actionable_segments(prompt: &str) -> Vec<String> {
+   00228|     let parts = split_candidate_actionable_parts(prompt);
+   00229|     if parts.len() <= 1
+   00230|         || !parts
+   00231|             .iter()
+   00232|             .all(|part| looks_like_independent_impulse(part))
+   00233|     {
+   00234|         return Vec::new();
+   00235|     }
+   00236|     parts
+   00237| }
+   00238| 
+   00239| fn split_candidate_actionable_parts(text: &str) -> Vec<String> {
+   00240|     let mut parts = Vec::new();
+   00241|     for sentence in split_sentences(text) {
+   00242|         for clause in sentence.split(';') {
+   00243|             for comma_part in clause.split(',') {
+   00244|                 for and_part in comma_part.split(" and ") {
+   00245|                     let trimmed = strip_leading_coordinator(and_part.trim());
+   00246|                     if !trimmed.is_empty() {
+   00247|                         parts.push(trimmed.to_owned());
+   00248|                     }
+   00249|                 }
+   00250|             }
+   00251|         }
+   00252|     }
+   00253|     parts
+   00254| }
+   00255| 
+   00256| fn split_sentences(text: &str) -> Vec<String> {
+   00257|     let chars: Vec<char> = text.chars().collect();
+   00258|     let mut sentences = Vec::new();
+   00259|     let mut current = String::new();
+   00260|     for (index, &ch) in chars.iter().enumerate() {
+   00261|         current.push(ch);
+   00262|         let strong_terminator = matches!(ch, '?' | '!' | '。' | '！' | '？');
+   00263|         let period_boundary =
+   00264|             ch == '.' && chars.get(index + 1).is_none_or(|next| next.is_whitespace());
+   00265|         if strong_terminator || period_boundary {
+   00266|             push_trimmed_segment(&mut sentences, &current);
+   00267|             current.clear();
+   00268|         }
+   00269|     }
+   00270|     push_trimmed_segment(&mut sentences, &current);
+   00271|     sentences
+   00272| }
+   00273| 
+   00274| fn push_trimmed_segment(out: &mut Vec<String>, candidate: &str) {
+   00275|     let trimmed = candidate.trim();
+   00276|     if !trimmed.is_empty() {
+   00277|         out.push(trimmed.to_owned());
+   00278|     }
+   00279| }
+   00280| 
+   00281| fn strip_leading_coordinator(text: &str) -> &str {
+   00282|     let trimmed = text.trim_start();
+   00283|     let lowered = trimmed.to_ascii_lowercase();
+   00284|     for coordinator in ["and", "then"] {
+   00285|         if lowered == coordinator {
+   00286|             return "";
+   00287|         }
+   00288|         let prefix = format!("{coordinator} ");
+   00289|         if lowered.starts_with(&prefix) {
+   00290|             return trimmed[prefix.len()..].trim_start();
+   00291|         }
+   00292|     }
+   00293|     trimmed
+   00294| }
+   00295| 
+   00296| fn looks_like_independent_impulse(segment: &str) -> bool {
+   00297|     let normalized = normalize_prompt(segment);
+   00298|     if normalized.is_empty() {
+   00299|         return false;
+   00300|     }
+   00301|     let language = detect_language(segment);
+   00302|     let formalization = formalize_intent(segment, language.slug(), None);
+   00303|     formalization.route.is_some()
+   00304|         || matches!(
+   00305|             formalization.kind,
+   00306|             IntentKind::Task
+   00307|                 | IntentKind::Question
+   00308|                 | IntentKind::Requirement
+   00309|                 | IntentKind::Courtesy
+   00310|         )
+   00311|         || formalization
+   00312|             .relevants
+   00313|             .iter()
+   00314|             .any(|relevant| relevant.starts_with("handler:"))
+   00315| }
+   00316| 
+   00317| pub fn record_candidates(log: &mut EventLog, prompt: &str, intent: &str) {
+   00318|     let lower = prompt.to_lowercase();
+   00319|     if lower.contains("suggest a name") || lower.contains("suggest names") {
+   00320|         for candidate in ["LinkLight", "Doublet", "FormalLeaf"] {
+   00321|             log.append("candidate", candidate.to_owned());
+   00322|         }
+   00323|         return;
+   00324|     }
+   00325|     if lower.contains("pick a") || lower.contains("choose a") {
+   00326|         log.append("candidate", "primary".to_owned());
+   00327|         log.append("candidate", "secondary".to_owned());
+   00328|         return;
+   00329|     }
+   00330|     log.append("candidate", intent.to_owned());
+   00331| }
+   00332| 
+   00333| #[derive(Debug, Clone)]
+   00334| pub struct ValidationChoice {
+   00335|     pub answer: String,
+   00336| }
+   00337| 
+   00338| pub fn record_validation(log: &mut EventLog, prompt: &str) -> Option<ValidationChoice> {
+   00339|     let lower = prompt.to_lowercase();
+   00340|     if lower.contains("prime") {
+   00341|         if let Some((low, high)) = extract_range(&lower) {
+   00342|             for candidate in low..=high {
+   00343|                 if is_prime(candidate) {
+   00344|                     let answer = format!("{candidate}");
+   00345|                     log.append("validation", format!("prime_between_{low}_and_{high}"));
+   00346|                     return Some(ValidationChoice { answer });
+   00347|                 }
+   00348|             }
+   00349|         }
+   00350|         log.append("validation", "no_prime_in_range".to_owned());
+   00351|     }
+   00352|     None
+   00353| }
+   00354| 
+   00355| pub fn extract_range(lower: &str) -> Option<(u64, u64)> {
+   00356|     let numbers: Vec<u64> = lower
+   00357|         .split(|character: char| !character.is_ascii_digit())
+   00358|         .filter_map(|token| token.parse::<u64>().ok())
+   00359|         .collect();
+   00360|     match numbers.as_slice() {
+   00361|         [low, high] if low <= high => Some((*low, *high)),
+   00362|         _ => None,
+   00363|     }
+   00364| }
+   00365| 
+   00366| pub const fn is_prime(value: u64) -> bool {
+   00367|     if value < 2 {
+   00368|         return false;
+   00369|     }
+   00370|     let mut divisor: u64 = 2;
+   00371|     while divisor.saturating_mul(divisor) <= value {
+   00372|         if value % divisor == 0 {
+   00373|             return false;
+   00374|         }
+   00375|         divisor += 1;
+   00376|     }
+   00377|     true
+   00378| }
+   00379| 
+   00380| pub fn extract_quoted_phrase(text: &str) -> Option<String> {
+   00381|     for (open, close) in [('\'', '\''), ('"', '"'), ('`', '`'), ('«', '»')] {
+   00382|         if let Some(start) = text.find(open) {
+   00383|             if let Some(end_offset) = text[start + open.len_utf8()..].find(close) {
+   00384|                 let inner = &text[start + open.len_utf8()..start + open.len_utf8() + end_offset];
+   00385|                 return Some(inner.to_owned());
+   00386|             }
+   00387|         }
+   00388|     }
+   00389|     None
+   00390| }
+   00391| 
+   00392| pub fn extract_backticked(text: &str) -> Option<String> {
+   00393|     let start = text.find('`')?;
+   00394|     let rest = &text[start + 1..];
+   00395|     let end = rest.find('`')?;
+   00396|     Some(rest[..end].to_owned())
+   00397| }
+   00398| 
+   00399| /// Walk the event log for a user-introduced name. Looks in the current
+   00400| /// prompt first, then in each `prior_turn:user` event so name recall works
+   00401| /// across multi-turn conversations.
+   00402| pub fn recall_name_from_history(log: &EventLog, prompt: &str) -> Option<String> {
+   00403|     if let Some(name) = extract_introduced_name(prompt) {
+   00404|         return Some(name);
+   00405|     }
+   00406|     for event in log.events() {
+   00407|         if event.kind == "prior_turn:user" {
+   00408|             if let Some(name) = extract_introduced_name(&event.payload) {
+   00409|                 return Some(name);
+   00410|             }
+   00411|         }
+   00412|     }
+   00413|     None
+   00414| }
+   00415| 
+   00416| /// Return the last user turn recorded in the log, ignoring the current
+   00417| /// impulse. Used by "what did I just ask?" style recall handlers.
+   00418| pub fn last_user_turn(log: &EventLog) -> Option<&str> {
+   00419|     log.events()
+   00420|         .iter()
+   00421|         .rev()
+   00422|         .find(|event| event.kind == "prior_turn:user")
+   00423|         .map(|event| event.payload.as_str())
+   00424| }
+   00425| 
+   00426| /// Return the last assistant turn recorded in the log. Used by follow-up
+   00427| /// handlers such as "how it works?" that need to infer the topic from the
+   00428| /// previous reply.
+   00429| pub fn last_assistant_turn(log: &EventLog) -> Option<&str> {
+   00430|     log.events()
+   00431|         .iter()
+   00432|         .rev()
+   00433|         .find(|event| event.kind == "prior_turn:assistant")
+   00434|         .map(|event| event.payload.as_str())
+   00435| }
+   00436| 
+   00437| pub fn extract_introduced_name(prompt: &str) -> Option<String> {
+   00438|     let needles = ["my name is", "i am called", "call me", "i'm", "i am "];
+   00439|     let lower = prompt.to_lowercase();
+   00440|     for needle in needles {
+   00441|         let mut search_from = 0;
+   00442|         while let Some(offset) = lower[search_from..].find(needle) {
+   00443|             let absolute = search_from + offset + needle.len();
+   00444|             let tail = &prompt[absolute..];
+   00445|             let token = tail
+   00446|                 .trim_start()
+   00447|                 .split(|c: char| {
+   00448|                     c.is_whitespace() || matches!(c, '.' | ',' | '!' | '?' | ';' | ':' | '\n')
+   00449|                 })
+   00450|                 .find(|token| !token.is_empty())?;
+   00451|             let cleaned = token.trim_matches(|c: char| !c.is_alphanumeric());
+   00452|             if !cleaned.is_empty() && cleaned.chars().next().is_some_and(char::is_alphabetic) {
+   00453|                 return Some(cleaned.to_owned());
+   00454|             }
+   00455|             search_from = absolute;
+   00456|         }
+   00457|     }
+   00458|     None
+   00459| }
+   00460| 
+   00461| pub fn detect_program_languages(normalized: &str) -> Option<(&'static str, &'static str)> {
+   00462|     let langs = [
+   00463|         "python",
+   00464|         "rust",
+   00465|         "javascript",
+   00466|         "typescript",
+   00467|         "go",
+   00468|         "java",
+   00469|         "c",
+   00470|         "ruby",
+   00471|     ];
+   00472|     let from = langs
+   00473|         .iter()
+   00474|         .find(|lang| normalized.contains(&format!("from {lang}")))
+   00475|         .copied();
+   00476|     let to = langs
+   00477|         .iter()
+   00478|         .find(|lang| normalized.contains(&format!("to {lang}")))
+   00479|         .copied();
+   00480|     match (from, to) {
+   00481|         (Some(f), Some(t)) => Some((f, t)),
+   00482|         _ => None,
+   00483|     }
+   00484| }
+   00485| 
+   00486| /// Language-neutral meta representation of a code fragment — the code meta
+   00487| /// language.
+   00488| ///
+   00489| /// Issue #526 forbids direct pair-specific translation: with `N` languages a
+   00490| /// direct table needs `N * N` translators, which is computationally
+   00491| /// intractable. Code translation therefore mirrors the natural-language
+   00492| /// pipeline. A fragment is first *formalized* into a `CodeMeaning` and then
+   00493| /// *rendered* into the requested target, so the translator stays at `N`
+   00494| /// formalizers plus `N` renderers instead of `N * N` hardcoded pairs. Adding a
+   00495| /// language is one new [`formalize_code_meaning`] recognizer and one new
+   00496| /// [`render_code_meaning`] arm — never a new `(source, target)` pair.
+   00497| #[derive(Debug, Clone, PartialEq, Eq)]
+   00498| pub enum CodeMeaning {
+   00499|     /// A binary function `add(a, b)` that returns the sum of its two
+   00500|     /// parameters. This is the currently seeded code meaning; widen coverage by
+   00501|     /// adding variants here rather than by adding direct language pairs.
+   00502|     BinaryAddFunction,
+   00503|     /// The fragment has not been formalized into a known code meaning. Carries
+   00504|     /// the trimmed source so callers render a traceable gap instead of
+   00505|     /// manufacturing an incorrect translation.
+   00506|     Unformalized(String),
+   00507| }
+   00508| 
+   00509| impl CodeMeaning {
+   00510|     /// Stable, language-neutral slug for this code meaning. Two fragments that
+   00511|     /// share a meaning (e.g. the same add function written in Rust and in
+   00512|     /// JavaScript) collapse to the same slug, which is what lets a round trip
+   00513|     /// preserve its `meaning:` link.
+   00514|     pub fn slug(&self) -> String {
+   00515|         match self {
+   00516|             Self::BinaryAddFunction => String::from("function:add:binary_sum"),
+   00517|             Self::Unformalized(source) => source
+   00518|                 .chars()
+   00519|                 .filter(char::is_ascii_alphanumeric)
+   00520|                 .collect::<String>()
+   00521|                 .to_lowercase(),
+   00522|         }
+   00523|     }
+   00524| }
+   00525| 
+   00526| /// Formalize a source-language code fragment into the language-neutral code
+   00527| /// meta language. The source language is irrelevant to the result: `add`
+   00528| /// written in Rust, Python, or JavaScript all collapse to the same
+   00529| /// [`CodeMeaning::BinaryAddFunction`], which is exactly why the round trip
+   00530| /// preserves meaning.
+   00531| pub fn formalize_code_meaning(code: &str) -> CodeMeaning {
+   00532|     if is_binary_add_function(code) {
+   00533|         CodeMeaning::BinaryAddFunction
+   00534|     } else {
+   00535|         CodeMeaning::Unformalized(code.trim().to_owned())
+   00536|     }
+   00537| }
+   00538| 
+   00539| /// Render a [`CodeMeaning`] into `target`'s surface syntax. When the meaning is
+   00540| /// unknown, or the target language has no seeded rendering yet, this returns a
+   00541| /// traceable, language-appropriate translation-gap comment rather than
+   00542| /// inventing plausible-but-wrong code.
+   00543| pub fn render_code_meaning(meaning: &CodeMeaning, source: &str, target: &str) -> String {
+   00544|     if matches!(meaning, CodeMeaning::BinaryAddFunction) {
+   00545|         if let Some(rendered) = render_binary_add(target) {
+   00546|             return rendered;
+   00547|         }
+   00548|     }
+   00549|     let subject = match meaning {
+   00550|         CodeMeaning::BinaryAddFunction => "add function",
+   00551|         CodeMeaning::Unformalized(source_code) => source_code.as_str(),
+   00552|     };
+   00553|     format!(
+   00554|         "{} translation gap for `{subject}` from {source} to {target}",
+   00555|         code_comment_prefix(target)
+   00556|     )
+   00557| }
+   00558| 
+   00559| /// Render the seeded [`CodeMeaning::BinaryAddFunction`] into `target`. Returns
+   00560| /// `None` when `target` has no seeded rendering, so the caller can emit a gap.
+   00561| fn render_binary_add(target: &str) -> Option<String> {
+   00562|     let rendered = match target {
+   00563|         "python" => "def add(a, b):\n    return a + b",
+   00564|         "rust" => "fn add(a: i32, b: i32) -> i32 {\n    a + b\n}",
+   00565|         "javascript" => "function add(a, b) {\n    return a + b;\n}",
+   00566|         "typescript" => "function add(a: number, b: number): number {\n    return a + b;\n}",
+   00567|         "go" => "func add(a int, b int) int {\n    return a + b\n}",
+   00568|         _ => return None,
+   00569|     };
+   00570|     Some(String::from(rendered))
+   00571| }
+   00572| 
+   00573| /// Comment prefix used to render a translation gap in `language`'s own syntax.
+   00574| fn code_comment_prefix(language: &str) -> &'static str {
+   00575|     match language {
+   00576|         "python" | "ruby" => "#",
+   00577|         _ => "//",
+   00578|     }
+   00579| }
+   00580| 
+   00581| /// Translate a code fragment from `source` to `target` by routing through the
+   00582| /// code meta language: `source -> CodeMeaning -> target`. There is no direct
+   00583| /// `(source, target)` path — see [`CodeMeaning`] for why.
+   00584| pub fn translate_program(code: &str, source: &str, target: &str) -> String {
+   00585|     let meaning = formalize_code_meaning(code);
+   00586|     render_code_meaning(&meaning, source, target)
+   00587| }
+   00588| 
+   00589| /// Language-neutral meaning slug for a code fragment, used to key its
+   00590| /// `meaning:` evidence link. Delegates to [`formalize_code_meaning`] so the
+   00591| /// meaning a fragment translates *through* is the same meaning its trace
+   00592| /// records — that shared identity is the #526 round-trip invariant.
+   00593| pub fn normalize_code_meaning(code: &str) -> String {
+   00594|     formalize_code_meaning(code).slug()
+   00595| }
+   00596| 
+   00597| fn is_binary_add_function(code: &str) -> bool {
+   00598|     let compact = code
+   00599|         .chars()
+   00600|         .filter(|character| !character.is_whitespace())
+   00601|         .flat_map(char::to_lowercase)
+   00602|         .collect::<String>();
+   00603|     let declares_add = compact.contains("defadd(")
+   00604|         || compact.contains("fnadd(")
+   00605|         || compact.contains("functionadd(");
+   00606|     declares_add && compact.contains("a+b")
+   00607| }
+   00608| 
+   00609| /// Normalize a surface fragment into a deterministic, language-independent
+   00610| /// key for hashing into a meaning id. The previous implementation looked
+   00611| /// the surface up in a hand-curated registry; that is now removed (the
+   00612| /// real meaning id comes from Wikidata via the translation pipeline). We
+   00613| /// keep the normalization step so the legacy hash continues to be stable
+   00614| /// across whitespace, casing, and punctuation differences.
+   00615| pub fn normalize_meaning(surface: &str) -> String {
+   00616|     let raw: String = surface
+   00617|         .chars()
+   00618|         .flat_map(char::to_lowercase)
+   00619|         .filter(|c| c.is_alphanumeric())
+   00620|         .collect();
+   00621|     canonical_meaning_token(&raw)
+   00622| }
+   00623| 
+   00624| /// Return the canonical meaning token for a normalized surface. With the
+   00625| /// offline registry gone, this is currently the identity function — the
+   00626| /// translation pipeline supplies the language-neutral [`MeaningId`] when a
+   00627| /// translation request actually fires, and callers that need a hash key
+   00628| /// (e.g. the engine's stable id) feed the normalized surface directly.
+   00629| pub fn canonical_meaning_token(raw: &str) -> String {
+   00630|     String::from(raw)
+   00631| }
+   00632| 
+   00633| pub fn infer_source_from_prompt(prompt: &str) -> &'static str {
+   00634|     let lower = prompt.to_lowercase();
+   00635|     if let Some(surface) = extract_quoted_phrase(prompt)
+   00636|         .or_else(|| crate::translation::extract_unquoted_translation_surface(prompt))
+   00637|     {
+   00638|         let language = detect_language(&surface);
+   00639|         if language != Language::Unknown {
+   00640|             return language.slug();
+   00641|         }
+   00642|     }
+   00643|     // Issue #386: the source language of an un-annotated request is the language
+   00644|     // the user issued the *translation command* in. Ask the lexicon which
+   00645|     // language's translation-action verb (переведи/опиши, अनुवाद, 翻译/翻譯…) the
+   00646|     // prompt carries — the per-language stems live once in
+   00647|     // data/seed/meanings-translation.lino under the `translate` meaning; this
+   00648|     // code knows only the concept and the language-code bridge. English is the
+   00649|     // default when no command verb is present.
+   00650|     crate::seed::lexicon()
+   00651|         .first_role_language(
+   00652|             crate::seed::ROLE_TRANSLATION_ACTION,
+   00653|             &lower,
+   00654|             &["ru", "hi", "zh"],
+   00655|         )
+   00656|         .unwrap_or("en")
+   00657| }
+   00658| 
+   00659| pub fn infer_program_languages_from_code(
+   00660|     code: &str,
+   00661|     normalized: &str,
+   00662| ) -> Option<(&'static str, &'static str)> {
+   00663|     let trimmed = code.trim();
+   00664|     let source = if trimmed.contains("fn ") || trimmed.contains("let ") || trimmed.contains("-> ") {
+   00665|         "rust"
+   00666|     } else if trimmed.contains("def ") || trimmed.contains("print(") {
+   00667|         "python"
+   00668|     } else if trimmed.contains("function ") || trimmed.contains("console.log") {
+   00669|         "javascript"
+   00670|     } else {
+   00671|         return None;
+   00672|     };
+   00673|     let langs = [
+   00674|         "python",
+   00675|         "rust",
+   00676|         "javascript",
+   00677|         "typescript",
+   00678|         "go",
+   00679|         "java",
+   00680|         "c",
+   00681|         "ruby",
+   00682|     ];
+   00683|     let target = langs
+   00684|         .iter()
+   00685|         .find(|lang| normalized.contains(&format!("to {lang}")))
+   00686|         .copied()?;
+   00687|     Some((source, target))
+   00688| }
+   00689| 
+   00690| /// Translate `surface` and return the full pipeline result so callers can
+   00691| /// inspect the meaning id, candidate list, and provenance trail.
+   00692| ///
+   00693| /// The caller is responsible for matching the source's leading case and
+   00694| /// terminal punctuation; see [`crate::translation::match_source_formatting`].
+   00695| pub fn translate_surface_detailed(
+   00696|     surface: &str,
+   00697|     source: &str,
+   00698|     target: &str,
+   00699| ) -> Result<crate::translation::Translation, crate::translation::HttpError> {
+   00700|     crate::translation::translate_via_default_pipeline(surface, source, target)
+   00701| }
+   00702| 
+   00703| pub fn extract_concept_from_query(prompt: &str) -> Option<String> {
+   00704|     let lower = prompt.to_lowercase();
+   00705|     if !(lower.contains("what do you know about") || lower.contains("introspect")) {
+   00706|         return None;
+   00707|     }
+   00708|     let quoted = extract_quoted_phrase(prompt)?;
+   00709|     Some(quoted)
+   00710| }
+   00711| 
+   00712| pub fn detect_algorithm_language(normalized: &str) -> &'static str {
+   00713|     let langs = [
+   00714|         ("python", "python"),
+   00715|         (" py ", "python"),
+   00716|         ("rust", "rust"),
+   00717|         (" rs ", "rust"),
+   00718|         ("javascript", "javascript"),
+   00719|         ("typescript", "typescript"),
+   00720|         ("go ", "go"),
+   00721|         ("golang", "go"),
+   00722|         ("java", "java"),
+   00723|         ("ruby", "ruby"),
+   00724|     ];
+   00725|     for (needle, slug) in langs {
+   00726|         if normalized.contains(needle) {
+   00727|             return slug;
+   00728|         }
+   00729|     }
+   00730|     "python"
+   00731| }
+   00732| 
+   00733| pub fn build_sorting_algorithm_answer(lang: &str, with_tests: bool) -> String {
+   00734|     let (fence, code, tests) = match lang {
+   00735|         "rust" => (
+   00736|             "rust",
+   00737|             "fn sort(values: &mut Vec<i32>) {\n    values.sort();\n}",
+   00738|             "#[test]\nfn test_sort_ascending() {\n    let mut v = vec![3, 1, 2];\n    sort(&mut v);\n    assert_eq!(v, vec![1, 2, 3]);\n}",
+   00739|         ),
+   00740|         "javascript" | "typescript" => (
+   00741|             lang,
+   00742|             "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}",
+   00743|             "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}",
+   00744|         ),
+   00745|         _ => (
+   00746|             "python",
+   00747|             "def sort(values):\n    return sorted(values)\n",
+   00748|             "def test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n",
+   00749|         ),
+   00750|     };
+   00751| 
+   00752|     if with_tests {
+   00753|         format!(
+   00754|             "Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+   00755|         )
+   00756|     } else {
+   00757|         format!(
+   00758|             "Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+   00759|         )
+   00760|     }
+   00761| }
+   00762| 
+   00763| /// Extract a JavaScript program from a prompt that asks the solver to run it.
+   00764| /// Looks for triple-backtick code fences first (with optional `js`/`javascript`
+   00765| /// language tag), then single-backtick spans, then `run "...";` quoted bodies.
+   00766| /// Returns `None` when the prompt does not appear to request JS execution.
+   00767| pub fn extract_javascript_program(prompt: &str) -> Option<String> {
+   00768|     let lower = prompt.to_lowercase();
+   00769|     let asks_to_run = lower.contains("run this javascript")
+   00770|         || lower.contains("run this js")
+   00771|         || lower.contains("execute this javascript")
+   00772|         || lower.contains("execute this js")
+   00773|         || lower.contains("run the following javascript")
+   00774|         || lower.contains("run the following js")
+   00775|         || lower.contains("evaluate this javascript")
+   00776|         || lower.contains("evaluate this js");
+   00777|     if !asks_to_run {
+   00778|         return None;
+   00779|     }
+   00780|     if let Some(body) = extract_fenced_block(prompt, &["javascript", "js"]) {
+   00781|         return Some(body);
+   00782|     }
+   00783|     if let Some(body) = extract_backticked(prompt) {
+   00784|         return Some(body);
+   00785|     }
+   00786|     extract_quoted_phrase(prompt)
+   00787| }
+   00788| 
+   00789| /// Render a percent-encoded URL in its readable IRI form (RFC 3987).
+   00790| ///
+   00791| /// Leaves reserved URI delimiters (`; / ? : @ & = + $ , #`) percent-encoded so
+   00792| /// query strings and fragments still resolve. Returns the input unchanged when
+   00793| /// the URL has no percent-escapes or when decoding would produce invalid
+   00794| /// UTF-8.
+   00795| ///
+   00796| /// Mirrors the JavaScript `decodeURI` semantics used in
+   00797| /// `js/worker/formal_ai_worker.js::humanizeUrl` so Wikipedia source links render
+   00798| /// identically across every formal-ai surface (issue #21).
+   00799| #[must_use]
+   00800| pub fn humanize_url(url: &str) -> String {
+   00801|     if !url.contains('%') {
+   00802|         return url.to_owned();
+   00803|     }
+   00804|     let bytes = url.as_bytes();
+   00805|     let mut out: Vec<u8> = Vec::with_capacity(bytes.len());
+   00806|     let mut i = 0usize;
+   00807|     while i < bytes.len() {
+   00808|         if bytes[i] == b'%' && i + 2 < bytes.len() {
+   00809|             if let (Some(hi), Some(lo)) = (hex_nibble(bytes[i + 1]), hex_nibble(bytes[i + 2])) {
+   00810|                 let value = (hi << 4) | lo;
+   00811|                 if is_reserved_uri_delimiter(value) {
+   00812|                     out.extend_from_slice(&bytes[i..=i + 2]);
+   00813|                 } else {
+   00814|                     out.push(value);
+   00815|                 }
+   00816|                 i += 3;
+   00817|                 continue;
+   00818|             }
+   00819|         }
+   00820|         out.push(bytes[i]);
+   00821|         i += 1;
+   00822|     }
+   00823|     String::from_utf8(out).unwrap_or_else(|_| url.to_owned())
+   00824| }
+   00825| 
+   00826| const fn hex_nibble(byte: u8) -> Option<u8> {
+   00827|     match byte {
+   00828|         b'0'..=b'9' => Some(byte - b'0'),
+   00829|         b'a'..=b'f' => Some(byte - b'a' + 10),
+   00830|         b'A'..=b'F' => Some(byte - b'A' + 10),
+   00831|         _ => None,
+   00832|     }
+   00833| }
+   00834| 
+   00835| const fn is_reserved_uri_delimiter(byte: u8) -> bool {
+   00836|     matches!(
+   00837|         byte,
+   00838|         b';' | b'/' | b'?' | b':' | b'@' | b'&' | b'=' | b'+' | b'$' | b',' | b'#'
+   00839|     )
+   00840| }
+   00841| 
+   00842| /// Find a fenced code block whose info string matches one of the supplied
+   00843| /// languages (case-insensitive). Returns the block body with trailing newlines
+   00844| /// trimmed.
+   00845| pub fn extract_fenced_block(text: &str, languages: &[&str]) -> Option<String> {
+   00846|     let fence = "```";
+   00847|     let mut cursor = 0usize;
+   00848|     while let Some(open_offset) = text[cursor..].find(fence) {
+   00849|         let open = cursor + open_offset;
+   00850|         let info_start = open + fence.len();
+   00851|         let info_end = text[info_start..]
+   00852|             .find('\n')
+   00853|             .map_or(text.len(), |n| info_start + n);
+   00854|         let info = text[info_start..info_end].trim().to_lowercase();
+   00855|         let body_start = (info_end + 1).min(text.len());
+   00856|         let body_end_offset = text[body_start..].find(fence)?;
+   00857|         let body_end = body_start + body_end_offset;
+   00858|         let body = text[body_start..body_end].trim_end_matches('\n').to_owned();
+   00859|         if info.is_empty() || languages.iter().any(|lang| info == *lang) {
+   00860|             return Some(body);
+   00861|         }
+   00862|         cursor = body_end + fence.len();
+   00863|     }
+   00864|     None
+   00865| }
+   00866| 
+   00867| /// Return true when the normalized prompt asks for a script or code to be
+   00868| /// *authored* — the author verb ([`ROLE_SCRIPT_AUTHORING_VERB`], carried by the
+   00869| /// `write` meaning) paired with a script-or-code artifact noun
+   00870| /// ([`ROLE_SCRIPT_OR_CODE_ARTIFACT`], carried by `script` and `code`) — in any
+   00871| /// supported language. No natural-language word is hardcoded here; the lexicon
+   00872| /// answers which surface forms evidence each role.
+   00873| ///
+   00874| /// Defers to the parametric write-program route for prompts that name the broad
+   00875| /// program genus ([`ROLE_PROGRAM_GENUS`]) or the canonical hello-world archetype
+   00876| /// ([`ROLE_HELLO_WORLD_REFERENCE`]), so those keep their richer formalization
+   00877| /// instead of collapsing into a bare script.
+   00878| ///
+   00879| /// Defers again — see [`names_no_task_beyond_the_minimal_script`] — when the
+   00880| /// prompt names a task the minimal script cannot render.
+   00881| ///
+   00882| /// [`ROLE_SCRIPT_AUTHORING_VERB`]: crate::seed::ROLE_SCRIPT_AUTHORING_VERB
+   00883| /// [`ROLE_SCRIPT_OR_CODE_ARTIFACT`]: crate::seed::ROLE_SCRIPT_OR_CODE_ARTIFACT
+   00884| /// [`ROLE_PROGRAM_GENUS`]: crate::seed::ROLE_PROGRAM_GENUS
+   00885| /// [`ROLE_HELLO_WORLD_REFERENCE`]: crate::seed::ROLE_HELLO_WORLD_REFERENCE
+   00886| pub fn is_write_script_request(prompt: &str, normalized: &str) -> bool {
+   00887|     use crate::seed::{
+   00888|         ROLE_HELLO_WORLD_REFERENCE, ROLE_PROGRAM_GENUS, ROLE_SCRIPT_AUTHORING_VERB,
+   00889|         ROLE_SCRIPT_OR_CODE_ARTIFACT,
+   00890|     };
+   00891|     let lexicon = crate::seed::lexicon();
+   00892|     // The parametric write-program route owns the broad program genus and the
+   00893|     // canonical hello-world archetype; step aside for those.
+   00894|     if lexicon.mentions_role(ROLE_PROGRAM_GENUS, normalized)
+   00895|         || lexicon.mentions_role(ROLE_HELLO_WORLD_REFERENCE, normalized)
+   00896|     {
+   00897|         return false;
+   00898|     }
+   00899|     // Author a script: the write verb plus a script-or-code artifact noun.
+   00900|     if !(lexicon.mentions_role(ROLE_SCRIPT_AUTHORING_VERB, normalized)
+   00901|         && lexicon.mentions_role(ROLE_SCRIPT_OR_CODE_ARTIFACT, normalized))
+   00902|     {
+   00903|         return false;
+   00904|     }
+   00905|     names_no_task_beyond_the_minimal_script(prompt, normalized)
+   00906| }
+   00907| 
+   00908| /// Return true when the minimal-script route can render everything the prompt
+   00909| /// names, and false when the prompt names a task it cannot.
+   00910| ///
+   00911| /// The route renders exactly one thing: the hello-world template for the
+   00912| /// language it recognizes. `handler:write_script` is hoisted to the front of
+   00913| /// method selection by the bare tokens "script"/"code" in
+   00914| /// `data/meta/cue-lexicon.lino`, which without this check lets that one template
+   00915| /// answer any request merely ending in "give me the code" — jumping over the
+   00916| /// task routes `data/seed/handler-precedence.lino` ranks above it (`numeric_list`
+   00917| /// is line 29, `write_script` line 43). Standing aside for a task it cannot
+   00918| /// render restores that order for any authoring verb, in any language, because
+   00919| /// the test is a property of the route rather than of a phrase.
+   00920| fn names_no_task_beyond_the_minimal_script(prompt: &str, normalized: &str) -> bool {
+   00921|     let Some(program) = crate::engine::hello_world_program_by_alias(normalized) else {
+   00922|         // No catalogued language: the route declines on its own grounds.
+   00923|         return true;
+   00924|     };
+   00925|     if crate::coding::program_task_by_alias(normalized)
+   00926|         .is_some_and(|task| task.slug != program.task.slug)
+   00927|     {
+   00928|         return false;
+   00929|     }
+   00930|     crate::solver_handlers::numeric_list::solve_numeric_list(prompt).is_none()
+   00931| }
+   00932| 
+   00933| pub fn format_write_script_execution(program: ProgramSpec) -> String {
+   00934|     let execution = &program.language.execution;
+   00935|     let expected_output = program.expected_output();
+   00936|     let cmd = execution.check_command.map_or_else(
+   00937|         || format!("Run command: `{}`", execution.run_command),
+   00938|         |check| {
+   00939|             format!(
+   00940|                 "Check command: `{check}`\nRun command: `{}`",
+   00941|                 execution.run_command
+   00942|             )
+   00943|         },
+   00944|     );
+   00945|     let output_label = if matches!(execution.status, ExecutionStatus::Verified) {
+   00946|         "Output"
+   00947|     } else {
+   00948|         "Expected output after verification"
+   00949|     };
+   00950|     format!(
+   00951|         "Execution status: {} in {}.\n{}\n{}:\n```text\n{}\n```\n{}",
+   00952|         execution.status.label(),
+   00953|         execution.environment,
+   00954|         cmd,
+   00955|         output_label,
+   00956|         expected_output,
+   00957|         execution.notes
+   00958|     )
+   00959| }
+   00960| 
+   00961| #[path = "source_tests/solver_helpers/tests.rs"]
+   00962| mod tests;
+   00963| 
+   
+   (End of file - total 963 lines)
+   </file>
+>> edit {"filePath":"rust/tests/source/solver_helpers.rs","file_path":"rust/tests/source/solver_helpers.rs","new":"formal_ai::rule_interpreter::handler_matches(\"opinion_question\", prompt)","newString":"formal_ai::rule_interpreter::handler_matches(\"opinion_question\", prompt)","new_str":"formal_ai::rule_interpreter::handler_matches(\"opinion_question\", prompt)","new_string":"formal_ai::rule_interpreter::handler_matches(\"opinion_question\", prompt)","old":"crate::rule_interpreter::handler_matches(\"opinion_question\", prompt)","oldString":"crate::rule_interpreter::handler_matches(\"opinion_question\", prompt)","old_str":"crate::rule_interpreter::handler_matches(\"opinion_question\", prompt)","old_string":"crate::rule_interpreter::handler_matches(\"opinion_question\", prompt)","path":"rust/tests/source/solver_helpers.rs"}
+>> bash {"command":"sha256sum -- rust/tests/source/solver_helpers.rs"}
+   Output: 8553f9fd41869d93a4fb76dc8978942f27fb0c4c6fa38675b6f4b978eec5f434  rust/tests/source/solver_helpers.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `crate::rule_interpreter::handler_matches("opinion_question", prompt)` with `formal_ai::rule_interpreter::handler_matches("opinion_question", prompt)` in `rust/tests/source/solver_helpers.rs` and observed the result.

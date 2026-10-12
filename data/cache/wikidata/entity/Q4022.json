@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "河流"
+        },
+        "es": {
+          "language": "es",
+          "value": "río"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "自然的水道"
+        },
+        "es": {
+          "language": "es",
+          "value": "corriente natural de agua que fluye con continuidad"
         }
       },
       "aliases": {
@@ -76,6 +84,20 @@
           {
             "language": "zh",
             "value": "河道"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "rio"
+          },
+          {
+            "language": "es",
+            "value": "ríos"
+          },
+          {
+            "language": "es",
+            "value": "rios"
           }
         ]
       }

@@ -4,10 +4,12 @@ Q287
     ru ("дерево (материал)")
   descriptions
     en "fibrous material from trees or other plants"
+    es "material duro y fibroso obtenido de los árboles u otras plantas, que se emplea para fines como mobiliario, utensilios, instrumentos, objetos, etc."
     ru "внутренняя часть дерева"
   id Q287
   labels
     en wood
+    es madera
     hi "लकड़ी"
     ru "древесина"
     zh "木材"

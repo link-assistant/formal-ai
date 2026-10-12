@@ -1,0 +1,33 @@
+view
+  id M-4d7d29d55fd5
+  lemma join
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the shape or manner in which things come together and a connection is made"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a set containing all and only the members of two or more given sets"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "become part of; become a member of a group or organization"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to become joined or linked"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "come into the company of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make contact or come together"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be or become joined or united or linked"
+    provenance (wordnet)

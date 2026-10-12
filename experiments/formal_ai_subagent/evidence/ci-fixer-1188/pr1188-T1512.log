@@ -1,0 +1,334 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs","file_path":"rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs","path":"rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs"}
+   <file>
+   00001| //! PR #1188 TEACH-D: the edit-composer gaps Formal AI showed as a subagent
+   00002| //! (`experiments/formal_ai_subagent/gaps.md` G16, G19, G20, G21, G22, G24,
+   00003| //! G28, G31). Before: lines under an insert request lost their indentation
+   00004| //! (G16); an ordinal line was only read (G19); a Spanish line operation
+   00005| //! answered in English (G20); a quoted path-shaped anchor was taken for the
+   00006| //! file (G21); `with these three lines in f:` replaced the line by the words
+   00007| //! (G22); a file rename rewrote the word `the` (G24); an empty line beside
+   00008| //! an anchor only read the file (G31). Twin of
+   00009| //! `rust/tests/web/pull-request-1188-edit-composer-gaps.test.mjs`.
+   00010| 
+   00011| use formal_ai::agentic_coding::general_planner::compose_edit_request;
+   00012| use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+   00013| use formal_ai::protocol::{ChatMessage, ToolCall};
+   00014| use formal_ai::source_fetch::sha256_hex;
+   00015| 
+   00016| const TOOLS: [&str; 4] = ["read", "edit", "bash", "write"];
+   00017| const THREE: &str = "one\ntwo\nthree\n";
+   00018| const LINO: &str = "meanings\n  table a\n    row x\n  b\nc\n";
+   00019| 
+   00020| /// The calls made (a shell call by its command), the file afterwards, and the
+   00021| /// final answer.
+   00022| struct Run {
+   00023|     calls: Vec<String>,
+   00024|     file: String,
+   00025|     answer: Option<String>,
+   00026| }
+   00027| 
+   00028| /// Run `prompt` over one file `name` holding `source`; the tools act on it the
+   00029| /// way the Agent CLI's do.
+   00030| fn drive(prompt: &str, source: &str, name: &str) -> Run {
+   00031|     let mut file = source.to_owned();
+   00032|     let mut messages = vec![ChatMessage::user(prompt)];
+   00033|     let mut calls = Vec::new();
+   00034|     let mut answer = None;
+   00035|     for index in 0..6 {
+   00036|         let planned = match plan_chat_step(&messages, &TOOLS) {
+   00037|             Some(AgenticPlan::ToolCalls(planned)) => planned,
+   00038|             Some(AgenticPlan::Final(text)) => {
+   00039|                 answer = Some(text);
+   00040|                 break;
+   00041|             }
+   00042|             None => break,
+   00043|         };
+   00044|         let call = planned[0].clone();
+   00045|         let arguments: serde_json::Value =
+   00046|             serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+   00047|         let result = match call.tool.as_str() {
+   00048|             "read" => file.clone(),
+   00049|             "edit" => {
+   00050|                 let old = arguments["oldString"].as_str().unwrap_or_default();
+   00051|                 let new = arguments["newString"].as_str().unwrap_or_default();
+   00052|                 file = file.replacen(old, new, 1);
+   00053|                 String::new()
+   00054|             }
+   00055|             "write" => {
+   00056|                 file = arguments["content"].as_str().unwrap_or_default().to_owned();
+   00057|                 String::new()
+   00058|             }
+   00059|             "bash" => format!("{}  {name}\n", sha256_hex(file.as_bytes())),
+   00060|             _ => String::new(),
+   00061|         };
+   00062|         calls.push(if call.tool == "bash" {
+   00063|             arguments["command"].as_str().unwrap_or_default().to_owned()
+   00064|         } else {
+   00065|             call.tool.clone()
+   00066|         });
+   00067|         let id = format!("call_{index}");
+   00068|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00069|             id.clone(),
+   00070|             call.tool.clone(),
+   00071|             call.arguments.clone(),
+   00072|         )]));
+   00073|         messages.push(ChatMessage::tool_result(id, call.tool.clone(), result));
+   00074|     }
+   00075|     Run {
+   00076|         calls,
+   00077|         file,
+   00078|         answer,
+   00079|     }
+   00080| }
+   00081| 
+   00082| #[test]
+   00083| fn lines_under_a_request_keep_their_structure() {
+   00084|     let rebased = drive(
+   00085|         "Insert the following lines after the line 'b' in f.lino:\ntable q\n  row 1",
+   00086|         LINO,
+   00087|         "f.lino",
+   00088|     );
+   00089|     assert_eq!(
+   00090|         rebased.file,
+   00091|         "meanings\n  table a\n    row x\n  b\n  table q\n    row 1\nc\n"
+   00092|     );
+   00093|     let fenced = drive(
+   00094|         "Insert these lines after the line 'b' in f.lino:\n```\ntable q\n```",
+   00095|         LINO,
+   00096|         "f.lino",
+   00097|     );
+   00098|     assert_eq!(
+   00099|         fenced.file,
+   00100|         "meanings\n  table a\n    row x\n  b\ntable q\nc\n"
+   00101|     );
+   00102|     let appended = drive(
+   00103|         "Append these lines to f.lino:\n  table z\n    row 9",
+   00104|         LINO,
+   00105|         "f.lino",
+   00106|     );
+   00107|     assert_eq!(appended.file, [LINO, "  table z\n    row 9\n"].concat());
+   00108|     // G93: an indentation the file already uses is kept, whatever the anchor's.
+   00109|     let given = drive(
+   00110|         "Insert these lines after the line containing 'row x' in f.lino:\n  table q\n    row 1",
+   00111|         LINO,
+   00112|         "f.lino",
+   00113|     );
+   00114|     assert_eq!(
+   00115|         given.file,
+   00116|         "meanings\n  table a\n    row x\n  table q\n    row 1\n  b\nc\n"
+   00117|     );
+   00118| }
+   00119| 
+   00120| #[test]
+   00121| fn lines_under_a_request_are_its_payload_whatever_they_say() {
+   00122|     // G94, G95: a delivery or a path inside the inserted rows is not acted on.
+   00123|     let rows = "| T527 | z, append gap G93 to `gaps.md` | **Pass** | w. |\n\
+   00124|                 | T528 | x in js/a.mjs and rust/b.rs | **Pass** | y. |";
+   00125|     let run = drive(
+   00126|         &format!("In d.md, insert these lines after the line containing '| T447 |':\n{rows}"),
+   00127|         "| T446 | a |\n| T447 | b |\n| T448 | c |\n",
+   00128|         "d.md",
+   00129|     );
+   00130|     assert_eq!(
+   00131|         run.file,
+   00132|         format!("| T446 | a |\n| T447 | b |\n{rows}\n| T448 | c |\n")
+   00133|     );
+   00134|     assert!(
+   00135|         !run.calls.iter().any(|call| call == "write"),
+   00136|         "{:?}",
+   00137|         run.calls
+   00138|     );
+   00139| }
+   00140| 
+   00141| #[test]
+   00142| fn a_line_named_by_its_ordinal() {
+   00143|     for (prompt, expected) in [
+   00144|         ("Remove the first line of f.txt.", "two\nthree\n"),
+   00145|         ("Delete the last line of f.txt.", "one\ntwo\n"),
+   00146|         ("Удали вторую строку из f.txt.", "one\nthree\n"),
+   00147|         ("f.txt की तीसरी पंक्ति हटाओ।", "one\ntwo\n"),
+   00148|         ("删除 f.txt 的最后一行。", "one\ntwo\n"),
+   00149|         ("Elimina la primera línea de f.txt.", "two\nthree\n"),
+   00150|     ] {
+   00151|         assert_eq!(drive(prompt, THREE, "f.txt").file, expected, "{prompt}");
+   00152|     }
+   00153|     let last = drive("Delete the last line of f.txt.", THREE, "f.txt");
+   00154|     assert_eq!(
+   00155|         last.answer.as_deref(),
+   00156|         Some("Deleted line(s) 3 of `f.txt` and observed the result.")
+   00157|     );
+   00158|     let inserted = drive(
+   00159|         "Insert the line 'zero' before the first line of f.txt.",
+   00160|         THREE,
+   00161|         "f.txt",
+   00162|     );
+   00163|     assert_eq!(inserted.file, "zero\none\ntwo\nthree\n");
+   00164|     assert_eq!(
+   00165|         inserted.answer.as_deref(),
+   00166|         Some("Inserted `zero` before line 1 of `f.txt` and observed the result.")
+   00167|     );
+   00168| }
+   00169| 
+   00170| #[test]
+   00171| fn the_answer_is_in_the_language_of_the_request() {
+   00172|     let removed = drive("Elimina las líneas 2 a 3 de f.txt.", THREE, "f.txt");
+   00173|     assert_eq!(
+   00174|         removed.answer.as_deref(),
+   00175|         Some("Se eliminaron las líneas 2-3 de `f.txt` y se verificó el resultado.")
+   00176|     );
+   00177|     let swapped = drive(
+   00178|         "Intercambia las líneas 'one' y 'two' en f.txt.",
+   00179|         THREE,
+   00180|         "f.txt",
+   00181|     );
+   00182|     assert_eq!(swapped.file, "two\none\nthree\n");
+   00183|     assert_eq!(
+   00184|         swapped.answer.as_deref(),
+   00185|         Some("Se intercambiaron `one` y `two` en `f.txt` y se verificó el resultado.")
+   00186|     );
+   00187|     let english = drive("Delete lines 2-3 from f.txt.", THREE, "f.txt");
+   00188|     assert_eq!(
+   00189|         english.answer.as_deref(),
+   00190|         Some("Deleted line(s) 2-3 of `f.txt` and observed the result.")
+   00191|     );
+   00192| }
+   00193| 
+   00194| #[test]
+   00195| fn a_quoted_path_shaped_anchor_is_not_the_file() {
+   00196|     let run = drive(
+   00197|         "Insert the line 'foo' after the line 'js/ocr.bundle.js' in paths.txt.",
+   00198|         "x\njs/ocr.bundle.js\ny\n",
+   00199|         "paths.txt",
+   00200|     );
+   00201|     assert_eq!(run.calls, ["read", "edit", "sha256sum -- paths.txt"]);
+   00202|     assert_eq!(run.file, "x\njs/ocr.bundle.js\nfoo\ny\n");
+   00203| }
+   00204| 
+   00205| #[test]
+   00206| fn a_new_clause_describing_lines_takes_the_lines_under_the_request() {
+   00207|     let run = drive(
+   00208|         "Replace the line 'const X = 2;' with these three lines in f.mjs:\nconst X = 2;\nconst Y = 3;\nconst Z = 4;",
+   00209|         "function f() {\n  const X = 2;\n  return X;\n}\n",
+   00210|         "f.mjs",
+   00211|     );
+   00212|     assert_eq!(
+   00213|         run.file,
+   00214|         "function f() {\n  const X = 2;\n  const Y = 3;\n  const Z = 4;\n  return X;\n}\n"
+   00215|     );
+   00216| }
+   00217| 
+   00218| #[test]
+   00219| fn renames_of_files_and_functions() {
+   00220|     assert_eq!(
+   00221|         compose_edit_request("Rename the file m.py to math_utils.py."),
+   00222|         None
+   00223|     );
+   00224|     let messages = [ChatMessage::user("Rename the file m.py to math_utils.py.")];
+   00225|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &TOOLS) else {
+   00226|         panic!("the move is planned");
+   00227|     };
+   00228|     let arguments: serde_json::Value =
+   00229|         serde_json::from_str(&calls[0].arguments).expect("tool arguments are JSON");
+   00230|     assert_eq!(arguments["command"], "test -e m.py");
+   00231|     let source = "export function add(a, b) {\n  return a + b;\n}\nexport function mul(a, b) {\n  return a * b;\n}\n";
+   00232|     let run = drive(
+   00233|         "Rename the function mul to multiply in src/m.mjs.",
+   00234|         source,
+   00235|         "src/m.mjs",
+   00236|     );
+   00237|     assert_eq!(
+   00238|         run.file,
+   00239|         source.replace("function mul(", "function multiply(")
+   00240|     );
+   00241|     assert_eq!(
+   00242|         run.answer.as_deref(),
+   00243|         Some("Renamed `mul` to `multiply` in `src/m.mjs` and observed the result.")
+   00244|     );
+   00245| }
+   00246| 
+   00247| #[test]
+   00248| fn an_empty_line_beside_an_anchor_line() {
+   00249|     let readme = "# T\ntext\n## Probe\nx\n";
+   00250|     let before = drive(
+   00251|         "Insert an empty line before the line '## Probe' in README.md.",
+   00252|         readme,
+   00253|         "README.md",
+   00254|     );
+   00255|     assert_eq!(before.file, "# T\ntext\n\n## Probe\nx\n");
+   00256|     assert_eq!(
+   00257|         before.answer.as_deref(),
+   00258|         Some("Added an empty line to `README.md` and observed the result.")
+   00259|     );
+   00260|     let after = drive(
+   00261|         "Add a blank line after the line 'text' in README.md.",
+   00262|         readme,
+   00263|         "README.md",
+   00264|     );
+   00265|     assert_eq!(after.file, "# T\ntext\n\n## Probe\nx\n");
+   00266| }
+   00267| 
+   00268| #[test]
+   00269| fn a_quoted_anchor_line_holding_an_escape() {
+   00270|     // G96: a `\n` inside a quoted anchor is its two characters when the file
+   00271|     // holds them so inside the line, and a line break when it holds two lines.
+   00272|     let source = " * `\\r`, as `split('\\n')` does.)\n * @param {string} text\n";
+   00273|     let prompt = "Insert the line « * Rust built-in `str::lines`.» after the line « * `\\r`, as `split('\\n')` does.)» in m.mjs.";
+   00274|     assert_eq!(
+   00275|         drive(prompt, source, "m.mjs").file,
+   00276|         " * `\\r`, as `split('\\n')` does.)\n * Rust built-in `str::lines`.\n * @param {string} text\n"
+   00277|     );
+   00278|     let prompt = "Insert the line 'x' after the line 'one\\ntwo' in f.txt.";
+   00279|     assert_eq!(drive(prompt, THREE, "f.txt").file, "one\ntwo\nx\nthree\n");
+   00280| }
+   00281| 
+   00282| #[test]
+   00283| fn a_path_names_a_file_not_the_answer_language() {
+   00284|     // G97: Spanish "formaliza" begins `formalization_segment.mjs`, a path, so
+   00285|     // the English request is answered in English.
+   00286|     let run = drive(
+   00287|         "Insert the line 'x' after the line 'one' in formalization_segment.mjs.",
+   00288|         THREE,
+   00289|         "formalization_segment.mjs",
+   00290|     );
+   00291|     assert_eq!(run.file, "one\nx\ntwo\nthree\n");
+   00292|     assert_eq!(
+   00293|         run.answer.as_deref(),
+   00294|         Some("Inserted `x` after `one` in `formalization_segment.mjs` and observed the result.")
+   00295|     );
+   00296| }
+   00297| 
+   00298| #[test]
+   00299| fn an_article_between_the_target_cues_is_no_part_of_the_new_text() {
+   00300|     // G98: the file clause runs back over the seeded function words between
+   00301|     // its cues, so `in the file f.txt` leaves `the` out of the new text.
+   00302|     let expected =
+   00303|         |old: &str, new: &str| Some(("f.txt".to_owned(), old.to_owned(), new.to_owned()));
+   00304|     assert_eq!(
+   00305|         compose_edit_request("Change 'mundo' to 'amigo' in the file f.txt."),
+   00306|         expected("mundo", "amigo")
+   00307|     );
+   00308|     assert_eq!(
+   00309|         compose_edit_request("Cambia 'mundo' a 'amigo' en el archivo f.txt."),
+   00310|         expected("mundo", "amigo")
+   00311|     );
+   00312|     assert_eq!(
+   00313|         compose_edit_request("Replace foo with bar in the file f.txt."),
+   00314|         expected("foo", "bar")
+   00315|     );
+   00316|     assert_eq!(
+   00317|         compose_edit_request("Change 'a' to 'b' in the f.txt file."),
+   00318|         expected("a", "b")
+   00319|     );
+   00320|     let run = drive("Change 'two' to 'deux' in the file f.txt.", THREE, "f.txt");
+   00321|     assert_eq!(run.file, "one\ndeux\nthree\n");
+   00322| }
+   00323| 
+   
+   (End of file - total 323 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs","file_path":"rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs","new":"arguments[\"content\"].as_str().unwrap_or_default().clone_into(&mut file);","newString":"arguments[\"content\"].as_str().unwrap_or_default().clone_into(&mut file);","new_str":"arguments[\"content\"].as_str().unwrap_or_default().clone_into(&mut file);","new_string":"arguments[\"content\"].as_str().unwrap_or_default().clone_into(&mut file);","old":"file = arguments[\"content\"].as_str().unwrap_or_default().to_owned();","oldString":"file = arguments[\"content\"].as_str().unwrap_or_default().to_owned();","old_str":"file = arguments[\"content\"].as_str().unwrap_or_default().to_owned();","old_string":"file = arguments[\"content\"].as_str().unwrap_or_default().to_owned();","path":"rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs"}
+   8d4a443468a5ab376d8564dc2ef2c213d1e66d6555b25b460b07565944994393  rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs
+   
+== answer ==
+Replaced `file = arguments["content"].as_str().unwrap_or_default().to_owned();` with `arguments["content"].as_str().unwrap_or_default().clone_into(&mut file);` in `rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs` and observed the result.

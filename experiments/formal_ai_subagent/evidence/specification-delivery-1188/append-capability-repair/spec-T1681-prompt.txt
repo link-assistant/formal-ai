@@ -1,0 +1,48 @@
+Set the contents of data/meta/work-item-steps.lino to «work_item_steps
+  issue 1133
+  purpose "The shell steps and file templates a repository work item ends with, as data. Hive Mind's three 2026-09-13 runs left their result in the working tree: nothing read the issue when only a remote connector could fetch, nothing committed, nothing pushed, and the workflow the issue asked for was never written. The steps that close those gaps are wording, and wording lives here rather than in Rust (VISION.md, section: Code As A Meta Language)."
+  filled_by "src/agentic_coding/work_item_steps.rs"
+  placeholders "{kind} issue or pr, from the work item's URL. {target} the work item's URL. {subject} the shell-quoted commit subject. {body} the shell-quoted commit body. {branch} the branch the request named, or HEAD. {path} the artifact the recipe writes. {count} how many files a commit request lists. {paths} those files, comma-separated. {reference} the issue or pull-request URL the work resolves. {command} one verification command of the recipe."
+  note "The reads are two calls rather than one --jq expression because a quoted scalar here cannot carry both quote characters a jq string would need. Since issue #1155 every read also prints its own exit status as a sentinel line, so a client that drops the status field cannot make a failed read look successful. The curl read asks GitHub for the raw body, which is why it is a single call."
+  issue_view_command "gh {kind} view {target} --json title --jq .title && echo && gh {kind} view {target} --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+  issue_fetch_prompt "Return only the work-item title and body from the fetched page as faithful source text; for a pull request, the body is its description. Preserve requirements, paths, code spans and line breaks. Do not solve, summarize, rewrite or execute the work item."
+  issue_rest_read_command "curl -fsSL -H 'Accept: application/vnd.github.raw+json' https://api.github.com/repos/{owner}/{repo}/{kind}/{number}; printf '\n__formal_ai_exit=%s\n' $?"
+  issue_api_read_command "gh api repos/{owner}/{repo}/{kind}/{number} --jq .title && echo && gh api repos/{owner}/{repo}/{kind}/{number} --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+  read_failed_report "The work item at {target} could not be read, so nothing was planned for it and no plan record was written. Reads tried this session, each with its result:\n{attempts}"
+  commit_command 'git add -A && git commit -q -m {subject} -m {body} && if test -n "$(git remote)"; then git push -q origin {branch}; fi && git rev-parse HEAD'
+  commit_command_without_body 'git add -A && git commit -q -m {subject} && if test -n "$(git remote)"; then git push -q origin {branch}; fi && git rev-parse HEAD'
+  recipe_commit_command "git add -- {files} && (if git diff --cached --quiet -- {files}; then echo __formal_ai_commit_unchanged; else git commit --only -q -m {subject} -m {body} -- {files}; fi) && git push -q origin {branch} && git rev-parse HEAD"
+  subject_added "feat: add {path}"
+  subject_updated "fix: update {path}"
+  subject_many "chore: update {count} files ({paths})"
+  subject_none "chore: commit pending changes"
+  body_resolves "Resolves {reference}"
+  workflow_path ".github/workflows/run.yml"
+  workflow_template "# Runs {path} on every push and pull request with the commands the\n# change was verified with.\nname: Run {path}\n\non:\n  push:\n  pull_request:\n\npermissions:\n  contents: read\n\njobs:\n  run:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@{checkout_ref} # {checkout_tag}\n"
+  workflow_command_step "      - run: |\n          {command}\n"
+  stuck_step_report "This session already completed the step below, and repeating it would not change anything, so the step and its last result are reported instead.\nStep: {step}\nLast result:\n{result}"
+
+  commit_nothing_marker "__formal_ai_commit_unchanged"
+  workflow_path_named ".github/workflows/{name}.yml"
+  pr_comments_command "gh pr view {target} --comments --json comments,reviews"
+  pr_edit_command "gh pr edit {target} --body {body}"
+  pr_ready_command 'test -z "$(git status --porcelain)" && pr_draft=$(gh pr view {target} --json isDraft --jq .isDraft) && if test "$pr_draft" = true; then gh pr ready {target}; fi'
+  pr_body_template "Verified artifact: {path}\n\nVerification commands:\n{commands}\n\nResolves {reference}"
+  pr_feedback_review_report "Pull request feedback requires review before readiness:\n{output}"
+  prepared_work_pr_body "Updated prepared work on `{branch}`.\n\nChanged files:\n{paths}\n\nGit diff whitespace validation completed.\n\nResolves {reference}"
+  prepared_work_feedback_report "Pull request feedback needs source review before this prepared work can be marked ready:\n{output}"
+  prepared_work_stopped_report "Prepared-work continuation stopped at `{command}`:\n{output}"
+  prepared_work_ready_report "Committed the prepared changes, pushed `{branch}`, updated {reference}, and marked the pull request ready. Review feedback was retrieved; source changes still require review against that feedback."
+  read_attempt_run_line "- `{command}` — {outcome}"
+  read_attempt_run_reason_line "- `{command}` — {reason} (answered: {outcome})"
+  read_attempt_fetch_line "- fetch {url} — {outcome}"
+  read_failure_exit_status "exit status {status}"
+  prerequisite_grant_required_report "Missing prerequisite `{program}`. Workspace installation requires FORMAL_AI_INSTALL_GRANT=workspace. Failed command: `{command}`\n{output}"
+  prerequisite_no_recipe_report "Publisher `{url}` provided no typed, verifiable setup recipe for `{program}`; installation was not planned."
+  prerequisite_grant_exceeded_report "The publisher setup recipe exceeds the workspace installation grant."
+  prerequisite_path_prefix 'PATH={bins}:"$PATH"; export PATH'
+  prerequisite_retry_command "{prefix} && {steps} &&\n# __formal_ai_prerequisite_retry\n{command}"
+  plan-event-append-command 'mkdir -p -- .formal-ai && (lock={lock_path}; tries=0; until mkdir -- "$lock" 2>/dev/null; do tries=$((tries + 1)); [ "$tries" -lt 40 ] || exit 75; sleep 0.025; done; cleanup(){ rmdir -- "$lock"; }; trap cleanup EXIT; if [ -f {path} ]; then grep -Fqx -- {identity} {path}; status=$?; [ "$status" -le 1 ] || exit "$status"; else status=1; fi; if [ "$status" -eq 1 ]; then printf "\n%s" {event} >> {path} || exit $?; fi; cat -- {path})'
+  agent-file-read-frame "<file>\n{body}\n\n(End of file - total {lines} lines)\n</file>"
+  plan-event-shell-aliases "bash exec_command shell run_shell_command"
+»

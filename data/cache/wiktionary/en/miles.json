@@ -1,0 +1,95 @@
+[
+  {
+    "word": "miles",
+    "phonetic": "/maɪlz/",
+    "phonetics": [
+      {
+        "text": "/maɪlz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/miles-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227558",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "The international mile: a unit of length precisely equal to 1.609344 kilometers established by treaty among Anglophone nations in 1959, divided into 5,280 feet or 1,760 yards.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of several customary units of length derived from the 1593 English statute mile of 8 furlongs, equivalent to 5,280 feet or 1,760 yards of various precise values.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of many customary units of length derived from the Roman mile (mille passus) of 8 stades or 5,000 Roman feet.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The Scandinavian mile: a unit of length precisely equal to 10 kilometers defined in 1889.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any of many customary units of length from other measurement systems of roughly similar values, as the Chinese (里) or Arabic mile (al-mīl).",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(travel) An airline mile in a frequent flier program.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Any similarly large distance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The shot missed by a mile."
+          },
+          {
+            "definition": "A race of 1 mile's length; a race of around 1 mile's length (usually 1500 or 1600 meters)",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The runners competed in the mile."
+          },
+          {
+            "definition": "One mile per hour, as a measure of speed.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "five miles over the speed limit"
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "adverb",
+        "definitions": [
+          {
+            "definition": "Much; a lot (used to emphasise a comparative)",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Her new paintings are miles better than her older ones."
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/mile",
+      "https://en.wiktionary.org/wiki/miles"
+    ]
+  }
+]

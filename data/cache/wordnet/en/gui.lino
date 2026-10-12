@@ -1,0 +1,12 @@
+language en
+lemma gui
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a user interface based on graphics (icons and pictures and menus) instead of text; uses a mouse as well as a keyboard as an input device"
+    id oewn-06587857-n
+    partOfSpeech n
+    synonyms ("graphical user interface")
+source "oewn:2024"

@@ -1,0 +1,125 @@
+{
+  "lemma": "decline",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13478551-n",
+      "partOfSpeech": "n",
+      "definition": "change toward something smaller or lower",
+      "synonyms": [
+        "diminution"
+      ]
+    },
+    {
+      "id": "oewn-14445892-n",
+      "partOfSpeech": "n",
+      "definition": "a condition inferior to an earlier condition; a gradual falling off from a better state; decline",
+      "synonyms": [
+        "declination"
+      ]
+    },
+    {
+      "id": "oewn-13477740-n",
+      "partOfSpeech": "n",
+      "definition": "a gradual decrease; as of stored charge or current",
+      "synonyms": [
+        "decay"
+      ]
+    },
+    {
+      "id": "oewn-09288526-n",
+      "partOfSpeech": "n",
+      "definition": "a downward slope or bend",
+      "synonyms": [
+        "descent",
+        "declivity",
+        "fall",
+        "declination",
+        "declension",
+        "downslope"
+      ]
+    },
+    {
+      "id": "oewn-00204228-v",
+      "partOfSpeech": "v",
+      "definition": "grow worse",
+      "examples": [
+        "Conditions in the slum worsened"
+      ],
+      "synonyms": [
+        "worsen"
+      ]
+    },
+    {
+      "id": "oewn-02242120-v",
+      "partOfSpeech": "v",
+      "definition": "not accept as true",
+      "examples": [
+        "He refused to accept what she said"
+      ],
+      "synonyms": [
+        "refuse",
+        "reject",
+        "pass up",
+        "turn down"
+      ]
+    },
+    {
+      "id": "oewn-00799092-v",
+      "partOfSpeech": "v",
+      "definition": "show unwillingness towards",
+      "examples": [
+        "he declined to join the group on a hike"
+      ],
+      "synonyms": [
+        "refuse"
+      ]
+    },
+    {
+      "id": "oewn-00432779-v",
+      "partOfSpeech": "v",
+      "definition": "grow smaller",
+      "examples": [
+        "Interest in the project waned"
+      ],
+      "synonyms": [
+        "go down",
+        "wane"
+      ]
+    },
+    {
+      "id": "oewn-02043721-v",
+      "partOfSpeech": "v",
+      "definition": "go down",
+      "examples": [
+        "The roof declines here"
+      ]
+    },
+    {
+      "id": "oewn-01975617-v",
+      "partOfSpeech": "v",
+      "definition": "fall in value",
+      "examples": [
+        "the stock market corrected",
+        "prices slumped"
+      ],
+      "synonyms": [
+        "slump",
+        "correct"
+      ]
+    },
+    {
+      "id": "oewn-00984945-v",
+      "partOfSpeech": "v",
+      "definition": "inflect for number, gender, case, etc.",
+      "examples": [
+        "in many languages, speakers decline nouns, pronouns, and adjectives"
+      ]
+    }
+  ]
+}

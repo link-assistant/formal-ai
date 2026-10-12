@@ -63,7 +63,7 @@ fn assert_localized(surface: &str, slug: &str, prompt: &str, rendered: &str) {
 fn the_language_matrix_covers_every_registered_language() {
     for language in registered_languages() {
         let prompt = prompt_for(language.slug());
-        assert!(!prompt.is_empty());
+        assert_ne!(prompt, "");
     }
     assert_eq!(
         PROMPTS.len(),

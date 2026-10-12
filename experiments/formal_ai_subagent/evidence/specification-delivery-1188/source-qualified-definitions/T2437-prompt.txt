@@ -1,0 +1,1 @@
+Run `node scripts/check-specification-in-javascript.mjs --write`

@@ -1,0 +1,27 @@
+[
+  {
+    "command": "npm",
+    "args": [
+      "ci",
+      "--prefix",
+      "rust/tests/e2e",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund"
+    ],
+    "status": 0,
+    "stdout": "\nadded 115 packages in 937ms\n",
+    "stderr": "npm notice\nnpm notice New minor version of npm available! 11.7.0 -> 11.21.0\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v11.21.0\nnpm notice To update run: npm install -g npm@11.21.0\nnpm notice\n"
+  },
+  {
+    "command": "node",
+    "args": [
+      "experiments/formal_ai_subagent/local-gates.mjs",
+      "--only",
+      "check-desktop-library,check-i18n-catalog-coverage,check-javascript-dependencies,release#2"
+    ],
+    "status": 0,
+    "stdout": "PASS check-desktop-library 0.5s\nPASS check-i18n-catalog-coverage 0.3s\nPASS check-javascript-dependencies 1.0s\nPASS release#2 11.2s\n\n4/4 passed or skipped; failed: none\n",
+    "stderr": ""
+  }
+]

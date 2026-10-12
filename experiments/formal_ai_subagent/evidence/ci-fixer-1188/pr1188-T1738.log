@@ -1,0 +1,124 @@
+>> read {"filePath":"rust/tests/web/mutating-action-bindings.test.mjs","file_path":"rust/tests/web/mutating-action-bindings.test.mjs","path":"rust/tests/web/mutating-action-bindings.test.mjs"}
+   <file>
+   00001| import { before, test } from 'node:test';
+   00002| import assert from 'node:assert/strict';
+   00003| import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+   00004| import { tmpdir } from 'node:os';
+   00005| import { join } from 'node:path';
+   00006| import { spawnSync } from 'node:child_process';
+   00007| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00008| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00009| 
+   00010| let verifiedRecipe;
+   00011| let planStep;
+   00012| before(async () => {
+   00013|   await installNodeHost(new WorkerHost());
+   00014|   ({ verifiedRecipe, planStep } = await import('../../../js/agentic/mutating_action.mjs'));
+   00015| });
+   00016| 
+   00017| function workspace(run) {
+   00018|   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-effect-'));
+   00019|   try { return run(directory); } finally { rmSync(directory, { recursive: true, force: true }); }
+   00020| }
+   00021| function execute(directory, command) {
+   00022|   const recipe = verifiedRecipe(command);
+   00023|   assert.ok(recipe, command);
+   00024|   const steps = [];
+   00025|   for (const step of recipe) {
+   00026|     const result = spawnSync('/bin/sh', ['-c', step], { cwd: directory, encoding: 'utf8' });
+   00027|     steps.push({ step, status: result.status, error: result.stderr });
+   00028|     if (result.status !== 0) break;
+   00029|   }
+   00030|   return { recipe, steps };
+   00031| }
+   00032| 
+   00033| test('G120: declared flags and value options bind the directory path', () => workspace((directory) => {
+   00034|   const command = 'mkdir -p -m 700 -- "evidence rows/nested"';
+   00035|   const result = execute(directory, command);
+   00036|   assert.ok(result.steps.every((step) => step.status === 0));
+   00037|   assert.deepEqual(result.recipe, ['test ! -e "evidence rows/nested" || test -d "evidence rows/nested"', command,
+   00038|     'test -d "evidence rows/nested"']);
+   00039|   assert.ok(execute(directory, command).steps.every((step) => step.status === 0));
+   00040| }));
+   00041| 
+   00042| test('G120: reuse permits a directory and still blocks an occupied file', () => workspace((directory) => {
+   00043|   writeFileSync(join(directory, 'occupied'), 'keep');
+   00044|   const result = execute(directory, 'mkdir -p occupied');
+   00045|   assert.equal(result.steps.length, 1);
+   00046|   assert.equal(result.steps[0].status, 1);
+   00047|   assert.equal(readFileSync(join(directory, 'occupied'), 'utf8'), 'keep');
+   00048| }));
+   00049| 
+   00050| test('G121: each glob match gets its own destination and source checks', () => workspace((directory) => {
+   00051|   mkdirSync(join(directory, 'logs'));
+   00052|   mkdirSync(join(directory, 'evidence'));
+   00053|   for (const name of ['one.log', 'two rows.log']) writeFileSync(join(directory, 'logs', name), name);
+   00054|   const result = execute(directory, 'cp logs/*.log evidence/');
+   00055|   assert.equal(result.steps.length, result.recipe.length);
+   00056|   assert.ok(result.steps.every((step) => step.status === 0));
+   00057|   for (const name of ['one.log', 'two rows.log']) {
+   00058|     assert.equal(readFileSync(join(directory, 'evidence', name), 'utf8'), name);
+   00059|     assert.equal(readFileSync(join(directory, 'logs', name), 'utf8'), name);
+   00060|   }
+   00061| }));
+   00062| 
+   00063| test('G121: an unmatched glob stops before preparation or action', () => workspace((directory) => {
+   00064|   const result = execute(directory, 'cp absent-*.log evidence/');
+   00065|   assert.equal(result.steps.length, 1);
+   00066|   assert.equal(result.steps[0].status, 1);
+   00067| }));
+   00068| 
+   00069| test('G121: occupied glob targets require explicit force consent', () => workspace((directory) => {
+   00070|   mkdirSync(join(directory, 'evidence'));
+   00071|   writeFileSync(join(directory, 'one.log'), 'new');
+   00072|   writeFileSync(join(directory, 'evidence', 'one.log'), 'old');
+   00073|   const blocked = execute(directory, 'cp *.log evidence/');
+   00074|   assert.equal(blocked.steps.length, 2);
+   00075|   assert.equal(blocked.steps[1].status, 1);
+   00076|   assert.equal(readFileSync(join(directory, 'evidence', 'one.log'), 'utf8'), 'old');
+   00077|   const forced = execute(directory, 'cp -f *.log evidence/');
+   00078|   assert.ok(forced.steps.every((step) => step.status === 0));
+   00079|   assert.equal(readFileSync(join(directory, 'evidence', 'one.log'), 'utf8'), 'new');
+   00080| }));
+   00081| 
+   00082| test('quoted operands and multiple sources keep their shell boundaries', () => workspace((directory) => {
+   00083|   writeFileSync(join(directory, 'first row'), 'first');
+   00084|   writeFileSync(join(directory, 'second row'), 'second');
+   00085|   mkdirSync(join(directory, 'archive rows'));
+   00086|   const copied = execute(directory, "cp 'first row' 'second row' 'archive rows/'");
+   00087|   assert.ok(copied.steps.every((step) => step.status === 0));
+   00088|   const moved = execute(directory, "mv 'first row' 'deep rows/final row'");
+   00089|   assert.ok(moved.steps.every((step) => step.status === 0));
+   00090|   assert.equal(readFileSync(join(directory, 'deep rows', 'final row'), 'utf8'), 'first');
+   00091| }));
+   00092| 
+   00093| test('failed postconditions report the attempted action instead of a skipped action', () => {
+   00094|   const command = 'mkdir -p rows';
+   00095|   const messages = [{ role: 'user', content: 'Run ' + command }];
+   00096|   let plan;
+   00097|   for (let index = 0; index < 3; index += 1) {
+   00098|     plan = planStep(command, messages, ['bash'], 'Run ' + command);
+   00099|     const call = plan.calls[0];
+   00100|     messages.push({ role: 'assistant', content: '', tool_calls: [{ id: 'c' + index, type: 'function', function: {
+   00101|       name: 'bash', arguments: call.arguments,
+   00102|     } }] }, { role: 'tool', tool_call_id: 'c' + index, content: index === 2 ? 'Output: \nError: failed\nExit Code: 1' : '' });
+   00103|   }
+   00104|   plan = planStep(command, messages, ['bash'], 'Run ' + command);
+   00105|   assert.equal(plan.kind, 'final');
+   00106|   assert.equal(plan.answer, 'I attempted `mkdir -p rows`. The step `test -d rows` exited 1, so completion is not verified.');
+   00107| });
+   00108| 
+   
+   (End of file - total 108 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/mutating-action-bindings.test.mjs","file_path":"rust/tests/web/mutating-action-bindings.test.mjs","new":"test('consumed-source glob effects require a stable collection contract', () => {\n  assert.equal(verifiedRecipe('mv logs/*.log evidence/'), null);\n  assert.ok(verifiedRecipe('mv logs/one.log evidence/one.log'));\n});\n\ntest('G121: an unmatched glob stops before preparation or action'","newString":"test('consumed-source glob effects require a stable collection contract', () => {\n  assert.equal(verifiedRecipe('mv logs/*.log evidence/'), null);\n  assert.ok(verifiedRecipe('mv logs/one.log evidence/one.log'));\n});\n\ntest('G121: an unmatched glob stops before preparation or action'","new_str":"test('consumed-source glob effects require a stable collection contract', () => {\n  assert.equal(verifiedRecipe('mv logs/*.log evidence/'), null);\n  assert.ok(verifiedRecipe('mv logs/one.log evidence/one.log'));\n});\n\ntest('G121: an unmatched glob stops before preparation or action'","new_string":"test('consumed-source glob effects require a stable collection contract', () => {\n  assert.equal(verifiedRecipe('mv logs/*.log evidence/'), null);\n  assert.ok(verifiedRecipe('mv logs/one.log evidence/one.log'));\n});\n\ntest('G121: an unmatched glob stops before preparation or action'","old":"test('G121: an unmatched glob stops before preparation or action'","oldString":"test('G121: an unmatched glob stops before preparation or action'","old_str":"test('G121: an unmatched glob stops before preparation or action'","old_string":"test('G121: an unmatched glob stops before preparation or action'","path":"rust/tests/web/mutating-action-bindings.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/mutating-action-bindings.test.mjs"}
+   b5b89571d147a2726dcd3b4ef23d543fcbad77f34678b04128bc06c363c25817  rust/tests/web/mutating-action-bindings.test.mjs
+   
+== answer ==
+Replaced `test('G121: an unmatched glob stops before preparation or action'` with `test('consumed-source glob effects require a stable collection contract', () => {
+  assert.equal(verifiedRecipe('mv logs/*.log evidence/'), null);
+  assert.ok(verifiedRecipe('mv logs/one.log evidence/one.log'));
+});
+
+test('G121: an unmatched glob stops before preparation or action'` in `rust/tests/web/mutating-action-bindings.test.mjs` and observed the result.

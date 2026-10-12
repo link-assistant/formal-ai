@@ -1,0 +1,48 @@
+language en
+lemma term
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a word or expression used for some particular thing"
+    examples ("he learned many medical terms")
+    id oewn-06314878-n
+    partOfSpeech n
+  entry
+    definition "a limited period of time"
+    examples ("a prison term" "he left school before the end of term")
+    id oewn-15249282-n
+    partOfSpeech n
+  entry
+    definition "(usually plural) a statement of what is required as part of an agreement"
+    examples ("the contract set out the conditions of the lease" "the terms of the treaty were generous")
+    id oewn-06783666-n
+    partOfSpeech n
+    synonyms (condition strings)
+  entry
+    definition "any distinct quantity contained in a polynomial"
+    examples ("the general term of an algebraic equation of the n-th degree")
+    id oewn-05864488-n
+    partOfSpeech n
+  entry
+    definition "one of the substantive phrases in a logical proposition"
+    examples ("the major term of a syllogism must occur twice")
+    id oewn-06764688-n
+    partOfSpeech n
+  entry
+    definition "the end of gestation or point at which birth is imminent"
+    examples ("a healthy baby born at full term")
+    id oewn-15251247-n
+    partOfSpeech n
+    synonyms ("full term")
+  entry
+    definition "(architecture) a statue or a human bust or an animal carved out of the top of a square pillar; originally used as a boundary marker in ancient Rome"
+    id oewn-04420858-n
+    partOfSpeech n
+    synonyms (terminus "terminal figure")
+  entry
+    definition "name formally or designate with a term"
+    id oewn-01031675-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,24 @@
+{
+  "cut": "Completed selected source repair phases and root tasks T3064–T3179; current archive controller outside cut",
+  "count": 1587,
+  "originalBytes": 27456787,
+  "latestSourceQualification": "T3174 FAIL language-parity45/43 retained; actual T3179 final independent gate result selected in full",
+  "supersession": "T4280 completes earlier partial T4263/T4269 cuts; T4298 corrects only original T4297 phase-label error; earlier observations preserved",
+  "historicalHead": "ab9f5bf8687399d682424f825797ca94ed6b6562",
+  "historicalCI": {
+    "registered": 195,
+    "success": 95,
+    "failure": 63,
+    "skipped": 36,
+    "cancelled": 1
+  },
+  "autonomousCodingCredit": 0,
+  "nativeExecution": false,
+  "records": 1587,
+  "uniqueOriginals": 1265,
+  "selectedOriginalBytes": 27456787,
+  "manifestFiles": 2,
+  "sourceHead": "261b3a7eb1869fbc07408e88bf854ccac8671a93",
+  "finalSourceQualification": "ActualT3179 PASS23",
+  "controllerOuter": "CurrentT3180 request/result/log outside cut; no self-prefix completeness credit"
+}

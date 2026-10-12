@@ -1,0 +1,190 @@
+>> bash {"command":"node --input-type=module -e 'await import(\"data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBpbXBvcnQge2V4ZWNGaWxlU3luY30gZnJvbSAnbm9kZTpjaGlsZF9wcm9jZXNzJzsgaW1wb3J0IHt0cmFuc2xhdGVKc1RvVHN9IGZyb20gJ2ZpbGU6Ly8vVXNlcnMva29uYXJkL0NvZGUvQXJjaGl2ZS9saW5rLWFzc2lzdGFudC9mb3JtYWwtYWkvc2NyaXB0cy90cmFuc2xhdGUtZXMubWpzJzsgZm9yKGNvbnN0IHNvdXJjZSBvZiBbJ2pzL3dvcmtlci1tb2R1bGVzLmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfY29yZWZlcmVuY2UuanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90cmFuc2xhdGlvbl9yZWNhbGxfYW5kX2NvbXBvdW5kX2ludGVyZXN0LmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfd3JpdGVfcHJvZ3JhbV9hbmRfcmVzZWFyY2guanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90b29sX2V4ZWN1dGlvbl9wb2xpY3kuanMnXSl7Y29uc3QgdGFyZ2V0PXNvdXJjZS5yZXBsYWNlKC9eanNcLy8sJ3RzLycpLnJlcGxhY2UoL1wuanMkLywnLnRzJyk7ZnMud3JpdGVGaWxlU3luYyh0YXJnZXQsdHJhbnNsYXRlSnNUb1RzKGZzLnJlYWRGaWxlU3luYyhzb3VyY2UsJ3V0ZjgnKSkpO30gZXhlY0ZpbGVTeW5jKCdydXN0Zm10JyxbJy0tZWRpdGlvbicsJzIwMjQnLCdydXN0L3NyYy9zb2x2ZXJfaGFuZGxlcnMvYmVuY2htYXJrX3Byb21wdHMucnMnLCdydXN0L3Rlc3RzL3VuaXQvc3BlY2lmaWNhdGlvbi9wcm9ub3VuX3RvcGljX2ZvbGxvd191cC5ycyddLHtzdGRpbzonaW5oZXJpdCd9KTsgZXhlY0ZpbGVTeW5jKHByb2Nlc3MuZXhlY1BhdGgsWyctLXRlc3QnLCdydXN0L3Rlc3RzL3dlYi93b3JrZXItbmF0aXZlLWhhbmRsZXItcGFyaXR5LnRlc3QubWpzJywncnVzdC90ZXN0cy93ZWIvd29ya2VyLWphdmFzY3JpcHQtcGVybWlzc2lvbi50ZXN0Lm1qcycsJ3J1c3QvdGVzdHMvd2ViL3NlcnZlci1sZWFybmluZy10cmFjZS50ZXN0Lm1qcyddLHtzdGRpbzonaW5oZXJpdCd9KTsgY29uc29sZS5sb2coJ0FDVFVBTF9DTE9TRVNUX05BVElWRV9IQU5ETEVSX1BBUklUWV9QQVNTJyk7\");'"}
+   Output: TAP version 13
+   # Subtest: a verified candidate in the worker trace yields the Rust learning_trace
+   ok 1 - a verified candidate in the worker trace yields the Rust learning_trace
+     ---
+     duration_ms: 1.470667
+     ...
+   # Subtest: the native solver event log is read verbatim once it carries the candidate
+   ok 2 - the native solver event log is read verbatim once it carries the candidate
+     ---
+     duration_ms: 0.136791
+     ...
+   # Subtest: no learning_trace without both a candidate and a verification
+   ok 3 - no learning_trace without both a candidate and a verification
+     ---
+     duration_ms: 0.15125
+     ...
+   # Subtest: event_payload stops at the next step and keeps only known fields
+   ok 4 - event_payload stops at the next step and keeps only known fields
+     ---
+     duration_ms: 0.070542
+     ...
+   # Subtest: a reported conversation stages one proposal against an absent gate
+   ok 5 - a reported conversation stages one proposal against an absent gate
+     ---
+     duration_ms: 7.531875
+     ...
+   # Subtest: a failed verification is a rejection, not a proposal
+   ok 6 - a failed verification is a rejection, not a proposal
+     ---
+     duration_ms: 1.136375
+     ...
+   # Subtest: the learn route counts the proposals of a recorded dialog
+   ok 7 - the learn route counts the proposals of a recorded dialog
+     ---
+     duration_ms: 4.922125
+     ...
+   # Subtest: unchanged native JavaScript request is refused before execution in chat mode
+   ok 8 - unchanged native JavaScript request is refused before execution in chat mode
+     ---
+     duration_ms: 668.797125
+     ...
+   # Subtest: refused user source causes no observable worker-global effect
+   ok 9 - refused user source causes no observable worker-global effect
+     ---
+     duration_ms: 0.241542
+     ...
+   # Subtest: explicit server agent mode uses the real existing worker executor
+   ok 10 - explicit server agent mode uses the real existing worker executor
+     ---
+     duration_ms: 16.600333
+     ...
+   # Subtest: explicit server chat mode overrides a retained agent preference
+   ok 11 - explicit server chat mode overrides a retained agent preference
+     ---
+     duration_ms: 16.425709
+     ...
+   # Subtest: whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+   ok 12 - whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+     ---
+     duration_ms: 1284.285792
+     ...
+   # Subtest: whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+   ok 13 - whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+     ---
+     duration_ms: 1093.256792
+     ...
+   # Subtest: whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+   ok 14 - whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+     ---
+     duration_ms: 1202.461583
+     ...
+   # Subtest: loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+   ok 15 - loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+     ---
+     duration_ms: 379.820333
+     ...
+   # Subtest: actual matching seed is required before any coreference event is recorded
+   ok 16 - actual matching seed is required before any coreference event is recorded
+     ---
+     duration_ms: 650.728708
+     ...
+   1..16
+   # tests 16
+   # suites 0
+   # pass 16
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 4707.912959
+   ACTUAL_CLOSEST_NATIVE_HANDLER_PARITY_PASS
+   
+   Exit Code: 0
+== answer ==
+The `node --input-type=module -e 'await import("data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBpbXBvcnQge2V4ZWNGaWxlU3luY30gZnJvbSAnbm9kZTpjaGlsZF9wcm9jZXNzJzsgaW1wb3J0IHt0cmFuc2xhdGVKc1RvVHN9IGZyb20gJ2ZpbGU6Ly8vVXNlcnMva29uYXJkL0NvZGUvQXJjaGl2ZS9saW5rLWFzc2lzdGFudC9mb3JtYWwtYWkvc2NyaXB0cy90cmFuc2xhdGUtZXMubWpzJzsgZm9yKGNvbnN0IHNvdXJjZSBvZiBbJ2pzL3dvcmtlci1tb2R1bGVzLmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfY29yZWZlcmVuY2UuanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90cmFuc2xhdGlvbl9yZWNhbGxfYW5kX2NvbXBvdW5kX2ludGVyZXN0LmpzJywnanMvd29ya2VyL2Zvcm1hbF9haV93b3JrZXJfd3JpdGVfcHJvZ3JhbV9hbmRfcmVzZWFyY2guanMnLCdqcy93b3JrZXIvZm9ybWFsX2FpX3dvcmtlcl90b29sX2V4ZWN1dGlvbl9wb2xpY3kuanMnXSl7Y29uc3QgdGFyZ2V0PXNvdXJjZS5yZXBsYWNlKC9eanNcLy8sJ3RzLycpLnJlcGxhY2UoL1wuanMkLywnLnRzJyk7ZnMud3JpdGVGaWxlU3luYyh0YXJnZXQsdHJhbnNsYXRlSnNUb1RzKGZzLnJlYWRGaWxlU3luYyhzb3VyY2UsJ3V0ZjgnKSkpO30gZXhlY0ZpbGVTeW5jKCdydXN0Zm10JyxbJy0tZWRpdGlvbicsJzIwMjQnLCdydXN0L3NyYy9zb2x2ZXJfaGFuZGxlcnMvYmVuY2htYXJrX3Byb21wdHMucnMnLCdydXN0L3Rlc3RzL3VuaXQvc3BlY2lmaWNhdGlvbi9wcm9ub3VuX3RvcGljX2ZvbGxvd191cC5ycyddLHtzdGRpbzonaW5oZXJpdCd9KTsgZXhlY0ZpbGVTeW5jKHByb2Nlc3MuZXhlY1BhdGgsWyctLXRlc3QnLCdydXN0L3Rlc3RzL3dlYi93b3JrZXItbmF0aXZlLWhhbmRsZXItcGFyaXR5LnRlc3QubWpzJywncnVzdC90ZXN0cy93ZWIvd29ya2VyLWphdmFzY3JpcHQtcGVybWlzc2lvbi50ZXN0Lm1qcycsJ3J1c3QvdGVzdHMvd2ViL3NlcnZlci1sZWFybmluZy10cmFjZS50ZXN0Lm1qcyddLHtzdGRpbzonaW5oZXJpdCd9KTsgY29uc29sZS5sb2coJ0FDVFVBTF9DTE9TRVNUX05BVElWRV9IQU5ETEVSX1BBUklUWV9QQVNTJyk7");'` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: a verified candidate in the worker trace yields the Rust learning_trace
+ok 1 - a verified candidate in the worker trace yields the Rust learning_trace
+  ---
+  duration_ms: 1.470667
+  ...
+# Subtest: the native solver event log is read verbatim once it carries the candidate
+ok 2 - the native solver event log is read verbatim once it carries the candidate
+  ---
+  duration_ms: 0.136791
+  ...
+# Subtest: no learning_trace without both a candidate and a verification
+ok 3 - no learning_trace without both a candidate and a verification
+  ---
+  duration_ms: 0.15125
+  ...
+# Subtest: event_payload stops at the next step and keeps only known fields
+ok 4 - event_payload stops at the next step and keeps only known fields
+  ---
+  duration_ms: 0.070542
+  ...
+# Subtest: a reported conversation stages one proposal against an absent gate
+ok 5 - a reported conversation stages one proposal against an absent gate
+  ---
+  duration_ms: 7.531875
+  ...
+# Subtest: a failed verification is a rejection, not a proposal
+ok 6 - a failed verification is a rejection, not a proposal
+  ---
+  duration_ms: 1.136375
+  ...
+# Subtest: the learn route counts the proposals of a recorded dialog
+ok 7 - the learn route counts the proposals of a recorded dialog
+  ---
+  duration_ms: 4.922125
+  ...
+# Subtest: unchanged native JavaScript request is refused before execution in chat mode
+ok 8 - unchanged native JavaScript request is refused before execution in chat mode
+  ---
+  duration_ms: 668.797125
+  ...
+# Subtest: refused user source causes no observable worker-global effect
+ok 9 - refused user source causes no observable worker-global effect
+  ---
+  duration_ms: 0.241542
+  ...
+# Subtest: explicit server agent mode uses the real existing worker executor
+ok 10 - explicit server agent mode uses the real existing worker executor
+  ---
+  duration_ms: 16.600333
+  ...
+# Subtest: explicit server chat mode overrides a retained agent preference
+ok 11 - explicit server chat mode overrides a retained agent preference
+  ---
+  duration_ms: 16.425709
+  ...
+# Subtest: whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+ok 12 - whole original native assertion program: english_follow_up_modification_emits_substitution_plan_trace
+  ---
+  duration_ms: 1284.285792
+  ...
+# Subtest: whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+ok 13 - whole original native assertion program: natural_language_code_execution_gate_is_stable_across_supported_language_contexts
+  ---
+  duration_ms: 1093.256792
+  ...
+# Subtest: whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+ok 14 - whole original native assertion program: pronoun_followup_resolves_prior_rust_topic_for_creator_question
+  ---
+  duration_ms: 1202.461583
+  ...
+# Subtest: loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+ok 15 - loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries
+  ---
+  duration_ms: 379.820333
+  ...
+# Subtest: actual matching seed is required before any coreference event is recorded
+ok 16 - actual matching seed is required before any coreference event is recorded
+  ---
+  duration_ms: 650.728708
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4707.912959
+ACTUAL_CLOSEST_NATIVE_HANDLER_PARITY_PASS
+```

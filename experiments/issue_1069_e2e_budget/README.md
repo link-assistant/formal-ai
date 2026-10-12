@@ -31,7 +31,7 @@ Three clocks now nest, each strictly inside the next:
 ## `run_budget_clamp_check.sh`
 
 Reading the script proves the clamp is written; the workflow test in
-`tests/unit/ci-cd/issue_1069.rs` does that. This harness proves it fires. It
+`tests/unit/ci-cd/docker_resource_hygiene.rs` does that. This harness proves it fires. It
 stands in for the two live dependencies — the Formal AI server, which is asked
 only for `/health`, and the Agent CLI, whose session cost becomes a parameter —
 and runs the real `experiments/agent_cli_e2e/run_issue_707.sh` under budgets

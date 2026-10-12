@@ -1,0 +1,112 @@
+name: Build GitHub Pages artifact
+
+# PR #1188 (R1188-U9): no job may run past 30 minutes. The release workflow's
+# one Pages job used to build the web bundle, run `cargo doc` for the
+# /docs/api reference (issue #479) on a cold cargo cache AND wait in the GitHub
+# Pages deployment queue (PR #965), which needed a 35-minute cap. The build
+# half lives here, under its own cap; `deploy-pages` in release.yml only
+# deploys the `github-pages` artifact this job uploads to the calling run.
+#
+# This lives in its own reusable workflow rather than as a job in release.yml
+# so that file, which sits against the 1500-line warning band that issue #999
+# and issue #1012 both pin, does not have to pay for it.
+
+on:
+  workflow_call:
+    inputs:
+      sha:
+        description: The commit to build and stamp; the release child commit when auto-release creates one.
+        required: true
+        type: string
+    outputs:
+      pages_sha:
+        description: The commit the artifact was built from and stamped with.
+        value: ${{ jobs.build.outputs.pages_sha }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build GitHub Pages artifact
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      pages_sha: ${{ steps.pages_ref.outputs.sha }}
+    steps:
+      - name: Select Pages deployment ref
+        id: pages_ref
+        env:
+          PAGES_DEPLOY_SHA: ${{ inputs.sha }}
+        run: |
+          if [[ ! "$PAGES_DEPLOY_SHA" =~ ^[0-9a-fA-F]{40}$ ]]; then
+            echo "::error::Could not resolve Pages deployment SHA"
+            exit 1
+          fi
+          echo "sha=${PAGES_DEPLOY_SHA}" >> "$GITHUB_OUTPUT"
+          echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.ref }}
+      - name: Verify trusted release branch matches the requested artifact commit
+        env:
+          PAGES_DEPLOY_SHA: ${{ steps.pages_ref.outputs.sha }}
+        run: |
+          # The release caller restricts this build to main. An input may
+          # select an artifact only when it equals the trusted branch checkout.
+          # Reject concurrent branch movement instead of building another commit.
+          if [ "$(git rev-parse HEAD)" != "$PAGES_DEPLOY_SHA" ]; then
+            echo "::error::Pages artifact SHA does not match the trusted release branch"
+            exit 1
+          fi
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24.x
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Build worker from the exact Pages source
+        id: selected_wasm
+        run: node scripts/build-selected-wasm.mjs build
+        timeout-minutes: 5
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install web bundle dependencies
+        run: bun install --frozen-lockfile
+      - name: Build web vendor bundle
+        run: bun run build:web
+      - name: Free up runner disk space
+        run: bash scripts/free-runner-disk.sh
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          prefix: docs-
+      - name: Generate Rust API docs (cargo doc --manifest-path rust/Cargo.toml)
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: bash scripts/build-rust-api-docs.sh
+      - name: Sync data/seed into js/seed (deployment mirror)
+        run: scripts/sync-seed.sh
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+      - name: Read formal-ai version from Cargo.toml
+        id: formal_ai_version
+        run: rust-script scripts/get-version.rs
+      - name: Stamp GitHub Pages artifact
+        run: scripts/stamp-pages-artifact.sh js "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
+      - name: Copy Rust API docs into the Pages artifact (/docs/api)
+        run: |
+          mkdir -p js/docs/api
+          cp -R target/doc/. js/docs/api/
+      - name: Verify the worker copied into the Pages artifact
+        env:
+          WASM_RECEIPT_SHA256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
+        run: node scripts/build-selected-wasm.mjs verify "$GITHUB_WORKSPACE" js "$WASM_RECEIPT_SHA256"
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: js
+          include-hidden-files: true

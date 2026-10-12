@@ -1,0 +1,241 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 1173.998542
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 117.272291
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 61.131125
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 108.919375
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 95.6155
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.620125
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 474.307042
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 280.39225
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 53.843625
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 1.912042
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 2.689291
+  ...
+# Subtest: a successful shell envelope advances the exact file obligation and preserves raw records
+ok 12 - a successful shell envelope advances the exact file obligation and preserves raw records
+  ---
+  duration_ms: 1082.930792
+  ...
+# Subtest: bare successful readback remains supported
+ok 13 - bare successful readback remains supported
+  ---
+  duration_ms: 22.405042
+  ...
+# Subtest: write acknowledgements and auxiliary commands do not certify file contents
+ok 14 - write acknowledgements and auxiliary commands do not certify file contents
+  ---
+  duration_ms: 72.014125
+  ...
+# Subtest: mismatch, nonzero status and a later failed receipt cannot reuse an older success
+ok 15 - mismatch, nonzero status and a later failed receipt cannot reuse an older success
+  ---
+  duration_ms: 50.275459
+  ...
+# Subtest: a different path sharing a filename suffix cannot fulfill the declared file
+ok 16 - a different path sharing a filename suffix cannot fulfill the declared file
+  ---
+  duration_ms: 31.661834
+  ...
+# Subtest: the unchanged issue1099 request persists both artifacts through real shell receipts
+ok 17 - the unchanged issue1099 request persists both artifacts through real shell receipts
+  ---
+  duration_ms: 1116.749375
+  ...
+# Subtest: exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+ok 18 - exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+  ---
+  duration_ms: 18.186334
+  ...
+# Subtest: ci_workflow_demand_is_read_from_the_obligation_graph
+ok 19 - ci_workflow_demand_is_read_from_the_obligation_graph
+  ---
+  duration_ms: 841.222167
+  ...
+# Subtest: issue \#1166 obligation graph (agentic JavaScript root)
+    # Subtest: the canonical body anchors its output literal once
+    ok 1 - the canonical body anchors its output literal once
+      ---
+      duration_ms: 279.098666
+      ...
+    # Subtest: R1166-2: two identical output clauses produce one node
+    ok 2 - R1166-2: two identical output clauses produce one node
+      ---
+      duration_ms: 18.49275
+      ...
+    # Subtest: distinct literals stay distinct nodes and have no unique literal
+    ok 3 - distinct literals stay distinct nodes and have no unique literal
+      ---
+      duration_ms: 4.586667
+      ...
+    # Subtest: coreference does not merge a filename with an output literal
+    ok 4 - coreference does not merge a filename with an output literal
+      ---
+      duration_ms: 5.884792
+      ...
+    # Subtest: the canonical body yields CI, naming, style and badge obligations
+    ok 5 - the canonical body yields CI, naming, style and badge obligations
+      ---
+      duration_ms: 17.81175
+      ...
+    # Subtest: R1166-5: an unknown clause yields an underivable node with its span, reported
+    ok 6 - R1166-5: an unknown clause yields an underivable node with its span, reported
+      ---
+      duration_ms: 6.29375
+      ...
+    # Subtest: R1166-6: ru, hi, zh and es bodies yield the same graph modulo the language tag
+    ok 7 - R1166-6: ru, hi, zh and es bodies yield the same graph modulo the language tag
+      ---
+      duration_ms: 99.130834
+      ...
+    # Subtest: R1166-7: a paraphrase yields an equivalent graph
+    ok 8 - R1166-7: a paraphrase yields an equivalent graph
+      ---
+      duration_ms: 344.120666
+      ...
+    # Subtest: R1166-3: request_demands reads the CI clause from the graph
+    ok 9 - R1166-3: request_demands reads the CI clause from the graph
+      ---
+      duration_ms: 19.957542
+      ...
+    1..9
+ok 20 - issue \#1166 obligation graph (agentic JavaScript root)
+  ---
+  duration_ms: 1008.228875
+  type: 'suite'
+  ...
+# Subtest: issue \#1166 R1166-8 routing by the formalized request
+    # Subtest: work-obligation requests carry work; command lines do not
+    ok 1 - work-obligation requests carry work; command lines do not
+      ---
+      duration_ms: 8.993291
+      ...
+    # Subtest: the browser worker agrees with the agentic root
+    ok 2 - the browser worker agrees with the agentic root
+      ---
+      duration_ms: 54.024583
+      ...
+    # Subtest: the worker terminal router keeps commands and refuses sentences about building something
+    ok 3 - the worker terminal router keeps commands and refuses sentences about building something
+      ---
+      duration_ms: 4.2625
+      ...
+    1..3
+ok 21 - issue \#1166 R1166-8 routing by the formalized request
+  ---
+  duration_ms: 67.449416
+  type: 'suite'
+  ...
+# Subtest: unchanged T2379 writes and independently verifies both artifacts
+ok 22 - unchanged T2379 writes and independently verifies both artifacts
+  ---
+  duration_ms: 1475.310542
+  ...
+# Subtest: quoted operation and teaching keywords remain literal in every obligation
+ok 23 - quoted operation and teaching keywords remain literal in every obligation
+  ---
+  duration_ms: 256.756917
+  ...
+# Subtest: a first-file receipt cannot certify a second file or its failed readback
+ok 24 - a first-file receipt cannot certify a second file or its failed readback
+  ---
+  duration_ms: 42.3445
+  ...
+# Subtest: write-only delivery retains first target and reports verification unavailable
+ok 25 - write-only delivery retains first target and reports verification unavailable
+  ---
+  duration_ms: 94.957417
+  ...
+# Subtest: read-only clients cannot mutate either literal target
+not ok 26 - read-only clients cannot mutate either literal target
+  ---
+  duration_ms: 60.650917
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/literal-obligation-transaction.test.mjs:74:1'
+  failureType: 'testCodeFailure'
+  error: 'crate_module_missing:crate/skill_compiler.mjs'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    crateInstance (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_modules.js:93:46)
+    crateModule (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_modules.js:114:10)
+    runtimeRuleFromText (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_capabilities_and_runtime_rules.js:65:18)
+    tryBehaviorRules (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_capabilities_and_runtime_rules.js:124:22)
+    solveImpl (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_solve.js:154:24)
+    async solve (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_solve.js:28:20)
+    async file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:282:20
+  ...
+# Subtest: a successful artifact never hides an underivable mandatory clause
+ok 27 - a successful artifact never hides an underivable mandatory clause
+  ---
+  duration_ms: 129.78675
+  ...
+# Subtest: all seeded enumeration surfaces inside literal operands remain payload
+ok 28 - all seeded enumeration surfaces inside literal operands remain payload
+  ---
+  duration_ms: 9.566792
+  ...
+# Subtest: every seeded outer cue preserves two complete literals and exact UTF8 spans
+ok 29 - every seeded outer cue preserves two complete literals and exact UTF8 spans
+  ---
+  duration_ms: 9.469625
+  ...
+# Subtest: closed twelve-character fence with internal instructions has one exact readback
+ok 30 - closed twelve-character fence with internal instructions has one exact readback
+  ---
+  duration_ms: 78.289958
+  ...
+# Subtest: independent outer artifacts retain nested enumeration bytes and receipts
+ok 31 - independent outer artifacts retain nested enumeration bytes and receipts
+  ---
+  duration_ms: 278.425417
+  ...
+1..31
+# tests 41
+# suites 2
+# pass 40
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2706.915125

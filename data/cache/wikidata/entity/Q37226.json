@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "教师"
+        },
+        "es": {
+          "language": "es",
+          "value": "profesor"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "教育學生、傳授知識與技藝的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "persona que se encarga de la educación formal e institucionalizada"
         }
       },
       "aliases": {
@@ -94,6 +102,20 @@
           {
             "language": "zh",
             "value": "老师"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "profesora"
+          },
+          {
+            "language": "es",
+            "value": "profesores"
+          },
+          {
+            "language": "es",
+            "value": "profesoras"
           }
         ]
       }

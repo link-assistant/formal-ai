@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "海員"
+        },
+        "es": {
+          "language": "es",
+          "value": "marino"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "zh": {
           "language": "zh",
           "value": "职业"
+        },
+        "es": {
+          "language": "es",
+          "value": "denominación genérica que reciben todos los miembros de la tripulación de un barco"
         }
       },
       "aliases": {
@@ -84,6 +92,20 @@
           {
             "language": "zh",
             "value": "船員"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "marinero mercante"
+          },
+          {
+            "language": "es",
+            "value": "marino mercante"
+          },
+          {
+            "language": "es",
+            "value": "marinero"
           }
         ]
       }

@@ -1,0 +1,35 @@
+Set the contents of experiments/formal_ai_subagent/evidence/specification-delivery-1188/routing-ladder-ledger-rows.md to «Finalized G126/G127 and current seed-backed L07 rows through T1627. Original obsolete GREETING_EXAMPLES L07 and broad G112 implementation asks remain failed; no obsolete-task closure is claimed. CI observations are attributed to the original job logs, not fabricated pre-repair FA transcripts.
+
+28 invocations, five failed task outcomes, 23 non-plan write/edit calls, zero manual source/docs/test edits through T1627. Follow-up checks exposed two intermediate source mechanisms that were repaired before the final 18/18 closest JavaScript tests passed. Native twins pass standalone rustfmt; native execution remains CI only. No worker ceiling was raised. Transcript bytes are an operational proxy only; actual model tokens and monetary cost were not measured.
+
+| # | Task (prompt summary; full tools/results in transcript) | Before | After |
+| --- | --- | --- | --- |
+| T1600 | Ask FA to implement directory capability routing | Fail: implementation ask returned a canned Rust program, no tools. | Full prompt/result: routing-ladder-repair/spec-T1600 files. |
+| T1601 | Ask FA to repair obsolete L07 | Fail: broad obsolete L07 repair declined multiple files; no changes. | Full prompt/result: routing-ladder-repair/spec-T1601 files. |
+| T1602 | Apply general seeded catalog alias veto in JavaScript | Pass: reviewed JavaScript general enumeration veto bytes. | Full prompt/result: routing-ladder-repair/spec-T1602 files. |
+| T1603 | Mirror seeded catalog alias veto in Rust | Pass: native twin source bytes. | Full prompt/result: routing-ladder-repair/spec-T1603 files. |
+| T1604 | Retry original broad implementation ask | Fail: exact T1600 implementation ask again returned canned Rust program; G112 remains open. | Full prompt/result: routing-ladder-repair/spec-T1604 files. |
+| T1605 | Execute original Spanish directory request | Pass: exact Spanish directory request executes list. | Full prompt/result: routing-ladder-repair/spec-T1605 files. |
+| T1606 | Derive current L07 canonical source task | Pass: derive L07 leaf from canonical greeting lexeme. | Full prompt/result: routing-ladder-repair/spec-T1606 files. |
+| T1607 | Create current L07 rule contract | Pass: corresponding seed-backed Links Notation structural rule. | Full prompt/result: routing-ladder-repair/spec-T1607 files. |
+| T1608 | Keep existing worker budget through declaration formatting | Pass: compact two existing declarations; retain worker ceiling. | Full prompt/result: routing-ladder-repair/spec-T1608 files. |
+| T1609 | Create selected-source sandbox | Pass: selected canonical seed copied into small isolated sandbox via FA filesystem command. | Full prompt/result: routing-ladder-repair/spec-T1609 files. |
+| T1610 | Replay whole current L07 node | Pass: full derived L07 node edits real sandbox seed and writes both effect and proof. | Full prompt/result: routing-ladder-repair/spec-T1610 files. |
+| T1611 | Create closest listing regressions | Pass: initial JavaScript listing/program-artifact regression source bytes. | Full prompt/result: routing-ladder-repair/spec-T1611 files. |
+| T1612 | Create closest L07 regression; observe authoring failure | Fail: first-line cue inside quoted test source leaked into planning; incorrect truncated file bytes. | Full prompt/result: routing-ladder-repair/spec-T1612 files. |
+| T1613 | Repair quoted pin scope in JS | Pass: JavaScript pin recovery reads instruction outside authoritative literal. | Full prompt/result: routing-ladder-repair/spec-T1613 files. |
+| T1614 | Repair quoted pin scope in Rust | Pass: corresponding native pin recovery. | Full prompt/result: routing-ladder-repair/spec-T1614 files. |
+| T1615 | Retry original authored L07 source request | Pass: exact unchanged T1612 retry byte-equal after repair. | Full prompt/result: routing-ladder-repair/spec-T1615 files. |
+| T1616 | Clarify scope distinction comment | Pass: clarify general scope distinction comment. | Full prompt/result: routing-ladder-repair/spec-T1616 files. |
+| T1617 | Create first-line constraint regressions | Pass: quoted-vs-real pin regression source authored; follow-up testing exposed internal content-cue scope. | Full prompt/result: routing-ladder-repair/spec-T1617 files. |
+| T1618 | Bind closed literal before internal prose in JS | Pass: apply general literal-first target binding; follow-up tests exposed fenced info header retention. | Full prompt/result: routing-ladder-repair/spec-T1618 files. |
+| T1619 | Mirror closed literal binding in Rust | Pass: native literal-first target binding, same follow-up limitation. | Full prompt/result: routing-ladder-repair/spec-T1619 files. |
+| T1620 | Preserve fenced info decoding in JS | Pass: reuse existing cleanContent for closed payloads and fenced info stripping. | Full prompt/result: routing-ladder-repair/spec-T1620 files. |
+| T1621 | Mirror existing fence decoding in Rust | Pass: formatted native closed-payload cleanup twin. | Full prompt/result: routing-ladder-repair/spec-T1621 files. |
+| T1622 | Observe second Spanish listing failure | Fail: exact Spanish existential listing searched fabricated todo-lo-que. | Full prompt/result: routing-ladder-repair/spec-T1622 files. |
+| T1623 | Resolve earlier action in local_search JS | Pass: JavaScript earliest evidenced listing/search action precedence. | Full prompt/result: routing-ladder-repair/spec-T1623 files. |
+| T1624 | Mirror local_search action precedence | Pass: formatted native action precedence twin. | Full prompt/result: routing-ladder-repair/spec-T1624 files. |
+| T1625 | Extend listing and named-search regressions | Pass: existential listing and named-search regressions authored. | Full prompt/result: routing-ladder-repair/spec-T1625 files. |
+| T1626 | Retry original existential listing request | Pass: exact unchanged T1622 retry executes list. | Full prompt/result: routing-ladder-repair/spec-T1626 files. |
+| T1627 | Create capability/layer contract changelog | Pass: patch changelog created via FA. | Full prompt/result: routing-ladder-repair/spec-T1627 files. |
+»

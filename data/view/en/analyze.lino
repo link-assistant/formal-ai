@@ -1,0 +1,21 @@
+view
+  id M-240043fd17d9
+  lemma analyze
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "consider in detail and subject to an analysis in order to discover essential features or meaning"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a mathematical, chemical, or grammatical analysis of; break down into components or essential features"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "break down into components or essential features"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "subject to psychoanalytic treatment"
+    provenance (wordnet)

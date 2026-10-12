@@ -1,0 +1,5 @@
+{
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "steps": 8,
+  "prompt": "Read rust/src/event_log.rs. Explain how to expose a generic named text transform in evidence_links while retaining its content-addressed event link. Current log text_transform payload requirement_list yields only hashedID, and the exact native requirement_listing_route evidence assertion fails. Suggest a general repair, do not edit."
+}

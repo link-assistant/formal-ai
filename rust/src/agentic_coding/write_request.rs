@@ -1,30 +1,25 @@
-//! Recovering the parts of a write request from its prose (issue #654).
+//! Recover write-request targets and literal payloads from seeded prose cues.
 //!
-//! A request that asks for a file to be produced carries the same four parts
-//! however it is worded: whitespace tokens, the seed-defined cues that mark a
-//! target or an action, the shape that tells a path from an ordinary word, and
-//! the span that holds the payload.  [`general_planner`](super::general_planner)
-//! composes them into a plan; this module answers only what the prose says, so
-//! a second route can ask the same questions without re-deriving them and
-//! drifting from the parse the planner will actually execute (issue #1066).
+//! The general planner and request inspection share this parse (issues #654, #1066).
+mod lowercase_spans;
 use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::shell_command_policy::{prose_sentences, sentences};
 use crate::seed::{self, Slot};
+pub(super) use lowercase_spans::{
+    first_raw_content_lead_end, first_raw_prefix_lead_end, raw_content_lead_close,
+    raw_lowercase_span,
+};
+/// The seeded articles and other function words (`the`, `el`).
+const FUNCTION_WORD_ROLE: &str = "request_function_word";
 /// One whitespace token together with its byte span in the original request.
 pub(super) struct Token<'a> {
     pub(super) text: &'a str,
     pub(super) start: usize,
     pub(super) end: usize,
+    pub(super) request: &'a str,
 }
-/// Split a request into tokens, recording each token's byte span.
-///
-/// The separators are whitespace *and* the ideographic punctuation marks, for
-/// the same reason the clause splitter knows `。`: a script that does not space
-/// its words still separates its clauses, and a whitespace-only split glues the
-/// punctuation and everything after it onto the token before. `创建文件
-/// notes/attribution.md，内容为 Gemfile.lock。` produced the single token
-/// `notes/attribution.md，内容为`, which is not a safe relative path, so the
-/// Chinese wording of a write request named no target at all.
+/// Split whitespace and ideographic punctuation while retaining byte spans.
+/// Without punctuation boundaries, an unspaced clause can become one path token.
 pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
     let mut out = Vec::new();
     let mut start: Option<usize> = None;
@@ -35,6 +30,7 @@ pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
                     text: &request[from..index],
                     start: from,
                     end: index,
+                    request,
                 });
             }
             continue;
@@ -48,6 +44,7 @@ pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
             text: &request[from..],
             start: from,
             end: request.len(),
+            request,
         });
     }
     out
@@ -96,14 +93,15 @@ pub(super) fn clean_path_token(word: &str) -> &str {
 /// in ./examples" file-shaped. When a later sentence contained a write-content
 /// marker, the generic planner consequently tried to overwrite that directory.
 /// File shape belongs to the final path component; dots in parent components or
-/// in the relative-path prefix do not make the target a file.
+/// in the relative-path prefix do not make the target a file. A component that
+/// is nothing but dots (`.`, `..`) names a directory, never a file: the full
+/// stop after a closing quote (`… with ''.`) is not a file to read (issue #715).
 pub(super) fn looks_like_file_path(path: &str) -> bool {
     !path.contains("://")
         && !is_dotted_number(path)
-        && path
-            .rsplit('/')
-            .next()
-            .is_some_and(|file_name| file_name.contains('.'))
+        && path.rsplit('/').next().is_some_and(|file_name| {
+            file_name.contains('.') && file_name.chars().any(|character| character != '.')
+        })
 }
 /// Lowercase a token stripped of edge punctuation, for cue/action comparison.
 ///
@@ -318,6 +316,8 @@ fn write_bindings(toks: &[Token<'_>]) -> Vec<WriteBinding> {
         (CueFamily::Target, &target_cues, true),
         (CueFamily::Action, &action_cues, false),
     ];
+    let quoted =
+        crate::normal_markov::quoted_segment_spans(toks.first().map_or("", |token| token.request));
     toks.iter()
         .enumerate()
         .filter_map(|(index, token)| {
@@ -356,6 +356,11 @@ fn write_bindings(toks: &[Token<'_>]) -> Vec<WriteBinding> {
                     family,
                     cue_precedes: false,
                 })
+        })
+        .filter(|binding| {
+            !quoted
+                .iter()
+                .any(|segment| binding.cue_start < segment.end && binding.cue_end > segment.start)
         })
         .collect()
 }
@@ -518,15 +523,11 @@ pub(super) fn is_stated_write_target(request: &str, path: &str) -> bool {
     })
 }
 
-/// The opening line a sentence pins, read through
-/// [`seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD`].
-///
-/// The lowercased copy is byte-length preserving for every supported language,
-/// so the marker's end offset slices the original sentence and the recovered
-/// line keeps its case.
+/// Recover the seeded opening-line constraint through original UTF-8 boundaries.
+/// Lowercase cue matching never changes the bytes of the recovered line.
 pub(super) fn pinned_first_line(sentence: &str) -> Option<String> {
-    let lowered = sentence.to_lowercase();
-    let (_, end) = first_prefix_lead_end(&lowered, seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD)?;
+    let (_, end) =
+        first_raw_prefix_lead_end(sentence, seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD)?;
     let raw = sentence
         .get(end..)?
         .trim()
@@ -667,39 +668,60 @@ pub(super) fn action_cue_start_after(toks: &[Token<'_>], from: usize) -> Option<
 pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
     first_action_cue(toks).map(|(start, _)| start)
 }
-/// Trim a recovered content span down to its literal payload, dropping the
-/// leading clause separator ("… the following: hello") and any surrounding
-/// quoting. A delimiter is removed only when the entire payload has a matching
-/// opening and closing delimiter. This matters for generated source and Links
-/// Notation: a lone terminal quote is data, not presentation punctuation.
-/// Returns [`None`] when nothing is left.
+/// Recover literal bytes from a seeded clause, preserving unmatched delimiters.
 pub(super) fn clean_content(raw: &str) -> Option<String> {
     let led = strip_clause_lead(raw);
-    let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
-        led[3..led.len() - 3].trim()
-    } else if led.len() >= 2 {
-        let first = led.as_bytes()[0];
-        let last = led.as_bytes()[led.len() - 1];
-        if first == last && matches!(first, b'`' | b'"' | b'\'') {
-            led[1..led.len() - 1].trim()
-        } else {
-            led
-        }
+    let fence_length = led.bytes().take_while(|byte| *byte == b'`').count();
+    if fence_length >= 3 && led.len() >= fence_length * 2 && led.ends_with(&led[..fence_length]) {
+        let body =
+            super::markdown_section::fenced_body(&led[fence_length..led.len() - fence_length]);
+        return (!body.is_empty()).then(|| body.to_owned());
+    }
+    let closed = led
+        .strip_suffix([
+            '.', '!', '?', '\u{0964}', '\u{3002}', '\u{ff01}', '\u{ff1f}',
+        ])
+        .map_or(led, str::trim);
+    if let [only] = crate::normal_markov::quoted_segment_spans(closed).as_slice()
+        && only.start == 0
+        && only.end == closed.len()
+    {
+        let text = &only.text;
+        return (!text.is_empty()).then(|| text.to_owned());
+    }
+    let bytes = led.as_bytes();
+    let quoted = led.len() >= 2
+        && bytes[0] == bytes[led.len() - 1]
+        && matches!(bytes[0], b'`' | b'"' | b'\'');
+    let result = if quoted {
+        led[1..led.len() - 1].trim()
     } else {
         led
     };
     (!result.is_empty()).then(|| result.to_owned())
 }
-/// Strip everything a recovered span carries *before* its literal payload: the
-/// clause separators, and the seed-defined adverbs that qualify the requirement
-/// rather than naming content.
-///
-/// "…containing exactly: Hello World" delimits the content with `exactly:`, so
-/// slicing after the content lead captured `exactly: Hello World` as the bytes
-/// to write and as the evidence to verify against — the file would never have
-/// matched (issue #905 §3).
+/// Strip seeded qualifiers and content leads only before a clause separator.
 fn strip_clause_lead(raw: &str) -> &str {
-    let qualifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
+    let modifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
+    let mut qualifiers = modifiers.clone();
+    for role in [
+        seed::ROLE_FILE_WRITE_CONTENT_LEAD,
+        "file_write_authoritative_content_lead",
+    ] {
+        for form in seed::lexicon()
+            .role_word_forms(role)
+            .into_iter()
+            .filter(|form| form.slot() == Slot::Prefix)
+        {
+            let lead = form.before_slot().trim().to_lowercase();
+            qualifiers.extend(modifiers.iter().filter_map(|modifier| {
+                let (before, _) = lead.split_once(modifier.as_str())?;
+                (before.is_empty() || before.chars().next_back().is_some_and(char::is_whitespace))
+                    .then(|| lead[before.len()..].to_owned())
+            }));
+            qualifiers.push(lead);
+        }
+    }
     let mut led = raw.trim();
     loop {
         let separated = led.trim_start_matches([':', '-', '—', '–']).trim();
@@ -710,10 +732,6 @@ fn strip_clause_lead(raw: &str) -> &str {
         led = shortened;
     }
 }
-/// Drop one leading qualifier, but only when a clause separator follows it. The
-/// separator is what marks the adverb as introducing the payload rather than
-/// opening it, so content that genuinely starts with "exactly what I asked for"
-/// keeps its first word.
 fn strip_leading_qualifier<'a>(text: &'a str, qualifiers: &[String]) -> &'a str {
     let lowered = text.to_lowercase();
     qualifiers
@@ -741,8 +759,40 @@ pub(super) fn safe_relative_path(path: &str) -> bool {
 /// or an unambiguous self-AST census reference; ambiguous spans fail closed.
 #[must_use]
 pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
+    compose_edit_clauses(request).map(|clauses| clauses.edit)
+}
+
+/// The `(target, old, new)` of an edit request and the spans its clauses take.
+pub(super) struct EditClauses {
+    /// What [`compose_edit_request`] returns.
+    pub(super) edit: (String, String, String),
+    /// The file clause, then the action through the new text, in bytes.
+    ///
+    /// `None` for a positional insert or lines under the request.
+    pub(super) spans: Option<[(usize, usize); 2]>,
+}
+
+/// [`compose_edit_request`] with the spans of its clauses.
+///
+/// Mirrors `composeEditClauses`.
+pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
+    // `everywhere`, `all occurrences`: no part of the old or new text (G84).
+    let blanked = super::edit_scope::without_all_occurrence_cues(raw);
+    let request = blanked.as_str();
     if let Some(edit) = super::positional_edit::compose_positional_insert(request) {
-        return Some(edit);
+        return Some(EditClauses { edit, spans: None });
+    }
+    // `Replace the line 'x' with these three lines in f:` followed by lines: a
+    // new clause that only describes lines (the seeded `line` meaning,
+    // unquoted) stands for the lines under the request (PR #1188 G22).
+    if let Some(block) = super::positional_edit::introduced_block(request)
+        && let Some((target, old, new)) = compose_edit_request(block.head)
+        && describes_lines(block.head, &new)
+    {
+        return Some(EditClauses {
+            edit: (target, old, block.text),
+            spans: None,
+        });
     }
     let toks = tokens(request);
     let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
@@ -750,41 +800,102 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let target_cues = bare_surfaces(seed::ROLE_FILE_EDIT_TARGET_CUE);
     let is_target_cue = |index: usize| target_cues.contains(&clean_cue_token(toks[index].text));
     let is_action_cue = |index: usize| action_cues.contains(&clean_cue_token(toks[index].text));
-    let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
+    let unquoted: Vec<usize> = super::positional_edit::unquoted_path_tokens(request)
+        .iter()
+        .map(|token| token.start)
+        .collect();
+    // A path the request leaves unquoted names the file before a literal that
+    // is exactly a path does: in "Replace 'a' with 'data/x.lino' in f.mjs" the
+    // quoted path is the new text, and the cue after it does not make it the
+    // target.
+    let segments = crate::normal_markov::quoted_segment_spans(request);
+    let is_quoted = |token: &Token<'_>| {
+        segments
+            .iter()
+            .any(|segment| token.start >= segment.start && token.end <= segment.end)
+    };
+    let is_path_candidate = |token: &Token<'_>| {
         let cleaned = clean_path_token(token.text);
-        let resolved = super::general_planner::resolve_census_target(cleaned);
-        if resolved.is_none() && (!looks_like_file_path(cleaned) || !safe_relative_path(cleaned)) {
-            return None;
-        }
-        let prev_is_cue = index
-            .checked_sub(1)
-            .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
-        let next_is_cue =
-            (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
-        let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
-        (prev_is_cue || next_is_cue).then_some((index, target))
-    })?;
+        unquoted.contains(&token.start)
+            && (super::general_planner::resolve_census_target(cleaned).is_some()
+                || (looks_like_file_path(cleaned) && safe_relative_path(cleaned)))
+    };
+    let candidate = |quoted_pass: bool| {
+        toks.iter().enumerate().find_map(|(index, token)| {
+            let cleaned = clean_path_token(token.text);
+            if !unquoted.contains(&token.start) || is_quoted(token) != quoted_pass {
+                return None;
+            }
+            let resolved = super::general_planner::resolve_census_target(cleaned);
+            if resolved.is_none()
+                && (!looks_like_file_path(cleaned) || !safe_relative_path(cleaned))
+            {
+                return None;
+            }
+            let prev_is_cue = index
+                .checked_sub(1)
+                .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
+            let next_is_cue =
+                (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
+            // A cue between two paths introduces the later one: in "…`p.lino``
+            // in req.md" the payload's last span is no target (PR #1188 G63).
+            let cue_introduces_next =
+                !prev_is_cue && next_is_cue && toks.get(index + 2).is_some_and(is_path_candidate);
+            let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
+            ((prev_is_cue || next_is_cue) && !cue_introduces_next).then_some((index, target))
+        })
+    };
+    let (file_index, target) = candidate(false).or_else(|| candidate(true))?;
+    // The file clause runs back over target cues and the seeded function words
+    // between them (`in the file f.txt`) to its first cue (PR #1188 G98); a cue
+    // word inside a quoted literal is payload ("… the named file.'").
+    let function_words = bare_surfaces(FUNCTION_WORD_ROLE);
+    let joins_clause = |index: usize| {
+        !is_quoted(&toks[index])
+            && (is_target_cue(index) || function_words.contains(&clean_cue_token(toks[index].text)))
+    };
     let mut clause_start_index = file_index;
-    while clause_start_index > 0 && is_target_cue(clause_start_index - 1) {
-        clause_start_index -= 1;
+    for index in (0..file_index)
+        .rev()
+        .take_while(|&index| joins_clause(index))
+    {
+        if is_target_cue(index) {
+            clause_start_index = index;
+        }
     }
     let file_clause_start = toks[clause_start_index].start;
+    // A cue word quoted whole is payload too: `replace 'with' with ','`.
+    let is_cue = |token: &Token<'_>, cues: &[String]| {
+        unquoted.contains(&token.start)
+            && !is_quoted(token)
+            && cues.contains(&clean_cue_token(token.text))
+    };
     let action = toks
         .iter()
-        .filter(|token| action_cues.contains(&clean_cue_token(token.text)))
+        .filter(|token| is_cue(token, &action_cues))
         .find(|token| token.start > toks[file_index].end)
-        .or_else(|| {
-            toks.iter()
-                .find(|token| action_cues.contains(&clean_cue_token(token.text)))
-        })?;
+        .or_else(|| toks.iter().find(|token| is_cue(token, &action_cues)))?;
     let action_end = action.end;
-    let new_lead = toks.iter().find(|token| {
-        token.start >= action_end && new_leads.contains(&clean_cue_token(token.text))
-    })?;
-    if file_clause_start >= action_end && file_clause_start < new_lead.start {
+    let new_lead = toks
+        .iter()
+        .find(|token| token.start >= action_end && is_cue(token, &new_leads))?;
+    // `Bump the version in package.json to 1.1.0`: a file clause right before
+    // the new lead ends the old text; anything else between them is no edit.
+    let file_between = file_clause_start >= action_end && file_clause_start < new_lead.start;
+    if file_between
+        && !request
+            .get(toks[file_index].end..new_lead.start)?
+            .trim()
+            .is_empty()
+    {
         return None;
     }
-    let old_span = request.get(action_end..new_lead.start)?;
+    let old_end = if file_between {
+        file_clause_start
+    } else {
+        new_lead.start
+    };
+    let old_span = request.get(action_end..old_end)?;
     let sentence_end = prose_sentences(request)
         .into_iter()
         .find(|sentence| sentence.span.contains(&new_lead.end))
@@ -795,34 +906,75 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
                 sentence.span.start + (raw.len() - raw.trim_start().len()) + sentence.text.len()
             },
         );
+    // A sentence boundary inside a quoted literal is payload: extend to its end.
+    // When that literal ends early, because the backtick spans inside the
+    // payload paired among themselves, a payload quoted whole up to the file
+    // clause runs to it (PR #1188 G63), else to its own close (G107).
+    let sentence_end = crate::normal_markov::quoted_segment_spans(request)
+        .into_iter()
+        .find(|segment| segment.start < sentence_end && sentence_end < segment.end)
+        .map_or(sentence_end, |segment| {
+            let whole = file_clause_start > segment.end
+                && request
+                    .get(new_lead.end..file_clause_start)
+                    .is_some_and(crate::normal_markov::wrapped_in_quote_pair);
+            if whole {
+                file_clause_start
+            } else {
+                segment.end
+            }
+        });
     let new_end = if file_clause_start > new_lead.end {
         file_clause_start.min(sentence_end)
     } else {
-        sentence_end
+        super::quote_nesting::whole_payload_end(request, new_lead.end, sentence_end)
     };
     let new_span = request.get(new_lead.end..new_end)?;
+    if !crate::normal_markov::wrapped_in_quote_pair(old_span.trim())
+        && super::workspace_search::content_search_for(old_span).is_some()
+    {
+        return None;
+    }
     let old = super::positional_edit::literal_text(old_span)?;
     let new = super::positional_edit::literal_text(new_span)?;
-    Some((target, old, new))
+    // `Rename the file m.py to math_utils.py`: an unquoted new name that is a
+    // workspace path renames the file itself, which is no edit of its bytes
+    // (PR #1188 G24); the shell intents carry it.
+    // Quoted, the new path renames the file too when the old clause quotes
+    // nothing (`Rename the file 'a.txt' to 'b.txt'`, G37).
+    let renamed_file = (crate::normal_markov::quoted_segment_spans(new_span).is_empty()
+        || crate::normal_markov::quoted_segment_spans(old_span).is_empty())
+        && looks_like_file_path(clean_path_token(new_span.trim()))
+        && seed::lexicon().mentions_role(
+            seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
+            &request.to_lowercase(),
+        );
+    (!renamed_file).then(|| EditClauses {
+        edit: (target, old, new),
+        spans: Some([
+            (file_clause_start, toks[file_index].end),
+            (action.start, new_end),
+        ]),
+    })
 }
 
-/// Whether the payload starting at `from` is a block that outlives its first line.
-///
-/// A marker alone on its line already introduces the whole block below it, and
-/// that is the shape this route was built for. The same request written with the
-/// payload starting on the marker's own line -- "with exactly this content: #
-/// Title\n\nbody..." -- means exactly the same thing, but the sentence bound cut
-/// it at the first line and delivered a 58-byte file for a 1478-byte document.
-///
-/// That is not a bound the author of the request can see. It made every
-/// multi-line literal write silently lossy: `alpha\nbeta\ngamma` was written as
-/// `alpha`, and the self-authoring loop produced a one-line stub of the document
-/// it was handed, which is how it looked broken while reporting success.
-///
-/// A payload whose first line ends but whose block continues is therefore read
-/// to `limit`, exactly as the marker-only spelling always was. The sentence bound
-/// still governs a payload that stays on one line, so "write the following: hello
-/// to `x.txt`" is unaffected -- there is no continuation to find.
+/// Whether a clause `text` of `head` is no quoted literal but words naming
+/// lines (`these three lines`, `the following lines`, `эти строки`).
+fn describes_lines(head: &str, text: &str) -> bool {
+    !crate::normal_markov::quoted_segment_spans(head)
+        .iter()
+        .any(|segment| segment.text == text)
+        && seed::lexicon().meaning("line").is_some_and(|meaning| {
+            meaning.evidenced_in(&crate::engine::normalize_prompt(text).to_lowercase())
+        })
+}
+
+/// Whether the payload starting at `from` continues beyond its first line.
+/// A marker on its own line and a marker followed by content introduce the
+/// same literal block. Use the block limit when a real continuation follows;
+/// cutting at the first sentence would silently discard later authored bytes.
+/// Keep the sentence bound for a one-line payload such as
+/// `write the following: hello to x.txt`, whose tail has no continuation.
 pub(super) fn payload_continues_past_its_first_line(
     request: &str,
     from: usize,

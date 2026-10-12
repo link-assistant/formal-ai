@@ -20,22 +20,6 @@ const FALLBACK_UNKNOWN_LANGUAGE_ANSWER: &str = concat!(
     "add a rule in Links Notation, then run the request again."
 );
 
-pub const GREETING_EXAMPLES: &[&str] = &["Hi", "Hello", "Hey"];
-pub const TEST_STATUS_EXAMPLES: &[&str] =
-    &["Test", "Test passed", "I'm here", "test passed, I'm here"];
-pub const COURTESY_RESPONSE_EXAMPLES: &[&str] = &["I am fine, thank you", "thanks"];
-pub const ASSISTANT_FREE_TIME_EXAMPLES: &[&str] = &[
-    "What do you do in your free time?",
-    "Что делаешь в свободное время?",
-];
-pub const IDENTITY_EXAMPLES: &[&str] = &[
-    "Who are you?",
-    "What are you?",
-    "Tell me about yourself",
-    "What is formal-ai?",
-];
-pub const UNKNOWN_EXAMPLES: &[&str] = &["Any prompt without a matching symbolic rule"];
-
 /// Resolve a localized response from the seed, caching the first read.
 ///
 /// Reads come from [`crate::seed`] (backed by

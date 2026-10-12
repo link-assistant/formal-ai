@@ -256,6 +256,13 @@ meanings
         text "won't"
       surface
         text "nor"
+    lexeme es
+      surface
+        text "no"
+      surface
+        text "nunca"
+      surface
+        text "sin"
     lexeme ru
       surface
         text "не"

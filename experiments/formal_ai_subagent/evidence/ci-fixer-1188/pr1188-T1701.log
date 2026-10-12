@@ -1,0 +1,197 @@
+>> read {"filePath":"rust/tests/unit/ci-cd/test_lane_deduplication.rs","file_path":"rust/tests/unit/ci-cd/test_lane_deduplication.rs","path":"rust/tests/unit/ci-cd/test_lane_deduplication.rs"}
+   <file>
+   00001| //! Regression coverage for issue #1037: the pipeline paid for the same tests
+   00002| //! twice, and the local cache grew without bound.
+   00003| //!
+   00004| //! Measured on run 32555911181 (`main`, 2026-08-22). The `CI/CD Pipeline` took
+   00005| //! 27 minutes, and its critical path was `Test (ubuntu-latest / full)` at 18
+   00006| //! minutes -- of which a single test binary held **700.17s**, 87% of the job.
+   00007| //!
+   00008| //! The cause was not compilation. sccache reported `Compile requests 1121 /
+   00009| //! Cache hits 771 / hits rate 79.57% / Cache errors 0` in that same job, and
+   00010| //! the test step logged no `Compiling` line at all: the step is pure test
+   00011| //! execution. The cost was duplication. The `full` lane skipped only
+   00012| //! `data_files::` and `self_ast_census`, so it ran the **1034 `specification::`
+   00013| //! tests** that the parallel `specification` lane was running at the same time
+   00014| //! -- a lane that needs 689s on its own to do exactly that. Two runners, the
+   00015| //! same tests, one pipeline.
+   00016| //!
+   00017| //! The invariant pinned here: **a test runs in one lane, not two.** Every lane
+   00018| //! that shards the suite has to exclude what the other lanes own, or the
+   00019| //! pipeline's critical path grows by work that is already finished elsewhere.
+   00020| //!
+   00021| //! The second half is the local counterpart. `target/` is never pruned by
+   00022| //! cargo, so a laptop accumulates artifacts from every branch and dependency
+   00023| //! version until the disk is full -- this repository reached that point. The
+   00024| //! rule is that a commit leaves a swept cache behind, and that the sweep keeps
+   00025| //! the artifacts the last build referenced so the next build still links.
+   00026| 
+   00027| use std::fs;
+   00028| 
+   00029| use super::workflow_fixtures::job_block;
+   00030| 
+   00031| fn release_workflow() -> String {
+   00032|     fs::read_to_string(format!(
+   00033|         "{}/../.github/workflows/release.yml",
+   00034|         env!("CARGO_MANIFEST_DIR")
+   00035|     ))
+   00036|     .expect("read .github/workflows/release.yml")
+   00037|     .replace("\r\n", "\n")
+   00038| }
+   00039| 
+   00040| fn repository_file(path: &str) -> String {
+   00041|     fs::read_to_string(format!("{}/../{path}", env!("CARGO_MANIFEST_DIR")))
+   00042|         .unwrap_or_else(|error| panic!("failed to read {path}: {error}"))
+   00043|         .replace("\r\n", "\n")
+   00044| }
+   00045| 
+   00046| /// The `full` lane must not re-run what the `specification` lane owns.
+   00047| ///
+   00048| /// Without the skip both lanes compile and run the same 1034 tests. The
+   00049| /// duplicate copy is invisible in the pipeline's conclusion -- both lanes pass
+   00050| /// -- and shows up only as four minutes on the critical path.
+   00051| #[test]
+   00052| fn the_full_test_lane_skips_the_specification_shard() {
+   00053|     let workflow = release_workflow();
+   00054|     let test_job = job_block(&workflow, "test");
+   00055| 
+   00056|     let run_tests = test_job
+   00057|         .split("- name: Run tests")
+   00058|         .nth(1)
+   00059|         .expect("the test job runs a `Run tests` step");
+   00060|     let step = run_tests
+   00061|         .split("- name:")
+   00062|         .next()
+   00063|         .expect("the step body ends at the next step");
+   00064| 
+   00065|     // Issue #1055 moved the skip flags into `scripts/run-prebuilt-tests.sh`,
+   00066|     // which the step invokes. The rule is unchanged: the full lane must not
+   00067|     // re-run what the specification lane owns.
+   00068|     let runner = fs::read_to_string(format!(
+   00069|         "{}/../scripts/run-prebuilt-tests.sh",
+   00070|         env!("CARGO_MANIFEST_DIR")
+   00071|     ))
+   00072|     .expect("read scripts/run-prebuilt-tests.sh");
+   00073|     assert!(
+   00074|         step.contains("run-prebuilt-tests.sh"),
+   00075|         "the full lane runs the prebuilt executables through the shared runner"
+   00076|     );
+   00077|     assert!(
+   00078|         runner.contains("--skip specification::"),
+   00079|         "the `full` lane must skip `specification::`; the `specification` lane \
+   00080|          already runs those tests, and running them twice put ~4 minutes of \
+   00081|          duplicate work on the pipeline's critical path. Step body:\n{step}"
+   00082|     );
+   00083| }
+   00084| 
+   00085| /// The lane that *owns* the specification tests must still run them.
+   00086| ///
+   00087| /// The skip above is only safe while this holds. If the specification lane ever
+   00088| /// stops running them, the skip silently turns into a coverage hole rather than
+   00089| /// a saving.
+   00090| #[test]
+   00091| fn the_specification_lane_still_runs_the_shard_it_owns() {
+   00092|     let workflow = release_workflow();
+   00093|     let test_job = job_block(&workflow, "test");
+   00094| 
+   00095|     let spec_step = test_job
+   00096|         .split("- name: Run specification tests")
+   00097|         .nth(1)
+   00098|         .expect("the test job runs a `Run specification tests` step");
+   00099| 
+   00100|     assert!(
+   00101|         spec_step.contains("specification::"),
+   00102|         "the specification lane must run `specification::` -- it is the only \
+   00103|          lane that does now that the full lane skips them"
+   00104|     );
+   00105| }
+   00106| 
+   00107| /// A commit ends with a swept cache, whether or not it touched Rust.
+   00108| ///
+   00109| /// `cargo-test.sh` prunes after a Rust commit, but a commit that touches no
+   00110| /// `.rs` file never invokes it, and `target/` keeps whatever the last build
+   00111| /// left. `always_run` is what makes the reclaim unconditional.
+   00112| #[test]
+   00113| fn every_commit_prunes_the_build_cache() {
+   00114|     let config = repository_file(".pre-commit-config.yaml");
+   00115| 
+   00116|     let hook = config
+   00117|         .split("- id: prune-build-cache")
+   00118|         .nth(1)
+   00119|         .expect("a `prune-build-cache` pre-commit hook keeps local disk bounded");
+   00120|     let hook = hook.split("- id:").next().unwrap_or(hook);
+   00121| 
+   00122|     assert!(
+   00123|         hook.contains("scripts/prune-build-cache.sh"),
+   00124|         "the hook must call the pruner"
+   00125|     );
+   00126|     assert!(
+   00127|         hook.contains("always_run: true"),
+   00128|         "the pruner must run on every commit, not only Rust ones: a docs-only \
+   00129|          commit leaves the previous build's artifacts on disk just the same"
+   00130|     );
+   00131| }
+   00132| 
+   00133| /// The pre-commit test hook goes through the wrapper, not a bare `cargo test`.
+   00134| ///
+   00135| /// A bare `cargo test` starts one compile job and one test thread per core,
+   00136| /// pinning the whole machine for the length of a commit, and prunes nothing
+   00137| /// afterwards.
+   00138| #[test]
+   00139| fn the_pre_commit_test_hook_uses_the_resource_capped_wrapper() {
+   00140|     let config = repository_file(".pre-commit-config.yaml");
+   00141| 
+   00142|     let hook = config
+   00143|         .split("- id: cargo-test")
+   00144|         .nth(1)
+   00145|         .expect("a `cargo-test` pre-commit hook exists");
+   00146|     let hook = hook.split("- id:").next().unwrap_or(hook);
+   00147| 
+   00148|     assert!(
+   00149|         hook.contains("scripts/cargo-test.sh"),
+   00150|         "the commit hook must use `scripts/cargo-test.sh`, which caps \
+   00151|          parallelism at half the cores and prunes afterwards; a bare \
+   00152|          `cargo test` does neither. Hook body:\n{hook}"
+   00153|     );
+   00154| }
+   00155| 
+   00156| /// The pruner prefers cargo-sweep, which prunes by fingerprint rather than mtime.
+   00157| ///
+   00158| /// This is the difference between a cache the next build can link against and
+   00159| /// one it has to rebuild. A timestamp comparison cannot distinguish a stale
+   00160| /// artifact from a current one that simply did not need recompiling, so it
+   00161| /// deletes live dependencies; cargo-sweep asks cargo what the build actually
+   00162| /// references.
+   00163| #[test]
+   00164| fn the_pruner_sweeps_by_fingerprint_and_bounds_local_disk() {
+   00165|     let pruner = repository_file("scripts/prune-build-cache.sh");
+   00166| 
+   00167|     assert!(
+   00168|         pruner.contains("cargo sweep"),
+   00169|         "the pruner must use cargo-sweep when it is available"
+   00170|     );
+   00171|     assert!(
+   00172|         pruner.contains("--installed"),
+   00173|         "artifacts from uninstalled toolchains can never be linked again and \
+   00174|          are pure waste; `--installed` drops them"
+   00175|     );
+   00176|     assert!(
+   00177|         pruner.contains("CARGO_TARGET_MAX_SIZE_MB"),
+   00178|         "local runs need a ceiling: one build of this repository is itself \
+   00179|          large, and a shared laptop has a disk budget a correct-but-unbounded \
+   00180|          cache still exceeds"
+   00181|     );
+   00182| }
+   00183| 
+   
+   (End of file - total 183 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/ci-cd/test_lane_deduplication.rs","file_path":"rust/tests/unit/ci-cd/test_lane_deduplication.rs","new":"spec_step.contains(\"TEST_SUITE: specification\")\n            && spec_step.contains(\"bash scripts/run-prebuilt-tests.sh\")\n            && repository_file(\"scripts/run-prebuilt-tests.sh\")\n                .contains(\"selection=(specification::)\"),","newString":"spec_step.contains(\"TEST_SUITE: specification\")\n            && spec_step.contains(\"bash scripts/run-prebuilt-tests.sh\")\n            && repository_file(\"scripts/run-prebuilt-tests.sh\")\n                .contains(\"selection=(specification::)\"),","new_str":"spec_step.contains(\"TEST_SUITE: specification\")\n            && spec_step.contains(\"bash scripts/run-prebuilt-tests.sh\")\n            && repository_file(\"scripts/run-prebuilt-tests.sh\")\n                .contains(\"selection=(specification::)\"),","new_string":"spec_step.contains(\"TEST_SUITE: specification\")\n            && spec_step.contains(\"bash scripts/run-prebuilt-tests.sh\")\n            && repository_file(\"scripts/run-prebuilt-tests.sh\")\n                .contains(\"selection=(specification::)\"),","old":"spec_step.contains(\"specification::\"),","oldString":"spec_step.contains(\"specification::\"),","old_str":"spec_step.contains(\"specification::\"),","old_string":"spec_step.contains(\"specification::\"),","path":"rust/tests/unit/ci-cd/test_lane_deduplication.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/ci-cd/test_lane_deduplication.rs"}
+   1eb68c852cb83fa225b9a812fe2d5f8f8cbcb5294ad0a8985a24fb1ff95c47dd  rust/tests/unit/ci-cd/test_lane_deduplication.rs
+   
+== answer ==
+Replaced `spec_step.contains("specification::"),` with `spec_step.contains("TEST_SUITE: specification")
+            && spec_step.contains("bash scripts/run-prebuilt-tests.sh")
+            && repository_file("scripts/run-prebuilt-tests.sh")
+                .contains("selection=(specification::)"),` in `rust/tests/unit/ci-cd/test_lane_deduplication.rs` and observed the result.

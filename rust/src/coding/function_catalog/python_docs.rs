@@ -128,13 +128,16 @@ pub fn fetch_index<T: SourceTransport>(
     Ok(StdlibIndex { parts })
 }
 
-fn extract_page(
-    page: &str,
-    capture: &SourceCapture,
-    source: &SourceRecord,
-) -> Result<Vec<StdlibPart>, FetchError> {
-    let html = std::str::from_utf8(capture.bytes())
-        .map_err(|error| FetchError::Cache(format!("python_docs_utf8:{page}:{error}")))?;
+/// One documented callable of a reference page: its anchor id, signature
+/// line and the first sentence of its description.
+struct PageDefinition {
+    symbol: String,
+    signature: String,
+    description: String,
+}
+
+/// Every `sig-object` definition of a Python reference page.
+fn page_definitions(html: &str) -> Vec<PageDefinition> {
     let mut out = Vec::new();
     let mut rest = html;
     while let Some(start) = rest.find("<dt class=\"sig sig-object py\"") {
@@ -166,24 +169,58 @@ fn extract_page(
             rest = paragraph;
             continue;
         };
-        let description = first_sentence(&text(&paragraph[..paragraph_end]));
-        let module = symbol
-            .split_once('.')
-            .map_or("builtins", |(module, _)| module)
-            .to_owned();
-        out.push(StdlibPart {
+        out.push(PageDefinition {
             symbol: symbol.to_owned(),
-            module,
             signature,
-            description,
-            source_url: format!("{}#{symbol}", source.api_url(&[("title", page)])),
-            license: source.license_name.clone(),
-            sha256: capture.sha256().to_owned(),
-            fetched_at: capture.fetched_at().to_owned(),
+            description: first_sentence(&text(&paragraph[..paragraph_end])),
         });
         rest = &paragraph[paragraph_end + 4..];
     }
-    Ok(out)
+    out
+}
+
+/// The statements a Python reference page carries -- each definition's
+/// signature and description -- the bespoke side of the issue #1163 R3
+/// comparison with the generic page formalizer.
+#[must_use]
+pub fn page_statements(bytes: &[u8]) -> Vec<String> {
+    page_definitions(&String::from_utf8_lossy(bytes))
+        .into_iter()
+        .flat_map(|definition| [definition.signature, definition.description])
+        .collect()
+}
+
+fn extract_page(
+    page: &str,
+    capture: &SourceCapture,
+    source: &SourceRecord,
+) -> Result<Vec<StdlibPart>, FetchError> {
+    let html = std::str::from_utf8(capture.bytes())
+        .map_err(|error| FetchError::Cache(format!("python_docs_utf8:{page}:{error}")))?;
+    Ok(page_definitions(html)
+        .into_iter()
+        .map(|definition| {
+            let module = definition
+                .symbol
+                .split_once('.')
+                .map_or("builtins", |(module, _)| module)
+                .to_owned();
+            StdlibPart {
+                source_url: format!(
+                    "{}#{}",
+                    source.api_url(&[("title", page)]),
+                    definition.symbol
+                ),
+                symbol: definition.symbol,
+                module,
+                signature: definition.signature,
+                description: definition.description,
+                license: source.license_name.clone(),
+                sha256: capture.sha256().to_owned(),
+                fetched_at: capture.fetched_at().to_owned(),
+            }
+        })
+        .collect())
 }
 
 fn attribute<'a>(tag: &'a str, name: &str) -> Option<&'a str> {

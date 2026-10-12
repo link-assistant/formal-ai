@@ -1,0 +1,90 @@
+[
+  {
+    "word": "inches",
+    "phonetic": "/ˈɪntʃɪz/",
+    "phonetics": [
+      {
+        "text": "/ˈɪntʃɪz/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/inches-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1212413",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A unit of length equal to one twelfth of a foot, or exactly 2.54 centimetres.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The amount of water which would cover a surface to the depth of an inch, used as a measurement of rainfall.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The amount of an alcoholic beverage which would fill a glass or bottle to the depth of an inch.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A very short distance.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "\"Don't move an inch!\""
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "verb",
+        "definitions": [
+          {
+            "definition": "(followed by a preposition) To advance very slowly, or by a small amount (in a particular direction).",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Fearful of falling, he inched along the window ledge."
+          },
+          {
+            "definition": "To drive by inches, or small degrees.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "To deal out by inches; to give sparingly.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      },
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A small island",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/inch",
+      "https://en.wiktionary.org/wiki/inches"
+    ]
+  }
+]

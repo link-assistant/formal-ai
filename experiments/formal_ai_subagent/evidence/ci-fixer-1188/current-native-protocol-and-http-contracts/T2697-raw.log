@@ -1,0 +1,1066 @@
+>> read {"filePath":"data/seed/shell-intents.lino","file_path":"data/seed/shell-intents.lino","path":"data/seed/shell-intents.lino"}
+   <file>
+   00001| shell_intents
+   00002|   name_leads
+   00003|     language en
+   00004|       lead "called"
+   00005|       lead "named"
+   00006|     language ru
+   00007|       lead "называется"
+   00008|       lead "названием"
+   00009|     language hi
+   00010|       lead "नामक"
+   00011|     language zh
+   00012|       lead "名为"
+   00013|   argument_noise
+   00014|     language en
+   00015|       word the
+   00016|       word file
+   00017|       word folder
+   00018|       word directory
+   00019|       word project
+   00020|       word from
+   00021|       word to
+   00022|       word into
+   00023|       word as
+   00024|       word called
+   00025|       word named
+   00026|       word for
+   00027|       word in
+   00028|       word local
+   00029|       word code
+   00030|       word repository
+   00031|       word repo
+   00032|       word search
+   00033|       word find
+   00034|       word grep
+   00035|     language ru
+   00036|       word файл
+   00037|       word папку
+   00038|       word папка
+   00039|       word каталог
+   00040|       word в
+   00041|       word из
+   00042|       word коде
+   00043|       word репозитории
+   00044|       word найди
+   00045|       word поиск
+   00046|     language hi
+   00047|       word फ़ाइल
+   00048|       word फ़ोल्डर
+   00049|       word में
+   00050|       word कोड
+   00051|       word खोजें
+   00052|       word हटाओ
+   00053|       word बनाएँ
+   00054|     language zh
+   00055|       word 删除文件
+   00056|       word 复制文件
+   00057|       word 移动文件
+   00058|       word 在代码中搜索
+   00059|       word 代码
+   00060|       word 中
+   00061|       word 搜索
+   00062|   cue_fillers
+   00063|     language en
+   00064|       word me
+   00065|       word us
+   00066|       word please
+   00067|       word the
+   00068|       word my
+   00069|       word our
+   00070|     language ru
+   00071|       word мне
+   00072|       word нам
+   00073|       word пожалуйста
+   00074|     language hi
+   00075|       word मुझे
+   00076|       word हमें
+   00077|       word कृपया
+   00078|     language zh
+   00079|       word 请
+   00080|       word 我
+   00081|     language es
+   00082|       word me
+   00083|       word mi
+   00084|       word el
+   00085|       word la
+   00086|   local_search_scopes
+   00087|     language en
+   00088|       scope "the code"
+   00089|       scope "in the code"
+   00090|       scope "in source"
+   00091|       scope "in the repository"
+   00092|       scope "in the repo"
+   00093|       scope "in local files"
+   00094|     language ru
+   00095|       scope "в коде"
+   00096|       scope "в исходниках"
+   00097|       scope "в репозитории"
+   00098|     language hi
+   00099|       scope "कोड में"
+   00100|       scope "स्थानीय फ़ाइलों में"
+   00101|     language zh
+   00102|       scope 在代码中
+   00103|       scope 在源码中
+   00104|       scope 在仓库中
+   00105|   local_path_search
+   00106|     command_template 'find "{root}"{predicate} \\( {patterns} \\) -print -quit'
+   00107|     actions
+   00108|       language en
+   00109|         action find
+   00110|         action locate
+   00111|         action "look for"
+   00112|         action "search for"
+   00113|       language ru
+   00114|         action найди
+   00115|         action найти
+   00116|         action отыщи
+   00117|       language hi
+   00118|         action खोजें
+   00119|         action ढूँढें
+   00120|       language zh
+   00121|         action 查找
+   00122|         action 搜索
+   00123|         action 定位
+   00124|     scopes
+   00125|       scope desktop
+   00126|         root "${FORMAL_AI_DESKTOP_DIR:-$HOME/Desktop}"
+   00127|         language en
+   00128|           cue "on my desktop"
+   00129|           cue "on the desktop"
+   00130|           cue "in my desktop"
+   00131|           cue "in the desktop"
+   00132|         language ru
+   00133|           cue "на моём рабочем столе"
+   00134|           cue "на моем рабочем столе"
+   00135|           cue "на рабочем столе"
+   00136|         language hi
+   00137|           cue "मेरे डेस्कटॉप पर"
+   00138|           cue "डेस्कटॉप पर"
+   00139|         language zh
+   00140|           cue 在我的桌面上
+   00141|           cue 在桌面上
+   00142|       scope home
+   00143|         root "${FORMAL_AI_HOME_DIR:-$HOME}"
+   00144|         language en
+   00145|           cue "on this computer"
+   00146|           cue "on my computer"
+   00147|           cue "on this machine"
+   00148|           cue "on my machine"
+   00149|           cue "in my home folder"
+   00150|         language ru
+   00151|           cue "на этом компьютере"
+   00152|           cue "на моём компьютере"
+   00153|           cue "в домашней папке"
+   00154|         language hi
+   00155|           cue "इस कंप्यूटर पर"
+   00156|           cue "मेरे कंप्यूटर पर"
+   00157|           cue "होम फ़ोल्डर में"
+   00158|         language zh
+   00159|           cue 在这台电脑上
+   00160|           cue 在我的电脑上
+   00161|           cue 在主文件夹中
+   00162|       scope current
+   00163|         root .
+   00164|         language en
+   00165|           cue "in this directory"
+   00166|           cue "in the current directory"
+   00167|           cue "in this folder"
+   00168|           cue "in the current folder"
+   00169|           cue "in this workspace"
+   00170|         language ru
+   00171|           cue "в этом каталоге"
+   00172|           cue "в текущем каталоге"
+   00173|           cue "в этой папке"
+   00174|         language hi
+   00175|           cue "इस निर्देशिका में"
+   00176|           cue "वर्तमान फ़ोल्डर में"
+   00177|         language zh
+   00178|           cue 在此目录中
+   00179|           cue 在当前目录中
+   00180|           cue 在此文件夹中
+   00181|     kinds
+   00182|       kind directory
+   00183|         predicate "-type d"
+   00184|         language en
+   00185|           cue folder
+   00186|           cue directory
+   00187|         language ru
+   00188|           cue папку
+   00189|           cue папка
+   00190|           cue каталог
+   00191|         language hi
+   00192|           cue फ़ोल्डर
+   00193|           cue निर्देशिका
+   00194|         language zh
+   00195|           cue 文件夹
+   00196|           cue 目录
+   00197|       kind file
+   00198|         predicate "-type f"
+   00199|         language en
+   00200|           cue file
+   00201|           cue document
+   00202|         language ru
+   00203|           cue файл
+   00204|           cue документ
+   00205|         language hi
+   00206|           cue फ़ाइल
+   00207|           cue दस्तावेज़
+   00208|         language zh
+   00209|           cue 文件
+   00210|           cue 文档
+   00211|   workspace_commands
+   00212|     workspace
+   00213|       marker Cargo.toml
+   00214|       test "cargo test"
+   00215|       install "cargo fetch"
+   00216|       build "cargo build"
+   00217|     workspace
+   00218|       marker bun.lock
+   00219|       test "bun test"
+   00220|       install "bun install"
+   00221|       build "bun run build"
+   00222|     workspace
+   00223|       marker pnpm-lock.yaml
+   00224|       test "pnpm test"
+   00225|       install "pnpm install"
+   00226|       build "pnpm build"
+   00227|     workspace
+   00228|       marker yarn.lock
+   00229|       test "yarn test"
+   00230|       install "yarn install"
+   00231|       build "yarn build"
+   00232|     workspace
+   00233|       marker package.json
+   00234|       test "npm test"
+   00235|       install "npm install"
+   00236|       build "npm run build"
+   00237|     workspace
+   00238|       marker pyproject.toml
+   00239|       test pytest
+   00240|       install "poetry install"
+   00241|       build "python -m build"
+   00242|     workspace
+   00243|       marker go.mod
+   00244|       test "go test ./..."
+   00245|       install "go mod download"
+   00246|       build "go build ./..."
+   00247|     workspace
+   00248|       marker pom.xml
+   00249|       test "mvn test"
+   00250|       install "mvn dependency:resolve"
+   00251|       build "mvn package"
+   00252|     workspace
+   00253|       marker build.gradle
+   00254|       test "./gradlew test"
+   00255|       install "./gradlew dependencies"
+   00256|       build "./gradlew build"
+   00257|     workspace
+   00258|       marker Makefile
+   00259|       test "make test"
+   00260|       install "make install"
+   00261|       build make
+   00262|   test_file_runners
+   00263|     # PR #1188 T91 (gap G11): "Run the tests in m.test.mjs." runs the named
+   00264|     # test file with the runtime its extension needs, never the workspace's
+   00265|     # whole-suite command chosen by a marker file. `{file}` is the named path.
+   00266|     runner
+   00267|       extension "mjs"
+   00268|       command "node --test {file}"
+   00269|     runner
+   00270|       extension "js"
+   00271|       command "node --test {file}"
+   00272|     runner
+   00273|       extension "cjs"
+   00274|       command "node --test {file}"
+   00275|     runner
+   00276|       extension "py"
+   00277|       command "python3 -m pytest {file}"
+   00278|     runner
+   00279|       extension "rb"
+   00280|       command "ruby {file}"
+   00281|     runner
+   00282|       extension "rs"
+   00283|       command "cargo test"
+   00284|     runner
+   00285|       extension "go"
+   00286|       command "go test ./..."
+   00287|   result_command_words
+   00288|     # PR #1188 G75: a shell command's own word tells a listing or a search
+   00289|     # result apart, never a word inside its operands (`sed … allowlist.txt`).
+   00290|     command
+   00291|       word "ls"
+   00292|       kind "listing"
+   00293|     command
+   00294|       word "tree"
+   00295|       kind "listing"
+   00296|     command
+   00297|       word "dir"
+   00298|       kind "listing"
+   00299|     command
+   00300|       word "grep"
+   00301|       kind "search"
+   00302|     command
+   00303|       word "rg"
+   00304|       kind "search"
+   00305|     command
+   00306|       word "find"
+   00307|       kind "search"
+   00308|     command
+   00309|       word "ag"
+   00310|       kind "search"
+   00311|   content_search
+   00312|     # PR #1188 T90 (gap G12): the shell fallback of the workspace content
+   00313|     # search when the client advertises no grep tool. `{mode}` is `w` for an
+   00314|     # identifier (whole-word match) and `F` for a quoted literal (fixed text).
+   00315|     command "grep -rnH{mode} --exclude-dir=.git -- {pattern} {scope}"
+   00316|     identifier_mode "w"
+   00317|     literal_mode "F"
+   00318|   path_objects
+   00319|     language en
+   00320|       object file
+   00321|       object files
+   00322|       object directory
+   00323|       object directories
+   00324|       object folder
+   00325|       object folders
+   00326|       object link
+   00327|       object symlink
+   00328|     language ru
+   00329|       object файл
+   00330|       object файла
+   00331|       object файлы
+   00332|       object папка
+   00333|       object папку
+   00334|       object папке
+   00335|       object каталог
+   00336|       object каталоге
+   00337|       object ссылка
+   00338|       object ссылку
+   00339|     language hi
+   00340|       object फ़ाइल
+   00341|       object फ़ाइलें
+   00342|       object फ़ोल्डर
+   00343|       object निर्देशिका
+   00344|       object लिंक
+   00345|     language zh
+   00346|       object 文件
+   00347|       object 文件夹
+   00348|       object 目录
+   00349|       object 链接
+   00350|   directory_listing
+   00351|     verbs
+   00352|       language en
+   00353|         verb list
+   00354|         verb show
+   00355|         verb display
+   00356|         verb print
+   00357|         verb enumerate
+   00358|         verb reveal
+   00359|         verb inspect
+   00360|         verb scan
+   00361|         verb see
+   00362|         verb give
+   00363|       language ru
+   00364|         verb покажи
+   00365|         verb показать
+   00366|         verb выведи
+   00367|         verb вывести
+   00368|         verb перечисли
+   00369|         verb отобрази
+   00370|         verb просмотри
+   00371|         verb просканируй
+   00372|         verb дай
+   00373|         verb список
+   00374|       language hi
+   00375|         verb दिखाएँ
+   00376|         verb दिखाओ
+   00377|         verb सूचीबद्ध
+   00378|         verb प्रिंट
+   00379|         verb सूची
+   00380|         verb दें
+   00381|         verb देखें
+   00382|       language zh
+   00383|         verb 显示
+   00384|         verb 列出
+   00385|         verb 打印
+   00386|         verb 展示
+   00387|         verb 查看
+   00388|         verb 给出
+   00389|         verb 扫描
+   00390|       language es
+   00391|         verb lista
+   00392|         verb listar
+   00393|         verb muestra
+   00394|         verb muéstrame
+   00395|         verb muestrame
+   00396|         verb mostrar
+   00397|         verb enseña
+   00398|         verb imprime
+   00399|         verb enumera
+   00400|         verb dame
+   00401|         verb ver
+   00402|     questions
+   00403|       language en
+   00404|         question what
+   00405|         question which
+   00406|         question "what's"
+   00407|       language ru
+   00408|         question какие
+   00409|         question что
+   00410|         question каких
+   00411|       language hi
+   00412|         question कौन
+   00413|         question क्या
+   00414|         question कौनसी
+   00415|       language zh
+   00416|         question 哪些
+   00417|         question 什么
+   00418|       language es
+   00419|         question qué
+   00420|         question cuáles
+   00421|         question cuales
+   00422|         question cuál
+   00423|     objects
+   00424|       language en
+   00425|         object files
+   00426|         object contents
+   00427|         object content
+   00428|         object listing
+   00429|         object entries
+   00430|         object items
+   00431|       language ru
+   00432|         object файлы
+   00433|         object файлов
+   00434|         object файла
+   00435|         object содержимое
+   00436|       language hi
+   00437|         object फ़ाइलें
+   00438|         object फ़ाइलों
+   00439|         object सामग्री
+   00440|       language zh
+   00441|         object 文件
+   00442|         object 内容
+   00443|       language es
+   00444|         object archivos
+   00445|         object ficheros
+   00446|         object contenido
+   00447|         object contenidos
+   00448|         object entradas
+   00449|     scopes
+   00450|       language en
+   00451|         scope here
+   00452|         scope "current directory"
+   00453|         scope "working directory"
+   00454|         scope "current working directory"
+   00455|         scope "this directory"
+   00456|         scope "the directory"
+   00457|         scope "current folder"
+   00458|         scope "this folder"
+   00459|         scope "the folder"
+   00460|         scope "local files"
+   00461|       language ru
+   00462|         scope здесь
+   00463|         scope "текущей папке"
+   00464|         scope "этой папке"
+   00465|         scope "текущем каталоге"
+   00466|         scope "этом каталоге"
+   00467|         scope "рабочем каталоге"
+   00468|         scope "текущий каталог"
+   00469|         scope "эту папку"
+   00470|         scope "локальные файлы"
+   00471|       language hi
+   00472|         scope यहाँ
+   00473|         scope "वर्तमान फ़ोल्डर"
+   00474|         scope "इस फ़ोल्डर"
+   00475|         scope "वर्तमान निर्देशिका"
+   00476|         scope "इस निर्देशिका"
+   00477|         scope "स्थानीय फ़ाइलें"
+   00478|       language zh
+   00479|         scope 这里
+   00480|         scope 当前目录
+   00481|         scope 这个目录
+   00482|         scope 当前文件夹
+   00483|         scope 这个文件夹
+   00484|         scope 本地文件
+   00485|       language es
+   00486|         scope aquí
+   00487|         scope aqui
+   00488|         scope "directorio actual"
+   00489|         scope "este directorio"
+   00490|         scope "el directorio"
+   00491|         scope "carpeta actual"
+   00492|         scope "esta carpeta"
+   00493|         scope "la carpeta"
+   00494|         scope "archivos locales"
+   00495|   intents
+   00496|     intent
+   00497|       command "formal-ai:report-issue"
+   00498|       argument "none"
+   00499|       language en
+   00500|         cue report
+   00501|         cue "report issue"
+   00502|         cue "create issue"
+   00503|         cue "open issue"
+   00504|       language ru
+   00505|         cue "сообщить о проблеме"
+   00506|         cue "создать issue"
+   00507|       language hi
+   00508|         cue "समस्या रिपोर्ट करें"
+   00509|       language zh
+   00510|         cue 报告问题
+   00511|     intent
+   00512|       command "printf '%s\\n' '' '[![Formal AI](https://img.shields.io/badge/Formal_AI-orchestrated-blue)](https://github.com/link-assistant/formal-ai)' >> README.md && tail -n 2 README.md"
+   00513|       argument "none"
+   00514|       language en
+   00515|         cue "README badge"
+   00516|         cue "badge in README"
+   00517|         cue "badge to README"
+   00518|       language ru
+   00519|         cue "значок README"
+   00520|         cue "бейдж README"
+   00521|         cue "бейдж в README"
+   00522|       language hi
+   00523|         cue "README बैज"
+   00524|       language zh
+   00525|         cue "README 徽章"
+   00526|         cue "在 README 中添加徽章"
+   00527|     intent
+   00528|       command pwd
+   00529|       argument "none"
+   00530|       language en
+   00531|         cue "working directory"
+   00532|         cue "where am i"
+   00533|         cue "where i am"
+   00534|         cue "where we are"
+   00535|         cue "which directory am i"
+   00536|         cue "current location"
+   00537|         cue "current directory"
+   00538|         cue "current path"
+   00539|         cue "show current directory"
+   00540|       language ru
+   00541|         cue "рабочий каталог"
+   00542|         cue "рабочем каталоге"
+   00543|         cue "рабочую директорию"
+   00544|         cue "текущий путь"
+   00545|       language hi
+   00546|         cue "वर्तमान निर्देशिका"
+   00547|         cue "कार्यशील निर्देशिका"
+   00548|       language zh
+   00549|         cue 当前目录
+   00550|         cue 工作目录
+   00551|     intent
+   00552|       command whoami
+   00553|       argument "none"
+   00554|       language en
+   00555|         cue "my username"
+   00556|         cue "my user name"
+   00557|         cue "who am i"
+   00558|         cue "current user"
+   00559|         cue "logged in as"
+   00560|       language ru
+   00561|         cue "моё имя пользователя"
+   00562|         cue "мое имя пользователя"
+   00563|         cue "кто я"
+   00564|         cue "текущий пользователь"
+   00565|       language hi
+   00566|         cue "मेरा उपयोगकर्ता नाम"
+   00567|         cue "मैं कौन हूँ"
+   00568|       language zh
+   00569|         cue 我的用户名
+   00570|         cue 当前用户
+   00571|     intent
+   00572|       command "df -h"
+   00573|       argument "none"
+   00574|       language en
+   00575|         cue "disk space"
+   00576|         cue "free space"
+   00577|         cue "space is free"
+   00578|         cue "space is available"
+   00579|         cue "space left"
+   00580|       language ru
+   00581|         cue "свободного места"
+   00582|         cue "места на диске"
+   00583|         cue "свободное место"
+   00584|       language hi
+   00585|         cue "डिस्क स्थान"
+   00586|         cue "खाली जगह"
+   00587|       language zh
+   00588|         cue 磁盘空间
+   00589|         cue 剩余空间
+   00590|     intent
+   00591|       command date
+   00592|       argument "none"
+   00593|       language en
+   00594|         cue "today's date"
+   00595|         cue "todays date"
+   00596|         cue "current date"
+   00597|         cue "what day is it"
+   00598|         cue "what's the date"
+   00599|         cue "what is the date"
+   00600|         cue "the current time"
+   00601|       language ru
+   00602|         cue "какое сегодня число"
+   00603|         cue "текущую дату"
+   00604|         cue "сегодняшнюю дату"
+   00605|         cue "текущее время"
+   00606|       language hi
+   00607|         cue "आज की तारीख"
+   00608|         cue "वर्तमान समय"
+   00609|       language zh
+   00610|         cue 今天的日期
+   00611|         cue 当前时间
+   00612|       language es
+   00613|         cue "la fecha de hoy"
+   00614|         cue "fecha actual"
+   00615|         cue "qué día es hoy"
+   00616|         cue "la hora actual"
+   00617|     intent
+   00618|       command ps
+   00619|       argument "none"
+   00620|       language en
+   00621|         cue "running processes"
+   00622|         cue "processes are running"
+   00623|         cue "process list"
+   00624|         cue "list of processes"
+   00625|         cue "which processes"
+   00626|         cue "list processes"
+   00627|       language ru
+   00628|         cue "запущенные процессы"
+   00629|         cue "процессы запущены"
+   00630|         cue "какие процессы"
+   00631|         cue "список процессов"
+   00632|         cue "работающие процессы"
+   00633|       language hi
+   00634|         cue "चल रही प्रक्रियाएं"
+   00635|         cue "कौन सी प्रक्रियाएं"
+   00636|         cue "प्रक्रियाओं की सूची"
+   00637|       language zh
+   00638|         cue 正在运行的进程
+   00639|         cue 哪些进程正在运行
+   00640|         cue 进程列表
+   00641|     intent
+   00642|       command ls
+   00643|       argument "none"
+   00644|       language en
+   00645|         cue "list files in this folder"
+   00646|         cue "show files in this folder"
+   00647|         cue "what files are in this folder"
+   00648|         cue "display the files here"
+   00649|         cue "give me a directory listing"
+   00650|         cue "enumerate files in the current directory"
+   00651|         cue "show directory contents"
+   00652|         cue "which files are here"
+   00653|         cue "list this directory"
+   00654|         cue "print the file list"
+   00655|         cue "inspect this folder"
+   00656|         cue "show me local files"
+   00657|         cue "what is in the current folder"
+   00658|         cue "reveal folder contents"
+   00659|         cue "scan the current directory"
+   00660|         cue "what's in this folder"
+   00661|         cue "what is in this folder"
+   00662|         cue "what's in this directory"
+   00663|         cue "what is in this directory"
+   00664|         cue "what's in the current"
+   00665|         cue "what is in the current"
+   00666|         cue "what's here"
+   00667|         cue "what is here"
+   00668|       language ru
+   00669|         cue "покажи файлы в этой папке"
+   00670|         cue "список файлов"
+   00671|         cue "какие файлы в этой папке"
+   00672|         cue "перечисли файлы здесь"
+   00673|         cue "покажи содержимое каталога"
+   00674|         cue "выведи список файлов"
+   00675|         cue "что находится в текущей папке"
+   00676|         cue "отобрази файлы каталога"
+   00677|         cue "перечисли текущий каталог"
+   00678|         cue "покажи локальные файлы"
+   00679|         cue "просмотри эту папку"
+   00680|         cue "какие файлы здесь"
+   00681|         cue "дай список каталога"
+   00682|         cue "покажи содержимое текущего каталога"
+   00683|         cue "просканируй текущую папку"
+   00684|         cue "что в этой папке"
+   00685|         cue "что в этом каталоге"
+   00686|         cue "что здесь есть"
+   00687|       language hi
+   00688|         cue "इस फ़ोल्डर में फ़ाइलें दिखाएँ"
+   00689|         cue "फ़ाइलों की सूची"
+   00690|         cue "इस फ़ोल्डर में कौन सी फ़ाइलें हैं"
+   00691|         cue "यहाँ फ़ाइलें सूचीबद्ध करें"
+   00692|         cue "निर्देशिका की सामग्री दिखाएँ"
+   00693|         cue "फ़ाइल सूची प्रिंट करें"
+   00694|         cue "वर्तमान फ़ोल्डर में क्या है"
+   00695|         cue "निर्देशिका फ़ाइलें प्रदर्शित करें"
+   00696|         cue "वर्तमान निर्देशिका सूचीबद्ध करें"
+   00697|         cue "स्थानीय फ़ाइलें दिखाएँ"
+   00698|         cue "इस फ़ोल्डर को देखें"
+   00699|         cue "यहाँ कौन सी फ़ाइलें हैं"
+   00700|         cue "निर्देशिका सूची दें"
+   00701|         cue "वर्तमान निर्देशिका की सामग्री दिखाएँ"
+   00702|         cue "वर्तमान फ़ोल्डर स्कैन करें"
+   00703|         cue "इस फ़ोल्डर में क्या है"
+   00704|       language zh
+   00705|         cue 显示这个文件夹里的文件
+   00706|         cue 文件列表
+   00707|         cue 这个文件夹里有哪些文件
+   00708|         cue 列出这里的文件
+   00709|         cue 显示目录内容
+   00710|         cue 打印文件列表
+   00711|         cue 当前文件夹里有什么
+   00712|         cue 展示目录文件
+   00713|         cue 列出当前目录
+   00714|         cue 显示本地文件
+   00715|         cue 查看这个文件夹
+   00716|         cue 这里有哪些文件
+   00717|         cue 给出目录列表
+   00718|         cue 显示当前目录的内容
+   00719|         cue 扫描当前文件夹
+   00720|         cue 这个文件夹里有什么
+   00721|         cue 当前目录里有什么
+   00722|     intent
+   00723|       command rg
+   00724|       argument search_query
+   00725|       language en
+   00726|         cue "search the code for"
+   00727|         cue "search source for"
+   00728|         cue "find in the code"
+   00729|         cue "search for"
+   00730|         cue "find"
+   00731|         cue "grep for"
+   00732|       language ru
+   00733|         cue "найди в коде"
+   00734|         cue "поищи в исходниках"
+   00735|         cue найди
+   00736|       language hi
+   00737|         cue "कोड में खोजें"
+   00738|         cue "स्रोत में ढूँढें"
+   00739|         cue खोजें
+   00740|       language zh
+   00741|         cue 在代码中搜索
+   00742|         cue 在源码中查找
+   00743|         cue 搜索
+   00744|         cue 查找
+   00745|     intent
+   00746|       command "wc -l"
+   00747|       argument "path"
+   00748|       language en
+   00749|         cue "number of lines"
+   00750|         cue "how many lines"
+   00751|         cue "count the lines"
+   00752|         cue "count lines"
+   00753|         cue "line count"
+   00754|       language ru
+   00755|         cue "количество строк"
+   00756|         cue "сколько строк"
+   00757|         cue "число строк"
+   00758|       language hi
+   00759|         cue "पंक्तियों की संख्या"
+   00760|         cue "कितनी पंक्तियाँ"
+   00761|       language zh
+   00762|         cue 有多少行
+   00763|         cue 行数
+   00764|     intent
+   00765|       command mkdir
+   00766|       argument "name_lead"
+   00767|       effect
+   00768|         flag "-p"
+   00769|         flag "--parents"
+   00770|         value-option "-m"
+   00771|         value-option "--mode"
+   00772|         reuse-option "-p"
+   00773|         reuse-option "--parents"
+   00774|         before-reuse "test ! -e {path} || test -d {path}"
+   00775|         before "test ! -e {path}"
+   00776|         after "test -d {path}"
+   00777|       language en
+   00778|         cue "create a directory"
+   00779|         cue "create a new directory"
+   00780|         cue "make a directory"
+   00781|         cue "create a folder"
+   00782|         cue "create a new folder"
+   00783|         cue "make a folder"
+   00784|         cue "make a new directory"
+   00785|         cue "make a new folder"
+   00786|       language ru
+   00787|         cue "создай каталог"
+   00788|         cue "создай папку"
+   00789|         cue "создай директорию"
+   00790|         cue "создать каталог"
+   00791|         cue "создать папку"
+   00792|       language hi
+   00793|         cue "एक निर्देशिका बनाओ"
+   00794|         cue "एक फ़ोल्डर बनाओ"
+   00795|       language zh
+   00796|         cue 创建一个目录
+   00797|         cue 创建一个文件夹
+   00798|     intent
+   00799|       command touch
+   00800|       argument one_path
+   00801|       language en
+   00802|         cue "create an empty file"
+   00803|         cue "create empty file"
+   00804|         cue "make an empty file"
+   00805|       language ru
+   00806|         cue "создай пустой файл"
+   00807|         cue "создать пустой файл"
+   00808|       language hi
+   00809|         cue "खाली फ़ाइल बनाएँ"
+   00810|         cue "खाली फ़ाइल बनाओ"
+   00811|       language zh
+   00812|         cue 创建空文件
+   00813|         cue 新建空文件
+   00814|     intent
+   00815|       command rmdir
+   00816|       argument one_path
+   00817|       destructive true
+   00818|       language en
+   00819|         cue "remove the directory"
+   00820|         cue "delete the directory"
+   00821|         cue "remove directory"
+   00822|         cue "delete folder"
+   00823|       language ru
+   00824|         cue "удали папку"
+   00825|         cue "удали каталог"
+   00826|       language hi
+   00827|         cue "फ़ोल्डर हटाओ"
+   00828|         cue "निर्देशिका हटाएँ"
+   00829|       language zh
+   00830|         cue 删除目录
+   00831|         cue 删除文件夹
+   00832|     intent
+   00833|       command rm
+   00834|       argument one_path
+   00835|       destructive true
+   00836|       language en
+   00837|         cue "delete the file"
+   00838|         cue "remove the file"
+   00839|         cue "delete file"
+   00840|         cue "remove file"
+   00841|         cue delete
+   00842|         cue remove
+   00843|       language ru
+   00844|         cue "удали файл"
+   00845|         cue "удалить файл"
+   00846|         cue удали
+   00847|         cue удалить
+   00848|       language hi
+   00849|         cue हटाओ
+   00850|         cue "फ़ाइल हटाएँ"
+   00851|       language zh
+   00852|         cue 删除文件
+   00853|         cue 移除文件
+   00854|         cue 删除
+   00855|         cue 移除
+   00856|       language es
+   00857|         cue "elimina el archivo"
+   00858|         cue "borra el archivo"
+   00859|         cue elimina
+   00860|         cue borra
+   00861|     intent
+   00862|       command cp
+   00863|       argument two_paths
+   00864|       effect
+   00865|         flag "-f"
+   00866|         flag "--force"
+   00867|         flag "-n"
+   00868|         flag "--no-clobber"
+   00869|         flag "-r"
+   00870|         flag "-R"
+   00871|         flag "--recursive"
+   00872|         flag "-a"
+   00873|         flag "-p"
+   00874|         reuse-option "-f"
+   00875|         reuse-option "--force"
+   00876|         before-reuse "test -e {source}"
+   00877|         directory-targets true
+   00878|         before "test -e {source}"
+   00879|         before "test ! -e {destination}"
+   00880|         prepare "mkdir -p -- {destination_parent}"
+   00881|         after "test -e {destination}"
+   00882|         after "test -e {source}"
+   00883|       language en
+   00884|         cue "copy the file"
+   00885|         cue "copy file"
+   00886|         cue copy
+   00887|       language ru
+   00888|         cue скопируй
+   00889|         cue "копировать файл"
+   00890|       language hi
+   00891|         cue "फ़ाइल कॉपी करें"
+   00892|         cue कॉपी
+   00893|       language zh
+   00894|         cue 复制文件
+   00895|         cue 复制
+   00896|     intent
+   00897|       command mv
+   00898|       argument two_paths
+   00899|       effect
+   00900|         flag "-f"
+   00901|         flag "--force"
+   00902|         flag "-n"
+   00903|         flag "--no-clobber"
+   00904|         reuse-option "-f"
+   00905|         reuse-option "--force"
+   00906|         before-reuse "test -e {source}"
+   00907|         before "test -e {source}"
+   00908|         before "test ! -e {destination}"
+   00909|         prepare "mkdir -p -- {destination_parent}"
+   00910|         after "test -e {destination}"
+   00911|         after "test ! -e {source}"
+   00912|       language en
+   00913|         cue "move the file"
+   00914|         cue "rename the file"
+   00915|         cue "move file"
+   00916|         cue rename
+   00917|         cue move
+   00918|       language ru
+   00919|         cue "перемести файл"
+   00920|         cue "переименуй файл"
+   00921|       language hi
+   00922|         cue "फ़ाइल स्थानांतरित करें"
+   00923|         cue "फ़ाइल का नाम बदलें"
+   00924|       language zh
+   00925|         cue 移动文件
+   00926|         cue 重命名文件
+   00927|     intent
+   00928|       command "ln -s"
+   00929|       argument two_paths
+   00930|       language en
+   00931|         cue "create a symbolic link"
+   00932|         cue "make a symbolic link"
+   00933|         cue "create a symlink"
+   00934|       language ru
+   00935|         cue "создай символическую ссылку"
+   00936|       language hi
+   00937|         cue "प्रतीकात्मक लिंक बनाएँ"
+   00938|       language zh
+   00939|         cue 创建符号链接
+   00940|     intent
+   00941|       command env
+   00942|       argument "none"
+   00943|       language en
+   00944|         cue "environment variables"
+   00945|         cue "show the environment"
+   00946|       language ru
+   00947|         cue "переменные окружения"
+   00948|       language hi
+   00949|         cue "पर्यावरण चर"
+   00950|       language zh
+   00951|         cue 环境变量
+   00952|     intent
+   00953|       command stat
+   00954|       argument one_path
+   00955|       language en
+   00956|         cue "show metadata for"
+   00957|         cue "file metadata for"
+   00958|         cue "file status for"
+   00959|       language ru
+   00960|         cue "метаданные файла"
+   00961|       language hi
+   00962|         cue "फ़ाइल मेटाडेटा"
+   00963|       language zh
+   00964|         cue 文件元数据
+   00965|     intent
+   00966|       command "git status"
+   00967|       argument "none"
+   00968|       language en
+   00969|         cue "show git status"
+   00970|         cue "repository status"
+   00971|       language ru
+   00972|         cue "статус git"
+   00973|       language hi
+   00974|         cue "गिट स्थिति"
+   00975|       language zh
+   00976|         cue "git 状态"
+   00977|     intent
+   00978|       command "git log"
+   00979|       argument "none"
+   00980|       language en
+   00981|         cue "show git log"
+   00982|         cue "git history"
+   00983|       language ru
+   00984|         cue "история git"
+   00985|       language hi
+   00986|         cue "गिट इतिहास"
+   00987|       language zh
+   00988|         cue "git 历史"
+   00989|     intent
+   00990|       command "git diff"
+   00991|       argument "none"
+   00992|       language en
+   00993|         cue "what changed in git"
+   00994|         cue "show git changes"
+   00995|       language ru
+   00996|         cue "изменения в git"
+   00997|       language hi
+   00998|         cue "गिट में बदलाव"
+   00999|       language zh
+   01000|         cue "git 中的更改"
+   01001|     intent
+   01002|       command "git commit"
+   01003|       argument "none"
+   01004|       language en
+   01005|         cue "commit my changes"
+   01006|         cue "commit the changes"
+   01007|       language ru
+   01008|         cue "закоммить изменения"
+   01009|       language hi
+   01010|         cue "मेरे बदलाव कमिट करें"
+   01011|       language zh
+   01012|         cue 提交我的更改
+   01013|     intent
+   01014|       command "formal-ai:workspace-test"
+   01015|       argument "none"
+   01016|       language en
+   01017|         cue "run the tests"
+   01018|         cue "run tests"
+   01019|         cue "test the project"
+   01020|       language ru
+   01021|         cue "запусти тесты"
+   01022|         cue "выполни тесты"
+   01023|       language hi
+   01024|         cue "परीक्षण चलाएँ"
+   01025|         cue "टेस्ट चलाओ"
+   01026|       language zh
+   01027|         cue 运行测试
+   01028|         cue 执行测试
+   01029|     intent
+   01030|       command "formal-ai:workspace-install"
+   01031|       argument "none"
+   01032|       language en
+   01033|         cue "install dependencies"
+   01034|         cue "install the dependencies"
+   01035|       language ru
+   01036|         cue "установи зависимости"
+   01037|       language hi
+   01038|         cue "निर्भरताएँ स्थापित करें"
+   01039|       language zh
+   01040|         cue 安装依赖
+   01041|     intent
+   01042|       command "formal-ai:workspace-build"
+   01043|       argument "none"
+   01044|       language en
+   01045|         cue "build the project"
+   01046|         cue "compile the project"
+   01047|       language ru
+   01048|         cue "собери проект"
+   01049|       language hi
+   01050|         cue "प्रोजेक्ट बनाएँ"
+   01051|       language zh
+   01052|         cue 构建项目
+   01053| 
+   
+   (End of file - total 1053 lines)
+   </file>
+>> edit {"filePath":"data/seed/shell-intents.lino","file_path":"data/seed/shell-intents.lino","new":"        before-reuse\n          code \"test ! -e {path} || test -d {path}\"","newString":"        before-reuse\n          code \"test ! -e {path} || test -d {path}\"","new_str":"        before-reuse\n          code \"test ! -e {path} || test -d {path}\"","new_string":"        before-reuse\n          code \"test ! -e {path} || test -d {path}\"","old":"        before-reuse \"test ! -e {path} || test -d {path}\"","oldString":"        before-reuse \"test ! -e {path} || test -d {path}\"","old_str":"        before-reuse \"test ! -e {path} || test -d {path}\"","old_string":"        before-reuse \"test ! -e {path} || test -d {path}\"","path":"data/seed/shell-intents.lino"}
+>> bash {"command":"sha256sum -- data/seed/shell-intents.lino"}
+   Output: 5fe391e70ed23fd18025f76beb90b88662775d498c303ab912d80af5f6e35722  data/seed/shell-intents.lino
+   
+   Exit Code: 0
+== answer ==
+Replaced `        before-reuse "test ! -e {path} || test -d {path}"` with `        before-reuse
+          code "test ! -e {path} || test -d {path}"` in `data/seed/shell-intents.lino` and observed the result.

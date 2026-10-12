@@ -1,0 +1,24 @@
+>> bash {"command":"node scripts/measure-notation.mjs --check && node experiments/formal_ai_subagent/apply-notation-rules.mjs --check"}
+   Output: directory                            files  characters  underscore-names  dash-names  abbreviated-names  duplicated-blocks  repeated-fields
+   data/meta                              152     1299011              2062         560                196                  9               78
+   data/meta/ci-gates                     102       88615                 8          95                  3                  0                0
+   data/meta/rename-map                     2       36738                 0           3                  0                  0                0
+   data/meta/requirement-status-ledger    150      232022                 2           0                  1                  0                2
+   data/meta/seed-metadata-gaps            68       89321                 0        1065                  0                  0                0
+   data/meta/self-translation               1        6295                 2          10                  2                  0                0
+   data/meta/worker-line-budget           122      117984                 1           1                  0                  0                0
+   data/seed                              243     3187970              9422         349                245                 27              184
+   data/meta (scope)                      597     1869986              2074        1696                200                  9               80
+   data/seed (scope)                      243     3187970              9422         349                245                 27              184
+   
+   Error: ::error file=data/meta/notation-ratchet.lino::data/seed underscore-names rose from 9420 to 9422: write new names with `-` and full English words, and state shared structure once (docs/links-notation-style.md; list them with --list).
+   
+   Exit Code: 1
+== answer ==
+The command failed: `node scripts/measure-notation.mjs --check && node experiments/formal_ai_subagent/apply-notation-rules.mjs --check` exited with code 1.
+
+```text
+::error file=data/meta/notation-ratchet.lino::data/seed underscore-names rose from 9420 to 9422: write new names with `-` and full English words, and state shared structure once (docs/links-notation-style.md; list them with --list).
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

@@ -1,0 +1,19 @@
+feature_capability_web_search	búsqueda web	búsqueda en internet	motores de búsqueda	puedes buscar en internet	puedes buscar en la web	tienes búsqueda web	tienes acceso a internet
+feature_capability_diagnostics	diagnóstico	diagnósticos	traza de razonamiento
+feature_capability_agent_mode	modo agente	agente	varios pasos	autónomo
+feature_capability_definition_fusion	fusión de definiciones	combinar definiciones
+feature_capability_configuration	configuración	ajustes	tema	idioma	estilo del chat	preferencias
+feature_capability_memory_actions	exportar memoria	importar memoria	exportación de memoria	importación de memoria
+feature_capability_greeting	saludo	saludos	saludar	hola
+feature_capability_write_program	hola mundo	escribir código	generar código	escribir un programa	programa
+feature_capability_concept_lookup	búsqueda de conceptos	concepto
+feature_capability_arithmetic	aritmética	calcular	matemáticas	2 + 2
+feature_capability_translation	traducción	traducir
+feature_capability_memory	memoria	recordar	contexto de la conversación
+feature_capability_demo_mode	modo demo	demo	demostración
+feature_capability_http_url	petición http	abrir url	abrir un enlace	visitar url	navegar a la url
+feature_capability_javascript_execution	javascript	ejecutar javascript	js
+feature_capability_planning	resumir	lluvia de ideas	juego de rol	proyecto de software	plan de proyecto
+feature_capability_question	puedes	puede	sabes	eres capaz	admites	tienes	está disponible	está activado
+feature_action_arithmetic	puedes calcular	puedes computar
+feature_action_planning	puedes resumir	puedes hacer una lluvia de ideas	puedes hacer un juego de rol

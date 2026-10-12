@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "音樂"
+        },
+        "es": {
+          "language": "es",
+          "value": "música"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "以聲音為媒介的藝術形式和文化活動"
+        },
+        "es": {
+          "language": "es",
+          "value": "forma de arte que usa sonidos y silencios"
         }
       },
       "aliases": {
@@ -60,6 +68,16 @@
           {
             "language": "zh",
             "value": "樂律"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "creando música"
+          },
+          {
+            "language": "es",
+            "value": "arte musical"
           }
         ]
       }

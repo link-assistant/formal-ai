@@ -1,0 +1,11 @@
+{
+  "id": "T3569",
+  "calls": 1,
+  "stop": "final",
+  "sourceBytes": 156,
+  "answerBytes": 226,
+  "containsExactSource": false,
+  "disposition": "unknown",
+  "answer": "The command failed: `error-keys.json` exited with code 9.\n\n```text\nfailed\n```\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+  "sourceUnchanged": true
+}

@@ -1,0 +1,8 @@
+# One CI gate, one file (issue #991).
+#
+# PR #1188: R1188-U4, names are full English words.
+ci_gate check-abbreviations
+  stage web
+  description "R1188-U4: file names and the declared names of the code (the scopes of data/meta/abbreviation-rules.lino) hold at most the ceilings of data/meta/abbreviation-ratchet.lino of names with a word on the abbreviation list of data/meta/notation-rules.lino; the ceilings only fall."
+  run "node scripts/measure-abbreviations.mjs --check"
+  justification "PR #1188 (R1188-U4, owner 2026-10-08): names are full English words, without abbreviations, in code and in the links notation we own. The rename map spells file names in full words tree by tree and later passes rename bindings; without a gate a new `args`, `pos` or `_config` name would raise the counts again unnoticed. The measure takes about a second."

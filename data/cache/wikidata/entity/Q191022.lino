@@ -1,13 +1,16 @@
 Q191022
   aliases
+    es (chalina)
     ru ("Шарфы")
   descriptions
     en "garment of fabric worn around neck or head"
+    es "complemento de ropa"
     ru "деталь одежды"
     zh "衣物"
   id Q191022
   labels
     en scarf
+    es bufanda
     hi "स्कार्फ़"
     ru "шарф"
     zh "圍巾"

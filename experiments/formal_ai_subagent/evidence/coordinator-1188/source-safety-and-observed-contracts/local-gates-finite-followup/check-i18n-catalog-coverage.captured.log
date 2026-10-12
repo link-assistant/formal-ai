@@ -1,0 +1,6 @@
+$ npm run --prefix rust/tests/e2e check:i18n
+
+> formal-ai-e2e@1.0.0 check:i18n
+> node scripts/check-i18n-catalog.mjs
+
+i18n catalog check passed for 4 locales and 471 keys

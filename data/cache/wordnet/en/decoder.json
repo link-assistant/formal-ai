@@ -1,0 +1,24 @@
+{
+  "lemma": "decoder",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-10014936-n",
+      "partOfSpeech": "n",
+      "definition": "the kind of intellectual who converts messages from a code to plain text",
+      "synonyms": [
+        "decipherer"
+      ]
+    },
+    {
+      "id": "oewn-03173729-n",
+      "partOfSpeech": "n",
+      "definition": "a machine that converts a coded text into ordinary language"
+    }
+  ]
+}

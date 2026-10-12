@@ -2,10 +2,10 @@ self_ast_census
   target src/summarization/mod.rs
   language rust
   fidelity signature
-  byte_len 28537
-  line_count 716
-  content_id source_module_a8b6ec7e4b2740a2
-  symbol_count 47
+  byte_len 28585
+  line_count 718
+  content_id source_module_210b7c62220984ab
+  symbol_count 49
   symbols
     const DEFAULT_MAX_STATEMENTS 57 57
     enum StatementKind 63 83
@@ -41,16 +41,18 @@ self_ast_census
     function apply_compound_words 590 611
     function apply_semantic_primes 620 646
     function describe_project 654 663
-    module context 665 665
-    module dedup 666 666
-    module dialog 667 667
-    module file 668 668
-    module gathering 669 669
-    module identifier 670 670
-    module importance 671 671
-    module markdown 672 672
-    module pipeline 673 673
-    module recheck 674 674
-    module resource 675 675
-    module validation 676 676
-    module vocabulary 677 677
+    module concise_dependency 665 665
+    module context 666 666
+    module dedup 667 667
+    module dependency 668 668
+    module dialog 669 669
+    module file 670 670
+    module gathering 671 671
+    module identifier 672 672
+    module importance 673 673
+    module markdown 674 674
+    module pipeline 675 675
+    module recheck 676 676
+    module resource 677 677
+    module validation 678 678
+    module vocabulary 679 679

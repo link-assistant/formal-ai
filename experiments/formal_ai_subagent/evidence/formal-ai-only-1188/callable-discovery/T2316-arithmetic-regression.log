@@ -1,0 +1,516 @@
+TAP version 13
+# Subtest: PR \#1188 dogfood: an append keeps the file it appends to
+    # Subtest: `Append the line 'third line' to notes.txt.` adds one line instead of overwriting the file
+    ok 1 - `Append the line 'third line' to notes.txt.` adds one line instead of overwriting the file # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.294542
+      ...
+    # Subtest: a prepend puts the quoted line first
+    ok 2 - a prepend puts the quoted line first # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.040333
+      ...
+    # Subtest: a file without a final newline gains the line without one
+    ok 3 - a file without a final newline gains the line without one # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.029625
+      ...
+    # Subtest: appending to a missing file creates it with the line
+    ok 4 - appending to a missing file creates it with the line # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.028209
+      ...
+    # Subtest: the position words are seeded per language, not English-only
+    ok 5 - the position words are seeded per language, not English-only # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.036666
+      ...
+    1..5
+ok 1 - PR \#1188 dogfood: an append keeps the file it appends to
+  ---
+  duration_ms: 140.898584
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a replacement edits only what it names
+    # Subtest: `smal` -> `small` fixes the word, not the `smal` inside `small`
+    ok 1 - `smal` -> `small` fixes the word, not the `smal` inside `small` # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.101792
+      ...
+    # Subtest: a single-quoted positional insert places the line after its anchor
+    ok 2 - a single-quoted positional insert places the line after its anchor # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.073709
+      ...
+    # Subtest: an anchor that occurs twice does not say where the line goes
+    ok 3 - an anchor that occurs twice does not say where the line goes # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.026083
+      ...
+    1..3
+ok 2 - PR \#1188 dogfood: a replacement edits only what it names
+  ---
+  duration_ms: 0.322666
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a removal takes out what it quotes
+    # Subtest: `Delete the line 'second line' from notes.txt.` removes that line
+    ok 1 - `Delete the line 'second line' from notes.txt.` removes that line # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.036792
+      ...
+    # Subtest: quoted text inside a line is removed from that line only
+    ok 2 - quoted text inside a line is removed from that line only # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.071416
+      ...
+    # Subtest: deleting a file is still a file deletion, not a text removal
+    ok 3 - deleting a file is still a file deletion, not a text removal # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.065083
+      ...
+    # Subtest: text found nowhere is reported, not written
+    ok 4 - text found nowhere is reported, not written # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.065083
+      ...
+    1..4
+ok 3 - PR \#1188 dogfood: a removal takes out what it quotes
+  ---
+  duration_ms: 0.298167
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: shell requests run what they name
+    # Subtest: `Run python3 greet.py.` runs the command without the sentence's full stop
+    ok 1 - `Run python3 greet.py.` runs the command without the sentence's full stop # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.030209
+      ...
+    # Subtest: `Create a directory named src.` makes the directory as a verified recipe, not a listing
+    ok 2 - `Create a directory named src.` makes the directory as a verified recipe, not a listing # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.020083
+      ...
+    # Subtest: a commit carries the message the request quotes and pushes only where a remote exists
+    ok 3 - a commit carries the message the request quotes and pushes only where a remote exists # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.054375
+      ...
+    1..3
+ok 4 - PR \#1188 dogfood: shell requests run what they name
+  ---
+  duration_ms: 0.148334
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a filler word inside a cue phrase keeps the cue
+    # Subtest: Show me git status. runs git status
+    ok 1 - Show me git status. runs git status # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.023708
+      ...
+    # Subtest: Show me the git log. runs git log
+    ok 2 - Show me the git log. runs git log # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.11125
+      ...
+    # Subtest: Покажи мне статус git runs git status
+    ok 3 - Покажи мне статус git runs git status # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.023625
+      ...
+    1..3
+ok 5 - PR \#1188 dogfood: a filler word inside a cue phrase keeps the cue
+  ---
+  duration_ms: 0.199125
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a setting changes on the line that assigns it
+    # Subtest: `Change the value of "debug" to true in config.json.` writes a bare boolean
+    ok 1 - `Change the value of "debug" to true in config.json.` writes a bare boolean # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.02425
+      ...
+    # Subtest: a string value keeps the file's quoting
+    ok 2 - a string value keeps the file's quoting # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.018708
+      ...
+    # Subtest: a YAML key is found by its own separator
+    ok 3 - a YAML key is found by its own separator # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.017375
+      ...
+    1..3
+ok 6 - PR \#1188 dogfood: a setting changes on the line that assigns it
+  ---
+  duration_ms: 0.089833
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a named source file says which language to write
+    # Subtest: `Create hello.py that prints "Hello, World!" and run it.` writes hello.py and checks its output
+    ok 1 - `Create hello.py that prints "Hello, World!" and run it.` writes hello.py and checks its output # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.020708
+      ...
+    # Subtest: a file name no catalogued language saves as names no language
+    ok 2 - a file name no catalogued language saves as names no language # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013166
+      ...
+    1..2
+ok 7 - PR \#1188 dogfood: a named source file says which language to write
+  ---
+  duration_ms: 0.165042
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a description of code is never written as a file's bytes
+    # Subtest: `Add a function multiply(a, b) to math.mjs …` keeps math.mjs and adds only the function
+    ok 1 - `Add a function multiply(a, b) to math.mjs …` keeps math.mjs and adds only the function # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.021625
+      ...
+    # Subtest: a request to author a function never writes a clause of itself as the file
+    ok 2 - a request to author a function never writes a clause of itself as the file # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013792
+      ...
+    # Subtest: literal content still writes the file
+    ok 3 - literal content still writes the file # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012708
+      ...
+    1..3
+ok 8 - PR \#1188 dogfood: a description of code is never written as a file's bytes
+  ---
+  duration_ms: 0.086208
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: "their sum" of two parameters reads both of them
+    # Subtest: `add(a, b) that returns their sum` is `a + b`, not `sum(a)`
+    ok 1 - `add(a, b) that returns their sum` is `a + b`, not `sum(a)` # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.019417
+      ...
+    # Subtest: `multiply(a, b) that returns a times b` is `a * b`: `a` is not read by `math`
+    ok 2 - `multiply(a, b) that returns a times b` is `a * b`: `a` is not read by `math` # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012792
+      ...
+    1..2
+ok 9 - PR \#1188 dogfood: "their sum" of two parameters reads both of them
+  ---
+  duration_ms: 0.053958
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a compacted ladder leaf does not rewrite the list it already changed
+    # Subtest: re-read after the summary envelope -> already present at once, never a second write
+    ok 1 - re-read after the summary envelope -> already present at once, never a second write # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.015708
+      ...
+    1..1
+ok 10 - PR \#1188 dogfood: a compacted ladder leaf does not rewrite the list it already changed
+  ---
+  duration_ms: 0.03225
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a synthesized function is written to the named file and called
+    # Subtest: write add.py -> check -> call with 2 and 3 -> report
+    ok 1 - write add.py -> check -> call with 2 and 3 -> report # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.017208
+      ...
+    # Subtest: call arguments are the numbers and quoted literals after the last run verb
+    ok 2 - call arguments are the numbers and quoted literals after the last run verb # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.015
+      ...
+    1..2
+ok 11 - PR \#1188 dogfood: a synthesized function is written to the named file and called
+  ---
+  duration_ms: 0.101666
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a typo without its correction is corrected by discovery
+    # Subtest: `Fix the typo 'smal' in README.md.` -> small, from the seed vocabulary
+    ok 1 - `Fix the typo 'smal' in README.md.` -> small, from the seed vocabulary # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.018834
+      ...
+    # Subtest: the correction is the unique most frequent word one edit away, in the word's capitalisation
+    ok 2 - the correction is the unique most frequent word one edit away, in the word's capitalisation # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.014417
+      ...
+    1..2
+ok 12 - PR \#1188 dogfood: a typo without its correction is corrected by discovery
+  ---
+  duration_ms: 0.057959
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: an unquoted line is grounded between its lead and the destination cue
+    # Subtest: Append the line third to notes.txt. appends third
+    ok 1 - Append the line third to notes.txt. appends third # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.022375
+      ...
+    # Subtest: Append the line go to bed to notes.txt. appends go to bed
+    ok 2 - Append the line go to bed to notes.txt. appends go to bed # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013334
+      ...
+    # Subtest: Добавь строку третья в конец notes.txt appends третья
+    ok 3 - Добавь строку третья в конец notes.txt appends третья # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.046666
+      ...
+    # Subtest: without a line lead nothing is guessed and nothing is written
+    ok 4 - without a line lead nothing is guessed and nothing is written # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013542
+      ...
+    1..4
+ok 13 - PR \#1188 dogfood: an unquoted line is grounded between its lead and the destination cue
+  ---
+  duration_ms: 0.127208
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: code and blank lines are stated in seeded words
+    # Subtest: a multi-line replacement written with \\n edits the function, never the whole file
+    ok 1 - a multi-line replacement written with \\n edits the function, never the whole file # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.017042
+      ...
+    # Subtest: an appended empty line is stated as an empty line
+    ok 2 - an appended empty line is stated as an empty line # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013125
+      ...
+    1..2
+ok 14 - PR \#1188 dogfood: code and blank lines are stated in seeded words
+  ---
+  duration_ms: 0.050625
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: cues inside a quoted payload do not steer routing
+    # Subtest: a payload that names another file is appended to the file the request names
+    ok 1 - a payload that names another file is appended to the file the request names # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.01675
+      ...
+    # Subtest: a quoted "Commit all changes" is text to append, not a commit
+    ok 2 - a quoted "Commit all changes" is text to append, not a commit # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011959
+      ...
+    1..2
+ok 15 - PR \#1188 dogfood: cues inside a quoted payload do not steer routing
+  ---
+  duration_ms: 0.049209
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: the task survives repeated compactions
+    # Subtest: the server answers a compaction request with the native envelope
+    ok 1 - the server answers a compaction request with the native envelope # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.015416
+      ...
+    # Subtest: a nested envelope whose first user turn is the recall question still yields the task
+    ok 2 - a nested envelope whose first user turn is the recall question still yields the task # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011584
+      ...
+    1..2
+ok 16 - PR \#1188 dogfood: the task survives repeated compactions
+  ---
+  duration_ms: 0.048041
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a re-summarized envelope head trails the client residue
+    # Subtest: the head sentences that state work are the task
+    ok 1 - the head sentences that state work are the task # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.016292
+      ...
+    1..1
+ok 17 - PR \#1188 dogfood: a re-summarized envelope head trails the client residue
+  ---
+  duration_ms: 0.030333
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a reduction over three parameters reads all three
+    # Subtest: add3(a, b, c) is a + b + c
+    ok 1 - add3(a, b, c) is a + b + c # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.015958
+      ...
+    # Subtest: mul3(a, b, c) is a * b * c
+    ok 2 - mul3(a, b, c) is a * b * c # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.01175
+      ...
+    1..2
+ok 18 - PR \#1188 dogfood: a reduction over three parameters reads all three
+  ---
+  duration_ms: 0.048083
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: an unquoted output is bound only when it reads as an utterance
+    # Subtest: `Create hello.py that prints Hello, World! and run it.` writes hello.py and checks its output
+    ok 1 - `Create hello.py that prints Hello, World! and run it.` writes hello.py and checks its output # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.019458
+      ...
+    # Subtest: `Write a Python program hello.py that prints …` names its file without a write cue
+    ok 2 - `Write a Python program hello.py that prints …` names its file without a write cue # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011709
+      ...
+    # Subtest: the utterance ends at a seeded clause separator or the sentence that carries it
+    ok 3 - the utterance ends at a seeded clause separator or the sentence that carries it # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013166
+      ...
+    # Subtest: a description of a computation is never bound as text to print
+    ok 4 - a description of a computation is never bound as text to print # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.0125
+      ...
+    1..4
+ok 19 - PR \#1188 dogfood: an unquoted output is bound only when it reads as an utterance
+  ---
+  duration_ms: 0.087
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a program the request asks to run is written in the seeded language when it names none
+    # Subtest: the seed names the language and the reason, and the catalog runs it
+    ok 1 - the seed names the language and the reason, and the catalog runs it # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.027459
+      ...
+    # Subtest: `write a program that prints Hello, World! and run it` writes main.py and checks its output instead of searching the web
+    ok 2 - `write a program that prints Hello, World! and run it` writes main.py and checks its output instead of searching the web # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012291
+      ...
+    # Subtest: `Напиши программу, которая выводит Привет, мир! и запусти её` writes main.py and checks its output instead of searching the web
+    ok 3 - `Напиши программу, которая выводит Привет, мир! и запусти её` writes main.py and checks its output instead of searching the web # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012459
+      ...
+    # Subtest: `写一个打印 "Ni hao" 的程序并运行` writes main.py and checks its output instead of searching the web
+    ok 4 - `写一个打印 "Ni hao" 的程序并运行` writes main.py and checks its output instead of searching the web # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.01225
+      ...
+    # Subtest: `एक प्रोग्राम लिखो जो "Namaste" प्रिंट करे और उसे चलाओ` writes main.py and checks its output instead of searching the web
+    ok 5 - `एक प्रोग्राम लिखो जो "Namaste" प्रिंट करे और उसे चलाओ` writes main.py and checks its output instead of searching the web # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012417
+      ...
+    # Subtest: a verb-final language binds the quoted output its print verb follows (seeded `verb_final`)
+    ok 6 - a verb-final language binds the quoted output its print verb follows (seeded `verb_final`) # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012417
+      ...
+    # Subtest: a request that does not ask to run the program does not get a language chosen for it (issue \#906)
+    ok 7 - a request that does not ask to run the program does not get a language chosen for it (issue \#906) # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012167
+      ...
+    1..7
+ok 20 - PR \#1188 dogfood: a program the request asks to run is written in the seeded language when it names none
+  ---
+  duration_ms: 0.149917
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a request that names a line deletes whole lines
+    # Subtest: `Delete the line containing '| R56kfQp |' from t.md.` removes the row, not the quoted cells
+    ok 1 - `Delete the line containing '| R56kfQp |' from t.md.` removes the row, not the quoted cells # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.020458
+      ...
+    # Subtest: `Remove the line …` and `Delete lines containing …` read the same seeded line meaning
+    ok 2 - `Remove the line …` and `Delete lines containing …` read the same seeded line meaning # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011625
+      ...
+    # Subtest: ru, hi and zh name the line in their own words; a sentence-final verb is still the verb
+    ok 3 - ru, hi and zh name the line in their own words; a sentence-final verb is still the verb # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012542
+      ...
+    # Subtest: without a line named, quoted text is still removed from inside its line
+    ok 4 - without a line named, quoted text is still removed from inside its line # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012959
+      ...
+    1..4
+ok 21 - PR \#1188 dogfood: a request that names a line deletes whole lines
+  ---
+  duration_ms: 0.088041
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a function and its test are added to existing ES modules (T1)
+    # Subtest: read both -> write the module and the test -> node --check -> node --test -> report
+    ok 1 - read both -> write the module and the test -> node --check -> node --test -> report
+      ---
+      duration_ms: 647.294417
+      ...
+    # Subtest: the expected value is the specification evaluated, not the synthesized code run
+    ok 2 - the expected value is the specification evaluated, not the synthesized code run
+      ---
+      duration_ms: 0.80275
+      ...
+    # Subtest: a relation the request names (`returns their sum`, `their difference`) is the expected value, in every seeded language
+    ok 3 - a relation the request names (`returns their sum`, `their difference`) is the expected value, in every seeded language
+      ---
+      duration_ms: 8942.028416
+      ...
+    # Subtest: the stated command is run in every language, after the run verb or before a final one
+    ok 4 - the stated command is run in every language, after the run verb or before a final one
+      ---
+      duration_ms: 1.042083
+      ...
+    # Subtest: the browser composer lowers the same IR to JavaScript from the seeded realization
+    ok 5 - the browser composer lowers the same IR to JavaScript from the seeded realization
+      ---
+      duration_ms: 25.829875
+      ...
+    1..5
+ok 22 - PR \#1188 dogfood: a function and its test are added to existing ES modules (T1)
+  ---
+  duration_ms: 9617.095083
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: an edit-shaped request never becomes a file deletion
+    # Subtest: held-out en/ru/hi/zh probes are declined honestly and leave the file byte-identical
+    ok 1 - held-out en/ru/hi/zh probes are declined honestly and leave the file byte-identical # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.039459
+      ...
+    # Subtest: a request that plainly deletes the file is still a deletion, in every language
+    ok 2 - a request that plainly deletes the file is still a deletion, in every language # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.018334
+      ...
+    # Subtest: the destructive commands are the seed's `destructive true` intents, not a list in code
+    ok 3 - the destructive commands are the seed's `destructive true` intents, not a list in code # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.01725
+      ...
+    1..3
+ok 23 - PR \#1188 dogfood: an edit-shaped request never becomes a file deletion
+  ---
+  duration_ms: 0.120708
+  type: 'suite'
+  ...
+1..23
+# tests 69
+# suites 23
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 64
+# todo 0
+# duration_ms 10135.842958

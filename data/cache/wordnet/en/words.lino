@@ -1,0 +1,35 @@
+language en
+lemma words
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the words that are spoken"
+    examples ("I listened to his words very closely")
+    id oewn-07124438-n
+    partOfSpeech n
+  entry
+    definition "the text of a popular song or musical-comedy number"
+    examples ("his compositions always started with the lyrics" "he wrote both words and music" "the song uses colloquial language")
+    id oewn-07066015-n
+    partOfSpeech n
+    synonyms (lyric language)
+  entry
+    definition "language that is spoken or written"
+    examples ("he has a gift for words" "she put her thoughts into words")
+    id oewn-06294417-n
+    partOfSpeech n
+  entry
+    definition "an angry dispute"
+    examples ("they had a quarrel" "they had words")
+    id oewn-07198809-n
+    partOfSpeech n
+    synonyms (quarrel wrangle row run-in dustup)
+  entry
+    definition "words making up the dialogue of a play"
+    examples ("the actor forgot his speech")
+    id oewn-07023937-n
+    partOfSpeech n
+    synonyms ("actor's line" speech)
+source "oewn:2024"

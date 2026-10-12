@@ -1,0 +1,26 @@
+{
+  "task": "T4195",
+  "prompt": "Run node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/validate-installed.mjs",
+  "started": "2026-10-09T21:13:59.981Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/validate-installed.mjs\"}",
+        "result": "Output: {\"schema\":\"installed-harmless-github-runtime-controls/v1\",\"sourceGuardsVerified\":5,\"sourceFilesByteEqual\":4,\"checks\":[{\"command\":\"node\",\"status\":0},{\"command\":\"node\",\"status\":0},{\"command\":\"/opt/homebrew/bin/actionlint\",\"status\":0}],\"actualRepositoryNodeTests\":8,\"queueRefusals\":8,\"outputRefusals\":6,\"fixtureGraphRefusals\":11,\"canonicalProjectionRefusals\":15,\"originalCanonical52operations104bindingsChecked\":true,\"actualGitHubService\":false,\"actualPrivateLease\":false,\"nativeExecutable\":false,\"compilerInvoked\":false,\"productionAuthority\":false,\"publication\":false,\"actionlintQueueException\":\"Only exact installed1.7.12 unsupported queue:max syntax ignored; privategroup queue retained\",\"actionlintShellcheck\":false,\"actionlintPyflakes\":false}\nT4195_INSTALLED_RUNTIME_CONTROLS_PASS\n\nExit Code: 0"
+      }
+    ],
+    "answer": "The `node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/validate-installed.mjs` command completed. Output:\n\n```text\n{\"schema\":\"installed-harmless-github-runtime-controls/v1\",\"sourceGuardsVerified\":5,\"sourceFilesByteEqual\":4,\"checks\":[{\"command\":\"node\",\"status\":0},{\"command\":\"node\",\"status\":0},{\"command\":\"/opt/homebrew/bin/actionlint\",\"status\":0}],\"actualRepositoryNodeTests\":8,\"queueRefusals\":8,\"outputRefusals\":6,\"fixtureGraphRefusals\":11,\"canonicalProjectionRefusals\":15,\"originalCanonical52operations104bindingsChecked\":true,\"actualGitHubService\":false,\"actualPrivateLease\":false,\"nativeExecutable\":false,\"compilerInvoked\":false,\"productionAuthority\":false,\"publication\":false,\"actionlintQueueException\":\"Only exact installed1.7.12 unsupported queue:max syntax ignored; privategroup queue retained\",\"actionlintShellcheck\":false,\"actionlintPyflakes\":false}\nT4195_INSTALLED_RUNTIME_CONTROLS_PASS\n```",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": true,
+  "finished": "2026-10-09T21:14:01.804Z"
+}

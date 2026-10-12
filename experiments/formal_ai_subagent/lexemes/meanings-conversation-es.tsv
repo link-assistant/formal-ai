@@ -1,0 +1,9 @@
+conversation_topic_opener	hablemos de …	hablemos sobre …	podemos hablar de …
+conversation_recall_query	cuándo pregunté por …	cuándo pregunté …	cuándo mencioné …	he preguntado por …	he mencionado …	busca en mis conversaciones …	busca en las conversaciones …
+conversation_recall_previous_message	qué estaba escrito en el mensaje anterior	qué había en el mensaje anterior	qué decía el mensaje anterior	cuál fue el mensaje anterior	muestra el mensaje anterior	el mensaje anterior	mensaje anterior
+conversation_recall_previous_user_message	qué pregunté	qué pregunté en el mensaje anterior	cuál fue mi pregunta anterior	cuál fue mi última pregunta	repite mi último mensaje	qué dije
+conversation_recall_other_query	busca … en otra conversación	busca … en otras conversaciones	encuentra … en otra conversación	encuentra … en otras conversaciones
+memory_append_directive	recuerda que …	recuerda …	guarda en la memoria …	anota que …	memoriza …
+memory_scope	en la memoria	en memoria
+memory_substitution_connector	por
+memory_substitution_directive	reemplaza	sustituye

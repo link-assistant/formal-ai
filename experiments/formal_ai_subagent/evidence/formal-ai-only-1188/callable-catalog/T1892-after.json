@@ -1,0 +1,15 @@
+{
+  "unchanged": {
+    "scripts/self-translation/lexer.mjs": true,
+    "scripts/self-translation/frontends.mjs": true,
+    "rust/src/coding/fragment_catalog.rs": true,
+    "rust/src/coding/program_ir.rs": true,
+    "js/agentic/module_function.mjs": true,
+    "js/agentic/general_planner.mjs": true,
+    "js/agentic/planner.mjs": true,
+    "js/agentic/crate/solver_formalization.mjs": true,
+    "js/agentic/crate/translation_formalization.mjs": true
+  },
+  "fixtureExit": 1,
+  "wrapperExists": false
+}

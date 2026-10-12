@@ -273,14 +273,25 @@ fn calculator_delegation_is_visible_in_evidence() {
 }
 
 #[test]
-fn local_arithmetic_fallback_keeps_word_operators() {
+fn calculator_handles_word_operators_after_upstream_fix() {
+    // The local fallback used to own word operators; the current
+    // link-calculator release evaluates them with standard precedence, so the
+    // request is delegated and its LINO keeps the grouping visible.
     let word_response = assert_calculation("What is 10 plus 20 times 3?", &["70"]);
     assert!(
         word_response
             .evidence_links
             .iter()
-            .any(|link| link == "calculation:engine:formal-ai-fallback"),
-        "word-operator fallback should be observable: {:?}",
+            .any(|link| link == "calculation:engine:link-calculator"),
+        "word operators should be delegated to link-calculator: {:?}",
+        word_response.evidence_links,
+    );
+    assert!(
+        word_response
+            .evidence_links
+            .iter()
+            .any(|link| link == "calculation:lino:(10 + (20 * 3))"),
+        "the delegated LINO should keep multiplication before addition: {:?}",
         word_response.evidence_links,
     );
 }
@@ -507,7 +518,8 @@ fn bare_dot_calculation_candidates_do_not_crash_the_process() {
     // gigabyte allocation and aborts the whole process on such input, so the
     // dialog "Write a Python function ... Then calculate the 10th Fibonacci
     // number and multiply it by 8% of 500 ..." used to crash with SIGKILL.
-    // After the guard the engine returns a normal answer for every prompt — the
+    // link-calculator 0.18.0 rejects them as recoverable parse errors
+    // (link-assistant/calculator#168), so the engine-side guard is gone; the
     // test reaching its assertions at all proves the process did not abort.
     for prompt in [
         "What is 2+2. What is 3+3.",

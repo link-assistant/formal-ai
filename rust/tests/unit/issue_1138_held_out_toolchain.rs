@@ -11,7 +11,7 @@
 //! written in wave T the guard scanned all of `data/`, and wave F then committed
 //! `data/benchmarks/self-use-prerequisite.lino`, whose held-out corpus names
 //! both programs *by design* and which
-//! `tests/unit/issue_1138_self_use_toolchain.rs` requires verbatim. Two
+//! `tests/unit/solver/issue_1138_self_use_toolchain.rs` requires verbatim. Two
 //! committed specifications contradicted each other. Plan 14's wave T settles it
 //! in the memorization tests' own words: held-out prompts live in
 //! `data/benchmarks/`, and the memorization scans exclude that directory —

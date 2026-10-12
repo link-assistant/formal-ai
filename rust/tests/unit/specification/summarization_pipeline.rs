@@ -10,8 +10,9 @@ use formal_ai::summarization::{
     DEFAULT_MAX_STATEMENTS, DialogTurn, RepositoryEntry, RepositoryResourceFormalization,
     StatementKind, SummarizationConfig, SummarizationMode, apply_compound_words,
     apply_semantic_primes, deformalize, describe_readme, formalize, formalize_dialog,
-    formalize_markdown, formalize_repository_resource, generate_chat_title, strip_markdown_noise,
-    summarize_dialog, summarize_repository_file, summarize_repository_resource,
+    formalize_markdown, formalize_repository_file, formalize_repository_resource,
+    generate_chat_title, strip_markdown_noise, summarize_dialog, summarize_repository_file,
+    summarize_repository_resource,
 };
 
 #[test]
@@ -287,6 +288,70 @@ fn repository_file_summary_recurses_into_markdown_embedded_grammars() {
     assert!(
         summary.contains("summarizes repository files"),
         "summary should keep the prose content, got: {summary}",
+    );
+}
+
+/// Issue #563 R346: the two randomly sampled repository files were JSON. The
+/// formalizer reads them as structured data by format, not by name: the
+/// pretty-printed one yields its top-level keys, the single-line one only its
+/// identity, and a file of no known format falls back to sentence statements.
+#[test]
+fn the_sampled_repository_files_are_formalized_by_format_not_by_name() {
+    let identity = formalize_repository_file(
+        "data/cache/wordnet/en/identity.json",
+        include_str!("../../../../data/cache/wordnet/en/identity.json"),
+    );
+    assert_eq!(
+        (
+            identity.format.as_str(),
+            identity.line_count,
+            identity.byte_count
+        ),
+        ("json", 57, 1524)
+    );
+    let texts: Vec<&str> = identity
+        .statements
+        .iter()
+        .map(|statement| statement.text.as_str())
+        .collect();
+    assert_eq!(
+        texts,
+        [
+            "data/cache/wordnet/en/identity.json is a JSON data file",
+            "Top-level keys: lemma, language, source, license, name, url, senses, id.",
+        ]
+    );
+
+    let issue = formalize_repository_file(
+        "docs/case-studies/issue-140/raw-data/issue-140.json",
+        include_str!("../../../../docs/case-studies/issue-140/raw-data/issue-140.json"),
+    );
+    assert_eq!(
+        (issue.format.as_str(), issue.line_count, issue.byte_count),
+        ("json", 1, 5322)
+    );
+    let texts: Vec<&str> = issue
+        .statements
+        .iter()
+        .map(|statement| statement.text.as_str())
+        .collect();
+    assert_eq!(
+        texts,
+        ["docs/case-studies/issue-140/raw-data/issue-140.json is a JSON data file"]
+    );
+
+    let note = formalize_repository_file(
+        "notes/history.unknown",
+        "Formal AI keeps an add-only history.\n",
+    );
+    assert_eq!(note.format, "text");
+    assert!(!note.statements.is_empty());
+    assert!(
+        note.statements
+            .iter()
+            .all(|statement| !statement.text.ends_with("data file")),
+        "{:?}",
+        note.statements
     );
 }
 

@@ -285,7 +285,7 @@ fn depth_bounded_leaf_records_its_reason() {
     );
     assert!(root.atomic, "max_depth 0 must force the root to a leaf");
     assert_eq!(root.reason, AtomicityReason::DepthBound);
-    assert!(root.children.is_empty());
+    assert_eq!(root.children, [] as [formal_ai::meta_frame::WorkUnit; 0]);
 }
 
 #[test]

@@ -1,0 +1,755 @@
+TAP version 13
+# Subtest: artifact delivery header: original-effect
+ok 1 - artifact delivery header: original-effect
+  ---
+  duration_ms: 80.010292
+  ...
+# Subtest: artifact delivery header: report-result-source-value
+ok 2 - artifact delivery header: report-result-source-value
+  ---
+  duration_ms: 1.025125
+  ...
+# Subtest: artifact delivery header: report-result-symbol
+ok 3 - artifact delivery header: report-result-symbol
+  ---
+  duration_ms: 0.399209
+  ...
+# Subtest: artifact delivery header: genuine-source-before
+ok 4 - artifact delivery header: genuine-source-before
+  ---
+  duration_ms: 0.621958
+  ...
+# Subtest: artifact delivery header: genuine-source-after
+ok 5 - artifact delivery header: genuine-source-after
+  ---
+  duration_ms: 0.59975
+  ...
+# Subtest: artifact delivery header: explicit-report-source-body
+ok 6 - artifact delivery header: explicit-report-source-body
+  ---
+  duration_ms: 1.060292
+  ...
+# Subtest: artifact delivery header: source-like-filename
+ok 7 - artifact delivery header: source-like-filename
+  ---
+  duration_ms: 1.285333
+  ...
+# Subtest: artifact delivery header: spanish-postposed-source
+ok 8 - artifact delivery header: spanish-postposed-source
+  ---
+  duration_ms: 1.838333
+  ...
+# Subtest: artifact delivery header: russian-postposed-source
+ok 9 - artifact delivery header: russian-postposed-source
+  ---
+  duration_ms: 1.19875
+  ...
+# Subtest: artifact delivery header: chinese-postposed-source
+ok 10 - artifact delivery header: chinese-postposed-source
+  ---
+  duration_ms: 0.662916
+  ...
+# Subtest: artifact delivery header: hindi-source
+ok 11 - artifact delivery header: hindi-source
+  ---
+  duration_ms: 0.456917
+  ...
+# Subtest: artifact delivery header: hindi-report
+ok 12 - artifact delivery header: hindi-report
+  ---
+  duration_ms: 0.408542
+  ...
+# Subtest: artifact delivery header: spanish-payload
+ok 13 - artifact delivery header: spanish-payload
+  ---
+  duration_ms: 0.357292
+  ...
+# Subtest: artifact delivery header: russian-payload
+ok 14 - artifact delivery header: russian-payload
+  ---
+  duration_ms: 0.409291
+  ...
+# Subtest: artifact delivery header: chinese-payload
+ok 15 - artifact delivery header: chinese-payload
+  ---
+  duration_ms: 0.330333
+  ...
+# Subtest: artifact delivery header: unicode-expanded-report
+ok 16 - artifact delivery header: unicode-expanded-report
+  ---
+  duration_ms: 0.566333
+  ...
+# Subtest: artifact delivery header: unicode-shrunk-report
+ok 17 - artifact delivery header: unicode-shrunk-report
+  ---
+  duration_ms: 0.481875
+  ...
+# Subtest: artifact delivery header: unicode-source
+ok 18 - artifact delivery header: unicode-source
+  ---
+  duration_ms: 0.619583
+  ...
+# Subtest: artifact delivery header: unicode-filename
+ok 19 - artifact delivery header: unicode-filename
+  ---
+  duration_ms: 0.727833
+  ...
+# Subtest: artifact delivery header: quoted-type
+ok 20 - artifact delivery header: quoted-type
+  ---
+  duration_ms: 0.461166
+  ...
+# Subtest: artifact delivery header: quoted-call
+ok 21 - artifact delivery header: quoted-call
+  ---
+  duration_ms: 0.330625
+  ...
+# Subtest: artifact delivery header: explicit-callable
+ok 22 - artifact delivery header: explicit-callable
+  ---
+  duration_ms: 0.774292
+  ...
+# Subtest: artifact delivery header: non-delivery
+ok 23 - artifact delivery header: non-delivery
+  ---
+  duration_ms: 0.419208
+  ...
+# Subtest: unchanged L21 persists both mandatory records in 8 turns
+ok 24 - unchanged L21 persists both mandatory records in 8 turns
+  ---
+  duration_ms: 1368.205208
+  ...
+# Subtest: unchanged L21 persists both mandatory records in 16 turns
+ok 25 - unchanged L21 persists both mandatory records in 16 turns
+  ---
+  duration_ms: 380.391333
+  ...
+# Subtest: typed evidence routing follows renamed source, effect and proof operands
+ok 26 - typed evidence routing follows renamed source, effect and proof operands
+  ---
+  duration_ms: 366.907875
+  ...
+# Subtest: record-looking prose in authoritative literal or code payload never becomes typed evidence
+ok 27 - record-looking prose in authoritative literal or code payload never becomes typed evidence
+  ---
+  duration_ms: 61.568
+  ...
+# Subtest: an audit finding satisfies a report operand but cannot author source
+ok 28 - an audit finding satisfies a report operand but cannot author source
+  ---
+  duration_ms: 0.656042
+  ...
+# Subtest: source delivery requires an actual complete-payload syntax receipt
+ok 29 - source delivery requires an actual complete-payload syntax receipt
+  ---
+  duration_ms: 62.508125
+  ...
+# Subtest: source authoring operands reject audit text while ordinary reports retain findings
+ok 30 - source authoring operands reject audit text while ordinary reports retain findings
+  ---
+  duration_ms: 1992.508333
+  ...
+# Subtest: explicit successful stdout observations preserve compact JSON and whitespace
+ok 31 - explicit successful stdout observations preserve compact JSON and whitespace
+  ---
+  duration_ms: 0.436208
+  ...
+# Subtest: independent create and real outer edit must both physically deliver: enumerated
+ok 32 - independent create and real outer edit must both physically deliver: enumerated
+  ---
+  duration_ms: 1368.293625
+  ...
+# Subtest: independent create and real outer edit must both physically deliver: unlisted
+ok 33 - independent create and real outer edit must both physically deliver: unlisted
+  ---
+  duration_ms: 428.542
+  ...
+# Subtest: G71: a request whose quotes do not pair is declined, never acted on
+    # Subtest: an escaped quote inside a quoted line names the problem and touches nothing
+    ok 1 - an escaped quote inside a quoted line names the problem and touches nothing
+      ---
+      duration_ms: 429.942292
+      ...
+    # Subtest: an opening quote that never closes is declined in the language of the request
+    ok 2 - an opening quote that never closes is declined in the language of the request
+      ---
+      duration_ms: 12.70375
+      ...
+    # Subtest: quotes that pair, apostrophes and code literals holding quotes are not faults
+    ok 3 - quotes that pair, apostrophes and code literals holding quotes are not faults
+      ---
+      duration_ms: 0.445875
+      ...
+    # Subtest: the same request with «» quotes is carried out
+    ok 4 - the same request with «» quotes is carried out
+      ---
+      duration_ms: 74.153167
+      ...
+    1..4
+ok 34 - G71: a request whose quotes do not pair is declined, never acted on
+  ---
+  duration_ms: 733.204959
+  type: 'suite'
+  ...
+# Subtest: G70: both roots expand the seeded contractions, and no seed surface is written contracted
+    # Subtest: the agentic normalizer expands what languages.lino seeds
+    ok 1 - the agentic normalizer expands what languages.lino seeds
+      ---
+      duration_ms: 0.580166
+      ...
+    # Subtest: a provider denial written with a contraction is a failure
+    ok 2 - a provider denial written with a contraction is a failure
+      ---
+      duration_ms: 900.505667
+      ...
+    # Subtest: no seed surface, phrase, cue or follow-up holds a seeded contraction written apart
+    ok 3 - no seed surface, phrase, cue or follow-up holds a seeded contraction written apart
+      ---
+      duration_ms: 67.784459
+      ...
+    1..3
+ok 35 - G70: both roots expand the seeded contractions, and no seed surface is written contracted
+  ---
+  duration_ms: 969.087709
+  type: 'suite'
+  ...
+# Subtest: G69: an addition that quotes no text earns a question, never a write
+    # Subtest: add, append and add-to-the-end with unquoted text ask what and where
+    ok 1 - add, append and add-to-the-end with unquoted text ask what and where
+      ---
+      duration_ms: 352.4785
+      ...
+    # Subtest: a request that only names a function add is no addition
+    ok 2 - a request that only names a function add is no addition
+      ---
+      duration_ms: 10.634375
+      ...
+    # Subtest: the quoted addition is appended
+    ok 3 - the quoted addition is appended
+      ---
+      duration_ms: 31.92475
+      ...
+    1..3
+ok 36 - G69: an addition that quotes no text earns a question, never a write
+  ---
+  duration_ms: 395.189084
+  type: 'suite'
+  ...
+# Subtest: G63: a backtick payload whose inner spans pair among themselves is one literal
+    # Subtest: a sentence break followed by more backtick spans keeps the whole replacement
+    ok 1 - a sentence break followed by more backtick spans keeps the whole replacement
+      ---
+      duration_ms: 46.353041
+      ...
+    # Subtest: a payload ending in a backtick span names no target file
+    ok 2 - a payload ending in a backtick span names no target file
+      ---
+      duration_ms: 41.797833
+      ...
+    1..2
+ok 37 - G63: a backtick payload whose inner spans pair among themselves is one literal
+  ---
+  duration_ms: 88.304209
+  type: 'suite'
+  ...
+# Subtest: T181: a correct Replace the edit tool answered quietly names the replacement
+    # Subtest: an unquoted change is stated, not "completed without output"
+    ok 1 - an unquoted change is stated, not "completed without output"
+      ---
+      duration_ms: 192.350667
+      ...
+    1..1
+ok 38 - T181: a correct Replace the edit tool answered quietly names the replacement
+  ---
+  duration_ms: 192.418
+  type: 'suite'
+  ...
+# Subtest: G78: a Replace whose new text holds the old one is a verified edit, never a refused whole-file write
+    # Subtest: In s.txt replace 'key 3' with 'key 33'
+    ok 1 - In s.txt replace 'key 3' with 'key 33'
+      ---
+      duration_ms: 44.20825
+      ...
+    # Subtest: Replace `run();` with `guard(); run();` in s.mjs.
+    ok 2 - Replace `run();` with `guard(); run();` in s.mjs.
+      ---
+      duration_ms: 31.803666
+      ...
+    1..2
+ok 39 - G78: a Replace whose new text holds the old one is a verified edit, never a refused whole-file write
+  ---
+  duration_ms: 76.165167
+  type: 'suite'
+  ...
+# Subtest: G64: an append whose quoted payload names paths and positions appends it
+    # Subtest: the payload is appended; no path inside it is read or run
+    ok 1 - the payload is appended; no path inside it is read or run
+      ---
+      duration_ms: 28.67475
+      ...
+    1..1
+ok 40 - G64: an append whose quoted payload names paths and positions appends it
+  ---
+  duration_ms: 28.741958
+  type: 'suite'
+  ...
+# Subtest: G72: an anchor line found more than once is named, never reported as a failed verification
+    # Subtest: the answer counts the anchor and nothing is edited
+    ok 1 - the answer counts the anchor and nothing is edited
+      ---
+      duration_ms: 10.874083
+      ...
+    1..1
+ok 41 - G72: an anchor line found more than once is named, never reported as a failed verification
+  ---
+  duration_ms: 10.933875
+  type: 'suite'
+  ...
+# Subtest: G15: the plan event step says what it does, and a run from the repository root keeps the committed plan log
+    # Subtest: the event preserves prior events and records a real append
+    ok 1 - the event preserves prior events and records a real append
+      ---
+      duration_ms: 80.115
+      ...
+    # Subtest: the dogfood driver writes plan events under a git-ignored sandbox at the repository root
+    ok 2 - the dogfood driver writes plan events under a git-ignored sandbox at the repository root
+      ---
+      duration_ms: 6.976167
+      ...
+    1..2
+ok 42 - G15: the plan event step says what it does, and a run from the repository root keeps the committed plan log
+  ---
+  duration_ms: 87.201583
+  type: 'suite'
+  ...
+# Subtest: G73: a whole-line anchor that also ends another line is edited once
+    # Subtest: the edit widens back over the line before until its old text is unique
+    ok 1 - the edit widens back over the line before until its old text is unique
+      ---
+      duration_ms: 36.160167
+      ...
+    1..1
+ok 43 - G73: a whole-line anchor that also ends another line is edited once
+  ---
+  duration_ms: 36.291541
+  type: 'suite'
+  ...
+# Subtest: G74: an inserted line followed by an empty line keeps the empty line
+    # Subtest: the empty line is written and stated
+    ok 1 - the empty line is written and stated
+      ---
+      duration_ms: 38.758333
+      ...
+    1..1
+ok 44 - G74: an inserted line followed by an empty line keeps the empty line
+  ---
+  duration_ms: 38.885709
+  type: 'suite'
+  ...
+# Subtest: G25: a test asked for with no expected result is a question, never a bare interpreter run
+    # Subtest: nothing is written or run
+    ok 1 - nothing is written or run
+      ---
+      duration_ms: 7.144125
+      ...
+    1..1
+ok 45 - G25: a test asked for with no expected result is a question, never a bare interpreter run
+  ---
+  duration_ms: 7.20525
+  type: 'suite'
+  ...
+# Subtest: G75: a command is a listing or a search by its own word, never by a word in its operands
+    # Subtest: a silent sed on allowlist.txt is no empty folder
+    ok 1 - a silent sed on allowlist.txt is no empty folder
+      ---
+      duration_ms: 21.77275
+      ...
+    # Subtest: a silent ls is still an empty folder
+    ok 2 - a silent ls is still an empty folder
+      ---
+      duration_ms: 34.997459
+      ...
+    1..2
+ok 46 - G75: a command is a listing or a search by its own word, never by a word in its operands
+  ---
+  duration_ms: 56.845958
+  type: 'suite'
+  ...
+# Subtest: G51: a file inserted after an unquoted anchor line that follows another
+    # Subtest: the unquoted line words are resolved to the lines they name
+    ok 1 - the unquoted line words are resolved to the lines they name
+      ---
+      duration_ms: 26.673583
+      ...
+    1..1
+ok 47 - G51: a file inserted after an unquoted anchor line that follows another
+  ---
+  duration_ms: 26.735792
+  type: 'suite'
+  ...
+# Subtest: G79: a Replace scoped to a part of the file
+    # Subtest: an old text found more than once is declined, naming the part
+    ok 1 - an old text found more than once is declined, naming the part
+      ---
+      duration_ms: 34.38525
+      ...
+    # Subtest: an old text found once is replaced, the part notwithstanding
+    ok 2 - an old text found once is replaced, the part notwithstanding
+      ---
+      duration_ms: 45.217542
+      ...
+    # Subtest: words that name no part are no scope
+    ok 3 - words that name no part are no scope
+      ---
+      duration_ms: 57.366042
+      ...
+    1..3
+ok 48 - G79: a Replace scoped to a part of the file
+  ---
+  duration_ms: 137.075083
+  type: 'suite'
+  ...
+# Subtest: G80: listed lines replaced as one block
+    # Subtest: the three listed lines become the one new line at their indentation
+    ok 1 - the three listed lines become the one new line at their indentation
+      ---
+      duration_ms: 27.457791
+      ...
+    1..1
+ok 49 - G80: listed lines replaced as one block
+  ---
+  duration_ms: 27.5155
+  type: 'suite'
+  ...
+# Subtest: G13: an assertion added in the test file's own form
+    # Subtest: a file of assert.equal lines gets one more, and is run
+    ok 1 - a file of assert.equal lines gets one more, and is run
+      ---
+      duration_ms: 45.864167
+      ...
+    # Subtest: a file of expect lines gets an expect line
+    ok 2 - a file of expect lines gets an expect line
+      ---
+      duration_ms: 42.552125
+      ...
+    1..2
+ok 50 - G13: an assertion added in the test file's own form
+  ---
+  duration_ms: 88.502917
+  type: 'suite'
+  ...
+# Subtest: G25: a test written from a stated expectation
+    # Subtest: a missing JavaScript test file is written around the one assertion, then run
+    ok 1 - a missing JavaScript test file is written around the one assertion, then run
+      ---
+      duration_ms: 30.063459
+      ...
+    # Subtest: a missing Python test file imports the function from the module its name names
+    ok 2 - a missing Python test file imports the function from the module its name names
+      ---
+      duration_ms: 30.37125
+      ...
+    # Subtest: a shell word inside the sentence is no command unless it is named as one
+    ok 3 - a shell word inside the sentence is no command unless it is named as one
+      ---
+      duration_ms: 83.976917
+      ...
+    1..3
+ok 51 - G25: a test written from a stated expectation
+  ---
+  duration_ms: 144.517125
+  type: 'suite'
+  ...
+# Subtest: G76: a backticked command followed by prose
+    # Subtest: the leading code span is the command, never the sentence after it
+    ok 1 - the leading code span is the command, never the sentence after it
+      ---
+      duration_ms: 14.427125
+      ...
+    # Subtest: a command whose backticks do not pair is not run
+    ok 2 - a command whose backticks do not pair is not run
+      ---
+      duration_ms: 1.310208
+      ...
+    1..2
+ok 52 - G76: a backticked command followed by prose
+  ---
+  duration_ms: 15.798417
+  type: 'suite'
+  ...
+# Subtest: G77: a bash call killed at the timeout
+    # Subtest: the answer states the kill and invents no exit code
+    ok 1 - the answer states the kill and invents no exit code
+      ---
+      duration_ms: 18.488042
+      ...
+    1..1
+ok 53 - G77: a bash call killed at the timeout
+  ---
+  duration_ms: 18.536042
+  type: 'suite'
+  ...
+# Subtest: G81: a line moved so that it follows another
+    # Subtest: the line named by its start is moved after the line named by its start
+    ok 1 - the line named by its start is moved after the line named by its start
+      ---
+      duration_ms: 50.236583
+      ...
+    1..1
+ok 54 - G81: a line moved so that it follows another
+  ---
+  duration_ms: 50.296542
+  type: 'suite'
+  ...
+# Subtest: G83: a file name that holds the word line
+    # Subtest: a Replace in x-line.lino is a text replace, not a line replace
+    ok 1 - a Replace in x-line.lino is a text replace, not a line replace
+      ---
+      duration_ms: 56.818208
+      ...
+    # Subtest: a Replace in line-budget.lino is a text replace, not a line replace
+    ok 2 - a Replace in line-budget.lino is a text replace, not a line replace
+      ---
+      duration_ms: 40.445625
+      ...
+    1..2
+ok 55 - G83: a file name that holds the word line
+  ---
+  duration_ms: 97.340375
+  type: 'suite'
+  ...
+# Subtest: G82: a copy followed by edits of the copy
+    # Subtest: the copy is made, then the replacements, each as it would be alone
+    ok 1 - the copy is made, then the replacements, each as it would be alone
+      ---
+      duration_ms: 3510.0735
+      ...
+    1..1
+ok 56 - G82: a copy followed by edits of the copy
+  ---
+  duration_ms: 3510.141959
+  type: 'suite'
+  ...
+# Subtest: G86: guillemets nested inside a guillemet payload
+    # Subtest: pairs as a stack: the inner pairs are part of the payload
+    ok 1 - pairs as a stack: the inner pairs are part of the payload
+      ---
+      duration_ms: 0.150833
+      ...
+    # Subtest: the row is inserted into the named file, and no other file is written
+    ok 2 - the row is inserted into the named file, and no other file is written
+      ---
+      duration_ms: 50.514958
+      ...
+    # Subtest: an outer guillemet whose stack never empties is declined as unpaired
+    ok 3 - an outer guillemet whose stack never empties is declined as unpaired
+      ---
+      duration_ms: 2.450834
+      ...
+    # Subtest: a write never targets a path named only inside quoted text
+    ok 4 - a write never targets a path named only inside quoted text
+      ---
+      duration_ms: 0.089291
+      ...
+    1..4
+ok 57 - G86: guillemets nested inside a guillemet payload
+  ---
+  duration_ms: 53.314417
+  type: 'suite'
+  ...
+# Subtest: G84: a replace asked for everywhere
+    # Subtest: "everywhere" is no part of the new text, and every occurrence is replaced
+    ok 1 - "everywhere" is no part of the new text, and every occurrence is replaced
+      ---
+      duration_ms: 36.264584
+      ...
+    # Subtest: "in all occurrences" is no part of the new text, and every occurrence is replaced
+    ok 2 - "in all occurrences" is no part of the new text, and every occurrence is replaced
+      ---
+      duration_ms: 59.900333
+      ...
+    # Subtest: "throughout the file" is no part of the new text, and every occurrence is replaced
+    ok 3 - "throughout the file" is no part of the new text, and every occurrence is replaced
+      ---
+      duration_ms: 35.521209
+      ...
+    # Subtest: a cue word inside the quotes is part of the text
+    ok 4 - a cue word inside the quotes is part of the text
+      ---
+      duration_ms: 40.468583
+      ...
+    # Subtest: the cue is seeded in every registered language
+    ok 5 - the cue is seeded in every registered language
+      ---
+      duration_ms: 0.591458
+      ...
+    1..5
+ok 58 - G84: a replace asked for everywhere
+  ---
+  duration_ms: 172.87775
+  type: 'suite'
+  ...
+# Subtest: G87: a replace asked again after its old text is gone
+    # Subtest: the new text already there: the replacement is already made
+    ok 1 - the new text already there: the replacement is already made
+      ---
+      duration_ms: 19.138584
+      ...
+    # Subtest: neither text there: the old text does not occur
+    ok 2 - neither text there: the old text does not occur
+      ---
+      duration_ms: 18.989
+      ...
+    # Subtest: a line replace whose line is gone is answered the same way
+    ok 3 - a line replace whose line is gone is answered the same way
+      ---
+      duration_ms: 20.997459
+      ...
+    1..3
+ok 59 - G87: a replace asked again after its old text is gone
+  ---
+  duration_ms: 59.219708
+  type: 'suite'
+  ...
+# Subtest: G84: the dogfood driver never prints a bare null answer
+    # Subtest: a session cut by the step budget says so
+    ok 1 - a session cut by the step budget says so
+      ---
+      duration_ms: 0.455625
+      ...
+    1..1
+ok 60 - G84: the dogfood driver never prints a bare null answer
+  ---
+  duration_ms: 0.498791
+  type: 'suite'
+  ...
+# Subtest: G85: numbered lines moved to another file
+    # Subtest: the range is appended to the destination, then removed from the source; no file is renamed
+    ok 1 - the range is appended to the destination, then removed from the source; no file is renamed
+      ---
+      duration_ms: 37.337292
+      ...
+    # Subtest: the destination is the path after the cue, wherever the source is named
+    ok 2 - the destination is the path after the cue, wherever the source is named
+      ---
+      duration_ms: 37.390667
+      ...
+    # Subtest: one line, asked in Russian
+    ok 3 - one line, asked in Russian
+      ---
+      duration_ms: 31.254417
+      ...
+    # Subtest: a range past the end of the source changes nothing and says why
+    ok 4 - a range past the end of the source changes nothing and says why
+      ---
+      duration_ms: 9.101875
+      ...
+    # Subtest: a file move without line numbers is still a file move
+    ok 5 - a file move without line numbers is still a file move
+      ---
+      duration_ms: 242.859416
+      ...
+    1..5
+ok 61 - G85: numbered lines moved to another file
+  ---
+  duration_ms: 358.06875
+  type: 'suite'
+  ...
+# Subtest: G88, G89, G91: replace lists
+    # Subtest: G89: a list whose file is named last makes every replacement
+    ok 1 - G89: a list whose file is named last makes every replacement
+      ---
+      duration_ms: 31.8185
+      ...
+    # Subtest: G88: new texts that spell a newline as an escape are a list too
+    ok 2 - G88: new texts that spell a newline as an escape are a list too
+      ---
+      duration_ms: 58.616375
+      ...
+    # Subtest: G91: an edit naming several files is declined, naming them, and changes nothing
+    ok 3 - G91: an edit naming several files is declined, naming them, and changes nothing
+      ---
+      duration_ms: 2.783417
+      ...
+    1..3
+ok 62 - G88, G89, G91: replace lists
+  ---
+  duration_ms: 93.319083
+  type: 'suite'
+  ...
+# Subtest: G92: the answer follows the request, not its quoted payload
+    # Subtest: an English replace whose new text is Spanish is answered in English
+    ok 1 - an English replace whose new text is Spanish is answered in English
+      ---
+      duration_ms: 40.310917
+      ...
+    1..1
+ok 63 - G92: the answer follows the request, not its quoted payload
+  ---
+  duration_ms: 40.364875
+  type: 'suite'
+  ...
+# Subtest: a Write acknowledgement, including echoed content, remains pending observation
+ok 64 - a Write acknowledgement, including echoed content, remains pending observation
+  ---
+  duration_ms: 328.314292
+  ...
+# Subtest: a prior successful receipt cannot certify a later Write
+ok 65 - a prior successful receipt cannot certify a later Write
+  ---
+  duration_ms: 0.619666
+  ...
+# Subtest: explicit successful shell receipts certify exact Unicode and newline bytes
+ok 66 - explicit successful shell receipts certify exact Unicode and newline bytes
+  ---
+  duration_ms: 3.288417
+  ...
+# Subtest: bare Read and framed Agent Read preserve exact content compatibility
+ok 67 - bare Read and framed Agent Read preserve exact content compatibility
+  ---
+  duration_ms: 1.846084
+  ...
+# Subtest: different paths and auxiliary commands never certify this record
+ok 68 - different paths and auxiliary commands never certify this record
+  ---
+  duration_ms: 0.726291
+  ...
+# Subtest: wrong bytes, bare shell stdout, nonzero and structured stdout remain failures
+ok 69 - wrong bytes, bare shell stdout, nonzero and structured stdout remain failures
+  ---
+  duration_ms: 100.708417
+  ...
+# Subtest: a later failed receipt or failed Write cannot reuse earlier certification
+ok 70 - a later failed receipt or failed Write cannot reuse earlier certification
+  ---
+  duration_ms: 1.080959
+  ...
+# Subtest: missing observation capability retains the written record and a typed Gap
+ok 71 - missing observation capability retains the written record and a typed Gap
+  ---
+  duration_ms: 0.409833
+  ...
+# Subtest: Read-only observation support uses the exact bound target
+ok 72 - Read-only observation support uses the exact bound target
+  ---
+  duration_ms: 0.458625
+  ...
+# Subtest: unknown written bytes remain a Gap without repeating an observation forever
+ok 73 - unknown written bytes remain a Gap without repeating an observation forever
+  ---
+  duration_ms: 0.345917
+  ...
+# Subtest: unsafe filename bytes are quoted as one real shell operand
+ok 74 - unsafe filename bytes are quoted as one real shell operand
+  ---
+  duration_ms: 65.419834
+  ...
+1..74
+# tests 107
+# suites 30
+# pass 107
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8083.478417

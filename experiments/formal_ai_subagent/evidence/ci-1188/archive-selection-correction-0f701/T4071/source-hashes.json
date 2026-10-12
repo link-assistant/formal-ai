@@ -1,0 +1,18 @@
+[
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/.github/workflows/native-response-observations.yml",
+    "sha256": "847be00eeec4e70953272a6c6d53f82628aafcedfcf3eb2356ab8099a6cc589c"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/.github/workflows/release.yml",
+    "sha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/scripts/release-image-factory.mjs",
+    "sha256": "3518b33ca657e710fe5f6c34b64dc7e725412eddc24c5d3724128ba2367f66f9"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/native-workflow-cache-bindings.test.mjs",
+    "sha256": "fe993a3ca09b446e71ad16103dd9be6166e1c657a052e9e97981ef728aa800a0"
+  }
+]

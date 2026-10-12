@@ -1,0 +1,41 @@
+{
+  "originalTaskUtf8Bytes": 744,
+  "originalSourceReceiptUtf8Bytes": 20799,
+  "autonomousSourceEffects": 0,
+  "reviewedSourceEffects": 2,
+  "reviewedTestEffects": 2,
+  "reviewedExecutionPromptUtf8Bytes": 564,
+  "allReviewedBeforeAndExpectedUtf8Bytes": 186259,
+  "deltas": [
+    {
+      "path": "js/agentic/capability_router.mjs",
+      "addedLines": 7,
+      "deletedLines": 6,
+      "beforeBytes": 17937,
+      "afterBytes": 18147
+    },
+    {
+      "path": "rust/src/agentic_coding/capability_router.rs",
+      "addedLines": 11,
+      "deletedLines": 4,
+      "beforeBytes": 38845,
+      "afterBytes": 39131
+    },
+    {
+      "path": "rust/tests/web/literal-write-request-scope.test.mjs",
+      "addedLines": 33,
+      "deletedLines": 0,
+      "beforeBytes": 11855,
+      "afterBytes": 13703
+    },
+    {
+      "path": "rust/tests/fixtures/literal-obligation-transaction.rs",
+      "addedLines": 12,
+      "deletedLines": 0,
+      "beforeBytes": 23107,
+      "afterBytes": 23534
+    }
+  ],
+  "validatedClosestTests": 52,
+  "limits": "Reviewed repair is not autonomous synthesis or demonstrated cost benefit. Native execution pending. Preserve no-plan for the unsafe negative as correct refusal, while broad source-dump answers remain failed implementation."
+}

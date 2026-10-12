@@ -101,3 +101,46 @@ fn with_formal_ai_global_writes_a_configuration_the_client_can_start_from() {
 
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+/// PR #1188 dogfooding: the Agent CLI compacted every session at its built-in
+/// 60000-token guess for `formal-ai`, losing the work in progress, because no
+/// client config stated the window Formal AI serves on `/v1/models`. Every
+/// opencode-shaped client config `formal-ai with` writes now states the model's
+/// limits: the served window (here, with no server listening, this host's
+/// capacity, which is what a server here would serve) and the served output
+/// cap.
+#[test]
+fn with_formal_ai_global_states_the_served_model_limits() {
+    let dir = tmpdir();
+    let home = dir.join("home");
+    std::fs::create_dir_all(&home).expect("home dir");
+    let configure = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args([
+            "with",
+            "--global",
+            "--base-url",
+            "http://127.0.0.1:18081",
+            "agent",
+        ])
+        .env("HOME", &home)
+        .env("FORMAL_AI_MEMORY_PATH", dir.join("memory.lino"))
+        .output()
+        .expect("global configure");
+    assert!(
+        configure.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&configure.stderr)
+    );
+    let config = std::fs::read_to_string(home.join(".config/link-assistant-agent/opencode.json"))
+        .expect("agent config");
+    let config: serde_json::Value = serde_json::from_str(&config).expect("agent config json");
+    let limit = &config["provider"]["formalai"]["models"]["formal-ai"]["limit"];
+    assert_eq!(limit["output"], serde_json::json!(8192), "{config}");
+    assert!(
+        limit["context"]
+            .as_u64()
+            .is_some_and(|window| window > 60_000),
+        "the served window, not the client's 60000-token guess: {config}"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}

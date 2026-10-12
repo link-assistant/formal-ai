@@ -1,0 +1,15 @@
+>> write {"content":"Discovered and source-validated recurrence for `factorial`.\n\n```python\ndef factorial(n):\n    return 1 if (n == 0) else (n * factorial(n - 1))\n\nprint(factorial(10))\n```\n\nResult for factorial(10): 3628800\n\nHow it works: the cached abstract definition was formalized into a boundary condition and a transition whose n measure strictly decreases on every recursive call.\nValidated against 4 source-provided tests. Sources: https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13863&language=en; https://www.wikidata.org/wiki/Special:EntityData/Q120976.json.\n","filePath":"callable-read-coverage.mjs","file_path":"callable-read-coverage.mjs","path":"callable-read-coverage.mjs"}
+== answer ==
+Discovered and source-validated recurrence for `factorial`.
+
+```python
+def factorial(n):
+    return 1 if (n == 0) else (n * factorial(n - 1))
+
+print(factorial(10))
+```
+
+Result for factorial(10): 3628800
+
+How it works: the cached abstract definition was formalized into a boundary condition and a transition whose n measure strictly decreases on every recursive call.
+Validated against 4 source-provided tests. Sources: https://www.wikifunctions.org/w/api.php?action=wikilambda_fetch&format=json&zids=Z13863&language=en; https://www.wikidata.org/wiki/Special:EntityData/Q120976.json.

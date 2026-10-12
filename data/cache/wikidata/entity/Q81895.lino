@@ -3,11 +3,13 @@ Q81895
     zh ("勺")
   descriptions
     en "utensil consisting of a small shallow bowl, oval or round, at the end of a handle"
+    es "utensilio usado para servir o comer un alimento"
     ru "столовый прибор, предназначенный для зачерпывания жидкой и рассыпчатой пищи"
     zh "由一个小浅碗组成的器具，椭圆形或圆形，位于手柄末端"
   id Q81895
   labels
     en spoon
+    es cuchara
     hi "चमचा"
     ru "ложка"
     zh "匙"

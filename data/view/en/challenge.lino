@@ -1,0 +1,41 @@
+view
+  id M-51f0fe0f4cb9
+  lemma challenge
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a demanding or stimulating situation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a call to engage in a contest or fight"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "questioning a statement and demanding an explanation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a formal objection to the selection of a particular person as a juror"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a demand by a sentry for a password or identification"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "take exception to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "issue a challenge to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "ask for identification"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "raise a formal objection in a court of law"
+    provenance (wordnet)

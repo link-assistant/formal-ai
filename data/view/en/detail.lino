@@ -1,0 +1,33 @@
+view
+  id M-44d455b84e45
+  lemma detail
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an isolated fact that is considered separately from the whole"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a small part that can be considered separately from the whole"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "extended treatment of particulars"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a crew of workers selected for a particular task"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a temporary military unit"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "provide details for"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "assign to a specific task"
+    provenance (wordnet)

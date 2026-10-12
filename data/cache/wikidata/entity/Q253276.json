@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "Q253276": {
+      "type": "item",
+      "id": "Q253276",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "mile"
+        },
+        "es": {
+          "language": "es",
+          "value": "milla"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "मील"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "миля"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英里"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "unit of length (on ground)"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "長度單位"
+        },
+        "es": {
+          "language": "es",
+          "value": "unidad de longitud"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "mi"
+          },
+          {
+            "language": "en",
+            "value": "miles"
+          },
+          {
+            "language": "en",
+            "value": "mi."
+          },
+          {
+            "language": "en",
+            "value": "m"
+          },
+          {
+            "language": "en",
+            "value": "m."
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "哩"
+          },
+          {
+            "language": "zh",
+            "value": "罗马里"
+          },
+          {
+            "language": "zh",
+            "value": "英哩"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

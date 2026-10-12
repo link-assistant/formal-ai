@@ -53,51 +53,31 @@ impl ProofMethod {
         }
     }
 
-    /// User-facing label localized to the requested language.
+    /// Every method, in declaration order.
+    pub const ALL: [Self; 10] = [
+        Self::DirectCalculation,
+        Self::Contradiction,
+        Self::Induction,
+        Self::Construction,
+        Self::Contrapositive,
+        Self::Cases,
+        Self::KnownTheorem,
+        Self::AxiomReduction,
+        Self::Tautology,
+        Self::DecisionProcedure,
+    ];
+
+    /// The method whose [`Self::slug`] is `slug`.
     #[must_use]
-    pub fn label(self, language: &str) -> &'static str {
-        match (self, language) {
-            (Self::DirectCalculation, "ru") => "прямое вычисление",
-            (Self::DirectCalculation, "zh") => "直接计算",
-            (Self::DirectCalculation, "hi") => "प्रत्यक्ष गणना",
-            (Self::DirectCalculation, _) => "direct calculation",
-            (Self::Contradiction, "ru") => "от противного",
-            (Self::Contradiction, "zh") => "反证法",
-            (Self::Contradiction, "hi") => "अंतर्विरोध द्वारा",
-            (Self::Contradiction, _) => "proof by contradiction",
-            (Self::Induction, "ru") => "по индукции",
-            (Self::Induction, "zh") => "数学归纳法",
-            (Self::Induction, "hi") => "गणितीय आगमन",
-            (Self::Induction, _) => "mathematical induction",
-            (Self::Construction, "ru") => "конструктивно",
-            (Self::Construction, "zh") => "构造法",
-            (Self::Construction, "hi") => "रचनात्मक प्रमाण",
-            (Self::Construction, _) => "constructive proof",
-            (Self::Contrapositive, "ru") => "от противоположного",
-            (Self::Contrapositive, "zh") => "逆否命题",
-            (Self::Contrapositive, "hi") => "विपरीतधर्मी",
-            (Self::Contrapositive, _) => "contrapositive",
-            (Self::Cases, "ru") => "разбор случаев",
-            (Self::Cases, "zh") => "分情况讨论",
-            (Self::Cases, "hi") => "मामलों का विश्लेषण",
-            (Self::Cases, _) => "case analysis",
-            (Self::KnownTheorem, "ru") => "известная теорема",
-            (Self::KnownTheorem, "zh") => "已知定理",
-            (Self::KnownTheorem, "hi") => "ज्ञात प्रमेय",
-            (Self::KnownTheorem, _) => "known theorem",
-            (Self::AxiomReduction, "ru") => "сведение к аксиоматике",
-            (Self::AxiomReduction, "zh") => "公理化归约",
-            (Self::AxiomReduction, "hi") => "अभिगृहीतों में निरूपण",
-            (Self::AxiomReduction, _) => "axiom-set reduction",
-            (Self::Tautology, "ru") => "тавтология",
-            (Self::Tautology, "zh") => "重言式",
-            (Self::Tautology, "hi") => "तथ्यात्मक",
-            (Self::Tautology, _) => "tautology check",
-            (Self::DecisionProcedure, "ru") => "процедура разрешения relative-meta-logic / SMT",
-            (Self::DecisionProcedure, "zh") => "relative-meta-logic / SMT 判定过程",
-            (Self::DecisionProcedure, "hi") => "relative-meta-logic / SMT निर्णय प्रक्रिया",
-            (Self::DecisionProcedure, _) => "relative-meta-logic / SMT decision procedure",
-        }
+    pub fn from_slug(slug: &str) -> Option<Self> {
+        Self::ALL.into_iter().find(|method| method.slug() == slug)
+    }
+
+    /// User-facing label localized to the requested language, read from the
+    /// `method_<slug>` template of `data/seed/proof-library.lino`.
+    #[must_use]
+    pub fn label(self, language: &str) -> String {
+        crate::seed::proof_library().text(&format!("method_{}", self.slug()), language, &[])
     }
 }
 
@@ -113,35 +93,40 @@ pub enum StepKind {
 }
 
 impl StepKind {
-    /// Localized label printed in front of the step.
+    /// Every step kind, in declaration order.
+    pub const ALL: [Self; 6] = [
+        Self::Hypothesis,
+        Self::Definition,
+        Self::Axiom,
+        Self::Inference,
+        Self::SubProof,
+        Self::Conclusion,
+    ];
+
+    /// The slug a step kind carries in `data/seed/proof-library.lino`.
     #[must_use]
-    pub fn label(self, language: &str) -> &'static str {
-        match (self, language) {
-            (Self::Hypothesis, "ru") => "Гипотеза",
-            (Self::Hypothesis, "zh") => "前提",
-            (Self::Hypothesis, "hi") => "परिकल्पना",
-            (Self::Hypothesis, _) => "Hypothesis",
-            (Self::Definition, "ru") => "Определение",
-            (Self::Definition, "zh") => "定义",
-            (Self::Definition, "hi") => "परिभाषा",
-            (Self::Definition, _) => "Definition",
-            (Self::Axiom, "ru") => "Аксиома",
-            (Self::Axiom, "zh") => "公理",
-            (Self::Axiom, "hi") => "अभिगृहीत",
-            (Self::Axiom, _) => "Axiom",
-            (Self::Inference, "ru") => "Вывод",
-            (Self::Inference, "zh") => "推理",
-            (Self::Inference, "hi") => "निष्कर्षण",
-            (Self::Inference, _) => "Inference",
-            (Self::SubProof, "ru") => "Подкаравасьное",
-            (Self::SubProof, "zh") => "子证明",
-            (Self::SubProof, "hi") => "उप-प्रमाण",
-            (Self::SubProof, _) => "Sub-proof",
-            (Self::Conclusion, "ru") => "Заключение",
-            (Self::Conclusion, "zh") => "结论",
-            (Self::Conclusion, "hi") => "निष्कर्ष",
-            (Self::Conclusion, _) => "Conclusion",
+    pub const fn slug(self) -> &'static str {
+        match self {
+            Self::Hypothesis => "hypothesis",
+            Self::Definition => "definition",
+            Self::Axiom => "axiom",
+            Self::Inference => "inference",
+            Self::SubProof => "sub_proof",
+            Self::Conclusion => "conclusion",
         }
+    }
+
+    /// The step kind whose [`Self::slug`] is `slug`.
+    #[must_use]
+    pub fn from_slug(slug: &str) -> Option<Self> {
+        Self::ALL.into_iter().find(|kind| kind.slug() == slug)
+    }
+
+    /// Localized label printed in front of the step, read from the
+    /// `step_<slug>` template of `data/seed/proof-library.lino`.
+    #[must_use]
+    pub fn label(self, language: &str) -> String {
+        crate::seed::proof_library().text(&format!("step_{}", self.slug()), language, &[])
     }
 }
 

@@ -77,6 +77,34 @@ pub fn run_named_tests(
     tests: &RunCommand,
     backend: &ExecutionBackend,
 ) -> Result<Evidence, WorkspaceError> {
+    let observed = observe_command(workspace, tests, backend)?;
+    if observed.observation.timed_out {
+        return Err(WorkspaceError::TimedOut {
+            deadline_seconds: observed.observation.deadline.as_secs(),
+            elapsed_seconds: observed.observation.elapsed.as_secs(),
+        });
+    }
+    Ok(observed.evidence)
+}
+
+/// Exact command result beside its deterministic evidence.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ObservedCommand {
+    /// Hash-bound command status and complete combined bytes.
+    pub evidence: Evidence,
+    /// Actual execution-box output, deadline and elapsed duration.
+    pub observation: crate::execution_box::BoxObservation,
+}
+
+/// Observe a permitted command without throwing away output or timeout status.
+///
+/// # Errors
+/// The same prerequisite, policy and execution refusals as named tests.
+pub fn observe_command(
+    workspace: &RepositoryWorkspace,
+    tests: &RunCommand,
+    backend: &ExecutionBackend,
+) -> Result<ObservedCommand, WorkspaceError> {
     let argv = tests.argv();
     let Some((program, arguments)) = argv.split_first() else {
         return Err(WorkspaceError::Observed {
@@ -128,13 +156,6 @@ pub fn run_named_tests(
                 detail: format!("{refusal:?}"),
             })?;
 
-    if observation.timed_out {
-        return Err(WorkspaceError::TimedOut {
-            deadline_seconds,
-            elapsed_seconds: observation.elapsed.as_secs(),
-        });
-    }
-
     let mut evidence = Evidence::observed(
         tests.line.clone(),
         argv.clone(),
@@ -155,7 +176,10 @@ pub fn run_named_tests(
         } else {
             tests.names.clone()
         },
-        timed_out: false,
+        timed_out: observation.timed_out,
     };
-    Ok(evidence)
+    Ok(ObservedCommand {
+        evidence,
+        observation,
+    })
 }

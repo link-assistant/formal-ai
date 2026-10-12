@@ -1,0 +1,442 @@
+>> read {"filePath":"js/agentic/crate/event_log.mjs","file_path":"js/agentic/crate/event_log.mjs","path":"js/agentic/crate/event_log.mjs"}
+   <file>
+   00001| // rust/src/event_log.rs, the solver event log and its evidence projection:
+   00002| // `EventLog::append` (content-addressed event ids) and `build_evidence_links`
+   00003| // (one typed link per event, after the prompt link, ending with the response
+   00004| // link). Every arm of the Rust `match` is here; the arms that address an event
+   00005| // by its id (`trace:execution_failure`, `formalization`, `search:local`, ...)
+   00006| // produce exactly the catch-all's `{kind}:{id}`, so they need no row.
+   00007| //
+   00008| // One implementation for both JavaScript surfaces (R1188-U29): the server
+   00009| // (js/server/evidence-links.mjs re-exports it) and the browser worker, which
+   00010| // runs it as a generated crate factory over the native log it records
+   00011| // (`solverEvents`), so a worker answer carries the native links too.
+   00012| 
+   00013| import { stableId } from './engine_stable_identifier.mjs';
+   00014| 
+   00015| /** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
+   00016| export class EventLog {
+   00017|   constructor(events = []) {
+   00018|     this.events = [];
+   00019|     for (const event of events) this.append(event.kind, event.payload ?? '');
+   00020|   }
+   00021| 
+   00022|   /** `EventLog::append`: the event id is `stable_id(kind, "{kind}:{index}:{payload}")`. */
+   00023|   append(kind, payload) {
+   00024|     const text = String(payload);
+   00025|     const id = stableId(kind, `${kind}:${this.events.length}:${text}`);
+   00026|     this.events.push({ id, kind: String(kind), payload: text });
+   00027|     return id;
+   00028|   }
+   00029| 
+   00030|   firstOf(kind) {
+   00031|     return this.events.find((event) => event.kind === kind) || null;
+   00032|   }
+   00033| 
+   00034|   lastOf(kind) {
+   00035|     for (let index = this.events.length - 1; index >= 0; index -= 1) {
+   00036|       if (this.events[index].kind === kind) return this.events[index];
+   00037|     }
+   00038|     return null;
+   00039|   }
+   00040| }
+   00041| 
+   00042| /** Kinds whose link is `{kind}:{payload}`, the payload kept verbatim. */
+   00043| const PAYLOAD_KINDS = new Set([
+   00044|   'language', 'language_from', 'language_to',
+   00045|   'definition_merge:language', 'definition_merge:source_declared',
+   00046|   'meaning', 'translation_gap', 'wikidata',
+   00047|   'formalization:subject_q', 'formalization:predicate_p', 'formalization:object_q',
+   00048|   'formalization:item_q', 'formalization:property_p', 'formalization:fallback',
+   00049|   'formalization:raw', 'formalization_unresolved', 'statement_weight',
+   00050|   'intent_formalization:kind', 'intent_formalization:route', 'intent_formalization:relevant',
+   00051|   'fact_query:relation', 'fact_query:subject', 'fact_query:cache:hit',
+   00052|   'fact_query:subject_qid', 'fact_query:value_qid',
+   00053|   'web_search:request', 'web_search:query_kind', 'web_search:provider',
+   00054|   'web_search:provider_planned', 'web_search:language', 'web_search:combined',
+   00055|   'web_search:fusion_planned', 'web_search:rank', 'web_search:fused', 'web_search:disabled',
+   00056|   'document_originality_check:request', 'document_originality_check:attachment',
+   00057|   'document_originality_check:text_sample',
+   00058|   'relative_meta_logic:assumed_prior', 'relative_meta_logic:trusted_source_tier',
+   00059|   'relative_meta_logic:ignored_source_tier',
+   00060|   'statement_verification:statement_count', 'statement_verification:statement',
+   00061|   'statement_verification:query', 'statement_verification:assessment',
+   00062|   'market_price_claim:claim_count', 'market_price_claim:claim', 'market_price_claim:asset',
+   00063|   'market_price_claim:period', 'market_price_claim:claimed_price', 'market_price_claim:source',
+   00064|   'market_price_claim:range', 'market_price_claim:assessment',
+   00065|   'read_local_file:request', 'http_fetch:request',
+   00066|   'docs_method:project', 'docs_method:method', 'docs_method:source_kind',
+   00067|   'release_timeline:snapshot', 'release_timeline:sha256', 'release_timeline:released',
+   00068|   'release_timeline:announced', 'release_timeline:stale',
+   00069|   'project:promoted', 'project_lookup:promotion', 'project_lookup:repository:github',
+   00070|   'project_lookup:repository:gitlab', 'project_lookup:repository:bitbucket',
+   00071|   'url_navigate:request', 'url_preview:iframe', 'tool_call',
+   00072|   'text_operation', 'text_rule', 'text_rule_chain',
+   00073|   'procedural_how_to:request', 'procedural_how_to:action', 'procedural_how_to:object',
+   00074|   'procedural_how_to:stage', 'procedural_how_to:wikihow_candidate', 'procedural_how_to:source_gate',
+   00075|   'concept_lookup:request', 'concept_lookup:context', 'concept_lookup:response-language',
+   00076|   'concept_lookup:hit', 'concept_lookup:miss', 'concept_lookup:context-match',
+   00077|   'concept_lookup:context-mismatch',
+   00078|   'followup:subject', 'mechanism_query:request', 'mechanism_query:stage', 'mechanism_query:source_gate',
+   00079|   'source_refresh', 'skill_compile:package', 'skill_compile:procedure',
+   00080|   'verifiable_task:check', 'verifiable_task:executed', 'verifiable_task:gap',
+   00081|   'verifiable_task:searched', 'verifiable_task:uncorroborated', 'verifiable_task:membership_source',
+   00082|   'skill_learning_proposal', 'compiled_skill:replay', 'cache_hit',
+   00083|   'calculation:engine', 'calculation:lino', 'method:learned:operations_verified',
+   00084|   'calendar:today', 'calendar:weekday', 'intent',
+   00085|   'program_parameter:language', 'program_parameter:task', 'legacy_intent',
+   00086|   'policy:agent_mode_required_for_tools', 'policy:package_permission_required',
+   00087|   'probability:model', 'filter:user', 'diagnostic_mode',
+   00088| ]);
+   00089| 
+   00090| /** Kinds whose link is `{kind}:{payload with every space as ':'}`. */
+   00091| const SPACE_AS_COLON_KINDS = new Set([
+   00092|   'intent_formalization_cache', 'tool_parameter', 'tool_result', 'tool_permission',
+   00093|   'source:http', 'skill_compile:procedure_step',
+   00094| ]);
+   00095| 
+   00096| /** Kinds whose link is `{kind}:{payload with every space as '_'}` (issue #674). */
+   00097| const SPACE_AS_UNDERSCORE_KINDS = new Set(['skill_gap', 'program_gap']);
+   00098| 
+   00099| /** Kinds whose link is the bare kind, the payload dropped. */
+   00100| const BARE_KINDS = new Set([
+   00101|   'fact_query:cache:miss', 'fact_query:cache:bypass', 'fact_query:force_fresh',
+   00102|   'policy:chat_bounded_autonomy', 'policy:add_only_history',
+   00103|   'policy:destructive_action_requires_confirmation', 'policy:cache_flush_requires_confirmation',
+   00104|   'policy:offline', 'policy:inappropriate_content',
+   00105|   'policy:guessed_under_ambiguity', 'policy:clarify_under_ambiguity',
+   00106| ]);
+   00107| 
+   00108| /** Kinds whose link is `source:{payload}`. */
+   00109| const SOURCE_KINDS = new Set(['docs_method:source', 'source', 'release_timeline:source']);
+   00110| 
+   00111| const OFFLINE_SKIP = 'skipped:offline';
+   00112| 
+   00113| /** The typed evidence link for one event: one arm of `build_evidence_links`. */
+   00114| export function evidenceLink(event) {
+   00115|   const { kind, id } = event;
+   00116|   const payload = String(event.payload);
+   00117|   if (kind === 'response') return payload;
+   00118|   if (PAYLOAD_KINDS.has(kind)) return `${kind}:${payload}`;
+   00119|   if (SPACE_AS_COLON_KINDS.has(kind)) return `${kind}:${payload.split(' ').join(':')}`;
+   00120|   if (SPACE_AS_UNDERSCORE_KINDS.has(kind)) return `${kind}:${payload.split(' ').join('_')}`;
+   00121|   if (BARE_KINDS.has(kind)) return kind;
+   00122|   if (SOURCE_KINDS.has(kind)) return `source:${payload}`;
+   00123|   if (kind === 'release_timeline:hit') return `release_timeline:${payload}`;
+   00124|   if (kind === 'spelling_correction') return `${kind}:${payload.split(' ').join('')}`;
+   00125|   if (kind === 'program_parameters') return `${kind}:${payload.replace(/[ ,]/g, ':')}`;
+   00126|   if (kind === 'search:external' && payload === OFFLINE_SKIP) return 'policy:offline';
+   00127|   return `${kind}:${id}`;
+   00128| }
+   00129| 
+   00130| /**
+   00131|  * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one
+   00132|  * link per logged event, then `responseLink` unless a link already equals it.
+   00133|  * @param {string} prompt
+   00134|  * @param {EventLog|{events: Array<{id: string, kind: string, payload: string}>}} log
+   00135|  * @param {string} responseLink
+   00136|  * @returns {Array<string>}
+   00137|  */
+   00138| export function buildEvidenceLinks(prompt, log, responseLink) {
+   00139|   const links = [`prompt:${stableId('prompt', prompt)}`];
+   00140|   for (const event of log.events) {
+   00141|     if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);
+   00142|     links.push(evidenceLink(event));
+   00143|   }
+   00144|   if (!links.includes(responseLink)) links.push(responseLink);
+   00145|   return links;
+   00146| }
+   00147| 
+   00148| const IMPULSE_KIND = 'impulse';
+   00149| const RESPONSE_KIND = 'response';
+   00150| 
+   00151| /**
+   00152|  * The native evidence links of a recorded solver log: `build_evidence_links`
+   00153|  * over `events`, the prompt read from their `impulse` event and the response
+   00154|  * link from their last `response` event (`response:<intent>` when none was
+   00155|  * logged). Null when the log holds no impulse.
+   00156|  * @param {Array<{kind: string, payload?: string}>} events
+   00157|  * @param {string} intent
+   00158|  * @returns {Array<string>|null}
+   00159|  */
+   00160| export function eventLogEvidenceLinks(events, intent) {
+   00161|   const impulse = (events || []).find((event) => event.kind === IMPULSE_KIND);
+   00162|   if (!impulse) return null;
+   00163|   const log = new EventLog();
+   00164|   for (const event of events) log.append(String(event.kind), String(event.payload ?? ''));
+   00165|   const response = log.lastOf(RESPONSE_KIND);
+   00166|   const responseLink = response ? response.payload : `${RESPONSE_KIND}:${String(intent ?? 'unknown')}`;
+   00167|   return buildEvidenceLinks(String(impulse.payload ?? ''), log, responseLink);
+   00168| }
+   00169| 
+   
+   (End of file - total 169 lines)
+   </file>
+>> edit {"filePath":"js/agentic/crate/event_log.mjs","file_path":"js/agentic/crate/event_log.mjs","new":"// Mirrors rust/src/event_log.rs: content-addressed IDs and typed evidence.\n// ID-based kinds use the {kind}:{id} fallback without an explicit row.\n// Named transform metadata supplements its original event provenance.","newString":"// Mirrors rust/src/event_log.rs: content-addressed IDs and typed evidence.\n// ID-based kinds use the {kind}:{id} fallback without an explicit row.\n// Named transform metadata supplements its original event provenance.","new_str":"// Mirrors rust/src/event_log.rs: content-addressed IDs and typed evidence.\n// ID-based kinds use the {kind}:{id} fallback without an explicit row.\n// Named transform metadata supplements its original event provenance.","new_string":"// Mirrors rust/src/event_log.rs: content-addressed IDs and typed evidence.\n// ID-based kinds use the {kind}:{id} fallback without an explicit row.\n// Named transform metadata supplements its original event provenance.","old":"// rust/src/event_log.rs, the solver event log and its evidence projection:\n// `EventLog::append` (content-addressed event ids) and `build_evidence_links`\n// (one typed link per event, after the prompt link, ending with the response\n// link). Every arm of the Rust `match` is here; the arms that address an event\n// by its id (`trace:execution_failure`, `formalization`, `search:local`, ...)\n// produce exactly the catch-all's `{kind}:{id}`, so they need no row.","oldString":"// rust/src/event_log.rs, the solver event log and its evidence projection:\n// `EventLog::append` (content-addressed event ids) and `build_evidence_links`\n// (one typed link per event, after the prompt link, ending with the response\n// link). Every arm of the Rust `match` is here; the arms that address an event\n// by its id (`trace:execution_failure`, `formalization`, `search:local`, ...)\n// produce exactly the catch-all's `{kind}:{id}`, so they need no row.","old_str":"// rust/src/event_log.rs, the solver event log and its evidence projection:\n// `EventLog::append` (content-addressed event ids) and `build_evidence_links`\n// (one typed link per event, after the prompt link, ending with the response\n// link). Every arm of the Rust `match` is here; the arms that address an event\n// by its id (`trace:execution_failure`, `formalization`, `search:local`, ...)\n// produce exactly the catch-all's `{kind}:{id}`, so they need no row.","old_string":"// rust/src/event_log.rs, the solver event log and its evidence projection:\n// `EventLog::append` (content-addressed event ids) and `build_evidence_links`\n// (one typed link per event, after the prompt link, ending with the response\n// link). Every arm of the Rust `match` is here; the arms that address an event\n// by its id (`trace:execution_failure`, `formalization`, `search:local`, ...)\n// produce exactly the catch-all's `{kind}:{id}`, so they need no row.","path":"js/agentic/crate/event_log.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/crate/event_log.mjs"}
+   45925d6207d3beb9043cfe611d24ced3b8ae177773768f9d2a9d734c3c7e5eb1  js/agentic/crate/event_log.mjs
+   
+== answer ==
+Replaced ``// rust/src/event_log.rs, the solver event log and its evidence projection:
+// `EventLog::append` (content-addressed event ids) and `build_evidence_links`
+// (one typed link per event, after the prompt link, ending with the response
+// link). Every arm of the Rust `match` is here; the arms that address an event
+// by its id (`trace:execution_failure`, `formalization`, `search:local`, ...)
+// produce exactly the catch-all's `{kind}:{id}`, so they need no row.`` with `// Mirrors rust/src/event_log.rs: content-addressed IDs and typed evidence.
+// ID-based kinds use the {kind}:{id} fallback without an explicit row.
+// Named transform metadata supplements its original event provenance.` in `js/agentic/crate/event_log.mjs` and observed the result.
+>> read {"filePath":"js/agentic/crate/event_log.mjs","file_path":"js/agentic/crate/event_log.mjs","path":"js/agentic/crate/event_log.mjs"}
+   <file>
+   00001| // Mirrors rust/src/event_log.rs: content-addressed IDs and typed evidence.
+   00002| // ID-based kinds use the {kind}:{id} fallback without an explicit row.
+   00003| // Named transform metadata supplements its original event provenance.
+   00004| //
+   00005| // One implementation for both JavaScript surfaces (R1188-U29): the server
+   00006| // (js/server/evidence-links.mjs re-exports it) and the browser worker, which
+   00007| // runs it as a generated crate factory over the native log it records
+   00008| // (`solverEvents`), so a worker answer carries the native links too.
+   00009| 
+   00010| import { stableId } from './engine_stable_identifier.mjs';
+   00011| 
+   00012| /** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
+   00013| export class EventLog {
+   00014|   constructor(events = []) {
+   00015|     this.events = [];
+   00016|     for (const event of events) this.append(event.kind, event.payload ?? '');
+   00017|   }
+   00018| 
+   00019|   /** `EventLog::append`: the event id is `stable_id(kind, "{kind}:{index}:{payload}")`. */
+   00020|   append(kind, payload) {
+   00021|     const text = String(payload);
+   00022|     const id = stableId(kind, `${kind}:${this.events.length}:${text}`);
+   00023|     this.events.push({ id, kind: String(kind), payload: text });
+   00024|     return id;
+   00025|   }
+   00026| 
+   00027|   firstOf(kind) {
+   00028|     return this.events.find((event) => event.kind === kind) || null;
+   00029|   }
+   00030| 
+   00031|   lastOf(kind) {
+   00032|     for (let index = this.events.length - 1; index >= 0; index -= 1) {
+   00033|       if (this.events[index].kind === kind) return this.events[index];
+   00034|     }
+   00035|     return null;
+   00036|   }
+   00037| }
+   00038| 
+   00039| /** Kinds whose link is `{kind}:{payload}`, the payload kept verbatim. */
+   00040| const PAYLOAD_KINDS = new Set([
+   00041|   'language', 'language_from', 'language_to',
+   00042|   'definition_merge:language', 'definition_merge:source_declared',
+   00043|   'meaning', 'translation_gap', 'wikidata',
+   00044|   'formalization:subject_q', 'formalization:predicate_p', 'formalization:object_q',
+   00045|   'formalization:item_q', 'formalization:property_p', 'formalization:fallback',
+   00046|   'formalization:raw', 'formalization_unresolved', 'statement_weight',
+   00047|   'intent_formalization:kind', 'intent_formalization:route', 'intent_formalization:relevant',
+   00048|   'fact_query:relation', 'fact_query:subject', 'fact_query:cache:hit',
+   00049|   'fact_query:subject_qid', 'fact_query:value_qid',
+   00050|   'web_search:request', 'web_search:query_kind', 'web_search:provider',
+   00051|   'web_search:provider_planned', 'web_search:language', 'web_search:combined',
+   00052|   'web_search:fusion_planned', 'web_search:rank', 'web_search:fused', 'web_search:disabled',
+   00053|   'document_originality_check:request', 'document_originality_check:attachment',
+   00054|   'document_originality_check:text_sample',
+   00055|   'relative_meta_logic:assumed_prior', 'relative_meta_logic:trusted_source_tier',
+   00056|   'relative_meta_logic:ignored_source_tier',
+   00057|   'statement_verification:statement_count', 'statement_verification:statement',
+   00058|   'statement_verification:query', 'statement_verification:assessment',
+   00059|   'market_price_claim:claim_count', 'market_price_claim:claim', 'market_price_claim:asset',
+   00060|   'market_price_claim:period', 'market_price_claim:claimed_price', 'market_price_claim:source',
+   00061|   'market_price_claim:range', 'market_price_claim:assessment',
+   00062|   'read_local_file:request', 'http_fetch:request',
+   00063|   'docs_method:project', 'docs_method:method', 'docs_method:source_kind',
+   00064|   'release_timeline:snapshot', 'release_timeline:sha256', 'release_timeline:released',
+   00065|   'release_timeline:announced', 'release_timeline:stale',
+   00066|   'project:promoted', 'project_lookup:promotion', 'project_lookup:repository:github',
+   00067|   'project_lookup:repository:gitlab', 'project_lookup:repository:bitbucket',
+   00068|   'url_navigate:request', 'url_preview:iframe', 'tool_call',
+   00069|   'text_operation', 'text_rule', 'text_rule_chain',
+   00070|   'procedural_how_to:request', 'procedural_how_to:action', 'procedural_how_to:object',
+   00071|   'procedural_how_to:stage', 'procedural_how_to:wikihow_candidate', 'procedural_how_to:source_gate',
+   00072|   'concept_lookup:request', 'concept_lookup:context', 'concept_lookup:response-language',
+   00073|   'concept_lookup:hit', 'concept_lookup:miss', 'concept_lookup:context-match',
+   00074|   'concept_lookup:context-mismatch',
+   00075|   'followup:subject', 'mechanism_query:request', 'mechanism_query:stage', 'mechanism_query:source_gate',
+   00076|   'source_refresh', 'skill_compile:package', 'skill_compile:procedure',
+   00077|   'verifiable_task:check', 'verifiable_task:executed', 'verifiable_task:gap',
+   00078|   'verifiable_task:searched', 'verifiable_task:uncorroborated', 'verifiable_task:membership_source',
+   00079|   'skill_learning_proposal', 'compiled_skill:replay', 'cache_hit',
+   00080|   'calculation:engine', 'calculation:lino', 'method:learned:operations_verified',
+   00081|   'calendar:today', 'calendar:weekday', 'intent',
+   00082|   'program_parameter:language', 'program_parameter:task', 'legacy_intent',
+   00083|   'policy:agent_mode_required_for_tools', 'policy:package_permission_required',
+   00084|   'probability:model', 'filter:user', 'diagnostic_mode',
+   00085| ]);
+   00086| 
+   00087| /** Kinds whose link is `{kind}:{payload with every space as ':'}`. */
+   00088| const SPACE_AS_COLON_KINDS = new Set([
+   00089|   'intent_formalization_cache', 'tool_parameter', 'tool_result', 'tool_permission',
+   00090|   'source:http', 'skill_compile:procedure_step',
+   00091| ]);
+   00092| 
+   00093| /** Kinds whose link is `{kind}:{payload with every space as '_'}` (issue #674). */
+   00094| const SPACE_AS_UNDERSCORE_KINDS = new Set(['skill_gap', 'program_gap']);
+   00095| 
+   00096| /** Kinds whose link is the bare kind, the payload dropped. */
+   00097| const BARE_KINDS = new Set([
+   00098|   'fact_query:cache:miss', 'fact_query:cache:bypass', 'fact_query:force_fresh',
+   00099|   'policy:chat_bounded_autonomy', 'policy:add_only_history',
+   00100|   'policy:destructive_action_requires_confirmation', 'policy:cache_flush_requires_confirmation',
+   00101|   'policy:offline', 'policy:inappropriate_content',
+   00102|   'policy:guessed_under_ambiguity', 'policy:clarify_under_ambiguity',
+   00103| ]);
+   00104| 
+   00105| /** Kinds whose link is `source:{payload}`. */
+   00106| const SOURCE_KINDS = new Set(['docs_method:source', 'source', 'release_timeline:source']);
+   00107| 
+   00108| const OFFLINE_SKIP = 'skipped:offline';
+   00109| 
+   00110| /** The typed evidence link for one event: one arm of `build_evidence_links`. */
+   00111| export function evidenceLink(event) {
+   00112|   const { kind, id } = event;
+   00113|   const payload = String(event.payload);
+   00114|   if (kind === 'response') return payload;
+   00115|   if (PAYLOAD_KINDS.has(kind)) return `${kind}:${payload}`;
+   00116|   if (SPACE_AS_COLON_KINDS.has(kind)) return `${kind}:${payload.split(' ').join(':')}`;
+   00117|   if (SPACE_AS_UNDERSCORE_KINDS.has(kind)) return `${kind}:${payload.split(' ').join('_')}`;
+   00118|   if (BARE_KINDS.has(kind)) return kind;
+   00119|   if (SOURCE_KINDS.has(kind)) return `source:${payload}`;
+   00120|   if (kind === 'release_timeline:hit') return `release_timeline:${payload}`;
+   00121|   if (kind === 'spelling_correction') return `${kind}:${payload.split(' ').join('')}`;
+   00122|   if (kind === 'program_parameters') return `${kind}:${payload.replace(/[ ,]/g, ':')}`;
+   00123|   if (kind === 'search:external' && payload === OFFLINE_SKIP) return 'policy:offline';
+   00124|   return `${kind}:${id}`;
+   00125| }
+   00126| 
+   00127| /**
+   00128|  * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one
+   00129|  * link per logged event, then `responseLink` unless a link already equals it.
+   00130|  * @param {string} prompt
+   00131|  * @param {EventLog|{events: Array<{id: string, kind: string, payload: string}>}} log
+   00132|  * @param {string} responseLink
+   00133|  * @returns {Array<string>}
+   00134|  */
+   00135| export function buildEvidenceLinks(prompt, log, responseLink) {
+   00136|   const links = [`prompt:${stableId('prompt', prompt)}`];
+   00137|   for (const event of log.events) {
+   00138|     if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);
+   00139|     links.push(evidenceLink(event));
+   00140|   }
+   00141|   if (!links.includes(responseLink)) links.push(responseLink);
+   00142|   return links;
+   00143| }
+   00144| 
+   00145| const IMPULSE_KIND = 'impulse';
+   00146| const RESPONSE_KIND = 'response';
+   00147| 
+   00148| /**
+   00149|  * The native evidence links of a recorded solver log: `build_evidence_links`
+   00150|  * over `events`, the prompt read from their `impulse` event and the response
+   00151|  * link from their last `response` event (`response:<intent>` when none was
+   00152|  * logged). Null when the log holds no impulse.
+   00153|  * @param {Array<{kind: string, payload?: string}>} events
+   00154|  * @param {string} intent
+   00155|  * @returns {Array<string>|null}
+   00156|  */
+   00157| export function eventLogEvidenceLinks(events, intent) {
+   00158|   const impulse = (events || []).find((event) => event.kind === IMPULSE_KIND);
+   00159|   if (!impulse) return null;
+   00160|   const log = new EventLog();
+   00161|   for (const event of events) log.append(String(event.kind), String(event.payload ?? ''));
+   00162|   const response = log.lastOf(RESPONSE_KIND);
+   00163|   const responseLink = response ? response.payload : `${RESPONSE_KIND}:${String(intent ?? 'unknown')}`;
+   00164|   return buildEvidenceLinks(String(impulse.payload ?? ''), log, responseLink);
+   00165| }
+   00166| 
+   
+   (End of file - total 166 lines)
+   </file>
+>> edit {"filePath":"js/agentic/crate/event_log.mjs","file_path":"js/agentic/crate/event_log.mjs","new":" * Mirrors rust/src/event_log.rs `build_evidence_links`: prompt and provenance\n * links, typed transform metadata, then `responseLink` unless already present.","newString":" * Mirrors rust/src/event_log.rs `build_evidence_links`: prompt and provenance\n * links, typed transform metadata, then `responseLink` unless already present.","new_str":" * Mirrors rust/src/event_log.rs `build_evidence_links`: prompt and provenance\n * links, typed transform metadata, then `responseLink` unless already present.","new_string":" * Mirrors rust/src/event_log.rs `build_evidence_links`: prompt and provenance\n * links, typed transform metadata, then `responseLink` unless already present.","old":" * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one\n * link per logged event, then `responseLink` unless a link already equals it.","oldString":" * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one\n * link per logged event, then `responseLink` unless a link already equals it.","old_str":" * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one\n * link per logged event, then `responseLink` unless a link already equals it.","old_string":" * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one\n * link per logged event, then `responseLink` unless a link already equals it.","path":"js/agentic/crate/event_log.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/crate/event_log.mjs"}
+   9e802fd8617e9fd38be055b177a57581945b4346bf98c3ba012b19ce5567ec68  js/agentic/crate/event_log.mjs
+   
+== answer ==
+Replaced `` * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one
+ * link per logged event, then `responseLink` unless a link already equals it.`` with `` * Mirrors rust/src/event_log.rs `build_evidence_links`: prompt and provenance
+ * links, typed transform metadata, then `responseLink` unless already present.`` in `js/agentic/crate/event_log.mjs` and observed the result.
+>> read {"filePath":".gitattributes","file_path":".gitattributes","path":".gitattributes"}
+   <file>
+   00001| *.lino text eol=lf
+   00002| data/cache/**/*.json text eol=lf
+   00003| # Generated case-study evidence preserves upstream diff/log bytes verbatim.
+   00004| docs/case-studies/issue-730/**/*.diff whitespace=-blank-at-eol,-blank-at-eof
+   00005| docs/case-studies/issue-730/**/*.jsonl whitespace=-blank-at-eof
+   00006| docs/case-studies/issue-730/**/*.log whitespace=-blank-at-eol,-blank-at-eof
+   00007| docs/case-studies/issue-742/raw-data/*.html whitespace=-blank-at-eol,-blank-at-eof
+   00008| docs/case-studies/issue-1012/self-hosting-authorship/**/*.log whitespace=-blank-at-eol,-blank-at-eof
+   00009| experiments/issue_746*.patch whitespace=-blank-at-eol
+   00010| dev/log/issues/781/pulls/803/** whitespace=-blank-at-eol,-blank-at-eof
+   00011| dev/log/issues/999/pulls/1000/ci-logs/** whitespace=-blank-at-eol,-blank-at-eof
+   00012| dev/log/issues/999/pulls/1000/github/** whitespace=-blank-at-eol,-blank-at-eof
+   00013| dev/log/issues/999/pulls/1000/research/** whitespace=-blank-at-eol,-blank-at-eof
+   00014| dev/log/issues/1012/pulls/1013/** whitespace=-blank-at-eol,-blank-at-eof
+   00015| dev/log/issues/1014/pulls/1015/** whitespace=-blank-at-eol,-blank-at-eof
+   00016| 
+   00017| # Issue #991 merge-conflict policy. `data/meta/merge-conflict-policy.lino` is the
+   00018| # reviewed registry; `rust-script scripts/check-merge-conflict-policy.rs` fails
+   00019| # when this file and that registry disagree.
+   00020| #
+   00021| # `merge=union` is built into git, so a fresh clone is conflict-proof without
+   00022| # running any `git config`. A union is a superset of both sides: it never loses an
+   00023| # entry, and every path below has a checker that fails while the union result is
+   00024| # not yet canonical.
+   00025| 
+   00026| # Ordered lists — `rust-script scripts/normalize-ordered-lists.rs --write`
+   00027| # restores the canonical order and drops the repeats.
+   00028| rust/src/agentic_coding/modules.rs merge=union
+   00029| rust/src/lib.rs merge=union
+   00030| rust/src/solver_handlers/modules.rs merge=union
+   00031| js/worker-modules.js merge=union
+   00032| rust/tests/integration/mod.rs merge=union
+   00033| rust/tests/source/mod.rs merge=union
+   00034| rust/tests/unit/ci-cd/mod.rs merge=union
+   00035| rust/tests/unit/mod.rs merge=union
+   00036| rust/tests/unit/specification/mod.rs merge=union
+   00037| 
+   00038| # Branch-creation placeholder — keeping both provenance lines is the right result.
+   00039| .gitkeep merge=union
+   00040| 
+   00041| # Derived artifacts — `bash scripts/regenerate-derived-artifacts.sh` rebuilds them
+   00042| # from the merged sources, and each one's own verifier fails until it is rerun.
+   00043| REQUIREMENTS.md merge=union
+   00044| docs/requirements/assembled/*.md merge=union
+   00045| data/meta/requirement-status-ledger.lino merge=union
+   00046| data/meta/requirement-status-ledger/*.lino merge=union
+   00047| data/meta/seed-metadata-gaps/*.lino merge=union
+   00048| data/meta/self-ast.lino merge=union
+   00049| data/meta/self-ast/** merge=union
+   00050| data/seed/closure-generated-*.lino merge=union
+   00051| docs/status.md merge=union
+   00052| scripts/hardcoded-language-allowlist.txt merge=union
+   00053| js/source-cache/wikifunctions-recurrences.lino merge=union
+   00054| 
+   00055| # The seed inventory and the two files generated from it —
+   00056| # `rust-script scripts/generate-seed-registry.rs --write` sorts the registry,
+   00057| # merges the flags of any entry a union left twice, and rewrites both projections.
+   00058| data/meta/seed-registry.lino merge=union
+   00059| rust/src/seed/embedded_registry.rs merge=union
+   00060| js/seed-files.js merge=union
+   00061| # Verbatim upstream captures (issues #1163, #1164) are pinned by SHA-256.
+   00062| rust/tests/fixtures/coding-discovery/captured/** -text whitespace=-blank-at-eol,-blank-at-eof
+   00063| experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof
+   00064| 
+   
+   (End of file - total 64 lines)
+   </file>
+>> edit {"filePath":".gitattributes","file_path":".gitattributes","new":"experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof\nexperiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.log whitespace=-blank-at-eol,-blank-at-eof","newString":"experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof\nexperiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.log whitespace=-blank-at-eol,-blank-at-eof","new_str":"experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof\nexperiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.log whitespace=-blank-at-eol,-blank-at-eof","new_string":"experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof\nexperiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.log whitespace=-blank-at-eol,-blank-at-eof","old":"experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof","oldString":"experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof","old_str":"experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof","old_string":"experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof","path":".gitattributes"}
+>> bash {"command":"sha256sum -- .gitattributes"}
+   0d1078fb45959ac2ff5546170465dfeaf7b0cda02f09e2fe2fe97aeab78090cb  .gitattributes
+   
+== answer ==
+Replaced `experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof` with `experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof
+experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.log whitespace=-blank-at-eol,-blank-at-eof` in `.gitattributes` and observed the result.

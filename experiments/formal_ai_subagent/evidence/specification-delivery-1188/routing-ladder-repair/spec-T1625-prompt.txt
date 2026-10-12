@@ -1,0 +1,53 @@
+Set the contents of rust/tests/web/issue-1138-workspace-listing.test.mjs to «// Native pin: issue_1138_self_use_intent_routing::spanish_routing_variations_reach_their_capability.
+import { before, test } from 'node:test';
+import assert from 'node:assert/strict';
+import { WorkerHost, plain } from '../../../js/server/worker-host.mjs';
+import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { routeDecision } from '../../../js/agentic/crate/capability_routing.mjs';
+import { requestFor } from '../../../js/agentic/local_search.mjs';
+import { planChatStep } from '../../../js/agentic/planner.mjs';
+let realm;
+before(async () => { realm = await installNodeHost(new WorkerHost()); });
+
+test('container-scoped listing aliases denote workspace acts without a program artefact', async () => {
+  for (const prompt of ['Lista los archivos de este directorio', 'List the files in the current directory', '列出当前目录中的文件']) {
+    assert.equal(realm.writeProgramParameters(prompt), null, prompt);
+    assert.notEqual(realm.solverRouteForPrompt(prompt)?.slug, 'write_program', prompt);
+    assert.deepEqual(routeDecision(prompt, ['list_dir']), {
+      object: 'path_scope', act: 'enumerate', locus: 'workspace',
+      outcome: { kind: 'routed', capability: 'list_dir' },
+    }, prompt);
+  }
+  const plan = await planChatStep([{ role: 'user', content: 'Lista los archivos de este directorio' }], ['list']);
+  assert.equal(plan.kind, 'tool_calls');
+  assert.equal(plan.calls.length, 1);
+  assert.equal(plan.calls[0].tool, 'list');
+  assert.equal(JSON.parse(plan.calls[0].arguments).path, '.');
+});
+
+test('explicit program artefacts and implementation languages preserve the list-files task', () => {
+  for (const [prompt, language] of [
+    ['Write a JavaScript program that lists files in the current directory', 'javascript'],
+    ['Write a program that lists files in the current directory', null],
+    ['List files in the current directory in JavaScript', 'javascript'],
+  ]) {
+    assert.deepEqual(plain(realm.writeProgramParameters(prompt)), { language, task: 'list_files' });
+    assert.equal(realm.solverRouteForPrompt(prompt).slug, 'write_program');
+  }
+});
+
+// Native pin: semantic_intent_routing::list_directory_routes_action_variations_in_every_supported_language.
+test('a later existential clause does not turn a listing into a fabricated filename search', async () => {
+  for (const prompt of ['muestra todo lo que hay en este directorio', 'muestra los archivos que hay en este directorio', 'lista los archivos que hay en esta carpeta']) {
+    assert.equal(requestFor(prompt), null);
+    const plan = await planChatStep([{ role: 'user', content: prompt }], ['exec_command']);
+    assert.equal(plan.kind, 'tool_calls');
+    assert.equal(plan.calls.length, 1);
+    assert.equal(plan.calls[0].tool, 'exec_command');
+    assert.equal(JSON.parse(plan.calls[0].arguments).command, 'ls');
+  }
+  const named = requestFor('busca una carpeta hive en este directorio');
+  assert.equal(named.mode, 'find');
+  assert.equal(named.subject, 'hive');
+});
+»

@@ -1,0 +1,628 @@
+>> read {"filePath":"rust/tests/unit/pull_request_1188_workspace_search.rs","file_path":"rust/tests/unit/pull_request_1188_workspace_search.rs","path":"rust/tests/unit/pull_request_1188_workspace_search.rs"}
+   <file>
+   00001| //! PR #1188 dogfooding (T90, gap G12): "Find all usages of add." searched the
+   00002| //! web for the sentence, "Where is add used in this project?" grepped the
+   00003| //! whole question, "Search for add in the files of this directory." listed
+   00004| //! the directory and "Find all usages of add in this directory." looked for a
+   00005| //! file named all-usages-of-add. Workspace content search now has its own
+   00006| //! seeded vocabulary (`workspace_content_search_form`, every registered
+   00007| //! language): the arm greps the named identifier or quoted literal -- the
+   00008| //! client's grep tool when advertised, else `grep -rn` through the shell --
+   00009| //! and answers with the file:line hits, or a seeded not-found naming the
+   00010| //! pattern and the scope. Twin of
+   00011| //! `rust/tests/web/pull-request-1188-workspace-search.test.mjs`.
+   00012| 
+   00013| use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+   00014| use formal_ai::protocol::{ChatMessage, ToolCall};
+   00015| 
+   00016| const AGENT_CLI_TOOLS: [&str; 14] = [
+   00017|     "bash",
+   00018|     "batch",
+   00019|     "codesearch",
+   00020|     "edit",
+   00021|     "glob",
+   00022|     "grep",
+   00023|     "list",
+   00024|     "read",
+   00025|     "task",
+   00026|     "todoread",
+   00027|     "todowrite",
+   00028|     "webfetch",
+   00029|     "websearch",
+   00030|     "write",
+   00031| ];
+   00032| const REDUCED_TOOLS: [&str; 4] = ["read", "write", "edit", "bash"];
+   00033| const GREP_HITS: &str = concat!(
+   00034|     "Found 2 matches\n",
+   00035|     "/work/demo/m.mjs:\n",
+   00036|     "  Line 1: export function add(a, b) {\n",
+   00037|     "\n",
+   00038|     "/work/demo/m.test.mjs:\n",
+   00039|     "  Line 6:   assert.strictEqual(add(1, 2), 3);",
+   00040| );
+   00041| const SHELL_HITS: &str =
+   00042|     "./m.mjs:1:export function add(a, b) {\n./m.test.mjs:6:  assert.strictEqual(add(1, 2), 3);\n";
+   00043| const LISTED: &str =
+   00044|     "- `m.mjs:1`: export function add(a, b) {\n- `m.test.mjs:6`: assert.strictEqual(add(1, 2), 3);";
+   00045| 
+   00046| /// The conversation after the user's request and, when given, one tool call
+   00047| /// with its result.
+   00048| fn conversation(prompt: &str, call: Option<(&str, &str, &str)>) -> Vec<ChatMessage> {
+   00049|     let mut messages = vec![
+   00050|         ChatMessage::new("system", "<env>\n  Working directory: /work/demo\n</env>"),
+   00051|         ChatMessage::user(prompt),
+   00052|     ];
+   00053|     if let Some((tool, arguments, result)) = call {
+   00054|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00055|             "c0",
+   00056|             tool,
+   00057|             arguments.to_owned(),
+   00058|         )]));
+   00059|         messages.push(ChatMessage::tool_result("c0", tool, result));
+   00060|     }
+   00061|     messages
+   00062| }
+   00063| 
+   00064| /// The first planned call (tool, arguments) and the answer given after
+   00065| /// `result` comes back.
+   00066| fn search_once(prompt: &str, tools: &[&str], result: &str) -> (String, serde_json::Value, String) {
+   00067|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&conversation(prompt, None), tools)
+   00068|     else {
+   00069|         panic!("{prompt} planned no tool call");
+   00070|     };
+   00071|     let call = calls[0].clone();
+   00072|     let next = conversation(prompt, Some((&call.tool, &call.arguments, result)));
+   00073|     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&next, tools) else {
+   00074|         panic!("{prompt} did not answer from the search result");
+   00075|     };
+   00076|     let arguments = serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+   00077|     (call.tool, arguments, answer)
+   00078| }
+   00079| 
+   00080| #[test]
+   00081| fn every_phrasing_greps_the_named_identifier_and_lists_its_hits() {
+   00082|     for prompt in [
+   00083|         "Find all usages of add.",
+   00084|         "Find all usages of add in this directory.",
+   00085|         "Where is add used in this project?",
+   00086|         "Search for add in the files of this directory.",
+   00087|         "Grep for add.",
+   00088|     ] {
+   00089|         let (tool, arguments, answer) = search_once(prompt, &AGENT_CLI_TOOLS, GREP_HITS);
+   00090|         assert_eq!(tool, "grep", "{prompt}");
+   00091|         assert_eq!(
+   00092|             arguments,
+   00093|             serde_json::json!({ "path": ".", "pattern": "\\badd\\b" }),
+   00094|             "{prompt}"
+   00095|         );
+   00096|         assert_eq!(
+   00097|             answer,
+   00098|             format!("Found 2 line(s) mentioning `add` in `.`:\n{LISTED}"),
+   00099|             "{prompt}"
+   00100|         );
+   00101|     }
+   00102| }
+   00103| 
+   00104| #[test]
+   00105| fn every_registered_language_asks_in_its_own_words() {
+   00106|     for (prompt, expected) in [
+   00107|         (
+   00108|             "Найди все использования add.",
+   00109|             format!("Найдено строк с `add` в `.`: 2.\n{LISTED}"),
+   00110|         ),
+   00111|         (
+   00112|             "इस निर्देशिका में add के सभी उपयोग खोजें।",
+   00113|             format!("`.` में `add` वाली 2 पंक्ति(याँ) मिलीं:\n{LISTED}"),
+   00114|         ),
+   00115|         (
+   00116|             "查找 add 的所有用法。",
+   00117|             format!("在 `.` 中找到 2 行提到 `add`：\n{LISTED}"),
+   00118|         ),
+   00119|         (
+   00120|             "¿Dónde se usa add?",
+   00121|             format!("Se encontraron 2 línea(s) que mencionan `add` en `.`:\n{LISTED}"),
+   00122|         ),
+   00123|     ] {
+   00124|         let (tool, arguments, answer) = search_once(prompt, &AGENT_CLI_TOOLS, GREP_HITS);
+   00125|         assert_eq!(tool, "grep", "{prompt}");
+   00126|         assert_eq!(arguments["pattern"], "\\badd\\b", "{prompt}");
+   00127|         assert_eq!(answer, expected, "{prompt}");
+   00128|     }
+   00129| }
+   00130| 
+   00131| #[test]
+   00132| fn a_pattern_found_nowhere_is_a_seeded_not_found() {
+   00133|     let (_, _, answer) = search_once(
+   00134|         "Find all usages of sub.",
+   00135|         &AGENT_CLI_TOOLS,
+   00136|         "No files found",
+   00137|     );
+   00138|     assert_eq!(answer, "No line in `.` mentions `sub`.");
+   00139| }
+   00140| 
+   00141| #[test]
+   00142| fn without_a_grep_tool_the_shell_runs_grep() {
+   00143|     let (tool, arguments, answer) =
+   00144|         search_once("Find all usages of add.", &REDUCED_TOOLS, SHELL_HITS);
+   00145|     assert_eq!(tool, "bash");
+   00146|     assert_eq!(
+   00147|         arguments["command"],
+   00148|         "grep -rnHw --exclude-dir=.git -- 'add' '.'"
+   00149|     );
+   00150|     assert_eq!(
+   00151|         answer,
+   00152|         format!("Found 2 line(s) mentioning `add` in `.`:\n{LISTED}")
+   00153|     );
+   00154|     let (_, _, none) = search_once("Find all usages of sub.", &REDUCED_TOOLS, "");
+   00155|     assert_eq!(none, "No line in `.` mentions `sub`.");
+   00156| }
+   00157| 
+   00158| /// G36: a scope phrase after the searched word is the scope, not part of
+   00159| /// the query (`rg -n 'foo this'` before).
+   00160| #[test]
+   00161| fn a_scope_phrase_after_the_searched_word_is_not_part_of_the_query() {
+   00162|     for prompt in [
+   00163|         "Search for 'foo' in this project.",
+   00164|         "Search for foo in the workspace.",
+   00165|     ] {
+   00166|         let Some(AgenticPlan::ToolCalls(calls)) =
+   00167|             plan_chat_step(&conversation(prompt, None), &REDUCED_TOOLS)
+   00168|         else {
+   00169|             panic!("{prompt} planned no tool call");
+   00170|         };
+   00171|         let arguments: serde_json::Value =
+   00172|             serde_json::from_str(&calls[0].arguments).expect("tool arguments are JSON");
+   00173|         assert_eq!(
+   00174|             arguments["command"], "grep -rnHw --exclude-dir=.git -- 'foo' '.'",
+   00175|             "{prompt}"
+   00176|         );
+   00177|     }
+   00178| }
+   00179| 
+   00180| #[test]
+   00181| fn a_quoted_literal_is_searched_as_fixed_text_within_the_named_folder() {
+   00182|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(
+   00183|         &conversation("Grep for 'return a' in lib/", None),
+   00184|         &REDUCED_TOOLS,
+   00185|     ) else {
+   00186|         panic!("the literal search planned no tool call");
+   00187|     };
+   00188|     let arguments: serde_json::Value =
+   00189|         serde_json::from_str(&calls[0].arguments).expect("tool arguments are JSON");
+   00190|     assert_eq!(
+   00191|         arguments["command"],
+   00192|         "grep -rnHF --exclude-dir=.git -- 'return a' 'lib'"
+   00193|     );
+   00194| }
+   00195| 
+   00196| #[test]
+   00197| fn a_named_file_is_the_scope_and_a_request_to_change_the_uses_is_not_a_search() {
+   00198|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(
+   00199|         &conversation("Count the lines containing foo in f.txt.", None),
+   00200|         &REDUCED_TOOLS,
+   00201|     ) else {
+   00202|         panic!("the scoped search planned no tool call");
+   00203|     };
+   00204|     let arguments: serde_json::Value =
+   00205|         serde_json::from_str(&calls[0].arguments).expect("tool arguments are JSON");
+   00206|     assert_eq!(
+   00207|         arguments["command"],
+   00208|         "grep -rnHw --exclude-dir=.git -- 'foo' 'f.txt'"
+   00209|     );
+   00210|     for prompt in [
+   00211|         "Rename all usages of add to plus.",
+   00212|         "Remove all uses of add.",
+   00213|     ] {
+   00214|         if let Some(AgenticPlan::ToolCalls(calls)) =
+   00215|             plan_chat_step(&conversation(prompt, None), &REDUCED_TOOLS)
+   00216|         {
+   00217|             assert!(!calls[0].arguments.contains("grep -rn"), "{prompt}");
+   00218|         }
+   00219|     }
+   00220| }
+   00221| 
+   00222| #[test]
+   00223| fn a_file_name_request_still_locates_the_file() {
+   00224|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(
+   00225|         &conversation("Find the file m.mjs in this directory.", None),
+   00226|         &AGENT_CLI_TOOLS,
+   00227|     ) else {
+   00228|         panic!("the file-name request planned no tool call");
+   00229|     };
+   00230|     assert_eq!(calls[0].tool, "bash");
+   00231|     assert!(
+   00232|         calls[0].arguments.contains("find "),
+   00233|         "{}",
+   00234|         calls[0].arguments
+   00235|     );
+   00236| }
+   00237| 
+   00238| #[test]
+   00239| fn a_search_the_request_sends_to_the_web_is_not_grepped() {
+   00240|     let plan = plan_chat_step(
+   00241|         &conversation("Find usages of add online.", None),
+   00242|         &AGENT_CLI_TOOLS,
+   00243|     );
+   00244|     if let Some(AgenticPlan::ToolCalls(calls)) = plan {
+   00245|         assert_ne!(calls[0].tool, "grep");
+   00246|     }
+   00247| }
+   00248| 
+   00249| /// T91 (gap G11): a named test file runs with the runtime its extension
+   00250| /// needs, from the seeded `test_file_runners` group of
+   00251| /// `data/seed/shell-intents.lino`, never the whole-suite command a marker
+   00252| /// file in the server's own directory chose.
+   00253| #[test]
+   00254| fn a_named_test_file_runs_with_its_own_runtime() {
+   00255|     for (prompt, command) in [
+   00256|         ("Run the tests in m.test.mjs.", "node --test m.test.mjs"),
+   00257|         ("Запусти тесты в m.test.mjs.", "node --test m.test.mjs"),
+   00258|         ("Run the tests in test_m.py.", "python3 -m pytest test_m.py"),
+   00259|     ] {
+   00260|         let Some(AgenticPlan::ToolCalls(calls)) =
+   00261|             plan_chat_step(&conversation(prompt, None), &REDUCED_TOOLS)
+   00262|         else {
+   00263|             panic!("{prompt} planned no tool call");
+   00264|         };
+   00265|         assert_eq!(calls[0].tool, "bash", "{prompt}");
+   00266|         let arguments: serde_json::Value =
+   00267|             serde_json::from_str(&calls[0].arguments).expect("tool arguments are JSON");
+   00268|         assert_eq!(arguments["command"], command, "{prompt}");
+   00269|     }
+   00270| }
+   00271| 
+   00272| /// T92 (gap G10): a function whose body is stated as an expression
+   00273| /// (`returns a - b`) is the seeded integer operation that meets the
+   00274| /// specification at every sample pair, and the returned value is the longest
+   00275| /// expression right after the verb, not the rest of the clause (`… to m.mjs`).
+   00276| #[test]
+   00277| fn a_function_whose_body_is_stated_as_an_expression_is_added() {
+   00278|     const MODULE: &str = "export function add(a, b) {\n  return a + b;\n}\n";
+   00279|     let mut file = MODULE.to_owned();
+   00280|     let mut messages = conversation(
+   00281|         "Add a function sub(a, b) that returns a - b to m.mjs.",
+   00282|         None,
+   00283|     );
+   00284|     let mut tools = Vec::new();
+   00285|     let mut answer = String::new();
+   00286|     for step in 0..6 {
+   00287|         let calls = match plan_chat_step(&messages, &REDUCED_TOOLS) {
+   00288|             Some(AgenticPlan::ToolCalls(calls)) => calls,
+   00289|             Some(AgenticPlan::Final(text)) => {
+   00290|                 answer = text;
+   00291|                 break;
+   00292|             }
+   00293|             _ => break,
+   00294|         };
+   00295|         let call = calls[0].clone();
+   00296|         let arguments: serde_json::Value =
+   00297|             serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+   00298|         let result = match call.tool.as_str() {
+   00299|             "read" => file.clone(),
+   00300|             "write" => {
+   00301|                 file = arguments["content"].as_str().unwrap_or_default().to_owned();
+   00302|                 String::new()
+   00303|             }
+   00304|             _ => String::new(),
+   00305|         };
+   00306|         tools.push(call.tool.clone());
+   00307|         let id = format!("s{step}");
+   00308|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00309|             id.clone(),
+   00310|             call.tool.clone(),
+   00311|             call.arguments.clone(),
+   00312|         )]));
+   00313|         messages.push(ChatMessage::tool_result(id, call.tool.clone(), result));
+   00314|     }
+   00315|     assert_eq!(tools, ["read", "write", "bash"]);
+   00316|     assert_eq!(
+   00317|         file,
+   00318|         format!("{MODULE}\nexport function sub(a, b) {{\n  return a - b;\n}}\n")
+   00319|     );
+   00320|     assert!(
+   00321|         answer.starts_with("Created and verified `m.mjs`"),
+   00322|         "answered {answer:?}"
+   00323|     );
+   00324| }
+   00325| 
+   00326| const BUGGY_MODULE: &str = "export function add(a, b) {\n  return a + b;\n}\n\nexport function mul(a, b) {\n  return a * b;\n}\n";
+   00327| const ADD_PROBE: &str =
+   00328|     "node --input-type=module -e \"import { add } from './m.mjs'; console.log(add(2, 3));\"";
+   00329| 
+   00330| /// Read returns the module, the shell returns `printed`: the calls (a shell
+   00331| /// call by its command) and the final answer.
+   00332| fn check(prompt: &str, printed: &str) -> (Vec<String>, Option<String>) {
+   00333|     let mut messages = conversation(prompt, None);
+   00334|     let mut calls = Vec::new();
+   00335|     for step in 0..4 {
+   00336|         let planned = match plan_chat_step(&messages, &REDUCED_TOOLS) {
+   00337|             Some(AgenticPlan::ToolCalls(planned)) => planned,
+   00338|             Some(AgenticPlan::Final(answer)) => return (calls, Some(answer)),
+   00339|             _ => break,
+   00340|         };
+   00341|         let call = planned[0].clone();
+   00342|         let arguments: serde_json::Value =
+   00343|             serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+   00344|         calls.push(if call.tool == "bash" {
+   00345|             arguments["command"].as_str().unwrap_or_default().to_owned()
+   00346|         } else {
+   00347|             call.tool.clone()
+   00348|         });
+   00349|         let result = if call.tool == "read" {
+   00350|             BUGGY_MODULE
+   00351|         } else {
+   00352|             printed
+   00353|         };
+   00354|         let id = format!("e{step}");
+   00355|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00356|             id.clone(),
+   00357|             call.tool.clone(),
+   00358|             call.arguments.clone(),
+   00359|         )]));
+   00360|         messages.push(ChatMessage::tool_result(id, call.tool.clone(), result));
+   00361|     }
+   00362|     (calls, None)
+   00363| }
+   00364| 
+   00365| /// T93 (gap G14): a bug report with a stated expectation is checked first --
+   00366| /// the module read, the function run at the contract's samples through its
+   00367| /// seeded probe -- and a function that meets it is no defect found.
+   00368| #[test]
+   00369| fn a_function_that_meets_the_stated_expectation_is_no_defect_found() {
+   00370|     let (calls, answer) = check("Fix the bug in m.mjs: add should return the sum.", "5\n");
+   00371|     assert_eq!(calls, ["read", ADD_PROBE]);
+   00372|     assert_eq!(
+   00373|         answer.as_deref(),
+   00374|         Some(
+   00375|             "No defect found: `add(2, 3)` in `m.mjs` returned `5`, the expected `5`, so `m.mjs` is unchanged."
+   00376|         )
+   00377|     );
+   00378| }
+   00379| 
+   00380| #[test]
+   00381| fn a_function_that_misses_the_stated_expectation_is_a_confirmed_defect() {
+   00382|     let (_, answer) = check("Fix the bug in m.mjs: add should return a * b.", "5\n");
+   00383|     assert_eq!(
+   00384|         answer.as_deref(),
+   00385|         Some(
+   00386|             "The defect is confirmed: `add(2, 3)` in `m.mjs` returned `5`, but the request expects `6`. `m.mjs` is unchanged."
+   00387|         )
+   00388|     );
+   00389| }
+   00390| 
+   00391| #[test]
+   00392| fn every_registered_language_states_the_expectation_in_its_own_words() {
+   00393|     let (calls, answer) = check(
+   00394|         "Исправь ошибку в m.mjs: add должна возвращать сумму.",
+   00395|         "5\n",
+   00396|     );
+   00397|     assert_eq!(calls, ["read", ADD_PROBE]);
+   00398|     assert_eq!(
+   00399|         answer.as_deref(),
+   00400|         Some(
+   00401|             "Ошибка не найдена: `add(2, 3)` в `m.mjs` вернула `5` — ожидаемое `5`, поэтому `m.mjs` не изменён."
+   00402|         )
+   00403|     );
+   00404|     let (calls, _) = check("m.mjs में बग ठीक करें: add को योग लौटाना चाहिए।", "5\n");
+   00405|     assert_eq!(calls, ["read", ADD_PROBE]);
+   00406| }
+   00407| 
+   00408| /// Run `prompt` over the in-memory `files`; the tools act as the Agent CLI's
+   00409| /// do. Returns each call (`tool path`, or a shell command) and the answer.
+   00410| fn run_over(
+   00411|     prompt: &str,
+   00412|     files: &mut std::collections::BTreeMap<String, String>,
+   00413| ) -> (Vec<String>, Option<String>) {
+   00414|     let mut messages = conversation(prompt, None);
+   00415|     let mut calls = Vec::new();
+   00416|     for step in 0..6 {
+   00417|         let planned = match plan_chat_step(&messages, &REDUCED_TOOLS) {
+   00418|             Some(AgenticPlan::ToolCalls(planned)) => planned,
+   00419|             Some(AgenticPlan::Final(answer)) => return (calls, Some(answer)),
+   00420|             _ => break,
+   00421|         };
+   00422|         let call = planned[0].clone();
+   00423|         let arguments: serde_json::Value =
+   00424|             serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+   00425|         let path = arguments["filePath"]
+   00426|             .as_str()
+   00427|             .or_else(|| arguments["path"].as_str())
+   00428|             .unwrap_or_default()
+   00429|             .to_owned();
+   00430|         let result = match call.tool.as_str() {
+   00431|             "read" => files
+   00432|                 .get(&path)
+   00433|                 .cloned()
+   00434|                 .unwrap_or_else(|| format!("Error: File not found: {path}")),
+   00435|             "write" => {
+   00436|                 let content = arguments["content"].as_str().unwrap_or_default();
+   00437|                 files.insert(path.clone(), content.to_owned());
+   00438|                 String::new()
+   00439|             }
+   00440|             "bash" => {
+   00441|                 let command = arguments["command"].as_str().unwrap_or_default();
+   00442|                 files
+   00443|                     .get(command.trim_start_matches("cat "))
+   00444|                     .cloned()
+   00445|                     .unwrap_or_default()
+   00446|             }
+   00447|             _ => String::new(),
+   00448|         };
+   00449|         calls.push(if call.tool == "bash" {
+   00450|             arguments["command"].as_str().unwrap_or_default().to_owned()
+   00451|         } else {
+   00452|             format!("{} {path}", call.tool)
+   00453|         });
+   00454|         let id = format!("w{step}");
+   00455|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00456|             id.clone(),
+   00457|             call.tool.clone(),
+   00458|             call.arguments.clone(),
+   00459|         )]));
+   00460|         messages.push(ChatMessage::tool_result(id, call.tool.clone(), result));
+   00461|     }
+   00462|     (calls, None)
+   00463| }
+   00464| 
+   00465| /// T96 (the backstop behind G13, G17 and T29): unless the first write verb is
+   00466| /// a seeded whole-file write, a literal-file plan reads its target first, and
+   00467| /// an existing non-empty file is replaced only when the request says so.
+   00468| #[test]
+   00469| fn an_edit_misread_as_a_whole_file_write_reads_the_file_and_keeps_it() {
+   00470|     const MODULE: &str = "export function add(a, b) {\n  return a + b;\n}\n";
+   00471|     let mut files = std::collections::BTreeMap::from([("m.mjs".to_owned(), MODULE.to_owned())]);
+   00472|     let (calls, answer) = run_over("Replace all uses of add with plus in m.mjs.", &mut files);
+   00473|     assert_eq!(calls, ["read m.mjs"]);
+   00474|     assert_eq!(
+   00475|         answer.as_deref(),
+   00476|         Some(
+   00477|             "Left `m.mjs` unchanged: it already has content, and the request does not say to replace the whole file."
+   00478|         )
+   00479|     );
+   00480|     assert_eq!(files["m.mjs"], MODULE);
+   00481| }
+   00482| 
+   00483| #[test]
+   00484| fn a_missing_target_is_created_after_the_read_finds_nothing() {
+   00485|     let mut files = std::collections::BTreeMap::new();
+   00486|     let (calls, _) = run_over("Put 'hello' into notes.txt.", &mut files);
+   00487|     assert_eq!(
+   00488|         calls,
+   00489|         [
+   00490|             "read notes.txt",
+   00491|             "write .formal-ai/general-change-plan.lino",
+   00492|             "write notes.txt",
+   00493|             "cat notes.txt",
+   00494|         ]
+   00495|     );
+   00496|     assert_eq!(files["notes.txt"], "hello");
+   00497| }
+   00498| 
+   00499| #[test]
+   00500| fn an_existing_target_is_kept_for_that_verb_and_replaced_for_a_whole_file_write() {
+   00501|     let mut kept = std::collections::BTreeMap::from([("notes.txt".to_owned(), "old".to_owned())]);
+   00502|     let (_, answer) = run_over("Put 'hello' into notes.txt.", &mut kept);
+   00503|     assert_eq!(kept["notes.txt"], "old");
+   00504|     assert!(
+   00505|         answer
+   00506|             .as_deref()
+   00507|             .is_some_and(|text| text.starts_with("Left `notes.txt` unchanged")),
+   00508|         "answered {answer:?}"
+   00509|     );
+   00510|     let mut replaced = std::collections::BTreeMap::from([("a.txt".to_owned(), "old".to_owned())]);
+   00511|     let (calls, _) = run_over("Create a file a.txt containing hello", &mut replaced);
+   00512|     assert_eq!(calls[0], "write .formal-ai/general-change-plan.lino");
+   00513|     assert_eq!(replaced["a.txt"], "hello");
+   00514| }
+   00515| 
+   00516| /// T98 (gap G29): a listing request lists the directory it names -- the
+   00517| /// path-shaped word after a seeded place preposition -- unless the word
+   00518| /// belongs to a seeded scope phrase.
+   00519| #[test]
+   00520| fn a_listing_request_lists_the_directory_it_names() {
+   00521|     for (prompt, tools, tool, arguments) in [
+   00522|         (
+   00523|             "List the files in src.",
+   00524|             &AGENT_CLI_TOOLS[..],
+   00525|             "list",
+   00526|             serde_json::json!({ "path": "src" }),
+   00527|         ),
+   00528|         (
+   00529|             "Покажи файлы в src.",
+   00530|             &AGENT_CLI_TOOLS[..],
+   00531|             "list",
+   00532|             serde_json::json!({ "path": "src" }),
+   00533|         ),
+   00534|         (
+   00535|             "List the files in this directory.",
+   00536|             &AGENT_CLI_TOOLS[..],
+   00537|             "list",
+   00538|             serde_json::json!({ "path": "." }),
+   00539|         ),
+   00540|         (
+   00541|             "List the files in src.",
+   00542|             &REDUCED_TOOLS[..],
+   00543|             "bash",
+   00544|             serde_json::json!({ "command": "ls 'src'" }),
+   00545|         ),
+   00546|         (
+   00547|             "List the files in the current folder.",
+   00548|             &REDUCED_TOOLS[..],
+   00549|             "bash",
+   00550|             serde_json::json!({ "command": "ls" }),
+   00551|         ),
+   00552|     ] {
+   00553|         let Some(AgenticPlan::ToolCalls(calls)) =
+   00554|             plan_chat_step(&conversation(prompt, None), tools)
+   00555|         else {
+   00556|             panic!("{prompt} planned no tool call");
+   00557|         };
+   00558|         assert_eq!(calls[0].tool, tool, "{prompt}");
+   00559|         let planned: serde_json::Value =
+   00560|             serde_json::from_str(&calls[0].arguments).expect("tool arguments are JSON");
+   00561|         assert_eq!(planned, arguments, "{prompt}");
+   00562|     }
+   00563| }
+   00564| 
+   00565| /// T99 (gap G26): a question about what a module exports is answered from the
+   00566| /// functions it declares behind a seeded export marker.
+   00567| #[test]
+   00568| fn a_question_about_what_a_module_exports_is_answered_from_its_declarations() {
+   00569|     const MODULE: &str = "export function add(a, b) {\n  return a + b;\n}\n\nfunction helper() {}\n\nexport async function mul(a, b) {\n  return a * b;\n}\n";
+   00570|     for (prompt, expected) in [
+   00571|         (
+   00572|             "Which functions does src/m.mjs export?",
+   00573|             "`src/m.mjs` exports 2 function(s): `add`, `mul`.",
+   00574|         ),
+   00575|         (
+   00576|             "Какие функции экспортирует src/m.mjs?",
+   00577|             "`src/m.mjs` экспортирует функции (2): `add`, `mul`.",
+   00578|         ),
+   00579|     ] {
+   00580|         let Some(AgenticPlan::ToolCalls(calls)) =
+   00581|             plan_chat_step(&conversation(prompt, None), &REDUCED_TOOLS)
+   00582|         else {
+   00583|             panic!("{prompt} planned no tool call");
+   00584|         };
+   00585|         assert_eq!(calls[0].tool, "read", "{prompt}");
+   00586|         let next = conversation(prompt, Some((&calls[0].tool, &calls[0].arguments, MODULE)));
+   00587|         assert_eq!(
+   00588|             plan_chat_step(&next, &REDUCED_TOOLS),
+   00589|             Some(AgenticPlan::Final(expected.to_owned())),
+   00590|             "{prompt}"
+   00591|         );
+   00592|     }
+   00593| }
+   00594| 
+   00595| /// T100 (gap G27): a summary of a named file hands the file's text to the
+   00596| /// summarization handlers instead of answering with its first line.
+   00597| #[test]
+   00598| fn a_summary_of_a_named_file_summarizes_its_text() {
+   00599|     const TEXT: &str = "The river flooded the town after three days of rain. Residents moved to the school on the hill. Volunteers brought food and blankets.\n";
+   00600|     let prompt = "Summarize README.md in one sentence.";
+   00601|     let Some(AgenticPlan::ToolCalls(calls)) =
+   00602|         plan_chat_step(&conversation(prompt, None), &REDUCED_TOOLS)
+   00603|     else {
+   00604|         panic!("the summary planned no read");
+   00605|     };
+   00606|     assert_eq!(calls[0].tool, "read");
+   00607|     let next = conversation(prompt, Some((&calls[0].tool, &calls[0].arguments, TEXT)));
+   00608|     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&next, &REDUCED_TOOLS) else {
+   00609|         panic!("the summary did not answer");
+   00610|     };
+   00611|     assert!(
+   00612|         answer.starts_with("The river flooded the town after three days of rain."),
+   00613|         "{answer}"
+   00614|     );
+   00615|     assert!(!answer.contains("Volunteers"), "{answer}");
+   00616| }
+   00617| 
+   
+   (End of file - total 617 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/pull_request_1188_workspace_search.rs","file_path":"rust/tests/unit/pull_request_1188_workspace_search.rs","new":"with the `file:line` hits","newString":"with the `file:line` hits","new_str":"with the `file:line` hits","new_string":"with the `file:line` hits","old":"with the file:line hits","oldString":"with the file:line hits","old_str":"with the file:line hits","old_string":"with the file:line hits","path":"rust/tests/unit/pull_request_1188_workspace_search.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/pull_request_1188_workspace_search.rs"}
+   bc0f9bf0d7cb56abfef6bd768045e20beebae85f8ce7ac16fa6d157ad87366b9  rust/tests/unit/pull_request_1188_workspace_search.rs
+   
+== answer ==
+Replaced `with the file:line hits` with ``with the `file:line` hits`` in `rust/tests/unit/pull_request_1188_workspace_search.rs` and observed the result.

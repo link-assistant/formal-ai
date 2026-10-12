@@ -1,0 +1,147 @@
+language en
+lemma see
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the seat within a bishop's diocese where the bishop's cathedral is located"
+    id oewn-08604380-n
+    partOfSpeech n
+  entry
+    definition "perceive by sight or have the power to perceive by sight"
+    examples ("You have to be a good observer to see all the details" "Can you see the bird in that tree?" "He is blind — he cannot see")
+    id oewn-02133754-v
+    partOfSpeech v
+  entry
+    definition "perceive (an idea or situation) mentally"
+    examples ("Now I see!" "I just can't see your point" "Does she realize how important this decision is?" "I don't understand the idea")
+    id oewn-00592510-v
+    partOfSpeech v
+    synonyms (understand realize realise)
+  entry
+    definition "perceive or be contemporaneous with"
+    examples ("We found Republicans winning the offices" "You'll see a lot of cheating in this school" "The 1960's saw the rebellion of the younger generation against established traditions" "I want to see results")
+    id oewn-02133338-v
+    partOfSpeech v
+    synonyms (witness find)
+  entry
+    definition "imagine; conceive of; see in one's mind"
+    examples ("I can't see him on horseback!" "I can see what will happen" "I can see a risk in this strategy")
+    id oewn-01638974-v
+    partOfSpeech v
+    synonyms (visualize visualise envision project fancy figure picture image)
+  entry
+    definition "deem to be"
+    examples ("She views this quite differently from me" "I consider her to be shallow" "I don't see the situation quite as negatively as you do")
+    id oewn-00692380-v
+    partOfSpeech v
+    synonyms (consider reckon view regard)
+  entry
+    definition "get to know or become aware of, usually accidentally"
+    examples ("I learned that she has two grown-up children" "I see that you have been promoted")
+    id oewn-00600349-v
+    partOfSpeech v
+    synonyms (learn hear "get word" "get wind" "pick up" "find out" "get a line" discover)
+  entry
+    definition "see or watch"
+    examples ("view a show on television" "This program will be seen all over the world" "view an exhibition" "Catch a show on Broadway" "see a movie")
+    id oewn-02155378-v
+    partOfSpeech v
+    synonyms (watch view catch "take in")
+  entry
+    definition "come together"
+    examples ("I'll probably see you at the meeting" "How nice to see you again!")
+    id oewn-02026953-v
+    partOfSpeech v
+    synonyms (meet "run into" encounter "run across" "come across")
+  entry
+    definition "find out, learn, or determine with certainty, usually by making an inquiry or other effort"
+    examples ("I want to see whether she speaks French" "See whether it works" "find out if he speaks Russian" "Check whether the train leaves on time")
+    id oewn-00922307-v
+    partOfSpeech v
+    synonyms (determine check "find out" ascertain watch learn)
+  entry
+    definition "be careful or certain to do something; make certain of something"
+    examples ("He verified that the valves were closed" "See that the curtains are closed" "control the quality of the product")
+    id oewn-00664507-v
+    partOfSpeech v
+    synonyms (check insure "see to it" ensure control ascertain assure)
+  entry
+    definition "go to see for professional or business reasons"
+    examples ("You should see a lawyer" "We had to see a psychiatrist")
+    id oewn-02493953-v
+    partOfSpeech v
+  entry
+    definition "go to see for a social visit"
+    examples ("I went to see my friend Mary the other day")
+    id oewn-02494137-v
+    partOfSpeech v
+  entry
+    definition "go to see a place, as for entertainment"
+    examples ("We went to see the Eiffel Tower in the morning")
+    id oewn-02498679-v
+    partOfSpeech v
+    synonyms (visit)
+  entry
+    definition "take charge of or deal with"
+    examples ("Could you see about lunch?" "I must attend to this matter" "She took care of this business")
+    id oewn-02555278-v
+    partOfSpeech v
+    synonyms (attend "take care" look)
+  entry
+    definition "receive as a specified guest"
+    examples ("the doctor will see you now" "The minister doesn't see anybody before noon")
+    id oewn-01473299-v
+    partOfSpeech v
+  entry
+    definition "date regularly; have a steady relationship with"
+    examples ("Did you know that she is seeing an older man?" "He is dating his former wife again!")
+    id oewn-02491850-v
+    partOfSpeech v
+    synonyms ("go steady" "go out" date)
+  entry
+    definition "see and understand, have a good eye"
+    examples ("The artist must first learn to see")
+    id oewn-02134174-v
+    partOfSpeech v
+  entry
+    definition "deliberate or decide"
+    examples ("See whether you can come tomorrow" "let's see — which movie should we see tonight?")
+    id oewn-00705474-v
+    partOfSpeech v
+  entry
+    definition "observe as if with an eye"
+    examples ("The camera saw the burglary and recorded it")
+    id oewn-02160655-v
+    partOfSpeech v
+  entry
+    definition "observe, check out, and look over carefully or inspect"
+    examples ("The customs agent examined the baggage" "I must see your passport before you can enter the country")
+    id oewn-02135744-v
+    partOfSpeech v
+    synonyms (examine)
+  entry
+    definition "undergo or live through a difficult experience"
+    examples ("We had many trials to go through" "he saw action in Viet Nam")
+    id oewn-02114674-v
+    partOfSpeech v
+    synonyms (experience "go through")
+  entry
+    definition "conduct someone someplace"
+    examples ("I'll see you to the door")
+    id oewn-02029932-v
+    partOfSpeech v
+    synonyms (escort)
+  entry
+    definition "match or meet"
+    examples ("I saw the bet of one of my fellow players")
+    id oewn-01159034-v
+    partOfSpeech v
+  entry
+    definition "make sense of; assign a meaning to"
+    examples ("What message do you see in this letter?" "How do you interpret his behavior?")
+    id oewn-00624823-v
+    partOfSpeech v
+    synonyms (interpret construe)
+source "oewn:2024"

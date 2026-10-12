@@ -1,0 +1,53 @@
+>> bash {"command":"mkdir -p -- .formal-ai && (lock='.formal-ai/general-change-plan.lino.lock'; tries=0; until mkdir -- \"$lock\" 2>/dev/null; do tries=$((tries + 1)); [ \"$tries\" -lt 40 ] || exit 75; sleep 0.025; done; cleanup(){ rmdir -- \"$lock\"; }; trap cleanup EXIT; if [ -f '.formal-ai/general-change-plan.lino' ]; then grep -Fqx -- '  id \"general_change_plan_6c7d64fcdb3d609c\"' '.formal-ai/general-change-plan.lino'; status=$?; [ \"$status\" -le 1 ] || exit \"$status\"; else status=1; fi; if [ \"$status\" -eq 1 ]; then printf \"\n%s\" 'general_change_plan\n  id \"general_change_plan_6c7d64fcdb3d609c\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Set the contents of output.mjs to «previous\\n»\"\n  target \"output.mjs\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_aca8bef0301c3d0e\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to output.mjs\"\n    expected_evidence \"workspace file output.mjs\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"previous\\n\"\n    command \"cat output.mjs\"\n  verification_command \"cat output.mjs\"\n' >> '.formal-ai/general-change-plan.lino' || exit $?; fi; awk -v identity='  id \"general_change_plan_6c7d64fcdb3d609c\"' \"\\$0==\\\"general_change_plan\\\" {if(record)exit; header=\\$0; next} \\$0==identity {record=1; print header} record && NF {print}\" '.formal-ai/general-change-plan.lino')"}
+   general_change_plan
+     id "general_change_plan_6c7d64fcdb3d609c"
+     execution_mode "literal_file"
+     terminal_state "executed"
+     goal "Set the contents of output.mjs to «previous\n»"
+     target "output.mjs"
+     step 1
+       capability "Write"
+       action "append the composed plan to .formal-ai/general-change-plan.lino"
+       expected_evidence "written plan event impulse_aca8bef0301c3d0e"
+     step 2
+       capability "Write"
+       action "write the requested content to output.mjs"
+       expected_evidence "workspace file output.mjs"
+     step 3
+       capability "Run"
+       action "run the request-derived verification command"
+       expected_evidence "previous\n"
+       command "cat output.mjs"
+     verification_command "cat output.mjs"
+   
+>> write {"content":"previous\n","filePath":"output.mjs","file_path":"output.mjs","path":"output.mjs"}
+>> bash {"command":"cat output.mjs"}
+   previous
+   
+== answer ==
+Completed the general change request for output.mjs and verified it with `cat output.mjs`.
+
+Plan event (.formal-ai/general-change-plan.lino):
+
+```lino
+general_change_plan
+  id "general_change_plan_6c7d64fcdb3d609c"
+  execution_mode "literal_file"
+  terminal_state "executed"
+  goal "Set the contents of output.mjs to «previous\n»"
+  target "output.mjs"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_aca8bef0301c3d0e"
+  step 2
+    capability "Write"
+    action "write the requested content to output.mjs"
+    expected_evidence "workspace file output.mjs"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "previous\n"
+    command "cat output.mjs"
+  verification_command "cat output.mjs"
+```

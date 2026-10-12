@@ -1,0 +1,341 @@
+>> read {"filePath":"rust/tests/unit/pull_request_1188_line_operations.rs","file_path":"rust/tests/unit/pull_request_1188_line_operations.rs","path":"rust/tests/unit/pull_request_1188_line_operations.rs"}
+   <file>
+   00001| //! PR #1188 dogfooding (T29, T30, T33, T35 and probe gaps G3, G4): whole-line
+   00002| //! operations. Before: a line deletion with its neighbour was routed to a
+   00003| //! whole-file write that replaced a 380-line file with one line (T29);
+   00004| //! numbered line ranges were only read (T30); an insert after line N planned
+   00005| //! nothing (T33); a quoted path-shaped needle was read as the file (T35); a
+   00006| //! moved line was duplicated (G4); a swap planned nothing (G3). A computed
+   00007| //! change that would drop most of a file without the request stating that
+   00008| //! extent is refused. Twin of
+   00009| //! `rust/tests/web/pull-request-1188-line-operations.test.mjs`.
+   00010| 
+   00011| use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+   00012| use formal_ai::protocol::{ChatMessage, ToolCall};
+   00013| use formal_ai::source_fetch::sha256_hex;
+   00014| 
+   00015| const TOOLS: [&str; 4] = ["read", "edit", "bash", "write"];
+   00016| const SIX: &str = "one\ntwo\nthree\nfour\nfive\nsix\n";
+   00017| const CFG: &str = "alpha = 1\nbeta = 2\ngamma = 3\n";
+   00018| const LINO: &str =
+   00019|     "header\n      surface\n        text \"get it\"\n      surface\n        text find\nfooter\n";
+   00020| 
+   00021| /// The tools called, the file afterwards, and the final answer.
+   00022| struct Run {
+   00023|     tools: Vec<String>,
+   00024|     file: String,
+   00025|     answer: Option<String>,
+   00026| }
+   00027| 
+   00028| /// Run `prompt` over one file `name` holding `source`; the tools act on it the
+   00029| /// way the Agent CLI's do.
+   00030| fn drive(prompt: &str, source: &str, name: &str) -> Run {
+   00031|     let mut file = source.to_owned();
+   00032|     let mut messages = vec![ChatMessage::user(prompt)];
+   00033|     let mut tools = Vec::new();
+   00034|     let mut answer = None;
+   00035|     for index in 0..6 {
+   00036|         let calls = match plan_chat_step(&messages, &TOOLS) {
+   00037|             Some(AgenticPlan::ToolCalls(calls)) => calls,
+   00038|             Some(AgenticPlan::Final(text)) => {
+   00039|                 answer = Some(text);
+   00040|                 break;
+   00041|             }
+   00042|             None => break,
+   00043|         };
+   00044|         let call = calls[0].clone();
+   00045|         let arguments: serde_json::Value =
+   00046|             serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+   00047|         let result = match call.tool.as_str() {
+   00048|             "read" => file.clone(),
+   00049|             "edit" => {
+   00050|                 let old = arguments["oldString"].as_str().unwrap_or_default();
+   00051|                 let new = arguments["newString"].as_str().unwrap_or_default();
+   00052|                 file = file.replacen(old, new, 1);
+   00053|                 String::new()
+   00054|             }
+   00055|             "write" => {
+   00056|                 file = arguments["content"].as_str().unwrap_or_default().to_owned();
+   00057|                 String::new()
+   00058|             }
+   00059|             "bash" => format!("{}  {name}\n", sha256_hex(file.as_bytes())),
+   00060|             _ => String::new(),
+   00061|         };
+   00062|         tools.push(call.tool.clone());
+   00063|         let id = format!("call_{index}");
+   00064|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00065|             id.clone(),
+   00066|             call.tool.clone(),
+   00067|             call.arguments.clone(),
+   00068|         )]));
+   00069|         messages.push(ChatMessage::tool_result(id, call.tool.clone(), result));
+   00070|     }
+   00071|     Run {
+   00072|         tools,
+   00073|         file,
+   00074|         answer,
+   00075|     }
+   00076| }
+   00077| 
+   00078| #[test]
+   00079| fn numbered_lines_are_removed() {
+   00080|     let range = drive("Delete lines 2-3 from f.txt.", SIX, "f.txt");
+   00081|     assert_eq!(range.tools, ["read", "edit", "bash"]);
+   00082|     assert_eq!(range.file, "one\nfour\nfive\nsix\n");
+   00083|     assert_eq!(
+   00084|         range.answer.as_deref(),
+   00085|         Some("Deleted line(s) 2-3 of `f.txt` and observed the result.")
+   00086|     );
+   00087|     assert_eq!(
+   00088|         drive("Delete lines 2 to 3 from f.txt.", SIX, "f.txt").file,
+   00089|         "one\nfour\nfive\nsix\n"
+   00090|     );
+   00091|     assert_eq!(
+   00092|         drive(
+   00093|             "Remove line 6 from f.txt.",
+   00094|             "one\ntwo\nthree\nfour\nfive\nsix",
+   00095|             "f.txt"
+   00096|         )
+   00097|         .file,
+   00098|         "one\ntwo\nthree\nfour\nfive"
+   00099|     );
+   00100| }
+   00101| 
+   00102| #[test]
+   00103| fn every_registered_language_names_the_range() {
+   00104|     for prompt in [
+   00105|         "Удали строки с 2 по 3 из f.txt.",
+   00106|         "f.txt से पंक्तियाँ 2 से 3 हटाओ।",
+   00107|         "删除 f.txt 的第2到3行。",
+   00108|         "Elimina las líneas 2 a 3 de f.txt.",
+   00109|     ] {
+   00110|         assert_eq!(
+   00111|             drive(prompt, SIX, "f.txt").file,
+   00112|             "one\nfour\nfive\nsix\n",
+   00113|             "{prompt}"
+   00114|         );
+   00115|     }
+   00116|     assert_eq!(
+   00117|         drive("Удали строки с 2 по 3 из f.txt.", SIX, "f.txt")
+   00118|             .answer
+   00119|             .as_deref(),
+   00120|         Some("Из `f.txt` удалены строки 2-3, результат проверен.")
+   00121|     );
+   00122| }
+   00123| 
+   00124| #[test]
+   00125| fn a_line_past_the_end_is_an_honest_failure() {
+   00126|     let run = drive("Delete line 9 from f.txt.", SIX, "f.txt");
+   00127|     assert_eq!(run.tools, ["read"]);
+   00128|     assert_eq!(run.file, SIX);
+   00129|     assert_eq!(
+   00130|         run.answer.as_deref(),
+   00131|         Some(
+   00132|             "Verification failed for `f.txt`: the observed bytes differ from the planned workspace effect."
+   00133|         )
+   00134|     );
+   00135| }
+   00136| 
+   00137| #[test]
+   00138| fn a_numbered_line_and_the_line_above_it() {
+   00139|     assert_eq!(
+   00140|         drive(
+   00141|             "Delete line 4 and the line above it from f.txt.",
+   00142|             SIX,
+   00143|             "f.txt"
+   00144|         )
+   00145|         .file,
+   00146|         "one\ntwo\nfive\nsix\n"
+   00147|     );
+   00148| }
+   00149| 
+   00150| #[test]
+   00151| fn a_quoted_line_and_the_named_line_directly_above_it_go_together() {
+   00152|     let run = drive(
+   00153|         "In m.lino, delete the line '        text \"get it\"' and the '      surface' line directly above it.",
+   00154|         LINO,
+   00155|         "m.lino",
+   00156|     );
+   00157|     assert_eq!(run.tools, ["read", "edit", "bash"]);
+   00158|     assert_eq!(
+   00159|         run.file,
+   00160|         "header\n      surface\n        text find\nfooter\n"
+   00161|     );
+   00162|     assert_eq!(
+   00163|         run.answer.as_deref(),
+   00164|         Some(
+   00165|             "Removed `      surface`, `        text \"get it\"` from `m.lino` and observed the result."
+   00166|         )
+   00167|     );
+   00168|     let refused = drive(
+   00169|         "In m.lino, delete the line 'footer' and the 'header' line directly above it.",
+   00170|         LINO,
+   00171|         "m.lino",
+   00172|     );
+   00173|     assert_eq!(refused.tools, ["read"]);
+   00174|     assert_eq!(refused.file, LINO);
+   00175| }
+   00176| 
+   00177| #[test]
+   00178| fn removed_lines_with_backticks_are_independent_list_values() {
+   00179|     let result = drive(
+   00180|         "In m.lino, delete the line 'x `{old}` `{path}`' and the 'a' line directly above it.",
+   00181|         "header\na\nx `{old}` `{path}`\nfooter\n",
+   00182|         "m.lino",
+   00183|     );
+   00184|     assert_eq!(result.file, "header\nfooter\n");
+   00185|     assert_eq!(
+   00186|         result.answer.as_deref(),
+   00187|         Some("Removed `a`, `` x `{old}` `{path}` `` from `m.lino` and observed the result.")
+   00188|     );
+   00189| }
+   00190| 
+   00191| #[test]
+   00192| fn an_insert_anchored_at_a_numbered_line() {
+   00193|     let after = drive("Insert the line 'X' after line 2 in f.txt.", SIX, "f.txt");
+   00194|     assert_eq!(after.tools, ["read", "edit", "bash"]);
+   00195|     assert_eq!(after.file, "one\ntwo\nX\nthree\nfour\nfive\nsix\n");
+   00196|     assert_eq!(
+   00197|         after.answer.as_deref(),
+   00198|         Some("Inserted `X` after line 2 of `f.txt` and observed the result.")
+   00199|     );
+   00200|     assert_eq!(
+   00201|         drive("Insert the line 'X' before line 1 in f.txt.", SIX, "f.txt").file,
+   00202|         "X\none\ntwo\nthree\nfour\nfive\nsix\n"
+   00203|     );
+   00204|     assert_eq!(
+   00205|         drive("Insert the line 'X' after line 6 in f.txt.", SIX, "f.txt").file,
+   00206|         format!("{SIX}X\n")
+   00207|     );
+   00208|     assert_eq!(
+   00209|         drive("Вставь строку 'X' после строки 2 в f.txt.", SIX, "f.txt").file,
+   00210|         "one\ntwo\nX\nthree\nfour\nfive\nsix\n"
+   00211|     );
+   00212| }
+   00213| 
+   00214| #[test]
+   00215| fn a_quoted_path_is_the_payload_when_the_file_is_named_unquoted() {
+   00216|     let run = drive(
+   00217|         "Delete the lines containing 'rust/src/x.rs' from allow.txt.",
+   00218|         "keep a\nrust/src/x.rs\nkeep b\n  - rust/src/x.rs (old)\nkeep c\n",
+   00219|         "allow.txt",
+   00220|     );
+   00221|     assert_eq!(run.tools, ["read", "edit", "bash"]);
+   00222|     assert_eq!(run.file, "keep a\nkeep b\nkeep c\n");
+   00223| }
+   00224| 
+   00225| #[test]
+   00226| fn a_line_is_moved_never_duplicated() {
+   00227|     let top = drive(
+   00228|         "Move the line 'gamma = 3' to the top of cfg.toml.",
+   00229|         CFG,
+   00230|         "cfg.toml",
+   00231|     );
+   00232|     assert_eq!(top.file, "gamma = 3\nalpha = 1\nbeta = 2\n");
+   00233|     assert_eq!(
+   00234|         top.answer.as_deref(),
+   00235|         Some("Moved `gamma = 3` to the start of `cfg.toml` and observed the result.")
+   00236|     );
+   00237|     assert_eq!(
+   00238|         drive(
+   00239|             "Move the line 'alpha = 1' to the end of cfg.toml.",
+   00240|             CFG,
+   00241|             "cfg.toml"
+   00242|         )
+   00243|         .file,
+   00244|         "beta = 2\ngamma = 3\nalpha = 1\n"
+   00245|     );
+   00246|     assert_eq!(
+   00247|         drive(
+   00248|             "Move the line 'alpha = 1' after the line 'beta = 2' in cfg.toml.",
+   00249|             CFG,
+   00250|             "cfg.toml"
+   00251|         )
+   00252|         .file,
+   00253|         "beta = 2\nalpha = 1\ngamma = 3\n"
+   00254|     );
+   00255|     assert_eq!(
+   00256|         drive(
+   00257|             "Перемести строку 'gamma = 3' в начало cfg.toml.",
+   00258|             CFG,
+   00259|             "cfg.toml"
+   00260|         )
+   00261|         .file,
+   00262|         "gamma = 3\nalpha = 1\nbeta = 2\n"
+   00263|     );
+   00264| }
+   00265| 
+   00266| #[test]
+   00267| fn two_lines_are_swapped() {
+   00268|     let run = drive(
+   00269|         "Swap the lines 'alpha = 1' and 'beta = 2' in cfg.toml.",
+   00270|         CFG,
+   00271|         "cfg.toml",
+   00272|     );
+   00273|     assert_eq!(run.tools, ["read", "edit", "bash"]);
+   00274|     assert_eq!(run.file, "beta = 2\nalpha = 1\ngamma = 3\n");
+   00275|     assert_eq!(
+   00276|         run.answer.as_deref(),
+   00277|         Some("Swapped `alpha = 1` and `beta = 2` in `cfg.toml` and observed the result.")
+   00278|     );
+   00279|     assert_eq!(
+   00280|         drive(
+   00281|             "交换 cfg.toml 中的 'alpha = 1' 和 'gamma = 3'。",
+   00282|             CFG,
+   00283|             "cfg.toml"
+   00284|         )
+   00285|         .file,
+   00286|         "gamma = 3\nbeta = 2\nalpha = 1\n"
+   00287|     );
+   00288| }
+   00289| 
+   00290| #[test]
+   00291| fn a_computed_change_never_leaves_a_fragment_of_the_file() {
+   00292|     let mostly: String = (0..9)
+   00293|         .map(|index| format!("x {index}\n"))
+   00294|         .collect::<String>()
+   00295|         + "keep\n";
+   00296|     let run = drive(
+   00297|         "Delete the lines containing 'x' from f.txt.",
+   00298|         &mostly,
+   00299|         "f.txt",
+   00300|     );
+   00301|     assert_eq!(run.tools, ["read"]);
+   00302|     assert_eq!(run.file, mostly);
+   00303|     assert_eq!(
+   00304|         run.answer.as_deref(),
+   00305|         Some(
+   00306|             "Refused to change `f.txt`: the computed result would drop most of the file, and the request does not ask for that."
+   00307|         )
+   00308|     );
+   00309|     assert_eq!(
+   00310|         drive("Delete lines 1-9 from f.txt.", &mostly, "f.txt").file,
+   00311|         "keep\n"
+   00312|     );
+   00313| }
+   00314| 
+   
+   (End of file - total 314 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/pull_request_1188_line_operations.rs","file_path":"rust/tests/unit/pull_request_1188_line_operations.rs","new":"#[test]\nfn scalar_removal_payload_keeps_placeholder_text() {\n    let result = drive(\n        \"Remove 'literal {old} {path}' from m.lino.\",\n        \"header\\nliteral {old} {path}\\nfooter\\n\",\n        \"m.lino\",\n    );\n    assert_eq!(result.file, \"header\\nfooter\\n\");\n    assert_eq!(\n        result.answer.as_deref(),\n        Some(\"Removed `literal {old} {path}` from `m.lino` and observed the result.\")\n    );\n}\n\n#[test]\nfn an_insert_anchored_at_a_numbered_line() {","newString":"#[test]\nfn scalar_removal_payload_keeps_placeholder_text() {\n    let result = drive(\n        \"Remove 'literal {old} {path}' from m.lino.\",\n        \"header\\nliteral {old} {path}\\nfooter\\n\",\n        \"m.lino\",\n    );\n    assert_eq!(result.file, \"header\\nfooter\\n\");\n    assert_eq!(\n        result.answer.as_deref(),\n        Some(\"Removed `literal {old} {path}` from `m.lino` and observed the result.\")\n    );\n}\n\n#[test]\nfn an_insert_anchored_at_a_numbered_line() {","new_str":"#[test]\nfn scalar_removal_payload_keeps_placeholder_text() {\n    let result = drive(\n        \"Remove 'literal {old} {path}' from m.lino.\",\n        \"header\\nliteral {old} {path}\\nfooter\\n\",\n        \"m.lino\",\n    );\n    assert_eq!(result.file, \"header\\nfooter\\n\");\n    assert_eq!(\n        result.answer.as_deref(),\n        Some(\"Removed `literal {old} {path}` from `m.lino` and observed the result.\")\n    );\n}\n\n#[test]\nfn an_insert_anchored_at_a_numbered_line() {","new_string":"#[test]\nfn scalar_removal_payload_keeps_placeholder_text() {\n    let result = drive(\n        \"Remove 'literal {old} {path}' from m.lino.\",\n        \"header\\nliteral {old} {path}\\nfooter\\n\",\n        \"m.lino\",\n    );\n    assert_eq!(result.file, \"header\\nfooter\\n\");\n    assert_eq!(\n        result.answer.as_deref(),\n        Some(\"Removed `literal {old} {path}` from `m.lino` and observed the result.\")\n    );\n}\n\n#[test]\nfn an_insert_anchored_at_a_numbered_line() {","old":"#[test]\nfn an_insert_anchored_at_a_numbered_line() {","oldString":"#[test]\nfn an_insert_anchored_at_a_numbered_line() {","old_str":"#[test]\nfn an_insert_anchored_at_a_numbered_line() {","old_string":"#[test]\nfn an_insert_anchored_at_a_numbered_line() {","path":"rust/tests/unit/pull_request_1188_line_operations.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/pull_request_1188_line_operations.rs"}
+   b41d0883df447b5106576ef8969f2a158d38ae36f0d8ccee6279e967f321155d  rust/tests/unit/pull_request_1188_line_operations.rs
+   
+== answer ==
+Replaced `#[test]
+fn an_insert_anchored_at_a_numbered_line() {` with ``#[test]
+fn scalar_removal_payload_keeps_placeholder_text() {
+    let result = drive(
+        "Remove 'literal {old} {path}' from m.lino.",
+        "header\nliteral {old} {path}\nfooter\n",
+        "m.lino",
+    );
+    assert_eq!(result.file, "header\nfooter\n");
+    assert_eq!(
+        result.answer.as_deref(),
+        Some("Removed `literal {old} {path}` from `m.lino` and observed the result.")
+    );
+}
+
+#[test]
+fn an_insert_anchored_at_a_numbered_line() {`` in `rust/tests/unit/pull_request_1188_line_operations.rs` and observed the result.

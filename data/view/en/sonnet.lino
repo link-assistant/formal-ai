@@ -1,0 +1,17 @@
+view
+  id M-8eccb21c7ae2
+  lemma sonnet
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a verse form consisting of 14 lines with a fixed rhyme scheme"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "praise in a sonnet"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "compose a sonnet"
+    provenance (wordnet)

@@ -1,0 +1,41 @@
+language en
+lemma attachment
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a feeling of affection for a person or an institution"
+    id oewn-07560531-n
+    partOfSpeech n
+    synonyms ("fond regard")
+  entry
+    definition "a supplementary part or accessory"
+    id oewn-02758249-n
+    partOfSpeech n
+  entry
+    definition "a writ authorizing the seizure of property that may be needed for the payment of a judgment in a judicial proceeding"
+    id oewn-06566972-n
+    partOfSpeech n
+  entry
+    definition "a connection that fastens things together"
+    id oewn-02758357-n
+    partOfSpeech n
+    synonyms (bond)
+  entry
+    definition "faithful support for a cause or political party or religion"
+    examples ("attachment to a formal agenda" "adherence to a fat-free diet" "the adhesion of Seville was decisive")
+    id oewn-01215372-n
+    partOfSpeech n
+    synonyms (adherence adhesion)
+  entry
+    definition "the act of attaching or affixing something"
+    id oewn-00380230-n
+    partOfSpeech n
+    synonyms (affixation)
+  entry
+    definition "the act of fastening things together"
+    id oewn-00148415-n
+    partOfSpeech n
+    synonyms (fastening)
+source "oewn:2024"

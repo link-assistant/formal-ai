@@ -1,0 +1,101 @@
+{
+  "id": "T3091",
+  "tools": [
+    "write"
+  ],
+  "stop": "final",
+  "answer": "I could not verify .formal-ai/general-change-plan.lino because `cat .formal-ai/general-change-plan.lino` was not observed. I have not marked the change complete.",
+  "scratchTargetWrites": 1,
+  "content": "hello",
+  "expected": "hello",
+  "pass": true,
+  "contentId": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+  "probes": [
+    {
+      "prompt": "Note İİ 😀.\nCreate file x.txt containing hello.",
+      "actual": "hello.",
+      "before": "ello."
+    },
+    {
+      "prompt": "Note İİİ 😀.\nCreate file x.txt containing hello.",
+      "actual": "hello.",
+      "before": "llo."
+    },
+    {
+      "prompt": "Note İİ 😀.\nCreate file x.txt containing «hello».",
+      "actual": "hello",
+      "before": "hello"
+    },
+    {
+      "prompt": "Note İK 😀.\n创建 x.txt 内容为 你好。",
+      "actual": "你好。",
+      "before": "你好。"
+    }
+  ],
+  "closerProbes": [
+    {
+      "prompt": "Note İİK 😀.\nCreate file x.txt जिसमें Gemfile.lock हो",
+      "plan": {
+        "id": "general_change_plan_c0dbab86c0eb4e7a",
+        "mode": "literal_file",
+        "goal": "Note İİK 😀.\nCreate file x.txt जिसमें Gemfile.lock हो",
+        "target": "x.txt",
+        "content": "Gemfile.lock",
+        "steps": [
+          {
+            "capability": "write",
+            "action": "append the composed plan to .formal-ai/general-change-plan.lino",
+            "expected_evidence": "written plan event impulse_49d4b77ebc742c9a",
+            "command": null
+          },
+          {
+            "capability": "write",
+            "action": "write the requested content to x.txt",
+            "expected_evidence": "workspace file x.txt",
+            "command": null
+          },
+          {
+            "capability": "run",
+            "action": "run the request-derived verification command",
+            "expected_evidence": "Gemfile.lock",
+            "command": "cat x.txt"
+          }
+        ],
+        "verification_command": "cat x.txt",
+        "terminal_state": "executed"
+      }
+    },
+    {
+      "prompt": "Note İİK 😀.\nCreate file x.txt 把 Gemfile.lock 写入",
+      "plan": {
+        "id": "general_change_plan_0fecc33078b6b1e4",
+        "mode": "literal_file",
+        "goal": "Note İİK 😀.\nCreate file x.txt 把 Gemfile.lock 写入",
+        "target": "x.txt",
+        "content": "Gemfile.lock",
+        "steps": [
+          {
+            "capability": "write",
+            "action": "append the composed plan to .formal-ai/general-change-plan.lino",
+            "expected_evidence": "written plan event impulse_f7fa2a8ed72b64a7",
+            "command": null
+          },
+          {
+            "capability": "write",
+            "action": "write the requested content to x.txt",
+            "expected_evidence": "workspace file x.txt",
+            "command": null
+          },
+          {
+            "capability": "run",
+            "action": "run the request-derived verification command",
+            "expected_evidence": "Gemfile.lock",
+            "command": "cat x.txt"
+          }
+        ],
+        "verification_command": "cat x.txt",
+        "terminal_state": "executed"
+      }
+    }
+  ]
+}

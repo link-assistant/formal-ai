@@ -1,0 +1,112 @@
+{
+  "entities": {
+    "Q90": {
+      "type": "item",
+      "id": "Q90",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Paris"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Париж"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "पेरिस"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "巴黎"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "巴黎"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "City of Light"
+          },
+          {
+            "language": "en",
+            "value": "City of Love"
+          },
+          {
+            "language": "en",
+            "value": "Lutetia"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Париж (Франция)"
+          },
+          {
+            "language": "ru",
+            "value": "Париж, Франция"
+          },
+          {
+            "language": "ru",
+            "value": "Париж (столица)"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "उजाले का शहर"
+          },
+          {
+            "language": "hi",
+            "value": "प्रेम का शहर"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "巴黎省"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Paris"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Париж"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "पेरिस"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "巴黎"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

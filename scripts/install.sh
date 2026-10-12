@@ -6,7 +6,8 @@
 #
 #   desktop   the Electron desktop app (downloads the matching release asset)
 #   vscode    the VS Code extension (downloads the .vsix, runs `code --install-extension`)
-#   cli       the `formal-ai` command-line tool (via `cargo install formal-ai`)
+#   cli       the `formal-ai` command-line tool (prebuilt release archive,
+#             falls back to `cargo install formal-ai`; issue #1181)
 #   telegram  the Telegram bot (alias for `cli`: the bot ships inside the CLI)
 #   all       desktop + vscode + cli (best effort; skips what the host can't do)
 #
@@ -23,6 +24,8 @@
 #   FORMAL_AI_INSTALL_VERSION   pin a release tag, e.g. v0.215.0 (default: latest)
 #   FORMAL_AI_INSTALL_DIR       where to place downloaded desktop assets
 #                               (default: $HOME/Downloads, else the current dir)
+#   FORMAL_AI_INSTALL_BIN       where to place the prebuilt CLI binary
+#                               (default: $HOME/.cargo/bin when it exists, else $HOME/.local/bin)
 #   FORMAL_AI_SKIP_VERIFY       set to 1 to skip the SHA-256 checksum check
 #
 # The script is wrapped in main() and only invoked on the final line so a
@@ -57,7 +60,8 @@ Usage: install.sh [desktop|vscode|cli|telegram|all]
 Targets:
   desktop   Download the desktop app release asset for this OS/arch.
   vscode    Download the .vsix and install it with `code --install-extension`.
-  cli       Install the `formal-ai` CLI with `cargo install formal-ai`.
+  cli       Install the `formal-ai` CLI from the prebuilt release archive
+            (falls back to `cargo install formal-ai`).
   telegram  Install the CLI that powers the Telegram bot (alias for `cli`).
   all       Install everything this machine can support (best effort).
 
@@ -65,6 +69,7 @@ Environment:
   FORMAL_AI_INSTALL_TARGET    target when none is passed on the command line
   FORMAL_AI_INSTALL_VERSION   pin a release tag (default: latest)
   FORMAL_AI_INSTALL_DIR       directory for downloaded desktop assets
+  FORMAL_AI_INSTALL_BIN       directory for the prebuilt CLI binary
   FORMAL_AI_SKIP_VERIFY=1     skip the SHA-256 checksum verification
 EOF
 }
@@ -270,7 +275,107 @@ install_vscode() {
   fi
 }
 
+# The host triple the `cli` job of the Desktop Release workflow publishes a
+# prebuilt archive for (issue #1181). Linux uses the static musl builds, so
+# one archive runs on any distro regardless of its glibc. Empty when this
+# OS/arch has no prebuilt archive (the caller falls back to cargo install).
+cli_target_triple() {
+  os="$(detect_os)"
+  arch="$(detect_arch)"
+  case "$os:$arch" in
+    macos:x64) echo "x86_64-apple-darwin" ;;
+    macos:arm64) echo "aarch64-apple-darwin" ;;
+    linux:x64) echo "x86_64-unknown-linux-musl" ;;
+    linux:arm64) echo "aarch64-unknown-linux-musl" ;;
+    windows:x64) echo "x86_64-pc-windows-msvc" ;;
+    *) echo "" ;;
+  esac
+}
+
+# Where the prebuilt binary goes. ~/.cargo/bin wins when it exists because it
+# is already on PATH for every rustup user; otherwise the XDG default.
+resolve_cli_bin_dir() {
+  if [ -n "${FORMAL_AI_INSTALL_BIN:-}" ]; then
+    echo "$FORMAL_AI_INSTALL_BIN"
+  elif [ -d "${HOME:-}/.cargo/bin" ]; then
+    echo "${HOME}/.cargo/bin"
+  else
+    echo "${HOME:-.}/.local/bin"
+  fi
+}
+
+# Download and install the prebuilt CLI archive for this host. Returns
+# non-zero -- without dying -- whenever the prebuilt path is unavailable or
+# unusable, so install_cli can fall back to `cargo install`.
+install_cli_prebuilt() {
+  json_file="$1"
+  triple="$(cli_target_triple)"
+  [ -n "$triple" ] || { log "no prebuilt CLI archive for this OS/arch"; return 1; }
+
+  exe=""
+  case "$triple" in
+    *-windows-*) ext="zip"; pattern="formal-ai-cli-${triple}\\.zip$"; exe=".exe" ;;
+    *) ext="tar.gz"; pattern="formal-ai-cli-${triple}\\.tar\\.gz$" ;;
+  esac
+
+  url="$(asset_url_matching "$pattern" < "$json_file" || true)"
+  [ -n "$url" ] || {
+    log "no prebuilt CLI archive (formal-ai-cli-${triple}.${ext}) in this release"
+    return 1
+  }
+
+  tmp="$(mktemp -d 2>/dev/null || echo "${TMPDIR:-/tmp}/formal-ai-cli.$$")"
+  mkdir -p "$tmp"
+  name="$(basename "$url")"
+  archive="${tmp}/${name}"
+  log "downloading $name"
+  download "$url" "$archive" || { log "download failed"; return 1; }
+  verify_checksum "$archive" "$json_file"
+
+  if [ "$ext" = "tar.gz" ]; then
+    tar -xzf "$archive" -C "$tmp" || { log "archive extraction failed"; return 1; }
+  elif have unzip; then
+    unzip -o "$archive" -d "$tmp" || { log "archive extraction failed"; return 1; }
+  else
+    # Git Bash ships no unzip; its bsdtar (Windows System32 tar) reads zip,
+    # and if the available tar is GNU tar it fails cleanly here.
+    tar -xf "$archive" -C "$tmp" || { log "archive extraction failed (no unzip)"; return 1; }
+  fi
+
+  src="${tmp}/formal-ai-cli-${triple}/formal-ai${exe}"
+  [ -f "$src" ] || { log "the archive did not contain the expected binary"; return 1; }
+
+  bin_dir="$(resolve_cli_bin_dir)"
+  mkdir -p "$bin_dir" || { log "could not create $bin_dir"; return 1; }
+  dest="${bin_dir}/formal-ai${exe}"
+  cp "$src" "$dest" && chmod +x "$dest" 2>/dev/null || {
+    log "could not install the binary into $bin_dir"
+    return 1
+  }
+  rm -rf "$tmp" 2>/dev/null || true
+
+  if ! "$dest" --version >/dev/null 2>&1; then
+    log "the downloaded binary did not run on this machine"
+    rm -f "$dest"
+    return 1
+  fi
+  log "CLI installed at $dest"
+  case ":${PATH}:" in
+    *":${bin_dir}:"*) : ;;
+    *) log "note: $bin_dir is not on your PATH; add it with:"
+       log "  export PATH=\"$bin_dir:\$PATH\"" ;;
+  esac
+  log "Try: formal-ai --help"
+}
+
 install_cli() {
+  # Issue #1181: prefer the prebuilt release archive -- no Rust toolchain, no
+  # compile -- and only fall back to `cargo install` when there is no archive
+  # for this host or it cannot be used.
+  if install_cli_prebuilt "$1"; then
+    return 0
+  fi
+  log "falling back to 'cargo install formal-ai'"
   if have cargo; then
     log "installing the formal-ai CLI with 'cargo install formal-ai'"
     if [ -n "${FORMAL_AI_INSTALL_VERSION:-}" ]; then
@@ -281,7 +386,7 @@ install_cli() {
     fi
     log "CLI installed. Try: formal-ai --help"
   else
-    die "cargo is required to install the CLI. Install Rust from https://rustup.rs then re-run."
+    die "no prebuilt CLI archive for this machine and cargo is unavailable. Install Rust from https://rustup.rs then re-run."
   fi
 }
 

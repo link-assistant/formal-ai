@@ -1,0 +1,25 @@
+view
+  id M-4120639e2024
+  lemma exact
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "marked by strict and particular and complete accordance with fact"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(of ideas, images, representations, expressions) characterized by perfect conformity to fact or truth; strictly correct"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "lacking compromising or mitigating elements"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "claim as due or just"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "take as an undesirable consequence of some event or state of affairs"
+    provenance (wordnet)

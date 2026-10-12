@@ -1,0 +1,49 @@
+language en
+lemma arrange
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "put into a proper or systematic order"
+    examples ("arrange the books on the shelves in chronological order")
+    id oewn-01466592-v
+    partOfSpeech v
+    synonyms ("set up")
+  entry
+    definition "make arrangements for"
+    examples ("Can you arrange a meeting with the President?")
+    id oewn-01023638-v
+    partOfSpeech v
+    synonyms ("fix up")
+  entry
+    definition "plan, organize, and carry out (an event)"
+    examples ("the neighboring tribe staged an invasion")
+    id oewn-01651668-v
+    partOfSpeech v
+    synonyms (stage)
+  entry
+    definition "set (printed matter) into a specific format"
+    examples ("Format this letter so it can be printed out")
+    id oewn-01748949-v
+    partOfSpeech v
+    synonyms (format)
+  entry
+    definition "arrange attractively"
+    examples ("dress my hair for the wedding")
+    id oewn-00038562-v
+    partOfSpeech v
+    synonyms (dress set do coif coiffe coiffure)
+  entry
+    definition "adapt for performance in a different way"
+    examples ("set this poem to music")
+    id oewn-01709988-v
+    partOfSpeech v
+    synonyms (set)
+  entry
+    definition "arrange thoughts, ideas, temporal events"
+    examples ("arrange my schedule" "set up one's life" "I put these memories with those of bygone times")
+    id oewn-00737576-v
+    partOfSpeech v
+    synonyms ("set up" put order)
+source "oewn:2024"

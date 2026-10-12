@@ -1,0 +1,42 @@
+{
+  "lemma": "ancient",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-09812689-n",
+      "partOfSpeech": "n",
+      "definition": "a very old person",
+      "synonyms": [
+        "antediluvian"
+      ]
+    },
+    {
+      "id": "oewn-09812582-n",
+      "partOfSpeech": "n",
+      "definition": "a person who lived in ancient times"
+    },
+    {
+      "id": "oewn-01732846-s",
+      "partOfSpeech": "s",
+      "definition": "belonging to times long past especially of the historical period before the fall of the Western Roman Empire",
+      "examples": [
+        "ancient history",
+        "ancient civilizations such as those of the Etruscans and Sumerians",
+        "ancient Greece"
+      ]
+    },
+    {
+      "id": "oewn-01649289-s",
+      "partOfSpeech": "s",
+      "definition": "very old",
+      "examples": [
+        "an ancient mariner"
+      ]
+    }
+  ]
+}

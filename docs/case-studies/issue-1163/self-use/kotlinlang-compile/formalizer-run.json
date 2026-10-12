@@ -1,0 +1,28 @@
+{
+  "url": "https://kotlinlang.org/docs/command-line.html",
+  "fetchedAt": "2026-10-07T08:25:03.924Z",
+  "status": 200,
+  "bytes": 14931,
+  "sha256": "0847a47edc7136be89ddb103aed1178c4eb95a0ba03bdfe396f1b207ab806e8e",
+  "blockCount": 54,
+  "codeBlocks": [
+    "bash | sdk install kotlin",
+    "bash | brew update",
+    "bash | sudo snap install --classic kotlin",
+    "kotlin | fun main() {",
+    "bash | kotlinc hello.kt -include-runtime -d hello.jar",
+    "bash | kotlinc -help",
+    "bash | java -jar hello.jar",
+    "bash | kotlinc hello.kt -d hello.jar",
+    "bash | kotlinr -classpath hello.jar HelloKt",
+    "kotlin | import java.io.File",
+    "bash | kotlinc -script list_folders.kts -- -d <path_to_folder_to_inspect>",
+    "bash | kotlinc -script-templates org.example.CustomScriptDefinition -script custom.script1.kts"
+  ],
+  "compile": [
+    "kotlinc hello.kt -include-runtime -d hello.jar"
+  ],
+  "run": [
+    "java -jar hello.jar"
+  ]
+}

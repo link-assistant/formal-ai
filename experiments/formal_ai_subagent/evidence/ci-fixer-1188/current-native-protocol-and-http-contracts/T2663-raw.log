@@ -1,0 +1,634 @@
+>> read {"filePath":"rust/tests/web/agentic-recipes-a.test.mjs","file_path":"rust/tests/web/agentic-recipes-a.test.mjs","path":"rust/tests/web/agentic-recipes-a.test.mjs"}
+   <file>
+   00001| // Unit tests for the JavaScript ports of the formalization, meaning-detail,
+   00002| // diagram and self-referential document recipes (js/agentic/formalize.mjs,
+   00003| // lexicon.mjs, formalization_recipe.mjs, meaning_detail.mjs, diagram.mjs,
+   00004| // self_heal.mjs, ledger.mjs, explain.mjs, change_request.mjs,
+   00005| // repair_strategy.mjs, rebuild_plan.mjs, source_links.mjs,
+   00006| // document_recipe.mjs and their crate/ dependencies).
+   00007| //
+   00008| // Each case mirrors a Rust test (rust/tests/unit/agentic-coding/agentic_coding.rs,
+   00009| // agentic_surfaces.rs, issue_538_agentic.rs, custom_formalization_subject.rs, issue_558_*.rs,
+   00010| // issue_1138_formalization_depth.rs); committed artifacts the Rust tests pin
+   00011| // byte-for-byte (docs/diagrams/agentic-recipes.md, the issue-538 Agent CLI
+   00012| // sessions, the seed meaning blocks) are the expectations here too.
+   00013| 
+   00014| import { loadRenameMap, resolveRenameChains } from '../../../experiments/formal_ai_subagent/rename-by-rule.mjs';
+   00015| import assert from 'node:assert/strict';
+   00016| import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+   00017| import { before, describe, it } from 'node:test';
+   00018| 
+   00019| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00020| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00021| import { parseChatMessage } from '../../../js/server/chat-request.mjs';
+   00022| import {
+   00023|   FISHERMAN_DOC_ID, PRIMITIVE_KINDS, canonicalFishermanSynopsis, coversAllNine, formalizeTextToLinks, totalRecords,
+   00024| } from '../../../js/agentic/formalize.mjs';
+   00025| import { Lexicon, tokenize } from '../../../js/agentic/lexicon.mjs';
+   00026| import {
+   00027|   CANONICAL_SOURCE_URL, KB_PATH, isFormalizationTask, planFormalizationStep, searchQuery,
+   00028| } from '../../../js/agentic/formalization_recipe.mjs';
+   00029| import * as meaningDetail from '../../../js/agentic/meaning_detail.mjs';
+   00030| import * as diagram from '../../../js/agentic/diagram.mjs';
+   00031| import * as selfHeal from '../../../js/agentic/self_heal.mjs';
+   00032| import * as ledger from '../../../js/agentic/ledger.mjs';
+   00033| import * as explain from '../../../js/agentic/explain.mjs';
+   00034| import * as changeRequest from '../../../js/agentic/change_request.mjs';
+   00035| import * as repairStrategy from '../../../js/agentic/repair_strategy.mjs';
+   00036| import * as rebuildPlan from '../../../js/agentic/rebuild_plan.mjs';
+   00037| import * as sourceLinks from '../../../js/agentic/source_links.mjs';
+   00038| import {
+   00039|   SourceLinks, fastStableId, ownedFileCount, ownedManifest, ownedManifestContentId, ownedManifestNotation, ownedSourceFiles,
+   00040|   ownedTotalBytes,
+   00041| } from '../../../js/agentic/crate/self_source_links.mjs';
+   00042| import { sourceCitation } from '../../../js/agentic/crate/self_explanation.mjs';
+   00043| import { stableId } from '../../../js/agentic/crate/engine_stable_identifier.mjs';
+   00044| import { sentences, clauses } from '../../../js/agentic/crate/formalization_segment.mjs';
+   00045| import { unknownSurfaceSpans, unknownSurfaces } from '../../../js/agentic/crate/concept_lookup.mjs';
+   00046| import { ConceptGraph, formalizeDeeply } from '../../../js/agentic/crate/formalization_concept_links.mjs';
+   00047| import { offlineRegistryLookup } from '../../../js/agentic/crate/concept_lookup.mjs';
+   00048| 
+   00049| const ROOT = new URL('../../../', import.meta.url);
+   00050| const repo = (path) => readFileSync(new URL(path, ROOT), 'utf8');
+   00051| 
+   00052| const user = (content) => parseChatMessage({ role: 'user', content });
+   00053| const callMessage = (id, tool, args) => parseChatMessage({
+   00054|   role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: tool, arguments: args } }],
+   00055| });
+   00056| const toolResult = (id, name, content) => parseChatMessage({ role: 'tool', tool_call_id: id, name, content });
+   00057| 
+   00058| /** Mirrors the Rust tests' `answer_tool_call`. */
+   00059| function answerCall(messages, call, result) {
+   00060|   const id = `call_${messages.length}`;
+   00061|   messages.push(callMessage(id, call.tool, call.arguments));
+   00062|   messages.push(toolResult(id, call.tool, result));
+   00063| }
+   00064| const single = (plan) => {
+   00065|   assert.equal(plan?.kind, 'tool_calls', JSON.stringify(plan)?.slice(0, 400));
+   00066|   assert.equal(plan.calls.length, 1);
+   00067|   return plan.calls[0];
+   00068| };
+   00069| const final = (plan) => {
+   00070|   assert.equal(plan?.kind, 'final', JSON.stringify(plan)?.slice(0, 400));
+   00071|   return plan.answer;
+   00072| };
+   00073| const formalizeStep = (messages, tools) => planFormalizationStep(
+   00074|   [...messages].reverse().find((message) => message.role === 'user').content, messages, tools,
+   00075| );
+   00076| 
+   00077| const TASKS = {
+   00078|   selfHeal: 'When you cannot answer an input, run your self-healing loop: reason about the failure, map it onto the source that would change with a source-to-links round-trip, learn a benchmark-gated lesson, and record the repair case in Links Notation for human approval.',
+   00079|   ledger: 'Promote the approved lesson into your learning ledger and record the approved learning record in Links Notation so a repeated failure is answered from the ledger next time.',
+   00080|   explain: 'Explain how Formal AI itself works, and ground the answer in its own source files, data artifacts, and tests rather than prose documentation.',
+   00081|   change: 'I want to change Formal AI itself: please add a new capability to the system, and route my request through the same human-gated review loop that produces a requirement, a test, and a patch plan I can review as a pull request.',
+   00082|   repair: 'Classify a failure and decide which part to repair: given a failure trace the system could not answer, determine whether the repair is a solver method, a data record, or a test change, then compose the grounded, human-gated repair strategy for it — for every class of failure, not just one.',
+   00083|   rebuild: 'An improvement to Formal AI was accepted — now rebuild it and reattach the improved WebAssembly worker to the UI: give me the ordered, reversible steps to regenerate the worker, reattach it to the browser UI, hot-swap the local server, and verify the UI uses the accepted version.',
+   00084|   sourceLinks: 'Translate the entire source code of our system to the links / meta language and back to source, and record the whole-repository source-to-links projection in Links Notation so we can recompile ourselves.',
+   00085|   meaning: "Make the tomato meaning more detailed: pin every surface's part of speech and grammatical number, ground it in Wikidata, and add the missing plural to томат.",
+   00086|   potato: 'Please make the potato word and meaning richer — record the singular/plural of each surface, add the missing plural form potatoes, and keep it grounded in Wikidata.',
+   00087|   diagram: 'Generate the mermaid diagrams of our agentic recipes, split into parts, as a visual overview of how Formal AI drives its own tools.',
+   00088| };
+   00089| 
+   00090| before(async () => {
+   00091|   await installNodeHost(new WorkerHost());
+   00092| });
+   00093| 
+   00094| describe('formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)', () => {
+   00095|   it('canonical_synopsis_covers_all_nine_primitives', () => {
+   00096|     const { summary } = formalizeTextToLinks(canonicalFishermanSynopsis(), '');
+   00097|     assert.ok(coversAllNine(summary));
+   00098|     assert.deepEqual(summary.covered, [...PRIMITIVE_KINDS]);
+   00099|     assert.equal(summary.doc_id, FISHERMAN_DOC_ID);
+   00100|     assert.equal(summary.concepts, 3);
+   00101|     assert.equal(summary.predicates, 6);
+   00102|     assert.equal(summary.assertions, 7);
+   00103|     assert.equal(summary.procedures, 1);
+   00104|     assert.equal(summary.contexts, 2);
+   00105|     assert.equal(summary.temporals, 3);
+   00106|     assert.equal(summary.modals, 3);
+   00107|     assert.equal(summary.annotations, 7);
+   00108|     assert.equal(totalRecords(summary), 37);
+   00109|     assert.equal(summary.needs_raised, 0);
+   00110|   });
+   00111| 
+   00112|   it('every_output_record_is_links_notation / grounded_svo_extraction_is_faithful', () => {
+   00113|     const document = formalizeTextToLinks(canonicalFishermanSynopsis(), '').links_notation;
+   00114|     assert.ok(document.startsWith('knowledge_base\n  id "tale:fisherman-and-fish"'));
+   00115|     assert.ok(!document.includes('\t'));
+   00116|     for (const needle of ['\n  id "a:0"', 'subject "ent:old_man"', 'predicate "pred:catch"', 'object "ent:golden_fish"',
+   00117|       'time "temporal:в-начале-сказки"', 'context "ctx:seaside"', 'modal "modal:commitment"',
+   00118|       'provenance "tale:fisherman-and-fish@0:28"', 'object "стать владычицей морской"', 'object_kind "literal"',
+   00119|       'span "0:28"', 'text "Старик поймал золотую рыбку."']) {
+   00120|       assert.ok(document.includes(needle), needle);
+   00121|     }
+   00122|   });
+   00123| 
+   00124|   it('formalization_is_deterministic', () => {
+   00125|     const first = formalizeTextToLinks(canonicalFishermanSynopsis(), '');
+   00126|     const second = formalizeTextToLinks(canonicalFishermanSynopsis(), '');
+   00127|     assert.deepEqual(first, second);
+   00128|   });
+   00129| 
+   00130|   it('arbitrary_text_still_produces_a_valid_knowledge_base', () => {
+   00131|     const formalized = formalizeTextToLinks('A cat sat on a mat. Then it slept.', 'doc:demo');
+   00132|     const { summary } = formalized;
+   00133|     assert.equal(summary.doc_id, 'doc:demo');
+   00134|     assert.equal(summary.annotations, 2);
+   00135|     assert.equal(summary.assertions, 0);
+   00136|     assert.equal(summary.procedures, 0);
+   00137|     assert.equal(summary.contexts, 0);
+   00138|     assert.ok(!coversAllNine(summary));
+   00139|     assert.ok(!formalized.links_notation.includes('pred:states'));
+   00140|     assert.ok(formalized.links_notation.includes('preserved_span\n  id "preserved:0"'));
+   00141|     assert.ok(formalized.links_notation.includes('language "en"'));
+   00142|   });
+   00143| 
+   00144|   it('explicit_doc_id_overrides_the_default', () => {
+   00145|     const formalized = formalizeTextToLinks(canonicalFishermanSynopsis(), 'kb:custom');
+   00146|     assert.equal(formalized.summary.doc_id, 'kb:custom');
+   00147|     assert.ok(formalized.links_notation.startsWith('knowledge_base\n  id "kb:custom"'));
+   00148|   });
+   00149| 
+   00150|   it('lexicon resolves titles by identity and aliases', () => {
+   00151|     const lexicon = Lexicon.standard();
+   00152|     assert.equal(lexicon.workForTitle('СКАЗКА  О РЫБАКЕ И РЫБКЕ')?.doc_id, FISHERMAN_DOC_ID);
+   00153|     assert.equal(lexicon.workForTitle('Сказка о рыбаке'), null);
+   00154|     assert.equal(lexicon.bestWorkFor('formalize the fisherman tale')?.doc_id, FISHERMAN_DOC_ID);
+   00155|     assert.equal(lexicon.bestWorkFor('Старик поймал золотую рыбку.'), null);
+   00156|     assert.deepEqual(tokenize('Hello, мир! 42x'), ['hello', 'мир', '42x']);
+   00157|   });
+   00158| });
+   00159| 
+   00160| describe('formalization segmentation and needs (rust/src/formalization)', () => {
+   00161|   it('segments with exact byte spans and the decimal-point rule', () => {
+   00162|     const text = 'Pi is 3.14 today. ¿La palabra existe? 猫坐在垫子上。下一句';
+   00163|     const segments = sentences(text);
+   00164|     assert.deepEqual(segments.map((segment) => segment.text), ['Pi is 3.14 today.', '¿La palabra existe?', '猫坐在垫子上。', '下一句']);
+   00165|     const bytes = new TextEncoder().encode(text);
+   00166|     for (const segment of segments) {
+   00167|       assert.equal(new TextDecoder().decode(bytes.slice(segment.start, segment.end)), segment.text);
+   00168|     }
+   00169|     assert.equal(segments[2].script, 'han');
+   00170|     assert.deepEqual(clauses(sentences('First, second; third.')[0]).map((clause) => clause.text), ['First', 'second', 'third.']);
+   00171|   });
+   00172| 
+   00173|   it('unknown surfaces skip quoted spans and seeded words', () => {
+   00174|     const spans = unknownSurfaceSpans('the «quick brown fox» zyxwvut');
+   00175|     assert.deepEqual(spans.map(([surface]) => surface), ['zyxwvut']);
+   00176|     assert.ok(!unknownSurfaces('the "quick brown" zyxwvut', 'en').includes('quick'));
+   00177|   });
+   00178| 
+   00179|   it('an offline deep pass reports every need unsatisfiable with the empty-structure identity', () => {
+   00180|     const graph = formalizeDeeply('Старик поймал золотую рыбку.', 'doc:input', offlineRegistryLookup, null, 1);
+   00181|     assert.ok(graph.needs.length > 0);
+   00182|     assert.ok(graph.needs.every((need) => need.state === 'unsatisfiable'));
+   00183|     assert.deepEqual(graph.groundedRatio(), [0, graph.needs.length]);
+   00184|     assert.equal(graph.identity(), new ConceptGraph().identity());
+   00185|     assert.ok(graph.toLinksNotation().startsWith(`concept_graph "${graph.identity()}"\n  document "doc:input"\n`));
+   00186|   });
+   00187| });
+   00188| 
+   00189| describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)', () => {
+   00190|   const TOOLS = ['web_search', 'web_fetch', 'write_file', 'run_command'];
+   00191| 
+   00192|   it('recognises formalization tasks in every language', () => {
+   00193|     assert.ok(isFormalizationTask('Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.'));
+   00194|     assert.ok(isFormalizationTask('formalize the fisherman tale'));
+   00195|     assert.ok(isFormalizationTask('Формализуй «Кот сидел на коврике» в базу знаний Links Notation.'));
+   00196|     assert.ok(isFormalizationTask('把《猫坐在垫子上》形式化为 Links Notation 知识库。'));
+   00197|     assert.ok(!isFormalizationTask('What is the capital of France?'));
+   00198|   });
+   00199| 
+   00200|   it('the acceptance walk: search query, then the canonical fetch, then the final report', () => {
+   00201|     const task = 'Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.';
+   00202|     const messages = [user(task)];
+   00203|     const search = single(planFormalizationStep(task, messages, ['web_search']));
+   00204|     assert.equal(search.tool, 'web_search');
+   00205|     assert.equal(search.arguments, '{"query":"Пушкин Сказка о рыбаке и рыбке полный текст"}');
+   00206|     assert.equal(searchQuery(), 'Пушкин Сказка о рыбаке и рыбке полный текст');
+   00207| 
+   00208|     answerCall(messages, search, '1. ru.wikisource.org — full text');
+   00209|     const fetch = single(planFormalizationStep(task, messages, ['web_search', 'web_fetch']));
+   00210|     assert.equal(fetch.tool, 'web_fetch');
+   00211|     assert.equal(fetch.arguments, `{"format":"text","url":"${CANONICAL_SOURCE_URL}"}`);
+   00212| 
+   00213|     const answer = final(planFormalizationStep(task, messages, ['web_search']));
+   00214|     assert.ok(answer.startsWith('Formalized «Сказка о рыбаке и рыбке» into a Links Notation knowledge base: 37 records realising 9 of'), answer);
+   00215|     assert.ok(answer.includes('9 of 9 protocol primitives'), answer);
+   00216|     assert.ok(answer.includes('knowledge_base'));
+   00217|     assert.ok(answer.includes(KB_PATH));
+   00218|   });
+   00219| 
+   00220|   it('planner_walks_the_full_search_fetch_write_run_recipe', () => {
+   00221|     const messages = [user('Please formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.')];
+   00222|     let call = single(formalizeStep(messages, TOOLS));
+   00223|     assert.equal(call.tool, 'web_search');
+   00224|     answerCall(messages, call, '1. ru.wikisource.org');
+   00225|     call = single(formalizeStep(messages, TOOLS));
+   00226|     assert.equal(call.tool, 'web_fetch');
+   00227|     assert.ok(call.arguments.includes(CANONICAL_SOURCE_URL));
+   00228|     answerCall(messages, call, canonicalFishermanSynopsis());
+   00229|     call = single(formalizeStep(messages, TOOLS));
+   00230|     assert.equal(call.tool, 'write_file');
+   00231|     assert.ok(call.arguments.includes(KB_PATH));
+   00232|     assert.equal(JSON.parse(call.arguments).content, formalizeTextToLinks(canonicalFishermanSynopsis(), '').links_notation);
+   00233|     answerCall(messages, call, `wrote ${KB_PATH}`);
+   00234|     call = single(formalizeStep(messages, TOOLS));
+   00235|     assert.equal(call.tool, 'run_command');
+   00236|     assert.equal(call.arguments, `{"command":"cat ${KB_PATH}"}`);
+   00237|     answerCall(messages, call, 'knowledge_base');
+   00238|     const answer = final(formalizeStep(messages, TOOLS));
+   00239|     assert.ok(answer.includes('9 of 9 protocol primitives'), answer);
+   00240|     assert.ok(answer.includes('```lino\nknowledge_base'), answer);
+   00241|   });
+   00242| 
+   00243|   it('planner_skips_capabilities_no_advertised_tool_provides / completes without tools', () => {
+   00244|     const messages = [user('formalize the fisherman tale')];
+   00245|     const call = single(formalizeStep(messages, ['write_file']));
+   00246|     assert.equal(call.tool, 'write_file');
+   00247|     answerCall(messages, call, 'ok');
+   00248|     final(formalizeStep(messages, ['write_file']));
+   00249|     assert.ok(final(formalizeStep([user('formalize the fisherman tale')], [])).includes('knowledge_base'));
+   00250|   });
+   00251| 
+   00252|   it('planner_formalizes_the_fetched_text_when_fetch_succeeds', () => {
+   00253|     const tools = ['web_fetch', 'write_file'];
+   00254|     const messages = [user('formalize the fisherman tale')];
+   00255|     const fetch = single(formalizeStep(messages, tools));
+   00256|     assert.equal(fetch.tool, 'web_fetch');
+   00257|     answerCall(messages, fetch, 'Старик поймал золотую рыбку.');
+   00258|     const write = single(formalizeStep(messages, tools));
+   00259|     assert.equal(write.tool, 'write_file');
+   00260|     const content = JSON.parse(write.arguments).content;
+   00261|     assert.ok(content.startsWith(formalizeTextToLinks('Старик поймал золотую рыбку.', '').links_notation));
+   00262|     assert.ok(content.includes('\nneed '), content);
+   00263|     assert.ok(content.includes('state unsatisfiable'), content);
+   00264|   });
+   00265| 
+   00266|   it('planner_falls_back_to_the_synopsis_when_fetch_errors', () => {
+   00267|     const tools = ['web_fetch', 'write_file'];
+   00268|     const messages = [user('formalize the fisherman tale')];
+   00269|     answerCall(messages, single(formalizeStep(messages, tools)), 'Error: 404 Not Found');
+   00270|     const write = single(formalizeStep(messages, tools));
+   00271|     assert.equal(JSON.parse(write.arguments).content, formalizeTextToLinks(canonicalFishermanSynopsis(), '').links_notation);
+   00272|   });
+   00273| 
+   00274|   it('issue 956: a quoted custom source is formalized itself', () => {
+   00275|     const task = 'Formalize «The cat sat on the mat» into a Links Notation knowledge base.';
+   00276|     const answer = final(planFormalizationStep(task, [user(task)], []));
+   00277|     assert.ok(answer.includes('The cat sat on the mat'), answer);
+   00278|     assert.ok(!answer.includes('рыбке'));
+   00279|     assert.ok(answer.includes('doc:input'));
+   00280|     assert.ok(answer.includes('2 records realising 1 of 9 protocol primitives'), answer);
+   00281|     const call = single(planFormalizationStep(task, [user(task)], ['web_search', 'web_fetch', 'write', 'bash']));
+   00282|     assert.equal(call.tool, 'write');
+   00283|     assert.ok(!call.arguments.includes('рыб'));
+   00284|     for (const [prompt, expected] of [
+   00285|       ['Формализуй «Кот сидел на коврике» в базу знаний Links Notation.', 'Кот сидел на коврике'],
+   00286|       ['把《猫坐在垫子上》形式化为 Links Notation 知识库。', '猫坐在垫子上'],
+   00287|       ['«बिल्ली चटाई पर बैठी» को Links Notation knowledge base में formalize करें।', 'बिल्ली चटाई पर बैठी'],
+   00288|     ]) {
+   00289|       const localized = final(planFormalizationStep(prompt, [user(prompt)], []));
+   00290|       assert.ok(localized.includes(expected), localized);
+   00291|       assert.ok(!localized.includes('рыбке'));
+   00292|     }
+   00293|     for (const prompt of [
+   00294|       'Formalize «СКАЗКА  О РЫБАКЕ И РЫБКЕ» into a Links Notation knowledge base.',
+   00295|       'Formalize “Сказка о рыбаке и рыбке” into a knowledge base with label «Reference».',
+   00296|     ]) {
+   00297|       assert.ok(final(planFormalizationStep(prompt, [user(prompt)], [])).includes('tale:fisherman-and-fish'));
+   00298|     }
+   00299|     const ordered = 'Formalize “First source clause.” into a knowledge base with label «Secondary label».';
+   00300|     const knowledge = JSON.parse(single(planFormalizationStep(ordered, [user(ordered)], ['write'])).arguments).content;
+   00301|     assert.ok(knowledge.includes('First source clause.'));
+   00302|     assert.ok(!knowledge.includes('Secondary label'));
+   00303|   });
+   00304| });
+   00305| 
+   00306| describe('meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)', () => {
+   00307|   const seed = repo('data/seed/meanings-translation.lino');
+   00308|   const block = (head, next) => {
+   00309|     const start = seed.indexOf(`\n  ${head}\n`) + 1;
+   00310|     const rest = seed.slice(start);
+   00311|     return rest.slice(0, rest.indexOf(`\n  ${next}\n`) + 1);
+   00312|   };
+   00313| 
+   00314|   it('recognises_the_meaning_detail_task / routes concepts', () => {
+   00315|     assert.ok(meaningDetail.isMeaningDetailTask(TASKS.meaning));
+   00316|     assert.ok(meaningDetail.isMeaningDetailTask('make the помидор meaning more detailed with grammatical number'));
+   00317|     assert.ok(!meaningDetail.isMeaningDetailTask('What is the capital of France?'));
+   00318|     assert.equal(meaningDetail.conceptForTask(TASKS.meaning).name, 'tomato');
+   00319|     assert.equal(meaningDetail.conceptForTask(TASKS.potato).name, 'potato');
+   00320|     assert.ok(meaningDetail.isMeaningDetailTask(TASKS.potato));
+   00321|   });
+   00322| 
+   00323|   it('enriched blocks match the seed byte for byte, fetched or not', () => {
+   00324|     const tomato = meaningDetail.enrichBlock(meaningDetail.TOMATO, null);
+   00325|     assert.equal(tomato, block('tomato', 'cucumber'));
+   00326|     assert.equal((tomato.match(/part_of_speech noun/g) || []).length, 9);
+   00327|     assert.ok(tomato.includes('feature Q146786 # wikidata grammatical feature plural'));
+   00328|     assert.equal(meaningDetail.enrichBlock(meaningDetail.TOMATO, meaningDetail.sourceBundle(meaningDetail.TOMATO)), tomato);
+   00329|     assert.equal(meaningDetail.enrichBlock(meaningDetail.TOMATO, 'Error: 404'), tomato);
+   00330|     assert.equal(meaningDetail.enrichBlock(meaningDetail.POTATO, null), block('potato', 'carrot'));
+   00331|   });
+   00332| 
+   00333|   for (const [file, task] of [['agent-cli-session.json', TASKS.meaning], ['agent-cli-session-potato.json', TASKS.potato]]) {
+   00334|     it(`replays the committed ${file} step for step`, async (t) => {
+   00335|       const { importDocumentRecipe } = await documentRecipeModule();
+   00336|       if (!importDocumentRecipe) return t.skip('document_recipe.mjs siblings not ported yet');
+   00337|       const session = JSON.parse(repo(`docs/case-studies/issue-538/${file}`));
+   00338|       assert.equal(session.task, task);
+   00339|       const messages = [user(task)];
+   00340|       for (const step of session.steps) {
+   00341|         const call = single(await importDocumentRecipe.planMeaningDetailStep(task, messages, session.tools_advertised));
+   00342|         assert.equal(call.tool, step.tool);
+   00343|         assert.deepEqual(JSON.parse(call.arguments), step.arguments);
+   00344|         answerCall(messages, call, step.result);
+   00345|       }
+   00346|       assert.equal(final(await importDocumentRecipe.planMeaningDetailStep(task, messages, session.tools_advertised)), session.final_answer);
+   00347|     });
+   00348|   }
+   00349| });
+   00350| 
+   00351| /** document_recipe.mjs imports sibling recipe modules other agents own; skip until they exist. */
+   00352| async function documentRecipeModule() {
+   00353|   try {
+   00354|     return { importDocumentRecipe: await import('../../../js/agentic/document_recipe.mjs') };
+   00355|   } catch (error) {
+   00356|     return { importDocumentRecipe: null, error };
+   00357|   }
+   00358| }
+   00359| 
+   00360| describe('diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)', () => {
+   00361|   it('recognises_the_diagram_task', () => {
+   00362|     assert.ok(diagram.isDiagramTask(TASKS.diagram));
+   00363|     assert.ok(diagram.isDiagramTask('please draw a mermaid flowchart of the recipes'));
+   00364|     assert.ok(!diagram.isDiagramTask('make the tomato meaning more detailed'));
+   00365|     assert.ok(!diagram.isDiagramTask('What is the capital of France?'));
+   00366|     assert.ok(!diagram.isDiagramTask("Insert the line 'js/mermaid.bundle.js' after the line 'js/app.js' in .gitignore."), 'a quoted cue is payload');
+   00367|   });
+   00368| 
+   00369|   it('committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)', () => {
+   00370|     const committed = repo('docs/diagrams/agentic-recipes.md');
+   00371|     assert.equal(diagram.renderDocument(), committed);
+   00372|     assert.equal((committed.match(/```mermaid/g) || []).length, 5);
+   00373|   });
+   00374| 
+   00375|   it('replays the committed diagram Agent CLI session', async (t) => {
+   00376|     const { importDocumentRecipe } = await documentRecipeModule();
+   00377|     if (!importDocumentRecipe) return t.skip('document_recipe.mjs siblings not ported yet');
+   00378|     const session = JSON.parse(repo('docs/case-studies/issue-538/agent-cli-session-diagram.json'));
+   00379|     const messages = [user(session.task)];
+   00380|     for (const step of session.steps) {
+   00381|       const call = single(await importDocumentRecipe.planDiagramStep(messages, session.tools_advertised));
+   00382|       assert.equal(call.tool, step.tool);
+   00383|       assert.deepEqual(JSON.parse(call.arguments), step.arguments);
+   00384|       answerCall(messages, call, step.result);
+   00385|     }
+   00386|     assert.equal(final(await importDocumentRecipe.planDiagramStep(messages, session.tools_advertised)), session.final_answer);
+   00387|   });
+   00388| });
+   00389| 
+   00390| describe('issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)', () => {
+   00391|   it('task predicates route each canonical task to exactly its recipe', () => {
+   00392|     const predicates = {
+   00393|       selfHeal: selfHeal.isSelfHealTask, ledger: ledger.isLedgerTask, explain: explain.isExplainTask,
+   00394|       change: changeRequest.isChangeRequestTask, repair: repairStrategy.isRepairStrategyTask,
+   00395|       rebuild: rebuildPlan.isRebuildTask, sourceLinks: sourceLinks.isSourceLinksTask,
+   00396|     };
+   00397|     for (const [name, predicate] of Object.entries(predicates)) assert.ok(predicate(TASKS[name]), name);
+   00398|     assert.ok(!predicates.rebuild(TASKS.selfHeal) && !predicates.rebuild(TASKS.change) && !predicates.rebuild(TASKS.repair));
+   00399|     for (const sibling of ['selfHeal', 'sourceLinks', 'ledger', 'explain', 'change', 'repair']) {
+   00400|       assert.ok(!predicates[sibling](TASKS.rebuild), sibling);
+   00401|     }
+   00402|     for (const sibling of ['selfHeal', 'sourceLinks', 'ledger', 'explain', 'change']) assert.ok(!predicates[sibling](TASKS.repair), sibling);
+   00403|     for (const sibling of ['selfHeal', 'sourceLinks', 'ledger', 'explain']) assert.ok(!predicates[sibling](TASKS.change), sibling);
+   00404|     assert.ok(!predicates.selfHeal(TASKS.ledger) && !predicates.sourceLinks(TASKS.ledger));
+   00405|     assert.ok(predicates.selfHeal('Can you fix it yourself?'));
+   00406|     assert.ok(!predicates.selfHeal('fix the bug in main.rs'));
+   00407|     assert.ok(predicates.rebuild('Please reattach the improved worker to the UI.'));
+   00408|     assert.ok(predicates.rebuild('Rebuild the wasm worker and hot-swap the local server.'));
+   00409|     assert.ok(predicates.ledger('record the learning ledger'));
+   00410|     assert.ok(predicates.ledger('promote the lesson into the promotion ledger'));
+   00411|     assert.ok(predicates.repair('Please classify a failure and produce a repair strategy.'));
+   00412|     assert.ok(predicates.repair('Decide which part to repair: solver method, a data record, or a test.'));
+   00413|     assert.ok(predicates.change('Please change Formal AI itself.'));
+   00414|     assert.ok(predicates.change('I want to add a new feature to the AI system.'));
+   00415|     for (const predicate of Object.values(predicates)) {
+   00416|       assert.ok(!predicate('what files are in this folder?'));
+   00417|     }
+   00418|     assert.ok(!predicates.change('change this line to uppercase'));
+   00419|     assert.ok(!predicates.explain('Explain how Formal AI works\nhttps://github.com/o/r/issues/1\nline\nline\nline'));
+   00420|   });
+   00421| 
+   00422|   it('committed documents render byte for byte with their final answers', () => {
+   00423|     assert.equal(selfHeal.renderDocument(), repo('data/meta/self-healing-case.lino'));
+   00424|     assert.ok(selfHeal.finalAnswer(selfHeal.renderDocument()).includes('mapped it onto src/agentic_coding/planner.rs'));
+   00425|     assert.ok(selfHeal.finalAnswer(selfHeal.renderDocument()).includes('(awaiting_review)'));
+   00426|     assert.equal(ledger.renderDocument(), repo('data/meta/learning-ledger.lino'));
+   00427|     assert.ok(ledger.finalAnswer(ledger.renderDocument()).startsWith('Recorded the approved learning ledger: 1 lesson(s)'));
+   00428|     assert.equal(repairStrategy.renderDocument(), repo('data/meta/repair-strategies.lino'));
+   00429|     assert.ok(repairStrategy.finalAnswer(repairStrategy.renderDocument())
+   00430|       .startsWith('Classified 3 failure traces, one per repair class (solver_method, data_record, test)'));
+   00431|   });
+   00432| 
+   00433|   it('the change request and rebuild plan are derived from the canonical request', () => {
+   00434|     const document = changeRequest.renderDocument();
+   00435|     assert.ok(document.startsWith('change_request\n  id "change_request_'));
+   00436|     assert.ok(document.includes('  derived_requirement "The system must add a new capability to Formal AI: let users ask it to reverse-sort a program\'s output."'));
+   00437|     assert.ok(document.includes('  proposed_test "user_requested_change_please_add_a_new_capability_to_formal_ai"'));
+   00438|     assert.equal(changeRequest.changeRequest().patch_plan.length, 5);
+   00439|     assert.ok(changeRequest.finalAnswer(document).includes('a 5-step patch plan against the grounded module src/agentic_coding/planner.rs'));
+   00440|     const plan = rebuildPlan.renderDocument();
+   00441|     assert.ok(plan.includes(`  change_id "${changeRequest.changeRequest().id}"`));
+   00442|     assert.equal((plan.match(/\n    step "/g) || []).length, 5);
+   00443|     assert.ok(rebuildPlan.finalAnswer(plan).includes('a 5-step, reversible pipeline'));
+   00444|     assert.ok(rebuildPlan.finalAnswer(plan).includes('reattaches it to 4 grounded UI artifacts'));
+   00445|   });
+   00446| 
+   00447|   it('document recipes walk write -> verify -> final', async (t) => {
+   00448|     const { importDocumentRecipe } = await documentRecipeModule();
+   00449|     if (!importDocumentRecipe) return t.skip('document_recipe.mjs siblings not ported yet');
+   00450|     const tools = ['write_file', 'run_command'];
+   00451|     const messages = [user(TASKS.ledger)];
+   00452|     let call = single(await importDocumentRecipe.planLedgerStep(messages, tools));
+   00453|     assert.equal(call.tool, 'write_file');
+   00454|     assert.equal(JSON.parse(call.arguments).content, ledger.renderDocument());
+   00455|     answerCall(messages, call, 'ok');
+   00456|     call = single(await importDocumentRecipe.planLedgerStep(messages, tools));
+   00457|     assert.equal(call.arguments, '{"command":"cat learning-ledger.lino"}');
+   00458|     answerCall(messages, call, ledger.renderDocument());
+   00459|     assert.equal(final(await importDocumentRecipe.planLedgerStep(messages, tools)), ledger.finalAnswer(ledger.renderDocument()));
+   00460|   });
+   00461| });
+   00462| 
+   00463| /** Every `.rs` file under rust/src, enumerated independently of the port. */
+   00464| function rustSourcePaths(dir = 'rust/src') {
+   00465|   const out = [];
+   00466|   for (const name of readdirSync(new URL(dir, ROOT))) {
+   00467|     const path = `${dir}/${name}`;
+   00468|     if (statSync(new URL(path, ROOT)).isDirectory()) out.push(...rustSourcePaths(path));
+   00469|     else if (name.endsWith('.rs')) out.push(path.slice('rust/'.length));
+   00470|   }
+   00471|   return out;
+   00472| }
+   00473| const utf8 = (text) => new TextEncoder().encode(text).length;
+   00474| 
+   00475| describe('issue #558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)', () => {
+   00476|   it('owned_manifest_content_addresses_every_source_file', () => {
+   00477|     const manifest = ownedManifest();
+   00478|     const files = ownedSourceFiles();
+   00479|     assert.equal(manifest.length, ownedFileCount());
+   00480|     assert.equal(manifest.length, files.length);
+   00481|     assert.ok(manifest.length > 150, 'the whole repository, not a corner');
+   00482|     assert.deepEqual(manifest.map((digest) => digest.path), rustSourcePaths().sort());
+   00483|     let total = 0;
+   00484|     manifest.forEach((digest, index) => {
+   00485|       const [path, source] = files[index];
+   00486|       assert.equal(digest.path, path);
+   00487|       assert.ok(digest.path.startsWith('src/') && digest.path.endsWith('.rs'), digest.path);
+   00488|       assert.equal(digest.byte_len, utf8(source));
+   00489|       if (index > 0) assert.ok(manifest[index - 1].path < digest.path, 'sorted and unique');
+   00490|       total += utf8(source);
+   00491|     });
+   00492|     assert.equal(total, ownedTotalBytes());
+   00493|     assert.equal(ownedManifestContentId(), stableId('source_tree', ownedManifestNotation()));
+   00494|   });
+   00495| 
+   00496|   it('content ids equal the Rust-generated self-AST census for every undrifted module', () => {
+   00497|     // data/meta/self-ast/src/**.lino is written by the Rust example
+   00498|     // regenerate_self_ast_census from the same OWNED_SOURCE_FILES and pinned to
+   00499|     // the sources by issue_673_self_ast_census.rs. A census whose byte_len no
+   00500|     // longer matches has drifted with an unregenerated edit and is skipped.
+   00501|     let compared = 0;
+   00502|     for (const digest of ownedManifest()) {
+   00503|       const census = new URL(`data/meta/self-ast/${digest.path.slice(0, -3)}.lino`, ROOT);
+   00504|       if (!existsSync(census)) continue;
+   00505|       const text = readFileSync(census, 'utf8');
+   00506|       if (Number(/\n  byte_len (\d+)/.exec(text)[1]) !== digest.byte_len) continue;
+   00507|       assert.equal(digest.content_id, /\n  content_id (\S+)/.exec(text)[1], digest.path);
+   00508|       compared += 1;
+   00509|     }
+   00510|     assert.ok(compared > 100, `compared ${compared} modules`);
+   00511|   });
+   00512| 
+   00513|   it('the fast FNV-1a equals crate::engine::stable_id', () => {
+   00514|     for (const text of ['', 'a', 'source_tree', 'Привет ✓ 🎉', repo('rust/src/self_source_links.rs')]) {
+   00515|       assert.equal(fastStableId('source_module', text), stableId('source_module', text));
+   00516|     }
+   00517|   });
+   00518| 
+   00519|   it('owned_manifest_renders_valid_links_notation', () => {
+   00520|     const notation = ownedManifestNotation();
+   00521|     assert.ok(notation.startsWith('source_manifest\n  engine meta_language\n  language rust\n'));
+   00522|     assert.ok(notation.includes(`file_count ${ownedFileCount()}`));
+   00523|     assert.ok(notation.includes(`total_bytes ${ownedTotalBytes()}`));
+   00524|     assert.ok(notation.includes('src/self_source_links.rs'));
+   00525|   });
+   00526| 
+   00527|   it('coverage_is_integer_permille_and_flags_unfaithful_modules', () => {
+   00528|     const fake = (path, faithful) => ({ path, byte_len: 10, content_id: `id_${path}`, total_link_count: 5, named_node_count: 3, faithful });
+   00529|     const graph = new SourceLinks([fake('a.rs', true), fake('b.rs', true), fake('c.rs', false), fake('d.rs', true)]);
+   00530|     assert.equal(graph.moduleCount(), 4);
+   00531|     assert.equal(graph.faithfulCount(), 3);
+   00532|     assert.equal(graph.coveragePermille(), 750);
+   00533|     assert.ok(!graph.isFullyFaithful());
+   00534|     const empty = new SourceLinks([]);
+   00535|     assert.equal(empty.coveragePermille(), 0);
+   00536|     assert.ok(!empty.isFullyFaithful());
+   00537|   });
+   00538| 
+   00539|   it('every source citation is grounded and a fabricated one cannot be constructed', () => {
+   00540|     const current = explain.explanation();
+   00541|     const manifest = ownedManifest();
+   00542|     assert.equal(current.sectionCount(), 5);
+   00543|     assert.equal(current.citationCount(), 13);
+   00544|     for (const citation of current.citationsOf('source')) {
+   00545|       assert.equal(citation.content_id, manifest.find((digest) => digest.path === citation.path).content_id);
+   00546|     }
+   00547|     for (const citation of current.citations().filter((entry) => entry.kind !== 'source')) {
+   00548|       assert.ok(existsSync(new URL(citation.path, ROOT)), citation.path);
+   00549|       assert.equal(citation.content_id, null);
+   00550|     }
+   00551|     assert.ok(current.citationsOf('data').length > 0 && current.citationsOf('test').length > 0);
+   00552|     assert.throws(() => sourceCitation('src/this_module_does_not_exist.rs'), /self_explanation_unowned_source/);
+   00553|   });
+   00554| 
+   00555|   it('the explanation document matches the committed Agent CLI evidence modulo the live ids', () => {
+   00556|     // Preserve the captured Rust document and resolve only recorded path moves.
+   00557|     // Live source ids are compared separately against the current manifest.
+   00558|     const renamed = new Map(resolveRenameChains(loadRenameMap().renames).map(({ from, to }) => [from, to]));
+   00559|     const live = (text) => text.replace(/ (content_id|source_file_count|source_manifest_content_id) .*/g, ' $1 X')
+   00560|       .replace(/path "([^"]+)"/g, (whole, citation) => {
+   00561|         const rooted = citation.startsWith('tests/') ? `rust/${citation}` : citation;
+   00562|         const current = renamed.get(rooted) ?? rooted;
+   00563|         if (current !== rooted) assert.ok(existsSync(new URL(current, ROOT)), current);
+   00564|         return `path "${current}"`;
+   00565|       });
+   00566|     const document = explain.renderDocument();
+   00567|     assert.equal(live(document), live(repo('docs/case-studies/issue-839/self-hosting-evidence/how-formal-ai-works.lino')));
+   00568|     assert.ok(document.includes(`  source_file_count ${ownedFileCount()}\n  source_manifest_content_id "${ownedManifestContentId()}"\n`));
+   00569|     assert.ok(document.endsWith('\n') && !document.endsWith('\n\n'));
+   00570|     const answer = explain.finalAnswer(document);
+   00571|     assert.ok(answer.startsWith('Here is how Formal AI works, grounded in its own source, data, and tests: across 5 topics with 13 citations'));
+   00572|     assert.ok(answer.endsWith(`Generated document (how-formal-ai-works.lino):\n\n${document.trimEnd()}`));
+   00573|   });
+   00574| 
+   00575|   it('the source-links document reports the whole repo over the representative slice', () => {
+   00576|     const document = sourceLinks.renderDocument();
+   00577|     assert.ok(document.startsWith(`self_source_links\n  engine meta_language\n  language rust\n  task translate_entire_source_to_links_and_back\n  entire_source\n    file_count ${ownedFileCount()}\n    total_bytes ${ownedTotalBytes()}\n    manifest_content_id "${ownedManifestContentId()}"\n  round_trip_proof\n    slice_size 6\n`));
+   00578|     const files = ownedSourceFiles();
+   00579|     const stride = Math.floor(files.length / 6);
+   00580|     assert.deepEqual(sourceLinks.slice().modules.map((module) => module.path), [0, 1, 2, 3, 4, 5].map((index) => files[index * stride][0]));
+   00581|     // Same shape as the Rust run committed in docs/case-studies/issue-841; the
+   00582|     // parse census is the no-`meta-language`-feature build's (see the header
+   00583|     // of js/agentic/crate/self_source_links.mjs).
+   00584|     const shape = (text) => text.replace(/ (file_count|total_bytes|manifest_content_id|path|byte_len|content_id|total_link_count|named_node_count|total_named_node_count|faithful_count|slice_faithful_count|coverage_permille|fully_faithful|slice_fully_faithful|faithful) .*/g, ' $1 X');
+   00585|     assert.equal(shape(document), shape(repo('docs/case-studies/issue-841/self-hosting-evidence/self-source-links.lino')));
+   00586|     assert.ok(document.includes('    slice_fully_faithful false\n'));
+   00587|     assert.ok(document.endsWith('\n') && !document.endsWith('\n\n'));
+   00588|     assert.ok(sourceLinks.finalAnswer(document).includes(`content-addressed all ${ownedFileCount()} owned source files under one manifest id, and verified a representative slice of 6 modules`));
+   00589|   });
+   00590| 
+   00591|   it('the explain and source-links recipes walk write -> verify -> final', async (t) => {
+   00592|     const { importDocumentRecipe } = await documentRecipeModule();
+   00593|     if (!importDocumentRecipe) return t.skip('document_recipe.mjs siblings not ported yet');
+   00594|     const tools = ['write_file', 'run_command'];
+   00595|     for (const [recipe, task, step, path] of [
+   00596|       [explain, TASKS.explain, importDocumentRecipe.planExplainStep, 'how-formal-ai-works.lino'],
+   00597|       [sourceLinks, TASKS.sourceLinks, importDocumentRecipe.planSourceLinksStep, 'self-source-links.lino'],
+   00598|     ]) {
+   00599|       const messages = [user(task)];
+   00600|       let call = single(await step(messages, tools));
+   00601|       assert.equal(call.tool, 'write_file');
+   00602|       const written = JSON.parse(call.arguments);
+   00603|       assert.equal(written.path, path);
+   00604|       assert.equal(written.content, recipe.renderDocument());
+   00605|       answerCall(messages, call, 'ok');
+   00606|       call = single(await step(messages, tools));
+   00607|       assert.equal(call.arguments, `{"command":"cat ${path}"}`);
+   00608|       answerCall(messages, call, recipe.renderDocument());
+   00609|       assert.equal(final(await step(messages, tools)), recipe.finalAnswer(recipe.renderDocument()));
+   00610|     }
+   00611|   });
+   00612| });
+   00613| 
+   
+   (End of file - total 613 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/agentic-recipes-a.test.mjs","file_path":"rust/tests/web/agentic-recipes-a.test.mjs","new":"      assert.equal(call.tool, step.tool);\n      assert.ok(session.tools_advertised.includes(call.tool));\n      assert.deepEqual(JSON.parse(call.arguments), step.arguments);\n      answerCall(messages, call, step.result);\n    }\n    assert.equal(final(await importDocumentRecipe.planDiagramStep","newString":"      assert.equal(call.tool, step.tool);\n      assert.ok(session.tools_advertised.includes(call.tool));\n      assert.deepEqual(JSON.parse(call.arguments), step.arguments);\n      answerCall(messages, call, step.result);\n    }\n    assert.equal(final(await importDocumentRecipe.planDiagramStep","new_str":"      assert.equal(call.tool, step.tool);\n      assert.ok(session.tools_advertised.includes(call.tool));\n      assert.deepEqual(JSON.parse(call.arguments), step.arguments);\n      answerCall(messages, call, step.result);\n    }\n    assert.equal(final(await importDocumentRecipe.planDiagramStep","new_string":"      assert.equal(call.tool, step.tool);\n      assert.ok(session.tools_advertised.includes(call.tool));\n      assert.deepEqual(JSON.parse(call.arguments), step.arguments);\n      answerCall(messages, call, step.result);\n    }\n    assert.equal(final(await importDocumentRecipe.planDiagramStep","old":"      assert.equal(call.tool, step.tool);\n      assert.deepEqual(JSON.parse(call.arguments), step.arguments);\n      answerCall(messages, call, step.result);\n    }\n    assert.equal(final(await importDocumentRecipe.planDiagramStep","oldString":"      assert.equal(call.tool, step.tool);\n      assert.deepEqual(JSON.parse(call.arguments), step.arguments);\n      answerCall(messages, call, step.result);\n    }\n    assert.equal(final(await importDocumentRecipe.planDiagramStep","old_str":"      assert.equal(call.tool, step.tool);\n      assert.deepEqual(JSON.parse(call.arguments), step.arguments);\n      answerCall(messages, call, step.result);\n    }\n    assert.equal(final(await importDocumentRecipe.planDiagramStep","old_string":"      assert.equal(call.tool, step.tool);\n      assert.deepEqual(JSON.parse(call.arguments), step.arguments);\n      answerCall(messages, call, step.result);\n    }\n    assert.equal(final(await importDocumentRecipe.planDiagramStep","path":"rust/tests/web/agentic-recipes-a.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/agentic-recipes-a.test.mjs"}
+   Output: df93ef8ec2f4bbb6169d597a49b76157ae99148247fddb3e44d62f8cae1a0fc3  rust/tests/web/agentic-recipes-a.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `      assert.equal(call.tool, step.tool);
+      assert.deepEqual(JSON.parse(call.arguments), step.arguments);
+      answerCall(messages, call, step.result);
+    }
+    assert.equal(final(await importDocumentRecipe.planDiagramStep` with `      assert.equal(call.tool, step.tool);
+      assert.ok(session.tools_advertised.includes(call.tool));
+      assert.deepEqual(JSON.parse(call.arguments), step.arguments);
+      answerCall(messages, call, step.result);
+    }
+    assert.equal(final(await importDocumentRecipe.planDiagramStep` in `rust/tests/web/agentic-recipes-a.test.mjs` and observed the result.

@@ -1,0 +1,13 @@
+language en
+lemma verbose
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "using or containing too many words"
+    examples ("long-winded (or windy) speakers" "verbose and ineffective instructional methods" "newspapers of the day printed long wordy editorials" "proceedings were delayed by wordy disputes")
+    id oewn-00551456-s
+    partOfSpeech s
+    synonyms (long-winded tedious windy wordy)
+source "oewn:2024"

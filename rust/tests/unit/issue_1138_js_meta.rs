@@ -335,3 +335,41 @@ fn documents_that_are_not_pivot_documents_are_rejected_by_name() {
         Err(PivotParseError::UnknownKind("nope".to_owned()))
     );
 }
+
+/// Issue #1188 R1188-U23: the pivot carries the source's layout, so the ts
+/// twin keeps the source's lines, indentation and comments (never one line
+/// of spaced tokens), the lino document carries the layout, and a document
+/// without one still renders in canonical spacing.
+#[test]
+fn the_pivot_carries_the_source_layout_into_the_ts_twin() {
+    let source = "#!/usr/bin/env node\n// A comment line.\nexport function sum(a, b) {\n  /* block */ return a + b; // trailing\n}\nconst tpl = `x ${ a /* inside */ } y ${`nested ${ b }`}`;\n";
+    let document =
+        extract("probe.js", SourceLanguage::JavaScript, source).expect("the fixture must extract");
+    let rendered = render_source(&document, ProjectionTarget::TypeScript)
+        .output
+        .expect("nothing is refused");
+    assert_eq!(rendered, source, "the ts twin is the source's own layout");
+    let text = render_document(&document);
+    let parsed = parse_document(&text).expect("the document parses back");
+    assert_eq!(
+        parsed.layout, document.layout,
+        "the lino document carries the layout"
+    );
+    let truncated = text.replacen("    slot \"\"\n", "", 1);
+    assert_eq!(
+        parse_document(&truncated),
+        Err(PivotParseError::MissingField("layout")),
+        "a layout that does not fit the tree is refused"
+    );
+    let mut bare = document;
+    bare.layout.clear();
+    assert_eq!(
+        render_source(&bare, ProjectionTarget::TypeScript)
+            .output
+            .as_deref(),
+        Some(
+            "export function sum ( a , b ) { return a + b ; } const tpl = `x ${a} y ${`nested ${b}`}` ;"
+        ),
+        "no layout renders canonical spacing"
+    );
+}

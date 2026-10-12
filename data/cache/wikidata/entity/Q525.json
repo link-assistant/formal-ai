@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "太阳"
+        },
+        "es": {
+          "language": "es",
+          "value": "Sol"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "位于太阳系中心的恒星"
+        },
+        "es": {
+          "language": "es",
+          "value": "única estrella del Sistema Solar, de tipo G y situada en su centro, alrededor de la cual orbitan los demás cuerpos del sistema"
         }
       },
       "aliases": {
@@ -62,6 +70,24 @@
           {
             "language": "zh",
             "value": "日"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "astro rey"
+          },
+          {
+            "language": "es",
+            "value": "helios"
+          },
+          {
+            "language": "es",
+            "value": "sol (estrella)"
+          },
+          {
+            "language": "es",
+            "value": "el Sol"
           }
         ]
       }

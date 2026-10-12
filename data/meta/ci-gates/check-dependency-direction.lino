@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-dependency-direction
+  stage web
+  description "R1188-U2: solver code under rust/src/ naming a surface module (CLI, server, Telegram, client integrations), and js/agentic/ modules importing node: built-ins or the Node server outside the listed host adapters, stay at or below the ceilings of data/meta/dependency-direction.lino, which only fall."
+  run "node scripts/check-dependency-direction.mjs"
+  justification "PR #1188 (R1188-U2): the Layers and Ports and Adapters principles say dependencies point inward, and nothing measured it, so a new outward reference went unseen."

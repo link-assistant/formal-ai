@@ -1,0 +1,21 @@
+view
+  id M-3389e2675336
+  lemma fraud
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "intentional deception resulting in injury to another person"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person who makes deceitful pretenses"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something intended to deceive; deliberate trickery intended to gain an advantage"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of swindling by some fraudulent scheme"
+    provenance (wordnet)

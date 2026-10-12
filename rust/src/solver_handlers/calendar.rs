@@ -4,19 +4,27 @@
 //! answer can be derived from a stable calendar relation instead of an external
 //! clock or lookup.
 
+use super::calendar_create::try_calendar_create_event;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::rule_interpreter::handler_table_value;
 use crate::seed::{
     ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT, ROLE_CALENDAR_DIRECTION_PREVIOUS,
-    ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY, lexicon,
+    ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY, fill_template_once,
+    lexicon, response_for,
 };
-use super::calendar_create::try_calendar_create_event;
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+pub mod date_weekday;
+pub mod month;
+
+/// The seed table of weekday names by language and direction case.
+const WEEKDAY_LABEL_TABLE: &str = "calendar_weekday_label";
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Weekday {
+pub enum Weekday {
     Monday,
     Tuesday,
     Wednesday,
@@ -51,11 +59,22 @@ impl Weekday {
         }
     }
 
-    const fn shifted(self, operation: WeekdayOperation) -> Self {
-        match operation {
-            WeekdayOperation::Next => Self::from_index(self.index() + 1),
-            WeekdayOperation::Previous => Self::from_index(self.index() + 6),
-        }
+    /// Shift by a signed day count. `rem_euclid` keeps negative offsets
+    /// ("30 days before Friday") inside the cycle without a manual wrap, so
+    /// every offset a prompt can state lands on a real weekday (issue #1176).
+    const fn shifted_by(self, days: i64) -> Self {
+        // `rem_euclid(7)` is always in 0..7, so each residue maps to its
+        // `usize` without a cast.
+        let offset: usize = match days.rem_euclid(7) {
+            0 => 0,
+            1 => 1,
+            2 => 2,
+            3 => 3,
+            4 => 4,
+            5 => 5,
+            _ => 6,
+        };
+        Self::from_index(self.index() + offset)
     }
 
     const fn slug(self) -> &'static str {
@@ -86,76 +105,13 @@ impl Weekday {
         }
     }
 
-    const fn en(self) -> &'static str {
-        match self {
-            Self::Monday => "Monday",
-            Self::Tuesday => "Tuesday",
-            Self::Wednesday => "Wednesday",
-            Self::Thursday => "Thursday",
-            Self::Friday => "Friday",
-            Self::Saturday => "Saturday",
-            Self::Sunday => "Sunday",
-        }
-    }
-
-    const fn ru(self) -> &'static str {
-        match self {
-            Self::Monday => "понедельник",
-            Self::Tuesday => "вторник",
-            Self::Wednesday => "среда",
-            Self::Thursday => "четверг",
-            Self::Friday => "пятница",
-            Self::Saturday => "суббота",
-            Self::Sunday => "воскресенье",
-        }
-    }
-
-    const fn ru_genitive(self) -> &'static str {
-        match self {
-            Self::Monday => "понедельника",
-            Self::Tuesday => "вторника",
-            Self::Wednesday => "среды",
-            Self::Thursday => "четверга",
-            Self::Friday => "пятницы",
-            Self::Saturday => "субботы",
-            Self::Sunday => "воскресенья",
-        }
-    }
-
-    const fn ru_instrumental(self) -> &'static str {
-        match self {
-            Self::Monday => "понедельником",
-            Self::Tuesday => "вторником",
-            Self::Wednesday => "средой",
-            Self::Thursday => "четвергом",
-            Self::Friday => "пятницей",
-            Self::Saturday => "субботой",
-            Self::Sunday => "воскресеньем",
-        }
-    }
-
-    const fn hi(self) -> &'static str {
-        match self {
-            Self::Monday => "सोमवार",
-            Self::Tuesday => "मंगलवार",
-            Self::Wednesday => "बुधवार",
-            Self::Thursday => "गुरुवार",
-            Self::Friday => "शुक्रवार",
-            Self::Saturday => "शनिवार",
-            Self::Sunday => "रविवार",
-        }
-    }
-
-    const fn zh(self) -> &'static str {
-        match self {
-            Self::Monday => "星期一",
-            Self::Tuesday => "星期二",
-            Self::Wednesday => "星期三",
-            Self::Thursday => "星期四",
-            Self::Friday => "星期五",
-            Self::Saturday => "星期六",
-            Self::Sunday => "星期日",
-        }
+    /// The weekday's name in `form`: a language slug, or a language slug and
+    /// the direction case a phrase takes (`ru.next`, `ru.previous`).
+    ///
+    /// The names are rows of the `calendar_weekday_label` table of
+    /// `data/seed/handler-rules.lino` (issue #918), so case is data as well.
+    fn label(self, form: &str) -> Option<&'static str> {
+        handler_table_value(WEEKDAY_LABEL_TABLE, &format!("{}.{form}", self.slug()))
     }
 }
 
@@ -166,10 +122,34 @@ enum WeekdayOperation {
 }
 
 impl WeekdayOperation {
+    /// The signed day count of the bare next/previous reading.
+    const fn sign(self) -> i64 {
+        match self {
+            Self::Next => 1,
+            Self::Previous => -1,
+        }
+    }
+
     const fn delta(self) -> &'static str {
         match self {
             Self::Next => "+1",
             Self::Previous => "-1",
+        }
+    }
+
+    /// The direction slug the weekday-label table keys a case form by.
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::Next => "next",
+            Self::Previous => "previous",
+        }
+    }
+
+    /// The seeded response that phrases the bare one-day shift.
+    const fn relation_intent(self) -> &'static str {
+        match self {
+            Self::Next => "calendar_weekday_relation_next",
+            Self::Previous => "calendar_weekday_relation_previous",
         }
     }
 
@@ -217,12 +197,32 @@ pub fn try_calendar_reasoning(
     if mentions_current_day_question(normalized) {
         return try_current_day_reasoning(prompt, log);
     }
+    // Issue #1176: a month offset ("2 months after January", "3 months after
+    // Monday") is read before the weekday gate, since a month name carries no
+    // day reference and a weekday plus months has no fixed day count.
+    if let Some(answer) = month::try_month_offset(prompt, normalized, log) {
+        return Some(answer);
+    }
+    // R1017: "What day of the week was 2024-02-29?" names a date, not a
+    // weekday, and is answered by counting days from the epoch.
+    if let Some(answer) = date_weekday::try_date_weekday(prompt, normalized, log) {
+        return Some(answer);
+    }
     if !mentions_weekday_context(normalized) {
         return None;
     }
     let operation = detect_operation(normalized)?;
     let source = detect_weekday(normalized)?;
-    let result = source.shifted(operation);
+    let language = detect_language(prompt).slug();
+    // Issue #1176: read the offset the prompt states ("100 days after",
+    // "2 weeks before") instead of always shifting by one. A bare "the day
+    // after X" states no offset and keeps the original ±1 reading.
+    let offset = detect_offset(normalized, language);
+    let signed = offset.map_or_else(
+        || operation.sign(),
+        |offset| operation.sign() * offset.total(),
+    );
+    let result = source.shifted_by(signed);
 
     log.append(
         "calendar:cycle",
@@ -230,11 +230,26 @@ pub fn try_calendar_reasoning(
     );
     log.append("calendar:subject_weekday", source.slug());
     log.append(operation.event_kind(), source.slug());
+    if let Some(offset) = offset {
+        log.append("calendar:offset", format!("{signed:+}d"));
+        let total = offset.total().unsigned_abs();
+        log.append(
+            "calendar:offset_derivation",
+            // Evidence-log notation, deliberately language-neutral: the
+            // user-facing derivation comes from the localized response
+            // template, not from this diagnostic line.
+            format!("{total}d = {}w + {}d", total / 7, total % 7),
+        );
+    }
     log.append("calendar:result_weekday", result.slug());
 
-    let language = detect_language(prompt).slug();
     log.append("language", language.to_owned());
-    let body = render_answer(language, operation, source, result);
+    let body = match offset {
+        Some(offset) if offset.total() > 1 => {
+            render_offset_answer(language, operation, source, result, offset)
+        }
+        _ => render_answer(language, operation, source, result),
+    };
     Some(finalize_simple(
         prompt,
         log,
@@ -267,7 +282,7 @@ fn try_current_day_reasoning(prompt: &str, log: &mut EventLog) -> Option<Symboli
     ))
 }
 
-fn mentions_current_day_question(normalized: &str) -> bool {
+pub fn mentions_current_day_question(normalized: &str) -> bool {
     let lex = lexicon();
     // A today marker must be present as a standalone word (CJK substring).
     let mentions_today = lex
@@ -320,7 +335,7 @@ fn detect_operation(normalized: &str) -> Option<WeekdayOperation> {
     }
 }
 
-fn detect_weekday(normalized: &str) -> Option<Weekday> {
+pub fn detect_weekday(normalized: &str) -> Option<Weekday> {
     // Walk the `calendar_weekday` meanings in cycle order (Monday … Sunday) and
     // return the first whose surface words appear as a standalone term, mapping
     // its slug back to a position. The words live in the lexicon, per language.
@@ -328,6 +343,124 @@ fn detect_weekday(normalized: &str) -> Option<Weekday> {
         .meanings_with_role(ROLE_CALENDAR_WEEKDAY)
         .filter(|meaning| meaning.words().any(|word| contains_term(normalized, word)))
         .find_map(|meaning| Weekday::from_slug(&meaning.slug))
+}
+
+/// The unit a stated offset counts: days (×1) or weeks (×7). The surfaces come
+/// from the `calendar_day` / `calendar_week` meanings, so the vocabulary stays
+/// in the seed; only the multiplier is calendar arithmetic (issue #1176).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum OffsetUnit {
+    Days,
+    Weeks,
+}
+
+impl OffsetUnit {
+    const fn multiplier(self) -> i64 {
+        match self {
+            Self::Days => 1,
+            Self::Weeks => 7,
+        }
+    }
+
+    /// The lexicon meaning slug that carries this unit's surfaces.
+    const fn meaning_slug(self) -> &'static str {
+        match self {
+            Self::Days => "calendar_day",
+            Self::Weeks => "calendar_week",
+        }
+    }
+}
+
+/// An offset a prompt states before a weekday shift: "100 days", "2 weeks".
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct Offset {
+    count: i64,
+    unit: OffsetUnit,
+}
+
+impl Offset {
+    const fn total(self) -> i64 {
+        self.count * self.unit.multiplier()
+    }
+}
+
+/// Read the offset a prompt states as `<numeral> days/weeks` — "100 days
+/// after Monday", "2 weeks before Friday" (issue #1176). Spelled-out numerals
+/// resolve through the seed cardinal tables inside the quantity extractor, so
+/// "two weeks" and "две недели" read the same as "2 weeks". Returns `None`
+/// when the prompt states no offset, which keeps the bare "the day after X"
+/// on its original ±1 reading.
+fn detect_offset(normalized: &str, language: &str) -> Option<Offset> {
+    let lex = lexicon();
+    let mut units: Vec<(OffsetUnit, String)> = [OffsetUnit::Days, OffsetUnit::Weeks]
+        .into_iter()
+        .filter_map(|unit| {
+            let meaning = lex.meaning(unit.meaning_slug())?;
+            Some(meaning.words().map(move |word| (unit, word.to_owned())))
+        })
+        .flatten()
+        .collect();
+    // Longest surfaces first so "weeks" is not read as the tail of "week".
+    units.sort_by_key(|unit| std::cmp::Reverse(unit.1.len()));
+    stated_count_with_unit(normalized, language, &units)
+        .map(|(count, unit, _)| Offset { count, unit })
+}
+
+/// The first stated `<numeral> <unit surface>` pair in the prompt: the count,
+/// the unit tag and the surface that matched. `units` is ordered longest
+/// surface first by the caller. Shared by the day/week reader above and the
+/// month reader in `calendar/month.rs` (issue #1176).
+fn stated_count_with_unit<'units, U: Copy>(
+    normalized: &str,
+    language: &str,
+    units: &'units [(U, String)],
+) -> Option<(i64, U, &'units str)> {
+    for quantity in crate::verifiable_task::quantities::extract_quantities(normalized, language) {
+        let Ok(count) = quantity.value.parse::<i64>() else {
+            continue;
+        };
+        // A numeral far past any calendar horizon is not an offset; skip it
+        // rather than answer a nonsense magnitude (12 digits ≈ 27 million years).
+        if count.unsigned_abs() > 999_999_999_999 {
+            continue;
+        }
+        // The quantity value is normalized ("two" → "2"), so a spelled token
+        // can be longer than its digits; walk to the end of the actual token.
+        // CJK unit characters end a numeral token, so "100天" reads as the
+        // numeral 100 followed by the day surface 天.
+        let token_end = normalized[quantity.offset..]
+            .find(|character: char| !is_numeral_token_character(character))
+            .map_or(normalized.len(), |gap| quantity.offset + gap);
+        let tail = normalized[token_end..].trim_start();
+        for (unit, surface) in units {
+            if starts_with_term(tail, surface) {
+                return Some((count, *unit, surface.as_str()));
+            }
+        }
+    }
+    None
+}
+
+/// Numeral tokens are letters and digits, except CJK unit characters, which
+/// start the unit word instead of continuing the numeral.
+fn is_numeral_token_character(character: char) -> bool {
+    character.is_alphanumeric() && !is_cjk_character(character)
+}
+
+/// Does `text` begin with `needle` as a standalone term? CJK surfaces match as
+/// a prefix (they carry no word boundaries); other scripts require the next
+/// character after the match to end the word.
+fn starts_with_term(text: &str, needle: &str) -> bool {
+    if needle.chars().any(is_cjk_character) {
+        return text.starts_with(needle);
+    }
+    if !text.starts_with(needle) {
+        return false;
+    }
+    text[needle.len()..]
+        .chars()
+        .next()
+        .is_none_or(|character| !is_word_character(character))
 }
 
 pub(super) fn contains_term(haystack: &str, needle: &str) -> bool {
@@ -340,6 +473,21 @@ pub(super) fn contains_term(haystack: &str, needle: &str) -> bool {
         before.is_none_or(|character| !is_word_character(character))
             && after.is_none_or(|character| !is_word_character(character))
     })
+}
+
+/// Byte offset of the earliest occurrence of `needle` in `haystack` — the
+/// positional sibling of [`contains_term`]. Presence is decided by
+/// `contains_term` (word boundaries, CJK substrings); the offset is the first
+/// raw occurrence, which is close enough for the proximity questions callers
+/// ask ("which number stands next to 'each'?", issue #1176).
+pub(super) fn term_position(haystack: &str, needle: &str) -> Option<usize> {
+    if !contains_term(haystack, needle) {
+        return None;
+    }
+    haystack
+        .match_indices(needle)
+        .next()
+        .map(|(start, _)| start)
 }
 
 fn is_cjk_character(character: char) -> bool {
@@ -397,90 +545,118 @@ const fn weekday_for_unix_days(days_since_unix_epoch: i64) -> Weekday {
     }
 }
 
+/// The seeded template of `intent` in `language`, or the English one when the
+/// seed carries none for it, paired with the language its weekday names take.
+fn template_for<'language>(intent: &str, language: &'language str) -> (&'language str, String) {
+    response_for(intent, language).map_or_else(
+        || ("en", response_for(intent, "en").unwrap_or_default()),
+        |template| (language, template),
+    )
+}
+
 fn render_current_day_answer(
     language: &str,
     weekday: Weekday,
     iso_date: &str,
     time_zone: &str,
 ) -> String {
-    match language {
-        "ru" => format!("Сегодня {}, {iso_date} ({time_zone}).", weekday.ru()),
-        "hi" => format!("आज {} है, {iso_date} ({time_zone}).", weekday.hi()),
-        "zh" => format!("今天是{}，{iso_date}（{time_zone}）。", weekday.zh()),
-        _ => format!("Today is {}, {iso_date} ({time_zone}).", weekday.en()),
-    }
+    let (language, template) = template_for("calendar_current_day", language);
+    fill_template_once(
+        &template,
+        &[
+            ("weekday", weekday_label(language, weekday)),
+            ("date", iso_date),
+            ("time_zone", time_zone),
+        ],
+    )
 }
 
+/// Render the bare one-day shift from the seeded
+/// `calendar_weekday_relation_*` responses (issue #918).
 fn render_answer(
     language: &str,
     operation: WeekdayOperation,
     source: Weekday,
     result: Weekday,
 ) -> String {
-    match language {
-        "ru" => match operation {
-            WeekdayOperation::Next => format!(
-                "После {} наступает {}. Я сдвинул {} на {} в семидневном календарном цикле.",
-                source.ru_genitive(),
-                result.ru(),
-                source.ru(),
-                operation.delta(),
+    let (language, template) = template_for(operation.relation_intent(), language);
+    fill_template_once(
+        &template,
+        &[
+            (
+                "source",
+                weekday_direction_label(language, operation, source),
             ),
-            WeekdayOperation::Previous => format!(
-                "Перед {} идёт {}. Я сдвинул {} на {} в семидневном календарном цикле.",
-                source.ru_instrumental(),
-                result.ru(),
-                source.ru(),
-                operation.delta(),
-            ),
-        },
-        "hi" => match operation {
-            WeekdayOperation::Next => format!(
-                "{} के बाद {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।",
-                source.hi(),
-                result.hi(),
-                source.hi(),
-                operation.delta(),
-            ),
-            WeekdayOperation::Previous => format!(
-                "{} से पहले {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।",
-                source.hi(),
-                result.hi(),
-                source.hi(),
-                operation.delta(),
-            ),
-        },
-        "zh" => match operation {
-            WeekdayOperation::Next => format!(
-                "{}之后是{}。我在七天的日历循环中将{}移动{}天。",
-                source.zh(),
-                result.zh(),
-                source.zh(),
-                operation.delta(),
-            ),
-            WeekdayOperation::Previous => format!(
-                "{}之前是{}。我在七天的日历循环中将{}移动{}天。",
-                source.zh(),
-                result.zh(),
-                source.zh(),
-                operation.delta(),
-            ),
-        },
-        _ => match operation {
-            WeekdayOperation::Next => format!(
-                "The day after {} is {}. I move {} by {} in the seven-day calendar cycle.",
-                source.en(),
-                result.en(),
-                source.en(),
-                operation.delta(),
-            ),
-            WeekdayOperation::Previous => format!(
-                "The day before {} is {}. I move {} by {} in the seven-day calendar cycle.",
-                source.en(),
-                result.en(),
-                source.en(),
-                operation.delta(),
-            ),
-        },
-    }
+            ("result", weekday_label(language, result)),
+            ("source_plain", weekday_label(language, source)),
+            ("delta", operation.delta()),
+        ],
+    )
+}
+
+/// The weekday's plain name for answer prose: the seeded name in `language`,
+/// else the English one (issue #918).
+fn weekday_label(language: &str, weekday: Weekday) -> &'static str {
+    weekday
+        .label(language)
+        .or_else(|| weekday.label("en"))
+        .unwrap_or_else(|| weekday.slug())
+}
+
+/// The weekday in the case its direction phrase needs (Russian takes the
+/// genitive after "после" and the instrumental after "перед"); a language
+/// whose seed rows carry no case form uses the plain name.
+fn weekday_direction_label(
+    language: &str,
+    operation: WeekdayOperation,
+    weekday: Weekday,
+) -> &'static str {
+    weekday
+        .label(&format!("{language}.{}", operation.slug()))
+        .unwrap_or_else(|| weekday_label(language, weekday))
+}
+
+/// Render the answer for a stated offset (issue #1176). The prose lives in
+/// `data/seed/multilingual-responses-quantities.lino` as
+/// `calendar_weekday_offset_*` templates, so the derivation sentence —
+/// "100 days = 14 weeks + 2 days, and Monday + 2 days = Wednesday" — ships in
+/// every supported language from the seed instead of Rust string literals.
+fn render_offset_answer(
+    language: &str,
+    operation: WeekdayOperation,
+    source: Weekday,
+    result: Weekday,
+    offset: Offset,
+) -> String {
+    let total = offset.total().unsigned_abs();
+    let weeks = total / 7;
+    let days = total % 7;
+    // A whole number of weeks cannot move the weekday, and the answer says so
+    // instead of deriving a shift of zero days; "1 week" gets its own template
+    // so the English stays grammatical (issue #1176).
+    let intent = match (operation, days) {
+        (WeekdayOperation::Next, 0) if weeks == 1 => "calendar_weekday_offset_exact_one_next",
+        (WeekdayOperation::Next, 0) => "calendar_weekday_offset_exact_next",
+        (WeekdayOperation::Previous, 0) if weeks == 1 => {
+            "calendar_weekday_offset_exact_one_previous"
+        }
+        (WeekdayOperation::Previous, 0) => "calendar_weekday_offset_exact_previous",
+        (WeekdayOperation::Next, _) => "calendar_weekday_offset_split_next",
+        (WeekdayOperation::Previous, _) => "calendar_weekday_offset_split_previous",
+    };
+    let Some(template) = crate::seed::localized_response(intent, language) else {
+        // A missing template falls back to the bare ±1 prose rather than an
+        // empty answer; the derivation still lives in the evidence log.
+        return render_answer(language, operation, source, result);
+    };
+    template
+        .replace("{n}", &total.to_string())
+        .replace(concat!("{", "weeks}"), &weeks.to_string())
+        .replace(concat!("{", "days}"), &days.to_string())
+        .replace(
+            concat!("{", "source}"),
+            weekday_direction_label(language, operation, source),
+        )
+        .replace("{source_plain}", weekday_label(language, source))
+        .replace(concat!("{", "result}"), weekday_label(language, result))
 }

@@ -1,0 +1,11 @@
+language en
+lemma authenticate
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "establish the authenticity of something"
+    id oewn-00666194-v
+    partOfSpeech v
+source "oewn:2024"

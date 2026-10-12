@@ -70,7 +70,7 @@ fn an_undescribed_pipeline_stage_is_proposed_as_an_addition() {
     let proposal = MetaSelfImprovement::from_sources(recipe, pipeline).propose();
     assert!(!proposal.is_self_consistent());
     assert_eq!(proposal.change_count(), 1);
-    assert!(proposal.stale_citations.is_empty());
+    assert_eq!(proposal.stale_citations, [] as [std::string::String; 0]);
     let added = &proposal.undescribed_stages;
     assert_eq!(added.len(), 1);
     assert_eq!(added[0].function, "record_evidence");
@@ -97,7 +97,10 @@ fn a_stale_recipe_citation_is_proposed_for_removal() {
     let pipeline = "fn run() { crate::a::record_a(log); }\n";
     let proposal = MetaSelfImprovement::from_sources(recipe, pipeline).propose();
     assert!(!proposal.is_self_consistent());
-    assert!(proposal.undescribed_stages.is_empty());
+    assert_eq!(
+        proposal.undescribed_stages,
+        [] as [formal_ai::meta_self_improvement::PipelineStage; 0]
+    );
     assert_eq!(proposal.stale_citations, vec!["record_gone".to_owned()]);
     let lino = proposal.to_links_notation(SelfImprovementMode::Propose);
     assert!(

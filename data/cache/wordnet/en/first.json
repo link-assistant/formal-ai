@@ -1,0 +1,192 @@
+{
+  "lemma": "first",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01014459-a",
+      "partOfSpeech": "a",
+      "definition": "preceding all others in time or space or degree",
+      "examples": [
+        "the first house on the right",
+        "the first day of spring",
+        "his first political race",
+        "her first baby",
+        "the first time",
+        "the first meetings of the new party",
+        "the first phase of his training"
+      ],
+      "synonyms": [
+        "1st"
+      ]
+    },
+    {
+      "id": "oewn-01019807-a",
+      "partOfSpeech": "a",
+      "definition": "highest in pitch or chief among parts or voices or instruments or orchestra sections",
+      "examples": [
+        "first soprano",
+        "the first violin section",
+        "played first horn"
+      ]
+    },
+    {
+      "id": "oewn-13868396-n",
+      "partOfSpeech": "n",
+      "definition": "the first or highest in an ordering or series",
+      "examples": [
+        "He wanted to be the first"
+      ],
+      "synonyms": [
+        "number one"
+      ]
+    },
+    {
+      "id": "oewn-13618687-n",
+      "partOfSpeech": "n",
+      "definition": "the first element in a countable series",
+      "examples": [
+        "the first of the month"
+      ],
+      "synonyms": [
+        "number one",
+        "number 1"
+      ]
+    },
+    {
+      "id": "oewn-15290329-n",
+      "partOfSpeech": "n",
+      "definition": "the time at which something is supposed to begin",
+      "examples": [
+        "they got an early start",
+        "she knew from the get-go that he was the man for her"
+      ],
+      "synonyms": [
+        "beginning",
+        "commencement",
+        "outset",
+        "get-go",
+        "start",
+        "kickoff",
+        "starting time",
+        "showtime",
+        "offset"
+      ]
+    },
+    {
+      "id": "oewn-00724798-n",
+      "partOfSpeech": "n",
+      "definition": "the fielding position of the player on a baseball team who is stationed at first of the bases in the infield (counting counterclockwise from home plate)",
+      "synonyms": [
+        "first base"
+      ]
+    },
+    {
+      "id": "oewn-06712932-n",
+      "partOfSpeech": "n",
+      "definition": "an honours degree of the highest class",
+      "synonyms": [
+        "first-class honours degree"
+      ]
+    },
+    {
+      "id": "oewn-03354857-n",
+      "partOfSpeech": "n",
+      "definition": "the lowest forward gear ratio in the gear box of a motor vehicle; used to start a car moving",
+      "synonyms": [
+        "first gear",
+        "low gear",
+        "low"
+      ]
+    },
+    {
+      "id": "oewn-00103286-r",
+      "partOfSpeech": "r",
+      "definition": "before anything else",
+      "examples": [
+        "first we must consider the garter snake"
+      ],
+      "synonyms": [
+        "firstly",
+        "foremost",
+        "first of all",
+        "first off"
+      ]
+    },
+    {
+      "id": "oewn-00104262-r",
+      "partOfSpeech": "r",
+      "definition": "the initial time",
+      "examples": [
+        "when Felix first saw a garter snake"
+      ]
+    },
+    {
+      "id": "oewn-00509461-r",
+      "partOfSpeech": "r",
+      "definition": "before another in time, space, or importance",
+      "examples": [
+        "I was here first",
+        "let's do this job first"
+      ]
+    },
+    {
+      "id": "oewn-00256094-r",
+      "partOfSpeech": "r",
+      "definition": "prominently forward",
+      "examples": [
+        "he put his best foot foremost"
+      ],
+      "synonyms": [
+        "foremost"
+      ]
+    },
+    {
+      "id": "oewn-01012803-s",
+      "partOfSpeech": "s",
+      "definition": "serving to begin",
+      "examples": [
+        "the beginning canto of the poem",
+        "the first verse"
+      ],
+      "synonyms": [
+        "beginning"
+      ]
+    },
+    {
+      "id": "oewn-00229886-s",
+      "partOfSpeech": "s",
+      "definition": "ranking above all others",
+      "examples": [
+        "was first in her class",
+        "the foremost figure among marine artists"
+      ],
+      "synonyms": [
+        "foremost",
+        "world-class"
+      ]
+    },
+    {
+      "id": "oewn-01012940-s",
+      "partOfSpeech": "s",
+      "definition": "serving to set in motion",
+      "examples": [
+        "the magazine's inaugural issue",
+        "the initiative phase in the negotiations",
+        "an initiatory step toward a treaty",
+        "his first (or maiden) speech in Congress",
+        "the liner's maiden voyage"
+      ],
+      "synonyms": [
+        "inaugural",
+        "initiative",
+        "initiatory",
+        "maiden"
+      ]
+    }
+  ]
+}

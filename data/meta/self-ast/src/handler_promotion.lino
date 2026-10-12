@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 8090
   line_count 215
-  content_id source_module_b8dfd9c1c10c9442
+  content_id source_module_80f91bf1f30598b6
   symbol_count 11
   symbols
     const PROMOTIONS_LINO 20 20

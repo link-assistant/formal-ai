@@ -1,0 +1,13 @@
+view
+  id M-6342e5e744df
+  lemma conditional
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "imposing or depending on or containing a condition"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "qualified by reservations"
+    provenance (wordnet)

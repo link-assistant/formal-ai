@@ -11,7 +11,7 @@
 
 use serde_json::json;
 
-use super::planner::{plan_one, tool_for, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::Progress;
 use super::write_request::{bare_surfaces, clean_cue_token, tokens};
 use crate::engine::ExecutionRecipe;
@@ -56,9 +56,12 @@ pub(super) fn named_branch(request: &str) -> Option<String> {
         if !is_cue {
             return None;
         }
-        let candidate = pair[1]
-            .text
-            .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ',' | '.' | ';' | ':' | '(' | ')'));
+        let candidate = pair[1].text.trim_matches(|character: char| {
+            matches!(
+                character,
+                '`' | '"' | '\'' | ',' | '.' | ';' | ':' | '(' | ')'
+            )
+        });
         is_branch_name(candidate).then(|| candidate.to_owned())
     })
 }
@@ -66,10 +69,12 @@ pub(super) fn named_branch(request: &str) -> Option<String> {
 fn is_branch_name(word: &str) -> bool {
     !word.is_empty()
         && !word.starts_with('-')
-        && word.chars().any(|character| character.is_ascii_alphanumeric())
         && word
             .chars()
-            .all(|character| character.is_ascii_alphanumeric() || matches!(character, '-' | '_' | '/' | '.'))
+            .any(|character| character.is_ascii_alphanumeric())
+        && word.chars().all(|character| {
+            character.is_ascii_alphanumeric() || matches!(character, '-' | '_' | '/' | '.')
+        })
 }
 
 /// The shell step that lands the tree: stage, commit, push, print the hash.
@@ -102,22 +107,36 @@ pub(super) fn resolves_body(reference: &str) -> String {
     super::work_item_steps::fill("body_resolves", &[("{reference}", reference)])
 }
 
-fn shell_quote(text: &str) -> String {
+pub(super) fn shell_quote(text: &str) -> String {
     format!("'{}'", text.replace('\'', "'\\''"))
 }
 
 /// Commit only the recipe's declared source artifacts; compiler outputs and
 /// unrelated staged edits are not part of the requested change.
-#[allow(clippy::literal_string_with_formatting_args, reason = "bind quoted operands in the shared commit template")]
+#[allow(
+    clippy::literal_string_with_formatting_args,
+    reason = "bind quoted operands in the shared commit template"
+)]
 pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTarget) -> String {
     let files = std::iter::once(recipe.path.as_str())
-        .chain(recipe.supporting_files.iter().map(|file| file.path.as_str()))
-        .map(shell_quote).collect::<Vec<_>>().join(" ");
-    super::work_item_steps::fill("recipe_commit_command", &[
-        ("{files}", &files), ("{subject}", &shell_quote(&recipe_subject(recipe))),
-        ("{body}", &shell_quote(&resolves_body(&target.reference))),
-        ("{branch}", &shell_quote(target.push_ref())),
-    ])
+        .chain(
+            recipe
+                .supporting_files
+                .iter()
+                .map(|file| file.path.as_str()),
+        )
+        .map(shell_quote)
+        .collect::<Vec<_>>()
+        .join(" ");
+    super::work_item_steps::fill(
+        "recipe_commit_command",
+        &[
+            ("{files}", &files),
+            ("{subject}", &shell_quote(&recipe_subject(recipe))),
+            ("{body}", &shell_quote(&resolves_body(&target.reference))),
+            ("{branch}", &shell_quote(target.push_ref())),
+        ],
+    )
 }
 
 /// The commit subject for a recipe's artifact.
@@ -136,7 +155,11 @@ pub(super) fn plan_commit_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> Option<AgenticPlan> {
-    let normalized = crate::engine::normalize_prompt(task);
+    // The commit cue must be the request's own words: `Append "Commit all
+    // changes" to notes.txt.` quotes it as text to write (PR #1188 gap 2).
+    let normalized = crate::engine::normalize_prompt(
+        &crate::solver_handlers::text_outside_quoted_segments(task),
+    );
     if !seed::lexicon().mentions_role(seed::ROLE_GIT_COMMIT_REQUEST, &normalized) {
         return None;
     }
@@ -144,8 +167,39 @@ pub(super) fn plan_commit_step(
     // also names the work to do -- "Implement X … and commit the changes", a
     // work item with its issue URL -- is the work, with the commit as its
     // last step, and belongs to the routes that do the work.
+    // Commit phrases can contain a generic authoring verb. Mask their complete
+    // spans while preserving an independent authoring instruction.
+    let spans: Vec<_> = seed::lexicon()
+        .words_for_role(seed::ROLE_GIT_COMMIT_REQUEST)
+        .iter()
+        .flat_map(|cue| {
+            normalized
+                .match_indices(cue)
+                .filter_map(|(start, matched)| {
+                    let end = start + matched.len();
+                    let before = normalized[..start].chars().next_back();
+                    let after = normalized[end..].chars().next();
+                    (before.is_none_or(|ch| !ch.is_alphanumeric())
+                        && after.is_none_or(|ch| !ch.is_alphanumeric()))
+                    .then_some((start, end))
+                })
+        })
+        .collect();
+    let authoring_text: String = normalized
+        .char_indices()
+        .map(|(index, ch)| {
+            if spans
+                .iter()
+                .any(|(start, end)| index >= *start && index < *end)
+            {
+                ' '
+            } else {
+                ch
+            }
+        })
+        .collect();
     if super::general_planner::repository_work_reference(task).is_some()
-        || super::general_planner::mentions_software_authoring(task)
+        || super::general_planner::mentions_software_authoring(&authoring_text)
     {
         return None;
     }
@@ -158,8 +212,29 @@ pub(super) fn plan_commit_step(
             task,
         )));
     }
-    let command = commit_command(&subject_for_listing(task), None, "HEAD");
+    let subject = stated_subject(task).unwrap_or_else(|| subject_for_listing(task));
+    let command = commit_command(&subject, None, "HEAD");
     Some(plan_one(run, json!({ "command": command }).to_string()))
+}
+
+/// The message the request quotes for the commit: the first quoted text after
+/// a seeded `git_commit_message_lead` ("with the message 'initial notes'"),
+/// so a stated message is never replaced by a generated one (PR #1188
+/// dogfooding).
+fn stated_subject(task: &str) -> Option<String> {
+    let lowered = task.to_lowercase();
+    let from = seed::lexicon()
+        .words_for_role("git_commit_message_lead")
+        .iter()
+        .filter_map(|word| {
+            let word = word.to_lowercase();
+            lowered.find(&word).map(|at| at + word.len())
+        })
+        .min()?;
+    crate::normal_markov::quoted_segment_spans(task)
+        .into_iter()
+        .find(|segment| segment.start >= from && !segment.text.trim().is_empty())
+        .map(|segment| segment.text)
 }
 
 /// A commit subject read from the `git status --porcelain` lines in `task`.

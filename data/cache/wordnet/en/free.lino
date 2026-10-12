@@ -1,0 +1,132 @@
+language en
+lemma free
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not limited or hampered; not under compulsion or restraint"
+    examples ("free enterprise" "a free port" "a free country" "I have an hour free" "free will" "free of racism" "feel free to stay as long as you wish" "a free choice")
+    id oewn-01065188-a
+    partOfSpeech a
+  entry
+    definition "unconstrained or not chemically bound in a molecule or not fixed and capable of relatively unrestricted motion"
+    examples ("free expansion" "free oxygen" "a free electron")
+    id oewn-01062062-a
+    partOfSpeech a
+  entry
+    definition "not held in servitude"
+    examples ("after the Civil War he was a free man")
+    id oewn-01069383-a
+    partOfSpeech a
+  entry
+    definition "people who are free"
+    examples ("the home of the free and the brave")
+    id oewn-07964544-n
+    partOfSpeech n
+    synonyms ("free people")
+  entry
+    definition "without restraint"
+    examples ("cows in India are running loose")
+    id oewn-00359817-r
+    partOfSpeech r
+    synonyms (loose)
+  entry
+    definition "costing nothing"
+    examples ("complimentary tickets" "free admission")
+    id oewn-01714713-s
+    partOfSpeech s
+    synonyms (complimentary costless gratis gratuitous)
+  entry
+    definition "not occupied or in use"
+    examples ("a free locker" "a free lane")
+    id oewn-01628191-s
+    partOfSpeech s
+  entry
+    definition "not fixed in position"
+    examples ("the detached shutter fell on him" "he pulled his arm free and ran")
+    id oewn-01064646-s
+    partOfSpeech s
+    synonyms (detached)
+  entry
+    definition "not taken up by scheduled activities"
+    examples ("a free hour between classes" "spare time on my hands")
+    id oewn-01628296-s
+    partOfSpeech s
+    synonyms (spare)
+  entry
+    definition "completely wanting or lacking"
+    examples ("writing barren of insight" "young recruits destitute of experience" "innocent of literary merit" "the sentence was devoid of meaning")
+    id oewn-00931219-s
+    partOfSpeech s
+    synonyms (barren destitute devoid innocent)
+  entry
+    definition "not literal"
+    examples ("a loose interpretation of what she had been told" "a free translation of the poem")
+    id oewn-00919313-s
+    partOfSpeech s
+    synonyms (loose liberal)
+  entry
+    definition "grant freedom to; free from confinement"
+    id oewn-02426474-v
+    partOfSpeech v
+    synonyms (liberate release unloose unloosen loose)
+  entry
+    definition "relieve from"
+    examples ("Rid the house of pests")
+    id oewn-02355171-v
+    partOfSpeech v
+    synonyms (rid disembarrass)
+  entry
+    definition "remove or force out from a position"
+    examples ("The dentist dislodged the piece of food that had been stuck under my gums" "He finally could free the legs of the earthquake victim who was buried in the rubble")
+    id oewn-01531310-v
+    partOfSpeech v
+    synonyms (dislodge)
+  entry
+    definition "grant relief or an exemption from a rule or requirement to"
+    examples ("She exempted me from the exam")
+    id oewn-02570061-v
+    partOfSpeech v
+    synonyms (exempt relieve)
+  entry
+    definition "make (information) available for publication"
+    examples ("release the list with the names of the prisoners")
+    id oewn-02499696-v
+    partOfSpeech v
+    synonyms (release)
+  entry
+    definition "free from obligations or duties"
+    id oewn-02427126-v
+    partOfSpeech v
+    synonyms (discharge)
+  entry
+    definition "free or remove obstruction from"
+    examples ("free a path across the cluttered floor")
+    id oewn-01478583-v
+    partOfSpeech v
+    synonyms (disengage)
+  entry
+    definition "let off the hook"
+    examples ("I absolve you from this responsibility")
+    id oewn-00904187-v
+    partOfSpeech v
+    synonyms (absolve)
+  entry
+    definition "part with a possession or right"
+    examples ("I am relinquishing my bedroom to the long-term house guest" "resign a claim to the throne")
+    id oewn-02321284-v
+    partOfSpeech v
+    synonyms (release relinquish resign "give up")
+  entry
+    definition "release (gas or energy) as a result of a chemical reaction or physical decomposition"
+    id oewn-01761838-v
+    partOfSpeech v
+    synonyms (release liberate)
+  entry
+    definition "make (assets) available"
+    examples ("release the holdings in the dictator's bank account")
+    id oewn-00270568-v
+    partOfSpeech v
+    synonyms (unblock unfreeze release)
+source "oewn:2024"

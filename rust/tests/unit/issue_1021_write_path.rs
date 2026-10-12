@@ -61,8 +61,8 @@ fn shell_command(prompt: &str) -> Option<String> {
 #[test]
 fn the_ladder_has_both_rungs_and_an_opt_in_to_climb_the_first() {
     let vocab = write_path();
-    assert!(!vocab.opt_in_variable.is_empty());
-    assert!(!vocab.opt_in_value.is_empty());
+    assert_ne!(vocab.opt_in_variable, "");
+    assert_ne!(vocab.opt_in_value, "");
     assert!(vocab.opt_in.iter().any(|action| action == "gh pr create"));
     assert!(
         vocab

@@ -1,0 +1,25 @@
+view
+  id M-33cb2e2a506f
+  lemma restore
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "return to its original or usable and functioning condition"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "get or give new life or energy; return to life, regain energy, recuperate"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give or bring back"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "restore by replacing a part or putting together what is torn or broken"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "bring back into original existence, use, function, or position"
+    provenance (wordnet)

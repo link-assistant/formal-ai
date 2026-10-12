@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鏡"
+        },
+        "es": {
+          "language": "es",
+          "value": "espejo"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "反射光线的物体"
+        },
+        "es": {
+          "language": "es",
+          "value": "objeto que refleja una imagen"
         }
       },
       "aliases": {
@@ -60,6 +68,12 @@
           {
             "language": "hi",
             "value": "आईना"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "espejos"
           }
         ]
       }

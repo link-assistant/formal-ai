@@ -1,0 +1,30 @@
+language en
+lemma below
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "in or to a place that is lower"
+    id oewn-00080389-r
+    partOfSpeech r
+    synonyms ("at a lower place" "to a lower place" beneath)
+  entry
+    definition "(in writing) at a later place"
+    examples ("see below" "vide infra")
+    id oewn-00080132-r
+    partOfSpeech r
+    synonyms (infra)
+  entry
+    definition "on a floor below"
+    examples ("the tenants live downstairs")
+    id oewn-00094946-r
+    partOfSpeech r
+    synonyms (downstairs "down the stairs" "on a lower floor")
+  entry
+    definition "further down"
+    examples ("see under for further discussion")
+    id oewn-00488265-r
+    partOfSpeech r
+    synonyms (under)
+source "oewn:2024"

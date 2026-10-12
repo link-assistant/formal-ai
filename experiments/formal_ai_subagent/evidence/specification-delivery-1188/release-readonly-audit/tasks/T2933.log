@@ -1,0 +1,388 @@
+>> bash {"command":"node --test rust/tests/web/issue-1181-cli-release-assets.test.mjs rust/tests/web/package-release-publication.test.mjs rust/tests/web/source-network-packets.test.mjs rust/tests/web/pages-artifact-trust.test.mjs rust/tests/web/issue-934-engine-hard-fail.test.mjs"}
+   Output: TAP version 13
+   # Subtest: R1181-1: the cli job builds the five requested targets and uploads to the release
+   ok 1 - R1181-1: the cli job builds the five requested targets and uploads to the release
+     ---
+     duration_ms: 1.285416
+     ...
+   # Subtest: R1181-2: the package and smoke-test steps build the archive layout from the pinned command
+   ok 2 - R1181-2: the package and smoke-test steps build the archive layout from the pinned command
+     ---
+     duration_ms: 1246.178041
+     ...
+   # Subtest: R1181-3: finalize consolidates the CLI fragments and reports missing legs as INCOMPLETE
+   ok 3 - R1181-3: finalize consolidates the CLI fragments and reports missing legs as INCOMPLETE
+     ---
+     duration_ms: 381.509167
+     ...
+   # Subtest: R1181-1: the release resolver builds a release that lacks the CLI archives
+   ok 4 - R1181-1: the release resolver builds a release that lacks the CLI archives
+     ---
+     duration_ms: 700.461458
+     ...
+   # Subtest: R1181-4: cargo binstall resolves the archive and path the workflow produces
+   ok 5 - R1181-4: cargo binstall resolves the archive and path the workflow produces
+     ---
+     duration_ms: 0.483792
+     ...
+   # Subtest: R1181-5: install.sh installs the verified prebuilt archive without cargo
+   ok 6 - R1181-5: install.sh installs the verified prebuilt archive without cargo
+     ---
+     duration_ms: 788.141833
+     ...
+   # Subtest: R1181-5: a checksum mismatch aborts and never falls back to cargo
+   ok 7 - R1181-5: a checksum mismatch aborts and never falls back to cargo
+     ---
+     duration_ms: 644.873417
+     ...
+   # Subtest: R1181-5: a host with no archive falls back to cargo install
+   ok 8 - R1181-5: a host with no archive falls back to cargo install
+     ---
+     duration_ms: 1025.877042
+     ...
+   # Subtest: R1181-5: install.sh and install.ps1 map hosts to the matrix targets
+   ok 9 - R1181-5: install.sh and install.ps1 map hosts to the matrix targets
+     ---
+     duration_ms: 1.232333
+     ...
+   # Subtest: R1181-5: install.ps1 parses under PowerShell
+   ok 10 - R1181-5: install.ps1 parses under PowerShell # SKIP pwsh is not installed on this host
+     ---
+     duration_ms: 0.225584
+     ...
+   # Subtest: a failed engine load posts engine_unavailable and refuses to answer
+   ok 11 - a failed engine load posts engine_unavailable and refuses to answer
+     ---
+     duration_ms: 402.666209
+     ...
+   # Subtest: the diagnostic override answers from JS with honest provenance
+   ok 12 - the diagnostic override answers from JS with honest provenance
+     ---
+     duration_ms: 542.920167
+     ...
+   # Subtest: the source no longer contains the silent fallback assignment
+   ok 13 - the source no longer contains the silent fallback assignment
+     ---
+     duration_ms: 0.244833
+     ...
+   # Subtest: the release child commit of a completed main run resolves for publication
+   ok 14 - the release child commit of a completed main run resolves for publication
+     ---
+     duration_ms: 0.894791
+     ...
+   # Subtest: an exact-head release resolves too, including when a later pipeline job failed
+   ok 15 - an exact-head release resolves too, including when a later pipeline job failed
+     ---
+     duration_ms: 0.121542
+     ...
+   # Subtest: a main run cannot publish an unrelated latest release
+   ok 16 - a main run cannot publish an unrelated latest release
+     ---
+     duration_ms: 0.06125
+     ...
+   # Subtest: untrusted runs and cancelled runs do not make any API request
+   ok 17 - untrusted runs and cancelled runs do not make any API request
+     ---
+     duration_ms: 0.062625
+     ...
+   # Subtest: PRs and default dispatches build without publishing or querying releases
+   ok 18 - PRs and default dispatches build without publishing or querying releases
+     ---
+     duration_ms: 0.111583
+     ...
+   # Subtest: manual publication requires main and a published stable tag
+   ok 19 - manual publication requires main and a published stable tag
+     ---
+     duration_ms: 0.203917
+     ...
+   # Subtest: drafts and prereleases never resolve; a completion requires the full commit
+   ok 20 - drafts and prereleases never resolve; a completion requires the full commit
+     ---
+     duration_ms: 0.062209
+     ...
+   # Subtest: a repeated npm publication verifies the immutable tarball bytes
+   ok 21 - a repeated npm publication verifies the immutable tarball bytes
+     ---
+     duration_ms: 0.138292
+     ...
+   # Subtest: npm publishes only on a real missing-version response; transport/auth errors fail
+   ok 22 - npm publishes only on a real missing-version response; transport/auth errors fail
+     ---
+     duration_ms: 0.194625
+     ...
+   # Subtest: both package workflows admit automated releases, check PRs, and attach installable artifacts
+   ok 23 - both package workflows admit automated releases, check PRs, and attach installable artifacts
+     ---
+     duration_ms: 0.863041
+     ...
+   # Subtest: each release path publishes and verifies slim before creating its GitHub release
+   ok 24 - each release path publishes and verifies slim before creating its GitHub release
+     ---
+     duration_ms: 0.569708
+     ...
+   # Subtest: checkout uses the trusted triggering ref before verification or execution
+   ok 25 - checkout uses the trusted triggering ref before verification or execution
+     ---
+     duration_ms: 0.687833
+     ...
+   # Subtest: ref validation rejects missing values and shell payloads; accepts a full SHA
+   ok 26 - ref validation rejects missing values and shell payloads; accepts a full SHA
+     ---
+     duration_ms: 395.799166
+     ...
+   # Subtest: a changed branch or arbitrary input fails before build; matching release commit passes
+   ok 27 - a changed branch or arbitrary input fails before build; matching release commit passes
+     ---
+     duration_ms: 90.292041
+     ...
+   # Subtest: every source has exactly one stable shard, including non-ASCII paths
+   ok 28 - every source has exactly one stable shard, including non-ASCII paths
+     ---
+     duration_ms: 1.082875
+     ...
+   # Subtest: duplicate paths and invalid shard identities refuse before serialization
+   ok 29 - duplicate paths and invalid shard identities refuse before serialization
+     ---
+     duration_ms: 0.125125
+     ...
+   # Subtest: receipt records serialized bytes and exact UTF-8 source, independently of line endings
+   ok 30 - receipt records serialized bytes and exact UTF-8 source, independently of line endings
+     ---
+     duration_ms: 0.360166
+     ...
+   # Subtest: a source digest or altered reconstruction never counts as a complete network
+   ok 31 - a source digest or altered reconstruction never counts as a complete network
+     ---
+     duration_ms: 0.16725
+     ...
+   # Subtest: decoder failures are propagated without a success receipt
+   ok 32 - decoder failures are propagated without a success receipt
+     ---
+     duration_ms: 0.074833
+     ...
+   # Subtest: all workflow serializer checkouts share one verified pin
+   ok 33 - all workflow serializer checkouts share one verified pin
+     ---
+     duration_ms: 0.129125
+     ...
+   # Subtest: downloaded gzip packet reconstructs the exact source and refuses identity corruption
+   ok 34 - downloaded gzip packet reconstructs the exact source and refuses identity corruption
+     ---
+     duration_ms: 1.884417
+     ...
+   # Subtest: release distribution rejects missing, duplicate, stale, forged and corrupt source packets
+   ok 35 - release distribution rejects missing, duplicate, stale, forged and corrupt source packets
+     ---
+     duration_ms: 2.563708
+     ...
+   # Subtest: production source producer imports without launching serialization and enumerates tracked production roots
+   ok 36 - production source producer imports without launching serialization and enumerates tracked production roots
+     ---
+     duration_ms: 236.906834
+     ...
+   1..36
+   # tests 36
+   # suites 0
+   # pass 35
+   # fail 0
+   # cancelled 0
+   # skipped 1
+   # todo 0
+   # duration_ms 4848.606584
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/issue-1181-cli-release-assets.test.mjs rust/tests/web/package-release-publication.test.mjs rust/tests/web/source-network-packets.test.mjs rust/tests/web/pages-artifact-trust.test.mjs rust/tests/web/issue-934-engine-hard-fail.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: R1181-1: the cli job builds the five requested targets and uploads to the release
+ok 1 - R1181-1: the cli job builds the five requested targets and uploads to the release
+  ---
+  duration_ms: 1.285416
+  ...
+# Subtest: R1181-2: the package and smoke-test steps build the archive layout from the pinned command
+ok 2 - R1181-2: the package and smoke-test steps build the archive layout from the pinned command
+  ---
+  duration_ms: 1246.178041
+  ...
+# Subtest: R1181-3: finalize consolidates the CLI fragments and reports missing legs as INCOMPLETE
+ok 3 - R1181-3: finalize consolidates the CLI fragments and reports missing legs as INCOMPLETE
+  ---
+  duration_ms: 381.509167
+  ...
+# Subtest: R1181-1: the release resolver builds a release that lacks the CLI archives
+ok 4 - R1181-1: the release resolver builds a release that lacks the CLI archives
+  ---
+  duration_ms: 700.461458
+  ...
+# Subtest: R1181-4: cargo binstall resolves the archive and path the workflow produces
+ok 5 - R1181-4: cargo binstall resolves the archive and path the workflow produces
+  ---
+  duration_ms: 0.483792
+  ...
+# Subtest: R1181-5: install.sh installs the verified prebuilt archive without cargo
+ok 6 - R1181-5: install.sh installs the verified prebuilt archive without cargo
+  ---
+  duration_ms: 788.141833
+  ...
+# Subtest: R1181-5: a checksum mismatch aborts and never falls back to cargo
+ok 7 - R1181-5: a checksum mismatch aborts and never falls back to cargo
+  ---
+  duration_ms: 644.873417
+  ...
+# Subtest: R1181-5: a host with no archive falls back to cargo install
+ok 8 - R1181-5: a host with no archive falls back to cargo install
+  ---
+  duration_ms: 1025.877042
+  ...
+# Subtest: R1181-5: install.sh and install.ps1 map hosts to the matrix targets
+ok 9 - R1181-5: install.sh and install.ps1 map hosts to the matrix targets
+  ---
+  duration_ms: 1.232333
+  ...
+# Subtest: R1181-5: install.ps1 parses under PowerShell
+ok 10 - R1181-5: install.ps1 parses under PowerShell # SKIP pwsh is not installed on this host
+  ---
+  duration_ms: 0.225584
+  ...
+# Subtest: a failed engine load posts engine_unavailable and refuses to answer
+ok 11 - a failed engine load posts engine_unavailable and refuses to answer
+  ---
+  duration_ms: 402.666209
+  ...
+# Subtest: the diagnostic override answers from JS with honest provenance
+ok 12 - the diagnostic override answers from JS with honest provenance
+  ---
+  duration_ms: 542.920167
+  ...
+# Subtest: the source no longer contains the silent fallback assignment
+ok 13 - the source no longer contains the silent fallback assignment
+  ---
+  duration_ms: 0.244833
+  ...
+# Subtest: the release child commit of a completed main run resolves for publication
+ok 14 - the release child commit of a completed main run resolves for publication
+  ---
+  duration_ms: 0.894791
+  ...
+# Subtest: an exact-head release resolves too, including when a later pipeline job failed
+ok 15 - an exact-head release resolves too, including when a later pipeline job failed
+  ---
+  duration_ms: 0.121542
+  ...
+# Subtest: a main run cannot publish an unrelated latest release
+ok 16 - a main run cannot publish an unrelated latest release
+  ---
+  duration_ms: 0.06125
+  ...
+# Subtest: untrusted runs and cancelled runs do not make any API request
+ok 17 - untrusted runs and cancelled runs do not make any API request
+  ---
+  duration_ms: 0.062625
+  ...
+# Subtest: PRs and default dispatches build without publishing or querying releases
+ok 18 - PRs and default dispatches build without publishing or querying releases
+  ---
+  duration_ms: 0.111583
+  ...
+# Subtest: manual publication requires main and a published stable tag
+ok 19 - manual publication requires main and a published stable tag
+  ---
+  duration_ms: 0.203917
+  ...
+# Subtest: drafts and prereleases never resolve; a completion requires the full commit
+ok 20 - drafts and prereleases never resolve; a completion requires the full commit
+  ---
+  duration_ms: 0.062209
+  ...
+# Subtest: a repeated npm publication verifies the immutable tarball bytes
+ok 21 - a repeated npm publication verifies the immutable tarball bytes
+  ---
+  duration_ms: 0.138292
+  ...
+# Subtest: npm publishes only on a real missing-version response; transport/auth errors fail
+ok 22 - npm publishes only on a real missing-version response; transport/auth errors fail
+  ---
+  duration_ms: 0.194625
+  ...
+# Subtest: both package workflows admit automated releases, check PRs, and attach installable artifacts
+ok 23 - both package workflows admit automated releases, check PRs, and attach installable artifacts
+  ---
+  duration_ms: 0.863041
+  ...
+# Subtest: each release path publishes and verifies slim before creating its GitHub release
+ok 24 - each release path publishes and verifies slim before creating its GitHub release
+  ---
+  duration_ms: 0.569708
+  ...
+# Subtest: checkout uses the trusted triggering ref before verification or execution
+ok 25 - checkout uses the trusted triggering ref before verification or execution
+  ---
+  duration_ms: 0.687833
+  ...
+# Subtest: ref validation rejects missing values and shell payloads; accepts a full SHA
+ok 26 - ref validation rejects missing values and shell payloads; accepts a full SHA
+  ---
+  duration_ms: 395.799166
+  ...
+# Subtest: a changed branch or arbitrary input fails before build; matching release commit passes
+ok 27 - a changed branch or arbitrary input fails before build; matching release commit passes
+  ---
+  duration_ms: 90.292041
+  ...
+# Subtest: every source has exactly one stable shard, including non-ASCII paths
+ok 28 - every source has exactly one stable shard, including non-ASCII paths
+  ---
+  duration_ms: 1.082875
+  ...
+# Subtest: duplicate paths and invalid shard identities refuse before serialization
+ok 29 - duplicate paths and invalid shard identities refuse before serialization
+  ---
+  duration_ms: 0.125125
+  ...
+# Subtest: receipt records serialized bytes and exact UTF-8 source, independently of line endings
+ok 30 - receipt records serialized bytes and exact UTF-8 source, independently of line endings
+  ---
+  duration_ms: 0.360166
+  ...
+# Subtest: a source digest or altered reconstruction never counts as a complete network
+ok 31 - a source digest or altered reconstruction never counts as a complete network
+  ---
+  duration_ms: 0.16725
+  ...
+# Subtest: decoder failures are propagated without a success receipt
+ok 32 - decoder failures are propagated without a success receipt
+  ---
+  duration_ms: 0.074833
+  ...
+# Subtest: all workflow serializer checkouts share one verified pin
+ok 33 - all workflow serializer checkouts share one verified pin
+  ---
+  duration_ms: 0.129125
+  ...
+# Subtest: downloaded gzip packet reconstructs the exact source and refuses identity corruption
+ok 34 - downloaded gzip packet reconstructs the exact source and refuses identity corruption
+  ---
+  duration_ms: 1.884417
+  ...
+# Subtest: release distribution rejects missing, duplicate, stale, forged and corrupt source packets
+ok 35 - release distribution rejects missing, duplicate, stale, forged and corrupt source packets
+  ---
+  duration_ms: 2.563708
+  ...
+# Subtest: production source producer imports without launching serialization and enumerates tracked production roots
+ok 36 - production source producer imports without launching serialization and enumerates tracked production roots
+  ---
+  duration_ms: 236.906834
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 35
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 4848.606584
+```

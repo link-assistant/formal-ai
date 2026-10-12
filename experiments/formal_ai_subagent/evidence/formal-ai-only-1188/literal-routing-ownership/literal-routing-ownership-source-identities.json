@@ -1,0 +1,18 @@
+{
+  "js/agentic/capability_router.mjs": {
+    "bytes": 18147,
+    "sha256": "332ff43161d39a1f9b2e61739102b61305d6b034ec17621d593342bbd5f360b1"
+  },
+  "rust/src/agentic_coding/capability_router.rs": {
+    "bytes": 39131,
+    "sha256": "3fa337b6f7516e0bdebb12e19c91e4da3bbee9731f7207250c8ce03c2e4cf037"
+  },
+  "rust/tests/web/literal-write-request-scope.test.mjs": {
+    "bytes": 13703,
+    "sha256": "83a75fc639cbb7453f9ca7ad027b42596d7c7922b8981c18f09a5207a50cbc52"
+  },
+  "rust/tests/fixtures/literal-obligation-transaction.rs": {
+    "bytes": 23534,
+    "sha256": "590f1830c433ef7554e66e9ec7ab33e2b98691279a114773fd370abdad028f38"
+  }
+}

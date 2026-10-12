@@ -1,0 +1,71 @@
+{
+  "archive": "T3999-T4106.json.gz",
+  "taskIds": [
+    "T3999",
+    "T4100",
+    "T4101",
+    "T4102",
+    "T4103",
+    "T4104",
+    "T4105",
+    "T4106"
+  ],
+  "entries": 36,
+  "compressedSHA": "a4888adcec5c9fa009d23105cc3bef81247711d99d77781cce4da7a3c8aac72f",
+  "decodedSHA": "efddaae6faf5394bbef93ac775b9642eb2822ed337cdc415be454792b8cafe23",
+  "head": "dfc31a82b50f05e3df0b8920f769c79ce98232d8",
+  "source": [
+    {
+      "path": "rust/tests/web/native-response-capture-runner.test.mjs",
+      "bytes": 9890,
+      "sha256": "9fa7c37f00544e8d65d822da4249b50f9888230804afacc8306a271ef0e7c115"
+    },
+    {
+      "path": "changelog.d/20261010_021000_capture_fixture_duration_input.md",
+      "bytes": 611,
+      "sha256": "bc73010672791e565cdaad250a0387f235e9fc932b37b77a1adda66b4d4bf890"
+    }
+  ],
+  "counts": {
+    "tasks": 8,
+    "physicalCalls": 16,
+    "writeCalls": 4,
+    "bashCalls": 12,
+    "readCalls": 0
+  },
+  "verification": {
+    "original": {
+      "task": "T4101",
+      "passing": 11,
+      "failures": 6
+    },
+    "unchangedRetry": {
+      "task": "T4103",
+      "passing": 17,
+      "failures": 0,
+      "skipped": 0,
+      "todo": 0,
+      "durationMs": 11885.805125
+    },
+    "related": {
+      "task": "T4104",
+      "passing": 36,
+      "failures": 0,
+      "skipped": 0,
+      "todo": 0,
+      "durationMs": 2485.963667
+    },
+    "originalAssertionsUnchanged": true,
+    "syntax": true,
+    "scopedDiff": true,
+    "sizeViolations": 0
+  },
+  "claims": {
+    "physicalEditsViaFormalAi": true,
+    "nativeCompilation": false,
+    "nativeOriginalProgramsExecuted": false,
+    "inventedDurationMeasurements": false,
+    "publication": false,
+    "specificationCountIncrease": false
+  }
+}

@@ -1,16 +1,19 @@
 Q163446
   aliases
+    es (alfombras alhombra tapete Tapete)
     hi ("ग़लीचा")
     ru ("ковер" "ковры")
     zh ("地氈")
   descriptions
     en "textile floor covering"
+    es "pieza de tela, paño, hule u otro material, también tejido confeccionado en ganchillo o bordado"
     hi "वस्त्र-आधारित फ़र्श आवरण"
     ru "тканое изделие для покрытия полов"
     zh "纺织地面覆盖物"
   id Q163446
   labels
     en carpet
+    es alfombra
     hi "क़ालीन"
     ru "ковёр"
     zh "地毯"

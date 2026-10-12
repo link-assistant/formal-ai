@@ -1,0 +1,42 @@
+language en
+lemma indent
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an order for goods to be exported or imported"
+    id oewn-06541870-n
+    partOfSpeech n
+  entry
+    definition "the space left between the margin and the start of an indented line"
+    id oewn-06401396-n
+    partOfSpeech n
+    synonyms (indentation indention indenture)
+  entry
+    definition "set in from the margin"
+    examples ("Indent the paragraphs of a letter")
+    id oewn-01749185-v
+    partOfSpeech v
+  entry
+    definition "cut or tear along an irregular line so that the parts can later be matched for authentication"
+    examples ("indent the documents")
+    id oewn-01282436-v
+    partOfSpeech v
+  entry
+    definition "make a depression into"
+    examples ("The bicycle dented my car")
+    id oewn-01282234-v
+    partOfSpeech v
+    synonyms (dent)
+  entry
+    definition "notch the edge of or make jagged"
+    id oewn-01279737-v
+    partOfSpeech v
+  entry
+    definition "bind by or as if by indentures, as of an apprentice or servant"
+    examples ("an indentured servant")
+    id oewn-00887090-v
+    partOfSpeech v
+    synonyms (indenture)
+source "oewn:2024"

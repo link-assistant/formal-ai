@@ -1,0 +1,150 @@
+TAP version 13
+# Subtest: complete Unicode declaration spans retain source and both coordinate systems
+ok 1 - complete Unicode declaration spans retain source and both coordinate systems
+  ---
+  duration_ms: 1.682834
+  ...
+# Subtest: bounded bodies establish Optional and scalar constraints without caller-supplied types
+ok 2 - bounded bodies establish Optional and scalar constraints without caller-supplied types
+  ---
+  duration_ms: 0.534542
+  ...
+# Subtest: an actual observed pair produces a guarded typed graph, without a wrapper or write
+ok 3 - an actual observed pair produces a guarded typed graph, without a wrapper or write
+  ---
+  duration_ms: 0.914958
+  ...
+# Subtest: nested Optional type parameters are instantiated from the observed operand
+ok 4 - nested Optional type parameters are instantiated from the observed operand
+  ---
+  duration_ms: 0.324334
+  ...
+# Subtest: stale identities and unobserved exports cannot produce a graph
+ok 5 - stale identities and unobserved exports cannot produce a graph
+  ---
+  duration_ms: 0.731
+  ...
+# Subtest: unknown calls, field schemas, input writes and local mutation remain contract gaps
+ok 6 - unknown calls, field schemas, input writes and local mutation remain contract gaps
+  ---
+  duration_ms: 1.706292
+  ...
+# Subtest: real module initialization and transitive import effects remain separate obligations
+ok 7 - real module initialization and transitive import effects remain separate obligations
+  ---
+  duration_ms: 1.066667
+  ...
+# Subtest: ASI line terminators, incompatible branches and unsupported async are not certified
+ok 8 - ASI line terminators, incompatible branches and unsupported async are not certified
+  ---
+  duration_ms: 0.397958
+  ...
+# Subtest: duplicate bindings and malformed balanced source do not masquerade as provenance
+ok 9 - duplicate bindings and malformed balanced source do not masquerade as provenance
+  ---
+  duration_ms: 0.338333
+  ...
+# Subtest: actual original callees retain exact declarations and honest unsupported contract reasons
+ok 10 - actual original callees retain exact declarations and honest unsupported contract reasons
+  ---
+  duration_ms: 10.628167
+  ...
+# Subtest: destination, immutable inputs and acceptance are declaration-scoped
+ok 11 - destination, immutable inputs and acceptance are declaration-scoped
+  ---
+  duration_ms: 50.182875
+  ...
+# Subtest: adjacent declared module and alias signature bind the same reusable discovery
+ok 12 - adjacent declared module and alias signature bind the same reusable discovery
+  ---
+  duration_ms: 0.637625
+  ...
+# Subtest: ambiguous destinations and quoted call shapes are not guessed
+ok 13 - ambiguous destinations and quoted call shapes are not guessed
+  ---
+  duration_ms: 0.3735
+  ...
+# Subtest: existing arithmetic module/test request remains on its original route
+ok 14 - existing arithmetic module/test request remains on its original route
+  ---
+  duration_ms: 56.24425
+  ...
+# Subtest: actual planner reads all operands, reports exact missing contracts, and changes no bytes
+ok 15 - actual planner reads all operands, reports exact missing contracts, and changes no bytes
+  ---
+  duration_ms: 284.660334
+  ...
+# Subtest: an absent destination is observed without creating it
+ok 16 - an absent destination is observed without creating it
+  ---
+  duration_ms: 53.279167
+  ...
+# Subtest: missing input is a failed read, never an empty source or a writing fallback
+ok 17 - missing input is a failed read, never an empty source or a writing fallback
+  ---
+  duration_ms: 33.394542
+  ...
+# Subtest: permission errors on the destination retain typed failure rather than absence
+ok 18 - permission errors on the destination retain typed failure rather than absence
+  ---
+  duration_ms: 0.53425
+  ...
+# Subtest: missing read capability is an exact typed gap, not a declined route
+ok 19 - missing read capability is an exact typed gap, not a declined route
+  ---
+  duration_ms: 0.53125
+  ...
+# Subtest: old request evidence is not reused for a new discovery request
+ok 20 - old request evidence is not reused for a new discovery request
+  ---
+  duration_ms: 0.466667
+  ...
+# Subtest: explicit client error flags stay bound to the observed read
+ok 21 - explicit client error flags stay bound to the observed read
+  ---
+  duration_ms: 0.452917
+  ...
+# Subtest: numbered source payload failure words remain data
+ok 22 - numbered source payload failure words remain data
+  ---
+  duration_ms: 49.25525
+  ...
+# Subtest: signature identifiers and path components cannot supply instruction verbs
+ok 23 - signature identifiers and path components cannot supply instruction verbs
+  ---
+  duration_ms: 0.549416
+  ...
+# Subtest: Unicode comments and identifiers: lossless byte spans preserve the existing public tree
+ok 24 - Unicode comments and identifiers: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 1.4335
+  ...
+# Subtest: BOM preimage: lossless byte spans preserve the existing public tree
+ok 25 - BOM preimage: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 0.252417
+  ...
+# Subtest: nested template and comments: lossless byte spans preserve the existing public tree
+ok 26 - nested template and comments: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 0.797417
+  ...
+# Subtest: regex and escaped literal: lossless byte spans preserve the existing public tree
+ok 27 - regex and escaped literal: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 0.204291
+  ...
+# Subtest: malformed observed source retains the same exact tokenizer failure
+ok 28 - malformed observed source retains the same exact tokenizer failure
+  ---
+  duration_ms: 0.222958
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1019.233917

@@ -1,0 +1,29 @@
+language en
+lemma superlative
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an exaggerated expression (usually of praise)"
+    examples ("the critics lavished superlatives on it")
+    id oewn-06706615-n
+    partOfSpeech n
+  entry
+    definition "the highest level or degree attainable; the highest stage of development"
+    examples ("his landscapes were deemed the acme of beauty" "the artist's gifts are at their acme" "at the height of her career" "the peak of perfection" "summer was at its peak" "… catapulted Einstein to the pinnacle of fame" "the summit of his ambition" "so many highest superlatives achieved by man" "at the top of his profession")
+    id oewn-13963489-n
+    partOfSpeech n
+    synonyms (acme height elevation peak pinnacle summit meridian tiptop top)
+  entry
+    definition "the superlative form of an adjective or adverb"
+    examples ("‘fastest’ is the superlative of the adjective ‘fast’" "‘least famous’ is the superlative degree of the adjective ‘famous’" "‘most surely’ is the superlative of the adverb ‘surely’")
+    id oewn-06334277-n
+    partOfSpeech n
+    synonyms ("superlative degree")
+  entry
+    definition "highest in quality"
+    id oewn-02351683-s
+    partOfSpeech s
+    synonyms (greatest sterling)
+source "oewn:2024"

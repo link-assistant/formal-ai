@@ -1,0 +1,120 @@
+language en
+lemma last
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "coming after all others in time or space or degree or being the only one remaining"
+    examples ("the last time I saw Paris" "the last day of the month" "had the last word" "waited until the last minute" "he raised his voice in a last supreme call" "the last game of the season" "down to his last nickel")
+    id oewn-01016876-a
+    partOfSpeech a
+  entry
+    definition "the temporal end; the concluding time"
+    examples ("the stopping point of each round was signaled by a bell" "the market was up at the finish" "they were playing better at the close of the season")
+    id oewn-15292365-n
+    partOfSpeech n
+    synonyms ("stopping point" finale finis finish conclusion close)
+  entry
+    definition "the last or lowest in an ordering or series"
+    examples ("he was the last to leave" "he finished an inglorious last")
+    id oewn-13872345-n
+    partOfSpeech n
+  entry
+    definition "a person's dying act; the final thing a person can do"
+    examples ("he breathed his last")
+    id oewn-01267160-n
+    partOfSpeech n
+  entry
+    definition "the time at which life ends; continuing until dead"
+    examples ("she stayed until his death" "a struggle to the last")
+    id oewn-15168236-n
+    partOfSpeech n
+    synonyms (death)
+  entry
+    definition "a unit of weight equal to 4,000 pounds"
+    id oewn-13740283-n
+    partOfSpeech n
+  entry
+    definition "a unit of capacity for grain equal to 80 bushels"
+    id oewn-13639461-n
+    partOfSpeech n
+  entry
+    definition "the final stage or concluding parts of an event or occurrence"
+    examples ("the end was exciting" "I had to miss the last of the movie")
+    id oewn-07306517-n
+    partOfSpeech n
+    synonyms (end)
+  entry
+    definition "holding device shaped like a human foot that is used to fashion or repair shoes"
+    id oewn-03649846-n
+    partOfSpeech n
+    synonyms ("shoemaker's last" "cobbler's last")
+  entry
+    definition "most recently"
+    examples ("I saw him last in London")
+    id oewn-00066148-r
+    partOfSpeech r
+  entry
+    definition "the item at the end"
+    examples ("last, I'll discuss family values")
+    id oewn-00066222-r
+    partOfSpeech r
+    synonyms (lastly "in conclusion" finally)
+  entry
+    definition "immediately past"
+    examples ("last Thursday" "the last chapter we read")
+    id oewn-01734561-s
+    partOfSpeech s
+  entry
+    definition "occurring at or forming an end or termination"
+    examples ("his concluding words came as a surprise" "the final chapter" "the last days of the dinosaurs" "terminal leave")
+    id oewn-01013868-s
+    partOfSpeech s
+    synonyms (concluding final terminal)
+  entry
+    definition "most unlikely or unsuitable"
+    examples ("the last person we would have suspected" "the last man they would have chosen for the job")
+    id oewn-01415749-s
+    partOfSpeech s
+  entry
+    definition "occurring at the time of death"
+    examples ("his last words" "the last rites")
+    id oewn-00004295-s
+    partOfSpeech s
+  entry
+    definition "conclusive in a process or progression"
+    examples ("the final answer" "a last resort" "the net result")
+    id oewn-01583536-s
+    partOfSpeech s
+    synonyms (final net)
+  entry
+    definition "highest in extent or degree"
+    examples ("to the last measure of human endurance" "whether they were accomplices in the last degree or a lesser one was … to be determined individually")
+    id oewn-01214767-s
+    partOfSpeech s
+  entry
+    definition "not to be altered or undone"
+    examples ("the judge's decision is final" "the arbiter will have the last say")
+    id oewn-00350996-s
+    partOfSpeech s
+    synonyms (final)
+  entry
+    definition "lowest in rank or importance"
+    examples ("last prize" "in last place")
+    id oewn-00231668-s
+    partOfSpeech s
+    synonyms (last-place lowest)
+  entry
+    definition "persist for a specified period of time"
+    examples ("The bad weather lasted for three days")
+    id oewn-02710788-v
+    partOfSpeech v
+    synonyms (endure)
+  entry
+    definition "continue to live and avoid dying"
+    examples ("We went without water and food for 3 days" "These superstitions survive in the backwaters of America" "The race car driver lived through several very serious accidents" "how long can a person last without food and water?" "one crash victim died, the other lived")
+    id oewn-02624202-v
+    partOfSpeech v
+    synonyms (survive live "live on" go endure "hold up" "hold out")
+source "oewn:2024"

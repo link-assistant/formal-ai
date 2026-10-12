@@ -11,7 +11,15 @@
 //! [`super::program_task_by_alias`] read them by slug. A record names only the
 //! concept (its `slug`); the translatable words stay self-describing seed data.
 
-#[derive(Clone, Copy)]
+use std::borrow::Cow;
+
+/// A catalog row: an implementation target and how its programs are run.
+///
+/// The file a program is saved as and its check and run commands are runtime
+/// data (issue #1165 R1165-6): a compiled row lends its constants, while the
+/// row a documented program binds owns the file and commands its
+/// documentation states or its declared name binds.
+#[derive(Clone)]
 pub struct ProgramLanguage {
     pub slug: &'static str,
     pub name: &'static str,
@@ -20,7 +28,7 @@ pub struct ProgramLanguage {
     pub source: &'static str,
     /// File name a novice should save the snippet as before running it (issue
     /// #330). The check/run commands above already reference this name.
-    pub save_as: &'static str,
+    pub save_as: Cow<'static, str>,
     /// The catalogued language this row is a *framework of*, or `None` when the
     /// row is a language in its own right.
     ///
@@ -70,6 +78,20 @@ impl ProgramLanguage {
     #[must_use]
     pub fn setup_hint(&self) -> String {
         crate::prerequisite::probe::seed_setup_hint(self.slug)
+    }
+
+    /// The execution note shown under this language's programs.
+    ///
+    /// A row whose `notes` is empty states it in the response seed instead,
+    /// as `program_execution_notes_<slug>`, so the sentence lives with the
+    /// other answer prose rather than in this table.
+    #[must_use]
+    pub fn execution_notes(&self) -> String {
+        if self.execution.notes.is_empty() {
+            crate::seed::report_text(&format!("program_execution_notes_{}", self.slug), &[])
+        } else {
+            self.execution.notes.to_owned()
+        }
     }
 
     /// The environment the recorded verification ran in.
@@ -131,16 +153,40 @@ pub struct ProgramTask {
 impl ProgramTask {
     #[must_use]
     pub fn output_for_language(&self, language: &ProgramLanguage) -> String {
-        list_files_sample_output(self.slug, language.save_as)
+        list_files_sample_output(self.slug, &language.save_as)
             .unwrap_or_else(|| self.output.to_owned())
     }
 }
 
+/// A program the catalog compiles in: a row of the `templates_*` tables.
 #[derive(Clone, Copy)]
-pub struct ProgramTemplate {
+pub struct CompiledTemplate {
     pub task_slug: &'static str,
     pub language_slug: &'static str,
     pub code: &'static str,
+}
+
+/// A program the catalog answers a `(task, language)` pair with.
+///
+/// The program is runtime data (issue #1165 R1165-4): a compiled row lends
+/// its text, while a pair the documentation route covers owns the program
+/// rediscovered from `data/seed/coding-documentation-captures.lino` when the
+/// catalog table is first read, so a retired program is no longer compiled.
+#[derive(Clone)]
+pub struct ProgramTemplate {
+    pub task_slug: &'static str,
+    pub language_slug: &'static str,
+    pub code: Cow<'static, str>,
+}
+
+impl From<&CompiledTemplate> for ProgramTemplate {
+    fn from(compiled: &CompiledTemplate) -> Self {
+        Self {
+            task_slug: compiled.task_slug,
+            language_slug: compiled.language_slug,
+            code: Cow::Borrowed(compiled.code),
+        }
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -197,9 +243,9 @@ impl ProgramSpec {
     /// against (issue #863).
     #[must_use]
     pub fn run_command_line(self) -> String {
-        let run_command = self.language.execution.run_command;
+        let run_command = &self.language.execution.run_command;
         self.stdin_fixture().map_or_else(
-            || run_command.to_owned(),
+            || run_command.to_string(),
             |input| format!("printf '{}' | {run_command}", shell_escaped(input)),
         )
     }
@@ -244,10 +290,10 @@ fn list_files_sample_output(task_slug: &str, save_as: &str) -> Option<String> {
 /// they are rows of `data/seed/toolchains.lino` now, read through
 /// [`ProgramLanguage::execution_status`] and [`ProgramLanguage::environment`],
 /// beside the probe that observes the toolchain on this machine.
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub struct ProgramExecution {
-    pub check_command: Option<&'static str>,
-    pub run_command: &'static str,
+    pub check_command: Option<Cow<'static, str>>,
+    pub run_command: Cow<'static, str>,
     pub notes: &'static str,
 }
 

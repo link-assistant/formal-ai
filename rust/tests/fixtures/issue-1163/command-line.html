@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<!-- Trimmed capture in the shape of kotlinlang.org/docs/command-line.html
+     (issue #1163 fixture): headings, paragraphs, a table, and the fenced
+     code block the online test resolves the kotlinc command from. -->
+<html lang="en">
+<head><title>Compiler - Kotlin Documentation</title></head>
+<body>
+  <h1>Command-line compiler</h1>
+  <p>The Kotlin compiler can be invoked from the command line.</p>
+  <h2>Create an application</h2>
+  <p>To compile a Kotlin application with the command-line compiler, use the following command.</p>
+  <pre><code class="language-kotlin">kotlinc hello.kt -include-runtime -d hello.jar</code></pre>
+  <p>java -jar hello.jar</p>
+  <h2>Compiler options</h2>
+  <table>
+    <tr><th>Option</th><th>Description</th></tr>
+    <tr><td>-include-runtime</td><td>Include the Kotlin runtime into the resulting jar</td></tr>
+    <tr><td>-d</td><td>Destination of the compilation output</td></tr>
+  </table>
+  <ul>
+    <li>The compiler requires JDK 8 or higher.</li>
+  </ul>
+</body>
+</html>

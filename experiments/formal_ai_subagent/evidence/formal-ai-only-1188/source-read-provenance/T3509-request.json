@@ -1,0 +1,9 @@
+{
+  "id": "T3509",
+  "dir": "/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-source-read-KjsbkL",
+  "prompt": "Create a file status.txt containing exactly: failed",
+  "originalNativeTask": "requested_failure_vocabulary_is_valid_successful_evidence",
+  "originalNativeFailure": "/tmp/pr1188-new-job-113777810903.log",
+  "precondition": [],
+  "receiptAdapter": "actual complete fs Read bytes unframed, original custom tool aliases, actual shell envelopes; no synthetic source/function implementation"
+}

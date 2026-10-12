@@ -1,0 +1,8 @@
+````````````text
+# Observed release audit for PR #1188
+
+This audit distinguishes committed mechanisms from actual publication. No production source was changed. The faithful source/API packet observed commit `c8b5e63e136f064216a74dfd2dcc77c826b67392`, tree `431c0ef8a58c33ba5f520149a6fe2882f35ce868`; its seventeen audited source files matched that commit and HEAD did not move during the observation. The earlier network-failed packet retains its separate `f0a6c6ff7532fd344b2e77205132ef00ed3aafd5` identity. The successful package and platform runs described below belong to remote PR head `4a560cdb5a47dd3d175ca16adf6d521619437a4e`, rather than the later audit commit.
+
+| Surface | Committed mechanism | Actual observation and boundary |
+| --- | --- | --- |
+| CLI five targets | Desktop Release `cli` depends on `resolve, base`. Each leg builds the explicit musl Linux x64/ARM64, macOS x64/ARM64 or Windows x64 target with `--release --locked`, packages `formal-ai`, LICENSE and README, extracts and executes `--version`, attests the exact archive, then uploads that archive to `TAG=needs.resolve.outputs.tag`, `REPO=github.repository` using the job token. Non-PR builds check out the resolved tag. | All five jobs passed in run 37870721641. Upload/attestation was correctly skipped on the PR. Its twelve retained artifacts are checksum fragments, not downloadable CLI or installer archives. The published stable v0.352.1 currently has no five CLI archives. No unconditional missing-upload path was found in the committed five-leg job;

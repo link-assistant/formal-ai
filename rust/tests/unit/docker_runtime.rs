@@ -15,8 +15,8 @@ fn dockerfile_defines_only_supported_dind_telegram_runtime() {
         "Dockerfile",
         &dockerfile,
         &[
-            "FROM rust:1.98-slim AS builder",
-            "FROM konard/box-dind:2.1.1",
+            "FROM rust:1.99-slim AS builder",
+            "FROM konard/box-dind:2.10.2",
             "LABEL org.opencontainers.image.source=\"https://github.com/link-assistant/formal-ai\"",
             "FORMAL_AI_IMAGE_VARIANT=dind",
             "FORMAL_AI_START_ISOLATION=docker",
@@ -56,7 +56,7 @@ fn docker_microservice_seed_declares_dind_start_command_contract() {
         "docker_microservice label should describe the only supported image variant: {record:?}"
     );
     assert!(
-        record.runtime.contains("konard/box-dind:2.1.1"),
+        record.runtime.contains("konard/box-dind:2.10.2"),
         "docker_microservice runtime should pin the Box DinD image: {record:?}"
     );
     assert!(

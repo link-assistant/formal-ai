@@ -1,0 +1,13 @@
+view
+  id M-eb60366f18be
+  lemma periodic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "happening or recurring at regular intervals"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "recurring or reappearing from time to time"
+    provenance (wordnet)

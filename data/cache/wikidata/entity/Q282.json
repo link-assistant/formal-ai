@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "葡萄酒"
+        },
+        "es": {
+          "language": "es",
+          "value": "vino"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "以葡萄為原材料釀造的酒"
+        },
+        "es": {
+          "language": "es",
+          "value": "bebida alcohólica hecha de jugo de uva fermentada"
         }
       },
       "aliases": {

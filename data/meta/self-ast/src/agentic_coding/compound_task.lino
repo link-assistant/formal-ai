@@ -1,0 +1,100 @@
+self_ast_census
+  target src/agentic_coding/compound_task.rs
+  language rust
+  fidelity full_ast
+  byte_len 6541
+  line_count 185
+  content_id source_module_c66588f693ada469
+  symbol_count 9
+  symbols
+    struct CompoundCapture 7 10
+    struct CompoundClause 12 17
+    struct CompoundTask 19 29
+    function children 30 35
+    function utf16_offset 36 38
+    function capture_text 39 47
+    function safe_path 48 54
+    function compile_compound_task 58 181
+    module tests 185 185
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 6076
+    named_node_count 1200
+    distinct_node_kinds 73
+    node_kinds
+      arguments 97
+      array_expression 2
+      array_type 3
+      assignment_expression 1
+      attribute 6
+      attribute_item 6
+      binary_expression 37
+      block 25
+      boolean_literal 2
+      break_expression 1
+      call_expression 97
+      char_literal 7
+      closure_expression 10
+      closure_parameters 10
+      compound_assignment_expr 1
+      crate 1
+      doc_comment 3
+      else_clause 2
+      expression_statement 29
+      field_declaration 15
+      field_declaration_list 3
+      field_expression 86
+      field_identifier 111
+      field_initializer 10
+      field_initializer_list 3
+      for_expression 4
+      function_item 5
+      generic_function 1
+      generic_type 13
+      identifier 250
+      if_expression 11
+      index_expression 4
+      inner_doc_comment_marker 1
+      integer_literal 17
+      let_condition 1
+      let_declaration 21
+      lifetime 10
+      lifetime_parameter 2
+      line_comment 5
+      macro_invocation 3
+      mod_item 1
+      mutable_specifier 4
+      outer_doc_comment_marker 2
+      parameter 10
+      parameters 5
+      parenthesized_expression 2
+      primitive_type 18
+      range_expression 2
+      reference_expression 9
+      reference_type 15
+      return_expression 8
+      scoped_identifier 11
+      scoped_use_list 1
+      shorthand_field_initializer 5
+      source_file 1
+      string_content 31
+      string_literal 31
+      struct_expression 3
+      struct_item 3
+      super 1
+      token_tree 12
+      try_expression 18
+      tuple_expression 2
+      tuple_pattern 4
+      tuple_struct_pattern 1
+      type_arguments 14
+      type_identifier 35
+      type_parameters 2
+      unary_expression 8
+      use_declaration 3
+      use_list 1
+      visibility_modifier 19
+      while_expression 2

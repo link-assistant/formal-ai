@@ -1,0 +1,72 @@
+TAP version 13
+# Subtest: unchanged T2379 writes and independently verifies both artifacts
+ok 1 - unchanged T2379 writes and independently verifies both artifacts
+  ---
+  duration_ms: 932.312709
+  ...
+# Subtest: quoted operation and teaching keywords remain literal in every obligation
+ok 2 - quoted operation and teaching keywords remain literal in every obligation
+  ---
+  duration_ms: 201.791625
+  ...
+# Subtest: a first-file receipt cannot certify a second file or its failed readback
+ok 3 - a first-file receipt cannot certify a second file or its failed readback
+  ---
+  duration_ms: 30.391125
+  ...
+# Subtest: write-only delivery retains first target and reports verification unavailable
+ok 4 - write-only delivery retains first target and reports verification unavailable
+  ---
+  duration_ms: 74.8135
+  ...
+# Subtest: read-only clients cannot mutate either literal target
+not ok 5 - read-only clients cannot mutate either literal target
+  ---
+  duration_ms: 50.918625
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/literal-obligation-transaction.test.mjs:74:1'
+  failureType: 'testCodeFailure'
+  error: 'crate_module_missing:crate/skill_compiler.mjs'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    crateInstance (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_modules.js:93:46)
+    crateModule (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_crate_modules.js:114:10)
+    runtimeRuleFromText (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_capabilities_and_runtime_rules.js:65:18)
+    tryBehaviorRules (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_capabilities_and_runtime_rules.js:124:22)
+    solveImpl (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_solve.js:154:24)
+    async solve (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_solve.js:28:20)
+    async file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:282:20
+  ...
+# Subtest: a successful artifact never hides an underivable mandatory clause
+ok 6 - a successful artifact never hides an underivable mandatory clause
+  ---
+  duration_ms: 83.942584
+  ...
+# Subtest: all seeded enumeration surfaces inside literal operands remain payload
+ok 7 - all seeded enumeration surfaces inside literal operands remain payload
+  ---
+  duration_ms: 8.814125
+  ...
+# Subtest: every seeded outer cue preserves two complete literals and exact UTF8 spans
+ok 8 - every seeded outer cue preserves two complete literals and exact UTF8 spans
+  ---
+  duration_ms: 8.797541
+  ...
+# Subtest: closed twelve-character fence with internal instructions has one exact readback
+ok 9 - closed twelve-character fence with internal instructions has one exact readback
+  ---
+  duration_ms: 45.423166
+  ...
+# Subtest: independent outer artifacts retain nested enumeration bytes and receipts
+ok 10 - independent outer artifacts retain nested enumeration bytes and receipts
+  ---
+  duration_ms: 208.437833
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 9
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1811.9845

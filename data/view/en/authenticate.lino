@@ -1,0 +1,9 @@
+view
+  id M-6710ab6d52c9
+  lemma authenticate
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "establish the authenticity of something"
+    provenance (wordnet)

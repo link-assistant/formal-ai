@@ -1,0 +1,26 @@
+[
+  {
+    "id": "T2937",
+    "target": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-readonly-audit/README.md",
+    "draft": "release-readonly-findings.draft.md",
+    "bytes": 8611,
+    "expectedHash": "ad481280d0c203deee808910035caac9977d9621ec718ef92ad4d52d95d1bcc4",
+    "actualHash": "ad481280d0c203deee808910035caac9977d9621ec718ef92ad4d52d95d1bcc4",
+    "fullPlanHash": "ad481280d0c203deee808910035caac9977d9621ec718ef92ad4d52d95d1bcc4",
+    "originalBodyExact": true,
+    "targetPrecondition": "absent according to original setup/history; no contemporaneous lstat saved",
+    "limit": "Read-only identity verification, no Formal AI unchanged retry yet."
+  },
+  {
+    "id": "T2944",
+    "target": "compiled-first-slice-production-plan.md",
+    "draft": "compiled-first-slice-plan.draft.md",
+    "bytes": 7723,
+    "expectedHash": "c9a71d17388744ba2191d643c9484904a444a608f4c39f5cf40982592acf85fc",
+    "actualHash": "c9a71d17388744ba2191d643c9484904a444a608f4c39f5cf40982592acf85fc",
+    "fullPlanHash": "c9a71d17388744ba2191d643c9484904a444a608f4c39f5cf40982592acf85fc",
+    "originalBodyExact": true,
+    "targetPrecondition": "absent according to original setup/history; no contemporaneous lstat saved",
+    "limit": "Read-only identity verification, no Formal AI unchanged retry yet."
+  }
+]

@@ -170,12 +170,19 @@ fn a_prefix_containing_escaped_characters_is_restored_exactly() {
 /// over a few samples estimates each leg's intrinsic cost. The regime this
 /// test exists to catch — one fsync per doublet — was two orders of magnitude
 /// past the bound and stays past it under any sample count.
+///
+/// The minimum alone was still too tight: run 37725193755 measured a 2.10 s
+/// rebuild against a 248 ms append -- an 8.5x ratio, just past both the 8x
+/// factor and the 2 s floor -- because projecting 400 events is genuinely more
+/// work than appending one. The fsync storm cost seconds per hundred events
+/// (15.8 s for 112), so at 400 events it sits far beyond a 16x / 5 s bound,
+/// which leaves the honest rebuild room on a loaded runner.
 #[test]
 fn rebuilding_a_projection_costs_what_appending_to_it_costs() {
     // Both paths do the same work per request once the fsync storm is gone. The
     // factor is generous because even the sampled legs run on a machine that
     // may be executing the rest of the suite alongside them.
-    const MAXIMUM_RATIO: u32 = 8;
+    const MAXIMUM_RATIO: u32 = 16;
     const SAMPLES: usize = 3;
 
     let append_elapsed = fastest_completion_cost(SAMPLES, SEEDED_EVENTS, true);
@@ -184,12 +191,12 @@ fn rebuilding_a_projection_costs_what_appending_to_it_costs() {
     let budget = append_elapsed
         .checked_mul(MAXIMUM_RATIO)
         .expect("the append budget must not overflow")
-        .max(Duration::from_secs(2));
+        .max(Duration::from_secs(5));
     assert!(
         rebuild_elapsed < budget,
         "rebuilding a {SEEDED_EVENTS}-event projection took {rebuild_elapsed:?}, over the \
          {budget:?} budget ({MAXIMUM_RATIO}x the {append_elapsed:?} append cost, floored at \
-         2 s); a rebuild must not pay one fsync per doublet"
+         5 s); a rebuild must not pay one fsync per doublet"
     );
 }
 

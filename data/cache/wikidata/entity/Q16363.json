@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "肩"
+        },
+        "es": {
+          "language": "es",
+          "value": "hombro"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "часть тела около плечевого сустава и шеи"
+        },
+        "es": {
+          "language": "es",
+          "value": "parte del cuerpo donde se une el brazo con el tronco"
         }
       },
       "aliases": {

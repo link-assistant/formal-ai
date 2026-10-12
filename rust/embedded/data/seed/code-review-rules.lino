@@ -1,0 +1,67 @@
+# Code-review rules applied by the review handler (issue #1177).
+#
+# Each `rule` record names one defect pattern the reviewer can detect
+# structurally. `detect` entries are matched as substrings of a code line
+# within the rule's `scope` -- any_line means any line after trimming,
+# def_line means a line that defines a function, and loop_body means a
+# line inside a for or while body. `avoid` entries suppress a match when
+# they also appear on the line. `language` gates the rule (python rules
+# apply unless the code looks like JavaScript, javascript rules only when
+# it does). `source` cites the upstream document that justifies the
+# advice.
+#
+# Read by the code-review handler in rust/src/solver_handlers/ through
+# the seed file registry (seed_files).
+rule
+  id bare_except
+    language python
+    scope any_line
+    severity high
+    detect "except:"
+    detect "except Exception:"
+    title "bare except swallows every error"
+    advice "catch the specific exception the call can raise, or at least log the exception before re-raising it, so real failures are not silently discarded"
+    source "https://docs.python.org/3/tutorial/errors.html"
+rule
+  id mutable_default_argument
+    language python
+    scope def_line
+    severity high
+    detect "=[]"
+    detect "={}"
+    title "mutable default argument is shared across calls"
+    advice "default to None and create the list or dict inside the function body, so each call gets a fresh container instead of mutating the one shared default"
+    source "https://docs.python.org/3/faq/programming.html#why-are-default-values-shared-between-objects"
+rule
+  id none_equality
+    language python
+    scope any_line
+    severity medium
+    detect "== None"
+    detect "None =="
+    avoid "==="
+    title "comparison to None with == instead of is"
+    advice "compare against the singleton None with is None or is not None, never the equality operators"
+    source "https://peps.python.org/pep-0008/#programming-recommendations"
+rule
+  id string_concat_in_loop
+    language python
+    scope loop_body
+    severity medium
+    detect "+= \""
+    detect "+= '"
+    detect "+= f\""
+    title "string built by += inside a loop is quadratic"
+    advice "collect the pieces in a list and join them once after the loop, so the total work stays linear instead of copying the string on every iteration"
+    source "https://docs.python.org/3/faq/programming.html#what-is-the-most-efficient-way-to-concatenate-many-strings-together"
+rule
+  id loose_equality
+    language javascript
+    scope any_line
+    severity medium
+    detect "=="
+    avoid "==="
+    avoid "!=="
+    title "loose == comparison coerces its operands"
+    advice "use strict equality === or !== so the comparison never silently converts the types of its operands before comparing"
+    source "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality"

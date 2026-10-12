@@ -1,0 +1,49 @@
+{
+  "lemma": "rolling",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07403930-n",
+      "partOfSpeech": "n",
+      "definition": "a deep prolonged sound (as of thunder or large bells)",
+      "synonyms": [
+        "peal",
+        "pealing",
+        "roll"
+      ]
+    },
+    {
+      "id": "oewn-00785416-n",
+      "partOfSpeech": "n",
+      "definition": "the act of robbing a helpless person",
+      "examples": [
+        "he was charged with rolling drunks in the park"
+      ]
+    },
+    {
+      "id": "oewn-00123350-n",
+      "partOfSpeech": "n",
+      "definition": "propelling something on wheels",
+      "synonyms": [
+        "wheeling"
+      ]
+    },
+    {
+      "id": "oewn-01884326-s",
+      "partOfSpeech": "s",
+      "definition": "uttered with a trill",
+      "examples": [
+        "she used rolling r's as in Spanish"
+      ],
+      "synonyms": [
+        "rolled",
+        "trilled"
+      ]
+    }
+  ]
+}

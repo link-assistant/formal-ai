@@ -1,0 +1,23 @@
+{
+  "tests": 59,
+  "passed": 59,
+  "nativeCompilation": false,
+  "coldTimingProof": false,
+  "U9": "Open",
+  "productionWorkflowsChanged": false,
+  "autonomousCredit": 0,
+  "source": [
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_coverage.rs",
+      "sha256": "32d5cec40712bf5a15cbc05e46e46ddb63989e71f598c8a0005ebff36695de28"
+    },
+    {
+      "path": "rust/tests/unit/issue_896_component_boundaries.rs",
+      "sha256": "6f57c0174ba38b974658c972b3baf234ca9d766698f2175090e94c87ddad1007"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/attestation_and_coverage_audit.rs",
+      "sha256": "780009097b210100d6552d91f13bb957e24811b4fdf2c47ef11d8731cf274201"
+    }
+  ]
+}

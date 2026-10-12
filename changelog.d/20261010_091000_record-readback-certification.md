@@ -1,0 +1,1 @@
+Verify evidence and effect record bytes after their current Write before delivering a Finding. Preserve exact-path and raw-byte receipts, bare Read compatibility, and typed failures or gaps when observation fails or is unavailable. Both unchanged original L21 requests now independently verify their mandatory records.

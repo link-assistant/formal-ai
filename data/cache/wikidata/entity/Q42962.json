@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "油"
+        },
+        "es": {
+          "language": "es",
+          "value": "aceite"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "物质类型"
+        },
+        "es": {
+          "language": "es",
+          "value": "líquido viscoso"
         }
       },
       "aliases": {
@@ -46,6 +54,16 @@
           {
             "language": "ru",
             "value": "масла"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "aceites"
+          },
+          {
+            "language": "es",
+            "value": "aceite mineral"
           }
         ]
       }

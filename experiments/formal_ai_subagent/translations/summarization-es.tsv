@@ -1,0 +1,3 @@
+summarization_disputed_statement	"{statement} (en disputa: {evidence})"
+summarization_evidence_denied	", negado por {denied}"
+summarization_evidence_summary	"afirmado por {asserted} de {total} fuentes{denied}"

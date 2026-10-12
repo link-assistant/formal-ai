@@ -6,7 +6,7 @@ handler_family_paraphrases_suite_issue_1138
   runner "cargo test --test unit issue_1138_family_migration -- --nocapture"
   minimum_pass_count "300"
   languages "en|ru|hi|zh|es"
-  families "retrieval_method|procedure_interpreter|structural_operator|dialogue_state_query|rule_interpreter"
+  families "retrieval_method|procedure-interpreter|structural-operator|dialogue-state-query|rule_interpreter"
   cases_per_family_per_language "12"
   member_file "handler-family-paraphrases/en.lino"
   member_file "handler-family-paraphrases/ru.lino"

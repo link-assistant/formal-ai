@@ -1,0 +1,27 @@
+language en
+lemma compression
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an increase in the density of something"
+    id oewn-07433833-n
+    partOfSpeech n
+    synonyms (compaction concretion densification)
+  entry
+    definition "the process or result of becoming smaller or pressed together"
+    examples ("the contraction of a gas on cooling")
+    id oewn-07327841-n
+    partOfSpeech n
+    synonyms (condensation contraction)
+  entry
+    definition "encoding information while reducing the bandwidth or bits required"
+    id oewn-00617323-n
+    partOfSpeech n
+  entry
+    definition "applying pressure"
+    id oewn-00357616-n
+    partOfSpeech n
+    synonyms (compressing)
+source "oewn:2024"

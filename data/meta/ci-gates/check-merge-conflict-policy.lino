@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_merge_conflict_policy
+ci_gate check-merge-conflict-policy
   stage rust
   description "Every measured conflict site is covered by a mechanism or deferred with a reason (issue #991)."
   run "rust-script --test scripts/check-merge-conflict-policy.rs && rust-script scripts/check-merge-conflict-policy.rs"
+  justification "check-merge-conflict-policy.rs was introduced in #991 to verify that conflict-prone files use the one-file-per-entry layout; without this, parallel branches adding entries still collide in the same file."

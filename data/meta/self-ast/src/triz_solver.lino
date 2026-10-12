@@ -1,0 +1,23 @@
+self_ast_census
+  target src/triz_solver.rs
+  language rust
+  fidelity signature
+  byte_len 9834
+  line_count 260
+  content_id source_module_091cd23daed5c099
+  symbol_count 14
+  symbols
+    const SEED_PATH 34 34
+    const INTENT 35 35
+    struct ResolutionFamily 40 46
+    struct BenchmarkTask 51 58
+    function seed_text 61 66
+    function records_of_type 75 86
+    function triz_families 90 107
+    function triz_benchmark_tasks 111 133
+    function triz_cues 138 152
+    function relevant_tasks 158 177
+    function families_text 180 186
+    function precedents_text 189 203
+    const LINK_NOTE_INTENT 207 207
+    function handle_triz 212 260

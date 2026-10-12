@@ -1,0 +1,12 @@
+language en
+lemma reporter
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a person who investigates and reports or edits news stories"
+    id oewn-10541255-n
+    partOfSpeech n
+    synonyms (newsperson)
+source "oewn:2024"

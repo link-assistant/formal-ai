@@ -1,0 +1,26 @@
+{
+  "lemma": "wellbeing",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14470991-n",
+      "partOfSpeech": "n",
+      "definition": "a contented state of being happy and healthy and prosperous",
+      "examples": [
+        "the town was finally on the upbeat after our recent troubles"
+      ],
+      "synonyms": [
+        "well-being",
+        "welfare",
+        "upbeat",
+        "eudaemonia",
+        "eudaimonia"
+      ]
+    }
+  ]
+}

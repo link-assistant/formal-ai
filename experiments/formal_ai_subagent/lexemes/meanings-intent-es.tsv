@@ -1,0 +1,29 @@
+assistant	asistente	asistente de ia
+user	usuario	usuaria
+inquiry	consulta	pregunta	solicitud
+answer	respuesta	contestación
+self_reference	ti mismo	ti misma	mí mismo	mí misma
+capability	capacidad	habilidad
+knowledge	conocimiento
+fact	hecho	hechos
+fact_check_current_dialogue_query	verifica los hechos de este diálogo	comprueba los hechos de este diálogo	verifica cada afirmación	comprueba todas las afirmaciones
+knowledge_inventory_probe	qué	cuáles	lista	muestra
+assistant_knowing	sabes	conoces	tienes	qué sabes	te es conocido	en tu conocimiento
+knowledge_inventory_query	qué sabes en general	qué sabes del mundo	qué te es conocido	qué conocimientos tienes
+introduction	presentación
+clarification	aclaración
+understanding	comprensión
+clarification_request	no entiendo	no lo entiendo	no entendí	no comprendo	qué quieres decir	estoy confundido	estoy confundida
+capability_query	qué puedes hacer	qué sabes hacer	cuáles son tus capacidades	de qué eres capaz	qué haces	muéstrame lo que puedes hacer	qué funciones tienes	cómo puedes ayudar	cómo me puedes ayudar	en qué puedes ayudar
+capability_query_more	qué más puedes hacer	qué más sabes hacer	qué otras cosas puedes hacer
+self_fact_query	hechos que sabes sobre ti	hechos sobre ti	datos sobre ti
+self_introduction_request	háblame de ti	cuéntame sobre ti	preséntate	conozcámonos	vamos a conocernos
+conversation_summary_directive	resume	resumir	resumen
+conversation_reference	conversación	chat	diálogo	charla	discusión
+conversation_summary_phrase	de qué hemos hablado	de qué hablamos	qué hemos hecho hasta ahora	qué hicimos hasta ahora	resumen de nuestra conversación	recuérdame de qué hablamos
+conversation_summary_courtesy	dame un resumen	puedes resumir	por favor resume	haz un resumen
+who_is_question	quién es …	quién era …	quiénes son …	quién fue …
+interrogative_opener	qué	quién	por qué	dónde	cuándo	cómo	cuál
+set_assistant_name	intención de establecer el nombre del asistente
+assistant_name_recall	intención de recordar el nombre del asistente
+ambiguous_modification_clarification	intención de aclarar una modificación ambigua

@@ -1,0 +1,14 @@
+# Issue #1188 R1188-U23 (owner, 2026-10-08, a strict requirement): every
+# regular code file in js/, ts/, rust/ (and scripts/, packages/) is
+# human-readable multi-line code. scripts/check-readable-code.mjs fails a
+# tracked code file that is packed (more than 160 characters per line on
+# average) or holds a line of more than 300 characters of code, unless it is
+# listed here. Only real distribution bundles belong here, each with its reason. A path ending in / covers every
+# file under it. An exemption that no longer covers an unreadable file fails
+# the gate, so this list only shrinks.
+#
+# The built web bundles (js/*.bundle.js, js/app.js) are git-ignored build
+# output, so the gate never sees them and they need no row.
+
+readable-code-exemption js/vendor/tree-sitter/web-tree-sitter.mjs
+  reason "Vendored distribution build of the web-tree-sitter package, committed as upstream published it (js/vendor/tree-sitter/provenance.lino); its Emscripten glue holds one line of about 4,100 characters. Reformatting it would make it differ from the published artifact its provenance names."

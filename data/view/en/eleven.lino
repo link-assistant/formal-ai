@@ -1,0 +1,17 @@
+view
+  id M-58d9b4471f93
+  lemma eleven
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the cardinal number that is the sum of ten and one"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a team that plays football"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being one more than ten"
+    provenance (wordnet)

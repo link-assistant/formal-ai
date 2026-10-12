@@ -1,0 +1,3 @@
+The original native-response capture runner's miniature repository now declares its scheduling-data precondition before creating the producer identity. Its tracked duration record has only the declared fallback and no invented measured rows. All original test programs and assertions across 17 controls remain unchanged.
+
+The initial unchanged runner command exposed six missing-file failures. The exact command retry passes all 17 controls; the related original 34 scheduling/capture controls plus two stream interruption controls also pass. Actual native execution and publication remain CI acceptance steps.

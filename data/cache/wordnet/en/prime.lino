@@ -1,0 +1,69 @@
+language en
+lemma prime
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of or relating to or being an integer that cannot be factored into other integers"
+    examples ("prime number")
+    id oewn-03023717-a
+    partOfSpeech a
+  entry
+    definition "a natural number that has exactly two distinct natural number divisors: 1 and itself"
+    id oewn-13615208-n
+    partOfSpeech n
+    synonyms ("prime quantity")
+  entry
+    definition "the period of greatest prosperity or productivity"
+    id oewn-15320288-n
+    partOfSpeech n
+    synonyms (flower peak heyday bloom blossom efflorescence flush)
+  entry
+    definition "the second canonical hour; about 6 a.m."
+    id oewn-15254580-n
+    partOfSpeech n
+  entry
+    definition "the time of maturity when power and vigor are greatest"
+    id oewn-15177369-n
+    partOfSpeech n
+    synonyms ("prime of life")
+  entry
+    definition "first in rank or degree"
+    examples ("an architect of premier rank" "the prime minister")
+    id oewn-01016587-s
+    partOfSpeech s
+    synonyms (premier)
+  entry
+    definition "used of the first or originating agent"
+    examples ("prime mover")
+    id oewn-01016768-s
+    partOfSpeech s
+  entry
+    definition "of superior grade"
+    examples ("choice wines" "prime beef" "prize carnations" "quality paper" "select peaches")
+    id oewn-02351005-s
+    partOfSpeech s
+    synonyms (choice prize quality select)
+  entry
+    definition "being at the best stage of development"
+    examples ("our manhood's prime vigor")
+    id oewn-01492920-s
+    partOfSpeech s
+    synonyms (meridian)
+  entry
+    definition "insert a primer into (a gun, mine, or charge) preparatory to detonation or firing"
+    examples ("prime a cannon" "prime a mine")
+    id oewn-00409549-v
+    partOfSpeech v
+  entry
+    definition "cover with a primer; apply a primer to"
+    id oewn-01368058-v
+    partOfSpeech v
+    synonyms (ground undercoat)
+  entry
+    definition "fill with priming liquid"
+    examples ("prime a car engine")
+    id oewn-00454973-v
+    partOfSpeech v
+source "oewn:2024"

@@ -32,25 +32,26 @@ pub fn try_summarization_request(
     }
 
     let language = detect_language(prompt).slug();
-    let (topic, body, source) = seeds
-        .pick_topic(normalized)
-        .and_then(|topic| {
-            derived_topic_summary(topic, language)
-                .map(|(body, source)| (topic.display_name.clone(), body, source))
-        })
-        .unwrap_or_else(|| {
-            let label = prompt
-                .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
-                .to_owned();
-            let fallback = if seeds.fallback_response.is_empty() {
-                "unknown"
-            } else {
-                seeds.fallback_response.as_str()
-            };
-            let body = seed::localized_response(fallback, language)
-                .unwrap_or_else(|| crate::engine::unknown_answer().to_owned());
-            (label, body, String::from("none"))
-        });
+    let derived = seeds.pick_topic(normalized).and_then(|topic| {
+        derived_topic_summary(topic, language)
+            .map(|(body, source)| (topic.display_name.clone(), body, source))
+    });
+    if derived.is_none() {
+        log.append("summarization:refusal", "no seeded topic".to_owned());
+    }
+    let (topic, body, source) = derived.unwrap_or_else(|| {
+        let label = prompt
+            .trim_matches(|c: char| c.is_ascii_punctuation() || c.is_whitespace())
+            .to_owned();
+        let fallback = if seeds.fallback_response.is_empty() {
+            "unknown"
+        } else {
+            seeds.fallback_response.as_str()
+        };
+        let body = seed::localized_response(fallback, language)
+            .unwrap_or_else(|| crate::engine::unknown_answer().to_owned());
+        (label, body, String::from("none"))
+    });
 
     log.append("summarization:topic", topic);
     log.append("summarization:source", source);
@@ -118,7 +119,10 @@ pub fn try_brainstorming_request(
         return None;
     }
     let category = seeds.pick_category(normalized)?;
-    let requested_count = requested_brainstorm_count(normalized);
+    if category.detection_keywords.is_empty() {
+        log.append("brainstorming:refusal", "no category keyword".to_owned());
+    }
+    let requested_count = requested_brainstorm_count(seeds, normalized);
     let body = numbered(&category.items, requested_count);
     log.append("brainstorm:category", category.slug.clone());
     Some(finalize_simple(
@@ -131,105 +135,20 @@ pub fn try_brainstorming_request(
     ))
 }
 
-pub fn try_conversation_topic_request(
-    prompt: &str,
-    normalized: &str,
-    log: &mut EventLog,
-) -> Option<SymbolicAnswer> {
-    let topic = conversation_topic(prompt, normalized)?;
-    let language = detect_language(prompt).slug();
-    let body = match language {
-        "ru" => format!(
-            "Можем. Тема: {topic}. Я могу начать с краткого определения, \
-             контекста или конкретного вопроса; если веб-поиск доступен, \
-             публичные факты можно уточнить через внешний источник."
-        ),
-        "hi" => format!(
-            "हम बात कर सकते हैं. विषय: {topic}. मैं छोटी परिभाषा, संदर्भ, \
-             या किसी конкрет प्रश्न से शुरू कर सकता हूँ; web search उपलब्ध हो \
-             तो public facts बाहरी स्रोत से जाँचे जा सकते हैं."
-        ),
-        "zh" => format!(
-            "可以聊。主题: {topic}。我可以从简短定义、上下文或具体问题开始; \
-             如果 web search 可用, 公开事实可以通过外部来源核对。"
-        ),
-        _ => format!(
-            "We can talk about {topic}. I can start with a short definition, \
-             context, or a specific question; when web search is available, \
-             public facts can be checked against an external source."
-        ),
-    };
-
-    log.append("conversation_topic", topic);
-    Some(finalize_simple(
-        prompt,
-        log,
-        "conversation_topic",
-        "response:conversation_topic",
-        &body,
-        0.75,
-    ))
-}
-
-/// Extract the topic the user proposed to discuss from a conversational opener.
+/// The number of items the user asked for: the value of the seed's
+/// `count_cardinal` meaning when the prompt evidences it (in any supported
+/// language), else the seed's `default_count`.
 ///
-/// The recognized surfaces — the let-us-talk-about-X phrasings in every
-/// supported language — carry the [`seed::ROLE_CONVERSATION_TOPIC_OPENER`] role;
-/// each is a prefix whose text before the `…` slot is the matchable opener, in
-/// declaration order. A form whose `action` field is `scan` is also matched
-/// anywhere in the prompt, not only at the start, so an opener that follows a
-/// greeting is still found. No per-language opener list lives here — only the
-/// concept; the surfaces come from `data/seed/meanings-conversation.lino`.
-fn conversation_topic(prompt: &str, normalized: &str) -> Option<String> {
-    let forms = seed::lexicon().role_word_forms(seed::ROLE_CONVERSATION_TOPIC_OPENER);
-    for form in &forms {
-        if let Some(topic) = normalized.strip_prefix(form.before_slot()) {
-            return clean_conversation_topic(topic);
-        }
-    }
-
-    let lower = prompt.to_lowercase();
-    for form in &forms {
-        if form.action == "scan"
-            && let Some((_, topic)) = lower.split_once(form.before_slot())
-        {
-            return clean_conversation_topic(topic);
-        }
-    }
-    None
-}
-
-fn clean_conversation_topic(raw: &str) -> Option<String> {
-    let topic = raw
-        .trim()
-        .trim_matches(|ch: char| {
-            ch.is_whitespace()
-                || matches!(
-                    ch,
-                    '`' | '"' | '\'' | ':' | '-' | '_' | '.' | ',' | '?' | '!'
-                )
-        })
-        .to_owned();
-    (!topic.is_empty()).then_some(topic)
-}
-
-/// The number of brainstorm items returned when the prompt names no count.
-const DEFAULT_BRAINSTORM_COUNT: usize = 5;
-
-/// Parse the number of items the user asked for, defaulting to
-/// [`DEFAULT_BRAINSTORM_COUNT`] when no explicit count is present.
-///
-/// The only non-default count the brainstorm prompts exercise is ten, so the
-/// recogniser asks the seed whether the `ten` cardinal is evidenced in the
-/// prompt — in any supported language — and reads the integer value from that
-/// cardinal's own numeral surface rather than a hardcoded literal. Recognising
-/// the concept this way keeps the count language-independent and self-describing.
-fn requested_brainstorm_count(normalized: &str) -> usize {
+/// The cardinal's integer value is read from its own numeral surface rather
+/// than a literal, so the count stays language-independent and the policy
+/// (which cardinal, which default) is the seed's, not this module's (issue
+/// #918).
+fn requested_brainstorm_count(seeds: &BrainstormSeeds, normalized: &str) -> usize {
     seed::lexicon()
-        .meaning("ten")
-        .filter(|ten| ten.evidenced_in(normalized))
+        .meaning(&seeds.count_cardinal)
+        .filter(|cardinal| cardinal.evidenced_in(normalized))
         .and_then(cardinal_value)
-        .unwrap_or(DEFAULT_BRAINSTORM_COUNT)
+        .unwrap_or(seeds.default_count)
 }
 
 /// Read the integer value of a cardinal-number meaning from its own data.
@@ -254,25 +173,22 @@ fn numbered(items: &[String], count: usize) -> String {
         .join("\n")
 }
 
-fn fact_records() -> &'static [FactRecord] {
-    static CELL: OnceLock<Vec<FactRecord>> = OnceLock::new();
-    CELL.get_or_init(seed::facts).as_slice()
-}
-
 /// Whether the committed fact store has a record for this prompt.
 ///
 /// The planner's open-web gate asks whether the symbolic engine can answer a
 /// request before releasing it to the open web (issue #989). Concepts and
-/// computations already answer there; a question the fact store matches --
-/// subject alias plus question keyword, exactly the dispatch the solver's
-/// `fact_lookup` row runs -- is equally answerable, and planning a web search
-/// for it would discard the answer the engine already owns (issue #1138).
+/// computations already answer there; a question the fact store's subject
+/// gate admits -- the formalized subject's Q-id equals a record's
+/// `subject_qid` (issue #1172 R2), with word-boundary alias matching only as
+/// the last-resort hint for Q-id-less records, so an unseeded subject such as
+/// Australia correctly falls through to `false`, exactly the dispatch the
+/// solver's `fact_lookup` row runs -- is equally answerable, and planning a
+/// web search for it would discard the answer the engine already owns
+/// (issue #1138).
 #[must_use]
 pub fn fact_store_resolves(prompt: &str) -> bool {
     let normalized = crate::engine::normalize_prompt(prompt);
-    fact_records()
-        .iter()
-        .any(|record| record.matches_normalized(&normalized))
+    super::factual_qa::gated_fact_record(prompt, &normalized).is_some()
 }
 
 /// Detect which knowledge-base relation a prompt asks about.
@@ -304,25 +220,39 @@ fn detect_relation(normalized: &str) -> Option<&'static str> {
 
 /// Find the subject alias the prompt mentions, if any. Returns the alias
 /// substring as it appears in `subject_aliases`.
+///
+/// Issue #1172: the alias must match at word boundaries via
+/// [`FactRecord::contains_word_sequence`] — the same comparison
+/// [`FactRecord::matches_normalized`] gates on — so the `fact_query:subject`
+/// evidence reports an alias that actually appears in the prompt as a whole
+/// word (e.g. "usa" for "capital of usa"), never the substring coincidence
+/// that used to fire (alias "us" inside "australia").
 fn detect_subject_alias<'a>(record: &'a FactRecord, normalized: &str) -> Option<&'a str> {
     record
         .subject_aliases
         .iter()
-        .find(|alias| !alias.is_empty() && normalized.contains(alias.as_str()))
+        .find(|alias| FactRecord::contains_word_sequence(normalized, alias))
         .map(String::as_str)
 }
 
+/// The `fact_lookup` row: a question over prompt-supplied text (issue #1172
+/// R7) and a comparison of seeded subjects (R6) first, then the seeded record
+/// the subject gate admits (R2).
 pub fn try_fact_lookup(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    let record = fact_records()
-        .iter()
-        .find(|record| record.matches_normalized(normalized))?;
+    if let Some(answer) = super::prompt_text_question::try_prompt_text_question(prompt, log)
+        .or_else(|| super::factual_qa::try_fact_comparison(prompt, log))
+    {
+        return Some(answer);
+    }
+    let (record, gate) = super::factual_qa::gated_fact_record(prompt, normalized)?;
 
     log.append("fact_lookup:request", prompt.to_owned());
     log.append("fact_lookup:hit", record.slug.clone());
+    log.append("fact_lookup:subject_gate", gate);
 
     // Structured fact_query trace events (Issue #127). When the matched record
     // declares a `relation`, surface the parsed (relation, subject) tuple so
@@ -415,7 +345,9 @@ pub fn try_coreference_request(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let seeds = coreference_seed_data();
-    let pronoun = matching_coreference_pronoun(seeds, normalized)?;
+    let pronoun = seeds.matching_pronoun(&crate::engine::normalize_prompt(
+        super::text_rewrite::command_head(prompt),
+    ))?;
 
     let (antecedent, resolution) = resolve_coreference_antecedent(seeds, log)?;
     log.append("context_resolution", resolution.links_notation());
@@ -499,20 +431,19 @@ fn resolve_coreference_antecedent<'a>(
     Some((antecedent, resolution))
 }
 
-fn matching_coreference_pronoun<'a>(
-    seeds: &'a CoreferenceSeeds,
-    normalized: &str,
-) -> Option<&'a Pronoun> {
-    seeds.pronouns.iter().find(|pronoun| {
-        pronoun
-            .contexts
-            .iter()
-            .any(|context| !context.is_empty() && normalized.contains(context.as_str()))
-            || pronoun
-                .starts_with
-                .iter()
-                .any(|prefix| !prefix.is_empty() && normalized.starts_with(prefix.as_str()))
-    })
+/// Whether an earlier user turn names an antecedent a pronoun resolves to.
+///
+/// The `coreference_antecedent` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_coreference_antecedent(log: &EventLog) -> bool {
+    resolve_coreference_antecedent(coreference_seed_data(), log).is_some()
+}
+
+/// A seeded command-head reference with a real earlier user antecedent.
+#[must_use]
+pub fn resolves_coreference_request(prompt: &str, log: &EventLog) -> bool {
+    let head = crate::engine::normalize_prompt(super::text_rewrite::command_head(prompt));
+    coreference_seed_data().matching_pronoun(&head).is_some() && names_coreference_antecedent(log)
 }
 
 fn rewrite_coreference_prompt(
@@ -594,6 +525,9 @@ pub fn try_roleplay_request(
     let topic_body = seeds
         .pick_topic(normalized)
         .map_or(seeds.fallback_body.as_str(), |topic| topic.body.as_str());
+    if seeds.pick_persona(normalized).is_none() && seeds.pick_topic(normalized).is_none() {
+        log.append("roleplay:refusal", "no persona or topic".to_owned());
+    }
     let body = seeds.render_body(persona_display, topic_body);
 
     Some(finalize_simple(

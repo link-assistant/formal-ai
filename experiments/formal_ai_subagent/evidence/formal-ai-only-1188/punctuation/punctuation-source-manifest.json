@@ -1,0 +1,27 @@
+[
+  {
+    "path": "js/agentic/general_planner.mjs",
+    "bytes": 25955,
+    "sha256": "eeba8e6467a0daa024c051c39928f79d894b14a187cd16abef412c33fc1feb54"
+  },
+  {
+    "path": "rust/src/agentic_coding/general_planner/literal_request.rs",
+    "bytes": 18638,
+    "sha256": "972270ed4e30b51e669c62200b30f8b2cb2ea37c1aac5610bd41645052ae0c68"
+  },
+  {
+    "path": "rust/tests/web/literal-write-request-scope.test.mjs",
+    "bytes": 5568,
+    "sha256": "549f36d145a03888a5743228e6276c761cbf66b7104046bef834e4c19e6b2d0b"
+  },
+  {
+    "path": "rust/tests/fixtures/literal-punctuation-contract.rs",
+    "bytes": 1146,
+    "sha256": "8cead3e751dd07c908c596ae8046b8056ca3c00c3e0afde3d93455fc8d995f0e"
+  },
+  {
+    "path": "rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs",
+    "bytes": 9975,
+    "sha256": "9b315533913645b7db4ae6471b3353062cd965094641b80588bce78a3a68daa7"
+  }
+]

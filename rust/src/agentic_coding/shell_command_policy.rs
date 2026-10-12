@@ -110,7 +110,45 @@ pub(super) fn sentence_spans(prompt: &str) -> Vec<&str> {
 /// *"When running sudo commands, run them in the background"* tells the agent how
 /// to treat a class of commands it may later choose to run. Nothing in it names a
 /// command to run now, so no token inside it may become one.
+/// Leading seed-owned negation scopes the entire coordinated command sentence.
+fn negated_command_policy(sentence: &str) -> bool {
+    let lower = sentence.to_lowercase();
+    let quotes = crate::normal_markov::quoted_segment_spans(sentence);
+    for surface in seed::caller_context_vocabulary().policy_leads {
+        let lead = surface.trim().to_lowercase();
+        if lead.is_empty() || !seed::lexicon().mentions_role("statement_negation_cue", &lead) {
+            continue;
+        }
+        for (at, _) in lower.match_indices(&lead) {
+            let Some((start, end)) =
+                super::write_request::raw_lowercase_span(sentence, Some((at, at + lead.len())))
+            else {
+                continue;
+            };
+            if !sentence[..start].trim().is_empty()
+                || quotes
+                    .iter()
+                    .any(|quote| start < quote.end && end > quote.start)
+            {
+                continue;
+            }
+            let word = |character: char| character.is_alphanumeric() || character == '_';
+            if !crate::coding::contains_cjk(&lead)
+                && (sentence[..start].chars().next_back().is_some_and(word)
+                    || sentence[end..].chars().next().is_some_and(word))
+            {
+                continue;
+            }
+            return true;
+        }
+    }
+    false
+}
+
 pub(super) fn states_a_command_policy(sentence: &str) -> bool {
+    if negated_command_policy(sentence) {
+        return true;
+    }
     let lower = sentence.to_lowercase();
     // A lead opens the rule, or qualifies it from the middle: *"Run commands
     // with sudo only when necessary"* is as much a rule as *"When running sudo
@@ -173,10 +211,37 @@ fn orders_a_named_command(clause: &str) -> bool {
 /// only a pronoun and does not.
 pub(super) fn governs_commands_rather_than_requesting_one(prompt: &str) -> bool {
     let sentences = sentence_spans(prompt);
-    !sentences.is_empty() && sentences.iter().all(|sentence| states_a_command_policy(sentence))
+    !sentences.is_empty()
+        && sentences
+            .iter()
+            .all(|sentence| states_a_command_policy(sentence))
 }
 
-pub(super) fn named_shell_command_in_sentence(
+/// The command text after a passthrough prefix, past an optional colon.
+///
+/// A leading code span is the command and the words after it are prose
+/// (``Run `node --test x.test.js` and tell me …``, PR #1188 G76); with no
+/// leading span, a remainder whose backticks do not pair is no command (the
+/// shell would read a command substitution), so `None` (mirrors
+/// `commandSpan`).
+pub(super) fn command_span(remainder: &str) -> Option<&str> {
+    let text = remainder
+        .strip_prefix(':')
+        .unwrap_or(remainder)
+        .trim_start();
+    let fence = &text[..text.len() - text.trim_start_matches('`').len()];
+    if !fence.is_empty()
+        && let Some(close) = text[fence.len()..].find(fence)
+    {
+        let inner = text[fence.len()..fence.len() + close].trim();
+        if !inner.is_empty() && !inner.contains('`') {
+            return Some(inner);
+        }
+    }
+    shell_quotes_paired(text).then_some(text)
+}
+
+pub fn named_shell_command_in_sentence(
     prompt: &str,
     vocab: &TerminalCommandVocabulary,
 ) -> Option<String> {
@@ -211,11 +276,27 @@ pub(super) fn named_shell_command_in_sentence(
         }
     }
 
-    // Shape 2: a shell token mentioned anywhere, given run context — the token alone.
+    // Shape 2: a shell token named as a command -- written as code, or right
+    // after a seeded command noun (`run the command ls`) -- given run context,
+    // the token alone. A shell word elsewhere in the sentence is prose: `Create
+    // a Python test … and run it` names no `python` command (PR #1188 G25).
+    let named_as_command = |index: usize, word: &str| {
+        is_shell_token(word)
+            && (word.starts_with('`')
+                || index.checked_sub(1).is_some_and(|previous| {
+                    vocab
+                        .command_nouns
+                        .contains(&words[previous].to_ascii_lowercase())
+                }))
+    };
     if (has_verb || has_phrase)
-        && let Some(word) = words.iter().find(|w| is_shell_token(w)) {
-            return Some(normalize_command_word(word));
-        }
+        && let Some((_, word)) = words
+            .iter()
+            .enumerate()
+            .find(|(index, word)| named_as_command(*index, word))
+    {
+        return Some(normalize_command_word(word));
+    }
 
     None
 }
@@ -251,7 +332,7 @@ pub(super) fn normalize_command_word(word: &str) -> String {
 /// Whether a word is natural-language prose rather than a command argument. Used to
 /// stop argument collection at the boundary between a command and the sentence around
 /// it (e.g. `git status` stops before `in the current directory`).
-pub(super) fn is_prose_word(word: &str) -> bool {
+pub fn is_prose_word(word: &str) -> bool {
     const PROSE_WORDS: &[&str] = &[
         "command",
         "commands",
@@ -324,3 +405,31 @@ pub(super) fn is_prose_word(word: &str) -> bool {
         .to_ascii_lowercase();
     PROSE_WORDS.contains(&normalized.as_str())
 }
+
+/// Pair outer shell quotes; actual shell execution remains the syntax authority.
+pub(super) fn shell_quotes_paired(command: &str) -> bool {
+    let mut quote = None;
+    let mut escaped = false;
+    for character in command.chars() {
+        if quote == Some('\'') {
+            if Some(character) == quote {
+                quote = None;
+            }
+        } else if escaped {
+            escaped = false;
+        } else if character == '\\' {
+            escaped = true;
+        } else if quote.is_some() {
+            if Some(character) == quote {
+                quote = None;
+            }
+        } else if ['\'', '"', '`'].contains(&character) {
+            quote = Some(character);
+        }
+    }
+    quote.is_none() && !escaped
+}
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/shell_command_policy-negated-tests.rs"]
+mod negated_command_policy_tests;

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_number_constraints.js"
+  ceiling 754
+  rationale "Hidden-number interval riddles (issues #403, #699, #890). JavaScript-first twin of native handler keys (number_constraint_reasoning), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth."

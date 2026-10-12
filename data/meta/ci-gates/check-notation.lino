@@ -1,0 +1,8 @@
+# One CI gate, one file (issue #991).
+#
+# PR #1188: R1188-U6 and R1188-U7, the links notation we own is measured.
+ci_gate check-notation
+  stage web
+  description "R1188-U6/U7: the links notation we own (the scopes of data/meta/notation-rules.lino) holds at most the ceilings of data/meta/notation-ratchet.lino of distinct names spelled with `_`, names holding a seeded abbreviation, duplicated child blocks and repeated fields; the ceilings only fall. The rename rule's --check fails when a notation file or a reader literal holds a name the rule renamed (data/meta/notation-renames.lino) in its old spelling."
+  run "node scripts/measure-notation.mjs --check && node experiments/formal_ai_subagent/apply-notation-rules.mjs --check"
+  justification "PR #1188 (R1188-U6, R1188-U7, owner 2026-10-08): names prefer `-` over `_`, use full English words, and shared structure is stated once. The rule passes lower these counts family by family; without a gate a new `_` name or a repeated block would raise them again unnoticed. The measure takes under a second."

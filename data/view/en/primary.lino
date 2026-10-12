@@ -1,0 +1,37 @@
+view
+  id M-8bcf9d63cfa4
+  lemma primary
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of first rank or importance or value; direct and immediate rather than secondary"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a preliminary election where delegates or nominees are chosen"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one of the main flight feathers projecting along the outer edge of a bird's wing"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(astronomy) a celestial body (especially a star) relative to other objects in orbit around it"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "coil forming the part of an electrical circuit such that changing current in it induces a current in a neighboring circuit"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not derived from or reducible to something else; basic"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "most important element"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or being the essential or basic part"
+    provenance (wordnet)

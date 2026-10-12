@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鏈"
+        },
+        "es": {
+          "language": "es",
+          "value": "cadena"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "英制長度單位"
+        },
+        "es": {
+          "language": "es",
+          "value": "unidad de longitud"
         }
       },
       "aliases": {
@@ -52,6 +60,12 @@
           {
             "language": "en",
             "value": "surveyor's chain"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Cadena de agrimensor"
           }
         ]
       }

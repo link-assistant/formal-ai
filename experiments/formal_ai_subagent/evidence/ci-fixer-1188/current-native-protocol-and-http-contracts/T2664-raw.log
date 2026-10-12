@@ -1,0 +1,5 @@
+>> bash {"command":"rustfmt --edition 2024 rust/src/agentic_coding/driver.rs rust/tests/unit/agentic-coding/issue_538_agentic.rs rust/tests/unit/agentic-coding/issue_540_agent_cli.rs rust/tests/unit/agentic-coding/issue_686_agent_cli.rs rust/tests/unit/coding_discovery/composition.rs"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

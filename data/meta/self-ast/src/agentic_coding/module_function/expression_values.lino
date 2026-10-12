@@ -1,0 +1,80 @@
+self_ast_census
+  target src/agentic_coding/module_function/expression_values.rs
+  language rust
+  fidelity full_ast
+  byte_len 5930
+  line_count 160
+  content_id source_module_64e8880b8e4bb083
+  symbol_count 3
+  symbols
+    function specified_value 10 31
+    function complete_symbolic_expression 39 80
+    function stated_value 82 160
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4468
+    named_node_count 905
+    distinct_node_kinds 59
+    node_kinds
+      arguments 85
+      array_expression 1
+      array_type 4
+      assignment_expression 2
+      binary_expression 15
+      block 24
+      boolean_literal 8
+      call_expression 85
+      char_literal 1
+      closure_expression 17
+      closure_parameters 17
+      compound_assignment_expr 2
+      crate 5
+      doc_comment 11
+      else_clause 4
+      expression_statement 23
+      field_expression 72
+      field_identifier 72
+      for_expression 2
+      function_item 3
+      generic_function 5
+      generic_type 9
+      identifier 176
+      if_expression 12
+      index_expression 8
+      integer_literal 12
+      let_chain 1
+      let_condition 2
+      let_declaration 18
+      lifetime 1
+      line_comment 11
+      macro_invocation 2
+      mutable_specifier 2
+      outer_doc_comment_marker 11
+      parameter 9
+      parameters 3
+      parenthesized_expression 2
+      primitive_type 6
+      range_expression 6
+      raw_string_literal 3
+      reference_expression 10
+      reference_type 10
+      return_expression 8
+      scoped_identifier 17
+      scoped_type_identifier 1
+      scoped_use_list 2
+      source_file 1
+      string_content 23
+      string_literal 21
+      super 2
+      token_tree 2
+      try_expression 5
+      tuple_struct_pattern 3
+      type_arguments 14
+      type_identifier 20
+      unary_expression 7
+      use_declaration 3
+      use_list 2
+      visibility_modifier 2

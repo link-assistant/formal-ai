@@ -14,8 +14,14 @@ use super::workflow_fixtures::*;
 fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
     let workflow = desktop_release_workflow();
     let build = job_block(&workflow, "build");
-    let install_sccache = workflow_step_block(build, "Cache Rust compiler outputs");
-    let enable_sccache = workflow_step_block(build, "Enable Rust compiler cache");
+    let build = build
+        .lines()
+        .filter(|line| !line.trim_start().starts_with('#'))
+        .collect::<Vec<_>>()
+        .join("\n");
+    let native = job_block(&workflow, "native");
+    let install_sccache = workflow_step_block(native, "Cache Rust compiler outputs");
+    let enable_sccache = workflow_step_block(native, "Enable Rust compiler cache");
 
     assert!(
         !build.contains("uses: actions/cache@"),
@@ -24,8 +30,20 @@ fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
          then timed out compressing this redundant cache"
     );
     assert!(
-        build.contains("mozilla-actions/sccache-action@"),
-        "desktop builds should retain the compiler-output cache"
+        native.contains("mozilla-actions/sccache-action@"),
+        "the native producer should retain the compiler-output cache"
+    );
+    assert!(
+        !native.contains("uses: actions/cache@"),
+        "native producer must not archive Cargo dependencies after compilation"
+    );
+    assert!(
+        !build.contains("cargo build"),
+        "packaging must consume the verified same-run executable"
+    );
+    assert!(
+        build.contains("$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs\" verify"),
+        "packaging must verify the source-bound executable receipt"
     );
     for step in [install_sccache, enable_sccache] {
         assert!(
@@ -174,6 +192,7 @@ fn desktop_release_normalizes_linux_artifact_names_before_checksums() {
 }
 
 #[test]
+#[allow(clippy::literal_string_with_formatting_args)]
 fn desktop_release_uploads_auto_update_metadata() {
     let workflow = desktop_release_workflow();
     let build = job_block(&workflow, "build");
@@ -199,12 +218,57 @@ fn desktop_release_uploads_auto_update_metadata() {
         collect.contains("latest(-mac|-linux)?\\.yml"),
         "checksum fragments should include updater metadata for provenance"
     );
+    // The original seventeen obligations remain a minimum; CLI archives and
+    // authenticated provenance now add required assets beyond that old count.
+    let original_assets = [
+        "formal-ai-desktop-macos-arm64-${version}.dmg",
+        "formal-ai-desktop-macos-arm64-${version}.zip",
+        "formal-ai-desktop-macos-x64-${version}.dmg",
+        "formal-ai-desktop-macos-x64-${version}.zip",
+        "formal-ai-desktop-windows-installer-x64-${version}.exe",
+        "formal-ai-desktop-windows-installer-arm64-${version}.exe",
+        "formal-ai-desktop-windows-portable-x64-${version}.exe",
+        "formal-ai-desktop-windows-portable-arm64-${version}.exe",
+        "formal-ai-desktop-linux-x64-${version}.AppImage",
+        "formal-ai-desktop-linux-arm64-${version}.AppImage",
+        "formal-ai-desktop-linux-x64-${version}.deb",
+        "formal-ai-desktop-linux-arm64-${version}.deb",
+        "formal-ai-desktop-linux-x64-${version}.tar.gz",
+        "formal-ai-desktop-linux-arm64-${version}.tar.gz",
+        "latest.yml",
+        "latest-mac.yml",
+        "latest-linux.yml",
+    ];
+    assert_eq!(original_assets.len(), 17);
+    for asset in original_assets {
+        assert!(
+            resolve_script.contains(asset),
+            "original required asset missing: {asset}"
+        );
+    }
+    for obligation in [
+        "expected_desktop_assets \"$release_version\"",
+        "expected_cli_assets",
+        "expected_native_targets",
+        "formal-ai-vscode-",
+        "SHA256SUMS.txt",
+        "BUILD-PROVENANCE.txt",
+        "formal-ai-native-source-",
+        "formal-ai-native-protocol-",
+        "formal-ai-signing-macos-",
+        "verify_durable_release",
+    ] {
+        assert!(
+            resolve_script.contains(obligation),
+            "required release obligation missing: {obligation}"
+        );
+    }
     assert!(
         resolve_script.contains("latest.yml")
             && resolve_script.contains("latest-mac.yml")
             && resolve_script.contains("latest-linux.yml")
-            && resolve_script.contains("required desktop assets: 17"),
-        "release resolver should require update metadata before skipping an automatic build"
+            && resolve_script.contains("done < <(expected_desktop_assets \"$release_version\")"),
+        "release resolver should require update metadata and the complete asset inventory before skipping an automatic build"
     );
 }
 

@@ -1,0 +1,26 @@
+{
+  "lemma": "pantheon",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08170236-n",
+      "partOfSpeech": "n",
+      "definition": "all the gods of a religion"
+    },
+    {
+      "id": "oewn-03890623-n",
+      "partOfSpeech": "n",
+      "definition": "a monument commemorating a nation's dead heroes"
+    },
+    {
+      "id": "oewn-03890475-n",
+      "partOfSpeech": "n",
+      "definition": "(antiquity) a temple to all the gods"
+    }
+  ]
+}

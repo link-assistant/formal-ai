@@ -6,6 +6,12 @@ import { createI18n, parseLinoCatalogs } from 'lino-i18n';
 
 const EXPECTED_LOCALES = ['en', 'ru', 'zh', 'hi'];
 const REQUIRED_KEYS = [
+  // Issue #825: the composer autocomplete listbox labels itself and its
+  // suggestion sources in every locale.
+  'autocomplete.listLabel',
+  'autocomplete.source.command',
+  'autocomplete.source.history',
+  'autocomplete.source.example',
   'buttons.reportIssue',
   'buttons.reportMissingRule',
   'buttons.sourceCode',
@@ -68,6 +74,12 @@ const REQUIRED_KEYS = [
   'conversation.copyMarkdown',
   'conversation.copyMarkdownDone',
   'conversation.copyMarkdownTitle',
+  // ConversationSummaryDetails uses these five labels over recorded message rows.
+  'message.conversationSummary.title',
+  'message.conversationSummary.role',
+  'message.conversationSummary.intent',
+  'message.conversationSummary.content',
+  'message.conversationSummary.unrecorded',
   'message.author.user',
   'message.detectedFailureReport',
   'message.browserRuntime.title',
@@ -290,6 +302,8 @@ const REQUIRED_KEYS = [
   'settings.uiSkin.flat',
   'settings.uiSkin.glass',
   'settings.uiSkin.contrast',
+  'settings.uiSkin.material',
+  'settings.glassOpacity',
   'settings.toolbarIconPack',
   'settings.toolbarIconPack.fontawesome',
   'settings.toolbarIconPack.materialSymbols',
@@ -573,6 +587,9 @@ const runtimeChecks = [
   ['zh', 'buttons.reportIssue', '报告问题'],
   ['hi', 'buttons.reportIssue', 'समस्या रिपोर्ट करें'],
   ['zz', 'buttons.reportIssue', 'Report issue'],
+  // Issue #825: the autocomplete labels resolve per UI language.
+  ['en', 'autocomplete.listLabel', 'Suggestions'],
+  ['ru', 'autocomplete.listLabel', 'Подсказки'],
   ['en', 'settings.language', 'Language'],
   ['en', 'status.nextDialogIn', 'Next dialog in 5s', { seconds: 5 }],
   ['en', 'status.mode', 'Mode: Agent', { mode: 'Agent' }],

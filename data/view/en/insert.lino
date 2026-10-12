@@ -1,0 +1,37 @@
+view
+  id M-994382c6a85b
+  lemma insert
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a folded section placed between the leaves of another publication"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an artifact that is inserted or is to be inserted"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(broadcasting) a local announcement inserted into a network program"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(film) a still picture that is introduced and that interrupts the action of a film"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put or introduce into something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "place, fit, or thrust (something) into another thing"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "fit snugly into"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "insert casually"
+    provenance (wordnet)

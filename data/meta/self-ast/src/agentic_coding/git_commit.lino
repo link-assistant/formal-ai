@@ -2,105 +2,107 @@ self_ast_census
   target src/agentic_coding/git_commit.rs
   language rust
   fidelity full_ast
-  byte_len 8283
-  line_count 206
-  content_id source_module_927aa97d7b177e28
-  symbol_count 13
+  byte_len 10751
+  line_count 281
+  content_id source_module_6471345f4d33d431
+  symbol_count 14
   symbols
     struct CommitTarget 22 28
     function push_ref 32 34
     function target_of 38 44
-    function named_branch 48 64
-    function is_branch_name 66 73
-    function commit_command 77 97
-    function resolves_body 101 103
-    function shell_quote 105 107
-    function recipe_commit_command 112 121
-    function recipe_subject 125 127
-    function plan_commit_step 134 163
-    function subject_for_listing 167 195
-    function porcelain_entry 198 206
+    function named_branch 48 67
+    function is_branch_name 69 78
+    function commit_command 82 102
+    function resolves_body 106 108
+    function shell_quote 110 112
+    function recipe_commit_command 120 140
+    function recipe_subject 144 146
+    function plan_commit_step 153 218
+    function stated_subject 224 238
+    function subject_for_listing 242 270
+    function porcelain_entry 273 281
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6335
-    named_node_count 1272
-    distinct_node_kinds 75
+    total_link_count 8011
+    named_node_count 1614
+    distinct_node_kinds 76
     node_kinds
-      arguments 97
+      arguments 138
       array_expression 9
       array_type 2
       attribute 5
       attribute_item 5
-      binary_expression 14
-      block 24
-      call_expression 97
-      char_literal 16
-      closure_expression 10
-      closure_parameters 10
+      binary_expression 22
+      block 33
+      call_expression 138
+      char_literal 17
+      closure_expression 21
+      closure_parameters 21
       continue_expression 1
-      crate 4
+      crate 6
       declaration_list 1
-      doc_comment 30
-      else_clause 1
+      doc_comment 34
+      else_clause 2
       escape_sequence 1
-      expression_statement 15
+      expression_statement 16
       field_declaration 2
       field_declaration_list 1
-      field_expression 66
-      field_identifier 69
+      field_expression 105
+      field_identifier 108
       field_initializer 1
       field_initializer_list 1
       for_expression 1
-      function_item 12
+      function_item 13
       generic_function 1
-      generic_type 8
-      identifier 269
-      if_expression 5
+      generic_type 10
+      identifier 338
+      if_expression 6
       impl_item 1
-      index_expression 2
+      index_expression 4
       inner_doc_comment_marker 10
       integer_literal 4
       let_condition 1
-      let_declaration 24
-      line_comment 34
+      let_declaration 33
+      line_comment 42
       macro_invocation 6
       match_arm 4
       match_block 1
       match_expression 1
       match_pattern 4
       mutable_specifier 3
-      outer_doc_comment_marker 20
-      parameter 18
-      parameters 12
-      parenthesized_expression 3
-      primitive_type 19
-      reference_expression 24
-      reference_type 21
+      outer_doc_comment_marker 24
+      parameter 19
+      parameters 13
+      parenthesized_expression 4
+      primitive_type 20
+      range_expression 2
+      reference_expression 27
+      reference_type 22
       return_expression 4
-      scoped_identifier 44
+      scoped_identifier 51
       scoped_use_list 2
       self 2
       self_parameter 1
       shorthand_field_initializer 1
       slice_pattern 6
       source_file 1
-      string_content 45
-      string_literal 44
+      string_content 46
+      string_literal 45
       struct_expression 1
       struct_item 1
-      super 24
+      super 25
       token_tree 13
-      try_expression 3
-      tuple_expression 17
-      tuple_pattern 6
+      try_expression 4
+      tuple_expression 18
+      tuple_pattern 9
       tuple_struct_pattern 2
       tuple_type 1
-      type_arguments 9
-      type_identifier 27
-      unary_expression 8
+      type_arguments 11
+      type_identifier 32
+      unary_expression 13
       use_declaration 7
       use_list 2
-      visibility_modifier 11
+      visibility_modifier 12

@@ -1,0 +1,162 @@
+{
+  "ok": true,
+  "configSha256": "97cc9d096dce6543152f4f1167a6c3b11dea7d75a9a58e18614b558ea467e390",
+  "runnerSha256": "748fd906eff35949ca1022eda146c2420f3dc308ed08e9ed541921d897867ef9",
+  "uniqueSelectedAndAuthorityPhysicalBytes": 3380249,
+  "selectedAuthorityFiles": 214,
+  "selectedAuthorityReadGuards": {
+    "total": 214,
+    "shards": [
+      {
+        "path": "selectedAuthorityReadGuards-001.jsonl",
+        "count": 214,
+        "bytes": 34106,
+        "sha256": "3e42e458aa5d697562af5a26b0bc42aa56a413b57ffdc35fc5d77931944defb5"
+      }
+    ]
+  },
+  "inputCap": 33554432,
+  "historicalReuseVerifiedPhysicalBytes": 104357789,
+  "historicalReuseFiles": 10397,
+  "historicalDecodedBytes": 544662148,
+  "historicalScope": "prior archive verification separately disclosed; not selected-input exemption",
+  "historicalReadGuards": {
+    "total": 10397,
+    "shards": [
+      {
+        "path": "historicalReadGuards-001.jsonl",
+        "count": 700,
+        "bytes": 225926,
+        "sha256": "40dd58c62e44839ad2eb934e0974a9e7b0dc38d204a4b5275d7042f6efa9136a"
+      },
+      {
+        "path": "historicalReadGuards-002.jsonl",
+        "count": 700,
+        "bytes": 236838,
+        "sha256": "61723b9a6eef6dd14243b976917320e0d60fad322e24faa7a27826f99108b259"
+      },
+      {
+        "path": "historicalReadGuards-003.jsonl",
+        "count": 700,
+        "bytes": 237811,
+        "sha256": "925546154a3cf2960458832c33bb552fa854b08df25b08779fdfde955336bf0f"
+      },
+      {
+        "path": "historicalReadGuards-004.jsonl",
+        "count": 700,
+        "bytes": 237761,
+        "sha256": "26a81cfb3f5afddb8fd821d7d8fd8a94adb9b86388e68803ed5679da06da1dcb"
+      },
+      {
+        "path": "historicalReadGuards-005.jsonl",
+        "count": 700,
+        "bytes": 237460,
+        "sha256": "b84693415f1ef20af1d9dce32a81ac85cd862eecc7ee9f5a915356119a144b5b"
+      },
+      {
+        "path": "historicalReadGuards-006.jsonl",
+        "count": 700,
+        "bytes": 237227,
+        "sha256": "7b562e3137ae9566c158254bf7ac5ea62741fdb022533a7de31b8e041b922775"
+      },
+      {
+        "path": "historicalReadGuards-007.jsonl",
+        "count": 700,
+        "bytes": 237346,
+        "sha256": "223353f71e0929634cf74fffa62d28de598d05c55d94bd7ce1d7b6c2e61de401"
+      },
+      {
+        "path": "historicalReadGuards-008.jsonl",
+        "count": 700,
+        "bytes": 237445,
+        "sha256": "c3f9f0819063a76d65beb6205b38f72035866140bd088d703681a5c577985cae"
+      },
+      {
+        "path": "historicalReadGuards-009.jsonl",
+        "count": 700,
+        "bytes": 237527,
+        "sha256": "95a6280c6c0ceb72453c371475c6629012e53a62fbc4f40e77f78529693a9c34"
+      },
+      {
+        "path": "historicalReadGuards-010.jsonl",
+        "count": 700,
+        "bytes": 237186,
+        "sha256": "6d8b8805fc2c6af30cc0613d92ad1f43ed764dc3f140a332ad46cd5ae3db7627"
+      },
+      {
+        "path": "historicalReadGuards-011.jsonl",
+        "count": 700,
+        "bytes": 237419,
+        "sha256": "e141e11ac0f9ee208acdc67ec8a1c714548ac928d05d83377356346fa8416c3c"
+      },
+      {
+        "path": "historicalReadGuards-012.jsonl",
+        "count": 700,
+        "bytes": 237278,
+        "sha256": "1ad6cbc942e375e71bd9c795150749adbdd262606196cccc1811c58168cc7a8e"
+      },
+      {
+        "path": "historicalReadGuards-013.jsonl",
+        "count": 700,
+        "bytes": 237597,
+        "sha256": "fd2a490ace270078c787f5960e6e987a147b048facd7740ae26f0a2aa6e4e7cf"
+      },
+      {
+        "path": "historicalReadGuards-014.jsonl",
+        "count": 700,
+        "bytes": 237515,
+        "sha256": "c8ffb9c04ebcf1f8efdc48bc33c073a4af3b9ef249cf669d0951c20d63ba1dac"
+      },
+      {
+        "path": "historicalReadGuards-015.jsonl",
+        "count": 597,
+        "bytes": 202587,
+        "sha256": "9ff1ff27ff541b3422ccc70b8a24b01aff87b91a45c6d0bf5a088d9c21f7e2eb"
+      }
+    ]
+  },
+  "logicalMembers": 217,
+  "uniqueOriginalBlobs": 193,
+  "reusedPriorBlobs": 5,
+  "newCompressedBytes": 4805549,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 217
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 193
+    }
+  ],
+  "encodedOriginalIdentityValidation": true,
+  "immutablePostReadGuards": true,
+  "recoveries": [],
+  "knownLosses": [
+    {
+      "id": "nativeobserver6084",
+      "state": "irrecoverableKnownLoss",
+      "reconstructed": false
+    },
+    {
+      "id": "first-alias-commit",
+      "state": "Codex transcript only; standalone original not reconstructed"
+    },
+    {
+      "id": "root7137-other-ignored-browser-seed-prebytes",
+      "state": "KnownLoss: other ignored browser seed prebytes/hashes unpersisted; statement full inverse available; diagnostic coding task priorSHA fb96 known but no Git recovery match; other previous drift Unknown",
+      "zeroExtraIgnoredEffects": false
+    },
+    {
+      "id": "root7137-other-ignored-browser-seed-prebytes",
+      "state": "KnownLoss: other ignored browser seed prebytes/hashes unpersisted; statement full inverse available; diagnostic coding task priorSHA fb96 known but no Git recovery match; other previous drift Unknown",
+      "zeroExtraIgnoredEffects": false
+    }
+  ],
+  "deferred": [],
+  "rootWrites": 0,
+  "actualCost": "Unknown",
+  "nativeExecution": false
+}

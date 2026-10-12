@@ -1,0 +1,47 @@
+Q159
+  aliases
+    en ("Russian Federation")
+    ru ("Российская Федерация")
+    zh ("俄羅斯" "俄国" "俄國")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q649
+              numeric-id 649
+          hash a07cdb39100f676ce7038a44fa7bb3cd7cb297ce
+          property P36
+          snaktype value
+        rank normal
+  id Q159
+  labels
+    en Russia
+    hi "रूस"
+    ru "Россия"
+    zh "俄罗斯"
+    zh-hans "俄罗斯"
+  sitelinks
+    enwiki
+      site enwiki
+      title Russia
+    hiwiki
+      site hiwiki
+      title "रूस"
+    ruwiki
+      site ruwiki
+      title "Россия"
+    zhwiki
+      site zhwiki
+      title "俄罗斯"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

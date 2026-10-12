@@ -1,0 +1,5 @@
+{
+  "taskId": "T2431",
+  "target": "rust/tests/fixtures/source-cache-seed-contract.rs",
+  "byteEqual": true
+}

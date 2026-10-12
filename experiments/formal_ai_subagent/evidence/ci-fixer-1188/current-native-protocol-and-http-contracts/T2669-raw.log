@@ -1,0 +1,199 @@
+>> read {"filePath":"rust/src/agentic_coding/modules.rs","file_path":"rust/src/agentic_coding/modules.rs","path":"rust/src/agentic_coding/modules.rs"}
+   <file>
+   00001| // Every module and re-export of the agentic-coding capability.
+   00002| //
+   00003| // Issue #991: this list is `merge=union` (see `data/meta/merge-conflict-policy.lino`),
+   00004| // so two branches that each add a capability produce a superset instead of a
+   00005| // conflict. It lives apart from `mod.rs` because a union is only safe for a file
+   00006| // whose every line is a list entry -- a union of two logic edits can compile and
+   00007| // still be wrong. Regenerate with
+   00008| // `rust-script scripts/normalize-ordered-lists.rs --write`.
+   00009| 
+   00010| pub mod algorithm_learning;
+   00011| pub mod associative_learning;
+   00012| mod capability_router;
+   00013| pub mod change_request;
+   00014| mod ci_workflow;
+   00015| mod code_artifact;
+   00016| pub mod code_rewrite_learning;
+   00017| mod code_task;
+   00018| pub(crate) mod command_reroute;
+   00019| mod comparison;
+   00020| mod contents_source;
+   00021| mod conversation_recall;
+   00022| pub mod corpus;
+   00023| pub mod diagram;
+   00024| mod directory_listing;
+   00025| mod document_recipe;
+   00026| pub mod dreaming_audit;
+   00027| pub mod driver;
+   00028| mod edit_scope;
+   00029| mod evidence_record;
+   00030| pub mod execution_learning;
+   00031| pub mod explain;
+   00032| pub mod external_benchmark_learning;
+   00033| pub(crate) mod file_path_shape;
+   00034| mod file_read;
+   00035| mod file_summary;
+   00036| mod final_result;
+   00037| mod formalization_recipe;
+   00038| pub mod formalize;
+   00039| mod function_expectation;
+   00040| mod general_execution;
+   00041| pub mod general_planner;
+   00042| mod git_commit;
+   00043| pub mod google_trends_catalog;
+   00044| pub mod google_trends_learning;
+   00045| mod harness_envelope;
+   00046| mod intent_router;
+   00047| pub mod learning_report;
+   00048| pub mod ledger;
+   00049| pub(crate) mod lexicon;
+   00050| mod line_range_move;
+   00051| mod line_removal;
+   00052| pub mod link_edit_rules;
+   00053| mod literal_write_guard;
+   00054| mod local_search;
+   00055| mod markdown_section;
+   00056| pub mod meaning_detail;
+   00057| mod module_exports;
+   00058| pub mod module_function;
+   00059| pub mod mutating_action;
+   00060| pub(crate) mod narration;
+   00061| mod note_composition;
+   00062| pub mod planner;
+   00063| mod positional_edit;
+   00064| mod prerequisite_recovery;
+   00065| pub mod procedure;
+   00066| mod progress;
+   00067| pub mod question_catalog;
+   00068| mod quote_nesting;
+   00069| pub mod rebuild_plan;
+   00070| pub mod repair_apply;
+   00071| pub mod repair_loop;
+   00072| pub mod repair_strategy;
+   00073| mod replace_list;
+   00074| mod report_issue;
+   00075| mod report_script;
+   00076| mod request_sequence;
+   00077| pub mod requirement_extraction;
+   00078| pub mod requirement_resolution;
+   00079| pub mod restart_feedback;
+   00080| pub mod routing_learning;
+   00081| pub mod self_ast;
+   00082| pub mod self_heal;
+   00083| mod shell_command;
+   00084| mod shell_command_policy;
+   00085| mod shell_file_fallback;
+   00086| pub mod source_links;
+   00087| mod spelling;
+   00088| mod stated_request;
+   00089| pub mod statement_audit;
+   00090| mod structured_document;
+   00091| pub(crate) mod structured_edit;
+   00092| pub mod system_diagram;
+   00093| pub mod task_obligations;
+   00094| mod task_structure;
+   00095| mod test_assertion;
+   00096| mod test_file_runner;
+   00097| pub mod tool_result;
+   00098| pub mod transcript_evidence;
+   00099| mod web_research;
+   00100| mod work_item_steps;
+   00101| mod workspace_change;
+   00102| mod workspace_computed_change;
+   00103| mod workspace_inspection;
+   00104| mod workspace_line_operation;
+   00105| mod workspace_search;
+   00106| mod workspace_setting;
+   00107| mod write_request;
+   00108| 
+   00109| pub use associative_learning::{
+   00110|     is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
+   00111| };
+   00112| pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
+   00113| pub use ci_workflow::render_with as render_ci_workflow;
+   00114| pub use code_rewrite_learning::{
+   00115|     is_code_rewrite_learning_task, CODE_REWRITE_LEARNING_PATH, CODE_REWRITE_LEARNING_TASK,
+   00116| };
+   00117| pub use command_reroute::plan_symbolic_command_reroute;
+   00118| pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
+   00119| pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
+   00120| pub use driver::{
+   00121|     run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome, DriverToolStep, CORE_RECIPE_TOOLS,
+   00122|     DRIVER_TOOLS,
+   00123| };
+   00124| pub use execution_learning::{
+   00125|     is_execution_learning_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,
+   00126| };
+   00127| pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
+   00128| pub use external_benchmark_learning::EXTERNAL_BENCHMARK_LEARNING_PATH;
+   00129| pub(crate) use file_read::supplied_file_answer;
+   00130| pub use formalize::{
+   00131|     coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
+   00132|     CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
+   00133| };
+   00134| pub use google_trends_catalog::{
+   00135|     is_google_trends_catalog_task, GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK,
+   00136| };
+   00137| pub use google_trends_learning::{
+   00138|     is_google_trends_learning_task, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
+   00139| };
+   00140| pub use learning_report::context_hierarchy_learning::{
+   00141|     is_context_hierarchy_learning_task, CONTEXT_HIERARCHY_LEARNING_PATH,
+   00142|     CONTEXT_HIERARCHY_LEARNING_TASK,
+   00143| };
+   00144| pub use learning_report::handler_precedence_learning::{
+   00145|     is_handler_precedence_learning_task, HANDLER_PRECEDENCE_LEARNING_PATH,
+   00146|     HANDLER_PRECEDENCE_LEARNING_TASK,
+   00147| };
+   00148| pub use learning_report::hardcoded_language_learning::{
+   00149|     is_hardcoded_language_learning_task, HARDCODED_LANGUAGE_LEARNING_PATH,
+   00150|     HARDCODED_LANGUAGE_LEARNING_TASK,
+   00151| };
+   00152| pub use learning_report::lexeme_import_learning::{
+   00153|     is_lexeme_import_learning_task, LEXEME_IMPORT_LEARNING_PATH, LEXEME_IMPORT_LEARNING_TASK,
+   00154| };
+   00155| pub use learning_report::search_fusion_learning::{
+   00156|     is_search_fusion_learning_task, SEARCH_FUSION_LEARNING_PATH, SEARCH_FUSION_LEARNING_TASK,
+   00157| };
+   00158| pub use learning_report::self_hosting_learning::{
+   00159|     is_self_hosting_learning_task, SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK,
+   00160| };
+   00161| pub use learning_report::{LearningReport, REPORTS};
+   00162| pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
+   00163| pub use link_edit_rules::{apply_link_edit, insert_members_via_links, parse_rule_document, rule_shapes, LinkEditError, LinkEditReport, LinkEditRule, RuleDocument, RuleShape};
+   00164| pub use meaning_detail::{
+   00165|     concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,
+   00166| };
+   00167| pub use planner::{
+   00168|     plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
+   00169| };
+   00170| pub use procedure::{compile_task as compile_procedure_task, COMPILED_PROCEDURE_PATH};
+   00171| pub use question_catalog::{
+   00172|     is_question_catalog_task, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
+   00173| };
+   00174| pub use rebuild_plan::{is_rebuild_task, REBUILD_PATH, REBUILD_TASK};
+   00175| pub use repair_strategy::{is_repair_strategy_task, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK};
+   00176| pub use requirement_resolution::{RequirementTarget, resolve_in, resolve_requirement_target};
+   00177| pub use routing_learning::{
+   00178|     is_routing_learning_task, ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK,
+   00179| };
+   00180| pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
+   00181| pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
+   00182| pub(crate) use shell_command::semantic_shell_command_for_task;
+   00183| pub use source_links::{is_source_links_task, SOURCE_LINKS_PATH, SOURCE_LINKS_TASK};
+   00184| pub use statement_audit::{is_statement_audit_task, STATEMENT_AUDIT_COMMAND, STATEMENT_AUDIT_PATH};
+   00185| 
+   
+   (End of file - total 185 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/modules.rs","file_path":"rust/src/agentic_coding/modules.rs","new":"    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome,\n    DriverToolStep, CORE_RECIPE_TOOLS, DRIVER_TOOLS,","newString":"    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome,\n    DriverToolStep, CORE_RECIPE_TOOLS, DRIVER_TOOLS,","new_str":"    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome,\n    DriverToolStep, CORE_RECIPE_TOOLS, DRIVER_TOOLS,","new_string":"    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome,\n    DriverToolStep, CORE_RECIPE_TOOLS, DRIVER_TOOLS,","old":"    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome, DriverToolStep, CORE_RECIPE_TOOLS,\n    DRIVER_TOOLS,","oldString":"    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome, DriverToolStep, CORE_RECIPE_TOOLS,\n    DRIVER_TOOLS,","old_str":"    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome, DriverToolStep, CORE_RECIPE_TOOLS,\n    DRIVER_TOOLS,","old_string":"    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome, DriverToolStep, CORE_RECIPE_TOOLS,\n    DRIVER_TOOLS,","path":"rust/src/agentic_coding/modules.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/modules.rs"}
+   Output: 6530c55e5d7c9adc4bcba2a9f371913cbc4f794a6793bcbd743693c7dfd1783a  rust/src/agentic_coding/modules.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome, DriverToolStep, CORE_RECIPE_TOOLS,
+    DRIVER_TOOLS,` with `    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome,
+    DriverToolStep, CORE_RECIPE_TOOLS, DRIVER_TOOLS,` in `rust/src/agentic_coding/modules.rs` and observed the result.

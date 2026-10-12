@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "血液"
+        },
+        "es": {
+          "language": "es",
+          "value": "sangre"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "生物體內的一種結締組織"
+        },
+        "es": {
+          "language": "es",
+          "value": "tejido fluido que circula por capilares, venas y arterias de todos los vertebrados"
         }
       }
     }

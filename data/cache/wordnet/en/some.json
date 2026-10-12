@@ -1,0 +1,68 @@
+{
+  "lemma": "some",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02275064-a",
+      "partOfSpeech": "a",
+      "definition": "(quantifier) used with either mass nouns or plural count nouns to indicate an unspecified number or quantity",
+      "examples": [
+        "have some milk",
+        "some roses were still blooming",
+        "having some friends over",
+        "some apples",
+        "some paper"
+      ]
+    },
+    {
+      "id": "oewn-00007414-r",
+      "partOfSpeech": "r",
+      "definition": "(of quantities) imprecise but fairly close to correct",
+      "examples": [
+        "lasted approximately an hour",
+        "in just about a minute",
+        "he's about 30 years old",
+        "I've had about all I can stand",
+        "we meet about once a month",
+        "some forty people came",
+        "weighs around a hundred pounds",
+        "roughly $3,000",
+        "holds 3 gallons, more or less",
+        "20 or so people were at the party"
+      ],
+      "synonyms": [
+        "approximately",
+        "about",
+        "close to",
+        "just about",
+        "roughly",
+        "more or less",
+        "around",
+        "or so"
+      ]
+    },
+    {
+      "id": "oewn-01556991-s",
+      "partOfSpeech": "s",
+      "definition": "relatively many but unspecified in number",
+      "examples": [
+        "they were here for some weeks",
+        "we did not meet again for some years"
+      ]
+    },
+    {
+      "id": "oewn-01683245-s",
+      "partOfSpeech": "s",
+      "definition": "remarkable",
+      "examples": [
+        "that was some party",
+        "she is some skier"
+      ]
+    }
+  ]
+}

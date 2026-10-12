@@ -1,0 +1,33 @@
+view
+  id M-11c5874fe0bd
+  lemma error
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a wrong action attributable to bad judgment or ignorance or inattention"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "inadvertent incorrectness"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a misconception resulting from incorrect information"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(baseball) a failure of a defensive player to make an out when normal play would have sufficed"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "departure from what is ethically acceptable"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) the occurrence of an incorrect result produced by a computer"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "part of a statement that is not correct"
+    provenance (wordnet)

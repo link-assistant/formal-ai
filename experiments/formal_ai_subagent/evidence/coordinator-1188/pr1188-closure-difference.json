@@ -1,0 +1,10 @@
+{
+  "base": "b54e332ef",
+  "added": [
+    "enoent",
+    "filesystem-absent-result",
+    "mutating-action-observed-failure",
+    "observation"
+  ],
+  "removed": []
+}

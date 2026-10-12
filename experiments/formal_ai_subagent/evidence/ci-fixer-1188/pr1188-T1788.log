@@ -1,0 +1,477 @@
+>> read {"filePath":"rust/src/agentic_coding/code_task.rs","file_path":"rust/src/agentic_coding/code_task.rs","path":"rust/src/agentic_coding/code_task.rs"}
+   <file>
+   00001| //! Seed-backed lowering of bounded coding tasks into executable Rust source.
+   00002| //!
+   00003| //! The coding ladder exposed a dangerous false-green: the literal-file parser
+   00004| //! treated a description of source code as the bytes to write. This module is
+   00005| //! the semantic route that runs before literal writes. It recognises source
+   00006| //! concepts through the multilingual seed, renders Rust syntax, and completes
+   00007| //! only after the client reads the written bytes back through an allowlisted
+   00008| //! command.
+   00009| 
+   00010| use serde_json::json;
+   00011| 
+   00012| use super::code_artifact::latest_result;
+   00013| use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
+   00014| use crate::normal_markov::unwrap_transport_quotes;
+   00015| use crate::protocol::ChatMessage;
+   00016| use crate::seed::{self, Slot};
+   00017| 
+   00018| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00019| enum RustItemKind {
+   00020|     Function,
+   00021|     Constant,
+   00022|     Test,
+   00023| }
+   00024| 
+   00025| #[derive(Debug, Clone, PartialEq, Eq)]
+   00026| pub(super) struct GeneratedSource {
+   00027|     pub(super) path: String,
+   00028|     pub(super) content: String,
+   00029| }
+   00030| 
+   00031| pub(super) fn plan_generated_source_step(
+   00032|     task: &str,
+   00033|     messages: &[ChatMessage],
+   00034|     tool_names: &[&str],
+   00035| ) -> Option<AgenticPlan> {
+   00036|     let task = unwrap_transport_quotes(task);
+   00037|     // Issue #1096: "In the file src/x.rs, replace "A" with "B" ... keep it valid
+   00038|     // Rust" is an edit of a tracked file, not a request to generate one. The
+   00039|     // program-request cue ("valid Rust") made this path claim it, synthesise
+   00040|     // its own artifact, and then verify the agent's correct edit against that
+   00041|     // artifact -- seven ladder leaves failed on the resulting byte mismatch.
+   00042|     // An edit request is recognised by the same reader the edit route uses, so
+   00043|     // the two routes cannot disagree about what counts as one; this step
+   00044|     // simply declines, and the edit step, later in the router, claims it.
+   00045|     if super::general_planner::compose_edit_request(task).is_some() {
+   00046|         return None;
+   00047|     }
+   00048|     let artifact = rust_source_for_task(task)?;
+   00049|     let write_tool = tool_for(tool_names, Capability::Write)?;
+   00050|     let latest_user = messages
+   00051|         .iter()
+   00052|         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
+   00053|     let current_turn = &messages[latest_user + 1..];
+   00054| 
+   00055|     if let Some(observed) = latest_result(current_turn, Capability::Run) {
+   00056|         let outcome = if observed == artifact.content {
+   00057|             "coding_workspace_effect_observed"
+   00058|         } else {
+   00059|             "coding_workspace_verification_failed"
+   00060|         };
+   00061|         return Some(AgenticPlan::Final(render_seeded_outcome(
+   00062|             outcome,
+   00063|             task,
+   00064|             &artifact.path,
+   00065|         )?));
+   00066|     }
+   00067|     if latest_result(current_turn, Capability::Write).is_some() {
+   00068|         return Some(match tool_for(tool_names, Capability::Run) {
+   00069|             Some(run_tool) => plan_one(
+   00070|                 run_tool,
+   00071|                 json!({"command": format!("cat {}", artifact.path)}).to_string(),
+   00072|             ),
+   00073|             None => AgenticPlan::Final(render_seeded_outcome(
+   00074|                 "coding_workspace_written_unverified",
+   00075|                 task,
+   00076|                 &artifact.path,
+   00077|             )?),
+   00078|         });
+   00079|     }
+   00080|     Some(plan_one(
+   00081|         write_tool,
+   00082|         write_arguments(&artifact.path, &artifact.content),
+   00083|     ))
+   00084| }
+   00085| 
+   00086| // These are seed-template placeholders, not Rust formatting arguments.
+   00087| #[allow(clippy::literal_string_with_formatting_args)]
+   00088| pub(super) fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
+   00089|     let normalized = task.to_lowercase();
+   00090|     let lexicon = seed::lexicon();
+   00091|     if !lexicon.mentions_role(seed::ROLE_FILE_WRITE_ACTION_CUE, &normalized)
+   00092|         && !lexicon.mentions_role(seed::ROLE_PROGRAM_REQUEST, &normalized)
+   00093|     {
+   00094|         return None;
+   00095|     }
+   00096|     let path = rust_path(task)?;
+   00097|     let extra_kind = lexicon.first_role_match(seed::ROLE_CODING_ARTIFACT_KIND, &normalized);
+   00098|     let kind = if extra_kind.is_some_and(|meaning| meaning.slug == "coding_constant") {
+   00099|         RustItemKind::Constant
+   00100|     } else if extra_kind.is_some_and(|meaning| meaning.slug == "coding_test") {
+   00101|         RustItemKind::Test
+   00102|     } else if lexicon
+   00103|         .first_role_match(seed::ROLE_PROGRAM_KIND, &normalized)
+   00104|         .is_some_and(|meaning| meaning.slug == "function")
+   00105|     {
+   00106|         RustItemKind::Function
+   00107|     } else {
+   00108|         return None;
+   00109|     };
+   00110|     let name = requested_identifier(task, &path, kind)?;
+   00111|     let task_without_path = task.replacen(&path, "", 1);
+   00112|     let numbers = numeric_literals(&task_without_path);
+   00113|     let public = lexicon.mentions_role(seed::ROLE_CODING_VISIBILITY, &normalized);
+   00114| 
+   00115|     let content = match kind {
+   00116|         RustItemKind::Function => {
+   00117|             if normalized.contains("f64")
+   00118|                 && lexicon.mentions_role(seed::ROLE_CODING_DIVISION_ACTION, &normalized)
+   00119|             {
+   00120|                 let divisor = numbers.last()?;
+   00121|                 render_rust_template(
+   00122|                     "coding_source_function_division",
+   00123|                     &[
+   00124|                         ("{visibility}", if public { "pub " } else { "" }),
+   00125|                         ("{name}", &name),
+   00126|                         ("{divisor}", divisor),
+   00127|                     ],
+   00128|                 )?
+   00129|             } else if lexicon.mentions_role(seed::ROLE_CODING_RETURN_ACTION, &normalized) {
+   00130|                 let value = numbers.last()?;
+   00131|                 render_rust_template(
+   00132|                     "coding_source_function_return",
+   00133|                     &[
+   00134|                         ("{visibility}", if public { "pub " } else { "" }),
+   00135|                         ("{name}", &name),
+   00136|                         ("{value}", value),
+   00137|                     ],
+   00138|                 )?
+   00139|             } else {
+   00140|                 return None;
+   00141|             }
+   00142|         }
+   00143|         RustItemKind::Constant => {
+   00144|             if !normalized.contains("&str") {
+   00145|                 return None;
+   00146|             }
+   00147|             let value = slot_identifier(&normalized, seed::ROLE_CODING_VALUE_SLOT)?;
+   00148|             render_rust_template(
+   00149|                 "coding_source_string_constant",
+   00150|                 &[
+   00151|                     ("{visibility}", if public { "pub " } else { "" }),
+   00152|                     ("{name}", &name),
+   00153|                     ("{value}", &value),
+   00154|                 ],
+   00155|             )?
+   00156|         }
+   00157|         RustItemKind::Test => {
+   00158|             let left = numbers.first()?;
+   00159|             let right = numbers.get(1)?;
+   00160|             if let (Some(expected), Some(operator)) = (
+   00161|                 numbers.get(2),
+   00162|                 lexicon
+   00163|                     .first_role_match(seed::ROLE_ARITHMETIC_OPERATOR_WORD, &normalized)
+   00164|                     .and_then(|meaning| {
+   00165|                         meaning
+   00166|                             .words()
+   00167|                             .find(|surface| !surface.chars().any(char::is_alphabetic))
+   00168|                     }),
+   00169|             ) {
+   00170|                 render_rust_template(
+   00171|                     "coding_source_binary_operation_test",
+   00172|                     &[
+   00173|                         ("{name}", &name),
+   00174|                         ("{left}", left),
+   00175|                         ("{operator}", operator),
+   00176|                         ("{right}", right),
+   00177|                         ("{expected}", expected),
+   00178|                     ],
+   00179|                 )?
+   00180|             } else {
+   00181|                 render_rust_template(
+   00182|                     "coding_source_equality_test",
+   00183|                     &[("{name}", &name), ("{left}", left), ("{right}", right)],
+   00184|                 )?
+   00185|             }
+   00186|         }
+   00187|     };
+   00188|     Some(GeneratedSource { path, content })
+   00189| }
+   00190| 
+   00191| pub(super) fn render_rust_template(intent: &str, substitutions: &[(&str, &str)]) -> Option<String> {
+   00192|     Some(render_template(
+   00193| &seed::response_for(intent, "rust")?,
+   00194|         substitutions,
+   00195|     ))
+   00196| }
+   00197| 
+   00198| // `{path}` is replaced in seed-owned text rather than interpolated by Rust.
+   00199| #[allow(clippy::literal_string_with_formatting_args)]
+   00200| pub(super) fn render_seeded_outcome(intent: &str, task: &str, path: &str) -> Option<String> {
+   00201|     let language = super::tool_result::response_language(task);
+   00202|     Some(render_template(
+   00203|         seed::localized_response(intent, language)?,
+   00204|         &[("{path}", path)],
+   00205|     ))
+   00206| }
+   00207| 
+   00208| /// Report a change by naming it, not merely by naming the file it touched.
+   00209| ///
+   00210| /// [`render_seeded_outcome`] can only say *that* a path was written, because
+   00211| /// `{path}` is all it substitutes. A caller who asked for the change and for a
+   00212| /// record of it -- the issue #1028 ladder does, and its `verify-node.sh` demands
+   00213| /// "at least four words that state the change you made" -- gets a status line
+   00214| /// where the statement should be, and the record it verifies never mentions the
+   00215| /// edit. A route that derived the new bytes already knows what it altered, so
+   00216| /// the seed sentence takes that as further slots: which members went into a
+   00217| /// list, or which name became which.
+   00218| // `{path}` is replaced in seed-owned text rather than interpolated by Rust; so
+   00219| // are the slots the caller names.
+   00220| #[allow(clippy::literal_string_with_formatting_args)]
+   00221| pub(super) fn render_seeded_change(
+   00222|     intent: &str,
+   00223|     task: &str,
+   00224|     path: &str,
+   00225|     slots: &[(&str, &str)],
+   00226| ) -> Option<String> {
+   00227|     let language = super::tool_result::response_language(task);
+   00228|     let mut substitutions = vec![("{path}", path)];
+   00229|     substitutions.extend_from_slice(slots);
+   00230|     Some(render_template(
+   00231|         seed::localized_response(intent, language)?,
+   00232|         &substitutions,
+   00233|     ))
+   00234| }
+   00235| 
+   00236| /// Render an explicitly typed list slot; mirrors `renderSeededListChange`.
+   00237| pub(super) fn render_seeded_list_change(
+   00238|     intent: &str,
+   00239|     task: &str,
+   00240|     path: &str,
+   00241|     slot: &str,
+   00242|     values: &[String],
+   00243| ) -> Option<String> {
+   00244|     render_seeded_change_with_lists(intent, task, path, &[], &[(slot, values)])
+   00245| }
+   00246| 
+   00247| /// Render scalar slots and explicitly typed lists without interpreting scalar text.
+   00248| #[allow(clippy::literal_string_with_formatting_args)]
+   00249| pub(super) fn render_seeded_change_with_lists(
+   00250|     intent: &str,
+   00251|     task: &str,
+   00252|     path: &str,
+   00253|     slots: &[(&str, &str)],
+   00254|     lists: &[(&str, &[String])],
+   00255| ) -> Option<String> {
+   00256|     let language = super::tool_result::response_language(task);
+   00257|     let template = seed::localized_response(intent, language)?;
+   00258|     let mut substitutions = vec![("{path}", path)];
+   00259|     substitutions.extend_from_slice(slots);
+   00260|     let mut values: Vec<(&str, String, String)> = substitutions
+   00261|         .into_iter()
+   00262|         .filter(|(slot, _)| !lists.iter().any(|(listed, _)| listed == slot))
+   00263|         .map(|(slot, value)| (slot, value.to_owned(), code_span(value)))
+   00264|         .collect();
+   00265|     for (slot, items) in lists {
+   00266|         let rendered = items
+   00267|             .iter()
+   00268|             .map(|value| code_span_item(value))
+   00269|             .collect::<Vec<_>>()
+   00270|             .join(", ");
+   00271|         values.push((slot, rendered.clone(), rendered));
+   00272|     }
+   00273|     Some(render_template_values(&template, &values))
+   00274| }
+   00275| 
+   00276| /// A placeholder the seed sentence wraps in backticks becomes a `CommonMark`
+   00277| /// code span: a value holding a backtick run gets a longer fence, padded when
+   00278| /// it starts or ends with a backtick, so the inserted text reads back verbatim.
+   00279| fn code_span_item(value: &str) -> String {
+   00280|     let longest = value
+   00281|         .split(|character| character != '`')
+   00282|         .map(str::len)
+   00283|         .max()
+   00284|         .unwrap_or(0);
+   00285|     if longest == 0 {
+   00286|         return format!("`{value}`");
+   00287|     }
+   00288|     let fence = "`".repeat(longest + 1);
+   00289|     let pad = if value.starts_with('`') || value.ends_with('`') {
+   00290|         " "
+   00291|     } else {
+   00292|         ""
+   00293|     };
+   00294|     format!("{fence}{pad}{value}{pad}{fence}")
+   00295| }
+   00296| 
+   00297| fn code_span(value: &str) -> String {
+   00298|     code_span_item(value)
+   00299| }
+   00300| 
+   00301| fn render_template(template: &str, substitutions: &[(&str, &str)]) -> String {
+   00302|     let values: Vec<(&str, String, String)> = substitutions
+   00303|         .iter()
+   00304|         .map(|(slot, value)| (*slot, (*value).to_owned(), code_span(value)))
+   00305|         .collect();
+   00306|     render_template_values(template, &values)
+   00307| }
+   00308| 
+   00309| /// Substitute only seed-owned slots; inserted literal values are never templates.
+   00310| fn render_template_values(mut template: &str, values: &[(&str, String, String)]) -> String {
+   00311|     let mut rendered = String::new();
+   00312|     while !template.is_empty() {
+   00313|         let found = values.iter().find_map(|(slot, plain, quoted)| {
+   00314|             let fenced = format!("`{slot}`");
+   00315|             if template.starts_with(&fenced) {
+   00316|                 return Some((fenced.len(), quoted.as_str()));
+   00317|             }
+   00318|             template
+   00319|                 .starts_with(*slot)
+   00320|                 .then_some((slot.len(), plain.as_str()))
+   00321|         });
+   00322|         if let Some((length, value)) = found {
+   00323|             rendered.push_str(value);
+   00324|             template = &template[length..];
+   00325|         } else {
+   00326|             let character = template.chars().next().expect("nonempty template");
+   00327|             rendered.push(character);
+   00328|             template = &template[character.len_utf8()..];
+   00329|         }
+   00330|     }
+   00331|     rendered
+   00332| }
+   00333| 
+   00334| fn rust_path(task: &str) -> Option<String> {
+   00335|     let end = task.find(".rs")?.checked_add(3)?;
+   00336|     let start = task[..end]
+   00337|         .char_indices()
+   00338|         .rev()
+   00339|         .take_while(|(_, character)| is_path_character(*character))
+   00340|         .last()
+   00341|         .map_or(0, |(index, _)| index);
+   00342|     let path = task.get(start..end)?;
+   00343|     (!path.is_empty()
+   00344|         && !path.starts_with('/')
+   00345|         && !path.split('/').any(|component| component == ".."))
+   00346|     .then(|| path.to_owned())
+   00347| }
+   00348| 
+   00349| const fn is_path_character(character: char) -> bool {
+   00350|     character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.' | '/')
+   00351| }
+   00352| 
+   00353| fn requested_identifier(task: &str, path: &str, kind: RustItemKind) -> Option<String> {
+   00354|     let normalized = task.to_lowercase();
+   00355|     if kind != RustItemKind::Constant
+   00356|         && let Some(name) = slot_identifier(&normalized, seed::ROLE_CODING_NAME_SLOT)
+   00357|         && valid_identifier(&name)
+   00358|     {
+   00359|         return Some(name);
+   00360|     }
+   00361|     let without_path = task.replacen(path, "", 1);
+   00362|     let mut candidates = identifier_tokens(&without_path)
+   00363|         .filter(|candidate| valid_identifier(candidate))
+   00364|         .collect::<Vec<_>>();
+   00365|     if kind == RustItemKind::Constant {
+   00366|         candidates.retain(|candidate| {
+   00367|             candidate.chars().any(|character| character == '_')
+   00368|                 && candidate
+   00369|                     .chars()
+   00370|                     .all(|character| character.is_ascii_uppercase() || character == '_')
+   00371|         });
+   00372|     } else {
+   00373|         candidates.retain(|candidate| candidate.contains('_'));
+   00374|     }
+   00375|     candidates.into_iter().next().map(str::to_owned)
+   00376| }
+   00377| 
+   00378| fn slot_identifier(normalized: &str, role: &str) -> Option<String> {
+   00379|     seed::lexicon()
+   00380|         .role_word_forms(role)
+   00381|         .into_iter()
+   00382|         .find_map(|form| match form.slot() {
+   00383|             Slot::Prefix => {
+   00384|                 let prefix = form.before_slot().trim().to_lowercase();
+   00385|                 let start = normalized.find(&prefix)?.checked_add(prefix.len())?;
+   00386|                 identifier_tokens(normalized.get(start..)?)
+   00387|                     .next()
+   00388|                     .map(str::to_owned)
+   00389|             }
+   00390|             Slot::Suffix => {
+   00391|                 let suffix = form.after_slot().trim().to_lowercase();
+   00392|                 let end = normalized.find(&suffix)?;
+   00393|                 identifier_tokens(normalized.get(..end)?)
+   00394|                     .last()
+   00395|                     .map(str::to_owned)
+   00396|             }
+   00397|             Slot::Circumfix => {
+   00398|                 let before = form.before_slot().trim().to_lowercase();
+   00399|                 let after = form.after_slot().trim().to_lowercase();
+   00400|                 let start = normalized.find(&before)?.checked_add(before.len())?;
+   00401|                 let remainder = normalized.get(start..)?;
+   00402|                 let end = remainder.find(&after)?;
+   00403|                 identifier_tokens(remainder.get(..end)?)
+   00404|                     .next()
+   00405|                     .map(str::to_owned)
+   00406|             }
+   00407|             Slot::Bare => None,
+   00408|         })
+   00409| }
+   00410| 
+   00411| fn identifier_tokens(text: &str) -> impl Iterator<Item = &str> {
+   00412|     text.split(|character: char| !character.is_ascii_alphanumeric() && character != '_')
+   00413|         .filter(|token| !token.is_empty())
+   00414| }
+   00415| 
+   00416| fn valid_identifier(identifier: &str) -> bool {
+   00417|     let mut characters = identifier.chars();
+   00418|     let Some(first) = characters.next() else {
+   00419|         return false;
+   00420|     };
+   00421|     (first.is_ascii_alphabetic() || first == '_')
+   00422|         && characters.all(|character| character.is_ascii_alphanumeric() || character == '_')
+   00423|         && !seed::lexicon()
+   00424|             .words_for_role(seed::ROLE_IDENTIFIER_RESERVED_WORD)
+   00425|             .iter()
+   00426|             .any(|reserved| reserved == identifier)
+   00427| }
+   00428| 
+   00429| fn numeric_literals(text: &str) -> Vec<String> {
+   00430|     let chars = text.char_indices().collect::<Vec<_>>();
+   00431|     let mut values = Vec::new();
+   00432|     let mut index = 0;
+   00433|     while index < chars.len() {
+   00434|         let (start, character) = chars[index];
+   00435|         if !character.is_ascii_digit()
+   00436|             || index
+   00437|                 .checked_sub(1)
+   00438|                 .is_some_and(|prior| chars[prior].1.is_ascii_alphabetic())
+   00439|         {
+   00440|             index += 1;
+   00441|             continue;
+   00442|         }
+   00443|         let mut end_index = index + 1;
+   00444|         while end_index < chars.len()
+   00445|             && (chars[end_index].1.is_ascii_digit() || chars[end_index].1 == '.')
+   00446|         {
+   00447|             end_index += 1;
+   00448|         }
+   00449|         if end_index < chars.len() && chars[end_index].1.is_ascii_alphabetic() {
+   00450|             index = end_index + 1;
+   00451|             continue;
+   00452|         }
+   00453|         let end = chars
+   00454|             .get(end_index)
+   00455|             .map_or(text.len(), |(offset, _)| *offset);
+   00456|         let value = text[start..end].trim_end_matches('.');
+   00457|         if !value.is_empty() {
+   00458|             values.push(value.to_owned());
+   00459|         }
+   00460|         index = end_index;
+   00461|     }
+   00462|     values
+   00463| }
+   00464| 
+   
+   (End of file - total 464 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/code_task.rs","file_path":"rust/src/agentic_coding/code_task.rs","new":"&seed::localized_response(intent, language)?,\n        &[(\"{path}\", path)],","newString":"&seed::localized_response(intent, language)?,\n        &[(\"{path}\", path)],","new_str":"&seed::localized_response(intent, language)?,\n        &[(\"{path}\", path)],","new_string":"&seed::localized_response(intent, language)?,\n        &[(\"{path}\", path)],","old":"        seed::localized_response(intent, language)?,\n        &[(\"{path}\", path)],","oldString":"        seed::localized_response(intent, language)?,\n        &[(\"{path}\", path)],","old_str":"        seed::localized_response(intent, language)?,\n        &[(\"{path}\", path)],","old_string":"        seed::localized_response(intent, language)?,\n        &[(\"{path}\", path)],","path":"rust/src/agentic_coding/code_task.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/code_task.rs"}
+   437c06aaedb1306c92ddec19cac282b9cb8c08ad390c6e8118e7087d82ce0b0c  rust/src/agentic_coding/code_task.rs
+   
+== answer ==
+Replaced `        seed::localized_response(intent, language)?,
+        &[("{path}", path)],` with `&seed::localized_response(intent, language)?,
+        &[("{path}", path)],` in `rust/src/agentic_coding/code_task.rs` and observed the result.

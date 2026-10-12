@@ -1,0 +1,57 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/release-readonly-audit.mjs"}
+   Output: {"packet":"/private/tmp/spec-recurrence-1188/release-readonly-audit","sourceCommit":"f0a6c6ff7532fd344b2e77205132ef00ed3aafd5","api":{"latest":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/releases/latest\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"stableCommit":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/commits/v0.352.1\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"desktopJobs":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721641/jobs?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"desktopArtifacts":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721641/artifacts?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"engineArtifacts":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721518/artifacts?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"engineJobs":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721518/jobs?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"vscodeJobs":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721326/jobs?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"sourceWorkflow":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"currentRuns":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/runs?head_sha=f0a6c6ff7532fd344b2e77205132ef00ed3aafd5&per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"},"slimLog":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/jobs/113646808260/logs\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"}},"artifactStatus":"unavailable","repositoryMutations":0}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/release-readonly-audit.mjs` command completed. Output:
+
+```json
+{
+  "api": {
+    "currentRuns": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/runs?head_sha=f0a6c6ff7532fd344b2e77205132ef00ed3aafd5&per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "desktopArtifacts": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721641/artifacts?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "desktopJobs": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721641/jobs?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "engineArtifacts": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721518/artifacts?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "engineJobs": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721518/jobs?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "latest": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/releases/latest\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "slimLog": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/jobs/113646808260/logs\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "sourceWorkflow": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "stableCommit": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/commits/v0.352.1\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    },
+    "vscodeJobs": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/runs/37870721326/jobs?per_page=100\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+      "status": "unavailable"
+    }
+  },
+  "artifactStatus": "unavailable",
+  "packet": "/private/tmp/spec-recurrence-1188/release-readonly-audit",
+  "repositoryMutations": 0,
+  "sourceCommit": "f0a6c6ff7532fd344b2e77205132ef00ed3aafd5"
+}
+```

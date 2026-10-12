@@ -1,0 +1,113 @@
+>> read {"filePath":"scripts/lib/source-network-packets.mjs","file_path":"scripts/lib/source-network-packets.mjs","path":"scripts/lib/source-network-packets.mjs"}
+   <file>
+   00001| // Lossless network packets for owned source: full serialized bytes and verified reconstruction.
+   00002| import { createHash } from 'node:crypto';
+   00003| import { gunzipSync } from 'node:zlib';
+   00004| 
+   00005| export const sourceDigest = (bytes) => createHash('sha256').update(bytes).digest('hex');
+   00006| 
+   00007| /** Disjoint, exhaustive shards over a canonical source path list. */
+   00008| export function partitionSourcePaths(paths, shardIndex, shardCount) {
+   00009|   if (!Number.isSafeInteger(shardCount) || shardCount < 1 || !Number.isSafeInteger(shardIndex)
+   00010|     || shardIndex < 0 || shardIndex >= shardCount) throw new Error('invalid source shard');
+   00011|   if (paths.some((path) => typeof path !== 'string') || new Set(paths).size !== paths.length) {
+   00012|     throw new Error('source paths must be distinct strings');
+   00013|   }
+   00014|   return [...paths].sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)))
+   00015|     .filter((_, index) => index % shardCount === shardIndex);
+   00016| }
+   00017| 
+   00018| /** The upstream serializer must preserve the actual source through its decoder, not its digest alone. */
+   00019| export function serializeSourceNetwork({ path, language, source }, LinkNetwork) {
+   00020|   const sourceBytes = Buffer.from(source, 'utf8');
+   00021|   const network = LinkNetwork.parse(source, language);
+   00022|   const document = network.toLino();
+   00023|   const restored = LinkNetwork.fromLino(document).reconstructText();
+   00024|   if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(sourceBytes)) {
+   00025|     throw new Error('source network round trip differs: ' + path);
+   00026|   }
+   00027|   const serializedBytes = Buffer.from(document, 'utf8');
+   00028|   return {
+   00029|     document,
+   00030|     receipt: {
+   00031|       path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),
+   00032|       serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),
+   00033|       fidelity: 'lossless-network-serialization',
+   00034|     },
+   00035|   };
+   00036| }
+   00037| 
+   00038| /** Validate a downloaded packet's compressed/network identities and reconstruct the recorded source bytes. */
+   00039| export function verifySourcePacket(receipt, compressed, LinkNetwork) {
+   00040|   if (sourceDigest(compressed) !== receipt.compressedSha256 || compressed.length !== receipt.compressedBytes) {
+   00041|     throw new Error('compressed packet identity differs: ' + receipt.path);
+   00042|   }
+   00043|   const bytes = gunzipSync(compressed);
+   00044|   if (sourceDigest(bytes) !== receipt.serializedSha256 || bytes.length !== receipt.serializedBytes) {
+   00045|     throw new Error('serialized network identity differs: ' + receipt.path);
+   00046|   }
+   00047|   const source = LinkNetwork.fromLino(new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes)).reconstructText();
+   00048|   const restored = Buffer.from(source, 'utf8');
+   00049|   if (restored.length !== receipt.sourceBytes || sourceDigest(restored) !== receipt.sourceSha256) {
+   00050|     throw new Error('reconstructed source identity differs: ' + receipt.path);
+   00051|   }
+   00052|   return source;
+   00053| }
+   00054| 
+   00055| 
+   00056| /** Certify exact shard coverage and packet identities against a committed release source tree.
+   00057|  * Producers already ran the full upstream decoder; this join checks their content-bound packets.
+   00058|  */
+   00059| export function verifySourceDistribution({ reports, sourcePaths, sourceBytes, packetBytes,
+   00060|   sourceHead, upstreamCommit, shardCount = 8 }) {
+   00061|   if (!/^[a-f0-9]{40,64}$/u.test(sourceHead) || !/^[a-f0-9]{40}$/u.test(upstreamCommit)) {
+   00062|     throw new Error('distribution requires full source and upstream commits');
+   00063|   }
+   00064|   if (reports.length !== shardCount) throw new Error('source distribution is missing a shard');
+   00065|   const seen = new Set();
+   00066|   for (const report of reports) {
+   00067|     if (!Number.isSafeInteger(report.shardIndex) || report.shardIndex < 0
+   00068|       || report.shardIndex >= shardCount || seen.has(report.shardIndex)) {
+   00069|       throw new Error('source distribution shard identity differs');
+   00070|     }
+   00071|     seen.add(report.shardIndex);
+   00072|     const paths = partitionSourcePaths(sourcePaths, report.shardIndex, shardCount);
+   00073|     if (report.sourceHead !== sourceHead || report.baseHead !== sourceHead
+   00074|       || report.inputState !== 'committed-head' || report.upstreamCommit !== upstreamCommit
+   00075|       || report.shardCount !== shardCount || report.totalOwnedSources !== sourcePaths.length
+   00076|       || report.checkedSources !== paths.length || report.fidelity !== 'lossless-network-serialization'
+   00077|       || !Array.isArray(report.sources) || report.sources.length !== paths.length) {
+   00078|       throw new Error('source distribution report identity differs');
+   00079|     }
+   00080|     for (let index = 0; index < paths.length; index += 1) {
+   00081|       const receipt = report.sources[index], path = paths[index];
+   00082|       if (receipt.path !== path || receipt.packet !== path + '.lino.gz'
+   00083|         || receipt.fidelity !== 'lossless-network-serialization') {
+   00084|         throw new Error('source distribution coverage differs');
+   00085|       }
+   00086|       const source = sourceBytes(path), compressed = packetBytes(report.shardIndex, receipt.packet);
+   00087|       if (source.length !== receipt.sourceBytes || sourceDigest(source) !== receipt.sourceSha256) {
+   00088|         throw new Error('release source identity differs: ' + path);
+   00089|       }
+   00090|       if (compressed.length !== receipt.compressedBytes || sourceDigest(compressed) !== receipt.compressedSha256) {
+   00091|         throw new Error('distribution compressed packet identity differs: ' + path);
+   00092|       }
+   00093|       const serialized = gunzipSync(compressed);
+   00094|       if (serialized.length !== receipt.serializedBytes || sourceDigest(serialized) !== receipt.serializedSha256) {
+   00095|         throw new Error('distribution serialized packet identity differs: ' + path);
+   00096|       }
+   00097|     }
+   00098|   }
+   00099|   return { sourceHead, upstreamCommit, shardCount, checkedSources: sourcePaths.length };
+   00100| }
+   00101| 
+   
+   (End of file - total 101 lines)
+   </file>
+>> edit {"filePath":"scripts/lib/source-network-packets.mjs","file_path":"scripts/lib/source-network-packets.mjs","new":"import { gzipSync, gunzipSync } from 'node:zlib';","newString":"import { gzipSync, gunzipSync } from 'node:zlib';","new_str":"import { gzipSync, gunzipSync } from 'node:zlib';","new_string":"import { gzipSync, gunzipSync } from 'node:zlib';","old":"import { gunzipSync } from 'node:zlib';","oldString":"import { gunzipSync } from 'node:zlib';","old_str":"import { gunzipSync } from 'node:zlib';","old_string":"import { gunzipSync } from 'node:zlib';","path":"scripts/lib/source-network-packets.mjs"}
+>> bash {"command":"sha256sum -- scripts/lib/source-network-packets.mjs"}
+   Output: 942266c1ede2eaed23d0558d1ef04c1caaf2e99f45e1e393f3d297566532296a  scripts/lib/source-network-packets.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `import { gunzipSync } from 'node:zlib';` with `import { gzipSync, gunzipSync } from 'node:zlib';` in `scripts/lib/source-network-packets.mjs` and observed the result.

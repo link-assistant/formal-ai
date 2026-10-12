@@ -1,0 +1,12 @@
+language en
+lemma apr
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the month following March and preceding May"
+    id oewn-15235985-n
+    partOfSpeech n
+    synonyms (April)
+source "oewn:2024"

@@ -1,0 +1,13 @@
+view
+  id M-910ee1bc3116
+  lemma originality
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the ability to think and act independently"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the quality of being new and original (not derived from something else)"
+    provenance (wordnet)

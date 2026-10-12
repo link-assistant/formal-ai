@@ -1,0 +1,21 @@
+computer_use_fetch	obtén	descarga	recupera	trae
+computer_use_filter_rows	filtra	filtrar	filtrado	filtradas
+computer_use_count_lines	cuenta	cuenta las líneas	cuántas líneas
+computer_use_unique_values	únicos	únicas	distintos	distintas
+computer_use_extract_field	id del pedido	identificador	primer pedido	extrae
+computer_use_query_selector	título	encabezado	token	selector
+computer_use_submit_form	envía	enviar	manda
+computer_use_list_directory	lista	enumera	lista los
+computer_use_pack_archive	empaqueta	archiva	comprime
+computer_use_unpack_archive	desempaqueta	descomprime	restaura
+computer_use_move_file	mueve	traslada
+computer_use_process_status	estado del proceso	proceso aislado	proceso
+computer_use_resource_customers	clientes	cliente
+computer_use_resource_notes	notas	archivo de notas
+computer_use_resource_documents	documentos	documento
+computer_use_resource_inbox_note	nota de la bandeja de entrada	bandeja de entrada
+computer_use_resource_orders	pedidos	pedido
+computer_use_resource_status_page	página de estado
+computer_use_resource_form	formulario
+computer_use_resource_inventory	inventario
+computer_use_gap_gui_rendering	captura de pantalla	píxeles	píxel	interfaz gráfica

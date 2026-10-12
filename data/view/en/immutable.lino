@@ -1,0 +1,13 @@
+view
+  id M-86a3a3fc00f3
+  lemma immutable
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not subject or susceptible to change or variation in form or quality or nature"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "constant and unchanging"
+    provenance (wordnet)

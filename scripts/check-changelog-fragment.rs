@@ -23,25 +23,35 @@
 //! regex = "1"
 //! ```
 
+use regex::Regex;
 use std::env;
 use std::path::Path;
 use std::process::{Command, exit};
-use regex::Regex;
+
+const MAX_COMMAND_OUTPUT_BYTES: usize = 16 * 1024 * 1024;
 
 fn exec(command: &str, args: &[&str]) -> String {
     match Command::new(command).args(args).output() {
         Ok(output) => {
+            if output.stdout.len() > MAX_COMMAND_OUTPUT_BYTES
+                || output.stderr.len() > MAX_COMMAND_OUTPUT_BYTES
+            {
+                eprintln!(
+                    "Failed to execute {command} {args:?}: output exceeded {MAX_COMMAND_OUTPUT_BYTES} bytes"
+                );
+                exit(1);
+            }
             if output.status.success() {
                 String::from_utf8_lossy(&output.stdout).trim().to_string()
             } else {
                 eprintln!("Error executing {} {:?}", command, args);
                 eprintln!("{}", String::from_utf8_lossy(&output.stderr));
-                String::new()
+                exit(1)
             }
         }
         Err(e) => {
             eprintln!("Failed to execute {} {:?}: {}", command, args, e);
-            String::new()
+            exit(1)
         }
     }
 }
@@ -70,18 +80,30 @@ fn get_changed_files() -> Vec<String> {
 
     let output = exec(
         "git",
-        &["diff", "--name-only", &format!("origin/{}...HEAD", base_ref)],
+        &[
+            "diff",
+            "--name-only",
+            &format!("origin/{}...HEAD", base_ref),
+        ],
     );
 
     if output.is_empty() {
         return Vec::new();
     }
 
-    output.lines().filter(|s| !s.is_empty()).map(String::from).collect()
+    output
+        .lines()
+        .filter(|s| !s.is_empty())
+        .map(String::from)
+        .collect()
 }
 
 fn is_source_file(file_path: &str, rust_root: &str) -> bool {
-    let prefix = if rust_root == "." { String::new() } else { format!("{}/", rust_root) };
+    let prefix = if rust_root == "." {
+        String::new()
+    } else {
+        format!("{}/", rust_root)
+    };
 
     let source_patterns = [
         Regex::new(&format!(r"^{}src/", regex::escape(&prefix))).unwrap(),
@@ -90,11 +112,17 @@ fn is_source_file(file_path: &str, rust_root: &str) -> bool {
         Regex::new(&format!(r"^{}Cargo\.toml$", regex::escape(&prefix))).unwrap(),
     ];
 
-    source_patterns.iter().any(|pattern| pattern.is_match(file_path))
+    source_patterns
+        .iter()
+        .any(|pattern| pattern.is_match(file_path))
 }
 
 fn is_changelog_fragment(file_path: &str, rust_root: &str) -> bool {
-    let changelog_dir = if rust_root == "." { "changelog.d/".to_string() } else { format!("{}/changelog.d/", rust_root) };
+    let changelog_dir = if rust_root == "." {
+        "changelog.d/".to_string()
+    } else {
+        format!("{}/changelog.d/", rust_root)
+    };
 
     (file_path.starts_with(&changelog_dir) || file_path.starts_with("changelog.d/"))
         && file_path.ends_with(".md")
@@ -106,7 +134,10 @@ fn main() {
 
     let rust_root = get_rust_root();
     if rust_root != "." {
-        println!("Detected multi-language repository (Rust root: {})", rust_root);
+        println!(
+            "Detected multi-language repository (Rust root: {})",
+            rust_root
+        );
     }
 
     let changed_files = get_changed_files();
@@ -123,7 +154,10 @@ fn main() {
     println!();
 
     // Count source files changed
-    let source_changes: Vec<&String> = changed_files.iter().filter(|f| is_source_file(f, &rust_root)).collect();
+    let source_changes: Vec<&String> = changed_files
+        .iter()
+        .filter(|f| is_source_file(f, &rust_root))
+        .collect();
     let source_changed_count = source_changes.len();
 
     println!("Source files changed: {}", source_changed_count);
@@ -151,7 +185,9 @@ fn main() {
 
     // Check if source files changed but no fragment was added
     if source_changed_count > 0 && fragment_added_count == 0 {
-        eprintln!("::error::No changelog fragment found in this PR. Please add a changelog entry in changelog.d/");
+        eprintln!(
+            "::error::No changelog fragment found in this PR. Please add a changelog entry in changelog.d/"
+        );
         eprintln!();
         eprintln!("To create a changelog fragment:");
         eprintln!("  Create a new .md file in changelog.d/ with your changes");

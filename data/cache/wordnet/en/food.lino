@@ -1,0 +1,23 @@
+language en
+lemma food
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "any substance that can be metabolized by an animal to give energy and build tissue"
+    id oewn-00021445-n
+    partOfSpeech n
+    synonyms (nutrient)
+  entry
+    definition "any solid substance (as opposed to liquid) that is used as a source of nourishment"
+    examples ("food and drink")
+    id oewn-07571428-n
+    partOfSpeech n
+    synonyms ("solid food")
+  entry
+    definition "anything that provides mental stimulus for thinking"
+    id oewn-05819240-n
+    partOfSpeech n
+    synonyms ("food for thought" "intellectual nourishment")
+source "oewn:2024"

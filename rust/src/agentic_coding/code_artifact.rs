@@ -6,18 +6,18 @@
 use std::fmt::Write as _;
 
 use lino_objects_codec::format::escape_reference;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use super::planner::{
-    plan_one, tool_capability, tool_for, write_arguments, AgenticPlan, Capability,
+    AgenticPlan, Capability, plan_one, tool_capability, tool_for, write_arguments,
 };
-use crate::coding::{program_language_by_alias, program_task_by_alias, program_template};
+use crate::coding::{program_language_by_alias, program_spec, program_task_by_alias};
 use crate::links_substitution_query::{
     parse_substitution_query, render_substitution_query, substitution_effect,
 };
 use crate::normal_markov::{
-    quoted_segments, unwrap_transport_quotes, RewriteHalt, RewriteOutcome, RewriteProgram,
-    RewriteRule,
+    RewriteHalt, RewriteOutcome, RewriteProgram, RewriteRule, quoted_segments,
+    unwrap_transport_quotes,
 };
 use crate::protocol::ChatMessage;
 
@@ -179,10 +179,12 @@ fn generated_artifact(task: &str) -> Option<WorkspaceArtifact> {
     let normalized = task.to_lowercase();
     let language = program_language_by_alias(&normalized)?;
     let program_task = program_task_by_alias(&normalized)?;
-    let template = program_template(program_task.slug, language.slug)?;
+    // Issue #1165 R1165-6: the file a documented program binds
+    // (`HelloWorldApp.java`) is the one it is written to.
+    let spec = program_spec(program_task.slug, language.slug)?;
     Some(WorkspaceArtifact {
-        path: language.save_as.to_owned(),
-        content: format!("{}\n", template.code.trim_end()),
+        path: spec.language.save_as.to_string(),
+        content: format!("{}\n", spec.template.code.trim_end()),
     })
 }
 
@@ -234,7 +236,7 @@ fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<Workspa
 /// only route to link-cli's `()` creation and deletion shorthands and to
 /// terminal rules. The whole turn must be the query: requiring that keeps the
 /// route unambiguous against ordinary prose that merely contains parentheses.
-fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {
+pub(super) fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {
     let trimmed = task.trim();
     if !trimmed.starts_with('(') {
         return None;
@@ -259,6 +261,29 @@ fn latest_workspace_artifact(messages: &[ChatMessage]) -> Option<WorkspaceArtifa
                 path: path.to_owned(),
                 content: content.to_owned(),
             })
+        })
+}
+
+/// The latest receipt associated with this exact command in the supplied request window.
+pub(super) fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {
+    messages
+        .iter()
+        .enumerate()
+        .rev()
+        .find_map(|(index, message)| {
+            if !message.role.eq_ignore_ascii_case("tool") {
+                return None;
+            }
+            let call_identity = message.tool_call_id.as_deref()?;
+            let call = messages[..index]
+                .iter()
+                .rev()
+                .flat_map(|prior| prior.tool_calls.iter().rev())
+                .find(|call| call.id == call_identity)?;
+            (tool_capability(&call.function.name) == Some(Capability::Run)
+                && super::tool_result::command_argument(&call.function.arguments).as_deref()
+                    == Some(command))
+            .then(|| message.content.plain_text())
         })
 }
 
@@ -312,14 +337,14 @@ pub(super) fn source_from_read_result(result: &str) -> String {
     decoded
 }
 
-fn source_from_agent_read_result(result: &str) -> Option<String> {
+pub(super) fn source_from_agent_read_result(result: &str) -> Option<String> {
     let after_open = result.strip_prefix("<file>\n")?;
     let (numbered, footer) = after_open.rsplit_once("\n\n(End of file - total ")?;
     if !footer.ends_with("</file>") {
         return None;
     }
     numbered
-        .lines()
+        .split('\n')
         .map(|line| {
             let (number, source) = line.split_once("| ")?;
             number

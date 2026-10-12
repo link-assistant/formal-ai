@@ -1,0 +1,9 @@
+{
+  "tests": 15,
+  "passed": 15,
+  "failed": 0,
+  "skipped": 0,
+  "file": "rust/tests/web/desktop-release-source-attribution.test.mjs",
+  "nativeCompilation": false,
+  "realPublication": false
+}

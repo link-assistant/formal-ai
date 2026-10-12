@@ -1,0 +1,36 @@
+reduce_mean	media	promedio
+absolute_deviation	desviación absoluta	diferencia absoluta
+prefix_negative	por debajo de cero	baja de cero
+interpose_each	entre cada dos elementos consecutivos
+balanced_delimiter_groups	grupos balanceados	grupos separados
+group_max_nesting	anidamiento máximo	nivel de anidamiento más profundo
+prefix_enumeration	todos los prefijos	prefijos del más corto al más largo
+zero_based_range	empezando desde 0	empezando en cero
+stringify_each	cadena que contiene	como cadena
+palindrome_extension	palíndromo más corto	sufijo palíndromo
+aligned_binary_xor	xor binario	realiza xor
+stable_longest	el más largo	devuelve el más largo
+explicit_value_mapping	leyenda	correspondiente a
+explicit_ordering	las opciones válidas son	orden dado
+bounded_top	elementos más grandes	n mayores
+bounded_bottom	elementos más pequeños	n menores
+power_square_each	cuadrados de los elementos	eleva cada uno al cuadrado
+keyed_sum_order	según la suma	por la suma de la fila
+frequency_rank	más común	rango de frecuencia
+regex_minimum_word_length	caracteres de largo	longitud mínima de palabra
+regex_lowercase_chunks	divide una cadena en las minúsculas
+regex_lowercase_underscore	minúsculas unidas con un guion bajo
+exclude_membership	elimina caracteres	excluye caracteres
+remove_boundary_occurrences	elimina la primera y la última aparición
+rotation_period	número mínimo de rotaciones	periodo de rotación mínimo
+duplicate_exists	algún duplicado	contiene duplicados
+composite_number	números no primos	número compuesto
+one_bit_difference	difieren en una posición de bit	diferencia de un bit
+grid_minimum_cost_path	camino de costo mínimo	camino de menor costo
+recurrence_conditional	si
+recurrence_less_equal	menor o igual
+recurrence_equal	igualdad
+recurrence_add	sumar	suma
+recurrence_multiply	multiplicar	multiplicación
+recurrence_subtract	restar	resta
+recurrence_subtract_one	decrementar	disminuir en uno

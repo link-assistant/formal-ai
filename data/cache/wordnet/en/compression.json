@@ -1,0 +1,46 @@
+{
+  "lemma": "compression",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07433833-n",
+      "partOfSpeech": "n",
+      "definition": "an increase in the density of something",
+      "synonyms": [
+        "compaction",
+        "concretion",
+        "densification"
+      ]
+    },
+    {
+      "id": "oewn-07327841-n",
+      "partOfSpeech": "n",
+      "definition": "the process or result of becoming smaller or pressed together",
+      "examples": [
+        "the contraction of a gas on cooling"
+      ],
+      "synonyms": [
+        "condensation",
+        "contraction"
+      ]
+    },
+    {
+      "id": "oewn-00617323-n",
+      "partOfSpeech": "n",
+      "definition": "encoding information while reducing the bandwidth or bits required"
+    },
+    {
+      "id": "oewn-00357616-n",
+      "partOfSpeech": "n",
+      "definition": "applying pressure",
+      "synonyms": [
+        "compressing"
+      ]
+    }
+  ]
+}

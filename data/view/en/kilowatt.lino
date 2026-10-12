@@ -1,0 +1,9 @@
+view
+  id M-1a31aec4d2ae
+  lemma kilowatt
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of power equal to 1000 watts"
+    provenance (wordnet)

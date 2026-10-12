@@ -1,0 +1,448 @@
+>> read {"filePath":"experiments/formal_ai_subagent/apply-notation-rules.mjs","file_path":"experiments/formal_ai_subagent/apply-notation-rules.mjs","path":"experiments/formal_ai_subagent/apply-notation-rules.mjs"}
+   <file>
+   00001| #!/usr/bin/env node
+   00002| // Apply the links notation rules of data/meta/notation-rules.lino by rule,
+   00003| // one family at a time (PR #1188, R1188-U6; docs/links-notation-style.md).
+   00004| //
+   00005| // The rule: a name of the notation we own is spelled with `-`, not `_`.
+   00006| // A family names its `.lino` files. Its names are the unquoted `_` names of
+   00007| // those files that occur in no other `.lino` file (a shared name waits for the
+   00008| // family that owns all its files), less the names a shell, Python or workflow
+   00009| // file spells (the pass rewrites JavaScript and Rust only) and the names the
+   00010| // family keeps with a reason. For each name the pass rewrites:
+   00011| //
+   00012| //   - the family's `.lino` files, and their byte mirrors (rust/embedded/,
+   00013| //     and the untracked deploy copies js/seed/ and the engine package assets);
+   00014| //   - the code that reads them: the name as a token inside a string literal
+   00015| //     of js/, scripts/, rust/src/, rust/tests/ and the other reader roots, and
+   00016| //     inside a JavaScript regular expression, where it accepts both spellings
+   00017| //     during the transition (`specialization[-_]ceiling`); a comment mention
+   00018| //     too, unless the same spelling is a code identifier somewhere, since code
+   00019| //     identifiers follow their language's convention and are never touched;
+   00020| //   - the backticked mentions in the documentation we own (not the case
+   00021| //     studies and logs, which are history).
+   00022| //
+   00023| // Every renamed name is recorded in data/meta/notation-renames.lino, so the
+   00024| // check can prove no reader went back to an old spelling.
+   00025| //
+   00026| // A family with `rule concise-lexemes` instead writes each long lexeme block
+   00027| // that has one in the concise form (scripts/lib/notation-concise-lexemes.mjs),
+   00028| // file by file, only when the result parses to the same tree; its check fails
+   00029| // while a family file still holds a long lexeme with a concise form. ts/ is regenerated
+   00030| // with `node scripts/translate-es.mjs --write` after a pass.
+   00031| //
+   00032| // Usage:
+   00033| //   node experiments/formal_ai_subagent/apply-notation-rules.mjs --family <name> --write
+   00034| //   node experiments/formal_ai_subagent/apply-notation-rules.mjs --family <name> --list
+   00035| //   node experiments/formal_ai_subagent/apply-notation-rules.mjs --family <name> --files [--lines]   (what would change)
+   00036| //   node experiments/formal_ai_subagent/apply-notation-rules.mjs --check
+   00037| 
+   00038| import { execFileSync } from 'node:child_process';
+   00039| import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+   00040| import { dirname, join, resolve } from 'node:path';
+   00041| import { fileURLToPath } from 'node:url';
+   00042| 
+   00043| import { RULES_FILE, namesOfLine, parseTree, readRules } from '../../scripts/lib/links-notation-names.mjs';
+   00044| import { conciseLexemes } from '../../scripts/lib/notation-concise-lexemes.mjs';
+   00045| import { parseLino } from '../../js/server/lino.mjs';
+   00046| import {
+   00047|   identifiersIn,
+   00048|   replaceTokens,
+   00049|   rewriteDocument,
+   00050|   rewriteNotation,
+   00051|   rewriteSource,
+   00052|   sourceSpans,
+   00053| } from '../../scripts/lib/notation-substitution.mjs';
+   00054| 
+   00055| const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+   00056| export const RENAMES_FILE = 'data/meta/notation-renames.lino';
+   00057| const GENERATOR = 'node experiments/formal_ai_subagent/apply-notation-rules.mjs --family <name> --write';
+   00058| 
+   00059| /** The roots whose code reads the notation. */
+   00060| const READER_ROOTS = ['js', 'scripts', 'rust/src', 'rust/tests', 'rust/examples', 'packages', 'desktop', 'experiments/js_dogfood', 'experiments/formal_ai_subagent'];
+   00061| /** Copies and generated output, never edited as readers. */
+   00062| const NOT_READER = /^(?:js\/seed|js\/vendor|rust\/embedded|ts)\/|\.bundle\.js$|(?:^|\/)node_modules\/|^experiments\/formal_ai_subagent\/sandboxes\//u;
+   00063| /** The `.lino` files that are history or copies, never notation to rename. */
+   00064| const NOT_NOTATION = /^(?:rust\/embedded|docs\/case-studies|dev|experiments)\/|\/sandboxes\//u;
+   00065| /**
+   00066|  * Shell, Python and workflow files: the pass does not rewrite them, so a name
+   00067|  * they spell waits until a family moves it together with them.
+   00068|  */
+   00069| const UNREWRITTEN = /\.(?:sh|py|yml|yaml|toml)$/u;
+   00070| const UNREWRITTEN_ROOTS = ['.github', 'scripts', 'experiments', 'rust', 'js', 'packages', 'desktop'];
+   00071| 
+   00072| /**
+   00073|  * The documentation we own. History stays as written (case studies, logs,
+   00074|  * changelogs, verbatim architect notes), and generated documents are
+   00075|  * regenerated from their sources instead of rewritten.
+   00076|  */
+   00077| const DOCUMENTS = /^(?:docs\/(?!case-studies\/|changelog\/|architect-notes\/|diagrams\/|requirements\/assembled\/).*|(?!CHANGELOG|REQUIREMENTS)[^/]+|data\/README|rust\/README|js\/README)\.md$/u;
+   00078| 
+   00079| function tracked(paths = []) {
+   00080|   return execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', ...paths], {
+   00081|     cwd: ROOT,
+   00082|     encoding: 'utf8',
+   00083|     maxBuffer: 1 << 28,
+   00084|   })
+   00085|     .split('\n')
+   00086|     .filter((path) => path && existsSync(join(ROOT, path)));
+   00087| }
+   00088| 
+   00089| const read = (path) => readFileSync(join(ROOT, path), 'utf8');
+   00090| 
+   00091| /** The files a family names, by glob. */
+   00092| export function familyFiles(family) {
+   00093|   return tracked(family.files.map((pattern) => `:(glob)${pattern}`))
+   00094|     .filter((path) => path.endsWith('.lino') && !family.except.has(path))
+   00095|     .sort();
+   00096| }
+   00097| 
+   00098| /** Every `.lino` file whose names are notation (not history, not a copy). */
+   00099| function notationFiles() {
+   00100|   return tracked(['*.lino']).filter((path) => !NOT_NOTATION.test(path) && path !== RULES_FILE && path !== RENAMES_FILE);
+   00101| }
+   00102| 
+   00103| function namesOfText(text) {
+   00104|   const names = new Set();
+   00105|   for (const line of text.split('\n')) {
+   00106|     namesOfLine(line).forEach(({ name }) => names.add(name));
+   00107|   }
+   00108|   return names;
+   00109| }
+   00110| 
+   00111| /**
+   00112|  * The renames of one family: `{mapping, shared, kept, collisions}`.
+   00113|  * @param {object} family
+   00114|  */
+   00115| export function planFamily(family) {
+   00116|   const files = familyFiles(family);
+   00117|   const inFamily = new Set(files);
+   00118|   const own = new Set();
+   00119|   files.forEach((path) => namesOfText(read(path)).forEach((name) => own.add(name)));
+   00120|   const elsewhere = new Set();
+   00121|   for (const path of notationFiles()) {
+   00122|     if (!inFamily.has(path)) {
+   00123|       namesOfText(read(path)).forEach((name) => elsewhere.add(name));
+   00124|     }
+   00125|   }
+   00126|   const unrewritten = new Set();
+   00127|   for (const path of tracked(UNREWRITTEN_ROOTS).filter((candidate) => UNREWRITTEN.test(candidate) && !NOT_READER.test(candidate))) {
+   00128|     for (const match of read(path).matchAll(/[a-z][a-z0-9]*(?:_[a-z0-9]+)+/gu)) {
+   00129|       if (own.has(match[0])) {
+   00130|         unrewritten.add(match[0]);
+   00131|       }
+   00132|     }
+   00133|   }
+   00134|   const mapping = new Map();
+   00135|   const shared = [];
+   00136|   const outsideCode = [];
+   00137|   const kept = [];
+   00138|   const collisions = [];
+   00139|   for (const name of [...own].sort()) {
+   00140|     if (!name.includes('_')) {
+   00141|       continue;
+   00142|     }
+   00143|     const renamed = name.replace(/_/gu, '-');
+   00144|     if (family.keepNames.has(name)) {
+   00145|       kept.push(name);
+   00146|     } else if (elsewhere.has(name)) {
+   00147|       shared.push(name);
+   00148|     } else if (unrewritten.has(name)) {
+   00149|       outsideCode.push(name);
+   00150|     } else if ((own.has(renamed) || elsewhere.has(renamed)) && !family.mergeCollisions) {
+   00151|       // An existing `-` spelling may name another thing; a family that knows
+   00152|       // both spellings name the same thing says `merge-collisions true`.
+   00153|       collisions.push(name);
+   00154|     } else {
+   00155|       mapping.set(name, renamed);
+   00156|     }
+   00157|   }
+   00158|   return { files, mapping, shared, kept, collisions, outsideCode };
+   00159| }
+   00160| 
+   00161| function languageOf(path) {
+   00162|   if (path.endsWith('.rs')) {
+   00163|     return 'rust';
+   00164|   }
+   00165|   return /\.(?:mjs|cjs|js|jsx)$/u.test(path) ? 'javascript' : null;
+   00166| }
+   00167| 
+   00168| function readerFiles() {
+   00169|   return tracked(READER_ROOTS).filter((path) => languageOf(path) !== null && !NOT_READER.test(path));
+   00170| }
+   00171| 
+   00172| function mirrorsOf(path) {
+   00173|   const mirrors = [`rust/embedded/${path}`];
+   00174|   if (path.startsWith('data/seed/')) {
+   00175|     const name = path.slice('data/seed/'.length);
+   00176|     mirrors.push(`js/seed/${name}`, `packages/formal-ai-engine/assets/seed/${name}`);
+   00177|   }
+   00178|   return mirrors.filter((mirror) => existsSync(join(ROOT, mirror)));
+   00179| }
+   00180| 
+   00181| let dryRun = false;
+   00182| let showLines = false;
+   00183| 
+   00184| function writeIfChanged(path, before, after, changed) {
+   00185|   if (after !== before) {
+   00186|     if (!dryRun) {
+   00187|       writeFileSync(join(ROOT, path), after);
+   00188|     }
+   00189|     if (showLines) {
+   00190|       const old = before.split('\n');
+   00191|       after.split('\n').forEach((line, index) => {
+   00192|         if (line !== old[index]) {
+   00193|           console.log(`${path}:${index + 1}\n  - ${(old[index] ?? "").trim()}\n  + ${line.trim()}`);
+   00194|         }
+   00195|       });
+   00196|     }
+   00197|     changed.push(path);
+   00198|   }
+   00199| }
+   00200| 
+   00201| /** Captured names own response placeholders before and after a rename. */
+   00202| export function capturePlaceholderMapping(mapping, document) {
+   00203|   const captures = new Set(
+   00204|     [...document.matchAll(/^\s+value ([A-Za-z][A-Za-z0-9_-]*) /gmu)]
+   00205|       .map((match) => match[1]),
+   00206|   );
+   00207|   return new Map([...mapping].filter(([name, renamed]) => captures.has(name) || captures.has(renamed)));
+   00208| }
+   00209| 
+   00210| /**
+   00211|  * Apply one family's renames: the notation, its mirrors, the readers and the
+   00212|  * documents. Returns the changed paths.
+   00213|  * @param {Map<string, string>} mapping
+   00214|  * @param {Array<string>} files
+   00215|  * @returns {Array<string>}
+   00216|  */
+   00217| export function applyMapping(mapping, files) {
+   00218|   const changed = [];
+   00219|   // Captured names also appear in response templates outside this family.
+   00220|   // Other handler fields may share a spelling with unrelated code variables.
+   00221|   const placeholderMapping = capturePlaceholderMapping(mapping, read("data/seed/handler-rules.lino"));
+   00222|   const placeholderFiles = tracked(["data/seed/*.lino"]).filter((path) =>
+   00223|     [...read(path).matchAll(/\{([A-Za-z][A-Za-z0-9_-]*)\}/gu)].some((match) => placeholderMapping.has(match[1])),
+   00224|   );
+   00225|   for (const path of new Set([...files, ...placeholderFiles])) {
+   00226|     const before = read(path);
+   00227|     const after = rewriteNotation(before, files.includes(path) ? mapping : placeholderMapping);
+   00228|     writeIfChanged(path, before, after, changed);
+   00229|     for (const mirror of mirrorsOf(path)) {
+   00230|       writeIfChanged(mirror, read(mirror), after, changed);
+   00231|     }
+   00232|   }
+   00233|   const readers = readerFiles().map((path) => ({ path, language: languageOf(path), text: read(path) }));
+   00234|   const identifiers = new Set();
+   00235|   readers.forEach(({ text, language }) => identifiersIn(text, language, mapping).forEach((name) => identifiers.add(name)));
+   00236|   for (const { path, language, text } of readers) {
+   00237|     writeIfChanged(path, text, rewriteSource(text, language, mapping, identifiers).text, changed);
+   00238|   }
+   00239|   for (const path of tracked(['*.md']).filter((candidate) => DOCUMENTS.test(candidate))) {
+   00240|     const text = read(path);
+   00241|     writeIfChanged(path, text, rewriteDocument(text, mapping).text, changed);
+   00242|   }
+   00243|   return changed;
+   00244| }
+   00245| 
+   00246| /** The paths `applyMapping` would change, without writing. */
+   00247| export function applyMappingDry(mapping, files) {
+   00248|   dryRun = true;
+   00249|   try {
+   00250|     return applyMapping(mapping, files);
+   00251|   } finally {
+   00252|     dryRun = false;
+   00253|   }
+   00254| }
+   00255| 
+   00256| /** A parsed tree without the parser's indentation bookkeeping. */
+   00257| function shape(node) {
+   00258|   return { name: node.name, id: node.id, value: node.value, children: node.children.map(shape) };
+   00259| }
+   00260| 
+   00261| /**
+   00262|  * Apply the concise lexeme rule to a family's files and their mirrors. A file
+   00263|  * is written only when its concise form parses to the same tree as before.
+   00264|  * Returns `{changed, converted, refused}`.
+   00265|  * @param {Array<string>} files
+   00266|  */
+   00267| export function applyConciseLexemes(files) {
+   00268|   const changed = [];
+   00269|   const refused = [];
+   00270|   let converted = 0;
+   00271|   for (const path of files) {
+   00272|     const before = read(path);
+   00273|     const result = conciseLexemes(before);
+   00274|     if (result.converted === 0) {
+   00275|       continue;
+   00276|     }
+   00277|     if (JSON.stringify(shape(parseLino(before))) !== JSON.stringify(shape(parseLino(result.text)))) {
+   00278|       refused.push(path);
+   00279|       continue;
+   00280|     }
+   00281|     converted += result.converted;
+   00282|     writeIfChanged(path, before, result.text, changed);
+   00283|     for (const mirror of mirrorsOf(path)) {
+   00284|       writeIfChanged(mirror, read(mirror), result.text, changed);
+   00285|     }
+   00286|   }
+   00287|   return { changed, converted, refused };
+   00288| }
+   00289| 
+   00290| /** The recorded renames, per family. */
+   00291| export function readRenames(text) {
+   00292|   const renames = new Map();
+   00293|   const top = parseTree(text).find((node) => node.line === 'notation-renames');
+   00294|   for (const family of top?.children ?? []) {
+   00295|     const name = family.line.split(/\s+/u)[1];
+   00296|     renames.set(name, new Map(family.children.map((entry) => entry.line.split(/\s+/u))));
+   00297|   }
+   00298|   return renames;
+   00299| }
+   00300| 
+   00301| function renderRenames(renames) {
+   00302|   const lines = [
+   00303|     `# Generated by \`${GENERATOR}\`; checked by its --check.`,
+   00304|     '#',
+   00305|     '# Every name a notation rule pass renamed, per family of',
+   00306|     `# ${RULES_FILE}: the old spelling, then the new one. The check fails`,
+   00307|     '# when a reader holds an old spelling again. This file keeps the old',
+   00308|     '# spellings on purpose, so scripts/measure-notation.mjs does not count it.',
+   00309|     'notation-renames',
+   00310|   ];
+   00311|   for (const [family, mapping] of renames) {
+   00312|     lines.push(`  family ${family}`);
+   00313|     for (const [old, renamed] of mapping) {
+   00314|       lines.push(`    ${old} ${renamed}`);
+   00315|     }
+   00316|   }
+   00317|   return `${lines.join('\n')}\n`;
+   00318| }
+   00319| 
+   00320| function readRenamesFile() {
+   00321|   return existsSync(join(ROOT, RENAMES_FILE)) ? readRenames(read(RENAMES_FILE)) : new Map();
+   00322| }
+   00323| 
+   00324| /**
+   00325|  * The problems of the applied families: an old spelling left in the notation
+   00326|  * or in a reader's literal, or a family file holding one of its own `_` names.
+   00327|  * @returns {Array<string>}
+   00328|  */
+   00329| export function checkApplied(rules) {
+   00330|   const problems = [];
+   00331|   const renames = readRenamesFile();
+   00332|   const old = new Map();
+   00333|   for (const [family, mapping] of renames) {
+   00334|     if (!rules.families.some((entry) => entry.name === family)) {
+   00335|       problems.push(`${RENAMES_FILE}: family ${family} is not in ${RULES_FILE}`);
+   00336|     }
+   00337|     mapping.forEach((renamed, name) => old.set(name, renamed));
+   00338|   }
+   00339|   for (const path of notationFiles()) {
+   00340|     for (const name of namesOfText(read(path))) {
+   00341|       if (old.has(name)) {
+   00342|         problems.push(`${path}: the renamed name ${name} is spelled ${old.get(name)} now`);
+   00343|       }
+   00344|     }
+   00345|   }
+   00346|   for (const path of readerFiles()) {
+   00347|     const text = read(path);
+   00348|     for (const span of sourceSpans(text, languageOf(path))) {
+   00349|       if (span.kind !== 'string') {
+   00350|         continue;
+   00351|       }
+   00352|       replaceTokens(text.slice(span.start, span.end), old, (name) => {
+   00353|         problems.push(`${path}: a literal holds the old spelling ${name} (now ${old.get(name)})`);
+   00354|         return name;
+   00355|       });
+   00356|     }
+   00357|   }
+   00358|   for (const family of rules.families.filter((entry) => entry.rule === 'concise-lexemes')) {
+   00359|     for (const path of familyFiles(family)) {
+   00360|       const left = conciseLexemes(read(path)).converted;
+   00361|       if (left > 0) {
+   00362|         problems.push(`family ${family.name}: ${path} holds ${left} long lexeme(s) with a concise form; run --family ${family.name} --write`);
+   00363|       }
+   00364|       for (const mirror of mirrorsOf(path).filter((candidate) => candidate.startsWith('rust/embedded/'))) {
+   00365|         if (read(mirror) !== read(path)) {
+   00366|           problems.push(`${mirror} differs from ${path}`);
+   00367|         }
+   00368|       }
+   00369|     }
+   00370|   }
+   00371|   for (const family of rules.families.filter((entry) => renames.has(entry.name))) {
+   00372|     const plan = planFamily(family);
+   00373|     for (const name of plan.mapping.keys()) {
+   00374|       problems.push(`family ${family.name}: ${name} is still spelled with _; run --family ${family.name} --write`);
+   00375|     }
+   00376|   }
+   00377|   return problems;
+   00378| }
+   00379| 
+   00380| function main(argv) {
+   00381|   const rules = readRules(read(RULES_FILE));
+   00382|   if (argv.includes('--check')) {
+   00383|     const problems = checkApplied(rules);
+   00384|     problems.forEach((problem) => console.error(`::error::${problem}`));
+   00385|     console.log(`notation rule families applied: ${readRenamesFile().size}; problems: ${problems.length}`);
+   00386|     return problems.length === 0 ? 0 : 1;
+   00387|   }
+   00388|   const familyName = argv[argv.indexOf('--family') + 1];
+   00389|   const family = rules.families.find((entry) => entry.name === familyName);
+   00390|   if (!argv.includes('--family') || !family) {
+   00391|     console.error(`name a family of ${RULES_FILE} with --family: ${rules.families.map((entry) => entry.name).join(', ')}`);
+   00392|     return 2;
+   00393|   }
+   00394|   if (family.rule === 'concise-lexemes') {
+   00395|     dryRun = !argv.includes('--write');
+   00396|     showLines = argv.includes('--lines');
+   00397|     const result = applyConciseLexemes(familyFiles(family));
+   00398|     console.log(`family ${family.name}: ${result.converted} lexemes to the concise form in ${result.changed.length} files` +
+   00399|       `${dryRun ? ' (dry run; --write applies)' : ''}`);
+   00400|     result.refused.forEach((path) => console.error(`  refused ${path}: its concise form parses to a different tree`));
+   00401|     result.changed.forEach((path) => console.log(`  ${path}`));
+   00402|     return result.refused.length === 0 ? 0 : 1;
+   00403|   }
+   00404|   const plan = planFamily(family);
+   00405|   console.log(`family ${family.name}: ${plan.files.length} files, ${plan.mapping.size} names to rename`);
+   00406|   console.log(`  shared with other files (wait for their family): ${plan.shared.join(' ') || 'none'}`);
+   00407|   console.log(`  spelled in shell, Python or workflow files (wait for their family): ${plan.outsideCode.join(' ') || 'none'}`);
+   00408|   console.log(`  kept: ${plan.kept.join(' ') || 'none'}`);
+   00409|   console.log(`  collisions with an existing - spelling: ${plan.collisions.join(' ') || 'none'}`);
+   00410|   if (argv.includes('--list')) {
+   00411|     plan.mapping.forEach((renamed, name) => console.log(`  ${name} -> ${renamed}`));
+   00412|   }
+   00413|   if (argv.includes('--files')) {
+   00414|     dryRun = true;
+   00415|     showLines = argv.includes('--lines');
+   00416|     applyMapping(plan.mapping, plan.files).forEach((path) => console.log(`  would change ${path}`));
+   00417|     return 0;
+   00418|   }
+   00419|   if (!argv.includes('--write')) {
+   00420|     return 0;
+   00421|   }
+   00422|   const changed = applyMapping(plan.mapping, plan.files);
+   00423|   const renames = readRenamesFile();
+   00424|   const recorded = renames.get(family.name) ?? new Map();
+   00425|   plan.mapping.forEach((renamed, name) => recorded.set(name, renamed));
+   00426|   renames.set(family.name, new Map([...recorded].sort(([a], [b]) => a.localeCompare(b))));
+   00427|   writeFileSync(join(ROOT, RENAMES_FILE), renderRenames(renames));
+   00428|   console.log(`changed ${changed.length} files:`);
+   00429|   changed.forEach((path) => console.log(`  ${path}`));
+   00430|   console.log(`recorded the renames in ${RENAMES_FILE}; regenerate ts/ with node scripts/translate-es.mjs --write`);
+   00431|   return 0;
+   00432| }
+   00433| 
+   00434| if (process.argv[1] === fileURLToPath(import.meta.url)) {
+   00435|   process.exitCode = main(process.argv.slice(2));
+   00436| }
+   00437| 
+   
+   (End of file - total 437 lines)
+   </file>
+>> edit {"filePath":"experiments/formal_ai_subagent/apply-notation-rules.mjs","file_path":"experiments/formal_ai_subagent/apply-notation-rules.mjs","new":"rewriteSource(text, language, mapping, identifiers, new Set(placeholderMapping.keys())).text","newString":"rewriteSource(text, language, mapping, identifiers, new Set(placeholderMapping.keys())).text","new_str":"rewriteSource(text, language, mapping, identifiers, new Set(placeholderMapping.keys())).text","new_string":"rewriteSource(text, language, mapping, identifiers, new Set(placeholderMapping.keys())).text","old":"rewriteSource(text, language, mapping, identifiers).text","oldString":"rewriteSource(text, language, mapping, identifiers).text","old_str":"rewriteSource(text, language, mapping, identifiers).text","old_string":"rewriteSource(text, language, mapping, identifiers).text","path":"experiments/formal_ai_subagent/apply-notation-rules.mjs"}
+>> bash {"command":"sha256sum -- experiments/formal_ai_subagent/apply-notation-rules.mjs"}
+   7248dc369ec2ba75af964b16fe51d6247efa92fe38e7170ba8ab43d38f277691  experiments/formal_ai_subagent/apply-notation-rules.mjs
+   
+== answer ==
+Replaced `rewriteSource(text, language, mapping, identifiers).text` with `rewriteSource(text, language, mapping, identifiers, new Set(placeholderMapping.keys())).text` in `experiments/formal_ai_subagent/apply-notation-rules.mjs` and observed the result.

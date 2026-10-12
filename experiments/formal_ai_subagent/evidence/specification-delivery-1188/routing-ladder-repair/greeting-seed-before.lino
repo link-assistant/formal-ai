@@ -1,0 +1,318 @@
+meanings
+  conversation_preference_avoid
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_preference_avoid
+    lexeme en "do not use" "stop using" "avoid using"
+    lexeme ru "не используй" "не используйте"
+    lexeme hi "उपयोग मत करो" "इस्तेमाल मत करो"
+    lexeme zh 不要使用 别再用
+    lexeme es "no uses" "deja de usar" "evita usar"
+  unauthorized_mutation_correction
+    defined-by inquiry
+    defined-by conversation_reference
+    role unauthorized_mutation_correction
+    lexeme en "i did not ask to update" "i did not ask to change"
+    lexeme ru "я не просил обновлять" "я не просила обновлять"
+    lexeme hi "मैंने अपडेट करने को नहीं कहा"
+    lexeme zh 我没让你更新
+    lexeme es "no te pedí actualizar" "no te pedí cambiar"
+  memory_link_count_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_link_count_query
+    lexeme en "how many links are in your memory"
+    lexeme ru "сколько ссылок в твоей памяти"
+    lexeme hi "तुम्हारी स्मृति में कितने लिंक हैं"
+    lexeme zh 你的记忆中有多少链接
+    lexeme es "cuántos enlaces hay en tu memoria"
+  memory_inventory_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_inventory_query
+    lexeme en "what is available in your local memory"
+    lexeme ru "что доступно в твоей локальной памяти"
+    lexeme hi "तुम्हारी स्थानीय स्मृति में क्या उपलब्ध है"
+    lexeme zh 你的本地记忆中有什么
+    lexeme es "qué hay disponible en tu memoria local"
+  memory_root_links_query
+    defined-by inquiry
+    defined-by knowledge
+    role memory_root_links_query
+    lexeme en "give me root links you have in your memory" "show root links in your memory"
+    lexeme ru "покажи корневые ссылки в твоей памяти"
+    lexeme hi "अपनी स्मृति के रूट लिंक दिखाओ"
+    lexeme zh 显示你记忆中的根链接
+    lexeme es "muéstrame los enlaces raíz de tu memoria" "dame los enlaces raíz que tienes en tu memoria"
+  memory_retrieval_correction
+    defined-by inquiry
+    defined-by knowledge
+    role memory_retrieval_correction
+    lexeme en "not about document generation it is about associative memory data retrieval"
+    lexeme ru "речь не о создании документа а об извлечении данных из ассоциативной памяти"
+    lexeme hi "यह दस्तावेज़ बनाने के बारे में नहीं बल्कि एसोसिएटिव मेमोरी डेटा प्राप्त करने के बारे में है"
+    lexeme zh 这不是生成文档而是检索关联记忆数据
+    lexeme es "no se trata de generar documentos sino de recuperar datos de la memoria asociativa"
+  conversation_topic_opener
+    defined-by inquiry
+    defined-by action
+    role conversation_topic_opener
+    lexeme en "let's talk about …" "lets talk about …" "can we talk about …" "talk about …"
+    lexeme ru
+      surface
+        text "давай поговорим о …"
+      surface
+        text "давай поговорим об …"
+      surface
+        text "давайте поговорим о …"
+      surface
+        text "давайте поговорим об …"
+      surface
+        text "поговорим о …"
+        action scan
+      surface
+        text "поговорим об …"
+      surface
+        text "обсудим …"
+    lexeme hi "चलो बात करें …" "बात करें …"
+    lexeme zh 聊聊… 谈谈…
+    lexeme es "hablemos de …" "hablemos sobre …" "podemos hablar de …"
+  conversation_recall_query
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_query
+    lexeme en
+      words "when did i ask about …" "when did i ask …" "when did i mention …" "when did i talk about …"
+      words "have i asked about …" "have i mentioned …" "did i ask about …" "did i mention …"
+      words "search my conversations for …" "search conversations for …" "search my chats for …" "recall …"
+    lexeme ru
+      words "когда я спрашивал про …" "когда я спрашивал о …" "когда я спрашивал …" "когда я упоминал …"
+      words "поиск по беседам …" "поиск в беседах …" "найди в беседах …"
+    lexeme hi "मेरी बातचीत में खोजो …" "मेरी चैट में खोजो …" "याद करो …"
+    lexeme zh 我什么时候问过… 我什么时候提到… 搜索我的对话… 在对话中搜索…
+    lexeme es
+      words "cuándo pregunté por …" "cuándo pregunté …" "cuándo mencioné …" "he preguntado por …" "he mencionado …"
+      words "busca en mis conversaciones …" "busca en las conversaciones …"
+  conversation_recall_previous_message
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_previous_message
+    lexeme en
+      words "what was written in the previous message" "what was in the previous message"
+      words "what did the previous message say" "what was the previous message" "what was the last message"
+      words "what was written before" "show the previous message" "the previous message" "previous message"
+    lexeme ru
+      words "что было написано в прошлом сообщении" "что было в прошлом сообщении"
+      words "что было написано в предыдущем сообщении" "что было в предыдущем сообщении" "в прошлом сообщении"
+      words "в предыдущем сообщении" "покажи прошлое сообщение" "прошлое сообщение" "предыдущее сообщение"
+    lexeme hi
+      words "पिछले संदेश में क्या लिखा था" "पिछले संदेश में क्या था" "पिछला संदेश क्या था" "पिछला संदेश दिखाओ"
+      words "पिछले संदेश में" "पिछला संदेश"
+    lexeme zh 上一条消息写了什么 上一条消息是什么 显示上一条消息 上一条消息 前一条消息 上条消息
+    lexeme es
+      words "qué estaba escrito en el mensaje anterior" "qué había en el mensaje anterior"
+      words "qué decía el mensaje anterior" "cuál fue el mensaje anterior" "muestra el mensaje anterior"
+      words "el mensaje anterior" "mensaje anterior"
+  conversation_recall_previous_user_message
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_previous_user_message
+    lexeme en
+      words "what did i ask" "what did i ask in the previous message" "what did i ask in the last message"
+      words "what was my previous question" "what was the previous question" "what was my last question"
+      words "what was my previous message" "repeat my last message" "what did i say"
+    lexeme ru
+      words "что я спрашивал" "я что спрашивал" "а я что спрашивал" "а что я спрашивал"
+      words "что я спрашивал в прошлом сообщении" "что я спрашивал в предыдущем сообщении" "что я спросил"
+      words "что я просил" "что я писал" "какой был мой прошлый вопрос" "какой был мой предыдущий вопрос"
+    lexeme hi "मैंने क्या पूछा था" "मेरा पिछला सवाल क्या था" "मैंने पिछले संदेश में क्या पूछा था"
+    lexeme zh 我刚才问了什么 我之前问了什么 我的上一个问题是什么
+    lexeme es
+      words "qué pregunté" "qué pregunté en el mensaje anterior" "cuál fue mi pregunta anterior"
+      words "cuál fue mi última pregunta" "repite mi último mensaje" "qué dije"
+  conversation_recall_other_query
+    defined-by inquiry
+    defined-by conversation_reference
+    role conversation_recall_other_query
+    lexeme en
+      words "find … in another conversation" "find … in other conversations" "find … in my other conversations"
+      words "find … in my conversations" "find … in another chat" "find … in other chats"
+      words "search for … in another conversation" "search for … in other conversations"
+    lexeme ru
+      words "найди … в другой беседе" "найди … в других беседах" "найди … в другом чате" "найди … в других чатах"
+      words "поищи … в других беседах"
+    lexeme hi "… दूसरी बातचीत में खोजो" "… दूसरी चैट में खोजो"
+    lexeme zh 查找…在其他对话中 搜索…在其他对话中 查找…在另一个对话中
+    lexeme es
+      words "busca … en otra conversación" "busca … en otras conversaciones" "encuentra … en otra conversación"
+      words "encuentra … en otras conversaciones"
+  memory_append_directive
+    defined-by action
+    defined-by answer
+    role memory_append_directive
+    lexeme en
+      words "remember that …" "remember …" "record memory …" "record that …" "append memory …" "note that …"
+      words "save to memory …" "memorize …"
+    lexeme ru
+      words "запомни что …" "запомни …" "запиши в память …" "запиши что …" "запиши …" "сохрани в память …"
+      words "заметь что …"
+    lexeme hi "याद रखो कि …" "याद रखो …" "याद रखना …" "स्मृति में सहेजो …" "नोट करो कि …" "नोट करो …"
+    lexeme zh 记住… 记下… 记录… 存入记忆…
+    lexeme es "recuerda que …" "recuerda …" "guarda en la memoria …" "anota que …" "memoriza …"
+  memory_scope
+    defined-by action
+    defined-by answer
+    role memory_scope
+    lexeme en "in memory" "into memory" "to memory" "in the memory"
+    lexeme ru "в памяти" "в память"
+    lexeme hi "स्मृति में" "मेमोरी में" "याद में"
+    lexeme zh 在记忆中 记忆中 在内存中
+    lexeme es "en la memoria" "en memoria"
+  memory_substitution_connector
+    defined-by action
+    defined-by answer
+    role memory_substitution_connector
+    lexeme en with by
+    lexeme ru на
+    lexeme hi "की जगह" "के बजाय" "की बजाय"
+    lexeme zh 换成 替换为 替换成 更换为
+    lexeme es por
+  memory_substitution_directive
+    defined-by action
+    defined-by answer
+    role memory_substitution_directive
+    lexeme en replace substitute
+    lexeme ru замени заменить замените поменяй
+    lexeme hi बदलो "बदल दो" रखो लिखो
+    lexeme zh 把 将 替换 更换
+    lexeme es reemplaza sustituye
+  agentic_continuation_cue
+    defined-by conversation_reference
+    role agentic_continuation_cue
+    lexeme en "continue if you have next steps" "continue" "go on" "please continue" "next steps"
+    lexeme ru "продолжай" "продолжи" "продолжи если есть следующие шаги" "продолжай если есть следующие шаги"
+    lexeme hi "जारी रखें" "जारी रखो" "अगर अगले कदम हैं तो जारी रखें"
+    lexeme zh
+      surface
+        text 继续
+      surface
+        text 请继续
+      surface
+        text 如果还有下一步请继续
+      surface
+        text 如果还有下一步 请继续
+    lexeme es "continúa" "continua si tienes próximos pasos"
+  enumeration_cue
+    defined-by conversation_reference
+    role enumeration_cue
+    lexeme en "first" "second" "third" "then" "next" "after that" "also" "finally" "lastly"
+    lexeme ru "сначала" "во-первых" "во-вторых" "затем" "потом" "далее" "также" "наконец" "после этого"
+    lexeme hi "पहले" "दूसरा" "फिर" "उसके बाद" "अंत में"
+    lexeme zh 首先 其次 然后 接着 之后 最后
+    lexeme es "primero" "segundo" "luego" "después" "finalmente"
+  social_greeting
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_greeting
+    lexeme en "hi" hello hey howdy greetings "hi there" "hello there" "good morning" "good afternoon" "good evening"
+    lexeme ru привет здравствуйте здравствуй приветствую шалом "шабат шалом" "доброе утро" "добрый день" "добрый вечер"
+    lexeme hi नमस्ते नमस्कार सलाम हाय "राम राम" "शुभ प्रभात" "शुभ संध्या"
+    lexeme zh 你好 您好 嗨 哈喽 早上好 早安 大家好 晚上好
+    lexeme es hola "buenos días" "buenas tardes" "buenas noches" saludos
+
+  social_wellbeing
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_wellbeing
+    lexeme en "how are you" "how are you doing" "how do you do" "how is it going" "how are things"
+    lexeme ru
+      words "как дела" "как твои дела" "как ваши дела" "как у тебя дела" "как у вас дела" "привет как дела"
+      words "здравствуйте как ваши дела" "как поживаешь" "как вы поживаете"
+    lexeme hi "कैसे हो" "आप कैसे हैं" "तुम कैसे हो" "क्या हाल है" "आपका क्या हाल है" "सब कैसा चल रहा है"
+    lexeme zh 你好吗 你还好吗 你怎么样 您怎么样 最近怎么样 过得怎么样
+    lexeme es "cómo estás" "cómo está usted" "qué tal" "cómo te va" "cómo andas"
+
+  social_farewell
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_farewell
+    lexeme en bye goodbye farewell "see you" "see you later" "take care" "so long" ciao tschüss
+    lexeme ru пока прощай увидимся "до свидания" досвидания "до встречи" "до скорого" "всего доброго"
+    lexeme hi अलविदा विदा बाय टाटा "फिर मिलेंगे"
+    lexeme zh 再见 拜拜 回见 改天见 后会有期
+    lexeme es adiós "hasta luego" "hasta pronto" "hasta mañana" "nos vemos" chau
+
+  social_courtesy_response
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_courtesy_response
+    lexeme en
+      words thanks "thank you" "i am fine thank you" "i am fine thanks" "i am good thank you" "i am good thanks"
+      words "fine thank you" "fine thanks" "good thank you" "good thanks" "doing well thank you" "doing well thanks"
+      words "thank you very much" "thank you so much" "thanks a lot" "thanks so much" "many thanks"
+    lexeme ru
+      words спасибо благодарю "у меня все хорошо спасибо" "у меня всё хорошо спасибо" "все хорошо спасибо"
+      words "всё хорошо спасибо" "хорошо спасибо" "нормально спасибо" "ого чето начал соображать"
+      words "ого чёто начал соображать" "ого чё то начал соображать" "ого что то начал соображать"
+    lexeme hi धन्यवाद शुक्रिया "मैं ठीक हूँ धन्यवाद" "ठीक हूँ धन्यवाद" "मैं अच्छा हूँ धन्यवाद"
+    lexeme zh 谢谢 多谢 我很好谢谢 "我很好 谢谢" 好的谢谢 "好的 谢谢" 非常感谢 谢谢你
+    lexeme es gracias "muchas gracias" "muy bien gracias" "todo bien gracias"
+
+  social_test_status
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_test_status
+    lexeme en test ping pong testing "test passed" "testing 123" "are you there" "you there" "i am here"
+    lexeme ru тест пинг "я здесь" "я тут" "тест пройден" "ты здесь" "ты тут" "вы здесь" "вы тут"
+    lexeme hi टेस्ट परीक्षण "परीक्षण सफल रहा" "मैं यहाँ हूँ" "मैं यहां हूं" "क्या आप वहाँ हैं" "क्या आप वहां हैं"
+    lexeme zh 测试 測試 测试通过 測試通過 我在这里 我在這裡 你在吗 您在吗 你在嗎 您在嗎
+    lexeme es prueba "prueba superada" "estoy aquí" "estoy aqui" "estás ahí" "estas ahi" "sigues ahí" "sigues ahi"
+
+  social_assistant_name
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_assistant_name
+    lexeme en
+      words "what is your name" "what's your name" "do you have a name" "what should i call you" "tell me your name"
+      words "may i know your name"
+    lexeme ru
+      words "как твое имя" "как твоё имя" "как тебя зовут" "как вас зовут" "у тебя есть имя" "назови своё имя"
+      words "назови свое имя"
+    lexeme hi
+      words "आपका नाम क्या है" "तुम्हारा नाम क्या है" "क्या तुम्हारा कोई नाम है" "मैं तुम्हें क्या कहूँ" "अपना नाम बताओ"
+    lexeme zh 你叫什么名字 您叫什么名字 你的名字是什么 你有名字吗 "告诉我你的名字"
+    lexeme es "cómo te llamas" "cuál es tu nombre" "cómo se llama usted" "puedo saber tu nombre"
+
+  social_identity
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_identity
+    lexeme en
+      words "who are you" "what are you" "who is formal ai" "what is formal ai" "who is formalai" "what is formalai"
+      words "tell me about yourself" "introduce yourself" "let s get acquainted" "lets get acquainted"
+      words "let us get acquainted" "let s get to know each other"
+    lexeme ru
+      words "кто ты" "что ты" "расскажи о себе" "расскажи мне о себе" "расскажи про себя" "опиши себя" представься
+      words "давай знакомиться" "давай познакомимся" "давайте познакомимся"
+    lexeme hi
+      words "तुम कौन हो" "तू कौन है" "आप कौन हैं" "अपना परिचय दो" "अपने बारे में बताओ" "चलो परिचय करते हैं"
+      words "आइए परिचय करें" "चलो एक दूसरे को जानें"
+    lexeme zh 你是谁 您是谁 你是什么 介绍一下你自己 告诉我你自己 我们认识一下吧 认识一下吧 让我们认识一下
+    lexeme es "quién eres" "qué eres" preséntate "cuéntame de ti"
+
+  social_assistant_free_time
+    defined-by inquiry
+    defined-by conversation_reference
+    role social_assistant_free_time
+    lexeme en
+      words "what do you do in your free time" "what do you do in free time" "how do you spend your free time"
+      words "what do you do when you are not working" "how do you spend your spare time"
+    lexeme ru
+      words "что делаешь в свободное время" "что ты делаешь в свободное время" "чем занимаешься в свободное время"
+      words "чем ты занимаешься в свободное время" "что делаешь когда свободен" "как проводишь свободное время"
+    lexeme hi
+      words "खाली समय में क्या करते हो" "आप खाली समय में क्या करते हैं" "फुर्सत में क्या करते हो"
+      words "खाली वक्त में क्या करते हो" "जब आप काम नहीं करते तो क्या करते हैं"
+    lexeme zh 你空闲时间做什么 你有空的时候做什么 你业余时间做什么 你休息的时候做什么 你不工作的时候做什么
+    lexeme es "qué haces en tu tiempo libre" "cómo pasas tu tiempo libre" "qué haces cuando no trabajas"
+

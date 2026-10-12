@@ -1,0 +1,181 @@
+{
+  "id": "T3097",
+  "tools": [],
+  "stop": "no-plan",
+  "answer": null,
+  "scratchTargetWrites": 0,
+  "content": null,
+  "expected": null,
+  "pass": true,
+  "contentId": null,
+  "probes": [
+    {
+      "task": "Write file.\nx.txt containing «hello».",
+      "composed": null,
+      "sentences": [
+        {
+          "text": "Write file",
+          "span": {
+            "start": 0,
+            "end": 11
+          }
+        },
+        {
+          "text": "x.txt containing «hello»",
+          "span": {
+            "start": 11,
+            "end": 37
+          }
+        }
+      ],
+      "obligations": null,
+      "firstPlan": null,
+      "beforeFirstPlan": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "write",
+            "arguments": "{\"content\":\"«hello»\",\"filePath\":\"x.txt\",\"file_path\":\"x.txt\",\"path\":\"x.txt\"}"
+          }
+        ]
+      }
+    },
+    {
+      "task": "Write a file.\nfolder/note-α.txt containing «hello».",
+      "composed": null,
+      "sentences": [
+        {
+          "text": "Write a file",
+          "span": {
+            "start": 0,
+            "end": 13
+          }
+        },
+        {
+          "text": "folder/note-α.txt containing «hello»",
+          "span": {
+            "start": 13,
+            "end": 51
+          }
+        }
+      ],
+      "obligations": null,
+      "firstPlan": null,
+      "beforeFirstPlan": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "write",
+            "arguments": "{\"content\":\"«hello»\",\"filePath\":\"folder/note-α.txt\",\"file_path\":\"folder/note-α.txt\",\"path\":\"folder/note-α.txt\"}"
+          }
+        ]
+      }
+    },
+    {
+      "task": "Создай файл.\nзаметка.txt с содержимым «привет».",
+      "composed": null,
+      "sentences": [
+        {
+          "text": "Создай файл",
+          "span": {
+            "start": 0,
+            "end": 12
+          }
+        },
+        {
+          "text": "заметка.txt с содержимым «привет»",
+          "span": {
+            "start": 12,
+            "end": 47
+          }
+        }
+      ],
+      "obligations": null,
+      "firstPlan": null,
+      "beforeFirstPlan": null
+    },
+    {
+      "task": "Crea el archivo.\nnota.txt con el contenido «hola».",
+      "composed": null,
+      "sentences": [
+        {
+          "text": "Crea el archivo",
+          "span": {
+            "start": 0,
+            "end": 16
+          }
+        },
+        {
+          "text": "nota.txt con el contenido «hola»",
+          "span": {
+            "start": 16,
+            "end": 50
+          }
+        }
+      ],
+      "obligations": null,
+      "firstPlan": null,
+      "beforeFirstPlan": null
+    },
+    {
+      "task": "Write file folder/note-α.txt containing «hello».",
+      "composed": {
+        "id": "general_change_plan_98e2c37ba77cfa9b",
+        "mode": "literal_file",
+        "goal": "Write file folder/note-α.txt containing «hello».",
+        "target": "folder/note-α.txt",
+        "content": "hello",
+        "steps": [
+          {
+            "capability": "write",
+            "action": "append the composed plan to .formal-ai/general-change-plan.lino",
+            "expected_evidence": "written plan event impulse_65733f88396dd0b5",
+            "command": null
+          },
+          {
+            "capability": "write",
+            "action": "write the requested content to folder/note-α.txt",
+            "expected_evidence": "workspace file folder/note-α.txt",
+            "command": null
+          },
+          {
+            "capability": "run",
+            "action": "run the request-derived verification command",
+            "expected_evidence": "hello",
+            "command": "cat folder/note-α.txt"
+          }
+        ],
+        "verification_command": "cat folder/note-α.txt",
+        "terminal_state": "executed"
+      },
+      "sentences": [
+        {
+          "text": "Write file folder/note-α.txt containing «hello»",
+          "span": {
+            "start": 0,
+            "end": 48
+          }
+        }
+      ],
+      "obligations": null,
+      "firstPlan": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "write",
+            "arguments": "{\"content\":\"hello\",\"filePath\":\"folder/note-α.txt\",\"file_path\":\"folder/note-α.txt\",\"path\":\"folder/note-α.txt\"}"
+          }
+        ]
+      },
+      "beforeFirstPlan": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "write",
+            "arguments": "{\"content\":\"hello\",\"filePath\":\"folder/note-α.txt\",\"file_path\":\"folder/note-α.txt\",\"path\":\"folder/note-α.txt\"}"
+          }
+        ]
+      }
+    }
+  ]
+}

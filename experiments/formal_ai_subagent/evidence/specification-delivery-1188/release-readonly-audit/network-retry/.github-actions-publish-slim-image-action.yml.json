@@ -1,0 +1,7 @@
+{
+  "path": ".github/actions/publish-slim-image/action.yml",
+  "sourceCommit": "c8b5e63e136f064216a74dfd2dcc77c826b67392",
+  "sourceTree": "431c0ef8a58c33ba5f520149a6fe2882f35ce868",
+  "sha256": "6171c00e07f1dc34990248de29c7518ec74dfda673138b4b52143120d9acb51e",
+  "rawUtf8": "name: Publish the slim server image\ndescription: Publish and smoke test the exact release binary as a small production sidecar.\ninputs:\n  version:\n    description: The released crate version\n    required: true\n  image:\n    description: GHCR repository already authenticated by the release job\n    required: true\nruns:\n  using: composite\n  steps:\n    - uses: docker/build-push-action@v7\n      with:\n        context: .\n        file: Dockerfile.slim\n        build-args: BINARY_SOURCE=prebuilt\n        push: true\n        tags: |\n          ${{ inputs.image }}:slim\n          ${{ inputs.image }}:${{ inputs.version }}-slim\n        cache-to: type=inline\n    - name: Verify the published sidecar\n      shell: bash\n      env:\n        SLIM_IMAGE: ${{ inputs.image }}:${{ inputs.version }}-slim\n      run: |\n        set -euo pipefail\n        docker pull \"$SLIM_IMAGE\"\n        docker run --rm --entrypoint verify-formal-ai-slim \"$SLIM_IMAGE\"\n        bytes=$(docker image inspect \"$SLIM_IMAGE\" --format '{{.Size}}')\n        test \"$bytes\" -le 2147483648\n"
+}

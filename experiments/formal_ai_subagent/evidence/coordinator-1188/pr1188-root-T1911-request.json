@@ -1,0 +1,4 @@
+{
+  "identifier": "T1911",
+  "prompt": "Read js/server/solver-log.mjs, js/worker/formal_ai_worker_solver_events.js and scripts/generate-worker-crate-modules.mjs. Make the existing native solver event projection a shared host-agnostic crate module and wire browser answers through that same implementation. Preserve raw events separately so the projection is idempotent. Keep the server export compatible, update checked worker generation, and run the closest real server-solver-log and specification-parity-worker JavaScript tests. Do not invent formalization anchors or weaken assertions."
+}

@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "Q2844": {
+      "type": "item",
+      "id": "Q2844",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Brasília"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Бразилиа"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ब्रासीलिया"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "巴西利亚"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "巴西利亚"
+        }
+      },
+      "aliases": {},
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Brasília"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Бразилиа"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "ब्रासीलिया"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "巴西利亚"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

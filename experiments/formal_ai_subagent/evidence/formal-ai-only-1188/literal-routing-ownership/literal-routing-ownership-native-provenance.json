@@ -1,0 +1,15 @@
+{
+  "head": "d7437d4bcfc6d94823ebeba634de016f25561b41",
+  "job": 113777810825,
+  "path": "/tmp/pr1188-new-job-113777810825.log",
+  "bytes": 172467,
+  "sha256": "ecbcc685e992c98fe217eff77c862fb1b391679cbea2d6c99de6d5f89baeb565",
+  "extractedLines": [
+    1630,
+    1638
+  ],
+  "task": "Write file.\nx.txt containing «hello».",
+  "actualWrites": 1,
+  "expectedWrites": 0,
+  "afterNativeExecution": "CI pending"
+}

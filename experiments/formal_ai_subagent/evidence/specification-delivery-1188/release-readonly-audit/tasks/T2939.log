@@ -1,0 +1,18 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/seal-release-readonly-audit.mjs"}
+   Output: {"artifacts":93,"reviewedReportByteEqual":true,"metricCorrectionByteEqual":true,"zipApiDigestEqual":true,"tgzDigestEqual":true,"actualWasmBytes":296906,"originalLiteralFailureRemainsOpen":true}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/seal-release-readonly-audit.mjs` command completed. Output:
+
+```json
+{
+  "actualWasmBytes": 296906,
+  "artifacts": 93,
+  "metricCorrectionByteEqual": true,
+  "originalLiteralFailureRemainsOpen": true,
+  "reviewedReportByteEqual": true,
+  "tgzDigestEqual": true,
+  "zipApiDigestEqual": true
+}
+```

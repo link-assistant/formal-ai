@@ -1,0 +1,336 @@
+>> read {"filePath":".github/workflows/issue-1028-agent-ladder.yml","file_path":".github/workflows/issue-1028-agent-ladder.yml","path":".github/workflows/issue-1028-agent-ladder.yml"}
+   <file>
+   00001| name: Issue 1028 Agent CLI binary-tree ladder
+   00002| 
+   00003| # Issue #1085 (D4): the ladder runs on pull requests that touch it or the
+   00004| # agentic coding modules (leaf level), weekly over every level, and on
+   00005| # dispatch. The deepest level whose nodes all pass is compared with
+   00006| # data/meta/ladder-ratchet.lino and may only move deeper.
+   00007| #
+   00008| # PR #1188: the depth-five run measured its 32 leaves one after another in one
+   00009| # job, 72-82 minutes (runs 37652295748, 37663996930; ~250s per passing leaf).
+   00010| # Leaves are independent -- each starts from a reset worktree and only a
+   00011| # depth-4 composite reads its children's effects -- so the default run is now
+   00012| #   plan     consults the green ledger (lookup only), warms the binary cache
+   00013| #            and lists the legs: sixteen depth-4 subtrees of two leaves each
+   00014| #            for the whole depth-five tree, one leg for anything else;
+   00015| #   ladder   one leg per subtree, each the unchanged run.sh with NODE_FILTER;
+   00016| #   compare  green only when every leg succeeded (check-shard-results.sh), the
+   00017| #            legs join into one run (combine-shards.py refuses a missing or
+   00018| #            overlapping leg), and that run holds the recorded ratchet. Its
+   00019| #            success, not the plan's, records the inputs green.
+   00020| # Weekly all mode measures every node in bounded independent legs. Leaves
+   00021| # and requirement nodes run in parallel; depth-four composites consume this
+   00022| # run's validated leaf effects and diffs in a second artifact-fed wave.
+   00023| # The final join checks the exact 63-node plan, corpus and source identity.
+   00024| on:
+   00025|   # Issue #1187 R2: a bot pull request's checks start through dispatch
+   00026|   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
+   00027|   workflow_dispatch:
+   00028|     inputs:
+   00029|       mode:
+   00030|         description: 'checks: run the pull-request checks on the dispatched branch'
+   00031|         required: false
+   00032|         default: checks
+   00033|         type: choice
+   00034|         options: [checks]
+   00035|       pull-request:
+   00036|         description: 'Pull request the dispatched checks report for'
+   00037|         required: false
+   00038|         default: ''
+   00039|         type: string
+   00040|       depth:
+   00041|         description: 'Tree depth to verify: 0=root, 1=2 nodes, 2=4, 3=8, 4=16, 5=32, all=5..0'
+   00042|         required: false
+   00043|         default: '5'
+   00044|         type: choice
+   00045|         options: ['0', '1', '2', '3', '4', '5', 'all']
+   00046|       node_filter:
+   00047|         description: 'Optional node path (for example 2.1.2.2.1)'
+   00048|         required: false
+   00049|         default: ''
+   00050|         type: string
+   00051|       skip_build:
+   00052|         description: 'Skip cargo build --manifest-path rust/Cargo.toml only when a compatible release binary is already present'
+   00053|         required: false
+   00054|         default: false
+   00055|         type: boolean
+   00056|       authored_rules:
+   00057|         description: 'Per-leaf authored mappings visible to the agent'
+   00058|         required: false
+   00059|         default: 'disabled'
+   00060|         type: choice
+   00061|         options: ['disabled', 'enabled']
+   00062|   pull_request:
+   00063|     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+   00064|     # never triggers this repository's own pipeline.
+   00065|     branches-ignore: ['e2e/**']
+   00066|     paths:
+   00067|       - 'experiments/issue_1028_agent_cli_ladder/**'
+   00068|       - 'rust/src/agentic_coding/**'
+   00069|       - 'data/meta/ladder-ratchet.lino'
+   00070|       - '.github/workflows/issue-1028-agent-ladder.yml'
+   00071|   schedule:
+   00072|     - cron: '23 3 * * 0'
+   00073| 
+   00074| permissions:
+   00075|   contents: read
+   00076| 
+   00077| concurrency:
+   00078|   group: issue-1028-agent-cli-binary-tree-${{ github.ref }}
+   00079|   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+   00080| 
+   00081| jobs:
+   00082|   plan:
+   00083|     name: Plan the Agent CLI ladder
+   00084|     runs-on: ubuntu-latest
+   00085|     timeout-minutes: 30
+   00086|     outputs:
+   00087|       already-green: ${{ steps.ledger.outputs.already-green }}
+   00088|       legs: ${{ steps.plan.outputs.legs || '[]' }}
+   00089|       leg-count: ${{ steps.plan.outputs.leg-count }}
+   00090|       composites: ${{ steps.plan.outputs.composites || '[]' }}
+   00091|     env:
+   00092|       TREE_DEPTH: ${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}
+   00093|       NODE_FILTER: ${{ inputs.node_filter || '' }}
+   00094|     steps:
+   00095|       - uses: actions/checkout@v7
+   00096|         with:
+   00097|           persist-credentials: false
+   00098|       # Lookup only (`record: 'false'`): a green plan says nothing about the
+   00099|       # ladder, so the compare job records the verdict for these inputs.
+   00100|       - name: Skip when identical inputs already passed
+   00101|         id: ledger
+   00102|         uses: ./.github/actions/green-ledger
+   00103|         with:
+   00104|           check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}-rules-${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}
+   00105|           paths: >-
+   00106|             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
+   00107|           enabled: ${{ github.ref != 'refs/heads/main' }}
+   00108|           record: 'false'
+   00109| 
+   00110|       - name: List the ladder legs
+   00111|         id: plan
+   00112|         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+   00113|         run: |
+   00114|           set -euo pipefail
+   00115|           plan=$(python3 experiments/issue_1028_agent_cli_ladder/plan-legs.py "$TREE_DEPTH" "$NODE_FILTER")
+   00116|           echo "legs=$(jq -c '.legs' <<< "$plan")" >> "$GITHUB_OUTPUT"
+   00117|           echo "composites=$(jq -c '.composites' <<< "$plan")" >> "$GITHUB_OUTPUT"
+   00118|           echo "leg-count=$(jq '(.legs | length) + (.composites | length)' <<< "$plan")" >> "$GITHUB_OUTPUT"
+   00119|           echo "$plan"
+   00120| 
+   00121|       # Reused across every workflow that only needs to *run* the binary: the
+   00122|       # cache key is the content of the sources it is built from, so a push that
+   00123|       # changed neither pays nothing (issue #1107). Warmed once here so every
+   00124|       # leg restores it instead of each compiling it.
+   00125|       - uses: ./.github/actions/formal-ai-binary
+   00126|         if: ${{ (inputs.skip_build != true) && steps.ledger.outputs.already-green != 'true' }}
+   00127| 
+   00128|   ladder:
+   00129|     name: Agent CLI ladder ${{ matrix.leg.id }}
+   00130|     needs: [plan]
+   00131|     if: ${{ needs.plan.outputs.already-green != 'true' }}
+   00132|     runs-on: ubuntu-latest
+   00133|     # 45 minutes for a two-leaf leg; 180 is the ceiling for the one-leg modes
+   00134|     # (scheduled `all` run walks every level of the tree in sequence).
+   00135|     # Static value so the CI wall-clock gate can measure the worst-case ceiling.
+   00136|     timeout-minutes: 180
+   00137|     strategy:
+   00138|       fail-fast: false
+   00139|       matrix:
+   00140|         leg: ${{ fromJSON(needs.plan.outputs.legs) }}
+   00141|     env:
+   00142|       TREE_DEPTH: ${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}
+   00143|       NODE_FILTER: ${{ matrix.leg.filter }}
+   00144|       # A fresh directory, not the committed evidence under docs/: the compare
+   00145|       # job joins exactly what this leg measured.
+   00146|       OUT: ${{ github.workspace }}/agent-tree-run
+   00147|       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
+   00148|       AUTHORED_RULES: ${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}
+   00149|     steps:
+   00150|       - uses: actions/checkout@v7
+   00151|         with:
+   00152|           persist-credentials: false
+   00153| 
+   00154|       - name: Setup Bun
+   00155|         uses: oven-sh/setup-bun@v2
+   00156|         with:
+   00157|           bun-version-file: .bun-version
+   00158|           no-cache: true
+   00159| 
+   00160|       # Each leaf's edit is compiled by verify-node.sh; the dependency crates
+   00161|       # are the same on every leg, so the first leaf of each leg restores them
+   00162|       # from the shared compiler cache instead of compiling them cold.
+   00163|       - uses: ./.github/actions/setup-sccache
+   00164| 
+   00165|       # verify-node.sh compiles every leaf's edit, so the toolchain must meet
+   00166|       # the crate's rust-version whether or not the binary came from cache:
+   00167|       # formal-ai-binary installs one only on a cache miss, and a runner image
+   00168|       # still on rustc 1.98.1 failed thirteen leaves as uncompilable (run
+   00169|       # 37710079109) although their edits were valid.
+   00170|       - name: Setup Rust
+   00171|         uses: dtolnay/rust-toolchain@stable
+   00172| 
+   00173|       - uses: ./.github/actions/formal-ai-binary
+   00174|         if: ${{ inputs.skip_build != true }}
+   00175| 
+   00176|       - name: Install pinned Agent CLI
+   00177|         run: bun add -g @link-assistant/agent@0.26.0
+   00178| 
+   00179|       - name: Run recursive Agent CLI tree
+   00180|         id: tree
+   00181|         env:
+   00182|           AGENT: agent
+   00183|         run: experiments/issue_1028_agent_cli_ladder/run.sh
+   00184| 
+   00185|       - name: Show the Agent CLI evidence on failure
+   00186|         if: failure()
+   00187|         run: scripts/dump-agent-cli-evidence.sh "$OUT"
+   00188| 
+   00189|       - name: Upload tree evidence
+   00190|         if: ${{ always() }}
+   00191|         uses: actions/upload-artifact@v7
+   00192|         with:
+   00193|           name: issue-1028-agent-cli-binary-tree-${{ matrix.leg.filter || 'tree' }}
+   00194|           path: ${{ github.workspace }}/agent-tree-run
+   00195|           retention-days: 3
+   00196|           if-no-files-found: error
+   00197| 
+   00198|   compare:
+   00199|     name: Compare the measured ladder with the record
+   00200|     needs: [plan, ladder]
+   00201|     # Not `always()`: a run superseded by a newer push is the one
+   00202|     # cancellation that is not a defect, and it skips the verdict.
+   00203|     if: ${{ !cancelled() && needs.plan.outputs.already-green != 'true' }}
+   00204|     runs-on: ubuntu-latest
+   00205|     timeout-minutes: 15
+   00206|     env:
+   00207|       TREE_DEPTH: ${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}
+   00208|       OUT: ${{ github.workspace }}/docs/case-studies/issue-1028/agent-tree-run
+   00209|     steps:
+   00210|       - uses: actions/checkout@v7
+   00211|         with:
+   00212|           persist-credentials: false
+   00213| 
+   00214|       # Enabled off, recording on: this job never skips, and its own success
+   00215|       # is what marks these inputs green for the plan job's next lookup.
+   00216|       - name: Record the verdict for these inputs
+   00217|         uses: ./.github/actions/green-ledger
+   00218|         with:
+   00219|           check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}-rules-${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}
+   00220|           paths: >-
+   00221|             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
+   00222|           enabled: 'false'
+   00223| 
+   00224|       - name: Every ladder leg finished
+   00225|         env:
+   00226|           NEEDS_JSON: ${{ toJSON(needs) }}
+   00227|           JOBS: plan ladder
+   00228|           CHECK: Agent CLI ladder
+   00229|         run: bash scripts/check-shard-results.sh
+   00230| 
+   00231|       - name: Download every leg's evidence
+   00232|         uses: actions/download-artifact@v8
+   00233|         env:
+   00234|           # v8's bundled unzip dependency still calls Buffer(); suppress only
+   00235|           # that reviewed upstream diagnostic, never all Node warnings:
+   00236|           # https://github.com/actions/download-artifact/issues/484
+   00237|           NODE_OPTIONS: --disable-warning=DEP0005
+   00238|         with:
+   00239|           pattern: issue-1028-agent-cli-binary-tree-*
+   00240|           path: ${{ runner.temp }}/agent-tree-legs
+   00241| 
+   00242|       # The committed evidence under $OUT is a previous run's; the joined run
+   00243|       # replaces it so nothing stale is compared or uploaded.
+   00244|       - name: Join the legs into one run
+   00245|         env:
+   00246|           LEG_COUNT: ${{ needs.plan.outputs.leg-count }}
+   00247|         run: |
+   00248|           set -euo pipefail
+   00249|           rm -rf "$OUT"
+   00250|           python3 experiments/issue_1028_agent_cli_ladder/combine-shards.py \
+   00251|             "$RUNNER_TEMP/agent-tree-legs" "$OUT" "$LEG_COUNT"
+   00252| 
+   00253|       # A ladder that ran and measured fewer leaves than the record is still
+   00254|       # compared -- that is the regression this gate exists to catch.
+   00255|       - name: Compare the measured ladder with the record
+   00256|         run: |
+   00257|           set -euo pipefail
+   00258|           result="$OUT/ladder-result.lino"
+   00259|           [[ -f "$result" ]] || { echo '::error::the run wrote no ladder-result.lino'; exit 1; }
+   00260|           field() { sed -n "s/^  $1 \"\(.*\)\"$/\1/p" "$result"; }
+   00261|           recorded_leaves=$(sed -n 's/^  leaf_nodes_passing //p' data/meta/ladder-ratchet.lino)
+   00262|           measured_leaves=$(field leaf_nodes_passing)
+   00263|           selected_leaves=$(field leaf_nodes_selected)
+   00264|           authored_rules_enabled=$(field authored_rules_enabled)
+   00265|           echo "leaf nodes passing: recorded $recorded_leaves, this run $measured_leaves of $selected_leaves"
+   00266|           cat "$result" >> "$GITHUB_STEP_SUMMARY"
+   00267|           # Only a full-width run is comparable with the record: a filtered or
+   00268|           # shallower run selects fewer leaves and would always look worse.
+   00269|           if [[ "$selected_leaves" == 32 && "$authored_rules_enabled" == true ]]; then
+   00270|             if (( measured_leaves < recorded_leaves )); then
+   00271|               echo "::error::$measured_leaves of 32 leaves passed; the record is $recorded_leaves (data/meta/ladder-ratchet.lino). A leaf Formal AI could change no longer changes."
+   00272|               exit 1
+   00273|             fi
+   00274|             if (( measured_leaves > recorded_leaves )); then
+   00275|               echo "::notice::leaf nodes passing improved to $measured_leaves; raise leaf_nodes_passing in data/meta/ladder-ratchet.lino in a reviewed commit"
+   00276|             fi
+   00277|           fi
+   00278|           if [[ "$selected_leaves" == 32 && "$authored_rules_enabled" == false ]]; then
+   00279|             measured_without_rules=$(field leaf_nodes_passing_without_authored_rules)
+   00280|             recorded_without_rules=$(sed -n 's/^  leaf_nodes_passing_without_authored_rules //p' data/meta/ladder-ratchet.lino)
+   00281|             if [[ "$recorded_without_rules" == not_measured ]]; then
+   00282|               echo "::error::the first complete rule-disabled run measured $measured_without_rules of 32; record that exact value as leaf_nodes_passing_without_authored_rules in data/meta/ladder-ratchet.lino"
+   00283|               exit 1
+   00284|             fi
+   00285|             if (( measured_without_rules < recorded_without_rules )); then
+   00286|               echo "::error::$measured_without_rules of 32 leaves passed without authored rules; the record is $recorded_without_rules"
+   00287|               exit 1
+   00288|             fi
+   00289|             if (( measured_without_rules > recorded_without_rules )); then
+   00290|               echo "::notice::rule-disabled leaves improved to $measured_without_rules; raise leaf_nodes_passing_without_authored_rules in a reviewed commit"
+   00291|             fi
+   00292|           fi
+   00293|           if [[ "$TREE_DEPTH" == all ]]; then
+   00294|             deepest=$(field deepest_passing_level)
+   00295|             recorded_depth=$(sed -n 's/^  deepest_passing_level //p' data/meta/ladder-ratchet.lino)
+   00296|             echo "deepest passing level: recorded $recorded_depth, this run $deepest"
+   00297|             if [[ "$recorded_depth" != none && "$deepest" == none ]]; then
+   00298|               echo "::error::no level passed completely; the record is level $recorded_depth"
+   00299|               exit 1
+   00300|             fi
+   00301|             if [[ "$recorded_depth" != none && "$deepest" != none ]] && (( deepest < recorded_depth )); then
+   00302|               echo "::error::deepest passing level $deepest is shallower than the recorded $recorded_depth (level 5 is the leaves)"
+   00303|               exit 1
+   00304|             fi
+   00305|           fi
+   00306| 
+   00307|       - name: Show the Agent CLI evidence on failure
+   00308|         if: failure()
+   00309|         run: scripts/dump-agent-cli-evidence.sh docs/case-studies/issue-1028/agent-tree-run
+   00310|       - name: Upload tree evidence
+   00311|         if: ${{ always() }}
+   00312|         uses: actions/upload-artifact@v7
+   00313|         with:
+   00314|           name: issue-1028-agent-cli-binary-tree
+   00315|           path: docs/case-studies/issue-1028/agent-tree-run
+   00316|           retention-days: 14
+   00317|           if-no-files-found: warn
+   00318| 
+   
+   (End of file - total 318 lines)
+   </file>
+>> edit {"filePath":".github/workflows/issue-1028-agent-ladder.yml","file_path":".github/workflows/issue-1028-agent-ladder.yml","new":"    # The previous 63-node serial walk is now at most two leaves or one\n    # requirement per leg. Keep a generous exception while real cold/all-mode\n    # observations establish the 30-minute retirement criterion. With the\n    # artifact-fed composite wave, the static workflow DAG remains 225 minutes.\n    timeout-minutes: 135","newString":"    # The previous 63-node serial walk is now at most two leaves or one\n    # requirement per leg. Keep a generous exception while real cold/all-mode\n    # observations establish the 30-minute retirement criterion. With the\n    # artifact-fed composite wave, the static workflow DAG remains 225 minutes.\n    timeout-minutes: 135","new_str":"    # The previous 63-node serial walk is now at most two leaves or one\n    # requirement per leg. Keep a generous exception while real cold/all-mode\n    # observations establish the 30-minute retirement criterion. With the\n    # artifact-fed composite wave, the static workflow DAG remains 225 minutes.\n    timeout-minutes: 135","new_string":"    # The previous 63-node serial walk is now at most two leaves or one\n    # requirement per leg. Keep a generous exception while real cold/all-mode\n    # observations establish the 30-minute retirement criterion. With the\n    # artifact-fed composite wave, the static workflow DAG remains 225 minutes.\n    timeout-minutes: 135","old":"    # 45 minutes for a two-leaf leg; 180 is the ceiling for the one-leg modes\n    # (scheduled `all` run walks every level of the tree in sequence).\n    # Static value so the CI wall-clock gate can measure the worst-case ceiling.\n    timeout-minutes: 180","oldString":"    # 45 minutes for a two-leaf leg; 180 is the ceiling for the one-leg modes\n    # (scheduled `all` run walks every level of the tree in sequence).\n    # Static value so the CI wall-clock gate can measure the worst-case ceiling.\n    timeout-minutes: 180","old_str":"    # 45 minutes for a two-leaf leg; 180 is the ceiling for the one-leg modes\n    # (scheduled `all` run walks every level of the tree in sequence).\n    # Static value so the CI wall-clock gate can measure the worst-case ceiling.\n    timeout-minutes: 180","old_string":"    # 45 minutes for a two-leaf leg; 180 is the ceiling for the one-leg modes\n    # (scheduled `all` run walks every level of the tree in sequence).\n    # Static value so the CI wall-clock gate can measure the worst-case ceiling.\n    timeout-minutes: 180","path":".github/workflows/issue-1028-agent-ladder.yml"}
+>> bash {"command":"sha256sum -- .github/workflows/issue-1028-agent-ladder.yml"}
+   8ad783e34d97b0664f83804573a59f6b279eb70ba415c9d16ceefe23c2a86e8d  .github/workflows/issue-1028-agent-ladder.yml
+   
+== answer ==
+Replaced ``    # 45 minutes for a two-leaf leg; 180 is the ceiling for the one-leg modes
+    # (scheduled `all` run walks every level of the tree in sequence).
+    # Static value so the CI wall-clock gate can measure the worst-case ceiling.
+    timeout-minutes: 180`` with `    # The previous 63-node serial walk is now at most two leaves or one
+    # requirement per leg. Keep a generous exception while real cold/all-mode
+    # observations establish the 30-minute retirement criterion. With the
+    # artifact-fed composite wave, the static workflow DAG remains 225 minutes.
+    timeout-minutes: 135` in `.github/workflows/issue-1028-agent-ladder.yml` and observed the result.

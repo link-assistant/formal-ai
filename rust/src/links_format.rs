@@ -30,11 +30,17 @@ pub fn format_lino_record(id: &str, pairs: &[(&str, String)]) -> String {
 /// exists to prevent — but that helper only writes a flat two-level record, so
 /// a nested tree had no way to reach it and kept its own escaper.
 ///
-/// The codec's always-quoting encoder is private, and the grammar crate's is
-/// too, so the rule is borrowed from the one public function that applies it:
-/// a single-field record is formatted and the field taken back off it. That
-/// costs an allocation per value and buys the property that matters — this
-/// cannot drift from the notation, because it *is* the notation's encoder.
+/// The rule is borrowed from the codec's record writer: a single-field record
+/// is formatted and the field taken back off it. That costs an allocation per
+/// value and buys the property that matters — this cannot drift from the
+/// notation, because it *is* the notation's encoder.
+///
+/// lino-objects-codec 0.8 also exports `format::format_value_verbatim`, but it
+/// is not a drop-in replacement: a value holding both quote kinds comes out in
+/// the n-quote run form (`"""it's "x""""`) instead of doubled quotes, and a
+/// control character becomes an `(escaped "…")` link. [`format_lino_value`]
+/// documents are read back by `seed::parser`, which reads neither, so the
+/// record writer stays until that reader does.
 ///
 /// Prefer this whenever the grammar is the document's only reader. Use
 /// [`format_lino_value`] when `seed::parser` reads the document back.
@@ -79,6 +85,22 @@ pub fn push_lino_node(out: &mut String, indent: usize, name: &str, value: Option
     if let Some(value) = value {
         out.push(' ');
         out.push_str(&format_lino_value(value));
+    }
+    out.push('\n');
+}
+
+/// Write one `name value` line at `indent` spaces, the value already in its
+/// notation form: a bare atom, or a string the caller quoted. A node with no
+/// value is a bare group header. Use [`push_lino_node`] when the value is free
+/// text the notation must quote.
+pub fn push_lino_field(out: &mut String, indent: usize, name: &str, value: Option<&str>) {
+    for _ in 0..indent {
+        out.push(' ');
+    }
+    out.push_str(name);
+    if let Some(value) = value {
+        out.push(' ');
+        out.push_str(value);
     }
     out.push('\n');
 }

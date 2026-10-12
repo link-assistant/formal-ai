@@ -3,151 +3,689 @@ multilingual_responses
     intent external_benchmark_learning_task
     language en
     text "Use Formal AI auto-learning to inspect the persisted issue 698 external benchmark failures as an associative links network, rank the evidence and general evaluator-boundary amendments, keep promotion human-review gated, and write external-benchmark-learning-report.lino."
+  response response_external_benchmark_learning_task_ru
+    intent external_benchmark_learning_task
+    language ru
+    text "Используй автообучение Formal AI, чтобы изучить сохранённые сбои внешних бенчмарков issue 698 как ассоциативную сеть связей, ранжировать доказательства и общие поправки на границе оценщика, оставить продвижение за проверкой человека и записать external-benchmark-learning-report.lino."
+  response response_external_benchmark_learning_task_hi
+    intent external_benchmark_learning_task
+    language hi
+    text "Formal AI auto-learning का उपयोग करके issue 698 की सहेजी गई external benchmark विफलताओं को associative links network के रूप में जाँचें, सबूतों और सामान्य evaluator-boundary संशोधनों को rank करें, promotion को मानव समीक्षा के पीछे रखें, और external-benchmark-learning-report.lino लिखें।"
+  response response_external_benchmark_learning_task_zh
+    intent external_benchmark_learning_task
+    language zh
+    text "使用 Formal AI 自动学习，将已保存的 issue 698 外部基准失败作为关联链接网络进行检查，对证据和通用的评估器边界修订进行排序，让提升保持在人工审查之后，并写入 external-benchmark-learning-report.lino。"
+  response response_external_benchmark_learning_task_es
+    intent external_benchmark_learning_task
+    language es
+    text "Usa el autoaprendizaje de Formal AI para inspeccionar los fallos persistidos de los benchmarks externos de la issue 698 como una red asociativa de enlaces, clasificar la evidencia y las enmiendas generales en la frontera del evaluador, mantener la promoción sujeta a revisión humana y escribir external-benchmark-learning-report.lino."
   response response_external_benchmark_ratchet_reference_suffix_en
     intent external_benchmark_ratchet_reference_suffix
     language en
     text " against {reference}"
+  response response_external_benchmark_ratchet_reference_suffix_ru
+    intent external_benchmark_ratchet_reference_suffix
+    language ru
+    text " относительно {reference}"
+  response response_external_benchmark_ratchet_reference_suffix_hi
+    intent external_benchmark_ratchet_reference_suffix
+    language hi
+    text " {reference} के सापेक्ष"
+  response response_external_benchmark_ratchet_reference_suffix_zh
+    intent external_benchmark_ratchet_reference_suffix
+    language zh
+    text " 相对于 {reference}"
+  response response_external_benchmark_ratchet_reference_suffix_es
+    intent external_benchmark_ratchet_reference_suffix
+    language es
+    text " frente a {reference}"
   response response_external_benchmark_baseline_read_error_en
     intent external_benchmark_baseline_read_error
     language en
     text "failed to read benchmark baseline {object}: {error}"
+  response response_external_benchmark_baseline_read_error_ru
+    intent external_benchmark_baseline_read_error
+    language ru
+    text "не удалось прочитать базовую линию бенчмарка {object}: {error}"
+  response response_external_benchmark_baseline_read_error_hi
+    intent external_benchmark_baseline_read_error
+    language hi
+    text "benchmark baseline {object} पढ़ने में विफल: {error}"
+  response response_external_benchmark_baseline_read_error_zh
+    intent external_benchmark_baseline_read_error
+    language zh
+    text "读取基准基线 {object} 失败：{error}"
+  response response_external_benchmark_baseline_read_error_es
+    intent external_benchmark_baseline_read_error
+    language es
+    text "no se pudo leer la línea base del benchmark {object}: {error}"
   response response_external_benchmark_provenance_en
     intent external_benchmark_provenance
     language en
+    audience machine
     text "external_benchmark_cache\n  suite {suite}\n  source_ref {source_ref}\n  download_url {url}\n  payload_bytes {payload_bytes}\n  content_id fnv1a64:{content_id}\n"
   response response_external_benchmark_parquet_module_unavailable_en
     intent external_benchmark_parquet_module_unavailable
     language en
     text "python3 module `pyarrow.parquet` is unavailable, so the pinned upstream parquet payload cannot be decoded"
+  response response_external_benchmark_parquet_module_unavailable_ru
+    intent external_benchmark_parquet_module_unavailable
+    language ru
+    text "модуль python3 `pyarrow.parquet` недоступен, поэтому закреплённые внешние данные parquet нельзя декодировать"
+  response response_external_benchmark_parquet_module_unavailable_hi
+    intent external_benchmark_parquet_module_unavailable
+    language hi
+    text "python3 module `pyarrow.parquet` उपलब्ध नहीं है, इसलिए pinned upstream parquet payload decode नहीं किया जा सकता"
+  response response_external_benchmark_parquet_module_unavailable_zh
+    intent external_benchmark_parquet_module_unavailable
+    language zh
+    text "python3 模块 `pyarrow.parquet` 不可用，因此无法解码固定的上游 parquet 数据"
+  response response_external_benchmark_parquet_module_unavailable_es
+    intent external_benchmark_parquet_module_unavailable
+    language es
+    text "el módulo de python3 `pyarrow.parquet` no está disponible, así que no se puede decodificar la carga parquet externa fijada"
   response response_external_benchmark_python_import_en
     intent external_benchmark_python_import
     language en
+    audience machine
     text "import {module}"
   response response_external_benchmark_parquet_start_error_en
     intent external_benchmark_parquet_start_error
     language en
     text "failed to start Python parquet decoder for {path}: {error}"
+  response response_external_benchmark_parquet_start_error_ru
+    intent external_benchmark_parquet_start_error
+    language ru
+    text "не удалось запустить декодер parquet на Python для {path}: {error}"
+  response response_external_benchmark_parquet_start_error_hi
+    intent external_benchmark_parquet_start_error
+    language hi
+    text "{path} के लिए Python parquet decoder शुरू करने में विफल: {error}"
+  response response_external_benchmark_parquet_start_error_zh
+    intent external_benchmark_parquet_start_error
+    language zh
+    text "为 {path} 启动 Python parquet 解码器失败：{error}"
+  response response_external_benchmark_parquet_start_error_es
+    intent external_benchmark_parquet_start_error
+    language es
+    text "no se pudo iniciar el decodificador parquet de Python para {path}: {error}"
   response response_external_benchmark_parquet_decode_error_en
     intent external_benchmark_parquet_decode_error
     language en
     text "{suite}: failed to decode pinned parquet payload {path}: {error}"
+  response response_external_benchmark_parquet_decode_error_ru
+    intent external_benchmark_parquet_decode_error
+    language ru
+    text "{suite}: не удалось декодировать закреплённые данные parquet {path}: {error}"
+  response response_external_benchmark_parquet_decode_error_hi
+    intent external_benchmark_parquet_decode_error
+    language hi
+    text "{suite}: pinned parquet payload {path} decode करने में विफल: {error}"
+  response response_external_benchmark_parquet_decode_error_zh
+    intent external_benchmark_parquet_decode_error
+    language zh
+    text "{suite}：解码固定的 parquet 数据 {path} 失败：{error}"
+  response response_external_benchmark_parquet_decode_error_es
+    intent external_benchmark_parquet_decode_error
+    language es
+    text "{suite}: no se pudo decodificar la carga parquet fijada {path}: {error}"
   response response_external_benchmark_parquet_utf8_error_en
     intent external_benchmark_parquet_utf8_error
     language en
     text "{suite} parquet decoder emitted non-UTF-8: {error}"
+  response response_external_benchmark_parquet_utf8_error_ru
+    intent external_benchmark_parquet_utf8_error
+    language ru
+    text "декодер parquet для {suite} выдал не-UTF-8: {error}"
+  response response_external_benchmark_parquet_utf8_error_hi
+    intent external_benchmark_parquet_utf8_error
+    language hi
+    text "{suite} parquet decoder ने non-UTF-8 output दिया: {error}"
+  response response_external_benchmark_parquet_utf8_error_zh
+    intent external_benchmark_parquet_utf8_error
+    language zh
+    text "{suite} 的 parquet 解码器输出了非 UTF-8 内容：{error}"
+  response response_external_benchmark_parquet_utf8_error_es
+    intent external_benchmark_parquet_utf8_error
+    language es
+    text "el decodificador parquet de {suite} emitió texto que no es UTF-8: {error}"
   response response_external_benchmark_provenance_write_error_en
     intent external_benchmark_provenance_write_error
     language en
     text "failed to write cache provenance {path}: {error}"
+  response response_external_benchmark_provenance_write_error_ru
+    intent external_benchmark_provenance_write_error
+    language ru
+    text "не удалось записать происхождение кэша {path}: {error}"
+  response response_external_benchmark_provenance_write_error_hi
+    intent external_benchmark_provenance_write_error
+    language hi
+    text "cache provenance {path} लिखने में विफल: {error}"
+  response response_external_benchmark_provenance_write_error_zh
+    intent external_benchmark_provenance_write_error
+    language zh
+    text "写入缓存来源记录 {path} 失败：{error}"
+  response response_external_benchmark_provenance_write_error_es
+    intent external_benchmark_provenance_write_error
+    language es
+    text "no se pudo escribir la procedencia de la caché {path}: {error}"
   response response_external_benchmark_swe_record_error_en
     intent external_benchmark_swe_record_error
     language en
     text "pinned SWE-bench record for {case} is invalid JSON: {error}"
+  response response_external_benchmark_swe_record_error_ru
+    intent external_benchmark_swe_record_error
+    language ru
+    text "закреплённая запись SWE-bench для {case} содержит недопустимый JSON: {error}"
+  response response_external_benchmark_swe_record_error_hi
+    intent external_benchmark_swe_record_error
+    language hi
+    text "{case} का pinned SWE-bench record अमान्य JSON है: {error}"
+  response response_external_benchmark_swe_record_error_zh
+    intent external_benchmark_swe_record_error
+    language zh
+    text "{case} 的固定 SWE-bench 记录是无效的 JSON：{error}"
+  response response_external_benchmark_swe_record_error_es
+    intent external_benchmark_swe_record_error
+    language es
+    text "el registro fijado de SWE-bench para {case} es JSON no válido: {error}"
   response response_external_benchmark_not_swe_case_en
     intent external_benchmark_not_swe_case
     language en
     text "{case} is not a SWE-bench case"
+  response response_external_benchmark_not_swe_case_ru
+    intent external_benchmark_not_swe_case
+    language ru
+    text "{case} не является случаем SWE-bench"
+  response response_external_benchmark_not_swe_case_hi
+    intent external_benchmark_not_swe_case
+    language hi
+    text "{case} कोई SWE-bench case नहीं है"
+  response response_external_benchmark_not_swe_case_zh
+    intent external_benchmark_not_swe_case
+    language zh
+    text "{case} 不是 SWE-bench 用例"
+  response response_external_benchmark_not_swe_case_es
+    intent external_benchmark_not_swe_case
+    language es
+    text "{case} no es un caso de SWE-bench"
   response response_external_benchmark_swe_encode_error_en
     intent external_benchmark_swe_encode_error
     language en
     text "failed to encode pinned SWE-bench slice: {error}"
+  response response_external_benchmark_swe_encode_error_ru
+    intent external_benchmark_swe_encode_error
+    language ru
+    text "не удалось закодировать закреплённый срез SWE-bench: {error}"
+  response response_external_benchmark_swe_encode_error_hi
+    intent external_benchmark_swe_encode_error
+    language hi
+    text "pinned SWE-bench slice encode करने में विफल: {error}"
+  response response_external_benchmark_swe_encode_error_zh
+    intent external_benchmark_swe_encode_error
+    language zh
+    text "编码固定的 SWE-bench 切片失败：{error}"
+  response response_external_benchmark_swe_encode_error_es
+    intent external_benchmark_swe_encode_error
+    language es
+    text "no se pudo codificar el corte fijado de SWE-bench: {error}"
   response response_external_benchmark_swe_slice_write_error_en
     intent external_benchmark_swe_slice_write_error
     language en
     text "failed to write pinned SWE-bench slice {path}: {error}"
+  response response_external_benchmark_swe_slice_write_error_ru
+    intent external_benchmark_swe_slice_write_error
+    language ru
+    text "не удалось записать закреплённый срез SWE-bench {path}: {error}"
+  response response_external_benchmark_swe_slice_write_error_hi
+    intent external_benchmark_swe_slice_write_error
+    language hi
+    text "pinned SWE-bench slice {path} लिखने में विफल: {error}"
+  response response_external_benchmark_swe_slice_write_error_zh
+    intent external_benchmark_swe_slice_write_error
+    language zh
+    text "写入固定的 SWE-bench 切片 {path} 失败：{error}"
+  response response_external_benchmark_swe_slice_write_error_es
+    intent external_benchmark_swe_slice_write_error
+    language es
+    text "no se pudo escribir el corte fijado de SWE-bench {path}: {error}"
   response response_external_benchmark_swe_predictions_write_error_en
     intent external_benchmark_swe_predictions_write_error
     language en
     text "failed to write SWE-bench predictions {path}: {error}"
+  response response_external_benchmark_swe_predictions_write_error_ru
+    intent external_benchmark_swe_predictions_write_error
+    language ru
+    text "не удалось записать предсказания SWE-bench {path}: {error}"
+  response response_external_benchmark_swe_predictions_write_error_hi
+    intent external_benchmark_swe_predictions_write_error
+    language hi
+    text "SWE-bench predictions {path} लिखने में विफल: {error}"
+  response response_external_benchmark_swe_predictions_write_error_zh
+    intent external_benchmark_swe_predictions_write_error
+    language zh
+    text "写入 SWE-bench 预测 {path} 失败：{error}"
+  response response_external_benchmark_swe_predictions_write_error_es
+    intent external_benchmark_swe_predictions_write_error
+    language es
+    text "no se pudieron escribir las predicciones de SWE-bench {path}: {error}"
   response response_external_benchmark_swe_clear_logs_error_en
     intent external_benchmark_swe_clear_logs_error
     language en
     text "failed to clear stale SWE-bench logs {path}: {error}"
+  response response_external_benchmark_swe_clear_logs_error_ru
+    intent external_benchmark_swe_clear_logs_error
+    language ru
+    text "не удалось очистить устаревшие журналы SWE-bench {path}: {error}"
+  response response_external_benchmark_swe_clear_logs_error_hi
+    intent external_benchmark_swe_clear_logs_error
+    language hi
+    text "पुराने SWE-bench logs {path} साफ़ करने में विफल: {error}"
+  response response_external_benchmark_swe_clear_logs_error_zh
+    intent external_benchmark_swe_clear_logs_error
+    language zh
+    text "清除过期的 SWE-bench 日志 {path} 失败：{error}"
+  response response_external_benchmark_swe_clear_logs_error_es
+    intent external_benchmark_swe_clear_logs_error
+    language es
+    text "no se pudieron borrar los registros obsoletos de SWE-bench {path}: {error}"
   response response_external_benchmark_swe_remove_report_error_en
     intent external_benchmark_swe_remove_report_error
     language en
     text "failed to remove stale SWE-bench report {path}: {error}"
+  response response_external_benchmark_swe_remove_report_error_ru
+    intent external_benchmark_swe_remove_report_error
+    language ru
+    text "не удалось удалить устаревший отчёт SWE-bench {path}: {error}"
+  response response_external_benchmark_swe_remove_report_error_hi
+    intent external_benchmark_swe_remove_report_error
+    language hi
+    text "पुरानी SWE-bench report {path} हटाने में विफल: {error}"
+  response response_external_benchmark_swe_remove_report_error_zh
+    intent external_benchmark_swe_remove_report_error
+    language zh
+    text "删除过期的 SWE-bench 报告 {path} 失败：{error}"
+  response response_external_benchmark_swe_remove_report_error_es
+    intent external_benchmark_swe_remove_report_error
+    language es
+    text "no se pudo eliminar el informe obsoleto de SWE-bench {path}: {error}"
   response response_external_benchmark_swe_start_error_en
     intent external_benchmark_swe_start_error
     language en
     text "failed to start the official SWE-bench evaluator: {error}"
+  response response_external_benchmark_swe_start_error_ru
+    intent external_benchmark_swe_start_error
+    language ru
+    text "не удалось запустить официальный оценщик SWE-bench: {error}"
+  response response_external_benchmark_swe_start_error_hi
+    intent external_benchmark_swe_start_error
+    language hi
+    text "आधिकारिक SWE-bench evaluator शुरू करने में विफल: {error}"
+  response response_external_benchmark_swe_start_error_zh
+    intent external_benchmark_swe_start_error
+    language zh
+    text "启动官方 SWE-bench 评估器失败：{error}"
+  response response_external_benchmark_swe_start_error_es
+    intent external_benchmark_swe_start_error
+    language es
+    text "no se pudo iniciar el evaluador oficial de SWE-bench: {error}"
   response response_external_benchmark_swe_exit_error_en
     intent external_benchmark_swe_exit_error
     language en
     text "official SWE-bench evaluator exited with {status}: {error}"
+  response response_external_benchmark_swe_exit_error_ru
+    intent external_benchmark_swe_exit_error
+    language ru
+    text "официальный оценщик SWE-bench завершился со статусом {status}: {error}"
+  response response_external_benchmark_swe_exit_error_hi
+    intent external_benchmark_swe_exit_error
+    language hi
+    text "आधिकारिक SWE-bench evaluator status {status} के साथ बंद हुआ: {error}"
+  response response_external_benchmark_swe_exit_error_zh
+    intent external_benchmark_swe_exit_error
+    language zh
+    text "官方 SWE-bench 评估器以状态 {status} 退出：{error}"
+  response response_external_benchmark_swe_exit_error_es
+    intent external_benchmark_swe_exit_error
+    language es
+    text "el evaluador oficial de SWE-bench terminó con {status}: {error}"
   response response_external_benchmark_swe_missing_report_en
     intent external_benchmark_swe_missing_report
     language en
     text "official SWE-bench evaluator did not publish {path}: {error}"
+  response response_external_benchmark_swe_missing_report_ru
+    intent external_benchmark_swe_missing_report
+    language ru
+    text "официальный оценщик SWE-bench не опубликовал {path}: {error}"
+  response response_external_benchmark_swe_missing_report_hi
+    intent external_benchmark_swe_missing_report
+    language hi
+    text "आधिकारिक SWE-bench evaluator ने {path} प्रकाशित नहीं किया: {error}"
+  response response_external_benchmark_swe_missing_report_zh
+    intent external_benchmark_swe_missing_report
+    language zh
+    text "官方 SWE-bench 评估器没有发布 {path}：{error}"
+  response response_external_benchmark_swe_missing_report_es
+    intent external_benchmark_swe_missing_report
+    language es
+    text "el evaluador oficial de SWE-bench no publicó {path}: {error}"
   response response_external_benchmark_swe_inspect_error_en
     intent external_benchmark_swe_inspect_error
     language en
     text "failed to inspect the SWE-bench Python environment: {error}"
+  response response_external_benchmark_swe_inspect_error_ru
+    intent external_benchmark_swe_inspect_error
+    language ru
+    text "не удалось проверить окружение Python для SWE-bench: {error}"
+  response response_external_benchmark_swe_inspect_error_hi
+    intent external_benchmark_swe_inspect_error
+    language hi
+    text "SWE-bench Python environment की जाँच करने में विफल: {error}"
+  response response_external_benchmark_swe_inspect_error_zh
+    intent external_benchmark_swe_inspect_error
+    language zh
+    text "检查 SWE-bench Python 环境失败：{error}"
+  response response_external_benchmark_swe_inspect_error_es
+    intent external_benchmark_swe_inspect_error
+    language es
+    text "no se pudo inspeccionar el entorno de Python de SWE-bench: {error}"
   response response_external_benchmark_swe_docker_error_en
     intent external_benchmark_swe_docker_error
     language en
     text "Docker is unavailable for SWE-bench evaluation: {error}"
+  response response_external_benchmark_swe_docker_error_ru
+    intent external_benchmark_swe_docker_error
+    language ru
+    text "Docker недоступен для оценки SWE-bench: {error}"
+  response response_external_benchmark_swe_docker_error_hi
+    intent external_benchmark_swe_docker_error
+    language hi
+    text "SWE-bench evaluation के लिए Docker उपलब्ध नहीं है: {error}"
+  response response_external_benchmark_swe_docker_error_zh
+    intent external_benchmark_swe_docker_error
+    language zh
+    text "Docker 不可用，无法进行 SWE-bench 评估：{error}"
+  response response_external_benchmark_swe_docker_error_es
+    intent external_benchmark_swe_docker_error
+    language es
+    text "Docker no está disponible para la evaluación de SWE-bench: {error}"
   response response_external_benchmark_swe_report_error_en
     intent external_benchmark_swe_report_error
     language en
     text "official SWE-bench report is invalid JSON: {error}"
+  response response_external_benchmark_swe_report_error_ru
+    intent external_benchmark_swe_report_error
+    language ru
+    text "официальный отчёт SWE-bench содержит недопустимый JSON: {error}"
+  response response_external_benchmark_swe_report_error_hi
+    intent external_benchmark_swe_report_error
+    language hi
+    text "आधिकारिक SWE-bench report अमान्य JSON है: {error}"
+  response response_external_benchmark_swe_report_error_zh
+    intent external_benchmark_swe_report_error
+    language zh
+    text "官方 SWE-bench 报告是无效的 JSON：{error}"
+  response response_external_benchmark_swe_report_error_es
+    intent external_benchmark_swe_report_error
+    language es
+    text "el informe oficial de SWE-bench es JSON no válido: {error}"
   response response_external_benchmark_swe_infrastructure_error_en
     intent external_benchmark_swe_infrastructure_error
     language en
     text "official SWE-bench evaluator reported infrastructure errors for: {cases}"
+  response response_external_benchmark_swe_infrastructure_error_ru
+    intent external_benchmark_swe_infrastructure_error
+    language ru
+    text "официальный оценщик SWE-bench сообщил об ошибках инфраструктуры для: {cases}"
+  response response_external_benchmark_swe_infrastructure_error_hi
+    intent external_benchmark_swe_infrastructure_error
+    language hi
+    text "आधिकारिक SWE-bench evaluator ने इनके लिए infrastructure errors बताईं: {cases}"
+  response response_external_benchmark_swe_infrastructure_error_zh
+    intent external_benchmark_swe_infrastructure_error
+    language zh
+    text "官方 SWE-bench 评估器报告了以下用例的基础设施错误：{cases}"
+  response response_external_benchmark_swe_infrastructure_error_es
+    intent external_benchmark_swe_infrastructure_error
+    language es
+    text "el evaluador oficial de SWE-bench informó de errores de infraestructura en: {cases}"
   response response_external_benchmark_pytest_command_en
     intent external_benchmark_pytest_command
     language en
+    audience machine
     text "python3 -m pytest {tests}"
   response response_external_benchmark_test_field_missing_en
     intent external_benchmark_test_field_missing
     language en
     text "{suite}: record {index} is missing the test field `{field}`"
+  response response_external_benchmark_test_field_missing_ru
+    intent external_benchmark_test_field_missing
+    language ru
+    text "{suite}: в записи {index} нет тестового поля `{field}`"
+  response response_external_benchmark_test_field_missing_hi
+    intent external_benchmark_test_field_missing
+    language hi
+    text "{suite}: record {index} में test field `{field}` नहीं है"
+  response response_external_benchmark_test_field_missing_zh
+    intent external_benchmark_test_field_missing
+    language zh
+    text "{suite}：记录 {index} 缺少测试字段 `{field}`"
+  response response_external_benchmark_test_field_missing_es
+    intent external_benchmark_test_field_missing
+    language es
+    text "{suite}: al registro {index} le falta el campo de prueba `{field}`"
   response response_external_benchmark_test_field_invalid_json_en
     intent external_benchmark_test_field_invalid_json
     language en
     text "{suite}: record {index} has invalid JSON in `{field}`: {error}"
+  response response_external_benchmark_test_field_invalid_json_ru
+    intent external_benchmark_test_field_invalid_json
+    language ru
+    text "{suite}: запись {index} содержит недопустимый JSON в `{field}`: {error}"
+  response response_external_benchmark_test_field_invalid_json_hi
+    intent external_benchmark_test_field_invalid_json
+    language hi
+    text "{suite}: record {index} के `{field}` में अमान्य JSON है: {error}"
+  response response_external_benchmark_test_field_invalid_json_zh
+    intent external_benchmark_test_field_invalid_json
+    language zh
+    text "{suite}：记录 {index} 的 `{field}` 中有无效的 JSON：{error}"
+  response response_external_benchmark_test_field_invalid_json_es
+    intent external_benchmark_test_field_invalid_json
+    language es
+    text "{suite}: el registro {index} tiene JSON no válido en `{field}`: {error}"
   response response_external_benchmark_test_field_not_array_en
     intent external_benchmark_test_field_not_array
     language en
     text "{suite}: record {index} has a non-array test field `{field}`"
+  response response_external_benchmark_test_field_not_array_ru
+    intent external_benchmark_test_field_not_array
+    language ru
+    text "{suite}: в записи {index} тестовое поле `{field}` не является массивом"
+  response response_external_benchmark_test_field_not_array_hi
+    intent external_benchmark_test_field_not_array
+    language hi
+    text "{suite}: record {index} का test field `{field}` array नहीं है"
+  response response_external_benchmark_test_field_not_array_zh
+    intent external_benchmark_test_field_not_array
+    language zh
+    text "{suite}：记录 {index} 的测试字段 `{field}` 不是数组"
+  response response_external_benchmark_test_field_not_array_es
+    intent external_benchmark_test_field_not_array
+    language es
+    text "{suite}: el registro {index} tiene un campo de prueba `{field}` que no es un array"
   response response_external_benchmark_recovery_not_permitted_en
     intent external_benchmark_recovery_not_permitted
     language en
     text "SWE-bench harness recovery was not permitted: {reason}"
+  response response_external_benchmark_recovery_not_permitted_ru
+    intent external_benchmark_recovery_not_permitted
+    language ru
+    text "восстановление каркаса SWE-bench не разрешено: {reason}"
+  response response_external_benchmark_recovery_not_permitted_hi
+    intent external_benchmark_recovery_not_permitted
+    language hi
+    text "SWE-bench harness recovery की अनुमति नहीं थी: {reason}"
+  response response_external_benchmark_recovery_not_permitted_zh
+    intent external_benchmark_recovery_not_permitted
+    language zh
+    text "不允许恢复 SWE-bench 测试框架：{reason}"
+  response response_external_benchmark_recovery_not_permitted_es
+    intent external_benchmark_recovery_not_permitted
+    language es
+    text "no se permitió recuperar el arnés de SWE-bench: {reason}"
   response response_external_benchmark_publisher_exhausted_en
     intent external_benchmark_publisher_exhausted
     language en
     text "SWE-bench harness publisher search was exhausted: {consulted}"
+  response response_external_benchmark_publisher_exhausted_ru
+    intent external_benchmark_publisher_exhausted
+    language ru
+    text "поиск издателя каркаса SWE-bench исчерпан: {consulted}"
+  response response_external_benchmark_publisher_exhausted_hi
+    intent external_benchmark_publisher_exhausted
+    language hi
+    text "SWE-bench harness publisher की खोज पूरी हो गई, कुछ नहीं मिला: {consulted}"
+  response response_external_benchmark_publisher_exhausted_zh
+    intent external_benchmark_publisher_exhausted
+    language zh
+    text "已穷尽 SWE-bench 测试框架发布方的搜索：{consulted}"
+  response response_external_benchmark_publisher_exhausted_es
+    intent external_benchmark_publisher_exhausted
+    language es
+    text "se agotó la búsqueda del publicador del arnés de SWE-bench: {consulted}"
   response response_external_benchmark_recovery_still_missing_en
     intent external_benchmark_recovery_still_missing
     language en
     text "SWE-bench harness remained unavailable after recovery: {after}"
+  response response_external_benchmark_recovery_still_missing_ru
+    intent external_benchmark_recovery_still_missing
+    language ru
+    text "каркас SWE-bench остался недоступным после восстановления: {after}"
+  response response_external_benchmark_recovery_still_missing_hi
+    intent external_benchmark_recovery_still_missing
+    language hi
+    text "recovery के बाद भी SWE-bench harness उपलब्ध नहीं रहा: {after}"
+  response response_external_benchmark_recovery_still_missing_zh
+    intent external_benchmark_recovery_still_missing
+    language zh
+    text "恢复后 SWE-bench 测试框架仍不可用：{after}"
+  response response_external_benchmark_recovery_still_missing_es
+    intent external_benchmark_recovery_still_missing
+    language es
+    text "el arnés de SWE-bench siguió sin estar disponible tras la recuperación: {after}"
   response response_external_benchmark_full_floor_regression_en
     intent external_benchmark_full_floor_regression
     language en
     text "{suite}: full_minimum_pass_count fell from {previous} to {current}"
+  response response_external_benchmark_full_floor_regression_ru
+    intent external_benchmark_full_floor_regression
+    language ru
+    text "{suite}: full_minimum_pass_count упал с {previous} до {current}"
+  response response_external_benchmark_full_floor_regression_hi
+    intent external_benchmark_full_floor_regression
+    language hi
+    text "{suite}: full_minimum_pass_count {previous} से घटकर {current} हो गया"
+  response response_external_benchmark_full_floor_regression_zh
+    intent external_benchmark_full_floor_regression
+    language zh
+    text "{suite}：full_minimum_pass_count 从 {previous} 降到了 {current}"
+  response response_external_benchmark_full_floor_regression_es
+    intent external_benchmark_full_floor_regression
+    language es
+    text "{suite}: full_minimum_pass_count bajó de {previous} a {current}"
   response response_external_benchmark_floor_below_best_en
     intent external_benchmark_floor_below_best
     language en
     text "{suite}: {field}={floor} is below the best recorded pass count {best} at slice {slice}"
+  response response_external_benchmark_floor_below_best_ru
+    intent external_benchmark_floor_below_best
+    language ru
+    text "{suite}: {field}={floor} ниже лучшего записанного числа пройденных {best} на срезе {slice}"
+  response response_external_benchmark_floor_below_best_hi
+    intent external_benchmark_floor_below_best
+    language hi
+    text "{suite}: {field}={floor} slice {slice} पर दर्ज सबसे अच्छी pass count {best} से कम है"
+  response response_external_benchmark_floor_below_best_zh
+    intent external_benchmark_floor_below_best
+    language zh
+    text "{suite}：{field}={floor} 低于切片 {slice} 上记录的最佳通过数 {best}"
+  response response_external_benchmark_floor_below_best_es
+    intent external_benchmark_floor_below_best
+    language es
+    text "{suite}: {field}={floor} está por debajo del mejor número de aprobados registrado, {best}, con el corte {slice}"
   response response_external_benchmark_unavailable_observation_en
     intent external_benchmark_unavailable_observation
     language en
+    audience machine
     text "suite={suite} benchmark_unavailable evaluator_detail={reason}"
   response response_external_benchmark_failure_observation_en
     intent external_benchmark_failure_observation
     language en
+    audience machine
     text "suite={suite} case={case} evaluator_detail={detail}"
   response response_external_benchmark_learning_event_en
     intent external_benchmark_learning_event
     language en
+    audience machine
     text "  event lesson:evaluator-grounded-repair\n"
   response response_external_benchmark_learning_lesson_en
     intent external_benchmark_learning_lesson
     language en
     text "Retain each failed upstream case and evaluator detail as evidence; propose a general repair at the solver/evaluator boundary, and do not promote it until the benchmark ratchet and Agent CLI replay pass under human review."
+  response response_external_benchmark_learning_lesson_ru
+    intent external_benchmark_learning_lesson
+    language ru
+    text "Сохранять каждый проваленный внешний случай и подробности оценщика как доказательство; предлагать общее исправление на границе solver/оценщик и не продвигать его, пока храповик бенчмарка и повтор Agent CLI не пройдут под проверкой человека."
+  response response_external_benchmark_learning_lesson_hi
+    intent external_benchmark_learning_lesson
+    language hi
+    text "हर विफल upstream case और evaluator detail को सबूत के रूप में रखें; solver/evaluator सीमा पर एक सामान्य सुधार प्रस्तावित करें, और जब तक benchmark ratchet और Agent CLI replay मानव समीक्षा में पास न हों, उसे promote न करें।"
+  response response_external_benchmark_learning_lesson_zh
+    intent external_benchmark_learning_lesson
+    language zh
+    text "将每个失败的上游用例及评估器详情作为证据保留；在 solver/评估器边界上提出通用修复，并在基准棘轮和 Agent CLI 重放于人工审查下通过之前不要提升它。"
+  response response_external_benchmark_learning_lesson_es
+    intent external_benchmark_learning_lesson
+    language es
+    text "Conservar cada caso externo fallido y el detalle del evaluador como evidencia; proponer una reparación general en la frontera entre solver y evaluador, y no promoverla hasta que el trinquete del benchmark y la reproducción del Agent CLI pasen con revisión humana."
   response response_external_benchmark_swe_unavailable_en
     intent external_benchmark_swe_unavailable
     language en
     text "official SWE-bench evaluation unavailable: {reason}"
+  response response_external_benchmark_swe_unavailable_ru
+    intent external_benchmark_swe_unavailable
+    language ru
+    text "официальная оценка SWE-bench недоступна: {reason}"
+  response response_external_benchmark_swe_unavailable_hi
+    intent external_benchmark_swe_unavailable
+    language hi
+    text "आधिकारिक SWE-bench evaluation उपलब्ध नहीं है: {reason}"
+  response response_external_benchmark_swe_unavailable_zh
+    intent external_benchmark_swe_unavailable
+    language zh
+    text "官方 SWE-bench 评估不可用：{reason}"
+  response response_external_benchmark_swe_unavailable_es
+    intent external_benchmark_swe_unavailable
+    language es
+    text "la evaluación oficial de SWE-bench no está disponible: {reason}"
+  response response_external_benchmark_shard_cannot_record_en
+    intent external_benchmark_shard_cannot_record
+    language en
+    text "--offset {offset} runs a shard of the suite; record the shards' combined total instead of appending or rewriting the frontier from one shard"
+  response response_external_benchmark_shard_cannot_record_ru
+    intent external_benchmark_shard_cannot_record
+    language ru
+    text "--offset {offset} запускает часть набора; записывайте общий итог всех частей, а не дописывайте и не перезаписывайте границу по одной части"
+  response response_external_benchmark_shard_cannot_record_hi
+    intent external_benchmark_shard_cannot_record
+    language hi
+    text "--offset {offset} suite का एक shard चलाता है; एक shard से frontier जोड़ने या फिर से लिखने के बजाय सभी shards का संयुक्त total दर्ज करें"
+  response response_external_benchmark_shard_cannot_record_zh
+    intent external_benchmark_shard_cannot_record
+    language zh
+    text "--offset {offset} 只运行测试集的一个分片；请记录所有分片的合计结果，而不要根据单个分片追加或重写前沿"
+  response response_external_benchmark_shard_cannot_record_es
+    intent external_benchmark_shard_cannot_record
+    language es
+    text "--offset {offset} ejecuta un fragmento de la suite; registra el total combinado de los fragmentos en lugar de añadir o reescribir la frontera a partir de un solo fragmento"

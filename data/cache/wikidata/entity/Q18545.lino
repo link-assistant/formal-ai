@@ -1,14 +1,17 @@
 Q18545
   aliases
     en (balls)
+    es (bola balon pelota)
     ru ("мячик" "шарик" "шар")
   descriptions
     en "round object used in sports or for playing"
+    es "objeto esférico u ovalado usado en varios deportes y juegos"
     hi "गोल वस्तु"
     ru "шарообразный предмет для подвижной игры"
   id Q18545
   labels
     en ball
+    es "balón"
     hi "गेंद"
     ru "мяч"
     zh "球"

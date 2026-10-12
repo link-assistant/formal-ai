@@ -1,0 +1,5 @@
+{
+  "taskId": "T2060",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run `node --test rust/tests/web/project-summary-parity.test.mjs rust/tests/web/specification-parity-worker.test.mjs`"
+}

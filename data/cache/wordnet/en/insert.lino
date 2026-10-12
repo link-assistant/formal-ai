@@ -1,0 +1,50 @@
+language en
+lemma insert
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a folded section placed between the leaves of another publication"
+    id oewn-06408455-n
+    partOfSpeech n
+  entry
+    definition "an artifact that is inserted or is to be inserted"
+    id oewn-03578433-n
+    partOfSpeech n
+    synonyms (inset)
+  entry
+    definition "(broadcasting) a local announcement inserted into a network program"
+    id oewn-00385318-n
+    partOfSpeech n
+    synonyms (cut-in)
+  entry
+    definition "(film) a still picture that is introduced and that interrupts the action of a film"
+    id oewn-00385137-n
+    partOfSpeech n
+    synonyms (cut-in)
+  entry
+    definition "put or introduce into something"
+    examples ("insert a picture into the text")
+    id oewn-01424276-v
+    partOfSpeech v
+    synonyms (infix enter introduce)
+  entry
+    definition "place, fit, or thrust (something) into another thing"
+    examples ("Insert your ticket here")
+    id oewn-00187671-v
+    partOfSpeech v
+    synonyms (enclose inclose "stick in" "put in" introduce)
+  entry
+    definition "fit snugly into"
+    examples ("insert your ticket into the slot" "tuck your shirttail in")
+    id oewn-01392430-v
+    partOfSpeech v
+    synonyms (tuck)
+  entry
+    definition "insert casually"
+    examples ("She slipped in a reference to her own work")
+    id oewn-01027611-v
+    partOfSpeech v
+    synonyms ("slip in" "stick in" "sneak in")
+source "oewn:2024"

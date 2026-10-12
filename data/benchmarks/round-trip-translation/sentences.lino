@@ -1,0 +1,1287 @@
+# R1188-U19 round-trip translation corpus. Built by
+# `node scripts/measure-round-trip-translation.mjs --write-corpus` from the seed
+# responses written in all five languages and the leading sentences of the
+# cached pages in data/benchmarks/web-formalization/.
+round-trip-sentence
+  language en
+  origin "seed-response action_correction"
+  text "I'm sorry. You asked for information, not an update. I won't make further changes unless you explicitly request them."
+round-trip-sentence
+  language ru
+  origin "seed-response action_correction"
+  text "Извините. Вы просили информацию, а не обновление. Я не буду вносить изменения без явного запроса."
+round-trip-sentence
+  language hi
+  origin "seed-response action_correction"
+  text "माफ़ कीजिए। आपने जानकारी माँगी थी, अपडेट नहीं। आपके स्पष्ट अनुरोध के बिना मैं आगे बदलाव नहीं करूँगा।"
+round-trip-sentence
+  language zh
+  origin "seed-response action_correction"
+  text "抱歉。你请求的是信息，而不是更新。除非你明确要求，否则我不会再做更改。"
+round-trip-sentence
+  language es
+  origin "seed-response action_correction"
+  text "Lo siento. Pediste información, no una actualización. No haré más cambios salvo que los solicites explícitamente."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_action_ask_user"
+  text "Let me ask you a few questions so I get this right."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_action_ask_user"
+  text "Задам пару коротких вопросов, чтобы всё сделать правильно."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_action_ask_user"
+  text "मैं इसे सही करने के लिए आपसे कुछ छोटे सवाल पूछता हूँ।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_action_ask_user"
+  text "我来问你几个简短的问题，以便把这件事做对。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_action_ask_user"
+  text "Voy a hacerte unas preguntas para hacerlo bien."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_action_compile_program"
+  text "Let me run a compile this program for you."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_action_compile_program"
+  text "Скомпилирую эту программу для вас."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_action_compile_program"
+  text "मैं आपके लिए इस प्रोग्राम को कंपाइल करता हूँ।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_action_compile_program"
+  text "我来为你编译这个程序。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_action_compile_program"
+  text "Voy a compilar este programa por ti."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_action_generic"
+  text "Let me take the next step to handle that for you."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_action_generic"
+  text "Сделаю следующий шаг, чтобы с этим разобраться."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_action_generic"
+  text "मैं इसे पूरा करने के लिए अगला कदम उठाता हूँ।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_action_generic"
+  text "我来采取下一步来处理这个。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_action_generic"
+  text "Voy a dar el siguiente paso para resolverlo."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_action_list_current"
+  text "Let me list the items directly in the current folder."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_action_list_current"
+  text "Покажу объекты непосредственно в текущей папке."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_action_list_current"
+  text "मैं मौजूदा फ़ोल्डर में सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_action_list_current"
+  text "我来列出当前目录中的直接项目。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_action_list_current"
+  text "Voy a listar los elementos que están directamente en la carpeta actual."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_action_list_desktop"
+  text "Let me list the items directly on your Desktop."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_action_list_desktop"
+  text "Покажу объекты непосредственно на вашем рабочем столе."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_action_list_desktop"
+  text "मैं आपके डेस्कटॉप पर सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_action_list_desktop"
+  text "我来列出桌面上的直接项目。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_action_list_desktop"
+  text "Voy a listar los elementos que están directamente en tu escritorio."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_action_list_home"
+  text "Let me list the items directly in your home folder."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_action_list_home"
+  text "Покажу объекты непосредственно в вашей домашней папке."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_action_list_home"
+  text "मैं आपके होम फ़ोल्डर में सीधे मौजूद आइटम सूचीबद्ध करता हूँ।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_action_list_home"
+  text "我来列出主目录中的直接项目。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_action_list_home"
+  text "Voy a listar los elementos que están directamente en tu carpeta personal."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_action_run"
+  text "Let me run the requested command to get that for you."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_action_run"
+  text "Выполню короткую команду, чтобы это получить."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_action_run"
+  text "मैं यह पाने के लिए एक छोटी कमांड चलाता हूँ।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_action_run"
+  text "我来运行一个命令来完成这个。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_action_run"
+  text "Voy a ejecutar el comando solicitado para obtenerlo."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_action_run_program"
+  text "Let me run the compiled program for you."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_action_run_program"
+  text "Запущу скомпилированную программу для вас."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_action_run_program"
+  text "मैं आपके लिए कंपाइल किया हुआ प्रोग्राम चलाता हूँ।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_action_run_program"
+  text "我来为你运行编译后的程序。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_action_run_program"
+  text "Voy a ejecutar el programa compilado por ti."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_continuation"
+  text "Nothing is in progress to continue. Tell me the task and I will start it."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_continuation"
+  text "Продолжать нечего: сейчас нет незавершённой задачи. Назовите задачу, и я начну."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_continuation"
+  text "जारी रखने के लिए कुछ भी प्रगति में नहीं है। मुझे कार्य बताइए और मैं उसे शुरू कर दूँगा।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_continuation"
+  text "当前没有正在进行的任务可以继续。请告诉我任务，我会开始。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_continuation"
+  text "No hay nada en curso que continuar. Dime la tarea y la empezaré."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_report_contents_question"
+  text "Which context should the GitHub issue include?"
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_report_contents_question"
+  text "Какой контекст включить в задачу GitHub?"
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_report_contents_question"
+  text "GitHub समस्या में कौन सा संदर्भ शामिल हो?"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_report_contents_question"
+  text "GitHub 问题应包含哪些上下文?"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_report_contents_question"
+  text "¿Qué contexto debe incluir la incidencia de GitHub?"
+round-trip-sentence
+  language en
+  origin "seed-response agentic_report_exported"
+  text "Report context exported."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_report_exported"
+  text "Контекст отчёта экспортирован."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_report_exported"
+  text "रिपोर्ट का संदर्भ निर्यात किया गया।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_report_exported"
+  text "报告上下文已导出。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_report_exported"
+  text "Se exportó el contexto del informe."
+round-trip-sentence
+  language en
+  origin "seed-response agentic_report_target_question"
+  text "What would you like to report? Select one or more."
+round-trip-sentence
+  language ru
+  origin "seed-response agentic_report_target_question"
+  text "Что вы хотите отправить? Выберите один или несколько вариантов."
+round-trip-sentence
+  language hi
+  origin "seed-response agentic_report_target_question"
+  text "आप क्या रिपोर्ट करना चाहेंगे? एक या अधिक विकल्प चुनें।"
+round-trip-sentence
+  language zh
+  origin "seed-response agentic_report_target_question"
+  text "您想报告什么？请选择一个或多个选项。"
+round-trip-sentence
+  language es
+  origin "seed-response agentic_report_target_question"
+  text "¿Qué quieres informar? Selecciona una o más opciones."
+round-trip-sentence
+  language en
+  origin "seed-response ambiguous_modification_clarification"
+  text "Which program or result should I modify?"
+round-trip-sentence
+  language ru
+  origin "seed-response ambiguous_modification_clarification"
+  text "Какую программу или результат нужно изменить?"
+round-trip-sentence
+  language hi
+  origin "seed-response ambiguous_modification_clarification"
+  text "मुझे किस प्रोग्राम या परिणाम को बदलना चाहिए?"
+round-trip-sentence
+  language zh
+  origin "seed-response ambiguous_modification_clarification"
+  text "我应该修改哪个程序或结果？"
+round-trip-sentence
+  language es
+  origin "seed-response ambiguous_modification_clarification"
+  text "¿Qué programa o resultado debo modificar?"
+round-trip-sentence
+  language en
+  origin "seed-response assistant_name"
+  text "I'm formal AI, and currently I don't have a name. But you can name me as you like."
+round-trip-sentence
+  language ru
+  origin "seed-response assistant_name"
+  text "Я formal AI, и сейчас у меня нет имени. Но вы можете назвать меня как хотите."
+round-trip-sentence
+  language hi
+  origin "seed-response assistant_name"
+  text "मैं formal AI हूँ, और अभी मेरा कोई नाम नहीं है। लेकिन आप मुझे अपनी पसंद का नाम दे सकते हैं।"
+round-trip-sentence
+  language zh
+  origin "seed-response assistant_name"
+  text "我是 formal AI,目前还没有名字。不过您可以按自己的喜好给我起名。"
+round-trip-sentence
+  language es
+  origin "seed-response assistant_name"
+  text "Soy Formal AI y actualmente no tengo nombre. Puedes ponerme el nombre que prefieras."
+round-trip-sentence
+  language en
+  origin "seed-response code_execution_refused"
+  text "This code was not tested, not compiled, not checked because no execution backend is configured."
+round-trip-sentence
+  language ru
+  origin "seed-response code_execution_refused"
+  text "Этот код не тестировался, не компилировался и не проверялся, потому что среда выполнения не настроена."
+round-trip-sentence
+  language hi
+  origin "seed-response code_execution_refused"
+  text "इस कोड का परीक्षण, संकलन या जाँच नहीं हुई क्योंकि कोई execution backend कॉन्फ़िगर नहीं है।"
+round-trip-sentence
+  language zh
+  origin "seed-response code_execution_refused"
+  text "此代码未经测试、编译或检查，因为尚未配置执行后端。"
+round-trip-sentence
+  language es
+  origin "seed-response code_execution_refused"
+  text "Este código no fue probado, compilado ni comprobado porque no hay un entorno de ejecución configurado."
+round-trip-sentence
+  language en
+  origin "seed-response code_execution_request_markers"
+  text '("run this" "execute this" "compile and run" "tell me exactly what it prints")'
+round-trip-sentence
+  language ru
+  origin "seed-response code_execution_request_markers"
+  text '("запусти это" "выполни это" "скомпилируй и запусти" "что оно печатает")'
+round-trip-sentence
+  language hi
+  origin "seed-response code_execution_request_markers"
+  text '("इसे चलाओ" "इसे निष्पादित" "संकलित करके चलाओ" "क्या छापता")'
+round-trip-sentence
+  language zh
+  origin "seed-response code_execution_request_markers"
+  text '("运行这个" "执行这个" "编译并运行" "打印了什么")'
+round-trip-sentence
+  language es
+  origin "seed-response code_execution_request_markers"
+  text '("ejecuta esto" "compílalo y ejecútalo" "qué imprime")'
+round-trip-sentence
+  language en
+  origin "seed-response coding_meta_algorithm_heading"
+  text "Meta algorithm for constructing conversion algorithms:"
+round-trip-sentence
+  language ru
+  origin "seed-response coding_meta_algorithm_heading"
+  text "Метаалгоритм построения алгоритмов преобразования:"
+round-trip-sentence
+  language hi
+  origin "seed-response coding_meta_algorithm_heading"
+  text "रूपांतरण एल्गोरिदम बनाने के लिए मेटा एल्गोरिदम:"
+round-trip-sentence
+  language zh
+  origin "seed-response coding_meta_algorithm_heading"
+  text "用于构建转换算法的元算法："
+round-trip-sentence
+  language es
+  origin "seed-response coding_meta_algorithm_heading"
+  text "Metaalgoritmo para construir algoritmos de conversión:"
+round-trip-sentence
+  language en
+  origin "seed-response coding_meta_algorithm_solutions_heading"
+  text "Coding solutions using the same meta algorithm:"
+round-trip-sentence
+  language ru
+  origin "seed-response coding_meta_algorithm_solutions_heading"
+  text "Решения для программирования, использующие тот же метаалгоритм:"
+round-trip-sentence
+  language hi
+  origin "seed-response coding_meta_algorithm_solutions_heading"
+  text "उसी मेटा एल्गोरिदम का उपयोग करने वाले कोडिंग समाधान:"
+round-trip-sentence
+  language zh
+  origin "seed-response coding_meta_algorithm_solutions_heading"
+  text "使用同一元算法的编程解决方案："
+round-trip-sentence
+  language es
+  origin "seed-response coding_meta_algorithm_solutions_heading"
+  text "Soluciones de programación que usan el mismo metaalgoritmo:"
+round-trip-sentence
+  language en
+  origin "seed-response coding_rosetta_failed"
+  text "Execution status: unavailable or failed in the isolated bounded agent workspace."
+round-trip-sentence
+  language ru
+  origin "seed-response coding_rosetta_failed"
+  text "Статус выполнения: недоступно или завершилось ошибкой в изолированной ограниченной рабочей среде агента."
+round-trip-sentence
+  language hi
+  origin "seed-response coding_rosetta_failed"
+  text "Execution status: सीमित पृथक agent workspace में उपलब्ध नहीं था या विफल हुआ।"
+round-trip-sentence
+  language zh
+  origin "seed-response coding_rosetta_failed"
+  text "执行状态：在受限的隔离代理工作区中不可用或失败。"
+round-trip-sentence
+  language es
+  origin "seed-response coding_rosetta_failed"
+  text "Estado de ejecución: no disponible o falló en el espacio aislado y limitado del agente."
+round-trip-sentence
+  language en
+  origin "seed-response coding_rosetta_not_requested"
+  text "Execution status: not requested."
+round-trip-sentence
+  language ru
+  origin "seed-response coding_rosetta_not_requested"
+  text "Статус выполнения: запуск не запрашивался."
+round-trip-sentence
+  language hi
+  origin "seed-response coding_rosetta_not_requested"
+  text "Execution status: चलाने का अनुरोध नहीं किया गया।"
+round-trip-sentence
+  language zh
+  origin "seed-response coding_rosetta_not_requested"
+  text "执行状态：未请求运行。"
+round-trip-sentence
+  language es
+  origin "seed-response coding_rosetta_not_requested"
+  text "Estado de ejecución: no solicitado."
+round-trip-sentence
+  language en
+  origin "seed-response coding_rosetta_passed"
+  text "Execution status: compiled and ran in an isolated bounded agent workspace."
+round-trip-sentence
+  language ru
+  origin "seed-response coding_rosetta_passed"
+  text "Статус выполнения: скомпилировано и запущено в изолированной ограниченной рабочей среде агента."
+round-trip-sentence
+  language hi
+  origin "seed-response coding_rosetta_passed"
+  text "Execution status: सीमित पृथक agent workspace में compile होकर चला।"
+round-trip-sentence
+  language zh
+  origin "seed-response coding_rosetta_passed"
+  text "执行状态：已在受限的隔离代理工作区中编译并运行。"
+round-trip-sentence
+  language es
+  origin "seed-response coding_rosetta_passed"
+  text "Estado de ejecución: compilado y ejecutado en el espacio aislado y limitado del agente."
+round-trip-sentence
+  language en
+  origin "seed-response coding_rosetta_workspace_unavailable"
+  text "Execution status: unavailable; the isolated workspace could not be created."
+round-trip-sentence
+  language ru
+  origin "seed-response coding_rosetta_workspace_unavailable"
+  text "Статус выполнения: недоступно; изолированную рабочую среду создать не удалось."
+round-trip-sentence
+  language hi
+  origin "seed-response coding_rosetta_workspace_unavailable"
+  text "Execution status: उपलब्ध नहीं; पृथक workspace बनाया नहीं जा सका।"
+round-trip-sentence
+  language zh
+  origin "seed-response coding_rosetta_workspace_unavailable"
+  text "执行状态：不可用；无法创建隔离工作区。"
+round-trip-sentence
+  language es
+  origin "seed-response coding_rosetta_workspace_unavailable"
+  text "Estado de ejecución: no disponible; no se pudo crear el espacio aislado."
+round-trip-sentence
+  language en
+  origin "seed-response coding_synthesis_sources_heading"
+  text "Sources:"
+round-trip-sentence
+  language ru
+  origin "seed-response coding_synthesis_sources_heading"
+  text "Источники:"
+round-trip-sentence
+  language hi
+  origin "seed-response coding_synthesis_sources_heading"
+  text "स्रोत:"
+round-trip-sentence
+  language zh
+  origin "seed-response coding_synthesis_sources_heading"
+  text "来源："
+round-trip-sentence
+  language es
+  origin "seed-response coding_synthesis_sources_heading"
+  text "Fuentes:"
+round-trip-sentence
+  language en
+  origin "seed-response compose_boundary_note"
+  text "Every statement below is carried by a cited source; nothing was added beyond them."
+round-trip-sentence
+  language ru
+  origin "seed-response compose_boundary_note"
+  text "Каждое утверждение ниже подтверждено источником; ничего сверх этого не добавлено."
+round-trip-sentence
+  language hi
+  origin "seed-response compose_boundary_note"
+  text "नीचे का हर कथन एक उद्धृत स्रोत से है; उसके अतिरिक्त कुछ नहीं जोड़ा गया।"
+round-trip-sentence
+  language zh
+  origin "seed-response compose_boundary_note"
+  text "以下每一条陈述都有引用来源；未添加来源之外的任何内容。"
+round-trip-sentence
+  language es
+  origin "seed-response compose_boundary_note"
+  text "Cada afirmación de abajo está respaldada por una fuente citada; no se añadió nada más allá de ellas."
+round-trip-sentence
+  language en
+  origin "seed-response compose_no_verified_capture"
+  text "No verified source statement was captured for this request, so nothing was composed."
+round-trip-sentence
+  language ru
+  origin "seed-response compose_no_verified_capture"
+  text "Для этого запроса не получено ни одного подтверждённого источником утверждения, поэтому ничего не составлено."
+round-trip-sentence
+  language hi
+  origin "seed-response compose_no_verified_capture"
+  text "इस अनुरोध के लिए कोई सत्यापित स्रोत-कथन प्राप्त नहीं हुआ, इसलिए कुछ भी नहीं लिखा गया।"
+round-trip-sentence
+  language zh
+  origin "seed-response compose_no_verified_capture"
+  text "没有为该请求捕获任何经来源验证的陈述，因此未作任何撰写。"
+round-trip-sentence
+  language es
+  origin "seed-response compose_no_verified_capture"
+  text "No se capturó ninguna afirmación verificada por una fuente para esta solicitud, así que no se compuso nada."
+round-trip-sentence
+  language en
+  origin "seed-response compose_sources_heading"
+  text "Sources"
+round-trip-sentence
+  language ru
+  origin "seed-response compose_sources_heading"
+  text "Источники"
+round-trip-sentence
+  language hi
+  origin "seed-response compose_sources_heading"
+  text "स्रोत"
+round-trip-sentence
+  language zh
+  origin "seed-response compose_sources_heading"
+  text "来源"
+round-trip-sentence
+  language es
+  origin "seed-response compose_sources_heading"
+  text "Fuentes"
+round-trip-sentence
+  language en
+  origin "seed-response concept_lookup_sources_heading"
+  text "Sources:"
+round-trip-sentence
+  language ru
+  origin "seed-response concept_lookup_sources_heading"
+  text "Источники:"
+round-trip-sentence
+  language hi
+  origin "seed-response concept_lookup_sources_heading"
+  text "स्रोत:"
+round-trip-sentence
+  language zh
+  origin "seed-response concept_lookup_sources_heading"
+  text "来源："
+round-trip-sentence
+  language es
+  origin "seed-response concept_lookup_sources_heading"
+  text "Fuentes:"
+round-trip-sentence
+  language en
+  origin "seed-response courtesy_response"
+  text "Glad to hear it. What would you like to do next?"
+round-trip-sentence
+  language ru
+  origin "seed-response courtesy_response"
+  text "Рад это слышать. Что вы хотите сделать дальше?"
+round-trip-sentence
+  language hi
+  origin "seed-response courtesy_response"
+  text "यह सुनकर अच्छा लगा। अब आप क्या करना चाहेंगे?"
+round-trip-sentence
+  language zh
+  origin "seed-response courtesy_response"
+  text "很高兴听到。接下来您想做什么?"
+round-trip-sentence
+  language es
+  origin "seed-response courtesy_response"
+  text "Me alegra saberlo. ¿Qué te gustaría hacer ahora?"
+round-trip-sentence
+  language en
+  origin "seed-response definition_followup_clarify"
+  text "What does “it” refer to here?"
+round-trip-sentence
+  language ru
+  origin "seed-response definition_followup_clarify"
+  text "Что именно вы имеете в виду под «это»?"
+round-trip-sentence
+  language hi
+  origin "seed-response definition_followup_clarify"
+  text "यहाँ “यह” से आपका क्या मतलब है?"
+round-trip-sentence
+  language zh
+  origin "seed-response definition_followup_clarify"
+  text "这里的“这”具体指什么？"
+round-trip-sentence
+  language es
+  origin "seed-response definition_followup_clarify"
+  text "¿A qué se refiere «eso» aquí?"
+round-trip-sentence
+  language en
+  origin "seed-response definition_merge_sources_label"
+  text "Sources:"
+round-trip-sentence
+  language ru
+  origin "seed-response definition_merge_sources_label"
+  text "Источники:"
+round-trip-sentence
+  language hi
+  origin "seed-response definition_merge_sources_label"
+  text "स्रोत:"
+round-trip-sentence
+  language zh
+  origin "seed-response definition_merge_sources_label"
+  text "来源："
+round-trip-sentence
+  language es
+  origin "seed-response definition_merge_sources_label"
+  text "Fuentes:"
+round-trip-sentence
+  language en
+  origin "seed-response document_format_conversion_fallbacks"
+  text "Documented target fallbacks:"
+round-trip-sentence
+  language ru
+  origin "seed-response document_format_conversion_fallbacks"
+  text "Документированные замены в целевом формате:"
+round-trip-sentence
+  language hi
+  origin "seed-response document_format_conversion_fallbacks"
+  text "लक्ष्य प्रारूप के प्रलेखित विकल्प:"
+round-trip-sentence
+  language zh
+  origin "seed-response document_format_conversion_fallbacks"
+  text "目标格式中有文档记载的回退方式："
+round-trip-sentence
+  language es
+  origin "seed-response document_format_conversion_fallbacks"
+  text "Alternativas documentadas en el formato de destino:"
+round-trip-sentence
+  language en
+  origin "seed-response document_originality_check_price_claim_heading"
+  text "Price claim check"
+round-trip-sentence
+  language ru
+  origin "seed-response document_originality_check_price_claim_heading"
+  text "Проверка ценовых утверждений"
+round-trip-sentence
+  language hi
+  origin "seed-response document_originality_check_price_claim_heading"
+  text "मूल्य दावों की जांच"
+round-trip-sentence
+  language zh
+  origin "seed-response document_originality_check_price_claim_heading"
+  text "价格声明核查"
+round-trip-sentence
+  language es
+  origin "seed-response document_originality_check_price_claim_heading"
+  text "Comprobación de afirmaciones de precio"
+round-trip-sentence
+  language en
+  origin "seed-response explain_previous_turn_empty"
+  text "There is no previous assistant turn available to explain yet."
+round-trip-sentence
+  language ru
+  origin "seed-response explain_previous_turn_empty"
+  text "Пока нет предыдущей реплики ассистента, которую можно объяснить."
+round-trip-sentence
+  language hi
+  origin "seed-response explain_previous_turn_empty"
+  text "अभी समझाने के लिए assistant का कोई पिछला turn उपलब्ध नहीं है।"
+round-trip-sentence
+  language zh
+  origin "seed-response explain_previous_turn_empty"
+  text "目前还没有可供解释的上一轮助手回复。"
+round-trip-sentence
+  language es
+  origin "seed-response explain_previous_turn_empty"
+  text "Todavía no hay ningún turno anterior del asistente que explicar."
+round-trip-sentence
+  language en
+  origin "seed-response fact_check_no_statements"
+  text "There are no declarative statements to check."
+round-trip-sentence
+  language ru
+  origin "seed-response fact_check_no_statements"
+  text "В диалоге нет утверждений для проверки."
+round-trip-sentence
+  language hi
+  origin "seed-response fact_check_no_statements"
+  text "जाँचने के लिए कोई घोषणात्मक कथन नहीं है।"
+round-trip-sentence
+  language zh
+  origin "seed-response fact_check_no_statements"
+  text "没有可核查的陈述。"
+round-trip-sentence
+  language es
+  origin "seed-response fact_check_no_statements"
+  text "No hay afirmaciones declarativas que comprobar."
+round-trip-sentence
+  language en
+  origin "seed-response fact_comparison_missing_value"
+  text "no seeded value"
+round-trip-sentence
+  language ru
+  origin "seed-response fact_comparison_missing_value"
+  text "нет сохранённого значения"
+round-trip-sentence
+  language hi
+  origin "seed-response fact_comparison_missing_value"
+  text "कोई सहेजा गया मान नहीं"
+round-trip-sentence
+  language zh
+  origin "seed-response fact_comparison_missing_value"
+  text "无已存值"
+round-trip-sentence
+  language es
+  origin "seed-response fact_comparison_missing_value"
+  text "sin valor guardado"
+round-trip-sentence
+  language en
+  origin "seed-response farewell"
+  text "Goodbye! Feel free to return any time."
+round-trip-sentence
+  language ru
+  origin "seed-response farewell"
+  text "До свидания! Возвращайтесь в любое время."
+round-trip-sentence
+  language hi
+  origin "seed-response farewell"
+  text "अलविदा! जब भी ज़रूरत हो, वापस आएं।"
+round-trip-sentence
+  language zh
+  origin "seed-response farewell"
+  text "再见!随时欢迎回来。"
+round-trip-sentence
+  language es
+  origin "seed-response farewell"
+  text "¡Adiós! Puedes volver cuando quieras."
+round-trip-sentence
+  language en
+  origin "seed-response feature_capability_reason_agent_mode_off"
+  text "agent mode is off; multi-step actions require explicit opt-in"
+round-trip-sentence
+  language ru
+  origin "seed-response feature_capability_reason_agent_mode_off"
+  text "agent mode выключен; для многошаговых действий нужен явный opt-in"
+round-trip-sentence
+  language hi
+  origin "seed-response feature_capability_reason_agent_mode_off"
+  text "agent mode off है; multi-step actions के लिए explicit opt-in चाहिए"
+round-trip-sentence
+  language zh
+  origin "seed-response feature_capability_reason_agent_mode_off"
+  text "agent mode 已关闭；多步骤操作需要显式启用"
+round-trip-sentence
+  language es
+  origin "seed-response feature_capability_reason_agent_mode_off"
+  text "el modo agente está desactivado; las acciones de varios pasos requieren activarlo de forma explícita"
+round-trip-sentence
+  language en
+  origin "seed-response feature_capability_reason_definition_fusion_explicit"
+  text "automatic definition fusion is set to explicit-only"
+round-trip-sentence
+  language ru
+  origin "seed-response feature_capability_reason_definition_fusion_explicit"
+  text "автоматическое слияние определений работает только после включения режима auto"
+round-trip-sentence
+  language hi
+  origin "seed-response feature_capability_reason_definition_fusion_explicit"
+  text "automatic definition fusion के लिए auto mode enable करना होगा"
+round-trip-sentence
+  language zh
+  origin "seed-response feature_capability_reason_definition_fusion_explicit"
+  text "自动 definition fusion 需要切换到 auto 模式"
+round-trip-sentence
+  language es
+  origin "seed-response feature_capability_reason_definition_fusion_explicit"
+  text "la fusión automática de definiciones está configurada solo para uso explícito"
+round-trip-sentence
+  language en
+  origin "seed-response feature_capability_reason_diagnostic_mode_off"
+  text "diagnostics are off; enable them to show traces"
+round-trip-sentence
+  language ru
+  origin "seed-response feature_capability_reason_diagnostic_mode_off"
+  text "диагностика выключена; включите ее, чтобы видеть трассировку"
+round-trip-sentence
+  language hi
+  origin "seed-response feature_capability_reason_diagnostic_mode_off"
+  text "diagnostics off है; trace दिखाने के लिए इसे enable करें"
+round-trip-sentence
+  language zh
+  origin "seed-response feature_capability_reason_diagnostic_mode_off"
+  text "诊断已关闭；开启后才会显示 trace"
+round-trip-sentence
+  language es
+  origin "seed-response feature_capability_reason_diagnostic_mode_off"
+  text "los diagnósticos están desactivados; actívalos para ver las trazas"
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Moon"
+  text "The Moon is the only natural satellite of Earth."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Moon"
+  text "It orbits Earth in an elliptical path, at a distance that varies over the year, averaging around 378,000 kilometers (235,000 mi)."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Moon"
+  text "It completes an orbit (lunar month) in relation to Earth and the Sun (synodically) every 29.5 days."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Sun"
+  text "The Sun is the star located at the centre of the Solar System."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Sun"
+  text "It is a massive sphere of hot plasma, heated to incandescence by nuclear fusion reactions in its core, radiating the energy from its surface mainly as visible light and infrared radiation, with 10% at ultraviolet energies."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Sun"
+  text "It is the main source of energy for life on Earth."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Water"
+  text "Water is an inorganic compound with the chemical formula H2O."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Water"
+  text "It is a transparent, tasteless, odorless, and nearly colorless chemical substance."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Water"
+  text "It is the main constituent of Earth's streams, lakes, and oceans."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Cat"
+  text "The cat (Felis catus), also called domestic cat and house cat, is a small domesticated carnivorous mammal."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Cat"
+  text "It is a member of Felidae, the family of mammals in the order Carnivora also colloquially referred to as cats."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Cat"
+  text "An obligate carnivore requiring a predominantly meat-based diet, it has retractable claws adapted to killing small prey species such as mice and rats."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Dog"
+  text "The dog (Canis familiaris or Canis lupus familiaris) is a domesticated descendant of wolves."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Dog"
+  text "Also called the domestic dog, it was selectively bred during the Late Pleistocene by hunter-gatherers."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Dog"
+  text "Dogs and the modern gray wolf share a common ancestor."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Apple"
+  text "An apple is the round, edible fruit of an apple tree (Malus spp."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Apple"
+  text ")."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Apple"
+  text "Fruit trees of the orchard or domestic apple (Malus domestica), the most widely grown in the genus, are cultivated worldwide."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Tree"
+  text "In botany, a tree is a perennial plant with an elongated stem, or trunk, usually supporting branches and leaves."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Tree"
+  text "In some usages, the definition of a tree may be narrower, e."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Tree"
+  text "g."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Mathematics"
+  text "Mathematics is a field of knowledge concerned with abstract concepts such as numbers, geometric shapes, sets, functions, and probabilities."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Mathematics"
+  text "It uses logical reasoning and proof to study and establish their properties, often expressed as theorems, formulas, and equations."
+round-trip-sentence
+  language en
+  origin "page https://en.wikipedia.org/wiki/Mathematics"
+  text "Mathematics is widely used to model and solve problems in science, engineering, technology, economics, and everyday life."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9B%D1%83%D0%BD%D0%B0"
+  text "Луна́ — единственный естественный спутник Земли."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9B%D1%83%D0%BD%D0%B0"
+  text "Самый близкий к Солнцу спутник планеты, так как у ближайших к Солнцу планет (Меркурия и Венеры) их нет."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9B%D1%83%D0%BD%D0%B0"
+  text "Второй по яркости объект на земном небосводе после Солнца и пятый по величине естественный спутник планеты Солнечной системы."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D0%BB%D0%BD%D1%86%D0%B5"
+  text "Со́лнце (астрономический символ ☉) — одна из звёзд нашей галактики (Млечный Путь) и единственная звезда Солнечной системы."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D0%BB%D0%BD%D1%86%D0%B5"
+  text "Вокруг Солнца обращаются другие объекты этой системы: планеты и их спутники, карликовые планеты и их спутники, астероиды, метеороиды, кометы и космическая пыль."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D0%BB%D0%BD%D1%86%D0%B5"
+  text "По спектральной классификации Солнце относится к типу G (жёлтый карлик), и подклассу 2V, или же к полному спектральному классу G2V."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%92%D0%BE%D0%B4%D0%B0"
+  text "Вода́ (в химии — оксид водорода, гидроксид водорода; химическая формула — H2O) — химическое вещество, представляющее собой бинарное неорганическое соединение, молекула которого состоит из двух атомов водорода и одного атома кислорода, соединённых между собой ковалентной связью."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%92%D0%BE%D0%B4%D0%B0"
+  text "Вода является продуктом горения (окисления) водорода при реакции с кислородом, но также может выступать конечным результатом и иных химических реакций, таких как горение углеводородов и других органических соединений."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%92%D0%BE%D0%B4%D0%B0"
+  text "При нормальных условиях вода представляет собой прозрачную жидкость, не имеющую цвета (при малой толщине слоя), запаха и вкуса."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%88%D0%BA%D0%B0"
+  text "Ко́шка (лат."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%88%D0%BA%D0%B0"
+  text "Felis catus) — домашнее животное, одно из наиболее популярных (наряду с собакой) «животных-компаньонов»."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D1%88%D0%BA%D0%B0"
+  text "С точки зрения научной систематики, домашняя кошка — млекопитающее семейства кошачьих отряда хищных."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D0%B1%D0%B0%D0%BA%D0%B0"
+  text "Соба́ка, или дома́шняя соба́ка (лат."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D0%B1%D0%B0%D0%BA%D0%B0"
+  text "Canis familiaris, или лат."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%A1%D0%BE%D0%B1%D0%B0%D0%BA%D0%B0"
+  text "Canis lupus familiaris), — домашнее животное, одно из наиболее популярных (наряду с кошкой) животных-компаньонов."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%AF%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE"
+  text "Я́блоко — сочный плод яблони, который употребляется в пищу в свежем и запечённом виде, служит сырьём в кулинарии и для приготовления напитков."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%AF%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE"
+  text "Наибольшее распространение получила яблоня домашняя, реже выращивают яблоню сливолистную."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%AF%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE"
+  text "Размер красных, зелёных, жёлтых или оранжевых шаровидных плодов 5—13 см в диаметре."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%94%D0%B5%D1%80%D0%B5%D0%B2%D0%BE"
+  text "Де́рево (лат."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%94%D0%B5%D1%80%D0%B5%D0%B2%D0%BE"
+  text "árbor, греч."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%94%D0%B5%D1%80%D0%B5%D0%B2%D0%BE"
+  text "δένδρον) — жизненная форма деревянистых растений с единственной, отчётливо выраженной, многолетней, в разной степени одревесневшей, разветвлённой (кроме пальм) и сохраняющейся в течение всей жизни главной осью — стволом."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%82%D0%B5%D0%BC%D0%B0%D1%82%D0%B8%D0%BA%D0%B0"
+  text "Матема́тика (др."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%82%D0%B5%D0%BC%D0%B0%D1%82%D0%B8%D0%BA%D0%B0"
+  text "-греч."
+round-trip-sentence
+  language ru
+  origin "page https://ru.wikipedia.org/wiki/%D0%9C%D0%B0%D1%82%D0%B5%D0%BC%D0%B0%D1%82%D0%B8%D0%BA%D0%B0"
+  text "μᾰθημᾰτικά < μάθημα «изучение; наука») — точная формальная наука, первоначально исследовавшая количественные отношения (числа) и пространственные формы (геометрические фигуры)."
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%9A%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE"
+  text "चन्द्रमा (प्रतीक: ) पृथ्वी का प्राकृतिक उपग्रह है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%9A%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE"
+  text "यह सौर मंडल का पाँचवां,सबसे विशाल प्राकृतिक उपग्रह है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%9A%E0%A4%A8%E0%A5%8D%E0%A4%A6%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE"
+  text "इसका आकार क्रिकेट बॉल की तरह गोल है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B8%E0%A5%82%E0%A4%B0%E0%A5%8D%E0%A4%AF"
+  text "सूर्य अथवा सूरज (प्रतीक: ) सौरमंडल के केन्द्र में स्थित एक तारा जिसके चारों तरफ पृथ्वी और सौरमंडल के अन्य अवयव घूमते हैं।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B8%E0%A5%82%E0%A4%B0%E0%A5%8D%E0%A4%AF"
+  text "सूर्य हमारे सौर मंडल का सबसे बड़ा पिंड है और उसका व्यास लगभग १३ लाख ९० हज़ार किलोमीटर है 113 गुना अधिक है जो पृथ्वी से 113 गुना तक ऊर्जा का यह शक्तिशाली भंडार मुख्य रूप से हाइड्रोजन और हीलियम गैसों का एक विशाल गोला है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B8%E0%A5%82%E0%A4%B0%E0%A5%8D%E0%A4%AF"
+  text "परमाणु विलय की प्रक्रिया द्वारा सूर्य अपने केंद्र में ऊर्जा पैदा करता है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%9C%E0%A4%B2"
+  text "जल या पानी एक आम रासायनिक पदार्थ है जिसका अणु दो हाइड्रोजन परमाणु और एक ऑक्सीजन परमाणु से बना है - H2O।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%9C%E0%A4%B2"
+  text "यह सारे प्राणियों के जीवन का आधार है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%9C%E0%A4%B2"
+  text "आमतौर पर जल शब्द का प्रयोग द्रव अवस्था के लिए उपयोग में लाया जाता है पर यह ठोस अवस्था (बर्फ) और गैसीय अवस्था (भाप या जल वाष्प) में भी पाया जाता है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%AC%E0%A4%BF%E0%A4%B2%E0%A5%8D%E0%A4%B2%E0%A5%80"
+  text "बिल्ली एक मांसाहारी स्तनधारी जानवर है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%AC%E0%A4%BF%E0%A4%B2%E0%A5%8D%E0%A4%B2%E0%A5%80"
+  text "इसकी सुनने और सुँघने की शक्ति प्रखर है और यह कम रोशनी, यहाँ तक कि रात में भी देख सकती हैं।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%AC%E0%A4%BF%E0%A4%B2%E0%A5%8D%E0%A4%B2%E0%A5%80"
+  text "लगभग 9500 वर्षों से बिल्ली मनुष्य के साथी के रूप में है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%95%E0%A5%81%E0%A4%A4%E0%A5%8D%E0%A4%A4%E0%A4%BE"
+  text "कुत्ता या श्वान(Dogs) भेड़िया कुल की एक प्रजाति है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%95%E0%A5%81%E0%A4%A4%E0%A5%8D%E0%A4%A4%E0%A4%BE"
+  text "यह मनुष्य के पालतू पशुओं में से एक महत्त्वपूर्ण प्राणी है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%95%E0%A5%81%E0%A4%A4%E0%A5%8D%E0%A4%A4%E0%A4%BE"
+  text "इनके द्वारा तंत्रिका तंत्र को प्रभावित करने वाला एक भयंकर रोग होता है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B8%E0%A5%87%E0%A4%AC"
+  text "सेब एक फल है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B8%E0%A5%87%E0%A4%AC"
+  text "सेब का रंग लाल या हरा होता है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B8%E0%A5%87%E0%A4%AC"
+  text "वैज्ञानिक भाषा में इसे मेेलस पमिला (Malus Pumila) कहते हैं।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B5%E0%A5%83%E0%A4%95%E0%A5%8D%E0%A4%B7"
+  text "वृक्ष का सामान्य अर्थ ऐसे पौधे से होता है जिसमें शाखाएँ निकली हों, जो कम से कम दो-वर्ष तक जीवित रहे, जिससे लकड़ी प्राप्त हो।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B5%E0%A5%83%E0%A4%95%E0%A5%8D%E0%A4%B7"
+  text "वृक्ष की एक जड़ होती है जो प्रायः ज़मीन के अन्दर होती है, तथा जड़ से निकलकर तना तथा पत्तियां हवा में रहते हैं।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%B5%E0%A5%83%E0%A4%95%E0%A5%8D%E0%A4%B7"
+  text "यह प्रदूषण कम करने में कारगर सिद्ध हुआ है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%97%E0%A4%A3%E0%A4%BF%E0%A4%A4"
+  text "गणित ऐसी विद्याओं का समूह है जो संख्याओं, मात्राओं, परिमाणों, रूपों और उन के परस्पर संबंधों, गुण, स्वभाव इत्यादि का अध्ययन करता हैं।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%97%E0%A4%A3%E0%A4%BF%E0%A4%A4"
+  text "गणित एक अमूर्त या निराकार (abstract) और निगमनात्मक प्रणाली है।"
+round-trip-sentence
+  language hi
+  origin "page https://hi.wikipedia.org/wiki/%E0%A4%97%E0%A4%A3%E0%A4%BF%E0%A4%A4"
+  text "गणित की कई शाखाएँ हैं : अंकगणित, रेखागणित, त्रिकोणमिति, सांख्यिकी, बीजगणित, कलन, इत्यादि।"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%9C%88%E7%90%83"
+  text "月球，俗称月亮，是地球唯一的天然卫星，直径约等于地球的四分之一，质量约为地球的1/81，相对于所环绕的行星，是体积和质量最大的卫星，并且是太阳系中第五大的卫星，也是太阳系内密度第二高的卫星，仅次于木卫一。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%9C%88%E7%90%83"
+  text "一般认为月亮形成于约45亿年前，即地球出现后的不久。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%9C%88%E7%90%83"
+  text "有关它的起源有几种假说，但没有一种能完全合理地作毫无破绽的解释，最被普遍认可的是大碰撞说，它假设月球形成于地球与火星般大小的“特亚”之间的一次巨大撞击。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E5%A4%AA%E9%98%B3"
+  text "太阳是位于太阳系中心的恒星，它是一个近乎完美的热等离子体理想球体，通过其核心的核聚变反应加热到白炽。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E5%A4%AA%E9%98%B3"
+  text "太阳主要以可见光、紫外线和红外线的形式辐射能量，是地球上生命最重要的能量来源。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E5%A4%AA%E9%98%B3"
+  text "太阳的半径大约是 695,000千米（432,000英里），或地球半径的109倍。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%B0%B4"
+  text "水（H2O）是一种无机化合物；"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%B0%B4"
+  text "在常温常压且无杂质时，水是无色、无味、几乎不导电的透明液体，也可经蒸发形成气态水蒸气；"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%B0%B4"
+  text "蒸发可在任何温度下发生。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E7%8C%AB"
+  text "猫（英语：cat）通常指家猫（学名：Felis catus，英语：domestic/house cat），是一种家养小型食肉哺乳动物，属小型猫科动物。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E7%8C%AB"
+  text "根据遗传学及考古学分析，人类养猫的纪录可追溯至10,000年前的新月沃土地区。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E7%8C%AB"
+  text "古埃及人饲养猫以防止老鼠偷食谷物的纪录可追溯至公元前1000年前。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E7%8A%AC"
+  text "犬（学名：Canis lupus familiaris）通称狗，又称家犬，是灰狼（Canis lupus lupus）被晚期智人长期驯化后演化出的一个亚种 ，也是现生种群数量最多、多态性最丰富的犬科哺乳动物。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E7%8A%AC"
+  text "狗是人类最早驯化的生物，时间大约在2.6～1.97万年前的末次冰盛期，早于新石器革命。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E7%8A%AC"
+  text "通过之后数万年的人工选择，人类根据不同需要已培育出了数百个不同形态的狗的品种（犬种），例如身高从只有15.2厘米（6.0英寸）的吉娃娃到76厘米（30英寸）的爱尔兰猎狼犬，毛色也有等白、黑、灰、黄、棕等各种颜色，其中大多数犬种出现是近几百年的事。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E8%8B%B9%E6%9E%9C"
+  text "苹果（学名：Malus domestica）是蔷薇科桃亚科苹果族苹果属植物，为落叶乔木，在世界上广泛种植。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E8%8B%B9%E6%9E%9C"
+  text "果实又称林檎或柰（古汉语称呼），一般呈红色，但需视品种而定，含丰富矿物质和维生素，是人们最常食用的水果之一。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E8%8B%B9%E6%9E%9C"
+  text "人们根据需求的不同口感、用途（比如烹饪、生吃、酿苹果酒等）培育不同的品种，已知有超过7,500个苹果品种，拥有一系列人们需要的不同特性。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%A0%91"
+  text "树又称树木、乔木，在植物学定义中，是指具有单一高挺主茎（称作树干）的多年生木本植物。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%A0%91"
+  text "树有次生生长，分枝距地面较高，可形成树冠。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%A0%91"
+  text "人类可利用其木材。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%95%B0%E5%AD%A6"
+  text "数学是研究数量、结构以及空间等概念及其变化的一门学科，属于形式科学的一种。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%95%B0%E5%AD%A6"
+  text "数学利用抽象化和逻辑推理，从计数、计算、量度、对物体形状及运动的观察发展而成。"
+round-trip-sentence
+  language zh
+  origin "page https://zh.wikipedia.org/wiki/%E6%95%B0%E5%AD%A6"
+  text "数学家们拓展这些概念，以公式化新的猜想，以及从选定的公理及定义出发，严谨地推导出一些定理。"
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Luna"
+  text "La Luna es el único satélite natural de la Tierra."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Luna"
+  text "​ Con un diámetro ecuatorial de 3474,8 km, es el quinto satélite más grande del sistema solar, mientras que en cuanto al tamaño proporcional respecto a su planeta es el satélite más grande: un cuarto del diámetro de la Tierra y 1/81 de su masa."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Luna"
+  text "Es, además, después de Ío, el segundo satélite más denso."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Sol"
+  text "El Sol (del latín sol, solis, que alude tanto al dios Sol Invictus como al propio Sol, y que a su vez procede de la raíz protoindoeuropea sauel, significando ‘luz’)​ es una estrella de tipo-G de la secuencia principal y clase de luminosidad V."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Sol"
+  text "Se encuentra en el centro del sistema solar y representa la principal y más abundante fuente de radiación electromagnética de todo este sistema planetario."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Sol"
+  text "​
+Se trata de una esfera de plasma casi perfecta, en cuyo interior tiene lugar un movimiento convectivo que, mediante un proceso de dinamo, genera un campo magnético."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Agua"
+  text "El agua (del latín aqua) es un compuesto inorgánico cuya molécula está constituida por dos átomos de hidrógeno y uno de oxígeno (H2O) unidos por un enlace covalente."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Agua"
+  text "​ El término agua, generalmente, se refiere a la sustancia en su estado líquido, aunque esta puede hallarse en su forma sólida, llamada hielo, y en su forma gaseosa, denominada vapor."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Agua"
+  text "​ Es una sustancia bastante común en la Tierra y el sistema solar, donde se encuentra principalmente en forma de vapor o de hielo."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Felis_catus"
+  text 'El gato doméstico (Felis catus)​​ llamado comúnmente gato, y de forma coloquial cucho, minino, michino o michi, y algunos nombres más, es un mamífero carnívoro de la familia Felidae (cuyos miembros son conocidos como "félidos").'
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Felis_catus"
+  text "​​​​
+Junto con el perro, el gato es el animal doméstico más popular como mascota."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Felis_catus"
+  text "En 2017, la población mundial estimada de gatos estaba en seiscientos millones de felinos."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Canis_familiaris"
+  text "El perro (Canis familiaris o Canis lupus familiaris, dependiendo de si se lo considera una especie o una subespecie del lobo),​​​ llamado perro doméstico o can,​ y en algunos lugares coloquialmente llamado chucho,​ tuso,​ choco,​ entre otros; es un mamífero carnívoro de la familia de los cánidos, que constituye una especie del género Canis."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Canis_familiaris"
+  text "​​ En el 2013, la población mundial estimada de perros estaba entre setecientos millones y novecientos ochenta y siete millones."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Canis_familiaris"
+  text "​​
+Junto con el gato, es el animal de compañía más popular del mundo,​​ recibiendo el título de «el mejor amigo del hombre»."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Manzana"
+  text "La manzana o poma​ es la fruta comestible de la especie Malus domestica, el manzano común."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Manzana"
+  text "Es una fruta pomácea de forma redonda y sabor dulce o agrio."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Manzana"
+  text "Los manzanos se cultivan en todo el mundo y son las especies más utilizadas del género Malus."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/%C3%81rbol"
+  text "Un árbol es una planta de tallo leñoso que se ramifica a cierta altura del suelo."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/%C3%81rbol"
+  text "​ El término hace referencia habitualmente a aquellas plantas cuya altura supera un determinado límite en la madurez, diferente según las fuentes: dos metros,​ tres metros,​​ cinco metros​ o los seis metros."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/%C3%81rbol"
+  text "​ Además, producen ramas secundarias nuevas cada año, que parten de un único fuste o tronco, con clara dominancia apical,​ dando lugar a una nueva copa separada del suelo."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Matem%C3%A1ticas"
+  text "Las matemáticas o, también, la matemática ​​​ (del latín mathematĭca, y a la vez del griego μαθηματικά, transliterado como mathēmatiká, derivado de μάθημα, tr."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Matem%C3%A1ticas"
+  text "máthēma ‘lo que se comprende’) es una ciencia formal que estudia los patrones, propiedades, estructuras y relaciones presentes en sistemas lógicos y abstractos creados por los humanos."
+round-trip-sentence
+  language es
+  origin "page https://es.wikipedia.org/wiki/Matem%C3%A1ticas"
+  text "Conceptos tales como cantidad, forma, espacio y número se podrían considerar como el objeto de estudio de la matemática."

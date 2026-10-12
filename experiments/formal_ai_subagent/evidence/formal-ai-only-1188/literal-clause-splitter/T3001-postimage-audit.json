@@ -1,0 +1,16 @@
+{
+  "identity": [
+    {
+      "path": "js/agentic/crate/obligation_ledger.mjs",
+      "unchanged": true,
+      "sha256": "2353fbeb50cd0fee554621b001b6a9fa68f0832493270152e2c8a6bde27a6723"
+    },
+    {
+      "path": "rust/src/obligation_ledger/derivation.rs",
+      "unchanged": true,
+      "sha256": "911adfec5d8c3a2a790bfbd6e222fde8051841a18b21a5197ece3835e9aa2141"
+    }
+  ],
+  "suppressed": [],
+  "policy": "Native compiler execution prohibited; guard was inactive unless suppressed is nonempty."
+}

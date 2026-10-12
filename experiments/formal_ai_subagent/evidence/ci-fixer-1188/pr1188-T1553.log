@@ -1,0 +1,104 @@
+>> read {"filePath":"scripts/run-prebuilt-tests.sh","file_path":"scripts/run-prebuilt-tests.sh","path":"scripts/run-prebuilt-tests.sh"}
+   <file>
+   00001| #!/usr/bin/env bash
+   00002| # Run the test executables `collect-build-artifacts.sh` gathered.
+   00003| #
+   00004| # Issue #1055: these were compiled once by the shared build job, so this only
+   00005| # runs them. TEST_SUITE picks the suite (PR #1188, R1188-U9):
+   00006| #
+   00007| # - `full` (the default): every target, skipping the suites that run apart --
+   00008| #   `data_files::` and `self_ast_census` as separate steps, `specification::`
+   00009| #   as its own lane -- since running them here again would be the duplication
+   00010| #   issue #1037 removed;
+   00011| # - `specification`: only the `specification::` tests of the unit target,
+   00012| #   which the specification lane used to compile again in every shard.
+   00013| set -euo pipefail
+   00014| 
+   00015| # Issue #1138: the branch suites shell out to `rust-script` for their gate
+   00016| # probes (tests/unit/docs_requirements/*, scripts gated with `--test`), and the
+   00017| # Test job stopped installing it when compiling moved out -- the installer is
+   00018| # idempotent, so a runner or a local caller that already has it skips this.
+   00019| bash scripts/install-rust-script.sh
+   00020| 
+   00021| # Issue #1138, plan 10 leaf 10: the corpus gate answers all ~1355 benchmark
+   00022| # prompts through the full engine (842-873s locally, >1154s unfinished in CI
+   00023| # run 35893508679), which cannot share this step's budget with the unit
+   00024| # phase. It has its own workflow, benchmark-corpus-gate.yml -- the same
+   00025| # partition data_files, self_ast_census, and specification use above.
+   00026| # An array, not a quoted string: "$CORPUS_GATE_SKIP" would hand libtest one
+   00027| # argument containing a space, which it rejects as
+   00028| # `Unrecognized option: 'skip issue_1138_no_silent_unknown'` (run 35912188200,
+   00029| # job 107358064235 -- the unit binary refused to start and the lane exited 101
+   00030| # twenty-six seconds in). "${CORPUS_GATE_SKIP[@]}" expands to the two words.
+   00031| CORPUS_GATE_SKIP=(--skip issue_1138_no_silent_unknown)
+   00032| 
+   00033| # Sharding (PR #1188): the full lane runs as SHARD_TOTAL parallel jobs. Every
+   00034| # job lists all three targets and hands the one listing to
+   00035| # scripts/plan-test-shards.mjs, which splits it longest-first from
+   00036| # data/meta/test-durations.lino -- the same plan in every job, each test in
+   00037| # exactly one shard -- and runs only its own part. Dealing tests out by listed
+   00038| # index instead left one shard with the slow tests while the others idled.
+   00039| # `--check` re-proves on the real listing that the shards cover every test
+   00040| # exactly once. SHARD_RESERVED_SECONDS (`<shard>=<seconds>,...`) is work a
+   00041| # shard already carries in other steps, so the plan gives it fewer tests.
+   00042| # Every target runs even after one fails, so a single run reports every
+   00043| # failure instead of stopping at the first red target.
+   00044| #
+   00045| # Existing per-test durations drive the stable shard plan. Suite wall timing
+   00046| # comes from the CI step timestamps without enabling unstable test features.
+   00047| SHARD_INDEX="${SHARD_INDEX:-1}"
+   00048| SHARD_TOTAL="${SHARD_TOTAL:-1}"
+   00049| SHARD_RESERVED_SECONDS="${SHARD_RESERVED_SECONDS:-}"
+   00050| TEST_SUITE="${TEST_SUITE:-full}"
+   00051| case "$TEST_SUITE" in
+   00052|   full)
+   00053|     targets=(unit integration source)
+   00054|     selection=(--skip data_files:: --skip self_ast_census --skip specification:: "${CORPUS_GATE_SKIP[@]}")
+   00055|     ;;
+   00056|   specification)
+   00057|     targets=(unit)
+   00058|     selection=(specification::)
+   00059|     ;;
+   00060|   *)
+   00061|     echo "::error::unknown TEST_SUITE '$TEST_SUITE' (full or specification)" >&2
+   00062|     exit 2
+   00063|     ;;
+   00064| esac
+   00065| status=0
+   00066| if [ "$SHARD_TOTAL" -gt 1 ]; then
+   00067|   listing="$(mktemp)"
+   00068|   plan="$(mktemp)"
+   00069|   trap 'rm -f "$listing" "$plan"' EXIT
+   00070|   for target in "${targets[@]}"; do
+   00071|     "dist/tests/$target" --list --format terse "${selection[@]}" \
+   00072|       | sed -n 's/: test$//p' \
+   00073|       | awk -v target="$target" '{ print target "\t" $0 }' >> "$listing" || status=1
+   00074|   done
+   00075|   node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --reserve "$SHARD_RESERVED_SECONDS" --check < "$listing"
+   00076|   node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --reserve "$SHARD_RESERVED_SECONDS" --report < "$listing"
+   00077|   node scripts/plan-test-shards.mjs --shard "$SHARD_INDEX" --of "$SHARD_TOTAL" --reserve "$SHARD_RESERVED_SECONDS" \
+   00078|     < "$listing" > "$plan"
+   00079| fi
+   00080| for target in "${targets[@]}"; do
+   00081|   if [ "$SHARD_TOTAL" -gt 1 ]; then
+   00082|     mapfile -t names < <(awk -F '\t' -v target="$target" '$1 == target { print $2 }' "$plan")
+   00083|     if [ "${#names[@]}" -eq 0 ]; then
+   00084|       continue
+   00085|     fi
+   00086|     echo "shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} ${target} test(s)"
+   00087|     "dist/tests/$target" --exact "${names[@]}" || status=1
+   00088|   else
+   00089|     "dist/tests/$target" "${time_flags[@]}" "${selection[@]}" || status=1
+   00090|   fi
+   00091| done
+   00092| exit "$status"
+   00093| 
+   
+   (End of file - total 93 lines)
+   </file>
+>> edit {"filePath":"scripts/run-prebuilt-tests.sh","file_path":"scripts/run-prebuilt-tests.sh","new":"\"dist/tests/$target\" \"${selection[@]}\"","newString":"\"dist/tests/$target\" \"${selection[@]}\"","new_str":"\"dist/tests/$target\" \"${selection[@]}\"","new_string":"\"dist/tests/$target\" \"${selection[@]}\"","old":"\"dist/tests/$target\" \"${time_flags[@]}\" \"${selection[@]}\"","oldString":"\"dist/tests/$target\" \"${time_flags[@]}\" \"${selection[@]}\"","old_str":"\"dist/tests/$target\" \"${time_flags[@]}\" \"${selection[@]}\"","old_string":"\"dist/tests/$target\" \"${time_flags[@]}\" \"${selection[@]}\"","path":"scripts/run-prebuilt-tests.sh"}
+>> bash {"command":"sha256sum -- scripts/run-prebuilt-tests.sh"}
+   58ab8b3d209e0417f9bf2c5bd264fad75169626b1b54f063b34fa3eaf2655b11  scripts/run-prebuilt-tests.sh
+   
+== answer ==
+Replaced `"dist/tests/$target" "${time_flags[@]}" "${selection[@]}"` with `"dist/tests/$target" "${selection[@]}"` in `scripts/run-prebuilt-tests.sh` and observed the result.

@@ -1,0 +1,139 @@
+{
+  "lemma": "about",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00007414-r",
+      "partOfSpeech": "r",
+      "definition": "(of quantities) imprecise but fairly close to correct",
+      "examples": [
+        "lasted approximately an hour",
+        "in just about a minute",
+        "he's about 30 years old",
+        "I've had about all I can stand",
+        "we meet about once a month",
+        "some forty people came",
+        "weighs around a hundred pounds",
+        "roughly $3,000",
+        "holds 3 gallons, more or less",
+        "20 or so people were at the party"
+      ],
+      "synonyms": [
+        "approximately",
+        "close to",
+        "just about",
+        "some",
+        "roughly",
+        "more or less",
+        "around",
+        "or so"
+      ]
+    },
+    {
+      "id": "oewn-00072240-r",
+      "partOfSpeech": "r",
+      "definition": "all around or on all sides",
+      "examples": [
+        "dirty clothes lying around (or about)",
+        "let's look about for help",
+        "There were trees growing all around",
+        "she looked around her"
+      ],
+      "synonyms": [
+        "around"
+      ]
+    },
+    {
+      "id": "oewn-00071565-r",
+      "partOfSpeech": "r",
+      "definition": "in the area or vicinity",
+      "examples": [
+        "a few spectators standing about",
+        "hanging around",
+        "waited around for the next flight"
+      ],
+      "synonyms": [
+        "around"
+      ]
+    },
+    {
+      "id": "oewn-00072729-r",
+      "partOfSpeech": "r",
+      "definition": "used of movement to or among many different places or in no particular direction",
+      "examples": [
+        "wandering about with no place to go",
+        "people were rushing about",
+        "news gets around (or about)",
+        "traveled around in Asia",
+        "he needs advice from someone who's been around",
+        "she sleeps around"
+      ],
+      "synonyms": [
+        "around"
+      ]
+    },
+    {
+      "id": "oewn-00072601-r",
+      "partOfSpeech": "r",
+      "definition": "in or to a reversed position or direction",
+      "examples": [
+        "about face",
+        "suddenly she turned around"
+      ],
+      "synonyms": [
+        "around"
+      ]
+    },
+    {
+      "id": "oewn-00359910-r",
+      "partOfSpeech": "r",
+      "definition": "in rotation or succession",
+      "examples": [
+        "turn about is fair play"
+      ]
+    },
+    {
+      "id": "oewn-00073433-r",
+      "partOfSpeech": "r",
+      "definition": "(of actions or states) slightly short of or not quite accomplished; all but",
+      "examples": [
+        "the job is (just) about done",
+        "the baby was almost asleep when the alarm sounded",
+        "we're almost finished",
+        "the car all but ran her down",
+        "he nearly fainted",
+        "talked for nigh onto 2 hours",
+        "the recording is well-nigh perfect",
+        "virtually all the parties signed the contract",
+        "I was near exhausted by the run",
+        "most everyone agrees"
+      ],
+      "synonyms": [
+        "almost",
+        "most",
+        "nearly",
+        "near",
+        "nigh",
+        "virtually",
+        "well-nigh"
+      ]
+    },
+    {
+      "id": "oewn-00032471-s",
+      "partOfSpeech": "s",
+      "definition": "on the move",
+      "examples": [
+        "up and about",
+        "the whole town was astir over the incident"
+      ],
+      "synonyms": [
+        "astir"
+      ]
+    }
+  ]
+}

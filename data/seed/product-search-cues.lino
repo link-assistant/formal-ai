@@ -1,0 +1,85 @@
+# Product-search vocabulary (issues #800 and #872).
+#
+# Shopping requests name a marketplace, a product with model constraints,
+# and qualifiers (free, open source, audience). All of that vocabulary is
+# data here; rust/src/solver_handlers/product_search.rs holds none of it.
+#
+# `marketplace` records carry the host a site-scoped search is composed on
+# and the deep-link template (`{query}` is percent-encoded by the handler).
+# `intent_cues` hold the request trigger phrases. `constraint` records
+# hold qualifier phrases and the honest filter advice each one warrants.
+# `product_noun` records map product words to the shopping advice row that
+# names what to verify before buying (a charger must match wattage and
+# connector; an app must match the store region and age band).
+#
+# Phrases are lowercase substrings of the normalized prompt (and the raw
+# prompt lowercased), English and Russian side by side.
+product_search
+  marketplace amazon_in
+    host www.amazon.in
+    link "https://www.amazon.in/s?k={query}"
+    phrase "на amazon.in"
+    phrase "on amazon.in"
+    phrase "на amazon in"
+    phrase "amazon india"
+    phrase "в индийском amazon"
+  marketplace app_store_ios
+    host apps.apple.com
+    link "https://www.apple.com/us/search/{query}?src=globalnav"
+    phrase "в app store"
+    phrase "in the app store"
+    phrase "in app store"
+    phrase "app store (ios)"
+    phrase "app store ios"
+  marketplace google_play
+    host play.google.com
+    link "https://play.google.com/store/search?q={query}"
+    phrase "в google play"
+    phrase "on google play"
+    phrase "in google play"
+  intent_cues
+    intent product_search
+    phrase "найди мне"
+    phrase "подбери мне"
+    phrase "поищи мне"
+    phrase "find me"
+    phrase "shop for"
+    phrase "look for a"
+    phrase "where can i buy"
+    phrase "где можно купить"
+  constraint
+    name free
+    phrase "бесплатн"
+    phrase "free"
+    advice "filter the store listing to price zero; a paid ranking can still surface, so read the price on the page"
+  constraint
+    name fully_free
+    phrase "абсолютно и полностью бесплатн"
+    phrase "completely free"
+    advice "check the listing for in-app purchases and ads; fully free and open source usually also means the source repository is linked"
+  constraint
+    name open_source
+    phrase "с открытым исходным кодом"
+    phrase "open source"
+    phrase "открытым исходным кодом"
+    advice "verify the linked source repository exists and matches the store listing; stores do not enforce this label"
+  product_noun
+    noun charger
+    phrase "зарядк"
+    phrase "charger"
+    phrase "power adapter"
+    phrase "блок питания"
+    advice "match the laptop model exactly (the model number is on the underside), then the connector type and the wattage; a lower-wattage charger throttles or refuses to charge"
+  product_noun
+    noun laptop
+    phrase "ноутбук"
+    phrase "laptop"
+    phrase "laptop "
+    advice "confirm the exact model number variant before ordering parts or accessories; suffixes change ports"
+  product_noun
+    noun toddler_games
+    phrase "игры для малышей"
+    phrase "игры для детей"
+    phrase "games for toddlers"
+    phrase "kids games"
+    advice "check the age band on the listing and the permissions the app asks for; offline-capable listings avoid ads served to children"

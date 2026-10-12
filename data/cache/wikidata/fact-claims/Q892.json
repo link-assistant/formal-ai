@@ -1,0 +1,162 @@
+{
+  "entities": {
+    "Q892": {
+      "type": "item",
+      "id": "Q892",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "J. R. R. Tolkien"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Джон Рональд Руэл Толкин"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जे. आर. आर. टोल्किन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "約翰·羅納德·魯埃爾·托爾金"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "J·R·R·托尔金"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "J.R.R Tolkien"
+          },
+          {
+            "language": "en",
+            "value": "John Tolkien"
+          },
+          {
+            "language": "en",
+            "value": "John R. R. Tolkien"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Толкиен, Джон Роналд Руэл"
+          },
+          {
+            "language": "ru",
+            "value": "Джон Толкин"
+          },
+          {
+            "language": "ru",
+            "value": "Дж. Р. Р. Толкин"
+          },
+          {
+            "language": "ru",
+            "value": "Дж. Р. Р. Толкиен"
+          },
+          {
+            "language": "ru",
+            "value": "Толкин, Джон Рональд Руэл"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "जॉन रोनल्ड राउल टोल्किन"
+          },
+          {
+            "language": "hi",
+            "value": "जे॰आर॰आर॰ टोल्किन"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "J·R·R·託爾金"
+          },
+          {
+            "language": "zh",
+            "value": "約翰·羅納德·瑞爾·託爾金"
+          },
+          {
+            "language": "zh",
+            "value": "托尔金"
+          },
+          {
+            "language": "zh",
+            "value": "托爾金"
+          },
+          {
+            "language": "zh",
+            "value": "J·R·R·托爾金"
+          },
+          {
+            "language": "zh",
+            "value": "J.R.R. 托尔金"
+          },
+          {
+            "language": "zh",
+            "value": "约翰·罗纳德·瑞尔·托尔金"
+          },
+          {
+            "language": "zh",
+            "value": "約翰·羅納德·瑞爾·托爾金"
+          },
+          {
+            "language": "zh",
+            "value": "約翰·托爾金"
+          },
+          {
+            "language": "zh",
+            "value": "J·R·R·托尔金"
+          }
+        ],
+        "zh-hans": [
+          {
+            "language": "zh-hans",
+            "value": "约翰·罗纳德·鲁埃尔·托尔金"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "J. R. R. Tolkien"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Толкин, Джон Рональд Руэл"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "जे॰आर॰आर॰ टोल्किन"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "J·R·R·托爾金"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

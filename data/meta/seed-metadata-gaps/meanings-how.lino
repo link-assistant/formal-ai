@@ -1,0 +1,31 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-how.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-4f51ddc2e07dfa94
+    record "common_typo"
+  gap seed-metadata-gap-826f9445ce1e5ad6
+    record "connect"
+  gap seed-metadata-gap-2c80321b5d2853b7
+    record "detail_modifier"
+  gap seed-metadata-gap-ee4ff20718e6a83b
+    record "mechanism_inquiry"
+  gap seed-metadata-gap-ad6263030bf7c353
+    record "mechanism_predicate"
+  gap seed-metadata-gap-1bec173ffdd82ab8
+    record "non_referential_subject"
+  gap seed-metadata-gap-237aaf47f7e442d6
+    record "procedural_action_install"
+  gap seed-metadata-gap-07238b8782b97501
+    record "procedural_action_order"
+  gap seed-metadata-gap-c41479f4738ec218
+    record "procedural_elaboration"
+  gap seed-metadata-gap-0fbbcd4bd1487691
+    record "procedural_request"
+  gap seed-metadata-gap-12793eef883fa646
+    record "procedural_request_elided_lead"
+  gap seed-metadata-gap-b0a840a98154d6b3
+    record "procedural_task_modifier"
+  gap seed-metadata-gap-e22f8a86d8a3fa93
+    record "topic_scan_stop_word"

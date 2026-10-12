@@ -1,0 +1,85 @@
+self_ast_census
+  target src/agentic_coding/module_function/seeded_composition_hook.rs
+  language rust
+  fidelity full_ast
+  byte_len 8415
+  line_count 210
+  content_id source_module_7c6223812e571b12
+  symbol_count 6
+  symbols
+    function string 9 11
+    function list 12 14
+    function require 15 17
+    function bind_accepted_import 18 99
+    function matches_goal 100 123
+    function qualify_seeded_composition 124 210
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 7229
+    named_node_count 1478
+    distinct_node_kinds 61
+    node_kinds
+      arguments 136
+      array_expression 1
+      array_type 2
+      binary_expression 38
+      block 26
+      boolean_literal 5
+      call_expression 136
+      closure_expression 20
+      closure_parameters 20
+      continue_expression 1
+      crate 5
+      doc_comment 1
+      else_clause 1
+      expression_statement 25
+      field_expression 85
+      field_identifier 85
+      for_expression 4
+      function_item 6
+      function_modifiers 1
+      generic_type 10
+      identifier 305
+      if_expression 5
+      index_expression 24
+      inner_doc_comment_marker 1
+      integer_literal 6
+      let_condition 2
+      let_declaration 23
+      lifetime 12
+      lifetime_parameter 2
+      line_comment 1
+      macro_invocation 3
+      mutable_specifier 3
+      parameter 19
+      parameters 6
+      primitive_type 13
+      range_expression 1
+      reference_expression 12
+      reference_type 25
+      return_expression 1
+      scoped_identifier 20
+      scoped_use_list 4
+      source_file 1
+      string_content 121
+      string_literal 122
+      super 5
+      token_tree 12
+      trait_bounds 2
+      try_expression 41
+      tuple_expression 2
+      tuple_pattern 4
+      tuple_struct_pattern 3
+      type_arguments 10
+      type_identifier 34
+      type_parameter 2
+      type_parameters 4
+      unary_expression 5
+      unit_expression 1
+      unit_type 1
+      use_declaration 6
+      use_list 4
+      visibility_modifier 2

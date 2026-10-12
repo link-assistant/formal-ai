@@ -1,0 +1,19 @@
+{
+  "transcript": [
+    {
+      "tool": "bash",
+      "arguments": "{\"command\":\"node -e \\\"const fs=require('fs'),path=require('path'),cp=require('child_process'),crypto=require('crypto');const r=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T2392-request.json'));for(const c of r.cases)if(fs.existsSync(path.join(c.dir,c.path))||crypto.createHash('sha256').update(c.source).digest('hex')!==c.sha256)throw Error('fixture precondition');for(const c of r.cases){fs.mkdirSync(path.dirname(path.join(c.dir,c.path)),{recursive:true});fs.writeFileSync(path.join(c.dir,c.path),c.source);cp.execFileSync('git',['init','-q'],{cwd:c.dir});cp.execFileSync('git',['add','--',c.path],{cwd:c.dir});cp.execFileSync('git',['-c','user.name=Formal AI Probe','-c','user.email=formal-ai-probe@example.invalid','commit','-q','-m','Selected original source preimage'],{cwd:c.dir});}\\\"\"}",
+      "result": "Output: \nExit Code: 0"
+    }
+  ],
+  "answer": "The command completed successfully without output.",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

@@ -1,0 +1,1 @@
+Ground source/report artifact roles and new lexical surfaces in loaded meanings. Keep notation checks consistent with variable-backed Rust template keys, migrate coding-ladder caller labels, and synchronize embedded project response records. Preserve actual Formal AI failures and checked integration evidence.

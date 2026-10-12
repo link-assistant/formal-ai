@@ -1,0 +1,12 @@
+{
+  "unchangedPrompt": true,
+  "allSelectedSourcesUnchanged": true,
+  "calls": 3,
+  "actualSourceReadBytes": 59976,
+  "answerBytes": 1061,
+  "disposition": "gap",
+  "usefulSynthesizedCodeBytes": 0,
+  "missingContracts": [
+    "goal-composition-contract"
+  ]
+}

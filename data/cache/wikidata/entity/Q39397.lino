@@ -4,10 +4,12 @@ Q39397
     zh ("斧頭" "斧鉞")
   descriptions
     en "weapon or tool consisting of a shaft, with a head attached at a parallel angle that is used primarily for chopping, splitting, or shaping materials"
+    es "arma o herramienta que tiene un mango con una cabeza fijada en ángulo paralelo, utilizada principalmente para cortar, partir o dar forma a materiales"
     ru "рубящее военное или бытовое орудие"
   id Q39397
   labels
     en axe
+    es hacha
     hi "कुल्हाड़ी"
     ru "топор"
     zh "斧"

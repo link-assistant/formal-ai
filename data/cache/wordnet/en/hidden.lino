@@ -1,0 +1,49 @@
+language en
+lemma hidden
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "not accessible to view"
+    examples ("concealed (or hidden) damage" "in stormy weather the stars are out of sight")
+    id oewn-02527874-s
+    partOfSpeech s
+    synonyms (concealed "out of sight")
+  entry
+    definition "designed to elude detection"
+    examples ("a hidden room or place of concealment such as a priest hole" "a secret passage" "the secret compartment in the desk")
+    id oewn-02096659-s
+    partOfSpeech s
+    synonyms (secret)
+  entry
+    definition "difficult to find"
+    examples ("hidden valleys" "a hidden cave" "an obscure retreat")
+    id oewn-02096522-s
+    partOfSpeech s
+    synonyms (obscure)
+  entry
+    definition "prevent from being seen or discovered"
+    examples ("hide the money")
+    id oewn-02149298-v
+    partOfSpeech v
+    synonyms (hide conceal)
+  entry
+    definition "be or go into hiding; keep out of sight, as for protection and safety"
+    examples ("Probably his horse would be close to where he was hiding" "She is hiding out in a cabin in Montana")
+    id oewn-02150244-v
+    partOfSpeech v
+    synonyms (hide "hide out")
+  entry
+    definition "cover as if with a shroud"
+    examples ("The origins of this civilization are shrouded in mystery")
+    id oewn-01585121-v
+    partOfSpeech v
+    synonyms (shroud enshroud hide cover)
+  entry
+    definition "make undecipherable or imperceptible by obscuring or concealing"
+    examples ("a hidden message" "a veiled threat")
+    id oewn-00314788-v
+    partOfSpeech v
+    synonyms (obscure "blot out" obliterate veil hide)
+source "oewn:2024"

@@ -1,0 +1,19 @@
+{
+  "taskId": "T2778",
+  "description": "Zero held-prompt specialization check",
+  "request": {
+    "taskId": "T2778",
+    "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "prompt": "Run node scripts/check-prompt-specialization.mjs --list"
+  },
+  "observation": {
+    "taskId": "T2778",
+    "calls": [
+      "bash"
+    ]
+  },
+  "byteCheck": null,
+  "outcome": "Pass: zero held prompts",
+  "rawSha256": "be11d3ec80be5f9d4bc79e10a010b6efac6efb964c398ac257c5fc87d7182ff0",
+  "rawUtf8": ">> bash {\"command\":\"node scripts/check-prompt-specialization.mjs --list\"}\n   Output: test prompts held verbatim in code: 0 (ceiling 0)\n   \n   Exit Code: 0\n== answer ==\nThe `node scripts/check-prompt-specialization.mjs --list` command completed. Output:\n\n```text\ntest prompts held verbatim in code: 0 (ceiling 0)\n```\n"
+}

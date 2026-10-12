@@ -1,0 +1,13 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-definition-merge.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-08c9574468aba89e
+    record "definition_artifact_request"
+  gap seed-metadata-gap-2ce960a4e4bffe31
+    record "definition_merge_action"
+  gap seed-metadata-gap-12a9f0188f1f3901
+    record "definition_merge_marker"
+  gap seed-metadata-gap-7a54c2ffe51815d8
+    record "definition_merge_tail_boundary"

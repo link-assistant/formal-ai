@@ -1,0 +1,35 @@
+{
+  "lemma": "couplet",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13765745-n",
+      "partOfSpeech": "n",
+      "definition": "two items of the same kind",
+      "synonyms": [
+        "couple",
+        "pair",
+        "twosome",
+        "twain",
+        "brace",
+        "span",
+        "yoke",
+        "distich",
+        "duo",
+        "duet",
+        "dyad",
+        "duad"
+      ]
+    },
+    {
+      "id": "oewn-06390540-n",
+      "partOfSpeech": "n",
+      "definition": "a stanza consisting of two successive lines of verse; usually rhymed"
+    }
+  ]
+}

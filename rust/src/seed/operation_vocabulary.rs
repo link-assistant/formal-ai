@@ -11,6 +11,14 @@ use super::parser::parse_lino;
 pub struct OperationLanguageForms {
     pub phrases: Vec<String>,
     pub combos: Vec<Vec<String>>,
+    /// Nouns naming what a count operation counts ("words", "строк"): a
+    /// counting cue plus one of them in a request's own framing asks for it.
+    pub units: Vec<String>,
+    /// The characters a character-class operation ("vowels") stands for.
+    pub members: Vec<String>,
+    /// Whether this language states an operation's argument before its
+    /// phrase ("x से शुरू होने वाली पंक्तियाँ") rather than after it.
+    pub argument_before: bool,
 }
 
 impl OperationLanguageForms {
@@ -25,6 +33,24 @@ impl OperationLanguageForms {
                         .all(|token| normalized.contains(token.as_str()))
             })
     }
+
+    /// Where the earliest phrase, or the earliest token of a fully present
+    /// combo, starts in `normalized`.
+    fn first_position(&self, normalized: &str) -> Option<usize> {
+        let phrases = self
+            .phrases
+            .iter()
+            .filter_map(|phrase| normalized.find(phrase.as_str()));
+        let combos = self.combos.iter().filter_map(|combo| {
+            combo
+                .iter()
+                .map(|token| normalized.find(token.as_str()))
+                .collect::<Option<Vec<_>>>()?
+                .into_iter()
+                .min()
+        });
+        phrases.chain(combos).min()
+    }
 }
 
 /// One canonical operation token plus localized trigger phrases.
@@ -37,15 +63,26 @@ pub struct OperationTrigger {
     /// *derived* from this declaration (issue #386), so adding a "cancel X"
     /// operation stays pure seed data rather than new control flow.
     pub inverse_of: Option<String>,
+    /// Phrases, declared via `exclude` children in any language block, in
+    /// which this operation's trigger word carries another sense: "smallest"
+    /// names the minimum, but "smallest first" orders a list. When one is
+    /// present the operation does not match, whatever its phrases say.
+    pub exclusions: Vec<String>,
 }
 
 impl OperationTrigger {
-    /// Does any phrase or combo for this operation appear in `normalized`?
+    /// Does any phrase or combo for this operation appear in `normalized`,
+    /// outside every phrase that gives its trigger another sense?
     #[must_use]
     pub fn matches(&self, normalized: &str) -> bool {
-        self.languages
-            .values()
-            .any(|forms| forms.matches(normalized))
+        !self
+            .exclusions
+            .iter()
+            .any(|phrase| normalized.contains(phrase.as_str()))
+            && self
+                .languages
+                .values()
+                .any(|forms| forms.matches(normalized))
     }
 }
 
@@ -53,6 +90,9 @@ impl OperationTrigger {
 #[derive(Debug, Clone, Default)]
 pub struct OperationVocabulary {
     pub operations: Vec<OperationTrigger>,
+    /// Every language's counting cues ("how many", "сколько", "count"),
+    /// declared once in the `counting_cue` block.
+    pub counting_cues: Vec<String>,
 }
 
 impl OperationVocabulary {
@@ -63,6 +103,82 @@ impl OperationVocabulary {
         self.operations
             .iter()
             .any(|op| op.canonical == canonical && op.matches(normalized))
+    }
+
+    /// Where the request first names the operation with this canonical token,
+    /// so a chain of operations runs in the order the request states them.
+    #[must_use]
+    pub fn position(&self, canonical: &str, normalized: &str) -> Option<usize> {
+        self.operations
+            .iter()
+            .filter(|op| op.canonical == canonical && op.matches(normalized))
+            .filter_map(|op| {
+                op.languages
+                    .values()
+                    .filter_map(|forms| forms.first_position(normalized))
+                    .min()
+            })
+            .min()
+    }
+
+    /// Does a request's own framing — its words outside the quoted payload —
+    /// ask how many of the unit the operation with this canonical token counts
+    /// ("how many words are in ..." asks for `count_words`)?
+    #[must_use]
+    pub fn asks_count_of(&self, canonical: &str, framing: &str) -> bool {
+        self.names_counting_cue(framing)
+            && self.operations.iter().any(|op| {
+                op.canonical == canonical
+                    && op.languages.values().any(|forms| {
+                        forms
+                            .units
+                            .iter()
+                            .any(|unit| framing.contains(unit.as_str()))
+                    })
+            })
+    }
+
+    /// The characters of the character class a request's own framing asks to
+    /// count ("count the vowels in ..."), pooled across every language that
+    /// declares `members` for it.
+    #[must_use]
+    pub fn counted_character_class(&self, framing: &str) -> Option<String> {
+        if !self.names_counting_cue(framing) {
+            return None;
+        }
+        self.operations
+            .iter()
+            .filter(|op| op.languages.values().any(|forms| !forms.members.is_empty()))
+            .find(|op| op.matches(framing))
+            .map(|op| {
+                op.languages
+                    .values()
+                    .flat_map(|forms| forms.members.iter().map(String::as_str))
+                    .collect()
+            })
+    }
+
+    fn names_counting_cue(&self, framing: &str) -> bool {
+        self.counting_cues
+            .iter()
+            .any(|cue| framing.contains(cue.as_str()))
+    }
+
+    /// Every language's phrases for the operation with this canonical token,
+    /// each paired with whether that language states the argument before it.
+    #[must_use]
+    pub fn argument_phrases(&self, canonical: &str) -> Vec<(&str, bool)> {
+        self.operations
+            .iter()
+            .filter(|op| op.canonical == canonical)
+            .flat_map(|op| op.languages.values())
+            .flat_map(|forms| {
+                forms
+                    .phrases
+                    .iter()
+                    .map(move |phrase| (phrase.as_str(), forms.argument_before))
+            })
+            .collect()
     }
 
     /// Every canonical operation token whose phrasing appears in the normalized
@@ -125,8 +241,20 @@ pub fn operation_vocabulary() -> OperationVocabulary {
     let tree = parse_lino(OPERATION_VOCABULARY_LINO);
     let mut vocabulary = OperationVocabulary::default();
     if let Some(root) = tree.children.first() {
+        for cue_node in root.children.iter().filter(|c| c.name == "counting_cue") {
+            for language_node in cue_node.children.iter().filter(|c| c.name == "language") {
+                vocabulary.counting_cues.extend(
+                    language_node
+                        .children
+                        .iter()
+                        .filter(|entry| entry.name == "phrase")
+                        .map(|entry| entry.id.clone()),
+                );
+            }
+        }
         for operation_node in root.children.iter().filter(|c| c.name == "operation") {
             let mut languages = BTreeMap::new();
+            let mut exclusions = Vec::new();
             for language_node in operation_node
                 .children
                 .iter()
@@ -137,6 +265,10 @@ pub fn operation_vocabulary() -> OperationVocabulary {
                     match entry.name.as_str() {
                         "phrase" => forms.phrases.push(entry.id.clone()),
                         "combo" => forms.combos.push(split_combo(&entry.id)),
+                        "exclude" => exclusions.push(entry.id.clone()),
+                        "unit" => forms.units.push(entry.id.clone()),
+                        "members" => forms.members.push(entry.id.clone()),
+                        "argument" => forms.argument_before = entry.id == "before",
                         _ => {}
                     }
                 }
@@ -150,6 +282,7 @@ pub fn operation_vocabulary() -> OperationVocabulary {
                 canonical: operation_node.id.clone(),
                 languages,
                 inverse_of,
+                exclusions,
             });
         }
     }

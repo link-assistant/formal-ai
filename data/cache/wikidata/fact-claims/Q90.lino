@@ -1,0 +1,32 @@
+Q90
+  aliases
+    en ("City of Light" "City of Love" Lutetia)
+    hi ("उजाले का शहर" "प्रेम का शहर")
+    ru ("Париж (Франция)" "Париж, Франция" "Париж (столица)")
+    zh ("巴黎省")
+  id Q90
+  labels
+    en Paris
+    hi "पेरिस"
+    ru "Париж"
+    zh "巴黎"
+    zh-hans "巴黎"
+  sitelinks
+    enwiki
+      site enwiki
+      title Paris
+    hiwiki
+      site hiwiki
+      title "पेरिस"
+    ruwiki
+      site ruwiki
+      title "Париж"
+    zhwiki
+      site zhwiki
+      title "巴黎"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

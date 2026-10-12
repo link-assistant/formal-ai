@@ -169,9 +169,7 @@ pub fn conversation_context_to_lino(dialog_id: &str, context: &Value) -> String 
 }
 
 fn config(key: &str) -> String {
-    crate::seed::agent_info()
-        .remove(key)
-        .unwrap_or_else(|| key.to_owned())
+    crate::seed::agent_info_value(key).unwrap_or_else(|| key.to_owned())
 }
 
 fn assemble_transcript(exchanges: &[DialogExchangeLog]) -> Vec<Value> {

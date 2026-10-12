@@ -1,0 +1,21 @@
+
+general_change_plan
+  id "general_change_plan_866f77cb82fe9efc"
+  execution_mode "literal_file"
+  terminal_state "executed"
+  goal "Implement a reusable observed text-asset resolver in contextual_asset_resolver.mjs, with independently meaningful closest tests. Read proposal.json and the observed Rust projection/translation sources first. Support only ReuseExistingAsset initially: an explicit default import with exactly type=text, actual source and asset identities, explicit destination context, permitted root ownership and target-relative existing asset path. Preserve unknown effects, reject context-free imports, missing or drifted source/assets, duplicate/unknown/nontext attributes, escaping or outside-root symlinks and ambiguous bindings before writing target artifacts. Prove moved destinations, aliases, Unicode paths and exact content with actual selected fixtures; no Transport implementation, invented asset or emitted Rust wrapper. This is selected-file scratch only; production sources/seed/ratchets and native compilation are out of scope. Report precise MissingContract gaps if source-backed implementation is unsupported."
+  target "contextual_asset_resolver.mjs"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_10808c81ebc4a3d2"
+  step 2
+    capability "Write"
+    action "write the requested content to contextual_asset_resolver.mjs"
+    expected_evidence "workspace file contextual_asset_resolver.mjs"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "independently meaningful closest tests."
+    command "cat contextual_asset_resolver.mjs"
+  verification_command "cat contextual_asset_resolver.mjs"

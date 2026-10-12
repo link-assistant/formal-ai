@@ -1,0 +1,379 @@
+# Response templates for the user-facing formalization task (issue #1186,
+# E150).
+#
+# The formalization and deformalization handlers render their prose through
+# these records so no response text lives in Rust. Placeholders in braces
+# are filled by the handler. The rendering blocks themselves (FOL, Lean,
+# Rocq, Links Notation) are language-neutral and are inserted through the
+# {statement_block} and {derivation} slots.
+#
+# The `repository_lineage` records render the lineage route's answer
+# (issue #1180 R10, repository history formalized into commits, issues and
+# pull requests); the commit list, path and numbers fill their slots.
+#
+# The `formalization_prover_*` records state, in each answer language, what
+# the theorem-prover step did: no prover invoked, which ones ran, and per
+# prover whether its binary was absent from PATH or ran with an exit status
+# on the compile unit the `prover` records of `formal-targets.lino` build.
+
+multilingual_responses
+  response response_formalization_result_en
+    intent formalization_result
+    language en
+    text "Formalized statement:\n\n{statement_block}\n\n{honesty}\n\nDerivation:\n{derivation}"
+  response response_formalization_result_ru
+    intent formalization_result
+    language ru
+    text "Формализованное утверждение:\n\n{statement_block}\n\n{honesty}\n\nВывод:\n{derivation}"
+  response response_formalization_result_hi
+    intent formalization_result
+    language hi
+    text "औपचारिक कथन:\n\n{statement_block}\n\n{honesty}\n\nव्युत्पत्ति:\n{derivation}"
+  response response_formalization_result_zh
+    intent formalization_result
+    language zh
+    text "形式化命题：\n\n{statement_block}\n\n{honesty}\n\n推导：\n{derivation}"
+  response response_formalization_result_es
+    intent formalization_result
+    language es
+    text "Enunciado formalizado:\n\n{statement_block}\n\n{honesty}\n\nDerivación:\n{derivation}"
+  response response_formalization_unparsed_en
+    intent formalization_unparsed
+    language en
+    text "The sentence was recognized as a formalization request, but no quantified clause could be parsed from it: {reason}. A formalization needs a quantifier word (every, some, no) or a formal quantifier symbol and at least one predicate."
+  response response_formalization_unparsed_ru
+    intent formalization_unparsed
+    language ru
+    text "Предложение распознано как запрос на формализацию, но кванторной конструкции из него извлечь не удалось: {reason}. Для формализации нужно кванторное слово (каждый, некоторый, никакой) или формальный символ квантора и хотя бы один предикат."
+  response response_formalization_unparsed_hi
+    intent formalization_unparsed
+    language hi
+    text "वाक्य औपचारिकीकरण अनुरोध माना गया, पर इसमें से कोई क्वांटिफाइड क्लॉज नहीं निकाला जा सका: {reason}। औपचारिकीकरण के लिए क्वांटिफायर शब्द (हर, कोई) या औपचारिक क्वांटिफायर प्रतीक और कम से कम एक विधेय चाहिए।"
+  response response_formalization_unparsed_zh
+    intent formalization_unparsed
+    language zh
+    text "该句子已被识别为形式化请求，但未能从中解析出含量化的子句：{reason}。形式化需要一个量词（每个、某个、没有）或形式量词符号以及至少一个谓词。"
+  response response_formalization_unparsed_es
+    intent formalization_unparsed
+    language es
+    text "La frase se reconoció como una solicitud de formalización, pero no se pudo extraer de ella una cláusula cuantificada: {reason}. Una formalización necesita una palabra cuantificadora (todo, algún, ningún) o un símbolo cuantificador formal y al menos un predicado."
+  response response_formalization_no_statement_en
+    intent formalization_no_statement
+    language en
+    text "This was recognized as a formalization request, but it names no statement to formalize. Give the statement after a colon, for example: Formalize: every human is mortal."
+  response response_formalization_no_statement_ru
+    intent formalization_no_statement
+    language ru
+    text "Это распознано как запрос на формализацию, но в нём нет утверждения для формализации. Укажите утверждение после двоеточия, например: Формализуй: каждый человек смертен."
+  response response_formalization_no_statement_hi
+    intent formalization_no_statement
+    language hi
+    text "इसे औपचारिकीकरण अनुरोध माना गया, पर इसमें औपचारिक बनाने के लिए कोई कथन नहीं है। कथन को कोलन के बाद दें, उदाहरण: औपचारिक बनाओ: हर मनुष्य नश्वर है।"
+  response response_formalization_no_statement_zh
+    intent formalization_no_statement
+    language zh
+    text "这被识别为形式化请求，但其中没有需要形式化的命题。请在冒号后给出命题，例如：形式化：每个人都会死。"
+  response response_formalization_no_statement_es
+    intent formalization_no_statement
+    language es
+    text "Se reconoció una solicitud de formalización, pero no nombra ningún enunciado que formalizar. Escribe el enunciado después de dos puntos, por ejemplo: Formaliza esto: todo humano es mortal."
+  response response_formalization_deformalized_en
+    intent formalization_deformalized
+    language en
+    text "Natural-language reading:\n\n{sentence}\n\nRound trip: {round_trip}\n\n{honesty}"
+  response response_formalization_deformalized_ru
+    intent formalization_deformalized
+    language ru
+    text "Прочтение на естественном языке:\n\n{sentence}\n\nОбратный проход: {round_trip}\n\n{honesty}"
+  response response_formalization_deformalized_hi
+    intent formalization_deformalized
+    language hi
+    text "सहज भाषा में पाठ:\n\n{sentence}\n\nपुनः पारगमन: {round_trip}\n\n{honesty}"
+  response response_formalization_deformalized_zh
+    intent formalization_deformalized
+    language zh
+    text "自然语言读法：\n\n{sentence}\n\n往返：{round_trip}\n\n{honesty}"
+  response response_formalization_deformalized_es
+    intent formalization_deformalized
+    language es
+    text "Lectura en lenguaje natural:\n\n{sentence}\n\nRecorrido de ida y vuelta: {round_trip}\n\n{honesty}"
+  response response_formalization_rml_absent_en
+    intent formalization_rml_absent
+    language en
+    text "rml was not found in PATH and FORMAL_AI_RML names no executable, so the clause was not exported through relative-meta-logic."
+  response response_formalization_rml_absent_ru
+    intent formalization_rml_absent
+    language ru
+    text "rml не найден в PATH, а FORMAL_AI_RML не указывает на исполняемый файл, поэтому утверждение не экспортировано через relative-meta-logic."
+  response response_formalization_rml_absent_hi
+    intent formalization_rml_absent
+    language hi
+    text "rml PATH में नहीं मिला और FORMAL_AI_RML किसी executable का नाम नहीं देता, इसलिए clause को relative-meta-logic के ज़रिए export नहीं किया गया।"
+  response response_formalization_rml_absent_zh
+    intent formalization_rml_absent
+    language zh
+    text "在 PATH 中找不到 rml，FORMAL_AI_RML 也没有指定可执行文件，因此该子句没有通过 relative-meta-logic 导出。"
+  response response_formalization_rml_absent_es
+    intent formalization_rml_absent
+    language es
+    text "No se encontró rml en PATH y FORMAL_AI_RML no indica ningún ejecutable, así que la cláusula no se exportó mediante relative-meta-logic."
+  response response_formalization_rml_outside_subset_en
+    intent formalization_rml_outside_subset
+    language en
+    text "The {quantifier} reading is outside the relative-meta-logic export subset, which has no binder for it, so rml was not run."
+  response response_formalization_rml_outside_subset_ru
+    intent formalization_rml_outside_subset
+    language ru
+    text "Прочтение {quantifier} выходит за пределы подмножества экспорта relative-meta-logic, где для него нет связывателя, поэтому rml не запускался."
+  response response_formalization_rml_outside_subset_hi
+    intent formalization_rml_outside_subset
+    language hi
+    text "{quantifier} वाला अर्थ relative-meta-logic export subset से बाहर है, जिसमें इसके लिए कोई binder नहीं है, इसलिए rml नहीं चलाया गया।"
+  response response_formalization_rml_outside_subset_zh
+    intent formalization_rml_outside_subset
+    language zh
+    text "{quantifier} 这种解读超出了 relative-meta-logic 导出子集，该子集没有对应的约束符，因此没有运行 rml。"
+  response response_formalization_rml_outside_subset_es
+    intent formalization_rml_outside_subset
+    language es
+    text "La lectura {quantifier} queda fuera del subconjunto de exportación de relative-meta-logic, que no tiene un ligador para ella, así que no se ejecutó rml."
+  response response_formalization_rml_ran_en
+    intent formalization_rml_ran
+    language en
+    text "rml export lean ran on {source} and exited with status {exit}; its Lean output path is {output}."
+  response response_formalization_rml_ran_ru
+    intent formalization_rml_ran
+    language ru
+    text "rml export lean выполнен для {source} и завершился со статусом {exit}; путь к его выводу Lean: {output}."
+  response response_formalization_rml_ran_hi
+    intent formalization_rml_ran
+    language hi
+    text "rml export lean को {source} पर चलाया गया और यह status {exit} के साथ समाप्त हुआ; इसके Lean output का पथ {output} है।"
+  response response_formalization_rml_ran_zh
+    intent formalization_rml_ran
+    language zh
+    text "已对 {source} 运行 rml export lean，退出状态为 {exit}；其 Lean 输出路径为 {output}。"
+  response response_formalization_rml_ran_es
+    intent formalization_rml_ran
+    language es
+    text "rml export lean se ejecutó sobre {source} y terminó con el estado {exit}; la ruta de su salida Lean es {output}."
+  response response_formalization_honesty_en
+    intent formalization_honesty
+    language en
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} The Lean and Rocq texts come from the seed-grammar exporter; the relative-meta-logic crate takes its place in process once it is published (link-foundation/relative-meta-logic#185)."
+  response response_formalization_honesty_ru
+    intent formalization_honesty
+    language ru
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} Тексты Lean и Rocq порождены экспортёром сид-грамматики; после публикации relative-meta-logic (link-foundation/relative-meta-logic#185) его место внутри процесса займёт этот крейт."
+  response response_formalization_honesty_hi
+    intent formalization_honesty
+    language hi
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} Lean और Rocq पाठ सीड-व्याकरण निर्यातक से बने हैं; relative-meta-logic के प्रकाशित होने पर (link-foundation/relative-meta-logic#185) वही क्रेट इन-प्रोसेस उसकी जगह लेगा।"
+  response response_formalization_honesty_zh
+    intent formalization_honesty
+    language zh
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} Lean 与 Rocq 文本由种子文法导出器生成；relative-meta-logic 发布后（link-foundation/relative-meta-logic#185），该 crate 将在进程内取而代之。"
+  response response_formalization_honesty_es
+    intent formalization_honesty
+    language es
+    text "{prover_summary} {lean_check} {rocq_check} {rml_check} Los textos Lean y Rocq provienen del exportador de la gramática semilla; el crate relative-meta-logic ocupará su lugar en proceso cuando se publique (link-foundation/relative-meta-logic#185)."
+  response response_formalization_prover_none_en
+    intent formalization_prover_none
+    language en
+    text "No theorem prover was invoked."
+  response response_formalization_prover_invoked_en
+    intent formalization_prover_invoked
+    language en
+    text "A theorem prover was invoked: {provers}."
+  response response_formalization_prover_absent_en
+    intent formalization_prover_absent
+    language en
+    text "{label} was not found in PATH, so the {label} text was not compiled."
+  response response_formalization_prover_present_en
+    intent formalization_prover_present
+    language en
+    text "{label} was found in PATH and ran on {source}; it exited with status {exit}."
+  response response_formalization_prover_none_ru
+    intent formalization_prover_none
+    language ru
+    text "Теорем-прувер не вызывался."
+  response response_formalization_prover_invoked_ru
+    intent formalization_prover_invoked
+    language ru
+    text "Вызван теорем-прувер: {provers}."
+  response response_formalization_prover_absent_ru
+    intent formalization_prover_absent
+    language ru
+    text "{label} не найден в PATH, поэтому текст {label} не компилировался."
+  response response_formalization_prover_present_ru
+    intent formalization_prover_present
+    language ru
+    text "{label} найден в PATH и запущен на {source}; код завершения {exit}."
+  response response_formalization_prover_none_hi
+    intent formalization_prover_none
+    language hi
+    text "कोई थीरम प्रोवर नहीं चलाया गया।"
+  response response_formalization_prover_invoked_hi
+    intent formalization_prover_invoked
+    language hi
+    text "थीरम प्रोवर चलाया गया: {provers}।"
+  response response_formalization_prover_absent_hi
+    intent formalization_prover_absent
+    language hi
+    text "{label} PATH में नहीं मिला, इसलिए {label} पाठ संकलित नहीं हुआ।"
+  response response_formalization_prover_present_hi
+    intent formalization_prover_present
+    language hi
+    text "{label} PATH में मिला और {source} पर चलाया गया; उसकी निकास स्थिति {exit} रही।"
+  response response_formalization_prover_none_zh
+    intent formalization_prover_none
+    language zh
+    text "未调用任何定理证明器。"
+  response response_formalization_prover_invoked_zh
+    intent formalization_prover_invoked
+    language zh
+    text "已调用定理证明器：{provers}。"
+  response response_formalization_prover_absent_zh
+    intent formalization_prover_absent
+    language zh
+    text "在 PATH 中未找到 {label}，因此未编译 {label} 文本。"
+  response response_formalization_prover_present_zh
+    intent formalization_prover_present
+    language zh
+    text "在 PATH 中找到 {label} 并在 {source} 上运行；退出状态为 {exit}。"
+  response response_formalization_prover_none_es
+    intent formalization_prover_none
+    language es
+    text "No se invocó ningún demostrador de teoremas."
+  response response_formalization_prover_invoked_es
+    intent formalization_prover_invoked
+    language es
+    text "Se invocó un demostrador de teoremas: {provers}."
+  response response_formalization_prover_absent_es
+    intent formalization_prover_absent
+    language es
+    text "{label} no se encontró en PATH, así que el texto de {label} no se compiló."
+  response response_formalization_prover_present_es
+    intent formalization_prover_present
+    language es
+    text "{label} se encontró en PATH y se ejecutó sobre {source}; terminó con el estado {exit}."
+  response response_repository_lineage_en
+    intent repository_lineage
+    language en
+    text "{path} has {count} commits in this repository's history, oldest first:\n{commits}\n\nThe introducing commit {first} was made for issue {issue} and delivered by pull request {pull}. The lineage is read from `git log --follow`; the issue comes from the commit's trailer and the pull request from the merge that delivered it."
+  response response_repository_lineage_ru
+    intent repository_lineage
+    language ru
+    text "У {path} в истории этого репозитория {count} коммитов, от старых к новым:\n{commits}\n\nВводящий коммит {first} сделан для задачи {issue} и доставлен пулл-реквестом {pull}. Происхождение прочитано из `git log --follow`; задача взята из трейлера коммита, пулл-реквест — из доставившего его слияния."
+  response response_repository_lineage_hi
+    intent repository_lineage
+    language hi
+    text "इस रिपॉज़िटरी के इतिहास में {path} के {count} कमिट हैं, सबसे पुराने पहले:\n{commits}\n\nपरिचय कराने वाला कमिट {first} इश्यू {issue} के लिए बना और पुल रिक्वेस्ट {pull} द्वारा पहुँचाया गया। वंश `git log --follow` से पढ़ा गया है; इश्यू कमिट के ट्रेलर से और पुल रिक्वेस्ट उसे पहुँचाने वाले मर्ज से आता है।"
+  response response_repository_lineage_zh
+    intent repository_lineage
+    language zh
+    text "{path} 在本仓库历史中有 {count} 个提交，按时间从早到晚：\n{commits}\n\n引入它的提交 {first} 是为问题 {issue} 而做的，并由拉取请求 {pull} 交付。来历读取自 `git log --follow`；问题来自提交的尾注，拉取请求来自交付它的合并。"
+  response response_repository_lineage_es
+    intent repository_lineage
+    language es
+    text "{path} tiene {count} commits en la historia de este repositorio, del más antiguo al más reciente:\n{commits}\n\nEl commit que lo introdujo, {first}, se hizo para el issue {issue} y lo entregó el pull request {pull}. El linaje se lee de `git log --follow`; el issue sale del trailer del commit y el pull request de la fusión que lo entregó."
+  response response_repository_lineage_unrecorded_en
+    intent repository_lineage_unrecorded
+    language en
+    text "(not recorded in the history)"
+  response response_repository_lineage_unrecorded_ru
+    intent repository_lineage_unrecorded
+    language ru
+    text "(не записан в истории)"
+  response response_repository_lineage_unrecorded_hi
+    intent repository_lineage_unrecorded
+    language hi
+    text "(इतिहास में दर्ज नहीं)"
+  response response_repository_lineage_unrecorded_zh
+    intent repository_lineage_unrecorded
+    language zh
+    text "（历史中未记录）"
+  response response_repository_lineage_unrecorded_es
+    intent repository_lineage_unrecorded
+    language es
+    text "(no registrado en la historia)"
+  response response_repository_status_explanation_en
+    intent repository_status_explanation
+    language en
+    text "The {status} is checked by {script}, introduced for issue {issue}. It measures the commit range {range}: {commits} commits, {sessions} of them carrying the {trailer} trailer. The floor is {floor} {unit} per release cycle ({attribution}), and the self-hosting share may not fall below the target of {target} recorded for {target_tag} ({policy}). The status fails when the range holds no {unit}, or when its projected share falls below that target; this answer reads the range and the ledger {ledger} and does not run the measurement, so run {script} to see which of the two applies."
+  response response_repository_status_explanation_ru
+    intent repository_status_explanation
+    language ru
+    text "{status} проверяет {script}, добавленный для задачи {issue}. Он измеряет диапазон коммитов {range}: {commits} коммитов, из них {sessions} несут трейлер {trailer}. Нижняя граница — {floor} ({unit}) на цикл выпуска ({attribution}), а доля самостоятельной разработки не может опуститься ниже цели {target}, записанной для {target_tag} ({policy}). Статус не проходит, когда в диапазоне нет ни одного слитого пулл-реквеста этого вида или когда прогнозная доля ниже цели; этот ответ читает диапазон и журнал {ledger} и не запускает измерение, поэтому запустите {script}, чтобы узнать, какое из двух условий сработало."
+  response response_repository_status_explanation_hi
+    intent repository_status_explanation
+    language hi
+    text "{status} की जाँच {script} करता है, जो इश्यू {issue} के लिए जोड़ा गया। यह कमिट सीमा {range} मापता है: {commits} कमिट, जिनमें से {sessions} पर {trailer} ट्रेलर है। निचली सीमा प्रति रिलीज़ चक्र {floor} ({unit}) है ({attribution}), और स्व-विकास का हिस्सा {target_tag} के लिए दर्ज लक्ष्य {target} से नीचे नहीं जा सकता ({policy})। स्थिति तब विफल होती है जब सीमा में ऐसा कोई मर्ज हुआ पुल रिक्वेस्ट न हो, या अनुमानित हिस्सा लक्ष्य से नीचे हो; यह उत्तर सीमा और लेजर {ledger} पढ़ता है और माप नहीं चलाता, इसलिए कौन सी शर्त लागू है यह जानने के लिए {script} चलाएँ।"
+  response response_repository_status_explanation_zh
+    intent repository_status_explanation
+    language zh
+    text "{status} 由 {script} 检查，它是为问题 {issue} 引入的。它度量提交范围 {range}：共 {commits} 个提交，其中 {sessions} 个带有 {trailer} 尾注。下限是每个发布周期 {floor} 个（{unit}）（{attribution}），自我开发占比不得低于为 {target_tag} 记录的目标 {target}（{policy}）。当该范围内没有已合并的此类拉取请求，或预计占比低于该目标时，状态失败；本回答只读取范围和账本 {ledger}，并不运行度量，请运行 {script} 查看是哪一种情况。"
+  response response_repository_status_explanation_es
+    intent repository_status_explanation
+    language es
+    text "El {status} lo comprueba {script}, introducido para el issue {issue}. Mide el rango de commits {range}: {commits} commits, {sessions} de ellos con el trailer {trailer}. El mínimo es {floor} ({unit}) por ciclo de publicación ({attribution}), y la proporción de autodesarrollo no puede bajar del objetivo {target} registrado para {target_tag} ({policy}). El estado falla cuando el rango no contiene ningún pull request fusionado de ese tipo, o cuando su proporción proyectada queda por debajo del objetivo; esta respuesta lee el rango y el registro {ledger} y no ejecuta la medición, así que ejecute {script} para ver cuál de las dos condiciones se cumple."
+  response response_repository_definition_en
+    intent repository_definition
+    language en
+    text "`{name}` is a {kind} in {file}, lines {start} to {end}. {doc} The symbol was introduced by commit {first} for issue {issue} (read from `git log -S`, with the issue from the commit's trailer)."
+  response response_repository_definition_ru
+    intent repository_definition
+    language ru
+    text "`{name}` — {kind} в {file}, строки с {start} по {end}. {doc} Символ добавлен коммитом {first} для задачи {issue} (прочитано из `git log -S`, задача — из трейлера коммита)."
+  response response_repository_definition_hi
+    intent repository_definition
+    language hi
+    text "`{name}` {file} में एक {kind} है, पंक्ति {start} से {end} तक। {doc} यह प्रतीक कमिट {first} द्वारा इश्यू {issue} के लिए जोड़ा गया (`git log -S` से पढ़ा गया, इश्यू कमिट के ट्रेलर से)।"
+  response response_repository_definition_zh
+    intent repository_definition
+    language zh
+    text "`{name}` 是 {file} 中的一个 {kind}，位于第 {start} 到 {end} 行。{doc} 该符号由提交 {first} 为问题 {issue} 引入（读取自 `git log -S`，问题来自提交的尾注）。"
+  response response_repository_definition_es
+    intent repository_definition
+    language es
+    text "`{name}` es un {kind} en {file}, líneas {start} a {end}. {doc} El símbolo lo introdujo el commit {first} para el issue {issue} (leído de `git log -S`, con el issue tomado del trailer del commit)."
+  response response_repository_definition_documented_en
+    intent repository_definition_documented
+    language en
+    text "Its documentation comment reads: {doc}"
+  response response_repository_definition_documented_ru
+    intent repository_definition_documented
+    language ru
+    text "Его документирующий комментарий гласит: {doc}"
+  response response_repository_definition_documented_hi
+    intent repository_definition_documented
+    language hi
+    text "इसकी प्रलेखन टिप्पणी कहती है: {doc}"
+  response response_repository_definition_documented_zh
+    intent repository_definition_documented
+    language zh
+    text "它的文档注释写道：{doc}"
+  response response_repository_definition_documented_es
+    intent repository_definition_documented
+    language es
+    text "Su comentario de documentación dice: {doc}"
+  response response_repository_definition_undocumented_en
+    intent repository_definition_undocumented
+    language en
+    text "It carries no documentation comment, so what it does is stated only by its source."
+  response response_repository_definition_undocumented_ru
+    intent repository_definition_undocumented
+    language ru
+    text "У него нет документирующего комментария, поэтому что он делает, говорит только его исходный код."
+  response response_repository_definition_undocumented_hi
+    intent repository_definition_undocumented
+    language hi
+    text "इस पर कोई प्रलेखन टिप्पणी नहीं है, इसलिए यह क्या करता है यह केवल इसका स्रोत बताता है।"
+  response response_repository_definition_undocumented_zh
+    intent repository_definition_undocumented
+    language zh
+    text "它没有文档注释，因此它做什么只能由其源代码说明。"
+  response response_repository_definition_undocumented_es
+    intent repository_definition_undocumented
+    language es
+    text "No tiene comentario de documentación, así que lo que hace solo lo dice su código fuente."

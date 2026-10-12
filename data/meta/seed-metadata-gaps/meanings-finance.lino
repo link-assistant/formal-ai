@@ -1,0 +1,29 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-finance.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-c40ce841806707eb
+    record "compounding"
+  gap seed-metadata-gap-eb28842a3e0a0e13
+    record "compounding_annual"
+  gap seed-metadata-gap-3c4a9d4855150c05
+    record "compounding_daily"
+  gap seed-metadata-gap-83912b8e6dcc6c89
+    record "compounding_monthly"
+  gap seed-metadata-gap-b9647d7cc3f6b7d7
+    record "compounding_quarterly"
+  gap seed-metadata-gap-d5fe1f7886931397
+    record "compounding_weekly"
+  gap seed-metadata-gap-b12a9229aa624f77
+    record "conversion_action"
+  gap seed-metadata-gap-475148a8638c59c1
+    record "final_amount"
+  gap seed-metadata-gap-771a7cfc7126fb3b
+    record "interest_finance"
+  gap seed-metadata-gap-27d5903b2993ea5d
+    record "investment"
+  gap seed-metadata-gap-f88d8c95a438efd1
+    record "live_rate_freshness"
+  gap seed-metadata-gap-9830450bb2cc54ab
+    record "year_period"

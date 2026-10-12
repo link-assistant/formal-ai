@@ -1,0 +1,26 @@
+{
+  "task": "T4157",
+  "prompt": "Run node u9-release-split/output-forwarding-controls.mjs",
+  "started": "2026-10-09T20:27:01.462Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node u9-release-split/output-forwarding-controls.mjs\"}",
+        "result": "Output: {\"sourceHead\":\"79cac78a23f471ef6dea134be51d13aa9f5ef209\",\"sourceGuardsVerified\":15,\"originalCallerIds\":[\"auto-release\",\"manual-release\"],\"originalWriterLease\":{\"group\":\"formal-ai-repository-writes\",\"queue\":\"max\",\"cancel\":\"false\"},\"positiveGraphs\":1,\"rejectedGraphs\":19,\"scope\":\"Actual source identities and declared DAG validation only; no GitHub scheduler/process/publication/cold timing proof\",\"githubLeaseExecuted\":false,\"nativeExecuted\":false}\n\nExit Code: 0"
+      }
+    ],
+    "answer": "The `node u9-release-split/output-forwarding-controls.mjs` command completed. Output:\n\n```json\n{\n  \"githubLeaseExecuted\": false,\n  \"nativeExecuted\": false,\n  \"originalCallerIds\": [\n    \"auto-release\",\n    \"manual-release\"\n  ],\n  \"originalWriterLease\": {\n    \"cancel\": \"false\",\n    \"group\": \"formal-ai-repository-writes\",\n    \"queue\": \"max\"\n  },\n  \"positiveGraphs\": 1,\n  \"rejectedGraphs\": 19,\n  \"scope\": \"Actual source identities and declared DAG validation only; no GitHub scheduler/process/publication/cold timing proof\",\n  \"sourceGuardsVerified\": 15,\n  \"sourceHead\": \"79cac78a23f471ef6dea134be51d13aa9f5ef209\"\n}\n```",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": false,
+  "finished": "2026-10-09T20:27:02.736Z"
+}

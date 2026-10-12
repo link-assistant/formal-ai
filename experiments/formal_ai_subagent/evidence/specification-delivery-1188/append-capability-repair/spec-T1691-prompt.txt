@@ -1,0 +1,1 @@
+Run node -e 'const fs=require("fs");const d="experiments/formal_ai_subagent/evidence/specification-delivery-1188/append-capability-repair";fs.mkdirSync(d,{recursive:true});fs.copyFileSync("/tmp/spec-append-ledger-rows.md",d+"/ledger-rows.md");fs.copyFileSync("/tmp/spec-append-audit.json",d+"/audit.json");'

@@ -1,0 +1,209 @@
+>> read {"filePath":"rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs","file_path":"rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs","path":"rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs"}
+   <file>
+   00001| //! Issue #1111: non-Linux CI is temporarily non-blocking, by a switch.
+   00002| //!
+   00003| //! `main` produced no release after v0.347.0 (2026-09-05). On the merge commit
+   00004| //! `7f3d61fee` the blocking failure was `macOS Core Tests / Build macOS test
+   00005| //! archive`, killed at its 1800 s execution budget with a 19.32% sccache hit
+   00006| //! rate against ~93% when healthy. That budget had already been raised twice
+   00007| //! for the same reason (1200 s in #1017, 1400 s in #1055, 1800 s in #1085), so
+   00008| //! raising it again would buy another 20 minutes of wall clock and no
+   00009| //! confidence.
+   00010| //!
+   00011| //! The maintainer's decision was to stop letting non-Linux platforms block
+   00012| //! development. These tests pin what that must mean: skipped, never deleted;
+   00013| //! reversible by one repository variable; and never silently reported as a
+   00014| //! pass.
+   00015| 
+   00016| use super::workflow_fixtures::{job_block, release_workflow, unwrapped};
+   00017| 
+   00018| /// The switch exists and defaults to skipping.
+   00019| #[test]
+   00020| fn the_switch_defaults_to_skip_and_is_named_in_the_workflow() {
+   00021|     let workflow = release_workflow();
+   00022|     assert!(
+   00023|         workflow.contains("FORMAL_AI_NON_LINUX_CI: ${{ vars.FORMAL_AI_NON_LINUX_CI || 'skip' }}"),
+   00024|         "the switch must default to skipping while the macOS build is the blocker"
+   00025|     );
+   00026| }
+   00027| 
+   00028| /// Skipped, not deleted. The whole point of the maintainer's instruction is
+   00029| /// that this is reversible without recovering anything from git history.
+   00030| #[test]
+   00031| fn no_non_linux_job_was_removed() {
+   00032|     let workflow = release_workflow();
+   00033|     assert!(
+   00034|         workflow.contains("macos-core-tests:"),
+   00035|         "the macOS job must still be defined, only skipped"
+   00036|     );
+   00037|     assert!(
+   00038|         workflow.contains("uses: ./.github/workflows/macos-core-tests.yml"),
+   00039|         "the reusable macOS workflow must still be called"
+   00040|     );
+   00041|     // PR #1188 (R1188-U9) removed the unsharded macOS specification leg of
+   00042|     // the test matrix: issue #1059 runs on macOS only the tests whose
+   00043|     // behaviour can differ from Linux, which macos-core-tests.yml does, and a
+   00044|     // 3600s compile-and-run leg could not fit the test job's 30-minute cap.
+   00045| }
+   00046| 
+   00047| /// Both non-Linux surfaces consult the switch.
+   00048| #[test]
+   00049| fn every_non_linux_surface_is_guarded_by_the_switch() {
+   00050|     let workflow = unwrapped(&release_workflow());
+   00051|     assert!(
+   00052|         workflow.contains("!cancelled() && vars.FORMAL_AI_NON_LINUX_CI == 'run' &&"),
+   00053|         "the macOS reusable-workflow call must run only when the switch says so"
+   00054|     );
+   00055|     assert!(
+   00056|         workflow
+   00057|             .contains("!startsWith(matrix.os, 'ubuntu') && vars.FORMAL_AI_NON_LINUX_CI != 'run'"),
+   00058|         "the macOS matrix leg must skip itself when the switch is off"
+   00059|     );
+   00060| }
+   00061| 
+   00062| /// A skip must not read as a pass. The green ledger set this precedent in
+   00063| /// #1107 and the same rule applies here: say so in the log and the summary.
+   00064| #[test]
+   00065| fn the_skip_is_reported_rather_than_silent() {
+   00066|     let workflow = release_workflow();
+   00067|     let test_job = job_block(&workflow, "test");
+   00068|     assert!(
+   00069|         test_job.contains("::notice title=$LEG skipped::"),
+   00070|         "a skipped platform must annotate the run"
+   00071|     );
+   00072|     assert!(
+   00073|         test_job.contains("GITHUB_STEP_SUMMARY"),
+   00074|         "a skipped platform must say so in the job summary"
+   00075|     );
+   00076|     assert!(
+   00077|         test_job.contains("Nothing on this platform was verified"),
+   00078|         "the summary must not let a skip be read as coverage"
+   00079|     );
+   00080| }
+   00081| 
+   00082| /// The release path must accept the skip, and only the skip. A macOS job that
+   00083| /// actually fails still has to stop the build -- otherwise this switch would
+   00084| /// be a way to ship past a real defect.
+   00085| #[test]
+   00086| fn the_build_accepts_a_skipped_macos_job_but_not_a_failed_one() {
+   00087|     let workflow = unwrapped(&release_workflow());
+   00088|     assert!(
+   00089|         workflow.contains(
+   00090|             "needs.macos-core-tests.result == 'success' || needs.macos-core-tests.result == 'skipped'"
+   00091|         ),
+   00092|         "the build must treat a switched-off macOS job as acceptable"
+   00093|     );
+   00094|     assert!(
+   00095|         !workflow.contains("needs.macos-core-tests.result != 'failure'"),
+   00096|         "the gate must enumerate what it accepts rather than accept everything that is not a failure"
+   00097|     );
+   00098| }
+   00099| 
+   00100| /// Linux coverage is untouched: this change buys speed on other platforms, not
+   00101| /// on the one that still has to be right.
+   00102| #[test]
+   00103| fn the_linux_leg_is_not_guarded_by_the_switch() {
+   00104|     let workflow = release_workflow();
+   00105|     assert!(
+   00106|         workflow.matches("{ os: ubuntu-latest, test-suite: full,").count() == 5,
+   00107|         "the Linux leg must still run the full suite"
+   00108|     );
+   00109|     let test_job = job_block(&workflow, "test");
+   00110|     let guard = "!startsWith(matrix.os, 'ubuntu')";
+   00111|     assert!(
+   00112|         test_job.contains(guard),
+   00113|         "the skip must be expressed as 'not ubuntu' so Linux can never be switched off by it"
+   00114|     );
+   00115| }
+   00116| 
+   00117| /// The green ledger's skip has to reach every job that depends on the skipped
+   00118| /// work, not just the one that consults the ledger.
+   00119| ///
+   00120| /// `agentic-cli-matrix.yml` failed on this branch's first run while passing on
+   00121| /// `main`, and the cause was latent rather than new: on a ledger hit, `build`
+   00122| /// skips the step that plans the client legs, so `needs.build.outputs.matrix`
+   00123| /// is empty and `fromJSON('')` is a strategy error -- the `matrix` job fails,
+   00124| /// `learn` skips, and the summary reports a red workflow for inputs that had
+   00125| /// already passed. A cache hit must never be able to turn a workflow red.
+   00126| mod agentic_cli_matrix_ledger {
+   00127|     use std::fs;
+   00128| 
+   00129|     fn workflow() -> String {
+   00130|         fs::read_to_string(format!(
+   00131|             "{}/../.github/workflows/agentic-cli-matrix.yml",
+   00132|             env!("CARGO_MANIFEST_DIR")
+   00133|         ))
+   00134|         .expect("the agentic CLI matrix workflow should be readable")
+   00135|         .replace("\r\n", "\n")
+   00136|     }
+   00137| 
+   00138|     #[test]
+   00139|     fn a_ledger_hit_skips_the_jobs_that_need_the_planned_matrix() {
+   00140|         let workflow = workflow();
+   00141|         // Job-level, not step-level: the same expression guards individual
+   00142|         // steps throughout the file, and a step guard would not stop
+   00143|         // `fromJSON('')` from failing the job's own strategy.
+   00144|         let job_guard = "\n    if: ${{ needs.build.outputs.already-green != 'true' }}\n";
+   00145|         for job in ["  matrix:\n", "  learn:\n"] {
+   00146|             let body = workflow
+   00147|                 .split(job)
+   00148|                 .nth(1)
+   00149|                 .unwrap_or_else(|| panic!("{job} must still be defined"));
+   00150|             let header = body.split("steps:").next().expect("a job has a header");
+   00151|             assert!(
+   00152|                 header.contains(job_guard.trim_end_matches('\n')),
+   00153|                 "{job} must skip at the job level on a ledger hit"
+   00154|             );
+   00155|         }
+   00156|     }
+   00157| 
+   00158|     /// A skip is not a pass for the one leg that can always run.
+   00159|     #[test]
+   00160|     fn the_summary_still_requires_the_replay_on_a_ledger_hit() {
+   00161|         let workflow = workflow();
+   00162|         assert!(
+   00163|             workflow.contains("ALREADY_GREEN: ${{ needs.build.outputs.already-green }}"),
+   00164|             "the summary must read the ledger result through env, never interpolated into run:"
+   00165|         );
+   00166|         let summary = workflow
+   00167|             .split("name: Matrix summary")
+   00168|             .nth(1)
+   00169|             .expect("the summary job exists");
+   00170|         let early_exit = summary
+   00171|             .split("if [ \"$ALREADY_GREEN\" = \"true\" ]; then")
+   00172|             .nth(1)
+   00173|             .expect("the ledger-hit branch exists");
+   00174|         let branch = early_exit.split("exit 0").next().expect("it exits");
+   00175|         assert!(
+   00176|             branch.contains("needs.replay.result"),
+   00177|             "replay needs only jq, so it runs on a ledger hit and must still be required"
+   00178|         );
+   00179|     }
+   00180| 
+   00181|     /// The early exit must not swallow a genuine leg failure.
+   00182|     #[test]
+   00183|     fn a_real_leg_failure_still_fails_the_summary() {
+   00184|         let workflow = workflow();
+   00185|         assert!(
+   00186|             workflow.contains("one or more client legs failed"),
+   00187|             "a failed client leg must still fail the matrix when the legs actually ran"
+   00188|         );
+   00189|         assert!(
+   00190|             workflow.contains("client-contract learning failed"),
+   00191|             "learning must still be required when it actually ran"
+   00192|         );
+   00193|     }
+   00194| }
+   00195| 
+   
+   (End of file - total 195 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs","file_path":"rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs","new":"workflow\n            .matches(\"{ os: ubuntu-latest, test-suite: full,\")\n            .count()\n            == 5,","newString":"workflow\n            .matches(\"{ os: ubuntu-latest, test-suite: full,\")\n            .count()\n            == 5,","new_str":"workflow\n            .matches(\"{ os: ubuntu-latest, test-suite: full,\")\n            .count()\n            == 5,","new_string":"workflow\n            .matches(\"{ os: ubuntu-latest, test-suite: full,\")\n            .count()\n            == 5,","old":"workflow.matches(\"{ os: ubuntu-latest, test-suite: full,\").count() == 5,","oldString":"workflow.matches(\"{ os: ubuntu-latest, test-suite: full,\").count() == 5,","old_str":"workflow.matches(\"{ os: ubuntu-latest, test-suite: full,\").count() == 5,","old_string":"workflow.matches(\"{ os: ubuntu-latest, test-suite: full,\").count() == 5,","path":"rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs"}
+   c71de38a7c9cd3d641602a29932f5f52ef6ab5764947474019e8dfc26d29fcd9  rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs
+   
+== answer ==
+Replaced `workflow.matches("{ os: ubuntu-latest, test-suite: full,").count() == 5,` with `workflow
+            .matches("{ os: ubuntu-latest, test-suite: full,")
+            .count()
+            == 5,` in `rust/tests/unit/ci-cd/issue_1111_non_linux_switch.rs` and observed the result.

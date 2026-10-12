@@ -1,0 +1,12 @@
+language en
+lemma unzip
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "open the zipper of"
+    examples ("unzip the bag")
+    id oewn-01344906-v
+    partOfSpeech v
+source "oewn:2024"

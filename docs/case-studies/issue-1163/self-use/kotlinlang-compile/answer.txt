@@ -1,0 +1,11 @@
+Procedural discovery plan for `compile a kotlin program from the command line` (action `compile`, object `a kotlin program from the command line`).
+
+Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check.
+
+wikiHow candidate `Compile-A-Kotlin-Program-From-The-Command-Line` did not return explicit steps (http_404).
+
+Fallback web search for `how to compile a kotlin program from the command line`:
+
+No CORS-enabled web search results were returned for `how to compile a kotlin program from the command line`.
+
+Providers tried: DuckDuckGo Instant Answer, Internet Archive (archive.org), Wikipedia REST, Wikidata entities, Wiktionary opensearch, Wikinews opensearch.

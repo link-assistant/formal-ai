@@ -1,0 +1,9 @@
+view
+  id M-c24c70c4df38
+  lemma megahertz
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "one million periods per second"
+    provenance (wordnet)

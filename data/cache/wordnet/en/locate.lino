@@ -1,0 +1,31 @@
+language en
+lemma locate
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "discover the location of; determine the place of; find by searching or examining"
+    examples ("Can you locate your cousins in the Midwest?" "My search turned up nothing")
+    id oewn-02291049-v
+    partOfSpeech v
+    synonyms ("turn up")
+  entry
+    definition "determine or indicate the place, site, or limits of, as if by an instrument or by a survey"
+    examples ("Our sense of sight enables us to locate objects in space" "Locate the boundaries of the property")
+    id oewn-02700775-v
+    partOfSpeech v
+    synonyms (situate)
+  entry
+    definition "assign a location to"
+    examples ("The company located some of their agents in Los Angeles")
+    id oewn-02338685-v
+    partOfSpeech v
+    synonyms (place site)
+  entry
+    definition "take up residence and become established"
+    examples ("The immigrants settled in the Midwest")
+    id oewn-00414801-v
+    partOfSpeech v
+    synonyms (settle)
+source "oewn:2024"

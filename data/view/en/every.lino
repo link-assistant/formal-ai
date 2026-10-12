@@ -1,0 +1,13 @@
+view
+  id M-6f5363555676
+  lemma every
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(used of count nouns) each and all of the members of a group considered singly and without exception"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "each and all of a series of entities or intervals as specified"
+    provenance (wordnet)

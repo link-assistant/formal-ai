@@ -44,6 +44,6 @@ names no artifact.
 `after-original-fix.txt` is kept as the record of the state this experiment was
 first captured against. A fresh `after.txt` for the current shape has not been
 captured, so re-running the example will not reproduce the file above; the
-current behaviour is pinned by `tests/unit/issue_904.rs` instead, which asserts
+current behaviour is pinned by `tests/unit/agentic-coding/work_item_planning.rs` instead, which asserts
 the read-first order, the executed artifact, and both cases where the honest
 terminal state remains.

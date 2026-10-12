@@ -104,3 +104,5 @@ fn the_how_to_guide_is_byte_identical_after_the_walk_moves_to_the_shared_kernel(
         );
     }
 }
+
+include!("../fixtures/source-walk-offline-failures.rs");

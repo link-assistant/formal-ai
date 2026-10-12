@@ -1,0 +1,53 @@
+language en
+lemma send
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "cause to go somewhere"
+    examples ("The explosion sent the car flying in the air" "She sent her children to camp" "He directed all his energies into his dissertation")
+    id oewn-01955339-v
+    partOfSpeech v
+    synonyms (direct)
+  entry
+    definition "to cause or order to be taken, directed, or transmitted to another place"
+    examples ("He had sent the dispatches downtown to the proper people and had slept")
+    id oewn-01439891-v
+    partOfSpeech v
+    synonyms ("send out")
+  entry
+    definition "cause to be directed or transmitted to another place"
+    examples ("send me your latest results" "I'll mail you the paper when it's written")
+    id oewn-01033289-v
+    partOfSpeech v
+    synonyms (mail post)
+  entry
+    definition "transport commercially"
+    id oewn-01954657-v
+    partOfSpeech v
+    synonyms (transport ship)
+  entry
+    definition "assign to a station"
+    id oewn-01091334-v
+    partOfSpeech v
+    synonyms (station post place)
+  entry
+    definition transfer
+    examples ("The spy sent the classified information off to Russia")
+    id oewn-01064577-v
+    partOfSpeech v
+    synonyms ("get off" "send off")
+  entry
+    definition "cause to be admitted; of persons to an institution"
+    examples ("After the second episode, she had to be committed" "he was committed to prison")
+    id oewn-02353564-v
+    partOfSpeech v
+    synonyms (commit institutionalize institutionalise charge)
+  entry
+    definition "broadcast over the airwaves, as in radio or television"
+    examples ("We cannot air this X-rated song")
+    id oewn-00975088-v
+    partOfSpeech v
+    synonyms (air broadcast beam transmit)
+source "oewn:2024"

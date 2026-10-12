@@ -1,0 +1,451 @@
+{
+  "cutoff": "T1690",
+  "invocations": 53,
+  "failed_task_outcomes": 9,
+  "supplied_draft_defects": 3,
+  "non_plan_write_edit_calls": 38,
+  "source_mutating_bash_calls": 6,
+  "file_writes_within_source_bash_calls": 11,
+  "physical_non_plan_mutation_calls": 44,
+  "manual_repository_source_test_docs_edits": 0,
+  "retained_log_bytes": 52452041,
+  "model_tokens_measured": false,
+  "model_cost_measured": false,
+  "missing_raw_transcripts": [
+    "T1638",
+    "T1639",
+    "T1653-a",
+    "T1654-a",
+    "T1655-a"
+  ],
+  "rows": [
+    {
+      "id": 1637,
+      "label": "T1637",
+      "outcome": "Fail",
+      "tools": "bash",
+      "detail": "Open G112: broad implementation request read through bash and echoed source",
+      "writeEdit": 0
+    },
+    {
+      "id": 1638,
+      "label": "T1638",
+      "outcome": "Pass",
+      "tools": "write (observed)",
+      "detail": "Initial reviewed JS append draft byte-equal; original raw log later overwritten by accidental helper repeat. Exact prompt reconstructed from retained draft; no invented transcript"
+    },
+    {
+      "id": 1639,
+      "label": "T1639",
+      "outcome": "Fail",
+      "tools": "none",
+      "detail": "Driver bootstrap blocked by duplicate sourceFromReadResult import after accidental helper repeat; exact prompt retained, original complete stderr not retained; observational provenance only"
+    },
+    {
+      "id": 1640,
+      "label": "T1640",
+      "outcome": "Applied; draft defect",
+      "tools": "read → write → read → write → bash",
+      "detail": "Operational duplicate helper reapplied malformed draft; exact bytes applied but driver boot failed. FA loader recovery T1641",
+      "writeEdit": 2
+    },
+    {
+      "id": 1641,
+      "label": "T1641",
+      "outcome": "Pass",
+      "tools": "write",
+      "detail": "FA bootstrap recovery used temporary loader serving committed execution module; restored reviewed append draft",
+      "writeEdit": 1
+    },
+    {
+      "id": 1642,
+      "label": "T1642",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1643,
+      "label": "T1643",
+      "outcome": "Fail",
+      "tools": "read → read",
+      "detail": "Open authored-target scope: quoted full metadata selected planner-precedence.lino; two failed reads, no mutation",
+      "writeEdit": 0
+    },
+    {
+      "id": 1644,
+      "label": "T1644",
+      "outcome": "Fail",
+      "tools": "none (boot failure)",
+      "detail": "Blocked before tools by CI-owned invalid mutating_action regex; exact retry T1647 after CI repair",
+      "writeEdit": 0
+    },
+    {
+      "id": 1647,
+      "label": "T1647",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1648,
+      "label": "T1648",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1649,
+      "label": "T1649",
+      "outcome": "Pass",
+      "tools": "read → edit → bash",
+      "detail": "Exact canonical action edit applied and observed",
+      "writeEdit": 1
+    },
+    {
+      "id": 1650,
+      "label": "T1650",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1651,
+      "label": "T1651",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1652,
+      "label": "T1652",
+      "outcome": "Pass",
+      "tools": "read → edit → bash",
+      "detail": "Exact native action edit applied and observed",
+      "writeEdit": 1
+    },
+    {
+      "id": 1652.9,
+      "label": "T1653-a",
+      "outcome": "Pass",
+      "tools": "write (observed)",
+      "detail": "Initial new closest test created, byte-equal; raw transcript later overwritten by second idempotent read. Exact original prompt reconstructed; complete original transcript unavailable"
+    },
+    {
+      "id": 1653,
+      "label": "T1653-b",
+      "outcome": "Pass",
+      "tools": "read",
+      "detail": "Second identical source request only read existing already-correct test; idempotent state, zero new write",
+      "writeEdit": 0
+    },
+    {
+      "id": 1653.9,
+      "label": "T1654-a",
+      "outcome": "Fail",
+      "tools": "none (quote fault)",
+      "detail": "Initial guillemet-wrapped full source declined due nested quotes; retry uses variable fence. Exact original prompt reconstructed; complete original transcript unavailable"
+    },
+    {
+      "id": 1654,
+      "label": "T1654-b",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1654.9,
+      "label": "T1655-a",
+      "outcome": "Fail",
+      "tools": "none (quote fault)",
+      "detail": "Initial guillemet-wrapped full native source declined due nested quotes; retry uses variable fence. Exact original prompt reconstructed; complete original transcript unavailable"
+    },
+    {
+      "id": 1655,
+      "label": "T1655-b",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1656,
+      "label": "T1656",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1657,
+      "label": "T1657",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1658,
+      "label": "T1658",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1659,
+      "label": "T1659",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1662,
+      "label": "T1662",
+      "outcome": "Pass",
+      "tools": "read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 1
+    },
+    {
+      "id": 1663,
+      "label": "T1663",
+      "outcome": "Pass",
+      "tools": "read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 1
+    },
+    {
+      "id": 1664,
+      "label": "T1664",
+      "outcome": "Fail",
+      "tools": "read → bash → bash",
+      "detail": "Failed authored native fixture Set: misparsed payload as Rename contents to formal_ai; unintended test edit restored by T1668",
+      "writeEdit": 0
+    },
+    {
+      "id": 1665,
+      "label": "T1665",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1666,
+      "label": "T1666",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1667,
+      "label": "T1667",
+      "outcome": "Fail",
+      "tools": "bash",
+      "detail": "Failed explicit shell form: exactly and guillemets entered command; exit127, no file edit",
+      "writeEdit": 0
+    },
+    {
+      "id": 1668,
+      "label": "T1668",
+      "outcome": "Pass",
+      "tools": "bash",
+      "detail": "Plain Run executed reviewed fixture copier: three real file writes",
+      "writeEdit": 0
+    },
+    {
+      "id": 1669,
+      "label": "T1669",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1670,
+      "label": "T1670",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1671,
+      "label": "T1671",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1672,
+      "label": "T1672",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1673,
+      "label": "T1673",
+      "outcome": "Pass",
+      "tools": "read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 1
+    },
+    {
+      "id": 1674,
+      "label": "T1674",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1675,
+      "label": "T1675",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1676,
+      "label": "T1676",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1677,
+      "label": "T1677",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1678,
+      "label": "T1678",
+      "outcome": "Fail",
+      "tools": "bash",
+      "detail": "Open G112: unchanged T1637 retry read and echoed fixed source; synthesis did not implement code",
+      "writeEdit": 0
+    },
+    {
+      "id": 1679,
+      "label": "T1679",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1680,
+      "label": "T1680",
+      "outcome": "Pass",
+      "tools": "bash",
+      "detail": "Plain Run copied formatted native G15 fixture: one file write",
+      "writeEdit": 0
+    },
+    {
+      "id": 1681,
+      "label": "T1681",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1682,
+      "label": "T1682",
+      "outcome": "Pass",
+      "tools": "read → write → read → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 2
+    },
+    {
+      "id": 1683,
+      "label": "T1683",
+      "outcome": "Applied; draft defect",
+      "tools": "bash → write → bash",
+      "detail": "Draft applied byte-equal; later source review found misplaced native atomic-shell guard; corrected T1689",
+      "writeEdit": 1
+    },
+    {
+      "id": 1684,
+      "label": "T1684",
+      "outcome": "Pass",
+      "tools": "bash → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 1
+    },
+    {
+      "id": 1685,
+      "label": "T1685",
+      "outcome": "Pass",
+      "tools": "bash",
+      "detail": "Plain Run copied honest shell harness and sequence contracts: three file writes",
+      "writeEdit": 0
+    },
+    {
+      "id": 1686,
+      "label": "T1686",
+      "outcome": "Applied; draft defect",
+      "tools": "bash",
+      "detail": "Reviewed mapper/data files copied; initial awk quoting failed closest execution checks; repaired T1687",
+      "writeEdit": 0
+    },
+    {
+      "id": 1687,
+      "label": "T1687",
+      "outcome": "Pass",
+      "tools": "bash",
+      "detail": "Plain Run copied corrected awk command template: one file write",
+      "writeEdit": 0
+    },
+    {
+      "id": 1688,
+      "label": "T1688",
+      "outcome": "Pass",
+      "tools": "bash → write → bash",
+      "detail": "Created closest concurrent-lock and sandbox-mapping regressions",
+      "writeEdit": 1
+    },
+    {
+      "id": 1689,
+      "label": "T1689",
+      "outcome": "Pass",
+      "tools": "bash → write → bash",
+      "detail": "Reviewed general capability source/data applied through Formal AI; requested bytes verified",
+      "writeEdit": 1
+    },
+    {
+      "id": 1690,
+      "label": "T1690",
+      "outcome": "Pass",
+      "tools": "bash → write → bash",
+      "detail": "Created append capability changelog",
+      "writeEdit": 1
+    }
+  ],
+  "final_cutoff": "T1695",
+  "final_invocations": 58,
+  "neutral_evidence_copy_bash_calls": 4,
+  "all_non_plan_mutating_tool_calls_including_evidence": 49,
+  "final_failed_task_outcomes": 9,
+  "final_capability_source_mutation_calls": 45,
+  "final_non_plan_write_edit_calls": 38,
+  "final_source_mutating_bash_calls": 7,
+  "final_file_writes_within_source_bash_calls": 13
+}

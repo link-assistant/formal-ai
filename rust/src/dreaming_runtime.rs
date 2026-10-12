@@ -56,8 +56,9 @@ pub fn core_is_idle(idle_for: Duration) -> bool {
 /// Start the one-per-process core worker.
 ///
 /// Dreaming is **default-on**: it only stays off when `FORMAL_AI_DREAMING` is
-/// explicitly set to `0`/`off`/`false`. The worker uses the same default shared
-/// memory path as every foreground surface.
+/// explicitly set to a false spelling (`0`/`off`/`false`/`no`; issue #1181).
+/// The worker uses the same default shared memory path as every foreground
+/// surface.
 pub fn start_core_dreaming() {
     if dreaming_disabled() {
         return;
@@ -73,7 +74,7 @@ pub fn start_core_dreaming() {
                     std::thread::sleep(Duration::from_secs(DEFAULT_IDLE_SECONDS));
                     if core_is_idle(Duration::from_secs(DEFAULT_IDLE_SECONDS)) {
                         if let Err(error) = run_core_dreaming_once(&path)
-                            && std::env::var("FORMAL_AI_DREAMING_DEBUG").as_deref() == Ok("1")
+                            && crate::cli_env::flag_enabled("FORMAL_AI_DREAMING_DEBUG")
                         {
                             eprintln!("[dreaming] background run failed: {error}");
                         }
@@ -157,11 +158,11 @@ pub fn learning_cycle_record_path(memory_path: &Path) -> std::path::PathBuf {
 }
 
 /// Whether the `FORMAL_AI_DREAMING` opt-out is in force. Dreaming is
-/// default-on; only an explicit `0`/`off`/`false` (any case) disables it.
+/// default-on; only an explicit false spelling (`0`/`off`/`false`/`no`, any
+/// case) disables it.
 #[must_use]
 pub fn dreaming_disabled() -> bool {
-    std::env::var("FORMAL_AI_DREAMING")
-        .is_ok_and(|value| matches!(value.to_ascii_lowercase().as_str(), "0" | "off" | "false"))
+    crate::cli_env::flag_disabled("FORMAL_AI_DREAMING")
 }
 
 fn now_seconds() -> u64 {

@@ -41,6 +41,10 @@ coding_discovery_runtime
 coding_runtime_templates
   template python_ir_function
     text "def {name}({parameters}):\n    return {expression}\n"
+  template javascript_ir_function
+    text "export function {name}({parameters}) {\n  return {expression};\n}\n"
+  template javascript_ir_gap
+    text "`{subject}` has no seeded javascript realization"
   template python_ir_predicate
     text " if {predicate}"
   template python_ir_each

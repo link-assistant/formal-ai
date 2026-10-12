@@ -1,0 +1,624 @@
+>> read {"filePath":"experiments/issue_1028_agent_cli_ladder/run.sh","file_path":"experiments/issue_1028_agent_cli_ladder/run.sh","path":"experiments/issue_1028_agent_cli_ladder/run.sh"}
+   <file>
+   00001| #!/usr/bin/env bash
+   00002| set -euo pipefail
+   00003| 
+   00004| ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+   00005| BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
+   00006| AGENT="${AGENT:-agent}"
+   00007| OUT="${OUT:-$ROOT/docs/case-studies/issue-1028/agent-tree-run}"
+   00008| TREE_DEPTH="${TREE_DEPTH:-5}"
+   00009| NODE_FILTER="${NODE_FILTER:-}"
+   00010| BASE_PORT="${BASE_PORT:-8870}"
+   00011| VERIFY_NODE="$ROOT/experiments/issue_1028_agent_cli_ladder/verify-node.sh"
+   00012| AUTHORED_RULES="${AUTHORED_RULES:-enabled}"
+   00013| 
+   00014| while [[ $# -gt 0 ]]; do
+   00015|   case "$1" in
+   00016|     --no-authored-rules) AUTHORED_RULES=disabled; shift ;;
+   00017|     *) echo "unknown option: $1" >&2; exit 2 ;;
+   00018|   esac
+   00019| done
+   00020| case "$AUTHORED_RULES" in
+   00021|   enabled|disabled) ;;
+   00022|   *) echo "AUTHORED_RULES must be enabled or disabled" >&2; exit 2 ;;
+   00023| esac
+   00024| 
+   00025| [[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai --manifest-path rust/Cargo.toml" >&2; exit 2; }
+   00026| command -v "$AGENT" >/dev/null || { echo "Agent CLI not installed" >&2; exit 2; }
+   00027| command -v git >/dev/null || { echo "git is required" >&2; exit 2; }
+   00028| command -v curl >/dev/null || { echo "curl is required" >&2; exit 2; }
+   00029| command -v python3 >/dev/null || { echo "python3 is required" >&2; exit 2; }
+   00030| 
+   00031| case "$TREE_DEPTH" in
+   00032|   0|1|2|3|4|5|all) ;;
+   00033|   *) echo "TREE_DEPTH must be 0, 1, 2, 3, 4, 5, or all" >&2; exit 2 ;;
+   00034| esac
+   00035| if [[ -n "$NODE_FILTER" && ! "$NODE_FILTER" =~ ^(R|[12](\.[12]){0,4})$ ]]; then
+   00036|   echo "NODE_FILTER must be R or a binary path such as 2.1.2.2.1" >&2
+   00037|   exit 2
+   00038| fi
+   00039| 
+   00040| mkdir -p "$OUT"
+   00041| 
+   00042| # A full depth-five run is over half an hour of real Agent CLI turns, and it
+   00043| # shares `target/` with whatever else is building on the machine. A rebuild or a
+   00044| # cache prune inside that window swaps -- or removes -- the binary under
+   00045| # measurement, and a node that fails because its server never started is
+   00046| # indistinguishable in the log from a node that failed on its merits. Copy the
+   00047| # binary out once, and every node is measured against the same bytes.
+   00048| STAGE="$(mktemp -d)"
+   00049| WORK="$STAGE/work"
+   00050| cleanup_stage() {
+   00051|   git -C "$ROOT" worktree remove --force "$WORK" >/dev/null 2>&1 || true
+   00052|   git -C "$ROOT" worktree prune >/dev/null 2>&1 || true
+   00053|   rm -rf "$STAGE"
+   00054| }
+   00055| trap cleanup_stage EXIT
+   00056| cp "$BIN" "$STAGE/formal-ai"
+   00057| BIN="$STAGE/formal-ai"
+   00058| 
+   00059| # Issue #1072: every node used to extract a full `git archive` (966 MB, most of
+   00060| # it `dev/` and `docs/` evidence) into a fresh temporary directory, `git init`
+   00061| # it, and commit it -- then compile there. Measured on run 34326451343: 110
+   00062| # minutes for 32 leaves, 25 of them Agent CLI work. Two costs made up the rest:
+   00063| # copying and re-hashing a gigabyte per node, and a workspace path cargo had
+   00064| # never seen, so every leaf recompiled the crate from scratch, shared target
+   00065| # directory or not. The fresh `git init` also minted a new root commit per
+   00066| # node, which is the project identity `@link-assistant/agent` keys its
+   00067| # snapshot store on: 115 stores, 31 GB, in six hours.
+   00068| #
+   00069| # One worktree, created once at one path, sparse so the evidence trees are
+   00070| # never checked out, and reset between nodes. Same path, so the second leaf's
+   00071| # `cargo check` is incremental; same root commit, so one snapshot store.
+   00072| BASE_SHA=$(git -C "$ROOT" rev-parse HEAD)
+   00073| git -C "$ROOT" worktree add --detach --no-checkout "$WORK" "$BASE_SHA" >/dev/null
+   00074| git -C "$WORK" sparse-checkout init --no-cone >/dev/null
+   00075| # `dev/` is 693 MB of captured logs and nothing compiles from it. `docs/` has
+   00076| # to stay: 31 `include_str!` call sites in the test suite read
+   00077| # `docs/case-studies/`, one of them from a `raw-data/` log, so excluding it
+   00078| # made `cargo test` fail to compile inside the node -- which the harness
+   00079| # scored as the leaf's own `failing_leaf_tests` rather than as its own
+   00080| # breakage. `docs/assets/` holds only images no source reads.
+   00081| # `dev/` is 693 MB of captured logs, but the test suite compiles exactly one
+   00082| # file out of it (`issue_991_incremental_decomposition.rs` reads a learning
+   00083| # report through `include_str!`), so that one path is added back. `docs/` has
+   00084| # to stay whole: 31 `include_str!` sites read `docs/case-studies/`, one of them
+   00085| # a `raw-data/` log. Excluding either made `cargo test` fail to compile inside
+   00086| # the node, which the harness scored as the leaf's own `failing_leaf_tests`
+   00087| # rather than as the harness's breakage -- a false verdict about Formal AI.
+   00088| # `docs/assets/` holds only images no source reads.
+   00089| sparse_paths=('/*' '!/dev/' '/dev/log/issues/702/pulls/818/agent-cli/' '!/docs/assets/')
+   00090| if [[ "$AUTHORED_RULES" == disabled ]]; then
+   00091|   # These 32 documents and leaves.tsv contain exact leaf-to-edit mappings. The
+   00092|   # harness reads its oracle from ROOT before invoking the agent, while the
+   00093|   # repository worktree presented to the agent omits both forms of the answer.
+   00094|   # Sparse exclusion keeps the worktree clean, unlike deleting tracked files
+   00095|   # after checkout, so the unchanged diff judge remains identical in both
+   00096|   # modes.
+   00097|   sparse_paths+=(
+   00098|     '!/experiments/issue_1028_agent_cli_ladder/rules/'
+   00099|     '!/experiments/issue_1028_agent_cli_ladder/leaves.tsv'
+   00100|   )
+   00101| fi
+   00102| git -C "$WORK" sparse-checkout set --no-cone "${sparse_paths[@]}" >/dev/null
+   00103| git -C "$WORK" checkout -q --detach "$BASE_SHA"
+   00104| git -C "$WORK" config user.email agent-ladder@example.invalid
+   00105| git -C "$WORK" config user.name agent-ladder
+   00106| 
+   00107| # Return the shared worktree to the base commit with nothing left over from the
+   00108| # previous node. A leftover would let one node inherit another's edit, so a tree
+   00109| # that is still dirty after the reset is a hard failure, not a warning.
+   00110| reset_work() {
+   00111|   git -C "$WORK" checkout -q --detach "$BASE_SHA"
+   00112|   git -C "$WORK" reset -q --hard "$BASE_SHA"
+   00113|   git -C "$WORK" clean -qfdx
+   00114|   local leftover
+   00115|   leftover=$(git -C "$WORK" status --porcelain)
+   00116|   if [[ -n "$leftover" ]]; then
+   00117|     echo "reset_work: worktree still dirty after reset:" >&2
+   00118|     printf '%s\n' "$leftover" >&2
+   00119|     return 1
+   00120|   fi
+   00121| }
+   00122| 
+   00123| # GNU timeout bounds one node's Agent CLI turn (plan 01 step 3): the leaves
+   00124| # that produced no proof ran 236 s, 162 s and 125 s against a 22 s median, and
+   00125| # nothing stopped them. The default is ten times that median and above every
+   00126| # passing leaf measured. Where `timeout` is absent (macOS without coreutils)
+   00127| # the node runs unbounded, and the summary says so.
+   00128| if command -v setsid >/dev/null 2>&1; then SETSID=(setsid); else SETSID=(); fi
+   00129| NODE_BUDGET="${LADDER_NODE_BUDGET:-240}"
+   00130| if command -v timeout >/dev/null 2>&1; then
+   00131|   BOUND=(timeout --kill-after=10 "$NODE_BUDGET")
+   00132| else
+   00133|   BOUND=()
+   00134|   echo "warning: no timeout binary; nodes run without the ${NODE_BUDGET}s budget" >&2
+   00135| fi
+   00136| # Issue #1085 (D4): every leaf's edit is compiled by verify-node.sh. One target
+   00137| # directory for the whole run keeps that incremental after the first leaf.
+   00138| export LADDER_CARGO_TARGET_DIR="${LADDER_CARGO_TARGET_DIR:-$STAGE/target}"
+   00139| 
+   00140| NODES="$OUT/tree.tsv"
+   00141| RUN_LOG="$OUT/run.log"
+   00142| : > "$NODES"
+   00143| : > "$RUN_LOG"
+   00144| : > "$OUT/durations.tsv"
+   00145| declare -A VERIFIED_EFFECTS=()
+   00146| 
+   00147| # Issue #1085 (D2.3, D4): the leaf table is committed beside this script so
+   00148| # the unit tests, the 32 rule files under rules/ and this run read one source.
+   00149| cp "$ROOT/experiments/issue_1028_agent_cli_ladder/leaves.tsv" "$OUT/leaves.tsv"
+   00150| 
+   00151| python3 - "$OUT/leaves.tsv" "$NODES" <<'PY'
+   00152| import sys
+   00153| from pathlib import Path
+   00154| leaves = {}
+   00155| for line in Path(sys.argv[1]).read_text().splitlines():
+   00156|     leaf, text, change_path, change_marker, change_guard, requirement = line.split('\t', 5)
+   00157|     leaves[int(leaf[1:])] = (text, change_path, change_marker, change_guard, requirement)
+   00158| 
+   00159| def child(path, branch):
+   00160|     return path + ("." if path else "") + str(branch)
+   00161| 
+   00162| def leaf_index(path):
+   00163|     bits = ''.join('0' if p == '1' else '1' for p in path.split('.'))
+   00164|     return int(bits, 2) + 1
+   00165| 
+   00166| def requirement_text(start, end):
+   00167|     listed = ' '.join(f'({k}) {leaves[k][4]}' for k in range(start, end + 1))
+   00168|     return ('Deliver these requirements in this repository; each names behaviour '
+   00169|             'or a declaration, never a file, so find the declaration in the '
+   00170|             'source tree first: ' + listed)
+   00171| def emit(path, depth, out):
+   00172|     if depth == 0:
+   00173|         # Issue #1085 (D4): the root and every node down to depth 3 are
+   00174|         # requirement-shaped; the prompt names behaviour, never a file.
+   00175|         text = 'Root task: ' + requirement_text(1, 32)
+   00176|         criterion = 'requirement_changes'
+   00177|         node_id = 'R'
+   00178|     elif depth == 5:
+   00179|         i = leaf_index(path)
+   00180|         node_id = path
+   00181|         leaf_text, criterion_path, criterion_marker, criterion_guard, _requirement = leaves[i]
+   00182|         text = f'Atomic task L{i:02d}: {leaf_text}'
+   00183|         criterion = 'tracked_source_change'
+   00184|     else:
+   00185|         node_id = path
+   00186|         bits = ''.join('0' if p == '1' else '1' for p in path.split('.'))
+   00187|         prefix = int(bits, 2)
+   00188|         span = 2 ** (5 - depth)
+   00189|         start = prefix * span + 1
+   00190|         end = (prefix + 1) * span
+   00191|         if depth <= 3:
+   00192|             text = f'Decomposition node {path}: ' + requirement_text(start, end)
+   00193|             criterion = 'requirement_changes'
+   00194|         else:
+   00195|             text = f'Complete recursive decomposition node {path}, covering atomic tasks L{start:02d}–L{end:02d}; both child nodes must produce independently checkable evidence.'
+   00196|             criterion = 'new_composite_effect'
+   00197|     if depth < 5:
+   00198|         criterion_path = ''
+   00199|         criterion_marker = ''
+   00200|         criterion_guard = ''
+   00201|     left = child(path, 1) if depth < 5 else ''
+   00202|     right = child(path, 2) if depth < 5 else ''
+   00203|     out.append((node_id, depth, text, criterion, left, right, criterion_path,
+   00204|                 criterion_marker, criterion_guard))
+   00205|     if depth < 5:
+   00206|         emit(child(path,1), depth+1, out)
+   00207|         emit(child(path,2), depth+1, out)
+   00208| 
+   00209| rows=[]
+   00210| emit('',0,rows)
+   00211| # `depth` is an int, and str.join refuses a non-str item, so joining the row
+   00212| # straight raised TypeError before a single node was ever selected. Render
+   00213| # every field before joining rather than trusting the tuple to be all strings.
+   00214| # Empty optional fields belong to the in-memory row, but emitting their trailing
+   00215| # separators makes the committed TSV fail git's whitespace check. Readers pad
+   00216| # omitted tail fields back to the eight-field schema below.
+   00217| Path(sys.argv[2]).write_text(
+   00218|     '\n'.join('\t'.join(map(str, r)).rstrip('\t') for r in rows) + '\n'
+   00219| )
+   00220| PY
+   00221| 
+   00222| python3 - "$NODES" "$TREE_DEPTH" "$NODE_FILTER" > "$OUT/selected.tsv" <<'PY'
+   00223| import sys
+   00224| from pathlib import Path
+   00225| rows=[]
+   00226| for line in Path(sys.argv[1]).read_text().splitlines():
+   00227|     fields = line.split('\t', 8)
+   00228|     if not 6 <= len(fields) <= 9:
+   00229|         raise ValueError(f'node row has {len(fields)} fields, expected 6 through 9: {line!r}')
+   00230|     fields.extend([''] * (9 - len(fields)))
+   00231|     (node, depth, text, criterion, left, right,
+   00232|      criterion_path, criterion_marker, criterion_guard) = fields
+   00233|     rows.append((node, int(depth), text, criterion, left, right,
+   00234|                  criterion_path, criterion_marker, criterion_guard))
+   00235| mode=sys.argv[2]
+   00236| filt=sys.argv[3]
+   00237| levels=list(range(5,-1,-1)) if mode=='all' else [int(mode)]
+   00238| for level in levels:
+   00239|     for row in rows:
+   00240|         node, depth, *_ = row
+   00241|         in_focused_subtree = (
+   00242|             not filt
+   00243|             or filt == 'R'
+   00244|             or node == filt
+   00245|             or node.startswith(filt + '.')
+   00246|         )
+   00247|         if depth == level and in_focused_subtree:
+   00248|             print('\t'.join(map(str,row)).rstrip('\t'))
+   00249| PY
+   00250| 
+   00251| selected_count=$(wc -l < "$OUT/selected.tsv" | tr -d ' ')
+   00252| expected=1
+   00253| if [[ "$TREE_DEPTH" = all ]]; then
+   00254|   if [[ -z "$NODE_FILTER" || "$NODE_FILTER" = R ]]; then
+   00255|     expected=63
+   00256|   else
+   00257|     filter_depth=$(awk -F. '{ print NF }' <<< "$NODE_FILTER")
+   00258|     expected=$(( (1 << (6 - filter_depth)) - 1 ))
+   00259|   fi
+   00260| elif [[ -n "$NODE_FILTER" ]]; then
+   00261|   # A filter names a subtree; a fixed depth selects that subtree's nodes at the
+   00262|   # depth. `R` at depth 5 is all 32 leaves, a depth-4 node is its two leaves,
+   00263|   # a leaf is itself. The old `expected=1` rejected every filter above a leaf.
+   00264|   if [[ "$NODE_FILTER" == R ]]; then
+   00265|     filter_depth=0
+   00266|   else
+   00267|     filter_depth=$(awk -F. '{ print NF }' <<< "$NODE_FILTER")
+   00268|   fi
+   00269|   if (( filter_depth > TREE_DEPTH )); then
+   00270|     expected=0
+   00271|   else
+   00272|     expected=$((1 << (TREE_DEPTH - filter_depth)))
+   00273|   fi
+   00274| else
+   00275|   expected=$((1 << TREE_DEPTH))
+   00276| fi
+   00277| [[ "$selected_count" -eq "$expected" ]] || { echo "expected $expected selected nodes, got $selected_count" >&2; exit 1; }
+   00278| 
+   00279| run_one() {
+   00280|   local id depth prompt criterion left right criterion_path criterion_marker criterion_guard row work session_dir server_pid port status proof effect config node_number full_prompt effect_contract verifier_status verifier_verdict
+   00281|   # Tab is whitespace to Bash, so IFS would collapse the two empty child fields
+   00282|   # in a leaf row and shift its external criterion into `left`. Translate only
+   00283|   # for parsing to a non-whitespace separator that preserves empty fields.
+   00284|   row=${1//$'\t'/$'\x1f'}
+   00285|   IFS=$'\x1f' read -r id depth prompt criterion left right criterion_path criterion_marker criterion_guard <<< "$row"
+   00286|   session_dir="$OUT/$id"
+   00287|   work="$WORK"
+   00288|   local started=$SECONDS
+   00289|   echo "node $id start"
+   00290|   mkdir -p "$session_dir"
+   00291|   # A focused replay reuses its stable evidence directory. Remove only the
+   00292|   # known outputs for this node so a failed attempt cannot retain a prior
+   00293|   # attempt's proof or effect and appear to have passed.
+   00294|   rm -f "$session_dir/agent-stream.jsonl"
+   00295|   rm -f "$session_dir/agent-stderr.log"
+   00296|   rm -f "$session_dir/formal-ai.log"
+   00297|   rm -f "$session_dir/proof.md"
+   00298|   rm -f "$session_dir/effect.lino"
+   00299|   node_number=$(python3 - "$id" <<'PY'
+   00300| import sys
+   00301| node=sys.argv[1]
+   00302| if node == 'R':
+   00303|     print(0)
+   00304| else:
+   00305|     bits=''.join('0' if x == '1' else '1' for x in node.split('.'))
+   00306|     print(int(bits, 2) + 1)
+   00307| PY
+   00308| )
+   00309|   port=$((BASE_PORT + node_number))
+   00310| 
+   00311|   # Cleaning the scratch checkout is not what the ladder measures, and it must
+   00312|   # never decide a node's verdict. `rm -rf` reports ENOTEMPTY for a directory
+   00313|   # that gained a file while the walk was inside it, which is what a just-killed
+   00314|   # server flushing its last write looks like; the trap runs under `set -e`, so
+   00315|   # that single failure ended the whole run after a node the log had already
+   00316|   # recorded as PASS. Retry briefly, then leave the directory to the operating
+   00317|   # system's temporary sweeper rather than failing the node.
+   00318|   cleanup_one() {
+   00319|     if [[ -n "${server_pid:-}" ]]; then
+   00320|       kill -- "-${server_pid}" 2>/dev/null || kill "$server_pid" 2>/dev/null || true
+   00321|       wait "$server_pid" 2>/dev/null || true
+   00322|     fi
+   00323|     # One line per node in the job log, so a ninety-minute step is readable
+   00324|     # while it runs rather than blank until it ends (plan 01 step 4).
+   00325|     printf '%s\t%s\t%s\n' "$id" "$depth" "$((SECONDS - started))" >> "$OUT/durations.tsv"
+   00326|     echo "node $id done in $((SECONDS - started))s"
+   00327|     return 0
+   00328|   }
+   00329|   trap cleanup_one RETURN
+   00330| 
+   00331|   reset_work || { printf '%s\tFAIL\tworktree_reset\n' "$id" | tee -a "$RUN_LOG"; return 1; }
+   00332|   mkdir -p "$work/.agent-ladder"
+   00333| 
+   00334|   local child_diffs="" leaf_span=""
+   00335|   if [[ "$depth" -eq 4 ]]; then
+   00336|     local left_effect_source="${VERIFIED_EFFECTS[$left]:-}"
+   00337|     local right_effect_source="${VERIFIED_EFFECTS[$right]:-}"
+   00338|     if [[ ! -s "$left_effect_source" || ! -s "$right_effect_source" ]]; then
+   00339|       printf '%s\tFAIL\tmissing_current_run_child_effect\n' "$id" | tee -a "$RUN_LOG"
+   00340|       return 1
+   00341|     fi
+   00342|     # Issue #1085 (D4): a composite must also merge both children's diffs.
+   00343|     if [[ ! -s "$OUT/$left/change.diff" || ! -s "$OUT/$right/change.diff" ]]; then
+   00344|       printf '%s\tFAIL\tmissing_current_run_child_diff\n' "$id" | tee -a "$RUN_LOG"
+   00345|       return 1
+   00346|     fi
+   00347|     child_diffs="$OUT/$left/change.diff $OUT/$right/change.diff"
+   00348|     mkdir -p "$work/.agent-ladder/verified-children"
+   00349|     cp "$left_effect_source" "$work/.agent-ladder/verified-children/node-$left.lino"
+   00350|     cp "$right_effect_source" "$work/.agent-ladder/verified-children/node-$right.lino"
+   00351|     git -C "$work" add .agent-ladder/verified-children
+   00352|     git -C "$work" commit -qm ladder-verified-child-effects
+   00353|   elif [[ "$depth" -le 3 ]]; then
+   00354|     leaf_span=$(python3 - "$id" "$depth" <<'PY'
+   00355| import sys
+   00356| node, depth = sys.argv[1], int(sys.argv[2])
+   00357| if node == 'R':
+   00358|     print('1-32')
+   00359| else:
+   00360|     bits = ''.join('0' if p == '1' else '1' for p in node.split('.'))
+   00361|     span = 2 ** (5 - depth)
+   00362|     start = int(bits, 2) * span + 1
+   00363|     print(f'{start}-{start + span - 1}')
+   00364| PY
+   00365| )
+   00366|   fi
+   00367| 
+   00368|   # `setsid` gives the server its own process group so `kill -- -pid` takes
+   00369|   # its children with it. macOS has no setsid; there the plain kill in
+   00370|   # cleanup_one still stops the server, so a developer can run one node.
+   00371|   "${SETSID[@]}" env FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
+   00372|     FORMAL_AI_MEMORY_PATH="$STAGE/memory/node-$id/memory.lino" \
+   00373|     FORMAL_AI_DREAMING=0 "$BIN" serve --agent-mode --host 127.0.0.1 --port "$port" \
+   00374|     >"$session_dir/formal-ai.log" 2>&1 &
+   00375|   server_pid=$!
+   00376| 
+   00377|   if ! curl -fsS --retry 30 --retry-delay 1 --retry-connrefused "http://127.0.0.1:$port/health" >/dev/null; then
+   00378|     printf '%s\tFAIL\tformal_ai_server_start\n' "$id" | tee -a "$RUN_LOG"
+   00379|     tail -100 "$session_dir/formal-ai.log" >&2 || true
+   00380|     return 1
+   00381|   fi
+   00382| 
+   00383|   # The model's limits come from the server, not from the client's built-in
+   00384|   # table. The Agent CLI ships a `formal-ai` model with a 60000-token context,
+   00385|   # and Formal AI counts one token per character, so a single read and write of
+   00386|   # a 25 KB source file crossed the CLI's compaction threshold: the session was
+   00387|   # summarized, the read and write evidence vanished, and the leaf re-planned
+   00388|   # read -> write until its budget ran out without a proof (run 37663996930,
+   00389|   # 15 of 32 leaves `missing_proof`; PR #1188 dogfooding). The served
+   00390|   # `/v1/models` states the real window and output cap.
+   00391|   limits="$(curl -fsS "http://127.0.0.1:$port/api/openai/v1/models" \
+   00392|     | python3 -c 'import json, sys; m = json.load(sys.stdin)["models"][0]; print(m["context_window_tokens"], m["max_output_tokens"])' \
+   00393|     2>/dev/null || true)"
+   00394|   model_limit=""
+   00395|   if [[ "$limits" =~ ^([0-9]+)\ ([0-9]+)$ ]]; then
+   00396|     model_limit="$(printf ',\"limit\":{\"context\":%s,\"output\":%s}' "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}")"
+   00397|   fi
+   00398|   config="$(printf '{\"provider\":{\"formalai\":{\"name\":\"Formal AI\",\"npm\":\"@ai-sdk/openai-compatible\",\"options\":{\"baseURL\":\"http://127.0.0.1:%s/api/openai/v1\",\"apiKey\":\"local\"},\"models\":{\"formal-ai\":{\"name\":\"Formal AI\"%s}}}},\"model\":\"formalai/formal-ai\"}' "$port" "$model_limit")"
+   00399| 
+   00400|   if [[ "$depth" -eq 5 ]]; then
+   00401|     printf -v effect_contract 'Apply the change to the tracked file `%s` itself -- the file has to end up modified in the Git worktree, and nothing else may change. Then create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text %s.' \
+   00402|       "$criterion_path" "$id" "$id" "$depth" "$criterion_marker"
+   00403|   elif [[ "$depth" -le 3 ]]; then
+   00404|     printf -v effect_contract 'Apply every listed requirement to the tracked source files themselves -- locate each declaration in the repository first (for example with grep), change only the files those requirements touch, and keep them valid Rust. Then create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=requirement`, and `result=<the files you changed and what changed in each, at least four words>`.' \
+   00405|       "$id" "$id" "$depth"
+   00406|   else
+   00407|     printf -v effect_contract 'Read the committed child effects in `.agent-ladder/verified-children/node-%s.lino` and `.agent-ladder/verified-children/node-%s.lino`. Inspect both files before writing anything. Extract each raw child value with `sed -n "s/^result=//p" FILE` or an equivalent command that returns undecorated file bytes. Treat only the single line beginning exactly `result=` as that child result. Do not copy tool-rendered line numbers, `<file>` wrappers, or any other fields. Create `agent-ladder-effects/node-%s.lino` with these exact field lines: `node_path=%s`, `node_depth=%s`, `node_kind=composite`, `left_child=%s`, `right_child=%s`, `left_result=` followed by the exact left child `result=` value, `right_result=` followed by the exact right child `result=` value, and `result=` followed by at least four words that include both exact child result values and state how they compose.' \
+   00408|       "$left" "$right" "$id" "$id" "$depth" "$left" "$right"
+   00409|   fi
+   00410| 
+   00411|   # Built with printf, not interpolated into a double-quoted string: bash does
+   00412|   # not expand \n there, so the node instructions used to reach the agent as one
+   00413|   # line with two literal backslash-n in the middle of it.
+   00414|   printf -v full_prompt '%s\n\nThis is recursive binary-tree node %s at depth %s. Solve only this node'"'"'s task in this fresh temporary repository. Its harness-evaluated completion criterion is: %s. %s Leave supporting evidence in .agent-ladder/node-%s-proof.md. The first line must be exactly node_path=%s and the body must state the concrete result. The harness rejects proof without the separate Git effect. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n' \
+   00415|     "$prompt" "$id" "$depth" "$criterion" "$effect_contract" "$id" "$id"
+   00416| 
+   00417|   set +e
+   00418|   (cd "$work" && \
+   00419|     FORMAL_AI_API_KEY=local \
+   00420|     LINK_ASSISTANT_AGENT_CONFIG_CONTENT="$config" \
+   00421|     "${BOUND[@]}" "$AGENT" --no-summarize-session --compaction-models "(same)" \
+   00422|       --model formalai/formal-ai --permission-mode auto \
+   00423|       --output-format stream-json --compact-json --disable-stdin \
+   00424|       --prompt "$full_prompt") \
+   00425|       >"$session_dir/agent-stream.jsonl" 2>"$session_dir/agent-stderr.log"
+   00426|   status=$?
+   00427|   set -e
+   00428|   if [[ "$status" -eq 124 || "$status" -eq 137 ]]; then
+   00429|     printf '%s\tFAIL\tagent_timeout_%ss\n' "$id" "$NODE_BUDGET" | tee -a "$RUN_LOG"
+   00430|     return 1
+   00431|   fi
+   00432|   if [[ "$status" -ne 0 ]]; then
+   00433|     printf '%s\tFAIL\tagent_exit_%s\n' "$id" "$status" | tee -a "$RUN_LOG"
+   00434|     return 1
+   00435|   fi
+   00436| 
+   00437|   # Agent CLI terminates stream-json output with a presentation-only blank
+   00438|   # line. Keep the committed JSONL canonical so every line is a JSON record
+   00439|   # and the generated evidence passes Git's whitespace check.
+   00440|   # GNU sed edits in place with `-i`; BSD sed wants an (empty) suffix argument.
+   00441|   if sed --version >/dev/null 2>&1; then
+   00442|     sed -i '${/^$/d;}' "$session_dir/agent-stream.jsonl"
+   00443|   else
+   00444|     sed -i '' '${/^$/d;}' "$session_dir/agent-stream.jsonl"
+   00445|   fi
+   00446| 
+   00447|   proof="$work/.agent-ladder/node-${id}-proof.md"
+   00448|   if [[ ! -s "$proof" ]]; then
+   00449|     printf '%s\tFAIL\tmissing_proof\n' "$id" | tee -a "$RUN_LOG"
+   00450|     return 1
+   00451|   fi
+   00452|   if ! grep -q "^node_path=$id$" "$proof"; then
+   00453|     printf '%s\tFAIL\tbad_proof_marker\n' "$id" | tee -a "$RUN_LOG"
+   00454|     return 1
+   00455|   fi
+   00456| 
+   00457|   effect="$work/agent-ladder-effects/node-${id}.lino"
+   00458|   set +e
+   00459|   verifier_verdict=$(LADDER_LEAVES="$OUT/leaves.tsv" LADDER_LEAF_SPAN="$leaf_span" LADDER_CHILD_DIFFS="$child_diffs" \
+   00460|     "$VERIFY_NODE" "$work" "$proof" "$id" "$depth" "$left" "$right" "$criterion_path" "$criterion_marker" "$criterion_guard")
+   00461|   verifier_status=$?
+   00462|   set -e
+   00463|   if [[ "$verifier_status" -ne 0 ]]; then
+   00464|     printf '%s\tFAIL\t%s\n' "$id" "$verifier_verdict" | tee -a "$RUN_LOG"
+   00465|     return 1
+   00466|   fi
+   00467| 
+   00468|   cp "$proof" "$session_dir/proof.md"
+   00469|   cp "$effect" "$session_dir/effect.lino"
+   00470|   [[ -f "$work/.agent-ladder/verify.tsv" ]] && cp "$work/.agent-ladder/verify.tsv" "$session_dir/verify.tsv"
+   00471|   if [[ "$depth" -eq 5 ]]; then
+   00472|     git -C "$work" diff -- "$criterion_path" > "$session_dir/change.diff"
+   00473|   elif [[ "$depth" -eq 4 ]]; then
+   00474|     cat "$OUT/$left/change.diff" "$OUT/$right/change.diff" > "$session_dir/change.diff"
+   00475|   else
+   00476|     git -C "$work" diff > "$session_dir/change.diff"
+   00477|   fi
+   00478|   VERIFIED_EFFECTS["$id"]="$session_dir/effect.lino"
+   00479|   printf '%s\tPASS\tdepth=%s\n' "$id" "$depth" | tee -a "$RUN_LOG"
+   00480| }
+   00481| 
+   00482| failed=0
+   00483| current_level=""
+   00484| level_failed=0
+   00485| # Issue #1085 (D4): a level is finished before the run stops, so the record
+   00486| # says which level passed completely; in `all` mode a failed level ends the run
+   00487| # because the level above builds on it.
+   00488| while IFS= read -r line; do
+   00489|   [[ -z "$line" ]] && continue
+   00490|   node=$(printf '%s\n' "$line" | cut -f1)
+   00491|   level=$(printf '%s\n' "$line" | cut -f2)
+   00492|   if [[ "$current_level" != "$level" ]]; then
+   00493|     if [[ -n "$current_level" && "$level_failed" -eq 1 && "$TREE_DEPTH" == all ]]; then
+   00494|       echo "level $current_level failed; not attempting level $level" | tee -a "$RUN_LOG"
+   00495|       break
+   00496|     fi
+   00497|     current_level="$level"
+   00498|     level_failed=0
+   00499|   fi
+   00500|   echo "=== $node ===" | tee -a "$RUN_LOG"
+   00501|   if run_one "$line"; then :; else failed=$((failed + 1)); level_failed=1; fi
+   00502| done < "$OUT/selected.tsv"
+   00503| deepest=none
+   00504| leaf_level_passed=0
+   00505| leaf_nodes_selected=$(awk -F'\t' '$2 == 5' "$OUT/selected.tsv" | wc -l | tr -d ' ')
+   00506| leaf_nodes_passing=$(grep -c $'\tPASS\tdepth=5$' "$RUN_LOG" || true)
+   00507| for level in 5 4 3 2 1 0; do
+   00508|   selected_at_level=$(awk -F'\t' -v level="$level" '$2 == level' "$OUT/selected.tsv" | wc -l | tr -d ' ')
+   00509|   [[ "$selected_at_level" -gt 0 ]] || continue
+   00510|   passed_at_level=$(grep -c $'\tPASS\tdepth='"$level"'$' "$RUN_LOG" || true)
+   00511|   if [[ "$passed_at_level" -eq "$selected_at_level" ]]; then
+   00512|     deepest="$level"
+   00513|     [[ "$level" -eq 5 ]] && leaf_level_passed=1
+   00514|   else
+   00515|     break
+   00516|   fi
+   00517| done
+   00518| cat > "$OUT/ladder-result.lino" <<EOF
+   00519| ladder_result
+   00520|   requested_depth "$TREE_DEPTH"
+   00521|   node_filter "${NODE_FILTER:-none}"
+   00522|   authored_rules_enabled "$([[ "$AUTHORED_RULES" == enabled ]] && echo true || echo false)"
+   00523|   selected_nodes "$selected_count"
+   00524|   failures "$failed"
+   00525|   deepest_passing_level "$deepest"
+   00526|   leaf_nodes_selected "$leaf_nodes_selected"
+   00527|   leaf_nodes_passing "$leaf_nodes_passing"
+   00528| EOF
+   00529| if [[ "$AUTHORED_RULES" == disabled ]]; then
+   00530|   printf '  leaf_nodes_passing_without_authored_rules "%s"\n' \
+   00531|     "$leaf_nodes_passing" >> "$OUT/ladder-result.lino"
+   00532| fi
+   00533| python3 - "$OUT" "$TREE_DEPTH" "${NODE_FILTER:-none}" "$selected_count" "$failed" "$deepest" \
+   00534|   "$leaf_nodes_passing" "$leaf_nodes_selected" "$AUTHORED_RULES" <<'PY'
+   00535| import sys
+   00536| from pathlib import Path
+   00537| out = Path(sys.argv[1])
+   00538| depth, node_filter, selected, failed, deepest, leaf_passing, leaf_selected, authored_rules = sys.argv[2:10]
+   00539| rows = []
+   00540| for line in (out / 'run.log').read_text().splitlines():
+   00541|     parts = line.split('\t')
+   00542|     if len(parts) != 3:
+   00543|         continue
+   00544|     node, verdict, detail = parts
+   00545|     report = {}
+   00546|     verify = out / node / 'verify.tsv'
+   00547|     if verify.exists():
+   00548|         for entry in verify.read_text().splitlines():
+   00549|             key, _, value = entry.partition('\t')
+   00550|             report[key] = value
+   00551|     tests = ', '.join(f'{k[6:]} {v}' for k, v in report.items() if k.startswith('tests:')) or '-'
+   00552|     rows.append(f"| {node} | {verdict} | {detail} | {report.get('compile', '-')} | {tests} | {report.get('diff_lines', '-')} |")
+   00553| table = '\n'.join(rows) if rows else '| - | - | no node ran | - | - | - |'
+   00554| (out / 'README.md').write_text(f"""# Agent CLI binary-tree ladder run
+   00555| 
+   00556| - requested depth: {depth}
+   00557| - node filter: {node_filter}
+   00558| - selected nodes: {selected}
+   00559| - failures: {failed}
+   00560| - deepest level whose nodes all passed: {deepest}
+   00561| - leaf nodes passing: {leaf_passing} of {leaf_selected}
+   00562| - authored per-leaf rules: {authored_rules}
+   00563| 
+   00564| | node | verdict | detail | compile | unit tests | diff lines |
+   00565| | --- | --- | --- | --- | --- | --- |
+   00566| {table}
+   00567| 
+   00568| The canonical decomposition is a complete binary tree: depth 0 has 1 node,
+   00569| depth 1 has 2, depth 2 has 4, depth 3 has 8, depth 4 has 16, and depth 5 has 32.
+   00570| Each selected node runs in a fresh temporary repository copy against the real
+   00571| `@link-assistant/agent` CLI and a local `formal-ai serve --agent-mode`.
+   00572| 
+   00573| Every leaf is *change-shaped*: a member insertion, a literal replacement or an
+   00574| identifier rename in a tracked source. The harness keeps the committed
+   00575| `leaves.tsv` as its verifier oracle; when authored rules are disabled, both
+   00576| that oracle and the corresponding `rules/` mappings are excluded from the
+   00577| agent's sparse worktree. PASS requires the worktree to show exactly one file
+   00578| modified, the marker absent from `HEAD`, the anchor still present, the file
+   00579| formatting, `cargo check --lib` compiling it, and `cargo test --test unit`
+   00580| passing for its module (issue #1085 D4). A depth-4 composite must compose both
+   00581| verified child effects and both children's diffs must apply to one tree and
+   00582| compile. Depth 3 and above are *requirement-shaped*: the prompt lists behaviour
+   00583| and declarations, never files; every leaf marker under the node must be
+   00584| present, only those files may change, and the tree must compile and pass the
+   00585| tests of every touched module. An effect file that merely describes a change
+   00586| never passes.
+   00587| 
+   00588| The `all` mode verifies the 32 leaves first, then 16, 8, 4, 2, and the root; a
+   00589| level is finished before the run stops, and a failed level ends the run. The
+   00590| deepest level whose nodes all passed is written to `ladder-result.lino` and
+   00591| compared with `data/meta/ladder-ratchet.lino` by the workflow.
+   00592| """)
+   00593| PY
+   00594| # The run measures; the ratchet step decides. Exiting non-zero on any failed
+   00595| # node made the job red for every leaf Formal AI cannot yet change, which says
+   00596| # nothing about whether it got worse (issue #1085 D4).
+   00597| if [[ "$TREE_DEPTH" == all && "$leaf_level_passed" -eq 1 ]]; then
+   00598|   echo "every leaf passed" | tee -a "$RUN_LOG"
+   00599| fi
+   00600| exit 0
+   00601| 
+   
+   (End of file - total 601 lines)
+   </file>
+>> edit {"filePath":"experiments/issue_1028_agent_cli_ladder/run.sh","file_path":"experiments/issue_1028_agent_cli_ladder/run.sh","new":"# Composite legs consume only validated evidence from this same source tree.\nif [[ -n \"${LADDER_CHILD_EVIDENCE:-}\" ]]; then\n  python3 \"$ROOT/experiments/issue_1028_agent_cli_ladder/import-children.py\" \\\n    \"$LADDER_CHILD_EVIDENCE\" \"$OUT\" \"$BASE_SHA\" \\\n    \"$(git -C \"$ROOT\" rev-parse 'HEAD^{tree}')\" \\\n    \"$([[ \"$AUTHORED_RULES\" == enabled ]] && echo true || echo false)\" \\\n    > \"$OUT/imported-children.tsv\"\n  while IFS=$'\\t' read -r child_id child_effect; do\n    VERIFIED_EFFECTS[\"$child_id\"]=\"$child_effect\"\n  done < \"$OUT/imported-children.tsv\"\nfi\n\nrun_one() {","newString":"# Composite legs consume only validated evidence from this same source tree.\nif [[ -n \"${LADDER_CHILD_EVIDENCE:-}\" ]]; then\n  python3 \"$ROOT/experiments/issue_1028_agent_cli_ladder/import-children.py\" \\\n    \"$LADDER_CHILD_EVIDENCE\" \"$OUT\" \"$BASE_SHA\" \\\n    \"$(git -C \"$ROOT\" rev-parse 'HEAD^{tree}')\" \\\n    \"$([[ \"$AUTHORED_RULES\" == enabled ]] && echo true || echo false)\" \\\n    > \"$OUT/imported-children.tsv\"\n  while IFS=$'\\t' read -r child_id child_effect; do\n    VERIFIED_EFFECTS[\"$child_id\"]=\"$child_effect\"\n  done < \"$OUT/imported-children.tsv\"\nfi\n\nrun_one() {","new_str":"# Composite legs consume only validated evidence from this same source tree.\nif [[ -n \"${LADDER_CHILD_EVIDENCE:-}\" ]]; then\n  python3 \"$ROOT/experiments/issue_1028_agent_cli_ladder/import-children.py\" \\\n    \"$LADDER_CHILD_EVIDENCE\" \"$OUT\" \"$BASE_SHA\" \\\n    \"$(git -C \"$ROOT\" rev-parse 'HEAD^{tree}')\" \\\n    \"$([[ \"$AUTHORED_RULES\" == enabled ]] && echo true || echo false)\" \\\n    > \"$OUT/imported-children.tsv\"\n  while IFS=$'\\t' read -r child_id child_effect; do\n    VERIFIED_EFFECTS[\"$child_id\"]=\"$child_effect\"\n  done < \"$OUT/imported-children.tsv\"\nfi\n\nrun_one() {","new_string":"# Composite legs consume only validated evidence from this same source tree.\nif [[ -n \"${LADDER_CHILD_EVIDENCE:-}\" ]]; then\n  python3 \"$ROOT/experiments/issue_1028_agent_cli_ladder/import-children.py\" \\\n    \"$LADDER_CHILD_EVIDENCE\" \"$OUT\" \"$BASE_SHA\" \\\n    \"$(git -C \"$ROOT\" rev-parse 'HEAD^{tree}')\" \\\n    \"$([[ \"$AUTHORED_RULES\" == enabled ]] && echo true || echo false)\" \\\n    > \"$OUT/imported-children.tsv\"\n  while IFS=$'\\t' read -r child_id child_effect; do\n    VERIFIED_EFFECTS[\"$child_id\"]=\"$child_effect\"\n  done < \"$OUT/imported-children.tsv\"\nfi\n\nrun_one() {","old":"run_one() {","oldString":"run_one() {","old_str":"run_one() {","old_string":"run_one() {","path":"experiments/issue_1028_agent_cli_ladder/run.sh"}
+>> bash {"command":"sha256sum -- experiments/issue_1028_agent_cli_ladder/run.sh"}
+   8bbfb63239ec0e53c06b12c059d513d7d73e46c0beb856428f6b68f026020fd3  experiments/issue_1028_agent_cli_ladder/run.sh
+   
+== answer ==
+Replaced `run_one() {` with `# Composite legs consume only validated evidence from this same source tree.
+if [[ -n "${LADDER_CHILD_EVIDENCE:-}" ]]; then
+  python3 "$ROOT/experiments/issue_1028_agent_cli_ladder/import-children.py" \
+    "$LADDER_CHILD_EVIDENCE" "$OUT" "$BASE_SHA" \
+    "$(git -C "$ROOT" rev-parse 'HEAD^{tree}')" \
+    "$([[ "$AUTHORED_RULES" == enabled ]] && echo true || echo false)" \
+    > "$OUT/imported-children.tsv"
+  while IFS=$'\t' read -r child_id child_effect; do
+    VERIFIED_EFFECTS["$child_id"]="$child_effect"
+  done < "$OUT/imported-children.tsv"
+fi
+
+run_one() {` in `experiments/issue_1028_agent_cli_ladder/run.sh` and observed the result.

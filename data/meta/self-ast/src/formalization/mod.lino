@@ -2,13 +2,17 @@ self_ast_census
   target src/formalization/mod.rs
   language rust
   fidelity signature
-  byte_len 472
-  line_count 12
-  content_id source_module_29822652690507fb
-  symbol_count 5
+  byte_len 577
+  line_count 16
+  content_id source_module_deb5c9cfb29a5264
+  symbol_count 9
   symbols
     module concept_links 8 8
     module concepts 9 9
     module needs 10 10
-    module procedures 11 11
-    module segment 12 12
+    module page 11 11
+    module procedures 12 12
+    module segment 13 13
+    module source_qualified_definition 14 14
+    module statement_rendering 15 15
+    module text_statements 16 16

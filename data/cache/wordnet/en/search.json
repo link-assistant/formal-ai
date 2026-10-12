@@ -1,0 +1,104 @@
+{
+  "lemma": "search",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00947217-n",
+      "partOfSpeech": "n",
+      "definition": "the activity of looking thoroughly in order to find something or someone",
+      "synonyms": [
+        "hunt",
+        "hunting"
+      ]
+    },
+    {
+      "id": "oewn-00638597-n",
+      "partOfSpeech": "n",
+      "definition": "an investigation seeking answers",
+      "examples": [
+        "a thorough search of the ledgers revealed nothing",
+        "the outcome justified the search"
+      ]
+    },
+    {
+      "id": "oewn-13574763-n",
+      "partOfSpeech": "n",
+      "definition": "an operation that determines whether one or more of a set of items has a specified property",
+      "examples": [
+        "they wrote a program to do a table lookup"
+      ],
+      "synonyms": [
+        "lookup"
+      ]
+    },
+    {
+      "id": "oewn-05778055-n",
+      "partOfSpeech": "n",
+      "definition": "the examination of alternative hypotheses",
+      "examples": [
+        "his search for a move that would avoid checkmate was unsuccessful"
+      ]
+    },
+    {
+      "id": "oewn-00645609-n",
+      "partOfSpeech": "n",
+      "definition": "boarding and inspecting a ship on the high seas",
+      "examples": [
+        "right of search"
+      ]
+    },
+    {
+      "id": "oewn-01318273-v",
+      "partOfSpeech": "v",
+      "definition": "try to locate or discover, or try to establish the existence of",
+      "examples": [
+        "The police are searching for clues",
+        "They are searching for the missing man in the entire county"
+      ],
+      "synonyms": [
+        "seek",
+        "look for"
+      ]
+    },
+    {
+      "id": "oewn-02158139-v",
+      "partOfSpeech": "v",
+      "definition": "search or seek",
+      "examples": [
+        "We looked all day and finally found the child in the forest",
+        "Look elsewhere for the perfect gift!"
+      ],
+      "synonyms": [
+        "look"
+      ]
+    },
+    {
+      "id": "oewn-00649877-v",
+      "partOfSpeech": "v",
+      "definition": "inquire into",
+      "examples": [
+        "the students had to research the history of the Second World War for their history project",
+        "He searched for information on his relatives on the web",
+        "Scientists are exploring the nature of consciousness"
+      ],
+      "synonyms": [
+        "research",
+        "explore"
+      ]
+    },
+    {
+      "id": "oewn-01320383-v",
+      "partOfSpeech": "v",
+      "definition": "subject to a search",
+      "examples": [
+        "The police searched the suspect",
+        "We searched the whole house for the missing keys"
+      ]
+    }
+  ]
+}

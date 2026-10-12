@@ -1,0 +1,5 @@
+{
+  "taskId": "T2011",
+  "target": "rust/src/coding/task_spec.rs",
+  "byteEqual": true
+}

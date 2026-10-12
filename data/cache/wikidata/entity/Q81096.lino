@@ -1,14 +1,17 @@
 Q81096
   aliases
+    es (ingeniera)
     hi ("अभियंता" "इंजीनियर")
     ru ("инженерка" "женщина-инженер")
     zh ("工程師")
   descriptions
     en "professional practitioner of engineering"
+    es "persona dedicada a la ingeniería"
     ru "специалист, осуществляющий инженерную деятельность"
   id Q81096
   labels
     en engineer
+    es ingeniero
     hi "अभियन्ता"
     ru "инженер"
     zh "工程师"

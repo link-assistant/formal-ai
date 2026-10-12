@@ -1,0 +1,13 @@
+language en
+lemma tradeoff
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an exchange that occurs as a compromise"
+    examples ("I faced a tradeoff between eating and buying my medicine")
+    id oewn-01169250-n
+    partOfSpeech n
+    synonyms (trade-off)
+source "oewn:2024"

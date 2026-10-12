@@ -99,6 +99,10 @@ fn russian_previous_user_question_skips_assistant_and_meta_recall_turns() {
     let first = solve_with_history("Что я спрашивал в прошлом сообщении?", &first_history);
 
     assert_eq!(first.intent, "recall_last_question");
+    assert_eq!(
+        first.answer,
+        "Вы спрашивали: \"Поставь мне встречу с мамукой на 10:00\""
+    );
     assert!(
         first
             .answer
@@ -118,6 +122,10 @@ fn russian_previous_user_question_skips_assistant_and_meta_recall_turns() {
     let followup = solve_with_history("а я что спрашивал?", &followup_history);
 
     assert_eq!(followup.intent, "recall_last_question");
+    assert_eq!(
+        followup.answer,
+        "Вы спрашивали: \"Поставь мне встречу с мамукой на 10:00\""
+    );
     assert!(
         followup
             .answer

@@ -1,0 +1,5 @@
+{
+  "taskId": "T2019",
+  "target": "rust/tests/unit/coding_discovery/ledger.rs",
+  "byteEqual": true
+}

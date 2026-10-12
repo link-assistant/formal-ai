@@ -1,0 +1,151 @@
+{
+  "cutoff": "T4027",
+  "native": "pending CI",
+  "autonomousCredit": 0,
+  "files": [
+    {
+      "source": "/private/tmp/pr1188-ci-T4023/T4023.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4023/T4023.log",
+      "bytes": 94,
+      "sha256": "9491e4d747e57b37baab9e2e4d7b87581422a1a908bc363ebbfd1bc6f3b1f9dc"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4023/prompt.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4023/prompt.txt",
+      "bytes": 896,
+      "sha256": "ecfc30aa9edf8862acdf8a07ea636bc128dd021efcaabd58050f5506620b43e2"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4023/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4023/request.json",
+      "bytes": 981,
+      "sha256": "b46a3fdb854f5aed1de3af7c32d5e4db1d1407d8ae0627b977ccd846b396578e"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4023/request.json.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4023/request.json.json",
+      "bytes": 1443,
+      "sha256": "570604cf303dc62aa24b4ef68edcbc169ab40c30adcdd8d68685ed227ad19dfb"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4024/T4024.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/T4024.log",
+      "bytes": 92,
+      "sha256": "340fcde04e232c95b10f338f75e3b2a04943f30d6df2ea63295b7b9dbe285113"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4024/build.py",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/build.py",
+      "bytes": 2146,
+      "sha256": "4864832a8de62deb9daf979a272be79d8f582fa7d371afc87076f71cb653774f"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4024/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/drive-request.json",
+      "bytes": 129,
+      "sha256": "f3afe12a0dc8bf984f3021e8d42b4419cee2390eddf6143ac4a24067794f0c2d"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4024/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/drive.json",
+      "bytes": 841,
+      "sha256": "8745d1918b920dfe8c163993b37730655d6134620b0689b92f0ba871d6b56378"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4024/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/repair.mjs",
+      "bytes": 838,
+      "sha256": "1da7239874a40637f7d5a651cdd6872e89b621a93aa3cddb66082fd5774e8743"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4024/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4024/request.json",
+      "bytes": 304752,
+      "sha256": "7bf087b4db2b8576377780b8b8e4d2101b05a775a16009045b9bc0067507ecde"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4025/T4025.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4025/T4025.log",
+      "bytes": 93,
+      "sha256": "400f0984b4cb792e62c185f5e0be4b4af3680a1edb44030e70c321b1f23b75a5"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4025/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4025/drive-request.json",
+      "bytes": 130,
+      "sha256": "3792999e52e2d2685b9623e6878780d776b7457ea386c338e3f06952cfe5f44a"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4025/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4025/drive.json",
+      "bytes": 35665,
+      "sha256": "77fbded64bba0129cbc930c1b7028c393e3286f3d3b3cdfd168df7a047bc9e3b"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4025/verify.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4025/verify.mjs",
+      "bytes": 2679,
+      "sha256": "7f079a026999a6fdb5c64820ecb9d2780deb97206adbe013c328bdffab058d80"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/T4026.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/T4026.log",
+      "bytes": 92,
+      "sha256": "f812cb083704d993dbb9015a8a992ecbfbfc3bafebc3e1a06966a1d7b222b5ed"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/ci-runs.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/ci-runs.json",
+      "bytes": 348107,
+      "sha256": "a8c2a84c51561bd1224395099ba9ae3bd1f380413865ec7d110320f9b606003c"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/closest.log",
+      "bytes": 11428,
+      "sha256": "3295f4dd86d31dd8e2f058443fde759cb7be9b22c4f47dc5aaa1200c871b3013"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/debt.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/debt.log",
+      "bytes": 660,
+      "sha256": "cbf0bd58a03272ed0f36f9dc6751866c983c4839e2348eba2f5766414c3c769d"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/drive-request.json",
+      "bytes": 130,
+      "sha256": "5eeea909c4e18439cfd994ebe996257b4675ccc29bcb9a922b3708355a6a8eec"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/drive.json",
+      "bytes": 701,
+      "sha256": "4521d9e6f87e84da376865766ad4d31834eff8660477e84cd288b06812681bf2"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/format.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/format.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/sources.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/sources.json",
+      "bytes": 1405,
+      "sha256": "536abe6ee0a3404c1b1638cd1cf13c05c5fd5b46ccb2dd7ec0f196be573335f6"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/verify.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/verify.mjs",
+      "bytes": 2777,
+      "sha256": "644e5077a6f8a01d4c53c3870edb446533f2b65f1859ae35d3715f561b33952e"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4026/whitespace.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/T4026/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

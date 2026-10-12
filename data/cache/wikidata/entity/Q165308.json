@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "南瓜"
+        },
+        "es": {
+          "language": "es",
+          "value": "calabaza gigante"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "原產於北美的橘色（黃色、綠色）冬瓜"
+        },
+        "es": {
+          "language": "es",
+          "value": "cultivar de calabaza de invierno"
         }
       },
       "aliases": {

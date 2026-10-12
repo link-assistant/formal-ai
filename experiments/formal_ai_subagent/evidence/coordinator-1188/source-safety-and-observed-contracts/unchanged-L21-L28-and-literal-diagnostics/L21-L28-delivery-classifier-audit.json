@@ -1,0 +1,24 @@
+[
+  {
+    "label": "L21",
+    "rows": [
+      {
+        "text": "Then create `agent-ladder-effects/node-2.1.2.1.1.lino` with these exact field lines: `node_path=2.1.2.1.1`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text FORMAL_AI_HOW_SOURCE_CACHE_DIR",
+        "normalized": "then create agent ladder effects node 2 1 2 1 1 lino with these exact field lines node path 2 1 2 1 1 node depth 5 node kind leaf and result followed by at least four words that state the change you made and that contain the exact text formal ai how source cache dir",
+        "carriesAuthoringTask": false,
+        "delivered": "agent-ladder-effects/node-2.1.2.1.1.lino"
+      }
+    ]
+  },
+  {
+    "label": "L28",
+    "rows": [
+      {
+        "text": "Then create `agent-ladder-effects/node-2.2.1.2.2.lino` with these exact field lines: `node_path=2.2.1.2.2`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text EMPTY_CONFIG_BACKUP_SENTINEL",
+        "normalized": "then create agent ladder effects node 2 2 1 2 2 lino with these exact field lines node path 2 2 1 2 2 node depth 5 node kind leaf and result followed by at least four words that state the change you made and that contain the exact text empty config backup sentinel",
+        "carriesAuthoringTask": false,
+        "delivered": "agent-ladder-effects/node-2.2.1.2.2.lino"
+      }
+    ]
+  }
+]

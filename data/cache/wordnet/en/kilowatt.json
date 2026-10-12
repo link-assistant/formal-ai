@@ -1,0 +1,19 @@
+{
+  "lemma": "kilowatt",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13666240-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of power equal to 1000 watts",
+      "synonyms": [
+        "kW"
+      ]
+    }
+  ]
+}

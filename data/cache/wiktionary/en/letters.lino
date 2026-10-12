@@ -1,0 +1,71 @@
+entry
+  license
+    name "CC BY-SA 3.0"
+    url "https://creativecommons.org/licenses/by-sa/3.0"
+  meanings
+    entry
+      definitions
+        entry
+          definition "A symbol in an alphabet."
+          example "There are twenty-six letters in the English alphabet."
+        entry
+          definition "A written or printed communication, generally longer and more formal than a note."
+          example "I wrote a letter to my sister about my life."
+        entry
+          definition "The literal meaning of something, as distinguished from its intended and remoter meaning (often contrasted with the spirit)."
+        entry
+          definition "(plural) Literature."
+          example "Benjamin Franklin was multiskilled – a scientist, politician and a man of letters."
+        entry
+          definition "A division unit of a piece of law marked by a letter of the alphabet."
+        entry
+          definition "A size of paper, 8½ in × 11 in (215.9 mm × 279.4 mm, US paper sizes rounded to the nearest 5 mm)."
+        entry
+          definition "A size of paper, 215 mm × 280 mm."
+        entry
+          definition "A single type; type, collectively; a style of type."
+      partOfSpeech noun
+      synonyms (bookstaff bookstave)
+    entry
+      definitions
+        entry
+          definition "To print, inscribe, or paint letters on something."
+        entry
+          definition "(scholastic) To earn a varsity letter (award)."
+      partOfSpeech verb
+    entry
+      definitions
+        entry
+          definition "One who lets, or lets out."
+          example "a blood-letter"
+        entry
+          definition "One who retards or hinders."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "Literature (school subject)."
+          example "Rickert was the first woman (and second individual) to be awarded a Ph.D. in English letters and philology with that academic honor at the University of Chicago."
+        entry
+          definition "The liberal arts, humanities, learning (broad accumulated cultural knowledge)."
+          example "Though architecture in ancient Rome was not generally considered to belong to the artes liberales, Vitruvius easily qualified as a man of letters because of his wide learning."
+      partOfSpeech noun
+    entry
+      definitions
+        entry
+          definition "An identifying initial of the academic institution that is awarded to a member of a varsity team. It is made from structured cloth, and intended to be sewn to a piece of clothing such as a varsity sweater or varsity jacket."
+      partOfSpeech noun
+  phonetic "/ˈlɛtəz/"
+  phonetics
+    entry
+      audio ""
+      text "/ˈlɛtəz/"
+    entry
+      audio "https://api.dictionaryapi.dev/media/pronunciations/en/letters-us.mp3"
+      license
+        name "BY-SA 3.0"
+        url "https://creativecommons.org/licenses/by-sa/3.0"
+      sourceUrl "https://commons.wikimedia.org/w/index.php?curid=1227679"
+      text "/ˈlɛtɚz/"
+  sourceUrls ("https://en.wiktionary.org/wiki/letter" "https://en.wiktionary.org/wiki/letters" "https://en.wiktionary.org/wiki/varsity%20letter")
+  word letters

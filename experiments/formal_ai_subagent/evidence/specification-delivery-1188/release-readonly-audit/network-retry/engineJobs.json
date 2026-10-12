@@ -1,0 +1,228 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/actions/runs/37870721518/jobs?per_page=100",
+  "observedAt": "2026-10-09T05:03:32.723Z",
+  "status": "retrieved",
+  "rawUtf8": "{\"total_count\":2,\"jobs\":[{\"id\":113627941582,\"run_id\":37870721518,\"workflow_name\":\"Publish browser engine\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721518\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadMDKzg\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113627941582\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721518/job/113627941582\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:38:05Z\",\"started_at\":\"2026-10-09T02:02:38Z\",\"completed_at\":\"2026-10-09T02:03:01Z\",\"name\":\"resolve\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T02:02:39Z\",\"completed_at\":\"2026-10-09T02:02:40Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T02:02:40Z\",\"completed_at\":\"2026-10-09T02:02:57Z\"},{\"name\":\"Run actions/setup-node@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T02:02:57Z\",\"completed_at\":\"2026-10-09T02:02:58Z\"},{\"name\":\"Resolve the published package release\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T02:02:58Z\",\"completed_at\":\"2026-10-09T02:02:58Z\"},{\"name\":\"Post Run actions/setup-node@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T02:02:58Z\",\"completed_at\":\"2026-10-09T02:02:58Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T02:02:58Z\",\"completed_at\":\"2026-10-09T02:02:58Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:02:58Z\",\"completed_at\":\"2026-10-09T02:02:58Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113627941582\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":1000155990,\"runner_name\":\"GitHub Actions 1000155990\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113634152628,\"run_id\":37870721518,\"workflow_name\":\"Publish browser engine\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721518\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadR-QtA\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113634152628\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721518/job/113634152628\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T02:03:01Z\",\"started_at\":\"2026-10-09T02:22:16Z\",\"completed_at\":\"2026-10-09T02:22:55Z\",\"name\":\"package\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T02:22:17Z\",\"completed_at\":\"2026-10-09T02:22:19Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T02:22:19Z\",\"completed_at\":\"2026-10-09T02:22:45Z\"},{\"name\":\"Select the resolved release tag\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":3,\"started_at\":\"2026-10-09T02:22:45Z\",\"completed_at\":\"2026-10-09T02:22:45Z\"},{\"name\":\"Run actions/setup-node@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T02:22:45Z\",\"completed_at\":\"2026-10-09T02:22:46Z\"},{\"name\":\"Install Bun\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T02:22:46Z\",\"completed_at\":\"2026-10-09T02:22:47Z\"},{\"name\":\"Prepare web and engine artifacts\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T02:22:47Z\",\"completed_at\":\"2026-10-09T02:22:48Z\"},{\"name\":\"Package the engine\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T02:22:48Z\",\"completed_at\":\"2026-10-09T02:22:50Z\"},{\"name\":\"Run actions/upload-artifact@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T02:22:50Z\",\"completed_at\":\"2026-10-09T02:22:52Z\"},{\"name\":\"Attach installable engine package to the release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":9,\"started_at\":\"2026-10-09T02:22:52Z\",\"completed_at\":\"2026-10-09T02:22:52Z\"},{\"name\":\"Publish with provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":10,\"started_at\":\"2026-10-09T02:22:52Z\",\"completed_at\":\"2026-10-09T02:22:52Z\"},{\"name\":\"Post Run actions/setup-node@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":19,\"started_at\":\"2026-10-09T02:22:52Z\",\"completed_at\":\"2026-10-09T02:22:52Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":20,\"started_at\":\"2026-10-09T02:22:52Z\",\"completed_at\":\"2026-10-09T02:22:53Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":21,\"started_at\":\"2026-10-09T02:22:53Z\",\"completed_at\":\"2026-10-09T02:22:53Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113634152628\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":1000156049,\"runner_name\":\"GitHub Actions 1000156049\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"}]}",
+  "sha256": "5aea24a6667b0e5e65eb76a74c72e6b9938396e5bb656f744385a6180882ce3f",
+  "json": {
+    "total_count": 2,
+    "jobs": [
+      {
+        "id": 113627941582,
+        "run_id": 37870721518,
+        "workflow_name": "Publish browser engine",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721518",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadMDKzg",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113627941582",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721518/job/113627941582",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:38:05Z",
+        "started_at": "2026-10-09T02:02:38Z",
+        "completed_at": "2026-10-09T02:03:01Z",
+        "name": "resolve",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T02:02:39Z",
+            "completed_at": "2026-10-09T02:02:40Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T02:02:40Z",
+            "completed_at": "2026-10-09T02:02:57Z"
+          },
+          {
+            "name": "Run actions/setup-node@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T02:02:57Z",
+            "completed_at": "2026-10-09T02:02:58Z"
+          },
+          {
+            "name": "Resolve the published package release",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T02:02:58Z",
+            "completed_at": "2026-10-09T02:02:58Z"
+          },
+          {
+            "name": "Post Run actions/setup-node@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T02:02:58Z",
+            "completed_at": "2026-10-09T02:02:58Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T02:02:58Z",
+            "completed_at": "2026-10-09T02:02:58Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:02:58Z",
+            "completed_at": "2026-10-09T02:02:58Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113627941582",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000155990,
+        "runner_name": "GitHub Actions 1000155990",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113634152628,
+        "run_id": 37870721518,
+        "workflow_name": "Publish browser engine",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721518",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadR-QtA",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113634152628",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721518/job/113634152628",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T02:03:01Z",
+        "started_at": "2026-10-09T02:22:16Z",
+        "completed_at": "2026-10-09T02:22:55Z",
+        "name": "package",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T02:22:17Z",
+            "completed_at": "2026-10-09T02:22:19Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T02:22:19Z",
+            "completed_at": "2026-10-09T02:22:45Z"
+          },
+          {
+            "name": "Select the resolved release tag",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 3,
+            "started_at": "2026-10-09T02:22:45Z",
+            "completed_at": "2026-10-09T02:22:45Z"
+          },
+          {
+            "name": "Run actions/setup-node@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T02:22:45Z",
+            "completed_at": "2026-10-09T02:22:46Z"
+          },
+          {
+            "name": "Install Bun",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T02:22:46Z",
+            "completed_at": "2026-10-09T02:22:47Z"
+          },
+          {
+            "name": "Prepare web and engine artifacts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T02:22:47Z",
+            "completed_at": "2026-10-09T02:22:48Z"
+          },
+          {
+            "name": "Package the engine",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T02:22:48Z",
+            "completed_at": "2026-10-09T02:22:50Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T02:22:50Z",
+            "completed_at": "2026-10-09T02:22:52Z"
+          },
+          {
+            "name": "Attach installable engine package to the release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 9,
+            "started_at": "2026-10-09T02:22:52Z",
+            "completed_at": "2026-10-09T02:22:52Z"
+          },
+          {
+            "name": "Publish with provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 10,
+            "started_at": "2026-10-09T02:22:52Z",
+            "completed_at": "2026-10-09T02:22:52Z"
+          },
+          {
+            "name": "Post Run actions/setup-node@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-10-09T02:22:52Z",
+            "completed_at": "2026-10-09T02:22:52Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-10-09T02:22:52Z",
+            "completed_at": "2026-10-09T02:22:53Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-09T02:22:53Z",
+            "completed_at": "2026-10-09T02:22:53Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113634152628",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000156049,
+        "runner_name": "GitHub Actions 1000156049",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      }
+    ]
+  }
+}

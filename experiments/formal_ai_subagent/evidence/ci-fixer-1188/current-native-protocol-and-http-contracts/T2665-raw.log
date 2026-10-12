@@ -1,0 +1,766 @@
+>> bash {"command":"node --test rust/tests/web/dogfood-driver-tool-schema.test.mjs rust/tests/web/agentic-recipes-a.test.mjs rust/tests/web/agentic-recipes-b.test.mjs"}
+   Output: TAP version 13
+   # Subtest: formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)
+       # Subtest: canonical_synopsis_covers_all_nine_primitives
+       ok 1 - canonical_synopsis_covers_all_nine_primitives
+         ---
+         duration_ms: 5.649875
+         ...
+       # Subtest: every_output_record_is_links_notation / grounded_svo_extraction_is_faithful
+       ok 2 - every_output_record_is_links_notation / grounded_svo_extraction_is_faithful
+         ---
+         duration_ms: 2.460208
+         ...
+       # Subtest: formalization_is_deterministic
+       ok 3 - formalization_is_deterministic
+         ---
+         duration_ms: 2.105375
+         ...
+       # Subtest: arbitrary_text_still_produces_a_valid_knowledge_base
+       ok 4 - arbitrary_text_still_produces_a_valid_knowledge_base
+         ---
+         duration_ms: 229.5045
+         ...
+       # Subtest: explicit_doc_id_overrides_the_default
+       ok 5 - explicit_doc_id_overrides_the_default
+         ---
+         duration_ms: 0.863083
+         ...
+       # Subtest: lexicon resolves titles by identity and aliases
+       ok 6 - lexicon resolves titles by identity and aliases
+         ---
+         duration_ms: 0.130875
+         ...
+       1..6
+   ok 1 - formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)
+     ---
+     duration_ms: 368.5445
+     type: 'suite'
+     ...
+   # Subtest: formalization segmentation and needs (rust/src/formalization)
+       # Subtest: segments with exact byte spans and the decimal-point rule
+       ok 1 - segments with exact byte spans and the decimal-point rule
+         ---
+         duration_ms: 0.192958
+         ...
+       # Subtest: unknown surfaces skip quoted spans and seeded words
+       ok 2 - unknown surfaces skip quoted spans and seeded words
+         ---
+         duration_ms: 0.188
+         ...
+       # Subtest: an offline deep pass reports every need unsatisfiable with the empty-structure identity
+       ok 3 - an offline deep pass reports every need unsatisfiable with the empty-structure identity
+         ---
+         duration_ms: 0.569208
+         ...
+       1..3
+   ok 2 - formalization segmentation and needs (rust/src/formalization)
+     ---
+     duration_ms: 1.165792
+     type: 'suite'
+     ...
+   # Subtest: formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)
+       # Subtest: recognises formalization tasks in every language
+       ok 1 - recognises formalization tasks in every language
+         ---
+         duration_ms: 1.705125
+         ...
+       # Subtest: the acceptance walk: search query, then the canonical fetch, then the final report
+       ok 2 - the acceptance walk: search query, then the canonical fetch, then the final report
+         ---
+         duration_ms: 138.28475
+         ...
+       # Subtest: planner_walks_the_full_search_fetch_write_run_recipe
+       ok 3 - planner_walks_the_full_search_fetch_write_run_recipe
+         ---
+         duration_ms: 6.934625
+         ...
+       # Subtest: planner_skips_capabilities_no_advertised_tool_provides / completes without tools
+       ok 4 - planner_skips_capabilities_no_advertised_tool_provides / completes without tools
+         ---
+         duration_ms: 2.546833
+         ...
+       # Subtest: planner_formalizes_the_fetched_text_when_fetch_succeeds
+       ok 5 - planner_formalizes_the_fetched_text_when_fetch_succeeds
+         ---
+         duration_ms: 1.69675
+         ...
+       # Subtest: planner_falls_back_to_the_synopsis_when_fetch_errors
+       ok 6 - planner_falls_back_to_the_synopsis_when_fetch_errors
+         ---
+         duration_ms: 3.256584
+         ...
+       # Subtest: issue 956: a quoted custom source is formalized itself
+       ok 7 - issue 956: a quoted custom source is formalized itself
+         ---
+         duration_ms: 3.888708
+         ...
+       1..7
+   ok 3 - formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)
+     ---
+     duration_ms: 158.537666
+     type: 'suite'
+     ...
+   # Subtest: meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+       # Subtest: recognises_the_meaning_detail_task / routes concepts
+       ok 1 - recognises_the_meaning_detail_task / routes concepts
+         ---
+         duration_ms: 0.2165
+         ...
+       # Subtest: enriched blocks match the seed byte for byte, fetched or not
+       ok 2 - enriched blocks match the seed byte for byte, fetched or not
+         ---
+         duration_ms: 3.486625
+         ...
+       # Subtest: replays the committed agent-cli-session.json step for step
+       ok 3 - replays the committed agent-cli-session.json step for step
+         ---
+         duration_ms: 17.531375
+         ...
+       # Subtest: replays the committed agent-cli-session-potato.json step for step
+       ok 4 - replays the committed agent-cli-session-potato.json step for step
+         ---
+         duration_ms: 3.692583
+         ...
+       1..4
+   ok 4 - meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+     ---
+     duration_ms: 25.060917
+     type: 'suite'
+     ...
+   # Subtest: diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+       # Subtest: recognises_the_diagram_task
+       ok 1 - recognises_the_diagram_task
+         ---
+         duration_ms: 0.192583
+         ...
+       # Subtest: committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)
+       ok 2 - committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)
+         ---
+         duration_ms: 0.55125
+         ...
+       # Subtest: replays the committed diagram Agent CLI session
+       ok 3 - replays the committed diagram Agent CLI session
+         ---
+         duration_ms: 0.958584
+         ...
+       1..3
+   ok 5 - diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+     ---
+     duration_ms: 1.757625
+     type: 'suite'
+     ...
+   # Subtest: issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)
+       # Subtest: task predicates route each canonical task to exactly its recipe
+       ok 1 - task predicates route each canonical task to exactly its recipe
+         ---
+         duration_ms: 0.3125
+         ...
+       # Subtest: committed documents render byte for byte with their final answers
+       ok 2 - committed documents render byte for byte with their final answers
+         ---
+         duration_ms: 1.247083
+         ...
+       # Subtest: the change request and rebuild plan are derived from the canonical request
+       ok 3 - the change request and rebuild plan are derived from the canonical request
+         ---
+         duration_ms: 6.142916
+         ...
+       # Subtest: document recipes walk write -> verify -> final
+       ok 4 - document recipes walk write -> verify -> final
+         ---
+         duration_ms: 0.920084
+         ...
+       1..4
+   ok 6 - issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)
+     ---
+     duration_ms: 8.685333
+     type: 'suite'
+     ...
+   # Subtest: issue \#558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)
+       # Subtest: owned_manifest_content_addresses_every_source_file
+       ok 1 - owned_manifest_content_addresses_every_source_file
+         ---
+         duration_ms: 233.255833
+         ...
+       # Subtest: content ids equal the Rust-generated self-AST census for every undrifted module
+       ok 2 - content ids equal the Rust-generated self-AST census for every undrifted module
+         ---
+         duration_ms: 52.220708
+         ...
+       # Subtest: the fast FNV-1a equals crate::engine::stable_id
+       ok 3 - the fast FNV-1a equals crate::engine::stable_id
+         ---
+         duration_ms: 0.5245
+         ...
+       # Subtest: owned_manifest_renders_valid_links_notation
+       ok 4 - owned_manifest_renders_valid_links_notation
+         ---
+         duration_ms: 0.06
+         ...
+       # Subtest: coverage_is_integer_permille_and_flags_unfaithful_modules
+       ok 5 - coverage_is_integer_permille_and_flags_unfaithful_modules
+         ---
+         duration_ms: 0.090125
+         ...
+       # Subtest: every source citation is grounded and a fabricated one cannot be constructed
+       ok 6 - every source citation is grounded and a fabricated one cannot be constructed
+         ---
+         duration_ms: 0.422583
+         ...
+       # Subtest: the explanation document matches the committed Agent CLI evidence modulo the live ids
+       ok 7 - the explanation document matches the committed Agent CLI evidence modulo the live ids
+         ---
+         duration_ms: 3.122917
+         ...
+       # Subtest: the source-links document reports the whole repo over the representative slice
+       ok 8 - the source-links document reports the whole repo over the representative slice
+         ---
+         duration_ms: 0.932208
+         ...
+       # Subtest: the explain and source-links recipes walk write -> verify -> final
+       ok 9 - the explain and source-links recipes walk write -> verify -> final
+         ---
+         duration_ms: 1.886125
+         ...
+       1..9
+   ok 7 - issue \#558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)
+     ---
+     duration_ms: 292.632667
+     type: 'suite'
+     ...
+   # Subtest: repeated event sequences become a validated parameterized algorithm
+   ok 8 - repeated event sequences become a validated parameterized algorithm
+     ---
+     duration_ms: 350.535709
+     ...
+   # Subtest: held-out constant drift is preserved as a failed candidate
+   ok 9 - held-out constant drift is preserved as a failed candidate
+     ---
+     duration_ms: 0.620833
+     ...
+   # Subtest: artifact round trip and conformance do not implicitly approve execution
+   ok 10 - artifact round trip and conformance do not implicitly approve execution
+     ---
+     duration_ms: 1.431917
+     ...
+   # Subtest: the memory reader round-trips the issue-531 observation document
+   ok 11 - the memory reader round-trips the issue-531 observation document
+     ---
+     duration_ms: 1.571041
+     ...
+   # Subtest: Agent CLI algorithm learning: write, discover, read back, conformance
+   ok 12 - Agent CLI algorithm learning: write, discover, read back, conformance
+     ---
+     duration_ms: 277.053166
+     ...
+   # Subtest: an arbitrary four-step procedure compiles and restates its steps
+   ok 13 - an arbitrary four-step procedure compiles and restates its steps
+     ---
+     duration_ms: 4.301459
+     ...
+   # Subtest: the same procedure in every supported language compiles to the same skill links
+   ok 14 - the same procedure in every supported language compiles to the same skill links
+     ---
+     duration_ms: 2.720208
+     ...
+   # Subtest: an uncompilable step reports a named gap and compiles nothing
+   ok 15 - an uncompilable step reports a named gap and compiles nothing
+     ---
+     duration_ms: 81.549166
+     ...
+   # Subtest: the gap name collapses the seed quote escape
+   ok 16 - the gap name collapses the seed quote escape
+     ---
+     duration_ms: 0.333166
+     ...
+   # Subtest: the compiler records every ordered requirement under the solver impulse
+   ok 17 - the compiler records every ordered requirement under the solver impulse
+     ---
+     duration_ms: 0.644917
+     ...
+   # Subtest: the compiled artifact round-trips and rejects tampering
+   ok 18 - the compiled artifact round-trips and rejects tampering
+     ---
+     duration_ms: 2.898542
+     ...
+   # Subtest: Agent CLI procedure: write, verify, execute, and return the same artifact
+   ok 19 - Agent CLI procedure: write, verify, execute, and return the same artifact
+     ---
+     duration_ms: 4.102667
+     ...
+   # Subtest: Agent CLI procedure rejects a corrupted readback and a failed execution
+   ok 20 - Agent CLI procedure rejects a corrupted readback and a failed execution
+     ---
+     duration_ms: 4.861875
+     ...
+   # Subtest: Agent CLI procedure localizes an honest unpersisted artifact
+   ok 21 - Agent CLI procedure localizes an honest unpersisted artifact
+     ---
+     duration_ms: 0.973375
+     ...
+   # Subtest: the associative report and answer match the committed Agent CLI session
+   ok 22 - the associative report and answer match the committed Agent CLI session
+     ---
+     duration_ms: 5.000792
+     ...
+   # Subtest: the associative report is derived from persisted usage, not canned
+   ok 23 - the associative report is derived from persisted usage, not canned
+     ---
+     duration_ms: 0.658083
+     ...
+   # Subtest: self-hosting and search-fusion reports are derived and review gated
+   ok 24 - self-hosting and search-fusion reports are derived and review gated
+     ---
+     duration_ms: 1.631042
+     ...
+   # Subtest: every registered report routes from its own task and identities are unique
+   ok 25 - every registered report routes from its own task and identities are unique
+     ---
+     duration_ms: 0.195917
+     ...
+   # Subtest: committed Agent CLI evidence reports match a fresh render
+   ok 26 - committed Agent CLI evidence reports match a fresh render
+     ---
+     duration_ms: 2.156292
+     ...
+   # Subtest: the dreaming audit is derived from the recipe and matches the committed session
+   ok 27 - the dreaming audit is derived from the recipe and matches the committed session
+     ---
+     duration_ms: 2.864375
+     ...
+   # Subtest: the self-AST recipe routes narrowly and answers like the committed session
+   ok 28 - the self-AST recipe routes narrowly and answers like the committed session
+     ---
+     duration_ms: 0.71475
+     ...
+   # Subtest: the question catalog recipe routes narrowly and answers like the committed session
+   ok 29 - the question catalog recipe routes narrowly and answers like the committed session
+     ---
+     duration_ms: 1.552458
+     ...
+   # Subtest: the Google Trends recipes route and answer like the committed sessions
+   ok 30 - the Google Trends recipes route and answer like the committed sessions
+     ---
+     duration_ms: 7.330917
+     ...
+   # Subtest: selected actual adapter list is recorded and executes its requested effect
+   ok 31 - selected actual adapter list is recorded and executes its requested effect
+     ---
+     duration_ms: 2.494958
+     ...
+   # Subtest: unavailable or duplicated adapter declarations stop before planner or effects
+   ok 32 - unavailable or duplicated adapter declarations stop before planner or effects
+     ---
+     duration_ms: 0.510167
+     ...
+   # Subtest: an undeclared call vetoes the complete batch before its first side effect
+   ok 33 - an undeclared call vetoes the complete batch before its first side effect
+     ---
+     duration_ms: 0.555667
+     ...
+   # Subtest: caller and planner mutations cannot fabricate advertised availability
+   ok 34 - caller and planner mutations cannot fabricate advertised availability
+     ---
+     duration_ms: 0.5395
+     ...
+   # Subtest: a final answer with no tool availability records an empty actual schema
+   ok 35 - a final answer with no tool availability records an empty actual schema
+     ---
+     duration_ms: 0.099916
+     ...
+   1..35
+   # tests 64
+   # suites 7
+   # pass 64
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 1229.833125
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/dogfood-driver-tool-schema.test.mjs rust/tests/web/agentic-recipes-a.test.mjs rust/tests/web/agentic-recipes-b.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)
+    # Subtest: canonical_synopsis_covers_all_nine_primitives
+    ok 1 - canonical_synopsis_covers_all_nine_primitives
+      ---
+      duration_ms: 5.649875
+      ...
+    # Subtest: every_output_record_is_links_notation / grounded_svo_extraction_is_faithful
+    ok 2 - every_output_record_is_links_notation / grounded_svo_extraction_is_faithful
+      ---
+      duration_ms: 2.460208
+      ...
+    # Subtest: formalization_is_deterministic
+    ok 3 - formalization_is_deterministic
+      ---
+      duration_ms: 2.105375
+      ...
+    # Subtest: arbitrary_text_still_produces_a_valid_knowledge_base
+    ok 4 - arbitrary_text_still_produces_a_valid_knowledge_base
+      ---
+      duration_ms: 229.5045
+      ...
+    # Subtest: explicit_doc_id_overrides_the_default
+    ok 5 - explicit_doc_id_overrides_the_default
+      ---
+      duration_ms: 0.863083
+      ...
+    # Subtest: lexicon resolves titles by identity and aliases
+    ok 6 - lexicon resolves titles by identity and aliases
+      ---
+      duration_ms: 0.130875
+      ...
+    1..6
+ok 1 - formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)
+  ---
+  duration_ms: 368.5445
+  type: 'suite'
+  ...
+# Subtest: formalization segmentation and needs (rust/src/formalization)
+    # Subtest: segments with exact byte spans and the decimal-point rule
+    ok 1 - segments with exact byte spans and the decimal-point rule
+      ---
+      duration_ms: 0.192958
+      ...
+    # Subtest: unknown surfaces skip quoted spans and seeded words
+    ok 2 - unknown surfaces skip quoted spans and seeded words
+      ---
+      duration_ms: 0.188
+      ...
+    # Subtest: an offline deep pass reports every need unsatisfiable with the empty-structure identity
+    ok 3 - an offline deep pass reports every need unsatisfiable with the empty-structure identity
+      ---
+      duration_ms: 0.569208
+      ...
+    1..3
+ok 2 - formalization segmentation and needs (rust/src/formalization)
+  ---
+  duration_ms: 1.165792
+  type: 'suite'
+  ...
+# Subtest: formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)
+    # Subtest: recognises formalization tasks in every language
+    ok 1 - recognises formalization tasks in every language
+      ---
+      duration_ms: 1.705125
+      ...
+    # Subtest: the acceptance walk: search query, then the canonical fetch, then the final report
+    ok 2 - the acceptance walk: search query, then the canonical fetch, then the final report
+      ---
+      duration_ms: 138.28475
+      ...
+    # Subtest: planner_walks_the_full_search_fetch_write_run_recipe
+    ok 3 - planner_walks_the_full_search_fetch_write_run_recipe
+      ---
+      duration_ms: 6.934625
+      ...
+    # Subtest: planner_skips_capabilities_no_advertised_tool_provides / completes without tools
+    ok 4 - planner_skips_capabilities_no_advertised_tool_provides / completes without tools
+      ---
+      duration_ms: 2.546833
+      ...
+    # Subtest: planner_formalizes_the_fetched_text_when_fetch_succeeds
+    ok 5 - planner_formalizes_the_fetched_text_when_fetch_succeeds
+      ---
+      duration_ms: 1.69675
+      ...
+    # Subtest: planner_falls_back_to_the_synopsis_when_fetch_errors
+    ok 6 - planner_falls_back_to_the_synopsis_when_fetch_errors
+      ---
+      duration_ms: 3.256584
+      ...
+    # Subtest: issue 956: a quoted custom source is formalized itself
+    ok 7 - issue 956: a quoted custom source is formalized itself
+      ---
+      duration_ms: 3.888708
+      ...
+    1..7
+ok 3 - formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)
+  ---
+  duration_ms: 158.537666
+  type: 'suite'
+  ...
+# Subtest: meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+    # Subtest: recognises_the_meaning_detail_task / routes concepts
+    ok 1 - recognises_the_meaning_detail_task / routes concepts
+      ---
+      duration_ms: 0.2165
+      ...
+    # Subtest: enriched blocks match the seed byte for byte, fetched or not
+    ok 2 - enriched blocks match the seed byte for byte, fetched or not
+      ---
+      duration_ms: 3.486625
+      ...
+    # Subtest: replays the committed agent-cli-session.json step for step
+    ok 3 - replays the committed agent-cli-session.json step for step
+      ---
+      duration_ms: 17.531375
+      ...
+    # Subtest: replays the committed agent-cli-session-potato.json step for step
+    ok 4 - replays the committed agent-cli-session-potato.json step for step
+      ---
+      duration_ms: 3.692583
+      ...
+    1..4
+ok 4 - meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+  ---
+  duration_ms: 25.060917
+  type: 'suite'
+  ...
+# Subtest: diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+    # Subtest: recognises_the_diagram_task
+    ok 1 - recognises_the_diagram_task
+      ---
+      duration_ms: 0.192583
+      ...
+    # Subtest: committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)
+    ok 2 - committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)
+      ---
+      duration_ms: 0.55125
+      ...
+    # Subtest: replays the committed diagram Agent CLI session
+    ok 3 - replays the committed diagram Agent CLI session
+      ---
+      duration_ms: 0.958584
+      ...
+    1..3
+ok 5 - diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+  ---
+  duration_ms: 1.757625
+  type: 'suite'
+  ...
+# Subtest: issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)
+    # Subtest: task predicates route each canonical task to exactly its recipe
+    ok 1 - task predicates route each canonical task to exactly its recipe
+      ---
+      duration_ms: 0.3125
+      ...
+    # Subtest: committed documents render byte for byte with their final answers
+    ok 2 - committed documents render byte for byte with their final answers
+      ---
+      duration_ms: 1.247083
+      ...
+    # Subtest: the change request and rebuild plan are derived from the canonical request
+    ok 3 - the change request and rebuild plan are derived from the canonical request
+      ---
+      duration_ms: 6.142916
+      ...
+    # Subtest: document recipes walk write -> verify -> final
+    ok 4 - document recipes walk write -> verify -> final
+      ---
+      duration_ms: 0.920084
+      ...
+    1..4
+ok 6 - issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)
+  ---
+  duration_ms: 8.685333
+  type: 'suite'
+  ...
+# Subtest: issue \#558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)
+    # Subtest: owned_manifest_content_addresses_every_source_file
+    ok 1 - owned_manifest_content_addresses_every_source_file
+      ---
+      duration_ms: 233.255833
+      ...
+    # Subtest: content ids equal the Rust-generated self-AST census for every undrifted module
+    ok 2 - content ids equal the Rust-generated self-AST census for every undrifted module
+      ---
+      duration_ms: 52.220708
+      ...
+    # Subtest: the fast FNV-1a equals crate::engine::stable_id
+    ok 3 - the fast FNV-1a equals crate::engine::stable_id
+      ---
+      duration_ms: 0.5245
+      ...
+    # Subtest: owned_manifest_renders_valid_links_notation
+    ok 4 - owned_manifest_renders_valid_links_notation
+      ---
+      duration_ms: 0.06
+      ...
+    # Subtest: coverage_is_integer_permille_and_flags_unfaithful_modules
+    ok 5 - coverage_is_integer_permille_and_flags_unfaithful_modules
+      ---
+      duration_ms: 0.090125
+      ...
+    # Subtest: every source citation is grounded and a fabricated one cannot be constructed
+    ok 6 - every source citation is grounded and a fabricated one cannot be constructed
+      ---
+      duration_ms: 0.422583
+      ...
+    # Subtest: the explanation document matches the committed Agent CLI evidence modulo the live ids
+    ok 7 - the explanation document matches the committed Agent CLI evidence modulo the live ids
+      ---
+      duration_ms: 3.122917
+      ...
+    # Subtest: the source-links document reports the whole repo over the representative slice
+    ok 8 - the source-links document reports the whole repo over the representative slice
+      ---
+      duration_ms: 0.932208
+      ...
+    # Subtest: the explain and source-links recipes walk write -> verify -> final
+    ok 9 - the explain and source-links recipes walk write -> verify -> final
+      ---
+      duration_ms: 1.886125
+      ...
+    1..9
+ok 7 - issue \#558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)
+  ---
+  duration_ms: 292.632667
+  type: 'suite'
+  ...
+# Subtest: repeated event sequences become a validated parameterized algorithm
+ok 8 - repeated event sequences become a validated parameterized algorithm
+  ---
+  duration_ms: 350.535709
+  ...
+# Subtest: held-out constant drift is preserved as a failed candidate
+ok 9 - held-out constant drift is preserved as a failed candidate
+  ---
+  duration_ms: 0.620833
+  ...
+# Subtest: artifact round trip and conformance do not implicitly approve execution
+ok 10 - artifact round trip and conformance do not implicitly approve execution
+  ---
+  duration_ms: 1.431917
+  ...
+# Subtest: the memory reader round-trips the issue-531 observation document
+ok 11 - the memory reader round-trips the issue-531 observation document
+  ---
+  duration_ms: 1.571041
+  ...
+# Subtest: Agent CLI algorithm learning: write, discover, read back, conformance
+ok 12 - Agent CLI algorithm learning: write, discover, read back, conformance
+  ---
+  duration_ms: 277.053166
+  ...
+# Subtest: an arbitrary four-step procedure compiles and restates its steps
+ok 13 - an arbitrary four-step procedure compiles and restates its steps
+  ---
+  duration_ms: 4.301459
+  ...
+# Subtest: the same procedure in every supported language compiles to the same skill links
+ok 14 - the same procedure in every supported language compiles to the same skill links
+  ---
+  duration_ms: 2.720208
+  ...
+# Subtest: an uncompilable step reports a named gap and compiles nothing
+ok 15 - an uncompilable step reports a named gap and compiles nothing
+  ---
+  duration_ms: 81.549166
+  ...
+# Subtest: the gap name collapses the seed quote escape
+ok 16 - the gap name collapses the seed quote escape
+  ---
+  duration_ms: 0.333166
+  ...
+# Subtest: the compiler records every ordered requirement under the solver impulse
+ok 17 - the compiler records every ordered requirement under the solver impulse
+  ---
+  duration_ms: 0.644917
+  ...
+# Subtest: the compiled artifact round-trips and rejects tampering
+ok 18 - the compiled artifact round-trips and rejects tampering
+  ---
+  duration_ms: 2.898542
+  ...
+# Subtest: Agent CLI procedure: write, verify, execute, and return the same artifact
+ok 19 - Agent CLI procedure: write, verify, execute, and return the same artifact
+  ---
+  duration_ms: 4.102667
+  ...
+# Subtest: Agent CLI procedure rejects a corrupted readback and a failed execution
+ok 20 - Agent CLI procedure rejects a corrupted readback and a failed execution
+  ---
+  duration_ms: 4.861875
+  ...
+# Subtest: Agent CLI procedure localizes an honest unpersisted artifact
+ok 21 - Agent CLI procedure localizes an honest unpersisted artifact
+  ---
+  duration_ms: 0.973375
+  ...
+# Subtest: the associative report and answer match the committed Agent CLI session
+ok 22 - the associative report and answer match the committed Agent CLI session
+  ---
+  duration_ms: 5.000792
+  ...
+# Subtest: the associative report is derived from persisted usage, not canned
+ok 23 - the associative report is derived from persisted usage, not canned
+  ---
+  duration_ms: 0.658083
+  ...
+# Subtest: self-hosting and search-fusion reports are derived and review gated
+ok 24 - self-hosting and search-fusion reports are derived and review gated
+  ---
+  duration_ms: 1.631042
+  ...
+# Subtest: every registered report routes from its own task and identities are unique
+ok 25 - every registered report routes from its own task and identities are unique
+  ---
+  duration_ms: 0.195917
+  ...
+# Subtest: committed Agent CLI evidence reports match a fresh render
+ok 26 - committed Agent CLI evidence reports match a fresh render
+  ---
+  duration_ms: 2.156292
+  ...
+# Subtest: the dreaming audit is derived from the recipe and matches the committed session
+ok 27 - the dreaming audit is derived from the recipe and matches the committed session
+  ---
+  duration_ms: 2.864375
+  ...
+# Subtest: the self-AST recipe routes narrowly and answers like the committed session
+ok 28 - the self-AST recipe routes narrowly and answers like the committed session
+  ---
+  duration_ms: 0.71475
+  ...
+# Subtest: the question catalog recipe routes narrowly and answers like the committed session
+ok 29 - the question catalog recipe routes narrowly and answers like the committed session
+  ---
+  duration_ms: 1.552458
+  ...
+# Subtest: the Google Trends recipes route and answer like the committed sessions
+ok 30 - the Google Trends recipes route and answer like the committed sessions
+  ---
+  duration_ms: 7.330917
+  ...
+# Subtest: selected actual adapter list is recorded and executes its requested effect
+ok 31 - selected actual adapter list is recorded and executes its requested effect
+  ---
+  duration_ms: 2.494958
+  ...
+# Subtest: unavailable or duplicated adapter declarations stop before planner or effects
+ok 32 - unavailable or duplicated adapter declarations stop before planner or effects
+  ---
+  duration_ms: 0.510167
+  ...
+# Subtest: an undeclared call vetoes the complete batch before its first side effect
+ok 33 - an undeclared call vetoes the complete batch before its first side effect
+  ---
+  duration_ms: 0.555667
+  ...
+# Subtest: caller and planner mutations cannot fabricate advertised availability
+ok 34 - caller and planner mutations cannot fabricate advertised availability
+  ---
+  duration_ms: 0.5395
+  ...
+# Subtest: a final answer with no tool availability records an empty actual schema
+ok 35 - a final answer with no tool availability records an empty actual schema
+  ---
+  duration_ms: 0.099916
+  ...
+1..35
+# tests 64
+# suites 7
+# pass 64
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1229.833125
+```

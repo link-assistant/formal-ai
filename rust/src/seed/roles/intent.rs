@@ -59,7 +59,7 @@ pub const ROLE_SOCIAL_IDENTITY: &str = "social_identity";
 /// Carried by `social_assistant_free_time` in `meanings-conversation.lino`
 /// with the surface inventory the intent-routing `assistant_free_time` family
 /// rows held (issue #1138 plan 10 leaf 20: the family retires onto this
-/// role, keeping the capabilities rules' `route_exact` veto meaningful).
+/// role, keeping the capabilities rules' `route-exact` veto meaningful).
 pub const ROLE_SOCIAL_ASSISTANT_FREE_TIME: &str = "social_assistant_free_time";
 /// Semantic role: a dialog-local request to stop using a quoted expression.
 pub const ROLE_CONVERSATION_PREFERENCE_AVOID: &str = "conversation_preference_avoid";

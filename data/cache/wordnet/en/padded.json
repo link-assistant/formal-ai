@@ -1,0 +1,76 @@
+{
+  "lemma": "padded",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01157206-s",
+      "partOfSpeech": "s",
+      "definition": "softened by the addition of cushions or padding",
+      "synonyms": [
+        "cushioned",
+        "cushiony"
+      ]
+    },
+    {
+      "id": "oewn-00958437-v",
+      "partOfSpeech": "v",
+      "definition": "add details to",
+      "synonyms": [
+        "embroider",
+        "pad",
+        "lard",
+        "embellish",
+        "aggrandize",
+        "aggrandise",
+        "blow up",
+        "dramatize",
+        "dramatise"
+      ]
+    },
+    {
+      "id": "oewn-01925197-v",
+      "partOfSpeech": "v",
+      "definition": "walk heavily and firmly, as when weary, or through mud",
+      "examples": [
+        "Mules plodded in a circle around a grindstone"
+      ],
+      "synonyms": [
+        "slog",
+        "footslog",
+        "plod",
+        "trudge",
+        "pad",
+        "tramp"
+      ]
+    },
+    {
+      "id": "oewn-01529744-v",
+      "partOfSpeech": "v",
+      "definition": "line or stuff with soft material",
+      "examples": [
+        "pad a bra"
+      ],
+      "synonyms": [
+        "pad",
+        "fill out"
+      ]
+    },
+    {
+      "id": "oewn-00322287-v",
+      "partOfSpeech": "v",
+      "definition": "add padding to",
+      "examples": [
+        "pad the seat of the chair"
+      ],
+      "synonyms": [
+        "pad",
+        "bolster"
+      ]
+    }
+  ]
+}

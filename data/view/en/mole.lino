@@ -1,0 +1,29 @@
+view
+  id M-e2e7b6ddf94d
+  lemma mole
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the molecular weight of a substance expressed in grams; the basic unit of amount of substance adopted under the Systeme International d'Unites"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "spicy sauce often containing chocolate"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a spy who works against enemy espionage"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a small congenital pigmented spot on the skin"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a protective structure of stone or concrete; extends from shore into the water to prevent a beach from washing away"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "small velvety-furred burrowing mammal having small eyes and fossorial forefeet"
+    provenance (wordnet)

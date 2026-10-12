@@ -5,13 +5,10 @@
 //! Links Notation and written before execution, so the tool transcript is an
 //! append-only record of the decision that caused the change.
 use super::planner::{Capability, trace_route};
-use super::shell_command_policy::prose_sentences;
 use super::write_request::{
-    CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_cue_token,
-    clean_content, clean_path_token, content_lead_close, first_action_cue_end,
-    first_content_lead_end, first_prefix_lead_end, honouring_pinned_first_line,
-    looks_like_file_path, payload_continues_past_its_first_line, ranked_bindings,
-    safe_relative_path, tokens,
+    bare_surfaces, clean_cue_token, clean_path_token, first_action_cue_end, first_prefix_lead_end,
+    first_raw_content_lead_end, first_raw_prefix_lead_end, honouring_pinned_first_line,
+    looks_like_file_path, safe_relative_path, tokens,
 };
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
@@ -22,8 +19,27 @@ use std::fmt::Write as _;
 pub const PLAN_PATH: &str = ".formal-ai/general-change-plan.lino";
 const TARGET_PLACEHOLDER: &str = "{target}";
 
-pub(crate) use super::write_request::typed_write_target;
+mod additive_scope;
+pub(super) use additive_scope::owns_additive_scope;
+mod content_shape;
+mod literal_request;
+mod owned_goals;
+use content_shape::{describes_code_to_author, names_an_addition};
+pub(super) use content_shape::{
+    missing_implementation_contract, owned_semantic_authoring_lead, owns_literal_body,
+};
+use literal_request::parse_write_request;
+pub(super) use owned_goals::{
+    instruction_view_for_request, owns_complete_edit_request, pending_read_gap,
+    plan_owned_goal_step,
+};
+
 pub use super::write_request::compose_edit_request;
+pub(crate) use super::write_request::typed_write_target;
+pub use owned_goals::{
+    declared_addition_contract, has_additive_position, owned_additive_literal,
+    owned_additive_literal_frame, owned_declared_create_frame,
+};
 /// What the bounded general planner can truthfully execute.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GeneralPlanMode {
@@ -94,7 +110,8 @@ impl GeneralChangePlan {
     /// Render the plan shape consumed by the driver and documented by the meta fixture.
     #[must_use]
     pub fn links_notation(&self) -> String {
-        let mut out = String::from("general_change_plan\n");
+        let mut out = super::append_contract::general_change_plan_record_header()
+            .expect("general plan record schema unavailable");
         field(&mut out, "id", &self.id);
         field(&mut out, "execution_mode", self.mode.slug());
         field(&mut out, "terminal_state", self.terminal_state.slug());
@@ -138,15 +155,64 @@ impl GeneralChangePlan {
 /// This removes an agent-harness preamble. Requests without a marker are unchanged.
 #[must_use]
 pub fn objective_text(request: &str) -> &str {
-    let lowered = request.to_lowercase();
-    first_prefix_lead_end(&lowered, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
-        .filter(|(start, _)| line_anchored(&lowered, *start))
+    let request =
+        super::file_read::read_request_envelope(request).map_or(request, |(text, _, _)| text);
+    first_raw_prefix_lead_end(request, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
+        .filter(|(start, _)| line_anchored(request, *start))
+        .filter(|(start, _)| {
+            !crate::normal_markov::quoted_segment_spans(request)
+                .iter()
+                .any(|segment| *start >= segment.start && *start < segment.end)
+        })
         .and_then(|(_, end)| request.get(end..))
         .map_or(request, str::trim)
 }
 /// Whether a marker at `start` opens its own line, so a delimiter quoted inside
 /// running prose ("write the words request: hello to notes.txt") does not
 /// silently truncate the request.
+/// A closed literal introduced by seeded creation or whole-content consent.
+fn literal_payload(request: &str) -> Option<crate::normal_markov::QuotedSegment> {
+    let quoted = crate::normal_markov::quoted_segment_spans(request);
+    let literal = quoted.iter().find(|segment| {
+        request[segment.end..].chars().all(|character| {
+            character.is_whitespace()
+                || matches!(character, '.' | '!' | '?' | '。' | '！' | '？' | '।')
+        })
+    })?;
+    let mut prefix = request[..literal.start].to_owned();
+    for segment in quoted
+        .iter()
+        .rev()
+        .filter(|segment| segment.end <= literal.start)
+    {
+        prefix.replace_range(
+            segment.start..segment.end,
+            &" ".repeat(segment.end - segment.start),
+        );
+    }
+    let normalized = crate::engine::normalize_prompt(&prefix);
+    let lexicon = crate::seed::lexicon();
+    let overwrite = lexicon.mentions_role("file_overwrite_consent", &normalized);
+    let lead = first_raw_content_lead_end(&prefix);
+    if lead.is_none() && !overwrite {
+        return None;
+    }
+    if lead.is_some_and(|(_, end)| {
+        !(prefix[end..]
+            .chars()
+            .all(|character| character.is_whitespace() || character == ':')
+            || (overwrite && !prefix[end..].trim_end().contains('\n')))
+    }) {
+        return None;
+    }
+    let words = tokens(&prefix);
+    let action_start = super::write_request::first_action_cue_start(&words)?;
+    let action_end = first_action_cue_end(&words)?;
+    let action = crate::engine::normalize_prompt(&prefix[action_start..action_end]);
+    (overwrite || lexicon.mentions_role("file_whole_write_action", &action))
+        .then(|| literal.clone())
+}
+
 fn line_anchored(text: &str, start: usize) -> bool {
     text[..start]
         .chars()
@@ -157,6 +223,20 @@ fn line_anchored(text: &str, start: usize) -> bool {
 #[must_use]
 pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePlan> {
     let request = objective_text(full_request);
+    // An additive edit (append, prepend) never rewrites the whole file: the
+    // workspace-change arm owns it, and a request it cannot ground is declined.
+    let literal = literal_payload(request);
+    let instruction = literal.as_ref().map_or_else(
+        || request.to_owned(),
+        |segment| format!("{}{}", &request[..segment.start], &request[segment.end..]),
+    );
+    let lowered = instruction.to_lowercase();
+    let lexicon = crate::seed::lexicon();
+    if lexicon.mentions_role("file_edit_position_end", &lowered)
+        || lexicon.mentions_role("file_edit_position_start", &lowered)
+    {
+        return None;
+    }
     let command_output = parse_command_output_request(request);
     let file_request = command_output.as_ref().map_or_else(
         || parse_write_request(request),
@@ -167,15 +247,18 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     };
     // Issue #906: "…containing Hello World, in JavaScript." names the bytes and,
     // separately, the language to write them with. Only the bytes are content.
-    let content = crate::implementation_language::without_trailing_known_modifier(&content)
-        .unwrap_or(content);
+    let content = if literal.is_some() {
+        content
+    } else {
+        crate::implementation_language::without_trailing_known_modifier(&content).unwrap_or(content)
+    };
     // Issue #1066: the same request can state the bytes and, separately,
     // constrain the line the file has to open with. The repair belongs here
     // rather than at the call sites, because every step of the plan quotes the
     // content it was composed from -- the verification step's expected evidence
     // most of all -- and a plan whose steps disagree with its own bytes is not
     // one a reader can check.
-    let content = honouring_pinned_first_line(full_request, &content).map_or(content, |repaired| {
+    let content = honouring_pinned_first_line(&instruction, &content).map_or(content, |repaired| {
         // Whether the repair applied is not recoverable from the finished plan,
         // and the two outcomes it separates -- bytes taken from the prose, and
         // bytes corrected to match a constraint stated elsewhere in the same
@@ -187,17 +270,40 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     if !safe_relative_path(&target) {
         return None;
     }
+    if command_output.is_none()
+        && (describes_code_to_author(request, &content)
+            || names_an_addition(request, &content, &target))
+    {
+        return None;
+    }
     let response_language = language(request);
     let intent = formalize_intent(request, response_language, None);
-    let verification_command = format!("cat {target}");
+    let verification_command = if command_output.is_some() {
+        super::work_item_steps::fill(
+            "command-capture-readback",
+            &[(concat!("{", "target", "}"), &shell_quote(&target))],
+        )
+    } else {
+        format!("cat {target}")
+    };
     let mut steps = vec![GeneralPlanStep {
         capability: Capability::Write,
-        action: format!("append the composed plan to {PLAN_PATH}"),
+        action: crate::seed::render_response(
+            "general-plan-append-action",
+            "en",
+            &[("plan_path", PLAN_PATH)],
+        )
+        .unwrap_or_default(),
         expected_evidence: format!("written plan event {}", intent.impulse_id),
         command: None,
     }];
     if let Some((_, command)) = &command_output {
-        let generation_command = format!("{command} > {}", shell_quote(&target));
+        let setup = super::work_item_steps::fill(
+            "command-capture-setup",
+            &[(concat!("{", "target", "}"), &shell_quote(&target))],
+        );
+        let end = super::work_item_steps::fill("command-capture-end", &[]);
+        let generation_command = format!("{setup}{command}{end}");
         steps.push(GeneralPlanStep {
             capability: Capability::Run,
             action: command_plan_text(
@@ -262,7 +368,17 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
 }
 fn compose_repository_work_plan(request: &str) -> Option<GeneralChangePlan> {
     let target = repository_work_reference(request)?;
-    if !mentions_bare_role(request, seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
+    // Hive Mind's objective field (`Issue to solve: <url>`, then the prepared
+    // branch and "Proceed.") carries its verb in the delimiter, which
+    // `objective_text` has already stripped. An objective that opens with the
+    // work-item reference itself is therefore that field: the reference is
+    // the request (issues #1154 and #1155 replay this exact prompt).
+    let opens_with_reference = request
+        .split_whitespace()
+        .next()
+        .and_then(repository_work_reference)
+        .is_some();
+    if !opens_with_reference && !mentions_bare_role(request, seed::ROLE_SOFTWARE_AUTHORING_ACTION) {
         return None;
     }
     let response_language = language(request);
@@ -317,8 +433,30 @@ pub(super) fn repository_work_reference(request: &str) -> Option<String> {
         let url = token.trim_matches(|character: char| {
             matches!(
                 character,
-                '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}' | ',' | ';' | '.' | '"' | '\''
-                    | '。' | '，' | '、' | '；' | '：' | '（' | '）' | '「' | '」' | '«' | '»' | '।'
+                '<' | '>'
+                    | '('
+                    | ')'
+                    | '['
+                    | ']'
+                    | '{'
+                    | '}'
+                    | ','
+                    | ';'
+                    | '.'
+                    | '"'
+                    | '\''
+                    | '。'
+                    | '，'
+                    | '、'
+                    | '；'
+                    | '：'
+                    | '（'
+                    | '）'
+                    | '「'
+                    | '」'
+                    | '«'
+                    | '»'
+                    | '।'
             )
         });
         let path = url
@@ -456,303 +594,15 @@ pub(crate) fn has_file_write_intent(lower: &str) -> bool {
 /// containing "exactly" from changing planner precedence.
 pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
     let normalized = request.to_lowercase();
-    first_prefix_lead_end(
+    let authoritative = first_prefix_lead_end(
         &normalized,
         seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
     )
     .is_some()
+        || literal_payload(request).is_some();
+    authoritative
         && compose_general_change_plan(request)
             .is_some_and(|plan| plan.mode == GeneralPlanMode::LiteralFile)
-}
-/// Recover the `(target, content)` of a write request from its wording.
-///
-/// The recogniser is entirely seed-driven (issue #680). It locates the target
-/// file by a `file_write_target_cue`/`file_write_destination_cue` that directly
-/// precedes a file-looking, safe relative path, then recovers the content two
-/// ways:
-///
-/// * **Marker-led** — a `file_write_content_lead` phrase ("containing", "with
-///   the following", …) introduces the payload. The content is the span after
-///   the marker (when the file precedes it) or the span between the marker and
-///   the file clause (when the content precedes the file).
-/// * **Destination-led** — the "write CONTENT to FILE" shape, where a
-///   `file_write_action_cue` opens the request and a *destination* cue (not a
-///   positional target cue) routes the preceding span into the file.
-/// * **Action-led** — the "write FILE saying CONTENT" shape, where a
-///   `file_write_action_cue` ("write"/"create"/"save"/…) directly names the file
-///   and a content-lead marker introduces the payload after it. An action cue
-///   licenses the file just like a target cue, but only marker-led content is
-///   accepted for it, so a bare "create app.rs" (no content) still falls through
-///   to the ordinary solver rather than fabricating an empty file.
-///
-/// Both byte offsets index the lowercased copy, which is byte-length preserving
-/// for en/ru/hi/zh, so the same offsets slice the original request and the
-/// recovered content keeps its case and punctuation.
-fn parse_write_request(request: &str) -> Option<(String, String)> {
-    let toks = tokens(request);
-    // A cue between two file-shaped tokens can belong to either of them, and the
-    // ranking only says which reading to try first. The reading that recovers a
-    // payload is the one the sentence supports, so the candidates are taken in
-    // order and the first that parses is the answer. A sentence that offers one
-    // candidate reaches exactly the branch it always did.
-    ranked_bindings(&toks)
-        .into_iter()
-        .find_map(|binding| parse_write_request_bound(request, &toks, &binding))
-}
-
-/// Read `request` as a write delivered through one particular binding.
-fn parse_write_request_bound(
-    request: &str,
-    toks: &[Token<'_>],
-    binding: &WriteBinding,
-) -> Option<(String, String)> {
-    let lowered = request.to_lowercase();
-    let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
-    let file_index = binding.index;
-    let target = binding.path.clone();
-    // The clause is the cue and its path together, so it begins at whichever of
-    // them the language puts first.
-    let clause_start = if binding.cue_precedes {
-        binding.cue_start
-    } else {
-        toks[file_index].start
-    };
-    let cue_is_destination = binding.family == CueFamily::Destination;
-    // Marker-led content. The payload sits after the marker, bounded by the file
-    // clause when the marker comes first ("write the following: hello to x.txt")
-    // and running to the end when the clause comes first ("store file x.txt
-    // containing hello").
-    //
-    // A marker that *precedes* the clause additionally needs a write verb, which
-    // is the same rule the destination-led and assignment-shaped branches below
-    // already apply — without it a read request whose object happens to be a
-    // content-lead surface claims a write. The issue-#671 matrix caught
-    // `show me the contents of the file beta.md` planning
-    // `write(beta.md, "of the")`, destroying the fixture it was asked to read.
-    // A marker inside a sentence that specifies a document to compose introduces
-    // that document's structure, not its bytes; see
-    // [`super::note_composition::composed_document_specification_span`]. Reading
-    // it as a literal payload is what wrote "the selected tree level, node
-    // outcomes, test results, and session id." into the ladder's final proof
-    // file (issue #1066), and it claimed the request too, so the note the caller
-    // asked for was never composed.
-    let specification = super::note_composition::composed_document_specification_span(request);
-    if let Some((_, marker_end)) = first_content_lead_end(&lowered)
-        && !specification.is_some_and(|span| span.contains(&marker_end))
-        && positions_share_statement(request, marker_end, clause_start)
-    {
-        let marker_leads = marker_end <= clause_start;
-        let statement_end = if marker_leads {
-            end_of_statement(request, marker_end, clause_start)
-        } else {
-            end_of_statement(request, marker_end, request.len())
-        };
-        // A circumfix marker states where its payload ends as well as where it
-        // begins, and the closing literal is grammar rather than bytes: the
-        // Hindi "जिसमें Gemfile.lock हो" would otherwise write the verb into the
-        // file with the content.
-        let payload_end = content_lead_close(&lowered, marker_end)
-            .map_or(statement_end, |close| close.min(statement_end));
-        let marker_span = request.get(marker_end..payload_end);
-        if (!marker_leads || first_action_cue_end(toks).is_some())
-            && let Some(content) = marker_span
-                .and_then(clean_content)
-                .filter(|content| {
-                    is_literal_content(content)
-                        && (!names_deferred_work_product(content)
-                            || first_prefix_lead_end(
-                                &lowered,
-                                seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
-                            )
-                            .is_some())
-                })
-            {
-                return Some((target, content));
-            }
-    }
-    let content_span = if cue_is_destination && binding.cue_precedes {
-        let action_end = first_action_cue_end(toks)?;
-        (action_end <= clause_start
-            && positions_share_statement(request, action_end, clause_start))
-        .then(|| request.get(action_end..clause_start))?
-    } else if cue_is_destination {
-        // The same shape read from the other side. A language that marks its
-        // destination with a postposition and closes the clause with the verb —
-        // "notes/attribution.md में Gemfile.lock लिखो" — states the payload
-        // between the two, exactly as the prepositional wording states it
-        // between the verb and the preposition.
-        let action_start = action_cue_start_after(toks, binding.cue_end)?;
-        (binding.cue_end <= action_start
-            && positions_share_statement(request, binding.cue_end, action_start))
-        .then(|| request.get(binding.cue_end..action_start))?
-    } else if let Some(value_lead) = toks
-        .iter()
-        .skip(file_index + 1)
-        .find(|token| dest_cues.contains(&clean_cue_token(token.text)))
-    {
-        // Assignment shape: "set the contents of FILE to VALUE". The target
-        // cue identifies the file object and a following destination cue
-        // introduces its literal value. Requiring a write action before the
-        // file keeps an unrelated "contents of FILE" read request out.
-        let action_end = first_action_cue_end(toks)?;
-        (action_end <= clause_start
-            && positions_share_statement(request, action_end, clause_start)
-            && positions_share_statement(request, clause_start, value_lead.start))
-        .then(|| request.get(value_lead.end..))?
-    } else {
-        None
-    };
-    let content = clean_content(content_span?)?;
-    // A recovered payload that is *only* a non-referential subject ("save it to
-    // FILE", "write this to FILE") names no literal content — the pronoun points
-    // back at content the request expects the recipe to still compose. Treating
-    // it as a literal write both fabricates the wrong file (the string "it") and
-    // steals the request from the keyword recipe that would author the real
-    // artifact, so fall through instead (issue #663).
-    //
-    // The same is true of a payload that names the *work product* rather than
-    // supplying it: "save the answer to FILE" states where an answer goes, not
-    // what it says (issue #1066).
-    if is_non_referential_content(&content)
-        || names_deferred_work_product(&content)
-        || !is_literal_content(&content)
-    {
-        return None;
-    }
-    Some((target, content))
-}
-/// Where the statement that begins at `from` ends, never past `limit`.
-///
-/// A literal payload is something the request *states*, and a statement ends
-/// where its sentence does. Bounding the span by the file clause alone reads
-/// across every sentence in between: "Draft a handover memo containing the
-/// migration status, the outstanding blockers, and the on-call owner. Leave the
-/// memo in `handover/2026-q3.md`" put the marker in the first sentence and the
-/// clause in the second, so the recovered payload ended with the words *Leave
-/// the memo* and the caller's memo opened by instructing them to leave it
-/// (issue #1066).
-///
-/// The clause bound still applies inside the sentence, because "write the
-/// following: hello to `x.txt`" states marker, payload and clause in one
-/// breath. This only refuses to look further than the sentence the marker is in.
-///
-/// A marker that says nothing more on its own line is the exception, because
-/// there the payload is a *block* rather than a phrase: "Create file
-/// `rules.lino` containing\n<three lines of lino>" leaves the marker with an
-/// empty tail, and a newline ends a sentence, so the sentence bound would
-/// recover nothing at all. When the marker's own line has no word left on it,
-/// the statement is the block that follows and runs to `limit`, which is what
-/// this route always did for block payloads.
-///
-/// The sentence is the one *prose* reads, so a semicolon inside the payload
-/// joins its two halves instead of ending it. Reading the payload at the scope
-/// shell routing reads at cut issue #918's minimal-core invariant in half at
-/// its semicolon.
-fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
-    let Some(sentence) = prose_sentences(request)
-        .into_iter()
-        .find(|sentence| sentence.span.contains(&from))
-    else {
-        return limit;
-    };
-    let says_more = request
-        .get(from..sentence.span.end)
-        .is_some_and(|tail| tail.chars().any(char::is_alphanumeric));
-    if says_more && !payload_continues_past_its_first_line(request, from, sentence.span.end) {
-        sentence.span.end.min(limit)
-    } else {
-        limit
-    }
-}
-/// Whether two write-request cues belong to one prose statement.
-///
-/// Literal-write roles are structural only inside the statement that relates
-/// them. Without this check, a content lead in one issue-description paragraph
-/// can pair with an incidental file-shaped token in a later paragraph and turn
-/// repository policy prose into an executable write (issue #1069).
-///
-/// [`end_of_statement`] deliberately lets a marker-only line introduce the
-/// block below it. Reusing that boundary here preserves that supported block
-/// shape while rejecting ordinary completed sentences between the two cues.
-fn positions_share_statement(request: &str, left: usize, right: usize) -> bool {
-    let (from, limit) = if left <= right {
-        (left, right)
-    } else {
-        (right, left)
-    };
-    from == limit || end_of_statement(request, from, limit) == limit
-}
-/// Whether a recovered payload says anything at all. A span of nothing but
-/// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
-/// issue-#671 matrix recovered a single `"`, the tail of a quoted prompt after
-/// its trailing content-lead marker — and writing it would replace real file
-/// bytes with a stray delimiter.
-fn is_literal_content(content: &str) -> bool {
-    content.chars().any(char::is_alphanumeric)
-}
-/// Whether a recovered write payload is nothing but a non-referential subject —
-/// a bare pronoun/function word ("it", "this", "that", …) that refers back to
-/// context rather than naming literal content. The surfaces carry the
-/// [`seed::ROLE_NON_REFERENTIAL_SUBJECT`] role; only whole-word
-/// ([`Slot::Bare`]) forms are rejected, so legitimate content that merely
-/// *begins* with such a word ("to be or not to be") is still accepted.
-fn is_non_referential_content(content: &str) -> bool {
-    let lower = content.to_lowercase();
-    seed::lexicon()
-        .role_word_forms(seed::ROLE_NON_REFERENTIAL_SUBJECT)
-        .iter()
-        .any(|form| form.slot() == Slot::Bare && lower == form.text)
-}
-/// Whether a recovered write payload names the result of work the same request
-/// asks for, instead of supplying bytes (issue #1066).
-///
-/// "Save the answer to `out/e.md`" and "leave observable evidence to
-/// `out/e.md`" have the destination-led shape of a literal write -- a write
-/// verb, a span, a destination cue, a path -- and supply no literal. Taking the
-/// span at face value wrote the words *the answer* into the file and, worse,
-/// claimed the request as finished, so the investigation that would have
-/// produced the real bytes never ran.
-///
-/// The surfaces carry [`seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE`] as
-/// [`Slot::Suffix`] forms, because the head noun is what defers and the
-/// modifiers in front of it ("observable", "final") are the caller's, not the
-/// lexicon's.
-///
-/// Applied to marker-led content too: “with the observed result” uses a content
-/// marker syntactically, but still names work that has not happened. Explicit
-/// bytes remain expressible through the authoritative-content marker, whose
-/// distinct role is routed before derived-delivery planning.
-fn names_deferred_work_product(content: &str) -> bool {
-    let lower = content
-        .trim()
-        .trim_end_matches(['.', '!', '?', '。', '！', '？'])
-        .trim_end()
-        .to_lowercase();
-    seed::lexicon()
-        .role_word_forms(seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE)
-        .iter()
-        .any(|form| match form.slot() {
-            Slot::Bare => lower == form.text,
-            Slot::Suffix => ends_with_head_noun(&lower, form.after_slot().trim_start()),
-            Slot::Prefix | Slot::Circumfix => false,
-        })
-}
-/// Whether `content` ends with `noun` standing as its own word.
-///
-/// English and Russian separate a head noun from its modifiers with a space, so
-/// the character before the match settles it. Chinese writes the same phrase
-/// with no separator at all, which is why the boundary is stated as "not an
-/// ASCII alphanumeric" rather than "whitespace": demanding a space would never
-/// match 结论, and demanding nothing would match the tail of an unrelated
-/// English word.
-fn ends_with_head_noun(content: &str, noun: &str) -> bool {
-    !noun.is_empty()
-        && content.strip_suffix(noun).is_some_and(|before| {
-            before
-                .chars()
-                .next_back()
-                .is_none_or(|character| !character.is_ascii_alphanumeric())
-        })
 }
 /// Resolve an edit target named in a request through the workspace self-AST
 /// census (issue #673).

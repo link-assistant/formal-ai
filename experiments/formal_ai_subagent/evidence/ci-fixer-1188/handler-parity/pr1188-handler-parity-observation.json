@@ -1,0 +1,100 @@
+{
+  "scope": "Working-tree production handlers with original native assertions; no local native compilation or current-remote PASS claim",
+  "sourceHead": "d22b7295beee7c7a883e9a6556fd33a1ae21c694",
+  "sourceIdentities": [
+    {
+      "path": "js/worker/formal_ai_worker_coreference.js",
+      "sha256": "e4e8cfa5e08e48a02b188ba6024025b992224e4336fd98b3b97dc8b95a55d575"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_translation_recall_and_compound_interest.js",
+      "sha256": "cc7d2547352dd715c1c391a1c6b044abcf968282555df4f623570df3c6bf1d1f"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_tool_execution_policy.js",
+      "sha256": "76e4241544e34ba2222b1eb86e6e98078388adeb99b4c102b1cb42ffd7ea4832"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_write_program_and_research.js",
+      "sha256": "e82139c776312cef1af48fbe5a6e6d6db7a3a4c5e8ebed90cb55517e97c2f7f1"
+    },
+    {
+      "path": "rust/src/solver_handlers/benchmark_prompts.rs",
+      "sha256": "6edabeeb35cb13d096d065c6cd8a0c7ee8f7d6217a1dfd05653e3508a9d971c8"
+    },
+    {
+      "path": "rust/tests/unit/specification/pronoun_topic_follow_up.rs",
+      "sha256": "e55eaed34dbc838d2f869354c7b560fa21c2c7bf1e45172fff6412cbdc8e1cba"
+    }
+  ],
+  "originalReport": "pr1188-three-case-original-report.json.gz",
+  "originalReportSha256": "9ce3b6ec883d1f0b2b7c61fe4f27578926243d0e78ade374cbdf7ba0304f299c",
+  "retrySummary": {
+    "nativeTotal": 1178,
+    "legacyCases": 136,
+    "legacyPassed": 136,
+    "typedCases": 44,
+    "typedPassed": 44,
+    "carried": 180,
+    "passed": 180,
+    "unsupported": 998,
+    "typedStaticAssertions": 169,
+    "typedExecutedAssertions": 245,
+    "priorNineUnknownRuntime": [
+      {
+        "id": "rust/tests/unit/specification/chat_surface.rs::links_notation_trace_is_present_for_every_answer",
+        "carried": false
+      },
+      {
+        "id": "rust/tests/unit/specification/code_generation_blueprint.rs::rust_http_json_statistics_request_returns_blueprint_program",
+        "carried": false
+      },
+      {
+        "id": "rust/tests/unit/specification/links_network.rs::trace_record_lists_ordered_reasoning_steps",
+        "carried": false
+      },
+      {
+        "id": "rust/tests/unit/specification/network_visualization.rs::answers_already_carry_links_notation_for_visualization",
+        "carried": false
+      },
+      {
+        "id": "rust/tests/unit/specification/reasoning_loop.rs::step_8_full_trace_is_stored_and_linked",
+        "carried": false
+      },
+      {
+        "id": "rust/tests/unit/specification/reasoning_paths.rs::selected_registry_method_is_recorded_as_a_meta_method",
+        "carried": false
+      },
+      {
+        "id": "rust/tests/unit/specification/translation_via_links.rs::every_answer_publishes_a_links_notation_trace",
+        "carried": false
+      },
+      {
+        "id": "rust/tests/unit/specification/translation_via_links.rs::translation_trace_includes_intermediate_meaning",
+        "carried": false
+      },
+      {
+        "id": "rust/tests/unit/specification/transparent_state.rs::links_notation_trace_is_always_present",
+        "carried": false
+      }
+    ],
+    "productionRecordWritten": false
+  },
+  "nearestTests": {
+    "tests": 16,
+    "passed": 16,
+    "raw": "T3232.log"
+  },
+  "twinsCitation": {
+    "checked": 1162,
+    "passed": 1162
+  },
+  "ceilings": {
+    "translation": 1331,
+    "coreference": 118,
+    "toolPolicy": 14,
+    "program": 1291
+  },
+  "originalReportEncoding": "gzip",
+  "originalReportStoredSha256": "11ce8a7123a7ed85487b2f769ddfd61a13f884f17db41299bb0c5787ccec2c1a"
+}

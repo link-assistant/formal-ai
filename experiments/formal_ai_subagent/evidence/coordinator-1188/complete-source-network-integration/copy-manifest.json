@@ -1,0 +1,574 @@
+{
+  "files": [
+    {
+      "source": "/private/tmp/pr1188-root-T1971-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1971-request.json",
+      "bytes": 1050,
+      "sha256": "ff960e9c2e0ad417095004acf6b471ff530ee0b3ed2f16b4c40f71a188c727a8"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1971.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1971-result.json",
+      "bytes": 1872,
+      "sha256": "116b5a7392f1d11c2974093598cb4e6431e3c7805dc75a1c98f716894e8523cf"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1972-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1972-request.json",
+      "bytes": 850,
+      "sha256": "4250b35c23a33476d1cc2eb96eb5f86818a9221f59bb557cc8cf392898e2a91b"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1972.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1972-result.json",
+      "bytes": 3214,
+      "sha256": "21fe86a2fe02f9df8fdb0fafcb84f6f6d1a2b58ffc99f3594180036b4a348e3d"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1973-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1973-request.json",
+      "bytes": 1300,
+      "sha256": "738a980169c62b6aed92aa5599c7d1e6fc40574e4b5aa7678cc399bee84af472"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1973.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1973-result.json",
+      "bytes": 5114,
+      "sha256": "6b9f8ca7ed7faa200f57109bc3156c7e8ae011884d0164fe89e1626ac6a6f8bc"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1974-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1974-request.json",
+      "bytes": 1314,
+      "sha256": "f053d23c4ee0952a3c7c541df2b3bb29478e1c394c24196846b0d629c0da203e"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1974.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1974-result.json",
+      "bytes": 5163,
+      "sha256": "023c61172cb23b4b2a03b3e2001d4aa2e06c20b52046b6d29eb784dd49afa6f3"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1975-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1975-request.json",
+      "bytes": 1306,
+      "sha256": "d98f5ea15c423e947f9ace6bc46cd3c8d0a68a9fbd8d318e6474aa43bd9550dd"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1975.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1975-result.json",
+      "bytes": 5634,
+      "sha256": "0fa27099411152f667d1460db2b13eeb4d612c5dbe358a1b4842711298c7e83d"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1976-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1976-request.json",
+      "bytes": 10421,
+      "sha256": "db6e5bd85a5628ac8f60269932d4176f4aa0f1e0bedd761aa749be16bb4136e9"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1976.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1976-result.json",
+      "bytes": 23262,
+      "sha256": "846827383f43f219832fdf9e17ce547612fc082f7689c2adb600a9bb46cd3105"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1977-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1977-request.json",
+      "bytes": 1310,
+      "sha256": "abc92540a01289eced7439124a8c67ab1c61ab0e4063097fca5dd61e97b5efae"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1977.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1977-result.json",
+      "bytes": 4997,
+      "sha256": "cec6878b67103b82727c4809ae04a54b9c2a3d4fc6b0c4323cb47a04b89846b6"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1978-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1978-request.json",
+      "bytes": 7369,
+      "sha256": "4a0eb6ad01103d30b70bb5c8567c9d68a7a772ea91a2bcfb86c3cca2e60ab8f0"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1978.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1978-result.json",
+      "bytes": 17544,
+      "sha256": "3153dd0b2ba22f40ae00e2ac511b1691d71ab2a692dad12bc0e796efb88d7bd1"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1979-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1979-request.json",
+      "bytes": 2924,
+      "sha256": "291b5a8b5e34dd524ab51be8da873a94af842e1f38fde20a84d30f7ae7d9a135"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1979.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1979-result.json",
+      "bytes": 9600,
+      "sha256": "719bdcc326e1546809fea65672aefd96389a4500db23daaec3b8c492c2ab6eb5"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1980-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1980-request.json",
+      "bytes": 5959,
+      "sha256": "feacd11c8100562f0ccf42049e209cb0183a807f535a9410b4ef811314265bca"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1980.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1980-result.json",
+      "bytes": 51016,
+      "sha256": "d5f9cab3d9d45a2bb3bcc8a47ba16af374d31a83ea222d006c5e5575c79d4259"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1981-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1981-request.json",
+      "bytes": 5751,
+      "sha256": "7f1babe5ae87d84a56fe1e1e013fe48660e81aad40e955760aeea6fd6c083083"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1981.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1981-result.json",
+      "bytes": 28922,
+      "sha256": "315360f486941dce0167f13023c4273cc764aa49670b46eed9d27fdf141a9035"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1982-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1982-request.json",
+      "bytes": 9660,
+      "sha256": "14091c69b0675759e1273dcb696aabd2b1ad9af110a72e2366b409201b361f76"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1982.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1982-result.json",
+      "bytes": 33476,
+      "sha256": "eb6dbf4478b2375fde07df31e60ac2745cdab9dba6f75f9ec459971a9c1fc72f"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1983-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1983-request.json",
+      "bytes": 9462,
+      "sha256": "da6d9f6ab78e62166a2a623a6ab76f9b4c517f877c3554ff101906b9c22da7e6"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1983.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1983-result.json",
+      "bytes": 37720,
+      "sha256": "f193f39beeba1eb32561f7dbda89f7e0156aaab595e228f10c6d92adcfa3b04b"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2283.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2283-transcript.log",
+      "bytes": 1141,
+      "sha256": "edfe5d53824733ee6361c0c6459816cedd756189cb6ad9b9e1e76aec67b4f083"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2284.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2284-transcript.log",
+      "bytes": 323,
+      "sha256": "48ac54c39da3c5f9fc406bfe62b1e710c5d54d4a2f953730297acf1d51ad963c"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2285.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2285-transcript.log",
+      "bytes": 322,
+      "sha256": "aa9a8f24355a7fb4f2898374a8f5eb785d8ad1257a079f8c50e02a0b5761e2a2"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2286.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2286-transcript.log",
+      "bytes": 196904,
+      "sha256": "538b8445b34a821cb9d170d3a8b4036be8fc1b8b3e20ed81cb183dd7c2697944"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2287.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2287-transcript.log",
+      "bytes": 137292,
+      "sha256": "e12944b49a8cdc28d3c03263402d342832714ebf80f0dfc57feb111e24251a23"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2288.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2288-transcript.log",
+      "bytes": 11535,
+      "sha256": "4144c2a8a0e8d21d567a5d26f79cacd7d10d424af198da4d66e0d07de51eb5c2"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2289.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2289-transcript.log",
+      "bytes": 171,
+      "sha256": "96e333de0fc316b7bfdc825976bc87c154aa8558f6878490eb4064c080c96e21"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2290.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2290-transcript.log",
+      "bytes": 11110,
+      "sha256": "c250d88a513306a2abd241694ca9934b88a1c956d69f814ffb3f8a6348c3618d"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2291.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2291-transcript.log",
+      "bytes": 306,
+      "sha256": "bbbdf617cac319466091f9ccb4e66db63ff4809198b4002c2ae7a4b23523521a"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2292.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2292-transcript.log",
+      "bytes": 10913,
+      "sha256": "8f21482add4ad7b297893678e3ae848f6d381083d645b164d219c20e1c7a8641"
+    },
+    {
+      "source": "/private/tmp/pr1188-T2293.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2293-transcript.log",
+      "bytes": 20143,
+      "sha256": "fc75664f31c2e91d9ca3e54cecf887b5504f0a119b139b4f83fdce14c0b68ecd"
+    },
+    {
+      "source": "/private/tmp/pr1188-u9-physical-audit.txt",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/ci-physical-audit.txt",
+      "bytes": 956,
+      "sha256": "465244d7f4f3f17c8835414c2df962003cf71fed6120263b4d31c29032d2cb2a"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2326-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2326-request.json",
+      "bytes": 33358,
+      "sha256": "f31b40d3863b3b19a068107d6003cd9562d2c109a7517876108f88c8862ec518"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2326-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2326-transcript.json",
+      "bytes": 800,
+      "sha256": "ffedaa6545030d92fd84205c63cc54a41730d7fd700e9a9eafc043536e722304"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2326-transcript.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2326-transcript.log",
+      "bytes": 800,
+      "sha256": "ffedaa6545030d92fd84205c63cc54a41730d7fd700e9a9eafc043536e722304"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2458.log",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2458-transcript.log",
+      "bytes": 1656,
+      "sha256": "a8bd2a6cbbc4b5dfc87188f4d5c6106891f2ff7fe73134dc1c0ddc0d7a6d97cb"
+    },
+    {
+      "source": "/private/tmp/pr1188-source-network-probes.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/actual-upstream-source-network-probes.json",
+      "bytes": 846,
+      "sha256": "750bbf3ecc83d77be69af54199b8644f7685e3e0cff0f983a54b96d754c6986f"
+    },
+    {
+      "source": "/private/tmp/pr1188-T1971-invalid-self-ast.rs",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1971-invalid-self-ast-preserved.rs",
+      "bytes": 56,
+      "sha256": "8a8abc3c9c180a98c9ad957322f8c6480369feffab66e8f6daba5cd53a9d3218"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1984-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1984-request.json",
+      "bytes": 12832,
+      "sha256": "0d6d2613bcefbbdcb528e88e199463777f087546360e62c19909b6cec29e34e6"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1984.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1984-result.json",
+      "bytes": 41020,
+      "sha256": "3f941e12bc4fece664df5965a0a0a5e1623bf3b80e3f150ed48033f33ec8a7e5"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1985-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1985-request.json",
+      "bytes": 13162,
+      "sha256": "e2db9235a1fc437951fa7d48e680fb7de2b83a79dfbd0accf1ed87271ec531ca"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1985.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1985-result.json",
+      "bytes": 94404,
+      "sha256": "766a12c26eab05eacb4031d573b6180314fdd02779e8d893ce17ebd99cc87d1b"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1986-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1986-request.json",
+      "bytes": 1012,
+      "sha256": "f76a1a7ad55a73f99509871916e3bb10fd42931e196383713175af3cfa8c1332"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1986.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1986-result.json",
+      "bytes": 17684,
+      "sha256": "a3175b749498ade3d241c539df67fb72cf3d3e36fa63e24a355f13d8c81404be"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1987-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1987-request.json",
+      "bytes": 1676,
+      "sha256": "72e997f49ba5bc16fab6e848c6402a7d9bd7f18c0542bfe0f4f1ecce123bd98a"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1987.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1987-result.json",
+      "bytes": 5368,
+      "sha256": "b7fcc44a5e06cd268d9fc9f45c9227f212f0a8d77091e3d7cd95a407e4759f43"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1988-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1988-request.json",
+      "bytes": 5126,
+      "sha256": "d161b298798101e872cada417d814d54e7564b5eadd71c82ba783060879619d3"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1988.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1988-result.json",
+      "bytes": 5545,
+      "sha256": "883ab04d2aba0a42c69dc4fd5877133cff537de6c9faaf0f0778bbe5e66aa95e"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1989-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1989-request.json",
+      "bytes": 5844,
+      "sha256": "9fafa4ec1d29610e26d9cef9e4a8bde3f471198db9dd5c88117f44f9e9f08deb"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1989.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1989-result.json",
+      "bytes": 32405,
+      "sha256": "affe027a8c15d5a90f2b54231ddd34b2606701c21cfbac38a4851d9aa2a951a3"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1990-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1990-request.json",
+      "bytes": 5017,
+      "sha256": "4c24f9d3ee2b95e1f3a415b636a455367eda12d8392efd1280f7c94f9c6dcbaf"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1990.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1990-result.json",
+      "bytes": 5414,
+      "sha256": "682a7d3da177dfc4e2f04fdfb343ac8f2026575831f28bd76e9940b029e4916f"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1991-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1991-request.json",
+      "bytes": 6014,
+      "sha256": "7e5288f0aba24ea034767672fd3da20fc9660d8970263d9f453b6b992d50718a"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1991.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1991-result.json",
+      "bytes": 46800,
+      "sha256": "ce65f189e9db53d1970dadf9b0761cb3fd3f3a83e24570181b7ec227f649d591"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1992-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1992-request.json",
+      "bytes": 1986,
+      "sha256": "e1bb3550919a46d64a10652f73539f7083af4962f4dc0597f3d7bcc1ad0c7b1c"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1992.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1992-result.json",
+      "bytes": 10129,
+      "sha256": "611808a636246eff185342436ba716c8d3fa51ba10c7b476738b00646bcea7a5"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1993-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1993-request.json",
+      "bytes": 3481,
+      "sha256": "0a9621a280f58b1756720acf8f7ca9963da231f5594e5d83394c2af2a86f2be4"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1993.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1993-result.json",
+      "bytes": 11266,
+      "sha256": "f8aa41ace0ee379f3c7fb708e941e08d9518095a269092155c1f9b4498872233"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1994-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1994-request.json",
+      "bytes": 1302,
+      "sha256": "06716bb13b61b4d2ce0a6b03480ea2df60acdceab70ebf953bb5a98d6227bc3b"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1994.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1994-result.json",
+      "bytes": 5218,
+      "sha256": "7fd182153180425786a28b502ba4a78921c1373f22182255da83ce1a2c53bbe5"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1995-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1995-request.json",
+      "bytes": 179,
+      "sha256": "61e4ae2025eded3d81b86e1389818d74f5ce09b2375d6ee4e04deb94dbb2c23d"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1995.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1995-result.json",
+      "bytes": 1969,
+      "sha256": "b7715f7e5ea1d507ba54cdad11f261f1299f90c72b194164e2d5c264f25c19f4"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1996-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1996-request.json",
+      "bytes": 2363,
+      "sha256": "04eb279647d353db1fafaf9fba9dc77ac9a97c8b09d426557b37b37843381e3c"
+    },
+    {
+      "source": "/private/tmp/pr1188-root-T1996.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T1996-result.json",
+      "bytes": 11421,
+      "sha256": "385971ca1daff8884110da67abc706bafdf5074301af7a80c14700b97cbba12c"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2327-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2327-request.json",
+      "bytes": 27283,
+      "sha256": "99814018ca848144802288bf5175ce5af8121c6b6fcf4016c248f27b178e6081"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2327-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2327-transcript.json",
+      "bytes": 566,
+      "sha256": "7a9404857e2cfc67bae37942434d1834fe71cc28a4f68ad10a369f5e6f3acf2a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2492-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2492-request.json",
+      "bytes": 181,
+      "sha256": "3df9f1fa6f58fdb3a09d16b381b627f2f84ac518c2b62bf2142ea206e6132eaa"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2492-observation.json",
+      "path": "experiments/formal_ai_subagent/evidence/coordinator-1188/complete-source-network-integration/T2492-observation.json",
+      "bytes": 53,
+      "sha256": "8005159ff53be08bcb30c629b2ada35de7f5fabd1086f8f893f8bab3bc4fe1f9"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2459-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2459-lossless-transcript.json",
+      "bytes": 10919,
+      "sha256": "67adf45932b8711bf2e492ef91b41c55974c6ee59a9472c3f8cde5a61c405588"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2460-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2460-lossless-transcript.json",
+      "bytes": 36291,
+      "sha256": "fea7e936e3b147fe10a7afd09d5dd6e94ae5401d807241652a9ebb9b9b3047d1"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2461-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2461-lossless-transcript.json",
+      "bytes": 196625,
+      "sha256": "2eecad26f45db182d3f4c362b07399c8e1a482a0a3af8be6fe10bf4218479437"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2462-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2462-lossless-transcript.json",
+      "bytes": 109207,
+      "sha256": "70a355a92a80bd412aa6d9daf7522cf0d62e5be3330e77bce0dbc8f22fff0128"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2463-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2463-lossless-transcript.json",
+      "bytes": 66042,
+      "sha256": "7f0e8429f76b01300b93c54a51d284ed6e493b9937bc57fd0e7478ad5aaab2f8"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2464-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2464-lossless-transcript.json",
+      "bytes": 6311,
+      "sha256": "d68575d8ada7e11b60c671b85ab01bd282a8dc063d77a6dd602a58c271c60f3c"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2465-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2465-lossless-transcript.json",
+      "bytes": 43657,
+      "sha256": "0c6e561a5e71ca806ee6df5994b363ff9393ffc16c35cd44baa327d0281063f2"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2466-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2466-lossless-transcript.json",
+      "bytes": 109873,
+      "sha256": "1a2856efcfa29b464712e954ad1c2fec800d45323ed00786194b9ccf1d2a76fd"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2467-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2467-lossless-transcript.json",
+      "bytes": 71551,
+      "sha256": "28bbcee1744c38089384871599e842f7bc210bf59c4f7dec116e4db96dff67d0"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2468-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2468-lossless-transcript.json",
+      "bytes": 5127,
+      "sha256": "13d464272fb9e9ea26515f75a1455ff79f217a74803cd38f367221dc2f745d14"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2469-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2469-lossless-transcript.json",
+      "bytes": 32872,
+      "sha256": "85b82831be316f56e69924c6647728cc218ec1ce504fa2314a9021d0d3c1d60c"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2470-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2470-lossless-transcript.json",
+      "bytes": 10420,
+      "sha256": "8ea83357c1d99f24d464465ef5c658f2c0216b26f7345d19910c7f2889c13c0a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2471-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2471-lossless-transcript.json",
+      "bytes": 94278,
+      "sha256": "9c3c69a1ac63d7129e6920827d532123e88908aecbc93d2c58a063d662b9ab8a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2472-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2472-lossless-transcript.json",
+      "bytes": 22212,
+      "sha256": "3d5c766bc1a004a01271376c6945fcb45aa32a20b9cc87209feddf42e5c68f2d"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2473-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2473-lossless-transcript.json",
+      "bytes": 59751,
+      "sha256": "1e5ce028c8a1170e71afee03d008022e55b7c95042a6e20b566938295294695c"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2474-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2474-lossless-transcript.json",
+      "bytes": 6276,
+      "sha256": "68f677ddbb19f86a95309e4bad5b441c4bc7ad093ff313bf1648b2fc181d0016"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2475-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2475-lossless-transcript.json",
+      "bytes": 63583,
+      "sha256": "452be520f7b01199af1aa688a10a7c8955115c4f28f202a6f4efddecde7d84ca"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2476-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2476-lossless-transcript.json",
+      "bytes": 4088,
+      "sha256": "3238872961a5a9ca6daabbe0cee5893fb55792030fb5d801314fbdf633742a7a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/citation-scratch-evidence/typed-reader-and-answer-record/T2477-lossless-transcript.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/T2477-lossless-transcript.json",
+      "bytes": 45416,
+      "sha256": "45383d9a5ecdf857dd0dbbc277b884272cedfe113c9a71993169be11c16ae69c"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/scratch-reader-ledger-rows.md",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/ledger-rows.md",
+      "bytes": 2356,
+      "sha256": "2c5f0be6de32ca3304239dfc5e3abc597a915f30d5f044636ddf986cad32f17d"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/scratch-reader-physical-audit.json",
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-answer-record/physical-call-audit.json",
+      "bytes": 366,
+      "sha256": "08367a67fe04c6974d8354789afff26b4057739c427c5632a3ba234a6f498add"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+view
+  id M-188b26e5c88c
+  lemma compression
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an increase in the density of something"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the process or result of becoming smaller or pressed together"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "encoding information while reducing the bandwidth or bits required"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "applying pressure"
+    provenance (wordnet)

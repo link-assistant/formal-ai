@@ -1,0 +1,17 @@
+{
+  "request": {
+    "taskId": "T2728",
+    "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "prompt": "Run node --check rust/tests/web/answer-links-parity.test.mjs"
+  },
+  "observation": {
+    "taskId": "T2728",
+    "calls": [
+      "bash"
+    ]
+  },
+  "transcript": {
+    "sha256": "b4cca4a765febac2cf8de0c5a5babebc0777a3a1cc05654ad19ee236b1a49dfd",
+    "rawUtf8": ">> bash {\"command\":\"node --check rust/tests/web/answer-links-parity.test.mjs\"}\n   Output: \n   Exit Code: 0\n== answer ==\nThe command completed successfully without output.\n"
+  }
+}

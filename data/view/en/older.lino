@@ -1,0 +1,17 @@
+view
+  id M-3441d91570da
+  lemma older
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "advanced in years; (‘aged’ is pronounced as two syllables)"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "used of the older of two persons of the same name especially used to distinguish a father from his son"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "skilled through long experience"
+    provenance (wordnet)

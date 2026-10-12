@@ -415,7 +415,7 @@ fn behavior_rule_listing_includes_capabilities_and_farewell_rules() {
 #[test]
 fn links_notation_trace_is_present_for_every_answer() {
     let response = answer("Hi");
-    assert!(!response.links_notation.is_empty());
+    assert_ne!(response.links_notation, "");
     assert!(response.links_notation.contains("answer_"));
     assert!(response.links_notation.contains("intent"));
 }

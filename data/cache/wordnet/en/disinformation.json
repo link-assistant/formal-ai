@@ -1,0 +1,16 @@
+{
+  "lemma": "disinformation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06647838-n",
+      "partOfSpeech": "n",
+      "definition": "misinformation that is deliberately disseminated in order to influence or confuse rivals (foreign enemies or business competitors etc.)"
+    }
+  ]
+}

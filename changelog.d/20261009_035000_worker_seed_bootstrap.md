@@ -1,0 +1,1 @@
+The browser worker now ships a checked response projection from canonical seed data for offline startup. Greeting variants and all baseline languages come from seed rather than copied source strings; seed synchronization verifies and regenerates that projection.

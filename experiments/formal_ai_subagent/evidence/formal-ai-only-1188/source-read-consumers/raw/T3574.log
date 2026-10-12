@@ -1,0 +1,34 @@
+{
+  "transcript": [
+    {
+      "tool": "read",
+      "arguments": "{\"filePath\":\"error-keys.json\",\"file_path\":\"error-keys.json\",\"path\":\"error-keys.json\"}",
+      "result": "{\n  \"success\": false,\n  \"complete\": false,\n  \"error\": \"failed\",\n  \"is_error\": true,\n  \"exit_code\": 9,\n  \"signal\": \"SIGTERM\",\n  \"content\": \"actual source\"\n}\n",
+      "source_read": {
+        "path": "error-keys.json",
+        "success": true,
+        "complete": true,
+        "format": "raw"
+      }
+    }
+  ],
+  "answer": "Contents of `error-keys.json`:\n\n```text\n{\n  \"success\": false,\n  \"complete\": false,\n  \"error\": \"failed\",\n  \"is_error\": true,\n  \"exit_code\": 9,\n  \"signal\": \"SIGTERM\",\n  \"content\": \"actual source\"\n}\n```",
+  "stop": "final",
+  "toolsAdvertised": [
+    "read"
+  ],
+  "selected": [
+    {
+      "kind": "tool_calls",
+      "result": null
+    },
+    {
+      "kind": "final",
+      "result": {
+        "text": "Contents of `error-keys.json`:\n\n```text\n{\n  \"success\": false,\n  \"complete\": false,\n  \"error\": \"failed\",\n  \"is_error\": true,\n  \"exit_code\": 9,\n  \"signal\": \"SIGTERM\",\n  \"content\": \"actual source\"\n}\n```",
+        "disposition": "unknown",
+        "origin": null
+      }
+    }
+  ]
+}

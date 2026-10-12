@@ -58,14 +58,15 @@ fn reviewed_ceiling(measure: &str) -> usize {
 }
 
 /// Every `docs_*` entry directly under `tests/unit`, file or directory — the
-/// same set `ls tests/unit | grep -c '^docs_'` counts.
+/// same set `ls tests/unit | grep -c '^docs_'` counts — and every entry R1188-U4
+/// renamed to the full word `documentation_*`.
 fn docs_suites() -> Vec<String> {
     let mut names: Vec<String> = fs::read_dir(repo_root().join("rust/tests/unit"))
         .expect("rust/tests/unit readable")
         .filter_map(Result::ok)
         .filter_map(|entry| {
             let name = entry.file_name().to_string_lossy().into_owned();
-            name.starts_with("docs_").then_some(name)
+            (name.starts_with("docs_") || name.starts_with("documentation_")).then_some(name)
         })
         .collect();
     names.sort();
@@ -75,7 +76,7 @@ fn docs_suites() -> Vec<String> {
 #[test]
 fn the_docs_requirements_suite_count_is_at_or_below_its_ceiling() {
     let suites = docs_suites();
-    let ceiling = reviewed_ceiling("docs_requirements_suites");
+    let ceiling = reviewed_ceiling("docs-requirements-suites");
     assert!(
         suites.len() <= ceiling,
         "the docs_* suite count grew from {ceiling} to {}: {suites:?}",
@@ -86,7 +87,7 @@ fn the_docs_requirements_suite_count_is_at_or_below_its_ceiling() {
 #[test]
 fn the_docs_requirements_suite_count_ratchets_strictly_downward() {
     let suites = docs_suites();
-    let ceiling = reviewed_ceiling("docs_requirements_suites");
+    let ceiling = reviewed_ceiling("docs-requirements-suites");
     assert!(
         suites.len() >= ceiling,
         "the docs_* suite count improved from {ceiling} to {}; lower the reviewed \
@@ -100,7 +101,7 @@ fn the_docs_requirements_suite_count_ratchets_strictly_downward() {
 fn the_target_is_five_and_the_five_survivors_are_named() {
     // #1089's own target. The five that survive are named so retiring a suite is
     // a decision rather than an accident.
-    let ceiling = reviewed_ceiling("docs_requirements_suites");
+    let ceiling = reviewed_ceiling("docs-requirements-suites");
     assert_eq!(
         ceiling, 5,
         "the ceiling has reached #1089's target of five; until then it falls one \

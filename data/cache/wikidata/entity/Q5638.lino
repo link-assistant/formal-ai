@@ -1,14 +1,17 @@
 Q5638
   aliases
     en (omnibus multibus autobus)
+    es (bus "ómnibus" micro colectivo guagua autobus omnibus)
   descriptions
     en "large road vehicle for transporting people"
+    es "vehículo grande de carretera para transportar gente"
     hi "सड़क पर चलने वाला यातायात वाहन"
     ru "вид автотранспорта"
     zh "用於載運多名乘客的車輛"
   id Q5638
   labels
     en bus
+    es "autobús"
     hi "बस"
     ru "автобус"
     zh "巴士"

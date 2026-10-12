@@ -1,0 +1,9 @@
+view
+  id M-b07280fe6a0c
+  lemma paradox
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(logic) a statement that contradicts itself"
+    provenance (wordnet)

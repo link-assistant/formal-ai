@@ -1,0 +1,9 @@
+view
+  id M-cdd480345ca8
+  lemma disinformation
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "misinformation that is deliberately disseminated in order to influence or confuse rivals (foreign enemies or business competitors etc.)"
+    provenance (wordnet)

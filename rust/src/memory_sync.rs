@@ -161,16 +161,27 @@ pub fn configured_memory_path() -> Option<PathBuf> {
 /// Live chat exchanges are recorded into memory unless explicitly disabled.
 #[must_use]
 pub fn chat_recording_enabled() -> bool {
-    !matches!(
-        std::env::var("FORMAL_AI_RECORD_CHAT").as_deref(),
-        Ok("0" | "false" | "off")
-    )
+    !crate::cli_env::flag_disabled("FORMAL_AI_RECORD_CHAT")
 }
 
 /// Resolve the native link-cli database beside a portable `.lino` memory log.
 #[must_use]
 pub fn server_link_database_path(memory_path: &Path) -> PathBuf {
     memory_path.with_extension("links")
+}
+
+/// The memory kind of a meta-reasoner learned-chunk statement (the
+/// `memoryOperation` kind the browser worker appends).
+pub const LEARNED_CHUNK_KIND: &str = "meta_learned_chunk";
+
+/// The learned-chunk statements held in `events`.
+#[must_use]
+pub fn learned_statements(events: &[MemoryEvent]) -> Vec<String> {
+    events
+        .iter()
+        .filter(|event| event.kind.as_deref() == Some(LEARNED_CHUNK_KIND))
+        .filter_map(|event| event.content.clone())
+        .collect()
 }
 
 /// A small file-backed event log used by the HTTP sync endpoints.
@@ -230,7 +241,7 @@ impl SyncStore {
                 let compatible = match crate::shared_memory::ensure_shared_memory_file(path) {
                     Ok(()) => true,
                     Err(error) => {
-                        if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                        if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
                             eprintln!("[memory] could not initialize {}: {error}", path.display());
                         }
                         false
@@ -239,7 +250,7 @@ impl SyncStore {
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, compatible)
             }
             Err(error) => {
-                if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+                if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
                     eprintln!("[memory] could not read {}: {error}", path.display());
                 }
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, false)
@@ -254,7 +265,7 @@ impl SyncStore {
         if store.compatible
             && let Err(error) = store.synchronize_link_cli_projection()
         {
-            if std::env::var("FORMAL_AI_MEMORY_DEBUG").as_deref() == Ok("1") {
+            if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
                 eprintln!(
                     "[memory] could not synchronize link-cli store for {}: {error}",
                     path.display()
@@ -262,6 +273,10 @@ impl SyncStore {
             }
             store.compatible = false;
         }
+        // R1012: meanings the meta reasoner learned in earlier sessions come
+        // back from the log, so a paraphrase is answered without a lookup
+        // (`metaImportLearned`, js/worker/formal_ai_worker_meta_composite.js).
+        let _ = crate::meta_reasoner::import_learned(&learned_statements(&store.events));
         store
     }
 
@@ -373,6 +388,16 @@ impl SyncStore {
                 outputs: Some(execution.outputs.clone()),
                 content: Some(format!("tool:{}", execution.tool)),
                 evidence: vec![user_id.clone()],
+                write_count: 1,
+                ..MemoryEvent::default()
+            });
+        }
+        if let Some(statement) = crate::meta_reasoner::take_learned() {
+            recorded.push(MemoryEvent {
+                id: crate::engine::stable_id(LEARNED_CHUNK_KIND, &statement),
+                kind: Some(String::from(LEARNED_CHUNK_KIND)),
+                role: Some(String::from("assistant")),
+                content: Some(statement),
                 write_count: 1,
                 ..MemoryEvent::default()
             });

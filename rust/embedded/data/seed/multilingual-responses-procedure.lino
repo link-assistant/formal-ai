@@ -15,6 +15,10 @@ multilingual_responses
     intent compiled_procedure
     language zh
     text "已将该流程编译为技能。\n\n```links\n{program}```\n\n已编译的步骤：\n\n{steps}\n发送触发值，我会按顺序执行这些步骤。问「你为什么这样做？」，我会引用这些步骤及其源文片段。"
+  response response_compiled_procedure_es
+    intent compiled_procedure
+    language es
+    text "Procedimiento compilado como habilidad.\n\n```links\n{program}```\n\nPasos compilados:\n\n{steps}\nEnvía el valor de activación y ejecutaré estos pasos en orden. Pregunta «¿por qué hiciste eso?» y citaré estos pasos con sus fragmentos de origen."
   response response_compiled_procedure_explanation_en
     intent compiled_procedure_explanation
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent compiled_procedure_explanation
     language zh
     text "已按顺序执行持久化的编译流程：\n\n{steps}"
+  response response_compiled_procedure_explanation_es
+    intent compiled_procedure_explanation
+    language es
+    text "El procedimiento compilado guardado se ejecutó en orden:\n\n{steps}"
   response response_skill_gap_en
     intent skill_gap
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent skill_gap
     language zh
     text "我无法编译步骤「{step}」：{gap}。\n\n没有编译任何内容——我不会部分执行流程。我只记录了这份待审提案；只有回归测试通过并经人工批准后，它才会改变能力：\n\n```links-notation\n{proposal}```\n\n请去掉该步骤，或用已支持的动作重述它。"
+  response response_skill_gap_es
+    intent skill_gap
+    language es
+    text "No puedo compilar el paso «{step}»: {gap}.\n\nNo se compiló nada: no ejecuto un procedimiento a medias. Registré esta propuesta solo para revisión; no cambia ninguna capacidad hasta que pasen las pruebas de regresión y una persona la apruebe:\n\n```links-notation\n{proposal}```\n\nQuita ese paso o reformúlalo con acciones que ya admito."
   response response_skill_gap_name_en
     intent skill_gap_name
     language en
@@ -63,6 +75,10 @@ multilingual_responses
     intent skill_gap_name
     language zh
     text "没有针对「{step}」的已编译能力"
+  response response_skill_gap_name_es
+    intent skill_gap_name
+    language es
+    text "no hay ninguna capacidad compilada para «{step}»"
   response response_agent_procedure_write_unavailable_en
     intent agent_procedure_write_unavailable
     language en
@@ -79,6 +95,10 @@ multilingual_responses
     intent agent_procedure_write_unavailable
     language zh
     text "流程已编译，但未提供工作区写入工具；制品尚未持久化或验证。\n\n```links\n{artifact}```"
+  response response_agent_procedure_write_unavailable_es
+    intent agent_procedure_write_unavailable
+    language es
+    text "El procedimiento se compiló, pero no se ofreció ninguna herramienta de escritura en el espacio de trabajo; el artefacto no se guardó ni se verificó.\n\n```links\n{artifact}```"
   response response_agent_procedure_readback_unavailable_en
     intent agent_procedure_readback_unavailable
     language en
@@ -95,6 +115,10 @@ multilingual_responses
     intent agent_procedure_readback_unavailable
     language zh
     text "流程制品 `{path}` 已写入，但未提供用于回读验证的 shell 工具。\n\n```links\n{artifact}```"
+  response response_agent_procedure_readback_unavailable_es
+    intent agent_procedure_readback_unavailable
+    language es
+    text "El artefacto de procedimiento `{path}` se escribió, pero no se ofreció ninguna herramienta de shell para verificarlo mediante relectura.\n\n```links\n{artifact}```"
   response response_agent_procedure_verification_failed_en
     intent agent_procedure_verification_failed
     language en
@@ -111,6 +135,10 @@ multilingual_responses
     intent agent_procedure_verification_failed
     language zh
     text "流程制品 `{path}` 验证失败：回读内容缺失、无效，或与已编译流程 `{procedure_id}` 不同。我不会声称未经验证的制品已就绪，也不会执行它。"
+  response response_agent_procedure_verification_failed_es
+    intent agent_procedure_verification_failed
+    language es
+    text "Falló la verificación del artefacto de procedimiento `{path}`: el contenido releído faltaba, no era válido o difería del procedimiento compilado `{procedure_id}`. No afirmaré que un artefacto sin verificar está listo ni lo ejecutaré."
   response response_agent_procedure_verified_en
     intent agent_procedure_verified
     language en
@@ -127,6 +155,10 @@ multilingual_responses
     intent agent_procedure_verified
     language zh
     text "流程制品 `{path}` 已写入并验证。\n\n```links\n{artifact}```\n\n已编译的步骤：\n\n{steps}"
+  response response_agent_procedure_verified_es
+    intent agent_procedure_verified
+    language es
+    text "El artefacto de procedimiento `{path}` se escribió y se verificó.\n\n```links\n{artifact}```\n\nPasos compilados:\n\n{steps}"
   response response_agent_procedure_executed_en
     intent agent_procedure_executed
     language en
@@ -143,6 +175,10 @@ multilingual_responses
     intent agent_procedure_executed
     language zh
     text "流程制品 `{path}` 已写入、回读，并在无副作用的一致性主机中端到端执行。\n\n```links\n{artifact}```\n\n执行证据：\n\n```links\n{execution}```\n\n已编译的步骤：\n\n{steps}"
+  response response_agent_procedure_executed_es
+    intent agent_procedure_executed
+    language es
+    text "El artefacto de procedimiento `{path}` se escribió, se volvió a leer y se ejecutó de principio a fin en el anfitrión de conformidad sin efectos secundarios.\n\n```links\n{artifact}```\n\nEvidencia de ejecución:\n\n```links\n{execution}```\n\nPasos compilados:\n\n{steps}"
   response response_agent_procedure_execution_failed_en
     intent agent_procedure_execution_failed
     language en
@@ -159,6 +195,10 @@ multilingual_responses
     intent agent_procedure_execution_failed
     language zh
     text "流程制品 `{path}` 已写入并验证，但端到端一致性执行失败。我不会声称该流程已执行。"
+  response response_agent_procedure_execution_failed_es
+    intent agent_procedure_execution_failed
+    language es
+    text "El artefacto de procedimiento `{path}` se escribió y se verificó, pero su ejecución de conformidad de principio a fin falló. No afirmaré que el procedimiento se ejecutó."
   response response_how_to_guide_heading_en
     intent how_to_guide_heading
     language en

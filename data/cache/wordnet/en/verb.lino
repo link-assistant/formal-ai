@@ -1,0 +1,15 @@
+language en
+lemma verb
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the word class that serves as the predicate of a sentence"
+    id oewn-06329055-n
+    partOfSpeech n
+  entry
+    definition "a content word that denotes an action, occurrence, or state of existence"
+    id oewn-06331562-n
+    partOfSpeech n
+source "oewn:2024"

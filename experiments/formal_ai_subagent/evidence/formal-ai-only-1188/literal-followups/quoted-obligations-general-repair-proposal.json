@@ -1,0 +1,42 @@
+{
+  "kind": "general-obligation-route-extraction",
+  "observedFailure": "T2379",
+  "failedPlanningAsk": "T2380",
+  "sourcePaths": [
+    "js/agentic/planner.mjs",
+    "js/agentic/planner/obligations.mjs",
+    "rust/src/agentic_coding/planner.rs",
+    "rust/src/agentic_coding/planner/obligations.rs"
+  ],
+  "invariants": [
+    "Retain exact authoritative literal precedence before semantic source/edit recipes.",
+    "Preserve task_obligations receipt identity, raw evidence and typed gaps.",
+    "Reuse one existing obligation transaction helper; no duplicated route arm or message classification.",
+    "Single-clause authoring keeps existing path.",
+    "Native code_task caller result argument retained byte-for-byte."
+  ],
+  "transformation": [
+    "Extract existing later obligation branch into planObligationsStep / plan_obligations_step helper.",
+    "Early authoritative literal arm dispatches a present obligation DAG to the extracted helper, otherwise its current single plan.",
+    "Later settled branch calls the same helper after existing shell-owned gate."
+  ],
+  "closestProbes": [
+    {
+      "original": "T2379",
+      "expected": "a.txt=alpha and b.txt=beta, with both exact cat receipts under8turns"
+    },
+    {
+      "heldOut": "same two-file prompt with payload containing rename/source/module command words",
+      "expected": "literal bytes in both paths; no semantic edit/source recipe"
+    },
+    {
+      "heldOut": "first verified artifact plus ungroundable second clause",
+      "expected": "first bytes remain and typed honest obligation Gap, no full-request completion"
+    },
+    {
+      "heldOut": "single authoritative literal containing teaching or file operation cues",
+      "expected": "same exact target/content and same safe event append protocol"
+    }
+  ],
+  "nativeApproach": "Production helper under planner/, test scaffolding exclusively external fixture. Public plan_chat_step native fixture drives real bounded temporary shell/Write calls rather than pretending append succeeded."
+}

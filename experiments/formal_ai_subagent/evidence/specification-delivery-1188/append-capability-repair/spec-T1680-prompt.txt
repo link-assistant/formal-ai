@@ -1,0 +1,1 @@
+Run node -e 'require("fs").copyFileSync("/tmp/spec-g15-native-formatted.rs","rust/tests/unit/pull_request_1188_teach_f.rs")'

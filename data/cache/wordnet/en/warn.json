@@ -1,0 +1,51 @@
+{
+  "lemma": "warn",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00871877-v",
+      "partOfSpeech": "v",
+      "definition": "notify of danger, potential harm, or risk",
+      "examples": [
+        "The director warned him that he might be fired",
+        "The doctor warned me about the dangers of smoking"
+      ]
+    },
+    {
+      "id": "oewn-00872241-v",
+      "partOfSpeech": "v",
+      "definition": "advise or counsel in terms of someone's behavior",
+      "examples": [
+        "I warned him not to go too far",
+        "I warn you against false assumptions",
+        "She warned him to be quiet"
+      ],
+      "synonyms": [
+        "discourage",
+        "admonish",
+        "monish"
+      ]
+    },
+    {
+      "id": "oewn-00834732-v",
+      "partOfSpeech": "v",
+      "definition": "ask to go away",
+      "examples": [
+        "The old man warned the children off his property"
+      ]
+    },
+    {
+      "id": "oewn-00834568-v",
+      "partOfSpeech": "v",
+      "definition": "notify, usually in advance",
+      "examples": [
+        "I warned you that I would ask some difficult questions"
+      ]
+    }
+  ]
+}

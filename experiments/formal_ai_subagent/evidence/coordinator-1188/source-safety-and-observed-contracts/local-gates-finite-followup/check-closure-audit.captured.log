@@ -1,0 +1,4 @@
+$ python3 scripts/check-closure-audit.py
+closure audit (data/meta/closure-audit.lino):
+  unresolved_distinct_honest: measured 1036 / reviewed 1035
+::error file=data/meta/closure-audit.lino::the honest closure gap grew from 1035 to 1036. Ground the tokens in an authored meanings file the runtime loads; the generator may propose work, never satisfy the gate.

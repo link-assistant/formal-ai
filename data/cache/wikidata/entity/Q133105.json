@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "腿"
+        },
+        "es": {
+          "language": "es",
+          "value": "pierna"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "часть тела - нога, не включая тазобедренный сустав"
+        },
+        "es": {
+          "language": "es",
+          "value": "extremidad o apéndice del cuerpo de un animal que sostiene el resto del cuerpo"
         }
       },
       "aliases": {
@@ -94,6 +102,32 @@
           {
             "language": "zh",
             "value": "小腿"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "miembro inferior"
+          },
+          {
+            "language": "es",
+            "value": "miembro inferior humano"
+          },
+          {
+            "language": "es",
+            "value": "miembros inferiores"
+          },
+          {
+            "language": "es",
+            "value": "extremidad posterior"
+          },
+          {
+            "language": "es",
+            "value": "pata"
+          },
+          {
+            "language": "es",
+            "value": "extremidad inferior"
           }
         ]
       }

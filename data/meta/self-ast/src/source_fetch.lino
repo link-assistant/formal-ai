@@ -2,51 +2,54 @@ self_ast_census
   target src/source_fetch.rs
   language rust
   fidelity signature
-  byte_len 18965
-  line_count 550
-  content_id source_module_a04261700cd2d49f
-  symbol_count 43
+  byte_len 20405
+  line_count 586
+  content_id source_module_6378945beec2424a
+  symbol_count 46
   symbols
-    const CACHE_FORMAT_VERSION 21 21
-    const LEGACY_CACHE_FORMAT_VERSION 22 22
-    const DEFAULT_TTL_SECONDS 23 23
-    static TEMP_FILE_ID 24 24
-    const USER_AGENT 25 29
-    trait SourceTransport 32 34
-    function get 33 33
-    const STATUS_TEMPLATE 43 43
-    function http_status 46 55
-    struct CurlSourceTransport 59 59
-    function get 62 110
-    enum FetchError 115 134
-    function speaks_for_the_service 143 151
-    function fmt 155 165
-    struct SourceCapture 172 178
-    function source_url 182 184
-    function fetched_at 187 189
-    function sha256 192 194
-    function cached 197 199
-    function bytes 202 204
-    function trace_payload 207 218
-    function record 221 226
-    struct CachedSourceClient 231 237
-    function new 241 249
-    function with_online 252 255
-    function with_clock 258 261
-    function with_ttl_seconds 264 267
-    function fetch 269 298
-    function fetch_with_reconstruction 316 367
-    function paths 369 374
-    function validate_url 377 391
-    function read_capture 393 446
-    function field 448 461
-    function write_capture 463 488
-    function content_path 490 492
-    function is_sha256_hex 494 499
-    function unique_temp_path 501 508
-    function cache_error 510 512
-    function cache_diagnostic 514 516
-    function sha256_hex 519 521
-    function hex_lower 533 539
-    function unix_now 541 545
-    function format_timestamp 547 550
+    module seed_captures 18 18
+    const CACHE_FORMAT_VERSION 23 23
+    const LEGACY_CACHE_FORMAT_VERSION 24 24
+    const DEFAULT_TTL_SECONDS 25 25
+    static TEMP_FILE_ID 26 26
+    const USER_AGENT 27 31
+    trait SourceTransport 34 36
+    function get 35 35
+    const STATUS_TEMPLATE 45 45
+    function http_status 48 57
+    struct CurlSourceTransport 61 61
+    function get 64 112
+    enum FetchError 117 136
+    function speaks_for_the_service 145 153
+    function fmt 157 172
+    struct SourceCapture 179 185
+    function from_seed_registry 192 194
+    function source_url 197 199
+    function fetched_at 202 204
+    function sha256 207 209
+    function cached 212 214
+    function bytes 217 219
+    function trace_payload 222 233
+    function replayed 239 244
+    function record 247 252
+    struct CachedSourceClient 257 263
+    function new 267 275
+    function with_online 278 281
+    function with_clock 284 287
+    function with_ttl_seconds 290 293
+    function fetch 295 334
+    function fetch_with_reconstruction 352 403
+    function paths 405 410
+    function validate_url 413 427
+    function read_capture 429 482
+    function field 484 497
+    function write_capture 499 524
+    function content_path 526 528
+    function is_sha256_hex 530 535
+    function unique_temp_path 537 544
+    function cache_error 546 548
+    function cache_diagnostic 550 552
+    function sha256_hex 555 557
+    function hex_lower 569 575
+    function unix_now 577 581
+    function format_timestamp 583 586

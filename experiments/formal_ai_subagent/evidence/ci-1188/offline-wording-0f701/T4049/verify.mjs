@@ -1,0 +1,7 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import {spawnSync,execFileSync}from'node:child_process';
+const p='/private/tmp/pr1188-ci-T4049',r=JSON.parse(fs.readFileSync('/private/tmp/pr1188-ci-T4047/request.json'));
+for(const i of r.changes)assert.equal(fs.readFileSync(i.path,'utf8').replace(/\s+/gu,''),i.content.replace(/\s+/gu,''));
+const test='rust/tests/web/source-walk-offline-policy.test.mjs';assert.ok(fs.readFileSync(test,'utf8').startsWith(execFileSync('git',['show','HEAD:'+test],{encoding:'utf8'})),'Every original assertion and operation exact');
+const checks=[['literal',process.execPath,['scripts/check-js-literals.mjs','--list']],['closest',process.execPath,['--test',test,'rust/tests/web/source-network-workers.test.mjs','rust/tests/web/fetch-work-item-observations.test.mjs','rust/tests/web/source-qualified-definition.test.mjs']],['debt',process.execPath,['scripts/check-debt-ratchet.mjs','--base','d209aac6461b355f1a527831202af3423135f7e6']],['format','rustfmt',['--check','--edition','2024','--config','skip_children=true','rust/src/source_fetch.rs']],['whitespace','git',['diff','--check','--',...r.changes.map(i=>i.path),test]]];
+for(const[name,prog,args]of checks){let c=spawnSync(prog,args,{encoding:'utf8',timeout:45000,maxBuffer:12e6});fs.writeFileSync(p+'/'+name+'.log',(c.stdout??'')+(c.stderr??''));assert.equal(c.status,0,name+':'+c.error);}
+console.log('PR1188_OFFLINE_DIAGNOSTIC_VERIFIED');

@@ -1,0 +1,87 @@
+>> read {"filePath":"data/meta/ci-speed.lino","file_path":"data/meta/ci-speed.lino","path":"data/meta/ci-speed.lino"}
+   <file>
+   00001| # The CI speed rule (PR #1188), enforced by `scripts/check-ci-speed.mjs`
+   00002| # (`data/meta/ci-gates/check-ci-speed.lino`). Documented in docs/ci-cd/speed.md.
+   00003| #
+   00004| # - No job or step runs longer than limit-minutes; target-minutes is the aim.
+   00005| #   Every job declares a timeout-minutes at or under the limit, and no job's
+   00006| #   measured maximum in data/meta/ci-durations.lino is above it.
+   00007| # - Long work starts first. A job whose measured median is at or above
+   00008| #   long-job-minutes waits only on jobs whose outputs, results or artifacts it
+   00009| #   uses; test shards are planned longest-first by shard-planner from recorded
+   00010| #   durations, and every sharded-suite runs through it.
+   00011| # - Sharding loses nothing: the plan puts every listed test in exactly one shard.
+   00012| #
+   00013| # A job that cannot meet the limit yet is an over-limit-job under its workflow,
+   00014| # with the cap it may keep and the reason. The list only shrinks: an entry whose
+   00015| # job meets the limit again, or no longer exists, fails the gate until removed.
+   00016| ci-speed
+   00017|   issue 1188
+   00018|   limit-minutes 30
+   00019|   target-minutes 15
+   00020|   long-job-minutes 10
+   00021|   durations "data/meta/ci-durations.lino"
+   00022|   test-durations "data/meta/test-durations.lino"
+   00023|   javascript-test-durations "data/meta/javascript-test-durations.lino"
+   00024|   playwright-test-durations "data/meta/playwright-test-durations.lino"
+   00025|   shard-planner "scripts/plan-test-shards.mjs"
+   00026|   sharded-suite "scripts/run-prebuilt-tests.sh"
+   00027|   sharded-suite "scripts/run-coverage-shard.sh"
+   00028|   sharded-suite ".github/workflows/release.yml"
+   00029|   sharded-suite ".github/workflows/layered-ci.yml"
+   00030|   sharded-suite ".github/workflows/e2e-local.yml"
+   00031|   workflow ".github/workflows/container-images.yml"
+   00032|     over-limit-job build
+   00033|       timeout-minutes 90
+   00034|       reason "Dispatch and workflow_call only, never on a pull request: one multi-architecture image build per Dockerfile, arm64 under emulation, with a 45-minute build step. To meet 30: build each architecture on its own native runner."
+   00035|   workflow ".github/workflows/coverage.yml"
+   00036|     over-limit-job coverage-build
+   00037|       timeout-minutes 40
+   00038|       reason "One instrumented build of every test target, measured 20.5 minutes at most (median 18.1); its 1500s budget needs the 40-minute cap under the 70% share rule (issue #1081). To meet 30: build the unit, integration and source harnesses in parallel jobs."
+   00039|   workflow ".github/workflows/dependencies-latest.yml"
+   00040|     over-limit-job update
+   00041|       timeout-minutes 90
+   00042|       reason "Weekly schedule and dispatch only: updates every dependency, then builds and tests the whole crate in one job."
+   00043|   workflow ".github/workflows/desktop-release.yml"
+   00044|     over-limit-job build
+   00045|       timeout-minutes 50
+   00046|       reason "Measured 41.3 minutes at most (macos-x64; windows-arm64 37.6): one release build plus Electron packaging per operating system, which one machine has to do. Pull requests run it only when desktop, vscode or Rust sources change. To meet 30: package a release binary built once per target."
+   00047|     over-limit-job cli
+   00048|       timeout-minutes 50
+   00049|       reason "Measured 34.4 minutes at most (cli-macos-x64): one cold release build per target on the slowest runner. To meet 30: share the release build with the desktop job for the same target."
+   00050|   workflow ".github/workflows/external-benchmarks.yml"
+   00051|     over-limit-job external-benchmarks
+   00052|       timeout-minutes 90
+   00053|       reason "Schedule and dispatch only (skipped on pull requests, which run the ratchet): runs the upstream suites, 21.2 minutes at most on main. To meet 30: run the sharded upstream-shard path on schedule too."
+   00054|     over-limit-job upstream-shard
+   00055|       timeout-minutes 45
+   00056|       reason "Dispatch with a shard size only: one window of the upstream suites. To meet 30: size the windows from measured durations."
+   00057|   workflow ".github/workflows/issue-1028-agent-ladder.yml"
+   00058|     over-limit-job ladder
+   00059|       timeout-minutes 180
+   00060|       reason "Pull-request legs measured 19.0 minutes at most; the static 180 bounds the weekly all mode, one leg walking every tree level in sequence, and is the ceiling data/meta/ci-wall-clock.lino records (R1085-16). To meet 30: plan the all mode as parallel per-level legs."
+   00061|   workflow ".github/workflows/macos-core-tests.yml"
+   00062|     over-limit-job build-archive
+   00063|       timeout-minutes 55
+   00064|       reason "Switched off while non-Linux CI is off (issue #1111): a cold build of the macOS test archive. To meet 30: build the archive from a shared compiler cache on the Linux build job's schedule."
+   00065|   workflow ".github/workflows/release.yml"
+   00066|     over-limit-job auto-release
+   00067|       timeout-minutes 90
+   00068|       reason "Push to main only: builds and publishes the Docker images and the GitHub release in one job; issue #977 requires at least 60 minutes, because at 30 the job was killed mid-build before the release step."
+   00069|     over-limit-job manual-release
+   00070|       timeout-minutes 90
+   00071|       reason "Dispatch only: the auto-release job's work on demand, under the same issue #977 floor of 60 minutes."
+   00072| 
+   
+   (End of file - total 72 lines)
+   </file>
+>> edit {"filePath":"data/meta/ci-speed.lino","file_path":"data/meta/ci-speed.lino","new":"    over-limit-job ladder\n      timeout-minutes 135\n      reason \"The weekly all corpus is now 31 parallel primary legs (16 leaf pairs and 15 requirement nodes), followed by 16 artifact-fed single-composite legs. Existing leaf-pair measurements max19.0 minutes; cold all-mode requirement timings remain unmeasured. Keep this generous primary backstop until every new leg is actually below30; plan30 + primary135 + leaf-join15 + composites30 + compare15 preserves the225-minute static DAG ceiling.\"","newString":"    over-limit-job ladder\n      timeout-minutes 135\n      reason \"The weekly all corpus is now 31 parallel primary legs (16 leaf pairs and 15 requirement nodes), followed by 16 artifact-fed single-composite legs. Existing leaf-pair measurements max19.0 minutes; cold all-mode requirement timings remain unmeasured. Keep this generous primary backstop until every new leg is actually below30; plan30 + primary135 + leaf-join15 + composites30 + compare15 preserves the225-minute static DAG ceiling.\"","new_str":"    over-limit-job ladder\n      timeout-minutes 135\n      reason \"The weekly all corpus is now 31 parallel primary legs (16 leaf pairs and 15 requirement nodes), followed by 16 artifact-fed single-composite legs. Existing leaf-pair measurements max19.0 minutes; cold all-mode requirement timings remain unmeasured. Keep this generous primary backstop until every new leg is actually below30; plan30 + primary135 + leaf-join15 + composites30 + compare15 preserves the225-minute static DAG ceiling.\"","new_string":"    over-limit-job ladder\n      timeout-minutes 135\n      reason \"The weekly all corpus is now 31 parallel primary legs (16 leaf pairs and 15 requirement nodes), followed by 16 artifact-fed single-composite legs. Existing leaf-pair measurements max19.0 minutes; cold all-mode requirement timings remain unmeasured. Keep this generous primary backstop until every new leg is actually below30; plan30 + primary135 + leaf-join15 + composites30 + compare15 preserves the225-minute static DAG ceiling.\"","old":"    over-limit-job ladder\n      timeout-minutes 180\n      reason \"Pull-request legs measured 19.0 minutes at most; the static 180 bounds the weekly all mode, one leg walking every tree level in sequence, and is the ceiling data/meta/ci-wall-clock.lino records (R1085-16). To meet 30: plan the all mode as parallel per-level legs.\"","oldString":"    over-limit-job ladder\n      timeout-minutes 180\n      reason \"Pull-request legs measured 19.0 minutes at most; the static 180 bounds the weekly all mode, one leg walking every tree level in sequence, and is the ceiling data/meta/ci-wall-clock.lino records (R1085-16). To meet 30: plan the all mode as parallel per-level legs.\"","old_str":"    over-limit-job ladder\n      timeout-minutes 180\n      reason \"Pull-request legs measured 19.0 minutes at most; the static 180 bounds the weekly all mode, one leg walking every tree level in sequence, and is the ceiling data/meta/ci-wall-clock.lino records (R1085-16). To meet 30: plan the all mode as parallel per-level legs.\"","old_string":"    over-limit-job ladder\n      timeout-minutes 180\n      reason \"Pull-request legs measured 19.0 minutes at most; the static 180 bounds the weekly all mode, one leg walking every tree level in sequence, and is the ceiling data/meta/ci-wall-clock.lino records (R1085-16). To meet 30: plan the all mode as parallel per-level legs.\"","path":"data/meta/ci-speed.lino"}
+>> bash {"command":"sha256sum -- data/meta/ci-speed.lino"}
+   c46568bed7eef26a6504cb0f0670b0b5eb0779bce0813be7e724e99d21bb12b0  data/meta/ci-speed.lino
+   
+== answer ==
+Replaced `    over-limit-job ladder
+      timeout-minutes 180
+      reason "Pull-request legs measured 19.0 minutes at most; the static 180 bounds the weekly all mode, one leg walking every tree level in sequence, and is the ceiling data/meta/ci-wall-clock.lino records (R1085-16). To meet 30: plan the all mode as parallel per-level legs."` with `    over-limit-job ladder
+      timeout-minutes 135
+      reason "The weekly all corpus is now 31 parallel primary legs (16 leaf pairs and 15 requirement nodes), followed by 16 artifact-fed single-composite legs. Existing leaf-pair measurements max19.0 minutes; cold all-mode requirement timings remain unmeasured. Keep this generous primary backstop until every new leg is actually below30; plan30 + primary135 + leaf-join15 + composites30 + compare15 preserves the225-minute static DAG ceiling."` in `data/meta/ci-speed.lino` and observed the result.

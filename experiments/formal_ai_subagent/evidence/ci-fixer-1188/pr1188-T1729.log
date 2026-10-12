@@ -1,0 +1,7 @@
+>> bash {"command":"test -e data/seed/shell-intents.lino"}
+>> bash {"command":"mkdir -p -- rust/embedded/data/seed"}
+>> bash {"command":"cp -f data/seed/shell-intents.lino rust/embedded/data/seed/shell-intents.lino"}
+>> bash {"command":"test -e rust/embedded/data/seed/shell-intents.lino"}
+>> bash {"command":"test -e data/seed/shell-intents.lino"}
+== answer ==
+Completed the action `cp -f data/seed/shell-intents.lino rust/embedded/data/seed/shell-intents.lino` and verified it with `test -e rust/embedded/data/seed/shell-intents.lino`, `test -e data/seed/shell-intents.lino`.

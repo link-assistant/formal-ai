@@ -1,0 +1,61 @@
+view
+  id M-8a06447d62c3
+  lemma project
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any piece of work that is undertaken or attempted"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a planned undertaking"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "communicate vividly"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "extend out or project in space"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "transfer (ideas or principles) from one domain into another"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "project on a screen"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cause to be heard"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "draw a projection of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make or work out a plan for; devise"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "present for consideration, examination, criticism, etc."
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "imagine; conceive of; see in one's mind"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put or send forth"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "throw, send, or cast forward"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "regard as objective"
+    provenance (wordnet)

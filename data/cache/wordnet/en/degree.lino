@@ -1,0 +1,45 @@
+language en
+lemma degree
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a position on a scale of intensity or amount or quality"
+    examples ("a moderate grade of intelligence" "a high level of care is required" "it is all a matter of degree")
+    id oewn-05101152-n
+    partOfSpeech n
+    synonyms (grade level)
+  entry
+    definition "a specific identifiable position in a continuum or series or especially in a process"
+    examples ("a remarkable degree of frankness" "at what stage are the social sciences?")
+    id oewn-13962925-n
+    partOfSpeech n
+    synonyms (level stage point)
+  entry
+    definition "an award conferred by a college or university signifying that the recipient has satisfactorily completed a course of study"
+    examples ("he earned his degree at Princeton summa cum laude")
+    id oewn-06710094-n
+    partOfSpeech n
+    synonyms ("academic degree")
+  entry
+    definition "a measure for arcs and angles"
+    examples ("there are 360 degrees in a circle")
+    id oewn-13632450-n
+    partOfSpeech n
+    synonyms (arcdegree)
+  entry
+    definition "the highest power of a term or variable"
+    id oewn-05869901-n
+    partOfSpeech n
+  entry
+    definition "a unit of temperature on a specified scale"
+    examples ("the game was played in spite of the 40-degree temperature")
+    id oewn-13736289-n
+    partOfSpeech n
+  entry
+    definition "the seriousness of something (e.g., a burn or crime)"
+    examples ("murder in the second degree" "a second degree burn")
+    id oewn-05101827-n
+    partOfSpeech n
+source "oewn:2024"

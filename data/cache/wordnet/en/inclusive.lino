@@ -1,0 +1,12 @@
+language en
+lemma inclusive
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "including much or everything; and especially including stated limits"
+    examples ("an inclusive art form" "an inclusive fee" "his concept of history is modern and inclusive" "from Monday to Friday inclusive")
+    id oewn-01869630-a
+    partOfSpeech a
+source "oewn:2024"

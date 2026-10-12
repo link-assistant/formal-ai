@@ -1,0 +1,41 @@
+language en
+lemma secondary
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "being of second rank or importance or value; not direct or immediate"
+    examples ("the stone will be hauled to a secondary crusher" "a secondary source" "a secondary issue" "secondary streams")
+    id oewn-01859389-a
+    partOfSpeech a
+  entry
+    definition "the defensive football players who line up behind the linemen"
+    id oewn-08446856-n
+    partOfSpeech n
+  entry
+    definition "coil such that current is induced in it by passing a current through the primary coil"
+    id oewn-04171063-n
+    partOfSpeech n
+    synonyms ("secondary coil" "secondary winding")
+  entry
+    definition "inferior in rank or status"
+    examples ("a lowly corporal" "petty officialdom")
+    id oewn-02108248-s
+    partOfSpeech s
+    synonyms (junior-grade lower-ranking lowly petty subaltern)
+  entry
+    definition "depending on or incidental to what is original or primary"
+    examples ("a secondary infection")
+    id oewn-01863896-s
+    partOfSpeech s
+  entry
+    definition "not of major importance"
+    examples ("played a secondary role in world events")
+    id oewn-01476701-s
+    partOfSpeech s
+  entry
+    definition "belonging to a lower class or rank"
+    id oewn-00797147-s
+    partOfSpeech s
+source "oewn:2024"

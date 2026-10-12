@@ -1,0 +1,10 @@
+[
+  {
+    "path": "rust/src/client_integrations.rs",
+    "sha256": "7781f69fc993eb91d6348735bd02254616a934f883d41b6e409b599af7228363"
+  },
+  {
+    "path": "rust/src/client_integrations/global_config.rs",
+    "sha256": "0f62ad674340813a9f3a391e3374048290f498f07b29ae69cf521c5b63d30961"
+  }
+]

@@ -1,0 +1,21 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-semantic-meta.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-d24f8e0d34bc8455
+    record "annotation"
+  gap seed-metadata-gap-5ce5badb13cf128c
+    record "cached_source_response"
+  gap seed-metadata-gap-ad2a9ab4d7ca4ebe
+    record "connotation"
+  gap seed-metadata-gap-32fb27ecc4f83c19
+    record "denotation"
+  gap seed-metadata-gap-ea4bcb7375296c94
+    record "external_knowledge_source"
+  gap seed-metadata-gap-f4e7277fb548575a
+    record "notation"
+  gap seed-metadata-gap-274041308b0ede24
+    record "semantic_facet"
+  gap seed-metadata-gap-48398f8a4880c0b5
+    record "semantic_gloss"

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鲨总目"
+        },
+        "es": {
+          "language": "es",
+          "value": "Selachii"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "软骨鱼纲中鲨总目鱼类的统称"
+        },
+        "es": {
+          "language": "es",
+          "value": "división de peces elasmobranquios"
         }
       },
       "aliases": {
@@ -88,6 +96,60 @@
           {
             "language": "zh",
             "value": "鲨鱼"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "tiburones"
+          },
+          {
+            "language": "es",
+            "value": "selaquimorfos"
+          },
+          {
+            "language": "es",
+            "value": "selacimorfos"
+          },
+          {
+            "language": "es",
+            "value": "escualos"
+          },
+          {
+            "language": "es",
+            "value": "jaquetones"
+          },
+          {
+            "language": "es",
+            "value": "tiburon"
+          },
+          {
+            "language": "es",
+            "value": "tiburón"
+          },
+          {
+            "language": "es",
+            "value": "Selaquimorpha"
+          },
+          {
+            "language": "es",
+            "value": "selacos"
+          },
+          {
+            "language": "es",
+            "value": "seláqueos"
+          },
+          {
+            "language": "es",
+            "value": "escualo"
+          },
+          {
+            "language": "es",
+            "value": "seláqueo"
+          },
+          {
+            "language": "es",
+            "value": "selaco"
           }
         ]
       }

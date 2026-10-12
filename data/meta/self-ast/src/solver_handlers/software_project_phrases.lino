@@ -1,0 +1,28 @@
+self_ast_census
+  target src/solver_handlers/software_project_phrases.rs
+  language rust
+  fidelity signature
+  byte_len 15172
+  line_count 366
+  content_id source_module_1c104ab56968c140
+  symbol_count 19
+  symbols
+    struct ArtifactMatch 23 26
+    function object_phrase_boundary_tokens 33 38
+    function object_phrase_lead_words 44 49
+    function object_phrase_lead_bigrams 54 59
+    function object_phrase_boundary_characters 67 73
+    function word_internal_boundary_characters 77 83
+    function sentence_end_characters 90 98
+    function trim_object_phrase 102 107
+    function skip_object_phrase_lead 111 130
+    function boundary_cut 136 155
+    function object_phrase_segments 162 188
+    function match_artifact_head 195 217
+    function match_action 221 228
+    function scan_action_from 235 253
+    function object_phrase_artifact 276 323
+    function is_start_boundary 325 333
+    function is_end_boundary 335 343
+    function is_word_character 353 355
+    function is_cjk_character 359 366

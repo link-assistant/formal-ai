@@ -1,15 +1,18 @@
 Q3342808
   aliases
     en (cocoanut coconuts "coconut fruit" "coco nut")
+    es ("coco (nuez)" "nuez de coco" "fruto del cocotero")
     ru ("кокосовый орех" "кокос (орех)")
   descriptions
     en "fruit of the coconut palm used as food and raw material"
+    es "fruto de la palmera cocotero utilizado como alimento y materia prima"
     hi "एक प्रकार का फल"
     ru "орех кокосовой пальмы"
     zh "椰子树的果实"
   id Q3342808
   labels
     en coconut
+    es coco
     hi "नारियल"
     ru "кокос"
     zh "椰子"

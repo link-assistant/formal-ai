@@ -51,6 +51,10 @@ inputs:
     description: Branch the draft pull request targets. Defaults to the checked-out branch.
     required: false
     default: ''
+  starting-ref:
+    description: Explicit checked-out branch to restore after authoring; empty preserves the event default.
+    required: false
+    default: ''
   port:
     description: Port `formal-ai serve` listens on.
     required: false
@@ -192,7 +196,7 @@ runs:
       if: always()
       shell: bash
       env:
-        STARTING_REF: ${{ github.head_ref || github.ref_name }}
+        STARTING_REF: ${{ inputs.starting-ref || github.head_ref || github.ref_name }}
       run: |
         set -euo pipefail
         current=$(git rev-parse --abbrev-ref HEAD)

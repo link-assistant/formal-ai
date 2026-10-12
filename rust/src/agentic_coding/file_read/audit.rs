@@ -41,12 +41,32 @@ pub(super) fn file_read_final_answer(
             lines.join("\n")
         }
         FileReadMode::Audit => bounded_audit_answer(files, request),
+        FileReadMode::LineSlice(slice) => files
+            .iter()
+            .map(|(path, content)| {
+                crate::agentic_coding::workspace_line_operation::sliced_lines(content, *slice)
+                    .map_or_else(
+                        || {
+                            seed::response_for("file-read-line-slice-unavailable", "en")
+                                .unwrap_or_default()
+                                .replace(concat!("{", "path", "}"), path)
+                        },
+                        |(first, last, lines)| {
+                            format!("Lines {first}-{last} of `{path}`:\n\n```text\n{lines}\n```")
+                        },
+                    )
+            })
+            .collect::<Vec<_>>()
+            .join("\n\n"),
         FileReadMode::Full => {
             if files.len() > 1 {
                 return files
                     .iter()
                     .map(|(path, content)| {
-                        format!("Contents of `{path}`:\n\n```text\n{}\n```", content.trim_end())
+                        format!(
+                            "Contents of `{path}`:\n\n```text\n{}\n```",
+                            content.trim_end()
+                        )
                     })
                     .collect::<Vec<_>>()
                     .join("\n\n");
@@ -74,8 +94,8 @@ fn bounded_audit_answer(files: &[(String, String)], request: &str) -> String {
     let language = crate::language::detect(request).slug();
     let response = |intent: &str| seed::localized_response(intent, language).unwrap_or_default();
     let mut remaining = FINDINGS_TOTAL;
-    let mut lines = vec![response("file_analysis_heading")
-        .replace("{count}", &files.len().to_string())];
+    let mut lines =
+        vec![response("file_analysis_heading").replace("{count}", &files.len().to_string())];
     for (path, content) in files {
         lines.push(format!("- `{}`", capped_text(path, PATH_CHARS)));
         let no_matches = content.trim() == "No files found";
@@ -86,8 +106,7 @@ fn bounded_audit_answer(files: &[(String, String)], request: &str) -> String {
             .filter(|line| !line.is_empty())
             .filter(|line| {
                 !no_matches
-                    && (!grep_result
-                        || (!line.starts_with("Found ") && !line.ends_with(':')))
+                    && (!grep_result || (!line.starts_with("Found ") && !line.ends_with(':')))
                     && line_contains_gap_marker(line, &markers)
             })
             .take(FINDINGS_PER_FILE.min(remaining))
@@ -106,15 +125,16 @@ fn bounded_audit_answer(files: &[(String, String)], request: &str) -> String {
 
 fn line_contains_gap_marker(line: &str, markers: &[String]) -> bool {
     let normalized = line.to_lowercase();
-    contains_unchecked_box(line)
-        || markers.iter().any(|surface| normalized.contains(surface))
+    contains_unchecked_box(line) || markers.iter().any(|surface| normalized.contains(surface))
 }
 
 fn contains_unchecked_box(line: &str) -> bool {
     line.match_indices('[').any(|(start, _)| {
-        line[start + 1..]
-            .find(']')
-            .is_some_and(|end| line[start + 1..start + 1 + end].chars().all(char::is_whitespace))
+        line[start + 1..].find(']').is_some_and(|end| {
+            line[start + 1..start + 1 + end]
+                .chars()
+                .all(char::is_whitespace)
+        })
     })
 }
 

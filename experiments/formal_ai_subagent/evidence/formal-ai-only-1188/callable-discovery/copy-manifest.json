@@ -1,0 +1,306 @@
+{
+  "id": "T2326",
+  "purpose": "Neutral immutable copies; no implementation synthesis",
+  "copies": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2311-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2311-request.json",
+      "sha256": "16fdf720f17cdd7cc84eb42804ca27316915d38a51e17bae403f0121e4779008",
+      "bytes": 2106
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2311-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2311-transcript.json",
+      "sha256": "3b014bf5cdace6990bd4829aabd52f6a9f072340a41950f90d687c41289167ef",
+      "bytes": 62
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2311-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2311-transcript.log",
+      "sha256": "3b014bf5cdace6990bd4829aabd52f6a9f072340a41950f90d687c41289167ef",
+      "bytes": 62
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2312-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2312-request.json",
+      "sha256": "015726292b40a45fcaeaa67282987f1d70768d6e9f181d51b769efbff34362da",
+      "bytes": 239577
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2312-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2312-transcript.json",
+      "sha256": "c885e8f7b0fe76c9eae676fa397523ba46f36f168a2f7ab2223ee055437b44a2",
+      "bytes": 647
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2312-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2312-transcript.log",
+      "sha256": "c885e8f7b0fe76c9eae676fa397523ba46f36f168a2f7ab2223ee055437b44a2",
+      "bytes": 647
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2313-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2313-request.json",
+      "sha256": "7cc0919679a8875c1aede3df376e3fca1d34617c7548a3bda7858b92dd3aceec",
+      "bytes": 1436
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2313-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2313-transcript.json",
+      "sha256": "b6cedcbbd3be5451280f9bce09175159848377c82f3136f5cdd45ad92e62d44a",
+      "bytes": 45699
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2313-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2313-transcript.log",
+      "sha256": "b6cedcbbd3be5451280f9bce09175159848377c82f3136f5cdd45ad92e62d44a",
+      "bytes": 45699
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2314-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2314-request.json",
+      "sha256": "32cf448022cf367d07a2435cfbde2987f605855c099a355db95fb45dc1948721",
+      "bytes": 116656
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2314-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2314-transcript.json",
+      "sha256": "6081f3669bb06c166dcd0e78026a129a524029c6b36f9fa8ccfb5fc55635efbd",
+      "bytes": 647
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2314-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2314-transcript.log",
+      "sha256": "6081f3669bb06c166dcd0e78026a129a524029c6b36f9fa8ccfb5fc55635efbd",
+      "bytes": 647
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2315-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2315-request.json",
+      "sha256": "ce8a44a70ad41e2e20e7d621ec070420761725e790d92db00c5c6e4898cbbc70",
+      "bytes": 1436
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2315-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2315-transcript.json",
+      "sha256": "25e1cd6933be756dd7245bcf9a8fbfb41f4256d1f38de88018f37b720f4013f2",
+      "bytes": 45618
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2315-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2315-transcript.log",
+      "sha256": "25e1cd6933be756dd7245bcf9a8fbfb41f4256d1f38de88018f37b720f4013f2",
+      "bytes": 45618
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2316-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2316-request.json",
+      "sha256": "075f0186cfc3325f7ac44866c1ad8e4d5b6a988f1be1373deee57241a82f0371",
+      "bytes": 315520
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2316-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2316-transcript.json",
+      "sha256": "5e24fd65ff6c27976ebe59d8d15564bd5c0e02abd4cc22b87d4bba260ac9c4e1",
+      "bytes": 528
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2316-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2316-transcript.log",
+      "sha256": "5e24fd65ff6c27976ebe59d8d15564bd5c0e02abd4cc22b87d4bba260ac9c4e1",
+      "bytes": 528
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2317-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2317-request.json",
+      "sha256": "05ec6af4600eeedfcad84c9669ef5af3c79a6ce25429811a6997d84799fb4a7f",
+      "bytes": 1511
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2317-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2317-transcript.json",
+      "sha256": "e704e74284874a10935fa6e994fdc39eeb423b9dd84cbb2f113b0c513d88365a",
+      "bytes": 45618
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2317-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2317-transcript.log",
+      "sha256": "e704e74284874a10935fa6e994fdc39eeb423b9dd84cbb2f113b0c513d88365a",
+      "bytes": 45618
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2318-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2318-request.json",
+      "sha256": "a31a9b05dc7008885d038340fd9217e62347ccf0120d2085719204c0d2cc7001",
+      "bytes": 1596
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2318-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2318-transcript.json",
+      "sha256": "541f2b442395898a29429f2902121272e8266fca430325739a47c1c5cd327fdd",
+      "bytes": 45672
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2318-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2318-transcript.log",
+      "sha256": "541f2b442395898a29429f2902121272e8266fca430325739a47c1c5cd327fdd",
+      "bytes": 45672
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2319-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2319-request.json",
+      "sha256": "f64ef3fb701e5573ee9ed950ccfb1df9d1cbaa3d2395a1b98a5f2802caa08187",
+      "bytes": 1597
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2319-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2319-transcript.json",
+      "sha256": "7d0ff9d5feb498dfbdc699cea5fea9f27ff21a7540ed04ab35df23cc872e8ad1",
+      "bytes": 45622
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2319-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2319-transcript.log",
+      "sha256": "7d0ff9d5feb498dfbdc699cea5fea9f27ff21a7540ed04ab35df23cc872e8ad1",
+      "bytes": 45622
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2320-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2320-request.json",
+      "sha256": "80b9a93dcf83c7a4158b895a1952fd94d6ca653e5eee8867bbe1ebf9c59b69a8",
+      "bytes": 1489
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2320-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2320-transcript.json",
+      "sha256": "3b014bf5cdace6990bd4829aabd52f6a9f072340a41950f90d687c41289167ef",
+      "bytes": 62
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2320-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2320-transcript.log",
+      "sha256": "3b014bf5cdace6990bd4829aabd52f6a9f072340a41950f90d687c41289167ef",
+      "bytes": 62
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2321-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2321-request.json",
+      "sha256": "9b18e198733f5c7c828cd5b15d014c4a618d50bbdcc20641c0f8923f2cd159f9",
+      "bytes": 191
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2321-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2321-transcript.json",
+      "sha256": "497c0aab21ed79c6854f7c79da745680aa8c9cb3cbc8ac2bf4f3e6c8b3b88dd2",
+      "bytes": 38307
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2321-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2321-transcript.log",
+      "sha256": "497c0aab21ed79c6854f7c79da745680aa8c9cb3cbc8ac2bf4f3e6c8b3b88dd2",
+      "bytes": 38307
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2322-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2322-request.json",
+      "sha256": "fb4ec81368dbed1c9db8d8669d0ab562f560aa945b6968881b9fdce9985bee86",
+      "bytes": 91234
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2322-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2322-transcript.json",
+      "sha256": "abb3bda8bb0230627d564e1bede1c619938a20a66f1925cf38dba24d65c3857e",
+      "bytes": 528
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2322-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2322-transcript.log",
+      "sha256": "abb3bda8bb0230627d564e1bede1c619938a20a66f1925cf38dba24d65c3857e",
+      "bytes": 528
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2323-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2323-request.json",
+      "sha256": "2714fa814b89dfdddd83a8e6c09b7de4385d8598852d660181f94e283a3ecb77",
+      "bytes": 214
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2323-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2323-transcript.json",
+      "sha256": "d676330d5e1d8aa99817f772834dde950612eb96aae1ddacff38ab057cbe0f84",
+      "bytes": 24401
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2323-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2323-transcript.log",
+      "sha256": "d676330d5e1d8aa99817f772834dde950612eb96aae1ddacff38ab057cbe0f84",
+      "bytes": 24401
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2324-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2324-request.json",
+      "sha256": "1baa0e8ebf12e57cb9081663190a762950cdcae45f23d40f2b6371fa7a8b1b7f",
+      "bytes": 1436
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2324-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2324-transcript.json",
+      "sha256": "e704e74284874a10935fa6e994fdc39eeb423b9dd84cbb2f113b0c513d88365a",
+      "bytes": 45618
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2324-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2324-transcript.log",
+      "sha256": "e704e74284874a10935fa6e994fdc39eeb423b9dd84cbb2f113b0c513d88365a",
+      "bytes": 45618
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2325-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2325-request.json",
+      "sha256": "79c8fc757fcc33c1df48281b68082cc8db3af5baa79fe5ac22a950275deffe39",
+      "bytes": 6757
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2325-transcript.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2325-transcript.json",
+      "sha256": "32a3c64cbfb40e6c1dac1276a2f0a9a252fb76667bae61a1ea43dc2aab38464b",
+      "bytes": 579
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2325-transcript.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2325-transcript.log",
+      "sha256": "32a3c64cbfb40e6c1dac1276a2f0a9a252fb76667bae61a1ea43dc2aab38464b",
+      "bytes": 579
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2316-closest.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2316-closest.log",
+      "sha256": "44147c6366e9dda28b953fa87ddb5d3688adbd0a6774b063f152f73be7c34960",
+      "bytes": 4101
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2322-closest.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2322-closest.log",
+      "sha256": "27e919b400d78500bd146cf63687d6410062094608b1398b550837db79aa1c7c",
+      "bytes": 4300
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2316-arithmetic-regression.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2316-arithmetic-regression.log",
+      "sha256": "89e598794a3fcf94781839fd8e8e9e27c3d3661ddf71eb15390c534f5e618939",
+      "bytes": 23157
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2315-original-acceptance.log",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T2315-original-acceptance.log",
+      "sha256": "9f4797c9e5aac30bc86d0d62dc1b9516006316c1d5d31fc3b6196633db1e291b",
+      "bytes": 9318
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T1804-request.json",
+      "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-discovery/T1804-request.json",
+      "sha256": "a891527774cad61ef511e0bef42efd3d7f9910d323051f89470f70f3555dcdb5",
+      "bytes": 39208
+    }
+  ]
+}

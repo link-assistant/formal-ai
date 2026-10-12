@@ -1,0 +1,14 @@
+{
+  "id": "T2394",
+  "label": "L28",
+  "node": "2.2.1.2.2",
+  "path": "rust/src/client_integrations.rs",
+  "prompt": "Atomic task L28: In the file rust/src/client_integrations.rs, rename the constant EMPTY_BACKUP_SENTINEL to EMPTY_CONFIG_BACKUP_SENTINEL. Change only that file and keep it valid Rust.\n\nThis is recursive binary-tree node 2.2.1.2.2 at depth 5. Solve only this node's task in this fresh temporary repository. Its harness-evaluated completion criterion is: tracked_source_change. Apply the change to the tracked file `rust/src/client_integrations.rs` itself -- the file has to end up modified in the Git worktree, and nothing else may change. Then create `agent-ladder-effects/node-2.2.1.2.2.lino` with these exact field lines: `node_path=2.2.1.2.2`, `node_depth=5`, `node_kind=leaf`, and `result=` followed by at least four words that state the change you made and that contain the exact text EMPTY_CONFIG_BACKUP_SENTINEL. Leave supporting evidence in .agent-ladder/node-2.2.1.2.2-proof.md. The first line must be exactly node_path=2.2.1.2.2 and the body must state the concrete result. The harness rejects proof without the separate Git effect. Use web research when it materially improves factual accuracy. Do not claim success without evidence.\n",
+  "dir": "/private/tmp/formal-ai-only-1188/L28-selected-bjjL77",
+  "sha256": "70fa1e7df98a0da014f1a2f9fc9b69e32791c6d44396e2d38fda943341c7a65f",
+  "bytes": 29470,
+  "originalStream": "/private/tmp/pr1188-ladder-disabled-all-leaves-4a560/2.2.1.2.2/agent-stream.jsonl",
+  "sourceCommit": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "steps": 16,
+  "sourcePreimage": "70fa1e7df98a0da014f1a2f9fc9b69e32791c6d44396e2d38fda943341c7a65f"
+}

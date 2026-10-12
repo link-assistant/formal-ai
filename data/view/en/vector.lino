@@ -1,0 +1,21 @@
+view
+  id M-58814d0fa0af
+  lemma vector
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a variable quantity that can be resolved into components"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a straight line segment whose length is magnitude and whose orientation in space is direction"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any agent (person or animal or microorganism) that carries and transmits a disease"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(genetics) a virus or other agent that is used to deliver DNA to a cell"
+    provenance (wordnet)

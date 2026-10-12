@@ -1,0 +1,220 @@
+{
+  "lemma": "pack",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13797293-n",
+      "partOfSpeech": "n",
+      "definition": "a large indefinite quantity",
+      "examples": [
+        "a battalion of ants",
+        "a multitude of TV antennas",
+        "a plurality of religions"
+      ],
+      "synonyms": [
+        "battalion",
+        "large number",
+        "multitude",
+        "plurality"
+      ]
+    },
+    {
+      "id": "oewn-07973040-n",
+      "partOfSpeech": "n",
+      "definition": "a complete collection of similar things"
+    },
+    {
+      "id": "oewn-03876224-n",
+      "partOfSpeech": "n",
+      "definition": "a convenient package or parcel (as of cigarettes or film)"
+    },
+    {
+      "id": "oewn-08260983-n",
+      "partOfSpeech": "n",
+      "definition": "an association of criminals",
+      "examples": [
+        "police tried to break up the gang",
+        "a pack of thieves"
+      ],
+      "synonyms": [
+        "gang",
+        "ring",
+        "mob"
+      ]
+    },
+    {
+      "id": "oewn-08257554-n",
+      "partOfSpeech": "n",
+      "definition": "an exclusive circle of people with a common purpose",
+      "synonyms": [
+        "clique",
+        "coterie",
+        "ingroup",
+        "inner circle",
+        "camp"
+      ]
+    },
+    {
+      "id": "oewn-08011383-n",
+      "partOfSpeech": "n",
+      "definition": "a group of hunting animals"
+    },
+    {
+      "id": "oewn-03876658-n",
+      "partOfSpeech": "n",
+      "definition": "a cream that cleanses and tones the skin",
+      "synonyms": [
+        "face pack"
+      ]
+    },
+    {
+      "id": "oewn-03876500-n",
+      "partOfSpeech": "n",
+      "definition": "a sheet or blanket (either dry or wet) to wrap around the body for its therapeutic effect"
+    },
+    {
+      "id": "oewn-03876350-n",
+      "partOfSpeech": "n",
+      "definition": "a bundle (especially one carried on the back)"
+    },
+    {
+      "id": "oewn-01485079-v",
+      "partOfSpeech": "v",
+      "definition": "arrange in a container",
+      "examples": [
+        "pack the books into the boxes"
+      ]
+    },
+    {
+      "id": "oewn-02091230-v",
+      "partOfSpeech": "v",
+      "definition": "fill to capacity",
+      "examples": [
+        "This singer always packs the concert halls",
+        "The murder trial packed the court house"
+      ]
+    },
+    {
+      "id": "oewn-01486416-v",
+      "partOfSpeech": "v",
+      "definition": "compress into a wad",
+      "examples": [
+        "wad paper into the box"
+      ],
+      "synonyms": [
+        "bundle",
+        "wad",
+        "compact"
+      ]
+    },
+    {
+      "id": "oewn-01453787-v",
+      "partOfSpeech": "v",
+      "definition": "carry, as on one's back",
+      "examples": [
+        "Pack your tents to the top of the mountain"
+      ]
+    },
+    {
+      "id": "oewn-02401678-v",
+      "partOfSpeech": "v",
+      "definition": "set up a committee or legislative body with one's own supporters so as to influence the outcome",
+      "examples": [
+        "pack a jury"
+      ]
+    },
+    {
+      "id": "oewn-02722977-v",
+      "partOfSpeech": "v",
+      "definition": "have with oneself; have on one's person",
+      "examples": [
+        "She always takes an umbrella",
+        "I always carry money",
+        "She packs a gun when she goes into the mountains"
+      ],
+      "synonyms": [
+        "carry",
+        "take"
+      ]
+    },
+    {
+      "id": "oewn-02068059-v",
+      "partOfSpeech": "v",
+      "definition": "press tightly together or cram",
+      "examples": [
+        "The crowd packed the auditorium"
+      ],
+      "synonyms": [
+        "throng",
+        "mob",
+        "pile",
+        "jam"
+      ]
+    },
+    {
+      "id": "oewn-01929984-v",
+      "partOfSpeech": "v",
+      "definition": "hike with a backpack",
+      "examples": [
+        "Every summer they are backpacking in the Rockies"
+      ],
+      "synonyms": [
+        "backpack"
+      ]
+    },
+    {
+      "id": "oewn-01577402-v",
+      "partOfSpeech": "v",
+      "definition": "press down tightly",
+      "examples": [
+        "tamp the coffee grinds in the container to make espresso"
+      ],
+      "synonyms": [
+        "tamp down",
+        "tamp"
+      ]
+    },
+    {
+      "id": "oewn-01487510-v",
+      "partOfSpeech": "v",
+      "definition": "seal with packing",
+      "examples": [
+        "pack the faucet"
+      ]
+    },
+    {
+      "id": "oewn-01486664-v",
+      "partOfSpeech": "v",
+      "definition": "have the property of being packable or of compacting easily",
+      "examples": [
+        "This powder compacts easily",
+        "Such odd-shaped items do not pack well"
+      ],
+      "synonyms": [
+        "compact"
+      ]
+    },
+    {
+      "id": "oewn-01485761-v",
+      "partOfSpeech": "v",
+      "definition": "load with a pack",
+      "synonyms": [
+        "load down"
+      ]
+    },
+    {
+      "id": "oewn-00108713-v",
+      "partOfSpeech": "v",
+      "definition": "treat the body or any part of it by wrapping it, as with blankets or sheets, and applying compresses to it, or stuffing it to provide cover, containment, or therapy, or to absorb blood",
+      "examples": [
+        "The nurse packed gauze in the wound",
+        "You had better pack your swollen ankle with ice"
+      ]
+    }
+  ]
+}

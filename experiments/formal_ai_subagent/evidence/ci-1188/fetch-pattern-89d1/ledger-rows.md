@@ -1,0 +1,2 @@
+| T4039 | Refine Rust prefix pattern to an explicit str reference through Formal AI. | PASS: one guarded expression write, identical predicate semantics. | Fixed: scoped native type precaution; no source operations or assertions changed. |
+| T4040 | Verify exact predicate refinement, standalone fmt and archive original record through Formal AI. | PASS: prior91/91 unchanged controls preserved; fmt and whitespace pass. | Fixed: explicit str precondition retained; native CI pending. |

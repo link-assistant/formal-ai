@@ -1,0 +1,15 @@
+{
+  "identifier": "T1464",
+  "prompt": "Run node scripts/generate-worker-crate-modules.mjs --write",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node scripts/generate-worker-crate-modules.mjs --write\"}",
+        "result": "34 worker crate files, 1 rewritten.\n"
+      }
+    ],
+    "answer": "The `node scripts/generate-worker-crate-modules.mjs --write` command completed. Output:\n\n```text\n34 worker crate files, 1 rewritten.\n```",
+    "stop": "final"
+  }
+}

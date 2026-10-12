@@ -830,3 +830,6 @@ fn grammar_projection_no_form_refuses_by_name() {
         }
     }
 }
+
+#[path = "../fixtures/import-attribute-dispositions.rs"]
+mod import_attribute_dispositions;

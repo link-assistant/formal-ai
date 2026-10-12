@@ -1,0 +1,5 @@
+>> bash {"command":"rustfmt --edition 2024 --config skip_children=true rust/src/solver_handlers/conversation_memory/mod.rs rust/src/solver_handlers/conversation_memory/conversation_summary.rs rust/tests/unit/capability-routing/issue_1175_claim_routing.rs"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

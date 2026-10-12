@@ -175,6 +175,10 @@ multilingual_responses
     intent http_fetch_curated_project
     language zh
     text "已请求获取 `{url}`。\n\n此 URL 与本地精选项目匹配。README 摘要：{summary}\n\n来源：[{url}]({url})"
+  response response_http_fetch_curated_project_es
+    intent http_fetch_curated_project
+    language es
+    text "Solicitud HTTP para `{url}`.\n\nEsta URL corresponde a un proyecto promovido y curado. Resumen del README (mediante la canalización formalize → summarize → deformalize): {summary}\n\nFuente: [{url}]({url})"
   response response_web_search_live_results_en
     intent web_search_live_results
     language en
@@ -191,6 +195,10 @@ multilingual_responses
     intent web_search_live_results
     language zh
     text "已执行 `{query}` 的网页搜索。捕获的提供商响应生成了 {count} 个融合结果：\n\n{results}"
+  response response_web_search_live_results_es
+    intent web_search_live_results
+    language es
+    text "Búsqueda web realizada para `{query}`. La respuesta capturada del proveedor produjo {count} resultado(s) combinado(s):\n\n{results}"
   response response_web_search_unavailable_en
     intent web_search_unavailable
     language en
@@ -207,6 +215,10 @@ multilingual_responses
     intent web_search_unavailable
     language zh
     text "`{query}` 没有可用的已捕获提供商响应。实时抓取默认关闭；请明确启用它以填充可重放的来源缓存。未执行的计划包括 DuckDuckGo、Internet Archive、Wikipedia、Wikidata、Wiktionary 和 Wikinews。"
+  response response_web_search_unavailable_es
+    intent web_search_unavailable
+    language es
+    text "No hay ninguna respuesta capturada del proveedor para `{query}`. La obtención en vivo está desactivada por defecto; actívala explícitamente para llenar la caché de fuentes reproducible. El plan no ejecutado incluye DuckDuckGo, Internet Archive, Wikipedia, Wikidata, Wiktionary y Wikinews."
   response response_search_fusion_header_en
     intent search_fusion_header
     language en
@@ -263,6 +275,10 @@ multilingual_responses
     intent agentic_action_list_desktop
     language zh
     text "我来列出桌面上的直接项目。"
+  response response_agentic_action_list_desktop_es
+    intent agentic_action_list_desktop
+    language es
+    text "Voy a listar los elementos que están directamente en tu escritorio."
   response response_agentic_action_list_home_en
     intent agentic_action_list_home
     language en
@@ -279,6 +295,10 @@ multilingual_responses
     intent agentic_action_list_home
     language zh
     text "我来列出主目录中的直接项目。"
+  response response_agentic_action_list_home_es
+    intent agentic_action_list_home
+    language es
+    text "Voy a listar los elementos que están directamente en tu carpeta personal."
   response response_agentic_action_list_current_en
     intent agentic_action_list_current
     language en
@@ -295,6 +315,10 @@ multilingual_responses
     intent agentic_action_list_current
     language zh
     text "我来列出当前目录中的直接项目。"
+  response response_agentic_action_list_current_es
+    intent agentic_action_list_current
+    language es
+    text "Voy a listar los elementos que están directamente en la carpeta actual."
   response response_agentic_action_find_desktop_en
     intent agentic_action_find_desktop
     language en
@@ -311,6 +335,10 @@ multilingual_responses
     intent agentic_action_find_desktop
     language zh
     text "我来在你的桌面上查找 {subject}。"
+  response response_agentic_action_find_desktop_es
+    intent agentic_action_find_desktop
+    language es
+    text "Voy a buscar {subject} en tu escritorio."
   response response_agentic_action_find_home_en
     intent agentic_action_find_home
     language en
@@ -327,6 +355,10 @@ multilingual_responses
     intent agentic_action_find_home
     language zh
     text "我来在你的主目录中查找 {subject}。"
+  response response_agentic_action_find_home_es
+    intent agentic_action_find_home
+    language es
+    text "Voy a buscar {subject} en tu carpeta personal."
   response response_agentic_action_find_current_en
     intent agentic_action_find_current
     language en
@@ -343,6 +375,10 @@ multilingual_responses
     intent agentic_action_find_current
     language zh
     text "我来在当前目录中查找 {subject}。"
+  response response_agentic_action_find_current_es
+    intent agentic_action_find_current
+    language es
+    text "Voy a buscar {subject} en la carpeta actual."
   response response_agentic_action_search_en
     intent agentic_action_search
     language en
@@ -359,6 +395,10 @@ multilingual_responses
     intent agentic_action_search
     language zh
     text "我来上网搜索 {target}。"
+  response response_agentic_action_search_es
+    intent agentic_action_search
+    language es
+    text "Voy a buscar {target} en la web."
   response response_agentic_action_read_en
     intent agentic_action_read
     language en
@@ -375,6 +415,10 @@ multilingual_responses
     intent agentic_action_read
     language zh
     text "我来打开 {target}，读取其中的内容。"
+  response response_agentic_action_read_es
+    intent agentic_action_read
+    language es
+    text "Voy a abrir {target} y leer lo que dice."
   response response_agentic_action_search_code_en
     intent agentic_action_search_code
     language en
@@ -391,6 +435,10 @@ multilingual_responses
     intent agentic_action_search_code
     language zh
     text "我来在代码中查找 {target}。"
+  response response_agentic_action_search_code_es
+    intent agentic_action_search_code
+    language es
+    text "Voy a buscar {target} en el código."
   response response_agentic_action_edit_en
     intent agentic_action_edit
     language en
@@ -407,6 +455,10 @@ multilingual_responses
     intent agentic_action_edit
     language zh
     text "我来更新 {target}。"
+  response response_agentic_action_edit_es
+    intent agentic_action_edit
+    language es
+    text "Voy a actualizar {target}."
   response response_agentic_action_run_en
     intent agentic_action_run
     language en
@@ -423,6 +475,10 @@ multilingual_responses
     intent agentic_action_run
     language zh
     text "我来运行一个命令来完成这个。"
+  response response_agentic_action_run_es
+    intent agentic_action_run
+    language es
+    text "Voy a ejecutar el comando solicitado para obtenerlo."
   response response_agentic_action_compile_program_en
     intent agentic_action_compile_program
     language en
@@ -479,6 +535,10 @@ multilingual_responses
     intent agentic_action_ask_user
     language zh
     text "我来问你几个简短的问题，以便把这件事做对。"
+  response response_agentic_action_ask_user_es
+    intent agentic_action_ask_user
+    language es
+    text "Voy a hacerte unas preguntas para hacerlo bien."
   response response_agentic_action_generic_en
     intent agentic_action_generic
     language en
@@ -495,198 +555,10 @@ multilingual_responses
     intent agentic_action_generic
     language zh
     text "我来采取下一步来处理这个。"
-  response response_local_search_route_local_en
-    intent local_search_route_local
-    language en
-    text "It is a local filesystem request."
-  response response_local_search_route_local_ru
-    intent local_search_route_local
-    language ru
-    text "Это запрос к локальной файловой системе."
-  response response_local_search_route_local_hi
-    intent local_search_route_local
-    language hi
-    text "यह स्थानीय फ़ाइल सिस्टम का अनुरोध है।"
-  response response_local_search_route_local_zh
-    intent local_search_route_local
-    language zh
-    text "这是本地文件系统请求。"
-  response response_local_search_found_directory_en
-    intent local_search_found_directory
-    language en
-    text "Found the folder at {path}. The search was limited to {scope}."
-  response response_local_search_found_directory_ru
-    intent local_search_found_directory
-    language ru
-    text "Папка найдена: {path}. Поиск был ограничен областью {scope}."
-  response response_local_search_found_directory_hi
-    intent local_search_found_directory
-    language hi
-    text "फ़ोल्डर {path} पर मिला। खोज {scope} तक सीमित थी।"
-  response response_local_search_found_directory_zh
-    intent local_search_found_directory
-    language zh
-    text "在 {path} 找到文件夹。搜索范围仅限于 {scope}。"
-  response response_local_search_found_file_en
-    intent local_search_found_file
-    language en
-    text "Found the file at {path}. The search was limited to {scope}."
-  response response_local_search_found_file_ru
-    intent local_search_found_file
-    language ru
-    text "Файл найден: {path}. Поиск был ограничен областью {scope}."
-  response response_local_search_found_file_hi
-    intent local_search_found_file
-    language hi
-    text "फ़ाइल {path} पर मिली। खोज {scope} तक सीमित थी।"
-  response response_local_search_found_file_zh
-    intent local_search_found_file
-    language zh
-    text "在 {path} 找到文件。搜索范围仅限于 {scope}。"
-  response response_local_search_found_path_en
-    intent local_search_found_path
-    language en
-    text "Found {path}. The search was limited to {scope}."
-  response response_local_search_found_path_ru
-    intent local_search_found_path
-    language ru
-    text "Найден путь {path}. Поиск был ограничен областью {scope}."
-  response response_local_search_found_path_hi
-    intent local_search_found_path
-    language hi
-    text "{path} मिला। खोज {scope} तक सीमित थी।"
-  response response_local_search_found_path_zh
-    intent local_search_found_path
-    language zh
-    text "找到 {path}。搜索范围仅限于 {scope}。"
-  response response_local_search_found_closest_en
-    intent local_search_found_closest
-    language en
-    text "No exact match for {requested}; the closest matching name is {actual} at {path}. The search was limited to {scope}."
-  response response_local_search_found_closest_ru
-    intent local_search_found_closest
-    language ru
-    text "Точного совпадения для {requested} нет; ближайшее имя — {actual}, путь {path}. Поиск был ограничен областью {scope}."
-  response response_local_search_found_closest_hi
-    intent local_search_found_closest
-    language hi
-    text "{requested} का सटीक मिलान नहीं मिला; निकटतम नाम {actual} है: {path}। खोज {scope} तक सीमित थी।"
-  response response_local_search_found_closest_zh
-    intent local_search_found_closest
-    language zh
-    text "没有与 {requested} 完全匹配的名称；最接近的是 {actual}，路径为 {path}。搜索范围仅限于 {scope}。"
-  response response_local_search_mismatch_requested_directory_en
-    intent local_search_mismatch_requested_directory
-    language en
-    text "No folder matched {requested}; the closest name is a non-directory path, {actual}, at {path}. The search was limited to {scope}."
-  response response_local_search_mismatch_requested_directory_ru
-    intent local_search_mismatch_requested_directory
-    language ru
-    text "Папка {requested} не найдена; ближайшее имя {actual} относится не к папке, путь {path}. Поиск был ограничен областью {scope}."
-  response response_local_search_mismatch_requested_directory_hi
-    intent local_search_mismatch_requested_directory
-    language hi
-    text "{requested} नाम का फ़ोल्डर नहीं मिला; निकटतम नाम {actual} फ़ोल्डर नहीं है: {path}। खोज {scope} तक सीमित थी।"
-  response response_local_search_mismatch_requested_directory_zh
-    intent local_search_mismatch_requested_directory
-    language zh
-    text "未找到名为 {requested} 的文件夹；最接近的名称 {actual} 不是文件夹，路径为 {path}。搜索范围仅限于 {scope}。"
-  response response_local_search_mismatch_requested_file_en
-    intent local_search_mismatch_requested_file
-    language en
-    text "No regular file matched {requested}; the closest name is a different path type, {actual}, at {path}. The search was limited to {scope}."
-  response response_local_search_mismatch_requested_file_ru
-    intent local_search_mismatch_requested_file
-    language ru
-    text "Обычный файл {requested} не найден; ближайшее имя {actual} относится к другому типу пути, путь {path}. Поиск был ограничен областью {scope}."
-  response response_local_search_mismatch_requested_file_hi
-    intent local_search_mismatch_requested_file
-    language hi
-    text "{requested} नाम की सामान्य फ़ाइल नहीं मिली; निकटतम नाम {actual} किसी अन्य पथ प्रकार का है: {path}। खोज {scope} तक सीमित थी।"
-  response response_local_search_mismatch_requested_file_zh
-    intent local_search_mismatch_requested_file
-    language zh
-    text "未找到名为 {requested} 的常规文件；最接近的名称 {actual} 属于其他路径类型，路径为 {path}。搜索范围仅限于 {scope}。"
-  response response_local_search_not_found_en
-    intent local_search_not_found
-    language en
-    text "{requested} was not found after exact, substring, and nearby-name checks within {scope}. No wider location was searched."
-  response response_local_search_not_found_ru
-    intent local_search_not_found
-    language ru
-    text "{requested} не найден после точной проверки, поиска по части имени и проверки близких имён в {scope}. За пределами этой области поиск не выполнялся."
-  response response_local_search_not_found_hi
-    intent local_search_not_found
-    language hi
-    text "{scope} में सटीक, आंशिक और निकटतम नाम की जाँच के बाद {requested} नहीं मिला। इसके बाहर खोज नहीं की गई।"
-  response response_local_search_not_found_zh
-    intent local_search_not_found
-    language zh
-    text "在 {scope} 内完成精确、子串和近似名称检查后仍未找到 {requested}。未搜索更大的范围。"
-  response response_local_search_scope_listing_en
-    intent local_search_scope_listing
-    language en
-    text "Items found directly within {scope}:\n{items}"
-  response response_local_search_scope_listing_ru
-    intent local_search_scope_listing
-    language ru
-    text "Объекты непосредственно в {scope}:\n{items}"
-  response response_local_search_scope_listing_hi
-    intent local_search_scope_listing
-    language hi
-    text "{scope} के भीतर सीधे मिले आइटम:\n{items}"
-  response response_local_search_scope_listing_zh
-    intent local_search_scope_listing
-    language zh
-    text "{scope} 内的直接项目：\n{items}"
-  response response_local_search_contents_listing_en
-    intent local_search_contents_listing
-    language en
-    text "Contents of {scope}:\n{items}"
-  response response_local_search_contents_listing_ru
-    intent local_search_contents_listing
-    language ru
-    text "Содержимое {scope}:\n{items}"
-  response response_local_search_contents_listing_hi
-    intent local_search_contents_listing
-    language hi
-    text "{scope} की सामग्री:\n{items}"
-  response response_local_search_contents_listing_zh
-    intent local_search_contents_listing
-    language zh
-    text "{scope} 的内容：\n{items}"
-  response response_local_search_type_directory_en
-    intent local_search_type_directory
-    language en
-    text "{path} is a folder. It was verified within {scope}."
-  response response_local_search_type_directory_ru
-    intent local_search_type_directory
-    language ru
-    text "{path} — это папка. Тип проверен в области {scope}."
-  response response_local_search_type_directory_hi
-    intent local_search_type_directory
-    language hi
-    text "{path} एक फ़ोल्डर है। प्रकार {scope} में सत्यापित किया गया।"
-  response response_local_search_type_directory_zh
-    intent local_search_type_directory
-    language zh
-    text "{path} 是文件夹。已在 {scope} 范围内验证类型。"
-  response response_local_search_type_file_en
-    intent local_search_type_file
-    language en
-    text "{path} is a file. It was verified within {scope}."
-  response response_local_search_type_file_ru
-    intent local_search_type_file
-    language ru
-    text "{path} — это файл. Тип проверен в области {scope}."
-  response response_local_search_type_file_hi
-    intent local_search_type_file
-    language hi
-    text "{path} एक फ़ाइल है। प्रकार {scope} में सत्यापित किया गया।"
-  response response_local_search_type_file_zh
-    intent local_search_type_file
-    language zh
-    text "{path} 是文件。已在 {scope} 范围内验证类型。"
+  response response_agentic_action_generic_es
+    intent agentic_action_generic
+    language es
+    text "Voy a dar el siguiente paso para resolverlo."
   response response_definition_followup_clarify_en
     intent definition_followup_clarify
     language en
@@ -703,6 +575,10 @@ multilingual_responses
     intent definition_followup_clarify
     language zh
     text "这里的“这”具体指什么？"
+  response response_definition_followup_clarify_es
+    intent definition_followup_clarify
+    language es
+    text "¿A qué se refiere «eso» aquí?"
   response response_comparison_decomposed_no_evidence_en
     intent comparison_decomposed_no_evidence
     language en
@@ -719,6 +595,10 @@ multilingual_responses
     intent comparison_decomposed_no_evidence
     language zh
     text "我分别搜索了 {left} 和 {right}，但搜索工具没有返回可用证据，因此比较尚未验证。"
+  response response_comparison_decomposed_no_evidence_es
+    intent comparison_decomposed_no_evidence
+    language es
+    text "Busqué {left} y {right} por separado, pero la herramienta de búsqueda disponible no devolvió evidencia utilizable. La comparación sigue sin verificar."
   response response_comparison_decomposed_evidence_en
     intent comparison_decomposed_evidence
     language en
@@ -735,6 +615,10 @@ multilingual_responses
     intent comparison_decomposed_evidence
     language zh
     text "{left} 和 {right} 的独立证据：\n\n{evidence}"
+  response response_comparison_decomposed_evidence_es
+    intent comparison_decomposed_evidence
+    language es
+    text "Evidencia por separado para {left} y {right}:\n\n{evidence}"
   response response_supplied_file_contents_en
     intent supplied_file_contents
     language en
@@ -751,6 +635,10 @@ multilingual_responses
     intent supplied_file_contents
     language zh
     text "`{path}` 的内容：\n\n{body}"
+  response response_supplied_file_contents_es
+    intent supplied_file_contents
+    language es
+    text "Contenido de `{path}`:\n\n{body}"
   response response_supplied_file_first_line_en
     intent supplied_file_first_line
     language en
@@ -767,6 +655,10 @@ multilingual_responses
     intent supplied_file_first_line
     language zh
     text "`{path}` 的第一行：{line}"
+  response response_supplied_file_first_line_es
+    intent supplied_file_first_line
+    language es
+    text "Primera línea de `{path}`: {line}"
   response response_general_plan_command_capture_action_en
     intent general_plan_command_capture_action
     language en
@@ -783,6 +675,10 @@ multilingual_responses
     intent general_plan_command_capture_action
     language zh
     text "运行明确指定的命令并将 stdout 保存到 {target}"
+  response response_general_plan_command_capture_action_es
+    intent general_plan_command_capture_action
+    language es
+    text "ejecutar el comando indicado y guardar su stdout en {target}"
   response response_general_plan_command_output_evidence_en
     intent general_plan_command_output_evidence
     language en
@@ -799,6 +695,10 @@ multilingual_responses
     intent general_plan_command_output_evidence
     language zh
     text "由命令创建的工作区文件 {target}"
+  response response_general_plan_command_output_evidence_es
+    intent general_plan_command_output_evidence
+    language es
+    text "archivo del espacio de trabajo {target} creado por el comando"
   response response_general_plan_command_verification_evidence_en
     intent general_plan_command_verification_evidence
     language en
@@ -815,6 +715,10 @@ multilingual_responses
     intent general_plan_command_verification_evidence
     language zh
     text "明确指定的命令的 stdout 已保存到 {target}"
+  response response_general_plan_command_verification_evidence_es
+    intent general_plan_command_verification_evidence
+    language es
+    text "stdout del comando indicado, guardado en {target}"
   response response_general_plan_repository_action_en
     intent general_plan_repository_action
     language en
@@ -831,6 +735,10 @@ multilingual_responses
     intent general_plan_repository_action
     language zh
     text "将有界仓库工作项计划追加到 {target}"
+  response response_general_plan_repository_action_es
+    intent general_plan_repository_action
+    language es
+    text "añadir el plan acotado de trabajo del repositorio a {target}"
   response response_general_plan_repository_read_en
     intent general_plan_repository_read
     language en
@@ -887,6 +795,10 @@ multilingual_responses
     intent general_plan_repository_evidence
     language zh
     text "准确的仓库工作项目标和执行边界"
+  response response_general_plan_repository_evidence_es
+    intent general_plan_repository_evidence
+    language es
+    text "el objetivo exacto de la tarea del repositorio y su límite de ejecución"
   response response_general_plan_repository_planned_en
     intent general_plan_repository_planned
     language en
@@ -1023,6 +935,10 @@ multilingual_responses
     intent client_contract_read_observations_error
     language zh
     text "无法读取观测记录 {path}：{error}"
+  response response_client_contract_read_observations_error_es
+    intent client_contract_read_observations_error
+    language es
+    text "no se pudieron leer las observaciones {path}: {error}"
   response response_client_contract_parse_observation_error_en
     intent client_contract_parse_observation_error
     language en
@@ -1039,6 +955,10 @@ multilingual_responses
     intent client_contract_parse_observation_error
     language zh
     text "无法解析观测记录 {path}:{line}：{error}"
+  response response_client_contract_parse_observation_error_es
+    intent client_contract_parse_observation_error
+    language es
+    text "no se pudo analizar la observación {path}:{line}: {error}"
   response response_client_contract_read_transcript_error_en
     intent client_contract_read_transcript_error
     language en
@@ -1055,6 +975,10 @@ multilingual_responses
     intent client_contract_read_transcript_error
     language zh
     text "无法读取交互记录 {path}：{error}"
+  response response_client_contract_read_transcript_error_es
+    intent client_contract_read_transcript_error
+    language es
+    text "no se pudo leer la transcripción {path}: {error}"
   response response_client_contract_parse_transcript_error_en
     intent client_contract_parse_transcript_error
     language en
@@ -1071,6 +995,10 @@ multilingual_responses
     intent client_contract_parse_transcript_error
     language zh
     text "无法解析交互记录 {path}:{line}：{error}"
+  response response_client_contract_parse_transcript_error_es
+    intent client_contract_parse_transcript_error
+    language es
+    text "no se pudo analizar la transcripción {path}:{line}: {error}"
   response response_client_contract_missing_evidence_error_en
     intent client_contract_missing_evidence_error
     language en
@@ -1087,6 +1015,10 @@ multilingual_responses
     intent client_contract_missing_evidence_error
     language zh
     text "{path} 既不包含工具调用，也不包含预期标记 `{expected_marker}`"
+  response response_client_contract_missing_evidence_error_es
+    intent client_contract_missing_evidence_error
+    language es
+    text "{path} no contiene ni una llamada a herramienta ni el marcador esperado `{expected_marker}`"
   response response_agentic_action_before_tool_en
     intent agentic_action_before_tool
     language en
@@ -1103,6 +1035,10 @@ multilingual_responses
     intent agentic_action_before_tool
     language zh
     text "我会对 {target} 使用 {tool}，以便在继续之前验证下一步。"
+  response response_agentic_action_before_tool_es
+    intent agentic_action_before_tool
+    language es
+    text "Usaré {tool} sobre {target} para verificar el siguiente paso antes de continuar."
   response response_world_state_remaining_en
     intent world_state_remaining
     language en
@@ -1119,6 +1055,10 @@ multilingual_responses
     intent world_state_remaining
     language zh
     text "当前状态与你的目标之间还有 {count} 条陈述：{remaining}。\n答案是当前->目标的差异，作为链接网络计算得出，而不是从记忆中取出。\n差异：{diff_id}"
+  response response_world_state_remaining_es
+    intent world_state_remaining
+    language es
+    text "Aún hay {count} afirmación(es) entre el estado actual y tu objetivo: {remaining}.\nLa respuesta es la diferencia actual->objetivo, calculada como una red de enlaces, no recuperada de la memoria.\nDiferencia: {diff_id}"
   response response_world_state_reached_en
     intent world_state_reached
     language en
@@ -1135,6 +1075,10 @@ multilingual_responses
     intent world_state_reached
     language zh
     text "没有剩余：每一条目标陈述在当前状态中都已成立。\n差异：{diff_id}"
+  response response_world_state_reached_es
+    intent world_state_reached
+    language es
+    text "No queda nada: cada afirmación objetivo ya se cumple en el estado actual.\nDiferencia: {diff_id}"
   response response_fact_check_current_dialogue_en
     intent fact_check_current_dialogue
     language en
@@ -1151,6 +1095,10 @@ multilingual_responses
     intent fact_check_current_dialogue
     language zh
     text "已相对于 {formal_system} 核查当前对话中的全部 {count} 条陈述。\n{summary}"
+  response response_fact_check_current_dialogue_es
+    intent fact_check_current_dialogue
+    language es
+    text "Se comprobaron las {count} afirmaciones del diálogo actual respecto a {formal_system}.\n{summary}"
   response response_fact_check_statement_en
     intent fact_check_statement
     language en
@@ -1167,6 +1115,10 @@ multilingual_responses
     intent fact_check_statement
     language zh
     text "{statement}：概率 {probability}（{basis}）。"
+  response response_fact_check_statement_es
+    intent fact_check_statement
+    language es
+    text "{statement}: probabilidad {probability} ({basis})."
   response response_fact_check_statement_counterexample_en
     intent fact_check_statement_counterexample
     language en
@@ -1183,6 +1135,10 @@ multilingual_responses
     intent fact_check_statement_counterexample
     language zh
     text "{statement}：概率 {probability}（{basis}）；反例：{counterexample}。"
+  response response_fact_check_statement_counterexample_es
+    intent fact_check_statement_counterexample
+    language es
+    text "{statement}: probabilidad {probability} ({basis}); contraejemplo: {counterexample}."
   response response_fact_check_arithmetic_counterexample_en
     intent fact_check_arithmetic_counterexample
     language en
@@ -1199,6 +1155,10 @@ multilingual_responses
     intent fact_check_arithmetic_counterexample
     language zh
     text "计算值：{left} = {left_value}，{right} = {right_value}。关系 {relation} 不成立"
+  response response_fact_check_arithmetic_counterexample_es
+    intent fact_check_arithmetic_counterexample
+    language es
+    text "Valores evaluados: {left} = {left_value}, {right} = {right_value}. La relación {relation} no se cumple"
   response response_fact_check_no_statements_en
     intent fact_check_no_statements
     language en
@@ -1215,6 +1175,10 @@ multilingual_responses
     intent fact_check_no_statements
     language zh
     text "没有可核查的陈述。"
+  response response_fact_check_no_statements_es
+    intent fact_check_no_statements
+    language es
+    text "No hay afirmaciones declarativas que comprobar."
   response response_detected_failure_report_invitation_en
     intent detected_failure_report_invitation
     language en
@@ -1279,6 +1243,10 @@ multilingual_responses
     intent compose_boundary_note
     language zh
     text "以下每一条陈述都有引用来源；未添加来源之外的任何内容。"
+  response response_compose_boundary_note_es
+    intent compose_boundary_note
+    language es
+    text "Cada afirmación de abajo está respaldada por una fuente citada; no se añadió nada más allá de ellas."
   response response_compose_sources_heading_en
     intent compose_sources_heading
     language en
@@ -1295,6 +1263,10 @@ multilingual_responses
     intent compose_sources_heading
     language zh
     text "来源"
+  response response_compose_sources_heading_es
+    intent compose_sources_heading
+    language es
+    text "Fuentes"
   response response_compose_no_verified_capture_en
     intent compose_no_verified_capture
     language en
@@ -1311,3 +1283,7 @@ multilingual_responses
     intent compose_no_verified_capture
     language zh
     text "没有为该请求捕获任何经来源验证的陈述，因此未作任何撰写。"
+  response response_compose_no_verified_capture_es
+    intent compose_no_verified_capture
+    language es
+    text "No se capturó ninguna afirmación verificada por una fuente para esta solicitud, así que no se compuso nada."

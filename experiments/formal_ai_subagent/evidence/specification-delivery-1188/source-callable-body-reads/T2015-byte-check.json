@@ -1,0 +1,5 @@
+{
+  "taskId": "T2015",
+  "target": "rust/src/coding/composition.rs",
+  "byteEqual": true
+}

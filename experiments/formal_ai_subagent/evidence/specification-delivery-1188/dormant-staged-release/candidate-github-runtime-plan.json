@@ -1,0 +1,33 @@
+{
+  "schema": "staged-release-controlled-github-acceptance/v1",
+  "scope": "Plan only; no workflow dispatched, no publication or merge. Scheduler/artifact controls do not count as release/native/cold proof.",
+  "sameRunArtifact": {
+    "prerequisite": "Exact source SHA containing dormant callee/helper plus a permitted controlled test caller; caller GITHUB_RUN_ID and callee GITHUB_RUN_ID must equal",
+    "producer": "Upload actual small source/byte fixture tar+descriptor with upload-artifact@v7; record APIartifact id,digest,run,attempt,job and physicaltar/hash/mode",
+    "consumer": "Real separate callee jobs download ONE artifactID from actual needs output with download-artifact@v8/currentrun; capture on-disk files and verify same SHA/length/type/inventory/0755; mutatedfile/missingwrongid/wrongrun/attempt/source/compiler controls fail independently",
+    "refusals": "Different run without token/repo/run input must fail; supplying crossrun fields forbidden by sourcecontract; no fixture considered native executable"
+  },
+  "callerOutputs": {
+    "activeFixture": "Small controlled fixture successful final stage returns pages_sha/pages_version and successful-only container tag via actual workflow_call/job/step outputs; deliberately interrupted final stage exposes no authorized tag",
+    "inactiveFixture": "Prepare returns active=false and baseline identity, build/package/smoke/images jobs actually skipped, final always guard emits baseline Pages without source/artifact imports or Create. Record real skipped step/job outcomes and caller outputs separately from empty unknown values.",
+    "productionRequirement": "Original guarded-main/no-release behavior must later be observed without relabeling event/ref or fake published tag; fixture outputs are not production outputs"
+  },
+  "writerLease": {
+    "controlledBoundary": "One caller job uses reusable fixture graph with original group/queue:max and no child/root lease; independent observer obtains actual ancestorlease API and dispatches independent contender only after lease is observed",
+    "receipt": "Capture caller/callee/descendant job startfinish times, group/queue API ahead_of_job ancestor IDs, contender waiting until final child ends and no selfcancellation; sharedworkflow graph needs ordering alone is insufficient proof",
+    "limit": "No live observer/contender launched here; unresolved permission/sourceavailability/runidentity/queue API are distinct from scheduler success. A private fixturegroup can demonstrate mechanism but cannot certify actual originalgroup writer coexistence."
+  },
+  "preparedSource": {
+    "realCIOnly": "Actual compiler/source-authority commands run only GitHub CI; helper verify-source must independently checkout exact actual selected main/tag/tree and compare all tracked archive/nativeinput bytes/compiler/protocolSHA, not uploaded selfclaims",
+    "failures": "Wrong artifactproducer SHA/version/run/attempt; source tracked drift after download; actual currentmain advances between stages; stabletag retargeted; binary swapped/truncated; package file omitted; full/slim/Hub repository digest swapped; all block before Create, preserving any earlier real registry writes",
+    "restriction": "Publication-stage graph not executed without existing real release authorization; registry smoke still genuine coldcargo install after actual registry availability; no preparedbinary substitution"
+  },
+  "actualCold": {
+    "measure": "Every actual real compiler/package/publish/wait/coldregistry install/full/slim/mirror/create stage command complete exit/status/signal and elapsed cold duration <=30; record all retries/cancellations/partial effects",
+    "notAccepted": "Caps30, plannedDAG, genericfixture timing, markeroutput or prior historicalrelease are not cold replacement proof"
+  },
+  "pending": true,
+  "githubExecuted": false,
+  "nativeExecuted": false,
+  "publication": false
+}

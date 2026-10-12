@@ -65,8 +65,8 @@ multilingual_responses
     intent meta_explanation
     language es
     text "Trabajo comparando tu solicitud con reglas deterministas de Links Notation almacenadas en memoria. Cada regla asigna un patrón reconocido a una respuesta fija. Cuando ninguna regla coincide, informo intent: unknown. No hay inferencia neuronal: cada respuesta se puede rastrear por completo hasta una regla simbólica."
-  response response_inappropriate_content_es
-    intent inappropriate_content
+  response response-inappropriate-content-es
+    intent inappropriate-content
     language es
     text "Ese mensaje contiene contenido inapropiado. Mantén una conversación respetuosa."
   response response_clarification_es
@@ -120,7 +120,7 @@ multilingual_responses
   response response_github_repository_traffic_es
     intent github_repository_traffic
     language es
-    text "En parte. Para un repositorio de GitHub como {repository}, GitHub puede mostrar tráfico agregado a las personas con acceso de push o escritura: visualizaciones, visitantes únicos, clones, sitios de referencia y contenido popular durante el periodo reciente. No muestra la identidad de cada visitante. Consulta GitHub Insights > Traffic o los endpoints REST de tráfico: {traffic_ui_docs}; {traffic_api_docs}."
+    text "En parte. Para un repositorio de GitHub como {repository}, GitHub puede mostrar tráfico agregado a las personas con acceso de push o escritura: visualizaciones, visitantes únicos, clones, sitios de referencia y contenido popular durante el periodo reciente. No muestra la identidad de cada visitante. Consulta GitHub Insights > Traffic o los endpoints REST de tráfico: {traffic-ui-docs}; {traffic-api-docs}."
   response response_document_originality_check_sample_present_es
     intent document_originality_check_sample_present
     language es
@@ -517,3 +517,43 @@ multilingual_responses
     intent statement_audit_temperature_range
     language es
     text "la temperatura debe ser finita y mayor que cero"
+  response response_learn_from_source_browser_summary_en
+    intent learn_from_source_browser_summary
+    language en
+    text "I recognized {source} as a declared data source I can learn from ({capability}). The loop that learns from it runs in the native engine: it replays the source prompts through the local links rules and sends the ones they leave unanswered to the human-gated self-improvement loop. This browser worker records the source but does not run that loop, so nothing was learned here."
+  response response_learn_from_source_browser_summary_ru
+    intent learn_from_source_browser_summary
+    language ru
+    text "Я распознал {source} как объявленный источник данных, на котором могу учиться ({capability}). Цикл обучения на нём работает в нативном движке: он прогоняет запросы источника через локальные правила связей и передаёт оставшиеся без ответа в цикл самоулучшения под контролем человека. Этот браузерный воркер записывает источник, но не запускает этот цикл, поэтому здесь ничему не научился."
+  response response_learn_from_source_browser_summary_hi
+    intent learn_from_source_browser_summary
+    language hi
+    text "मैंने {source} को एक घोषित डेटा स्रोत के रूप में पहचाना, जिससे मैं सीख सकता हूँ ({capability})। इससे सीखने वाला लूप नेटिव इंजन में चलता है: वह स्रोत के प्रॉम्प्ट को स्थानीय लिंक नियमों से दोबारा चलाता है और जिनका उत्तर नहीं मिलता उन्हें मानव-नियंत्रित आत्म-सुधार लूप को भेजता है। यह ब्राउज़र वर्कर स्रोत को दर्ज करता है, पर वह लूप नहीं चलाता, इसलिए यहाँ कुछ नहीं सीखा गया।"
+  response response_learn_from_source_browser_summary_zh
+    intent learn_from_source_browser_summary
+    language zh
+    text "我已将 {source} 识别为可供学习的已声明数据源（{capability}）。从中学习的循环在原生引擎中运行：它通过本地链接规则重放该来源的提示，并把仍未得到回答的提示交给需人工把关的自我改进循环。此浏览器工作线程只记录该来源，不运行该循环，因此这里没有学到任何东西。"
+  response response_learn_from_source_browser_summary_es
+    intent learn_from_source_browser_summary
+    language es
+    text "Reconocí {source} como una fuente de datos declarada de la que puedo aprender ({capability}). El ciclo que aprende de ella se ejecuta en el motor nativo: reproduce las solicitudes de la fuente con las reglas de enlaces locales y envía las que quedan sin respuesta al ciclo de automejora supervisado por humanos. Este worker del navegador registra la fuente pero no ejecuta ese ciclo, así que aquí no se aprendió nada."
+  response response-project-lookup-promoted-en
+    intent project-lookup-promoted
+    language en
+    text "In the {promoted-orgs} repository context, `{display-name}` should first mean [{repo-slug}]({project-url}) — {description}\n\nOther repositories and entities found online are shown by the browser demo through a web search for `{display-name}`. Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
+  response response-project-lookup-promoted-ru
+    intent project-lookup-promoted
+    language ru
+    text "В контексте репозиториев {promoted-orgs} под `{display-name}` я прежде всего имею в виду [{repo-slug}]({project-url}) — {description}\n\nДругие найденные в интернете репозитории и сущности должна показывать браузерная демо-версия через поиск по запросу `{display-name}`. Провайдеры: {provider-summary}. Ранжирование: reciprocal rank fusion (k = {reciprocal-rank-constant}). Продвижение ассоциативных репозиториев можно отключить, тогда ответ пойдет по обычному поиску GitHub, GitLab и Bitbucket."
+  response response-project-lookup-promoted-hi
+    intent project-lookup-promoted
+    language hi
+    text "{promoted-orgs} repository context में `{display-name}` से मेरा पहला मतलब [{repo-slug}]({project-url}) है — {description}\n\nदूसरे matching repositories और entities browser demo में `{display-name}` web search से दिखाए जाते हैं. Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). Associative repository promotion बंद करने पर जवाब generic GitHub, GitLab, और Bitbucket project lookup path से जाता है."
+  response response-project-lookup-promoted-zh
+    intent project-lookup-promoted
+    language zh
+    text "在 {promoted-orgs} 仓库上下文中，`{display-name}` 首先指 [{repo-slug}]({project-url}) — {description}\n\n浏览器 demo 会通过 `{display-name}` 的网页搜索显示其他匹配的仓库和实体。Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). 关闭 associative repository promotion 后，回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。"
+  response response-project-lookup-promoted-es
+    intent project-lookup-promoted
+    language es
+    text "In the {promoted-orgs} repository context, `{display-name}` should first mean [{repo-slug}]({project-url}) — {description}\n\nOther repositories and entities found online are shown by the browser demo through a web search for `{display-name}`. Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."

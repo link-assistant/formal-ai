@@ -1,0 +1,96 @@
+{
+  "lemma": "duplicate",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03312926-n",
+      "partOfSpeech": "n",
+      "definition": "something additional of the same kind",
+      "examples": [
+        "he always carried extras in case of an emergency"
+      ],
+      "synonyms": [
+        "extra"
+      ]
+    },
+    {
+      "id": "oewn-03262046-n",
+      "partOfSpeech": "n",
+      "definition": "a copy that corresponds to an original exactly",
+      "examples": [
+        "he made a duplicate for the files"
+      ],
+      "synonyms": [
+        "duplication"
+      ]
+    },
+    {
+      "id": "oewn-02071307-s",
+      "partOfSpeech": "s",
+      "definition": "identically copied from an original",
+      "examples": [
+        "a duplicate key"
+      ]
+    },
+    {
+      "id": "oewn-01490161-s",
+      "partOfSpeech": "s",
+      "definition": "being two identical",
+      "synonyms": [
+        "matching",
+        "twin",
+        "twinned"
+      ]
+    },
+    {
+      "id": "oewn-01738383-v",
+      "partOfSpeech": "v",
+      "definition": "make or do or perform again",
+      "examples": [
+        "He could never replicate his brilliant performance of the magic trick"
+      ],
+      "synonyms": [
+        "reduplicate",
+        "double",
+        "repeat",
+        "replicate"
+      ]
+    },
+    {
+      "id": "oewn-02665436-v",
+      "partOfSpeech": "v",
+      "definition": "duplicate or match",
+      "examples": [
+        "The polished surface twinned his face and chest in reverse"
+      ],
+      "synonyms": [
+        "twin",
+        "parallel"
+      ]
+    },
+    {
+      "id": "oewn-01739189-v",
+      "partOfSpeech": "v",
+      "definition": "make a duplicate or duplicates of",
+      "examples": [
+        "Could you please duplicate this letter for me?"
+      ]
+    },
+    {
+      "id": "oewn-00247103-v",
+      "partOfSpeech": "v",
+      "definition": "increase twofold",
+      "examples": [
+        "The population doubled within 50 years"
+      ],
+      "synonyms": [
+        "double"
+      ]
+    }
+  ]
+}

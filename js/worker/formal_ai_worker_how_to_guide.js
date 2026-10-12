@@ -697,7 +697,7 @@ async function trySynthesizedHowToGuide(task, preferences) {
     confidence: 0.9,
     evidence,
     diagnostics: "",
-    query: `how to ${subject}`,
+    query: proceduralFallbackQuery(subject),
     guide,
     formalizedObject: `HOWTO:${subject}`,
   };

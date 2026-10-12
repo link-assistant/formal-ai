@@ -1,0 +1,29 @@
+view
+  id M-cf7ccf640121
+  lemma brief
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a document stating the facts and points of law of a client's case"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a condensed written summary or abstract"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of short duration or distance"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "concise and succinct"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "(of clothing) very short"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give essential information to someone"
+    provenance (wordnet)

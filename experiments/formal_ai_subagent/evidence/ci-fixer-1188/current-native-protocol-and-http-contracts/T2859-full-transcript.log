@@ -1,0 +1,15 @@
+>> bash {"command":"node /private/tmp/pr1188-ci-final-gate-verify.mjs"}
+   Output: {"all20RatchetsPass":true,"enZh":"en->zh: 6/64 sentences survive, 209/455 content terms survive (209/236 known)","workerLines":347,"seedMirrorsExact":true}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/pr1188-ci-final-gate-verify.mjs` command completed. Output:
+
+```json
+{
+  "all20RatchetsPass": true,
+  "enZh": "en->zh: 6/64 sentences survive, 209/455 content terms survive (209/236 known)",
+  "seedMirrorsExact": true,
+  "workerLines": 347
+}
+```

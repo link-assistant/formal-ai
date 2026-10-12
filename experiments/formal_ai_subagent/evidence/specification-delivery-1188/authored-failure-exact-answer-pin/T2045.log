@@ -1,0 +1,137 @@
+>> bash {"command":"node --test --test-name-pattern=\"literal verification reads\" rust/tests/web/authored-literal-planning.test.mjs"}
+   TAP version 13
+   # Subtest: fenced creation preserves source with task labels, command cues and paths
+   ok 1 - fenced creation preserves source with task labels, command cues and paths # SKIP test name does not match pattern
+     ---
+     duration_ms: 342.428334
+     ...
+   # Subtest: closed quoted whole-content consent replaces an existing source file
+   ok 2 - closed quoted whole-content consent replaces an existing source file # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.052166
+     ...
+   # Subtest: a plain replacement stays an edit even when its new literal names a file write
+   ok 3 - a plain replacement stays an edit even when its new literal names a file write # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.041834
+     ...
+   # Subtest: longer fences preserve payloads containing their own Markdown examples
+   ok 4 - longer fences preserve payloads containing their own Markdown examples # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.038042
+     ...
+   # Subtest: literal verification reads failure narratives and compact JSON as authored data
+   ok 5 - literal verification reads failure narratives and compact JSON as authored data
+     ---
+     duration_ms: 363.869
+     ...
+   # Subtest: explicit verification failure still vetoes exact literal output
+   ok 6 - explicit verification failure still vetoes exact literal output # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.114125
+     ...
+   # Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+   ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.04325
+     ...
+   # Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+   ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.086708
+     ...
+   # Subtest: G125: quoted edit payloads with skill cues stay data
+   ok 9 - G125: quoted edit payloads with skill cues stay data # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.13075
+     ...
+   # Subtest: G125: genuine unquoted skill teaching keeps its guard
+   ok 10 - G125: genuine unquoted skill teaching keeps its guard # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.078
+     ...
+   # Subtest: G125: a malformed quoted replacement changes nothing
+   ok 11 - G125: a malformed quoted replacement changes nothing # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.03875
+     ...
+   1..11
+   # tests 11
+   # suites 0
+   # pass 1
+   # fail 0
+   # cancelled 0
+   # skipped 10
+   # todo 0
+   # duration_ms 846.924416
+   
+== answer ==
+The `node --test --test-name-pattern="literal verification reads" rust/tests/web/authored-literal-planning.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths # SKIP test name does not match pattern
+  ---
+  duration_ms: 342.428334
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.052166
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.041834
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.038042
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 363.869
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.114125
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.04325
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.086708
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.13075
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.078
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.03875
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 10
+# todo 0
+# duration_ms 846.924416
+```

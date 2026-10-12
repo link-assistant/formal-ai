@@ -1,0 +1,98 @@
+language en
+lemma issue
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an important question that is in dispute and must be settled"
+    examples ("the issue could be settled by requiring public education for everyone" "politicians never discuss the real issues")
+    id oewn-05822776-n
+    partOfSpeech n
+  entry
+    definition "one of a series published periodically"
+    examples ("she found an old issue of the magazine in her dentist's waiting room")
+    id oewn-06609182-n
+    partOfSpeech n
+    synonyms (number)
+  entry
+    definition "some situation or event that is thought about"
+    examples ("he kept drifting off the topic" "he had been thinking about the subject for several years" "it is a matter for the police")
+    id oewn-05822417-n
+    partOfSpeech n
+    synonyms (topic subject matter)
+  entry
+    definition "the act of providing an item for general use or for official purposes (usually in quantity)"
+    examples ("a new issue of stamps" "the last issue of penicillin was over a month ago")
+    id oewn-01062158-n
+    partOfSpeech n
+    synonyms (issuing issuance)
+  entry
+    definition "supplies (as food or clothing or ammunition) issued by the government"
+    id oewn-13388766-n
+    partOfSpeech n
+    synonyms ("military issue" "government issue")
+  entry
+    definition "the income or profit arising from such transactions as the sale of land or other property"
+    examples ("the average return was about 5%")
+    id oewn-13281089-n
+    partOfSpeech n
+    synonyms (return take takings proceeds yield payoff)
+  entry
+    definition "a phenomenon that follows and is caused by some previous phenomenon"
+    examples ("the magnetic effect was greater when the rod was lengthwise" "his decision had depressing consequences for business" "he acted very wise after the event")
+    id oewn-11430739-n
+    partOfSpeech n
+    synonyms (consequence effect outcome result event upshot)
+  entry
+    definition "the immediate descendants of a person"
+    examples ("she was the mother of many offspring" "he died without issue")
+    id oewn-10393697-n
+    partOfSpeech n
+    synonyms (offspring progeny)
+  entry
+    definition "the becoming visible"
+    examples ("not a day's difference between the emergence of the andrenas and the opening of the willow catkins")
+    id oewn-07334509-n
+    partOfSpeech n
+    synonyms (emergence egress)
+  entry
+    definition "an opening that permits escape or release"
+    examples ("he blocked the way out" "the canyon had only one issue")
+    id oewn-03308910-n
+    partOfSpeech n
+    synonyms (exit outlet "way out")
+  entry
+    definition "the act of issuing printed materials"
+    id oewn-01105519-n
+    partOfSpeech n
+    synonyms (publication)
+  entry
+    definition "prepare and issue for public distribution or sale"
+    examples ("publish a magazine or newspaper")
+    id oewn-00969657-v
+    partOfSpeech v
+    synonyms (publish "bring out" "put out" release)
+  entry
+    definition "circulate or distribute or equip with"
+    examples ("issue a new uniform to the children" "supply blankets for the beds")
+    id oewn-02484912-v
+    partOfSpeech v
+    synonyms (supply)
+  entry
+    definition "bring out an official document (such as a warrant)"
+    id oewn-01065071-v
+    partOfSpeech v
+  entry
+    definition "come out of"
+    examples ("Water issued from the hole in the wall" "The words seemed to come out by themselves")
+    id oewn-00530070-v
+    partOfSpeech v
+    synonyms (emerge "come out" "come forth" "go forth" egress)
+  entry
+    definition "make out and issue"
+    examples ("write out a check" "cut a ticket" "Please make the check out to me")
+    id oewn-01066821-v
+    partOfSpeech v
+    synonyms ("write out" "make out" cut)
+source "oewn:2024"

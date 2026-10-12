@@ -1,0 +1,29 @@
+{
+  "provenance": "Observed native CI job logs. Long trace lines are truncated explicitly; no pre-repair FA transcript is fabricated.",
+  "original_l07_status": "The obsolete GREETING_EXAMPLES contract remains unsatisfiable; the current replacement contract is separately proved.",
+  "observations": [
+    {
+      "path": "/private/tmp/pr1188-new-job-113547862889.log",
+      "excerpts": [
+        "2026-10-08T21:33:35.2751126Z test issue_1138_self_use_intent_routing::spanish_routing_variations_reach_their_capability ... FAILED",
+        "2026-10-08T21:36:32.5589089Z test pull_request_1188_edit_composer_gaps::an_empty_line_beside_an_anchor_line ... ok",
+        "2026-10-08T21:36:42.4319217Z test pull_request_1188_line_anchor::a_whole_line_anchor_is_unchanged ... ok",
+        "2026-10-08T21:39:14.9085694Z 1.1.2.2.1 anchor \"GREETING_EXAMPLES\" is absent from rust/src/engine_responses.rs",
+        "2026-10-08T21:39:14.9088830Z L07 (1.1.2.2.1): left rust/src/engine_responses.rs unchanged",
+        "2026-10-08T21:39:14.9090037Z L07 (1.1.2.2.1): agent-ladder-effects/node-1.1.2.2.1.lino result= omits \"\\\"Good morning\\\"\": \"This task cannot be split into two sub-tasks that can be checked independently, and no observable completion criterion is known for it, so there is nothing to enumerate: it is an irreducible single need.\"",
+        "2026-10-08T21:39:14.9091385Z ---- issue_1138_self_use_intent_routing::spanish_routing_variations_reach_their_capability stdout ----",
+        "2026-10-08T21:39:14.9092345Z thread 'issue_1138_self_use_intent_routing::spanish_routing_variations_reach_their_capability' (6233) panicked at tests/unit/issue_1138_self_use_intent_routing.rs:170:5:",
+        "2026-10-08T21:39:14.9435914Z     issue_1138_self_use_intent_routing::spanish_routing_variations_reach_their_capability"
+      ]
+    },
+    {
+      "path": "/tmp/pr1188-new-job-113547863674.log",
+      "excerpts": [
+        "2026-10-08T21:54:31.8289718Z test issue_1138_place_timezone::a_berlin_mention_anchors_the_event_in_every_supported_language ... ok",
+        "2026-10-08T21:55:44.5353274Z test pull_request_1188_edit_composer_gaps::a_quoted_path_shaped_anchor_is_not_the_file ... ok",
+        "2026-10-08T21:55:44.8878974Z test pull_request_1188_replace_semantics::after_the_context_a_line_that_is_the_anchor_outranks_one_containing_it ... ok",
+        "2026-10-08T21:55:46.3299348Z test pull_request_1188_teach_f::g73_a_whole_line_anchor_that_also_ends_another_line_is_edited_once ... ok"
+      ]
+    }
+  ]
+}

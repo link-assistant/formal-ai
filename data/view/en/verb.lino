@@ -1,0 +1,13 @@
+view
+  id M-45246de49472
+  lemma verb
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the word class that serves as the predicate of a sentence"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a content word that denotes an action, occurrence, or state of existence"
+    provenance (wordnet)

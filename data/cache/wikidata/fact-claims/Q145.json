@@ -1,0 +1,167 @@
+{
+  "entities": {
+    "Q145": {
+      "type": "item",
+      "id": "Q145",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "United Kingdom"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Великобритания"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "यूनाइटेड किंगडम"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "英国"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "英国"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "United Kingdom of Great Britain and Northern Ireland"
+          },
+          {
+            "language": "en",
+            "value": "U K"
+          },
+          {
+            "language": "en",
+            "value": "G B"
+          },
+          {
+            "language": "en",
+            "value": "Great Britain"
+          },
+          {
+            "language": "en",
+            "value": "Great Britain and Northern Ireland"
+          },
+          {
+            "language": "en",
+            "value": "the United Kingdom of Great Britain and Northern Ireland"
+          },
+          {
+            "language": "en",
+            "value": "the UK"
+          },
+          {
+            "language": "en",
+            "value": "the United Kingdom"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Соединённое Королевство Великобритании и Северной Ирландии"
+          },
+          {
+            "language": "ru",
+            "value": "Туманный Альбион"
+          },
+          {
+            "language": "ru",
+            "value": "Соединённое Королевство"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "联合王国"
+          },
+          {
+            "language": "zh",
+            "value": "大不列颠及北爱尔兰联合王国"
+          },
+          {
+            "language": "zh",
+            "value": "不列颠"
+          }
+        ],
+        "zh-hans": [
+          {
+            "language": "zh-hans",
+            "value": "联合王国"
+          },
+          {
+            "language": "zh-hans",
+            "value": "大不列颠及北爱尔兰联合王国"
+          },
+          {
+            "language": "zh-hans",
+            "value": "不列颠"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "United Kingdom"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Великобритания"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "यूनाइटेड किंगडम"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "英国"
+        }
+      },
+      "claims": {
+        "P36": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "6cf2429b4407a0b73c81c32a8bde92de9b402c1f",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 84,
+                  "id": "Q84"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P36"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

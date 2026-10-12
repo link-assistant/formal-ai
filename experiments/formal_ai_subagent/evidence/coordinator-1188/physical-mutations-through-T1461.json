@@ -1,0 +1,226 @@
+{
+  "scope": "Retained root raw transcripts through T1461 only; earlier task effects documented without invented transcript verification.",
+  "repository_edit_write_calls": 33,
+  "ignored_plan_writes": 3,
+  "scratch_edit_write_calls": 0,
+  "manual_source_test_doc_mutations": 0,
+  "independent_feature_synthesis_claimed": false,
+  "records": [
+    {
+      "id": "T1424",
+      "tool": "edit",
+      "target": "docs/requirements/issue-1188-user-requirements.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1425",
+      "tool": "edit",
+      "target": "docs/requirements/issue-1188-user-requirements.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1426",
+      "tool": "edit",
+      "target": "docs/requirements/issue-1188-user-requirements.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1427",
+      "tool": "edit",
+      "target": "docs/requirements/issue-1188-user-requirements.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1433",
+      "tool": "edit",
+      "target": ".github/workflows/publish-engine.yml",
+      "category": "repository"
+    },
+    {
+      "id": "T1434",
+      "tool": "edit",
+      "target": ".github/workflows/release.yml",
+      "category": "repository"
+    },
+    {
+      "id": "T1435",
+      "tool": "write",
+      "target": ".formal-ai/general-change-plan.lino",
+      "category": "plan"
+    },
+    {
+      "id": "T1435",
+      "tool": "write",
+      "target": "docs/case-studies/pull-request-1188/release-verification.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1436",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1437",
+      "tool": "edit",
+      "target": "experiments/formal_ai_subagent/gaps.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1438",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1439",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1440",
+      "tool": "edit",
+      "target": "docs/case-studies/issue-712/README.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1441",
+      "tool": "edit",
+      "target": "data/meta/adoption-effect-ratchet.lino",
+      "category": "repository"
+    },
+    {
+      "id": "T1442",
+      "tool": "edit",
+      "target": "rust/tests/unit/minimal_core_and_seed_metadata.rs",
+      "category": "repository"
+    },
+    {
+      "id": "T1443",
+      "tool": "edit",
+      "target": ".github/workflows/docker-slim.yml",
+      "category": "repository"
+    },
+    {
+      "id": "T1444",
+      "tool": "edit",
+      "target": "rust/tests/unit/ci-cd/api_docs_publishing.rs",
+      "category": "repository"
+    },
+    {
+      "id": "T1445",
+      "tool": "edit",
+      "target": "rust/tests/unit/ci-cd/api_docs_publishing.rs",
+      "category": "repository"
+    },
+    {
+      "id": "T1446",
+      "tool": "edit",
+      "target": "rust/tests/unit/ci-cd/attestation_and_coverage_audit.rs",
+      "category": "repository"
+    },
+    {
+      "id": "T1447",
+      "tool": "edit",
+      "target": "rust/tests/unit/ci-cd/job_timeouts_as_failures.rs",
+      "category": "repository"
+    },
+    {
+      "id": "T1448",
+      "tool": "edit",
+      "target": "rust/tests/unit/ci-cd/workflow_release.rs",
+      "category": "repository"
+    },
+    {
+      "id": "T1449",
+      "tool": "edit",
+      "target": "rust/tests/unit/ci-cd/step_deadlines_and_coverage_budget.rs",
+      "category": "repository"
+    },
+    {
+      "id": "T1450",
+      "tool": "write",
+      "target": ".formal-ai/general-change-plan.lino",
+      "category": "plan"
+    },
+    {
+      "id": "T1450",
+      "tool": "write",
+      "target": "changelog.d/20261009_231000_release-path-verification.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1451",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1451",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1452",
+      "tool": "edit",
+      "target": "experiments/formal_ai_subagent/gaps.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1453",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1453",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1453",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1454",
+      "tool": "edit",
+      "target": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+      "category": "repository"
+    },
+    {
+      "id": "T1456",
+      "tool": "edit",
+      "target": "js/agentic/planner.mjs",
+      "category": "repository"
+    },
+    {
+      "id": "T1457",
+      "tool": "edit",
+      "target": "rust/src/agentic_coding/planner.rs",
+      "category": "repository"
+    },
+    {
+      "id": "T1460",
+      "tool": "write",
+      "target": ".formal-ai/general-change-plan.lino",
+      "category": "plan"
+    },
+    {
+      "id": "T1460",
+      "tool": "write",
+      "target": "rust/tests/web/explicit-shell-payload-routing.test.mjs",
+      "category": "repository"
+    },
+    {
+      "id": "T1461",
+      "tool": "edit",
+      "target": "rust/tests/unit/agentic-coding/issue_749_shell_routing.rs",
+      "category": "repository"
+    }
+  ]
+}

@@ -1,0 +1,945 @@
+>> read {"filePath":"js/agentic/planner.mjs","file_path":"js/agentic/planner.mjs","path":"js/agentic/planner.mjs"}
+   <file>
+   00001| // Deterministic agentic planner: the next tool call or final answer from a
+   00002| // conversation and its advertised tools, without hidden neural state
+   00003| // (rust/src/agentic_coding/planner.rs).
+   00004| //
+   00005| // Every route arm is the twin of the Rust arm of the same name, run in the
+   00006| // order data/seed/planner-precedence.lino declares. Arms that consult the
+   00007| // host solver are async, so the cascade awaits each arm.
+   00008| 
+   00009| import * as algorithmLearning from './algorithm_learning.mjs';
+   00010| import { Capability } from './capability.mjs';
+   00011| import * as capabilityRouter from './capability_router.mjs';
+   00012| import * as changeRequest from './change_request.mjs';
+   00013| import * as ciWorkflow from './ci_workflow.mjs';
+   00014| import * as codeArtifact from './code_artifact.mjs';
+   00015| import * as codeTask from './code_task.mjs';
+   00016| import * as commandReroute from './command_reroute.mjs';
+   00017| import * as comparison from './comparison.mjs';
+   00018| import { programContractAnswer } from './crate/coding_program_contract.mjs';
+   00019| import { sourceTreeRequest as metaSourceTreeRequest } from './crate/meta_translate.mjs';
+   00020| import { handlerMatches } from './crate/rule_interpreter.mjs';
+   00021| import { quoteFault } from './crate/normal_markov.mjs';
+   00022| import * as testAssertion from './test_assertion.mjs';
+   00023| import * as replaceList from './replace_list.mjs';
+   00024| import * as quoteNesting from './quote_nesting.mjs';
+   00025| import * as requestSequence from './request_sequence.mjs';
+   00026| import { plannerPrecedence } from './crate/seed.mjs';
+   00027| import { looksLikeSkillDescription } from './crate/skill_compiler.mjs';
+   00028| import { computerUsePlanAgenticStep } from './crate/computer_use_planner.mjs';
+   00029| import { latestUserRequest } from './content.mjs';
+   00030| import * as conversationRecall from './conversation_recall.mjs';
+   00031| import * as diagram from './diagram.mjs';
+   00032| import * as documentRecipe from './document_recipe.mjs';
+   00033| import * as dreamingAudit from './dreaming_audit.mjs';
+   00034| import * as evidenceRecord from './evidence_record.mjs';
+   00035| import * as fileSummary from './file_summary.mjs';
+   00036| import * as explain from './explain.mjs';
+   00037| import { fileReadTaskFor, planFileReadStep } from './file_read.mjs';
+   00038| import * as formalizationRecipe from './formalization_recipe.mjs';
+   00039| import * as functionExpectation from './function_expectation.mjs';
+   00040| import { planGeneralChangeStep } from './general_execution.mjs';
+   00041| import { composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText } from './general_planner.mjs';
+   00042| import * as gitCommit from './git_commit.mjs';
+   00043| import * as googleTrendsCatalog from './google_trends_catalog.mjs';
+   00044| import * as googleTrendsLearning from './google_trends_learning.mjs';
+   00045| import * as harnessEnvelope from './harness_envelope.mjs';
+   00046| import * as intentRouter from './intent_router.mjs';
+   00047| import * as learningReport from './learning_report.mjs';
+   00048| import * as ledger from './ledger.mjs';
+   00049| import * as localSearch from './local_search.mjs';
+   00050| import * as meaningDetail from './meaning_detail.mjs';
+   00051| import * as moduleExports from './module_exports.mjs';
+   00052| import * as moduleFunction from './module_function.mjs';
+   00053| import * as mutatingAction from './mutating_action.mjs';
+   00054| import * as noteComposition from './note_composition.mjs';
+   00055| import { agenticMessage } from './messages.mjs';
+   00056| import { finalAnswer, isToolCalls, jsonText, planOne } from './plan.mjs';
+   00057| import { continuedAgentTask, isContinuationCue, traceRoute } from './planner/continuation.mjs';
+   00058| import * as positionalEdit from './positional_edit.mjs';
+   00059| import * as procedure from './procedure.mjs';
+   00060| import { Progress } from './progress.mjs';
+   00061| import * as questionCatalog from './question_catalog.mjs';
+   00062| import * as rebuildPlan from './rebuild_plan.mjs';
+   00063| import * as repairStrategy from './repair_strategy.mjs';
+   00064| import * as reportIssue from './report_issue.mjs';
+   00065| import * as restartFeedback from './restart_feedback.mjs';
+   00066| import * as selfAst from './self_ast.mjs';
+   00067| import * as selfHeal from './self_heal.mjs';
+   00068| import * as shellCommand from './shell_command.mjs';
+   00069| import * as shellFileFallback from './shell_file_fallback.mjs';
+   00070| import * as sourceLinks from './source_links.mjs';
+   00071| import * as statementAudit from './statement_audit.mjs';
+   00072| import * as structuredDocument from './structured_document.mjs';
+   00073| import * as structuredEdit from './structured_edit.mjs';
+   00074| import * as taskObligations from './task_obligations.mjs';
+   00075| import * as taskStructure from './task_structure.mjs';
+   00076| import * as toolResult from './tool_result.mjs';
+   00077| import * as webResearch from './web_research.mjs';
+   00078| import { fill } from './work_item_steps.mjs';
+   00079| import * as workspaceChange from './workspace_change.mjs';
+   00080| import * as workspaceInspection from './workspace_inspection.mjs';
+   00081| import * as workspaceSearch from './workspace_search.mjs';
+   00082| 
+   00083| const { toolFor } = capabilityRouter;
+   00084| 
+   00085| /**
+   00086|  * Mirrors `PLANNER_ROUTE_ARMS` in rust/src/agentic_coding/planner/precedence.rs: the
+   00087|  * route arms of the cascade, named and in run order.
+   00088|  */
+   00089| export const PLANNER_ROUTE_ARMS = [
+   00090|   ['plan_chat_step_routes', 'conversation-control-decline'],
+   00091|   ['plan_chat_step_routes', 'computer_use'],
+   00092|   ['plan_chat_step_routes', 'authoritative-literal-write'],
+   00093|   ['plan_chat_step_routes', 'program_contract'],
+   00094|   ['plan_chat_step_routes', 'evidence_record'],
+   00095|   ...['git_commit', 'workspace_change', 'generated-source', 'structured_edit', 'structured_document',
+   00096|     'statement_audit', 'task_obligations', 'literal-write', 'algorithm_learning', 'procedure',
+   00097|     'learning_report', 'code_artifact', 'self_heal', 'dreaming_audit', 'self_ast', 'source_links',
+   00098|     'learning_ledger', 'explain', 'change_request', 'repair_strategy', 'rebuild_plan',
+   00099|     'google_trends_learning', 'google_trends_catalog', 'question_catalog', 'file-analysis',
+   00100|     'report-flow', 'conversation_recall', 'follow_up_answer', 'contextual_reference_clarification',
+   00101|     'definition-followup', 'intent-edit', 'typed-file-read', 'local_search', 'comparison',
+   00102|     'named-capability-table', 'shell_command', 'file_read', 'formalization_recipe', 'meaning_detail',
+   00103|     'diagram', 'workspace_inspection', 'task_structure', 'capability-table-named-or-local',
+   00104|     'positional-edit-decline', 'web-research-query', 'intent_web_search', 'code-search-fallback',
+   00105|     'research-continuation', 'latest_turn_answer', 'note_composition', 'general-change-fallback',
+   00106|     'web-research-final', 'capability-table-open-web'].map((arm) => ['plan_settled_routes', arm]),
+   00107| ];
+   00108| 
+   00109| /**
+   00110|  * Mirrors `fn checked_route_precedence` in rust/src/agentic_coding/planner/precedence.rs:
+   00111|  * throws unless planner-precedence.lino names exactly the coded arms in order.
+   00112|  */
+   00113| export function checkedRoutePrecedence() {
+   00114|   const declared = plannerPrecedence();
+   00115|   if (declared.length !== PLANNER_ROUTE_ARMS.length) {
+   00116|     throw new Error(agenticMessage('planner_precedence_count', { declared: declared.length, coded: PLANNER_ROUTE_ARMS.length }));
+   00117|   }
+   00118|   PLANNER_ROUTE_ARMS.forEach(([fn, name], index) => {
+   00119|     if (declared[index] !== name) {
+   00120|       throw new Error(agenticMessage('planner_precedence_order', { declared: declared[index], function: fn, name }));
+   00121|     }
+   00122|   });
+   00123|   return declared;
+   00124| }
+   00125| 
+   00126| /**
+   00127|  * The workspace_change arm of `fn plan_settled_routes`: a learned
+   00128|  * workspace-change procedure, or the module-function composition (PR #1188 T1)
+   00129|  * that is one of them.
+   00130|  */
+   00131| async function planWorkspaceChangeArm(task, messages, toolNames) {
+   00132|   // A copy or move followed by edits of the file it makes is planned sentence
+   00133|   // by sentence (PR #1188 G82).
+   00134|   return (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStep))
+   00135|     ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
+   00136|     ?? (await moduleFunction.planModuleFunctionStep(task, messages, toolNames))
+   00137|     // A bug report with a stated expectation is checked before anything is
+   00138|     // rewritten (PR #1188 T93).
+   00139|     ?? functionExpectation.planFunctionExpectationStep(task, messages, toolNames)
+   00140|     // An assertion of a stated call and value is added in the test file's own
+   00141|     // form, and the file is run (PR #1188 G13).
+   00142|     ?? testAssertion.planTestAssertionStep(task, messages, toolNames)
+   00143|     // A test asked for with no expected result is a question (PR #1188 G25).
+   00144|     ?? functionExpectation.planTestExpectationQuestion(task);
+   00145| }
+   00146| 
+   00147| /**
+   00148|  * Mirrors `fn request_fault_answer`: the seeded answer declining a request
+   00149|  * whose quotes do not pair (PR #1188 G71) or whose edit names several files
+   00150|  * (G91), or null.
+   00151|  * @param {string} task
+   00152|  */
+   00153| function requestFaultAnswer(task) {
+   00154|   const fault = quoteFault(task) ?? quoteNesting.nestedQuoteFault(task);
+   00155|   if (fault !== null) {
+   00156|     const answer = codeTask.renderSeededChange(fault.intent ?? `request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
+   00157|     return answer === null ? null : finalAnswer(answer);
+   00158|   }
+   00159|   // Steps joined by a sequence cue are each checked alone (PR #1188 G99).
+   00160|   if (requestSequence.sequenceSteps(task) !== null) return null;
+   00161|   const files = replaceList.severalEditTargets(task);
+   00162|   const clause = files === null ? replaceList.unplannedEditClause(task) : null;
+   00163|   const answer = files !== null
+   00164|     ? codeTask.renderSeededListChange('request_several_edit_targets', task, '', '{files}', files)
+   00165|     : clause !== null
+   00166|       ? codeTask.renderSeededChange('request-edit-clause-unplanned', task, '', [['{clause}', clause]])
+   00167|       : null;
+   00168|   return answer === null ? null : finalAnswer(answer);
+   00169| }
+   00170| 
+   00171| /**
+   00172|  * Mirrors `fn tool_capability` in rust/src/agentic_coding/planner.rs.
+   00173|  * @param {string} name
+   00174|  * @returns {string|null}
+   00175|  */
+   00176| export function toolCapability(name) {
+   00177|   return capabilityRouter.classifyTool(name);
+   00178| }
+   00179| 
+   00180| /**
+   00181|  * Mirrors `fn plan_chat_step` in rust/src/agentic_coding/planner.rs.
+   00182|  * @param {Array<object>} messages parsed chat messages
+   00183|  * @param {Array<string>} toolNames the grounded advertised tool names
+   00184|  * @returns {Promise<object|null>} an `AgenticPlan` or null
+   00185|  */
+   00186| export async function planChatStep(messages, toolNames) {
+   00187|   const received = latestUserRequest(messages);
+   00188|   if (received === null) return null;
+   00189|   const summary = harnessEnvelope.summarizeRequest(received);
+   00190|   if (summary !== null) return finalAnswer(summary);
+   00191|   const effective = continuedAgentTask(messages, received);
+   00192|   const restart = await restartFeedback.planRestart(effective ?? received, messages, toolNames);
+   00193|   const plan = restart ?? await planChatStepRoutes(messages, toolNames, received);
+   00194|   if (plan === null) return null;
+   00195|   return stopRepeatedFailure(stopRepeatedCall(plan, messages), messages);
+   00196| }
+   00197| 
+   00198| /** Mirrors `fn stop_repeated_call` in rust/src/agentic_coding/planner.rs. */
+   00199| function stopRepeatedCall(plan, messages) {
+   00200|   if (!isToolCalls(plan)) return plan;
+   00201|   const progress = Progress.scan(messages);
+   00202|   for (const call of plan.calls) {
+   00203|     const attempt = progress.repeatedCall(call);
+   00204|     if (attempt) {
+   00205|       return finalAnswer(fill('stuck_step_report', [
+   00206|         ['{step}', `${call.tool} ${call.arguments}`],
+   00207|         ['{result}', attempt.detail.trim()],
+   00208|       ]));
+   00209|     }
+   00210|   }
+   00211|   return plan;
+   00212| }
+   00213| 
+   00214| /** Mirrors `fn stop_repeated_failure` in rust/src/agentic_coding/planner.rs. */
+   00215| function stopRepeatedFailure(plan, messages) {
+   00216|   const REPEATED_FAILURES_THAT_STOP = 2;
+   00217|   if (!isToolCalls(plan)) return plan;
+   00218|   const progress = Progress.scan(messages);
+   00219|   const repeated = plan.calls.find((call) => progress.identicalFailuresOf(call.tool) >= REPEATED_FAILURES_THAT_STOP);
+   00220|   if (!repeated) return plan;
+   00221|   const failure = progress.latestFailureOfTool(repeated.tool);
+   00222|   if (!failure) return plan;
+   00223|   const prompt = latestUserRequest(messages) ?? '';
+   00224|   return finalAnswer(toolResult.renderFailure(repeated.tool, failure.detail, prompt));
+   00225| }
+   00226| 
+   00227| /** Mirrors `fn plan_chat_step_routes` in rust/src/agentic_coding/planner.rs. */
+   00228| async function planChatStepRoutes(messages, toolNames, received) {
+   00229|   checkedRoutePrecedence();
+   00230|   traceRoute('agentic_received', received);
+   00231|   const effective = continuedAgentTask(messages, received) ?? received;
+   00232|   const task = objectiveText(effective);
+   00233|   traceRoute('agentic_task', task);
+   00234|   if (handlerMatches('conversation_control', task) || isContinuationCue(task)
+   00235|     // An edit request's block is its payload: a `when … then` inside it is text
+   00236|     // being written, not a skill being taught (PR #1188 T57).
+   00237|     || (!hasAuthoritativeLiteralWrite(task) && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
+   00238|     return null;
+   00239|   }
+   00240|   // The computer_use arm. Ahead of it, quotes that do not pair leave no
+   00241|   // telling the quoted text from the instruction, so the request is declined
+   00242|   // before any arm reads its payload as words to act on (PR #1188 G71).
+   00243|   const computerUse = requestFaultAnswer(task) ?? computerUsePlanAgenticStep(messages, toolNames);
+   00244|   if (computerUse !== null) return computerUse;
+   00245|   if (hasAuthoritativeLiteralWrite(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
+   00246|     const general = composeGeneralChangePlan(task);
+   00247|     if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+   00248|   }
+   00249|   const answer = programContractAnswer(task);
+   00250|   if (answer !== null) {
+   00251|     if (answer.execution_recipe && ciWorkflow.requestedIn(task)) ciWorkflow.attach(answer.execution_recipe);
+   00252|     const rerouted = await commandReroute.planSymbolicCommandReroute(messages, toolNames, answer);
+   00253|     if (rerouted !== null) return rerouted;
+   00254|   }
+   00255|   const evidence = await evidenceRecord.planEvidenceRecordStep(task, messages, toolNames);
+   00256|   if (evidence !== null) return evidence;
+   00257|   return planSettledRoutes(task, messages, toolNames);
+   00258| }
+   00259| 
+   00260| /**
+   00261|  * Mirrors `fn plan_settled_routes` in rust/src/agentic_coding/planner.rs.
+   00262|  * @returns {Promise<object|null>}
+   00263|  */
+   00264| export async function planSettledRoutes(task, messages, toolNames) {
+   00265|   for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
+   00266|     const plan = await arm(task, messages, toolNames);
+   00267|     if (plan !== null) return plan;
+   00268|   }
+   00269|   if (statementAudit.isStatementAuditTask(task)) {
+   00270|     return planShellStep(messages, toolNames, statementAudit.commandFor(task));
+   00271|   }
+   00272|   if (metaSourceTreeRequest(task) !== null) {
+   00273|     const step = await conversationRecall.planSharedSolverStep(messages, toolNames);
+   00274|     if (step.kind === 'ready') return step.plan;
+   00275|   }
+   00276|   const shellOwned = shellCommand.semanticShellCommandForTask(task) !== null && composeGeneralChangePlan(task) === null;
+   00277|   const obligations = capabilityRouter.workspaceCreationTool(toolNames) !== null && !shellOwned
+   00278|     ? taskObligations.obligations(task)
+   00279|     : null;
+   00280|   if (obligations !== null) {
+   00281|     const next = taskObligations.nextStep(task, messages);
+   00282|     if (next && (next.kind === 'observe' || next.kind === 'decompose')) {
+   00283|       const general = composeGeneralChangePlan(next.node.clause);
+   00284|       return general === null ? null : await planGeneralChangeStep(messages, toolNames, general);
+   00285|     }
+   00286|     if (next && next.kind === 'report_gap') {
+   00287|       return finalAnswer(taskObligations.gapAnswer(next.node_id, next.clause, next.span, next.reason));
+   00288|     }
+   00289|     if (taskObligations.successfullyDischarged(task, messages)) {
+   00290|       for (const obligation of [...obligations].reverse()) {
+   00291|         const general = composeGeneralChangePlan(obligation.clause);
+   00292|         if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+   00293|       }
+   00294|       return null;
+   00295|     }
+   00296|     return null;
+   00297|   }
+   00298|   if (capabilityRouter.workspaceCreationTool(toolNames) !== null) {
+   00299|     const general = composeGeneralChangePlan(task);
+   00300|     if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+   00301|   }
+   00302|   const algorithm = algorithmLearning.compileTask(task);
+   00303|   if (algorithm !== null) return algorithmLearning.planStep(messages, toolNames, algorithm);
+   00304|   const compiled = procedure.compileTask(task);
+   00305|   if (compiled !== null) return procedure.planStep(messages, toolNames, compiled);
+   00306|   const report = learningReport.route(task);
+   00307|   if (report !== null) return learningReport.planReportStep(report, messages, toolNames);
+   00308|   const artifact = await codeArtifact.planCodeArtifactStep(task, messages, toolNames);
+   00309|   if (artifact !== null) return artifact;
+   00310|   for (const [predicate, step] of [
+   00311|     [selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep],
+   00312|     [dreamingAudit.isDreamingAuditTask, documentRecipe.planDreamingAuditStep],
+   00313|     [selfAst.isSelfAstTask, documentRecipe.planSelfAstStep],
+   00314|     [sourceLinks.isSourceLinksTask, documentRecipe.planSourceLinksStep],
+   00315|     [ledger.isLedgerTask, documentRecipe.planLedgerStep],
+   00316|     [explain.isExplainTask, documentRecipe.planExplainStep],
+   00317|     [changeRequest.isChangeRequestTask, documentRecipe.planChangeRequestStep],
+   00318|     [repairStrategy.isRepairStrategyTask, documentRecipe.planRepairStrategyStep],
+   00319|     [rebuildPlan.isRebuildTask, documentRecipe.planRebuildStep],
+   00320|     [googleTrendsLearning.isGoogleTrendsLearningTask, documentRecipe.planGoogleTrendsLearningStep],
+   00321|     [googleTrendsCatalog.isGoogleTrendsCatalogTask, documentRecipe.planGoogleTrendsCatalogStep],
+   00322|     [questionCatalog.isQuestionCatalogTask, documentRecipe.planQuestionCatalogStep],
+   00323|   ]) {
+   00324|     if (predicate(task)) return await step(messages, toolNames);
+   00325|   }
+   00326|   // The file-analysis arm. After its typed read, where a name or literal is
+   00327|   // used inside the workspace is a content search (PR #1188 T90): grep it,
+   00328|   // ahead of the file-name locate arm and web search.
+   00329|   const analysis = fileReadTaskFor(task);
+   00330|   const search = (analysis !== null && analysis.isAnalysis() ? await planFileReadStep(analysis, messages, toolNames) : null)
+   00331|     ?? workspaceSearch.planWorkspaceSearchStep(task, messages, toolNames)
+   00332|     // What a named module exports is answered from its declarations (T99).
+   00333|     ?? moduleExports.planModuleExportsStep(task, messages, toolNames)
+   00334|     // A summary of a named file summarizes the file's text (T100).
+   00335|     ?? await fileSummary.planFileSummaryStep(task, messages, toolNames);
+   00336|   if (search !== null) return search;
+   00337|   const reportFlow = await reportIssue.planReportFlow(messages, toolNames);
+   00338|   if (reportFlow !== null) return reportFlow;
+   00339|   const shared = await conversationRecall.planSharedSolverStep(messages, toolNames);
+   00340|   if (shared.kind === 'ready') return shared.plan;
+   00341|   if (shared.kind === 'defer') return null;
+   00342|   return planLaterRoutes(task, messages, toolNames);
+   00343| }
+   00344| 
+   00345| /** The second half of `plan_settled_routes`, from `follow_up_answer` on. */
+   00346| async function planLaterRoutes(task, messages, toolNames) {
+   00347|   const followUp = toolResult.followUpAnswer(messages, task);
+   00348|   if (followUp !== null) return finalAnswer(followUp);
+   00349|   const clarification = webResearch.contextualReferenceClarification(task);
+   00350|   if (clarification !== null) return finalAnswer(clarification);
+   00351|   if (webResearch.isDefinitionFollowup(task)) {
+   00352|     const query = await webResearch.definitionFollowupTopic(messages, task);
+   00353|     if (query === null) return finalAnswer(webResearch.definitionFollowupClarification(task));
+   00354|     const plan = await webResearch.planWebResearchStep(messages, toolNames, query, true);
+   00355|     if (plan !== null) return plan;
+   00356|   }
+   00357|   const edit = await intentRouter.planEditStep(task, messages, toolNames);
+   00358|   if (edit !== null) return edit;
+   00359|   if (toolFor(toolNames, Capability.Read) !== null) {
+   00360|     const fileTask = fileReadTaskFor(task);
+   00361|     if (fileTask !== null) return await planFileReadStep(fileTask, messages, toolNames);
+   00362|   }
+   00363|   for (const step of [
+   00364|     () => localSearch.planLocalSearchStep(messages, toolNames),
+   00365|     () => comparison.planComparisonStep(task, messages, toolNames),
+   00366|     () => capabilityRouter.planNamedCapabilityStep(task, messages, toolNames),
+   00367|   ]) {
+   00368|     const plan = await step();
+   00369|     if (plan !== null) return plan;
+   00370|   }
+   00371|   // A destructive shell intent read against a request about text inside a
+   00372|   // file is declined honestly, never composed (PR #1188).
+   00373|   const refused = shellCommand.refusedDestructiveEdit(task);
+   00374|   if (refused !== null) {
+   00375|     const decline = codeTask.renderSeededChange('file_text_unit', task, refused, []);
+   00376|     if (decline !== null) return finalAnswer(decline);
+   00377|   }
+   00378|   const command = shellCommand.shellCommandForTask(task);
+   00379|   if (command !== null) {
+   00380|     const fallback = await shellFileFallback.planStep(task, messages, toolNames, command);
+   00381|     if (fallback !== null) return fallback;
+   00382|     const mutating = await mutatingAction.planStep(command, messages, toolNames, task);
+   00383|     if (mutating !== null) return mutating;
+   00384|     return planShellStep(messages, toolNames, command);
+   00385|   }
+   00386|   const fileTask = fileReadTaskFor(task);
+   00387|   if (fileTask !== null) return await planFileReadStep(fileTask, messages, toolNames);
+   00388|   if (formalizationRecipe.isFormalizationTask(task)) {
+   00389|     return await formalizationRecipe.planFormalizationStep(task, messages, toolNames);
+   00390|   }
+   00391|   if (meaningDetail.isMeaningDetailTask(task)) return await documentRecipe.planMeaningDetailStep(task, messages, toolNames);
+   00392|   if (diagram.isDiagramTask(task)) return await documentRecipe.planDiagramStep(messages, toolNames);
+   00393|   return planOpenRoutes(task, messages, toolNames);
+   00394| }
+   00395| 
+   00396| /** The tail of `plan_settled_routes`, from `workspace_inspection` on. */
+   00397| async function planOpenRoutes(task, messages, toolNames) {
+   00398|   if (!toolResult.hasLatestTurnResult(messages)) {
+   00399|     const search = workspaceInspection.workspaceInspectionSearchForTask(task);
+   00400|     const tool = search === null ? null : toolFor(toolNames, Capability.Grep);
+   00401|     if (tool !== null) {
+   00402|       const args = { query: search.query, pattern: search.pattern };
+   00403|       if (search.include !== null && search.include !== undefined) args.include = search.include;
+   00404|       return planOne(tool, jsonText(args));
+   00405|     }
+   00406|   }
+   00407|   const structure = await taskStructure.planTaskStructureStep(messages, task);
+   00408|   if (structure !== null) return structure;
+   00409|   if (!webResearch.hasSuccessfulSearchResult(messages)) {
+   00410|     const routed = await capabilityRouter.planRoutedCapabilityStep(task, messages, toolNames, capabilityRouter.RoutingStage.NamedOrLocal);
+   00411|     if (routed !== null) return routed;
+   00412|   }
+   00413|   // An addition that quotes no text earns a question naming what is missing
+   00414|   // (PR #1188 G69); any other unplanned local edit is declined.
+   00415|   const unquoted = positionalEdit.unquotedAdditionPath(task);
+   00416|   if (unquoted !== null || positionalEdit.namesLocalEdit(task)) {
+   00417|     const question = unquoted === null ? null : codeTask.renderSeededChange('file_addition_unquoted', task, unquoted, []);
+   00418|     return question === null ? null : finalAnswer(question);
+   00419|   }
+   00420|   const researchQuery = await webResearch.webResearchQueryFor(messages);
+   00421|   if (researchQuery !== null) {
+   00422|     const plan = await webResearch.planWebResearchStep(messages, toolNames, researchQuery, false);
+   00423|     if (plan !== null) return plan;
+   00424|   }
+   00425|   const webSearch = await intentRouter.planWebSearchStep(task, messages, toolNames);
+   00426|   if (webSearch !== null) return webSearch;
+   00427|   if (!toolResult.hasLatestTurnResult(messages)) {
+   00428|     const query = shellCommand.codeSearchQueryForTask(task);
+   00429|     const tool = query === null ? null : toolFor(toolNames, Capability.Grep);
+   00430|     if (tool !== null) return planOne(tool, jsonText({ query, pattern: query }));
+   00431|   }
+   00432|   if (webResearch.hasSuccessfulSearchResult(messages)) {
+   00433|     const query = await webResearch.midResearchWebQueryFor(messages);
+   00434|     if (query !== null) {
+   00435|       const plan = await webResearch.planWebResearchStep(messages, toolNames, query, false);
+   00436|       if (plan !== null) return plan;
+   00437|     }
+   00438|   }
+   00439|   const latest = await toolResult.latestTurnAnswer(messages, toolNames, task);
+   00440|   if (latest !== null) return finalAnswer(latest);
+   00441|   const note = await noteComposition.planNoteCompositionStep(task, messages);
+   00442|   if (note !== null) return note;
+   00443|   const general = composeGeneralChangePlan(task);
+   00444|   if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+   00445|   const unresolved = await webResearch.unresolvedWebResearchQueryFor(messages);
+   00446|   if (unresolved !== null) {
+   00447|     const plan = await webResearch.planWebResearchStep(messages, toolNames, unresolved, false);
+   00448|     if (plan !== null) return plan;
+   00449|   }
+   00450|   return capabilityRouter.planRoutedCapabilityStep(task, messages, toolNames, capabilityRouter.RoutingStage.OpenWeb);
+   00451| }
+   00452| 
+   00453| /**
+   00454|  * Mirrors `fn plan_shell_step` in rust/src/agentic_coding/planner.rs.
+   00455|  * @returns {object} an `AgenticPlan`
+   00456|  */
+   00457| export function planShellStep(messages, toolNames, command) {
+   00458|   const progress = Progress.scan(messages);
+   00459|   if (progress.done(Capability.Run)) {
+   00460|     const outputs = progress.run_outputs;
+   00461|     return finalAnswer(toolResult.render(command, outputs.length ? outputs[outputs.length - 1] : '',
+   00462|       latestUserRequest(messages) ?? ''));
+   00463|   }
+   00464|   const tool = toolFor(toolNames, Capability.Run);
+   00465|   if (tool !== null) return planOne(tool, jsonText({ command }));
+   00466|   return finalAnswer(agenticMessage('shell_tool_missing', { command }));
+   00467| }
+   00468| 
+   
+   (End of file - total 468 lines)
+   </file>
+== answer ==
+Contents of `js/agentic/planner.mjs`:
+
+```text
+// Deterministic agentic planner: the next tool call or final answer from a
+// conversation and its advertised tools, without hidden neural state
+// (rust/src/agentic_coding/planner.rs).
+//
+// Every route arm is the twin of the Rust arm of the same name, run in the
+// order data/seed/planner-precedence.lino declares. Arms that consult the
+// host solver are async, so the cascade awaits each arm.
+
+import * as algorithmLearning from './algorithm_learning.mjs';
+import { Capability } from './capability.mjs';
+import * as capabilityRouter from './capability_router.mjs';
+import * as changeRequest from './change_request.mjs';
+import * as ciWorkflow from './ci_workflow.mjs';
+import * as codeArtifact from './code_artifact.mjs';
+import * as codeTask from './code_task.mjs';
+import * as commandReroute from './command_reroute.mjs';
+import * as comparison from './comparison.mjs';
+import { programContractAnswer } from './crate/coding_program_contract.mjs';
+import { sourceTreeRequest as metaSourceTreeRequest } from './crate/meta_translate.mjs';
+import { handlerMatches } from './crate/rule_interpreter.mjs';
+import { quoteFault } from './crate/normal_markov.mjs';
+import * as testAssertion from './test_assertion.mjs';
+import * as replaceList from './replace_list.mjs';
+import * as quoteNesting from './quote_nesting.mjs';
+import * as requestSequence from './request_sequence.mjs';
+import { plannerPrecedence } from './crate/seed.mjs';
+import { looksLikeSkillDescription } from './crate/skill_compiler.mjs';
+import { computerUsePlanAgenticStep } from './crate/computer_use_planner.mjs';
+import { latestUserRequest } from './content.mjs';
+import * as conversationRecall from './conversation_recall.mjs';
+import * as diagram from './diagram.mjs';
+import * as documentRecipe from './document_recipe.mjs';
+import * as dreamingAudit from './dreaming_audit.mjs';
+import * as evidenceRecord from './evidence_record.mjs';
+import * as fileSummary from './file_summary.mjs';
+import * as explain from './explain.mjs';
+import { fileReadTaskFor, planFileReadStep } from './file_read.mjs';
+import * as formalizationRecipe from './formalization_recipe.mjs';
+import * as functionExpectation from './function_expectation.mjs';
+import { planGeneralChangeStep } from './general_execution.mjs';
+import { composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText } from './general_planner.mjs';
+import * as gitCommit from './git_commit.mjs';
+import * as googleTrendsCatalog from './google_trends_catalog.mjs';
+import * as googleTrendsLearning from './google_trends_learning.mjs';
+import * as harnessEnvelope from './harness_envelope.mjs';
+import * as intentRouter from './intent_router.mjs';
+import * as learningReport from './learning_report.mjs';
+import * as ledger from './ledger.mjs';
+import * as localSearch from './local_search.mjs';
+import * as meaningDetail from './meaning_detail.mjs';
+import * as moduleExports from './module_exports.mjs';
+import * as moduleFunction from './module_function.mjs';
+import * as mutatingAction from './mutating_action.mjs';
+import * as noteComposition from './note_composition.mjs';
+import { agenticMessage } from './messages.mjs';
+import { finalAnswer, isToolCalls, jsonText, planOne } from './plan.mjs';
+import { continuedAgentTask, isContinuationCue, traceRoute } from './planner/continuation.mjs';
+import * as positionalEdit from './positional_edit.mjs';
+import * as procedure from './procedure.mjs';
+import { Progress } from './progress.mjs';
+import * as questionCatalog from './question_catalog.mjs';
+import * as rebuildPlan from './rebuild_plan.mjs';
+import * as repairStrategy from './repair_strategy.mjs';
+import * as reportIssue from './report_issue.mjs';
+import * as restartFeedback from './restart_feedback.mjs';
+import * as selfAst from './self_ast.mjs';
+import * as selfHeal from './self_heal.mjs';
+import * as shellCommand from './shell_command.mjs';
+import * as shellFileFallback from './shell_file_fallback.mjs';
+import * as sourceLinks from './source_links.mjs';
+import * as statementAudit from './statement_audit.mjs';
+import * as structuredDocument from './structured_document.mjs';
+import * as structuredEdit from './structured_edit.mjs';
+import * as taskObligations from './task_obligations.mjs';
+import * as taskStructure from './task_structure.mjs';
+import * as toolResult from './tool_result.mjs';
+import * as webResearch from './web_research.mjs';
+import { fill } from './work_item_steps.mjs';
+import * as workspaceChange from './workspace_change.mjs';
+import * as workspaceInspection from './workspace_inspection.mjs';
+import * as workspaceSearch from './workspace_search.mjs';
+
+const { toolFor } = capabilityRouter;
+
+/**
+ * Mirrors `PLANNER_ROUTE_ARMS` in rust/src/agentic_coding/planner/precedence.rs: the
+ * route arms of the cascade, named and in run order.
+ */
+export const PLANNER_ROUTE_ARMS = [
+  ['plan_chat_step_routes', 'conversation-control-decline'],
+  ['plan_chat_step_routes', 'computer_use'],
+  ['plan_chat_step_routes', 'authoritative-literal-write'],
+  ['plan_chat_step_routes', 'program_contract'],
+  ['plan_chat_step_routes', 'evidence_record'],
+  ...['git_commit', 'workspace_change', 'generated-source', 'structured_edit', 'structured_document',
+    'statement_audit', 'task_obligations', 'literal-write', 'algorithm_learning', 'procedure',
+    'learning_report', 'code_artifact', 'self_heal', 'dreaming_audit', 'self_ast', 'source_links',
+    'learning_ledger', 'explain', 'change_request', 'repair_strategy', 'rebuild_plan',
+    'google_trends_learning', 'google_trends_catalog', 'question_catalog', 'file-analysis',
+    'report-flow', 'conversation_recall', 'follow_up_answer', 'contextual_reference_clarification',
+    'definition-followup', 'intent-edit', 'typed-file-read', 'local_search', 'comparison',
+    'named-capability-table', 'shell_command', 'file_read', 'formalization_recipe', 'meaning_detail',
+    'diagram', 'workspace_inspection', 'task_structure', 'capability-table-named-or-local',
+    'positional-edit-decline', 'web-research-query', 'intent_web_search', 'code-search-fallback',
+    'research-continuation', 'latest_turn_answer', 'note_composition', 'general-change-fallback',
+    'web-research-final', 'capability-table-open-web'].map((arm) => ['plan_settled_routes', arm]),
+];
+
+/**
+ * Mirrors `fn checked_route_precedence` in rust/src/agentic_coding/planner/precedence.rs:
+ * throws unless planner-precedence.lino names exactly the coded arms in order.
+ */
+export function checkedRoutePrecedence() {
+  const declared = plannerPrecedence();
+  if (declared.length !== PLANNER_ROUTE_ARMS.length) {
+    throw new Error(agenticMessage('planner_precedence_count', { declared: declared.length, coded: PLANNER_ROUTE_ARMS.length }));
+  }
+  PLANNER_ROUTE_ARMS.forEach(([fn, name], index) => {
+    if (declared[index] !== name) {
+      throw new Error(agenticMessage('planner_precedence_order', { declared: declared[index], function: fn, name }));
+    }
+  });
+  return declared;
+}
+
+/**
+ * The workspace_change arm of `fn plan_settled_routes`: a learned
+ * workspace-change procedure, or the module-function composition (PR #1188 T1)
+ * that is one of them.
+ */
+async function planWorkspaceChangeArm(task, messages, toolNames) {
+  // A copy or move followed by edits of the file it makes is planned sentence
+  // by sentence (PR #1188 G82).
+  return (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStep))
+    ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
+    ?? (await moduleFunction.planModuleFunctionStep(task, messages, toolNames))
+    // A bug report with a stated expectation is checked before anything is
+    // rewritten (PR #1188 T93).
+    ?? functionExpectation.planFunctionExpectationStep(task, messages, toolNames)
+    // An assertion of a stated call and value is added in the test file's own
+    // form, and the file is run (PR #1188 G13).
+    ?? testAssertion.planTestAssertionStep(task, messages, toolNames)
+    // A test asked for with no expected result is a question (PR #1188 G25).
+    ?? functionExpectation.planTestExpectationQuestion(task);
+}
+
+/**
+ * Mirrors `fn request_fault_answer`: the seeded answer declining a request
+ * whose quotes do not pair (PR #1188 G71) or whose edit names several files
+ * (G91), or null.
+ * @param {string} task
+ */
+function requestFaultAnswer(task) {
+  const fault = quoteFault(task) ?? quoteNesting.nestedQuoteFault(task);
+  if (fault !== null) {
+    const answer = codeTask.renderSeededChange(fault.intent ?? `request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
+    return answer === null ? null : finalAnswer(answer);
+  }
+  // Steps joined by a sequence cue are each checked alone (PR #1188 G99).
+  if (requestSequence.sequenceSteps(task) !== null) return null;
+  const files = replaceList.severalEditTargets(task);
+  const clause = files === null ? replaceList.unplannedEditClause(task) : null;
+  const answer = files !== null
+    ? codeTask.renderSeededListChange('request_several_edit_targets', task, '', '{files}', files)
+    : clause !== null
+      ? codeTask.renderSeededChange('request-edit-clause-unplanned', task, '', [['{clause}', clause]])
+      : null;
+  return answer === null ? null : finalAnswer(answer);
+}
+
+/**
+ * Mirrors `fn tool_capability` in rust/src/agentic_coding/planner.rs.
+ * @param {string} name
+ * @returns {string|null}
+ */
+export function toolCapability(name) {
+  return capabilityRouter.classifyTool(name);
+}
+
+/**
+ * Mirrors `fn plan_chat_step` in rust/src/agentic_coding/planner.rs.
+ * @param {Array<object>} messages parsed chat messages
+ * @param {Array<string>} toolNames the grounded advertised tool names
+ * @returns {Promise<object|null>} an `AgenticPlan` or null
+ */
+export async function planChatStep(messages, toolNames) {
+  const received = latestUserRequest(messages);
+  if (received === null) return null;
+  const summary = harnessEnvelope.summarizeRequest(received);
+  if (summary !== null) return finalAnswer(summary);
+  const effective = continuedAgentTask(messages, received);
+  const restart = await restartFeedback.planRestart(effective ?? received, messages, toolNames);
+  const plan = restart ?? await planChatStepRoutes(messages, toolNames, received);
+  if (plan === null) return null;
+  return stopRepeatedFailure(stopRepeatedCall(plan, messages), messages);
+}
+
+/** Mirrors `fn stop_repeated_call` in rust/src/agentic_coding/planner.rs. */
+function stopRepeatedCall(plan, messages) {
+  if (!isToolCalls(plan)) return plan;
+  const progress = Progress.scan(messages);
+  for (const call of plan.calls) {
+    const attempt = progress.repeatedCall(call);
+    if (attempt) {
+      return finalAnswer(fill('stuck_step_report', [
+        ['{step}', `${call.tool} ${call.arguments}`],
+        ['{result}', attempt.detail.trim()],
+      ]));
+    }
+  }
+  return plan;
+}
+
+/** Mirrors `fn stop_repeated_failure` in rust/src/agentic_coding/planner.rs. */
+function stopRepeatedFailure(plan, messages) {
+  const REPEATED_FAILURES_THAT_STOP = 2;
+  if (!isToolCalls(plan)) return plan;
+  const progress = Progress.scan(messages);
+  const repeated = plan.calls.find((call) => progress.identicalFailuresOf(call.tool) >= REPEATED_FAILURES_THAT_STOP);
+  if (!repeated) return plan;
+  const failure = progress.latestFailureOfTool(repeated.tool);
+  if (!failure) return plan;
+  const prompt = latestUserRequest(messages) ?? '';
+  return finalAnswer(toolResult.renderFailure(repeated.tool, failure.detail, prompt));
+}
+
+/** Mirrors `fn plan_chat_step_routes` in rust/src/agentic_coding/planner.rs. */
+async function planChatStepRoutes(messages, toolNames, received) {
+  checkedRoutePrecedence();
+  traceRoute('agentic_received', received);
+  const effective = continuedAgentTask(messages, received) ?? received;
+  const task = objectiveText(effective);
+  traceRoute('agentic_task', task);
+  if (handlerMatches('conversation_control', task) || isContinuationCue(task)
+    // An edit request's block is its payload: a `when … then` inside it is text
+    // being written, not a skill being taught (PR #1188 T57).
+    || (!hasAuthoritativeLiteralWrite(task) && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
+    return null;
+  }
+  // The computer_use arm. Ahead of it, quotes that do not pair leave no
+  // telling the quoted text from the instruction, so the request is declined
+  // before any arm reads its payload as words to act on (PR #1188 G71).
+  const computerUse = requestFaultAnswer(task) ?? computerUsePlanAgenticStep(messages, toolNames);
+  if (computerUse !== null) return computerUse;
+  if (hasAuthoritativeLiteralWrite(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
+    const general = composeGeneralChangePlan(task);
+    if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+  }
+  const answer = programContractAnswer(task);
+  if (answer !== null) {
+    if (answer.execution_recipe && ciWorkflow.requestedIn(task)) ciWorkflow.attach(answer.execution_recipe);
+    const rerouted = await commandReroute.planSymbolicCommandReroute(messages, toolNames, answer);
+    if (rerouted !== null) return rerouted;
+  }
+  const evidence = await evidenceRecord.planEvidenceRecordStep(task, messages, toolNames);
+  if (evidence !== null) return evidence;
+  return planSettledRoutes(task, messages, toolNames);
+}
+
+/**
+ * Mirrors `fn plan_settled_routes` in rust/src/agentic_coding/planner.rs.
+ * @returns {Promise<object|null>}
+ */
+export async function planSettledRoutes(task, messages, toolNames) {
+  for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
+    const plan = await arm(task, messages, toolNames);
+    if (plan !== null) return plan;
+  }
+  if (statementAudit.isStatementAuditTask(task)) {
+    return planShellStep(messages, toolNames, statementAudit.commandFor(task));
+  }
+  if (metaSourceTreeRequest(task) !== null) {
+    const step = await conversationRecall.planSharedSolverStep(messages, toolNames);
+    if (step.kind === 'ready') return step.plan;
+  }
+  const shellOwned = shellCommand.semanticShellCommandForTask(task) !== null && composeGeneralChangePlan(task) === null;
+  const obligations = capabilityRouter.workspaceCreationTool(toolNames) !== null && !shellOwned
+    ? taskObligations.obligations(task)
+    : null;
+  if (obligations !== null) {
+    const next = taskObligations.nextStep(task, messages);
+    if (next && (next.kind === 'observe' || next.kind === 'decompose')) {
+      const general = composeGeneralChangePlan(next.node.clause);
+      return general === null ? null : await planGeneralChangeStep(messages, toolNames, general);
+    }
+    if (next && next.kind === 'report_gap') {
+      return finalAnswer(taskObligations.gapAnswer(next.node_id, next.clause, next.span, next.reason));
+    }
+    if (taskObligations.successfullyDischarged(task, messages)) {
+      for (const obligation of [...obligations].reverse()) {
+        const general = composeGeneralChangePlan(obligation.clause);
+        if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+      }
+      return null;
+    }
+    return null;
+  }
+  if (capabilityRouter.workspaceCreationTool(toolNames) !== null) {
+    const general = composeGeneralChangePlan(task);
+    if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+  }
+  const algorithm = algorithmLearning.compileTask(task);
+  if (algorithm !== null) return algorithmLearning.planStep(messages, toolNames, algorithm);
+  const compiled = procedure.compileTask(task);
+  if (compiled !== null) return procedure.planStep(messages, toolNames, compiled);
+  const report = learningReport.route(task);
+  if (report !== null) return learningReport.planReportStep(report, messages, toolNames);
+  const artifact = await codeArtifact.planCodeArtifactStep(task, messages, toolNames);
+  if (artifact !== null) return artifact;
+  for (const [predicate, step] of [
+    [selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep],
+    [dreamingAudit.isDreamingAuditTask, documentRecipe.planDreamingAuditStep],
+    [selfAst.isSelfAstTask, documentRecipe.planSelfAstStep],
+    [sourceLinks.isSourceLinksTask, documentRecipe.planSourceLinksStep],
+    [ledger.isLedgerTask, documentRecipe.planLedgerStep],
+    [explain.isExplainTask, documentRecipe.planExplainStep],
+    [changeRequest.isChangeRequestTask, documentRecipe.planChangeRequestStep],
+    [repairStrategy.isRepairStrategyTask, documentRecipe.planRepairStrategyStep],
+    [rebuildPlan.isRebuildTask, documentRecipe.planRebuildStep],
+    [googleTrendsLearning.isGoogleTrendsLearningTask, documentRecipe.planGoogleTrendsLearningStep],
+    [googleTrendsCatalog.isGoogleTrendsCatalogTask, documentRecipe.planGoogleTrendsCatalogStep],
+    [questionCatalog.isQuestionCatalogTask, documentRecipe.planQuestionCatalogStep],
+  ]) {
+    if (predicate(task)) return await step(messages, toolNames);
+  }
+  // The file-analysis arm. After its typed read, where a name or literal is
+  // used inside the workspace is a content search (PR #1188 T90): grep it,
+  // ahead of the file-name locate arm and web search.
+  const analysis = fileReadTaskFor(task);
+  const search = (analysis !== null && analysis.isAnalysis() ? await planFileReadStep(analysis, messages, toolNames) : null)
+    ?? workspaceSearch.planWorkspaceSearchStep(task, messages, toolNames)
+    // What a named module exports is answered from its declarations (T99).
+    ?? moduleExports.planModuleExportsStep(task, messages, toolNames)
+    // A summary of a named file summarizes the file's text (T100).
+    ?? await fileSummary.planFileSummaryStep(task, messages, toolNames);
+  if (search !== null) return search;
+  const reportFlow = await reportIssue.planReportFlow(messages, toolNames);
+  if (reportFlow !== null) return reportFlow;
+  const shared = await conversationRecall.planSharedSolverStep(messages, toolNames);
+  if (shared.kind === 'ready') return shared.plan;
+  if (shared.kind === 'defer') return null;
+  return planLaterRoutes(task, messages, toolNames);
+}
+
+/** The second half of `plan_settled_routes`, from `follow_up_answer` on. */
+async function planLaterRoutes(task, messages, toolNames) {
+  const followUp = toolResult.followUpAnswer(messages, task);
+  if (followUp !== null) return finalAnswer(followUp);
+  const clarification = webResearch.contextualReferenceClarification(task);
+  if (clarification !== null) return finalAnswer(clarification);
+  if (webResearch.isDefinitionFollowup(task)) {
+    const query = await webResearch.definitionFollowupTopic(messages, task);
+    if (query === null) return finalAnswer(webResearch.definitionFollowupClarification(task));
+    const plan = await webResearch.planWebResearchStep(messages, toolNames, query, true);
+    if (plan !== null) return plan;
+  }
+  const edit = await intentRouter.planEditStep(task, messages, toolNames);
+  if (edit !== null) return edit;
+  if (toolFor(toolNames, Capability.Read) !== null) {
+    const fileTask = fileReadTaskFor(task);
+    if (fileTask !== null) return await planFileReadStep(fileTask, messages, toolNames);
+  }
+  for (const step of [
+    () => localSearch.planLocalSearchStep(messages, toolNames),
+    () => comparison.planComparisonStep(task, messages, toolNames),
+    () => capabilityRouter.planNamedCapabilityStep(task, messages, toolNames),
+  ]) {
+    const plan = await step();
+    if (plan !== null) return plan;
+  }
+  // A destructive shell intent read against a request about text inside a
+  // file is declined honestly, never composed (PR #1188).
+  const refused = shellCommand.refusedDestructiveEdit(task);
+  if (refused !== null) {
+    const decline = codeTask.renderSeededChange('file_text_unit', task, refused, []);
+    if (decline !== null) return finalAnswer(decline);
+  }
+  const command = shellCommand.shellCommandForTask(task);
+  if (command !== null) {
+    const fallback = await shellFileFallback.planStep(task, messages, toolNames, command);
+    if (fallback !== null) return fallback;
+    const mutating = await mutatingAction.planStep(command, messages, toolNames, task);
+    if (mutating !== null) return mutating;
+    return planShellStep(messages, toolNames, command);
+  }
+  const fileTask = fileReadTaskFor(task);
+  if (fileTask !== null) return await planFileReadStep(fileTask, messages, toolNames);
+  if (formalizationRecipe.isFormalizationTask(task)) {
+    return await formalizationRecipe.planFormalizationStep(task, messages, toolNames);
+  }
+  if (meaningDetail.isMeaningDetailTask(task)) return await documentRecipe.planMeaningDetailStep(task, messages, toolNames);
+  if (diagram.isDiagramTask(task)) return await documentRecipe.planDiagramStep(messages, toolNames);
+  return planOpenRoutes(task, messages, toolNames);
+}
+
+/** The tail of `plan_settled_routes`, from `workspace_inspection` on. */
+async function planOpenRoutes(task, messages, toolNames) {
+  if (!toolResult.hasLatestTurnResult(messages)) {
+    const search = workspaceInspection.workspaceInspectionSearchForTask(task);
+    const tool = search === null ? null : toolFor(toolNames, Capability.Grep);
+    if (tool !== null) {
+      const args = { query: search.query, pattern: search.pattern };
+      if (search.include !== null && search.include !== undefined) args.include = search.include;
+      return planOne(tool, jsonText(args));
+    }
+  }
+  const structure = await taskStructure.planTaskStructureStep(messages, task);
+  if (structure !== null) return structure;
+  if (!webResearch.hasSuccessfulSearchResult(messages)) {
+    const routed = await capabilityRouter.planRoutedCapabilityStep(task, messages, toolNames, capabilityRouter.RoutingStage.NamedOrLocal);
+    if (routed !== null) return routed;
+  }
+  // An addition that quotes no text earns a question naming what is missing
+  // (PR #1188 G69); any other unplanned local edit is declined.
+  const unquoted = positionalEdit.unquotedAdditionPath(task);
+  if (unquoted !== null || positionalEdit.namesLocalEdit(task)) {
+    const question = unquoted === null ? null : codeTask.renderSeededChange('file_addition_unquoted', task, unquoted, []);
+    return question === null ? null : finalAnswer(question);
+  }
+  const researchQuery = await webResearch.webResearchQueryFor(messages);
+  if (researchQuery !== null) {
+    const plan = await webResearch.planWebResearchStep(messages, toolNames, researchQuery, false);
+    if (plan !== null) return plan;
+  }
+  const webSearch = await intentRouter.planWebSearchStep(task, messages, toolNames);
+  if (webSearch !== null) return webSearch;
+  if (!toolResult.hasLatestTurnResult(messages)) {
+    const query = shellCommand.codeSearchQueryForTask(task);
+    const tool = query === null ? null : toolFor(toolNames, Capability.Grep);
+    if (tool !== null) return planOne(tool, jsonText({ query, pattern: query }));
+  }
+  if (webResearch.hasSuccessfulSearchResult(messages)) {
+    const query = await webResearch.midResearchWebQueryFor(messages);
+    if (query !== null) {
+      const plan = await webResearch.planWebResearchStep(messages, toolNames, query, false);
+      if (plan !== null) return plan;
+    }
+  }
+  const latest = await toolResult.latestTurnAnswer(messages, toolNames, task);
+  if (latest !== null) return finalAnswer(latest);
+  const note = await noteComposition.planNoteCompositionStep(task, messages);
+  if (note !== null) return note;
+  const general = composeGeneralChangePlan(task);
+  if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
+  const unresolved = await webResearch.unresolvedWebResearchQueryFor(messages);
+  if (unresolved !== null) {
+    const plan = await webResearch.planWebResearchStep(messages, toolNames, unresolved, false);
+    if (plan !== null) return plan;
+  }
+  return capabilityRouter.planRoutedCapabilityStep(task, messages, toolNames, capabilityRouter.RoutingStage.OpenWeb);
+}
+
+/**
+ * Mirrors `fn plan_shell_step` in rust/src/agentic_coding/planner.rs.
+ * @returns {object} an `AgenticPlan`
+ */
+export function planShellStep(messages, toolNames, command) {
+  const progress = Progress.scan(messages);
+  if (progress.done(Capability.Run)) {
+    const outputs = progress.run_outputs;
+    return finalAnswer(toolResult.render(command, outputs.length ? outputs[outputs.length - 1] : '',
+      latestUserRequest(messages) ?? ''));
+  }
+  const tool = toolFor(toolNames, Capability.Run);
+  if (tool !== null) return planOne(tool, jsonText({ command }));
+  return finalAnswer(agenticMessage('shell_tool_missing', { command }));
+}
+```

@@ -10,206 +10,77 @@ meanings
     defined-by expectation
     role verifiable_expectation
     role verifiable_expectation_count
-    lexeme en
-      surface
-        text "how many … do i have"
-    lexeme ru
-      surface
-        text "сколько у меня …"
-    lexeme hi
-      surface
-        text "मेरे पास कितने … हैं"
-    lexeme zh
-      surface
-        text "我有多少…"
-    lexeme es
-      surface
-        text "cuántos … tengo"
+    lexeme en "how many … do i have"
+    lexeme ru "сколько у меня …"
+    lexeme hi "मेरे पास कितने … हैं"
+    lexeme zh "我有多少…"
+    lexeme es "cuántos … tengo"
   expectation_edited_text
     defined-by expectation
     role verifiable_expectation
     role verifiable_expectation_edited_text
-    lexeme en
-      surface
-        text "make this sentence more concise: …"
-    lexeme ru
-      surface
-        text "сделай это предложение короче: …"
-    lexeme hi
-      surface
-        text "इस वाक्य को अधिक संक्षिप्त बनाओ: …"
-    lexeme zh
-      surface
-        text "把这句话改得更简洁：…"
-    lexeme es
-      surface
-        text "haz esta frase más concisa: …"
+    lexeme en "make this sentence more concise: …"
+    lexeme ru "сделай это предложение короче: …"
+    lexeme hi "इस वाक्य को अधिक संक्षिप्त बनाओ: …"
+    lexeme zh "把这句话改得更简洁：…"
+    lexeme es "haz esta frase más concisa: …"
   expectation_unknown_value
     defined-by expectation
     role verifiable_expectation
     role verifiable_expectation_unknown
-    lexeme en
-      surface
-        text "find …:"
-    lexeme ru
-      surface
-        text "найди …:"
-    lexeme hi
-      surface
-        text "… ज्ञात करो:"
-    lexeme zh
-      surface
-        text "求 …："
-    lexeme es
-      surface
-        text "halla …:"
+    lexeme en "find …:"
+    lexeme ru "найди …:"
+    lexeme hi "… ज्ञात करो:"
+    lexeme zh "求 …："
+    lexeme es "halla …:"
   expectation_numeric
     defined-by expectation
     role verifiable_expectation
     role verifiable_expectation_numeric
-    lexeme en
-      surface
-        text "how many … left"
-      surface
-        text "how many … remain"
-      surface
-        text "how many litres …"
-    lexeme ru
-      surface
-        text "сколько … оста"
-      surface
-        text "сколько литров …"
-    lexeme hi
-      surface
-        text "कितने … बच"
-      surface
-        text "कितने लीटर …"
-    lexeme zh
-      surface
-        text "还剩多少"
-      surface
-        text "多少升"
-    lexeme es
-      surface
-        text "cuántos … quedan"
-      surface
-        text "cuántos litros …"
+    lexeme en "how many … left" "how many … remain" "how many litres …"
+    lexeme ru "сколько … оста" "сколько литров …"
+    lexeme hi "कितने … बच" "कितने लीटर …"
+    lexeme zh "还剩多少" "多少升"
+    lexeme es "cuántos … quedan" "cuántos litros …"
   verifiable_entity_separator
     defined-by relation
     role verifiable_entity_separator
-    lexeme en
-      surface
-        text and
-    lexeme ru
-      surface
-        text и
-    lexeme hi
-      surface
-        text और
-    lexeme zh
-      surface
-        text 和
-    lexeme es
-      surface
-        text y
+    lexeme en and
+    lexeme ru и
+    lexeme hi और
+    lexeme zh 和
+    lexeme es y
   quantity_determiner
     defined-by relation
     role verifiable_quantity_determiner
-    lexeme en
-      surface
-        text a
-      surface
-        text an
-    lexeme hi
-      surface
-        text एक
-    lexeme zh
-      surface
-        text 一
-    lexeme es
-      surface
-        text un
-      surface
-        text una
+    lexeme en a an
+    lexeme hi एक
+    lexeme zh 一
+    lexeme es un una
+  # The pattern expectation is read only by the data-gated pattern-inference arm
+  # (a run of atoms or a grid), never by the generic task reader, so it carries
+  # its own role and not the generic verifiable_expectation role.
   expectation_pattern
     defined-by expectation
-    role verifiable_expectation
     role verifiable_expectation_pattern
     lexeme en
-      surface
-        text pattern
-      surface
-        text sequence
-      surface
-        text palindrome
-      surface
-        text symmetry
-      surface
-        text periodic
-      surface
-        text repeat
-      surface
-        text "what comes next"
-      surface
-        text "next number"
-      surface
-        text "next term"
-      surface
-        text "continue the"
-      surface
-        text "continue this"
-    lexeme ru
-      surface
-        text закономерность
-      surface
-        text последовательность
-      surface
-        text палиндром
-    lexeme hi
-      surface
-        text पैटर्न
-      surface
-        text क्रम
-      surface
-        text पैलिंड्रोम
-    lexeme zh
-      surface
-        text 规律
-      surface
-        text 序列
-      surface
-        text 回文
-    lexeme es
-      surface
-        text patrón
-      surface
-        text secuencia
-      surface
-        text palíndromo
+      words pattern sequence palindrome symmetry periodic repeat "what comes next" "next number" "next term"
+      words "continue the" "continue this"
+    lexeme ru закономерность последовательность палиндром
+    lexeme hi पैटर्न क्रम पैलिंड्रोम
+    lexeme zh 规律 序列 回文
+    lexeme es patrón secuencia palíndromo
+  pattern_grid_symmetry_separator
+    defined-by expectation_pattern
+    grounding "src/sequences/inference.rs"
   quantity_flow_increase
     defined-by relation
     role verifiable_quantity_flow_increase
     grounding "https://en.wikipedia.org/wiki/Word_problem_(mathematics_education)"
-    lexeme en
-      surface
-        text makes
-        action quantity_before
-      surface
-        text holds
-        action quantity_before
-      surface
-        text receives
-        action quantity_before
-    lexeme ru
-      surface
-        text печёт
-        action quantity_before
-      surface
-        text баке
-        action quantity_before
-      surface
-        text получает
-        action quantity_before
+    lexeme en makes holds receives
+      action quantity_before
+    lexeme ru печёт баке получает
+      action quantity_before
     lexeme hi
       surface
         text बनाती
@@ -220,26 +91,10 @@ meanings
       surface
         text मिलता
         action quantity_after
-    lexeme zh
-      surface
-        text 做
-        action quantity_before
-      surface
-        text 水箱
-        action quantity_before
-      surface
-        text 收到
-        action quantity_before
-    lexeme es
-      surface
-        text hace
-        action quantity_before
-      surface
-        text contiene
-        action quantity_before
-      surface
-        text recibe
-        action quantity_before
+    lexeme zh 做 水箱 收到
+      action quantity_before
+    lexeme es hace contiene recibe
+      action quantity_before
   quantity_flow_decrease
     defined-by relation
     role verifiable_quantity_flow_decrease
@@ -254,139 +109,49 @@ meanings
       surface
         text "poured out"
         action quantity_after
-    lexeme ru
-      surface
-        text продаёт
-        action quantity_before
-      surface
-        text отдаёт
-        action quantity_before
-      surface
-        text вылили
-        action quantity_before
-    lexeme hi
-      surface
-        text बेचती
-        action quantity_after
-      surface
-        text देती
-        action quantity_after
-      surface
-        text "निकाल दिया"
-        action quantity_after
-    lexeme zh
-      surface
-        text 卖出
-        action quantity_before
-      surface
-        text 送给
-        action quantity_before
-      surface
-        text 倒出
-        action quantity_before
-    lexeme es
-      surface
-        text vende
-        action quantity_before
-      surface
-        text "le da"
-        action quantity_before
-      surface
-        text vierten
-        action quantity_before
+    lexeme ru продаёт отдаёт вылили
+      action quantity_before
+    lexeme hi बेचती देती "निकाल दिया"
+      action quantity_after
+    lexeme zh 卖出 送给 倒出
+      action quantity_before
+    lexeme es vende "le da" vierten
+      action quantity_before
   litre_to_millilitre
     defined-by litre
     defined-by millilitre
     role verifiable_unit_conversion
     grounding "https://www.bipm.org/en/measurement-units/si-prefixes"
-    lexeme en
-      surface
-        text 1000
+    lexeme en 1000
   medical_device
     grounded-in Q6554101
     defined-by concept
-    lexeme en
-      surface
-        text "medical instrument"
-      surface
-        text "medical instruments"
-    lexeme ru
-      surface
-        text "медицинский инструмент"
-      surface
-        text "медицинских инструментов"
-    lexeme hi
-      surface
-        text "चिकित्सा उपकरण"
-    lexeme zh
-      surface
-        text 医疗器械
-    lexeme es
-      surface
-        text "instrumento médico"
-      surface
-        text "instrumentos médicos"
+    lexeme en "medical instrument" "medical instruments"
+    lexeme ru "медицинский инструмент" "медицинских инструментов"
+    lexeme hi "चिकित्सा उपकरण"
+    lexeme zh 医疗器械
+    lexeme es "instrumento médico" "instrumentos médicos"
   stethoscope
     grounded-in Q162339
     defined-by medical_device
-    lexeme en
-      surface
-        text stethoscope
-      surface
-        text stethoscopes
-    lexeme ru
-      surface
-        text стетоскоп
-    lexeme hi
-      surface
-        text स्टेथोस्कोप
-    lexeme zh
-      surface
-        text 听诊器
-    lexeme es
-      surface
-        text estetoscopio
+    lexeme en stethoscope stethoscopes
+    lexeme ru стетоскоп
+    lexeme hi स्टेथोस्कोप
+    lexeme zh 听诊器
+    lexeme es estetoscopio
   scalpel
     grounded-in Q207172
     defined-by medical_device
-    lexeme en
-      surface
-        text scalpel
-      surface
-        text scalpels
-    lexeme ru
-      surface
-        text скальпель
-      surface
-        text скальпеля
-    lexeme hi
-      surface
-        text स्कैल्पेल
-    lexeme zh
-      surface
-        text 手术刀
-    lexeme es
-      surface
-        text bisturí
-      surface
-        text bisturís
+    lexeme en scalpel scalpels
+    lexeme ru скальпель скальпеля
+    lexeme hi स्कैल्पेल
+    lexeme zh 手术刀
+    lexeme es bisturí bisturís
   thermometer
     grounded-in Q646
     defined-by medical_device
-    lexeme en
-      surface
-        text thermometer
-      surface
-        text thermometers
-    lexeme ru
-      surface
-        text термометр
-    lexeme hi
-      surface
-        text थर्मामीटर
-    lexeme zh
-      surface
-        text 体温计
-    lexeme es
-      surface
-        text termómetro
+    lexeme en thermometer thermometers
+    lexeme ru термометр
+    lexeme hi थर्मामीटर
+    lexeme zh 体温计
+    lexeme es termómetro

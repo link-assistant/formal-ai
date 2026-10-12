@@ -1,15 +1,18 @@
 Q780
   aliases
     en ("Gallus gallus domesticus" chickens vistas)
+    es (gallina gallo "gallo domestico" "gallo doméstico" "Gallus gallus domesticus")
     ru ("кура" "петух" "цыплёнок" "куры" "Gallus gallus domesticus")
     zh ("雞" "家鸡")
   descriptions
     en "domesticated bird (specifically a red junglefowl) kept by humans primarily as a food source"
+    es "subespecie de aves"
     ru "вид домашней птицы"
     zh "家禽"
   id Q780
   labels
     en chicken
+    es pollo
     hi "मुर्गी"
     ru "курица"
     zh "鸡"

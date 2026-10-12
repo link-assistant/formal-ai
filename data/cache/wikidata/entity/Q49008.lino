@@ -1,0 +1,21 @@
+Q49008
+  aliases
+    en (prime "1-almost prime")
+    es ("numero primo" "números primos" "numeros primos" primo primos)
+    ru ("первоначальные числа" "простые числа")
+    zh ("质数" "素數" "素数")
+  descriptions
+    en "positive integer with exactly two divisors, 1 and itself"
+    es "número natural mayor que 1 y que solo tiene dos divisores enteros"
+    hi "अभाज्य संख्या जो सिर्फ़ अपने आप में ही भाजित हो"
+    ru "натуральное число, имеющее ровно два различных натуральных делителя — единицу и самого себя"
+    zh "只能被1和自身整除且大於1的自然數"
+  id Q49008
+  labels
+    en "prime number"
+    es "número primo"
+    hi "अभाज्य संख्या"
+    ru "простое число"
+    zh "質數"
+  type item
+success 1

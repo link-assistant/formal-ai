@@ -1,0 +1,193 @@
+{
+  "entities": {
+    "P856": {
+      "type": "property",
+      "id": "P856",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "official website"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "официальный сайт"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "आधिकारिक वेबसाइट"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "官方网站"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "URL of the official page of an item (current or former). Usage: If a listed URL no longer points to the official website, do not remove it, but see the \"Hijacked or dead websites\" section of the Talk page"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "URL веб-сайта этого элемента"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "項目的官方主頁的統一資源定位符（當前或以前）[如果主頁更改，請添加具有首選等級的附加聲明。 不要刪除以前的統一資源定位符]"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "site"
+          },
+          {
+            "language": "en",
+            "value": "web address"
+          },
+          {
+            "language": "en",
+            "value": "home page"
+          },
+          {
+            "language": "en",
+            "value": "homepage"
+          },
+          {
+            "language": "en",
+            "value": "official page"
+          },
+          {
+            "language": "en",
+            "value": "official web site"
+          },
+          {
+            "language": "en",
+            "value": "website (official)"
+          },
+          {
+            "language": "en",
+            "value": "web site"
+          },
+          {
+            "language": "en",
+            "value": "official URL"
+          },
+          {
+            "language": "en",
+            "value": "home page (official)"
+          },
+          {
+            "language": "en",
+            "value": "official site"
+          },
+          {
+            "language": "en",
+            "value": "website"
+          },
+          {
+            "language": "en",
+            "value": "URL (official)"
+          },
+          {
+            "language": "en",
+            "value": "homepage (official)"
+          },
+          {
+            "language": "en",
+            "value": "official homepage"
+          },
+          {
+            "language": "en",
+            "value": "www site (official)"
+          },
+          {
+            "language": "en",
+            "value": "site official"
+          },
+          {
+            "language": "en",
+            "value": "website official"
+          },
+          {
+            "language": "en",
+            "value": "site (official)"
+          },
+          {
+            "language": "en",
+            "value": "URL"
+          },
+          {
+            "language": "en",
+            "value": "URL official"
+          },
+          {
+            "language": "en",
+            "value": "personal website"
+          },
+          {
+            "language": "en",
+            "value": "URL of subject"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "сайт"
+          },
+          {
+            "language": "ru",
+            "value": "веб-сайт"
+          },
+          {
+            "language": "ru",
+            "value": "официальный веб-сайт"
+          },
+          {
+            "language": "ru",
+            "value": "URL официального сайта"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "网站地址"
+          },
+          {
+            "language": "zh",
+            "value": "网址"
+          },
+          {
+            "language": "zh",
+            "value": "官网"
+          },
+          {
+            "language": "zh",
+            "value": "官方網站"
+          },
+          {
+            "language": "zh",
+            "value": "官方網頁"
+          },
+          {
+            "language": "zh",
+            "value": "官网地址"
+          },
+          {
+            "language": "zh",
+            "value": "官網"
+          },
+          {
+            "language": "zh",
+            "value": "官方主頁"
+          },
+          {
+            "language": "zh",
+            "value": "主页"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

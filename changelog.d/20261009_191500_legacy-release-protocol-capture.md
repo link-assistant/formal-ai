@@ -1,0 +1,1 @@
+Keep browser-engine publication and lossless source-network recovery tooling at the independently selected workflow revision when building older stable tags. Bind source serialization to the selected checkout, retain the declared Cargo-derived engine package version, and refuse absent selected package layouts or changed protocol/source bytes.

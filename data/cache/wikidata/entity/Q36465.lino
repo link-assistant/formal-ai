@@ -5,11 +5,13 @@ Q36465
     zh ("麵粉")
   descriptions
     en "powder which is made by grinding cereal grains"
+    es "polvo fino que se obtiene del cereal molido y de otros alimentos ricos en almidón"
     hi "अनाज का पिसा हुआ रूप"
     ru "продукт питания, молотые зёрна злаков"
   id Q36465
   labels
     en flour
+    es harina
     hi "आटा"
     ru "мука"
     zh "穀粉"

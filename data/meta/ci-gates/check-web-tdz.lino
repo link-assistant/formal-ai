@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_web_tdz
+ci_gate check-web-tdz
   stage web
   description "The web app has no hook ordering bug that would throw a temporal-dead-zone error."
   run "npm run --prefix rust/tests/e2e check:web-tdz"
+  justification "A web worker that imported a symbol before its module was fully evaluated caused a Temporal Dead Zone error invisible in tests but crashing real sessions; the TDZ guard was added in #347 to catch static initialization-order violations before they ship."

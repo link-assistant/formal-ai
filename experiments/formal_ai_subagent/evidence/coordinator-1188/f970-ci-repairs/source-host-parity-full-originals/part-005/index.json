@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "part": 5,
+  "totalParts": 5,
+  "originalUnionIndexSHA256": null,
+  "originalLogicalMembersAcrossThisFiniteSelection": 27,
+  "logicalMembersThisPart": 27,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 27,
+  "sourceAndControllerInputBytes": 944271,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 28,
+  "newEncodedBlobs": 24,
+  "reusedPreviousEncodedBlobs": 4,
+  "newCompressedBytes": 61717,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 29
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 28
+    }
+  ],
+  "selectionSHA256": "a195edd6297671a747370b733e8cb0a5d18eca4a5b4a978967d9a8e4ce279370",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [],
+  "pending": [
+    "Own final archive controller running result excluded; no recursive completeness claimed"
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

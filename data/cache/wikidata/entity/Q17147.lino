@@ -1,12 +1,14 @@
 Q17147
   descriptions
     en "organic vessel in which an embryo first begins to develop"
+    es "envase orgánico en donde se desarrolla un embrión"
     hi "गोल या अण्डाकार जीवित वस्तु है जो बहुत से प्राणियों के मादा द्वारा पैदा की जाती है"
     ru "как стадия развития (яйцеклетка)"
     zh "胚胎的一种"
   id Q17147
   labels
     en egg
+    es huevo
     hi "अंडा"
     ru "яйцо"
     zh "卵"

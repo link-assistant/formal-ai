@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "毯子"
+        },
+        "es": {
+          "language": "es",
+          "value": "frazada"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "постельная принадлежность"
+        },
+        "es": {
+          "language": "es",
+          "value": "prenda textil larga y rectangular, utilizada en la cama para protección del frío"
         }
       },
       "aliases": {
@@ -36,6 +44,20 @@
           {
             "language": "zh",
             "value": "毛毯"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "manta"
+          },
+          {
+            "language": "es",
+            "value": "cobertor"
+          },
+          {
+            "language": "es",
+            "value": "cobija"
           }
         ]
       }

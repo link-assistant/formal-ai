@@ -1,0 +1,13 @@
+{
+  "transcript": [],
+  "answer": "This edit names several files (`js/agentic/tool_result.mjs`, `rust/src/agentic_coding/tool_result.rs`), and one edit request changes one file, so nothing was changed. Ask for the edit once for each file.",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

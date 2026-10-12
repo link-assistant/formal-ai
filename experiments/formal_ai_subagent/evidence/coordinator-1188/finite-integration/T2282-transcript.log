@@ -1,0 +1,218 @@
+>> bash {"command":"node --test rust/tests/web/authored-literal-planning.test.mjs rust/tests/web/general-plan-event-append.test.mjs"}
+   Output: TAP version 13
+   # Subtest: fenced creation preserves source with task labels, command cues and paths
+   ok 1 - fenced creation preserves source with task labels, command cues and paths
+     ---
+     duration_ms: 725.6215
+     ...
+   # Subtest: closed quoted whole-content consent replaces an existing source file
+   ok 2 - closed quoted whole-content consent replaces an existing source file
+     ---
+     duration_ms: 43.183166
+     ...
+   # Subtest: a plain replacement stays an edit even when its new literal names a file write
+   ok 3 - a plain replacement stays an edit even when its new literal names a file write
+     ---
+     duration_ms: 31.128166
+     ...
+   # Subtest: longer fences preserve payloads containing their own Markdown examples
+   ok 4 - longer fences preserve payloads containing their own Markdown examples
+     ---
+     duration_ms: 62.519958
+     ...
+   # Subtest: literal verification reads failure narratives and compact JSON as authored data
+   ok 5 - literal verification reads failure narratives and compact JSON as authored data
+     ---
+     duration_ms: 62.039667
+     ...
+   # Subtest: explicit verification failure still vetoes exact literal output
+   ok 6 - explicit verification failure still vetoes exact literal output
+     ---
+     duration_ms: 1.085458
+     ...
+   # Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+   ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+     ---
+     duration_ms: 259.649041
+     ...
+   # Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+   ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+     ---
+     duration_ms: 135.407333
+     ...
+   # Subtest: G125: quoted edit payloads with skill cues stay data
+   ok 9 - G125: quoted edit payloads with skill cues stay data
+     ---
+     duration_ms: 36.449334
+     ...
+   # Subtest: G125: genuine unquoted skill teaching keeps its guard
+   ok 10 - G125: genuine unquoted skill teaching keeps its guard
+     ---
+     duration_ms: 1.230416
+     ...
+   # Subtest: G125: a malformed quoted replacement changes nothing
+   ok 11 - G125: a malformed quoted replacement changes nothing
+     ---
+     duration_ms: 1.512792
+     ...
+   # Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+   ok 12 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+     ---
+     duration_ms: 717.449625
+     ...
+   # Subtest: an absent log is created, while a permission failure never overwrites it
+   ok 13 - an absent log is created, while a permission failure never overwrites it
+     ---
+     duration_ms: 11.156208
+     ...
+   # Subtest: read-back that loses earlier events cannot authorize the requested write
+   ok 14 - read-back that loses earlier events cannot authorize the requested write
+     ---
+     duration_ms: 2.517333
+     ...
+   # Subtest: run-only clients execute a quoted append and preserve history on retries
+   ok 15 - run-only clients execute a quoted append and preserve history on retries
+     ---
+     duration_ms: 29.446917
+     ...
+   # Subtest: write-only clients cannot overwrite an unobserved event stream
+   ok 16 - write-only clients cannot overwrite an unobserved event stream
+     ---
+     duration_ms: 1.546791
+     ...
+   # Subtest: simultaneous retries take the bounded lock and retain exactly one event
+   ok 17 - simultaneous retries take the bounded lock and retain exactly one event
+     ---
+     duration_ms: 1378.1745
+     ...
+   # Subtest: repository-root shell events use the same sandbox as file tools
+   ok 18 - repository-root shell events use the same sandbox as file tools
+     ---
+     duration_ms: 55.028833
+     ...
+   # Subtest: cached event readback excludes the separator before a later canonical record
+   ok 19 - cached event readback excludes the separator before a later canonical record
+     ---
+     duration_ms: 14.187833
+     ...
+   1..19
+   # tests 19
+   # suites 0
+   # pass 19
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 2338.971375
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/authored-literal-planning.test.mjs rust/tests/web/general-plan-event-append.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 725.6215
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 43.183166
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 31.128166
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 62.519958
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 62.039667
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.085458
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 259.649041
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 135.407333
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 36.449334
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 1.230416
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 1.512792
+  ...
+# Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+ok 12 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+  ---
+  duration_ms: 717.449625
+  ...
+# Subtest: an absent log is created, while a permission failure never overwrites it
+ok 13 - an absent log is created, while a permission failure never overwrites it
+  ---
+  duration_ms: 11.156208
+  ...
+# Subtest: read-back that loses earlier events cannot authorize the requested write
+ok 14 - read-back that loses earlier events cannot authorize the requested write
+  ---
+  duration_ms: 2.517333
+  ...
+# Subtest: run-only clients execute a quoted append and preserve history on retries
+ok 15 - run-only clients execute a quoted append and preserve history on retries
+  ---
+  duration_ms: 29.446917
+  ...
+# Subtest: write-only clients cannot overwrite an unobserved event stream
+ok 16 - write-only clients cannot overwrite an unobserved event stream
+  ---
+  duration_ms: 1.546791
+  ...
+# Subtest: simultaneous retries take the bounded lock and retain exactly one event
+ok 17 - simultaneous retries take the bounded lock and retain exactly one event
+  ---
+  duration_ms: 1378.1745
+  ...
+# Subtest: repository-root shell events use the same sandbox as file tools
+ok 18 - repository-root shell events use the same sandbox as file tools
+  ---
+  duration_ms: 55.028833
+  ...
+# Subtest: cached event readback excludes the separator before a later canonical record
+ok 19 - cached event readback excludes the separator before a later canonical record
+  ---
+  duration_ms: 14.187833
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2338.971375
+```

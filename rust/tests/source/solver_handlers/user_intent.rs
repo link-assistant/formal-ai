@@ -210,7 +210,7 @@ pub fn try_capabilities(
     }
     if more_capabilities {
         if prior_history_mentions_web_search(log) {
-            log.append("capabilities:history", "prior_web_search".to_owned());
+            log.append("capabilities:history", "prior-web-search".to_owned());
         }
         let body = localized_seed_response("capabilities_more", language.slug());
         return Some(finalize_simple(
@@ -341,6 +341,9 @@ pub fn try_proof_request_with_config(
     log: &mut EventLog,
     config: ProofRenderConfig,
 ) -> Option<SymbolicAnswer> {
+    let directed = crate::solver_helpers::request_after_leading_courtesy(prompt)
+        .map(crate::engine::normalize_prompt);
+    let normalized = directed.as_deref().unwrap_or(normalized);
     // A proof verb may be followed by whitespace or punctuation (",", ":",
     // "!", "."). Avoid false positives on longer words that just happen to
     // start with the verb (e.g. "prover" or "proven") by checking the

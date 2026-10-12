@@ -1,0 +1,10 @@
+{
+  "id": "T2379",
+  "dir": "/private/tmp/formal-ai-only-1188/quoted-obligations-e1VrEs",
+  "prompt": "First, create file a.txt with exactly this content «alpha». Second, create file b.txt with exactly this content «beta».",
+  "steps": 8,
+  "expected": {
+    "a.txt": "alpha",
+    "b.txt": "beta"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "physical-release-transfer-controls/v1",
+  "actualTarProduced": true,
+  "actualTarImported": true,
+  "actualExecutableModePreserved": true,
+  "fixtureNativeExecutable": false,
+  "positive": 1,
+  "refusals": 7,
+  "root": "/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/pr1188-transfer-GUk1yO",
+  "sourceScope": "Controlled real filesystem/tar transfer only; independent live Git/main/tag/compiler/native and GitHub artifact service not executed",
+  "githubExecuted": false,
+  "nativeExecuted": false,
+  "publication": false,
+  "coldTiming": false
+}

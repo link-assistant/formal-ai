@@ -9,23 +9,11 @@ meanings
     effect "the coding-task recognizer may bind a requested artifact"
     unit "not applicable"
     example write
-    lexeme en
-      surface
-        text write
-    lexeme ru
-      surface
-        text напиши
-    lexeme hi
-      surface
-        text लिखो
-      surface
-        text लिखें
-    lexeme zh
-      surface
-        text 写
-    lexeme es
-      surface
-        text escribe
+    lexeme en write
+    lexeme ru напиши
+    lexeme hi लिखो लिखें
+    lexeme zh 写
+    lexeme es escribe
   coding_request_implement
     defined-by action
     role coding_request_verb
@@ -33,23 +21,11 @@ meanings
     effect "the coding-task recognizer may bind a requested artifact"
     unit "not applicable"
     example implement
-    lexeme en
-      surface
-        text implement
-    lexeme ru
-      surface
-        text реализуй
-    lexeme hi
-      surface
-        text "लागू करो"
-      surface
-        text "लागू करें"
-    lexeme zh
-      surface
-        text 实现
-    lexeme es
-      surface
-        text implementa
+    lexeme en implement
+    lexeme ru реализуй
+    lexeme hi "लागू करो" "लागू करें"
+    lexeme zh 实现
+    lexeme es implementa
   coding_request_complete
     defined-by action
     role coding_request_verb
@@ -57,21 +33,11 @@ meanings
     effect "the coding-task recognizer may bind a requested artifact"
     unit "not applicable"
     example complete
-    lexeme en
-      surface
-        text complete
-    lexeme ru
-      surface
-        text дополни
-    lexeme hi
-      surface
-        text "पूरा करो"
-    lexeme zh
-      surface
-        text 完成
-    lexeme es
-      surface
-        text completa
+    lexeme en complete
+    lexeme ru дополни
+    lexeme hi "पूरा करो"
+    lexeme zh 完成
+    lexeme es completa
   coding_request_define
     defined-by action
     role coding_request_verb
@@ -79,21 +45,11 @@ meanings
     effect "the coding-task recognizer may bind a requested artifact"
     unit "not applicable"
     example define
-    lexeme en
-      surface
-        text define
-    lexeme ru
-      surface
-        text определи
-    lexeme hi
-      surface
-        text "परिभाषित करो"
-    lexeme zh
-      surface
-        text 定义
-    lexeme es
-      surface
-        text define
+    lexeme en define
+    lexeme ru определи
+    lexeme hi "परिभाषित करो"
+    lexeme zh 定义
+    lexeme es define
   coding_request_create
     defined-by create
     defined-by action
@@ -102,95 +58,52 @@ meanings
     effect "the coding-task recognizer may bind a requested artifact"
     unit "not applicable"
     example create
-    lexeme en
-      surface
-        text create
-    lexeme ru
-      surface
-        text создай
-    lexeme hi
-      surface
-        text बनाओ
-    lexeme zh
-      surface
-        text 创建
-    lexeme es
-      surface
-        text crea
+    lexeme en create
+    lexeme ru создай
+    lexeme hi बनाओ
+    lexeme zh 创建
+    lexeme es crea
   coding_request_function
     defined-by function
     defined-by code
     role coding_request_object
+    role coding-source-artifact-kind
     precondition "a request verb governs this artifact noun"
     effect "the requested artifact is a callable function"
     unit "not applicable"
     example function
-    lexeme en
-      surface
-        text function
-    lexeme ru
-      surface
-        text функция
-      surface
-        text функцию
-    lexeme hi
-      surface
-        text फ़ंक्शन
-      surface
-        text फंक्शन
-    lexeme zh
-      surface
-        text 函数
-    lexeme es
-      surface
-        text función
+    lexeme en function
+    lexeme ru функция функцию
+    lexeme hi फ़ंक्शन फंक्शन
+    lexeme zh 函数
+    lexeme es función
   coding_request_method
     defined-by function
     defined-by code
     role coding_request_object
+    role coding-source-artifact-kind
     precondition "a request verb governs this artifact noun"
     effect "the requested artifact is a method"
     unit "not applicable"
     example method
-    lexeme en
-      surface
-        text method
-    lexeme ru
-      surface
-        text метод
-    lexeme hi
-      surface
-        text मेथड
-    lexeme zh
-      surface
-        text 方法
-    lexeme es
-      surface
-        text método
+    lexeme en method
+    lexeme ru метод
+    lexeme hi मेथड
+    lexeme zh 方法
+    lexeme es método
   coding_request_program
     defined-by code
     role coding_request_object
+    role coding-source-artifact-kind
     precondition "a request verb governs this artifact noun"
     effect "the requested artifact is a program"
     unit "not applicable"
     example program
-    lexeme en
-      surface
-        text program
-    lexeme ru
-      surface
-        text программа
-      surface
-        text программу
-    lexeme hi
-      surface
-        text प्रोग्राम
-    lexeme zh
-      surface
-        text 程序
-    lexeme es
-      surface
-        text programa
+    lexeme en program
+    lexeme ru программа программу
+    lexeme hi प्रोग्राम
+    lexeme zh 程序
+    lexeme es programa
   coding_example_request
     defined-by request
     defined-by example
@@ -199,33 +112,11 @@ meanings
     effect "the coding source handler may retrieve an attributed example"
     unit "not applicable"
     example "give me an example"
-    lexeme en
-      surface
-        text "give me example"
-      surface
-        text "give me an example"
-      surface
-        text example
-    lexeme ru
-      surface
-        text "покажи пример"
-      surface
-        text "дай пример"
-    lexeme hi
-      surface
-        text "उदाहरण दें"
-      surface
-        text उदाहरण
-    lexeme zh
-      surface
-        text 示例
-      surface
-        text 例子
-    lexeme es
-      surface
-        text "dame un ejemplo"
-      surface
-        text ejemplo
+    lexeme en "give me example" "give me an example" example
+    lexeme ru "покажи пример" "дай пример"
+    lexeme hi "उदाहरण दें" उदाहरण
+    lexeme zh 示例 例子
+    lexeme es "dame un ejemplo" ejemplo
   coding_execute_url_request
     defined-by request
     defined-by execute
@@ -234,28 +125,242 @@ meanings
     effect "the coding source handler may run a fetched example in a bounded workspace"
     unit "not applicable"
     example execute
+    lexeme en execute run
+    lexeme ru выполни запусти
+    lexeme hi चलाएँ निष्पादित
+    lexeme zh 执行 运行
+    lexeme es ejecuta ejecutar
+  code_example_decomposition_request
+    defined-by request
+    role code_example_decomposition_cue
+    precondition "the first line of a prompt asks for the parts of the code examples on the page the following lines supply"
+    effect "the supplied-page route decomposes each code block in a registered grammar into its meaningful parts (issue 1164 R1164-11)"
+    unit "not applicable"
+    example "the parts of the code example"
     lexeme en
-      surface
-        text execute
-      surface
-        text run
-    lexeme ru
-      surface
-        text выполни
-      surface
-        text запусти
-    lexeme hi
-      surface
-        text चलाएँ
-      surface
-        text निष्पादित
-    lexeme zh
-      surface
-        text 执行
-      surface
-        text 运行
-    lexeme es
-      surface
-        text ejecuta
-      surface
-        text ejecutar
+      words "parts of the code example" "parts of the code examples" "decompose the code example"
+      words "decompose the code examples"
+    lexeme ru "части примера кода" "разбери пример кода"
+    lexeme hi "कोड उदाहरण के भाग"
+    lexeme zh 代码示例的组成部分
+    lexeme es "partes del ejemplo de código"
+  code_example_decomposition
+    defined-by answer
+    role code_example_decomposition_answer
+    precondition "a supplied page carries a code block in a language with a registered grammar"
+    effect "the answer lists each decomposed part as its kind and source text, one per line"
+    unit "not applicable"
+    example "entry_point main"
+    grounding "data/seed/code-node-decomposition.lino"
+  coding-source-artifact-module
+    defined-by code
+    role coding-source-artifact-kind
+    precondition "an authoring action governs this source artifact noun"
+    effect "the output operand requires complete checked source rather than an audit report"
+    unit "not applicable"
+    example "source module"
+    lexeme en module source code
+    lexeme ru модуль модуля исходник код
+    lexeme hi मॉड्यूल स्रोत कोड
+    lexeme zh 模块 源码 代码
+    lexeme es módulo fuente código
+  evidence-report-artifact
+    defined-by document
+    role evidence-report-artifact-kind
+    precondition "a delivery action governs this findings artifact noun"
+    effect "the output operand accepts observed findings rather than requiring executable source"
+    unit "not applicable"
+    example report
+    lexeme en report reports notes findings observations summary
+    lexeme ru отчёт отчет заметки результаты наблюдения
+    lexeme hi रिपोर्ट टिप्पणियां निष्कर्ष अवलोकन
+    lexeme zh 报告 笔记 发现 观察
+    lexeme es informe informes notas hallazgos observaciones resumen
+
+  coding-source-artifact-kind
+    defined-by type
+    defined-by code
+    precondition "the requested output operand is an executable source artifact"
+    effect "a source delivery requires complete syntax-certified bytes and an observed or synthesized origin receipt"
+    unit "not applicable"
+    example "write a source module"
+    grounding "js/agentic/final_payload.mjs"
+  evidence-report-artifact-kind
+    defined-by type
+    defined-by document
+    precondition "the requested output operand is a report of observed results"
+    effect "a report may contain findings without certifying those bytes as a complete source module"
+    unit "not applicable"
+    example "write the findings report"
+    grounding "js/agentic/final_payload.mjs"
+  module
+    defined-by code
+    precondition "source declarations form one loadable coding unit"
+    effect "the noun binds the source artifact operand rather than a findings report"
+    unit "not applicable"
+    example "source module"
+    lexeme en module
+    lexeme ru модуль
+    lexeme hi मॉड्यूल
+    lexeme zh 模块
+    lexeme es módulo
+  reports
+    defined-by report
+    precondition "the noun denotes multiple reports or a reporting artifact"
+    effect "the inflected surface retains the report meaning and accepts observed results"
+    unit "not applicable"
+    example "reports"
+    lexeme en reports
+    lexeme ru отчёты отчеты
+    lexeme hi रिपोर्टें
+    lexeme zh 报告
+    lexeme es informes
+  findings
+    defined-by observation
+    precondition "an inspection produced observed results"
+    effect "the noun denotes those results without claiming executable source"
+    unit "not applicable"
+    example "inspection findings"
+    lexeme en findings
+    lexeme ru результаты
+    lexeme hi निष्कर्ष
+    lexeme zh 发现
+    lexeme es hallazgos
+  observations
+    defined-by observation
+    precondition "one or more tool outcomes have been observed"
+    effect "the plural noun retains the observation meaning and its provenance"
+    unit "not applicable"
+    example "tool observations"
+    lexeme en observations
+    lexeme ru наблюдения
+    lexeme hi अवलोकन
+    lexeme zh 观察
+    lexeme es observaciones
+
+  document
+    role ontology_category
+    defined-by entity
+    defined-by knowledge
+    precondition "information is represented as an identifiable body of recorded content"
+    effect "the body may be inspected, retained, and delivered without treating it as executable source"
+    unit "one recorded content body"
+    example "a findings document"
+    grounding "js/agentic/final_payload.mjs"
+  report
+    role ontology_category
+    defined-by document
+    defined-by observation
+    precondition "a recorded content body presents the results of an observation or investigation"
+    effect "the delivered body communicates findings and the evidence supporting them"
+    unit "one findings document"
+    example "a report of actual source reads and verification results"
+    grounding "js/agentic/final_payload.mjs"
+  source-links-report-cue
+    defined-by source
+    role source-links-report-cue
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "source links"
+    lexeme en "source links" "source graph" source-links
+    lexeme ru "ссылки исходного кода" "граф исходного кода"
+    lexeme hi "स्रोत लिंक" "स्रोत ग्राफ"
+    lexeme zh 源码链接 源码图
+    lexeme es "enlaces de código fuente" "grafo del código fuente"
+  source-recompilation-action
+    defined-by action
+    role source-recompilation-action
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "recompile"
+    lexeme en recompile
+    lexeme ru пересобери перекомпилируй
+    lexeme hi "पुनः संकलित करो"
+    lexeme zh 重新编译
+    lexeme es recompila
+  source-projection-scope
+    defined-by concept
+    role source-projection-scope
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "whole"
+    lexeme en entire whole
+    lexeme ru весь целиком
+    lexeme hi पूरा समस्त
+    lexeme zh 全部 整个
+    lexeme es entero todo completo
+  source-projection-origin
+    defined-by source
+    role source-projection-origin
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "source"
+    lexeme en source
+    lexeme ru исходник "исходный код"
+    lexeme hi स्रोत
+    lexeme zh 源码
+    lexeme es fuente "código fuente"
+  source-projection-return
+    defined-by action
+    role source-projection-return
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "back"
+    lexeme en back
+    lexeme ru обратно
+    lexeme hi वापस
+    lexeme zh 返回
+    lexeme es vuelta regreso
+  back
+    defined-by concept
+    role source-projection-return
+    precondition "a source projection request asks to return code from an already bound graph"
+    effect "selects the return direction of the requested source projection without authorizing another task"
+    unit "not applicable"
+    example "source code back"
+    grounding "js/agentic/file_read/source.mjs; data/seed/meanings-coding-request.lino"
+  entire
+    defined-by concept
+    role source-projection-scope
+    precondition "a source projection request quantifies its owned source operand"
+    effect "selects all of that source operand while preserving its declared identity and scope"
+    unit "not applicable"
+    example "the entire source module"
+    grounding "js/agentic/file_read/source.mjs; data/seed/meanings-coding-structure.lino"
+  links
+    defined-by concept
+    role source-projection-format
+    precondition "a bound source projection asks for the graph format recognized by the existing links cue"
+    effect "names the Links Notation representation of the requested source graph; it does not declare provider status"
+    unit "not applicable"
+    example "project the source into links"
+    grounding "js/agentic/file_read/source.mjs; data/seed/meanings-skill-procedure.lino"
+  recompile
+    defined-by concept
+    role source-recompilation-action
+    precondition "a source projection request names a supported code reconstruction action"
+    effect "selects reconstruction from bound source graph bytes; any execution remains separately required and observed"
+    unit "not applicable"
+    example "recompile the source graph"
+    grounding "js/agentic/file_read/source.mjs; rust/src/repository_workspace/operation.rs"
+  regressions
+    defined-by concept
+    role coding_artifact_kind
+    precondition "a request owns the existing regression test artifact kind in plural"
+    effect "selects regression test artifacts for the owned target; a trailing acceptance clause alone does not bind a different target kind"
+    unit "not applicable"
+    example "create regressions for the named source"
+    grounding "js/agentic/general_planner.mjs; data/seed/meanings-coding-tasks.lino"
+  source-links
+    defined-by concept
+    role source-links-report-cue
+    precondition "an instruction requests the graph representation of an identified source"
+    effect "names source graph reporting with the original source identity and bytes retained"
+    unit "not applicable"
+    example "report source-links for the bound function"
+    grounding "js/agentic/file_read/source.mjs; data/seed/meanings-coding-request.lino"

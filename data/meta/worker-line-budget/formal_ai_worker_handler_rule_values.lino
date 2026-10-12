@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_handler_rule_values.js"
+  ceiling 227
+  rationale "Browser twin of rust/src/rule_interpreter/values.rs, split out of formal_ai_worker_handler_rules.js for R1188-U20 (2026-10-08): the condition subjects (now with the command head), the captured value sources moved unchanged (resolve values, quoted phrase, role slot), and the generic transform value source with its named text-transform registry, whose first entry is requirement_list. The handler_rules shard fell by what moved here, so the requirement-listing route grew no existing module."

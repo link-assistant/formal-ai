@@ -1,0 +1,17 @@
+# R1188-U18 page formalization corpus: the Wikipedia topics fetched in every
+# language Formal AI speaks. `scripts/fetch-web-formalization-corpus.mjs
+# --write` resolves each English title through its interlanguage links and
+# stores the intro section of every page, with its source URL and revision id,
+# in one file per language next to this one. The topics are ordinary
+# encyclopedia subjects chosen before any measurement; no code names them.
+web-formalization-topics
+  source-language en
+  languages "en ru hi zh es"
+  topic Moon
+  topic Sun
+  topic Water
+  topic Cat
+  topic Dog
+  topic Apple
+  topic Tree
+  topic Mathematics

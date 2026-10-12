@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "輪"
+        },
+        "es": {
+          "language": "es",
+          "value": "rueda"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "一种重要的机械装置"
+        },
+        "es": {
+          "language": "es",
+          "value": "pieza mecánica circular que gira alrededor de un eje"
         }
       },
       "aliases": {

@@ -187,6 +187,12 @@ impl ModuleCensus {
         }
     }
 
+    /// The immutable source whose identity and declaration spans this census records.
+    #[must_use]
+    pub fn source(&self) -> &str {
+        &self.source
+    }
+
     /// The abstract-syntax node census, present only at
     /// [`CensusFidelity::FullAst`]. Computed on first use and memoized.
     #[must_use]
@@ -251,6 +257,79 @@ impl ModuleCensus {
         }
         out
     }
+}
+
+/// The row of a census document that names its module.
+const TARGET_ROW: &str = "  target ";
+/// The row of a census document that opens its symbol table.
+const SYMBOLS_ROW: &str = "  symbols";
+/// The indentation of one symbol-table row.
+const SYMBOL_ROW_INDENT: &str = "    ";
+/// The indentation of a row nested below a symbol-table row.
+const NESTED_ROW_INDENT: &str = "     ";
+
+/// A committed census document read back: the module it names, that module's
+/// fidelity tier and its declared symbols.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CensusDocument {
+    /// The module the document's `target` row names.
+    pub path: String,
+    /// The tier [`fidelity_for`] gives that module.
+    pub fidelity: CensusFidelity,
+    /// The rows of the document's `symbols` table, in document order.
+    pub symbols: Vec<SymbolSpan>,
+}
+
+/// Parse one committed census document, the inverse of
+/// [`ModuleCensus::links_notation`] for the module path and its symbol table,
+/// or `None` when the document names no module.
+///
+/// Mirrored by `moduleFromDocument` in `js/agentic/crate/self_ast_census.mjs`,
+/// whose workspace census is built from the committed documents.
+#[must_use]
+pub fn module_from_document(text: &str) -> Option<CensusDocument> {
+    let mut path = None;
+    let mut symbols = Vec::new();
+    let mut in_symbols = false;
+    for line in text.lines() {
+        if let Some(target) = line.strip_prefix(TARGET_ROW) {
+            path = Some(target.trim().to_owned());
+        }
+        if line == SYMBOLS_ROW {
+            in_symbols = true;
+            continue;
+        }
+        if in_symbols && line.starts_with(SYMBOL_ROW_INDENT) && !line.starts_with(NESTED_ROW_INDENT)
+        {
+            let mut fields = line.split_whitespace();
+            if let (Some(kind), Some(name)) = (fields.next(), fields.next()) {
+                let mut line_number = || {
+                    fields
+                        .next()
+                        .and_then(|value| value.parse().ok())
+                        .unwrap_or_default()
+                };
+                let start_line = line_number();
+                let end_line = line_number();
+                symbols.push(SymbolSpan {
+                    kind: kind.to_owned(),
+                    name: name.to_owned(),
+                    start_line,
+                    end_line,
+                });
+            }
+            continue;
+        }
+        if !line.starts_with(SYMBOL_ROW_INDENT) {
+            in_symbols = false;
+        }
+    }
+    let path = path?;
+    Some(CensusDocument {
+        fidelity: fidelity_for(&path),
+        path,
+        symbols,
+    })
 }
 
 /// Where a `path:symbol` reference lands in the workspace census.

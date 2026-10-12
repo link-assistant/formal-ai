@@ -1,0 +1,17 @@
+language en
+lemma adapter
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a musician who adapts a composition for particular voices or instruments or for another style of performance"
+    id oewn-09829330-n
+    partOfSpeech n
+    synonyms (arranger transcriber)
+  entry
+    definition "device that enables something to be used in a way different from that for which it was intended or makes different pieces of apparatus compatible"
+    id oewn-02681751-n
+    partOfSpeech n
+    synonyms (adaptor)
+source "oewn:2024"

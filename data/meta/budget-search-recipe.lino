@@ -201,7 +201,7 @@ integration_loop_step_7
 test_unit_budget_search
   record_type "meta_test"
   suite "budget_search"
-  test_file "tests/unit/budget_search.rs"
+  test_file "tests/unit/solver/budget_search.rs"
   pins "The fixture reachability problem is solved under a sufficient budget, stays unknown with search: evidence under budget 0, is deterministic across runs and instances, respects the allowed operator set, is recognised across en/ru/hi/zh, proposes a gated (never promotable) skill on success, and stays inert for ordinary calculations."
 test_specification_budget_search
   record_type "meta_test"

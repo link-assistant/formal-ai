@@ -1,14 +1,17 @@
 Q9430
   aliases
     en (sea oceans oceanic)
+    es (oceano mar "océanos" oceanos "oceánico" "oceánica" "oceánicos" "oceánicas" oceanico oceanica oceanicos oceanicas)
   descriptions
     en "very large body of saline water"
+    es "gran extensión de agua"
     hi "नमकीन पानी का बड़ा शरीर"
     ru "крупнейший водный объект, составляющий часть Мирового океана"
     zh "地球上巨大的鹽水體"
   id Q9430
   labels
     en ocean
+    es "océano"
     hi "महासागर"
     ru "океан"
     zh "海洋"

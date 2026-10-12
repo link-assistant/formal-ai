@@ -1,0 +1,22 @@
+>> bash {"command":"cat /private/tmp/pr1188-source-network-parallel-shard-result.json"}
+   Output: {
+     "started": "2026-10-09T06:31:33.741Z",
+     "completed": "2026-10-09T06:34:10.148Z",
+     "code": 0,
+     "signal": null,
+     "log": "/private/tmp/pr1188-source-network-parallel-shard.log"
+   }
+   
+   Exit Code: 0
+== answer ==
+The `cat /private/tmp/pr1188-source-network-parallel-shard-result.json` command completed. Output:
+
+```json
+{
+  "code": 0,
+  "completed": "2026-10-09T06:34:10.148Z",
+  "log": "/private/tmp/pr1188-source-network-parallel-shard.log",
+  "signal": null,
+  "started": "2026-10-09T06:31:33.741Z"
+}
+```

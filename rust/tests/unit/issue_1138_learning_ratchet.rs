@@ -37,8 +37,8 @@ fn adopted_methods_equal_methods_with_a_qualifying_effect() {
     let ratchet = fs::read_to_string(root.join("data/meta/adoption-effect-ratchet.lino"))
         .expect("ratchet readable");
     parse_indented(&ratchet).expect("ratchet is valid Links Notation");
-    assert!(ratchet.contains("measure adopted_items_with_qualifying_effect"));
-    assert!(ratchet.contains("invariant \"equals adopted_items\""));
+    assert!(ratchet.contains("measure adopted-items-with-qualifying-effect"));
+    assert!(ratchet.contains("invariant \"equals adopted-items\""));
 }
 
 #[test]
@@ -65,7 +65,7 @@ fn effective_adoption_is_executable_and_the_unread_adoption_count_is_zero() {
     let ratchet = fs::read_to_string(root.join("data/meta/adoption-effect-ratchet.lino"))
         .expect("ratchet readable");
     let unread = ratchet
-        .split("measure learned_items_never_read_back")
+        .split("measure learned-items-never-read-back")
         .nth(1)
         .and_then(|tail| {
             tail.lines()
@@ -75,10 +75,10 @@ fn effective_adoption_is_executable_and_the_unread_adoption_count_is_zero() {
         .trim();
     assert_eq!(unread, "value 0");
 
-    assert!(ratchet.contains("measure adopted_items\n    direction up\n    value 1"));
+    assert!(ratchet.contains("measure adopted-items\n    direction up\n    value 1"));
     assert!(
         ratchet.contains(
-            "measure adopted_items_with_qualifying_effect\n    direction up\n    value 1"
+            "measure adopted-items-with-qualifying-effect\n    direction up\n    value 1"
         )
     );
 }

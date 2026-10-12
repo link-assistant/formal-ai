@@ -1,0 +1,16 @@
+{
+  "source": "harmless synthetic producer diagnostic, not originalT2537 program",
+  "pipe": {
+    "bytes": 8192,
+    "sentinel": false,
+    "tail": "eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4"
+  },
+  "file": {
+    "path": "/private/tmp/formal-ai-only-1188/node-large-dataurl-diagnostic-stderr.log",
+    "bytes": 45532,
+    "sentinel": true,
+    "tail": "  at async file:///Users/konard/Code/Archive/link-assistant/formal-ai/[eval1]:1:1\n\nNode.js v20.19.4\n"
+  },
+  "exitCode": 1,
+  "limit": "No repository mutation; no originaltask retry or source repair."
+}

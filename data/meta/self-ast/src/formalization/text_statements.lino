@@ -1,0 +1,69 @@
+self_ast_census
+  target src/formalization/text_statements.rs
+  language rust
+  fidelity signature
+  byte_len 31274
+  line_count 946
+  content_id source_module_bb73d9289c0e66e8
+  symbol_count 60
+  symbols
+    const FUNCTION_WORD_ROLES 35 35
+    const NEGATION_ROLE 38 38
+    const LONGEST_PHRASE 41 41
+    const LONGEST_HAN_WORD 44 44
+    const SHORTEST_STEM 47 47
+    const APOSTROPHES 49 49
+    const NUMBER_SEPARATORS 50 50
+    const PLACEHOLDERS 51 51
+    enum WordKind 55 72
+    function is_term 77 82
+    function is_known 86 88
+    enum Polarity 93 98
+    function slug 103 108
+    struct Word 113 120
+    struct Statement 124 137
+    struct Sentence 141 146
+    struct Token 150 155
+    function is_word_character 159 174
+    function is_numeral_character 176 183
+    function is_han 185 187
+    function is_number 190 194
+    function seed_record 196 205
+    static ROOT 197 197
+    function seed_words 209 226
+    function inflection_endings 230 234
+    function role_words_in 239 256
+    function function_words 260 270
+    function tokens 278 314
+    function flush_token 316 323
+    function phrase_key 328 353
+    struct Rank 356 361
+    function outranks 366 374
+    function meaning_indexes 377 380
+    static INDEXES 378 378
+    function build_meaning_indexes 382 439
+    function indexed_meaning 443 448
+    function fold_inflection 453 476
+    function unknown_stem 483 493
+    function kind_of_listed 498 513
+    function word 515 517
+    function contextual_auxiliary 522 559
+    function read_plain_run 561 584
+    function longest_phrase 587 604
+    function read_single 607 634
+    function join_names 637 652
+    function read_han_run 656 673
+    function flush_unknown 675 682
+    function longest_han_word 684 696
+    function read_words 701 714
+    function flush_run 716 723
+    function clause_statement 730 771
+    function statement_clauses 776 795
+    function formalize_sentences 801 827
+    function promote_names 833 876
+    function formalize_text 880 885
+    function statement_terms 889 895
+    function content_ids 899 905
+    function known_ids 909 916
+    function statement_identity 923 939
+    function has_no_unknown 943 946

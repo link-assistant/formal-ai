@@ -1,0 +1,363 @@
+>> read {"filePath":"rust/tests/unit/pull_request_1188_fix_gaps.rs","file_path":"rust/tests/unit/pull_request_1188_fix_gaps.rs","path":"rust/tests/unit/pull_request_1188_fix_gaps.rs"}
+   <file>
+   00001| //! PR #1188 FIX-GAPS: the open edit gaps G90, G99, G102, G104, G106 and G107
+   00002| //! of `experiments/formal_ai_subagent/gaps.md` (ledger rows T371, T377, T471,
+   00003| //! T473, T720, T786, T793 and T794; the fixes are rows T840-T869 of
+   00004| //! `docs/case-studies/pull-request-1188/formal-ai-dogfood.md`). Twin of
+   00005| //! `rust/tests/web/pull-request-1188-fix-gaps.test.mjs`.
+   00006| 
+   00007| use super::pull_request_1188_teach_f::drive;
+   00008| 
+   00009| const MODULE: &str = "import { A } from \"x\";\nfoo(C);\n";
+   00010| const LINES: &str = "a\nb\nc\nd\n";
+   00011| const ROW: &str = "row A. one\nrow C two\n";
+   00012| const SEVERAL_FILES: &str = "and one edit request changes one file, so nothing was changed. Ask for the edit once for each file.";
+   00013| const NESTED: &str = "so I cannot tell where it ends, and nothing was done. Quote such a text with «», or with a mark it does not hold.";
+   00014| 
+   00015| #[test]
+   00016| fn g104_files_listed_with_and_or_commas_are_all_named() {
+   00017|     let run = drive(
+   00018|         "In a.mjs and b.mjs, replace «A» with «B» and replace every «C» with «D».",
+   00019|         &[("a.mjs", MODULE), ("b.mjs", MODULE)],
+   00020|     );
+   00021|     assert!(run.tools.is_empty(), "{:?}", run.tools);
+   00022|     assert_eq!(run.files["a.mjs"], MODULE);
+   00023|     assert_eq!(run.files["b.mjs"], MODULE);
+   00024|     assert_eq!(
+   00025|         run.answer.as_deref(),
+   00026|         Some(format!("This edit names several files (`a.mjs`, `b.mjs`), {SEVERAL_FILES}").as_str())
+   00027|     );
+   00028|     let three = drive(
+   00029|         "In a.txt, b.txt and c.txt, replace «x» with «y».",
+   00030|         &[("a.txt", "x\n"), ("b.txt", "x\n"), ("c.txt", "x\n")],
+   00031|     );
+   00032|     assert!(three.tools.is_empty(), "{:?}", three.tools);
+   00033|     assert_eq!(
+   00034|         three.answer.as_deref(),
+   00035|         Some(
+   00036|             format!("This edit names several files (`a.txt`, `b.txt`, `c.txt`), {SEVERAL_FILES}")
+   00037|                 .as_str()
+   00038|         )
+   00039|     );
+   00040|     // A path in a later sentence (the ladder leaf asking for evidence) is no
+   00041|     // edit target.
+   00042|     let ladder = drive(
+   00043|         "In the file rust/src/core.rs, replace \"statement_negation_cue\" with \"statement_negation_marker\". Leave supporting evidence in .agent-ladder/node-2.1-proof.md.",
+   00044|         &[(
+   00045|             "rust/src/core.rs",
+   00046|             "const statement_negation_cue: u8 = 1;\n",
+   00047|         )],
+   00048|     );
+   00049|     assert_eq!(
+   00050|         ladder.files["rust/src/core.rs"],
+   00051|         "const statement_negation_marker: u8 = 1;\n"
+   00052|     );
+   00053|     assert!(
+   00054|         !ladder
+   00055|             .answer
+   00056|             .as_deref()
+   00057|             .unwrap_or_default()
+   00058|             .starts_with("This edit names several files"),
+   00059|         "{:?}",
+   00060|         ladder.answer
+   00061|     );
+   00062|     let one = drive("In a.mjs, replace «A» with «B».", &[("a.mjs", MODULE)]);
+   00063|     assert_eq!(one.files["a.mjs"], "import { B } from \"x\";\nfoo(C);\n");
+   00064|     assert_eq!(
+   00065|         one.answer.as_deref(),
+   00066|         Some("Replaced `A` with `B` in `a.mjs` and observed the result.")
+   00067|     );
+   00068| }
+   00069| 
+   00070| #[test]
+   00071| fn g99_edits_joined_by_a_sequence_cue_are_planned_step_by_step() {
+   00072|     let run = drive(
+   00073|         "Insert the line «b2» after the line «b» in f.txt, then delete the line «c» from f.txt.",
+   00074|         &[("f.txt", LINES)],
+   00075|     );
+   00076|     assert_eq!(run.files["f.txt"], "a\nb\nb2\nd\n");
+   00077|     assert_eq!(
+   00078|         run.answer.as_deref(),
+   00079|         Some(
+   00080|             "Inserted `b2` after `b` in `f.txt` and observed the result.\n\nRemoved `c` from `f.txt` and observed the result."
+   00081|         )
+   00082|     );
+   00083|     let inherited = drive(
+   00084|         "In f.txt, insert the line «b2» after the line «b» and then delete the line «c».",
+   00085|         &[("f.txt", LINES)],
+   00086|     );
+   00087|     assert_eq!(inherited.files["f.txt"], "a\nb\nb2\nd\n");
+   00088|     let russian = drive(
+   00089|         "Вставь строку «b2» после строки «b» в f.txt, затем удали строку «c» из f.txt.",
+   00090|         &[("f.txt", LINES)],
+   00091|     );
+   00092|     assert_eq!(russian.files["f.txt"], "a\nb\nb2\nd\n");
+   00093|     assert_eq!(
+   00094|         russian.answer.as_deref(),
+   00095|         Some(
+   00096|             "В `f.txt` после `b` вставлено `b2`, результат проверен.\n\nИз `f.txt` удалено `c`, результат проверен."
+   00097|         )
+   00098|     );
+   00099| }
+   00100| 
+   00101| #[test]
+   00102| fn g106_several_replaces_apply_all_or_decline() {
+   00103|     let run = drive(
+   00104|         "In r.md, replace «A.» with «B.» and then replace «C» with «D».",
+   00105|         &[("r.md", ROW)],
+   00106|     );
+   00107|     assert_eq!(run.files["r.md"], "row B. one\nrow D two\n");
+   00108|     assert_eq!(
+   00109|         run.answer.as_deref(),
+   00110|         Some(
+   00111|             "Replaced `A.` with `B.` in `r.md` and observed the result.\n\nReplaced `C` with `D` in `r.md` and observed the result."
+   00112|         )
+   00113|     );
+   00114|     let declined = drive(
+   00115|         "In r.md, replace «A.» with «B.» and replace C with D.",
+   00116|         &[("r.md", ROW)],
+   00117|     );
+   00118|     assert!(declined.tools.is_empty(), "{:?}", declined.tools);
+   00119|     assert_eq!(declined.files["r.md"], ROW);
+   00120|     assert_eq!(
+   00121|         declined.answer.as_deref(),
+   00122|         Some(
+   00123|             "This request asks for several edits, and I cannot read `replace C with D` as a replacement of quoted text, so nothing was changed. Quote its old and new texts, or ask for that edit on its own."
+   00124|         )
+   00125|     );
+   00126| }
+   00127| 
+   00128| #[test]
+   00129| fn g90_a_quoted_text_holding_its_own_quote_mark_is_declined() {
+   00130|     let rust = "    (text.matches('`').count() % 2 == 0).then_some(text)\n";
+   00131|     let run = drive(
+   00132|         "Replace '(text.matches('`').count() % 2 == 0).then_some(text)' with 'text.matches('`').count().is_multiple_of(2).then_some(text)' in p.rs.",
+   00133|         &[("p.rs", rust)],
+   00134|     );
+   00135|     assert!(run.tools.is_empty(), "{:?}", run.tools);
+   00136|     assert_eq!(run.files["p.rs"], rust);
+   00137|     assert_eq!(
+   00138|         run.answer.as_deref(),
+   00139|         Some(
+   00140|             format!(
+   00141|                 "A quoted text in this request holds its own quote mark (``'(text.matches('`').count() % 2``), {NESTED}"
+   00142|             )
+   00143|             .as_str()
+   00144|         )
+   00145|     );
+   00146|     let doubled = drive(
+   00147|         "Replace \"a synthesized.\"\" with \"a holds.\"\" in f.lino.",
+   00148|         &[("f.lino", "x = \"a synthesized.\"\n")],
+   00149|     );
+   00150|     assert!(doubled.tools.is_empty(), "{:?}", doubled.tools);
+   00151|     assert_eq!(doubled.files["f.lino"], "x = \"a synthesized.\"\n");
+   00152|     assert_eq!(
+   00153|         doubled.answer.as_deref(),
+   00154|         Some(
+   00155|             format!(
+   00156|                 "A quoted text in this request holds its own quote mark (`\" with \"a holds.\"\" in f.lino.`), {NESTED}"
+   00157|             )
+   00158|             .as_str()
+   00159|         )
+   00160|     );
+   00161|     let guillemets = drive(
+   00162|         "Replace «\"a synthesized.\"» with «\"a holds.\"» in f.lino.",
+   00163|         &[("f.lino", "x = \"a synthesized.\"\n")],
+   00164|     );
+   00165|     assert_eq!(guillemets.files["f.lino"], "x = \"a holds.\"\n");
+   00166| }
+   00167| 
+   00168| #[test]
+   00169| fn g107_a_backticked_payload_whose_inner_spans_pair_runs_to_its_own_close() {
+   00170|     let run = drive(
+   00171|         "In r.md, replace `x` with `a. `b` x`.",
+   00172|         &[("r.md", "one x two\n")],
+   00173|     );
+   00174|     assert_eq!(run.files["r.md"], "one a. `b` x two\n");
+   00175|     assert_eq!(
+   00176|         run.answer.as_deref(),
+   00177|         Some("Replaced `x` with ``a. `b` x`` in `r.md` and observed the result.")
+   00178|     );
+   00179|     let row = drive(
+   00180|         "In r.md, replace `Remaining: x` with `In chat, \"f <u>\" (the `p_f` meaning of `d/m.lino`, in five) fetch (`r/p.rs`, `r/w.rs`; worker `j/w.js`); offline nothing. `t/u.rs` and `t/w.mjs` pin it. Remaining: x`",
+   00181|         &[("r.md", "| U18 | Remaining: x, since y. |\n")],
+   00182|     );
+   00183|     assert_eq!(
+   00184|         row.files["r.md"],
+   00185|         "| U18 | In chat, \"f <u>\" (the `p_f` meaning of `d/m.lino`, in five) fetch (`r/p.rs`, `r/w.rs`; worker `j/w.js`); offline nothing. `t/u.rs` and `t/w.mjs` pin it. Remaining: x, since y. |\n"
+   00186|     );
+   00187| }
+   00188| 
+   00189| #[test]
+   00190| fn g102_a_file_described_rather_than_given_is_never_written() {
+   00191|     let run = drive(
+   00192|         "Create the file abbreviations.test.mjs. It imports node:assert/strict as assert and node:test as test, and imports wordsOfIdentifier from «./scripts/measure-abbreviations.mjs». Write one test:\n1. test «a declared name splits at underscores»: assert.deepEqual(wordsOfIdentifier(«parseArgs»), [«parse», «args»]).",
+   00193|         &[(
+   00194|             "scripts/measure-abbreviations.mjs",
+   00195|             "export function wordsOfIdentifier() {}\n",
+   00196|         )],
+   00197|     );
+   00198|     // The planner plans no step: no `cat` of the fragments and no write of a
+   00199|     // failed or refused step; the server's solver then answers.
+   00200|     assert!(run.tools.is_empty(), "{:?}", run.tools);
+   00201|     assert_eq!(run.answer, None);
+   00202|     assert!(!run.files.contains_key("abbreviations.test.mjs"));
+   00203| }
+   00204| 
+   00205| #[test]
+   00206| fn g109_copy_then_comma_joined_edits_preserves_source() {
+   00207|     let run = drive(
+   00208|         "Copy a.lino to b.lino, then in b.lino replace every «x» with «y» and replace «m» with «n».",
+   00209|         &[("a.lino", "x m\n")],
+   00210|     );
+   00211|     assert_eq!(run.files["a.lino"], "x m\n");
+   00212|     assert_eq!(run.files["b.lino"], "y n\n");
+   00213| }
+   00214| 
+   00215| #[test]
+   00216| fn advertised_multi_edit_receives_every_explicit_path() {
+   00217|     use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+   00218|     use formal_ai::protocol::ChatMessage;
+   00219|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(
+   00220|         &[ChatMessage::user("replace alpha with beta in a.txt and b.txt")],
+   00221|         &["multi_edit", "web_search"],
+   00222|     ) else { panic!("advertised multi-edit must be routed"); };
+   00223|     assert_eq!(calls[0].tool, "multi_edit");
+   00224|     let args: serde_json::Value = serde_json::from_str(&calls[0].arguments).expect("tool arguments");
+   00225|     assert_eq!(args["paths"], serde_json::json!(["a.txt", "b.txt"]));
+   00226|     assert_eq!(args["edits"][0]["old_string"], "alpha");
+   00227|     assert_eq!(args["edits"][0]["new_string"], "beta");
+   00228| }
+   00229| 
+   00230| #[test]
+   00231| fn g108_scalar_backtick_comma_payload_is_fenced_whole() {
+   00232|     let payload = "values `left`, `right` remain scalar";
+   00233|     let request = format!("In f.txt replace «x» with «{payload}»");
+   00234|     let run = drive(&request, &[("f.txt", "x")]);
+   00235|     assert_eq!(run.files["f.txt"], payload);
+   00236|     assert_eq!(
+   00237|         run.answer.as_deref(),
+   00238|         Some(
+   00239|             "Replaced `x` with ``values `left`, `right` remain scalar`` in `f.txt` and observed the result."
+   00240|         )
+   00241|     );
+   00242| }
+   00243| 
+   00244| #[test]
+   00245| fn g110_payload_paths_are_never_creation_targets() {
+   00246|     let content = "record destination to rust/src/solver_handlers/policy_gates.rs";
+   00247|     let request = format!("Create budget.lino with the content «{content}».");
+   00248|     let run = drive(&request, &[]);
+   00249|     assert_eq!(run.files["budget.lino"], content);
+   00250|     assert!(
+   00251|         !run.files
+   00252|             .contains_key("rust/src/solver_handlers/policy_gates.rs")
+   00253|     );
+   00254| }
+   00255| 
+   00256| #[test]
+   00257| fn g113_quoted_content_retains_all_whitespace() {
+   00258|     let content = "  seed method-execution\n    bundle true\n";
+   00259|     let request = format!("Create rows.lino with the content «{content}».");
+   00260|     let run = drive(&request, &[]);
+   00261|     assert_eq!(run.files["rows.lino"], content);
+   00262| }
+   00263| 
+   00264| #[test]
+   00265| fn g114_quoted_objective_is_preserved() {
+   00266|     let content = "pub fn emit(\n    task: &str,\n) {}";
+   00267|     let request = format!("In f.rs replace «old» with «{content}»");
+   00268|     let run = drive(&request, &[("f.rs", "old")]);
+   00269|     assert_eq!(run.files["f.rs"], content);
+   00270| }
+   00271| 
+   00272| #[test]
+   00273| fn g115_new_only_escape_is_source_text() {
+   00274|     let old = "const lines = text;";
+   00275|     let next = r"const lines = text.split('\n');";
+   00276|     let request = format!("In f.mjs replace «{old}» with «{next}»");
+   00277|     let run = drive(&request, &[("f.mjs", old)]);
+   00278|     assert_eq!(run.files["f.mjs"], next);
+   00279| }
+   00280| 
+   00281| #[test]
+   00282| fn authored_fenced_source_cues_are_literal_data() {
+   00283|     let content = "const inventory = [];\n// When `input` arrives then `output` follows.\n// task: Append to src/rules.mjs.\n// retain these words, in JavaScript.\n";
+   00284|     let request = format!("Create output.mjs containing\n```javascript\n{content}```");
+   00285|     let run = drive(&request, &[]);
+   00286|     assert_eq!(run.files["output.mjs"], content);
+   00287| }
+   00288| 
+   00289| #[test]
+   00290| fn authored_whole_content_consent_overwrites_existing_source() {
+   00291|     let content = "const inventory = [];\n// Copy a.mjs to b.mjs; Delete scratch.tmp.\n";
+   00292|     let request = format!("Set the contents of output.mjs to «{content}»");
+   00293|     let run = drive(&request, &[("output.mjs", "old\n")]);
+   00294|     assert_eq!(run.files["output.mjs"], content);
+   00295| }
+   00296| 
+   00297| #[test]
+   00298| fn authored_new_literal_cannot_promote_replacement_to_whole_file_write() {
+   00299|     let request = "In f.mjs replace «old» with «Create another.mjs with inventory []»";
+   00300|     let run = drive(request, &[("f.mjs", "before old after\n")]);
+   00301|     assert_eq!(
+   00302|         run.files["f.mjs"],
+   00303|         "before Create another.mjs with inventory [] after\n"
+   00304|     );
+   00305| }
+   00306| 
+   00307| #[test]
+   00308| fn authored_failure_text_is_verification_data() {
+   00309|     for content in [
+   00310|         "Error: this is the diagnostic example.\n",
+   00311|         "{\"z\":\"failed: recorded attempt\",\"a\":\"fixture\"}\n",
+   00312|     ] {
+   00313|         let request = format!("Set the contents of output.mjs to «{content}»");
+   00314|         let run = drive(&request, &[("output.mjs", "previous\n")]);
+   00315|         assert_eq!(run.files["output.mjs"], content);
+   00316|         assert!(
+   00317|             run.answer
+   00318|                 .as_deref()
+   00319|                 .is_some_and(|answer| answer.starts_with("Completed the general change request")),
+   00320|             "{:?}",
+   00321|             run.answer
+   00322|         );
+   00323|     }
+   00324| }
+   00325| 
+   00326| #[test]
+   00327| fn exact_content_set_forms_consume_seeded_leads() {
+   00328|     let content =
+   00329|         "First paragraph.\n\nWhen tasks arrive, preserve Copy a.mjs to b.mjs as quoted data.\n";
+   00330|     for lead in [
+   00331|         "exactly this content",
+   00332|         "with exactly this content",
+   00333|         "with content",
+   00334|         "contents",
+   00335|         "с точно таким содержанием",
+   00336|         "ठीक इसी सामग्री के साथ",
+   00337|         "内容与以下完全相同",
+   00338|         "con exactamente este contenido",
+   00339|     ] {
+   00340|         let request = format!("Set the contents of output.mjs to {lead}: «{content}»");
+   00341|         let run = drive(&request, &[("output.mjs", "previous\n")]);
+   00342|         assert_eq!(run.files["output.mjs"], content, "{lead}");
+   00343|     }
+   00344|     for content in ["exactly what I asked for", "with content: literal words"] {
+   00345|         let request = format!("Set the contents of output.mjs to «{content}»");
+   00346|         let run = drive(&request, &[("output.mjs", "previous\n")]);
+   00347|         assert_eq!(run.files["output.mjs"], content);
+   00348|     }
+   00349| }
+   00350| 
+   
+   (End of file - total 350 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/pull_request_1188_fix_gaps.rs","file_path":"rust/tests/unit/pull_request_1188_fix_gaps.rs","new":"        &[ChatMessage::user(\n            \"replace alpha with beta in a.txt and b.txt\",\n        )],","newString":"        &[ChatMessage::user(\n            \"replace alpha with beta in a.txt and b.txt\",\n        )],","new_str":"        &[ChatMessage::user(\n            \"replace alpha with beta in a.txt and b.txt\",\n        )],","new_string":"        &[ChatMessage::user(\n            \"replace alpha with beta in a.txt and b.txt\",\n        )],","old":"        &[ChatMessage::user(\"replace alpha with beta in a.txt and b.txt\")],","oldString":"        &[ChatMessage::user(\"replace alpha with beta in a.txt and b.txt\")],","old_str":"        &[ChatMessage::user(\"replace alpha with beta in a.txt and b.txt\")],","old_string":"        &[ChatMessage::user(\"replace alpha with beta in a.txt and b.txt\")],","path":"rust/tests/unit/pull_request_1188_fix_gaps.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/pull_request_1188_fix_gaps.rs"}
+   9ee8a40d0be21e5a1b22c7bebeb21f134499bcba19c62b954c9db5ec7fc46aaf  rust/tests/unit/pull_request_1188_fix_gaps.rs
+   
+== answer ==
+Replaced `        &[ChatMessage::user("replace alpha with beta in a.txt and b.txt")],` with `        &[ChatMessage::user(
+            "replace alpha with beta in a.txt and b.txt",
+        )],` in `rust/tests/unit/pull_request_1188_fix_gaps.rs` and observed the result.

@@ -1,0 +1,21 @@
+view
+  id M-fcccdf62f7a0
+  lemma public
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not private; open to or concerning the people as a whole"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "people in general considered as a whole"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a body of people sharing some common interest"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "affecting the people or community as a whole"
+    provenance (wordnet)

@@ -1,0 +1,12 @@
+language en
+lemma authenticity
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "undisputed credibility"
+    id oewn-04790511-n
+    partOfSpeech n
+    synonyms (genuineness legitimacy)
+source "oewn:2024"

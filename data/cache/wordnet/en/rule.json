@@ -1,0 +1,224 @@
+{
+  "lemma": "rule",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05854581-n",
+      "partOfSpeech": "n",
+      "definition": "a principle or condition that customarily governs behavior",
+      "examples": [
+        "it was his rule to take a walk before breakfast",
+        "short haircuts were the regulation"
+      ],
+      "synonyms": [
+        "regulation"
+      ]
+    },
+    {
+      "id": "oewn-05675457-n",
+      "partOfSpeech": "n",
+      "definition": "something regarded as a normative example",
+      "examples": [
+        "the convention of not naming the main character",
+        "violence is the rule not the exception",
+        "his formula for impressing visitors"
+      ],
+      "synonyms": [
+        "convention",
+        "normal",
+        "pattern",
+        "formula"
+      ]
+    },
+    {
+      "id": "oewn-06664987-n",
+      "partOfSpeech": "n",
+      "definition": "prescribed guide for conduct or action",
+      "synonyms": [
+        "prescript"
+      ]
+    },
+    {
+      "id": "oewn-07274440-n",
+      "partOfSpeech": "n",
+      "definition": "(linguistics) a rule describing (or prescribing) a linguistic practice",
+      "synonyms": [
+        "linguistic rule"
+      ]
+    },
+    {
+      "id": "oewn-05922132-n",
+      "partOfSpeech": "n",
+      "definition": "a basic generalization that is accepted as true and that can be used as a basis for reasoning or conduct",
+      "examples": [
+        "their principles of composition characterized all their works"
+      ],
+      "synonyms": [
+        "principle"
+      ]
+    },
+    {
+      "id": "oewn-15320659-n",
+      "partOfSpeech": "n",
+      "definition": "the duration of a monarch's or government's power",
+      "examples": [
+        "during the rule of Elizabeth"
+      ]
+    },
+    {
+      "id": "oewn-14466399-n",
+      "partOfSpeech": "n",
+      "definition": "dominance or power through legal authority",
+      "examples": [
+        "France held undisputed dominion over vast areas of Africa",
+        "the rule of Caesar"
+      ],
+      "synonyms": [
+        "dominion"
+      ]
+    },
+    {
+      "id": "oewn-06801754-n",
+      "partOfSpeech": "n",
+      "definition": "directions that define the way a game or sport is to be conducted",
+      "examples": [
+        "he knew the rules of chess"
+      ]
+    },
+    {
+      "id": "oewn-06664809-n",
+      "partOfSpeech": "n",
+      "definition": "any one of a systematic body of regulations defining the way of life of members of a religious order",
+      "examples": [
+        "the rule of St. Dominic"
+      ]
+    },
+    {
+      "id": "oewn-05882839-n",
+      "partOfSpeech": "n",
+      "definition": "a rule or law concerning a natural phenomenon or the function of a complex system",
+      "examples": [
+        "the principle of the conservation of mass",
+        "the principle of jet propulsion",
+        "the right-hand rule for inductive fields"
+      ],
+      "synonyms": [
+        "principle"
+      ]
+    },
+    {
+      "id": "oewn-05855459-n",
+      "partOfSpeech": "n",
+      "definition": "(mathematics) a standard procedure for solving a class of mathematical problems",
+      "examples": [
+        "he determined the upper bound with Descartes' rule of signs",
+        "he gave us a general formula for attacking polynomials"
+      ],
+      "synonyms": [
+        "formula"
+      ]
+    },
+    {
+      "id": "oewn-04125870-n",
+      "partOfSpeech": "n",
+      "definition": "measuring stick consisting of a strip of wood or metal or plastic with a straight edge that is used for drawing straight lines and measuring lengths",
+      "synonyms": [
+        "ruler"
+      ]
+    },
+    {
+      "id": "oewn-02592711-v",
+      "partOfSpeech": "v",
+      "definition": "exercise authority over; as of nations",
+      "examples": [
+        "Who is governing the country now?"
+      ],
+      "synonyms": [
+        "govern"
+      ]
+    },
+    {
+      "id": "oewn-00717773-v",
+      "partOfSpeech": "v",
+      "definition": "decide with authority",
+      "examples": [
+        "The King decreed that all firstborn males should be killed"
+      ],
+      "synonyms": [
+        "decree"
+      ]
+    },
+    {
+      "id": "oewn-02650318-v",
+      "partOfSpeech": "v",
+      "definition": "be larger in number, quantity, power, status or importance",
+      "examples": [
+        "Money reigns supreme here",
+        "Hispanics predominate in this neighborhood"
+      ],
+      "synonyms": [
+        "predominate",
+        "dominate",
+        "reign",
+        "prevail"
+      ]
+    },
+    {
+      "id": "oewn-00974031-v",
+      "partOfSpeech": "v",
+      "definition": "decide on and make a declaration about",
+      "examples": [
+        "find someone guilty"
+      ],
+      "synonyms": [
+        "find"
+      ]
+    },
+    {
+      "id": "oewn-02722870-v",
+      "partOfSpeech": "v",
+      "definition": "have an affinity with; of signs of the zodiac"
+    },
+    {
+      "id": "oewn-01693915-v",
+      "partOfSpeech": "v",
+      "definition": "mark or draw with a ruler",
+      "examples": [
+        "rule the margins"
+      ]
+    },
+    {
+      "id": "oewn-00235558-v",
+      "partOfSpeech": "v",
+      "definition": "keep in check",
+      "examples": [
+        "rule one's temper"
+      ],
+      "synonyms": [
+        "harness",
+        "rein"
+      ]
+    },
+    {
+      "id": "oewn-82316888-v",
+      "partOfSpeech": "v",
+      "definition": "be excellent or outstanding",
+      "examples": [
+        "I'm enjoying this. I know. This rules!",
+        "It rocks, but it can get a little dense.",
+        "A shot of tequila and then turn up the song, it kicks ass",
+        "To say Ben slays in these photos is an understatement"
+      ],
+      "synonyms": [
+        "rock",
+        "kick ass",
+        "slay"
+      ]
+    }
+  ]
+}

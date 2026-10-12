@@ -1,0 +1,5 @@
+{
+  "taskId": "T2000",
+  "scratch": "/private/tmp/spec-recurrence-1188",
+  "prompt": "Create callable-read-coverage.mjs implementing a general JavaScript source-owned callable read contract. Export readFormalParameterPositions(expression, formalParameters). expression is an existing Links Notation recurrence AST node with name, value and children. A parameter node reads only the matching formal parameter; literal nodes read none; application and recur nodes recurse through their children. Return distinct positional indexes in declaration order. Derive reads from the body AST, never from the function declaration or a word search over source text. Export bindCallableReadCoverage(contract, taskSignature) to preserve source identity for provisional signatures, map formal read positions onto task input positions, and reject incompatible explicit arity. Do not special-case factorial, source IDs, prompts or expected test answers. Write the implementation and run a meaningful Node check covering a renamed anonymous task input, a literal-only body and incompatible arity."
+}

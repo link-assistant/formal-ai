@@ -1,0 +1,71 @@
+{
+  "entities": {
+    "Q482798": {
+      "type": "item",
+      "id": "Q482798",
+      "labels": {
+        "es": {
+          "language": "es",
+          "value": "yarda"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "ярд"
+        },
+        "en": {
+          "language": "en",
+          "value": "yard"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "码"
+        }
+      },
+      "descriptions": {
+        "es": {
+          "language": "es",
+          "value": "unidad de longitud"
+        },
+        "en": {
+          "language": "en",
+          "value": "unit of length"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "長度單位"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "англоамериканская единица измерения расстояния"
+        }
+      },
+      "aliases": {
+        "es": [
+          {
+            "language": "es",
+            "value": "vara"
+          },
+          {
+            "language": "es",
+            "value": "vara inglesa"
+          },
+          {
+            "language": "es",
+            "value": "yarda anglosajona"
+          }
+        ],
+        "en": [
+          {
+            "language": "en",
+            "value": "yd"
+          },
+          {
+            "language": "en",
+            "value": "yards"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

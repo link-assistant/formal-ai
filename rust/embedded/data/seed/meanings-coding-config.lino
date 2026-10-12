@@ -6,33 +6,11 @@ meanings
     effect "the fact or request is read as naming the search provider setting"
     unit "not applicable"
     example "search provider"
-    lexeme en
-      surface
-        text "search provider"
-      surface
-        text "search providers"
-      surface
-        text "trusted search providers"
-    lexeme ru
-      surface
-        text "поисковый провайдер"
-      surface
-        text "поисковых провайдеров"
-    lexeme hi
-      surface
-        text "खोज प्रदाता"
-      surface
-        text "खोज प्रदाताओं"
-    lexeme zh
-      surface
-        text 搜索来源
-      surface
-        text 搜索提供者
-    lexeme es
-      surface
-        text "proveedor de búsqueda"
-      surface
-        text "proveedores de búsqueda"
+    lexeme en "search provider" "search providers" "trusted search providers"
+    lexeme ru "поисковый провайдер" "поисковых провайдеров"
+    lexeme hi "खोज प्रदाता" "खोज प्रदाताओं"
+    lexeme zh 搜索来源 搜索提供者
+    lexeme es "proveedor de búsqueda" "proveedores de búsqueda"
   repository_provider
     defined-by concept
     role coding_search_subject_kind
@@ -40,27 +18,11 @@ meanings
     effect "the fact or request is read as naming the repository provider"
     unit "not applicable"
     example provider
-    lexeme en
-      surface
-        text provider
-      surface
-        text providers
-    lexeme ru
-      surface
-        text провайдер
-    lexeme hi
-      surface
-        text प्रदाता
-    lexeme zh
-      surface
-        text 来源
-      surface
-        text 提供者
-    lexeme es
-      surface
-        text proveedor
-      surface
-        text proveedores
+    lexeme en provider providers
+    lexeme ru провайдер
+    lexeme hi प्रदाता
+    lexeme zh 来源 提供者
+    lexeme es proveedor proveedores
   repository_default_value
     defined-by concept
     role coding_search_subject_kind
@@ -68,21 +30,11 @@ meanings
     effect "the fact or request is read as naming a repository default value"
     unit "not applicable"
     example default
-    lexeme en
-      surface
-        text default
-    lexeme ru
-      surface
-        text "по умолчанию"
-    lexeme hi
-      surface
-        text डिफ़ॉल्ट
-    lexeme zh
-      surface
-        text 默认
-    lexeme es
-      surface
-        text "por defecto"
+    lexeme en default
+    lexeme ru "по умолчанию"
+    lexeme hi डिफ़ॉल्ट
+    lexeme zh 默认
+    lexeme es "por defecto"
   repository_timeout
     defined-by concept
     role coding_search_subject_kind
@@ -90,21 +42,11 @@ meanings
     effect "the fact or request is read as naming the repository timeout"
     unit second
     example timeout
-    lexeme en
-      surface
-        text timeout
-    lexeme ru
-      surface
-        text таймаут
-    lexeme hi
-      surface
-        text टाइमआउट
-    lexeme zh
-      surface
-        text 超时
-    lexeme es
-      surface
-        text "tiempo de espera"
+    lexeme en timeout
+    lexeme ru таймаут
+    lexeme hi टाइमआउट
+    lexeme zh 超时
+    lexeme es "tiempo de espera"
   file_analysis_gap_marker
     defined-by predicate
     role file_analysis_gap_marker
@@ -112,102 +54,79 @@ meanings
     effect "the line is reported as unfinished work"
     unit "not applicable"
     example "pending"
-    lexeme en
-      surface
-        text TODO
-      surface
-        text FIXME
-      surface
-        text TBD
-      surface
-        text remaining
-      surface
-        text pending
-      surface
-        text partial
-      surface
-        text blocked
-      surface
-        text deferred
-      surface
-        text "not implemented"
-      surface
-        text "not yet"
-      surface
-        text missing
-      surface
-        text incomplete
-    lexeme ru
-      surface
-        text осталось
-      surface
-        text ожидает
-      surface
-        text частично
-      surface
-        text заблокировано
-      surface
-        text отложено
-      surface
-        text "не реализовано"
-      surface
-        text "ещё не"
-      surface
-        text отсутствует
-      surface
-        text неполный
-    lexeme hi
-      surface
-        text शेष
-      surface
-        text लंबित
-      surface
-        text आंशिक
-      surface
-        text अवरुद्ध
-      surface
-        text स्थगित
-      surface
-        text "लागू नहीं"
-      surface
-        text अनुपस्थित
-      surface
-        text अधूरा
-    lexeme zh
-      surface
-        text 剩余
-      surface
-        text 待处理
-      surface
-        text 部分
-      surface
-        text 阻塞
-      surface
-        text 延期
-      surface
-        text 未实现
-      surface
-        text 尚未
-      surface
-        text 缺失
-      surface
-        text 不完整
-    lexeme es
-      surface
-        text restante
-      surface
-        text pendiente
-      surface
-        text parcial
-      surface
-        text bloqueado
-      surface
-        text diferido
-      surface
-        text "no implementado"
-      surface
-        text "todavía no"
-      surface
-        text falta
-      surface
-        text incompleto
+    lexeme en TODO FIXME TBD remaining pending partial blocked deferred "not implemented" "not yet" missing incomplete
+    lexeme ru осталось ожидает частично заблокировано отложено "не реализовано" "ещё не" отсутствует неполный
+    lexeme hi शेष लंबित आंशिक अवरुद्ध स्थगित "लागू नहीं" अनुपस्थित अधूरा
+    lexeme zh 剩余 待处理 部分 阻塞 延期 未实现 尚未 缺失 不完整
+    lexeme es restante pendiente parcial bloqueado diferido "no implementado" "todavía no" falta incompleto
+  setting
+    defined-by concept
+    role config_value_lead
+    precondition "a request names the setting of a configuration file it wants changed"
+    effect "the line assigning that key gets the new value, in the file's own quoting"
+    unit "not applicable"
+    example "the value of"
+    lexeme en "value of" setting bump set
+    lexeme ru значение настройку установи задай повысь
+    lexeme hi मान "सेट करो" बढ़ाओ
+    lexeme zh 值 设置 设为 提升
+    lexeme es "valor de" establece incrementa
+  coding_bug_fix_request
+    # PR #1188 T93 (gap G14): a request to fix a defect in a named file. With
+    # a stated expectation (`coding_expectation_cue`) the function is run
+    # against it first, and a function that already meets it is reported as
+    # no defect found instead of being rewritten or answered as unknown.
+    defined-by action
+    role coding_bug_fix_request
+    precondition "a request asks to fix a defect in a named file"
+    effect "the named function is run against the stated expectation before any rewrite"
+    unit "not applicable"
+    example "fix the bug"
+    lexeme en "fix the bug" "fix a bug" "fix the defect" "fix the error"
+    lexeme ru "исправь ошибку" "исправь баг" "исправить ошибку"
+    lexeme hi "बग ठीक करें" "बग ठीक करो" "त्रुटि ठीक करें"
+    lexeme zh 修复错误 修复缺陷 修复bug
+    lexeme es "corrige el error" "arregla el error" "corrige el fallo"
+  coding_expectation_cue
+    # The stated expectation of a bug report: the named function, then this
+    # cue, then what it should return ("add should return the sum").
+    defined-by relation
+    role coding_expectation_cue
+    precondition "a bug report states what a named function should return"
+    effect "the text after this cue is computed at the contract samples and compared with the observed value"
+    unit "not applicable"
+    example "should return"
+    lexeme en "should return" "must return" "is supposed to return"
+    lexeme ru "должна возвращать" "должен возвращать" "должна вернуть" "должен вернуть"
+    lexeme hi "लौटाना चाहिए"
+    lexeme zh 应该返回 应返回
+    lexeme es "debería devolver" "debe devolver"
+  module_export_question
+    # PR #1188 T99 (gap G26): a question about what a named module exports
+    # ("Which functions does src/m.mjs export?"), answered from the module's
+    # own declarations instead of dumping the file.
+    defined-by relation
+    role module_export_question
+    precondition "a question names a module and asks about its declarations"
+    effect "the module is read and its exported functions are named instead of dumping the file"
+    unit "not applicable"
+    example "export"
+    lexeme en "export" "exports" "exported"
+    lexeme ru экспортирует экспортируются
+    lexeme hi निर्यात
+    lexeme zh 导出
+    lexeme es exporta exportan exportadas
+  module_export_marker
+    # A programming-language keyword that makes the declaration after it part
+    # of the module's public interface; the same word in every lexeme.
+    defined-by code
+    role module_export_marker
+    precondition "a source line under export listing starts with this keyword"
+    effect "the declaration after it is listed as part of the module public interface"
+    unit "not applicable"
+    example "export"
+    lexeme en "export" "pub"
+    lexeme ru "export" "pub"
+    lexeme hi "export" "pub"
+    lexeme zh "export" "pub"
+    lexeme es "export" "pub"

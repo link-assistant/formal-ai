@@ -1,0 +1,20 @@
+greeting-pack
+  type associative_package
+  schema_version 1
+  name Greeting
+  version 1.0.0
+  handler greeting-response
+    kind response
+    capability greeting
+    response "Hello!"
+  trigger greeting-trigger
+    kind prompt
+    match_prompt hello
+    normalized_match hello
+    handler greeting-response
+  permission greeting-permission
+    effect allow
+    capability greeting
+    description "Reply to a greeting"
+  contained_links "greeting means hello"
+  provenance "https://github.com/link-assistant/formal-ai/issues/668"

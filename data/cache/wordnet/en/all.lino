@@ -1,0 +1,23 @@
+language en
+lemma all
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(quantifier) used with either mass or count nouns to indicate the whole number or amount of or every one of a class"
+    examples ("we sat up all night" "ate all the food" "all men are mortal" "all parties are welcome")
+    id oewn-02277044-a
+    partOfSpeech a
+  entry
+    definition "to a complete degree or to the full or entire extent; Completely or entirely"
+    examples ("he was wholly convinced" "entirely satisfied with the meal" "it was completely different from what we expected" "was completely at fault" "a totally new situation" "the directions were all wrong" "it was not altogether her fault" "an altogether new approach" "a whole new idea" "she felt right at home" "he fell right into the trap")
+    id oewn-00008423-r
+    partOfSpeech r
+    synonyms (wholly entirely completely totally altogether whole right)
+  entry
+    definition "completely given to or absorbed by"
+    examples ("became all attention")
+    id oewn-00523527-s
+    partOfSpeech s
+source "oewn:2024"

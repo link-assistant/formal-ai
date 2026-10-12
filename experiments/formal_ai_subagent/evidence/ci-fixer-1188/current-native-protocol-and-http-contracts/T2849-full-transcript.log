@@ -1,0 +1,334 @@
+>> read {"filePath":"js/agentic/crate/seed_meanings.mjs","file_path":"js/agentic/crate/seed_meanings.mjs","path":"js/agentic/crate/seed_meanings.mjs"}
+   <file>
+   00001| // The language-independent meaning lexicon: a port of rust/src/seed/meanings.rs
+   00002| // (`Lexicon`) and its loader rust/src/seed/meanings/parse.rs.
+   00003| //
+   00004| // The worker realm parses a differently ordered file set (it skips
+   00005| // learned-request-openers.lino and sorts by name), and declaration order is
+   00006| // priority for `first_role_match` / `words_for_role`, so this module parses
+   00007| // `MEANING_FILES` itself, in the order rust/src/seed/embedded_registry.rs
+   00008| // lists them. A meaning is `{slug, defined_by, roles, wikidata, lexemes:
+   00009| // [{language, words: [{text, action}]}]}`.
+   00010| 
+   00011| import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
+   00012| 
+   00013| /** The one inventory of the seed files and the lexicons that read them. */
+   00014| const SEED_REGISTRY = 'data/meta/seed-registry.lino';
+   00015| 
+   00016| /** `MEANING_FILES`: every seed the registry gives the `meaning` lexicon, in the
+   00017|  * Mirrors `const MEANING_FILES` in rust/src/seed/embedded_registry.rs.
+   00018|  * registry's (name) order, as rust/src/seed/embedded_registry.rs lists them. */
+   00019| export function meaningFiles() {
+   00020|   return cached('meaning-files', () => childrenNamed(parseLino(readText(SEED_REGISTRY)), 'seed')
+   00021|     .filter((seed) => childrenNamed(seed, 'lexicon').some((lexicon) => lexicon.id === 'meaning'))
+   00022|     .map((seed) => `data/seed/${seed.id}.lino`));
+   00023| }
+   00024| 
+   00025| const CANONICAL_TARGETS = new Map([
+   00026|   ['reference_action', 'reference-action'], ['link_action', 'link-action'],
+   00027|   ['any_of_reference', 'any-of-reference'], ['any_of_link', 'any-of-link'],
+   00028|   ['repeatable_from_zero', 'repeatable-from-zero'], ['zero_or_more', 'zero-or-more'],
+   00029|   ['point_at', 'point-at'], ['or_else', 'or-else'], ['is_identity', 'is-identity'],
+   00030|   ['is_a_kind_of', 'is-a-kind-of'], ['held_by', 'held-by'], ['together_with', 'together-with'],
+   00031|   ['self_equation', 'self-equation'], ['one_symbol_one_meaning', 'one-symbol-one-meaning'],
+   00032|   ['sense_split', 'sense-split'], ['bank_river', 'bank-river'], ['bank_money', 'bank-money'],
+   00033| ]);
+   00034| 
+   00035| const findChildValue = (node, name) => (node.children || []).find((child) => child.name === name)?.value ?? '';
+   00036| 
+   00037| /** Mirrors `fn definition_targets` in rust/src/seed/meanings/parse.rs. */
+   00038| function definitionTargets(raw) {
+   00039|   return raw.split(/[\s()[\],]/u).filter(Boolean).map((target) => CANONICAL_TARGETS.get(target) ?? target);
+   00040| }
+   00041| 
+   00042| /** Mirrors `decode_codepoints` in rust/src/seed/parser.rs. */
+   00043| function decodeCodepoints(raw) {
+   00044|   let out = '';
+   00045|   for (const part of raw.split(/\s+/u).filter(Boolean)) {
+   00046|     const hex = part.startsWith('0x') || part.startsWith('0X');
+   00047|     const parsed = hex ? parseInt(part.slice(2), 16) : parseInt(part, 10);
+   00048|     if (Number.isFinite(parsed) && parsed <= 0x10ffff && !(parsed >= 0xd800 && parsed <= 0xdfff)) {
+   00049|       out += String.fromCodePoint(parsed);
+   00050|     }
+   00051|   }
+   00052|   return out;
+   00053| }
+   00054| 
+   00055| /** Mirrors `fn surface_text`. */
+   00056| function surfaceText(node) {
+   00057|   const text = findChildValue(node, 'text');
+   00058|   if (text) return text;
+   00059|   const codepoints = findChildValue(node, 'codepoints');
+   00060|   return codepoints ? decodeCodepoints(codepoints) : node.value;
+   00061| }
+   00062| 
+   00063| /** Mirrors `fn parse_word_form` (the fields the planner reads). */
+   00064| function parseWordForm(node) {
+   00065|   return { text: surfaceText(node), action: findChildValue(node, 'action') };
+   00066| }
+   00067| 
+   00068| /** Mirrors `fn parse_meaning`. */
+   00069| function parseMeaning(node) {
+   00070|   const slug = node.name === 'meaning' ? node.value : node.name;
+   00071|   const meaning = { slug, defined_by: [], roles: [], wikidata: '', lexemes: [] };
+   00072|   if (node.name !== 'meaning' && node.value) meaning.defined_by.push(...definitionTargets(node.value));
+   00073|   for (const child of node.children || []) {
+   00074|     if (child.name === 'defined_by' || child.name === 'defined-by') {
+   00075|       meaning.defined_by.push(...definitionTargets(child.value));
+   00076|     } else if (child.name === 'grounded-in' || child.name === 'wikidata') {
+   00077|       meaning.wikidata = child.value;
+   00078|     } else if (child.name === 'role') {
+   00079|       meaning.roles.push(child.value);
+   00080|     } else if (child.name === 'lexeme') {
+   00081|       const explicit = findChildValue(child, 'language');
+   00082|       meaning.lexemes.push({
+   00083|         language: explicit || child.value,
+   00084|         words: (child.children || [])
+   00085|           .filter((word) => word.name === 'word' || word.name === 'surface')
+   00086|           .map(parseWordForm),
+   00087|       });
+   00088|     } else if (child.name === 'surface') {
+   00089|       meaning.lexemes.push({ language: findChildValue(child, 'language'), words: [parseWordForm(child)] });
+   00090|     }
+   00091|   }
+   00092|   return meaning;
+   00093| }
+   00094| 
+   00095| /** Mirrors `fn parse_lexicon_text`: parse an explicit source without changing the cached lexicon. */
+   00096| export function parseLexiconText(source) {
+   00097|   const root = parseLino(source);
+   00098|   const containers = (root.children || []).filter((child) => child.name === 'meanings');
+   00099|   const sources = containers.length ? containers : [root];
+   00100|   const meanings = [];
+   00101|   for (const container of sources) {
+   00102|     for (const node of container.children || []) {
+   00103|       if (node.name === 'meaning' || node.name !== 'meanings') meanings.push(parseMeaning(node));
+   00104|     }
+   00105|   }
+   00106|   return meanings;
+   00107| }
+   00108| 
+   00109| /** Mirrors `fn lexicon` / `fn parse_lexicon`: every meaning in declaration order. */
+   00110| export function lexicon() {
+   00111|   return cached('meaning-lexicon', () => parseLexiconText(meaningFiles().map(readText).join('\n')));
+   00112| }
+   00113| 
+   00114| /** Mirrors `crate::coding::contains_cjk`. @param {string} text */
+   00115| export function containsCjk(text) {
+   00116|   for (const character of text) {
+   00117|     const cp = character.codePointAt(0);
+   00118|     if ((cp >= 0x3400 && cp <= 0x4dbf) || (cp >= 0x4e00 && cp <= 0x9fff) || (cp >= 0xf900 && cp <= 0xfaff)
+   00119|       || (cp >= 0x3040 && cp <= 0x30ff) || (cp >= 0x3100 && cp <= 0x312f)) return true;
+   00120|   }
+   00121|   return false;
+   00122| }
+   00123| 
+   00124| /** Mirrors `fn surface_present` in rust/src/seed/meanings.rs. */
+   00125| export function surfacePresent(normalized, expected) {
+   00126|   if (!expected) return false;
+   00127|   if (containsCjk(expected)) return normalized.includes(expected);
+   00128|   return normalized === expected
+   00129|     || normalized.startsWith(`${expected} `)
+   00130|     || normalized.endsWith(` ${expected}`)
+   00131|     || normalized.includes(` ${expected} `);
+   00132| }
+   00133| 
+   00134| /** Mirrors `Meaning::has_role`. */
+   00135| export const hasRole = (meaning, role) => meaning.roles.includes(role);
+   00136| 
+   00137| /** Mirrors `Meaning::words`. */
+   00138| export function words(meaning) {
+   00139|   return meaning.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text));
+   00140| }
+   00141| 
+   00142| /** Mirrors `Meaning::word_forms`. */
+   00143| export function wordForms(meaning) {
+   00144|   return meaning.lexemes.flatMap((lexeme) => lexeme.words);
+   00145| }
+   00146| 
+   00147| /** Mirrors `Meaning::evidenced_in`. */
+   00148| export function evidencedIn(meaning, normalized) {
+   00149|   return words(meaning).some((word) => surfacePresent(normalized, word));
+   00150| }
+   00151| 
+   00152| /** Mirrors `Meaning::word_in`. */
+   00153| export function wordIn(meaning, language) {
+   00154|   return meaning.lexemes.find((lexeme) => lexeme.language === language)?.words[0]?.text ?? null;
+   00155| }
+   00156| 
+   00157| /** Mirrors `Meaning::mentions_in_languages_raw`. */
+   00158| export function mentionsInLanguagesRaw(meaning, normalized, languages) {
+   00159|   return meaning.lexemes
+   00160|     .filter((lexeme) => languages.includes(lexeme.language))
+   00161|     .some((lexeme) => lexeme.words.some((word) => word.text && normalized.includes(word.text)));
+   00162| }
+   00163| 
+   00164| /** Mirrors `WordForm::slot`: 'bare' | 'prefix' | 'suffix' | 'circumfix'. */
+   00165| export function slotOf(form) {
+   00166|   const at = form.text.indexOf('…');
+   00167|   if (at < 0) return 'bare';
+   00168|   const before = at > 0;
+   00169|   const after = at + 1 < form.text.length;
+   00170|   if (before && after) return 'circumfix';
+   00171|   if (before) return 'prefix';
+   00172|   if (after) return 'suffix';
+   00173|   return 'bare';
+   00174| }
+   00175| 
+   00176| /** Mirrors `WordForm::before_slot`. */
+   00177| export function beforeSlot(form) {
+   00178|   const at = form.text.indexOf('…');
+   00179|   return at < 0 ? form.text : form.text.slice(0, at);
+   00180| }
+   00181| 
+   00182| /** Mirrors `WordForm::after_slot`. */
+   00183| export function afterSlot(form) {
+   00184|   const at = form.text.indexOf('…');
+   00185|   return at < 0 ? '' : form.text.slice(at + 1);
+   00186| }
+   00187| 
+   00188| /** Mirrors `Lexicon::meaning`. */
+   00189| export function meaning(slug) {
+   00190|   return lexicon().find((candidate) => candidate.slug === slug) ?? null;
+   00191| }
+   00192| 
+   00193| /** Mirrors `Lexicon::meanings_with_role`. */
+   00194| export function meaningsWithRole(role) {
+   00195|   return lexicon().filter((candidate) => hasRole(candidate, role));
+   00196| }
+   00197| 
+   00198| /** Mirrors `Lexicon::role_word_forms`. */
+   00199| export function roleWordForms(role) {
+   00200|   return meaningsWithRole(role).flatMap(wordForms);
+   00201| }
+   00202| 
+   00203| /** Mirrors `Lexicon::words_for_role`. */
+   00204| export function wordsForRole(role) {
+   00205|   const out = [];
+   00206|   for (const candidate of meaningsWithRole(role)) {
+   00207|     for (const word of words(candidate)) if (!out.includes(word)) out.push(word);
+   00208|   }
+   00209|   return out;
+   00210| }
+   00211| 
+   00212| /** Mirrors `Lexicon::words_for_role_in_languages`. */
+   00213| export function wordsForRoleInLanguages(role, languages) {
+   00214|   const out = [];
+   00215|   for (const candidate of meaningsWithRole(role)) {
+   00216|     for (const lexeme of candidate.lexemes) {
+   00217|       if (!languages.includes(lexeme.language)) continue;
+   00218|       for (const word of lexeme.words) if (!out.includes(word.text)) out.push(word.text);
+   00219|     }
+   00220|   }
+   00221|   return out;
+   00222| }
+   00223| 
+   00224| /** Mirrors `Lexicon::mentions_role`. */
+   00225| export function mentionsRole(role, normalized) {
+   00226|   return meaningsWithRole(role).some((candidate) => evidencedIn(candidate, normalized));
+   00227| }
+   00228| 
+   00229| /** Mirrors `Lexicon::mentions_role_spelled`. */
+   00230| export function mentionsRoleSpelled(role, normalized) {
+   00231|   return meaningsWithRole(role).some((candidate) =>
+   00232|     words(candidate).filter((word) => /\p{Alphabetic}/u.test(word)).some((word) => surfacePresent(normalized, word)));
+   00233| }
+   00234| 
+   00235| /** Mirrors `Lexicon::mentions_role_raw`. */
+   00236| export function mentionsRoleRaw(role, normalized) {
+   00237|   return meaningsWithRole(role).some((candidate) => words(candidate).some((word) => normalized.includes(word)));
+   00238| }
+   00239| 
+   00240| const PHRASAL_VERB_OBJECT_LIMIT = 6;
+   00241| 
+   00242| /** Mirrors `fn separated_surface_present`. */
+   00243| function separatedSurfacePresent(tokens, surface) {
+   00244|   const parts = surface.split(/\s+/u).filter(Boolean);
+   00245|   if (parts.length !== 2) return false;
+   00246|   const [verb, particle] = parts;
+   00247|   return tokens.some((word, index) =>
+   00248|     word === verb && tokens.slice(index + 2, index + 2 + PHRASAL_VERB_OBJECT_LIMIT).includes(particle));
+   00249| }
+   00250| 
+   00251| /** Mirrors `Lexicon::mentions_role_separated`. */
+   00252| export function mentionsRoleSeparated(role, normalized) {
+   00253|   const tokens = normalized.split(/\s+/u).filter(Boolean);
+   00254|   return meaningsWithRole(role)
+   00255|     .filter((candidate) => candidate.defined_by.includes('action'))
+   00256|     .flatMap(words)
+   00257|     .some((surface) => separatedSurfacePresent(tokens, surface));
+   00258| }
+   00259| 
+   00260| /** Mirrors `Lexicon::first_role_language`. */
+   00261| export function firstRoleLanguage(role, normalized, priority) {
+   00262|   return priority.find((language) => meaningsWithRole(role).some((candidate) =>
+   00263|     candidate.lexemes
+   00264|       .filter((lexeme) => lexeme.language === language)
+   00265|       .some((lexeme) => lexeme.words.some((word) => normalized.includes(word.text))))) ?? null;
+   00266| }
+   00267| 
+   00268| /** Mirrors `Lexicon::first_role_match`. */
+   00269| export function firstRoleMatch(role, normalized) {
+   00270|   return meaningsWithRole(role).find((candidate) => evidencedIn(candidate, normalized)) ?? null;
+   00271| }
+   00272| 
+   00273| /** Mirrors `Lexicon::first_role_match_in_languages_raw`. */
+   00274| export function firstRoleMatchInLanguagesRaw(role, normalized, languages) {
+   00275|   return meaningsWithRole(role).find((candidate) => mentionsInLanguagesRaw(candidate, normalized, languages)) ?? null;
+   00276| }
+   00277| 
+   00278| /** Mirrors `Lexicon::mentions_role_in_languages_raw`. */
+   00279| export function mentionsRoleInLanguagesRaw(role, normalized, languages) {
+   00280|   return meaningsWithRole(role).some((candidate) => mentionsInLanguagesRaw(candidate, normalized, languages));
+   00281| }
+   00282| 
+   00283| function lexemeLists(candidate, language, surface, action = null) {
+   00284|   return candidate.lexemes
+   00285|     .filter((lexeme) => lexeme.language === language)
+   00286|     .some((lexeme) => lexeme.words.some((word) => word.text === surface && (action === null || word.action === action)));
+   00287| }
+   00288| 
+   00289| /** Mirrors `Lexicon::role_surface_translation`. */
+   00290| export function roleSurfaceTranslation(role, source, target, surface) {
+   00291|   const found = meaningsWithRole(role).find((candidate) => lexemeLists(candidate, source, surface));
+   00292|   return found ? wordIn(found, target) : null;
+   00293| }
+   00294| 
+   00295| /** Mirrors `Lexicon::role_lists_surface`. */
+   00296| export function roleListsSurface(role, language, surface) {
+   00297|   return meaningsWithRole(role).some((candidate) => lexemeLists(candidate, language, surface));
+   00298| }
+   00299| 
+   00300| /** Mirrors `Lexicon::role_action_surface_translation`. */
+   00301| export function roleActionSurfaceTranslation(role, action, source, target, surface) {
+   00302|   const found = meaningsWithRole(role).find((candidate) => lexemeLists(candidate, source, surface, action));
+   00303|   return found ? wordIn(found, target) : null;
+   00304| }
+   00305| 
+   00306| /** Mirrors `Lexicon::meaning_by_wikidata`. */
+   00307| export function meaningByWikidata(id) {
+   00308|   return lexicon().find((candidate) => candidate.wikidata === id) ?? null;
+   00309| }
+   00310| 
+   
+   (End of file - total 310 lines)
+   </file>
+>> edit {"filePath":"js/agentic/crate/seed_meanings.mjs","file_path":"js/agentic/crate/seed_meanings.mjs","new":"// Language-independent Lexicon from rust/src/seed/meanings.rs; loader:\n// rust/src/seed/meanings/parse.rs. Declaration order sets first_role_match\n// and words_for_role priority. Parse MEANING_FILES in the order listed by\n// rust/src/seed/embedded_registry.rs: the worker realm sorts files and omits\n// learned-request-openers.lino. Parsed meaning and word shapes appear below.","newString":"// Language-independent Lexicon from rust/src/seed/meanings.rs; loader:\n// rust/src/seed/meanings/parse.rs. Declaration order sets first_role_match\n// and words_for_role priority. Parse MEANING_FILES in the order listed by\n// rust/src/seed/embedded_registry.rs: the worker realm sorts files and omits\n// learned-request-openers.lino. Parsed meaning and word shapes appear below.","new_str":"// Language-independent Lexicon from rust/src/seed/meanings.rs; loader:\n// rust/src/seed/meanings/parse.rs. Declaration order sets first_role_match\n// and words_for_role priority. Parse MEANING_FILES in the order listed by\n// rust/src/seed/embedded_registry.rs: the worker realm sorts files and omits\n// learned-request-openers.lino. Parsed meaning and word shapes appear below.","new_string":"// Language-independent Lexicon from rust/src/seed/meanings.rs; loader:\n// rust/src/seed/meanings/parse.rs. Declaration order sets first_role_match\n// and words_for_role priority. Parse MEANING_FILES in the order listed by\n// rust/src/seed/embedded_registry.rs: the worker realm sorts files and omits\n// learned-request-openers.lino. Parsed meaning and word shapes appear below.","old":"// The language-independent meaning lexicon: a port of rust/src/seed/meanings.rs\n// (`Lexicon`) and its loader rust/src/seed/meanings/parse.rs.\n//\n// The worker realm parses a differently ordered file set (it skips\n// learned-request-openers.lino and sorts by name), and declaration order is\n// priority for `first_role_match` / `words_for_role`, so this module parses\n// `MEANING_FILES` itself, in the order rust/src/seed/embedded_registry.rs\n// lists them. A meaning is `{slug, defined_by, roles, wikidata, lexemes:\n// [{language, words: [{text, action}]}]}`.","oldString":"// The language-independent meaning lexicon: a port of rust/src/seed/meanings.rs\n// (`Lexicon`) and its loader rust/src/seed/meanings/parse.rs.\n//\n// The worker realm parses a differently ordered file set (it skips\n// learned-request-openers.lino and sorts by name), and declaration order is\n// priority for `first_role_match` / `words_for_role`, so this module parses\n// `MEANING_FILES` itself, in the order rust/src/seed/embedded_registry.rs\n// lists them. A meaning is `{slug, defined_by, roles, wikidata, lexemes:\n// [{language, words: [{text, action}]}]}`.","old_str":"// The language-independent meaning lexicon: a port of rust/src/seed/meanings.rs\n// (`Lexicon`) and its loader rust/src/seed/meanings/parse.rs.\n//\n// The worker realm parses a differently ordered file set (it skips\n// learned-request-openers.lino and sorts by name), and declaration order is\n// priority for `first_role_match` / `words_for_role`, so this module parses\n// `MEANING_FILES` itself, in the order rust/src/seed/embedded_registry.rs\n// lists them. A meaning is `{slug, defined_by, roles, wikidata, lexemes:\n// [{language, words: [{text, action}]}]}`.","old_string":"// The language-independent meaning lexicon: a port of rust/src/seed/meanings.rs\n// (`Lexicon`) and its loader rust/src/seed/meanings/parse.rs.\n//\n// The worker realm parses a differently ordered file set (it skips\n// learned-request-openers.lino and sorts by name), and declaration order is\n// priority for `first_role_match` / `words_for_role`, so this module parses\n// `MEANING_FILES` itself, in the order rust/src/seed/embedded_registry.rs\n// lists them. A meaning is `{slug, defined_by, roles, wikidata, lexemes:\n// [{language, words: [{text, action}]}]}`.","path":"js/agentic/crate/seed_meanings.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/crate/seed_meanings.mjs"}
+   Output: 0ce3b636505c3bb4fe7c2a836087de861e96cbe7eceeb54607b5224e3944f8fe  js/agentic/crate/seed_meanings.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced ``// The language-independent meaning lexicon: a port of rust/src/seed/meanings.rs
+// (`Lexicon`) and its loader rust/src/seed/meanings/parse.rs.
+//
+// The worker realm parses a differently ordered file set (it skips
+// learned-request-openers.lino and sorts by name), and declaration order is
+// priority for `first_role_match` / `words_for_role`, so this module parses
+// `MEANING_FILES` itself, in the order rust/src/seed/embedded_registry.rs
+// lists them. A meaning is `{slug, defined_by, roles, wikidata, lexemes:
+// [{language, words: [{text, action}]}]}`.`` with `// Language-independent Lexicon from rust/src/seed/meanings.rs; loader:
+// rust/src/seed/meanings/parse.rs. Declaration order sets first_role_match
+// and words_for_role priority. Parse MEANING_FILES in the order listed by
+// rust/src/seed/embedded_registry.rs: the worker realm sorts files and omits
+// learned-request-openers.lino. Parsed meaning and word shapes appear below.` in `js/agentic/crate/seed_meanings.mjs` and observed the result.

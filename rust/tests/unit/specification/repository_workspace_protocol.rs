@@ -120,8 +120,8 @@ fn protocol_document_matches_the_live_source() {
     let declared = declared_steps();
     assert_eq!(
         declared.len(),
-        6,
-        "the protocol is clone, locate, read, edit, verify, diff"
+        9,
+        "the protocol is clone, locate, read, serve, edit, session, verify, diff, commit"
     );
 
     let mut orders: Vec<usize> = declared

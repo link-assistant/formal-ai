@@ -45,15 +45,22 @@ try {
   // Hosts without a usable location keep plain worker-relative resolution.
 }
 
+importScripts(withAssetVersion("worker-script-prerequisites.js"));
+
+// The completed set is private to this actual import closure, not caller globals.
+const loadWorkerAsset = createWorkerAssetLoader(importScripts, withAssetVersion);
+
 try {
   // `seed-files.js` first: it is the generated inventory of `seed/*.lino` files
   // that `seed_loader.js` fetches, kept in its own file so two branches that
   // each add a seed file never edit the same lines. See issue #991 and
-  // `data/meta/seed-registry.lino`.
-  importScripts(withAssetVersion("seed-files.js"));
-  importScripts(withAssetVersion("seed_loader.js"));
+  // `data/meta/seed-registry.lino`; shipped responses also boot offline.
+  loadWorkerAsset("worker-bootstrap-responses.js");
+  loadWorkerAsset("seed-files.js");
+  loadWorkerAsset("parser-cache-primordials.js");
+  loadWorkerAsset("seed_loader.js");
 } catch (_error) {
-  // Seed loader is optional: tests that mock the worker may exclude it.
+  // Mock workers may omit the optional loader.
 }
 
 try {
@@ -76,13 +83,6 @@ try {
   });
 }
 
-// The module list lives in its own file so it can be union merged: see
-// `data/meta/merge-conflict-policy.lino`. Two branches that each add a worker
-// module then produce a superset instead of an add/add conflict, and
-// `rust-script scripts/normalize-ordered-lists.rs --write` regenerates the list
-// from the directory itself.
 importScripts(withAssetVersion("worker-modules.js"));
 
-for (const modulePath of self.FORMAL_AI_WORKER_MODULES) {
-  importScripts(withAssetVersion(modulePath));
-}
+loadWorkerModules(self.FORMAL_AI_WORKER_MODULES, loadWorkerAsset);

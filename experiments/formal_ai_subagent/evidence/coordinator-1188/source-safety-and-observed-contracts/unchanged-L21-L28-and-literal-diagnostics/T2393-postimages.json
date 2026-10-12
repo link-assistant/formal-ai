@@ -1,0 +1,19 @@
+{
+  "path": "rust/src/solver_handler_how_synthesis.rs",
+  "bytes": 5812,
+  "sha256": "dda0405c8561fccfd35733acce3ffd7f56ca9bbebd4c028b5d22954c05248504",
+  "unchanged": false,
+  "artifacts": [
+    {
+      "path": "agent-ladder-effects/node-2.1.2.1.1.lino",
+      "exists": false,
+      "content": null
+    },
+    {
+      "path": ".agent-ladder/node-2.1.2.1.1-proof.md",
+      "exists": true,
+      "content": "node_path=2.1.2.1.1\n\nReplaced `FORMAL_AI_SOURCE_CACHE_DIR` with `FORMAL_AI_HOW_SOURCE_CACHE_DIR` in `rust/src/solver_handler_how_synthesis.rs` and observed the result.\n"
+    }
+  ],
+  "gitStatus": " M rust/src/solver_handler_how_synthesis.rs\n?? .agent-ladder/\n"
+}

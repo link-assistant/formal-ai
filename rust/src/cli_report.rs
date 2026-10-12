@@ -295,7 +295,7 @@ fn separate_context_attachments(
             std::fs::write(&path, &contents)?;
             (path, contents)
         };
-        debug_assert!(!contents.is_empty());
+        debug_assert_ne!(contents, "");
         let url = upload_gist(&path, session, visibility)?;
         attachments.push(ReportAttachment {
             heading: config(heading_key),

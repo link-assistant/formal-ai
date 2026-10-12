@@ -1,0 +1,1 @@
+Release controls now bind the metadata operation to the prepared image factory and retain every original desktop and updater asset obligation. Independent fixture checks cover version/latest tag ordering, complete release evidence, each missing original asset and unknown API/authentication responses. Production release gates and budgets are unchanged; U9 remains Open.

@@ -1,0 +1,9 @@
+view
+  id M-4f03397e6950
+  lemma wellbeing
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a contented state of being happy and healthy and prosperous"
+    provenance (wordnet)

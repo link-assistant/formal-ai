@@ -1,14 +1,17 @@
 Q83180
   aliases
+    es (tejado techo techumbre "cubierta arquitectónica")
     ru ("чердак" "покрытие")
     zh ("屋頂" "厝頂")
   descriptions
     en "top covering of a building"
+    es "elemento constructivo que protege la parte superior de un edificio frente a la intemperie"
     ru "верхнее покрытие здания"
     zh "房屋的頂蓋"
   id Q83180
   labels
     en roof
+    es cubierta
     hi "छत"
     ru "крыша"
     zh "屋顶"

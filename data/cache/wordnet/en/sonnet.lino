@@ -1,0 +1,19 @@
+language en
+lemma sonnet
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a verse form consisting of 14 lines with a fixed rhyme scheme"
+    id oewn-06392995-n
+    partOfSpeech n
+  entry
+    definition "praise in a sonnet"
+    id oewn-01707589-v
+    partOfSpeech v
+  entry
+    definition "compose a sonnet"
+    id oewn-01707472-v
+    partOfSpeech v
+source "oewn:2024"

@@ -1,0 +1,57 @@
+view
+  id M-c4774bb7617b
+  lemma process
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a particular course of action intended to achieve a result"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(psychology) the performance of some composite cognitive activity; an operation that affects mental contents"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a writ issued by authority of law; usually compels the defendant's attendance in a civil suit; failure to appear results in a default judgment against the defendant"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a mental process that you are not directly aware of"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a natural prolongation or projection from a part of an organism either animal or plant"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a sustained phenomenon or one marked by gradual changes through a series of states"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "subject to a process or treatment, with the aim of readying for some purpose, improving, or remedying a condition"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "march in a procession"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "deal with in a routine way"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "perform mathematical and logical operations on (data) according to programmed instructions in order to obtain the required information"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "institute legal proceedings against; file a suit against"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "shape, form, or improve a material"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "deliver a warrant or summons to someone"
+    provenance (wordnet)

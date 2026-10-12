@@ -1,0 +1,19 @@
+{
+  "lemma": "colosseum",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03076832-n",
+      "partOfSpeech": "n",
+      "definition": "a large amphitheater in Rome whose construction was begun by Vespasian about AD 75 or 80",
+      "synonyms": [
+        "Amphitheatrum Flavium"
+      ]
+    }
+  ]
+}

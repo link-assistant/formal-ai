@@ -1,0 +1,13 @@
+view
+  id M-f0e5c5e38107
+  lemma formalise
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make formal or official"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "declare or make legally valid"
+    provenance (wordnet)

@@ -1,0 +1,764 @@
+>> read {"filePath":"rust/tests/unit/coding_discovery/composition.rs","file_path":"rust/tests/unit/coding_discovery/composition.rs","path":"rust/tests/unit/coding_discovery/composition.rs"}
+   <file>
+   00001| use formal_ai::coding_task_spec::{ArtifactShape, CodingTaskSpec, Example, Parameter};
+   00002| use formal_ai::composition::{compose, compose_with_ir};
+   00003| use formal_ai::concept_discovery::{
+   00004|     CandidatePart, ConceptMap, ConceptRequirement, StructuralMeaning, structural_meanings,
+   00005| };
+   00006| use formal_ai::fragment_catalog::FragmentCatalog;
+   00007| use formal_ai::needs::{NeedKind, NeedState};
+   00008| use formal_ai::program_ir::{IrNode, IrType, ProgramIr, ReuseMode};
+   00009| 
+   00010| fn parameter(name: &str, annotation: Option<&str>) -> Parameter {
+   00011|     Parameter {
+   00012|         name: name.to_owned(),
+   00013|         annotation: annotation.map(str::to_owned),
+   00014|     }
+   00015| }
+   00016| 
+   00017| fn example(arguments: &[&str], expected: &str) -> Example {
+   00018|     Example {
+   00019|         arguments: arguments.iter().map(|value| (*value).to_owned()).collect(),
+   00020|         expected: expected.to_owned(),
+   00021|     }
+   00022| }
+   00023| 
+   00024| fn spec(name: &str, parameters: Vec<Parameter>, examples: Vec<Example>) -> CodingTaskSpec {
+   00025|     CodingTaskSpec {
+   00026|         language: "python".to_owned(),
+   00027|         artifact_shape: ArtifactShape::Function,
+   00028|         callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+   00029|             signature: String::new(),
+   00030|         },
+   00031|         name: name.to_owned(),
+   00032|         parameters,
+   00033|         return_annotation: None,
+   00034|         imports: Vec::new(),
+   00035|         requirement_sentences: Vec::new(),
+   00036|         examples,
+   00037|         expected_stdout: None,
+   00038|         prose_language: "en".to_owned(),
+   00039|     }
+   00040| }
+   00041| 
+   00042| fn program(requirement: &str, expected_stdout: Option<&str>) -> CodingTaskSpec {
+   00043|     CodingTaskSpec {
+   00044|         language: "python".to_owned(),
+   00045|         artifact_shape: ArtifactShape::Program,
+   00046|         callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+   00047|             signature: String::new(),
+   00048|         },
+   00049|         name: "main".to_owned(),
+   00050|         parameters: Vec::new(),
+   00051|         return_annotation: None,
+   00052|         imports: Vec::new(),
+   00053|         requirement_sentences: vec![requirement.to_owned()],
+   00054|         examples: Vec::new(),
+   00055|         expected_stdout: expected_stdout.map(str::to_owned),
+   00056|         prose_language: "en".to_owned(),
+   00057|     }
+   00058| }
+   00059| 
+   00060| fn candidate(id: &str, kind: &str, code: Option<&str>) -> CandidatePart {
+   00061|     CandidatePart {
+   00062|         id: id.to_owned(),
+   00063|         kind: kind.to_owned(),
+   00064|         label: id.to_owned(),
+   00065|         language: Some("python".to_owned()),
+   00066|         code: code.map(str::to_owned),
+   00067|         callable_name: None,
+   00068|         callable_contract: None,
+   00069|         source_tests: Vec::new(),
+   00070|         license: if kind == "stdlib" {
+   00071|             "PSF-2.0"
+   00072|         } else {
+   00073|             "Apache-2.0"
+   00074|         }
+   00075|         .to_owned(),
+   00076|         source_url: format!("https://source.invalid/{id}"),
+   00077|         sha256: "e".repeat(64),
+   00078|         fetched_at: "2026-09-15T00:00:00Z".to_owned(),
+   00079|         score: 1.0,
+   00080|     }
+   00081| }
+   00082| 
+   00083| fn map(structure_ids: &[&str], candidates: Vec<CandidatePart>) -> ConceptMap {
+   00084|     let registry = structural_meanings();
+   00085|     let structures = structure_ids
+   00086|         .iter()
+   00087|         .map(|id| {
+   00088|             registry
+   00089|                 .iter()
+   00090|                 .find(|meaning| meaning.id == *id)
+   00091|                 .cloned()
+   00092|                 .unwrap_or_else(|| StructuralMeaning {
+   00093|                     id: (*id).to_owned(),
+   00094|                     idiom: String::new(),
+   00095|                     grounding: String::new(),
+   00096|                 })
+   00097|         })
+   00098|         .collect();
+   00099|     ConceptMap {
+   00100|         needs: vec![ConceptRequirement::new(
+   00101|             "fixture need",
+   00102|             "en",
+   00103|             NeedState::Satisfied,
+   00104|             structures,
+   00105|             candidates,
+   00106|         )],
+   00107|         evidence: Vec::new(),
+   00108|     }
+   00109| }
+   00110| 
+   00111| #[test]
+   00112| fn passing_drafts_are_executed_and_least_action_selects_the_stdlib_gcd() {
+   00113|     let task = spec(
+   00114|         "greatest_common_divisor",
+   00115|         vec![parameter("a", Some("int")), parameter("b", Some("int"))],
+   00116|         vec![example(&["3", "5"], "1"), example(&["25", "15"], "5")],
+   00117|     );
+   00118|     let concepts = map(
+   00119|         &[],
+   00120|         vec![
+   00121|             candidate("math.gcd", "stdlib", None),
+   00122|             candidate(
+   00123|                 "Z14857",
+   00124|                 "wikifunctions_implementation",
+   00125|                 Some("import math\nreturn math.gcd(a, b)"),
+   00126|             ),
+   00127|             candidate(
+   00128|                 "Z13642",
+   00129|                 "wikifunctions_implementation",
+   00130|                 Some("while b:\n    a, b = b, a % b\nreturn a"),
+   00131|             ),
+   00132|         ],
+   00133|     );
+   00134|     let outcome = compose(&task, &concepts);
+   00135|     let selected = outcome.selected.expect("a GCD draft passes");
+   00136|     assert_eq!(selected.id, "stdlib:math.gcd");
+   00137|     assert!(selected.source.contains("return math.gcd(a, b)"));
+   00138|     assert!(
+   00139|         outcome
+   00140|             .attempts
+   00141|             .iter()
+   00142|             .any(|attempt| attempt.id == "part:Z14857")
+   00143|     );
+   00144|     assert_eq!(selected.assertion_count, 2);
+   00145| }
+   00146| 
+   00147| #[test]
+   00148| fn structural_compositions_cover_tuple_pairwise_and_vowel_counting() {
+   00149|     let sum_product = compose(
+   00150|         &spec(
+   00151|             "sum_product",
+   00152|             vec![parameter("numbers", Some("list[int]"))],
+   00153|             vec![
+   00154|                 example(&["[]"], "(0, 1)"),
+   00155|                 example(&["[1, 2, 3, 4]"], "(10, 24)"),
+   00156|             ],
+   00157|         ),
+   00158|         &map(
+   00159|             &["tuple_of", "reduce_sum", "reduce_product"],
+   00160|             vec![
+   00161|                 candidate("sum", "stdlib", None),
+   00162|                 candidate("math.prod", "stdlib", None),
+   00163|             ],
+   00164|         ),
+   00165|     );
+   00166|     let sum_product = sum_product
+   00167|         .selected
+   00168|         .expect("sum/product composition passes");
+   00169|     assert!(
+   00170|         sum_product
+   00171|             .source
+   00172|             .contains("return (sum(numbers), math.prod(numbers))")
+   00173|     );
+   00174| 
+   00175|     let close = compose(
+   00176|         &spec(
+   00177|             "has_close_elements",
+   00178|             vec![
+   00179|                 parameter("numbers", Some("list[float]")),
+   00180|                 parameter("threshold", Some("float")),
+   00181|             ],
+   00182|             vec![
+   00183|                 example(&["[1.0, 2.0, 3.0]", "0.5"], "False"),
+   00184|                 example(&["[1.0, 2.8, 3.0]", "0.3"], "True"),
+   00185|             ],
+   00186|         ),
+   00187|         &map(
+   00188|             &[
+   00189|                 "quantifier_any",
+   00190|                 "pairwise_distinct",
+   00191|                 "predicate_abs_diff_lt",
+   00192|             ],
+   00193|             Vec::new(),
+   00194|         ),
+   00195|     );
+   00196|     let close = close.selected.expect("pairwise composition passes");
+   00197|     assert!(close.source.contains(".combinations(numbers, 2)"));
+   00198|     assert!(close.source.contains("abs(left - right) < threshold"));
+   00199| 
+   00200|     let vowels = compose(
+   00201|         &spec(
+   00202|             "count_vowels",
+   00203|             vec![parameter("text", Some("str"))],
+   00204|             vec![example(&["'hello'"], "2"), example(&["'sky'"], "0")],
+   00205|         ),
+   00206|         &map(&["reduce_count", "vowel_character_class"], Vec::new()),
+   00207|     );
+   00208|     let vowels = vowels.selected.expect("vowel composition passes");
+   00209|     assert!(vowels.source.contains("sum(1 for character in text"));
+   00210|     assert!(vowels.composition.starts_with("typed_search("));
+   00211| }
+   00212| 
+   00213| #[test]
+   00214| fn failed_parts_return_no_answer_and_name_the_failed_example() {
+   00215|     let task = spec(
+   00216|         "transform_value",
+   00217|         vec![parameter("value", Some("int"))],
+   00218|         vec![example(&["1"], "2")],
+   00219|     );
+   00220|     let outcome = compose(&task, &map(&[], vec![candidate("abs", "stdlib", None)]));
+   00221|     assert!(outcome.selected.is_none());
+   00222|     assert!(
+   00223|         outcome.research_trail.contains("abs"),
+   00224|         "{}",
+   00225|         outcome.research_trail
+   00226|     );
+   00227|     assert!(
+   00228|         outcome.research_trail.contains("transform_value(1) == 2"),
+   00229|         "{}",
+   00230|         outcome.research_trail
+   00231|     );
+   00232| }
+   00233| 
+   00234| #[test]
+   00235| fn a_missing_catalog_fragment_is_a_blocked_need_and_never_an_answer() {
+   00236|     let task = spec(
+   00237|         "unknown_operation",
+   00238|         vec![parameter("value", Some("int"))],
+   00239|         vec![example(&["1"], "1")],
+   00240|     );
+   00241|     let missing_id = "rediscover_this_operation";
+   00242|     let program = ProgramIr {
+   00243|         name: task.name.clone(),
+   00244|         parameters: vec![("value".to_owned(), IrType::Integer)],
+   00245|         result: IrType::Integer,
+   00246|         body: IrNode::Apply {
+   00247|             fragment: missing_id.to_owned(),
+   00248|             arguments: vec![IrNode::Parameter {
+   00249|                 name: "value".to_owned(),
+   00250|                 ty: IrType::Integer,
+   00251|             }],
+   00252|         },
+   00253|         fragments: vec![missing_id.to_owned()],
+   00254|         source_urls: Vec::new(),
+   00255|         source_licenses: Vec::new(),
+   00256|         reuse: ReuseMode::ShapeOnly,
+   00257|     };
+   00258| 
+   00259|     let outcome = compose_with_ir(
+   00260|         &task,
+   00261|         &map(&[], Vec::new()),
+   00262|         &FragmentCatalog::default(),
+   00263|         [program],
+   00264|     );
+   00265| 
+   00266|     assert!(outcome.selected.is_none());
+   00267|     assert_eq!(
+   00268|         outcome.unverified,
+   00269|         [] as [formal_ai::composition::UnverifiedDraft; 0]
+   00270|     );
+   00271|     assert_eq!(outcome.blocked_needs.len(), 1);
+   00272|     assert_eq!(outcome.blocked_needs[0].kind, NeedKind::Part);
+   00273|     assert_eq!(outcome.blocked_needs[0].state, NeedState::Unsatisfiable);
+   00274|     assert_eq!(
+   00275|         outcome.blocked_needs[0].subject,
+   00276|         format!("fragment:{missing_id}")
+   00277|     );
+   00278|     assert!(outcome.research_trail.contains(missing_id));
+   00279| }
+   00280| 
+   00281| #[test]
+   00282| fn legacy_composition_cannot_bypass_the_callers_empty_catalog() {
+   00283|     let task = spec(
+   00284|         "unique_count",
+   00285|         vec![parameter("values", Some("list[int]"))],
+   00286|         vec![example(&["[1, 1, 2]"], "2")],
+   00287|     );
+   00288|     let outcome = compose_with_ir(
+   00289|         &task,
+   00290|         &map(&["distinct_elements", "reduce_len"], Vec::new()),
+   00291|         &FragmentCatalog::default(),
+   00292|         [],
+   00293|     );
+   00294| 
+   00295|     assert!(outcome.selected.is_none());
+   00296|     assert!(
+   00297|         outcome
+   00298|             .blocked_needs
+   00299|             .iter()
+   00300|             .any(|need| need.subject.starts_with("fragment:")),
+   00301|         "the injected empty catalog must be authoritative: {outcome:#?}"
+   00302|     );
+   00303| }
+   00304| 
+   00305| #[test]
+   00306| fn runnable_programs_are_composed_from_output_and_range_observations() {
+   00307|     let literal = compose(
+   00308|         &program("Print Alpha, beta!", Some("Alpha, beta!")),
+   00309|         &map(&["print_stdout"], Vec::new()),
+   00310|     )
+   00311|     .selected
+   00312|     .expect("an exact stdout observation should verify a runnable program");
+   00313|     assert_eq!(literal.source, "print(\"Alpha, beta!\")");
+   00314|     assert_eq!(literal.assertion_count, 1);
+   00315| 
+   00316|     let range = compose(
+   00317|         &program("Count to five inclusive.", None),
+   00318|         &map(&["range_inclusive"], Vec::new()),
+   00319|     )
+   00320|     .selected
+   00321|     .expect("a seeded cardinal and inclusive range should derive stdout");
+   00322|     assert!(range.source.contains("for number in range(1, 5 + 1)"));
+   00323|     assert!(range.source.contains("print(number)"));
+   00324|     assert!(range.composition.starts_with("typed_search("));
+   00325| }
+   00326| 
+   00327| #[test]
+   00328| fn source_recurrence_candidates_are_verified_with_discovered_examples() {
+   00329|     let mut source_candidate = candidate(
+   00330|         "source-abstract-17",
+   00331|         "wikifunctions_recurrence",
+   00332|         Some("def accumulated_total(n):\n    return 0 if n == 0 else n + accumulated_total(n - 1)"),
+   00333|     );
+   00334|     source_candidate.source_tests = vec![
+   00335|         example(&["0"], "0"),
+   00336|         example(&["4"], "10"),
+   00337|         example(&["7"], "28"),
+   00338|     ];
+   00339|     let source_parameter_expression =
+   00340|         formal_ai::coding_recurrence::Expression::Parameter("n".to_owned());
+   00341|     let contract = formal_ai::coding_recurrence::SourceCallableContract {
+   00342|         name: "accumulated_total".to_owned(),
+   00343|         parameter: "n".to_owned(),
+   00344|         expression: formal_ai::coding_recurrence::Expression::Apply(
+   00345|             formal_ai::coding_recurrence::Operation::Conditional,
+   00346|             vec![
+   00347|                 formal_ai::coding_recurrence::Expression::Apply(
+   00348|                     formal_ai::coding_recurrence::Operation::Equal,
+   00349|                     vec![
+   00350|                         source_parameter_expression.clone(),
+   00351|                         formal_ai::coding_recurrence::Expression::Literal(0),
+   00352|                     ],
+   00353|                 ),
+   00354|                 formal_ai::coding_recurrence::Expression::Literal(0),
+   00355|                 formal_ai::coding_recurrence::Expression::Apply(
+   00356|                     formal_ai::coding_recurrence::Operation::Add,
+   00357|                     vec![
+   00358|                         source_parameter_expression.clone(),
+   00359|                         formal_ai::coding_recurrence::Expression::Recur(Box::new(
+   00360|                             formal_ai::coding_recurrence::Expression::Apply(
+   00361|                                 formal_ai::coding_recurrence::Operation::SubtractOne,
+   00362|                                 vec![source_parameter_expression],
+   00363|                             ),
+   00364|                         )),
+   00365|                     ],
+   00366|                 ),
+   00367|             ],
+   00368|         ),
+   00369|     };
+   00370|     source_candidate.code = Some(contract.render_python());
+   00371|     source_candidate.callable_name = Some(contract.name.clone());
+   00372|     source_candidate.callable_contract = Some(contract);
+   00373|     let outcome = compose(
+   00374|         &spec(
+   00375|             "accumulated_total",
+   00376|             vec![parameter("n", Some("int"))],
+   00377|             Vec::new(),
+   00378|         ),
+   00379|         &map(&[], vec![source_candidate]),
+   00380|     );
+   00381|     let selected = outcome
+   00382|         .selected
+   00383|         .expect("source recurrence should pass its discovered tests");
+   00384|     assert_eq!(selected.id, "recurrence:source-abstract-17");
+   00385|     assert_eq!(selected.assertion_count, 3);
+   00386| }
+   00387| 
+   00388| #[test]
+   00389| fn existing_collection_meanings_compose_into_held_out_programs() {
+   00390|     let filtered = compose(
+   00391|         &spec(
+   00392|             "retain_matching_values",
+   00393|             vec![parameter("values", None), parameter("fragment", None)],
+   00394|             vec![
+   00395|                 example(&["['cabin', 'mint', 'cab']", "'cab'"], "['cabin', 'cab']"),
+   00396|                 example(&["[]", "'x'"], "[]"),
+   00397|             ],
+   00398|         ),
+   00399|         &map(&["filter_only", "membership"], Vec::new()),
+   00400|     )
+   00401|     .selected
+   00402|     .expect("filter and membership should compose");
+   00403|     assert!(
+   00404|         filtered
+   00405|             .source
+   00406|             .contains("[item for item in values if fragment in item]")
+   00407|     );
+   00408| 
+   00409|     let rolling = compose(
+   00410|         &spec(
+   00411|             "prefix_high_water_marks",
+   00412|             vec![parameter("samples", None)],
+   00413|             vec![
+   00414|                 example(&["[]"], "[]"),
+   00415|                 example(&["[5, 2, 7, 1]"], "[5, 5, 7, 7]"),
+   00416|             ],
+   00417|         ),
+   00418|         &map(&["running_prefix", "reduce_max"], Vec::new()),
+   00419|     )
+   00420|     .selected
+   00421|     .expect("running maximum should compose");
+   00422|     assert!(
+   00423|         rolling
+   00424|             .source
+   00425|             .contains("itertools.accumulate(samples, max)")
+   00426|     );
+   00427| 
+   00428|     let normalized = compose(
+   00429|         &spec(
+   00430|             "normalized_symbol_cardinality",
+   00431|             vec![parameter("symbols", None)],
+   00432|             vec![example(&["'AaBbA'"], "2"), example(&["''"], "0")],
+   00433|         ),
+   00434|         &map(
+   00435|             &["distinct_elements", "reduce_count", "case_insensitive"],
+   00436|             Vec::new(),
+   00437|         ),
+   00438|     )
+   00439|     .selected
+   00440|     .expect("normalization should compose before distinct counting");
+   00441|     assert!(normalized.source.contains("len(set(symbols.lower()))"));
+   00442| 
+   00443|     let windows = compose(
+   00444|         &spec(
+   00445|             "count_shifted_matches",
+   00446|             vec![parameter("haystack", None), parameter("needle", None)],
+   00447|             vec![
+   00448|                 example(&["'zzzzz'", "'zz'"], "4"),
+   00449|                 example(&["'abc'", "'x'"], "0"),
+   00450|             ],
+   00451|         ),
+   00452|         &map(&["count_overlapping"], Vec::new()),
+   00453|     )
+   00454|     .selected
+   00455|     .expect("overlapping windows should compose");
+   00456|     assert!(windows.source.contains("haystack.startswith(needle, i)"));
+   00457| }
+   00458| 
+   00459| #[test]
+   00460| fn held_out_grid_examples_select_the_supported_predecessor_relation() {
+   00461|     let outcome = compose(
+   00462|         &spec(
+   00463|             "least_weight_to_coordinate",
+   00464|             vec![
+   00465|                 parameter("weights", Some("list[list[int]]")),
+   00466|                 parameter("last_row", Some("int")),
+   00467|                 parameter("last_column", Some("int")),
+   00468|             ],
+   00469|             vec![
+   00470|                 example(
+   00471|                     &[
+   00472|                         "[[1, 100, 100, 100], [100, 2, 100, 100], [100, 100, 3, 4]]",
+   00473|                         "2",
+   00474|                         "3",
+   00475|                     ],
+   00476|                     "10",
+   00477|                 ),
+   00478|                 example(&["[[4, 8], [7, 1]]", "1", "1"], "5"),
+   00479|             ],
+   00480|         ),
+   00481|         &map(&["grid_minimum_cost_path"], Vec::new()),
+   00482|     );
+   00483|     let selected = outcome.selected.unwrap_or_else(|| {
+   00484|         panic!(
+   00485|             "examples should select diagonal as an allowed predecessor: {:#?}",
+   00486|             outcome.attempts
+   00487|         )
+   00488|     });
+   00489|     assert!(
+   00490|         selected.source.contains("lambda self, state_0, state_1"),
+   00491|         "the selected candidate is a general recursive-reduction IR: {}",
+   00492|         selected.source
+   00493|     );
+   00494|     assert!(selected.source.contains("(-1, -1)"));
+   00495|     assert!(
+   00496|         selected
+   00497|             .source_urls
+   00498|             .iter()
+   00499|             .any(|url| url
+   00500|                 == "https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf")
+   00501|     );
+   00502|     assert!(selected.composition.starts_with("typed_search("));
+   00503| }
+   00504| 
+   00505| fn competing_product_program(task: &CodingTaskSpec, catalog: &FragmentCatalog) -> ProgramIr {
+   00506|     let fragments = vec!["reduce_product".to_owned(), "range_inclusive".to_owned()];
+   00507|     ProgramIr {
+   00508|         name: task.name.clone(),
+   00509|         parameters: vec![(task.parameters[0].name.clone(), IrType::Unknown(0))],
+   00510|         result: IrType::Integer,
+   00511|         body: IrNode::Apply {
+   00512|             fragment: "reduce_product".to_owned(),
+   00513|             arguments: vec![IrNode::Apply {
+   00514|                 fragment: "range_inclusive".to_owned(),
+   00515|                 arguments: vec![IrNode::Parameter {
+   00516|                     name: task.parameters[0].name.clone(),
+   00517|                     ty: IrType::Unknown(0),
+   00518|                 }],
+   00519|             }],
+   00520|         },
+   00521|         source_urls: fragments
+   00522|             .iter()
+   00523|             .map(|identifier| catalog.get(identifier).unwrap().grounding.clone())
+   00524|             .collect(),
+   00525|         source_licenses: fragments
+   00526|             .iter()
+   00527|             .map(|identifier| catalog.get(identifier).unwrap().license.clone())
+   00528|             .collect(),
+   00529|         fragments,
+   00530|         reuse: ReuseMode::ShapeOnly,
+   00531|     }
+   00532| }
+   00533| 
+   00534| #[test]
+   00535| fn source_owned_body_reads_compete_with_actual_typed_ir_under_a_provisional_signature() {
+   00536|     let task = formal_ai::coding_task_spec::recognise(
+   00537|         "Write a Python function that returns the factorial of n",
+   00538|     )
+   00539|     .unwrap();
+   00540|     assert_eq!(
+   00541|         task.callable_binding_origin,
+   00542|         formal_ai::coding_task_spec::CallableBindingOrigin::Provisional
+   00543|     );
+   00544|     assert_eq!(task.parameters[0].name, "input");
+   00545|     let source_candidate =
+   00546|         formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+   00547|     let contract = source_candidate.callable_contract.as_ref().unwrap();
+   00548|     assert_eq!(contract.parameter, "n");
+   00549|     assert_eq!(contract.read_positions(), Some(vec![0]));
+   00550|     let source = source_candidate.code.clone().unwrap();
+   00551|     let selected_identifier = format!("recurrence:{}", source_candidate.id);
+   00552|     let source_url = source_candidate.source_url.clone();
+   00553|     let catalog = FragmentCatalog::bootstrap();
+   00554|     let competing = competing_product_program(&task, &catalog);
+   00555|     assert_eq!(competing.action_cost(), 3);
+   00556|     let competing_identifier = competing.content_id();
+   00557|     let outcome = compose_with_ir(
+   00558|         &task,
+   00559|         &map(&[], vec![source_candidate]),
+   00560|         &catalog,
+   00561|         [competing],
+   00562|     );
+   00563|     assert!(
+   00564|         outcome
+   00565|             .attempts
+   00566|             .iter()
+   00567|             .any(|attempt| attempt.id == competing_identifier && attempt.passed)
+   00568|     );
+   00569|     assert!(
+   00570|         outcome
+   00571|             .attempts
+   00572|             .iter()
+   00573|             .any(|attempt| attempt.id == selected_identifier && attempt.passed)
+   00574|     );
+   00575|     let selected = outcome.selected.unwrap();
+   00576|     assert_eq!(selected.id, selected_identifier);
+   00577|     assert_eq!(selected.source, source);
+   00578|     assert_eq!(selected.source_urls, vec![source_url]);
+   00579|     assert_eq!(selected.assertion_count, 4);
+   00580| }
+   00581| 
+   00582| #[test]
+   00583| fn declaration_only_source_names_cannot_outrank_an_input_reading_program() {
+   00584|     let mut task = spec(
+   00585|         "discovered_function",
+   00586|         vec![parameter("input", None)],
+   00587|         Vec::new(),
+   00588|     );
+   00589|     task.callable_binding_origin = formal_ai::coding_task_spec::CallableBindingOrigin::Provisional;
+   00590|     let contract = formal_ai::coding_recurrence::SourceCallableContract {
+   00591|         name: "constant".to_owned(),
+   00592|         parameter: "n".to_owned(),
+   00593|         expression: formal_ai::coding_recurrence::Expression::Literal(1),
+   00594|     };
+   00595|     assert_eq!(contract.read_positions(), Some(Vec::new()));
+   00596|     let mut source_candidate = candidate("source-constant", "wikifunctions_recurrence", None);
+   00597|     source_candidate.code = Some(contract.render_python());
+   00598|     source_candidate.callable_name = Some(contract.name.clone());
+   00599|     source_candidate.callable_contract = Some(contract);
+   00600|     source_candidate.source_tests = vec![example(&["0"], "1"), example(&["1"], "1")];
+   00601|     let catalog = FragmentCatalog::bootstrap();
+   00602|     let competing = competing_product_program(&task, &catalog);
+   00603|     let identifier = competing.content_id();
+   00604|     let outcome = compose_with_ir(
+   00605|         &task,
+   00606|         &map(&[], vec![source_candidate]),
+   00607|         &catalog,
+   00608|         [competing],
+   00609|     );
+   00610|     assert!(
+   00611|         outcome
+   00612|             .attempts
+   00613|             .iter()
+   00614|             .any(|attempt| attempt.id == "recurrence:source-constant" && attempt.passed)
+   00615|     );
+   00616|     let selected = outcome.selected.unwrap();
+   00617|     assert_eq!(selected.id, identifier);
+   00618|     assert_eq!(
+   00619|         selected.source,
+   00620|         "import math\n\ndef discovered_function(input):\n    return math.prod(range(1, input + 1))"
+   00621|     );
+   00622|     assert_eq!(selected.assertion_count, 2);
+   00623|     assert!(selected.composition.starts_with("typed_search("));
+   00624|     assert!(
+   00625|         !selected
+   00626|             .source_urls
+   00627|             .iter()
+   00628|             .any(|url| url == "https://source.invalid/source-constant")
+   00629|     );
+   00630| }
+   00631| 
+   00632| #[test]
+   00633| fn source_ast_binding_keeps_explicit_signature_and_self_recursion() {
+   00634|     let task = formal_ai::coding_task_spec::recognise("def discovered_function(input: int) -> int:\n    \"\"\"Return the factorial of input.\"\"\"").unwrap();
+   00635|     assert!(matches!(
+   00636|         &task.callable_binding_origin,
+   00637|         formal_ai::coding_task_spec::CallableBindingOrigin::Declared { .. }
+   00638|     ));
+   00639|     let candidate =
+   00640|         formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+   00641|     let outcome = compose_with_ir(
+   00642|         &task,
+   00643|         &map(&[], vec![candidate]),
+   00644|         &FragmentCatalog::bootstrap(),
+   00645|         [],
+   00646|     );
+   00647|     let selected = outcome.selected.unwrap();
+   00648|     assert_eq!(
+   00649|         selected.source,
+   00650|         "def discovered_function(input: int) -> int:\n    return 1 if (input == 0) else (input * discovered_function(input - 1))"
+   00651|     );
+   00652|     assert_eq!(selected.assertion_count, 4);
+   00653|     assert!(selected.composition.starts_with("source_recurrence("));
+   00654| }
+   00655| 
+   00656| #[test]
+   00657| fn unsupported_explicit_source_bindings_are_rejected_before_execution() {
+   00658|     for signature in [
+   00659|         "chosen(x, y)",
+   00660|         "chosen(*x)",
+   00661|         "chosen(x=3)",
+   00662|         "chosen(x, /)",
+   00663|         "chosen(chosen)",
+   00664|     ] {
+   00665|         let task = formal_ai::coding_task_spec::recognise(&format!(
+   00666|             "def {signature}:\n    \"\"\"Return the factorial of x.\"\"\""
+   00667|         ))
+   00668|         .unwrap();
+   00669|         let candidate =
+   00670|             formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+   00671|         assert!(
+   00672|             candidate
+   00673|                 .callable_contract
+   00674|                 .as_ref()
+   00675|                 .unwrap()
+   00676|                 .bound_to(&task)
+   00677|                 .is_none(),
+   00678|             "{signature}"
+   00679|         );
+   00680|         let outcome = compose_with_ir(
+   00681|             &task,
+   00682|             &map(&[], vec![candidate]),
+   00683|             &FragmentCatalog::bootstrap(),
+   00684|             [],
+   00685|         );
+   00686|         assert!(outcome.selected.is_none(), "{signature}");
+   00687|         assert!(outcome.attempts.is_empty(), "{signature}");
+   00688|     }
+   00689| }
+   00690| 
+   00691| #[test]
+   00692| fn observed_calls_bind_identity_without_using_literal_arguments_as_formal_names() {
+   00693|     let task =
+   00694|         formal_ai::coding_task_spec::recognise("Return the factorial.\nassert chosen(3) == 6")
+   00695|             .unwrap();
+   00696|     assert_eq!(
+   00697|         task.callable_binding_origin,
+   00698|         formal_ai::coding_task_spec::CallableBindingOrigin::Observed
+   00699|     );
+   00700|     assert_eq!(task.parameters[0].name, "arg1");
+   00701|     let candidate =
+   00702|         formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+   00703|     let bound = candidate
+   00704|         .callable_contract
+   00705|         .as_ref()
+   00706|         .unwrap()
+   00707|         .bound_to(&task)
+   00708|         .unwrap();
+   00709|     assert_eq!(bound.name, "chosen");
+   00710|     assert_eq!(bound.parameter, "n");
+   00711|     assert_eq!(bound.read_positions(), Some(vec![0]));
+   00712|     let source = bound.render_python();
+   00713|     let outcome = compose_with_ir(
+   00714|         &task,
+   00715|         &map(&[], vec![candidate]),
+   00716|         &FragmentCatalog::bootstrap(),
+   00717|         [],
+   00718|     );
+   00719|     let selected = outcome.selected.unwrap();
+   00720|     assert_eq!(selected.source, source);
+   00721|     assert_eq!(selected.assertion_count, 1);
+   00722| }
+   00723| 
+   00724| #[test]
+   00725| fn source_body_contract_must_match_the_callable_and_evaluated_program() {
+   00726|     let task = formal_ai::coding_task_spec::recognise(
+   00727|         "Write a Python function that returns the factorial of n",
+   00728|     )
+   00729|     .unwrap();
+   00730|     let original = formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+   00731|     let mut missing = original.clone();
+   00732|     missing.callable_contract = None;
+   00733|     let mut changed_body = original.clone();
+   00734|     changed_body.callable_contract.as_mut().unwrap().expression =
+   00735|         formal_ai::coding_recurrence::Expression::Literal(1);
+   00736|     let mut changed_identity = original;
+   00737|     changed_identity.callable_name = Some("different_callable".to_owned());
+   00738|     for candidate in [missing, changed_body, changed_identity] {
+   00739|         let outcome = compose_with_ir(
+   00740|             &task,
+   00741|             &map(&[], vec![candidate]),
+   00742|             &FragmentCatalog::bootstrap(),
+   00743|             [],
+   00744|         );
+   00745|         assert!(outcome.selected.is_none());
+   00746|         assert_eq!(
+   00747|             outcome.attempts,
+   00748|             [] as [formal_ai::composition::DraftAttempt; 0]
+   00749|         );
+   00750|     }
+   00751| }
+   00752| 
+   
+   (End of file - total 752 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/coding_discovery/composition.rs","file_path":"rust/tests/unit/coding_discovery/composition.rs","new":"\"import math\\n\\ndef discovered_function(input):\\n    return math.prod(range(1, input + 1))\\n\"","newString":"\"import math\\n\\ndef discovered_function(input):\\n    return math.prod(range(1, input + 1))\\n\"","new_str":"\"import math\\n\\ndef discovered_function(input):\\n    return math.prod(range(1, input + 1))\\n\"","new_string":"\"import math\\n\\ndef discovered_function(input):\\n    return math.prod(range(1, input + 1))\\n\"","old":"\"import math\\n\\ndef discovered_function(input):\\n    return math.prod(range(1, input + 1))\"","oldString":"\"import math\\n\\ndef discovered_function(input):\\n    return math.prod(range(1, input + 1))\"","old_str":"\"import math\\n\\ndef discovered_function(input):\\n    return math.prod(range(1, input + 1))\"","old_string":"\"import math\\n\\ndef discovered_function(input):\\n    return math.prod(range(1, input + 1))\"","path":"rust/tests/unit/coding_discovery/composition.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/coding_discovery/composition.rs"}
+   Output: 004d88e749cc22c61d7ec8cd4e71325d65f2563e3642c52087e0e2956a96430a  rust/tests/unit/coding_discovery/composition.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `"import math\n\ndef discovered_function(input):\n    return math.prod(range(1, input + 1))"` with `"import math\n\ndef discovered_function(input):\n    return math.prod(range(1, input + 1))\n"` in `rust/tests/unit/coding_discovery/composition.rs` and observed the result.

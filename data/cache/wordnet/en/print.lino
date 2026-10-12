@@ -1,0 +1,60 @@
+language en
+lemma print
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the text appearing in a book, newspaper, or other printed publication"
+    examples ("I want to see it in print")
+    id oewn-06691047-n
+    partOfSpeech n
+  entry
+    definition "a picture or design printed from an engraving"
+    id oewn-04009955-n
+    partOfSpeech n
+  entry
+    definition "a visible indication made on a surface"
+    examples ("some previous reader had covered the pages with dozens of marks" "paw prints were everywhere")
+    id oewn-06811608-n
+    partOfSpeech n
+    synonyms (mark)
+  entry
+    definition "availability in printed form"
+    examples ("we've got to get that story into print" "his book is no longer in print")
+    id oewn-06690891-n
+    partOfSpeech n
+  entry
+    definition "a copy of a movie on film (especially a particular version of it)"
+    id oewn-04010358-n
+    partOfSpeech n
+  entry
+    definition "a fabric with a dyed pattern pressed onto it (usually by engraved rollers)"
+    id oewn-04010232-n
+    partOfSpeech n
+  entry
+    definition "a printed picture produced from a photographic negative"
+    id oewn-03932813-n
+    partOfSpeech n
+    synonyms ("photographic print")
+  entry
+    definition "put into print"
+    examples ("The newspaper published the news of the royal couple's divorce" "This news should not be printed")
+    id oewn-01749530-v
+    partOfSpeech v
+    synonyms (publish)
+  entry
+    definition "write as if with print; not cursive"
+    id oewn-01750523-v
+    partOfSpeech v
+  entry
+    definition "make into a print"
+    examples ("print the negative")
+    id oewn-01752992-v
+    partOfSpeech v
+  entry
+    definition "reproduce by printing"
+    id oewn-01751753-v
+    partOfSpeech v
+    synonyms (impress)
+source "oewn:2024"

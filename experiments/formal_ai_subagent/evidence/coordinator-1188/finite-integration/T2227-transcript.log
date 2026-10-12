@@ -1,0 +1,42 @@
+>> read {"filePath":"data/meta/ci-wall-clock.lino","file_path":"data/meta/ci-wall-clock.lino","path":"data/meta/ci-wall-clock.lino"}
+   <file>
+   00001| # Wall-clock ceiling for the pull-request pipeline. R1085-16 item 5 requires
+   00002| # this to be recorded and enforced. `scripts/check-ci-wall-clock.rs` discovers
+   00003| # all PR-triggered workflows, computes each workflow's critical path through the
+   00004| # needs: DAG weighted by timeout-minutes, recurses into reusable workflows, and
+   00005| # verifies that the discovered maximum equals measured_minutes and does not
+   00006| # exceed ceiling_minutes.
+   00007| #
+   00008| # Discovery result (2026-10-08):
+   00009| #   issue-1028-agent-ladder.yml: 225 min
+   00010| #     plan(30m) -> ladder(180m) -> compare(15m)
+   00011| #   release.yml: 140 min
+   00012| #     detect-changes(5m) -> build-artifacts(20m) -> test(90m)
+   00013| #       -> build(20m) -> pipeline-status(5m)
+   00014| #
+   00015| # The ladder job ceiling (180 min static) covers the one-leg all-mode
+   00016| # (schedule/dispatch); on pull_request the plan generates 16 parallel
+   00017| # legs of cap=45 each so the actual PR ceiling is plan(30)+leg(45)+compare(15)=90 min.
+   00018| # The static 180-min timeout is the measurable worst-case for the gate.
+   00019| #
+   00020| # Push-only jobs (auto-release, manual-release, build-pages, deploy-pages,
+   00021| # changelog-pr) and workflow_dispatch-only jobs (manual-release, changelog-pr)
+   00022| # are excluded from the critical path by the check script.
+   00023| ci_wall_clock pull_request_pipeline
+   00024|   measured_minutes 225
+   00025|   measured_date "2026-10-08"
+   00026|   ceiling_minutes 225
+   00027|   workflow ".github/workflows/issue-1028-agent-ladder.yml"
+   00028|   chain "plan(30m)->ladder(135m)->leaf-evidence(15m)->composites(30m)->compare(15m)"
+   00029|   note "Ladder worst-case ceiling: the plan generates either 16 parallel legs of cap=45 (depth-5 PR mode, effective PR wall=90m) or a single leg of cap=180 (all-mode). Static timeout-minutes=180 is the measurable worst-case. Next longest PR workflow: release.yml at 140m via detect-changes(5m)->build-artifacts(20m)->test(90m)->build(20m)->pipeline-status(5m)."
+   00030|   requirement "R1085-16"
+   00031| 
+   
+   (End of file - total 31 lines)
+   </file>
+>> edit {"filePath":"data/meta/ci-wall-clock.lino","file_path":"data/meta/ci-wall-clock.lino","new":"  note \"The all-mode ladder preserves all63 nodes across31 primary legs and16 artifact-fed composites. Its static DAG remains225 minutes: plan30 + primary135 + validated leaf join15 + composite30 + compare15. This ceiling is a backstop, not an observed runtime; actual cold all-mode measurements are required before retiring the primary exception. PR depth-five uses16 independent leaf-pair legs and skips the composite wave.\"","newString":"  note \"The all-mode ladder preserves all63 nodes across31 primary legs and16 artifact-fed composites. Its static DAG remains225 minutes: plan30 + primary135 + validated leaf join15 + composite30 + compare15. This ceiling is a backstop, not an observed runtime; actual cold all-mode measurements are required before retiring the primary exception. PR depth-five uses16 independent leaf-pair legs and skips the composite wave.\"","new_str":"  note \"The all-mode ladder preserves all63 nodes across31 primary legs and16 artifact-fed composites. Its static DAG remains225 minutes: plan30 + primary135 + validated leaf join15 + composite30 + compare15. This ceiling is a backstop, not an observed runtime; actual cold all-mode measurements are required before retiring the primary exception. PR depth-five uses16 independent leaf-pair legs and skips the composite wave.\"","new_string":"  note \"The all-mode ladder preserves all63 nodes across31 primary legs and16 artifact-fed composites. Its static DAG remains225 minutes: plan30 + primary135 + validated leaf join15 + composite30 + compare15. This ceiling is a backstop, not an observed runtime; actual cold all-mode measurements are required before retiring the primary exception. PR depth-five uses16 independent leaf-pair legs and skips the composite wave.\"","old":"  note \"Ladder worst-case ceiling: the plan generates either 16 parallel legs of cap=45 (depth-5 PR mode, effective PR wall=90m) or a single leg of cap=180 (all-mode). Static timeout-minutes=180 is the measurable worst-case. Next longest PR workflow: release.yml at 140m via detect-changes(5m)->build-artifacts(20m)->test(90m)->build(20m)->pipeline-status(5m).\"","oldString":"  note \"Ladder worst-case ceiling: the plan generates either 16 parallel legs of cap=45 (depth-5 PR mode, effective PR wall=90m) or a single leg of cap=180 (all-mode). Static timeout-minutes=180 is the measurable worst-case. Next longest PR workflow: release.yml at 140m via detect-changes(5m)->build-artifacts(20m)->test(90m)->build(20m)->pipeline-status(5m).\"","old_str":"  note \"Ladder worst-case ceiling: the plan generates either 16 parallel legs of cap=45 (depth-5 PR mode, effective PR wall=90m) or a single leg of cap=180 (all-mode). Static timeout-minutes=180 is the measurable worst-case. Next longest PR workflow: release.yml at 140m via detect-changes(5m)->build-artifacts(20m)->test(90m)->build(20m)->pipeline-status(5m).\"","old_string":"  note \"Ladder worst-case ceiling: the plan generates either 16 parallel legs of cap=45 (depth-5 PR mode, effective PR wall=90m) or a single leg of cap=180 (all-mode). Static timeout-minutes=180 is the measurable worst-case. Next longest PR workflow: release.yml at 140m via detect-changes(5m)->build-artifacts(20m)->test(90m)->build(20m)->pipeline-status(5m).\"","path":"data/meta/ci-wall-clock.lino"}
+>> bash {"command":"sha256sum -- data/meta/ci-wall-clock.lino"}
+   c056b7f78e190dca3791e95472ee91c0c95c7958ac5140a0235639b67390f77d  data/meta/ci-wall-clock.lino
+   
+== answer ==
+Replaced `  note "Ladder worst-case ceiling: the plan generates either 16 parallel legs of cap=45 (depth-5 PR mode, effective PR wall=90m) or a single leg of cap=180 (all-mode). Static timeout-minutes=180 is the measurable worst-case. Next longest PR workflow: release.yml at 140m via detect-changes(5m)->build-artifacts(20m)->test(90m)->build(20m)->pipeline-status(5m)."` with `  note "The all-mode ladder preserves all63 nodes across31 primary legs and16 artifact-fed composites. Its static DAG remains225 minutes: plan30 + primary135 + validated leaf join15 + composite30 + compare15. This ceiling is a backstop, not an observed runtime; actual cold all-mode measurements are required before retiring the primary exception. PR depth-five uses16 independent leaf-pair legs and skips the composite wave."` in `data/meta/ci-wall-clock.lino` and observed the result.

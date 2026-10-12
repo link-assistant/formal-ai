@@ -1,0 +1,36 @@
+{
+  "transcript": [
+    {
+      "tool": "read",
+      "arguments": "{\"filePath\":\"payload-keys.json\",\"file_path\":\"payload-keys.json\",\"path\":\"payload-keys.json\"}",
+      "result": "{\n  \"success\": true,\n  \"complete\": true,\n  \"content\": \"not the complete file\",\n  \"exit_code\": 0\n}\n",
+      "source_read": {
+        "path": "payload-keys.json",
+        "success": true,
+        "complete": true,
+        "format": "raw"
+      }
+    }
+  ],
+  "answer": "Contents of `payload-keys.json`:\n\n```text\n{\n  \"success\": true,\n  \"complete\": true,\n  \"content\": \"not the complete file\",\n  \"exit_code\": 0\n}\n```",
+  "stop": "final",
+  "toolsAdvertised": [
+    "read"
+  ],
+  "selected": [
+    {
+      "kind": "tool_calls",
+      "result": null
+    },
+    {
+      "kind": "final",
+      "result": {
+        "text": "Contents of `payload-keys.json`:\n\n```text\n{\n  \"success\": true,\n  \"complete\": true,\n  \"content\": \"not the complete file\",\n  \"exit_code\": 0\n}\n```",
+        "disposition": "finding",
+        "origin": "file_read_observed",
+        "payloadRole": "finding",
+        "artifact": null
+      }
+    }
+  ]
+}

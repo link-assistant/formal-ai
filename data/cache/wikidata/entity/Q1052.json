@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "彩虹"
+        },
+        "es": {
+          "language": "es",
+          "value": "arco iris"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "光学现象"
+        },
+        "es": {
+          "language": "es",
+          "value": "fenómeno meteorológico que aparece como un arco multicolor cuando la luz del sol se refleja en gotas de agua"
         }
       },
       "aliases": {
@@ -44,6 +52,16 @@
           {
             "language": "zh",
             "value": "诺尔省城际客运"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "arcoíris"
+          },
+          {
+            "language": "es",
+            "value": "arcoiris"
           }
         ]
       }

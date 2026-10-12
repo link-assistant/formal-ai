@@ -1,0 +1,20 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-coding-request.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "role"
+  gap seed-metadata-gap-8540d10a04d7eb34
+    record "coding-source-artifact-kind"
+  gap seed-metadata-gap-db3b1865c7449806
+    record "evidence-report-artifact-kind"
+  gap seed-metadata-gap-c73f7541e21e16a9
+    record "execute"
+    missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-4d9a7fb0fac90e60
+    record "findings"
+  gap seed-metadata-gap-8b98a25ad379bb56
+    record "module"
+  gap seed-metadata-gap-fc97d2503dee89ed
+    record "observations"
+  gap seed-metadata-gap-ff931bd18f606339
+    record "reports"

@@ -1,0 +1,18 @@
+{
+  "schema": "native-whole-session-observation/v1",
+  "observed": "session-v3-observed-8abb066db.json",
+  "rawLog": "session-v3-raw-job-113928931943.log.gz",
+  "jobReceipt": "session-v3-job-api.json",
+  "runReceipt": "session-v3-run-api.json",
+  "observedSha256": "46bd89aed5f1d16185ea513d87da2fd1d0f0485ea7b74e1fdcea462530acfdd2",
+  "rawLogSha256": "18f2784b83bc920f46657a8462c1772d4e61118d94cd3a2b2b326ded6a145713",
+  "jobReceiptSha256": "8140c84216dcd12fb3cca0e448228f2487236ec72ba8e5f534fa8045f064c385",
+  "runReceiptSha256": "26275e90deb44c5937bb7d51af93306030f907cf39e3e36c9adc1bb3a2d2081b",
+  "pullRequestHead": "8abb066dbe9895ba843ca690e0d9e9f21c12e571",
+  "sourceCommit": "96e579831186bb93c657e807056cd7e41ea4bdd4",
+  "sourceTree": "21e50375d2de386a9932cdee34c9450ca4d09828",
+  "capturedCases": [
+    "contract"
+  ],
+  "rollback": "Not executed after the original first whole-session assertion failed; original legacy fixture and live native comparison remain required."
+}

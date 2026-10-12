@@ -1,0 +1,23 @@
+language en
+lemma digit
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "one of the elements that collectively form a system of numeration"
+    examples ("0 and 1 are digits")
+    id oewn-13763162-n
+    partOfSpeech n
+    synonyms (figure)
+  entry
+    definition "the length of breadth of a finger used as a linear measure"
+    id oewn-13675079-n
+    partOfSpeech n
+    synonyms (finger fingerbreadth "finger's breadth")
+  entry
+    definition "a finger or toe in human beings or corresponding body part in other vertebrates"
+    id oewn-05573730-n
+    partOfSpeech n
+    synonyms (dactyl)
+source "oewn:2024"

@@ -125,6 +125,16 @@ pub(super) fn extract_web_search_request(
     if crate::solver_search::recognizes_reachability_problem(&normalized_words) {
         return None;
     }
+    // Issue #989 open-web gate (matching the planner's own rule, see also
+    // #1172): a prompt the fact store resolves — subject alias plus
+    // question keyword at word boundaries — already has an answer the
+    // engine owns. This handler outranks `fact_lookup` in
+    // data/seed/handler-precedence.lino (170 vs 310), so claiming such a
+    // prompt as a web search would discard that answer and answer with the
+    // offline `web_search_unavailable` refusal instead.
+    if crate::solver_handlers::benchmark_prompts::fact_store_resolves(prompt) {
+        return None;
+    }
     if let Some(query) = extract_semantic_web_search_query(&normalized_words) {
         return Some(WebSearchRequest {
             query,

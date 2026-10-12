@@ -720,7 +720,7 @@ renderer through `formalAiDesktop:invokeTool` /
   with output and logs returned through the tool result. A shell request may opt
   into Docker isolation with `input.isolation = "docker"`.
 - **Sandboxed code tools** — `eval_js`, `code_exec`, and Docker-isolated `shell`
-  requests — run inside the `konard/box-dind:2.1.1` Docker sandbox (the same
+  requests — run inside the `konard/box-dind:2.10.2` Docker sandbox (the same
   inner-Docker image the Telegram microservice uses), with logs captured to a
   local path. If Docker is unavailable the sandboxed call is refused
   (`sandbox_unavailable`) rather than run unsandboxed.

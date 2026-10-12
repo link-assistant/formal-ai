@@ -1,0 +1,196 @@
+>> read {"filePath":"rust/tests/web/pull-request-1188-line-operations.test.mjs","file_path":"rust/tests/web/pull-request-1188-line-operations.test.mjs","path":"rust/tests/web/pull-request-1188-line-operations.test.mjs"}
+   <file>
+   00001| // PR #1188 dogfooding (T29, T30, T33, T35 and probe gaps G3, G4): whole-line
+   00002| // operations a coding agent is asked for every day. Before: "delete the line
+   00003| // 'A' and the 'B' line directly above it" was routed to a whole-file write
+   00004| // that replaced a 380-line file with one line (T29); "Delete lines 266-267
+   00005| // from f.lino." only read the file (T30); "Insert the line '…' after line N"
+   00006| // planned nothing (T33); a quoted path-shaped needle in a removal was read as
+   00007| // the file (T35); "Move the line 'x' to the top" duplicated it (G4); "Swap
+   00008| // the lines 'a' and 'b'" planned nothing (G3). Each is now a computed change
+   00009| // over the file's lines (js/agentic/workspace_line_operation.mjs), and a
+   00010| // computed change that would drop most of a file without the request stating
+   00011| // that extent is refused. The Rust twin is
+   00012| // rust/tests/unit/pull_request_1188_line_operations.rs.
+   00013| 
+   00014| import { before, describe, test } from 'node:test';
+   00015| import assert from 'node:assert/strict';
+   00016| import { createHash } from 'node:crypto';
+   00017| 
+   00018| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00019| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00020| 
+   00021| let planChatStep;
+   00022| let planRoutedCapabilityStep;
+   00023| let RoutingStage;
+   00024| 
+   00025| before(async () => {
+   00026|   await installNodeHost(new WorkerHost());
+   00027|   ({ planChatStep } = await import('../../../js/agentic/planner.mjs'));
+   00028|   ({ planRoutedCapabilityStep, RoutingStage } = await import('../../../js/agentic/capability_router.mjs'));
+   00029| });
+   00030| 
+   00031| const SIX = 'one\ntwo\nthree\nfour\nfive\nsix\n';
+   00032| const CFG = 'alpha = 1\nbeta = 2\ngamma = 3\n';
+   00033| 
+   00034| /** Run `prompt` over one file `name` holding `source`; the tools act as the Agent CLI's do. */
+   00035| async function drive(prompt, source, name = 'f.txt') {
+   00036|   let file = source;
+   00037|   const messages = [{ role: 'user', content: prompt }];
+   00038|   const calls = [];
+   00039|   for (let step = 0; step < 6; step += 1) {
+   00040|     const plan = await planChatStep(messages, ['read', 'edit', 'bash', 'write']);
+   00041|     if (!plan || plan.kind === 'final') return { calls, file, answer: plan ? plan.answer : null };
+   00042|     const [call] = plan.calls;
+   00043|     const args = JSON.parse(call.arguments);
+   00044|     let result = '';
+   00045|     if (call.tool === 'read') result = file;
+   00046|     if (call.tool === 'edit') file = file.replace(args.oldString, () => args.newString);
+   00047|     if (call.tool === 'write') file = args.content;
+   00048|     if (call.tool === 'bash') result = `${createHash('sha256').update(file).digest('hex')}  ${name}\n`;
+   00049|     calls.push(call.tool);
+   00050|     const id = `call_${step}`;
+   00051|     messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
+   00052|     messages.push({ role: 'tool', tool_call_id: id, content: result });
+   00053|   }
+   00054|   return { calls, file, answer: null };
+   00055| }
+   00056| 
+   00057| describe('numbered lines are removed (T30)', () => {
+   00058|   test('a range, a "to" range and one line', async () => {
+   00059|     const range = await drive('Delete lines 2-3 from f.txt.', SIX);
+   00060|     assert.deepEqual(range.calls, ['read', 'edit', 'bash']);
+   00061|     assert.equal(range.file, 'one\nfour\nfive\nsix\n');
+   00062|     assert.equal(range.answer, 'Deleted line(s) 2-3 of `f.txt` and observed the result.');
+   00063|     assert.equal((await drive('Delete lines 2 to 3 from f.txt.', SIX)).file, 'one\nfour\nfive\nsix\n');
+   00064|     assert.equal((await drive('Remove line 6 from f.txt.', 'one\ntwo\nthree\nfour\nfive\nsix')).file, 'one\ntwo\nthree\nfour\nfive');
+   00065|   });
+   00066| 
+   00067|   test('every registered language names the range', async () => {
+   00068|     for (const prompt of ['Удали строки с 2 по 3 из f.txt.', 'f.txt से पंक्तियाँ 2 से 3 हटाओ।', '删除 f.txt 的第2到3行。', 'Elimina las líneas 2 a 3 de f.txt.']) {
+   00069|       assert.equal((await drive(prompt, SIX)).file, 'one\nfour\nfive\nsix\n', prompt);
+   00070|     }
+   00071|     assert.equal((await drive('Удали строки с 2 по 3 из f.txt.', SIX)).answer, 'Из `f.txt` удалены строки 2-3, результат проверен.');
+   00072|   });
+   00073| 
+   00074|   test('a line past the end is an honest failure and the file is untouched', async () => {
+   00075|     const { calls, file, answer } = await drive('Delete line 9 from f.txt.', SIX);
+   00076|     assert.deepEqual(calls, ['read']);
+   00077|     assert.equal(file, SIX);
+   00078|     assert.equal(answer, 'Verification failed for `f.txt`: the observed bytes differ from the planned workspace effect.');
+   00079|   });
+   00080| 
+   00081|   test('a numbered line and the line above it (T29 shape, numbered)', async () => {
+   00082|     assert.equal((await drive('Delete line 4 and the line above it from f.txt.', SIX)).file, 'one\ntwo\nfive\nsix\n');
+   00083|   });
+   00084| });
+   00085| 
+   00086| describe('a quoted line and its neighbour are removed together (T29)', () => {
+   00087|   const LINO = 'header\n      surface\n        text "get it"\n      surface\n        text find\nfooter\n';
+   00088| 
+   00089|   test('the line and the named line directly above it', async () => {
+   00090|     const { calls, file, answer } = await drive(
+   00091|       "In m.lino, delete the line '        text \"get it\"' and the '      surface' line directly above it.", LINO, 'm.lino');
+   00092|     assert.deepEqual(calls, ['read', 'edit', 'bash']);
+   00093|     assert.equal(file, 'header\n      surface\n        text find\nfooter\n');
+   00094|     assert.equal(answer, 'Removed `      surface`, `        text "get it"` from `m.lino` and observed the result.');
+   00095|   });
+   00096| 
+   00097|   test('each removed line is a list value even when it contains backticks', async () => {
+   00098|     const { file, answer } = await drive(
+   00099|       "In m.lino, delete the line 'x `{old}` `{path}`' and the 'a' line directly above it.",
+   00100|       'header\na\nx `{old}` `{path}`\nfooter\n', 'm.lino');
+   00101|     assert.equal(file, 'header\nfooter\n');
+   00102|     assert.equal(answer, 'Removed `a`, `` x `{old}` `{path}` `` from `m.lino` and observed the result.');
+   00103|   });
+   00104| 
+   00105|   test('a neighbour that is not the named line is refused, never guessed', async () => {
+   00106|     const { calls, file } = await drive("In m.lino, delete the line 'footer' and the 'header' line directly above it.", LINO, 'm.lino');
+   00107|     assert.deepEqual(calls, ['read']);
+   00108|     assert.equal(file, LINO);
+   00109|   });
+   00110| 
+   00111|   test('a removal is never routed to a whole-file write', () => {
+   00112|     const prompt = "In m.lino, delete the line '        text \"get it\"' and the '      surface' line directly above it.";
+   00113|     const plan = planRoutedCapabilityStep(prompt, [{ role: 'user', content: prompt }], ['read', 'write', 'edit', 'bash'], RoutingStage.NamedOrLocal);
+   00114|     assert.ok(!(plan?.calls ?? []).some((call) => call.tool === 'write'));
+   00115|   });
+   00116| });
+   00117| 
+   00118| describe('an insert anchored at a numbered line (T33)', () => {
+   00119|   test('after and before line N', async () => {
+   00120|     const after = await drive("Insert the line 'X' after line 2 in f.txt.", SIX);
+   00121|     assert.deepEqual(after.calls, ['read', 'edit', 'bash']);
+   00122|     assert.equal(after.file, 'one\ntwo\nX\nthree\nfour\nfive\nsix\n');
+   00123|     assert.equal(after.answer, 'Inserted `X` after line 2 of `f.txt` and observed the result.');
+   00124|     assert.equal((await drive("Insert the line 'X' before line 1 in f.txt.", SIX)).file, 'X\none\ntwo\nthree\nfour\nfive\nsix\n');
+   00125|     assert.equal((await drive("Insert the line 'X' after line 6 in f.txt.", SIX)).file, `${SIX}X\n`);
+   00126|   });
+   00127| 
+   00128|   test('in Russian', async () => {
+   00129|     assert.equal((await drive("Вставь строку 'X' после строки 2 в f.txt.", SIX)).file, 'one\ntwo\nX\nthree\nfour\nfive\nsix\n');
+   00130|   });
+   00131| });
+   00132| 
+   00133| describe('a quoted path is the payload when the file is named unquoted (T35)', () => {
+   00134|   test('every line containing the path goes from the named file', async () => {
+   00135|     const source = 'keep a\nrust/src/x.rs\nkeep b\n  - rust/src/x.rs (old)\nkeep c\n';
+   00136|     const { calls, file } = await drive("Delete the lines containing 'rust/src/x.rs' from allow.txt.", source, 'allow.txt');
+   00137|     assert.deepEqual(calls, ['read', 'edit', 'bash']);
+   00138|     assert.equal(file, 'keep a\nkeep b\nkeep c\n');
+   00139|   });
+   00140| });
+   00141| 
+   00142| describe('a line is moved, never duplicated (G4)', () => {
+   00143|   test('to the top, to the end, after another line', async () => {
+   00144|     const top = await drive("Move the line 'gamma = 3' to the top of cfg.toml.", CFG, 'cfg.toml');
+   00145|     assert.equal(top.file, 'gamma = 3\nalpha = 1\nbeta = 2\n');
+   00146|     assert.equal(top.answer, 'Moved `gamma = 3` to the start of `cfg.toml` and observed the result.');
+   00147|     assert.equal((await drive("Move the line 'alpha = 1' to the end of cfg.toml.", CFG, 'cfg.toml')).file, 'beta = 2\ngamma = 3\nalpha = 1\n');
+   00148|     assert.equal((await drive("Move the line 'alpha = 1' after the line 'beta = 2' in cfg.toml.", CFG, 'cfg.toml')).file,
+   00149|       'beta = 2\nalpha = 1\ngamma = 3\n');
+   00150|     assert.equal((await drive("Перемести строку 'gamma = 3' в начало cfg.toml.", CFG, 'cfg.toml')).file, 'gamma = 3\nalpha = 1\nbeta = 2\n');
+   00151|   });
+   00152| });
+   00153| 
+   00154| describe('two lines are swapped (G3)', () => {
+   00155|   test('the two whole lines exchange places', async () => {
+   00156|     const { calls, file, answer } = await drive("Swap the lines 'alpha = 1' and 'beta = 2' in cfg.toml.", CFG, 'cfg.toml');
+   00157|     assert.deepEqual(calls, ['read', 'edit', 'bash']);
+   00158|     assert.equal(file, 'beta = 2\nalpha = 1\ngamma = 3\n');
+   00159|     assert.equal(answer, 'Swapped `alpha = 1` and `beta = 2` in `cfg.toml` and observed the result.');
+   00160|     assert.equal((await drive("交换 cfg.toml 中的 'alpha = 1' 和 'gamma = 3'。", CFG, 'cfg.toml')).file, 'gamma = 3\nbeta = 2\nalpha = 1\n');
+   00161|   });
+   00162| });
+   00163| 
+   00164| describe('a computed change never leaves a fragment of the file (T29)', () => {
+   00165|   const MOSTLY = `${Array.from({ length: 9 }, (_, index) => `x ${index}`).join('\n')}\nkeep\n`;
+   00166| 
+   00167|   test('a removal by content that would drop most of the file is refused', async () => {
+   00168|     const { calls, file, answer } = await drive("Delete the lines containing 'x' from f.txt.", MOSTLY);
+   00169|     assert.deepEqual(calls, ['read']);
+   00170|     assert.equal(file, MOSTLY);
+   00171|     assert.equal(answer, 'Refused to change `f.txt`: the computed result would drop most of the file, and the request does not ask for that.');
+   00172|   });
+   00173| 
+   00174|   test('a numbered range states its extent and may', async () => {
+   00175|     assert.equal((await drive('Delete lines 1-9 from f.txt.', MOSTLY)).file, 'keep\n');
+   00176|   });
+   00177| });
+   00178| 
+   
+   (End of file - total 178 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/pull-request-1188-line-operations.test.mjs","file_path":"rust/tests/web/pull-request-1188-line-operations.test.mjs","new":"  test('a scalar removal payload retains placeholder-shaped text', async () => {\n    const { file, answer } = await drive(\"Remove 'literal {old} {path}' from m.lino.\",\n      'header\\nliteral {old} {path}\\nfooter\\n', 'm.lino');\n    assert.equal(file, 'header\\nfooter\\n');\n    assert.equal(answer, 'Removed `literal {old} {path}` from `m.lino` and observed the result.');\n  });\n\n  test('a neighbour that is not the named line is refused, never guessed', async () => {","newString":"  test('a scalar removal payload retains placeholder-shaped text', async () => {\n    const { file, answer } = await drive(\"Remove 'literal {old} {path}' from m.lino.\",\n      'header\\nliteral {old} {path}\\nfooter\\n', 'm.lino');\n    assert.equal(file, 'header\\nfooter\\n');\n    assert.equal(answer, 'Removed `literal {old} {path}` from `m.lino` and observed the result.');\n  });\n\n  test('a neighbour that is not the named line is refused, never guessed', async () => {","new_str":"  test('a scalar removal payload retains placeholder-shaped text', async () => {\n    const { file, answer } = await drive(\"Remove 'literal {old} {path}' from m.lino.\",\n      'header\\nliteral {old} {path}\\nfooter\\n', 'm.lino');\n    assert.equal(file, 'header\\nfooter\\n');\n    assert.equal(answer, 'Removed `literal {old} {path}` from `m.lino` and observed the result.');\n  });\n\n  test('a neighbour that is not the named line is refused, never guessed', async () => {","new_string":"  test('a scalar removal payload retains placeholder-shaped text', async () => {\n    const { file, answer } = await drive(\"Remove 'literal {old} {path}' from m.lino.\",\n      'header\\nliteral {old} {path}\\nfooter\\n', 'm.lino');\n    assert.equal(file, 'header\\nfooter\\n');\n    assert.equal(answer, 'Removed `literal {old} {path}` from `m.lino` and observed the result.');\n  });\n\n  test('a neighbour that is not the named line is refused, never guessed', async () => {","old":"  test('a neighbour that is not the named line is refused, never guessed', async () => {","oldString":"  test('a neighbour that is not the named line is refused, never guessed', async () => {","old_str":"  test('a neighbour that is not the named line is refused, never guessed', async () => {","old_string":"  test('a neighbour that is not the named line is refused, never guessed', async () => {","path":"rust/tests/web/pull-request-1188-line-operations.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/pull-request-1188-line-operations.test.mjs"}
+   f61879977121120275e51a629422db97d291fd238f0ca31a5a35fd88d8288fb2  rust/tests/web/pull-request-1188-line-operations.test.mjs
+   
+== answer ==
+Replaced `  test('a neighbour that is not the named line is refused, never guessed', async () => {` with ``  test('a scalar removal payload retains placeholder-shaped text', async () => {
+    const { file, answer } = await drive("Remove 'literal {old} {path}' from m.lino.",
+      'header\nliteral {old} {path}\nfooter\n', 'm.lino');
+    assert.equal(file, 'header\nfooter\n');
+    assert.equal(answer, 'Removed `literal {old} {path}` from `m.lino` and observed the result.');
+  });
+
+  test('a neighbour that is not the named line is refused, never guessed', async () => {`` in `rust/tests/web/pull-request-1188-line-operations.test.mjs` and observed the result.

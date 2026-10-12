@@ -1,0 +1,5 @@
+{
+  "taskId": "T2449",
+  "target": "changelog.d/20261010_013000_source-qualified-definitions.md",
+  "byteEqual": true
+}

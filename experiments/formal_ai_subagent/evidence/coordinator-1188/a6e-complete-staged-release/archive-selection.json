@@ -1,0 +1,16 @@
+{
+  "ciHead": "a6e369c074e57b5c78334e447d721435fb87bb1f",
+  "sourceQualification": "Actual T3368 PASS required before archive application",
+  "scope": "Finite completed release/native source and original CI census observations; mutable coding-host and coverage drafts excluded",
+  "nativeCompilationLocal": false,
+  "publication": false,
+  "autonomousCredit": 0,
+  "records": 1920,
+  "uniqueOriginals": 1447,
+  "selectedOriginalBytes": 16876777,
+  "manifestFiles": 3,
+  "sourceHead": "96615c2ffa095bbbc8e0955e5e5229af04dc381a",
+  "finalSourceQualification": "Actual T3368 PASS;43sources,20checks,105portable passes+1original optional skip; new native execution reserved for CI",
+  "controllerOuter": "Completed previousT3344 and currentT3345–T3368 full observers, CI4382/4383/4386 and Spec4699 included once; installationT3369 outsidecut, no recursive self-prefix completeness credit",
+  "autonomousCodingCredit": 0
+}

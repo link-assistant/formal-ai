@@ -1,0 +1,38 @@
+{
+  "schema": "native-response-capture-selection/v1",
+  "origin": {
+    "sourceHead": "d7437d4bcfc6d94823ebeba634de016f25561b41",
+    "job": 113768586686,
+    "inventorySHA": "16201c1d5e116b354a8c8ec1033b47969185f84584a1f8d849f4b02851f577b2"
+  },
+  "cases": [
+    "rust/tests/integration/issue_386_cancel_sort.rs::issue_386_cancel_sort_is_undone_in_every_supported_language",
+    "rust/tests/integration/issue_461_php_followup.rs::russian_capabilities_follow_up_can_request_php_hello_world",
+    "rust/tests/unit/candidate_solution_portfolios.rs::comparison_ledger_answers_why_in_all_supported_languages",
+    "rust/tests/unit/candidate_solution_portfolios.rs::rule_synthesis_is_a_second_portfolio_leaf_with_the_same_engine",
+    "rust/tests/unit/formal_ai.rs::software_project_approval_returns_implementation_starter",
+    "rust/tests/unit/issue_823_recursive_learning.rs::the_live_solver_recalls_an_approved_lesson_instead_of_rederiving_it",
+    "rust/tests/unit/issue_920_question_necessity.rs::issue_920_proof_followups_keep_only_the_smallest_requirement_question",
+    "rust/tests/unit/software_project.rs::approval_returns_language_aware_generated_code_surface",
+    "rust/tests/unit/software_project.rs::software_project_dialogue_examples_formalize_plan_then_implement_after_approval",
+    "rust/tests/unit/software_project.rs::software_project_followup_detects_verbs_across_supported_languages",
+    "rust/tests/unit/software_project.rs::software_project_followup_keeps_test_step_in_the_project_dialogue",
+    "rust/tests/unit/software_project.rs::software_project_followup_reports_approved_state_after_implementation",
+    "rust/tests/unit/solver/issue_531_pattern_inference.rs::grid_report_localizes_symmetry_description",
+    "rust/tests/unit/solver/issue_531_pattern_inference.rs::pattern_inference_report_localizes_into_every_seeded_language",
+    "rust/tests/unit/solver/weighted_statement_formalization.rs::english_requirement_contradiction_warns_with_both_statements_and_a_resolution",
+    "rust/tests/unit/solver/weighted_statement_formalization.rs::requirement_contradiction_reply_is_in_the_prompt_language",
+    "rust/tests/unit/specification/behavior_rules.rs::behavior_rules_count_followup_answers_reported_russian_prompt",
+    "rust/tests/unit/specification/calculator_delegation.rs::final_amount_conversion_uses_prior_compound_interest_answer",
+    "rust/tests/unit/specification/code_generation/follow_up.rs::chinese_follow_up_path_argument_modification_reuses_context",
+    "rust/tests/unit/specification/code_generation/follow_up.rs::hindi_follow_up_path_argument_modification_reuses_context",
+    "rust/tests/unit/specification/code_generation/follow_up.rs::russian_follow_up_path_argument_modification_reuses_context",
+    "rust/tests/unit/specification/conversation_history.rs::previous_user_question_recall_skips_meta_turns_in_supported_languages",
+    "rust/tests/unit/specification/conversational_reverification.rs::assistant_name_can_be_set_and_recalled_in_every_language",
+    "rust/tests/unit/specification/reasoning_paths_procedures.rs::procedural_elaboration_followup_covers_many_topics",
+    "rust/tests/unit/specification/reasoning_paths_procedures.rs::procedural_elaboration_followup_covers_supported_languages",
+    "rust/tests/unit/specification/reasoning_paths_procedures.rs::procedural_elaboration_followup_rebinds_to_prior_how_to",
+    "rust/tests/unit/specification/text_manipulation.rs::russian_follow_up_replace_edits_previous_assistant_code_artifact",
+    "rust/tests/unit/web_requests.rs::research_comparison_table_followup_uses_prior_search_topics"
+  ]
+}

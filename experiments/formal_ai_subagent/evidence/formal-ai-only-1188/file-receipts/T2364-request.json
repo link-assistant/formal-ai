@@ -1,0 +1,136 @@
+{
+  "id": "T2364",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "copies": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2356-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2356-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2356-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2356-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2356-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2356-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2357-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2357-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2357-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2357-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2357-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2357-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2358-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2358-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2358-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2358-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2358-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2358-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2359-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2359-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2359-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2359-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2359-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2359-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2360-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2360-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2360-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2360-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2360-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2360-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2361-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2361-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2361-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2361-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2361-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2361-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2362-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2362-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2362-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2362-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2362-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2362-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2363-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2363-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2363-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2363-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2363-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2363-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2364-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2364-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/file-receipts-source-manifest.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/file-receipts-source-manifest.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2363-static-checks.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2363-static-checks.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2358-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2358-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2359-negative-probes.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2359-negative-probes.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2360-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2360-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2362-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/T2362-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2363-finite-ledger.md",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/finite-ledger.md"
+    }
+  ],
+  "manifest": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/file-receipts/copy-manifest.json",
+  "prompt": "Run node -e \"const fs=require('fs'),path=require('path'),crypto=require('crypto');const r=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T2364-request.json'));for(const c of r.copies)if(!fs.existsSync(c.source)||fs.existsSync(c.target))throw Error('copy precondition');const manifest=[];for(const c of r.copies){fs.mkdirSync(path.dirname(c.target),{recursive:true});fs.copyFileSync(c.source,c.target);const a=fs.readFileSync(c.source),b=fs.readFileSync(c.target);if(!a.equals(b))throw Error('copy mismatch');manifest.push({source:c.source,target:c.target,bytes:b.length,sha256:crypto.createHash('sha256').update(b).digest('hex')});}fs.writeFileSync(r.manifest,JSON.stringify(manifest,null,2));\""
+}

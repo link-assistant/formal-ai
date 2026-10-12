@@ -1,0 +1,1 @@
+Source controls track the relocated native executable and coverage producers, require declared stage caps at most thirty minutes, and retain original feature, artifact, smoke and reduction obligations. All four current attestation producers are checked. Production workflows, quality floors and operations are unchanged; actual cold timing and U9 remain Open.

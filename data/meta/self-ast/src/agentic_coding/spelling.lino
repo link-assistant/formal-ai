@@ -1,0 +1,78 @@
+self_ast_census
+  target src/agentic_coding/spelling.rs
+  language rust
+  fidelity full_ast
+  byte_len 3045
+  line_count 82
+  content_id source_module_dc062792d44a2415
+  symbol_count 4
+  symbols
+    function vocabulary 14 28
+    static VOCABULARY 15 15
+    function one_edit_apart 31 52
+    function corrected_spelling 56 82
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2925
+    named_node_count 576
+    distinct_node_kinds 56
+    node_kinds
+      arguments 53
+      assignment_expression 3
+      binary_expression 23
+      block 16
+      boolean_literal 4
+      call_expression 53
+      closure_expression 6
+      closure_parameters 6
+      compound_assignment_expr 1
+      continue_expression 1
+      crate 1
+      doc_comment 12
+      else_clause 2
+      expression_statement 14
+      field_expression 43
+      field_identifier 43
+      for_expression 3
+      function_item 3
+      generic_type 7
+      identifier 123
+      if_expression 5
+      index_expression 4
+      inner_doc_comment_marker 8
+      integer_literal 9
+      let_declaration 13
+      lifetime 1
+      line_comment 12
+      match_arm 3
+      match_block 1
+      match_expression 1
+      match_pattern 3
+      mutable_specifier 4
+      outer_doc_comment_marker 4
+      parameter 5
+      parameters 3
+      parenthesized_expression 1
+      primitive_type 12
+      range_expression 4
+      reference_expression 6
+      reference_pattern 1
+      reference_type 5
+      return_expression 2
+      scoped_identifier 8
+      source_file 1
+      static_item 1
+      super 1
+      try_expression 3
+      tuple_expression 3
+      tuple_pattern 7
+      tuple_struct_pattern 2
+      tuple_type 1
+      type_arguments 7
+      type_identifier 10
+      unary_expression 5
+      use_declaration 2
+      visibility_modifier 1

@@ -1,0 +1,20 @@
+{
+  "task": "T4238",
+  "prompt": "Implement exact canonical dormant release projection refresh for current d292 cacheenv and caller lease changes. Preserve entire old canonical snapshot, dormant projection and full T2790 failure log. Derive all52 operations/104refs from actual current release.yml through checked stage extractor and current generator which reproduces old projection. Update only .github/workflows/release-staged.yml and dormant-staged-release original-release-workflow.yml, stage-source-coverage.json, candidate-output-bindings.json, candidate-release-caller.yml. Preserve original tests/freshness refusal unchanged, all actual transfer/source authority/caps/outputs/gates/operations and real BUILD_CACHE_SETTINGS environment. No production caller/floor/source modification or publication/cold claim. Run Node projection/refusals and actionlint; commit scoped finite refresh no push.",
+  "started": "2026-10-09T22:53:18.768Z",
+  "result": {
+    "transcript": [],
+    "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement exact canonical dormant release projection refresh for current d292 cacheenv and caller lease changes. Preserve entire old canonical snapshot, dormant projection and full T2790 failure log. Derive all52 operations/104refs from actual current release.yml through checked stage extractor and current generator which reproduces old projection. Update only .github/workflows/release-staged.yml and dormant-staged-release original-release-workflow.yml, stage-source-coverage.json, candidate-output-bindings.json, candidate-release-caller.yml. Preserve original tests/freshness refusal unchanged, all actual transfer/source authority/caps/outputs/gates/operations and real BUILD_CACHE_SETTINGS environment. No production caller/floor/source modification or publication/cold claim. Run Node projection/refusals and actionlint; commit scoped finite refresh no push.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": false,
+  "finished": "2026-10-09T22:53:19.945Z"
+}

@@ -1,0 +1,184 @@
+{
+  "entities": {
+    "Q183": {
+      "type": "item",
+      "id": "Q183",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Germany"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Германия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जर्मनी"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "德國"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "德国"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Federal Republic of Germany"
+          },
+          {
+            "language": "en",
+            "value": "DE"
+          },
+          {
+            "language": "en",
+            "value": "DEU"
+          },
+          {
+            "language": "en",
+            "value": "FRG"
+          },
+          {
+            "language": "en",
+            "value": "BRD"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Федеративная Республика Германия"
+          },
+          {
+            "language": "ru",
+            "value": "ФРГ"
+          },
+          {
+            "language": "ru",
+            "value": "Дойчланд"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "德意志"
+          },
+          {
+            "language": "zh",
+            "value": "德意志联邦"
+          },
+          {
+            "language": "zh",
+            "value": "德意志联邦共和国"
+          },
+          {
+            "language": "zh",
+            "value": "德意志聯邦"
+          },
+          {
+            "language": "zh",
+            "value": "德意志聯邦共和國"
+          },
+          {
+            "language": "zh",
+            "value": "德国"
+          }
+        ],
+        "zh-hans": [
+          {
+            "language": "zh-hans",
+            "value": "德意志"
+          },
+          {
+            "language": "zh-hans",
+            "value": "德意志联邦"
+          },
+          {
+            "language": "zh-hans",
+            "value": "德意志联邦共和国"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Germany"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Германия"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "जर्मनी"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "德国"
+        }
+      },
+      "claims": {
+        "P36": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "95677e2e7ca09191a3702fbbd6bd5833b1c6487e",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 64,
+                  "id": "Q64"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "preferred"
+          },
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "95677e2e7ca09191a3702fbbd6bd5833b1c6487e",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 64,
+                  "id": "Q64"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "preferred"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P36"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

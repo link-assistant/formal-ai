@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "美"
+        },
+        "es": {
+          "language": "es",
+          "value": "belleza"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "美学的最基本概念范畴之一"
+        },
+        "es": {
+          "language": "es",
+          "value": "concepto estético"
         }
       },
       "aliases": {

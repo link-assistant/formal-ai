@@ -1,0 +1,41 @@
+view
+  id M-e80f7aef8b00
+  lemma market
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the world of commercial activity where goods and services are bought and sold"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the customers for a particular product or service"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a marketplace where groceries are sold"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the securities markets in the aggregate"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an area in a town where a public mercantile establishment is set up"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "engage in the commercial promotion, sale, or distribution of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "buy household supplies"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "deal in a market"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make commercial"
+    provenance (wordnet)

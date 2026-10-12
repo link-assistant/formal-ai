@@ -5,7 +5,9 @@
 //! language-neutral operations. This lets the same algorithm formalize new
 //! recurrence families without adding source-object IDs or benchmark prompts.
 
-use std::collections::BTreeMap;
+pub mod cache;
+
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt::Write as _;
 
 use crate::coding::function_catalog::wikifunctions::{
@@ -47,6 +49,172 @@ pub struct Recurrence {
     pub operator_sources: Vec<String>,
 }
 
+/// Source-owned callable identity and its authoritative expression body.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct SourceCallableContract {
+    pub name: String,
+    pub parameter: String,
+    pub expression: Expression,
+}
+
+impl SourceCallableContract {
+    #[must_use]
+    pub fn read_positions(&self) -> Option<Vec<usize>> {
+        read_formal_parameter_positions(&self.expression, std::slice::from_ref(&self.parameter))
+    }
+
+    #[must_use]
+    pub fn render_python(&self) -> String {
+        render_callable_python(&self.expression, &self.name, &self.parameter)
+    }
+
+    #[must_use]
+    pub fn bound_to(&self, task: &crate::coding::task_spec::CodingTaskSpec) -> Option<Self> {
+        use crate::coding::task_spec::CallableBindingOrigin;
+        self.read_positions()?;
+        let (name, parameter) = match &task.callable_binding_origin {
+            CallableBindingOrigin::Provisional => (&self.name, &self.parameter),
+            CallableBindingOrigin::Observed => {
+                if task.parameters.len() != 1 {
+                    return None;
+                }
+                (&task.name, &self.parameter)
+            }
+            CallableBindingOrigin::Declared { signature } => {
+                if task.parameters.len() != 1 || !plain_declared_signature(signature) {
+                    return None;
+                }
+                (&task.name, &task.parameters[0].name)
+            }
+        };
+        if name.is_empty()
+            || parameter.is_empty()
+            || (name == parameter && expression_calls_self(&self.expression))
+        {
+            return None;
+        }
+        let expression = bind_expression_parameters(
+            &self.expression,
+            std::slice::from_ref(&self.parameter),
+            std::slice::from_ref(parameter),
+        )?;
+        Some(Self {
+            name: name.clone(),
+            parameter: parameter.clone(),
+            expression,
+        })
+    }
+}
+
+fn expression_calls_self(expression: &Expression) -> bool {
+    match expression {
+        Expression::Recur(_) => true,
+        Expression::Apply(_, arguments) => arguments.iter().any(expression_calls_self),
+        Expression::Parameter(_) | Expression::Literal(_) => false,
+    }
+}
+
+fn plain_declared_signature(signature: &str) -> bool {
+    if signature.is_empty() {
+        return true;
+    }
+    let Some(open) = signature.find('(') else {
+        return false;
+    };
+    let Some(close) = crate::coding::python_signature::matching_close_paren(signature, open) else {
+        return false;
+    };
+    crate::coding::python_signature::split_top_level_commas(&signature[open + 1..close - 1])
+        .iter()
+        .all(|parameter| {
+            let parameter = parameter.trim();
+            !parameter.starts_with('*') && parameter != "/" && !parameter.contains('=')
+        })
+}
+
+/// Distinct input positions actually read by the expression body.
+#[must_use]
+pub fn read_formal_parameter_positions(
+    expression: &Expression,
+    formal_parameters: &[String],
+) -> Option<Vec<usize>> {
+    if formal_parameters.iter().any(String::is_empty)
+        || formal_parameters.iter().collect::<BTreeSet<_>>().len() != formal_parameters.len()
+    {
+        return None;
+    }
+    let mut reads = BTreeSet::new();
+    collect_reads(expression, formal_parameters, &mut reads)?;
+    Some(reads.into_iter().collect())
+}
+
+fn collect_reads(
+    expression: &Expression,
+    formal_parameters: &[String],
+    reads: &mut BTreeSet<usize>,
+) -> Option<()> {
+    match expression {
+        Expression::Parameter(name) => {
+            let position = formal_parameters
+                .iter()
+                .position(|parameter| parameter == name)?;
+            reads.insert(position);
+        }
+        Expression::Literal(_) => {}
+        Expression::Recur(argument) => collect_reads(argument, formal_parameters, reads)?,
+        Expression::Apply(_, arguments) => {
+            for argument in arguments {
+                collect_reads(argument, formal_parameters, reads)?;
+            }
+        }
+    }
+    Some(())
+}
+
+/// Bind formal input symbols without changing expression operations.
+#[must_use]
+pub fn bind_expression_parameters(
+    expression: &Expression,
+    formal_parameters: &[String],
+    target_parameters: &[String],
+) -> Option<Expression> {
+    if formal_parameters.len() != target_parameters.len()
+        || target_parameters.iter().any(String::is_empty)
+        || target_parameters.iter().collect::<BTreeSet<_>>().len() != target_parameters.len()
+    {
+        return None;
+    }
+    read_formal_parameter_positions(expression, formal_parameters)?;
+    match expression {
+        Expression::Parameter(name) => {
+            let position = formal_parameters
+                .iter()
+                .position(|parameter| parameter == name)?;
+            Some(Expression::Parameter(target_parameters[position].clone()))
+        }
+        Expression::Literal(value) => Some(Expression::Literal(*value)),
+        Expression::Recur(argument) => Some(Expression::Recur(Box::new(
+            bind_expression_parameters(argument, formal_parameters, target_parameters)?,
+        ))),
+        Expression::Apply(operation, arguments) => Some(Expression::Apply(
+            *operation,
+            arguments
+                .iter()
+                .map(|argument| {
+                    bind_expression_parameters(argument, formal_parameters, target_parameters)
+                })
+                .collect::<Option<Vec<_>>>()?,
+        )),
+    }
+}
+
+fn render_callable_python(expression: &Expression, function_name: &str, parameter: &str) -> String {
+    let mut out = format!("def {function_name}({parameter}):\n");
+    let expression = render_expression(expression, function_name);
+    let _ = writeln!(out, "    return {expression}");
+    out.trim_end().to_owned()
+}
+
 impl Recurrence {
     /// Derive a valid concise callable name from the fetched source label.
     #[must_use]
@@ -56,10 +224,7 @@ impl Recurrence {
 
     #[must_use]
     pub fn render_python(&self, function_name: &str) -> String {
-        let mut out = format!("def {function_name}({}):\n", self.parameter);
-        let expression = render_expression(&self.expression, function_name);
-        let _ = writeln!(out, "    return {expression}");
-        out.trim_end().to_owned()
+        render_callable_python(&self.expression, function_name, &self.parameter)
     }
 
     #[must_use]

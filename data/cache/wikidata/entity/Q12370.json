@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "盐"
+        },
+        "es": {
+          "language": "es",
+          "value": "sal"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "化合物的種類"
+        },
+        "es": {
+          "language": "es",
+          "value": "compuesto químico"
         }
       },
       "aliases": {

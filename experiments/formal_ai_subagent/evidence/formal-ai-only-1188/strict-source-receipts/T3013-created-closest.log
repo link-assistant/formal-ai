@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: explicit successful receipts preserve exact JSON, Unicode, whitespace and authored error narratives
+ok 1 - explicit successful receipts preserve exact JSON, Unicode, whitespace and authored error narratives
+  ---
+  duration_ms: 452.792417
+  ...
+# Subtest: matching bytes cannot erase missing status, failure status or typed harness errors
+ok 2 - matching bytes cannot erase missing status, failure status or typed harness errors
+  ---
+  duration_ms: 0.207084
+  ...
+# Subtest: lookup binds exact command, nearest call identity and latest matching result
+ok 3 - lookup binds exact command, nearest call identity and latest matching result
+  ---
+  duration_ms: 1.679583
+  ...
+# Subtest: whole rewrite without Edit accepts actual exact shell and typed JSON observations
+ok 4 - whole rewrite without Edit accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 461.530667
+  ...
+# Subtest: whole rewrite without Edit rejects failed matching observation even after correct physical write
+ok 5 - whole rewrite without Edit rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 68.752875
+  ...
+# Subtest: whole rewrite without Edit ignores unrelated cat and obeys newest failed target receipt
+ok 6 - whole rewrite without Edit ignores unrelated cat and obeys newest failed target receipt
+  ---
+  duration_ms: 31.824042
+  ...
+# Subtest: structured list insertion accepts actual exact shell and typed JSON observations
+ok 7 - structured list insertion accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 23.085584
+  ...
+# Subtest: structured list insertion rejects failed matching observation even after correct physical write
+ok 8 - structured list insertion rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 30.642708
+  ...
+# Subtest: structured list insertion ignores unrelated cat and obeys newest failed target receipt
+ok 9 - structured list insertion ignores unrelated cat and obeys newest failed target receipt
+  ---
+  duration_ms: 10.602708
+  ...
+# Subtest: generated source accepts actual exact shell and typed JSON observations
+ok 10 - generated source accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 26.137083
+  ...
+# Subtest: generated source rejects failed matching observation even after correct physical write
+ok 11 - generated source rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 34.304916
+  ...
+# Subtest: generated source ignores unrelated cat and obeys newest failed target receipt
+ok 12 - generated source ignores unrelated cat and obeys newest failed target receipt
+  ---
+  duration_ms: 13.604917
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1421.29575

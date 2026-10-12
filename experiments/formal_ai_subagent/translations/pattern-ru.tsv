@@ -1,0 +1,5 @@
+algorithm_discovery_summary	"Поиск алгоритмов по {traces} трассировкам: кандидатов — {candidates}, проверено на отложенных данных — {validated}; только предложение, ни один алгоритм не выполнялся."
+algorithm_dreaming_applied	"План dreaming применён к {path}: удалено событий — {removed}, можно освободить примерно {bytes} байт; изучено поправок мета-алгоритма — {amendments}, повторяющихся шаблонов — {patterns}, кандидатов алгоритмов выполнения — {algorithms}; сохранено неудачных симуляций — {failures} и испытаний dreaming — {trials}."
+algorithm_empty_binding_name	"Недопустимая привязка {binding}: имя пустое"
+algorithm_invalid_binding	"Недопустимая привязка {binding}: ожидается NAME=VALUE"
+algorithm_observation_missing	"Файл наблюдений не существует: {path}"

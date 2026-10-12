@@ -1,0 +1,590 @@
+>> read {"filePath":"rust/tests/unit/issue_531_algorithm_discovery.rs","file_path":"rust/tests/unit/issue_531_algorithm_discovery.rs","path":"rust/tests/unit/issue_531_algorithm_discovery.rs"}
+   <file>
+   00001| //! Regression coverage for the issue-531 review follow-up: repeated sequences
+   00002| //! of events must become reviewable, validated algorithm candidates rather than
+   00003| //! stopping at a "this sequence repeats" classification.
+   00004| 
+   00005| use std::collections::BTreeMap;
+   00006| use std::fmt::Write as _;
+   00007| use std::fs;
+   00008| use std::process::Command;
+   00009| 
+   00010| use formal_ai::agentic_coding::{algorithm_learning::trace_from_driver_outcome, run_agentic_task};
+   00011| use formal_ai::algorithm_discovery::{
+   00012|     AlgorithmApproval, AlgorithmGate, AlgorithmHost, ArgumentPattern, ExecutionTrace,
+   00013|     MAX_DISCOVERED_ALGORITHM_STEPS, MAX_DISCOVERY_INPUT_STEPS, TraceStep, discover_algorithms,
+   00014|     trace_from_compiled_procedure, trace_from_event_log,
+   00015| };
+   00016| use formal_ai::{
+   00017|     DreamingConfig, EventLog, MemoryEvent, MemoryStore, apply_dreaming_plan, compile_procedure,
+   00018|     plan_memory_dreaming,
+   00019| };
+   00020| 
+   00021| fn step(operation: &str, arguments: &[(&str, &str)]) -> TraceStep {
+   00022|     TraceStep::new(operation).with_arguments(arguments.iter().copied())
+   00023| }
+   00024| 
+   00025| fn trace(id: &str, subject: &str, format: &str) -> ExecutionTrace {
+   00026|     ExecutionTrace::new(
+   00027|         id,
+   00028|         vec![
+   00029|             step("fetch", &[("subject", subject)]),
+   00030|             step("normalize", &[("subject", subject), ("format", format)]),
+   00031|             step("persist", &[("subject", subject)]),
+   00032|         ],
+   00033|     )
+   00034| }
+   00035| 
+   00036| #[test]
+   00037| fn repeated_event_sequences_become_a_validated_parameterized_algorithm() {
+   00038|     let run = discover_algorithms(&[
+   00039|         trace("run-alpha", "alpha", "json"),
+   00040|         trace("run-beta", "beta", "json"),
+   00041|         trace("run-gamma", "gamma", "json"),
+   00042|     ]);
+   00043| 
+   00044|     assert!(run.associative_compression_lossless);
+   00045|     assert!(run.associative_compression_steps > 0);
+   00046|     let candidates = run.validated_candidates();
+   00047|     assert_eq!(candidates.len(), 1, "{}", run.links_notation());
+   00048|     let candidate = candidates[0];
+   00049|     assert_eq!(candidate.steps.len(), 3);
+   00050|     assert_eq!(candidate.support_trace_ids, ["run-alpha", "run-beta"]);
+   00051|     assert_eq!(candidate.held_out.len(), 1);
+   00052|     assert!(candidate.held_out[0].passed);
+   00053| 
+   00054|     let fetch_subject = &candidate.steps[0].arguments["subject"];
+   00055|     let normalize_subject = &candidate.steps[1].arguments["subject"];
+   00056|     assert_eq!(fetch_subject, normalize_subject);
+   00057|     assert!(matches!(fetch_subject, ArgumentPattern::Parameter(_)));
+   00058|     assert_eq!(
+   00059|         candidate.steps[1].arguments["format"],
+   00060|         ArgumentPattern::Constant(String::from("json"))
+   00061|     );
+   00062| 
+   00063|     let document = run.links_notation();
+   00064|     assert!(document.contains("mode \"proposal_only\""));
+   00065|     assert!(document.contains("human_gated \"true\""));
+   00066|     assert!(document.contains("associative_compression_lossless \"true\""));
+   00067| }
+   00068| 
+   00069| #[test]
+   00070| fn a_repeated_episode_inside_one_log_is_discovered_without_trace_boundaries() {
+   00071|     let trace = ExecutionTrace::new(
+   00072|         "single-log",
+   00073|         vec![
+   00074|             step("read", &[]),
+   00075|             step("verify", &[]),
+   00076|             step("read", &[]),
+   00077|             step("verify", &[]),
+   00078|             step("read", &[]),
+   00079|             step("verify", &[]),
+   00080|         ],
+   00081|     );
+   00082| 
+   00083|     let run = discover_algorithms(&[trace]);
+   00084|     let candidate = run
+   00085|         .validated_candidates()
+   00086|         .into_iter()
+   00087|         .find(|candidate| {
+   00088|             candidate
+   00089|                 .steps
+   00090|                 .iter()
+   00091|                 .map(|step| step.operation.as_str())
+   00092|                 .eq(["read", "verify"])
+   00093|         })
+   00094|         .expect("the repeated read/verify episode should be inferred");
+   00095|     assert_eq!(candidate.support_trace_ids.len(), 2);
+   00096|     assert_eq!(candidate.held_out.len(), 1);
+   00097| }
+   00098| 
+   00099| #[test]
+   00100| fn held_out_constant_drift_is_preserved_as_a_failed_candidate() {
+   00101|     let run = discover_algorithms(&[
+   00102|         trace("run-alpha", "alpha", "json"),
+   00103|         trace("run-beta", "beta", "json"),
+   00104|         trace("run-gamma", "gamma", "xml"),
+   00105|     ]);
+   00106| 
+   00107|     assert_eq!(
+   00108|         run.validated_candidates(),
+   00109|         [] as [&formal_ai::algorithm_discovery::AlgorithmCandidate; 0]
+   00110|     );
+   00111|     let candidate = run
+   00112|         .candidates
+   00113|         .iter()
+   00114|         .find(|candidate| candidate.steps.len() == 3)
+   00115|         .expect("the rejected candidate must remain inspectable");
+   00116|     assert_eq!(candidate.held_out.len(), 1);
+   00117|     assert!(!candidate.held_out[0].passed);
+   00118|     assert!(
+   00119|         candidate.held_out[0]
+   00120|             .failures
+   00121|             .iter()
+   00122|             .any(|failure| failure.contains("constant_mismatch"))
+   00123|     );
+   00124|     assert!(
+   00125|         run.links_notation()
+   00126|             .contains("status \"held_out_validation_failed\"")
+   00127|     );
+   00128|     assert!(
+   00129|         candidate
+   00130|             .conformance_links_notation("must-not-pass", &BTreeMap::new())
+   00131|             .is_err()
+   00132|     );
+   00133| }
+   00134| 
+   00135| #[test]
+   00136| fn held_out_missing_or_changed_steps_reject_an_incomplete_algorithm() {
+   00137|     let truncated = ExecutionTrace::new(
+   00138|         "run-gamma",
+   00139|         vec![
+   00140|             step("fetch", &[("subject", "gamma")]),
+   00141|             step("persist", &[("subject", "gamma")]),
+   00142|         ],
+   00143|     );
+   00144|     let run = discover_algorithms(&[
+   00145|         trace("run-alpha", "alpha", "json"),
+   00146|         trace("run-beta", "beta", "json"),
+   00147|         truncated,
+   00148|     ]);
+   00149| 
+   00150|     let candidate = run
+   00151|         .candidates
+   00152|         .iter()
+   00153|         .find(|candidate| candidate.steps.len() == 3)
+   00154|         .expect("two support traces should retain an inspectable proposal");
+   00155|     assert!(!candidate.validated());
+   00156|     assert!(
+   00157|         candidate.held_out[0]
+   00158|             .failures
+   00159|             .iter()
+   00160|             .any(|failure| failure.contains("operation_mismatch"))
+   00161|     );
+   00162|     assert!(
+   00163|         candidate.held_out[0]
+   00164|             .failures
+   00165|             .iter()
+   00166|             .any(|failure| failure.contains("missing_step"))
+   00167|     );
+   00168| }
+   00169| 
+   00170| #[test]
+   00171| fn failed_longer_episode_does_not_hide_a_validated_subroutine() {
+   00172|     let changed_tail = ExecutionTrace::new(
+   00173|         "run-gamma",
+   00174|         vec![
+   00175|             step("fetch", &[("subject", "gamma")]),
+   00176|             step("normalize", &[("subject", "gamma"), ("format", "json")]),
+   00177|             step("publish", &[("subject", "gamma")]),
+   00178|         ],
+   00179|     );
+   00180|     let run = discover_algorithms(&[
+   00181|         trace("run-alpha", "alpha", "json"),
+   00182|         trace("run-beta", "beta", "json"),
+   00183|         changed_tail,
+   00184|     ]);
+   00185| 
+   00186|     assert!(
+   00187|         run.candidates
+   00188|             .iter()
+   00189|             .any(|candidate| { candidate.steps.len() == 3 && !candidate.validated() })
+   00190|     );
+   00191|     assert!(run.validated_candidates().iter().any(|candidate| {
+   00192|         candidate
+   00193|             .steps
+   00194|             .iter()
+   00195|             .map(|step| step.operation.as_str())
+   00196|             .eq(["fetch", "normalize"])
+   00197|     }));
+   00198| }
+   00199| 
+   00200| #[test]
+   00201| fn empty_constant_arguments_round_trip_without_becoming_missing_fields() {
+   00202|     let run = discover_algorithms(&[
+   00203|         trace("run-alpha", "alpha", ""),
+   00204|         trace("run-beta", "beta", ""),
+   00205|         trace("run-gamma", "gamma", ""),
+   00206|     ]);
+   00207|     let expected = run.validated_candidates()[0];
+   00208|     assert_eq!(
+   00209|         expected.steps[1].arguments["format"],
+   00210|         ArgumentPattern::Constant(String::new())
+   00211|     );
+   00212| 
+   00213|     let restored = formal_ai::algorithm_discovery::AlgorithmCandidate::from_links_notation(
+   00214|         &run.links_notation(),
+   00215|     )
+   00216|     .expect("an explicitly empty constant is still a present value");
+   00217|     assert_eq!(&restored, expected);
+   00218| }
+   00219| 
+   00220| #[test]
+   00221| fn held_out_argument_shape_drift_is_a_counterexample() {
+   00222|     let mut changed = trace("run-gamma", "gamma", "json");
+   00223|     changed.steps[1]
+   00224|         .arguments
+   00225|         .insert(String::from("privileged"), String::from("true"));
+   00226|     let run = discover_algorithms(&[
+   00227|         trace("run-alpha", "alpha", "json"),
+   00228|         trace("run-beta", "beta", "json"),
+   00229|         changed,
+   00230|     ]);
+   00231|     let candidate = run
+   00232|         .candidates
+   00233|         .iter()
+   00234|         .find(|candidate| candidate.steps.len() == 3)
+   00235|         .expect("support retains a reviewable failed proposal");
+   00236| 
+   00237|     assert!(!candidate.validated());
+   00238|     assert!(
+   00239|         candidate.held_out[0]
+   00240|             .failures
+   00241|             .iter()
+   00242|             .any(|failure| failure.contains("unexpected_argument"))
+   00243|     );
+   00244| }
+   00245| 
+   00246| #[test]
+   00247| fn oversized_observation_sets_fail_closed_without_partial_candidates() {
+   00248|     let trace = ExecutionTrace::new(
+   00249|         "oversized",
+   00250|         vec![step("read", &[]); MAX_DISCOVERY_INPUT_STEPS + 1],
+   00251|     );
+   00252|     let run = discover_algorithms(&[trace]);
+   00253| 
+   00254|     assert!(run.observation_limit_exceeded);
+   00255|     assert_eq!(
+   00256|         run.candidates,
+   00257|         [] as [formal_ai::algorithm_discovery::AlgorithmCandidate; 0]
+   00258|     );
+   00259|     assert!(!run.associative_compression_lossless);
+   00260|     assert!(
+   00261|         run.links_notation()
+   00262|             .contains("observation_limit_exceeded \"true\"")
+   00263|     );
+   00264| }
+   00265| 
+   00266| #[test]
+   00267| fn imported_artifacts_cannot_bypass_the_reviewable_step_limit() {
+   00268|     let mut artifact = String::from(
+   00269|         "algorithm_candidate \"oversized\"\n  evidence_id \"oversized\"\n  mode \"proposal_only\"\n  human_gated \"true\"\n  status \"held_out_validated\"\n  associative_root \"0\"\n  steps\n",
+   00270|     );
+   00271|     for index in 0..=MAX_DISCOVERED_ALGORITHM_STEPS {
+   00272|         let _ = write!(artifact, "    step \"{index}\"\n      operation \"read\"\n");
+   00273|     }
+   00274|     artifact.push_str(
+   00275|         "  support\n    trace \"alpha\"\n    trace \"beta\"\n  held_out\n    test \"gamma\"\n      start_step \"0\"\n      passed \"true\"\n",
+   00276|     );
+   00277| 
+   00278|     let error = formal_ai::algorithm_discovery::AlgorithmCandidate::from_links_notation(&artifact)
+   00279|         .expect_err("import must reapply the same bound as discovery");
+   00280|     assert!(
+   00281|         error.to_string().contains("reviewable step limit"),
+   00282|         "{error}"
+   00283|     );
+   00284| }
+   00285| 
+   00286| #[test]
+   00287| fn runtime_event_logs_and_compiled_guides_share_the_trace_model() {
+   00288|     let event_traces = ["alpha", "beta", "gamma"].map(|subject| {
+   00289|         let mut log = EventLog::new();
+   00290|         log.append("fetch", subject);
+   00291|         log.append("normalize", subject);
+   00292|         log.append("persist", subject);
+   00293|         trace_from_event_log(format!("event-log-{subject}"), &log)
+   00294|     });
+   00295|     let event_candidate = discover_algorithms(&event_traces)
+   00296|         .validated_candidates()
+   00297|         .into_iter()
+   00298|         .next()
+   00299|         .expect("runtime logs should use the common held-out miner")
+   00300|         .clone();
+   00301|     assert_eq!(event_candidate.steps.len(), 3);
+   00302| 
+   00303|     let guide = compile_procedure(
+   00304|         "When I paste a link, fetch its title, translate it to Russian, save both, and reply with the translation.",
+   00305|     )
+   00306|     .expect("seeded multi-step guide should compile");
+   00307|     let guide_trace = trace_from_compiled_procedure(&guide);
+   00308|     assert_eq!(guide_trace.id, guide.id);
+   00309|     assert_eq!(
+   00310|         guide_trace
+   00311|             .steps
+   00312|             .iter()
+   00313|             .map(|step| step.operation.as_str())
+   00314|             .collect::<Vec<_>>(),
+   00315|         [
+   00316|             "skill_procedure_fetch",
+   00317|             "skill_procedure_translate",
+   00318|             "skill_procedure_store",
+   00319|             "skill_procedure_reply",
+   00320|         ]
+   00321|     );
+   00322|     assert_eq!(
+   00323|         guide_trace.steps[1].arguments["target_language"],
+   00324|         "language_russian"
+   00325|     );
+   00326| }
+   00327| 
+   00328| #[derive(Default)]
+   00329| struct RecordingHost {
+   00330|     operations: Vec<(String, BTreeMap<String, String>)>,
+   00331| }
+   00332| 
+   00333| impl AlgorithmHost for RecordingHost {
+   00334|     fn perform(
+   00335|         &mut self,
+   00336|         operation: &str,
+   00337|         arguments: &BTreeMap<String, String>,
+   00338|         input: &str,
+   00339|     ) -> Result<String, String> {
+   00340|         self.operations
+   00341|             .push((operation.to_owned(), arguments.clone()));
+   00342|         Ok(format!("{operation}({input})"))
+   00343|     }
+   00344| }
+   00345| 
+   00346| #[test]
+   00347| fn learned_algorithm_is_inert_until_green_gate_and_named_review() {
+   00348|     let run = discover_algorithms(&[
+   00349|         trace("run-alpha", "alpha", "json"),
+   00350|         trace("run-beta", "beta", "json"),
+   00351|         trace("run-gamma", "gamma", "json"),
+   00352|     ]);
+   00353|     let candidate = run.validated_candidates()[0];
+   00354| 
+   00355|     assert!(
+   00356|         candidate
+   00357|             .promote(
+   00358|                 AlgorithmGate::passed("issue_531_algorithm_discovery", 1),
+   00359|                 AlgorithmApproval::declined("reviewer"),
+   00360|             )
+   00361|             .is_err()
+   00362|     );
+   00363|     assert!(
+   00364|         candidate
+   00365|             .promote(
+   00366|                 AlgorithmGate::failed("issue_531_algorithm_discovery", 0, 1),
+   00367|                 AlgorithmApproval::granted("reviewer"),
+   00368|             )
+   00369|             .is_err()
+   00370|     );
+   00371|     assert!(
+   00372|         candidate
+   00373|             .promote(
+   00374|                 AlgorithmGate::passed("", 1),
+   00375|                 AlgorithmApproval::granted("reviewer"),
+   00376|             )
+   00377|             .is_err()
+   00378|     );
+   00379| 
+   00380|     let approved = candidate
+   00381|         .promote(
+   00382|             AlgorithmGate::passed("issue_531_algorithm_discovery", 1),
+   00383|             AlgorithmApproval::granted("reviewer"),
+   00384|         )
+   00385|         .expect("validated candidates can be explicitly promoted");
+   00386|     assert_eq!(approved.candidate(), candidate);
+   00387|     assert_eq!(approved.gate().suite, "issue_531_algorithm_discovery");
+   00388|     assert_eq!(approved.approval().reviewer, "reviewer");
+   00389|     let parameter = candidate.steps[0].arguments["subject"]
+   00390|         .parameter_name()
+   00391|         .expect("subject varies across support");
+   00392|     let bindings = BTreeMap::from([(parameter.to_owned(), String::from("delta"))]);
+   00393|     let mut host = RecordingHost::default();
+   00394|     let executed = approved
+   00395|         .execute("trigger", &bindings, &mut host)
+   00396|         .expect("an approved algorithm should execute through the generic host");
+   00397| 
+   00398|     assert_eq!(executed.outcomes.len(), 3);
+   00399|     assert_eq!(host.operations[0].1["subject"], "delta");
+   00400|     assert_eq!(host.operations[1].1["format"], "json");
+   00401| }
+   00402| 
+   00403| #[test]
+   00404| fn idle_learning_proposes_algorithms_from_persisted_conversation_events() {
+   00405|     let events = memory_observations();
+   00406| 
+   00407|     let plan = plan_memory_dreaming(&events, &DreamingConfig::default());
+   00408|     assert_eq!(plan.algorithm_candidates.len(), 1);
+   00409|     assert!(plan.algorithm_candidates[0].validated());
+   00410| 
+   00411|     let mut store = MemoryStore::from_events(events);
+   00412|     let outcome = apply_dreaming_plan(&mut store, &plan);
+   00413|     assert_eq!(outcome.learned_algorithm_candidates, 1);
+   00414|     let learned = store
+   00415|         .events()
+   00416|         .iter()
+   00417|         .find(|event| event.kind.as_deref() == Some("algorithm_learning_candidate"))
+   00418|         .expect("idle learning should retain the proposal");
+   00419|     assert_eq!(learned.intent.as_deref(), Some("generalize"));
+   00420|     assert!(
+   00421|         learned
+   00422|             .content
+   00423|             .as_deref()
+   00424|             .is_some_and(|content| content.contains("human_gated \"true\""))
+   00425|     );
+   00426| }
+   00427| 
+   00428| fn memory_observations() -> Vec<MemoryEvent> {
+   00429|     let mut store = MemoryStore::new();
+   00430|     store.replace_from_links_notation(include_str!(
+   00431|         "../../../data/benchmarks/issue-531-algorithm-traces.lino"
+   00432|     ));
+   00433|     store.events().to_vec()
+   00434| }
+   00435| 
+   00436| #[test]
+   00437| fn artifact_round_trip_and_conformance_do_not_implicitly_approve_execution() {
+   00438|     let run = discover_algorithms(&[
+   00439|         trace("run-alpha", "alpha", "json"),
+   00440|         trace("run-beta", "beta", "json"),
+   00441|         trace("run-gamma", "gamma", "json"),
+   00442|     ]);
+   00443|     let candidate = run.validated_candidates()[0];
+   00444|     let restored = formal_ai::algorithm_discovery::AlgorithmCandidate::from_links_notation(
+   00445|         &run.links_notation(),
+   00446|     )
+   00447|     .expect("generated discovery artifact should round-trip");
+   00448|     assert_eq!(&restored, candidate);
+   00449| 
+   00450|     let parameter = candidate.steps[0].arguments["subject"]
+   00451|         .parameter_name()
+   00452|         .expect("subject is parameterized");
+   00453|     let conformance = restored
+   00454|         .conformance_links_notation(
+   00455|             "dry-trigger",
+   00456|             &BTreeMap::from([(parameter.to_owned(), String::from("delta"))]),
+   00457|         )
+   00458|         .expect("all parameters are bound");
+   00459|     assert!(conformance.contains("side_effects \"false\""));
+   00460|     assert!(conformance.contains("result \"passed\""));
+   00461|     assert!(!conformance.contains("reviewer"));
+   00462| 
+   00463|     let tampered = run
+   00464|         .links_notation()
+   00465|         .replacen(&candidate.id, "algorithm_tampered", 1);
+   00466|     assert!(
+   00467|         formal_ai::algorithm_discovery::AlgorithmCandidate::from_links_notation(&tampered).is_err()
+   00468|     );
+   00469|     let tampered_evidence =
+   00470|         run.links_notation()
+   00471|             .replacen("test \"run-gamma\"", "test \"forged-run\"", 1);
+   00472|     assert!(
+   00473|         formal_ai::algorithm_discovery::AlgorithmCandidate::from_links_notation(&tampered_evidence)
+   00474|             .is_err(),
+   00475|         "held-out evidence cannot be rewritten into a promotion-eligible artifact"
+   00476|     );
+   00477| }
+   00478| 
+   00479| #[test]
+   00480| fn public_cli_mines_and_conformance_checks_a_portable_memory_file() {
+   00481|     let workspace = std::env::temp_dir().join(format!(
+   00482|         "formal-ai-issue-531-algorithm-cli-{}",
+   00483|         std::process::id()
+   00484|     ));
+   00485|     fs::create_dir_all(&workspace).expect("create isolated CLI fixture");
+   00486|     let observations = workspace.join("observations.lino");
+   00487|     let artifact = workspace.join("algorithms.lino");
+   00488|     fs::write(
+   00489|         &observations,
+   00490|         MemoryStore::from_events(memory_observations()).export_links_notation(),
+   00491|     )
+   00492|     .expect("write portable observations");
+   00493| 
+   00494|     let learned = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+   00495|         .args([
+   00496|             "learn",
+   00497|             "algorithms",
+   00498|             "--from",
+   00499|             observations.to_str().expect("UTF-8 fixture path"),
+   00500|             "--output",
+   00501|             artifact.to_str().expect("UTF-8 artifact path"),
+   00502|         ])
+   00503|         .output()
+   00504|         .expect("run public learning CLI");
+   00505|     assert!(learned.status.success(), "{learned:?}");
+   00506|     assert!(String::from_utf8_lossy(&learned.stderr).contains("held-out validated"));
+   00507|     let document = fs::read_to_string(&artifact).expect("read learned artifact");
+   00508|     assert!(document.contains("algorithm_candidate"));
+   00509| 
+   00510|     let conformance = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+   00511|         .args([
+   00512|             "algorithm",
+   00513|             "conformance",
+   00514|             "--artifact",
+   00515|             artifact.to_str().expect("UTF-8 artifact path"),
+   00516|             "--trigger",
+   00517|             "cli-regression",
+   00518|             "--binding",
+   00519|             "parameter_1=delta",
+   00520|         ])
+   00521|         .output()
+   00522|         .expect("run public conformance CLI");
+   00523|     assert!(conformance.status.success(), "{conformance:?}");
+   00524|     let output = String::from_utf8_lossy(&conformance.stdout);
+   00525|     assert!(output.contains("side_effects \"false\""));
+   00526|     assert!(output.contains("result \"passed\""));
+   00527| 
+   00528|     fs::remove_dir_all(workspace).expect("remove isolated CLI fixture");
+   00529| }
+   00530| 
+   00531| #[test]
+   00532| fn formal_ai_agent_cli_discovers_reads_back_and_conformance_checks_the_same_task() {
+   00533|     let memory = MemoryStore::from_events(memory_observations()).export_links_notation();
+   00534|     let task = format!(
+   00535|         "Derive any reusable execution algorithm from these recorded events and verify it.\n{memory}"
+   00536|     );
+   00537|     let run = run_agentic_task(&task).expect("in-repo Agent CLI replay");
+   00538| 
+   00539|     assert!(!run.hit_turn_cap);
+   00540|     assert_eq!(
+   00541|         run.steps
+   00542|             .iter()
+   00543|             .map(|step| step.tool.as_str())
+   00544|             .collect::<Vec<_>>(),
+   00545|         ["write_file", "run_command", "run_command", "run_command"]
+   00546|     );
+   00547|     assert!(
+   00548|         run.steps[1]
+   00549|             .arguments
+   00550|             .contains("formal-ai learn algorithms")
+   00551|     );
+   00552|     assert!(run.steps[2].result.contains("algorithm_candidate"));
+   00553|     assert!(
+   00554|         run.steps[3]
+   00555|             .arguments
+   00556|             .contains("formal-ai algorithm conformance")
+   00557|     );
+   00558|     assert!(run.steps[3].result.contains("side_effects \"false\""));
+   00559|     assert!(run.final_answer.contains("status \"conformance_passed\""));
+   00560|     assert!(run.final_answer.contains("human_gated \"true\""));
+   00561| 
+   00562|     let replayable_trace = trace_from_driver_outcome("agent-session", &run);
+   00563|     assert_eq!(
+   00564|         replayable_trace
+   00565|             .steps
+   00566|             .iter()
+   00567|             .map(|step| step.operation.as_str())
+   00568|             .collect::<Vec<_>>(),
+   00569|         ["write_file", "run_command", "run_command", "run_command"]
+   00570|     );
+   00571| }
+   00572| 
+   
+   (End of file - total 572 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/issue_531_algorithm_discovery.rs","file_path":"rust/tests/unit/issue_531_algorithm_discovery.rs","new":"    // Nextest archives relocate executables; compile-time paths name the producer.\n    // https://nexte.st/docs/ci-features/archiving/\n    let executable = std::env::var_os(\"NEXTEST_BIN_EXE_formal_ai\")\n        .or_else(|| std::env::var_os(\"NEXTEST_BIN_EXE_formal-ai\"))\n        .or_else(|| std::env::var_os(\"CARGO_BIN_EXE_formal-ai\"))\n        .unwrap_or_else(|| env!(\"CARGO_BIN_EXE_formal-ai\").into());\n    let learned = Command::new(&executable)","newString":"    // Nextest archives relocate executables; compile-time paths name the producer.\n    // https://nexte.st/docs/ci-features/archiving/\n    let executable = std::env::var_os(\"NEXTEST_BIN_EXE_formal_ai\")\n        .or_else(|| std::env::var_os(\"NEXTEST_BIN_EXE_formal-ai\"))\n        .or_else(|| std::env::var_os(\"CARGO_BIN_EXE_formal-ai\"))\n        .unwrap_or_else(|| env!(\"CARGO_BIN_EXE_formal-ai\").into());\n    let learned = Command::new(&executable)","new_str":"    // Nextest archives relocate executables; compile-time paths name the producer.\n    // https://nexte.st/docs/ci-features/archiving/\n    let executable = std::env::var_os(\"NEXTEST_BIN_EXE_formal_ai\")\n        .or_else(|| std::env::var_os(\"NEXTEST_BIN_EXE_formal-ai\"))\n        .or_else(|| std::env::var_os(\"CARGO_BIN_EXE_formal-ai\"))\n        .unwrap_or_else(|| env!(\"CARGO_BIN_EXE_formal-ai\").into());\n    let learned = Command::new(&executable)","new_string":"    // Nextest archives relocate executables; compile-time paths name the producer.\n    // https://nexte.st/docs/ci-features/archiving/\n    let executable = std::env::var_os(\"NEXTEST_BIN_EXE_formal_ai\")\n        .or_else(|| std::env::var_os(\"NEXTEST_BIN_EXE_formal-ai\"))\n        .or_else(|| std::env::var_os(\"CARGO_BIN_EXE_formal-ai\"))\n        .unwrap_or_else(|| env!(\"CARGO_BIN_EXE_formal-ai\").into());\n    let learned = Command::new(&executable)","old":"    let learned = Command::new(env!(\"CARGO_BIN_EXE_formal-ai\"))","oldString":"    let learned = Command::new(env!(\"CARGO_BIN_EXE_formal-ai\"))","old_str":"    let learned = Command::new(env!(\"CARGO_BIN_EXE_formal-ai\"))","old_string":"    let learned = Command::new(env!(\"CARGO_BIN_EXE_formal-ai\"))","path":"rust/tests/unit/issue_531_algorithm_discovery.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/issue_531_algorithm_discovery.rs"}
+   Output: 97cf7a91f7420bfd7d77a07f6514e853908690e5d7b6ebf7e662af5100736d50  rust/tests/unit/issue_531_algorithm_discovery.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    let learned = Command::new(env!("CARGO_BIN_EXE_formal-ai"))` with `    // Nextest archives relocate executables; compile-time paths name the producer.
+    // https://nexte.st/docs/ci-features/archiving/
+    let executable = std::env::var_os("NEXTEST_BIN_EXE_formal_ai")
+        .or_else(|| std::env::var_os("NEXTEST_BIN_EXE_formal-ai"))
+        .or_else(|| std::env::var_os("CARGO_BIN_EXE_formal-ai"))
+        .unwrap_or_else(|| env!("CARGO_BIN_EXE_formal-ai").into());
+    let learned = Command::new(&executable)` in `rust/tests/unit/issue_531_algorithm_discovery.rs` and observed the result.

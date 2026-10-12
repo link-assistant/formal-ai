@@ -73,4 +73,10 @@ if [[ "$mode" == "check" ]]; then
   fi
 fi
 
+if [[ "$mode" == "check" ]]; then
+  node "$ROOT_DIR/scripts/generate-worker-bootstrap.mjs" --check || status=1
+else
+  node "$ROOT_DIR/scripts/generate-worker-bootstrap.mjs" --write
+fi
+
 exit "$status"

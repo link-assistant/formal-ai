@@ -1,0 +1,130 @@
+{
+  "schema": "formal-ai-finite-evidence/v1",
+  "tasks": [
+    "T3820",
+    "T3821",
+    "T3822",
+    "T3823",
+    "T3824",
+    "T3825",
+    "T3826"
+  ],
+  "raw": [
+    {
+      "path": "raw/T3820-request.json.gz",
+      "sha256": "c973be98942eb48776e58b0233f6220b2f49101ce6bf23f156f40936e225bbac"
+    },
+    {
+      "path": "raw/T3820-transcript.json.gz",
+      "sha256": "a15e00c9fe3ab2810b622c9ea997e466b19ff6e4bfdb981b500418f1d8368825"
+    },
+    {
+      "path": "raw/T3820.log.gz",
+      "sha256": "a15e00c9fe3ab2810b622c9ea997e466b19ff6e4bfdb981b500418f1d8368825"
+    },
+    {
+      "path": "raw/T3821-request.json.gz",
+      "sha256": "8e548008df69f9b6eb511b6894833519c5f31e1010e9be012156828d03b8181c"
+    },
+    {
+      "path": "raw/T3821-transcript.json.gz",
+      "sha256": "8d977480411a44d805d63a88b30880472af7613f9a400a4e3918749bd147b851"
+    },
+    {
+      "path": "raw/T3821.log.gz",
+      "sha256": "8d977480411a44d805d63a88b30880472af7613f9a400a4e3918749bd147b851"
+    },
+    {
+      "path": "raw/T3821-audit.json.gz",
+      "sha256": "437cdcfa72166be5c53ba777e4b6c92f3de12745d5f6dd3a4da9957ace4a41c8"
+    },
+    {
+      "path": "raw/T3822-request.json.gz",
+      "sha256": "ee426d4cc0491260a4950ecbd33cf853ca3fd599e7e4eabdce2ff6306336c638"
+    },
+    {
+      "path": "raw/T3822-transcript.json.gz",
+      "sha256": "2a9c58083e04647799de4a1572ee1aafddd57aa2be34fead1c4354f8d0be1be8"
+    },
+    {
+      "path": "raw/T3822.log.gz",
+      "sha256": "2a9c58083e04647799de4a1572ee1aafddd57aa2be34fead1c4354f8d0be1be8"
+    },
+    {
+      "path": "raw/T3823-request.json.gz",
+      "sha256": "93f79f7550c34eda8a443748ffccc6df06a6c0e01a259ee4bab695d491c5db00"
+    },
+    {
+      "path": "raw/T3823-transcript.json.gz",
+      "sha256": "961beecb3a2d069ce2aedd036653b4ef62c314119625fa84980a9efeb0d43756"
+    },
+    {
+      "path": "raw/T3823.log.gz",
+      "sha256": "961beecb3a2d069ce2aedd036653b4ef62c314119625fa84980a9efeb0d43756"
+    },
+    {
+      "path": "raw/T3823-audit.json.gz",
+      "sha256": "4c54f700d4be86faf15e69a1c320eede0cb51cee01e18584685029549613fa05"
+    },
+    {
+      "path": "raw/T3824-request.json.gz",
+      "sha256": "59137568cd8794316a61dfd67dcffd3f5afcc804c7adbb016740ccad8404495e"
+    },
+    {
+      "path": "raw/T3824-transcript.json.gz",
+      "sha256": "963d085f3d4f83a050846e4a09854e99f2619c65c789c50dda9d21dd6df027d8"
+    },
+    {
+      "path": "raw/T3824.log.gz",
+      "sha256": "963d085f3d4f83a050846e4a09854e99f2619c65c789c50dda9d21dd6df027d8"
+    },
+    {
+      "path": "raw/T3824-tests.log.gz",
+      "sha256": "515f92063f63b7cb8361829c91526b6c9812d3785c7beb3e610c102242424975"
+    },
+    {
+      "path": "raw/T3825-request.json.gz",
+      "sha256": "ca36bed1ac5cfbba74815dfa81bfae7a1ac9d3182423abddfe1fcd3244ba228f"
+    },
+    {
+      "path": "raw/T3825-transcript.json.gz",
+      "sha256": "726ff9de6ea3baa7f9ba791a5be3ca5c5e24aef1af896ef794c3f2d5f7953245"
+    },
+    {
+      "path": "raw/T3825.log.gz",
+      "sha256": "726ff9de6ea3baa7f9ba791a5be3ca5c5e24aef1af896ef794c3f2d5f7953245"
+    }
+  ],
+  "sources": [
+    {
+      "path": "rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs",
+      "sha256": "0659d4b681ed158ec89f784fa06b9812206d0c7299e73bc78c7e0a0c08e7b38e",
+      "bytes": 9769
+    },
+    {
+      "path": "changelog.d/20261010_230000_multiple_obligation_workspace_fixture.md",
+      "sha256": "ace7ded382bc57db5229c68b649e98b00cf09e5a1ef3b1fea8b6ef4ed08332f0",
+      "bytes": 289
+    },
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability/tool_workspace.rs",
+      "sha256": "7dd92128fa067c9d5d35edfac4c4de4c89955bc5551eb90fd95811feb7c10511",
+      "bytes": 7257
+    }
+  ],
+  "effects": {
+    "repositoryReviewedSourceWrites": 1,
+    "repositoryChangelogWrites": 1,
+    "formatterInvocations": 1,
+    "scratchDirectoryCreates": 2,
+    "scratchSourceTargetWrites": 3,
+    "scratchAuxiliaryAppends": 2,
+    "manualSourceWrites": 0,
+    "autonomousUsefulSynthesis": 0
+  },
+  "validation": {
+    "nearestJsPass": 11,
+    "nearestJsFail": 0,
+    "nativeExecution": "pending CI"
+  }
+}

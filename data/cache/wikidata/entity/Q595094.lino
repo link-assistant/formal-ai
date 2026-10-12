@@ -4,11 +4,13 @@ Q595094
     zh ("姐妹花" "姊妹")
   descriptions
     en "female sibling"
+    es "pariente sanguínea"
     hi "महिला सहोदर"
     ru "девочка/женщина тех же родителей"
   id Q595094
   labels
     en sister
+    es hermana
     hi "बहन"
     ru "сестра"
     zh "姐妹"

@@ -1,0 +1,7 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/releases/latest",
+  "observedAt": "2026-10-09T05:00:41.254Z",
+  "status": "unavailable",
+  "message": "Command failed: gh api repos/link-assistant/formal-ai/releases/latest\nerror connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n",
+  "stderr": "error connecting to api.github.com\ncheck your internet connection or https://githubstatus.com\n"
+}

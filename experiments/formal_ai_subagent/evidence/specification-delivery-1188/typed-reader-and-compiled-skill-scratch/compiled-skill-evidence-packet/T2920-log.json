@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2920.log",
+  "sha256": "d93077fc9fdca588aac7d0d006efec2f7f22c05cff35f6fa7f36da7acb94f1ca",
+  "rawUtf8": ">> bash {\"command\":\"node /private/tmp/spec-recurrence-1188/seal-reader-packet.mjs\"}\n   Output: {\"packet\":\"/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet\",\"tasks\":14,\"calls\":25,\"edits\":6,\"retained\":77}\n   \n   Exit Code: 0\n== answer ==\nThe `node /private/tmp/spec-recurrence-1188/seal-reader-packet.mjs` command completed. Output:\n\n```json\n{\n  \"calls\": 25,\n  \"edits\": 6,\n  \"packet\": \"/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet\",\n  \"retained\": 77,\n  \"tasks\": 14\n}\n```\n"
+}

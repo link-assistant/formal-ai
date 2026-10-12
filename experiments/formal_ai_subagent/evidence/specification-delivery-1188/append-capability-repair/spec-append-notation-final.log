@@ -1,0 +1,11 @@
+directory                            files  characters  underscore-names  dash-names  abbreviated-names  duplicated-blocks  repeated-fields
+data/meta                              152     1293647              2062         515                196                  9               78
+data/meta/ci-gates                     102       88615                 8          95                  3                  0                0
+data/meta/rename-map                     2       36738                 0           3                  0                  0                0
+data/meta/requirement-status-ledger    150      231945                 2           0                  1                  0                2
+data/meta/seed-metadata-gaps            68       89321                 0        1065                  0                  0                0
+data/meta/self-translation               1        6295                 2          10                  2                  0                0
+data/meta/worker-line-budget           118      116036                 1           0                  0                  0                0
+data/seed                              243     3182446              9420         341                245                 27              184
+data/meta (scope)                      593     1862597              2074        1650                200                  9               80
+data/seed (scope)                      243     3182446              9420         341                245                 27              184

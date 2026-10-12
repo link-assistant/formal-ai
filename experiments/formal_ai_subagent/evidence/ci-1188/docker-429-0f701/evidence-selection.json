@@ -1,0 +1,157 @@
+{
+  "cutoff": "T4045",
+  "native": "pending CI",
+  "autonomousCredit": 0,
+  "files": [
+    {
+      "source": "/private/tmp/pr1188-ci-T4041/T4041.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4041/T4041.log",
+      "bytes": 93,
+      "sha256": "755535857e97b5df2ac1925e0fca273a555efbea4bfedd5c0554176764e705c0"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4041/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4041/drive-request.json",
+      "bytes": 600,
+      "sha256": "50cb510475352911a769ac6c44ed1a637e193d8bbee333fb8840318a81636799"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4041/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4041/drive.json",
+      "bytes": 1375,
+      "sha256": "245d06a7821502eaca93b9f40762f969c774fec9692fbb486ffda7ea3bcc6c23"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4041/prompt.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4041/prompt.txt",
+      "bytes": 522,
+      "sha256": "d54ffe02ea5f9811cd22d52ce8ac257972701f3dc3b99f7addec7ee8f38a6196"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4042/T4042.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/T4042.log",
+      "bytes": 92,
+      "sha256": "777a35569f9d5fe09132d5b9463d1d11e715fc87ee3ae6cc28023db0b52c85b8"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4042/build.py",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/build.py",
+      "bytes": 1583,
+      "sha256": "e5d1f5d1a8aa945ddf9369a18e1f882599448b6dcfabdea8835587494780b6f9"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4042/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/drive-request.json",
+      "bytes": 126,
+      "sha256": "40ce818a86e516d330870a013f10f1609b8dd5d92359b6e744b2804be7eb127e"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4042/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/drive.json",
+      "bytes": 835,
+      "sha256": "2544b37b4b6da85013812b75ad53f2a899ae4418c44ac14d23f22e70c2a85802"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4042/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/repair.mjs",
+      "bytes": 835,
+      "sha256": "2320b72a1405d87983a666b292880b94586d12eb44dd153ca2204be3da6b435b"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4042/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4042/request.json",
+      "bytes": 95461,
+      "sha256": "e385cef62aa4e53cb5371939884bbcc44d0abdd376e7b8c91154e2323d78bddf"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4043/T4043.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/T4043.log",
+      "bytes": 92,
+      "sha256": "eb5f61ea8b5444afa101adab71c9a43f1cdab3c955e6785d5d032f99f6b2f827"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4043/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/drive-request.json",
+      "bytes": 129,
+      "sha256": "ac38a49054256781428fe1972ba5b8ecdb3cd339b143b4f53eb20f8609ae23bf"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4043/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/drive.json",
+      "bytes": 841,
+      "sha256": "8f59b6c468f2dd1ebc9d2fac1e015a3c8a56c2acd13bf35301cdfe19b1cc40cb"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4043/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/repair.mjs",
+      "bytes": 838,
+      "sha256": "8e5c2cf959b39a3d7a7fe14c281b3f87e9f363feacf3d54e244538e06ea4710d"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4043/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/request.json",
+      "bytes": 4296,
+      "sha256": "88af6583b0cbc7ba122931098a8b3143afd8b5ee6f439d9a2ea54122d8e9143a"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4043/test.draft.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4043/test.draft.mjs",
+      "bytes": 3961,
+      "sha256": "541f0a9cefccc4b9cab677a3505574476e5fa8db7ca7afa56d7ab03a54bb8f12"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4044/T4044.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/T4044.log",
+      "bytes": 92,
+      "sha256": "33b4e5a2008872612e0d9106a9d8cf68b1363a2eb925874905178b3a8b310cc4"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4044/closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/closest.log",
+      "bytes": 4547,
+      "sha256": "22fa2836756d40d9a4d7f41791772a133734bc209a40c648db32d5ebbe820ffb"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4044/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/drive-request.json",
+      "bytes": 129,
+      "sha256": "c1e94e52faa5f467d4fd86c5cc02dd99e2b670c225c8bf3b01afe2bb6ce43935"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4044/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/drive.json",
+      "bytes": 699,
+      "sha256": "3d7e085747d2b0c55d6b4a15ebb41836e5a55e24aa5581a55e58f7de6b5564d6"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4044/verify.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/verify.mjs",
+      "bytes": 1533,
+      "sha256": "6d5029cb46bafcdbb09120604ad0c0318f4e4e7514a56eb0d4affcf7b916b557"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4044/whitespace.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/T4044/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/private/tmp/pr1188-0f701-official/container-independent-amd64-fail.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/container-independent-amd64-fail.log",
+      "bytes": 165596,
+      "sha256": "6480ace3f295e581a32d3d7d5226b307a4c6886382aef5b59568152941d7e210"
+    },
+    {
+      "source": "/private/tmp/pr1188-0f701-official/container-independent-arm64-fail.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/container-independent-arm64-fail.log",
+      "bytes": 165419,
+      "sha256": "1dd6624aa37a189fee49aaf87e910121fbfdd9e9a6ad9cc9c5412742a1b26494"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4045/actionlint.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/actionlint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

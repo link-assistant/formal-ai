@@ -1,0 +1,25 @@
+self_ast_census
+  target src/small_model_fallback.rs
+  language rust
+  fidelity signature
+  byte_len 11704
+  line_count 321
+  content_id source_module_04de501dcf14028a
+  symbol_count 16
+  symbols
+    const SEED_PATH 48 48
+    struct SmallModelOptions 55 63
+    function enabled_for 70 76
+    struct CatalogModel 81 95
+    function seed_text 98 103
+    function catalog 107 163
+    function eligible 173 190
+    function recommend 195 197
+    struct DownloadPlan 201 206
+    function download_manifest 212 218
+    struct FormalizationCandidate 223 227
+    struct ModelProposal 231 239
+    function is_advisory 244 246
+    function lexical_affinity 252 274
+    function propose_best_match 285 313
+    function confirm_proposal 319 321

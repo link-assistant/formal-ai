@@ -1,4 +1,5 @@
-ci_gate check_issue_citations
+ci_gate check-issue-citations
   stage rust
   description "Every prose claim that an issue remains open names an item in the committed GitHub state snapshot."
   run "rust-script scripts/check-issue-citations.rs"
+  justification "Prose claims citing closed or non-existent issues mislead contributors about the current state of work; the gate was introduced in #1138 (commit 9c31b0530) to verify every open-issue claim against the committed GitHub snapshot."

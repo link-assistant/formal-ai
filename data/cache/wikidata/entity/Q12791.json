@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "刀劍"
+        },
+        "es": {
+          "language": "es",
+          "value": "espada"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "刀剑类冷兵器的总称"
+        },
+        "es": {
+          "language": "es",
+          "value": "arma blanca de dos filos"
         }
       },
       "aliases": {
@@ -50,6 +58,16 @@
           {
             "language": "hi",
             "value": "तलवारें"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "hierro"
+          },
+          {
+            "language": "es",
+            "value": "hierros"
           }
         ]
       }

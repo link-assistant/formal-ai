@@ -1,0 +1,16 @@
+>> read {"filePath":"rust/tests/web/notation-response-placeholders.test.mjs","file_path":"rust/tests/web/notation-response-placeholders.test.mjs","path":"rust/tests/web/notation-response-placeholders.test.mjs"}
+   <file>
+   00001| «// PR #1188 T935-T936: a notation rename carries response placeholders too.
+   
+   (End of file - total 1 lines)
+   </file>
+== answer ==
+The `read` command completed. Output:
+
+```text
+<file>
+00001| «// PR #1188 T935-T936: a notation rename carries response placeholders too.
+
+(End of file - total 1 lines)
+</file>
+```

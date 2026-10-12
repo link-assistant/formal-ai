@@ -1,0 +1,6 @@
+{
+  "task": "T1939",
+  "prompt": "Run node --input-type=module -e 'const cp=await import('\\''node:child_process'\\'');const result=cp.execFileSync('\\''node'\\'',['\\''scripts/translate-js-rust.mjs'\\'','\\''--write'\\'','\\''--fetch'\\''],{encoding:'\\''utf8'\\'',maxBuffer:128*1024*1024});process.stdout.write(result);console.log('\\''PR1188_T1939_TRANSLATION_PASS'\\'');'",
+  "marker": "PR1188_T1939_TRANSLATION_PASS",
+  "steps": 16
+}

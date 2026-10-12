@@ -1,0 +1,5 @@
+# Conversation runtime evidence
+
+The original history and whole-inventory failure reports are preserved losslessly as gzip JSON, with decoded and stored hashes in [manifest.json](manifest.json). Final reports execute the unchanged native source-derived bodies through the browser WorkerHost. They record actual supplied history and typed events; they do not establish native compiled success or persisted-memory availability.
+
+Original counts are 6/18 and 186/201 passing. Final reports are 18/18 and 201/201 passing; all 977 unsupported inventory records remain explicit. The procedural repair belongs to the separate peer phase. T3277 physically returned exit 0 and 201 passing, while its external wrapper incorrectly read a nonexistent results field. That false failure remains in raw evidence and is separately validated by T3278; T3279 repeats the complete unchanged inventory on final stable producers. T3256 and T3267 genuine heldout failures remain preserved with their later repair references.

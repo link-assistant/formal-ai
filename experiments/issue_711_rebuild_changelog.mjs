@@ -9,6 +9,14 @@
  * exception: its fragments already belonged to releases 0.2.0 through 0.11.0,
  * so their original sections are matched by exact fragment body.
  *
+ * CHANGELOG.md keeps only the newest releases. No maintained file may exceed
+ * 1500 lines, so older releases roll into `docs/changelog/releases-from-<version>.md`,
+ * each named for the oldest release it holds (R1188-U5). The archive is packed
+ * oldest first, so a full archive file never changes again and an archive's
+ * name never changes: each release only moves the oldest sections of
+ * CHANGELOG.md into the newest archive file, which opens a new one once it is
+ * full. CHANGELOG.md links every archive file above the insert marker.
+ *
  * Usage:
  *   node experiments/issue_711_rebuild_changelog.mjs --write
  *   node experiments/issue_711_rebuild_changelog.mjs --write --pending-release 1.2.3 --pending-date 2026-07-17
@@ -17,20 +25,35 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  unlinkSync,
+  writeFileSync,
+} from "node:fs";
+import { posix } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const INITIAL_COMMIT = "6f8d4a8a05770adfd2fe33fdf3c6c586efb103af";
 const CHANGELOG_PATH = "CHANGELOG.md";
 const MAP_PATH = "docs/case-studies/issue-711/fragment-release-map.tsv";
-const HEADER = `# Changelog
+export const ARCHIVE_DIR = "docs/changelog";
+const INSERT_MARKER = "<!-- changelog-insert-here -->";
+const INTRO = `# Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-<!-- changelog-insert-here -->`;
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).`;
+// Lines of release sections CHANGELOG.md keeps; the newest release is always
+// kept whatever its size. The header and the archive list stay well inside
+// the remaining headroom under the 1400-line warning of check-file-size.
+export const RECENT_SECTION_LINES = 1200;
+// The most lines one archive file holds, header included.
+export const ARCHIVE_LINE_LIMIT = 1400;
+const ARCHIVE_HEADER_LINES = 4;
 
 function argument(name, fallback = undefined) {
   const index = process.argv.indexOf(`--${name}`);
@@ -193,17 +216,139 @@ function deletedFragments(ref) {
     .map((path) => ({ path, body: stripFrontmatter(fileAt(ref, path)) }));
 }
 
+function lineCount(text) {
+  return text.split("\n").length;
+}
+
+function isDocumentRelative(target) {
+  return !(
+    target === "" ||
+    target.startsWith("#") ||
+    target.startsWith("/") ||
+    target.includes("://") ||
+    target.startsWith("mailto:")
+  );
+}
+
+// A root-relative link target as a document in the directory `base` writes it.
+export function relativeTo(base, target) {
+  if (!isDocumentRelative(target)) return target;
+  const baseParts = base.split("/");
+  const parts = posix.normalize(target).split("/");
+  let shared = 0;
+  while (
+    shared < baseParts.length &&
+    shared < parts.length - 1 &&
+    baseParts[shared] === parts[shared]
+  ) {
+    shared += 1;
+  }
+  return [...Array(baseParts.length - shared).fill(".."), ...parts.slice(shared)].join("/");
+}
+
+// Rebase every relative path link in a release section written for the
+// repository root. Only plain path targets are touched, so a `](` inside code
+// or prose that is not a link target is left alone.
+export function rebaseLinks(body, base) {
+  return body.replace(/\]\(([A-Za-z0-9_.\-/]+(?:#[^)\s]*)?)\)/g, (match, target) =>
+    isDocumentRelative(target) ? `](${relativeTo(base, target)})` : match,
+  );
+}
+
+function sectionText(group) {
+  const body = group.fragments === null
+    ? group.body
+    : group.fragments.sort((a, b) => a.path.localeCompare(b.path)).map(({ body }) => body).join("\n\n");
+  return `## [${group.version}] - ${group.date}\n\n${body}`;
+}
+
+// Split sections (newest first) into the ones CHANGELOG.md keeps and the
+// archive files, packed oldest first so a full archive file is never rewritten.
+export function splitHistory(sections) {
+  let recentLines = 0;
+  let recentCount = 0;
+  for (const section of sections) {
+    const lines = lineCount(section.text) + (recentCount > 0 ? 1 : 0);
+    if (recentCount > 0 && recentLines + lines > RECENT_SECTION_LINES) break;
+    recentLines += lines;
+    recentCount += 1;
+  }
+  const recent = sections.slice(0, recentCount);
+  const archived = sections.slice(recentCount).reverse();
+  const archives = [];
+  let lines = 0;
+  for (const section of archived) {
+    const size = lineCount(section.text);
+    const current = archives.at(-1);
+    if (current && lines + 1 + size <= ARCHIVE_LINE_LIMIT) {
+      current.push(section);
+      lines += 1 + size;
+    } else {
+      archives.push([section]);
+      lines = ARCHIVE_HEADER_LINES + size;
+    }
+  }
+  return { recent, archives };
+}
+
+// An archive file is named for the oldest release it holds, which never
+// changes once the archive is opened.
+export const ARCHIVE_PREFIX = "releases-from-";
+
+function archivePath(archive) {
+  return `${ARCHIVE_DIR}/${ARCHIVE_PREFIX}${archive[0].version}.md`;
+}
+
+// The version an archive file name starts from, as numbers, for ordering.
+export function archiveVersion(name) {
+  const match = new RegExp(`^${ARCHIVE_PREFIX}(.+)\\.md$`).exec(name);
+  return match ? match[1].split(/[.-]/).map((part) => Number.parseInt(part, 10) || 0) : [];
+}
+
+function compareArchiveNames(left, right) {
+  const [a, b] = [archiveVersion(left), archiveVersion(right)];
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+    const difference = (a[index] ?? 0) - (b[index] ?? 0);
+    if (difference !== 0) return difference;
+  }
+  return left.localeCompare(right);
+}
+
+function archiveRange(archive) {
+  const [oldest, newest] = [archive[0].version, archive.at(-1).version];
+  return oldest === newest ? oldest : `${oldest} to ${newest}`;
+}
+
+function renderArchive(archive) {
+  const newestFirst = [...archive].reverse();
+  const header = `# Changelog archive: ${archiveRange(archive)}\n\n` +
+    "Releases in this range, newest first. Newer releases are in " +
+    "[CHANGELOG.md](../../CHANGELOG.md).";
+  const sections = newestFirst.map(({ text }) => rebaseLinks(text, ARCHIVE_DIR));
+  return `${header}\n\n${sections.join("\n\n")}\n`;
+}
+
 export function renderReconstruction(groups, assignments) {
   const sections = [...groups.values()]
     .sort((a, b) => compareVersions(b.version, a.version))
-    .map((group) => {
-      const body = group.fragments === null
-        ? group.body
-        : group.fragments.sort((a, b) => a.path.localeCompare(b.path)).map(({ body }) => body).join("\n\n");
-      return `## [${group.version}] - ${group.date}\n\n${body}`;
-    });
+    .map((group) => ({ version: group.version, text: sectionText(group) }));
 
-  const changelog = `${HEADER}\n\n${sections.join("\n\n")}\n`;
+  const { recent, archives } = splitHistory(sections);
+  let header = INTRO;
+  if (archives.length > 0) {
+    const links = archives
+      .map((archive) => `- [${archiveRange(archive)}](${archivePath(archive)})`)
+      .reverse();
+    header += "\n\nOlder releases are archived under `docs/changelog/` so that no file\n" +
+      `exceeds the repository's 1500-line cap (newest first):\n\n${links.join("\n")}`;
+  }
+  header += `\n\n${INSERT_MARKER}`;
+
+  const changelog = `${header}\n\n${recent.map(({ text }) => text).join("\n\n")}\n`;
+  const archiveFiles = archives.map((archive) => ({
+    path: archivePath(archive),
+    content: renderArchive(archive),
+  }));
   const map = [
     "fragment\tfirst_release",
     ...assignments
@@ -212,7 +357,17 @@ export function renderReconstruction(groups, assignments) {
     "",
   ].join("\n");
 
-  return { changelog, map, assignments, groups };
+  return { changelog, archives: archiveFiles, map, assignments, groups };
+}
+
+// The archive files on disk, by repository-relative path, oldest first. The
+// numbered names used before R1188-U5 count too, so --write removes them.
+function existingArchives() {
+  if (!existsSync(ARCHIVE_DIR)) return [];
+  return readdirSync(ARCHIVE_DIR)
+    .filter((name) => /^archive-\d+\.md$/.test(name) || archiveVersion(name).length > 0)
+    .sort(compareArchiveNames)
+    .map((name) => `${ARCHIVE_DIR}/${name}`);
 }
 
 function main() {
@@ -233,10 +388,24 @@ function main() {
 
   if (process.argv.includes("--write")) {
     writeFileSync(CHANGELOG_PATH, result.changelog);
+    for (const stale of existingArchives()) unlinkSync(stale);
+    if (result.archives.length > 0) mkdirSync(ARCHIVE_DIR, { recursive: true });
+    for (const { path, content } of result.archives) writeFileSync(path, content);
     writeFileSync(MAP_PATH, result.map);
   } else if (process.argv.includes("--check")) {
     if (readFileSync(CHANGELOG_PATH, "utf8") !== result.changelog) {
       throw new Error("CHANGELOG.md differs from reconstructed Git history");
+    }
+    const expected = new Set(result.archives.map(({ path }) => path));
+    for (const path of existingArchives()) {
+      if (!expected.has(path)) {
+        throw new Error(`${path} is a stale changelog archive; rerun with --write`);
+      }
+    }
+    for (const { path, content } of result.archives) {
+      if (!existsSync(path) || readFileSync(path, "utf8") !== content) {
+        throw new Error(`${path} differs from reconstructed Git history`);
+      }
     }
     if (readFileSync(MAP_PATH, "utf8") !== result.map) {
       throw new Error(`${MAP_PATH} differs from reconstructed Git history`);

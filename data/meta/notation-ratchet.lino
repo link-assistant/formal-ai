@@ -1,0 +1,42 @@
+# Notation ratchet (PR #1188, R1188-U6 and R1188-U7;
+# docs/links-notation-style.md).
+#
+# The ceilings on the links notation we own, per scope of
+# data/meta/notation-rules.lino, measured by scripts/measure-notation.mjs
+# (gate check-notation). Each count is of distinct items, so a new record
+# that reuses existing keys moves nothing, while a new `_` name, a new
+# abbreviated name, a new duplicated block or a new repeated field raises a
+# count and fails the gate. The ceilings only fall: `--write` lowers them to
+# the measure after a rule pass. `characters` is recorded for the concise-form
+# passes and is not a ceiling, since new seed data rightly adds characters.
+#
+# History. On 2026-10-08 the seed-lexemes family wrote 4916 lexemes in the
+# concise form (`lexeme en "read" "open"` with the fields its surfaces share
+# below it): data/seed fell from 3,532,300 to 3,150,411 characters and its
+# duplicated blocks from 45 to 27. Its repeated fields were re-based from 115
+# to 184 by the same change, not by new repetition: a field every surface of a
+# lexeme shares (`part_of_speech noun`) now sits once on the lexeme, where the
+# measure sees the same field on the sibling lexemes of other languages. That
+# is the next deduplication: state it once on the meaning.
+#
+# On 2026-10-09 data/seed underscore-names was raised from 9419 to 9426 for
+# R1188-U18 ("formalize <url>"): the meaning page_formalization, its role
+# page_formalization_action and five answer intents (page_formalization_empty,
+# _fetch_failed, _more, _offline, _summary). Intents and roles are identifiers
+# both roots and the API read, and their family has not been converted, so a
+# member spelled with `-` alone would mix two conventions in one family; it
+# converts with its readers in the intents-and-roles pass. The 25 new response
+# records of the same change are already written with `-`.
+notation-ratchet
+  scope data/meta
+    underscore-names 2067
+    abbreviated-names 198
+    duplicated-blocks 9
+    repeated-fields 80
+    characters 1897864
+  scope data/seed
+    underscore-names 9420
+    abbreviated-names 245
+    duplicated-blocks 27
+    repeated-fields 183
+    characters 3266533

@@ -53,7 +53,7 @@ fn hello_world_inline_replacement_accepts_diverse_prompt_surfaces() {
             language: "Python",
             slug: "python",
             prompt: "Write hello world in Python, but print “Bye Python” instead",
-            code_fragment: "print(\"Bye Python\")",
+            code_fragment: "print('Bye Python')",
             output_fragment: "```text\nBye Python\n```",
         },
         Case {
@@ -100,12 +100,13 @@ fn python_hello_world_seed_runs() {
     let response = answer("Write hello world in Python");
     assert_write_program_parameters(&response, "python", "hello_world");
     assert!(response.answer.contains("```python"));
-    assert!(response.answer.contains("print(\"Hello, world!\")"));
-    assert!(
-        response
-            .answer
-            .contains("Execution status: compiled and ran")
-    );
+    assert!(response.answer.contains("print('Hello, world!')"));
+    // Issue #1165: the program is the Python wiki's, which no recorded run
+    // executed, so its status names the page instead of the harness run.
+    assert!(response.answer.contains(
+        "Execution status: not run; this program was rediscovered from \
+         https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples"
+    ));
     assert!(response.answer.contains("python3"));
 }
 
@@ -159,11 +160,12 @@ fn c_hello_world_seed_compiles_and_runs() {
     assert_write_program_parameters(&response, "c", "hello_world");
     assert!(response.answer.contains("```c"));
     assert!(response.answer.contains("#include <stdio.h>"));
-    assert!(
-        response
-            .answer
-            .contains("Execution status: compiled and ran")
-    );
+    // Issue #1165: Microsoft's documented puts example is not the program the
+    // harness ran, so its status names the page it was rediscovered from.
+    assert!(response.answer.contains(
+        "Execution status: not run; this program was rediscovered from \
+         https://raw.githubusercontent.com/MicrosoftDocs/cpp-docs/main/docs/c-runtime-library/reference/puts-putws.md"
+    ));
 }
 
 #[test]
@@ -174,7 +176,7 @@ fn typescript_hello_world_seed_reports_unavailable_execution() {
     assert!(
         response
             .answer
-            .contains("Execution status: not compiled or run")
+            .contains("Execution status: not run; this program was rediscovered from")
     );
     assert!(
         response

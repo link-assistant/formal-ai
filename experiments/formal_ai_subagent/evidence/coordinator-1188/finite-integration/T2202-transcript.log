@@ -1,0 +1,57 @@
+>> read {"filePath":"experiments/issue_1028_agent_cli_ladder/plan-legs.py","file_path":"experiments/issue_1028_agent_cli_ladder/plan-legs.py","path":"experiments/issue_1028_agent_cli_ladder/plan-legs.py"}
+   <file>
+   00001| substitution_rules
+   00002|   id learned_program_plan_rules
+   00003| 
+   
+   (End of file - total 3 lines)
+   </file>
+>> edit {"filePath":"experiments/issue_1028_agent_cli_ladder/plan-legs.py","file_path":"experiments/issue_1028_agent_cli_ladder/plan-legs.py","new":"#!/usr/bin/env python3\n\"\"\"Plan independent node legs and the current-run leaf dependency wave.\"\"\"\nimport itertools\nimport json\nimport re\nimport sys\n\n\ndef nodes(depth):\n    return [\"R\"] if depth == 0 else [\".\".join(bits) for bits in itertools.product(\"12\", repeat=depth)]\n\n\ndef focused(node, prefix):\n    return not prefix or prefix == \"R\" or node == prefix or node.startswith(prefix + \".\")\n\n\ndef plan(mode, prefix=\"\"):\n    if mode not in [str(depth) for depth in range(6)] + [\"all\"]:\n        raise ValueError(\"depth must be 0 through 5, or all\")\n    if prefix and not re.fullmatch(r\"R|[12](\\.[12]){0,4}\", prefix):\n        raise ValueError(\"invalid binary-tree node filter\")\n    levels = list(range(5, -1, -1)) if mode == \"all\" else [int(mode)]\n    expected = [node for depth in levels for node in nodes(depth) if focused(node, prefix)]\n    if not expected:\n        raise ValueError(\"the filter selects no node at the requested depth\")\n    legs, composites = [], []\n    for depth in levels:\n        selected = [node for node in nodes(depth) if focused(node, prefix)]\n        groups = {}\n        for node in selected:\n            key = node.rsplit(\".\", 1)[0] if depth == 5 and \".\" in node and prefix != node else node\n            groups.setdefault(key, []).append(node)\n        for key, members in groups.items():\n            leg = {\"depth\": depth, \"filter\": key, \"id\": f\"depth-{depth}-{key}\", \"nodes\": members}\n            (composites if mode == \"all\" and depth == 4 else legs).append(leg)\n    return {\"requested_depth\": mode, \"node_filter\": prefix or \"none\", \"legs\": legs,\n            \"composites\": composites, \"expected_nodes\": expected}\n\n\nif __name__ == \"__main__\":\n    print(json.dumps(plan(*sys.argv[1:]), separators=(\",\", \":\")))\n","newString":"#!/usr/bin/env python3\n\"\"\"Plan independent node legs and the current-run leaf dependency wave.\"\"\"\nimport itertools\nimport json\nimport re\nimport sys\n\n\ndef nodes(depth):\n    return [\"R\"] if depth == 0 else [\".\".join(bits) for bits in itertools.product(\"12\", repeat=depth)]\n\n\ndef focused(node, prefix):\n    return not prefix or prefix == \"R\" or node == prefix or node.startswith(prefix + \".\")\n\n\ndef plan(mode, prefix=\"\"):\n    if mode not in [str(depth) for depth in range(6)] + [\"all\"]:\n        raise ValueError(\"depth must be 0 through 5, or all\")\n    if prefix and not re.fullmatch(r\"R|[12](\\.[12]){0,4}\", prefix):\n        raise ValueError(\"invalid binary-tree node filter\")\n    levels = list(range(5, -1, -1)) if mode == \"all\" else [int(mode)]\n    expected = [node for depth in levels for node in nodes(depth) if focused(node, prefix)]\n    if not expected:\n        raise ValueError(\"the filter selects no node at the requested depth\")\n    legs, composites = [], []\n    for depth in levels:\n        selected = [node for node in nodes(depth) if focused(node, prefix)]\n        groups = {}\n        for node in selected:\n            key = node.rsplit(\".\", 1)[0] if depth == 5 and \".\" in node and prefix != node else node\n            groups.setdefault(key, []).append(node)\n        for key, members in groups.items():\n            leg = {\"depth\": depth, \"filter\": key, \"id\": f\"depth-{depth}-{key}\", \"nodes\": members}\n            (composites if mode == \"all\" and depth == 4 else legs).append(leg)\n    return {\"requested_depth\": mode, \"node_filter\": prefix or \"none\", \"legs\": legs,\n            \"composites\": composites, \"expected_nodes\": expected}\n\n\nif __name__ == \"__main__\":\n    print(json.dumps(plan(*sys.argv[1:]), separators=(\",\", \":\")))\n","new_str":"#!/usr/bin/env python3\n\"\"\"Plan independent node legs and the current-run leaf dependency wave.\"\"\"\nimport itertools\nimport json\nimport re\nimport sys\n\n\ndef nodes(depth):\n    return [\"R\"] if depth == 0 else [\".\".join(bits) for bits in itertools.product(\"12\", repeat=depth)]\n\n\ndef focused(node, prefix):\n    return not prefix or prefix == \"R\" or node == prefix or node.startswith(prefix + \".\")\n\n\ndef plan(mode, prefix=\"\"):\n    if mode not in [str(depth) for depth in range(6)] + [\"all\"]:\n        raise ValueError(\"depth must be 0 through 5, or all\")\n    if prefix and not re.fullmatch(r\"R|[12](\\.[12]){0,4}\", prefix):\n        raise ValueError(\"invalid binary-tree node filter\")\n    levels = list(range(5, -1, -1)) if mode == \"all\" else [int(mode)]\n    expected = [node for depth in levels for node in nodes(depth) if focused(node, prefix)]\n    if not expected:\n        raise ValueError(\"the filter selects no node at the requested depth\")\n    legs, composites = [], []\n    for depth in levels:\n        selected = [node for node in nodes(depth) if focused(node, prefix)]\n        groups = {}\n        for node in selected:\n            key = node.rsplit(\".\", 1)[0] if depth == 5 and \".\" in node and prefix != node else node\n            groups.setdefault(key, []).append(node)\n        for key, members in groups.items():\n            leg = {\"depth\": depth, \"filter\": key, \"id\": f\"depth-{depth}-{key}\", \"nodes\": members}\n            (composites if mode == \"all\" and depth == 4 else legs).append(leg)\n    return {\"requested_depth\": mode, \"node_filter\": prefix or \"none\", \"legs\": legs,\n            \"composites\": composites, \"expected_nodes\": expected}\n\n\nif __name__ == \"__main__\":\n    print(json.dumps(plan(*sys.argv[1:]), separators=(\",\", \":\")))\n","new_string":"#!/usr/bin/env python3\n\"\"\"Plan independent node legs and the current-run leaf dependency wave.\"\"\"\nimport itertools\nimport json\nimport re\nimport sys\n\n\ndef nodes(depth):\n    return [\"R\"] if depth == 0 else [\".\".join(bits) for bits in itertools.product(\"12\", repeat=depth)]\n\n\ndef focused(node, prefix):\n    return not prefix or prefix == \"R\" or node == prefix or node.startswith(prefix + \".\")\n\n\ndef plan(mode, prefix=\"\"):\n    if mode not in [str(depth) for depth in range(6)] + [\"all\"]:\n        raise ValueError(\"depth must be 0 through 5, or all\")\n    if prefix and not re.fullmatch(r\"R|[12](\\.[12]){0,4}\", prefix):\n        raise ValueError(\"invalid binary-tree node filter\")\n    levels = list(range(5, -1, -1)) if mode == \"all\" else [int(mode)]\n    expected = [node for depth in levels for node in nodes(depth) if focused(node, prefix)]\n    if not expected:\n        raise ValueError(\"the filter selects no node at the requested depth\")\n    legs, composites = [], []\n    for depth in levels:\n        selected = [node for node in nodes(depth) if focused(node, prefix)]\n        groups = {}\n        for node in selected:\n            key = node.rsplit(\".\", 1)[0] if depth == 5 and \".\" in node and prefix != node else node\n            groups.setdefault(key, []).append(node)\n        for key, members in groups.items():\n            leg = {\"depth\": depth, \"filter\": key, \"id\": f\"depth-{depth}-{key}\", \"nodes\": members}\n            (composites if mode == \"all\" and depth == 4 else legs).append(leg)\n    return {\"requested_depth\": mode, \"node_filter\": prefix or \"none\", \"legs\": legs,\n            \"composites\": composites, \"expected_nodes\": expected}\n\n\nif __name__ == \"__main__\":\n    print(json.dumps(plan(*sys.argv[1:]), separators=(\",\", \":\")))\n","old":"substitution_rules\n  id learned_program_plan_rules\n","oldString":"substitution_rules\n  id learned_program_plan_rules\n","old_str":"substitution_rules\n  id learned_program_plan_rules\n","old_string":"substitution_rules\n  id learned_program_plan_rules\n","path":"experiments/issue_1028_agent_cli_ladder/plan-legs.py"}
+>> bash {"command":"sha256sum -- experiments/issue_1028_agent_cli_ladder/plan-legs.py"}
+   08fef04ec774a5a488a0a70a27705a148e621c7aca42b18057f7060def4f7cfa  experiments/issue_1028_agent_cli_ladder/plan-legs.py
+   
+== answer ==
+Replaced `substitution_rules
+  id learned_program_plan_rules
+` with `#!/usr/bin/env python3
+"""Plan independent node legs and the current-run leaf dependency wave."""
+import itertools
+import json
+import re
+import sys
+
+
+def nodes(depth):
+    return ["R"] if depth == 0 else [".".join(bits) for bits in itertools.product("12", repeat=depth)]
+
+
+def focused(node, prefix):
+    return not prefix or prefix == "R" or node == prefix or node.startswith(prefix + ".")
+
+
+def plan(mode, prefix=""):
+    if mode not in [str(depth) for depth in range(6)] + ["all"]:
+        raise ValueError("depth must be 0 through 5, or all")
+    if prefix and not re.fullmatch(r"R|[12](\.[12]){0,4}", prefix):
+        raise ValueError("invalid binary-tree node filter")
+    levels = list(range(5, -1, -1)) if mode == "all" else [int(mode)]
+    expected = [node for depth in levels for node in nodes(depth) if focused(node, prefix)]
+    if not expected:
+        raise ValueError("the filter selects no node at the requested depth")
+    legs, composites = [], []
+    for depth in levels:
+        selected = [node for node in nodes(depth) if focused(node, prefix)]
+        groups = {}
+        for node in selected:
+            key = node.rsplit(".", 1)[0] if depth == 5 and "." in node and prefix != node else node
+            groups.setdefault(key, []).append(node)
+        for key, members in groups.items():
+            leg = {"depth": depth, "filter": key, "id": f"depth-{depth}-{key}", "nodes": members}
+            (composites if mode == "all" and depth == 4 else legs).append(leg)
+    return {"requested_depth": mode, "node_filter": prefix or "none", "legs": legs,
+            "composites": composites, "expected_nodes": expected}
+
+
+if __name__ == "__main__":
+    print(json.dumps(plan(*sys.argv[1:]), separators=(",", ":")))
+` in `experiments/issue_1028_agent_cli_ladder/plan-legs.py` and observed the result.

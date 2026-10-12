@@ -1,0 +1,30 @@
+Q649
+  aliases
+    en ("Moscow, Russia" "Moskva Federal City, Russia" "Moscow, USSR" "Moskva, Russia" "City of Moscow" "Moscow, Russian Federation" "Moscow, Soviet Union" "Moscow, Russian SFSR" "Москва" "Moskva, Rossiya" Mosky "Moskovĭ" Moskvi Moskve "Moskvë")
+    ru ("Первопрестольная" "Порт пяти морей" "Москва (город)" "Москва, Россия" "Москва (Россия)" "Третий Рим" "Нерезиновая" "МСК" "Златоглавая" "Белокаменная")
+  id Q649
+  labels
+    en Moscow
+    hi "मास्को"
+    ru "Москва"
+    zh "莫斯科"
+    zh-hans "莫斯科"
+  sitelinks
+    enwiki
+      site enwiki
+      title Moscow
+    hiwiki
+      site hiwiki
+      title "मास्को"
+    ruwiki
+      site ruwiki
+      title "Москва"
+    zhwiki
+      site zhwiki
+      title "莫斯科"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

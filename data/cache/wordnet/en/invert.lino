@@ -1,0 +1,23 @@
+language en
+lemma invert
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "make an inversion (in a musical composition)"
+    examples ("here the theme is inverted")
+    id oewn-00387824-v
+    partOfSpeech v
+  entry
+    definition "reverse the position, order, relation, or condition of"
+    examples ("when forming a question, invert the subject and the verb")
+    id oewn-00387636-v
+    partOfSpeech v
+    synonyms (reverse)
+  entry
+    definition "turn inside out or upside down"
+    id oewn-00387386-v
+    partOfSpeech v
+    synonyms ("turn back" reverse)
+source "oewn:2024"

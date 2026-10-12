@@ -2,68 +2,88 @@ self_ast_census
   target src/agentic_coding/conversation_recall.rs
   language rust
   fidelity full_ast
-  byte_len 4491
-  line_count 91
-  content_id source_module_969743f85c5baa85
-  symbol_count 2
+  byte_len 8177
+  line_count 194
+  content_id source_module_dd882ca3526650ca
+  symbol_count 4
   symbols
-    enum SharedSolverStep 36 44
-    function plan_shared_solver_step 46 91
+    function plan_verified_recipe_step 37 50
+    enum SharedSolverStep 52 60
+    function plan_shared_solver_step 62 135
+    function repeated_owned_operation_failure 137 194
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 1696
-    named_node_count 374
-    distinct_node_kinds 49
+    total_link_count 4623
+    named_node_count 975
+    distinct_node_kinds 67
     node_kinds
-      arguments 17
-      array_type 2
-      block 8
-      call_expression 17
-      crate 3
-      doc_comment 32
-      else_clause 2
+      arguments 67
+      array_type 5
+      binary_expression 9
+      block 25
+      boolean_literal 1
+      call_expression 67
+      closure_expression 7
+      closure_parameters 7
+      continue_expression 7
+      crate 5
+      doc_comment 33
+      else_clause 3
       enum_item 1
       enum_variant 3
       enum_variant_list 1
       escape_sequence 14
-      expression_statement 5
-      field_expression 9
-      field_identifier 9
-      function_item 1
-      identifier 74
-      if_expression 3
+      expression_statement 31
+      field_expression 57
+      field_identifier 57
+      for_expression 1
+      function_item 3
+      generic_function 1
+      generic_type 3
+      identifier 234
+      if_expression 13
+      index_expression 1
       inner_doc_comment_marker 10
-      let_chain 1
-      let_condition 1
-      let_declaration 2
-      line_comment 38
-      macro_invocation 1
+      integer_literal 3
+      let_chain 2
+      let_condition 4
+      let_declaration 13
+      line_comment 39
+      macro_invocation 3
       match_arm 4
       match_block 1
       match_expression 1
       match_pattern 4
+      mutable_specifier 2
       or_pattern 1
       ordered_field_declaration_list 1
-      outer_doc_comment_marker 22
-      parameter 2
-      parameters 1
-      primitive_type 1
-      reference_expression 5
-      reference_type 3
-      return_expression 1
-      scoped_identifier 19
+      outer_doc_comment_marker 23
+      parameter 7
+      parameters 3
+      parenthesized_expression 1
+      primitive_type 3
+      range_expression 1
+      raw_string_literal 1
+      reference_expression 18
+      reference_type 9
+      return_expression 6
+      scoped_identifier 39
+      scoped_type_identifier 2
       scoped_use_list 1
       source_file 1
-      string_content 21
-      string_literal 7
-      super 5
-      token_tree 6
-      tuple_pattern 1
-      tuple_struct_pattern 1
-      type_identifier 4
+      string_content 33
+      string_literal 18
+      super 9
+      token_tree 17
+      try_expression 1
+      tuple_pattern 3
+      tuple_struct_pattern 7
+      type_arguments 4
+      type_identifier 13
+      unary_expression 3
       use_declaration 4
       use_list 1
-      visibility_modifier 2
+      visibility_modifier 3

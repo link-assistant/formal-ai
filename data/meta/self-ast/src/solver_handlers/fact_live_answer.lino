@@ -1,0 +1,26 @@
+self_ast_census
+  target src/solver_handlers/fact_live_answer.rs
+  language rust
+  fidelity signature
+  byte_len 12288
+  line_count 326
+  content_id source_module_c26700c48fee6514
+  symbol_count 17
+  symbols
+    const MAX_SUBJECT_WORDS 41 41
+    const LIVE_FACT_CACHE_DIR_ENV 43 43
+    const LIVE_FACT_INTENT 45 45
+    const EXPLANATION_INTENT 48 48
+    struct LiveFactQuestion 54 57
+    function is_property_id 60 63
+    function question_stop_words 66 70
+    function remove_sequence 73 90
+    function content_words 95 106
+    function live_fact_question 114 129
+    function try_fact_live_answer 135 197
+    function explanation_concept 204 214
+    function try_explanation_research 221 271
+    function try_fact_lookup_with_client 277 290
+    function explanation_fallback 294 300
+    function explanation_fallback 304 310
+    function try_fact_lookup_with_offline 317 326

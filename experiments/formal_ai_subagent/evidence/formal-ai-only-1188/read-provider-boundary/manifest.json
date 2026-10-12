@@ -1,0 +1,165 @@
+{
+  "schema": "read-provider-boundary-evidence/v1",
+  "id": "T3555",
+  "ownedPaths": [
+    "experiments/js_dogfood/drive.mjs",
+    "rust/tests/web/general-plan-event-append.test.mjs",
+    "rust/tests/web/observed-auxiliary-contracts.test.mjs",
+    "rust/tests/web/read-provider-boundary.test.mjs",
+    "changelog.d/20261010_160000_read-provider-boundary.md"
+  ],
+  "identities": [
+    {
+      "path": "experiments/js_dogfood/drive.mjs",
+      "sha256": "6285382ae5cd12fa47545b51fb88566c82c6afa56427d938d51dd74c89d8a92d",
+      "bytes": 11523,
+      "lines": 236
+    },
+    {
+      "path": "rust/tests/web/general-plan-event-append.test.mjs",
+      "sha256": "ff6f1f2d1591696d4194990e8dc94a006d61bbabbd30c276dc2a0e24f236d2eb",
+      "bytes": 10649,
+      "lines": 191
+    },
+    {
+      "path": "rust/tests/web/observed-auxiliary-contracts.test.mjs",
+      "sha256": "ac020508802dc11948ef0e64ea60241e77106c65d664280ea30afd7885572e64",
+      "bytes": 8479,
+      "lines": 130
+    },
+    {
+      "path": "rust/tests/web/read-provider-boundary.test.mjs",
+      "sha256": "2dfed6ca1eb0462e504fcaaa9438bf0f2278f23d4b8f763a912a7ab52adc5147",
+      "bytes": 5552,
+      "lines": 95
+    },
+    {
+      "path": "changelog.d/20261010_160000_read-provider-boundary.md",
+      "sha256": "f4d03cd6fae22a728bedc89a2758c52ec2d68f1c653a59c543c6d27824762d62",
+      "bytes": 286,
+      "lines": 1
+    }
+  ],
+  "originalTaskUtf8Bytes": 736,
+  "originalSuppliedPatchBytes": 0,
+  "reviewedPatchContextUtf8": 89040,
+  "authoredRepositoryEffectsBeforeSeal": 6,
+  "autonomousSuccessfulFeatureWrites": 0,
+  "manualSourceWrites": 0,
+  "sealEffects": {
+    "neutralEvidenceCopies": 17,
+    "authoredRepositoryDocuments": 2,
+    "neutralManifest": 1
+  },
+  "baseline": {
+    "originalTests": "12/17;5failed",
+    "CI": "raw/d70e-tier2-original-ci.log",
+    "localRawLog": "Initial read-only local rerun12/17 observed in tool output; separate local file not captured"
+  },
+  "validation": {
+    "originalUnchangedAssertions": "17/17",
+    "focusedFirst": "65/65",
+    "fullClosest": "82/82",
+    "skipped": 0,
+    "consumerChanges": 0,
+    "nativeChanges": 0,
+    "sourceJSON": "actual filesystem bytes remain data; only provider-owned outer metadata declares status/completeness"
+  },
+  "originalBroadRetry": {
+    "id": "T3554",
+    "samePrompt": true,
+    "result": "Gap/MissingContract",
+    "tools": 0,
+    "effects": 0,
+    "g112": "Open; no autonomous general mechanism implementation"
+  },
+  "testScratchPhysicalEffects": "Uninstrumented isolated temporary test fixtures; excluded from authored FA invocation tally",
+  "diff": "23\t7\texperiments/js_dogfood/drive.mjs\n16\t5\trust/tests/web/general-plan-event-append.test.mjs\n5\t3\trust/tests/web/observed-auxiliary-contracts.test.mjs\n",
+  "files": [
+    {
+      "path": "raw/T3551-request.json",
+      "sha256": "84dba994a654dfece8d19ebb456b532c3e27179cf21b4af5ece011bcb7c4bdb0",
+      "bytes": 1378
+    },
+    {
+      "path": "raw/T3551-transcript.json",
+      "sha256": "225c830fe5dda9741d211018de0aa728cc195d9e68adc5e6abe2eaed33b305df",
+      "bytes": 3326
+    },
+    {
+      "path": "raw/T3551-transcript.log",
+      "sha256": "225c830fe5dda9741d211018de0aa728cc195d9e68adc5e6abe2eaed33b305df",
+      "bytes": 3326
+    },
+    {
+      "path": "raw/T3551-audit.json",
+      "sha256": "4ba23059c04c677b1f28257ca5b8f1845767c397d7562ef5776c30853c4e3937",
+      "bytes": 2180
+    },
+    {
+      "path": "raw/T3552-request.json",
+      "sha256": "8a0df4ce5600a055c16ad57b14de765f7f9d37fb50934f32f97c4b328ef985d7",
+      "bytes": 68647
+    },
+    {
+      "path": "raw/T3552-transcript.json",
+      "sha256": "045ec3c76f325fc9262a61596e8a0c0a9aa365cf5e18afeac18a5d65b22a80b1",
+      "bytes": 1629
+    },
+    {
+      "path": "raw/T3552-transcript.log",
+      "sha256": "045ec3c76f325fc9262a61596e8a0c0a9aa365cf5e18afeac18a5d65b22a80b1",
+      "bytes": 1629
+    },
+    {
+      "path": "raw/T3552-audit.json",
+      "sha256": "79c9fe4fbacd5eb11fad8815eabed8e035a1e591b2e67a58048e46c3856e5042",
+      "bytes": 993
+    },
+    {
+      "path": "raw/T3553-request.json",
+      "sha256": "94327d1334fc6794888a8b4924aab36b8858bfdcf8c59ae970890a29f4c88095",
+      "bytes": 25117
+    },
+    {
+      "path": "raw/T3553-transcript.json",
+      "sha256": "25fc0d878ca4605171076539fc5a9ded56f6d8b55abb5cb780fb9e6b9889f7ab",
+      "bytes": 2371
+    },
+    {
+      "path": "raw/T3553-transcript.log",
+      "sha256": "25fc0d878ca4605171076539fc5a9ded56f6d8b55abb5cb780fb9e6b9889f7ab",
+      "bytes": 2371
+    },
+    {
+      "path": "raw/T3553-closest.log",
+      "sha256": "36a13aed10586f94fa63faebad994ddaa00132bd4a548289af401830b88d4970",
+      "bytes": 16987
+    },
+    {
+      "path": "raw/T3554-request.json",
+      "sha256": "07b00c6c6aad46804c30490845dffc06a1390a87421a943e3939057f3e6b5ebf",
+      "bytes": 1457
+    },
+    {
+      "path": "raw/T3554-transcript.json",
+      "sha256": "225c830fe5dda9741d211018de0aa728cc195d9e68adc5e6abe2eaed33b305df",
+      "bytes": 3326
+    },
+    {
+      "path": "raw/T3554-transcript.log",
+      "sha256": "225c830fe5dda9741d211018de0aa728cc195d9e68adc5e6abe2eaed33b305df",
+      "bytes": 3326
+    },
+    {
+      "path": "raw/T3554-audit.json",
+      "sha256": "3322f321fab4fd38247b27f67b6120959224028476ef25b9c0c43d0d70dd129a",
+      "bytes": 222
+    },
+    {
+      "path": "raw/d70e-tier2-original-ci.log",
+      "sha256": "68e67187d66f4774276c51ce42105c910ba1f2809d21a803fcd358c7abf4e0ea",
+      "bytes": 367983
+    }
+  ]
+}

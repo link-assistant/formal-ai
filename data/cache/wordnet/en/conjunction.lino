@@ -1,0 +1,37 @@
+language en
+lemma conjunction
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the temporal property of two things happening at the same time"
+    examples ("the interval determining the coincidence gate is adjustable")
+    id oewn-05055452-n
+    partOfSpeech n
+    synonyms (concurrence coincidence co-occurrence)
+  entry
+    definition "the state of being joined together"
+    id oewn-14444358-n
+    partOfSpeech n
+    synonyms (junction conjugation colligation)
+  entry
+    definition "an uninflected function word that serves to conjoin words or phrases or clauses or sentences"
+    id oewn-06336819-n
+    partOfSpeech n
+    synonyms (conjunctive connective continuative)
+  entry
+    definition "the grammatical relation between linguistic units (words or phrases or clauses) that are connected by a conjunction"
+    id oewn-13821604-n
+    partOfSpeech n
+  entry
+    definition "(astronomy) apparent meeting or passing of two or more celestial bodies in the same degree of the zodiac"
+    id oewn-07429767-n
+    partOfSpeech n
+    synonyms (alignment)
+  entry
+    definition "something that joins or connects"
+    id oewn-03611128-n
+    partOfSpeech n
+    synonyms (junction)
+source "oewn:2024"

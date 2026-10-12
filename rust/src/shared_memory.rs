@@ -134,14 +134,14 @@ pub fn resolve_memory_path_from(
 pub fn shared_memory_path() -> PathBuf {
     let configured = std::env::var_os(MEMORY_PATH_ENV);
     let home = std::env::var_os("HOME");
-    // `resolve_memory_path_from` stays pure -- `tests/issue_756.rs` pins the
+    // `resolve_memory_path_from` stays pure -- `tests/shared_memory_path.rs` pins the
     // exact path it derives from a given HOME -- so the test-binary fallback is
     // applied here, where the environment is already being read.
     //
     // Only the *unmanaged* default is redirected. A test that has already
     // pointed `FORMAL_AI_MEMORY_PATH` or `HOME` somewhere of its own has said
     // where it wants the store, and overriding that would break tests doing
-    // exactly the right thing (`tests/issue_756.rs` moves `HOME` to a temporary
+    // exactly the right thing (`tests/shared_memory_path.rs` moves `HOME` to a temporary
     // directory and asserts the store appears under it).
     if configured
         .as_deref()
@@ -162,7 +162,7 @@ pub fn shared_memory_path() -> PathBuf {
 /// Whether `HOME` has been pointed at a scratch directory.
 ///
 /// A test that relocates `HOME` puts it under the system temporary directory
-/// (`tests/issue_756.rs` uses `std::env::temp_dir().join(...)`), while a real
+/// (`tests/shared_memory_path.rs` uses `std::env::temp_dir().join(...)`), while a real
 /// home directory is never there. That is the distinction the redirect needs:
 /// a test which has already said where it wants the store must keep it, and
 /// only the unmanaged default gets moved.

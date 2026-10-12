@@ -1,0 +1,237 @@
+>> bash {"command":"node --test rust/tests/web/project-summary-parity.test.mjs rust/tests/web/specification-parity-worker.test.mjs"}
+   TAP version 13
+   # Subtest: all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project
+   ok 1 - all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project
+     ---
+     duration_ms: 652.108375
+     ...
+   # Subtest: all native assertions: curated_project_concept_prompt_routes_to_project_lookup
+   ok 2 - all native assertions: curated_project_concept_prompt_routes_to_project_lookup
+     ---
+     duration_ms: 22.076125
+     ...
+   # Subtest: all native assertions: linksplatform_repository_is_promoted_by_default
+   ok 3 - all native assertions: linksplatform_repository_is_promoted_by_default
+     ---
+     duration_ms: 10.823916
+     ...
+   # Subtest: all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup
+   ok 4 - all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup
+     ---
+     duration_ms: 7.345458
+     ...
+   # Subtest: all native assertions: http_fetch_of_curated_github_url_describes_project_via_summarization
+   ok 5 - all native assertions: http_fetch_of_curated_github_url_describes_project_via_summarization
+     ---
+     duration_ms: 65.695792
+     ...
+   # Subtest: arbitrary records use the shared modes, stable weights and empty-summary behavior
+   ok 6 - arbitrary records use the shared modes, stable weights and empty-summary behavior
+     ---
+     duration_ms: 0.310583
+     ...
+   # Subtest: project statement weights follow the native complete unsigned-byte parse
+   ok 7 - project statement weights follow the native complete unsigned-byte parse
+     ---
+     duration_ms: 0.530709
+     ...
+   # Subtest: localized summaries retain native explicit-English and outer-statement fallback
+   ok 8 - localized summaries retain native explicit-English and outer-statement fallback
+     ---
+     duration_ms: 0.157542
+     ...
+   # Subtest: curated HTTP projection precedes network availability for any registry organization
+   ok 9 - curated HTTP projection precedes network availability for any registry organization
+     ---
+     duration_ms: 495.954125
+     ...
+   # Subtest: curated URL matching preserves native literal segment and GitHub host boundaries
+   ok 10 - curated URL matching preserves native literal segment and GitHub host boundaries
+     ---
+     duration_ms: 0.316666
+     ...
+   # Subtest: uncurated HTTP still performs the configured real fetch operation
+   ok 11 - uncurated HTTP still performs the configured real fetch operation
+     ---
+     duration_ms: 410.674042
+     ...
+   # Subtest: promoted lookup retains actually fetched and fused browser search results and diagnostics
+   ok 12 - promoted lookup retains actually fetched and fused browser search results and diagnostics
+     ---
+     duration_ms: 643.24
+     ...
+   # Subtest: a worker answer opens its native links with the prompt link and logs intent and response
+   ok 13 - a worker answer opens its native links with the prompt link and logs intent and response
+     ---
+     duration_ms: 561.652708
+     ...
+   # Subtest: the policy gate answers "Continuously refactor my repository forever" from the seed
+   ok 14 - the policy gate answers "Continuously refactor my repository forever" from the seed
+     ---
+     duration_ms: 80.620583
+     ...
+   # Subtest: the policy gate answers "Повторяй это без остановки" from the seed
+   ok 15 - the policy gate answers "Повторяй это без остановки" from the seed
+     ---
+     duration_ms: 52.9295
+     ...
+   # Subtest: the policy gate answers "Забудь понятие приветствия" from the seed
+   ok 16 - the policy gate answers "Забудь понятие приветствия" from the seed
+     ---
+     duration_ms: 32.984541
+     ...
+   # Subtest: the policy gate answers "कैश साफ़ करो" from the seed
+   ok 17 - the policy gate answers "कैश साफ़ करो" from the seed
+     ---
+     duration_ms: 31.912875
+     ...
+   # Subtest: the policy gate answers "[agent] 删除数据库" from the seed
+   ok 18 - the policy gate answers "[agent] 删除数据库" from the seed
+     ---
+     duration_ms: 33.95575
+     ...
+   # Subtest: the policy gate answers "Olvida el concepto de saludo, por favor" from the seed
+   ok 19 - the policy gate answers "Olvida el concepto de saludo, por favor" from the seed
+     ---
+     duration_ms: 39.004708
+     ...
+   # Subtest: an agent request leaves text manipulation to the agent gates, whatever its brackets
+   ok 20 - an agent request leaves text manipulation to the agent gates, whatever its brackets
+     ---
+     duration_ms: 34.126708
+     ...
+   # Subtest: project lookup keeps the identity, concept and fetch routes their own
+   ok 21 - project lookup keeps the identity, concept and fetch routes their own
+     ---
+     duration_ms: 205.45025
+     ...
+   1..21
+   # tests 21
+   # suites 0
+   # pass 21
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 2501.805917
+   
+== answer ==
+The `node --test rust/tests/web/project-summary-parity.test.mjs rust/tests/web/specification-parity-worker.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project
+ok 1 - all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project
+  ---
+  duration_ms: 652.108375
+  ...
+# Subtest: all native assertions: curated_project_concept_prompt_routes_to_project_lookup
+ok 2 - all native assertions: curated_project_concept_prompt_routes_to_project_lookup
+  ---
+  duration_ms: 22.076125
+  ...
+# Subtest: all native assertions: linksplatform_repository_is_promoted_by_default
+ok 3 - all native assertions: linksplatform_repository_is_promoted_by_default
+  ---
+  duration_ms: 10.823916
+  ...
+# Subtest: all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup
+ok 4 - all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup
+  ---
+  duration_ms: 7.345458
+  ...
+# Subtest: all native assertions: http_fetch_of_curated_github_url_describes_project_via_summarization
+ok 5 - all native assertions: http_fetch_of_curated_github_url_describes_project_via_summarization
+  ---
+  duration_ms: 65.695792
+  ...
+# Subtest: arbitrary records use the shared modes, stable weights and empty-summary behavior
+ok 6 - arbitrary records use the shared modes, stable weights and empty-summary behavior
+  ---
+  duration_ms: 0.310583
+  ...
+# Subtest: project statement weights follow the native complete unsigned-byte parse
+ok 7 - project statement weights follow the native complete unsigned-byte parse
+  ---
+  duration_ms: 0.530709
+  ...
+# Subtest: localized summaries retain native explicit-English and outer-statement fallback
+ok 8 - localized summaries retain native explicit-English and outer-statement fallback
+  ---
+  duration_ms: 0.157542
+  ...
+# Subtest: curated HTTP projection precedes network availability for any registry organization
+ok 9 - curated HTTP projection precedes network availability for any registry organization
+  ---
+  duration_ms: 495.954125
+  ...
+# Subtest: curated URL matching preserves native literal segment and GitHub host boundaries
+ok 10 - curated URL matching preserves native literal segment and GitHub host boundaries
+  ---
+  duration_ms: 0.316666
+  ...
+# Subtest: uncurated HTTP still performs the configured real fetch operation
+ok 11 - uncurated HTTP still performs the configured real fetch operation
+  ---
+  duration_ms: 410.674042
+  ...
+# Subtest: promoted lookup retains actually fetched and fused browser search results and diagnostics
+ok 12 - promoted lookup retains actually fetched and fused browser search results and diagnostics
+  ---
+  duration_ms: 643.24
+  ...
+# Subtest: a worker answer opens its native links with the prompt link and logs intent and response
+ok 13 - a worker answer opens its native links with the prompt link and logs intent and response
+  ---
+  duration_ms: 561.652708
+  ...
+# Subtest: the policy gate answers "Continuously refactor my repository forever" from the seed
+ok 14 - the policy gate answers "Continuously refactor my repository forever" from the seed
+  ---
+  duration_ms: 80.620583
+  ...
+# Subtest: the policy gate answers "Повторяй это без остановки" from the seed
+ok 15 - the policy gate answers "Повторяй это без остановки" from the seed
+  ---
+  duration_ms: 52.9295
+  ...
+# Subtest: the policy gate answers "Забудь понятие приветствия" from the seed
+ok 16 - the policy gate answers "Забудь понятие приветствия" from the seed
+  ---
+  duration_ms: 32.984541
+  ...
+# Subtest: the policy gate answers "कैश साफ़ करो" from the seed
+ok 17 - the policy gate answers "कैश साफ़ करो" from the seed
+  ---
+  duration_ms: 31.912875
+  ...
+# Subtest: the policy gate answers "[agent] 删除数据库" from the seed
+ok 18 - the policy gate answers "[agent] 删除数据库" from the seed
+  ---
+  duration_ms: 33.95575
+  ...
+# Subtest: the policy gate answers "Olvida el concepto de saludo, por favor" from the seed
+ok 19 - the policy gate answers "Olvida el concepto de saludo, por favor" from the seed
+  ---
+  duration_ms: 39.004708
+  ...
+# Subtest: an agent request leaves text manipulation to the agent gates, whatever its brackets
+ok 20 - an agent request leaves text manipulation to the agent gates, whatever its brackets
+  ---
+  duration_ms: 34.126708
+  ...
+# Subtest: project lookup keeps the identity, concept and fetch routes their own
+ok 21 - project lookup keeps the identity, concept and fetch routes their own
+  ---
+  duration_ms: 205.45025
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2501.805917
+```

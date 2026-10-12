@@ -1,0 +1,10 @@
+>> bash {"command":"node scripts/check-ci-speed.mjs"}
+   Output: CI speed: 89 of 100 jobs in 38 workflows meet the 30-minute limit and 11 carry a recorded exception; long jobs start first; test shards are planned longest-first.
+   
+   Exit Code: 0
+== answer ==
+The `node scripts/check-ci-speed.mjs` command completed. Output:
+
+```text
+CI speed: 89 of 100 jobs in 38 workflows meet the 30-minute limit and 11 carry a recorded exception; long jobs start first; test shards are planned longest-first.
+```

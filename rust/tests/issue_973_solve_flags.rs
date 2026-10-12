@@ -22,6 +22,8 @@ use std::path::{Path, PathBuf};
 /// it shows the invocation this issue forbids going forward.
 const HISTORY_PREFIXES: &[&str] = &[
     "docs/case-studies/",
+    // Released changelog sections CHANGELOG.md rolled into its archive.
+    "docs/changelog/",
     "dev/log/",
     "experiments/",
     "coverage/",

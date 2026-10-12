@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "男孩"
+        },
+        "es": {
+          "language": "es",
+          "value": "niño"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "年幼雄性人类"
+        },
+        "es": {
+          "language": "es",
+          "value": "ser humano de género masculino y poca edad"
         }
       },
       "aliases": {
@@ -50,6 +58,16 @@
           {
             "language": "ru",
             "value": "парень"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "chico"
+          },
+          {
+            "language": "es",
+            "value": "muchacho"
           }
         ]
       }

@@ -1,0 +1,1 @@
+Witness each declared and used native string lifetime before interpreting unchanged test records. Preserve every original ordered assertion, source identity and effect/profile refusal; unknown or malformed generic declarations reject the whole case. Actual seven nearest controls and full existing reader suites pass; no native compilation claim.

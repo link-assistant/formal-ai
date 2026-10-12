@@ -1,0 +1,65 @@
+language en
+lemma standard
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "conforming to or constituting a standard of measurement or value; or of the usual or regularized or accepted kind"
+    examples ("windows of standard width" "standard sizes" "the standard fixtures" "standard brands" "standard operating procedure")
+    id oewn-02303673-a
+    partOfSpeech a
+  entry
+    definition "established or well-known or widely recognized as a model of authority or excellence"
+    examples ("a standard reference work")
+    id oewn-02302509-a
+    partOfSpeech a
+  entry
+    definition "conforming to the established language usage of educated native speakers"
+    examples ("standard (American) English" "received standard English is sometimes called the King's English")
+    id oewn-02305339-a
+    partOfSpeech a
+    synonyms (received)
+  entry
+    definition "a basis for comparison; a reference point against which other things can be evaluated"
+    examples ("the schools comply with federal standards" "they set the measure for all subsequent work")
+    id oewn-07275291-n
+    partOfSpeech n
+    synonyms (criterion measure touchstone)
+  entry
+    definition "the ideal in terms of which something can be judged"
+    examples ("they live by the standards of their community")
+    id oewn-05933552-n
+    partOfSpeech n
+    synonyms (criterion)
+  entry
+    definition "a board measure = 1980 board feet"
+    id oewn-13639233-n
+    partOfSpeech n
+  entry
+    definition "the value behind the money in a monetary system"
+    id oewn-13394387-n
+    partOfSpeech n
+    synonyms ("monetary standard")
+  entry
+    definition "an upright pole or beam (especially one used as a support)"
+    examples ("distance was marked by standards every mile" "lamps supported on standards provided illumination")
+    id oewn-04308380-n
+    partOfSpeech n
+  entry
+    definition "any distinctive flag"
+    id oewn-04308278-n
+    partOfSpeech n
+    synonyms (banner)
+  entry
+    definition "commonly used or supplied"
+    examples ("standard procedure" "standard car equipment")
+    id oewn-00489512-s
+    partOfSpeech s
+  entry
+    definition "regularly and widely used or sold"
+    examples ("a standard size" "a stock item")
+    id oewn-01966886-s
+    partOfSpeech s
+    synonyms (stock)
+source "oewn:2024"

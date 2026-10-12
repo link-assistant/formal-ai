@@ -1,0 +1,1267 @@
+TAP version 13
+# Subtest: general_planner (rust/tests/unit/agentic-coding/agentic_general_planner.rs)
+    # Subtest: composes capability steps and verification (line 20)
+    ok 1 - composes capability steps and verification (line 20)
+      ---
+      duration_ms: 711.550375
+      ...
+    # Subtest: accepts three unpinned phrasings in two languages (line 40)
+    ok 2 - accepts three unpinned phrasings in two languages (line 40)
+      ---
+      duration_ms: 4.537625
+      ...
+    # Subtest: rejects unsafe, ambiguous, dot-directory and non-referential requests (lines 49, 55, 177)
+    ok 3 - rejects unsafe, ambiguous, dot-directory and non-referential requests (lines 49, 55, 177)
+      ---
+      duration_ms: 11.53525
+      ...
+    # Subtest: keeps exact multi-line and backticked payloads (lines 228, 244, 269)
+    ok 4 - keeps exact multi-line and backticked payloads (lines 228, 244, 269)
+      ---
+      duration_ms: 4.8495
+      ...
+    # Subtest: command stdout requests run the command (line 306)
+    ok 5 - command stdout requests run the command (line 306)
+      ---
+      duration_ms: 0.673583
+      ...
+    1..5
+ok 1 - general_planner (rust/tests/unit/agentic-coding/agentic_general_planner.rs)
+  ---
+  duration_ms: 952.995791
+  type: 'suite'
+  ...
+# Subtest: task_obligations (rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs)
+    # Subtest: two named files are two obligations, in order (line 93)
+    ok 1 - two named files are two obligations, in order (line 93)
+      ---
+      duration_ms: 13.542584
+      ...
+    # Subtest: a cue inside a clause opens no obligation (line 108)
+    ok 2 - a cue inside a clause opens no obligation (line 108)
+      ---
+      duration_ms: 5.80125
+      ...
+    # Subtest: a single artifact request is unchanged; Russian is recognised (lines 139, 152)
+    ok 3 - a single artifact request is unchanged; Russian is recognised (lines 139, 152)
+      ---
+      duration_ms: 8.178083
+      ...
+    # Subtest: gap answers carry the clause and its UTF-8 byte span
+    ok 4 - gap answers carry the clause and its UTF-8 byte span
+      ---
+      duration_ms: 0.278791
+      ...
+    # Subtest: the first open file obligation is observed first, with its byte span (line 121)
+    ok 5 - the first open file obligation is observed first, with its byte span (line 121)
+      ---
+      duration_ms: 18.612666
+      ...
+    # Subtest: split_once_checkable declines an atomic clause
+    ok 6 - split_once_checkable declines an atomic clause
+      ---
+      duration_ms: 0.59175
+      ...
+    1..6
+ok 2 - task_obligations (rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs)
+  ---
+  duration_ms: 47.404417
+  type: 'suite'
+  ...
+# Subtest: structured_edit (rust/tests/unit/agentic-coding/issue_1069_structural_edit.rs)
+    # Subtest: inserts into a matches! alternation (line 87)
+    ok 1 - inserts into a matches! alternation (line 87)
+      ---
+      duration_ms: 5.112875
+      ...
+    # Subtest: keeps the named array insertion (line 113)
+    ok 2 - keeps the named array insertion (line 113)
+      ---
+      duration_ms: 0.789625
+      ...
+    # Subtest: finds an unnamed list by its members; parenthesised lists (lines 129, 149)
+    ok 3 - finds an unnamed list by its members; parenthesised lists (lines 129, 149)
+      ---
+      duration_ms: 1.188959
+      ...
+    # Subtest: insertion is idempotent: the read that shows the value is the observation (line 165)
+    ok 4 - insertion is idempotent: the read that shows the value is the observation (line 165)
+      ---
+      duration_ms: 13.309541
+      ...
+    1..4
+ok 3 - structured_edit (rust/tests/unit/agentic-coding/issue_1069_structural_edit.rs)
+  ---
+  duration_ms: 20.601875
+  type: 'suite'
+  ...
+# Subtest: links_substitution_query (rust/tests/unit/issue_715_links_substitution_query.rs)
+    # Subtest: sides map to create, delete, update and read (lines 26-79)
+    ok 1 - sides map to create, delete, update and read (lines 26-79)
+      ---
+      duration_ms: 0.553083
+      ...
+    # Subtest: rendering round-trips and matches the canonical shorthands (lines 141, 167)
+    ok 2 - rendering round-trips and matches the canonical shorthands (lines 141, 167)
+      ---
+      duration_ms: 0.4965
+      ...
+    1..2
+ok 4 - links_substitution_query (rust/tests/unit/issue_715_links_substitution_query.rs)
+  ---
+  duration_ms: 1.117
+  type: 'suite'
+  ...
+# Subtest: program contract, CI workflow and command reroute
+    # Subtest: explicit_stdout reads every fixture case (rust/src/coding/program_contract.rs tests)
+    ok 1 - explicit_stdout reads every fixture case (rust/src/coding/program_contract.rs tests)
+      ---
+      duration_ms: 1.576458
+      ...
+    # Subtest: a Kotlin stdout contract becomes a verified recipe the reroute writes first
+    ok 2 - a Kotlin stdout contract becomes a verified recipe the reroute writes first
+      ---
+      duration_ms: 87.77775
+      ...
+    # Subtest: fill_workflow_versions rewrites stale pins (rust/tests/unit/issue_1168_latest_versions.rs line 354)
+    ok 3 - fill_workflow_versions rewrites stale pins (rust/tests/unit/issue_1168_latest_versions.rs line 354)
+      ---
+      duration_ms: 0.258125
+      ...
+    1..3
+ok 5 - program contract, CI workflow and command reroute
+  ---
+  duration_ms: 89.690833
+  type: 'suite'
+  ...
+# Subtest: workspace rewrites, read results and repair diagnostics
+    # Subtest: a word-scoped rewrite leaves longer identifiers alone
+    ok 1 - a word-scoped rewrite leaves longer identifiers alone
+      ---
+      duration_ms: 0.336834
+      ...
+    # Subtest: sourceFromReadResult decodes numbered read-tool output
+    ok 2 - sourceFromReadResult decodes numbered read-tool output
+      ---
+      duration_ms: 0.04825
+      ...
+    # Subtest: formalize_diagnostic reads file, line, code and message (rust/tests/unit/agentic-coding/issue_1185_error_repair_loop.rs)
+    ok 3 - formalize_diagnostic reads file, line, code and message (rust/tests/unit/agentic-coding/issue_1185_error_repair_loop.rs)
+      ---
+      duration_ms: 1.360667
+      ...
+    1..3
+ok 6 - workspace rewrites, read results and repair diagnostics
+  ---
+  duration_ms: 1.807875
+  type: 'suite'
+  ...
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 7 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 1303.952667
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+not ok 8 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 343.189875
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'export const previous = true;\n'
+    - "import { test } from 'node:test';\n" +
+    -   'const inventory = [];\n' +
+    -   "const actions = ['Copy source.mjs to target.mjs', 'Delete notes.tmp', 'Move a.mjs to b.mjs'];\n" +
+    -   '// When `input` arrives then `output` follows; this is source documentation.\n' +
+    -   '// task: words here belong to the payload.\n' +
+    -   '// Append this instruction to the end of src/rules.mjs.\n' +
+    -   '// retain these literal words, in JavaScript.\n'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: |-
+    import { test } from 'node:test';
+    const inventory = [];
+    const actions = ['Copy source.mjs to target.mjs', 'Delete notes.tmp', 'Move a.mjs to b.mjs'];
+    // When `input` arrives then `output` follows; this is source documentation.
+    // task: words here belong to the payload.
+    // Append this instruction to the end of src/rules.mjs.
+    // retain these literal words, in JavaScript.
+    
+  actual: |-
+    export const previous = true;
+    
+  operator: 'strictEqual'
+  stack: |-
+    observe (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:25:12)
+    async TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:49:3)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 9 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 40.653167
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 10 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 106.656042
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 11 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 223.908
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 12 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 3.559625
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 13 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 613.454083
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 14 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 191.232875
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 15 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 40.852834
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 16 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 1.131417
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 17 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 1.687041
+  ...
+# Subtest: a member the request quotes twice is inserted once (T180)
+    # Subtest: the ladder node prompt repeats the member in its result clause
+    ok 1 - the ladder node prompt repeats the member in its result clause
+      ---
+      duration_ms: 536.245167
+      ...
+    1..1
+ok 18 - a member the request quotes twice is inserted once (T180)
+  ---
+  duration_ms: 883.33775
+  type: 'suite'
+  ...
+# Subtest: setting a file's contents writes the file (G68, issue \#745)
+    # Subtest: set the contents of note.txt to hello
+    ok 1 - set the contents of note.txt to hello
+      ---
+      duration_ms: 194.54825
+      ...
+    # Subtest: pon el contenido de note.txt en hello
+    ok 2 - pon el contenido de note.txt en hello
+      ---
+      duration_ms: 431.387458
+      ...
+    1..2
+ok 19 - setting a file's contents writes the file (G68, issue \#745)
+  ---
+  duration_ms: 626.27275
+  type: 'suite'
+  ...
+# Subtest: a request that declares the file it writes creates it unread (T310)
+    # Subtest: a file noun before the path and the content after it write first, whatever the verb
+    ok 1 - a file noun before the path and the content after it write first, whatever the verb
+      ---
+      duration_ms: 1101.739625
+      ...
+    # Subtest: a destination ahead of the file noun keeps the read-first guard
+    ok 2 - a destination ahead of the file noun keeps the read-first guard
+      ---
+      duration_ms: 22.590208
+      ...
+    1..2
+ok 20 - a request that declares the file it writes creates it unread (T310)
+  ---
+  duration_ms: 1421.546458
+  type: 'suite'
+  ...
+# Subtest: an explicit grep runs as written; a search request is the workspace search (T311)
+    # Subtest: execute grep TODO note.txt is the command itself
+    ok 1 - execute grep TODO note.txt is the command itself
+      ---
+      duration_ms: 12.419625
+      ...
+    # Subtest: a local search request greps the workspace for the whole word
+    ok 2 - a local search request greps the workspace for the whole word
+      ---
+      duration_ms: 27.8425
+      ...
+    1..2
+ok 21 - an explicit grep runs as written; a search request is the workspace search (T311)
+  ---
+  duration_ms: 40.373375
+  type: 'suite'
+  ...
+# Subtest: an article after a place preposition is no directory (T312)
+    # Subtest: qué hay en la carpeta actual lists the current directory
+    ok 1 - qué hay en la carpeta actual lists the current directory
+      ---
+      duration_ms: 365.943709
+      ...
+    # Subtest: a named directory is still listed
+    ok 2 - a named directory is still listed
+      ---
+      duration_ms: 80.100167
+      ...
+    1..2
+ok 22 - an article after a place preposition is no directory (T312)
+  ---
+  duration_ms: 446.259042
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: an append keeps the file it appends to
+    # Subtest: `Append the line 'third line' to notes.txt.` adds one line instead of overwriting the file
+    ok 1 - `Append the line 'third line' to notes.txt.` adds one line instead of overwriting the file
+      ---
+      duration_ms: 643.967125
+      ...
+    # Subtest: a prepend puts the quoted line first
+    ok 2 - a prepend puts the quoted line first
+      ---
+      duration_ms: 28.919666
+      ...
+    # Subtest: a file without a final newline gains the line without one
+    ok 3 - a file without a final newline gains the line without one
+      ---
+      duration_ms: 28.898583
+      ...
+    # Subtest: appending to a missing file creates it with the line
+    ok 4 - appending to a missing file creates it with the line
+      ---
+      duration_ms: 19.54025
+      ...
+    # Subtest: the position words are seeded per language, not English-only
+    ok 5 - the position words are seeded per language, not English-only
+      ---
+      duration_ms: 41.370458
+      ...
+    1..5
+ok 23 - PR \#1188 dogfood: an append keeps the file it appends to
+  ---
+  duration_ms: 1106.387458
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a replacement edits only what it names
+    # Subtest: `smal` -> `small` fixes the word, not the `smal` inside `small`
+    ok 1 - `smal` -> `small` fixes the word, not the `smal` inside `small`
+      ---
+      duration_ms: 22.449417
+      ...
+    # Subtest: a single-quoted positional insert places the line after its anchor
+    ok 2 - a single-quoted positional insert places the line after its anchor
+      ---
+      duration_ms: 21.109166
+      ...
+    # Subtest: an anchor that occurs twice does not say where the line goes
+    ok 3 - an anchor that occurs twice does not say where the line goes
+      ---
+      duration_ms: 7.933084
+      ...
+    1..3
+ok 24 - PR \#1188 dogfood: a replacement edits only what it names
+  ---
+  duration_ms: 51.729375
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a removal takes out what it quotes
+    # Subtest: `Delete the line 'second line' from notes.txt.` removes that line
+    ok 1 - `Delete the line 'second line' from notes.txt.` removes that line
+      ---
+      duration_ms: 22.2755
+      ...
+    # Subtest: quoted text inside a line is removed from that line only
+    ok 2 - quoted text inside a line is removed from that line only
+      ---
+      duration_ms: 31.350416
+      ...
+    # Subtest: deleting a file is still a file deletion, not a text removal
+    ok 3 - deleting a file is still a file deletion, not a text removal
+      ---
+      duration_ms: 487.203209
+      ...
+    # Subtest: text found nowhere is reported, not written
+    ok 4 - text found nowhere is reported, not written
+      ---
+      duration_ms: 11.377958
+      ...
+    1..4
+ok 25 - PR \#1188 dogfood: a removal takes out what it quotes
+  ---
+  duration_ms: 552.412709
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: shell requests run what they name
+    # Subtest: `Run python3 greet.py.` runs the command without the sentence's full stop
+    ok 1 - `Run python3 greet.py.` runs the command without the sentence's full stop
+      ---
+      duration_ms: 16.89
+      ...
+    # Subtest: `Create a directory named src.` makes the directory as a verified recipe, not a listing
+    ok 2 - `Create a directory named src.` makes the directory as a verified recipe, not a listing
+      ---
+      duration_ms: 319.39975
+      ...
+    # Subtest: a commit carries the message the request quotes and pushes only where a remote exists
+    ok 3 - a commit carries the message the request quotes and pushes only where a remote exists
+      ---
+      duration_ms: 10.251417
+      ...
+    1..3
+ok 26 - PR \#1188 dogfood: shell requests run what they name
+  ---
+  duration_ms: 346.684125
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a filler word inside a cue phrase keeps the cue
+    # Subtest: Show me git status. runs git status
+    ok 1 - Show me git status. runs git status
+      ---
+      duration_ms: 4192.777792
+      ...
+    # Subtest: Show me the git log. runs git log
+    ok 2 - Show me the git log. runs git log
+      ---
+      duration_ms: 62.480917
+      ...
+    # Subtest: Покажи мне статус git runs git status
+    ok 3 - Покажи мне статус git runs git status
+      ---
+      duration_ms: 69.199958
+      ...
+    1..3
+ok 27 - PR \#1188 dogfood: a filler word inside a cue phrase keeps the cue
+  ---
+  duration_ms: 4324.608792
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a setting changes on the line that assigns it
+    # Subtest: `Change the value of "debug" to true in config.json.` writes a bare boolean
+    ok 1 - `Change the value of "debug" to true in config.json.` writes a bare boolean
+      ---
+      duration_ms: 20.816666
+      ...
+    # Subtest: a string value keeps the file's quoting
+    ok 2 - a string value keeps the file's quoting
+      ---
+      duration_ms: 21.798375
+      ...
+    # Subtest: a YAML key is found by its own separator
+    ok 3 - a YAML key is found by its own separator
+      ---
+      duration_ms: 19.455792
+      ...
+    1..3
+ok 28 - PR \#1188 dogfood: a setting changes on the line that assigns it
+  ---
+  duration_ms: 62.187125
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a named source file says which language to write
+    # Subtest: `Create hello.py that prints "Hello, World!" and run it.` writes hello.py and checks its output
+    ok 1 - `Create hello.py that prints "Hello, World!" and run it.` writes hello.py and checks its output
+      ---
+      duration_ms: 6.049584
+      ...
+    # Subtest: a file name no catalogued language saves as names no language
+    ok 2 - a file name no catalogued language saves as names no language
+      ---
+      duration_ms: 0.281041
+      ...
+    1..2
+ok 29 - PR \#1188 dogfood: a named source file says which language to write
+  ---
+  duration_ms: 6.484042
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a description of code is never written as a file's bytes
+    # Subtest: `Add a function multiply(a, b) to math.mjs …` keeps math.mjs and adds only the function
+    ok 1 - `Add a function multiply(a, b) to math.mjs …` keeps math.mjs and adds only the function
+      ---
+      duration_ms: 206.229542
+      ...
+    # Subtest: a request to author a function never writes a clause of itself as the file
+    ok 2 - a request to author a function never writes a clause of itself as the file
+      ---
+      duration_ms: 2.28875
+      ...
+    # Subtest: literal content still writes the file
+    ok 3 - literal content still writes the file
+      ---
+      duration_ms: 1.7865
+      ...
+    1..3
+ok 30 - PR \#1188 dogfood: a description of code is never written as a file's bytes
+  ---
+  duration_ms: 210.400125
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: "their sum" of two parameters reads both of them
+    # Subtest: `add(a, b) that returns their sum` is `a + b`, not `sum(a)`
+    ok 1 - `add(a, b) that returns their sum` is `a + b`, not `sum(a)`
+      ---
+      duration_ms: 795.977208
+      ...
+    # Subtest: `multiply(a, b) that returns a times b` is `a * b`: `a` is not read by `math`
+    ok 2 - `multiply(a, b) that returns a times b` is `a * b`: `a` is not read by `math`
+      ---
+      duration_ms: 23.361
+      ...
+    1..2
+ok 31 - PR \#1188 dogfood: "their sum" of two parameters reads both of them
+  ---
+  duration_ms: 819.428625
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a compacted ladder leaf does not rewrite the list it already changed
+    # Subtest: re-read after the summary envelope -> already present at once, never a second write
+    ok 1 - re-read after the summary envelope -> already present at once, never a second write
+      ---
+      duration_ms: 32.8105
+      ...
+    1..1
+ok 32 - PR \#1188 dogfood: a compacted ladder leaf does not rewrite the list it already changed
+  ---
+  duration_ms: 32.87425
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a synthesized function is written to the named file and called
+    # Subtest: write add.py -> check -> call with 2 and 3 -> report
+    ok 1 - write add.py -> check -> call with 2 and 3 -> report
+      ---
+      duration_ms: 1263.775333
+      ...
+    # Subtest: call arguments are the numbers and quoted literals after the last run verb
+    ok 2 - call arguments are the numbers and quoted literals after the last run verb
+      ---
+      duration_ms: 0.151291
+      ...
+    1..2
+ok 33 - PR \#1188 dogfood: a synthesized function is written to the named file and called
+  ---
+  duration_ms: 1264.073042
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a typo without its correction is corrected by discovery
+    # Subtest: `Fix the typo 'smal' in README.md.` -> small, from the seed vocabulary
+    ok 1 - `Fix the typo 'smal' in README.md.` -> small, from the seed vocabulary
+      ---
+      duration_ms: 164.232542
+      ...
+    # Subtest: the correction is the unique most frequent word one edit away, in the word's capitalisation
+    ok 2 - the correction is the unique most frequent word one edit away, in the word's capitalisation
+      ---
+      duration_ms: 8.831
+      ...
+    1..2
+ok 34 - PR \#1188 dogfood: a typo without its correction is corrected by discovery
+  ---
+  duration_ms: 173.139875
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: an unquoted line is grounded between its lead and the destination cue
+    # Subtest: Append the line third to notes.txt. appends third
+    ok 1 - Append the line third to notes.txt. appends third
+      ---
+      duration_ms: 13.448167
+      ...
+    # Subtest: Append the line go to bed to notes.txt. appends go to bed
+    ok 2 - Append the line go to bed to notes.txt. appends go to bed
+      ---
+      duration_ms: 12.719583
+      ...
+    # Subtest: Добавь строку третья в конец notes.txt appends третья
+    ok 3 - Добавь строку третья в конец notes.txt appends третья
+      ---
+      duration_ms: 12.618541
+      ...
+    # Subtest: without a line lead nothing is guessed and nothing is written
+    ok 4 - without a line lead nothing is guessed and nothing is written
+      ---
+      duration_ms: 73.123041
+      ...
+    1..4
+ok 35 - PR \#1188 dogfood: an unquoted line is grounded between its lead and the destination cue
+  ---
+  duration_ms: 112.006792
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: code and blank lines are stated in seeded words
+    # Subtest: a multi-line replacement written with \\n edits the function, never the whole file
+    ok 1 - a multi-line replacement written with \\n edits the function, never the whole file
+      ---
+      duration_ms: 14.09
+      ...
+    # Subtest: an appended empty line is stated as an empty line
+    ok 2 - an appended empty line is stated as an empty line
+      ---
+      duration_ms: 12.334083
+      ...
+    1..2
+ok 36 - PR \#1188 dogfood: code and blank lines are stated in seeded words
+  ---
+  duration_ms: 26.548084
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: cues inside a quoted payload do not steer routing
+    # Subtest: a payload that names another file is appended to the file the request names
+    ok 1 - a payload that names another file is appended to the file the request names
+      ---
+      duration_ms: 28.507667
+      ...
+    # Subtest: a quoted "Commit all changes" is text to append, not a commit
+    ok 2 - a quoted "Commit all changes" is text to append, not a commit
+      ---
+      duration_ms: 12.053834
+      ...
+    1..2
+ok 37 - PR \#1188 dogfood: cues inside a quoted payload do not steer routing
+  ---
+  duration_ms: 40.63075
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: the task survives repeated compactions
+    # Subtest: the server answers a compaction request with the native envelope
+    ok 1 - the server answers a compaction request with the native envelope
+      ---
+      duration_ms: 6.141208
+      ...
+    # Subtest: a nested envelope whose first user turn is the recall question still yields the task
+    ok 2 - a nested envelope whose first user turn is the recall question still yields the task
+      ---
+      duration_ms: 13.972917
+      ...
+    1..2
+ok 38 - PR \#1188 dogfood: the task survives repeated compactions
+  ---
+  duration_ms: 20.188375
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a re-summarized envelope head trails the client residue
+    # Subtest: the head sentences that state work are the task
+    ok 1 - the head sentences that state work are the task
+      ---
+      duration_ms: 14.427708
+      ...
+    1..1
+ok 39 - PR \#1188 dogfood: a re-summarized envelope head trails the client residue
+  ---
+  duration_ms: 14.474083
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a reduction over three parameters reads all three
+    # Subtest: add3(a, b, c) is a + b + c
+    ok 1 - add3(a, b, c) is a + b + c
+      ---
+      duration_ms: 31.87225
+      ...
+    # Subtest: mul3(a, b, c) is a * b * c
+    ok 2 - mul3(a, b, c) is a * b * c
+      ---
+      duration_ms: 29.584958
+      ...
+    1..2
+ok 40 - PR \#1188 dogfood: a reduction over three parameters reads all three
+  ---
+  duration_ms: 61.523459
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: an unquoted output is bound only when it reads as an utterance
+    # Subtest: `Create hello.py that prints Hello, World! and run it.` writes hello.py and checks its output
+    ok 1 - `Create hello.py that prints Hello, World! and run it.` writes hello.py and checks its output
+      ---
+      duration_ms: 4.85175
+      ...
+    # Subtest: `Write a Python program hello.py that prints …` names its file without a write cue
+    ok 2 - `Write a Python program hello.py that prints …` names its file without a write cue
+      ---
+      duration_ms: 4.227042
+      ...
+    # Subtest: the utterance ends at a seeded clause separator or the sentence that carries it
+    ok 3 - the utterance ends at a seeded clause separator or the sentence that carries it
+      ---
+      duration_ms: 2.100959
+      ...
+    # Subtest: a description of a computation is never bound as text to print
+    ok 4 - a description of a computation is never bound as text to print
+      ---
+      duration_ms: 1.613709
+      ...
+    1..4
+ok 41 - PR \#1188 dogfood: an unquoted output is bound only when it reads as an utterance
+  ---
+  duration_ms: 12.864209
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a program the request asks to run is written in the seeded language when it names none
+    # Subtest: the seed names the language and the reason, and the catalog runs it
+    ok 1 - the seed names the language and the reason, and the catalog runs it
+      ---
+      duration_ms: 0.367583
+      ...
+    # Subtest: `write a program that prints Hello, World! and run it` writes main.py and checks its output instead of searching the web
+    ok 2 - `write a program that prints Hello, World! and run it` writes main.py and checks its output instead of searching the web
+      ---
+      duration_ms: 11.047542
+      ...
+    # Subtest: `Напиши программу, которая выводит Привет, мир! и запусти её` writes main.py and checks its output instead of searching the web
+    ok 3 - `Напиши программу, которая выводит Привет, мир! и запусти её` writes main.py and checks its output instead of searching the web
+      ---
+      duration_ms: 14.745166
+      ...
+    # Subtest: `写一个打印 "Ni hao" 的程序并运行` writes main.py and checks its output instead of searching the web
+    ok 4 - `写一个打印 "Ni hao" 的程序并运行` writes main.py and checks its output instead of searching the web
+      ---
+      duration_ms: 5.281833
+      ...
+    # Subtest: `एक प्रोग्राम लिखो जो "Namaste" प्रिंट करे और उसे चलाओ` writes main.py and checks its output instead of searching the web
+    ok 5 - `एक प्रोग्राम लिखो जो "Namaste" प्रिंट करे और उसे चलाओ` writes main.py and checks its output instead of searching the web
+      ---
+      duration_ms: 4.438
+      ...
+    # Subtest: a verb-final language binds the quoted output its print verb follows (seeded `verb_final`)
+    ok 6 - a verb-final language binds the quoted output its print verb follows (seeded `verb_final`)
+      ---
+      duration_ms: 0.650792
+      ...
+    # Subtest: a request that does not ask to run the program does not get a language chosen for it (issue \#906)
+    ok 7 - a request that does not ask to run the program does not get a language chosen for it (issue \#906)
+      ---
+      duration_ms: 0.3495
+      ...
+    1..7
+ok 42 - PR \#1188 dogfood: a program the request asks to run is written in the seeded language when it names none
+  ---
+  duration_ms: 36.990625
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a request that names a line deletes whole lines
+    # Subtest: `Delete the line containing '| R56kfQp |' from t.md.` removes the row, not the quoted cells
+    ok 1 - `Delete the line containing '| R56kfQp |' from t.md.` removes the row, not the quoted cells
+      ---
+      duration_ms: 13.214875
+      ...
+    # Subtest: `Remove the line …` and `Delete lines containing …` read the same seeded line meaning
+    ok 2 - `Remove the line …` and `Delete lines containing …` read the same seeded line meaning
+      ---
+      duration_ms: 24.605417
+      ...
+    # Subtest: ru, hi and zh name the line in their own words; a sentence-final verb is still the verb
+    ok 3 - ru, hi and zh name the line in their own words; a sentence-final verb is still the verb
+      ---
+      duration_ms: 38.791208
+      ...
+    # Subtest: without a line named, quoted text is still removed from inside its line
+    ok 4 - without a line named, quoted text is still removed from inside its line
+      ---
+      duration_ms: 12.643291
+      ...
+    1..4
+ok 43 - PR \#1188 dogfood: a request that names a line deletes whole lines
+  ---
+  duration_ms: 89.367
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: a function and its test are added to existing ES modules (T1)
+    # Subtest: read both -> write the module and the test -> node --check -> node --test -> report
+    ok 1 - read both -> write the module and the test -> node --check -> node --test -> report
+      ---
+      duration_ms: 188.412833
+      ...
+    # Subtest: the expected value is the specification evaluated, not the synthesized code run
+    ok 2 - the expected value is the specification evaluated, not the synthesized code run
+      ---
+      duration_ms: 0.787375
+      ...
+    # Subtest: a relation the request names (`returns their sum`, `their difference`) is the expected value, in every seeded language
+    ok 3 - a relation the request names (`returns their sum`, `their difference`) is the expected value, in every seeded language
+      ---
+      duration_ms: 9340.04725
+      ...
+    # Subtest: the stated command is run in every language, after the run verb or before a final one
+    ok 4 - the stated command is run in every language, after the run verb or before a final one
+      ---
+      duration_ms: 1.320625
+      ...
+    # Subtest: the browser composer lowers the same IR to JavaScript from the seeded realization
+    ok 5 - the browser composer lowers the same IR to JavaScript from the seeded realization
+      ---
+      duration_ms: 28.628625
+      ...
+    1..5
+ok 44 - PR \#1188 dogfood: a function and its test are added to existing ES modules (T1)
+  ---
+  duration_ms: 9559.334208
+  type: 'suite'
+  ...
+# Subtest: PR \#1188 dogfood: an edit-shaped request never becomes a file deletion
+    # Subtest: held-out en/ru/hi/zh probes are declined honestly and leave the file byte-identical
+    ok 1 - held-out en/ru/hi/zh probes are declined honestly and leave the file byte-identical
+      ---
+      duration_ms: 203.62425
+      ...
+    # Subtest: a request that plainly deletes the file is still a deletion, in every language
+    ok 2 - a request that plainly deletes the file is still a deletion, in every language
+      ---
+      duration_ms: 212.174917
+      ...
+    # Subtest: the destructive commands are the seed's `destructive true` intents, not a list in code
+    ok 3 - the destructive commands are the seed's `destructive true` intents, not a list in code
+      ---
+      duration_ms: 0.231208
+      ...
+    1..3
+ok 45 - PR \#1188 dogfood: an edit-shaped request never becomes a file deletion
+  ---
+  duration_ms: 416.123
+  type: 'suite'
+  ...
+# Subtest: an advertised multi_edit capability receives every explicitly named path
+ok 46 - an advertised multi_edit capability receives every explicitly named path
+  ---
+  duration_ms: 1656.631084
+  ...
+# Subtest: G104: an edit naming files listed with `and` or commas is declined, naming every file
+    # Subtest: `In a.mjs and b.mjs, …` names both files and changes neither
+    ok 1 - `In a.mjs and b.mjs, …` names both files and changes neither
+      ---
+      duration_ms: 97.075917
+      ...
+    # Subtest: a comma list of three files names all three
+    ok 2 - a comma list of three files names all three
+      ---
+      duration_ms: 3.876083
+      ...
+    # Subtest: a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+    ok 3 - a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+      ---
+      duration_ms: 84.506959
+      ...
+    # Subtest: one file followed by a comma and the edit is still one edit
+    ok 4 - one file followed by a comma and the edit is still one edit
+      ---
+      duration_ms: 25.1635
+      ...
+    1..4
+ok 47 - G104: an edit naming files listed with `and` or commas is declined, naming every file
+  ---
+  duration_ms: 210.85675
+  type: 'suite'
+  ...
+# Subtest: G99: edits joined by a sequence cue are planned step by step
+    # Subtest: `…, then delete …` inserts and then deletes, each over the file the step before left
+    ok 1 - `…, then delete …` inserts and then deletes, each over the file the step before left
+      ---
+      duration_ms: 159.954584
+      ...
+    # Subtest: a step that names no file takes the file the other names
+    ok 2 - a step that names no file takes the file the other names
+      ---
+      duration_ms: 153.595167
+      ...
+    # Subtest: the Russian cue `затем` is a step too, answered in Russian
+    ok 3 - the Russian cue `затем` is a step too, answered in Russian
+      ---
+      duration_ms: 133.633209
+      ...
+    # Subtest: a cue that opens no clause, or a step without a quoted text, is no sequence
+    ok 4 - a cue that opens no clause, or a step without a quoted text, is no sequence
+      ---
+      duration_ms: 0.246459
+      ...
+    1..4
+ok 48 - G99: edits joined by a sequence cue are planned step by step
+  ---
+  duration_ms: 447.784417
+  type: 'suite'
+  ...
+# Subtest: G106: several Replaces apply all or decline, never drop one
+    # Subtest: `and then replace` applies both
+    ok 1 - `and then replace` applies both
+      ---
+      duration_ms: 250.164459
+      ...
+    # Subtest: a second clause that is no quoted replacement is named, and nothing changes
+    ok 2 - a second clause that is no quoted replacement is named, and nothing changes
+      ---
+      duration_ms: 4.249584
+      ...
+    1..2
+ok 49 - G106: several Replaces apply all or decline, never drop one
+  ---
+  duration_ms: 254.505792
+  type: 'suite'
+  ...
+# Subtest: G90: a quoted text holding its own quote mark is declined, naming the quote
+    # Subtest: single-quoted texts holding single quotes (T471)
+    ok 1 - single-quoted texts holding single quotes (T471)
+      ---
+      duration_ms: 1.523458
+      ...
+    # Subtest: double-quoted texts ending in a double quote of their own (T377)
+    ok 2 - double-quoted texts ending in a double quote of their own (T377)
+      ---
+      duration_ms: 1.56175
+      ...
+    # Subtest: the same texts in «» are edited
+    ok 3 - the same texts in «» are edited
+      ---
+      duration_ms: 26.978292
+      ...
+    1..3
+ok 50 - G90: a quoted text holding its own quote mark is declined, naming the quote
+  ---
+  duration_ms: 30.307333
+  type: 'suite'
+  ...
+# Subtest: G107: a backticked payload whose inner spans pair runs to its own close
+    # Subtest: a sentence end inside the payload keeps the whole replacement
+    ok 1 - a sentence end inside the payload keeps the whole replacement
+      ---
+      duration_ms: 31.141292
+      ...
+    # Subtest: the T794 shape: paths, a semicolon and a sentence end inside the payload
+    ok 2 - the T794 shape: paths, a semicolon and a sentence end inside the payload
+      ---
+      duration_ms: 35.490375
+      ...
+    # Subtest: the payload ends where its own mark closes, before a later sentence
+    ok 3 - the payload ends where its own mark closes, before a later sentence
+      ---
+      duration_ms: 0.448291
+      ...
+    1..3
+ok 51 - G107: a backticked payload whose inner spans pair runs to its own close
+  ---
+  duration_ms: 67.233125
+  type: 'suite'
+  ...
+# Subtest: G102: a file described rather than given is never written from a failed or refused step
+    # Subtest: a create request whose names and values are «» fragments writes nothing
+    ok 1 - a create request whose names and values are «» fragments writes nothing
+      ---
+      duration_ms: 786.16875
+      ...
+    1..1
+ok 52 - G102: a file described rather than given is never written from a failed or refused step
+  ---
+  duration_ms: 786.235459
+  type: 'suite'
+  ...
+# Subtest: G109: copy then comma-joined replacements preserves the source
+ok 53 - G109: copy then comma-joined replacements preserves the source
+  ---
+  duration_ms: 2862.077042
+  ...
+# Subtest: G109: move then a quoted edit runs in order
+ok 54 - G109: move then a quoted edit runs in order
+  ---
+  duration_ms: 2813.528459
+  ...
+# Subtest: G108: scalar payload code spans keep comma-separated backticks whole
+ok 55 - G108: scalar payload code spans keep comma-separated backticks whole
+  ---
+  duration_ms: 0.294667
+  ...
+# Subtest: G110: payload file paths and cues cannot become the creation target
+ok 56 - G110: payload file paths and cues cannot become the creation target
+  ---
+  duration_ms: 29.301541
+  ...
+# Subtest: G113: exact quoted content retains indentation and terminal newline
+ok 57 - G113: exact quoted content retains indentation and terminal newline
+  ---
+  duration_ms: 50.826916
+  ...
+# Subtest: G114: an objective label in quoted source is data
+ok 58 - G114: an objective label in quoted source is data
+  ---
+  duration_ms: 0.300542
+  ...
+# Subtest: G115: replacement preserves a new-only source newline escape
+ok 59 - G115: replacement preserves a new-only source newline escape
+  ---
+  duration_ms: 29.401625
+  ...
+# Subtest: formal rewrite queries validate escaped literals before the prose quote guard
+ok 60 - formal rewrite queries validate escaped literals before the prose quote guard
+  ---
+  duration_ms: 25.193459
+  ...
+# Subtest: a quoted path in an edit request is payload, not the target
+    # Subtest: the new text may be a path
+    ok 1 - the new text may be a path
+      ---
+      duration_ms: 554.721584
+      ...
+    # Subtest: a quoted path still names the file when nothing else does
+    ok 2 - a quoted path still names the file when nothing else does
+      ---
+      duration_ms: 0.777042
+      ...
+    # Subtest: a literal led by the words that say what it is stands for the literal (T25)
+    ok 3 - a literal led by the words that say what it is stands for the literal (T25)
+      ---
+      duration_ms: 1.439791
+      ...
+    # Subtest: the planner reads the unquoted file first
+    ok 4 - the planner reads the unquoted file first
+      ---
+      duration_ms: 65.467125
+      ...
+    # Subtest: a sentence mark after one quoted literal is the sentence's, not the content's (T26)
+    ok 5 - a sentence mark after one quoted literal is the sentence's, not the content's (T26)
+      ---
+      duration_ms: 172.764041
+      ...
+    # Subtest: a path inside a quoted payload never outranks the file the request names (T36)
+    ok 6 - a path inside a quoted payload never outranks the file the request names (T36)
+      ---
+      duration_ms: 0.976209
+      ...
+    # Subtest: a target cue inside the quoted new text is payload (T37)
+    ok 7 - a target cue inside the quoted new text is payload (T37)
+      ---
+      duration_ms: 0.702625
+      ...
+    1..7
+ok 61 - a quoted path in an edit request is payload, not the target
+  ---
+  duration_ms: 1103.642792
+  type: 'suite'
+  ...
+# Subtest: workspace content search greps the named identifier
+    # Subtest: Find all usages of add. lists the file:line hits
+    ok 1 - Find all usages of add. lists the file:line hits
+      ---
+      duration_ms: 657.98825
+      ...
+    # Subtest: Find all usages of add in this directory. lists the file:line hits
+    ok 2 - Find all usages of add in this directory. lists the file:line hits
+      ---
+      duration_ms: 40.41975
+      ...
+    # Subtest: Where is add used in this project? lists the file:line hits
+    ok 3 - Where is add used in this project? lists the file:line hits
+      ---
+      duration_ms: 33.679042
+      ...
+    # Subtest: Search for add in the files of this directory. lists the file:line hits
+    ok 4 - Search for add in the files of this directory. lists the file:line hits
+      ---
+      duration_ms: 26.692708
+      ...
+    # Subtest: Grep for add. lists the file:line hits
+    ok 5 - Grep for add. lists the file:line hits
+      ---
+      duration_ms: 23.387
+      ...
+    # Subtest: every registered language asks in its own words
+    ok 6 - every registered language asks in its own words
+      ---
+      duration_ms: 96.447
+      ...
+    # Subtest: a pattern found nowhere is a seeded not-found naming the pattern and the scope
+    ok 7 - a pattern found nowhere is a seeded not-found naming the pattern and the scope
+      ---
+      duration_ms: 28.03325
+      ...
+    # Subtest: without a grep tool the shell runs grep -rn
+    ok 8 - without a grep tool the shell runs grep -rn
+      ---
+      duration_ms: 67.897375
+      ...
+    # Subtest: a scope phrase after the searched word is the scope, not part of the query (G36)
+    ok 9 - a scope phrase after the searched word is the scope, not part of the query (G36)
+      ---
+      duration_ms: 29.8825
+      ...
+    # Subtest: a quoted literal is searched as fixed text within the named folder
+    ok 10 - a quoted literal is searched as fixed text within the named folder
+      ---
+      duration_ms: 13.052166
+      ...
+    # Subtest: a named file is the scope, and a request to change the uses is not a search
+    ok 11 - a named file is the scope, and a request to change the uses is not a search
+      ---
+      duration_ms: 48945.898667
+      ...
+    # Subtest: a file-name request still locates the file
+    ok 12 - a file-name request still locates the file
+      ---
+      duration_ms: 73.394416
+      ...
+    # Subtest: a search the request sends to the web is not grepped
+    ok 13 - a search the request sends to the web is not grepped
+      ---
+      duration_ms: 63.300917
+      ...
+    1..13
+ok 62 - workspace content search greps the named identifier
+  ---
+  duration_ms: 50414.424875
+  type: 'suite'
+  ...
+# Subtest: a named test file runs with its own runtime
+    # Subtest: Run the tests in m.test.mjs.
+    ok 1 - Run the tests in m.test.mjs.
+      ---
+      duration_ms: 75.71475
+      ...
+    # Subtest: Запусти тесты в m.test.mjs.
+    ok 2 - Запусти тесты в m.test.mjs.
+      ---
+      duration_ms: 120.810292
+      ...
+    # Subtest: Run the tests in test_m.py.
+    ok 3 - Run the tests in test_m.py.
+      ---
+      duration_ms: 51.174084
+      ...
+    1..3
+ok 63 - a named test file runs with its own runtime
+  ---
+  duration_ms: 247.83925
+  type: 'suite'
+  ...
+# Subtest: a function whose body is stated as an expression is added
+    # Subtest: sub(a, b) returning a - b joins the module and is checked
+    ok 1 - sub(a, b) returning a - b joins the module and is checked
+      ---
+      duration_ms: 87.356292
+      ...
+    1..1
+ok 64 - a function whose body is stated as an expression is added
+  ---
+  duration_ms: 87.418958
+  type: 'suite'
+  ...
+# Subtest: a bug report with a stated expectation is checked first
+    # Subtest: a function that meets the expectation is no defect found
+    ok 1 - a function that meets the expectation is no defect found
+      ---
+      duration_ms: 13.432375
+      ...
+    # Subtest: a function that misses it is a confirmed defect, the file unchanged
+    ok 2 - a function that misses it is a confirmed defect, the file unchanged
+      ---
+      duration_ms: 11.694458
+      ...
+    # Subtest: every registered language states the expectation in its own words
+    ok 3 - every registered language states the expectation in its own words
+      ---
+      duration_ms: 25.47775
+      ...
+    1..3
+ok 65 - a bug report with a stated expectation is checked first
+  ---
+  duration_ms: 50.70675
+  type: 'suite'
+  ...
+# Subtest: a literal-file write never replaces an existing file unasked
+    # Subtest: an edit misread as a whole-file write reads the file and keeps it
+    ok 1 - an edit misread as a whole-file write reads the file and keeps it
+      ---
+      duration_ms: 25.298958
+      ...
+    # Subtest: a missing target is created after the read finds nothing
+    ok 2 - a missing target is created after the read finds nothing
+      ---
+      duration_ms: 54.748375
+      ...
+    # Subtest: an existing target is kept for that verb, and replaced for a whole-file write
+    ok 3 - an existing target is kept for that verb, and replaced for a whole-file write
+      ---
+      duration_ms: 61.43575
+      ...
+    1..3
+ok 66 - a literal-file write never replaces an existing file unasked
+  ---
+  duration_ms: 141.600834
+  type: 'suite'
+  ...
+# Subtest: a listing request lists the directory it names
+    # Subtest: List the files in src. (14 tools)
+    ok 1 - List the files in src. (14 tools)
+      ---
+      duration_ms: 45.719542
+      ...
+    # Subtest: Покажи файлы в src. (14 tools)
+    ok 2 - Покажи файлы в src. (14 tools)
+      ---
+      duration_ms: 36.353333
+      ...
+    # Subtest: List the files in this directory. (14 tools)
+    ok 3 - List the files in this directory. (14 tools)
+      ---
+      duration_ms: 58.27825
+      ...
+    # Subtest: List the files in src. (4 tools)
+    ok 4 - List the files in src. (4 tools)
+      ---
+      duration_ms: 47.973292
+      ...
+    # Subtest: List the files in the current folder. (4 tools)
+    ok 5 - List the files in the current folder. (4 tools)
+      ---
+      duration_ms: 62.448916
+      ...
+    1..5
+ok 67 - a listing request lists the directory it names
+  ---
+  duration_ms: 250.945291
+  type: 'suite'
+  ...
+# Subtest: a question about what a module exports is answered from its declarations
+    # Subtest: Which functions does src/m.mjs export?
+    ok 1 - Which functions does src/m.mjs export?
+      ---
+      duration_ms: 15.839833
+      ...
+    # Subtest: Какие функции экспортирует src/m.mjs?
+    ok 2 - Какие функции экспортирует src/m.mjs?
+      ---
+      duration_ms: 16.654709
+      ...
+    1..2
+ok 68 - a question about what a module exports is answered from its declarations
+  ---
+  duration_ms: 32.572708
+  type: 'suite'
+  ...
+# Subtest: a summary of a named file summarizes its text
+    # Subtest: Summarize README.md in one sentence.
+    ok 1 - Summarize README.md in one sentence.
+      ---
+      duration_ms: 56.927542
+      ...
+    1..1
+ok 69 - a summary of a named file summarizes its text
+  ---
+  duration_ms: 57.048875
+  type: 'suite'
+  ...
+1..69
+# tests 176
+# suites 49
+# pass 175
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 51932.697

@@ -1,0 +1,399 @@
+>> read {"filePath":"rust/tests/unit/specification/pronoun_topic_follow_up.rs","file_path":"rust/tests/unit/specification/pronoun_topic_follow_up.rs","path":"rust/tests/unit/specification/pronoun_topic_follow_up.rs"}
+   <file>
+   00001| //! Regression coverage for issue #465: pronoun follow-ups should preserve the
+   00002| //! prior topic when asking a creator question.
+   00003| 
+   00004| use formal_ai::{ConversationTurn, UniversalSolver};
+   00005| 
+   00006| struct RustCreatorCase {
+   00007|     language: &'static str,
+   00008|     prompt: &'static str,
+   00009| }
+   00010| 
+   00011| #[test]
+   00012| fn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {
+   00013|     let solver = UniversalSolver::default();
+   00014|     let first = solver.solve("What is Rust?");
+   00015|     assert!(
+   00016|         first.intent.starts_with("concept_lookup"),
+   00017|         "first turn should establish the Rust topic, got: {}",
+   00018|         first.intent
+   00019|     );
+   00020| 
+   00021|     let history = [
+   00022|         ConversationTurn::user("What is Rust?"),
+   00023|         ConversationTurn::assistant(first.answer),
+   00024|     ];
+   00025|     let response = solver.solve_with_history("Who created it?", &history);
+   00026| 
+   00027|     assert_eq!(response.intent, "fact_lookup");
+   00028|     assert!(
+   00029|         response.answer.contains("Graydon Hoare"),
+   00030|         "creator answer should name Graydon Hoare, got: {}",
+   00031|         response.answer
+   00032|     );
+   00033|     assert!(
+   00034|         response.answer.contains("Mozilla"),
+   00035|         "creator answer should include the Mozilla context, got: {}",
+   00036|         response.answer
+   00037|     );
+   00038|     assert!(
+   00039|         response
+   00040|             .evidence_links
+   00041|             .iter()
+   00042|             .any(|link| link == "wikidata:Q575650"),
+   00043|         "Rust follow-up should keep the Rust Wikidata anchor, got: {:?}",
+   00044|         response.evidence_links
+   00045|     );
+   00046|     assert!(
+   00047|         response.links_notation.contains("coreference:resolved")
+   00048|             && response.links_notation.contains("coreference:rewrite"),
+   00049|         "follow-up trace should record the coreference resolution and rewrite: {}",
+   00050|         response.links_notation
+   00051|     );
+   00052| }
+   00053| 
+   00054| #[test]
+   00055| fn rust_creator_fact_is_available_across_supported_languages() {
+   00056|     let solver = UniversalSolver::default();
+   00057|     let cases = [
+   00058|         RustCreatorCase {
+   00059|             language: "en",
+   00060|             prompt: "Who created Rust?",
+   00061|         },
+   00062|         RustCreatorCase {
+   00063|             language: "ru",
+   00064|             prompt: "Кто создал Rust?",
+   00065|         },
+   00066|         RustCreatorCase {
+   00067|             language: "hi",
+   00068|             prompt: "Rust किसने बनाया?",
+   00069|         },
+   00070|         RustCreatorCase {
+   00071|             language: "zh",
+   00072|             prompt: "谁创建 Rust?",
+   00073|         },
+   00074|     ];
+   00075| 
+   00076|     for case in cases {
+   00077|         let response = solver.solve(case.prompt);
+   00078|         assert_eq!(
+   00079|             response.intent, "fact_lookup",
+   00080|             "{} Rust creator prompt should route to fact_lookup, got {} -> {}",
+   00081|             case.language, response.intent, response.answer
+   00082|         );
+   00083|         let documented_answer = match case.language {
+   00084|             "en" => {
+   00085|                 "Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project."
+   00086|             }
+   00087|             "ru" => {
+   00088|                 "Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект."
+   00089|             }
+   00090|             "hi" => {
+   00091|                 "Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया."
+   00092|             }
+   00093|             "zh" => "Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。",
+   00094|             _ => unreachable!("the case table documents every supported language"),
+   00095|         };
+   00096|         assert_eq!(response.answer, documented_answer);
+   00097|         assert!(
+   00098|             response.answer.contains("Graydon Hoare"),
+   00099|             "{} Rust creator answer should name Graydon Hoare, got: {}",
+   00100|             case.language,
+   00101|             response.answer
+   00102|         );
+   00103|         assert!(
+   00104|             response.answer.contains("Mozilla"),
+   00105|             "{} Rust creator answer should include Mozilla context, got: {}",
+   00106|             case.language,
+   00107|             response.answer
+   00108|         );
+   00109|         assert!(
+   00110|             response
+   00111|                 .evidence_links
+   00112|                 .iter()
+   00113|                 .any(|link| link == "wikidata:Q575650"),
+   00114|             "{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}",
+   00115|             case.language,
+   00116|             response.evidence_links
+   00117|         );
+   00118|     }
+   00119| }
+   00120| 
+   
+   (End of file - total 120 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/specification/pronoun_topic_follow_up.rs","file_path":"rust/tests/unit/specification/pronoun_topic_follow_up.rs","new":"//! Regression coverage for issue #465: pronoun follow-ups should preserve the\n//! prior topic when asking a creator question.\n\nuse formal_ai::{ConversationTurn, UniversalSolver};\n\nstruct RustCreatorCase {\n    language: &'static str,\n    prompt: &'static str,\n}\n\n#[test]\nfn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {\n    let solver = UniversalSolver::default();\n    let first = solver.solve(\"What is Rust?\");\n    assert!(\n        first.intent.starts_with(\"concept_lookup\"),\n        \"first turn should establish the Rust topic, got: {}\",\n        first.intent\n    );\n\n    let history = [\n        ConversationTurn::user(\"What is Rust?\"),\n        ConversationTurn::assistant(first.answer),\n    ];\n    let response = solver.solve_with_history(\"Who created it?\", &history);\n\n    assert_eq!(response.intent, \"fact_lookup\");\n    assert!(\n        response.answer.contains(\"Graydon Hoare\"),\n        \"creator answer should name Graydon Hoare, got: {}\",\n        response.answer\n    );\n    assert!(\n        response.answer.contains(\"Mozilla\"),\n        \"creator answer should include the Mozilla context, got: {}\",\n        response.answer\n    );\n    assert!(\n        response\n            .evidence_links\n            .iter()\n            .any(|link| link == \"wikidata:Q575650\"),\n        \"Rust follow-up should keep the Rust Wikidata anchor, got: {:?}\",\n        response.evidence_links\n    );\n    assert!(\n        response.links_notation.contains(\"coreference:resolved\")\n            && response.links_notation.contains(\"coreference:rewrite\"),\n        \"follow-up trace should record the coreference resolution and rewrite: {}\",\n        response.links_notation\n    );\n}\n\n#[test]\nfn rust_creator_fact_is_available_across_supported_languages() {\n    let solver = UniversalSolver::default();\n    let cases = [\n        RustCreatorCase {\n            language: \"en\",\n            prompt: \"Who created Rust?\",\n        },\n        RustCreatorCase {\n            language: \"ru\",\n            prompt: \"Кто создал Rust?\",\n        },\n        RustCreatorCase {\n            language: \"hi\",\n            prompt: \"Rust किसने बनाया?\",\n        },\n        RustCreatorCase {\n            language: \"zh\",\n            prompt: \"谁创建 Rust?\",\n        },\n    ];\n\n    for case in cases {\n        let response = solver.solve(case.prompt);\n        assert_eq!(\n            response.intent, \"fact_lookup\",\n            \"{} Rust creator prompt should route to fact_lookup, got {} -> {}\",\n            case.language, response.intent, response.answer\n        );\n        let documented_answer = match case.language {\n            \"en\" => {\n                \"Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project.\"\n            }\n            \"ru\" => {\n                \"Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект.\"\n            }\n            \"hi\" => {\n                \"Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया.\"\n            }\n            \"zh\" => \"Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。\",\n            _ => unreachable!(\"the case table documents every supported language\"),\n        };\n        assert_eq!(response.answer, documented_answer);\n        assert!(\n            response.answer.contains(\"Graydon Hoare\"),\n            \"{} Rust creator answer should name Graydon Hoare, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response.answer.contains(\"Mozilla\"),\n            \"{} Rust creator answer should include Mozilla context, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response\n                .evidence_links\n                .iter()\n                .any(|link| link == \"wikidata:Q575650\"),\n            \"{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}\",\n            case.language,\n            response.evidence_links\n        );\n    }\n}\n\n#[test]\nfn seeded_coreference_contexts_normalize_terminal_multilingual_surfaces() {\n    let solver = UniversalSolver::default();\n    let original = \"Write me a Rust program that lists the files in the current directory\";\n    let first = solver.solve(original);\n    assert_eq!(first.intent, \"write_program\");\n    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];\n    let prompts = [\"Explain the program?\", \"Объясни результаты?\", \"Объясни программу.\",\n        \"इन परिणामों?\", \"यह प्रोग्राम?\", \"解释结果。\", \"解释程序？\"];\n    for prompt in prompts {\n        let reply = solver.solve_with_history(prompt, &history);\n        assert_eq!(reply.intent, \"coreference_program_artifact\", \"{}\", prompt);\n        assert!(reply.links_notation.contains(\"coreference:resolved\"), \"{}\", prompt);\n    }\n}\n\n#[test]\nfn seeded_coreference_contexts_reject_embedded_word_surfaces() {\n    let solver = UniversalSolver::default();\n    let original = \"Write me a Rust program that lists the files in the current directory\";\n    let first = solver.solve(original);\n    assert_eq!(first.intent, \"write_program\");\n    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];\n    for prompt in [\"Who created with?\", \"Explain programming?\", \"xрезультатыx\", \"xपरिणामोंx\", \"itself\"] {\n        let reply = solver.solve_with_history(prompt, &history);\n        assert!(!reply.links_notation.contains(\"coreference:resolved\"), \"{}\", prompt);\n    }\n}\n","newString":"//! Regression coverage for issue #465: pronoun follow-ups should preserve the\n//! prior topic when asking a creator question.\n\nuse formal_ai::{ConversationTurn, UniversalSolver};\n\nstruct RustCreatorCase {\n    language: &'static str,\n    prompt: &'static str,\n}\n\n#[test]\nfn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {\n    let solver = UniversalSolver::default();\n    let first = solver.solve(\"What is Rust?\");\n    assert!(\n        first.intent.starts_with(\"concept_lookup\"),\n        \"first turn should establish the Rust topic, got: {}\",\n        first.intent\n    );\n\n    let history = [\n        ConversationTurn::user(\"What is Rust?\"),\n        ConversationTurn::assistant(first.answer),\n    ];\n    let response = solver.solve_with_history(\"Who created it?\", &history);\n\n    assert_eq!(response.intent, \"fact_lookup\");\n    assert!(\n        response.answer.contains(\"Graydon Hoare\"),\n        \"creator answer should name Graydon Hoare, got: {}\",\n        response.answer\n    );\n    assert!(\n        response.answer.contains(\"Mozilla\"),\n        \"creator answer should include the Mozilla context, got: {}\",\n        response.answer\n    );\n    assert!(\n        response\n            .evidence_links\n            .iter()\n            .any(|link| link == \"wikidata:Q575650\"),\n        \"Rust follow-up should keep the Rust Wikidata anchor, got: {:?}\",\n        response.evidence_links\n    );\n    assert!(\n        response.links_notation.contains(\"coreference:resolved\")\n            && response.links_notation.contains(\"coreference:rewrite\"),\n        \"follow-up trace should record the coreference resolution and rewrite: {}\",\n        response.links_notation\n    );\n}\n\n#[test]\nfn rust_creator_fact_is_available_across_supported_languages() {\n    let solver = UniversalSolver::default();\n    let cases = [\n        RustCreatorCase {\n            language: \"en\",\n            prompt: \"Who created Rust?\",\n        },\n        RustCreatorCase {\n            language: \"ru\",\n            prompt: \"Кто создал Rust?\",\n        },\n        RustCreatorCase {\n            language: \"hi\",\n            prompt: \"Rust किसने बनाया?\",\n        },\n        RustCreatorCase {\n            language: \"zh\",\n            prompt: \"谁创建 Rust?\",\n        },\n    ];\n\n    for case in cases {\n        let response = solver.solve(case.prompt);\n        assert_eq!(\n            response.intent, \"fact_lookup\",\n            \"{} Rust creator prompt should route to fact_lookup, got {} -> {}\",\n            case.language, response.intent, response.answer\n        );\n        let documented_answer = match case.language {\n            \"en\" => {\n                \"Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project.\"\n            }\n            \"ru\" => {\n                \"Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект.\"\n            }\n            \"hi\" => {\n                \"Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया.\"\n            }\n            \"zh\" => \"Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。\",\n            _ => unreachable!(\"the case table documents every supported language\"),\n        };\n        assert_eq!(response.answer, documented_answer);\n        assert!(\n            response.answer.contains(\"Graydon Hoare\"),\n            \"{} Rust creator answer should name Graydon Hoare, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response.answer.contains(\"Mozilla\"),\n            \"{} Rust creator answer should include Mozilla context, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response\n                .evidence_links\n                .iter()\n                .any(|link| link == \"wikidata:Q575650\"),\n            \"{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}\",\n            case.language,\n            response.evidence_links\n        );\n    }\n}\n\n#[test]\nfn seeded_coreference_contexts_normalize_terminal_multilingual_surfaces() {\n    let solver = UniversalSolver::default();\n    let original = \"Write me a Rust program that lists the files in the current directory\";\n    let first = solver.solve(original);\n    assert_eq!(first.intent, \"write_program\");\n    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];\n    let prompts = [\"Explain the program?\", \"Объясни результаты?\", \"Объясни программу.\",\n        \"इन परिणामों?\", \"यह प्रोग्राम?\", \"解释结果。\", \"解释程序？\"];\n    for prompt in prompts {\n        let reply = solver.solve_with_history(prompt, &history);\n        assert_eq!(reply.intent, \"coreference_program_artifact\", \"{}\", prompt);\n        assert!(reply.links_notation.contains(\"coreference:resolved\"), \"{}\", prompt);\n    }\n}\n\n#[test]\nfn seeded_coreference_contexts_reject_embedded_word_surfaces() {\n    let solver = UniversalSolver::default();\n    let original = \"Write me a Rust program that lists the files in the current directory\";\n    let first = solver.solve(original);\n    assert_eq!(first.intent, \"write_program\");\n    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];\n    for prompt in [\"Who created with?\", \"Explain programming?\", \"xрезультатыx\", \"xपरिणामोंx\", \"itself\"] {\n        let reply = solver.solve_with_history(prompt, &history);\n        assert!(!reply.links_notation.contains(\"coreference:resolved\"), \"{}\", prompt);\n    }\n}\n","new_str":"//! Regression coverage for issue #465: pronoun follow-ups should preserve the\n//! prior topic when asking a creator question.\n\nuse formal_ai::{ConversationTurn, UniversalSolver};\n\nstruct RustCreatorCase {\n    language: &'static str,\n    prompt: &'static str,\n}\n\n#[test]\nfn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {\n    let solver = UniversalSolver::default();\n    let first = solver.solve(\"What is Rust?\");\n    assert!(\n        first.intent.starts_with(\"concept_lookup\"),\n        \"first turn should establish the Rust topic, got: {}\",\n        first.intent\n    );\n\n    let history = [\n        ConversationTurn::user(\"What is Rust?\"),\n        ConversationTurn::assistant(first.answer),\n    ];\n    let response = solver.solve_with_history(\"Who created it?\", &history);\n\n    assert_eq!(response.intent, \"fact_lookup\");\n    assert!(\n        response.answer.contains(\"Graydon Hoare\"),\n        \"creator answer should name Graydon Hoare, got: {}\",\n        response.answer\n    );\n    assert!(\n        response.answer.contains(\"Mozilla\"),\n        \"creator answer should include the Mozilla context, got: {}\",\n        response.answer\n    );\n    assert!(\n        response\n            .evidence_links\n            .iter()\n            .any(|link| link == \"wikidata:Q575650\"),\n        \"Rust follow-up should keep the Rust Wikidata anchor, got: {:?}\",\n        response.evidence_links\n    );\n    assert!(\n        response.links_notation.contains(\"coreference:resolved\")\n            && response.links_notation.contains(\"coreference:rewrite\"),\n        \"follow-up trace should record the coreference resolution and rewrite: {}\",\n        response.links_notation\n    );\n}\n\n#[test]\nfn rust_creator_fact_is_available_across_supported_languages() {\n    let solver = UniversalSolver::default();\n    let cases = [\n        RustCreatorCase {\n            language: \"en\",\n            prompt: \"Who created Rust?\",\n        },\n        RustCreatorCase {\n            language: \"ru\",\n            prompt: \"Кто создал Rust?\",\n        },\n        RustCreatorCase {\n            language: \"hi\",\n            prompt: \"Rust किसने बनाया?\",\n        },\n        RustCreatorCase {\n            language: \"zh\",\n            prompt: \"谁创建 Rust?\",\n        },\n    ];\n\n    for case in cases {\n        let response = solver.solve(case.prompt);\n        assert_eq!(\n            response.intent, \"fact_lookup\",\n            \"{} Rust creator prompt should route to fact_lookup, got {} -> {}\",\n            case.language, response.intent, response.answer\n        );\n        let documented_answer = match case.language {\n            \"en\" => {\n                \"Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project.\"\n            }\n            \"ru\" => {\n                \"Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект.\"\n            }\n            \"hi\" => {\n                \"Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया.\"\n            }\n            \"zh\" => \"Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。\",\n            _ => unreachable!(\"the case table documents every supported language\"),\n        };\n        assert_eq!(response.answer, documented_answer);\n        assert!(\n            response.answer.contains(\"Graydon Hoare\"),\n            \"{} Rust creator answer should name Graydon Hoare, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response.answer.contains(\"Mozilla\"),\n            \"{} Rust creator answer should include Mozilla context, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response\n                .evidence_links\n                .iter()\n                .any(|link| link == \"wikidata:Q575650\"),\n            \"{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}\",\n            case.language,\n            response.evidence_links\n        );\n    }\n}\n\n#[test]\nfn seeded_coreference_contexts_normalize_terminal_multilingual_surfaces() {\n    let solver = UniversalSolver::default();\n    let original = \"Write me a Rust program that lists the files in the current directory\";\n    let first = solver.solve(original);\n    assert_eq!(first.intent, \"write_program\");\n    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];\n    let prompts = [\"Explain the program?\", \"Объясни результаты?\", \"Объясни программу.\",\n        \"इन परिणामों?\", \"यह प्रोग्राम?\", \"解释结果。\", \"解释程序？\"];\n    for prompt in prompts {\n        let reply = solver.solve_with_history(prompt, &history);\n        assert_eq!(reply.intent, \"coreference_program_artifact\", \"{}\", prompt);\n        assert!(reply.links_notation.contains(\"coreference:resolved\"), \"{}\", prompt);\n    }\n}\n\n#[test]\nfn seeded_coreference_contexts_reject_embedded_word_surfaces() {\n    let solver = UniversalSolver::default();\n    let original = \"Write me a Rust program that lists the files in the current directory\";\n    let first = solver.solve(original);\n    assert_eq!(first.intent, \"write_program\");\n    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];\n    for prompt in [\"Who created with?\", \"Explain programming?\", \"xрезультатыx\", \"xपरिणामोंx\", \"itself\"] {\n        let reply = solver.solve_with_history(prompt, &history);\n        assert!(!reply.links_notation.contains(\"coreference:resolved\"), \"{}\", prompt);\n    }\n}\n","new_string":"//! Regression coverage for issue #465: pronoun follow-ups should preserve the\n//! prior topic when asking a creator question.\n\nuse formal_ai::{ConversationTurn, UniversalSolver};\n\nstruct RustCreatorCase {\n    language: &'static str,\n    prompt: &'static str,\n}\n\n#[test]\nfn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {\n    let solver = UniversalSolver::default();\n    let first = solver.solve(\"What is Rust?\");\n    assert!(\n        first.intent.starts_with(\"concept_lookup\"),\n        \"first turn should establish the Rust topic, got: {}\",\n        first.intent\n    );\n\n    let history = [\n        ConversationTurn::user(\"What is Rust?\"),\n        ConversationTurn::assistant(first.answer),\n    ];\n    let response = solver.solve_with_history(\"Who created it?\", &history);\n\n    assert_eq!(response.intent, \"fact_lookup\");\n    assert!(\n        response.answer.contains(\"Graydon Hoare\"),\n        \"creator answer should name Graydon Hoare, got: {}\",\n        response.answer\n    );\n    assert!(\n        response.answer.contains(\"Mozilla\"),\n        \"creator answer should include the Mozilla context, got: {}\",\n        response.answer\n    );\n    assert!(\n        response\n            .evidence_links\n            .iter()\n            .any(|link| link == \"wikidata:Q575650\"),\n        \"Rust follow-up should keep the Rust Wikidata anchor, got: {:?}\",\n        response.evidence_links\n    );\n    assert!(\n        response.links_notation.contains(\"coreference:resolved\")\n            && response.links_notation.contains(\"coreference:rewrite\"),\n        \"follow-up trace should record the coreference resolution and rewrite: {}\",\n        response.links_notation\n    );\n}\n\n#[test]\nfn rust_creator_fact_is_available_across_supported_languages() {\n    let solver = UniversalSolver::default();\n    let cases = [\n        RustCreatorCase {\n            language: \"en\",\n            prompt: \"Who created Rust?\",\n        },\n        RustCreatorCase {\n            language: \"ru\",\n            prompt: \"Кто создал Rust?\",\n        },\n        RustCreatorCase {\n            language: \"hi\",\n            prompt: \"Rust किसने बनाया?\",\n        },\n        RustCreatorCase {\n            language: \"zh\",\n            prompt: \"谁创建 Rust?\",\n        },\n    ];\n\n    for case in cases {\n        let response = solver.solve(case.prompt);\n        assert_eq!(\n            response.intent, \"fact_lookup\",\n            \"{} Rust creator prompt should route to fact_lookup, got {} -> {}\",\n            case.language, response.intent, response.answer\n        );\n        let documented_answer = match case.language {\n            \"en\" => {\n                \"Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project.\"\n            }\n            \"ru\" => {\n                \"Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект.\"\n            }\n            \"hi\" => {\n                \"Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया.\"\n            }\n            \"zh\" => \"Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。\",\n            _ => unreachable!(\"the case table documents every supported language\"),\n        };\n        assert_eq!(response.answer, documented_answer);\n        assert!(\n            response.answer.contains(\"Graydon Hoare\"),\n            \"{} Rust creator answer should name Graydon Hoare, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response.answer.contains(\"Mozilla\"),\n            \"{} Rust creator answer should include Mozilla context, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response\n                .evidence_links\n                .iter()\n                .any(|link| link == \"wikidata:Q575650\"),\n            \"{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}\",\n            case.language,\n            response.evidence_links\n        );\n    }\n}\n\n#[test]\nfn seeded_coreference_contexts_normalize_terminal_multilingual_surfaces() {\n    let solver = UniversalSolver::default();\n    let original = \"Write me a Rust program that lists the files in the current directory\";\n    let first = solver.solve(original);\n    assert_eq!(first.intent, \"write_program\");\n    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];\n    let prompts = [\"Explain the program?\", \"Объясни результаты?\", \"Объясни программу.\",\n        \"इन परिणामों?\", \"यह प्रोग्राम?\", \"解释结果。\", \"解释程序？\"];\n    for prompt in prompts {\n        let reply = solver.solve_with_history(prompt, &history);\n        assert_eq!(reply.intent, \"coreference_program_artifact\", \"{}\", prompt);\n        assert!(reply.links_notation.contains(\"coreference:resolved\"), \"{}\", prompt);\n    }\n}\n\n#[test]\nfn seeded_coreference_contexts_reject_embedded_word_surfaces() {\n    let solver = UniversalSolver::default();\n    let original = \"Write me a Rust program that lists the files in the current directory\";\n    let first = solver.solve(original);\n    assert_eq!(first.intent, \"write_program\");\n    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];\n    for prompt in [\"Who created with?\", \"Explain programming?\", \"xрезультатыx\", \"xपरिणामोंx\", \"itself\"] {\n        let reply = solver.solve_with_history(prompt, &history);\n        assert!(!reply.links_notation.contains(\"coreference:resolved\"), \"{}\", prompt);\n    }\n}\n","old":"//! Regression coverage for issue #465: pronoun follow-ups should preserve the\n//! prior topic when asking a creator question.\n\nuse formal_ai::{ConversationTurn, UniversalSolver};\n\nstruct RustCreatorCase {\n    language: &'static str,\n    prompt: &'static str,\n}\n\n#[test]\nfn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {\n    let solver = UniversalSolver::default();\n    let first = solver.solve(\"What is Rust?\");\n    assert!(\n        first.intent.starts_with(\"concept_lookup\"),\n        \"first turn should establish the Rust topic, got: {}\",\n        first.intent\n    );\n\n    let history = [\n        ConversationTurn::user(\"What is Rust?\"),\n        ConversationTurn::assistant(first.answer),\n    ];\n    let response = solver.solve_with_history(\"Who created it?\", &history);\n\n    assert_eq!(response.intent, \"fact_lookup\");\n    assert!(\n        response.answer.contains(\"Graydon Hoare\"),\n        \"creator answer should name Graydon Hoare, got: {}\",\n        response.answer\n    );\n    assert!(\n        response.answer.contains(\"Mozilla\"),\n        \"creator answer should include the Mozilla context, got: {}\",\n        response.answer\n    );\n    assert!(\n        response\n            .evidence_links\n            .iter()\n            .any(|link| link == \"wikidata:Q575650\"),\n        \"Rust follow-up should keep the Rust Wikidata anchor, got: {:?}\",\n        response.evidence_links\n    );\n    assert!(\n        response.links_notation.contains(\"coreference:resolved\")\n            && response.links_notation.contains(\"coreference:rewrite\"),\n        \"follow-up trace should record the coreference resolution and rewrite: {}\",\n        response.links_notation\n    );\n}\n\n#[test]\nfn rust_creator_fact_is_available_across_supported_languages() {\n    let solver = UniversalSolver::default();\n    let cases = [\n        RustCreatorCase {\n            language: \"en\",\n            prompt: \"Who created Rust?\",\n        },\n        RustCreatorCase {\n            language: \"ru\",\n            prompt: \"Кто создал Rust?\",\n        },\n        RustCreatorCase {\n            language: \"hi\",\n            prompt: \"Rust किसने बनाया?\",\n        },\n        RustCreatorCase {\n            language: \"zh\",\n            prompt: \"谁创建 Rust?\",\n        },\n    ];\n\n    for case in cases {\n        let response = solver.solve(case.prompt);\n        assert_eq!(\n            response.intent, \"fact_lookup\",\n            \"{} Rust creator prompt should route to fact_lookup, got {} -> {}\",\n            case.language, response.intent, response.answer\n        );\n        let documented_answer = match case.language {\n            \"en\" => {\n                \"Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project.\"\n            }\n            \"ru\" => {\n                \"Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект.\"\n            }\n            \"hi\" => {\n                \"Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया.\"\n            }\n            \"zh\" => \"Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。\",\n            _ => unreachable!(\"the case table documents every supported language\"),\n        };\n        assert_eq!(response.answer, documented_answer);\n        assert!(\n            response.answer.contains(\"Graydon Hoare\"),\n            \"{} Rust creator answer should name Graydon Hoare, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response.answer.contains(\"Mozilla\"),\n            \"{} Rust creator answer should include Mozilla context, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response\n                .evidence_links\n                .iter()\n                .any(|link| link == \"wikidata:Q575650\"),\n            \"{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}\",\n            case.language,\n            response.evidence_links\n        );\n    }\n}\n","oldString":"//! Regression coverage for issue #465: pronoun follow-ups should preserve the\n//! prior topic when asking a creator question.\n\nuse formal_ai::{ConversationTurn, UniversalSolver};\n\nstruct RustCreatorCase {\n    language: &'static str,\n    prompt: &'static str,\n}\n\n#[test]\nfn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {\n    let solver = UniversalSolver::default();\n    let first = solver.solve(\"What is Rust?\");\n    assert!(\n        first.intent.starts_with(\"concept_lookup\"),\n        \"first turn should establish the Rust topic, got: {}\",\n        first.intent\n    );\n\n    let history = [\n        ConversationTurn::user(\"What is Rust?\"),\n        ConversationTurn::assistant(first.answer),\n    ];\n    let response = solver.solve_with_history(\"Who created it?\", &history);\n\n    assert_eq!(response.intent, \"fact_lookup\");\n    assert!(\n        response.answer.contains(\"Graydon Hoare\"),\n        \"creator answer should name Graydon Hoare, got: {}\",\n        response.answer\n    );\n    assert!(\n        response.answer.contains(\"Mozilla\"),\n        \"creator answer should include the Mozilla context, got: {}\",\n        response.answer\n    );\n    assert!(\n        response\n            .evidence_links\n            .iter()\n            .any(|link| link == \"wikidata:Q575650\"),\n        \"Rust follow-up should keep the Rust Wikidata anchor, got: {:?}\",\n        response.evidence_links\n    );\n    assert!(\n        response.links_notation.contains(\"coreference:resolved\")\n            && response.links_notation.contains(\"coreference:rewrite\"),\n        \"follow-up trace should record the coreference resolution and rewrite: {}\",\n        response.links_notation\n    );\n}\n\n#[test]\nfn rust_creator_fact_is_available_across_supported_languages() {\n    let solver = UniversalSolver::default();\n    let cases = [\n        RustCreatorCase {\n            language: \"en\",\n            prompt: \"Who created Rust?\",\n        },\n        RustCreatorCase {\n            language: \"ru\",\n            prompt: \"Кто создал Rust?\",\n        },\n        RustCreatorCase {\n            language: \"hi\",\n            prompt: \"Rust किसने बनाया?\",\n        },\n        RustCreatorCase {\n            language: \"zh\",\n            prompt: \"谁创建 Rust?\",\n        },\n    ];\n\n    for case in cases {\n        let response = solver.solve(case.prompt);\n        assert_eq!(\n            response.intent, \"fact_lookup\",\n            \"{} Rust creator prompt should route to fact_lookup, got {} -> {}\",\n            case.language, response.intent, response.answer\n        );\n        let documented_answer = match case.language {\n            \"en\" => {\n                \"Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project.\"\n            }\n            \"ru\" => {\n                \"Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект.\"\n            }\n            \"hi\" => {\n                \"Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया.\"\n            }\n            \"zh\" => \"Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。\",\n            _ => unreachable!(\"the case table documents every supported language\"),\n        };\n        assert_eq!(response.answer, documented_answer);\n        assert!(\n            response.answer.contains(\"Graydon Hoare\"),\n            \"{} Rust creator answer should name Graydon Hoare, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response.answer.contains(\"Mozilla\"),\n            \"{} Rust creator answer should include Mozilla context, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response\n                .evidence_links\n                .iter()\n                .any(|link| link == \"wikidata:Q575650\"),\n            \"{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}\",\n            case.language,\n            response.evidence_links\n        );\n    }\n}\n","old_str":"//! Regression coverage for issue #465: pronoun follow-ups should preserve the\n//! prior topic when asking a creator question.\n\nuse formal_ai::{ConversationTurn, UniversalSolver};\n\nstruct RustCreatorCase {\n    language: &'static str,\n    prompt: &'static str,\n}\n\n#[test]\nfn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {\n    let solver = UniversalSolver::default();\n    let first = solver.solve(\"What is Rust?\");\n    assert!(\n        first.intent.starts_with(\"concept_lookup\"),\n        \"first turn should establish the Rust topic, got: {}\",\n        first.intent\n    );\n\n    let history = [\n        ConversationTurn::user(\"What is Rust?\"),\n        ConversationTurn::assistant(first.answer),\n    ];\n    let response = solver.solve_with_history(\"Who created it?\", &history);\n\n    assert_eq!(response.intent, \"fact_lookup\");\n    assert!(\n        response.answer.contains(\"Graydon Hoare\"),\n        \"creator answer should name Graydon Hoare, got: {}\",\n        response.answer\n    );\n    assert!(\n        response.answer.contains(\"Mozilla\"),\n        \"creator answer should include the Mozilla context, got: {}\",\n        response.answer\n    );\n    assert!(\n        response\n            .evidence_links\n            .iter()\n            .any(|link| link == \"wikidata:Q575650\"),\n        \"Rust follow-up should keep the Rust Wikidata anchor, got: {:?}\",\n        response.evidence_links\n    );\n    assert!(\n        response.links_notation.contains(\"coreference:resolved\")\n            && response.links_notation.contains(\"coreference:rewrite\"),\n        \"follow-up trace should record the coreference resolution and rewrite: {}\",\n        response.links_notation\n    );\n}\n\n#[test]\nfn rust_creator_fact_is_available_across_supported_languages() {\n    let solver = UniversalSolver::default();\n    let cases = [\n        RustCreatorCase {\n            language: \"en\",\n            prompt: \"Who created Rust?\",\n        },\n        RustCreatorCase {\n            language: \"ru\",\n            prompt: \"Кто создал Rust?\",\n        },\n        RustCreatorCase {\n            language: \"hi\",\n            prompt: \"Rust किसने बनाया?\",\n        },\n        RustCreatorCase {\n            language: \"zh\",\n            prompt: \"谁创建 Rust?\",\n        },\n    ];\n\n    for case in cases {\n        let response = solver.solve(case.prompt);\n        assert_eq!(\n            response.intent, \"fact_lookup\",\n            \"{} Rust creator prompt should route to fact_lookup, got {} -> {}\",\n            case.language, response.intent, response.answer\n        );\n        let documented_answer = match case.language {\n            \"en\" => {\n                \"Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project.\"\n            }\n            \"ru\" => {\n                \"Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект.\"\n            }\n            \"hi\" => {\n                \"Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया.\"\n            }\n            \"zh\" => \"Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。\",\n            _ => unreachable!(\"the case table documents every supported language\"),\n        };\n        assert_eq!(response.answer, documented_answer);\n        assert!(\n            response.answer.contains(\"Graydon Hoare\"),\n            \"{} Rust creator answer should name Graydon Hoare, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response.answer.contains(\"Mozilla\"),\n            \"{} Rust creator answer should include Mozilla context, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response\n                .evidence_links\n                .iter()\n                .any(|link| link == \"wikidata:Q575650\"),\n            \"{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}\",\n            case.language,\n            response.evidence_links\n        );\n    }\n}\n","old_string":"//! Regression coverage for issue #465: pronoun follow-ups should preserve the\n//! prior topic when asking a creator question.\n\nuse formal_ai::{ConversationTurn, UniversalSolver};\n\nstruct RustCreatorCase {\n    language: &'static str,\n    prompt: &'static str,\n}\n\n#[test]\nfn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {\n    let solver = UniversalSolver::default();\n    let first = solver.solve(\"What is Rust?\");\n    assert!(\n        first.intent.starts_with(\"concept_lookup\"),\n        \"first turn should establish the Rust topic, got: {}\",\n        first.intent\n    );\n\n    let history = [\n        ConversationTurn::user(\"What is Rust?\"),\n        ConversationTurn::assistant(first.answer),\n    ];\n    let response = solver.solve_with_history(\"Who created it?\", &history);\n\n    assert_eq!(response.intent, \"fact_lookup\");\n    assert!(\n        response.answer.contains(\"Graydon Hoare\"),\n        \"creator answer should name Graydon Hoare, got: {}\",\n        response.answer\n    );\n    assert!(\n        response.answer.contains(\"Mozilla\"),\n        \"creator answer should include the Mozilla context, got: {}\",\n        response.answer\n    );\n    assert!(\n        response\n            .evidence_links\n            .iter()\n            .any(|link| link == \"wikidata:Q575650\"),\n        \"Rust follow-up should keep the Rust Wikidata anchor, got: {:?}\",\n        response.evidence_links\n    );\n    assert!(\n        response.links_notation.contains(\"coreference:resolved\")\n            && response.links_notation.contains(\"coreference:rewrite\"),\n        \"follow-up trace should record the coreference resolution and rewrite: {}\",\n        response.links_notation\n    );\n}\n\n#[test]\nfn rust_creator_fact_is_available_across_supported_languages() {\n    let solver = UniversalSolver::default();\n    let cases = [\n        RustCreatorCase {\n            language: \"en\",\n            prompt: \"Who created Rust?\",\n        },\n        RustCreatorCase {\n            language: \"ru\",\n            prompt: \"Кто создал Rust?\",\n        },\n        RustCreatorCase {\n            language: \"hi\",\n            prompt: \"Rust किसने बनाया?\",\n        },\n        RustCreatorCase {\n            language: \"zh\",\n            prompt: \"谁创建 Rust?\",\n        },\n    ];\n\n    for case in cases {\n        let response = solver.solve(case.prompt);\n        assert_eq!(\n            response.intent, \"fact_lookup\",\n            \"{} Rust creator prompt should route to fact_lookup, got {} -> {}\",\n            case.language, response.intent, response.answer\n        );\n        let documented_answer = match case.language {\n            \"en\" => {\n                \"Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project.\"\n            }\n            \"ru\" => {\n                \"Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект.\"\n            }\n            \"hi\" => {\n                \"Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया.\"\n            }\n            \"zh\" => \"Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。\",\n            _ => unreachable!(\"the case table documents every supported language\"),\n        };\n        assert_eq!(response.answer, documented_answer);\n        assert!(\n            response.answer.contains(\"Graydon Hoare\"),\n            \"{} Rust creator answer should name Graydon Hoare, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response.answer.contains(\"Mozilla\"),\n            \"{} Rust creator answer should include Mozilla context, got: {}\",\n            case.language,\n            response.answer\n        );\n        assert!(\n            response\n                .evidence_links\n                .iter()\n                .any(|link| link == \"wikidata:Q575650\"),\n            \"{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}\",\n            case.language,\n            response.evidence_links\n        );\n    }\n}\n","path":"rust/tests/unit/specification/pronoun_topic_follow_up.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/specification/pronoun_topic_follow_up.rs"}
+   Output: bb39c08c5bc140f14df46a56e8aa48bc72614906e329ce7739c27cba14dd41ae  rust/tests/unit/specification/pronoun_topic_follow_up.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `//! Regression coverage for issue #465: pronoun follow-ups should preserve the
+//! prior topic when asking a creator question.
+
+use formal_ai::{ConversationTurn, UniversalSolver};
+
+struct RustCreatorCase {
+    language: &'static str,
+    prompt: &'static str,
+}
+
+#[test]
+fn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {
+    let solver = UniversalSolver::default();
+    let first = solver.solve("What is Rust?");
+    assert!(
+        first.intent.starts_with("concept_lookup"),
+        "first turn should establish the Rust topic, got: {}",
+        first.intent
+    );
+
+    let history = [
+        ConversationTurn::user("What is Rust?"),
+        ConversationTurn::assistant(first.answer),
+    ];
+    let response = solver.solve_with_history("Who created it?", &history);
+
+    assert_eq!(response.intent, "fact_lookup");
+    assert!(
+        response.answer.contains("Graydon Hoare"),
+        "creator answer should name Graydon Hoare, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Mozilla"),
+        "creator answer should include the Mozilla context, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "wikidata:Q575650"),
+        "Rust follow-up should keep the Rust Wikidata anchor, got: {:?}",
+        response.evidence_links
+    );
+    assert!(
+        response.links_notation.contains("coreference:resolved")
+            && response.links_notation.contains("coreference:rewrite"),
+        "follow-up trace should record the coreference resolution and rewrite: {}",
+        response.links_notation
+    );
+}
+
+#[test]
+fn rust_creator_fact_is_available_across_supported_languages() {
+    let solver = UniversalSolver::default();
+    let cases = [
+        RustCreatorCase {
+            language: "en",
+            prompt: "Who created Rust?",
+        },
+        RustCreatorCase {
+            language: "ru",
+            prompt: "Кто создал Rust?",
+        },
+        RustCreatorCase {
+            language: "hi",
+            prompt: "Rust किसने बनाया?",
+        },
+        RustCreatorCase {
+            language: "zh",
+            prompt: "谁创建 Rust?",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "fact_lookup",
+            "{} Rust creator prompt should route to fact_lookup, got {} -> {}",
+            case.language, response.intent, response.answer
+        );
+        let documented_answer = match case.language {
+            "en" => {
+                "Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project."
+            }
+            "ru" => {
+                "Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект."
+            }
+            "hi" => {
+                "Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया."
+            }
+            "zh" => "Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。",
+            _ => unreachable!("the case table documents every supported language"),
+        };
+        assert_eq!(response.answer, documented_answer);
+        assert!(
+            response.answer.contains("Graydon Hoare"),
+            "{} Rust creator answer should name Graydon Hoare, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response.answer.contains("Mozilla"),
+            "{} Rust creator answer should include Mozilla context, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "wikidata:Q575650"),
+            "{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}",
+            case.language,
+            response.evidence_links
+        );
+    }
+}
+` with `//! Regression coverage for issue #465: pronoun follow-ups should preserve the
+//! prior topic when asking a creator question.
+
+use formal_ai::{ConversationTurn, UniversalSolver};
+
+struct RustCreatorCase {
+    language: &'static str,
+    prompt: &'static str,
+}
+
+#[test]
+fn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {
+    let solver = UniversalSolver::default();
+    let first = solver.solve("What is Rust?");
+    assert!(
+        first.intent.starts_with("concept_lookup"),
+        "first turn should establish the Rust topic, got: {}",
+        first.intent
+    );
+
+    let history = [
+        ConversationTurn::user("What is Rust?"),
+        ConversationTurn::assistant(first.answer),
+    ];
+    let response = solver.solve_with_history("Who created it?", &history);
+
+    assert_eq!(response.intent, "fact_lookup");
+    assert!(
+        response.answer.contains("Graydon Hoare"),
+        "creator answer should name Graydon Hoare, got: {}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("Mozilla"),
+        "creator answer should include the Mozilla context, got: {}",
+        response.answer
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link == "wikidata:Q575650"),
+        "Rust follow-up should keep the Rust Wikidata anchor, got: {:?}",
+        response.evidence_links
+    );
+    assert!(
+        response.links_notation.contains("coreference:resolved")
+            && response.links_notation.contains("coreference:rewrite"),
+        "follow-up trace should record the coreference resolution and rewrite: {}",
+        response.links_notation
+    );
+}
+
+#[test]
+fn rust_creator_fact_is_available_across_supported_languages() {
+    let solver = UniversalSolver::default();
+    let cases = [
+        RustCreatorCase {
+            language: "en",
+            prompt: "Who created Rust?",
+        },
+        RustCreatorCase {
+            language: "ru",
+            prompt: "Кто создал Rust?",
+        },
+        RustCreatorCase {
+            language: "hi",
+            prompt: "Rust किसने बनाया?",
+        },
+        RustCreatorCase {
+            language: "zh",
+            prompt: "谁创建 Rust?",
+        },
+    ];
+
+    for case in cases {
+        let response = solver.solve(case.prompt);
+        assert_eq!(
+            response.intent, "fact_lookup",
+            "{} Rust creator prompt should route to fact_lookup, got {} -> {}",
+            case.language, response.intent, response.answer
+        );
+        let documented_answer = match case.language {
+            "en" => {
+                "Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project."
+            }
+            "ru" => {
+                "Rust изначально создал Graydon Hoare в Mozilla Research, а Mozilla спонсировала проект."
+            }
+            "hi" => {
+                "Rust को मूल रूप से Graydon Hoare ने Mozilla Research में बनाया था, और Mozilla ने इस परियोजना को प्रायोजित किया."
+            }
+            "zh" => "Rust 最初由 Graydon Hoare 在 Mozilla Research 创建, Mozilla 赞助了该项目。",
+            _ => unreachable!("the case table documents every supported language"),
+        };
+        assert_eq!(response.answer, documented_answer);
+        assert!(
+            response.answer.contains("Graydon Hoare"),
+            "{} Rust creator answer should name Graydon Hoare, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response.answer.contains("Mozilla"),
+            "{} Rust creator answer should include Mozilla context, got: {}",
+            case.language,
+            response.answer
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
+                .any(|link| link == "wikidata:Q575650"),
+            "{} Rust creator fact should keep the Rust Wikidata anchor, got: {:?}",
+            case.language,
+            response.evidence_links
+        );
+    }
+}
+
+#[test]
+fn seeded_coreference_contexts_normalize_terminal_multilingual_surfaces() {
+    let solver = UniversalSolver::default();
+    let original = "Write me a Rust program that lists the files in the current directory";
+    let first = solver.solve(original);
+    assert_eq!(first.intent, "write_program");
+    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];
+    let prompts = ["Explain the program?", "Объясни результаты?", "Объясни программу.",
+        "इन परिणामों?", "यह प्रोग्राम?", "解释结果。", "解释程序？"];
+    for prompt in prompts {
+        let reply = solver.solve_with_history(prompt, &history);
+        assert_eq!(reply.intent, "coreference_program_artifact", "{}", prompt);
+        assert!(reply.links_notation.contains("coreference:resolved"), "{}", prompt);
+    }
+}
+
+#[test]
+fn seeded_coreference_contexts_reject_embedded_word_surfaces() {
+    let solver = UniversalSolver::default();
+    let original = "Write me a Rust program that lists the files in the current directory";
+    let first = solver.solve(original);
+    assert_eq!(first.intent, "write_program");
+    let history = [ConversationTurn::user(original), ConversationTurn::assistant(first.answer)];
+    for prompt in ["Who created with?", "Explain programming?", "xрезультатыx", "xपरिणामोंx", "itself"] {
+        let reply = solver.solve_with_history(prompt, &history);
+        assert!(!reply.links_notation.contains("coreference:resolved"), "{}", prompt);
+    }
+}
+` in `rust/tests/unit/specification/pronoun_topic_follow_up.rs` and observed the result.

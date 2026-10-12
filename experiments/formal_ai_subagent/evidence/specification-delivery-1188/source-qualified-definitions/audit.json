@@ -1,0 +1,206 @@
+{
+  "cutoff": "T2449",
+  "invocations": 50,
+  "observedToolCalls": 112,
+  "repositoryWriteToolCalls": 32,
+  "repositoryFormatBashCalls": 5,
+  "sharedRecordGeneratorBashCalls": 1,
+  "repositoryMutationToolCalls": 38,
+  "excludedHistoryAppendBashCalls": 32,
+  "requestUtf8Bytes": 376699,
+  "rawTranscriptUtf8Bytes": 3327130,
+  "actualModelTokensMeasured": false,
+  "moneyMeasured": false,
+  "mutations": [
+    {
+      "id": "T2401",
+      "tool": "write",
+      "target": "data/seed/sources-registry.lino"
+    },
+    {
+      "id": "T2402",
+      "tool": "write",
+      "target": "js/worker/formal_ai_worker_seed_captures.js"
+    },
+    {
+      "id": "T2403",
+      "tool": "write",
+      "target": "js/worker/formal_ai_worker_source_walk.js"
+    },
+    {
+      "id": "T2404",
+      "tool": "write",
+      "target": "rust/src/source_fetch/seed_captures.rs"
+    },
+    {
+      "id": "T2405",
+      "tool": "write",
+      "target": "rust/src/source_fetch.rs"
+    },
+    {
+      "id": "T2406",
+      "tool": "write",
+      "target": "data/seed/prompt-patterns.lino"
+    },
+    {
+      "id": "T2407",
+      "tool": "write",
+      "target": "data/seed/multilingual-responses-concept-lookup.lino"
+    },
+    {
+      "id": "T2408",
+      "tool": "write",
+      "target": "js/worker/formal_ai_worker_source_qualified_definition.js"
+    },
+    {
+      "id": "T2409",
+      "tool": "write",
+      "target": "js/worker/formal_ai_worker_concept_lookup.js"
+    },
+    {
+      "id": "T2410",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/source_qualified_definition.rs"
+    },
+    {
+      "id": "T2411",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/word_definition.rs"
+    },
+    {
+      "id": "T2412",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/modules.rs"
+    },
+    {
+      "id": "T2413",
+      "tool": "write",
+      "target": "data/meta/worker-line-budget/formal_ai_worker_seed_captures.lino"
+    },
+    {
+      "id": "T2414",
+      "tool": "write",
+      "target": "data/meta/worker-line-budget/formal_ai_worker_source_qualified_definition.lino"
+    },
+    {
+      "id": "T2415",
+      "tool": "bash",
+      "purpose": "native formatter actual write"
+    },
+    {
+      "id": "T2416",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/software_project_phrases.rs"
+    },
+    {
+      "id": "T2417",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/statistics.rs"
+    },
+    {
+      "id": "T2418",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/text_rewrite.rs"
+    },
+    {
+      "id": "T2419",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/verifiable_task.rs"
+    },
+    {
+      "id": "T2420",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/web_search_intent.rs"
+    },
+    {
+      "id": "T2422",
+      "tool": "write",
+      "target": "rust/tests/web/source-qualified-definition.test.mjs"
+    },
+    {
+      "id": "T2424",
+      "tool": "write",
+      "target": "js/worker/formal_ai_worker_seed_captures.js"
+    },
+    {
+      "id": "T2425",
+      "tool": "write",
+      "target": "rust/tests/web/source-qualified-definition.test.mjs"
+    },
+    {
+      "id": "T2427",
+      "tool": "write",
+      "target": "rust/tests/unit/specification/source_cache.rs"
+    },
+    {
+      "id": "T2428",
+      "tool": "bash",
+      "purpose": "native formatter actual write"
+    },
+    {
+      "id": "T2431",
+      "tool": "write",
+      "target": "rust/tests/fixtures/source-cache-seed-contract.rs"
+    },
+    {
+      "id": "T2432",
+      "tool": "write",
+      "target": "rust/src/source_fetch/seed_captures.rs"
+    },
+    {
+      "id": "T2433",
+      "tool": "write",
+      "target": "rust/src/solver_handlers/source_qualified_definition.rs"
+    },
+    {
+      "id": "T2434",
+      "tool": "bash",
+      "purpose": "native formatter actual write"
+    },
+    {
+      "id": "T2437",
+      "tool": "bash",
+      "purpose": "shared specification record generator"
+    },
+    {
+      "id": "T2438",
+      "tool": "write",
+      "target": "js/worker/formal_ai_worker_seed_captures.js"
+    },
+    {
+      "id": "T2439",
+      "tool": "write",
+      "target": "js/worker/formal_ai_worker_source_qualified_definition.js"
+    },
+    {
+      "id": "T2440",
+      "tool": "write",
+      "target": "rust/src/source_fetch/seed_captures.rs"
+    },
+    {
+      "id": "T2441",
+      "tool": "write",
+      "target": "rust/tests/web/source-qualified-definition.test.mjs"
+    },
+    {
+      "id": "T2443",
+      "tool": "bash",
+      "purpose": "native formatter actual write"
+    },
+    {
+      "id": "T2444",
+      "tool": "write",
+      "target": "rust/tests/fixtures/source-cache-seed-contract.rs"
+    },
+    {
+      "id": "T2448",
+      "tool": "bash",
+      "purpose": "native formatter actual write"
+    },
+    {
+      "id": "T2449",
+      "tool": "write",
+      "target": "changelog.d/20261010_013000_source-qualified-definitions.md"
+    }
+  ]
+}

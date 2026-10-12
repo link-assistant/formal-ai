@@ -1,0 +1,99 @@
+self_ast_census
+  target src/agentic_coding/quote_nesting.rs
+  language rust
+  fidelity full_ast
+  byte_len 7896
+  line_count 189
+  content_id source_module_32901c517a73ecbb
+  symbol_count 14
+  symbols
+    const SAME_MARKS 19 19
+    const FENCE 21 21
+    const FAULT_FRAGMENT_CHARS 23 23
+    const CLOSE_FOLLOWERS 25 25
+    const OPEN_LEADERS 27 27
+    const NESTED_INTENT 29 29
+    const FRAGMENT_PLACEHOLDER 31 31
+    const CLAUSE_PLACEHOLDER 32 32
+    const UNPLANNED_CLAUSE_INTENT 33 33
+    struct NestedQuote 36 41
+    function opens_inner 45 49
+    function whole_payload_end 60 107
+    function nested_quote_fault 112 144
+    function request_fault_answer 152 189
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 5262
+    named_node_count 1059
+    distinct_node_kinds 67
+    node_kinds
+      arguments 77
+      array_expression 3
+      array_type 1
+      assignment_expression 1
+      binary_expression 25
+      block 26
+      call_expression 77
+      char_literal 3
+      closure_expression 10
+      closure_parameters 10
+      compound_assignment_expr 2
+      const_item 9
+      continue_expression 3
+      crate 2
+      doc_comment 42
+      else_clause 5
+      escape_sequence 1
+      expression_statement 31
+      field_declaration 2
+      field_declaration_list 1
+      field_expression 69
+      field_identifier 73
+      field_initializer 2
+      field_initializer_list 1
+      for_expression 1
+      function_item 4
+      generic_type 2
+      identifier 234
+      if_expression 15
+      index_expression 9
+      inner_doc_comment_marker 12
+      integer_literal 8
+      let_condition 3
+      let_declaration 21
+      lifetime 1
+      line_comment 44
+      macro_invocation 1
+      mutable_specifier 3
+      outer_doc_comment_marker 30
+      parameter 8
+      parameters 4
+      parenthesized_expression 2
+      primitive_type 20
+      range_expression 11
+      reference_expression 11
+      reference_type 12
+      return_expression 12
+      scoped_identifier 27
+      scoped_use_list 1
+      source_file 1
+      string_content 11
+      string_literal 13
+      struct_expression 1
+      struct_item 1
+      super 16
+      token_tree 1
+      try_expression 1
+      tuple_expression 4
+      tuple_pattern 4
+      tuple_struct_pattern 5
+      type_arguments 2
+      type_identifier 8
+      unary_expression 8
+      use_declaration 3
+      use_list 1
+      visibility_modifier 6
+      while_expression 1

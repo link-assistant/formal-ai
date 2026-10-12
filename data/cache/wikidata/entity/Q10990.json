@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "肉类食物"
+        },
+        "es": {
+          "language": "es",
+          "value": "carne"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "可食用的动物肉"
+        },
+        "es": {
+          "language": "es",
+          "value": "parte de un animal consumida como alimento"
         }
       },
       "aliases": {
@@ -40,6 +48,12 @@
           {
             "language": "ru",
             "value": "мясопродукты"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "vianda"
           }
         ]
       }

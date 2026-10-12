@@ -1,0 +1,13 @@
+{
+  "taskRange": "T2906-T2932",
+  "taskCount": 27,
+  "physicalCallsIncludingThisFaithfulBash": 51,
+  "physicalWriteEditCalls": 12,
+  "faithfulArchivalBashTasks": [
+    "T2920",
+    "T2931",
+    "T2932"
+  ],
+  "ledger": "/private/tmp/spec-recurrence-1188/typed-reader-next/ledger-T2906-T2932.md",
+  "productionSourceMutations": 0
+}

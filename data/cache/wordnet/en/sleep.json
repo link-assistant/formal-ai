@@ -1,0 +1,77 @@
+{
+  "lemma": "sleep",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14048353-n",
+      "partOfSpeech": "n",
+      "definition": "a natural and periodic state of rest during which consciousness of the world is suspended",
+      "examples": [
+        "he didn't get enough sleep last night",
+        "calm as a child in dreamless slumber"
+      ],
+      "synonyms": [
+        "slumber"
+      ]
+    },
+    {
+      "id": "oewn-14049464-n",
+      "partOfSpeech": "n",
+      "definition": "a torpid state resembling deep sleep",
+      "synonyms": [
+        "sopor"
+      ]
+    },
+    {
+      "id": "oewn-15298612-n",
+      "partOfSpeech": "n",
+      "definition": "a period of time spent sleeping",
+      "examples": [
+        "he felt better after a little sleep",
+        "there wasn't time for a nap"
+      ],
+      "synonyms": [
+        "nap"
+      ]
+    },
+    {
+      "id": "oewn-13986101-n",
+      "partOfSpeech": "n",
+      "definition": "euphemisms for death (based on an analogy between lying in a bed and in a tomb)",
+      "examples": [
+        "she was laid to rest beside her husband",
+        "they had to put their family pet to sleep"
+      ],
+      "synonyms": [
+        "rest",
+        "eternal rest",
+        "eternal sleep",
+        "quietus"
+      ]
+    },
+    {
+      "id": "oewn-00014735-v",
+      "partOfSpeech": "v",
+      "definition": "be asleep",
+      "synonyms": [
+        "kip",
+        "slumber",
+        "log Z's",
+        "catch some Z's"
+      ]
+    },
+    {
+      "id": "oewn-02707305-v",
+      "partOfSpeech": "v",
+      "definition": "be able to accommodate for sleeping",
+      "examples": [
+        "This tent sleeps six people"
+      ]
+    }
+  ]
+}

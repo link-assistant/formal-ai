@@ -1,0 +1,91 @@
+language en
+lemma first
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "preceding all others in time or space or degree"
+    examples ("the first house on the right" "the first day of spring" "his first political race" "her first baby" "the first time" "the first meetings of the new party" "the first phase of his training")
+    id oewn-01014459-a
+    partOfSpeech a
+    synonyms (1st)
+  entry
+    definition "highest in pitch or chief among parts or voices or instruments or orchestra sections"
+    examples ("first soprano" "the first violin section" "played first horn")
+    id oewn-01019807-a
+    partOfSpeech a
+  entry
+    definition "the first or highest in an ordering or series"
+    examples ("He wanted to be the first")
+    id oewn-13868396-n
+    partOfSpeech n
+    synonyms ("number one")
+  entry
+    definition "the first element in a countable series"
+    examples ("the first of the month")
+    id oewn-13618687-n
+    partOfSpeech n
+    synonyms ("number one" "number 1")
+  entry
+    definition "the time at which something is supposed to begin"
+    examples ("they got an early start" "she knew from the get-go that he was the man for her")
+    id oewn-15290329-n
+    partOfSpeech n
+    synonyms (beginning commencement outset get-go start kickoff "starting time" showtime offset)
+  entry
+    definition "the fielding position of the player on a baseball team who is stationed at first of the bases in the infield (counting counterclockwise from home plate)"
+    id oewn-00724798-n
+    partOfSpeech n
+    synonyms ("first base")
+  entry
+    definition "an honours degree of the highest class"
+    id oewn-06712932-n
+    partOfSpeech n
+    synonyms ("first-class honours degree")
+  entry
+    definition "the lowest forward gear ratio in the gear box of a motor vehicle; used to start a car moving"
+    id oewn-03354857-n
+    partOfSpeech n
+    synonyms ("first gear" "low gear" low)
+  entry
+    definition "before anything else"
+    examples ("first we must consider the garter snake")
+    id oewn-00103286-r
+    partOfSpeech r
+    synonyms (firstly foremost "first of all" "first off")
+  entry
+    definition "the initial time"
+    examples ("when Felix first saw a garter snake")
+    id oewn-00104262-r
+    partOfSpeech r
+  entry
+    definition "before another in time, space, or importance"
+    examples ("I was here first" "let's do this job first")
+    id oewn-00509461-r
+    partOfSpeech r
+  entry
+    definition "prominently forward"
+    examples ("he put his best foot foremost")
+    id oewn-00256094-r
+    partOfSpeech r
+    synonyms (foremost)
+  entry
+    definition "serving to begin"
+    examples ("the beginning canto of the poem" "the first verse")
+    id oewn-01012803-s
+    partOfSpeech s
+    synonyms (beginning)
+  entry
+    definition "ranking above all others"
+    examples ("was first in her class" "the foremost figure among marine artists")
+    id oewn-00229886-s
+    partOfSpeech s
+    synonyms (foremost world-class)
+  entry
+    definition "serving to set in motion"
+    examples ("the magazine's inaugural issue" "the initiative phase in the negotiations" "an initiatory step toward a treaty" "his first (or maiden) speech in Congress" "the liner's maiden voyage")
+    id oewn-01012940-s
+    partOfSpeech s
+    synonyms (inaugural initiative initiatory maiden)
+source "oewn:2024"

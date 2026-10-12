@@ -1,0 +1,191 @@
+7239c69bc 09-30 15:19 feat(issue-1161): clients registry config_env with JSON/CLI projection
+5e066bb85 09-30 17:53 fix(issue-1172): word-boundary subject matching for factual QA
+b7c4edaca 09-30 17:54 feat(issue-1173): unknown-reasoning fallback executes the search
+ffa3a405d 09-30 17:54 feat(issue-1174): summarization and text-transform family
+8fcfd9ddb 09-30 17:55 feat(issue-1175): routing guards by formalization shape
+fe8a1d0b3 09-30 17:55 feat(issue-1176): quantities, dates, and exact statistics
+4dd8f4c13 09-30 17:55 feat(issue-1177): nine code-task handlers with formal answers
+368579554 09-30 17:56 feat(issue-1181): shared cli_env parser and release CLI binaries
+22cf6399c 09-30 17:57 chore(closure): ground 34 lemmas against Open English WordNet offline
+f3cd85907 09-30 17:57 docs(requirements): record every deferred follow-up as open rows
+d3101d6db 09-30 17:57 fix(worker): registry gains the fourteen new handler keys
+d55dc4a2e 09-30 17:57 test(parity): measured cross-runtime cases for the new handlers
+e4193a615 09-30 18:11 feat(integration): wire the bulk QA, reasoning, and coding batch
+9d137e808 09-30 19:53 feat(issue-1171): generated LLM task parity surface with its generator
+a752e700b 09-30 20:07 feat(issue-1153): slim runtime image for the serve sidecar
+9270b342f 09-30 20:16 feat(issue-1084): multi-arch container images via a native runner matrix
+46d5dcfa8 09-30 20:19 feat(issue-1179): fact-check sources and YAML-key claim exclusions
+b0a49de8b 09-30 20:19 test(issue-869): pin the meeting-scheduling prompt that fell to unknown
+ac95f9656 09-30 20:26 test(issue-447): pin the seeded opener path for the interface complaint
+689c44c49 09-30 20:29 feat(issue-1163): generic page formalizer turns fetched pages into links
+b32fb4abd 09-30 20:29 feat(issue-1184): white-box derivation record and formal-ai explain
+dc3671dc7 09-30 20:30 feat(issue-1186): formalization as a user-facing task with round trip
+2f86f34b4 09-30 20:32 feat(issue-1187): optional GitHub credentials for every workload
+1394803df 09-30 20:34 feat(issue-1168): resolve generated-code versions at generation time
+443d9a133 09-30 20:36 feat(issue-955): runtime hand-check suite carrying the 49 audit findings
+b2772db2a 09-30 20:37 feat(issue-934): engine-unavailable is loud, with per-answer engine provenance
+d266b1319 09-30 20:40 feat(issue-836): seeded legality advisory that warns before acting
+4770967c1 09-30 20:44 chore(issue-1090): retire the manual-confirmation column as aspirational
+7a6d9814e 09-30 20:55 feat(issue-800): product-search handler composes the amazon.in query
+5d76720ae 09-30 20:57 feat(issue-1164): decompose, generalize, and recompose retrieved code examples
+99221181c 09-30 21:03 feat(issue-1185): error-driven repair loop for failed build and run steps
+5a164f690 09-30 21:04 fix(issue-1154): one shell-argument reading and a repeat invariant
+48dae57d5 09-30 21:07 feat(issue-872): verbless shopping shape and surface-form queries
+c5ab72b74 09-30 21:14 feat(issue-1088): evidence index, move script and the non-source line budget
+71dd597eb 09-30 21:15 feat(issue-1178): creative composition from formalized sources
+f366d2c4c 09-30 21:17 feat(issue-953): untrack the minified web bundles as build output
+16bbbcb84 09-30 21:23 feat(issue-1165): rediscoverable coding-procedure cache on the production path
+feb868e8d 09-30 21:24 feat(issue-1166): formalize the request into obligations instead of matching phrases
+98f7de4ae 09-30 21:25 feat(issue-1167): meta-language compose/render/parse for all fifteen grammars
+772075a42 09-30 21:26 feat(issue-700): SI dimension algebra converts unstated unit pairs
+d81d549e0 09-30 21:29 feat(issue-1180): repository history as formal context for reasoning
+680f9bf3b 09-30 21:36 feat(issue-901): general paradox families, top-20 benchmark, prompt entry
+329fec41b 09-30 21:40 feat(issue-954): generated module map in ARCHITECTURE.md, pinned by a doc test
+6913661dc 09-30 21:41 feat(issue-491): least-action scoring for balanced splits and solutions
+5f2985a47 09-30 21:51 feat(issue-483): small-model formalization fallback behind a flag
+9d1992fdb 09-30 21:53 feat(issue-825): shared autocomplete for every own-input-box surface
+239917faa 09-30 21:54 fix(issue-1155): validate work-item reads and fall back honestly
+fbe37c88e 09-30 21:56 fix(ci): restore fact routing stolen by web search and hyphen-blind matching
+f31ed5517 09-30 21:58 docs(issue-coverage): per-issue done/partial/not-started ledger for the bulk effort
+c80c498a8 09-30 22:16 refactor(issue-1180): split history capture and cursor modules
+4b62678c3 09-30 22:18 fix(issue-1169): finish dependency pins and matching lockfiles
+2ad01f2cd 09-30 22:23 feat(issue-668): add reviewable shareable package artifacts
+6f4fadc8d 09-30 22:23 feat(issue-557): embed composer actions and configurable skins
+0d6d60df3 09-30 22:27 fix(agentic): draft bounded continuation, feedback and prerequisite recovery
+5b702e0f4 09-30 22:29 feat(issue-669): add opt-in append-only memory synchronization
+9a76bafcc 09-30 22:31 feat(issue-670): draft bounded browser Python measurement experiment
+c75fb3dd2 09-30 22:34 feat(issue-665): draft offline app and typed browser engine package
+7873be0a6 09-30 22:35 fix(issue-668): require consent for every agent handler reference
+13e85e54f 09-30 22:35 feat(issue-861): add consent-gated anonymous Sentry diagnostics
+0ea45be64 09-30 22:35 fix(issue-447): let short viewport sidebars scroll all controls
+1e06c9ab0 09-30 22:37 style: format backend slices and support Windows telemetry transport
+fe9329f59 09-30 22:38 feat(issue-666): draft extension listings and registry publishing
+22955a53f 09-30 22:43 feat(issue-667): draft shared four-pane debugger projection
+39667feb2 09-30 22:45 refactor(issue-951): inventory UI logic and scaffold Rust migration boundary
+ca5e45fc5 09-30 22:47 fix(ci): bulk repair release paths, seed integrity and code task loaders
+243e684fe 09-30 22:49 fix(ci): preserve complete response metadata when merging marker meanings
+3f1b3ab58 09-30 22:49 feat(issue-1182): complete duplication audits and installed-parser adapter
+2fcb9d7d6 09-30 22:52 fix(ci): retain normalized fact storage and classify intentional E2E errors
+6b560e16f 09-30 23:04 feat(issue-1184): finalize derivations for solver answers
+fca05d36d 09-30 23:05 feat: wire seeded handlers and generated registry
+71c1ee5d2 09-30 23:05 fix(issue-1169): add dependency currency audit
+acaeb71cb 09-30 23:06 feat(issue-940): render sourced research documents
+c3ba008f8 09-30 23:06 feat(issue-1171): move parity classes to data registry
+d05597db0 09-30 23:09 chore: register research artifacts and core boundary
+10a3dedd3 09-30 23:09 docs(issue-453): record moonshot task coverage
+6b9d0fa2c 09-30 23:10 fix(issue-1184): keep answer serializer type-safe
+7bccfab40 09-30 23:11 docs: reconcile bulk issue coverage
+05620d936 09-30 23:12 docs(issue-1182): remove duplicate baseline trailing blank
+9e2f73b14 10-06 20:22 fix(rust): restore the lib build and lib-test build CI reported
+df830dec7 10-06 20:26 fix(ci): make actionlint and zizmor pass on the new workflows
+2b5547750 10-06 20:26 fix(audit): drop the stale RUSTSEC-2026-0235 ignore
+bc0986862 10-06 20:27 feat(issue-1138): the js -> ts translator in JavaScript
+4b574e04b 10-06 20:27 fix(links): replace moved benchmark URLs and stale local links
+93620cbde 10-06 20:29 fix(issue-825): autocomplete matches the word being typed, keeps caller order
+90986b67e 10-06 20:29 docs+ci: JavaScript-first doctrine and the native-only parity ratchet
+72f45acc4 10-06 20:30 fix(ts): regenerate the ts tree for the committed js file set
+a6f9b04fd 10-06 20:30 docs(requirements): shard the 2026-10-06 doctrine and reassemble
+a0f8d9a66 10-06 20:30 chore(debt): retire the closed foot parity gap and lower its ceiling
+cb5cc2523 10-06 20:31 style(rust): apply cargo fmt to telemetry.rs and web_formalize.rs
+bce408f96 10-06 20:31 fix(rust): version_resolution compiles under -D warnings
+238aea811 10-06 20:31 chore(ledgers): re-render status and seed-metadata gaps
+994ecee21 10-06 20:31 docs: refresh the issue-state snapshot and drop stale open claims
+602d1649b 10-06 20:34 fix(scripts): make the new script suites compile and pass under -Dwarnings
+c47311988 10-06 20:34 fix(scripts): cross-org-duplication compiles under -Dwarnings
+42d3fcc06 10-06 20:34 fix(worker): read stated weekday offsets mod 7 like the native calendar
+39ea57df6 10-06 20:35 feat(worker): interpret data/seed/handler-rules.lino in the browser
+5566fe488 10-06 20:37 fix(tests): drop 189 duplicated test-module declarations
+f8a4047e2 10-06 20:38 fix(issue-825): completion replaces only the word being typed
+151cb0ed2 10-06 20:38 feat(worker): JS twins for text-transform, formalization and product search
+8aef72b08 10-06 20:39 feat(worker): TRIZ resolution, legality advisory and the #1173 R5 guard
+5377ffae4 10-06 20:41 feat(worker): port statistics, word problems, unit conversion and number constraints to JS
+e2346b131 10-06 20:42 feat(worker): wire the JavaScript-first parity ports into the registry
+bdd894ac8 10-06 20:44 fix(triz): select seed records by record_type like the JS twin
+4566820cb 10-06 20:46 fix(formalization): read formal-targets records under their root like the JS twin
+f08263a31 10-06 20:48 fix(units): divide template renders the derivation; seed prepositional km/m surfaces
+96db74319 10-06 20:53 feat(worker): JS twins for brainstorming, advice, creative writing and planning
+b93c4cd36 10-06 20:54 feat(seed): verification-evidence templates for regex and refactoring twins
+2a759cce3 10-06 20:54 feat(worker): JS twins for the coding handlers
+52f6f4928 10-06 20:54 docs(ledger): record browser twins for the coding handlers
+dfef87e14 10-06 20:55 feat(parity): every handler row runs in JavaScript; ratchet to zero
+f57a42b95 10-06 20:58 fix(creative): Rust composition handlers follow the JS twins
+922710934 10-06 21:16 fix(rust): clear the -D warnings dead-code and private-interface lints
+33e8981c7 10-06 21:18 fix(ci): container-images matrix validates; autocomplete keeps the UI boundary
+8762700b3 10-06 21:26 refactor(debt): literal_predicates back under the ratchet (594 -> 534)
+2de0933a0 10-06 21:28 fix(issue-1168): generated workflows pin resolved versions (R6)
+4d392b0d3 10-06 21:52 fix(tests): Rust test crates compile under -D warnings
+058f64c26 10-06 21:54 fix(issue-1169): dependency gate compiles in the unit crate and stays under 1000 lines
+1814d86bb 10-06 22:12 fix(ci): unit crate has no dead helpers; browser inventory declares every file
+bb05729a8 10-06 22:32 feat(meta): recursive meta reasoner on the JS solve path, grounded not hardcoded
+c27f1141d 10-06 22:34 docs(meta): recursive meta-algorithm doctrine R1001-R1012 and the coding blockers
+af03b55fa 10-06 22:36 feat(meta): compose by clause semantics; three more ladder rungs
+b34abf915 10-06 22:37 fix(issue-483): small-model catalog reads its sibling rows
+b8386645f 10-06 22:43 feat(meta): file instruction set and composed measures; first repository rung
+0f8760572 10-06 22:53 feat(meta): discovery that refuses semantic drift; the driver replays the cache
+e1fee0f94 10-07 01:39 feat(meta): coding blockers, Rust twin, literal ratchet; gates batch
+d46713f64 10-07 01:59 fix(meta): borrow mapped type names; type the evidence vector
+8f1d3aaa2 10-07 02:08 fix(web): split the stylesheet into js/styles/ (cascade order kept)
+5a56705b5 10-07 02:36 feat: JavaScript server at Rust parity; 1500-line ceiling on every file
+e5da0dc1f 10-07 02:39 fix(tests): source crate knows Swift and R; desktop pins command-stream 1.2.0
+5d5694227 10-07 02:52 fix(ci): canonical Links Notation in every seed; clippy pedantic clean
+2ad74c679 10-07 03:12 feat(meta): Rust learned chunks persist; discovery before research
+2b15843fc 10-07 03:14 ci(release): server parity gates the release
+3675e2960 10-07 03:18 fix(tests): source crate names Swift and R as idiom-less, not a crash
+b0a21eaa9 10-07 03:21 fix(desktop): the Rust manifest pins command-stream 1.1
+b2f66cdc3 10-07 03:34 feat(server): JS server thinking trace, memory and agentic planner at parity
+383899198 10-07 03:36 fix(meta): discovery goal check without a literal predicate; R1015 names the release gate
+352d02521 10-07 03:39 fix(seed): JS reader collapses the Links Notation doubled-quote escape
+46b959853 10-07 03:43 fix(parity): the browser runs the summarization and statistics parity cases
+3cfa5ad9f 10-07 03:45 feat(seed): reverse_words generalises by token combo in English
+1022fd042 10-07 03:46 feat(agentic): JS self-explanation and self-source-links recipes replace the stubs
+21f925a63 10-07 03:47 docs(requirements): regenerate register, ledger and status after R1015/R1017 updates
+52e19e5fa 10-07 03:52 feat(text): tasks put to Formal AI derive by phrasing, routing and chain order
+b95c63b32 10-07 03:52 feat(quantities): percentile and month offsets in both runtimes (#1176 R3, R4)
+3b43863f1 10-07 03:52 docs(requirements): regenerate after #1176 R3/R4 delivery
+6869a429d 10-07 03:56 fix(requirements): a row's verdict reads its own status cells as words
+74eb6b65d 10-07 03:58 fix(shell): a relative path is the composed command's search root
+ded930eae 10-07 04:01 fix(agentic): generated CI workflows keep each step on its own line
+b6dbcdff1 10-07 04:10 feat(text): counting questions, a line prefix filter and character classes
+86a054d8b 10-07 04:11 fix(agentic): the error repair loop reads diagnostics again
+41c06cba9 10-07 04:11 fix(server): the JS server greets with the canonical wording, as Rust does
+641e25230 10-07 04:14 fix(synthesis): a function described in prose is not named `that`
+a51ea0f2c 10-07 04:15 chore(census): regenerate the self-AST census from CI (ded930eae)
+ca1e24848 10-07 04:17 feat(meta): five more ladder rungs derive by general rules (R1009, R1011, R1017)
+77b7c86d2 10-07 04:20 chore(test): local web tests run one file at a time
+26a178ad4 10-07 04:20 feat(shell): the composer's words are seed data; counts pipe into wc -l
+c00ead426 10-07 04:22 test(routing): a 359-probe routing corpus with a coverage budget (#1175 R4)
+2607edc16 10-07 04:27 chore(census): regenerate the self-AST census from CI (26a178ad4)
+3836ea751 10-07 04:54 chore(ladder): record the honest coding-ladder floor (24 → 23)
+52642b19f 10-07 05:08 fix(release): macOS CLI checksum without sha256sum; retry a busy DMG detach
+2fe2d2c88 10-07 05:11 feat(worker): seven native-only routing lanes run in the browser (#1175)
+d9f971c6c 10-07 05:11 feat(server): Rust evidence links and native program reports in the JS server (R1013)
+e00b3baa5 10-07 05:14 feat(solver): weekday of a date, primality, spelled square roots and stated sort results (R1017)
+8f5f37caf 10-07 05:19 fix(routing): prose before a colon is not the command; why-questions about code are not meta
+b12577c10 10-07 05:20 chore(core-boundary): ledger the R1017 / #1175 / #1176 handler growth
+d0819898a 10-07 05:27 fix(core-boundary): promote the PR #1188 interpreters; issue_918 reads its counts from the ledger
+ad7044e2e 10-07 05:37 feat(routing): 33 more browser probes route as Rust does (#1175)
+606941514 10-07 05:39 fix(worker): clarification and roleplay rows win over identity and greeting
+fb23435ab 10-07 05:40 docs(requirements): R1017 evidence for the small math families; status regenerated
+5415b5960 10-07 05:56 chore(parity): chat_learning_trace closed in CI; server parity ceiling 6 -> 5
+c09a9497a 10-07 06:27 fix(lint): rustdoc and clippy errors from the delegated-task batch
+cf1bf7552 10-07 06:30 data(wikidata): official snapshots for the twelve months and prime number
+d78dd98bf 10-07 06:30 fix(docker): the memory-upgrade E2E ignores box-dind's stdout notice
+bd2d64faa 10-07 06:32 feat(routing): 24 code probes route in the browser as in Rust; Rust splits glued CJK operators
+a78a2190a 10-07 06:46 fix(meta): named skill gaps, clarifications and agent opt-ins survive the meta reasoner
+edbe213f1 10-07 06:46 fix(web): Enter sends, temperature needs its number, composer padding, sidebar sharing
+5576c5878 10-07 06:53 fix(write_script): a script over files is derived, not templated
+150b921b5 10-07 07:32 fix(lint): five clippy errors; the 845 spec waits for the worker to boot
+083665765 10-07 07:38 chore(census): regenerate the self-AST census from CI (150b921b5)
+46d45c9e1 10-07 09:09 fix(ci): clear the full-suite failures, test-target clippy and gate drift
+59142276a 10-07 09:13 chore(census): regenerate the self-AST census from CI (46d45c9e1)
+dc4813762 10-07 09:32 fix(lint): typed empty comparisons and the last assert_is_empty sites
+34fa09d41 10-07 09:37 chore(census): regenerate the self-AST census from CI (dc4813762)
+b11ed4574 10-07 10:05 fix(lint): declare the issue 961 constants before the first statement
+7688c93db 10-07 10:20 fix(ci): suppress DEP0005 on the container download step; count the two new pushing checkouts
+7d4f110d2 10-07 11:14 fix(ci): HTML walker, registry from the loaded lexicon, add-on extension, local-folder gap
+6872307e4 10-07 11:19 fix(agentic): object call arguments, REST issue URLs, quoted literals stay whole
+a0e1786ee 10-07 11:50 fix(ratchet): name the HTML comment delimiters; sync the self-AST census (6872307e4)
+49447ab5c 10-07 11:55 fix(lint): array pattern for the file-type filter trim
+28443684c 10-07 11:59 chore(census): regenerate the self-AST census from CI (49447ab5c)
+2e1d6cb62 10-07 12:35 fix(formalize): Lean and Rocq keep the negation of a "No ..." statement
+f756b5b22 10-07 12:35 docs(changelog): note the Lean and Rocq negation fix

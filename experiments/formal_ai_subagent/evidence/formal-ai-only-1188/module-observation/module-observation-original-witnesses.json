@@ -1,0 +1,475 @@
+{
+  "solver_formalization.mjs": {
+    "contentId": "46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c",
+    "moduleEffects": "unknown",
+    "moduleSyntax": "unknown",
+    "initialization": [
+      {
+        "kind": "import",
+        "effects": "unknown",
+        "source": "import { candidateCompactSummary } from './translation_formalization.mjs';",
+        "contentId": "daa613bf242881af2617fec7b0e2afa361fb6629de629d70c95b453bc9906f26",
+        "span": {
+          "byteStart": 861,
+          "byteEnd": 935,
+          "start": 861,
+          "end": 935
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "export const DEFAULT_SELECTION_CONFIG = Object.freeze({\n  temperature: Math.fround(0.7),\n  guessProbability: Math.fround(0.8),\n  questioningRigor: Math.fround(0.4),\n});",
+        "contentId": "bef2cce99df18bfc91689a2ea94e1c3cddfeaaad1068bea0b8773d4bbe816cf3",
+        "span": {
+          "byteStart": 1025,
+          "byteEnd": 1193,
+          "start": 1025,
+          "end": 1193
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const f32 = Math.fround;",
+        "contentId": "428a842aa3ff99491104f938827133540ea7d4ead74a93fa36b46da53bb22c68",
+        "span": {
+          "byteStart": 1195,
+          "byteEnd": 1219,
+          "start": 1195,
+          "end": 1219
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const FNV_OFFSET = 0xcbf29ce484222325n;",
+        "contentId": "5d90463f1605e5c261335ff6541bf52814acf486a7a113deeaab20de82a90ba0",
+        "span": {
+          "byteStart": 1220,
+          "byteEnd": 1259,
+          "start": 1220,
+          "end": 1259
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const FNV_PRIME = 0x100000001b3n;",
+        "contentId": "954f10b40c1f4d7c08f5b8182a0ea99636b42b6db4d02debb61034c3c807a34a",
+        "span": {
+          "byteStart": 1260,
+          "byteEnd": 1293,
+          "start": 1260,
+          "end": 1293
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const MASK = (1n << 64n) - 1n;",
+        "contentId": "7cd4168904f3c82ef6473a694af753d63f67024bc0046971ca5cdbb4e0891efb",
+        "span": {
+          "byteStart": 1294,
+          "byteEnd": 1324,
+          "start": 1294,
+          "end": 1324
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const encoder = new TextEncoder();",
+        "contentId": "8c975eb5ac94b8c3645cec6d91be6485db47925f783914da5ae08b75eaaa26d4",
+        "span": {
+          "byteStart": 1325,
+          "byteEnd": 1359,
+          "start": 1325,
+          "end": 1359
+        }
+      }
+    ],
+    "declarations": [
+      {
+        "name": "selectedCandidate",
+        "parameters": [
+          "selection"
+        ],
+        "source": "export function selectedCandidate(selection) {\n  return selection.decision.kind === 'selected' ? selection.candidates[selection.decision.index] ?? null : null;\n}",
+        "span": {
+          "byteStart": 7901,
+          "byteEnd": 8062,
+          "start": 7901,
+          "end": 8062
+        },
+        "contract": {
+          "inputs": [
+            {
+              "name": "selection",
+              "type": {
+                "kind": "parameter",
+                "name": "selection"
+              }
+            }
+          ],
+          "result": null,
+          "callEffects": "unknown",
+          "preconditions": [],
+          "status": "unknown",
+          "gap": {
+            "reason": "MissingStructuralSchema",
+            "span": {
+              "start": 7950,
+              "end": 7956
+            }
+          },
+          "structuralRequirements": [
+            {
+              "root": "selection",
+              "selectors": [
+                {
+                  "property": "decision"
+                },
+                {
+                  "property": "kind"
+                }
+              ],
+              "status": "unproved",
+              "source": "selection.decision.kind",
+              "contentId": "65819544325301a1ec2365bb87ed364283fbda0c352f7333253aa0a9263050d0",
+              "span": {
+                "byteStart": 7957,
+                "byteEnd": 7980,
+                "start": 7957,
+                "end": 7980
+              }
+            },
+            {
+              "root": "selection",
+              "selectors": [
+                {
+                  "property": "candidates"
+                },
+                {
+                  "index": "selection.decision.index"
+                }
+              ],
+              "status": "unproved",
+              "source": "selection.candidates[selection.decision.index]",
+              "contentId": "994c37f714623395344cd519375e49b6c1a4e40483415a4f030a55f5b2bb861b",
+              "span": {
+                "byteStart": 7998,
+                "byteEnd": 8044,
+                "start": 7998,
+                "end": 8044
+              }
+            },
+            {
+              "root": "selection",
+              "selectors": [
+                {
+                  "property": "decision"
+                },
+                {
+                  "property": "index"
+                }
+              ],
+              "status": "unproved",
+              "source": "selection.decision.index",
+              "contentId": "b2706c77aae37550fe5805857a18e83217fbe98a43e470e28073c8dfaa221599",
+              "span": {
+                "byteStart": 8019,
+                "byteEnd": 8043,
+                "start": 8019,
+                "end": 8043
+              }
+            }
+          ]
+        },
+        "identity": {
+          "path": "solver_formalization.mjs",
+          "moduleContentId": "46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c",
+          "declarationContentId": "f022c81108800ba6b7f07b37f738ab314b2037d8e040ced250915350b46401c5",
+          "span": {
+            "byteStart": 7901,
+            "byteEnd": 8062,
+            "start": 7901,
+            "end": 8062
+          }
+        }
+      }
+    ]
+  },
+  "translation_formalization.mjs": {
+    "contentId": "f4161079a1e37708915bef76e0ddab96a4104745668c051a3d0b0f7330db822b",
+    "moduleEffects": "unknown",
+    "moduleSyntax": "unknown",
+    "initialization": [
+      {
+        "kind": "import",
+        "effects": "unknown",
+        "source": "import { cached, realm } from '../host.mjs';",
+        "contentId": "26abf7de406a6749012d8efec6f96467611999cd9c3c231cdaa407f337404ec3",
+        "span": {
+          "byteStart": 1241,
+          "byteEnd": 1285,
+          "start": 1241,
+          "end": 1285
+        }
+      },
+      {
+        "kind": "import",
+        "effects": "unknown",
+        "source": "import { agenticMessage } from '../messages.mjs';",
+        "contentId": "d231200d79b9dc414b1350d220226edc7ba2454406b13838a39a598df1a915d9",
+        "span": {
+          "byteStart": 1286,
+          "byteEnd": 1335,
+          "start": 1286,
+          "end": 1335
+        }
+      },
+      {
+        "kind": "import",
+        "effects": "unknown",
+        "source": "import { formatLinoValue } from './links_format.mjs';",
+        "contentId": "4bd5171740e585a91cb327f1af6a693c9b3a4c7c2e06d85e1d570ae628dffe8b",
+        "span": {
+          "byteStart": 1336,
+          "byteEnd": 1389,
+          "start": 1336,
+          "end": 1389
+        }
+      },
+      {
+        "kind": "import",
+        "effects": "unknown",
+        "source": "import { seedConcepts } from './seed_concepts.mjs';",
+        "contentId": "1cfe43192c0d207f37e7373bb5eadf436f0b9281ef8d3a369dd10a42f004d91f",
+        "span": {
+          "byteStart": 1390,
+          "byteEnd": 1441,
+          "start": 1390,
+          "end": 1441
+        }
+      },
+      {
+        "kind": "import",
+        "effects": "unknown",
+        "source": "import { meaningsWithRole, wordForms, wordIn, words, wordsForRoleInLanguages } from './seed_meanings.mjs';",
+        "contentId": "10e49411e3ddb5767b94751b2b42b542448996672752c1cdc8b511bbf65cc002",
+        "span": {
+          "byteStart": 1442,
+          "byteEnd": 1548,
+          "start": 1442,
+          "end": 1548
+        }
+      },
+      {
+        "kind": "import",
+        "effects": "unknown",
+        "source": "import { compareStrings } from './summarization_dedup.mjs';",
+        "contentId": "acaa8ce7c92eefa882fd23208685686842c2c5d3dfb37c7597be5cc55648d342",
+        "span": {
+          "byteStart": 1549,
+          "byteEnd": 1608,
+          "start": 1549,
+          "end": 1608
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "export const ROLE_WIKIDATA_ENTITY_ANCHOR = 'wikidata_entity_anchor';",
+        "contentId": "dde937df6d3085279a26dc7c2369c6e349d8d87fc1c515457bea032c986234ba",
+        "span": {
+          "byteStart": 1690,
+          "byteEnd": 1758,
+          "start": 1690,
+          "end": 1758
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "export const ROLE_BINARY_RELATION_PROPERTY = 'binary_relation_property';",
+        "contentId": "c6b21cbbb6c846b2382356ae3024dd696fad450150bd08cda3c253c50ceebbd0",
+        "span": {
+          "byteStart": 1841,
+          "byteEnd": 1913,
+          "start": 1841,
+          "end": 1913
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "export const ROLE_TRANSLATION_PROPERTY = 'translation_property';",
+        "contentId": "018f6ded969480ced7f5ba29bad79d3452b9170392f0465925da39166f55a5ec",
+        "span": {
+          "byteStart": 1992,
+          "byteEnd": 2056,
+          "start": 1992,
+          "end": 2056
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "export const ROLE_TRANSLATION_ACTION = 'translation_action';",
+        "contentId": "5ac5a10a32f451e0a41b08997c0f4d58a4922cb2ca8a8b5aac91e4d07f84ef52",
+        "span": {
+          "byteStart": 2134,
+          "byteEnd": 2194,
+          "start": 2134,
+          "end": 2194
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const UTF8 = new TextEncoder();",
+        "contentId": "c8d3c907878619afc747b7e4134409952521a7988e2f6aef878ff3321385397f",
+        "span": {
+          "byteStart": 2196,
+          "byteEnd": 2227,
+          "start": 2196,
+          "end": 2227
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const UTF8_DECODE = new TextDecoder();",
+        "contentId": "e58f995503853b9c941316e3b103d72f7662e0a244c629b93f9a5ef5e53f710a",
+        "span": {
+          "byteStart": 2228,
+          "byteEnd": 2266,
+          "start": 2228,
+          "end": 2266
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const TRIM_BOTH = /^\\p{White_Space}+|\\p{White_Space}+$/gu;",
+        "contentId": "1b459069bbeaab56762f7e3a4eb2ec5649dc067a6539c0680039ca3b17269637",
+        "span": {
+          "byteStart": 2267,
+          "byteEnd": 2325,
+          "start": 2267,
+          "end": 2325
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const CLEAN_EDGES = new Set(['\"', \"'\", '`', '“', '”', '‘', '’', '«', '»', '(', ')', '[', ']']);",
+        "contentId": "458c9ad5f9bbf815c3e8eb6bad1a839f0bb87bef997b5a6975327adda5a1d404",
+        "span": {
+          "byteStart": 2326,
+          "byteEnd": 2431,
+          "start": 2326,
+          "end": 2421
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const CLEAN_TAIL = new Set(['?', '。', '.', '!', ',', ';', ':']);",
+        "contentId": "85af679a9d4e71bee7956f9a1a99711426370d6b82553bb99b78f4c50f366464",
+        "span": {
+          "byteStart": 2432,
+          "byteEnd": 2498,
+          "start": 2422,
+          "end": 2486
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const trim = (text) => text.replace(TRIM_BOTH, '');",
+        "contentId": "8e755cd932e39afca17e824c4b7e99d3ce97fffc7525e6b2619bf80eaebd29b2",
+        "span": {
+          "byteStart": 2520,
+          "byteEnd": 2571,
+          "start": 2508,
+          "end": 2559
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const byteLength = (text) => UTF8.encode(text).length;",
+        "contentId": "6360eaf092b1823dd9598e38e50a965f404af8d0a998567fd5d9efdf4a7f5487",
+        "span": {
+          "byteStart": 2591,
+          "byteEnd": 2645,
+          "start": 2579,
+          "end": 2633
+        }
+      },
+      {
+        "kind": "unclassified",
+        "effects": "unknown",
+        "source": "const wordCount = (text) => text.split(/\\p{White_Space}+/u).filter(Boolean).length;",
+        "contentId": "ce084ed8f7fca2e29ad6c5fd80b515641bd4b66314d93a0145f62cf08649fbdf",
+        "span": {
+          "byteStart": 2688,
+          "byteEnd": 2771,
+          "start": 2676,
+          "end": 2759
+        }
+      }
+    ],
+    "declarations": [
+      {
+        "name": "candidateCompactSummary",
+        "parameters": [
+          "candidate"
+        ],
+        "source": "export function candidateCompactSummary(candidate) {\n  const parts = candidate.slots.map((slot) => `${slot.role}=${slot.anchor.id}`);\n  if (candidate.unresolved_terms.length > 0) parts.push(`unresolved=${candidate.unresolved_terms.join('|')}`);\n  return parts.length === 0 ? 'empty' : parts.join(' ');\n}",
+        "span": {
+          "byteStart": 6549,
+          "byteEnd": 6852,
+          "start": 6537,
+          "end": 6840
+        },
+        "contract": {
+          "inputs": [
+            {
+              "name": "candidate",
+              "type": {
+                "kind": "parameter",
+                "name": "candidate"
+              }
+            }
+          ],
+          "result": null,
+          "callEffects": "unknown",
+          "preconditions": [],
+          "status": "unknown",
+          "gap": {
+            "reason": "UnsupportedStatement",
+            "span": {
+              "start": 6604,
+              "end": 6609
+            }
+          },
+          "structuralRequirements": []
+        },
+        "identity": {
+          "path": "translation_formalization.mjs",
+          "moduleContentId": "f4161079a1e37708915bef76e0ddab96a4104745668c051a3d0b0f7330db822b",
+          "declarationContentId": "f861e014c4f894d6359cddfca938ec5343c5d6da2b978a96989906759aa57e8b",
+          "span": {
+            "byteStart": 6549,
+            "byteEnd": 6852,
+            "start": 6537,
+            "end": 6840
+          }
+        }
+      }
+    ]
+  }
+}

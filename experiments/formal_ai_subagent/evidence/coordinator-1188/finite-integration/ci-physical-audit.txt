@@ -1,0 +1,4 @@
+Cutoff T2282:83 complete raw transcripts present; missing=[]
+Verified repository-source Edit calls63; neutral template-Copy Bash calls4 (T2201/2203/2205/2237); neutral rustfmt Bash call1 (T2274 formats5ownedfiles); zero manual repository-source mutations.
+Actual tool headers {'bash': 103, 'read': 63, 'edit': 63}
+T2200 original broad ask:1source-readBash,0mutations; reviewed FA-applied patch, not independent synthesis. T2260 actual actionlint FAIL resolved2261repair/2262retry. T2277 actual18/19FAIL resolved2280–81receiptfixture/2282unchanged19/19retry.

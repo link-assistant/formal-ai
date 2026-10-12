@@ -1,0 +1,5 @@
+{
+  "taskId": "T2025",
+  "target": "js/worker/formal_ai_worker_source_callable_contracts.js",
+  "byteEqual": true
+}

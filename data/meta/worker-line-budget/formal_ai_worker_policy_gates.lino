@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_policy_gates.js"
+  ceiling 108
+  rationale "R1188-U29 (2026-10-09): the browser twin of the native try_policy_gates. Seven gates in the native order read their roles in data/seed/meanings-policy.lino as raw substrings of the lowercased prompt in five languages, log the native events and answer with the seeded response the slug names; isAgentModeRequest is the twin of is_agent_request, on which the chat handlers decline. The ceiling is the measured length."

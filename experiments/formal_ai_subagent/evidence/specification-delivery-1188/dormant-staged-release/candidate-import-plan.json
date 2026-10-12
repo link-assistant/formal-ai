@@ -1,0 +1,210 @@
+{
+  "schema": "staged-release-candidate-import-plan/v1",
+  "scope": "Native/compiler commands are CI-only behind GITHUB_ACTIONS guard; no native local invocation. Reviewed executable source proposal and actual local controlled byte/graph/tar observations. Source HOLD; no repository write authorized by this packet.",
+  "sourceGuards": [
+    {
+      "path": ".github/workflows/release.yml",
+      "bytes": 66375,
+      "sha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253"
+    },
+    {
+      "path": ".github/workflows/container-images.yml",
+      "bytes": 45881,
+      "sha256": "5a39be3f97ca9278f60b406c82bfadc4afd0bb9b93e330e8358ca63093a2972a"
+    },
+    {
+      "path": ".github/actions/publish-slim-image/action.yml",
+      "bytes": 2282,
+      "sha256": "c97ce1f496728be3143dace6f53b2c99ca2eac2c1dba6c0c174b51c36405374d"
+    },
+    {
+      "path": "scripts/prepared-release-binary.mjs",
+      "bytes": 6515,
+      "sha256": "3f06667000dbf019833d31530928c01d41d123564121ef7776525fc43cbd9630"
+    },
+    {
+      "path": "scripts/release-image-factory.mjs",
+      "bytes": 11685,
+      "sha256": "e904f99046f06521b8beb491b131072a3141f862e808b7bfb4cf381902e5c1d6"
+    },
+    {
+      "path": "scripts/native-release-source.mjs",
+      "bytes": 8670,
+      "sha256": "5c7f92f8e5678647aea65267d8af732cfb6d0840add158510363cc37be736a56"
+    },
+    {
+      "path": "scripts/native-release-artifact.mjs",
+      "bytes": 8187,
+      "sha256": "f87de791bcd26e94470d2529a99026e91e19ab7403940ced15877a9743c5bad9"
+    },
+    {
+      "path": "scripts/native-release-trust.mjs",
+      "bytes": 4426,
+      "sha256": "fd0c82c3b524878fee4d8096c6925002a2ce3393df7f2ad27f0b3be503ba973e"
+    },
+    {
+      "path": "scripts/publish-crate.rs",
+      "bytes": 12505,
+      "sha256": "1e2ba73953bbd9248b8b3911ae59c19775d8cd863a86f2d9e6703f36da43f1f6"
+    },
+    {
+      "path": "scripts/wait-for-crate.rs",
+      "bytes": 5326,
+      "sha256": "ba342b25abe109d1a9152ec412cca6a23d608fc8986f4d43ba84ce4219292ffc"
+    },
+    {
+      "path": "scripts/smoke-test-published-crate.sh",
+      "bytes": 524,
+      "sha256": "325aea9142fd4fac0909458309a722f01af2024d7ee3a5ddb68ee5a6f75b8cc5"
+    },
+    {
+      "path": "scripts/invoke-create-github-release.sh",
+      "bytes": 1123,
+      "sha256": "657caca9f3a5f25ce049c44e6c03c5a9c8632c6f6e784bc9037c56629f27e51f"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/job_timeouts_as_failures.rs",
+      "bytes": 22168,
+      "sha256": "2ec3d9f49f5557cdd8a7f020243e398a9b49d50c441435e9fd4bf564abdb0f94"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/release_publishing.rs",
+      "bytes": 40806,
+      "sha256": "5726ff564c88d2d17a4607eaa4999b2a0e3aefcbe497c51451b55ece477e7d6d"
+    },
+    {
+      "path": "rust/tests/web/package-release-publication.test.mjs",
+      "bytes": 6304,
+      "sha256": "a762e945bac1d2e0c43d165087467473c829e419ff2b1fbea43a24c887ad9325"
+    }
+  ],
+  "finiteDormantImport": [
+    {
+      "draft": "/private/tmp/spec-recurrence-1188/u9-factory-sandbox/u9-release-split/candidate-release-staged.yml",
+      "target": ".github/workflows/release-staged.yml",
+      "bytes": 73874,
+      "sha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d",
+      "before": null
+    },
+    {
+      "draft": "/private/tmp/spec-recurrence-1188/u9-factory-sandbox/u9-release-split/release-stage-transfer.mjs",
+      "target": "scripts/release-stage-transfer.mjs",
+      "bytes": 17495,
+      "sha256": "ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc",
+      "before": null
+    },
+    {
+      "draft": "/private/tmp/spec-recurrence-1188/u9-factory-sandbox/u9-release-split/release-stage-transfer.test.mjs",
+      "target": "rust/tests/web/release-stage-transfer.test.mjs",
+      "bytes": 8131,
+      "sha256": "aa379ae02ff178407de86709b10ac46717967864a78b2cae92d1e65b0ab27bb3",
+      "before": null
+    }
+  ],
+  "heldCallerReplacement": {
+    "draft": "/private/tmp/spec-recurrence-1188/u9-factory-sandbox/u9-release-split/candidate-release-caller.yml",
+    "target": ".github/workflows/release.yml",
+    "bytes": 45294,
+    "sha256": "c43d9c89579ae30efe1f872ca078597cb44f884971121ecd7240d634eec40838",
+    "before": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253",
+    "heldReason": "Original90/min>=60floor remain production until genuine complete cold stage acceptance and scheduler/artifact observations. Dormant callee declares30cap but proves no cold runtime."
+  },
+  "operationCoverage": {
+    "originalOperations": 52,
+    "auto": 28,
+    "manual": 24,
+    "convertedCrossStageOutputRefs": 104,
+    "realJobs": 16,
+    "source": "stage-source-coverage.json",
+    "actualBindings": "candidate-output-bindings.json",
+    "assertions": "candidate-controls-result.json",
+    "allOriginalPackageVerificationPreserved": true,
+    "noNoVerify": true,
+    "defaultFeaturesReleaseWarningsCompilerPreserved": true
+  },
+  "transfers": {
+    "source": "Actual git archive bytes sealed after exact remote current main/tag/HEAD/tree selection. Consumers checkout exact SHA independently, compare their own git archive bytes and current physical tracked diff/native inputs, actual rustc full contract, protocolSHA/run/attempt/source producer. Artifact id from real upload job output; descriptor/archive hashes separate.",
+    "binary": "Exact prepared-release directory archived with executable-byte/native-source/compiler/status receipt; consumer descriptor+tar bytes match trusted outputs and native receipt source/version/run/attempt/compiler/producer. Copy exact verified producer bytes to rust/target/release/formal-ai for original Docker context, preserving0755. No replacement cargo build claims.",
+    "package": "Original actual cargo package --locked -p formal-ai including verification. Transfer exact crate and complete unpacked per-file hash inventory. Publish runs original real cargo publish script, including its own verification/rebuild semantics. Original wait remains; actual static registry crate downloaded and all decompressed package contents compared to actual prior verified archive before original cold cargo install/--help.",
+    "images": "Original full factory/slim verify/anonymous GHCR/mirror order before Create. Full/slim/optional mirror receipts and binary/source packet archived after actual success, bind exact full repository digest and source/version/executable; final consumer rechecks current main/tag and all expected descriptor identities before original Create. Original attachments/Pages steps retained after Create.",
+    "cache": "No Cargo target tree/state artifact or guessed compiler reuse. Existing actual BuildKit runtime token/result URL and same scope=docker-image cache-from/cache-to remain original full factory. Independent full4 native/container route topology remains separate after published tag, unchanged authority."
+  },
+  "runtimeAudit": {
+    "calleeInitialAuthority": "Before any version mutation, prepare job requires exact original caller workflow_ref, auto push-main or manual instant-dispatch-main; CI-only helper repeats workflow_ref/mode/event/main/protocol checks. Heldout missing guard rejected.",
+    "protocolCheckoutClean": "Fixed: prepare original checkout first; trusted protocol checkout after original preparation, before seals. Downstream exact source checkout occurs before protocol checkout. Heldout reordering rejected.",
+    "artifactIds": "Same caller/callee GitHub run only; each real upload output artifact-id passed via actual joboutputs/needs to single-ID download; defaults currentrepo/run, exact source producer/run/attempt checked; no cross-run import. Missing/skipped IDs download only when active release.",
+    "artifactPaths": "Single ID contents extract directly into declared .release-transfer/kind. Outer zip may normalize tar file mode; inner tar preserves executable modes, actual fixture proved0755. Reject symlink/hardlink/special/pathtraversal/unmanifested inventory.",
+    "packageCleanup": "Fresh jobs import verified source/package bytes, no assumed targetcache retention. Actual crate archive is rust/target/package/formal-ai-VERSION.crate, transfer includes explicit complete package contents descriptor. No removal of package or cold install validation.",
+    "skippedOutputs": "Prepare always records baseline current source/compiler/version. Inactive release downstream compute jobs skip; final always guard permits only inactive baseline path or all active stages successful. Final source/artifact checks gatedactive; original ResolvePages always remains. Caller container-tag only actual Create success and original downstream requires callerresultsuccess. opposite mode branch remains skipped.",
+    "writerLease": "Exact original caller job concurrency formal-ai-repository-writes+queue:max persists until whole reusable job completes; callee/jobs have no duplicate concurrency. Documents support callerconcurrency/ancestorlease; actual whole-callee retention and contender wait remain controlledGitHub acceptance, not locally proven.",
+    "downstreamStable": "Existing independent native-container consumer remains original caller after successful Create/container tag; published-stable source authority and full/ARM architecture source compilation/receipts/cachekeys unchanged. Intermediate prepared authority never substitutes independent published trust."
+  },
+  "primaryDocs": [
+    {
+      "url": "https://github.com/actions/download-artifact",
+      "observed": "Single artifactID directly extracts at path; currentrepo/run default; crossrun needs token/repo/run fields; tar preserves inner permissions."
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/reusing-workflow-configurations",
+      "observed": "Callerjob supports concurrency/needs/if/permissions but not outputs/env/steps/runs-on/timeout; callee env explicit and outputs workflow_call backedactualjob; github context caller."
+    }
+  ],
+  "actualEvidence": {
+    "wholeImplementationAsk": "T4159 MissingContract zero tools, no authored candidate",
+    "preservedFailures": [
+      "T4160 missing direct publish dependency",
+      "T4162 missing full digest output + installedactionlintqueue syntax limitation",
+      "T4164 source driftSHA refusal",
+      "T4165 stalehelper export after source-guard prevented install"
+    ],
+    "actualControls": [
+      "T4181 graph1positive11refusals,descriptor1positive15refusals,source1positive5refusals; actionlint0 except exact sourceexistingunsupportedqueue diagnostic, shellcheck/pyflakesoff",
+      "T4172 actualtar1positive7refusals and0755 preserved; controlled fixture only; T4178 portable Node2tests PASS rawexit0, driver marker false retained"
+    ]
+  },
+  "pendingAcceptance": [
+    "Actual GitHub upload/download service same reusable run artifact IDs and descriptor output delivery",
+    "Actual whole caller writerlease ancestor + independent contender waiting through final mutable stage",
+    "Actual fresh compiler/source build/package/publish/wait/cold registry install/full/slim/mirror/Create coverage and durations <=30 each",
+    "Issue977 oldfloor migration only after all prior genuine complete replacement proof",
+    "Current credentials validated by actual release, historical success is not currentvalidity",
+    "Otherfour U9 exception families untouched"
+  ],
+  "githubExecuted": false,
+  "nativeExecuted": false,
+  "publication": false,
+  "coldTiming": false,
+  "autonomousCredit": 0,
+  "amplificationCredit": 0,
+  "finalInstalledSources": [
+    {
+      "target": ".github/workflows/release-staged.yml",
+      "bytes": 73874,
+      "sha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d"
+    },
+    {
+      "target": "scripts/release-stage-transfer.mjs",
+      "bytes": 17495,
+      "sha256": "ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc"
+    },
+    {
+      "target": "rust/tests/web/release-stage-transfer.test.mjs",
+      "bytes": 19485,
+      "sha256": "169f758848bb2f60c67b52f8d174b5b3e2b7ab940a4ab6ebff224ebaa623ba38"
+    }
+  ],
+  "checkedProjection": {
+    "sourceWriter": "T4187",
+    "actualVerification": "T4188",
+    "tests": 4,
+    "status": 0,
+    "driverMarkerOk": false,
+    "canonicalExactSourceSnapshot": true,
+    "originalOperations": 52,
+    "transferredReferences": 104,
+    "projectionRefusals": 15,
+    "sourceCallerUnchanged": true,
+    "helperNativeCommands": "GitHubCIonly; never launched locally"
+  },
+  "initialImportPlanRetained": "finiteDormantImport entries describe exact initialT4183 install; subsequent source-only test amendment T4187 yields final-source-manifest identities."
+}

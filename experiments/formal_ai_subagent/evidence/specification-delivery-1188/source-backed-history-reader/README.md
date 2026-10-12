@@ -1,0 +1,11 @@
+# Source-backed imported history reader
+
+Canonical free solve_with_history imports and aliases now bind to the actual default WorkerHost history operation only after the real public native export and forwarding body are structurally verified. Native producer identities and original fixture bytes are checked again before execution. Arbitrarily named pure local helpers are interpreted from their typed source expression bodies; effects, recursion, nested assertions and unknown profiles reject complete cases. Call arguments and original assertions retain native order.
+
+T3136 passes25/25 closest checks: unchanged14readerchecks plus11source-contract/helper/historycontrols, including genuine unchanged native assertions. The full actual T3134 observation is1178total,201carried,186passing,15failing,977unsupported. All prior180 pass. Six newly exposed direct-history cases pass; twelve direct-history cases and three generic-helper procedural cases fail honestly. The authoritative committed record remains root-owned and untouched in this batch. No field-only count promotion or native assertion changes were made.
+
+Full prompts, history, observed answers, evidence and assertion stops are preserved in the new-history and additional-history reports. T3127 is a partial helper readiness observation, not a whole-case pass. Source snapshots and preimages retain the source scope in artifacts.json; no native compilation was performed. BroadT3124 authored a description only, and productionT3129 plus exactunchangedT3138 performed marker audits; autonomous synthesis remainsOpenG112. Literal applications are separate completed tasks.
+
+T3124–T3138 totals27physical calls: 19 bash, 6 write, 2 grep. Six Write calls author scratch drafts or four owned production paths. No model-token or monetary cost measurement is claimed. Archive/seal invocations are recorded separately. Every raw artifact is gzip-compressed losslessly, with original byte length and SHA256; decode equality was verified before writing.
+
+T3139 adds one archive Bash call (28physicalcalls throughthatcutoff). T3140 verifies every archived original byte length and hash, preserves the archive invocation, and adds one seal Bash call. Complete phaseT3124–T3140 totals29calls:21Bash,6Write,2Grep. T3140raw request/transcript is retained separately for coordinator sealing.

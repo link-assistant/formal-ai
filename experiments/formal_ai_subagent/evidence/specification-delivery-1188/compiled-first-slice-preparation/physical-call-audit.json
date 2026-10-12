@@ -1,0 +1,109 @@
+{
+  "tasks": 15,
+  "toolCalls": 23,
+  "read": 1,
+  "bash": 18,
+  "write": 4,
+  "scope": "includes previously separately sealedT2946–48; integrate unique IDs, not duplicate counts; no token/cost claim",
+  "observed": [
+    {
+      "taskId": "T2941",
+      "calls": [
+        "read"
+      ]
+    },
+    {
+      "taskId": "T2942",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2943",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2944",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2945",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2946",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2947",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2948",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2949",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2950",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2951",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2952",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2953",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2954",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2955",
+      "calls": [
+        "bash"
+      ],
+      "provenance": "current archival invocation; external transcript finalized after process return"
+    }
+  ]
+}

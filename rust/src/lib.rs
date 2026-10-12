@@ -7,6 +7,7 @@ pub mod anthropic;
 pub mod anticipation;
 pub mod arithmetic;
 pub mod associative_package;
+pub mod associative_packages;
 pub mod associative_persistence;
 pub mod attachment_context;
 pub mod bounded_autonomy;
@@ -17,7 +18,9 @@ pub(crate) mod calculation_word_problem;
 pub mod change_request;
 pub mod client_contract_learning;
 pub mod client_integrations;
+pub mod cloud_sync;
 pub(crate) mod code_editing;
+pub mod code_example_knowledge;
 pub(crate) mod coding;
 pub use coding::composition;
 pub use coding::composition_search;
@@ -26,6 +29,7 @@ pub use coding::discovered_procedures;
 pub use coding::fragment_catalog;
 pub use coding::function_catalog as coding_function_catalog;
 pub use coding::ir_lowering;
+pub use coding::program_contract;
 pub use coding::program_ir;
 pub use coding::python_render;
 pub use coding::python_signature;
@@ -34,6 +38,7 @@ pub use coding::task_spec as coding_task_spec;
 pub mod authoring_loop;
 pub mod behavior_delta;
 pub mod capability_routing;
+pub mod cli_env;
 pub mod cli_solve;
 pub mod coding_research_learning;
 pub mod computer_use;
@@ -46,14 +51,17 @@ pub mod contribution_write_path;
 pub mod conversation_context;
 pub mod cue_lexicon;
 pub mod definition_merge;
+pub mod derivation;
 pub mod dialog_conversation;
 pub mod dialog_log;
+pub mod discovery_production;
 pub mod document_formats;
 pub mod draft_portfolio;
 pub mod dreaming;
 pub mod dreaming_application;
 pub mod dreaming_runtime;
 pub mod engine;
+pub(crate) mod engine_answer;
 pub(crate) mod engine_assistant_name;
 pub(crate) mod engine_responses;
 pub mod entity_resolution;
@@ -64,7 +72,9 @@ pub mod execution_box;
 pub mod execution_evidence;
 pub(crate) mod execution_intent;
 pub mod external_benchmarks;
+pub mod fact_check;
 pub mod fact_checking;
+pub mod fact_live;
 pub(crate) mod failure_reporting;
 pub mod family_method;
 pub mod file_legality;
@@ -77,6 +87,7 @@ pub mod google_trends_catalog;
 pub mod google_trends_learning;
 pub mod grammar_kinds;
 pub mod handler_promotion;
+pub mod history_context;
 pub mod how_to_capture_manifest;
 pub mod how_to_guide;
 pub mod implementation_language;
@@ -90,11 +101,14 @@ pub mod language_frontier;
 pub mod learning_adoption_ledger;
 pub mod learning_cycle;
 pub mod learning_ledger;
+pub mod least_action;
+pub mod legality_warning;
 pub mod lexeme_import;
 pub mod link_store;
 pub(crate) mod links_format;
 pub mod links_query;
 pub mod links_substitution_query;
+pub mod lino_adapters;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod local_transport;
 pub(crate) mod mcp;
@@ -109,6 +123,7 @@ pub(crate) mod meta_core;
 pub mod meta_frame;
 pub(crate) mod meta_method_answers;
 pub(crate) mod meta_method_dispatch;
+pub mod meta_reasoner;
 pub mod meta_reasoning;
 pub mod meta_self_improvement;
 pub mod meta_translate;
@@ -147,6 +162,7 @@ pub mod release_timeline;
 pub mod repair_strategy;
 pub mod repository_workspace;
 pub mod requirement_contradiction;
+pub mod research_documents;
 pub mod research_learning;
 pub(crate) mod responses_stream;
 pub mod retrieval_method;
@@ -173,9 +189,11 @@ pub mod server;
 pub mod service_accessibility;
 pub mod shared_dialog;
 pub mod shared_memory;
+pub mod si_units;
 pub mod skill_compiler;
 pub mod skill_ledger;
 pub mod skill_procedure;
+pub mod small_model_fallback;
 pub mod solution_evidence;
 pub mod solver;
 pub(crate) mod solver_config;
@@ -206,15 +224,19 @@ pub mod summarization;
 pub mod task_decomposition;
 pub mod telegram;
 pub mod telegram_runtime;
+pub mod telemetry;
 pub mod thinking;
 pub mod thinking_prose;
 pub mod tool_scope;
 pub mod trace_record;
 pub mod translate_write;
 pub mod translation;
+pub mod triz_solver;
 pub(crate) mod unknown_opener;
 pub mod verifiable_task;
+pub mod version_resolution;
 pub mod web_engine_core;
+pub mod web_formalize;
 pub mod web_search_core;
 pub mod web_search_fusion_core;
 pub mod web_search_markers;
@@ -255,9 +277,9 @@ pub use client_integrations::{
 pub use coding::rosetta_request::try_rosetta_code_request_with_client;
 pub use document_formats::{
     DOCUMENT_FORMAT_ENGINE, DocumentConversion, DocumentFormatCapabilities,
-    canonical_document_format_label, convert_document_format, cross_format_document_concepts,
-    document_format_capabilities, document_package_is_recognized, document_profile_is_recognized,
-    supported_document_formats,
+    FormalizedDocumentSource, canonical_document_format_label, convert_document_format,
+    cross_format_document_concepts, document_format_capabilities, document_package_is_recognized,
+    document_profile_is_recognized, formalize_document_source, supported_document_formats,
 };
 pub use dreaming::{
     DreamingAction, DreamingActionKind, DreamingConfig, DreamingDurability,
@@ -464,7 +486,41 @@ pub use solver_handler_how_synthesis::{
 pub use solver_handlers::{
     AnswerAgreement, MemoryQueryExecution, VerifiedAnswer, answer_memory_recall,
     classify_agreement, execute_memory_query, execute_memory_query_with_options,
-    try_web_search_with_client,
+    handle_advice_request, handle_brainstorm_request, handle_code_debugging,
+    handle_code_explanation, handle_code_refactoring, handle_code_review,
+    handle_creative_writing_request, handle_formalization_request, handle_format_conversion,
+    handle_planning_request, handle_product_search, handle_regex_synthesis,
+    handle_shell_command_compose, handle_sql_synthesis, handle_summarization_request,
+    handle_test_generation, handle_text_rewrite, handle_word_problem,
+    try_page_formalization_with_client, try_translation, try_web_search_with_client,
+};
+// Issue #1186 R4/R6: the relative-meta-logic export step and the theorem-prover
+// step of the formalization task, public so the unit suite pins the rendered
+// sources, the PATH lookup and the recorded runs.
+pub use solver_handlers::{
+    AppliedPredicate, ClauseExporter, ProverRecord, ProverRun, QuantifiedClause, RmlExport,
+    prover_check_slots, prover_command_in, prover_file_stem, prover_records, prover_runs_with,
+    prover_unit, rml_source, run_prover_with, run_rml_export_with,
+};
+// Issue #1172 R2/R6/R7: the subject-verified fact gate, seeded comparisons and
+// questions over prompt-supplied text, public so the unit suite pins them.
+pub use solver_handlers::{
+    ResolvedSubject, SubjectGate, fact_subject_gate, gated_fact_record, resolve_fact_subject,
+    try_fact_comparison, try_prompt_text_question,
+};
+// Issue #1172 R3/R8: the live Wikidata answer and the researched explanation
+// of the `fact_lookup` row, public so the unit suite drives them through a
+// fixture transport.
+#[cfg(feature = "meta-language")]
+pub use solver_handlers::try_explanation_research;
+pub use solver_handlers::{
+    LiveFactQuestion, explanation_concept, live_fact_question, try_fact_live_answer,
+    try_fact_lookup_with_client, try_fact_lookup_with_offline,
+};
+// Issue #1172 R1172-5: the concept_lookup row's dictionary step, public so the
+// unit suite drives it over committed captures.
+pub use solver_handlers::{
+    definition_term, try_word_definition_with_client, try_word_definition_with_offline,
 };
 pub use solver_helpers::humanize_url;
 pub use source_fetch::{
@@ -473,7 +529,7 @@ pub use source_fetch::{
 pub use source_research::{
     OptionResearchExecution, ResearchFailure, ResearchPage, SourceResearchExecution,
     StatementResearchExecution, execute_option_research, execute_source_research,
-    execute_statement_research,
+    execute_statement_research, need_routes_to_web_search, research_unmatched_need,
 };
 pub use statement_verification::{
     CapturedStatementEvidence, MarketPriceAssessment, MarketPriceClaim,

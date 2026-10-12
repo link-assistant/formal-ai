@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "巧克力"
+        },
+        "es": {
+          "language": "es",
+          "value": "chocolate"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "以可可豆为主要原料的食品"
+        },
+        "es": {
+          "language": "es",
+          "value": "alimento hecho de granos de semillas de cacao asados ​​y molidos"
         }
       },
       "aliases": {

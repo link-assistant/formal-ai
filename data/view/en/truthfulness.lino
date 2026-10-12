@@ -1,0 +1,9 @@
+view
+  id M-8e1d0894da31
+  lemma truthfulness
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the quality of being truthful"
+    provenance (wordnet)

@@ -1,0 +1,12 @@
+language en
+lemma kilocalorie
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a unit of heat equal to the amount of heat required to raise the temperature of one kilogram of water by one degree at one atmosphere pressure; used by nutritionists to characterize the energy-producing potential in food"
+    id oewn-13748672-n
+    partOfSpeech n
+    synonyms (Calorie "kilogram calorie" "large calorie" "nutritionist's calorie")
+source "oewn:2024"

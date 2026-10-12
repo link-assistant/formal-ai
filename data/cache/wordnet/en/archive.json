@@ -1,0 +1,24 @@
+{
+  "lemma": "archive",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02738091-n",
+      "partOfSpeech": "n",
+      "definition": "a depository containing historical records and documents"
+    },
+    {
+      "id": "oewn-01387292-v",
+      "partOfSpeech": "v",
+      "definition": "put into an archive",
+      "synonyms": [
+        "file away"
+      ]
+    }
+  ]
+}

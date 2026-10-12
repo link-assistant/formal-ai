@@ -74,7 +74,7 @@ environments
     tools ("intent_routing" "write_program" "code_execution" "concept_lookup" "fact_lookup" "summarize_conversation" "brainstorm" "coreference" "roleplay" "html_replies")
   environment docker_microservice
     label "Docker-in-Docker Telegram bot image"
-    runtime "Rust binary on konard/box-dind:2.1.1 with an inner Docker daemon"
+    runtime "Rust binary on konard/box-dind:2.10.2 with an inner Docker daemon"
     seed_path "data/seed/ (embedded in the binary)"
     memory_store "Telegram chat history plus start-command logs under /tmp/start-command/logs/"
     memory_export_command "formal-ai telegram --mode polling (default container command)"

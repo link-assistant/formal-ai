@@ -1,0 +1,13 @@
+view
+  id M-8051400374bc
+  lemma reasoning
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "thinking that is coherent and logical"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "endowed with the capacity to reason"
+    provenance (wordnet)

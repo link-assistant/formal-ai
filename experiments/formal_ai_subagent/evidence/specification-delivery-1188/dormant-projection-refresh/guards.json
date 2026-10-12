@@ -1,0 +1,30 @@
+[
+  {
+    "path": ".github/workflows/release-staged.yml",
+    "sha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d"
+  },
+  {
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+    "sha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253"
+  },
+  {
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+    "sha256": "11d6ffbdabd633e12e7e877a4317cfe6d2b377eacde29668494d2fd0f7432c35"
+  },
+  {
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+    "sha256": "6dec15e75a0ac0da6a652b3e4415d994f0478973c161a8d84ca90a72f267f669"
+  },
+  {
+    "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+    "sha256": "c43d9c89579ae30efe1f872ca078597cb44f884971121ecd7240d634eec40838"
+  },
+  {
+    "path": ".github/workflows/release.yml",
+    "sha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8"
+  },
+  {
+    "path": "rust/tests/web/release-stage-transfer.test.mjs",
+    "sha256": "309e3f1605f441dbcbcab19c163711c433289d0b33696ad64b3df37d1c3d7243"
+  }
+]

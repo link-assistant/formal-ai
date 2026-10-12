@@ -1,0 +1,13 @@
+view
+  id M-d531ce4920db
+  lemma incomplete
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not complete or total; not completed"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not yet finished"
+    provenance (wordnet)

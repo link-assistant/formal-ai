@@ -910,7 +910,7 @@ mod tests {
     fn the_worker_list_is_regenerated_from_the_directory_it_mirrors() {
         let root = temp_dir("worker");
         write(&root, "js/worker/formal_ai_worker.js", "// entry\n");
-        write(&root, "js/worker/formal_ai_worker_00.js", "// zero\n");
+        write(&root, "js/worker/formal_ai_worker_seed_responses_and_language.js", "// zero\n");
         write(&root, "js/worker/how_to_guide.js", "// guide\n");
         write(&root, "js/worker/notes.md", "not a module\n");
         write(&root, "js/worker-modules.js", "self.FORMAL_AI_WORKER_MODULES = [];\n");
@@ -923,12 +923,12 @@ mod tests {
 
         assert_eq!(
             js_modules_in(&root.join("js/worker")),
-            ["formal_ai_worker_00.js", "how_to_guide.js"],
+            ["formal_ai_worker_seed_responses_and_language.js", "how_to_guide.js"],
             "only JavaScript modules are listed, and the entry point that loads the list is not a module in it"
         );
         assert_eq!(process(&root, &file, true), Outcome::Rewritten);
         let rendered = fs::read_to_string(root.join("js/worker-modules.js")).unwrap();
-        assert!(rendered.contains("\"worker/formal_ai_worker_00.js\""));
+        assert!(rendered.contains("\"worker/formal_ai_worker_seed_responses_and_language.js\""));
         assert!(rendered.contains("\"worker/how_to_guide.js\""));
         assert!(!rendered.contains("notes.md"));
         assert_eq!(process(&root, &file, false), Outcome::Unchanged);
@@ -938,10 +938,10 @@ mod tests {
     fn the_worker_list_is_rendered_from_the_directory_contents() {
         let rendered = render_js_module_list(
             "js/worker",
-            &["formal_ai_worker_00.js".to_string(), "how_to_guide.js".to_string()],
+            &["formal_ai_worker_seed_responses_and_language.js".to_string(), "how_to_guide.js".to_string()],
         );
         assert!(rendered.contains("self.FORMAL_AI_WORKER_MODULES = Object.freeze(["));
-        assert!(rendered.contains("  \"worker/formal_ai_worker_00.js\",\n"));
+        assert!(rendered.contains("  \"worker/formal_ai_worker_seed_responses_and_language.js\",\n"));
         assert!(rendered.contains("  \"worker/how_to_guide.js\",\n"));
         assert!(rendered.ends_with("]);\n"));
     }

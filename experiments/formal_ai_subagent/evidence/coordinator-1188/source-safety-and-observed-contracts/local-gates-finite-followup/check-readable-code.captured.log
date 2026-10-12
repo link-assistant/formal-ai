@@ -1,0 +1,3 @@
+$ node scripts/check-readable-code.mjs
+js/seed/worker-bootstrap-responses.js: packed: 535 line(s) for 113006 characters (at least 707 needed)
+readable code: 1 unreadable file(s) of 3706; break the lines (fix the generator for a generated file), or list a true bundle with its reason in data/meta/readable-code-exemptions.lino

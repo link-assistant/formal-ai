@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "月球"
+        },
+        "es": {
+          "language": "es",
+          "value": "Luna"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "地球唯一的天然衛星"
+        },
+        "es": {
+          "language": "es",
+          "value": "satélite natural de la Tierra"
         }
       },
       "aliases": {
@@ -118,6 +126,16 @@
           {
             "language": "zh",
             "value": "嬋娟"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "la Luna"
+          },
+          {
+            "language": "es",
+            "value": "Satélite de la Tierra"
           }
         ]
       }

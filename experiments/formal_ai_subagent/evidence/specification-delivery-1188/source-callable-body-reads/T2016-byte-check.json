@@ -1,0 +1,5 @@
+{
+  "taskId": "T2016",
+  "target": "rust/src/coding/synthesis_runtime.rs",
+  "byteEqual": true
+}

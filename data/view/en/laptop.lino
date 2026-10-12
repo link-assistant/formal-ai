@@ -1,0 +1,9 @@
+view
+  id M-3704488b4e1e
+  lemma laptop
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a portable computer small enough to use in your lap"
+    provenance (wordnet)

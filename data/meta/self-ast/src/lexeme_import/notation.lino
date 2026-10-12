@@ -1,0 +1,15 @@
+self_ast_census
+  target src/lexeme_import/notation.rs
+  language rust
+  fidelity signature
+  byte_len 4221
+  line_count 118
+  content_id source_module_1ad5c6c104726d0d
+  symbol_count 6
+  symbols
+    const RULES 5 5
+    function project 8 13
+    function selected 15 48
+    function indentation 50 54
+    function factor 56 114
+    module tests 118 118

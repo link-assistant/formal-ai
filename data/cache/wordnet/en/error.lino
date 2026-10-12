@@ -1,0 +1,44 @@
+language en
+lemma error
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a wrong action attributable to bad judgment or ignorance or inattention"
+    examples ("he made a bad mistake" "she was quick to point out my errors" "I could understand his English in spite of his grammatical faults")
+    id oewn-00071785-n
+    partOfSpeech n
+    synonyms (mistake fault)
+  entry
+    definition "inadvertent incorrectness"
+    id oewn-04809878-n
+    partOfSpeech n
+    synonyms (erroneousness)
+  entry
+    definition "a misconception resulting from incorrect information"
+    id oewn-05904072-n
+    partOfSpeech n
+    synonyms ("erroneous belief")
+  entry
+    definition "(baseball) a failure of a defensive player to make an out when normal play would have sufficed"
+    id oewn-00072888-n
+    partOfSpeech n
+    synonyms (misplay)
+  entry
+    definition "departure from what is ethically acceptable"
+    id oewn-04860996-n
+    partOfSpeech n
+    synonyms (wrongdoing)
+  entry
+    definition "(computer science) the occurrence of an incorrect result produced by a computer"
+    id oewn-07314187-n
+    partOfSpeech n
+    synonyms ("computer error")
+  entry
+    definition "part of a statement that is not correct"
+    examples ("the book was full of errors")
+    id oewn-06782183-n
+    partOfSpeech n
+    synonyms (mistake)
+source "oewn:2024"

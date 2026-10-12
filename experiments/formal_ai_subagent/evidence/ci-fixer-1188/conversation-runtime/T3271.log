@@ -1,0 +1,486 @@
+>> read {"filePath":"rust/tests/web/issue-1175-claim-routing.test.mjs","file_path":"rust/tests/web/issue-1175-claim-routing.test.mjs","path":"rust/tests/web/issue-1175-claim-routing.test.mjs"}
+   <file>
+   00001| // Issue #1175 R3, browser root: the claim rows of
+   00002| // data/seed/capability-routing.lino are consulted before a handler runs
+   00003| // (claimRouteAdmits in js/worker/formal_ai_worker_dispatch.js), as
+   00004| // rust/tests/unit/capability-routing/issue_1175_claim_routing.rs pins for the native router.
+   00005| 
+   00006| import assert from "node:assert/strict";
+   00007| import test from "node:test";
+   00008| 
+   00009| import { createWorkerContext, evaluate, plain } from "./support/browser-runtime.mjs";
+   00010| 
+   00011| const worker = createWorkerContext();
+   00012| const seeded = evaluate(worker, "loadSeed()");
+   00013| 
+   00014| async function admits(handler, prompt) {
+   00015|   await seeded;
+   00016|   return plain(evaluate(worker, `claimRouteAdmits(${JSON.stringify(handler)}, ${JSON.stringify(prompt)})`));
+   00017| }
+   00018| 
+   00019| test("the claim rows are read from the capability table", async () => {
+   00020|   await seeded;
+   00021|   assert.deepEqual(plain(evaluate(worker, "claimRouteRows()")), [
+   00022|     { handler: "software_project", browserHandler: "trySoftwareProjectRequest", admitsOn: ["object_phrase_artifact", "approval_of_a_proposal"], refusalEvents: [] },
+   00023|     { handler: "terminal_command", browserHandler: "tryTerminalCommand", admitsOn: ["shell_command_shape", "semantic_shell_task"], refusalEvents: [] },
+   00024|     { handler: "repository_lineage", browserHandler: "", admitsOn: ["repository_subject"], refusalEvents: [] },
+   00025|     { handler: "page_query_text", browserHandler: "tryPageQueryText", admitsOn: ["supplied_page"], refusalEvents: [] },
+   00026|     { handler: "javascript_execution", browserHandler: "tryJavaScriptExecution", admitsOn: ["javascript_program"], refusalEvents: [] },
+   00027|     { handler: "incompatible_units", browserHandler: "tryIncompatibleUnits", admitsOn: ["incompatible_unit_pair"], refusalEvents: [] },
+   00028|     { handler: "http_fetch", browserHandler: "", admitsOn: ["fetch_url"], refusalEvents: [] },
+   00029|     { handler: "url_navigate", browserHandler: "", admitsOn: ["navigation_url"], refusalEvents: [] },
+   00030|     { handler: "calendar_create_event", browserHandler: "", admitsOn: ["calendar_date_signal"], refusalEvents: [] },
+   00031|     { handler: "code_debugging", browserHandler: "tryCodeDebugging", admitsOn: ["code_artifact"], refusalEvents: [] },
+   00032|     { handler: "code_explanation", browserHandler: "tryCodeExplanation", admitsOn: ["code_artifact"], refusalEvents: [] },
+   00033|     { handler: "code_review", browserHandler: "tryCodeReview", admitsOn: ["code_artifact"], refusalEvents: [] },
+   00034|     { handler: "summarization_text", browserHandler: "trySummarizationText", admitsOn: ["supplied_text"], refusalEvents: [] },
+   00035|     { handler: "requirement_listing", browserHandler: "requirement_listing", admitsOn: ["supplied_text"], refusalEvents: [] },
+   00036|     { handler: "text_rewrite", browserHandler: "tryTextRewrite", admitsOn: ["supplied_text"], refusalEvents: [] },
+   00037|     { handler: "statistics", browserHandler: "tryStatistics", admitsOn: ["stated_number"], refusalEvents: [] },
+   00038|     { handler: "word_problem", browserHandler: "tryWordProblem", admitsOn: ["stated_number"], refusalEvents: [] },
+   00039|     { handler: "arithmetic", browserHandler: "tryArithmetic", admitsOn: ["calculation_expression", "currency_rate_basis"], refusalEvents: [] },
+   00040|     { handler: "compound_interest", browserHandler: "tryCompoundInterest", admitsOn: ["investment_terms", "conversion_target_currency"], refusalEvents: [] },
+   00041|     { handler: "number_constraint_reasoning", browserHandler: "tryNumberConstraintReasoning", admitsOn: ["interval_bounds"], refusalEvents: [] },
+   00042|     { handler: "unit_conversion", browserHandler: "tryUnitConversion", admitsOn: ["measured_quantity"], refusalEvents: [] },
+   00043|     { handler: "calendar_reasoning", browserHandler: "tryCalendarReasoning", admitsOn: ["calendar_date_signal", "calendar_anchor"], refusalEvents: [] },
+   00044|     { handler: "test_generation", browserHandler: "tryTestGeneration", admitsOn: ["function_under_test"], refusalEvents: ["test_generation:refusal"] },
+   00045|     { handler: "code_refactoring", browserHandler: "tryCodeRefactoring", admitsOn: ["code_artifact"], refusalEvents: ["code_refactoring:refusal"] },
+   00046|     { handler: "format_conversion", browserHandler: "tryFormatConversion", admitsOn: ["structured_document"], refusalEvents: ["format_conversion:refusal"] },
+   00047|     { handler: "brainstorm_composition", browserHandler: "tryBrainstormComposition", admitsOn: ["composition_topic"], refusalEvents: ["brainstorming:refusal"] },
+   00048|     { handler: "creative_writing", browserHandler: "tryCreativeWritingRequest", admitsOn: ["composition_topic"], refusalEvents: ["creative_writing:refusal"] },
+   00049|     { handler: "advice_request", browserHandler: "tryAdviceRequest", admitsOn: ["advice_topic"], refusalEvents: ["advice:refusal"] },
+   00050|     { handler: "planning_request", browserHandler: "tryPlanningRequest", admitsOn: ["cached_destination"], refusalEvents: ["planning:refusal"] },
+   00051|     { handler: "regex_synthesis", browserHandler: "tryRegexSynthesis", admitsOn: ["pattern_constraints"], refusalEvents: ["regex_synthesis:refusal"] },
+   00052|     { handler: "sql_synthesis", browserHandler: "trySqlSynthesis", admitsOn: ["table_reference"], refusalEvents: ["sql_synthesis:refusal"] },
+   00053|     { handler: "shell_command_compose", browserHandler: "tryShellCommandCompose", admitsOn: ["filesystem_object"], refusalEvents: ["shell_command_compose:refusal"] },
+   00054|     { handler: "program_synthesis", browserHandler: "tryProgramSynthesis", admitsOn: ["function_spec"], refusalEvents: [] },
+   00055|     { handler: "write_script", browserHandler: "tryWriteScript", admitsOn: ["script_language"], refusalEvents: [] },
+   00056|     { handler: "document_generation_plan", browserHandler: "tryDocumentGenerationPlan", admitsOn: ["document_format"], refusalEvents: [] },
+   00057|     { handler: "installation_conversion", browserHandler: "tryInstallationConversion", admitsOn: ["install_steps"], refusalEvents: [] },
+   00058|     { handler: "execution_failure", browserHandler: "tryExecutionFailure", admitsOn: ["call_expression"], refusalEvents: [] },
+   00059|     { handler: "concept_lookup", browserHandler: "tryConceptLookup", admitsOn: ["concept_subject"], refusalEvents: [] },
+   00060|     { handler: "definition_merge", browserHandler: "tryDefinitionMerge", admitsOn: ["definition_merge_term"], refusalEvents: [] },
+   00061|     { handler: "who_is", browserHandler: "tryWhoIsQuestion", admitsOn: ["concept_subject"], refusalEvents: [] },
+   00062|     { handler: "how_it_works", browserHandler: "tryHowItWorks", admitsOn: ["mechanism_subject","prior_reply"], refusalEvents: ["how_it_works:refusal"] },
+   00063|     { handler: "procedural_how_to", browserHandler: "tryProceduralHowTo", admitsOn: ["procedure_task"], refusalEvents: [] },
+   00064|     { handler: "procedural_how_to_followup", browserHandler: "tryProceduralHowToFollowup", admitsOn: ["prior_procedure"], refusalEvents: [] },
+   00065|     { handler: "web_search", browserHandler: "tryWebSearch", admitsOn: ["search_focus"], refusalEvents: [] },
+   00066|     { handler: "conversation_topic", browserHandler: "", admitsOn: ["conversation_topic_subject"], refusalEvents: [] },
+   00067|     { handler: "learn_from_source", browserHandler: "tryLearnFromSource", admitsOn: ["learnable_source"], refusalEvents: [] },
+   00068|     { handler: "product_search", browserHandler: "tryProductSearch", admitsOn: ["marketplace_scope"], refusalEvents: ["product_search:refusal"] },
+   00069|     { handler: "verifiable_task", browserHandler: "tryVerifiableTask", admitsOn: ["verifiable_spec"], refusalEvents: [] },
+   00070|     { handler: "legality_warning", browserHandler: "tryLegalityWarning", admitsOn: ["legality_assessment"], refusalEvents: [] },
+   00071|     { handler: "opinion_question", browserHandler: "tryOpinionQuestion", admitsOn: ["assistant_addressee"], refusalEvents: [] },
+   00072|     { handler: "physical_action_question", browserHandler: "tryPhysicalActionQuestion", admitsOn: ["assistant_addressee"], refusalEvents: [] },
+   00073|     { handler: "punctuation_only_prompt", browserHandler: "tryPunctuationOnlyPrompt", admitsOn: ["punctuation_only"], refusalEvents: [] },
+   00074|     { handler: "ill_formed", browserHandler: "tryIllFormed", admitsOn: ["unbalanced_brackets"], refusalEvents: [] },
+   00075|     { handler: "shell_refusal", browserHandler: "tryShellRefusal", admitsOn: ["shell_command_shape"], refusalEvents: [] },
+   00076|     { handler: "link_native_synthesis", browserHandler: "tryLinkNativeSynthesis", admitsOn: ["stated_number"], refusalEvents: [] },
+   00077|     { handler: "software_project_followup", browserHandler: "trySoftwareProjectFollowup", admitsOn: ["prior_software_project"], refusalEvents: [] },
+   00078|     { handler: "research_result_followup", browserHandler: "tryResearchResultFollowup", admitsOn: ["prior_research_request"], refusalEvents: [] },
+   00079|     { handler: "research_comparison_table", browserHandler: "tryResearchComparisonTable", admitsOn: ["prior_research_request"], refusalEvents: [] },
+   00080|     { handler: "coreference", browserHandler: "tryCoreferenceFactLookup", admitsOn: ["coreference_antecedent"], refusalEvents: [] },
+   00081|     { handler: "response_language_followup", browserHandler: "tryResponseLanguageFollowup", admitsOn: ["prior_user_request"], refusalEvents: [] },
+   00082|     { handler: "numeric_list", browserHandler: "tryNumericList", admitsOn: ["list_items","prior_numeric_list"], refusalEvents: [] },
+   00083|     { handler: "text_manipulation", browserHandler: "tryTextManipulation", admitsOn: ["text_operation"], refusalEvents: [] },
+   00084|     { handler: "shell_command_transform", browserHandler: "tryShellCommandTransform", admitsOn: ["shell_command_operand","prior_reply"], refusalEvents: [] },
+   00085|     { handler: "write_program_coreference", browserHandler: "tryWriteProgramCoreference", admitsOn: ["prior_program"], refusalEvents: [] },
+   00086|     { handler: "write_program_concrete", browserHandler: "tryWriteProgramConcrete", admitsOn: ["program_task"], refusalEvents: [] },
+   00087|     { handler: "program_blueprint_from_prompt", browserHandler: "tryProgramBlueprintFromPrompt", admitsOn: ["program_task"], refusalEvents: [] },
+   00088|     { handler: "software_project_request", browserHandler: "trySoftwareProjectRequest", admitsOn: ["object_phrase_artifact","approval_of_a_proposal"], refusalEvents: [] },
+   00089|     { handler: "memory_program", browserHandler: "tryMemoryProgram", admitsOn: ["memory_program_reading"], refusalEvents: [] },
+   00090|     { handler: "memory_program_gap", browserHandler: "tryMemoryProgramGap", admitsOn: ["memory_program_reading"], refusalEvents: [] },
+   00091|     { handler: "conversation_control", browserHandler: "", admitsOn: ["backticked_term","prior_reply"], refusalEvents: ["conversation_control:refusal"] },
+   00092|     { handler: "agentic_continuation", browserHandler: "tryAgenticContinuation", admitsOn: ["prior_reply"], refusalEvents: ["agentic_continuation:refusal"] },
+   00093|     { handler: "clarification", browserHandler: "tryClarification", admitsOn: ["prior_reply"], refusalEvents: ["clarification:refusal"] },
+   00094|     { handler: "current_dialogue_fact_checking", browserHandler: "tryCurrentDialogueFactChecking", admitsOn: ["prior_user_request"], refusalEvents: ["current_dialogue_fact_checking:refusal"] },
+   00095|     { handler: "historical", browserHandler: "tryHistorical", admitsOn: ["dialogue_turn","name_assignment"], refusalEvents: ["conversation_recall:refusal"] },
+   00096|     { handler: "conversation_memory", browserHandler: "", admitsOn: ["dialogue_turn","name_assignment","recall_query_term","supplied_payload"], refusalEvents: ["conversation_recall:refusal"] },
+   00097|     { handler: "summarization", browserHandler: "", admitsOn: ["summary_topic"], refusalEvents: ["summarization:refusal"] },
+   00098|     { handler: "brainstorming", browserHandler: "tryBrainstormingRequest", admitsOn: ["brainstorm_category"], refusalEvents: ["brainstorming:refusal"] },
+   00099|     { handler: "roleplay", browserHandler: "tryRoleplayRequest", admitsOn: ["persona_or_topic"], refusalEvents: ["roleplay:refusal"] },
+   00100|     { handler: "document_originality_check", browserHandler: "tryDocumentOriginalityCheck", admitsOn: ["document_operand"], refusalEvents: ["document_originality_check:refusal"] },
+   00101|     { handler: "translation", browserHandler: "tryTranslation", admitsOn: ["translation_text"], refusalEvents: ["translation:refusal"] },
+   00102|     { handler: "triz_resolution", browserHandler: "tryTrizResolution", admitsOn: ["triz_precedent"], refusalEvents: ["triz_resolution:refusal"] },
+   00103|     { handler: "algorithm", browserHandler: "tryAlgorithm", admitsOn: ["algorithm_operation"], refusalEvents: ["algorithm:refusal"] },
+   00104|     { handler: "source_refresh", browserHandler: "trySourceRefresh", admitsOn: ["source_reference"], refusalEvents: ["source_refresh:refusal"] },
+   00105|     { handler: "proof_request", browserHandler: "tryProofRequest", admitsOn: ["stated_claim"], refusalEvents: ["proof_request:refusal"] },
+   00106|     { handler: "capabilities", browserHandler: "tryCapabilities", admitsOn: ["assistant_subject"], refusalEvents: [] },
+   00107|     { handler: "meta_explanation", browserHandler: "tryMetaExplanation", admitsOn: ["assistant_subject"], refusalEvents: [] },
+   00108|     { handler: "network_query", browserHandler: "tryNetworkSnapshot", admitsOn: ["assistant_subject"], refusalEvents: [] },
+   00109|     { handler: "exact_memory_query", browserHandler: "tryExactMemoryQuery", admitsOn: ["memory_query_statement"], refusalEvents: [] },
+   00110|     { handler: "fact_lookup", browserHandler: "", admitsOn: ["fact_subject"], refusalEvents: [] },
+   00111|     { handler: "docs_method_explanation", browserHandler: "tryDocsMethodExplanation", admitsOn: ["documented_method"], refusalEvents: [] },
+   00112|     { handler: "kupi_slona", browserHandler: "tryKupiSlona", admitsOn: ["idiom_utterance"], refusalEvents: [] },
+   00113|     { handler: "source_conflict", browserHandler: "trySourceConflict", admitsOn: ["attributed_alternatives"], refusalEvents: ["source_conflict:refusal"] },
+   00114|     { handler: "github_repository_traffic", browserHandler: "tryGithubRepositoryTraffic", admitsOn: ["named_repository"], refusalEvents: ["github_repository_traffic:refusal"] },
+   00115|     { handler: "formalization_request", browserHandler: "tryFormalizationRequest", admitsOn: ["formalization_statement"], refusalEvents: ["formalization_request:refusal"] },
+   00116|   ]);
+   00117| });
+   00118| 
+   00119| test("every row names browser functions and evidence kinds the worker knows", async () => {
+   00120|   await seeded;
+   00121|   const unknown = plain(evaluate(worker, `claimRouteRows().flatMap((row) => [
+   00122|     ...row.admitsOn.filter((kind) => typeof claimEvidence()[kind] !== "function"),
+   00123|     ...(row.browserHandler && typeof self[row.browserHandler] !== "function"
+   00124|       && !browserHandlerPrecedence().some((record) => record.name === row.browserHandler && (record.contextBinding || record.ruleSet))
+   00125|       ? [row.browserHandler] : []),
+   00126|   ])`));
+   00127|   assert.deepEqual(unknown, []);
+   00128| });
+   00129| 
+   00130| async function evidence(kind, prompt) {
+   00131|   await seeded;
+   00132|   return plain(evaluate(worker, `claimEvidence()[${JSON.stringify(kind)}](${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`));
+   00133| }
+   00134| 
+   00135| test("the native-only rows read the same structure in the worker", async () => {
+   00136|   assert.equal(await evidence("fetch_url", "Fetch https://example.com"), true);
+   00137|   assert.equal(await evidence("fetch_url", "Fetch me a summary of the news"), false);
+   00138|   assert.equal(await evidence("navigation_url", "Navigate to github.com"), true);
+   00139|   assert.equal(await evidence("navigation_url", "Navigate the menu to the settings screen"), false);
+   00140|   assert.equal(await evidence("calendar_date_signal", "Schedule a meeting with Anna tomorrow at 3pm"), true);
+   00141|   assert.equal(await evidence("calendar_date_signal", "Explain how a calendar works."), false);
+   00142| });
+   00143| 
+   00144| test("a surface word alone is not admitted", async () => {
+   00145|   assert.equal(await admits("tryTerminalCommand", "Make a 3-day itinerary for a first visit to Rome."), false);
+   00146|   assert.equal(await admits("tryTerminalCommand", "Find the bug: def average(xs): return sum(xs) / len(xs)"), false);
+   00147|   assert.equal(await admits("trySoftwareProjectRequest", "Write a regex for a US ZIP code with an optional 4-digit extension"), false);
+   00148|   assert.equal(await admits("tryPageQueryText", "What command builds the jar on this page?"), false);
+   00149|   assert.equal(await admits("tryJavaScriptExecution", "Run this JavaScript"), false);
+   00150|   assert.equal(await admits("tryIncompatibleUnits", "What does a unit test check?"), false);
+   00151|   assert.equal(await admits("tryCodeDebugging", "Find the bug in my plan for the trip"), false);
+   00152|   assert.equal(await admits("tryCodeExplanation", "Explain how a compiler works"), false);
+   00153|   assert.equal(await admits("tryCodeReview", "Review my essay about the ocean"), false);
+   00154|   assert.equal(await admits("trySummarizationText", "Summarize the rust language"), false);
+   00155|   assert.equal(await admits("tryTextRewrite", "Make this more formal"), false);
+   00156|   assert.equal(await admits("tryStatistics", "What is the mean of my test scores?"), false);
+   00157|   assert.equal(await admits("tryStatistics", "Is this number prime?"), false);
+   00158|   assert.equal(await admits("tryWordProblem", "How many apples are left if I eat some?"), false);
+   00159|   assert.equal(await admits("tryArithmetic", "Explain how long division works"), false);
+   00160|   assert.equal(await admits("tryCompoundInterest", "How does compound interest work when you invest?"), false);
+   00161|   assert.equal(await admits("tryNumberConstraintReasoning", "Guess the hidden number I am thinking of"), false);
+   00162|   assert.equal(await admits("tryUnitConversion", "Convert this recipe to metric units"), false);
+   00163|   assert.equal(await admits("tryCalendarReasoning", "Explain how a calendar works."), false);
+   00164| });
+   00165| 
+   00166| test("the structural evidence admits", async () => {
+   00167|   assert.equal(await admits("tryTerminalCommand", "find . -name '*.log' -size +10M"), true);
+   00168|   assert.equal(await admits("trySoftwareProjectRequest", "Build a web app for tracking habits"), true);
+   00169|   assert.equal(await admits("tryPageQueryText", "What command builds the jar?\nRun kotlinc hello.kt -include-runtime -d hello.jar."), true);
+   00170|   assert.equal(await admits("tryJavaScriptExecution", "Run this JavaScript: console.log(1 + 2)"), true);
+   00171|   assert.equal(await admits("tryIncompatibleUnits", "How many meters are in a kilobyte?"), true);
+   00172|   assert.equal(await admits("tryCodeDebugging", "Find the bug: def average(xs): return sum(xs) / len(xs)"), true);
+   00173|   assert.equal(await admits("tryCodeExplanation", "Explain this code: print(sum(range(10)))"), true);
+   00174|   assert.equal(await admits("tryCodeReview", "Review this code: `const total = items.map((item) => item.price)`"), true);
+   00175|   assert.equal(await admits("trySummarizationText", "Summarize: The parser reads the file. It builds a tree. The tree is checked."), true);
+   00176|   assert.equal(await admits("tryTextRewrite", "Make this formal: hey can you send me the file"), true);
+   00177|   assert.equal(await admits("tryStatistics", "What is the mean of 3, 5 and 7?"), true);
+   00178|   assert.equal(await admits("tryStatistics", "Is 97 a prime number?"), true);
+   00179|   assert.equal(await admits("tryWordProblem", "Tom has 5 apples and gets 3 more. How many apples does he have?"), true);
+   00180|   assert.equal(await admits("tryArithmetic", "What is 2 + 2?"), true);
+   00181|   assert.equal(await admits("tryArithmetic", "what dollar exchange rate do you use for calculations?"), true);
+   00182|   assert.equal(await admits("tryCompoundInterest", "If I invest $1000 at 8% annual interest compounded monthly for 5 years, how much will I have?"), true);
+   00183|   assert.equal(await admits("tryCompoundInterest", "convert the final amount to EUR using current exchange rates from the web."), true);
+   00184|   assert.equal(await admits("tryNumberConstraintReasoning", "Я загадал число больше 1 но меньше 3. что это за число?"), true);
+   00185|   assert.equal(await admits("tryUnitConversion", "How many meters are in 3 km?"), true);
+   00186|   assert.equal(await admits("tryCalendarReasoning", "What day comes after Monday?"), true);
+   00187|   assert.equal(await admits("tryCalendarReasoning", "What day is today?"), true);
+   00188|   assert.equal(await admits("tryCalendarReasoning", "What day of the week was 2024-02-29?"), true);
+   00189|   assert.equal(await admits("tryCalendarReasoning", "What month is 2 months after January?"), true);
+   00190| });
+   00191| 
+   00192| // The numeric rows must not change an admitted answer: each handler, run on
+   00193| // its own probes, answers only where its row admits (and the one-number
+   00194| // primality question still reaches statistics).
+   00195| test("a numeric handler answers only where its row admits", async () => {
+   00196|   await seeded;
+   00197|   const answered = plain(evaluate(worker, `[
+   00198|     ["tryStatistics", "Is 97 a prime number?"], ["tryStatistics", "What is the mean of my test scores?"],
+   00199|     ["tryUnitConversion", "How many meters are in 3 km?"], ["tryUnitConversion", "Convert this recipe to metric units"],
+   00200|     ["tryCalendarReasoning", "What day comes after Monday?"], ["tryCalendarReasoning", "Explain how a calendar works."],
+   00201|   ].map(([name, prompt]) => {
+   00202|     const normalized = normalizePrompt(prompt);
+   00203|     const hit = self[name](prompt, normalized, detectLanguage(prompt));
+   00204|     return [Boolean(hit), claimRouteAdmits(name, prompt, normalized)];
+   00205|   })`));
+   00206|   assert.deepEqual(answered, [[true, true], [false, false], [true, true], [false, false], [true, true], [false, false]]);
+   00207| });
+   00208| 
+   00209| test("a handler with no claim row is admitted as before", async () => {
+   00210|   assert.equal(await admits("tryAHandlerWithNoRow", "Купи слона"), true);
+   00211|   assert.equal(await admits("tryKupiSlona", "Купи слона"), true);
+   00212| });
+   00213| 
+   00214| test("R1175-3 refusal lane: a cued request without its operand keeps only its named refusal", async () => {
+   00215|   await seeded;
+   00216|   const admission = (handler, prompt) => plain(evaluate(worker, `claimRouteAdmission(${JSON.stringify(handler)}, ${JSON.stringify(prompt)})`));
+   00217|   // Without the operand the handler is admitted to refuse only.
+   00218|   assert.equal(await admission("tryTestGeneration", "Write unit tests"), "refusal");
+   00219|   assert.equal(await admission("tryCodeRefactoring", "Refactor my morning routine"), "refusal");
+   00220|   assert.equal(await admission("tryFormatConversion", "Convert this JSON to YAML"), "refusal");
+   00221|   // With it, every answer the handler gives is admitted.
+   00222|   assert.equal(await admission("tryTestGeneration", "Write tests for `square(n)`: square(3) returns 9"), "full");
+   00223|   assert.equal(await admission("tryCodeRefactoring", "Refactor this promise chain with async/await:\n```javascript\nfetch(url).then(r => r.json());\n```"), "full");
+   00224|   assert.equal(await admission("tryFormatConversion", "Convert this JSON to YAML:\n```json\n{\"a\": 1}\n```"), "full");
+   00225|   // A refusal recorded by the handler stands; an answer without one is dropped.
+   00226|   const refused = (handler, hit) => plain(evaluate(worker, `claimRouteRefused(${JSON.stringify(handler)}, ${JSON.stringify(hit)})`));
+   00227|   assert.equal(await refused("tryTestGeneration", { evidence: ["test_generation:request:cued", "test_generation:refusal:function=none"] }), true);
+   00228|   assert.equal(await refused("tryTestGeneration", { evidence: ["test_generation:request:cued", "test_generation:suite:case=3"] }), false);
+   00229|   // End to end the named refusal is still the answer.
+   00230|   const answer = plain(await evaluate(worker, "solve(\"Write unit tests\", [], {}, {}, [], {})"));
+   00231|   assert.equal(answer.intent, "test_generation", JSON.stringify(answer));
+   00232|   assert.ok(answer.content.startsWith("Recognized a test-writing request, but no function under test could be identified"), answer.content);
+   00233| });
+   00234| 
+   00235| test("R1175-3: the refusal-group evidence reads the handlers' own operands", async () => {
+   00236|   assert.equal(await evidence("function_under_test", "Write tests for `is_palindrome(s)`"), true);
+   00237|   assert.equal(await evidence("function_under_test", "Write unit tests"), false);
+   00238|   assert.equal(await evidence("structured_document", "Convert this YAML to JSON:\n```yaml\nname: formal-ai\n```"), true);
+   00239|   assert.equal(await evidence("structured_document", "Convert this YAML to JSON"), false);
+   00240| });
+   00241| 
+   00242| // Issue #1175 R3 classes (b), (c) and (e): a follow-up admits on the earlier
+   00243| // turn it continues, a composer on its specification (without one it is
+   00244| // admitted to its refusal lane), a lookup or policy on its subject or shape.
+   00245| async function evidenceIn(kind, prompt, history = []) {
+   00246|   await seeded;
+   00247|   return plain(evaluate(worker, `claimEvidence()[${JSON.stringify(kind)}](${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}), ${JSON.stringify(history)})`));
+   00248| }
+   00249| 
+   00250| test("R1175-3 class b: the dialogue evidence reads the earlier turns, never the prompt alone", async () => {
+   00251|   const research = [{ role: "user", content: "Research the best laptops for programming" }, { role: "assistant", content: "Here is what I found." }];
+   00252|   assert.equal(await evidenceIn("prior_research_request", "What is the result?", research), true);
+   00253|   assert.equal(await evidenceIn("prior_research_request", "What is the result?"), false);
+   00254|   const howTo = [{ role: "user", content: "How to tie a tie?" }, { role: "assistant", content: "Procedural discovery for tie a tie." }];
+   00255|   assert.equal(await evidenceIn("prior_procedure", "Can you give me specific instructions?", howTo), true);
+   00256|   assert.equal(await evidenceIn("prior_procedure", "Can you give me specific instructions?"), false);
+   00257|   assert.equal(await evidenceIn("prior_user_request", "Answer in Russian", howTo), true);
+   00258|   assert.equal(await evidenceIn("prior_user_request", "Answer in Russian"), false);
+   00259|   assert.equal(await evidenceIn("prior_reply", "How does it work?", howTo), true);
+   00260|   assert.equal(await evidenceIn("prior_software_project", "Now test it"), false);
+   00261|   await seeded;
+   00262|   assert.equal(plain(evaluate(worker, `claimRouteAdmission("tryResearchResultFollowup", "What is the result?", normalizePrompt("What is the result?"), ${JSON.stringify(research)})`)), "full");
+   00263|   assert.equal(await admits("tryResearchResultFollowup", "What is the result?"), false);
+   00264| });
+   00265| 
+   00266| test("R1175-3 class c: a composer without its specification is admitted to its refusal lane only", async () => {
+   00267|   await seeded;
+   00268|   const admission = (handler, prompt) => plain(evaluate(worker, `claimRouteAdmission(${JSON.stringify(handler)}, ${JSON.stringify(prompt)})`));
+   00269|   for (const [handler, bare, specified] of [
+   00270|     ["tryRegexSynthesis", "Write a regex", "Write a regular expression that matches five digits"],
+   00271|     ["trySqlSynthesis", "Write a SQL query", "Write a SQL query that selects every row of the users table"],
+   00272|     ["tryPlanningRequest", "Plan a trip somewhere nice", "Make a 3-day itinerary for a first visit to Rome."],
+   00273|   ]) {
+   00274|     assert.equal(await admission(handler, bare), "refusal", bare);
+   00275|     assert.equal(await admission(handler, specified), "full", specified);
+   00276|   }
+   00277|   assert.equal(await evidence("function_spec", "Write a Python function"), false);
+   00278|   assert.equal(await evidence("function_spec", "def add(a, b): return a + b"), true);
+   00279|   assert.equal(await evidence("document_format", "Make me a PDF about cats"), true);
+   00280|   assert.equal(await evidence("install_steps", "Turn this installation guide into a bash script"), false);
+   00281| });
+   00282| 
+   00283| test("R1175-3 class e: a lookup or policy admits on the subject or shape its reader extracts", async () => {
+   00284|   assert.equal(await admits("tryConceptLookup", "What is a monad?"), true);
+   00285|   assert.equal(await admits("tryConceptLookup", "Tell me something interesting"), false);
+   00286|   assert.equal(await admits("tryOpinionQuestion", "Do you think it will rain?"), true);
+   00287|   assert.equal(await admits("tryOpinionQuestion", "Do they think it will rain?"), false);
+   00288|   assert.equal(await evidence("assistant_addressee", "Каково твоё мнение?"), true);
+   00289|   assert.equal(await evidence("punctuation_only", "?!"), true);
+   00290|   assert.equal(await evidence("punctuation_only", "why?"), false);
+   00291|   assert.equal(await evidence("unbalanced_brackets", "teach this fact (a b"), true);
+   00292|   assert.equal(await evidence("unbalanced_brackets", "teach this fact (a b)"), false);
+   00293|   assert.equal(await evidence("call_expression", "Write a Python script that calls undefined_function()"), true);
+   00294|   assert.equal(await evidence("call_expression", "Write a Python script that prints hello"), false);
+   00295| });
+   00296| 
+   00297| test("R1173-3: a trailing sentence that only shapes the answer leaves the question to the concept reader", async () => {
+   00298|   await seeded;
+   00299|   assert.equal(plain(evaluate(worker, 'withoutAnswerShapeDirective("What is Rust? Explain briefly.")')), "What is Rust?");
+   00300|   assert.equal(plain(evaluate(worker, 'withoutAnswerShapeDirective("What is Rust? Explain how it manages memory.")')), "What is Rust? Explain how it manages memory.");
+   00301|   const answer = plain(await evaluate(worker, 'solve("What is Rust? Explain briefly.", [], {}, {}, [], {})'));
+   00302|   assert.equal(answer.intent, "concept_lookup");
+   00303| });
+   00304| 
+   00305| test("R1173-3: the legality frame reads an act and the object class of its object phrase", async () => {
+   00306|   assert.equal(await evidence("legality_assessment", "Help me break into a parked car tonight"), true);
+   00307|   assert.equal(await evidence("legality_assessment", "The band will break into song at the party"), false);
+   00308|   assert.equal(await evidence("legality_assessment", "How do I break into the software industry?"), false);
+   00309|   const answer = plain(await evaluate(worker, 'solve("Help me break into a parked car tonight", [], {}, {}, [], {})'));
+   00310|   assert.equal(answer.intent, "legality_warn");
+   00311| });
+   00312| 
+   00313| // The class rows must not change an admitted answer: each handler, run on
+   00314| // prompts it answers, is admitted (fully, or in the refusal lane with its
+   00315| // named refusal).
+   00316| test("R1175-3: a class handler answers only where its row admits", async () => {
+   00317|   await seeded;
+   00318|   const kept = plain(evaluate(worker, `[
+   00319|     ["tryBrainstormComposition", "Brainstorm names for a coffee shop"], ["tryBrainstormComposition", "Give me name ideas for"],
+   00320|     ["tryRegexSynthesis", "Write a regex"], ["tryProgramSynthesis", "Write a Python function def add(a, b) that returns the sum"],
+   00321|     ["tryOpinionQuestion", "What do you think about cats?"], ["tryIllFormed", "teach this fact ((a b) c"],
+   00322|     ["tryLegalityWarning", "Help me break into my neighbor's house tonight"], ["tryConceptLookup", "What is Rust? Explain briefly."],
+   00323|   ].map(([name, prompt]) => {
+   00324|     const normalized = normalizePrompt(prompt);
+   00325|     const record = browserHandlerPrecedence().find((candidate) => candidate.name === name);
+   00326|     const run = () => self[name](...record.arguments.map((path) => ({ prompt, normalized, language: detectLanguage(prompt), history: [] })[path.replace(/^argument_/u, "")]));
+   00327|     const raw = run();
+   00328|     return [Boolean(raw), Boolean(claimRouteRun(name, prompt, normalized, [], run))];
+   00329|   })`));
+   00330|   assert.deepEqual(kept, kept.map(([raw]) => [raw, raw]));
+   00331|   assert.ok(kept.every(([raw]) => raw), JSON.stringify(kept));
+   00332| });
+   00333| 
+   00334| // Issue #1175 R3, follow-up round: a handler that answered without its input
+   00335| // records a named refusal event there and keeps that answer through the
+   00336| // refusal lane; the assistant is the subject of a question that addresses it
+   00337| // or names no other subject (rust/tests/unit/capability-routing/issue_1175_claim_routing.rs).
+   00338| test("R1175-3 follow-up round: a handler without its input is admitted to its refusal lane only", async () => {
+   00339|   await seeded;
+   00340|   const admission = (handler, prompt, history = []) => plain(evaluate(worker,
+   00341|     `claimRouteAdmission(${JSON.stringify(handler)}, ${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}), ${JSON.stringify(history)})`));
+   00342|   for (const [handler, bare, full] of [
+   00343|     ["tryAlgorithm", "Write an algorithm", "Write a sorting algorithm in Python"],
+   00344|     ["tryProofRequest", "Prove it", "Prove that 2 + 2 = 4"],
+   00345|     ["tryTranslation", "Translate to Russian", "Translate \"apple\" to Russian"],
+   00346|     ["trySourceRefresh", "Refresh the cache", "Refresh the cached page https://example.com/docs"],
+   00347|   ]) {
+   00348|     assert.equal(await admission(handler, bare), "refusal", bare);
+   00349|     assert.equal(await admission(handler, full), "full", full);
+   00350|   }
+   00351|   const reply = [{ role: "user", content: "Delete the logs" }, { role: "assistant", content: "Deleted." }];
+   00352|   assert.equal(await admission("tryClarification", "I don't understand", reply), "full");
+   00353|   assert.equal(await admission("tryClarification", "I don't understand"), "refusal");
+   00354|   // The no-input answer records its refusal event, so it still stands.
+   00355|   const answer = plain(await evaluate(worker, 'solve("Continue", [], {}, {}, [], {})'));
+   00356|   assert.equal(answer.intent, "continuation_cue");
+   00357| });
+   00358| 
+   00359| test("R1175-3 follow-up round: the assistant is the subject unless another is named", async () => {
+   00360|   assert.equal(await evidence("assistant_subject", "What can you do?"), true);
+   00361|   assert.equal(await evidence("assistant_subject", "show me the network"), true);
+   00362|   assert.equal(await evidence("assistant_subject", "What is a monad?"), false);
+   00363|   assert.equal(await evidence("memory_query_statement", "select content from memory"), true);
+   00364|   assert.equal(await evidence("memory_query_statement", "remember that I like tea"), false);
+   00365| });
+   00366| 
+   00367| test("R1173-3: a comma after the advice verb still reaches the advice handler", async () => {
+   00368|   await seeded;
+   00369|   const answer = plain(await evaluate(worker, 'solve("Посоветуй, как лучше спать", [], {}, {}, [], {})'));
+   00370|   assert.equal(answer.intent, "advice");
+   00371| });
+   00372| 
+   00373| // Issue #1175 R3, the last five rows: the handlers that read nothing but their
+   00374| // cue now read the operand their answer is about (formal_ai_worker_claim_operands.js),
+   00375| // so every precedence handler carries a row. Held-out probes in en, ru, hi and zh,
+   00376| // as rust/tests/unit/capability-routing/issue_1175_claim_routing_operands.rs pins natively.
+   00377| async function operands(kind, prompt) {
+   00378|   await seeded;
+   00379|   return plain(evaluate(worker, `CLAIM_OPERANDS[${JSON.stringify(kind)}](${JSON.stringify(prompt)})`));
+   00380| }
+   00381| 
+   00382| async function admission(handler, prompt) {
+   00383|   await seeded;
+   00384|   return plain(evaluate(worker, `claimRouteAdmission(${JSON.stringify(handler)}, ${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`));
+   00385| }
+   00386| 
+   00387| async function rule(handler, prompt) {
+   00388|   await seeded;
+   00389|   return plain(evaluate(worker, `runHandlerRuleSet(${JSON.stringify(handler)}, ${JSON.stringify(prompt)}, ${JSON.stringify(prompt.toLowerCase())}, [])`));
+   00390| }
+   00391| 
+   00392| test("R1175-3 last five rows: every precedence handler carries a claim row", async () => {
+   00393|   await seeded;
+   00394|   const missing = plain(evaluate(worker, `(() => {
+   00395|     const rows = new Set(claimRouteRows().map((row) => row.handler));
+   00396|     return Object.keys(WORKER_HANDLER_REGISTRY.workerHandlers).filter((name) => !rows.has(name));
+   00397|   })()`));
+   00398|   assert.deepEqual(missing, []);
+   00399| });
+   00400| 
+   00401| test("R1175-3 last five rows: the documented method is read from the prompt", async () => {
+   00402|   for (const prompt of ["how does pandas DataFrame.join work?", "как работает pandas DataFrame.join?",
+   00403|     "pandas DataFrame.join कैसे काम करता है?", "pandas DataFrame.join 如何工作？"]) {
+   00404|     assert.equal((await operands("documented_method", prompt))[0], "pandas.DataFrame.join", prompt);
+   00405|     assert.equal(await admission("tryDocsMethodExplanation", prompt), "full", prompt);
+   00406|   }
+   00407|   for (const prompt of ["Explain pandas DataFrame.merge", "объясни pandas DataFrame.merge",
+   00408|     "pandas DataFrame.merge कैसे काम करता है?", "pandas DataFrame.merge 如何工作？"]) {
+   00409|     assert.equal(await admission("tryDocsMethodExplanation", prompt), "denied", prompt);
+   00410|   }
+   00411| });
+   00412| 
+   00413| test("R1175-3 last five rows: the idiom claims only as the whole utterance", async () => {
+   00414|   for (const [prompt, idiom] of [["Hey, buy an elephant!", "buy an elephant"], ["Ну купи слона, пожалуйста", "купи слона"],
+   00415|     ["चलो हाथी खरीदो ना", "हाथी खरीदो"], ["快买大象吧", "买大象"]]) {
+   00416|     assert.deepEqual(await operands("idiom_utterance", prompt), [idiom], prompt);
+   00417|     assert.equal((await rule("kupi_slona", prompt)).intent, "kupi_slona", prompt);
+   00418|   }
+   00419|   for (const prompt of ["Where can I buy an elephant figurine?", "Мама сказала: купи слона в магазине игрушек",
+   00420|     "दुकान से हाथी खरीदो और घर लाओ", "我想在动物园买大象玩具"]) {
+   00421|     assert.equal(await admission("tryKupiSlona", prompt), "denied", prompt);
+   00422|   }
+   00423| });
+   00424| 
+   00425| test("R1175-3 last five rows: a source conflict names its attributed alternatives", async () => {
+   00426|   for (const [prompt, first, second] of [
+   00427|     ["The sources conflict: Wikipedia says Tesla was born in 1856, but an old almanac says 1857.", "Wikipedia says Tesla was born in 1856", "an old almanac says 1857"],
+   00428|     ["Источники противоречат друг другу: по данным Википедии он родился в 1880 году, а по данным Британники в 1881.", "по данным Википедии он родился в 1880 году", "по данным Британники в 1881"],
+   00429|     ["स्रोतों में विरोधाभास है: विकिपीडिया के अनुसार वह 1880 में पैदा हुआ, लेकिन ब्रिटानिका के अनुसार 1881 में।", "विकिपीडिया के अनुसार वह 1880 में पैदा हुआ", "ब्रिटानिका के अनुसार 1881 में"],
+   00430|     ["来源之间有矛盾：维基百科说他生于1880年，大英百科说他生于1881年。", "维基百科说他生于1880年", "大英百科说他生于1881年"],
+   00431|   ]) {
+   00432|     assert.equal(await admission("trySourceConflict", prompt), "full", prompt);
+   00433|     const answer = await rule("source_conflict", prompt);
+   00434|     assert.ok(answer.content.includes(first) && answer.content.includes(second), answer.content);
+   00435|   }
+   00436|   for (const prompt of ["The sources conflict on this question.", "Источники противоречат друг другу.", "स्रोतों में विरोधाभास है।", "来源之间有矛盾。"]) {
+   00437|     assert.equal(await admission("trySourceConflict", prompt), "refusal", prompt);
+   00438|     const answer = await rule("source_conflict", prompt);
+   00439|     assert.ok(answer.evidence.some((link) => link.startsWith("source_conflict:refusal")), prompt);
+   00440|   }
+   00441| });
+   00442| 
+   00443| test("R1175-3 last five rows: a traffic answer names the repository the prompt names", async () => {
+   00444|   for (const [prompt, repository] of [
+   00445|     ["Can I see who visited my GitHub repository konard/formal-ai?", "konard/formal-ai"],
+   00446|     ["Можно ли узнать, кто заходил в репозиторий facebook/react на GitHub?", "facebook/react"],
+   00447|     ["क्या मैं जान सकता हूँ कि GitHub रेपो rust-lang/rust में कौन आया?", "rust-lang/rust"],
+   00448|     ["能知道谁访问过 GitHub 仓库 vercel/next.js 吗？", "vercel/next.js"],
+   00449|     ["можно ли узнать заходил ли кто либо в твое репо на github?", "link-assistant/formal-ai"],
+   00450|   ]) {
+   00451|     assert.deepEqual(await operands("named_repository", prompt), [repository], prompt);
+   00452|     assert.ok((await rule("github_repository_traffic", prompt)).content.includes(repository), prompt);
+   00453|   }
+   00454|   for (const prompt of ["Can I know who visited my GitHub repo?", "Можно ли узнать, кто заходил в мой репозиторий на GitHub?",
+   00455|     "क्या मैं जान सकता हूँ कि मेरे GitHub रेपो में कौन आया?", "能知道谁访问过我的 GitHub 仓库吗？"]) {
+   00456|     assert.equal(await admission("tryGithubRepositoryTraffic", prompt), "refusal", prompt);
+   00457|     const answer = await rule("github_repository_traffic", prompt);
+   00458|     assert.ok(!answer.content.includes("link-assistant/formal-ai"), answer.content);
+   00459|     assert.ok(answer.evidence.some((link) => link.startsWith("github_repository_traffic:refusal")), prompt);
+   00460|   }
+   00461| });
+   00462| 
+   00463| test("R1175-3 last five rows: a formalization claims only with a statement", async () => {
+   00464|   for (const prompt of ["Formalize: all humans are mortal", "Формализуй: все люди смертны",
+   00465|     "औपचारिक बनाओ: हर छात्र जो पढ़ता है, परीक्षा पास करता है", "形式化：每个学习的学生都通过考试"]) {
+   00466|     assert.equal(await admission("tryFormalizationRequest", prompt), "full", prompt);
+   00467|   }
+   00468|   for (const prompt of ["Formalize this in Lean", "Формализуй это", "इसे औपचारिक बनाओ", "请形式化这个"]) {
+   00469|     assert.equal(await admission("tryFormalizationRequest", prompt), "refusal", prompt);
+   00470|     const answer = plain(evaluate(worker, `tryFormalizationRequest(${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`));
+   00471|     assert.ok(answer.evidence.some((link) => link.startsWith("formalization_request:refusal")), prompt);
+   00472|   }
+   00473| });
+   00474| 
+   
+   (End of file - total 474 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/issue-1175-claim-routing.test.mjs","file_path":"rust/tests/web/issue-1175-claim-routing.test.mjs","new":"{ handler: \"historical\", browserHandler: \"tryHistorical\", admitsOn: [\"dialogue_turn\",\"name_assignment\",\"recall_query_term\"], refusalEvents: [\"conversation_recall:refusal\"] }","newString":"{ handler: \"historical\", browserHandler: \"tryHistorical\", admitsOn: [\"dialogue_turn\",\"name_assignment\",\"recall_query_term\"], refusalEvents: [\"conversation_recall:refusal\"] }","new_str":"{ handler: \"historical\", browserHandler: \"tryHistorical\", admitsOn: [\"dialogue_turn\",\"name_assignment\",\"recall_query_term\"], refusalEvents: [\"conversation_recall:refusal\"] }","new_string":"{ handler: \"historical\", browserHandler: \"tryHistorical\", admitsOn: [\"dialogue_turn\",\"name_assignment\",\"recall_query_term\"], refusalEvents: [\"conversation_recall:refusal\"] }","old":"{ handler: \"historical\", browserHandler: \"tryHistorical\", admitsOn: [\"dialogue_turn\",\"name_assignment\"], refusalEvents: [\"conversation_recall:refusal\"] }","oldString":"{ handler: \"historical\", browserHandler: \"tryHistorical\", admitsOn: [\"dialogue_turn\",\"name_assignment\"], refusalEvents: [\"conversation_recall:refusal\"] }","old_str":"{ handler: \"historical\", browserHandler: \"tryHistorical\", admitsOn: [\"dialogue_turn\",\"name_assignment\"], refusalEvents: [\"conversation_recall:refusal\"] }","old_string":"{ handler: \"historical\", browserHandler: \"tryHistorical\", admitsOn: [\"dialogue_turn\",\"name_assignment\"], refusalEvents: [\"conversation_recall:refusal\"] }","path":"rust/tests/web/issue-1175-claim-routing.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/issue-1175-claim-routing.test.mjs"}
+   Output: dd8b21e105081407dcefcc1223621d0947acf67616c9b00d72050d9f2271b770  rust/tests/web/issue-1175-claim-routing.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `{ handler: "historical", browserHandler: "tryHistorical", admitsOn: ["dialogue_turn","name_assignment"], refusalEvents: ["conversation_recall:refusal"] }` with `{ handler: "historical", browserHandler: "tryHistorical", admitsOn: ["dialogue_turn","name_assignment","recall_query_term"], refusalEvents: ["conversation_recall:refusal"] }` in `rust/tests/web/issue-1175-claim-routing.test.mjs` and observed the result.

@@ -1,0 +1,14 @@
+Q23925413
+  aliases
+    en ("US gallon" "U.S. wet gallon" "liquid gallon" gal gallon)
+  descriptions
+    en "US gallon, used in the US and some Latin American and Caribbean countries"
+    es "unidad de volumen de Estados Unidos"
+    ru "единица объема Соединенных Штатов Америки"
+  id Q23925413
+  labels
+    en "gallon (US)"
+    es "galone (EE. UU.)"
+    ru "американский галлон"
+  type item
+success 1

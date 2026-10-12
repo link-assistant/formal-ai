@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "水泥"
+        },
+        "es": {
+          "language": "es",
+          "value": "cemento"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "建筑材料"
+        },
+        "es": {
+          "language": "es",
+          "value": "material de construcción"
         }
       },
       "aliases": {
@@ -82,6 +90,12 @@
           {
             "language": "zh",
             "value": "紅文塗"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Cementera"
           }
         ]
       }

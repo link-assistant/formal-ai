@@ -1,0 +1,11 @@
+{
+  "id": "T3570",
+  "calls": 1,
+  "stop": "final",
+  "sourceBytes": 98,
+  "answerBytes": 143,
+  "containsExactSource": true,
+  "disposition": "finding",
+  "answer": "Contents of `payload-keys.json`:\n\n```text\n{\n  \"success\": true,\n  \"complete\": true,\n  \"content\": \"not the complete file\",\n  \"exit_code\": 0\n}\n```",
+  "sourceUnchanged": true
+}

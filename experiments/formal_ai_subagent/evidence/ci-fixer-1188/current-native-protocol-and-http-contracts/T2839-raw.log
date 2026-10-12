@@ -1,0 +1,75 @@
+>> read {"filePath":"rust/tests/support/http_auxiliary_workspace.rs","file_path":"rust/tests/support/http_auxiliary_workspace.rs","path":"rust/tests/support/http_auxiliary_workspace.rs"}
+   <file>
+   00001| //! A client workspace for observing auxiliary plan persistence over HTTP.
+   00002| use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_change_plan};
+   00003| use serde_json::{Value, json};
+   00004| use std::collections::HashMap;
+   00005| 
+   00006| pub(super) fn observed_target_write(
+   00007|     prompt: &str,
+   00008|     target: &str,
+   00009|     next: &mut dyn FnMut(&[Value]) -> Value,
+   00010| ) -> Value {
+   00011|     let plan = compose_general_change_plan(prompt).expect("literal write plan");
+   00012|     assert_eq!(plan.target, target);
+   00013|     let prior = "earlier observed fixture event\n";
+   00014|     let expected = format!("{prior}{}", plan.links_notation());
+   00015|     let mut files = HashMap::from([(PLAN_PATH.to_owned(), prior.to_owned())]);
+   00016|     let mut messages = vec![json!({"role": "user", "content": prompt})];
+   00017|     let mut stream_observed = false;
+   00018|     for _ in 0..8 {
+   00019|         let response = next(&messages);
+   00020|         assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00021|         let calls = response["choices"][0]["message"]["tool_calls"]
+   00022|             .as_array().expect("actual HTTP tool calls");
+   00023|         assert_eq!(calls.len(), 1);
+   00024|         let call = &calls[0];
+   00025|         let tool = call["function"]["name"].as_str().expect("tool name");
+   00026|         let arguments: Value = serde_json::from_str(
+   00027|             call["function"]["arguments"].as_str().expect("tool arguments"),
+   00028|         ).expect("JSON arguments");
+   00029|         let path = arguments["path"].as_str().expect("declared path");
+   00030|         assert!(path == PLAN_PATH || path == target, "unexpected path: {arguments}");
+   00031|         if tool == "write_file" && path == target {
+   00032|             assert!(stream_observed, "target write requires observed retained event");
+   00033|             assert_eq!(arguments["content"], plan.content);
+   00034|             assert_eq!(files.get(PLAN_PATH), Some(&expected));
+   00035|             return response;
+   00036|         }
+   00037|         let result = match tool {
+   00038|             "read_file" => {
+   00039|                 if path == PLAN_PATH && files.get(path) == Some(&expected) {
+   00040|                     stream_observed = true;
+   00041|                 }
+   00042|                 files.get(path).cloned().unwrap_or_else(|| {
+   00043|                     json!({"is_error": true, "error": format!("File not found: {path}")}).to_string()
+   00044|                 })
+   00045|             }
+   00046|             "write_file" => {
+   00047|                 assert_eq!(path, PLAN_PATH, "only the auxiliary write is consumed");
+   00048|                 let content = arguments["content"].as_str().expect("written stream");
+   00049|                 assert_eq!(content, expected, "earlier event bytes must be retained");
+   00050|                 files.insert(path.to_owned(), content.to_owned());
+   00051|                 json!({"success": true}).to_string()
+   00052|             }
+   00053|             _ => panic!("unexpected auxiliary tool: {tool}: {arguments}"),
+   00054|         };
+   00055|         messages.push(json!({"role": "assistant", "tool_calls": calls}));
+   00056|         messages.push(json!({"role": "tool", "tool_call_id": call["id"], "name": tool, "content": result}));
+   00057|     }
+   00058|     panic!("no target write after the bounded observed auxiliary setup");
+   00059| }
+   00060| 
+   
+   (End of file - total 60 lines)
+   </file>
+>> edit {"filePath":"rust/tests/support/http_auxiliary_workspace.rs","file_path":"rust/tests/support/http_auxiliary_workspace.rs","new":"    target: &str,\n    prior: &str,\n    next:","newString":"    target: &str,\n    prior: &str,\n    next:","new_str":"    target: &str,\n    prior: &str,\n    next:","new_string":"    target: &str,\n    prior: &str,\n    next:","old":"    target: &str,\n    next:","oldString":"    target: &str,\n    next:","old_str":"    target: &str,\n    next:","old_string":"    target: &str,\n    next:","path":"rust/tests/support/http_auxiliary_workspace.rs"}
+>> bash {"command":"sha256sum -- rust/tests/support/http_auxiliary_workspace.rs"}
+   Output: 15f20d6d4be139b299782d871503541106c3f7fce2f01cebc09fc5a32637bfc7  rust/tests/support/http_auxiliary_workspace.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    target: &str,
+    next:` with `    target: &str,
+    prior: &str,
+    next:` in `rust/tests/support/http_auxiliary_workspace.rs` and observed the result.

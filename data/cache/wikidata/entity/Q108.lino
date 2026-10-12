@@ -1,0 +1,21 @@
+Q108
+  aliases
+    en (Jan "1. month")
+    es ("mes de Jano" "mes del dios Jano" "primer mes" "1.° mes" "mes primero" "mes 1.°" "1" "mes del dios de las puertas" Ene Ene. En En. "mes 1" "mes de las puertas" "mes de los portales" "mes del dios de los portales" janero E)
+    ru ("января" "янв.")
+    zh ("一月")
+  descriptions
+    en "first month in the Julian and Gregorian calendars"
+    es "primer mes del año en los calendarios juliano y gregoriano"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में पहला महीना"
+    ru "первый месяц года в юлианском и григорианском календарях"
+    zh "公曆及儒略曆中第一個月份"
+  id Q108
+  labels
+    en January
+    es enero
+    hi "जनवरी"
+    ru "январь"
+    zh "1月"
+  type item
+success 1

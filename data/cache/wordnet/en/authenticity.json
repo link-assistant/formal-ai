@@ -1,0 +1,20 @@
+{
+  "lemma": "authenticity",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04790511-n",
+      "partOfSpeech": "n",
+      "definition": "undisputed credibility",
+      "synonyms": [
+        "genuineness",
+        "legitimacy"
+      ]
+    }
+  ]
+}

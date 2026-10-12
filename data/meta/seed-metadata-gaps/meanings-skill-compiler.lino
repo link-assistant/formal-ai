@@ -1,0 +1,19 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-skill-compiler.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-1f338f3362769743
+    record "behavior_rule_edit"
+  gap seed-metadata-gap-2c66a45b5b9cdbcd
+    record "network_capability_need"
+  gap seed-metadata-gap-3553b09738e01185
+    record "nondeterministic_step"
+  gap seed-metadata-gap-570b3329b99be209
+    record "shell_capability_need"
+  gap seed-metadata-gap-b623ca9040b4209a
+    record "skill_teaching_response"
+  gap seed-metadata-gap-cdfc48eb94ae0a57
+    record "skill_teaching_trigger"
+  gap seed-metadata-gap-1adc02a886e7bcf3
+    record "skill_when_then"

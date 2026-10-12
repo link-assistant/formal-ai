@@ -74,7 +74,7 @@ without a live daemon:
   the renderer as `serviceStatus()`, `startService()`,
   `installAgentEnvironment()`, `stopService()` through `contextBridge` (with
   `contextIsolation: true` / `nodeIntegration: false`).
-- [`js/app.js`](../../js/app.js) — renders the Services panel, polls
+- [`js/app/main.jsx`](../../js/app/main.jsx) — renders the Services panel, polls
   status, and calls the bridge from the **Start**/**Stop** buttons.
 
 Docker is required for this panel; if it is not installed the panel shows a
@@ -196,7 +196,7 @@ CLI + agent-commander setup. The implemented desktop/container contract applies
 the relevant practices directly:
 
 - **Docker/VM boundary for autonomous tools.** The Agent environment is a
-  Formal-AI-owned Docker container derived from `konard/box-dind:2.1.1`.
+  Formal-AI-owned Docker container derived from `konard/box-dind:2.10.2`.
 - **No host Docker socket.** Containers use their own DinD daemon and named
   `/var/lib/docker` volumes; the host `/var/run/docker.sock` is never mounted.
 - **No host agent binaries.** Desktop tests statically guard against direct

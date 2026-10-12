@@ -52,11 +52,13 @@ pub mod cache;
 pub(crate) mod formal_statement;
 pub mod formalization;
 pub mod formatting;
+pub mod free_sentence;
 pub mod http;
 mod language_markers;
 pub mod meaning;
 pub mod pipeline;
 pub mod prompt;
+pub mod round_trip;
 pub mod selection;
 pub mod wikidata;
 pub mod wiktionary;
@@ -75,7 +77,7 @@ pub use formatting::match_source_formatting;
 pub use http::{CurlClient, HttpError};
 pub(crate) use language_markers::{
     detect_comprehension_failure, detect_response_language, detect_source_language,
-    detect_target_language,
+    detect_target_language, forbids_response_language, requested_response_language,
 };
 pub(crate) use pipeline::seed_meaning_for_surface;
 pub use pipeline::{Translation, TranslationPipeline};

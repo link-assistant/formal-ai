@@ -1,0 +1,21 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/seal-compiled-skill-packet.mjs"}
+   Output: {"packet":"/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet","taskCount":12,"callsIncludingSeal":25,"edits":6,"allSinceT2906":{"tasks":26,"calls":50,"edits":12},"artifacts":62}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/seal-compiled-skill-packet.mjs` command completed. Output:
+
+```json
+{
+  "allSinceT2906": {
+    "calls": 50,
+    "edits": 12,
+    "tasks": 26
+  },
+  "artifacts": 62,
+  "callsIncludingSeal": 25,
+  "edits": 6,
+  "packet": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet",
+  "taskCount": 12
+}
+```

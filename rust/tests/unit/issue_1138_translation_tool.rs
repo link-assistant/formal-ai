@@ -255,6 +255,61 @@ fn write_tree_writes_every_owned_file() {
     let _ = std::fs::remove_dir_all(&root);
 }
 
+/// Issue #1180 R11: the agentic ES modules (`js/agentic/**/*.mjs`) are part
+/// of the native write set, mapped to `ts/agentic/**/*.mts` exactly as
+/// `scripts/translate-es.mjs` maps them; an `.mjs` outside that subtree is
+/// not the translator's.
+#[test]
+fn the_agentic_module_subtree_writes_its_mts_twins() {
+    use formal_ai::meta_translate::{SourceRoot, WriteTargetError, write_target};
+    use formal_ai::translate_write::{self, WriteReport};
+    assert_eq!(
+        write_target(
+            SourceRoot::JavaScript,
+            SourceRoot::TypeScript,
+            "js/agentic/crate/history_store.mjs"
+        ),
+        Ok("ts/agentic/crate/history_store.mts".to_owned())
+    );
+    assert_eq!(
+        write_target(
+            SourceRoot::TypeScript,
+            SourceRoot::JavaScript,
+            "ts/agentic/planner.mts"
+        ),
+        Ok("js/agentic/planner.mjs".to_owned())
+    );
+    assert_eq!(
+        write_target(
+            SourceRoot::JavaScript,
+            SourceRoot::TypeScript,
+            "js/server/main.mjs"
+        ),
+        Err(WriteTargetError::WrongRoot {
+            path: "js/server/main.mjs".to_owned()
+        }),
+        "only the module subtrees carry an .mts twin"
+    );
+    let root = temp_source_tree(&[
+        ("js/one.js", "export const one = 1;\n"),
+        ("js/agentic/crate/two.mjs", "export const two = 2;\n"),
+        ("js/server/three.mjs", "export const three = 3;\n"),
+    ]);
+    let report = translate_write::write_tree(SourceRoot::JavaScript, SourceRoot::TypeScript, &root);
+    let WriteReport::Wrote { files, .. } = &report else {
+        panic!("the clean tree must write, got {report:?}");
+    };
+    let mut targets = files
+        .iter()
+        .map(|file| file.target.as_str())
+        .collect::<Vec<_>>();
+    targets.sort_unstable();
+    assert_eq!(targets, ["ts/agentic/crate/two.mts", "ts/one.ts"]);
+    assert!(root.join("ts/agentic/crate/two.mts").is_file());
+    assert!(!root.join("ts/server/three.mts").exists());
+    let _ = std::fs::remove_dir_all(&root);
+}
+
 fn temp_source_tree(files: &[(&str, &str)]) -> std::path::PathBuf {
     let root = std::env::temp_dir().join(format!(
         "formal-ai-l2g-write-{}-{:p}",

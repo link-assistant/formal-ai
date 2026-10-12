@@ -1,0 +1,5 @@
+{
+  "originalFilename": "placement-fixture-preimage.rs",
+  "sha256": "8374b742142213d0ce44b7dccaf4ed280a0182b1eff33e31b85f6980aff14539",
+  "rawUtf8": "use super::*;\n#[test]\nfn seeded_slots_keep_provider_distinct_from_subject() {\n    assert_eq!(\n        request(\"Cite a definition of associative memory from Wikipedia\"),\n        Some(Request {\n            term: String::from(\"associative memory\"),\n            source: String::from(\"Wikipedia\"),\n            language: String::from(\"en\")\n        })\n    );\n    assert_eq!(\n        request(\"Cita una definición de red de nodos de Wikipedia\")\n            .unwrap()\n            .term,\n        \"red de nodos\"\n    );\n    assert_eq!(\n        request(\"According to Wikipedia, define entropy\")\n            .unwrap()\n            .term,\n        \"entropy\"\n    );\n    assert!(request(\"Hi\").is_none());\n    assert!(request(\"Cite a definition of \\\"\\\" from Wikipedia\").is_none());\n}\n"
+}

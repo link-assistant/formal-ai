@@ -1,0 +1,7 @@
+# Fetched issue auxiliary safety and structured digest contracts
+
+The original two-statement issue prose and whole-task request remain unchanged. The native safety fixture now executes only bounded real auxiliary append/read commands through the existing frozen ToolWorkspace instead of injecting wrote-the-plan. It retains the first auxiliary target and Planned-not-executed assertions and adds physical absence of the forbidden source file. JS controls prove fake acknowledgement, nonzero and outer errors cannot authorize literal target writes.
+
+The original structured list source and expected bytes remain unchanged. The fixture now observes the actual fresh sha256sum -- f.rs call and exact full expected hash. An independent full JS planner regression checks the same request and command-bound successful receipt. Combined focused validation is 46/46. Native source was formatted standalone; native execution is pending CI. Shared ToolWorkspace SHA remains 7dd92128fa067c9d5d35edfac4c4de4c89955bc5551eb90fd95811feb7c10511.
+
+Authorship: reviewed general test-provider/receipt integration only; autonomous useful code 0, manual source writes 0. Four explicit reviewed writes across four unique source/test paths, two formatter invocations (skip_children isolates the shared helper), two neutral test log captures. T3808 genuine diagnosis returned source echo without implementation. No G112 synthesis closure. Original task bytes remain separate from all literal reviewed source/preimage context in preserved requests.

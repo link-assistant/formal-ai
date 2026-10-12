@@ -1,0 +1,14 @@
+[
+  {
+    "name": "rust-whitespace",
+    "value": "7",
+    "actual": 50,
+    "sharedRustTrim": "7"
+  },
+  {
+    "name": "javascript-only-bom",
+    "value": "﻿7﻿",
+    "actual": 7,
+    "sharedRustTrim": "﻿7﻿"
+  }
+]

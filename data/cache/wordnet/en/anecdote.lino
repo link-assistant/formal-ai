@@ -1,0 +1,11 @@
+language en
+lemma anecdote
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "short account of an incident (especially a biographical one)"
+    id oewn-07235246-n
+    partOfSpeech n
+source "oewn:2024"

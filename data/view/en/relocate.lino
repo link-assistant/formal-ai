@@ -1,0 +1,13 @@
+view
+  id M-99961c042a35
+  lemma relocate
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "become established in a new location"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "move or establish in a new location"
+    provenance (wordnet)

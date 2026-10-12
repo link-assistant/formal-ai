@@ -1,0 +1,26 @@
+# Dependencies point inward (R1188-U2: the Layers and the Ports and Adapters
+# principles). `node scripts/check-dependency-direction.mjs` (gate
+# check-dependency-direction) counts two kinds of outward dependency and holds
+# each count to its ceiling, which only falls.
+dependency-direction
+  # The surface modules of rust/src/. A name ending in `_` is a prefix. Solver
+  # code that names one of them reaches outward.
+  surface-module "cli_"
+  surface-module "server"
+  surface-module "telegram"
+  surface-module "telegram_runtime"
+  surface-module "client_integrations"
+  surface-module "client_contract_learning"
+  # Measured 2026-10-08, mostly `crate::cli_env::flag_enabled` read by solver
+  # modules, plus the server's response types in the dialog log.
+  outward-references-ceiling 38
+  # The adapters behind the host port of js/agentic/host.mjs: modules that may
+  # import `node:` built-ins or the Node server because they are the Node side
+  # of the port, each with its reason.
+  host-adapter "js/agentic/node-host.mjs"
+    reason "The Node implementation of the host port: files, processes and the solver of js/server."
+  host-adapter "js/agentic/orchestration_cli.mjs"
+    reason "The command-line entry of the orchestration runner, a surface rather than planner logic."
+  # Measured 2026-10-08: the orchestration modules under js/agentic/crate/
+  # spawn and watch agent processes directly instead of through the host port.
+  port-bypasses-ceiling 19

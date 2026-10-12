@@ -8,7 +8,7 @@
 //! override decorates the cache, never replacing the whole record.
 //!
 //! An override fact that merely repeats a value the cache already carries is
-//! *redundant*. `tests/unit/overrides.rs` walks the whole `data/overrides`
+//! *redundant*. `tests/unit/seed/overrides.rs` walks the whole `data/overrides`
 //! tree and fails the build until every redundant fact is removed, so the
 //! layer can never silently drift away from upstream: once the cache (or a
 //! live API refresh) catches up, the override must go.

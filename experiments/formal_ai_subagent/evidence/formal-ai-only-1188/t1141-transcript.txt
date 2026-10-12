@@ -1,0 +1,1354 @@
+>> read {"filePath":"data/seed/meanings-conversation.lino","file_path":"data/seed/meanings-conversation.lino","path":"data/seed/meanings-conversation.lino"}
+   <file>
+   00001| meanings
+   00002|   conversation_preference_avoid
+   00003|     defined-by inquiry
+   00004|     defined-by conversation_reference
+   00005|     role conversation_preference_avoid
+   00006|     lexeme en "do not use" "stop using" "avoid using"
+   00007|     lexeme ru "не используй" "не используйте"
+   00008|     lexeme hi "उपयोग मत करो" "इस्तेमाल मत करो"
+   00009|     lexeme zh 不要使用 别再用
+   00010|     lexeme es "no uses" "deja de usar" "evita usar"
+   00011|   unauthorized_mutation_correction
+   00012|     defined-by inquiry
+   00013|     defined-by conversation_reference
+   00014|     role unauthorized_mutation_correction
+   00015|     lexeme en "i did not ask to update" "i did not ask to change"
+   00016|     lexeme ru "я не просил обновлять" "я не просила обновлять"
+   00017|     lexeme hi "मैंने अपडेट करने को नहीं कहा"
+   00018|     lexeme zh 我没让你更新
+   00019|     lexeme es "no te pedí actualizar" "no te pedí cambiar"
+   00020|   memory_link_count_query
+   00021|     defined-by inquiry
+   00022|     defined-by knowledge
+   00023|     role memory_link_count_query
+   00024|     lexeme en "how many links are in your memory"
+   00025|     lexeme ru "сколько ссылок в твоей памяти"
+   00026|     lexeme hi "तुम्हारी स्मृति में कितने लिंक हैं"
+   00027|     lexeme zh 你的记忆中有多少链接
+   00028|     lexeme es "cuántos enlaces hay en tu memoria"
+   00029|   memory_inventory_query
+   00030|     defined-by inquiry
+   00031|     defined-by knowledge
+   00032|     role memory_inventory_query
+   00033|     lexeme en "what is available in your local memory"
+   00034|     lexeme ru "что доступно в твоей локальной памяти"
+   00035|     lexeme hi "तुम्हारी स्थानीय स्मृति में क्या उपलब्ध है"
+   00036|     lexeme zh 你的本地记忆中有什么
+   00037|     lexeme es "qué hay disponible en tu memoria local"
+   00038|   memory_root_links_query
+   00039|     defined-by inquiry
+   00040|     defined-by knowledge
+   00041|     role memory_root_links_query
+   00042|     lexeme en "give me root links you have in your memory" "show root links in your memory"
+   00043|     lexeme ru "покажи корневые ссылки в твоей памяти"
+   00044|     lexeme hi "अपनी स्मृति के रूट लिंक दिखाओ"
+   00045|     lexeme zh 显示你记忆中的根链接
+   00046|     lexeme es "muéstrame los enlaces raíz de tu memoria" "dame los enlaces raíz que tienes en tu memoria"
+   00047|   memory_retrieval_correction
+   00048|     defined-by inquiry
+   00049|     defined-by knowledge
+   00050|     role memory_retrieval_correction
+   00051|     lexeme en "not about document generation it is about associative memory data retrieval"
+   00052|     lexeme ru "речь не о создании документа а об извлечении данных из ассоциативной памяти"
+   00053|     lexeme hi "यह दस्तावेज़ बनाने के बारे में नहीं बल्कि एसोसिएटिव मेमोरी डेटा प्राप्त करने के बारे में है"
+   00054|     lexeme zh 这不是生成文档而是检索关联记忆数据
+   00055|     lexeme es "no se trata de generar documentos sino de recuperar datos de la memoria asociativa"
+   00056|   conversation_topic_opener
+   00057|     defined-by inquiry
+   00058|     defined-by action
+   00059|     role conversation_topic_opener
+   00060|     lexeme en "let's talk about …" "lets talk about …" "can we talk about …" "talk about …"
+   00061|     lexeme ru
+   00062|       surface
+   00063|         text "давай поговорим о …"
+   00064|       surface
+   00065|         text "давай поговорим об …"
+   00066|       surface
+   00067|         text "давайте поговорим о …"
+   00068|       surface
+   00069|         text "давайте поговорим об …"
+   00070|       surface
+   00071|         text "поговорим о …"
+   00072|         action scan
+   00073|       surface
+   00074|         text "поговорим об …"
+   00075|       surface
+   00076|         text "обсудим …"
+   00077|     lexeme hi "चलो बात करें …" "बात करें …"
+   00078|     lexeme zh 聊聊… 谈谈…
+   00079|     lexeme es "hablemos de …" "hablemos sobre …" "podemos hablar de …"
+   00080|   conversation_recall_query
+   00081|     defined-by inquiry
+   00082|     defined-by conversation_reference
+   00083|     role conversation_recall_query
+   00084|     lexeme en
+   00085|       words "when did i ask about …" "when did i ask …" "when did i mention …" "when did i talk about …"
+   00086|       words "have i asked about …" "have i mentioned …" "did i ask about …" "did i mention …"
+   00087|       words "search my conversations for …" "search conversations for …" "search my chats for …" "recall …"
+   00088|     lexeme ru
+   00089|       words "когда я спрашивал про …" "когда я спрашивал о …" "когда я спрашивал …" "когда я упоминал …"
+   00090|       words "поиск по беседам …" "поиск в беседах …" "найди в беседах …"
+   00091|     lexeme hi "मेरी बातचीत में खोजो …" "मेरी चैट में खोजो …" "याद करो …"
+   00092|     lexeme zh 我什么时候问过… 我什么时候提到… 搜索我的对话… 在对话中搜索…
+   00093|     lexeme es
+   00094|       words "cuándo pregunté por …" "cuándo pregunté …" "cuándo mencioné …" "he preguntado por …" "he mencionado …"
+   00095|       words "busca en mis conversaciones …" "busca en las conversaciones …"
+   00096|   conversation_recall_previous_message
+   00097|     defined-by inquiry
+   00098|     defined-by conversation_reference
+   00099|     role conversation_recall_previous_message
+   00100|     lexeme en
+   00101|       words "what was written in the previous message" "what was in the previous message"
+   00102|       words "what did the previous message say" "what was the previous message" "what was the last message"
+   00103|       words "what was written before" "show the previous message" "the previous message" "previous message"
+   00104|     lexeme ru
+   00105|       words "что было написано в прошлом сообщении" "что было в прошлом сообщении"
+   00106|       words "что было написано в предыдущем сообщении" "что было в предыдущем сообщении" "в прошлом сообщении"
+   00107|       words "в предыдущем сообщении" "покажи прошлое сообщение" "прошлое сообщение" "предыдущее сообщение"
+   00108|     lexeme hi
+   00109|       words "पिछले संदेश में क्या लिखा था" "पिछले संदेश में क्या था" "पिछला संदेश क्या था" "पिछला संदेश दिखाओ"
+   00110|       words "पिछले संदेश में" "पिछला संदेश"
+   00111|     lexeme zh 上一条消息写了什么 上一条消息是什么 显示上一条消息 上一条消息 前一条消息 上条消息
+   00112|     lexeme es
+   00113|       words "qué estaba escrito en el mensaje anterior" "qué había en el mensaje anterior"
+   00114|       words "qué decía el mensaje anterior" "cuál fue el mensaje anterior" "muestra el mensaje anterior"
+   00115|       words "el mensaje anterior" "mensaje anterior"
+   00116|   conversation_recall_previous_user_message
+   00117|     defined-by inquiry
+   00118|     defined-by conversation_reference
+   00119|     role conversation_recall_previous_user_message
+   00120|     lexeme en
+   00121|       words "what did i ask" "what did i ask in the previous message" "what did i ask in the last message"
+   00122|       words "what was my previous question" "what was the previous question" "what was my last question"
+   00123|       words "what was my previous message" "repeat my last message" "what did i say"
+   00124|     lexeme ru
+   00125|       words "что я спрашивал" "я что спрашивал" "а я что спрашивал" "а что я спрашивал"
+   00126|       words "что я спрашивал в прошлом сообщении" "что я спрашивал в предыдущем сообщении" "что я спросил"
+   00127|       words "что я просил" "что я писал" "какой был мой прошлый вопрос" "какой был мой предыдущий вопрос"
+   00128|     lexeme hi "मैंने क्या पूछा था" "मेरा पिछला सवाल क्या था" "मैंने पिछले संदेश में क्या पूछा था"
+   00129|     lexeme zh 我刚才问了什么 我之前问了什么 我的上一个问题是什么
+   00130|     lexeme es
+   00131|       words "qué pregunté" "qué pregunté en el mensaje anterior" "cuál fue mi pregunta anterior"
+   00132|       words "cuál fue mi última pregunta" "repite mi último mensaje" "qué dije"
+   00133|   conversation_recall_other_query
+   00134|     defined-by inquiry
+   00135|     defined-by conversation_reference
+   00136|     role conversation_recall_other_query
+   00137|     lexeme en
+   00138|       words "find … in another conversation" "find … in other conversations" "find … in my other conversations"
+   00139|       words "find … in my conversations" "find … in another chat" "find … in other chats"
+   00140|       words "search for … in another conversation" "search for … in other conversations"
+   00141|     lexeme ru
+   00142|       words "найди … в другой беседе" "найди … в других беседах" "найди … в другом чате" "найди … в других чатах"
+   00143|       words "поищи … в других беседах"
+   00144|     lexeme hi "… दूसरी बातचीत में खोजो" "… दूसरी चैट में खोजो"
+   00145|     lexeme zh 查找…在其他对话中 搜索…在其他对话中 查找…在另一个对话中
+   00146|     lexeme es
+   00147|       words "busca … en otra conversación" "busca … en otras conversaciones" "encuentra … en otra conversación"
+   00148|       words "encuentra … en otras conversaciones"
+   00149|   memory_append_directive
+   00150|     defined-by action
+   00151|     defined-by answer
+   00152|     role memory_append_directive
+   00153|     lexeme en
+   00154|       words "remember that …" "remember …" "record memory …" "record that …" "append memory …" "note that …"
+   00155|       words "save to memory …" "memorize …"
+   00156|     lexeme ru
+   00157|       words "запомни что …" "запомни …" "запиши в память …" "запиши что …" "запиши …" "сохрани в память …"
+   00158|       words "заметь что …"
+   00159|     lexeme hi "याद रखो कि …" "याद रखो …" "याद रखना …" "स्मृति में सहेजो …" "नोट करो कि …" "नोट करो …"
+   00160|     lexeme zh 记住… 记下… 记录… 存入记忆…
+   00161|     lexeme es "recuerda que …" "recuerda …" "guarda en la memoria …" "anota que …" "memoriza …"
+   00162|   memory_scope
+   00163|     defined-by action
+   00164|     defined-by answer
+   00165|     role memory_scope
+   00166|     lexeme en "in memory" "into memory" "to memory" "in the memory"
+   00167|     lexeme ru "в памяти" "в память"
+   00168|     lexeme hi "स्मृति में" "मेमोरी में" "याद में"
+   00169|     lexeme zh 在记忆中 记忆中 在内存中
+   00170|     lexeme es "en la memoria" "en memoria"
+   00171|   memory_substitution_connector
+   00172|     defined-by action
+   00173|     defined-by answer
+   00174|     role memory_substitution_connector
+   00175|     lexeme en with by
+   00176|     lexeme ru на
+   00177|     lexeme hi "की जगह" "के बजाय" "की बजाय"
+   00178|     lexeme zh 换成 替换为 替换成 更换为
+   00179|     lexeme es por
+   00180|   memory_substitution_directive
+   00181|     defined-by action
+   00182|     defined-by answer
+   00183|     role memory_substitution_directive
+   00184|     lexeme en replace substitute
+   00185|     lexeme ru замени заменить замените поменяй
+   00186|     lexeme hi बदलो "बदल दो" रखो लिखो
+   00187|     lexeme zh 把 将 替换 更换
+   00188|     lexeme es reemplaza sustituye
+   00189|   agentic_continuation_cue
+   00190|     defined-by conversation_reference
+   00191|     role agentic_continuation_cue
+   00192|     lexeme en "continue if you have next steps" "continue" "go on" "please continue" "next steps"
+   00193|     lexeme ru "продолжай" "продолжи" "продолжи если есть следующие шаги" "продолжай если есть следующие шаги"
+   00194|     lexeme hi "जारी रखें" "जारी रखो" "अगर अगले कदम हैं तो जारी रखें"
+   00195|     lexeme zh
+   00196|       surface
+   00197|         text 继续
+   00198|       surface
+   00199|         text 请继续
+   00200|       surface
+   00201|         text 如果还有下一步请继续
+   00202|       surface
+   00203|         text 如果还有下一步 请继续
+   00204|     lexeme es "continúa" "continua si tienes próximos pasos"
+   00205|   enumeration_cue
+   00206|     defined-by conversation_reference
+   00207|     role enumeration_cue
+   00208|     lexeme en "first" "second" "third" "then" "next" "after that" "also" "finally" "lastly"
+   00209|     lexeme ru "сначала" "во-первых" "во-вторых" "затем" "потом" "далее" "также" "наконец" "после этого"
+   00210|     lexeme hi "पहले" "दूसरा" "फिर" "उसके बाद" "अंत में"
+   00211|     lexeme zh 首先 其次 然后 接着 之后 最后
+   00212|     lexeme es "primero" "segundo" "luego" "después" "finalmente"
+   00213|   social_greeting
+   00214|     defined-by inquiry
+   00215|     defined-by conversation_reference
+   00216|     role social_greeting
+   00217|     lexeme en "hi" hello hey howdy greetings "hi there" "hello there" "good morning" "good afternoon" "good evening"
+   00218|     lexeme ru привет здравствуйте здравствуй приветствую шалом "шабат шалом" "доброе утро" "добрый день" "добрый вечер"
+   00219|     lexeme hi नमस्ते नमस्कार सलाम हाय "राम राम" "शुभ प्रभात" "शुभ संध्या"
+   00220|     lexeme zh 你好 您好 嗨 哈喽 早上好 早安 大家好 晚上好
+   00221|     lexeme es hola "buenos días" "buenas tardes" "buenas noches" saludos
+   00222| 
+   00223|   social_wellbeing
+   00224|     defined-by inquiry
+   00225|     defined-by conversation_reference
+   00226|     role social_wellbeing
+   00227|     lexeme en "how are you" "how are you doing" "how do you do" "how is it going" "how are things"
+   00228|     lexeme ru
+   00229|       words "как дела" "как твои дела" "как ваши дела" "как у тебя дела" "как у вас дела" "привет как дела"
+   00230|       words "здравствуйте как ваши дела" "как поживаешь" "как вы поживаете"
+   00231|     lexeme hi "कैसे हो" "आप कैसे हैं" "तुम कैसे हो" "क्या हाल है" "आपका क्या हाल है" "सब कैसा चल रहा है"
+   00232|     lexeme zh 你好吗 你还好吗 你怎么样 您怎么样 最近怎么样 过得怎么样
+   00233|     lexeme es "cómo estás" "cómo está usted" "qué tal" "cómo te va" "cómo andas"
+   00234| 
+   00235|   social_farewell
+   00236|     defined-by inquiry
+   00237|     defined-by conversation_reference
+   00238|     role social_farewell
+   00239|     lexeme en bye goodbye farewell "see you" "see you later" "take care" "so long" ciao tschüss
+   00240|     lexeme ru пока прощай увидимся "до свидания" досвидания "до встречи" "до скорого" "всего доброго"
+   00241|     lexeme hi अलविदा विदा बाय टाटा "फिर मिलेंगे"
+   00242|     lexeme zh 再见 拜拜 回见 改天见 后会有期
+   00243|     lexeme es adiós "hasta luego" "hasta pronto" "hasta mañana" "nos vemos" chau
+   00244| 
+   00245|   social_courtesy_response
+   00246|     defined-by inquiry
+   00247|     defined-by conversation_reference
+   00248|     role social_courtesy_response
+   00249|     lexeme en
+   00250|       words thanks "thank you" "i am fine thank you" "i am fine thanks" "i am good thank you" "i am good thanks"
+   00251|       words "fine thank you" "fine thanks" "good thank you" "good thanks" "doing well thank you" "doing well thanks"
+   00252|       words "thank you very much" "thank you so much" "thanks a lot" "thanks so much" "many thanks"
+   00253|     lexeme ru
+   00254|       words спасибо благодарю "у меня все хорошо спасибо" "у меня всё хорошо спасибо" "все хорошо спасибо"
+   00255|       words "всё хорошо спасибо" "хорошо спасибо" "нормально спасибо" "ого чето начал соображать"
+   00256|       words "ого чёто начал соображать" "ого чё то начал соображать" "ого что то начал соображать"
+   00257|     lexeme hi धन्यवाद शुक्रिया "मैं ठीक हूँ धन्यवाद" "ठीक हूँ धन्यवाद" "मैं अच्छा हूँ धन्यवाद"
+   00258|     lexeme zh 谢谢 多谢 我很好谢谢 "我很好 谢谢" 好的谢谢 "好的 谢谢" 非常感谢 谢谢你
+   00259|     lexeme es gracias "muchas gracias" "muy bien gracias" "todo bien gracias"
+   00260| 
+   00261|   social_test_status
+   00262|     defined-by inquiry
+   00263|     defined-by conversation_reference
+   00264|     role social_test_status
+   00265|     lexeme en test ping pong testing "test passed" "testing 123" "are you there" "you there" "i am here"
+   00266|     lexeme ru тест пинг "я здесь" "я тут" "тест пройден" "ты здесь" "ты тут" "вы здесь" "вы тут"
+   00267|     lexeme hi टेस्ट परीक्षण "परीक्षण सफल रहा" "मैं यहाँ हूँ" "मैं यहां हूं" "क्या आप वहाँ हैं" "क्या आप वहां हैं"
+   00268|     lexeme zh 测试 測試 测试通过 測試通過 我在这里 我在這裡 你在吗 您在吗 你在嗎 您在嗎
+   00269|     lexeme es prueba "prueba superada" "estoy aquí" "estoy aqui" "estás ahí" "estas ahi" "sigues ahí" "sigues ahi"
+   00270| 
+   00271|   social_assistant_name
+   00272|     defined-by inquiry
+   00273|     defined-by conversation_reference
+   00274|     role social_assistant_name
+   00275|     lexeme en
+   00276|       words "what is your name" "what's your name" "do you have a name" "what should i call you" "tell me your name"
+   00277|       words "may i know your name"
+   00278|     lexeme ru
+   00279|       words "как твое имя" "как твоё имя" "как тебя зовут" "как вас зовут" "у тебя есть имя" "назови своё имя"
+   00280|       words "назови свое имя"
+   00281|     lexeme hi
+   00282|       words "आपका नाम क्या है" "तुम्हारा नाम क्या है" "क्या तुम्हारा कोई नाम है" "मैं तुम्हें क्या कहूँ" "अपना नाम बताओ"
+   00283|     lexeme zh 你叫什么名字 您叫什么名字 你的名字是什么 你有名字吗 "告诉我你的名字"
+   00284|     lexeme es "cómo te llamas" "cuál es tu nombre" "cómo se llama usted" "puedo saber tu nombre"
+   00285| 
+   00286|   social_identity
+   00287|     defined-by inquiry
+   00288|     defined-by conversation_reference
+   00289|     role social_identity
+   00290|     lexeme en
+   00291|       words "who are you" "what are you" "who is formal ai" "what is formal ai" "who is formalai" "what is formalai"
+   00292|       words "tell me about yourself" "introduce yourself" "let s get acquainted" "lets get acquainted"
+   00293|       words "let us get acquainted" "let s get to know each other"
+   00294|     lexeme ru
+   00295|       words "кто ты" "что ты" "расскажи о себе" "расскажи мне о себе" "расскажи про себя" "опиши себя" представься
+   00296|       words "давай знакомиться" "давай познакомимся" "давайте познакомимся"
+   00297|     lexeme hi
+   00298|       words "तुम कौन हो" "तू कौन है" "आप कौन हैं" "अपना परिचय दो" "अपने बारे में बताओ" "चलो परिचय करते हैं"
+   00299|       words "आइए परिचय करें" "चलो एक दूसरे को जानें"
+   00300|     lexeme zh 你是谁 您是谁 你是什么 介绍一下你自己 告诉我你自己 我们认识一下吧 认识一下吧 让我们认识一下
+   00301|     lexeme es "quién eres" "qué eres" preséntate "cuéntame de ti"
+   00302| 
+   00303|   social_assistant_free_time
+   00304|     defined-by inquiry
+   00305|     defined-by conversation_reference
+   00306|     role social_assistant_free_time
+   00307|     lexeme en
+   00308|       words "what do you do in your free time" "what do you do in free time" "how do you spend your free time"
+   00309|       words "what do you do when you are not working" "how do you spend your spare time"
+   00310|     lexeme ru
+   00311|       words "что делаешь в свободное время" "что ты делаешь в свободное время" "чем занимаешься в свободное время"
+   00312|       words "чем ты занимаешься в свободное время" "что делаешь когда свободен" "как проводишь свободное время"
+   00313|     lexeme hi
+   00314|       words "खाली समय में क्या करते हो" "आप खाली समय में क्या करते हैं" "फुर्सत में क्या करते हो"
+   00315|       words "खाली वक्त में क्या करते हो" "जब आप काम नहीं करते तो क्या करते हैं"
+   00316|     lexeme zh 你空闲时间做什么 你有空的时候做什么 你业余时间做什么 你休息的时候做什么 你不工作的时候做什么
+   00317|     lexeme es "qué haces en tu tiempo libre" "cómo pasas tu tiempo libre" "qué haces cuando no trabajas"
+   00318| 
+   00319| 
+   
+   (End of file - total 319 lines)
+   </file>
+>> edit {"filePath":"data/seed/meanings-conversation.lino","file_path":"data/seed/meanings-conversation.lino","new":"    lexeme en \"do not use\" \"don t use\" \"don’t use\" \"don't use\" \"stop using\" \"avoid using\"","newString":"    lexeme en \"do not use\" \"don t use\" \"don’t use\" \"don't use\" \"stop using\" \"avoid using\"","new_str":"    lexeme en \"do not use\" \"don t use\" \"don’t use\" \"don't use\" \"stop using\" \"avoid using\"","new_string":"    lexeme en \"do not use\" \"don t use\" \"don’t use\" \"don't use\" \"stop using\" \"avoid using\"","old":"    lexeme en \"do not use\" \"stop using\" \"avoid using\"","oldString":"    lexeme en \"do not use\" \"stop using\" \"avoid using\"","old_str":"    lexeme en \"do not use\" \"stop using\" \"avoid using\"","old_string":"    lexeme en \"do not use\" \"stop using\" \"avoid using\"","path":"data/seed/meanings-conversation.lino"}
+>> bash {"command":"sha256sum -- data/seed/meanings-conversation.lino"}
+   12e5e590cf79dd0cc7331a0eea3a25fe51dc0b27f22c319f5bdf63f0c07e0a8c  data/seed/meanings-conversation.lino
+   
+== answer ==
+Replaced `    lexeme en "do not use" "stop using" "avoid using"` with `    lexeme en "do not use" "don t use" "don’t use" "don't use" "stop using" "avoid using"` in `data/seed/meanings-conversation.lino` and observed the result.
+>> read {"filePath":"rust/src/event_log.rs","file_path":"rust/src/event_log.rs","path":"rust/src/event_log.rs"}
+   <file>
+   00001| //! Append-only event log for the universal solver.
+   00002| //!
+   00003| //! Every step the solver takes is recorded as a content-addressed event
+   00004| //! before the user-facing answer is built. The answer is then a projection
+   00005| //! of the log — see `VISION.md` and `GOALS.md` for the rationale.
+   00006| //!
+   00007| //! The log is intentionally small: it lives in-process, holds plain Rust
+   00008| //! records, and uses the same FNV-1a 64-bit hash that `engine::stable_id`
+   00009| //! uses so identifiers stay stable across surfaces.
+   00010| 
+   00011| use crate::engine::{ThinkingStep, stable_id};
+   00012| use crate::link_store::{LinkStore, LinkStoreError};
+   00013| use crate::memory::MemoryEvent;
+   00014| 
+   00015| /// A single event in the append-only log.
+   00016| #[derive(Debug, Clone, PartialEq, Eq)]
+   00017| pub struct Event {
+   00018|     pub id: String,
+   00019|     pub kind: &'static str,
+   00020|     pub payload: String,
+   00021| }
+   00022| 
+   00023| /// In-process append-only event log.
+   00024| #[derive(Debug, Default, Clone)]
+   00025| pub struct EventLog {
+   00026|     events: Vec<Event>,
+   00027| }
+   00028| 
+   00029| impl EventLog {
+   00030|     #[must_use]
+   00031|     pub const fn new() -> Self {
+   00032|         Self { events: Vec::new() }
+   00033|     }
+   00034| 
+   00035|     /// Append a new event with content-addressed id.
+   00036|     ///
+   00037|     /// The id is derived from the kind, the payload, and the current log
+   00038|     /// length so that repeated events produce stable, distinct ids.
+   00039|     pub fn append(&mut self, kind: &'static str, payload: impl Into<String>) -> String {
+   00040|         let payload = payload.into();
+   00041|         let seed = format!("{kind}:{}:{payload}", self.events.len());
+   00042|         let id = stable_id(kind, &seed);
+   00043|         self.events.push(Event {
+   00044|             id: id.clone(),
+   00045|             kind,
+   00046|             payload,
+   00047|         });
+   00048|         id
+   00049|     }
+   00050| 
+   00051|     /// Append a machine-addressable payload without hand-building a textual
+   00052|     /// key/value record at every call site.
+   00053|     pub fn append_fields(&mut self, kind: &'static str, fields: &[(&str, &str)]) -> String {
+   00054|         let payload = render_fields(fields);
+   00055|         self.append(kind, payload)
+   00056|     }
+   00057| 
+   00058|     #[must_use]
+   00059|     pub fn events(&self) -> &[Event] {
+   00060|         &self.events
+   00061|     }
+   00062| 
+   00063|     /// Returns the first event of the given kind, if any.
+   00064|     #[must_use]
+   00065|     pub fn first_of(&self, kind: &str) -> Option<&Event> {
+   00066|         self.events.iter().find(|event| event.kind == kind)
+   00067|     }
+   00068| 
+   00069|     /// Returns the most recent event of the given kind, if any.
+   00070|     #[must_use]
+   00071|     pub fn last_of(&self, kind: &str) -> Option<&Event> {
+   00072|         self.events.iter().rev().find(|event| event.kind == kind)
+   00073|     }
+   00074| 
+   00075|     /// Project the log to a list of `<kind>:<id>` links for the user-facing
+   00076|     /// evidence array. Each link points back to a distinct event.
+   00077|     #[must_use]
+   00078|     pub fn evidence_links(&self) -> Vec<String> {
+   00079|         self.events
+   00080|             .iter()
+   00081|             .map(|event| format!("{}:{}", event.kind, event.id))
+   00082|             .collect()
+   00083|     }
+   00084| 
+   00085|     /// Build a Links Notation `steps` block listing every event in order.
+   00086|     /// Used by trace serialization in [`crate::solver`].
+   00087|     #[must_use]
+   00088|     pub fn steps_block(&self) -> String {
+   00089|         use std::fmt::Write as _;
+   00090|         let mut buffer = String::from("steps:");
+   00091|         for (index, event) in self.events.iter().enumerate() {
+   00092|             let _ = write!(
+   00093|                 buffer,
+   00094|                 "\n  step_{index} {} {}",
+   00095|                 event.kind,
+   00096|                 sanitize_payload(&event.payload)
+   00097|             );
+   00098|         }
+   00099|         buffer
+   00100|     }
+   00101| 
+   00102|     /// Project raw solver events into user-readable, ordered thinking steps.
+   00103|     ///
+   00104|     /// This is the *curated* projection introduced for issue #488. Instead of a
+   00105|     /// noisy 1:1 dump of every internal event, it keeps only the meaningful
+   00106|     /// reasoning milestones, cleans each `detail` down to concrete content,
+   00107|     /// folds the calculator's reduction trace into one composite `compute` step
+   00108|     /// with detailed children, de-duplicates consecutive repeats, and labels the
+   00109|     /// universal-algorithm phases `high` so the minimum granularity surfaces only
+   00110|     /// the high-level direction.
+   00111|     ///
+   00112|     /// The raw, lossless trace stays available to maintainers through
+   00113|     /// [`EventLog::steps_block`] and [`EventLog::evidence_links`].
+   00114|     #[must_use]
+   00115|     pub fn thinking_steps(&self) -> Vec<ThinkingStep> {
+   00116|         self.thinking_steps_for_answer("")
+   00117|     }
+   00118| 
+   00119|     /// Like [`EventLog::thinking_steps`], but substitutes the actual composed
+   00120|     /// answer for the opaque `response:<route>` payload of the closing
+   00121|     /// `deformalize` step so the final reasoning step is concrete (issue #488).
+   00122|     #[must_use]
+   00123|     pub fn thinking_steps_for_answer(&self, final_answer: &str) -> Vec<ThinkingStep> {
+   00124|         let answer = collapse_thinking_whitespace(final_answer);
+   00125| 
+   00126|         // Phase 1 — curate raw events into a clean plan, folding the
+   00127|         // calculator's reduction trace into one composite parent + children.
+   00128|         let mut plan: Vec<PlannedThinkingStep> = Vec::new();
+   00129|         let mut calculation = CalculationCluster::default();
+   00130|         for event in &self.events {
+   00131|             if event.kind == "calculation" || event.kind.starts_with("calculation:") {
+   00132|                 calculation.absorb(event.kind, &event.payload);
+   00133|                 continue;
+   00134|             }
+   00135|             if calculation.has_data() {
+   00136|                 calculation.drain_into(&mut plan);
+   00137|             }
+   00138|             if let Some(step) = curate_thinking_event(event.kind, &event.payload, &answer) {
+   00139|                 plan.push(step);
+   00140|             }
+   00141|         }
+   00142|         if calculation.has_data() {
+   00143|             calculation.drain_into(&mut plan);
+   00144|         }
+   00145| 
+   00146|         // Phase 2 — de-duplicate consecutive repeats, assign order and parent
+   00147|         // ids (so composite steps render as recursively nested thinking).
+   00148|         let mut steps: Vec<ThinkingStep> = Vec::new();
+   00149|         let mut order: u32 = 0;
+   00150|         let mut previous_key: Option<String> = None;
+   00151|         let mut current_parent: Option<String> = None;
+   00152|         for planned in plan {
+   00153|             let key = format!("{}\u{1f}{}", planned.step, planned.detail);
+   00154|             let is_child = planned.role == StepRole::Child;
+   00155|             if !is_child && previous_key.as_deref() == Some(key.as_str()) {
+   00156|                 continue;
+   00157|             }
+   00158|             previous_key = Some(key);
+   00159|             let mut step = ThinkingStep::new(
+   00160|                 order,
+   00161|                 planned.step,
+   00162|                 planned.detail,
+   00163|                 planned.level,
+   00164|                 planned.source,
+   00165|             );
+   00166|             match planned.role {
+   00167|                 StepRole::Parent => current_parent = Some(step.id.clone()),
+   00168|                 StepRole::Child => {
+   00169|                     if let Some(parent) = current_parent.clone() {
+   00170|                         step = step.with_parent(parent);
+   00171|                     }
+   00172|                 }
+   00173|                 StepRole::Normal => current_parent = None,
+   00174|             }
+   00175|             steps.push(step);
+   00176|             order += 1;
+   00177|         }
+   00178| 
+   00179|         // Phase 3 — narrate the finished trace in the language of the answer
+   00180|         // (issue #889). A single step cannot know that language while the trace
+   00181|         // is still being built, because the language is itself one of the steps.
+   00182|         let language = crate::thinking::thinking_answer_language(&steps);
+   00183|         crate::thinking::localize_thinking_steps(&mut steps, &language);
+   00184|         steps
+   00185|     }
+   00186| 
+   00187|     /// Replay every in-process event into a durable link store projection.
+   00188|     ///
+   00189|     /// This is additive: the original event log remains in-process, while
+   00190|     /// the target store receives memory records that can be exported as
+   00191|     /// `.lino` or reduced to doublets by the active backend.
+   00192|     pub fn append_to_link_store<S: LinkStore>(
+   00193|         &self,
+   00194|         store: &mut S,
+   00195|     ) -> Result<usize, LinkStoreError> {
+   00196|         for event in &self.events {
+   00197|             store.append_memory_event(MemoryEvent {
+   00198|                 id: event.id.clone(),
+   00199|                 kind: Some(event.kind.to_owned()),
+   00200|                 content: Some(event.payload.clone()),
+   00201|                 evidence: vec![format!("{}:{}", event.kind, event.id)],
+   00202|                 ..MemoryEvent::default()
+   00203|             })?;
+   00204|         }
+   00205|         Ok(self.events.len())
+   00206|     }
+   00207| }
+   00208| 
+   00209| /// Render the canonical compact form used by structured event payloads.
+   00210| #[must_use]
+   00211| pub fn render_fields(fields: &[(&str, &str)]) -> String {
+   00212|     fields
+   00213|         .iter()
+   00214|         .map(|(name, value)| format!("{name}={value}"))
+   00215|         .collect::<Vec<_>>()
+   00216|         .join(" ")
+   00217| }
+   00218| 
+   00219| /// Role of a planned step in a recursively-composite (fractal) thinking tree.
+   00220| #[derive(Clone, Copy, PartialEq, Eq)]
+   00221| enum StepRole {
+   00222|     /// A leaf step at the top level.
+   00223|     Normal,
+   00224|     /// A composite step that owns the following [`StepRole::Child`] steps.
+   00225|     Parent,
+   00226|     /// A sub-step nested under the most recent [`StepRole::Parent`].
+   00227|     Child,
+   00228| }
+   00229| 
+   00230| /// A curated thinking step before ordering, de-duplication and id assignment.
+   00231| struct PlannedThinkingStep {
+   00232|     step: &'static str,
+   00233|     detail: String,
+   00234|     level: &'static str,
+   00235|     source: &'static str,
+   00236|     role: StepRole,
+   00237| }
+   00238| 
+   00239| impl PlannedThinkingStep {
+   00240|     fn normal(
+   00241|         step: &'static str,
+   00242|         detail: impl Into<String>,
+   00243|         level: &'static str,
+   00244|         source: &'static str,
+   00245|     ) -> Self {
+   00246|         Self {
+   00247|             step,
+   00248|             detail: detail.into(),
+   00249|             level,
+   00250|             source,
+   00251|             role: StepRole::Normal,
+   00252|         }
+   00253|     }
+   00254| 
+   00255|     fn parent(
+   00256|         step: &'static str,
+   00257|         detail: impl Into<String>,
+   00258|         level: &'static str,
+   00259|         source: &'static str,
+   00260|     ) -> Self {
+   00261|         Self {
+   00262|             role: StepRole::Parent,
+   00263|             ..Self::normal(step, detail, level, source)
+   00264|         }
+   00265|     }
+   00266| 
+   00267|     fn child(
+   00268|         step: &'static str,
+   00269|         detail: impl Into<String>,
+   00270|         level: &'static str,
+   00271|         source: &'static str,
+   00272|     ) -> Self {
+   00273|         Self {
+   00274|             role: StepRole::Child,
+   00275|             ..Self::normal(step, detail, level, source)
+   00276|         }
+   00277|     }
+   00278| }
+   00279| 
+   00280| /// Accumulates the calculator's `calculation:*` trace so it can be rendered as a
+   00281| /// single composite `compute` step (parent) with detailed children (issue #488,
+   00282| /// requirement R11 — recursively composite / fractal steps).
+   00283| #[derive(Default)]
+   00284| struct CalculationCluster {
+   00285|     request: Option<String>,
+   00286|     engine: Option<String>,
+   00287|     expression: Option<String>,
+   00288|     steps: Option<String>,
+   00289|     result: Option<String>,
+   00290| }
+   00291| 
+   00292| impl CalculationCluster {
+   00293|     fn absorb(&mut self, kind: &str, payload: &str) {
+   00294|         let value = payload.trim().to_owned();
+   00295|         match kind {
+   00296|             "calculation" => self.result = Some(value),
+   00297|             "calculation:request" => self.request = Some(value),
+   00298|             "calculation:engine" => self.engine = Some(value),
+   00299|             "calculation:lino" => self.expression = Some(value),
+   00300|             "calculation:steps" => self.steps = Some(value),
+   00301|             // `calculation:rate_basis` and any other detail kinds stay in the raw
+   00302|             // evidence trace but are not surfaced in the curated view.
+   00303|             _ => {}
+   00304|         }
+   00305|     }
+   00306| 
+   00307|     const fn has_data(&self) -> bool {
+   00308|         self.result.is_some()
+   00309|             || self.request.is_some()
+   00310|             || self.engine.is_some()
+   00311|             || self.expression.is_some()
+   00312|             || self.steps.is_some()
+   00313|     }
+   00314| 
+   00315|     fn drain_into(&mut self, plan: &mut Vec<PlannedThinkingStep>) {
+   00316|         let parent_detail = self
+   00317|             .result
+   00318|             .clone()
+   00319|             .or_else(|| self.request.clone())
+   00320|             .unwrap_or_default();
+   00321|         plan.push(PlannedThinkingStep::parent(
+   00322|             "compute",
+   00323|             parent_detail,
+   00324|             "high",
+   00325|             "calculation",
+   00326|         ));
+   00327|         if let Some(engine) = self.engine.take() {
+   00328|             plan.push(PlannedThinkingStep::child(
+   00329|                 "compute_engine",
+   00330|                 engine,
+   00331|                 "detailed",
+   00332|                 "calculation:engine",
+   00333|             ));
+   00334|         }
+   00335|         if let Some(expression) = self.expression.take() {
+   00336|             plan.push(PlannedThinkingStep::child(
+   00337|                 "compute_expression",
+   00338|                 expression,
+   00339|                 "detailed",
+   00340|                 "calculation:lino",
+   00341|             ));
+   00342|         }
+   00343|         if let Some(steps) = self.steps.take() {
+   00344|             plan.push(PlannedThinkingStep::child(
+   00345|                 "compute_steps",
+   00346|                 steps,
+   00347|                 "detailed",
+   00348|                 "calculation:steps",
+   00349|             ));
+   00350|         }
+   00351|         *self = Self::default();
+   00352|     }
+   00353| }
+   00354| 
+   00355| /// Collapse any run of whitespace (including newlines) into single spaces so a
+   00356| /// multi-line answer renders as one concrete `deformalize` detail.
+   00357| fn collapse_thinking_whitespace(value: &str) -> String {
+   00358|     value.split_whitespace().collect::<Vec<_>>().join(" ")
+   00359| }
+   00360| 
+   00361| /// Curate a single raw solver event into a clean, concrete thinking step, or
+   00362| /// `None` when the event is internal bookkeeping that should not surface to the
+   00363| /// user.
+   00364| ///
+   00365| /// This is an **allowlist**: only events that carry meaningful reasoning are
+   00366| /// kept, and each is reduced to concrete content (a search term, a route, a
+   00367| /// looked-up entity, the composed answer). Unknown kinds are dropped so the
+   00368| /// default view stays concrete — the lossless trace remains in the evidence
+   00369| /// links for maintainers.
+   00370| fn curate_thinking_event(
+   00371|     kind: &'static str,
+   00372|     payload: &str,
+   00373|     final_answer: &str,
+   00374| ) -> Option<PlannedThinkingStep> {
+   00375|     let detail = payload.trim();
+   00376|     let keep = |step: &'static str, detail: &str, level: &'static str| {
+   00377|         Some(PlannedThinkingStep::normal(
+   00378|             step,
+   00379|             detail.to_owned(),
+   00380|             level,
+   00381|             kind,
+   00382|         ))
+   00383|     };
+   00384|     match kind {
+   00385|         // ---- Universal-algorithm phases (high level / minimum granularity) ----
+   00386|         "impulse" => keep("impulse", detail, "high"),
+   00387|         "language" | "language_from" => keep("detect_language", detail, "high"),
+   00388|         "language_to" => keep("resolve_response_language", detail, "high"),
+   00389|         "intent_formalization:route" => keep("formalize", detail, "high"),
+   00390|         "intent" | "legacy_intent" => keep("dispatch_handler", detail, "high"),
+   00391|         "program_plan" | "program_parameters" => keep("program_plan", detail, "high"),
+   00392|         "response" => {
+   00393|             let value = if final_answer.is_empty() {
+   00394|                 detail
+   00395|             } else {
+   00396|                 final_answer
+   00397|             };
+   00398|             keep("deformalize", value, "high")
+   00399|         }
+   00400| 
+   00401|         // ---- Concrete detailed reasoning ----
+   00402|         "concept_lookup:request" | "procedural_how_to:request" => {
+   00403|             keep("scan_memory", detail, "detailed")
+   00404|         }
+   00405|         "concept_lookup:hit"
+   00406|         | "fact_query:relation"
+   00407|         | "fact_query:subject"
+   00408|         | "fact_lookup:hit"
+   00409|         // The timeline an answer was computed from is part of the lookup, so it
+   00410|         // shows up in the reasoning trace next to the fact it answered.
+   00411|         | "release_timeline:hit" => keep("lookup_fact", detail, "detailed"),
+   00412|         "web_search:request" | "http_fetch:request" | "url_navigate:request" => {
+   00413|             keep("http_chat", detail, "detailed")
+   00414|         }
+   00415|         "tool_call" | "tool_result" => keep("invoke_tool", detail, "detailed"),
+   00416|         "coreference" | "program_coreference" => keep("coreference_binding", "", "detailed"),
+   00417|         "modifier_detection" | "program_modifiers" => keep("modifier_detection", "", "detailed"),
+   00418|         "rule_construction" => keep("rule_construction", "", "detailed"),
+   00419|         // The validation payload is an internal acceptance reason
+   00420|         // (`accepted_without_extra_constraints`); surface a clean verification
+   00421|         // step without the meta-language token.
+   00422|         "validation" => keep("rule_verification", "", "detailed"),
+   00423|         _ if kind.starts_with("tool_") => keep("invoke_tool", detail, "detailed"),
+   00424|         _ if kind.starts_with("agent_mode") || kind == "action_log" => {
+   00425|             keep("agent_plan", detail, "detailed")
+   00426|         }
+   00427| 
+   00428|         // ---- Everything else: internal bookkeeping, dropped from the view ----
+   00429|         _ => None,
+   00430|     }
+   00431| }
+   00432| 
+   00433| /// Build the evidence links array for a symbolic answer.
+   00434| ///
+   00435| /// Translates each log event into a typed link, appending `response_link` at
+   00436| /// the end when it is not already present.
+   00437| #[must_use]
+   00438| pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -> Vec<String> {
+   00439|     let mut links: Vec<String> = Vec::new();
+   00440|     links.push(format!("prompt:{}", stable_id("prompt", prompt)));
+   00441|     for event in log.events() {
+   00442|         let evidence = match event.kind {
+   00443|             "trace:execution_failure" => format!("trace:execution_failure:{}", event.id),
+   00444|             "language" => format!("language:{}", event.payload),
+   00445|             "language_from" => format!("language_from:{}", event.payload),
+   00446|             "language_to" => format!("language_to:{}", event.payload),
+   00447|             "definition_merge:language" => format!("definition_merge:language:{}", event.payload),
+   00448|             "definition_merge:source_declared" => {
+   00449|                 format!("definition_merge:source_declared:{}", event.payload)
+   00450|             }
+   00451|             "meaning" => format!("meaning:{}", event.payload),
+   00452|             "translation_gap" => format!("translation_gap:{}", event.payload),
+   00453|             "wikidata" => format!("wikidata:{}", event.payload),
+   00454|             "formalization" => format!("formalization:{}", event.id),
+   00455|             "formalization:subject_q" => {
+   00456|                 format!("formalization:subject_q:{}", event.payload)
+   00457|             }
+   00458|             "formalization:predicate_p" => {
+   00459|                 format!("formalization:predicate_p:{}", event.payload)
+   00460|             }
+   00461|             "formalization:object_q" => {
+   00462|                 format!("formalization:object_q:{}", event.payload)
+   00463|             }
+   00464|             "formalization:item_q" => format!("formalization:item_q:{}", event.payload),
+   00465|             "formalization:property_p" => {
+   00466|                 format!("formalization:property_p:{}", event.payload)
+   00467|             }
+   00468|             "formalization:fallback" => {
+   00469|                 format!("formalization:fallback:{}", event.payload)
+   00470|             }
+   00471|             "formalization:raw" => format!("formalization:raw:{}", event.payload),
+   00472|             "formalization_unresolved" => {
+   00473|                 format!("formalization_unresolved:{}", event.payload)
+   00474|             }
+   00475|             // Issue #661 (R384): each accepted interpretation's posterior weight,
+   00476|             // surfaced verbatim (`formalization:<i> weight=<p> <summary>`) so a
+   00477|             // consumer can read every formalized statement as a weighted claim and
+   00478|             // verify the weights sum to 1 across candidates. Trace-only.
+   00479|             "statement_weight" => format!("statement_weight:{}", event.payload),
+   00480|             // Issue #661 (R384): a detected clash between a new formalized
+   00481|             // requirement and a retained one. The id keys back to the event whose
+   00482|             // payload names both statements, the shared subject, and their weights.
+   00483|             "requirement_contradiction" => {
+   00484|                 format!("requirement_contradiction:{}", event.id)
+   00485|             }
+   00486|             "intent_formalization" => format!("intent_formalization:{}", event.id),
+   00487|             "intent_formalization_cache" => {
+   00488|                 format!(
+   00489|                     "intent_formalization_cache:{}",
+   00490|                     event.payload.replace(' ', ":")
+   00491|                 )
+   00492|             }
+   00493|             "intent_formalization:kind" => {
+   00494|                 format!("intent_formalization:kind:{}", event.payload)
+   00495|             }
+   00496|             "intent_formalization:route" => {
+   00497|                 format!("intent_formalization:route:{}", event.payload)
+   00498|             }
+   00499|             "intent_formalization:relevant" => {
+   00500|                 format!("intent_formalization:relevant:{}", event.payload)
+   00501|             }
+   00502|             // Structured fact_query trace events (Issue #127): preserve the
+   00503|             // payload verbatim so memory consumers can render the parsed
+   00504|             // relation, subject, and cache decision (rather than a hash id).
+   00505|             "fact_query:request" => format!("fact_query:request:{}", event.id),
+   00506|             "fact_query:relation" => format!("fact_query:relation:{}", event.payload),
+   00507|             "fact_query:subject" => format!("fact_query:subject:{}", event.payload),
+   00508|             "fact_query:cache:hit" => format!("fact_query:cache:hit:{}", event.payload),
+   00509|             "fact_query:cache:miss" => String::from("fact_query:cache:miss"),
+   00510|             "fact_query:cache:bypass" => String::from("fact_query:cache:bypass"),
+   00511|             "fact_query:force_fresh" => String::from("fact_query:force_fresh"),
+   00512|             "fact_query:subject_qid" => format!("fact_query:subject_qid:{}", event.payload),
+   00513|             "fact_query:value_qid" => format!("fact_query:value_qid:{}", event.payload),
+   00514|             // Structured web_search trace events (Issue #133): record the
+   00515|             // request, the providers considered (DuckDuckGo first, plus
+   00516|             // CORS-readable knowledge bases), per-provider ranks, and the
+   00517|             // combined-ranking strategy so memory consumers can reconstruct
+   00518|             // the multi-engine reasoning offline.
+   00519|             "web_search:request" => format!("web_search:request:{}", event.payload),
+   00520|             "web_search:query_kind" => format!("web_search:query_kind:{}", event.payload),
+   00521|             "web_search:provider" => format!("web_search:provider:{}", event.payload),
+   00522|             "web_search:provider_planned" => {
+   00523|                 format!("web_search:provider_planned:{}", event.payload)
+   00524|             }
+   00525|             "web_search:language" => format!("web_search:language:{}", event.payload),
+   00526|             "web_search:combined" => format!("web_search:combined:{}", event.payload),
+   00527|             "web_search:fusion_planned" => {
+   00528|                 format!("web_search:fusion_planned:{}", event.payload)
+   00529|             }
+   00530|             "web_search:rank" => format!("web_search:rank:{}", event.payload),
+   00531|             "web_search:fused" => format!("web_search:fused:{}", event.payload),
+   00532|             "web_search:disabled" => format!("web_search:disabled:{}", event.payload),
+   00533|             "document_originality_check:request" => {
+   00534|                 format!("document_originality_check:request:{}", event.payload)
+   00535|             }
+   00536|             "document_originality_check:attachment" => {
+   00537|                 format!("document_originality_check:attachment:{}", event.payload)
+   00538|             }
+   00539|             "document_originality_check:text_sample" => {
+   00540|                 format!("document_originality_check:text_sample:{}", event.payload)
+   00541|             }
+   00542|             // Relative-meta-logic statement probability trace (issue #535):
+   00543|             // preserve the assumed-true prior, the trusted-source tier weights,
+   00544|             // and the ignored (unoriginal) tier verbatim so consumers can
+   00545|             // reconstruct how each statement's probability would move.
+   00546|             "relative_meta_logic:assumed_prior" => {
+   00547|                 format!("relative_meta_logic:assumed_prior:{}", event.payload)
+   00548|             }
+   00549|             "relative_meta_logic:trusted_source_tier" => {
+   00550|                 format!("relative_meta_logic:trusted_source_tier:{}", event.payload)
+   00551|             }
+   00552|             "relative_meta_logic:ignored_source_tier" => {
+   00553|                 format!("relative_meta_logic:ignored_source_tier:{}", event.payload)
+   00554|             }
+   00555|             // Per-statement web-search grounding plan (issue #535): each
+   00556|             // extracted statement, its grounding query, and its assessment.
+   00557|             "statement_verification:statement_count" => {
+   00558|                 format!("statement_verification:statement_count:{}", event.payload)
+   00559|             }
+   00560|             "statement_verification:statement" => {
+   00561|                 format!("statement_verification:statement:{}", event.payload)
+   00562|             }
+   00563|             "statement_verification:query" => {
+   00564|                 format!("statement_verification:query:{}", event.payload)
+   00565|             }
+   00566|             "statement_verification:assessment" => {
+   00567|                 format!("statement_verification:assessment:{}", event.payload)
+   00568|             }
+   00569|             "market_price_claim:claim_count" => {
+   00570|                 format!("market_price_claim:claim_count:{}", event.payload)
+   00571|             }
+   00572|             "market_price_claim:claim" => {
+   00573|                 format!("market_price_claim:claim:{}", event.payload)
+   00574|             }
+   00575|             "market_price_claim:asset" => {
+   00576|                 format!("market_price_claim:asset:{}", event.payload)
+   00577|             }
+   00578|             "market_price_claim:period" => {
+   00579|                 format!("market_price_claim:period:{}", event.payload)
+   00580|             }
+   00581|             "market_price_claim:claimed_price" => {
+   00582|                 format!("market_price_claim:claimed_price:{}", event.payload)
+   00583|             }
+   00584|             "market_price_claim:source" => {
+   00585|                 format!("market_price_claim:source:{}", event.payload)
+   00586|             }
+   00587|             "market_price_claim:range" => {
+   00588|                 format!("market_price_claim:range:{}", event.payload)
+   00589|             }
+   00590|             "market_price_claim:assessment" => {
+   00591|                 format!("market_price_claim:assessment:{}", event.payload)
+   00592|             }
+   00593|             "read_local_file:request" => format!("read_local_file:request:{}", event.payload),
+   00594|             "http_fetch:request" => format!("http_fetch:request:{}", event.payload),
+   00595|             "docs_method:request" => format!("docs_method:request:{}", event.id),
+   00596|             "docs_method:project" => format!("docs_method:project:{}", event.payload),
+   00597|             "docs_method:method" => format!("docs_method:method:{}", event.payload),
+   00598|             "docs_method:source_kind" => {
+   00599|                 format!("docs_method:source_kind:{}", event.payload)
+   00600|             }
+   00601|             "docs_method:source" | "source" | "release_timeline:source" => {
+   00602|                 format!("source:{}", event.payload)
+   00603|             }
+   00604|             // Release-timeline provenance (Issue #892): the snapshot an answer
+   00605|             // was computed from travels with it, so a reader can tell how
+   00606|             // current the list is and re-derive it from the same bytes.
+   00607|             "release_timeline:hit" => format!("release_timeline:{}", event.payload),
+   00608|             "release_timeline:snapshot" => {
+   00609|                 format!("release_timeline:snapshot:{}", event.payload)
+   00610|             }
+   00611|             "release_timeline:sha256" => format!("release_timeline:sha256:{}", event.payload),
+   00612|             "release_timeline:released" => {
+   00613|                 format!("release_timeline:released:{}", event.payload)
+   00614|             }
+   00615|             "release_timeline:announced" => {
+   00616|                 format!("release_timeline:announced:{}", event.payload)
+   00617|             }
+   00618|             "release_timeline:stale" => format!("release_timeline:stale:{}", event.payload),
+   00619|             "project:promoted" => format!("project:promoted:{}", event.payload),
+   00620|             "project_lookup:promotion" => {
+   00621|                 format!("project_lookup:promotion:{}", event.payload)
+   00622|             }
+   00623|             "project_lookup:repository:github" => {
+   00624|                 format!("project_lookup:repository:github:{}", event.payload)
+   00625|             }
+   00626|             "project_lookup:repository:gitlab" => {
+   00627|                 format!("project_lookup:repository:gitlab:{}", event.payload)
+   00628|             }
+   00629|             "project_lookup:repository:bitbucket" => {
+   00630|                 format!("project_lookup:repository:bitbucket:{}", event.payload)
+   00631|             }
+   00632|             "url_navigate:request" => format!("url_navigate:request:{}", event.payload),
+   00633|             "url_preview:iframe" => format!("url_preview:iframe:{}", event.payload),
+   00634|             "tool_call" => format!("tool_call:{}", event.payload),
+   00635|             "tool_parameter" => format!("tool_parameter:{}", event.payload.replace(' ', ":")),
+   00636|             "tool_result" => format!("tool_result:{}", event.payload.replace(' ', ":")),
+   00637|             "tool_permission" => {
+   00638|                 format!("tool_permission:{}", event.payload.replace(' ', ":"))
+   00639|             }
+   00640|             "text_operation" => format!("text_operation:{}", event.payload),
+   00641|             "text_rule" => format!("text_rule:{}", event.payload),
+   00642|             "text_rule_chain" => format!("text_rule_chain:{}", event.payload),
+   00643|             "text_result" => format!("text_result:{}", event.id),
+   00644|             "text_substitution_rules" => format!("text_substitution_rules:{}", event.id),
+   00645|             "text_substitution_trace" => format!("text_substitution_trace:{}", event.id),
+   00646|             "text_substitution_graph" => format!("text_substitution_graph:{}", event.id),
+   00647|             "procedural_how_to:request" => {
+   00648|                 format!("procedural_how_to:request:{}", event.payload)
+   00649|             }
+   00650|             "procedural_how_to:action" => {
+   00651|                 format!("procedural_how_to:action:{}", event.payload)
+   00652|             }
+   00653|             "procedural_how_to:object" => {
+   00654|                 format!("procedural_how_to:object:{}", event.payload)
+   00655|             }
+   00656|             "procedural_how_to:stage" => {
+   00657|                 format!("procedural_how_to:stage:{}", event.payload)
+   00658|             }
+   00659|             "procedural_how_to:wikihow_candidate" => {
+   00660|                 format!("procedural_how_to:wikihow_candidate:{}", event.payload)
+   00661|             }
+   00662|             "procedural_how_to:source_gate" => {
+   00663|                 format!("procedural_how_to:source_gate:{}", event.payload)
+   00664|             }
+   00665|             "spelling_correction" => {
+   00666|                 format!("spelling_correction:{}", event.payload.replace(' ', ""))
+   00667|             }
+   00668|             "concept_lookup:request" => format!("concept_lookup:request:{}", event.payload),
+   00669|             "concept_lookup:context" => format!("concept_lookup:context:{}", event.payload),
+   00670|             "concept_lookup:response-language" => {
+   00671|                 format!("concept_lookup:response-language:{}", event.payload)
+   00672|             }
+   00673|             "concept_lookup:hit" => format!("concept_lookup:hit:{}", event.payload),
+   00674|             "concept_lookup:miss" => format!("concept_lookup:miss:{}", event.payload),
+   00675|             "concept_lookup:context-match" => {
+   00676|                 format!("concept_lookup:context-match:{}", event.payload)
+   00677|             }
+   00678|             "concept_lookup:context-mismatch" => {
+   00679|                 format!("concept_lookup:context-mismatch:{}", event.payload)
+   00680|             }
+   00681|             "followup:subject" => format!("followup:subject:{}", event.payload),
+   00682|             // The seeded status slug the research follow-up classified, as the
+   00683|             // browser worker surfaces it (`research_result_followup:status:<slug>`).
+   00684|             "research_result_followup:status" => {
+   00685|                 format!("research_result_followup:status:{}", event.payload)
+   00686|             }
+   00687|             "mechanism_query:request" => {
+   00688|                 format!("mechanism_query:request:{}", event.payload)
+   00689|             }
+   00690|             "mechanism_query:stage" => format!("mechanism_query:stage:{}", event.payload),
+   00691|             "mechanism_query:source_gate" => {
+   00692|                 format!("mechanism_query:source_gate:{}", event.payload)
+   00693|             }
+   00694|             "search:local" => format!("search:local:{}", event.id),
+   00695|             "search:external" if event.payload == "skipped:offline" => {
+   00696|                 String::from("policy:offline")
+   00697|             }
+   00698|             "search:external" => format!("search:external:{}", event.id),
+   00699|             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
+   00700|             "source_refresh" => format!("source_refresh:{}", event.payload),
+   00701|             "skill_compile:package" => format!("skill_compile:package:{}", event.payload),
+   00702|             "skill_compile:procedure" => format!("skill_compile:procedure:{}", event.payload),
+   00703|             "skill_compile:procedure_artifact" => {
+   00704|                 format!("skill_compile:procedure_artifact:{}", event.id)
+   00705|             }
+   00706|             "skill_compile:procedure_step" => format!(
+   00707|                 "skill_compile:procedure_step:{}",
+   00708|                 event.payload.replace(' ', ":")
+   00709|             ),
+   00710|             // Issue #674: the named gap is the evidence, so it travels in the link
+   00711|             // rather than being reduced to an opaque event id.
+   00712|             "skill_gap" => format!("skill_gap:{}", event.payload.replace(' ', "_")),
+   00713|             "program_gap" => format!("program_gap:{}", event.payload.replace(' ', "_")),
+   00714|             // Verifiable-task observations are themselves the evidence. Keep
+   00715|             // the check slug, executed value and gap/research detail readable;
+   00716|             // replacing them with the event digest makes it impossible for a
+   00717|             // consumer to tell which verification actually passed.
+   00718|             "verifiable_task:check"
+   00719|             | "verifiable_task:executed"
+   00720|             | "verifiable_task:gap"
+   00721|             | "verifiable_task:searched"
+   00722|             | "verifiable_task:uncorroborated"
+   00723|             | "verifiable_task:membership_source" => {
+   00724|                 format!("{}:{}", event.kind, event.payload)
+   00725|             }
+   00726|             "memory_program_compiled" => format!("memory_program_compiled:{}", event.id),
+   00727|             "memory_program_execution" => format!("memory_program_execution:{}", event.id),
+   00728|             "skill_learning_proposal" => {
+   00729|                 format!("skill_learning_proposal:{}", event.payload)
+   00730|             }
+   00731|             "skill_learning_proposal:artifact" => {
+   00732|                 format!("skill_learning_proposal:artifact:{}", event.id)
+   00733|             }
+   00734|             "compiled_skill:package" => format!("compiled_skill:package:{}", event.id),
+   00735|             "compiled_skill:replay" => format!("compiled_skill:replay:{}", event.payload),
+   00736|             "conflict:source_disagreement" => {
+   00737|                 format!("conflict:source_disagreement:{}", event.id)
+   00738|             }
+   00739|             "cache_hit" => format!("cache_hit:{}", event.payload),
+   00740|             "network_fetch" => format!("network_fetch:{}", event.id),
+   00741|             "calculation:engine" => format!("calculation:engine:{}", event.payload),
+   00742|             "calculation:lino" => format!("calculation:lino:{}", event.payload),
+   00743|             "method:learned:operations_verified" => {
+   00744|                 format!("method:learned:operations_verified:{}", event.payload)
+   00745|             }
+   00746|             "calendar:today" => format!("calendar:today:{}", event.payload),
+   00747|             "calendar:weekday" => format!("calendar:weekday:{}", event.payload),
+   00748|             "intent" => format!("intent:{}", event.payload),
+   00749|             "program_parameter:language" => {
+   00750|                 format!("program_parameter:language:{}", event.payload)
+   00751|             }
+   00752|             "program_parameter:task" => format!("program_parameter:task:{}", event.payload),
+   00753|             "program_parameters" => {
+   00754|                 format!(
+   00755|                     "program_parameters:{}",
+   00756|                     event.payload.replace([' ', ','], ":")
+   00757|                 )
+   00758|             }
+   00759|             "legacy_intent" => format!("legacy_intent:{}", event.payload),
+   00760|             "response" => event.payload.clone(),
+   00761|             "agent_mode:opted_in" => format!("agent_mode:opted_in:{}", event.id),
+   00762|             "agent_mode:active" => format!("agent_mode:active:{}", event.id),
+   00763|             "policy:chat_bounded_autonomy" => String::from("policy:chat_bounded_autonomy"),
+   00764|             "policy:add_only_history" => String::from("policy:add_only_history"),
+   00765|             "policy:destructive_action_requires_confirmation" => {
+   00766|                 String::from("policy:destructive_action_requires_confirmation")
+   00767|             }
+   00768|             "policy:agent_time_budget" => format!("policy:agent_time_budget:{}", event.id),
+   00769|             "policy:cache_flush_requires_confirmation" => {
+   00770|                 String::from("policy:cache_flush_requires_confirmation")
+   00771|             }
+   00772|             "policy:offline" => String::from("policy:offline"),
+   00773|             "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
+   00774|             "policy:agent_mode_required_for_tools" => {
+   00775|                 format!("policy:agent_mode_required_for_tools:{}", event.payload)
+   00776|             }
+   00777|             "policy:package_permission_required" => {
+   00778|                 format!("policy:package_permission_required:{}", event.payload)
+   00779|             }
+   00780|             "policy:temperature_selection" => {
+   00781|                 format!("policy:temperature_selection:{}", event.id)
+   00782|             }
+   00783|             "policy:guessed_under_ambiguity" => String::from("policy:guessed_under_ambiguity"),
+   00784|             "policy:clarify_under_ambiguity" => String::from("policy:clarify_under_ambiguity"),
+   00785|             "probability:evidence" => format!("probability:evidence:{}", event.id),
+   00786|             "probability:model" => format!("probability:model:{}", event.payload),
+   00787|             "probability:ranking" => format!("probability:ranking:{}", event.id),
+   00788|             "error" => format!("error:{}", event.id),
+   00789|             "filter:user" => format!("filter:user:{}", event.payload),
+   00790|             "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),
+   00791|             "execution_status" => format!("execution_status:{}", event.id),
+   00792|             "execution_environment" => format!("execution_environment:{}", event.id),
+   00793|             _ => format!("{}:{}", event.kind, event.id),
+   00794|         };
+   00795|         links.push(evidence);
+   00796|     }
+   00797|     if !links.iter().any(|link| link == response_link) {
+   00798|         links.push(response_link.to_owned());
+   00799|     }
+   00800|     links
+   00801| }
+   00802| 
+   00803| /// The evidence links of a recorded log: [`build_evidence_links`] with the
+   00804| ///
+   00805| /// The prompt is read from the log's `impulse` event and the response link from its
+   00806| /// last `response` event (`response:<intent>` when none was logged). `None`
+   00807| /// when the log holds no impulse.
+   00808| ///
+   00809| /// The browser worker and the JavaScript server project the native log they
+   00810| /// record through the twin, `eventLogEvidenceLinks` in
+   00811| /// `js/agentic/crate/event_log.mjs` (R1188-U29).
+   00812| #[must_use]
+   00813| pub fn event_log_evidence_links(log: &EventLog, intent: &str) -> Option<Vec<String>> {
+   00814|     let impulse = log.first_of("impulse")?;
+   00815|     let response_link = log.last_of("response").map_or_else(
+   00816|         || format!("response:{intent}"),
+   00817|         |event| event.payload.clone(),
+   00818|     );
+   00819|     Some(build_evidence_links(&impulse.payload, log, &response_link))
+   00820| }
+   00821| 
+   00822| fn sanitize_payload(value: &str) -> String {
+   00823|     value
+   00824|         .replace('\r', "\\r")
+   00825|         .replace('\n', "\\n")
+   00826|         .replace('\t', "\\t")
+   00827| }
+   00828| 
+   
+   (End of file - total 828 lines)
+   </file>
+>> edit {"filePath":"rust/src/event_log.rs","file_path":"rust/src/event_log.rs","new":"        // A named transform is typed metadata, while its event id remains the\n        // provenance link recorded below.\n        if event.kind == \"text_transform\" {\n            links.push(format!(\"text_transform:{}\", event.payload));\n        }\n        links.push(evidence);","newString":"        // A named transform is typed metadata, while its event id remains the\n        // provenance link recorded below.\n        if event.kind == \"text_transform\" {\n            links.push(format!(\"text_transform:{}\", event.payload));\n        }\n        links.push(evidence);","new_str":"        // A named transform is typed metadata, while its event id remains the\n        // provenance link recorded below.\n        if event.kind == \"text_transform\" {\n            links.push(format!(\"text_transform:{}\", event.payload));\n        }\n        links.push(evidence);","new_string":"        // A named transform is typed metadata, while its event id remains the\n        // provenance link recorded below.\n        if event.kind == \"text_transform\" {\n            links.push(format!(\"text_transform:{}\", event.payload));\n        }\n        links.push(evidence);","old":"        links.push(evidence);","oldString":"        links.push(evidence);","old_str":"        links.push(evidence);","old_string":"        links.push(evidence);","path":"rust/src/event_log.rs"}
+>> bash {"command":"sha256sum -- rust/src/event_log.rs"}
+   a75025fbdf9f1c19ae4482599cb6d57a4262637c1fdec73946e2c221996d2819  rust/src/event_log.rs
+   
+== answer ==
+Replaced `        links.push(evidence);` with `        // A named transform is typed metadata, while its event id remains the
+        // provenance link recorded below.
+        if event.kind == "text_transform" {
+            links.push(format!("text_transform:{}", event.payload));
+        }
+        links.push(evidence);` in `rust/src/event_log.rs` and observed the result.
+>> read {"filePath":"js/agentic/crate/event_log.mjs","file_path":"js/agentic/crate/event_log.mjs","path":"js/agentic/crate/event_log.mjs"}
+   <file>
+   00001| // rust/src/event_log.rs, the solver event log and its evidence projection:
+   00002| // `EventLog::append` (content-addressed event ids) and `build_evidence_links`
+   00003| // (one typed link per event, after the prompt link, ending with the response
+   00004| // link). Every arm of the Rust `match` is here; the arms that address an event
+   00005| // by its id (`trace:execution_failure`, `formalization`, `search:local`, ...)
+   00006| // produce exactly the catch-all's `{kind}:{id}`, so they need no row.
+   00007| //
+   00008| // One implementation for both JavaScript surfaces (R1188-U29): the server
+   00009| // (js/server/evidence-links.mjs re-exports it) and the browser worker, which
+   00010| // runs it as a generated crate factory over the native log it records
+   00011| // (`solverEvents`), so a worker answer carries the native links too.
+   00012| 
+   00013| import { stableId } from './engine_stable_identifier.mjs';
+   00014| 
+   00015| /** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
+   00016| export class EventLog {
+   00017|   constructor(events = []) {
+   00018|     this.events = [];
+   00019|     for (const event of events) this.append(event.kind, event.payload ?? '');
+   00020|   }
+   00021| 
+   00022|   /** `EventLog::append`: the event id is `stable_id(kind, "{kind}:{index}:{payload}")`. */
+   00023|   append(kind, payload) {
+   00024|     const text = String(payload);
+   00025|     const id = stableId(kind, `${kind}:${this.events.length}:${text}`);
+   00026|     this.events.push({ id, kind: String(kind), payload: text });
+   00027|     return id;
+   00028|   }
+   00029| 
+   00030|   firstOf(kind) {
+   00031|     return this.events.find((event) => event.kind === kind) || null;
+   00032|   }
+   00033| 
+   00034|   lastOf(kind) {
+   00035|     for (let index = this.events.length - 1; index >= 0; index -= 1) {
+   00036|       if (this.events[index].kind === kind) return this.events[index];
+   00037|     }
+   00038|     return null;
+   00039|   }
+   00040| }
+   00041| 
+   00042| /** Kinds whose link is `{kind}:{payload}`, the payload kept verbatim. */
+   00043| const PAYLOAD_KINDS = new Set([
+   00044|   'language', 'language_from', 'language_to',
+   00045|   'definition_merge:language', 'definition_merge:source_declared',
+   00046|   'meaning', 'translation_gap', 'wikidata',
+   00047|   'formalization:subject_q', 'formalization:predicate_p', 'formalization:object_q',
+   00048|   'formalization:item_q', 'formalization:property_p', 'formalization:fallback',
+   00049|   'formalization:raw', 'formalization_unresolved', 'statement_weight',
+   00050|   'intent_formalization:kind', 'intent_formalization:route', 'intent_formalization:relevant',
+   00051|   'fact_query:relation', 'fact_query:subject', 'fact_query:cache:hit',
+   00052|   'fact_query:subject_qid', 'fact_query:value_qid',
+   00053|   'web_search:request', 'web_search:query_kind', 'web_search:provider',
+   00054|   'web_search:provider_planned', 'web_search:language', 'web_search:combined',
+   00055|   'web_search:fusion_planned', 'web_search:rank', 'web_search:fused', 'web_search:disabled',
+   00056|   'document_originality_check:request', 'document_originality_check:attachment',
+   00057|   'document_originality_check:text_sample',
+   00058|   'relative_meta_logic:assumed_prior', 'relative_meta_logic:trusted_source_tier',
+   00059|   'relative_meta_logic:ignored_source_tier',
+   00060|   'statement_verification:statement_count', 'statement_verification:statement',
+   00061|   'statement_verification:query', 'statement_verification:assessment',
+   00062|   'market_price_claim:claim_count', 'market_price_claim:claim', 'market_price_claim:asset',
+   00063|   'market_price_claim:period', 'market_price_claim:claimed_price', 'market_price_claim:source',
+   00064|   'market_price_claim:range', 'market_price_claim:assessment',
+   00065|   'read_local_file:request', 'http_fetch:request',
+   00066|   'docs_method:project', 'docs_method:method', 'docs_method:source_kind',
+   00067|   'release_timeline:snapshot', 'release_timeline:sha256', 'release_timeline:released',
+   00068|   'release_timeline:announced', 'release_timeline:stale',
+   00069|   'project:promoted', 'project_lookup:promotion', 'project_lookup:repository:github',
+   00070|   'project_lookup:repository:gitlab', 'project_lookup:repository:bitbucket',
+   00071|   'url_navigate:request', 'url_preview:iframe', 'tool_call',
+   00072|   'text_operation', 'text_rule', 'text_rule_chain',
+   00073|   'procedural_how_to:request', 'procedural_how_to:action', 'procedural_how_to:object',
+   00074|   'procedural_how_to:stage', 'procedural_how_to:wikihow_candidate', 'procedural_how_to:source_gate',
+   00075|   'concept_lookup:request', 'concept_lookup:context', 'concept_lookup:response-language',
+   00076|   'concept_lookup:hit', 'concept_lookup:miss', 'concept_lookup:context-match',
+   00077|   'concept_lookup:context-mismatch',
+   00078|   'followup:subject', 'mechanism_query:request', 'mechanism_query:stage', 'mechanism_query:source_gate',
+   00079|   'source_refresh', 'skill_compile:package', 'skill_compile:procedure',
+   00080|   'verifiable_task:check', 'verifiable_task:executed', 'verifiable_task:gap',
+   00081|   'verifiable_task:searched', 'verifiable_task:uncorroborated', 'verifiable_task:membership_source',
+   00082|   'skill_learning_proposal', 'compiled_skill:replay', 'cache_hit',
+   00083|   'calculation:engine', 'calculation:lino', 'method:learned:operations_verified',
+   00084|   'calendar:today', 'calendar:weekday', 'intent',
+   00085|   'program_parameter:language', 'program_parameter:task', 'legacy_intent',
+   00086|   'policy:agent_mode_required_for_tools', 'policy:package_permission_required',
+   00087|   'probability:model', 'filter:user', 'diagnostic_mode',
+   00088| ]);
+   00089| 
+   00090| /** Kinds whose link is `{kind}:{payload with every space as ':'}`. */
+   00091| const SPACE_AS_COLON_KINDS = new Set([
+   00092|   'intent_formalization_cache', 'tool_parameter', 'tool_result', 'tool_permission',
+   00093|   'source:http', 'skill_compile:procedure_step',
+   00094| ]);
+   00095| 
+   00096| /** Kinds whose link is `{kind}:{payload with every space as '_'}` (issue #674). */
+   00097| const SPACE_AS_UNDERSCORE_KINDS = new Set(['skill_gap', 'program_gap']);
+   00098| 
+   00099| /** Kinds whose link is the bare kind, the payload dropped. */
+   00100| const BARE_KINDS = new Set([
+   00101|   'fact_query:cache:miss', 'fact_query:cache:bypass', 'fact_query:force_fresh',
+   00102|   'policy:chat_bounded_autonomy', 'policy:add_only_history',
+   00103|   'policy:destructive_action_requires_confirmation', 'policy:cache_flush_requires_confirmation',
+   00104|   'policy:offline', 'policy:inappropriate_content',
+   00105|   'policy:guessed_under_ambiguity', 'policy:clarify_under_ambiguity',
+   00106| ]);
+   00107| 
+   00108| /** Kinds whose link is `source:{payload}`. */
+   00109| const SOURCE_KINDS = new Set(['docs_method:source', 'source', 'release_timeline:source']);
+   00110| 
+   00111| const OFFLINE_SKIP = 'skipped:offline';
+   00112| 
+   00113| /** The typed evidence link for one event: one arm of `build_evidence_links`. */
+   00114| export function evidenceLink(event) {
+   00115|   const { kind, id } = event;
+   00116|   const payload = String(event.payload);
+   00117|   if (kind === 'response') return payload;
+   00118|   if (PAYLOAD_KINDS.has(kind)) return `${kind}:${payload}`;
+   00119|   if (SPACE_AS_COLON_KINDS.has(kind)) return `${kind}:${payload.split(' ').join(':')}`;
+   00120|   if (SPACE_AS_UNDERSCORE_KINDS.has(kind)) return `${kind}:${payload.split(' ').join('_')}`;
+   00121|   if (BARE_KINDS.has(kind)) return kind;
+   00122|   if (SOURCE_KINDS.has(kind)) return `source:${payload}`;
+   00123|   if (kind === 'release_timeline:hit') return `release_timeline:${payload}`;
+   00124|   if (kind === 'spelling_correction') return `${kind}:${payload.split(' ').join('')}`;
+   00125|   if (kind === 'program_parameters') return `${kind}:${payload.replace(/[ ,]/g, ':')}`;
+   00126|   if (kind === 'search:external' && payload === OFFLINE_SKIP) return 'policy:offline';
+   00127|   return `${kind}:${id}`;
+   00128| }
+   00129| 
+   00130| /**
+   00131|  * Mirrors rust/src/event_log.rs `build_evidence_links`: the prompt link, one
+   00132|  * link per logged event, then `responseLink` unless a link already equals it.
+   00133|  * @param {string} prompt
+   00134|  * @param {EventLog|{events: Array<{id: string, kind: string, payload: string}>}} log
+   00135|  * @param {string} responseLink
+   00136|  * @returns {Array<string>}
+   00137|  */
+   00138| export function buildEvidenceLinks(prompt, log, responseLink) {
+   00139|   const links = [`prompt:${stableId('prompt', prompt)}`];
+   00140|   for (const event of log.events) links.push(evidenceLink(event));
+   00141|   if (!links.includes(responseLink)) links.push(responseLink);
+   00142|   return links;
+   00143| }
+   00144| 
+   00145| const IMPULSE_KIND = 'impulse';
+   00146| const RESPONSE_KIND = 'response';
+   00147| 
+   00148| /**
+   00149|  * The native evidence links of a recorded solver log: `build_evidence_links`
+   00150|  * over `events`, the prompt read from their `impulse` event and the response
+   00151|  * link from their last `response` event (`response:<intent>` when none was
+   00152|  * logged). Null when the log holds no impulse.
+   00153|  * @param {Array<{kind: string, payload?: string}>} events
+   00154|  * @param {string} intent
+   00155|  * @returns {Array<string>|null}
+   00156|  */
+   00157| export function eventLogEvidenceLinks(events, intent) {
+   00158|   const impulse = (events || []).find((event) => event.kind === IMPULSE_KIND);
+   00159|   if (!impulse) return null;
+   00160|   const log = new EventLog();
+   00161|   for (const event of events) log.append(String(event.kind), String(event.payload ?? ''));
+   00162|   const response = log.lastOf(RESPONSE_KIND);
+   00163|   const responseLink = response ? response.payload : `${RESPONSE_KIND}:${String(intent ?? 'unknown')}`;
+   00164|   return buildEvidenceLinks(String(impulse.payload ?? ''), log, responseLink);
+   00165| }
+   00166| 
+   
+   (End of file - total 166 lines)
+   </file>
+>> edit {"filePath":"js/agentic/crate/event_log.mjs","file_path":"js/agentic/crate/event_log.mjs","new":"  for (const event of log.events) {\n    if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);\n    links.push(evidenceLink(event));\n  }","newString":"  for (const event of log.events) {\n    if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);\n    links.push(evidenceLink(event));\n  }","new_str":"  for (const event of log.events) {\n    if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);\n    links.push(evidenceLink(event));\n  }","new_string":"  for (const event of log.events) {\n    if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);\n    links.push(evidenceLink(event));\n  }","old":"  for (const event of log.events) links.push(evidenceLink(event));","oldString":"  for (const event of log.events) links.push(evidenceLink(event));","old_str":"  for (const event of log.events) links.push(evidenceLink(event));","old_string":"  for (const event of log.events) links.push(evidenceLink(event));","path":"js/agentic/crate/event_log.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/crate/event_log.mjs"}
+   0b67f08dd4743e62536a9183b348d0bf2d815959a85abdf2d964fcee3bb6527b  js/agentic/crate/event_log.mjs
+   
+== answer ==
+Replaced `  for (const event of log.events) links.push(evidenceLink(event));` with ``  for (const event of log.events) {
+    if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);
+    links.push(evidenceLink(event));
+  }`` in `js/agentic/crate/event_log.mjs` and observed the result.

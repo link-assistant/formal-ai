@@ -1,0 +1,15 @@
+{
+  "method": "Exact source-only JavaScript port of scripts/check-capability-routing.rs::planner_route_arms; not execution of native gate",
+  "details": [
+    {
+      "signature": "fn plan_chat_step_routes(",
+      "arms": 5
+    },
+    {
+      "signature": "pub(super) fn plan_settled_routes(",
+      "arms": 53
+    }
+  ],
+  "total": 58,
+  "ceiling": 58
+}

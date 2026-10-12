@@ -1,0 +1,11 @@
+{
+  "actualNodeTests": 4,
+  "passed": 4,
+  "unchangedFreshnessAndRefusalTests": true,
+  "layoutOnly": true,
+  "lines": 185,
+  "fullOriginalFailedGuardNotWeakened": true,
+  "nativeCompilation": false,
+  "publication": false,
+  "U9": "Open"
+}

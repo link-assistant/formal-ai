@@ -1,0 +1,837 @@
+{
+  "sourceHead": "3cecc094f60df95d7fa9eea251955520972857fd",
+  "scope": "actual unmodified production WorkerHost; genuine sequential user/assistant history",
+  "productionSourceMutations": 0,
+  "nativeFixture": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/unit/specification/natural_language_skill_compilation.rs",
+  "packageExpected": {
+    "id": "compiled_skill_32628c474c664f67",
+    "rule_id": "compiled_skill_rule_881391387cf00e11",
+    "handler_id": "compiled_skill_handler_aaf62aceed77ddcd",
+    "legacy_behavior_rule_id": "behavior_rule_runtime_32628c474c664f67"
+  },
+  "facts": {
+    "teachHasCompiledPackage": false,
+    "teachLogsActualPackage": false,
+    "countActualDialogLocalOne": true,
+    "countNativeClosingNewline": false,
+    "listHasActualPackageAndLegacyId": false,
+    "replayContentCorrect": true,
+    "replayHasCompiledPackageEvent": false,
+    "replayHasCacheHit": false
+  },
+  "observations": [
+    {
+      "phase": "teach",
+      "prompt": "When the user says `checksum status`, answer `checksum cache is valid.`",
+      "history": [],
+      "answer": {
+        "intent": "behavior_rule_update",
+        "content": "Behavior rule compiled for this dialog.\n\nWhen the user says `checksum status` then respond with `checksum cache is valid.`.\n\n```links\nbehavior_rule_runtime_32628c474c664f67\n  type \"behavior_rule_runtime\"\n  match_prompt \"checksum status\"\n  answer \"checksum cache is valid.\"\n  when_then \"When the user says `checksum status` then respond with `checksum cache is valid.`.\"\n  source \"user_message\"\n```\n\nSend `checksum status` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.",
+        "confidence": 1,
+        "evidence": [
+          "behavior_rule:update",
+          "behavior_rule_runtime_32628c474c664f67",
+          "trace:impulse:When the user says `checksum status`, answer `checksum cache is valid.`",
+          "trace:formalization:(@USER OP:express ?when the user says checksum status answer checksum cache is valid)",
+          "trace:language:en",
+          "trace:meta:synthesize_from_meaning:open",
+          "trace:handler:behavior_rule_update",
+          "trace:deformalize:(@USER OP:express ?when the user says checksum status answer checksum cache is valid):behavior_rule_update",
+          "prompt:prompt_2ce48b9f6cebdd2b",
+          "impulse:impulse_c76fe2ebe10e25a0",
+          "language:en",
+          "candidate:candidate_7537785773b89178",
+          "statement_weight:formalization:0 weight=1.000000 empty",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "intent_formalization_cache:miss:impulse_092671f29334368f",
+          "intent_formalization:intent_formalization_3fa5557dc6fa46d6",
+          "intent_formalization:kind:question",
+          "search:local:search:local_6bfc6afe08ce6170",
+          "selected_rule:selected_rule_c462a8ecb2667aef",
+          "intent:behavior_rule_update",
+          "validation:validation_27bbade9cb1d4714",
+          "response:behavior_rule_update",
+          "trace:simplification:trace:simplification_0a0f7cc1a07c5ba9",
+          "trace:trace_f48537f8324d9a4e"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "When the user says `checksum status`, answer `checksum cache is valid.`",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "When the user says `checksum status`, answer `checksum cache is valid.` -> (@USER OP:express ?when the user says checksum status answer checksum cache is valid)",
+            "formalization": {
+              "raw": "When the user says `checksum status`, answer `checksum cache is valid.`",
+              "subject": "@USER",
+              "verb": "OP:express",
+              "object": "?when the user says checksum status answer checksum cache is valid",
+              "tuple": "(@USER OP:express ?when the user says checksum status answer checksum cache is valid)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "en",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "synthesize_from_meaning open",
+            "derivation": "derivation\n  goal synthesize_from_meaning\n  status open\n  unknown \"when\"\n    status grounded\n    origin documentation\n    operation fail_when_any\n  unknown \"user\"\n    status open\n    origin none\n  unknown \"says\"\n    status open\n    origin none\n  unknown \"checksum\"\n    status open\n    origin none\n  unknown \"status\"\n    status grounded\n    origin documentation\n    operation fail_when_any\n  unknown \"answer\"\n    status open\n    origin none\n  unknown \"cache\"\n    status open\n    origin none\n  unknown \"valid\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"When the user says `checksum status`, answer `checksum cache is valid.`\"\n  event 2\n    kind formalize\n    detail \"goal synthesize_from_meaning; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind evidence\n    detail \"the request opens with an operation (when) and names no data to act on: it asks for the procedure\"\n  event 4\n    kind unknowns\n    detail \"when, user, says, checksum, status, answer, cache, valid\"\n  event 5\n    kind hypothesis\n    detail \"when → fail_when_any:2.00 (documentation)\"\n  event 6\n    kind impasse\n    detail \"user: unknown, lookup needed\"\n  event 7\n    kind impasse\n    detail \"says: unknown, lookup needed\"\n  event 8\n    kind impasse\n    detail \"checksum: unknown, lookup needed\"\n  event 9\n    kind hypothesis\n    detail \"status → fail_when_any:1.00 (documentation)\"\n  event 10\n    kind impasse\n    detail \"answer: unknown, lookup needed\"\n  event 11\n    kind impasse\n    detail \"cache: unknown, lookup needed\"\n  event 12\n    kind impasse\n    detail \"valid: unknown, lookup needed\"\n  event 13\n    kind impasse\n    detail \"6 open unknown(s) outweigh 1 grounded operation(s); no program is claimed\"",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryBehaviorRules",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:express ?when the user says checksum status answer checksum cache is valid) ⇒ behavior_rule_update: Behavior rule compiled for this dialog.",
+            "projection": {
+              "tuple": "(@USER OP:express ?when the user says checksum status answer checksum cache is valid)",
+              "intent": "behavior_rule_update",
+              "contentChars": 530,
+              "evidenceCount": 2,
+              "language": "en",
+              "summary": "(@USER OP:express ?when the user says checksum status answer checksum cache is valid) ⇒ behavior_rule_update: Behavior rule compiled for this dialog."
+            },
+            "answer": "Behavior rule compiled for this dialog.",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [],
+        "derivationId": "answer_d739eca231e4f76a",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "When the user says `checksum status`, answer `checksum cache is valid.`"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "intent",
+            "payload": "behavior_rule_update"
+          },
+          {
+            "kind": "candidate",
+            "payload": "behavior_rule_update"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:behavior_rule_update"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "behavior_rule_update"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "When the user says `checksum status`, answer `checksum cache is valid.`"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=0 probability=1.000000 empty"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 empty"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_092671f29334368f"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_092671f29334368f\n  impulse_id \"impulse_092671f29334368f\"\n  source_text \"When the user says `checksum status`, answer `checksum cache is valid.`\"\n  normalized_text \"when the user says checksum status answer checksum cache is valid\"\n  language \"en\"\n  kind \"question\"\n  known \"impulse:impulse_092671f29334368f\"\n  known \"language:en\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "question"
+          },
+          {
+            "kind": "search:local",
+            "payload": "When the user says `checksum status`, answer `checksum cache is valid.`"
+          },
+          {
+            "kind": "selected_rule",
+            "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+          },
+          {
+            "kind": "intent",
+            "payload": "behavior_rule_update"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:behavior_rule_update"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "behavior_rule_update"
+          }
+        ],
+        "derivation": "derivation\n  goal synthesize_from_meaning\n  status open\n  unknown \"when\"\n    status grounded\n    origin documentation\n    operation fail_when_any\n  unknown \"user\"\n    status open\n    origin none\n  unknown \"says\"\n    status open\n    origin none\n  unknown \"checksum\"\n    status open\n    origin none\n  unknown \"status\"\n    status grounded\n    origin documentation\n    operation fail_when_any\n  unknown \"answer\"\n    status open\n    origin none\n  unknown \"cache\"\n    status open\n    origin none\n  unknown \"valid\"\n    status open\n    origin none\n  event 1\n    kind impulse\n    detail \"When the user says `checksum status`, answer `checksum cache is valid.`\"\n  event 2\n    kind formalize\n    detail \"goal synthesize_from_meaning; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind evidence\n    detail \"the request opens with an operation (when) and names no data to act on: it asks for the procedure\"\n  event 4\n    kind unknowns\n    detail \"when, user, says, checksum, status, answer, cache, valid\"\n  event 5\n    kind hypothesis\n    detail \"when → fail_when_any:2.00 (documentation)\"\n  event 6\n    kind impasse\n    detail \"user: unknown, lookup needed\"\n  event 7\n    kind impasse\n    detail \"says: unknown, lookup needed\"\n  event 8\n    kind impasse\n    detail \"checksum: unknown, lookup needed\"\n  event 9\n    kind hypothesis\n    detail \"status → fail_when_any:1.00 (documentation)\"\n  event 10\n    kind impasse\n    detail \"answer: unknown, lookup needed\"\n  event 11\n    kind impasse\n    detail \"cache: unknown, lookup needed\"\n  event 12\n    kind impasse\n    detail \"valid: unknown, lookup needed\"\n  event 13\n    kind impasse\n    detail \"6 open unknown(s) outweigh 1 grounded operation(s); no program is claimed\""
+      }
+    },
+    {
+      "phase": "count",
+      "prompt": "How many behavior rules are there?",
+      "history": [
+        {
+          "role": "user",
+          "content": "When the user says `checksum status`, answer `checksum cache is valid.`"
+        },
+        {
+          "role": "assistant",
+          "content": "Behavior rule compiled for this dialog.\n\nWhen the user says `checksum status` then respond with `checksum cache is valid.`.\n\n```links\nbehavior_rule_runtime_32628c474c664f67\n  type \"behavior_rule_runtime\"\n  match_prompt \"checksum status\"\n  answer \"checksum cache is valid.\"\n  when_then \"When the user says `checksum status` then respond with `checksum cache is valid.`.\"\n  source \"user_message\"\n```\n\nSend `checksum status` now and I will answer with the configured response. Export memory to keep this rule message with the dialog."
+        }
+      ],
+      "answer": {
+        "intent": "behavior_rules_count",
+        "content": "Total behavior rules: 9 (built-in: 8; dialog-local: 1).\n\nReasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.\n\n```links\nbehavior_rules_count\n  built_in_rules \"8\"\n  dialog_local_rules \"1\"\n  total_rules \"9\"\n  algorithm \"behavior_rule_records + collect_runtime_rules(prior_turn:user)\"\n```",
+        "confidence": 1,
+        "evidence": [
+          "behavior_rules:count",
+          "behavior_rules:built_in_count:8",
+          "behavior_rules:runtime_count:1",
+          "reasoning:result:total:9",
+          "trace:impulse:How many behavior rules are there?",
+          "trace:formalization:(@USER OP:express ?how many behavior rules are there)",
+          "trace:language:en",
+          "trace:meta:understand:open",
+          "trace:handler:behavior_rules_count",
+          "trace:deformalize:(@USER OP:express ?how many behavior rules are there):behavior_rules_count",
+          "prompt:prompt_bcd5a385f94a1e62",
+          "impulse:impulse_3c4720edf5de0693",
+          "language:en",
+          "candidate:candidate_7537785773b89178",
+          "statement_weight:formalization:0 weight=1.000000 empty",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "intent_formalization_cache:miss:impulse_6c68599c0bfd8cc9",
+          "intent_formalization:intent_formalization_e71e2dbeb1e3521c",
+          "intent_formalization:kind:question",
+          "search:local:search:local_517e53db466d9ba3",
+          "selected_rule:selected_rule_c462a8ecb2667aef",
+          "intent:behavior_rules_count",
+          "validation:validation_27bbade9cb1d4714",
+          "response:behavior_rules_count",
+          "trace:simplification:trace:simplification_0a0f7cc1a07c5ba9",
+          "trace:trace_47e67a7b4eae11c3"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "How many behavior rules are there?",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "How many behavior rules are there? -> (@USER OP:express ?how many behavior rules are there)",
+            "formalization": {
+              "raw": "How many behavior rules are there?",
+              "subject": "@USER",
+              "verb": "OP:express",
+              "object": "?how many behavior rules are there",
+              "tuple": "(@USER OP:express ?how many behavior rules are there)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "en",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "understand open",
+            "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"How many behavior rules are there?\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"how, many, behavior, rules, there\"",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryBehaviorRules",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:express ?how many behavior rules are there) ⇒ behavior_rules_count: Total behavior rules: 9 (built-in: 8; dialog-local: 1).",
+            "projection": {
+              "tuple": "(@USER OP:express ?how many behavior rules are there)",
+              "intent": "behavior_rules_count",
+              "contentChars": 347,
+              "evidenceCount": 4,
+              "language": "en",
+              "summary": "(@USER OP:express ?how many behavior rules are there) ⇒ behavior_rules_count: Total behavior rules: 9 (built-in: 8; dialog-local: 1)."
+            },
+            "answer": "Total behavior rules: 9 (built-in: 8; dialog-local: 1).",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [],
+        "derivationId": "answer_f81dc95437d67736",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "How many behavior rules are there?"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "intent",
+            "payload": "behavior_rules_count"
+          },
+          {
+            "kind": "candidate",
+            "payload": "behavior_rules_count"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:behavior_rules_count"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "behavior_rules_count"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "How many behavior rules are there?"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=0 probability=1.000000 empty"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 empty"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_6c68599c0bfd8cc9"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_6c68599c0bfd8cc9\n  impulse_id \"impulse_6c68599c0bfd8cc9\"\n  source_text \"How many behavior rules are there?\"\n  normalized_text \"how many behavior rules are there\"\n  language \"en\"\n  kind \"question\"\n  known \"impulse:impulse_6c68599c0bfd8cc9\"\n  known \"language:en\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "question"
+          },
+          {
+            "kind": "search:local",
+            "payload": "How many behavior rules are there?"
+          },
+          {
+            "kind": "selected_rule",
+            "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+          },
+          {
+            "kind": "intent",
+            "payload": "behavior_rules_count"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:behavior_rules_count"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "behavior_rules_count"
+          }
+        ],
+        "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"How many behavior rules are there?\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"how, many, behavior, rules, there\""
+      }
+    },
+    {
+      "phase": "list",
+      "prompt": "Show rules",
+      "history": [
+        {
+          "role": "user",
+          "content": "When the user says `checksum status`, answer `checksum cache is valid.`"
+        },
+        {
+          "role": "assistant",
+          "content": "Behavior rule compiled for this dialog.\n\nWhen the user says `checksum status` then respond with `checksum cache is valid.`.\n\n```links\nbehavior_rule_runtime_32628c474c664f67\n  type \"behavior_rule_runtime\"\n  match_prompt \"checksum status\"\n  answer \"checksum cache is valid.\"\n  when_then \"When the user says `checksum status` then respond with `checksum cache is valid.`.\"\n  source \"user_message\"\n```\n\nSend `checksum status` now and I will answer with the configured response. Export memory to keep this rule message with the dialog."
+        },
+        {
+          "role": "user",
+          "content": "How many behavior rules are there?"
+        },
+        {
+          "role": "assistant",
+          "content": "Total behavior rules: 9 (built-in: 8; dialog-local: 1).\n\nReasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.\n\n```links\nbehavior_rules_count\n  built_in_rules \"8\"\n  dialog_local_rules \"1\"\n  total_rules \"9\"\n  algorithm \"behavior_rule_records + collect_runtime_rules(prior_turn:user)\"\n```"
+        }
+      ],
+      "answer": {
+        "intent": "behavior_rules_list",
+        "content": "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):\n\n### Greetings\n- `rule_greeting` -> When the user says `Hi`, `Hello`, or `Hey` then respond with `Hi, how may I help you?`.\n\n### Farewells\n- `rule_farewell` -> When the user says `bye`, `goodbye`, or `пока` then respond with `Goodbye! Feel free to return any time.`.\n\n### Small talk\n- `rule_assistant_free_time` -> When the user asks what I do in free time then respond with `I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations.`.\n\n### Identity\n- `rule_identity` -> When the user asks `Who are you?` or `Кто ты?` then respond with `I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.`.\n\n### Assistant name\n- `rule_assistant_name` -> When the user asks `What is your name?` or `Как тебя зовут?` then respond with the assistant-name answer; if a surface has an assistant-name setting, include that configured name.\n\n### Capabilities\n- `rule_capabilities` -> When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing.\n\n### Program templates\n- `rule_write_program` -> When the user requests a program with a supported `language` and `task`, resolve those parameters and render the matching template through the single `write_program` intent.\n\n### Unknown fallback\n- `rule_unknown` -> When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`).\n\n### Dialog-local rules taught in this conversation\n- `behavior_rule_runtime_32628c474c664f67` -> When the user says `checksum status` then respond with `checksum cache is valid.`.\n\nRead one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`.\nTeach this dialog with: ``When `your prompt` then `your answer` ``. Equivalent forms: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``When `your prompt` do `your answer` ``.\nMultilingual forms: Russian ``Когда `X` тогда `Y` `` / ``Когда `X` делай `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``.\nThe write is append-only: export memory to preserve the rule message with the dialog.",
+        "confidence": 1,
+        "evidence": [
+          "behavior_rules:list",
+          "all",
+          "trace:impulse:Show rules",
+          "trace:formalization:(@USER OP:express ?show rules)",
+          "trace:language:en",
+          "trace:meta:synthesize_from_meaning:partial",
+          "trace:handler:behavior_rules_list",
+          "trace:deformalize:(@USER OP:express ?show rules):behavior_rules_list",
+          "prompt:prompt_b658abb56099837b",
+          "impulse:impulse_65fb652e28350ac6",
+          "language:en",
+          "candidate:candidate_cb105729c41ce158",
+          "statement_weight:formalization:0 weight=1.000000 subject=wikipedia:en:Show_rules",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "formalization:formalization_0ac4fb799662d3a3",
+          "formalization:fallback:wikipedia:en:Show_rules",
+          "intent_formalization_cache:miss:impulse_e77d601456085f9b",
+          "intent_formalization:intent_formalization_26a83066b400a4e6",
+          "intent_formalization:kind:statement",
+          "search:local:search:local_185c16e28e656a75",
+          "selected_rule:selected_rule_8b06fb2d3be676be",
+          "intent:behavior_rules_list",
+          "validation:validation_7a450cd36c0aaaf2",
+          "response:behavior_rules_list",
+          "trace:simplification:trace:simplification_5678fc761ff1398b",
+          "trace:trace_b5667e93b3e06d1e"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "Show rules",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "Show rules -> (@USER OP:express ?show rules)",
+            "formalization": {
+              "raw": "Show rules",
+              "subject": "@USER",
+              "verb": "OP:express",
+              "object": "?show rules",
+              "tuple": "(@USER OP:express ?show rules)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "en",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "synthesize_from_meaning partial",
+            "derivation": "derivation\n  goal synthesize_from_meaning\n  status partial\n  unknown \"show\"\n    status grounded\n    origin documentation\n    operation print_lines\n  unknown \"rules\"\n    status open\n    origin none\n  program \"print_lines\"\n  event 1\n    kind impulse\n    detail \"Show rules\"\n  event 2\n    kind formalize\n    detail \"goal synthesize_from_meaning; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind evidence\n    detail \"the request opens with an operation (show) and names no data to act on: it asks for the procedure\"\n  event 4\n    kind unknowns\n    detail \"show, rules\"\n  event 5\n    kind hypothesis\n    detail \"show → print_lines:1.00 (documentation)\"\n  event 6\n    kind impasse\n    detail \"rules: unknown, lookup needed\"\n  event 7\n    kind clause\n    detail \"head {print_lines}\"\n  event 8\n    kind goal\n    detail \"program serving {print_lines}\"\n  event 9\n    kind probe\n    detail \"skipped: the program needs the node environment\"",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryBehaviorRules",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:express ?show rules) ⇒ behavior_rules_list: Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` s…",
+            "projection": {
+              "tuple": "(@USER OP:express ?show rules)",
+              "intent": "behavior_rules_list",
+              "contentChars": 2492,
+              "evidenceCount": 2,
+              "language": "en",
+              "summary": "(@USER OP:express ?show rules) ⇒ behavior_rules_list: Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` s…"
+            },
+            "answer": "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [],
+        "derivationId": "answer_897e200f818b61ab",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "Show rules"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "intent",
+            "payload": "behavior_rules_list"
+          },
+          {
+            "kind": "candidate",
+            "payload": "behavior_rules_list"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:behavior_rules_list"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "behavior_rules_list"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "Show rules"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=520 probability=1.000000 subject=wikipedia:en:Show_rules"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 subject=wikipedia:en:Show_rules"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "formalization",
+            "payload": "subject=wikipedia:en:Show_rules"
+          },
+          {
+            "kind": "formalization:fallback",
+            "payload": "wikipedia:en:Show_rules"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_e77d601456085f9b"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_e77d601456085f9b\n  impulse_id \"impulse_e77d601456085f9b\"\n  source_text \"Show rules\"\n  normalized_text \"show rules\"\n  language \"en\"\n  kind \"statement\"\n  known \"impulse:impulse_e77d601456085f9b\"\n  known \"language:en\"\n  known \"formalization:fallback:wikipedia:en:Show_rules\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "statement"
+          },
+          {
+            "kind": "search:local",
+            "payload": "Show rules"
+          },
+          {
+            "kind": "selected_rule",
+            "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+          },
+          {
+            "kind": "intent",
+            "payload": "behavior_rules_list"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:behavior_rules_list"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "behavior_rules_list"
+          }
+        ],
+        "derivation": "derivation\n  goal synthesize_from_meaning\n  status partial\n  unknown \"show\"\n    status grounded\n    origin documentation\n    operation print_lines\n  unknown \"rules\"\n    status open\n    origin none\n  program \"print_lines\"\n  event 1\n    kind impulse\n    detail \"Show rules\"\n  event 2\n    kind formalize\n    detail \"goal synthesize_from_meaning; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind evidence\n    detail \"the request opens with an operation (show) and names no data to act on: it asks for the procedure\"\n  event 4\n    kind unknowns\n    detail \"show, rules\"\n  event 5\n    kind hypothesis\n    detail \"show → print_lines:1.00 (documentation)\"\n  event 6\n    kind impasse\n    detail \"rules: unknown, lookup needed\"\n  event 7\n    kind clause\n    detail \"head {print_lines}\"\n  event 8\n    kind goal\n    detail \"program serving {print_lines}\"\n  event 9\n    kind probe\n    detail \"skipped: the program needs the node environment\""
+      }
+    },
+    {
+      "phase": "replay",
+      "prompt": "checksum status",
+      "history": [
+        {
+          "role": "user",
+          "content": "When the user says `checksum status`, answer `checksum cache is valid.`"
+        },
+        {
+          "role": "assistant",
+          "content": "Behavior rule compiled for this dialog.\n\nWhen the user says `checksum status` then respond with `checksum cache is valid.`.\n\n```links\nbehavior_rule_runtime_32628c474c664f67\n  type \"behavior_rule_runtime\"\n  match_prompt \"checksum status\"\n  answer \"checksum cache is valid.\"\n  when_then \"When the user says `checksum status` then respond with `checksum cache is valid.`.\"\n  source \"user_message\"\n```\n\nSend `checksum status` now and I will answer with the configured response. Export memory to keep this rule message with the dialog."
+        },
+        {
+          "role": "user",
+          "content": "How many behavior rules are there?"
+        },
+        {
+          "role": "assistant",
+          "content": "Total behavior rules: 9 (built-in: 8; dialog-local: 1).\n\nReasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.\n\n```links\nbehavior_rules_count\n  built_in_rules \"8\"\n  dialog_local_rules \"1\"\n  total_rules \"9\"\n  algorithm \"behavior_rule_records + collect_runtime_rules(prior_turn:user)\"\n```"
+        },
+        {
+          "role": "user",
+          "content": "Show rules"
+        },
+        {
+          "role": "assistant",
+          "content": "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):\n\n### Greetings\n- `rule_greeting` -> When the user says `Hi`, `Hello`, or `Hey` then respond with `Hi, how may I help you?`.\n\n### Farewells\n- `rule_farewell` -> When the user says `bye`, `goodbye`, or `пока` then respond with `Goodbye! Feel free to return any time.`.\n\n### Small talk\n- `rule_assistant_free_time` -> When the user asks what I do in free time then respond with `I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations.`.\n\n### Identity\n- `rule_identity` -> When the user asks `Who are you?` or `Кто ты?` then respond with `I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.`.\n\n### Assistant name\n- `rule_assistant_name` -> When the user asks `What is your name?` or `Как тебя зовут?` then respond with the assistant-name answer; if a surface has an assistant-name setting, include that configured name.\n\n### Capabilities\n- `rule_capabilities` -> When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing.\n\n### Program templates\n- `rule_write_program` -> When the user requests a program with a supported `language` and `task`, resolve those parameters and render the matching template through the single `write_program` intent.\n\n### Unknown fallback\n- `rule_unknown` -> When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`).\n\n### Dialog-local rules taught in this conversation\n- `behavior_rule_runtime_32628c474c664f67` -> When the user says `checksum status` then respond with `checksum cache is valid.`.\n\nRead one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`.\nTeach this dialog with: ``When `your prompt` then `your answer` ``. Equivalent forms: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``When `your prompt` do `your answer` ``.\nMultilingual forms: Russian ``Когда `X` тогда `Y` `` / ``Когда `X` делай `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``.\nThe write is append-only: export memory to preserve the rule message with the dialog."
+        }
+      ],
+      "answer": {
+        "intent": "behavior_rule_custom",
+        "content": "checksum cache is valid.",
+        "confidence": 1,
+        "evidence": [
+          "behavior_rule:match",
+          "behavior_rule_runtime_32628c474c664f67",
+          "trace:impulse:checksum status",
+          "trace:formalization:(@USER OP:express ?checksum status)",
+          "trace:language:en",
+          "trace:meta:understand:open",
+          "trace:handler:behavior_rule_custom",
+          "trace:deformalize:(@USER OP:express ?checksum status):behavior_rule_custom",
+          "prompt:prompt_86d449869c6e2078",
+          "impulse:impulse_b4ef5c78485f918f",
+          "language:en",
+          "candidate:candidate_67791baea2de64d5",
+          "statement_weight:formalization:0 weight=1.000000 subject=wikipedia:en:checksum_status",
+          "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+          "formalization:formalization_f2cf524ebe988b9c",
+          "formalization:fallback:wikipedia:en:checksum_status",
+          "intent_formalization_cache:miss:impulse_86d449869c6e2078",
+          "intent_formalization:intent_formalization_ba4f3f8fb2e4c3a1",
+          "intent_formalization:kind:statement",
+          "search:local:search:local_10f75efd817ac45a",
+          "selected_rule:selected_rule_8b06fb2d3be676be",
+          "intent:behavior_rule_custom",
+          "validation:validation_7a450cd36c0aaaf2",
+          "response:behavior_rule_custom",
+          "trace:simplification:trace:simplification_5678fc761ff1398b",
+          "trace:trace_fe34f0c500adba56"
+        ],
+        "steps": [
+          {
+            "step": "impulse",
+            "detail": "checksum status",
+            "level": "high"
+          },
+          {
+            "step": "formalize",
+            "detail": "checksum status -> (@USER OP:express ?checksum status)",
+            "formalization": {
+              "raw": "checksum status",
+              "subject": "@USER",
+              "verb": "OP:express",
+              "object": "?checksum status",
+              "tuple": "(@USER OP:express ?checksum status)",
+              "interpretations": []
+            },
+            "level": "detailed"
+          },
+          {
+            "step": "detect_language",
+            "detail": "en",
+            "level": "high"
+          },
+          {
+            "step": "meta_reason",
+            "detail": "understand open",
+            "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"checksum status\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"checksum, status\"",
+            "level": "detailed"
+          },
+          {
+            "step": "dispatch_handler",
+            "detail": "tryBehaviorRules",
+            "level": "high"
+          },
+          {
+            "step": "deformalize",
+            "detail": "(@USER OP:express ?checksum status) ⇒ behavior_rule_custom: checksum cache is valid.",
+            "projection": {
+              "tuple": "(@USER OP:express ?checksum status)",
+              "intent": "behavior_rule_custom",
+              "contentChars": 24,
+              "evidenceCount": 2,
+              "language": "en",
+              "summary": "(@USER OP:express ?checksum status) ⇒ behavior_rule_custom: checksum cache is valid."
+            },
+            "answer": "checksum cache is valid.",
+            "level": "high"
+          }
+        ],
+        "toolCalls": [],
+        "derivationId": "answer_a739703acbc715d0",
+        "rawSolverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "checksum status"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "intent",
+            "payload": "behavior_rule_custom"
+          },
+          {
+            "kind": "candidate",
+            "payload": "behavior_rule_custom"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:behavior_rule_custom"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "behavior_rule_custom"
+          }
+        ],
+        "solverEvents": [
+          {
+            "kind": "impulse",
+            "payload": "checksum status"
+          },
+          {
+            "kind": "language",
+            "payload": "en"
+          },
+          {
+            "kind": "candidate",
+            "payload": "formalization:0 score=520 probability=1.000000 subject=wikipedia:en:checksum_status"
+          },
+          {
+            "kind": "statement_weight",
+            "payload": "formalization:0 weight=1.000000 subject=wikipedia:en:checksum_status"
+          },
+          {
+            "kind": "policy:temperature_selection",
+            "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+          },
+          {
+            "kind": "formalization",
+            "payload": "subject=wikipedia:en:checksum_status"
+          },
+          {
+            "kind": "formalization:fallback",
+            "payload": "wikipedia:en:checksum_status"
+          },
+          {
+            "kind": "intent_formalization_cache",
+            "payload": "miss impulse_86d449869c6e2078"
+          },
+          {
+            "kind": "intent_formalization",
+            "payload": "intent_formalization impulse_86d449869c6e2078\n  impulse_id \"impulse_86d449869c6e2078\"\n  source_text \"checksum status\"\n  normalized_text \"checksum status\"\n  language \"en\"\n  kind \"statement\"\n  known \"impulse:impulse_86d449869c6e2078\"\n  known \"language:en\"\n  known \"formalization:fallback:wikipedia:en:checksum_status\"\n"
+          },
+          {
+            "kind": "intent_formalization:kind",
+            "payload": "statement"
+          },
+          {
+            "kind": "search:local",
+            "payload": "checksum status"
+          },
+          {
+            "kind": "selected_rule",
+            "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+          },
+          {
+            "kind": "intent",
+            "payload": "behavior_rule_custom"
+          },
+          {
+            "kind": "validation",
+            "payload": "accepted_without_extra_constraints"
+          },
+          {
+            "kind": "response",
+            "payload": "response:behavior_rule_custom"
+          },
+          {
+            "kind": "trace:simplification",
+            "payload": "smallest_sufficient"
+          },
+          {
+            "kind": "trace",
+            "payload": "behavior_rule_custom"
+          }
+        ],
+        "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"checksum status\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"checksum, status\""
+      }
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import { test } from "node:test";
 
 import {
   createWorkerContext,
+  evaluate,
   loadWorkerMirror,
   plain,
   REPO_ROOT,
@@ -69,23 +70,31 @@ test("the committed module list is exactly the worker mirror directory", () => {
   );
 });
 
-test("worker modules are named after their subject, and the numbered prefix stays frozen", () => {
+test("worker modules are named after their subject, never numbered", () => {
   // Issue #991: `formal_ai_worker_25.js` is the file two branches both create
   // when they each add a module, and git reports that as an add/add conflict no
-  // ordering can prevent. `data/meta/merge-conflict-policy.lino` freezes the
-  // numbers that predate the policy and requires every later module to be named
-  // after what it contains, so two branches produce two different names.
-  const FROZEN_PREFIX_MAX = 24;
-  const numbered = workerMirrorFiles()
-    .map((file) => file.match(/formal_ai_worker_(\d+)\.js$/))
-    .filter(Boolean)
-    .map((match) => Number(match[1]));
+  // ordering can prevent. R1188-U5 renamed the numbered modules issue #658 cut
+  // by line count after what each holds (data/meta/rename-map.lino), so every
+  // module is named after its subject and two branches produce two names.
+  const numbered = workerMirrorFiles().filter((file) => /_\d+\.js$/u.test(file));
+  assert.deepEqual(numbered, [], "name a worker module after its subject, not a number");
+});
 
-  assert.deepEqual(
-    numbered,
-    Array.from({ length: FROZEN_PREFIX_MAX + 1 }, (_, index) => index),
-    `the frozen numbered modules are 00..${FROZEN_PREFIX_MAX}; name a new module after its subject instead`,
-  );
+test("the worker modules load in any order", async () => {
+  // The module list is sorted by name, so renaming a module moves it in the
+  // load order. No module reads another module's bindings while it loads
+  // (R1188-U5): booted in reverse order, the worker loads without a
+  // ReferenceError and answers as it does in name order. The arithmetic prompt
+  // needs the numeric claim evidence another module defines.
+  const reversed = createWorkerContext({}, { reorderModules: (modules) => modules.reverse() });
+  const evidenceKinds = (context) => plain(evaluate(context, "Object.keys(claimEvidence()).sort()"));
+  assert.deepEqual(evidenceKinds(reversed), evidenceKinds(worker));
+  for (const prompt of ["What is 17 * 23?", "Sort the numbers 3, 1, 2."]) {
+    const inOrder = await solve(prompt);
+    const inReverse = await reversed.solve(prompt, [], {}, {}, [], {});
+    assert.equal(inReverse.intent, inOrder.intent, prompt);
+    assert.equal(inReverse.content, inOrder.content, prompt);
+  }
 });
 
 test("every coding handler executes the shared meta-algorithm", async () => {
@@ -146,9 +155,14 @@ test("every coding handler executes the shared meta-algorithm", async () => {
 
 test("source-derived recurrences render and evaluate without a task template", async () => {
   await worker.init();
-  const fibonacci = await solve(
-    "Write a Python function that calculates the Fibonacci sequence recursively.",
-  );
+  // A recursive Fibonacci request names the catalog's fibonacci task, so the
+  // solver answers it from the catalog, as rust/src/solver.rs does for a
+  // concrete write_program rule (task_catalog.rs pins the native answer); the
+  // recurrence route itself is exercised directly.
+  const prompt = "Write a Python function that calculates the Fibonacci sequence recursively.";
+  const catalog = await solve(prompt);
+  assert.equal(catalog.content.split("\n")[0], "Here is a minimal Python recursive Fibonacci program:");
+  const fibonacci = await worker.trySourceRecurrenceSynthesis(prompt);
   assert.equal(fibonacci.intent, "write_program");
   assert.match(fibonacci.content, /def fibonacci\(n\)/);
   assert.match(fibonacci.content, /fibonacci\(n - 1\)/);
@@ -175,8 +189,9 @@ test("prompt normalization collapses whitespace and case", () => {
   assert.equal(context.normalizePrompt(""), "");
 });
 
-test("language detection recognises each supported script", () => {
-  const context = loadWorkerMirror();
+test("language detection recognises each supported script", async () => {
+  const context = createWorkerContext();
+  await evaluate(context, "loadSeed()");
   assert.equal(context.detectLanguage("привет как дела"), "ru");
   assert.equal(context.detectLanguage("hello how are you"), "en");
   assert.equal(context.detectLanguage("你好吗"), "zh");

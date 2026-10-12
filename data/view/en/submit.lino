@@ -1,0 +1,45 @@
+view
+  id M-cef164bd2f31
+  lemma submit
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "refer for judgment or consideration"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put before"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "yield to the control of another"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "hand over formally"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "refer to another person for decision or judgment"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "yield to another's wish or opinion"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "accept or undergo, often unwillingly"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make an application as for a job or funding"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make over as a return"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "accept as inevitable"
+    provenance (wordnet)

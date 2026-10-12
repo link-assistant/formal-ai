@@ -23,7 +23,7 @@ function apiCandidates(options = {}) {
   const port = String(options.port || "18080");
   const repoRoot = options.repoRoot || "";
   const env = options.env || {};
-  const args = ["serve", "--host", host, "--port", port];
+  const args = ["serve", "--host", host, "--port", port, ...(options.debugSession ? ["--debug-session"] : [])];
   const candidates = [];
 
   const override = env.FORMAL_AI_VSCODE_BINARY || env.FORMAL_AI_DESKTOP_BINARY;

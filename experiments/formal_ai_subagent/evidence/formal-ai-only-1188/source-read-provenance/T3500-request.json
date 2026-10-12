@@ -1,0 +1,14 @@
+{
+  "id": "T3500",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Read js/agentic/progress.mjs and rust/src/agentic_coding/progress.rs, then inspect tool_result failure classification and rust/tests/fixtures/observed-plan-event.rs. Provide a read-only general capability repair design: a source-bound bare Read containing authored failure vocabulary must remain source observation rather than provider error; explicit outer errors and nonzero statuses must remain failures, and unframed completeness/success remains unknown. Identify exact existing result fields, source provenance, negative controls and meaningful unchanged native fixture retry. Do not write any file or implement the repair; report precise unsupported planning capability honestly.",
+  "tools": [
+    "read"
+  ],
+  "before": {
+    "js/agentic/progress.mjs": "631dc456728b72c44ad0882ef2e3cf8145efc531638dc6850ea2f7575b30d473",
+    "rust/src/agentic_coding/progress.rs": "6287d4089aeb8704fdd308f9fdf510f6272049909784a94cc9e0b9f7052e8c5b",
+    "js/agentic/tool_result.mjs": "8cf6c622950bef310994735fec172e2a7b9509621dae1f8c89ae88107a823875",
+    "rust/tests/fixtures/observed-plan-event.rs": "5e06d0a8d3aaff880c34f849ae96ceb09bdaf7a0110bde250418c7be65056dac"
+  }
+}

@@ -1,0 +1,49 @@
+Q30
+  aliases
+    en ("the States" "the United States of America" "US of America" "the US" "the U.S." "the US of A" "U.S. of America" "the US of America" "the USA" "the U.S.A." "the U.S. of A" "US of A" "the U.S. of America" "the United States" Merica Murica "U. S." "U. S. A." "United States of America")
+    hi ("संयुक्त राज्य अमेरिका" "यू एस" "अमेरिका" "यू० एस०" "यू एस ए" "यू० एस० ए०")
+    ru ("Соединённые Штаты Америки" "Соединённые Штаты" "Штаты" "Соединённые Государства Америки" "САСШ" "Северо-Американские Соединённые Штаты")
+    zh ("美利坚合众国" "花旗国" "美国")
+    zh-hans ("美利坚合众国" "花旗国")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q61
+              numeric-id 61
+          hash 6dbe651bbfe1c0afb847d59eb77ab610a89e3aeb
+          property P36
+          snaktype value
+        rank preferred
+  id Q30
+  labels
+    en "United States"
+    hi "संयुक्त राज्य"
+    ru "США"
+    zh "美國"
+    zh-hans "美国"
+  sitelinks
+    enwiki
+      site enwiki
+      title "United States"
+    hiwiki
+      site hiwiki
+      title "संयुक्त राज्य अमेरिका"
+    ruwiki
+      site ruwiki
+      title "Соединённые Штаты Америки"
+    zhwiki
+      site zhwiki
+      title "美国"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

@@ -1,0 +1,14 @@
+{
+  "head": "d7437d4bcfc6d94823ebeba634de016f25561b41",
+  "job": 113779140028,
+  "path": "/tmp/pr1188-new-job-113779140028.log",
+  "bytes": 348462,
+  "sha256": "6e41e2aa434ce7c1036e31f37ba2904db7a1473dbdb8bac15cf910471c7a7516",
+  "extractedLines": [
+    3043,
+    3050
+  ],
+  "nativeWrongBytes": "g «hello».",
+  "task": "Note İK𐐷 😀 café.\nCreate file x.txt containing «hello».",
+  "nativeExecutionAfterRepair": "CI pending"
+}

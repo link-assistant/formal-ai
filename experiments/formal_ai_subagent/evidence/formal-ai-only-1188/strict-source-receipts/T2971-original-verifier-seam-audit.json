@@ -1,0 +1,12 @@
+{
+  "request": "T2971",
+  "scope": "read-only exact actual Write/Run transcript receipts",
+  "rawEqualsActualWrite": false,
+  "payloadEqualsActualWrite": true,
+  "rawSha256": "f8a2617ba9268fcca80215ded2e353c85b141d11acff227ac08273bfa35bf669",
+  "payloadSha256": "1888b97785a19da3a6f4aa980cc1fadbe19b92745fe0ba3d8c0db9c05b610a08",
+  "actualWriteSha256": "1888b97785a19da3a6f4aa980cc1fadbe19b92745fe0ba3d8c0db9c05b610a08",
+  "reportedExitCode": 0,
+  "harnessReportedFailure": false,
+  "seam": "workspace_change planRewriteStep whole-write fallback compares raw cat receipt directly to updated source at lines145-148; digest edit path already normalizes typed receipt"
+}

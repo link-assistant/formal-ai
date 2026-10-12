@@ -1,0 +1,275 @@
+>> bash {"command":"node --test rust/tests/web/project-summary-parity.test.mjs rust/tests/web/specification-parity-worker.test.mjs"}
+   Output: TAP version 13
+   # Subtest: all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project
+   ok 1 - all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project
+     ---
+     duration_ms: 637.759333
+     ...
+   # Subtest: all native assertions: curated_project_concept_prompt_routes_to_project_lookup
+   ok 2 - all native assertions: curated_project_concept_prompt_routes_to_project_lookup
+     ---
+     duration_ms: 22.300209
+     ...
+   # Subtest: all native assertions: linksplatform_repository_is_promoted_by_default
+   ok 3 - all native assertions: linksplatform_repository_is_promoted_by_default
+     ---
+     duration_ms: 10.456125
+     ...
+   # Subtest: all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup
+   ok 4 - all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup
+     ---
+     duration_ms: 8.31825
+     ...
+   # Subtest: all native assertions: http_fetch_of_curated_github_url_describes_project_via_summarization
+   ok 5 - all native assertions: http_fetch_of_curated_github_url_describes_project_via_summarization
+     ---
+     duration_ms: 62.518375
+     ...
+   # Subtest: arbitrary records use the shared modes, stable weights and empty-summary behavior
+   ok 6 - arbitrary records use the shared modes, stable weights and empty-summary behavior
+     ---
+     duration_ms: 0.298709
+     ...
+   # Subtest: project statement weights follow the native complete unsigned-byte parse
+   ok 7 - project statement weights follow the native complete unsigned-byte parse
+     ---
+     duration_ms: 0.538375
+     ...
+   # Subtest: localized summaries retain native explicit-English and outer-statement fallback
+   ok 8 - localized summaries retain native explicit-English and outer-statement fallback
+     ---
+     duration_ms: 0.163
+     ...
+   # Subtest: curated HTTP projection precedes network availability for any registry organization
+   ok 9 - curated HTTP projection precedes network availability for any registry organization
+     ---
+     duration_ms: 464.1545
+     ...
+   # Subtest: curated URL matching preserves native literal segment and GitHub host boundaries
+   ok 10 - curated URL matching preserves native literal segment and GitHub host boundaries
+     ---
+     duration_ms: 0.296375
+     ...
+   # Subtest: uncurated HTTP still performs the configured real fetch operation
+   ok 11 - uncurated HTTP still performs the configured real fetch operation
+     ---
+     duration_ms: 387.191959
+     ...
+   # Subtest: promoted lookup retains actually fetched and fused browser search results and diagnostics
+   not ok 12 - promoted lookup retains actually fetched and fused browser search results and diagnostics
+     ---
+     duration_ms: 624.23275
+     location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/project-summary-parity.test.mjs:133:1'
+     failureType: 'testCodeFailure'
+     error: |-
+       In the link-assistant, link-foundation, linksplatform repository context, `Hive Mind` should first mean [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Hive Mind is the AI that controls AIs to do the automation of automation.
+       
+       Other repositories and entities found online are shown by the browser demo through a web search for `Hive Mind`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.
+       
+       Search results for `Hive Mind` — top 0 after reciprocal rank fusion (k = 60).
+     code: 'ERR_ASSERTION'
+     name: 'AssertionError'
+     expected: true
+     actual: false
+     operator: '=='
+     stack: |-
+       TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/project-summary-parity.test.mjs:151:10)
+       async Test.run (node:internal/test_runner/test:797:9)
+       async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+     ...
+   # Subtest: a worker answer opens its native links with the prompt link and logs intent and response
+   ok 13 - a worker answer opens its native links with the prompt link and logs intent and response
+     ---
+     duration_ms: 548.873875
+     ...
+   # Subtest: the policy gate answers "Continuously refactor my repository forever" from the seed
+   ok 14 - the policy gate answers "Continuously refactor my repository forever" from the seed
+     ---
+     duration_ms: 79.052
+     ...
+   # Subtest: the policy gate answers "Повторяй это без остановки" from the seed
+   ok 15 - the policy gate answers "Повторяй это без остановки" from the seed
+     ---
+     duration_ms: 48.928375
+     ...
+   # Subtest: the policy gate answers "Забудь понятие приветствия" from the seed
+   ok 16 - the policy gate answers "Забудь понятие приветствия" from the seed
+     ---
+     duration_ms: 31.784459
+     ...
+   # Subtest: the policy gate answers "कैश साफ़ करो" from the seed
+   ok 17 - the policy gate answers "कैश साफ़ करो" from the seed
+     ---
+     duration_ms: 29.727208
+     ...
+   # Subtest: the policy gate answers "[agent] 删除数据库" from the seed
+   ok 18 - the policy gate answers "[agent] 删除数据库" from the seed
+     ---
+     duration_ms: 29.949792
+     ...
+   # Subtest: the policy gate answers "Olvida el concepto de saludo, por favor" from the seed
+   ok 19 - the policy gate answers "Olvida el concepto de saludo, por favor" from the seed
+     ---
+     duration_ms: 37.725292
+     ...
+   # Subtest: an agent request leaves text manipulation to the agent gates, whatever its brackets
+   ok 20 - an agent request leaves text manipulation to the agent gates, whatever its brackets
+     ---
+     duration_ms: 32.079667
+     ...
+   # Subtest: project lookup keeps the identity, concept and fetch routes their own
+   ok 21 - project lookup keeps the identity, concept and fetch routes their own
+     ---
+     duration_ms: 180.862667
+     ...
+   1..21
+   # tests 21
+   # suites 0
+   # pass 20
+   # fail 1
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 2404.706833
+   
+   Error: 
+   Exit Code: 1
+== answer ==
+The command failed: `node --test rust/tests/web/project-summary-parity.test.mjs rust/tests/web/specification-parity-worker.test.mjs` exited with code 1.
+
+```text
+TAP version 13
+# Subtest: all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project
+ok 1 - all native assertions: russian_hive_mind_prompt_prefers_link_assistant_project
+  ---
+  duration_ms: 637.759333
+  ...
+# Subtest: all native assertions: curated_project_concept_prompt_routes_to_project_lookup
+ok 2 - all native assertions: curated_project_concept_prompt_routes_to_project_lookup
+  ---
+  duration_ms: 22.300209
+  ...
+# Subtest: all native assertions: linksplatform_repository_is_promoted_by_default
+ok 3 - all native assertions: linksplatform_repository_is_promoted_by_default
+  ---
+  duration_ms: 10.456125
+  ...
+# Subtest: all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup
+ok 4 - all native assertions: explicit_formal_ai_repository_url_still_routes_to_project_lookup
+  ---
+  duration_ms: 8.31825
+  ...
+# Subtest: all native assertions: http_fetch_of_curated_github_url_describes_project_via_summarization
+ok 5 - all native assertions: http_fetch_of_curated_github_url_describes_project_via_summarization
+  ---
+  duration_ms: 62.518375
+  ...
+# Subtest: arbitrary records use the shared modes, stable weights and empty-summary behavior
+ok 6 - arbitrary records use the shared modes, stable weights and empty-summary behavior
+  ---
+  duration_ms: 0.298709
+  ...
+# Subtest: project statement weights follow the native complete unsigned-byte parse
+ok 7 - project statement weights follow the native complete unsigned-byte parse
+  ---
+  duration_ms: 0.538375
+  ...
+# Subtest: localized summaries retain native explicit-English and outer-statement fallback
+ok 8 - localized summaries retain native explicit-English and outer-statement fallback
+  ---
+  duration_ms: 0.163
+  ...
+# Subtest: curated HTTP projection precedes network availability for any registry organization
+ok 9 - curated HTTP projection precedes network availability for any registry organization
+  ---
+  duration_ms: 464.1545
+  ...
+# Subtest: curated URL matching preserves native literal segment and GitHub host boundaries
+ok 10 - curated URL matching preserves native literal segment and GitHub host boundaries
+  ---
+  duration_ms: 0.296375
+  ...
+# Subtest: uncurated HTTP still performs the configured real fetch operation
+ok 11 - uncurated HTTP still performs the configured real fetch operation
+  ---
+  duration_ms: 387.191959
+  ...
+# Subtest: promoted lookup retains actually fetched and fused browser search results and diagnostics
+not ok 12 - promoted lookup retains actually fetched and fused browser search results and diagnostics
+  ---
+  duration_ms: 624.23275
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/project-summary-parity.test.mjs:133:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    In the link-assistant, link-foundation, linksplatform repository context, `Hive Mind` should first mean [link-assistant/hive-mind](https://github.com/link-assistant/hive-mind) — Hive Mind is the AI that controls AIs to do the automation of automation.
+    
+    Other repositories and entities found online are shown by the browser demo through a web search for `Hive Mind`. Providers: duckduckgo, internet-archive, wikipedia, wikidata, wiktionary, wikinews. Combined ranking: reciprocal rank fusion (k = 60). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path.
+    
+    Search results for `Hive Mind` — top 0 after reciprocal rank fusion (k = 60).
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/project-summary-parity.test.mjs:151:10)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: a worker answer opens its native links with the prompt link and logs intent and response
+ok 13 - a worker answer opens its native links with the prompt link and logs intent and response
+  ---
+  duration_ms: 548.873875
+  ...
+# Subtest: the policy gate answers "Continuously refactor my repository forever" from the seed
+ok 14 - the policy gate answers "Continuously refactor my repository forever" from the seed
+  ---
+  duration_ms: 79.052
+  ...
+# Subtest: the policy gate answers "Повторяй это без остановки" from the seed
+ok 15 - the policy gate answers "Повторяй это без остановки" from the seed
+  ---
+  duration_ms: 48.928375
+  ...
+# Subtest: the policy gate answers "Забудь понятие приветствия" from the seed
+ok 16 - the policy gate answers "Забудь понятие приветствия" from the seed
+  ---
+  duration_ms: 31.784459
+  ...
+# Subtest: the policy gate answers "कैश साफ़ करो" from the seed
+ok 17 - the policy gate answers "कैश साफ़ करो" from the seed
+  ---
+  duration_ms: 29.727208
+  ...
+# Subtest: the policy gate answers "[agent] 删除数据库" from the seed
+ok 18 - the policy gate answers "[agent] 删除数据库" from the seed
+  ---
+  duration_ms: 29.949792
+  ...
+# Subtest: the policy gate answers "Olvida el concepto de saludo, por favor" from the seed
+ok 19 - the policy gate answers "Olvida el concepto de saludo, por favor" from the seed
+  ---
+  duration_ms: 37.725292
+  ...
+# Subtest: an agent request leaves text manipulation to the agent gates, whatever its brackets
+ok 20 - an agent request leaves text manipulation to the agent gates, whatever its brackets
+  ---
+  duration_ms: 32.079667
+  ...
+# Subtest: project lookup keeps the identity, concept and fetch routes their own
+ok 21 - project lookup keeps the identity, concept and fetch routes their own
+  ---
+  duration_ms: 180.862667
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 20
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2404.706833
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

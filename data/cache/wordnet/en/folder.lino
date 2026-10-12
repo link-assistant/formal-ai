@@ -1,0 +1,16 @@
+language en
+lemma folder
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a small book usually having a paper cover"
+    id oewn-06425532-n
+    partOfSpeech n
+    synonyms (booklet brochure leaflet pamphlet)
+  entry
+    definition "covering that is folded over to protect the contents"
+    id oewn-03381125-n
+    partOfSpeech n
+source "oewn:2024"

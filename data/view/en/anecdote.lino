@@ -1,0 +1,9 @@
+view
+  id M-4360f5fe1e1c
+  lemma anecdote
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "short account of an incident (especially a biographical one)"
+    provenance (wordnet)

@@ -1,0 +1,13 @@
+view
+  id M-0b3ec0818f6f
+  lemma dec
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the last (12th) month of the year"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(astronomy) the angular distance of a celestial body north or to the south of the celestial equator; expressed in degrees; used with right ascension to specify positions on the celestial sphere"
+    provenance (wordnet)

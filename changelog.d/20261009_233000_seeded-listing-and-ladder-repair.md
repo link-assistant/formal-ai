@@ -1,0 +1,9 @@
+---
+bump: patch
+---
+
+### Fixed
+
+- Route container-scoped enumeration to workspace listing when the request names no program artefact or implementation language; retain explicit program requests and named local searches. A later existential clause follows the earlier listing action instead of supplying a fabricated filename.
+- Keep quoted first-line constraints and content cues inside authored payloads, while honoring actual constraints outside the literal and preserving fenced source bytes.
+- Derive ladder leaf L07 from the canonical greeting seed after its former Rust example list was removed. The current node performs a real seed edit and writes separate effect and proof evidence; the changed greeting reaches the production caller.

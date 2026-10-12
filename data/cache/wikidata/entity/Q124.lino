@@ -1,0 +1,20 @@
+Q124
+  aliases
+    en (Oct "10. month")
+    es (otubre Oct. otu. ot. oct. "décimo mes" "10.° mes" "mes décimo" "mes 10.°" "10" ochubre "mes 10")
+    ru ("октября" "окт.")
+  descriptions
+    en "tenth month in the Julian and Gregorian calendars"
+    es "décimo mes del año"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में दसवां महीना"
+    ru "десятый месяц года в юлианском и григорианском календарях"
+    zh "公历及儒略历中第十个月份"
+  id Q124
+  labels
+    en October
+    es octubre
+    hi "अक्टूबर"
+    ru "октябрь"
+    zh "10月"
+  type item
+success 1

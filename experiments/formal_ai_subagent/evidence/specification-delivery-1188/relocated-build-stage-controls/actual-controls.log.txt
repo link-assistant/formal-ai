@@ -1,0 +1,305 @@
+TAP version 13
+# Subtest: actual process order starts weighted late-lexical case before early-lexical cases
+ok 1 - actual process order starts weighted late-lexical case before early-lexical cases
+  ---
+  duration_ms: 604.680208
+  ...
+# Subtest: bounded pool never exceeds two real processes and still completes remaining batches after failure
+ok 2 - bounded pool never exceeds two real processes and still completes remaining batches after failure
+  ---
+  duration_ms: 186.0385
+  ...
+# Subtest: successful exit cannot hide an omitted, repeated, or unselected test
+ok 3 - successful exit cannot hide an omitted, repeated, or unselected test
+  ---
+  duration_ms: 259.416
+  ...
+# Subtest: actual ignored-case completion remains distinct from passed cases
+ok 4 - actual ignored-case completion remains distinct from passed cases
+  ---
+  duration_ms: 134.81825
+  ...
+# Subtest: nonzero harness status remains failure even when printed cases look successful
+ok 5 - nonzero harness status remains failure even when printed cases look successful
+  ---
+  duration_ms: 137.250584
+  ...
+# Subtest: invalid runtime selections and missing executable are refused before any execution
+ok 6 - invalid runtime selections and missing executable are refused before any execution
+  ---
+  duration_ms: 0.29775
+  ...
+# Subtest: equal weights share only a target and batches retain fixed size bounds
+ok 7 - equal weights share only a target and batches retain fixed size bounds
+  ---
+  duration_ms: 0.174792
+  ...
+# Subtest: printed FAILED completion cannot be certified by an exit-zero harness
+ok 8 - printed FAILED completion cannot be certified by an exit-zero harness
+  ---
+  duration_ms: 152.128375
+  ...
+# Subtest: actual shard shell retains missing-executable failure after an existing target succeeds
+ok 9 - actual shard shell retains missing-executable failure after an existing target succeeds
+  ---
+  duration_ms: 977.059875
+  ...
+# Subtest: the whole instrumented producer fits thirty minutes without an exception
+ok 10 - the whole instrumented producer fits thirty minutes without an exception
+  ---
+  duration_ms: 0.877708
+  ...
+# Subtest: the bounded compile retains instrumentation, every test target and upload guards
+ok 11 - the bounded compile retains instrumentation, every test target and upload guards
+  ---
+  duration_ms: 0.201625
+  ...
+# Subtest: one fresh merge imports through a minimal bundle with exact source/tree/input validation
+ok 12 - one fresh merge imports through a minimal bundle with exact source/tree/input validation
+  ---
+  duration_ms: 1892.276333
+  ...
+# Subtest: selection refuses wrong run/head, altered JSON and damaged merge-bundle bytes
+ok 13 - selection refuses wrong run/head, altered JSON and damaged merge-bundle bytes
+  ---
+  duration_ms: 1315.869917
+  ...
+# Subtest: tag selection has no synthetic bundle and refuses uncommitted compilation inputs
+ok 14 - tag selection has no synthetic bundle and refuses uncommitted compilation inputs
+  ---
+  duration_ms: 1555.90075
+  ...
+# Subtest: exact native executable receipt rejects every independent build-contract mismatch
+ok 15 - exact native executable receipt rejects every independent build-contract mismatch
+  ---
+  duration_ms: 1238.836917
+  ...
+# Subtest: producer refuses unexpected flags, compiler, host or feature policy before recording success
+ok 16 - producer refuses unexpected flags, compiler, host or feature policy before recording success
+  ---
+  duration_ms: 1234.742208
+  ...
+# Subtest: altered compiler provenance, extra artifact files and a substituted executable name refuse
+ok 17 - altered compiler provenance, extra artifact files and a substituted executable name refuse
+  ---
+  duration_ms: 1244.60425
+  ...
+# Subtest: ignored physical build inputs refuse before sealing any native source identity
+ok 18 - ignored physical build inputs refuse before sealing any native source identity
+  ---
+  duration_ms: 1989.316209
+  ...
+# Subtest: tracked legacy seeds and Cargo configuration bind source identity and refuse dirty bytes
+ok 19 - tracked legacy seeds and Cargo configuration bind source identity and refuse dirty bytes
+  ---
+  duration_ms: 2310.710959
+  ...
+# Subtest: extracted archives preserve the verified executable name, length and SHA
+ok 20 - extracted archives preserve the verified executable name, length and SHA
+  ---
+  duration_ms: 1238.727459
+  ...
+# Subtest: one source job seals source and compiler before all eight distinct native producers
+ok 21 - one source job seals source and compiler before all eight distinct native producers
+  ---
+  duration_ms: 1.115208
+  ...
+# Subtest: the six desktop and five CLI consumers only package exact verified target artifacts
+ok 22 - the six desktop and five CLI consumers only package exact verified target artifacts
+  ---
+  duration_ms: 1.066375
+  ...
+# Subtest: publication guards and full consolidated asset verification remain on release consumers
+ok 23 - publication guards and full consolidated asset verification remain on release consumers
+  ---
+  duration_ms: 0.253333
+  ...
+# Subtest: VS Code and final provenance use the same exact source selection
+ok 24 - VS Code and final provenance use the same exact source selection
+  ---
+  duration_ms: 0.3335
+  ...
+# Subtest: each packaging job captures the pinned workflow protocol before checking out binary source
+ok 25 - each packaging job captures the pinned workflow protocol before checking out binary source
+  ---
+  duration_ms: 0.424875
+  ...
+# Subtest: long Windows checkout paths are enabled before any native, desktop or CLI checkout
+ok 26 - long Windows checkout paths are enabled before any native, desktop or CLI checkout
+  ---
+  duration_ms: 0.198375
+  ...
+# Subtest: current native/package sources retain all relocated operations under declared thirty-minute caps
+ok 27 - current native/package sources retain all relocated operations under declared thirty-minute caps
+  ---
+  duration_ms: 1.05075
+  ...
+# Subtest: current coverage sources retain the complete instrumented suite and reduction obligations under bounded stage clocks
+ok 28 - current coverage sources retain the complete instrumented suite and reduction obligations under bounded stage clocks
+  ---
+  duration_ms: 0.168834
+  ...
+# Subtest: refuse changed relocated native/package source: missing original heavy target
+ok 29 - refuse changed relocated native/package source: missing original heavy target
+  ---
+  duration_ms: 1.267792
+  ...
+# Subtest: refuse changed relocated native/package source: unbounded native cap
+ok 30 - refuse changed relocated native/package source: unbounded native cap
+  ---
+  duration_ms: 3.901833
+  ...
+# Subtest: refuse changed relocated native/package source: unbounded package cap
+ok 31 - refuse changed relocated native/package source: unbounded package cap
+  ---
+  duration_ms: 0.933042
+  ...
+# Subtest: refuse changed relocated native/package source: wrong compiler source
+ok 32 - refuse changed relocated native/package source: wrong compiler source
+  ---
+  duration_ms: 0.291625
+  ...
+# Subtest: refuse changed relocated native/package source: compile default features dropped
+ok 33 - refuse changed relocated native/package source: compile default features dropped
+  ---
+  duration_ms: 0.326042
+  ...
+# Subtest: refuse changed relocated native/package source: missing native receipt
+ok 34 - refuse changed relocated native/package source: missing native receipt
+  ---
+  duration_ms: 0.232958
+  ...
+# Subtest: refuse changed relocated native/package source: native verification after upload
+ok 35 - refuse changed relocated native/package source: native verification after upload
+  ---
+  duration_ms: 0.496125
+  ...
+# Subtest: refuse changed relocated native/package source: spoofed target download
+ok 36 - refuse changed relocated native/package source: spoofed target download
+  ---
+  duration_ms: 0.313291
+  ...
+# Subtest: refuse changed relocated native/package source: source drift selection digest
+ok 37 - refuse changed relocated native/package source: source drift selection digest
+  ---
+  duration_ms: 0.222375
+  ...
+# Subtest: refuse changed relocated native/package source: unqualified required binary
+ok 38 - refuse changed relocated native/package source: unqualified required binary
+  ---
+  duration_ms: 0.222667
+  ...
+# Subtest: refuse changed relocated native/package source: duplicate package compilation
+ok 39 - refuse changed relocated native/package source: duplicate package compilation
+  ---
+  duration_ms: 1.288333
+  ...
+# Subtest: refuse changed relocated native/package source: missing CLI smoke
+ok 40 - refuse changed relocated native/package source: missing CLI smoke
+  ---
+  duration_ms: 0.374958
+  ...
+# Subtest: refuse changed instrumented coverage source: unbounded producer cap
+ok 41 - refuse changed instrumented coverage source: unbounded producer cap
+  ---
+  duration_ms: 0.130917
+  ...
+# Subtest: refuse changed instrumented coverage source: budget precedes job failure clock
+ok 42 - refuse changed instrumented coverage source: budget precedes job failure clock
+  ---
+  duration_ms: 0.143709
+  ...
+# Subtest: refuse changed instrumented coverage source: native feature coverage weakened
+ok 43 - refuse changed instrumented coverage source: native feature coverage weakened
+  ---
+  duration_ms: 0.111292
+  ...
+# Subtest: refuse changed instrumented coverage source: executable inventory missing
+ok 44 - refuse changed instrumented coverage source: executable inventory missing
+  ---
+  duration_ms: 0.914125
+  ...
+# Subtest: refuse changed instrumented coverage source: wrong executable transfer
+ok 45 - refuse changed instrumented coverage source: wrong executable transfer
+  ---
+  duration_ms: 0.128708
+  ...
+# Subtest: refuse changed instrumented coverage source: profile missing refusal removed
+ok 46 - refuse changed instrumented coverage source: profile missing refusal removed
+  ---
+  duration_ms: 0.182125
+  ...
+# Subtest: refuse changed instrumented coverage source: coverage ratchet removed
+ok 47 - refuse changed instrumented coverage source: coverage ratchet removed
+  ---
+  duration_ms: 0.177959
+  ...
+# Subtest: refuse changed instrumented coverage source: change gating weakened
+ok 48 - refuse changed instrumented coverage source: change gating weakened
+  ---
+  duration_ms: 0.232166
+  ...
+# Subtest: all original artifact attestations and durable JSON evidence remain bound to their actual producers
+ok 49 - all original artifact attestations and durable JSON evidence remain bound to their actual producers
+  ---
+  duration_ms: 0.119958
+  ...
+# Subtest: refuse missing attestation producer build
+ok 50 - refuse missing attestation producer build
+  ---
+  duration_ms: 0.215292
+  ...
+# Subtest: refuse spoofed attestation subject build
+ok 51 - refuse spoofed attestation subject build
+  ---
+  duration_ms: 0.271542
+  ...
+# Subtest: refuse missing attestation producer cli
+ok 52 - refuse missing attestation producer cli
+  ---
+  duration_ms: 0.16875
+  ...
+# Subtest: refuse spoofed attestation subject cli
+ok 53 - refuse spoofed attestation subject cli
+  ---
+  duration_ms: 0.180958
+  ...
+# Subtest: refuse missing attestation producer vscode
+ok 54 - refuse missing attestation producer vscode
+  ---
+  duration_ms: 0.171459
+  ...
+# Subtest: refuse spoofed attestation subject vscode
+ok 55 - refuse spoofed attestation subject vscode
+  ---
+  duration_ms: 0.172417
+  ...
+# Subtest: refuse missing attestation producer finalize
+ok 56 - refuse missing attestation producer finalize
+  ---
+  duration_ms: 0.170084
+  ...
+# Subtest: refuse spoofed attestation subject finalize
+ok 57 - refuse spoofed attestation subject finalize
+  ---
+  duration_ms: 0.179166
+  ...
+# Subtest: refuse legacy attestation action
+ok 58 - refuse legacy attestation action
+  ---
+  duration_ms: 0.243792
+  ...
+# Subtest: refuse cross-platform checksum text parsing
+ok 59 - refuse cross-platform checksum text parsing
+  ---
+  duration_ms: 0.253792
+  ...
+1..59
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14074.047375

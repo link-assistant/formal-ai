@@ -1,0 +1,8 @@
+{
+  "id": "T3001",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Repair the reusable obligation clause splitter in js/agentic/crate/obligation_ledger.mjs and rust/src/obligation_ledger/derivation.rs so seeded enumeration cues inside a closed literal operand remain payload, while independent unquoted obligations still split. Observe the existing scanners and preserve their source-coordinate contracts. Add meaningful public-function and actual file readback regressions for closed guillemet, inline and fenced literals, multilingual cues and nonASCII text, retaining the original independent-artifact assertions. Validate the selected changes and report exact observations without inventing compiler results. Do not run cargo, rustc or rust-script.",
+  "steps": 16,
+  "status": "Prepared original general capability request; not invoked while source hold remains.",
+  "provenance": "Prepared request relabeled after parent corrected global ID allocation; oldT2401 was never invoked; prompt unchanged."
+}

@@ -1,0 +1,65 @@
+TAP version 13
+# Subtest: complete Unicode declaration spans retain source and both coordinate systems
+ok 1 - complete Unicode declaration spans retain source and both coordinate systems
+  ---
+  duration_ms: 1.677542
+  ...
+# Subtest: bounded bodies establish Optional and scalar constraints without caller-supplied types
+ok 2 - bounded bodies establish Optional and scalar constraints without caller-supplied types
+  ---
+  duration_ms: 0.520542
+  ...
+# Subtest: an actual observed pair produces a guarded typed graph, without a wrapper or write
+ok 3 - an actual observed pair produces a guarded typed graph, without a wrapper or write
+  ---
+  duration_ms: 0.869834
+  ...
+# Subtest: nested Optional type parameters are instantiated from the observed operand
+ok 4 - nested Optional type parameters are instantiated from the observed operand
+  ---
+  duration_ms: 0.318959
+  ...
+# Subtest: stale identities and unobserved exports cannot produce a graph
+ok 5 - stale identities and unobserved exports cannot produce a graph
+  ---
+  duration_ms: 0.564375
+  ...
+# Subtest: unknown calls, field schemas, input writes and local mutation remain contract gaps
+ok 6 - unknown calls, field schemas, input writes and local mutation remain contract gaps
+  ---
+  duration_ms: 1.613166
+  ...
+# Subtest: real module initialization and transitive import effects remain separate obligations
+ok 7 - real module initialization and transitive import effects remain separate obligations
+  ---
+  duration_ms: 1.162792
+  ...
+# Subtest: ASI line terminators, incompatible branches and unsupported async are not certified
+ok 8 - ASI line terminators, incompatible branches and unsupported async are not certified
+  ---
+  duration_ms: 0.491625
+  ...
+# Subtest: duplicate bindings and malformed balanced source do not masquerade as provenance
+ok 9 - duplicate bindings and malformed balanced source do not masquerade as provenance
+  ---
+  duration_ms: 0.388834
+  ...
+# Subtest: actual original callees retain exact declarations and honest unsupported contract reasons
+ok 10 - actual original callees retain exact declarations and honest unsupported contract reasons
+  ---
+  duration_ms: 10.787833
+  ...
+# Subtest: production discovery records supported graphs but cannot certify an unbound requested goal
+ok 11 - production discovery records supported graphs but cannot certify an unbound requested goal
+  ---
+  duration_ms: 512.739625
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 583.641542

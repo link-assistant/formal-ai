@@ -41,9 +41,10 @@ rust/tests/unit/specification/mod.rs merge=union
 # Derived artifacts — `bash scripts/regenerate-derived-artifacts.sh` rebuilds them
 # from the merged sources, and each one's own verifier fails until it is rerun.
 REQUIREMENTS.md merge=union
+docs/requirements/assembled/*.md merge=union
 data/meta/requirement-status-ledger.lino merge=union
 data/meta/requirement-status-ledger/*.lino merge=union
-data/meta/seed-metadata-gaps-*.lino merge=union
+data/meta/seed-metadata-gaps/*.lino merge=union
 data/meta/self-ast.lino merge=union
 data/meta/self-ast/** merge=union
 data/seed/closure-generated-*.lino merge=union
@@ -57,3 +58,7 @@ js/source-cache/wikifunctions-recurrences.lino merge=union
 data/meta/seed-registry.lino merge=union
 rust/src/seed/embedded_registry.rs merge=union
 js/seed-files.js merge=union
+# Verbatim upstream captures (issues #1163, #1164) are pinned by SHA-256.
+rust/tests/fixtures/coding-discovery/captured/** -text whitespace=-blank-at-eol,-blank-at-eof
+experiments/formal_ai_subagent/evidence/formal-ai-only-1188/*.txt whitespace=-blank-at-eol,-blank-at-eof
+experiments/formal_ai_subagent/evidence/**/*.log whitespace=-blank-at-eol,-blank-at-eof

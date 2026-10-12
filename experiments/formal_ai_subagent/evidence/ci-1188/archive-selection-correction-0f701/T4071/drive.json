@@ -1,0 +1,26 @@
+{
+  "task": 4071,
+  "prompt": "Run node /private/tmp/pr1188-ci-T4071/archive.mjs",
+  "started": "2026-10-09T22:16:46.117Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node /private/tmp/pr1188-ci-T4071/archive.mjs\"}",
+        "result": "Output: PR1188_NATIVE_WORKFLOW_BINDINGS_ARCHIVED\n\nExit Code: 0"
+      }
+    ],
+    "answer": "The `node /private/tmp/pr1188-ci-T4071/archive.mjs` command completed. Output:\n\n```text\nPR1188_NATIVE_WORKFLOW_BINDINGS_ARCHIVED\n```",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": true,
+  "finished": "2026-10-09T22:16:47.539Z"
+}

@@ -1,0 +1,7 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5",
+  "observedAt": "2026-10-09T05:03:32.725Z",
+  "status": "unavailable",
+  "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5\ngh: Not Found (HTTP 404)\n",
+  "stderr": "gh: Not Found (HTTP 404)\n"
+}

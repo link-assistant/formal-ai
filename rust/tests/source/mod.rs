@@ -49,7 +49,7 @@ pub mod solver;
 pub(crate) mod solver_diagnostics;
 pub(crate) mod solver_dispatch;
 pub(crate) mod solver_formalization;
-pub(crate) mod solver_handler_docs;
+pub(crate) mod solver_handler_documentation;
 pub(crate) mod solver_handler_how;
 pub(crate) mod solver_handler_oracle;
 pub(crate) mod solver_handler_units;

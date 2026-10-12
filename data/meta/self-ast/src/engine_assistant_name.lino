@@ -2,22 +2,17 @@ self_ast_census
   target src/engine_assistant_name.rs
   language rust
   fidelity signature
-  byte_len 1976
-  line_count 51
-  content_id source_module_583e88ddfdd53ff1
-  symbol_count 14
+  byte_len 1270
+  line_count 39
+  content_id source_module_9549d68766df1711
+  symbol_count 9
   symbols
-    const FALLBACK_ASSISTANT_NAME_ANSWER 5 6
-    const FALLBACK_ASSISTANT_NAME_ANSWER_RU 7 8
-    const FALLBACK_ASSISTANT_NAME_ANSWER_HI 9 10
-    const FALLBACK_ASSISTANT_NAME_ANSWER_ZH 11 12
-    const ASSISTANT_NAME_EXAMPLES 14 20
-    function cached_response 22 31
-    function assistant_name_answer 33 36
-    static CELL 34 34
-    function russian_assistant_name_answer 38 41
-    static CELL 39 39
-    function hindi_assistant_name_answer 43 46
-    static CELL 44 44
-    function chinese_assistant_name_answer 48 51
-    static CELL 49 49
+    function cached_response 13 19
+    function assistant_name_answer 21 24
+    static CELL 22 22
+    function russian_assistant_name_answer 26 29
+    static CELL 27 27
+    function hindi_assistant_name_answer 31 34
+    static CELL 32 32
+    function chinese_assistant_name_answer 36 39
+    static CELL 37 37

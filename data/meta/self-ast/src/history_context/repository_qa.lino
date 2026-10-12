@@ -1,0 +1,30 @@
+self_ast_census
+  target src/history_context/repository_qa.rs
+  language rust
+  fidelity signature
+  byte_len 15366
+  line_count 442
+  content_id source_module_525d6971601c6ce5
+  symbol_count 21
+  symbols
+    const STATUS_INTENT 32 32
+    const DEFINITION_INTENT 34 34
+    const MAX_DEFINITIONS 36 36
+    struct CensusSymbol 40 47
+    function cued_phrase 50 56
+    function status_subject 60 66
+    function identifier_shaped 73 83
+    function definition_subjects 89 102
+    function census_document_symbols 105 136
+    function census_symbols 140 168
+    function symbol_doc 176 205
+    function unrecorded 208 210
+    function short_sha 213 224
+    function issue_of 227 231
+    function capitalized 234 239
+    function definition_answer 243 292
+    function ledger_field 295 297
+    function percentage 300 303
+    function git 306 316
+    function status_answer 321 383
+    function answer_repository_question 387 442

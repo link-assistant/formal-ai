@@ -1,0 +1,5 @@
+{
+  "taskId": "T2933",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run node --test rust/tests/web/issue-1181-cli-release-assets.test.mjs rust/tests/web/package-release-publication.test.mjs rust/tests/web/source-network-packets.test.mjs rust/tests/web/pages-artifact-trust.test.mjs rust/tests/web/issue-934-engine-hard-fail.test.mjs"
+}

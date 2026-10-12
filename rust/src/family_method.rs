@@ -282,16 +282,16 @@ fn parse_catalog(text: &str) -> Result<Vec<FamilyMethod>, String> {
     let root = tree
         .children
         .iter()
-        .find(|node| node.name == "handler_family_methods")
-        .ok_or_else(|| String::from("handler_family_methods:missing_root"))?;
+        .find(|node| node.name == "handler-family-methods")
+        .ok_or_else(|| String::from("handler-family-methods:missing_root"))?;
     let mut families = Vec::new();
     for node in root.children.iter().filter(|node| node.name == "family") {
         let priority = node
             .find_child_value("priority")
             .parse::<u32>()
-            .map_err(|_| format!("handler_family_methods:{}:invalid_priority", node.id))?;
+            .map_err(|_| format!("handler-family-methods:{}:invalid_priority", node.id))?;
         let minimum_numbers = node
-            .find_child_value("minimum_numbers")
+            .find_child_value("minimum-numbers")
             .parse::<usize>()
             .unwrap_or(0);
         let evidence_groups = node
@@ -309,26 +309,26 @@ fn parse_catalog(text: &str) -> Result<Vec<FamilyMethod>, String> {
         let capture_responses = node
             .children
             .iter()
-            .filter(|child| child.name == "response_with_capture")
+            .filter(|child| child.name == "response-with-capture")
             .filter_map(|child| split_response(&child.id))
             .collect::<Vec<_>>();
         let declines_when_served_by = node
             .children
             .iter()
-            .find(|child| child.name == "declines_when_served_by")
+            .find(|child| child.name == "declines-when-served-by")
             .map(|child| child.id.clone())
             .filter(|name| !name.is_empty());
         if let Some(method) = &declines_when_served_by
             && !matches!(method.as_str(), "numeric_list")
         {
             return Err(format!(
-                "handler_family_methods:{}:unknown_declines_when_served_by:{method}",
+                "handler-family-methods:{}:unknown_declines_when_served_by:{method}",
                 node.id
             ));
         }
         if node.id.is_empty() || evidence_groups.is_empty() || responses.is_empty() {
             return Err(format!(
-                "handler_family_methods:{}:incomplete_family",
+                "handler-family-methods:{}:incomplete_family",
                 node.id
             ));
         }
@@ -371,7 +371,7 @@ fn parse_evidence_group(node: &LinoNode) -> Result<EvidenceGroup, String> {
         .collect::<Vec<_>>();
     if node.id.is_empty() || terms.is_empty() {
         return Err(format!(
-            "handler_family_methods:{}:empty_evidence_group",
+            "handler-family-methods:{}:empty_evidence_group",
             node.id
         ));
     }

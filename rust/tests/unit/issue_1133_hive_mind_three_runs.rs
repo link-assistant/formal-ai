@@ -5,9 +5,12 @@
 //! planner does now where it went wrong then. The full account is
 //! `docs/case-studies/hive-mind-hello-world/2026-09-13-three-runs.md`.
 
+use formal_ai::agentic_coding::append_contract::{append_definition, project_append_contracts};
 use formal_ai::agentic_coding::general_planner::compose_edit_request;
 use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
+#[path = "../fixtures/atomic-record-append.rs"]
+mod append_provider;
 
 /// Claude Code's tool set in the Kotlin run: every playwright tool attached.
 const CLAUDE_TOOLS: [&str; 20] = [
@@ -151,12 +154,22 @@ fn repository_workflows_include_runtime_setup_and_output_verification() {
         );
         let workflow = planned
             .iter()
-            .find(|call| path_of(call) == ".github/workflows/run.yml")
+            .find(|call| path_of(call).starts_with(".github/workflows/"))
             .unwrap_or_else(|| panic!("missing workflow for {language}"));
         assert!(
             workflow.arguments.to_lowercase().contains(setup),
             "{language}: {workflow:?}"
         );
+        // Every step opens its own line: the rendered fragments are line
+        // blocks, never glued onto the previous step's last line.
+        let written: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
+        for line in written["content"].as_str().unwrap_or_default().lines() {
+            let markers = line.matches("- uses:").count() + line.matches("- run:").count();
+            assert!(
+                markers == 0 || (markers == 1 && line.trim_start().starts_with('-')),
+                "{language}: glued step line `{line}`"
+            );
+        }
         let verifier = planned
             .iter()
             .find(|call| path_of(call) == "tests/verify-output.sh")
@@ -343,11 +356,30 @@ fn drive(
     max_steps: usize,
 ) -> (Vec<PlannedToolCall>, Option<String>) {
     let mut planned = Vec::new();
+    let append = append_provider::AppendWorkspace::new();
+    let definitions: Vec<serde_json::Value> = tools
+        .iter()
+        .filter(|name| matches!(**name, "Write" | "write"))
+        .map(|name| append_definition(name))
+        .collect();
     for step in 0..max_steps {
-        match plan_chat_step(messages, tools) {
+        let scoped = project_append_contracts(messages, &definitions);
+        match plan_chat_step(&scoped, tools) {
             Some(AgenticPlan::ToolCalls(calls)) => {
                 let call = calls[0].clone();
-                let result = results(&call.tool, &call.arguments);
+                let args: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+                let appended = if matches!(call.tool.as_str(), "Write" | "write")
+                    && args["append_mode"] == "atomic_record_append"
+                {
+                    Some(append.execute(&args))
+                } else {
+                    None
+                };
+                let result = match &appended {
+                    Some(Ok(_)) => String::new(),
+                    Some(Err(error)) => format!("Error: {error}"),
+                    None => results(&call.tool, &call.arguments),
+                };
                 record(
                     messages,
                     &format!("c{step}"),
@@ -355,6 +387,13 @@ fn drive(
                     &call.arguments,
                     &result,
                 );
+                if let Some(receipt) = appended {
+                    let result_message = messages.last_mut().expect("recorded append result");
+                    match receipt {
+                        Ok(receipt) => result_message.append_receipt = Some(receipt),
+                        Err(_) => result_message.is_error = true,
+                    }
+                }
                 planned.push(call);
             }
             Some(AgenticPlan::Final(text)) => return (planned, Some(text)),

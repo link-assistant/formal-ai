@@ -1,0 +1,24 @@
+{
+  "id": "T3033",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Read rust/src/client_integrations.rs, rust/src/client_integrations/global_config.rs and js/agentic/workspace_change.mjs. Describe a general identifier rename preflight that follows the declared child module and actual imported binding before changing the declaring file. Explain how to preserve an explicit single-file edit scope and how the planner should represent a scope conflict or unavailable validation, rather than treating a source digest as Rust name-resolution proof. Give a reusable staged mechanism and genuine original and held-out checks. This is an observation and planning request only.",
+  "tools": [
+    "read",
+    "grep",
+    "list"
+  ],
+  "before": [
+    {
+      "path": "rust/src/client_integrations.rs",
+      "sha256": "70fa1e7df98a0da014f1a2f9fc9b69e32791c6d44396e2d38fda943341c7a65f"
+    },
+    {
+      "path": "rust/src/client_integrations/global_config.rs",
+      "sha256": "0f62ad674340813a9f3a391e3374048290f498f07b29ae69cf521c5b63d30961"
+    },
+    {
+      "path": "js/agentic/workspace_change.mjs",
+      "sha256": "e879be4d9a79d08710a770e4d2d7f4726bbd8bd75fcd2800775dae1dadf9a636"
+    }
+  ]
+}

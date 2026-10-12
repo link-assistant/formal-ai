@@ -1,0 +1,197 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>BeginnersGuide/Programmers/SimpleExamples</title>
+<link rel="stylesheet" type="text/css" media="all" charset="utf-8" href="europython/css/common.css">
+<link rel="stylesheet" type="text/css" media="screen" charset="utf-8" href="europython/css/screen.css">
+<link rel="stylesheet" type="text/css" media="print" charset="utf-8" href="europython/css/print.css">
+<style type="text/css">
+ul.pagetitle{
+  display: inline;
+  margin: 0;
+  padding: 0;
+  font-size: 1.5em;
+}
+li.pagetitle{
+  display: inline;
+  margin: 0;
+}
+td.noborder {
+  border: 0;
+}
+</style>
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet">
+<script src="/pagefind/pagefind-ui.js"></script>
+<style type="text/css">
+div#sidebar { display: none !important; }
+div#content { margin-left: 0 !important; padding: 0 16px !important; }
+ul#pagetrail { margin-left: 0 !important; }
+#pageinfo { margin-left: 0 !important; }
+#page { max-width: 960px; margin: 0 auto; padding: 16px 0; }
+
+/* Pagefind overrides */
+.wiki-search-bar { background: #f0f0f0; padding: 10px 20px; border-bottom: 1px solid #ddd; }
+.wiki-search-bar .pagefind-ui { max-width: 960px; margin: 0 auto; }
+.wiki-search-bar .pagefind-ui__form { position: relative !important; }
+.wiki-search-bar .pagefind-ui__search-input {
+    font-size: 16px !important;
+    padding: 10px 44px !important;
+    border-radius: 6px !important;
+    border: 1px solid #ccc !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+.wiki-search-bar .pagefind-ui__search-clear {
+    position: absolute !important;
+    top: 20px !important;
+    right: 12px !important;
+    font-size: 13px !important;
+    padding: 4px 8px !important;
+}
+.wiki-search-bar .pagefind-ui__results-area {
+    max-width: 960px !important;
+    margin: 0 auto !important;
+}
+.wiki-search-bar .pagefind-ui__result {
+    padding: 12px 0 !important;
+    border-bottom: 1px solid #e0e0e0 !important;
+}
+.wiki-search-bar .pagefind-ui__result-link {
+    color: #306998 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+}
+.wiki-search-bar .pagefind-ui__result-excerpt {
+    font-size: 14px !important;
+    color: #555 !important;
+    line-height: 1.5 !important;
+}
+.wiki-search-bar .pagefind-ui__message {
+    font-size: 14px !important;
+    color: #666 !important;
+    padding: 8px 0 !important;
+}
+.wiki-search-bar .pagefind-ui__button {
+    background: #306998 !important;
+    color: #fff !important;
+    border-radius: 4px !important;
+    border: none !important;
+    padding: 8px 20px !important;
+    margin-top: 8px !important;
+    cursor: pointer !important;
+}
+.wiki-search-bar .pagefind-ui__button:hover { background: #1e4f72 !important; }
+kbd.search-shortcut-hint {
+    position: absolute;
+    right: 56px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #e8e8e8;
+    color: #888;
+    font-family: -apple-system, sans-serif;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    pointer-events: none;
+}
+</style>
+</head>
+<body>
+<div style="background:#fffde7;color:#333;padding:14px 20px;font-family:-apple-system,sans-serif;font-size:14px;text-align:left;border-bottom:2px solid #f9a825;line-height:1.6;">
+This wiki is in the process of being archived due to lack of usage and the resources necessary to serve it &mdash; predominately to bots, crawlers, and LLM companies. Edits are discouraged.<br>
+Pages are preserved as they were at the time of archival. For current information, please visit <a href="https://www.python.org/" style="color:#306998;">python.org</a>.<br>If a change to this archive is absolutely needed, requests can be made via the <a href="mailto:infrastructure@python.org" style="color:#306998;">infrastructure@python.org</a> mailing list.
+</div>
+<div style="background:#f8f8f8;padding:8px 20px;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+<a href="FrontPage.html"><img src="logo.png" style="height:40px;"></a>
+<nav style="display:flex;gap:16px;font-size:15px;font-family:-apple-system,sans-serif;">
+<a href="FrontPage.html" style="color:#306998;text-decoration:none;">Home</a>
+<a href="TitleIndex.html" style="color:#306998;text-decoration:none;">All Pages</a>
+<a href="RecentChanges.html" style="color:#306998;text-decoration:none;">Recent Changes</a>
+</nav>
+</div>
+<div class="wiki-search-bar">
+<div id="search"></div>
+<script>
+window.addEventListener("DOMContentLoaded",function(){
+  new PagefindUI({element:"#search",showSubResults:false,showImages:false,autofocus:false,resetStyles:false,baseUrl:"/"});
+  var inp=document.querySelector(".pagefind-ui__search-input");
+  if(inp){
+    inp.placeholder="Search the wiki archive...";
+    var hint=document.createElement("kbd");
+    hint.className="search-shortcut-hint";
+    hint.innerHTML=(navigator.platform.indexOf("Mac")>-1?"⌘":"Ctrl")+"K";
+    inp.parentNode.style.position="relative";
+    inp.parentNode.appendChild(hint);
+    document.addEventListener("keydown",function(e){
+      if((e.metaKey||e.ctrlKey)&&e.key==="k"){e.preventDefault();inp.focus();inp.select();hint.style.display="none";}
+    });
+    inp.addEventListener("focus",function(){hint.style.display="none";});
+    inp.addEventListener("blur",function(){if(!inp.value)hint.style.display="";});
+  }
+});
+</script>
+</div>
+<div id="page">
+<div dir="ltr" id="content" lang="en"><span class="anchor" id="top"></span>
+<span class="anchor" id="line-1"></span><p class="line874">Here are some samples to help get a better idea of Python's syntax: <span class="anchor" id="line-2"></span><span class="anchor" id="line-3"></span><p class="line874">Hello World (the traditional first program) <span class="anchor" id="line-4"></span><span class="anchor" id="line-5"></span><p class="line867"><span class="anchor" id="line-6"></span><span class="anchor" id="line-7"></span><span class="anchor" id="line-1-1"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-27986105805cf23422d40fc399ad845f1c78b68d" lang="en"><span class="line"><span class="anchor" id="line-1-2"></span><span class="ResWord">print</span>(<span class="String">'</span><span class="String">Hello world!</span><span class="String">'</span>)</span>
+</pre></div></div><span class="anchor" id="line-8"></span><p class="line874">String formatting <span class="anchor" id="line-9"></span><span class="anchor" id="line-10"></span><p class="line867"><span class="anchor" id="line-11"></span><span class="anchor" id="line-12"></span><span class="anchor" id="line-13"></span><span class="anchor" id="line-14"></span><span class="anchor" id="line-1-3"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-c2c3d67df2969eb662f12610eba28195924ccb90" lang="en"><span class="line"><span class="anchor" id="line-1-4"></span><span class="ID">name</span> = <span class="String">'</span><span class="String">Monty</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-2-1"></span><span class="ResWord">print</span>(<span class="String">'</span><span class="String">Hello, </span><span class="String">%s</span><span class="String">'</span> % <span class="ID">name</span>)  <span class="Comment"># string interpolation</span></span>
+<span class="line"><span class="anchor" id="line-3-1"></span><span class="ResWord">print</span>(<span class="String">'</span><span class="String">Hello, </span><span class="String">{}</span><span class="String">'</span>.<span class="ID">format</span>(<span class="ID">name</span>))  <span class="Comment"># string formatting</span></span>
+</pre></div></div><span class="anchor" id="line-15"></span><p class="line874">Defining a function <span class="anchor" id="line-16"></span><span class="anchor" id="line-17"></span><p class="line867"><span class="anchor" id="line-18"></span><span class="anchor" id="line-19"></span><span class="anchor" id="line-20"></span><span class="anchor" id="line-1-5"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-ce02b3e1fd086b3ce77e7042bd3e676eb8097257" lang="en"><span class="line"><span class="anchor" id="line-1-6"></span><span class="ResWord">def</span> <span class="ID">add_one</span>(<span class="ID">x</span>):</span>
+<span class="line"><span class="anchor" id="line-2-2"></span>    <span class="ResWord">return</span> <span class="ID">x</span> + <span class="Number">1</span></span>
+</pre></div></div><span class="anchor" id="line-21"></span><p class="line874">Testing variable equality <span class="anchor" id="line-22"></span><span class="anchor" id="line-23"></span><p class="line867"><span class="anchor" id="line-24"></span><span class="anchor" id="line-25"></span><span class="anchor" id="line-26"></span><span class="anchor" id="line-27"></span><span class="anchor" id="line-28"></span><span class="anchor" id="line-29"></span><span class="anchor" id="line-30"></span><span class="anchor" id="line-31"></span><span class="anchor" id="line-32"></span><span class="anchor" id="line-33"></span><span class="anchor" id="line-34"></span><span class="anchor" id="line-35"></span><span class="anchor" id="line-36"></span><span class="anchor" id="line-37"></span><span class="anchor" id="line-1-7"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-1780328f1646bd651365c88e08210b5319b9a39e" lang="en"><span class="line"><span class="anchor" id="line-1-8"></span><span class="ID">x</span> = <span class="Number">1</span></span>
+<span class="line"><span class="anchor" id="line-2-3"></span><span class="ID">y</span> = <span class="Number">2</span></span>
+<span class="line"><span class="anchor" id="line-3-2"></span><span class="ResWord">print</span> <span class="String">'</span><span class="String">x is equal to y: </span><span class="String">%s</span><span class="String">'</span> % (<span class="ID">x</span> == <span class="ID">y</span>)</span>
+<span class="line"><span class="anchor" id="line-4-1"></span><span class="ID">z</span> = <span class="Number">1</span></span>
+<span class="line"><span class="anchor" id="line-5-1"></span><span class="ResWord">print</span> <span class="String">'</span><span class="String">x is equal to z: </span><span class="String">%s</span><span class="String">'</span> % (<span class="ID">x</span> == <span class="ID">z</span>)</span>
+<span class="line"><span class="anchor" id="line-6-1"></span><span class="ID">names</span> = [<span class="String">'</span><span class="String">Donald</span><span class="String">'</span>, <span class="String">'</span><span class="String">Jake</span><span class="String">'</span>, <span class="String">'</span><span class="String">Phil</span><span class="String">'</span>]</span>
+<span class="line"><span class="anchor" id="line-7-1"></span><span class="ID">words</span> = [<span class="String">'</span><span class="String">Random</span><span class="String">'</span>, <span class="String">'</span><span class="String">Words</span><span class="String">'</span>, <span class="String">'</span><span class="String">Dogs</span><span class="String">'</span>]</span>
+<span class="line"><span class="anchor" id="line-8-1"></span><span class="ResWord">if</span> <span class="ID">names</span> == <span class="ID">words</span>:</span>
+<span class="line"><span class="anchor" id="line-9-1"></span>    <span class="ResWord">print</span> <span class="String">'</span><span class="String">Names list is equal to words</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-10-1"></span><span class="ResWord">else</span>:</span>
+<span class="line"><span class="anchor" id="line-11-1"></span>    <span class="ResWord">print</span> <span class="String">"</span><span class="String">Names list isn</span><span class="String">'</span><span class="String">t equal to words</span><span class="String">"</span></span>
+<span class="line"><span class="anchor" id="line-12-1"></span><span class="ID">new_names</span> = [<span class="String">'</span><span class="String">Donald</span><span class="String">'</span>, <span class="String">'</span><span class="String">Jake</span><span class="String">'</span>, <span class="String">'</span><span class="String">Phil</span><span class="String">'</span>]</span>
+<span class="line"><span class="anchor" id="line-13-1"></span><span class="ResWord">print</span> <span class="String">'</span><span class="String">New names list is equal to names: </span><span class="String">%s</span><span class="String">'</span> % (<span class="ID">new_names</span> == <span class="ID">names</span>)</span>
+</pre></div></div><span class="anchor" id="line-38"></span><p class="line874">Defining a class with two methods <span class="anchor" id="line-39"></span><span class="anchor" id="line-40"></span><p class="line867"><span class="anchor" id="line-41"></span><span class="anchor" id="line-42"></span><span class="anchor" id="line-43"></span><span class="anchor" id="line-44"></span><span class="anchor" id="line-45"></span><span class="anchor" id="line-46"></span><span class="anchor" id="line-1-9"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-e2a4128b267e8afe516d6d17eb69a20eeb752163" lang="en"><span class="line"><span class="anchor" id="line-1-10"></span><span class="ResWord">class</span> <span class="ID">Talker</span>(<span class="ResWord">object</span>):</span>
+<span class="line"><span class="anchor" id="line-2-4"></span>    <span class="ResWord">def</span> <span class="ID">greet</span>(<span class="ResWord">self</span>, <span class="ID">name</span>):</span>
+<span class="line"><span class="anchor" id="line-3-3"></span>        <span class="ResWord">print</span> <span class="String">'</span><span class="String">Hello, </span><span class="String">%s</span><span class="String">!</span><span class="String">'</span> % <span class="ID">name</span></span>
+<span class="line"><span class="anchor" id="line-4-2"></span>    <span class="ResWord">def</span> <span class="ID">farewell</span>(<span class="ResWord">self</span>, <span class="ID">name</span>):</span>
+<span class="line"><span class="anchor" id="line-5-2"></span>        <span class="ResWord">print</span> <span class="String">'</span><span class="String">Farewell, </span><span class="String">%s</span><span class="String">!</span><span class="String">'</span> % <span class="ID">name</span></span>
+</pre></div></div><span class="anchor" id="line-47"></span><p class="line874">Defining a list <span class="anchor" id="line-48"></span><span class="anchor" id="line-49"></span><p class="line867"><span class="anchor" id="line-50"></span><span class="anchor" id="line-51"></span><span class="anchor" id="line-52"></span><span class="anchor" id="line-1-11"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-bad02cf240b15935bec05979051ac1ca4b3fd79f" lang="en"><span class="line"><span class="anchor" id="line-1-12"></span><span class="ID">dynamic_languages</span> = [<span class="String">'</span><span class="String">Python</span><span class="String">'</span>, <span class="String">'</span><span class="String">Ruby</span><span class="String">'</span>, <span class="String">'</span><span class="String">Groovy</span><span class="String">'</span>]</span>
+<span class="line"><span class="anchor" id="line-2-5"></span><span class="ID">dynamic_languages</span>.<span class="ID">append</span>(<span class="String">'</span><span class="String">Lisp</span><span class="String">'</span>)</span>
+</pre></div></div><span class="anchor" id="line-53"></span><p class="line874">Defining a dictionary <span class="anchor" id="line-54"></span><span class="anchor" id="line-55"></span><p class="line867"><span class="anchor" id="line-56"></span><span class="anchor" id="line-57"></span><span class="anchor" id="line-58"></span><span class="anchor" id="line-59"></span><span class="anchor" id="line-60"></span><span class="anchor" id="line-1-13"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-22680c5442bf7744e3a13f40016b7b1b23c1149c" lang="en"><span class="line"><span class="anchor" id="line-1-14"></span><span class="ID">numbered_words</span> = <span class="ResWord">dict</span>()</span>
+<span class="line"><span class="anchor" id="line-2-6"></span><span class="ID">numbered_words</span>[<span class="Number">2</span>] = <span class="String">'</span><span class="String">world</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-3-4"></span><span class="ID">numbered_words</span>[<span class="Number">1</span>] = <span class="String">'</span><span class="String">Hello</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-4-3"></span><span class="ID">numbered_words</span>[<span class="Number">3</span>] = <span class="String">'</span><span class="String">!</span><span class="String">'</span></span>
+</pre></div></div><span class="anchor" id="line-61"></span><p class="line874">Defining a while loop <span class="anchor" id="line-62"></span><span class="anchor" id="line-63"></span><p class="line867"><span class="anchor" id="line-64"></span><span class="anchor" id="line-65"></span><span class="anchor" id="line-66"></span><span class="anchor" id="line-67"></span><span class="anchor" id="line-68"></span><span class="anchor" id="line-69"></span><span class="anchor" id="line-1-15"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-99a6e5e3f577ebbf736e50fd7bbcee17d19747d1" lang="en"><span class="line"><span class="anchor" id="line-1-16"></span><span class="ResWord">while</span> <span class="ConsWord">True</span>:</span>
+<span class="line"><span class="anchor" id="line-2-7"></span>    <span class="ResWord">if</span> <span class="ID">value</span> == <span class="ID">wanted_value</span>:</span>
+<span class="line"><span class="anchor" id="line-3-5"></span>        <span class="ResWord">break</span></span>
+<span class="line"><span class="anchor" id="line-4-4"></span>    <span class="ResWord">else</span>:</span>
+<span class="line"><span class="anchor" id="line-5-3"></span>        <span class="ResWord">pass</span></span>
+</pre></div></div><span class="anchor" id="line-70"></span><p class="line874">Defining multiline strings <span class="anchor" id="line-71"></span><span class="anchor" id="line-72"></span><p class="line867"><span class="anchor" id="line-73"></span><span class="anchor" id="line-74"></span><span class="anchor" id="line-75"></span><span class="anchor" id="line-76"></span><span class="anchor" id="line-77"></span><span class="anchor" id="line-78"></span><span class="anchor" id="line-1-17"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-4103ced4509853480fa305b3b8fd5417f7324785" lang="en"><span class="line"><span class="anchor" id="line-1-18"></span><span class="ID">string</span> = <span class="String">'''</span><span class="String">This is a string with embedded newlines.</span><span class="String"></span></span>
+<span class="line"><span class="anchor" id="line-2-8"></span><span class="String"></span><span class="String">Also known as a tripled-quoted string.</span><span class="String"></span></span>
+<span class="line"><span class="anchor" id="line-3-6"></span><span class="String"></span><span class="String">    Whitespace at the beginning of lines is included,</span><span class="String"></span></span>
+<span class="line"><span class="anchor" id="line-4-5"></span><span class="String"></span><span class="String">so the above line is indented but the others are not.</span><span class="String"></span></span>
+<span class="line"><span class="anchor" id="line-5-4"></span><span class="String"></span><span class="String">'''</span></span>
+</pre></div></div><span class="anchor" id="line-79"></span><p class="line874">Splitting a long string over several lines of source code <span class="anchor" id="line-80"></span><span class="anchor" id="line-81"></span><p class="line867"><span class="anchor" id="line-82"></span><span class="anchor" id="line-83"></span><span class="anchor" id="line-84"></span><span class="anchor" id="line-85"></span><span class="anchor" id="line-86"></span><span class="anchor" id="line-87"></span><span class="anchor" id="line-1-19"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-2e0101f3f008d89dff8bb28eb86fddb19a65feb9" lang="en"><span class="line"><span class="anchor" id="line-1-20"></span><span class="ID">string</span> = (<span class="String">'</span><span class="String">This is a single long, long string</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-2-9"></span>          <span class="String">'</span><span class="String"> written over many lines for convenience</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-3-7"></span>          <span class="String">'</span><span class="String"> using implicit concatenation to join each</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-4-6"></span>          <span class="String">'</span><span class="String"> piece into a single string without extra</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-5-5"></span>          <span class="String">'</span><span class="String"> newlines (unless you add them yourself).</span><span class="String">'</span>)</span>
+</pre></div></div><span class="anchor" id="line-88"></span><p class="line874">Defining a for loop <span class="anchor" id="line-89"></span><span class="anchor" id="line-90"></span><p class="line867"><span class="anchor" id="line-91"></span><span class="anchor" id="line-92"></span><span class="anchor" id="line-93"></span><span class="anchor" id="line-94"></span><span class="anchor" id="line-1-21"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-5a85f7face350a0741bb4823c4407f03a08f0dc9" lang="en"><span class="line"><span class="anchor" id="line-1-22"></span><span class="ResWord">for</span> <span class="ID">x</span> <span class="ResWord">in</span> <span class="ID">xrange</span>(<span class="Number">1</span>, <span class="Number">4</span>):</span>
+<span class="line"><span class="anchor" id="line-2-10"></span>    <span class="ResWord">print</span> (<span class="String">'</span><span class="String">Hello, new Python user!</span><span class="String">'</span></span>
+<span class="line"><span class="anchor" id="line-3-8"></span>           <span class="String">'</span><span class="String">This is time number </span><span class="String">%d</span><span class="String">'</span>) % <span class="ID">x</span></span>
+</pre></div></div><span class="anchor" id="line-95"></span><p class="line874">List comprehension <span class="anchor" id="line-96"></span><span class="anchor" id="line-97"></span><p class="line867"><span class="anchor" id="line-98"></span><span class="anchor" id="line-99"></span><span class="anchor" id="line-100"></span><span class="anchor" id="line-101"></span><span class="anchor" id="line-1-23"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-520202d8b5c28480cacbaa329f28ff30cb7f0c41" lang="en"><span class="line"><span class="anchor" id="line-1-24"></span><span class="ID">l</span> = [<span class="ID">x</span>**<span class="Number">2</span> <span class="ResWord">for</span> <span class="ID">x</span> <span class="ResWord">in</span> <span class="ResWord">range</span>(<span class="Number">4</span>)]</span>
+<span class="line"><span class="anchor" id="line-2-11"></span><span class="ResWord">print</span>(<span class="ID">l</span>)</span>
+<span class="line"><span class="anchor" id="line-3-9"></span><span class="Comment"># [0, 1, 4, 9]</span></span>
+</pre></div></div><span class="anchor" id="line-102"></span><p class="line874">Set comprehension with condition <span class="anchor" id="line-103"></span><span class="anchor" id="line-104"></span><p class="line867"><span class="anchor" id="line-105"></span><span class="anchor" id="line-106"></span><span class="anchor" id="line-107"></span><span class="anchor" id="line-108"></span><span class="anchor" id="line-1-25"></span><div class="highlight python"><div class="codearea" dir="ltr" lang="en"><pre dir="ltr" id="CA-424877dea8b945d32255530f635130e4d78181e0" lang="en"><span class="line"><span class="anchor" id="line-1-26"></span><span class="ID">squares</span> = {<span class="ID">x</span>**<span class="Number">2</span> <span class="ResWord">for</span> <span class="ID">x</span> <span class="ResWord">in</span> [<span class="Number">0</span>,<span class="Number">2</span>,<span class="Number">4</span>] <span class="ResWord">if</span> <span class="ID">x</span> &lt; <span class="Number">4</span>}</span>
+<span class="line"><span class="anchor" id="line-2-12"></span><span class="ResWord">print</span>(<span class="ID">squares</span>)</span>
+<span class="line"><span class="anchor" id="line-3-10"></span><span class="Comment"># {0, 4}</span></span>
+</pre></div></div><span class="anchor" id="line-109"></span><span class="anchor" id="line-110"></span><span class="anchor" id="line-111"></span><p class="line867"><hr /><p class="line874"> <span class="anchor" id="line-112"></span><a href="./CategoryDocumentation.html">CategoryDocumentation</a> <span class="anchor" id="line-113"></span><span class="anchor" id="bottom"></span></div>
+</div>
+<hr>
+2026-02-14 16:07
+</body>
+</html>

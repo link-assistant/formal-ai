@@ -1,0 +1,62 @@
+{
+  "canonicalSha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8",
+  "previousCanonicalSha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253",
+  "canonicalDelta": "two actual publish BUILD_CACHE_SETTINGS fields and native-response caller concurrency",
+  "originalOperations": 52,
+  "transferredReferences": 104,
+  "changedOperations": [
+    {
+      "caller": "auto-release",
+      "name": "Publish Docker image to GHCR",
+      "ordinal": 18
+    },
+    {
+      "caller": "manual-release",
+      "name": "Publish Docker image to GHCR",
+      "ordinal": 14
+    }
+  ],
+  "source": [
+    {
+      "path": ".github/workflows/release-staged.yml",
+      "bytes": 74164,
+      "sha256": "7cc7a0daabe48d734a827baaa117be3eb0f42b52f0ea8d3fc41763ac333d3762"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/original-release-workflow.yml",
+      "bytes": 66830,
+      "sha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json",
+      "bytes": 91879,
+      "sha256": "d46d441d11aff94e032cca5cfa8f16ff404a91fa5b893c83fd1f3aef31ba89a8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-output-bindings.json",
+      "bytes": 43161,
+      "sha256": "5972098cdae938d1bfcc2d8498e49c9b9bb45ac0b2b883f2bf624a482279e05c"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/candidate-release-caller.yml",
+      "bytes": 45459,
+      "sha256": "6788f39405b01029f21c9395db5aba8cf317240e37a9a2970f059edfeffe95b4"
+    }
+  ],
+  "operations": [
+    {
+      "script": "/private/tmp/spec-recurrence-1188/stage-coverage-reviewed.mjs",
+      "stdout": "{\"workflowSha256\":\"3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8\",\"callers\":[{\"id\":\"auto-release\",\"steps\":28,\"crossStageOutputTransfers\":52},{\"id\":\"manual-release\",\"steps\":24,\"crossStageOutputTransfers\":52}],\"positiveMappings\":1,\"refusals\":5,\"physicalWrites\":1,\"implemented\":false,\"githubExecuted\":false,\"nativeExecuted\":false,\"publication\":false}\nT4158_STAGE_COVERAGE_PASS\n"
+    },
+    {
+      "script": "/private/tmp/spec-recurrence-1188/u9-factory-reviewed/generate-staged-candidate.mjs",
+      "stdout": "{\"physicalScratchWrites\":4,\"callerLeasePreserved\":true,\"originalOperations\":52,\"convertedReferences\":104,\"realJobs\":16,\"maxJobMinutes\":30,\"githubExecuted\":false,\"nativeExecuted\":false,\"publication\":false}\nT4180_CANDIDATE_INSTALLED\n"
+    }
+  ],
+  "originalFreshnessAssertionUnchanged": true,
+  "autonomousCredit": 0,
+  "githubExecuted": false,
+  "nativeExecuted": false,
+  "publication": false,
+  "U9": "Open"
+}

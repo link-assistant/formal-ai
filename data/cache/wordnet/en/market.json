@@ -1,0 +1,99 @@
+{
+  "lemma": "market",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01099197-n",
+      "partOfSpeech": "n",
+      "definition": "the world of commercial activity where goods and services are bought and sold",
+      "examples": [
+        "without competition there would be no market",
+        "they were driven from the marketplace"
+      ],
+      "synonyms": [
+        "marketplace",
+        "market place"
+      ]
+    },
+    {
+      "id": "oewn-08441908-n",
+      "partOfSpeech": "n",
+      "definition": "the customers for a particular product or service",
+      "examples": [
+        "before they publish any book they try to determine the size of the market for it"
+      ]
+    },
+    {
+      "id": "oewn-03466317-n",
+      "partOfSpeech": "n",
+      "definition": "a marketplace where groceries are sold",
+      "examples": [
+        "the grocery store included a meat market"
+      ],
+      "synonyms": [
+        "grocery store",
+        "grocery",
+        "food market"
+      ]
+    },
+    {
+      "id": "oewn-08089673-n",
+      "partOfSpeech": "n",
+      "definition": "the securities markets in the aggregate",
+      "examples": [
+        "the market always frustrates the small investor"
+      ],
+      "synonyms": [
+        "securities industry"
+      ]
+    },
+    {
+      "id": "oewn-03727779-n",
+      "partOfSpeech": "n",
+      "definition": "an area in a town where a public mercantile establishment is set up",
+      "synonyms": [
+        "marketplace",
+        "market place",
+        "mart"
+      ]
+    },
+    {
+      "id": "oewn-02303121-v",
+      "partOfSpeech": "v",
+      "definition": "engage in the commercial promotion, sale, or distribution of",
+      "examples": [
+        "The company is marketing its new line of beauty products"
+      ]
+    },
+    {
+      "id": "oewn-02331194-v",
+      "partOfSpeech": "v",
+      "definition": "buy household supplies",
+      "examples": [
+        "We go marketing every Saturday"
+      ]
+    },
+    {
+      "id": "oewn-02303432-v",
+      "partOfSpeech": "v",
+      "definition": "deal in a market"
+    },
+    {
+      "id": "oewn-00471317-v",
+      "partOfSpeech": "v",
+      "definition": "make commercial",
+      "examples": [
+        "Some Amish people have commercialized their way of life"
+      ],
+      "synonyms": [
+        "commercialize",
+        "commercialise"
+      ]
+    }
+  ]
+}

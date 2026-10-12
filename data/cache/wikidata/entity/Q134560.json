@@ -19,12 +19,20 @@
         "zh": {
           "language": "zh",
           "value": "腰帶"
+        },
+        "es": {
+          "language": "es",
+          "value": "cinturón"
         }
       },
       "descriptions": {
         "en": {
           "language": "en",
           "value": "worn band or braid, usually around the waist or hips"
+        },
+        "es": {
+          "language": "es",
+          "value": "prenda que se coloca alrededor de la cintura o cadera"
         }
       },
       "aliases": {
@@ -32,6 +40,24 @@
           {
             "language": "zh",
             "value": "腰带"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "correa"
+          },
+          {
+            "language": "es",
+            "value": "cinto"
+          },
+          {
+            "language": "es",
+            "value": "cincho"
+          },
+          {
+            "language": "es",
+            "value": "faja"
           }
         ]
       }

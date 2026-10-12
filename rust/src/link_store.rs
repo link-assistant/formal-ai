@@ -676,11 +676,11 @@ impl LinkCliLinkStore {
             let path = self.database.display().to_string();
             let detail = error.to_string();
             let message = crate::seed::render_response(
-                "link_cli_publish_failed",
+                "link-cli-publish-failed",
                 "en",
                 &[("path", &path), ("error", &detail)],
             )
-            .unwrap_or_else(|| ["link_cli_publish_failed", &path, &detail].join(":"));
+            .unwrap_or_else(|| ["link-cli-publish-failed", &path, &detail].join(":"));
             LinkStoreError::Backend(message)
         });
 

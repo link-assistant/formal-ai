@@ -37,7 +37,7 @@ fn try_dispatch_has_no_name_special_cases() {
 #[test]
 fn prelude_methods_are_ledgered() {
     // Plan 09 leaf 5 adds the five prelude methods as `status pending` rows, so
-    // `handler_migration_pending` rises once, honestly, from 40 to 45 before it
+    // `handler-migration-pending` rises once, honestly, from 40 to 45 before it
     // falls. The census is precedence **plus** prelude from that leaf onward.
     let ledger = fs::read_to_string(repo_root().join("data/meta/handler-migration-ledger.lino"))
         .expect("handler migration ledger readable");

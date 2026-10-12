@@ -13,7 +13,8 @@
 # name, because a measurement names the step and not the job, and an
 # unattributable budget silently drops out of the weekly audit. That is the
 # same disappearing act issue #1081 was opened about.
-ci_gate check_step_budget_headroom
+ci_gate check-step-budget-headroom
   stage rust
   description "Every declared step budget can still be read and attributed to one step."
   run "rust-script --test scripts/check-step-budget-headroom.rs"
+  justification "A step that shares a name with another step cannot be attributed a budget in the weekly headroom audit, silently dropping out of the measurement — the same disappearing act #1081 was opened about (commit 707de6bc4)."

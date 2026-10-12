@@ -1,0 +1,593 @@
+# The recursive meta reasoner's data (2026-10-06 meta-algorithm doctrine).
+#
+# js/worker/formal_ai_worker_meta_reasoner.js is domain-free — it knows how to
+# open unknowns, rank hypotheses, recurse into what a definition itself left
+# unknown, enumerate typed programs and verify them against the request's own
+# examples. Everything it *reads* lives here —
+#
+#   cue          request-shape markers (how a definition, an example, an
+#                artifact request, a question or a universal quantifier is
+#                written) per language. The object of a `location` cue after
+#                a file noun ("files in data") is a location operand, a path.
+#                A universal quantifier ("every file")
+#                says the program iterates — it ranks programs that pass
+#                through a list above ones that never do.
+#   grammatical  words whose dictionary part of speech is a closed class
+#                (article, preposition, conjunction, pronoun, auxiliary). It is
+#                a pre-computed cache of what a capture would say; a word
+#                missing here is looked up like any other unknown.
+#   affix        inflection endings stripped when matching a surface to a
+#                documented name (reverses -> reverse).
+#   degree       comparison endings per language (longest = long + est). A
+#                superlative word is its stem, which names a measure, plus the
+#                degree's `gloss` (the English documentation wording, shared
+#                by every language), which names the selection by it.
+#   primitive    the instruction set programs are composed from. `doc` is the
+#                operation's own documentation (the wording its language
+#                reference uses), never a list of request words — a request
+#                word reaches a primitive only through that documentation or
+#                through a dictionary definition that shares its words.
+#                `code` is the JavaScript the answer shows and the verifier
+#                runs; `infer` derives a parameter from one example pair;
+#                `environment` names a runtime the operation needs (node —
+#                the file system), so it is not probed where that is absent;
+#                `effect true` marks an operation that acts on the world
+#                (prints, exits, runs), which never serves as a measure.
+#                `takes` lists the types of the values an operation reads from
+#                the request ({k0}, {k1} in its code), in the order named.
+#   filter       a comparison a list is filtered by — the element's measure
+#                (any primitive to a number, or the number itself) against a
+#                threshold inferred from the examples or read from the request.
+#                `measure text` compares the element's content (the element
+#                itself, or what one operation reads from it) with a value.
+#   selector     a choice of one element of a list by its measure (`test`
+#                compares an element's measure with the best one so far).
+#   probe        sample inputs per type, run when a request gives no example;
+#                the first one the program changes is shown.
+#   response     answer templates per language; {name} slots are filled from
+#                the derivation.
+#   note         the derivation trace's wording, one template per decision
+#                kind; {name} slots are filled from the decision.
+#   impasse      answer intents by which a specialized handler admits it could
+#                not do the task (an exact intent, or a `suffix`). Such an
+#                answer is an impasse, not a result — the turn is handed to the
+#                general loop, which answers when it can derive a program.
+#                A `named_suffix` intent already names the missing skill, its
+#                language and its task, so only a derived program replaces it;
+#                an open reply naming what is still unknown would lose it.
+#                The same holds for a clarifying question about an unfilled
+#                slot (`_unspecified`) and for an arithmetic error that names
+#                what failed to evaluate (`calculation_error`).
+
+meta_reasoning
+  cue
+    role definition
+    language en
+    marker " is "
+    marker " means "
+    marker " denotes "
+    marker " stands for "
+  cue
+    role definition
+    language ru
+    marker " это "
+    marker " означает "
+    marker " — "
+  cue
+    role example
+    language en
+    marker "->"
+    marker "→"
+    marker "=>"
+    marker " gives "
+    marker " returns "
+    marker " becomes "
+    marker " into "
+    marker " maps to "
+  cue
+    role example
+    language ru
+    marker "->"
+    marker "→"
+    marker "=>"
+    marker " даёт "
+    marker " возвращает "
+    marker " в "
+  cue
+    role sequence
+    language en
+    marker " and then "
+    marker " then "
+    marker " and "
+    marker ", "
+  cue
+    role sequence
+    language ru
+    marker " а затем "
+    marker " затем "
+    marker " и "
+    marker ", "
+  cue
+    role artifact
+    language en
+    marker "function"
+    marker "program"
+    marker "script"
+    marker "code"
+    marker "algorithm"
+  cue
+    role artifact
+    language ru
+    marker "функци"
+    marker "программ"
+    marker "скрипт"
+    marker "код"
+    marker "алгоритм"
+  cue
+    role universal
+    language en
+    marker " every "
+    marker " each "
+    marker " all "
+    marker " any "
+  cue
+    role universal
+    language ru
+    marker " каждый "
+    marker " каждого "
+    marker " каждую "
+    marker " все "
+    marker " всех "
+    marker " любой "
+  cue
+    role location
+    language en
+    marker " in "
+    marker " under "
+    marker " inside "
+  cue
+    role location
+    language ru
+    marker " в "
+    marker " внутри "
+  cue
+    role question
+    language en
+    marker "what is"
+    marker "what's"
+    marker "what does"
+    marker "define"
+  cue
+    role question
+    language ru
+    marker "что такое"
+    marker "что значит"
+    marker "что означает"
+  grammatical
+    language en
+    word a
+    word an
+    word the
+    word and
+    word or
+    word of
+    word to
+    word in
+    word on
+    word for
+    word with
+    word by
+    word from
+    word that
+    word this
+    word it
+    word its
+    word them
+    word they
+    word their
+    word these
+    word those
+    word one
+    word ones
+    word is
+    word are
+    word be
+    word me
+    word my
+    word i
+    word you
+    word please
+    word can
+    word could
+    word would
+    word should
+    word will
+    word which
+    word then
+    word so
+    word as
+    word all
+    word write
+    word make
+    word create
+    word implement
+    word new
+    word give
+    word turns
+    word turn
+  grammatical
+    language ru
+    word и
+    word или
+    word в
+    word на
+    word с
+    word по
+    word для
+    word из
+    word что
+    word это
+    word их
+    word его
+    word её
+    word них
+    word как
+    word мне
+    word напиши
+    word сделай
+    word создай
+    word пожалуйста
+  affix
+    language en
+    ending ies y
+    ending es ""
+    ending s ""
+    ending ed ""
+    ending ed e
+    ending ing ""
+    ending ing e
+    ending ly ""
+    ending er ""
+  affix
+    language ru
+    ending ет ть
+    ending ит ть
+    ending ают ать
+    ending ой ""
+    ending ый ""
+    ending ая ""
+  degree superlative
+    language en
+    ending est ""
+    ending iest y
+    gloss "the greatest"
+  degree superlative
+    language ru
+    ending ейший ""
+    ending айший ""
+  primitive split_words
+    from text
+    to list_text
+    doc "Splits a string into an ordered list of words separated by whitespace."
+    code "(input) => input.trim().split(/ +/).filter(Boolean)"
+  primitive join_words
+    from list_text
+    to text
+    doc "Joins the words of a list into one string, separated by a single space."
+    code "(input) => input.join(' ')"
+  primitive split_lines
+    from text
+    to list_text
+    doc "Splits a string into the list of its lines, separated by line breaks."
+    code "(input) => input.split(String.fromCharCode(10))"
+  primitive join_lines
+    from list_text
+    to text
+    doc "Joins a list of lines into one string, one per line, separated by line breaks."
+    code "(input) => input.join(String.fromCharCode(10))"
+  primitive list_files
+    from path
+    to list_path
+    environment node
+    doc "Lists the files in a folder (directory): returns the path of every file it contains."
+    code "(input) => require('fs').readdirSync(input, { withFileTypes: true }).filter((entry) => entry.isFile()).map((entry) => require('path').join(input, entry.name))"
+  primitive read_file
+    from path
+    to text
+    environment node
+    doc "Reads a file from disk and returns its contents as text."
+    code "(input) => require('fs').readFileSync(input, 'utf8')"
+  primitive run_command
+    from text
+    to text
+    environment node
+    effect true
+    doc "Runs a shell command and returns the output it prints (its standard output)."
+    code "(input) => require('child_process').execSync(input, { encoding: 'utf8' })"
+  primitive print_lines
+    from list_any
+    to text
+    environment node
+    effect true
+    doc "Prints every item of a list on its own line to the standard output (shows, outputs, displays, reports them)."
+    code "(input) => { const text = input.join(String.fromCharCode(10)); console.log(text); return text; }"
+  primitive fail_when_any
+    from list_any
+    to number
+    environment node
+    effect true
+    doc "Fails the process (exits with a non-zero status code) when the list has any item, and succeeds when it is empty; returns the number of items."
+    code "(input) => { process.exitCode = input.length > 0 ? 1 : 0; return input.length; }"
+  primitive split_characters
+    from text
+    to list_text
+    doc "Splits a string into the list of its characters (letters)."
+    code "(input) => Array.from(input)"
+  primitive join_characters
+    from list_text
+    to text
+    doc "Concatenates a list of characters into one string with no separator."
+    code "(input) => input.join('')"
+  primitive reverse_text
+    from text
+    to text
+    doc "Reverses a string: the order of its characters is reversed, so the last character comes first."
+    code "(input) => Array.from(input).reverse().join('')"
+  primitive upper_case
+    from text
+    to text
+    doc "Converts every letter of a string to upper case (capital letters)."
+    code "(input) => input.toUpperCase()"
+  primitive lower_case
+    from text
+    to text
+    doc "Converts every letter of a string to lower case (small letters)."
+    code "(input) => input.toLowerCase()"
+  primitive capitalize_first
+    from text
+    to text
+    doc "Capitalizes a string: its first letter becomes upper case, the rest is unchanged."
+    code "(input) => input.charAt(0).toUpperCase() + input.slice(1)"
+  primitive trim_text
+    from text
+    to text
+    doc "Removes whitespace from both ends of a string."
+    code "(input) => input.trim()"
+  primitive text_length
+    from text
+    to number
+    doc "Counts the characters of a string; returns its length."
+    code "(input) => Array.from(input).length"
+  primitive reverse_list
+    from list_any
+    to list_any
+    doc "Reverses a list in place: the first element becomes the last and the order of the items is reversed."
+    code "(input) => input.slice().reverse()"
+  primitive sort_list
+    from list_any
+    to list_any
+    doc "Sorts the elements of a list in ascending order."
+    code "(input) => input.slice().sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))"
+  primitive unique_items
+    from list_any
+    to list_any
+    doc "Removes duplicate elements from a list, keeping the first occurrence of each distinct value."
+    code "(input) => Array.from(new Set(input))"
+  primitive count_items
+    from list_any
+    to number
+    doc "Counts the elements of a list; returns the number of items."
+    code "(input) => input.length"
+  primitive sum_numbers
+    from list_number
+    to number
+    doc "Adds the numbers of a list together and returns their sum (the total)."
+    code "(input) => input.reduce((total, value) => total + value, 0)"
+  primitive product_numbers
+    from list_number
+    to number
+    doc "Multiplies the numbers of a list together and returns their product."
+    code "(input) => input.reduce((total, value) => total * value, 1)"
+  primitive maximum_number
+    from list_number
+    to number
+    doc "Returns the largest (greatest, maximum) number of a list."
+    code "(input) => Math.max(...input)"
+  primitive minimum_number
+    from list_number
+    to number
+    doc "Returns the smallest (least, minimum) number of a list."
+    code "(input) => Math.min(...input)"
+  primitive multiply_by
+    from number
+    to number
+    doc "Multiplies a number by a factor (times; for example doubles with factor 2 or triples with factor 3)."
+    code "(input) => input * {k}"
+    infer "(input, output) => (input === 0 ? null : output / input)"
+  primitive add_constant
+    from number
+    to number
+    doc "Adds a constant amount to a number (increments it by that amount)."
+    code "(input) => input + {k}"
+    infer "(input, output) => output - input"
+  primitive square_number
+    from number
+    to number
+    doc "Squares a number: multiplies it by itself."
+    code "(input) => input * input"
+  primitive absolute_number
+    from number
+    to number
+    doc "Returns the absolute value of a number: its distance from zero, without a sign."
+    code "(input) => Math.abs(input)"
+  primitive keep_even
+    from list_number
+    to list_number
+    doc "Filters a list, keeping only the even numbers (divisible by two)."
+    code "(input) => input.filter((value) => value % 2 === 0)"
+  primitive keep_odd
+    from list_number
+    to list_number
+    doc "Filters a list, keeping only the odd numbers (not divisible by two)."
+    code "(input) => input.filter((value) => value % 2 !== 0)"
+  primitive replace_text
+    from text
+    to text
+    takes "text text"
+    doc "Replaces every occurrence of a value in a string with a replacement value."
+    code "(input) => input.split({k0}).join({k1})"
+  combinator map_each
+    doc "Applies an operation to each element of a list, to every item in turn, and returns the list of results."
+  combinator rewrite_file
+    doc "Rewrites a file in place: reads its text, transforms it, and writes the result back to the same file (edits, updates, modifies, converts the file)."
+    code "(input) => { const fs = require('fs'); fs.writeFileSync(input, ({f})(fs.readFileSync(input, 'utf8'))); return input; }"
+  filter keep_greater
+    doc "Filters a list, keeping the elements whose measure is greater than a threshold (more, longer, larger, above)."
+    test "(measure, threshold) => measure > threshold"
+  filter keep_less
+    doc "Filters a list, keeping the elements whose measure is less than a threshold (fewer, shorter, smaller, below)."
+    test "(measure, threshold) => measure < threshold"
+  filter keep_containing
+    measure text
+    doc "Filters a list, keeping the elements whose content contains a value (includes it as a substring)."
+    test "(measure, threshold) => measure.includes(threshold)"
+  selector maximum_by
+    doc "Returns the element of a list whose measure is the greatest (the maximum by a measure); the first such element on a tie."
+    test "(measure, best) => measure > best"
+  impasse
+    intent calculation_error
+    intent unknown
+    suffix _skill_gap
+    suffix _unspecified
+    named_suffix _skill_gap
+    named_suffix _unspecified
+    named_suffix calculation_error
+  probe
+    type text
+    value "hello world"
+    value "the cat saw the cat"
+  probe
+    type list_text
+    value "[\"pear\", \"apple\", \"fig\", \"apple\"]"
+  probe
+    type list_number
+    value "[3, 1, 2, 3]"
+  probe
+    type number
+    value "7"
+  note subgoals_programmed
+    text "{done}/{total} sub-goals have a program"
+  note examples_goal
+    text "program {from} → {to} with difference 0 over {count} example(s)"
+  note tie
+    text "{count} equally evidenced programs; kept {kept}"
+  note no_program
+    text "no program up to length {length} reaches difference 0 ({evaluated} evaluated)"
+  note no_head_program
+    text "no typed program serves the last clause's head"
+  note uncovered
+    text "{count} grounded word group(s) left unexplained by the chosen program"
+  note structural
+    text "{indent}{word} is structural vocabulary of the instruction set"
+  note frame
+    text "{indent}{word} names the artifact's frame: \"{gloss}\""
+  note no_gloss
+    text "{indent}{word}: no gloss reaches an operation"
+  note lookup_needed
+    text "{word}: unknown, lookup needed"
+  note formalized
+    text "goal {goal}; {examples} example(s); {definitions} definition(s) in the request"
+  note self_defined
+    text "{term} is defined by the request itself"
+  note verified
+    text "rendered source passes {passed}/{total}"
+  note evidence_only
+    text "{word} ties {count} operations; evidence only"
+  note nothing_grounded
+    text "no word of the request grounds an operation"
+  note open_outweigh
+    text "{open} open unknown(s) outweigh {grounded} grounded operation(s); no program is claimed"
+  note argument_type
+    text "{word} names the argument type {type}"
+  note stated_path
+    text "{path} is a path: the program takes a path"
+  note universal
+    text "“{word}” quantifies universally — the program iterates"
+  note measure_unit
+    text "{word} follows the bound {bound}: it names the measure"
+  note parameter
+    text "parameter {value} from the request"
+  note probe_skipped
+    text "skipped: the program needs the {environment} environment"
+  note no_op
+    text "no probe input is changed by the program; it does nothing the request asked for"
+  note location
+    text "{word} follows “{cue}” after a file noun: a location operand, so the program takes a path"
+  note symbol
+    text "{indent}{word} names the symbol {value}: its gloss quotes it"
+  note degree
+    text "{word} is {stem} in the {degree} degree"
+  note degree_measure
+    text "{indent}{stem} names the measure {operations}"
+  note imperative
+    text "the request opens with an operation ({word}) and names no data to act on: it asks for the procedure"
+  response solved_by_examples
+    language en
+    text "I composed this program from the operations I could ground and checked it against every example you gave ({passed}/{total} pass):"
+  response solved_by_examples
+    language ru
+    text "Я составил программу из операций, смысл которых удалось установить, и проверил её на всех ваших примерах ({passed}/{total} проходят):"
+  response solved_by_meaning
+    language en
+    text "No example was given, so this program is grounded in the meanings of your words, not verified. A probe run: {probe}."
+  response solved_by_meaning
+    language ru
+    text "Примеров не было, поэтому программа выведена из значений ваших слов и не проверена. Пробный запуск: {probe}."
+  response defined_in_request
+    language en
+    text "From your own message: {term} — {definition}."
+  response defined_in_request
+    language ru
+    text "Из вашего сообщения: {term} — {definition}."
+  response usage
+    language en
+    text "Call it as {call}."
+  response usage
+    language ru
+    text "Вызов: {call}."
+  response environment_note
+    language en
+    text "It needs the {environment} environment (the file system), so it was not run here; run it with Node."
+  response environment_note
+    language ru
+    text "Ей нужна среда {environment} (файловая система), поэтому здесь она не запускалась; запустите её в Node."
+  response subrequest
+    language en
+    text "Request {index}: {request}"
+  response subrequest
+    language ru
+    text "Запрос {index}: {request}"
+  response decomposed
+    language en
+    text "Your message holds {count} separate requests; I solved each as its own goal."
+  response decomposed
+    language ru
+    text "В вашем сообщении {count} отдельных запроса; каждый я решил как отдельную цель."
+  response reasoning_heading
+    language en
+    text "How I got there:"
+  response reasoning_heading
+    language ru
+    text "Как я к этому пришёл:"
+  response open_unknowns
+    language en
+    text "Still unknown: {terms}. The question that would decide it: {question}"
+  response open_unknowns
+    language ru
+    text "Пока неизвестно: {terms}. Вопрос, который это решит: {question}"
+  response decide_question
+    language en
+    text "could you give one input and the output you expect?"
+  response decide_question
+    language ru
+    text "можете привести один пример входа и ожидаемого результата?"

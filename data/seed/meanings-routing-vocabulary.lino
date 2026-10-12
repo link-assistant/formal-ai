@@ -279,3 +279,1211 @@ meanings
     unit "not applicable"
     example "the table ends in the explicit default ask"
     grounding "data/seed/capability-routing.lino"
+  software_project
+    defined-by method
+    role action
+    precondition "a request asks for a software artifact to be built or a proposal to be approved"
+    effect "names the handler whose claim row admits it on an artifact object phrase or an approval"
+    unit "not applicable"
+    example "make a todo app in rust"
+    grounding "data/seed/capability-routing.lino"
+  terminal_command
+    defined-by method
+    role action
+    precondition "a request is a shell command or a task with a known shell command"
+    effect "names the handler whose claim row admits it only on a command shape or a semantic shell task"
+    unit "not applicable"
+    example "ls -la"
+    grounding "data/seed/capability-routing.lino"
+  object_phrase_artifact
+    defined-by concept
+    role action
+    precondition "the verb's object phrase names a software artifact"
+    effect "admits the software project handler's claim"
+    unit "boolean"
+    example "build a calculator app"
+    grounding "data/seed/capability-routing.lino"
+  approval_of_a_proposal
+    defined-by concept
+    role action
+    precondition "the prompt approves a project the assistant proposed"
+    effect "admits the software project handler's claim"
+    unit "boolean"
+    example "yes, build it"
+    grounding "data/seed/capability-routing.lino"
+  shell_command_shape
+    defined-by concept
+    role action
+    precondition "the leading token is a command and the rest parses as its arguments"
+    effect "admits the terminal command handler's claim"
+    unit "boolean"
+    example "git status --short"
+    grounding "data/seed/capability-routing.lino"
+  semantic_shell_task
+    defined-by concept
+    role action
+    precondition "the prompt describes a task a known shell command performs"
+    effect "admits the terminal command handler's claim"
+    unit "boolean"
+    example "list the files in this folder"
+    grounding "data/seed/capability-routing.lino"
+  repository_subject
+    defined-by concept
+    role action
+    precondition "the prompt names an existing path, a status phrase or a census symbol"
+    effect "admits the repository lineage handler's claim"
+    unit "boolean"
+    example "what does evaluate_calculation do"
+    grounding "data/seed/capability-routing.lino"
+  page_query_text
+    defined-by method
+    role action
+    precondition "a request asks a question over a page it supplies"
+    effect "names the handler whose claim row admits it only on a supplied page"
+    unit "not applicable"
+    example "what command builds the jar, then the page text on the following lines"
+    grounding "data/seed/capability-routing.lino"
+  javascript_execution
+    defined-by method
+    role action
+    precondition "a request asks for a supplied program to be run"
+    effect "names the handler whose claim row admits it only on an extracted program"
+    unit "not applicable"
+    example "run this javascript with console.log(1 + 2)"
+    grounding "data/seed/capability-routing.lino"
+  incompatible_units
+    defined-by method
+    role action
+    precondition "a request asks to convert between units of different physical dimensions"
+    effect "names the handler whose claim row admits it only on an incompatible unit pair"
+    unit "not applicable"
+    example "how many meters are in a kilobyte"
+    grounding "data/seed/capability-routing.lino"
+  supplied_page
+    defined-by concept
+    role action
+    precondition "the first line is a query and the remaining lines are the page it reads"
+    effect "admits the page query handler claim"
+    unit "boolean"
+    example "what command builds the jar, then the page text"
+    grounding "data/seed/capability-routing.lino"
+  javascript_program
+    defined-by concept
+    role action
+    precondition "a program can be extracted from the request to run it"
+    effect "admits the program execution handler claim"
+    unit "boolean"
+    example "run this javascript with console.log(1 + 2)"
+    grounding "data/seed/capability-routing.lino"
+  incompatible_unit_pair
+    defined-by concept
+    role action
+    precondition "two named measurement units belong to different physical dimensions"
+    effect "admits the unit incompatibility handler claim"
+    unit "boolean"
+    example "meters and kilobytes"
+    grounding "data/seed/capability-routing.lino"
+  fetch_url
+    defined-by concept
+    role action
+    precondition "the request carries a URL operand it asks to retrieve"
+    effect "admits the fetch handler claim"
+    unit "boolean"
+    example "fetch https://example.com"
+    grounding "data/seed/capability-routing.lino"
+  navigation_url
+    defined-by concept
+    role action
+    precondition "the request carries a URL operand it asks to open"
+    effect "admits the navigation handler claim"
+    unit "boolean"
+    example "navigate to github.com"
+    grounding "data/seed/capability-routing.lino"
+  calendar_date_signal
+    defined-by concept
+    role action
+    precondition "a date signal is backed by a clock hour, a timezone, a participant or an explicit scheduling act"
+    effect "admits the calendar event handler claim"
+    unit "boolean"
+    example "schedule a meeting with anna tomorrow at 3pm"
+    grounding "data/seed/capability-routing.lino"
+  test_generation
+    defined-by method
+    role action
+    precondition "a request asks for tests of a function"
+    effect "names the handler whose claim row admits a suite only with a named function under test and keeps only its refusal otherwise"
+    unit "not applicable"
+    example "write tests for is_palindrome(s)"
+    grounding "data/seed/capability-routing.lino"
+  code_refactoring
+    defined-by method
+    role action
+    precondition "a request asks to restructure code it carries"
+    effect "names the handler whose claim row admits a rewrite only with a code artifact and keeps only its refusal otherwise"
+    unit "not applicable"
+    example "refactor this promise chain with async/await"
+    grounding "data/seed/capability-routing.lino"
+  format_conversion
+    defined-by method
+    role action
+    precondition "a request asks to convert a document between notations"
+    effect "names the handler whose claim row admits a conversion only with the document and keeps only its refusal otherwise"
+    unit "not applicable"
+    example "convert this json to yaml"
+    grounding "data/seed/capability-routing.lino"
+  function_under_test
+    defined-by concept
+    role action
+    precondition "a test request names the function it tests, in backticks or after the word for"
+    effect "admits the test generation handler claim to a suite"
+    unit "boolean"
+    example "write tests for is_palindrome(s)"
+    grounding "data/seed/capability-routing.lino"
+  structured_document
+    defined-by concept
+    role action
+    precondition "a conversion request carries the JSON or YAML document it converts"
+    effect "admits the format conversion handler claim to a converted document"
+    unit "boolean"
+    example "convert this json to yaml: {a: 1}"
+    grounding "data/seed/capability-routing.lino"
+  code_debugging
+    defined-by method
+    role action
+    precondition "a request asks to find the defect in code it carries"
+    effect "names the handler whose claim row admits it only on a code artifact"
+    unit "not applicable"
+    example "find the bug in def average(xs): return sum(xs) / len(xs)"
+    grounding "data/seed/capability-routing.lino"
+  code_explanation
+    defined-by method
+    role action
+    precondition "a request asks to explain code it carries"
+    effect "names the handler whose claim row admits it only on a code artifact"
+    unit "not applicable"
+    example "explain this code: print(sum(range(10)))"
+    grounding "data/seed/capability-routing.lino"
+  code_review
+    defined-by method
+    role action
+    precondition "a request asks to review code it carries"
+    effect "names the handler whose claim row admits it only on a code artifact"
+    unit "not applicable"
+    example "review this code with a fenced block"
+    grounding "data/seed/capability-routing.lino"
+  summarization_text
+    defined-by method
+    role action
+    precondition "a request asks to summarize text it carries"
+    effect "names the handler whose claim row admits it only on supplied text"
+    unit "not applicable"
+    example "summarize: the text on the following lines"
+    grounding "data/seed/capability-routing.lino"
+  requirement_listing
+    defined-by method
+    role action
+    precondition "a request asks for the requirements of text it carries"
+    effect "names the handler whose claim row admits it only on supplied text"
+    unit "not applicable"
+    example "list the requirements of this issue: the text on the following lines"
+    grounding "data/seed/capability-routing.lino"
+  text_rewrite
+    defined-by method
+    role action
+    precondition "a request asks to rewrite, correct or recast text it carries"
+    effect "names the handler whose claim row admits it only on supplied text"
+    unit "not applicable"
+    example "make this formal: hey can you send me the file"
+    grounding "data/seed/capability-routing.lino"
+  code_artifact
+    defined-by concept
+    role action
+    precondition "the request carries code: a fenced block, a code-shaped backtick span, a definition keyword or a call after a command colon"
+    effect "admits the code debugging, explanation and review handler claims"
+    unit "boolean"
+    example "explain this code: print(sum(range(10)))"
+    grounding "data/seed/capability-routing.lino"
+  supplied_text
+    defined-by concept
+    role action
+    precondition "the request carries at least three words of text after a command colon, a line break or inside quotes"
+    effect "admits the free-text summary and rewrite handler claims"
+    unit "boolean"
+    example "summarize: the text that follows"
+    grounding "data/seed/capability-routing.lino"
+  word_problem
+    defined-by method
+    role action
+    precondition "a request asks a quantity question in prose over numbers it states"
+    effect "names the handler whose claim row admits it only on a stated number"
+    unit "not applicable"
+    example "five boxes cost 3 each, what is the total for 5 boxes"
+    grounding "data/seed/capability-routing.lino"
+  arithmetic
+    defined-by method
+    role action
+    precondition "a request asks to evaluate an expression it carries"
+    effect "names the handler whose claim row admits it only on a calculation expression or a rate-basis currency pair"
+    unit "not applicable"
+    example "what is 2 + 2"
+    grounding "data/seed/capability-routing.lino"
+  compound_interest
+    defined-by method
+    role action
+    precondition "a request asks for the final amount of an investment, or converts that amount"
+    effect "names the handler whose claim row admits it only on investment terms or a conversion target currency"
+    unit "not applicable"
+    example "invest 1000 dollars at 8% compounded monthly for 5 years"
+    grounding "data/seed/capability-routing.lino"
+  number_constraint_reasoning
+    defined-by method
+    role action
+    precondition "a request asks which numbers satisfy the bounds it states"
+    effect "names the handler whose claim row admits it only on stated interval bounds"
+    unit "not applicable"
+    example "a number is greater than 3 and less than 7, which is it"
+    grounding "data/seed/capability-routing.lino"
+  unit_conversion
+    defined-by method
+    role action
+    precondition "a request asks to convert a stated quantity between two units"
+    effect "names the handler whose claim row admits it only on a measured quantity"
+    unit "not applicable"
+    example "3 km in m"
+    grounding "data/seed/capability-routing.lino"
+  calendar_reasoning
+    defined-by method
+    role action
+    precondition "a request asks for a day or month reached from a calendar anchor"
+    effect "names the handler whose claim row admits it only on a calendar anchor or an event date signal"
+    unit "not applicable"
+    example "what day comes after monday"
+    grounding "data/seed/capability-routing.lino"
+  stated_number
+    defined-by concept
+    role action
+    precondition "the request states at least one number the shared numeric reader parses"
+    effect "admits the statistics and word problem handler claims"
+    unit "boolean"
+    example "the mean of 3, 5 and 7"
+    grounding "data/seed/capability-routing.lino"
+  calculation_expression
+    defined-by concept
+    role action
+    precondition "the calculator reader extracts an expression from the request"
+    effect "admits the arithmetic handler claim"
+    unit "boolean"
+    example "what is 2 + 2"
+    grounding "data/seed/capability-routing.lino"
+  currency_rate_basis
+    defined-by concept
+    role action
+    precondition "the request names the US dollar exchange rate whose calculation basis it asks"
+    effect "admits the arithmetic handler claim for its rate-basis arm"
+    unit "boolean"
+    example "which usd rate do you use for calculations"
+    grounding "data/seed/capability-routing.lino"
+  investment_terms
+    defined-by concept
+    role action
+    precondition "the request states a principal, an annual rate, a compounding frequency and a term"
+    effect "admits the compound interest handler claim"
+    unit "boolean"
+    example "1000 dollars at 8% compounded monthly for 5 years"
+    grounding "data/seed/capability-routing.lino"
+  conversion_target_currency
+    defined-by concept
+    role action
+    precondition "the request names the currency an earlier final amount converts to"
+    effect "admits the compound interest follow-up claim"
+    unit "boolean"
+    example "convert the final amount to eur"
+    grounding "data/seed/capability-routing.lino"
+  interval_bounds
+    defined-by concept
+    role action
+    precondition "the request states a lower and an upper bound on a hidden number"
+    effect "admits the number constraint handler claim"
+    unit "boolean"
+    example "greater than 3 and less than 7"
+    grounding "data/seed/capability-routing.lino"
+  measured_quantity
+    defined-by concept
+    role action
+    precondition "the request states a number and names exactly two measurement units"
+    effect "admits the unit conversion handler claim"
+    unit "boolean"
+    example "3 km in m"
+    grounding "data/seed/capability-routing.lino"
+  calendar_anchor
+    defined-by concept
+    role action
+    precondition "the request names the day it starts from: a weekday, a month, a stated date or today"
+    effect "admits the calendar reasoning handler claim"
+    unit "boolean"
+    example "what day comes after monday"
+    grounding "data/seed/capability-routing.lino"
+  rml
+    defined-by concept
+    role action
+    precondition "a universal conditional clause is formalized"
+    effect "names the relative-meta-logic export target whose rml command renders the clause as Lean"
+    unit "not applicable"
+    example "rml export lean clause.lino -o clause.lean"
+    grounding "data/seed/formal-targets.lino"
+  ascii
+    defined-by concept
+    role action
+    precondition "a formal target declares which names it writes without quoting"
+    effect "a name made only of ASCII letters, digits and underscores is written bare, any other name in the target's identifier quoting"
+    unit "not applicable"
+    example "Lean 4 writes student bare and студент as «студент»"
+    grounding "data/seed/formal-targets.lino"
+  advice_topic
+    defined-by concept
+    role action
+    precondition "the request names a topic the cited advice table covers"
+    effect "admits the claim of the advice handler"
+    unit "boolean"
+    example "how should i sleep better"
+    grounding "data/seed/capability-routing.lino"
+  assistant_addressee
+    defined-by concept
+    role action
+    precondition "the question addresses the assistant in the second person"
+    effect "admits the claim of the no-opinion and physical-action policy"
+    unit "boolean"
+    example "do you think it will rain"
+    grounding "data/seed/capability-routing.lino"
+  cached_destination
+    defined-by concept
+    role action
+    precondition "the request names a destination whose places are cached"
+    effect "admits the claim of the planning handler"
+    unit "boolean"
+    example "plan a 2-day trip to berlin"
+    grounding "data/seed/capability-routing.lino"
+  call_expression
+    defined-by concept
+    role action
+    precondition "the request carries an identifier followed by an argument list"
+    effect "admits the claim of the execution failure handler"
+    unit "boolean"
+    example "calls undefined_function()"
+    grounding "data/seed/capability-routing.lino"
+  undefined_call
+    defined-by concept
+    role action
+    precondition "a coding request says its program calls a function that no definition, builtin or second mention names"
+    effect "admits the failure trace of the execution failure handler with that function named"
+    unit "not applicable"
+    example "a python script that calls missing_helper()"
+    grounding "data/seed/code-task-cues.lino"
+  composition_topic
+    defined-by concept
+    role action
+    precondition "the request names the topic words a composition is about"
+    effect "admits the claim of the brainstorm and creative writing handler"
+    unit "boolean"
+    example "write a poem about the sea"
+    grounding "data/seed/capability-routing.lino"
+  concept_subject
+    defined-by concept
+    role action
+    precondition "the concept reader extracts the subject of a definition question"
+    effect "admits the claim of the concept lookup and person question handler"
+    unit "boolean"
+    example "what is a monad"
+    grounding "data/seed/capability-routing.lino"
+  conversation_topic_subject
+    defined-by concept
+    role action
+    precondition "the conversation opener names its topic"
+    effect "admits the claim of the conversation topic handler"
+    unit "boolean"
+    example "let us talk about volcanoes"
+    grounding "data/seed/capability-routing.lino"
+  coreference_antecedent
+    defined-by concept
+    role action
+    precondition "an earlier user turn names the subject a pronoun refers to"
+    effect "admits the claim of the coreference handler"
+    unit "boolean"
+    example "what is its capital after asking about france"
+    grounding "data/seed/capability-routing.lino"
+  definition_merge_term
+    defined-by concept
+    role action
+    precondition "the request names the term whose definitions are merged"
+    effect "admits the claim of the definition merge handler"
+    unit "boolean"
+    example "merge the definitions of entropy"
+    grounding "data/seed/capability-routing.lino"
+  document_format
+    defined-by concept
+    role action
+    precondition "the request names the document format the authoring verb governs"
+    effect "admits the claim of the document plan handler"
+    unit "boolean"
+    example "make me a pdf report"
+    grounding "data/seed/capability-routing.lino"
+  filesystem_object
+    defined-by concept
+    role action
+    precondition "the request acts on files or directories or is a whole substitution"
+    effect "admits the claim of the shell command composer"
+    unit "boolean"
+    example "count the lines in all py files"
+    grounding "data/seed/capability-routing.lino"
+  function_spec
+    defined-by concept
+    role action
+    precondition "the request names a function by signature, assertion or sourced recurrence"
+    effect "admits the claim of the program synthesis handler"
+    unit "boolean"
+    example "def add(a, b)"
+    grounding "data/seed/capability-routing.lino"
+  install_steps
+    defined-by concept
+    role action
+    precondition "the request carries installation commands to convert"
+    effect "admits the claim of the installation conversion handler"
+    unit "boolean"
+    example "git clone then make install"
+    grounding "data/seed/capability-routing.lino"
+  learnable_source
+    defined-by concept
+    role action
+    precondition "the request names a declared source the engine can learn from"
+    effect "admits the claim of the learn from source handler"
+    unit "boolean"
+    example "learn from google trends"
+    grounding "data/seed/capability-routing.lino"
+  legality_assessment
+    defined-by concept
+    role action
+    precondition "the legality catalogue assesses the request by phrase or by act and object"
+    effect "admits the claim of the legality advisory"
+    unit "boolean"
+    example "break into a parked car"
+    grounding "data/seed/capability-routing.lino"
+  list_items
+    defined-by concept
+    role action
+    precondition "the request lists numbers or at least two quoted values"
+    effect "admits the claim of the list operation handler"
+    unit "boolean"
+    example "sort 5, 2, 9"
+    grounding "data/seed/capability-routing.lino"
+  marketplace_scope
+    defined-by concept
+    role action
+    precondition "the request names the marketplace a search is scoped to"
+    effect "admits the claim of the product search handler"
+    unit "boolean"
+    example "find a usb cable on amazon.in"
+    grounding "data/seed/capability-routing.lino"
+  mechanism_subject
+    defined-by concept
+    role action
+    precondition "the mechanism question names its subject"
+    effect "admits the claim of the how it works handler"
+    unit "boolean"
+    example "how does a compiler work"
+    grounding "data/seed/capability-routing.lino"
+  memory_program_reading
+    defined-by concept
+    role action
+    precondition "the request reads as a seeded memory program family"
+    effect "admits the claim of the memory program handlers"
+    unit "boolean"
+    example "count my saved notes"
+    grounding "data/seed/capability-routing.lino"
+  pattern_constraints
+    defined-by concept
+    role action
+    precondition "the request names character classes and separators a pattern is composed from"
+    effect "admits the claim of the regex synthesis handler"
+    unit "boolean"
+    example "a regex for five digits"
+    grounding "data/seed/capability-routing.lino"
+  prior_numeric_list
+    defined-by concept
+    role action
+    precondition "an earlier turn established the list, language or code request a follow-up inherits"
+    effect "admits the claim of the list operation handler"
+    unit "boolean"
+    example "now in rust"
+    grounding "data/seed/capability-routing.lino"
+  prior_procedure
+    defined-by concept
+    role action
+    precondition "the earlier exchange was an answered how-to request whose task re-parses"
+    effect "admits the claim of the procedure follow-up handler"
+    unit "boolean"
+    example "give me the exact steps"
+    grounding "data/seed/capability-routing.lino"
+  prior_program
+    defined-by concept
+    role action
+    precondition "an earlier turn established the task and language of a program"
+    effect "admits the claim of the program follow-up handler"
+    unit "boolean"
+    example "now make it read a file"
+    grounding "data/seed/capability-routing.lino"
+  prior_reply
+    defined-by concept
+    role action
+    precondition "the dialogue holds an earlier reply the follow-up elaborates"
+    effect "admits the claim of the how it works and command rewrite handlers"
+    unit "boolean"
+    example "how does it work"
+    grounding "data/seed/capability-routing.lino"
+  prior_research_request
+    defined-by concept
+    role action
+    precondition "the earlier user turn was a research request"
+    effect "admits the claim of the research follow-up handlers"
+    unit "boolean"
+    example "what is the result"
+    grounding "data/seed/capability-routing.lino"
+  prior_software_project
+    defined-by concept
+    role action
+    precondition "the earlier reply formalized a software project request"
+    effect "admits the claim of the project follow-up handler"
+    unit "boolean"
+    example "now test it"
+    grounding "data/seed/capability-routing.lino"
+  prior_user_request
+    defined-by concept
+    role action
+    precondition "the dialogue holds an earlier user request to answer again"
+    effect "admits the claim of the language retarget handler"
+    unit "boolean"
+    example "answer in russian"
+    grounding "data/seed/capability-routing.lino"
+  procedure_task
+    defined-by concept
+    role action
+    precondition "the how-to reader extracts the task of a procedure"
+    effect "admits the claim of the procedure handler"
+    unit "boolean"
+    example "how to tie a tie"
+    grounding "data/seed/capability-routing.lino"
+  punctuation_only
+    defined-by concept
+    role action
+    precondition "the prompt carries no letter or digit"
+    effect "admits the claim of the punctuation clarification"
+    unit "boolean"
+    example "?"
+    grounding "data/seed/capability-routing.lino"
+  script_language
+    defined-by concept
+    role action
+    precondition "the request names a catalogued language for a minimal script"
+    effect "admits the claim of the script handler"
+    unit "boolean"
+    example "write a python script"
+    grounding "data/seed/capability-routing.lino"
+  search_focus
+    defined-by concept
+    role action
+    precondition "the search reader extracts the query focus"
+    effect "admits the claim of the web search handler"
+    unit "boolean"
+    example "search the web for rust news"
+    grounding "data/seed/capability-routing.lino"
+  shell_command_operand
+    defined-by concept
+    role action
+    precondition "the request carries the command or loop it rewrites"
+    effect "admits the claim of the command rewrite handler"
+    unit "boolean"
+    example "make ls an infinite loop"
+    grounding "data/seed/capability-routing.lino"
+  table_reference
+    defined-by concept
+    role action
+    precondition "the request names the table a query is composed over"
+    effect "admits the claim of the sql synthesis handler"
+    unit "boolean"
+    example "select users older than 30"
+    grounding "data/seed/capability-routing.lino"
+  text_operation
+    defined-by concept
+    role action
+    precondition "the request parses as input text and text operations"
+    effect "admits the claim of the text operation handler"
+    unit "boolean"
+    example "reverse the word hello"
+    grounding "data/seed/capability-routing.lino"
+  unbalanced_brackets
+    defined-by concept
+    role action
+    precondition "the round brackets of the prompt do not balance"
+    effect "admits the claim of the ill-formed notation answer"
+    unit "boolean"
+    example "teach this fact (a b"
+    grounding "data/seed/capability-routing.lino"
+  verifiable_spec
+    defined-by concept
+    role action
+    precondition "the task reader formalizes an expectation the answer can be checked against"
+    effect "admits the claim of the verifiable task handler"
+    unit "boolean"
+    example "what comes next in 1 2 1 2"
+    grounding "data/seed/capability-routing.lino"
+  brainstorm_composition
+    defined-by method
+    role action
+    precondition "a naming brainstorm states its topic"
+    effect "composes ranked name candidates for the topic"
+    unit "not applicable"
+    example "brainstorm names for a bakery"
+    grounding "data/seed/handler-precedence.lino"
+  creative_writing
+    defined-by method
+    role action
+    precondition "a verse request states its form and topic"
+    effect "composes verse that passes its form check"
+    unit "not applicable"
+    example "write a haiku about rain"
+    grounding "data/seed/handler-precedence.lino"
+  conversation_topic
+    defined-by method
+    role action
+    precondition "an opener proposes a conversation topic"
+    effect "opens the conversation on that topic"
+    unit "not applicable"
+    example "let us talk about volcanoes"
+    grounding "data/seed/handler-precedence.lino"
+  definition_merge
+    defined-by method
+    role action
+    precondition "a request asks to merge the definitions of a term"
+    effect "merges the localized definitions of the term"
+    unit "not applicable"
+    example "merge the definitions of entropy"
+    grounding "data/seed/handler-precedence.lino"
+  document_generation_plan
+    defined-by method
+    role action
+    precondition "an authoring request names a document format"
+    effect "plans the document in that format"
+    unit "not applicable"
+    example "make me a pdf report"
+    grounding "data/seed/handler-precedence.lino"
+  execution_failure
+    defined-by method
+    role action
+    precondition "a request runs a call whose function is undefined"
+    effect "reports the failure trace"
+    unit "not applicable"
+    example "calls undefined_function()"
+    grounding "data/seed/handler-precedence.lino"
+  how_it_works
+    defined-by method
+    role action
+    precondition "a mechanism question names a subject or follows a reply"
+    effect "explains the mechanism or how to ask"
+    unit "not applicable"
+    example "how does a compiler work"
+    grounding "data/seed/handler-precedence.lino"
+  ill_formed
+    defined-by method
+    role action
+    precondition "a fact to teach has unbalanced brackets"
+    effect "reports the ill-formed notation"
+    unit "not applicable"
+    example "teach this fact (a b"
+    grounding "data/seed/handler-precedence.lino"
+  installation_conversion
+    defined-by method
+    role action
+    precondition "a request carries installation commands to convert"
+    effect "renders the commands as the target script"
+    unit "not applicable"
+    example "turn this guide into a bash script"
+    grounding "data/seed/handler-precedence.lino"
+  learn_from_source
+    defined-by method
+    role action
+    precondition "a directive names a declared learnable source"
+    effect "teaches the engine from that source"
+    unit "not applicable"
+    example "learn from google trends"
+    grounding "data/seed/handler-precedence.lino"
+  legality_warning
+    defined-by method
+    role action
+    precondition "the legality catalogue assesses the request"
+    effect "warns or refuses with the category and reason"
+    unit "not applicable"
+    example "break into a parked car"
+    grounding "data/seed/handler-precedence.lino"
+  link_native_synthesis
+    defined-by method
+    role action
+    precondition "a request states quantities to substitute or sell"
+    effect "synthesizes the answer over the link store"
+    unit "not applicable"
+    example "if x = 2 what is x + 1"
+    grounding "data/seed/handler-precedence.lino"
+  memory_program
+    defined-by method
+    role action
+    precondition "a request compiles to a seeded memory program"
+    effect "executes the program over the memory store"
+    unit "not applicable"
+    example "count my saved notes"
+    grounding "data/seed/handler-precedence.lino"
+  memory_program_gap
+    defined-by method
+    role action
+    precondition "a request reads as a memory program family missing a primitive"
+    effect "names the missing primitive"
+    unit "not applicable"
+    example "delete my notes by mood"
+    grounding "data/seed/handler-precedence.lino"
+  opinion_question
+    defined-by method
+    role action
+    precondition "a question asks the assistant for its opinion"
+    effect "states the no-opinion policy"
+    unit "not applicable"
+    example "do you think it will rain"
+    grounding "data/seed/handler-precedence.lino"
+  physical_action_question
+    defined-by method
+    role action
+    precondition "a question asks the assistant about a physical act"
+    effect "states the physical-action policy"
+    unit "not applicable"
+    example "did you eat today"
+    grounding "data/seed/handler-precedence.lino"
+  procedural_how_to
+    defined-by method
+    role action
+    precondition "a how-to request names a task"
+    effect "plans or synthesizes the procedure"
+    unit "not applicable"
+    example "how to tie a tie"
+    grounding "data/seed/handler-precedence.lino"
+  procedural_how_to_followup
+    defined-by method
+    role action
+    precondition "an elaboration follows an answered how-to request"
+    effect "rebinds to the earlier procedure"
+    unit "not applicable"
+    example "give me the exact steps"
+    grounding "data/seed/handler-precedence.lino"
+  program_blueprint_from_prompt
+    defined-by method
+    role action
+    precondition "a program request names a task and language"
+    effect "composes the interactive program blueprint"
+    unit "not applicable"
+    example "write a todo app in python"
+    grounding "data/seed/handler-precedence.lino"
+  punctuation_only_prompt
+    defined-by method
+    role action
+    precondition "the prompt carries only punctuation"
+    effect "asks for clarification"
+    unit "not applicable"
+    example "?"
+    grounding "data/seed/handler-precedence.lino"
+  regex_synthesis
+    defined-by method
+    role action
+    precondition "a request names the constraints of a pattern"
+    effect "composes and verifies the regular expression"
+    unit "not applicable"
+    example "a regex for five digits"
+    grounding "data/seed/handler-precedence.lino"
+  research_comparison_table
+    defined-by method
+    role action
+    precondition "a table request follows a research request"
+    effect "draws the comparison table of its topics"
+    unit "not applicable"
+    example "compare them in a table"
+    grounding "data/seed/handler-precedence.lino"
+  research_result_followup
+    defined-by method
+    role action
+    precondition "a result request follows a research request"
+    effect "reports the research status"
+    unit "not applicable"
+    example "what is the result"
+    grounding "data/seed/handler-precedence.lino"
+  response_language_followup
+    defined-by method
+    role action
+    precondition "a retarget follows an earlier request"
+    effect "answers the earlier request again in the named language"
+    unit "not applicable"
+    example "answer in russian"
+    grounding "data/seed/handler-precedence.lino"
+  shell_command_compose
+    defined-by method
+    role action
+    precondition "a request acts on files with a shell command"
+    effect "composes the command from manual pages"
+    unit "not applicable"
+    example "count the lines in all py files"
+    grounding "data/seed/handler-precedence.lino"
+  shell_command_transform
+    defined-by method
+    role action
+    precondition "a request rewrites a command it carries or an earlier reply holds"
+    effect "renders the rewritten command"
+    unit "not applicable"
+    example "make ls an infinite loop"
+    grounding "data/seed/handler-precedence.lino"
+  shell_refusal
+    defined-by method
+    role action
+    precondition "a chat request asks to run a shell command"
+    effect "states the bounded-autonomy policy"
+    unit "not applicable"
+    example "run sudo apt update for me"
+    grounding "data/seed/handler-precedence.lino"
+  software_project_followup
+    defined-by method
+    role action
+    precondition "a step follows a formalized software project"
+    effect "binds the step to the project"
+    unit "not applicable"
+    example "now test it"
+    grounding "data/seed/handler-precedence.lino"
+  software_project_request
+    defined-by method
+    role action
+    precondition "an authoring verb governs a software artifact"
+    effect "formalizes the project request"
+    unit "not applicable"
+    example "build a web app for habits"
+    grounding "data/seed/handler-precedence.lino"
+  sql_synthesis
+    defined-by method
+    role action
+    precondition "a request names the table of a query"
+    effect "composes the sql statement"
+    unit "not applicable"
+    example "select users older than 30"
+    grounding "data/seed/handler-precedence.lino"
+  text_manipulation
+    defined-by method
+    role action
+    precondition "a request carries input text and operations"
+    effect "applies the operations to the text"
+    unit "not applicable"
+    example "reverse the word hello"
+    grounding "data/seed/handler-precedence.lino"
+  who_is
+    defined-by method
+    role action
+    precondition "a question names a person"
+    effect "resolves the person"
+    unit "not applicable"
+    example "who is ada lovelace"
+    grounding "data/seed/handler-precedence.lino"
+  write_program_concrete
+    defined-by method
+    role action
+    precondition "a program request names a catalogued task and language"
+    effect "writes the program from its template"
+    unit "not applicable"
+    example "write hello world in rust"
+    grounding "data/seed/handler-precedence.lino"
+  write_program_coreference
+    defined-by method
+    role action
+    precondition "a bare program follow-up follows an established program"
+    effect "rewrites the earlier program"
+    unit "not applicable"
+    example "now make it read a file"
+    grounding "data/seed/handler-precedence.lino"
+  backticked_term
+    defined-by concept
+    role action
+    precondition "the request carries a term in backticks"
+    effect "admits the claim of the conversation control handler"
+    unit "boolean"
+    example "avoid the term `synergy`"
+    grounding "data/seed/capability-routing.lino"
+  name_assignment
+    defined-by concept
+    role action
+    precondition "the request assigns a name to the assistant or introduces the user's own"
+    effect "admits the claim of the conversation recall handlers"
+    unit "boolean"
+    example "now your name is ada"
+    grounding "data/seed/capability-routing.lino"
+  recall_query_term
+    defined-by concept
+    role action
+    precondition "the request names a term to recall from the conversation"
+    effect "admits the claim of the conversation memory handler"
+    unit "boolean"
+    example "what did we say about rust"
+    grounding "data/seed/capability-routing.lino"
+  supplied_payload
+    defined-by concept
+    role action
+    precondition "the request carries text after a colon"
+    effect "admits the claim of the conversation memory handler"
+    unit "boolean"
+    example "summarize: we met and agreed"
+    grounding "data/seed/capability-routing.lino"
+  summary_topic
+    defined-by concept
+    role action
+    precondition "the request names a seeded summary topic"
+    effect "admits the claim of the topic summary handler"
+    unit "boolean"
+    example "summarize rust"
+    grounding "data/seed/capability-routing.lino"
+  brainstorm_category
+    defined-by concept
+    role action
+    precondition "the request names a brainstorm category by its keywords"
+    effect "admits the claim of the brainstorm list handler"
+    unit "boolean"
+    example "brainstorm project ideas"
+    grounding "data/seed/capability-routing.lino"
+  persona_or_topic
+    defined-by concept
+    role action
+    precondition "the request names a seeded persona or roleplay topic"
+    effect "admits the claim of the roleplay handler"
+    unit "boolean"
+    example "explain relativity as einstein"
+    grounding "data/seed/capability-routing.lino"
+  document_operand
+    defined-by concept
+    role action
+    precondition "the request supplies the document it asks about"
+    effect "admits the claim of the originality check handler"
+    unit "boolean"
+    example "check this text for plagiarism: a quote"
+    grounding "data/seed/capability-routing.lino"
+  translation_text
+    defined-by concept
+    role action
+    precondition "the request carries the text it asks to translate"
+    effect "admits the claim of the translation handler"
+    unit "boolean"
+    example "translate apple to russian"
+    grounding "data/seed/capability-routing.lino"
+  triz_precedent
+    defined-by concept
+    role action
+    precondition "the contradiction question shares words with a seeded precedent"
+    effect "admits the claim of the triz handler"
+    unit "boolean"
+    example "make the wing stronger without weight"
+    grounding "data/seed/capability-routing.lino"
+  algorithm_operation
+    defined-by concept
+    role action
+    precondition "the algorithm request names the operation it implements"
+    effect "admits the claim of the algorithm handler"
+    unit "boolean"
+    example "write a sorting algorithm"
+    grounding "data/seed/capability-routing.lino"
+  source_reference
+    defined-by concept
+    role action
+    precondition "the request names the source it acts on by url or path"
+    effect "admits the claim of the source refresh handler"
+    unit "boolean"
+    example "refresh the page https://example.com"
+    grounding "data/seed/capability-routing.lino"
+  stated_claim
+    defined-by concept
+    role action
+    precondition "the proof request states a claim beyond its directive"
+    effect "admits the claim of the proof handler"
+    unit "boolean"
+    example "prove that 2 + 2 = 4"
+    grounding "data/seed/capability-routing.lino"
+  assistant_subject
+    defined-by concept
+    role action
+    precondition "the question addresses the assistant or names no other subject"
+    effect "admits the claim of the capability, meta and network handlers"
+    unit "boolean"
+    example "what can you do"
+    grounding "data/seed/capability-routing.lino"
+  memory_query_statement
+    defined-by concept
+    role action
+    precondition "the request is a statement in a memory query dialect"
+    effect "admits the claim of the exact memory query handler"
+    unit "boolean"
+    example "select content from memory"
+    grounding "data/seed/capability-routing.lino"
+  brainstorming
+    defined-by method
+    role action
+    precondition "a brainstorm request names a seeded category"
+    effect "lists the category's seeded ideas"
+    unit "not applicable"
+    example "brainstorm project ideas"
+    grounding "data/seed/handler-precedence.lino"
+  conversation_control
+    defined-by method
+    role action
+    precondition "a request sets a conversation preference or corrects an earlier action"
+    effect "records the preference or acknowledges the correction"
+    unit "not applicable"
+    example "do not use the word `synergy`"
+    grounding "data/seed/handler-precedence.lino"
+  conversation_memory
+    defined-by method
+    role action
+    precondition "a request recalls or summarizes the running conversation"
+    effect "answers from the recorded turns"
+    unit "not applicable"
+    example "what did i ask before"
+    grounding "data/seed/handler-precedence.lino"
+  current_dialogue_fact_checking
+    defined-by method
+    role action
+    precondition "a request checks the statements of the running dialogue"
+    effect "checks each earlier statement"
+    unit "not applicable"
+    example "check what i said so far"
+    grounding "data/seed/handler-precedence.lino"
+  document_originality_check
+    defined-by method
+    role action
+    precondition "a request asks whether a document is original"
+    effect "plans the originality search over the supplied document"
+    unit "not applicable"
+    example "check this text for plagiarism"
+    grounding "data/seed/handler-precedence.lino"
+  exact_memory_query
+    defined-by method
+    role action
+    precondition "a request is a memory query statement"
+    effect "runs the query over the memory store"
+    unit "not applicable"
+    example "select content from memory"
+    grounding "data/seed/handler-precedence.lino"
+  historical
+    defined-by method
+    role action
+    precondition "a request recaps or recalls the running conversation"
+    effect "answers from the earlier turns"
+    unit "not applicable"
+    example "what was the previous message"
+    grounding "data/seed/handler-precedence.lino"
+  network_query
+    defined-by method
+    role action
+    precondition "a request asks about the assistant's own link network"
+    effect "renders the network or the concept it records"
+    unit "not applicable"
+    example "show me the network"
+    grounding "data/seed/handler-precedence.lino"
+  proof_request
+    defined-by method
+    role action
+    precondition "a request asks for a proof of a stated claim"
+    effect "runs the proof engine on the claim"
+    unit "not applicable"
+    example "prove that 2 + 2 = 4"
+    grounding "data/seed/handler-precedence.lino"
+  dialogue_turn
+    defined-by concept
+    role action
+    precondition "the dialogue holds an earlier turn"
+    effect "admits the claim of the conversation recall handlers"
+    unit "boolean"
+    example "what was the previous message"
+    grounding "data/seed/capability-routing.lino"
+  continuation_cue
+    defined-by concept
+    role action
+    precondition "the whole request is a continuation cue"
+    effect "names the answer of the agentic continuation handler"
+    unit "not applicable"
+    example "continue"
+    grounding "data/seed/handler-rules.lino"
+  fact_subject
+    defined-by concept
+    role action
+    precondition "the fact question names the subject one of its arms resolves"
+    effect "admits the claim of the fact lookup handler"
+    unit "boolean"
+    example "what is the capital of france"
+    grounding "data/seed/capability-routing.lino"
+  fact_lookup
+    defined-by method
+    role action
+    precondition "a question asks for a fact about a named subject"
+    effect "answers from the gated record, a live statement or a researched explanation"
+    unit "not applicable"
+    example "what is the capital of france"
+    grounding "data/seed/handler-precedence.lino"
+  documented_method
+    defined-by concept
+    role action
+    precondition "the request names the project and the method of a seeded documentation page"
+    effect "admits the claim of the documentation explanation handler and names the page it answers from"
+    unit "boolean"
+    example "how does pandas DataFrame.join work"
+    grounding "data/seed/capability-routing.lino"
+  idiom_utterance
+    defined-by concept
+    role action
+    precondition "the circular idiom is the whole utterance, framed at most by particles and function words"
+    effect "admits the claim of the circular idiom handler"
+    unit "boolean"
+    example "buy an elephant"
+    grounding "data/seed/capability-routing.lino"
+  attributed_alternatives
+    defined-by concept
+    role action
+    precondition "the request names two alternatives each attributed to a source"
+    effect "admits the claim of the source conflict handler and names both alternatives"
+    unit "boolean"
+    example "Wikipedia says 1880, but Britannica says 1881"
+    grounding "data/seed/capability-routing.lino"
+  named_repository
+    defined-by concept
+    role action
+    precondition "the request names a repository as an owner/name slug or url, or as the assistant's own"
+    effect "admits the claim of the repository traffic handler and names that repository"
+    unit "boolean"
+    example "who visited konard/formal-ai on GitHub"
+    grounding "data/seed/capability-routing.lino"
+  formalization_statement
+    defined-by concept
+    role action
+    precondition "the request carries a statement beyond its formalization cue, or a formal clause"
+    effect "admits the claim of the formalization handler"
+    unit "boolean"
+    example "formalize: every human is mortal"
+    grounding "data/seed/capability-routing.lino"
+  formalization_request
+    defined-by concept
+    role action
+    precondition "a request asks to formalize a statement or deformalize a formal clause"
+    effect "the formalization handler renders the statement in the formal targets or reads the clause back"
+    unit "boolean"
+    example "formalize: every human is mortal"
+    grounding "data/seed/capability-routing.lino"
+  operand
+    defined-by concept
+    role action
+    precondition "a rule captures the operand a claim-evidence reader extracts from the request"
+    effect "the rule answers about the same operand its claim row admits on"
+    unit "boolean"
+    example "value repository operand named_repository"
+    grounding "data/seed/capability-routing.lino"

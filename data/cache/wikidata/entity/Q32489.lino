@@ -1,17 +1,20 @@
 Q32489
   aliases
     en (knives "knife blade")
+    es (faca)
     hi ("चक्कू" "छुरी" "छुरा")
     ru ("ножик")
     zh ("刀劍")
   descriptions
     en "tool with a cutting edge or blade"
+    es "herramienta o arma con un filo o cuchilla cortante"
     hi "बहु उपयोगी A."
     ru "колющий, рубящий или режущий инструмент"
     zh "工具、武器"
   id Q32489
   labels
     en knife
+    es cuchillo
     hi "चाकू"
     ru "нож"
     zh "小刀"

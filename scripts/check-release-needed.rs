@@ -273,6 +273,161 @@ fn get_max_published_version(crate_name: &str) -> Option<String> {
     }
 }
 
+// Bound the observer independently of its own API and source-check deadlines.
+fn bounded_recovery_observer(
+    command: &mut std::process::Command,
+) -> Option<(std::process::ExitStatus, Vec<u8>)> {
+    use std::io::Read;
+    use std::process::Stdio;
+    use std::time::{Duration, Instant};
+    let mut child = command
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .ok()?;
+    let stdout = child.stdout.take()?;
+    let stderr = child.stderr.take()?;
+    let (sender, receiver) = std::sync::mpsc::channel::<(bool, Option<Vec<u8>>)>();
+    let error_sender = sender.clone();
+    std::thread::spawn(move || {
+        let mut bytes = Vec::new();
+        let result = stdout
+            .take(65537)
+            .read_to_end(&mut bytes)
+            .ok()
+            .map(|_| bytes);
+        let _ = sender.send((true, result));
+    });
+    std::thread::spawn(move || {
+        let mut bytes = Vec::new();
+        let result = stderr
+            .take(16385)
+            .read_to_end(&mut bytes)
+            .ok()
+            .map(|_| bytes);
+        let _ = error_sender.send((false, result));
+    });
+    let deadline = Instant::now() + Duration::from_secs(150);
+    let status = loop {
+        match child.try_wait() {
+            Ok(Some(status)) => break Some(status),
+            Ok(None) if Instant::now() < deadline => std::thread::sleep(Duration::from_millis(25)),
+            _ => {
+                let _ = child.kill();
+                let _ = child.wait();
+                break None;
+            }
+        }
+    };
+    let status = status?;
+    let mut output = None;
+    let mut errors = None;
+    for _ in 0..2 {
+        let remaining = deadline.saturating_duration_since(Instant::now());
+        let (is_output, bytes) = receiver.recv_timeout(remaining).ok()?;
+        if is_output {
+            output = bytes;
+        } else {
+            errors = bytes;
+        }
+    }
+    let output = output?;
+    let errors = errors?;
+    if output.len() > 65536 || errors.len() > 16384 {
+        return None;
+    }
+    Some((status, output))
+}
+
+// Explicit source-qualified recovery mode never promotes metadata presence to delivery.
+// Fragment/version handling stays intact; ordinary no-fragment checks can propose recovery.
+fn qualified_recovery_requested(current_version: &str) -> bool {
+    let automatic_root = env::var("RELEASE_RECOVERY_PROTOCOL_ROOT").ok();
+    let protocol_directory = get_arg("all-target-recovery-protocol");
+    if automatic_root.is_none() && protocol_directory.is_none() {
+        return false;
+    }
+    set_output("should_release", "false");
+    set_output("skip_bump", "true");
+    set_output("release_complete", "false");
+    set_output("recovery_state", "UnavailableFullTargetEvidence");
+    set_output("recovery_missing_assets", "[]");
+    let observed = if let Some(root) = automatic_root {
+        if root != "_protocol" {
+            eprintln!("Unexpected immutable recovery root; deferring");
+            return true;
+        }
+        let helper = Path::new(&root).join("scripts/release-recovery-decision.mjs");
+        bounded_recovery_observer(
+            std::process::Command::new("node")
+                .arg(helper)
+                .args(["automatic", current_version]),
+        )
+    } else {
+        let required = [
+            "all-target-recovery-root",
+            "all-target-recovery-protocol-commit",
+            "all-target-recovery-protocol-sha256",
+            "all-target-recovery-source-commit",
+        ];
+        let values: Option<Vec<String>> = required.iter().map(|name| get_arg(name)).collect();
+        let Some(values) = values else {
+            eprintln!(
+                "Source-qualified recovery requires complete source/protocol identity; deferring"
+            );
+            return true;
+        };
+        let helper = Path::new(&values[0]).join("scripts/release-recovery-decision.mjs");
+        let observed =
+            bounded_recovery_observer(std::process::Command::new("node").arg(helper).args([
+                "observe",
+                values[0].as_str(),
+                protocol_directory.as_ref().unwrap().as_str(),
+                values[1].as_str(),
+                values[2].as_str(),
+                values[3].as_str(),
+                current_version,
+            ]));
+        observed
+    };
+    let Some((status, output)) = observed else {
+        eprintln!("Source-qualified recovery observer unavailable; deferring");
+        return true;
+    };
+    if !status.success() || output.len() > 65536 {
+        eprintln!(
+            "Source-qualified recovery observer failed or exceeded decision bounds; deferring"
+        );
+        return true;
+    }
+    let Ok(decision) = serde_json::from_slice::<serde_json::Value>(&output) else {
+        eprintln!("Malformed source-qualified recovery decision; deferring");
+        return true;
+    };
+    if decision["schema"].as_str() != Some("release-recovery-decision/v1")
+        || decision["version"].as_str() != Some(current_version)
+        || decision["publicationComplete"].as_bool() != Some(false)
+        || decision["shouldRelease"].as_bool() != Some(false)
+        || decision["automaticRepairAuthorized"].as_bool() != Some(false)
+        || decision["state"].as_str() != Some("UnavailableFullTargetEvidence")
+    {
+        eprintln!("Unqualified recovery authorization refused; deferring");
+        return true;
+    }
+    if let Some(missing) = decision["sameVersionRepairProposal"].as_array() {
+        if missing.len() <= 512 && missing.iter().all(|name| name.as_str().is_some()) {
+            set_output(
+                "recovery_missing_assets",
+                &serde_json::to_string(missing).unwrap_or_default(),
+            );
+        }
+    }
+    println!(
+        "All-target recovery remains deferred; selective same-version proposals are not writer authority"
+    );
+    true
+}
+
 fn main() {
     let rust_root = match rust_paths::get_rust_root(None, true) {
         Ok(root) => root,
@@ -303,6 +458,10 @@ fn main() {
     };
     let crate_name = package_info.name;
     let current_version = package_info.version;
+
+    if !has_fragments && qualified_recovery_requested(&current_version) {
+        return;
+    }
 
     let max_published = get_max_published_version(&crate_name);
     if let Some(ref max_ver) = max_published {
@@ -364,7 +523,9 @@ fn main() {
                 image, dockerhub_published
             );
         } else {
-            println!("Docker Hub artifact check skipped: DOCKERHUB_IMAGE or Dockerfile is not configured");
+            println!(
+                "Docker Hub artifact check skipped: DOCKERHUB_IMAGE or Dockerfile is not configured"
+            );
         }
         println!(
             "GitHub release {}{} published: {}",

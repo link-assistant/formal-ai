@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "pull-request-head": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "source-commit": "08295d4b7a8e57766c235a7ed908f5cd05f71a45",
+  "source-tree": "2ddcb2797fe522f4c9335e445d8d3c37e5406ba8",
+  "captures": [
+    {
+      "id": "self-coding",
+      "legacy": "docs/case-studies/issue-651/self-coding-run/session.json",
+      "legacy-sha256": "1d2a61859214f395ed06b7faf5d7eb7df0f91f011c67bf7faa278a63ed502fac",
+      "observed": "docs/case-studies/issue-651/self-coding-run/session-native-protocol-4a560.json",
+      "observed-sha256": "fc3b134ab21fb3d4941ed3acf1e72e2c4314587b74e58e3c9d26b8e70d5614f7",
+      "run": 37870721512,
+      "job": 113640815027,
+      "raw-log-line": 1721,
+      "comparison-representation": "Original test trimmed the full pretty JSON operand; observed capture has no terminal LF"
+    },
+    {
+      "id": "ci-diagnostic",
+      "legacy": "docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session.json",
+      "legacy-sha256": "56e2c12babc5a4c6b8422547851195311c57927c1cf694723404670926109735",
+      "observed": "docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session-native-protocol-4a560.json",
+      "observed-sha256": "8283462aafee014e6c0f9fb9089b9f3a1ce1fb890290c182ec11f127283db5ff",
+      "run": 37870721512,
+      "job": 113640815107,
+      "raw-log-line": 1689,
+      "comparison-representation": "Original test formatted the full pretty JSON with one terminal LF"
+    },
+    {
+      "id": "ci-template",
+      "legacy": "docs/case-studies/issue-1012/self-hosting-authorship/template-comparison/session.json",
+      "legacy-sha256": "601fded3193b7b2feb00ed5de64bbb04640847ac97392af70c4b79b1968a38c4",
+      "status": "Missing actual current protocol capture: first assertion stopped native execution before this case"
+    }
+  ]
+}

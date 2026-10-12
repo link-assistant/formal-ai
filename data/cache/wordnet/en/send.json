@@ -1,0 +1,108 @@
+{
+  "lemma": "send",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01955339-v",
+      "partOfSpeech": "v",
+      "definition": "cause to go somewhere",
+      "examples": [
+        "The explosion sent the car flying in the air",
+        "She sent her children to camp",
+        "He directed all his energies into his dissertation"
+      ],
+      "synonyms": [
+        "direct"
+      ]
+    },
+    {
+      "id": "oewn-01439891-v",
+      "partOfSpeech": "v",
+      "definition": "to cause or order to be taken, directed, or transmitted to another place",
+      "examples": [
+        "He had sent the dispatches downtown to the proper people and had slept"
+      ],
+      "synonyms": [
+        "send out"
+      ]
+    },
+    {
+      "id": "oewn-01033289-v",
+      "partOfSpeech": "v",
+      "definition": "cause to be directed or transmitted to another place",
+      "examples": [
+        "send me your latest results",
+        "I'll mail you the paper when it's written"
+      ],
+      "synonyms": [
+        "mail",
+        "post"
+      ]
+    },
+    {
+      "id": "oewn-01954657-v",
+      "partOfSpeech": "v",
+      "definition": "transport commercially",
+      "synonyms": [
+        "transport",
+        "ship"
+      ]
+    },
+    {
+      "id": "oewn-01091334-v",
+      "partOfSpeech": "v",
+      "definition": "assign to a station",
+      "synonyms": [
+        "station",
+        "post",
+        "place"
+      ]
+    },
+    {
+      "id": "oewn-01064577-v",
+      "partOfSpeech": "v",
+      "definition": "transfer",
+      "examples": [
+        "The spy sent the classified information off to Russia"
+      ],
+      "synonyms": [
+        "get off",
+        "send off"
+      ]
+    },
+    {
+      "id": "oewn-02353564-v",
+      "partOfSpeech": "v",
+      "definition": "cause to be admitted; of persons to an institution",
+      "examples": [
+        "After the second episode, she had to be committed",
+        "he was committed to prison"
+      ],
+      "synonyms": [
+        "commit",
+        "institutionalize",
+        "institutionalise",
+        "charge"
+      ]
+    },
+    {
+      "id": "oewn-00975088-v",
+      "partOfSpeech": "v",
+      "definition": "broadcast over the airwaves, as in radio or television",
+      "examples": [
+        "We cannot air this X-rated song"
+      ],
+      "synonyms": [
+        "air",
+        "broadcast",
+        "beam",
+        "transmit"
+      ]
+    }
+  ]
+}

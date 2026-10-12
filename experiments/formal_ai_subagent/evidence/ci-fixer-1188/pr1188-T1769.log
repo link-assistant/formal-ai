@@ -1,0 +1,315 @@
+>> read {"filePath":"rust/tests/unit/mod.rs","file_path":"rust/tests/unit/mod.rs","path":"rust/tests/unit/mod.rs"}
+   <file>
+   00001| mod agent_cli_entry_point;
+   00002| mod architect_notes;
+   00003| mod architecture_docs;
+   00004| mod assistant_name;
+   00005| mod benchmark_release_capability;
+   00006| mod bulk_lexeme_import;
+   00007| mod caller_framing_context;
+   00008| mod candidate_solution_portfolios;
+   00009| mod ci_gates;
+   00010| mod claude_code_away_recap;
+   00011| mod cli_paths;
+   00012| mod coding_discovery;
+   00013| mod coding_ladder_rungs;
+   00014| mod compatibility_research_evidence;
+   00015| mod concept_lookup_response_language;
+   00016| mod concept_sense_ledger;
+   00017| mod concise_lexemes;
+   00018| mod conversational_variations;
+   00019| mod courtesy_response;
+   00020| mod custom_formalization_subject;
+   00021| mod data_files;
+   00022| mod dialog_log;
+   00023| mod docker_runtime;
+   00024| mod docs_benchmarks;
+   00025| mod docs_requirements;
+   00026| mod document_generation_plan;
+   00027| mod document_originality_check;
+   00028| mod documentation_issue_citations;
+   00029| mod documentation_status;
+   00030| mod dreaming_runtime;
+   00031| mod exit_code_verification;
+   00032| mod fetched_page_answer_extraction;
+   00033| mod formal_ai;
+   00034| mod formal_projection_round_trips;
+   00035| mod generated_question_ordering;
+   00036| mod github_logs;
+   00037| mod grounded_local_action;
+   00038| mod hive_mind_full_circle;
+   00039| mod installation_conversion;
+   00040| mod interval_number_riddle;
+   00041| mod issue_1021_behaviour_range;
+   00042| mod issue_1021_bounded_autonomy;
+   00043| mod issue_1021_closed_circle;
+   00044| mod issue_1021_contribution_artifacts;
+   00045| mod issue_1021_write_path;
+   00046| mod issue_1066_agent_ladder;
+   00047| mod issue_1066_hollow_answers;
+   00048| mod issue_1066_ladder_capability;
+   00049| mod issue_1066_node_verifier;
+   00050| mod issue_1066_self_development;
+   00051| mod issue_1069_identifier_rename;
+   00052| mod issue_1073_reasoning_standard;
+   00053| mod issue_1085_metric_restatement;
+   00054| mod issue_1085_python_signature;
+   00055| mod issue_1085_self_authored_backlog;
+   00056| mod issue_1085_upstream_frontier;
+   00057| mod issue_1085_upstream_prompt_transfer;
+   00058| mod issue_1095_continuation_cue;
+   00059| mod issue_1105_report_flow;
+   00060| mod issue_1133_hive_mind_three_runs;
+   00061| mod issue_1138_concept_lookup;
+   00062| mod issue_1138_formalization_depth;
+   00063| mod issue_1138_retrieval_method;
+   00064| mod issue_1138_round_trip_projection;
+   00065| mod issue_1138_rust_projection;
+   00066| mod issue_1138_segmentation;
+   00067| mod issue_1138_source_walk_parity;
+   00068| mod issue_1138_three_source_roots;
+   00069| mod issue_1138_translation_tool;
+   00070| mod issue_1138_universal_loop_lookup;
+   00071| mod issue_498_google_trends;
+   00072| mod issue_499_learn_from_source;
+   00073| mod issue_531_algorithm_discovery;
+   00074| mod issue_531_concepts_probe;
+   00075| mod issue_649_world_model;
+   00076| mod issue_656_promotion;
+   00077| mod issue_661_repository_audit;
+   00078| mod issue_671_matrix_coverage;
+   00079| mod issue_673_self_ast_census;
+   00080| mod issue_676_thinking_narrative;
+   00081| mod issue_680_intent_routing;
+   00082| mod issue_701_dreaming_amendment_class;
+   00083| mod issue_701_learning_adoption;
+   00084| mod issue_702_nested_contexts;
+   00085| mod issue_702_world_model_dialog;
+   00086| mod issue_702_world_state_chat;
+   00087| mod issue_705_anticipation;
+   00088| mod issue_706_any_language;
+   00089| mod issue_708_memory_query_language_browser;
+   00090| mod issue_708_self_hosting;
+   00091| mod issue_709_search_fusion;
+   00092| mod issue_709_search_fusion_learning;
+   00093| mod issue_715_link_substitution_query;
+   00094| mod issue_715_links_substitution_query;
+   00095| mod issue_715_normal_markov;
+   00096| mod issue_715_renderer_artifacts;
+   00097| mod issue_781_option_evidence;
+   00098| mod issue_781_option_network;
+   00099| mod issue_819_followup;
+   00100| mod issue_823_recursive_learning;
+   00101| mod issue_835_file_legality;
+   00102| mod issue_844_production_pipeline;
+   00103| mod issue_844_statement_merge;
+   00104| mod issue_844_statement_ranking;
+   00105| mod issue_845_fact_checking;
+   00106| mod issue_848_workspace_change_learning;
+   00107| mod issue_885_document_fact_checking;
+   00108| mod issue_889_thinking_seed;
+   00109| mod issue_896_component_boundaries;
+   00110| mod issue_906_language_router;
+   00111| mod issue_918_handler_rules_batch;
+   00112| mod issue_918_handler_rules_batch_2;
+   00113| mod issue_920_question_necessity;
+   00114| mod issue_922_method_learning;
+   00115| mod issue_931_local_transport_contract;
+   00116| mod issue_932_box_language_projects;
+   00117| mod issue_932_self_authoring;
+   00118| mod issue_933_answer_parity;
+   00119| mod issue_933_self_authoring;
+   00120| mod issue_936_substitution_compiler;
+   00121| mod issue_940_research_documents;
+   00122| mod issue_962_word_operator_parity;
+   00123| mod issue_988_stock_rust_install;
+   00124| mod issue_991_how_to_synthesis;
+   00125| mod issue_991_incremental_decomposition;
+   00126| mod issue_991_merge_conflict_policy;
+   00127| mod language_parity_lib_suite;
+   00128| mod lino_location;
+   00129| mod local_path_discovery;
+   00130| mod local_report_export;
+   00131| mod local_surface;
+   00132| mod market_price_claims;
+   00133| mod memory_learning;
+   00134| mod memory_maintenance;
+   00135| mod memory_retention_origin;
+   00136| mod minimal_core_and_seed_metadata;
+   00137| mod multilingual_variations;
+   00138| mod offline_replay;
+   00139| mod page_formalization_route;
+   00140| mod process_composition;
+   00141| mod proof_language_independence;
+   00142| mod proof_request;
+   00143| mod proof_request_configuration;
+   00144| mod proxy;
+   00145| mod pull_request_1188_fix_gaps;
+   00146| mod pull_request_1188_function_recipe;
+   00147| mod pull_request_1188_line_anchor;
+   00148| mod pull_request_1188_line_operations;
+   00149| mod pull_request_1188_line_removal;
+   00150| mod pull_request_1188_quoted_payload_command;
+   00151| mod pull_request_1188_quoted_payload_cues;
+   00152| mod pull_request_1188_quoted_payload_safety;
+   00153| mod pull_request_1188_replace_semantics;
+   00154| mod pull_request_1188_setting_verb;
+   00155| mod pull_request_1188_subagent_gaps;
+   00156| mod pull_request_1188_teach_e;
+   00157| mod pull_request_1188_teach_f;
+   00158| mod pull_request_1188_typo_discovery;
+   00159| mod pull_request_1188_unnamed_language;
+   00160| mod pull_request_1188_unquoted_output;
+   00161| mod pull_request_1188_workspace_search;
+   00162| mod report_output_location;
+   00163| mod requirement_listing_route;
+   00164| mod requirement_span_integrity;
+   00165| mod researched_coding_procedures;
+   00166| mod semantic_intent_routing;
+   00167| mod server_route_manifest;
+   00168| mod shared_dialog;
+   00169| mod shared_memory_isolation;
+   00170| mod software_project;
+   00171| mod source_module_contracts;
+   00172| mod source_provenance;
+   00173| mod specification;
+   00174| mod symbolic_kernel_coverage;
+   00175| mod task_ladder_false_greens;
+   00176| mod terminal_command_intent;
+   00177| mod test_status;
+   00178| mod thinking_detail_length;
+   00179| mod tool_failure_observations;
+   00180| mod tool_scope;
+   00181| mod total_closure;
+   00182| mod tui_integration_metadata;
+   00183| mod unresolved_request_research;
+   00184| mod user_journeys;
+   00185| mod web_requests;
+   00186| mod web_search_by_reasoning;
+   00187| 
+   00188| #[path = "ci-cd/mod.rs"]
+   00189| mod ci_cd;
+   00190| mod hive_mind_hello_world;
+   00191| mod issue_1088_evidence_index;
+   00192| mod issue_1090_manual_column_retired;
+   00193| mod issue_1101_documentation_question_parity;
+   00194| mod issue_1138_bounded_file_analysis;
+   00195| mod issue_1138_conversation_container;
+   00196| mod issue_1138_execution_box;
+   00197| mod issue_1138_family_migration;
+   00198| mod issue_1138_handler_promotions;
+   00199| mod issue_1138_held_out_toolchain;
+   00200| mod issue_1138_js_meta;
+   00201| mod issue_1138_js_tokenizer;
+   00202| mod issue_1138_learned_items_change_answers;
+   00203| mod issue_1138_learning_ratchet;
+   00204| mod issue_1138_obligation_evidence;
+   00205| mod issue_1138_place_timezone;
+   00206| mod issue_1138_review_time_gate;
+   00207| mod issue_1138_selection_heuristics;
+   00208| mod issue_1138_solve_cli;
+   00209| mod issue_1138_source_capabilities;
+   00210| mod issue_1138_store_read_path;
+   00211| mod issue_1138_surface_honesty;
+   00212| mod issue_1138_telegram_execution;
+   00213| mod issue_1138_uniform_dispatch;
+   00214| mod issue_1163_1164_captured_pages;
+   00215| mod issue_1163_formal_knowledge_paths;
+   00216| mod issue_1163_web_formalize;
+   00217| mod issue_1164_code_example_knowledge;
+   00218| mod issue_1164_pascal_from_documentation;
+   00219| mod issue_1165_discovery_production;
+   00220| mod issue_1165_documentation_route;
+   00221| mod issue_1165_documented_commands;
+   00222| mod issue_1166_executor_gaps;
+   00223| mod issue_1166_obligation_routing;
+   00224| mod issue_1167_compose_render_parse;
+   00225| mod issue_1168_latest_versions;
+   00226| mod issue_1168_workflow_render_parity;
+   00227| mod issue_1169_dependency_currency;
+   00228| mod issue_1171_llm_task_parity;
+   00229| mod issue_1172_live_fact;
+   00230| mod issue_1172_word_definition;
+   00231| mod issue_1173_fallback_executes_search;
+   00232| mod issue_1175_routing;
+   00233| mod issue_1176_quantities_dates;
+   00234| mod issue_1176_wikidata_grounding;
+   00235| mod issue_1179_fact_check_sources;
+   00236| mod issue_1180_repository_qa;
+   00237| mod issue_1181_boolean_environment_parser;
+   00238| mod issue_1182_duplicate_gate;
+   00239| mod issue_1182_links_notation_conformance;
+   00240| mod issue_1184_derivation_records;
+   00241| mod issue_1187_credentials;
+   00242| mod issue_1188_dependency_summarization;
+   00243| mod issue_1188_round_trip_translation;
+   00244| mod issue_1188_self_translation_corpus;
+   00245| mod issue_1188_web_formalization;
+   00246| mod issue_483_small_model_fallback;
+   00247| mod issue_491_least_action;
+   00248| mod issue_668_associative_package_sharing;
+   00249| mod issue_669_memory_sync;
+   00250| mod issue_700_si_units;
+   00251| mod issue_800_product_search;
+   00252| mod issue_836_legality_warning;
+   00253| mod issue_861_telemetry;
+   00254| mod issue_872_app_store_search;
+   00255| mod issue_901_triz_solver;
+   00256| mod issue_954_module_map;
+   00257| mod r1017_small_math_tasks;
+   00258| mod verifiable_task;
+   00259| 
+   00260| // Readers for the split REQUIREMENTS.md register and the archived CHANGELOG.md.
+   00261| #[path = "../support/assembled_docs.rs"]
+   00262| mod assembled_docs;
+   00263| 
+   00264| 
+   00265| 
+   00266| 
+   00267| 
+   00268| 
+   00269| 
+   00270| 
+   00271| 
+   00272| 
+   00273| 
+   00274| #[path = "agentic-coding/mod.rs"]
+   00275| mod agentic_coding;
+   00276| 
+   00277| #[path = "capability-routing/mod.rs"]
+   00278| mod capability_routing;
+   00279| 
+   00280| #[path = "memory/mod.rs"]
+   00281| mod memory;
+   00282| 
+   00283| #[path = "prerequisite/mod.rs"]
+   00284| mod prerequisite;
+   00285| 
+   00286| #[path = "protocol/mod.rs"]
+   00287| mod protocol;
+   00288| 
+   00289| #[path = "repository-workspace/mod.rs"]
+   00290| mod repository_workspace;
+   00291| 
+   00292| #[path = "seed/mod.rs"]
+   00293| mod seed;
+   00294| 
+   00295| #[path = "sequences/mod.rs"]
+   00296| mod sequences;
+   00297| 
+   00298| #[path = "solver/mod.rs"]
+   00299| mod solver;
+   00300| 
+   00301| #[path = "web-engine-core/mod.rs"]
+   00302| mod web_engine_core;
+   00303| 
+   
+   (End of file - total 303 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/mod.rs","file_path":"rust/tests/unit/mod.rs","new":"mod pull_request_1188_line_moves;\nmod pull_request_1188_line_operations;","newString":"mod pull_request_1188_line_moves;\nmod pull_request_1188_line_operations;","new_str":"mod pull_request_1188_line_moves;\nmod pull_request_1188_line_operations;","new_string":"mod pull_request_1188_line_moves;\nmod pull_request_1188_line_operations;","old":"mod pull_request_1188_line_operations;","oldString":"mod pull_request_1188_line_operations;","old_str":"mod pull_request_1188_line_operations;","old_string":"mod pull_request_1188_line_operations;","path":"rust/tests/unit/mod.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/mod.rs"}
+   500b5f1fd7d0b8c365d7cd7de70510e6386718dc9b98b13832005a9a7e21a6c3  rust/tests/unit/mod.rs
+   
+== answer ==
+Replaced `mod pull_request_1188_line_operations;` with `mod pull_request_1188_line_moves;
+mod pull_request_1188_line_operations;` in `rust/tests/unit/mod.rs` and observed the result.

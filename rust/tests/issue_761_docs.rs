@@ -76,7 +76,7 @@ fn agentic_cli_page_covers_every_registry_entry_and_mode() {
         .lines()
         .filter_map(|line| line.strip_prefix("  tool \"")?.strip_suffix('"'))
         .collect();
-    assert!(!ids.is_empty());
+    assert_ne!(ids, [] as [&str; 0]);
     for id in ids {
         assert!(
             page.contains(&format!("## `{id}`")),

@@ -1,0 +1,173 @@
+{
+  "entities": {
+    "Q142": {
+      "type": "item",
+      "id": "Q142",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "France"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Франция"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "फ़्रान्स"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "法國"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "法国"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "French Republic"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Французская Республика"
+          },
+          {
+            "language": "ru",
+            "value": "ФР"
+          },
+          {
+            "language": "ru",
+            "value": "Французская республика"
+          },
+          {
+            "language": "ru",
+            "value": "Республика Франция"
+          },
+          {
+            "language": "ru",
+            "value": "Пятая Французская Республика"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "फ़्राँस"
+          },
+          {
+            "language": "hi",
+            "value": "फ्रांस"
+          },
+          {
+            "language": "hi",
+            "value": "फ्रान्स"
+          },
+          {
+            "language": "hi",
+            "value": "फ़्रांस"
+          },
+          {
+            "language": "hi",
+            "value": "फ्राँस"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "法兰西共和国"
+          },
+          {
+            "language": "zh",
+            "value": "法兰西"
+          },
+          {
+            "language": "zh",
+            "value": "法蘭西共和國"
+          },
+          {
+            "language": "zh",
+            "value": "法蘭西"
+          },
+          {
+            "language": "zh",
+            "value": "法国"
+          }
+        ],
+        "zh-hans": [
+          {
+            "language": "zh-hans",
+            "value": "法兰西共和国"
+          },
+          {
+            "language": "zh-hans",
+            "value": "法兰西"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "France"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Франция"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "फ़्रान्स"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "法国"
+        }
+      },
+      "claims": {
+        "P36": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "62b03c9cc3ffe5ba42e974a926ae43b8f6a8365e",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 90,
+                  "id": "Q90"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "preferred"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P36"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

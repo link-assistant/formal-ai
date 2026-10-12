@@ -1,0 +1,26 @@
+{
+  "js/agentic/module_function/callable_catalog.mjs": {
+    "bytes": 10931,
+    "sha256": "b8e0856d00a47984959cbfd8d7239bb143970bda4b526b9e617f956c9d3f727d"
+  },
+  "js/agentic/module_function/source_contract.mjs": {
+    "bytes": 7769,
+    "sha256": "a25adfe6924862dfbe268ca75cec10dd71bd76c6bebb16a223d987a59fc6b118"
+  },
+  "rust/src/agentic_coding/module_function/callable_catalog.rs": {
+    "bytes": 18895,
+    "sha256": "e6e2f4c279fbb116554d06379b17dd20b6a6df9d7ed9fcd206f3223abb85cc63"
+  },
+  "rust/src/agentic_coding/module_function/source_contract.rs": {
+    "bytes": 12397,
+    "sha256": "8248ee70a01bb3276c7a4ab714226d5b2e9b8db696d85820f3b7fd3970dbade9"
+  },
+  "rust/tests/web/observed-callable-contracts.test.mjs": {
+    "bytes": 13031,
+    "sha256": "eb78110f5bdffb57c8a94da4d9adce7cea0a8b6c059e01c392a5a9c45ea5f29d"
+  },
+  "rust/tests/fixtures/observed-callable-contracts.rs": {
+    "bytes": 8568,
+    "sha256": "6e27e6e657821e24ec335cc9e9873a9653e91e41b56b905ad3a68e23c78517db"
+  }
+}

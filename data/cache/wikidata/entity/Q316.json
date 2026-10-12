@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "愛"
+        },
+        "es": {
+          "language": "es",
+          "value": "amor"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "基於感情的強烈、積極的情感"
+        },
+        "es": {
+          "language": "es",
+          "value": "emoción de afecto fuerte y apego personal a las personas y las cosas"
         }
       },
       "aliases": {
@@ -110,6 +118,16 @@
           {
             "language": "zh",
             "value": "愛情"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "amores"
+          },
+          {
+            "language": "es",
+            "value": "amar"
           }
         ]
       }

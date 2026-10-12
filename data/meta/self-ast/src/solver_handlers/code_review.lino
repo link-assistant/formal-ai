@@ -1,0 +1,27 @@
+self_ast_census
+  target src/solver_handlers/code_review.rs
+  language rust
+  fidelity signature
+  byte_len 9645
+  line_count 285
+  content_id source_module_bf7da999d1f3967a
+  symbol_count 18
+  symbols
+    const CUES_PATH 20 20
+    const RULES_PATH 21 21
+    const INTENT 22 22
+    const JS_MARKERS 24 24
+    const DEF_KEYWORDS 26 26
+    function seed_text 29 34
+    function cue_phrases 38 69
+    function template 72 78
+    struct Rule 81 91
+    function rules 93 126
+    function indent_of 129 131
+    function is_loop_header 134 137
+    function is_def_line 140 145
+    function loop_body_lines 149 171
+    struct Finding 174 178
+    function review 182 220
+    function triggered 224 229
+    function handle_code_review 234 285

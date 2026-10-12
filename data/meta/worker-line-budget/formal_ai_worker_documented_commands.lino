@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_documented_commands.js"
+  ceiling 115
+  rationale "Browser twin of documented_language_commands (rust/src/discovery_production_contract.rs) and program_languages (rust/src/coding/catalog/mod.rs), added by the issue #1165 DISCOVER pass on 2026-10-08 (R1165-6): the policy seed's command_procedure rows name, per catalog language and role, the captured documentation page and the tool its command line starts with, and installDocumentedLanguageCommands fills WRITE_PROGRAM_LANGUAGES from those pages at seed install, so no worker row restates a check or run command a captured page states. A new module rather than growth of a numbered shard, which all sit at their ceilings."

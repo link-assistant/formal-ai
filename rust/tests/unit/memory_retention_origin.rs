@@ -95,7 +95,7 @@ fn applying_an_old_eviction_plan_rechecks_the_records_current_origin() {
             ..DreamingConfig::default()
         },
     );
-    assert!(!plan.actions.is_empty());
+    assert_ne!(plan.actions, [] as [formal_ai::DreamingAction; 0]);
     let original = MemoryEvent {
         role: Some("tool".to_owned()),
         ..cache

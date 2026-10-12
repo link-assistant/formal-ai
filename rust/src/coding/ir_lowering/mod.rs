@@ -5,6 +5,7 @@
 //! language but Python, and a gap is named rather than opaque: a
 //! [`LoweringGap`] says which node has no lowering in which language.
 
+pub mod javascript;
 pub mod python;
 pub mod rust;
 
@@ -33,7 +34,8 @@ pub struct LoweringGap {
 pub fn lowerings() -> Vec<&'static dyn LanguageLowering> {
     static PYTHON: python::PythonLowering = python::PythonLowering;
     static RUST: rust::RustLowering = rust::RustLowering;
-    vec![&PYTHON, &RUST]
+    static JAVASCRIPT: javascript::JavaScriptLowering = javascript::JavaScriptLowering;
+    vec![&PYTHON, &RUST, &JAVASCRIPT]
 }
 
 #[must_use]

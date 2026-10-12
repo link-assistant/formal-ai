@@ -1,0 +1,17 @@
+{
+  "wrapperExists": false,
+  "inputs": {
+    "solver_formalization.mjs": {
+      "unchanged": true,
+      "sha256": "46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c"
+    },
+    "translation_formalization.mjs": {
+      "unchanged": true,
+      "sha256": "f4161079a1e37708915bef76e0ddab96a4104745668c051a3d0b0f7330db822b"
+    },
+    "selected-summary.test.mjs": {
+      "unchanged": true,
+      "sha256": "fffe6e3f5fc510f0a84ece6d75885431d413c3ed420c0b6928c370c4fed30656"
+    }
+  }
+}

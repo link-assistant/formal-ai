@@ -164,6 +164,31 @@ struct RenderContext {
     google_auth_type: String,
     model_catalog_path: String,
     working_directory: String,
+    /// The context window and output cap the server serves on `/v1/models`,
+    /// for clients whose config states a model's limits. Probed on the first
+    /// template that names them, never earlier: a client that states no
+    /// limits must not spend a request on the endpoint it is about to call,
+    /// and the probe must follow the wrapper's own server-version check.
+    model_limits: std::cell::OnceCell<(String, String)>,
+}
+
+impl RenderContext {
+    fn model_limits(&self) -> &(String, String) {
+        self.model_limits.get_or_init(|| {
+            // A running server states its own limits; otherwise this host's
+            // capacity is exactly what a wrapper-started server here would
+            // serve.
+            let (window, output) =
+                server::served_model_limits(&self.base_url).unwrap_or_else(|| {
+                    (
+                        ContextCapacity::current()
+                            .map_or(0, |capacity| capacity.context_window_tokens),
+                        crate::server::ADVERTISED_MAX_OUTPUT_TOKENS.unsigned_abs(),
+                    )
+                });
+            (window.to_string(), output.to_string())
+        })
+    }
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -353,6 +378,7 @@ fn render_context(
         google_auth_type,
         model_catalog_path: String::new(),
         working_directory: std::env::current_dir()?.to_string_lossy().into_owned(),
+        model_limits: std::cell::OnceCell::new(),
     };
     // An already-qualified selector (`provider/model`) is passed through: the
     // seed template only supplies the provider a bare alias is missing.
@@ -679,7 +705,7 @@ fn overlay_args(overlay: &[String], caller: &CallerArgs, context: &RenderContext
 }
 
 fn render_template(template: &str, context: &RenderContext) -> String {
-    template
+    let rendered = template
         .replace("{provider_id}", &context.provider_id)
         .replace("{model}", &context.model)
         .replace("{model_selector}", &context.model_selector)
@@ -698,8 +724,23 @@ fn render_template(template: &str, context: &RenderContext) -> String {
         .replace("{protocol_base_env}", &context.protocol_base_env)
         .replace("{google_auth_type}", &context.google_auth_type)
         .replace("{model_catalog_path}", &context.model_catalog_path)
-        .replace("{working_directory}", &context.working_directory)
+        .replace("{working_directory}", &context.working_directory);
+    if ![CONTEXT_WINDOW_SLOT, MAX_OUTPUT_SLOT]
+        .iter()
+        .any(|slot| rendered.contains(slot))
+    {
+        return rendered;
+    }
+    let (window, output) = context.model_limits();
+    rendered
+        .replace(CONTEXT_WINDOW_SLOT, window)
+        .replace(MAX_OUTPUT_SLOT, output)
 }
+
+/// The template slots whose values cost a `GET /v1/models` probe, so they are
+/// filled only when a template names one.
+const CONTEXT_WINDOW_SLOT: &str = concat!("{", "context_window_tokens", "}");
+const MAX_OUTPUT_SLOT: &str = concat!("{", "max_output_tokens", "}");
 
 fn codex_model_catalog(model: &str) -> Result<String, Box<dyn Error>> {
     let context = ContextCapacity::current()?;

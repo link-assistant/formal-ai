@@ -1,0 +1,13 @@
+view
+  id M-b3e236cfdea6
+  lemma selector
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person who chooses or selects out"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a switch that is used to select among alternatives"
+    provenance (wordnet)

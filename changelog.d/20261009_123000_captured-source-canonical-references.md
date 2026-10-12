@@ -1,0 +1,1 @@
+Preserve exact captured source bodies, digests and times while fixing quoted reference syntax. Expose verified registry decoding through the real capture boundary and keep its tamper/duplicate/time tests outside production source. Native canonical parser validation remains pending CI.

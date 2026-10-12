@@ -1,0 +1,9 @@
+view
+  id M-6bc38dc64a55
+  lemma dyne
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of force equal to the force that imparts an acceleration of 1 cm/sec/sec to a mass of 1 gram"
+    provenance (wordnet)

@@ -323,12 +323,26 @@ fn canonicalize_normal(body: &str) -> String {
 
 /// A view of the canonical text with escapes rendered back to characters, used
 /// only for the prose heuristic (so `\n` reads as a word break, not letters).
+/// A named format placeholder (`{path}`, `{count:>3}`) reads as the anonymous
+/// `{}` it stands for: its name is a variable, not a word the reader sees.
 fn heuristic_view(text: &str) -> String {
     let chars: Vec<char> = text.chars().collect();
     let n = chars.len();
     let mut i = 0;
     let mut out = String::new();
     while i < n {
+        if chars[i] == '{' && i + 1 < n && chars[i + 1] != '{' {
+            let close = chars[i + 1..].iter().position(|c| *c == '}');
+            if let Some(length) = close {
+                let inner = &chars[i + 1..i + 1 + length];
+                let name_end = inner.iter().position(|c| *c == ':').unwrap_or(inner.len());
+                if inner[..name_end].iter().all(|c| c.is_ascii_alphanumeric() || *c == '_') {
+                    out.push_str("{}");
+                    i += length + 2;
+                    continue;
+                }
+            }
+        }
         if chars[i] == '\\' && i + 1 < n {
             match chars[i + 1] {
                 'n' | 't' | 'r' => out.push(' '),
@@ -703,6 +717,8 @@ let languages = format!("en ru hi zh");
         assert!(!is_user_facing_prose("en ru hi zh"));
         // Placeholder-heavy format directive with no real words.
         assert!(!is_user_facing_prose("{} {}."));
+        assert!(!is_user_facing_prose("{informal} -> {formal}."));
+        assert!(!is_multi_word_phrase("find {path}"));
     }
 
     #[test]

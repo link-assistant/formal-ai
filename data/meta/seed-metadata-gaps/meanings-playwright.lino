@@ -1,0 +1,9 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-playwright.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-dd2ef6a626a35c2c
+    record "playwright"
+  gap seed-metadata-gap-a5bc7d79541d0864
+    record "playwright_script_request_cue"

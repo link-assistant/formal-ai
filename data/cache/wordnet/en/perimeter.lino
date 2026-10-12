@@ -1,0 +1,21 @@
+language en
+lemma perimeter
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the boundary line or the area immediately inside the boundary"
+    id oewn-13926393-n
+    partOfSpeech n
+    synonyms (margin border)
+  entry
+    definition "a line enclosing a plane areas"
+    id oewn-13894091-n
+    partOfSpeech n
+  entry
+    definition "the size of something as given by the distance around it"
+    id oewn-05108523-n
+    partOfSpeech n
+    synonyms (circumference)
+source "oewn:2024"

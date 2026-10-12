@@ -1,0 +1,9 @@
+view
+  id M-61058e01b0ac
+  lemma memo
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a written proposal or reminder"
+    provenance (wordnet)

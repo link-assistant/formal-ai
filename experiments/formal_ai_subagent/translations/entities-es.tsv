@@ -1,0 +1,4 @@
+definition_merge_header	"Definición combinada de {term}{anchor}\nIdiomas de las fuentes: {languages}\n\nHechos:"
+definition_merge_sources_label	"Fuentes:"
+who_is_unknown_entity	"Todavía no tengo un hecho de Links Notation sobre «{term}». Añade un hecho o una regla en Links Notation y vuelve a ejecutar la solicitud."
+who_is_unknown_entity_suggestion	"Todavía no tengo un hecho de Links Notation sobre «{term}». ¿Quisiste decir «{corrected}»? Añade un hecho o una regla en Links Notation y vuelve a ejecutar la solicitud."

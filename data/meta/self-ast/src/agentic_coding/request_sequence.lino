@@ -1,0 +1,101 @@
+self_ast_census
+  target src/agentic_coding/request_sequence.rs
+  language rust
+  fidelity full_ast
+  byte_len 11204
+  line_count 291
+  content_id source_module_308c1a0a626206a1
+  symbol_count 14
+  symbols
+    const CLAUSE_MARKS 26 26
+    const SEQUENCE_CUE_ROLE 28 28
+    const JOINER_ROLE 30 30
+    function request_sequence 34 55
+    function sequence_cut 60 70
+    function sequence_cues 74 105
+    function cue_at 109 120
+    function unquoted_paths 123 136
+    function sequence_steps 141 189
+    const STEP_TAIL 192 192
+    function with_request 195 210
+    function plan_request_sequence_step 216 225
+    function plan_bound_request_steps 228 268
+    function turn_exchanges 273 291
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 8752
+    named_node_count 1806
+    distinct_node_kinds 69
+    node_kinds
+      arguments 164
+      array_expression 2
+      array_type 16
+      assignment_expression 3
+      binary_expression 34
+      block 43
+      boolean_literal 2
+      break_expression 1
+      call_expression 164
+      captured_pattern 1
+      char_literal 12
+      closure_expression 23
+      closure_parameters 23
+      compound_assignment_expr 2
+      const_item 4
+      continue_expression 1
+      crate 3
+      doc_comment 39
+      else_clause 1
+      escape_sequence 2
+      expression_statement 49
+      field_expression 131
+      field_identifier 131
+      for_expression 5
+      function_item 10
+      function_type 2
+      generic_type 20
+      identifier 410
+      if_expression 14
+      index_expression 10
+      inner_doc_comment_marker 13
+      integer_literal 13
+      let_declaration 40
+      line_comment 43
+      loop_expression 1
+      macro_invocation 3
+      match_arm 2
+      match_block 1
+      match_expression 1
+      match_pattern 2
+      mutable_specifier 13
+      outer_doc_comment_marker 26
+      parameter 24
+      parameters 12
+      parenthesized_expression 4
+      primitive_type 26
+      range_expression 10
+      reference_expression 15
+      reference_type 34
+      return_expression 11
+      scoped_identifier 41
+      scoped_use_list 3
+      source_file 1
+      string_content 7
+      string_literal 8
+      super 14
+      token_tree 5
+      try_expression 6
+      tuple_expression 3
+      tuple_pattern 9
+      tuple_struct_pattern 6
+      tuple_type 2
+      type_arguments 20
+      type_identifier 43
+      unary_expression 9
+      use_declaration 6
+      use_list 3
+      visibility_modifier 3
+      while_expression 1

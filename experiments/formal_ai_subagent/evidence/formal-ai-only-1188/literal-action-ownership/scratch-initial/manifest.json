@@ -1,0 +1,324 @@
+{
+  "schema": "scratch-capability-proposal/v1",
+  "selected": [
+    {
+      "path": "js/agentic/write_request.mjs",
+      "sha256": "948cb31fe912582596fa13376d3b5775473d8d4fa379b0e1ac8180e3ed013772",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/js/agentic/write_request.mjs"
+    },
+    {
+      "path": "js/agentic/general_planner.mjs",
+      "sha256": "e924118d85e19458abb9b50500ecd525efb8c28c3a18dbc25aa33ae094896bc7",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/js/agentic/general_planner.mjs"
+    },
+    {
+      "path": "js/agentic/crate/literal_authoring_contract.mjs",
+      "sha256": "5d6391760fcef61d3ba407aafcb3468d41631f990ff4e40224163af4f02cf6bf",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/js/agentic/crate/literal_authoring_contract.mjs"
+    },
+    {
+      "path": "js/agentic/planner.mjs",
+      "sha256": "0741352438cbc83b4b2f8005e846c43553c4f04f0d989a4ccb5e0d1c822bed09",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/js/agentic/planner.mjs"
+    },
+    {
+      "path": "js/agentic/workspace_change.mjs",
+      "sha256": "6e5d06ce519fc12e11f4850d2f8985897bc6f0a5435228ec28fd842bd9302b58",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/js/agentic/workspace_change.mjs"
+    },
+    {
+      "path": "rust/src/agentic_coding/write_request.rs",
+      "sha256": "c5c13b54ffbe9056fbef2236f92322384b7ec0fdca629f2076d1d81b36a2984e",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/rust/src/agentic_coding/write_request.rs"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/literal_request.rs",
+      "sha256": "1d24a1f07f4bd7c5769496c9fa5a9ed53498436e3e70a045f678247854bd9254",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/rust/src/agentic_coding/general_planner/literal_request.rs"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/content_shape.rs",
+      "sha256": "428a97b68a52038883cdb16b1410ebb437e1ebe073bed0999a998d9d91189eab",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/rust/src/agentic_coding/general_planner/content_shape.rs"
+    },
+    {
+      "path": "rust/src/agentic_coding/planner.rs",
+      "sha256": "1c4ea8703890ffebb30ded69371b17d0364839dd51267e046a9daba8d284ddcd",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/rust/src/agentic_coding/planner.rs"
+    },
+    {
+      "path": "rust/src/agentic_coding/workspace_change.rs",
+      "sha256": "2c46f1e62fdfc7cc288e2544b56b91f18bcf02a53d8343f47f30acd995f3ebe9",
+      "scratchPath": "/private/tmp/formal-ai-only-1188/payload-action-ownership/rust/src/agentic_coding/workspace_change.rs"
+    }
+  ],
+  "raw": [
+    {
+      "name": "T3827-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3827-request.json",
+      "sha256": "af44c5213fcf528fab02aaec03437bc17c362caeda27e3f6bcf6bf09ce9ece22"
+    },
+    {
+      "name": "T3827-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3827-transcript.json",
+      "sha256": "6ed03473783d99de3c250a86865cb474246296cb24a09b32f18c2186c0aa3294"
+    },
+    {
+      "name": "T3827.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3827.log",
+      "sha256": "6ed03473783d99de3c250a86865cb474246296cb24a09b32f18c2186c0aa3294"
+    },
+    {
+      "name": "T3828-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3828-request.json",
+      "sha256": "51ef98ce46685e645e636c6dfe3ba086154c476ee44737a1b0df1602926fe705"
+    },
+    {
+      "name": "T3828-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3828-transcript.json",
+      "sha256": "220724cb0eda51ce01e43f0c30361e60f1bf080fcd5b82c971c89ab7b77abded"
+    },
+    {
+      "name": "T3828.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3828.log",
+      "sha256": "220724cb0eda51ce01e43f0c30361e60f1bf080fcd5b82c971c89ab7b77abded"
+    },
+    {
+      "name": "T3828-audit.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3828-audit.json",
+      "sha256": "c89171532816ade4c7997b18cf85866c88439665052f857776f1e0c641a5d42d"
+    },
+    {
+      "name": "T3829-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3829-request.json",
+      "sha256": "016601e239aaf369e3a956ada78deb0c725b58b7ac06215c41eb359683579a0e"
+    },
+    {
+      "name": "T3829-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3829-transcript.json",
+      "sha256": "5c0f61e92908328291e8df550f08d7ab0aec3111da27e265c6a520c2e3b01b4d"
+    },
+    {
+      "name": "T3829.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3829.log",
+      "sha256": "5c0f61e92908328291e8df550f08d7ab0aec3111da27e265c6a520c2e3b01b4d"
+    },
+    {
+      "name": "T3829-tests.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3829-tests.log",
+      "sha256": "d0c5dc56e2f411deb12480f31577d2661d392ec6aa8067c7f80f0df56ae6f6ca"
+    },
+    {
+      "name": "T3830-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3830-request.json",
+      "sha256": "027bfd38cd6e2a40f33484c6ce1dd8a2ed551149654204c82c1d55e15101e93f"
+    },
+    {
+      "name": "T3830-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3830-transcript.json",
+      "sha256": "31b49168a0c58ece503d1a86e040051492fad02927cfdb32c09aaff91e91d1a2"
+    },
+    {
+      "name": "T3830.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3830.log",
+      "sha256": "31b49168a0c58ece503d1a86e040051492fad02927cfdb32c09aaff91e91d1a2"
+    },
+    {
+      "name": "T3830-tests.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3830-tests.log",
+      "sha256": "2f3ac45f9aa1b63676612775c4fe35bf2273f08bdc7a11e6b3816638b4c639ff"
+    },
+    {
+      "name": "T3831-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3831-request.json",
+      "sha256": "61bef380dd68520b5c6e0d092dc5eee52c89ad97d9dbb0e64ca2a950f923a122"
+    },
+    {
+      "name": "T3831-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3831-transcript.json",
+      "sha256": "972f8a98bbead75a2e4f5f05abb6c07f0f9a9d1e868fbb79890a0d88d17200cd"
+    },
+    {
+      "name": "T3831.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3831.log",
+      "sha256": "972f8a98bbead75a2e4f5f05abb6c07f0f9a9d1e868fbb79890a0d88d17200cd"
+    },
+    {
+      "name": "T3831-tests.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3831-tests.log",
+      "sha256": "7e8a04fbbba681f0ae638ce102f84c7f0213a45f7f21f610bb6e10cf805bbc52"
+    },
+    {
+      "name": "T3832-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3832-request.json",
+      "sha256": "f9563a416577848f076b556f59d1298cd5756340105a17b11e02ac38305ab05d"
+    },
+    {
+      "name": "T3832-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3832-transcript.json",
+      "sha256": "f0fcd78e1cf72319931feea77c27dddebcba1bc9252683e19cc4c16fcf7eaaa8"
+    },
+    {
+      "name": "T3832.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3832.log",
+      "sha256": "f0fcd78e1cf72319931feea77c27dddebcba1bc9252683e19cc4c16fcf7eaaa8"
+    },
+    {
+      "name": "T3832-tests.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3832-tests.log",
+      "sha256": "7407efee525e2592ca444ca832b1da81151ffebe65e5ece856fe261ea806b5b7"
+    },
+    {
+      "name": "T3833-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3833-request.json",
+      "sha256": "72e0b545e02cd5c9e3228e242702eff48ab07c05b5b5246058a6ca01878f77f7"
+    },
+    {
+      "name": "T3833-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3833-transcript.json",
+      "sha256": "2e2f23a2fcb15710f53a8d3b9f51964765d8beca389d2c7ef5525acdd97437cc"
+    },
+    {
+      "name": "T3833.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3833.log",
+      "sha256": "2e2f23a2fcb15710f53a8d3b9f51964765d8beca389d2c7ef5525acdd97437cc"
+    },
+    {
+      "name": "T3833-tests.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3833-tests.log",
+      "sha256": "4feea4e183185706fe8d26a15b7b4c6faa29e30dea556941d052ab342e267125"
+    },
+    {
+      "name": "T3834-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3834-request.json",
+      "sha256": "d26384bd9d724a0edce9291098c0f55500213a3b21ad3b2f4e6ce307b7b81720"
+    },
+    {
+      "name": "T3834-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3834-transcript.json",
+      "sha256": "b95c85e737fec42eed2e6633b498c76d790a43745a3b4ddca34290a1bb317eb4"
+    },
+    {
+      "name": "T3834.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3834.log",
+      "sha256": "b95c85e737fec42eed2e6633b498c76d790a43745a3b4ddca34290a1bb317eb4"
+    },
+    {
+      "name": "T3834-tests.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3834-tests.log",
+      "sha256": "1b6bed066ef3f4678e0edb4102d22242596df5842ec33eca8e06edc9045235a6"
+    },
+    {
+      "name": "T3835-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3835-request.json",
+      "sha256": "bb66452ae8cd3339ff6a2645ba8b0946a02e06d41b6d5bd48bcd767bb0903aa4"
+    },
+    {
+      "name": "T3835-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3835-transcript.json",
+      "sha256": "4926a8020444199e6260c113d18b6c824e1d36390457f5e74cfe0d63e6ee34a8"
+    },
+    {
+      "name": "T3835.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3835.log",
+      "sha256": "4926a8020444199e6260c113d18b6c824e1d36390457f5e74cfe0d63e6ee34a8"
+    },
+    {
+      "name": "T3835-tests.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3835-tests.log",
+      "sha256": "235f649368e819ca0843809e4a07a9e3638b6a5ef044c40514a0a78be2796aad"
+    },
+    {
+      "name": "T3836-request.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3836-request.json",
+      "sha256": "465ef19d2a0f86114b25c3cde78e67b8b628e6ec38cb4c94c61ee9a20302cb6f"
+    },
+    {
+      "name": "T3836-transcript.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3836-transcript.json",
+      "sha256": "220724cb0eda51ce01e43f0c30361e60f1bf080fcd5b82c971c89ab7b77abded"
+    },
+    {
+      "name": "T3836.log",
+      "path": "/private/tmp/formal-ai-only-1188/T3836.log",
+      "sha256": "220724cb0eda51ce01e43f0c30361e60f1bf080fcd5b82c971c89ab7b77abded"
+    },
+    {
+      "name": "T3836-audit.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3836-audit.json",
+      "sha256": "47752cb21304a2e98290f1c6e59311a662485bce2702620697d7121441a06254"
+    },
+    {
+      "name": "T3835-original-promotion.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3835-original-promotion.json",
+      "sha256": "2ece74ee3018057969b8b91ee35e7e5c1d615b86ce1d7215915b2a9196f5bdcc"
+    },
+    {
+      "name": "T3835-original-spanish.json",
+      "path": "/private/tmp/formal-ai-only-1188/T3835-original-spanish.json",
+      "sha256": "0920d9d32fa181af60850acd0c801ec8b1a1612d8e140b16d3fe3b869eb7f350"
+    },
+    {
+      "name": "original-CI-promotion-observation.json",
+      "path": "/private/tmp/pr1188-ci-T4005/observation.json",
+      "sha256": "8335f2d11feecdd9ee476fc2bde7867ea9ce1aab40d851dc0db1eaf06de01860"
+    }
+  ],
+  "prototypes": [
+    {
+      "name": "write-contract.mjs",
+      "path": "/private/tmp/formal-ai-only-1188/payload-action-ownership/write-contract.mjs",
+      "sha256": "33424e066fd1d94fb695f75c3976aa557a8f845c3bf2d1e515bee935267c9487"
+    },
+    {
+      "name": "operation-owner.mjs",
+      "path": "/private/tmp/formal-ai-only-1188/payload-action-ownership/operation-owner.mjs",
+      "sha256": "94e2e4b68309c5fbf9ba4f42212a3f75c5658f3b85ab47f7024ef64d7e494c4d"
+    },
+    {
+      "name": "owned-actions.mjs",
+      "path": "/private/tmp/formal-ai-only-1188/payload-action-ownership/owned-actions.mjs",
+      "sha256": "6a451b4bf4340356515ee56b1dc2e04364b0b6672c186f474fe55c76665ec4c0"
+    },
+    {
+      "name": "ownership.test.mjs",
+      "path": "/private/tmp/formal-ai-only-1188/payload-action-ownership/ownership.test.mjs",
+      "sha256": "b788550b50b0db236d35b790711e45c8dcdf2b1ab43544dfe2da5f475821955e"
+    },
+    {
+      "name": "planner-prototype.mjs",
+      "path": "/private/tmp/formal-ai-only-1188/payload-action-ownership/planner-prototype.mjs",
+      "sha256": "751933811e788d62ccd4972631289bb065650b199b770c65e66b56beced30aa4"
+    },
+    {
+      "name": "full-planner.test.mjs",
+      "path": "/private/tmp/formal-ai-only-1188/payload-action-ownership/full-planner.test.mjs",
+      "sha256": "7bf6215fcbd8e19370a535167fdc24c21a46eedd3f7490742d481ee4b7b6f2f0"
+    },
+    {
+      "name": "native-literal-request.rs",
+      "path": "/private/tmp/formal-ai-only-1188/payload-action-ownership/native-literal-request.rs",
+      "sha256": "b9438125413bcad237cfc385ab80782f1abdf7e0ddbc3608a843bb700276f5ab"
+    },
+    {
+      "name": "native-operation-owner.rs",
+      "path": "/private/tmp/formal-ai-only-1188/payload-action-ownership/native-operation-owner.rs",
+      "sha256": "5a44ab1cb2d6748d1113e40403ba2a3ff7c463c78eec89abfbeaa67dda569ccf"
+    }
+  ],
+  "effects": {
+    "repositoryWrites": 0,
+    "neutralSelectedSourceCopies": 10,
+    "explicitScratchPrototypeWrites": 18,
+    "unchangedNoopWrites": 1,
+    "formatterInvocations": 2,
+    "manualSourceWrites": 0,
+    "autonomousUsefulSynthesis": 0
+  },
+  "validation": {
+    "jsPass": 26,
+    "jsFail": 0,
+    "nativeExecution": "unexecuted draft; standalonefmt only",
+    "broadCodingRetry": "no-plan"
+  }
+}

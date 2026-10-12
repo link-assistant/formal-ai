@@ -1,0 +1,37 @@
+view
+  id M-aae8b792d2b2
+  lemma divide
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a serious disagreement between two groups of people (typically producing tension or hostility)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a ridge of land that separates two adjacent river systems"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "separate into parts or portions"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "perform a division"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "act as a barrier between; stand between"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "move or break apart"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a division or separation"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "force, take, or pull apart"
+    provenance (wordnet)

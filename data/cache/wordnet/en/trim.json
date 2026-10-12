@@ -1,0 +1,198 @@
+{
+  "lemma": "trim",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14521095-n",
+      "partOfSpeech": "n",
+      "definition": "a state of arrangement or appearance",
+      "examples": [
+        "in good trim"
+      ],
+      "synonyms": [
+        "trimness"
+      ]
+    },
+    {
+      "id": "oewn-04491416-n",
+      "partOfSpeech": "n",
+      "definition": "a decoration or adornment typically on the edge of a garment",
+      "examples": [
+        "the trimming on a hat",
+        "the trim on a shirt"
+      ],
+      "synonyms": [
+        "trimming",
+        "passementerie"
+      ]
+    },
+    {
+      "id": "oewn-13850733-n",
+      "partOfSpeech": "n",
+      "definition": "attitude of an aircraft in flight when allowed to take its own orientation"
+    },
+    {
+      "id": "oewn-00360729-n",
+      "partOfSpeech": "n",
+      "definition": "cutting down to the desired size or shape",
+      "synonyms": [
+        "trimming",
+        "clipping"
+      ]
+    },
+    {
+      "id": "oewn-00994531-s",
+      "partOfSpeech": "s",
+      "definition": "thin and fit",
+      "examples": [
+        "the spare figure of a marathon runner",
+        "a body kept trim by exercise"
+      ],
+      "synonyms": [
+        "spare"
+      ]
+    },
+    {
+      "id": "oewn-02432422-s",
+      "partOfSpeech": "s",
+      "definition": "characterized by order and neatness; free from disorder",
+      "examples": [
+        "even the barn was shipshape",
+        "a trim little sailboat"
+      ],
+      "synonyms": [
+        "shipshape",
+        "well-kept"
+      ]
+    },
+    {
+      "id": "oewn-02431847-s",
+      "partOfSpeech": "s",
+      "definition": "neat and smart in appearance",
+      "examples": [
+        "a clean-cut and well-bred young man",
+        "the trig corporal in his jaunty cap",
+        "a trim beard"
+      ],
+      "synonyms": [
+        "clean-cut",
+        "trig"
+      ]
+    },
+    {
+      "id": "oewn-01798494-s",
+      "partOfSpeech": "s",
+      "definition": "severely simple in line or design",
+      "examples": [
+        "a neat tailored suit",
+        "tailored curtains"
+      ],
+      "synonyms": [
+        "tailored"
+      ]
+    },
+    {
+      "id": "oewn-01265128-v",
+      "partOfSpeech": "v",
+      "definition": "remove the edges from and cut down to the desired size",
+      "examples": [
+        "pare one's fingernails",
+        "trim the photograph",
+        "trim lumber"
+      ],
+      "synonyms": [
+        "pare"
+      ]
+    },
+    {
+      "id": "oewn-01683701-v",
+      "partOfSpeech": "v",
+      "definition": "decorate, as with ornaments",
+      "examples": [
+        "trim the christmas tree",
+        "trim a shop window"
+      ]
+    },
+    {
+      "id": "oewn-00430013-v",
+      "partOfSpeech": "v",
+      "definition": "cut down on; make a reduction in",
+      "examples": [
+        "reduce your daily fat intake",
+        "The employer wants to cut back health benefits"
+      ],
+      "synonyms": [
+        "reduce",
+        "cut down",
+        "cut back",
+        "trim down",
+        "trim back",
+        "cut",
+        "bring down"
+      ]
+    },
+    {
+      "id": "oewn-02757982-v",
+      "partOfSpeech": "v",
+      "definition": "balance in flight by regulating the control surfaces",
+      "examples": [
+        "trim an airplane"
+      ]
+    },
+    {
+      "id": "oewn-02757827-v",
+      "partOfSpeech": "v",
+      "definition": "be in equilibrium during a flight",
+      "examples": [
+        "The airplane trimmed"
+      ]
+    },
+    {
+      "id": "oewn-01683328-v",
+      "partOfSpeech": "v",
+      "definition": "decorate (food), as with parsley or other ornamental foods",
+      "synonyms": [
+        "garnish",
+        "dress"
+      ]
+    },
+    {
+      "id": "oewn-01323662-v",
+      "partOfSpeech": "v",
+      "definition": "cultivate, tend, and cut back the growth of",
+      "examples": [
+        "dress the plants in the garden"
+      ],
+      "synonyms": [
+        "snip",
+        "clip",
+        "crop",
+        "lop",
+        "dress",
+        "prune",
+        "cut back"
+      ]
+    },
+    {
+      "id": "oewn-01251346-v",
+      "partOfSpeech": "v",
+      "definition": "cut closely",
+      "examples": [
+        "trim my beard"
+      ],
+      "synonyms": [
+        "shave"
+      ]
+    },
+    {
+      "id": "oewn-00297974-v",
+      "partOfSpeech": "v",
+      "definition": "adjust (sails on a ship) so that the wind is optimally used"
+    }
+  ]
+}

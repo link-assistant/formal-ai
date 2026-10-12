@@ -1,0 +1,388 @@
+Set the contents of js/agentic/general_execution.mjs to «// Execution state machine for a composed general change plan
+// (rust/src/agentic_coding/general_execution.rs).
+
+import { Capability } from './capability.mjs';
+import { isHostedResearchTool, shellCommandTool, toolFor } from './capability_router.mjs';
+import { attach, requestedIn } from './ci_workflow.mjs';
+import { executionRecipeFinalAnswer, planSymbolicCommandReroute } from './command_reroute.mjs';
+import { sourceFromReadResult } from './code_artifact.mjs';
+import { mentionsRoleRaw } from './write_lexicon.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { plainText } from './content.mjs';
+import {
+  GeneralPlanMode, PLAN_PATH, composeGeneralChangePlan, planLinksNotation, plannedNotExecutedAnswer,
+  repositoryWorkReference, shellQuote,
+} from './general_planner.mjs';
+import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
+import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
+import { Progress, isWorkItemRead } from './progress.mjs';
+import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure } from './tool_result.mjs';
+import { fill } from './work_item_steps.mjs';
+import { programContractAnswer } from './crate/coding_program_contract.mjs';
+import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
+import { detect } from './crate/language.mjs';
+import { localizedResponse } from './crate/seed.mjs';
+import { isAsciiDigit, splitWhitespace, trim, trimEndMatches, charIn } from './write_str.mjs';
+
+/**
+ * Mirrors `fn plan_general_change_step`.
+ * @param {Array<object>} messages
+ * @param {Array<string>} toolNames
+ * @param {object} plan a `GeneralChangePlan` (general_planner.mjs)
+ */
+export function planGeneralChangeStep(messages, toolNames, plan) {
+  return generalChangeStep(messages, toolNames, plan, false);
+}
+
+/** Mirrors `fn plan_work_item_change_step`. */
+export function planWorkItemChangeStep(messages, toolNames, plan) {
+  return generalChangeStep(messages, toolNames, plan, true);
+}
+
+const command = (text) => jsonText({ command: text });
+
+function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
+  // A literal-file write reads its target first unless the request names a
+  // whole-file write, and never replaces an existing file unasked (PR #1188 T96).
+  const guarded = guardedStep(plan, messages, toolNames);
+  if (guarded !== null) return guarded;
+  const progress = Progress.scan(messages);
+  const latestFailure = progress.latestFailure();
+  const workItemUnreadable = plan.mode === GeneralPlanMode.RepositoryWorkItem
+    && latestFailure !== null
+    && (latestFailure.capability === Capability.Fetch || isWorkItemRead(latestFailure));
+  const targetMissing = latestFailure !== null && isGuardRead(plan,
+    latestFailure.arguments === null || latestFailure.arguments === undefined ? null : toolArgumentPath(latestFailure.arguments),
+    latestFailure.capability);
+  const eventMissing = latestFailure !== null && latestFailure.capability === Capability.Read
+    && toolArgumentPath(latestFailure.arguments) === PLAN_PATH && absentPlanEvent(latestFailure.detail);
+  const failure = workItemUnreadable || targetMissing || eventMissing ? null : latestFailure;
+  if (failure) {
+    if (failure.capability === Capability.Write) {
+      const path = failure.arguments === null || failure.arguments === undefined ? null : toolArgumentPath(failure.arguments);
+      const readTool = toolFor(toolNames, Capability.Read);
+      if (path !== null && readTool && progress.failedWriteCountFor(path) === 1) {
+        return planOne(readTool, readArguments(path));
+      }
+      const writeTool = toolFor(toolNames, Capability.Write);
+      if (path === PLAN_PATH && plan.mode === GeneralPlanMode.LiteralFile && !readTool
+        && progress.failedWriteCountFor(PLAN_PATH) === 1 && writeTool) {
+        return planOne(writeTool, writeArguments(plan.target, plan.content));
+      }
+      const runTool = shellCommandTool(toolNames);
+      if (plan.mode !== GeneralPlanMode.RepositoryWorkItem && trim(plan.verification_command) !== ''
+        && progress.runCountFor(plan.verification_command) === 0 && runTool) {
+        return planOne(runTool, command(plan.verification_command));
+      }
+      return finalAnswer(renderFailure(path ?? 'write', failure.detail, plan.goal));
+    }
+    if (failure.capability === Capability.Run) {
+      const output = progress.latestRunOutputFor(plan.verification_command);
+      const report = output === null || output === undefined
+        ? null
+        : failedVerification([output], plan.verification_command, plan.goal);
+      if (report !== null && report !== undefined) return finalAnswer(report);
+    }
+    const previous = progress.previousAttempt();
+    const recoveringMissingWrite = failure.capability === Capability.Read
+      && Boolean(previous) && previous.capability === Capability.Write && !previous.succeeded;
+    if (!recoveringMissingWrite) {
+      return finalAnswer(renderFailure(capabilityLabel(failure.capability), failure.detail, plan.goal));
+    }
+  }
+  const previous = progress.previousAttempt();
+  const recoveringWrite = progress.last() === Capability.Read
+    && Boolean(previous) && previous.capability === Capability.Write && !previous.succeeded;
+  if (recoveringWrite) {
+    const tool = toolFor(toolNames, Capability.Write);
+    const args = previous.arguments;
+    if (tool && args !== null && args !== undefined) return planOne(tool, args);
+  }
+  if (plan.mode === GeneralPlanMode.RepositoryWorkItem) {
+    const fetched = repositoryWorkItemObjective(plan, progress);
+    if (fetched !== null) {
+      const step = planWorkItemExecution(fetched, messages, toolNames);
+      if (step) return step;
+    } else {
+      const step = planWorkItemRead(messages, toolNames, plan.target, progress);
+      if (step) return step;
+    }
+    const report = workItemReadFailureReport(plan, progress);
+    if (report !== null) return finalAnswer(report);
+  }
+  const eventStep = planEventStep(plan, progress, toolNames);
+  if (eventStep !== null) return eventStep;
+  const writeTool = toolFor(toolNames, Capability.Write);
+  if (writeTool && plan.mode === GeneralPlanMode.LiteralFile && !progress.successfulWriteFor(plan.target)) {
+    return planOne(writeTool, writeArguments(plan.target, plan.content));
+  }
+  const runTool = shellCommandTool(toolNames);
+  if (runTool) {
+    if (plan.mode === GeneralPlanMode.CommandOutput) {
+      const generation = plan.steps[1]?.command ?? null;
+      if (generation !== null) {
+        if (progress.successfulRunCountFor(generation) === 0) return planOne(runTool, command(generation));
+        if (progress.successfulRunCountFor(plan.verification_command) === 0) {
+          return planOne(runTool, command(plan.verification_command));
+        }
+      }
+    } else if (plan.mode === GeneralPlanMode.LiteralFile && progress.successfulRunCountFor(plan.verification_command) === 0) {
+      return planOne(runTool, command(plan.verification_command));
+    }
+  }
+  return finishGeneralChange(plan, progress, resolvedFromWorkItem);
+}
+
+// The event stream is an observed artifact: generic Write replaces bytes, so
+// read its previous contents before composing an append and verify afterwards.
+function absentPlanEvent(detail) {
+  return mentionsRoleRaw('filesystem_absent_result', normalizePrompt(detail));
+}
+
+function planEventAppendCommand(plan) {
+  const event = planLinksNotation(plan);
+  const identity = event.split('\n')[1];
+  const path = shellQuote(PLAN_PATH);
+  return 'mkdir -p -- .formal-ai && ('
+    + 'if [ -f ' + path + ' ]; then grep -Fqx -- ' + shellQuote(identity) + ' ' + path + '; status=$?; '
+    + '[ "$status" -le 1 ] || exit "$status"; else status=1; fi; '
+    + 'if [ "$status" -eq 1 ]; then printf \'\\n%s\' ' + shellQuote(event) + ' >> ' + path + ' || exit $?; fi; '
+    + 'cat -- ' + path + ')';
+}
+
+function unverifiedPlanEvent(plan) {
+  return finalAnswer(generalPlanUnverified({ ...plan, target: PLAN_PATH, verification_command: 'cat ' + PLAN_PATH }));
+}
+
+function planEventStep(plan, progress, toolNames) {
+  const event = planLinksNotation(plan);
+  const identity = event.split('\n')[1];
+  const read = toolFor(toolNames, Capability.Read);
+  const write = toolFor(toolNames, Capability.Write);
+  if (read && write) {
+    const output = progress.successfulReadOutputFor(PLAN_PATH);
+    const prior = output === null ? null : sourceFromReadResult(output);
+    const expected = progress.successfulWriteContentFor(PLAN_PATH);
+    if (expected !== null) {
+      if (prior !== null && prior.startsWith(expected)) return null;
+      if (progress.last() === Capability.Read
+        && toolArgumentPath(progress.latestSuccessfulArguments(Capability.Read)) === PLAN_PATH) return unverifiedPlanEvent(plan);
+      return planOne(read, readArguments(PLAN_PATH));
+    }
+    if (prior !== null && prior.split('\n').includes(identity)) return prior.includes(event) ? null : unverifiedPlanEvent(plan);
+    const failure = progress.latestFailure();
+    const missing = failure !== null && failure.capability === Capability.Read
+      && toolArgumentPath(failure.arguments) === PLAN_PATH && absentPlanEvent(failure.detail);
+    if (prior === null && !missing) return planOne(read, readArguments(PLAN_PATH));
+    const before = prior ?? '';
+    const separator = before !== '' && !before.endsWith('\n') ? '\n' : '';
+    return planOne(write, writeArguments(PLAN_PATH, before + separator + event));
+  }
+  const run = shellCommandTool(toolNames);
+  if (!run) return finalAnswer(plannedNotExecutedAnswer(plan));
+  const append = planEventAppendCommand(plan);
+  if (progress.successfulRunCountFor(append) === 0) return planOne(run, command(append));
+  const raw = progress.latestSuccessfulRunOutputFor(append);
+  const observed = raw === null ? null : observedPayload(raw);
+  return observed !== null && observed.includes(event) ? null : unverifiedPlanEvent(plan);
+}
+
+/**
+ * Mirrors `fn plan_work_item_execution`.
+ *
+ * Partial: rust/src/solver.rs `UniversalSolver::default().solve` is consulted
+ * only for the `execution_recipe` its answer carries. The solver's first
+ * recipe-bearing arm, `coding::program_contract::answer`, is ported
+ * (crate/coding_program_contract.mjs) and used here; the later catalog
+ * `write_program` recipe arm is native-only, so a work item only that arm
+ * would answer falls through to the literal-file composer.
+ */
+function planWorkItemExecution(objective, messages, toolNames) {
+  const answer = workItemSolverAnswer(objective);
+  if (answer && answer.execution_recipe && requestedIn(objective)) attach(answer.execution_recipe);
+  const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer) : null;
+  if (step) return step;
+  const executable = composeGeneralChangePlan(objective);
+  if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return null;
+  return planWorkItemChangeStep(messages, toolNames, executable);
+}
+
+function workItemSolverAnswer(objective) {
+  return programContractAnswer(objective);
+}
+
+function planWorkItemRead(messages, toolNames, target, progress) {
+  const fetch = toolFor(toolNames, Capability.Fetch);
+  if (fetch && isHostedResearchTool(fetch)) {
+    return progress.attemptedFetchOf(target) ? null : planOne(fetch, workItemFetchArguments(target));
+  }
+  const run = shellCommandTool(toolNames);
+  if (!progress.attemptedWorkItemReadOf(target) && run) return planOne(run, command(issueViewCommand(target)));
+  if (!progress.attemptedFetchOf(target) && fetch) return planOne(fetch, workItemFetchArguments(target));
+  if (run) {
+    for (const fallback of [issueRestReadCommand(target), issueApiReadCommand(target)]) {
+      if (fallback !== null && !progress.hasRun(fallback)) return planOne(run, command(fallback));
+    }
+  }
+  const preparedPull = preparedPullReference(messages);
+  if (preparedPull !== null && preparedPull !== target && !progress.attemptedFetchOf(preparedPull) && fetch) {
+    return planOne(fetch, workItemFetchArguments(preparedPull));
+  }
+  return null;
+}
+
+function preparedPullReference(messages) {
+  const user = [...messages].reverse().find((message) => message.role.toLowerCase() === 'user');
+  if (!user) return null;
+  for (const token of splitWhitespace(plainText(user.content))) {
+    const reference = repositoryWorkReference(token);
+    if (reference !== null && reference.split('/').reverse()[1] === 'pull') return reference;
+  }
+  return null;
+}
+
+function workItemFetchArguments(target) {
+  return jsonText({ url: target, format: 'text', prompt: fill('issue_fetch_prompt', []) });
+}
+
+/** Mirrors `fn issue_view_command`. @param {string} target */
+export function issueViewCommand(target) {
+  const kind = trimEndMatches(target, charIn('/')).split('/').reverse()[1] === 'pull' ? 'pr' : 'issue';
+  return fill('issue_view_command', [['{kind}', kind], ['{target}', shellQuote(target)]]);
+}
+
+function restSegments(target) {
+  const segments = trimEndMatches(target, charIn('/')).split('/').reverse();
+  if (segments.length < 4) return null;
+  const [number, kindSegment, repo, owner] = segments;
+  let kind;
+  if (kindSegment === 'issue' || kindSegment === 'issues') kind = 'issues';
+  else if (kindSegment === 'pull' || kindSegment === 'pulls') kind = 'pulls';
+  else return null;
+  if (!number || !Array.from(number).every(isAsciiDigit)) return null;
+  return [owner, repo, kind, number];
+}
+
+function restCommand(key, target) {
+  const segments = restSegments(target);
+  if (!segments) return null;
+  const [owner, repo, kind, number] = segments;
+  return fill(key, [['{owner}', owner], ['{repo}', repo], ['{kind}', kind], ['{number}', number]]);
+}
+
+function issueRestReadCommand(target) {
+  return restCommand('issue_rest_read_command', target);
+}
+
+function issueApiReadCommand(target) {
+  return restCommand('issue_api_read_command', target);
+}
+
+function workItemReadFailureReport(plan, progress) {
+  if (!progress.failedWorkItemReadOf(plan.target)) return null;
+  const attempts = progress.workItemReadAttempts(plan.target);
+  if (!attempts.length) return null;
+  return fill('read_failed_report', [['{target}', plan.target], ['{attempts}', attempts.join('\n')]]);
+}
+
+function repositoryWorkItemObjective(plan, progress) {
+  const found = progress.fetched_pages.find(([url]) => url === plan.target);
+  if (!found || trim(found[1]) === '') return null;
+  return found[1];
+}
+
+// Exact declared literal data is evidence, even when its words describe failures.
+// Explicit harness errors and nonzero exit status still veto completion.
+function literalVerificationMatches(plan, output) {
+  return plan.mode === GeneralPlanMode.LiteralFile && output !== null && output !== undefined
+    && !harnessReportedFailure(output) && [null, 0].includes(reportedExitCode(output))
+    && trim(output) === trim(plan.content);
+}
+
+function finishGeneralChange(plan, progress, resolvedFromWorkItem) {
+  if (plan.mode === GeneralPlanMode.RepositoryWorkItem) return finalAnswer(plannedNotExecutedAnswer(plan));
+  const latest = progress.latestRunOutputFor(plan.verification_command);
+  const report = latest === null || latest === undefined || literalVerificationMatches(plan, latest)
+    ? null
+    : failedVerification([latest], plan.verification_command, plan.goal);
+  if (report !== null && report !== undefined) return finalAnswer(report);
+  if (progress.successfulRunCountFor(plan.verification_command) === 0) return finalAnswer(generalPlanUnverified(plan));
+  if (plan.mode === GeneralPlanMode.LiteralFile) {
+    const output = progress.latestSuccessfulRunOutputFor(plan.verification_command);
+    const observed = output === null || output === undefined ? null : observedPayload(output);
+    if (!literalVerificationMatches(plan, output)
+      && (observed === null || observed === undefined || trim(observed) !== trim(plan.content))) {
+      return finalAnswer(generalPlanMismatch(plan, observed ?? ''));
+    }
+  }
+  if (resolvedFromWorkItem && plan.mode === GeneralPlanMode.LiteralFile) {
+    return finalAnswer(workItemCompletion(plan, progress));
+  }
+  return finalAnswer(generalPlanCompleted(plan));
+}
+
+function workItemCompletion(plan, progress) {
+  const recipe = {
+    language: 'text',
+    source: plan.content,
+    path: plan.target,
+    supporting_files: [],
+    commands: [plan.verification_command],
+  };
+  const output = progress.latestSuccessfulRunOutputFor(plan.verification_command);
+  return executionRecipeFinalAnswer(recipe, output === null || output === undefined ? [] : [output], null);
+}
+
+function generalPlanCompleted(plan) {
+  const language = detect(plan.goal);
+  return (localizedResponse('general_plan_completed', language) ?? '')
+    .split('{target}').join(plan.target)
+    .split('{command}').join(plan.verification_command)
+    .split('{plan_path}').join(PLAN_PATH)
+    .split('{plan}').join(fencedBlock(LINO_FENCE_LANGUAGE, planLinksNotation(plan)));
+}
+
+function toolArgumentPath(args) {
+  let value;
+  try {
+    value = JSON.parse(args);
+  } catch {
+    return null;
+  }
+  if (!value || typeof value !== 'object') return null;
+  for (const key of ['path', 'filePath', 'file_path']) {
+    if (typeof value[key] === 'string') return value[key];
+  }
+  return null;
+}
+
+function readArguments(path) {
+  return jsonText({ path, filePath: path, file_path: path });
+}
+
+const CAPABILITY_LABELS = Object.freeze({
+  search: 'search', fetch: 'fetch', read: 'read', write: 'write', edit: 'edit', run: 'run', grep: 'grep',
+  glob: 'glob', list_dir: 'list directory', todo: 'todo', subagent: 'subagent', read_many: 'read many',
+  multi_edit: 'multi-edit', ask_user: 'ask user',
+});
+
+function capabilityLabel(capability) {
+  return CAPABILITY_LABELS[capability];
+}
+
+function generalPlanMismatch(plan, observed) {
+  const language = detect(plan.goal);
+  const expected = plan.mode === GeneralPlanMode.RepositoryWorkItem ? planLinksNotation(plan) : plan.content;
+  return (localizedResponse('general_plan_verification_mismatch', language) ?? '')
+    .split('{target}').join(plan.target)
+    .split('{expected}').join(trim(expected))
+    .split('{observed}').join(trim(observed));
+}
+
+function generalPlanUnverified(plan) {
+  const language = detect(plan.goal);
+  return (localizedResponse('general_plan_unverified', language) ?? '')
+    .split('{target}').join(plan.target)
+    .split('{command}').join(plan.verification_command);
+}
+»

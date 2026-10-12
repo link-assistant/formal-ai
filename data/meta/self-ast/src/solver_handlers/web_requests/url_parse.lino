@@ -2,19 +2,21 @@ self_ast_census
   target src/solver_handlers/web_requests/url_parse.rs
   language rust
   fidelity signature
-  byte_len 4601
-  line_count 136
-  content_id source_module_fb728acd126071b2
-  symbol_count 11
+  byte_len 5276
+  line_count 151
+  content_id source_module_5b6aa429aac8593f
+  symbol_count 13
   symbols
-    function extract_http_fetch_url 6 9
-    function extract_url_navigate_url 11 14
-    function first_url_candidate 16 24
-    function trim_url_token 26 30
-    function is_url_wrapper_punctuation 32 37
-    function is_url_trailing_punctuation 39 41
-    function normalize_url_candidate 43 69
-    function looks_like_hostname 71 93
-    function role_evidences_web_intent 95 114
-    function is_http_fetch_prompt 116 123
-    function is_url_navigate_prompt 125 136
+    const ROLE_PAGE_FORMALIZATION_ACTION 7 7
+    function extract_http_fetch_url 9 12
+    function extract_url_navigate_url 14 17
+    function first_url_candidate 19 27
+    function trim_url_token 29 33
+    function is_url_wrapper_punctuation 35 40
+    function is_url_trailing_punctuation 42 44
+    function normalize_url_candidate 46 72
+    function looks_like_hostname 74 96
+    function role_evidences_web_intent 98 117
+    function is_http_fetch_prompt 119 126
+    function is_page_formalization_prompt 131 138
+    function is_url_navigate_prompt 140 151

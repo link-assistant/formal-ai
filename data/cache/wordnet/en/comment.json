@@ -1,0 +1,77 @@
+{
+  "lemma": "comment",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06777755-n",
+      "partOfSpeech": "n",
+      "definition": "a statement that expresses a personal opinion or belief or adds information",
+      "examples": [
+        "from time to time she contributed a personal comment on his account",
+        "we would appreciate input from our users on how we can improve our software"
+      ],
+      "synonyms": [
+        "remark",
+        "input"
+      ]
+    },
+    {
+      "id": "oewn-06775422-n",
+      "partOfSpeech": "n",
+      "definition": "a written explanation or criticism or illustration that is added to a book or other textual material",
+      "examples": [
+        "he wrote an extended comment on the proposal"
+      ],
+      "synonyms": [
+        "commentary"
+      ]
+    },
+    {
+      "id": "oewn-07237830-n",
+      "partOfSpeech": "n",
+      "definition": "a report (often malicious) about the behavior of other people",
+      "examples": [
+        "the divorce caused much gossip"
+      ],
+      "synonyms": [
+        "gossip",
+        "scuttlebutt"
+      ]
+    },
+    {
+      "id": "oewn-01060446-v",
+      "partOfSpeech": "v",
+      "definition": "make or write a comment on",
+      "examples": [
+        "he commented the paper of his colleague"
+      ],
+      "synonyms": [
+        "notice",
+        "remark",
+        "point out"
+      ]
+    },
+    {
+      "id": "oewn-01035061-v",
+      "partOfSpeech": "v",
+      "definition": "explain or interpret something"
+    },
+    {
+      "id": "oewn-00963361-v",
+      "partOfSpeech": "v",
+      "definition": "provide interlinear explanations for words or phrases",
+      "examples": [
+        "He annotated on what his teacher had written"
+      ],
+      "synonyms": [
+        "gloss",
+        "annotate"
+      ]
+    }
+  ]
+}

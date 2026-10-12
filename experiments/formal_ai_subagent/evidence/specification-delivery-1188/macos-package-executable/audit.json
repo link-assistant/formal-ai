@@ -1,0 +1,59 @@
+{
+  "archive": "T3749-T3760.json.gz",
+  "compressedSha256": "37298700cddae2d436c9b5f883e602c2dbc6b0c6014c538dd94e2aff94f08de3",
+  "decodedSha256": "71db9ea7efa97e76c9668fc44b6e5676283ba524073a466de3c3ccdd6a32f0b1",
+  "compressedBytes": 127495,
+  "decodedBytes": 688179,
+  "source": [
+    {
+      "path": "scripts/native-release-evidence.mjs",
+      "bytes": 19774,
+      "sha256": "4284379cf988d5d45dcc6dff6268c655eec165268dd65933fb08fbee4671b016"
+    },
+    {
+      "path": ".github/workflows/desktop-release.yml",
+      "bytes": 63421,
+      "sha256": "1c132fe1583db4ccce0e6b9558e0db28ff0f6358fe849c75b3dce34d5e18a40d"
+    },
+    {
+      "path": "rust/tests/web/native-release-evidence.test.mjs",
+      "bytes": 12365,
+      "sha256": "8aef0a71d5e0d1f4c0a5be27b258e87131e401a13628091ab76d6e58690b0828"
+    },
+    {
+      "path": "rust/tests/fixtures/native-release-evidence/observations.mjs",
+      "bytes": 5751,
+      "sha256": "822625df2eea3992d8fa337f1a4ec62932a4b5f70995408c5dbce8d3f921e25b"
+    },
+    {
+      "path": "rust/tests/web/mac-package-executable.test.mjs",
+      "bytes": 7891,
+      "sha256": "672108716edbb47054786bb9c04aad2df4543ed33f3d052f9d2eef9dbb3de5be"
+    },
+    {
+      "path": "changelog.d/20261010_001000_macos_packaged_sidecar_provenance.md",
+      "bytes": 390,
+      "sha256": "e8d38fab7891e7c00ca8ce9a8596d3ce6d77ad3b16a06d44e5e98234231d2741"
+    }
+  ],
+  "counts": {
+    "tasks": 12,
+    "physicalCalls": 23,
+    "writeCalls": 6,
+    "bashCalls": 17
+  },
+  "verification": {
+    "passing": 40,
+    "failures": 0,
+    "skipped": 0,
+    "actionlint": true
+  },
+  "claims": {
+    "nativeCompilation": false,
+    "actualMacPackageExecution": false,
+    "liveSigning": false,
+    "publication": false,
+    "autonomousSynthesis": false,
+    "specificationCountIncrease": false
+  }
+}

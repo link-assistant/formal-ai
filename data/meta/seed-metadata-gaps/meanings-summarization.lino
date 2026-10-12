@@ -1,0 +1,21 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-summarization.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-6811175fa12eb803
+    record "go"
+  gap seed-metadata-gap-5c71494d802652c3
+    record "lets"
+  gap seed-metadata-gap-5dc04b5f2ac79244
+    record "nice"
+  gap seed-metadata-gap-5c24fa41edc44219
+    record "text_summarization_action"
+  gap seed-metadata-gap-ac93b4863ab399f6
+    record "today"
+  gap seed-metadata-gap-0bf79a4311e21e2e
+    record "translation_stop_word"
+  gap seed-metadata-gap-ea2c561de1394978
+    record "walk"
+  gap seed-metadata-gap-fe2491fc830322fb
+    record "weather"

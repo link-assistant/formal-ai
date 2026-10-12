@@ -1,0 +1,45 @@
+{
+  "lemma": "delete",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01551969-v",
+      "partOfSpeech": "v",
+      "definition": "remove or make invisible",
+      "examples": [
+        "Please delete my name from your list"
+      ],
+      "synonyms": [
+        "cancel"
+      ]
+    },
+    {
+      "id": "oewn-01001860-v",
+      "partOfSpeech": "v",
+      "definition": "wipe out digitally or magnetically recorded information",
+      "examples": [
+        "Who erased the files from my hard disk?"
+      ],
+      "synonyms": [
+        "erase"
+      ]
+    },
+    {
+      "id": "oewn-00201227-v",
+      "partOfSpeech": "v",
+      "definition": "cut or eliminate",
+      "examples": [
+        "she edited the juiciest scenes"
+      ],
+      "synonyms": [
+        "edit",
+        "blue-pencil"
+      ]
+    }
+  ]
+}

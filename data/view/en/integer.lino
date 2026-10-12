@@ -1,0 +1,9 @@
+view
+  id M-173d2f112910
+  lemma integer
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "any of the natural numbers (positive or negative) or zero"
+    provenance (wordnet)

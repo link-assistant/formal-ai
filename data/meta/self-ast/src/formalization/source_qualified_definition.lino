@@ -1,0 +1,17 @@
+self_ast_census
+  target src/formalization/source_qualified_definition.rs
+  language rust
+  fidelity signature
+  byte_len 10539
+  line_count 312
+  content_id source_module_06c609e29d8ef9a0
+  symbol_count 8
+  symbols
+    struct Request 10 14
+    function matches_source 15 19
+    function unquote 20 41
+    function literal_end 43 71
+    function request 74 176
+    function render 177 183
+    function unresolved 184 203
+    function try_definition 204 312

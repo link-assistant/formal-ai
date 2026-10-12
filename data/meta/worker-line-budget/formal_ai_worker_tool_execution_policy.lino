@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_tool_execution_policy.js"
+  ceiling 14
+  rationale "Natural language JavaScript execution requires explicit agent mode, with truthful refusal and actual executor status. Initial measured ceiling for a new module; existing ceilings remain unchanged (R1188-U29, 2026-10-10)."

@@ -1,0 +1,33 @@
+view
+  id M-d54dae7a69a6
+  lemma arrange
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put into a proper or systematic order"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make arrangements for"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "plan, organize, and carry out (an event)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "set (printed matter) into a specific format"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange attractively"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "adapt for performance in a different way"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "arrange thoughts, ideas, temporal events"
+    provenance (wordnet)

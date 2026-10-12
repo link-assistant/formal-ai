@@ -1,14 +1,17 @@
 Q43663
   aliases
     en (socks)
+    es (soquete calcetines calcetin "media corta")
     ru ("носки")
     zh ("短袜")
   descriptions
     en "garment worn on foot and leg; made from materials like cotton, wool, or synthetics, they provide protection, warmth, comfort, and reduce friction inside shoes"
+    es "prenda usada en el pie"
     ru "короткий чулок, не доходящий до колена"
   id Q43663
   labels
     en sock
+    es "calcetín"
     hi "जुराब"
     ru "носок"
     zh "短襪"

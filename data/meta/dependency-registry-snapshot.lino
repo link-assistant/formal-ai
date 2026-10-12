@@ -1,0 +1,245 @@
+# Written by `rust-script scripts/check-dependencies-latest.rs --refresh-snapshot`.
+# One flat record per registry answer; `--offline` reads exactly these.
+dependency_registry_snapshot
+  record_type "dependency_registry_snapshot"
+  refreshed_at "2026-10-07T21:07:23Z"
+registry_entry crates_io/base64
+  latest "0.23.1"
+  source_url "https://crates.io/api/v1/crates/base64"
+registry_entry crates_io/clap
+  latest "4.6.7"
+  source_url "https://crates.io/api/v1/crates/clap"
+registry_entry crates_io/command-stream
+  latest "1.5.3"
+  source_url "https://crates.io/api/v1/crates/command-stream"
+registry_entry crates_io/egg
+  latest "0.11.0"
+  source_url "https://crates.io/api/v1/crates/egg"
+registry_entry crates_io/fs2
+  latest "0.4.3"
+  source_url "https://crates.io/api/v1/crates/fs2"
+registry_entry crates_io/kamadak-exif
+  latest "0.6.1"
+  source_url "https://crates.io/api/v1/crates/kamadak-exif"
+registry_entry crates_io/link-calculator
+  latest "0.22.0"
+  source_url "https://crates.io/api/v1/crates/link-calculator"
+registry_entry crates_io/links-notation
+  latest "0.23.0"
+  source_url "https://crates.io/api/v1/crates/links-notation"
+registry_entry crates_io/lino-arguments
+  latest "0.4.0"
+  source_url "https://crates.io/api/v1/crates/lino-arguments"
+registry_entry crates_io/lino-objects-codec
+  latest "0.8.0"
+  source_url "https://crates.io/api/v1/crates/lino-objects-codec"
+registry_entry crates_io/meta-language
+  latest "0.58.2"
+  source_url "https://crates.io/api/v1/crates/meta-language"
+registry_entry crates_io/nom
+  latest "8.0.0"
+  source_url "https://crates.io/api/v1/crates/nom"
+registry_entry crates_io/regex
+  latest "1.13.1"
+  source_url "https://crates.io/api/v1/crates/regex"
+registry_entry crates_io/serde
+  latest "1.0.229"
+  source_url "https://crates.io/api/v1/crates/serde"
+registry_entry crates_io/serde_json
+  latest "1.0.151"
+  source_url "https://crates.io/api/v1/crates/serde_json"
+registry_entry crates_io/sha2
+  latest "0.11.0"
+  source_url "https://crates.io/api/v1/crates/sha2"
+registry_entry crates_io/shell-words
+  latest "1.1.1"
+  source_url "https://crates.io/api/v1/crates/shell-words"
+registry_entry crates_io/temp-env
+  latest "0.3.6"
+  source_url "https://crates.io/api/v1/crates/temp-env"
+registry_entry crates_io/thread-priority
+  latest "3.1.1"
+  source_url "https://crates.io/api/v1/crates/thread-priority"
+registry_entry crates_io/tokio
+  latest "1.53.2"
+  source_url "https://crates.io/api/v1/crates/tokio"
+registry_entry crates_io/toml_edit
+  latest "0.25.15+spec-1.1.0"
+  source_url "https://crates.io/api/v1/crates/toml_edit"
+registry_entry crates_io/unicode-general-category
+  latest "1.1.0"
+  source_url "https://crates.io/api/v1/crates/unicode-general-category"
+registry_entry crates_io/unicode-normalization
+  latest "0.1.25"
+  source_url "https://crates.io/api/v1/crates/unicode-normalization"
+registry_entry crates_io/walkdir
+  latest "2.5.0"
+  source_url "https://crates.io/api/v1/crates/walkdir"
+registry_entry crates_io/which
+  latest "8.0.6"
+  source_url "https://crates.io/api/v1/crates/which"
+registry_entry npm/@chakra-ui/react
+  latest "3.37.0"
+  source_url "https://registry.npmjs.org/@chakra-ui/react"
+registry_entry npm/@emotion/react
+  latest "11.14.0"
+  source_url "https://registry.npmjs.org/@emotion/react"
+registry_entry npm/@link-assistant/web-capture
+  latest "1.12.0"
+  source_url "https://registry.npmjs.org/@link-assistant/web-capture"
+registry_entry npm/@link-assistant/web-search
+  latest "0.11.1"
+  source_url "https://registry.npmjs.org/@link-assistant/web-search"
+registry_entry npm/@playwright/test
+  latest "1.64.0"
+  source_url "https://registry.npmjs.org/@playwright/test"
+registry_entry npm/@vscode/test-web
+  latest "0.0.81"
+  source_url "https://registry.npmjs.org/@vscode/test-web"
+registry_entry npm/@vscode/vsce
+  latest "4.0.0"
+  source_url "https://registry.npmjs.org/@vscode/vsce"
+registry_entry npm/agent-commander
+  latest "0.11.0"
+  source_url "https://registry.npmjs.org/agent-commander"
+registry_entry npm/command-stream
+  latest "2.0.0"
+  source_url "https://registry.npmjs.org/command-stream"
+registry_entry npm/dompurify
+  latest "3.4.16"
+  source_url "https://registry.npmjs.org/dompurify"
+registry_entry npm/electron
+  latest "44.7.0"
+  source_url "https://registry.npmjs.org/electron"
+registry_entry npm/electron-builder
+  latest "26.15.3"
+  source_url "https://registry.npmjs.org/electron-builder"
+registry_entry npm/electron-updater
+  latest "6.8.9"
+  source_url "https://registry.npmjs.org/electron-updater"
+registry_entry npm/esbuild
+  latest "0.28.2"
+  source_url "https://registry.npmjs.org/esbuild"
+registry_entry npm/lino-i18n
+  latest "0.3.0"
+  source_url "https://registry.npmjs.org/lino-i18n"
+registry_entry npm/marked
+  latest "18.1.0"
+  source_url "https://registry.npmjs.org/marked"
+registry_entry npm/playwright
+  latest "1.64.0"
+  source_url "https://registry.npmjs.org/playwright"
+registry_entry npm/react
+  latest "19.3.0"
+  source_url "https://registry.npmjs.org/react"
+registry_entry npm/react-dom
+  latest "19.3.0"
+  source_url "https://registry.npmjs.org/react-dom"
+registry_entry npm/serve
+  latest "14.2.6"
+  source_url "https://registry.npmjs.org/serve"
+registry_entry npm/tesseract.js
+  latest "7.0.0"
+  source_url "https://registry.npmjs.org/tesseract.js"
+registry_entry npm/typescript
+  latest "7.0.2"
+  source_url "https://registry.npmjs.org/typescript"
+registry_entry github_action/Swatinem/rust-cache
+  latest "v2.9.2"
+  source_url "https://api.github.com/repos/Swatinem/rust-cache/releases/latest"
+registry_entry github_action/actions/attest
+  latest "v4.2.2"
+  source_url "https://api.github.com/repos/actions/attest/releases/latest"
+registry_entry github_action/actions/cache
+  latest "v6.1.0"
+  source_url "https://api.github.com/repos/actions/cache/releases/latest"
+registry_entry github_action/actions/cache/restore
+  latest "v6.1.0"
+  source_url "https://api.github.com/repos/actions/cache/releases/latest"
+registry_entry github_action/actions/checkout
+  latest "v7.0.1"
+  source_url "https://api.github.com/repos/actions/checkout/releases/latest"
+registry_entry github_action/actions/configure-pages
+  latest "v6.0.0"
+  source_url "https://api.github.com/repos/actions/configure-pages/releases/latest"
+registry_entry github_action/actions/create-github-app-token
+  latest "v3.2.0"
+  source_url "https://api.github.com/repos/actions/create-github-app-token/releases/latest"
+registry_entry github_action/actions/dependency-review-action
+  latest "v5.0.0"
+  source_url "https://api.github.com/repos/actions/dependency-review-action/releases/latest"
+registry_entry github_action/actions/deploy-pages
+  latest "v5.0.1"
+  source_url "https://api.github.com/repos/actions/deploy-pages/releases/latest"
+registry_entry github_action/actions/download-artifact
+  latest "v8.0.2"
+  source_url "https://api.github.com/repos/actions/download-artifact/releases/latest"
+registry_entry github_action/actions/setup-node
+  latest "v7.0.0"
+  source_url "https://api.github.com/repos/actions/setup-node/releases/latest"
+registry_entry github_action/actions/setup-python
+  latest "v7.0.0"
+  source_url "https://api.github.com/repos/actions/setup-python/releases/latest"
+registry_entry github_action/actions/upload-artifact
+  latest "v7.0.2"
+  source_url "https://api.github.com/repos/actions/upload-artifact/releases/latest"
+registry_entry github_action/actions/upload-pages-artifact
+  latest "v5.0.0"
+  source_url "https://api.github.com/repos/actions/upload-pages-artifact/releases/latest"
+registry_entry github_action/codecov/codecov-action
+  latest "v7.1.1"
+  source_url "https://api.github.com/repos/codecov/codecov-action/releases/latest"
+registry_entry github_action/docker/build-push-action
+  latest "v7.4.0"
+  source_url "https://api.github.com/repos/docker/build-push-action/releases/latest"
+registry_entry github_action/docker/login-action
+  latest "v4.6.0"
+  source_url "https://api.github.com/repos/docker/login-action/releases/latest"
+registry_entry github_action/docker/metadata-action
+  latest "v6.2.0"
+  source_url "https://api.github.com/repos/docker/metadata-action/releases/latest"
+registry_entry github_action/docker/setup-buildx-action
+  latest "v4.4.1"
+  source_url "https://api.github.com/repos/docker/setup-buildx-action/releases/latest"
+registry_entry github_action/github/codeql-action/analyze
+  latest "v4.38.2"
+  source_url "https://api.github.com/repos/github/codeql-action/releases/latest"
+registry_entry github_action/github/codeql-action/autobuild
+  latest "v4.38.2"
+  source_url "https://api.github.com/repos/github/codeql-action/releases/latest"
+registry_entry github_action/github/codeql-action/init
+  latest "v4.38.2"
+  source_url "https://api.github.com/repos/github/codeql-action/releases/latest"
+registry_entry github_action/lycheeverse/lychee-action
+  latest "v2.9.0"
+  source_url "https://api.github.com/repos/lycheeverse/lychee-action/releases/latest"
+registry_entry github_action/mozilla-actions/sccache-action
+  latest "v0.0.11"
+  source_url "https://api.github.com/repos/mozilla-actions/sccache-action/releases/latest"
+registry_entry github_action/oven-sh/setup-bun
+  latest "v2.2.0"
+  source_url "https://api.github.com/repos/oven-sh/setup-bun/releases/latest"
+registry_entry github_action/peter-evans/create-pull-request
+  latest "v8.1.1"
+  source_url "https://api.github.com/repos/peter-evans/create-pull-request/releases/latest"
+registry_entry github_action/taiki-e/install-action
+  latest "v2.87.26"
+  source_url "https://api.github.com/repos/taiki-e/install-action/releases/latest"
+registry_entry github_action/taiki-e/setup-cross-toolchain-action
+  latest "v1.42.0"
+  source_url "https://api.github.com/repos/taiki-e/setup-cross-toolchain-action/releases/latest"
+registry_entry github_action/zizmorcore/zizmor-action
+  latest "v0.6.4"
+  source_url "https://api.github.com/repos/zizmorcore/zizmor-action/releases/latest"
+registry_entry docker_image/konard/box-dind
+  latest "2.10.2"
+  source_url "https://hub.docker.com/v2/repositories/konard/box-dind/tags"
+registry_entry docker_image/rust
+  latest "1.99.0"
+  source_url "https://hub.docker.com/v2/repositories/rust/tags"
+registry_entry docker_image/ubuntu
+  latest "26.10"
+  source_url "https://hub.docker.com/v2/repositories/ubuntu/tags"
+registry_entry rust_toolchain/rustc
+  latest "1.99.0"
+  source_url "https://static.rust-lang.org/dist/channel-rust-stable.toml"

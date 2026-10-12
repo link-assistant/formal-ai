@@ -324,6 +324,10 @@ fn try_recall_previous_message(
         render_previous_message(role, &content, language)
     } else {
         log.append("filter:user", "previous_message:none".to_owned());
+        log.append(
+            "conversation_recall:refusal",
+            "no previous message".to_owned(),
+        );
         render_no_previous_message(language)
     };
     Some(finalize_simple(
@@ -440,6 +444,14 @@ fn try_memory_recall(
         &body,
         0.9,
     ))
+}
+
+/// Whether the request names a term to recall from the conversation.
+///
+/// The `recall_query_term` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn names_recall_query(normalized: &str) -> bool {
+    recognize_recall_query(normalized).is_some()
 }
 
 fn recognize_recall_query(normalized: &str) -> Option<RecallQuery> {
@@ -709,52 +721,30 @@ fn memory_conversation_count(matches: &[MemoryRecallMatch]) -> usize {
 }
 
 fn render_recall_report(query: &RecallQuery, matches: &[RecallMatch], language: &str) -> String {
-    if matches.is_empty() {
-        return match language {
-            "ru" => format!(
-                "Упоминаний \"{}\" в истории разговора не найдено.",
-                query.term
-            ),
-            "zh" => format!("在对话历史中没有找到 \"{}\"。", query.term),
-            "hi" => format!("बातचीत के इतिहास में \"{}\" नहीं मिला.", query.term),
-            _ => format!(
-                "No mentions of \"{}\" found in the conversation history.",
-                query.term
-            ),
-        };
-    }
-
-    let mut body = match language {
-        "ru" => format!(
-            "Найдено упоминаний \"{}\" в истории разговора: {}\n",
-            query.term,
-            matches.len()
-        ),
-        "zh" => format!(
-            "在对话历史中找到 \"{}\" 的记录: {}\n",
-            query.term,
-            matches.len()
-        ),
-        "hi" => format!(
-            "बातचीत के इतिहास में \"{}\" के उल्लेख मिले: {}\n",
-            query.term,
-            matches.len()
-        ),
-        _ => format!(
-            "Found {} mention(s) of \"{}\" in the conversation history.\n",
-            matches.len(),
-            query.term
-        ),
+    let count = matches.len().to_string();
+    let intent = if matches.is_empty() {
+        "conversation-recall-empty"
+    } else {
+        "conversation-recall-header"
     };
+    let mut lines = vec![seed::render_localized_once(
+        intent,
+        language,
+        &[("term", &query.term), ("count", &count)],
+    )];
     for matched in matches {
-        writeln!(
-            body,
-            "- turn {} {}: {}",
-            matched.turn_index, matched.role, matched.content
-        )
-        .expect("string write is infallible");
+        let turn = matched.turn_index.to_string();
+        lines.push(seed::render_localized_once(
+            "conversation-recall-turn",
+            language,
+            &[
+                ("turn", &turn),
+                ("role", matched.role),
+                ("content", &matched.content),
+            ],
+        ));
     }
-    body.trim_end().to_owned()
+    lines.join("\n").trim_end().to_owned()
 }
 
 fn render_memory_recall_report(

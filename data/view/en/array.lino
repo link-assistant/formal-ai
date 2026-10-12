@@ -1,0 +1,29 @@
+view
+  id M-79ee71aece30
+  lemma array
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an orderly arrangement"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an impressive display"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "especially fine or decorative clothing"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an arrangement of aerials spaced to give desired directional characteristics"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "lay out orderly or logically in a line or as if in a line"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "align oneself with a group or a way of thinking"
+    provenance (wordnet)

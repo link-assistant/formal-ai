@@ -7,20 +7,19 @@ use lino_objects_codec::format::parse_indented;
 
 mod seed_and_memory;
 
-const PYTHON_SCRIPT_ANSWER: &str = r#"Here is a minimal Python script:
+const PYTHON_SCRIPT_ANSWER: &str = r"Here is a minimal Python script:
 
 ```python
-print("Hello, world!")
+print('Hello, world!')
 ```
 
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
-Check command: `python3 -m py_compile main.py`
+Execution status: not run; this program was rediscovered from https://wiki.python.org/moin/BeginnersGuide/Programmers/SimpleExamples and its output contract was checked by decomposition, not by executing it.
+Check command: `python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py`
 Run command: `python3 main.py`
-Output:
+Expected output after verification:
 ```text
 Hello, world!
-```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."#;
+```";
 
 const RUST_SCRIPT_ANSWER: &str = r#"Here is a minimal Rust script:
 

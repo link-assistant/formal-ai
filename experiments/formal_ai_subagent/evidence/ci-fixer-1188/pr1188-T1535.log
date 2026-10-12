@@ -1,0 +1,351 @@
+>> read {"filePath":"rust/tests/issue_961_macos_portability.rs","file_path":"rust/tests/issue_961_macos_portability.rs","path":"rust/tests/issue_961_macos_portability.rs"}
+   <file>
+   00001| //! Cross-platform source contracts for the four macOS portability regressions
+   00002| //! reported in issue #961.
+   00003| 
+   00004| #[path = "support/assembled_docs.rs"]
+   00005| mod assembled_docs;
+   00006| 
+   00007| const PACKAGE_WRAPPER: &str = include_str!("../../desktop/scripts/package-macos-with-retry.sh");
+   00008| const SESSION_FILE_TEST: &str = include_str!("issue_757_session_files.rs");
+   00009| const TUI_ISOLATION_TEST: &str = include_str!("integration/issue_819_tui_isolation.rs");
+   00010| const PTY_HELPER: &str = include_str!("integration/pty.rs");
+   00011| const WITH_FORMAL_AI_TEST: &str = include_str!("integration/with_formal_ai.rs");
+   00012| const SYNC_SEED: &str = include_str!("../../scripts/sync-seed.sh");
+   00013| const RUNNER_DISK_CLEANUP: &str = include_str!("../../scripts/free-runner-disk.sh");
+   00014| const RELEASE_WORKFLOW: &str = include_str!("../../.github/workflows/release.yml");
+   00015| const MACOS_CORE_WORKFLOW: &str = include_str!("../../.github/workflows/macos-core-tests.yml");
+   00016| const ISSUE_CASE_STUDY: &str = include_str!("../../docs/case-studies/issue-961/README.md");
+   00017| const PR_CASE_STUDY: &str = include_str!("../../docs/case-studies/pull-request-987/README.md");
+   00018| 
+   00019| fn seed_array_guard_precedes_expansion() -> bool {
+   00020|     let guard = SYNC_SEED.find("if [[ ${#dests[@]} -gt 0 ]]");
+   00021|     let expansion = SYNC_SEED.find("for dst in \"${dests[@]}\"");
+   00022|     matches!((guard, expansion), (Some(guard), Some(expansion)) if guard < expansion)
+   00023| }
+   00024| 
+   00025| /// The denominator the slice step actually passes to `cargo nextest
+   00026| /// --partition`. Issue #961 froze it at twelve; issue #1017 raised it to
+   00027| /// sixteen because the round-robin partitioner balances by test index and never
+   00028| /// by duration. Reading it from the step instead of repeating a literal keeps
+   00029| /// #961's contract -- every supported shard runs -- true at any slice count,
+   00030| /// and still catches the failure it was written for: a matrix that disagrees
+   00031| /// with the denominator silently drops those tests while CI stays green.
+   00032| /// Issue #1059 removed the slice denominator: macOS runs the modules named in
+   00033| /// `data/meta/macos-platform-tests.lino` on one runner rather than a shard of
+   00034| /// the whole suite. The failure this guarded -- a selection that silently drops
+   00035| /// tests while CI stays green -- now takes the shape of an empty module list.
+   00036| fn macos_platform_modules() -> usize {
+   00037|     std::fs::read_to_string(concat!(
+   00038|         env!("CARGO_MANIFEST_DIR"),
+   00039|         "/../data/meta/macos-platform-tests.lino"
+   00040|     ))
+   00041|     .expect("read the macOS platform test list")
+   00042|     .lines()
+   00043|     .filter(|line| line.trim().starts_with("module "))
+   00044|     .count()
+   00045| }
+   00046| 
+   00047| fn supported_macos_test_shards_are_complete() -> bool {
+   00048|     RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1
+   00049|         && RELEASE_WORKFLOW.contains("uses: ./.github/workflows/macos-core-tests.yml")
+   00050|         && MACOS_CORE_WORKFLOW.matches("- { partition:").count() == 1
+   00051|         && macos_platform_modules() >= 5
+   00052|         && MACOS_CORE_WORKFLOW.contains("platform.filter")
+   00053|         && RELEASE_WORKFLOW.contains("test-suite: specification")
+   00054| }
+   00055| 
+   00056| fn macos_portability_failures() -> Vec<&'static str> {
+   00057|     let mut failures = Vec::new();
+   00058| 
+   00059|     if PACKAGE_WRAPPER.contains("formal-ai-macos-package.XXXXXX.log")
+   00060|         || !PACKAGE_WRAPPER.contains("formal-ai-macos-package.log.XXXXXX")
+   00061|     {
+   00062|         failures.push("the package log mktemp placeholder must be the template suffix");
+   00063|     }
+   00064|     if !SESSION_FILE_TEST.contains("proxy_log.canonicalize()") {
+   00065|         failures.push("the expected proxy log path must be canonicalized");
+   00066|     }
+   00067|     if TUI_ISOLATION_TEST.contains(".args([\"-qfec\"")
+   00068|         || WITH_FORMAL_AI_TEST.contains(".args([\"-qfec\"")
+   00069|         || !PTY_HELPER.contains("ScriptDialect::Bsd")
+   00070|         || !PTY_HELPER.contains("command.args([\"-q\", \"/dev/null\", program])")
+   00071|     {
+   00072|         failures.push("PTY tests must select BSD script syntax on macOS");
+   00073|     }
+   00074|     if !seed_array_guard_precedes_expansion() {
+   00075|         failures.push("the empty destination array must be guarded before expansion");
+   00076|     }
+   00077|     if !supported_macos_test_shards_are_complete() {
+   00078|         failures.push("the test matrix must include every supported macOS core slice");
+   00079|     }
+   00080| 
+   00081|     failures
+   00082| }
+   00083| 
+   00084| #[test]
+   00085| fn package_log_uses_a_bsd_portable_mktemp_template() {
+   00086|     assert!(
+   00087|         PACKAGE_WRAPPER.contains("formal-ai-macos-package.log.XXXXXX"),
+   00088|         "BSD mktemp only replaces trailing X characters"
+   00089|     );
+   00090|     assert!(!PACKAGE_WRAPPER.contains("formal-ai-macos-package.XXXXXX.log"));
+   00091| }
+   00092| 
+   00093| #[test]
+   00094| fn proxy_log_expectation_matches_the_canonicalized_product_path() {
+   00095|     assert!(SESSION_FILE_TEST.contains("proxy_log.canonicalize()"));
+   00096| }
+   00097| 
+   00098| #[test]
+   00099| fn pty_tests_do_not_embed_util_linux_only_script_flags() {
+   00100|     assert!(!TUI_ISOLATION_TEST.contains(".args([\"-qfec\""));
+   00101|     assert!(!WITH_FORMAL_AI_TEST.contains(".args([\"-qfec\""));
+   00102|     assert!(PTY_HELPER.contains("ScriptDialect::Bsd"));
+   00103|     assert!(PTY_HELPER.contains("command.args([\"-q\", \"/dev/null\", program])"));
+   00104| }
+   00105| 
+   00106| #[test]
+   00107| fn pty_input_waits_for_tui_readiness_before_writing() {
+   00108|     assert!(PTY_HELPER.contains("interact_after_ready"));
+   00109|     assert!(WITH_FORMAL_AI_TEST.contains("pty::interact_after_ready"));
+   00110| }
+   00111| 
+   00112| #[test]
+   00113| fn seed_sync_guards_an_empty_destination_array() {
+   00114|     assert!(seed_array_guard_precedes_expansion());
+   00115| }
+   00116| 
+   00117| #[test]
+   00118| fn full_test_matrix_runs_on_a_supported_macos_image() {
+   00119|     assert!(supported_macos_test_shards_are_complete());
+   00120|     // Issue #961 needed 25 minutes for the archive build and froze that literal;
+   00121|     // issue #1017 raised it to 30 so the 1200s step budget expires before the
+   00122|     // job cap rather than after it. The floor is the contract -- the archive
+   00123|     // build must still be allowed at least the 25 minutes it was measured to
+   00124|     // need -- so assert the floor instead of an exact value that a later
+   00125|     // headroom increase would break again.
+   00126|     let longest_cap = MACOS_CORE_WORKFLOW
+   00127|         .split("timeout-minutes: ")
+   00128|         .skip(1)
+   00129|         .filter_map(|rest| rest.split('\n').next()?.trim().parse::<u64>().ok())
+   00130|         .max()
+   00131|         .expect("the macOS core workflow must declare job timeouts");
+   00132|     assert!(
+   00133|         longest_cap >= 25,
+   00134|         "the archive build needs at least 25 minutes (issue #961); found {longest_cap}"
+   00135|     );
+   00136|     // Issue #1055: a floor, for the reason the comment above gives -- pinning
+   00137|     // the exact number is what broke this when the budget grew from 1200s to
+   00138|     // 1400s to absorb a cold rebuild after a profile change.
+   00139|     let archive_budget = MACOS_CORE_WORKFLOW
+   00140|         .split("TEST_BUDGET_SECONDS: ")
+   00141|         .skip(1)
+   00142|         .filter_map(|rest| rest.split('\n').next()?.trim().parse::<u64>().ok())
+   00143|         .max()
+   00144|         .expect("the macOS core workflow must budget its archive build");
+   00145|     assert!(
+   00146|         archive_budget >= 1200,
+   00147|         "the archive build needs at least 1200s (issue #961); found {archive_budget}"
+   00148|     );
+   00149|     assert!(MACOS_CORE_WORKFLOW.contains("taiki-e/install-action@nextest"));
+   00150|     // Plan 16 L1 moved the manifest to rust/Cargo.toml, which sits between
+   00151|     // `nextest` and its `archive` subcommand; count the subcommand token on
+   00152|     // cargo-nextest lines instead of the three-word literal, so the contract
+   00153|     // (the archive is built exactly once) survives flag insertions.
+   00154|     let archive_builds = MACOS_CORE_WORKFLOW
+   00155|         .lines()
+   00156|         .filter(|line| line.contains("cargo nextest"))
+   00157|         .filter(|line| line.split_whitespace().any(|token| token == "archive"))
+   00158|         .count();
+   00159|     assert_eq!(archive_builds, 1);
+   00160| }
+   00161| 
+   00162| #[test]
+   00163| fn macos_test_bootstrap_uses_portable_df_syntax() {
+   00164|     assert!(!RUNNER_DISK_CLEANUP.contains("--output=avail"));
+   00165|     assert!(RUNNER_DISK_CLEANUP.contains("df -Pk /"));
+   00166| }
+   00167| 
+   00168| #[cfg(unix)]
+   00169| #[test]
+   00170| fn runner_disk_cleanup_accepts_a_bsd_shaped_df() {
+   00171|     use std::os::unix::fs::PermissionsExt as _;
+   00172|     use std::time::{SystemTime, UNIX_EPOCH};
+   00173| 
+   00174|     let nonce = SystemTime::now()
+   00175|         .duration_since(UNIX_EPOCH)
+   00176|         .expect("clock after epoch")
+   00177|         .as_nanos();
+   00178|     let root = std::env::temp_dir().join(format!(
+   00179|         "formal-ai-issue-961-runner-disk-{}-{nonce}",
+   00180|         std::process::id()
+   00181|     ));
+   00182|     let bin_dir = root.join("bin");
+   00183|     std::fs::create_dir_all(&bin_dir).expect("fake binary directory");
+   00184|     let script = root.join("free-runner-disk.sh");
+   00185|     std::fs::write(&script, RUNNER_DISK_CLEANUP).expect("sandbox cleanup script");
+   00186| 
+   00187|     for (name, body) in [
+   00188|         (
+   00189|             "df",
+   00190|             "#!/bin/sh\ncase \"$1\" in\n  -Pk) printf 'Filesystem 1024-blocks Used Available Capacity Mounted on\\n/dev/mock 100000 50000 50000 50%% /\\n' ;;\n  -h) printf 'Filesystem Size Used Avail Capacity Mounted on\\n/dev/mock 100G 50G 50G 50%% /\\n' ;;\n  *) echo \"df: unrecognized option '$1'\" >&2; exit 64 ;;\nesac\n",
+   00191|         ),
+   00192|         ("sudo", "#!/bin/sh\nexit 0\n"),
+   00193|     ] {
+   00194|         let path = bin_dir.join(name);
+   00195|         std::fs::write(&path, body).expect("fake command");
+   00196|         let mut permissions = std::fs::metadata(&path)
+   00197|             .expect("fake command metadata")
+   00198|             .permissions();
+   00199|         permissions.set_mode(0o755);
+   00200|         std::fs::set_permissions(&path, permissions).expect("fake command permissions");
+   00201|     }
+   00202| 
+   00203|     let mut paths = vec![bin_dir];
+   00204|     paths.extend(std::env::split_paths(
+   00205|         &std::env::var_os("PATH").unwrap_or_default(),
+   00206|     ));
+   00207|     let output = std::process::Command::new("/bin/bash")
+   00208|         .arg(&script)
+   00209|         .env("PATH", std::env::join_paths(paths).expect("sandbox PATH"))
+   00210|         .env("RUNNER_DISK_MIN_MIB", "0")
+   00211|         .output()
+   00212|         .expect("run cleanup against BSD-shaped df");
+   00213|     let stderr = String::from_utf8_lossy(&output.stderr);
+   00214|     std::fs::remove_dir_all(&root).expect("remove runner disk sandbox");
+   00215| 
+   00216|     assert!(output.status.success(), "stderr:\n{stderr}");
+   00217| }
+   00218| 
+   00219| #[test]
+   00220| fn requirement_matrix_and_case_studies_cover_the_complete_issue() {
+   00221|     let requirements = assembled_docs::requirements();
+   00222|     for requirement in ["R961-1", "R961-2", "R961-3", "R961-4", "R961-5", "R961-6"] {
+   00223|         assert!(requirements.contains(requirement));
+   00224|         assert!(ISSUE_CASE_STUDY.contains(requirement));
+   00225|     }
+   00226|     for section in [
+   00227|         "## 1. Collected data",
+   00228|         "## 2. Timeline",
+   00229|         "## 3. Requirements",
+   00230|         "## 4. Root causes",
+   00231|         "## 5. Research and prior art",
+   00232|         "## 6. Tests-first reproduction",
+   00233|         "## 7. Implemented fix",
+   00234|         "## 8. Formal AI / Agent CLI authorship",
+   00235|         "## 9. Verification",
+   00236|     ] {
+   00237|         assert!(ISSUE_CASE_STUDY.contains(section));
+   00238|     }
+   00239|     assert!(PR_CASE_STUDY.contains("## Initial state and discussion audit"));
+   00240|     assert!(PR_CASE_STUDY.contains("## Decisions made in this pull request"));
+   00241|     assert!(PR_CASE_STUDY.contains("## Verification and CI"));
+   00242| }
+   00243| 
+   00244| #[test]
+   00245| fn formal_ai_and_the_real_agent_cli_authored_two_of_seven_smallest_leaves() {
+   00246|     const FORMAL_AI_AUTHORED_LEAVES: usize = 2;
+   00247|     const SMALLEST_REQUIREMENT_LEAVES: usize = 7;
+   00248|     const GENERATED_CHANGELOG: &str = include_str!(
+   00249|         "../../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/20260810_120000_issue_961_macos_ci_parity.md"
+   00250|     );
+   00251|     const GENERATED_DECOMPOSITION: &[u8] = include_bytes!(
+   00252|         "../../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/issue-961-task-decomposition.lino"
+   00253|     );
+   00254|     const CANONICAL_DECOMPOSITION: &[u8] =
+   00255|         include_bytes!("../../docs/case-studies/issue-961/issue-961-task-decomposition.lino");
+   00256|     // Towncrier removes the canonical fragment after publishing it. Keep the
+   00257|     // authorship check valid on release commits by verifying the generated
+   00258|     // fragment against its durable canonical destination instead: CHANGELOG.md
+   00259|     // and the archive its older releases roll into.
+   00260|     let canonical_changelog = assembled_docs::changelog();
+   00261| 
+   00262|     assert!(canonical_changelog.contains(GENERATED_CHANGELOG.trim()));
+   00263|     assert_eq!(GENERATED_DECOMPOSITION, CANONICAL_DECOMPOSITION);
+   00264|     assert_eq!(
+   00265|         FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES,
+   00266|         28
+   00267|     );
+   00268| 
+   00269|     for (agent_log, server_log, session, target) in [
+   00270|         (
+   00271|             include_str!(
+   00272|                 "../../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/agent-cli.log"
+   00273|             ),
+   00274|             include_str!(
+   00275|                 "../../docs/case-studies/issue-961/self-hosting-authorship/changelog-session/formal-ai.log"
+   00276|             ),
+   00277|             "ses_014a75079ffewrf0nGhHCIG06f",
+   00278|             "20260810_120000_issue_961_macos_ci_parity.md",
+   00279|         ),
+   00280|         (
+   00281|             include_str!(
+   00282|                 "../../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/agent-cli.log"
+   00283|             ),
+   00284|             include_str!(
+   00285|                 "../../docs/case-studies/issue-961/self-hosting-authorship/decomposition-session/formal-ai.log"
+   00286|             ),
+   00287|             "ses_014a725dbffeJQOYwc4T0yJjFT",
+   00288|             "issue-961-task-decomposition.lino",
+   00289|         ),
+   00290|     ] {
+   00291|         assert!(agent_log.contains(session));
+   00292|         for evidence in ["planned ToolCalls", "tool=write", "planned Final", target] {
+   00293|             assert!(server_log.contains(evidence));
+   00294|         }
+   00295|     }
+   00296| }
+   00297| 
+   00298| #[cfg(unix)]
+   00299| #[test]
+   00300| fn seed_sync_reaches_the_orphan_pass_with_an_empty_destination() {
+   00301|     use std::time::{SystemTime, UNIX_EPOCH};
+   00302| 
+   00303|     let nonce = SystemTime::now()
+   00304|         .duration_since(UNIX_EPOCH)
+   00305|         .expect("clock after epoch")
+   00306|         .as_nanos();
+   00307|     let root = std::env::temp_dir().join(format!(
+   00308|         "formal-ai-issue-961-sync-seed-{}-{nonce}",
+   00309|         std::process::id()
+   00310|     ));
+   00311|     let script_dir = root.join("scripts");
+   00312|     let source_dir = root.join("data/seed");
+   00313|     let destination_dir = root.join("js/seed");
+   00314|     std::fs::create_dir_all(&script_dir).expect("script directory");
+   00315|     std::fs::create_dir_all(&source_dir).expect("seed source directory");
+   00316|     std::fs::create_dir_all(&destination_dir).expect("empty seed destination directory");
+   00317|     std::fs::write(source_dir.join("canary.lino"), "canary\n").expect("source canary");
+   00318|     std::fs::write(script_dir.join("sync-seed.sh"), SYNC_SEED).expect("sandbox script");
+   00319| 
+   00320|     let output = std::process::Command::new("/bin/bash")
+   00321|         .arg(script_dir.join("sync-seed.sh"))
+   00322|         .arg("--check")
+   00323|         .output()
+   00324|         .expect("run seed sync with the platform Bash");
+   00325|     let stderr = String::from_utf8_lossy(&output.stderr);
+   00326|     std::fs::remove_dir_all(&root).expect("remove seed sync sandbox");
+   00327| 
+   00328|     assert_eq!(output.status.code(), Some(1), "stderr:\n{stderr}");
+   00329|     assert!(
+   00330|         stderr.contains("sync-seed: out of sync"),
+   00331|         "stderr:\n{stderr}"
+   00332|     );
+   00333|     assert!(!stderr.contains("unbound variable"), "stderr:\n{stderr}");
+   00334| }
+   00335| 
+   00336| #[test]
+   00337| fn complete_macos_portability_contract_holds() {
+   00338|     assert_eq!(macos_portability_failures(), Vec::<&str>::new());
+   00339| }
+   00340| 
+   
+   (End of file - total 340 lines)
+   </file>
+>> edit {"filePath":"rust/tests/issue_961_macos_portability.rs","file_path":"rust/tests/issue_961_macos_portability.rs","new":"MACOS_CORE_WORKFLOW.matches(\"runs-on: macos-15-intel\").count() == 2","newString":"MACOS_CORE_WORKFLOW.matches(\"runs-on: macos-15-intel\").count() == 2","new_str":"MACOS_CORE_WORKFLOW.matches(\"runs-on: macos-15-intel\").count() == 2","new_string":"MACOS_CORE_WORKFLOW.matches(\"runs-on: macos-15-intel\").count() == 2","old":"RELEASE_WORKFLOW.matches(\"os: macos-15-intel\").count() == 1","oldString":"RELEASE_WORKFLOW.matches(\"os: macos-15-intel\").count() == 1","old_str":"RELEASE_WORKFLOW.matches(\"os: macos-15-intel\").count() == 1","old_string":"RELEASE_WORKFLOW.matches(\"os: macos-15-intel\").count() == 1","path":"rust/tests/issue_961_macos_portability.rs"}
+>> bash {"command":"sha256sum -- rust/tests/issue_961_macos_portability.rs"}
+   902643fec6a6f17aa59439baf78a4b80496a653419ec31cbaaa2e3032aa86a0c  rust/tests/issue_961_macos_portability.rs
+   
+== answer ==
+Replaced `RELEASE_WORKFLOW.matches("os: macos-15-intel").count() == 1` with `MACOS_CORE_WORKFLOW.matches("runs-on: macos-15-intel").count() == 2` in `rust/tests/issue_961_macos_portability.rs` and observed the result.

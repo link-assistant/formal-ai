@@ -1,0 +1,211 @@
+>> read {"filePath":"js/worker/formal_ai_worker_conversation_history.js","file_path":"js/worker/formal_ai_worker_conversation_history.js","path":"js/worker/formal_ai_worker_conversation_history.js"}
+   <file>
+   00001| // Mirrors recognize_recall_query, term_from_form and recall_matches in
+   00002| // rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.
+   00003| function historyRecallTerm(form, normalized) {
+   00004|   let raw;
+   00005|   if (form.slot === "prefix" && normalized.startsWith(form.before)) {
+   00006|     raw = normalized.slice(form.before.length);
+   00007|   } else if (form.slot === "suffix" && normalized.endsWith(form.after)) {
+   00008|     raw = normalized.slice(0, normalized.length - form.after.length);
+   00009|   } else if (form.slot === "circumfix" && normalized.startsWith(form.before)) {
+   00010|     const rest = normalized.slice(form.before.length);
+   00011|     if (!rest.endsWith(form.after)) return null;
+   00012|     raw = rest.slice(0, rest.length - form.after.length);
+   00013|   } else {
+   00014|     return null;
+   00015|   }
+   00016|   return raw.trim().replace(/^[\s`"':\-_.,?!()]+|[\s`"':\-_.,?!()]+$/gu, "")
+   00017|     .split(/\s+/u).filter(Boolean).join(" ") || null;
+   00018| }
+   00019| 
+   00020| // Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.
+   00021| function historyRecallQuery(normalized) {
+   00022|   const roles = [
+   00023|     [ROLE_CONVERSATION_RECALL_QUERY, "conversation"],
+   00024|     [ROLE_CONVERSATION_RECALL_OTHER_QUERY, "other_conversations"],
+   00025|   ];
+   00026|   for (const [role, scope] of roles) {
+   00027|     for (const form of roleWordForms(role)) {
+   00028|       const term = historyRecallTerm(form, normalized);
+   00029|       if (term) return { term, scope };
+   00030|     }
+   00031|   }
+   00032|   return null;
+   00033| }
+   00034| 
+   00035| // Mirrors try_conversation_recall and render_recall_report: native typed events
+   00036| // record actual matching turn indices; no persisted store is inferred from dialog history.
+   00037| function tryConversationRecall(prompt, normalized, history) {
+   00038|   const query = historyRecallQuery(normalized);
+   00039|   if (!query) return null;
+   00040|   const needle = normalizePrompt(query.term);
+   00041|   const matches = [];
+   00042|   for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {
+   00043|     if (!turn || !["user", "assistant"].includes(turn.role)) continue;
+   00044|     const content = String(turn.content ?? "");
+   00045|     if (needle && normalizePrompt(content).includes(needle)) {
+   00046|       matches.push({ turn: index + 1, role: turn.role, content });
+   00047|     }
+   00048|   }
+   00049|   const solverEvents = [
+   00050|     { kind: "filter:memory_query", payload: query.term },
+   00051|     { kind: "filter:memory_scope", payload: query.scope },
+   00052|     { kind: "filter:memory_matches", payload: String(matches.length) },
+   00053|     ...matches.map((matched) => ({
+   00054|       kind: "memory_match",
+   00055|       payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,
+   00056|     })),
+   00057|   ];
+   00058|   const language = detectLanguage(prompt);
+   00059|   const values = { term: query.term, count: String(matches.length) };
+   00060|   const name = matches.length ? "conversation-recall-header" : "conversation-recall-empty";
+   00061|   const lines = [nativeLaneRender(answerFor(name, language), values)];
+   00062|   for (const matched of matches) {
+   00063|     lines.push(nativeLaneRender(answerFor("conversation-recall-turn", language), matched));
+   00064|   }
+   00065|   return { intent: "conversation_recall", content: lines.join("\n"), confidence: 0.9, solverEvents };
+   00066| }
+   00067| 
+   
+   (End of file - total 67 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_conversation_history.js","file_path":"js/worker/formal_ai_worker_conversation_history.js","new":"// Mirrors recognize_recall_query, term_from_form and recall_matches in\n// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.\nfunction historyRecallTerm(form, normalized) {\n  let raw;\n  if (form.slot === \"prefix\" && normalized.startsWith(form.before)) {\n    raw = normalized.slice(form.before.length);\n  } else if (form.slot === \"suffix\" && normalized.endsWith(form.after)) {\n    raw = normalized.slice(0, normalized.length - form.after.length);\n  } else if (form.slot === \"circumfix\" && normalized.startsWith(form.before)) {\n    const rest = normalized.slice(form.before.length);\n    if (!rest.endsWith(form.after)) return null;\n    raw = rest.slice(0, rest.length - form.after.length);\n  } else {\n    return null;\n  }\n  return raw.trim().replace(/^[\\s`\"':\\-_.,?!()]+|[\\s`\"':\\-_.,?!()]+$/gu, \"\")\n    .split(/\\s+/u).filter(Boolean).join(\" \") || null;\n}\n\n// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.\nfunction historyRecallQuery(normalized) {\n  const roles = [\n    [ROLE_CONVERSATION_RECALL_QUERY, \"conversation\"],\n    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, \"other_conversations\"],\n  ];\n  for (const [role, scope] of roles) {\n    for (const form of roleWordForms(role)) {\n      const term = historyRecallTerm(form, normalized);\n      if (term) return { term, scope };\n    }\n  }\n  return null;\n}\n\n// Mirrors try_conversation_recall and render_recall_report: native typed events\n// record actual matching turn indices; no persisted store is inferred from dialog history.\nfunction tryConversationRecall(prompt, normalized, history) {\n  const query = historyRecallQuery(normalized);\n  if (!query) return null;\n  const needle = normalizePrompt(query.term);\n  const matches = [];\n  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {\n    if (!turn || ![\"user\", \"assistant\"].includes(turn.role)) continue;\n    const content = String(turn.content ?? \"\");\n    if (needle && normalizePrompt(content).includes(needle)) {\n      matches.push({ turn: index + 1, role: turn.role, content });\n    }\n  }\n  const solverEvents = [\n    { kind: \"filter:memory_query\", payload: query.term },\n    { kind: \"filter:memory_scope\", payload: query.scope },\n    { kind: \"filter:memory_matches\", payload: String(matches.length) },\n    ...matches.map((matched) => ({\n      kind: \"memory_match\",\n      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,\n    })),\n  ];\n  const language = detectLanguage(prompt);\n  const values = { term: query.term, count: String(matches.length) };\n  const name = matches.length ? \"conversation-recall-header\" : \"conversation-recall-empty\";\n  const lines = [handlerRulesFillOnce(answerFor(name, language), values)];\n  for (const matched of matches) {\n    lines.push(handlerRulesFillOnce(answerFor(\"conversation-recall-turn\", language), matched));\n  }\n  return { intent: \"conversation_recall\", content: lines.join(\"\\n\"), confidence: 0.9, solverEvents };\n}\n","newString":"// Mirrors recognize_recall_query, term_from_form and recall_matches in\n// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.\nfunction historyRecallTerm(form, normalized) {\n  let raw;\n  if (form.slot === \"prefix\" && normalized.startsWith(form.before)) {\n    raw = normalized.slice(form.before.length);\n  } else if (form.slot === \"suffix\" && normalized.endsWith(form.after)) {\n    raw = normalized.slice(0, normalized.length - form.after.length);\n  } else if (form.slot === \"circumfix\" && normalized.startsWith(form.before)) {\n    const rest = normalized.slice(form.before.length);\n    if (!rest.endsWith(form.after)) return null;\n    raw = rest.slice(0, rest.length - form.after.length);\n  } else {\n    return null;\n  }\n  return raw.trim().replace(/^[\\s`\"':\\-_.,?!()]+|[\\s`\"':\\-_.,?!()]+$/gu, \"\")\n    .split(/\\s+/u).filter(Boolean).join(\" \") || null;\n}\n\n// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.\nfunction historyRecallQuery(normalized) {\n  const roles = [\n    [ROLE_CONVERSATION_RECALL_QUERY, \"conversation\"],\n    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, \"other_conversations\"],\n  ];\n  for (const [role, scope] of roles) {\n    for (const form of roleWordForms(role)) {\n      const term = historyRecallTerm(form, normalized);\n      if (term) return { term, scope };\n    }\n  }\n  return null;\n}\n\n// Mirrors try_conversation_recall and render_recall_report: native typed events\n// record actual matching turn indices; no persisted store is inferred from dialog history.\nfunction tryConversationRecall(prompt, normalized, history) {\n  const query = historyRecallQuery(normalized);\n  if (!query) return null;\n  const needle = normalizePrompt(query.term);\n  const matches = [];\n  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {\n    if (!turn || ![\"user\", \"assistant\"].includes(turn.role)) continue;\n    const content = String(turn.content ?? \"\");\n    if (needle && normalizePrompt(content).includes(needle)) {\n      matches.push({ turn: index + 1, role: turn.role, content });\n    }\n  }\n  const solverEvents = [\n    { kind: \"filter:memory_query\", payload: query.term },\n    { kind: \"filter:memory_scope\", payload: query.scope },\n    { kind: \"filter:memory_matches\", payload: String(matches.length) },\n    ...matches.map((matched) => ({\n      kind: \"memory_match\",\n      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,\n    })),\n  ];\n  const language = detectLanguage(prompt);\n  const values = { term: query.term, count: String(matches.length) };\n  const name = matches.length ? \"conversation-recall-header\" : \"conversation-recall-empty\";\n  const lines = [handlerRulesFillOnce(answerFor(name, language), values)];\n  for (const matched of matches) {\n    lines.push(handlerRulesFillOnce(answerFor(\"conversation-recall-turn\", language), matched));\n  }\n  return { intent: \"conversation_recall\", content: lines.join(\"\\n\"), confidence: 0.9, solverEvents };\n}\n","new_str":"// Mirrors recognize_recall_query, term_from_form and recall_matches in\n// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.\nfunction historyRecallTerm(form, normalized) {\n  let raw;\n  if (form.slot === \"prefix\" && normalized.startsWith(form.before)) {\n    raw = normalized.slice(form.before.length);\n  } else if (form.slot === \"suffix\" && normalized.endsWith(form.after)) {\n    raw = normalized.slice(0, normalized.length - form.after.length);\n  } else if (form.slot === \"circumfix\" && normalized.startsWith(form.before)) {\n    const rest = normalized.slice(form.before.length);\n    if (!rest.endsWith(form.after)) return null;\n    raw = rest.slice(0, rest.length - form.after.length);\n  } else {\n    return null;\n  }\n  return raw.trim().replace(/^[\\s`\"':\\-_.,?!()]+|[\\s`\"':\\-_.,?!()]+$/gu, \"\")\n    .split(/\\s+/u).filter(Boolean).join(\" \") || null;\n}\n\n// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.\nfunction historyRecallQuery(normalized) {\n  const roles = [\n    [ROLE_CONVERSATION_RECALL_QUERY, \"conversation\"],\n    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, \"other_conversations\"],\n  ];\n  for (const [role, scope] of roles) {\n    for (const form of roleWordForms(role)) {\n      const term = historyRecallTerm(form, normalized);\n      if (term) return { term, scope };\n    }\n  }\n  return null;\n}\n\n// Mirrors try_conversation_recall and render_recall_report: native typed events\n// record actual matching turn indices; no persisted store is inferred from dialog history.\nfunction tryConversationRecall(prompt, normalized, history) {\n  const query = historyRecallQuery(normalized);\n  if (!query) return null;\n  const needle = normalizePrompt(query.term);\n  const matches = [];\n  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {\n    if (!turn || ![\"user\", \"assistant\"].includes(turn.role)) continue;\n    const content = String(turn.content ?? \"\");\n    if (needle && normalizePrompt(content).includes(needle)) {\n      matches.push({ turn: index + 1, role: turn.role, content });\n    }\n  }\n  const solverEvents = [\n    { kind: \"filter:memory_query\", payload: query.term },\n    { kind: \"filter:memory_scope\", payload: query.scope },\n    { kind: \"filter:memory_matches\", payload: String(matches.length) },\n    ...matches.map((matched) => ({\n      kind: \"memory_match\",\n      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,\n    })),\n  ];\n  const language = detectLanguage(prompt);\n  const values = { term: query.term, count: String(matches.length) };\n  const name = matches.length ? \"conversation-recall-header\" : \"conversation-recall-empty\";\n  const lines = [handlerRulesFillOnce(answerFor(name, language), values)];\n  for (const matched of matches) {\n    lines.push(handlerRulesFillOnce(answerFor(\"conversation-recall-turn\", language), matched));\n  }\n  return { intent: \"conversation_recall\", content: lines.join(\"\\n\"), confidence: 0.9, solverEvents };\n}\n","new_string":"// Mirrors recognize_recall_query, term_from_form and recall_matches in\n// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.\nfunction historyRecallTerm(form, normalized) {\n  let raw;\n  if (form.slot === \"prefix\" && normalized.startsWith(form.before)) {\n    raw = normalized.slice(form.before.length);\n  } else if (form.slot === \"suffix\" && normalized.endsWith(form.after)) {\n    raw = normalized.slice(0, normalized.length - form.after.length);\n  } else if (form.slot === \"circumfix\" && normalized.startsWith(form.before)) {\n    const rest = normalized.slice(form.before.length);\n    if (!rest.endsWith(form.after)) return null;\n    raw = rest.slice(0, rest.length - form.after.length);\n  } else {\n    return null;\n  }\n  return raw.trim().replace(/^[\\s`\"':\\-_.,?!()]+|[\\s`\"':\\-_.,?!()]+$/gu, \"\")\n    .split(/\\s+/u).filter(Boolean).join(\" \") || null;\n}\n\n// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.\nfunction historyRecallQuery(normalized) {\n  const roles = [\n    [ROLE_CONVERSATION_RECALL_QUERY, \"conversation\"],\n    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, \"other_conversations\"],\n  ];\n  for (const [role, scope] of roles) {\n    for (const form of roleWordForms(role)) {\n      const term = historyRecallTerm(form, normalized);\n      if (term) return { term, scope };\n    }\n  }\n  return null;\n}\n\n// Mirrors try_conversation_recall and render_recall_report: native typed events\n// record actual matching turn indices; no persisted store is inferred from dialog history.\nfunction tryConversationRecall(prompt, normalized, history) {\n  const query = historyRecallQuery(normalized);\n  if (!query) return null;\n  const needle = normalizePrompt(query.term);\n  const matches = [];\n  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {\n    if (!turn || ![\"user\", \"assistant\"].includes(turn.role)) continue;\n    const content = String(turn.content ?? \"\");\n    if (needle && normalizePrompt(content).includes(needle)) {\n      matches.push({ turn: index + 1, role: turn.role, content });\n    }\n  }\n  const solverEvents = [\n    { kind: \"filter:memory_query\", payload: query.term },\n    { kind: \"filter:memory_scope\", payload: query.scope },\n    { kind: \"filter:memory_matches\", payload: String(matches.length) },\n    ...matches.map((matched) => ({\n      kind: \"memory_match\",\n      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,\n    })),\n  ];\n  const language = detectLanguage(prompt);\n  const values = { term: query.term, count: String(matches.length) };\n  const name = matches.length ? \"conversation-recall-header\" : \"conversation-recall-empty\";\n  const lines = [handlerRulesFillOnce(answerFor(name, language), values)];\n  for (const matched of matches) {\n    lines.push(handlerRulesFillOnce(answerFor(\"conversation-recall-turn\", language), matched));\n  }\n  return { intent: \"conversation_recall\", content: lines.join(\"\\n\"), confidence: 0.9, solverEvents };\n}\n","old":"// Mirrors recognize_recall_query, term_from_form and recall_matches in\n// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.\nfunction historyRecallTerm(form, normalized) {\n  let raw;\n  if (form.slot === \"prefix\" && normalized.startsWith(form.before)) {\n    raw = normalized.slice(form.before.length);\n  } else if (form.slot === \"suffix\" && normalized.endsWith(form.after)) {\n    raw = normalized.slice(0, normalized.length - form.after.length);\n  } else if (form.slot === \"circumfix\" && normalized.startsWith(form.before)) {\n    const rest = normalized.slice(form.before.length);\n    if (!rest.endsWith(form.after)) return null;\n    raw = rest.slice(0, rest.length - form.after.length);\n  } else {\n    return null;\n  }\n  return raw.trim().replace(/^[\\s`\"':\\-_.,?!()]+|[\\s`\"':\\-_.,?!()]+$/gu, \"\")\n    .split(/\\s+/u).filter(Boolean).join(\" \") || null;\n}\n\n// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.\nfunction historyRecallQuery(normalized) {\n  const roles = [\n    [ROLE_CONVERSATION_RECALL_QUERY, \"conversation\"],\n    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, \"other_conversations\"],\n  ];\n  for (const [role, scope] of roles) {\n    for (const form of roleWordForms(role)) {\n      const term = historyRecallTerm(form, normalized);\n      if (term) return { term, scope };\n    }\n  }\n  return null;\n}\n\n// Mirrors try_conversation_recall and render_recall_report: native typed events\n// record actual matching turn indices; no persisted store is inferred from dialog history.\nfunction tryConversationRecall(prompt, normalized, history) {\n  const query = historyRecallQuery(normalized);\n  if (!query) return null;\n  const needle = normalizePrompt(query.term);\n  const matches = [];\n  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {\n    if (!turn || ![\"user\", \"assistant\"].includes(turn.role)) continue;\n    const content = String(turn.content ?? \"\");\n    if (needle && normalizePrompt(content).includes(needle)) {\n      matches.push({ turn: index + 1, role: turn.role, content });\n    }\n  }\n  const solverEvents = [\n    { kind: \"filter:memory_query\", payload: query.term },\n    { kind: \"filter:memory_scope\", payload: query.scope },\n    { kind: \"filter:memory_matches\", payload: String(matches.length) },\n    ...matches.map((matched) => ({\n      kind: \"memory_match\",\n      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,\n    })),\n  ];\n  const language = detectLanguage(prompt);\n  const values = { term: query.term, count: String(matches.length) };\n  const name = matches.length ? \"conversation-recall-header\" : \"conversation-recall-empty\";\n  const lines = [nativeLaneRender(answerFor(name, language), values)];\n  for (const matched of matches) {\n    lines.push(nativeLaneRender(answerFor(\"conversation-recall-turn\", language), matched));\n  }\n  return { intent: \"conversation_recall\", content: lines.join(\"\\n\"), confidence: 0.9, solverEvents };\n}\n","oldString":"// Mirrors recognize_recall_query, term_from_form and recall_matches in\n// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.\nfunction historyRecallTerm(form, normalized) {\n  let raw;\n  if (form.slot === \"prefix\" && normalized.startsWith(form.before)) {\n    raw = normalized.slice(form.before.length);\n  } else if (form.slot === \"suffix\" && normalized.endsWith(form.after)) {\n    raw = normalized.slice(0, normalized.length - form.after.length);\n  } else if (form.slot === \"circumfix\" && normalized.startsWith(form.before)) {\n    const rest = normalized.slice(form.before.length);\n    if (!rest.endsWith(form.after)) return null;\n    raw = rest.slice(0, rest.length - form.after.length);\n  } else {\n    return null;\n  }\n  return raw.trim().replace(/^[\\s`\"':\\-_.,?!()]+|[\\s`\"':\\-_.,?!()]+$/gu, \"\")\n    .split(/\\s+/u).filter(Boolean).join(\" \") || null;\n}\n\n// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.\nfunction historyRecallQuery(normalized) {\n  const roles = [\n    [ROLE_CONVERSATION_RECALL_QUERY, \"conversation\"],\n    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, \"other_conversations\"],\n  ];\n  for (const [role, scope] of roles) {\n    for (const form of roleWordForms(role)) {\n      const term = historyRecallTerm(form, normalized);\n      if (term) return { term, scope };\n    }\n  }\n  return null;\n}\n\n// Mirrors try_conversation_recall and render_recall_report: native typed events\n// record actual matching turn indices; no persisted store is inferred from dialog history.\nfunction tryConversationRecall(prompt, normalized, history) {\n  const query = historyRecallQuery(normalized);\n  if (!query) return null;\n  const needle = normalizePrompt(query.term);\n  const matches = [];\n  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {\n    if (!turn || ![\"user\", \"assistant\"].includes(turn.role)) continue;\n    const content = String(turn.content ?? \"\");\n    if (needle && normalizePrompt(content).includes(needle)) {\n      matches.push({ turn: index + 1, role: turn.role, content });\n    }\n  }\n  const solverEvents = [\n    { kind: \"filter:memory_query\", payload: query.term },\n    { kind: \"filter:memory_scope\", payload: query.scope },\n    { kind: \"filter:memory_matches\", payload: String(matches.length) },\n    ...matches.map((matched) => ({\n      kind: \"memory_match\",\n      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,\n    })),\n  ];\n  const language = detectLanguage(prompt);\n  const values = { term: query.term, count: String(matches.length) };\n  const name = matches.length ? \"conversation-recall-header\" : \"conversation-recall-empty\";\n  const lines = [nativeLaneRender(answerFor(name, language), values)];\n  for (const matched of matches) {\n    lines.push(nativeLaneRender(answerFor(\"conversation-recall-turn\", language), matched));\n  }\n  return { intent: \"conversation_recall\", content: lines.join(\"\\n\"), confidence: 0.9, solverEvents };\n}\n","old_str":"// Mirrors recognize_recall_query, term_from_form and recall_matches in\n// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.\nfunction historyRecallTerm(form, normalized) {\n  let raw;\n  if (form.slot === \"prefix\" && normalized.startsWith(form.before)) {\n    raw = normalized.slice(form.before.length);\n  } else if (form.slot === \"suffix\" && normalized.endsWith(form.after)) {\n    raw = normalized.slice(0, normalized.length - form.after.length);\n  } else if (form.slot === \"circumfix\" && normalized.startsWith(form.before)) {\n    const rest = normalized.slice(form.before.length);\n    if (!rest.endsWith(form.after)) return null;\n    raw = rest.slice(0, rest.length - form.after.length);\n  } else {\n    return null;\n  }\n  return raw.trim().replace(/^[\\s`\"':\\-_.,?!()]+|[\\s`\"':\\-_.,?!()]+$/gu, \"\")\n    .split(/\\s+/u).filter(Boolean).join(\" \") || null;\n}\n\n// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.\nfunction historyRecallQuery(normalized) {\n  const roles = [\n    [ROLE_CONVERSATION_RECALL_QUERY, \"conversation\"],\n    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, \"other_conversations\"],\n  ];\n  for (const [role, scope] of roles) {\n    for (const form of roleWordForms(role)) {\n      const term = historyRecallTerm(form, normalized);\n      if (term) return { term, scope };\n    }\n  }\n  return null;\n}\n\n// Mirrors try_conversation_recall and render_recall_report: native typed events\n// record actual matching turn indices; no persisted store is inferred from dialog history.\nfunction tryConversationRecall(prompt, normalized, history) {\n  const query = historyRecallQuery(normalized);\n  if (!query) return null;\n  const needle = normalizePrompt(query.term);\n  const matches = [];\n  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {\n    if (!turn || ![\"user\", \"assistant\"].includes(turn.role)) continue;\n    const content = String(turn.content ?? \"\");\n    if (needle && normalizePrompt(content).includes(needle)) {\n      matches.push({ turn: index + 1, role: turn.role, content });\n    }\n  }\n  const solverEvents = [\n    { kind: \"filter:memory_query\", payload: query.term },\n    { kind: \"filter:memory_scope\", payload: query.scope },\n    { kind: \"filter:memory_matches\", payload: String(matches.length) },\n    ...matches.map((matched) => ({\n      kind: \"memory_match\",\n      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,\n    })),\n  ];\n  const language = detectLanguage(prompt);\n  const values = { term: query.term, count: String(matches.length) };\n  const name = matches.length ? \"conversation-recall-header\" : \"conversation-recall-empty\";\n  const lines = [nativeLaneRender(answerFor(name, language), values)];\n  for (const matched of matches) {\n    lines.push(nativeLaneRender(answerFor(\"conversation-recall-turn\", language), matched));\n  }\n  return { intent: \"conversation_recall\", content: lines.join(\"\\n\"), confidence: 0.9, solverEvents };\n}\n","old_string":"// Mirrors recognize_recall_query, term_from_form and recall_matches in\n// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.\nfunction historyRecallTerm(form, normalized) {\n  let raw;\n  if (form.slot === \"prefix\" && normalized.startsWith(form.before)) {\n    raw = normalized.slice(form.before.length);\n  } else if (form.slot === \"suffix\" && normalized.endsWith(form.after)) {\n    raw = normalized.slice(0, normalized.length - form.after.length);\n  } else if (form.slot === \"circumfix\" && normalized.startsWith(form.before)) {\n    const rest = normalized.slice(form.before.length);\n    if (!rest.endsWith(form.after)) return null;\n    raw = rest.slice(0, rest.length - form.after.length);\n  } else {\n    return null;\n  }\n  return raw.trim().replace(/^[\\s`\"':\\-_.,?!()]+|[\\s`\"':\\-_.,?!()]+$/gu, \"\")\n    .split(/\\s+/u).filter(Boolean).join(\" \") || null;\n}\n\n// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.\nfunction historyRecallQuery(normalized) {\n  const roles = [\n    [ROLE_CONVERSATION_RECALL_QUERY, \"conversation\"],\n    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, \"other_conversations\"],\n  ];\n  for (const [role, scope] of roles) {\n    for (const form of roleWordForms(role)) {\n      const term = historyRecallTerm(form, normalized);\n      if (term) return { term, scope };\n    }\n  }\n  return null;\n}\n\n// Mirrors try_conversation_recall and render_recall_report: native typed events\n// record actual matching turn indices; no persisted store is inferred from dialog history.\nfunction tryConversationRecall(prompt, normalized, history) {\n  const query = historyRecallQuery(normalized);\n  if (!query) return null;\n  const needle = normalizePrompt(query.term);\n  const matches = [];\n  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {\n    if (!turn || ![\"user\", \"assistant\"].includes(turn.role)) continue;\n    const content = String(turn.content ?? \"\");\n    if (needle && normalizePrompt(content).includes(needle)) {\n      matches.push({ turn: index + 1, role: turn.role, content });\n    }\n  }\n  const solverEvents = [\n    { kind: \"filter:memory_query\", payload: query.term },\n    { kind: \"filter:memory_scope\", payload: query.scope },\n    { kind: \"filter:memory_matches\", payload: String(matches.length) },\n    ...matches.map((matched) => ({\n      kind: \"memory_match\",\n      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,\n    })),\n  ];\n  const language = detectLanguage(prompt);\n  const values = { term: query.term, count: String(matches.length) };\n  const name = matches.length ? \"conversation-recall-header\" : \"conversation-recall-empty\";\n  const lines = [nativeLaneRender(answerFor(name, language), values)];\n  for (const matched of matches) {\n    lines.push(nativeLaneRender(answerFor(\"conversation-recall-turn\", language), matched));\n  }\n  return { intent: \"conversation_recall\", content: lines.join(\"\\n\"), confidence: 0.9, solverEvents };\n}\n","path":"js/worker/formal_ai_worker_conversation_history.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_conversation_history.js"}
+   Output: 18002e5700f72ba2e1285575e928bd511869b3fd0e5bb001fd5387fb4d0b1224  js/worker/formal_ai_worker_conversation_history.js
+   
+   Exit Code: 0
+== answer ==
+Replaced ``// Mirrors recognize_recall_query, term_from_form and recall_matches in
+// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.
+function historyRecallTerm(form, normalized) {
+  let raw;
+  if (form.slot === "prefix" && normalized.startsWith(form.before)) {
+    raw = normalized.slice(form.before.length);
+  } else if (form.slot === "suffix" && normalized.endsWith(form.after)) {
+    raw = normalized.slice(0, normalized.length - form.after.length);
+  } else if (form.slot === "circumfix" && normalized.startsWith(form.before)) {
+    const rest = normalized.slice(form.before.length);
+    if (!rest.endsWith(form.after)) return null;
+    raw = rest.slice(0, rest.length - form.after.length);
+  } else {
+    return null;
+  }
+  return raw.trim().replace(/^[\s`"':\-_.,?!()]+|[\s`"':\-_.,?!()]+$/gu, "")
+    .split(/\s+/u).filter(Boolean).join(" ") || null;
+}
+
+// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.
+function historyRecallQuery(normalized) {
+  const roles = [
+    [ROLE_CONVERSATION_RECALL_QUERY, "conversation"],
+    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, "other_conversations"],
+  ];
+  for (const [role, scope] of roles) {
+    for (const form of roleWordForms(role)) {
+      const term = historyRecallTerm(form, normalized);
+      if (term) return { term, scope };
+    }
+  }
+  return null;
+}
+
+// Mirrors try_conversation_recall and render_recall_report: native typed events
+// record actual matching turn indices; no persisted store is inferred from dialog history.
+function tryConversationRecall(prompt, normalized, history) {
+  const query = historyRecallQuery(normalized);
+  if (!query) return null;
+  const needle = normalizePrompt(query.term);
+  const matches = [];
+  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {
+    if (!turn || !["user", "assistant"].includes(turn.role)) continue;
+    const content = String(turn.content ?? "");
+    if (needle && normalizePrompt(content).includes(needle)) {
+      matches.push({ turn: index + 1, role: turn.role, content });
+    }
+  }
+  const solverEvents = [
+    { kind: "filter:memory_query", payload: query.term },
+    { kind: "filter:memory_scope", payload: query.scope },
+    { kind: "filter:memory_matches", payload: String(matches.length) },
+    ...matches.map((matched) => ({
+      kind: "memory_match",
+      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,
+    })),
+  ];
+  const language = detectLanguage(prompt);
+  const values = { term: query.term, count: String(matches.length) };
+  const name = matches.length ? "conversation-recall-header" : "conversation-recall-empty";
+  const lines = [nativeLaneRender(answerFor(name, language), values)];
+  for (const matched of matches) {
+    lines.push(nativeLaneRender(answerFor("conversation-recall-turn", language), matched));
+  }
+  return { intent: "conversation_recall", content: lines.join("\n"), confidence: 0.9, solverEvents };
+}
+`` with ``// Mirrors recognize_recall_query, term_from_form and recall_matches in
+// rust/src/solver_handlers/conversation_memory/mod.rs; only supplied dialog turns are read.
+function historyRecallTerm(form, normalized) {
+  let raw;
+  if (form.slot === "prefix" && normalized.startsWith(form.before)) {
+    raw = normalized.slice(form.before.length);
+  } else if (form.slot === "suffix" && normalized.endsWith(form.after)) {
+    raw = normalized.slice(0, normalized.length - form.after.length);
+  } else if (form.slot === "circumfix" && normalized.startsWith(form.before)) {
+    const rest = normalized.slice(form.before.length);
+    if (!rest.endsWith(form.after)) return null;
+    raw = rest.slice(0, rest.length - form.after.length);
+  } else {
+    return null;
+  }
+  return raw.trim().replace(/^[\s`"':\-_.,?!()]+|[\s`"':\-_.,?!()]+$/gu, "")
+    .split(/\s+/u).filter(Boolean).join(" ") || null;
+}
+
+// Mirrors recognize_recall_query: slot forms and scopes come from the seed roles.
+function historyRecallQuery(normalized) {
+  const roles = [
+    [ROLE_CONVERSATION_RECALL_QUERY, "conversation"],
+    [ROLE_CONVERSATION_RECALL_OTHER_QUERY, "other_conversations"],
+  ];
+  for (const [role, scope] of roles) {
+    for (const form of roleWordForms(role)) {
+      const term = historyRecallTerm(form, normalized);
+      if (term) return { term, scope };
+    }
+  }
+  return null;
+}
+
+// Mirrors try_conversation_recall and render_recall_report: native typed events
+// record actual matching turn indices; no persisted store is inferred from dialog history.
+function tryConversationRecall(prompt, normalized, history) {
+  const query = historyRecallQuery(normalized);
+  if (!query) return null;
+  const needle = normalizePrompt(query.term);
+  const matches = [];
+  for (const [index, turn] of (Array.isArray(history) ? history : []).entries()) {
+    if (!turn || !["user", "assistant"].includes(turn.role)) continue;
+    const content = String(turn.content ?? "");
+    if (needle && normalizePrompt(content).includes(needle)) {
+      matches.push({ turn: index + 1, role: turn.role, content });
+    }
+  }
+  const solverEvents = [
+    { kind: "filter:memory_query", payload: query.term },
+    { kind: "filter:memory_scope", payload: query.scope },
+    { kind: "filter:memory_matches", payload: String(matches.length) },
+    ...matches.map((matched) => ({
+      kind: "memory_match",
+      payload: `turn=${matched.turn} role=${matched.role} content=${matched.content}`,
+    })),
+  ];
+  const language = detectLanguage(prompt);
+  const values = { term: query.term, count: String(matches.length) };
+  const name = matches.length ? "conversation-recall-header" : "conversation-recall-empty";
+  const lines = [handlerRulesFillOnce(answerFor(name, language), values)];
+  for (const matched of matches) {
+    lines.push(handlerRulesFillOnce(answerFor("conversation-recall-turn", language), matched));
+  }
+  return { intent: "conversation_recall", content: lines.join("\n"), confidence: 0.9, solverEvents };
+}
+`` in `js/worker/formal_ai_worker_conversation_history.js` and observed the result.

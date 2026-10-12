@@ -1,0 +1,23 @@
+language en
+lemma otherwise
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "in other respects or ways"
+    examples ("he is otherwise normal" "the funds are not otherwise available" "an otherwise hopeless situation")
+    id oewn-00046442-r
+    partOfSpeech r
+  entry
+    definition "in another and different manner"
+    examples ("very soon you will know differently" "she thought otherwise" "there is no way out other than the fire escape")
+    id oewn-00114003-r
+    partOfSpeech r
+    synonyms (differently)
+  entry
+    definition "other than as supposed or expected"
+    examples ("the outcome was otherwise")
+    id oewn-02078705-s
+    partOfSpeech s
+source "oewn:2024"

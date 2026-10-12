@@ -1,0 +1,17 @@
+view
+  id M-fbc3568a7449
+  lemma overlapping
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "covering with a design in which one element covers a part of another (as with tiles or shingles)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "coincide partially or wholly"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "extend over and cover a part of"
+    provenance (wordnet)

@@ -1,0 +1,9 @@
+view
+  id M-c41f59e6e25c
+  lemma reporter
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person who investigates and reports or edits news stories"
+    provenance (wordnet)

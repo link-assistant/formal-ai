@@ -1,0 +1,52 @@
+software_followup	seguimiento	ejercicio
+software_followup_verification	pruébalo	prueba el	prueba esto	verifica	compruébalo	comprueba que	ejecuta las pruebas
+software_followup_execution	ejecútalo	ejecuta esto	ejecuta el	córrelo	pruébalo ya
+software_followup_demonstration	haz una demostración	muéstrame	muestra el	imprime el
+output_display_request	muéstrame …	muestra …	imprime …	visualiza …
+scaffold	crea el esqueleto	genera el esqueleto	andamiaje
+software_artifact	artefacto de software	entregable
+artifact_browser_extension	extensión del navegador	extensión de navegador
+artifact_command_line_tool	herramienta de línea de comandos	herramienta cli
+artifact_github_action	acción de github
+artifact_mobile_app	aplicación móvil	app móvil
+artifact_web_app	aplicación web	app web
+artifact_application	aplicación
+artifact_extension	extensión	complemento
+artifact_dashboard	panel de control	tablero
+artifact_scraper	scraper	raspador
+artifact_library	biblioteca	librería
+artifact_website	sitio web	página web
+artifact_plugin	plugin	complemento
+artifact_service	servicio
+artifact_bot	bot
+artifact_app	app
+artifact_api	api
+artifact_sdk	sdk
+artifact_tool	herramienta
+artifact_mod	mod
+software_feature	funcionalidad	funcionalidades	requisito	requisitos
+requirement_state_tracking	seguimiento	puntos de vida	estado	daño	enfriamiento
+requirement_data_exchange	importar	exportar	csv	copia de seguridad	informe	calendario
+requirement_automation	recordatorio	notificación	programación	semanal
+requirement_validation	validar	comprobar	conflicto	auditoría
+requirement_integration	integración	api	discord	telegram	navegador
+requirement_user_interface	panel	gráfico	filtro	progreso
+requirement_project_behavior	añadir	administrador	cliente	archivo	historial	factura	registro	pago	subir	sincronizar
+software_delivery	entrega
+delivery_manual_instructions	instrucciones manuales	instrucción manual	instrucciones	sin código
+delivery_immediate_execution	ejecuta	ejecuta el comando	ejecuta los comandos	ejecútalo	webvm
+delivery_script_generation	bash	shell	script	scripts	comandos
+software_language	lenguaje de programación
+language_python	python	django	fastapi
+language_rust	rust	cargo
+language_javascript	javascript	node
+language_php	php	laravel	symfony
+implementation_language_preposition	en
+implementation_language_noun	lenguaje
+tabletop_game_tracker	rastreador de juegos de mesa	seguimiento de juego de mesa
+game_tracker_domain	dnd	juego de mesa	wargame	ficha	token	owlbear
+game_tracker_mechanic	puntos de vida	daño	protección	resistencia	enfriamiento
+software_approval	aprobación
+software_approval_trigger	apruebo	aprobado	aprueba el plan	sí	sí adelante	adelante	procede	hazlo	empieza la implementación	genera el código
+software_step_granularity	cada paso	paso a paso
+software_bash_command	shell	bash	comando	comandos	docker	webvm

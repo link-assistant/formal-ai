@@ -1,0 +1,5 @@
+{
+  "prompt": "Create file data/seed/learned-program-rules.lino containing\nsubstitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"learned_reverse\"\n    order \"90\"\n    event \"learned\"\n    when \"request:modifier -> reverse\"\n    replace \"request:task -> list_files_arg\"\n      with \"request:task -> list_files_arg_reverse_sort\"",
+  "desired": "substitution_rules\n  id \"learned_program_plan_rules\"\n  rule \"learned_reverse\"\n    order \"90\"\n    event \"learned\"\n    when \"request:modifier -> reverse\"\n    replace \"request:task -> list_files_arg\"\n      with \"request:task -> list_files_arg_reverse_sort\"",
+  "provenance": "Unchanged CI T4005 observation input/content; original initial scope failure retained in strict T3849."
+}

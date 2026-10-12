@@ -54,6 +54,10 @@ trace "npm install succeeded; classifying $(wc -l <"$stderr_log" | tr -d ' ') st
 # glob@7.2.3.) Upstream deprecated every glob below 12.x, including the very
 # releases that fix CVE-2025-64756, so the warning is unavoidable noise rather
 # than an actionable vulnerability -- see isaacs/node-glob#644.
+#
+# node-domexception arrives through @link-assistant/web-capture 1.12 ->
+# node-fetch@3 -> fetch-blob@3.2.0; every fetch-blob release still depends on
+# it, and its removal is node-fetch/fetch-blob#175 (fix PRs #176 and #177).
 reviewed_deprecations=(
   "inflight|electron-builder upstream deprecation|https://github.com/electron-userland/electron-builder/issues/10016"
   "rimraf|electron-builder upstream deprecation|https://github.com/electron-userland/electron-builder/issues/10016"
@@ -62,6 +66,7 @@ reviewed_deprecations=(
   "prebuild-install|vsce upstream deprecation|https://github.com/microsoft/vscode-vsce/issues/1290"
   "whatwg-encoding|vsce upstream deprecation|https://github.com/microsoft/vscode-vsce/issues/1290"
   "glob|archiver/electron-builder upstream deprecation|https://github.com/isaacs/node-glob/issues/644"
+  "node-domexception|fetch-blob upstream deprecation|https://github.com/node-fetch/fetch-blob/issues/175"
 )
 
 # Extracts the package name from "npm warn deprecated <name>@<version>: ...".

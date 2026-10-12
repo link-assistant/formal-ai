@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "火山"
+        },
+        "es": {
+          "language": "es",
+          "value": "volcán"
         }
       },
       "descriptions": {
@@ -37,7 +41,27 @@
         "zh": {
           "language": "zh",
           "value": "天然，表面通風或裂縫，通常呈山地形式"
+        },
+        "es": {
+          "language": "es",
+          "value": "estructura geológica"
         }
+      },
+      "aliases": {
+        "es": [
+          {
+            "language": "es",
+            "value": "volcanes"
+          },
+          {
+            "language": "es",
+            "value": "vulcano"
+          },
+          {
+            "language": "es",
+            "value": "edificio volcánico"
+          }
+        ]
       }
     }
   },

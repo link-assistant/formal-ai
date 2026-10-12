@@ -1,0 +1,9 @@
+view
+  id M-fa34dd61af2e
+  lemma boolean
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to a combinatorial system devised by George Boole that combines propositions with the logical operators AND and OR and IF THEN and EXCEPT and NOT"
+    provenance (wordnet)

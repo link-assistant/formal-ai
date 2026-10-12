@@ -1,0 +1,15 @@
+{
+  "id": "T3542",
+  "stop": "final",
+  "answer": "The `node -e 'const fs=require('\\''fs'\\'');const r=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3542-request.json'\\'','\\''utf8'\\''));for(const c of r.changes)if(fs.readFileSync('\\''/Users/konard/Code/Archive/link-assistant/formal-ai/'\\''+c.path,'\\''utf8'\\'')!==c.before)throw Error('\\''source preimage'\\'');for(const c of r.changes)fs.writeFileSync('\\''/Users/konard/Code/Archive/link-assistant/formal-ai/'\\''+c.path,c.expected);console.log('\\''shared worker parser caller switch'\\'');'` command completed. Output:\n\n```text\nshared worker parser caller switch\n```",
+  "calls": [
+    "bash"
+  ],
+  "matches": [
+    {
+      "path": "js/worker/formal_ai_worker_obligation_plans.js",
+      "exact": true,
+      "sha256": "774abef004b13866964f63bc5652e5d1384a3dfd7ce521be7f64ca92bca20186"
+    }
+  ]
+}

@@ -237,7 +237,7 @@ fn promotion_coalesces_same_file_edits_under_one_root_and_fails_on_read_errors()
 fn promotion_protocol_events_round_trip_through_bundle() {
     let run = demonstration_promotion_run();
     let events = run.memory_events();
-    assert!(!events.is_empty());
+    assert_ne!(events, [] as [formal_ai::MemoryEvent; 0]);
 
     let info = BundleInfo::default();
     let bundle = formal_ai::export_memory_full(&[], &events, &[], &info);

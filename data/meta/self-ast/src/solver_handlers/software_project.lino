@@ -2,58 +2,51 @@ self_ast_census
   target src/solver_handlers/software_project.rs
   language rust
   fidelity signature
-  byte_len 35030
-  line_count 929
-  content_id source_module_861363e8a42bcc8e
-  symbol_count 50
+  byte_len 32583
+  line_count 850
+  content_id source_module_b8c05ab066cf1715
+  symbol_count 43
   symbols
-    struct ArtifactMatch 21 24
-    struct SoftwareProjectMeaning 27 38
-    struct SoftwareSubtask 41 45
-    enum DeliveryMode 48 53
-    function label 56 63
-    function from_slug 68 75
-    enum ApprovalState 79 82
-    function label 85 90
-    function software_project_claims 100 108
-    function from_prompt 111 140
-    function canonical_key 142 160
-    function meaning_id 162 164
-    function delivery_mode_label 168 170
-    function domain_label 172 178
-    function meaning_lino 180 235
-    function try_software_project_request 238 276
-    function prior_software_project_meaning 278 286
-    function record_meaning 288 342
-    function artifact_label 353 377
-    function artifact_surface_table 384 395
-    function action_surface_table 402 411
-    function match_action 415 425
-    function match_artifact 429 439
-    function scan_match 446 459
-    function is_start_boundary 461 469
-    function is_end_boundary 471 479
-    function is_word_character 489 491
-    function is_cjk_character 495 502
-    function extract_target 504 519
-    function extract_after_marker 521 542
-    function capitalize_short_target 544 554
-    function requirement_marker_words 560 567
-    function extract_requirements 569 590
-    function derive_subtasks 592 605
-    function requirement_category_label 612 624
-    function classify_requirement 631 648
-    function subtask_title 650 664
-    function detect_delivery_mode 672 677
-    function detect_implementation_language 682 687
-    function implementation_language_from_slug 693 695
-    function approval_gates 697 720
-    function push_unique 722 726
-    function sentence_case 728 735
-    function is_game_unit_tracker 741 745
-    function is_approval_prompt 753 762
-    function reasoning_steps 764 797
-    function plan_steps 799 842
-    function render_plan_response 844 885
-    function render_implementation_response 887 920
-    function lino_string 922 929
+    struct SoftwareProjectMeaning 20 31
+    struct SoftwareSubtask 34 38
+    enum DeliveryMode 41 46
+    function label 49 56
+    function from_slug 61 68
+    enum ApprovalState 72 75
+    function label 78 83
+    function software_project_claims 97 104
+    function software_project_approval_claims 112 114
+    function from_prompt 117 150
+    function canonical_key 152 170
+    function meaning_id 172 174
+    function delivery_mode_label 178 180
+    function domain_label 182 188
+    function meaning_lino 190 245
+    function try_software_project_request 248 286
+    function prior_software_project_meaning 288 296
+    function record_meaning 298 352
+    function artifact_label 363 387
+    function artifact_surface_table 396 407
+    function action_surface_table 414 423
+    function extract_target 425 440
+    function extract_after_marker 442 463
+    function capitalize_short_target 465 475
+    function requirement_marker_words 481 488
+    function extract_requirements 490 511
+    function derive_subtasks 513 526
+    function requirement_category_label 533 545
+    function classify_requirement 552 569
+    function subtask_title 571 585
+    function detect_delivery_mode 593 598
+    function detect_implementation_language 603 608
+    function implementation_language_from_slug 614 616
+    function approval_gates 618 641
+    function push_unique 643 647
+    function sentence_case 649 656
+    function is_game_unit_tracker 662 666
+    function is_approval_prompt 674 683
+    function reasoning_steps 685 718
+    function plan_steps 720 763
+    function render_plan_response 765 806
+    function render_implementation_response 808 841
+    function lino_string 843 850

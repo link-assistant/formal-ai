@@ -1,0 +1,5 @@
+{
+  "taskId": "T2033",
+  "target": "rust/tests/unit/coding_discovery/composition.rs",
+  "byteEqual": true
+}

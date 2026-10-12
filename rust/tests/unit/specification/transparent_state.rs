@@ -24,13 +24,13 @@ fn knowledge_export_is_inspectable_at_runtime() {
 #[test]
 fn evidence_links_are_exposed_through_the_public_struct() {
     let response = answer("Hi");
-    assert!(!response.evidence_links.is_empty());
+    assert_ne!(response.evidence_links, [] as [std::string::String; 0]);
 }
 
 #[test]
 fn links_notation_trace_is_always_present() {
     let response = answer("Hi");
-    assert!(!response.links_notation.is_empty());
+    assert_ne!(response.links_notation, "");
 }
 
 // ---------------------------------------------------------------------------
@@ -84,6 +84,19 @@ fn why_meta_question_explains_previous_answer() {
         "why-questions should resolve to a meta-explanation intent"
     );
     assert!(response.answer.contains("because") || response.answer.contains("evidence"));
+}
+
+/// A fronted "why …" only opens a question: it is a meta explanation when it
+/// addresses the assistant itself, never when it asks about the user's code.
+#[test]
+fn why_question_about_user_code_is_not_a_meta_explanation() {
+    for prompt in [
+        "Why does this fail: def f(x): return x +",
+        "Why is the sky blue?",
+    ] {
+        let response = answer(prompt);
+        assert_ne!(response.intent, "meta_explanation", "{prompt}");
+    }
 }
 
 #[test]

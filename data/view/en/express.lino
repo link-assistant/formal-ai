@@ -1,0 +1,57 @@
+view
+  id M-b25c3bf9d4f4
+  lemma express
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "mail that is distributed by a rapid and efficient system"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "public transport consisting of a fast train or bus that makes only a few scheduled stops"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "rapid transport of goods"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "by express"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "not tacit or implied"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "without unnecessary stops"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give expression to"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "articulate; either verbally or with a cry, shout, or noise"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "serve as a means for expressing something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "indicate through a symbol, formula, etc."
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "manifest the effects of (a gene or genetic trait)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "obtain from a substance, as by mechanical action"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "send by rapid transport or special messenger service"
+    provenance (wordnet)

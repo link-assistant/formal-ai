@@ -1,16 +1,19 @@
 Q4022
   aliases
     en (rivers)
+    es (rio "ríos" rios)
     ru ("речка")
     zh ("江" "河" "川" "江河" "河川" "河道")
   descriptions
     en "larger natural watercourse"
+    es "corriente natural de agua que fluye con continuidad"
     hi "प्राकृतिक जलस्रोत"
     ru "природный водный поток"
     zh "自然的水道"
   id Q4022
   labels
     en river
+    es "río"
     hi "नदी"
     ru "река"
     zh "河流"

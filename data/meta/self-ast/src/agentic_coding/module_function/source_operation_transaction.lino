@@ -1,0 +1,108 @@
+self_ast_census
+  target src/agentic_coding/module_function/source_operation_transaction.rs
+  language rust
+  fidelity full_ast
+  byte_len 6522
+  line_count 194
+  content_id source_module_a7434931159aa305
+  symbol_count 25
+  symbols
+    trait SourceOperationHost 5 14
+    type Receipt 6 6
+    function accepted_sources 7 13
+    function accepted_operation_source_bytes 16 25
+    trait SourceCandidateOperationHost 28 38
+    function candidate_status 29 37
+    trait SourceFinalizedCandidateOperationHost 40 50
+    function finalized_candidate_status 41 49
+    function accepted_operation_candidate_status 52 63
+    enum CandidateFile 66 70
+    enum ProcessDisposition 71 75
+    trait CandidateIo 76 85
+    type Receipt 77 77
+    function owns_lease 78 78
+    function inspect 79 79
+    function process_disposition 80 83
+    function remove_unchanged_candidate 84 84
+    struct CandidateTransaction 86 91
+    function create_candidate_transaction 93 110
+    function unchanged 112 114
+    function authorize_write 115 126
+    function record_write 127 139
+    function abort 141 163
+    function finish 164 189
+    module finalized_operation_tests 194 194
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 5205
+    named_node_count 1053
+    distinct_node_kinds 65
+    node_kinds
+      arguments 40
+      assignment_expression 6
+      associated_type 2
+      attribute 3
+      attribute_item 3
+      binary_expression 7
+      block 27
+      boolean_literal 5
+      call_expression 40
+      declaration_list 5
+      doc_comment 8
+      else_clause 2
+      enum_item 2
+      enum_variant 6
+      enum_variant_list 2
+      expression_statement 36
+      field_declaration 4
+      field_declaration_list 1
+      field_expression 45
+      field_identifier 50
+      field_initializer 1
+      field_initializer_list 1
+      function_item 8
+      function_signature_item 7
+      generic_type 20
+      identifier 166
+      if_expression 17
+      impl_item 1
+      inner_doc_comment_marker 1
+      let_declaration 3
+      lifetime 16
+      lifetime_parameter 1
+      line_comment 8
+      macro_invocation 8
+      mod_item 1
+      mutable_specifier 6
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 7
+      parameter 36
+      parameters 15
+      primitive_type 42
+      reference_expression 7
+      reference_type 47
+      return_expression 15
+      scoped_identifier 11
+      scoped_type_identifier 7
+      self 48
+      self_parameter 12
+      shorthand_field_initializer 3
+      source_file 1
+      string_content 44
+      string_literal 44
+      struct_expression 1
+      struct_item 1
+      token_tree 17
+      trait_bounds 7
+      trait_item 4
+      try_expression 3
+      type_arguments 20
+      type_identifier 68
+      type_parameter 5
+      type_parameters 5
+      unary_expression 8
+      use_declaration 1
+      visibility_modifier 14

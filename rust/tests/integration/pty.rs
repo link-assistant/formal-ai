@@ -168,7 +168,7 @@ fn interaction_sends_input_after_the_readiness_marker() {
 
     assert!(output.status.success());
     assert_eq!(output.stdout, b"TUI_READY\r\n");
-    assert!(output.stderr.is_empty());
+    assert_eq!(output.stderr, [] as [u8; 0]);
 }
 
 #[test]

@@ -2,28 +2,28 @@ self_ast_census
   target src/agentic_coding/google_trends_learning.rs
   language rust
   fidelity full_ast
-  byte_len 5443
-  line_count 107
-  content_id source_module_fd8f391bbc37c7f2
+  byte_len 5541
+  line_count 110
+  content_id source_module_67eb3050051d786c
   symbol_count 9
   symbols
     const GOOGLE_TRENDS_LEARNING_PATH 18 18
-    const GOOGLE_TRENDS_LEARNING_TASK 21 28
-    const LEARNING_CAPABILITY 28 28
-    const GOOGLE_TRENDS_KEYWORDS 30 30
-    function is_google_trends_learning_task 50 63
-    function is_learn_from_source_directive 68 72
-    function render_document 76 78
-    function final_answer 82 99
-    function verification_command 103 107
+    const GOOGLE_TRENDS_LEARNING_TASK 21 27
+    const LEARNING_CAPABILITY 27 27
+    const GOOGLE_TRENDS_KEYWORDS 29 29
+    function is_google_trends_learning_task 49 62
+    function is_learn_from_source_directive 67 71
+    function render_document 75 77
+    function final_answer 81 98
+    function verification_command 102 110
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 1875
-    named_node_count 397
-    distinct_node_kinds 42
+    total_link_count 1946
+    named_node_count 409
+    distinct_node_kinds 43
     node_kinds
       arguments 15
       array_expression 1
@@ -44,13 +44,13 @@ self_ast_census
       field_expression 13
       field_identifier 13
       function_item 5
-      identifier 67
+      identifier 72
       if_expression 1
       inner_doc_comment_marker 12
       integer_literal 1
-      let_declaration 3
+      let_declaration 4
       line_comment 40
-      macro_invocation 3
+      macro_invocation 4
       outer_doc_comment_marker 28
       parameter 3
       parameters 5
@@ -61,9 +61,10 @@ self_ast_census
       return_expression 1
       scoped_identifier 4
       source_file 1
-      string_content 25
-      string_literal 14
-      token_tree 9
+      string_content 26
+      string_literal 15
+      super 1
+      token_tree 11
       type_identifier 3
       use_declaration 1
       visibility_modifier 6

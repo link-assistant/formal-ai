@@ -19,10 +19,22 @@ pub use crate::ci_gates::{ci_surface, release_workflow};
 /// Issue #895: the two coverage denominators live in their own workflow. They
 /// are a leaf of the release graph -- nothing `needs:` them -- so moving them
 /// out of `release.yml` changed no ordering, and it keeps that file under the
-/// 2000-line ceiling `scripts/check-file-size.rs` enforces.
+/// 1500-line ceiling `scripts/check-file-size.rs` enforces.
 pub fn coverage_workflow() -> String {
     fs::read_to_string(format!(
         "{}/../.github/workflows/coverage.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("\r\n", "\n")
+}
+
+/// PR #1188 (R1188-U9): the Pages build (web bundle, `cargo doc`, stamp,
+/// upload) runs in its own reusable workflow under a 30-minute cap, and the
+/// release workflow's `deploy-pages` job only deploys its artifact.
+pub fn pages_artifact_workflow() -> String {
+    fs::read_to_string(format!(
+        "{}/../.github/workflows/pages-artifact.yml",
         env!("CARGO_MANIFEST_DIR")
     ))
     .unwrap()
@@ -60,7 +72,7 @@ pub fn unwrapped(workflow: &str) -> String {
 
 pub fn job_block<'a>(workflow: &'a str, job_name: &str) -> &'a str {
     let marker = format!("  {job_name}:\n");
-    let start = workflow.find(&marker).unwrap();
+    let start = workflow.find(&format!("\n{marker}")).unwrap() + 1;
     let body_start = start + marker.len();
     let rest = &workflow[body_start..];
 
@@ -80,6 +92,15 @@ pub fn job_block<'a>(workflow: &'a str, job_name: &str) -> &'a str {
         || &workflow[start..],
         |end| &workflow[start..body_start + end],
     )
+}
+
+#[test]
+fn job_lookup_ignores_a_nested_input_with_the_same_name() {
+    let workflow = "on:\n  workflow_dispatch:\n    inputs:\n      publish:\n        type: boolean\njobs:\n  publish:\n    timeout-minutes: 30\n  resolve:\n    timeout-minutes: 5\n";
+    assert_eq!(
+        job_block(workflow, "publish"),
+        "  publish:\n    timeout-minutes: 30\n"
+    );
 }
 
 pub fn workflow_step_block<'a>(job: &'a str, step_name: &str) -> &'a str {

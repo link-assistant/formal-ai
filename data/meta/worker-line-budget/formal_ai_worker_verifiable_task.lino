@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_verifiable_task.js"
-  ceiling 150
-  rationale "Seed-driven browser projection of the shared verifiable-task route. It formalizes a task and records the unavailable execution boundary without adding a second solver or embedding task answers."
+  ceiling 155
+  rationale "Seed-driven browser projection of the shared verifiable-task route. It formalizes a task and records the unavailable execution boundary without adding a second solver or embedding task answers. Ceiling moved 150 to 155 (2026-10-08, issue #531): the route enters tryPatternInference first, as the native try_verifiable_task_with_online enters try_pattern_inference."

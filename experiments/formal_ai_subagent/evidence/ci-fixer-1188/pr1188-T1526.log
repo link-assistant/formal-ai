@@ -1,0 +1,899 @@
+>> read {"filePath":"rust/src/solver_handlers/web_requests.rs","file_path":"rust/src/solver_handlers/web_requests.rs","path":"rust/src/solver_handlers/web_requests.rs"}
+   <file>
+   00001| //! URL fetch, URL navigation, and browser-search handlers.
+   00002| 
+   00003| use crate::concepts::extract_concept_query;
+   00004| use crate::engine::{SymbolicAnswer, normalize_prompt};
+   00005| use crate::event_log::EventLog;
+   00006| use crate::formalization::page::{formalize_page, page_answer};
+   00007| use crate::language::detect as detect_language;
+   00008| use crate::seed::{self, ProjectRecord, projects_registry};
+   00009| use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, FetchError, SourceTransport};
+   00010| use crate::summarization::{SummarizationConfig, SummarizationMode, describe_project};
+   00011| use crate::web_search_core::{
+   00012|     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
+   00013| };
+   00014| 
+   00015| mod live_search;
+   00016| mod url_parse;
+   00017| 
+   00018| use super::curated_project_fetch::try_curated_http_fetch;
+   00019| use super::finalize_simple;
+   00020| use super::installation_conversion::is_install_conversion_request;
+   00021| use super::web_search_intent::{WebSearchQueryKind, extract_web_search_request};
+   00022| 
+   00023| pub use live_search::{try_web_search_with_client, try_web_search_with_offline};
+   00024| pub(super) use url_parse::normalize_url_candidate;
+   00025| use url_parse::{
+   00026|     extract_http_fetch_url, extract_url_navigate_url, first_url_candidate,
+   00027|     is_page_formalization_prompt, is_url_trailing_punctuation, is_url_wrapper_punctuation,
+   00028|     looks_like_hostname,
+   00029| };
+   00030| 
+   00031| /// Match prompts that explicitly ask the engine to perform an HTTP request
+   00032| /// (e.g. `fetch google.com`, `Сделай запрос к google.com`). In the browser
+   00033| /// web app the actual `fetch()` is attempted first, with an iframe fallback when
+   00034| /// CORS blocks the request only after target frame-policy headers have been
+   00035| /// checked. Non-fetch URL prompts (`Navigate to github.com`, `Visit github.com`,
+   00036| /// ...) are handled by [`try_url_navigate`] instead.
+   00037| pub fn try_http_fetch(
+   00038|     prompt: &str,
+   00039|     normalized: &str,
+   00040|     log: &mut EventLog,
+   00041| ) -> Option<SymbolicAnswer> {
+   00042|     try_http_fetch_with_offline(prompt, normalized, log, true)
+   00043| }
+   00044| 
+   00045| /// Execute an explicit HTTP request when the caller has opted out of offline
+   00046| /// mode. A failed request records an error, never source provenance.
+   00047| pub fn try_http_fetch_with_offline(
+   00048|     prompt: &str,
+   00049|     normalized: &str,
+   00050|     log: &mut EventLog,
+   00051|     offline: bool,
+   00052| ) -> Option<SymbolicAnswer> {
+   00053|     let url = extract_http_fetch_url(prompt, normalized)?;
+   00054|     Some(answer_http_fetch_url(prompt, &url, log, offline))
+   00055| }
+   00056| 
+   00057| /// Execute the URL selected by the shared object/act/locus capability table.
+   00058| ///
+   00059| /// Unlike [`try_http_fetch_with_offline`], this entry point does not ask a
+   00060| /// second verb recognizer whether the already-routed request really meant
+   00061| /// fetch.  The URL remains structural and is parsed from the original prompt;
+   00062| /// all execution, cache, provenance, and offline behaviour is the same.
+   00063| pub fn try_routed_http_fetch_with_offline(
+   00064|     prompt: &str,
+   00065|     log: &mut EventLog,
+   00066|     offline: bool,
+   00067| ) -> Option<SymbolicAnswer> {
+   00068|     let url = crate::capability_routing::first_url(prompt)?;
+   00069|     Some(answer_http_fetch_url(prompt, &url, log, offline))
+   00070| }
+   00071| 
+   00072| fn answer_http_fetch_url(
+   00073|     prompt: &str,
+   00074|     url: &str,
+   00075|     log: &mut EventLog,
+   00076|     offline: bool,
+   00077| ) -> SymbolicAnswer {
+   00078|     if is_page_formalization_prompt(prompt, &normalize_prompt(prompt)) {
+   00079|         let cache_root = crate::coding::synthesis_runtime::source_cache_root();
+   00080|         let client =
+   00081|             CachedSourceClient::new(&cache_root, CurlSourceTransport).with_online(!offline);
+   00082|         return answer_page_formalization(prompt, url, log, &client);
+   00083|     }
+   00084|     log.append("http_fetch:request", url);
+   00085|     if let Some(answer) = try_curated_http_fetch(prompt, url, log) {
+   00086|         return answer;
+   00087|     }
+   00088|     if offline {
+   00089|         log.append("policy:offline", url);
+   00090|         let body = seed::response_for("lexeme_import_cache_miss_offline", "en")
+   00091|             .unwrap_or_else(|| String::from("lexeme_import_cache_miss_offline"))
+   00092|             .replace("{qid}", url);
+   00093|         return finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0);
+   00094|     }
+   00095|     let cache_dir =
+   00096|         std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
+   00097|     let client = CachedSourceClient::new(cache_dir, CurlSourceTransport).with_online(true);
+   00098|     let capture = match client.fetch(url) {
+   00099|         Ok(capture) => capture,
+   00100|         Err(error) => {
+   00101|             log.append("error:fetch", error.to_string());
+   00102|             let body = seed::response_for("lexeme_import_fetch_failed", "en")
+   00103|                 .unwrap_or_else(|| String::from("lexeme_import_fetch_failed"))
+   00104|                 .replace("{qid}", url)
+   00105|                 .replace(&["{", "error", "}"].concat(), &error.to_string());
+   00106|             return finalize_simple(
+   00107|                 prompt,
+   00108|                 log,
+   00109|                 "http_fetch",
+   00110|                 "response:http_fetch_failed",
+   00111|                 &body,
+   00112|                 0.0,
+   00113|             );
+   00114|         }
+   00115|     };
+   00116|     capture.record(log);
+   00117|     let body = String::from_utf8_lossy(capture.bytes())
+   00118|         .chars()
+   00119|         .take(8_000)
+   00120|         .collect::<String>();
+   00121|     finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0)
+   00122| }
+   00123| 
+   00124| /// Formalize the page a request names through `client` (R1188-U18).
+   00125| ///
+   00126| /// The cache answers first, and the network only when the client is
+   00127| /// online. Returns `None` when the request names no URL or does not ask for
+   00128| /// a formalization. The browser twin is `tryPageFormalization` in
+   00129| /// `js/worker/formal_ai_worker_page_formalization.js`.
+   00130| pub fn try_page_formalization_with_client<T: SourceTransport>(
+   00131|     prompt: &str,
+   00132|     log: &mut EventLog,
+   00133|     client: &CachedSourceClient<T>,
+   00134| ) -> Option<SymbolicAnswer> {
+   00135|     let normalized = normalize_prompt(prompt);
+   00136|     let url = extract_http_fetch_url(prompt, &normalized)?;
+   00137|     is_page_formalization_prompt(prompt, &normalized)
+   00138|         .then(|| answer_page_formalization(prompt, &url, log, client))
+   00139| }
+   00140| 
+   00141| /// The statements of the page at `url`, in the request's language: the
+   00142| /// page's prose ([`crate::web_formalize::page_prose`]) read by
+   00143| /// [`crate::formalization::page::formalize_page`] in the page's language.
+   00144| /// Offline with no cached capture, or when the fetch fails, the answer says
+   00145| /// so and nothing is formalized.
+   00146| fn answer_page_formalization<T: SourceTransport>(
+   00147|     prompt: &str,
+   00148|     url: &str,
+   00149|     log: &mut EventLog,
+   00150|     client: &CachedSourceClient<T>,
+   00151| ) -> SymbolicAnswer {
+   00152|     log.append("page_formalization:request", url);
+   00153|     let language = detect_language(prompt).slug();
+   00154|     let capture = match client.fetch(url) {
+   00155|         Ok(capture) => capture,
+   00156|         Err(error) => {
+   00157|             log.append("error:fetch", error.to_string());
+   00158|             let reason = error.to_string();
+   00159|             let body = if matches!(error, FetchError::OfflineCacheMiss(_)) {
+   00160|                 seed::render_response("page_formalization_offline", language, &[("url", url)])
+   00161|             } else {
+   00162|                 seed::render_response(
+   00163|                     "page_formalization_fetch_failed",
+   00164|                     language,
+   00165|                     &[("url", url), ("error", &reason)],
+   00166|                 )
+   00167|             };
+   00168|             return finalize_simple(
+   00169|                 prompt,
+   00170|                 log,
+   00171|                 "page_formalization",
+   00172|                 "response:page_formalization_unavailable",
+   00173|                 &body.unwrap_or_default(),
+   00174|                 0.0,
+   00175|             );
+   00176|         }
+   00177|     };
+   00178|     capture.record(log);
+   00179|     let prose = crate::web_formalize::page_prose(capture.bytes(), url);
+   00180|     let report = formalize_page(&prose, detect_language(&prose).slug());
+   00181|     let counts = [
+   00182|         report.sentences.len(),
+   00183|         report.statements,
+   00184|         report.covered,
+   00185|         report.terms,
+   00186|         report.unknown,
+   00187|     ]
+   00188|     .map(|count| count.to_string());
+   00189|     log.append_fields(
+   00190|         "page_formalization:report",
+   00191|         &[
+   00192|             ("sentences", &counts[0]),
+   00193|             ("statements", &counts[1]),
+   00194|             ("covered", &counts[2]),
+   00195|             ("terms", &counts[3]),
+   00196|             ("unknown", &counts[4]),
+   00197|         ],
+   00198|     );
+   00199|     let body = page_answer(&report, url, language);
+   00200|     finalize_simple(
+   00201|         prompt,
+   00202|         log,
+   00203|         "page_formalization",
+   00204|         "response:page_formalization",
+   00205|         &body,
+   00206|         0.9,
+   00207|     )
+   00208| }
+   00209| 
+   00210| /// Whether the seed's navigation recognizer claims this prompt for the
+   00211| /// `url_navigate` row (`Open github.com`, `Перейди на …`). The capability
+   00212| /// table's routed fetch runs ahead of that row and deliberately does not
+   00213| /// re-ask a verb recognizer, so it asks this instead: a request the
+   00214| /// navigation vocabulary claims is advice to open a tab, not a fetch of the
+   00215| /// page (the url-navigation ladder in `seed_and_memory`, issue #1138).
+   00216| pub fn url_navigation_claims(prompt: &str, normalized: &str) -> bool {
+   00217|     extract_url_navigate_url(prompt, normalized).is_some()
+   00218| }
+   00219| 
+   00220| /// Whether the seed's fetch recognizer claims this prompt for the
+   00221| /// `http_fetch` row: a URL operand the request asks to retrieve. The claim
+   00222| /// row of the capability table consults it before the handler runs (issue
+   00223| /// #1175 R3), so a fetch word with no URL operand never reaches it.
+   00224| #[must_use]
+   00225| pub fn http_fetch_claims(prompt: &str, normalized: &str) -> bool {
+   00226|     extract_http_fetch_url(prompt, normalized).is_some()
+   00227| }
+   00228| 
+   00229| /// Match prompts that ask the assistant to navigate to or display a URL
+   00230| /// without performing an HTTP request (e.g. `Navigate to github.com`,
+   00231| /// `Go to github.com`, `Перейди на github.com`). The browser web app renders
+   00232| /// an iframe preview only when CORS-readable frame-policy metadata does not
+   00233| /// report blocking X-Frame-Options or CSP frame-ancestors headers.
+   00234| pub fn try_url_navigate(
+   00235|     prompt: &str,
+   00236|     normalized: &str,
+   00237|     log: &mut EventLog,
+   00238| ) -> Option<SymbolicAnswer> {
+   00239|     let url = extract_url_navigate_url(prompt, normalized)?;
+   00240|     log.append("url_navigate:request", url.clone());
+   00241|     log.append("url_preview:frame_policy_check", url.clone());
+   00242|     log.append("url_preview:external_link", url.clone());
+   00243|     // Issue #918: the wording is the seeded web_* responses the browser twin
+   00244|     // (`tryUrlNavigate`, js/worker/formal_ai_worker_web_providers_and_wasm_calls.js) also renders.
+   00245|     let body = format!(
+   00246|         "{}\n\n{}",
+   00247|         seed::render_response("web_open_in_new_tab", "en", &[("url", &url)]).unwrap_or_default(),
+   00248|         seed::render_response("web_url_navigate_native_note", "en", &[]).unwrap_or_default(),
+   00249|     );
+   00250|     Some(finalize_simple(
+   00251|         prompt,
+   00252|         log,
+   00253|         "url_navigate",
+   00254|         "response:url_navigate",
+   00255|         &body,
+   00256|         0.95,
+   00257|     ))
+   00258| }
+   00259| 
+   00260| /// Reciprocal Rank Fusion constant used to combine the top-10 results returned
+   00261| /// by each search provider. Re-exported from `crate::web_search_core` so the
+   00262| /// CLI, server, browser worker, and the Rust→WASM port all share one value.
+   00263| ///
+   00264| /// Source: <https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf>
+   00265| pub const WEB_SEARCH_RRF_K: u32 = CORE_WEB_SEARCH_RRF_K;
+   00266| 
+   00267| /// Provider order used by the browser worker and by the Rust solver when
+   00268| /// recording the unexecuted provider plan for `web_search`. Sourced from
+   00269| /// `crate::web_search_core::WEB_SEARCH_PROVIDERS` so the WASM worker and the
+   00270| /// JS planner cannot drift apart (issue #133).
+   00271| pub const WEB_SEARCH_PROVIDERS: &[&str] = CORE_WEB_SEARCH_PROVIDERS;
+   00272| 
+   00273| /// Execute a recognized web-search request instead of describing one.
+   00274| ///
+   00275| /// Issue #1173 (E138) R2: this handler used to answer with the fixed
+   00276| /// paragraph describing the browser demo's provider plan. It now runs the
+   00277| /// executed search through the process source cache — captured sources
+   00278| /// answer from their statements with citations, and anything else degrades
+   00279| /// to the localized `web_search_unavailable` response. Live provider
+   00280| /// fetches stay opt-in via `FORMAL_AI_LIVE_FETCH`, matching the combined
+   00281| /// offline gate `solver_dispatch.rs` applies to its `web_search` route.
+   00282| pub fn try_web_search(
+   00283|     prompt: &str,
+   00284|     normalized: &str,
+   00285|     log: &mut EventLog,
+   00286| ) -> Option<SymbolicAnswer> {
+   00287|     let request = extract_web_search_request(prompt, normalized)?;
+   00288|     // The native-handler table carries no runtime offline flag; the live-fetch
+   00289|     // opt-in is applied inside `answer_web_search_query`.
+   00290|     Some(answer_web_search_query(
+   00291|         prompt,
+   00292|         &request.query,
+   00293|         request.kind,
+   00294|         log,
+   00295|         false,
+   00296|     ))
+   00297| }
+   00298| 
+   00299| /// The web-search query the intent recogniser extracts from `prompt`, or [`None`]
+   00300| /// when the prompt is not a web-search request.
+   00301| ///
+   00302| /// Exposes the *same* seed-backed recognition [`try_web_search`] uses, without
+   00303| /// producing the descriptive answer, so the agentic planner (issue #687) can reuse
+   00304| /// it to decide when to emit the client's web-search tool call instead of
+   00305| /// re-deriving the intent independently.
+   00306| pub fn detect_web_search_query(prompt: &str) -> Option<String> {
+   00307|     let normalized = prompt.to_lowercase();
+   00308|     extract_web_search_request(prompt, &normalized).map(|request| request.query)
+   00309| }
+   00310| 
+   00311| /// Execute the web search for `query` and answer from it.
+   00312| ///
+   00313| /// Issue #1173 (E138): this function used to build the descriptive paragraph
+   00314| /// about the browser demo's search machinery ("Web search requested for
+   00315| /// `…`" and its latest-news, research, and Russian arms), which stood as the
+   00316| /// final answer for every prompt the intent recogniser or the
+   00317| /// unknown-reasoning fallback handed it. The description is deleted as an
+   00318| /// answer surface: the search now executes through the process source cache
+   00319| /// (issue #709 fusion) and answers from the captured statements with
+   00320| /// citations, or — offline or on a cache miss — with the localized
+   00321| /// `web_search_unavailable` response that names the query.
+   00322| ///
+   00323| /// `runtime_offline` is the caller's own offline mode; the
+   00324| /// `FORMAL_AI_LIVE_FETCH` opt-in is applied here so every caller gets the
+   00325| /// combined offline gate `solver_dispatch.rs` uses at its `web_search` call
+   00326| /// site.
+   00327| pub fn answer_web_search_query(
+   00328|     prompt: &str,
+   00329|     query: &str,
+   00330|     query_kind: WebSearchQueryKind,
+   00331|     log: &mut EventLog,
+   00332|     runtime_offline: bool,
+   00333| ) -> SymbolicAnswer {
+   00334|     let cache_dir =
+   00335|         std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
+   00336|     let client = CachedSourceClient::new(cache_dir, CurlSourceTransport)
+   00337|         .with_online(!runtime_offline && live_search::live_fetch_enabled());
+   00338|     live_search::execute_web_search_answer(prompt, query, query_kind, log, &client)
+   00339| }
+   00340| 
+   00341| const PROMOTED_PROJECT_ORGS: &[&str] = &["link-assistant", "link-foundation", "linksplatform"];
+   00342| 
+   00343| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00344| enum RepositoryPlatform {
+   00345|     GitHub,
+   00346|     GitLab,
+   00347|     Bitbucket,
+   00348| }
+   00349| 
+   00350| impl RepositoryPlatform {
+   00351|     const fn label(self) -> &'static str {
+   00352|         match self {
+   00353|             Self::GitHub => "GitHub",
+   00354|             Self::GitLab => "GitLab",
+   00355|             Self::Bitbucket => "Bitbucket",
+   00356|         }
+   00357|     }
+   00358| 
+   00359|     const fn host(self) -> &'static str {
+   00360|         match self {
+   00361|             Self::GitHub => "github.com",
+   00362|             Self::GitLab => "gitlab.com",
+   00363|             Self::Bitbucket => "bitbucket.org",
+   00364|         }
+   00365|     }
+   00366| }
+   00367| 
+   00368| #[derive(Debug, Clone, PartialEq, Eq)]
+   00369| struct RepositoryReference {
+   00370|     platform: RepositoryPlatform,
+   00371|     owner: String,
+   00372|     name: String,
+   00373|     url: String,
+   00374| }
+   00375| 
+   00376| impl RepositoryReference {
+   00377|     fn slug(&self) -> String {
+   00378|         format!("{}/{}", self.owner, self.name)
+   00379|     }
+   00380| }
+   00381| 
+   00382| /// Lookup repository/project prompts. Runs *after* `concept_lookup` so
+   00383| /// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep
+   00384| /// their existing intent.
+   00385| ///
+   00386| /// With promotion enabled (the default), known projects from Link Assistant,
+   00387| /// Link Foundation, and `LinksPlatform` are listed first. With promotion
+   00388| /// disabled, the same prompts stay on the generic repository lookup path.
+   00389| pub fn try_project_lookup(
+   00390|     prompt: &str,
+   00391|     _normalized: &str,
+   00392|     log: &mut EventLog,
+   00393|     promote_associative_repositories: bool,
+   00394|     suppress_identity_route: bool,
+   00395| ) -> Option<SymbolicAnswer> {
+   00396|     try_project_lookup_internal(
+   00397|         prompt,
+   00398|         prompt,
+   00399|         log,
+   00400|         promote_associative_repositories,
+   00401|         suppress_identity_route,
+   00402|         None,
+   00403|     )
+   00404| }
+   00405| 
+   00406| pub fn try_explicit_repository_lookup(
+   00407|     prompt: &str,
+   00408|     normalized: &str,
+   00409|     log: &mut EventLog,
+   00410|     promote_associative_repositories: bool,
+   00411|     suppress_identity_route: bool,
+   00412|     response_language: Option<&str>,
+   00413| ) -> Option<SymbolicAnswer> {
+   00414|     if is_text_url_extraction_prompt(normalized) {
+   00415|         return None;
+   00416|     }
+   00417|     if extract_http_fetch_url(prompt, normalized).is_some()
+   00418|         || extract_url_navigate_url(prompt, normalized).is_some()
+   00419|     {
+   00420|         return None;
+   00421|     }
+   00422|     repository_from_prompt(prompt)?;
+   00423|     try_project_lookup_internal(
+   00424|         prompt,
+   00425|         prompt,
+   00426|         log,
+   00427|         promote_associative_repositories,
+   00428|         suppress_identity_route,
+   00429|         response_language,
+   00430|     )
+   00431| }
+   00432| 
+   00433| pub fn try_project_lookup_with_response_language(
+   00434|     prompt: &str,
+   00435|     lookup_prompt: &str,
+   00436|     log: &mut EventLog,
+   00437|     promote_associative_repositories: bool,
+   00438|     suppress_identity_route: bool,
+   00439|     response_language: &str,
+   00440| ) -> Option<SymbolicAnswer> {
+   00441|     try_project_lookup_internal(
+   00442|         prompt,
+   00443|         lookup_prompt,
+   00444|         log,
+   00445|         promote_associative_repositories,
+   00446|         suppress_identity_route,
+   00447|         Some(response_language),
+   00448|     )
+   00449| }
+   00450| 
+   00451| fn try_project_lookup_internal(
+   00452|     prompt: &str,
+   00453|     lookup_prompt: &str,
+   00454|     log: &mut EventLog,
+   00455|     promote_associative_repositories: bool,
+   00456|     suppress_identity_route: bool,
+   00457|     response_language: Option<&str>,
+   00458| ) -> Option<SymbolicAnswer> {
+   00459|     // A repository URL can be source material rather than the requested action.
+   00460|     // Keep installation-guide/script transformations on their more specific
+   00461|     // conversion path instead of treating the embedded clone URL as a lookup.
+   00462|     if is_install_conversion_request(&lookup_prompt.to_lowercase()) {
+   00463|         return None;
+   00464|     }
+   00465|     if is_text_url_extraction_prompt(lookup_prompt) {
+   00466|         return None;
+   00467|     }
+   00468|     if let Some(repo) = repository_from_prompt(lookup_prompt) {
+   00469|         if promote_associative_repositories
+   00470|             && let Some(project) = promoted_project_by_repo(&repo.owner, &repo.name)
+   00471|         {
+   00472|             return Some(render_project_lookup(
+   00473|                 prompt,
+   00474|                 log,
+   00475|                 project,
+   00476|                 response_language,
+   00477|             ));
+   00478|         }
+   00479|         return Some(render_generic_repository_lookup(
+   00480|             prompt,
+   00481|             log,
+   00482|             Some(&repo),
+   00483|             promote_associative_repositories,
+   00484|             response_language,
+   00485|         ));
+   00486|     }
+   00487|     if suppress_identity_route {
+   00488|         return None;
+   00489|     }
+   00490| 
+   00491|     let project = matched_project(lookup_prompt)?;
+   00492|     if promote_associative_repositories && is_promoted_project(project) {
+   00493|         return Some(render_project_lookup(
+   00494|             prompt,
+   00495|             log,
+   00496|             project,
+   00497|             response_language,
+   00498|         ));
+   00499|     }
+   00500| 
+   00501|     Some(render_generic_repository_lookup(
+   00502|         prompt,
+   00503|         log,
+   00504|         None,
+   00505|         promote_associative_repositories,
+   00506|         response_language,
+   00507|     ))
+   00508| }
+   00509| 
+   00510| fn render_project_lookup(
+   00511|     prompt: &str,
+   00512|     log: &mut EventLog,
+   00513|     project: &ProjectRecord,
+   00514|     response_language: Option<&str>,
+   00515| ) -> SymbolicAnswer {
+   00516|     let language = response_language.unwrap_or_else(|| detect_language(prompt).slug());
+   00517|     // Issue #556: record the forced target language so a response-language
+   00518|     // replay's trace and evidence carry `language_to:<code>` even though the
+   00519|     // localized surface itself is produced by the summarizer below.
+   00520|     if response_language.is_some() {
+   00521|         log.append("language_to", language.to_owned());
+   00522|     }
+   00523|     let config = SummarizationConfig::default()
+   00524|         .with_mode(SummarizationMode::Short)
+   00525|         .with_language(language);
+   00526|     let description = describe_project(project, &config);
+   00527|     let display_name = project.display_name_for(language);
+   00528|     let repo_slug = project.repo_slug();
+   00529|     let project_url = project.url.clone();
+   00530| 
+   00531|     log.append("project:promoted", repo_slug.clone());
+   00532|     log.append("source", project_url.clone());
+   00533|     log.append("summarization:mode", "short".to_owned());
+   00534|     log.append("summarization:language", language.to_owned());
+   00535|     log.append("web_search:request", display_name.to_owned());
+   00536|     for provider in WEB_SEARCH_PROVIDERS {
+   00537|         log.append("web_search:provider_planned", (*provider).to_owned());
+   00538|     }
+   00539|     log.append(
+   00540|         "web_search:fusion_planned",
+   00541|         format!("rrf:k={WEB_SEARCH_RRF_K}"),
+   00542|     );
+   00543| 
+   00544|     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
+   00545|     let promoted_orgs = PROMOTED_PROJECT_ORGS.join(", ");
+   00546|     let body = match language {
+   00547|         "ru" => format!(
+   00548|             "В контексте репозиториев {promoted_orgs} под `{display_name}` я прежде всего \
+   00549|              имею в виду [{repo_slug}]({project_url}) — {description}\n\n\
+   00550|              Другие найденные в интернете репозитории и сущности должна показывать \
+   00551|              браузерная демо-версия через поиск по запросу `{display_name}`. \
+   00552|              Провайдеры: {provider_summary}. Ранжирование: reciprocal rank fusion \
+   00553|              (k = {WEB_SEARCH_RRF_K}). Продвижение ассоциативных репозиториев \
+   00554|              можно отключить, тогда ответ пойдет по обычному поиску GitHub, \
+   00555|              GitLab и Bitbucket."
+   00556|         ),
+   00557|         "hi" => format!(
+   00558|             "{promoted_orgs} repository context में `{display_name}` से मेरा पहला \
+   00559|              मतलब [{repo_slug}]({project_url}) है — {description}\n\n\
+   00560|              दूसरे matching repositories और entities browser demo में \
+   00561|              `{display_name}` web search से दिखाए जाते हैं. Providers: \
+   00562|              {provider_summary}. Combined ranking: reciprocal rank fusion \
+   00563|              (k = {WEB_SEARCH_RRF_K}). Associative repository promotion बंद \
+   00564|              करने पर जवाब generic GitHub, GitLab, और Bitbucket project lookup \
+   00565|              path से जाता है."
+   00566|         ),
+   00567|         "zh" => format!(
+   00568|             "在 {promoted_orgs} 仓库上下文中，`{display_name}` 首先指 \
+   00569|              [{repo_slug}]({project_url}) — {description}\n\n\
+   00570|              浏览器 demo 会通过 `{display_name}` 的网页搜索显示其他匹配的仓库和实体。\
+   00571|              Providers: {provider_summary}. Combined ranking: reciprocal rank fusion \
+   00572|              (k = {WEB_SEARCH_RRF_K}). 关闭 associative repository promotion 后，\
+   00573|              回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。"
+   00574|         ),
+   00575|         _ => format!(
+   00576|             "In the {promoted_orgs} repository context, `{display_name}` should first mean \
+   00577|              [{repo_slug}]({project_url}) — {description}\n\n\
+   00578|              Other repositories and entities found online are shown by the browser \
+   00579|              demo through a web search for `{display_name}`. Providers: \
+   00580|              {provider_summary}. Combined ranking: reciprocal rank fusion \
+   00581|              (k = {WEB_SEARCH_RRF_K}). Associative repository promotion can be \
+   00582|              switched off; then the answer follows the generic GitHub, GitLab, \
+   00583|              and Bitbucket project lookup path."
+   00584|         ),
+   00585|     };
+   00586|     finalize_simple(
+   00587|         prompt,
+   00588|         log,
+   00589|         "project_lookup",
+   00590|         "response:project_lookup",
+   00591|         &body,
+   00592|         0.9,
+   00593|     )
+   00594| }
+   00595| 
+   00596| fn render_generic_repository_lookup(
+   00597|     prompt: &str,
+   00598|     log: &mut EventLog,
+   00599|     repository: Option<&RepositoryReference>,
+   00600|     promotion_enabled: bool,
+   00601|     response_language: Option<&str>,
+   00602| ) -> SymbolicAnswer {
+   00603|     let language = response_language.unwrap_or_else(|| detect_language(prompt).slug());
+   00604|     // Issue #556: mirror the promoted-project renderer — a forced response
+   00605|     // language is recorded on the trace so the whole answerable class, not just
+   00606|     // promoted projects, carries `language_to:<code>` when replayed.
+   00607|     if response_language.is_some() {
+   00608|         log.append("language_to", language.to_owned());
+   00609|     }
+   00610|     let provider_summary = ["GitHub", "GitLab", "Bitbucket"].join(", ");
+   00611|     if !promotion_enabled {
+   00612|         log.append("project_lookup:promotion", "disabled".to_owned());
+   00613|     }
+   00614|     if let Some(repo) = repository {
+   00615|         let slug = repo.slug();
+   00616|         append_repository_evidence(log, repo.platform, slug.clone());
+   00617|         log.append("source", repo.url.clone());
+   00618|         let label = repo.platform.label();
+   00619|         let body = match language {
+   00620|             "ru" => format!(
+   00621|                 "Это запрос о репозитории [{slug}]({url}) на {label}.\n\n\
+   00622|                  Обычный путь project_lookup ищет и резюмирует README или описание \
+   00623|                  проекта на GitHub, GitLab и Bitbucket без особого правила для \
+   00624|                  отдельного названия. Если репозиторий находится в продвигаемых \
+   00625|                  организациях и продвижение включено, он будет показан первым.",
+   00626|                 url = repo.url
+   00627|             ),
+   00628|             "hi" => format!(
+   00629|                 "यह {label} पर रिपॉजिटरी [{slug}]({url}) के लिए lookup है.\n\n\
+   00630|                  Generic project_lookup path GitHub, GitLab, और Bitbucket पर \
+   00631|                  README या project descriptions summarize कर सकता है, किसी \
+   00632|                  single name के लिए special case के बिना. अगर repository \
+   00633|                  promoted organizations में है और promotion enabled है, तो वह \
+   00634|                  पहले दिखाई जाएगी.",
+   00635|                 url = repo.url
+   00636|             ),
+   00637|             "zh" => format!(
+   00638|                 "这是 {label} 上的仓库查询：[{slug}]({url})。\n\n\
+   00639|                  通用 project_lookup 路径可以汇总 GitHub、GitLab 和 Bitbucket 上的 \
+   00640|                  README 或项目描述，不需要为单个名称写特殊规则。如果该仓库属于 promoted \
+   00641|                  organizations 且 promotion 已开启，它会优先显示。",
+   00642|                 url = repo.url
+   00643|             ),
+   00644|             _ => format!(
+   00645|                 "This is a repository lookup for [{slug}]({url}) on {label}.\n\n\
+   00646|                  The generic project_lookup path can summarize README or project \
+   00647|                  descriptions from GitHub, GitLab, and Bitbucket without a special \
+   00648|                  case for any single name. If the repository belongs to a promoted \
+   00649|                  organization and promotion is enabled, that repository is listed \
+   00650|                  first.",
+   00651|                 url = repo.url
+   00652|             ),
+   00653|         };
+   00654|         return finalize_simple(
+   00655|             prompt,
+   00656|             log,
+   00657|             "project_lookup",
+   00658|             "response:project_lookup",
+   00659|             &body,
+   00660|             0.82,
+   00661|         );
+   00662|     }
+   00663| 
+   00664|     log.append("project_lookup:repository_hosts", provider_summary.clone());
+   00665|     let body = match language {
+   00666|         "ru" => format!(
+   00667|             "Это обычный запрос project_lookup о проекте или репозитории.\n\n\
+   00668|              Я не выделяю специальный репозиторий, потому что продвижение \
+   00669|              ассоциативных репозиториев отключено. Дальше следует искать и \
+   00670|              резюмировать подходящие проекты на {provider_summary} и похожих \
+   00671|              хостингах."
+   00672|         ),
+   00673|         "hi" => format!(
+   00674|             "यह project या repository के लिए generic project_lookup request है.\n\n\
+   00675|              मैं किसी specific repository को प्राथमिकता नहीं दे रहा हूँ क्योंकि \
+   00676|              associative repository promotion disabled है. अगला step {provider_summary} \
+   00677|              और similar hosts पर matching projects खोजना और summarize करना है."
+   00678|         ),
+   00679|         "zh" => format!(
+   00680|             "这是一个关于项目或仓库的通用 project_lookup 请求。\n\n\
+   00681|              我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。\
+   00682|              下一步是在 {provider_summary} 和类似托管平台中搜索并汇总匹配项目。"
+   00683|         ),
+   00684|         _ => format!(
+   00685|             "This is a generic project_lookup request for a project or repository.\n\n\
+   00686|              I am not privileging a specific repository because associative \
+   00687|              repository promotion is disabled. The next step is to search and \
+   00688|              summarize matching projects across {provider_summary} and similar \
+   00689|              hosts."
+   00690|         ),
+   00691|     };
+   00692|     finalize_simple(
+   00693|         prompt,
+   00694|         log,
+   00695|         "project_lookup",
+   00696|         "response:project_lookup",
+   00697|         &body,
+   00698|         0.72,
+   00699|     )
+   00700| }
+   00701| 
+   00702| fn append_repository_evidence(log: &mut EventLog, platform: RepositoryPlatform, slug: String) {
+   00703|     let kind = match platform {
+   00704|         RepositoryPlatform::GitHub => "project_lookup:repository:github",
+   00705|         RepositoryPlatform::GitLab => "project_lookup:repository:gitlab",
+   00706|         RepositoryPlatform::Bitbucket => "project_lookup:repository:bitbucket",
+   00707|     };
+   00708|     log.append(kind, slug);
+   00709| }
+   00710| 
+   00711| /// Match the concept term against the curated project registry. Returns the
+   00712| /// matching [`ProjectRecord`] or `None` when no curated project matches.
+   00713| fn matched_project(prompt: &str) -> Option<&'static ProjectRecord> {
+   00714|     let query = extract_concept_query(prompt)?;
+   00715|     let term = normalize_concept_term(&query.term);
+   00716|     if term.is_empty() {
+   00717|         return None;
+   00718|     }
+   00719|     let registry = registry_static();
+   00720|     if let Some(project) = registry.by_alias(&term) {
+   00721|         return Some(project);
+   00722|     }
+   00723|     if term == "hivemind" {
+   00724|         return registry.by_alias("hive mind");
+   00725|     }
+   00726|     None
+   00727| }
+   00728| 
+   00729| fn promoted_project_by_repo(org: &str, name: &str) -> Option<&'static ProjectRecord> {
+   00730|     let registry = registry_static();
+   00731|     registry.projects.iter().find(|project| {
+   00732|         is_promoted_project(project)
+   00733|             && project.org.eq_ignore_ascii_case(org)
+   00734|             && project.name.eq_ignore_ascii_case(name)
+   00735|     })
+   00736| }
+   00737| 
+   00738| fn is_promoted_project(project: &ProjectRecord) -> bool {
+   00739|     PROMOTED_PROJECT_ORGS
+   00740|         .iter()
+   00741|         .any(|org| project.org.eq_ignore_ascii_case(org))
+   00742| }
+   00743| 
+   00744| fn repository_from_prompt(prompt: &str) -> Option<RepositoryReference> {
+   00745|     first_url_candidate(prompt)
+   00746|         .and_then(|(_, url)| repository_from_url(&url))
+   00747|         .or_else(|| repository_from_concept_term(prompt))
+   00748| }
+   00749| 
+   00750| fn repository_from_concept_term(prompt: &str) -> Option<RepositoryReference> {
+   00751|     let query = extract_concept_query(prompt)?;
+   00752|     let term = query.term.trim();
+   00753|     if term.contains("://") || looks_like_hostname(term) {
+   00754|         return normalize_url_candidate(term).and_then(|url| repository_from_url(&url));
+   00755|     }
+   00756|     repository_from_slug(term)
+   00757| }
+   00758| 
+   00759| fn repository_from_slug(term: &str) -> Option<RepositoryReference> {
+   00760|     let trimmed = term
+   00761|         .trim()
+   00762|         .trim_matches(is_url_wrapper_punctuation)
+   00763|         .trim_end_matches(is_url_trailing_punctuation);
+   00764|     let mut segments = trimmed.split('/');
+   00765|     let owner = clean_repository_segment(segments.next()?)?;
+   00766|     let name = clean_repository_segment(segments.next()?)?;
+   00767|     if segments.next().is_some() {
+   00768|         return None;
+   00769|     }
+   00770|     if owner.chars().all(|ch| ch.is_ascii_digit()) && name.chars().all(|ch| ch.is_ascii_digit()) {
+   00771|         return None;
+   00772|     }
+   00773|     Some(RepositoryReference {
+   00774|         platform: RepositoryPlatform::GitHub,
+   00775|         url: format!("https://github.com/{owner}/{name}"),
+   00776|         owner,
+   00777|         name,
+   00778|     })
+   00779| }
+   00780| 
+   00781| fn repository_from_url(url: &str) -> Option<RepositoryReference> {
+   00782|     let after_scheme = url.split_once("://")?.1;
+   00783|     let (host_port, path_with_suffix) = after_scheme.split_once('/')?;
+   00784|     let host = host_port
+   00785|         .split(':')
+   00786|         .next()
+   00787|         .unwrap_or_default()
+   00788|         .trim_start_matches("www.")
+   00789|         .to_ascii_lowercase();
+   00790|     let platform = match host.as_str() {
+   00791|         "github.com" => RepositoryPlatform::GitHub,
+   00792|         "gitlab.com" => RepositoryPlatform::GitLab,
+   00793|         "bitbucket.org" => RepositoryPlatform::Bitbucket,
+   00794|         _ => return None,
+   00795|     };
+   00796|     let path = path_with_suffix
+   00797|         .split(['?', '#'])
+   00798|         .next()
+   00799|         .unwrap_or_default();
+   00800|     let mut segments = path.split('/').filter(|segment| !segment.is_empty());
+   00801|     let owner = clean_repository_segment(segments.next()?)?;
+   00802|     let name = clean_repository_segment(segments.next()?)?;
+   00803|     Some(RepositoryReference {
+   00804|         platform,
+   00805|         url: format!("https://{}/{owner}/{name}", platform.host()),
+   00806|         owner,
+   00807|         name,
+   00808|     })
+   00809| }
+   00810| 
+   00811| /// Owner/name slugs a prompt names: a GitHub URL's owner and name, then each
+   00812| /// bare `owner/name` run of the characters a repository slug is spelled with.
+   00813| ///
+   00814| /// Issue #1175 R3: the repository a traffic question names. Twin of
+   00815| /// `repositorySlugCandidates` in `js/worker/formal_ai_worker_claim_operands.js`.
+   00816| #[must_use]
+   00817| pub fn repository_slug_candidates(prompt: &str) -> Vec<String> {
+   00818|     let mut slugs = Vec::new();
+   00819|     if let Some(repo) = first_url_candidate(prompt).and_then(|(_, url)| repository_from_url(&url))
+   00820|         && repo.platform == RepositoryPlatform::GitHub
+   00821|     {
+   00822|         slugs.push(format!("{}/{}", repo.owner, repo.name));
+   00823|     }
+   00824|     let leads = |segment: &str| {
+   00825|         segment
+   00826|             .chars()
+   00827|             .next()
+   00828|             .is_some_and(|ch| ch.is_ascii_alphanumeric())
+   00829|     };
+   00830|     let digits = |segment: &str| segment.chars().all(|ch| ch.is_ascii_digit());
+   00831|     for run in prompt
+   00832|         .split(|ch: char| !(ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '/' | '-')))
+   00833|     {
+   00834|         let mut parts = run.trim_end_matches('.').split('/');
+   00835|         let (Some(owner), Some(name), None) = (parts.next(), parts.next(), parts.next()) else {
+   00836|             continue;
+   00837|         };
+   00838|         let (Some(owner), Some(name)) = (
+   00839|             clean_repository_segment(owner),
+   00840|             clean_repository_segment(name),
+   00841|         ) else {
+   00842|             continue;
+   00843|         };
+   00844|         if leads(&owner) && leads(&name) && !(digits(&owner) && digits(&name)) {
+   00845|             slugs.push(format!("{owner}/{name}"));
+   00846|         }
+   00847|     }
+   00848|     slugs
+   00849| }
+   00850| 
+   00851| fn clean_repository_segment(segment: &str) -> Option<String> {
+   00852|     let trimmed = segment.trim().trim_end_matches(".git");
+   00853|     if trimmed.is_empty() {
+   00854|         return None;
+   00855|     }
+   00856|     if !trimmed
+   00857|         .chars()
+   00858|         .all(|ch| ch.is_ascii_alphanumeric() || matches!(ch, '-' | '_' | '.'))
+   00859|     {
+   00860|         return None;
+   00861|     }
+   00862|     Some(trimmed.to_owned())
+   00863| }
+   00864| 
+   00865| fn is_text_url_extraction_prompt(normalized: &str) -> bool {
+   00866|     let normalized = normalized.trim_start().to_ascii_lowercase();
+   00867|     (normalized.starts_with("extract url ") || normalized.starts_with("extract urls "))
+   00868|         && normalized.contains(" from ")
+   00869| }
+   00870| 
+   00871| fn normalize_concept_term(value: &str) -> String {
+   00872|     normalize_prompt(value)
+   00873|         .replace(['-', '_'], " ")
+   00874|         .split_whitespace()
+   00875|         .collect::<Vec<_>>()
+   00876|         .join(" ")
+   00877| }
+   00878| 
+   00879| /// Lazy-init the curated projects registry once per process. The seed file is
+   00880| /// embedded via `include_str!` and the parsed form is immutable, so a `OnceLock`
+   00881| /// is enough and avoids re-parsing on every prompt.
+   00882| pub(super) fn registry_static() -> &'static crate::seed::ProjectsRegistry {
+   00883|     use std::sync::OnceLock;
+   00884|     static REGISTRY: OnceLock<crate::seed::ProjectsRegistry> = OnceLock::new();
+   00885|     REGISTRY.get_or_init(projects_registry)
+   00886| }
+   00887| 
+   
+   (End of file - total 887 lines)
+   </file>
+>> edit {"filePath":"rust/src/solver_handlers/web_requests.rs","file_path":"rust/src/solver_handlers/web_requests.rs","new":"/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep their intent.","newString":"/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep their intent.","new_str":"/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep their intent.","new_string":"/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep their intent.","old":"/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep\n/// their existing intent.","oldString":"/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep\n/// their existing intent.","old_str":"/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep\n/// their existing intent.","old_string":"/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep\n/// their existing intent.","path":"rust/src/solver_handlers/web_requests.rs"}
+>> bash {"command":"sha256sum -- rust/src/solver_handlers/web_requests.rs"}
+   a3b39d0a09b0e7a168535e8b140cb4cd6181d95938af8b10b133364d46c9bd2f  rust/src/solver_handlers/web_requests.rs
+   
+== answer ==
+Replaced ``/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep
+/// their existing intent.`` with ``/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep their intent.`` in `rust/src/solver_handlers/web_requests.rs` and observed the result.

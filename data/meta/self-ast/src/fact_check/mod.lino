@@ -1,0 +1,29 @@
+self_ast_census
+  target src/fact_check/mod.rs
+  language rust
+  fidelity signature
+  byte_len 10170
+  line_count 268
+  content_id source_module_9d9d8b4bc45d8ce7
+  symbol_count 20
+  symbols
+    module code_source 30 30
+    module git_source 31 31
+    module web_source 32 32
+    const EXCLUSIONS_LINO 40 41
+    const SOURCES_LINO 42 42
+    enum DocumentType 47 54
+    function of_path 60 66
+    function slug 68 74
+    function is_sequence_item_key 82 84
+    function predicate_is_excluded 89 97
+    function sequence_item_keys 101 115
+    function claim_fields 120 139
+    function structured_claim 149 178
+    function prior_for_context 183 187
+    function tier_for_context 192 203
+    function web_aggregator_hosts 207 221
+    struct FactCheckVerdict 226 233
+    function fact_check 238 251
+    function source_registry_row 253 260
+    function registry_root 262 268

@@ -10,6 +10,8 @@ other document, gate or requirement contradicts that page, the other one is wron
 
 ## How we develop Formal AI: drive the Agent CLI, never defer
 
+**Method: progressive JPEG (R1188-U28 to R1188-U30).** Every problem and every pull request is attacked the way a progressive JPEG loads: first the whole at low resolution, then sharper passes over all of it, the lowest level first. JavaScript goes first, and the other roots follow by automated translation, with recorded temporary workarounds where the meta language cannot translate yet. See [`docs/progressive-delivery.md`](docs/progressive-delivery.md); [`docs/progressive-plan.md`](docs/progressive-plan.md) is the generated next pass.
+
 **From issue #538 forward, this is the only way we develop the Formal AI
 system.** We do not solve a task by editing code and data by hand and we do not
 solve it partway and defer the rest to a roadmap. We solve it by **driving Formal
@@ -120,6 +122,22 @@ the local Formal AI server:
 ```bash
 solve ISSUE_URL --tool agent --model formal-ai --attach-logs --verbose
 ```
+
+### Formal AI as a subagent on its own requirements (R1026)
+
+Keep what you produce while working on Formal AI in the repository, not in a
+private scratchpad, whenever it is worth keeping: probe tools, the gaps found
+by probing, task prompts, claims and sandboxes. Formal AI can then read, edit
+and run it like any other workspace file. The shared folder is
+`experiments/formal_ai_subagent/`, and its `README.md` describes the loop:
+
+1. Delegate a small edit with
+   `node experiments/js_dogfood/drive.mjs --dir <sandbox-or-repo-root> "<instruction>"`.
+2. When it fails, probe the cause with `experiments/formal_ai_subagent/probe.mjs`.
+3. Fix the cause generally in both roots, add a regression test, and have
+   Formal AI record the result in the dogfood ledger.
+
+Formal AI keeps its own gap list (`gaps.md`) there too.
 
 ### Delegate the next commit to Formal AI: task issue, bot branch, review, merge
 
@@ -524,6 +542,25 @@ Removal from a public thread is not approval to retain another copy.
    - On long batches, commit at least once every four hours, and push
      only after re-reading the issue, the pull request, and the diff
      one more time.
+   - One test at a time on the workstation (R1018): run a single test
+     file (`node --test --test-concurrency=1 <file>`, after any running
+     `node --test` finishes). When test processes overload the machine,
+     never kill the owner's processes; fix the cause (unbounded
+     concurrency, a runaway runner) instead.
+   - Rust is verified by pushing (R1020): no local `cargo` build, test or
+     clippy. Artifacts that need a Rust build come from CI — the WASM
+     worker from the release workflow's `formal-ai-worker-wasm` artifact,
+     `ts/` from `scripts/translate-es.mjs`.
+   - Keep requirement status current (R1021): a batch that changes what is
+     delivered updates its requirement rows and regenerates the assembled
+     register and the status ledger in the same push.
+   - Never idle-wait on CI (R1022): while a run is in flight, keep drafting
+     the open requirement rows and re-verifying the planned ones. A pull
+     request is finished only when every planned requirement is drafted,
+     CI/CD is green and the release is deliverable.
+   - Decide, don't ask (R1023): open technical choices are settled from the
+     best available practices (researched online when needed), not put to
+     the owner as questions.
 
    **The three-root cycle is js-first.** Rust, JavaScript and TypeScript
    are all full implementation roots — client and backend — kept
@@ -532,12 +569,30 @@ Removal from a public thread is not approval to retain another copy.
    the 2026-08-04 interfacing-only-JavaScript boundary). Because
    JavaScript executes faster than Rust compiles, author and test a
    change in `js/` first when the change touches shared logic, then
-   translate outward rather than hand-porting:
+   translate outward rather than hand-porting. The conversion follows
+   the practices of `link-foundation/meta-language` (PR #196) and
+   `link-foundation/relative-meta-logic` (R1024):
 
    ```bash
    formal-ai translate --list                  # every direction and its status
    formal-ai translate --from rust --to meta --input rust/src/module.rs
+   node scripts/self-translate.mjs --to rust js/agentic/crate/module.mjs
+   node scripts/self-translate.mjs --report    # the twins against their Rust
+   node scripts/check-twin-citations.mjs       # every twin cites a live Rust item
    ```
+
+   `node scripts/self-translate.mjs` is the JavaScript-first self-translation
+   copied from meta-language PR #196: a provenance header, every top-level
+   item translated or carried with the reason
+   `data/meta/self-translation/constructs.lino` gives, and a round trip that
+   restores the source byte for byte (`--to js` reads a translation back,
+   `--to meta` prints the links IR). To widen the fragment, add the construct
+   map row, a case and its `(call ...)` rows to
+   `rust/tests/fixtures/self-translation/cases.lino`, then run
+   `node scripts/self-translate.mjs --write`; never hand-edit the expected
+   files. Both runtimes run every call of that one corpus, the practice of
+   relative-meta-logic's `test-corpus/`. What was adopted and why is
+   [docs/case-studies/pull-request-1188/conversion-best-practices.md](docs/case-studies/pull-request-1188/conversion-best-practices.md).
 
    Translation in any direction goes through the meta pivot
    (`rust/src/meta_translate.rs`); a leg that is not materialized yet
@@ -552,7 +607,10 @@ Removal from a public thread is not approval to retain another copy.
    the Opus model; the Fable model must never be used as a sub-agent
    (project owner directive, 2026-09-15). Keep the agent count low —
    the workstation is a notebook, and a fleet of agents competes with
-   the build for the same memory.
+   the build for the same memory: at most two or three sub-agents at
+   once (R1019), each told the same disk, RAM and CPU limits. Sub-agents
+   only make code changes; they run the JavaScript Formal AI only when
+   absolutely necessary and never run builds or full suites.
 
    **Classify CI failures before touching them.** A branch with
    tracked, owner-assigned reds (an allowlisted failing test, an
@@ -624,7 +682,10 @@ This project uses:
 - Write tests for all new functionality
 - Keep functions focused and reasonably sized
 - Keep Rust files under 1000 lines (`.lino` files and the browser worker JavaScript are capped at 1500); all limits are enforced by `rust-script scripts/check-file-size.rs`
-- Use meaningful variable and function names
+- Name things in full English words (`index`, not `idx`; `arguments`, not `args`) in code and in the links notation we own, and name files and directories after what they hold, never with numbered parts (R1188-U4, R1188-U5)
+- In the links notation we own, prefer `-` over `_` in names, keep it human readable, and state shared structure once and reference it (R1188-U6, R1188-U7; `docs/links-notation-style.md`)
+- Generalize, don't specialize: fix a failing case with the smallest universal rule that covers its class, so specific tests pass through shared code (R1188-U1), and follow [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles) (R1188-U2)
+- Make bulk changes by rules, such as a substitution pass or a generator with `--check`, not by hand (R1188-U8)
 
 ### Documentation Format
 
@@ -637,8 +698,8 @@ Use Rust documentation comments:
 ///
 /// # Arguments
 ///
-/// * `arg1` - Description of arg1
-/// * `arg2` - Description of arg2
+/// * `left` - Description of left
+/// * `right` - Description of right
 ///
 /// # Returns
 ///
@@ -655,8 +716,8 @@ Use Rust documentation comments:
 /// let result = example_function(1, 2);
 /// assert_eq!(result, 3);
 /// ```
-pub fn example_function(arg1: i32, arg2: i32) -> i32 {
-    arg1 + arg2
+pub fn example_function(left: i32, right: i32) -> i32 {
+    left + right
 }
 ```
 
@@ -706,7 +767,7 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
   **When something does behave differently on macOS, add its module to
   `data/meta/macos-platform-tests.lino`** with a line saying what differs. Do
   not widen the filter back to everything; the file is the list of what macOS is
-  actually for, and `issue_1017::the_macos_lane_selects_a_non_empty_set_of_tests`
+  actually for, and `step_budgets_within_job_clocks::the_macos_lane_selects_a_non_empty_set_of_tests`
   fails if it empties out.
 
   **Start the longest work first.** Whenever work is split across parallel
@@ -722,7 +783,7 @@ pub fn example_function(arg1: i32, arg2: i32) -> i32 {
 
   `scripts/plan-test-partition.rs` implements it for the macOS test slices from
   the durations recorded in `data/meta/test-durations.lino`, and the
-  `check_test_partition_balance` CI gate fails when the plan drifts out of
+  `check-test-partition-balance` CI gate fails when the plan drifts out of
   balance -- so a regression back to index order cannot land quietly. Apply the
   same rule to any new fan-out: sort by cost, descending, before assigning.
 
@@ -833,6 +894,71 @@ debt belongs:
   it — an untracked patch is invisible debt, because nothing fails when
   the upstream release lands and nothing ever removes it.
 
+The same rule governs *held-back releases* (issue #1169): every dependency
+must sit at its publisher's latest release, and `rust-script
+scripts/check-dependencies-latest.rs` fails when one does not. The one
+sanctioned way to hold a dependency back is a same-line annotation naming
+the issue that tracks the hold-back — `links-notation = "0.16.1" # blocked:
+https://github.com/link-foundation/lino-objects-codec/issues/60` in
+`Cargo.toml` (the URL may be bare or `<…>`-bracketed), or a `"<name>//":
+"blocked: <url> (reason)"` note key in the same `package.json`. The
+annotation must open with an issue URL, or with the GitHub security advisory
+(`https://github.com/advisories/GHSA-…`) when the hold-back waits on an
+unpatched vulnerability; a hold-back without one is not a decision, only
+drift, and the gate fails on it. The daily
+`dependencies-latest` workflow re-checks every registry and opens one pull
+request with everything that moved, so the gate being green is a fact about
+yesterday's registries, not a permanent state anyone achieves once.
+
+## GitHub credentials
+
+Tokens are **optional in all cases** (issue #1187). Nothing needs
+configuring for the workflows to run; when a credential exists, more work
+happens unattended.
+
+- **One resolver.** Every workflow that writes to GitHub takes its token
+  from `.github/actions/automation-token` — never from a directly read
+  secret. Three layers, first available wins: a GitHub App
+  (`AUTOMATION_APP_ID` + `AUTOMATION_APP_PRIVATE_KEY`, one app may serve
+  every repository of the organization), then one secret named
+  `AUTOMATION_TOKEN` — the same name in every repository, so one
+  organization secret serves them all — then the built-in `github.token`.
+  The layer that resolved is printed to the log and the job summary. No
+  other token secret name may appear in a workflow
+  (`rust/tests/unit/issue_1187_credentials.rs` fails the build on one).
+- **Checks without approval.** A `pull_request` workflow run whose PR was
+  opened by `GITHUB_TOKEN` waits for approval — that is GitHub's rule, not
+  ours. When the resolver reports layer `default`, the workflow that
+  pushed the branch calls `.github/actions/dispatch-checks`, which
+  dispatches every `pull_request` workflow on the head commit; dispatch
+  runs need no approval.
+- **Isolation without tokens.** A workload needing a separate tree tests on
+  an orphan branch of this repository (`e2e/<purpose>/<run_id>/<name>`,
+  `.github/workflows/e2e-isolation.yml`), with an `e2e-task` issue and a
+  pull request based on that branch, closed and deleted at the end. A
+  separate repository is used only when the resolver reports
+  `can-create-repositories: true` (the App layer).
+- **Cross-repository work degrades, never fails.** Filing an issue in
+  another repository at layer `default` is not possible; the workload
+  writes its findings into its report (`docs/status.md`, the case study)
+  and keeps one tracking issue here listing what to file.
+
+## Manual confirmation is aspirational (issue #1090)
+
+The manual-confirmation column of
+[docs/requirements-traceability.md](docs/requirements-traceability.md) is
+**aspirational**: `not yet confirmed` is the honest resting state of a row
+whose automated test pins the machinery while nobody has yet watched it run
+by hand, and it carries no debt and gates nothing. Two rules follow:
+
+- **No new manual-confirmation ledger may be introduced until an existing one is complete.**
+  A second parallel column would dilute the one surface that exists;
+  finishing beats starting.
+- The way the column fills is the finish branch of #1090: replayed session
+  captures from the agentic-CLI matrix, cited per row. Until a capture
+  exists for a row, the row stays `not yet confirmed` — that is the
+  recorded truth, not a gap to paper over.
+
 ## Project Conventions (recurring maintainer recommendations)
 
 These conventions recur in almost every issue review. They are collected here so
@@ -848,10 +974,18 @@ hardcoded prompt→answer tables.
    same prompt identically. A behavioural change in one **must** be mirrored in
    the other in the same PR. Name and comment the twin so the parity is obvious
    (e.g. "Mirrors `try_x` in `rust/src/solver_handler_x.rs`").
-   Mirror parity is the transitional contract while JS worker logic remains:
-   under the compiled-logic doctrine (REQUIREMENTS.md R536), prefer absorbing
-   the path into the Rust→WASM worker over adding a new JS twin, and never
-   grow the worker line budget (`scripts/check-worker-line-budget.rs`).
+   **JavaScript first (REQUIREMENTS.md R997-R1000, 2026-10-06).** Implement
+   and test a requirement in the JavaScript worker first (`npm run test:web`
+   runs in seconds); Rust follows by translation through the meta language,
+   or by a port that names its JavaScript original. Never land a new
+   `null` ("native surface only") registry row: `scripts/check-js-parity.mjs`
+   ratchets their count down. A worker module's line ceiling may rise for a
+   JavaScript twin of a native handler, with the keys named in the shard's
+   rationale (R999). Write new handler modules in the portable subset
+   (top-level functions with JSDoc types, `const`/`let`, tagged unions
+   dispatched by `switch`, no classes or destructuring) so they translate
+   mechanically. Regenerate `ts/` with `node scripts/translate-es.mjs
+   --write`; leave Rust compilation to CI — a push is the build.
 
 2. **Data-driven seed, no hardcoded natural language in code (issues #386,
    #513).** Natural language is *data*, never a string literal in the engine.
@@ -1047,6 +1181,16 @@ hardcoded prompt→answer tables.
     `scripts/tests-as-docs-allowlist.txt`, new ones fail the build, and a row
     that has been made explicit must be pruned (`--write` regenerates the list).
 
+17. **Pin invariants with containment, not byte-equality (R1085-16).** A test
+    that pins a structural invariant — "this generated document must satisfy
+    property X" — should assert containment or membership (`assert!(text.contains(…))`,
+    `assert!(VALID_VALUES.contains(&actual))`) rather than comparing the whole
+    generated document byte-for-byte. Byte-equality is right only when the bytes
+    themselves are the contract (a content-addressed artifact, a wire format, a
+    fixture the regeneration pipeline must reproduce exactly). For everything else,
+    pin the observable invariant and leave room for unrelated regeneration to change
+    the surrounding document without breaking the test.
+
 ## Merge conflicts are a layout bug (issue #991)
 
 `python3 scripts/analyze-merge-conflicts.py` replays every merge in this
@@ -1084,10 +1228,10 @@ pin breaks the build. The mapping, so you know which suite to update:
 
 | Document | Pinned by |
 | --- | --- |
-| `docs/status.md` and the two generated regions in `README.md` and `docs/benchmarks.md` | `rust/tests/unit/docs_status.rs` — regenerate with `rust-script scripts/render-status.rs --write`; never edit the generated bytes by hand |
+| `docs/status.md` and the two generated regions in `README.md` and `docs/benchmarks.md` | `rust/tests/unit/documentation_status.rs` — regenerate with `rust-script scripts/render-status.rs --write`; never edit the generated bytes by hand |
 | benchmark statements in `docs/benchmarks.md`, `VISION.md`, `ROADMAP.md`, `ARCHITECTURE.md`, `README.md` | `rust/tests/unit/docs_benchmarks.rs` |
 | `REQUIREMENTS.md`, `docs/requirements/*.md`, `docs/requirements-traceability.md`, and the requirement-status ledger | `rust/tests/unit/docs_requirements.rs` and the per-issue modules under `rust/tests/unit/docs_requirements/` |
-| issue citations across the narrative documents | `rust/tests/unit/docs_issue_citations.rs` |
+| issue citations across the narrative documents | `rust/tests/unit/documentation_issue_citations.rs` |
 | `docs/architect-notes/` | `rust/tests/unit/architect_notes.rs` |
 | `docs/meta-algorithm.md` and the per-algorithm specification pages | the modules under `rust/tests/unit/specification/` |
 | cross-cutting `README.md`, `VISION.md`, and `CONTRIBUTING.md` rules | `rust/tests/issue_885_docs.rs`, `rust/tests/issue_973_solve_flags.rs` |
@@ -1119,8 +1263,15 @@ differently.
 
 ## Pull Request Process
 
-1. Ensure all tests pass locally
-2. Update documentation if needed
+1. Run only the tests next to your change locally (`node --test <file>`) and
+   the JavaScript twins of the gates it touches
+   (`node experiments/formal_ai_subagent/local-gates.mjs --only <gate>`); do
+   not build Rust locally. CI runs everything else, and its failures are fixed
+   in bulk (R1188-U24, R1188-U25).
+2. Check the change against the review checklist in
+   [`docs/architecture/principles.md`](docs/architecture/principles.md), which
+   maps every code-architecture principle to the gate that enforces it
+   (R1188-U2), and update documentation if needed
 3. Add a changelog fragment (see step 5 in Development Workflow)
 4. Ensure the PR description clearly describes the changes
 5. Link the issue the PR closes with a GitHub closing keyword — `Fixes #146` or
@@ -1168,7 +1319,9 @@ Use these categories in your fragments:
 Fragments are automatically collected into CHANGELOG.md during the release process. The release workflow:
 
 1. Collects all fragments
-2. Updates CHANGELOG.md with the new version entry
+2. Updates CHANGELOG.md with the new version entry; CHANGELOG.md keeps only
+   the newest releases, and older ones roll into `docs/changelog/releases-from-<version>.md`, each named for the oldest release it holds (R1188-U5),
+   so no changelog file exceeds the 1500-line cap
 3. Removes processed fragment files
 4. Bumps the version in Cargo.toml
 5. Creates a git tag and GitHub release

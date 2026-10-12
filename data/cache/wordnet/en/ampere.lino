@@ -1,0 +1,18 @@
+language en
+lemma ampere
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a former unit of electric current (slightly smaller than the SI ampere)"
+    id oewn-13659320-n
+    partOfSpeech n
+    synonyms ("international ampere")
+  entry
+    definition "the basic unit of electric current adopted under the Systeme International d'Unites"
+    examples ("a typical household circuit carries 15 to 50 amps")
+    id oewn-13658855-n
+    partOfSpeech n
+    synonyms (amp A)
+source "oewn:2024"

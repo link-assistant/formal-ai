@@ -1,0 +1,14 @@
+{
+  "id": "T3560",
+  "stop": "final",
+  "calls": 0,
+  "answerBytes": 917,
+  "selected": [
+    {
+      "kind": "no-plan",
+      "result": null
+    }
+  ],
+  "drift": [],
+  "taskUtf8Bytes": 723
+}

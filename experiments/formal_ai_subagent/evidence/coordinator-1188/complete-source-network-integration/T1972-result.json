@@ -1,0 +1,18 @@
+{
+  "task": "T1972",
+  "prompt": "Run node --input-type=module -e 'import fs from\"node:fs\";import crypto from\"node:crypto\";import{execFileSync}from\"node:child_process\";\nconst p=\"rust/src/agentic_coding/self_ast.rs\",observed=fs.readFileSync(p),expected=execFileSync(\"git\",[\"show\",\"HEAD:\"+p]);fs.writeFileSync(\"/private/tmp/pr1188-T1971-invalid-self-ast.rs\",observed);if(!observed.includes(Buffer.from(\"assert_eq!(188, 558)\")))throw Error(\"unexpected effect changed\");fs.writeFileSync(p,expected);if(!fs.readFileSync(p).equals(expected))throw Error(\"restoration byte identity\");\nconsole.log(JSON.stringify({restored:p,sourceBytes:expected.length,badBytes:observed.length,sha256:crypto.createHash(\"sha256\").update(expected).digest(\"hex\"),manualWrites:0}));\nconsole.log(\"ROOT_T1972_PASS\");'",
+  "started": "2026-10-09T01:41:24.705Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node --input-type=module -e 'import fs from\\\"node:fs\\\";import crypto from\\\"node:crypto\\\";import{execFileSync}from\\\"node:child_process\\\";\\nconst p=\\\"rust/src/agentic_coding/self_ast.rs\\\",observed=fs.readFileSync(p),expected=execFileSync(\\\"git\\\",[\\\"show\\\",\\\"HEAD:\\\"+p]);fs.writeFileSync(\\\"/private/tmp/pr1188-T1971-invalid-self-ast.rs\\\",observed);if(!observed.includes(Buffer.from(\\\"assert_eq!(188, 558)\\\")))throw Error(\\\"unexpected effect changed\\\");fs.writeFileSync(p,expected);if(!fs.readFileSync(p).equals(expected))throw Error(\\\"restoration byte identity\\\");\\nconsole.log(JSON.stringify({restored:p,sourceBytes:expected.length,badBytes:observed.length,sha256:crypto.createHash(\\\"sha256\\\").update(expected).digest(\\\"hex\\\"),manualWrites:0}));\\nconsole.log(\\\"ROOT_T1972_PASS\\\");'\"}",
+        "result": "Output: {\"restored\":\"rust/src/agentic_coding/self_ast.rs\",\"sourceBytes\":15971,\"badBytes\":56,\"sha256\":\"56741f6837d16474f513793e190e7992c964ea1fbc3ee41b7128e266a0df7610\",\"manualWrites\":0}\nROOT_T1972_PASS\n\nExit Code: 0"
+      }
+    ],
+    "answer": "The `node --input-type=module -e 'import fs from\"node:fs\";import crypto from\"node:crypto\";import{execFileSync}from\"node:child_process\";\nconst p=\"rust/src/agentic_coding/self_ast.rs\",observed=fs.readFileSync(p),expected=execFileSync(\"git\",[\"show\",\"HEAD:\"+p]);fs.writeFileSync(\"/private/tmp/pr1188-T1971-invalid-self-ast.rs\",observed);if(!observed.includes(Buffer.from(\"assert_eq!(188, 558)\")))throw Error(\"unexpected effect changed\");fs.writeFileSync(p,expected);if(!fs.readFileSync(p).equals(expected))throw Error(\"restoration byte identity\");\nconsole.log(JSON.stringify({restored:p,sourceBytes:expected.length,badBytes:observed.length,sha256:crypto.createHash(\"sha256\").update(expected).digest(\"hex\"),manualWrites:0}));\nconsole.log(\"ROOT_T1972_PASS\");'` command completed. Output:\n\n```text\n{\"restored\":\"rust/src/agentic_coding/self_ast.rs\",\"sourceBytes\":15971,\"badBytes\":56,\"sha256\":\"56741f6837d16474f513793e190e7992c964ea1fbc3ee41b7128e266a0df7610\",\"manualWrites\":0}\nROOT_T1972_PASS\n```",
+    "stop": "final"
+  },
+  "ok": true,
+  "finished": "2026-10-09T01:41:25.656Z"
+}

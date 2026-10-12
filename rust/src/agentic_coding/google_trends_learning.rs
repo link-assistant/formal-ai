@@ -18,8 +18,7 @@ use crate::google_trends_learning::trending_learning_report;
 pub const GOOGLE_TRENDS_LEARNING_PATH: &str = "google-trends-learning.lino";
 
 /// A differently worded task for the Google Trends learning-frontier recipe.
-pub const GOOGLE_TRENDS_LEARNING_TASK: &str =
-    "Collect the Google Trends learning frontier — the trending searches Formal AI cannot \
+pub const GOOGLE_TRENDS_LEARNING_TASK: &str = "Collect the Google Trends learning frontier — the trending searches Formal AI cannot \
      yet resolve — route them through the human-gated self-improvement loop, and record the \
      learning report in Links Notation.";
 
@@ -101,7 +100,11 @@ pub fn final_answer(document: &str) -> String {
 /// Shell command used by the agentic recipe to verify the written report exists.
 #[must_use]
 pub fn verification_command() -> String {
+    let program = format!(
+        "p='{GOOGLE_TRENDS_LEARNING_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:14]))"
+    );
     format!(
-        "python3 -c p='{GOOGLE_TRENDS_LEARNING_PATH}';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:14]))"
+        "python3 -c {}",
+        super::general_planner::shell_quote(&program)
     )
 }

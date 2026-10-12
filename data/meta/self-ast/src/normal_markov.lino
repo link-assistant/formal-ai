@@ -2,10 +2,10 @@ self_ast_census
   target src/normal_markov.rs
   language rust
   fidelity signature
-  byte_len 9202
-  line_count 273
-  content_id source_module_0b67293fb91852f3
-  symbol_count 17
+  byte_len 16510
+  line_count 467
+  content_id source_module_f340aac8d8e85b0f
+  symbol_count 30
   symbols
     struct RewriteRule 17 24
     function new 29 35
@@ -19,8 +19,21 @@ self_ast_census
     struct QuotedSegment 142 149
     function quoted_segments 158 163
     function quoted_segment_spans 172 192
-    function unwrap_transport_quotes 197 209
-    function next_delimiter 211 228
-    const PAIRS 212 212
-    function next_complete_pair 230 251
-    function closing_delimiter 253 273
+    struct QuoteFault 196 204
+    const ASCII_QUOTES 206 206
+    const OPEN_ONLY 207 207
+    const CLOSE_FOLLOWERS 208 208
+    const FAULT_FRAGMENT_CHARS 209 209
+    function quote_fault 218 256
+    function gap_faults 260 272
+    function word_internal_mark 279 285
+    function unwrap_transport_quotes 290 302
+    const PAIRS 305 305
+    function wrapped_in_quote_pair 322 329
+    function quotes_whole 335 340
+    function next_delimiter 342 354
+    function next_complete_pair 356 378
+    function closing_delimiter 385 395
+    function stacked_closing_delimiter 400 418
+    function nested_closing_delimiter 422 445
+    function plain_closing_delimiter 447 467

@@ -1,0 +1,5 @@
+{
+  "taskId": "T2050",
+  "target": "js/worker/formal_ai_worker_project_summaries.js",
+  "byteEqual": true
+}

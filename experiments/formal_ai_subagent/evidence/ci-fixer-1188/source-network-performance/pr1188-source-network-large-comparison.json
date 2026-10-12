@@ -1,0 +1,19 @@
+{
+  "upstream": "eb0574d5528babd3b4aadece81590d8e2230b99b",
+  "path": "ts/worker/formal_ai_worker_facts_and_software_phrases.ts",
+  "sourceSha256": "ce3985becef2e51d0f777532287f871a51b71c9ee9ef038907cf668662454f03",
+  "sourceBytes": 50132,
+  "serializedBytes": 3458046,
+  "baseline": {
+    "milliseconds": 13606.947167,
+    "decodes": 2
+  },
+  "optimized": {
+    "milliseconds": 11367.217249999998,
+    "decodes": 1
+  },
+  "fullNetworkBytesEqual": true,
+  "compressedBytesEqual": true,
+  "receiptEqual": true,
+  "physicalSourceUnchanged": true
+}

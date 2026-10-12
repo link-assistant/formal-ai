@@ -1,12 +1,15 @@
 Q99895
   aliases
+    es (cabecera)
     ru ("Подушка")
   descriptions
     en "cushion for the head"
+    es "pieza mullida en la que se apoya la cabeza durante el sueño"
     ru "постельная принадлежность"
   id Q99895
   labels
     en pillow
+    es almohada
     hi "तकिया"
     ru "подушка"
     zh "枕頭"

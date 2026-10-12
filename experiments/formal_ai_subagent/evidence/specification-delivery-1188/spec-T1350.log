@@ -1,0 +1,9 @@
+>> bash {"command":"node experiments/formal_ai_subagent/generate-worker-factory-budgets.mjs"}
+   data/meta/worker-line-budget/formal_ai_worker_crate_normal_markov.lino
+   
+== answer ==
+The `node experiments/formal_ai_subagent/generate-worker-factory-budgets.mjs` command completed. Output:
+
+```text
+data/meta/worker-line-budget/formal_ai_worker_crate_normal_markov.lino
+```

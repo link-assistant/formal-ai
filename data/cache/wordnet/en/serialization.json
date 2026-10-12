@@ -1,0 +1,19 @@
+{
+  "lemma": "serialization",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01104767-n",
+      "partOfSpeech": "n",
+      "definition": "publication in serial form",
+      "synonyms": [
+        "serialisation"
+      ]
+    }
+  ]
+}

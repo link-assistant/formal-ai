@@ -1,0 +1,13 @@
+{
+  "transcript": [],
+  "answer": null,
+  "stop": "no-plan",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

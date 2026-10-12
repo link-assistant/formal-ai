@@ -1,0 +1,5 @@
+{
+  "taskId": "T2421",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run `node /private/tmp/spec-recurrence-1188/citation-original-production-probe.mjs`"
+}

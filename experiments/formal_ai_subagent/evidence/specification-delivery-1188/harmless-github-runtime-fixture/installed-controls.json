@@ -1,0 +1,63 @@
+{
+  "schema": "installed-harmless-github-runtime-controls/v1",
+  "sourceGuardsVerified": 5,
+  "sourceFilesByteEqual": 4,
+  "checks": [
+    {
+      "command": "node",
+      "args": [
+        "--check",
+        "scripts/release-runtime-fixture.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "command": "node",
+      "args": [
+        "--test",
+        "rust/tests/web/release-runtime-fixture.test.mjs",
+        "rust/tests/web/release-stage-transfer.test.mjs"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "TAP version 13\n# Subtest: runtime fixture uses read-only same-run IDs, actual outputs, inactive skipping and private caller-only leases\nok 1 - runtime fixture uses read-only same-run IDs, actual outputs, inactive skipping and private caller-only leases\n  ---\n  duration_ms: 7.716791\n  ...\n# Subtest: wrong run/group, missing ancestor or unqueued contender never become actual lease proof\nok 2 - wrong run/group, missing ancestor or unqueued contender never become actual lease proof\n  ---\n  duration_ms: 1.367625\n  ...\n# Subtest: real active/inactive output contract rejects skipped success, wrong source and early marker\nok 3 - real active/inactive output contract rejects skipped success, wrong source and early marker\n  ---\n  duration_ms: 0.32425\n  ...\n# Subtest: credential routing, production group, nested lease and spoofed or ungated artifact graphs are refused\nok 4 - credential routing, production group, nested lease and spoofed or ungated artifact graphs are refused\n  ---\n  duration_ms: 4.654583\n  ...\n# Subtest: immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input\nok 5 - immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input\n  ---\n  duration_ms: 309.209\n  ...\n# Subtest: independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers\nok 6 - independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers\n  ---\n  duration_ms: 2.717875\n  ...\n# Subtest: dormant workflow is a checked exact canonical operation/order/output/authority projection\nok 7 - dormant workflow is a checked exact canonical operation/order/output/authority projection\n  ---\n  duration_ms: 47.661792\n  ...\n# Subtest: canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail\nok 8 - canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail\n  ---\n  duration_ms: 91.9715\n  ...\n1..8\n# tests 8\n# suites 0\n# pass 8\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 503.487583\n",
+      "stderr": "",
+      "error": null
+    },
+    {
+      "command": "/opt/homebrew/bin/actionlint",
+      "args": [
+        "-shellcheck=",
+        "-pyflakes=",
+        "-ignore",
+        "unexpected key \"queue\" for \"concurrency\" section",
+        ".github/workflows/release-runtime-fixture.yml",
+        ".github/workflows/release-runtime-fixture-callee.yml"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "",
+      "stderr": "",
+      "error": null
+    }
+  ],
+  "actualRepositoryNodeTests": 8,
+  "queueRefusals": 8,
+  "outputRefusals": 6,
+  "fixtureGraphRefusals": 11,
+  "canonicalProjectionRefusals": 15,
+  "originalCanonical52operations104bindingsChecked": true,
+  "actualGitHubService": false,
+  "actualPrivateLease": false,
+  "nativeExecutable": false,
+  "compilerInvoked": false,
+  "productionAuthority": false,
+  "publication": false,
+  "actionlintQueueException": "Only exact installed1.7.12 unsupported queue:max syntax ignored; privategroup queue retained",
+  "actionlintShellcheck": false,
+  "actionlintPyflakes": false
+}

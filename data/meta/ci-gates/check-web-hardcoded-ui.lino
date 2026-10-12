@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_web_hardcoded_ui
+ci_gate check-web-hardcoded-ui
   stage web
   description "The web app renders no hardcoded user-facing string."
   run "npm run --prefix rust/tests/e2e check:web-hardcoded-ui"
+  justification "Hardcoded UI strings in app.js bypassed the i18n catalog and left permission dialogs untranslated in non-English locales; the guard was added in commit 506a1a994 to prevent new hardcoded strings from entering the web UI after the i18n routing work."

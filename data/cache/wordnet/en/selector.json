@@ -1,0 +1,28 @@
+{
+  "lemma": "selector",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-10451389-n",
+      "partOfSpeech": "n",
+      "definition": "a person who chooses or selects out",
+      "synonyms": [
+        "picker",
+        "chooser"
+      ]
+    },
+    {
+      "id": "oewn-04176498-n",
+      "partOfSpeech": "n",
+      "definition": "a switch that is used to select among alternatives",
+      "synonyms": [
+        "selector switch"
+      ]
+    }
+  ]
+}

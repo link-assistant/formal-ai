@@ -1,0 +1,14 @@
+# Issue 669 schema for explicit, append-only synchronization.
+cloud_sync
+  default_enabled false
+  opt_in required
+  object_digest sha256
+  object_format memory_event
+  publication immutable
+  merge append_only
+  duplicate_key content_address
+  local_counters excluded
+  backend directory
+  pending_backend git
+  pending_backend webdav
+  pending_backend s3

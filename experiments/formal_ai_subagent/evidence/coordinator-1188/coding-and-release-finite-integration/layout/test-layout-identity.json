@@ -1,0 +1,37 @@
+{
+  "kind": "five test ports formatting only; all executable ASTs identical in actualT2763",
+  "sourceCommit": "79cac78a23f471ef6dea134be51d13aa9f5ef209",
+  "files": [
+    {
+      "path": "rust/tests/web/literal-action-goal-ledger.test.mjs",
+      "beforeSha256": "ef28ab58b1fd8a7222cbf2efccf14bd6c8ee45d002bf0f044bbdc810a481ef96",
+      "afterSha256": "6d8f2df8ef4d84c691d5ade1bc3365b4c9e5b56db52ab119b6ca04e231be152e",
+      "canonicalExecutableAstSha256": "70dca74e3b25edfda3fbbe7fc1504247c10dbf207edb9c4abbb6469363a21c6d"
+    },
+    {
+      "path": "rust/tests/web/literal-action-independent-goals.test.mjs",
+      "beforeSha256": "06126c7e3b50686d76b701f91f55971b616e0a4edf3b75385e6b6f1d7e301c77",
+      "afterSha256": "e00e1aa2ea902bedd85cc9a2cddcc525e0cfbeec55b27631e7217c6dcce4c487",
+      "canonicalExecutableAstSha256": "8cf56235e23e78f8afeed4721fb11e63e479698a195fc8058cbc8e71f2b7a258"
+    },
+    {
+      "path": "rust/tests/web/literal-action-ownership.test.mjs",
+      "beforeSha256": "3faf43569a621f37a2b750ba3a8a778877f146c1b7d3531b1c9ecf4b4a676052",
+      "afterSha256": "a1bb7266017d47d1af6b8954986cfd90a1662b3bb34524d2210e639feacc4d58",
+      "canonicalExecutableAstSha256": "2bbeedf0a86ccdcdc55ca34bb0ec37f0cb435c993e40f154da13aee7d460513d"
+    },
+    {
+      "path": "rust/tests/web/literal-action-routing.test.mjs",
+      "beforeSha256": "f1bcb9b8cdb7665abf9f703d87ae0f13740a7c6f456da8ac276bcbed46c0e390",
+      "afterSha256": "32dba1b7ecf3438064cb08e164ca015f8cc5591ae53ff190623df6c4a898aa22",
+      "canonicalExecutableAstSha256": "f770e17e06426e268d41aa039efa0b88ec8dfc3a068fcb00ae2200aa2289a530"
+    },
+    {
+      "path": "rust/tests/web/literal-action-test-helper.mjs",
+      "beforeSha256": "b36e8be116e1c3bb17b14a259407d84bd2a04a55324492262e13874d286ef45d",
+      "afterSha256": "4b33831612f6c9015fc5b170d7f83ee3ffab5611a71dc244d313cbb0f0c4312a",
+      "canonicalExecutableAstSha256": "6ab65fa015656db33face09f9aaa99bc1ec2811b964617ae8ce38efc38622c11"
+    }
+  ],
+  "assertionsChanged": false
+}

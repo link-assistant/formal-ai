@@ -1,17 +1,20 @@
 Q40348
   aliases
     en (attorney solicitor barrister lawyers)
+    es (abogados "licenciado en derecho" abogada abogadas licenciado licenciada)
     hi ("न्यायज्ञ" "वक़ील" "मुख़्तार" "मुख्तार" "विधिज्ञ" "विधिवक्ता" "बकील" "लॉयर")
     ru ("адвокат в гражданском процессе" "практикующая юристка" "практикующий юрист")
     zh ("辩护人" "律师" "执业律师")
   descriptions
     en "legal professional"
+    es "profesional autorizado para asesorar y defender los derechos e intereses de otra persona y representarla en un juicio"
     hi "क़ानूनी पेशेवर जो ग्राहकों की मदद करता है और न्यायालय में उनका प्रतिनिधित्व करता है"
     ru "независимый советник по правовым вопросам и представитель клиента в суде"
     zh "幫助客戶並在法庭上代表他們的法律專業人士"
   id Q40348
   labels
     en lawyer
+    es abogado
     hi "वकील"
     ru "адвокат"
     zh "律師"

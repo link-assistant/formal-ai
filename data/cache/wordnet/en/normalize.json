@@ -1,0 +1,49 @@
+{
+  "lemma": "normalize",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00469496-v",
+      "partOfSpeech": "v",
+      "definition": "become normal or return to its normal state",
+      "examples": [
+        "Let us hope that relations with this country will normalize soon"
+      ],
+      "synonyms": [
+        "normalise"
+      ]
+    },
+    {
+      "id": "oewn-00469149-v",
+      "partOfSpeech": "v",
+      "definition": "make normal or cause to conform to a norm or standard",
+      "examples": [
+        "normalize relations with China",
+        "normalize the temperature",
+        "normalize the spelling"
+      ],
+      "synonyms": [
+        "normalise",
+        "renormalize",
+        "renormalise"
+      ]
+    },
+    {
+      "id": "oewn-00303837-v",
+      "partOfSpeech": "v",
+      "definition": "bring to a desired consistency, texture, or hardness by a process of gradually heating and cooling",
+      "examples": [
+        "temper glass"
+      ],
+      "synonyms": [
+        "anneal",
+        "temper"
+      ]
+    }
+  ]
+}

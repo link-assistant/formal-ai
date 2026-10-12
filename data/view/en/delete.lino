@@ -1,0 +1,17 @@
+view
+  id M-2ce5665d9dea
+  lemma delete
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "remove or make invisible"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "wipe out digitally or magnetically recorded information"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "cut or eliminate"
+    provenance (wordnet)

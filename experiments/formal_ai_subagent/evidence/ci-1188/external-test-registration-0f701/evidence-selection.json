@@ -1,0 +1,195 @@
+{
+  "cutoff": "T4080",
+  "officialSource": "0f701bd8d4bc7a525fccc8d5c9a8fd0d4b340c84",
+  "native": "pending actual fresh CI compiler/test runtime",
+  "autonomousCredit": 0,
+  "files": [
+    {
+      "task": 4076,
+      "source": "/private/tmp/pr1188-ci-T4076/T4076.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/T4076.log",
+      "bytes": 93,
+      "sha256": "65bcc5d577d02c219e3b724a1d695beb74b0deef178eb579cf618b8989e81d9a"
+    },
+    {
+      "task": 4076,
+      "source": "/private/tmp/pr1188-ci-T4076/algorithm-operation-receipts.rs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/algorithm-operation-receipts.rs",
+      "bytes": 2841,
+      "sha256": "4fa60abd50027752649a48f27202867017d3ea09f5904b20478bbe0ccc8ad716"
+    },
+    {
+      "task": 4076,
+      "source": "/private/tmp/pr1188-ci-T4076/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/drive-request.json",
+      "bytes": 1900,
+      "sha256": "3bf4af4a5dd13e22f88f53073b1dd72d88ba557db0805096300c39101a326faa"
+    },
+    {
+      "task": 4076,
+      "source": "/private/tmp/pr1188-ci-T4076/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/drive.json",
+      "bytes": 2745,
+      "sha256": "f7e2551677d869a00993c9116f1730fd021901de613b54623c71122e32698a3a"
+    },
+    {
+      "task": 4076,
+      "source": "/private/tmp/pr1188-ci-T4076/original.rs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/original.rs",
+      "bytes": 2532,
+      "sha256": "98a3f873a3f330a20e74ae54ef574913513018e48701882cd704d63ab704467f"
+    },
+    {
+      "task": 4076,
+      "source": "/private/tmp/pr1188-ci-T4076/test-target-ownership.rs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4076/test-target-ownership.rs",
+      "bytes": 965,
+      "sha256": "9561a5158f1b10f9886e75952a46b824d532f60b28dff6c8d1880efba1a85e3e"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/T4077.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/T4077.log",
+      "bytes": 92,
+      "sha256": "8332beda37c96dcbc5a07105a50cad53602f8b83596eb969e47080bb14615a93"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/control-before.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/control-before.log",
+      "bytes": 499,
+      "sha256": "5c75bbfa73c50185ad0401bced577e8c6993aceb31aa443594499fdb359f2425"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/control.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/control.mjs",
+      "bytes": 8807,
+      "sha256": "f044891265c2cafd50abe8c1411ba53a55e1e3a9f4d3a7d6c5b8f42ae2c04dab"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/controls.rs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/controls.rs",
+      "bytes": 4844,
+      "sha256": "c54b5e522754d21b442d7eeb9c64b31fb71d970317d170b14805408bd08ef934"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/draft.rs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/draft.rs",
+      "bytes": 16330,
+      "sha256": "f9a9a0af76ff6b911116c303adc302c5c4127093d3b30837d0f8b77d823db60f"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/drive-request.json",
+      "bytes": 148,
+      "sha256": "f921e0bf4caa7f86471bf3ad0eb0abd3889a8f49223eaf9cf78c5542314a90b5"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/drive.json",
+      "bytes": 879,
+      "sha256": "536fcca634d5ecf0c1522694588a72c60f08d524c68b0bd3017480b963493b9b"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/helpers.rs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/helpers.rs",
+      "bytes": 6672,
+      "sha256": "c453bb7fc384e936b4ebb9076d995d64815158558c7e3bb0580a71ece1fbc5c9"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/repair.mjs",
+      "bytes": 857,
+      "sha256": "7e49663a5ba089aa73fc7e098c203c501eaaef5908f4b95f8739f501a0a61aeb"
+    },
+    {
+      "task": 4077,
+      "source": "/private/tmp/pr1188-ci-T4077/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4077/request.json",
+      "bytes": 17420,
+      "sha256": "dccbd608756ed574c8bedfe35fb89b98e639b5f6569d435c2fc817168044fc84"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/T4079.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/T4079.log",
+      "bytes": 92,
+      "sha256": "e8436d2c89ff305fadf75db55f9e2d872bdcd7693f92d985458d12cb103fc16f"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/debt.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/debt.log",
+      "bytes": 660,
+      "sha256": "cbf0bd58a03272ed0f36f9dc6751866c983c4839e2348eba2f5766414c3c769d"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/drive-request.json",
+      "bytes": 148,
+      "sha256": "b066587b0d01520727996af063e079e97a89d680dcfaa4bf547e944c2dcdccf4"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/drive.json",
+      "bytes": 737,
+      "sha256": "1443ead9a09ebafa9b613f553c5643382d4a19c904e79f4933c6bce87b3dd02a"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/format.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/format.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/source-hashes.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/source-hashes.json",
+      "bytes": 462,
+      "sha256": "9cd75faa24154c0005bf2d8d3ad871b3b59fe34a1fa4a306dda2c8e0c4f8cb18"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/structural-twin.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/structural-twin.log",
+      "bytes": 499,
+      "sha256": "5c75bbfa73c50185ad0401bced577e8c6993aceb31aa443594499fdb359f2425"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/verify.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/verify.mjs",
+      "bytes": 1567,
+      "sha256": "58918799efb66f0111ced576286f5012b06a5f9133bc657fa69d4cd0a975e0fe"
+    },
+    {
+      "task": 4079,
+      "source": "/private/tmp/pr1188-ci-T4079/whitespace.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/T4079/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/private/tmp/pr1188-0f701-official/native-new-full-114042298427.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/native-new-full-114042298427.log",
+      "bytes": 369505,
+      "sha256": "e08dca56badf3f4f9a652fe8744ecfdf941089c900d4b307ac6dd3eb6bac9b50"
+    },
+    {
+      "source": "/private/tmp/pr1188-0f701-official/new-failure-114030300960.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/external-test-registration-0f701/new-failure-114030300960.log",
+      "bytes": 156490,
+      "sha256": "81cd97f5b162666c5950b4ebb6418045b765bd2113321395361cf036e8eebdb4"
+    }
+  ]
+}

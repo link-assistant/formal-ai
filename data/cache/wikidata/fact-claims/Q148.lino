@@ -1,0 +1,49 @@
+Q148
+  aliases
+    en ("Red China" "PR China" "Communist China" "China PR" cn "The PRC" P.R.C. "the People's Republic of China")
+    hi ("चीन जनवादी गणराज्य")
+    ru ("КНР" "Поднебесная" "Материковый Китай" "Континентальный Китай" "Китайская Народная Республика")
+    zh ("中" "红色中国" "共产中国" "中国大陆" "大陆" "陆" "新中国" "北京當局" "中華人民共和國" "中华" "共產中國" "中國大陸" "中国" "中國")
+    zh-hans ("中国" "中")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q956
+              numeric-id 956
+          hash 952c42479db8a9aebff21f296c3ab4c1792c7b97
+          property P36
+          snaktype value
+        rank normal
+  id Q148
+  labels
+    en "People's Republic of China"
+    hi "चीन"
+    ru "Китай"
+    zh "中华人民共和国"
+    zh-hans "中华人民共和国"
+  sitelinks
+    enwiki
+      site enwiki
+      title China
+    hiwiki
+      site hiwiki
+      title "चीनी जनवादी गणराज्य"
+    ruwiki
+      site ruwiki
+      title "Китай"
+    zhwiki
+      site zhwiki
+      title "中华人民共和国"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

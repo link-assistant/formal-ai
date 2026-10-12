@@ -1,0 +1,34 @@
+language en
+lemma church
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "one of the groups of Christians who have their own beliefs and forms of worship"
+    id oewn-08099479-n
+    partOfSpeech n
+    synonyms ("Christian church")
+  entry
+    definition "a place for public (especially Christian) worship"
+    examples ("the church was empty")
+    id oewn-03031762-n
+    partOfSpeech n
+    synonyms ("church building")
+  entry
+    definition "a service conducted in a house of worship"
+    examples ("don't be late for church")
+    id oewn-01034400-n
+    partOfSpeech n
+    synonyms ("church service")
+  entry
+    definition "the body of people who attend or belong to a particular local church"
+    examples ("our church is hosting a picnic next week")
+    id oewn-08099776-n
+    partOfSpeech n
+  entry
+    definition "perform a special church rite or service for"
+    examples ("church a woman after childbirth")
+    id oewn-02083398-v
+    partOfSpeech v
+source "oewn:2024"

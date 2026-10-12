@@ -1,0 +1,17 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/software-project-phrases.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-39761fb52bc50d89
+    record "software_object_boundary_character"
+  gap seed-metadata-gap-08e09c1f110fedda
+    record "software_object_boundary_word"
+  gap seed-metadata-gap-ee0eb297d7215ff0
+    record "software_object_lead_bigram"
+  gap seed-metadata-gap-7bb5bd09fd59aff2
+    record "software_object_lead_word"
+  gap seed-metadata-gap-c6f3c532d1f72d2d
+    record "software_object_word_internal_character"
+  gap seed-metadata-gap-3e2bffc6354119de
+    record "software_sentence_end_character"

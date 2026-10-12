@@ -1,0 +1,3 @@
+- Repair the slim Docker release build by copying Bun 1.4.2 from its published official image instead of the nonexistent 1.2.28 tag.
+- Keep the CI Bun pin at the same verified official release; the image manifest contains both Linux amd64 and arm64.
+- Leave Rust compilation and the complete Docker runtime smoke test to CI using the prebuilt release binary.

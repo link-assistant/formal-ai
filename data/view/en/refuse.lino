@@ -1,0 +1,33 @@
+view
+  id M-4f4b852c93f1
+  lemma refuse
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "food that is discarded (as from a kitchen)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "show unwillingness towards"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "not accept as true"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "elude, especially in a baffling way"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "refuse to let have"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "resist immunologically the introduction of some foreign tissue or organ"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "refuse entrance or membership"
+    provenance (wordnet)

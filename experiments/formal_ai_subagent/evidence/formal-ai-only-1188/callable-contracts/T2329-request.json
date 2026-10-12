@@ -1,0 +1,8 @@
+{
+  "id": "T2329",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run node -e \"const fs=require('fs');const r=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T2329-request.json','utf8'));if(fs.readFileSync(r.path,'utf8')!==r.before||fs.existsSync(r.target))throw Error('preimage mismatch');fs.copyFileSync(r.path,r.target);fs.unlinkSync(r.path);\"",
+  "path": "requested-change.lino",
+  "before": "change_request\n  id \"change_request_e0ff9b76a864f30a\"\n  request \"Please add a new capability to Formal AI: let users ask it to reverse-sort a program's output.\"\n  human_gated \"true\"\n  target_module \"src/agentic_coding/planner.rs\"\n  target_content_id \"source_module_dbf16da761691ec2\"\n  derived_requirement \"The system must add a new capability to Formal AI: let users ask it to reverse-sort a program's output.\"\n  proposed_test \"user_requested_change_please_add_a_new_capability_to_formal_ai\"\n  reviewable_pull_request\n    step \"Record the derived requirement for review: The system must add a new capability to Formal AI: let users ask it to reverse-sort a program's output.\"\n    step \"Add the failing test `user_requested_change_please_add_a_new_capability_to_formal_ai` that pins the requested behaviour\"\n    step \"Edit the grounded target module `src/agentic_coding/planner.rs` until the test passes\"\n    step \"Run the benchmark gate; only a green run is reviewable\"\n    step \"Open a reviewable pull request; a human approves before it merges\"\n",
+  "target": "/private/tmp/formal-ai-only-1188/T2328-wrong-requested-change.lino"
+}

@@ -1,0 +1,65 @@
+language en
+lemma trimmed
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "made neat and tidy by trimming"
+    examples ("his neatly trimmed hair")
+    id oewn-02463784-a
+    partOfSpeech a
+    synonyms (cut)
+  entry
+    definition "remove the edges from and cut down to the desired size"
+    examples ("pare one's fingernails" "trim the photograph" "trim lumber")
+    id oewn-01265128-v
+    partOfSpeech v
+    synonyms (pare trim)
+  entry
+    definition "decorate, as with ornaments"
+    examples ("trim the christmas tree" "trim a shop window")
+    id oewn-01683701-v
+    partOfSpeech v
+    synonyms (trim)
+  entry
+    definition "cut down on; make a reduction in"
+    examples ("reduce your daily fat intake" "The employer wants to cut back health benefits")
+    id oewn-00430013-v
+    partOfSpeech v
+    synonyms (reduce "cut down" "cut back" trim "trim down" "trim back" cut "bring down")
+  entry
+    definition "balance in flight by regulating the control surfaces"
+    examples ("trim an airplane")
+    id oewn-02757982-v
+    partOfSpeech v
+    synonyms (trim)
+  entry
+    definition "be in equilibrium during a flight"
+    examples ("The airplane trimmed")
+    id oewn-02757827-v
+    partOfSpeech v
+    synonyms (trim)
+  entry
+    definition "decorate (food), as with parsley or other ornamental foods"
+    id oewn-01683328-v
+    partOfSpeech v
+    synonyms (trim garnish dress)
+  entry
+    definition "cultivate, tend, and cut back the growth of"
+    examples ("dress the plants in the garden")
+    id oewn-01323662-v
+    partOfSpeech v
+    synonyms (snip clip crop trim lop dress prune "cut back")
+  entry
+    definition "cut closely"
+    examples ("trim my beard")
+    id oewn-01251346-v
+    partOfSpeech v
+    synonyms (shave trim)
+  entry
+    definition "adjust (sails on a ship) so that the wind is optimally used"
+    id oewn-00297974-v
+    partOfSpeech v
+    synonyms (trim)
+source "oewn:2024"

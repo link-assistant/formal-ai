@@ -1,0 +1,68 @@
+self_ast_census
+  target src/agentic_coding/test_file_runner.rs
+  language rust
+  fidelity full_ast
+  byte_len 2289
+  line_count 62
+  content_id source_module_37306c8e5cd13fd2
+  symbol_count 5
+  symbols
+    const WORKSPACE_TEST_COMMAND 15 15
+    const FILE_SLOT 16 16
+    function runners 19 45
+    static RUNNERS 20 20
+    function test_file_command 51 62
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1531
+    named_node_count 307
+    distinct_node_kinds 45
+    node_kinds
+      arguments 24
+      array_type 1
+      binary_expression 4
+      block 7
+      call_expression 24
+      char_literal 1
+      closure_expression 8
+      closure_parameters 8
+      const_item 2
+      crate 2
+      doc_comment 13
+      expression_statement 2
+      field_expression 26
+      field_identifier 26
+      function_item 2
+      generic_type 4
+      identifier 52
+      if_expression 1
+      inner_doc_comment_marker 8
+      let_declaration 4
+      lifetime 1
+      line_comment 13
+      macro_invocation 1
+      outer_doc_comment_marker 5
+      parameter 2
+      parameters 2
+      primitive_type 4
+      reference_type 5
+      return_expression 1
+      scoped_identifier 8
+      source_file 1
+      static_item 1
+      string_content 8
+      string_literal 8
+      super 1
+      token_tree 1
+      try_expression 2
+      tuple_expression 1
+      tuple_pattern 3
+      tuple_type 2
+      type_arguments 4
+      type_identifier 9
+      unary_expression 1
+      use_declaration 3
+      visibility_modifier 1

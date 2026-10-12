@@ -1,0 +1,34 @@
+>> write {"content":"general_change_plan\n  id \"general_change_plan_76d30bb072e6267b\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md containing «Formal AI now recognizes the shell listing command ls as a standalone token. Coding requests that mention calls, details, signals or goals keep their explicitly named file read instead of listing the workspace. Genuine list-then-read requests retain their order in both JavaScript and Rust.\\n\\nThe original multi-turn specification-reader implementation request now reads its named source on retry, but feature-level source synthesis remains open: the request still makes no source change. Two focused JavaScript regressions pass, and the native twin is formatting-clean for CI.\\n»\"\n  target \"changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md\"\n  step 1\n    capability \"Write\"\n    action \"write the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_979c4ed1d5d73b85\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md\"\n    expected_evidence \"workspace file changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"Formal AI now recognizes the shell listing command ls as a standalone token. Coding requests that mention calls, details, signals or goals keep their explicitly named file read instead of listing the workspace. Genuine list-then-read requests retain their order in both JavaScript and Rust.\\n\\nThe original multi-turn specification-reader implementation request now reads its named source on retry, but feature-level source synthesis remains open: the request still makes no source change. Two focused JavaScript regressions pass, and the native twin is formatting-clean for CI.\\n\"\n    command \"cat changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md\"\n  verification_command \"cat changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md\"\n","filePath":".formal-ai/general-change-plan.lino","file_path":".formal-ai/general-change-plan.lino","path":".formal-ai/general-change-plan.lino"}
+>> write {"content":"Formal AI now recognizes the shell listing command ls as a standalone token. Coding requests that mention calls, details, signals or goals keep their explicitly named file read instead of listing the workspace. Genuine list-then-read requests retain their order in both JavaScript and Rust.\n\nThe original multi-turn specification-reader implementation request now reads its named source on retry, but feature-level source synthesis remains open: the request still makes no source change. Two focused JavaScript regressions pass, and the native twin is formatting-clean for CI.\n","filePath":"changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md","file_path":"changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md","path":"changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md"}
+>> bash {"command":"cat changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md"}
+   Formal AI now recognizes the shell listing command ls as a standalone token. Coding requests that mention calls, details, signals or goals keep their explicitly named file read instead of listing the workspace. Genuine list-then-read requests retain their order in both JavaScript and Rust.
+   
+   The original multi-turn specification-reader implementation request now reads its named source on retry, but feature-level source synthesis remains open: the request still makes no source change. Two focused JavaScript regressions pass, and the native twin is formatting-clean for CI.
+   
+== answer ==
+Completed the general change request for changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md and verified it with `cat changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md`.
+
+Plan event (.formal-ai/general-change-plan.lino):
+
+```lino
+general_change_plan
+  id "general_change_plan_76d30bb072e6267b"
+  execution_mode "literal_file"
+  terminal_state "executed"
+  goal "Create changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md containing «Formal AI now recognizes the shell listing command ls as a standalone token. Coding requests that mention calls, details, signals or goals keep their explicitly named file read instead of listing the workspace. Genuine list-then-read requests retain their order in both JavaScript and Rust.\n\nThe original multi-turn specification-reader implementation request now reads its named source on retry, but feature-level source synthesis remains open: the request still makes no source change. Two focused JavaScript regressions pass, and the native twin is formatting-clean for CI.\n»"
+  target "changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md"
+  step 1
+    capability "Write"
+    action "write the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_979c4ed1d5d73b85"
+  step 2
+    capability "Write"
+    action "write the requested content to changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md"
+    expected_evidence "workspace file changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "Formal AI now recognizes the shell listing command ls as a standalone token. Coding requests that mention calls, details, signals or goals keep their explicitly named file read instead of listing the workspace. Genuine list-then-read requests retain their order in both JavaScript and Rust.\n\nThe original multi-turn specification-reader implementation request now reads its named source on retry, but feature-level source synthesis remains open: the request still makes no source change. Two focused JavaScript regressions pass, and the native twin is formatting-clean for CI.\n"
+    command "cat changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md"
+  verification_command "cat changelog.d/20261009_122000_formal-ai-source-read-token-boundaries.md"
+```

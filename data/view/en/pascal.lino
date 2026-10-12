@@ -1,0 +1,17 @@
+view
+  id M-0253934aca59
+  lemma pascal
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "French mathematician and philosopher and Jansenist; invented an adding machine; contributed (with Fermat) to the theory of probability (1623-1662)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of pressure equal to one newton per square meter"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a programing language designed to teach programming through a top-down modular approach"
+    provenance (wordnet)

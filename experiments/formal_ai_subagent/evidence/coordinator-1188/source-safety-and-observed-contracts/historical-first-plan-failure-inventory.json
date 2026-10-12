@@ -1,0 +1,205 @@
+{
+  "source_head": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "cases": [
+    {
+      "test": "declarative_new_file_routes_to_write_not_read",
+      "location": "tests/equivalent_tool_requests.rs:99:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814933,
+      "raw_log": "/tmp/pr1188-new-job-113640814933.log",
+      "line": 1122
+    },
+    {
+      "test": "tool_failure_observations::nonzero_exit_verification_cannot_produce_a_success_claim",
+      "location": "tests/unit/tool_failure_observations.rs:32:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814933,
+      "raw_log": "/tmp/pr1188-new-job-113640814933.log",
+      "line": 1769
+    },
+    {
+      "test": "tool_failure_observations::a_second_failed_write_for_the_same_path_stops_retrying",
+      "location": "tests/unit/tool_failure_observations.rs:15:18:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814933,
+      "raw_log": "/tmp/pr1188-new-job-113640814933.log",
+      "line": 1776
+    },
+    {
+      "test": "issue_680_intent_routing::chat_completions_routes_write_intent_to_tool_call",
+      "location": "tests/integration/issue_680_intent_routing.rs:122:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814928,
+      "raw_log": "/tmp/pr1188-new-job-113640814928.log",
+      "line": 1124
+    },
+    {
+      "test": "issue_680_intent_routing::write_intent_routes_to_write_tool_in_any_phrasing",
+      "location": "tests/unit/issue_680_intent_routing.rs:94:9:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814928,
+      "raw_log": "/tmp/pr1188-new-job-113640814928.log",
+      "line": 1728
+    },
+    {
+      "test": "tool_failure_observations::explicit_error_verification_cannot_produce_a_success_claim",
+      "location": "tests/unit/tool_failure_observations.rs:32:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814928,
+      "raw_log": "/tmp/pr1188-new-job-113640814928.log",
+      "line": 1749
+    },
+    {
+      "test": "agentic_coding::file_creation_writes::diverse_write_phrasings_all_route_to_write",
+      "location": "tests/unit/agentic-coding/file_creation_writes.rs:122:9:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814965,
+      "raw_log": "/tmp/pr1188-new-job-113640814965.log",
+      "line": 1692
+    },
+    {
+      "test": "tool_failure_observations::exact_content_parsing_generalizes_across_payloads_and_punctuation",
+      "location": "tests/unit/tool_failure_observations.rs:91:50:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814965,
+      "raw_log": "/tmp/pr1188-new-job-113640814965.log",
+      "line": 1851
+    },
+    {
+      "test": "issue_755_file_read_write::the_whole_write_read_task_persists_and_reads_back_the_users_content",
+      "location": "tests/integration/issue_755_file_read_write.rs:177:5:",
+      "category": "fake HTTP workspace does not retain/read actual auxiliary bytes or no-read client assumes auxiliary write",
+      "job": 113640815030,
+      "raw_log": "/tmp/pr1188-new-job-113640815030.log",
+      "line": 1229
+    },
+    {
+      "test": "tool_failure_observations::an_unrecoverable_write_still_asks_the_workspace_before_reporting",
+      "location": "tests/unit/tool_failure_observations.rs:201:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815030,
+      "raw_log": "/tmp/pr1188-new-job-113640815030.log",
+      "line": 1847
+    },
+    {
+      "test": "tool_failure_observations::requested_failure_vocabulary_is_valid_successful_evidence",
+      "location": "tests/unit/tool_failure_observations.rs:318:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815030,
+      "raw_log": "/tmp/pr1188-new-job-113640815030.log",
+      "line": 1854
+    },
+    {
+      "test": "agentic_coding::file_creation_writes::file_creation_request_emits_write_not_read",
+      "location": "tests/unit/agentic-coding/file_creation_writes.rs:39:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814994,
+      "raw_log": "/tmp/pr1188-new-job-113640814994.log",
+      "line": 1664
+    },
+    {
+      "test": "tool_failure_observations::failed_auxiliary_plan_write_without_read_still_attempts_the_target",
+      "location": "tests/unit/tool_failure_observations.rs:209:9:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640814994,
+      "raw_log": "/tmp/pr1188-new-job-113640814994.log",
+      "line": 1679
+    },
+    {
+      "test": "coding_ladder_rungs::r916_04_completion_is_not_claimed_when_verification_exits_nonzero",
+      "location": "tests/unit/coding_ladder_rungs.rs:550:13:",
+      "category": "fixed positional replies now answer append rather than target verification",
+      "job": 113640814954,
+      "raw_log": "/tmp/pr1188-new-job-113640814954.log",
+      "line": 1695
+    },
+    {
+      "test": "issue_712_intent_routing::declarative_new_file_routes_to_write_and_never_read",
+      "location": "tests/integration/issue_712_intent_routing.rs:104:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815027,
+      "raw_log": "/tmp/pr1188-new-job-113640815027.log",
+      "line": 1096
+    },
+    {
+      "test": "issue_755_file_read_write::a_failed_plan_write_never_blocks_the_users_write",
+      "location": "tests/integration/issue_755_file_read_write.rs:140:5:",
+      "category": "fake HTTP workspace does not retain/read actual auxiliary bytes or no-read client assumes auxiliary write",
+      "job": 113640815027,
+      "raw_log": "/tmp/pr1188-new-job-113640815027.log",
+      "line": 1107
+    },
+    {
+      "test": "issue_755_file_read_write::the_users_content_reaches_the_users_file_in_every_language",
+      "location": "tests/integration/issue_755_file_read_write.rs:116:32:",
+      "category": "fake HTTP workspace does not retain/read actual auxiliary bytes or no-read client assumes auxiliary write",
+      "job": 113640815027,
+      "raw_log": "/tmp/pr1188-new-job-113640815027.log",
+      "line": 1115
+    },
+    {
+      "test": "coding_ladder_rungs::r916_04_completion_is_claimed_when_the_effect_is_observed",
+      "location": "tests/unit/coding_ladder_rungs.rs:592:13:",
+      "category": "fixed positional replies now answer append rather than target verification",
+      "job": 113640815027,
+      "raw_log": "/tmp/pr1188-new-job-113640815027.log",
+      "line": 1735
+    },
+    {
+      "test": "tool_failure_observations::failed_write_is_followed_by_read_then_one_write_retry",
+      "location": "tests/unit/tool_failure_observations.rs:15:18:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815027,
+      "raw_log": "/tmp/pr1188-new-job-113640815027.log",
+      "line": 1765
+    },
+    {
+      "test": "tool_failure_observations::matching_observed_evidence_allows_completion",
+      "location": "tests/unit/tool_failure_observations.rs:32:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815107,
+      "raw_log": "/tmp/pr1188-new-job-113640815107.log",
+      "line": 1710
+    },
+    {
+      "test": "issue_712_intent_routing::all_reported_capability_classes_route_in_one_matrix",
+      "location": "tests/integration/issue_712_intent_routing.rs:134:9:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815009,
+      "raw_log": "/tmp/pr1188-new-job-113640815009.log",
+      "line": 1105
+    },
+    {
+      "test": "issue_680_intent_routing::write_intent_is_not_stolen_by_the_edit_router",
+      "location": "tests/unit/issue_680_intent_routing.rs:212:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815009,
+      "raw_log": "/tmp/pr1188-new-job-113640815009.log",
+      "line": 1724
+    },
+    {
+      "test": "tool_failure_observations::exact_modifier_is_not_written_as_part_of_the_payload",
+      "location": "tests/unit/tool_failure_observations.rs:53:46:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815009,
+      "raw_log": "/tmp/pr1188-new-job-113640815009.log",
+      "line": 1747
+    },
+    {
+      "test": "issue_755_file_read_write::write_emits_only_the_advertised_parameter_names",
+      "location": "tests/integration/issue_755_file_read_write.rs:437:5:",
+      "category": "fake HTTP workspace does not retain/read actual auxiliary bytes or no-read client assumes auxiliary write",
+      "job": 113640815127,
+      "raw_log": "/tmp/pr1188-new-job-113640815127.log",
+      "line": 1105
+    },
+    {
+      "test": "tool_failure_observations::successful_command_with_wrong_evidence_is_not_verified",
+      "location": "tests/unit/tool_failure_observations.rs:32:5:",
+      "category": "first auxiliary read conflicts with first-write assertion or its content extraction",
+      "job": 113640815127,
+      "raw_log": "/tmp/pr1188-new-job-113640815127.log",
+      "line": 1727
+    }
+  ]
+}

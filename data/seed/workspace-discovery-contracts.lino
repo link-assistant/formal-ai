@@ -1,0 +1,41 @@
+workspace-discovery-contracts
+  template original-request-1
+    text "Inspect the task model."
+  template original-request-2
+    text "Inspect the task model!"
+  template original-request-3
+    text "Inspect the task model and record result."
+  template original-request-4
+    text "Inspect the task model and record 😀 result."
+  template original-request-5
+    text "Inspect the task model"
+  template source-template-1
+    text "# {}\nprintf '%s\\n' 'workspace-discovery-v1'; find . -maxdepth 4 -type f -not -path './.git/*' -print; discovery_status=$?; printf '%s\\n' 'workspace-discovery-end'; exit \"$discovery_status\""
+  template source-template-2
+    text "# {}\nprintf '%s\\n' 'workspace-source-v1'; head -c 65537 < '{}'; discovery_status=$?; printf '\\n%s\\n' 'workspace-source-end'; exit \"$discovery_status\""
+  template source-template-3
+    text "A successful bounded workspace listing at depth at most four contained {} file paths and no filename matching all subject terms {}. This establishes no matching filename in that observed scope; model and schema remain unknown."
+  template source-template-4
+    text "The bounded workspace listing contains {} candidate paths: {}. No authoritative model was selected; schema and model semantics remain unknown."
+  template source-template-5
+    text "Candidate {} was listed but no bounded source observation provider is available; bytes and schema remain unknown."
+  template source-template-6
+    text "Candidate {} lacks an explicitly successful exact-command framed source observation; model and schema remain unknown."
+  template source-template-7
+    text "The bound workspace listing identified candidate {} and the bounded source command reported {} source bytes. Source identity {}. Domain schema and task-model interpretation remain unknown; inspection is not fulfilled."
+  template source-template-8
+    text "Workspace discovery has no qualified bounded provider; model and schema remain unknown."
+  template source-template-9
+    text "The bound workspace discovery operation failed or lacks explicit process success; model and schema remain unknown."
+  template source-template-10
+    text "Workspace discovery output is absent or exceeds the observation bound; model and schema remain unknown."
+  template source-template-11
+    text "Workspace discovery framing, path scope, or file bound was not observed; model and schema remain unknown."
+  template source-template-12
+    text "Workspace discovery framing, path scope, or file bound was not observed; model and schema remain unknown."
+  template source-template-13
+    text "Candidate source exceeds the bounded observation size; model and schema remain unknown."
+  template accepted-node-test-command
+    text "node --test {}"
+  template unobserved-provider-canonical-source
+    text "unobserved provider canonical source"

@@ -1,0 +1,16 @@
+language en
+lemma decoder
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the kind of intellectual who converts messages from a code to plain text"
+    id oewn-10014936-n
+    partOfSpeech n
+    synonyms (decipherer)
+  entry
+    definition "a machine that converts a coded text into ordinary language"
+    id oewn-03173729-n
+    partOfSpeech n
+source "oewn:2024"

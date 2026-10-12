@@ -1,0 +1,9 @@
+view
+  id M-c20b3cdd7559
+  lemma colosseum
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a large amphitheater in Rome whose construction was begun by Vespasian about AD 75 or 80"
+    provenance (wordnet)

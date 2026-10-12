@@ -1,0 +1,13 @@
+language en
+lemma detailed
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "developed or executed with care and in minute detail"
+    examples ("a detailed plan" "the elaborate register of the inhabitants prevented tax evasion" "the carefully elaborated theme")
+    id oewn-00311231-s
+    partOfSpeech s
+    synonyms (elaborate elaborated)
+source "oewn:2024"

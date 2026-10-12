@@ -580,9 +580,7 @@ fn formal_ai_repo() -> String {
 }
 
 fn config(key: &str) -> String {
-    seed::agent_info()
-        .remove(key)
-        .unwrap_or_else(|| key.to_owned())
+    seed::agent_info_value(key).unwrap_or_else(|| key.to_owned())
 }
 
 fn render(key: &str, values: &[(&str, &str)]) -> String {

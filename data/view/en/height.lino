@@ -1,0 +1,21 @@
+view
+  id M-0ff0b7c1256a
+  lemma height
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the vertical dimension of extension; distance from the base of something to the top"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the highest level or degree attainable; the highest stage of development"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(of a standing person) the distance from head to foot"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "elevation especially above sea level or above the earth's surface"
+    provenance (wordnet)

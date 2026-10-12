@@ -21,7 +21,7 @@ use crate::service_accessibility::ServiceAccessibilityCache;
 use crate::source_fetch::{CachedSourceClient, SourceCapture, SourceTransport};
 use crate::source_walk::{
     CaptureExtractor, Extracted, LookupBounds, SourceLookup, Walk, WalkOutcome, WalkSourceOutcome,
-    entry_url_in, walk_sources,
+    entry_url_in, fallback_entry_url_in, walk_sources,
 };
 use crate::trace_record;
 
@@ -170,6 +170,9 @@ impl CaptureExtractor for SenseExtractor {
     fn entry_url(&self, record: &SourceRecord, subject: &str) -> Option<String> {
         entry_url_in(record, subject, &self.language)
     }
+    fn fallback_entry_url(&self, record: &SourceRecord) -> Option<String> {
+        fallback_entry_url_in(record, &self.surface, &self.language)
+    }
 
     fn read(
         &self,
@@ -261,6 +264,11 @@ struct RawGloss {
     synonyms: Vec<String>,
 }
 
+/// The registry extractor name of the generic page formalizer (issue #1163
+/// R12), the reader for any page web search returns.
+#[cfg(feature = "meta-language")]
+const GENERIC_PAGE_EXTRACTOR: &str = "generic_page_v1";
+
 /// Dispatch on the registry's declared extractor, never on a host name.
 fn read_glosses(extractor: &str, bytes: &[u8], surface: &str) -> Vec<RawGloss> {
     let text = String::from_utf8_lossy(bytes);
@@ -270,12 +278,68 @@ fn read_glosses(extractor: &str, bytes: &[u8], surface: &str) -> Vec<RawGloss> {
         ("wordnet_sense_v1", Some(value)) => wordnet_sense(&value, surface),
         ("mediawiki_summary_v1", Some(value)) => mediawiki_summary(&value, surface),
         ("wikidata_entity_v1", Some(value)) => wikidata_entity(&value, surface),
+        // Issue #1163 R12: any fetched page, whatever its format, read
+        // through the generic page formalizer rather than a bespoke parser.
+        #[cfg(feature = "meta-language")]
+        (GENERIC_PAGE_EXTRACTOR, _) => generic_page_glosses(bytes, surface),
         // The committed `data/cache/**/*.lino` projections carry the same
         // schema as the live payloads, written by issue #398's lossless codec.
         // One reader serves both because both spell a definition `definition`.
         (_, None) => projection_glosses(&text, surface),
         _ => Vec::new(),
     }
+}
+
+/// The glosses a registry source's declared extractor reads from a payload,
+/// as text: the same dispatch the concept walk runs, exposed so each
+/// extractor branch can be checked against captured bytes.
+#[must_use]
+pub fn extractor_gloss_texts(extractor: &str, bytes: &[u8], surface: &str) -> Vec<String> {
+    read_glosses(extractor, bytes, surface)
+        .into_iter()
+        .map(|gloss| gloss.gloss)
+        .collect()
+}
+
+/// What a registry extractor yields from a payload, as statement text.
+///
+/// Issue #1163 R3: the lexical extractors' glosses, the OEIS reader's record
+/// statements, and the Python-docs reader's signatures and descriptions -- the
+/// bespoke side of the generic-covers-bespoke comparison.
+#[must_use]
+pub fn extractor_statements(extractor: &str, bytes: &[u8], surface: &str) -> Vec<String> {
+    match extractor {
+        "oeis_sequence_v1" => crate::coding::function_catalog::oeis::record_statements(bytes),
+        "python_docs_v1" => crate::coding::function_catalog::python_docs::page_statements(bytes),
+        _ => extractor_gloss_texts(extractor, bytes, surface),
+    }
+}
+
+/// The `generic_page_v1` extractor (issue #1163 R12): the page is formalized
+/// by `web_formalize`, and every paragraph or list item that mentions the
+/// surface (case-insensitively) is a gloss of it.
+#[cfg(feature = "meta-language")]
+fn generic_page_glosses(bytes: &[u8], surface: &str) -> Vec<RawGloss> {
+    use crate::web_formalize::{PageBlock, formalize_page_with_context};
+    let needle = surface.trim().to_lowercase();
+    if needle.is_empty() {
+        return Vec::new();
+    }
+    formalize_page_with_context(bytes, None, None)
+        .1
+        .into_iter()
+        .filter_map(|(_, block)| match block {
+            PageBlock::Paragraph { text, .. } | PageBlock::ListItem { text } => Some(text),
+            _ => None,
+        })
+        .filter(|text| text.to_lowercase().contains(needle.as_str()))
+        .map(|gloss| RawGloss {
+            lemma: surface.to_owned(),
+            gloss,
+            part_of_speech: String::new(),
+            synonyms: Vec::new(),
+        })
+        .collect()
 }
 
 /// The Free Dictionary API's Wiktionary entry: an array of entries, each with
@@ -590,6 +654,37 @@ impl<'a, T: SourceTransport> RegistrySourceLookup<'a, T> {
         self.bounds
     }
 
+    /// Research a need no registered source covers (issue #1163 R4).
+    ///
+    /// Web search and the generic page formalizer run through
+    /// [`research_page_senses`], so every sense keeps the page's URL, digest
+    /// and the generic page row's license and tier.
+    #[cfg(feature = "meta-language")]
+    fn research_unmatched(&mut self, need: &Need, bounds: &LookupBounds) -> LookupOutcome {
+        let not_found = || LookupOutcome::NotFound {
+            consulted: Vec::new(),
+        };
+        if !crate::source_research::need_routes_to_web_search(need.kind) {
+            return not_found();
+        }
+        let language = if need.language.is_empty() {
+            self.language.clone()
+        } else {
+            need.language.clone()
+        };
+        let Some((source_id, senses)) =
+            research_page_senses(self.client, &need.subject, &language, bounds)
+        else {
+            return not_found();
+        };
+        self.consulted.insert(source_id);
+        if senses.is_empty() {
+            not_found()
+        } else {
+            LookupOutcome::Found(senses)
+        }
+    }
+
     /// Resolve one surface and keep the outcome rows.
     fn resolve(&mut self, surface: &str, language: &str, bounds: &LookupBounds) -> LookupOutcome {
         let walked = lookup_surface(
@@ -616,6 +711,13 @@ impl<'a, T: SourceTransport> RegistrySourceLookup<'a, T> {
 
 impl<T: SourceTransport> SourceLookup for RegistrySourceLookup<'_, T> {
     fn lookup(&mut self, need: &Need, bounds: &LookupBounds) -> LookupOutcome {
+        // Issue #1163 R4: a need whose kind no registry row declares has no
+        // source to walk, so it is researched through web search instead of
+        // answering empty.
+        #[cfg(feature = "meta-language")]
+        if crate::source_research::need_routes_to_web_search(need.kind) {
+            return self.research_unmatched(need, bounds);
+        }
         if need.kind != NeedKind::Concept {
             // One implementation, but not one that pretends every kind is a
             // word. A procedure need belongs to the how-to extractor over the
@@ -633,6 +735,42 @@ impl<T: SourceTransport> SourceLookup for RegistrySourceLookup<'_, T> {
         let subject = need.subject.clone();
         self.resolve(&subject, &language, bounds)
     }
+}
+
+/// Retrieve and formalize pages about `subject` (issue #1163 R4).
+///
+/// The explanation handler of issue #1172 R8 reuses it. Web search runs
+/// through [`crate::source_research::execute_source_research`]; each captured
+/// page, most trusted first, is read by the registry row whose extractor is
+/// the generic page formalizer, so every sense is a statement of the page that
+/// mentions the subject and keeps the page URL, SHA-256, license and tier.
+///
+/// `None` when the registry declares no generic page row or the search
+/// itself could not be read (offline cache miss, transport failure); the
+/// returned id is that row's, the source the senses are attributed to.
+#[cfg(feature = "meta-language")]
+pub fn research_page_senses<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    subject: &str,
+    language: &str,
+    bounds: &LookupBounds,
+) -> Option<(String, Vec<ConceptSense>)> {
+    let record = crate::seed::source_registry()
+        .into_iter()
+        .find(|record| record.extractor == GENERIC_PAGE_EXTRACTOR)?;
+    let research = crate::source_research::execute_source_research(
+        client,
+        subject,
+        bounds.max_pages_per_service,
+    )
+    .ok()?;
+    let extractor = SenseExtractor::new(subject, language);
+    let mut senses = Vec::new();
+    for page in research.pages_by_trust() {
+        let read = extractor.read(&record, &page.capture, 0, senses.len(), bounds);
+        senses.extend(read.items);
+    }
+    Some((record.id, senses))
 }
 
 /// Look one surface up, as the trait does, but returning every sense instead of
@@ -761,7 +899,6 @@ pub fn unknown_surface_spans(text: &str) -> Vec<(String, usize, usize)> {
     }
     out
 }
-
 /// The text of `value` with every quoted span removed, in any of the quotation
 /// marks the five seeded languages use.
 fn outside_quotes(value: &str) -> String {
@@ -789,7 +926,6 @@ fn outside_quotes(value: &str) -> String {
     }
     out
 }
-
 /// Whether `value` carries at least one quoted span.
 ///
 /// [`unknown_surfaces`] skips quoted spans because a quoted example is the
@@ -800,7 +936,6 @@ fn outside_quotes(value: &str) -> String {
 pub fn has_quoted_span(value: &str) -> bool {
     outside_quotes(value) != value
 }
-
 /// Every surface the seed lexicon declares, folded once.
 fn seeded_surfaces() -> &'static BTreeSet<String> {
     static CACHE: OnceLock<BTreeSet<String>> = OnceLock::new();

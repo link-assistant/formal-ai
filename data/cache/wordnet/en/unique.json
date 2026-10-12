@@ -1,0 +1,63 @@
+{
+  "lemma": "unique",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00507765-s",
+      "partOfSpeech": "s",
+      "definition": "radically distinctive and without equal",
+      "examples": [
+        "he is alone in the field of microbiology",
+        "this theory is altogether alone in its penetration of the problem",
+        "Bach was unique in his handling of counterpoint",
+        "craftsmen whose skill is unequaled",
+        "unparalleled athletic ability",
+        "a breakdown of law unparalleled in our history"
+      ],
+      "synonyms": [
+        "alone",
+        "unequaled",
+        "unequalled",
+        "unparalleled"
+      ]
+    },
+    {
+      "id": "oewn-01108735-s",
+      "partOfSpeech": "s",
+      "definition": "(followed by ‘to’) applying exclusively to a given category or condition or locality",
+      "examples": [
+        "a species unique to Australia"
+      ]
+    },
+    {
+      "id": "oewn-02222756-s",
+      "partOfSpeech": "s",
+      "definition": "the single one of its kind",
+      "examples": [
+        "a singular example",
+        "the unique existing example of Donne's handwriting",
+        "a unique copy of an ancient manuscript",
+        "certain types of problems have unique solutions"
+      ],
+      "synonyms": [
+        "singular"
+      ]
+    },
+    {
+      "id": "oewn-00493556-s",
+      "partOfSpeech": "s",
+      "definition": "highly unusual or rare but not the single instance",
+      "examples": [
+        "spoke with a unique accent",
+        "had unique ability in raising funds",
+        "a frankness unique in literature",
+        "a unique dining experience"
+      ]
+    }
+  ]
+}

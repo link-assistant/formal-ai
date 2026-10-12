@@ -48,9 +48,15 @@ fn repo_root() -> PathBuf {
 
 /// Every `prompt` field in every `.lino` file under `data/benchmarks/`, with the
 /// file it came from.
+///
+/// Sorted by file name, so every machine reads the corpus in one order: the
+/// CI shards below split this list by position, and a directory order that
+/// differs between two runners would hand them overlapping slices and leave
+/// other prompts unchecked.
 fn benchmark_prompts() -> Vec<(String, String)> {
     let mut prompts = Vec::new();
     for entry in walkdir::WalkDir::new(repo_root().join("data/benchmarks"))
+        .sort_by_file_name()
         .into_iter()
         .filter_map(Result::ok)
         .filter(|entry| entry.file_type().is_file())
@@ -97,16 +103,57 @@ fn unknown_openers() -> Vec<String> {
         .collect()
 }
 
+/// The CI shard this run answers, from `FORMAL_AI_CORPUS_SHARD=<index>/<total>`.
+///
+/// `.github/workflows/benchmark-corpus-gate.yml` runs this gate as parallel
+/// shards, so no single job carries the whole half-hour sweep. Each shard
+/// answers every `total`-th prompt starting at `index`, which together cover
+/// the corpus exactly once. Unset means the whole corpus, as a local run
+/// expects; a malformed value fails loudly instead of silently checking
+/// nothing.
+fn corpus_shard() -> Option<(usize, usize)> {
+    let raw = std::env::var("FORMAL_AI_CORPUS_SHARD").ok()?;
+    let parsed = raw.split_once('/').and_then(|(index, total)| {
+        Some((
+            index.trim().parse::<usize>().ok()?,
+            total.trim().parse::<usize>().ok()?,
+        ))
+    });
+    match parsed {
+        Some((index, total)) if (1..=total).contains(&index) => Some((index, total)),
+        _ => panic!(
+            "FORMAL_AI_CORPUS_SHARD must be <index>/<total> with 1 <= index <= total, got {raw:?}"
+        ),
+    }
+}
+
 #[test]
 fn no_benchmark_prompt_reaches_the_unknown_opener() {
     let documented = FormalAiEngine.answer(DOCUMENTED_PROMPT).answer;
     assert_eq!(documented, DOCUMENTED_ANSWER);
-    let prompts = benchmark_prompts();
+    let corpus = benchmark_prompts();
     assert!(
-        prompts.len() >= 700,
+        corpus.len() >= 700,
         "the benchmark corpora should carry the committed suites, got {}",
-        prompts.len()
+        corpus.len()
     );
+    let prompts: Vec<(String, String)> = match corpus_shard() {
+        Some((index, total)) => {
+            let slice: Vec<(String, String)> = corpus
+                .iter()
+                .enumerate()
+                .filter(|(position, _)| position % total == index - 1)
+                .map(|(_, prompt)| prompt.clone())
+                .collect();
+            println!(
+                "corpus shard {index}/{total}: {} of {} prompts",
+                slice.len(),
+                corpus.len()
+            );
+            slice
+        }
+        None => corpus,
+    };
     let openers = unknown_openers();
     assert!(
         !openers.is_empty(),

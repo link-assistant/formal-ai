@@ -1,0 +1,60 @@
+[
+  {
+    "phase": "dormant least privilege",
+    "before": {
+      "outcome": "failed",
+      "actualObservation": "GitHub Zizmor excessive top-level contents/packages write"
+    },
+    "attempts": [
+      {
+        "task": "T4257",
+        "outcome": "failed",
+        "resolution": "open",
+        "reason": "Whole implementation ask used no tools"
+      },
+      {
+        "task": "T4258",
+        "outcome": "passed",
+        "resolution": "fixed",
+        "scope": "Reviewed permissions-only installation; zero autonomous credit"
+      },
+      {
+        "task": "T4259",
+        "outcome": "failed",
+        "resolution": "open",
+        "reason": "New independent test named YAML import failure; original26 controls passed"
+      },
+      {
+        "task": "T4260",
+        "outcome": "passed",
+        "resolution": "fixed",
+        "scope": "Reviewed default YAML import correction"
+      },
+      {
+        "task": "T4261",
+        "outcome": "failed",
+        "resolution": "open",
+        "reason": "New test incorrectly sought inline gh release create instead of canonical shell invoker"
+      },
+      {
+        "task": "T4263",
+        "outcome": "passed",
+        "resolution": "fixed",
+        "scope": "Exact canonical invoker operation locator"
+      },
+      {
+        "task": "T4264",
+        "outcome": "passed",
+        "resolution": "fixed",
+        "scope": "28 actual tests pass process exit0; driver marker false is separately retained"
+      }
+    ],
+    "after": {
+      "outcome": "passed",
+      "resolution": "fixed",
+      "scope": "Local permission mapping/actionlint/unchanged projection; actual GitHub Zizmor rerun pending"
+    },
+    "U9": "Open",
+    "publication": false
+  }
+]

@@ -1,0 +1,41 @@
+view
+  id M-d5057b1de998
+  lemma sold
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "disposed of to a purchaser"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "exchange or deliver for money or its equivalent"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be sold at a certain price or in a certain way"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "persuade somebody to accept something"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "do business; offer for sale as for one's livelihood"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "give up for a price or reward"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be approved of or gain acceptance"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be responsible for the sale of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "deliver to an enemy by treachery"
+    provenance (wordnet)

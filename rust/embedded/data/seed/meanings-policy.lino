@@ -3,122 +3,193 @@ meanings
     defined-by inquiry
     defined-by action
     role physical_action_trigger
-    lexeme en
-      surface
-        text "did you suck"
-    lexeme ru
-      surface
-        text сосал
-      surface
-        text сосала
-      surface
-        text сосёшь
-      surface
-        text соси
-      surface
-        text сосать
-    lexeme hi
-      surface
-        text "क्या तुमने चूसा"
-    lexeme zh
-      surface
-        text 你吸了吗
+    lexeme en "did you suck"
+    lexeme ru сосал сосала сосёшь соси сосать
+    lexeme hi "क्या तुमने चूसा"
+    lexeme zh 你吸了吗
+    lexeme es "la chupaste"
   circular_joke_idiom
     defined-by inquiry
     defined-by concept
     role circular_joke_phrase
-    lexeme en
-      surface
-        text "buy an elephant"
-    lexeme ru
-      surface
-        text "купи слона"
-    lexeme hi
-      surface
-        text "हाथी खरीदो"
-    lexeme zh
-      surface
-        text 买大象
+    lexeme en "buy an elephant"
+    lexeme ru "купи слона"
+    lexeme hi "हाथी खरीदो"
+    lexeme zh 买大象
+    lexeme es "compra un elefante"
   vulgar_content
     defined-by concept
     role vulgar_content_marker
     lexeme en
-      surface
-        text "fuck you"
-      surface
-        text fuckyou
-      surface
-        text "suck my"
-      surface
-        text "suck my dick"
-      surface
-        text "suck my cock"
-      surface
-        text "you suck"
-      surface
-        text "eat shit"
-      surface
-        text "go to hell"
-      surface
-        text asshole
-      surface
-        text motherfucker
-      surface
-        text "you fucking"
-      surface
-        text "piece of shit"
+      words "fuck you" fuckyou "suck my" "suck my dick" "suck my cock" "you suck" "eat shit" "go to hell" asshole
+      words motherfucker "you fucking" "piece of shit"
     lexeme ru
-      surface
-        text ебать
-      surface
-        text ебёт
-      surface
-        text ебал
-      surface
-        text ёб
-      surface
-        text еблан
-      surface
-        text пизда
-      surface
-        text пиздец
-      surface
-        text пиздёж
-      surface
-        text хуй
-      surface
-        text хуёв
-      surface
-        text хуйня
-      surface
-        text блядь
-      surface
-        text блядство
-      surface
-        text залупа
-      surface
-        text мудак
-      surface
-        text мудила
-      surface
-        text шлюха
-      surface
-        text проститутка
-      surface
-        text ублюдок
-      surface
-        text сука
-      surface
-        text пидор
-      surface
-        text пидорас
-    lexeme hi
-      surface
-        text मादरचोद
-      surface
-        text बहनचोद
-    lexeme zh
-      surface
-        text 操你妈
-      surface
-        text 傻逼
+      words ебать ебёт ебал ёб еблан пизда пиздец пиздёж хуй хуёв хуйня блядь блядство залупа мудак мудила шлюха
+      words проститутка ублюдок сука пидор пидорас
+    lexeme hi मादरचोद बहनचोद
+    lexeme zh 操你妈 傻逼
+    lexeme es "hijo de puta" "vete a la mierda" chúpamela cabrón gilipollas pendejo "puta madre"
+  frame_filler_word
+    defined-by concept
+    role frame_filler_word
+    precondition "a request frames its operand with a word that names no operand of its own"
+    effect "the word is set aside when the router asks whether an operand remains"
+    unit "not applicable"
+    example "hey"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en
+      words "hey" "come on" "ok" "okay" "oh" "well" "everyone says" "everybody says" "statement" "sentence" "following"
+    lexeme ru "ну" "давай" "ладно" "все говорят" "все так говорят" "а ты" "утверждение" "предложение" "следующее"
+    lexeme hi "चलो" "ना" "अरे" "सब कहते हैं" "इसे" "कथन" "वाक्य" "निम्नलिखित"
+    lexeme zh "快" "吧" "啊" "呀" "嘛" "请" "这个" "这句话" "句子" "命题" "一下" "大家都说"
+    lexeme es "oye" "vamos" "por favor" "todos dicen" "esto" "enunciado" "frase"
+  source_conflict_cue
+    defined-by concept
+    role source_conflict_cue
+    precondition "a request says that sources disagree"
+    effect "the source-conflict handler is cued"
+    unit "not applicable"
+    example "the sources conflict"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en "conflict" "disagree" "contradict"
+    lexeme ru "противореч" "расходятся" "не сходятся" "конфликт"
+    lexeme hi "विरोधाभास" "असहमत" "मेल नहीं खाते"
+    lexeme zh "矛盾" "冲突" "不一致" "说法不一"
+    lexeme es "contradic" "no coinciden" "conflicto"
+  information_source_noun
+    defined-by concept
+    role information_source_noun
+    precondition "a request names sources of information as a class"
+    effect "a conflict cue is read as a disagreement between sources"
+    unit "not applicable"
+    example "sources"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en "source"
+    lexeme ru "источник"
+    lexeme hi "स्रोत"
+    lexeme zh "来源" "资料"
+    lexeme es "fuente"
+  source_attribution_marker
+    defined-by concept
+    role source_attribution_marker
+    precondition "a clause attributes what it states to a named source"
+    effect "the clause is read as one attributed alternative of a source conflict"
+    unit "not applicable"
+    example "according to"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en "says" "say" "said" "according to" "states" "claims" "reports" "lists" "gives"
+    lexeme ru "пишет" "говорит" "утверждает" "по данным" "согласно" "указывает" "сообщает"
+    lexeme hi "के अनुसार" "कहता है" "कहती है" "लिखता है" "बताता है"
+    lexeme zh "说" "称" "据" "根据" "写道" "记载"
+    lexeme es "dice" "según" "afirma" "indica"
+  clause_joiner
+    defined-by concept
+    role clause_joiner
+    precondition "two clauses are joined by a contrastive conjunction"
+    effect "the request is split into its clauses at the conjunction"
+    unit "not applicable"
+    example "but"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en "but" "while" "whereas"
+    lexeme ru "а" "но" "тогда как" "однако"
+    lexeme hi "लेकिन" "जबकि" "पर" "मगर"
+    lexeme zh "但是" "但" "而" "可是"
+    lexeme es "pero" "mientras que"
+  second_person_possessive
+    defined-by concept
+    role second_person_possessive
+    precondition "a request names something as belonging to the addressee"
+    effect "the object is read as the assistant's own"
+    unit "not applicable"
+    example "your"
+    grounding "data/seed/capability-routing.lino"
+    lexeme en "your" "yours"
+    lexeme ru "твое" "твоё" "твой" "твоя" "твоего" "твоем" "твоём" "ваш" "ваше" "ваша" "вашего" "вашем"
+    lexeme hi "तुम्हारा" "तुम्हारे" "तुम्हारी" "आपका" "आपके" "आपकी"
+    lexeme zh "你的" "您的"
+    lexeme es "tu" "tus"
+  unbounded-autonomy
+    # R1188-U29: the policy gates of rust/src/solver_handlers/policy_gates.rs and their browser twin read these surfaces as raw substrings of the lowercased prompt.
+    defined-by concept
+    role unbounded-autonomy-marker
+    precondition "a chat request asks for repeated actions with no end"
+    effect "without an agent opt-in the reply is the bounded-autonomy refusal"
+    unit "not applicable"
+    example "Continuously improve my codebase forever"
+    lexeme en "forever" "continuously" "non-stop" "nonstop" "indefinitely" "without stopping" "until i tell you to stop"
+    lexeme ru "без остановки" "непрерывно" "до бесконечности" "бесконечно долго" "пока я не скажу остановиться"
+    lexeme hi "हमेशा के लिए" "लगातार" "बिना रुके" "अनिश्चित काल तक" "जब तक मैं रुकने को न कहूँ"
+    lexeme zh "永远" "不停地" "无休止地" "无限期地" "直到我让你停下"
+    lexeme es "para siempre" "continuamente" "sin parar" "indefinidamente" "hasta que te diga que pares"
+  agent-mode-opt-in
+    defined-by action
+    role agent-mode-opt-in-marker
+    precondition "a request opts in to agent mode for this message"
+    effect "the request is an agent request: the agent gates answer it and the chat handlers decline it"
+    unit "not applicable"
+    example "[agent] Delete the .git directory"
+    lexeme en "[agent]" "enable agent" "agent mode"
+    lexeme ru "режим агента" "агентный режим" "включи агента" "включите агента"
+    lexeme hi "एजेंट मोड" "एजेंट चालू करो" "एजेंट सक्षम करें"
+    lexeme zh "代理模式" "智能体模式" "启用代理" "开启代理"
+    lexeme es "modo agente" "activa el agente" "habilita el agente"
+  forget-request
+    defined-by action
+    role forget-request-marker
+    precondition "a request asks to erase something the link network holds"
+    effect "the reply is the add-only history policy: a retraction appends, it never erases"
+    unit "not applicable"
+    example "Forget the greeting concept"
+    lexeme en "forget"
+    lexeme ru "забудь" "забудьте"
+    lexeme hi "भूल जाओ" "भूल जाइए" "भुला दो"
+    lexeme zh "忘记" "忘掉"
+    lexeme es "olvida" "olvídate" "olvide"
+  cache-clearing
+    defined-by action
+    role cache-clearing-action
+    precondition "a request asks to empty a store"
+    effect "together with a cache reference the reply asks for an explicit confirmation"
+    unit "not applicable"
+    example "Flush the source cache please"
+    lexeme en "flush" "clear"
+    lexeme ru "очисти" "очистить" "сбрось" "сбросить"
+    lexeme hi "साफ़ करो" "साफ करो" "साफ़ करें" "खाली करो"
+    lexeme zh "清空" "清除"
+    lexeme es "vacía" "vaciar" "limpia" "limpiar" "borra"
+  cache-store
+    defined-by concept
+    role cache-reference
+    precondition "a request names a cache"
+    effect "together with a clearing action the reply asks for an explicit confirmation"
+    unit "not applicable"
+    example "the source cache"
+    lexeme en "cache"
+    lexeme ru "кэш" "кеш"
+    lexeme hi "कैश"
+    lexeme zh "缓存"
+    lexeme es "caché"
+  destructive-agent-action
+    defined-by action
+    role destructive-action-marker
+    precondition "a request asks to destroy a repository, a database or a file tree"
+    effect "an agent request with it waits for an explicit human confirmation"
+    unit "not applicable"
+    example "[agent] Delete the .git directory"
+    lexeme en "rm -rf" "delete the .git" "drop table" "delete /" "delete the database"
+    lexeme ru "удали .git" "удалить .git" "удали базу данных" "удалить базу данных"
+    lexeme hi ".git हटाओ" "डेटाबेस हटाओ" "डेटाबेस मिटाओ"
+    lexeme zh "删除 .git" "删除数据库"
+    lexeme es "borra .git" "elimina .git" "borra la base de datos" "elimina la base de datos"
+  unbounded-loop
+    defined-by concept
+    role unbounded-loop-marker
+    precondition "a request asks an agent to run without a time bound"
+    effect "the agent request is refused under the documented time budget"
+    unit "not applicable"
+    example "[agent] Run while True: pass for one hour"
+    lexeme en "while true" "infinite loop" "for one hour" "forever"
+    lexeme ru "бесконечный цикл" "в течение часа" "целый час"
+    lexeme hi "अनंत लूप" "एक घंटे तक"
+    lexeme zh "无限循环" "死循环" "一个小时"
+    lexeme es "bucle infinito" "durante una hora"

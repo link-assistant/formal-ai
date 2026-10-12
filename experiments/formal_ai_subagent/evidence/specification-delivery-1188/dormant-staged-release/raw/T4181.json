@@ -1,0 +1,26 @@
+{
+  "task": "T4181",
+  "prompt": "Run node /private/tmp/spec-recurrence-1188/u9-factory-reviewed/candidate-controls.mjs",
+  "started": "2026-10-09T20:48:52.762Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node /private/tmp/spec-recurrence-1188/u9-factory-reviewed/candidate-controls.mjs\"}",
+        "result": "Output: {\"schema\":\"candidate-release-controls/v1\",\"candidateSha256\":\"c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d\",\"helperSha256\":\"ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc\",\"originalOperations\":52,\"convertedReferences\":104,\"realJobs\":16,\"graphPositive\":1,\"graphRefusals\":11,\"transferPositive\":1,\"transferRefusals\":15,\"sourcePositive\":1,\"sourceRefusals\":5,\"actionlint\":{\"status\":0,\"queueMaxCompatibilityException\":\"Installed1.7.12 rejects unchanged source-existing queue:max; only exact unsupported queue syntax diagnostic excluded\",\"shellcheck\":false,\"pyflakes\":false},\"physicalWrites\":1,\"githubExecuted\":false,\"nativeExecuted\":false,\"publication\":false,\"coldTiming\":false,\"autonomousCredit\":0,\"amplificationCredit\":0}\nT4181_CANDIDATE_CONTROLS_PASS\n\nExit Code: 0"
+      }
+    ],
+    "answer": "The `node /private/tmp/spec-recurrence-1188/u9-factory-reviewed/candidate-controls.mjs` command completed. Output:\n\n```text\n{\"schema\":\"candidate-release-controls/v1\",\"candidateSha256\":\"c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d\",\"helperSha256\":\"ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc\",\"originalOperations\":52,\"convertedReferences\":104,\"realJobs\":16,\"graphPositive\":1,\"graphRefusals\":11,\"transferPositive\":1,\"transferRefusals\":15,\"sourcePositive\":1,\"sourceRefusals\":5,\"actionlint\":{\"status\":0,\"queueMaxCompatibilityException\":\"Installed1.7.12 rejects unchanged source-existing queue:max; only exact unsupported queue syntax diagnostic excluded\",\"shellcheck\":false,\"pyflakes\":false},\"physicalWrites\":1,\"githubExecuted\":false,\"nativeExecuted\":false,\"publication\":false,\"coldTiming\":false,\"autonomousCredit\":0,\"amplificationCredit\":0}\nT4181_CANDIDATE_CONTROLS_PASS\n```",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": true,
+  "finished": "2026-10-09T20:48:54.055Z"
+}

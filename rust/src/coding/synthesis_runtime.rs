@@ -201,6 +201,7 @@ pub fn extend_with_sequence_programs(
                 language: Some("python".to_owned()),
                 code: Some(program.source),
                 callable_name: Some(program.callable_name),
+                callable_contract: None,
                 source_tests: Vec::new(),
                 license: program.license,
                 source_url: program.source_url,
@@ -221,6 +222,14 @@ pub fn discover_and_compose(
     live: bool,
 ) -> (ConceptMap, composition::CompositionOutcome) {
     let mut catalog = discovery_catalog(spec, log, live);
+    // The committed recurrence cache is the browser's procedure memory
+    // (`trySourceRecurrenceSynthesis`); a recurrence the request names enters
+    // composition as a source candidate carrying its source tests, so the
+    // native solver composes the same program offline (issue #1173 p223).
+    if let Some(candidate) = crate::coding::recurrence::cache::source_recurrence_candidate(spec) {
+        log.append("synthesis:source_recurrence", candidate.id.clone());
+        catalog.source_candidates.push(candidate);
+    }
     let mut concepts = discover_over_registry(spec, &catalog, log, live);
     let mut outcome = composition::compose(spec, &concepts);
     if outcome.selected.is_none() {
@@ -348,14 +357,15 @@ pub fn attach_execution_recipe(
     let language = crate::coding::program_language_by_slug(&spec.language);
     let path = language.map_or_else(
         || format!("main.{}", spec.language),
-        |language| language.save_as.to_owned(),
+        |language| language.save_as.to_string(),
     );
     let commands = language.map_or_else(Vec::new, |language| {
         language
             .execution
             .check_command
+            .as_deref()
             .into_iter()
-            .chain(program.then_some(language.execution.run_command))
+            .chain(program.then_some(language.execution.run_command.as_ref()))
             .map(str::to_owned)
             .collect()
     });
@@ -400,7 +410,7 @@ fn research_phrases(spec: &CodingTaskSpec) -> Vec<String> {
                 .map(str::to_owned),
         );
     }
-    if spec.name != "discovered_function" {
+    if spec.name != crate::coding::task_spec::PROVISIONAL_FUNCTION_NAME {
         phrases.push(spec.name.replace('_', " "));
     }
     let mut seen = BTreeSet::new();
@@ -422,12 +432,7 @@ fn token_overlap(left: &str, right: &str) -> usize {
 }
 
 pub fn live_fetch_enabled() -> bool {
-    std::env::var("FORMAL_AI_LIVE_FETCH").is_ok_and(|value| {
-        matches!(
-            value.trim().to_ascii_lowercase().as_str(),
-            "1" | "true" | "yes" | "on"
-        )
-    })
+    crate::cli_env::flag_enabled("FORMAL_AI_LIVE_FETCH")
 }
 
 pub fn procedure_ledger() -> Option<DiscoveredProcedureLedger> {

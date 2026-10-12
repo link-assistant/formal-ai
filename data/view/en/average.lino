@@ -1,0 +1,53 @@
+view
+  id M-bb8c11347266
+  lemma average
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a statistic describing the location of a distribution"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(sports) the ratio of successful performances to opportunities"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an intermediate scale value regarded as normal or usual"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "approximating the statistical norm or average or expected value"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "lacking special distinction, rank, or status; commonly encountered"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "lacking exceptional quality or ability"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "around the middle of a scale of evaluation"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relating to or constituting the most frequent value in a distribution"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "relating to or constituting the middle value of an ordered set of values (or the average of the middle two in a set with an even number of values)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "amount to or come to an average, without loss or gain"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "achieve or reach on average"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "compute the average of"
+    provenance (wordnet)

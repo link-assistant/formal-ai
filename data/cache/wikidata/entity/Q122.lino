@@ -1,0 +1,20 @@
+Q122
+  aliases
+    en (Aug "8. month")
+    es (Ago. Ago "8" "mes 8" "8.º mes" "mes de Augusto" "octavo mes" "mes octavo" "mes de Octavio Augusto")
+    ru ("августа" "авг.")
+  descriptions
+    en "eighth month in the Julian and Gregorian calendars"
+    es "octavo mes del año"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में आठवां महीना"
+    ru "восьмой месяц года в юлианском и григорианском календарях"
+    zh "公历及儒略历中第八个月份"
+  id Q122
+  labels
+    en August
+    es agosto
+    hi "अगस्त"
+    ru "август"
+    zh "8月"
+  type item
+success 1

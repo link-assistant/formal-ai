@@ -1,0 +1,1 @@
+{"path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/stage-source-coverage.json", "sha256": "d46d441d11aff94e032cca5cfa8f16ff404a91fa5b893c83fd1f3aef31ba89a8", "lines": 1841, "generatorSha256": "029bc716a95d09947b27d7d6b398e91cc6fd3169f5a0a96c37626d3eb47c987c"}

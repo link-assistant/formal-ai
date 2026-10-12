@@ -1,0 +1,5 @@
+{
+  "taskId": "T2024",
+  "target": "rust/src/coding/recurrence.rs",
+  "byteEqual": true
+}

@@ -1,0 +1,23 @@
+{
+  "lemma": "nanometer",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13679972-n",
+      "partOfSpeech": "n",
+      "definition": "a metric unit of length equal to one billionth of a meter",
+      "synonyms": [
+        "nanometre",
+        "nm",
+        "millimicron",
+        "micromillimeter",
+        "micromillimetre"
+      ]
+    }
+  ]
+}

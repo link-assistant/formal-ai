@@ -1,0 +1,185 @@
+{
+  "schema": "literal-action-ownership-evidence/v1",
+  "sourceIdentities": [
+    {
+      "path": "js/agentic/general_planner.mjs",
+      "sha256": "5a2bca60be90d739b68fd66535597aba4ff5e90926273363230d5a5a98ebeb3b"
+    },
+    {
+      "path": "js/agentic/crate/literal_content.mjs",
+      "sha256": "f0935e4834fb242eb0b3669e4fa0ad30540b26dff7c0c06dfc305b9ba0e942b7"
+    },
+    {
+      "path": "js/agentic/crate/literal_authoring_contract.mjs",
+      "sha256": "f0fd2a8fa6596c82d2277833ba8a3fa44684845726ce79c0347766e78794ccfe"
+    },
+    {
+      "path": "js/agentic/request_sequence.mjs",
+      "sha256": "35d40839c80628f51da0a78c9bdf7b64d713fd8bbef88c306d2b00dcad8618b1"
+    },
+    {
+      "path": "js/agentic/planner/owned_goals.mjs",
+      "sha256": "bc3aa53b98c09a31924cd1484f7890a97530512f848ca26b9f4672e9e17c9fc9"
+    },
+    {
+      "path": "js/agentic/planner.mjs",
+      "sha256": "5f99758356810e5d767e6c58053ff80ed845c4fb343fd0235c9c138e75cc117b"
+    },
+    {
+      "path": "js/agentic/crate/literal_instruction_view.mjs",
+      "sha256": "c3f59d4544e3acdcc1c528f29c0d9e2ee2e252dfb252c15b2b2b98a363cb02d3"
+    },
+    {
+      "path": "js/agentic/crate/literal_body_ownership.mjs",
+      "sha256": "914ea6054762fd0046306fd47989a47dc06cd90d8965aaca311b043597d05434"
+    },
+    {
+      "path": "js/agentic/crate/operation_owner.mjs",
+      "sha256": "cafd23821fb7ff76928c77d8b62cfc1ef16178afb28626b28080932e7bb8afe2"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/literal_request.rs",
+      "sha256": "38033809cf6720e8ba2729c43178e79f9169528f5339eadeb27d53ffe37e97cd"
+    },
+    {
+      "path": "rust/src/agentic_coding/write_request.rs",
+      "sha256": "24916635e74e0f9c39087ca5a227924c483754a99079274b61bb8ffe113d965b"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/content_shape.rs",
+      "sha256": "c594a49b5846a6eec91cfd5130be1779a969c4f61a9d8eaaf81bc778902ef119"
+    },
+    {
+      "path": "rust/src/agentic_coding/request_sequence.rs",
+      "sha256": "c4f4709562e14b363178c86a18d43ff86af3c7d69d5644a2d1c86f643c0560a6"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/owned_goals.rs",
+      "sha256": "66f9ffd96990f99b07d3dab867fc9f1ccc344fcf377c1080df6ead993303dce9"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner.rs",
+      "sha256": "c38e08f488956ca5ae5ae500faf0f005c4f7816bd1983e93d023eb9e02fa4c62"
+    },
+    {
+      "path": "rust/src/agentic_coding/planner.rs",
+      "sha256": "f6d08d719fecc62380f9e0eb51210242958098472dd9c9f2d6fcb1b735e2f88c"
+    },
+    {
+      "path": "rust/tests/fixtures/literal-action-promotion.json",
+      "sha256": "07b2b4d299af2fe98d80f55c32186de13c0abb9694c44da280f3419e4bed0c90"
+    },
+    {
+      "path": "rust/tests/web/literal-action-ownership.test.mjs",
+      "sha256": "3faf43569a621f37a2b750ba3a8a778877f146c1b7d3531b1c9ecf4b4a676052"
+    },
+    {
+      "path": "rust/tests/web/literal-action-routing.test.mjs",
+      "sha256": "f1bcb9b8cdb7665abf9f703d87ae0f13740a7c6f456da8ac276bcbed46c0e390"
+    },
+    {
+      "path": "rust/tests/web/literal-action-independent-goals.test.mjs",
+      "sha256": "06126c7e3b50686d76b701f91f55971b616e0a4edf3b75385e6b6f1d7e301c77"
+    },
+    {
+      "path": "rust/tests/web/literal-action-goal-ledger.test.mjs",
+      "sha256": "ef28ab58b1fd8a7222cbf2efccf14bd6c8ee45d002bf0f044bbdc810a481ef96"
+    },
+    {
+      "path": "rust/tests/web/literal-action-test-helper.mjs",
+      "sha256": "b36e8be116e1c3bb17b14a259407d84bd2a04a55324492262e13874d286ef45d"
+    },
+    {
+      "path": "rust/tests/fixtures/literal-action-ownership.rs",
+      "sha256": "cb5a9b84ddf329bf1703f23c0f6df14a51f730bb9478c7c40c16c541fc1aafce"
+    },
+    {
+      "path": "rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs",
+      "sha256": "4562c318c66de166059a2c2c1b1b54df4b43a2912bf28fd93b085aceed922eda"
+    }
+  ],
+  "inputMetrics": [
+    {
+      "id": "T3849",
+      "taskUtf8Bytes": 313,
+      "reviewedBeforeAfterBytes": 0,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3850",
+      "taskUtf8Bytes": 39,
+      "reviewedBeforeAfterBytes": 0,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3851",
+      "taskUtf8Bytes": 104,
+      "reviewedBeforeAfterBytes": 0,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3852",
+      "taskUtf8Bytes": 679,
+      "reviewedBeforeAfterBytes": 148846,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3853",
+      "taskUtf8Bytes": 708,
+      "reviewedBeforeAfterBytes": 81418,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3854",
+      "taskUtf8Bytes": 814,
+      "reviewedBeforeAfterBytes": 57592,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3855",
+      "taskUtf8Bytes": 1060,
+      "reviewedBeforeAfterBytes": 392670,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3856",
+      "taskUtf8Bytes": 1230,
+      "reviewedBeforeAfterBytes": 57752,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3857",
+      "taskUtf8Bytes": 1889,
+      "reviewedBeforeAfterBytes": 14759,
+      "autonomousCodeOutputs": 0
+    },
+    {
+      "id": "T3858",
+      "taskUtf8Bytes": 616,
+      "reviewedBeforeAfterBytes": 0,
+      "autonomousCodeOutputs": 0
+    }
+  ],
+  "implementationProvenance": "reviewed-general-capability-repair",
+  "sourceWritesPriorToSeal": 33,
+  "formatterChangedFiles": 7,
+  "scratchSetupWrites": 10,
+  "manualSourceWrites": 0,
+  "autonomousImplementation": 0,
+  "nativeCompiled": false,
+  "tests": {
+    "unchangedBaseline": 53,
+    "ownerGoalControls": 42,
+    "total": 95,
+    "passed": 95
+  },
+  "nativeRouteArms": 58,
+  "g112": "Open",
+  "originalManifestSha256": "79d5e7dcc49142002e59983e0cc8bdda089df33c4fece4a52e6f44f17761310e",
+  "originalManifestPath": "raw/production-manifest-original.json.gz",
+  "rawRecordCount": 281,
+  "rawChunks": [
+    "raw-manifest-1.json",
+    "raw-manifest-2.json"
+  ]
+}

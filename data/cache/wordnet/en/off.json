@@ -1,0 +1,117 @@
+{
+  "lemma": "off",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01655911-a",
+      "partOfSpeech": "a",
+      "definition": "not in operation or operational",
+      "examples": [
+        "the oven is off",
+        "the lights are off"
+      ]
+    },
+    {
+      "id": "oewn-01656338-a",
+      "partOfSpeech": "a",
+      "definition": "(of events) no longer planned or scheduled",
+      "examples": [
+        "the wedding is definitely off"
+      ],
+      "synonyms": [
+        "cancelled"
+      ]
+    },
+    {
+      "id": "oewn-00234667-r",
+      "partOfSpeech": "r",
+      "definition": "from a particular thing or place or position (‘forth’ is obsolete)",
+      "examples": [
+        "ran away from the lion",
+        "wanted to get away from there",
+        "sent the children away to boarding school",
+        "the teacher waved the children away from the dead animal",
+        "went off to school",
+        "they drove off",
+        "go forth and preach"
+      ],
+      "synonyms": [
+        "away",
+        "forth"
+      ]
+    },
+    {
+      "id": "oewn-00236984-r",
+      "partOfSpeech": "r",
+      "definition": "at a distance in space or time",
+      "examples": [
+        "the boat was 5 miles off (or away)",
+        "the party is still 2 weeks off (or away)",
+        "away back in the 18th century"
+      ],
+      "synonyms": [
+        "away"
+      ]
+    },
+    {
+      "id": "oewn-00194904-r",
+      "partOfSpeech": "r",
+      "definition": "no longer on or in contact or attached",
+      "examples": [
+        "clean off the dirt",
+        "he shaved off his mustache"
+      ]
+    },
+    {
+      "id": "oewn-02090070-s",
+      "partOfSpeech": "s",
+      "definition": "below a satisfactory level",
+      "examples": [
+        "an off year for tennis",
+        "his performance was off"
+      ]
+    },
+    {
+      "id": "oewn-02378437-s",
+      "partOfSpeech": "s",
+      "definition": "in an unpalatable state",
+      "examples": [
+        "sour milk"
+      ],
+      "synonyms": [
+        "sour",
+        "turned"
+      ]
+    },
+    {
+      "id": "oewn-00035367-s",
+      "partOfSpeech": "s",
+      "definition": "not performing or scheduled for duties",
+      "examples": [
+        "He's off every Tuesday"
+      ]
+    },
+    {
+      "id": "oewn-02488014-v",
+      "partOfSpeech": "v",
+      "definition": "kill intentionally and with premeditation",
+      "examples": [
+        "The mafia boss ordered his enemies murdered"
+      ],
+      "synonyms": [
+        "murder",
+        "slay",
+        "hit",
+        "dispatch",
+        "bump off",
+        "polish off",
+        "remove"
+      ]
+    }
+  ]
+}

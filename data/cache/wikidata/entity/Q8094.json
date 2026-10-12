@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "風"
+        },
+        "es": {
+          "language": "es",
+          "value": "viento"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "गतिशील वायु"
+        },
+        "es": {
+          "language": "es",
+          "value": "movimiento natural del aire u otros gases en relación con la superficie de un planeta"
         }
       },
       "aliases": {

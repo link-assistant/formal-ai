@@ -1,0 +1,1 @@
+Guard exact tested main and its own recorded version child before production version mutation, push retry and tag. Actual21Node controls and standaloneformat PASS. Existing releasecaller/resolver/projection/floors unchanged. Full raw original wholeask failure and reviewed physical reproduction preserved. U9/currentcredentials/newheadpublication/coldtiming remain Open/unknown.

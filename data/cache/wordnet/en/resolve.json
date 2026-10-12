@@ -1,0 +1,112 @@
+{
+  "lemma": "resolve",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04868717-n",
+      "partOfSpeech": "n",
+      "definition": "the trait of being resolute",
+      "examples": [
+        "his resoluteness carried him through the battle",
+        "it was his unshakeable resolution to finish the work"
+      ],
+      "synonyms": [
+        "resoluteness",
+        "firmness",
+        "firmness of purpose",
+        "resolution"
+      ]
+    },
+    {
+      "id": "oewn-06523865-n",
+      "partOfSpeech": "n",
+      "definition": "a formal expression by a meeting; agreed to by a vote",
+      "synonyms": [
+        "resolution",
+        "declaration"
+      ]
+    },
+    {
+      "id": "oewn-00700621-v",
+      "partOfSpeech": "v",
+      "definition": "bring to an end; settle conclusively",
+      "examples": [
+        "The case was decided",
+        "The judge decided the case in favor of the plaintiff",
+        "The father adjudicated when the sons were quarreling over their inheritance"
+      ],
+      "synonyms": [
+        "decide",
+        "settle",
+        "adjudicate"
+      ]
+    },
+    {
+      "id": "oewn-01023429-v",
+      "partOfSpeech": "v",
+      "definition": "reach a conclusion after a discussion or deliberation",
+      "synonyms": [
+        "conclude"
+      ]
+    },
+    {
+      "id": "oewn-00701392-v",
+      "partOfSpeech": "v",
+      "definition": "reach a decision",
+      "examples": [
+        "he resolved never to drink again"
+      ],
+      "synonyms": [
+        "purpose"
+      ]
+    },
+    {
+      "id": "oewn-00637185-v",
+      "partOfSpeech": "v",
+      "definition": "understand the meaning of",
+      "examples": [
+        "The question concerning the meaning of life cannot be answered"
+      ],
+      "synonyms": [
+        "answer"
+      ]
+    },
+    {
+      "id": "oewn-02198058-v",
+      "partOfSpeech": "v",
+      "definition": "make clearly visible",
+      "examples": [
+        "can this image be resolved?"
+      ]
+    },
+    {
+      "id": "oewn-00735067-v",
+      "partOfSpeech": "v",
+      "definition": "find the solution",
+      "examples": [
+        "solve an equation",
+        "solve for x"
+      ],
+      "synonyms": [
+        "solve"
+      ]
+    },
+    {
+      "id": "oewn-00448264-v",
+      "partOfSpeech": "v",
+      "definition": "cause to go into a solution",
+      "examples": [
+        "The recipe says that we should dissolve a cup of sugar in two cups of water"
+      ],
+      "synonyms": [
+        "dissolve",
+        "break up"
+      ]
+    }
+  ]
+}

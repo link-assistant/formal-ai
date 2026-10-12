@@ -19,8 +19,8 @@ const DESKTOP_SERVICE_CONTROL: &str = include_str!("../../../../desktop/lib/serv
 const DESKTOP_LOCAL_SERVER: &str = include_str!("../../../../desktop/lib/local-server.cjs");
 // Issue #550: the front-end source moved to JSX (bundled by bun into the
 // served js/app.js); these surface assertions check source-level code, so
-// they read the JSX source rather than the minified bundle.
-const WEB_APP: &str = include_str!("../../../../js/app/main.jsx");
+// they read the JSX modules rather than the minified bundle.
+use super::WEB_APP_SOURCES as WEB_APP;
 const I18N_PERMISSIONS: &str = include_str!("../../../../js/i18n-catalog-permissions.lino");
 
 #[test]

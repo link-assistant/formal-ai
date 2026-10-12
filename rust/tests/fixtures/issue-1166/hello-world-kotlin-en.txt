@@ -1,0 +1,9 @@
+Create a small Kotlin program that prints "Hello, World!" to the console.
+
+First, the program must print exactly: "Hello, World!"
+Then, the expected output is:
+  "Hello, World!"
+Also, add a GitHub Actions workflow that runs the build on every push to the main branch
+Also, use a meaningful name for the workflow file, like test-hello-world.yml
+Also, add clear comments and follow Kotlin best practices
+Finally, a CI badge (optional)

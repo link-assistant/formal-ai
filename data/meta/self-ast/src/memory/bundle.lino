@@ -2,20 +2,23 @@ self_ast_census
   target src/memory/bundle.rs
   language rust
   fidelity signature
-  byte_len 17200
-  line_count 455
-  content_id source_module_0f919e3b0933a877
-  symbol_count 12
+  byte_len 18271
+  line_count 485
+  content_id source_module_f05ee2f689a59e77
+  symbol_count 15
   symbols
-    function export_bundle 23 63
-    function extract_memory_from_bundle 71 108
-    struct BundleInfo 117 124
-    struct ParsedBundle 133 139
-    function seed_cache_events 150 164
-    function export_full_memory 174 236
-    function push_optional_info 238 248
-    function import_full_memory 257 266
-    function parse_bundle_document 269 377
-    function extract_agent_info 379 386
-    function parse_agent_info 388 409
-    function suggest_migrations 420 455
+    const SEED_BODY_ENCODING_FIELD 17 17
+    const SEED_LITERAL_LINE_ENCODING 18 18
+    function export_bundle 26 68
+    function extract_memory_from_bundle 76 113
+    struct BundleInfo 122 129
+    struct ParsedBundle 138 144
+    function seed_cache_events 155 169
+    function export_full_memory 179 243
+    function push_optional_info 245 255
+    function import_full_memory 264 273
+    function parse_bundle_document 276 403
+    function extract_agent_info 405 412
+    function parse_agent_info 414 435
+    function suggest_migrations 446 481
+    module seed_byte_roundtrip_tests 485 485

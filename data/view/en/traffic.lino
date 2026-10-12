@@ -1,0 +1,29 @@
+view
+  id M-d227ac3819c6
+  lemma traffic
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the aggregation of things (pedestrians or vehicles) coming and going in a particular locality during a specified period of time"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "buying and selling; especially illicit trade"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the amount of activity over a communication system during a given period of time"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "social or verbal interchange (usually followed by ‘with’)"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "deal illegally"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "trade or deal a commodity"
+    provenance (wordnet)

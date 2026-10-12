@@ -15,6 +15,10 @@ multilingual_responses
     intent orchestration_correction_prompt
     language zh
     text "在同一会话中继续请求的更正。\n已证伪的主张：{claim}\n证据：{evidence}\n依据证据重新评估该主张，更正结果，并说明发生了什么变化。\n完成此更正目标：{task}"
+  response response_orchestration_correction_prompt_es
+    intent orchestration_correction_prompt
+    language es
+    text "Continúa la corrección solicitada en esta misma sesión.\nAfirmación refutada: {claim}\nEvidencia: {evidence}\nVuelve a evaluar la afirmación frente a la evidencia, corrige el resultado e indica qué cambió.\nCompleta este objetivo de corrección: {task}"
   response response_orchestration_cross_agent_denial_en
     intent orchestration_cross_agent_denial
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent orchestration_cross_agent_denial
     language zh
     text "跨代理否定：来源={sources}；概率={probability}"
+  response response_orchestration_cross_agent_denial_es
+    intent orchestration_cross_agent_denial
+    language es
+    text "Refutación entre agentes: fuentes={sources}; probabilidad={probability}"
   response response_draft_comparison_explanation_en
     intent draft_comparison_explanation
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent draft_comparison_explanation
     language zh
     text "我选择了草案 {winner_index}（{strategy}），因为它通过了 {passed_tests}/{total_tests} 个生成测试。随后，确定性的最小作用量决胜规则选择了最小且充分的通过草案；若存在另一个通过草案，账本会记录 {smaller_percent}% 的大小缩减。提交前已验证组合。"
+  response response_draft_comparison_explanation_es
+    intent draft_comparison_explanation
+    language es
+    text "Elegí el borrador {winner_index} ({strategy}) porque superó {passed_tests}/{total_tests} pruebas generadas. Después, el desempate determinista de mínima acción prefirió el borrador aprobado más pequeño que bastara; cuando había otro borrador aprobado, el registro anota una reducción de tamaño del {smaller_percent}%. La composición se verificó antes de confirmarla."
   response response_completion_recovery_restate_postcondition_en
     intent completion_recovery_restate_postcondition
     language en
@@ -63,6 +75,10 @@ multilingual_responses
     intent completion_recovery_restate_postcondition
     language zh
     text "本会话中的上一次尝试结束时未更改工作区。\n已证伪的主张：{claim}\n证据：{evidence}\n请用一行说明该请求隐含的可观察后置条件：之后必须存在哪个文件，它必须做什么。\n然后通过写入该文件使后置条件成立，并报告你写入的路径。\n请求：{task}"
+  response response_completion_recovery_restate_postcondition_es
+    intent completion_recovery_restate_postcondition
+    language es
+    text "El intento anterior de esta sesión terminó sin cambiar el espacio de trabajo.\nAfirmación refutada: {claim}\nEvidencia: {evidence}\nFormula en una línea la poscondición observable que implica la solicitud: qué archivo debe existir después y qué debe hacer.\nLuego cumple esa poscondición escribiendo el archivo e indica la ruta que escribiste.\nSolicitud: {task}"
   response response_completion_recovery_name_target_artifact_en
     intent completion_recovery_name_target_artifact
     language en
@@ -79,6 +95,10 @@ multilingual_responses
     intent completion_recovery_name_target_artifact
     language zh
     text "重述目标并未产生文件。\n已证伪的主张：{claim}\n证据：{evidence}\n不要再做计划，也不要再查看目录。现在选定一个具体的相对路径，用满足请求的最小内容创建该文件，并打印该路径。\n请求：{task}"
+  response response_completion_recovery_name_target_artifact_es
+    intent completion_recovery_name_target_artifact
+    language es
+    text "Reformular el objetivo no produjo ningún archivo.\nAfirmación refutada: {claim}\nEvidencia: {evidence}\nNo planifiques ni vuelvas a inspeccionar el directorio. Elige ahora una ruta relativa concreta, crea ese archivo con el contenido mínimo que cumpla la solicitud y muestra la ruta.\nSolicitud: {task}"
   response response_completion_recovery_decompose_into_leaf_en
     intent completion_recovery_decompose_into_leaf
     language en
@@ -95,3 +115,7 @@ multilingual_responses
     intent completion_recovery_decompose_into_leaf
     language zh
     text "两次尝试都没有产生文件。改为分解该请求。\n已证伪的主张：{claim}\n证据：{evidence}\n指出该任务中自身即可留下文件的最小叶子，只执行该叶子，暂时忽略其他部分。打印你写入的路径。\n请求：{task}"
+  response response_completion_recovery_decompose_into_leaf_es
+    intent completion_recovery_decompose_into_leaf
+    language es
+    text "Dos intentos no produjeron ningún archivo. Descompón la solicitud en su lugar.\nAfirmación refutada: {claim}\nEvidencia: {evidence}\nNombra la hoja más pequeña de esta tarea que por sí sola deje un archivo, ejecuta solo esa hoja e ignora por ahora todas las demás partes. Muestra la ruta que escribiste.\nSolicitud: {task}"

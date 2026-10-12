@@ -1,0 +1,20 @@
+Q125
+  aliases
+    en (Nov "11th month")
+    es (Nov Nov. nov nov. "undécimo mes" "mes undécimo" "11.° mes" "mes 11.°" "mes 11" "11" "penúltimo mes" "mes decimoprimero" "decimoprimer mes" N)
+    ru ("ноября" "ноя.")
+  descriptions
+    en "eleventh month in the Julian and Gregorian calendars"
+    es "undécimo y penúltimo mes del año"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में ग्यारहवां महीना"
+    ru "одиннадцатый месяц года в юлианском и григорианском календарях"
+    zh "公曆及儒略曆中第十一個月份"
+  id Q125
+  labels
+    en November
+    es noviembre
+    hi "नवम्बर"
+    ru "ноябрь"
+    zh "11月"
+  type item
+success 1

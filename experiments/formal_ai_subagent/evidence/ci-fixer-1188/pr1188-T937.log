@@ -1,0 +1,100 @@
+>> read {"filePath":".github/workflows/pages-artifact.yml","file_path":".github/workflows/pages-artifact.yml","path":".github/workflows/pages-artifact.yml"}
+   <file>
+   00001| name: Build GitHub Pages artifact
+   00002| 
+   00003| # PR #1188 (R1188-U9): no job may run past 30 minutes. The release workflow's
+   00004| # one Pages job used to build the web bundle, run `cargo doc` for the
+   00005| # /docs/api reference (issue #479) on a cold cargo cache AND wait in the GitHub
+   00006| # Pages deployment queue (PR #965), which needed a 35-minute cap. The build
+   00007| # half lives here, under its own cap; `deploy-pages` in release.yml only
+   00008| # deploys the `github-pages` artifact this job uploads to the calling run.
+   00009| #
+   00010| # This lives in its own reusable workflow rather than as a job in release.yml
+   00011| # so that file, which sits against the 1500-line warning band that issue #999
+   00012| # and issue #1012 both pin, does not have to pay for it.
+   00013| 
+   00014| on:
+   00015|   workflow_call:
+   00016|     inputs:
+   00017|       sha:
+   00018|         description: The commit to build and stamp; the release child commit when auto-release creates one.
+   00019|         required: true
+   00020|         type: string
+   00021|     outputs:
+   00022|       pages_sha:
+   00023|         description: The commit the artifact was built from and stamped with.
+   00024|         value: ${{ jobs.build.outputs.pages_sha }}
+   00025| 
+   00026| permissions:
+   00027|   contents: read
+   00028| 
+   00029| jobs:
+   00030|   build:
+   00031|     name: Build GitHub Pages artifact
+   00032|     runs-on: ubuntu-latest
+   00033|     timeout-minutes: 30
+   00034|     outputs:
+   00035|       pages_sha: ${{ steps.pages_ref.outputs.sha }}
+   00036|     steps:
+   00037|       - name: Select Pages deployment ref
+   00038|         id: pages_ref
+   00039|         env:
+   00040|           PAGES_DEPLOY_SHA: ${{ inputs.sha }}
+   00041|         run: |
+   00042|           if [ -z "$PAGES_DEPLOY_SHA" ]; then
+   00043|             echo "::error::Could not resolve Pages deployment SHA"
+   00044|             exit 1
+   00045|           fi
+   00046|           echo "sha=${PAGES_DEPLOY_SHA}" >> "$GITHUB_OUTPUT"
+   00047|           echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
+   00048|       - uses: actions/checkout@v7
+   00049|         with:
+   00050|           persist-credentials: false
+   00051|           ref: ${{ steps.pages_ref.outputs.sha }}
+   00052|       - name: Setup Bun
+   00053|         uses: oven-sh/setup-bun@v2
+   00054|         with:
+   00055|           bun-version-file: .bun-version
+   00056|       - name: Install web bundle dependencies
+   00057|         run: bun install --frozen-lockfile
+   00058|       - name: Build web vendor bundle
+   00059|         run: bun run build:web
+   00060|       - name: Setup Rust
+   00061|         uses: dtolnay/rust-toolchain@stable
+   00062|       - name: Free up runner disk space
+   00063|         run: bash scripts/free-runner-disk.sh
+   00064|       - uses: ./.github/actions/cache-cargo-registry
+   00065|         with:
+   00066|           prefix: docs-
+   00067|       - name: Generate Rust API docs (cargo doc --manifest-path rust/Cargo.toml)
+   00068|         env:
+   00069|           RUSTDOCFLAGS: -D warnings
+   00070|         run: bash scripts/build-rust-api-docs.sh
+   00071|       - name: Sync data/seed into js/seed (deployment mirror)
+   00072|         run: scripts/sync-seed.sh
+   00073|       - name: Install rust-script
+   00074|         run: bash scripts/install-rust-script.sh
+   00075|       - name: Read formal-ai version from Cargo.toml
+   00076|         id: formal_ai_version
+   00077|         run: rust-script scripts/get-version.rs
+   00078|       - name: Stamp GitHub Pages artifact
+   00079|         run: scripts/stamp-pages-artifact.sh js "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
+   00080|       - name: Copy Rust API docs into the Pages artifact (/docs/api)
+   00081|         run: |
+   00082|           mkdir -p js/docs/api
+   00083|           cp -R target/doc/. js/docs/api/
+   00084|       - name: Upload GitHub Pages artifact
+   00085|         uses: actions/upload-pages-artifact@v5
+   00086|         with:
+   00087|           path: js
+   00088|           include-hidden-files: true
+   00089| 
+   
+   (End of file - total 89 lines)
+   </file>
+>> edit {"filePath":".github/workflows/pages-artifact.yml","file_path":".github/workflows/pages-artifact.yml","new":"          if [[ ! \"$PAGES_DEPLOY_SHA\" =~ ^[0-9a-fA-F]{40}$ ]]; then","newString":"          if [[ ! \"$PAGES_DEPLOY_SHA\" =~ ^[0-9a-fA-F]{40}$ ]]; then","new_str":"          if [[ ! \"$PAGES_DEPLOY_SHA\" =~ ^[0-9a-fA-F]{40}$ ]]; then","new_string":"          if [[ ! \"$PAGES_DEPLOY_SHA\" =~ ^[0-9a-fA-F]{40}$ ]]; then","old":"          if [ -z \"$PAGES_DEPLOY_SHA\" ]; then","oldString":"          if [ -z \"$PAGES_DEPLOY_SHA\" ]; then","old_str":"          if [ -z \"$PAGES_DEPLOY_SHA\" ]; then","old_string":"          if [ -z \"$PAGES_DEPLOY_SHA\" ]; then","path":".github/workflows/pages-artifact.yml"}
+>> bash {"command":"sha256sum -- .github/workflows/pages-artifact.yml"}
+   48f89647543416f3075fa396ea21277d23beba9a88e8ddaa2b97de4bfefb1b56  .github/workflows/pages-artifact.yml
+   
+== answer ==
+Replaced `          if [ -z "$PAGES_DEPLOY_SHA" ]; then` with `          if [[ ! "$PAGES_DEPLOY_SHA" =~ ^[0-9a-fA-F]{40}$ ]]; then` in `.github/workflows/pages-artifact.yml` and observed the result.

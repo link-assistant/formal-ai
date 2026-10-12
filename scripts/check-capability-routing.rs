@@ -43,7 +43,9 @@ fn parse_ratchet(text: &str) -> Result<Ratchet, String> {
         if trimmed == "ceiling" {
             measure = None;
         } else if let Some(value) = trimmed.strip_prefix("measure ") {
-            measure = Some(unquote(value));
+            // A measure name reads in its `-` spelling, so a base revision that
+            // still spells it with `_` compares with this one (R1188-U6).
+            measure = Some(unquote(value).replace('_', "-"));
         } else if let Some(value) = trimmed.strip_prefix("direction ") {
             let name = measure
                 .as_ref()
@@ -134,10 +136,10 @@ fn corpus_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
         ));
     }
     let mut measured = BTreeMap::new();
-    measured.insert("intents_measured".to_owned(), intents.len() as u64);
-    measured.insert("languages_measured".to_owned(), languages.len() as u64);
+    measured.insert("intents-measured".to_owned(), intents.len() as u64);
+    measured.insert("languages-measured".to_owned(), languages.len() as u64);
     measured.insert(
-        "paraphrases_per_intent_per_language".to_owned(),
+        "paraphrases-per-intent-per-language".to_owned(),
         cells.values().copied().min().unwrap_or(0),
     );
     Ok(measured)
@@ -236,22 +238,22 @@ fn static_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
     let capabilities = fs::read_to_string(root.join("data/seed/agentic-tool-capabilities.lino"))
         .map_err(|error| format!("agentic-tool-capabilities.lino: {error}"))?;
     measured.insert(
-        "memorized_capability_cues".to_owned(),
+        "memorized-capability-cues".to_owned(),
         memorized_capability_cues(&capabilities),
     );
     let intent_routing = fs::read_to_string(root.join("data/seed/intent-routing.lino"))
         .map_err(|error| format!("intent-routing.lino: {error}"))?;
     measured.insert(
-        "intent_routing_phrase_rows".to_owned(),
+        "intent-routing-phrase-rows".to_owned(),
         phrase_rows(&intent_routing),
     );
     let planner = fs::read_to_string(root.join("rust/src/agentic_coding/planner.rs"))
         .map_err(|error| format!("planner.rs: {error}"))?;
     measured.insert(
-        "planner_route_arms".to_owned(),
+        "planner-route-arms".to_owned(),
         planner_route_arms(&planner),
     );
-    let frontier = fs::read_to_string(root.join("rust/tests/unit/issue_1138_frontier_classes.rs"))
+    let frontier = fs::read_to_string(root.join("rust/tests/unit/capability-routing/issue_1138_frontier_classes.rs"))
         .map_err(|error| format!("issue_1138_frontier_classes.rs: {error}"))?;
     let expected = [
         "news_class_routes_to_a_live_search",
@@ -263,7 +265,7 @@ fn static_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
         "ui_complaint_class_routes_to_a_structured_report",
     ];
     measured.insert(
-        "frontier_prompts_open".to_owned(),
+        "frontier-prompts-open".to_owned(),
         expected
             .iter()
             .filter(|name| !frontier.contains(*name))
@@ -278,9 +280,9 @@ fn parse_runtime_measures(output: &str) -> Result<BTreeMap<String, u64>, String>
         let mut words = line.split_whitespace();
         let Some(name) = words.next() else { continue };
         if ![
-            "capability_routing_cases_passing",
-            "cross_tool_misroutes",
-            "silent_unknowns",
+            "capability-routing-cases-passing",
+            "cross-tool-misroutes",
+            "silent-unknowns",
         ]
         .contains(&name)
         {
@@ -294,9 +296,9 @@ fn parse_runtime_measures(output: &str) -> Result<BTreeMap<String, u64>, String>
         measured.insert(name.to_owned(), value);
     }
     for name in [
-        "capability_routing_cases_passing",
-        "cross_tool_misroutes",
-        "silent_unknowns",
+        "capability-routing-cases-passing",
+        "cross-tool-misroutes",
+        "silent-unknowns",
     ] {
         if !measured.contains_key(name) {
             return Err(format!("measurement output omitted `{name}`"));
@@ -324,8 +326,9 @@ fn runtime_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
     let output = command_output(
         root,
         "cargo",
+        // The active toolchain (CI installs stable); a pinned `+1.x.y` broke
+        // the gate the day `rust-version` moved past it.
         &[
-            "+1.98.1",
             "run",
             "--quiet",
             "--manifest-path",
@@ -484,7 +487,7 @@ mod tests {
     #[test]
     fn parses_directions_and_values() {
         let parsed = parse_ratchet(
-            "capability_routing_ratchet\n  ceiling\n    measure passing\n    value 4\n    direction up\n  ceiling\n    measure misses\n    value 0\n    direction down\n",
+            "capability-routing-ratchet\n  ceiling\n    measure passing\n    value 4\n    direction up\n  ceiling\n    measure misses\n    value 0\n    direction down\n",
         )
         .unwrap();
         assert_eq!(parsed.values["passing"], 4);
@@ -495,12 +498,12 @@ mod tests {
     #[test]
     fn parses_runtime_output_without_trusting_the_denominator() {
         let parsed = parse_runtime_measures(
-            "capability_routing_cases_passing 420 / 420\ncross_tool_misroutes 0\nsilent_unknowns 0\n",
+            "capability-routing-cases-passing 420 / 420\ncross-tool-misroutes 0\nsilent-unknowns 0\n",
         )
         .unwrap();
-        assert_eq!(parsed["capability_routing_cases_passing"], 420);
-        assert_eq!(parsed["cross_tool_misroutes"], 0);
-        assert_eq!(parsed["silent_unknowns"], 0);
+        assert_eq!(parsed["capability-routing-cases-passing"], 420);
+        assert_eq!(parsed["cross-tool-misroutes"], 0);
+        assert_eq!(parsed["silent-unknowns"], 0);
     }
 
     #[test]

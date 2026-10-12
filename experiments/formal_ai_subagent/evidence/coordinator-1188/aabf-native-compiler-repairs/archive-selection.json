@@ -1,0 +1,28 @@
+{
+  "sourceQualification": "Actual T3342 PASS",
+  "ciHead": "aabf6d4ea012d9b67843ee7bb4e33b7e0730ecc6",
+  "ciSnapshot": {
+    "at": "20261010T122111Z",
+    "head": "aabf6d4ea012d9b67843ee7bb4e33b7e0730ecc6",
+    "total": 149,
+    "counts": {
+      "skipped": 26,
+      "queued": 11,
+      "failure": 36,
+      "in_progress": 16,
+      "success": 59,
+      "cancelled": 1
+    },
+    "changed": true
+  },
+  "ciFailures": 36,
+  "nativeReuse": 0,
+  "records": 233,
+  "uniqueOriginals": 212,
+  "selectedOriginalBytes": 74904234,
+  "manifestFiles": 1,
+  "sourceHead": "0033d6f89a39ad9f10092466b033f1a876cf83bf",
+  "finalSourceQualification": "Actual T3342 PASS; unchanged 34 closest controls source-bound, native compilation reserved for CI",
+  "controllerOuter": "Actual T3342 and CI T4381 full outer included once; installation T3343 outside cut, no self-prefix completeness credit",
+  "autonomousCodingCredit": 0
+}

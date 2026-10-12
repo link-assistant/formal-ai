@@ -3,15 +3,17 @@
 Issue [#960](https://github.com/link-assistant/formal-ai/issues/960) collects
 three maintainer requirements that each landed once as a practice and were then
 written down without anything that fails when they are broken: the 128-record
-cache budget (R222-1,
-[#222](https://github.com/link-assistant/formal-ai/pull/222#issuecomment-4513844358)),
+cache budget ([#222](https://github.com/link-assistant/formal-ai/pull/222#issuecomment-4513844358)),
 the tests-as-documentation exact-answer style (R234-2,
 [#234](https://github.com/link-assistant/formal-ai/pull/234#issuecomment-4528554549)),
-and the `Fixes <url>` pull-request linking rule (R234-4, same thread). A
+and the `Fixes <url>` pull-request linking rule (same thread). A
 convention that is recorded but unenforced decays silently: by the time this
 issue was filed `data/cache/wikidata/entity` held 406 records against a
 documented cap of 128. Timeline, root causes, and the measurements behind the
 one deliberate exemption live in `docs/case-studies/issue-960/`.
+
+The cache budget (R222-1) is delivered as R960-2 below, enforced by `scripts/check-cache-budget.rs` and pinned by `rust/tests/unit/docs_requirements/enforced_conventions.rs`.
+The linking rule (R234-4) is delivered as R960-5 below, enforced by `scripts/check-pull-request-link.rs` and pinned by `rust/tests/unit/docs_requirements/enforced_conventions.rs`.
 
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |

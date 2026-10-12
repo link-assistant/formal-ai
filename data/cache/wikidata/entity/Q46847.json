@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "戒指"
+        },
+        "es": {
+          "language": "es",
+          "value": "anillo"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "圓形帶子作為手指周圍的一種裝飾性珠寶佩戴"
+        },
+        "es": {
+          "language": "es",
+          "value": "tipo de adorno de joyería"
         }
       },
       "aliases": {

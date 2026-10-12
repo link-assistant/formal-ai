@@ -1,0 +1,432 @@
+{
+  "author": {
+    "is_bot": true,
+    "login": "app/github-actions"
+  },
+  "createdAt": "2026-09-10T23:38:47Z",
+  "headRefName": "formal-ai/issue-1123-34542617225",
+  "number": 1124,
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:43:29Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364049/job/103090637431",
+      "name": "Check Links",
+      "startedAt": "2026-09-10T23:42:49Z",
+      "status": "COMPLETED",
+      "workflowName": "Broken Link Checker"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:44:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090640059",
+      "name": "Detect Changes",
+      "startedAt": "2026-09-10T23:42:50Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:44:10Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364042/job/103090637499",
+      "name": "Detect Changes",
+      "startedAt": "2026-09-10T23:42:49Z",
+      "status": "COMPLETED",
+      "workflowName": "Coverage"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:45:56Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364065/job/103090637711",
+      "name": "Verify monotonic ledger",
+      "startedAt": "2026-09-10T23:42:49Z",
+      "status": "COMPLETED",
+      "workflowName": "External Benchmarks"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:47:08Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364120/job/103090637590",
+      "name": "Question necessity ratchet (issue #920)",
+      "startedAt": "2026-09-10T23:42:49Z",
+      "status": "COMPLETED",
+      "workflowName": "Question necessity ratchet"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:52:04Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364086/job/103090637951",
+      "name": "CodeQL (rust)",
+      "startedAt": "2026-09-10T23:42:49Z",
+      "status": "COMPLETED",
+      "workflowName": "Security"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:48:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364078/job/103090637404",
+      "name": "stock-rust-install",
+      "startedAt": "2026-09-10T23:42:49Z",
+      "status": "COMPLETED",
+      "workflowName": "Stock Rust Install"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:43:56Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364086/job/103090637806",
+      "name": "CodeQL (actions)",
+      "startedAt": "2026-09-10T23:42:49Z",
+      "status": "COMPLETED",
+      "workflowName": "Security"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:42:47Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364065/job/103090638815",
+      "name": "Run upstream suites",
+      "startedAt": "2026-09-10T23:42:47Z",
+      "status": "COMPLETED",
+      "workflowName": "External Benchmarks"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:44:05Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090639816",
+      "name": "Self-Hosting Evidence Check",
+      "startedAt": "2026-09-10T23:42:50Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:09:18Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364042/job/103090940598",
+      "name": "Code Coverage",
+      "startedAt": "2026-09-10T23:44:12Z",
+      "status": "COMPLETED",
+      "workflowName": "Coverage"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:43:22Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364086/job/103090637940",
+      "name": "Cargo audit",
+      "startedAt": "2026-09-10T23:42:49Z",
+      "status": "COMPLETED",
+      "workflowName": "Security"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:44:17Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090640087",
+      "name": "Version Modification Check",
+      "startedAt": "2026-09-10T23:42:51Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:45:33Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364042/job/103090940642",
+      "name": "Browser Code Coverage",
+      "startedAt": "2026-09-10T23:44:14Z",
+      "status": "COMPLETED",
+      "workflowName": "Coverage"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:43:15Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364086/job/103090637981",
+      "name": "Dependency Review",
+      "startedAt": "2026-09-10T23:42:50Z",
+      "status": "COMPLETED",
+      "workflowName": "Security"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:43:13Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090640192",
+      "name": "Release Preflight",
+      "startedAt": "2026-09-10T23:42:50Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:43:11Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090640216",
+      "name": "base / Pin base commit",
+      "startedAt": "2026-09-10T23:42:50Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:42:47Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090666494",
+      "name": "Create Changelog PR",
+      "startedAt": "2026-09-10T23:42:55Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:44:53Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090971917",
+      "name": "Secrets Scan",
+      "startedAt": "2026-09-10T23:44:20Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:52:56Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090971923",
+      "name": "E2E Tests (local web app)",
+      "startedAt": "2026-09-10T23:44:20Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:51:40Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090971978",
+      "name": "Build binaries and tests",
+      "startedAt": "2026-09-10T23:44:20Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:52:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090971941",
+      "name": "Lint and Format Check",
+      "startedAt": "2026-09-10T23:44:21Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:44:18Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103090972855",
+      "name": "macOS Core Tests",
+      "startedAt": "2026-09-10T23:44:18Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:52:58Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565613",
+      "name": "Changelog Fragment Check",
+      "startedAt": "2026-09-10T23:51:42Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:03:52Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565582",
+      "name": "Docker Image Build & Runtime Check",
+      "startedAt": "2026-09-10T23:51:42Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:03:29Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565667",
+      "name": "Test (ubuntu-latest / full)",
+      "startedAt": "2026-09-10T23:51:43Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:52:41Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565693",
+      "name": "Test (macos-15-intel / specification)",
+      "startedAt": "2026-09-10T23:51:43Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:54:27Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565921",
+      "name": "E2E Tests (agent CLI ↔ formal-ai) / E2E Tests (agent CLI ↔ formal-ai)",
+      "startedAt": "2026-09-10T23:51:42Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:55:35Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565938",
+      "name": "Box Image Projects (rust)",
+      "startedAt": "2026-09-10T23:51:42Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:53:46Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565851",
+      "name": "Box Image Projects (python)",
+      "startedAt": "2026-09-10T23:51:42Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:54:28Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565754",
+      "name": "Box Image Projects (javascript)",
+      "startedAt": "2026-09-10T23:51:42Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:55:46Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565824",
+      "name": "Box Image Projects (typescript)",
+      "startedAt": "2026-09-10T23:51:43Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:55:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565937",
+      "name": "Box Image Projects (go)",
+      "startedAt": "2026-09-10T23:51:42Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:55:03Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565861",
+      "name": "Box Image Projects (java)",
+      "startedAt": "2026-09-10T23:51:42Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:54:44Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103092565914",
+      "name": "Box Image Projects (ruby)",
+      "startedAt": "2026-09-10T23:51:43Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:05:02Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103095111676",
+      "name": "Build Package",
+      "startedAt": "2026-09-11T00:03:32Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:05:02Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103095451161",
+      "name": "Auto Release",
+      "startedAt": "2026-09-11T00:05:03Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:05:02Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103095451003",
+      "name": "Instant Release",
+      "startedAt": "2026-09-11T00:05:03Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:05:02Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103095451549",
+      "name": "Deploy Web App to GitHub Pages",
+      "startedAt": "2026-09-11T00:05:03Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:05:03Z",
+      "conclusion": "SKIPPED",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103095452474",
+      "name": "E2E Tests (GitHub Pages)",
+      "startedAt": "2026-09-11T00:05:03Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-11T00:05:25Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/actions/runs/34543364225/job/103095451614",
+      "name": "Pipeline Status",
+      "startedAt": "2026-09-11T00:05:05Z",
+      "status": "COMPLETED",
+      "workflowName": "CI/CD Pipeline"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-09-10T23:43:49Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/link-assistant/formal-ai/runs/103090861126",
+      "name": "CodeQL",
+      "startedAt": "2026-09-10T23:43:47Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    }
+  ],
+  "title": "Count go.sum as a lockfile in the self-hosting metric (authored by Formal AI, #1123)"
+}

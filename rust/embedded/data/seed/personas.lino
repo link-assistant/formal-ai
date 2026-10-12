@@ -1,5 +1,5 @@
 personas
-  trigger ("pretend you are" "act as" "roleplay" "explain like you are" "притворись что ты" "представь что ты" "играй роль" "कल्पना करो कि तुम" "भूमिका निभाओ" "假装你是" "扮演" "角色扮演")
+  trigger ("pretend you are" "pretend to be" "act as" "roleplay" "explain like you are" "притворись что ты" "представь что ты" "играй роль" "कल्पना करो कि तुम" "भूमिका निभाओ" "假装你是" "扮演" "角色扮演")
   default_persona "requested persona"
   body_template "Roleplay frame recorded for <persona>. I will keep the persona explicit and factual: <body>"
   fallback_body "relativity says measurements of space and time depend on the observer's motion, while the laws of physics stay consistent."

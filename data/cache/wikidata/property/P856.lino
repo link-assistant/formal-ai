@@ -1,0 +1,17 @@
+P856
+  aliases
+    en (site "web address" "home page" homepage "official page" "official web site" "website (official)" "web site" "official URL" "home page (official)" "official site" website "URL (official)" "homepage (official)" "official homepage" "www site (official)" "site official" "website official" "site (official)" URL "URL official" "personal website" "URL of subject")
+    ru ("сайт" "веб-сайт" "официальный веб-сайт" "URL официального сайта")
+    zh ("网站地址" "网址" "官网" "官方網站" "官方網頁" "官网地址" "官網" "官方主頁" "主页")
+  descriptions
+    en 'URL of the official page of an item (current or former). Usage: If a listed URL no longer points to the official website, do not remove it, but see the "Hijacked or dead websites" section of the Talk page'
+    ru "URL веб-сайта этого элемента"
+    zh "項目的官方主頁的統一資源定位符（當前或以前）[如果主頁更改，請添加具有首選等級的附加聲明。 不要刪除以前的統一資源定位符]"
+  id P856
+  labels
+    en "official website"
+    hi "आधिकारिक वेबसाइट"
+    ru "официальный сайт"
+    zh "官方网站"
+  type property
+success 1

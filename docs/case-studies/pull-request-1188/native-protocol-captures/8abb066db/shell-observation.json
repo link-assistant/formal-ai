@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "head": "8abb066dbe9895ba843ca690e0d9e9f21c12e571",
+  "source_preview": "96e579831186bb93c657e807056cd7e41ea4bdd4",
+  "job": 113928931856,
+  "raw_log_sha256": "c5d20043ab819d22cc074d6bc520a4bef819def1fb6322ec9d2e510b1b5a3201",
+  "line": 1404,
+  "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/shell.json",
+  "sha256": "28b1e0b3b5e75501dc9db4df375145b15bdb60d98b6a9898b1ee4be06f6fc9d1",
+  "raw_line_sha256": "1bb30675bc3ddca3fbba4365d33b9f53063227d987df38e18380c6f476a9a2f0",
+  "legacy": "docs/case-studies/issue-749/agent-cli-evidence/session.json",
+  "legacy_sha256": "1bd0b6792cca4b70ae6c6dd7d50933e5a47d0538e418829a768d278f38b9bab6",
+  "fresh_final_head": false,
+  "representation": "Exact complete native operand from official failing coverage8 assertion; legacy target bytes and every other session field preserved."
+}

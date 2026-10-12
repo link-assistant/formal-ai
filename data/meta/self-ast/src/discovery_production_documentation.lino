@@ -1,0 +1,34 @@
+self_ast_census
+  target src/discovery_production_documentation.rs
+  language rust
+  fidelity signature
+  byte_len 21822
+  line_count 555
+  content_id source_module_afe60154b5a001a5
+  symbol_count 25
+  symbols
+    const DOCUMENTATION_CAPTURES 14 15
+    const RUNTIME_CACHE_ENV 18 18
+    const NO_DOCUMENTATION_CAPTURE 22 22
+    struct DocumentationCapture 26 45
+    struct RunContract 49 56
+    function invoked_names 63 75
+    function documentation_route_active 80 91
+    function documentation_captures 95 100
+    function all_documentation_captures 104 138
+    function block_names_language 147 156
+    function documented_example 165 202
+    function rediscover_from_documentation 212 220
+    function rediscover_documented_program 242 312
+    function rediscover_documented_program 322 333
+    function record_discovered 346 352
+    function answer_cache_miss 363 401
+    function catalog_run_commands 406 414
+    function rediscover_catalog_program 427 441
+    function documented_pairs 446 458
+    struct DocumentedCommand 462 468
+    function documented_run_commands 478 493
+    function language_has_documented_procedure 502 515
+    const DOCUMENTATION_ROUTE_SOURCE 519 519
+    struct DocumentedCatalogProgram 523 530
+    function documented_catalog_programs 539 555

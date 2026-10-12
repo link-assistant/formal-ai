@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2911-prompt.txt",
+  "sha256": "a1d4752b0dd1116798fceebe7f910e2894a76f6267f9e6f574689e124e8d0d42",
+  "rawUtf8": "Run node --test typed-spec-reader.test.mjs\n"
+}

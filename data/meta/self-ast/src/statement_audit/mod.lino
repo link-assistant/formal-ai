@@ -2,9 +2,9 @@ self_ast_census
   target src/statement_audit/mod.rs
   language rust
   fidelity signature
-  byte_len 758
+  byte_len 769
   line_count 20
-  content_id source_module_055a7e31483a209d
+  content_id source_module_f87f1dade0160020
   symbol_count 5
   symbols
     module audit 7 7

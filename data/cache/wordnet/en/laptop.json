@@ -1,0 +1,19 @@
+{
+  "lemma": "laptop",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-03648120-n",
+      "partOfSpeech": "n",
+      "definition": "a portable computer small enough to use in your lap",
+      "synonyms": [
+        "laptop computer"
+      ]
+    }
+  ]
+}

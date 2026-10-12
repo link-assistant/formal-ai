@@ -5,11 +5,11 @@
 
 use crate::engine::{ExecutionRecipe, ExecutionRecipeFile, SymbolicAnswer};
 use crate::event_log::EventLog;
-use crate::normal_markov::quoted_segment_spans;
 use crate::seed::{self, parser::parse_lino};
 
 const CONTRACTS: &str = include_str!("../../embedded/data/meta/stdout-program-contracts.lino");
 
+#[must_use]
 pub fn runtime_steps(language: &str) -> Option<String> {
     let root = parse_lino(CONTRACTS);
     let contract = root
@@ -18,48 +18,176 @@ pub fn runtime_steps(language: &str) -> Option<String> {
         .children
         .iter()
         .find(|node| node.name == "language" && node.id == language)?;
-    Some(contract.find_child_value("ci_setup").to_owned())
+    Some(crate::version_resolution::fill_workflow_versions(
+        contract.find_child_value("ci_setup"),
+        &crate::version_resolution::VersionSet::for_generation(),
+    ))
 }
 
-/// Read an explicitly quoted output operand in its own clause.
-fn explicit_stdout(prompt: &str) -> Option<String> {
-    let mut previous_end = 0;
-    let mut outputs = Vec::new();
-    for literal in quoted_segment_spans(prompt) {
-        let prefix = &prompt[previous_end..literal.start];
-        previous_end = literal.end;
-        let clause = prefix
-            .rsplit(['\n', '.', ';', '。'])
-            .next()
-            .unwrap_or(prefix);
-        if seed::lexicon()
-            .meaning("print_stdout")
-            .is_some_and(|meaning| meaning.evidenced_in(&clause.to_lowercase()))
-        {
-            outputs.push(literal.text);
-        }
-    }
+/// Read the request's explicitly quoted output operands.
+///
+/// The operands come from the obligation graph's clauses
+/// ([`crate::intent_formalization::bound_output_literals`]): a quoted value
+/// introduced by a print clause of its own obligation clause, each value
+/// once, in request order (R1166-3).
+#[must_use]
+pub fn explicit_stdout(prompt: &str) -> Option<String> {
+    let outputs = crate::intent_formalization::bound_output_literals(prompt);
     (!outputs.is_empty()).then(|| outputs.join("\n"))
 }
 
 /// A program authoring clause, excluding output literals and page navigation.
 fn program_language(prompt: &str) -> Option<String> {
     let lexicon = seed::lexicon();
+    prompt
+        .lines()
+        .find_map(|line| {
+            let outside = crate::solver_handlers::text_outside_quoted_segments(line);
+            let normalized = crate::engine::normalize_prompt(&outside);
+            (lexicon
+                .meaning("coding_request_program")
+                .is_some_and(|meaning| meaning.evidenced_in(&normalized))
+                && (lexicon.mentions_role(seed::ROLE_PROGRAM_REQUEST, &normalized)
+                    || lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized)))
+            .then(|| crate::implementation_language::requested(&normalized))
+            .flatten()
+        })
+        .or_else(|| named_source_language(prompt))
+        .or_else(|| unnamed_program_language(prompt))
+}
+
+/// The seed's `unnamed_language` when the request asks to write a program and
+/// to run it but names no language (PR #1188 dogfooding). The run is the
+/// agent's own obligation, so the program has to be written in something
+/// runnable; a request that only asks for a program still asks which
+/// language (issue #906).
+fn unnamed_program_language(prompt: &str) -> Option<String> {
+    let lexicon = seed::lexicon();
+    let outside = crate::solver_handlers::text_outside_quoted_segments(prompt);
+    let normalized = crate::engine::normalize_prompt(&outside);
+    let asks = lexicon
+        .meaning("coding_request_program")
+        .is_some_and(|meaning| meaning.evidenced_in(&normalized))
+        && (lexicon.mentions_role(seed::ROLE_PROGRAM_REQUEST, &normalized)
+            || lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized))
+        && lexicon.mentions_role(seed::ROLE_SOFTWARE_FOLLOWUP_EXECUTION, &normalized);
+    if !asks {
+        return None;
+    }
+    let root = parse_lino(CONTRACTS);
+    let language = root.children.first()?.find_child_value("unnamed_language");
+    (!language.is_empty()).then(|| language.to_owned())
+}
+
+/// A bare-word file path (`hello.py,` → `hello.py`), sentence marks peeled.
+fn source_path(token: &str) -> &str {
+    token
+        .trim_start_matches(['`', '"', '\'', '('])
+        .trim_end_matches(['`', '"', '\'', ',', ';', ':', '.', '!', '?', ')'])
+}
+
+/// The one relative source file with `extension` the request names, cued or
+/// not: in "Write a Python program hello.py that prints …" the noun before
+/// the path is no write cue, yet the path names the program's file the way
+/// [`named_source_language`] reads its language from it (PR #1188 T18).
+/// Two distinct such files name none.
+fn named_source_file(prompt: &str, extension: &str) -> Option<String> {
+    let outside = crate::solver_handlers::text_outside_quoted_segments(prompt);
+    let mut paths: Vec<&str> = outside
+        .split_whitespace()
+        .filter(|token| source_extension(token) == Some(extension))
+        .map(source_path)
+        .filter(|path| !path.starts_with('/') && !path.split('/').any(|part| part == ".."))
+        .collect();
+    paths.dedup();
+    match paths.as_slice() {
+        [path] => Some((*path).to_owned()),
+        _ => None,
+    }
+}
+
+/// A bare-word file's extension (`hello.py` → `py`), sentence marks peeled.
+fn source_extension(token: &str) -> Option<&str> {
+    let path = source_path(token);
+    let name = path.rsplit('/').next()?;
+    let (stem, extension) = name.rsplit_once('.')?;
+    (!stem.is_empty()
+        && !extension.is_empty()
+        && extension
+            .chars()
+            .all(|character| character.is_ascii_alphanumeric()))
+    .then_some(extension)
+}
+
+/// A line that asks for printed output and names exactly one source file whose
+/// extension is the saved-file extension of exactly one catalogued language
+/// (`hello.py` → python) is a program request in that language, the way a
+/// programmer reads the file name (PR #1188 dogfooding). Only a line that asks
+/// to write or create one: `Change greet.py so it prints "Hi"` edits a file,
+/// it does not replace it.
+fn named_source_language(prompt: &str) -> Option<String> {
+    let lexicon = seed::lexicon();
     prompt.lines().find_map(|line| {
         let outside = crate::solver_handlers::text_outside_quoted_segments(line);
         let normalized = crate::engine::normalize_prompt(&outside);
-        (lexicon
-            .meaning("coding_request_program")
+        if !lexicon
+            .meaning("print_stdout")
             .is_some_and(|meaning| meaning.evidenced_in(&normalized))
-            && (lexicon.mentions_role(seed::ROLE_PROGRAM_REQUEST, &normalized)
-                || lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized)))
-        .then(|| crate::implementation_language::requested(&normalized))
-        .flatten()
+            || !lexicon.mentions_role(seed::ROLE_CODING_REQUEST_VERB, &normalized)
+        {
+            return None;
+        }
+        let mut slugs: Vec<&str> = outside
+            .split_whitespace()
+            .filter_map(source_extension)
+            .flat_map(|extension| {
+                crate::coding::catalog::PROGRAM_LANGUAGES
+                    .iter()
+                    .filter(move |language| {
+                        language.framework_of.is_none()
+                            && source_extension(&language.save_as) == Some(extension)
+                    })
+                    .map(|language| language.slug)
+            })
+            .collect();
+        slugs.sort_unstable();
+        slugs.dedup();
+        match slugs.as_slice() {
+            [slug] => Some((*slug).to_owned()),
+            _ => None,
+        }
     })
+}
+
+/// Whether every output the request binds is quoted in it.
+fn quotes_every_output(prompt: &str) -> bool {
+    let quoted: Vec<String> = crate::normal_markov::quoted_segment_spans(prompt)
+        .into_iter()
+        .map(|segment| segment.text)
+        .collect();
+    crate::intent_formalization::bound_output_literals(prompt)
+        .iter()
+        .all(|output| quoted.contains(output))
+}
+
+/// Whether the request asks for the program to be run, outside its quotes.
+fn asks_to_run(prompt: &str) -> bool {
+    let outside = crate::solver_handlers::text_outside_quoted_segments(prompt);
+    seed::lexicon().mentions_role(
+        seed::ROLE_SOFTWARE_FOLLOWUP_EXECUTION,
+        &crate::engine::normalize_prompt(&outside),
+    )
 }
 
 /// Build only the operation the request explicitly specifies. Other program
 /// behaviors continue through discovery/composition rather than being guessed.
+///
+/// An output read in the open, without quotes (PR #1188 T18), binds the
+/// contract only beside an obligation the agent itself discharges: a named
+/// source file or a run. Without one, "write a program in Rust that prints
+/// Hello, world!" is the catalog task the documentation route answers, the
+/// same program in every locale (issue #932) -- a verb-final request states
+/// no open output to bind at all.
 #[allow(
     clippy::literal_string_with_formatting_args,
     reason = "bind named operands in source-backed Links Notation templates"
@@ -68,11 +196,15 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let language = program_language(prompt)?;
     let output = explicit_stdout(prompt)?;
     let catalog = super::program_language_by_slug(&language)?;
-    let extension = std::path::Path::new(catalog.save_as)
+    let extension = std::path::Path::new(catalog.save_as.as_ref())
         .extension()?
         .to_str()?;
-    let path = crate::agentic_coding::general_planner::typed_write_target(prompt, extension)
-        .unwrap_or_else(|| catalog.save_as.to_owned());
+    let named_path = crate::agentic_coding::general_planner::typed_write_target(prompt, extension)
+        .or_else(|| named_source_file(prompt, extension));
+    if named_path.is_none() && !quotes_every_output(prompt) && !asks_to_run(prompt) {
+        return None;
+    }
+    let path = named_path.unwrap_or_else(|| catalog.save_as.to_string());
     let root = parse_lino(CONTRACTS);
     let contract = root
         .children
@@ -92,9 +224,10 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let mut commands: Vec<String> = catalog
         .execution
         .check_command
+        .as_deref()
         .into_iter()
-        .chain(std::iter::once(catalog.execution.run_command))
-        .map(|command| command.replace(catalog.save_as, &path))
+        .chain(std::iter::once(catalog.execution.run_command.as_ref()))
+        .map(|command| command.replace(catalog.save_as.as_ref(), &path))
         .collect();
     let comment = contract.find_child_value("comment");
     let source_url = contract.find_child_value("source");
@@ -119,6 +252,10 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     log.append("program_parameter:language", language.clone());
     log.append("program_parameter:expected_stdout", output.clone());
     log.append("knowledge_source_url", source_url.to_owned());
+    // R1166-3/R1166-4: clauses the obligation graph cannot read, and output
+    // literals it demands but the binding above does not carry, are reported
+    // in the run's derivation, never dropped.
+    crate::intent_formalization::record_obligation_gaps(prompt, log);
     let mut answer = crate::solver_handlers::finalize_simple(
         prompt,
         log,
@@ -188,4 +325,82 @@ fn string_literal(value: &str, extra_escapes: &str, unicode_escape: &str) -> Str
     }
     out.push('"');
     out
+}
+
+/// The command that calls the function `source` defines with `arguments` and
+/// prints its result.
+///
+/// It is built from the language's `definition` and `call` contract
+/// templates (PR #1188 dogfooding: "… in add.py and run it with 2 and 3").
+/// `None` when the language has no call template, no definition matches, or
+/// the argument count is not the parameter count.
+#[must_use]
+#[allow(
+    clippy::literal_string_with_formatting_args,
+    reason = "bind named operands in source-backed Links Notation templates"
+)]
+pub fn function_call_command(
+    language: &str,
+    path: &str,
+    source: &str,
+    arguments: &[String],
+) -> Option<String> {
+    if arguments.is_empty() {
+        return None;
+    }
+    let root = parse_lino(CONTRACTS);
+    let contract = root
+        .children
+        .first()?
+        .children
+        .iter()
+        .find(|node| node.name == "language" && node.id == language)?;
+    let call = contract.find_child_value("call");
+    let (name, parameters) = defined_function(source, contract.find_child_value("definition"))?;
+    if call.is_empty() || parameters != arguments.len() {
+        return None;
+    }
+    let module = path
+        .rsplit_once('.')
+        .filter(|(_, extension)| !extension.is_empty() && !extension.contains('/'))
+        .map_or(path, |(stem, _)| stem)
+        .replace('/', ".");
+    Some(
+        call.replace("{module}", &module)
+            .replace("{name}", &name)
+            .replace("{arguments}", &arguments.join(", ")),
+    )
+}
+
+/// The name and parameter count of the first definition `template` matches.
+#[allow(
+    clippy::literal_string_with_formatting_args,
+    reason = "the definition template's named slots"
+)]
+fn defined_function(source: &str, template: &str) -> Option<(String, usize)> {
+    let (prefix, after_name) = template.split_once("{name}")?;
+    let (middle, suffix) = after_name.split_once("{parameters}")?;
+    if prefix.is_empty() || middle.is_empty() {
+        return None;
+    }
+    source.lines().find_map(|raw| {
+        let rest = raw.trim_start().strip_prefix(prefix)?;
+        let at = rest.find(middle).filter(|at| *at > 0)?;
+        let name = &rest[..at];
+        let tail = &rest[at + middle.len()..];
+        let end = tail.rfind(suffix)?;
+        let mut characters = name.chars();
+        let identifier = characters
+            .next()
+            .is_some_and(|first| first.is_ascii_alphabetic() || first == '_')
+            && characters.all(|character| character.is_ascii_alphanumeric() || character == '_');
+        identifier.then(|| {
+            let parameters = tail[..end]
+                .split(',')
+                .map(|part| part.split([':', '=']).next().unwrap_or_default().trim())
+                .filter(|part| !part.is_empty())
+                .count();
+            (name.to_owned(), parameters)
+        })
+    })
 }

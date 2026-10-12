@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "雨"
+        },
+        "es": {
+          "language": "es",
+          "value": "lluvia"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "自然降水現象"
+        },
+        "es": {
+          "language": "es",
+          "value": "tipo de precipitación en la que gotas de agua líquida caen hacia la superficie de la tierra"
         }
       },
       "aliases": {

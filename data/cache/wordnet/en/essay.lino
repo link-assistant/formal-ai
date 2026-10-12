@@ -1,0 +1,27 @@
+language en
+lemma essay
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an analytic or interpretive literary composition"
+    id oewn-06421205-n
+    partOfSpeech n
+  entry
+    definition "a tentative attempt"
+    id oewn-00788872-n
+    partOfSpeech n
+  entry
+    definition "make an effort or attempt"
+    examples ("He tried to shake off his fears" "The infant had essayed a few wobbly steps" "The police attempted to stop the thief" "He sought to improve himself" "She always seeks to do good in the world")
+    id oewn-02535833-v
+    partOfSpeech v
+    synonyms (try seek attempt assay)
+  entry
+    definition "put to the test, as for its quality, or give experimental use to"
+    examples ("This approach has been tried with good results" "Test this recipe")
+    id oewn-02537291-v
+    partOfSpeech v
+    synonyms (test prove try "try out" examine)
+source "oewn:2024"

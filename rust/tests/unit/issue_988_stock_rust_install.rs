@@ -108,8 +108,8 @@ fn same_task_agent_cli_authorship_is_preserved() {
     // Towncrier removes the source fragment after publishing it. Compare the
     // authored artifact with its durable destination so release commits keep
     // the provenance check valid.
-    let canonical = fs::read_to_string(root.join("CHANGELOG.md"))
-        .expect("the canonical changelog should be readable");
+    // CHANGELOG.md and the archive its older releases roll into.
+    let canonical = crate::assembled_docs::changelog_at(&root);
     assert!(canonical.contains(generated.trim()));
 
     let evidence = root.join("docs/case-studies/issue-988/self-hosting-authorship");

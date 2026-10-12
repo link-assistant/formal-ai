@@ -119,3 +119,103 @@ multilingual_responses
     intent concept_lookup_disabled
     language es
     text "No se consultó la fuente {source} porque la opción {settings_key} está desactivada."
+  response response_word_definition_answer_en
+    intent word_definition_answer
+    language en
+    text "{term}, as {source} defines it:\n{senses}Source: {url} (sha256 {sha256}; {license})"
+  response response_word_definition_answer_ru
+    intent word_definition_answer
+    language ru
+    text "{term} — значения по словарю {source}:\n{senses}Источник: {url} (sha256 {sha256}; {license})"
+  response response_word_definition_answer_hi
+    intent word_definition_answer
+    language hi
+    text "{term} — {source} के अनुसार अर्थ:\n{senses}स्रोत: {url} (sha256 {sha256}; {license})"
+  response response_word_definition_answer_zh
+    intent word_definition_answer
+    language zh
+    text "{term}——{source}的释义：\n{senses}来源：{url}（sha256 {sha256}；{license}）"
+  response response_word_definition_answer_es
+    intent word_definition_answer
+    language es
+    text "{term}, según {source}:\n{senses}Fuente: {url} (sha256 {sha256}; {license})"
+  response response_word_definition_sense_en
+    intent word_definition_sense
+    language en
+    text "  {n}. {pos}{gloss}\n"
+  response response_word_definition_sense_ru
+    intent word_definition_sense
+    language ru
+    text "  {n}. {pos}{gloss}\n"
+  response response_word_definition_sense_hi
+    intent word_definition_sense
+    language hi
+    text "  {n}. {pos}{gloss}\n"
+  response response_word_definition_sense_zh
+    intent word_definition_sense
+    language zh
+    text "  {n}. {pos}{gloss}\n"
+  response response_word_definition_sense_es
+    intent word_definition_sense
+    language es
+    text "  {n}. {pos}{gloss}\n"
+  response source-qualified-definition-answer-en
+    intent source-qualified-definition-answer
+    language en
+    text "{term} — {source} ({kind}):\n{senses}Source: {url} (sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url})"
+  response source-qualified-definition-unresolved-en
+    intent source-qualified-definition-unresolved
+    language en
+    text "No verified definition of {term} from {source}: {status}."
+  response source-qualified-definition-answer-ru
+    intent source-qualified-definition-answer
+    language ru
+    text "{term} — {source} ({kind}):\n{senses}Источник: {url} (sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url})"
+  response source-qualified-definition-unresolved-ru
+    intent source-qualified-definition-unresolved
+    language ru
+    text "Нет проверенного определения {term} из {source}: {status}."
+  response source-qualified-definition-answer-es
+    intent source-qualified-definition-answer
+    language es
+    text "{term} — {source} ({kind}):\n{senses}Fuente: {url} (sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url})"
+  response source-qualified-definition-unresolved-es
+    intent source-qualified-definition-unresolved
+    language es
+    text "No hay definición verificada de {term} de {source}: {status}."
+  response source-qualified-definition-answer-hi
+    intent source-qualified-definition-answer
+    language hi
+    text "{term} — {source} ({kind}):\n{senses}स्रोत: {url} (sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url})"
+  response source-qualified-definition-unresolved-hi
+    intent source-qualified-definition-unresolved
+    language hi
+    text "{source} से {term} की सत्यापित परिभाषा उपलब्ध नहीं: {status}।"
+  response source-qualified-definition-answer-zh
+    intent source-qualified-definition-answer
+    language zh
+    text "{term} — {source}（{kind}）：\n{senses}来源：{url}（sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url}）"
+  response source-qualified-definition-unresolved-zh
+    intent source-qualified-definition-unresolved
+    language zh
+    text "没有{source}对{term}的已验证定义：{status}。"
+  response source-capture-offline-cache-miss-en
+    intent source-capture-offline-cache-miss
+    language en
+    text "no cached capture for {url}"
+  response source-capture-offline-cache-miss-ru
+    intent source-capture-offline-cache-miss
+    language ru
+    text "нет сохранённой копии источника для {url}"
+  response source-capture-offline-cache-miss-hi
+    intent source-capture-offline-cache-miss
+    language hi
+    text "कैश में {url} की कोई प्रति नहीं है"
+  response source-capture-offline-cache-miss-zh
+    intent source-capture-offline-cache-miss
+    language zh
+    text "缓存中没有 {url} 的来源副本"
+  response source-capture-offline-cache-miss-es
+    intent source-capture-offline-cache-miss
+    language es
+    text "no hay una captura en caché para {url}"

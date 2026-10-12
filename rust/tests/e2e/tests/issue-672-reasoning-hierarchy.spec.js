@@ -18,6 +18,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
 const SCREENSHOT_DIR = path.resolve(__dirname, '../../../..', 'docs/screenshots/issue-672');
@@ -53,9 +54,7 @@ async function seed(page, preferences) {
   );
   await page.goto('./');
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 10_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function send(page, text) {

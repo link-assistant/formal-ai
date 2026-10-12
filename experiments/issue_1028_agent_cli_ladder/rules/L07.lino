@@ -1,8 +1,8 @@
 link_edit
   leaf L07
-  path rust/src/engine_responses.rs
-  language rust
-  rule insert_member
-    list "GREETING_EXAMPLES"
-    member "Good morning"
-  expect "Good morning"
+  path data/seed/meanings-conversation.lino
+  language lino
+  rule replace_literal
+    old "good evening"
+    new "good day"
+  expect "good day"

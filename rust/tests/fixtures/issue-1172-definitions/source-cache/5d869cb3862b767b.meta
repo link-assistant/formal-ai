@@ -1,0 +1,4 @@
+source-capture-v2
+url=https://es.wiktionary.org/w/api.php?action=query&format=json&prop=extracts&explaintext=1&titles=ef%C3%ADmero
+fetched_at=1791388204
+sha256=aa9f241595cf51db321c57664b5e41013cd6ebb3bd502651353f74bae5942ae3

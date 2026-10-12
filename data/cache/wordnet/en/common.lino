@@ -1,0 +1,64 @@
+language en
+lemma common
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "belonging to or participated in by a community as a whole; public"
+    examples ("for the common good" "common lands are set aside for use by all members of a community")
+    id oewn-00494722-a
+    partOfSpeech a
+  entry
+    definition "having no special distinction or quality; widely known or commonly encountered; average or ordinary or usual"
+    examples ("the common man" "a common sailor" "the common cold" "a common nuisance" "followed common procedure" "it is common knowledge that she lives alone" "the common housefly" "a common brand of soap")
+    id oewn-00487699-a
+    partOfSpeech a
+  entry
+    definition "a piece of open land for recreational use in an urban area"
+    examples ("they went for a walk in the park")
+    id oewn-08632949-n
+    partOfSpeech n
+    synonyms (park commons green)
+  entry
+    definition "common to or shared by two or more parties"
+    examples ("a common friend" "the mutual interests of management and labor")
+    id oewn-02159888-s
+    partOfSpeech s
+    synonyms (mutual)
+  entry
+    definition "commonly encountered"
+    examples ("a common (or familiar) complaint" "the usual greeting")
+    id oewn-00973799-s
+    partOfSpeech s
+    synonyms (usual)
+  entry
+    definition "being or characteristic of or appropriate to everyday language"
+    examples ("common parlance" "a vernacular term" "vernacular speakers" "the vulgar tongue of the masses" "the technical and vulgar names for an animal species")
+    id oewn-01049925-s
+    partOfSpeech s
+    synonyms (vernacular vulgar)
+  entry
+    definition "of or associated with the great masses of people"
+    examples ("the common people in those days suffered greatly" "behavior that branded him as common" "his square plebeian nose" "a vulgar and objectionable person" "the unwashed masses")
+    id oewn-01597504-s
+    partOfSpeech s
+    synonyms (plebeian vulgar unwashed)
+  entry
+    definition "of low or inferior quality or value"
+    examples ("of what coarse metal ye are molded" "produced … the common cloths used by the poorer population")
+    id oewn-02355096-s
+    partOfSpeech s
+    synonyms (coarse)
+  entry
+    definition "lacking refinement or cultivation or taste"
+    examples ("he had coarse manners but a first-rate mind" "behavior that branded him as common" "an untutored and uncouth human being" "an uncouth soldier — a real tough guy" "appealing to the vulgar taste for violence" "the vulgar display of the newly rich")
+    id oewn-01957020-s
+    partOfSpeech s
+    synonyms (coarse rough-cut uncouth vulgar)
+  entry
+    definition "to be expected; standard"
+    examples ("common decency")
+    id oewn-01678370-s
+    partOfSpeech s
+source "oewn:2024"

@@ -1,0 +1,6 @@
+{
+  "id": "T2356",
+  "dir": "/private/tmp/formal-ai-only-1188/multiple-artifacts-p90zfu",
+  "prompt": "Two files. First, create file notes/attribution.md containing Gemfile.lock. Second, create file changelog/fragment.md containing bump patch.",
+  "steps": 8
+}

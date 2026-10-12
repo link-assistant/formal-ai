@@ -1,0 +1,28 @@
+language en
+lemma above
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "an earlier section of a written text"
+    examples ("for instructions, refer to the above")
+    id oewn-06404303-n
+    partOfSpeech n
+  entry
+    definition "(in writing) at an earlier place"
+    examples ("see above")
+    id oewn-00080266-r
+    partOfSpeech r
+    synonyms (supra)
+  entry
+    definition "in or to a place that is higher"
+    id oewn-00080519-r
+    partOfSpeech r
+    synonyms ("higher up" "in a higher place" "to a higher place")
+  entry
+    definition "appearing earlier in the same text"
+    examples ("flaws in the above interpretation")
+    id oewn-00126865-s
+    partOfSpeech s
+source "oewn:2024"

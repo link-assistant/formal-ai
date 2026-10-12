@@ -1,0 +1,9 @@
+view
+  id M-b49b9311f1ed
+  lemma workflow
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "progress (or rate of progress) in work being done"
+    provenance (wordnet)

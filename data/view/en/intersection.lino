@@ -1,0 +1,29 @@
+view
+  id M-73da8893a967
+  lemma intersection
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a point where lines intersect"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a junction where one street or road crosses another"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a point or set of points common to two or more geometric configurations"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the set of elements common to two or more sets"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a representation of common ground between theories or phenomena"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of intersecting (as joining by causing your path to intersect your target's path)"
+    provenance (wordnet)

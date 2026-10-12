@@ -1,0 +1,36 @@
+{
+  "id": "T3547",
+  "dir": "/private/tmp/formal-ai-only-1188/contextual-asset-resolver-phase/production-original-retry",
+  "prompt": "Implement a reusable observed text-asset resolver in contextual_asset_resolver.mjs, with independently meaningful closest tests. Read proposal.json and the observed Rust projection/translation sources first. Support only ReuseExistingAsset initially: an explicit default import with exactly type=text, actual source and asset identities, explicit destination context, permitted root ownership and target-relative existing asset path. Preserve unknown effects, reject context-free imports, missing or drifted source/assets, duplicate/unknown/nontext attributes, escaping or outside-root symlinks and ambiguous bindings before writing target artifacts. Prove moved destinations, aliases, Unicode paths and exact content with actual selected fixtures; no Transport implementation, invented asset or emitted Rust wrapper. This is selected-file scratch only; production sources/seed/ratchets and native compilation are out of scope. Report precise MissingContract gaps if source-backed implementation is unsupported.",
+  "unchangedOriginal": "T3517",
+  "promptByteIdentical": true,
+  "taskUtf8Bytes": 1011,
+  "sourcePreimages": [
+    {
+      "path": "proposal.json",
+      "sha256": "158b672509511355fe3f75c8c99d840f76560d4e16e9ae29c4344136de70c4e3"
+    },
+    {
+      "path": "observed/rust_projection.rs",
+      "sha256": "523fb572010132fce32f375dfc047fec06757971c37aef1664fc99a915956c77"
+    },
+    {
+      "path": "observed/meta_translate.rs",
+      "sha256": "8f71b98a8be1c68e0b415f9bfd86e3c184cc0d9e2d960e4ce59e8b90e4807f37"
+    },
+    {
+      "path": "observed/translate_write.rs",
+      "sha256": "2202facaa742c9b80cb0588664325c4274f6bf8d7b9a1a38c186a0bdece8b3cd"
+    },
+    {
+      "path": "fixture/js/app/application-constants.js",
+      "sha256": "9274511f512f21dad8322407be6890e85caca8b7f239f140f635e5941a007dd5"
+    },
+    {
+      "path": "fixture/js/app/example-prompts.lino",
+      "sha256": "6b49f31276455cce57aae4104261c05b56e30ff468743f77a4687e05d081f136"
+    }
+  ],
+  "targetInitiallyAbsent": true,
+  "runtime": "Fresh ordinary WorkerHost/canonical production planner; no loader override or in-memory function replacement"
+}

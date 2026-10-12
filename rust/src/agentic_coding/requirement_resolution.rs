@@ -31,9 +31,95 @@ pub fn resolve_requirement_target(requirement: &str) -> Option<RequirementTarget
 /// `static` whose identifier words (singularised) all occur in the requirement
 /// wins, longest identifier first. A tie between modules is broken by the
 /// module path words the requirement mentions; a remaining tie is ambiguity and
-/// resolves to nothing rather than to a guess.
+/// resolves to nothing rather than to a guess. When identifier words do not bind,
+/// an actual canonical seed surface and its semantic role can bind its declared owner.
 #[must_use]
 pub fn resolve_in(census: &WorkspaceCensus, requirement: &str) -> Option<RequirementTarget> {
+    let modules = explicit_module_scope(census, requirement)?;
+    if modules.is_empty() {
+        resolve_scoped(census, requirement)
+    } else {
+        let scoped = WorkspaceCensus { modules };
+        resolve_scoped(&scoped, requirement)
+            .or_else(|| resolve_scoped_literal(&scoped, requirement))
+    }
+}
+
+/// Resolve an unnamed scalar initializer only within an explicit source scope.
+fn resolve_scoped_literal(
+    census: &WorkspaceCensus,
+    requirement: &str,
+) -> Option<RequirementTarget> {
+    let (_, old, _) = super::write_request::compose_edit_clauses(requirement)?.edit;
+    let module = census.modules.first()?;
+    let candidates: Vec<_> = module
+        .symbols
+        .iter()
+        .filter(|symbol| {
+            if symbol.kind != "const" && symbol.kind != "static" {
+                return false;
+            }
+            let declaration: String = module
+                .source()
+                .split_inclusive('\n')
+                .skip(symbol.start_line.saturating_sub(1))
+                .take(symbol.end_line.saturating_sub(symbol.start_line) + 1)
+                .collect();
+            let Some((_, initializer)) = declaration.split_once('=') else {
+                return false;
+            };
+            let initializer = initializer.trim();
+            let segments = crate::normal_markov::quoted_segment_spans(initializer);
+            let [segment] = segments.as_slice() else {
+                return false;
+            };
+            initializer.starts_with('"')
+                && segment.start == 0
+                && initializer[segment.end..].trim() == ";"
+                && segment.text == old
+        })
+        .collect();
+    if let [symbol] = candidates.as_slice() {
+        Some(target(module, symbol))
+    } else {
+        None
+    }
+}
+
+/// Bind exact observed module paths before declaration ranking.
+fn explicit_module_scope(census: &WorkspaceCensus, requirement: &str) -> Option<Vec<ModuleCensus>> {
+    let references: Vec<_> = requirement
+        .split(|character: char| {
+            !character.is_alphanumeric() && !matches!(character, '_' | '.' | '/' | '-')
+        })
+        .map(|token| token.trim_end_matches('.'))
+        .filter(|token| {
+            token.contains('/')
+                && std::path::Path::new(token)
+                    .extension()
+                    .is_some_and(|extension| extension == "rs")
+        })
+        .collect();
+    let mut selected = Vec::new();
+    for reference in references {
+        let relative = reference.strip_prefix("./").unwrap_or(reference);
+        let path = relative.strip_prefix("rust/").unwrap_or(relative);
+        if path.split('/').any(|part| matches!(part, "." | "..")) {
+            return None;
+        }
+        let module = census.module(path)?;
+        if selected
+            .iter()
+            .all(|candidate: &ModuleCensus| candidate.path != module.path)
+        {
+            selected.push(module.clone());
+        }
+    }
+    (selected.len() <= 1).then_some(selected)
+}
+
+/// Rank declarations only within the observed module scope.
+fn resolve_scoped(census: &WorkspaceCensus, requirement: &str) -> Option<RequirementTarget> {
     let tokens = tokens_of(requirement);
     for token in &tokens {
         if !looks_like_declared_name(token) {
@@ -80,9 +166,102 @@ pub fn resolve_in(census: &WorkspaceCensus, requirement: &str) -> Option<Require
         }
     }
     if best.is_empty() {
-        return None;
+        let sources: Vec<_> = crate::seed::seed_files()
+            .into_iter()
+            .filter(|(_, text)| crate::seed::MEANING_FILES.contains(text))
+            .collect();
+        return resolve_seed_target(census, requirement, &sources);
     }
     unique(&best, &tokens)
+}
+
+/// Bind a concrete canonical surface and semantic role to a declared seed constant.
+///
+/// Constant spelling follows the seed registry generator. No seed is privileged;
+/// equally supported distinct targets remain unresolved.
+#[must_use]
+pub fn resolve_seed_target(
+    census: &WorkspaceCensus,
+    requirement: &str,
+    sources: &[(&str, &str)],
+) -> Option<RequirementTarget> {
+    let tokens: Vec<_> = tokens_of(requirement)
+        .into_iter()
+        .map(|word| word.to_lowercase())
+        .collect();
+    let role_words: Vec<_> = tokens.iter().map(|word| singular(word)).collect();
+    let mut best_length = 0;
+    let mut best: Vec<RequirementTarget> = Vec::new();
+    for (path, source) in sources {
+        let Some(stem) = path
+            .rsplit('/')
+            .next()
+            .and_then(|name| name.strip_suffix(".lino"))
+        else {
+            continue;
+        };
+        if stem.is_empty()
+            || !stem.chars().all(|character| {
+                character.is_ascii_alphanumeric() || matches!(character, '_' | '-')
+            })
+        {
+            continue;
+        }
+        let name = format!("{}_LINO", stem.to_ascii_uppercase().replace('-', "_"));
+        let candidates: Vec<_> = census
+            .modules_declaring(&name)
+            .into_iter()
+            .filter_map(|module| module.symbol(&name).map(|symbol| (module, symbol)))
+            .filter(|(_, symbol)| matches!(symbol.kind.as_str(), "const" | "static"))
+            .collect();
+        if candidates.is_empty() {
+            continue;
+        }
+        for meaning in crate::seed::parse_lexicon_text(source).meanings {
+            for surface in meaning.words() {
+                if surface.contains('…') {
+                    continue;
+                }
+                let parts: Vec<_> = tokens_of(surface)
+                    .into_iter()
+                    .map(|word| word.to_lowercase())
+                    .collect();
+                // A role must have independent request evidence outside the matched surface.
+                if parts.is_empty()
+                    || !tokens
+                        .windows(parts.len())
+                        .enumerate()
+                        .any(|(start, window)| {
+                            window == parts
+                                && meaning.roles.iter().any(|role| {
+                                    role.split(['_', '-']).any(|part| {
+                                        let part = singular(&part.to_lowercase());
+                                        role_words.iter().enumerate().any(|(index, word)| {
+                                            (index < start || index >= start + parts.len())
+                                                && *word == part
+                                        })
+                                    })
+                                })
+                        })
+                {
+                    continue;
+                }
+                if parts.len() > best_length {
+                    best_length = parts.len();
+                    best.clear();
+                }
+                if parts.len() == best_length {
+                    for (module, symbol) in &candidates {
+                        let candidate = target(module, symbol);
+                        if !best.contains(&candidate) {
+                            best.push(candidate);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if best.len() == 1 { best.pop() } else { None }
 }
 
 fn unique(

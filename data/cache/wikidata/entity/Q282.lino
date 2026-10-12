@@ -3,11 +3,13 @@ Q282
     en (vino)
   descriptions
     en "alcoholic drink typically made from grapes through the fermentation process"
+    es "bebida alcohólica hecha de jugo de uva fermentada"
     ru "алкогольный напиток"
     zh "以葡萄為原材料釀造的酒"
   id Q282
   labels
     en wine
+    es vino
     hi "शराब"
     ru "вино"
     zh "葡萄酒"

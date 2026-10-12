@@ -21,7 +21,7 @@ and writes them, sorted, to `data/seed/roles.lino`. The matching CI tests in
 The transform is deterministic and idempotent: re-running it reproduces the
 file byte-for-byte. Run with `python3 scripts/generate-role-registry.py`.
 """
-import glob
+import argparse
 import os
 import re
 import sys
@@ -44,9 +44,29 @@ def strip_comment(stripped):
     return stripped
 
 
+def meaning_files(root):
+    """Return the seed files the lexicon loads: `MEANING_FILES` in the registry.
+
+    The constant lists `*_LINO` names; each is bound to its file by an
+    `include_str!` of the embedded mirror, whose data/seed twin is read here.
+    """
+    registry = os.path.join(root, "rust/src/seed/embedded_registry.rs")
+    with open(registry, encoding="utf-8") as fh:
+        source = fh.read()
+    paths = dict(
+        re.findall(
+            r'pub const (\w+): &str =\s*include_str!\("\.\./\.\./embedded/(data/seed/[^"]+)"\)',
+            source,
+        )
+    )
+    block = source.split("pub const MEANING_FILES: &[&str] = &[", 1)[1].split("];", 1)[0]
+    names = re.findall(r"\b(\w+_LINO)\b", block)
+    return sorted(os.path.join(root, paths[name]) for name in names)
+
+
 def collect(root):
     """Return (defined_meaning_slugs, distinct_role_values)."""
-    files = sorted(glob.glob(os.path.join(root, "data/seed/meanings*.lino")))
+    files = meaning_files(root)
     defined = set()
     roles = set()
     for path in files:
@@ -98,16 +118,31 @@ def render(defined, roles):
 
 
 def main():
-    root = sys.argv[1] if len(sys.argv) > 1 else REPO_ROOT
-    defined, roles = collect(root)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("root", nargs="?", default=REPO_ROOT)
+    parser.add_argument("--check", action="store_true", help="Compare without changing any bytes")
+    parser.add_argument("--output", help="Explicit generated projection destination")
+    arguments = parser.parse_args()
+    defined, roles = collect(arguments.root)
     text = render(defined, roles)
-    target = os.path.join(root, "data/seed/roles.lino")
-    with open(target, "w", encoding="utf-8") as fh:
-        fh.write(text)
+    target = arguments.output or os.path.join(arguments.root, "data/seed/roles.lino")
+    if arguments.check:
+        try:
+            with open(target, encoding="utf-8") as fh:
+                actual = fh.read()
+        except FileNotFoundError:
+            actual = None
+        if actual != text:
+            print(f"role registry differs: {target}", file=sys.stderr)
+            return 1
+    else:
+        with open(target, "w", encoding="utf-8") as fh:
+            fh.write(text)
     both = sum(1 for r in roles if r in defined)
     print(f"roles: {len(roles)} ({both} also meanings, {len(roles) - both} predicate-only)")
-    print(f"wrote {target}")
+    print(f"{'checked' if arguments.check else 'wrote'} {target}")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

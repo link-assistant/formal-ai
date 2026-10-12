@@ -1,0 +1,55 @@
+ INFO zizmor: 🌈 zizmor v1.30.0
+ INFO audit: zizmor: 🌈 completed .github/workflows/release-staged.yml
+help[self-repository]: use GitHub's dedicated self-repository syntax
+   --> .github/workflows/release-staged.yml:544:15
+    |
+538 |       - name: Set up Docker Buildx
+    |         -------------------------- this step
+...
+544 |         uses: ./.github/actions/setup-buildx-resilient
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use '$/...' instead of './...'
+    |
+    = note: audit confidence → High
+    = note: this finding has an auto-fix
+    = help: audit documentation → https://docs.zizmor.sh/audits/#self-repository
+
+help[self-repository]: use GitHub's dedicated self-repository syntax
+   --> .github/workflows/release-staged.yml:583:15
+    |
+576 |       - name: Publish and verify the slim GHCR sidecar
+    |         ---------------------------------------------- this step
+...
+583 |         uses: ./.github/actions/publish-slim-image
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use '$/...' instead of './...'
+    |
+    = note: audit confidence → High
+    = note: this finding has an auto-fix
+    = help: audit documentation → https://docs.zizmor.sh/audits/#self-repository
+
+help[self-repository]: use GitHub's dedicated self-repository syntax
+    --> .github/workflows/release-staged.yml:1227:15
+     |
+1222 |       - name: Set up Docker Buildx
+     |         -------------------------- this step
+...
+1227 |         uses: ./.github/actions/setup-buildx-resilient
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use '$/...' instead of './...'
+     |
+     = note: audit confidence → High
+     = note: this finding has an auto-fix
+     = help: audit documentation → https://docs.zizmor.sh/audits/#self-repository
+
+help[self-repository]: use GitHub's dedicated self-repository syntax
+    --> .github/workflows/release-staged.yml:1263:15
+     |
+1257 |       - name: Publish and verify the slim GHCR sidecar
+     |         ---------------------------------------------- this step
+...
+1263 |         uses: ./.github/actions/publish-slim-image
+     |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ use '$/...' instead of './...'
+     |
+     = note: audit confidence → High
+     = note: this finding has an auto-fix
+     = help: audit documentation → https://docs.zizmor.sh/audits/#self-repository
+
+47 findings (21 ignored, 22 suppressed, 4 safe fixes): 0 informational, 4 low, 0 medium, 0 high

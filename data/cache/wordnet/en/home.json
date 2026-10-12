@@ -1,0 +1,193 @@
+{
+  "lemma": "home",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01222498-a",
+      "partOfSpeech": "a",
+      "definition": "used of your own ground",
+      "examples": [
+        "a home game"
+      ]
+    },
+    {
+      "id": "oewn-02753598-a",
+      "partOfSpeech": "a",
+      "definition": "relating to or being where one lives or where one's roots are",
+      "examples": [
+        "my home town"
+      ]
+    },
+    {
+      "id": "oewn-08577045-n",
+      "partOfSpeech": "n",
+      "definition": "where you live at a particular time",
+      "examples": [
+        "deliver the package to my home",
+        "he doesn't have a home to go to",
+        "your place or mine?"
+      ],
+      "synonyms": [
+        "place"
+      ]
+    },
+    {
+      "id": "oewn-03264208-n",
+      "partOfSpeech": "n",
+      "definition": "housing that someone is living in",
+      "examples": [
+        "he built a modest dwelling near the pond",
+        "they raise money to provide homes for the homeless"
+      ],
+      "synonyms": [
+        "dwelling",
+        "domicile",
+        "abode",
+        "habitation",
+        "dwelling house"
+      ]
+    },
+    {
+      "id": "oewn-08507209-n",
+      "partOfSpeech": "n",
+      "definition": "the country or state or city where you live",
+      "examples": [
+        "Canadian tariffs enabled United States lumber companies to raise prices at home",
+        "his home is New Jersey"
+      ]
+    },
+    {
+      "id": "oewn-03534081-n",
+      "partOfSpeech": "n",
+      "definition": "(baseball) base consisting of a rubber slab where the batter stands; it must be touched by a base runner in order to score",
+      "examples": [
+        "he ruled that the runner failed to touch home"
+      ],
+      "synonyms": [
+        "home plate",
+        "home base",
+        "plate"
+      ]
+    },
+    {
+      "id": "oewn-08507412-n",
+      "partOfSpeech": "n",
+      "definition": "the place where you are stationed and from which missions start and end",
+      "synonyms": [
+        "base"
+      ]
+    },
+    {
+      "id": "oewn-08602685-n",
+      "partOfSpeech": "n",
+      "definition": "place where something began and flourished",
+      "examples": [
+        "the United States is the home of basketball"
+      ]
+    },
+    {
+      "id": "oewn-14537296-n",
+      "partOfSpeech": "n",
+      "definition": "an environment offering affection and security",
+      "examples": [
+        "home is where the heart is",
+        "he grew up in a good Christian home",
+        "there's no place like home"
+      ]
+    },
+    {
+      "id": "oewn-08094856-n",
+      "partOfSpeech": "n",
+      "definition": "a social unit living together",
+      "examples": [
+        "he moved his family to Virginia",
+        "It was a good Christian household",
+        "I waited until the whole house was asleep",
+        "the teacher asked how many people made up his home",
+        "the family refused to accept his will"
+      ],
+      "synonyms": [
+        "family",
+        "household",
+        "house",
+        "menage"
+      ]
+    },
+    {
+      "id": "oewn-03533280-n",
+      "partOfSpeech": "n",
+      "definition": "an institution where people are cared for",
+      "examples": [
+        "a home for the elderly"
+      ],
+      "synonyms": [
+        "nursing home",
+        "rest home"
+      ]
+    },
+    {
+      "id": "oewn-00098390-r",
+      "partOfSpeech": "r",
+      "definition": "at or to or in the direction of one's home or family",
+      "examples": [
+        "He stays home on weekends",
+        "after the game the children brought friends home for supper",
+        "I'll be home tomorrow",
+        "came riding home in style",
+        "I hope you will come home for Christmas",
+        "I'll take her home",
+        "don't forget to write home"
+      ]
+    },
+    {
+      "id": "oewn-00099070-r",
+      "partOfSpeech": "r",
+      "definition": "on or to the point aimed at",
+      "examples": [
+        "the arrow struck home"
+      ]
+    },
+    {
+      "id": "oewn-00098930-r",
+      "partOfSpeech": "r",
+      "definition": "to the fullest extent; to the heart",
+      "examples": [
+        "drove the nail home",
+        "drove his point home",
+        "his comments hit home"
+      ]
+    },
+    {
+      "id": "oewn-01042014-s",
+      "partOfSpeech": "s",
+      "definition": "inside the country",
+      "examples": [
+        "the British Home Office has broader responsibilities than the United States Department of the Interior",
+        "the nation's internal politics"
+      ],
+      "synonyms": [
+        "interior",
+        "internal",
+        "national"
+      ]
+    },
+    {
+      "id": "oewn-02465056-v",
+      "partOfSpeech": "v",
+      "definition": "provide with, or send to, a home"
+    },
+    {
+      "id": "oewn-02009361-v",
+      "partOfSpeech": "v",
+      "definition": "return home accurately from a long distance",
+      "examples": [
+        "homing pigeons"
+      ]
+    }
+  ]
+}

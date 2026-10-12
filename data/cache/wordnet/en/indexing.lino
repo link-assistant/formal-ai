@@ -1,0 +1,11 @@
+language en
+lemma indexing
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of classifying and providing an index in order to make items easier to retrieve"
+    id oewn-01015098-n
+    partOfSpeech n
+source "oewn:2024"

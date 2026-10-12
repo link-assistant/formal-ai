@@ -1,0 +1,19 @@
+self_ast_census
+  target src/least_action.rs
+  language rust
+  fidelity signature
+  byte_len 8476
+  line_count 216
+  content_id source_module_9ee4532ebe7513b2
+  symbol_count 10
+  symbols
+    struct ActionCost 40 50
+    const ZERO 54 59
+    function is_less_action_than 64 72
+    struct Subtask 78 85
+    struct WorkPlan 94 109
+    function plan 126 153
+    function least_action_plan 161 173
+    struct SolutionCandidate 177 183
+    function rank_by_least_action 189 210
+    function least_action_solution 214 216

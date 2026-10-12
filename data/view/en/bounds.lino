@@ -1,0 +1,9 @@
+view
+  id M-719120bb3f6e
+  lemma bounds
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the line or plane indicating the limit or extent of something"
+    provenance (wordnet)

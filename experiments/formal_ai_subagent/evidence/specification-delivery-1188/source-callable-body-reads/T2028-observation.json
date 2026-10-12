@@ -1,0 +1,8 @@
+{
+  "taskId": "T2028",
+  "calls": [
+    "bash",
+    "write",
+    "bash"
+  ]
+}

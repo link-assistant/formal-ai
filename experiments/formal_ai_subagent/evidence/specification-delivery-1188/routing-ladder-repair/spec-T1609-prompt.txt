@@ -1,0 +1,1 @@
+Run node -e 'const fs=require("node:fs");const p="/private/tmp/formal-ai-pr1188-l07-replay/data/seed";fs.mkdirSync(p,{recursive:true});fs.copyFileSync("data/seed/meanings-conversation.lino",p+"/meanings-conversation.lino");'

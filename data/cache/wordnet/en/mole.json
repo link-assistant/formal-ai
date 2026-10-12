@@ -1,0 +1,56 @@
+{
+  "lemma": "mole",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13746191-n",
+      "partOfSpeech": "n",
+      "definition": "the molecular weight of a substance expressed in grams; the basic unit of amount of substance adopted under the Systeme International d'Unites",
+      "synonyms": [
+        "gram molecule",
+        "mol"
+      ]
+    },
+    {
+      "id": "oewn-07854527-n",
+      "partOfSpeech": "n",
+      "definition": "spicy sauce often containing chocolate"
+    },
+    {
+      "id": "oewn-09989722-n",
+      "partOfSpeech": "n",
+      "definition": "a spy who works against enemy espionage",
+      "synonyms": [
+        "counterspy"
+      ]
+    },
+    {
+      "id": "oewn-04701152-n",
+      "partOfSpeech": "n",
+      "definition": "a small congenital pigmented spot on the skin"
+    },
+    {
+      "id": "oewn-02897867-n",
+      "partOfSpeech": "n",
+      "definition": "a protective structure of stone or concrete; extends from shore into the water to prevent a beach from washing away",
+      "synonyms": [
+        "breakwater",
+        "groin",
+        "groyne",
+        "bulwark",
+        "seawall",
+        "jetty"
+      ]
+    },
+    {
+      "id": "oewn-01892161-n",
+      "partOfSpeech": "n",
+      "definition": "small velvety-furred burrowing mammal having small eyes and fossorial forefeet"
+    }
+  ]
+}

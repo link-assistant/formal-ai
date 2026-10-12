@@ -1,0 +1,22 @@
+{
+  "lemma": "serialize",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00279845-v",
+      "partOfSpeech": "v",
+      "definition": "arrange serially",
+      "examples": [
+        "Serialize the numbers"
+      ],
+      "synonyms": [
+        "serialise"
+      ]
+    }
+  ]
+}

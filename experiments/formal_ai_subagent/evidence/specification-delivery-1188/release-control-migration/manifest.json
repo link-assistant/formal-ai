@@ -1,0 +1,180 @@
+{
+  "kind": "OriginalReleaseOperationControlMigration",
+  "preimages": [
+    {
+      "path": "rust/tests/unit/ci-cd/release_recovery.rs",
+      "sha256": "08c2767f3a27bf08d860e5b5a6d0835bb104169fbe147a57a4c5c8100e5775fe"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_release_desktop.rs",
+      "sha256": "fd0ac8b26681f44833667d5217567547605eb6b8fcf719045eefccaf54b1ed23"
+    },
+    {
+      "path": "rust/tests/web/prepared-release-factory.test.mjs",
+      "sha256": "f394ab5dae9432e53afe4aaa353565ae8999afcbaf51e3a38cfd12ab807f4553"
+    }
+  ],
+  "originalObservations": [
+    {
+      "name": "new-failure-114030300740.log",
+      "bytes": 194769,
+      "sha256": "6a0623a3b97952a5efa59da20ddd741062dfc17a82313bc785b9b59b1d1323bd"
+    },
+    {
+      "name": "new-failure-114030300797.log",
+      "bytes": 158497,
+      "sha256": "cacda2caaf606e8e8823cd9525c5d1f72e07c8fe585d92f561925f38540e1969"
+    }
+  ],
+  "originalLogicalOperations": 7,
+  "originalRequiredAssets": [
+    "formal-ai-desktop-macos-arm64-${version}.dmg",
+    "formal-ai-desktop-macos-arm64-${version}.zip",
+    "formal-ai-desktop-macos-x64-${version}.dmg",
+    "formal-ai-desktop-macos-x64-${version}.zip",
+    "formal-ai-desktop-windows-installer-x64-${version}.exe",
+    "formal-ai-desktop-windows-installer-arm64-${version}.exe",
+    "formal-ai-desktop-windows-portable-x64-${version}.exe",
+    "formal-ai-desktop-windows-portable-arm64-${version}.exe",
+    "formal-ai-desktop-linux-x64-${version}.AppImage",
+    "formal-ai-desktop-linux-arm64-${version}.AppImage",
+    "formal-ai-desktop-linux-x64-${version}.deb",
+    "formal-ai-desktop-linux-arm64-${version}.deb",
+    "formal-ai-desktop-linux-x64-${version}.tar.gz",
+    "formal-ai-desktop-linux-arm64-${version}.tar.gz",
+    "latest.yml",
+    "latest-mac.yml",
+    "latest-linux.yml"
+  ],
+  "originalMinimumAssetCount": 17,
+  "installed": [
+    {
+      "path": "rust/tests/unit/ci-cd/release_recovery.rs",
+      "bytes": 6112,
+      "sha256": "8ec72d9093aa5ea0724c5fe8ad541e8a5074450aff7e320434b81cda2e419323"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_release_desktop.rs",
+      "bytes": 13434,
+      "sha256": "3a006a0606b95d6ca6701399741d472173f3abdb50d5554a3bbd2e7413e4b78d"
+    },
+    {
+      "path": "rust/tests/web/prepared-release-factory.test.mjs",
+      "bytes": 19700,
+      "sha256": "227967df84923c004bcc3b677bcbc72fec67f6edf26ea69c2fb55d36695c38f6"
+    },
+    {
+      "path": "rust/tests/web/release-workflow-operation-controls.test.mjs",
+      "bytes": 9411,
+      "sha256": "e1318054c453e911a74b4f7727e30e4f8d90956e7d8da1635467bf439e32d385"
+    },
+    {
+      "path": "changelog.d/1188-release-workflow-operation-controls.md",
+      "bytes": 371,
+      "sha256": "ad64a9be3ea6a5cdad1aed0d92bd45ffc5f275d4821e8544481bc02de3d33827"
+    }
+  ],
+  "autonomousCredit": 0,
+  "nativeCompilation": false,
+  "livePublication": false,
+  "U9": "Open",
+  "observationFailures": [
+    {
+      "task": "T4218",
+      "status": 1,
+      "description": "combined scratch45s observation interrupted; fullraw/partiallog retained; no completed suite claim"
+    },
+    {
+      "task": "T4219",
+      "status": 7,
+      "error": "spawnSync node ETIMEDOUT",
+      "description": "factory45s observation interrupted; fullraw/partiallog retained; original18cases subsequently covered disjoint6x3"
+    }
+  ],
+  "controls": {
+    "actualPassed": 55,
+    "operations": 22,
+    "originalFactoryCases": 18,
+    "factorySelectedCaseNames": [
+      "Docker Hub canonical digest spelling accepts configured docker.io alias without another build",
+      "a mirror cannot substitute the source repository or independent source selection in its full-image receipt",
+      "actual Node Docker stand-in builds prebuilt once, preserves immutable full observations and mirrors without compilation",
+      "actual Node producer binds the single existing build and source under push",
+      "actual Node producer binds the single existing build and source under workflow_dispatch",
+      "actual controlled build-failed cannot produce a completed build receipt",
+      "actual controlled source-mutated cannot produce a completed build receipt",
+      "actual docker-failed observation cannot certify an image publication",
+      "actual runtime-failed observation cannot certify an image publication",
+      "actual wrong-binary observation cannot certify an image publication",
+      "actual wrong-version observation cannot certify an image publication",
+      "altered actual destination config refuses mirror receipt",
+      "altered producer bytes, source fields and status veto before any Docker process",
+      "anonymous transport failure and altered manifest bytes refuse image receipts",
+      "both guarded publication jobs bind the same producer, full factory, optional mirror and original slim order",
+      "missing actual GHA cache environment refuses before any image process",
+      "optional mirror cannot target another registry or disagree with configured opt-in target",
+      "untrusted event/branch, version, tag and build overrides refuse before controlled build"
+    ],
+    "desktopSourceAttribution": 15,
+    "rustfmtParseAndFormat": true,
+    "nativeRustSuiteExecution": false,
+    "originalSevenLogicalOperationsPreserved": true,
+    "originalSeventeenMinimumAssetsPreserved": true
+  },
+  "raw": [
+    {
+      "task": "T4216",
+      "file": "raw/T4216.json",
+      "bytes": 1714,
+      "sha256": "dfeb87df4f011189b87ffb918af4259b484b438f3cdecdb73985b1d0665f0b53"
+    },
+    {
+      "task": "T4217",
+      "file": "raw/T4217.json",
+      "bytes": 6017,
+      "sha256": "923f534a818a72cd54bf328dc1321dad56ed9ea0f6c82f245afec5541bc9fa4f"
+    },
+    {
+      "task": "T4218",
+      "file": "raw/T4218.json",
+      "bytes": 8058,
+      "sha256": "e49af0a2d1e07cf0a945c30653cddb3467278ac7c88ef3bd2e04f4b2949830d0"
+    },
+    {
+      "task": "T4219",
+      "file": "raw/T4219.json",
+      "bytes": 6740,
+      "sha256": "dfa83d72beb0e47f7f7ba40c29b5596375141d4d1fbe7449a712400ef1db1898"
+    },
+    {
+      "task": "T4220",
+      "file": "raw/T4220.json",
+      "bytes": 953,
+      "sha256": "9a0aa776a5e5ebbbf859de7dd3221188a0986c9cfa11ee7bf7f78f4994c85804"
+    },
+    {
+      "task": "T4221",
+      "file": "raw/T4221.json",
+      "bytes": 944,
+      "sha256": "a7a503e1004396e8b81f66ba0c78a31e306b1e72008ed13b5bf69b9445506887"
+    },
+    {
+      "task": "T4222",
+      "file": "raw/T4222.json",
+      "bytes": 947,
+      "sha256": "f5cafd7018dd5c1390a6490b516e965c0cb6812f30371e3ad2b5a7b7a4f00387"
+    },
+    {
+      "task": "T4223",
+      "file": "raw/T4223.json",
+      "bytes": 947,
+      "sha256": "a606a4a8047c99fb107d9152b60be2a0f6cd51113d4cedaebe0f67325dc42899"
+    },
+    {
+      "task": "T4224",
+      "file": "raw/T4224.json",
+      "bytes": 947,
+      "sha256": "28a8ac8c330aeffb899b40bd90f966149400881e7fcd7f18b2630e0e76eed62d"
+    }
+  ]
+}

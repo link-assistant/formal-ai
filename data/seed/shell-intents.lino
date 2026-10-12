@@ -59,6 +59,30 @@ shell_intents
       word 代码
       word 中
       word 搜索
+  cue_fillers
+    language en
+      word me
+      word us
+      word please
+      word the
+      word my
+      word our
+    language ru
+      word мне
+      word нам
+      word пожалуйста
+    language hi
+      word मुझे
+      word हमें
+      word कृपया
+    language zh
+      word 请
+      word 我
+    language es
+      word me
+      word mi
+      word el
+      word la
   local_search_scopes
     language en
       scope "the code"
@@ -235,6 +259,62 @@ shell_intents
       test "make test"
       install "make install"
       build make
+  test_file_runners
+    # PR #1188 T91 (gap G11): "Run the tests in m.test.mjs." runs the named
+    # test file with the runtime its extension needs, never the workspace's
+    # whole-suite command chosen by a marker file. `{file}` is the named path.
+    runner
+      extension "mjs"
+      command "node --test {file}"
+    runner
+      extension "js"
+      command "node --test {file}"
+    runner
+      extension "cjs"
+      command "node --test {file}"
+    runner
+      extension "py"
+      command "python3 -m pytest {file}"
+    runner
+      extension "rb"
+      command "ruby {file}"
+    runner
+      extension "rs"
+      command "cargo test"
+    runner
+      extension "go"
+      command "go test ./..."
+  result_command_words
+    # PR #1188 G75: a shell command's own word tells a listing or a search
+    # result apart, never a word inside its operands (`sed … allowlist.txt`).
+    command
+      word "ls"
+      kind "listing"
+    command
+      word "tree"
+      kind "listing"
+    command
+      word "dir"
+      kind "listing"
+    command
+      word "grep"
+      kind "search"
+    command
+      word "rg"
+      kind "search"
+    command
+      word "find"
+      kind "search"
+    command
+      word "ag"
+      kind "search"
+  content_search
+    # PR #1188 T90 (gap G12): the shell fallback of the workspace content
+    # search when the client advertises no grep tool. `{mode}` is `w` for an
+    # identifier (whole-word match) and `F` for a quoted literal (fixed text).
+    command "grep -rnH{mode} --exclude-dir=.git -- {pattern} {scope}"
+    identifier_mode "w"
+    literal_mode "F"
   path_objects
     language en
       object file
@@ -684,6 +764,17 @@ shell_intents
     intent
       command mkdir
       argument "name_lead"
+      effect
+        flag "-p"
+        flag "--parents"
+        value-option "-m"
+        value-option "--mode"
+        reuse-option "-p"
+        reuse-option "--parents"
+        before-reuse
+          code "test ! -e {path} || test -d {path}"
+        before "test ! -e {path}"
+        after "test -d {path}"
       language en
         cue "create a directory"
         cue "create a new directory"
@@ -724,6 +815,7 @@ shell_intents
     intent
       command rmdir
       argument one_path
+      destructive true
       language en
         cue "remove the directory"
         cue "delete the directory"
@@ -741,24 +833,49 @@ shell_intents
     intent
       command rm
       argument one_path
+      destructive true
       language en
         cue "delete the file"
         cue "remove the file"
         cue "delete file"
         cue "remove file"
+        cue delete
+        cue remove
       language ru
         cue "удали файл"
         cue "удалить файл"
+        cue удали
+        cue удалить
       language hi
         cue हटाओ
         cue "फ़ाइल हटाएँ"
       language zh
         cue 删除文件
         cue 移除文件
+        cue 删除
+        cue 移除
+      language es
+        cue "elimina el archivo"
+        cue "borra el archivo"
+        cue elimina
+        cue borra
     intent
       command cp
       argument two_paths
       effect
+        flag "-f"
+        flag "--force"
+        flag "-n"
+        flag "--no-clobber"
+        flag "-r"
+        flag "-R"
+        flag "--recursive"
+        flag "-a"
+        flag "-p"
+        reuse-option "-f"
+        reuse-option "--force"
+        before-reuse "test -e {source}"
+        directory-targets true
         before "test -e {source}"
         before "test ! -e {destination}"
         prepare "mkdir -p -- {destination_parent}"
@@ -781,6 +898,13 @@ shell_intents
       command mv
       argument two_paths
       effect
+        flag "-f"
+        flag "--force"
+        flag "-n"
+        flag "--no-clobber"
+        reuse-option "-f"
+        reuse-option "--force"
+        before-reuse "test -e {source}"
         before "test -e {source}"
         before "test ! -e {destination}"
         prepare "mkdir -p -- {destination_parent}"

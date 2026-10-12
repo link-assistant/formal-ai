@@ -158,7 +158,13 @@ fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
     // create -> read back, driven end to end through the protocol with a client
     // loop that actually applies the writes to a scratch workspace.
     let tools = vec![write_tool(&strict_write_schema()), read_tool()];
-    let mut workspace: Vec<(String, String)> = Vec::new();
+    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(
+        "write 10 to 1.txt file",
+    )
+    .expect("original literal write plan");
+    let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;
+    let prior = "earlier observed fixture event\n";
+    let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];
     let transcript = drive_with(
         "write 10 to 1.txt file",
         &tools,
@@ -168,12 +174,44 @@ fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
                 let path = arguments["file_path"].as_str().unwrap_or_default();
                 let content = arguments["content"].as_str().unwrap_or_default();
                 workspace.push((path.to_owned(), content.to_owned()));
-                String::from("ok")
+                (String::from("ok")).into()
             }
-            _ => String::from("ok"),
+            "Read" => {
+                let path = arguments["file_path"]
+                    .as_str()
+                    .expect("advertised read path");
+                workspace
+                    .iter()
+                    .rev()
+                    .find(|(written, _)| written == path)
+                    .map_or_else(
+                        || ({
+                            json!({"is_error": true, "error": format!("File not found: {path}")})
+                                .to_string()
+                        }).into(),
+                        |(_, content)| formal_ai::agentic_coding::tool_result::ProviderToolObservation::complete_owned_read(path, content),
+                    )
+            }
+            other => panic!("unadvertised workspace operation: {other}"),
         },
     );
     assert!(!transcript.is_empty(), "the request should drive a write");
+    let observed_stream = workspace
+        .iter()
+        .rev()
+        .find(|(path, _)| path == plan_path)
+        .expect("actual written plan stream");
+    assert_eq!(
+        observed_stream.1,
+        format!("{prior}{}", plan.links_notation())
+    );
+    assert_eq!(
+        transcript
+            .iter()
+            .filter(|(tool, arguments)| tool == "Write" && arguments["file_path"] == plan_path)
+            .count(),
+        1
+    );
     assert!(
         workspace
             .iter()
@@ -222,9 +260,16 @@ fn a_multi_turn_lifecycle_reads_back_the_current_content_each_time() {
                     }
                     "Read" => {
                         let path = args["file_path"].as_str().unwrap_or_default();
-                        let content = workspace.borrow().get(path).cloned().unwrap_or_default();
-                        last_read = content.clone();
-                        content
+                        let content = workspace.borrow().get(path).cloned();
+                        content.map_or_else(
+                            || json!({"is_error": true, "error": format!("File not found: {path}")}).to_string(),
+                            |content| {
+                                if path == "1.txt" {
+                                    last_read = content.clone();
+                                }
+                                content
+                            },
+                        )
                     }
                     _ => String::new(),
                 };
@@ -388,11 +433,11 @@ fn drive(prompt: &str, tools: &[Value], result: &str, turns: usize) -> Vec<(Stri
 }
 
 /// Drive the client tool loop, delegating each call to `execute`.
-fn drive_with(
+fn drive_with<R: Into<formal_ai::agentic_coding::tool_result::ProviderToolObservation>>(
     prompt: &str,
     tools: &[Value],
     turns: usize,
-    execute: &mut dyn FnMut(&str, &Value) -> String,
+    execute: &mut dyn FnMut(&str, &Value) -> R,
 ) -> Vec<(String, Value)> {
     enable_http_agent_mode_for_current_process();
     let mut messages = vec![json!({"role": "user", "content": prompt})];
@@ -408,12 +453,18 @@ fn drive_with(
             let arguments: Value =
                 serde_json::from_str(call["function"]["arguments"].as_str().unwrap_or("{}"))
                     .unwrap_or(Value::Null);
-            let result = execute(name, &arguments);
+            let observation: formal_ai::agentic_coding::tool_result::ProviderToolObservation =
+                execute(name, &arguments).into();
+            let opaque_path = (formal_ai::agentic_coding::planner::tool_capability(name)
+                == Some(formal_ai::agentic_coding::planner::Capability::Read))
+            .then(|| arguments["file_path"].as_str().unwrap_or(""));
+            let (result, source_read) = observation.into_transport(opaque_path);
             transcript.push((name.to_owned(), arguments));
             messages.push(json!({
                 "role": "tool",
                 "tool_call_id": call["id"],
-                "content": result
+                "content": result,
+                "source_read": source_read
             }));
         }
     }

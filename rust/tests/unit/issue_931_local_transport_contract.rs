@@ -71,3 +71,27 @@ fn issue_931_documents_every_requirement_and_manual_protocol_check() {
         );
     }
 }
+
+/// R931-11: the transports shipped as a minor release with their changelog
+/// entry (0.343.0, PR #1008), wherever the changelog keeps that release.
+#[test]
+fn issue_931_shipped_as_a_minor_release_with_its_changelog_entry() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("..");
+    let mut parts = vec![root.join("CHANGELOG.md")];
+    if let Ok(entries) = std::fs::read_dir(root.join("docs/changelog")) {
+        parts.extend(entries.filter_map(Result::ok).map(|entry| entry.path()));
+    }
+    let entry =
+        "Add localhost-default WebSocket and host-only WebRTC data-channel server and client modes";
+    let release = parts
+        .iter()
+        .filter_map(|path| std::fs::read_to_string(path).ok())
+        .find_map(|text| {
+            let at = text.find(entry)?;
+            let heading = text[..at].rfind("\n## [")?;
+            Some(text[heading + 1..at].to_owned())
+        })
+        .expect("the changelog keeps the issue #931 entry");
+    assert!(release.starts_with("## [0.343.0]"), "{release}");
+    assert!(release.contains("### Added"), "{release}");
+}

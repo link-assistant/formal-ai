@@ -1,0 +1,27 @@
+self_ast_census
+  target src/solver_handlers/product_search.rs
+  language rust
+  fidelity signature
+  byte_len 15513
+  line_count 441
+  content_id source_module_9ed6f473294d02f9
+  symbol_count 18
+  symbols
+    const CUES_PATH 27 27
+    const INTENT 28 28
+    struct Marketplace 31 37
+    struct Constraint 40 44
+    struct ProductNoun 47 51
+    function seed_text 54 59
+    function record_phrases 62 72
+    struct Catalogue 75 80
+    function load 83 150
+    function percent_encode 155 171
+    function is_model_code 175 186
+    function product_terms 190 229
+    function template 232 238
+    function matched_noun_surface 243 250
+    function constraints_text 253 263
+    function marketplace_needed 270 317
+    function handle_product_search 325 427
+    function names_marketplace 433 441

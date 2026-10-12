@@ -1,0 +1,8 @@
+{
+  "id": "T1899",
+  "dir": "/private/tmp/formal-ai-only-1188/catalog-role-retry",
+  "prompt": "Add a reusable observed-source callable catalog to scripts/self-translation/source-callable-catalog.mjs. Read scripts/self-translation/lexer.mjs first and reuse its lex and topLevelItems exports. Discover only actual top-level JavaScript function declarations and export/import bindings, with complete declaration source spans, stable source/declaration content identities and canonical module origins. Comments, quoted export lookalikes and unresolved reexports must not become callables. Keep unsupported input/result/effect contracts explicit unknowns, and reject changed-source evidence before use. Design meaningful focused tests against alias shadowing, commented exports, Unicode byte versus character spans and stale source hashes. Do not add a requirement-specific wrapper or invent proven purity or types from unknown fields. Identify and report missing primitives before any output write if you cannot implement this general mechanism safely.",
+  "steps": 24,
+  "original": "T1893",
+  "note": "Exact original prompt in bounded selected-file context; original target absence and observed lexer bytes preserved, not full repository replay."
+}

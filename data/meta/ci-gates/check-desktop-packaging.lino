@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_desktop_packaging
+ci_gate check-desktop-packaging
   stage web
   description "Desktop packaging keeps its signing and resource-preparation regressions covered."
   run "node --test desktop/scripts/adhoc-sign-mac.test.cjs desktop/scripts/prepare-resources.test.mjs"
+  justification "Ad-hoc macOS signing and resource preparation can break silently during bundler upgrades; the test guard in desktop/scripts/adhoc-sign-mac.test.cjs was added in commit 46aa1dd75 (issue #798) to catch signing regressions before they reach the release pipeline."

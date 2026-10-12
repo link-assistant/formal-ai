@@ -1,0 +1,11 @@
+language en
+lemma postposition
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(linguistics) the placing of one linguistic element after another (as placing a modifier after the word that it modifies in a sentence or placing an affix after the base to which it is attached)"
+    id oewn-06495391-n
+    partOfSpeech n
+source "oewn:2024"

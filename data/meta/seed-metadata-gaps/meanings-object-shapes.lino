@@ -1,0 +1,33 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-object-shapes.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-412e4c12a310407e
+    record "clock_reference"
+  gap seed-metadata-gap-27e417a4dcfe66a6
+    record "container_scope"
+  gap seed-metadata-gap-c6606fcde343261d
+    record "content_assignment"
+  gap seed-metadata-gap-a1a66832f13fbee9
+    record "content_introducer"
+  gap seed-metadata-gap-0fc316c69b301093
+    record "delegation_marker"
+  gap seed-metadata-gap-2bc53e67c332defc
+    record "freshness_live"
+  gap seed-metadata-gap-09da5e8e8d20f0da
+    record "language_reference"
+  gap seed-metadata-gap-2a2d83519acef43a
+    record "prior_turn_reference"
+  gap seed-metadata-gap-920bc7fe5fcf9353
+    record "quantity_interrogative"
+  gap seed-metadata-gap-86c9adf91e9e02f1
+    record "self_surface_noun"
+  gap seed-metadata-gap-3878e8b873ccdb11
+    record "task_list_noun"
+  gap seed-metadata-gap-b615e682ca80a365
+    record "web_host_suffix"
+  gap seed-metadata-gap-eafce17778870177
+    record "web_scope"
+  gap seed-metadata-gap-77dd88ad081c0f08
+    record "workspace_scope"

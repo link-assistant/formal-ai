@@ -1,0 +1,123 @@
+language en
+lemma move
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of deciding to do something"
+    examples ("he didn't make a move to help" "his first move was to hire a lawyer")
+    id oewn-00166763-n
+    partOfSpeech n
+  entry
+    definition "the act of changing your residence or place of business"
+    examples ("they say that three moves equal one fire")
+    id oewn-00169479-n
+    partOfSpeech n
+    synonyms (relocation)
+  entry
+    definition "a change of position that does not entail a change of location"
+    examples ("the reflex motion of his eyebrows revealed his surprise" "movement is a sign of life" "an impatient move of his hand" "gastrointestinal motility")
+    id oewn-00332776-n
+    partOfSpeech n
+    synonyms (motion movement motility)
+  entry
+    definition "the act of changing location from one place to another"
+    examples ("police controlled the motion of the crowd" "the movement of people from the farms to the cities" "his move put him directly in my path")
+    id oewn-00280679-n
+    partOfSpeech n
+    synonyms (motion movement)
+  entry
+    definition "(game) a player's turn to take some action permitted by the rules of the game"
+    id oewn-00166993-n
+    partOfSpeech n
+  entry
+    definition "change location; move, travel, or proceed, also metaphorically"
+    examples ("How fast does your new car go?" "We travelled from Rome to Naples by bus" "The policemen went from door to door looking for the suspect" "The soldiers moved towards the city in an attempt to take it before night fell" "news travelled fast")
+    id oewn-01839438-v
+    partOfSpeech v
+    synonyms (travel go locomote)
+  entry
+    definition "cause to move or shift into a new position or place, both in a concrete and in an abstract sense"
+    examples ("Move those boxes into the corner, please" "I'm moving my money to another bank" "The director moved more responsibilities onto his new assistant")
+    id oewn-01854282-v
+    partOfSpeech v
+    synonyms (displace)
+  entry
+    definition "move so as to change position, perform a nontranslational motion"
+    examples ("He moved his hand slightly to the right")
+    id oewn-01835473-v
+    partOfSpeech v
+  entry
+    definition "change residence, affiliation, or place of employment"
+    examples ("We moved from Idaho to Nebraska" "The basketball player moved from one team to another")
+    id oewn-01859592-v
+    partOfSpeech v
+  entry
+    definition "follow a procedure or take a course"
+    examples ("We should go farther in this matter" "She went through a lot of trouble" "go about the world in a certain manner" "Messages must go through diplomatic channels")
+    id oewn-02377696-v
+    partOfSpeech v
+    synonyms (go proceed)
+  entry
+    definition "be in a state of action"
+    examples ("she is always moving")
+    id oewn-00014542-v
+    partOfSpeech v
+    synonyms ("be active")
+  entry
+    definition "go or proceed from one point to another"
+    examples ("the debate moved from family values to the economy")
+    id oewn-00124250-v
+    partOfSpeech v
+  entry
+    definition "perform an action, or work out or perform (an action)"
+    examples ("think before you act" "We must move quickly" "The governor should act on the new energy bill" "The nanny acted quickly by grabbing the toddler and covering him with a wet towel")
+    id oewn-02372362-v
+    partOfSpeech v
+    synonyms (act)
+  entry
+    definition "have an emotional or cognitive impact upon"
+    examples ("This child impressed me as unusually mature" "This behavior struck me as odd" "he was dumb-struck by the news" "her comments struck a sour note")
+    id oewn-01771801-v
+    partOfSpeech v
+    synonyms (affect impress strike)
+  entry
+    definition "give an incentive for action"
+    examples ("This moved me to sacrifice my career")
+    id oewn-01653541-v
+    partOfSpeech v
+    synonyms (motivate actuate propel prompt incite)
+  entry
+    definition "arouse sympathy or compassion in"
+    examples ("Her fate moved us all")
+    id oewn-01775311-v
+    partOfSpeech v
+  entry
+    definition "dispose of by selling"
+    examples ("The chairman of the company told the salesmen to move the computers")
+    id oewn-02360955-v
+    partOfSpeech v
+  entry
+    definition "progress by being changed"
+    examples ("The speech has to go through several more drafts" "run through your presentation before the meeting")
+    id oewn-00540190-v
+    partOfSpeech v
+    synonyms (go run)
+  entry
+    definition "live one's life in a specified environment"
+    examples ("she moves in certain circles only")
+    id oewn-02604860-v
+    partOfSpeech v
+  entry
+    definition "have a turn; make one's move in a game"
+    examples ("Can I go now?")
+    id oewn-01079008-v
+    partOfSpeech v
+    synonyms (go)
+  entry
+    definition "propose formally; in a debate or parliamentary meeting"
+    id oewn-00880877-v
+    partOfSpeech v
+    synonyms ("make a motion")
+source "oewn:2024"

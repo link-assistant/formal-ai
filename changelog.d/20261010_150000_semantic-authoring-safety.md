@@ -1,0 +1,1 @@
+Share raw literal parsing and semantic-content ownership between the JavaScript composer and worker, scope source-links routing to positive unquoted instructions, and preserve a typed MissingContract for unsupported semantic implementations. Exact authored bytes and genuine source-links requests remain supported; this safety repair does not implement general source synthesis.

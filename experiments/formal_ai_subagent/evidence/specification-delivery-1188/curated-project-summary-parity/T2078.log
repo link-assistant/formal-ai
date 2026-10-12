@@ -1,0 +1,60 @@
+>> bash {"command":"node scripts/measure-notation.mjs --check && node experiments/formal_ai_subagent/apply-notation-rules.mjs --check"}
+   Output: directory                            files  characters  underscore-names  dash-names  abbreviated-names  duplicated-blocks  repeated-fields
+   data/meta                              152     1298963              2059         560                196                  9               78
+   data/meta/ci-gates                     102       88615                 8          95                  3                  0                0
+   data/meta/rename-map                     2       36738                 0           3                  0                  0                0
+   data/meta/requirement-status-ledger    150      232022                 2           0                  1                  0                2
+   data/meta/seed-metadata-gaps            68       89321                 0        1065                  0                  0                0
+   data/meta/self-translation               1        6295                 2          10                  2                  0                0
+   data/meta/worker-line-budget           122      117984                 1           1                  0                  0                0
+   data/seed                              243     3188081              9420         351                245                 27              184
+   data/meta (scope)                      597     1869938              2071        1696                200                  9               80
+   data/seed (scope)                      243     3188081              9420         351                245                 27              184
+   data/meta underscore-names fell from 2074 to 2071; lower the ceiling with --write.
+   notation rule families applied: 3; problems: 18
+   
+   Error: ::error::js/server/repository-workspace-command-line.mjs: a literal holds the old spelling coding_ladder (now coding-ladder)
+   ::error::js/server/repository-workspace.mjs: a literal holds the old spelling coding_ladder (now coding-ladder)
+   ::error::rust/src/solver_handler_how.rs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+   ::error::rust/tests/web/repository-workspace-node.test.mjs: a literal holds the old spelling coding_ladder (now coding-ladder)
+   ::error::rust/embedded/data/seed/multilingual-responses-parity.lino differs from data/seed/multilingual-responses-parity.lino
+   
+   Exit Code: 1
+== answer ==
+The command failed: `node scripts/measure-notation.mjs --check && node experiments/formal_ai_subagent/apply-notation-rules.mjs --check` exited with code 1.
+
+```text
+::error::js/server/repository-workspace-command-line.mjs: a literal holds the old spelling coding_ladder (now coding-ladder)
+::error::js/server/repository-workspace.mjs: a literal holds the old spelling coding_ladder (now coding-ladder)
+::error::rust/src/solver_handler_how.rs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/notation-response-placeholders.test.mjs: a literal holds the old spelling fallback_query (now fallback-query)
+::error::rust/tests/web/repository-workspace-node.test.mjs: a literal holds the old spelling coding_ladder (now coding-ladder)
+::error::rust/embedded/data/seed/multilingual-responses-parity.lino differs from data/seed/multilingual-responses-parity.lino
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

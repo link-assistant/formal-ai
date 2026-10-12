@@ -24,7 +24,11 @@
 #     --message "<commit subject>" \
 #     [--seed <directory copied into the workspace first>] \
 #     [--contains <text the artifact must contain>]... \
-#     [--port <port>] [--no-commit]
+#     [--port <port>] [--commit]
+#
+# Without `--commit` nothing is committed (R1138-3-7): authoring refuses
+# commits by default, exactly as `formal-ai solve` does. `--no-commit` is
+# still accepted and means the default.
 set -euo pipefail
 
 # The repository this authors in. Derived from the script's own location when
@@ -47,9 +51,10 @@ die() {
 }
 
 args=()
-commit=1
+commit=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --commit) commit=1; shift ;;
     --no-commit) commit=0; shift ;;
     --task|--produces|--into|--evidence|--pull-request|--message|--seed|--contains|--port)
       [[ $# -ge 2 ]] || die "$1 needs a value"
@@ -63,9 +68,8 @@ done
 [[ -x "$BIN" ]] || die "build first: cargo build --release --bin formal-ai"
 command -v "$AGENT" >/dev/null || die "the @link-assistant/agent CLI is not on PATH"
 
-# Mutation stays opt-in here (`--no-commit` is the flag the workflow passes for
-# a dry run), mirroring `formal-ai solve`'s own default-deny ladder from the
-# other side: the loop lands the four-trailer commit only under `--commit`.
+# Mutation is opt-in, mirroring `formal-ai solve`'s own default-deny ladder: the
+# loop lands the four-trailer commit only under `--commit`.
 if [[ "$commit" -eq 1 ]]; then
   exec "$BIN" solve --repository "$ROOT" --commit "${args[@]}"
 else

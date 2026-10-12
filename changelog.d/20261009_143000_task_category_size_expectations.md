@@ -1,0 +1,1 @@
+Record expansion, compression and unrestricted size expectations before task execution. Bind independent acceptance to exact code or response bytes and preserve complete declared cohorts, failures and source attribution. Track a 95% objective over at least20 tasks per category without claiming an observed autonomous baseline or making output length a correctness condition.

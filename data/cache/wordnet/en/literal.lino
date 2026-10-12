@@ -1,0 +1,33 @@
+language en
+lemma literal
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "limited to the explicit meaning of a word or text"
+    examples ("a literal translation")
+    id oewn-01421662-a
+    partOfSpeech a
+  entry
+    definition "a mistake in printed matter resulting from mechanical failures of some kind"
+    id oewn-06782461-n
+    partOfSpeech n
+    synonyms (misprint erratum "typographical error" typo "literal error")
+  entry
+    definition "being or reflecting the essential or genuine character of something"
+    examples ("her actual motive" "a literal solitude like a desert" "a genuine dilemma")
+    id oewn-02470192-s
+    partOfSpeech s
+    synonyms (actual genuine real)
+  entry
+    definition "without interpretation or embellishment"
+    examples ("a literal depiction of the scene before him")
+    id oewn-00918097-s
+    partOfSpeech s
+  entry
+    definition "avoiding embellishment or exaggeration (used for emphasis)"
+    examples ("it's the literal truth")
+    id oewn-01798183-s
+    partOfSpeech s
+source "oewn:2024"

@@ -1,0 +1,5 @@
+{
+  "taskId": "T2943",
+  "directory": "/private/tmp/spec-recurrence-1188/typed-reader-next",
+  "prompt": "Run node --test compiled-skill-prototype.test.mjs"
+}

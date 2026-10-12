@@ -1,0 +1,17 @@
+language en
+lemma literally
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "in a literal sense"
+    examples ("literally translated" "he said so literally")
+    id oewn-00341857-r
+    partOfSpeech r
+  entry
+    definition "(intensifier before a figurative expression) without exaggeration"
+    examples ("our eyes were literally pinned to TV during the Gulf War")
+    id oewn-00112012-r
+    partOfSpeech r
+source "oewn:2024"

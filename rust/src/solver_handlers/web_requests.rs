@@ -3,9 +3,10 @@
 use crate::concepts::extract_concept_query;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
+use crate::formalization::page::{formalize_page, page_answer};
 use crate::language::detect as detect_language;
 use crate::seed::{self, ProjectRecord, projects_registry};
-use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, FetchError, SourceTransport};
 use crate::summarization::{SummarizationConfig, SummarizationMode, describe_project};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
@@ -23,7 +24,8 @@ pub use live_search::{try_web_search_with_client, try_web_search_with_offline};
 pub(super) use url_parse::normalize_url_candidate;
 use url_parse::{
     extract_http_fetch_url, extract_url_navigate_url, first_url_candidate,
-    is_url_trailing_punctuation, is_url_wrapper_punctuation, looks_like_hostname,
+    is_page_formalization_prompt, is_url_trailing_punctuation, is_url_wrapper_punctuation,
+    looks_like_hostname,
 };
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
@@ -73,6 +75,12 @@ fn answer_http_fetch_url(
     log: &mut EventLog,
     offline: bool,
 ) -> SymbolicAnswer {
+    if is_page_formalization_prompt(prompt, &normalize_prompt(prompt)) {
+        let cache_root = crate::coding::synthesis_runtime::source_cache_root();
+        let client =
+            CachedSourceClient::new(&cache_root, CurlSourceTransport).with_online(!offline);
+        return answer_page_formalization(prompt, url, log, &client);
+    }
     log.append("http_fetch:request", url);
     if let Some(answer) = try_curated_http_fetch(prompt, url, log) {
         return answer;
@@ -113,6 +121,92 @@ fn answer_http_fetch_url(
     finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0)
 }
 
+/// Formalize the page a request names through `client` (R1188-U18).
+///
+/// The cache answers first, and the network only when the client is
+/// online. Returns `None` when the request names no URL or does not ask for
+/// a formalization. The browser twin is `tryPageFormalization` in
+/// `js/worker/formal_ai_worker_page_formalization.js`.
+pub fn try_page_formalization_with_client<T: SourceTransport>(
+    prompt: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    let normalized = normalize_prompt(prompt);
+    let url = extract_http_fetch_url(prompt, &normalized)?;
+    is_page_formalization_prompt(prompt, &normalized)
+        .then(|| answer_page_formalization(prompt, &url, log, client))
+}
+
+/// The statements of the page at `url`, in the request's language: the
+/// page's prose ([`crate::web_formalize::page_prose`]) read by
+/// [`crate::formalization::page::formalize_page`] in the page's language.
+/// Offline with no cached capture, or when the fetch fails, the answer says
+/// so and nothing is formalized.
+fn answer_page_formalization<T: SourceTransport>(
+    prompt: &str,
+    url: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> SymbolicAnswer {
+    log.append("page_formalization:request", url);
+    let language = detect_language(prompt).slug();
+    let capture = match client.fetch(url) {
+        Ok(capture) => capture,
+        Err(error) => {
+            log.append("error:fetch", error.to_string());
+            let reason = error.to_string();
+            let body = if matches!(error, FetchError::OfflineCacheMiss(_)) {
+                seed::render_response("page_formalization_offline", language, &[("url", url)])
+            } else {
+                seed::render_response(
+                    "page_formalization_fetch_failed",
+                    language,
+                    &[("url", url), ("error", &reason)],
+                )
+            };
+            return finalize_simple(
+                prompt,
+                log,
+                "page_formalization",
+                "response:page_formalization_unavailable",
+                &body.unwrap_or_default(),
+                0.0,
+            );
+        }
+    };
+    capture.record(log);
+    let prose = crate::web_formalize::page_prose(capture.bytes(), url);
+    let report = formalize_page(&prose, detect_language(&prose).slug());
+    let counts = [
+        report.sentences.len(),
+        report.statements,
+        report.covered,
+        report.terms,
+        report.unknown,
+    ]
+    .map(|count| count.to_string());
+    log.append_fields(
+        "page_formalization:report",
+        &[
+            ("sentences", &counts[0]),
+            ("statements", &counts[1]),
+            ("covered", &counts[2]),
+            ("terms", &counts[3]),
+            ("unknown", &counts[4]),
+        ],
+    );
+    let body = page_answer(&report, url, language);
+    finalize_simple(
+        prompt,
+        log,
+        "page_formalization",
+        "response:page_formalization",
+        &body,
+        0.9,
+    )
+}
+
 /// Whether the seed's navigation recognizer claims this prompt for the
 /// `url_navigate` row (`Open github.com`, `Перейди на …`). The capability
 /// table's routed fetch runs ahead of that row and deliberately does not
@@ -121,6 +215,15 @@ fn answer_http_fetch_url(
 /// page (the url-navigation ladder in `seed_and_memory`, issue #1138).
 pub fn url_navigation_claims(prompt: &str, normalized: &str) -> bool {
     extract_url_navigate_url(prompt, normalized).is_some()
+}
+
+/// Whether the seed's fetch recognizer claims this prompt for the
+/// `http_fetch` row: a URL operand the request asks to retrieve. The claim
+/// row of the capability table consults it before the handler runs (issue
+/// #1175 R3), so a fetch word with no URL operand never reaches it.
+#[must_use]
+pub fn http_fetch_claims(prompt: &str, normalized: &str) -> bool {
+    extract_http_fetch_url(prompt, normalized).is_some()
 }
 
 /// Match prompts that ask the assistant to navigate to or display a URL
@@ -137,12 +240,12 @@ pub fn try_url_navigate(
     log.append("url_navigate:request", url.clone());
     log.append("url_preview:frame_policy_check", url.clone());
     log.append("url_preview:external_link", url.clone());
+    // Issue #918: the wording is the seeded web_* responses the browser twin
+    // (`tryUrlNavigate`, js/worker/formal_ai_worker_web_providers_and_wasm_calls.js) also renders.
     let body = format!(
-        "I suggest opening this in a new tab: [{url}]({url}).\n\n\
-         In the browser web app, this URL is checked with browser-readable \
-         frame-policy metadata before any embedded preview is attempted. If \
-         X-Frame-Options or CSP frame-ancestors blocks embedding, the web app \
-         keeps the direct external link instead."
+        "{}\n\n{}",
+        seed::render_response("web_open_in_new_tab", "en", &[("url", &url)]).unwrap_or_default(),
+        seed::render_response("web_url_navigate_native_note", "en", &[]).unwrap_or_default(),
     );
     Some(finalize_simple(
         prompt,
@@ -161,23 +264,35 @@ pub fn try_url_navigate(
 /// Source: <https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf>
 pub const WEB_SEARCH_RRF_K: u32 = CORE_WEB_SEARCH_RRF_K;
 
-/// Provider order used by the browser worker and by the offline Rust solver
-/// when describing the multi-engine plan for `web_search`. Sourced from
+/// Provider order used by the browser worker and by the Rust solver when
+/// recording the unexecuted provider plan for `web_search`. Sourced from
 /// `crate::web_search_core::WEB_SEARCH_PROVIDERS` so the WASM worker and the
 /// JS planner cannot drift apart (issue #133).
 pub const WEB_SEARCH_PROVIDERS: &[&str] = CORE_WEB_SEARCH_PROVIDERS;
 
+/// Execute a recognized web-search request instead of describing one.
+///
+/// Issue #1173 (E138) R2: this handler used to answer with the fixed
+/// paragraph describing the browser demo's provider plan. It now runs the
+/// executed search through the process source cache — captured sources
+/// answer from their statements with citations, and anything else degrades
+/// to the localized `web_search_unavailable` response. Live provider
+/// fetches stay opt-in via `FORMAL_AI_LIVE_FETCH`, matching the combined
+/// offline gate `solver_dispatch.rs` applies to its `web_search` route.
 pub fn try_web_search(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let request = extract_web_search_request(prompt, normalized)?;
+    // The native-handler table carries no runtime offline flag; the live-fetch
+    // opt-in is applied inside `answer_web_search_query`.
     Some(answer_web_search_query(
         prompt,
         &request.query,
         request.kind,
         log,
+        false,
     ))
 }
 
@@ -193,122 +308,34 @@ pub fn detect_web_search_query(prompt: &str) -> Option<String> {
     extract_web_search_request(prompt, &normalized).map(|request| request.query)
 }
 
+/// Execute the web search for `query` and answer from it.
+///
+/// Issue #1173 (E138): this function used to build the descriptive paragraph
+/// about the browser demo's search machinery ("Web search requested for
+/// `…`" and its latest-news, research, and Russian arms), which stood as the
+/// final answer for every prompt the intent recogniser or the
+/// unknown-reasoning fallback handed it. The description is deleted as an
+/// answer surface: the search now executes through the process source cache
+/// (issue #709 fusion) and answers from the captured statements with
+/// citations, or — offline or on a cache miss — with the localized
+/// `web_search_unavailable` response that names the query.
+///
+/// `runtime_offline` is the caller's own offline mode; the
+/// `FORMAL_AI_LIVE_FETCH` opt-in is applied here so every caller gets the
+/// combined offline gate `solver_dispatch.rs` uses at its `web_search` call
+/// site.
 pub fn answer_web_search_query(
     prompt: &str,
     query: &str,
     query_kind: WebSearchQueryKind,
     log: &mut EventLog,
+    runtime_offline: bool,
 ) -> SymbolicAnswer {
-    log.append("web_search:request", query.to_owned());
-    log.append("web_search:query_kind", query_kind.as_str());
-    for provider in WEB_SEARCH_PROVIDERS {
-        log.append("web_search:provider_planned", (*provider).to_owned());
-    }
-    log.append(
-        "web_search:fusion_planned",
-        format!("rrf:k={WEB_SEARCH_RRF_K}"),
-    );
-    let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
-    let language = detect_language(prompt).slug();
-    let is_latest_news_request = matches!(query_kind, WebSearchQueryKind::LatestNews);
-    let is_research_request = matches!(
-        query_kind,
-        WebSearchQueryKind::ImplicitResearchQuestion
-            | WebSearchQueryKind::EnumerationResearchRequest
-    );
-    let body = match language {
-        "ru" if is_latest_news_request => format!(
-            "Запрошены последние новости для `{query}`.\n\n\
-             В браузерной демо-версии formal-ai такой запрос идет через веб-поиск: \
-             DuckDuckGo Instant Answer по умолчанию, затем Internet Archive, \
-             Wikipedia REST, Wikidata, Wiktionary и Wikinews (Викиновости, \
-             https://www.wikinews.org/) в указанном порядке приоритета. Топ-10 \
-             ссылок от каждого провайдера объединяются через reciprocal rank \
-             fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), а \
-             диагностика записывает провайдеры, ранги, объединение и итоговые \
-             ссылки, чтобы рассуждение можно было проверить.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        "ru" if is_research_request => format!(
-            "Распознан исследовательский вопрос для `{query}`.\n\n\
-             Чтобы ответить на такой вопрос без локального правила, браузерная \
-             демо-версия formal-ai ищет проверяемые источники: по умолчанию \
-             DuckDuckGo Instant Answer (CORS-совместимый, без ключа), затем \
-             Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews \
-             в указанном \
-             порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются \
-             через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
-             rank_i(d))`), а диагностика записывает провайдеры, ранги, объединение \
-             и итоговые ссылки, чтобы рассуждение можно было проверить.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        "ru" => format!(
-            "Поиск в интернете запрошен для `{query}`.\n\n\
-             В браузерной демо-версии formal-ai по умолчанию использует DuckDuckGo \
-             Instant Answer (CORS-совместимый, без ключа) и параллельно опрашивает \
-             Internet Archive, Wikipedia REST, Wikidata, Wiktionary и Wikinews \
-             в указанном \
-             порядке приоритета. Топ-10 ссылок от каждого провайдера объединяются \
-             через reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
-             rank_i(d))`), поэтому URL, которые встречаются у нескольких провайдеров, \
-             всплывают вверх. Дубликаты одной и той же сущности (например, \
-             Викидата + Википедия) сворачиваются в один пункт с пометкой \
-             «Другие источники». Для произвольной страницы используйте \
-             `fetch example.com`; если прямой `fetch()` заблокирован CORS, \
-             браузер проверит frame-policy перед встроенным iframe.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        _ if is_latest_news_request => format!(
-            "Latest-news search requested for `{query}`.\n\n\
-             In the browser demo formal-ai uses web search for freshness-sensitive \
-             news prompts: DuckDuckGo Instant Answer by default, then Internet \
-             Archive, Wikipedia REST, Wikidata, Wiktionary, and Wikinews \
-             (https://www.wikinews.org/) in priority order. The top-10 links \
-             from each provider are merged with reciprocal rank fusion \
-             (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), and \
-             diagnostics record each provider, rank, fusion step, and final \
-             source link so the reasoning path can be inspected.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        _ if is_research_request => format!(
-            "Open research question detected for `{query}`.\n\n\
-             To answer this without a local rule, the browser demo searches \
-             verifiable sources: DuckDuckGo Instant Answer by default, then \
-             Internet Archive, Wikipedia REST, Wikidata, Wiktionary, and \
-             Wikinews in priority order. The top-10 links from each provider are merged \
-             with reciprocal rank fusion (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + \
-             rank_i(d))`), and diagnostics record each provider, rank, fusion \
-             step, and final source link so the reasoning path can be inspected.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-        _ => format!(
-            "Web search requested for `{query}`.\n\n\
-             In the browser demo formal-ai defaults to the DuckDuckGo Instant \
-             Answer endpoint (CORS-readable, keyless) and queries Internet Archive, \
-             Wikipedia REST, Wikidata, Wiktionary, and Wikinews in that priority order. The \
-             top-10 links from each provider are merged with reciprocal rank fusion \
-             (`score(d) = Σ 1 / ({WEB_SEARCH_RRF_K} + rank_i(d))`), so URLs that \
-             appear in more than one provider bubble up. Duplicate entries for the \
-             same entity (e.g. Wikidata + Wikipedia) are collapsed into a single \
-             bullet with an \"other sources\" footnote. For an arbitrary page, use \
-             `fetch example.com`; if direct `fetch()` is blocked by CORS, the \
-             browser checks frame policy before an embedded iframe.\n\n\
-             Provider: duckduckgo (default)\n\
-             Providers considered: {provider_summary}\n\
-             Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})"
-        ),
-    };
-    finalize_simple(prompt, log, "web_search", "response:web_search", &body, 0.8)
+    let cache_dir =
+        std::env::var("FORMAL_AI_SOURCE_CACHE_DIR").unwrap_or_else(|_| String::from("data"));
+    let client = CachedSourceClient::new(cache_dir, CurlSourceTransport)
+        .with_online(!runtime_offline && live_search::live_fetch_enabled());
+    live_search::execute_web_search_answer(prompt, query, query_kind, log, &client)
 }
 
 const PROMOTED_PROJECT_ORGS: &[&str] = &["link-assistant", "link-foundation", "linksplatform"];
@@ -353,8 +380,7 @@ impl RepositoryReference {
 }
 
 /// Lookup repository/project prompts. Runs *after* `concept_lookup` so
-/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep
-/// their existing intent.
+/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep their intent.
 ///
 /// With promotion enabled (the default), known projects from Link Assistant,
 /// Link Foundation, and `LinksPlatform` are listed first. With promotion
@@ -516,46 +542,19 @@ fn render_project_lookup(
 
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
     let promoted_orgs = PROMOTED_PROJECT_ORGS.join(", ");
-    let body = match language {
-        "ru" => format!(
-            "В контексте репозиториев {promoted_orgs} под `{display_name}` я прежде всего \
-             имею в виду [{repo_slug}]({project_url}) — {description}\n\n\
-             Другие найденные в интернете репозитории и сущности должна показывать \
-             браузерная демо-версия через поиск по запросу `{display_name}`. \
-             Провайдеры: {provider_summary}. Ранжирование: reciprocal rank fusion \
-             (k = {WEB_SEARCH_RRF_K}). Продвижение ассоциативных репозиториев \
-             можно отключить, тогда ответ пойдет по обычному поиску GitHub, \
-             GitLab и Bitbucket."
-        ),
-        "hi" => format!(
-            "{promoted_orgs} repository context में `{display_name}` से मेरा पहला \
-             मतलब [{repo_slug}]({project_url}) है — {description}\n\n\
-             दूसरे matching repositories और entities browser demo में \
-             `{display_name}` web search से दिखाए जाते हैं. Providers: \
-             {provider_summary}. Combined ranking: reciprocal rank fusion \
-             (k = {WEB_SEARCH_RRF_K}). Associative repository promotion बंद \
-             करने पर जवाब generic GitHub, GitLab, और Bitbucket project lookup \
-             path से जाता है."
-        ),
-        "zh" => format!(
-            "在 {promoted_orgs} 仓库上下文中，`{display_name}` 首先指 \
-             [{repo_slug}]({project_url}) — {description}\n\n\
-             浏览器 demo 会通过 `{display_name}` 的网页搜索显示其他匹配的仓库和实体。\
-             Providers: {provider_summary}. Combined ranking: reciprocal rank fusion \
-             (k = {WEB_SEARCH_RRF_K}). 关闭 associative repository promotion 后，\
-             回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。"
-        ),
-        _ => format!(
-            "In the {promoted_orgs} repository context, `{display_name}` should first mean \
-             [{repo_slug}]({project_url}) — {description}\n\n\
-             Other repositories and entities found online are shown by the browser \
-             demo through a web search for `{display_name}`. Providers: \
-             {provider_summary}. Combined ranking: reciprocal rank fusion \
-             (k = {WEB_SEARCH_RRF_K}). Associative repository promotion can be \
-             switched off; then the answer follows the generic GitHub, GitLab, \
-             and Bitbucket project lookup path."
-        ),
-    };
+    let fusion_constant = WEB_SEARCH_RRF_K.to_string();
+    let body = seed::fill_template_once(
+        &seed::localized_response("project-lookup-promoted", language).unwrap_or_default(),
+        &[
+            ("promoted-orgs", &promoted_orgs),
+            ("display-name", display_name),
+            ("repo-slug", &repo_slug),
+            ("project-url", &project_url),
+            ("description", &description),
+            ("provider-summary", &provider_summary),
+            ("reciprocal-rank-constant", &fusion_constant),
+        ],
+    );
     finalize_simple(
         prompt,
         log,
@@ -779,6 +778,46 @@ fn repository_from_url(url: &str) -> Option<RepositoryReference> {
         owner,
         name,
     })
+}
+
+/// Owner/name slugs a prompt names: a GitHub URL's owner and name, then each
+/// bare `owner/name` run of the characters a repository slug is spelled with.
+///
+/// Issue #1175 R3: the repository a traffic question names. Twin of
+/// `repositorySlugCandidates` in `js/worker/formal_ai_worker_claim_operands.js`.
+#[must_use]
+pub fn repository_slug_candidates(prompt: &str) -> Vec<String> {
+    let mut slugs = Vec::new();
+    if let Some(repo) = first_url_candidate(prompt).and_then(|(_, url)| repository_from_url(&url))
+        && repo.platform == RepositoryPlatform::GitHub
+    {
+        slugs.push(format!("{}/{}", repo.owner, repo.name));
+    }
+    let leads = |segment: &str| {
+        segment
+            .chars()
+            .next()
+            .is_some_and(|ch| ch.is_ascii_alphanumeric())
+    };
+    let digits = |segment: &str| segment.chars().all(|ch| ch.is_ascii_digit());
+    for run in prompt
+        .split(|ch: char| !(ch.is_ascii_alphanumeric() || matches!(ch, '.' | '_' | '/' | '-')))
+    {
+        let mut parts = run.trim_end_matches('.').split('/');
+        let (Some(owner), Some(name), None) = (parts.next(), parts.next(), parts.next()) else {
+            continue;
+        };
+        let (Some(owner), Some(name)) = (
+            clean_repository_segment(owner),
+            clean_repository_segment(name),
+        ) else {
+            continue;
+        };
+        if leads(&owner) && leads(&name) && !(digits(&owner) && digits(&name)) {
+            slugs.push(format!("{owner}/{name}"));
+        }
+    }
+    slugs
 }
 
 fn clean_repository_segment(segment: &str) -> Option<String> {

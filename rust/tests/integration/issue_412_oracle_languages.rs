@@ -24,14 +24,13 @@ fun main() {
 }
 ```
 
-Execution status: not compiled or run in Kotlin toolchain is not configured in this repository runtime.
+Execution status: not run; this program was rediscovered from https://kotlinlang.org/docs/command-line.html and its output contract was checked by decomposition, not by executing it.
 Check command: `kotlinc Main.kt -include-runtime -d Main.jar`
 Run command: `java -jar Main.jar`
 Expected output after verification:
 ```text
 Hello, world!
 ```
-The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.
 
 How it works:
 The program prints the text `Hello, world!` to standard output and then exits.
@@ -48,17 +47,18 @@ const PHP_CATALOG_ANSWER: &str = r#"Here is a minimal PHP hello world program:
 ```php
 <?php
 
-echo "Hello, world!", PHP_EOL;
+echo "Hello, world!";
+
+?>
 ```
 
-Execution status: compiled and ran in issue-8 local verification harness (isolated sandbox).
+Execution status: not run; this program was rediscovered from https://www.php.net/manual/en/tutorial.firstpage.php and its output contract was checked by decomposition, not by executing it.
 Check command: `php -l main.php`
 Run command: `php main.php`
-Output:
+Expected output after verification:
 ```text
 Hello, world!
 ```
-1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.
 
 How it works:
 The program prints the text `Hello, world!` to standard output and then exits.
@@ -137,14 +137,13 @@ fn kotlin_graduated_from_the_oracle_to_the_catalog() {
     assert_eq!(response.answer, KOTLIN_CATALOG_ANSWER);
 }
 
-/// Swift is still uncatalogued, so it still resolves from the oracle: the
-/// fallback keeps its job for every language the catalog does not template.
-///
-/// PHP shared this test until issue #1021 catalogued it, and rewriting what was
-/// left was the chance to show the answer rather than a substring of it (R234-2,
-/// issue #960): the oracle route is the one place an answer carries an external
-/// attribution, and a reader cannot check that the attribution is honest -- a
-/// cached snippet, credited to where it came from -- from `contains("```swift")`.
+/// Swift has no catalog program, so it still resolves from the oracle -- and
+/// the oracle reads the documentation route before its cached snapshots
+/// (issue #1165 R1165-4): the program is the Swift book's, rediscovered from
+/// its captured guided tour, and the Hello World Collection snapshot that
+/// used to answer here is retired. The oracle route is the one place an
+/// answer carries an external attribution, so the answer is shown whole
+/// (R234-2, issue #960): the source line names the captured page.
 #[test]
 fn swift_hello_world_resolves_from_the_oracle() {
     let solver = UniversalSolver::default();
@@ -156,16 +155,42 @@ fn swift_hello_world_resolves_from_the_oracle() {
         "Here is a minimal Swift program (hello world):\n\
          \n\
          ```swift\n\
-         print(\"Hello, World!\")\n\
+         print(\"Hello, world!\")\n\
+         // Prints \"Hello, world!\"\n\
          ```\n\
          \n\
          Output:\n\
          ```text\n\
-         Hello, World!\n\
+         Hello, world!\n\
          ```\n\
-         Source: Hello World Collection \
-         (http://helloworldcollection.de/#Swift), cached locally as a popular \
-         example."
+         Source: Documentation capture \
+         (https://raw.githubusercontent.com/swiftlang/swift-book/main/TSPL.docc/GuidedTour/GuidedTour.md), \
+         cached locally as a popular example."
+    );
+}
+
+/// Lua has no catalog row either; its grammar row (meta-language ships
+/// tree-sitter-lua) lets the oracle answer it from lua.org's Programming in
+/// Lua through the documentation route, so its snapshot is retired too
+/// (issue #1165).
+#[test]
+fn lua_hello_world_resolves_from_the_documentation() {
+    let lua = UniversalSolver::default().solve("write me a hello world program in lua");
+    assert_eq!(lua.intent, "write_program_oracle_hello_world_lua");
+    assert_eq!(
+        lua.answer,
+        "Here is a minimal Lua program (hello world):\n\
+         \n\
+         ```lua\n\
+         print(\"Hello, world!\")\n\
+         ```\n\
+         \n\
+         Output:\n\
+         ```text\n\
+         Hello, world!\n\
+         ```\n\
+         Source: Documentation capture (https://www.lua.org/pil/1.html), \
+         cached locally as a popular example."
     );
 }
 
@@ -195,11 +220,12 @@ fn php_graduated_from_the_oracle_to_the_catalog() {
         "answer must contain the catalogued PHP template, got: {}",
         response.answer
     );
-    // Unlike Kotlin, a real `php` toolchain verified this one, so the verified
-    // execution status is the honest claim to carry.
+    // A real `php` toolchain verified the catalog's earlier template, not
+    // php.net's page example the answer now carries (issue #1165), so the
+    // answer must not borrow that run.
     assert!(
-        response.answer.contains("compiled and ran"),
-        "the verified PHP toolchain must be reported as executed, got: {}",
+        !response.answer.contains("compiled and ran"),
+        "a rediscovered program must not be reported as executed, got: {}",
         response.answer
     );
     assert_eq!(response.answer, PHP_CATALOG_ANSWER);

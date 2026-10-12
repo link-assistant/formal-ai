@@ -1,0 +1,22 @@
+language en
+lemma spanish
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of or relating to or characteristic of Spain or the people of Spain"
+    examples ("Spanish music")
+    id oewn-02970122-a
+    partOfSpeech a
+  entry
+    definition "the Romance language spoken in most of Spain and the countries colonized by Spain"
+    id oewn-06979499-n
+    partOfSpeech n
+    synonyms ("Spanish language")
+  entry
+    definition "the people of Spain"
+    id oewn-09752657-n
+    partOfSpeech n
+    synonyms ("Spanish people")
+source "oewn:2024"

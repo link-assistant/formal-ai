@@ -1,0 +1,3 @@
+# Content-hashed offline inventory and its root-scoped worker are build output.
+/precache-manifest.js
+/service-worker.js

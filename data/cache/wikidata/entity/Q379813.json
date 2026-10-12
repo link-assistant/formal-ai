@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "豆类"
+        },
+        "es": {
+          "language": "es",
+          "value": "legumbre"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "植物"
+        },
+        "es": {
+          "language": "es",
+          "value": "semilla contenida en las plantas de la familia de las Leguminosas (Fabaceae)"
         }
       },
       "aliases": {
@@ -58,6 +66,12 @@
           {
             "language": "zh",
             "value": "豆類"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "legumbres"
           }
         ]
       }

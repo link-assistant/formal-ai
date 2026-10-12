@@ -1,0 +1,86 @@
+{
+  "lemma": "blend",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07390005-n",
+      "partOfSpeech": "n",
+      "definition": "an occurrence of thorough mixing"
+    },
+    {
+      "id": "oewn-06299307-n",
+      "partOfSpeech": "n",
+      "definition": "a new word formed by joining two others and combining their meanings",
+      "examples": [
+        "‘smog’ is a blend of ‘smoke’ and ‘fog’",
+        "‘motel’ is a portmanteau word made by combining ‘motor’ and ‘hotel’",
+        "‘brunch’ is a well-known portmanteau"
+      ],
+      "synonyms": [
+        "portmanteau word",
+        "portmanteau"
+      ]
+    },
+    {
+      "id": "oewn-00381504-n",
+      "partOfSpeech": "n",
+      "definition": "the act of blending components together thoroughly",
+      "synonyms": [
+        "blending"
+      ]
+    },
+    {
+      "id": "oewn-01465097-v",
+      "partOfSpeech": "v",
+      "definition": "combine into one",
+      "examples": [
+        "blend the nuts and raisins together",
+        "he blends in with the crowd",
+        "We don't intermingle much"
+      ],
+      "synonyms": [
+        "intermix",
+        "immingle",
+        "intermingle"
+      ]
+    },
+    {
+      "id": "oewn-02706315-v",
+      "partOfSpeech": "v",
+      "definition": "blend or harmonize",
+      "examples": [
+        "This flavor will blend with those in your dish",
+        "This sofa won't go with the chairs"
+      ],
+      "synonyms": [
+        "go",
+        "blend in"
+      ]
+    },
+    {
+      "id": "oewn-00395719-v",
+      "partOfSpeech": "v",
+      "definition": "mix together different elements",
+      "examples": [
+        "The colors blend well"
+      ],
+      "synonyms": [
+        "flux",
+        "mix",
+        "conflate",
+        "commingle",
+        "immix",
+        "fuse",
+        "coalesce",
+        "meld",
+        "combine",
+        "merge"
+      ]
+    }
+  ]
+}

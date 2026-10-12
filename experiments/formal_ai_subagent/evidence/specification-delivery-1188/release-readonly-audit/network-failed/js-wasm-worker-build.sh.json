@@ -1,0 +1,7 @@
+{
+  "path": "js/wasm-worker/build.sh",
+  "sourceCommit": "f0a6c6ff7532fd344b2e77205132ef00ed3aafd5",
+  "sourceTree": "3119c543e5df5d9b6abc692a27cbe4e3422cdb87",
+  "sha256": "288e45176ee8c4ac02fb1a6b60bbad8f4b0df60a9fd8a5d8937a948dae610ae3",
+  "rawUtf8": "#!/usr/bin/env sh\nset -eu\n\nrustc \\\n  -D warnings \\\n  --edition=2024 \\\n  --target wasm32-unknown-unknown \\\n  --crate-type cdylib \\\n  -C opt-level=z \\\n  -C panic=abort \\\n  -C lto=fat \\\n  -C codegen-units=1 \\\n  -C strip=symbols \\\n  -C link-arg=-s \\\n  \"$(dirname \"$0\")/src/lib.rs\" \\\n  -o \"$(dirname \"$0\")/../formal_ai_worker.wasm\"\n"
+}

@@ -1,0 +1,22 @@
+language en
+lemma engineering
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the practical application of technical and scientific knowledge to commerce or industry"
+    id oewn-00951878-n
+    partOfSpeech n
+  entry
+    definition "the discipline dealing with the art or science of applying scientific knowledge to practical problems"
+    examples ("he had trouble deciding which branch of engineering to study")
+    id oewn-06134474-n
+    partOfSpeech n
+    synonyms ("engineering science" "applied science" technology)
+  entry
+    definition "a room (as on a ship) in which the engine is located"
+    id oewn-03293411-n
+    partOfSpeech n
+    synonyms ("engine room")
+source "oewn:2024"

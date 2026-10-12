@@ -1,0 +1,23 @@
+language en
+lemma add-on
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a software module that extends or enhances the capabilities of an existing application"
+    id oewn-06578832-n
+    partOfSpeech n
+    synonyms (plug-in)
+  entry
+    definition "a component that is added to something to improve it"
+    examples ("the addition of a bathroom was a major improvement" "the addition of cinnamon improved the flavor")
+    id oewn-02682269-n
+    partOfSpeech n
+    synonyms (addition improver)
+  entry
+    definition "a supplementary component that improves capability"
+    id oewn-02674051-n
+    partOfSpeech n
+    synonyms (accessory appurtenance supplement)
+source "oewn:2024"

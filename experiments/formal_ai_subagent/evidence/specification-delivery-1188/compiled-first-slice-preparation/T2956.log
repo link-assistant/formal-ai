@@ -1,0 +1,66 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/observe-compiler-factory-closure.mjs"}
+   Output: {
+     "sourceHead": "c1832e13071893b88954482de2d18129376fd270",
+     "scope": "read-only actual current generator import closure, not production compiled-skill implementation",
+     "currentEntries": [
+       "crate/dependency_summarization.mjs",
+       "crate/event_log.mjs",
+       "crate/page_formalization.mjs",
+       "crate/skill_procedure.mjs",
+       "crate/skill_procedure_artifact.mjs",
+       "crate/solver_formalization.mjs",
+       "crate/solver_event_projection.mjs",
+       "crate/round_trip_translation.mjs"
+     ],
+     "currentClosure": 36,
+     "candidateClosure": 37,
+     "added": [
+       {
+         "name": "crate/skill_compiler.mjs",
+         "exports": [
+           "looksLikeSkillDescription"
+         ],
+         "sourceSha256": "2e32099c4c4fa27e3ad8fc76b328848e59ea4357a100d456d7092787e1c0b9a2",
+         "sourceLines": 40,
+         "factoryLines": 52,
+         "generatedFile": "formal_ai_worker_crate_skill_compiler.js"
+       }
+     ],
+     "productionFilesGenerated": 0
+   }
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/observe-compiler-factory-closure.mjs` command completed. Output:
+
+```json
+{
+  "added": [
+    {
+      "exports": [
+        "looksLikeSkillDescription"
+      ],
+      "factoryLines": 52,
+      "generatedFile": "formal_ai_worker_crate_skill_compiler.js",
+      "name": "crate/skill_compiler.mjs",
+      "sourceLines": 40,
+      "sourceSha256": "2e32099c4c4fa27e3ad8fc76b328848e59ea4357a100d456d7092787e1c0b9a2"
+    }
+  ],
+  "candidateClosure": 37,
+  "currentClosure": 36,
+  "currentEntries": [
+    "crate/dependency_summarization.mjs",
+    "crate/event_log.mjs",
+    "crate/page_formalization.mjs",
+    "crate/skill_procedure.mjs",
+    "crate/skill_procedure_artifact.mjs",
+    "crate/solver_formalization.mjs",
+    "crate/solver_event_projection.mjs",
+    "crate/round_trip_translation.mjs"
+  ],
+  "productionFilesGenerated": 0,
+  "scope": "read-only actual current generator import closure, not production compiled-skill implementation",
+  "sourceHead": "c1832e13071893b88954482de2d18129376fd270"
+}
+```

@@ -1,0 +1,23 @@
+# R1188-U21 dependency summarization ratchet. Written by
+# `node scripts/measure-dependency-summarization.mjs --write`; the CI gate
+# data/meta/ci-gates/check-text-summarization.lino fails when a value falls.
+# Shares are rounded down to three decimals; counts are exact.
+# Re-recorded for PR #1188 (the LEXEMES batch): the Spanish lexemes and the
+# total-surface ranking of shared surfaces let the summary keep more key
+# facts (retention 0.644 to 0.650) at a slightly longer summary, so the
+# compression floors fell by 0.002 to 0.005; the trade-off is recorded here.
+text-summarization-ratchet
+  source "scripts/measure-dependency-summarization.mjs"
+  corpus "data/benchmarks/dependency-summarization/corpus.lino"
+  documents 70
+  compression 0.639
+  key-fact-retention 0.65
+  duplicates-removed 78
+  pages-documents 40
+  pages-compression 0.637
+  pages-key-fact-retention 0.815
+  pages-duplicates-removed 34
+  issues-documents 30
+  issues-compression 0.64
+  issues-key-fact-retention 0.549
+  issues-duplicates-removed 44

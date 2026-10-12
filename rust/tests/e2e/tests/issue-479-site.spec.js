@@ -20,7 +20,7 @@
 const { test, expect } = require('@playwright/test');
 
 // Seed the shared preference store (Links-Notation format, identical to
-// issue-479.spec.js / issue-347.spec.js) so the rendered locale never depends
+// macos-gatekeeper-screenshots.spec.js / download-page.spec.js) so the rendered locale never depends
 // on the CI browser's Accept-Language header.
 function seedPreferences(data) {
   try {

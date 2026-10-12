@@ -1,0 +1,37 @@
+self_ast_census
+  target src/meta_reasoner/phrases.rs
+  language rust
+  fidelity signature
+  byte_len 4442
+  line_count 96
+  content_id source_module_12dd7474457c9fed
+  symbol_count 28
+  symbols
+    const CYCLE 12 12
+    const REQUEST_DEFINITION 14 14
+    const RECALL 16 16
+    const DOCUMENTED 18 18
+    const UNDERSTAND 20 20
+    const GROUNDED_VIA 22 22
+    const ACTING_ON 24 24
+    const MODIFIERS 26 26
+    const CLAUSE_HEAD 28 28
+    const NONE 30 30
+    const DECOMPOSE 32 32
+    const SUBGOAL_ITEM 34 34
+    const SUBGOAL 36 36
+    const SUBGOAL_PROGRAM 38 38
+    const ARROW 40 40
+    const NO_PROBE 42 42
+    const LEARNED 44 44
+    const COUNTEREXAMPLE 46 46
+    const SEARCH 48 48
+    const MEANING_GOAL 50 50
+    const LOOKUPS 52 52
+    const REASONING_LINE 54 54
+    const IMPASSE_HANDOFF 56 56
+    const GOAL_STATUS 58 58
+    const CHAIN 60 60
+    const COMPOSE 62 62
+    const ALTERNATIVES 64 64
+    function fill 71 96

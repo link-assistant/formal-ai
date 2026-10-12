@@ -1,0 +1,37 @@
+view
+  id M-081588903915
+  lemma reflection
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a calm, lengthy, intent consideration"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the phenomenon of a propagating wave (light or sound) being thrown back from a surface"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "expression without words"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a likeness in which left and right are reversed"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the image of something as reflected by a mirror (or other reflective material)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(mathematics) a transformation in which the direction of one axis is reversed"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a remark expressing careful consideration"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the ability to reflect beams or rays"
+    provenance (wordnet)

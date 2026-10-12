@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "part": 17,
+  "totalParts": 17,
+  "originalUnionIndexSHA256": "d5306369f33f1d32b5edccf82a4a71e4750a7b16bb7e92ccfda6ca6622a85ed1",
+  "originalLogicalMembersAcrossThisFiniteSelection": 443,
+  "logicalMembersThisPart": 443,
+  "currentControllerMembers": 4,
+  "selectedInputsThisPart": 407,
+  "sourceAndControllerInputBytes": 17288583,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 349,
+  "newEncodedBlobs": 316,
+  "reusedPreviousEncodedBlobs": 33,
+  "newCompressedBytes": 3919370,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 447
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 349
+    }
+  ],
+  "selectionSHA256": "4cd9e53a99448bb6363768689dbef611ec6e3b8987d4e3f33c712e013777fb50",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [],
+  "pending": [
+    "Hosted exact final-head CI",
+    "Native compiled execution",
+    "Remaining30 original requirements",
+    "Production delivery and credentials"
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

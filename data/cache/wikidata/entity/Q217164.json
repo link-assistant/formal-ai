@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "地板"
+        },
+        "es": {
+          "language": "es",
+          "value": "piso"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "कमरे में चलने के लिए उपयोग होने वाला अंग"
+        },
+        "es": {
+          "language": "es",
+          "value": "superficie inferior horizontal de un espacio arquitectónico"
         }
       },
       "aliases": {
@@ -46,6 +54,16 @@
           {
             "language": "zh",
             "value": "塗跤"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "planta"
+          },
+          {
+            "language": "es",
+            "value": "pavimento"
           }
         ]
       }

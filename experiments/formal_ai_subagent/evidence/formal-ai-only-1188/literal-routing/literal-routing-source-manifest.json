@@ -1,0 +1,42 @@
+[
+  {
+    "path": "js/agentic/general_planner.mjs",
+    "bytes": 25105,
+    "sha256": "0d1482065ec5dc408db9cf7acf6781ab3226e46e83bd4818fb2d438f179fdc6f"
+  },
+  {
+    "path": "js/agentic/general_execution.mjs",
+    "bytes": 19057,
+    "sha256": "96de5ba8bb9a9918cbe1f20dce63900e2ecf86b96c5afb65ec4f37206cefb281"
+  },
+  {
+    "path": "rust/src/agentic_coding/general_planner.rs",
+    "bytes": 27096,
+    "sha256": "2fbf5d4c8a8fb2ccc15611d47ee9a987cfdb6d4f15091bca798bd7794aefaa37"
+  },
+  {
+    "path": "rust/src/agentic_coding/general_planner/literal_request.rs",
+    "bytes": 17702,
+    "sha256": "7f6f27f5759bfe48d7b7ad9a1aa93dc7802ee37a3cd752b045d61ad3dc7b2499"
+  },
+  {
+    "path": "rust/src/agentic_coding/general_execution.rs",
+    "bytes": 33635,
+    "sha256": "c6cf461edef6e3bcbd845f286c1f94beffcb9e3bd3403418389c47cd87a7501a"
+  },
+  {
+    "path": "rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs",
+    "bytes": 6869,
+    "sha256": "5175438b156db25ac0811065cf19835df328261cf2cd53d5c7d060e96a1f66c1"
+  },
+  {
+    "path": "rust/tests/web/literal-write-request-scope.test.mjs",
+    "bytes": 4663,
+    "sha256": "38f4cd3dc5f9d82e63d994de9620a895061b1816e7a25d7379ed5ecd78ad81b0"
+  },
+  {
+    "path": "rust/tests/web/general-plan-event-append.test.mjs",
+    "bytes": 10324,
+    "sha256": "18f5ffb2f92965b8c66a377e230493e3bee8ac6751e23e317cd1126b8fcb5286"
+  }
+]

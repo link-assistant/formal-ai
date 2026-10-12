@@ -1,17 +1,20 @@
 Q376
   aliases
     en (chronoscope watch timepiece)
+    es (cronoscopio)
     hi ("घड़ी" "क्लॉक" "समयमापी यंत्र")
     ru ("хронометр")
     zh ("时钟" "钟" "鐘")
   descriptions
     en "instrument that measures the passage of time"
+    es "instrumento para medir el tiempo natural"
     hi "समय दीखनेका वस्"
     ru "прибор для измерения времени"
     zh "可報時的儀器"
   id Q376
   labels
     en clock
+    es reloj
     hi "घडी"
     ru "часы"
     zh "時鐘"

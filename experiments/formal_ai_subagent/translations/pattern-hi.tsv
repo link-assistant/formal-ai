@@ -1,0 +1,5 @@
+algorithm_discovery_summary	"{traces} trace(s) पर algorithm discovery: {candidates} candidate(s), {validated} held-out पर validated; यह केवल प्रस्ताव है, कोई algorithm execute नहीं किया गया।"
+algorithm_dreaming_applied	"Dreaming plan {path} पर लागू किया गया; {removed} event(s) हटाए गए, अनुमानित {bytes} byte(s) खाली किए जा सकते हैं, {amendments} meta-algorithm संशोधन, {patterns} दोहराए जाने वाले pattern(s) और {algorithms} execution-algorithm candidate(s) सीखे गए, {failures} विफल simulation(s) और {trials} dreaming trial(s) सुरक्षित रखे गए।"
+algorithm_empty_binding_name	"अमान्य binding {binding}; नाम खाली है"
+algorithm_invalid_binding	"अमान्य binding {binding}; NAME=VALUE अपेक्षित है"
+algorithm_observation_missing	"Observation फ़ाइल मौजूद नहीं है: {path}"

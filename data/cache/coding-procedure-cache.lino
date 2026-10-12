@@ -1,0 +1,12 @@
+# The rediscoverable coding-procedure cache (issue #1165, E130).
+#
+# Runtime cache, not knowledge. The policy that governs every row lives in
+# data/seed/program-cache-policy.lino. This file ships with no procedure rows
+# on purpose. A row appears here only after research_coding_skill_gap verified
+# a procedure against its expected output, and the committed rows may be
+# deleted by a test that then reproduces them through the same research path.
+coding_procedure_cache
+  version "1"
+  format_note
+    shape "procedure_<language>_<task> with language task rediscovery_query rediscovery_source entry verified_output content_id"
+    content_id "fnv1a64 of the entry program bytes, recomputed by the Rust reader on load"

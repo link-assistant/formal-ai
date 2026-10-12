@@ -1,0 +1,47 @@
+{
+  "lemma": "median",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06033170-n",
+      "partOfSpeech": "n",
+      "definition": "the number midway between the two middle numbers in a series containing an even or odd number of items",
+      "synonyms": [
+        "median value"
+      ]
+    },
+    {
+      "id": "oewn-01599054-s",
+      "partOfSpeech": "s",
+      "definition": "relating to or constituting the middle value of an ordered set of values (or the average of the middle two in a set with an even number of values)",
+      "examples": [
+        "the median value of 17, 20, and 36 is 20",
+        "the median income for the year was $15,000"
+      ],
+      "synonyms": [
+        "average"
+      ]
+    },
+    {
+      "id": "oewn-00782692-s",
+      "partOfSpeech": "s",
+      "definition": "dividing an animal into right and left halves",
+      "synonyms": [
+        "medial"
+      ]
+    },
+    {
+      "id": "oewn-00331928-s",
+      "partOfSpeech": "s",
+      "definition": "relating to or situated in or extending toward the middle",
+      "synonyms": [
+        "medial"
+      ]
+    }
+  ]
+}

@@ -2,10 +2,10 @@ self_ast_census
   target src/proof_engine/mod.rs
   language rust
   fidelity signature
-  byte_len 34534
-  line_count 598
-  content_id source_module_249cc2cbd9a27371
-  symbol_count 14
+  byte_len 7456
+  line_count 185
+  content_id source_module_87494cc7ddd652bf
+  symbol_count 11
   symbols
     module arithmetic 20 20
     module decision 21 21
@@ -14,10 +14,7 @@ self_ast_census
     module types 24 24
     function attempt_proof 42 57
     function attempt_proof_with_config 68 120
-    function enrich_partial_plan_with_deep_reasoning 127 145
-    function deep_formal_translation_step 147 177
-    function deep_relative_meta_logic_step 179 209
-    function mixed_godel_determinism 211 309
-    function godel_determinism_partial_plan 311 414
-    function missing_axiom_inputs 416 466
-    function generic_partial_plan 468 598
+    function enrich_partial_plan_with_deep_reasoning 128 145
+    function mixed_godel_determinism 147 167
+    function godel_determinism_partial_plan 169 176
+    function generic_partial_plan 178 185

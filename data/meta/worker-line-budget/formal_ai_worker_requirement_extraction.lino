@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_requirement_extraction.js"
+  ceiling 219
+  rationale "Browser twin of js/agentic/crate/requirement_extraction.mjs and rust/src/agentic_coding/requirement_extraction.rs (R1188-U20, 2026-10-08), which a classic worker cannot import: the requirement_list text transform of the handler rules lists exactly what the crate extractor returns, and rust/tests/web/requirement-listing-route.test.mjs holds the two equal over the whole issue-requirements benchmark corpus."

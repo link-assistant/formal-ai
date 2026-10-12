@@ -25,13 +25,16 @@ mod templates_listing;
 mod templates_stdin;
 mod types;
 
+use std::borrow::Cow;
+
 use crate::event_log::EventLog;
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
 
 pub use languages::PROGRAM_LANGUAGES;
 pub use tasks::PROGRAM_TASKS;
 pub use types::{
-    ExecutionStatus, ProgramExecution, ProgramLanguage, ProgramSpec, ProgramTask, ProgramTemplate,
+    CompiledTemplate, ExecutionStatus, ProgramExecution, ProgramLanguage, ProgramSpec, ProgramTask,
+    ProgramTemplate,
 };
 
 pub const WRITE_PROGRAM_INTENT: &str = "write_program";
@@ -40,10 +43,11 @@ pub fn record_algorithm_construction(log: &mut EventLog) {
     MetaAlgorithmBuilder::for_surface(CodingSurface::CodingCatalog).record(log);
 }
 
-/// Every program template, grouped by source file. The groups are split purely
-/// to keep each file under the repository's per-file line limit; semantically
-/// they form a single flat catalog, iterated via [`program_templates`].
-const TEMPLATE_GROUPS: &[&[ProgramTemplate]] = &[
+/// Every compiled program template, grouped by source file. The groups are
+/// split purely to keep each file under the repository's per-file line limit;
+/// semantically they form a single flat table, read through
+/// [`program_templates`].
+const TEMPLATE_GROUPS: &[&[CompiledTemplate]] = &[
     templates_core::TEMPLATES_CORE,
     templates_listing::TEMPLATES_LISTING,
     templates_extended::TEMPLATES_EXTENDED,
@@ -51,20 +55,151 @@ const TEMPLATE_GROUPS: &[&[ProgramTemplate]] = &[
     templates_framework::TEMPLATES_FRAMEWORK,
 ];
 
-/// Iterate over every program template across all groups.
+/// A catalog pair the documentation route answers (issue #1165 R1165-4/6):
+/// the program it rediscovers and the row its run contract binds.
+pub struct DocumentedPair {
+    /// The task slug.
+    pub task_slug: &'static str,
+    /// The catalog row with the file and commands the documented program
+    /// binds (`HelloWorldApp.java` and `javac HelloWorldApp.java`).
+    pub language: ProgramLanguage,
+    /// The rediscovered program, its contract and its deviation.
+    pub program: crate::discovery_production::DocumentedProgram,
+}
+
+/// The catalog's runtime tables: every program it answers with, and the
+/// pairs the documentation route answers.
+struct CatalogTable {
+    templates: Vec<ProgramTemplate>,
+    documented: Vec<DocumentedPair>,
+}
+
+/// The catalog row a documented program binds: the base row with the file it
+/// is saved as and its commands taken from the program's run contract.
+fn bound_language(
+    base: &ProgramLanguage,
+    contract: &crate::discovery_production::DocumentedContract,
+) -> ProgramLanguage {
+    let command = |role: &str| {
+        contract
+            .commands
+            .iter()
+            .find(|command| command.role == role)
+            .map(|command| Cow::Owned(command.command.clone()))
+    };
+    let mut language = base.clone();
+    language.save_as = Cow::Owned(contract.save_as.clone());
+    language.execution.check_command = command("check");
+    if let Some(run) = command("run") {
+        language.execution.run_command = run;
+    }
+    language
+}
+
+/// The catalog's tables, built once at runtime (issue #1165 R1165-4).
+///
+/// The compiled groups come first; then every pair the seed bundle retires to
+/// the documentation route (`program_source "documentation_route"` in
+/// `data/seed/hello-world-programs.lino`) takes the program the documentation
+/// captures rediscover for it, and the row its run contract binds. A retired
+/// pair whose captures yield no verified program has no template.
+fn catalog_table() -> &'static CatalogTable {
+    static TABLE: std::sync::OnceLock<CatalogTable> = std::sync::OnceLock::new();
+    TABLE.get_or_init(|| {
+        let mut templates: Vec<ProgramTemplate> = TEMPLATE_GROUPS
+            .iter()
+            .copied()
+            .flatten()
+            .map(ProgramTemplate::from)
+            .collect();
+        let mut documented = Vec::new();
+        for program in crate::discovery_production::documented_catalog_programs() {
+            let (Some(task), Some(language), Ok(rediscovered)) = (
+                program_task_by_slug(&program.task),
+                program_language_by_slug(&program.language),
+                program.rediscovered,
+            ) else {
+                continue;
+            };
+            let compiled = templates.iter().any(|template| {
+                template.task_slug == task.slug && template.language_slug == language.slug
+            });
+            if compiled {
+                continue;
+            }
+            templates.push(ProgramTemplate {
+                task_slug: task.slug,
+                language_slug: language.slug,
+                code: Cow::Owned(rediscovered.recipe.entry.clone()),
+            });
+            documented.push(DocumentedPair {
+                task_slug: task.slug,
+                language: bound_language(language, &rediscovered.contract),
+                program: rediscovered,
+            });
+        }
+        CatalogTable {
+            templates,
+            documented,
+        }
+    })
+}
+
+/// Iterate over every program template the catalog answers with.
 pub fn program_templates() -> impl Iterator<Item = &'static ProgramTemplate> {
-    TEMPLATE_GROUPS.iter().copied().flatten()
+    catalog_table().templates.iter()
 }
 
 /// Total number of templates in the catalog (used for diagnostics).
 #[must_use]
 pub fn program_template_count() -> usize {
-    TEMPLATE_GROUPS.iter().map(|group| group.len()).sum()
+    catalog_table().templates.len()
+}
+
+/// The pair the documentation route answers, when it answers this one.
+#[must_use]
+pub fn documented_pair(task_slug: &str, language_slug: &str) -> Option<&'static DocumentedPair> {
+    catalog_table()
+        .documented
+        .iter()
+        .find(|pair| pair.task_slug == task_slug && pair.language.slug == language_slug)
+}
+
+/// Every catalog language row, with each command a captured documentation
+/// page states taken from that page (issue #1165 R1165-6).
+///
+/// [`PROGRAM_LANGUAGES`] leaves such a command empty; the policy seed's
+/// `command_procedure` rows name the page and the `command_verb` its line starts with,
+/// and [`crate::discovery_production::documented_language_commands`] derives
+/// the command with the page's file name bound to the row's. Built once.
+#[must_use]
+pub fn program_languages() -> &'static [ProgramLanguage] {
+    static LANGUAGES: std::sync::OnceLock<Vec<ProgramLanguage>> = std::sync::OnceLock::new();
+    LANGUAGES.get_or_init(|| {
+        PROGRAM_LANGUAGES
+            .iter()
+            .map(|base| {
+                let mut language = base.clone();
+                for command in crate::discovery_production::documented_language_commands(
+                    base.slug,
+                    &base.save_as,
+                ) {
+                    let stated = Cow::Owned(command.command);
+                    if command.role == "check" {
+                        language.execution.check_command = Some(stated);
+                    } else {
+                        language.execution.run_command = stated;
+                    }
+                }
+                language
+            })
+            .collect()
+    })
 }
 
 #[must_use]
 pub fn program_language_by_slug(slug: &str) -> Option<&'static ProgramLanguage> {
-    PROGRAM_LANGUAGES
+    program_languages()
         .iter()
         .find(|language| language.slug == slug)
 }
@@ -80,11 +215,16 @@ pub fn program_template(task_slug: &str, language_slug: &str) -> Option<&'static
         .find(|template| template.task_slug == task_slug && template.language_slug == language_slug)
 }
 
+/// The `(task, language, template)` triple a request resolves to; a pair the
+/// documentation route answers runs with the row its program binds.
 #[must_use]
 pub fn program_spec(task_slug: &str, language_slug: &str) -> Option<ProgramSpec> {
+    let language = documented_pair(task_slug, language_slug)
+        .map(|pair| &pair.language)
+        .or_else(|| program_language_by_slug(language_slug))?;
     Some(ProgramSpec {
         task: program_task_by_slug(task_slug)?,
-        language: program_language_by_slug(language_slug)?,
+        language,
         template: program_template(task_slug, language_slug)?,
     })
 }
@@ -119,11 +259,11 @@ pub fn program_language_by_alias(normalized: &str) -> Option<&'static ProgramLan
     // hardest to satisfy. Framework rows are therefore consulted first. Nothing
     // else changes: with no framework named, this is the same first-match scan
     // over [`PROGRAM_LANGUAGES`] it has always been.
-    PROGRAM_LANGUAGES
+    program_languages()
         .iter()
         .find(|language| language.is_framework() && names_target(normalized, language))
         .or_else(|| {
-            PROGRAM_LANGUAGES
+            program_languages()
                 .iter()
                 .find(|language| names_target(normalized, language))
         })
@@ -162,7 +302,7 @@ pub fn program_task_by_alias(normalized: &str) -> Option<&'static ProgramTask> {
 
 #[must_use]
 pub fn supported_program_languages() -> String {
-    PROGRAM_LANGUAGES
+    program_languages()
         .iter()
         .map(|language| language.slug)
         .collect::<Vec<_>>()
@@ -242,12 +382,19 @@ fn contains_token(normalized: &str, expected: &str) -> bool {
     normalized.split_whitespace().any(|token| token == expected)
 }
 
+/// A whitespace-bounded phrase.
+///
+/// A Han character beside a Latin phrase is a word boundary too, as it is for [`contains_token`]: an ordinary Chinese
+/// request writes `写一个hello world程序` with no spaces around the phrase.
 fn contains_phrase(normalized: &str, expected: &str) -> bool {
     if contains_cjk(expected) {
         return normalized.contains(expected);
     }
-    normalized == expected
-        || normalized.starts_with(&format!("{expected} "))
-        || normalized.ends_with(&format!(" {expected}"))
-        || normalized.contains(&format!(" {expected} "))
+    let is_boundary =
+        |character: char| character.is_whitespace() || contains_cjk(&character.to_string());
+    normalized.match_indices(expected).any(|(index, _)| {
+        let before = normalized[..index].chars().next_back();
+        let after = normalized[index + expected.len()..].chars().next();
+        before.is_none_or(is_boundary) && after.is_none_or(is_boundary)
+    })
 }

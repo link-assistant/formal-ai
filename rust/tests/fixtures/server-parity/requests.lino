@@ -1,0 +1,807 @@
+# The server parity contract corpus (R1013).
+#
+# scripts/check-server-parity.mjs starts the JavaScript server
+# (js/server/main.mjs) and the Rust server (`formal-ai serve`) side by side,
+# both with the bearer token below and a fresh memory file, sends every request
+# here to each in order, and compares status, content type, the CORS and
+# deprecation headers, and the normalized body. `route` names the
+# data/meta/server-routes.lino row the request exercises (empty for requests
+# no route serves), and every manifest route appears at least once.
+# `auth` picks the credentials - bearer (default), none, wrong, api_key or
+# goog_api_key. A `header` value may name `{host}`, the address of the server
+# the request is sent to. Bodies are single-quoted so JSON needs no escaping
+# (an apostrophe, quote, backslash or newline inside a JSON string is written
+# as its \u escape, since the parser unescapes the rest). `agent_mode true`
+# sends the request to a second server pair started with --agent-mode, where
+# the deterministic agentic planner answers tool-bearing requests (R1015).
+server_parity_requests
+  bearer_token parity-token
+  request options_preflight
+    route options_preflight
+    method OPTIONS
+    path '/v1/chat/completions'
+    auth none
+  request head_root
+    route head_probe
+    method HEAD
+    path '/'
+    auth none
+  request head_health
+    route head_probe
+    method HEAD
+    path '/health'
+    auth none
+  request head_anthropic
+    route head_probe_vendor
+    method HEAD
+    path '/api/anthropic'
+  request head_openai
+    route head_probe_vendor
+    method HEAD
+    path '/api/openai'
+  request head_gemini
+    route head_probe_vendor
+    method HEAD
+    path '/api/gemini'
+  request head_formal_ai
+    route head_probe_vendor
+    method HEAD
+    path '/api/formal-ai'
+  request head_vertex
+    route head_probe_vendor
+    method HEAD
+    path '/api/vertex'
+  request head_hello
+    route head_probe_vendor
+    method HEAD
+    path '/api/hello'
+  request head_anthropic_hello
+    route head_probe_vendor
+    method HEAD
+    path '/api/anthropic/api/hello'
+  request head_vendor_unauthorized
+    route head_probe_vendor
+    method HEAD
+    path '/api/openai'
+    auth none
+  request api_hello
+    route api_hello
+    method GET
+    path '/api/hello'
+  request api_hello_anthropic
+    route api_hello
+    method GET
+    path '/api/anthropic/api/hello'
+  request health
+    route health
+    method GET
+    path '/health'
+    auth none
+  request health_post_not_found
+    method POST
+    path '/health'
+    auth none
+    body '{}'
+  request models
+    route models
+    method GET
+    path '/v1/models'
+  request models_openai
+    route models
+    method GET
+    path '/api/openai/v1/models'
+  request models_unauthorized
+    route models
+    method GET
+    path '/v1/models'
+    auth none
+  request models_wrong_token
+    route models
+    method GET
+    path '/v1/models'
+    auth wrong
+  request models_api_key
+    route models
+    method GET
+    path '/v1/models'
+    auth api_key
+  request network
+    route network
+    method GET
+    path '/v1/network'
+  request network_formal_ai
+    route network
+    method GET
+    path '/api/formal-ai/v1/network'
+  request network_dot
+    route network
+    method GET
+    path '/v1/network?format=dot'
+  request network_unknown_trace
+    route network
+    method GET
+    path '/v1/network?trace=server-parity-unknown'
+  request network_graph_alias
+    route network_graph_alias
+    method GET
+    path '/v1/graph'
+  request network_graph_alias_formal_ai
+    route network_graph_alias
+    method GET
+    path '/api/formal-ai/v1/graph'
+  request bundle
+    route bundle
+    method GET
+    path '/v1/bundle'
+  request links
+    route links
+    method GET
+    path '/v1/links'
+  request links_query_json
+    route links_query
+    method POST
+    path '/v1/links/query'
+    body '{"query":"MATCH (a)-[r]->(b) RETURN a, r, b"}'
+  request links_query_lino
+    route links_query
+    method POST
+    path '/api/formal-ai/v1/links/query'
+    body 'links_query\n  query "MATCH (a)-[r]->(b) RETURN a, r, b"\n'
+  request links_query_missing
+    route links_query
+    method POST
+    path '/v1/links/query'
+    body '{}'
+  request links_query_invalid
+    route links_query
+    method POST
+    path '/v1/links/query'
+    body '{"query":"NOT A QUERY"}'
+  request memory_empty
+    route memory
+    method GET
+    path '/v1/memory'
+  request memory_since_empty
+    route memory_since
+    method GET
+    path '/v1/memory/since?event=server_parity_event_1'
+  request memory_import
+    route memory_import
+    method POST
+    path '/v1/memory/import'
+    body 'demo_memory\n  event "server_parity_event_1"\n    kind "message"\n    role "user"\n    content "Parity import one"\n  event "server_parity_event_2"\n    kind "message"\n    role "assistant"\n    content "Parity import two"\n'
+  request memory_import_again
+    route memory_import
+    method POST
+    path '/api/formal-ai/v1/memory/import'
+    body 'demo_memory\n  event "server_parity_event_1"\n    kind "message"\n    role "user"\n    content "Parity import one"\n  event "server_parity_event_2"\n    kind "message"\n    role "assistant"\n    content "Parity import two"\n'
+  request memory_after_import
+    route memory
+    method GET
+    path '/api/formal-ai/v1/memory'
+  request memory_since_after_import
+    route memory_since
+    method GET
+    path '/v1/memory/since?event=server_parity_event_1'
+  request memory_import_recall_facts
+    route memory_import
+    method POST
+    path '/v1/memory/import'
+    body 'demo_memory\n  event "server_parity_recall_1"\n    kind "message"\n    role "user"\n    content "Zebra stripes are my favourite pattern"\n    conversationId "parity-recall"\n    conversationTitle "Parity recall"\n  event "server_parity_recall_2"\n    kind "message"\n    role "user"\n    content "Quokka smiles make my day"\n  event "server_parity_amendment_1"\n    kind "meta_algorithm_amendment"\n    inputs "topic=quokka"\n    outputs "rule=Mention that quokkas live on Rottnest Island."\n  event "server_parity_amendment_2"\n    kind "meta_algorithm_amendment"\n    inputs "topic=arithmetic"\n    outputs "rule=Show the operands before the result."\n'
+  request chat_memory_recall
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Did I mention zebra stripes?"}]}'
+  request responses_memory_recall_amended
+    route responses
+    method POST
+    path '/v1/responses'
+    body '{"model":"formal-ai","input":"Did I mention quokka smiles?"}'
+  request chat_memory_recall_missing
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Did I mention platypus eggs?"}]}'
+  request chat_memory_link_count
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"How many links are in your memory?"}]}'
+  request chat_standing_requirement
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Arithmetic: what is 2 + 2?"}]}'
+  request chat_basic
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request chat_openai_path
+    route chat_completions
+    method POST
+    path '/api/openai/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request chat_alias_model
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"latest","messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request chat_content_parts
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":[{"type":"text","text":"What is 2 + 2?"}]}]}'
+  request chat_null_content
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"system","content":null},{"role":"user","content":"What is 2 + 2?"}]}'
+  request chat_stream
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"What is 2 + 2?"}],"stream":true}'
+  request chat_stream_usage
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"What is 2 + 2?"}],"stream":true,"stream_options":{"include_usage":true}}'
+  request chat_tools_refused
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"list the files here"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object"}}}]}'
+  request chat_tools_refused_stream
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"formal-ai","stream":true,"messages":[{"role":"user","content":"list the files here"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object"}}}]}'
+  request chat_unsupported_model
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"model":"gpt-unknown-9","messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request chat_invalid_json
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{not json'
+  request chat_invalid_type
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    body '{"messages":"not a list"}'
+  request chat_unauthorized
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    auth none
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request responses_basic
+    route responses
+    method POST
+    path '/v1/responses'
+    body '{"model":"formal-ai","input":"What is 2 + 2?"}'
+  request responses_openai_path
+    route responses
+    method POST
+    path '/api/openai/v1/responses'
+    body '{"model":"formal-ai","input":"What is 2 + 2?"}'
+  request responses_input_items
+    route responses
+    method POST
+    path '/v1/responses'
+    body '{"model":"formal-ai","instructions":"Answer briefly.","input":[{"role":"user","content":[{"type":"input_text","text":"What is 2 + 2?"}]}]}'
+  request responses_stream
+    route responses
+    method POST
+    path '/v1/responses'
+    body '{"model":"formal-ai","input":"What is 2 + 2?","stream":true}'
+  request responses_tools_refused
+    route responses
+    method POST
+    path '/v1/responses'
+    body '{"model":"formal-ai","input":"list the files here","tools":[{"type":"function","name":"bash","parameters":{"type":"object"}}]}'
+  request responses_unsupported_model
+    route responses
+    method POST
+    path '/v1/responses'
+    body '{"model":"gpt-unknown-9","input":"What is 2 + 2?"}'
+  request responses_invalid_json
+    route responses
+    method POST
+    path '/v1/responses'
+    body '{not json'
+  request messages_basic
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    body '{"model":"formal-ai","max_tokens":256,"messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request messages_anthropic_path
+    route anthropic_messages
+    method POST
+    path '/api/anthropic/v1/messages'
+    body '{"model":"formal-ai","max_tokens":256,"messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request messages_system_blocks
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    body '{"model":"formal-ai","max_tokens":256,"system":[{"type":"text","text":"Answer briefly."}],"messages":[{"role":"user","content":[{"type":"text","text":"What is 2 + 2?"}]}]}'
+  request messages_stream
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    body '{"model":"formal-ai","max_tokens":256,"stream":true,"messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request messages_tools_refused
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    body '{"model":"formal-ai","max_tokens":256,"messages":[{"role":"user","content":"list the files here"}],"tools":[{"name":"bash","input_schema":{"type":"object"}}]}'
+  request messages_unsupported_model
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    body '{"model":"claude-unknown-9","max_tokens":256,"messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request messages_invalid_json
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    body '{not json'
+  request messages_x_api_key
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    auth api_key
+    body '{"model":"formal-ai","max_tokens":256,"messages":[{"role":"user","content":"What is 2 + 2?"}]}'
+  request mcp_initialize
+    route mcp
+    method POST
+    path '/mcp'
+    body '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"server-parity","version":"1"}}}'
+  request mcp_tools_list
+    route mcp
+    method POST
+    path '/mcp'
+    body '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
+  request mcp_unknown_method
+    route mcp
+    method POST
+    path '/mcp'
+    body '{"jsonrpc":"2.0","id":3,"method":"server/parity"}'
+  request mcp_parse_error
+    route mcp
+    method POST
+    path '/mcp'
+    body '{not json'
+  request mcp_same_origin
+    route mcp
+    method POST
+    path '/mcp'
+    header 'origin: http://{host}'
+    body '{"jsonrpc":"2.0","id":4,"method":"tools/list"}'
+  request mcp_foreign_origin
+    route mcp
+    method POST
+    path '/mcp'
+    header 'origin: http://parity.invalid'
+    body '{"jsonrpc":"2.0","id":5,"method":"tools/list"}'
+  request mcp_unauthorized
+    route mcp
+    method POST
+    path '/mcp'
+    auth none
+    body '{"jsonrpc":"2.0","id":6,"method":"tools/list"}'
+  request mcp_stream_get
+    route mcp_stream
+    method GET
+    path '/mcp'
+  request telegram_message
+    route telegram_webhook
+    method POST
+    path '/telegram/webhook'
+    auth none
+    body '{"update_id":1,"message":{"message_id":1,"date":1,"chat":{"id":1,"type":"private"},"from":{"id":1,"is_bot":false,"first_name":"Parity"},"text":"What is 2 + 2?"}}'
+  request telegram_no_message
+    route telegram_webhook
+    method POST
+    path '/telegram/webhook'
+    auth none
+    body '{"update_id":2}'
+  request telegram_invalid_json
+    route telegram_webhook
+    method POST
+    path '/telegram/webhook'
+    auth none
+    body '{not json'
+  request conversation_missing
+    route conversation_context
+    method GET
+    path '/v1/conversations/server-parity-dialog'
+  request conversation_missing_formal_ai
+    route conversation_context
+    method GET
+    path '/api/formal-ai/v1/conversations/server-parity-dialog?format=json'
+  request conversation_learn_missing
+    route conversation_learn
+    method POST
+    path '/v1/conversations/server-parity-dialog/learn'
+  request debug_session_disabled
+    route debug_session
+    method POST
+    path '/v1/debug/advance'
+    body '{"token":"server-parity"}'
+  request gemini_models
+    route gemini_models
+    method GET
+    path '/api/gemini/v1beta/models'
+  request gemini_model
+    route gemini_model
+    method GET
+    path '/api/gemini/v1beta/models/formal-ai'
+  request gemini_model_prefixed
+    route gemini_model
+    method GET
+    path '/api/gemini/v1beta/models/models/formal-ai'
+  request gemini_generate
+    route gemini_generate_content
+    method POST
+    path '/api/gemini/v1beta/models/formal-ai:generateContent'
+    body '{"contents":[{"role":"user","parts":[{"text":"What is 2 + 2?"}]}]}'
+  request gemini_stream
+    route gemini_stream_generate_content
+    method POST
+    path '/api/gemini/v1beta/models/formal-ai:streamGenerateContent'
+    body '{"contents":[{"role":"user","parts":[{"text":"What is 2 + 2?"}]}]}'
+  request gemini_vendor_model
+    route gemini_generate_content
+    method POST
+    path '/api/gemini/v1beta/models/gemini-2.5-flash:generateContent'
+    body '{"contents":[{"role":"user","parts":[{"text":"What is 2 + 2?"}]}]}'
+  request gemini_unsupported_model
+    route gemini_generate_content
+    method POST
+    path '/api/gemini/v1beta/models/parity-unknown:generateContent'
+    body '{"contents":[{"role":"user","parts":[{"text":"What is 2 + 2?"}]}]}'
+  request gemini_invalid_json
+    route gemini_generate_content
+    method POST
+    path '/api/gemini/v1beta/models/formal-ai:generateContent'
+    body '{not json'
+  request gemini_goog_api_key
+    route gemini_models
+    method GET
+    path '/api/gemini/v1beta/models'
+    auth goog_api_key
+  request vertex_models
+    route vertex_models
+    method GET
+    path '/api/vertex/v1/projects/parity/locations/us-central1/publishers/google/models'
+  request vertex_generate
+    route vertex_generate_content
+    method POST
+    path '/api/vertex/v1/projects/parity/locations/us-central1/publishers/google/models/formal-ai:generateContent'
+    body '{"contents":[{"role":"user","parts":[{"text":"What is 2 + 2?"}]}]}'
+  request vertex_stream
+    route vertex_stream_generate_content
+    method POST
+    path '/api/vertex/v1/projects/parity/locations/us-central1/publishers/google/models/formal-ai:streamGenerateContent'
+    body '{"contents":[{"role":"user","parts":[{"text":"What is 2 + 2?"}]}]}'
+  request telegram_code_execution_refused
+    route telegram_webhook
+    method POST
+    path '/telegram/webhook'
+    auth none
+    body '{"update_id":3,"message":{"message_id":3,"date":1,"chat":{"id":1,"type":"private"},"from":{"id":1,"is_bot":false,"first_name":"Parity"},"text":"Run this and tell me exactly what it prints: print(sum(range(1, 11)))"}}'
+  request chat_learning_trace
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    header 'X-Formal-AI-Dialog-ID: server-parity-learning'
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Напиши мне программу на Rust, которая выдаёт список файлов в текущей директории"},{"role":"assistant","content":"Вот минимальная программа на языке Rust (list files in the current directory):\u000a\u000a```rust\u000ause std::fs;\u000a\u000afn main() -> std::io::Result<()> {\u000a    let mut names: Vec<String> = fs::read_dir(\u0022.\u0022)?\u000a        .filter_map(Result::ok)\u000a        .filter(|entry| entry.path().is_file())\u000a        .map(|entry| entry.file_name().to_string_lossy().into_owned())\u000a        .collect();\u000a    names.sort();\u000a    for name in names {\u000a        println!(\u0022{name}\u0022);\u000a    }\u000a    Ok(())\u000a}\u000a```\u000a\u000aСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\u000aCheck command: `rustc main.rs -o main`\u000aRun command: `./main`\u000aВывод:\u000a```text\u000aREADME.md\u000adata.txt\u000amain.rs\u000a```\u000a1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\u000a\u000aКак это работает:\u000aПрограмма читает содержимое текущего каталога, оставляет только обычные файлы, собирает их имена в список, сортирует список по алфавиту и печатает каждое имя на отдельной строке.\u000a\u000aКак проверить это самостоятельно:\u000a1. Установите инструментарий: the Rust toolchain from https://rustup.rs.\u000a2. Сохраните приведённый выше код в файл `main.rs`.\u000a3. Проверьте, что код компилируется: `rustc main.rs -o main`.\u000a4. Запустите программу: `./main`.\u000a5. Сравните вывод с разделом ожидаемого вывода выше."},{"role":"user","content":"Сделай так, чтобы программа принимала путь как аргумент"},{"role":"assistant","content":"Вот минимальная программа на языке Rust (list files in the directory given as a path argument):\u000a\u000a```rust\u000ause std::env;\u000ause std::fs;\u000a\u000afn main() {\u000a    let path = env::args().nth(1).unwrap_or_else(|| String::from(\u0022.\u0022));\u000a    let mut names: Vec<String> = fs::read_dir(&path)\u000a        .expect(\u0022failed to read directory\u0022)\u000a        .filter_map(|entry| entry.ok())\u000a        .filter(|entry| entry.path().is_file())\u000a        .map(|entry| entry.file_name().to_string_lossy().into_owned())\u000a        .collect();\u000a    names.sort();\u000a    for name in names {\u000a        println!(\u0022{name}\u0022);\u000a    }\u000a}\u000a```\u000a\u000aСтатус выполнения: скомпилировано и запущено в среде «issue-8 local verification harness (isolated sandbox)».\u000aCheck command: `rustc main.rs -o main`\u000aRun command: `./main`\u000aВывод:\u000a```text\u000aREADME.md\u000adata.txt\u000amain.rs\u000a```\u000a1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.\u000a\u000aКак это работает:\u000aПрограмма берёт путь к каталогу из первого аргумента командной строки (если аргумент не задан, используется текущий каталог), читает содержимое этого каталога, оставляет только обычные файлы, сортирует их имена по алфавиту и печатает каждое имя на отдельной строке.\u000a\u000aПроверьте обновлённую программу так же, как и раньше: сохраните код в файл `main.rs` и снова выполните `./main`."},{"role":"user","content":"Сделай сортировку результатов в обратном порядке"}]}'
+  request conversation_learn_recorded
+    route conversation_learn
+    method POST
+    path '/v1/conversations/server-parity-learning/learn'
+  request not_found_v1
+    method GET
+    path '/v1/server-parity-missing'
+  request not_found_v1_unauthorized
+    method GET
+    path '/v1/server-parity-missing'
+    auth none
+  request not_found_root
+    method GET
+    path '/server-parity-missing'
+    auth none
+  # Agent-mode requests (R1015) - sent to a second server pair started with
+  # --agent-mode, so the deterministic agentic planner answers them.
+  request agent_shell_show_current_directory
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"show current directory"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_show_environment
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"show environment variables"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_copy_file
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"copy a.txt to b.txt"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_git_changes
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"what changed in git"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_search_todo
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"search for TODO in the code"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_delete_en
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"delete the file old.txt"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_delete_ru
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"удали файл old.txt"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_delete_hi
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"फ़ाइल old.txt हटाओ"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_delete_zh
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"删除文件 old.txt"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_opencode_quotes
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"\u0022execute echo ISSUE749_OPENCODE_TWO_WORDS SECOND_ARGUMENT\u0022"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_delete_step_two
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"delete the file old.txt"},{"role":"assistant","content":null,"tool_calls":[{"id":"call_0","type":"function","function":{"name":"run_shell_command","arguments":"{\u0022command\u0022:\u0022rm old.txt\u0022,\u0022is_background\u0022:false}"}}]},{"role":"tool","tool_call_id":"call_0","name":"run_shell_command","content":"Command: rm old.txt\u000aOutput: (empty)\u000aExit Code: 0"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_shell_pwd_done
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"show current directory"},{"role":"assistant","content":null,"tool_calls":[{"id":"call_0","type":"function","function":{"name":"run_shell_command","arguments":"{\u0022command\u0022:\u0022pwd\u0022,\u0022is_background\u0022:false}"}}]},{"role":"tool","tool_call_id":"call_0","name":"run_shell_command","content":"Command: pwd\u000aOutput: /tmp/work\u000aExit Code: 0"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_responses_cmd_date
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"execute date","tools":[{"type":"function","name":"exec_command","parameters":{"type":"object","properties":{"cmd":{"type":"string"}},"required":["cmd"],"additionalProperties":false}}]}'
+  request agent_responses_cmd_echo
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"run bash: echo hi there","tools":[{"type":"function","name":"exec_command","parameters":{"type":"object","properties":{"cmd":{"type":"string"}},"required":["cmd"],"additionalProperties":false}}]}'
+  request agent_responses_cmd_sort
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"execute sort names.txt","tools":[{"type":"function","name":"exec_command","parameters":{"type":"object","properties":{"cmd":{"type":"string"}},"required":["cmd"],"additionalProperties":false}}]}'
+  request agent_responses_cmd_bash_c
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"bash -c \u0027printf hello\u0027","tools":[{"type":"function","name":"exec_command","parameters":{"type":"object","properties":{"cmd":{"type":"string"}},"required":["cmd"],"additionalProperties":false}}]}'
+  request agent_responses_cmd_powershell
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"powershell Get-ChildItem","tools":[{"type":"function","name":"exec_command","parameters":{"type":"object","properties":{"cmd":{"type":"string"}},"required":["cmd"],"additionalProperties":false}}]}'
+  request agent_responses_shell_cmd
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"Run the ls command to list files in the current directory.","tools":[{"type":"function","name":"shell","parameters":{"type":"object","properties":{"cmd":{"type":"string"}},"required":["cmd"]}}]}'
+  request agent_responses_bash_command
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"Run the ls command to list files in the current directory.","tools":[{"type":"function","name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}]}'
+  request agent_responses_stream_shell
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"execute date","tools":[{"type":"function","name":"exec_command","parameters":{"type":"object","properties":{"cmd":{"type":"string"}},"required":["cmd"],"additionalProperties":false}}],"stream":true}'
+  request agent_chat_stream_shell
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"show current directory"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}},{"type":"function","function":{"name":"web_search","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}],"stream":true}'
+  request agent_responses_formalize
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":"Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base.","tools":[{"type":"function","name":"web_search","parameters":{"type":"object"}}]}'
+  request agent_responses_formalize_fetch
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":[{"type":"message","role":"user","content":"Formalize the fisherman tale into links notation."},{"type":"function_call","call_id":"call_1","name":"web_search","arguments":"{\u0022query\u0022:\u0022Сказка о рыбаке и рыбке\u0022}"},{"type":"function_call_output","call_id":"call_1","output":"1. ru.wikisource.org — full text"}],"tools":[{"type":"function","name":"web_search","parameters":{"type":"object"}},{"type":"function","name":"web_fetch","parameters":{"type":"object"}}]}'
+  request agent_responses_formalize_final
+    route responses
+    method POST
+    path '/v1/responses'
+    agent_mode true
+    body '{"model":"formal-ai","input":[{"type":"message","role":"user","content":"Formalize the fisherman tale into links notation."},{"type":"function_call","call_id":"call_1","name":"web_search","arguments":"{}"},{"type":"function_call_output","call_id":"call_1","output":"ru.wikisource.org"}],"tools":[{"type":"function","name":"web_search","parameters":{"type":"object"}}]}'
+  request agent_messages_formalize
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    agent_mode true
+    body '{"model":"formal-ai","max_tokens":256,"messages":[{"role":"user","content":"Formalize «Сказка о рыбаке и рыбке» into a Links Notation knowledge base."}],"tools":[{"name":"web_search","input_schema":{"type":"object","properties":{"query":{"type":"string"}}}}]}'
+  request agent_messages_shell
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    agent_mode true
+    body '{"model":"formal-ai","max_tokens":256,"messages":[{"role":"user","content":"show current directory"}],"tools":[{"name":"bash","input_schema":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}]}'
+  request agent_messages_shell_stream
+    route anthropic_messages
+    method POST
+    path '/v1/messages'
+    agent_mode true
+    body '{"model":"formal-ai","max_tokens":256,"stream":true,"messages":[{"role":"user","content":"show current directory"}],"tools":[{"name":"bash","input_schema":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}]}'
+  request agent_gemini_shell
+    route gemini_generate_content
+    method POST
+    path '/api/gemini/v1beta/models/formal-ai:generateContent'
+    agent_mode true
+    body '{"contents":[{"role":"user","parts":[{"text":"show current directory"}]}],"tools":[{"functionDeclarations":[{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}]}]}'
+  request agent_tool_choice_without_tools
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"show current directory"}],"tool_choice":"auto"}'
+  request agent_non_agentic_task
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"What is 2 + 2?"}],"tools":[{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"},"is_background":{"type":"boolean"}},"required":["command","is_background"],"additionalProperties":false}}}]}'
+  request agent_no_tools_chat
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Hi"}]}'
+  request agent_opencode_read
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"read the file alpha.txt and print its contents"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"write","parameters":{"type":"object","properties":{"filePath":{"type":"string"},"content":{"type":"string"}},"required":["filePath","content"]}}},{"type":"function","function":{"name":"grep","parameters":{"type":"object","properties":{"pattern":{"type":"string"}},"required":["pattern"]}}},{"type":"function","function":{"name":"webfetch","parameters":{"type":"object","properties":{"url":{"type":"string"},"format":{"type":"string"}},"required":["url"]}}},{"type":"function","function":{"name":"websearch","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_opencode_write
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"create a file hello.txt with the content: Hello, world!"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"write","parameters":{"type":"object","properties":{"filePath":{"type":"string"},"content":{"type":"string"}},"required":["filePath","content"]}}},{"type":"function","function":{"name":"grep","parameters":{"type":"object","properties":{"pattern":{"type":"string"}},"required":["pattern"]}}},{"type":"function","function":{"name":"webfetch","parameters":{"type":"object","properties":{"url":{"type":"string"},"format":{"type":"string"}},"required":["url"]}}},{"type":"function","function":{"name":"websearch","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_opencode_search
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"search the web for the latest Rust release"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"write","parameters":{"type":"object","properties":{"filePath":{"type":"string"},"content":{"type":"string"}},"required":["filePath","content"]}}},{"type":"function","function":{"name":"grep","parameters":{"type":"object","properties":{"pattern":{"type":"string"}},"required":["pattern"]}}},{"type":"function","function":{"name":"webfetch","parameters":{"type":"object","properties":{"url":{"type":"string"},"format":{"type":"string"}},"required":["url"]}}},{"type":"function","function":{"name":"websearch","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_opencode_repeated
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"show current directory"},{"role":"assistant","content":null,"tool_calls":[{"id":"call_a","type":"function","function":{"name":"bash","arguments":"{\u0022command\u0022:\u0022pwd\u0022}"}}]},{"role":"tool","tool_call_id":"call_a","name":"bash","content":"/tmp/work"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"write","parameters":{"type":"object","properties":{"filePath":{"type":"string"},"content":{"type":"string"}},"required":["filePath","content"]}}},{"type":"function","function":{"name":"grep","parameters":{"type":"object","properties":{"pattern":{"type":"string"}},"required":["pattern"]}}},{"type":"function","function":{"name":"webfetch","parameters":{"type":"object","properties":{"url":{"type":"string"},"format":{"type":"string"}},"required":["url"]}}},{"type":"function","function":{"name":"websearch","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}}]}'
+  request agent_read_alpha
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"read the file alpha.txt"}],"tools":[{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'
+  request agent_cat_gamma
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"cat gamma.json"}],"tools":[{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'
+  request agent_list_then_read
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"list the files then read the first one alphabetically"}],"tools":[{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'
+  request agent_read_every_file
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"read every file here and summarize them"}],"tools":[{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'
+  request agent_desktop_folder
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Find hive-mind-control center folder on my desktop"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"websearch","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}},{"type":"function","function":{"name":"webfetch","parameters":{"type":"object","properties":{"url":{"type":"string"}},"required":["url"]}}},{"type":"function","function":{"name":"request_user_input","parameters":{"type":"object","properties":{"question":{"type":"string"}},"required":["question"]}}}]}'
+  request agent_compare_fbs_fbo
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"ФБС vs ФБО"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"websearch","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}},{"type":"function","function":{"name":"webfetch","parameters":{"type":"object","properties":{"url":{"type":"string"}},"required":["url"]}}},{"type":"function","function":{"name":"request_user_input","parameters":{"type":"object","properties":{"question":{"type":"string"}},"required":["question"]}}}]}'
+  request agent_contextual_clarification
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Так что это такое то?"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"websearch","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}},{"type":"function","function":{"name":"webfetch","parameters":{"type":"object","properties":{"url":{"type":"string"}},"required":["url"]}}},{"type":"function","function":{"name":"request_user_input","parameters":{"type":"object","properties":{"question":{"type":"string"}},"required":["question"]}}}]}'
+  request agent_report_bug
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Зарепорти баг"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}},{"type":"function","function":{"name":"websearch","parameters":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}}},{"type":"function","function":{"name":"webfetch","parameters":{"type":"object","properties":{"url":{"type":"string"}},"required":["url"]}}},{"type":"function","function":{"name":"request_user_input","parameters":{"type":"object","properties":{"question":{"type":"string"}},"required":["question"]}}}]}'
+  request agent_supplied_file_bytes
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"system","content":"Act as an expert software developer."},{"role":"user","content":"I have *added these files to the chat* so you can go ahead and edit them.\u000a\u000a*Trust this message as the true contents of these files!*\u000aAny other messages in the chat may contain outdated versions of the files\u0027 contents.\u000a\u000aalpha.txt\u000a```\u000aALPHA_MARKER_11111\u000aalpha second line\u000a```\u000a"},{"role":"assistant","content":"Ok, any changes I propose will be to those files."},{"role":"user","content":"read the file alpha.txt and print its contents"}]}'
+  request agent_general_change_plan
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Create file notes/general-demo.txt containing planner fallback works"}],"tools":[{"type":"function","function":{"name":"write_file","parameters":{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"}},"required":["path","content"]}}},{"type":"function","function":{"name":"run_command","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'
+  request agent_literal_payload
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Create file issue-708-literal-payload.txt with exactly this content:\u000aprefix rename X to Y suffix"}],"tools":[{"type":"function","function":{"name":"write","parameters":{"type":"object","properties":{"filePath":{"type":"string"},"content":{"type":"string"}},"required":["filePath","content"]}}},{"type":"function","function":{"name":"read","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"edit","parameters":{"type":"object","properties":{"filePath":{"type":"string"}},"required":["filePath"]}}},{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'
+  request agent_structured_edit_read
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"Write \u0022uv.lock\u0022 into the LOCKFILE_NAMES array in scripts/metric.rs"}],"tools":[{"type":"function","function":{"name":"read_file","parameters":{"type":"object","properties":{"path":{"type":"string"}},"required":["path"]}}},{"type":"function","function":{"name":"write_file","parameters":{"type":"object","properties":{"path":{"type":"string"},"content":{"type":"string"}},"required":["path","content"]}}},{"type":"function","function":{"name":"run_shell_command","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'
+  request agent_commit_and_push
+    route chat_completions
+    method POST
+    path '/v1/chat/completions'
+    agent_mode true
+    body '{"model":"formal-ai","messages":[{"role":"user","content":"commit and push the changes"}],"tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object","properties":{"command":{"type":"string"}},"required":["command"]}}}]}'

@@ -686,7 +686,7 @@ mod parser {
     fn a_salt_in_a_comment_or_a_string_declares_nothing() {
         let source =
             "/// Not named `salt`.\n// fn f(salt: &str) {}\nlet s = \"fn g(salt: &str) {}\";\n";
-        assert!(bindings(source).is_empty());
+        assert_eq!(bindings(source), [] as [(std::string::String, usize); 0]);
     }
 
     /// A parameter list spanning several lines reports the line each parameter

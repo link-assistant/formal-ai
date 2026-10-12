@@ -1,0 +1,21 @@
+view
+  id M-4329945f975b
+  lemma above
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an earlier section of a written text"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "(in writing) at an earlier place"
+    provenance (wordnet)
+  sense
+    part_of_speech adverb
+    gloss "in or to a place that is higher"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "appearing earlier in the same text"
+    provenance (wordnet)

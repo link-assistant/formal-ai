@@ -6,8 +6,8 @@ BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8791}"
 OUT="${OUT:-$ROOT/docs/case-studies/issue-671/agent-cli-contract-learning}"
-OBSERVATIONS="$OUT/observations.jsonl"
-EXPECTED="$OUT/client-contract-learning-report.lino"
+OBSERVATIONS="$ROOT/docs/case-studies/issue-671/agent-cli-contract-learning/observations.jsonl"
+EXPECTED="$ROOT/docs/case-studies/issue-671/agent-cli-contract-learning/client-contract-learning-report.lino"
 TASK="Execute the Formal AI client-contract auto-learning task. Run '$BIN clients learn $OBSERVATIONS' and write its exact stdout to client-contract-learning-report.lino. Keep every proposed amendment awaiting human review; do not apply proposals."
 
 command -v "$AGENT" > /dev/null

@@ -1,0 +1,36 @@
+reduce_mean	औसत	माध्य
+absolute_deviation	निरपेक्ष विचलन	निरपेक्ष अंतर
+prefix_negative	शून्य से नीचे
+interpose_each	हर दो लगातार तत्वों के बीच
+balanced_delimiter_groups	संतुलित समूह	अलग समूह
+group_max_nesting	अधिकतम नेस्टिंग	नेस्टिंग का सबसे गहरा स्तर
+prefix_enumeration	सभी उपसर्ग
+zero_based_range	0 से शुरू	शून्य से शुरू
+stringify_each	स्ट्रिंग के रूप में
+palindrome_extension	सबसे छोटा पैलिंड्रोम	पैलिंड्रोमिक प्रत्यय
+aligned_binary_xor	बाइनरी xor	xor करें
+stable_longest	सबसे लंबा	सबसे लंबा लौटाएं
+explicit_value_mapping	लीजेंड	के अनुरूप
+explicit_ordering	मान्य विकल्प हैं	दिया गया क्रम
+bounded_top	सबसे बड़े तत्व	n सबसे बड़े
+bounded_bottom	सबसे छोटे तत्व	n सबसे छोटे
+power_square_each	प्रत्येक तत्व का वर्ग
+keyed_sum_order	योग के अनुसार	पंक्ति योग के अनुसार
+frequency_rank	सबसे आम	आवृत्ति क्रम
+regex_minimum_word_length	अक्षर लंबा	न्यूनतम शब्द लंबाई
+regex_lowercase_chunks	छोटे अक्षरों पर स्ट्रिंग विभाजित करें
+regex_lowercase_underscore	अंडरस्कोर से जुड़े छोटे अक्षर
+exclude_membership	अक्षर हटाएं	अक्षर बाहर करें
+remove_boundary_occurrences	पहली और आखिरी घटना हटाएं
+rotation_period	न्यूनतम घुमावों की संख्या
+duplicate_exists	कोई डुप्लिकेट	डुप्लिकेट हैं
+composite_number	अभाज्य नहीं संख्याएँ	भाज्य संख्या
+one_bit_difference	एक बिट स्थिति पर अलग	एक बिट का अंतर
+grid_minimum_cost_path	न्यूनतम लागत पथ
+recurrence_conditional	यदि
+recurrence_less_equal	से कम या बराबर
+recurrence_equal	समानता
+recurrence_add	जोड़ें	जोड़
+recurrence_multiply	गुणा
+recurrence_subtract	घटाव
+recurrence_subtract_one	डिक्रीमेंट	एक घटाएं

@@ -1,0 +1,5 @@
+{
+  "taskId": "T2419",
+  "target": "rust/src/solver_handlers/verifiable_task.rs",
+  "byteEqual": true
+}

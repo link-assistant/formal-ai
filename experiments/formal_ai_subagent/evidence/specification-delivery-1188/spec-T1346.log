@@ -1,0 +1,1019 @@
+>> read {"filePath":"rust/src/agentic_coding/write_request.rs","file_path":"rust/src/agentic_coding/write_request.rs","path":"rust/src/agentic_coding/write_request.rs"}
+   <file>
+   00001| //! Recover write-request targets and literal payloads from seeded prose cues.
+   00002| //!
+   00003| //! The general planner and request inspection share this parse (issues #654, #1066).
+   00004| use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
+   00005| use super::shell_command_policy::{prose_sentences, sentences};
+   00006| use crate::seed::{self, Slot};
+   00007| /// The seeded articles and other function words (`the`, `el`).
+   00008| const FUNCTION_WORD_ROLE: &str = "request_function_word";
+   00009| /// One whitespace token together with its byte span in the original request.
+   00010| pub(super) struct Token<'a> {
+   00011|     pub(super) text: &'a str,
+   00012|     pub(super) start: usize,
+   00013|     pub(super) end: usize,
+   00014|     pub(super) request: &'a str,
+   00015| }
+   00016| /// Split whitespace and ideographic punctuation while retaining byte spans.
+   00017| /// Without punctuation boundaries, an unspaced clause can become one path token.
+   00018| pub(super) fn tokens(request: &str) -> Vec<Token<'_>> {
+   00019|     let mut out = Vec::new();
+   00020|     let mut start: Option<usize> = None;
+   00021|     for (index, character) in request.char_indices() {
+   00022|         if character.is_whitespace() || is_ideographic_punctuation(character) {
+   00023|             if let Some(from) = start.take() {
+   00024|                 out.push(Token {
+   00025|                     text: &request[from..index],
+   00026|                     start: from,
+   00027|                     end: index,
+   00028|                     request,
+   00029|                 });
+   00030|             }
+   00031|             continue;
+   00032|         }
+   00033|         if start.is_none() {
+   00034|             start = Some(index);
+   00035|         }
+   00036|     }
+   00037|     if let Some(from) = start {
+   00038|         out.push(Token {
+   00039|             text: &request[from..],
+   00040|             start: from,
+   00041|             end: request.len(),
+   00042|             request,
+   00043|         });
+   00044|     }
+   00045|     out
+   00046| }
+   00047| 
+   00048| /// Whether a character is one of the ideographic punctuation marks that
+   00049| /// separate words and clauses in a script written without spaces.
+   00050| const fn is_ideographic_punctuation(character: char) -> bool {
+   00051|     matches!(character,
+   00052|         '\u{3001}'..='\u{3003}'
+   00053|             | '\u{3008}'..='\u{3011}'
+   00054|             | '\u{3014}'..='\u{301f}'
+   00055|             | '\u{ff01}'
+   00056|             | '\u{ff08}'
+   00057|             | '\u{ff09}'
+   00058|             | '\u{ff0c}'
+   00059|             | '\u{ff1a}'
+   00060|             | '\u{ff1b}'
+   00061|             | '\u{ff1f}')
+   00062| }
+   00063| /// The bare (whole-word) surface forms for a role, lowercased for token matching.
+   00064| pub(super) fn bare_surfaces(role: &str) -> Vec<String> {
+   00065|     seed::lexicon()
+   00066|         .role_word_forms(role)
+   00067|         .iter()
+   00068|         .filter(|form| form.slot() == Slot::Bare)
+   00069|         .map(|form| form.text.to_lowercase())
+   00070|         .collect()
+   00071| }
+   00072| /// Trim the quoting/edge punctuation from a token that may be a file path,
+   00073| /// preserving the interior dots that make it look like a file. Trailing sentence
+   00074| /// punctuation is stripped too, so a plain word that merely *ends a sentence*
+   00075| /// ("… add the plural to томат.") is not mistaken for a file whose only dot is the
+   00076| /// terminal period — a real filename never ends in a bare `.`/`!`/`?`.
+   00077| pub(super) fn clean_path_token(word: &str) -> &str {
+   00078|     peel_sentence_punctuation(word, |token| {
+   00079|         token
+   00080|             .trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ':' | ';'))
+   00081|             .trim_end_matches(['!', '?'])
+   00082|     })
+   00083| }
+   00084| /// Whether a safe-looking token names a file rather than merely using the
+   00085| /// conventional `./` prefix for a directory.
+   00086| ///
+   00087| /// Checking the whole token for a dot made policy prose such as "keep examples
+   00088| /// in ./examples" file-shaped. When a later sentence contained a write-content
+   00089| /// marker, the generic planner consequently tried to overwrite that directory.
+   00090| /// File shape belongs to the final path component; dots in parent components or
+   00091| /// in the relative-path prefix do not make the target a file. A component that
+   00092| /// is nothing but dots (`.`, `..`) names a directory, never a file: the full
+   00093| /// stop after a closing quote (`… with ''.`) is not a file to read (issue #715).
+   00094| pub(super) fn looks_like_file_path(path: &str) -> bool {
+   00095|     !path.contains("://")
+   00096|         && !is_dotted_number(path)
+   00097|         && path.rsplit('/').next().is_some_and(|file_name| {
+   00098|             file_name.contains('.') && file_name.chars().any(|character| character != '.')
+   00099|         })
+   00100| }
+   00101| /// Lowercase a token stripped of edge punctuation, for cue/action comparison.
+   00102| ///
+   00103| /// The Devanagari full stop `।` ends a Hindi sentence exactly as `.` ends an
+   00104| /// English one, so a cue that closes a clause — `लिखो।` — is the same cue as
+   00105| /// `लिखो`. Without it the verb of every sentence-final Hindi request went
+   00106| /// unrecognised.
+   00107| pub(super) fn clean_cue_token(word: &str) -> String {
+   00108|     word.trim_matches(|c: char| {
+   00109|         matches!(
+   00110|             c,
+   00111|             '`' | '"' | '\'' | ',' | ':' | ';' | '.' | '!' | '?' | '\u{0964}' | '\u{0965}'
+   00112|         )
+   00113|     })
+   00114|     .to_lowercase()
+   00115| }
+   00116| /// The byte span just past the leftmost `file_write_content_lead` marker in the
+   00117| /// lowercased request, honouring whole-word boundaries for space-delimited
+   00118| /// scripts and substring matches for CJK (which has no inter-word spaces).
+   00119| pub(super) fn first_content_lead_end(lowered: &str) -> Option<(usize, usize)> {
+   00120|     first_prefix_lead_end(lowered, seed::ROLE_FILE_WRITE_CONTENT_LEAD)
+   00121| }
+   00122| /// Where the payload a circumfix content marker opened has to stop.
+   00123| ///
+   00124| /// "जिसमें Gemfile.lock हो" states its content between two literals, and so does
+   00125| /// "把 Gemfile.lock 写入": the closing literal is a grammatical boundary, not
+   00126| /// part of the bytes. Returns [`None`] when the marker that ended at `from` was
+   00127| /// not a circumfix one, which is every marker in the languages that put their
+   00128| /// content last.
+   00129| pub(super) fn content_lead_close(lowered: &str, from: usize) -> Option<usize> {
+   00130|     seed::lexicon()
+   00131|         .role_word_forms(seed::ROLE_FILE_WRITE_CONTENT_LEAD)
+   00132|         .iter()
+   00133|         .filter(|form| form.slot() == Slot::Circumfix)
+   00134|         .filter_map(|form| {
+   00135|             let opener = form.before_slot().trim().to_lowercase();
+   00136|             let closer = form.after_slot().trim().to_lowercase();
+   00137|             if opener.is_empty()
+   00138|                 || closer.is_empty()
+   00139|                 || !lowered.get(..from)?.trim_end().ends_with(&opener)
+   00140|             {
+   00141|                 return None;
+   00142|             }
+   00143|             lowered
+   00144|                 .get(from..)?
+   00145|                 .find(&closer)
+   00146|                 .map(|relative| from + relative)
+   00147|         })
+   00148|         .min()
+   00149| }
+   00150| pub(super) fn first_prefix_lead_end(lowered: &str, role: &str) -> Option<(usize, usize)> {
+   00151|     let markers: Vec<(String, String)> = seed::lexicon()
+   00152|         .role_word_forms(role)
+   00153|         .iter()
+   00154|         .filter(|form| matches!(form.slot(), Slot::Prefix | Slot::Circumfix))
+   00155|         .map(|form| {
+   00156|             (
+   00157|                 form.before_slot().trim().to_lowercase(),
+   00158|                 form.after_slot().trim().to_lowercase(),
+   00159|             )
+   00160|         })
+   00161|         .filter(|(marker, _)| !marker.is_empty())
+   00162|         .collect();
+   00163|     let mut best: Option<(usize, usize)> = None;
+   00164|     for (marker, closer) in &markers {
+   00165|         let mut from = 0;
+   00166|         while let Some(relative) = lowered[from..].find(marker.as_str()) {
+   00167|             let start = from + relative;
+   00168|             let end = start + marker.len();
+   00169|             let cjk = !marker.contains(' ') && !marker.is_ascii();
+   00170|             let before_ok = cjk
+   00171|                 || start == 0
+   00172|                 || lowered[..start]
+   00173|                     .chars()
+   00174|                     .next_back()
+   00175|                     .is_some_and(char::is_whitespace);
+   00176|             let after_ok = cjk
+   00177|                 || end == lowered.len()
+   00178|                 || lowered[end..]
+   00179|                     .chars()
+   00180|                     .next()
+   00181|                     .is_some_and(|c| c.is_whitespace() || c.is_ascii_punctuation());
+   00182|             // A circumfix form holds its subject *between* two literals, so its
+   00183|             // opener means nothing on its own: "把" opens a Chinese object
+   00184|             // phrase only when the verb that closes it follows. Requiring the
+   00185|             // closer keeps a one-character opener from claiming every sentence
+   00186|             // that happens to contain it.
+   00187|             let closed = closer.is_empty() || lowered[end..].contains(closer.as_str());
+   00188|             if before_ok && after_ok && closed {
+   00189|                 if best.is_none_or(|(best_start, best_end)| {
+   00190|                     start < best_start || (start == best_start && end > best_end)
+   00191|                 }) {
+   00192|                     best = Some((start, end));
+   00193|                 }
+   00194|                 break;
+   00195|             }
+   00196|             from = end;
+   00197|         }
+   00198|     }
+   00199|     best
+   00200| }
+   00201| /// Which family of cue named a path, which decides what the rest of the
+   00202| /// sentence is allowed to mean.
+   00203| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00204| pub(super) enum CueFamily {
+   00205|     /// A `file_write_target_cue` — the file the work is about.
+   00206|     Target,
+   00207|     /// A `file_write_destination_cue` — somewhere to deliver bytes.
+   00208|     Destination,
+   00209|     /// A bare `file_write_action_cue`, which names a file only incidentally.
+   00210|     Action,
+   00211| }
+   00212| 
+   00213| /// One path a sentence names, together with the cue that named it.
+   00214| #[derive(Debug, Clone)]
+   00215| pub(super) struct WriteBinding {
+   00216|     /// Token index of the path.
+   00217|     pub(super) index: usize,
+   00218|     /// The cleaned, safe relative path.
+   00219|     pub(super) path: String,
+   00220|     /// Byte offset at which the binding cue begins.
+   00221|     pub(super) cue_start: usize,
+   00222|     /// Byte offset just past the binding cue.
+   00223|     pub(super) cue_end: usize,
+   00224|     /// Which family of cue bound it.
+   00225|     pub(super) family: CueFamily,
+   00226|     /// Whether the cue stands *before* the path. A postposition stands after it.
+   00227|     pub(super) cue_precedes: bool,
+   00228| }
+   00229| 
+   00230| /// The target file of a write, as `(token index, path)`.
+   00231| ///
+   00232| /// A sentence can offer more than one file-shaped token behind a cue, and which
+   00233| /// one it *delivers to* is not the leftmost: "Write Gemfile.lock into
+   00234| /// notes/attribution.md" names the content first, behind the bare action cue
+   00235| /// *Write*, and the destination second, behind *into*. Binding the leftmost
+   00236| /// bound the content as the target, the destination-led branch below then failed
+   00237| /// its `action_end <= clause_start` test, and the whole clause composed to
+   00238| /// nothing — in all five languages.
+   00239| ///
+   00240| /// So the candidates are ranked by what named them rather than by where they
+   00241| /// stand: a path a *target* or *destination* cue points at outranks one only an
+   00242| /// action cue stands beside, and a cue that follows its path (a postposition)
+   00243| /// ranks last. A sentence that offers exactly one candidate is unaffected, which
+   00244| /// is every sentence the earlier rule read correctly.
+   00245| pub(super) fn cued_write_target(toks: &[Token<'_>]) -> Option<(usize, String)> {
+   00246|     preferred_binding(toks).map(|binding| (binding.index, binding.path))
+   00247| }
+   00248| 
+   00249| /// Every candidate binding, best first.
+   00250| ///
+   00251| /// A cue that stands *between* two file-shaped tokens could belong to either of
+   00252| /// them, and no ranking settles that on its own: `notes/attribution.md में
+   00253| /// Gemfile.lock लिखो` puts the destination postposition after the path it marks,
+   00254| /// so the same rule that reads `into notes/attribution.md` correctly reads the
+   00255| /// Hindi sentence backwards. The reading is settled by the rest of the sentence
+   00256| /// instead — the caller takes these in order and keeps the first that yields a
+   00257| /// payload — so the ranking only has to decide which reading is *tried* first.
+   00258| pub(super) fn ranked_bindings(toks: &[Token<'_>]) -> Vec<WriteBinding> {
+   00259|     let mut bindings = write_bindings(toks);
+   00260|     bindings.sort_by_key(binding_rank);
+   00261|     bindings
+   00262| }
+   00263| 
+   00264| /// The binding a write request is read through: the highest-ranked candidate.
+   00265| pub(super) fn preferred_binding(toks: &[Token<'_>]) -> Option<WriteBinding> {
+   00266|     ranked_bindings(toks).into_iter().next()
+   00267| }
+   00268| 
+   00269| /// Lower ranks are preferred. Token order breaks a tie, which `min_by_key`
+   00270| /// preserves because the bindings are produced in token order.
+   00271| const fn binding_rank(binding: &WriteBinding) -> u8 {
+   00272|     match (binding.cue_precedes, binding.family) {
+   00273|         (true, CueFamily::Target | CueFamily::Destination) => 0,
+   00274|         (true, CueFamily::Action) => 1,
+   00275|         (false, _) => 2,
+   00276|     }
+   00277| }
+   00278| 
+   00279| /// Every cued target in token order, so a caller that has a further question to
+   00280| /// ask about a candidate can go on to the next one instead of losing the
+   00281| /// sentence with it.
+   00282| pub(super) fn cued_write_targets(toks: &[Token<'_>]) -> Vec<(usize, String)> {
+   00283|     write_bindings(toks)
+   00284|         .into_iter()
+   00285|         .filter(|binding| binding.cue_precedes)
+   00286|         .map(|binding| (binding.index, binding.path))
+   00287|         .collect()
+   00288| }
+   00289| 
+   00290| /// Every path a cue binds, in token order.
+   00291| ///
+   00292| /// A cue stands before its path in the languages that put it there and after it
+   00293| /// in the languages that do not: Hindi writes `notes/attribution.md फ़ाइल` and
+   00294| /// `notes/attribution.md में`, so a reader that only ever looks one token back
+   00295| /// finds no target in a Hindi request at all. A postposition is therefore read
+   00296| /// too, but only for the target and destination families — an action cue after a
+   00297| /// path closes the clause rather than naming the file — and only when the path
+   00298| /// has no cue in front of it.
+   00299| fn write_bindings(toks: &[Token<'_>]) -> Vec<WriteBinding> {
+   00300|     let target_cues = bare_surfaces(seed::ROLE_FILE_WRITE_TARGET_CUE);
+   00301|     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
+   00302|     let action_cues = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
+   00303|     // The fused reading is for the nouns and particles that a script without
+   00304|     // spaces writes against their neighbour — `创建文件` is "create" and "file",
+   00305|     // `文件` is the cue. A verb is not read that way: `输出内容 sample.txt` opens
+   00306|     // with the write verb `输出` and means "output the contents of", a read, and
+   00307|     // reading the verb out of the fused token claimed the file the request asked
+   00308|     // to be shown.
+   00309|     let families = [
+   00310|         (CueFamily::Destination, &dest_cues, true),
+   00311|         (CueFamily::Target, &target_cues, true),
+   00312|         (CueFamily::Action, &action_cues, false),
+   00313|     ];
+   00314|     let quoted =
+   00315|         crate::normal_markov::quoted_segment_spans(toks.first().map_or("", |token| token.request));
+   00316|     toks.iter()
+   00317|         .enumerate()
+   00318|         .filter_map(|(index, token)| {
+   00319|             let cleaned = clean_path_token(token.text);
+   00320|             if !looks_like_file_path(cleaned) || !safe_relative_path(cleaned) {
+   00321|                 return None;
+   00322|             }
+   00323|             let path = cleaned.to_owned();
+   00324|             if let Some(previous) = index.checked_sub(1).map(|before| &toks[before])
+   00325|                 && let Some((family, cue_start, cue_end)) =
+   00326|                     families.iter().find_map(|(family, cues, fused)| {
+   00327|                         trailing_cue(previous, cues, *fused).map(|span| (*family, span.0, span.1))
+   00328|                     })
+   00329|             {
+   00330|                 return Some(WriteBinding {
+   00331|                     index,
+   00332|                     path,
+   00333|                     cue_start,
+   00334|                     cue_end,
+   00335|                     family,
+   00336|                     cue_precedes: true,
+   00337|                 });
+   00338|             }
+   00339|             let next = toks.get(index + 1)?;
+   00340|             families
+   00341|                 .iter()
+   00342|                 .take(2)
+   00343|                 .find_map(|(family, cues, fused)| {
+   00344|                     leading_cue(next, cues, *fused).map(|span| (*family, span.0, span.1))
+   00345|                 })
+   00346|                 .map(|(family, cue_start, cue_end)| WriteBinding {
+   00347|                     index,
+   00348|                     path,
+   00349|                     cue_start,
+   00350|                     cue_end,
+   00351|                     family,
+   00352|                     cue_precedes: false,
+   00353|                 })
+   00354|         })
+   00355|         .filter(|binding| {
+   00356|             !quoted
+   00357|                 .iter()
+   00358|                 .any(|segment| binding.cue_start < segment.end && binding.cue_end > segment.start)
+   00359|         })
+   00360|         .collect()
+   00361| }
+   00362| 
+   00363| /// The span of a cue standing at the *end* of `token`, if one does.
+   00364| ///
+   00365| /// An unspaced script writes the cue and the word before it as one token —
+   00366| /// `创建文件` is "create" and "file" with nothing between them — so for a cue in
+   00367| /// such a script the token's tail is the boundary the language actually has.
+   00368| fn trailing_cue(token: &Token<'_>, cues: &[String], fused: bool) -> Option<(usize, usize)> {
+   00369|     let cleaned = clean_cue_token(token.text);
+   00370|     cues.iter().find_map(|cue| {
+   00371|         if cleaned == *cue {
+   00372|             return Some((token.start, token.end));
+   00373|         }
+   00374|         (fused && is_unspaced_surface(cue) && cleaned.ends_with(cue.as_str()))
+   00375|             .then(|| (token.end.saturating_sub(cue.len()), token.end))
+   00376|     })
+   00377| }
+   00378| 
+   00379| /// The span of a cue standing at the *start* of `token`, if one does.
+   00380| fn leading_cue(token: &Token<'_>, cues: &[String], fused: bool) -> Option<(usize, usize)> {
+   00381|     let cleaned = clean_cue_token(token.text);
+   00382|     cues.iter().find_map(|cue| {
+   00383|         if cleaned == *cue {
+   00384|             return Some((token.start, token.end));
+   00385|         }
+   00386|         (fused && is_unspaced_surface(cue) && cleaned.starts_with(cue.as_str()))
+   00387|             .then(|| (token.start, token.start + cue.len()))
+   00388|     })
+   00389| }
+   00390| 
+   00391| /// Whether a surface belongs to a script that does not separate its words with
+   00392| /// spaces, so a token boundary is not where the word ends.
+   00393| fn is_unspaced_surface(surface: &str) -> bool {
+   00394|     crate::coding::catalog::contains_cjk(surface)
+   00395| }
+   00396| 
+   00397| /// Whether a token is written as a double-quoted literal.
+   00398| ///
+   00399| /// A path is *mentioned* -- bare, or set in the backticks this repository's
+   00400| /// prose uses for code -- whereas a double-quoted token is a *value* the
+   00401| /// sentence is handing to something else: the member "add \"bun.lock\" to the
+   00402| /// `IGNORE_FILES` list" inserts, the marker the ladder asks a record to contain.
+   00403| /// Both can be file-shaped, and `clean_path_token` peels either quoting away, so
+   00404| /// the distinction has to be read before the peeling.
+   00405| fn quoted_as_value(word: &str) -> bool {
+   00406|     let bare = peel_sentence_punctuation(word, |token| token.trim_end_matches([',', ':', ';']));
+   00407|     bare.len() >= 2 && bare.starts_with('"') && bare.ends_with('"')
+   00408| }
+   00409| /// The path a request names as the destination of a write, whether or not it
+   00410| /// also spells the bytes out.
+   00411| ///
+   00412| /// [`parse_write_request`] answers a narrower question — it recovers a write it
+   00413| /// can execute verbatim — and deliberately declines a request whose payload has
+   00414| /// still to be *composed*. The evidence-record route needs the target of
+   00415| /// exactly that declined shape ("record what you find in FILE"), so the target
+   00416| /// half of the parse is exposed on its own rather than duplicated (issue #1066).
+   00417| pub(super) fn stated_write_target(request: &str) -> Option<String> {
+   00418|     cued_write_target(&tokens(request)).map(|(_, target)| target)
+   00419| }
+   00420| /// Bind a source destination using the ordinary cue/path safety rules, with
+   00421| /// the language's artifact type as a further constraint. Output operands and
+   00422| /// workflow paths do not become source destinations by appearing first.
+   00423| pub fn typed_write_target(request: &str, extension: &str) -> Option<String> {
+   00424|     cued_write_targets(&tokens(request))
+   00425|         .into_iter()
+   00426|         .map(|(_, path)| path)
+   00427|         .find(|path| {
+   00428|             std::path::Path::new(path)
+   00429|                 .extension()
+   00430|                 .and_then(|value| value.to_str())
+   00431|                 == Some(extension)
+   00432|         })
+   00433| }
+   00434| /// Whether the request applies a seed-defined write action to anything.
+   00435| ///
+   00436| /// Used with [`stated_write_target`] to tell "record it in FILE" (a write whose
+   00437| /// content is composed) from "read the first line in FILE" (a read that merely
+   00438| /// mentions a file after a positional cue).
+   00439| pub(super) fn states_write_action(request: &str) -> bool {
+   00440|     first_action_cue_end(&tokens(request)).is_some()
+   00441| }
+   00442| 
+   00443| /// The path a sentence names as the *destination* of a write it states.
+   00444| ///
+   00445| /// [`stated_write_target`] answers a weaker question -- which path a cue points
+   00446| /// at -- and a sentence can point a cue at a path it is not delivering to,
+   00447| /// because the same cues introduce the file the work is done *in*. Both of these
+   00448| /// name a path after a target cue and state a write action:
+   00449| ///
+   00450| /// > In the file `src/solver_handlers/document_request.rs`, add "toward " to the
+   00451| /// > TARGET_MARKERS list.
+   00452| ///
+   00453| /// > Then create `agent-ladder-effects/node-1.1.2.2.1.lino` recording what you
+   00454| /// > changed.
+   00455| ///
+   00456| /// Only the second is somewhere to put an answer. In the first the thing being
+   00457| /// added goes into a list *inside* the file, and reading it as a delivery
+   00458| /// destroys the file it was asked to edit -- the planner writes its own status
+   00459| /// line over the source and the write reports success.
+   00460| ///
+   00461| /// What separates them is order, the same adjacency principle
+   00462| /// [`cued_write_target`] already uses to bind a cue to a path. A delivery
+   00463| /// composes something and then says where to put it, so its path *follows* the
+   00464| /// action; a sentence that says where the work happens states the place first
+   00465| /// and the action afterwards.
+   00466| ///
+   00467| /// Measured over the 1 118 request sentences this repository records that name a
+   00468| /// file and carry a cue (`experiments/issue_1069_paths_in_prose/cue-order-survey.py`),
+   00469| /// the path follows the action in 21.56% of them, precedes it in 65.74%, and in
+   00470| /// the remaining 12.70% there is no write cue at all -- an edit, which is never a
+   00471| /// delivery. So this reads roughly a fifth of them as destinations, where the
+   00472| /// weaker "cues a path and states a write" test reads all 1 118.
+   00473| ///
+   00474| /// The rule that suggests itself first is the cue family: the seed declares a
+   00475| /// second family for edits, so a sentence mentioning one could be doing work
+   00476| /// rather than delivering. That fails on this corpus. Thirty of the sentences
+   00477| /// carry both families, and the ladder's own delivery sentence is one of them --
+   00478| /// "Then create `agent-ladder-effects/node-1.1.2.2.1.lino` … followed by at
+   00479| /// least four words that state the **change** you made" -- so the family rule
+   00480| /// discards the record the node exists to produce. Position separates what
+   00481| /// mention cannot.
+   00482| ///
+   00483| /// Position alone still admits a value that merely *looks* like a path, because
+   00484| /// the operand of an insertion follows the action too: "Edit `scripts/metric.rs`:
+   00485| /// add \"bun.lock\" to the `IGNORE_FILES` list" names the file before the action
+   00486| /// and the member after it. So the candidates are taken in order and a
+   00487| /// double-quoted one is skipped rather than accepted -- see [`quoted_as_value`].
+   00488| /// The same survey measures what that costs: of the 241 sentences the position
+   00489| /// rule admits, 2 (0.83%) quote their path, and both are member insertions of
+   00490| /// exactly this shape. No delivery destination in the corpus is double-quoted.
+   00491| pub(super) fn delivered_write_target(sentence: &str) -> Option<String> {
+   00492|     let toks = tokens(sentence);
+   00493|     let action = first_action_cue_start(&toks)?;
+   00494|     cued_write_targets(&toks)
+   00495|         .into_iter()
+   00496|         .find(|(index, _)| toks[*index].start > action && !quoted_as_value(toks[*index].text))
+   00497|         .map(|(_, path)| path)
+   00498| }
+   00499| 
+   00500| /// Whether `request` names `path` as the destination of a write it states.
+   00501| ///
+   00502| /// The read routes need this to keep from opening the file they were asked to
+   00503| /// create. "Leave observable evidence in `.agent-ladder/node-1.2-proof.md`. The
+   00504| /// first line must be exactly `node_path=1.2`" names one path and one read cue
+   00505| /// -- *first line* -- and the two belong to different obligations: the path is
+   00506| /// where the answer goes, the cue describes how it has to open. Read the prompt
+   00507| /// as a whole and the cue captures the path, and the run opens the file it was
+   00508| /// supposed to write.
+   00509| ///
+   00510| /// Scoped to a sentence, for the same reason [`super::evidence_record`] scopes
+   00511| /// its own split: "Read the file `Cargo.toml`. Record what you find in
+   00512| /// `notes/report.md`." states a write of the second path only, and the first
+   00513| /// must stay readable.
+   00514| pub(super) fn is_stated_write_target(request: &str, path: &str) -> bool {
+   00515|     sentences(request).into_iter().any(|sentence| {
+   00516|         states_write_action(sentence.text)
+   00517|             && stated_write_target(sentence.text).is_some_and(|target| target == path)
+   00518|     })
+   00519| }
+   00520| 
+   00521| /// The opening line a sentence pins, read through
+   00522| /// [`seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD`].
+   00523| ///
+   00524| /// The lowercased copy is byte-length preserving for every supported language,
+   00525| /// so the marker's end offset slices the original sentence and the recovered
+   00526| /// line keeps its case.
+   00527| pub(super) fn pinned_first_line(sentence: &str) -> Option<String> {
+   00528|     let lowered = sentence.to_lowercase();
+   00529|     let (_, end) = first_prefix_lead_end(&lowered, seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD)?;
+   00530|     let raw = sentence
+   00531|         .get(end..)?
+   00532|         .trim()
+   00533|         .trim_start_matches([':', '-', '\u{2014}', '\u{2013}'])
+   00534|         .trim();
+   00535|     let line = delimited_first_line(raw)
+   00536|         .or_else(|| unquoted_machine_first_line(raw))
+   00537|         .unwrap_or(raw)
+   00538|         .trim_matches(['`', '"', '\'']);
+   00539|     (!line.is_empty()).then(|| line.to_owned())
+   00540| }
+   00541| 
+   00542| /// An explicitly delimited opening line, without the presentation delimiters.
+   00543| ///
+   00544| /// The closing delimiter is also a grammatical boundary: in "exactly `id=7`
+   00545| /// and the body ...", the coordinated body constraint is not part of the
+   00546| /// machine-readable header.
+   00547| fn delimited_first_line(raw: &str) -> Option<&str> {
+   00548|     let delimiter = raw.chars().next()?;
+   00549|     if !matches!(delimiter, '`' | '"' | '\'') {
+   00550|         return None;
+   00551|     }
+   00552|     let after_open = raw.get(delimiter.len_utf8()..)?;
+   00553|     let close = after_open.find(delimiter)?;
+   00554|     after_open.get(..close)
+   00555| }
+   00556| 
+   00557| /// Stop an unquoted machine header before a coordinated second requirement.
+   00558| ///
+   00559| /// Natural-language lines such as "ready and waiting" remain whole. A compact
+   00560| /// assignment/header token (`name=value`, `name:value`) followed by a
+   00561| /// seed-defined procedure separator is unambiguous: the separator begins the
+   00562| /// next clause, as it did in the live Agent ladder prompt.
+   00563| fn unquoted_machine_first_line(raw: &str) -> Option<&str> {
+   00564|     let lowered = raw.to_lowercase();
+   00565|     bare_surfaces(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR)
+   00566|         .into_iter()
+   00567|         .filter_map(|separator| {
+   00568|             let marker = format!(" {separator} ");
+   00569|             lowered.find(&marker).and_then(|boundary| {
+   00570|                 let candidate = raw.get(..boundary)?.trim();
+   00571|                 (!candidate.contains(char::is_whitespace) && candidate.contains(['=', ':']))
+   00572|                     .then_some(candidate)
+   00573|             })
+   00574|         })
+   00575|         .min_by_key(|candidate| candidate.len())
+   00576| }
+   00577| /// The opening line the request pins, wherever in the request it pins it.
+   00578| ///
+   00579| /// A pinned first line constrains the finished file, not the sentence that
+   00580| /// happens to state it. [`super::evidence_record`] reads the constraint one
+   00581| /// sentence at a time because it is separating delivery from work; a route that
+   00582| /// only has to *obey* the constraint needs nothing more than its text.
+   00583| pub(super) fn pinned_first_line_of_request(request: &str) -> Option<String> {
+   00584|     sentences(request)
+   00585|         .into_iter()
+   00586|         .find_map(|sentence| pinned_first_line(sentence.text))
+   00587| }
+   00588| /// The same content, rewritten to open with the line `request` pinned.
+   00589| ///
+   00590| /// A literal write is only literal when it satisfies every stated constraint on
+   00591| /// the file it writes, and a request can state two: what the file contains, and
+   00592| /// how it begins. "Write `notes/x.md` containing alpha, beta and gamma. The
+   00593| /// first line must be exactly `id=7`" reads as a literal write to the broad
+   00594| /// content parser -- *containing* cues content -- and the bytes it recovers are
+   00595| /// the prose that followed the cue, which neither open with the pinned line nor
+   00596| /// leave the pinning sentence out. Writing them satisfies the sentence that was
+   00597| /// parsed and violates the one that was not.
+   00598| ///
+   00599| /// Both corrections come out of a parse that has already happened -- the pinned
+   00600| /// line, and which sentence pinned it -- so the plan is repaired rather than
+   00601| /// dropped. Dropping it was the earlier fix, and it moved the failure instead of
+   00602| /// removing it: a request that states every byte it wants and no work to do has
+   00603| /// no other route to reach, so declining sent the plainest write there is to the
+   00604| /// open-web routers.
+   00605| ///
+   00606| /// The pinning sentence leaves the body with it. It was recovered only because
+   00607| /// the content lead swept up the rest of the prose; the caller stated it as a
+   00608| /// constraint on the file, never as something to put inside the file.
+   00609| ///
+   00610| /// Returns `None` when there is nothing to repair -- `request` pins no line, or
+   00611| /// `content` already opens with it (issue #1066).
+   00612| pub(super) fn honouring_pinned_first_line(request: &str, content: &str) -> Option<String> {
+   00613|     let line = pinned_first_line_of_request(request)?;
+   00614|     if content.starts_with(&line) {
+   00615|         return None;
+   00616|     }
+   00617|     let body = without_pinning_sentences(content);
+   00618|     Some(if body.is_empty() {
+   00619|         format!("{line}\n")
+   00620|     } else {
+   00621|         format!("{line}\n\n{body}\n")
+   00622|     })
+   00623| }
+   00624| 
+   00625| /// `content` without any sentence that is itself a leading-line constraint.
+   00626| fn without_pinning_sentences(content: &str) -> String {
+   00627|     sentences(content)
+   00628|         .into_iter()
+   00629|         .filter(|sentence| pinned_first_line(sentence.text).is_none())
+   00630|         .map(|sentence| content[sentence.span].trim())
+   00631|         .filter(|kept| !kept.is_empty())
+   00632|         .collect::<Vec<_>>()
+   00633|         .join(" ")
+   00634| }
+   00635| /// The span of the first `file_write_action_cue` in the request.
+   00636| fn first_action_cue(toks: &[Token<'_>]) -> Option<(usize, usize)> {
+   00637|     let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
+   00638|     toks.iter()
+   00639|         .find_map(|token| leading_cue(token, &actions, false))
+   00640| }
+   00641| /// The byte offset just past the first `file_write_action_cue` token.
+   00642| pub(super) fn first_action_cue_end(toks: &[Token<'_>]) -> Option<usize> {
+   00643|     first_action_cue(toks).map(|(_, end)| end)
+   00644| }
+   00645| /// Where the first `file_write_action_cue` at or after `from` begins.
+   00646| ///
+   00647| /// A language that closes its clause with the verb states the action *after* the
+   00648| /// destination it was given, so the payload is what stands between them. The
+   00649| /// prepositional shape reads the same span from the other side — see
+   00650| /// `parse_write_request`.
+   00651| pub(super) fn action_cue_start_after(toks: &[Token<'_>], from: usize) -> Option<usize> {
+   00652|     let actions = bare_surfaces(seed::ROLE_FILE_WRITE_ACTION_CUE);
+   00653|     toks.iter()
+   00654|         .filter(|token| token.start >= from)
+   00655|         .find_map(|token| leading_cue(token, &actions, false))
+   00656|         .map(|(start, _)| start)
+   00657| }
+   00658| /// The byte offset at which the first `file_write_action_cue` begins.
+   00659| ///
+   00660| /// [`first_action_cue_end`] answers where a payload may start; this answers
+   00661| /// where the delivery clause does, and the two questions have different callers.
+   00662| /// A sentence can carry both halves of a request -- "Break the customer import
+   00663| /// rewrite into sub-tasks and record what you work out in `import-split.md`"
+   00664| /// states the work and then, mid-sentence, says where its result goes -- so a
+   00665| /// reader that hands the whole sentence to delivery throws the work away with
+   00666| /// it (issue #1066).
+   00667| pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
+   00668|     first_action_cue(toks).map(|(start, _)| start)
+   00669| }
+   00670| /// Trim a recovered content span down to its literal payload, dropping the
+   00671| /// leading clause separator ("… the following: hello") and any surrounding
+   00672| /// quoting. A delimiter is removed only when the entire payload has a matching
+   00673| /// opening and closing delimiter. This matters for generated source and Links
+   00674| /// Notation: a lone terminal quote is data, not presentation punctuation.
+   00675| /// Returns [`None`] when nothing is left.
+   00676| pub(super) fn clean_content(raw: &str) -> Option<String> {
+   00677|     let led = strip_clause_lead(raw);
+   00678|     if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
+   00679|         let body = super::markdown_section::fenced_body(&led[3..led.len() - 3]);
+   00680|         return (!body.is_empty()).then(|| body.to_owned());
+   00681|     }
+   00682|     // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),
+   00683|     // is the content; the sentence's closing mark after it is the sentence's:
+   00684|     // `containing 'hello'.` writes `hello`, not `'hello'.`.
+   00685|     let closed = led
+   00686|         .strip_suffix([
+   00687|             '.', '!', '?', '\u{0964}', '\u{3002}', '\u{ff01}', '\u{ff1f}',
+   00688|         ])
+   00689|         .map_or(led, str::trim);
+   00690|     if let [only] = crate::normal_markov::quoted_segment_spans(closed).as_slice()
+   00691|         && only.start == 0
+   00692|         && only.end == closed.len()
+   00693|     {
+   00694|         let text = &only.text;
+   00695|         return (!text.is_empty()).then(|| text.to_owned());
+   00696|     }
+   00697|     let bytes = led.as_bytes();
+   00698|     let quoted = led.len() >= 2
+   00699|         && bytes[0] == bytes[led.len() - 1]
+   00700|         && matches!(bytes[0], b'`' | b'"' | b'\'');
+   00701|     let result = if quoted {
+   00702|         led[1..led.len() - 1].trim()
+   00703|     } else {
+   00704|         led
+   00705|     };
+   00706|     (!result.is_empty()).then(|| result.to_owned())
+   00707| }
+   00708| /// Strip everything a recovered span carries *before* its literal payload: the
+   00709| /// clause separators, and the seed-defined adverbs that qualify the requirement
+   00710| /// rather than naming content.
+   00711| ///
+   00712| /// "…containing exactly: Hello World" delimits the content with `exactly:`, so
+   00713| /// slicing after the content lead captured `exactly: Hello World` as the bytes
+   00714| /// to write and as the evidence to verify against — the file would never have
+   00715| /// matched (issue #905 §3).
+   00716| fn strip_clause_lead(raw: &str) -> &str {
+   00717|     let qualifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
+   00718|     let mut led = raw.trim();
+   00719|     loop {
+   00720|         let separated = led.trim_start_matches([':', '-', '—', '–']).trim();
+   00721|         let shortened = strip_leading_qualifier(separated, &qualifiers);
+   00722|         if shortened.len() == led.len() {
+   00723|             return led;
+   00724|         }
+   00725|         led = shortened;
+   00726|     }
+   00727| }
+   00728| /// Drop one leading qualifier, but only when a clause separator follows it. The
+   00729| /// separator is what marks the adverb as introducing the payload rather than
+   00730| /// opening it, so content that genuinely starts with "exactly what I asked for"
+   00731| /// keeps its first word.
+   00732| fn strip_leading_qualifier<'a>(text: &'a str, qualifiers: &[String]) -> &'a str {
+   00733|     let lowered = text.to_lowercase();
+   00734|     qualifiers
+   00735|         .iter()
+   00736|         .filter(|qualifier| lowered.starts_with(qualifier.as_str()))
+   00737|         .filter_map(|qualifier| {
+   00738|             let rest = text.get(qualifier.len()..)?.trim_start();
+   00739|             rest.starts_with([':', '-', '—', '–']).then_some(rest)
+   00740|         })
+   00741|         .min_by_key(|rest| rest.len())
+   00742|         .unwrap_or(text)
+   00743| }
+   00744| pub(super) fn safe_relative_path(path: &str) -> bool {
+   00745|     !path.starts_with('/')
+   00746|         && !path.starts_with('-')
+   00747|         && !path.split('/').any(|part| part == ".." || part.is_empty())
+   00748|         && path
+   00749|             .chars()
+   00750|             .all(|c| c.is_alphanumeric() || matches!(c, '/' | '.' | '_' | '-'))
+   00751| }
+   00752| 
+   00753| /// Recover the `(target, old, new)` of a file-edit request from its wording.
+   00754| ///
+   00755| /// Every cue comes from the seed lexicon. A target may be a safe relative path
+   00756| /// or an unambiguous self-AST census reference; ambiguous spans fail closed.
+   00757| #[must_use]
+   00758| pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
+   00759|     compose_edit_clauses(request).map(|clauses| clauses.edit)
+   00760| }
+   00761| 
+   00762| /// The `(target, old, new)` of an edit request and the spans its clauses take.
+   00763| pub(super) struct EditClauses {
+   00764|     /// What [`compose_edit_request`] returns.
+   00765|     pub(super) edit: (String, String, String),
+   00766|     /// The file clause, then the action through the new text, in bytes.
+   00767|     ///
+   00768|     /// `None` for a positional insert or lines under the request.
+   00769|     pub(super) spans: Option<[(usize, usize); 2]>,
+   00770| }
+   00771| 
+   00772| /// [`compose_edit_request`] with the spans of its clauses.
+   00773| ///
+   00774| /// Mirrors `composeEditClauses`.
+   00775| pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
+   00776|     // `everywhere`, `all occurrences`: no part of the old or new text (G84).
+   00777|     let blanked = super::edit_scope::without_all_occurrence_cues(raw);
+   00778|     let request = blanked.as_str();
+   00779|     if let Some(edit) = super::positional_edit::compose_positional_insert(request) {
+   00780|         return Some(EditClauses { edit, spans: None });
+   00781|     }
+   00782|     // `Replace the line 'x' with these three lines in f:` followed by lines: a
+   00783|     // new clause that only describes lines (the seeded `line` meaning,
+   00784|     // unquoted) stands for the lines under the request (PR #1188 G22).
+   00785|     if let Some(block) = super::positional_edit::introduced_block(request)
+   00786|         && let Some((target, old, new)) = compose_edit_request(block.head)
+   00787|         && describes_lines(block.head, &new)
+   00788|     {
+   00789|         return Some(EditClauses {
+   00790|             edit: (target, old, block.text),
+   00791|             spans: None,
+   00792|         });
+   00793|     }
+   00794|     let toks = tokens(request);
+   00795|     let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
+   00796|     let new_leads = bare_surfaces(seed::ROLE_FILE_EDIT_NEW_LEAD_CUE);
+   00797|     let target_cues = bare_surfaces(seed::ROLE_FILE_EDIT_TARGET_CUE);
+   00798|     let is_target_cue = |index: usize| target_cues.contains(&clean_cue_token(toks[index].text));
+   00799|     let is_action_cue = |index: usize| action_cues.contains(&clean_cue_token(toks[index].text));
+   00800|     let unquoted: Vec<usize> = super::positional_edit::unquoted_path_tokens(request)
+   00801|         .iter()
+   00802|         .map(|token| token.start)
+   00803|         .collect();
+   00804|     // A path the request leaves unquoted names the file before a literal that
+   00805|     // is exactly a path does: in "Replace 'a' with 'data/x.lino' in f.mjs" the
+   00806|     // quoted path is the new text, and the cue after it does not make it the
+   00807|     // target.
+   00808|     let segments = crate::normal_markov::quoted_segment_spans(request);
+   00809|     let is_quoted = |token: &Token<'_>| {
+   00810|         segments
+   00811|             .iter()
+   00812|             .any(|segment| token.start >= segment.start && token.end <= segment.end)
+   00813|     };
+   00814|     let is_path_candidate = |token: &Token<'_>| {
+   00815|         let cleaned = clean_path_token(token.text);
+   00816|         unquoted.contains(&token.start)
+   00817|             && (super::general_planner::resolve_census_target(cleaned).is_some()
+   00818|                 || (looks_like_file_path(cleaned) && safe_relative_path(cleaned)))
+   00819|     };
+   00820|     let candidate = |quoted_pass: bool| {
+   00821|         toks.iter().enumerate().find_map(|(index, token)| {
+   00822|             let cleaned = clean_path_token(token.text);
+   00823|             if !unquoted.contains(&token.start) || is_quoted(token) != quoted_pass {
+   00824|                 return None;
+   00825|             }
+   00826|             let resolved = super::general_planner::resolve_census_target(cleaned);
+   00827|             if resolved.is_none()
+   00828|                 && (!looks_like_file_path(cleaned) || !safe_relative_path(cleaned))
+   00829|             {
+   00830|                 return None;
+   00831|             }
+   00832|             let prev_is_cue = index
+   00833|                 .checked_sub(1)
+   00834|                 .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
+   00835|             let next_is_cue =
+   00836|                 (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
+   00837|             // A cue between two paths introduces the later one: in "…`p.lino``
+   00838|             // in req.md" the payload's last span is no target (PR #1188 G63).
+   00839|             let cue_introduces_next =
+   00840|                 !prev_is_cue && next_is_cue && toks.get(index + 2).is_some_and(is_path_candidate);
+   00841|             let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
+   00842|             ((prev_is_cue || next_is_cue) && !cue_introduces_next).then_some((index, target))
+   00843|         })
+   00844|     };
+   00845|     let (file_index, target) = candidate(false).or_else(|| candidate(true))?;
+   00846|     // The file clause runs back over target cues and the seeded function words
+   00847|     // between them (`in the file f.txt`) to its first cue (PR #1188 G98); a cue
+   00848|     // word inside a quoted literal is payload ("… the named file.'").
+   00849|     let function_words = bare_surfaces(FUNCTION_WORD_ROLE);
+   00850|     let joins_clause = |index: usize| {
+   00851|         !is_quoted(&toks[index])
+   00852|             && (is_target_cue(index) || function_words.contains(&clean_cue_token(toks[index].text)))
+   00853|     };
+   00854|     let mut clause_start_index = file_index;
+   00855|     for index in (0..file_index)
+   00856|         .rev()
+   00857|         .take_while(|&index| joins_clause(index))
+   00858|     {
+   00859|         if is_target_cue(index) {
+   00860|             clause_start_index = index;
+   00861|         }
+   00862|     }
+   00863|     let file_clause_start = toks[clause_start_index].start;
+   00864|     // A cue word quoted whole is payload too: `replace 'with' with ','`.
+   00865|     let is_cue = |token: &Token<'_>, cues: &[String]| {
+   00866|         unquoted.contains(&token.start)
+   00867|             && !is_quoted(token)
+   00868|             && cues.contains(&clean_cue_token(token.text))
+   00869|     };
+   00870|     let action = toks
+   00871|         .iter()
+   00872|         .filter(|token| is_cue(token, &action_cues))
+   00873|         .find(|token| token.start > toks[file_index].end)
+   00874|         .or_else(|| toks.iter().find(|token| is_cue(token, &action_cues)))?;
+   00875|     let action_end = action.end;
+   00876|     let new_lead = toks
+   00877|         .iter()
+   00878|         .find(|token| token.start >= action_end && is_cue(token, &new_leads))?;
+   00879|     // `Bump the version in package.json to 1.1.0`: a file clause right before
+   00880|     // the new lead ends the old text; anything else between them is no edit.
+   00881|     let file_between = file_clause_start >= action_end && file_clause_start < new_lead.start;
+   00882|     if file_between
+   00883|         && !request
+   00884|             .get(toks[file_index].end..new_lead.start)?
+   00885|             .trim()
+   00886|             .is_empty()
+   00887|     {
+   00888|         return None;
+   00889|     }
+   00890|     let old_end = if file_between {
+   00891|         file_clause_start
+   00892|     } else {
+   00893|         new_lead.start
+   00894|     };
+   00895|     let old_span = request.get(action_end..old_end)?;
+   00896|     let sentence_end = prose_sentences(request)
+   00897|         .into_iter()
+   00898|         .find(|sentence| sentence.span.contains(&new_lead.end))
+   00899|         .map_or_else(
+   00900|             || request.len(),
+   00901|             |sentence| {
+   00902|                 let raw = &request[sentence.span.clone()];
+   00903|                 sentence.span.start + (raw.len() - raw.trim_start().len()) + sentence.text.len()
+   00904|             },
+   00905|         );
+   00906|     // A sentence boundary inside a quoted literal is payload: extend to its end.
+   00907|     // When that literal ends early, because the backtick spans inside the
+   00908|     // payload paired among themselves, a payload quoted whole up to the file
+   00909|     // clause runs to it (PR #1188 G63), else to its own close (G107).
+   00910|     let sentence_end = crate::normal_markov::quoted_segment_spans(request)
+   00911|         .into_iter()
+   00912|         .find(|segment| segment.start < sentence_end && sentence_end < segment.end)
+   00913|         .map_or(sentence_end, |segment| {
+   00914|             let whole = file_clause_start > segment.end
+   00915|                 && request
+   00916|                     .get(new_lead.end..file_clause_start)
+   00917|                     .is_some_and(crate::normal_markov::wrapped_in_quote_pair);
+   00918|             if whole {
+   00919|                 file_clause_start
+   00920|             } else {
+   00921|                 segment.end
+   00922|             }
+   00923|         });
+   00924|     let new_end = if file_clause_start > new_lead.end {
+   00925|         file_clause_start.min(sentence_end)
+   00926|     } else {
+   00927|         super::quote_nesting::whole_payload_end(request, new_lead.end, sentence_end)
+   00928|     };
+   00929|     let new_span = request.get(new_lead.end..new_end)?;
+   00930|     let old = super::positional_edit::literal_text(old_span)?;
+   00931|     let new = super::positional_edit::literal_text(new_span)?;
+   00932|     // `Rename the file m.py to math_utils.py`: an unquoted new name that is a
+   00933|     // workspace path renames the file itself, which is no edit of its bytes
+   00934|     // (PR #1188 G24); the shell intents carry it.
+   00935|     // Quoted, the new path renames the file too when the old clause quotes
+   00936|     // nothing (`Rename the file 'a.txt' to 'b.txt'`, G37).
+   00937|     let renamed_file = (crate::normal_markov::quoted_segment_spans(new_span).is_empty()
+   00938|         || crate::normal_markov::quoted_segment_spans(old_span).is_empty())
+   00939|         && looks_like_file_path(clean_path_token(new_span.trim()))
+   00940|         && seed::lexicon().mentions_role(
+   00941|             seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
+   00942|             &request.to_lowercase(),
+   00943|         );
+   00944|     (!renamed_file).then(|| EditClauses {
+   00945|         edit: (target, old, new),
+   00946|         spans: Some([
+   00947|             (file_clause_start, toks[file_index].end),
+   00948|             (action.start, new_end),
+   00949|         ]),
+   00950|     })
+   00951| }
+   00952| 
+   00953| /// Whether a clause `text` of `head` is no quoted literal but words naming
+   00954| /// lines (`these three lines`, `the following lines`, `эти строки`).
+   00955| fn describes_lines(head: &str, text: &str) -> bool {
+   00956|     !crate::normal_markov::quoted_segment_spans(head)
+   00957|         .iter()
+   00958|         .any(|segment| segment.text == text)
+   00959|         && seed::lexicon().meaning("line").is_some_and(|meaning| {
+   00960|             meaning.evidenced_in(&crate::engine::normalize_prompt(text).to_lowercase())
+   00961|         })
+   00962| }
+   00963| 
+   00964| /// Whether the payload starting at `from` is a block that outlives its first line.
+   00965| ///
+   00966| /// A marker alone on its line already introduces the whole block below it, and
+   00967| /// that is the shape this route was built for. The same request written with the
+   00968| /// payload starting on the marker's own line -- "with exactly this content: #
+   00969| /// Title\n\nbody..." -- means exactly the same thing, but the sentence bound cut
+   00970| /// it at the first line and delivered a 58-byte file for a 1478-byte document.
+   00971| ///
+   00972| /// That is not a bound the author of the request can see. It made every
+   00973| /// multi-line literal write silently lossy: `alpha\nbeta\ngamma` was written as
+   00974| /// `alpha`, and the self-authoring loop produced a one-line stub of the document
+   00975| /// it was handed, which is how it looked broken while reporting success.
+   00976| ///
+   00977| /// A payload whose first line ends but whose block continues is therefore read
+   00978| /// to `limit`, exactly as the marker-only spelling always was. The sentence bound
+   00979| /// still governs a payload that stays on one line, so "write the following: hello
+   00980| /// to `x.txt`" is unaffected -- there is no continuation to find.
+   00981| pub(super) fn payload_continues_past_its_first_line(
+   00982|     request: &str,
+   00983|     from: usize,
+   00984|     sentence_end: usize,
+   00985| ) -> bool {
+   00986|     let Some(tail) = request.get(from..) else {
+   00987|         return false;
+   00988|     };
+   00989|     let Some(break_at) = tail.find('\n') else {
+   00990|         return false;
+   00991|     };
+   00992|     // Only a payload the sentence bound would actually truncate qualifies: the
+   00993|     // newline has to fall inside the sentence being cut, and real content has to
+   00994|     // follow it. Otherwise the sentence bound is already returning the whole
+   00995|     // payload and there is nothing to widen.
+   00996|     from + break_at < sentence_end && tail[break_at..].chars().any(char::is_alphanumeric)
+   00997| }
+   00998| 
+   
+   (End of file - total 998 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/write_request.rs","file_path":"rust/src/agentic_coding/write_request.rs","new":"    let fence_length = led.bytes().take_while(|byte| *byte == b'`').count();\n    if fence_length >= 3\n        && led.len() >= fence_length * 2\n        && led.ends_with(&led[..fence_length])\n    {\n        let body = super::markdown_section::fenced_body(&led[fence_length..led.len() - fence_length]);\n        return (!body.is_empty()).then(|| body.to_owned());\n    }","newString":"    let fence_length = led.bytes().take_while(|byte| *byte == b'`').count();\n    if fence_length >= 3\n        && led.len() >= fence_length * 2\n        && led.ends_with(&led[..fence_length])\n    {\n        let body = super::markdown_section::fenced_body(&led[fence_length..led.len() - fence_length]);\n        return (!body.is_empty()).then(|| body.to_owned());\n    }","new_str":"    let fence_length = led.bytes().take_while(|byte| *byte == b'`').count();\n    if fence_length >= 3\n        && led.len() >= fence_length * 2\n        && led.ends_with(&led[..fence_length])\n    {\n        let body = super::markdown_section::fenced_body(&led[fence_length..led.len() - fence_length]);\n        return (!body.is_empty()).then(|| body.to_owned());\n    }","new_string":"    let fence_length = led.bytes().take_while(|byte| *byte == b'`').count();\n    if fence_length >= 3\n        && led.len() >= fence_length * 2\n        && led.ends_with(&led[..fence_length])\n    {\n        let body = super::markdown_section::fenced_body(&led[fence_length..led.len() - fence_length]);\n        return (!body.is_empty()).then(|| body.to_owned());\n    }","old":"    if led.len() >= 6 && led.starts_with(\"```\") && led.ends_with(\"```\") {\n        let body = super::markdown_section::fenced_body(&led[3..led.len() - 3]);\n        return (!body.is_empty()).then(|| body.to_owned());\n    }","oldString":"    if led.len() >= 6 && led.starts_with(\"```\") && led.ends_with(\"```\") {\n        let body = super::markdown_section::fenced_body(&led[3..led.len() - 3]);\n        return (!body.is_empty()).then(|| body.to_owned());\n    }","old_str":"    if led.len() >= 6 && led.starts_with(\"```\") && led.ends_with(\"```\") {\n        let body = super::markdown_section::fenced_body(&led[3..led.len() - 3]);\n        return (!body.is_empty()).then(|| body.to_owned());\n    }","old_string":"    if led.len() >= 6 && led.starts_with(\"```\") && led.ends_with(\"```\") {\n        let body = super::markdown_section::fenced_body(&led[3..led.len() - 3]);\n        return (!body.is_empty()).then(|| body.to_owned());\n    }","path":"rust/src/agentic_coding/write_request.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/write_request.rs"}
+   d7e80f9983e0bfb88e694c4064e0d68b4d32df4623d65b1ef060b8eaad75c028  rust/src/agentic_coding/write_request.rs
+   
+== answer ==
+Replaced ````    if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
+        let body = super::markdown_section::fenced_body(&led[3..led.len() - 3]);
+        return (!body.is_empty()).then(|| body.to_owned());
+    }```` with ``    let fence_length = led.bytes().take_while(|byte| *byte == b'`').count();
+    if fence_length >= 3
+        && led.len() >= fence_length * 2
+        && led.ends_with(&led[..fence_length])
+    {
+        let body = super::markdown_section::fenced_body(&led[fence_length..led.len() - fence_length]);
+        return (!body.is_empty()).then(|| body.to_owned());
+    }`` in `rust/src/agentic_coding/write_request.rs` and observed the result.

@@ -299,15 +299,7 @@ pub fn compile_procedure_with_ledger(
     let canonical_program = canonical_program(&trigger, &steps);
     let id = stable_id("compiled_procedure", &canonical_program);
     for step in &mut steps {
-        step.id = stable_id(
-            "compiled_procedure_step",
-            &format!(
-                "{id}:{}:{}:{}",
-                step.index,
-                step.kind,
-                step.arguments().join("+")
-            ),
-        );
+        step.id = step_id(&id, step);
     }
 
     Ok(CompiledProcedure {
@@ -568,6 +560,22 @@ impl ProcedureHost for ProcedureConformanceHost {
     fn perform(&mut self, step: &ProcedureStep, input: &str) -> Result<String, String> {
         Ok(format!("{}({input})", step.kind))
     }
+}
+
+/// The content id of `step` inside the procedure `procedure_id`: its index,
+/// kind and arguments under the procedure's id.
+///
+/// Mirrored by `stepId` in `js/agentic/crate/skill_procedure.mjs`.
+fn step_id(procedure_id: &str, step: &ProcedureStep) -> String {
+    stable_id(
+        "compiled_procedure_step",
+        &format!(
+            "{procedure_id}:{}:{}:{}",
+            step.index,
+            step.kind,
+            step.arguments().join("+")
+        ),
+    )
 }
 
 /// The language-independent program text every id is derived from.

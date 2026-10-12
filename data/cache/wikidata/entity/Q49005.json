@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "簾"
+        },
+        "es": {
+          "language": "es",
+          "value": "cortina"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "挂在建筑物的窗户上，具有遮阳、隔热、调节室内光线、吸声隔声等作用的室内装饰品"
+        },
+        "es": {
+          "language": "es",
+          "value": "trozo de tela destinado a bloquear u oscurecer la luz o similar"
         }
       },
       "aliases": {

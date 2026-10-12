@@ -1,0 +1,90 @@
+[
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T09:21:42Z",
+    "actor": "konard",
+    "source_issue": 1183,
+    "source_title": "E127: a truly capable Formal AI: coding by discovery over the formalized internet, every LLM task class in formal form, fact checking with relative meta logic, self-coding via Hive Mind, dependencies latest and deduplicated (sub-issues)",
+    "commit_id": null
+  },
+  {
+    "event": "parent_issue_added",
+    "created_at": "2026-09-29T09:21:53Z",
+    "actor": "konard",
+    "source_issue": null,
+    "source_title": null,
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T09:34:59Z",
+    "actor": "konard",
+    "source_issue": 1170,
+    "source_title": "E135: Formal AI must code itself through Hive Mind: self-hosting 0% since v0.352.1, only literal lockfile edits so far; blockers and a replay ladder",
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T09:35:13Z",
+    "actor": "konard",
+    "source_issue": 1177,
+    "source_title": "E142: code explanation, review, debugging, refactoring, test generation, regex, SQL, shell commands and generation in formal form (HumanEval 14/164, MBPP 49/500)",
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T10:44:09Z",
+    "actor": "konard",
+    "source_issue": 1167,
+    "source_title": "E132: code lives in the meta language: compose there, render out, parse every emitted language back (no Kotlin/Scala/Swift/R CST entry, composition never uses meta_translate, round trip #[ignore])",
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T10:45:06Z",
+    "actor": "konard",
+    "source_issue": 1163,
+    "source_title": "E128: the internet as formal knowledge: formalize any fetched page (text and code blocks) into links, search as the entry point for any need",
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T10:47:34Z",
+    "actor": "konard",
+    "source_issue": 1165,
+    "source_title": "E130: put discovery on the production path: research_coding_skill_gap is test-only; write_program answers from three stored program sets (hello-world-programs.lino, stdout contracts, knowledge.rs ORACLE_SNAPSHOTS); make them a deletable, rediscoverable cache",
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T10:48:17Z",
+    "actor": "konard",
+    "source_issue": 1166,
+    "source_title": "E131: formalize the request into obligations instead of matching phrases (CI workflow, task aliases, doubled output literal)",
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T10:49:36Z",
+    "actor": "konard",
+    "source_issue": 1184,
+    "source_title": "E148: white-box derivation for every answer: derivation_id on every answer, a durable derivation record, and formal-ai explain <answer-id>",
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-09-29T10:51:09Z",
+    "actor": "konard",
+    "source_issue": 1185,
+    "source_title": "E149: error-driven repair loop: formalize compiler/runtime diagnostics, search the error, apply the fix in the meta language, retry (today the executor stops at the first failed step)",
+    "commit_id": null
+  },
+  {
+    "event": "cross-referenced",
+    "created_at": "2026-10-07T05:33:05Z",
+    "actor": "konard",
+    "source_issue": 1188,
+    "source_title": "Bulk QA, reasoning and coding fixes; recursive meta reasoner; JS server parity",
+    "commit_id": null
+  }
+]

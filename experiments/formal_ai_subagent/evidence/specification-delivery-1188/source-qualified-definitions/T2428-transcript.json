@@ -1,0 +1,7 @@
+{
+  "taskId": "T2428",
+  "encoding": "utf8",
+  "sha256": "738e2dca78edcab0e7a35bb2ee5547df5a286250a414fbe0c72d68e26ed5f8b2",
+  "byteLength": 411,
+  "rawUtf8": ">> bash {\"command\":\"rustfmt --edition 2024 --config skip_children=true rust/src/source_fetch.rs rust/src/source_fetch/seed_captures.rs rust/src/solver_handlers/source_qualified_definition.rs rust/src/solver_handlers/word_definition.rs rust/src/solver_handlers/modules.rs rust/tests/unit/specification/source_cache.rs\"}\n   Output: \n   Exit Code: 0\n== answer ==\nThe command completed successfully without output.\n"
+}

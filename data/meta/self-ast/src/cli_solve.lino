@@ -2,27 +2,29 @@ self_ast_census
   target src/cli_solve.rs
   language rust
   fidelity signature
-  byte_len 17942
-  line_count 505
-  content_id source_module_7cdfff1238796ec9
-  symbol_count 19
+  byte_len 18795
+  line_count 534
+  content_id source_module_a9b9bf3da4112fe1
+  symbol_count 21
   symbols
     struct SolveArgs 25 64
     function default 67 86
-    struct SolveOutcome 91 102
-    struct RequirementInput 104 107
-    struct IssueSource 109 113
-    function run_solve 122 281
-    function requirement 283 329
-    function commit_message 331 351
-    function github_issue_api_url 355 372
-    function valid_github_segment 374 379
-    function parse_github_issue_requirement 385 421
-    function canonical_pull_request 423 433
-    function protocol_trace 435 456
-    function commit_isolated 458 478
-    struct SolveScratch 480 482
-    function new 485 493
-    static SEQUENCE 486 486
-    function drop 497 499
-    function protocol_template 502 505
+    struct SolveOutcome 91 104
+    struct RequirementInput 106 109
+    struct IssueSource 111 115
+    function run_solve 124 295
+    function requirement 297 343
+    function commit_message 345 365
+    function github_issue_api_url 369 386
+    function valid_github_segment 388 393
+    function parse_github_issue_requirement 399 435
+    function canonical_pull_request 437 447
+    function protocol_trace 451 479
+    const SOLVE_CALLER 482 482
+    const COMMIT_STAGE 485 485
+    function commit_isolated 487 507
+    struct SolveScratch 509 511
+    function new 514 522
+    static SEQUENCE 515 515
+    function drop 526 528
+    function protocol_template 531 534

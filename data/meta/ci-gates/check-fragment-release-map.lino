@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_fragment_release_map
+ci_gate check-fragment-release-map
   stage rust
   description "The fragment release map regenerates to exactly what is committed."
   run "node --test experiments/issue_738_fragment_release_map.test.mjs"
+  justification "A fragment map regenerated non-atomically could produce partial or mismatched entries that misdirected release notes; the atomic regeneration test was introduced for issue #738 to prevent inconsistent fragment maps."

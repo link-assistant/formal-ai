@@ -1,0 +1,13 @@
+view
+  id M-96a42595d5b9
+  lemma received
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "conforming to the established language usage of educated native speakers"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "widely accepted as true or worthy"
+    provenance (wordnet)

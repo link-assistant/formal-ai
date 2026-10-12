@@ -1,0 +1,17 @@
+view
+  id M-e446146ac360
+  lemma inspect
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "look over carefully"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "come to see in an official or professional capacity"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "examine carefully for accuracy with the intent of verification"
+    provenance (wordnet)

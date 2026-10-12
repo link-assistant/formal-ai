@@ -1,15 +1,18 @@
 Q133105
   aliases
     en ("lower limb" "free lower limb")
+    es ("miembro inferior" "miembro inferior humano" "miembros inferiores" "extremidad posterior" pata "extremidad inferior")
     hi ("पांव")
     ru ("лапа" "лапка" "нижняя конечность" "конечность" "свободная часть ноги" "задняя конечность")
     zh ("下盤" "下肢" "髀" "腿部" "小腿")
   descriptions
     en "weight bearing and locomotive anatomical structure of animals"
+    es "extremidad o apéndice del cuerpo de un animal que sostiene el resto del cuerpo"
     ru "часть тела - нога, не включая тазобедренный сустав"
   id Q133105
   labels
     en leg
+    es pierna
     hi "टाँग"
     ru "нога"
     zh "腿"

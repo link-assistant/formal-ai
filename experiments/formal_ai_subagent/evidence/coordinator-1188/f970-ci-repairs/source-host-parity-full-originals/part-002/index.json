@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "part": 2,
+  "totalParts": 3,
+  "originalUnionIndexSHA256": "60599fac132af0753cabda644f769c0a190357e7e2160e285d936da4bfb21415",
+  "originalLogicalMembersAcrossUnion": 4721,
+  "logicalMembersThisPart": 2775,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 938,
+  "sourceAndControllerInputBytes": 24820723,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 940,
+  "newEncodedBlobs": 939,
+  "reusedPreviousEncodedBlobs": 1,
+  "newCompressedBytes": 8709517,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-002.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-003.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-004.jsonl",
+      "count": 677
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "blobs-002.jsonl",
+      "count": 240
+    }
+  ],
+  "selectionSHA256": "431648a0e944ba0fef6f61f16df7ea0791eb7f1f1cfcbc0f2b6d919acccb4842",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [
+    {
+      "original": "T6175 failed EISDIR observer",
+      "missing": "full rawdrive not written after genuine physical effects; complete surviving original request/program/error/physical outputs retained; no reconstruction"
+    },
+    {
+      "packet": "root-closed-3485",
+      "path": "/private/tmp/pr1188-root-T3485",
+      "reason": "not present; no reconstruction"
+    },
+    {
+      "original": "Read/destination namespace races",
+      "missing": "coverage Unknown; no consumer/G132 completion or fresh Git naming census claim; owner6721 is additive naming freeze, not independent review"
+    }
+  ],
+  "pending": [
+    "T3492 original three section failures retained; subsequent repair outside this cut",
+    "normalizer/coding-quality counterfeit/consumer/create-provider completion pending"
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

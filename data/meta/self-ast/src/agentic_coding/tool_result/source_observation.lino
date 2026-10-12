@@ -1,0 +1,104 @@
+self_ast_census
+  target src/agentic_coding/tool_result/source_observation.rs
+  language rust
+  fidelity full_ast
+  byte_len 11585
+  line_count 322
+  content_id source_module_45c09dd826dc9501
+  symbol_count 16
+  symbols
+    function observed_bytes_match 10 55
+    function observed_digest_matches 57 64
+    function reported_exit_code 67 69
+    function harness_reported_failure 72 74
+    function shell_step 77 82
+    function normalized_payload 85 90
+    function observed_payload 93 121
+    function incomplete_receipt 124 138
+    enum SourceReadStatus 142 146
+    struct ProviderToolObservation 150 153
+    function from 156 161
+    function complete_owned_read 167 174
+    function into_transport 178 185
+    struct SourceReadObservation 190 196
+    function complete_owned_source_read_frame 200 216
+    function source_read_observation 220 322
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 9809
+    named_node_count 2033
+    distinct_node_kinds 70
+    node_kinds
+      arguments 209
+      array_expression 9
+      attribute 7
+      attribute_item 7
+      binary_expression 53
+      block 33
+      boolean_literal 20
+      call_expression 209
+      char_literal 3
+      closure_expression 45
+      closure_parameters 45
+      crate 8
+      declaration_list 2
+      doc_comment 15
+      else_clause 3
+      enum_item 1
+      enum_variant 3
+      enum_variant_list 1
+      escape_sequence 6
+      expression_statement 15
+      field_declaration 7
+      field_declaration_list 2
+      field_expression 177
+      field_identifier 188
+      field_initializer 4
+      field_initializer_list 4
+      function_item 13
+      generic_function 8
+      generic_type 14
+      identifier 396
+      if_expression 9
+      impl_item 2
+      inner_doc_comment_marker 1
+      integer_literal 8
+      let_chain 2
+      let_condition 6
+      let_declaration 26
+      line_comment 16
+      macro_invocation 5
+      outer_doc_comment_marker 14
+      parameter 19
+      parameters 13
+      parenthesized_expression 4
+      primitive_type 26
+      reference_expression 4
+      reference_type 17
+      return_expression 9
+      scoped_identifier 41
+      scoped_use_list 1
+      self 3
+      self_parameter 1
+      shorthand_field_initializer 6
+      source_file 1
+      string_content 70
+      string_literal 72
+      struct_expression 4
+      struct_item 2
+      super 6
+      token_tree 10
+      try_expression 1
+      tuple_expression 3
+      tuple_pattern 9
+      tuple_struct_pattern 10
+      tuple_type 1
+      type_arguments 22
+      type_identifier 46
+      unary_expression 13
+      use_declaration 2
+      use_list 1
+      visibility_modifier 20

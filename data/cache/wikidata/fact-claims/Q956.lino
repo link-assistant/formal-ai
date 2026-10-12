@@ -1,0 +1,31 @@
+Q956
+  aliases
+    en (Beiping Peiping Yanjing Zhongdu Khanbaliq BJ Pekin Shuntian Shuntianfu "Shuntian Fu" Pe-king "Pei-p'ing" Pei-ping "Peip'ing" Pei-ching Yan-ching Yanking Chung-tu Chungtu Khanbalik "Shun-t'ien" Shun-tien Beeijing Poh-cin "Bākgīng" Pak-kiann Ji Jicheng Chi "Chi-ch'eng" Chi-cheng "Chi-ch’êng" "Bei Jing Shi" "Beijing Shi" "Peking Shi")
+    ru ("Бэйцзин" "Бэйпин")
+    zh ("北平" "北平市" "平" "燕京" "燕" "京兆地方" "Běijīng shì" "Jīng" "Běipíng" "Běipíng shì" "Píng" "Yànjīng" "Yàn" "Jīngzhào dìfāng")
+  id Q956
+  labels
+    en Beijing
+    hi "बीजिंग"
+    ru "Пекин"
+    zh "北京市"
+    zh-hans "北京市"
+  sitelinks
+    enwiki
+      site enwiki
+      title Beijing
+    hiwiki
+      site hiwiki
+      title "बीजिंग"
+    ruwiki
+      site ruwiki
+      title "Пекин"
+    zhwiki
+      site zhwiki
+      title "北京市"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

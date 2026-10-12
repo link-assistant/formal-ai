@@ -1,0 +1,49 @@
+Q142
+  aliases
+    en ("French Republic")
+    hi ("फ़्राँस" "फ्रांस" "फ्रान्स" "फ़्रांस" "फ्राँस")
+    ru ("Французская Республика" "ФР" "Французская республика" "Республика Франция" "Пятая Французская Республика")
+    zh ("法兰西共和国" "法兰西" "法蘭西共和國" "法蘭西" "法国")
+    zh-hans ("法兰西共和国" "法兰西")
+  claims
+    P36
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q90
+              numeric-id 90
+          hash 62b03c9cc3ffe5ba42e974a926ae43b8f6a8365e
+          property P36
+          snaktype value
+        rank preferred
+  id Q142
+  labels
+    en France
+    hi "फ़्रान्स"
+    ru "Франция"
+    zh "法國"
+    zh-hans "法国"
+  sitelinks
+    enwiki
+      site enwiki
+      title France
+    hiwiki
+      site hiwiki
+      title "फ़्रान्स"
+    ruwiki
+      site ruwiki
+      title "Франция"
+    zhwiki
+      site zhwiki
+      title "法国"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P36)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

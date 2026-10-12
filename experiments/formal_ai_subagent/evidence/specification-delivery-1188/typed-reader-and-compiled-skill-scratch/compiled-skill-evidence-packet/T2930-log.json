@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2930.log",
+  "sha256": "0e730f7d7cbcdafd00b588ea272d4cd76df5f7366cbedea24de76f920291bd01",
+  "rawUtf8": ">> read {\"filePath\":\"/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/skill_compiler.rs\",\"file_path\":\"/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/skill_compiler.rs\",\"path\":\"/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/skill_compiler.rs\"}\n   {\"is_error\":true,\"error\":\"path escapes the sandbox: /Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/skill_compiler.rs\"}\n>> read {\"filePath\":\"engine/seed\",\"file_path\":\"engine/seed\",\"path\":\"engine/seed\"}\n   {\"is_error\":true,\"error\":\"ENOENT: no such file or directory, open '/private/tmp/spec-recurrence-1188/typed-reader-next/engine/seed'\"}\n== answer ==\nThe command failed: path escapes the sandbox: /Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/skill_compiler.rs\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.\n"
+}

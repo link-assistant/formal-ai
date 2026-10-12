@@ -1,0 +1,9 @@
+{
+  "action": "private-index scoped commit preflight",
+  "status": "failed before commit",
+  "exitCode": 2,
+  "error": "js/agentic/file_read/records.mjs:108: new blank line at EOF.",
+  "mutex": "released by trap",
+  "sourceEffects": 0,
+  "note": "Unstaged git diff --check did not include untracked new file"
+}

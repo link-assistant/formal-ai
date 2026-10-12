@@ -181,7 +181,7 @@ impl SystemExplanation {
                 vec![
                     Citation::source("src/self_source_links.rs"),
                     Citation::source("src/agentic_coding/self_ast.rs"),
-                    Citation::test("rust/tests/unit/issue_558_source_links.rs"),
+                    Citation::test("rust/tests/unit/agentic-coding/issue_558_source_links.rs"),
                 ],
             ),
             ExplanationSection::new(
@@ -192,7 +192,7 @@ impl SystemExplanation {
                 vec![
                     Citation::source("src/self_healing.rs"),
                     Citation::data("data/meta/self-healing-case.lino"),
-                    Citation::test("rust/tests/unit/issue_558_self_healing.rs"),
+                    Citation::test("rust/tests/unit/agentic-coding/issue_558_self_healing.rs"),
                 ],
             ),
             ExplanationSection::new(
@@ -204,7 +204,7 @@ impl SystemExplanation {
                 vec![
                     Citation::source("src/learning_ledger.rs"),
                     Citation::data("data/meta/learning-ledger.lino"),
-                    Citation::test("rust/tests/unit/issue_558_learning_ledger.rs"),
+                    Citation::test("rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs"),
                 ],
             ),
             ExplanationSection::new(

@@ -1,0 +1,22 @@
+language en
+lemma contradiction
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "opposition between two conflicting forces or ideas"
+    id oewn-13879873-n
+    partOfSpeech n
+  entry
+    definition "(logic) a statement that is necessarily false"
+    examples ("the statement ‘he is brave and he is not brave’ is a contradiction")
+    id oewn-07221547-n
+    partOfSpeech n
+    synonyms ("contradiction in terms")
+  entry
+    definition "the speech act of contradicting someone"
+    examples ("he spoke as if he thought his claims were immune to contradiction")
+    id oewn-07221256-n
+    partOfSpeech n
+source "oewn:2024"

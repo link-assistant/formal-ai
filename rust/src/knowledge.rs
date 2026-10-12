@@ -30,6 +30,41 @@
 //! The data is plain Rust so it compiles into both the native binary and the
 //! Rust→WASM browser worker without a runtime fetch, and is mirrored verbatim in
 //! `js/worker/formal_ai_worker.js` so every reasoning surface agrees byte-for-byte.
+//!
+//! Issue #1165 (E130) converts this store into the *bootstrap tier* of the
+//! rediscoverable procedure cache: the snapshots are the record of discovery
+//! that ran before `data/cache/coding-procedure-cache.lino` existed, and
+//! [`bootstrap_cache_active`] — which reads
+//! `data/seed/program-cache-policy.lino`, not this file — decides whether
+//! they are still served. Deleting the bootstrap record in that seed stops
+//! every snapshot-backed answer with no Rust change; the production miss
+//! path (`crate::discovery_production`) then answers from cache rows that
+//! name their rediscovery query and source, and the snapshots retire for good
+//! once every language row they covered is reproduced by a rediscovery run.
+
+/// The cache policy seed that governs the bootstrap tier (issue #1165).
+const PROCEDURE_CACHE_POLICY: &str =
+    include_str!("../embedded/data/seed/program-cache-policy.lino");
+
+/// Whether the embedded snapshot bootstrap still fronts the rediscoverable
+/// procedure cache.
+///
+/// The decision is data, not code: the `bootstrap` record of the policy seed
+/// carries `active`, so retiring the bootstrap is a seed edit, and a test can
+/// prove the deletion path without recompiling.
+#[must_use]
+pub fn bootstrap_cache_active() -> bool {
+    use std::sync::OnceLock;
+    static ACTIVE: OnceLock<bool> = OnceLock::new();
+    *ACTIVE.get_or_init(|| {
+        let policy = crate::seed::parser::parse_lino(PROCEDURE_CACHE_POLICY);
+        policy
+            .children
+            .first()
+            .and_then(|root| root.children.iter().find(|node| node.name == "bootstrap"))
+            .is_some_and(|bootstrap| bootstrap.find_child_value("active") == "true")
+    })
+}
 
 /// Lower bound on the local cache: even for a small source we keep up to this
 /// many popular items before the 1% ceiling takes over. Issue #412, R8.
@@ -89,6 +124,11 @@ pub enum KnowledgeSource {
     /// <https://stackoverflow.com> — community answers, treated read-only and
     /// only for snippets under a compatible licence.
     StackOverflow,
+    /// A documentation page captured byte for byte under
+    /// `data/seed/coding-documentation-captures.lino` (issue #1165): the
+    /// documentation route rediscovers a program from it before any snapshot
+    /// answers.
+    DocumentationCapture,
 }
 
 impl KnowledgeSource {
@@ -101,6 +141,7 @@ impl KnowledgeSource {
             Self::Wikifunctions => "wikifunctions",
             Self::HelloWorldCollection => "hello-world-collection",
             Self::StackOverflow => "stack-overflow",
+            Self::DocumentationCapture => "documentation-capture",
         }
     }
 
@@ -112,6 +153,7 @@ impl KnowledgeSource {
             Self::Wikifunctions => "Wikifunctions",
             Self::HelloWorldCollection => "Hello World Collection",
             Self::StackOverflow => "Stack Overflow",
+            Self::DocumentationCapture => "Documentation capture",
         }
     }
 
@@ -123,6 +165,7 @@ impl KnowledgeSource {
             Self::Wikifunctions => "https://www.wikifunctions.org",
             Self::HelloWorldCollection => "http://helloworldcollection.de",
             Self::StackOverflow => "https://stackoverflow.com",
+            Self::DocumentationCapture => "",
         }
     }
 
@@ -139,6 +182,7 @@ impl KnowledgeSource {
             Self::Wikifunctions => 3_000,
             Self::HelloWorldCollection => 600,
             Self::StackOverflow => 24_000_000,
+            Self::DocumentationCapture => 0,
         }
     }
 }
@@ -162,39 +206,14 @@ pub struct OracleSnippet {
 
 /// The committed popular-case cache for the coding oracle.
 ///
-/// These are the "Hello, World!" programs for languages the built-in
-/// [`crate::coding::catalog`] does not template (Kotlin, Swift, PHP, Bash, Lua,
-/// Haskell), plus a Rosetta-Code factorial in Kotlin to exercise a non-trivial
-/// task. The set is intentionally tiny — well under [`cache_capacity`] for every
+/// These are the "Hello, World!" programs for languages no grammar row lets
+/// the documentation route rediscover (Bash, Haskell), plus a Rosetta-Code
+/// factorial in Kotlin to exercise a non-trivial task. Issue #1165 retired
+/// the Swift, Lua, Kotlin and PHP Hello World snapshots: the oracle answers
+/// Swift and Lua from their captured documentation (the Swift book, lua.org),
+/// and Kotlin and PHP are answered by the catalog from theirs. The set is intentionally tiny — well under [`cache_capacity`] for every
 /// source — and is the offline accelerator a live refresh would repopulate.
 const ORACLE_SNAPSHOTS: &[OracleSnippet] = &[
-    OracleSnippet {
-        task_slug: "hello_world",
-        language_slug: "kotlin",
-        language_label: "Kotlin",
-        source: KnowledgeSource::HelloWorldCollection,
-        source_url: "http://helloworldcollection.de/#Kotlin",
-        code: "fun main() {\n    println(\"Hello, World!\")\n}",
-        expected_output: "Hello, World!",
-    },
-    OracleSnippet {
-        task_slug: "hello_world",
-        language_slug: "swift",
-        language_label: "Swift",
-        source: KnowledgeSource::HelloWorldCollection,
-        source_url: "http://helloworldcollection.de/#Swift",
-        code: "print(\"Hello, World!\")",
-        expected_output: "Hello, World!",
-    },
-    OracleSnippet {
-        task_slug: "hello_world",
-        language_slug: "php",
-        language_label: "PHP",
-        source: KnowledgeSource::HelloWorldCollection,
-        source_url: "http://helloworldcollection.de/#PHP",
-        code: "<?php\necho \"Hello, World!\\n\";",
-        expected_output: "Hello, World!",
-    },
     OracleSnippet {
         task_slug: "hello_world",
         language_slug: "bash",
@@ -202,15 +221,6 @@ const ORACLE_SNAPSHOTS: &[OracleSnippet] = &[
         source: KnowledgeSource::HelloWorldCollection,
         source_url: "http://helloworldcollection.de/#Bash",
         code: "echo \"Hello, World!\"",
-        expected_output: "Hello, World!",
-    },
-    OracleSnippet {
-        task_slug: "hello_world",
-        language_slug: "lua",
-        language_label: "Lua",
-        source: KnowledgeSource::HelloWorldCollection,
-        source_url: "http://helloworldcollection.de/#Lua",
-        code: "print(\"Hello, World!\")",
         expected_output: "Hello, World!",
     },
     OracleSnippet {
@@ -233,6 +243,20 @@ const ORACLE_SNAPSHOTS: &[OracleSnippet] = &[
     },
 ];
 
+/// A snippet the oracle answers a `(task, language)` request with, owned so
+/// a program rediscovered from documentation and a cached snapshot render
+/// alike.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct OracleAnswer {
+    pub task_slug: String,
+    pub language_slug: String,
+    pub language_label: String,
+    pub source: KnowledgeSource,
+    pub source_url: String,
+    pub code: String,
+    pub expected_output: String,
+}
+
 /// Offline-first lookup that generalises the built-in coding catalogue using
 /// the external knowledge sources' cached snapshots.
 pub struct CodingOracle;
@@ -248,11 +272,16 @@ impl CodingOracle {
     ///
     /// The language is matched by slug or case-insensitive display label so a
     /// bare `kotlin` / `Kotlin` both resolve. Returns `None` when the oracle has
-    /// no cached answer — the caller then stays on its existing path (the static
-    /// catalogue or, ultimately, the `unknown` opener), so this is purely
+    /// no cached answer — or when the bootstrap tier has been retired in the
+    /// policy seed, which is the deletable-cache contract of issue #1165: the
+    /// caller then stays on its existing path (the static catalogue, the
+    /// procedure cache, or ultimately the `unknown` opener), so this is purely
     /// additive.
     #[must_use]
     pub fn lookup(task_slug: &str, language: &str) -> Option<&'static OracleSnippet> {
+        if !bootstrap_cache_active() {
+            return None;
+        }
         let needle = language.trim().to_ascii_lowercase();
         ORACLE_SNAPSHOTS.iter().find(|snippet| {
             snippet.task_slug == task_slug
@@ -261,11 +290,63 @@ impl CodingOracle {
         })
     }
 
+    /// The snippet the oracle answers a pair with (issue #1165 R1165-4).
+    ///
+    /// The program the documentation route rediscovers comes first (the
+    /// Swift book), credited to its captured page; a cached snapshot answers
+    /// only a pair no captured page covers. The browser twin is
+    /// `codingOracleAnswer` with `codingOracleDocumentedSnippet`.
+    #[must_use]
+    pub fn answer(task_slug: &str, language: &str) -> Option<OracleAnswer> {
+        if let Some(program) =
+            crate::discovery_production::documented_oracle_program(task_slug, language)
+        {
+            let slug = language.trim().to_ascii_lowercase();
+            let label = if program.language_name.is_empty() {
+                slug.clone()
+            } else {
+                program.language_name
+            };
+            return Some(OracleAnswer {
+                task_slug: task_slug.to_owned(),
+                language_slug: slug,
+                language_label: label,
+                source: KnowledgeSource::DocumentationCapture,
+                source_url: program.recipe.rediscovery_source,
+                code: program.recipe.entry,
+                expected_output: program.recipe.verified_output,
+            });
+        }
+        let snippet = Self::lookup(task_slug, language)?;
+        Some(OracleAnswer {
+            task_slug: snippet.task_slug.to_owned(),
+            language_slug: snippet.language_slug.to_owned(),
+            language_label: snippet.language_label.to_owned(),
+            source: snippet.source,
+            source_url: snippet.source_url.to_owned(),
+            code: snippet.code.to_owned(),
+            expected_output: snippet.expected_output.to_owned(),
+        })
+    }
+
     /// Whether the oracle can answer for `language` (any task), used to decide
     /// when to generalise beyond the static catalogue.
+    ///
+    /// Issue #1165 R4 replaces the reading "a snapshot exists" with "a grammar
+    /// exists and discovery found a procedure": while the bootstrap tier is
+    /// active the snapshots are the record of discoveries that already ran, so
+    /// they still answer; retiring the bootstrap in the policy seed leaves
+    /// `crate::discovery_production::knows_language` — cache row plus grammar —
+    /// as the authority.
     #[must_use]
     pub fn knows_language(language: &str) -> bool {
+        if !bootstrap_cache_active() {
+            return false;
+        }
         let needle = language.trim().to_ascii_lowercase();
+        if crate::discovery_production::language_has_documented_procedure(&needle) {
+            return true;
+        }
         ORACLE_SNAPSHOTS.iter().any(|snippet| {
             snippet.language_slug == needle || snippet.language_label.to_ascii_lowercase() == needle
         })

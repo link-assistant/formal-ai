@@ -1,0 +1,56 @@
+{
+  "schema": "goal-bound-source-query-observation/v1",
+  "originalDesignTask": "T3558",
+  "taskUtf8Bytes": 445,
+  "actualReadReceipts": [
+    {
+      "arguments": {
+        "filePath": "rust/src/cli_solve.rs",
+        "file_path": "rust/src/cli_solve.rs",
+        "path": "rust/src/cli_solve.rs"
+      },
+      "rawSourceUtf8Bytes": 18421,
+      "source_read": {
+        "path": "rust/src/cli_solve.rs",
+        "success": true,
+        "complete": true,
+        "format": "raw"
+      }
+    },
+    {
+      "arguments": {
+        "filePath": "rust/src/repository_workspace/mod.rs",
+        "file_path": "rust/src/repository_workspace/mod.rs",
+        "path": "rust/src/repository_workspace/mod.rs"
+      },
+      "rawSourceUtf8Bytes": 35734,
+      "source_read": {
+        "path": "rust/src/repository_workspace/mod.rs",
+        "success": true,
+        "complete": true,
+        "format": "raw"
+      }
+    },
+    {
+      "arguments": {
+        "filePath": "rust/src/repository_workspace/verify.rs",
+        "file_path": "rust/src/repository_workspace/verify.rs",
+        "path": "rust/src/repository_workspace/verify.rs"
+      },
+      "rawSourceUtf8Bytes": 5821,
+      "source_read": {
+        "path": "rust/src/repository_workspace/verify.rs",
+        "success": true,
+        "complete": true,
+        "format": "raw"
+      }
+    }
+  ],
+  "finalUtf8Bytes": 60160,
+  "finalDisposition": "unknown",
+  "validatedUsefulCodeBytes": 0,
+  "sourceBackedPlanProduced": false,
+  "proposalProvenance": "Coordinator-reviewed general mechanism proposal, not requirement implementation or autonomous plan",
+  "productionSourceWrites": 0,
+  "nativeCommandsRun": false
+}

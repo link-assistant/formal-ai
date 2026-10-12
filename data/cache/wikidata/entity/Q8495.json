@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "奶"
+        },
+        "es": {
+          "language": "es",
+          "value": "leche"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "哺乳類生物的乳房分泌出來的液體"
+        },
+        "es": {
+          "language": "es",
+          "value": "líquido nutriente producido por las glándulas mamentarias de los mamíferos"
         }
       },
       "aliases": {

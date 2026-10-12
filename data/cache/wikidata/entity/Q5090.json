@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "稻"
+        },
+        "es": {
+          "language": "es",
+          "value": "arroz"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "禾本目禾本科稻属植物的果实-稻谷经脱壳、碾磨粗皮后的成品，可食用"
+        },
+        "es": {
+          "language": "es",
+          "value": "semilla de la planta Oryza sativa"
         }
       },
       "aliases": {

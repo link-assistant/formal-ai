@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_concept_lookup.js"
-  ceiling 194
-  rationale "Issue #1138 registry-driven concept lookup mirror with bounded capture, provenance, and opt-outs."
+  ceiling 383
+  rationale "Issue #1138 registry-driven concept lookup mirror with bounded capture, provenance, and opt-outs. Ceiling moved 194 to 383 for issue #1172 R5 (2026-10-07): tryWordDefinition reads the five-language "What does X mean?" frames from prompt-patterns.lino and the registry dictionary source (Wiktionary, with the ru/es/hi per-edition section reader), answering up to three senses with URL, sha256 and license; twin of word_definition.rs."

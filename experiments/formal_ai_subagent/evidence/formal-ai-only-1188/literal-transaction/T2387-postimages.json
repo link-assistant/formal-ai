@@ -1,0 +1,11 @@
+{
+  "actual": {
+    "a.txt": "alpha"
+  },
+  "cats": [
+    {
+      "command": "cat a.txt",
+      "result": "Output: alpha\nExit Code: 0"
+    }
+  ]
+}

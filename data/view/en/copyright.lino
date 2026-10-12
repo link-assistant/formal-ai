@@ -1,0 +1,13 @@
+view
+  id M-9e58747c8feb
+  lemma copyright
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a document granting exclusive right to publish and sell literary or musical or artistic work"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "secure a copyright on a written work"
+    provenance (wordnet)

@@ -1,0 +1,77 @@
+>> bash {"command":"node --test callable-body-reads.test.mjs"}
+   TAP version 13
+   # Subtest: actual committed body reads its source formal slot despite anonymous task spelling
+   ok 1 - actual committed body reads its source formal slot despite anonymous task spelling
+     ---
+     duration_ms: 0.886875
+     ...
+   # Subtest: literal contents and declaration-only names do not read an input
+   ok 2 - literal contents and declaration-only names do not read an input
+     ---
+     duration_ms: 0.072583
+     ...
+   # Subtest: repeated body reads are distinct positional inputs, never declaration counts
+   ok 3 - repeated body reads are distinct positional inputs, never declaration counts
+     ---
+     duration_ms: 0.105417
+     ...
+   # Subtest: explicit signature binds AST parameters and recursive callable before actual execution
+   ok 4 - explicit signature binds AST parameters and recursive callable before actual execution
+     ---
+     duration_ms: 103.437625
+     ...
+   # Subtest: explicit incompatible arity, duplicates and unresolved parameters reject honestly
+   ok 5 - explicit incompatible arity, duplicates and unresolved parameters reject honestly
+     ---
+     duration_ms: 0.104458
+     ...
+   1..5
+   # tests 5
+   # suites 0
+   # pass 5
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 557.846334
+   
+== answer ==
+The `node --test callable-body-reads.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: actual committed body reads its source formal slot despite anonymous task spelling
+ok 1 - actual committed body reads its source formal slot despite anonymous task spelling
+  ---
+  duration_ms: 0.886875
+  ...
+# Subtest: literal contents and declaration-only names do not read an input
+ok 2 - literal contents and declaration-only names do not read an input
+  ---
+  duration_ms: 0.072583
+  ...
+# Subtest: repeated body reads are distinct positional inputs, never declaration counts
+ok 3 - repeated body reads are distinct positional inputs, never declaration counts
+  ---
+  duration_ms: 0.105417
+  ...
+# Subtest: explicit signature binds AST parameters and recursive callable before actual execution
+ok 4 - explicit signature binds AST parameters and recursive callable before actual execution
+  ---
+  duration_ms: 103.437625
+  ...
+# Subtest: explicit incompatible arity, duplicates and unresolved parameters reject honestly
+ok 5 - explicit incompatible arity, duplicates and unresolved parameters reject honestly
+  ---
+  duration_ms: 0.104458
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 557.846334
+```

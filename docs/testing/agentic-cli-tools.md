@@ -394,7 +394,10 @@ harness. `run_leg.sh` reads the `verification` object from
 `formal-ai clients --format json`: surface, file-delivery mode, headless flags,
 interactive environment and onboarding keys, required/forbidden tools, launch
 arguments/readiness checks, extension package, sandbox needs and the expected
-vendor-auth boundary. There are four surfaces, and every client gets exactly
+vendor-auth boundary. The same output also declares, per global config entry,
+the environment variables that relocate it (`config_env`, issue #1161) so a
+host points a client at task-local config without moving
+`XDG_CONFIG_HOME`/`HOME`. There are four surfaces, and every client gets exactly
 one:
 
 - **`cli`** — prompt in, answer out. The full case list below runs against it.

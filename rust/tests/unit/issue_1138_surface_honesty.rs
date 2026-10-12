@@ -77,19 +77,43 @@ fn an_unverified_answer_says_so_in_five_languages() {
 }
 
 /// The five-language doctrine is not four languages and a fallthrough: Spanish
-/// gets its own branch rather than the English default.
+/// gets its own sentence rather than the English default. Since R379 the
+/// how-to-test guidance prose lives in the `coding_guidance` records of
+/// `data/seed/coding-guidance.lino`, and `rust/src/coding/guidance.rs` only
+/// looks a sentence up by the response language's slug, so the Spanish branch
+/// is an `es` field wherever a record carries a `ru` one.
 #[test]
 fn guidance_has_a_spanish_branch() {
-    let guidance = fs::read_to_string(repo_root().join("rust/src/coding/guidance.rs"))
-        .expect("rust/src/coding/guidance.rs should be readable");
+    let guidance = fs::read_to_string(repo_root().join("data/seed/coding-guidance.lino"))
+        .expect("data/seed/coding-guidance.lino should be readable");
+    let mut records: Vec<Vec<&str>> = Vec::new();
+    for line in guidance.lines() {
+        if !line.starts_with(' ') && !line.trim().is_empty() {
+            records.push(Vec::new());
+        } else if let Some(record) = records.last_mut() {
+            record.push(line.trim());
+        }
+    }
+    let guidance_records: Vec<&Vec<&str>> = records
+        .iter()
+        .filter(|fields| fields.contains(&"record_type \"coding_guidance\""))
+        .collect();
     assert!(
-        guidance.contains("Language::Spanish"),
-        "the how-to-test guidance must branch on Spanish rather than fall through to English"
+        !guidance_records.is_empty(),
+        "the how-to-test guidance is seeded as coding_guidance records"
     );
-    let russian = guidance.matches("Language::Russian").count();
-    let spanish = guidance.matches("Language::Spanish").count();
-    assert_eq!(
-        spanish, russian,
-        "Spanish must be branched on wherever Russian is: {spanish} Spanish arms against {russian} Russian ones"
-    );
+    for fields in guidance_records {
+        let has = |slug: &str| {
+            fields.iter().any(|field| {
+                field
+                    .strip_prefix(slug)
+                    .is_some_and(|rest| rest.starts_with(" \"") && rest.len() > 3)
+            })
+        };
+        assert_eq!(
+            has("es"),
+            has("ru"),
+            "Spanish must be seeded wherever Russian is: {fields:?}"
+        );
+    }
 }

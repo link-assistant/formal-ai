@@ -1,0 +1,13 @@
+view
+  id M-2d88fa9f3cd6
+  lemma journalism
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "newspapers and magazines collectively"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the profession of reporting or photographing or editing news stories for one of the media"
+    provenance (wordnet)

@@ -1,0 +1,47 @@
+self_ast_census
+  target src/solver_handlers/shell_command_compose.rs
+  language rust
+  fidelity signature
+  byte_len 29451
+  line_count 818
+  content_id source_module_1432ddbb080ad6d0
+  symbol_count 38
+  symbols
+    const CUES_PATH 29 29
+    const MANUAL_PATH 30 30
+    const INTENT 31 31
+    const OTHER_INTENTS 34 43
+    const SHELL_CUE_MAP 46 46
+    function seed_text 49 54
+    function cue_phrases 59 90
+    function any_cue_matches 93 115
+    function word_entries 118 138
+    function role_words 141 147
+    function role_position 150 155
+    function word_after_lead 159 171
+    function template 174 180
+    function mapping_rows 184 193
+    struct ManualFlag 196 199
+    struct ManualCommand 202 207
+    function manual_pages 209 239
+    struct Composed 243 253
+    struct PipeStage 256 260
+    function counted 264 287
+    function flag_lines 290 295
+    function explained_flags 298 305
+    function tokens 307 309
+    function names_filesystem_object 315 324
+    function echo 328 333
+    function root_path 337 350
+    function file_argument 353 362
+    function number_value 366 374
+    function name_pattern 378 408
+    function size_test 412 449
+    function mtime_test 453 460
+    function line_slice 463 499
+    function grep_search 502 543
+    function sed_literal 547 556
+    function sed_substitution 564 613
+    function find_files 616 666
+    function ls_listing 669 705
+    function handle_shell_command_compose 710 818

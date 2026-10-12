@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "艇"
+        },
+        "es": {
+          "language": "es",
+          "value": "bote"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "較小的船隻"
+        },
+        "es": {
+          "language": "es",
+          "value": "medio de transporte acuático"
         }
       },
       "aliases": {
@@ -52,6 +60,20 @@
           {
             "language": "zh",
             "value": "小船"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "barco menor"
+          },
+          {
+            "language": "es",
+            "value": "embarcación"
+          },
+          {
+            "language": "es",
+            "value": "barco"
           }
         ]
       }

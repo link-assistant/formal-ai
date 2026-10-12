@@ -1,0 +1,109 @@
+{
+  "originalTaskUtf8Bytes": 1129,
+  "originalTaskSha256": "fa91d2574051f3043174574b3c72bda0762e5c8f39650219166dea2c47afa25c",
+  "originalImplementationToolCalls": 1,
+  "originalSourceObservationReceiptUtf8Bytes": 30614,
+  "autonomousAuthoredRepositorySourceEffects": 0,
+  "reviewedSourceEffects": 8,
+  "reviewedTestEffects": 4,
+  "reviewedContexts": [
+    {
+      "id": "T3089",
+      "executionPromptUtf8Bytes": 564,
+      "allSuppliedBeforeAndExpectedUtf8Bytes": 294885,
+      "sourceBeforeAndExpectedUtf8Bytes": 294885,
+      "sourceModelIngestionClaimed": false
+    },
+    {
+      "id": "T3090",
+      "executionPromptUtf8Bytes": 564,
+      "allSuppliedBeforeAndExpectedUtf8Bytes": 153679,
+      "sourceBeforeAndExpectedUtf8Bytes": 91527,
+      "sourceModelIngestionClaimed": false
+    },
+    {
+      "id": "T3092",
+      "executionPromptUtf8Bytes": 564,
+      "allSuppliedBeforeAndExpectedUtf8Bytes": 68782,
+      "sourceBeforeAndExpectedUtf8Bytes": 0,
+      "sourceModelIngestionClaimed": false
+    }
+  ],
+  "deltas": [
+    {
+      "path": "js/agentic/write_request/lowercase_spans.mjs",
+      "addedLines": 40,
+      "deletedLines": 0,
+      "beforeBytes": 0,
+      "afterBytes": 1768,
+      "category": "reviewed-general-source"
+    },
+    {
+      "path": "rust/src/agentic_coding/write_request/lowercase_spans.rs",
+      "addedLines": 59,
+      "deletedLines": 0,
+      "beforeBytes": 0,
+      "afterBytes": 1977,
+      "category": "reviewed-general-source"
+    },
+    {
+      "path": "js/agentic/write_request.mjs",
+      "addedLines": 3,
+      "deletedLines": 2,
+      "beforeBytes": 26721,
+      "afterBytes": 26882,
+      "category": "reviewed-general-source"
+    },
+    {
+      "path": "rust/src/agentic_coding/write_request.rs",
+      "addedLines": 8,
+      "deletedLines": 8,
+      "beforeBytes": 45735,
+      "afterBytes": 45709,
+      "category": "reviewed-general-source"
+    },
+    {
+      "path": "js/agentic/general_planner.mjs",
+      "addedLines": 7,
+      "deletedLines": 7,
+      "beforeBytes": 26562,
+      "afterBytes": 26571,
+      "category": "reviewed-general-source"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner.rs",
+      "addedLines": 6,
+      "deletedLines": 7,
+      "beforeBytes": 27096,
+      "afterBytes": 27076,
+      "category": "reviewed-general-source"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/literal_request.rs",
+      "addedLines": 7,
+      "deletedLines": 8,
+      "beforeBytes": 19359,
+      "afterBytes": 19320,
+      "category": "reviewed-general-source"
+    },
+    {
+      "path": "rust/tests/web/literal-write-request-scope.test.mjs",
+      "addedLines": 55,
+      "deletedLines": 0,
+      "beforeBytes": 8432,
+      "afterBytes": 11855,
+      "category": "reviewed-external-regression"
+    },
+    {
+      "path": "rust/tests/fixtures/literal-obligation-transaction.rs",
+      "addedLines": 73,
+      "deletedLines": 0,
+      "beforeBytes": 19900,
+      "afterBytes": 23107,
+      "category": "reviewed-external-regression"
+    }
+  ],
+  "validatedClosestTests": 44,
+  "meaningfulMechanism": "Raw character-boundary mapping plus actual content/objective/pinned-line integration, original Unicode and ownership regression controls.",
+  "limits": "Line counts include comments and formatting and are not an autonomous amplification or net-value metric. Reviewed full-file contexts are cost inputs. No padding added; no native execution, latency/currency savings or autonomous synthesis claim. Broad unchanged retry still only reads source."
+}

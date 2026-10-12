@@ -1,0 +1,7 @@
+{
+  "taskId": "T2437",
+  "encoding": "utf8",
+  "sha256": "6b52d7bc486364e7664e9caf2a7252550e5b580b4565e477e25435426e18073e",
+  "byteLength": 489,
+  "rawUtf8": ">> bash {\"command\":\"node scripts/check-specification-in-javascript.mjs --write\"}\n   Output: specification in JavaScript: 1171 tests, 136 carried, 136 pass in the worker\n   wrote data/meta/specification-javascript-gaps.lino\n   \n   Exit Code: 0\n== answer ==\nThe `node scripts/check-specification-in-javascript.mjs --write` command completed. Output:\n\n```text\nspecification in JavaScript: 1171 tests, 136 carried, 136 pass in the worker\nwrote data/meta/specification-javascript-gaps.lino\n```\n"
+}

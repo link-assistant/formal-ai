@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "生命"
+        },
+        "es": {
+          "language": "es",
+          "value": "vida"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "能够从环境中提取能量用于保存和复制自我的物体"
+        },
+        "es": {
+          "language": "es",
+          "value": "materia orgánica con capacidad homeostatica y replicante"
         }
       },
       "aliases": {
@@ -90,6 +98,12 @@
           {
             "language": "zh",
             "value": "性命"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "biota"
           }
         ]
       }

@@ -1,0 +1,17 @@
+{
+  "request": {
+    "taskId": "T2733",
+    "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "prompt": "Run node scripts/check-prompt-specialization.mjs --list"
+  },
+  "observation": {
+    "taskId": "T2733",
+    "calls": [
+      "bash"
+    ]
+  },
+  "transcript": {
+    "sha256": "55e9a801a0f411d4db7c47afe8b2869ffac9d4920e893d336176988049ff6a9b",
+    "rawUtf8": ">> bash {\"command\":\"node scripts/check-prompt-specialization.mjs --list\"}\n   Output: test prompts held verbatim in code: 1 (ceiling 0)\n     js/worker/formal_ai_worker_seed_responses_and_language.js: Hi, how may I help you?\n   \n   Error: ::error file=data/meta/prompt-specialization-ratchet.lino::1 new test prompt(s) held verbatim in code: answer the class through seed data instead of the one prompt (R1188-U1). Run with --list.\n   \n   Exit Code: 1\n== answer ==\nThe command failed: `node scripts/check-prompt-specialization.mjs --list` exited with code 1.\n\n```text\n::error file=data/meta/prompt-specialization-ratchet.lino::1 new test prompt(s) held verbatim in code: answer the class through seed data instead of the one prompt (R1188-U1). Run with --list.\n```\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.\n"
+  }
+}

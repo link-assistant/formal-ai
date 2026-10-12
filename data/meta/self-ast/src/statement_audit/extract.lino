@@ -2,10 +2,10 @@ self_ast_census
   target src/statement_audit/extract.rs
   language rust
   fidelity signature
-  byte_len 14139
-  line_count 457
-  content_id source_module_31532504df26f191
-  symbol_count 32
+  byte_len 14589
+  line_count 469
+  content_id source_module_9e403e9c5e156db8
+  symbol_count 34
   symbols
     const REGISTRY 7 7
     struct ExtractedStatement 10 17
@@ -13,29 +13,31 @@ self_ast_census
     struct RequirementRegistry 26 30
     function registry 32 47
     function proposed_resolution 49 51
-    function requirement_claim 55 69
-    function strip_surface 71 83
-    function extract_corpus 85 98
-    function extract_prose 100 116
-    function extract_structured 118 143
-    function extract_code_comments 145 180
-    function leading_comment 182 189
-    function push_statement 191 219
-    function statement_id 221 226
-    struct Referent 229 232
-    function resolve_document_references 234 280
-    function ends_sentence 282 288
-    function leading_reference 290 318
-    const REFERENCES 291 291
-    function begins_with_predicate 320 329
-    const PREDICATES 321 321
-    function possessive_form 331 337
-    function extract_subject 339 381
-    const PREDICATES 340 340
-    function path_claim 383 396
-    function strip_list_marker 398 403
-    function trim_statement 405 410
-    function extension 412 417
-    function is_prose_path 419 421
-    function is_structured_path 423 425
-    function is_code_path 427 457
+    const FORBIDDEN 54 54
+    function forbids 61 63
+    function requirement_claim 67 81
+    function strip_surface 83 95
+    function extract_corpus 97 110
+    function extract_prose 112 128
+    function extract_structured 130 155
+    function extract_code_comments 157 192
+    function leading_comment 194 201
+    function push_statement 203 231
+    function statement_id 233 238
+    struct Referent 241 244
+    function resolve_document_references 246 292
+    function ends_sentence 294 300
+    function leading_reference 302 330
+    const REFERENCES 303 303
+    function begins_with_predicate 332 341
+    const PREDICATES 333 333
+    function possessive_form 343 349
+    function extract_subject 351 393
+    const PREDICATES 352 352
+    function path_claim 395 408
+    function strip_list_marker 410 415
+    function trim_statement 417 422
+    function extension 424 429
+    function is_prose_path 431 433
+    function is_structured_path 435 437
+    function is_code_path 439 469

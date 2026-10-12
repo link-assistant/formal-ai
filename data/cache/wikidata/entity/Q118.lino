@@ -1,0 +1,21 @@
+Q118
+  aliases
+    en (Apr "4. month")
+    es (Abr Abr. "4" "4.º mes" "cuarto mes" "mes 4" "mes 4.º" "mes cuarto")
+    ru ("апреля" "апр.")
+    zh ("四月")
+  descriptions
+    en "fourth month of the year in the Julian and Gregorian calendars"
+    es "cuarto mes del año en los calendarios juliano y gregoriano"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में चौथा महीना"
+    ru "четвёртый месяц года в юлианском и григорианском календарях"
+    zh "公历及儒略历中第四个月份"
+  id Q118
+  labels
+    en April
+    es abril
+    hi "अप्रैल"
+    ru "апрель"
+    zh "4月"
+  type item
+success 1

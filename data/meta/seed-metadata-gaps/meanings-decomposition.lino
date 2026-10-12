@@ -1,0 +1,21 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-decomposition.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-fe5e4299021f7b96
+    record "decomposable_task_noun"
+  gap seed-metadata-gap-ea14364892641cdf
+    record "observable_task_action"
+  gap seed-metadata-gap-dce033eb8a86a4a4
+    record "subtask_enumeration_cue"
+  gap seed-metadata-gap-c3c1e20b5d46bf00
+    record "subtask_unit_noun"
+  gap seed-metadata-gap-27b1f45b4178f822
+    record "task_atomicity_predicate"
+  gap seed-metadata-gap-1ce1efebf8551877
+    record "task_decomposition_action"
+  gap seed-metadata-gap-a20926835c698df8
+    record "task_first_step_cue"
+  gap seed-metadata-gap-cd242f2ac7d9f8ec
+    record "unobservable_task_action"

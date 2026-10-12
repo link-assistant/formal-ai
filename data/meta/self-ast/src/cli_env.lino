@@ -1,0 +1,13 @@
+self_ast_census
+  target src/cli_env.rs
+  language rust
+  fidelity signature
+  byte_len 3452
+  line_count 71
+  content_id source_module_b97784dc5a802c2d
+  symbol_count 4
+  symbols
+    function parse_bool_env 30 36
+    function bool_env_value_parser 43 51
+    function flag_enabled 59 61
+    function flag_disabled 69 71

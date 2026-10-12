@@ -1,0 +1,37 @@
+view
+  id M-f00f3c557ff5
+  lemma duplicate
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "something additional of the same kind"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a copy that corresponds to an original exactly"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "identically copied from an original"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being two identical"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make or do or perform again"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "duplicate or match"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make a duplicate or duplicates of"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "increase twofold"
+    provenance (wordnet)

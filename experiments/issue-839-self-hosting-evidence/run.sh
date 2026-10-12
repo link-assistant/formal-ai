@@ -45,14 +45,14 @@
 #      source through a source-to-links round-trip, gate a lesson on a benchmark,
 #      and emit the reviewable repair case as Links Notation. It is the recipe that
 #      renders `data/meta/self-healing-case.lino` (`self_heal::render_document()`,
-#      pinned byte-for-byte by tests/unit/issue_558_self_healing.rs), so this
+#      pinned byte-for-byte by tests/unit/agentic-coding/issue_558_self_healing.rs), so this
 #      session is the recorded authoring event that committed document belongs to.
 #   6. how-formal-ai-works.lino — the fourth axis, its own real Agent CLI session:
 #      the self-explanation recipe (src/agentic_coding/explain.rs) answers "how does
 #      Formal AI work?" by resolving every claim against the *current* owned source
 #      manifest, so the document it writes is a content-addressed description of the
 #      source tree as this branch leaves it (it names the manifest content id and the
-#      module content ids it cites). tests/unit/issue_558_self_explanation.rs asserts
+#      module content ids it cites). tests/unit/agentic-coding/issue_558_self_explanation.rs asserts
 #      it live rather than pinning bytes, precisely because it moves with the source
 #      — which makes it a genuine per-branch artifact rather than checked-in data.
 #   7. rebuild-and-reattach.lino — the fifth axis, its own real Agent CLI session:
@@ -213,7 +213,7 @@ if axis self-heal; then
 # self-healing recipe (src/agentic_coding/self_heal.rs) runs issue #558's closed
 # loop and writes the reviewable repair case as Links Notation. The same
 # `self_heal::render_document()` output is what `data/meta/self-healing-case.lino`
-# is committed as (tests/unit/issue_558_self_healing.rs pins it byte-for-byte), so
+# is committed as (tests/unit/agentic-coding/issue_558_self_healing.rs pins it byte-for-byte), so
 # this session is the authoring event that document is attributed to.
 run_session "$heal_work" "$HEAL_TASK" agent-stream-self-heal
 cp "$heal_work/self-healing-case.lino" "$OUT/self-healing-case.lino"
@@ -225,7 +225,7 @@ if axis explain; then
 # grounds "how does Formal AI work?" in the owned source manifest itself, citing
 # module content ids. The document is therefore a description of the source tree as
 # this branch leaves it — including the modules this PR adds — which is why
-# tests/unit/issue_558_self_explanation.rs asserts it live instead of pinning bytes.
+# tests/unit/agentic-coding/issue_558_self_explanation.rs asserts it live instead of pinning bytes.
 run_session "$explain_work" "$EXPLAIN_TASK" agent-stream-explain
 cp "$explain_work/how-formal-ai-works.lino" "$OUT/how-formal-ai-works.lino"
 "$BIN" agent --task "$EXPLAIN_TASK" --session-json "$OUT/explain-session.json" >/dev/null

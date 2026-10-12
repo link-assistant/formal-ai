@@ -1,0 +1,1 @@
+Keep authored literal payload actions inside their source-owned spans, bind ambiguous authoring verbs to their actual operation object, and preserve independent creation/edit goals through request-local replay. Unsupported later goals stay explicit gaps; exact Unicode bytes and existing failure/verification safeguards remain required.

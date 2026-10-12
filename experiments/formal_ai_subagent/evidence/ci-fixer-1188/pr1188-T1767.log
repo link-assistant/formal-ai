@@ -1,0 +1,135 @@
+>> read {"filePath":"rust/tests/unit/pull_request_1188_line_moves.rs","file_path":"rust/tests/unit/pull_request_1188_line_moves.rs","path":"rust/tests/unit/pull_request_1188_line_moves.rs"}
+   <file>
+   00001| use std::path::PathBuf;
+   00002| 
+   00003| #[path = "../../src/cli_paths.rs"]
+   00004| mod implementation;
+   00005| 
+   00006| use implementation::resolve_root;
+   00007| 
+   00008| #[test]
+   00009| fn a_relative_root_is_resolved_before_a_child_changes_directory() {
+   00010|     let root = resolve_root(Some(PathBuf::from(".")), &PathBuf::from("."));
+   00011|     assert!(root.is_absolute());
+   00012|     assert_eq!(root, std::env::current_dir().expect("current directory"));
+   00013| }
+   00014| 
+   00015| #[test]
+   00016| fn an_absolute_root_keeps_its_identity() {
+   00017|     let current = std::env::current_dir().expect("current directory");
+   00018|     assert_eq!(
+   00019|         resolve_root(Some(current.clone()), &PathBuf::from("ignored")),
+   00020|         current
+   00021|     );
+   00022| }
+   00023| 
+   
+   (End of file - total 23 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/pull_request_1188_line_moves.rs","file_path":"rust/tests/unit/pull_request_1188_line_moves.rs","new":"//! PR #1188 G85: verified line-range movement and preserved scalar file moves.\n//! Uses the same driven-session harness as the remaining TEACH-F cases.\n\nuse super::pull_request_1188_teach_f::drive;\n\nconst G85_SOURCE: &str = \"l1\\nl2\\nl3\\nl4\\nl5\\n\";\n\n#[test]\nfn g85_a_line_range_is_appended_to_the_destination_then_removed_from_the_source() {\n    let run = drive(\n        \"Move lines 2-3 of a.md to the end of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl4\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"b1\\nl2\\nl3\\n\");\n    assert!(\n        run.commands\n            .iter()\n            .all(|command| !command.starts_with(\"mv \") && !command.starts_with(\"cp \")),\n        \"{:?}\",\n        run.commands\n    );\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result.\")\n    );\n}\n\n#[test]\nfn g85_the_destination_is_the_path_after_the_cue_wherever_the_source_is_named() {\n    let run = drive(\n        \"In a.md move lines 2 to 3 to the start of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl4\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"l2\\nl3\\nb1\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result.\")\n    );\n}\n\n#[test]\nfn g85_one_line_moved_in_russian() {\n    let run = drive(\n        \"Перенеси строку 4 из a.md в конец b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl2\\nl3\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"b1\\nl4\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Перенёс строку 4 из `a.md` в конец `b.md` и проверил результат.\")\n    );\n}\n\n#[test]\nfn g85_a_range_past_the_end_of_the_source_changes_nothing() {\n    let run = drive(\n        \"Move lines 7-9 of a.md to the end of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.tools, [\"read\"]);\n    assert_eq!(run.files[\"b.md\"], \"b1\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed.\")\n    );\n}\n\n#[test]\nfn g85_a_file_move_without_line_numbers_is_still_a_file_move() {\n    let run = drive(\"Move a.md to c.md.\", &[(\"a.md\", G85_SOURCE)]);\n    assert!(\n        run.commands.iter().any(|command| command == \"test -e a.md\"),\n        \"{:?}\",\n        run.commands\n    );\n}\n","newString":"//! PR #1188 G85: verified line-range movement and preserved scalar file moves.\n//! Uses the same driven-session harness as the remaining TEACH-F cases.\n\nuse super::pull_request_1188_teach_f::drive;\n\nconst G85_SOURCE: &str = \"l1\\nl2\\nl3\\nl4\\nl5\\n\";\n\n#[test]\nfn g85_a_line_range_is_appended_to_the_destination_then_removed_from_the_source() {\n    let run = drive(\n        \"Move lines 2-3 of a.md to the end of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl4\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"b1\\nl2\\nl3\\n\");\n    assert!(\n        run.commands\n            .iter()\n            .all(|command| !command.starts_with(\"mv \") && !command.starts_with(\"cp \")),\n        \"{:?}\",\n        run.commands\n    );\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result.\")\n    );\n}\n\n#[test]\nfn g85_the_destination_is_the_path_after_the_cue_wherever_the_source_is_named() {\n    let run = drive(\n        \"In a.md move lines 2 to 3 to the start of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl4\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"l2\\nl3\\nb1\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result.\")\n    );\n}\n\n#[test]\nfn g85_one_line_moved_in_russian() {\n    let run = drive(\n        \"Перенеси строку 4 из a.md в конец b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl2\\nl3\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"b1\\nl4\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Перенёс строку 4 из `a.md` в конец `b.md` и проверил результат.\")\n    );\n}\n\n#[test]\nfn g85_a_range_past_the_end_of_the_source_changes_nothing() {\n    let run = drive(\n        \"Move lines 7-9 of a.md to the end of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.tools, [\"read\"]);\n    assert_eq!(run.files[\"b.md\"], \"b1\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed.\")\n    );\n}\n\n#[test]\nfn g85_a_file_move_without_line_numbers_is_still_a_file_move() {\n    let run = drive(\"Move a.md to c.md.\", &[(\"a.md\", G85_SOURCE)]);\n    assert!(\n        run.commands.iter().any(|command| command == \"test -e a.md\"),\n        \"{:?}\",\n        run.commands\n    );\n}\n","new_str":"//! PR #1188 G85: verified line-range movement and preserved scalar file moves.\n//! Uses the same driven-session harness as the remaining TEACH-F cases.\n\nuse super::pull_request_1188_teach_f::drive;\n\nconst G85_SOURCE: &str = \"l1\\nl2\\nl3\\nl4\\nl5\\n\";\n\n#[test]\nfn g85_a_line_range_is_appended_to_the_destination_then_removed_from_the_source() {\n    let run = drive(\n        \"Move lines 2-3 of a.md to the end of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl4\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"b1\\nl2\\nl3\\n\");\n    assert!(\n        run.commands\n            .iter()\n            .all(|command| !command.starts_with(\"mv \") && !command.starts_with(\"cp \")),\n        \"{:?}\",\n        run.commands\n    );\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result.\")\n    );\n}\n\n#[test]\nfn g85_the_destination_is_the_path_after_the_cue_wherever_the_source_is_named() {\n    let run = drive(\n        \"In a.md move lines 2 to 3 to the start of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl4\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"l2\\nl3\\nb1\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result.\")\n    );\n}\n\n#[test]\nfn g85_one_line_moved_in_russian() {\n    let run = drive(\n        \"Перенеси строку 4 из a.md в конец b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl2\\nl3\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"b1\\nl4\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Перенёс строку 4 из `a.md` в конец `b.md` и проверил результат.\")\n    );\n}\n\n#[test]\nfn g85_a_range_past_the_end_of_the_source_changes_nothing() {\n    let run = drive(\n        \"Move lines 7-9 of a.md to the end of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.tools, [\"read\"]);\n    assert_eq!(run.files[\"b.md\"], \"b1\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed.\")\n    );\n}\n\n#[test]\nfn g85_a_file_move_without_line_numbers_is_still_a_file_move() {\n    let run = drive(\"Move a.md to c.md.\", &[(\"a.md\", G85_SOURCE)]);\n    assert!(\n        run.commands.iter().any(|command| command == \"test -e a.md\"),\n        \"{:?}\",\n        run.commands\n    );\n}\n","new_string":"//! PR #1188 G85: verified line-range movement and preserved scalar file moves.\n//! Uses the same driven-session harness as the remaining TEACH-F cases.\n\nuse super::pull_request_1188_teach_f::drive;\n\nconst G85_SOURCE: &str = \"l1\\nl2\\nl3\\nl4\\nl5\\n\";\n\n#[test]\nfn g85_a_line_range_is_appended_to_the_destination_then_removed_from_the_source() {\n    let run = drive(\n        \"Move lines 2-3 of a.md to the end of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl4\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"b1\\nl2\\nl3\\n\");\n    assert!(\n        run.commands\n            .iter()\n            .all(|command| !command.starts_with(\"mv \") && !command.starts_with(\"cp \")),\n        \"{:?}\",\n        run.commands\n    );\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result.\")\n    );\n}\n\n#[test]\nfn g85_the_destination_is_the_path_after_the_cue_wherever_the_source_is_named() {\n    let run = drive(\n        \"In a.md move lines 2 to 3 to the start of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl4\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"l2\\nl3\\nb1\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result.\")\n    );\n}\n\n#[test]\nfn g85_one_line_moved_in_russian() {\n    let run = drive(\n        \"Перенеси строку 4 из a.md в конец b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.files[\"a.md\"], \"l1\\nl2\\nl3\\nl5\\n\");\n    assert_eq!(run.files[\"b.md\"], \"b1\\nl4\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"Перенёс строку 4 из `a.md` в конец `b.md` и проверил результат.\")\n    );\n}\n\n#[test]\nfn g85_a_range_past_the_end_of_the_source_changes_nothing() {\n    let run = drive(\n        \"Move lines 7-9 of a.md to the end of b.md.\",\n        &[(\"a.md\", G85_SOURCE), (\"b.md\", \"b1\\n\")],\n    );\n    assert_eq!(run.tools, [\"read\"]);\n    assert_eq!(run.files[\"b.md\"], \"b1\\n\");\n    assert_eq!(\n        run.answer.as_deref(),\n        Some(\"`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed.\")\n    );\n}\n\n#[test]\nfn g85_a_file_move_without_line_numbers_is_still_a_file_move() {\n    let run = drive(\"Move a.md to c.md.\", &[(\"a.md\", G85_SOURCE)]);\n    assert!(\n        run.commands.iter().any(|command| command == \"test -e a.md\"),\n        \"{:?}\",\n        run.commands\n    );\n}\n","old":"use std::path::PathBuf;\n\n#[path = \"../../src/cli_paths.rs\"]\nmod implementation;\n\nuse implementation::resolve_root;\n\n#[test]\nfn a_relative_root_is_resolved_before_a_child_changes_directory() {\n    let root = resolve_root(Some(PathBuf::from(\".\")), &PathBuf::from(\".\"));\n    assert!(root.is_absolute());\n    assert_eq!(root, std::env::current_dir().expect(\"current directory\"));\n}\n\n#[test]\nfn an_absolute_root_keeps_its_identity() {\n    let current = std::env::current_dir().expect(\"current directory\");\n    assert_eq!(\n        resolve_root(Some(current.clone()), &PathBuf::from(\"ignored\")),\n        current\n    );\n}\n","oldString":"use std::path::PathBuf;\n\n#[path = \"../../src/cli_paths.rs\"]\nmod implementation;\n\nuse implementation::resolve_root;\n\n#[test]\nfn a_relative_root_is_resolved_before_a_child_changes_directory() {\n    let root = resolve_root(Some(PathBuf::from(\".\")), &PathBuf::from(\".\"));\n    assert!(root.is_absolute());\n    assert_eq!(root, std::env::current_dir().expect(\"current directory\"));\n}\n\n#[test]\nfn an_absolute_root_keeps_its_identity() {\n    let current = std::env::current_dir().expect(\"current directory\");\n    assert_eq!(\n        resolve_root(Some(current.clone()), &PathBuf::from(\"ignored\")),\n        current\n    );\n}\n","old_str":"use std::path::PathBuf;\n\n#[path = \"../../src/cli_paths.rs\"]\nmod implementation;\n\nuse implementation::resolve_root;\n\n#[test]\nfn a_relative_root_is_resolved_before_a_child_changes_directory() {\n    let root = resolve_root(Some(PathBuf::from(\".\")), &PathBuf::from(\".\"));\n    assert!(root.is_absolute());\n    assert_eq!(root, std::env::current_dir().expect(\"current directory\"));\n}\n\n#[test]\nfn an_absolute_root_keeps_its_identity() {\n    let current = std::env::current_dir().expect(\"current directory\");\n    assert_eq!(\n        resolve_root(Some(current.clone()), &PathBuf::from(\"ignored\")),\n        current\n    );\n}\n","old_string":"use std::path::PathBuf;\n\n#[path = \"../../src/cli_paths.rs\"]\nmod implementation;\n\nuse implementation::resolve_root;\n\n#[test]\nfn a_relative_root_is_resolved_before_a_child_changes_directory() {\n    let root = resolve_root(Some(PathBuf::from(\".\")), &PathBuf::from(\".\"));\n    assert!(root.is_absolute());\n    assert_eq!(root, std::env::current_dir().expect(\"current directory\"));\n}\n\n#[test]\nfn an_absolute_root_keeps_its_identity() {\n    let current = std::env::current_dir().expect(\"current directory\");\n    assert_eq!(\n        resolve_root(Some(current.clone()), &PathBuf::from(\"ignored\")),\n        current\n    );\n}\n","path":"rust/tests/unit/pull_request_1188_line_moves.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/pull_request_1188_line_moves.rs"}
+   d5c3d35a319a85a9d1547c17b453e65eb1d410992dfae121f8f72e3f62b4875a  rust/tests/unit/pull_request_1188_line_moves.rs
+   
+== answer ==
+Replaced `use std::path::PathBuf;
+
+#[path = "../../src/cli_paths.rs"]
+mod implementation;
+
+use implementation::resolve_root;
+
+#[test]
+fn a_relative_root_is_resolved_before_a_child_changes_directory() {
+    let root = resolve_root(Some(PathBuf::from(".")), &PathBuf::from("."));
+    assert!(root.is_absolute());
+    assert_eq!(root, std::env::current_dir().expect("current directory"));
+}
+
+#[test]
+fn an_absolute_root_keeps_its_identity() {
+    let current = std::env::current_dir().expect("current directory");
+    assert_eq!(
+        resolve_root(Some(current.clone()), &PathBuf::from("ignored")),
+        current
+    );
+}
+` with ``//! PR #1188 G85: verified line-range movement and preserved scalar file moves.
+//! Uses the same driven-session harness as the remaining TEACH-F cases.
+
+use super::pull_request_1188_teach_f::drive;
+
+const G85_SOURCE: &str = "l1\nl2\nl3\nl4\nl5\n";
+
+#[test]
+fn g85_a_line_range_is_appended_to_the_destination_then_removed_from_the_source() {
+    let run = drive(
+        "Move lines 2-3 of a.md to the end of b.md.",
+        &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+    );
+    assert_eq!(run.files["a.md"], "l1\nl4\nl5\n");
+    assert_eq!(run.files["b.md"], "b1\nl2\nl3\n");
+    assert!(
+        run.commands
+            .iter()
+            .all(|command| !command.starts_with("mv ") && !command.starts_with("cp ")),
+        "{:?}",
+        run.commands
+    );
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result.")
+    );
+}
+
+#[test]
+fn g85_the_destination_is_the_path_after_the_cue_wherever_the_source_is_named() {
+    let run = drive(
+        "In a.md move lines 2 to 3 to the start of b.md.",
+        &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+    );
+    assert_eq!(run.files["a.md"], "l1\nl4\nl5\n");
+    assert_eq!(run.files["b.md"], "l2\nl3\nb1\n");
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result.")
+    );
+}
+
+#[test]
+fn g85_one_line_moved_in_russian() {
+    let run = drive(
+        "Перенеси строку 4 из a.md в конец b.md.",
+        &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+    );
+    assert_eq!(run.files["a.md"], "l1\nl2\nl3\nl5\n");
+    assert_eq!(run.files["b.md"], "b1\nl4\n");
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("Перенёс строку 4 из `a.md` в конец `b.md` и проверил результат.")
+    );
+}
+
+#[test]
+fn g85_a_range_past_the_end_of_the_source_changes_nothing() {
+    let run = drive(
+        "Move lines 7-9 of a.md to the end of b.md.",
+        &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+    );
+    assert_eq!(run.tools, ["read"]);
+    assert_eq!(run.files["b.md"], "b1\n");
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed.")
+    );
+}
+
+#[test]
+fn g85_a_file_move_without_line_numbers_is_still_a_file_move() {
+    let run = drive("Move a.md to c.md.", &[("a.md", G85_SOURCE)]);
+    assert!(
+        run.commands.iter().any(|command| command == "test -e a.md"),
+        "{:?}",
+        run.commands
+    );
+}
+`` in `rust/tests/unit/pull_request_1188_line_moves.rs` and observed the result.

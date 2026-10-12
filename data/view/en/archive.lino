@@ -1,0 +1,13 @@
+view
+  id M-b5dbdf66a836
+  lemma archive
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a depository containing historical records and documents"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put into an archive"
+    provenance (wordnet)

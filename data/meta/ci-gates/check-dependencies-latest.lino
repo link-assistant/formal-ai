@@ -1,0 +1,10 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check-dependencies-latest
+  stage rust
+  description "Every manifest pin is at the latest release in the committed registry snapshot, or carries a blocked annotation naming its tracking issue or advisory (issue #1169); the daily dependencies-latest workflow refreshes the snapshot and moves the pins together."
+  run "rust-script --test scripts/check-dependencies-latest.rs && rust-script scripts/check-dependencies-latest.rs --offline"
+  justification "Stale dependency pins cause silent security exposure and build divergence; the gate requires every pin to be at the latest release or carry a tracked annotation, introduced in PR #1169."

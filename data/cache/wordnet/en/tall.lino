@@ -1,0 +1,39 @@
+language en
+lemma tall
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "great in vertical dimension; high in stature"
+    examples ("tall people" "tall buildings" "tall trees" "tall ships")
+    id oewn-02393670-a
+    partOfSpeech a
+  entry
+    definition "a garment size for a tall person"
+    id oewn-05104540-n
+    partOfSpeech n
+  entry
+    definition "lofty in style"
+    examples ("he engages in so much tall talk, one never really realizes what he is saying")
+    id oewn-02024935-s
+    partOfSpeech s
+    synonyms (grandiloquent magniloquent)
+  entry
+    definition "having a specified height"
+    examples ("five feet tall" "five feet in height")
+    id oewn-02394294-s
+    partOfSpeech s
+    synonyms ("in height")
+  entry
+    definition "impressively difficult"
+    examples ("a tall order")
+    id oewn-00752176-s
+    partOfSpeech s
+  entry
+    definition "too improbable to admit of belief"
+    examples ("a tall story")
+    id oewn-00649139-s
+    partOfSpeech s
+    synonyms (improbable marvelous marvellous)
+source "oewn:2024"

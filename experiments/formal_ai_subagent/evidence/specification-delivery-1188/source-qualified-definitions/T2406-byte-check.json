@@ -1,0 +1,5 @@
+{
+  "taskId": "T2406",
+  "target": "data/seed/prompt-patterns.lino",
+  "byteEqual": true
+}

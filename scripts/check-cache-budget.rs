@@ -35,7 +35,7 @@
 //!   * **Closure-driven buckets** are exempt from the count, and pay for the
 //!     exemption with a stricter rule: every record must be *referenced* from
 //!     `data/seed/**`, `src/**`, or another cache record (the recursive
-//!     grounding closure `tests/unit/semantic_grounding.rs` walks). An
+//!     grounding closure `tests/unit/seed/semantic_grounding.rs` walks). An
 //!     unreferenced record is speculative caching by another name and fails.
 //!     Their overflow above the cap is reported as a warning on every run, so
 //!     the debt stays visible and attributable.
@@ -72,7 +72,7 @@ const CACHE_CONSTANT_PATH: &str = "rust/src/translation/cache.rs";
 const CLOSURE_DRIVEN_BUCKETS: &[ExemptBucket] = &[
     ExemptBucket {
         path: "data/cache/wikidata/entity",
-        reason: "every Q-id referenced by data/seed/**, by src/**, or by another cached record must have a checked-in record (tests/unit/semantic_grounding.rs); trimming to 128 fails the closure gate",
+        reason: "every Q-id referenced by data/seed/**, by src/**, or by another cached record must have a checked-in record (tests/unit/seed/semantic_grounding.rs); trimming to 128 fails the closure gate",
     },
     ExemptBucket {
         path: "data/cache/wordnet/en",
@@ -500,7 +500,7 @@ mod tests {
 
     /// Records reference each other: `L3412.lino` naming `Q4833830` is why that
     /// entity is checked in, and the recursive grounding closure in
-    /// `tests/unit/semantic_grounding.rs` walks exactly those edges.
+    /// `tests/unit/seed/semantic_grounding.rs` walks exactly those edges.
     #[test]
     fn a_record_referenced_only_by_another_record_is_not_an_orphan() {
         let repo = temp_dir("record-to-record");

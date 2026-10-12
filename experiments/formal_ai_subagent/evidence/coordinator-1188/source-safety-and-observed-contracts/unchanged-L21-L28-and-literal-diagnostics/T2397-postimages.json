@@ -1,0 +1,41 @@
+{
+  "target": {
+    "path": "rust/src/client_integrations.rs",
+    "bytes": 29477,
+    "sha256": "7781f69fc993eb91d6348735bd02254616a934f883d41b6e409b599af7228363"
+  },
+  "artifacts": [
+    {
+      "path": "agent-ladder-effects/node-2.2.1.2.2.lino",
+      "exists": true,
+      "content": "node_path=2.2.1.2.2\nnode_depth=5\nnode_kind=leaf\nresult=Renamed `EMPTY_BACKUP_SENTINEL` to `EMPTY_CONFIG_BACKUP_SENTINEL` in `rust/src/client_integrations.rs` and observed the result.\n"
+    },
+    {
+      "path": ".agent-ladder/node-2.2.1.2.2-proof.md",
+      "exists": true,
+      "content": "node_path=2.2.1.2.2\n\nRenamed `EMPTY_BACKUP_SENTINEL` to `EMPTY_CONFIG_BACKUP_SENTINEL` in `rust/src/client_integrations.rs` and observed the result.\n"
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "rust/src/client_integrations/global_config.rs",
+      "unchanged": true,
+      "sha256": "0f62ad674340813a9f3a391e3374048290f498f07b29ae69cf521c5b63d30961",
+      "oldReferences": [
+        {
+          "line": 20,
+          "text": "    EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER, RENDERED_PLACEHOLDER, RenderContext,"
+        },
+        {
+          "line": 173,
+          "text": "    if backup == EMPTY_BACKUP_SENTINEL {"
+        },
+        {
+          "line": 196,
+          "text": "        fs::write(backup_path, EMPTY_BACKUP_SENTINEL)?;"
+        }
+      ]
+    }
+  ],
+  "gitStatus": " M rust/src/client_integrations.rs\n?? .agent-ladder/\n?? agent-ladder-effects/\n"
+}

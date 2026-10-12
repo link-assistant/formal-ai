@@ -1,0 +1,17 @@
+view
+  id M-89a7c3c8dde0
+  lemma pantheon
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "all the gods of a religion"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a monument commemorating a nation's dead heroes"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(antiquity) a temple to all the gods"
+    provenance (wordnet)

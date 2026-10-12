@@ -1,0 +1,34 @@
+{
+  "id": "T3552",
+  "stop": "final",
+  "calls": [
+    "bash"
+  ],
+  "matches": [
+    {
+      "path": "experiments/js_dogfood/drive.mjs",
+      "exact": true,
+      "sha256": "e708534b9950480ad0c88155cbf7ad937fca16a6257ef83eb27ca709f7c1ae50"
+    },
+    {
+      "path": "rust/tests/web/general-plan-event-append.test.mjs",
+      "exact": true,
+      "sha256": "ff6f1f2d1591696d4194990e8dc94a006d61bbabbd30c276dc2a0e24f236d2eb"
+    },
+    {
+      "path": "rust/tests/web/observed-auxiliary-contracts.test.mjs",
+      "exact": true,
+      "sha256": "ac020508802dc11948ef0e64ea60241e77106c65d664280ea30afd7885572e64"
+    },
+    {
+      "path": "rust/tests/web/read-provider-boundary.test.mjs",
+      "exact": true,
+      "sha256": "2dfed6ca1eb0462e504fcaaa9438bf0f2278f23d4b8f763a912a7ab52adc5147"
+    },
+    {
+      "path": "changelog.d/20261010_160000_read-provider-boundary.md",
+      "exact": true,
+      "sha256": "f4d03cd6fae22a728bedc89a2758c52ec2d68f1c653a59c543c6d27824762d62"
+    }
+  ]
+}

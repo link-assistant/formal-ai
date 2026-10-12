@@ -41,6 +41,12 @@ struct LocalTransportServer {
 
 impl LocalTransportServer {
     fn spawn(transport: Transport, port: u16) -> Self {
+        Self::spawn_with(transport, port, &[], Stdio::null())
+    }
+
+    /// R931-10: `extra` carries `--transport-trace`, and `stderr` is where
+    /// its lifecycle lines go.
+    fn spawn_with(transport: Transport, port: u16, extra: &[&str], stderr: Stdio) -> Self {
         let memory_path = std::env::temp_dir().join(format!(
             "formal-ai-issue-931-{}-{port}.lino",
             std::process::id()
@@ -55,11 +61,12 @@ impl LocalTransportServer {
                 &port.to_string(),
                 transport.server_flag(),
             ])
+            .args(extra)
             .env("FORMAL_AI_API_BEARER_TOKEN", TOKEN)
             .env("FORMAL_AI_MEMORY_PATH", &memory_path)
             .env("FORMAL_AI_DREAMING", "0")
             .stdout(Stdio::null())
-            .stderr(Stdio::null())
+            .stderr(stderr)
             .spawn()
             .expect("spawn local transport server");
         let mut server = Self { child, memory_path };
@@ -225,5 +232,37 @@ fn issue_931_whole_task_uses_the_same_cli_as_server_and_client() {
             String::from_utf8_lossy(&output.stdout),
             "Hi, how may I help you?\n"
         );
+    }
+}
+
+/// R931-10: lifecycle diagnostics are opt-in. `--transport-trace` prints the
+/// WebSocket connection's open and close; without it the server prints none.
+#[test]
+fn issue_931_transport_trace_is_opt_in() {
+    for traced in [true, false] {
+        let port = reserve_loopback_port();
+        let log = std::env::temp_dir().join(format!(
+            "formal-ai-issue-931-trace-{}-{port}.log",
+            std::process::id()
+        ));
+        let file = std::fs::File::create(&log).expect("trace log");
+        let extra: &[&str] = if traced { &["--transport-trace"] } else { &[] };
+        let server =
+            LocalTransportServer::spawn_with(Transport::WebSocket, port, extra, file.into());
+        let request = TransportRequest::new("GET", "/v1/models", "");
+        websocket_request(&format!("ws://127.0.0.1:{port}"), &request).expect("WebSocket response");
+        std::thread::sleep(Duration::from_millis(200));
+        drop(server);
+        let trace = std::fs::read_to_string(&log).unwrap_or_default();
+        let _ = std::fs::remove_file(&log);
+        if traced {
+            assert!(
+                trace.contains("[local-transport] websocket peer="),
+                "{trace}"
+            );
+            assert!(trace.contains("event=open"), "{trace}");
+        } else {
+            assert!(!trace.contains("[local-transport]"), "{trace}");
+        }
     }
 }

@@ -1,0 +1,29 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-number-words.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-91520dcff403aa33
+    record "cardinal_number"
+  gap seed-metadata-gap-6b1134b175fb271c
+    record "eight"
+  gap seed-metadata-gap-9c5cd59ea32cdba9
+    record "five"
+  gap seed-metadata-gap-8a996e9e98fd1699
+    record "four"
+  gap seed-metadata-gap-1148f5e1061589a9
+    record "nine"
+  gap seed-metadata-gap-4a2503e440b728cb
+    record "one"
+  gap seed-metadata-gap-701497f9e29c5502
+    record "seven"
+  gap seed-metadata-gap-6b4bb4e45312374f
+    record "six"
+  gap seed-metadata-gap-843e3be460e79130
+    record "ten"
+  gap seed-metadata-gap-02b97e379899020f
+    record "three"
+  gap seed-metadata-gap-846e1ce461108045
+    record "two"
+  gap seed-metadata-gap-fa33f0454c84c94f
+    record "zero"

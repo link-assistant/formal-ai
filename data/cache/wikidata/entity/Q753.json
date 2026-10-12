@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "銅"
+        },
+        "es": {
+          "language": "es",
+          "value": "cobre"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "原子序數為29的化學元素"
+        },
+        "es": {
+          "language": "es",
+          "value": "elemento químico de símbolo Cu y número atómico 29"
         }
       },
       "aliases": {
@@ -94,6 +102,28 @@
           {
             "language": "zh",
             "value": "铜"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "cuprifera"
+          },
+          {
+            "language": "es",
+            "value": "cuprifero"
+          },
+          {
+            "language": "es",
+            "value": "cuprífera"
+          },
+          {
+            "language": "es",
+            "value": "cuprífero"
+          },
+          {
+            "language": "es",
+            "value": "Cu"
           }
         ]
       }

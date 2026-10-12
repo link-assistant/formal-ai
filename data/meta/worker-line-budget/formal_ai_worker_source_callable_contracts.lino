@@ -1,0 +1,4 @@
+worker-module-budget
+  module "formal_ai_worker_source_callable_contracts.js"
+  ceiling 130
+  rationale "Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling."

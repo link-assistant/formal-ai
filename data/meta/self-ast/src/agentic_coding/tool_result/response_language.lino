@@ -1,0 +1,70 @@
+self_ast_census
+  target src/agentic_coding/tool_result/response_language.rs
+  language rust
+  fidelity full_ast
+  byte_len 2909
+  line_count 65
+  content_id source_module_18a2959e3bcd2238
+  symbol_count 4
+  symbols
+    const MIN_LEXICAL_EVIDENCE 13 13
+    function seeded_word_languages 16 36
+    static LANGUAGES 17 17
+    function lexical_language 42 65
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2202
+    named_node_count 449
+    distinct_node_kinds 48
+    node_kinds
+      arguments 39
+      binary_expression 8
+      block 11
+      call_expression 39
+      closure_expression 3
+      closure_parameters 3
+      compound_assignment_expr 1
+      const_item 1
+      continue_expression 1
+      crate 5
+      doc_comment 13
+      expression_statement 12
+      field_expression 36
+      field_identifier 36
+      for_expression 4
+      function_item 2
+      generic_type 9
+      identifier 92
+      if_expression 3
+      inner_doc_comment_marker 7
+      integer_literal 5
+      let_chain 1
+      let_condition 2
+      let_declaration 10
+      lifetime 2
+      line_comment 13
+      mutable_specifier 3
+      outer_doc_comment_marker 6
+      parameter 2
+      parameters 2
+      primitive_type 6
+      reference_expression 3
+      reference_type 4
+      return_expression 2
+      scoped_identifier 18
+      scoped_use_list 1
+      source_file 1
+      static_item 1
+      super 1
+      tuple_expression 1
+      tuple_pattern 3
+      tuple_struct_pattern 3
+      type_arguments 9
+      type_identifier 15
+      unary_expression 6
+      use_declaration 2
+      use_list 1
+      visibility_modifier 1

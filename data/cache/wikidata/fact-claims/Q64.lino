@@ -1,0 +1,32 @@
+Q64
+  aliases
+    en ("Berlin, Germany" DE-BE)
+    hi ("बर्लिन, जर्मनी")
+    zh ("柏林市" "柏林州")
+    zh-hans ("柏林市")
+  id Q64
+  labels
+    en Berlin
+    hi "बर्लिन"
+    ru "Берлин"
+    zh "柏林"
+    zh-hans "柏林"
+  sitelinks
+    enwiki
+      site enwiki
+      title Berlin
+    hiwiki
+      site hiwiki
+      title "बर्लिन"
+    ruwiki
+      site ruwiki
+      title "Берлин"
+    zhwiki
+      site zhwiki
+      title "柏林"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

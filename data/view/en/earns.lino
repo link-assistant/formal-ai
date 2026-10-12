@@ -1,0 +1,13 @@
+view
+  id M-8dc7083fad84
+  lemma earns
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "earn on some commercial or business transaction; earn as salary or wages"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "acquire or deserve by one's efforts or actions"
+    provenance (wordnet)

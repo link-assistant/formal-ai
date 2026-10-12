@@ -1,0 +1,88 @@
+{
+  "id": "T3564",
+  "unchangedOriginal": "T3558",
+  "exactPrompt": true,
+  "calls": 3,
+  "rawSourceInputBytes": 59976,
+  "answerBytes": 1061,
+  "lastResult": {
+    "text": "Callable discovery MissingContract:\n{\"reason\":\"MissingContract\",\"authored\":false,\"verified\":false,\"missingContracts\":[\"goal-composition-contract\"],\"observations\":[{\"path\":\"rust/src/cli_solve.rs\",\"span\":[0,109],\"status\":\"reported-success\",\"complete\":true,\"utf8Bytes\":18421,\"contentIdentity\":\"ed7399c8e83d81376c0498af473b007cf5d54781fcbbcbbf2b556eeb670a144e\"},{\"path\":\"rust/src/repository_workspace/mod.rs\",\"span\":[0,109],\"status\":\"reported-success\",\"complete\":true,\"utf8Bytes\":35734,\"contentIdentity\":\"578d2c1181b3de300c6833103214aabbc25f13386d9c1fd6b440e8df3b76be7a\"},{\"path\":\"rust/src/repository_workspace/verify.rs\",\"span\":[0,109],\"status\":\"reported-success\",\"complete\":true,\"utf8Bytes\":5821,\"contentIdentity\":\"3fbf6f6baef4c5f0fdd3d6d0269de490fbf187aac32ff28cf5e8c4e60a8f495d\"}],\"goals\":[{\"kind\":\"unsupported-source-goal\",\"span\":[109,267],\"missing\":\"goal-composition-contract\"},{\"kind\":\"unsupported-source-goal\",\"span\":[267,359],\"missing\":\"goal-composition-contract\"},{\"kind\":\"unsupported-source-goal\",\"span\":[359,445],\"missing\":\"goal-composition-contract\"}]}",
+    "disposition": "gap",
+    "origin": "goal-bound-source-observation",
+    "payloadRole": "finding",
+    "artifact": null,
+    "discovery": {
+      "reason": "MissingContract",
+      "authored": false,
+      "verified": false,
+      "missingContracts": [
+        "goal-composition-contract"
+      ],
+      "observations": [
+        {
+          "path": "rust/src/cli_solve.rs",
+          "span": [
+            0,
+            109
+          ],
+          "status": "reported-success",
+          "complete": true,
+          "utf8Bytes": 18421,
+          "contentIdentity": "ed7399c8e83d81376c0498af473b007cf5d54781fcbbcbbf2b556eeb670a144e"
+        },
+        {
+          "path": "rust/src/repository_workspace/mod.rs",
+          "span": [
+            0,
+            109
+          ],
+          "status": "reported-success",
+          "complete": true,
+          "utf8Bytes": 35734,
+          "contentIdentity": "578d2c1181b3de300c6833103214aabbc25f13386d9c1fd6b440e8df3b76be7a"
+        },
+        {
+          "path": "rust/src/repository_workspace/verify.rs",
+          "span": [
+            0,
+            109
+          ],
+          "status": "reported-success",
+          "complete": true,
+          "utf8Bytes": 5821,
+          "contentIdentity": "3fbf6f6baef4c5f0fdd3d6d0269de490fbf187aac32ff28cf5e8c4e60a8f495d"
+        }
+      ],
+      "goals": [
+        {
+          "kind": "unsupported-source-goal",
+          "span": [
+            109,
+            267
+          ],
+          "missing": "goal-composition-contract"
+        },
+        {
+          "kind": "unsupported-source-goal",
+          "span": [
+            267,
+            359
+          ],
+          "missing": "goal-composition-contract"
+        },
+        {
+          "kind": "unsupported-source-goal",
+          "span": [
+            359,
+            445
+          ],
+          "missing": "goal-composition-contract"
+        }
+      ]
+    }
+  },
+  "drift": [],
+  "productionSourceWrites": 0,
+  "autonomousUsefulCodeBytes": 0,
+  "nativeCommandsRun": false
+}

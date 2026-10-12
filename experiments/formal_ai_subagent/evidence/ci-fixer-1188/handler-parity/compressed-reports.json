@@ -1,0 +1,125 @@
+{
+  "scope": "Lossless storage only; original report bytes, failures, source identities and assertions remain unchanged",
+  "entries": [
+    {
+      "original": "pr1188-three-case-original-report.json",
+      "stored": "pr1188-three-case-original-report.json.gz",
+      "compression": "gzip",
+      "originalByteLength": 1243092,
+      "originalSha256": "9ce3b6ec883d1f0b2b7c61fe4f27578926243d0e78ade374cbdf7ba0304f299c",
+      "storedByteLength": 115469,
+      "storedSha256": "11ce8a7123a7ed85487b2f769ddfd61a13f884f17db41299bb0c5787ccec2c1a",
+      "summary": {
+        "nativeTotal": 1176,
+        "legacyCases": 136,
+        "legacyPassed": 136,
+        "typedCases": 42,
+        "typedPassed": 39,
+        "carried": 178,
+        "passed": 175,
+        "unsupported": 998,
+        "typedStaticAssertions": 164,
+        "typedExecutedAssertions": 211,
+        "priorNineUnknownRuntime": [
+          {
+            "id": "rust/tests/unit/specification/chat_surface.rs::links_notation_trace_is_present_for_every_answer",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/code_generation_blueprint.rs::rust_http_json_statistics_request_returns_blueprint_program",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/links_network.rs::trace_record_lists_ordered_reasoning_steps",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/network_visualization.rs::answers_already_carry_links_notation_for_visualization",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/reasoning_loop.rs::step_8_full_trace_is_stored_and_linked",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/reasoning_paths.rs::selected_registry_method_is_recorded_as_a_meta_method",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/translation_via_links.rs::every_answer_publishes_a_links_notation_trace",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/translation_via_links.rs::translation_trace_includes_intermediate_meaning",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/transparent_state.rs::links_notation_trace_is_always_present",
+            "carried": false
+          }
+        ],
+        "productionRecordWritten": false
+      }
+    },
+    {
+      "original": "production-reader-actual-report.json",
+      "stored": "production-reader-actual-report.json.gz",
+      "compression": "gzip",
+      "originalByteLength": 1581355,
+      "originalSha256": "7ae419bb8acb746b91dede280b22d1f23e0dc92ac3d683313c267559d04b1372",
+      "storedByteLength": 136355,
+      "storedSha256": "682a747b8db24efdc59701661878ffcbc62a9e3de1ea37adb315efbb118ce114",
+      "summary": {
+        "nativeTotal": 1178,
+        "legacyCases": 136,
+        "legacyPassed": 136,
+        "typedCases": 44,
+        "typedPassed": 44,
+        "carried": 180,
+        "passed": 180,
+        "unsupported": 998,
+        "typedStaticAssertions": 169,
+        "typedExecutedAssertions": 245,
+        "priorNineUnknownRuntime": [
+          {
+            "id": "rust/tests/unit/specification/chat_surface.rs::links_notation_trace_is_present_for_every_answer",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/code_generation_blueprint.rs::rust_http_json_statistics_request_returns_blueprint_program",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/links_network.rs::trace_record_lists_ordered_reasoning_steps",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/network_visualization.rs::answers_already_carry_links_notation_for_visualization",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/reasoning_loop.rs::step_8_full_trace_is_stored_and_linked",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/reasoning_paths.rs::selected_registry_method_is_recorded_as_a_meta_method",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/translation_via_links.rs::every_answer_publishes_a_links_notation_trace",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/translation_via_links.rs::translation_trace_includes_intermediate_meaning",
+            "carried": false
+          },
+          {
+            "id": "rust/tests/unit/specification/transparent_state.rs::links_notation_trace_is_always_present",
+            "carried": false
+          }
+        ],
+        "productionRecordWritten": false
+      }
+    }
+  ]
+}

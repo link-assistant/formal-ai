@@ -1,0 +1,721 @@
+# Creative-composition rules and knowledge (issue #1178, E143).
+#
+# Everything the four composition handlers consult lives here as data —
+# writing forms and their default constraints, spelled numbers, the English
+# rhyme classes (grounded in Wiktionary's Rhymes pages), the stated
+# pronunciation-coverage gap for the other languages, verse-line skeletons
+# with {topic}/{rhyme} slots, topic stop words, the brainstorm morphology
+# rules (operations on the request's own topic words — never a fixed
+# catalog of answers), the distinctness metric, the planning place cache
+# (each row cites the source it was seeded from) with scheduling
+# constraints, and the advice evidence-grade scale with per-topic
+# recommendations retrieved from primary sources.
+#
+# Read by the handlers in rust/src/solver_handlers/{creative_composition,
+# creative_writing}.rs through `crate::seed::seed_files()`.
+
+creative_composition_rules
+  # ---------------------------------------------------------------- forms
+  writing_form
+    form poem
+    default_lines 4
+    default_scheme abcb
+    en poem
+    ru стихотворение
+    ru стих
+    hi कविता
+    zh 诗
+    es poema
+  writing_form
+    form haiku
+    default_lines 3
+    default_scheme none
+    syllables "5-7-5"
+    en haiku
+    ru хокку
+    hi हाइकू
+    zh 俳句
+    es haiku
+  writing_form
+    form limerick
+    default_lines 5
+    default_scheme aabba
+    en limerick
+    ru лимерик
+    hi लिमरिक
+    zh 打油诗
+    es limerick
+  writing_form
+    form couplet
+    default_lines 2
+    default_scheme aa
+    en couplet
+    ru двустишие
+    zh 对句
+    es pareado
+  writing_form
+    form sonnet
+    default_lines 14
+    default_scheme ababcdcdefefgg
+    en sonnet
+    ru сонет
+    hi सॉनेट
+    zh 十四行诗
+    es soneto
+  # ---------------------------------------------------------- request cues
+  # Recognition words the handlers test the request against beyond the role
+  # lexicon — a stated line count (substring), a stated rhyme scheme literal,
+  # a bare rhyme request (falls back to its scheme), the brainstorm length
+  # cap, and the exclusion marker whose following tokens name excluded words.
+  request_cue
+    cue line_count
+    word line
+    word lines
+    word строка
+    word строки
+    word पंक्ति
+    word 行
+    word línea
+    word líneas
+  request_cue
+    cue stated_scheme
+    word aabb
+    word abab
+  request_cue
+    cue rhyme_request
+    scheme aabb
+    word rhyming
+    word rhyme
+  request_cue
+    cue short_names
+    max_length 12
+    word short
+  request_cue
+    cue exclusion
+    word without
+  # ------------------------------------------------------- spelled numbers
+  spelled_number
+    language en
+    number one 1
+    number two 2
+    number three 3
+    number four 4
+    number five 5
+    number six 6
+    number seven 7
+    number eight 8
+    number nine 9
+    number ten 10
+    number eleven 11
+    number twelve 12
+  spelled_number
+    language ru
+    number один 1
+    number два 2
+    number три 3
+    number четыре 4
+    number пять 5
+    number шесть 6
+    number семь 7
+    number восемь 8
+    number девять 9
+    number десять 10
+    number одиннадцать 11
+    number двенадцать 12
+  spelled_number
+    language hi
+    number एक 1
+    number दो 2
+    number तीन 3
+    number चार 4
+    number पाँच 5
+    number छह 6
+    number सात 7
+    number आठ 8
+    number नौ 9
+    number दस 10
+    number ग्यारह 11
+    number बारह 12
+  spelled_number
+    language zh
+    number 一 1
+    number 二 2
+    number 三 3
+    number 四 4
+    number 五 5
+    number 六 6
+    number 七 7
+    number 八 8
+    number 九 9
+    number 十 10
+    number 十一 11
+    number 十二 12
+  spelled_number
+    language es
+    number uno 1
+    number dos 2
+    number tres 3
+    number cuatro 4
+    number cinco 5
+    number seis 6
+    number siete 7
+    number ocho 8
+    number nueve 9
+    number diez 10
+    number once 11
+    number doce 12
+  # ------------------------------------------------------ rhyme knowledge
+  rhyme_coverage
+    rhyme_languages en
+    gap "The registered wiktionary source (data/seed/sources-registry.lino) serves its Free Dictionary API for the language api_language leads with (en), and its per-language MediaWiki extracts endpoint carries no pronunciation field, so offline rhyme classes are grounded for en only; for ru/hi/zh/es this answer states the gap instead of guessing rhymes and composes unrhymed verse under the line-count and topic constraints."
+  rhyme_class
+    id iː
+    word sea
+    word free
+    word tree
+    word three
+    word be
+    word we
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/iː"
+  rhyme_class
+    id aɪt
+    word night
+    word light
+    word bright
+    word white
+    word sight
+    word flight
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/aɪt"
+  rhyme_class
+    id eɪv
+    word wave
+    word cave
+    word gave
+    word save
+    word brave
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/eɪv"
+  rhyme_class
+    id eɪ
+    word day
+    word away
+    word say
+    word play
+    word stay
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/eɪ"
+  rhyme_class
+    id iːp
+    word deep
+    word sleep
+    word keep
+    word weep
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/iːp"
+  rhyme_class
+    id uːn
+    word moon
+    word soon
+    word noon
+    word tune
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/uːn"
+  rhyme_class
+    id ɑːr
+    word star
+    word far
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/ɑːr"
+  rhyme_class
+    id ɔːr
+    word shore
+    word more
+    word before
+    word door
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/ɔːr"
+  rhyme_class
+    id ænd
+    word sand
+    word hand
+    word land
+    word stand
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/ænd"
+  rhyme_class
+    id uː
+    word blue
+    word true
+    word new
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/uː"
+  rhyme_class
+    id oʊm
+    word foam
+    word home
+    word roam
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/oʊm"
+  rhyme_class
+    id aɪd
+    word tide
+    word wide
+    word side
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/aɪd"
+  rhyme_class
+    id eɪl
+    word sail
+    word tale
+    word whale
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/eɪl"
+  rhyme_class
+    id aɪnd
+    word wind
+    word kind
+    word mind
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/aɪnd"
+  rhyme_class
+    id ʌn
+    word sun
+    word run
+    word one
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/ʌn"
+  rhyme_class
+    id eɪn
+    word rain
+    word again
+    word plain
+    source_url "https://en.wiktionary.org/wiki/Rhymes:English/eɪn"
+  # -------------------------------------------------- verse-line skeletons
+  poem_line_skeleton
+    language en
+    rhyme_slot true
+    text "the {topic} keeps its counsel by the {rhyme}"
+  poem_line_skeleton
+    language en
+    rhyme_slot true
+    text "and all our evenings settle toward the {rhyme}"
+  poem_line_skeleton
+    language en
+    rhyme_slot true
+    text "I learned the {topic} the way one learns a {rhyme}"
+  poem_line_skeleton
+    language en
+    rhyme_slot true
+    text "no letter reaches farther than the {rhyme}"
+  poem_line_skeleton
+    language en
+    rhyme_slot true
+    text "the morning opens like a {rhyme}"
+  poem_line_skeleton
+    language en
+    rhyme_slot true
+    text "give the {topic} one more evening, one more {rhyme}"
+  poem_line_skeleton
+    language en
+    rhyme_slot false
+    text "the {topic} is wide tonight"
+  poem_line_skeleton
+    language en
+    rhyme_slot false
+    text "we stood where the {topic} begins"
+  poem_line_skeleton
+    language ru
+    rhyme_slot false
+    text "снова вижу {topic}"
+  poem_line_skeleton
+    language ru
+    rhyme_slot false
+    text "{topic} остаётся с нами"
+  poem_line_skeleton
+    language ru
+    rhyme_slot false
+    text "ветер говорит о {topic}"
+  poem_line_skeleton
+    language hi
+    rhyme_slot false
+    text "{topic} के लिए एक पंक्ति"
+  poem_line_skeleton
+    language hi
+    rhyme_slot false
+    text "{topic} के नाम पर यह रात"
+  poem_line_skeleton
+    language hi
+    rhyme_slot false
+    text "{topic} की ओर देखते हुए"
+  poem_line_skeleton
+    language zh
+    rhyme_slot false
+    text "我看见{topic}的时候"
+  poem_line_skeleton
+    language zh
+    rhyme_slot false
+    text "{topic}在夜里安静下来"
+  poem_line_skeleton
+    language zh
+    rhyme_slot false
+    text "风把{topic}吹向远方"
+  poem_line_skeleton
+    language es
+    rhyme_slot false
+    text "otra vez {topic} junto a la ventana"
+  poem_line_skeleton
+    language es
+    rhyme_slot false
+    text "todo lo que sé de {topic}"
+  poem_line_skeleton
+    language es
+    rhyme_slot false
+    text "la noche guarda {topic}"
+  # -------------------------------------------------- topic stop words
+  topic_stop_word
+    language en
+    word a
+    word an
+    word the
+    word for
+    word near
+    word to
+    word in
+    word at
+    word of
+    word with
+    word into
+    word them
+    word it
+    word me
+    word my
+    word our
+    word give
+    word ideas
+    word idea
+    word name
+    word names
+    word suggest
+    word come
+    word up
+    word with
+    word brainstorm
+    word short
+    word about
+    word write
+    word poem
+    word haiku
+    word sonnet
+    word limerick
+    word couplet
+    word story
+    word line
+    word lines
+    word rhyming
+    word without
+    word tips
+    word advice
+    word plan
+    word trip
+    word itinerary
+    word day
+    word days
+  topic_stop_word
+    language ru
+    word для
+    word про
+    word о
+    word в
+    word на
+    word с
+    word и
+    word рядом
+    word около
+    word мне
+    word дай
+    word придумай
+    word предложи
+    word название
+    word названия
+    word имя
+    word имена
+    word идеи
+    word идей
+    word короткое
+    word о
+    word напиши
+    word стих
+    word стихотворение
+    word строка
+    word строки
+    word совет
+    word советы
+    word маршрут
+    word день
+    word дня
+    word дней
+  topic_stop_word
+    language hi
+    word के
+    word लिए
+    word का
+    word की
+    word मुझे
+    word दो
+    word नाम
+    word विचार
+    word लिखो
+    word लिखें
+    word कविता
+    word पंक्ति
+    word पंक्तियों
+    word पंक्तियाँ
+    word में
+    word पर
+    word सलाह
+    word सुझाव
+    word योजना
+    word दिन
+  topic_stop_word
+    language zh
+    word 直到
+    word 自从
+    word 期间
+    word 之前
+    word 之后
+    word 附近
+    word 后面
+    word 下面
+    word 里面
+    word 上面
+    word 上午
+    word 下午
+    word 点钟
+    word 的
+    word 给
+    word 我
+    word 起
+    word 个
+    word 名字
+    word 想法
+    word 写
+    word 一首
+    word 首
+    word 诗
+    word 行
+    word 关于
+    word 建议
+    word 计划
+    word 行程
+    word 天
+  topic_stop_word
+    language es
+    word para
+    word un
+    word una
+    word el
+    word la
+    word dame
+    word ideas
+    word idea
+    word nombres
+    word sugiere
+    word escribe
+    word poema
+    word sobre
+    word consejos
+    word plan
+    word viaje
+    word día
+    word días
+  # -------------------------------------------- brainstorm morphology rules
+  brainstorm_rule
+    kind compound
+    note "capitalize both topic words and join them"
+  brainstorm_rule
+    kind blend
+    note "front half of the first topic word fused to the back half of the second"
+  brainstorm_rule
+    kind suffix
+    piece Hub
+    piece Lab
+    piece Works
+    piece House
+    piece Corner
+    piece Room
+    piece Club
+    piece Point
+    note "capitalize the topic word and append one generic establishment piece"
+  brainstorm_rule
+    kind definite
+    note "the definite article over the two topic words"
+  distinctness_metric
+    name "pairwise normalized levenshtein ratio"
+    floor 0.3
+    share_rule "no two returned candidates may share both of their content words"
+    statement "candidates are ranked by the stated pairwise normalized levenshtein ratio (floor 0.3, nearest duplicates dropped, first kept) and no two returned candidates share both content words"
+  # ---------------------------------------------------- planning knowledge
+  destination_surface
+    destination rome
+    surface Rome
+    surface Roma
+    surface Рим
+    surface Риме
+    surface रोम
+    surface 罗马
+    surface 羅馬
+  plan_constraint
+    day_window "09:00-19:00"
+    travel_intra_district_minutes 20
+    travel_cross_district_minutes 40
+    lunch_window "13:00-14:00"
+    max_items_per_day 4
+    category_spread "no two consecutive items of the same category on one day"
+    note "hours come from the seeded place cache (Wikivoyage, CC BY-SA) and are approximate; re-verify before traveling. No web search was run."
+  planning_place_cache
+    destination rome
+    id colosseum
+    name "Colosseum"
+    district ancient
+    category sight
+    hours "09:00-19:00"
+    visit_minutes 120
+    source_url "https://en.wikivoyage.org/wiki/Rome/Colosseum"
+  planning_place_cache
+    destination rome
+    id roman_forum
+    name "Roman Forum"
+    district ancient
+    category sight
+    hours "09:00-19:00"
+    visit_minutes 90
+    source_url "https://en.wikivoyage.org/wiki/Rome"
+  planning_place_cache
+    destination rome
+    id palatine_hill
+    name "Palatine Hill"
+    district ancient
+    category sight
+    hours "09:00-19:00"
+    visit_minutes 60
+    source_url "https://en.wikivoyage.org/wiki/Rome"
+  planning_place_cache
+    destination rome
+    id vatican_museums
+    name "Vatican Museums"
+    district vatican
+    category museum
+    hours "09:00-18:00"
+    closed_days su
+    visit_minutes 180
+    source_url "https://en.wikivoyage.org/wiki/Rome/Vatican"
+  planning_place_cache
+    destination rome
+    id st_peter
+    name "St Peter's Basilica"
+    district vatican
+    category church
+    hours "07:00-19:00"
+    visit_minutes 90
+    source_url "https://en.wikivoyage.org/wiki/Rome/Vatican"
+  planning_place_cache
+    destination rome
+    id pantheon
+    name "Pantheon"
+    district centro
+    category church
+    hours "09:00-19:00"
+    visit_minutes 60
+    source_url "https://en.wikivoyage.org/wiki/Rome/Pantheon"
+  planning_place_cache
+    destination rome
+    id trevi_fountain
+    name "Trevi Fountain"
+    district centro
+    category sight
+    hours "always open"
+    visit_minutes 30
+    source_url "https://en.wikivoyage.org/wiki/Rome/Trevi"
+  planning_place_cache
+    id piazza_navona
+    destination rome
+    name "Piazza Navona"
+    district centro
+    category square
+    hours "always open"
+    visit_minutes 45
+    source_url "https://en.wikivoyage.org/wiki/Rome"
+  planning_place_cache
+    destination rome
+    id campo_dei_fiori
+    name "Campo de' Fiori market"
+    district centro
+    category market
+    hours "07:00-14:00"
+    visit_minutes 45
+    source_url "https://en.wikivoyage.org/wiki/Rome"
+  planning_place_cache
+    destination rome
+    id trastevere_evening
+    name "Trastevere dinner walk"
+    district trastevere
+    category food
+    hours "17:00-23:00"
+    visit_minutes 120
+    source_url "https://en.wikivoyage.org/wiki/Rome/Trastevere"
+  # ------------------------------------------------------ advice knowledge
+  advice_evidence_grade
+    grade systematic_review
+    weight 0.9
+    label "strong (systematic review)"
+  advice_evidence_grade
+    grade authority_guideline
+    weight 0.75
+    label "strong (health-authority guideline)"
+  advice_evidence_grade
+    grade primary_study
+    weight 0.6
+    label "moderate (individual primary study)"
+  advice_evidence_grade
+    grade anecdote
+    weight 0.3
+    label "weak (anecdote)"
+  advice_topic
+    topic sleep
+    surface sleep
+    surface sleeping
+    surface "trouble sleeping"
+    surface insomnia
+    surface сон
+    surface бессонница
+    surface "не сплю"
+    surface नींद
+    surface अनिद्रा
+    surface 睡眠
+    surface 失眠
+    surface sueño
+    surface insomnio
+    note "retrieved from primary health-authority pages and formalized here; the ordinal weighting below awaits the relative meta logic of issue #1179 for full probabilities"
+  advice_recommendation
+    topic sleep
+    grade authority_guideline
+    text "Keep a consistent sleep schedule: go to bed and get up at the same times every day, including weekends."
+    source "CDC — About Sleep"
+    source_url "https://www.cdc.gov/sleep/about/index.html"
+  advice_recommendation
+    topic sleep
+    grade authority_guideline
+    text "Most adults need 7 or more hours of sleep per night; teens need 8-10."
+    source "CDC — About Sleep"
+    source_url "https://www.cdc.gov/sleep/about/index.html"
+  advice_recommendation
+    topic sleep
+    grade authority_guideline
+    text "Keep the bedroom quiet, dark, relaxing, and at a comfortable temperature."
+    source "NIH News in Health — Good Sleep for Good Health"
+    source_url "https://newsinhealth.nih.gov/2013/04/good-sleep-good-health"
+  advice_recommendation
+    grade primary_study
+    topic sleep
+    text "Avoid large meals, caffeine, and alcohol in the late evening."
+    source "NIH News in Health — Good Sleep for Good Health"
+    source_url "https://newsinhealth.nih.gov/2013/04/good-sleep-good-health"
+  advice_recommendation
+    topic sleep
+    grade authority_guideline
+    text "Be physically active during the day; it helps you fall asleep at night."
+    source "NHLBI — Sleep Health"
+    source_url "https://www.nhlbi.nih.gov/health/sleep"
+  advice_recommendation
+    topic sleep
+    grade authority_guideline
+    text "Remove electronic devices from the bedroom and stop screen time before sleep."
+    source "CDC — About Sleep"
+    source_url "https://www.cdc.gov/sleep/about/index.html"

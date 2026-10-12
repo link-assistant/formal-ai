@@ -1,0 +1,71 @@
+{
+  "lemma": "manifest",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06513909-n",
+      "partOfSpeech": "n",
+      "definition": "a customs document listing the contents put on a ship or plane"
+    },
+    {
+      "id": "oewn-01622528-s",
+      "partOfSpeech": "s",
+      "definition": "clearly revealed to the mind or the senses or judgment",
+      "examples": [
+        "the effects of the drought are apparent to anyone who sees the parched fields",
+        "evident hostility",
+        "manifest disapproval",
+        "patent advantages",
+        "made his meaning plain",
+        "it is plain that he is no reactionary",
+        "in plain view",
+        "a palpable lie"
+      ],
+      "synonyms": [
+        "apparent",
+        "evident",
+        "palpable",
+        "patent",
+        "plain",
+        "unmistakable"
+      ]
+    },
+    {
+      "id": "oewn-00822637-v",
+      "partOfSpeech": "v",
+      "definition": "provide evidence for; stand as proof of; show by one's behavior, attitude, or external attributes",
+      "examples": [
+        "His high fever attested to his illness",
+        "The buildings in Rome manifest a high level of architectural sophistication",
+        "This decision demonstrates his sense of fairness"
+      ],
+      "synonyms": [
+        "attest",
+        "certify",
+        "demonstrate",
+        "evidence"
+      ]
+    },
+    {
+      "id": "oewn-01002923-v",
+      "partOfSpeech": "v",
+      "definition": "record in a ship's manifest",
+      "examples": [
+        "each passenger must be manifested"
+      ]
+    },
+    {
+      "id": "oewn-00424028-v",
+      "partOfSpeech": "v",
+      "definition": "reveal its presence or make an appearance",
+      "examples": [
+        "the ghost manifests each year on the same day"
+      ]
+    }
+  ]
+}

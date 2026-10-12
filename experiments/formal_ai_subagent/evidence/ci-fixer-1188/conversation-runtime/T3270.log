@@ -1,0 +1,42 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/observe-new-history-cases.mjs"}
+   Output: {
+     "total": 1178,
+     "carriedCandidates": 201,
+     "counts": {
+       "passed": 18,
+       "failed": 0,
+       "unsupported": 1
+     },
+     "failures": [],
+     "unsupported": [
+       {
+         "id": "rust/tests/unit/specification/conversation_history.rs::previous_user_question_recall_skips_meta_turns_in_supported_languages",
+         "status": "unsupported",
+         "reason": "unsupported native record declaration"
+       }
+     ]
+   }
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/observe-new-history-cases.mjs` command completed. Output:
+
+```json
+{
+  "carriedCandidates": 201,
+  "counts": {
+    "failed": 0,
+    "passed": 18,
+    "unsupported": 1
+  },
+  "failures": [],
+  "total": 1178,
+  "unsupported": [
+    {
+      "id": "rust/tests/unit/specification/conversation_history.rs::previous_user_question_recall_skips_meta_turns_in_supported_languages",
+      "reason": "unsupported native record declaration",
+      "status": "unsupported"
+    }
+  ]
+}
+```

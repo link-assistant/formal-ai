@@ -1,0 +1,8 @@
+behavior_rule	reglas	lista de reglas	regla
+rule_enumeration_request	lista	enumera	muestra	muéstrame	cuáles	qué
+rule_count_request	cuántas	cuántos	número de	cantidad de
+rule_count_scope	total	existentes	actuales	todas
+rule_brief_request	breve	brevemente	corto	conciso	en resumen
+behavior_domain	comportamiento	conducta
+assistant_own_ruleset	tus	tuyas	propias	actuales	lista de reglas
+behavior_rule_set_phrase	lista las reglas de comportamiento	lista todas las reglas de comportamiento	muestra las reglas de comportamiento	muéstrame las reglas de comportamiento	muestra las reglas	qué reglas de comportamiento	cuáles son tus reglas de comportamiento	reglas de comportamiento existentes

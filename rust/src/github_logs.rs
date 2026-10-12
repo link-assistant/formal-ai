@@ -8,12 +8,13 @@ use serde::Serialize;
 
 const REPO_VIEW_FIELDS: &str =
     "name,description,owner,url,defaultBranchRef,createdAt,pushedAt,isPrivate,licenseInfo";
+// `closedAt` and `mergedAt` date the lifecycle transitions the repository
+// history importer records (issue #1180 R3).
 const ISSUE_VIEW_FIELDS: &str =
-    "number,title,body,author,state,labels,comments,createdAt,updatedAt,url";
-const ISSUE_LIST_FIELDS: &str = "number,title,state,labels,createdAt,updatedAt,url,author";
-const PR_VIEW_FIELDS: &str = "number,title,body,author,state,isDraft,headRefName,baseRefName,commits,comments,reviews,reviewDecision,mergeStateStatus,createdAt,updatedAt,url";
-const PR_LIST_FIELDS: &str =
-    "number,title,state,createdAt,updatedAt,url,author,headRefName,baseRefName,isDraft";
+    "number,title,body,author,state,labels,comments,createdAt,updatedAt,url,closedAt";
+const ISSUE_LIST_FIELDS: &str = "number,title,state,labels,createdAt,updatedAt,url,author,closedAt";
+const PR_VIEW_FIELDS: &str = "number,title,body,author,state,isDraft,headRefName,baseRefName,commits,comments,reviews,reviewDecision,mergeStateStatus,createdAt,updatedAt,url,closedAt,mergedAt";
+const PR_LIST_FIELDS: &str = "number,title,state,createdAt,updatedAt,url,author,headRefName,baseRefName,isDraft,closedAt,mergedAt";
 const RUN_LIST_FIELDS: &str =
     "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url";
 const RUN_VIEW_FIELDS: &str = "databaseId,workflowName,status,conclusion,createdAt,updatedAt,headSha,headBranch,event,url,jobs";

@@ -1,17 +1,20 @@
 Q7569
   aliases
     en (children kid)
+    es ("niña")
     hi ("संतान")
     ru ("дети" "дитя")
     zh ("童年")
   descriptions
     en "human between birth and puberty"
+    es "ser humano prepubescente"
     hi "व्यक्ति जो शिशु से बड़ा है और आदमी से छोटा है"
     ru "человек в период детства"
     zh "从出生到青春期的人"
   id Q7569
   labels
     en child
+    es "niño"
     hi "बच्चा"
     ru "ребёнок"
     zh "儿童"

@@ -646,10 +646,10 @@ mod tests {
     #[test]
     fn complete_owner_is_not_debt_and_non_lexeme_language_rows_do_not_count() {
         let text = "registry\n  language es\n    status partial\n  idea\n    lexeme en\n    lexeme ru\n    lexeme hi\n    lexeme zh\n    lexeme es\n";
-        assert!(
+        assert_eq!(
             gaps_from_documents([("data/seed/not-a-meanings-file.lino", text)])
-                .expect("fixture parses")
-                .is_empty()
+                .expect("fixture parses"),
+            [] as [LanguageGap; 0]
         );
     }
 
@@ -667,7 +667,7 @@ mod tests {
     fn exact_generated_debt_is_accepted() {
         let gaps = vec![sample_gap()];
         let debt = render_debt(&gaps, "2026-09-17");
-        assert!(check_debt(&gaps, &debt).is_empty());
+        assert_eq!(check_debt(&gaps, &debt), [] as [std::string::String; 0]);
     }
 
     #[test]

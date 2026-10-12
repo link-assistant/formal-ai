@@ -1,0 +1,92 @@
+self_ast_census
+  target src/agentic_coding/general_planner/content_shape.rs
+  language rust
+  fidelity full_ast
+  byte_len 11301
+  line_count 275
+  content_id source_module_58ad3d856499ceec
+  symbol_count 11
+  symbols
+    function describes_code_to_author 18 37
+    function owns_literal_body 39 72
+    function leading_authoring_action 75 89
+    function semantic_authoring_lead 92 99
+    function names_an_addition 109 126
+    function asks_to_author_code 131 136
+    function prose_around 140 148
+    function missing_implementation_contract 151 174
+    function operation_role_spans 177 213
+    function first_operation_owner 215 236
+    function owned_semantic_authoring_lead 238 275
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 8536
+    named_node_count 1798
+    distinct_node_kinds 63
+    node_kinds
+      arguments 173
+      array_expression 2
+      binary_expression 43
+      block 39
+      boolean_literal 9
+      call_expression 173
+      char_literal 14
+      closure_expression 31
+      closure_parameters 31
+      continue_expression 3
+      crate 21
+      doc_comment 29
+      escape_sequence 2
+      expression_statement 27
+      field_expression 140
+      field_identifier 140
+      for_expression 3
+      function_item 11
+      generic_function 1
+      generic_type 6
+      identifier 402
+      if_expression 10
+      index_expression 10
+      inner_doc_comment_marker 5
+      integer_literal 2
+      let_chain 3
+      let_condition 3
+      let_declaration 27
+      lifetime 3
+      line_comment 29
+      macro_invocation 4
+      match_arm 3
+      match_block 1
+      match_expression 1
+      match_pattern 3
+      mutable_specifier 3
+      outer_doc_comment_marker 24
+      parameter 19
+      parameters 11
+      parenthesized_expression 1
+      primitive_type 31
+      range_expression 14
+      reference_expression 30
+      reference_type 19
+      return_expression 8
+      scoped_identifier 72
+      scoped_use_list 1
+      source_file 1
+      string_content 36
+      string_literal 37
+      super 9
+      token_tree 6
+      try_expression 2
+      tuple_expression 5
+      tuple_pattern 13
+      tuple_struct_pattern 7
+      tuple_type 2
+      type_arguments 7
+      type_identifier 11
+      unary_expression 16
+      use_declaration 2
+      use_list 1
+      visibility_modifier 6

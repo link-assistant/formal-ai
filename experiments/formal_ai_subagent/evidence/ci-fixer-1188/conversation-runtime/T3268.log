@@ -1,0 +1,94 @@
+>> read {"filePath":"rust/tests/web/worker-conversation-history.test.mjs","file_path":"rust/tests/web/worker-conversation-history.test.mjs","path":"rust/tests/web/worker-conversation-history.test.mjs"}
+   <file>
+   00001| import assert from 'node:assert/strict';
+   00002| import { readFileSync } from 'node:fs';
+   00003| import { test } from 'node:test';
+   00004| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00005| import { symbolicFromWorker } from '../../../js/server/solve.mjs';
+   00006| import { testFunctions, tokenize } from '../../../scripts/lib/rust-specification-cases.mjs';
+   00007| import { typedProgramOf, executeTypedProgram } from '../../../scripts/lib/rust-specification-programs.mjs';
+   00008| 
+   00009| const root = new URL('../../../', import.meta.url).pathname;
+   00010| const file = 'rust/tests/unit/specification/conversation_history.rs';
+   00011| const source = readFileSync(root + file, 'utf8');
+   00012| const originals = [
+   00013|   ['solve_with_history_searches_english_dialog_history_by_term', 7],
+   00014|   ['solve_with_history_reports_no_dialog_history_matches', 3],
+   00015|   ['solve_with_history_searches_dialog_history_in_russian', 4],
+   00016|   ['solve_with_history_searches_dialog_history_in_hindi', 4],
+   00017|   ['solve_with_history_searches_dialog_history_in_chinese', 4],
+   00018|   ['solve_with_history_accepts_other_conversation_query_forms', 3],
+   00019| ];
+   00020| for (const [name, assertions] of originals) {
+   00021|   test('whole original native history assertions: ' + name, async () => {
+   00022|     const native = testFunctions(tokenize(source)).find(item => item.name === name);
+   00023|     assert.ok(native);
+   00024|     const parsed = typedProgramOf(native.body, { source, file: root + file, root });
+   00025|     assert.ok(parsed.program, parsed.reason);
+   00026|     assert.equal(parsed.program.nativeAssertions, assertions);
+   00027|     const result = await executeTypedProgram(new WorkerHost(), parsed.program);
+   00028|     assert.equal(result.status, 'passed', result.failure);
+   00029|     assert.equal(result.assertions, assertions);
+   00030|     const final = result.observations.at(-1).answer;
+   00031|     assert.ok(final.solver_events.some(event => event.kind === 'filter:memory_query'));
+   00032|     assert.ok(final.solver_events.some(event => event.kind === 'filter:memory_scope'));
+   00033|   });
+   00034| }
+   00035| 
+   00036| test('search result has exact native English bytes and only actual turn matches', async () => {
+   00037|   const host = new WorkerHost();
+   00038|   const history = [
+   00039|     { role: 'user', content: 'Rust library notes' },
+   00040|     { role: 'system', content: 'Rust unavailable privileged notes' },
+   00041|     { role: 'assistant', content: 'RUST library details' },
+   00042|     { role: 'user', content: 'Unrelated Python note' },
+   00043|   ];
+   00044|   const response = symbolicFromWorker(await host.solve('Recall Rust!', history), history);
+   00045|   assert.equal(response.answer, 'Found 2 mention(s) of "rust" in the conversation history.\n- turn 1 user: Rust library notes\n- turn 3 assistant: RUST library details');
+   00046|   const matches = response.solver_events.filter(event => event.kind === 'memory_match');
+   00047|   assert.deepEqual(matches.map(event => event.payload), [
+   00048|     'turn=1 role=user content=Rust library notes',
+   00049|     'turn=3 role=assistant content=RUST library details',
+   00050|   ]);
+   00051|   assert.ok(!response.answer.includes('privileged'));
+   00052|   assert.ok(!response.answer.includes('Python'));
+   00053| });
+   00054| 
+   00055| test('empty query and unrelated syntax do not invent history or persisted memory', async () => {
+   00056|   const host = new WorkerHost();
+   00057|   for (const prompt of ['Recall', 'When did I mention?', 'Someone mentioned Rust yesterday']) {
+   00058|     const actual = await host.run('historyRecallQuery(normalizePrompt(__prompt))', { __prompt: prompt });
+   00059|     assert.equal(actual, null, prompt);
+   00060|   }
+   00061|   const result = await host.solve('When did I ask about Haskell?', []);
+   00062|   assert.equal(result.content, 'No mentions of "haskell" found in the conversation history.');
+   00063|   assert.ok(result.solverEvents.some(event => event.kind === 'filter:memory_matches' && event.payload === '0'));
+   00064|   assert.ok(!result.solverEvents.some(event => event.kind === 'memory_match'));
+   00065| });
+   00066| 
+   00067| 
+   00068| test('seeded Spanish slots and inserted template-like message bytes remain genuine history', async () => {
+   00069|   const host = new WorkerHost();
+   00070|   const history = [{ role: 'user', content: 'Rust {turn} {role} {content} {term}' }];
+   00071|   const answer = await host.solve('Recall Rust', history);
+   00072|   assert.equal(answer.content, 'Found 1 mention(s) of "rust" in the conversation history.\n- turn 1 user: Rust {turn} {role} {content} {term}');
+   00073|   assert.ok(answer.solverEvents.some(event => event.kind === 'memory_match' && event.payload.endsWith(history[0].content)));
+   00074|   const spanish = await host.solve('Busca en mis conversaciones Rust', history);
+   00075|   assert.equal(spanish.intent, 'conversation_recall');
+   00076|   assert.ok(spanish.content.startsWith('Se encontraron 1 menciones'));
+   00077|   assert.ok(spanish.content.includes(history[0].content));
+   00078| });
+   00079| 
+   
+   (End of file - total 79 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/worker-conversation-history.test.mjs","file_path":"rust/tests/web/worker-conversation-history.test.mjs","new":"  const ascii = await host.solve('Busca en mis conversaciones Rust', history);\n  assert.equal(ascii.intent, 'conversation_recall');\n  assert.ok(ascii.content.includes(history[0].content));\n  const spanish = await host.solve('¿Cuándo mencioné Rust?', history);","newString":"  const ascii = await host.solve('Busca en mis conversaciones Rust', history);\n  assert.equal(ascii.intent, 'conversation_recall');\n  assert.ok(ascii.content.includes(history[0].content));\n  const spanish = await host.solve('¿Cuándo mencioné Rust?', history);","new_str":"  const ascii = await host.solve('Busca en mis conversaciones Rust', history);\n  assert.equal(ascii.intent, 'conversation_recall');\n  assert.ok(ascii.content.includes(history[0].content));\n  const spanish = await host.solve('¿Cuándo mencioné Rust?', history);","new_string":"  const ascii = await host.solve('Busca en mis conversaciones Rust', history);\n  assert.equal(ascii.intent, 'conversation_recall');\n  assert.ok(ascii.content.includes(history[0].content));\n  const spanish = await host.solve('¿Cuándo mencioné Rust?', history);","old":"  const spanish = await host.solve('Busca en mis conversaciones Rust', history);","oldString":"  const spanish = await host.solve('Busca en mis conversaciones Rust', history);","old_str":"  const spanish = await host.solve('Busca en mis conversaciones Rust', history);","old_string":"  const spanish = await host.solve('Busca en mis conversaciones Rust', history);","path":"rust/tests/web/worker-conversation-history.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/worker-conversation-history.test.mjs"}
+   Output: 7c4b649a037c690b554767e7b1e59f3ef3b4d31d7476b7f3388d21601588f9d3  rust/tests/web/worker-conversation-history.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `  const spanish = await host.solve('Busca en mis conversaciones Rust', history);` with `  const ascii = await host.solve('Busca en mis conversaciones Rust', history);
+  assert.equal(ascii.intent, 'conversation_recall');
+  assert.ok(ascii.content.includes(history[0].content));
+  const spanish = await host.solve('¿Cuándo mencioné Rust?', history);` in `rust/tests/web/worker-conversation-history.test.mjs` and observed the result.

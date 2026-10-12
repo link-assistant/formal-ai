@@ -1,8 +1,8 @@
 link_edit
   leaf L10
-  path rust/src/solver_handlers/document_request.rs
+  path rust/src/solver_handlers/shell_command_compose.rs
   language rust
   rule insert_member
-    list "ACTIONS"
+    list "OTHER_INTENTS"
     member "reformat"
   expect "reformat"

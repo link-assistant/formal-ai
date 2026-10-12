@@ -1,0 +1,12 @@
+language en
+lemma nov
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the month following October and preceding December"
+    id oewn-15238202-n
+    partOfSpeech n
+    synonyms (November)
+source "oewn:2024"

@@ -1,0 +1,13 @@
+view
+  id M-fea28d482c7b
+  lemma shared
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "have in common; held or experienced in common"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "distributed in portions (often equal) on the basis of a plan or purpose"
+    provenance (wordnet)

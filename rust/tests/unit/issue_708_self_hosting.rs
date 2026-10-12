@@ -48,19 +48,19 @@ fn captured_agent_artifacts_match_their_committed_leaves() {
     // the way the query-languages leaf below already was -- the question this
     // test asks is whether the suite is still the authored one, not whether the
     // repository's formatter has stood still since it was authored.
-    let suite = include_str!("issue_708_memory_program_execution.rs");
+    let suite = include_str!("memory/issue_708_memory_program_execution.rs");
     let authored_suite = include_str!(
         "../../../docs/case-studies/issue-708/self-hosting-execution-tests/issue_708_memory_program_execution.rs"
     );
     assert_eq!(rustfmt_source(authored_suite), suite);
 
-    let compiler_test = include_str!("issue_708_memory_program.rs");
+    let compiler_test = include_str!("memory/issue_708_memory_program.rs");
     let authored_compiler_test = include_str!(
         "../../../docs/case-studies/issue-708/self-hosting-authorship/issue_708_memory_program.rs"
     );
     assert_eq!(rustfmt_source(authored_compiler_test), compiler_test);
 
-    let query_suite = include_str!("issue_708_memory_query_languages.rs");
+    let query_suite = include_str!("memory/issue_708_memory_query_languages.rs");
     let authored_query_suite = include_str!(
         "../../../docs/case-studies/issue-708/self-hosting-query-languages/issue_708_memory_query_languages.rs"
     );

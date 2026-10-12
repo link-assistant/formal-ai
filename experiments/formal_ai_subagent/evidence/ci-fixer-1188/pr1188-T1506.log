@@ -1,0 +1,792 @@
+>> read {"filePath":"rust/tests/unit/specification/debug_session.rs","file_path":"rust/tests/unit/specification/debug_session.rs","path":"rust/tests/unit/specification/debug_session.rs"}
+   <file>
+   00001| //! The step-through debug session (issue #667, R383).
+   00002| //!
+   00003| //! `serve --debug-session` binds loopback only, every debug request needs the
+   00004| //! session token, a paused turn advances one stage per authenticated advance (a
+   00005| //! repeated or stale advance answers 409 and records nothing), and a release or
+   00006| //! a client disconnect never leaves a solve paused. Every stage event carries
+   00007| //! the turn's recipe as Mermaid source with the stage highlighted, the
+   00008| //! `path:symbol` locations, lines and excerpts of the code that emits that
+   00009| //! stage in both runtimes (`rust/src/server/debug_stage_sources.rs` over the
+   00010| //! generated `data/meta/debug-stage-sources.lino`), and the method-registry
+   00011| //! method the turn's route resolves to with its handlers
+   00012| //! (`rust/src/server/debug_stage.rs`); a held turn is neither persisted nor
+   00013| //! answered. The JavaScript twin is
+   00014| //! `rust/tests/web/server-debug-session.test.mjs`; the protocol is
+   00015| //! `docs/vscode/debugger.md`.
+   00016| 
+   00017| use std::time::Duration;
+   00018| 
+   00019| use formal_ai::derivation::{answer_derivation_id, store_path};
+   00020| use formal_ai::server::{
+   00021|     DebugSession, DebugToken, EXCERPT_LINES, StageView, TurnView, debug_session_banner,
+   00022|     describe_turn, enable_debug_session, handle_debug_request, is_loopback_host, stage_diagram,
+   00023|     with_connection_scope,
+   00024| };
+   00025| use formal_ai::{ApiAuthConfig, ApiHttpResponse, ThinkingStep, handle_api_request_with_auth};
+   00026| use serde_json::{Value, json};
+   00027| 
+   00028| const TOKEN: &str = "debug-session-test-token";
+   00029| const BEARER: &str = "debug-session-bearer";
+   00030| const SOLVE_ENTRY: &str =
+   00031|     "rust/src/solver.rs:solve_with_history_probability_store_and_intent_cache";
+   00032| const EVENT_LOG: &str = "js/worker/formal_ai_worker_solver_events.js:solverEventLog";
+   00033| const ARITHMETIC: &str = "rust/src/solver_handlers/mod.rs:try_arithmetic";
+   00034| const CALCULATION_EVENTS: &str =
+   00035|     "js/worker/formal_ai_worker_solver_events.js:solverCalculationEvents";
+   00036| const FINALIZE: &str = "rust/src/solver_handlers/mod.rs:finalize_simple";
+   00037| const INTENT_RECORD: (&str, &str) = (
+   00038|     "rust/src/intent_formalization.rs:record_intent_formalization",
+   00039|     "js/agentic/crate/intent_formalization.mjs:recordIntentFormalization",
+   00040| );
+   00041| 
+   00042| /// Every stage of the served `What is 2 + 2?` turn: `(step, Rust emitter, JS emitter)`.
+   00043| const TWO_PLUS_TWO: [(&str, &str, &str); 10] = [
+   00044|     ("impulse", SOLVE_ENTRY, EVENT_LOG),
+   00045|     ("detect_language", SOLVE_ENTRY, EVENT_LOG),
+   00046|     ("formalize", INTENT_RECORD.0, INTENT_RECORD.1),
+   00047|     ("compute", ARITHMETIC, CALCULATION_EVENTS),
+   00048|     ("compute_engine", ARITHMETIC, CALCULATION_EVENTS),
+   00049|     ("compute_expression", ARITHMETIC, CALCULATION_EVENTS),
+   00050|     ("compute_steps", ARITHMETIC, CALCULATION_EVENTS),
+   00051|     ("dispatch_handler", FINALIZE, EVENT_LOG),
+   00052|     ("rule_verification", FINALIZE, EVENT_LOG),
+   00053|     ("deformalize", FINALIZE, EVENT_LOG),
+   00054| ];
+   00055| 
+   00056| fn session() -> DebugSession {
+   00057|     DebugSession::new(DebugToken {
+   00058|         token: TOKEN.to_owned(),
+   00059|         generated: false,
+   00060|     })
+   00061| }
+   00062| 
+   00063| fn stages() -> Vec<ThinkingStep> {
+   00064|     vec![
+   00065|         ThinkingStep::new(0, "impulse", "What is 2 + 2?", "high", "impulse"),
+   00066|         ThinkingStep::new(1, "compute", "4", "high", "calculation"),
+   00067|         ThinkingStep::new(2, "deformalize", "4", "high", "response"),
+   00068|     ]
+   00069| }
+   00070| 
+   00071| /// A turn routed to `arithmetic`, with a sub-stage under `compute`.
+   00072| fn routed() -> Vec<ThinkingStep> {
+   00073|     let compute = ThinkingStep::new(2, "compute", "2 + 2 = 4", "high", "calculation");
+   00074|     let engine = ThinkingStep::new(
+   00075|         3,
+   00076|         "compute_engine",
+   00077|         "link-calculator",
+   00078|         "high",
+   00079|         "calculation:engine",
+   00080|     )
+   00081|     .with_parent(compute.id.clone());
+   00082|     vec![
+   00083|         ThinkingStep::new(0, "impulse", "What is 2 + 2?", "high", "impulse"),
+   00084|         ThinkingStep::new(
+   00085|             1,
+   00086|             "formalize",
+   00087|             "arithmetic",
+   00088|             "high",
+   00089|             "intent_formalization:route",
+   00090|         ),
+   00091|         compute,
+   00092|         engine,
+   00093|         ThinkingStep::new(4, "deformalize", "2 + 2 = 4", "high", "response"),
+   00094|     ]
+   00095| }
+   00096| 
+   00097| /// The repository the test runs in (`rust/` is the working directory).
+   00098| fn repository() -> std::path::PathBuf {
+   00099|     std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("..")
+   00100| }
+   00101| 
+   00102| /// The located excerpt is the file's own text from the definition line on.
+   00103| ///
+   00104| /// A method's definition line is indented inside its `impl` block (the solve
+   00105| /// entry `solve_with_history_probability_store_and_intent_cache` is one), so
+   00106| /// the indentation is trimmed before the visibility, as the JavaScript twin's
+   00107| /// unanchored `fn <symbol>(` pattern does.
+   00108| fn assert_excerpt(source: &str, line: u64, excerpt: &str, definition: &str) {
+   00109|     let file = source.rsplit_once(':').map_or(source, |(file, _)| file);
+   00110|     let text = std::fs::read_to_string(repository().join(file)).expect("located file");
+   00111|     let lines: Vec<&str> = text.split('\n').collect();
+   00112|     let shown: Vec<&str> = excerpt.split('\n').collect();
+   00113|     let start = usize::try_from(line).expect("line") - 1;
+   00114|     assert!(
+   00115|         lines[start]
+   00116|             .trim_start()
+   00117|             .trim_start_matches("pub(crate) ")
+   00118|             .trim_start_matches("pub ")
+   00119|             .trim_start_matches("export ")
+   00120|             .starts_with(definition),
+   00121|         "{}",
+   00122|         lines[start]
+   00123|     );
+   00124|     assert_eq!(shown, lines[start..start + shown.len()]);
+   00125|     assert!(shown.len() <= EXCERPT_LINES, "an excerpt is capped");
+   00126| }
+   00127| 
+   00128| /// The text of a string field of an event, empty when absent.
+   00129| fn text<'event>(event: &'event Value, field: &str) -> &'event str {
+   00130|     event[field].as_str().unwrap_or("")
+   00131| }
+   00132| 
+   00133| /// Every stage names its own emitters, located in the files they live in, and
+   00134| /// the routed method stays a separate field (empty while nothing is routed).
+   00135| fn assert_stage_sources(events: &[&Value], expected: &[(&str, &str, &str)]) {
+   00136|     let named: Vec<(&str, &str, &str)> = events
+   00137|         .iter()
+   00138|         .map(|event| {
+   00139|             (
+   00140|                 text(event, "step"),
+   00141|                 text(event, "rust_source"),
+   00142|                 text(event, "js_source"),
+   00143|             )
+   00144|         })
+   00145|         .collect();
+   00146|     assert_eq!(named, expected);
+   00147|     for event in events {
+   00148|         for (runtime, keyword) in [("rust", "fn "), ("js", "function ")] {
+   00149|             let source = text(event, &format!("{runtime}_source"));
+   00150|             let symbol = source.rsplit_once(':').map_or("", |(_, symbol)| symbol);
+   00151|             let line = event[format!("{runtime}_line")].as_u64().unwrap_or(0);
+   00152|             let excerpt = text(event, &format!("{runtime}_excerpt"));
+   00153|             assert_excerpt(source, line, excerpt, &format!("{keyword}{symbol}"));
+   00154|         }
+   00155|         let routed = text(event, "method") == "arithmetic";
+   00156|         assert!(routed || text(event, "method").is_empty());
+   00157|         assert_eq!(
+   00158|             text(event, "method_rust_source"),
+   00159|             if routed {
+   00160|                 "rust/src/solver_dispatch.rs:handle_arithmetic"
+   00161|             } else {
+   00162|                 ""
+   00163|             }
+   00164|         );
+   00165|         assert_eq!(
+   00166|             text(event, "method_js_source"),
+   00167|             if routed {
+   00168|                 "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js:tryArithmetic"
+   00169|             } else {
+   00170|                 ""
+   00171|             }
+   00172|         );
+   00173|     }
+   00174| }
+   00175| 
+   00176| fn kinds(snapshot: &Value) -> Vec<String> {
+   00177|     snapshot["events"]
+   00178|         .as_array()
+   00179|         .expect("events")
+   00180|         .iter()
+   00181|         .map(|event| {
+   00182|             format!(
+   00183|                 "{}:{}",
+   00184|                 event["kind"].as_str().unwrap_or(""),
+   00185|                 event["stage"]
+   00186|             )
+   00187|         })
+   00188|         .collect()
+   00189| }
+   00190| 
+   00191| /// Poll until a turn is paused, and return the paused entry.
+   00192| fn paused_turn(session: &DebugSession) -> Value {
+   00193|     for _ in 0..600 {
+   00194|         let snapshot = session.snapshot(None);
+   00195|         if let Some(paused) = snapshot["paused"]
+   00196|             .as_array()
+   00197|             .and_then(|paused| paused.first())
+   00198|         {
+   00199|             return paused.clone();
+   00200|         }
+   00201|         std::thread::sleep(Duration::from_millis(10));
+   00202|     }
+   00203|     panic!("no turn paused");
+   00204| }
+   00205| 
+   00206| fn error_message(response: &ApiHttpResponse) -> String {
+   00207|     let body: Value = serde_json::from_str(&response.body).expect("json error body");
+   00208|     body["error"]["message"].as_str().unwrap_or("").to_owned()
+   00209| }
+   00210| 
+   00211| #[test]
+   00212| fn only_loopback_hosts_may_carry_a_debug_session() {
+   00213|     for host in [
+   00214|         "127.0.0.1",
+   00215|         "127.1.2.3",
+   00216|         "localhost",
+   00217|         "LOCALHOST",
+   00218|         "::1",
+   00219|         "[::1]",
+   00220|     ] {
+   00221|         assert!(is_loopback_host(host), "{host}");
+   00222|     }
+   00223|     for host in [
+   00224|         "0.0.0.0",
+   00225|         "192.168.1.5",
+   00226|         "::",
+   00227|         "example.com",
+   00228|         "128.0.0.1",
+   00229|         "127.0.0.256",
+   00230|         "",
+   00231|     ] {
+   00232|         assert!(!is_loopback_host(host), "{host}");
+   00233|     }
+   00234|     assert_eq!(
+   00235|         enable_debug_session("0.0.0.0").map(|_| ()),
+   00236|         Err(String::from("debug_session_requires_loopback:0.0.0.0"))
+   00237|     );
+   00238| }
+   00239| 
+   00240| #[test]
+   00241| fn the_banner_prints_only_a_generated_token() {
+   00242|     let given = session();
+   00243|     assert_eq!(
+   00244|         debug_session_banner(&given),
+   00245|         format!("debug_session={}", given.id())
+   00246|     );
+   00247|     assert!(given.id().starts_with("debug_session_"));
+   00248|     let generated = DebugSession::new(DebugToken {
+   00249|         token: String::from("abc"),
+   00250|         generated: true,
+   00251|     });
+   00252|     assert_eq!(
+   00253|         debug_session_banner(&generated),
+   00254|         format!("debug_session={};token=abc", generated.id())
+   00255|     );
+   00256|     let fresh = formal_ai::server::generate_debug_token();
+   00257|     assert_eq!(fresh.len(), 48);
+   00258|     assert!(fresh.bytes().all(|byte| byte.is_ascii_hexdigit()));
+   00259|     assert_ne!(fresh, formal_ai::server::generate_debug_token());
+   00260|     assert!(given.authorizes(TOKEN));
+   00261|     assert!(!given.authorizes("debug-session-test-tokem"));
+   00262|     assert!(!given.authorizes(""));
+   00263| }
+   00264| 
+   00265| #[test]
+   00266| fn stepping_off_never_holds_a_turn() {
+   00267|     let session = session();
+   00268|     session.gate(&stages(), &mut || true);
+   00269|     assert_eq!(kinds(&session.snapshot(None)), Vec::<String>::new());
+   00270| }
+   00271| 
+   00272| #[test]
+   00273| fn each_advance_reveals_exactly_one_stage_and_a_repeat_records_nothing() {
+   00274|     let session = session();
+   00275|     session.pause();
+   00276|     let stages = stages();
+   00277|     std::thread::scope(|scope| {
+   00278|         let held = scope.spawn(|| session.gate(&stages, &mut || true));
+   00279|         let paused = paused_turn(&session);
+   00280|         assert_eq!(paused["turn"], "turn_1");
+   00281|         assert_eq!(paused["stage"], 0);
+   00282|         assert!(!session.advance("turn_1", Some(1)), "stage 1 is not paused");
+   00283|         assert!(!session.advance("turn_9", Some(0)), "an unknown turn");
+   00284|         assert!(
+   00285|             !session.advance("turn_1", None),
+   00286|             "an advance names its stage"
+   00287|         );
+   00288|         assert!(session.advance("turn_1", Some(0)));
+   00289|         assert!(!session.advance("turn_1", Some(0)), "stage 0 was advanced");
+   00290|         assert!(session.advance("turn_1", Some(1)));
+   00291|         assert!(!held.is_finished(), "held at the last stage");
+   00292|         assert!(session.advance("turn_1", Some(2)));
+   00293|         held.join().expect("the turn completes");
+   00294|     });
+   00295|     let snapshot = session.snapshot(None);
+   00296|     assert_eq!(
+   00297|         kinds(&snapshot),
+   00298|         [
+   00299|             "stage_paused:0",
+   00300|             "stage_advanced:0",
+   00301|             "stage_paused:1",
+   00302|             "stage_advanced:1",
+   00303|             "stage_paused:2",
+   00304|             "stage_advanced:2",
+   00305|             "turn_released:2",
+   00306|         ]
+   00307|     );
+   00308|     let three_stage_diagram = [
+   00309|         "flowchart TD",
+   00310|         "    s0[\"0 impulse\"]",
+   00311|         "    s1[\"1 compute\"]",
+   00312|         "    s2[\"2 deformalize\"]",
+   00313|         "    s0 --> s1",
+   00314|         "    s1 --> s2",
+   00315|         "    classDef current stroke-width:4px",
+   00316|         "    class s1 current",
+   00317|     ]
+   00318|     .join("\n");
+   00319|     // No route: no method. The JavaScript `calculation` event has one
+   00320|     // appender, so it is the emitter; the Rust one has several and none is
+   00321|     // reached from the solver entry, so it records no location.
+   00322|     let mut paused = snapshot["events"][2].clone();
+   00323|     assert_eq!(text(&paused, "js_source"), CALCULATION_EVENTS);
+   00324|     assert_excerpt(
+   00325|         CALCULATION_EVENTS,
+   00326|         paused["js_line"].as_u64().unwrap_or(0),
+   00327|         text(&paused, "js_excerpt"),
+   00328|         "function solverCalculationEvents(",
+   00329|     );
+   00330|     if let Some(fields) = paused.as_object_mut() {
+   00331|         for field in ["js_excerpt", "js_line", "js_source"] {
+   00332|             fields.remove(field);
+   00333|         }
+   00334|     }
+   00335|     assert_eq!(
+   00336|         paused,
+   00337|         json!({
+   00338|             "detail": "4", "id": "debug_event_3", "kind": "stage_paused", "method": "",
+   00339|             "method_js_excerpt": "", "method_js_line": 0, "method_js_source": "",
+   00340|             "method_rust_excerpt": "", "method_rust_line": 0, "method_rust_source": "",
+   00341|             "mermaid": three_stage_diagram,
+   00342|             "rust_excerpt": "", "rust_line": 0, "rust_source": "",
+   00343|             "session": session.id(), "source": "calculation", "stage": 1,
+   00344|             "stages": 3, "step": "compute", "turn": "turn_1",
+   00345|         })
+   00346|     );
+   00347|     assert_eq!(snapshot["events"][6]["reason"], "completed");
+   00348|     assert_eq!(snapshot["next"], 7);
+   00349|     assert_eq!(
+   00350|         session.snapshot(Some(6))["events"],
+   00351|         json!([snapshot["events"][6].clone()])
+   00352|     );
+   00353|     assert!(!session.advance("turn_1", Some(2)), "a released turn");
+   00354| }
+   00355| 
+   00356| #[test]
+   00357| fn every_stage_carries_the_recipe_diagram_its_own_emitters_and_the_routed_method() {
+   00358|     let session = session();
+   00359|     session.pause();
+   00360|     let stages = routed();
+   00361|     std::thread::scope(|scope| {
+   00362|         let held = scope.spawn(|| session.gate(&stages, &mut || true));
+   00363|         paused_turn(&session);
+   00364|         for stage in 0..3 {
+   00365|             assert!(session.advance("turn_1", Some(stage)));
+   00366|         }
+   00367|         let paused = session.snapshot(None)["paused"][0].clone();
+   00368|         assert_eq!(paused["stage"], 3);
+   00369|         assert_eq!(paused["method"], "arithmetic");
+   00370|         assert_eq!(
+   00371|             paused["mermaid"],
+   00372|             [
+   00373|                 "flowchart TD",
+   00374|                 "    s0[\"0 impulse\"]",
+   00375|                 "    s1[\"1 formalize\"]",
+   00376|                 "    s2[\"2 compute\"]",
+   00377|                 "    s3[\"3 compute_engine\"]",
+   00378|                 "    s4[\"4 deformalize\"]",
+   00379|                 "    s0 --> s1",
+   00380|                 "    s1 --> s2",
+   00381|                 "    s2 -.-> s3",
+   00382|                 "    s2 --> s4",
+   00383|                 "    classDef current stroke-width:4px",
+   00384|                 "    class s3 current",
+   00385|             ]
+   00386|             .join("\n")
+   00387|         );
+   00388|         let rust = text(&paused, "method_rust_source");
+   00389|         let js = text(&paused, "method_js_source");
+   00390|         assert_eq!(rust, "rust/src/solver_dispatch.rs:handle_arithmetic");
+   00391|         assert_eq!(
+   00392|             js,
+   00393|             "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js:tryArithmetic"
+   00394|         );
+   00395|         let excerpt = text(&paused, "method_rust_excerpt");
+   00396|         assert_excerpt(
+   00397|             rust,
+   00398|             paused["method_rust_line"].as_u64().unwrap_or(0),
+   00399|             excerpt,
+   00400|             "fn handle_arithmetic(",
+   00401|         );
+   00402|         assert_eq!(
+   00403|             excerpt.rsplit('\n').next(),
+   00404|             Some("}"),
+   00405|             "runs to the closing brace"
+   00406|         );
+   00407|         assert_excerpt(
+   00408|             js,
+   00409|             paused["method_js_line"].as_u64().unwrap_or(0),
+   00410|             text(&paused, "method_js_excerpt"),
+   00411|             "function tryArithmetic(",
+   00412|         );
+   00413|         session.release(None);
+   00414|         held.join().expect("the release frees the turn");
+   00415|     });
+   00416|     // Each stage names the code that emits it; the highlight moves with it.
+   00417|     let events = session.snapshot(None)["events"].clone();
+   00418|     let paused_events: Vec<&Value> = events
+   00419|         .as_array()
+   00420|         .expect("events")
+   00421|         .iter()
+   00422|         .filter(|event| event["kind"] == "stage_paused")
+   00423|         .collect();
+   00424|     assert_stage_sources(
+   00425|         &paused_events,
+   00426|         &[
+   00427|             ("impulse", SOLVE_ENTRY, EVENT_LOG),
+   00428|             ("formalize", INTENT_RECORD.0, INTENT_RECORD.1),
+   00429|             ("compute", ARITHMETIC, CALCULATION_EVENTS),
+   00430|             ("compute_engine", ARITHMETIC, CALCULATION_EVENTS),
+   00431|         ],
+   00432|     );
+   00433|     let highlighted: Vec<&str> = paused_events
+   00434|         .iter()
+   00435|         .map(|event| text(event, "mermaid").rsplit('\n').next().unwrap_or(""))
+   00436|         .collect();
+   00437|     assert_eq!(
+   00438|         highlighted,
+   00439|         [
+   00440|             "    class s0 current",
+   00441|             "    class s1 current",
+   00442|             "    class s2 current",
+   00443|             "    class s3 current",
+   00444|         ]
+   00445|     );
+   00446|     // A rule-set method resolves to the rule interpreter in both runtimes; a
+   00447|     // route the registry does not know records no method, and a stage whose
+   00448|     // event no function appends records no location at all.
+   00449|     let rule = describe_turn(&[ThinkingStep::new(
+   00450|         0,
+   00451|         "formalize",
+   00452|         "clarification",
+   00453|         "high",
+   00454|         "route",
+   00455|     )]);
+   00456|     let rule_rust = rule.rust.expect("rule interpreter");
+   00457|     let rule_js = rule.js.expect("browser rule handler");
+   00458|     assert_eq!(
+   00459|         format!("{}:{}", rule_rust.path, rule_rust.symbol),
+   00460|         "rust/src/rule_interpreter.rs:run_handler"
+   00461|     );
+   00462|     assert_eq!(
+   00463|         format!("{}:{}", rule_js.path, rule_js.symbol),
+   00464|         "js/worker/formal_ai_worker_handler_rules.js:tryClarification"
+   00465|     );
+   00466|     let unknown = describe_turn(&[ThinkingStep::new(
+   00467|         0,
+   00468|         "formalize",
+   00469|         "greeting",
+   00470|         "high",
+   00471|         "no_such_event",
+   00472|     )]);
+   00473|     assert_eq!(
+   00474|         unknown,
+   00475|         TurnView {
+   00476|             stages: vec![StageView::default()],
+   00477|             ..TurnView::default()
+   00478|         }
+   00479|     );
+   00480|     let quoted = stage_diagram(&[ThinkingStep::new(0, "say \"hi\"", "", "high", "x")], 0);
+   00481|     assert_eq!(
+   00482|         quoted.split('\n').nth(1),
+   00483|         Some("    s0[\"0 say #quot;hi#quot;\"]")
+   00484|     );
+   00485| }
+   00486| 
+   00487| #[test]
+   00488| fn a_turn_begun_before_its_solve_waits_at_its_first_stage_then_resumes() {
+   00489|     let session = session();
+   00490|     let stages = stages();
+   00491|     assert_eq!(
+   00492|         session.begin(&stages[0], &mut || true),
+   00493|         None,
+   00494|         "stepping off never opens a turn"
+   00495|     );
+   00496|     session.pause();
+   00497|     std::thread::scope(|scope| {
+   00498|         let opening = scope.spawn(|| session.begin(&stages[0], &mut || true));
+   00499|         let paused = paused_turn(&session);
+   00500|         assert_eq!(
+   00501|             [
+   00502|                 &paused["turn"],
+   00503|                 &paused["stage"],
+   00504|                 &paused["stages"],
+   00505|                 &paused["step"]
+   00506|             ],
+   00507|             [&json!("turn_1"), &json!(0), &json!(1), &json!("impulse")]
+   00508|         );
+   00509|         assert!(
+   00510|             !opening.is_finished(),
+   00511|             "the solve waits until stage 0 is advanced"
+   00512|         );
+   00513|         assert!(session.advance("turn_1", Some(0)));
+   00514|         let begun = opening.join().expect("the advance lets the solve run");
+   00515|         assert_eq!(begun.as_deref(), Some("turn_1"));
+   00516|         assert_eq!(
+   00517|             session.snapshot(None)["paused"],
+   00518|             json!([]),
+   00519|             "a running solve has no paused stage"
+   00520|         );
+   00521|         assert!(!session.advance("turn_1", Some(0)), "stage 0 was advanced");
+   00522|         assert!(
+   00523|             !session.advance("turn_1", Some(1)),
+   00524|             "stage 1 is not computed yet"
+   00525|         );
+   00526|         let resumed = scope.spawn(|| session.resume("turn_1", &stages, &mut || true));
+   00527|         let paused = paused_turn(&session);
+   00528|         assert_eq!(
+   00529|             [&paused["stage"], &paused["stages"]],
+   00530|             [&json!(1), &json!(3)]
+   00531|         );
+   00532|         assert!(session.advance("turn_1", Some(1)));
+   00533|         assert!(session.advance("turn_1", Some(2)));
+   00534|         resumed.join().expect("the turn completes");
+   00535|     });
+   00536|     let snapshot = session.snapshot(None);
+   00537|     assert_eq!(
+   00538|         kinds(&snapshot),
+   00539|         [
+   00540|             "stage_paused:0",
+   00541|             "stage_advanced:0",
+   00542|             "stage_paused:1",
+   00543|             "stage_advanced:1",
+   00544|             "stage_paused:2",
+   00545|             "stage_advanced:2",
+   00546|             "turn_released:2",
+   00547|         ]
+   00548|     );
+   00549|     assert_eq!(snapshot["events"][6]["reason"], "completed");
+   00550|     // A turn released while its solve runs is not held again.
+   00551|     std::thread::scope(|scope| {
+   00552|         let opening = scope.spawn(|| session.begin(&stages[0], &mut || true));
+   00553|         paused_turn(&session);
+   00554|         assert!(session.advance("turn_2", Some(0)));
+   00555|         let running = opening
+   00556|             .join()
+   00557|             .expect("the solve runs")
+   00558|             .expect("an open turn");
+   00559|         session.release(Some(running.as_str()));
+   00560|         session.resume(&running, &stages, &mut || true);
+   00561|     });
+   00562|     let snapshot = session.snapshot(None);
+   00563|     let events = snapshot["events"].as_array().expect("events");
+   00564|     assert_eq!(
+   00565|         events.last().map(|event| &event["reason"]),
+   00566|         Some(&json!("released"))
+   00567|     );
+   00568|     assert_eq!(snapshot["paused"], json!([]));
+   00569| }
+   00570| 
+   00571| #[test]
+   00572| fn a_disconnect_or_a_release_frees_a_paused_turn() {
+   00573|     let session = session();
+   00574|     session.pause();
+   00575|     let stages = stages();
+   00576|     session.gate(&stages, &mut || false);
+   00577|     let snapshot = session.snapshot(None);
+   00578|     assert_eq!(snapshot["events"][1]["kind"], "turn_released");
+   00579|     assert_eq!(snapshot["events"][1]["reason"], "disconnected");
+   00580|     std::thread::scope(|scope| {
+   00581|         let held = scope.spawn(|| session.gate(&stages, &mut || true));
+   00582|         let paused = paused_turn(&session);
+   00583|         assert_eq!(paused["turn"], "turn_2");
+   00584|         session.release(None);
+   00585|         held.join().expect("the release frees the turn");
+   00586|     });
+   00587|     let snapshot = session.snapshot(None);
+   00588|     assert_eq!(snapshot["stepping"], false);
+   00589|     assert_eq!(snapshot["paused"], json!([]));
+   00590|     assert_eq!(snapshot["events"][3]["reason"], "released");
+   00591| }
+   00592| 
+   00593| #[test]
+   00594| fn debug_requests_answer_the_twin_errors() {
+   00595|     let disabled = handle_debug_request(None, "session", "{}");
+   00596|     assert_eq!(disabled.status_code, 404);
+   00597|     assert_eq!(error_message(&disabled), "debug_session_disabled");
+   00598|     let session = session();
+   00599|     let malformed = handle_debug_request(Some(&session), "session", "{not json");
+   00600|     assert_eq!(malformed.status_code, 400);
+   00601|     assert_eq!(error_message(&malformed), "debug_request_invalid");
+   00602|     for action in ["session", "pause", "advance", "release"] {
+   00603|         let refused = handle_debug_request(Some(&session), action, r#"{"token":"wrong"}"#);
+   00604|         assert_eq!(refused.status_code, 401, "{action}");
+   00605|         assert_eq!(error_message(&refused), "debug_session_token_invalid");
+   00606|     }
+   00607|     let stale = handle_debug_request(
+   00608|         Some(&session),
+   00609|         "advance",
+   00610|         &json!({ "token": TOKEN, "turn": "turn_1", "stage": 0 }).to_string(),
+   00611|     );
+   00612|     assert_eq!(stale.status_code, 409);
+   00613|     assert_eq!(error_message(&stale), "debug_stage_not_paused");
+   00614|     let state = handle_debug_request(
+   00615|         Some(&session),
+   00616|         "pause",
+   00617|         &json!({ "token": TOKEN }).to_string(),
+   00618|     );
+   00619|     assert_eq!(state.status_code, 200);
+   00620|     let body: Value = serde_json::from_str(&state.body).expect("snapshot");
+   00621|     assert_eq!(
+   00622|         body,
+   00623|         json!({
+   00624|             "events": [], "next": 0, "object": "debug.session", "paused": [],
+   00625|             "session": session.id(), "stepping": true,
+   00626|         })
+   00627|     );
+   00628| }
+   00629| 
+   00630| /// The served route, end to end: a chat turn solved inside a connection scope
+   00631| /// is held until its last stage is advanced through `POST /v1/debug/advance`.
+   00632| #[test]
+   00633| fn a_served_chat_turn_answers_only_after_its_last_stage() {
+   00634|     let dir = std::env::temp_dir().join(format!("formal-ai-debug-session-{}", std::process::id()));
+   00635|     let _ = std::fs::remove_dir_all(&dir);
+   00636|     std::fs::create_dir_all(&dir).expect("temp dir");
+   00637|     let memory = dir.join("memory.lino");
+   00638|     let dialogs = dir.join("dialogs");
+   00639|     temp_env::with_vars(
+   00640|         [
+   00641|             ("FORMAL_AI_MEMORY_PATH", Some(memory.as_os_str())),
+   00642|             ("FORMAL_AI_DIALOG_LOG_DIR", Some(dialogs.as_os_str())),
+   00643|             ("FORMAL_AI_RECORD_CHAT", Some(std::ffi::OsStr::new("0"))),
+   00644|             (
+   00645|                 "FORMAL_AI_DEBUG_SESSION_TOKEN",
+   00646|                 Some(std::ffi::OsStr::new(TOKEN)),
+   00647|             ),
+   00648|         ],
+   00649|         || {
+   00650|             let session = enable_debug_session("127.0.0.1").expect("loopback");
+   00651|             let auth = ApiAuthConfig::bearer_token(BEARER);
+   00652|             let bearer = format!("Bearer {BEARER}");
+   00653|             let headers = [("authorization", bearer.as_str())];
+   00654|             let debug = |action: &str, body: &Value| {
+   00655|                 handle_api_request_with_auth(
+   00656|                     "POST",
+   00657|                     &format!("/v1/debug/{action}"),
+   00658|                     &headers,
+   00659|                     &body.to_string(),
+   00660|                     &auth,
+   00661|                 )
+   00662|             };
+   00663|             // The record the turn's answer is persisted under, removed so the
+   00664|             // held turn can be seen not to write it.
+   00665|             let root = std::env::current_dir().expect("working directory");
+   00666|             let record = store_path(&root, &formal_ai::solve("What is 2 + 2?").derivation_id())
+   00667|                 .expect("record path");
+   00668|             let _ = std::fs::remove_file(&record);
+   00669|             assert_eq!(debug("pause", &json!({ "token": TOKEN })).status_code, 200);
+   00670|             let chat = json!({
+   00671|                 "model": "formal-ai",
+   00672|                 "messages": [{ "role": "user", "content": "What is 2 + 2?" }],
+   00673|             })
+   00674|             .to_string();
+   00675|             std::thread::scope(|scope| {
+   00676|                 let answered = scope.spawn(|| {
+   00677|                     with_connection_scope(
+   00678|                         || true,
+   00679|                         || {
+   00680|                             handle_api_request_with_auth(
+   00681|                                 "POST",
+   00682|                                 "/v1/chat/completions",
+   00683|                                 &headers,
+   00684|                                 &chat,
+   00685|                                 &auth,
+   00686|                             )
+   00687|                         },
+   00688|                     )
+   00689|                 });
+   00690|                 // Stage 0 is truly suspended: only the prompt is known, the
+   00691|                 // solver has not run, so nothing is routed yet.
+   00692|                 let mut paused = paused_turn(session);
+   00693|                 assert_eq!(
+   00694|                     [
+   00695|                         &paused["stage"],
+   00696|                         &paused["stages"],
+   00697|                         &paused["step"],
+   00698|                         &paused["method"]
+   00699|                     ],
+   00700|                     [&json!(0), &json!(1), &json!("impulse"), &json!("")]
+   00701|                 );
+   00702|                 let first = json!({ "token": TOKEN, "turn": paused["turn"], "stage": 0 });
+   00703|                 assert_eq!(debug("advance", &first).status_code, 200);
+   00704|                 assert_eq!(debug("advance", &first).status_code, 409);
+   00705|                 // Stages 1.. are revealed from the solved turn, held before it
+   00706|                 // is persisted.
+   00707|                 paused = paused_turn(session);
+   00708|                 let total = paused["stages"].as_u64().expect("stage count");
+   00709|                 assert_eq!(total, TWO_PLUS_TWO.len() as u64);
+   00710|                 assert_eq!(paused["method"], "arithmetic");
+   00711|                 assert_eq!(
+   00712|                     paused["method_rust_source"],
+   00713|                     "rust/src/solver_dispatch.rs:handle_arithmetic"
+   00714|                 );
+   00715|                 for stage in 1..total {
+   00716|                     assert_eq!(paused["stage"], stage);
+   00717|                     assert!(!answered.is_finished(), "held before stage {stage}");
+   00718|                     assert!(
+   00719|                         !record.exists(),
+   00720|                         "not persisted while stage {stage} is held"
+   00721|                     );
+   00722|                     assert!(
+   00723|                         paused["mermaid"]
+   00724|                             .as_str()
+   00725|                             .is_some_and(|mermaid| mermaid
+   00726|                                 .ends_with(&format!("\n    class s{stage} current"))),
+   00727|                         "stage {stage} is highlighted"
+   00728|                     );
+   00729|                     let request = json!({ "token": TOKEN, "turn": paused["turn"], "stage": stage });
+   00730|                     let advanced = debug("advance", &request);
+   00731|                     assert_eq!(advanced.status_code, 200);
+   00732|                     let repeated = debug("advance", &request);
+   00733|                     assert_eq!(repeated.status_code, 409, "a stage is never advanced twice");
+   00734|                     if stage + 1 < total {
+   00735|                         let body: Value = serde_json::from_str(&advanced.body).expect("snapshot");
+   00736|                         paused = body["paused"][0].clone();
+   00737|                     }
+   00738|                 }
+   00739|                 // Stepping off before the join: a second solve inside the same
+   00740|                 // request (a restated standing requirement) is never held.
+   00741|                 let released = debug("release", &json!({ "token": TOKEN }));
+   00742|                 let state: Value = serde_json::from_str(&released.body).expect("snapshot");
+   00743|                 assert_eq!(state["stepping"], false);
+   00744|                 let response = answered.join().expect("the turn answers");
+   00745|                 assert_eq!(response.status_code, 200);
+   00746|                 let body: Value = serde_json::from_str(&response.body).expect("completion");
+   00747|                 let content = body["choices"][0]["message"]["content"]
+   00748|                     .as_str()
+   00749|                     .unwrap_or("");
+   00750|                 assert!(content.contains('4'));
+   00751|                 assert_eq!(
+   00752|                     store_path(&root, &answer_derivation_id(content)).as_ref(),
+   00753|                     Some(&record),
+   00754|                     "the served answer is the one whose record was removed"
+   00755|                 );
+   00756|                 assert!(record.exists(), "the release persists the record");
+   00757|             });
+   00758|             let state = debug("session", &json!({ "token": TOKEN }));
+   00759|             let snapshot: Value = serde_json::from_str(&state.body).expect("snapshot");
+   00760|             let advanced: Vec<&Value> = snapshot["events"]
+   00761|                 .as_array()
+   00762|                 .expect("events")
+   00763|                 .iter()
+   00764|                 .filter(|event| event["kind"] == "stage_advanced")
+   00765|                 .collect();
+   00766|             assert_stage_sources(&advanced, &TWO_PLUS_TWO);
+   00767|             let counts: Vec<u64> = advanced
+   00768|                 .iter()
+   00769|                 .map(|event| event["stages"].as_u64().unwrap_or(0))
+   00770|                 .collect();
+   00771|             let mut expected = vec![TWO_PLUS_TWO.len() as u64; TWO_PLUS_TWO.len()];
+   00772|             expected[0] = 1;
+   00773|             assert_eq!(
+   00774|                 counts, expected,
+   00775|                 "stage 0 was paused before the turn was solved"
+   00776|             );
+   00777|         },
+   00778|     );
+   00779|     let _ = std::fs::remove_dir_all(&dir);
+   00780| }
+   00781| 
+   
+   (End of file - total 781 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/specification/debug_session.rs","file_path":"rust/tests/unit/specification/debug_session.rs","new":"let rejected_advance = handle_debug_request(","newString":"let rejected_advance = handle_debug_request(","new_str":"let rejected_advance = handle_debug_request(","new_string":"let rejected_advance = handle_debug_request(","old":"let stale = handle_debug_request(","oldString":"let stale = handle_debug_request(","old_str":"let stale = handle_debug_request(","old_string":"let stale = handle_debug_request(","path":"rust/tests/unit/specification/debug_session.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/specification/debug_session.rs"}
+   076b6a68b6148f9ea2a1b944ebd188faa3e13938869451f63d2d3b4e52f26cb0  rust/tests/unit/specification/debug_session.rs
+   
+== answer ==
+Replaced `let stale = handle_debug_request(` with `let rejected_advance = handle_debug_request(` in `rust/tests/unit/specification/debug_session.rs` and observed the result.

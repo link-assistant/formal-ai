@@ -1,0 +1,130 @@
+language en
+lemma picks
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the person or thing chosen or selected"
+    examples ("he was my pick for mayor")
+    id oewn-05798247-n
+    partOfSpeech n
+    synonyms (choice pick selection)
+  entry
+    definition "the quantity of a crop that is harvested"
+    examples ("he sent the first picking of berries to the market" "it was the biggest peach pick in years")
+    id oewn-13781698-n
+    partOfSpeech n
+    synonyms (picking pick)
+  entry
+    definition "the best people or things in a group"
+    examples ("the cream of England's young men were killed in the Great War")
+    id oewn-08403766-n
+    partOfSpeech n
+    synonyms (cream pick)
+  entry
+    definition "the yarn woven across the warp yarn in weaving"
+    id oewn-04606292-n
+    partOfSpeech n
+    synonyms (woof weft filling pick)
+  entry
+    definition "a small thin device (of metal or plastic or ivory) used to pluck a stringed instrument"
+    id oewn-03935898-n
+    partOfSpeech n
+    synonyms (pick plectrum plectron)
+  entry
+    definition "a thin sharp implement used for removing unwanted material"
+    examples ("he used a pick to clean the dirt out of the cracks")
+    id oewn-03935681-n
+    partOfSpeech n
+    synonyms (pick)
+  entry
+    definition "a heavy iron tool with a wooden handle and a curved head that is pointed on both ends"
+    examples ("they used picks and sledges to break the rocks")
+    id oewn-03935440-n
+    partOfSpeech n
+    synonyms (pick pickax pickaxe)
+  entry
+    definition "a basketball maneuver; obstructing an opponent with one's body"
+    examples ("he was called for setting an illegal pick")
+    id oewn-00564702-n
+    partOfSpeech n
+    synonyms (pick)
+  entry
+    definition "the act of choosing or selecting"
+    examples ("your choice of colors was unfortunate" "you can take your pick")
+    id oewn-00162063-n
+    partOfSpeech n
+    synonyms (choice selection option pick)
+  entry
+    definition "select carefully from a group"
+    examples ("She finally picked her successor" "He picked his way carefully")
+    id oewn-00678369-v
+    partOfSpeech v
+    synonyms (pick)
+  entry
+    definition "look for and gather"
+    examples ("pick mushrooms" "pick flowers")
+    id oewn-01384737-v
+    partOfSpeech v
+    synonyms (pick pluck cull)
+  entry
+    definition "harass with constant criticism"
+    examples ("Don't always pick on your little brother")
+    id oewn-00844451-v
+    partOfSpeech v
+    synonyms (blame "find fault" pick)
+  entry
+    definition "provoke"
+    examples ("pick a fight or a quarrel")
+    id oewn-01650673-v
+    partOfSpeech v
+    synonyms (pick)
+  entry
+    definition "remove in small bits"
+    examples ("pick meat from a bone")
+    id oewn-00178216-v
+    partOfSpeech v
+    synonyms (pick)
+  entry
+    definition "remove unwanted substances from, such as feathers or pits"
+    examples ("Clean the turkey")
+    id oewn-00177724-v
+    partOfSpeech v
+    synonyms (clean pick)
+  entry
+    definition "pilfer or rob"
+    examples ("pick pockets")
+    id oewn-02326628-v
+    partOfSpeech v
+    synonyms (pick)
+  entry
+    definition "pay for something"
+    examples ("pick up the tab" "pick up the burden of high-interest mortgages" "foot the bill")
+    id oewn-02292054-v
+    partOfSpeech v
+    synonyms (foot pick)
+  entry
+    definition "pull lightly but sharply with a plucking motion"
+    examples ("he plucked the strings of his mandolin")
+    id oewn-01455157-v
+    partOfSpeech v
+    synonyms (pluck plunk pick)
+  entry
+    definition "attack with or as if with a pickaxe of ice or rocky ground, for example"
+    examples ("Pick open the ice")
+    id oewn-01445197-v
+    partOfSpeech v
+    synonyms (pick "break up")
+  entry
+    definition "hit lightly with a picking motion"
+    id oewn-01246038-v
+    partOfSpeech v
+    synonyms (peck pick beak)
+  entry
+    definition "eat intermittently; take small bites of"
+    examples ("He pieced at the sandwich all morning" "She never eats a full meal — she just nibbles")
+    id oewn-01176591-v
+    partOfSpeech v
+    synonyms (nibble pick piece)
+source "oewn:2024"

@@ -1,0 +1,260 @@
+language en
+lemma hold
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the act of grasping"
+    examples ("he released his clasp on my arm" "he has a strong grip for an old man" "she kept a firm hold on the railing")
+    id oewn-00814187-n
+    partOfSpeech n
+    synonyms (clasp clench clutch clutches grasp grip)
+  entry
+    definition "understanding of the nature or meaning or quality or magnitude of something"
+    examples ("he has a good grasp of accounting practices")
+    id oewn-05814631-n
+    partOfSpeech n
+    synonyms (appreciation grasp)
+  entry
+    definition "power by which something or someone is affected or dominated"
+    examples ("he has a hold over them")
+    id oewn-05204500-n
+    partOfSpeech n
+  entry
+    definition "time during which some action is awaited"
+    examples ("instant replay caused too long a delay" "he ordered a hold in the action")
+    id oewn-15297015-n
+    partOfSpeech n
+    synonyms (delay "time lag" postponement wait)
+  entry
+    definition "a state of being confined (usually for a short time)"
+    examples ("his detention was politically motivated" "the prisoner is on hold" "he is in the custody of police")
+    id oewn-14023148-n
+    partOfSpeech n
+    synonyms (detention detainment custody)
+  entry
+    definition "a stronghold"
+    id oewn-03530552-n
+    partOfSpeech n
+  entry
+    definition "a cell in a jail or prison"
+    id oewn-03530432-n
+    partOfSpeech n
+    synonyms (keep)
+  entry
+    definition "the appendage to an object that is designed to be held in order to use or move it"
+    examples ("he grabbed the hammer by the handle" "it was an old briefcase but it still had a good grip")
+    id oewn-03491080-n
+    partOfSpeech n
+    synonyms (handle grip handgrip)
+  entry
+    definition "the space in a ship or aircraft for storing cargo"
+    id oewn-02968086-n
+    partOfSpeech n
+    synonyms ("cargo area" "cargo deck" "cargo hold" "storage area")
+  entry
+    definition "cause to continue in a certain state, position, or activity"
+    examples ("hold in place" "She always held herself as a lady" "The students keep me on my toes")
+    id oewn-02687605-v
+    partOfSpeech v
+    synonyms (keep maintain)
+  entry
+    definition "have or hold in one's hands or grip"
+    examples ("Hold this bowl for a moment, please")
+    id oewn-01219234-v
+    partOfSpeech v
+  entry
+    definition "organize or be responsible for"
+    examples ("hold a reception" "have, throw, or make a party" "give a course")
+    id oewn-01737358-v
+    partOfSpeech v
+    synonyms (throw have make give)
+  entry
+    definition "have or possess, either in a concrete or an abstract sense"
+    examples ("She has $1,000 in the bank" "He has got two beautiful daughters" "She holds a Master's degree from Harvard" "I have two years left" "I don't have any money left" "They have two more years before they retire")
+    id oewn-02208144-v
+    partOfSpeech v
+    synonyms (have "have got")
+  entry
+    definition "keep in mind or convey as a conviction or view"
+    examples ("take for granted" "view as important" "hold these truths to be self-evident" "I hold him personally responsible")
+    id oewn-00695546-v
+    partOfSpeech v
+    synonyms (deem "view as" "take for")
+  entry
+    definition "maintain (a theory, thoughts, or feelings)"
+    examples ("bear a grudge" "entertain interesting notions" "harbor a resentment")
+    id oewn-01777051-v
+    partOfSpeech v
+    synonyms (harbor harbour entertain nurse bear)
+  entry
+    definition "to close within bounds, or otherwise limit or deprive of free movement"
+    examples ("This holds the local until the express passengers change trains" "About a dozen animals were held inside the stockade" "The illegal immigrants were held at a detention center" "The terrorists held the journalists for ransom")
+    id oewn-01304044-v
+    partOfSpeech v
+    synonyms (restrain confine constrain)
+  entry
+    definition "secure and keep for possible future use or application"
+    examples ("The landlord retained the security deposit" "I reserve the right to disagree")
+    id oewn-02288169-v
+    partOfSpeech v
+    synonyms (retain "keep back" "hold back")
+  entry
+    definition "have rightfully; of rights, titles, and offices"
+    examples ("She bears the title of Duchess" "He held the governorship for almost a decade")
+    id oewn-02307200-v
+    partOfSpeech v
+    synonyms (bear)
+  entry
+    definition "be the physical support of; carry the weight of"
+    examples ("The beam holds up the roof" "He supported me with one hand while I balanced on the beam" "What's holding that mirror?")
+    id oewn-01219607-v
+    partOfSpeech v
+    synonyms (support sustain "hold up")
+  entry
+    definition "contain or hold; have within"
+    examples ("The jar carries wine" "The canteen holds fresh water" "This can contains water")
+    id oewn-02706727-v
+    partOfSpeech v
+    synonyms (bear carry contain)
+  entry
+    definition "have room for; hold without crowding"
+    examples ("This hotel can accommodate 250 guests" "The theater admits 300 people" "The auditorium can't hold more than 500 people")
+    id oewn-02738673-v
+    partOfSpeech v
+    synonyms (accommodate admit)
+  entry
+    definition "remain in a certain state, position, or condition"
+    examples ("The weather held" "They held on the road and kept marching")
+    id oewn-02689312-v
+    partOfSpeech v
+  entry
+    definition "support or hold in a certain manner"
+    examples ("She holds her head high" "He carried himself upright")
+    id oewn-01604155-v
+    partOfSpeech v
+    synonyms (carry bear)
+  entry
+    definition "be valid, applicable, or true"
+    examples ("This theory still holds")
+    id oewn-02654604-v
+    partOfSpeech v
+    synonyms (prevail obtain)
+  entry
+    definition "assert or affirm"
+    examples ("Rousseau's philosophy holds that people are inherently good")
+    id oewn-00685690-v
+    partOfSpeech v
+  entry
+    definition "have as a major characteristic"
+    examples ("The novel holds many surprises" "The book holds in store much valuable advise")
+    id oewn-02752150-v
+    partOfSpeech v
+  entry
+    definition "be capable of holding or containing"
+    examples ("This box won't take all the items" "The flask holds one gallon")
+    id oewn-02707070-v
+    partOfSpeech v
+    synonyms (contain take)
+  entry
+    definition "arrange for and reserve (something for someone else) in advance"
+    examples ("reserve me a seat on a flight" "The agent booked tickets to the show for the whole family" "please hold a table at Maxim's")
+    id oewn-02503969-v
+    partOfSpeech v
+    synonyms (reserve book)
+  entry
+    definition "protect against a challenge or attack"
+    examples ("Hold that position behind the trees!" "Hold the bridge against the enemy's attacks")
+    id oewn-01132302-v
+    partOfSpeech v
+    synonyms (defend guard)
+  entry
+    definition "bind by an obligation; cause to be indebted"
+    examples ("He's held by a contract" "I'll hold you by your promise")
+    id oewn-00886738-v
+    partOfSpeech v
+    synonyms (oblige bind obligate)
+  entry
+    definition "hold the attention of"
+    examples ("The soprano held the audience" "This story held our interest" "She can hold an audience spellbound")
+    id oewn-00738591-v
+    partOfSpeech v
+  entry
+    definition "remain committed to"
+    examples ("I hold to these ideas")
+    id oewn-00608395-v
+    partOfSpeech v
+  entry
+    definition "resist or confront with resistance"
+    examples ("The politician defied public opinion" "The new material withstands even the greatest wear and tear" "The bridge held")
+    id oewn-02712676-v
+    partOfSpeech v
+    synonyms (defy withstand "hold up")
+  entry
+    definition "be pertinent or relevant or applicable"
+    examples ("The same laws apply to you!" "This theory holds for all irrational numbers" "The same rules go for everyone")
+    id oewn-02682599-v
+    partOfSpeech v
+    synonyms (apply "go for")
+  entry
+    definition "stop dealing with"
+    examples ("hold all calls to the President's office while he is in a meeting")
+    id oewn-02649658-v
+    partOfSpeech v
+  entry
+    definition "lessen the intensity of; temper; hold in restraint; hold or keep within limits"
+    examples ("moderate your alcohol intake" "hold your tongue" "hold your temper" "control your anger")
+    id oewn-02516039-v
+    partOfSpeech v
+    synonyms (control "hold in" contain check curb moderate)
+  entry
+    definition "keep from departing"
+    examples ("Hold the taxi" "Hold the horse")
+    id oewn-02456020-v
+    partOfSpeech v
+  entry
+    definition "take and maintain control over, often by violent means"
+    examples ("The dissatisfied students held the President's office for almost a week")
+    id oewn-02446762-v
+    partOfSpeech v
+  entry
+    definition "cause to come to an abrupt stop"
+    examples ("Halt the engines" "Arrest the progress" "halt the presses")
+    id oewn-01863572-v
+    partOfSpeech v
+    synonyms (halt arrest)
+  entry
+    definition "cover as for protection against noise or smell"
+    examples ("She held her ears when the jackhammer started to operate" "hold one's nose")
+    id oewn-01337426-v
+    partOfSpeech v
+  entry
+    definition "drink alcohol without showing ill effects"
+    examples ("He can hold his liquor" "he had drunk more than he could carry")
+    id oewn-01207773-v
+    partOfSpeech v
+    synonyms (carry)
+  entry
+    definition "aim, point, or direct"
+    examples ("Hold the fire extinguisher directly on the flames")
+    id oewn-01154219-v
+    partOfSpeech v
+  entry
+    definition "declare to be"
+    examples ("She was declared incompetent" "judge held that the defendant was innocent")
+    id oewn-00824028-v
+    partOfSpeech v
+    synonyms (declare adjudge)
+  entry
+    definition "be in accord; be in agreement"
+    examples ("We agreed on the terms of the settlement" "I can't agree with you!" "I hold with those who say life is sacred" "Both philosophers concord on this point")
+    id oewn-00807038-v
+    partOfSpeech v
+    synonyms (agree concur concord)
+  entry
+    definition "keep from exhaling or expelling"
+    examples ("hold your breath")
+    id oewn-00004492-v
+    partOfSpeech v
+source "oewn:2024"

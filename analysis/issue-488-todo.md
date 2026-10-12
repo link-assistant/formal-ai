@@ -85,7 +85,7 @@ The concreteness exists in the data but is destroyed at projection + render time
 - [x] Update the case study in `docs/case-studies/issue-488` with the new design (R13).
 - [x] Add a `changelog.d/` fragment and bump the package version for release.
 - [x] Update/extend tests: source mirror tests, `openai_compatibility.rs`,
-      e2e `issue-488.spec.js`; add concreteness assertions (e.g. compute summary
+      e2e `visible-thinking-preview.spec.js`; add concreteness assertions (e.g. compute summary
       contains the computed result) (R5).
 - [x] Run full local verification (fmt, clippy, cargo test, e2e checks, file-size).
 - [x] Merge latest default branch, refresh PR description, `gh pr ready 489`.

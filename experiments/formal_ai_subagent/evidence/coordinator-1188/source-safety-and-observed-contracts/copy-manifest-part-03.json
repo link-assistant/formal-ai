@@ -1,0 +1,602 @@
+[
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2910-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2910-prompt-txt.json",
+    "bytes": 8959,
+    "sha256": "cf4f086b6dcb4495e4f9683858e249c9c426691668e5f7fad4118bf7dc297b2c"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2910-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2910-request-json.json",
+    "bytes": 9328,
+    "sha256": "fff5a91a645eb7fac85321ec8aec9cff809d33a45c0097bb281f4dbf2f6c8f27"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2911-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2911-log.json",
+    "bytes": 5779,
+    "sha256": "ef87d08bce769823c5e81451b59e96bcd7300d7e575be188c2f7af79b134baa7"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2911-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2911-observation-json.json",
+    "bytes": 239,
+    "sha256": "9e207702d4b258b13ccc8a0bdae7cae7aed982040d69b706807760f36a046278"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2911-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2911-prompt-txt.json",
+    "bytes": 210,
+    "sha256": "457485a9bbdc111ebef66e9fa48307ab7c400767eccf693ac33ef93138cd707c"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2911-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2911-request-json.json",
+    "bytes": 337,
+    "sha256": "6bd4ed2692c8da8a47b64f435531e0cead635da4579b86d74df4ed3f18408ed7"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2912-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2912-byte-check-json.json",
+    "bytes": 268,
+    "sha256": "d5b018c19c8433154fe5963879532674b147d5a42289f5c2e74594ba68ef5889"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2912-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2912-log.json",
+    "bytes": 100035,
+    "sha256": "b26e31c7305c7163ce484e79e864a4f1cb87359be9c2e0e910e1e6a5c88a8723"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2912-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2912-observation-json.json",
+    "bytes": 270,
+    "sha256": "b42f4bd5a660694698e288abf4d7ef0d60e8412526db4d6baf9c09687c669f0b"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2912-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2912-prompt-txt.json",
+    "bytes": 11467,
+    "sha256": "7cf1b4c752b430c5efb97b7e9d393157a6fc8b35a53bada0eb10e42bf37c4764"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2912-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2912-request-json.json",
+    "bytes": 11707,
+    "sha256": "0d166785714881259aeb88f33aca3944e4701b1ddf8755bcab9390ffa2f6289d"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2913-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2913-byte-check-json.json",
+    "bytes": 273,
+    "sha256": "c5fc88224231ab6484c18354b34196ab0167f7aaffbca2251d31fbd8a9b706d4"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2913-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2913-log.json",
+    "bytes": 83315,
+    "sha256": "bcb639817cec671048afdeca920029605bfe6320eaab9653b1115643313a6995"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2913-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2913-observation-json.json",
+    "bytes": 270,
+    "sha256": "1d00c6f71885bef9dc441ed29a36a0313d10951de19eed151389e6009fa55908"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2913-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2913-prompt-txt.json",
+    "bytes": 9488,
+    "sha256": "5e45f91061b4af20efc7f38e4ace02ec795ae00d6174360226685a601efde4ae"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2913-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2913-request-json.json",
+    "bytes": 9874,
+    "sha256": "2110704ccf8eaefaad435d7f15374b4cf579c816a8e8950a8a501e604b942c71"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2914-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2914-log.json",
+    "bytes": 6206,
+    "sha256": "e65691b0246c7c2934906ea0537eaa7a95b303e86a4d9258f7cf177ffeb32bb4"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2914-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2914-observation-json.json",
+    "bytes": 239,
+    "sha256": "13c9f44625c30822a6f754ba50fa2470c9526c5aefa4421b2bbb94529c910e3d"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2914-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2914-prompt-txt.json",
+    "bytes": 210,
+    "sha256": "57e07bd716e928225cf4d1ecc4bd0139f569050c83e732ae0f602c6f5db1b738"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2914-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2914-request-json.json",
+    "bytes": 337,
+    "sha256": "ffafd35fc7da9ac1aeca0f9c1f6a7063e4f503c7f71d44bb72f5f13fa8b620ea"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2915-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2915-byte-check-json.json",
+    "bytes": 271,
+    "sha256": "6a4c1bf7cd168b589693102efec8c920ae54f65ef2128ae0703b9e8ed6797d00"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2915-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2915-log.json",
+    "bytes": 29409,
+    "sha256": "d99f1eb3b796d0e0a6f56b7286ce22bfdea11ee165f14ea787e4877146b01afc"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2915-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2915-observation-json.json",
+    "bytes": 270,
+    "sha256": "95294464c623bdaf143c2f90b0834f71a466ff15850fb7f2bac74e220215a281"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2915-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2915-prompt-txt.json",
+    "bytes": 3308,
+    "sha256": "5b387aeac2dc39f123831f4973484a046135d38c9773d58df91816255705dbe6"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2915-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2915-request-json.json",
+    "bytes": 3454,
+    "sha256": "64504e63ca916c7909d53a2d63ccc5f0d2c09d0059d54443c5f31667645aea35"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2916-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2916-log.json",
+    "bytes": 15211,
+    "sha256": "6242295e6253af027909bd166f168cf7425c3ac2de70d8855e6a11ca8b52da16"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2916-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2916-observation-json.json",
+    "bytes": 239,
+    "sha256": "5906af35dc73433cb2b81b0c4c427116a00c22601eefcb2cd91ce7ac8b9d4d0e"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2916-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2916-prompt-txt.json",
+    "bytes": 201,
+    "sha256": "6fffbb189b7b3828edad6b2cb4b68ff233071926aca065cb49b30cc76ca354cf"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2916-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2916-request-json.json",
+    "bytes": 328,
+    "sha256": "ede89cc6295c8f2827bf69fbe235f10473673db604c851dea01351c005d86932"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2917-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2917-log.json",
+    "bytes": 277,
+    "sha256": "e841038ab0b71d61775001f3fdbb464a41c987b9c3f5cd0a642450c127615335"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2917-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2917-observation-json.json",
+    "bytes": 221,
+    "sha256": "04212772898a82b3acced2a0dbc5f7f2c4cee40d09e999621a9a51ef226b7175"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2917-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2917-prompt-txt.json",
+    "bytes": 581,
+    "sha256": "155c953cb790a97c01e9b527d2eada054178ba2e37633aa431d256dd2e3a8770"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2917-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2917-request-json.json",
+    "bytes": 708,
+    "sha256": "cee0bf6f3590e9a9f3fa5a650400101fd8fcfc2ebb8f393f0d767e1748cb2545"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2918-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2918-log.json",
+    "bytes": 73884,
+    "sha256": "eb5babe51a82402c04c4d1655d6fea5aa70cceaf7537d31b80dac344aac2b338"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2918-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2918-observation-json.json",
+    "bytes": 239,
+    "sha256": "5ce459e3025347b110166b04e484e073e39bb7941f849a7ab0badc607b4d8781"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2918-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2918-prompt-txt.json",
+    "bytes": 199,
+    "sha256": "e1eca0479f45b5888a9d27135a8875ae8890d572e5010ddce86bd2faf7147d9b"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2918-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2918-request-json.json",
+    "bytes": 326,
+    "sha256": "8464e5dcc87f65a9e04638f8482cc9581db689eb05d836802eec3079ef495dcf"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2919-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2919-log.json",
+    "bytes": 1128,
+    "sha256": "349a764dbb6caa6e2fb1964d4bf01eb0b9a46385c9a3897b08e2c10e8ef50007"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2919-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2919-observation-json.json",
+    "bytes": 254,
+    "sha256": "21ded7e7a5d07d8bbb559e2ba405b8d8f4a8baf7135d5b727fb7d19d5c75f95c"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2919-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2919-prompt-txt.json",
+    "bytes": 783,
+    "sha256": "c1763483f6d2656fb21ea03d9aabbe626aa26df23d26d5cd2563b425e85970a3"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/T2919-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/T2919-request-json.json",
+    "bytes": 910,
+    "sha256": "19e5b6c4da61ceb488cac84c49a2feaf6698a548cc7a3be2472e0962b56ea725"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/ledger-rows.md",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/ledger-rows.md",
+    "bytes": 1887,
+    "sha256": "d5a1581aa4b2daa760916ffb9a793814813cecab030c776bc4c6b6286d0c3f0a"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/scratch-spec-reader-primitives-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/scratch-spec-reader-primitives-mjs.json",
+    "bytes": 20040,
+    "sha256": "164d4f24c8ade13626c0834c0e19ecc3d087eee6790b67e27aac4fefacf01953"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/scratch-typed-spec-candidate-inventory-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/scratch-typed-spec-candidate-inventory-json.json",
+    "bytes": 1447316,
+    "sha256": "0374b93d2cba1d54ce69ad757f673f30a70f4430f5630f84c25f68b23bc2a1b3"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/scratch-typed-spec-inventory-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/scratch-typed-spec-inventory-mjs.json",
+    "bytes": 3231,
+    "sha256": "d5c4335642c5a6a80de2c245e17838d093a88b20fb5948985a76ac016d68c689"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/scratch-typed-spec-reader-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/scratch-typed-spec-reader-mjs.json",
+    "bytes": 11390,
+    "sha256": "663f13d4f209082913621c53ccf2c8bcd7e2071a0a3592a503d749fbfbe573ef"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/scratch-typed-spec-reader-test-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/scratch-typed-spec-reader-test-mjs.json",
+    "bytes": 9411,
+    "sha256": "453aa6db9d94c79ca6214528032878833f6a925174f2091fc8ff69b36a828b86"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-js-agentic-crate-engine-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-js-agentic-crate-engine-mjs.json",
+    "bytes": 3039,
+    "sha256": "e4396419be6fc6affa031285d5fee64f1ea490159731023afe833307d56be348"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-js-agentic-crate-engine_stable_identifier-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-js-agentic-crate-engine_stable_identifier-mjs.json",
+    "bytes": 2079,
+    "sha256": "82817d75f22abf2bdc9e9adbd1b6b432bfdcf96e6365544042fbe582f7cb3c79"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-js-agentic-crate-event_log-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-js-agentic-crate-event_log-mjs.json",
+    "bytes": 8772,
+    "sha256": "3ada909ee01794ae8c60185c8c2fc37f3143a39f751b3c6b18ff4d255d30ff70"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-js-agentic-crate-links_format-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-js-agentic-crate-links_format-mjs.json",
+    "bytes": 3965,
+    "sha256": "07c2bfa8bcd0c5e411ca1b9e198a7200c651bd708095b5482cd7fd6596ae5622"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-js-agentic-crate-skill_compiler-mjs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-js-agentic-crate-skill_compiler-mjs.json",
+    "bytes": 1951,
+    "sha256": "05db3cc4b4f500691d90413d38c16543207565af58396981106cadb683dc50fa"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-rust-src-skill_compiler-rs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-rust-src-skill_compiler-rs.json",
+    "bytes": 32837,
+    "sha256": "aab2f6196d29d4bfce0e577920e5d39849745a8470ccddf35c7bb70aa181ecab"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-rust-src-skill_compiler-structured-rs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-rust-src-skill_compiler-structured-rs.json",
+    "bytes": 18197,
+    "sha256": "b252a8f37c06aef737bc305d7c218bc4792a7acbb7583fb8e765f1c9467aee51"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-rust-src-solver_handlers-behavior_rules-rs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-rust-src-solver_handlers-behavior_rules-rs.json",
+    "bytes": 16789,
+    "sha256": "3bb595652e2f246b2fc08679f3fe377b236514f21c5be14d72bff14b00a3f0b9"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-rust-tests-unit-specification-behavior_rules-rs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-rust-tests-unit-specification-behavior_rules-rs.json",
+    "bytes": 36583,
+    "sha256": "3922a70d9a44f01a654be9a524c918de662a14c19bd227bb7b0baee203991b36"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/source-rust-tests-unit-specification-natural_language_skill_compilation-rs.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/source-rust-tests-unit-specification-natural_language_skill_compilation-rs.json",
+    "bytes": 8233,
+    "sha256": "69685c022a83e4a8e59a6b2bca758115c4b5116d2666f7f2a7aabe22ce917ac7"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet/summary.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/evidence-packet/summary.json",
+    "bytes": 17832,
+    "sha256": "389682b9c92547005183b0915d5f63578202ca699c95db110ba35785b7fca893"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2920-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2920-log.json",
+    "bytes": 714,
+    "sha256": "c512b2cbac97590e2098827e1fb8b929dbd14a1a569fcaef310b8ab1440b705b"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2920-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2920-observation-json.json",
+    "bytes": 239,
+    "sha256": "c1ed15dc6a55cadc9e1f45406699567436416c2695bb6cf6781ad68827e95ca5"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2920-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2920-prompt-txt.json",
+    "bytes": 233,
+    "sha256": "48caf2b3aaee19373f04c25ee509b7844dee5ed1aaf5e8d67ff5da36bc8c953e"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2920-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2920-request-json.json",
+    "bytes": 360,
+    "sha256": "58215207530732e9e5e8e6ddd0d7782f29259937f42299defa012ccf1e501d67"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2921-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2921-byte-check-json.json",
+    "bytes": 275,
+    "sha256": "79d6d025acf862d4a82b1466c2a7d45447eeb70d32004409db1f703dcccde04a"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2921-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2921-log.json",
+    "bytes": 60139,
+    "sha256": "78c353dae894d3e5a0b3add8e8f993b4d16748e0ce71aff6e9fe0550ff0dc176"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2921-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2921-observation-json.json",
+    "bytes": 270,
+    "sha256": "d16dc42a06eaed781686598fa58443dda42567b987cc95143791d88486c3c85c"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2921-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2921-prompt-txt.json",
+    "bytes": 6818,
+    "sha256": "706af58ff99fab04cb71f7117d6e848f8998f9fc29f784804098fdc1b4d7309c"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2921-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2921-request-json.json",
+    "bytes": 7033,
+    "sha256": "62462ed8f6ca9bb9a5049c825b496d827e6ec22052a97c902803ba3d1ffd84f3"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2922-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2922-byte-check-json.json",
+    "bytes": 280,
+    "sha256": "0febb5910691d2a5ebc8e783de7adb1360164864f067e788f18659d0a55007f3"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2922-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2922-log.json",
+    "bytes": 76719,
+    "sha256": "bcb64adaf7c8eb6dde8bf034f17ef2a4f622ed4ca1dfbcbb969e74cd6e88ae9b"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2922-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2922-observation-json.json",
+    "bytes": 270,
+    "sha256": "00ab03354ed0b6302cdf395b2c286827eb6657e7d689a637367227b9eb1117df"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2922-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2922-prompt-txt.json",
+    "bytes": 8719,
+    "sha256": "2787e632dd64e5822026f90e4c45ebde281534334641a860a263ab9af0042ae8"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2922-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2922-request-json.json",
+    "bytes": 8962,
+    "sha256": "e5797b54ba4caae5614a63e1bb17816617611af0996c8338b3ce71ec86024c62"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2923-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2923-log.json",
+    "bytes": 8845,
+    "sha256": "8618e95c6c196948337210fb2204418e9f153b25c3b3d00fca39953615854fc3"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2923-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2923-observation-json.json",
+    "bytes": 239,
+    "sha256": "bdb4df1680c34a3facf3322bccb48f49ff0caa4fdf94a32e83c3f266aa327d88"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2923-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2923-prompt-txt.json",
+    "bytes": 217,
+    "sha256": "71d1506e2a097c717361d3d95457d77deeae19515e9a0c42dfde239ea0a52bce"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2923-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2923-request-json.json",
+    "bytes": 344,
+    "sha256": "75224abf64f21e541bf99cc3ff14c2f54a2989d36d84dcee97e1373d94527746"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2924-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2924-byte-check-json.json",
+    "bytes": 280,
+    "sha256": "9c4700f4ca49a5f2b3fb9ce3f7ea06b0cccd3cd602cb734c9c3a7d0b6f879f01"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2924-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2924-log.json",
+    "bytes": 76655,
+    "sha256": "ec452f5ece186b46de636a9bbcb3b035e05970152aeabe9035ff333b8282408c"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2924-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2924-observation-json.json",
+    "bytes": 270,
+    "sha256": "5a77eaf8aefa717bec9caff4b2d6e345742c8e59fe3b5b39f27d537320d674ea"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2924-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2924-prompt-txt.json",
+    "bytes": 8711,
+    "sha256": "51481ba9194d023f839f38049064884e23c3c265cab77fc4b60df78618fd0041"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2924-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2924-request-json.json",
+    "bytes": 8954,
+    "sha256": "c2a7a9c6f8cc1495a1f1648fa6f75e2b414d04963f26d0a734bb50d75c1b05d4"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2925-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2925-log.json",
+    "bytes": 10885,
+    "sha256": "715786d07b3bba3db7ff82e48fb87aa1843437af60f7c302da111f0e7888b9b1"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2925-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2925-observation-json.json",
+    "bytes": 239,
+    "sha256": "fb0ea51f6907d025bbc6764a47559f2393eaf694ecab992e9aab90186ae9561f"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2925-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2925-prompt-txt.json",
+    "bytes": 244,
+    "sha256": "012da8260de30d2ec453e09781bb6c371e15058db9da02776ace79b763b84c81"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2925-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2925-request-json.json",
+    "bytes": 371,
+    "sha256": "f9d59675faadc5d1a55d45c29e23da6dda1e85f0e2aa2f8ac2e2dbe03954509d"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2926-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2926-byte-check-json.json",
+    "bytes": 280,
+    "sha256": "7184d4cac8bd7b847383a824590b51347d60910b724a4d30f8bbd9ada9a454d6"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2926-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2926-log.json",
+    "bytes": 22561,
+    "sha256": "a6ccbf075e2ecee60358786bb45591dc3964450ef4845c9ed363020aa6d603a8"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2926-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2926-observation-json.json",
+    "bytes": 270,
+    "sha256": "e70f65df20626e7433f41f82d94a2ad5166346ed2535926d3476d0c0a4b99c3e"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2926-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2926-prompt-txt.json",
+    "bytes": 2397,
+    "sha256": "ef331b2cbb196e08bfb60eac162f450449c83134b537aa61d711d18e7a318cc1"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2926-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2926-request-json.json",
+    "bytes": 2571,
+    "sha256": "52cf3a9caafb06e20dfe895607bed0b55a63c492606e82fbbb9981007f3d4497"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2927-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2927-byte-check-json.json",
+    "bytes": 280,
+    "sha256": "9d3071800842fd43df5ff987c9f809f3fe0209113745d95c834d4bad2a794695"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2927-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2927-log.json",
+    "bytes": 98777,
+    "sha256": "a5c32f0e1ec7ae398842137de2649a0d18736ecd792df13746188caff7fd77c9"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2927-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2927-observation-json.json",
+    "bytes": 270,
+    "sha256": "35d665098a77f4089c8bfbf9ed7a647a509afc45cf3ba9fc05c586467225d741"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2927-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2927-prompt-txt.json",
+    "bytes": 11350,
+    "sha256": "bbda39f1138eacaf70b6b24a544695e010c0e5077c1229777a9a1b153f437fb4"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2927-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2927-request-json.json",
+    "bytes": 11609,
+    "sha256": "da8362ee075b90fa36f0fa6c488ceb6e65c601a59d19db63dcd256692d27f83f"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2928-log.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2928-log.json",
+    "bytes": 11981,
+    "sha256": "e6419b78a6781e205272af5499c1237509abb8e41b5ec475ae716f9c7f566808"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2928-observation-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2928-observation-json.json",
+    "bytes": 239,
+    "sha256": "7d9352e6fbd08b6fc10ed7719fcba37bba42907c0a5fa6d485a9dfddf0950768"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2928-prompt-txt.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2928-prompt-txt.json",
+    "bytes": 244,
+    "sha256": "ba05909a8721abc75a06c8d27504d8849c589f4ab7b53412a373c694b620b8e0"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2928-request-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2928-request-json.json",
+    "bytes": 371,
+    "sha256": "5c53a4d25310857122940e9e4a74ef9a4106abf4fc3c060876636cd068121a82"
+  },
+  {
+    "from": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-evidence-packet/T2929-byte-check-json.json",
+    "to": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/typed-reader-and-compiled-skill-scratch/compiled-skill-evidence-packet/T2929-byte-check-json.json",
+    "bytes": 278,
+    "sha256": "d1f8bba0a67bad224af3d294de4ada38ae51b20fac29e6fee6aed2955383cfe4"
+  }
+]

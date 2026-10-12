@@ -1,0 +1,31 @@
+{
+  "lemma": "acre",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08873717-n",
+      "partOfSpeech": "n",
+      "definition": "a state in western Brazil bordering on Bolivia and Peru"
+    },
+    {
+      "id": "oewn-13635023-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of area (4840 square yards) used in English-speaking countries"
+    },
+    {
+      "id": "oewn-08811162-n",
+      "partOfSpeech": "n",
+      "definition": "a town and port in northwestern Israel in the eastern Mediterranean",
+      "synonyms": [
+        "Akko",
+        "Akka",
+        "Accho"
+      ]
+    }
+  ]
+}

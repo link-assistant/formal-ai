@@ -1,0 +1,83 @@
+>> read {"filePath":"rust/tests/web/worker-native-handler-parity.test.mjs","file_path":"rust/tests/web/worker-native-handler-parity.test.mjs","path":"rust/tests/web/worker-native-handler-parity.test.mjs"}
+   <file>
+   00001| import assert from 'node:assert/strict';
+   00002| import { test } from 'node:test';
+   00003| import { readFileSync } from 'node:fs';
+   00004| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00005| import { specificationCases, testFunctions, tokenize } from '../../../scripts/lib/rust-specification-cases.mjs';
+   00006| import { typedProgramOf, executeTypedProgram } from '../../../scripts/lib/rust-specification-programs.mjs';
+   00007| 
+   00008| const root = new URL('../../../', import.meta.url).pathname;
+   00009| const originals = [
+   00010|   ['rust/tests/unit/specification/code_generation/follow_up.rs', 'english_follow_up_modification_emits_substitution_plan_trace', 4, 4],
+   00011|   ['rust/tests/unit/specification/natural_language_access.rs', 'natural_language_code_execution_gate_is_stable_across_supported_language_contexts', 3, 12],
+   00012|   ['rust/tests/unit/specification/pronoun_topic_follow_up.rs', 'pronoun_followup_resolves_prior_rust_topic_for_creator_question', 6, 6],
+   00013| ];
+   00014| for (const [file, name, macros, executions] of originals) {
+   00015|   test('whole original native assertion program: ' + name, async () => {
+   00016|     const source = readFileSync(root + file, 'utf8');
+   00017|     const native = testFunctions(tokenize(source)).find(item => item.name === name);
+   00018|     assert.ok(native);
+   00019|     const parsed = typedProgramOf(native.body, { source, file: root + file, root });
+   00020|     assert.ok(parsed.program, parsed.reason);
+   00021|     assert.equal(parsed.program.nativeAssertions, macros);
+   00022|     const result = await executeTypedProgram(new WorkerHost(), parsed.program);
+   00023|     assert.equal(result.status, 'passed', result.failure);
+   00024|     assert.equal(result.assertions, executions);
+   00025|     assert.equal(result.nativeAssertions, macros);
+   00026|     assert.ok(specificationCases(root).cases.find(item => item.id === file + '::' + name)?.program);
+   00027|     const final = result.observations.at(-1).answer;
+   00028|     if (name.includes('substitution')) {
+   00029|       const event = final.solver_events.find(item => item.kind === 'write_program_plan');
+   00030|       assert.ok(event?.payload.includes('list_files_arg'));
+   00031|     } else if (name.includes('execution_gate')) {
+   00032|       for (const observation of result.observations) {
+   00033|         const events = observation.answer.solver_events.filter(item => item.kind === 'policy:agent_mode_required_for_tools');
+   00034|         assert.equal(events.length, 1);
+   00035|         assert.equal(events[0].payload, 'tool:javascript_execution');
+   00036|       }
+   00037|     } else {
+   00038|       assert.ok(final.solver_events.some(item => item.kind === 'coreference:resolved' && item.payload === 'it=Rust'));
+   00039|       assert.ok(final.solver_events.some(item => item.kind === 'coreference:rewrite' && item.payload === 'who created rust'));
+   00040|       assert.ok(final.solver_events.some(item => item.kind === 'wikidata' && item.payload === 'Q575650'));
+   00041|     }
+   00042|   });
+   00043| }
+   00044| 
+   00045| test('loaded seeded pronoun contexts survive terminal punctuation and Unicode boundaries', async () => {
+   00046|   const host = new WorkerHost();
+   00047|   const cases = [
+   00048|     ['Who created it?', 'it'], ['Compare it.', 'it'], ['Ask about results!', 'results'],
+   00049|     ['Explain the program?', 'program'], ['Объясни результаты?', 'результаты'],
+   00050|     ['Объясни программу.', 'программа'], ['इन परिणामों?', 'परिणाम'],
+   00051|     ['यह प्रोग्राम?', 'प्रोग्राम'], ['解释结果。', '结果'], ['解释程序？', '程序'],
+   00052|   ];
+   00053|   for (const [prompt, token] of cases) {
+   00054|     const actual = await host.run('matchingCoreferencePronoun(normalizePrompt(__contextPrompt))?.token ?? null', { __contextPrompt: prompt });
+   00055|     assert.equal(actual, token, prompt);
+   00056|   }
+   00057|   for (const prompt of ['Who created with?', 'Explain programming?', 'xрезультатыx', 'xपरिणामोंx', 'itself']) {
+   00058|     const actual = await host.run('matchingCoreferencePronoun(normalizePrompt(__contextPrompt))?.token ?? null', { __contextPrompt: prompt });
+   00059|     assert.equal(actual, null, prompt);
+   00060|   }
+   00061| });
+   00062| 
+   00063| test('actual matching seed is required before any coreference event is recorded', async () => {
+   00064|   const host = new WorkerHost();
+   00065|   const first = await host.solve('What is Rust?');
+   00066|   const history = [{ role: 'user', content: 'What is Rust?' }, { role: 'assistant', content: first.content }];
+   00067|   const answer = await host.solve('Who created with?', history);
+   00068|   assert.ok(!answer.solver_events.some(item => item.kind.startsWith('coreference:')));
+   00069| });
+   00070| 
+   
+   (End of file - total 70 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/worker-native-handler-parity.test.mjs","file_path":"rust/tests/web/worker-native-handler-parity.test.mjs","new":"assert.ok(Array.isArray(answer.solverEvents));\n  assert.ok(!answer.solverEvents.some(item => item.kind.startsWith('coreference:')));","newString":"assert.ok(Array.isArray(answer.solverEvents));\n  assert.ok(!answer.solverEvents.some(item => item.kind.startsWith('coreference:')));","new_str":"assert.ok(Array.isArray(answer.solverEvents));\n  assert.ok(!answer.solverEvents.some(item => item.kind.startsWith('coreference:')));","new_string":"assert.ok(Array.isArray(answer.solverEvents));\n  assert.ok(!answer.solverEvents.some(item => item.kind.startsWith('coreference:')));","old":"assert.ok(!answer.solver_events.some(item => item.kind.startsWith('coreference:')));","oldString":"assert.ok(!answer.solver_events.some(item => item.kind.startsWith('coreference:')));","old_str":"assert.ok(!answer.solver_events.some(item => item.kind.startsWith('coreference:')));","old_string":"assert.ok(!answer.solver_events.some(item => item.kind.startsWith('coreference:')));","path":"rust/tests/web/worker-native-handler-parity.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/worker-native-handler-parity.test.mjs"}
+   Output: 91c96b9b3f86f99a4201918c4394a8110c88fa26271622b3455b7b53a5ade859  rust/tests/web/worker-native-handler-parity.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `assert.ok(!answer.solver_events.some(item => item.kind.startsWith('coreference:')));` with `assert.ok(Array.isArray(answer.solverEvents));
+  assert.ok(!answer.solverEvents.some(item => item.kind.startsWith('coreference:')));` in `rust/tests/web/worker-native-handler-parity.test.mjs` and observed the result.

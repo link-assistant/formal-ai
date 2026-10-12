@@ -1,0 +1,22 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/build-reader-ledger.mjs"}
+   Output: {"taskRange":"T2906-T2932","taskCount":27,"physicalCallsIncludingThisFaithfulBash":51,"physicalWriteEditCalls":12,"faithfulArchivalBashTasks":["T2920","T2931","T2932"],"ledger":"/private/tmp/spec-recurrence-1188/typed-reader-next/ledger-T2906-T2932.md","productionSourceMutations":0}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/build-reader-ledger.mjs` command completed. Output:
+
+```json
+{
+  "faithfulArchivalBashTasks": [
+    "T2920",
+    "T2931",
+    "T2932"
+  ],
+  "ledger": "/private/tmp/spec-recurrence-1188/typed-reader-next/ledger-T2906-T2932.md",
+  "physicalCallsIncludingThisFaithfulBash": 51,
+  "physicalWriteEditCalls": 12,
+  "productionSourceMutations": 0,
+  "taskCount": 27,
+  "taskRange": "T2906-T2932"
+}
+```

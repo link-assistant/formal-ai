@@ -1,0 +1,21 @@
+view
+  id M-4753faa1790b
+  lemma procedure
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a particular course of action intended to achieve a result"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a process or series of acts especially of a practical or mechanical nature involved in a particular form of work"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a set sequence of steps, part of larger computer program"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a mode of conducting legal and parliamentary proceedings"
+    provenance (wordnet)

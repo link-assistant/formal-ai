@@ -251,7 +251,7 @@ test_unit_memory_maintenance
 test_unit_docs_requirements
   record_type "meta_test"
   suite "docs_requirements_issue_540"
-  test_file "tests/unit/docs_requirements/issue_540.rs"
+  test_file "tests/unit/docs_requirements/dreaming_memory_maintenance.rs"
   pins "Issue #540 requirements, README, ARCHITECTURE, and case-study documents stay traceable to the dreaming planner. The file moved here from tests/unit/docs_requirements_issue_540.rs when the docs_* gate ecosystem was collapsed to five entries (issue #1089, plan 11 L76)."
 test_unit_issue_705_anticipation
   record_type "meta_test"

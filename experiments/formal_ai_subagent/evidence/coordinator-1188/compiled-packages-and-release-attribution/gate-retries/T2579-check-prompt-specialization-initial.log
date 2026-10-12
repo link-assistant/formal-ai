@@ -1,0 +1,3 @@
+$ node scripts/check-prompt-specialization.mjs
+test prompts held verbatim in code: 6 (ceiling 0)
+::error file=data/meta/prompt-specialization-ratchet.lino::6 new test prompt(s) held verbatim in code: answer the class through seed data instead of the one prompt (R1188-U1). Run with --list.

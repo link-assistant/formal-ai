@@ -1,0 +1,1407 @@
+# Response-template intents of the handlers issue #918 (R914-6) moved from
+# compiled prose to seed responses. Each record names one `intent` key a
+# multilingual-responses-*.lino file carries response records for, so the
+# closure audit resolves the key to an authored definition rather than an
+# open reference. The shape follows the localized_response_template records
+# of data/seed/meanings-response-intents.lino.
+meanings
+  numeric_list_intro_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that sorts the list in ascending order"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that sorts the numbers 3, 1, 2 in ascending order:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_reverse_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that sorts the list in descending order"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is JavaScript code that sorts the numbers 5, 2, 9 in descending order:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_reverse
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that reverses the given order of the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Go code that reverses the numbers 1, 2, 3:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_sum
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that sums the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that sums the numbers 1, 2, 3:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_product
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that multiplies the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that multiplies the numbers 2, 3, 4:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_minimum
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that finds the smallest item of the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that finds the smallest of the numbers 7, 3, 9:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_intro_maximum
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list request asks for code that finds the largest item of the list"
+    effect "the answer introduces the generated program with its language and the list as given"
+    unit "not applicable"
+    example "Here is Python code that finds the largest of the numbers 4, 8, 2:"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_result_label
+    defined-by answer
+    role localized_response_template
+    precondition "a numeric-list answer shows the computed result"
+    effect "the answer labels the result line"
+    unit "not applicable"
+    example "Result: 1, 2, 3"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_noun_strings
+    defined-by answer
+    role localized_response_template
+    precondition "an English numeric-list answer works on a list of strings"
+    effect "the intro names the items as strings"
+    unit "not applicable"
+    example "strings"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  numeric_list_noun_numbers
+    defined-by answer
+    role localized_response_template
+    precondition "an English numeric-list answer works on a list of numbers"
+    effect "the intro names the items as numbers"
+    unit "not applicable"
+    example "numbers"
+    grounding "data/seed/multilingual-responses-numeric-list.lino"
+  meta_explanation_architecture
+    defined-by answer
+    role localized_response_template
+    precondition "a prompt asks how the assistant itself is built, addressing it and naming an architecture concept"
+    effect "the answer says it is not an LLM runtime and names the current surface, its runtime, memory and web-search notes"
+    unit "not applicable"
+    example "I am not an LLM runtime and I do not perform neural inference."
+    grounding "data/seed/multilingual-responses-capabilities.lino"
+  algorithm_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for a sorting algorithm or names an algorithm without a test"
+    effect "the answer lays out the seeded snippet of the found language with its execution status"
+    unit "not applicable"
+    example "Here is a reviewable sorting algorithm in rust:"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_with_tests
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for a sorting algorithm with a test"
+    effect "the answer lays out the seeded snippet and its test with the execution status"
+    unit "not applicable"
+    example "Here is a reviewable sorting algorithm in python with a test:"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_code_python
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the python sorting snippet"
+    effect "the snippet is the python function that returns the values in ascending order"
+    unit "not applicable"
+    example "sort"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_tests_python
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the python test of its sorting snippet"
+    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in python"
+    unit "not applicable"
+    example "test_sort_ascending"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_code_rust
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the rust sorting snippet"
+    effect "the snippet is the rust function that returns the values in ascending order"
+    unit "not applicable"
+    example "sort"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_tests_rust
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the rust test of its sorting snippet"
+    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in rust"
+    unit "not applicable"
+    example "test_sort_ascending"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_code_javascript
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the javascript sorting snippet"
+    effect "the snippet is the javascript function that returns the values in ascending order"
+    unit "not applicable"
+    example "sort"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_tests_javascript
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the javascript test of its sorting snippet"
+    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in javascript"
+    unit "not applicable"
+    example "test_sort_ascending"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_code_typescript
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the typescript sorting snippet"
+    effect "the snippet is the typescript function that returns the values in ascending order"
+    unit "not applicable"
+    example "sort"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_tests_typescript
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the typescript test of its sorting snippet"
+    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in typescript"
+    unit "not applicable"
+    example "test_sort_ascending"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  document_generation_plan_format
+    defined-by answer
+    role localized_response_template
+    precondition "a document plan names the format the request asked for"
+    effect "the plan's opening sentence carries the requested format label"
+    unit "not applicable"
+    example " in PDF format"
+    grounding "data/seed/multilingual-responses-documents.lino"
+  document_format_conversion
+    defined-by answer
+    role localized_response_template
+    precondition "a document conversion answer opens with the engine, the source, the target and the supported formats"
+    effect "the answer names the conversion engine and both formats before the converted output"
+    unit "not applicable"
+    example "Source: Markdown; target: HTML."
+    grounding "data/seed/multilingual-responses-documents.lino"
+  document_format_conversion_native_concepts
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion answer lists the target's native concepts"
+    effect "the answer names the concepts the target format represents natively"
+    unit "not applicable"
+    example "Native target concepts: heading, paragraph."
+    grounding "data/seed/multilingual-responses-documents.lino"
+  document_format_conversion_fallbacks
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion answer introduces the concepts the target lacks"
+    effect "the answer heads the list of concepts that fall back to another form"
+    unit "not applicable"
+    example "Documented target fallbacks:"
+    grounding "data/seed/multilingual-responses-documents.lino"
+  document_format_conversion_fallback
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion answer lists one concept the target lacks"
+    effect "the answer pairs the concept with the form it falls back to"
+    unit "not applicable"
+    example "- emphasis -> plain text"
+    grounding "data/seed/multilingual-responses-documents.lino"
+  document_format_conversion_package
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion answer reports the size of a packaged target"
+    effect "the answer gives the package layer size in bytes"
+    unit "not applicable"
+    example "Package layer: 1024 bytes in the DOCX OPC stored-entry profile."
+    grounding "data/seed/multilingual-responses-documents.lino"
+  calendar_weekday_relation_next
+    defined-by answer
+    role localized_response_template
+    precondition "a weekday question asks for the day after a weekday"
+    effect "the answer names the following weekday and the one-day shift in the seven-day cycle"
+    unit "not applicable"
+    example "The day after Monday is Tuesday."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_relation_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a weekday question asks for the day before a weekday"
+    effect "the answer names the preceding weekday and the one-day shift in the seven-day cycle"
+    unit "not applicable"
+    example "The day before Friday is Thursday."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_current_day
+    defined-by answer
+    role localized_response_template
+    precondition "a question asks which day today is"
+    effect "the answer names today's weekday, its date and the time zone it was read in"
+    unit "not applicable"
+    example "Today is Thursday, 2026-10-08 (UTC)."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_create_event_confirmation
+    defined-by answer
+    role localized_response_template
+    precondition "a request schedules an event"
+    effect "the answer proposes the event with its date, time, zone and duration, an importable ICS file and a calendar link, and asks for confirmation"
+    unit "not applicable"
+    example "Create event «Call» on 2026-10-09."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  document_originality_check_price_claim_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an originality check caught a contradicted price claim"
+    effect "the answer heads the contradicted price claims"
+    unit "not applicable"
+    example "Price claim check"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_recorded
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up exercises the artifact of the active software-project plan"
+    effect "the answer names the follow-up kind and the artifact it records"
+    unit "not applicable"
+    example "Recorded a verification follow-up for the scraper from the active plan."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_heading_meaning
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the answer heads the Links Notation record of the follow-up"
+    unit "not applicable"
+    example "Formalized meaning:"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_heading_reasoning
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the answer heads the reasoning steps behind the record"
+    unit "not applicable"
+    example "Reasoning steps:"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_heading_plan
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the answer heads the verification plan for the artifact"
+    unit "not applicable"
+    example "Verification plan:"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_recognize
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the first reasoning step reads the verb as a follow-up of the plan, not a fact lookup"
+    unit "not applicable"
+    example 'Recognize "test" as a verification request'
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_bind_site
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up names a site to test against"
+    effect "the reasoning step binds the test target behind the network gate"
+    unit "not applicable"
+    example "Bind the test target to wikipedia.org"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_record_output
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up names the output it wants surfaced"
+    effect "the reasoning step records the expected output for the harness"
+    unit "not applicable"
+    example 'Record the expected output as "the top 10 most frequent words"'
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_fixture
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the reasoning step drives the artifact through a fixture first"
+    unit "not applicable"
+    example "Drive the artifact through a deterministic fixture"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_gates
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the reasoning step keeps code execution behind approval gates"
+    unit "not applicable"
+    example "Keep code execution behind approval gates"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_generate
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the plan step generates the artifact core and a fixture-backed harness"
+    unit "not applicable"
+    example "Generate the scraper core plus a deterministic test harness"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_assert
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the plan step asserts each requirement against the fixture"
+    unit "not applicable"
+    example "Assert each requirement against the fixture."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_surface
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up names the output it wants surfaced"
+    effect "the plan step surfaces that output from the fixture run"
+    unit "not applicable"
+    example "Surface the top 10 most frequent words from the fixture run."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_run
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the plan step runs the test command of the implementation language once approved"
+    unit "not applicable"
+    example "Run the python test command"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_promote
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the plan step promotes the run to the live target behind the gates"
+    unit "not applicable"
+    example "Promote the run to live wikipedia.org"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_default_target
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up names no site to test against"
+    effect "the plan names the requested target in place of a site"
+    unit "not applicable"
+    example "the requested target"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_approved
+    defined-by answer
+    role localized_response_template
+    precondition "the active software-project plan is already approved"
+    effect "the answer says the starter already holds the harness and which gates a live run needs"
+    unit "not applicable"
+    example "The plan is approved"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_proposed
+    defined-by answer
+    role localized_response_template
+    precondition "the active software-project plan is not approved yet"
+    effect "the answer asks for plan approval and names the gates a live run needs"
+    unit "not applicable"
+    example "Reply approve plan"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  workspace_search_hits
+    defined-by answer
+    role localized_response_template
+    precondition "a workspace content search for one identifier or literal found matching lines"
+    effect "the answer counts the lines and lists each as file:line with its text"
+    unit "not applicable"
+    example "Found 2 line(s) mentioning `add` in `.`:"
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  workspace_search_none
+    defined-by answer
+    role localized_response_template
+    precondition "a workspace content search for one identifier or literal found no matching line"
+    effect "the answer names the pattern and the searched scope"
+    unit "not applicable"
+    example "No line in `.` mentions `sub`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  function_expectation_holds
+    defined-by answer
+    role localized_response_template
+    precondition "a bug report stated what a function should return and running it at the contract samples gave that value"
+    effect "no defect is reported and the file is left unchanged"
+    unit "not applicable"
+    example "No defect found: `add(2, 3)` in `m.mjs` returned `5`, the expected `5`, so `m.mjs` is unchanged."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  function_expectation_fails
+    defined-by answer
+    role localized_response_template
+    precondition "a bug report stated what a function should return and running it at the contract samples gave another value"
+    effect "the defect is reported as confirmed with both values and the file is left unchanged"
+    unit "not applicable"
+    example "The defect is confirmed: `add(2, 3)` in `m.mjs` returned `5`, but the request expects `6`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  general_change_existing_file_kept
+    defined-by answer
+    role localized_response_template
+    precondition "a literal-file write whose verb does not name a whole-file write found its target already holding content"
+    effect "the file is left unchanged and the refusal names it"
+    unit "not applicable"
+    example "Left `m.mjs` unchanged: it already has content, and the request does not say to replace the whole file."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  general_change_target_unnamed
+    defined-by answer
+    role localized_response_template
+    precondition "a literal-file write targets a path the request names only inside quoted text, never as the file to write"
+    effect "nothing is written and the refusal names the path (PR #1188 G86)"
+    unit "not applicable"
+    example "Did not write `f.md`: the request names it only inside quoted text, not as the file to write, so nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  module_exports_listed
+    defined-by answer
+    role localized_response_template
+    precondition "a question asked which functions a named module exports and its declarations carry an export marker"
+    effect "the answer counts the exported functions and names each"
+    unit "not applicable"
+    example "`src/m.mjs` exports 2 function(s): `add`, `mul`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  module_exports_none
+    defined-by answer
+    role localized_response_template
+    precondition "a question asked which functions a named module exports and no declaration carries an export marker"
+    effect "the answer says the module exports no function"
+    unit "not applicable"
+    example "`src/m.mjs` exports no function."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request_quote_escaped
+    defined-by answer
+    role localized_response_template
+    precondition "a request holds a backslash before a quote that opens or closes a quoted literal"
+    effect "nothing is done and the answer names the escaped quote"
+    unit "not applicable"
+    example "A backslash before a quote in this request (`\'set the contents of note.txt t`) leaves its quoted text unpaired, so I cannot tell the quoted text from the instruction, and nothing was done."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request_quote_unpaired
+    defined-by answer
+    role localized_response_template
+    precondition "a request holds an opening quote that no quoted literal closes"
+    effect "nothing is done and the answer names the unclosed quote"
+    unit "not applicable"
+    example "A quote in this request opens and never closes (`'x with y in f.txt.`), so I cannot tell the quoted text from the instruction, and nothing was done."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request-quote-nested
+    defined-by answer
+    role localized_response_template
+    precondition "a quoted text of a request naming a file closes with a mark followed by a letter, a digit or another quote mark"
+    effect "nothing is done and the answer names the quote that holds its own mark"
+    unit "not applicable"
+    example "A quoted text in this request holds its own quote mark (`'a('x')' with 'b' in f.rs.`), so I cannot tell where it ends, and nothing was done."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request-edit-clause-unplanned
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for several edits and one clause after the first is no replacement of quoted text"
+    effect "nothing is changed and the answer names the clause, rather than making the first edit alone"
+    unit "not applicable"
+    example "This request asks for several edits, and I cannot read `replace C with D` as a replacement of quoted text, so nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request_several_edit_targets
+    defined-by answer
+    role localized_response_template
+    precondition "an edit request names more than one file outside its quotes"
+    effect "nothing is changed and the answer names the files, asking for one edit request per file"
+    unit "not applicable"
+    example "This edit names several files (`p.txt`, `q.txt`), and one edit request changes one file, so nothing was changed. Ask for the edit once for each file."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  file_addition_unquoted
+    defined-by answer
+    role localized_response_template
+    precondition "a request leading with the add verb names a workspace file but quotes no text to add"
+    effect "nothing is changed and the answer asks for the exact text and its place"
+    unit "not applicable"
+    example "What exact text should go into `config.txt`, and where?"
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_text_replaced_unchecked
+    defined-by answer
+    role localized_response_template
+    precondition "an edit tool replaced quoted text and replied with no output and no error"
+    effect "the answer states the replacement without claiming an observation"
+    unit "not applicable"
+    example "Replaced `run();` with `guard(); run();` in `s.mjs`; the edit tool reported no error."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  file_edit_anchor_repeated
+    defined-by answer
+    role localized_response_template
+    precondition "an insert names an anchor line that occurs more than once in the file"
+    effect "nothing is changed and the answer counts the anchor and asks which one"
+    unit "not applicable"
+    example "The line `anchor` occurs 2 times in `g.txt`, so I cannot tell which one places the insert, and nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  file_edit_scope_unapplied
+    defined-by answer
+    role localized_response_template
+    precondition "a replace names a part of the file its old text lies in, and the old text occurs there more than once"
+    effect "nothing is changed and the answer counts the old text and names the part"
+    unit "not applicable"
+    example "`x` occurs 3 times in `languages.rs`, and I cannot tell which of them lie in the row whose slug is rust, so nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  test_assertion_added
+    defined-by answer
+    role localized_response_template
+    precondition "a request adds an assertion of a stated call and value to a named test file that already holds assertions"
+    effect "the assertion is written in the file's own assertion form, the file is run, and the answer states both"
+    unit "not applicable"
+    example "Added `assert.equal(add(2, 2), 4);` to `m.test.mjs` and ran `node --test m.test.mjs`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  test_file_written
+    defined-by answer
+    role localized_response_template
+    precondition "a request writes a test of a stated call and value into a named test file that does not exist yet"
+    effect "the file is written in the language's new-file form around the one assertion, run, and the answer states both"
+    unit "not applicable"
+    example "Wrote `m.test.mjs` with `assert.equal(add(2, 3), 5);` and ran `node --test m.test.mjs`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_texts_replaced
+    defined-by answer
+    role localized_response_template
+    precondition "one sentence asks for several replacements of quoted text in one file"
+    effect "the replacements are made in order, the file's digest is checked, and the answer lists each pair"
+    unit "not applicable"
+    example "Made 3 replacements in `b.lino`, in order: `x` → `y`, `p` → `q`, `m` → `n`; and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_range_moved_end
+    defined-by answer
+    role localized_response_template
+    precondition "numbered lines of one file are moved to the end of another"
+    effect "the range is appended to the destination, then removed from the source, each observed by its digest (PR #1188 G85)"
+    unit "not applicable"
+    example "Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_range_moved_start
+    defined-by answer
+    role localized_response_template
+    precondition "numbered lines of one file are moved to the start of another"
+    effect "the range is placed first in the destination, then removed from the source, each observed by its digest (PR #1188 G85)"
+    unit "not applicable"
+    example "Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_number_moved_end
+    defined-by answer
+    role localized_response_template
+    precondition "one numbered line of a file is moved to the end of another"
+    effect "the line is appended to the destination, then removed from the source, each observed by its digest (PR #1188 G85)"
+    unit "not applicable"
+    example "Moved line 4 of `a.md` to the end of `b.md` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_number_moved_start
+    defined-by answer
+    role localized_response_template
+    precondition "one numbered line of a file is moved to the start of another"
+    effect "the line is placed first in the destination, then removed from the source, each observed by its digest (PR #1188 G85)"
+    unit "not applicable"
+    example "Moved line 4 of `a.md` to the start of `b.md` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_range_outside_file
+    defined-by answer
+    role localized_response_template
+    precondition "a line-range move names lines past the end of its source file"
+    effect "nothing is planned or written and the answer states the file's line count (PR #1188 G85)"
+    unit "not applicable"
+    example "`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_text_not_found
+    defined-by answer
+    role localized_response_template
+    precondition "a replace or removal names text the file does not hold"
+    effect "nothing is planned or written and the answer says the text does not occur (PR #1188 G87)"
+    unit "not applicable"
+    example "`x` does not occur in `f.txt`, so nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_text_already_replaced
+    defined-by answer
+    role localized_response_template
+    precondition "a replace is asked again: the file holds its new text and no longer its old text"
+    effect "nothing is planned or written and the answer says the replacement is already made (PR #1188 G87)"
+    unit "not applicable"
+    example "`f.txt` already holds `y` and no `x`: the replacement is already made, and nothing changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  test_expectation_missing
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks to write a test into a named file and states no expected result"
+    effect "nothing is written or run and the answer asks which call and result the test should check"
+    unit "not applicable"
+    example "What should the test in `test_m.py` check: which call, and what result?"
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  nl_tool_requested_source
+    defined-by answer
+    role localized_response_template
+    precondition "a JavaScript tool call was refused before it ran"
+    effect "the refusal is followed by the source the request asked to run"
+    unit "not applicable"
+    example "Requested source: console.log(2 + 3)"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_javascript_report
+    defined-by answer
+    role localized_response_template
+    precondition "a JavaScript tool call ran in the deterministic subset"
+    effect "the report states the execution status, the tool and its output"
+    unit "not applicable"
+    example "Tool call: javascript_execution"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_calculator_executed
+    defined-by answer
+    role localized_response_template
+    precondition "an explicit calculator tool call was allowed and evaluated"
+    effect "the report states the input expression and the evaluated result"
+    unit "not applicable"
+    example "Tool call: calculator"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_calculator_failed
+    defined-by answer
+    role localized_response_template
+    precondition "an explicit calculator tool call was allowed but the expression did not evaluate"
+    effect "the report states the input expression and the evaluation error"
+    unit "not applicable"
+    example "Execution status: failed."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_web_search_planned
+    defined-by answer
+    role localized_response_template
+    precondition "an explicit web search tool call was allowed"
+    effect "the report states the query and the recorded provider plan without executing it"
+    unit "not applicable"
+    example "Tool call: web_search"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_agent_mode_required
+    defined-by answer
+    role localized_response_template
+    precondition "a natural-language tool call arrived while agent mode is off"
+    effect "the refusal names the capability that needs agent mode"
+    unit "not applicable"
+    example "Execution status: refused."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_package_denied
+    defined-by answer
+    role localized_response_template
+    precondition "a natural-language tool call names a capability no installed package grants"
+    effect "the refusal names the capability, the reason and the package that would grant it"
+    unit "not applicable"
+    example "Execution status: refused."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_local_shell_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "a local shell tool call is permitted but the runtime has no shell executor"
+    effect "the refusal says the shell executor is absent"
+    unit "not applicable"
+    example "Execution status: refused."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_browser_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "a natural-language tool call reaches a browser session that has no executor for that tool"
+    effect "the refusal says the call cannot run here and where it can"
+    unit "not applicable"
+    example "Execution status: refused."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_conversion_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Converted installation instructions for {project}."
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_formalized_meaning_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Formalized meaning:"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_conversion_algorithm
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Conversion algorithm:"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_markdown_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "README.md installation guide:"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_shell_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Bash script:"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_powershell_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "PowerShell script:"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_default_project
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "the project"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_clone
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Clone the repository"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_enter_directory
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Enter the project directory"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_install
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Install dependencies"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_verify
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Run the verification command"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_build
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Build the project"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_start
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Start the application"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_probe
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Verify the installation"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_run_program
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Run {program}"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  installation_step_run_verb
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Run the {program} {verb} step"
+    grounding "data/seed/multilingual-responses-installation.lino"
+  translation_gap_no_source
+    defined-by answer
+    role localized_response_template
+    precondition "a translation request names no phrase to translate"
+    effect "says no source phrase was found"
+    unit "not applicable"
+    example "I could not identify a source phrase to translate from"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_gap_surface
+    defined-by answer
+    role localized_response_template
+    precondition "the translation pipeline finds no target surface for the phrase"
+    effect "reports the translation gap it recorded"
+    unit "not applicable"
+    example "I could not translate"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_program_heading
+    defined-by answer
+    role localized_response_template
+    precondition "a backticked program is translated between programming languages"
+    effect "heads the translated program"
+    unit "not applicable"
+    example "Translated"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_code_gap_comment
+    defined-by answer
+    role localized_response_template
+    precondition "a program meaning has no rendering in the target programming language"
+    effect "comments the gap inside the translated program"
+    unit "not applicable"
+    example "translation gap for"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_clarify_interpretation
+    defined-by answer
+    role localized_response_template
+    precondition "two formalization candidates are too close to choose between"
+    effect "asks which interpretation was meant"
+    unit "not applicable"
+    example "Which interpretation did you mean:"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_clarify_reading
+    defined-by answer
+    role localized_response_template
+    precondition "two close formalization candidates differ only in their predicate"
+    effect "asks which predicate reading was meant"
+    unit "not applicable"
+    example "Should I read"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  requirement-listing-response
+    defined-by answer
+    role localized_response_template
+    precondition "a request carries its own text and asks for the requirements that text states"
+    effect "lists the requirements the text states, one per line, under a localized intro"
+    unit "not applicable"
+    example "Requirements stated in the text:"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  inappropriate-content
+    defined-by answer
+    role localized_response_template
+    precondition "a message holds vulgar or abusive words"
+    effect "asks to keep the conversation respectful"
+    unit "not applicable"
+    example "That message contains inappropriate content."
+    grounding "data/seed/multilingual-responses.lino"
+  bounded-autonomy
+    defined-by answer
+    role localized_response_template
+    precondition "a chat request asks for repeated actions with no end and no agent opt-in"
+    effect "says a chat reply is bounded and open-ended work needs agent mode in a sandbox"
+    unit "not applicable"
+    example "I can only run a bounded chat reply per message."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  add-only-history
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks to forget something the link network holds"
+    effect "says the network only appends and a retraction appends a superseding event"
+    unit "not applicable"
+    example "The link network is append-only."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  cache-flush-requires-confirmation
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks to clear the source cache"
+    effect "asks for an explicit confirmation of the auditable flush"
+    unit "not applicable"
+    example "Flushing the source cache is an auditable action."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  destructive-action-requires-confirmation
+    defined-by answer
+    role localized_response_template
+    precondition "an agent request asks to destroy a repository, a database or a file tree"
+    effect "asks for an explicit human confirmation before the sandboxed action runs"
+    unit "not applicable"
+    example "Destructive agent actions require an explicit human confirmation."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  agent-time-budget
+    defined-by answer
+    role localized_response_template
+    precondition "an agent request asks to run without a time bound"
+    effect "refuses the unbounded loop under the documented time budget"
+    unit "not applicable"
+    example "Agent execution is bounded by a documented time budget."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  agent-action
+    defined-by answer
+    role localized_response_template
+    precondition "a request opts in to agent mode for one message"
+    effect "confirms the opt-in, the isolated sandbox and the action log"
+    unit "not applicable"
+    example "Agent mode is opted in for this message."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  machine
+    defined-by concept
+    role response_audience
+    precondition "a multilingual response row is read by a program (a code template, a log line), not by a person"
+    effect "marks the row with audience machine, so its language owes no translation in the response-language debt"
+    unit "not applicable"
+    example "audience machine"
+    grounding "scripts/generate-response-parity-debt.mjs"
+  behavior_rule_topic_greetings
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the greetings topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Greetings"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_farewells
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the farewells topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Farewells"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_small_talk
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the small_talk topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Small talk"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_identity
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the identity topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Identity"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the assistant_name topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Assistant name"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the capabilities topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Capabilities"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the write_program topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Program templates"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_unknown_fallback
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the unknown_fallback topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Unknown fallback"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_greeting
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in greeting rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Greeting rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_farewell
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in farewell rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Farewell rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_assistant_free_time
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_free_time rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Assistant free-time rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_identity
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in identity rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Identity rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_name rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Assistant name rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in capabilities rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Capabilities rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in write_program rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Write-program rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_unknown
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in unknown rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Unknown fallback rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_greeting
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in greeting rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`Hi`, `Hello`, `Hey`, and multilingual greeting seed phrases"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_farewell
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in farewell rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`bye`, `goodbye`, `poka`, and multilingual farewell seed phrases"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_assistant_free_time
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_free_time rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_identity
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in identity rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`Who are you?`, `Кто ты?`, and equivalent identity prompts"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_name rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`What is your name?`, `Как тебя зовут?`, and equivalent name prompts"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in capabilities rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`What can you do?`, `Что ты умеешь?`, and equivalent capability prompts"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in write_program rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`write_program(language, task)` with languages [{languages}] and tasks [{tasks}]"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_unknown
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in unknown rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "Any prompt that no earlier rule or handler can answer"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_response_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_name rule, whose answer is no single seeded response"
+    effect "the response field describes the answer the rule gives"
+    unit "not applicable"
+    example "Returns the assistant-name answer; browser surfaces can override it from the assistant name setting."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_response_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in capabilities rule, whose answer is no single seeded response"
+    effect "the response field describes the answer the rule gives"
+    unit "not applicable"
+    example "Lists the supported symbolic chat capabilities."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_response_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in write_program rule, whose answer is no single seeded response"
+    effect "the response field describes the answer the rule gives"
+    unit "not applicable"
+    example "Returns a minimal program from the parameterized template catalog."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_greeting
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in greeting rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user says `Hi`, `Hello`, or `Hey` then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_farewell
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in farewell rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user says `bye`, `goodbye`, or `пока` then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_assistant_free_time
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in assistant_free_time rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user asks what I do in free time then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_identity
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in identity rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user asks `Who are you?` or `Кто ты?` then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in assistant_name rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user asks `What is your name?` or `Как тебя зовут?` then respond with the assistant-name answer; if a surface has an assistant-name setting, include that configured name."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in capabilities rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in write_program rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user requests a program with a supported `language` and `task`, resolve those parameters and render the matching template through the single `write_program` intent."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_unknown
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in unknown rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`)."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_intro
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks to list the behavior rules"
+    effect "the answer introduces the rules grouped by topic as When X then Y statements"
+    unit "not applicable"
+    example "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_runtime_heading
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list includes rules taught earlier in this dialog"
+    effect "the answer heads those dialog-local rules with this label"
+    unit "not applicable"
+    example "Dialog-local rules taught in this conversation"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_footer_read
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list ends"
+    effect "the answer shows how to read one rule, with two example commands"
+    unit "not applicable"
+    example "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_footer_teach
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list ends"
+    effect "the answer shows the sentence forms that teach this dialog a rule"
+    unit "not applicable"
+    example "Teach this dialog with: ``When `your prompt` then `your answer` ``. Equivalent forms: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``When `your prompt` do `your answer` ``."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_footer_forms
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list ends"
+    effect "the answer names the rule sentence forms of the other languages"
+    unit "not applicable"
+    example "Multilingual forms: Russian ``Когда `X` тогда `Y` `` / ``Когда `X` делай `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_footer_append
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list ends"
+    effect "the answer says a taught rule is appended and kept by exporting memory"
+    unit "not applicable"
+    example "The write is append-only: export memory to preserve the rule message with the dialog."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_change_hint
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail ends"
+    effect "the answer shows how to change the rule in the current dialog"
+    unit "not applicable"
+    example "To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_runtime_when_then
+    defined-by answer
+    role localized_response_template
+    precondition "a rule taught in this dialog is listed or recorded"
+    effect "the answer states the taught rule as a When X then Y sentence"
+    unit "not applicable"
+    example "When the user says `{trigger}` then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_update_title
+    defined-by answer
+    role localized_response_template
+    precondition "a message teaches this dialog a rule"
+    effect "the answer confirms the rule was compiled for this dialog"
+    unit "not applicable"
+    example "Behavior rule compiled for this dialog."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_update_send_hint
+    defined-by answer
+    role localized_response_template
+    precondition "a message teaches this dialog a rule"
+    effect "the answer invites the trigger now and says how to keep the rule"
+    unit "not applicable"
+    example "Send `{trigger}` now and I will answer with the configured response. Export memory to keep this rule message with the dialog."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_count_summary
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks how many behavior rules there are"
+    effect "the answer states the total with the built-in and dialog-local counts"
+    unit "not applicable"
+    example "Total behavior rules: {total} (built-in: {built_in}; dialog-local: {runtime})."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_count_reasoning
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks how many behavior rules there are"
+    effect "the answer says how the count was made"
+    unit "not applicable"
+    example "Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_brief_groups
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for the behavior-rule list briefly"
+    effect "the answer names the rule groups in one phrase"
+    unit "not applicable"
+    example "greetings, farewells, small talk, identity, assistant name, capabilities, program templates, and the unknown fallback"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_brief
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for the behavior-rule list briefly"
+    effect "the answer states the counts and the rule groups in one sentence"
+    unit "not applicable"
+    example "Briefly: {total} behavior rules ({built_in} built-in, {runtime} dialog-local): {groups}."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+
+  source-qualified-definition
+    defined-by concept
+    role action
+    precondition "a definition request binds its topic and a named source to separate typed operands"
+    effect "only registered enabled providers and verified response bytes can supply source-qualified senses"
+    unit "one source-qualified request"
+    example "retrieve a definition of entropy from a named dictionary"
+    grounding "js/worker/formal_ai_worker_source_qualified_definition.js"
+    lexeme en "definition from a named source"
+    lexeme ru "определение из указанного источника"
+    lexeme hi "नामित स्रोत से परिभाषा"
+    lexeme zh "来自指定来源的定义"
+    lexeme es "definición de una fuente indicada"
+
+  source-qualified-definition-answer
+    defined-by answer
+    role localized_response_template
+    precondition "verified source bytes yield one or more definition senses with source identity and retrieval provenance"
+    effect "the response renders those actual senses and their citation without substituting the provider for the topic"
+    unit "one source-qualified request"
+    example "render verified senses with a source URL and content identity"
+    grounding "js/worker/formal_ai_worker_source_qualified_definition.js"
+    lexeme en "verified source definition answer"
+    lexeme ru "ответ с определением из проверенного источника"
+    lexeme hi "सत्यापित स्रोत की परिभाषा का उत्तर"
+    lexeme zh "经验证来源的定义回答"
+    lexeme es "respuesta de definición de fuente verificada"
+
+  source-qualified-definition-unresolved
+    defined-by answer
+    role localized_response_template
+    precondition "a source-qualified definition lacks an enabled provider, verified capture or usable definition senses"
+    effect "the response records the missing source evidence without inventing a definition or retrieval"
+    unit "one source-qualified request"
+    example "report an unavailable verified source capture"
+    grounding "js/worker/formal_ai_worker_source_qualified_definition.js"
+    lexeme en "unresolved source definition"
+    lexeme ru "неполученное определение из источника"
+    lexeme hi "अप्राप्त स्रोत की परिभाषा"
+    lexeme zh "未解决的来源定义"
+    lexeme es "definición de fuente sin resolver"
+  file-addition-position-unknown
+    defined-by answer
+    role localized_response_template
+    precondition "A source-owned additive literal names a target and exact payload but no single insertion position is owned, or start and end positions conflict."
+    effect "No tool or file effect occurs. The localized response asks for exactly one insertion position while retaining the target and payload obligation."
+    unit "not applicable"
+    example "Add file note.txt containing hello asks for the insertion position without changing existing bytes."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino::intent file-addition-position-unknown"
+    source "js/agentic/literal_addition.mjs::planLiteralAdditionStep"
+    source "rust/src/agentic_coding/literal_addition.rs::plan_literal_addition_step"
+  file-addition-unverified
+    defined-by answer
+    role localized_response_template
+    precondition "An additive literal has an owned target, payload and position, but declared Read and replacement Write capabilities or complete bound source observations do not establish the requested addition."
+    effect "The localized response states that the addition cannot be verified from available complete source reads and declared tools. It claims no observation or successful change that did not occur."
+    unit "not applicable"
+    example "An opaque or foreign-path prior Read does not authorize treating unknown existing source as empty."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino::intent file-addition-unverified"
+    source "js/agentic/literal_addition.mjs::planLiteralAdditionStep"
+    source "rust/src/agentic_coding/literal_addition.rs::plan_literal_addition_step"
+  opaque-label
+    defined-by source-context-opaque-label-contract
+    role source-context-opaque-label-contract
+    precondition "The loaded source-context grammar completely owns the informational introducer, one Unicode label and terminal punctuation. Paths, quotes, operation cues, attribution, conjunctions and unconsumed prose refuse this classification."
+    effect "Only the label is informational context. It grants no operation, source, safety or publication authority, and all following action and immutable Need spans remain independent."
+    unit "not applicable"
+    example "Note Saffron61. is informational context; a quoted or operation-bearing sentence is not an opaque label."
+    grounding "data/seed/source-context-grammar.lino::annotation opaque-label"
+    source "js/agentic/planner/owned_goals.mjs::sourceContextLabel"
+    source "rust/src/agentic_coding/general_planner/owned_goals.rs::source_context_label"

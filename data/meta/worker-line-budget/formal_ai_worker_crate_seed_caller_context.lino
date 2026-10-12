@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_seed_caller_context.js"
+  ceiling 108
+  rationale "Exact classic-worker projection of js/agentic/crate/seed_caller_context.mjs; no headroom beyond current faithful generated source."

@@ -1,0 +1,134 @@
+{
+  "lemma": "collapse",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14089685-n",
+      "partOfSpeech": "n",
+      "definition": "an abrupt failure of function or complete physical exhaustion",
+      "examples": [
+        "the commander's prostration demoralized his men"
+      ],
+      "synonyms": [
+        "prostration"
+      ]
+    },
+    {
+      "id": "oewn-07375728-n",
+      "partOfSpeech": "n",
+      "definition": "a natural event caused by something suddenly falling down or caving in",
+      "examples": [
+        "the roof is in danger of collapse",
+        "the collapse of the old star under its own gravity"
+      ]
+    },
+    {
+      "id": "oewn-00328336-n",
+      "partOfSpeech": "n",
+      "definition": "the act of throwing yourself down; collapse; sink",
+      "examples": [
+        "he landed on the bed with a great flop"
+      ],
+      "synonyms": [
+        "flop"
+      ]
+    },
+    {
+      "id": "oewn-07493085-n",
+      "partOfSpeech": "n",
+      "definition": "a sudden large decline of business or the prices of stocks (especially one that causes additional failures)",
+      "synonyms": [
+        "crash"
+      ]
+    },
+    {
+      "id": "oewn-01993067-v",
+      "partOfSpeech": "v",
+      "definition": "break down, literally or metaphorically",
+      "examples": [
+        "The wall collapsed",
+        "The business collapsed",
+        "The dam broke",
+        "The roof collapsed",
+        "The wall gave in",
+        "The roof finally gave under the weight of the ice"
+      ],
+      "synonyms": [
+        "fall in",
+        "cave in",
+        "give",
+        "give way",
+        "break",
+        "founder"
+      ]
+    },
+    {
+      "id": "oewn-00030640-v",
+      "partOfSpeech": "v",
+      "definition": "collapse due to fatigue, an illness, or a sudden attack",
+      "synonyms": [
+        "break down"
+      ]
+    },
+    {
+      "id": "oewn-02087744-v",
+      "partOfSpeech": "v",
+      "definition": "fold or close up",
+      "examples": [
+        "fold up your umbrella",
+        "collapse the music stand"
+      ]
+    },
+    {
+      "id": "oewn-02045722-v",
+      "partOfSpeech": "v",
+      "definition": "fall apart",
+      "examples": [
+        "the building crumbled after the explosion",
+        "Negotiations broke down"
+      ],
+      "synonyms": [
+        "crumble",
+        "crumple",
+        "tumble",
+        "break down"
+      ]
+    },
+    {
+      "id": "oewn-01993576-v",
+      "partOfSpeech": "v",
+      "definition": "cause to burst",
+      "examples": [
+        "The ice broke the pipe"
+      ],
+      "synonyms": [
+        "burst"
+      ]
+    },
+    {
+      "id": "oewn-01789398-v",
+      "partOfSpeech": "v",
+      "definition": "suffer a nervous breakdown",
+      "synonyms": [
+        "crack up",
+        "crack",
+        "crock up",
+        "break up"
+      ]
+    },
+    {
+      "id": "oewn-00224886-v",
+      "partOfSpeech": "v",
+      "definition": "lose significance, effectiveness, or value",
+      "examples": [
+        "The school system is collapsing",
+        "The stock market collapsed"
+      ]
+    }
+  ]
+}

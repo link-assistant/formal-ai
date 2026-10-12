@@ -1,0 +1,48 @@
+// Curated project descriptions and local HTTP projection (R1188-U29).
+// Mirrors describe_project in rust/src/summarization/mod.rs and
+// try_curated_http_fetch in rust/src/solver_handlers/curated_project_fetch.rs.
+// Statements, localized surfaces and response text all come from seed records;
+// summary modes and ordering come from the shared formalization pipeline.
+
+function describeProjectRecord(project, language, mode = "short") {
+  const summary = crateModule("crate/summarization.mjs");
+  const config = summary.withMode(summary.withLanguage(summary.defaultConfig(), language), mode);
+  const statements = projectStatementsFor(project, language).map(summary.statementFromSeed);
+  return summary.deformalize(summary.summarize(statements, config));
+}
+
+function projectSummaryResponse(intent, language, values) {
+  const template = crateModule("crate/seed.mjs").localizedResponse(intent, language);
+  if (template === null) return null;
+  return handlerRulesFillOnce(template, values);
+}
+
+function curatedProjectForHttpUrl(url) {
+  // The native registry matcher uses literal URL segments, not repository
+  // reference cleanup: a .git suffix, query or encoded name is not stripped.
+  const match = String(url).toLowerCase().match(/^https?:\/\/github\.com\/([^/]+)\/([^/]+)(?:\/|$)/);
+  if (!match) return null;
+  return PROJECTS.find((project) =>
+    String(project.org).toLowerCase() === match[1] &&
+    String(project.name).toLowerCase() === match[2]) || null;
+}
+
+function tryCuratedProjectFetch(prompt, url) {
+  const project = curatedProjectForHttpUrl(url);
+  if (!project) return null;
+  const language = detectLanguage(prompt);
+  const content = projectSummaryResponse("http_fetch_curated_project", language, {
+    url, summary: describeProjectRecord(project, language, "standard"),
+  });
+  if (content === null) return null;
+  return {
+    intent: "http_fetch", content, confidence: 0.95,
+    evidence: [
+      `http_fetch:request:${url}`,
+      `http_fetch:curated_project:${projectRepoSlug(project)}`,
+      "summarization:mode:standard",
+      `summarization:language:${language}`,
+    ],
+    iframeUrl: null,
+  };
+}

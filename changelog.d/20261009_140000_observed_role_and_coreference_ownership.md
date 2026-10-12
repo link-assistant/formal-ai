@@ -1,0 +1,1 @@
+Require independent seed-role evidence outside the named canonical surface. Reuse one normalized bounded seed pronoun/antecedent matcher so real-history coreference reaches its handler before general meta reasoning and quoted payloads or embedded aliases do not invent context. Preserve original whole-program assertions; native execution remains pending CI.

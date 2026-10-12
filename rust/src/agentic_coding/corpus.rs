@@ -16,6 +16,8 @@ use super::formalize::CANONICAL_FISHERMAN_SYNOPSIS;
 use super::meaning_detail::{self, CONCEPTS};
 use super::planner::CANONICAL_SOURCE_URL;
 
+mod cached_issues;
+
 /// One page in the offline corpus. Fields are owned so pages can be built from the
 /// [`CONCEPTS`] registry at call time (one Wikidata-lexeme page per concept).
 struct CorpusPage {
@@ -49,6 +51,14 @@ fn pages() -> Vec<CorpusPage> {
         .collect(),
         body: CANONICAL_FISHERMAN_SYNOPSIS.to_owned(),
     }];
+    for &(url, body) in cached_issues::PAGES {
+        pages.push(CorpusPage {
+            url: url.to_owned(),
+            title: url.to_owned(),
+            keywords: vec![url.to_owned()],
+            body: body.to_owned(),
+        });
+    }
     for concept in CONCEPTS {
         // The concept's own routing keywords plus the shared lexeme vocabulary, so
         // both a concept-specific query and a generic "wikidata lexeme …" query hit.
@@ -109,14 +119,21 @@ pub fn web_search(query: &str) -> String {
 
 /// Resolve a `web_fetch` url into deterministic page text.
 ///
-/// An unknown url yields an error string the planner recognises via its error
-/// heuristic and ignores (falling back to the canonical synopsis), exactly as a
-/// real 404 would behave — which is how the driver exercises the *"understand
-/// errors from tools"* requirement.
+/// This compatibility wrapper preserves response bytes for existing callers.
+/// Providers use [`web_fetch_result`] to distinguish registry absence from
+/// document text without treating words in the body as process status.
 #[must_use]
 pub fn web_fetch(url: &str) -> String {
+    web_fetch_result(url).unwrap_or_else(|detail| detail)
+}
+
+/// Fetch an actual registered page without interpreting its body as status.
+///
+/// # Errors
+/// Returns the unchanged offline 404 detail when the requested URL is absent.
+pub fn web_fetch_result(url: &str) -> Result<String, String> {
     pages().iter().find(|page| page.url == url).map_or_else(
-        || format!("web_fetch error: 404 not found for {url}"),
-        |page| page.body.clone(),
+        || Err(format!("web_fetch error: 404 not found for {url}")),
+        |page| Ok(page.body.clone()),
     )
 }

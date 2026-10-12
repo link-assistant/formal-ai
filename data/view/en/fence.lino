@@ -1,0 +1,33 @@
+view
+  id M-0c975fcf7944
+  lemma fence
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a barrier that serves to enclose an area"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a dealer in stolen property"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "enclose with a fence"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "receive stolen goods"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "fight with fencing swords"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "surround with a wall in order to fortify"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "have an argument about something"
+    provenance (wordnet)

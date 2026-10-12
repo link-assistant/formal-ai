@@ -1,0 +1,25 @@
+view
+  id M-1fad14c7b3ae
+  lemma overlap
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a representation of common ground between theories or phenomena"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the property of partial coincidence in time"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a flap that lies over another part"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "coincide partially or wholly"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "extend over and cover a part of"
+    provenance (wordnet)

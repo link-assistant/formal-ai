@@ -5,13 +5,62 @@
 //! the algorithm deterministic: parse command-like install steps into a small
 //! intermediate representation, then render every requested target format from
 //! that same ordered step list.
+//!
+//! Issue #918: the request cues, the source and target markers, the prose
+//! function words, the verb-to-step map and the project marker are the
+//! `installation_*` tables and policy of `data/seed/handler-rules.lino`, and
+//! every sentence is a seeded `installation_*` response. Only the script
+//! syntax itself (fence infos, strict-mode lines, wrappers, probe flags) stays
+//! here, as the browser twin in `js/worker/formal_ai_worker_software_project_plans.js` and
+//! `js/worker/formal_ai_worker_installation_and_software_followups.js` keeps it too.
 
 use std::fmt::Write as _;
 
 use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::meta_algorithm_builder::{CodingSurface, MetaAlgorithmBuilder};
+use crate::rule_interpreter::{handler_policy, handler_table_rows, handler_table_value};
+use crate::seed;
 use crate::solver_handlers::finalize_simple;
+
+/// The step action a generic launcher verb maps to in
+/// `table installation_verb_action`: it defers to a more concrete verb.
+const RUN_ACTION: &str = "run";
+
+/// The target marker of `table installation_target_marker` that asks for both
+/// scripts at once.
+const BOTH_SCRIPTS: &str = "shell_and_powershell";
+
+/// A seeded `installation_*` response with each slot filled once. The
+/// conversion is a structured English record, so it renders with `en`.
+fn install_text(intent: &str, values: &[(&str, &str)]) -> String {
+    seed::fill_template_once(
+        &seed::localized_response(intent, "en").unwrap_or_default(),
+        values,
+    )
+}
+
+/// The seeded `installation_step_<action>` description.
+fn step_text(action: &str, values: &[(&str, &str)]) -> String {
+    install_text(&format!("installation_step_{action}"), values)
+}
+
+/// Whether `value` contains a key of the seeded `table <name>`.
+fn names_any(value: &str, table: &str) -> bool {
+    handler_table_rows(table)
+        .iter()
+        .any(|(cue, _)| !cue.is_empty() && value.contains(cue.as_str()))
+}
+
+/// The values of every row of the seeded `table <name>` whose key `value`
+/// contains, in seed order.
+fn named_values(value: &str, table: &str) -> Vec<&'static str> {
+    handler_table_rows(table)
+        .iter()
+        .filter(|(cue, _)| !cue.is_empty() && value.contains(cue.as_str()))
+        .map(|(_, named)| named.as_str())
+        .collect()
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum InstallFormat {
@@ -76,12 +125,16 @@ impl InstallationConversion {
             steps = extract_install_steps(prompt, source_format);
         }
         if steps.is_empty() {
+            steps = colon_payload_steps(prompt);
+        }
+        if steps.is_empty() {
             return None;
         }
         Some(Self {
             source_format,
             target_formats,
-            project: extract_project(prompt).unwrap_or_else(|| String::from("the project")),
+            project: extract_project(prompt)
+                .unwrap_or_else(|| install_text("installation_default_project", &[])),
             steps,
         })
     }
@@ -110,119 +163,30 @@ impl InstallationConversion {
 /// Shared with `intent_formalization` so routing and the handler use the same
 /// recogniser when promoting this reading ahead of other guides (issue #932).
 pub fn is_install_conversion_request(normalized: &str) -> bool {
-    let asks_conversion = contains_any(
-        normalized,
-        &[
-            "convert",
-            "conversion",
-            "transform",
-            "turn",
-            "translate",
-            "back to",
-            "конверт",
-            "преобраз",
-            "перевед",
-            "बदल",
-            "परिवर्त",
-            "रूपांतर",
-            "कन्वर्ट",
-            "转换",
-            "轉換",
-            "转成",
-            "轉成",
-            "转为",
-            "轉為",
-            "翻译",
-            "翻譯",
-        ],
-    );
-    let names_install_surface = contains_any(
-        normalized,
-        &[
-            "readme",
-            "markdown",
-            "installation guide",
-            "install guide",
-            "deployment guide",
-            "deploy guide",
-            "installation script",
-            "install script",
-            "deployment script",
-            "deploy script",
-            "руководство по установ",
-            "инструкц",
-            "установ",
-            "स्थापना",
-            "इंस्टॉल",
-            "इंस्टॉलेशन",
-            "安装",
-            "安裝",
-            "部署",
-        ],
-    );
-    let names_script_surface = contains_any(
-        normalized,
-        &[
-            " sh ",
-            " bash",
-            "shell",
-            "powershell",
-            "pwsh",
-            "ps1",
-            "script",
-            "скрипт",
-            "скрипта",
-            "脚本",
-            "腳本",
-        ],
-    );
-    asks_conversion && names_install_surface && names_script_surface
-}
-
-fn contains_any(value: &str, needles: &[&str]) -> bool {
-    needles.iter().any(|needle| value.contains(needle))
+    [
+        "installation_conversion_action",
+        "installation_conversion_surface",
+        "installation_conversion_script",
+    ]
+    .iter()
+    .all(|table| names_any(normalized, table))
 }
 
 fn detect_source_format(prompt: &str, normalized: &str) -> InstallFormat {
+    let named = named_values(normalized, "installation_source_marker");
+    // An explicit PowerShell source outranks a shell one, which outranks a
+    // Markdown one, whatever order the markers occur in.
+    if let Some(format) = [
+        InstallFormat::PowerShellScript,
+        InstallFormat::ShellScript,
+        InstallFormat::Markdown,
+    ]
+    .into_iter()
+    .find(|format| named.contains(&format.label()))
+    {
+        return format;
+    }
     let fences = fenced_blocks(prompt);
-    let explicit_powershell = contains_any(
-        normalized,
-        &[
-            "this powershell",
-            "powershell installation script",
-            "powershell script back",
-            "ps1 script",
-        ],
-    );
-    let explicit_shell = contains_any(
-        normalized,
-        &[
-            "this shell",
-            "this bash",
-            "shell installation script",
-            "shell script back",
-            "bash script back",
-        ],
-    );
-    let explicit_markdown = contains_any(
-        normalized,
-        &[
-            "this readme",
-            "readme.md installation guide",
-            "readme installation guide",
-            "this markdown",
-            "markdown installation guide",
-        ],
-    );
-    if explicit_powershell {
-        return InstallFormat::PowerShellScript;
-    }
-    if explicit_shell {
-        return InstallFormat::ShellScript;
-    }
-    if explicit_markdown {
-        return InstallFormat::Markdown;
-    }
     if fences
         .iter()
         .any(|block| is_powershell_fence(block.info.as_str()))
@@ -245,58 +209,21 @@ fn detect_source_format(prompt: &str, normalized: &str) -> InstallFormat {
 }
 
 fn detect_target_formats(normalized: &str, source_format: InstallFormat) -> Vec<InstallFormat> {
+    let target_markers = named_values(normalized, "installation_target_marker");
+    let names = |label: &str| target_markers.contains(&label);
     let mut targets = Vec::new();
-    if contains_any(
-        normalized,
-        &[
-            "back to a readme",
-            "back to readme",
-            "to a readme",
-            "to readme",
-            "to markdown",
-            "markdown guide",
-        ],
-    ) {
+    if names(InstallFormat::Markdown.label()) {
         push_target(&mut targets, InstallFormat::Markdown);
     }
-    if contains_any(
-        normalized,
-        &[
-            "both sh and powershell",
-            "both bash and powershell",
-            "sh and powershell",
-            "bash and powershell",
-        ],
-    ) {
+    if names(BOTH_SCRIPTS) {
         push_target(&mut targets, InstallFormat::ShellScript);
         push_target(&mut targets, InstallFormat::PowerShellScript);
     }
-    if contains_any(
-        normalized,
-        &[
-            "into a sh script",
-            "to a sh script",
-            "into sh",
-            "to sh",
-            "into a shell script",
-            "to a shell script",
-            "into a bash script",
-            "to a bash script",
-        ],
-    ) {
+    if names(InstallFormat::ShellScript.label()) {
         push_target(&mut targets, InstallFormat::ShellScript);
     }
-    if contains_any(
-        normalized,
-        &[
-            "into a powershell script",
-            "to a powershell script",
-            "into powershell",
-            "to powershell",
-            "to ps1",
-            "into ps1",
-        ],
-    ) && source_format != InstallFormat::PowerShellScript
+    if names(InstallFormat::PowerShellScript.label())
+        && source_format != InstallFormat::PowerShellScript
     {
         push_target(&mut targets, InstallFormat::PowerShellScript);
     }
@@ -427,6 +354,30 @@ fn extract_install_steps(source: &str, source_format: InstallFormat) -> Vec<Inst
             command,
         })
         .collect()
+}
+
+/// Whether the request carries installation commands to convert.
+///
+/// The `install_steps` claim evidence of issue #1175 R3.
+#[must_use]
+pub fn carries_install_steps(prompt: &str, normalized: &str) -> bool {
+    let source_format = detect_source_format(prompt, normalized);
+    let source_text = extract_source_text(prompt, source_format);
+    !extract_install_steps(&source_text, source_format).is_empty()
+        || (source_format == InstallFormat::Markdown
+            && source_text != prompt
+            && !extract_install_steps(prompt, source_format).is_empty())
+        || !colon_payload_steps(prompt).is_empty()
+}
+
+/// The commands a one-line request states after its colon ("Turn this
+/// installation guide into a bash script: git clone … && make install"): the
+/// request line itself is prose, so its payload is read as the guide's text.
+fn colon_payload_steps(prompt: &str) -> Vec<InstallStep> {
+    prompt
+        .split_once(": ")
+        .map(|(_, payload)| extract_install_steps(payload, InstallFormat::Markdown))
+        .unwrap_or_default()
 }
 
 fn collect_inline_commands(source: &str, commands: &mut Vec<String>) {
@@ -604,13 +555,12 @@ fn has_shell_operator(command: &str) -> bool {
 /// catching lowercase prose that slipped past the executable-head check
 /// ("clone the repository manually").
 fn reads_as_prose(tokens: &[&str]) -> bool {
-    const FUNCTION_WORDS: &[&str] = &[
-        "the", "a", "an", "and", "or", "to", "with", "into", "from", "your", "you", "our", "this",
-        "that", "these", "those", "then", "will", "should", "must", "please", "manually",
-    ];
+    let function_words = handler_table_rows("installation_prose_word");
     tokens.iter().any(|token| {
         let word = token.trim_matches(|c: char| !c.is_alphanumeric());
-        FUNCTION_WORDS.contains(&word)
+        function_words
+            .iter()
+            .any(|(function_word, _)| function_word == word)
     })
 }
 
@@ -623,7 +573,7 @@ fn describe_command(command: &str) -> String {
     let parsed = ParsedCommand::parse(command);
     parsed
         .action()
-        .map_or_else(|| parsed.synthesized_description(), String::from)
+        .unwrap_or_else(|| parsed.synthesized_description())
 }
 
 /// Structural view of a command: the program (last path segment of the
@@ -686,63 +636,53 @@ impl ParsedCommand {
         }
     }
 
-    /// Map the parsed verb/object onto an install-step action category.
-    fn action(&self) -> Option<&'static str> {
+    /// Map the parsed verb/object onto an install-step description.
+    fn action(&self) -> Option<String> {
         if self.is_probe {
-            return Some("Verify the installation");
+            return Some(step_text("probe", &[]));
         }
         let mut generic_run = false;
-        for argument in &self.arguments {
-            match classify_verb(argument) {
+        // The verbs first, then the program itself.
+        for verb in self.arguments.iter().chain(std::iter::once(&self.program)) {
+            match classify_verb(verb) {
                 // A generic launcher verb defers to a more concrete object
                 // ("npm run build" is a build, not a launch).
-                Some("run") => generic_run = true,
-                Some(action) => return Some(action),
+                Some(RUN_ACTION) => generic_run = true,
+                Some(action) => return Some(step_text(action, &[])),
                 None => {}
             }
         }
-        match classify_verb(&self.program) {
-            Some("run") => generic_run = true,
-            Some(action) => return Some(action),
-            None => {}
-        }
-        generic_run.then_some("Start the application")
+        generic_run.then(|| step_text("start", &[]))
     }
 
     /// Fall back to a description synthesized from the program/verb so unseen
     /// but well-formed commands still read meaningfully.
     fn synthesized_description(&self) -> String {
         self.arguments.first().map_or_else(
-            || format!("Run {}", self.program),
-            |verb| format!("Run the {} {} step", self.program, verb),
+            || step_text("run_program", &[("program", self.program.as_str())]),
+            |verb| {
+                step_text(
+                    "run_verb",
+                    &[("program", self.program.as_str()), ("verb", verb.as_str())],
+                )
+            },
         )
     }
 }
 
-/// Translate a single verb token into an action category. Keyed on the verb
-/// itself (not the surrounding tool), so the same lexicon serves every program.
-/// Returns the special marker `"run"` for generic launcher verbs so the caller
-/// can prefer a more concrete object.
+/// Translate a single verb token into its step action through the seeded
+/// `table installation_verb_action`. Keyed on the verb itself (not the
+/// surrounding tool), so the same table serves every program. Returns
+/// [`RUN_ACTION`] for generic launcher verbs so the caller can prefer a more
+/// concrete object.
 fn classify_verb(token: &str) -> Option<&'static str> {
-    Some(match token {
-        "clone" => "Clone the repository",
-        "cd" | "chdir" | "pushd" => "Enter the project directory",
-        "install" | "add" | "ci" | "restore" | "sync" | "bootstrap" | "vendor" | "i" => {
-            "Install dependencies"
-        }
-        "test" | "check" | "lint" | "doctor" | "verify" | "validate" | "version" | "pytest"
-        | "jest" | "mocha" | "vitest" | "tox" => "Run the verification command",
-        "build" | "compile" | "configure" | "make" | "package" | "dist" | "bundle" | "cmake"
-        | "gradle" | "ninja" | "msbuild" => "Build the project",
-        "run" | "serve" | "start" | "up" | "exec" | "dev" | "launch" | "watch" => "run",
-        _ => return None,
-    })
+    handler_table_value("installation_verb_action", token)
 }
 
 fn extract_project(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
-    let marker = " for ";
-    let start = lower.find(marker)? + marker.len();
+    let marker = handler_policy("installation_conversion", "project-marker")?;
+    let start = lower.find(marker.as_str())? + marker.len();
     let tail = &prompt[start..];
     let stop = tail
         .find(|character: char| {
@@ -788,20 +728,20 @@ fn record_conversion(log: &mut EventLog, conversion: &InstallationConversion) {
 }
 
 fn render_conversion(conversion: &InstallationConversion) -> String {
-    let mut output = String::new();
-    let _ = writeln!(
-        output,
-        "Converted installation instructions for {}.",
-        conversion.project
+    let mut output = install_text(
+        "installation_conversion_heading",
+        &[("project", conversion.project.as_str())],
     );
-    output.push_str("\nFormalized meaning:\n```lino\n");
+    output.push_str("\n\n");
+    output.push_str(&install_text(
+        "installation_formalized_meaning_heading",
+        &[],
+    ));
+    output.push_str("\n```lino\n");
     output.push_str(&render_lino(conversion));
-    output.push_str("```\n\nConversion algorithm:\n");
-    output.push_str("1. Detect the source surface and requested target surface(s).\n");
-    output.push_str("2. Extract command-like install/deploy steps in original order.\n");
-    output.push_str("3. Render every target from the same install-step IR.\n");
-    output.push_str("4. Preserve commands verbatim so the conversion can round-trip.\n");
-    output.push('\n');
+    output.push_str("```\n\n");
+    output.push_str(&install_text("installation_conversion_algorithm", &[]));
+    output.push_str("\n\n");
     MetaAlgorithmBuilder::for_surface(CodingSurface::InstallationConversion)
         .write_explanation(&mut output);
 
@@ -843,8 +783,8 @@ fn render_lino(conversion: &InstallationConversion) -> String {
 }
 
 fn render_markdown_guide(output: &mut String, conversion: &InstallationConversion) {
-    output.push_str("README.md installation guide:\n\n");
-    output.push_str("## Installation\n\n");
+    output.push_str(&install_text("installation_markdown_heading", &[]));
+    output.push_str("\n\n");
     for (index, step) in conversion.steps.iter().enumerate() {
         let _ = writeln!(output, "{}. {}.", index + 1, step.description);
         output.push_str("\n   ```sh\n");
@@ -854,7 +794,8 @@ fn render_markdown_guide(output: &mut String, conversion: &InstallationConversio
 }
 
 fn render_shell_script(output: &mut String, conversion: &InstallationConversion) {
-    output.push_str("Bash script:\n```bash\n#!/usr/bin/env bash\nset -euo pipefail\n\n");
+    output.push_str(&install_text("installation_shell_heading", &[]));
+    output.push_str("\n```bash\n#!/usr/bin/env bash\nset -euo pipefail\n\n");
     for step in &conversion.steps {
         let _ = writeln!(output, "# {}", step.description);
         let _ = writeln!(output, "{}", step.command);
@@ -863,7 +804,8 @@ fn render_shell_script(output: &mut String, conversion: &InstallationConversion)
 }
 
 fn render_powershell_script(output: &mut String, conversion: &InstallationConversion) {
-    output.push_str("PowerShell script:\n```powershell\n$ErrorActionPreference = 'Stop'\n\n");
+    output.push_str(&install_text("installation_powershell_heading", &[]));
+    output.push_str("\n```powershell\n$ErrorActionPreference = 'Stop'\n\n");
     for step in &conversion.steps {
         let _ = writeln!(output, "# {}", step.description);
         let _ = writeln!(output, "{}", step.command);

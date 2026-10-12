@@ -1,0 +1,41 @@
+view
+  id M-e1755f6a1a28
+  lemma substitute
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person or thing that takes or can take the place of another"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an athlete who plays only when a starter on the team is replaced"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "someone who takes the place of another (as when things get dangerous or difficult)"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "capable of substituting in any of several positions on a team"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "serving or used in place of another"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "artificial and inferior"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "put in the place of another; switch seemingly equivalent items"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "be a substitute"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "act as a substitute"
+    provenance (wordnet)

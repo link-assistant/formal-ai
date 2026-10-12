@@ -1,0 +1,78 @@
+>> read {"filePath":"rust/tests/web/notation-response-placeholders.test.mjs","file_path":"rust/tests/web/notation-response-placeholders.test.mjs","path":"rust/tests/web/notation-response-placeholders.test.mjs"}
+   <file>
+   00001| // PR #1188 T935-T936: a notation rename carries response placeholders too.
+   00002| import assert from 'node:assert/strict';
+   00003| import test from 'node:test';
+   00004| import { capturePlaceholderMapping } from '../../../experiments/formal_ai_subagent/apply-notation-rules.mjs';
+   00005| import { rewriteNotation, rewriteSource } from '../../../scripts/lib/notation-substitution.mjs';
+   00006| import { createWorkerContext, evaluate, plain } from './support/browser-runtime.mjs';
+   00007| 
+   00008| test('renaming a captured value carries its placeholder while preserving literal prose', () => {
+   00009|   const source = 'value sample_value literal "sample_value"\ntext "{sample_value}; {unmapped}; sample_value"\n';
+   00010|   assert.equal(rewriteNotation(source, new Map([['sample_value', 'sample-value']])),
+   00011|     'value sample-value literal "sample_value"\ntext "{sample-value}; {unmapped}; sample_value"\n');
+   00012| });
+   00013| 
+   00014| const worker = createWorkerContext();
+   00015| await evaluate(worker, 'loadSeed()');
+   00016| 
+   00017| test('all five languages render both traffic documentation links for named and unnamed repositories', () => {
+   00018|   const values = [
+   00019|     { name: 'repository', value: 'example/project' },
+   00020|     { name: 'traffic-ui-docs', value: 'https://docs.github.com/en/repositories/viewing-activity-and-data-for-your-repository/viewing-traffic-to-a-repository' },
+   00021|     { name: 'traffic-api-docs', value: 'https://docs.github.com/en/rest/metrics/traffic' },
+   00022|   ];
+   00023|   for (const language of ['en', 'ru', 'hi', 'zh', 'es']) {
+   00024|     for (const intent of ['github_repository_traffic', 'github_repository_traffic_unnamed']) {
+   00025|       const template = evaluate(worker, 'handlerRulesResponseFor(' + JSON.stringify(intent) + ',' + JSON.stringify(language) + ')');
+   00026|       assert.equal(typeof template, 'string', language + ': ' + intent);
+   00027|       const rendered = evaluate(worker, 'handlerRulesSubstitute(' + JSON.stringify(template) + ',' + JSON.stringify(values) + ')');
+   00028|       assert.ok(rendered.includes(values[1].value), rendered);
+   00029|       assert.ok(rendered.includes(values[2].value), rendered);
+   00030|       assert.doesNotMatch(rendered, /\{[A-Za-z][A-Za-z0-9_-]*\}/u);
+   00031|     }
+   00032|   }
+   00033| });
+   00034| 
+   00035| test('the reported Russian prompt and an unnamed English query cite rendered documentation', async () => {
+   00036|   for (const prompt of ['можно ли узнать заходил ли кто либо в твое репо на github?', 'Can I know who visited my GitHub repo?']) {
+   00037|     const answer = plain(await worker.solve(prompt, [], {}, {}, [], {}));
+   00038|     assert.equal(answer.intent, 'github_repository_traffic');
+   00039|     assert.ok(answer.content.includes('https://docs.github.com/en/rest/metrics/traffic'), answer.content);
+   00040|     assert.doesNotMatch(answer.content, /\{[A-Za-z][A-Za-z0-9_-]*\}/u);
+   00041|   }
+   00042| });
+   00043| 
+   00044| test('source templates migrate notation placeholders while Rust format variables retain their spelling', () => {
+   00045|   const mapping = new Map([['sample_value', 'sample-value']]);
+   00046|   const source = 'const answer = "{sample_value}";';
+   00047|   assert.equal(rewriteSource(source, 'javascript', mapping, new Set()).text, 'const answer = "{sample-value}";');
+   00048|   assert.equal(rewriteSource(source, 'rust', mapping, new Set(['sample_value'])).text, source);
+   00049| });
+   00050| 
+   00051| test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {
+   00052|   const mapping = new Map([['sample_value', 'sample-value'], ['unrelated_field', 'unrelated-field']]);
+   00053|   for (const spelling of ['sample_value', 'sample-value']) {
+   00054|     const document = 'handler sample\n  value ' + spelling + ' literal "example"\n  unrelated-field "unrelated field"\n';
+   00055|     assert.deepEqual([...capturePlaceholderMapping(mapping, document)], [['sample_value', 'sample-value']]);
+   00056|   }
+   00057| });
+   00058| 
+   
+   (End of file - total 58 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/notation-response-placeholders.test.mjs","file_path":"rust/tests/web/notation-response-placeholders.test.mjs","new":"test('Rust variable-backed template keys retain their spelling while policy names migrate', () => {\n  const source = 'fn plan(fallback_query: &str) { policy(\"fallback_query\"); fill(&[(\"fallback_query\", fallback_query)]); }';\n  const mapping = new Map([['fallback_query', 'fallback-query']]);\n  const rewritten = rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set()).text;\n  assert.equal(rewritten, 'fn plan(fallback_query: &str) { policy(\"fallback-query\"); fill(&[(\"fallback_query\", fallback_query)]); }');\n  assert.equal(rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set(['fallback_query'])).text,\n    'fn plan(fallback_query: &str) { policy(\"fallback-query\"); fill(&[(\"fallback-query\", fallback_query)]); }');\n});\n\ntest('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {","newString":"test('Rust variable-backed template keys retain their spelling while policy names migrate', () => {\n  const source = 'fn plan(fallback_query: &str) { policy(\"fallback_query\"); fill(&[(\"fallback_query\", fallback_query)]); }';\n  const mapping = new Map([['fallback_query', 'fallback-query']]);\n  const rewritten = rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set()).text;\n  assert.equal(rewritten, 'fn plan(fallback_query: &str) { policy(\"fallback-query\"); fill(&[(\"fallback_query\", fallback_query)]); }');\n  assert.equal(rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set(['fallback_query'])).text,\n    'fn plan(fallback_query: &str) { policy(\"fallback-query\"); fill(&[(\"fallback-query\", fallback_query)]); }');\n});\n\ntest('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {","new_str":"test('Rust variable-backed template keys retain their spelling while policy names migrate', () => {\n  const source = 'fn plan(fallback_query: &str) { policy(\"fallback_query\"); fill(&[(\"fallback_query\", fallback_query)]); }';\n  const mapping = new Map([['fallback_query', 'fallback-query']]);\n  const rewritten = rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set()).text;\n  assert.equal(rewritten, 'fn plan(fallback_query: &str) { policy(\"fallback-query\"); fill(&[(\"fallback_query\", fallback_query)]); }');\n  assert.equal(rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set(['fallback_query'])).text,\n    'fn plan(fallback_query: &str) { policy(\"fallback-query\"); fill(&[(\"fallback-query\", fallback_query)]); }');\n});\n\ntest('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {","new_string":"test('Rust variable-backed template keys retain their spelling while policy names migrate', () => {\n  const source = 'fn plan(fallback_query: &str) { policy(\"fallback_query\"); fill(&[(\"fallback_query\", fallback_query)]); }';\n  const mapping = new Map([['fallback_query', 'fallback-query']]);\n  const rewritten = rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set()).text;\n  assert.equal(rewritten, 'fn plan(fallback_query: &str) { policy(\"fallback-query\"); fill(&[(\"fallback_query\", fallback_query)]); }');\n  assert.equal(rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set(['fallback_query'])).text,\n    'fn plan(fallback_query: &str) { policy(\"fallback-query\"); fill(&[(\"fallback-query\", fallback_query)]); }');\n});\n\ntest('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {","old":"test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {","oldString":"test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {","old_str":"test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {","old_string":"test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {","path":"rust/tests/web/notation-response-placeholders.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/notation-response-placeholders.test.mjs"}
+   85a8ee9298727313f5b3d506aa4c659fb08d120203ccde7c6b5ee2b7398ac5aa  rust/tests/web/notation-response-placeholders.test.mjs
+   
+== answer ==
+Replaced `test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {` with `test('Rust variable-backed template keys retain their spelling while policy names migrate', () => {
+  const source = 'fn plan(fallback_query: &str) { policy("fallback_query"); fill(&[("fallback_query", fallback_query)]); }';
+  const mapping = new Map([['fallback_query', 'fallback-query']]);
+  const rewritten = rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set()).text;
+  assert.equal(rewritten, 'fn plan(fallback_query: &str) { policy("fallback-query"); fill(&[("fallback_query", fallback_query)]); }');
+  assert.equal(rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set(['fallback_query'])).text,
+    'fn plan(fallback_query: &str) { policy("fallback-query"); fill(&[("fallback-query", fallback_query)]); }');
+});
+
+test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {` in `rust/tests/web/notation-response-placeholders.test.mjs` and observed the result.

@@ -229,7 +229,7 @@ fn predict_reports_statement_movement() {
     let action = Action::new("flip the switch").adding("light", "on");
     let prediction = context.predict(&action);
     // The action edits state, so it is not a no-op.
-    assert!(!prediction.added.is_empty());
+    assert_ne!(prediction.added, [] as [formal_ai::SubstitutionLink; 0]);
     assert!(before < 0.5, "contradicted statement starts low");
 }
 

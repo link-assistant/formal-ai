@@ -18,7 +18,7 @@ fn answer(prompt: &str) -> SymbolicAnswer {
 #[test]
 fn answers_already_carry_links_notation_for_visualization() {
     let response = answer("Hi");
-    assert!(!response.links_notation.is_empty());
+    assert_ne!(response.links_notation, "");
 }
 
 // ---------------------------------------------------------------------------
@@ -70,7 +70,7 @@ fn graph_endpoint_returns_404_for_unknown_trace() {
 fn web_demo_chat_works_even_when_graph_is_disabled() {
     let response = temp_env::with_var("FORMAL_AI_DISABLE_GRAPH", Some("1"), || answer("Hi"));
     assert_eq!(response.intent, "greeting");
-    assert!(!response.answer.is_empty());
+    assert_ne!(response.answer, "");
 }
 
 #[test]

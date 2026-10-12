@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "面具"
+        },
+        "es": {
+          "language": "es",
+          "value": "máscara"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "任何全部或部分面部遮盖物，无论是礼仪性的、保护性的、装饰性的还是用作伪装的"
+        },
+        "es": {
+          "language": "es",
+          "value": "indumentaria usada para esconder el rostro"
         }
       },
       "aliases": {
@@ -66,6 +74,24 @@
           {
             "language": "zh",
             "value": "面谱"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Mascara"
+          },
+          {
+            "language": "es",
+            "value": "Antifaz"
+          },
+          {
+            "language": "es",
+            "value": "Careta"
+          },
+          {
+            "language": "es",
+            "value": "Baile sin rostro"
           }
         ]
       }

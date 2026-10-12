@@ -1,12 +1,15 @@
 Q80151
   aliases
+    es (sombreros)
     ru ("тулья")
   descriptions
     en "shaped head covering, having a brim and a crown, or one of these"
+    es "prenda para la cabeza con forma, que tiene ala y corona, o una de estas"
     ru "головной убор из тульи и полей"
   id Q80151
   labels
     en hat
+    es sombrero
     hi "टोपी"
     ru "шляпа"
     zh "帽子"

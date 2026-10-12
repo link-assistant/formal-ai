@@ -1,0 +1,5 @@
+algorithm_discovery_summary	"Descubrimiento de algoritmos sobre {traces} traza(s): {candidates} candidato(s), {validated} validado(s) con datos reservados; solo es una propuesta, no se ejecutó ningún algoritmo."
+algorithm_dreaming_applied	"Plan de dreaming aplicado a {path}: se eliminaron {removed} evento(s), se estiman {bytes} byte(s) recuperables, se aprendieron {amendments} enmienda(s) del meta-algoritmo, {patterns} patrón(es) recurrente(s) y {algorithms} candidato(s) de algoritmo de ejecución, y se conservaron {failures} simulación(es) fallida(s) y {trials} prueba(s) de dreaming."
+algorithm_empty_binding_name	"Vinculación no válida {binding}; el nombre está vacío"
+algorithm_invalid_binding	"Vinculación no válida {binding}; se esperaba NAME=VALUE"
+algorithm_observation_missing	"El archivo de observaciones no existe: {path}"

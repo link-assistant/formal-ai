@@ -141,7 +141,7 @@ fn real_event_logs_propose_an_inert_method_that_is_adopted_only_after_promotion(
     assert!(empty_registry.method_for_route(&proposal.name).is_none());
 
     let promotions = learning.promotion_proposals();
-    assert!(!promotions.is_empty());
+    assert_ne!(promotions, [] as [formal_ai::PromotionProposal; 0]);
     assert_eq!(promotions[0].edit.seed_file, LEARNED_METHODS_SEED_FILE);
     let reviewed_document = fs::read_to_string(
         Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -215,7 +215,7 @@ fn rejected_benchmark_proposals_are_durable_and_include_the_reason() {
         promotion.rejected().len(),
         learning.promotion_proposals().len()
     );
-    assert!(promotion.promoted().is_empty());
+    assert_eq!(promotion.promoted(), [] as [&formal_ai::PromotionRecord; 0]);
     let rejection = promotion
         .memory_events()
         .into_iter()

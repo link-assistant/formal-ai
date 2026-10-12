@@ -525,6 +525,29 @@ const toolRouter = createToolRouter({
   allowedReadRoot: REPO_ROOT,
   computerUseRoot: path.join(app.getPath("userData"), "computer-use"),
   resolvePath: (value) => path.resolve(REPO_ROOT, value),
+  // Issue #953: the supervised engine is the authoritative authorizer.
+  // currentStatus() carries apiBase only when the local server is up, so
+  // an offline engine degrades to the local spec-driven checks instead of
+  // blocking the desktop.
+  engineAuthorize: async (payload) => {
+    try {
+      const status = localServerManager.currentStatus();
+      if (!status || !status.apiBase) return { available: false };
+      const response = await globalThis.fetch(
+        `${status.apiBase}/v1/tools/authorize`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload),
+        },
+      );
+      if (!response || !response.ok) return { available: false };
+      return await response.json();
+    } catch (_error) {
+      return { available: false };
+    }
+  },
+  realpath: (target) => fs.promises.realpath(String(target)),
   dockerAvailable: dockerIsAvailable,
   runInSandbox,
   runOnHost,
@@ -636,35 +659,13 @@ ipcMain.handle("formalAiDesktop:syncMemory", async (_event, payload) => {
 // --install-extension` — the same artifact the manual `install.sh vscode` flow
 // uses. Each side-effecting dependency is injected so the lib stays testable.
 function runVsCodeCli(command, args) {
-  if (process.platform === "win32") {
-    // command-stream#191: its shell mode accepts a command string but has no
-    // argv-safe Windows command-shim interface. Keep Node's native argv
-    // handling for code.cmd until that focused upstream limitation is fixed.
-    return new Promise((resolve) => {
-      let stdout = "";
-      let stderr = "";
-      let child;
-      try {
-        child = childProcess.spawn(command, args, {
-          stdio: ["ignore", "pipe", "pipe"],
-          shell: true,
-        });
-      } catch (error) {
-        resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
-        return;
-      }
-      child.stdout.on("data", (chunk) => { stdout += chunk; });
-      child.stderr.on("data", (chunk) => { stderr += chunk; });
-      child.once("error", (error) => {
-        resolve({ code: 1, stdout, stderr: error && error.message ? error.message : String(error) });
-      });
-      child.once("exit", (code) => {
-        resolve({ code: typeof code === "number" ? code : 1, stdout, stderr });
-      });
-    });
-  }
+  // Windows ships the CLI as the `code.cmd` shim, which cannot be executed
+  // directly. command-stream's shell `{ file, args }` form hands argument
+  // construction to Node's shell-enabled spawn (command-stream#191), so both
+  // platforms go through the same adapter.
   return commandRunner.run(command, args, {
     env: process.env,
+    shell: process.platform === "win32",
   });
 }
 

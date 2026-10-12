@@ -2,94 +2,97 @@ self_ast_census
   target src/agentic_coding/task_obligations.rs
   language rust
   fidelity full_ast
-  byte_len 10836
-  line_count 269
-  content_id source_module_3d0e8f832c6dee89
-  symbol_count 9
+  byte_len 13165
+  line_count 331
+  content_id source_module_31dd99810de1ac70
+  symbol_count 11
   symbols
     type Obligation 25 25
     function obligations 34 41
-    function next_step 49 81
-    function successfully_discharged 89 97
-    function gap_answer 103 119
-    function observed_file_outcome 129 223
-    function observed_ledger 227 236
-    function agentic_root 247 254
-    function align_file_expectations 256 269
+    function next_step 49 78
+    function successfully_discharged 86 94
+    function gap_answer 100 116
+    function observed_file_outcome 126 220
+    function observed_ledger 224 234
+    function agentic_root 245 252
+    function align_file_expectations 254 267
+    function reconcile_file_observations 270 309
+    function observe_non_file_record 312 331
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6187
-    named_node_count 1285
-    distinct_node_kinds 68
+    total_link_count 8014
+    named_node_count 1659
+    distinct_node_kinds 69
     node_kinds
-      arguments 99
+      arguments 123
       array_expression 2
       array_type 4
-      assignment_expression 1
+      assignment_expression 3
       attribute 5
       attribute_item 5
-      binary_expression 13
-      block 23
-      boolean_literal 1
-      call_expression 99
-      closure_expression 10
-      closure_parameters 10
+      binary_expression 17
+      block 36
+      boolean_literal 4
+      call_expression 123
+      closure_expression 11
+      closure_parameters 11
       crate 11
-      doc_comment 51
-      expression_statement 24
-      field_expression 82
-      field_identifier 100
-      field_initializer 20
-      field_initializer_list 7
-      field_pattern 1
-      for_expression 3
-      function_item 8
+      doc_comment 53
+      expression_statement 46
+      field_expression 115
+      field_identifier 137
+      field_initializer 24
+      field_initializer_list 9
+      field_pattern 2
+      for_expression 4
+      function_item 10
       generic_type 4
-      identifier 264
-      if_expression 7
+      identifier 353
+      if_expression 13
       inner_doc_comment_marker 9
       integer_literal 8
       let_chain 1
       let_condition 4
-      let_declaration 18
-      line_comment 67
-      macro_invocation 3
+      let_declaration 25
+      line_comment 69
+      macro_invocation 5
       match_arm 2
       match_block 1
       match_expression 1
       match_pattern 2
-      mutable_specifier 10
-      outer_doc_comment_marker 42
-      parameter 18
-      parameters 8
+      mutable_specifier 17
+      outer_doc_comment_marker 44
+      parameter 22
+      parameters 10
       parenthesized_expression 3
-      primitive_type 13
-      reference_expression 13
-      reference_type 20
-      return_expression 5
-      scoped_identifier 53
-      scoped_type_identifier 5
+      primitive_type 14
+      reference_expression 26
+      reference_type 24
+      remaining_field_pattern 1
+      return_expression 15
+      scoped_identifier 69
+      scoped_type_identifier 7
       scoped_use_list 2
-      shorthand_field_identifier 1
+      shorthand_field_identifier 2
       shorthand_field_initializer 2
       source_file 1
-      string_content 13
-      string_literal 14
-      struct_expression 7
-      struct_pattern 1
-      super 12
-      token_tree 5
+      string_content 15
+      string_literal 16
+      struct_expression 9
+      struct_pattern 2
+      super 18
+      token_tree 9
       try_expression 2
       tuple_expression 7
-      tuple_struct_pattern 5
+      tuple_struct_pattern 8
       tuple_type 1
       type_arguments 4
-      type_identifier 28
+      type_identifier 35
       type_item 1
-      unary_expression 5
+      unary_expression 7
       use_declaration 5
       use_list 2
       visibility_modifier 7

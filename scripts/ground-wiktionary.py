@@ -135,6 +135,9 @@ def write_entry(word: str, data: list) -> None:
             "cargo",
             "run",
             "--quiet",
+            # The workspace manifest lives under rust/, not the repo root.
+            "--manifest-path",
+            "rust/Cargo.toml",
             "--example",
             "wikidata_json_to_lino",
             "entry",

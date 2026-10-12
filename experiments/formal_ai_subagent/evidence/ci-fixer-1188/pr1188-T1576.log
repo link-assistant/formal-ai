@@ -1,0 +1,992 @@
+>> read {"filePath":"rust/src/agentic_coding/planner.rs","file_path":"rust/src/agentic_coding/planner.rs","path":"rust/src/agentic_coding/planner.rs"}
+   <file>
+   00001| //! Deterministic agentic planner for choosing the next tool or final answer from
+   00002| //! a conversation and its advertised capabilities, without hidden neural state.
+   00003| 
+   00004| use serde_json::json;
+   00005| mod continuation;
+   00006| mod precedence;
+   00007| use continuation::continued_agent_task;
+   00008| pub use continuation::trace_route;
+   00009| pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
+   00010| pub use precedence::checked_route_precedence;
+   00011| 
+   00012| pub(super) use super::capability_router::tool_for;
+   00013| use super::code_task;
+   00014| use super::comparison;
+   00015| use super::conversation_recall;
+   00016| use super::diagram;
+   00017| use super::document_recipe::{
+   00018|     plan_change_request_step, plan_diagram_step, plan_dreaming_audit_step, plan_explain_step,
+   00019|     plan_google_trends_catalog_step, plan_google_trends_learning_step, plan_ledger_step,
+   00020|     plan_meaning_detail_step, plan_question_catalog_step, plan_rebuild_step,
+   00021|     plan_repair_strategy_step, plan_self_ast_step, plan_self_heal_step, plan_source_links_step,
+   00022| };
+   00023| use super::dreaming_audit;
+   00024| use super::evidence_record;
+   00025| use super::explain;
+   00026| use super::file_read::{file_read_task_for, plan_file_read_step};
+   00027| use super::formalization_recipe;
+   00028| use super::general_execution::plan_general_change_step;
+   00029| use super::general_planner::{
+   00030|     compose_general_change_plan, has_authoritative_literal_write, objective_text,
+   00031| };
+   00032| use super::git_commit;
+   00033| use super::google_trends_catalog;
+   00034| use super::google_trends_learning;
+   00035| use super::harness_envelope;
+   00036| use super::intent_router;
+   00037| use super::learning_report;
+   00038| use super::ledger;
+   00039| use super::local_search;
+   00040| use super::meaning_detail;
+   00041| use super::mutating_action;
+   00042| use super::note_composition;
+   00043| use super::procedure;
+   00044| pub(super) use super::progress::Progress;
+   00045| use super::question_catalog;
+   00046| use super::rebuild_plan;
+   00047| use super::repair_strategy;
+   00048| use super::report_issue;
+   00049| use super::self_ast;
+   00050| use super::self_heal;
+   00051| use super::shell_command;
+   00052| use super::shell_file_fallback;
+   00053| use super::source_links;
+   00054| use super::statement_audit;
+   00055| use super::structured_document;
+   00056| use super::structured_edit;
+   00057| use super::task_obligations;
+   00058| use super::task_structure;
+   00059| use super::tool_result;
+   00060| use super::web_research;
+   00061| use super::workspace_inspection;
+   00062| use super::workspace_search;
+   00063| use super::{algorithm_learning, capability_router};
+   00064| use super::{change_request, code_artifact};
+   00065| use crate::protocol::ChatMessage;
+   00066| use crate::skill_compiler::looks_like_skill_description;
+   00067| 
+   00068| pub use super::formalization_recipe::{CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY};
+   00069| 
+   00070| /// The next deterministic step the server takes in an agentic coding loop.
+   00071| #[derive(Debug, Clone, PartialEq, Eq)]
+   00072| pub enum AgenticPlan {
+   00073|     /// Emit these tool calls (one per planned step) and wait for their results.
+   00074|     ToolCalls(Vec<PlannedToolCall>),
+   00075|     /// The task is complete; this is the final assistant answer.
+   00076|     Final(String),
+   00077| }
+   00078| 
+   00079| /// A single tool call the planner wants the server to emit.
+   00080| #[derive(Debug, Clone, PartialEq, Eq)]
+   00081| pub struct PlannedToolCall {
+   00082|     /// The tool name to invoke (taken verbatim from the request's tools).
+   00083|     pub tool: String,
+   00084|     /// JSON-encoded arguments object for the call.
+   00085|     pub arguments: String,
+   00086| }
+   00087| 
+   00088| /// The tool capabilities the planner's recipe relies on.
+   00089| ///
+   00090| /// This is the single source of truth for "what kind of thing a tool does". Both
+   00091| /// the planner (to pick which advertised tool to call for each recipe step) and
+   00092| /// the server's permission gate (to decide whether an agentic client may drive a
+   00093| /// tool of this kind) classify tool names through [`tool_capability`] — so the
+   00094| /// two never drift and no per-tool-name special cases accumulate.
+   00095| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00096| pub enum Capability {
+   00097|     Search,
+   00098|     Fetch,
+   00099|     Read,
+   00100|     Write,
+   00101|     Edit,
+   00102|     Run,
+   00103|     Grep,
+   00104|     Glob,
+   00105|     ListDir,
+   00106|     Todo,
+   00107|     Subagent,
+   00108|     ReadMany,
+   00109|     MultiEdit,
+   00110|     AskUser,
+   00111| }
+   00112| 
+   00113| impl Capability {
+   00114|     /// The associative-package capability key that grants an agentic client the
+   00115|     /// right to drive a tool of this kind, e.g. `tool:capability:write`. Grants
+   00116|     /// are by *capability class*, not by tool name, so any CLI's naming
+   00117|     /// (`write`, `write_file`, `edit`, `patch`, …) maps to the same permission.
+   00118|     #[must_use]
+   00119|     pub const fn permission_key(self) -> &'static str {
+   00120|         match self {
+   00121|             Self::Search => "tool:capability:search",
+   00122|             Self::Fetch => "tool:capability:fetch",
+   00123|             Self::Read => "tool:capability:read",
+   00124|             Self::Write => "tool:capability:write",
+   00125|             Self::Edit => "tool:capability:edit",
+   00126|             Self::Run => "tool:capability:run",
+   00127|             Self::Grep => "tool:capability:grep",
+   00128|             Self::Glob => "tool:capability:glob",
+   00129|             Self::ListDir => "tool:capability:list_dir",
+   00130|             Self::Todo => "tool:capability:todo",
+   00131|             Self::Subagent => "tool:capability:subagent",
+   00132|             Self::ReadMany => "tool:capability:read_many",
+   00133|             Self::MultiEdit => "tool:capability:multi_edit",
+   00134|             Self::AskUser => "tool:capability:ask_user",
+   00135|         }
+   00136|     }
+   00137| 
+   00138|     pub(super) const fn registry_id(self) -> &'static str {
+   00139|         match self {
+   00140|             Self::Search => "web_search",
+   00141|             Self::Fetch => "web_fetch",
+   00142|             Self::Read => "read_file",
+   00143|             Self::Write => "write_file",
+   00144|             Self::Edit => "edit_file",
+   00145|             Self::Run => "shell",
+   00146|             Self::Grep => "grep",
+   00147|             Self::Glob => "glob",
+   00148|             Self::ListDir => "list_dir",
+   00149|             Self::Todo => "todo",
+   00150|             Self::Subagent => "subagent",
+   00151|             Self::ReadMany => "read_many",
+   00152|             Self::MultiEdit => "multi_edit",
+   00153|             Self::AskUser => "ask_user",
+   00154|         }
+   00155|     }
+   00156| }
+   00157| 
+   00158| /// Classify an advertised tool name into the [`Capability`] it provides.
+   00159| ///
+   00160| /// Returns [`None`] when the planner's recipe has no use for it
+   00161| /// (list/grep/todo/…). Public so the permission gate classifies through the
+   00162| /// *same* function the planner uses.
+   00163| #[must_use]
+   00164| pub fn tool_capability(name: &str) -> Option<Capability> {
+   00165|     capability_router::classify_tool(name)
+   00166| }
+   00167| 
+   00168| /// Plan the next agentic step from the conversation and advertised tools.
+   00169| /// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
+   00170| #[must_use]
+   00171| pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
+   00172|     let received = crate::protocol::latest_user_request(messages)?;
+   00173|     // A harness prompt that quotes the task to have it summarized is answered
+   00174|     // with the summary, never by doing the task again (issue #1133).
+   00175|     if let Some(summary) = harness_envelope::summarize_request(&received) {
+   00176|         return Some(AgenticPlan::Final(summary));
+   00177|     }
+   00178|     // A restart over prepared work (changed paths plus a pull request link)
+   00179|     // is the whole turn's shape, not one arm of the precedence cascade: it is
+   00180|     // decided on the same effective request the cascade reads, ahead of it,
+   00181|     // and its plan still passes the repeated-call and repeated-failure stops.
+   00182|     let effective = continued_agent_task(messages, &received);
+   00183|     let restart = super::restart_feedback::plan_restart(
+   00184|         effective.as_deref().unwrap_or(&received),
+   00185|         messages,
+   00186|         tool_names,
+   00187|     );
+   00188|     let plan = restart.or_else(|| plan_chat_step_routes(messages, tool_names, received))?;
+   00189|     Some(stop_repeated_failure(
+   00190|         stop_repeated_call(plan, messages),
+   00191|         messages,
+   00192|     ))
+   00193| }
+   00194| 
+   00195| /// A tool call this turn already completed is not a plan again (issue #1154).
+   00196| ///
+   00197| /// Independent of any argument parsing: whatever keys a client names its
+   00198| /// arguments by, a stateless planner that re-derives a call whose result is
+   00199| /// already in the transcript ignored that result. The Codex Rust run planned
+   00200| /// the identical `gh issue view` 78 times over 6.2M input tokens because the
+   00201| /// read's accounting could not see the `cmd` key; this stop would have ended
+   00202| /// the loop on the second attempt whatever the parser did. The repeat is
+   00203| /// answered by reporting the stuck step and its last result.
+   00204| fn stop_repeated_call(plan: AgenticPlan, messages: &[ChatMessage]) -> AgenticPlan {
+   00205|     let AgenticPlan::ToolCalls(calls) = &plan else {
+   00206|         return plan;
+   00207|     };
+   00208|     let progress = Progress::scan(messages);
+   00209|     let Some((repeated, attempt)) = calls
+   00210|         .iter()
+   00211|         .find_map(|call| progress.repeated_call(call).map(|attempt| (call, attempt)))
+   00212|     else {
+   00213|         return plan;
+   00214|     };
+   00215|     AgenticPlan::Final(super::work_item_steps::fill(
+   00216|         "stuck_step_report",
+   00217|         &[
+   00218|             (
+   00219|                 "{step}",
+   00220|                 &format!("{} {}", repeated.tool, repeated.arguments),
+   00221|             ),
+   00222|             ("{result}", attempt.detail.trim()),
+   00223|         ],
+   00224|     ))
+   00225| }
+   00226| 
+   00227| /// A tool call that has already failed twice this turn with the same report
+   00228| /// is not a plan; the third attempt is replaced by the report of the failure.
+   00229| ///
+   00230| /// Issue #1133: the Kotlin run planned `mcp__playwright__browser_click` 547
+   00231| /// times, each answered by the same selector error, until the context window
+   00232| /// overflowed. No route knows it is looping -- each re-derives the same next
+   00233| /// step from the same transcript -- so the stop is applied to whatever any
+   00234| /// route planned.
+   00235| fn stop_repeated_failure(plan: AgenticPlan, messages: &[ChatMessage]) -> AgenticPlan {
+   00236|     const REPEATED_FAILURES_THAT_STOP: usize = 2;
+   00237|     let AgenticPlan::ToolCalls(calls) = &plan else {
+   00238|         return plan;
+   00239|     };
+   00240|     let progress = Progress::scan(messages);
+   00241|     let Some(repeated) = calls
+   00242|         .iter()
+   00243|         .find(|call| progress.identical_failures_of(&call.tool) >= REPEATED_FAILURES_THAT_STOP)
+   00244|     else {
+   00245|         return plan;
+   00246|     };
+   00247|     let Some(failure) = progress.latest_failure_of_tool(&repeated.tool) else {
+   00248|         return plan;
+   00249|     };
+   00250|     let prompt = crate::protocol::latest_user_request(messages).unwrap_or_default();
+   00251|     AgenticPlan::Final(tool_result::render_failure(
+   00252|         &repeated.tool,
+   00253|         &failure.detail,
+   00254|         &prompt,
+   00255|     ))
+   00256| }
+   00257| 
+   00258| fn plan_chat_step_routes(
+   00259|     messages: &[ChatMessage],
+   00260|     tool_names: &[&str],
+   00261|     received: String,
+   00262| ) -> Option<AgenticPlan> {
+   00263|     // Load-time precedence join (plan 10 leaf 18): first plan step of a run
+   00264|     // proves the seed still names the cascade this function is about to walk.
+   00265|     checked_route_precedence();
+   00266|     trace_route("agentic_received", &received);
+   00267|     // Agent compacts a long tool loop by asking the model to summarize it, then
+   00268|     // starts the next request with the protocol turn "Continue if you have next
+   00269|     // steps". The work is still present, but only inside the assistant's
+   00270|     // `Conversation summary:` envelope. Treating the protocol turn as a fresh
+   00271|     // request loses that work and sends the sentence itself to web search.
+   00272|     // Recover only our own summary envelope, immediately before the exact
+   00273|     // continuation turn; ordinary user requests that happen to say "continue"
+   00274|     // keep their normal meaning.
+   00275|     let effective = continued_agent_task(messages, &received).unwrap_or(received);
+   00276|     // An *unmarked* harness preamble is still the caller talking (issue #907,
+   00277|     // follow-up). `<session_context>`-style markup is stripped upstream in
+   00278|     // `crate::protocol`, but Hive Mind's adapters concatenated their workflow
+   00279|     // policy and the objective into one untagged user message, so the tell has
+   00280|     // to be the objective delimiter the caller wrote instead of a tag:
+   00281|     // everything before a line-anchored `Issue to solve:` / `Task:` / `Goal:`
+   00282|     // lead is the caller's framing, and only the text after it is the request.
+   00283|     //
+   00284|     // Routing the whole message let the preamble win: "When running sudo
+   00285|     // commands, run them in the background." paired a run verb with the `sudo`
+   00286|     // shell token and planned bare `sudo`, and "Your prepared working
+   00287|     // directory: …" planned `pwd`, in both cases dropping the repository work
+   00288|     // that followed. The general planner already read the objective this way
+   00289|     // (issue #904); every other route now reads it the same way, so one
+   00290|     // boundary serves the whole router rather than one recipe.
+   00291|     let task = objective_text(&effective).to_owned();
+   00292|     trace_route("agentic_task", &task);
+   00293|     // A bare continuation cue with nothing to resume is still the cue here,
+   00294|     // and the `agentic_continuation` conversation handler answers it; the
+   00295|     // words of the cue are never a request (issue #1095).
+   00296|     if crate::rule_interpreter::handler_matches("conversation_control", &task)
+   00297|         || is_continuation_cue(&task)
+   00298|         // An edit request's block is its payload: a `when … then` inside it is
+   00299|         // text being written, not a skill being taught (PR #1188 T57).
+   00300|         || (!has_authoritative_literal_write(&task)
+   00301|             && super::general_planner::compose_edit_request(&task).is_none()
+   00302|             && looks_like_skill_description(super::positional_edit::own_text(&task)))
+   00303|     {
+   00304|         return None;
+   00305|     }
+   00306|     // Issue #707: seed-defined computer-use plans own their exact multilingual
+   00307|     // prompts before broad write/search routing. Each emitted primitive carries
+   00308|     // explicit pre/postconditions and is executed by the advertising client.
+   00309|     // Ahead of them, quotes that do not pair leave no telling the quoted text
+   00310|     // from the instruction, so the request is declined before any arm reads its
+   00311|     // payload as words to act on (PR #1188 G71).
+   00312|     if let Some(plan) = super::quote_nesting::request_fault_answer(&task)
+   00313|         .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
+   00314|     {
+   00315|         return Some(plan);
+   00316|     }
+   00317|     // An explicit exact-content marker makes the following bytes authoritative.
+   00318|     // Claim this narrow shape before edit/source semantics inspect the payload:
+   00319|     // literal bytes may themselves say "rename X to Y" (issue #708). Broader
+   00320|     // file-write requests remain below the semantic coding routes.
+   00321|     if has_authoritative_literal_write(&task)
+   00322|         && let Some(plan) = capability_router::workspace_creation_tool(tool_names)
+   00323|             .and_then(|_| compose_general_change_plan(&task))
+   00324|             .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+   00325|     {
+   00326|         return Some(plan);
+   00327|     }
+   00328|     // Bind a program's semantic operands before treating its source path as a
+   00329|     // destination for a report about the rest of the request.
+   00330|     if let Some(mut answer) =
+   00331|         crate::coding::program_contract::answer(&task, &mut crate::event_log::EventLog::default())
+   00332|     {
+   00333|         if let Some(recipe) = answer.execution_recipe.as_mut()
+   00334|             && super::ci_workflow::requested_in(&task)
+   00335|         {
+   00336|             super::ci_workflow::attach(recipe);
+   00337|         }
+   00338|         if let Some(plan) =
+   00339|             super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
+   00340|         {
+   00341|             return Some(plan);
+   00342|         }
+   00343|     }
+   00344|     // "Find this out and leave the answer in FILE" (issue #1066). This sits ahead
+   00345|     // of every route that reads a request's lone file-shaped token, because that
+   00346|     // token is the *destination* here and opening it for reading ends the run with
+   00347|     // the evidence file unwritten. It sits behind the literal-write routes above,
+   00348|     // which own a request that spells its bytes out; this one owns the request
+   00349|     // whose bytes still have to be found.
+   00350|     //
+   00351|     // It sits ahead of the change routes below for the same reason it sits ahead
+   00352|     // of the readers: a request can carry both halves. The ladder's leaf says
+   00353|     // "Edit `src/engine_responses.rs` … Then create `agent-ladder-effects/…lino`
+   00354|     // recording what you changed. Leave evidence in `.agent-ladder/…-proof.md`",
+   00355|     // and the change routes answer `Final` for the whole request the moment the
+   00356|     // edit lands, so the two records the caller verifies are never written and
+   00357|     // the node fails `missing_proof` having done the work. This route peels one
+   00358|     // delivery at a time and re-plans the residual (see `parse_obligation`), so
+   00359|     // the change route still receives the edit -- with only the edit left in it.
+   00360|     if let Some(plan) = evidence_record::plan_evidence_record_step(&task, messages, tool_names) {
+   00361|         return Some(plan);
+   00362|     }
+   00363|     plan_settled_routes(&task, messages, tool_names)
+   00364| }
+   00365| 
+   00366| /// Every route below the delivery peeling above, as one function.
+   00367| ///
+   00368| /// [`plan_evidence_record_step`](evidence_record::plan_evidence_record_step)
+   00369| /// peels a named destination off a request and re-plans the remainder, and that
+   00370| /// is only ever the right reading when the destination is not already some
+   00371| /// other route's whole answer. A registered recipe *is* named by its artifact —
+   00372| /// `learning_report::route` matches a prompt precisely by finding its own
+   00373| /// `path` in it — so peeling that path off leaves a residual that no longer
+   00374| /// reaches the recipe, and the request is answered by whatever the remainder
+   00375| /// happens to look like instead.
+   00376| ///
+   00377| /// Splitting the tail out lets the peeling ask the question directly: plan the
+   00378| /// *whole* request through the routes below and see whether one of them writes
+   00379| /// the file. Nothing here re-enters the peeling, so asking cannot recurse.
+   00380| pub(super) fn plan_settled_routes(
+   00381|     task: &str,
+   00382|     messages: &[ChatMessage],
+   00383|     tool_names: &[&str],
+   00384| ) -> Option<AgenticPlan> {
+   00385|     // A request to commit what is already in the tree is one shell step. It
+   00386|     // is claimed first because its words ("review these changes and commit
+   00387|     // them", with a `?? Main.scala` listing) read to later routes as a search
+   00388|     // for the file; the route itself declines any request that also names the
+   00389|     // work to do (issue #1133).
+   00390|     if let Some(plan) = git_commit::plan_commit_step(task, messages, tool_names) {
+   00391|         return Some(plan);
+   00392|     }
+   00393|     // A learned workspace-change procedure owns grounded repository rewrites
+   00394|     // and multi-file compositions before source creation or shell routing can
+   00395|     // collapse them into one incomplete action. A function and its test added
+   00396|     // to existing modules (PR #1188 T1) is one such composition: read both
+   00397|     // modules, write both, run the stated command.
+   00398|     // A copy or move followed by edits of the file it makes is planned
+   00399|     // sentence by sentence (PR #1188 G82).
+   00400|     if let Some(plan) = super::request_sequence::plan_request_sequence_step(
+   00401|         task,
+   00402|         messages,
+   00403|         tool_names,
+   00404|         plan_chat_step,
+   00405|     )
+   00406|     .or_else(|| super::workspace_change::plan_workspace_change_step(task, messages, tool_names))
+   00407|     .or_else(|| super::module_function::plan_module_function_step(task, messages, tool_names))
+   00408|     // A bug report with a stated expectation is checked before anything is
+   00409|     // rewritten (PR #1188 T93).
+   00410|     .or_else(|| {
+   00411|         super::function_expectation::plan_function_expectation_step(task, messages, tool_names)
+   00412|     })
+   00413|     // An assertion of a stated call and value is added in the test
+   00414|     // file's own form, and the file is run (PR #1188 G13).
+   00415|     .or_else(|| super::test_assertion::plan_test_assertion_step(task, messages, tool_names))
+   00416|     // A test asked for with no expected result is a question (PR #1188
+   00417|     // G25).
+   00418|     .or_else(|| super::function_expectation::test_expectation_question(task))
+   00419|     {
+   00420|         return Some(plan);
+   00421|     }
+   00422|     // A source-code description is not literal file content. Lower bounded
+   00423|     // seed-backed source tasks before the broad literal-write parser so coding
+   00424|     // requests produce executable bytes and verify those exact bytes.
+   00425|     if let Some(plan) = code_task::plan_generated_source_step(task, messages, tool_names) {
+   00426|         return Some(plan);
+   00427|     }
+   00428|     if let Some(plan) = structured_edit::plan_structured_edit_step(task, messages, tool_names) {
+   00429|         return Some(plan);
+   00430|     }
+   00431|     // A source-backed structured document is a read/derive/write transaction.
+   00432|     // It must win before the ordinary file reader, which would otherwise read
+   00433|     // the input correctly and then mistake that intermediate observation for
+   00434|     // the answer to the whole authored-artifact request.
+   00435|     if let Some(plan) = structured_document::plan_step(task, messages, tool_names) {
+   00436|         return Some(plan);
+   00437|     }
+   00438|     // A repository audit names the artifact its CLI command will produce; that
+   00439|     // filename is a destination, not literal content for the generic writer.
+   00440|     // Keep the replayable recipe ahead of literal fallback so an observed CLI
+   00441|     // result completes the audit instead of starting a redundant write plan.
+   00442|     if statement_audit::is_statement_audit_task(task) {
+   00443|         return Some(plan_shell_step(
+   00444|             messages,
+   00445|             tool_names,
+   00446|             statement_audit::command_for(task),
+   00447|         ));
+   00448|     }
+   00449|     // Resolve an unambiguous literal write before keyword recipes: arbitrary
+   00450|     // filenames/payloads may legitimately contain "issue", "report", or "learning".
+   00451|     // Unambiguous is the operative word: a request that also pins the target
+   00452|     // file's opening line has not spelled its bytes out, and content recovered
+   00453|     // from its prose would be written without that line (issue #1066).
+   00454|     // Plan 16 L2g: a request that names a source-tree file (`js/app.js … to
+   00455|     // typescript`) is the meta pivot's translate family, and must be claimed
+   00456|     // before the literal-write and obligation composers read "write it" as an
+   00457|     // artifact write of the goal text. The structural gate (a path token plus
+   00458|     // the target's canonical spelling) is cheap; the family itself is decided
+   00459|     // by the shared solver, whose bridge lowers it to one `translate` tool
+   00460|     // call — or answers with the rendered gap on a client without the tool.
+   00461|     if crate::meta_translate::source_tree_request(task).is_some() {
+   00462|         match super::conversation_recall::plan_shared_solver_step(messages, tool_names) {
+   00463|             super::conversation_recall::SharedSolverStep::Ready(plan) => return Some(plan),
+   00464|             super::conversation_recall::SharedSolverStep::NotOurs
+   00465|             | super::conversation_recall::SharedSolverStep::Defer => {}
+   00466|         }
+   00467|     }
+   00468|     // An enumerated request is planned one obligation at a time, and is not
+   00469|     // successfully finished until the runtime ledger has discharged every
+   00470|     // node with at least one execution record (issues #1099 and #1138 B5).
+   00471|     // Single-clause requests deliberately bypass this path and keep the
+   00472|     // established whole-request composer below. So does a request the shell
+   00473|     // executes as one command and no composer reads as an artifact write:
+   00474|     // "show me the working directory: then list its files" splits into clauses
+   00475|     // whose first half names no artifact, and the ledger reported a gap where
+   00476|     // the shell cascade answers the whole request (issue #907). The semantic
+   00477|     // resolver, not the general one: "copy" inside "a fresh repository copy"
+   00478|     // matches a shell verb surface without the request being a command.
+   00479|     let shell_owned = super::shell_command::semantic_shell_command_for_task(task).is_some()
+   00480|         && compose_general_change_plan(task).is_none();
+   00481|     if capability_router::workspace_creation_tool(tool_names).is_some()
+   00482|         && !shell_owned
+   00483|         && let Some(obligations) = task_obligations::obligations(task)
+   00484|     {
+   00485|         match task_obligations::next_step(task, messages) {
+   00486|             Some(
+   00487|                 task_obligations::ObligationStep::Observe(node)
+   00488|                 | task_obligations::ObligationStep::Decompose(node),
+   00489|             ) => {
+   00490|                 // Observable artifact nodes re-enter the ordinary composer;
+   00491|                 // underivable nodes have already been recursively split by
+   00492|                 // `ObligationNode::build`. If no executable plan can be
+   00493|                 // derived, decline instead of turning an unobserved node into
+   00494|                 // completion prose.
+   00495|                 return compose_general_change_plan(&node.clause)
+   00496|                     .map(|plan| plan_general_change_step(messages, tool_names, &plan));
+   00497|             }
+   00498|             Some(task_obligations::ObligationStep::ReportGap {
+   00499|                 node_id,
+   00500|                 clause,
+   00501|                 span,
+   00502|                 reason,
+   00503|             }) => {
+   00504|                 return Some(AgenticPlan::Final(task_obligations::gap_answer(
+   00505|                     &node_id, &clause, span, &reason,
+   00506|                 )));
+   00507|             }
+   00508|             None if task_obligations::successfully_discharged(task, messages) => {
+   00509|                 // Re-enter the final executable obligation's ordinary state
+   00510|                 // machine so the completion wording and verification report
+   00511|                 // stay identical to a single-target request.
+   00512|                 return obligations
+   00513|                     .iter()
+   00514|                     .rev()
+   00515|                     .find_map(|obligation| compose_general_change_plan(&obligation.clause))
+   00516|                     .map(|plan| plan_general_change_step(messages, tool_names, &plan));
+   00517|             }
+   00518|             None => return None,
+   00519|         }
+   00520|     }
+   00521|     if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
+   00522|         .and_then(|_| compose_general_change_plan(task))
+   00523|         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+   00524|     {
+   00525|         return Some(plan);
+   00526|     }
+   00527|     // Portable event logs own the independently validated trace-learning route.
+   00528|     if let Some(task) = algorithm_learning::compile_task(task) {
+   00529|         return Some(algorithm_learning::plan_step(messages, tool_names, &task));
+   00530|     }
+   00531|     // A freely phrased procedure is one generalized compile → persist → verify
+   00532|     // recipe on both the symbolic and Agent CLI surfaces.
+   00533|     if let Some(procedure) = procedure::compile_task(task) {
+   00534|         return Some(procedure::plan_step(messages, tool_names, &procedure));
+   00535|     }
+   00536|     // Specific self-inspection routes precede broad formalization. Associative
+   00537|     // learning comes before self-healing because both accept auto-learning terms;
+   00538|     // the requested artifact scope distinguishes their recipes.
+   00539|     if let Some(report) = learning_report::route(task) {
+   00540|         return Some(report.plan_step(messages, tool_names));
+   00541|     }
+   00542|     // Workspace mutations are grounded in client-owned file bytes. This route
+   00543|     // follows the explicit learning recipes so their requested artifacts cannot
+   00544|     // be mistaken for an edit, and precedes the generic edit/read/shell routers
+   00545|     // below. Requests naming both a literal target and literal content are
+   00546|     // already claimed by the write probe above.
+   00547|     if let Some(plan) = code_artifact::plan_code_artifact_step(task, messages, tool_names) {
+   00548|         return Some(plan);
+   00549|     }
+   00550|     if self_heal::is_self_heal_task(task) {
+   00551|         return Some(plan_self_heal_step(messages, tool_names));
+   00552|     }
+   00553|     if dreaming_audit::is_dreaming_audit_task(task) {
+   00554|         return Some(plan_dreaming_audit_step(messages, tool_names));
+   00555|     }
+   00556|     if self_ast::is_self_ast_task(task) {
+   00557|         return Some(plan_self_ast_step(messages, tool_names));
+   00558|     }
+   00559|     // The whole-repository source-links recipe: checked alongside the other
+   00560|     // self-inspection recipes and before formalization, because its request
+   00561|     // legitimately names "links" (its output format), which the broad
+   00562|     // formalization keyword match below would otherwise capture.
+   00563|     if source_links::is_source_links_task(task) {
+   00564|         return Some(plan_source_links_step(messages, tool_names));
+   00565|     }
+   00566|     // The learning-ledger recipe: the promotion step that follows an approved repair
+   00567|     // case. Checked after self-healing (which owns the "auto learning" keywords) and
+   00568|     // before formalization, since its request legitimately names "Links Notation".
+   00569|     if ledger::is_ledger_task(task) {
+   00570|         return Some(plan_ledger_step(messages, tool_names));
+   00571|     }
+   00572|     // The grounded self-explanation recipe: answers "how does Formal AI work?" from
+   00573|     // real source/data/test artifacts. Checked alongside the other self-inspection
+   00574|     // recipes and before formalization, since its request legitimately names "Links
+   00575|     // Notation" as the output format its document is rendered in.
+   00576|     if explain::is_explain_task(task) {
+   00577|         return Some(plan_explain_step(messages, tool_names));
+   00578|     }
+   00579|     // The user-initiated self-change recipe: turns a natural-language "change Formal AI
+   00580|     // itself" request into a reviewable pull request through the same human-gated loop.
+   00581|     // Checked alongside the other self-referential recipes and before formalization,
+   00582|     // since its request legitimately names "Links Notation" as the output format.
+   00583|     if change_request::is_change_request_task(task) {
+   00584|         return Some(plan_change_request_step(messages, tool_names));
+   00585|     }
+   00586|     // The general repair-classification recipe: given an arbitrary failure trace, decide
+   00587|     // whether the repair is a solver method, a data record, or a test, and compose the
+   00588|     // grounded, human-gated strategy for each class. Checked alongside the other
+   00589|     // self-referential recipes and before formalization, since its request legitimately
+   00590|     // names "Links Notation" as the output format its strategies are rendered in. Its
+   00591|     // keywords are disjoint from the self-healing recipe's ("repair case"/"repair loop"),
+   00592|     // so ordering only guards a request that somehow names both.
+   00593|     if repair_strategy::is_repair_strategy_task(task) {
+   00594|         return Some(plan_repair_strategy_step(messages, tool_names));
+   00595|     }
+   00596|     // Rebuild-and-reattach recipe: once a change is accepted, recompile Formal AI and
+   00597|     // reattach the improved WebAssembly worker to the UI (issue #558's `R558-06`).
+   00598|     // Checked alongside the other self-referential recipes and before formalization,
+   00599|     // since its request legitimately names "Links Notation" as the output format its plan
+   00600|     // is rendered in. Its keywords key on "reattach" and are disjoint from the
+   00601|     // source-links recipe's "recompile", so ordering only guards a request that somehow
+   00602|     // names both.
+   00603|     if rebuild_plan::is_rebuild_task(task) {
+   00604|         return Some(plan_rebuild_step(messages, tool_names));
+   00605|     }
+   00606|     // The learning-frontier recipe (issues #498 + #558): route the trending prompts the
+   00607|     // engine cannot yet resolve through the human-gated self-improvement loop. Checked
+   00608|     // before the sibling catalog recipe because both legitimately name "Google Trends";
+   00609|     // its keywords ("learning frontier", "self-improvement loop", "cannot … resolve") are
+   00610|     // disjoint from the catalog recipe's (prompt/answer/catalog/test), so ordering only
+   00611|     // guards a request that somehow names both.
+   00612|     if google_trends_learning::is_google_trends_learning_task(task) {
+   00613|         return Some(plan_google_trends_learning_step(messages, tool_names));
+   00614|     }
+   00615|     if google_trends_catalog::is_google_trends_catalog_task(task) {
+   00616|         return Some(plan_google_trends_catalog_step(messages, tool_names));
+   00617|     }
+   00618|     // The question-catalog recipe (issue #527): enumerate every possible question
+   00619|     // smallest-first, classify each grammatically and logically, and answer the
+   00620|     // meaningful ones. Checked alongside the other self-referential recipes and before
+   00621|     // formalization, since its request legitimately names "Links Notation" as the output
+   00622|     // format its catalog is rendered in. Its keywords ("question catalog", "all possible
+   00623|     // questions", …) are disjoint from the sibling recipes', so ordering only guards a
+   00624|     // request that somehow names both.
+   00625|     if question_catalog::is_question_catalog_task(task) {
+   00626|         return Some(plan_question_catalog_step(messages, tool_names));
+   00627|     }
+   00628|     // A request to inspect named files and report what it finds is a file
+   00629|     // analysis, not a request to open a repository issue. In particular, a
+   00630|     // `.github/...` path supplies the report router's otherwise-valid subject
+   00631|     // word. Let the typed read + audit object govern the output verb before the
+   00632|     // conversation-level report wizard sees it (issue #1138 self-use).
+   00633|     // After it, where a name or literal is used inside the workspace is a
+   00634|     // content search (PR #1188 T90): grep it, ahead of the file-name locate arm
+   00635|     // and web search.
+   00636|     if let Some(plan) = file_read_task_for(task)
+   00637|         .filter(super::file_read::FileReadTask::is_analysis)
+   00638|         .map(|file_task| plan_file_read_step(&file_task, messages, tool_names))
+   00639|         .or_else(|| workspace_search::plan_workspace_search_step(task, messages, tool_names))
+   00640|         // What a named module exports is answered from its declarations (T99).
+   00641|         .or_else(|| super::module_exports::plan_module_exports_step(task, messages, tool_names))
+   00642|         // A summary of a named file summarizes the file's text (T100).
+   00643|         .or_else(|| super::file_summary::plan_file_summary_step(task, messages, tool_names))
+   00644|     {
+   00645|         return Some(plan);
+   00646|     }
+   00647|     // Agent-mode counterpart of the web UI's report action (issues #687 + #822).
+   00648|     // This is a conversation state machine: after the initial report intent it
+   00649|     // continues across structured tool results or plain-text user choices.
+   00650|     if let Some(plan) = report_issue::plan_report_flow(messages, tool_names) {
+   00651|         return Some(plan);
+   00652|     }
+   00653|     match conversation_recall::plan_shared_solver_step(messages, tool_names) {
+   00654|         conversation_recall::SharedSolverStep::Ready(plan) => return Some(plan),
+   00655|         // The shared solver's typed recipe owns the turn and the client can run
+   00656|         // it: stop routing and yield the request so the server's recipe path
+   00657|         // delivers the verified write--check--run chain (issue #916) -- falling
+   00658|         // through instead would let the research arms below steal the prompt
+   00659|         // back (issue #936).
+   00660|         conversation_recall::SharedSolverStep::Defer => return None,
+   00661|         conversation_recall::SharedSolverStep::NotOurs => {}
+   00662|     }
+   00663|     if let Some(answer) = tool_result::follow_up_answer(messages, task) {
+   00664|         return Some(AgenticPlan::Final(answer));
+   00665|     }
+   00666|     if let Some(answer) = web_research::contextual_reference_clarification(task) {
+   00667|         return Some(AgenticPlan::Final(answer));
+   00668|     }
+   00669|     if web_research::is_definition_followup(task) {
+   00670|         if let Some(query) = web_research::definition_followup_topic(messages, task) {
+   00671|             if let Some(plan) =
+   00672|                 web_research::plan_web_research_step(messages, tool_names, &query, true)
+   00673|             {
+   00674|                 return Some(plan);
+   00675|             }
+   00676|         } else {
+   00677|             return Some(AgenticPlan::Final(
+   00678|                 web_research::definition_followup_clarification(task),
+   00679|             ));
+   00680|         }
+   00681|     }
+   00682|     if let Some(plan) = intent_router::plan_edit_step(task, messages, tool_names) {
+   00683|         return Some(plan);
+   00684|     }
+   00685|     // Preserve the established stateful list/read recipe whenever the client
+   00686|     // exposes its typed read capability. The shared read-many route remains
+   00687|     // available for CLIs that advertise only a batch reader.
+   00688|     if tool_for(tool_names, Capability::Read).is_some()
+   00689|         && let Some(file_task) = file_read_task_for(task)
+   00690|     {
+   00691|         return Some(plan_file_read_step(&file_task, messages, tool_names));
+   00692|     }
+   00693|     // A meanings-driven explicit local scope dominates generic search verbs.
+   00694|     // This state machine observes each result and widens only after emptiness.
+   00695|     if let Some(plan) = local_search::plan_local_search_step(messages, tool_names) {
+   00696|         return Some(plan);
+   00697|     }
+   00698|     if let Some(plan) = comparison::plan_comparison_step(task, messages, tool_names) {
+   00699|         return Some(plan);
+   00700|     }
+   00701|     // Plan 10 leaf 11: the shared cue-phrase arm that stood here is retired, and its *position*
+   00702|     // is kept -- because position is what the seven named capabilities still need. The decision
+   00703|     // table decides them now by `(object, act, locus)` with no phrase scan, and it decides them
+   00704|     // here, ahead of the shell cascade, so a request whose row names an advertised `grep`, `glob`,
+   00705|     // `list_dir`, `read_many`, `multi_edit`, `todo` or `subagent` is not answered by the shell
+   00706|     // lowering that same row declares as its fallback. A row the table cannot decide here (no
+   00707|     // row, or a capability outside the seven) leaves the cascade exactly as it was.
+   00708|     if let Some(plan) = capability_router::plan_named_capability_step(task, messages, tool_names) {
+   00709|         return Some(plan);
+   00710|     }
+   00711|     if let Some(plan) = plan_shell_command_arm(task, messages, tool_names) {
+   00712|         return Some(plan);
+   00713|     }
+   00714|     if let Some(file_task) = file_read_task_for(task) {
+   00715|         return Some(plan_file_read_step(&file_task, messages, tool_names));
+   00716|     }
+   00717|     if formalization_recipe::is_formalization_task(task) {
+   00718|         return Some(formalization_recipe::plan_formalization_step(
+   00719|             task, messages, tool_names,
+   00720|         ));
+   00721|     }
+   00722|     if meaning_detail::is_meaning_detail_task(task) {
+   00723|         return Some(plan_meaning_detail_step(task, messages, tool_names));
+   00724|     }
+   00725|     if diagram::is_diagram_task(task) {
+   00726|         return Some(plan_diagram_step(messages, tool_names));
+   00727|     }
+   00728|     // Plan 10 leaf 19 (issue #1138): the URL route that stood here is retired.
+   00729|     // The decision table's five `url` rows — one per act — decide that request
+   00730|     // class at the named-or-local stage below, with the same `fetch_arguments`
+   00731|     // lowering this arm produced, so the arm was a second URL decision ahead of
+   00732|     // its own table backstop. The table also guards what this arm never did: a
+   00733|     // URL named while a research recipe is already under way is the recipe's
+   00734|     // to continue, not a one-step fetch that ends it (issue #781).
+   00735|     // A request to look at the repository the agent was handed is answered by
+   00736|     // reading that repository. It has to be resolved before the research
+   00737|     // routers, which would otherwise claim it on the strength of its question
+   00738|     // shape alone and look the answer up on the open web (issue #1066). The
+   00739|     // subject rule inside `workspace_inspection_search_for_task` is what keeps a
+   00740|     // genuinely external question out of this route.
+   00741|     if !tool_result::has_latest_turn_result(messages)
+   00742|         && let Some(search) = workspace_inspection::workspace_inspection_search_for_task(task)
+   00743|         && let Some(tool) = tool_for(tool_names, Capability::Grep)
+   00744|     {
+   00745|         let mut arguments = json!({
+   00746|             "query": search.query,
+   00747|             "pattern": search.pattern,
+   00748|         });
+   00749|         if let Some(include) = search.include {
+   00750|             arguments["include"] = include.into();
+   00751|         }
+   00752|         return Some(plan_one(tool, arguments.to_string()));
+   00753|     }
+   00754|     // A question about how a task decomposes is answered by decomposing it. It
+   00755|     // has to be resolved before the research routers for the same reason the
+   00756|     // workspace inspection above does: the question shape alone would otherwise
+   00757|     // send a task the web has never heard of to a web search (issue #1066).
+   00758|     //
+   00759|     // The route reads `messages` for the same reason its neighbour above does,
+   00760|     // and it makes that judgement itself: a turn on which a tool has already run
+   00761|     // is not one an answer composed from the request alone may claim.
+   00762|     if let Some(plan) = task_structure::plan_task_structure_step(messages, task) {
+   00763|         return Some(plan);
+   00764|     }
+   00765|     // The decision table of `data/seed/capability-routing.lino` (issue #1138 B10,
+   00766|     // plan 10 leaves 9-11). Capability is a function of the object in the
+   00767|     // request, the act asked for, and where the effect lands, and a triple with
+   00768|     // no row declines here rather than guessing -- so the research routers below
+   00769|     // answer only what the table did not claim.
+   00770|     //
+   00771|     // It sits *here*, and not ahead of the semantic routes above, because that
+   00772|     // is the position the #745 and #758 misroutes were actually made from:
+   00773|     // every one of them was a request the routes above declined and a research
+   00774|     // router then claimed on the strength of its sentence shape alone. Ahead of
+   00775|     // those routes the table preempts the ones that read the conversation and
+   00776|     // the workspace, which was measured at 239 failing tests -- the recipe
+   00777|     // driver, the ladder capability suite and the agentic surfaces among them.
+   00778|     // Since leaf 11 removed the 280 memorized cues there is no second capability
+   00779|     // decision behind this one; what the table declines is visible as an honest
+   00780|     // gap in the event log rather than as a phrase match that never fired.
+   00781|     // One more thing the table may not claim: a turn that is *mid-recipe*.
+   00782|     // Once a search has produced usable output the conversation is inside the
+   00783|     // multi-step research route -- search, then fetch each result, then compose
+   00784|     // -- and the request text on that turn is still the original request. The
+   00785|     // table reads that text, sees the object it named ("… на amazon.in" names a
+   00786|     // registrable host), and answers the whole conversation with one step,
+   00787|     // ending the recipe after its first (issue #781). Routing by object, act and
+   00788|     // locus decides *which capability a request needs*; it does not decide that
+   00789|     // a recipe already under way is finished. The `has_successful_search_result`
+   00790|     // boundary is the one the research routes below already draw for themselves.
+   00791|     if !web_research::has_successful_search_result(messages)
+   00792|         && let Some(plan) = capability_router::plan_routed_capability_step(
+   00793|             task,
+   00794|             messages,
+   00795|             tool_names,
+   00796|             capability_router::RoutingStage::NamedOrLocal,
+   00797|         )
+   00798|     {
+   00799|         return Some(plan);
+   00800|     }
+   00801|     // An addition that quotes no text earns a question naming what is missing
+   00802|     // (PR #1188 G69).
+   00803|     // An instruction that edits a named file is never a web question -- when
+   00804|     // no edit route above could compose it, the honest answer is that nothing
+   00805|     // was planned, not a search for the sentence (issues #1115, #1133).
+   00806|     if super::positional_edit::unquoted_addition_path(task).is_some()
+   00807|         || super::positional_edit::names_local_edit(task)
+   00808|     {
+   00809|         return unquoted_addition_question(task);
+   00810|     }
+   00811|     if let Some(query) = web_research::web_research_query_for(messages)
+   00812|         && let Some(plan) =
+   00813|             web_research::plan_web_research_step(messages, tool_names, &query, false)
+   00814|     {
+   00815|         return Some(plan);
+   00816|     }
+   00817|     if let Some(plan) = intent_router::plan_web_search_step(task, messages, tool_names) {
+   00818|         return Some(plan);
+   00819|     }
+   00820|     // A generic localized "find" cue can describe either an open-web lookup or
+   00821|     // a workspace grep. The research routers above get first refusal whenever
+   00822|     // the client exposes their tools; explicit local/repository searches were
+   00823|     // already claimed by the capability router. This fallback therefore keeps
+   00824|     // grep available to grep-only clients without letting an alphabetically
+   00825|     // earlier local tool steal a web-research request.
+   00826|     if !tool_result::has_latest_turn_result(messages)
+   00827|         && let Some(query) = shell_command::code_search_query_for_task(task)
+   00828|         && let Some(tool) = tool_for(tool_names, Capability::Grep)
+   00829|     {
+   00830|         return Some(plan_one(
+   00831|             tool,
+   00832|             json!({ "query": query, "pattern": query }).to_string(),
+   00833|         ));
+   00834|     }
+   00835|     if web_research::has_successful_search_result(messages)
+   00836|         && let Some(query) = web_research::mid_research_web_query_for(messages)
+   00837|         && let Some(plan) =
+   00838|             web_research::plan_web_research_step(messages, tool_names, &query, false)
+   00839|     {
+   00840|         return Some(plan);
+   00841|     }
+   00842|     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, task) {
+   00843|         return Some(AgenticPlan::Final(answer));
+   00844|     }
+   00845|     // A request that specifies what a document has to *cover* is answered by
+   00846|     // composing that document. It sits here, after every route that could answer
+   00847|     // one of the named parts outright, so a note is only composed once nothing
+   00848|     // else claims the request -- and before the literal-write fallback, which
+   00849|     // would otherwise write the specification instead of the document
+   00850|     // (issue #1066).
+   00851|     if let Some(plan) = note_composition::plan_note_composition_step(task, messages) {
+   00852|         return Some(plan);
+   00853|     }
+   00854|     if let Some(plan) = compose_general_change_plan(task)
+   00855|         .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+   00856|     {
+   00857|         return Some(plan);
+   00858|     }
+   00859|     if let Some(query) = web_research::unresolved_web_research_query_for(messages)
+   00860|         && let Some(plan) =
+   00861|             web_research::plan_web_research_step(messages, tool_names, &query, false)
+   00862|     {
+   00863|         return Some(plan);
+   00864|     }
+   00865|     // The open-web half of the decision table, last: the research routers above
+   00866|     // own a bare term the web has to answer, and the table speaks only for the
+   00867|     // requests they declined -- which is where #745's "trawl the web for rust
+   00868|     // ownership" ended in nothing at all.
+   00869|     if let Some(plan) = capability_router::plan_routed_capability_step(
+   00870|         task,
+   00871|         messages,
+   00872|         tool_names,
+   00873|         capability_router::RoutingStage::OpenWeb,
+   00874|     ) {
+   00875|         return Some(plan);
+   00876|     }
+   00877|     None
+   00878| }
+   00879| 
+   00880| /// The `shell_command` route arm of the cascade, or `None` to fall through.
+   00881| ///
+   00882| /// A destructive shell intent read against a request about text inside a file
+   00883| /// is declined with the seeded sentence, never composed (PR #1188); that
+   00884| /// guard is this arm's own head, not a separately named route. Otherwise the
+   00885| /// composed command runs through the file fallback, the verified mutating
+   00886| /// recipe, or one shell step.
+   00887| fn plan_shell_command_arm(
+   00888|     task: &str,
+   00889|     messages: &[ChatMessage],
+   00890|     tool_names: &[&str],
+   00891| ) -> Option<AgenticPlan> {
+   00892|     if let Some(decline) = shell_command::destructive_edit_decline(task) {
+   00893|         return Some(decline);
+   00894|     }
+   00895|     let command = shell_command::shell_command_for_task(task)?;
+   00896|     if let Some(plan) = shell_file_fallback::plan_step(task, messages, tool_names, &command) {
+   00897|         return Some(plan);
+   00898|     }
+   00899|     // A command that changes the workspace answers by what the workspace
+   00900|     // holds afterwards, so it is carried out as the verified recipe its seed
+   00901|     // intent declares rather than issued once (issues #824 and #944).
+   00902|     if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, task) {
+   00903|         return Some(plan);
+   00904|     }
+   00905|     Some(plan_shell_step(messages, tool_names, &command))
+   00906| }
+   00907| 
+   00908| /// Run a shell command through the client-owned tool loop, then present its result.
+   00909| fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str) -> AgenticPlan {
+   00910|     let progress = Progress::scan(messages);
+   00911|     if progress.done(Capability::Run) {
+   00912|         return AgenticPlan::Final(tool_result::render(
+   00913|             command,
+   00914|             progress.run_outputs.last().map_or("", String::as_str),
+   00915|             crate::protocol::latest_user_request(messages)
+   00916|                 .as_deref()
+   00917|                 .unwrap_or_default(),
+   00918|         ));
+   00919|     }
+   00920| 
+   00921|     if let Some(tool) = tool_for(tool_names, Capability::Run) {
+   00922|         return plan_one(tool, json!({ "command": command }).to_string());
+   00923|     }
+   00924| 
+   00925|     AgenticPlan::Final(format!(
+   00926|         "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
+   00927|     ))
+   00928| }
+   00929| 
+   00930| pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {
+   00931|     AgenticPlan::ToolCalls(vec![PlannedToolCall {
+   00932|         tool: tool.to_owned(),
+   00933|         arguments,
+   00934|     }])
+   00935| }
+   00936| 
+   00937| /// Arguments for a write step that satisfy whichever key the advertised write
+   00938| /// tool expects. Agentic CLIs disagree on the parameter name — the in-repo driver
+   00939| /// reads `path`, the `@link-assistant/agent` CLI's `write` tool wants `filePath`,
+   00940| /// others use `file_path`. All are emitted; a schema-validating CLI keeps the one
+   00941| /// it declared and strips the rest, so the same plan drives any of them without a
+   00942| /// per-CLI special case.
+   00943| pub(super) fn write_arguments(path: &str, content: &str) -> String {
+   00944|     json!({
+   00945|         "path": path,
+   00946|         "filePath": path,
+   00947|         "file_path": path,
+   00948|         "content": content,
+   00949|     })
+   00950|     .to_string()
+   00951| }
+   00952| 
+   00953| /// Arguments for a fetch step. Emits `url` (the universal key) plus `format`
+   00954| /// set to `"text"` — the `@link-assistant/agent` CLI's `webfetch` tool declares
+   00955| /// a required `format` enum (`"text" | "markdown" | "html"`) and zod refuses the
+   00956| /// call otherwise (observed live: *"Invalid option: expected one of
+   00957| /// \"text\"|\"markdown\"|\"html\""*). The in-repo driver reads only `url`, and
+   00958| /// CLIs whose schemas don't declare `format` strip it, so one shape drives all
+   00959| /// of them without a per-CLI special case.
+   00960| pub(super) fn fetch_arguments(url: &str) -> String {
+   00961|     json!({
+   00962|         "url": url,
+   00963|         "format": "text",
+   00964|     })
+   00965|     .to_string()
+   00966| }
+   00967| 
+   00968| /// The seeded question for an addition that quotes no text (PR #1188 G69).
+   00969| ///
+   00970| /// `None` for any other unplanned local edit, which is declined.
+   00971| fn unquoted_addition_question(task: &str) -> Option<AgenticPlan> {
+   00972|     super::positional_edit::unquoted_addition_path(task)
+   00973|         .and_then(|path| {
+   00974|             code_task::render_seeded_change("file_addition_unquoted", task, &path, &[])
+   00975|         })
+   00976|         .map(AgenticPlan::Final)
+   00977| }
+   00978| 
+   
+   (End of file - total 978 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/planner.rs","file_path":"rust/src/agentic_coding/planner.rs","new":"super::quote_nesting::request_fault_answer(\n        &task,\n        tool_for(tool_names, Capability::MultiEdit).is_some(),\n    )","newString":"super::quote_nesting::request_fault_answer(\n        &task,\n        tool_for(tool_names, Capability::MultiEdit).is_some(),\n    )","new_str":"super::quote_nesting::request_fault_answer(\n        &task,\n        tool_for(tool_names, Capability::MultiEdit).is_some(),\n    )","new_string":"super::quote_nesting::request_fault_answer(\n        &task,\n        tool_for(tool_names, Capability::MultiEdit).is_some(),\n    )","old":"super::quote_nesting::request_fault_answer(&task)","oldString":"super::quote_nesting::request_fault_answer(&task)","old_str":"super::quote_nesting::request_fault_answer(&task)","old_string":"super::quote_nesting::request_fault_answer(&task)","path":"rust/src/agentic_coding/planner.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/planner.rs"}
+   fec66b181c1ed529433542db07fafb10e0133e2243aed2f6b725dd7d1c472ec4  rust/src/agentic_coding/planner.rs
+   
+== answer ==
+Replaced `super::quote_nesting::request_fault_answer(&task)` with `super::quote_nesting::request_fault_answer(
+        &task,
+        tool_for(tool_names, Capability::MultiEdit).is_some(),
+    )` in `rust/src/agentic_coding/planner.rs` and observed the result.

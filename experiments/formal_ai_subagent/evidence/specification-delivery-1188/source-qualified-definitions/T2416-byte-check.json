@@ -1,0 +1,5 @@
+{
+  "taskId": "T2416",
+  "target": "rust/src/solver_handlers/software_project_phrases.rs",
+  "byteEqual": true
+}

@@ -1,0 +1,12 @@
+self_ast_census
+  target src/seed/reports.rs
+  language rust
+  fidelity signature
+  byte_len 2140
+  line_count 58
+  content_id source_module_72d2047519af3480
+  symbol_count 3
+  symbols
+    function report_text 18 33
+    static REPORTS 19 19
+    function fill_slots 37 58

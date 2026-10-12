@@ -163,8 +163,9 @@ fn an_ungrounded_identity_is_reported_as_a_missing_precondition() {
     // Supplied by the caller, so the precondition holds.
     let mut provided = Map::new();
     provided.insert(String::from("channel_id"), json!("C0ABCDEF"));
-    assert!(
-        ungrounded_identity_arguments(&definition, &provided, "Announce the release.").is_empty()
+    assert_eq!(
+        ungrounded_identity_arguments(&definition, &provided, "Announce the release."),
+        [] as [std::string::String; 0]
     );
 
     // Supplied as the empty string, which is the defect itself: present in the

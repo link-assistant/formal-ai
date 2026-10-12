@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_unknown_language.js"
+  ceiling 33
+  rationale "Unsupported-language reasoning reads actual local, seed and captured stores and renders the canonical unresolved answer. Initial measured ceiling for a new module; existing ceilings remain unchanged (R1188-U29, 2026-10-10)."

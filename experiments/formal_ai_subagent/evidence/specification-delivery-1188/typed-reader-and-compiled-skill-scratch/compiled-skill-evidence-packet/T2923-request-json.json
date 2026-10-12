@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2923-request.json",
+  "sha256": "85684637dabf69020a64069e5dcb9ba56b369046c0cd9ccdcefbf6a82e90bda9",
+  "rawUtf8": "{\n  \"taskId\": \"T2923\",\n  \"directory\": \"/private/tmp/spec-recurrence-1188/typed-reader-next\",\n  \"prompt\": \"Run node --test compiled-skill-prototype.test.mjs\"\n}\n"
+}

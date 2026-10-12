@@ -1,0 +1,63 @@
+>> read {"filePath":"rust/tests/web/file-read-shell-token-boundaries.test.mjs","file_path":"rust/tests/web/file-read-shell-token-boundaries.test.mjs","path":"rust/tests/web/file-read-shell-token-boundaries.test.mjs"}
+   <file>
+   00001| // Coding requirements can mention plural nouns without requesting a shell listing.
+   00002| import assert from 'node:assert/strict';
+   00003| import { before, test } from 'node:test';
+   00004| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00005| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00006| import { planChatStep } from '../../../js/agentic/planner.mjs';
+   00007| 
+   00008| before(async () => { await installNodeHost(new WorkerHost()); });
+   00009| 
+   00010| test('plural nouns ending in ls preserve the explicitly named source read', async () => {
+   00011|   for (const noun of ['calls', 'details', 'signals', 'goals']) {
+   00012|     const prompt = 'Read alpha.mjs and inspect ' + noun + ' with their supplied context.';
+   00013|     const plan = await planChatStep([{ role: 'user', content: prompt }], ['read', 'bash']);
+   00014|     assert.equal(plan.kind, 'calls');
+   00015|     assert.equal(plan.calls.length, 1);
+   00016|     assert.equal(plan.calls[0].tool, 'read', noun);
+   00017|     assert.equal(JSON.parse(plan.calls[0].arguments).filePath, 'alpha.mjs');
+   00018|   }
+   00019| });
+   00020| 
+   00021| test('the standalone ls command still lists before reading its selected file', async () => {
+   00022|   const plan = await planChatStep([{ role: 'user', content: 'ls then read the first one alphabetically' }], ['read', 'bash']);
+   00023|   assert.equal(plan.kind, 'calls');
+   00024|   assert.equal(plan.calls[0].tool, 'bash');
+   00025|   assert.match(JSON.parse(plan.calls[0].arguments).command, /^find \. -maxdepth 1 -type f/);
+   00026| });
+   00027| 
+   
+   (End of file - total 27 lines)
+   </file>
+>> write {"content":"// Coding requirements can mention plural nouns without requesting a shell listing.\nimport assert from 'node:assert/strict';\nimport { before, test } from 'node:test';\nimport { WorkerHost } from '../../../js/server/worker-host.mjs';\nimport { installNodeHost } from '../../../js/agentic/node-host.mjs';\nimport { planChatStep } from '../../../js/agentic/planner.mjs';\n\nbefore(async () => { await installNodeHost(new WorkerHost()); });\n\ntest('plural nouns ending in ls preserve the explicitly named source read', async () => {\n  for (const noun of ['calls', 'details', 'signals', 'goals']) {\n    const prompt = 'Read alpha.mjs and inspect ' + noun + ' with their supplied context.';\n    const plan = await planChatStep([{ role: 'user', content: prompt }], ['read', 'bash']);\n    assert.equal(plan.kind, 'tool_calls');\n    assert.equal(plan.calls.length, 1);\n    assert.equal(plan.calls[0].tool, 'read', noun);\n    assert.equal(JSON.parse(plan.calls[0].arguments).filePath, 'alpha.mjs');\n  }\n});\n\ntest('the standalone ls command still lists before reading its selected file', async () => {\n  const plan = await planChatStep([{ role: 'user', content: 'ls then read the first one alphabetically' }], ['read', 'bash']);\n  assert.equal(plan.kind, 'tool_calls');\n  assert.equal(plan.calls[0].tool, 'bash');\n  assert.match(JSON.parse(plan.calls[0].arguments).command, /^find \\. -maxdepth 1 -type f/);\n});\n","filePath":"rust/tests/web/file-read-shell-token-boundaries.test.mjs","file_path":"rust/tests/web/file-read-shell-token-boundaries.test.mjs","path":"rust/tests/web/file-read-shell-token-boundaries.test.mjs"}
+>> bash {"command":"cat rust/tests/web/file-read-shell-token-boundaries.test.mjs"}
+   // Coding requirements can mention plural nouns without requesting a shell listing.
+   import assert from 'node:assert/strict';
+   import { before, test } from 'node:test';
+   import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   import { planChatStep } from '../../../js/agentic/planner.mjs';
+   
+   before(async () => { await installNodeHost(new WorkerHost()); });
+   
+   test('plural nouns ending in ls preserve the explicitly named source read', async () => {
+     for (const noun of ['calls', 'details', 'signals', 'goals']) {
+       const prompt = 'Read alpha.mjs and inspect ' + noun + ' with their supplied context.';
+       const plan = await planChatStep([{ role: 'user', content: prompt }], ['read', 'bash']);
+       assert.equal(plan.kind, 'tool_calls');
+       assert.equal(plan.calls.length, 1);
+       assert.equal(plan.calls[0].tool, 'read', noun);
+       assert.equal(JSON.parse(plan.calls[0].arguments).filePath, 'alpha.mjs');
+     }
+   });
+   
+   test('the standalone ls command still lists before reading its selected file', async () => {
+     const plan = await planChatStep([{ role: 'user', content: 'ls then read the first one alphabetically' }], ['read', 'bash']);
+     assert.equal(plan.kind, 'tool_calls');
+     assert.equal(plan.calls[0].tool, 'bash');
+     assert.match(JSON.parse(plan.calls[0].arguments).command, /^find \. -maxdepth 1 -type f/);
+   });
+   
+== answer ==
+Replaced `assert.equal(plan.kind, 'calls');` with `assert.equal(plan.kind, 'tool_calls');` in `rust/tests/web/file-read-shell-token-boundaries.test.mjs` and observed the result.

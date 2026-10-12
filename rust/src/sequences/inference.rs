@@ -197,8 +197,8 @@ impl GridPatternReport {
         if symmetries.is_empty() {
             lines.push(pattern_template("pattern_grid_no_symmetry", language));
         } else {
-            let separator = if language == "zh" { "、" } else { ", " };
-            let joined = symmetries.join(separator);
+            let separator = pattern_template("pattern_grid_symmetry_separator", language);
+            let joined = symmetries.join(separator.as_str());
             lines.push(render_pattern(
                 "pattern_grid_symmetry",
                 language,

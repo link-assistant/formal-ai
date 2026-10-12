@@ -1,15 +1,18 @@
 Q34442
   aliases
     en (track route roadway)
+    es (ruta "tráfico rodado" camino carreteras)
     ru ("автодорога" "дороги" "автомобильные дороги" "автомобильная дорога" "автомобильный маршрут" "путь" "Дорога")
     zh ("馬路")
   descriptions
     en "wide way leading from one place to another, especially one with a specially prepared surface which vehicles can use"
+    es "camino ancho que une un lugar con otro, normalmente con una superficie especialmente acondicionada para el tránsito de vehículos"
     ru "путь сообщения, полоса земли для передвижения"
     zh "基础设施"
   id Q34442
   labels
     en road
+    es carretera
     hi "सड़क"
     ru "дорога"
     zh "道路"

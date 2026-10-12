@@ -1,0 +1,17 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/compress-release-desktop-jobs.mjs"}
+   Output: {"originalDecodedBytes":159515,"originalSha256":"0242f6fc9cb3b69356c66eab3d315740a88ec61271ac41cea3b66a8171a3b57d","compressedBytes":8018,"decodeByteEqual":true,"manifestArtifacts":102,"productionSourceMutations":0}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/compress-release-desktop-jobs.mjs` command completed. Output:
+
+```json
+{
+  "compressedBytes": 8018,
+  "decodeByteEqual": true,
+  "manifestArtifacts": 102,
+  "originalDecodedBytes": 159515,
+  "originalSha256": "0242f6fc9cb3b69356c66eab3d315740a88ec61271ac41cea3b66a8171a3b57d",
+  "productionSourceMutations": 0
+}
+```

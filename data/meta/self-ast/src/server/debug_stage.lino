@@ -1,0 +1,51 @@
+self_ast_census
+  target src/server/debug_stage.rs
+  language rust
+  fidelity signature
+  byte_len 13774
+  line_count 387
+  content_id source_module_29a2bb276d06862d
+  symbol_count 42
+  symbols
+    const DISPATCH_TABLE 37 37
+    const DISPATCH_TABLE_START 38 38
+    const DISPATCH_TABLE_END 39 39
+    const RULES_SEED 40 40
+    const BROWSER_SEED 41 41
+    const SEED_HANDLER_PREFIX 42 42
+    const RUST_TREE 43 43
+    const JS_TREE 44 44
+    const RUST_RULE_RUNNER_PATH 45 45
+    const RUST_RULE_RUNNER_SYMBOL 46 46
+    const JS_RULE_RUNNER 47 47
+    const BROWSER_HANDLER_PREFIX 48 48
+    const ROUTE_STEPS 49 49
+    const RUST 50 50
+    const JS 51 51
+    const RUST_KEYWORD 52 52
+    const JS_KEYWORD 53 53
+    const EXCERPT_LINES 55 55
+    const CURRENT_CLASS 56 56
+    const CURRENT_STYLE 57 57
+    struct SourceLocation 61 70
+    struct StageView 74 79
+    struct TurnView 84 93
+    function seed_handlers 96 103
+    function dispatch_symbol 106 125
+    function excerpt 128 143
+    function locate_in 145 156
+    function locate 159 169
+    function rust_location 173 189
+    function js_location 194 206
+    function turn_method 210 224
+    function source_root 228 234
+    type Locations 236 236
+    function cached 239 251
+    function stage_location 256 275
+    function describe_turn 281 329
+    static HANDLERS 282 282
+    static SOURCES 283 283
+    static STAGES 284 284
+    function label 332 334
+    function stage_diagram 340 365
+    function location_fields 368 387

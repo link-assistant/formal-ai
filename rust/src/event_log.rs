@@ -679,6 +679,11 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
                 format!("concept_lookup:context-mismatch:{}", event.payload)
             }
             "followup:subject" => format!("followup:subject:{}", event.payload),
+            // The seeded status slug the research follow-up classified, as the
+            // browser worker surfaces it (`research_result_followup:status:<slug>`).
+            "research_result_followup:status" => {
+                format!("research_result_followup:status:{}", event.payload)
+            }
             "mechanism_query:request" => {
                 format!("mechanism_query:request:{}", event.payload)
             }
@@ -787,12 +792,36 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "execution_environment" => format!("execution_environment:{}", event.id),
             _ => format!("{}:{}", event.kind, event.id),
         };
+        // A named transform is typed metadata, while its event id remains the
+        // provenance link recorded below.
+        if event.kind == "text_transform" {
+            links.push(format!("text_transform:{}", event.payload));
+        }
         links.push(evidence);
     }
     if !links.iter().any(|link| link == response_link) {
         links.push(response_link.to_owned());
     }
     links
+}
+
+/// The evidence links of a recorded log: [`build_evidence_links`] with the
+///
+/// The prompt is read from the log's `impulse` event and the response link from its
+/// last `response` event (`response:<intent>` when none was logged). `None`
+/// when the log holds no impulse.
+///
+/// The browser worker and the JavaScript server project the native log they
+/// record through the twin, `eventLogEvidenceLinks` in
+/// `js/agentic/crate/event_log.mjs` (R1188-U29).
+#[must_use]
+pub fn event_log_evidence_links(log: &EventLog, intent: &str) -> Option<Vec<String>> {
+    let impulse = log.first_of("impulse")?;
+    let response_link = log.last_of("response").map_or_else(
+        || format!("response:{intent}"),
+        |event| event.payload.clone(),
+    );
+    Some(build_evidence_links(&impulse.payload, log, &response_link))
 }
 
 fn sanitize_payload(value: &str) -> String {

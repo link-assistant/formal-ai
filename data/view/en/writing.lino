@@ -1,0 +1,25 @@
+view
+  id M-0750c7cac011
+  lemma writing
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of creating written works"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the work of a writer; anything expressed in letters of the alphabet (especially when considered from the point of view of style and effect)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(usually plural) the collected work of an author"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "letters or symbols that are written or imprinted on a surface to represent the sounds or words of a language"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the activity of putting something in written form"
+    provenance (wordnet)

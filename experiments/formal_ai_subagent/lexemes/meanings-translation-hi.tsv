@@ -1,0 +1,13 @@
+es	स्पेनिश भाषा कोड
+full	पूर्ण भाषा प्रोटोकॉल स्थिति
+partial	आंशिक भाषा प्रोटोकॉल स्थिति
+explicit_gap	स्पष्ट भाषा अंतराल नीति
+explicit_language_context	स्पष्ट भाषा संदर्भ पहचान
+language_gap	भाषा कवरेज अंतराल
+response_greeting_es	स्पेनिश अभिवादन उत्तर
+response_identity_es	स्पेनिश पहचान उत्तर
+response_language_gap_en	अंग्रेज़ी भाषा अंतराल उत्तर
+response_language_gap_ru	रूसी भाषा अंतराल उत्तर
+response_language_gap_hi	हिंदी भाषा अंतराल उत्तर
+response_language_gap_zh	चीनी भाषा अंतराल उत्तर
+response_language_gap_es	स्पेनिश भाषा अंतराल उत्तर

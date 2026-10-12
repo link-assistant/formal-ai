@@ -1,0 +1,29 @@
+view
+  id M-90d577055baa
+  lemma inventory
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a detailed list of all the items in stock"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the merchandise that a shop has on hand"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(accounting) the value of a firm's current assets including raw materials and work in progress and finished goods"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a collection of resources"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "making an itemized list of merchandise or supplies on hand"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "make or include in an itemized record or report"
+    provenance (wordnet)

@@ -15,6 +15,10 @@ multilingual_responses
     intent who_is_unknown_entity
     language zh
     text "我还没有关于“{term}”的 Links Notation 事实。请在 Links Notation 中添加事实或规则，然后重新运行该请求。"
+  response response_who_is_unknown_entity_es
+    intent who_is_unknown_entity
+    language es
+    text "Todavía no tengo un hecho de Links Notation sobre «{term}». Añade un hecho o una regla en Links Notation y vuelve a ejecutar la solicitud."
   response response_who_is_unknown_entity_suggestion_en
     intent who_is_unknown_entity_suggestion
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent who_is_unknown_entity_suggestion
     language zh
     text "我还没有关于“{term}”的 Links Notation 事实。您指的是“{corrected}”吗？请在 Links Notation 中添加事实或规则，然后重新运行该请求。"
+  response response_who_is_unknown_entity_suggestion_es
+    intent who_is_unknown_entity_suggestion
+    language es
+    text "Todavía no tengo un hecho de Links Notation sobre «{term}». ¿Quisiste decir «{corrected}»? Añade un hecho o una regla en Links Notation y vuelve a ejecutar la solicitud."
   response response_definition_merge_header_en
     intent definition_merge_header
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent definition_merge_header
     language zh
     text "{term}{anchor} 的合并定义\n来源语言：{languages}\n\n事实："
+  response response_definition_merge_header_es
+    intent definition_merge_header
+    language es
+    text "Definición combinada de {term}{anchor}\nIdiomas de las fuentes: {languages}\n\nHechos:"
   response response_definition_merge_sources_label_en
     intent definition_merge_sources_label
     language en
@@ -63,3 +75,427 @@ multilingual_responses
     intent definition_merge_sources_label
     language zh
     text "来源："
+  response response_definition_merge_sources_label_es
+    intent definition_merge_sources_label
+    language es
+    text "Fuentes:"
+  response response_fact_comparison_en
+    intent fact_comparison
+    language en
+    text "{left} and {right}, compared on their seeded facts:\n{rows}\n{differences}"
+  response response_fact_comparison_ru
+    intent fact_comparison
+    language ru
+    text "{left} и {right} в сравнении по сохранённым фактам:\n{rows}\n{differences}"
+  response response_fact_comparison_hi
+    intent fact_comparison
+    language hi
+    text "सहेजे गए तथ्यों के आधार पर {left} और {right} की तुलना:\n{rows}\n{differences}"
+  response response_fact_comparison_zh
+    intent fact_comparison
+    language zh
+    text "根据已存事实比较{left}和{right}：\n{rows}\n{differences}"
+  response response_fact_comparison_es
+    intent fact_comparison
+    language es
+    text "{left} y {right}, comparados según sus hechos guardados:\n{rows}\n{differences}"
+  response response_fact_comparison_row_en
+    intent fact_comparison_row
+    language en
+    text "- {relation}: {left} — {left_value}; {right} — {right_value}"
+  response response_fact_comparison_row_ru
+    intent fact_comparison_row
+    language ru
+    text "- {relation}: {left} — {left_value}; {right} — {right_value}"
+  response response_fact_comparison_row_hi
+    intent fact_comparison_row
+    language hi
+    text "- {relation}: {left} — {left_value}; {right} — {right_value}"
+  response response_fact_comparison_row_zh
+    intent fact_comparison_row
+    language zh
+    text "- {relation}：{left} — {left_value}；{right} — {right_value}"
+  response response_fact_comparison_row_es
+    intent fact_comparison_row
+    language es
+    text "- {relation}: {left} — {left_value}; {right} — {right_value}"
+  response response_fact_comparison_known_row_en
+    intent fact_comparison_known_row
+    language en
+    text "- {relation}: {value}"
+  response response_fact_comparison_known_row_ru
+    intent fact_comparison_known_row
+    language ru
+    text "- {relation}: {value}"
+  response response_fact_comparison_known_row_hi
+    intent fact_comparison_known_row
+    language hi
+    text "- {relation}: {value}"
+  response response_fact_comparison_known_row_zh
+    intent fact_comparison_known_row
+    language zh
+    text "- {relation}：{value}"
+  response response_fact_comparison_known_row_es
+    intent fact_comparison_known_row
+    language es
+    text "- {relation}: {value}"
+  response response_fact_comparison_missing_value_en
+    intent fact_comparison_missing_value
+    language en
+    text "no seeded value"
+  response response_fact_comparison_missing_value_ru
+    intent fact_comparison_missing_value
+    language ru
+    text "нет сохранённого значения"
+  response response_fact_comparison_missing_value_hi
+    intent fact_comparison_missing_value
+    language hi
+    text "कोई सहेजा गया मान नहीं"
+  response response_fact_comparison_missing_value_zh
+    intent fact_comparison_missing_value
+    language zh
+    text "无已存值"
+  response response_fact_comparison_missing_value_es
+    intent fact_comparison_missing_value
+    language es
+    text "sin valor guardado"
+  response response_fact_comparison_difference_en
+    intent fact_comparison_difference
+    language en
+    text "Difference in {relation}: {left_value} for {left}, {right_value} for {right}."
+  response response_fact_comparison_difference_ru
+    intent fact_comparison_difference
+    language ru
+    text "Различие ({relation}): {left_value} у {left}, {right_value} у {right}."
+  response response_fact_comparison_difference_hi
+    intent fact_comparison_difference
+    language hi
+    text "{relation} में अंतर: {left} के लिए {left_value}, {right} के लिए {right_value}।"
+  response response_fact_comparison_difference_zh
+    intent fact_comparison_difference
+    language zh
+    text "{relation}不同：{left}是{left_value}，{right}是{right_value}。"
+  response response_fact_comparison_difference_es
+    intent fact_comparison_difference
+    language es
+    text "Diferencia en {relation}: {left_value} para {left}, {right_value} para {right}."
+  response response_fact_comparison_same_en
+    intent fact_comparison_same
+    language en
+    text "Same {relation} for both: {value}."
+  response response_fact_comparison_same_ru
+    intent fact_comparison_same
+    language ru
+    text "Одинаково ({relation}) для обоих: {value}."
+  response response_fact_comparison_same_hi
+    intent fact_comparison_same
+    language hi
+    text "दोनों के लिए {relation} समान है: {value}।"
+  response response_fact_comparison_same_zh
+    intent fact_comparison_same
+    language zh
+    text "两者的{relation}相同：{value}。"
+  response response_fact_comparison_same_es
+    intent fact_comparison_same
+    language es
+    text "Mismo {relation} para ambos: {value}."
+  response response_fact_comparison_unaligned_en
+    intent fact_comparison_unaligned
+    language en
+    text "{relation} is seeded only for {subject}, so it cannot be compared yet."
+  response response_fact_comparison_unaligned_ru
+    intent fact_comparison_unaligned
+    language ru
+    text "{relation}: значение сохранено только для {subject}, поэтому сравнить пока нельзя."
+  response response_fact_comparison_unaligned_hi
+    intent fact_comparison_unaligned
+    language hi
+    text "{relation} केवल {subject} के लिए सहेजा गया है, इसलिए अभी तुलना नहीं हो सकती।"
+  response response_fact_comparison_unaligned_zh
+    intent fact_comparison_unaligned
+    language zh
+    text "{relation}只为{subject}存有数据，因此暂时无法比较。"
+  response response_fact_comparison_unaligned_es
+    intent fact_comparison_unaligned
+    language es
+    text "{relation} solo está guardado para {subject}, así que aún no se puede comparar."
+  response response_fact_comparison_gap_en
+    intent fact_comparison_gap
+    language en
+    text "I can compare {known} and {missing} only from seeded facts, and I have none for {missing}. What I have for {known}:\n{rows}\nAdd facts for {missing} (or allow a live lookup) to compare them."
+  response response_fact_comparison_gap_ru
+    intent fact_comparison_gap
+    language ru
+    text "Я могу сравнить {known} и {missing} только по сохранённым фактам, а для {missing} их нет. Что есть для {known}:\n{rows}\nДобавьте факты для {missing} (или разрешите живой поиск), чтобы сравнить."
+  response response_fact_comparison_gap_hi
+    intent fact_comparison_gap
+    language hi
+    text "मैं {known} और {missing} की तुलना केवल सहेजे गए तथ्यों से कर सकता हूँ, और {missing} के लिए कोई तथ्य नहीं है। {known} के लिए मेरे पास है:\n{rows}\nतुलना के लिए {missing} के तथ्य जोड़ें (या लाइव खोज की अनुमति दें)।"
+  response response_fact_comparison_gap_zh
+    intent fact_comparison_gap
+    language zh
+    text "我只能根据已存事实比较{known}和{missing}，但没有关于{missing}的事实。关于{known}，我有：\n{rows}\n请为{missing}添加事实（或允许实时查询）后再比较。"
+  response response_fact_comparison_gap_es
+    intent fact_comparison_gap
+    language es
+    text "Solo puedo comparar {known} y {missing} con hechos guardados, y no tengo ninguno de {missing}. Lo que tengo de {known}:\n{rows}\nAñade hechos de {missing} (o permite una consulta en vivo) para compararlos."
+  response response_prompt_text_answer_en
+    intent prompt_text_answer
+    language en
+    text "The text answers this: «{sentence}»"
+  response response_prompt_text_answer_ru
+    intent prompt_text_answer
+    language ru
+    text "Ответ есть в тексте: «{sentence}»"
+  response response_prompt_text_answer_hi
+    intent prompt_text_answer
+    language hi
+    text "पाठ में इसका उत्तर है: «{sentence}»"
+  response response_prompt_text_answer_zh
+    intent prompt_text_answer
+    language zh
+    text "文本中的答案：「{sentence}」"
+  response response_prompt_text_answer_es
+    intent prompt_text_answer
+    language es
+    text "El texto lo responde: «{sentence}»"
+  response response_prompt_text_gap_en
+    intent prompt_text_gap
+    language en
+    text "The given text does not say: none of its sentences mentions {focus}."
+  response response_prompt_text_gap_ru
+    intent prompt_text_gap
+    language ru
+    text "В данном тексте об этом не сказано: ни одно предложение не упоминает {focus}."
+  response response_prompt_text_gap_hi
+    intent prompt_text_gap
+    language hi
+    text "दिए गए पाठ में यह नहीं बताया गया है: कोई भी वाक्य {focus} का उल्लेख नहीं करता।"
+  response response_prompt_text_gap_zh
+    intent prompt_text_gap
+    language zh
+    text "给定的文本没有说明：没有句子提到{focus}。"
+  response response_prompt_text_gap_es
+    intent prompt_text_gap
+    language es
+    text "El texto dado no lo dice: ninguna de sus frases menciona {focus}."
+  response response_prompt_text_slot_answer_en
+    intent prompt_text_slot_answer
+    language en
+    text "From the text — {slots}."
+  response response_prompt_text_slot_answer_ru
+    intent prompt_text_slot_answer
+    language ru
+    text "По тексту — {slots}."
+  response response_prompt_text_slot_answer_hi
+    intent prompt_text_slot_answer
+    language hi
+    text "पाठ के अनुसार — {slots}।"
+  response response_prompt_text_slot_answer_zh
+    intent prompt_text_slot_answer
+    language zh
+    text "根据文本——{slots}。"
+  response response_prompt_text_slot_answer_es
+    intent prompt_text_slot_answer
+    language es
+    text "Según el texto — {slots}."
+  response response_prompt_text_statement_en
+    intent prompt_text_statement
+    language en
+    text "As a statement: {statement}"
+  response response_prompt_text_statement_ru
+    intent prompt_text_statement
+    language ru
+    text "Как утверждение: {statement}"
+  response response_prompt_text_statement_hi
+    intent prompt_text_statement
+    language hi
+    text "कथन के रूप में: {statement}"
+  response response_prompt_text_statement_zh
+    intent prompt_text_statement
+    language zh
+    text "作为陈述：{statement}"
+  response response_prompt_text_statement_es
+    intent prompt_text_statement
+    language es
+    text "Como enunciado: {statement}"
+  response response_prompt_text_slot_subject_en
+    intent prompt_text_slot_subject
+    language en
+    text "subject «{value}»"
+  response response_prompt_text_slot_subject_ru
+    intent prompt_text_slot_subject
+    language ru
+    text "субъект «{value}»"
+  response response_prompt_text_slot_subject_hi
+    intent prompt_text_slot_subject
+    language hi
+    text "कर्ता «{value}»"
+  response response_prompt_text_slot_subject_zh
+    intent prompt_text_slot_subject
+    language zh
+    text "主语「{value}」"
+  response response_prompt_text_slot_subject_es
+    intent prompt_text_slot_subject
+    language es
+    text "sujeto «{value}»"
+  response response_prompt_text_slot_predicate_en
+    intent prompt_text_slot_predicate
+    language en
+    text "predicate «{value}»"
+  response response_prompt_text_slot_predicate_ru
+    intent prompt_text_slot_predicate
+    language ru
+    text "предикат «{value}»"
+  response response_prompt_text_slot_predicate_hi
+    intent prompt_text_slot_predicate
+    language hi
+    text "विधेय «{value}»"
+  response response_prompt_text_slot_predicate_zh
+    intent prompt_text_slot_predicate
+    language zh
+    text "谓语「{value}」"
+  response response_prompt_text_slot_predicate_es
+    intent prompt_text_slot_predicate
+    language es
+    text "predicado «{value}»"
+  response response_prompt_text_slot_object_en
+    intent prompt_text_slot_object
+    language en
+    text "object «{value}»"
+  response response_prompt_text_slot_object_ru
+    intent prompt_text_slot_object
+    language ru
+    text "объект «{value}»"
+  response response_prompt_text_slot_object_hi
+    intent prompt_text_slot_object
+    language hi
+    text "कर्म «{value}»"
+  response response_prompt_text_slot_object_zh
+    intent prompt_text_slot_object
+    language zh
+    text "宾语「{value}」"
+  response response_prompt_text_slot_object_es
+    intent prompt_text_slot_object
+    language es
+    text "objeto «{value}»"
+  response response_prompt_text_slot_time_en
+    intent prompt_text_slot_time
+    language en
+    text "time «{value}»"
+  response response_prompt_text_slot_time_ru
+    intent prompt_text_slot_time
+    language ru
+    text "время «{value}»"
+  response response_prompt_text_slot_time_hi
+    intent prompt_text_slot_time
+    language hi
+    text "समय «{value}»"
+  response response_prompt_text_slot_time_zh
+    intent prompt_text_slot_time
+    language zh
+    text "时间「{value}」"
+  response response_prompt_text_slot_time_es
+    intent prompt_text_slot_time
+    language es
+    text "tiempo «{value}»"
+  response response_prompt_text_slot_place_en
+    intent prompt_text_slot_place
+    language en
+    text "place «{value}»"
+  response response_prompt_text_slot_place_ru
+    intent prompt_text_slot_place
+    language ru
+    text "место «{value}»"
+  response response_prompt_text_slot_place_hi
+    intent prompt_text_slot_place
+    language hi
+    text "स्थान «{value}»"
+  response response_prompt_text_slot_place_zh
+    intent prompt_text_slot_place
+    language zh
+    text "地点「{value}」"
+  response response_prompt_text_slot_place_es
+    intent prompt_text_slot_place
+    language es
+    text "lugar «{value}»"
+  response response_fact_live_answer_en
+    intent fact_live_answer
+    language en
+    text "Wikidata states that the {relation} of {subject} is {value}. Source: {reference}"
+  response response_fact_live_answer_ru
+    intent fact_live_answer
+    language ru
+    text "По данным Викиданных, {relation} для {subject}: {value}. Источник: {reference}"
+  response response_fact_live_answer_hi
+    intent fact_live_answer
+    language hi
+    text "विकिडेटा के अनुसार {subject} का {relation} {value} है। स्रोत: {reference}"
+  response response_fact_live_answer_zh
+    intent fact_live_answer
+    language zh
+    text "根据维基数据，{subject}的{relation}是{value}。来源：{reference}"
+  response response_fact_live_answer_es
+    intent fact_live_answer
+    language es
+    text "Según Wikidata, {relation} de {subject}: {value}. Fuente: {reference}"
+  response response_fact_live_answer_author_of_book_en
+    intent fact_live_answer_author_of_book
+    language en
+    text "{subject} was written by {value}. Source: {reference}"
+  response response_fact_live_answer_author_of_book_ru
+    intent fact_live_answer_author_of_book
+    language ru
+    text "Автор произведения «{subject}»: {value}. Источник: {reference}"
+  response response_fact_live_answer_author_of_book_hi
+    intent fact_live_answer_author_of_book
+    language hi
+    text "{subject} को {value} ने लिखा था। स्रोत: {reference}"
+  response response_fact_live_answer_author_of_book_zh
+    intent fact_live_answer_author_of_book
+    language zh
+    text "《{subject}》由{value}创作。来源：{reference}"
+  response response_fact_live_answer_author_of_book_es
+    intent fact_live_answer_author_of_book
+    language es
+    text "La obra «{subject}» fue escrita por {value}. Fuente: {reference}"
+  response response_explanation_research_answer_en
+    intent explanation_research_answer
+    language en
+    text "What the retrieved pages say about {concept}:\n{rows}"
+  response response_explanation_research_answer_ru
+    intent explanation_research_answer
+    language ru
+    text "Что говорят найденные страницы о «{concept}»:\n{rows}"
+  response response_explanation_research_answer_hi
+    intent explanation_research_answer
+    language hi
+    text "{concept} के बारे में मिले पृष्ठ यह कहते हैं:\n{rows}"
+  response response_explanation_research_answer_zh
+    intent explanation_research_answer
+    language zh
+    text "检索到的页面关于{concept}的说法：\n{rows}"
+  response response_explanation_research_answer_es
+    intent explanation_research_answer
+    language es
+    text "Lo que dicen las páginas recuperadas sobre {concept}:\n{rows}"
+  response response_explanation_research_row_en
+    intent explanation_research_row
+    language en
+    text "- {statement} (source: {url}, sha256 {sha256})"
+  response response_explanation_research_row_ru
+    intent explanation_research_row
+    language ru
+    text "- {statement} (источник: {url}, sha256 {sha256})"
+  response response_explanation_research_row_hi
+    intent explanation_research_row
+    language hi
+    text "- {statement} (स्रोत: {url}, sha256 {sha256})"
+  response response_explanation_research_row_zh
+    intent explanation_research_row
+    language zh
+    text "- {statement}（来源：{url}，sha256 {sha256}）"
+  response response_explanation_research_row_es
+    intent explanation_research_row
+    language es
+    text "- {statement} (fuente: {url}, sha256 {sha256})"

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "梳篦"
+        },
+        "es": {
+          "language": "es",
+          "value": "peine"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "बाल कंघी करने का साधन |"
+        },
+        "es": {
+          "language": "es",
+          "value": "utensilio plano con púas que sirve para arreglar, desenredar y limpiar el cabello u otras fibras"
         }
       }
     }

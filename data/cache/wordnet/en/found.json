@@ -1,0 +1,279 @@
+{
+  "lemma": "found",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01453492-a",
+      "partOfSpeech": "a",
+      "definition": "come upon unexpectedly or after searching",
+      "examples": [
+        "found art",
+        "the lost-and-found department"
+      ]
+    },
+    {
+      "id": "oewn-13301031-n",
+      "partOfSpeech": "n",
+      "definition": "food and lodging provided in addition to money",
+      "examples": [
+        "they worked for $30 and found"
+      ]
+    },
+    {
+      "id": "oewn-02253273-v",
+      "partOfSpeech": "v",
+      "definition": "come upon, as if by accident; meet with",
+      "examples": [
+        "We find this idea in Plato",
+        "I happened upon the most wonderful bakery not very far from here",
+        "She chanced upon an interesting book in the bookstore the other day"
+      ],
+      "synonyms": [
+        "find",
+        "happen",
+        "chance",
+        "bump",
+        "encounter"
+      ]
+    },
+    {
+      "id": "oewn-02431950-v",
+      "partOfSpeech": "v",
+      "definition": "set up or found",
+      "examples": [
+        "She set up a literacy program"
+      ],
+      "synonyms": [
+        "establish",
+        "set up",
+        "launch"
+      ]
+    },
+    {
+      "id": "oewn-02158938-v",
+      "partOfSpeech": "v",
+      "definition": "discover or determine the existence, presence, or fact of by perception with the eyes",
+      "examples": [
+        "She detected high levels of lead in her drinking water",
+        "We found traces of lead in the paint"
+      ],
+      "synonyms": [
+        "detect",
+        "observe",
+        "find",
+        "discover",
+        "notice"
+      ]
+    },
+    {
+      "id": "oewn-01650771-v",
+      "partOfSpeech": "v",
+      "definition": "set up or lay the groundwork for",
+      "examples": [
+        "establish a new department"
+      ],
+      "synonyms": [
+        "establish",
+        "plant",
+        "constitute",
+        "institute"
+      ]
+    },
+    {
+      "id": "oewn-02290474-v",
+      "partOfSpeech": "v",
+      "definition": "come upon after searching; find the location of something that was missed or lost",
+      "examples": [
+        "Did you find your glasses?",
+        "I cannot find my gloves!"
+      ],
+      "synonyms": [
+        "find",
+        "regain"
+      ]
+    },
+    {
+      "id": "oewn-00638550-v",
+      "partOfSpeech": "v",
+      "definition": "use as a basis for; found on",
+      "examples": [
+        "base a claim on some observation"
+      ],
+      "synonyms": [
+        "establish",
+        "base",
+        "ground"
+      ]
+    },
+    {
+      "id": "oewn-00920843-v",
+      "partOfSpeech": "v",
+      "definition": "establish after a calculation, investigation, experiment, survey, or study",
+      "examples": [
+        "find the product of two numbers",
+        "The physicist who found the elusive particle won the Nobel Prize"
+      ],
+      "synonyms": [
+        "determine",
+        "find",
+        "find out",
+        "ascertain"
+      ]
+    },
+    {
+      "id": "oewn-00717144-v",
+      "partOfSpeech": "v",
+      "definition": "come to believe on the basis of emotion, intuitions, or indefinite grounds",
+      "examples": [
+        "I feel that he doesn't like me",
+        "I find him to be obnoxious",
+        "I found the movie rather entertaining"
+      ],
+      "synonyms": [
+        "find",
+        "feel"
+      ]
+    },
+    {
+      "id": "oewn-02133338-v",
+      "partOfSpeech": "v",
+      "definition": "perceive or be contemporaneous with",
+      "examples": [
+        "We found Republicans winning the offices",
+        "You'll see a lot of cheating in this school",
+        "The 1960's saw the rebellion of the younger generation against established traditions",
+        "I want to see results"
+      ],
+      "synonyms": [
+        "witness",
+        "find",
+        "see"
+      ]
+    },
+    {
+      "id": "oewn-02218118-v",
+      "partOfSpeech": "v",
+      "definition": "get something or somebody for a specific purpose",
+      "examples": [
+        "I found this gadget that will serve as a bottle opener",
+        "I got hold of these tools to fix our plumbing",
+        "The chairman got hold of a secretary on Friday night to type the urgent letter"
+      ],
+      "synonyms": [
+        "line up",
+        "get hold",
+        "come up",
+        "find"
+      ]
+    },
+    {
+      "id": "oewn-01641524-v",
+      "partOfSpeech": "v",
+      "definition": "make a discovery, make a new finding",
+      "examples": [
+        "Roentgen discovered X-rays",
+        "Physicists believe they found a new elementary particle"
+      ],
+      "synonyms": [
+        "discover",
+        "find"
+      ]
+    },
+    {
+      "id": "oewn-02217057-v",
+      "partOfSpeech": "v",
+      "definition": "obtain through effort or management",
+      "examples": [
+        "She found the time and energy to take care of her aging parents",
+        "We found the money to send our sons to college"
+      ],
+      "synonyms": [
+        "find"
+      ]
+    },
+    {
+      "id": "oewn-00974031-v",
+      "partOfSpeech": "v",
+      "definition": "decide on and make a declaration about",
+      "examples": [
+        "find someone guilty"
+      ],
+      "synonyms": [
+        "rule",
+        "find"
+      ]
+    },
+    {
+      "id": "oewn-00523831-v",
+      "partOfSpeech": "v",
+      "definition": "receive a specified treatment (abstract)",
+      "examples": [
+        "These aspects of civilization do not find expression or receive an interpretation",
+        "His movie received a good review",
+        "I got nothing but trouble for my good intentions"
+      ],
+      "synonyms": [
+        "receive",
+        "get",
+        "find",
+        "obtain",
+        "incur"
+      ]
+    },
+    {
+      "id": "oewn-02202295-v",
+      "partOfSpeech": "v",
+      "definition": "perceive oneself to be in a certain condition or place",
+      "examples": [
+        "I found myself in a difficult situation",
+        "When he woke up, he found himself in a hospital room"
+      ],
+      "synonyms": [
+        "find"
+      ]
+    },
+    {
+      "id": "oewn-02252785-v",
+      "partOfSpeech": "v",
+      "definition": "get or find back; recover the use of",
+      "examples": [
+        "She regained control of herself",
+        "She found her voice and replied quickly"
+      ],
+      "synonyms": [
+        "recover",
+        "retrieve",
+        "find",
+        "regain"
+      ]
+    },
+    {
+      "id": "oewn-02025505-v",
+      "partOfSpeech": "v",
+      "definition": "succeed in reaching; arrive at",
+      "examples": [
+        "The arrow found its mark"
+      ],
+      "synonyms": [
+        "find"
+      ]
+    },
+    {
+      "id": "oewn-00251577-v",
+      "partOfSpeech": "v",
+      "definition": "accept and make use of one's personality, abilities, and situation",
+      "examples": [
+        "My son went to Berkeley to find himself"
+      ],
+      "synonyms": [
+        "find oneself",
+        "find"
+      ]
+    }
+  ]
+}

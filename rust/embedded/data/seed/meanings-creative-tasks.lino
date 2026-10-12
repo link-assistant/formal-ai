@@ -1,0 +1,65 @@
+# Creative-composition request vocabulary (issue #1178, E143).
+#
+# Four roles name the request classes the composition handlers own —
+# brainstorming_request (candidates composed from the formalized topic),
+# creative_writing_request (verse under form constraints), planning_request
+# (schedules under time constraints), and advice_request (guidance weighted
+# by evidence grade). Surfaces are stored the way normalize_prompt renders
+# them (lowercase, punctuation folded to spaces) so a cue still matches its
+# punctuated raw form; multi-word surfaces are quoted.
+#
+# The handlers deliberately claim only topic-bearing shapes — a bare
+# "brainstorm" with no topic stays with the legacy brainstorm-seeds path
+# (data/seed/brainstorm-seeds.lino), whose two fixed categories remain as a
+# deletable cache while the composition path here answers topic requests.
+#
+# Read through `crate::seed::lexicon()` by the handlers in
+# rust/src/solver_handlers/{creative_composition,creative_writing}.rs.
+
+meanings
+  brainstorming_request
+    defined-by action
+    role brainstorming_request
+    lexeme en
+      words "name ideas for" "names for a" "names for the" "ideas for a" "ideas for the" "idea for a"
+      words "come up with names" "come up with a name" "suggest names for" "suggest a name for" "brainstorm names for"
+      words "brainstorm a name for" "brainstorm ideas for" "name ideas"
+    lexeme ru
+      words "название для" "названия для" "имя для" "имена для" "идеи для" "идей для" "придумай название для"
+      words "придумай имя для" "предложи названия для" "придумай идеи для"
+    lexeme hi "नाम के विचार" "नाम सुझाओ" "के लिए नाम" "के लिए विचार" "विचार दो"
+    lexeme zh "起个名字" "起名字" "想几个名字" "起名" "给我一些想法" "名字想法"
+    lexeme es "ideas para" "idea para" "nombres para" "un nombre para" "sugiere nombres" "dame ideas"
+  creative_writing_request
+    defined-by action
+    role creative_writing_request
+    lexeme en
+      words "write a poem" "write a haiku" "write a limerick" "write a sonnet" "write a couplet" "poem about"
+      words "poem on the" "four-line poem" "four line poem" "rhyming poem" "rhyming sonnet" "sonnet about" "haiku about"
+      words "limerick about" "couplet about" "short poem" "write a story" "compose a poem"
+    lexeme ru
+      words "напиши стихотворение" "напиши стих" "стихотворение о" "стихотворение про" "стих о" "стих про" "хокку"
+      words "хайку" "лимерик" "четверостишие"
+    lexeme hi "कविता लिखो" "कविता लिखें" "के बारे में कविता" "कविता बनाओ" "हाइकू"
+    lexeme zh "写一首诗" "写一首" "写诗" "首诗" "一首诗" "行诗" "俳句" "打油诗"
+    lexeme es "escribe un poema" "escribe una historia" "poema sobre" "poema acerca" "un haiku" "escribe un haiku"
+  planning_request
+    defined-by action
+    role planning_request
+    lexeme en
+      words "itinerary" "plan a trip" "plan a visit" "day trip" "travel plan" "day plan" "plan for" "schedule for"
+      words "plan me"
+    lexeme ru "маршрут" "план поездки" "составь маршрут" "составь план" "спланируй" "планируй"
+    lexeme hi "यात्रा की योजना" "यात्रा योजना" "कार्यक्रम बनाओ" "योजना बनाओ" "इनिरेरी"
+    lexeme zh "行程" "旅行计划" "旅游计划" "规划一次" "计划一次旅行" "安排行程"
+    lexeme es "itinerario" "planifica un viaje" "plan de viaje" "planear un viaje" "organiza un viaje"
+  advice_request
+    defined-by action
+    role advice_request
+    lexeme en
+      words "tips for" "advice for" "advice on" "any advice" "what should i do about" "how can i improve" "recommend"
+      words "evidence-based tips" "give me tips"
+    lexeme ru "совет" "советы" "посоветуй" "как мне улучшить" "как улучшить" "что мне делать с"
+    lexeme hi "सलाह दो" "सलाह के लिए" "सुझाव दो" "सुझाव के लिए" "कैसे सुधारूँ"
+    lexeme zh "建议" "给点建议" "小贴士" "有什么建议" "怎样才能改善"
+    lexeme es "consejos para" "un consejo para" "recomendaciones para" "recomienda" "como puedo mejorar"

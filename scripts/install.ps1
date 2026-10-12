@@ -8,7 +8,8 @@
 
     desktop   the Electron desktop app (downloads the matching release asset)
     vscode    the VS Code extension (downloads the .vsix, runs `code --install-extension`)
-    cli       the `formal-ai` command-line tool (via `cargo install formal-ai`)
+    cli       the `formal-ai` command-line tool (prebuilt release archive,
+              falls back to `cargo install formal-ai`; issue #1181)
     telegram  the Telegram bot (alias for `cli`: the bot ships inside the CLI)
     all       desktop + vscode + cli (best effort; skips what the host can't do)
 
@@ -29,6 +30,8 @@
     FORMAL_AI_INSTALL_TARGET    desktop | vscode | cli | telegram | all (default: desktop)
     FORMAL_AI_INSTALL_VERSION   pin a release tag, e.g. v0.215.0 (default: latest)
     FORMAL_AI_INSTALL_DIR       directory for downloaded desktop assets
+    FORMAL_AI_INSTALL_BIN       directory for the prebuilt CLI binary
+                                (default: ~\.cargo\bin when it exists, else ~\.local\bin)
     FORMAL_AI_SKIP_VERIFY=1     skip the SHA-256 checksum verification
 #>
 [CmdletBinding()]
@@ -57,7 +60,8 @@ Usage: install.ps1 -Target <desktop|vscode|cli|telegram|all>
 Targets:
   desktop   Download the desktop app installer for this architecture.
   vscode    Download the .vsix and install it with `code --install-extension`.
-  cli       Install the `formal-ai` CLI with `cargo install formal-ai`.
+  cli       Install the `formal-ai` CLI from the prebuilt release archive
+            (falls back to `cargo install formal-ai`).
   telegram  Install the CLI that powers the Telegram bot (alias for `cli`).
   all       Install everything this machine can support (best effort).
 
@@ -65,6 +69,7 @@ Environment:
   FORMAL_AI_INSTALL_TARGET    target when none is passed
   FORMAL_AI_INSTALL_VERSION   pin a release tag (default: latest)
   FORMAL_AI_INSTALL_DIR       directory for downloaded desktop assets
+  FORMAL_AI_INSTALL_BIN       directory for the prebuilt CLI binary
   FORMAL_AI_SKIP_VERIFY=1     skip the SHA-256 checksum verification
 '@
 }
@@ -192,12 +197,83 @@ function Install-Telegram {
   # The Telegram bot ships inside the CLI, so this is the `cli` step plus a
   # bot-specific next-step hint. Kept as its own target so users following the
   # Telegram landing page can run with -Target telegram without an error.
-  Install-Cli
+  param($Release)
+  Install-Cli -Release $Release
   Write-Log 'Telegram bot ready. Create a token with @BotFather, then run:'
   Write-Log '  $env:TELEGRAM_BOT_TOKEN=''<token>''; formal-ai telegram'
 }
 
+# The host triple the `cli` job of the Desktop Release workflow publishes a
+# prebuilt archive for (issue #1181). $null when this architecture has no
+# prebuilt archive (the caller falls back to cargo install).
+function Get-CliTargetTriple {
+  $arch = Get-Arch
+  switch ($arch) {
+    'x64'   { return 'x86_64-pc-windows-msvc' }
+    default { return $null }  # no Windows ARM64 CLI archive yet
+  }
+}
+
+# Where the prebuilt binary goes. ~\.cargo\bin wins when it exists because it
+# is already on PATH for every rustup user; otherwise a per-user default.
+function Resolve-CliBinDir {
+  if ($env:FORMAL_AI_INSTALL_BIN) { return $env:FORMAL_AI_INSTALL_BIN }
+  $cargoBin = Join-Path $env:USERPROFILE '.cargo\bin'
+  if (Test-Path $cargoBin) { return $cargoBin }
+  return (Join-Path $env:USERPROFILE '.local\bin')
+}
+
+# Download and install the prebuilt CLI archive for this host. Returns $false
+# -- without throwing -- whenever the prebuilt path is unavailable or unusable,
+# so Install-Cli can fall back to `cargo install`.
+function Install-CliPrebuilt {
+  param($Release)
+  $triple = Get-CliTargetTriple
+  if (-not $triple) { Write-Log 'no prebuilt CLI archive for this architecture'; return $false }
+
+  $name = "formal-ai-cli-$triple.zip"
+  $url = Get-AssetUrl -Release $Release -Pattern "^$([regex]::Escape($name))$"
+  if (-not $url) { Write-Log "no prebuilt CLI archive ($name) in this release"; return $false }
+
+  $tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("formal-ai-cli-" + [System.Guid]::NewGuid().ToString('N'))
+  New-Item -ItemType Directory -Path $tmp -Force | Out-Null
+  $archive = Join-Path $tmp $name
+  Write-Log "downloading $name"
+  Invoke-WebRequest -Uri $url -OutFile $archive -UseBasicParsing -Headers @{ 'User-Agent' = 'formal-ai-installer' }
+  Test-Checksum -File $archive -Release $Release
+
+  Expand-Archive -Path $archive -DestinationPath $tmp -Force
+  $src = Join-Path $tmp "formal-ai-cli-$triple\formal-ai.exe"
+  if (-not (Test-Path $src)) { Write-Log 'the archive did not contain the expected binary'; return $false }
+
+  $binDir = Resolve-CliBinDir
+  if (-not (Test-Path $binDir)) { New-Item -ItemType Directory -Path $binDir -Force | Out-Null }
+  $dest = Join-Path $binDir 'formal-ai.exe'
+  Copy-Item $src $dest -Force
+  Remove-Item $tmp -Recurse -Force -ErrorAction SilentlyContinue
+
+  & $dest --version | Out-Null
+  if ($LASTEXITCODE -ne 0) {
+    Write-Log 'the downloaded binary did not run on this machine'
+    Remove-Item $dest -Force -ErrorAction SilentlyContinue
+    return $false
+  }
+  Write-Log "CLI installed at $dest"
+  if (($env:Path -split ';') -notcontains $binDir) {
+    Write-Log "note: $binDir is not on your PATH; add it with:"
+    Write-Log "  [Environment]::SetEnvironmentVariable('Path', `$env:Path + ';$binDir', 'User')"
+  }
+  Write-Log 'Try: formal-ai --help'
+  return $true
+}
+
 function Install-Cli {
+  param($Release)
+  # Issue #1181: prefer the prebuilt release archive -- no Rust toolchain, no
+  # compile -- and only fall back to `cargo install` when there is no archive
+  # for this host or it cannot be used.
+  if (Install-CliPrebuilt -Release $Release) { return }
+  Write-Log "falling back to 'cargo install formal-ai'"
   if (Get-Command cargo -ErrorAction SilentlyContinue) {
     Write-Log "installing the formal-ai CLI with 'cargo install formal-ai'"
     if ($env:FORMAL_AI_INSTALL_VERSION) {
@@ -211,7 +287,7 @@ function Install-Cli {
     Write-Log 'CLI installed. Try: formal-ai --help'
   }
   else {
-    throw 'cargo is required to install the CLI. Install Rust from https://rustup.rs then re-run.'
+    throw 'no prebuilt CLI archive for this machine and cargo is unavailable. Install Rust from https://rustup.rs then re-run.'
   }
 }
 
@@ -223,14 +299,14 @@ function Invoke-Main {
   switch ($Target) {
     'desktop' { Install-Desktop -Release $release }
     'vscode'  { Install-VsCode -Release $release }
-    'cli'     { Install-Cli }
-    'telegram' { Install-Telegram }
+    'cli'     { Install-Cli -Release $release }
+    'telegram' { Install-Telegram -Release $release }
     'all' {
       # Best effort: never abort the whole run because one optional interface is
       # missing its toolchain.
       try { Install-Desktop -Release $release } catch { Write-Err "desktop step did not complete: $_" }
       try { Install-VsCode -Release $release } catch { Write-Err "vscode step did not complete: $_" }
-      try { Install-Cli } catch { Write-Err "cli step did not complete: $_" }
+      try { Install-Cli -Release $release } catch { Write-Err "cli step did not complete: $_" }
     }
   }
 

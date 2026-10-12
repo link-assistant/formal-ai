@@ -1,0 +1,5 @@
+{
+  "taskId": "T2022",
+  "target": "rust/tests/unit/coding_discovery/oeis.rs",
+  "byteEqual": true
+}

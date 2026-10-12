@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "identity": {
+    "source-commit": "96e579831186bb93c657e807056cd7e41ea4bdd4",
+    "source-tree": "21e50375d2de386a9932cdee34c9450ca4d09828",
+    "cargo-lock-sha256": "762cb71b149e9827c6cd3073cda46c1e605468ef0851bc738ddf2cf0228a8f18",
+    "platform": "linux",
+    "architecture": "x64",
+    "rust-flags": "-Dwarnings",
+    "compiler": "rustc 1.99.0 (b940084d7 2026-09-28)\nbinary: rustc\ncommit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4\ncommit-date: 2026-09-28\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0\nLLVM version: 23.1.1",
+    "profile": "release",
+    "features": "all",
+    "target": "x86_64-unknown-linux-gnu",
+    "encoded-rust-flags": "",
+    "cargo-profile-overrides": {},
+    "native-inputs-sha256": "47971da3294df28ae1a05e47268c9f502ad1a9872b75e754b4f6aec8a20515fe",
+    "native-input-files": 1102,
+    "test-inputs-sha256": "eeff052df3871def2858e7fa0c449b4b7df0d680c50ea6b91c8c957f860f8c04",
+    "test-input-files": 31759
+  },
+  "run": "37957603176",
+  "attempt": "1",
+  "job": "build-artifacts",
+  "captures": [
+    {
+      "id": "self-coding",
+      "legacy-sha256": "1d2a61859214f395ed06b7faf5d7eb7df0f91f011c67bf7faa278a63ed502fac",
+      "exit": 0,
+      "signal": null,
+      "status": "failed",
+      "error": "AssertionError [ERR_ASSERTION]: Actual native capture must observe the original target verification"
+    },
+    {
+      "id": "ci-diagnostic",
+      "legacy-sha256": "56e2c12babc5a4c6b8422547851195311c57927c1cf694723404670926109735",
+      "exit": 0,
+      "signal": null,
+      "status": "failed",
+      "error": "AssertionError [ERR_ASSERTION]: Actual native capture must observe the original target verification"
+    },
+    {
+      "id": "ci-template",
+      "legacy-sha256": "601fded3193b7b2feb00ed5de64bbb04640847ac97392af70c4b79b1968a38c4",
+      "exit": 0,
+      "signal": null,
+      "status": "failed",
+      "error": "AssertionError [ERR_ASSERTION]: Actual native capture must observe the original target verification"
+    }
+  ]
+}

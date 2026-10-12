@@ -1,0 +1,29 @@
+{
+  "lemma": "micrometer",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13680266-n",
+      "partOfSpeech": "n",
+      "definition": "a metric unit of length equal to one millionth of a meter",
+      "synonyms": [
+        "micron",
+        "micrometre"
+      ]
+    },
+    {
+      "id": "oewn-03765190-n",
+      "partOfSpeech": "n",
+      "definition": "caliper for measuring small distances",
+      "synonyms": [
+        "micrometer gauge",
+        "micrometer caliper"
+      ]
+    }
+  ]
+}

@@ -4,6 +4,18 @@ name: Coding Ladder
 # test/release graph. The expensive measurement runs weekly, on dispatch, and
 # when its own contract changes on a pull request. A push to main also measures
 # relevant engine changes without adding 130 authoring attempts to every PR.
+#
+# PR #1188 split the one 23-29 minute job into short parallel ones, so no job
+# runs past the owner's 15-minute target:
+#   ladder-binary  restores (or builds once) the release binary every shard
+#                  then restores from the same cache key;
+#   ladder-shard   N legs each measure every N-th task in dataset order
+#                  (SHARD=<index>/<N>, N = the matrix size);
+#   coding-ladder  the check this workflow always reported: every shard must
+#                  have succeeded (scripts/check-shard-results.sh), the shard
+#                  results must cover all 130 tasks exactly once (the
+#                  harness's MERGE_FROM mode refuses anything less), and the
+#                  merged result must hold the recorded floor.
 on:
   push:
     branches:
@@ -17,9 +29,13 @@ on:
       - 'data/meta/ladder-ratchet.lino'
       - 'experiments/issue_847_coding_ladder/**'
       - 'scripts/check-coding-ladder.rs'
+      - 'scripts/check-shard-results.sh'
       - '.github/actions/formal-ai-binary/**'
       - '.github/workflows/coding-ladder.yml'
   pull_request:
+    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
+    # never triggers this repository's own pipeline.
+    branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
     paths:
       - 'rust/src/cli_solve.rs'
@@ -29,10 +45,25 @@ on:
       - 'data/meta/ci-gates/coding-ladder.lino'
       - 'experiments/issue_847_coding_ladder/**'
       - 'scripts/check-coding-ladder.rs'
+      - 'scripts/check-shard-results.sh'
       - '.github/workflows/coding-ladder.yml'
   schedule:
     - cron: '17 5 * * 0'
+  # Issue #1187 R2: a bot pull request's checks start through dispatch
+  # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run the pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
 
 permissions:
   contents: read
@@ -42,10 +73,35 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
-  coding-ladder:
-    name: 130-task coding ladder
+  ladder-binary:
+    name: Coding ladder binary
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    # A cold release build measured 4.4-5.6 minutes; a cache hit is seconds.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      # Built (or restored) once here, so every shard below restores the same
+      # cached binary instead of each compiling it.
+      - uses: ./.github/actions/formal-ai-binary
+
+  ladder-shard:
+    name: Coding ladder shard ${{ matrix.shard }}
+    needs: [ladder-binary]
+    runs-on: ubuntu-latest
+    # 1200s of budget under a 30-minute cap is 66.7%, inside the 70% share
+    # issue #1081 allows. All 130 tasks measured 17.7-23.1 minutes in one job,
+    # so a fifth is ~4-5 minutes (8.6 at most, PR #1188); the budget is four times that, for a shard
+    # whose tasks run into the harness's 300s per-task timeout.
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # Five legs; the shard count is the matrix size (strategy.job-total),
+        # so adding or removing a leg can never leave a task unmeasured.
+        shard: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -53,16 +109,80 @@ jobs:
 
       - uses: ./.github/actions/formal-ai-binary
 
-      - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
-
-      - name: Measure all 130 coding tasks
+      - name: Measure one shard of the 130 coding tasks
         env:
+          SHARD_INDEX: ${{ strategy.job-index }}
+          SHARD_TOTAL: ${{ strategy.job-total }}
+          RESULTS: ${{ runner.temp }}/coding-ladder-shard
+          TEST_BUDGET_SECONDS: 1200
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          set -euo pipefail
+          export SHARD="$((SHARD_INDEX + 1))/${SHARD_TOTAL}"
+          export OUT="$RESULTS/coding-ladder-shard-$((SHARD_INDEX + 1)).json"
+          mkdir -p "$RESULTS"
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Coding ladder shard" \
+            bash experiments/issue_847_coding_ladder/run_coding_ladder.sh \
+            | tee "$RESULTS/coding-ladder-shard-$((SHARD_INDEX + 1)).log"
+          # The harness exits 0 when it cannot measure at all (no binary, a
+          # dirty tree); a shard that wrote no result measured nothing.
+          [ -s "$OUT" ] || { echo "::error::shard $SHARD wrote no result" >&2; exit 1; }
+
+      - name: Retain the shard evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coding-ladder-shard-${{ matrix.shard }}
+          path: ${{ runner.temp }}/coding-ladder-shard
+          if-no-files-found: warn
+          retention-days: 3
+
+  coding-ladder:
+    name: 130-task coding ladder (all shards)
+    # A new display name on purpose: scripts/check-job-headroom.rs matches
+    # measured jobs to caps by name, and the one-job history under the old
+    # name would be judged against this short verdict job's cap.
+    needs: [ladder-binary, ladder-shard]
+    # Not `always()`: a run superseded by a newer push is the one
+    # cancellation that is not a defect, and it skips the verdict.
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Every coding ladder shard finished
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          JOBS: ladder-binary ladder-shard
+          CHECK: Coding ladder
+        run: bash scripts/check-shard-results.sh
+
+      - name: Download the shard results
+        uses: actions/download-artifact@v8
+        env:
+          # v8's bundled unzip dependency still calls Buffer(); suppress only
+          # that reviewed upstream diagnostic, never all Node warnings:
+          # https://github.com/actions/download-artifact/issues/484
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          pattern: coding-ladder-shard-*
+          path: ${{ runner.temp }}/coding-ladder-shards
+
+      - name: Join the shards into one 130-task result
+        env:
+          MERGE_FROM: ${{ runner.temp }}/coding-ladder-shards
           OUT: ${{ runner.temp }}/coding-ladder-results.json
         run: |
           set -euo pipefail
           bash experiments/issue_847_coding_ladder/run_coding_ladder.sh \
-            | tee "${{ runner.temp }}/coding-ladder.log"
+            | tee "$RUNNER_TEMP/coding-ladder.log"
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
 
       - name: Enforce the recorded floor
         env:
@@ -77,5 +197,6 @@ jobs:
           path: |
             ${{ runner.temp }}/coding-ladder-results.json
             ${{ runner.temp }}/coding-ladder.log
+            ${{ runner.temp }}/coding-ladder-shards
           if-no-files-found: warn
           retention-days: 14

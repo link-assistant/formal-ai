@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: R848-2/R848-7: source creation renders executable bytes and observes them
+    # Subtest: function, constant and test requests write exact source
+    ok 1 - function, constant and test requests write exact source
+      ---
+      duration_ms: 964.601375
+      ...
+    # Subtest: the same request in russian, chinese and hindi generates the same shape of source
+    ok 2 - the same request in russian, chinese and hindi generates the same shape of source
+      ---
+      duration_ms: 83.050875
+      ...
+    1..2
+ok 1 - R848-2/R848-7: source creation renders executable bytes and observes them
+  ---
+  duration_ms: 1210.958458
+  type: 'suite'
+  ...
+# Subtest: R848-5: repository search uses the named code subject
+    # Subtest: seven subject shapes each become one focused grep
+    ok 1 - seven subject shapes each become one focused grep
+      ---
+      duration_ms: 1331.459083
+      ...
+    1..1
+ok 2 - R848-5: repository search uses the named code subject
+  ---
+  duration_ms: 1331.559334
+  type: 'suite'
+  ...
+# Subtest: R848-6: a structured collection edit transforms the workspace bytes
+    # Subtest: read, transform, write and observe the excluded_folders array
+    ok 1 - read, transform, write and observe the excluded_folders array
+      ---
+      duration_ms: 24.830917
+      ...
+    1..1
+ok 3 - R848-6: a structured collection edit transforms the workspace bytes
+  ---
+  duration_ms: 24.977875
+  type: 'suite'
+  ...
+# Subtest: R848-10: symbol refactors and composite module requests terminate verified
+    # Subtest: an identifier rename is a grounded rewrite, not a file move
+    ok 1 - an identifier rename is a grounded rewrite, not a file move
+      ---
+      duration_ms: 30.542292
+      ...
+    # Subtest: an Agent CLI absolute read path gets one bounded whole-word rewrite and a digest check
+    ok 2 - an Agent CLI absolute read path gets one bounded whole-word rewrite and a digest check
+      ---
+      duration_ms: 27.598583
+      ...
+    # Subtest: a composite request writes the module, then registers it, observing both
+    ok 3 - a composite request writes the module, then registers it, observing both
+      ---
+      duration_ms: 24.409583
+      ...
+    # Subtest: an Agent CLI composite registers the module with a compact edit and a digest check
+    ok 4 - an Agent CLI composite registers the module with a compact edit and a digest check
+      ---
+      duration_ms: 26.865541
+      ...
+    1..4
+ok 4 - R848-10: symbol refactors and composite module requests terminate verified
+  ---
+  duration_ms: 109.746709
+  type: 'suite'
+  ...
+1..4
+# tests 8
+# suites 4
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3063.201875

@@ -1,0 +1,94 @@
+# Informal-register vocabulary and phrase rules (issue #1174).
+#
+# The register-rewriting handler reads this file. action_cue records name the
+# request shapes that ask for a formal rewrite (the cue must appear in the
+# command head, not the text being rewritten); word_pair records map one
+# informal token to its formal equivalent; phrase_rule records the politeness
+# grammaticalization applied after the word substitutions. The words are data;
+# the handler only computes the rewrite and reports each substitution.
+
+register_lexicon
+  action_cue
+    language en
+    cue "rewrite formally"
+    cue "rewrite this formally"
+    cue "make this formal"
+    cue "rewrite in a formal register"
+    cue "rewrite in a formal style"
+  action_cue
+    language ru
+    cue "перепиши официально"
+    cue "перепиши формально"
+    cue "сделай официальным стилем"
+  word_pair
+    language en
+    informal "u"
+    formal "you"
+  word_pair
+    language en
+    informal "ur"
+    formal "your"
+  word_pair
+    language en
+    informal "asap"
+    formal "as soon as possible"
+  word_pair
+    language en
+    informal "thx"
+    formal "thank you"
+  word_pair
+    language en
+    informal "gonna"
+    formal "going to"
+  word_pair
+    language en
+    informal "wanna"
+    formal "want to"
+  word_pair
+    language en
+    informal "gotta"
+    formal "have to"
+  word_pair
+    language en
+    informal "hey"
+    formal "hello"
+  word_pair
+    language en
+    informal "plz"
+    formal "please"
+  word_pair
+    language en
+    informal "pls"
+    formal "please"
+  word_pair
+    language en
+    informal "sry"
+    formal "sorry"
+  word_pair
+    language en
+    informal "idk"
+    formal "I do not know"
+  word_pair
+    language en
+    informal "btw"
+    formal "by the way"
+  word_pair
+    language en
+    informal "rn"
+    formal "right now"
+  word_pair
+    language ru
+    informal "пж"
+    formal "пожалуйста"
+  word_pair
+    language ru
+    informal "плиз"
+    formal "пожалуйста"
+  word_pair
+    language ru
+    informal "спс"
+    formal "спасибо"
+  phrase_rule
+    language en
+    pattern "can you"
+    replacement "could you please"

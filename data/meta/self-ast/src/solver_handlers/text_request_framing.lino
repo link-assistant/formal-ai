@@ -1,0 +1,18 @@
+self_ast_census
+  target src/solver_handlers/text_request_framing.rs
+  language rust
+  fidelity signature
+  byte_len 5028
+  line_count 132
+  content_id source_module_72e1f61a61394d9a
+  symbol_count 9
+  symbols
+    function request_framing 19 24
+    struct OperationArgument 30 35
+    function phrase_argument 41 72
+    function inside_quoted 74 78
+    function argument_after 80 88
+    function argument_before 90 101
+    function quoted_argument 103 109
+    const ARGUMENT_ENDS 113 113
+    function bare_argument 120 132

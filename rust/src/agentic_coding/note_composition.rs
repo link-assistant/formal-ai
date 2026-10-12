@@ -26,6 +26,7 @@
 //! parts stay listed as outstanding until something in the conversation answers
 //! them.
 
+use super::final_result::{FinalDisposition, FinalPayloadRole, FinalResult, record_with_role};
 use super::planner::AgenticPlan;
 use super::shell_command_policy::sentences;
 use super::write_request::first_content_lead_end;
@@ -43,12 +44,18 @@ use std::ops::Range;
 pub(super) fn plan_note_composition_step(
     task: &str,
     messages: &[ChatMessage],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let specification = parse_specification(task)?;
-    Some(AgenticPlan::Final(compose(&specification, messages)))
+    Some(record_with_role(
+        AgenticPlan::Final(compose(&specification, messages)),
+        FinalDisposition::Finding,
+        "note_composition",
+        FinalPayloadRole::AuditReport,
+        result,
+    ))
 }
 
-/// What a request said its document has to cover.
 struct Specification {
     /// The sentence that asked for the document, as the caller wrote it.
     request: String,
@@ -58,15 +65,7 @@ struct Specification {
     parts: Vec<String>,
 }
 
-/// Where `task` specifies a document to compose, when it specifies one.
-///
-/// [`super::general_planner`] asks this before reading a content lead as a
-/// literal payload. Both routes recognise the same word -- "containing" is a
-/// [`seed::ROLE_FILE_WRITE_CONTENT_LEAD`] surface either way -- and the sentence
-/// around it is what says which reading applies. When the marker is inside a
-/// sentence that names a composition action, a document kind and two or more
-/// parts, the words after it are the document's structure, and transcribing them
-/// writes the request into the file instead of the note.
+/// Recognize the document specification before any literal-write fallback.
 ///
 /// The ladder's own last node is exactly this shape: "Produce a final evidence
 /// note containing the selected tree level, node outcomes, test results, and
@@ -180,9 +179,7 @@ fn compose(specification: &Specification, messages: &[ChatMessage]) -> String {
         }
     }
     if observations.is_empty() {
-        note.push_str(
-            "\nNo requested part above is backed by an observation from this session.\n",
-        );
+        note.push_str("\nNo requested part above is backed by an observation from this session.\n");
     }
     note
 }
@@ -205,7 +202,10 @@ fn observations(messages: &[ChatMessage]) -> Vec<String> {
         .map(|message| {
             let name = message.name.as_deref().unwrap_or("tool");
             let raw = message.content.plain_text();
-            let head = raw.lines().find(|line| !line.trim().is_empty()).unwrap_or("");
+            let head = raw
+                .lines()
+                .find(|line| !line.trim().is_empty())
+                .unwrap_or("");
             format!("{name}: {}", head.trim())
         })
         .collect()

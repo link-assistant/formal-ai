@@ -1,0 +1,136 @@
+>> read {"filePath":"experiments/issue_1028_agent_cli_ladder/evidence.py","file_path":"experiments/issue_1028_agent_cli_ladder/evidence.py","path":"experiments/issue_1028_agent_cli_ladder/evidence.py"}
+   <file>
+   00001| """Validate one ladder evidence set against its tree, corpus and observations."""
+   00002| import hashlib
+   00003| import re
+   00004| from pathlib import Path
+   00005| 
+   00006| FIELDS = ("requested_depth", "node_filter", "authored_rules_enabled", "source_commit", "source_tree",
+   00007|           "tree_sha256", "leaves_sha256", "selected_nodes", "failures", "deepest_passing_level",
+   00008|           "leaf_nodes_selected", "leaf_nodes_passing", "leaf_nodes_passing_without_authored_rules")
+   00009| IDENTITY = ("authored_rules_enabled", "source_commit", "source_tree", "tree_sha256", "leaves_sha256")
+   00010| 
+   00011| 
+   00012| def fail(message):
+   00013|     raise ValueError(message)
+   00014| 
+   00015| 
+   00016| def digest(path):
+   00017|     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+   00018| 
+   00019| 
+   00020| def result(path):
+   00021|     values = {}
+   00022|     for line in Path(path).read_text().splitlines():
+   00023|         parts = line.strip().split(" ", 1)
+   00024|         if len(parts) == 2 and parts[0] in FIELDS:
+   00025|             if parts[0] in values:
+   00026|                 fail(f"duplicate result field: {parts[0]}")
+   00027|             values[parts[0]] = parts[1].strip().strip('"')
+   00028|     return values
+   00029| 
+   00030| 
+   00031| def corpus(path):
+   00032|     rows = {}
+   00033|     for row in (Path(path) / "tree.tsv").read_text().splitlines():
+   00034|         node, depth, *_ = row.split("\t")
+   00035|         if not re.fullmatch(r"R|[12](\.[12]){0,4}", node) or int(depth) != (0 if node == "R" else node.count(".") + 1):
+   00036|             fail(f"invalid canonical tree node: {node}")
+   00037|         if node in rows:
+   00038|             fail(f"duplicate tree node: {node}")
+   00039|         rows[node] = (int(depth), row)
+   00040|     if len(rows) != 63 or sum(depth == 5 for depth, _ in rows.values()) != 32:
+   00041|         fail("the canonical corpus must contain all 63 nodes and 32 leaves")
+   00042|     return rows
+   00043| 
+   00044| 
+   00045| def selected(tree, mode, prefix):
+   00046|     if mode not in [str(depth) for depth in range(6)] + ["all"]:
+   00047|         fail(f"invalid requested depth: {mode}")
+   00048|     if prefix not in ("none", "R") and not re.fullmatch(r"[12](\.[12]){0,4}", prefix):
+   00049|         fail(f"invalid node filter: {prefix}")
+   00050|     return {node for node, (depth, _) in tree.items()
+   00051|             if (mode == "all" or depth == int(mode))
+   00052|             and (prefix in ("none", "R") or node == prefix or node.startswith(prefix + "."))}
+   00053| 
+   00054| 
+   00055| def observations(path):
+   00056|     verdicts = {}
+   00057|     for row in (Path(path) / "run.log").read_text().splitlines():
+   00058|         fields = row.split("\t")
+   00059|         if len(fields) != 3 or fields[1] not in ("PASS", "FAIL"):
+   00060|             continue
+   00061|         if fields[0] in verdicts:
+   00062|             fail(f"duplicate measured node: {fields[0]}")
+   00063|         verdicts[fields[0]] = fields[1]
+   00064|     return verdicts
+   00065| 
+   00066| 
+   00067| def counts(tree, chosen, verdicts, rules):
+   00068|     leaf = {node for node in chosen if tree[node][0] == 5}
+   00069|     deepest = "none"
+   00070|     for depth in range(5, -1, -1):
+   00071|         level = {node for node in chosen if tree[node][0] == depth}
+   00072|         if not level:
+   00073|             continue
+   00074|         if any(verdicts[node] != "PASS" for node in level):
+   00075|             break
+   00076|         deepest = str(depth)
+   00077|     values = {"selected_nodes": str(len(chosen)), "failures": str(sum(verdicts[node] == "FAIL" for node in chosen)),
+   00078|               "deepest_passing_level": deepest, "leaf_nodes_selected": str(len(leaf)),
+   00079|               "leaf_nodes_passing": str(sum(verdicts[node] == "PASS" for node in leaf))}
+   00080|     if rules == "false":
+   00081|         values["leaf_nodes_passing_without_authored_rules"] = values["leaf_nodes_passing"]
+   00082|     return values
+   00083| 
+   00084| 
+   00085| def validate(path):
+   00086|     path = Path(path)
+   00087|     values = result(path / "ladder-result.lino")
+   00088|     for key in FIELDS[:-1]:
+   00089|         if key not in values:
+   00090|             fail(f"{path.name} omits result field {key}")
+   00091|     if values["authored_rules_enabled"] not in ("true", "false"):
+   00092|         fail("invalid authored-rules identity")
+   00093|     for key in ("source_commit", "source_tree"):
+   00094|         if not re.fullmatch(r"[0-9a-f]{40}", values[key]):
+   00095|             fail(f"invalid {key}")
+   00096|     for key, filename in (("tree_sha256", "tree.tsv"), ("leaves_sha256", "leaves.tsv")):
+   00097|         if values[key] != digest(path / filename):
+   00098|             fail(f"{path.name} has conflicting {filename} bytes")
+   00099|     tree = corpus(path)
+   00100|     chosen = selected(tree, values["requested_depth"], values["node_filter"])
+   00101|     rows = (path / "selected.tsv").read_text().splitlines()
+   00102|     ids = [row.split("\t", 1)[0] for row in rows]
+   00103|     if len(ids) != len(set(ids)) or set(ids) != chosen:
+   00104|         fail(f"{path.name} selected nodes do not match its depth/filter")
+   00105|     if any(row != tree[node][1] for node, row in zip(ids, rows)):
+   00106|         fail(f"{path.name} selected rows disagree with its corpus")
+   00107|     verdicts = observations(path)
+   00108|     if set(verdicts) != chosen:
+   00109|         fail(f"{path.name} must report one disposition for every selected node")
+   00110|     expected = counts(tree, chosen, verdicts, values["authored_rules_enabled"])
+   00111|     if any(values.get(key) != value for key, value in expected.items()):
+   00112|         fail(f"{path.name} result counts disagree with measured node dispositions")
+   00113|     for node in chosen:
+   00114|         if verdicts[node] == "PASS" and not (path / node / "effect.lino").is_file():
+   00115|             fail(f"{path.name} claims passing node {node} without its effect")
+   00116|     return values, tree, chosen, verdicts
+   00117| 
+   
+   (End of file - total 117 lines)
+   </file>
+>> edit {"filePath":"experiments/issue_1028_agent_cli_ladder/evidence.py","file_path":"experiments/issue_1028_agent_cli_ladder/evidence.py","new":"    timings = {}\n    for row in (path / \"durations.tsv\").read_text().splitlines():\n        node, depth, elapsed = row.split(\"\\t\")\n        if node in timings or node not in chosen or int(depth) != tree[node][0] or int(elapsed) < 0:\n            fail(f\"{path.name} has duplicate, foreign or invalid elapsed measurements\")\n        timings[node] = int(elapsed)\n    if set(timings) != chosen:\n        fail(f\"{path.name} omits actual node elapsed measurements\")\n    verdicts = observations(path)","newString":"    timings = {}\n    for row in (path / \"durations.tsv\").read_text().splitlines():\n        node, depth, elapsed = row.split(\"\\t\")\n        if node in timings or node not in chosen or int(depth) != tree[node][0] or int(elapsed) < 0:\n            fail(f\"{path.name} has duplicate, foreign or invalid elapsed measurements\")\n        timings[node] = int(elapsed)\n    if set(timings) != chosen:\n        fail(f\"{path.name} omits actual node elapsed measurements\")\n    verdicts = observations(path)","new_str":"    timings = {}\n    for row in (path / \"durations.tsv\").read_text().splitlines():\n        node, depth, elapsed = row.split(\"\\t\")\n        if node in timings or node not in chosen or int(depth) != tree[node][0] or int(elapsed) < 0:\n            fail(f\"{path.name} has duplicate, foreign or invalid elapsed measurements\")\n        timings[node] = int(elapsed)\n    if set(timings) != chosen:\n        fail(f\"{path.name} omits actual node elapsed measurements\")\n    verdicts = observations(path)","new_string":"    timings = {}\n    for row in (path / \"durations.tsv\").read_text().splitlines():\n        node, depth, elapsed = row.split(\"\\t\")\n        if node in timings or node not in chosen or int(depth) != tree[node][0] or int(elapsed) < 0:\n            fail(f\"{path.name} has duplicate, foreign or invalid elapsed measurements\")\n        timings[node] = int(elapsed)\n    if set(timings) != chosen:\n        fail(f\"{path.name} omits actual node elapsed measurements\")\n    verdicts = observations(path)","old":"    verdicts = observations(path)","oldString":"    verdicts = observations(path)","old_str":"    verdicts = observations(path)","old_string":"    verdicts = observations(path)","path":"experiments/issue_1028_agent_cli_ladder/evidence.py"}
+>> bash {"command":"sha256sum -- experiments/issue_1028_agent_cli_ladder/evidence.py"}
+   6089f4d2447e3e6689b40338bbea6a419d89c0388535f0e88433f4222f935ba8  experiments/issue_1028_agent_cli_ladder/evidence.py
+   
+== answer ==
+Replaced `    verdicts = observations(path)` with `    timings = {}
+    for row in (path / "durations.tsv").read_text().splitlines():
+        node, depth, elapsed = row.split("\t")
+        if node in timings or node not in chosen or int(depth) != tree[node][0] or int(elapsed) < 0:
+            fail(f"{path.name} has duplicate, foreign or invalid elapsed measurements")
+        timings[node] = int(elapsed)
+    if set(timings) != chosen:
+        fail(f"{path.name} omits actual node elapsed measurements")
+    verdicts = observations(path)` in `experiments/issue_1028_agent_cli_ladder/evidence.py` and observed the result.

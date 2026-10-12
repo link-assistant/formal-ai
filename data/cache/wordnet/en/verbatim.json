@@ -1,0 +1,34 @@
+{
+  "lemma": "verbatim",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00259374-r",
+      "partOfSpeech": "r",
+      "definition": "using exactly the same words",
+      "examples": [
+        "he repeated her remarks verbatim"
+      ],
+      "synonyms": [
+        "word for word"
+      ]
+    },
+    {
+      "id": "oewn-00917922-s",
+      "partOfSpeech": "s",
+      "definition": "in precisely the same words used by a writer or speaker",
+      "examples": [
+        "a direct quotation",
+        "repeated their dialog verbatim"
+      ],
+      "synonyms": [
+        "direct"
+      ]
+    }
+  ]
+}

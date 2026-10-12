@@ -1,0 +1,21 @@
+view
+  id M-e40604834459
+  lemma collection
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "several things grouped together or considered as a whole"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a publication containing a variety of works"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "request for a sum of money"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of gathering something together"
+    provenance (wordnet)

@@ -1,0 +1,1 @@
+Retire CLI and desktop build timeout exceptions after all five CLI and six desktop jobs passed with independently verified same-run native binaries. All package jobs now enforce thirty-minute caps; historical timings and source/startup/byte checks remain intact.

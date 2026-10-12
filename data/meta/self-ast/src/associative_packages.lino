@@ -1,0 +1,17 @@
+self_ast_census
+  target src/associative_packages.rs
+  language rust
+  fidelity signature
+  byte_len 7159
+  line_count 194
+  content_id source_module_2cde262337b2d094
+  symbol_count 8
+  symbols
+    struct SharedPackage 16 20
+    struct AvailableHandler 24 28
+    struct PermissionReview 33 37
+    enum SharingError 40 49
+    function export 54 62
+    function parse 65 85
+    function declared_permissions 89 101
+    function import_package 109 194

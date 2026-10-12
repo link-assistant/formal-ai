@@ -1,0 +1,11 @@
+# Completing the interrupted duplication audit (#1182)
+
+The interrupted draft could not operate as written: its `fn` recognizer did not skip the required whitespace, dependency parsing missed normal Cargo entries, and clone destinations discarded the organization. The maintained-parser adapter assumed a newer release and interpreted the crate's flattened relations as an indentation tree.
+
+The gate and cross-organization scanner now share a lexical extractor which masks strings while counting braces, preserves string whitespace during normalization, handles nested block comments and Rust raw literals, and records original line numbers. Both scripts skip symlinks. The gate requires an explicit readable baseline and compares group identities; stale entries demand removal, new entries demand consolidation. The historical inventory remains clearly labeled as historical. An exact new baseline is deliberately pending measurement on the final integrated tree.
+
+Cross-organization checkouts retain organization/repository identity, dependency votes match candidate repository names, and issue creation runs only under --open. A failed marker search prevents creation. Weekly automation scans by default, uses the shared credential resolver, installs its runner, and uploads its record. No external issue was filed during this work. The lexical scanner is candidate discovery, with grammar-backed extraction still pending.
+
+The installed direct links-notation 0.16.1 already exposes the required API. `parser::parse_document` retains indentation; `parse_lino` intentionally flattens it, so it cannot be used for a seed-tree adapter. The adapter rejects unsupported nested inline structures and returns parse errors. The exhaustive corpus audit is explicitly ignored pending measured gap filing; small adapter fixtures are active. Existing loaders are not migrated or deleted until conformance is established.
+
+Integration: register lino_adapters and both issue_1182 unit modules. No Cargo/lock change is needed. In CI, run the gate with --json for current inventory, initialize/review/commit data/meta/duplicate-functions-baseline.lino with --write-baseline, then add the required gate to central CI metadata. Run the ignored corpus test separately to measure remaining parser adoption gaps. Local builds/tests/package commands were prohibited and were not run.

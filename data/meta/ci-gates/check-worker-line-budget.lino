@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_worker_line_budget
+ci_gate check-worker-line-budget
   stage rust
   description "Each browser worker module stays under its own committed line ceiling."
   run "rust-script --test scripts/check-worker-line-budget.rs && rust-script scripts/check-worker-line-budget.rs"
+  justification "A source file that grew past the line ceiling predicted untestable complexity in the worker modules; the line budget gate was introduced in #658 (E39/R380) alongside the WASM worker migration to enforce the 1 500-line ceiling."

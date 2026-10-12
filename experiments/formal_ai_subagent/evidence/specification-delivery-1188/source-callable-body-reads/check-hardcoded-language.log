@@ -1,0 +1,7 @@
+
+Checking rust/src/ for hardcoded user-facing natural language (R379)...
+
+Detected prose literals: 699 | allowlisted: 699
+
+No new hardcoded natural language; allowlist is in sync (699 entries).
+

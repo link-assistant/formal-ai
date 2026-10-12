@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蜂蜜"
+        },
+        "es": {
+          "language": "es",
+          "value": "miel"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "蜜蜂采花蜜所制成的带甜味食物"
+        },
+        "es": {
+          "language": "es",
+          "value": "sustancia dulce y viscosa hecha por abejas principalmente usando néctar de flores"
         }
       },
       "aliases": {
@@ -54,6 +62,12 @@
           {
             "language": "ru",
             "value": "пчелиный мёд"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "miel de abejas"
           }
         ]
       }

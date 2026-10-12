@@ -1,0 +1,8 @@
+export_substitution_rule	प्रतिस्थापन नियम निर्यात
+substitution	प्रतिस्थापन
+substitution_rule_export	प्रतिस्थापन नियमों का निर्यात
+target_javascript	लक्ष्य javascript
+target_rust	लक्ष्य rust
+target_webassembly	लक्ष्य webassembly
+wasm	wasm
+webassembly	वेबअसेंबली

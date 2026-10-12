@@ -16,9 +16,9 @@
     },
     {
       "arguments": {
-        "command": "python3 -c p='google-trends-catalog.lino';s=open(p).read().splitlines();print(len(s));print('\\n'.join(s[:12]))"
+        "command": "python3 -c 'p='\\''google-trends-catalog.lino'\\'';s=open(p).read().splitlines();print(len(s));print('\\''\\n'\\''.join(s[:12]))'"
       },
-      "result": "980\ngoogle_trends_catalog\n  record_type \"google_trends_catalog\"\n  source \"google_trends_rss\"\n  source_url \"https://trends.google.com/trending/rss?geo=US\"\n  geo \"US\"\n  locale \"ru\"\n  collected_at \"2026-07-08T20:10:00Z\"\n  topic_count \"10\"\n  prompt_count \"80\"\n  answered_count \"80\"\n  topic\n    rank \"1\"\n",
+      "result": "{\"command\":\"python3 -c 'p='\\\\''google-trends-catalog.lino'\\\\'';s=open(p).read().splitlines();print(len(s));print('\\\\''\\\\n'\\\\''.join(s[:12]))'\",\"complete\":true,\"exit_code\":0,\"schema\":\"command-execution-receipt/v1\",\"stderr\":\"\",\"stdout\":\"980\\ngoogle_trends_catalog\\n  record_type \\\"google_trends_catalog\\\"\\n  source \\\"google_trends_rss\\\"\\n  source_url \\\"https://trends.google.com/trending/rss?geo=US\\\"\\n  geo \\\"US\\\"\\n  locale \\\"ru\\\"\\n  collected_at \\\"2026-07-08T20:10:00Z\\\"\\n  topic_count \\\"10\\\"\\n  prompt_count \\\"80\\\"\\n  answered_count \\\"80\\\"\\n  topic\\n    rank \\\"1\\\"\\n\",\"timed_out\":false,\"truncated\":false}",
       "tool": "run_command"
     }
   ],

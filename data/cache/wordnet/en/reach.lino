@@ -1,0 +1,84 @@
+language en
+lemma reach
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the limits within which something can be effective"
+    examples ("range of motion" "he was beyond the reach of their fire")
+    id oewn-08646496-n
+    partOfSpeech n
+    synonyms (range)
+  entry
+    definition "an area in which something acts or operates or has power or control:"
+    examples ("a piano has a greater range than the human voice" "the ambit of municipal legislation" "within the compass of this article" "within the scope of an investigation" "outside the reach of the law" "in the political orbit of a world power")
+    id oewn-05132642-n
+    partOfSpeech n
+    synonyms (scope range orbit compass ambit)
+  entry
+    definition "the act of physically reaching or thrusting out"
+    id oewn-00342069-n
+    partOfSpeech n
+    synonyms (reaching stretch)
+  entry
+    definition "the limit of capability"
+    examples ("within the compass of education")
+    id oewn-05631411-n
+    partOfSpeech n
+    synonyms (compass range grasp)
+  entry
+    definition "reach a destination, either real or abstract"
+    examples ("We hit Detroit by noon" "The water reached the doorstep" "We barely made it to the finish line" "I have to hit the MAC machine before the weekend starts")
+    id oewn-02024442-v
+    partOfSpeech v
+    synonyms (make attain hit "arrive at" gain)
+  entry
+    definition "reach a point in time, or a certain state or level"
+    examples ("The thermometer hit 100 degrees" "This car can reach a speed of 140 miles per hour")
+    id oewn-02010848-v
+    partOfSpeech v
+    synonyms (hit attain)
+  entry
+    definition "move forward or upward in order to touch; also in a metaphorical sense"
+    examples ("Government reaches out to the people")
+    id oewn-01442758-v
+    partOfSpeech v
+    synonyms ("reach out")
+  entry
+    definition "be in or establish communication with"
+    examples ("Our advertisements reach millions" "He never contacted his children after he emigrated to Australia")
+    id oewn-00745330-v
+    partOfSpeech v
+    synonyms ("get through" "get hold of" contact)
+  entry
+    definition "to gain with effort"
+    examples ("she achieved her goal despite setbacks")
+    id oewn-02531751-v
+    partOfSpeech v
+    synonyms (achieve accomplish attain)
+  entry
+    definition "to extend as far as"
+    examples ("The sunlight reached the wall" "Can he reach?" "The chair must not touch the wall")
+    id oewn-02691488-v
+    partOfSpeech v
+    synonyms ("extend to" touch)
+  entry
+    definition "reach a goal"
+    examples ("make the first team" "We made it!" "She may not make the grade")
+    id oewn-02026014-v
+    partOfSpeech v
+    synonyms (make "get to" "progress to")
+  entry
+    definition "place into the hands or custody of"
+    examples ("hand me the spoon, please" "Turn the files over to me, please" "He turned over the prisoner to his lawyers")
+    id oewn-02235554-v
+    partOfSpeech v
+    synonyms (pass hand "pass on" "turn over" give)
+  entry
+    definition "to exert much effort or energy"
+    examples ("straining our ears to hear")
+    id oewn-01148517-v
+    partOfSpeech v
+    synonyms (strive strain)
+source "oewn:2024"

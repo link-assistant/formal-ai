@@ -1,0 +1,21 @@
+== answer ==
+Правило поведения скомпилировано для этого диалога.
+
+Когда пользователь говорит `rust
+//! PR #1188 FIX-GAPS: the open edit gaps G90, G99, G102, G104, G106 and G107
+//! of`, ответь `(ledger rows T371, T377, T471,
+//! T473, T720, T786, T793 and T794; the fixes are rows T840-T869 of
+//!`.
+
+```links
+behavior_rule_runtime_121c75124d81ab6a
+  type "behavior_rule_runtime"
+  match_prompt "rust\n//! PR #1188 FIX-GAPS: the open edit gaps G90, G99, G102, G104, G106 and G107\n//! of"
+  answer "(ledger rows T371, T377, T471,\n//! T473, T720, T786, T793 and T794; the fixes are rows T840-T869 of\n//!"
+  when_then "Когда пользователь говорит `rust\n//! PR #1188 FIX-GAPS: the open edit gaps G90, G99, G102, G104, G106 and G107\n//! of`, ответь `(ledger rows T371, T377, T471,\n//! T473, T720, T786, T793 and T794; the fixes are rows T840-T869 of\n//!`."
+  source "user_message"
+```
+
+Отправьте `rust
+//! PR #1188 FIX-GAPS: the open edit gaps G90, G99, G102, G104, G106 and G107
+//! of` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом.

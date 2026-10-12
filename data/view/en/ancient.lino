@@ -1,0 +1,21 @@
+view
+  id M-81d420751580
+  lemma ancient
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a very old person"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a person who lived in ancient times"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "belonging to times long past especially of the historical period before the fall of the Western Roman Empire"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "very old"
+    provenance (wordnet)

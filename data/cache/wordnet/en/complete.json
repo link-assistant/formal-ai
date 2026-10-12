@@ -1,0 +1,157 @@
+{
+  "lemma": "complete",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00522139-a",
+      "partOfSpeech": "a",
+      "definition": "having every necessary or normal part or component or step",
+      "examples": [
+        "a complete meal",
+        "a complete wardrobe",
+        "a complete set of the Britannica",
+        "a complete set of china",
+        "a complete defeat",
+        "a complete accounting"
+      ]
+    },
+    {
+      "id": "oewn-01754870-s",
+      "partOfSpeech": "s",
+      "definition": "perfect and complete in every respect; having all necessary qualities",
+      "examples": [
+        "a complete gentleman",
+        "consummate happiness",
+        "a consummate performance"
+      ],
+      "synonyms": [
+        "consummate"
+      ]
+    },
+    {
+      "id": "oewn-02233868-s",
+      "partOfSpeech": "s",
+      "definition": "highly skilled",
+      "examples": [
+        "an accomplished pianist",
+        "a complete musician"
+      ],
+      "synonyms": [
+        "accomplished"
+      ]
+    },
+    {
+      "id": "oewn-01524174-s",
+      "partOfSpeech": "s",
+      "definition": "without qualification; used informally as (often pejorative) intensifiers",
+      "examples": [
+        "an arrant fool",
+        "a complete coward",
+        "a consummate fool",
+        "a double-dyed villain",
+        "gross negligence",
+        "a perfect idiot",
+        "pure folly",
+        "what a sodding mess",
+        "stark staring mad",
+        "a thorough nuisance",
+        "a thoroughgoing villain",
+        "utter nonsense",
+        "the unadulterated truth"
+      ],
+      "synonyms": [
+        "arrant",
+        "consummate",
+        "double-dyed",
+        "everlasting",
+        "gross",
+        "perfect",
+        "pure",
+        "sodding",
+        "stark",
+        "staring",
+        "thorough",
+        "thoroughgoing",
+        "utter",
+        "unadulterated"
+      ]
+    },
+    {
+      "id": "oewn-01006696-s",
+      "partOfSpeech": "s",
+      "definition": "having come or been brought to a conclusion",
+      "examples": [
+        "the harvesting was complete",
+        "the affair is over, ended, finished",
+        "the abruptly terminated interview"
+      ],
+      "synonyms": [
+        "concluded",
+        "ended",
+        "over",
+        "all over",
+        "terminated"
+      ]
+    },
+    {
+      "id": "oewn-00485097-v",
+      "partOfSpeech": "v",
+      "definition": "come or bring to a finish or an end",
+      "examples": [
+        "He finished the dishes",
+        "She completed the requirements for her Master's Degree",
+        "The fastest runner finished the race in just over 2 hours; others finished in over 4 hours"
+      ],
+      "synonyms": [
+        "finish"
+      ]
+    },
+    {
+      "id": "oewn-00456705-v",
+      "partOfSpeech": "v",
+      "definition": "bring to a whole, with all the necessary parts or elements",
+      "examples": [
+        "A child would complete the family"
+      ]
+    },
+    {
+      "id": "oewn-02569639-v",
+      "partOfSpeech": "v",
+      "definition": "complete or carry out",
+      "examples": [
+        "discharge one's duties"
+      ],
+      "synonyms": [
+        "dispatch",
+        "discharge"
+      ]
+    },
+    {
+      "id": "oewn-01119902-v",
+      "partOfSpeech": "v",
+      "definition": "complete a pass",
+      "synonyms": [
+        "nail"
+      ]
+    },
+    {
+      "id": "oewn-01022740-v",
+      "partOfSpeech": "v",
+      "definition": "write all the required information onto a form",
+      "examples": [
+        "fill out this questionnaire, please!",
+        "make out a form"
+      ],
+      "synonyms": [
+        "fill out",
+        "fill in",
+        "make out"
+      ]
+    }
+  ]
+}

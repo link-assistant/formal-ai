@@ -1,0 +1,47 @@
+{
+  "ok": true,
+  "part": 8,
+  "totalParts": 8,
+  "originalUnionIndexSHA256": null,
+  "originalLogicalMembersAcrossThisFiniteSelection": 603,
+  "logicalMembersThisPart": 603,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 573,
+  "sourceAndControllerInputBytes": 17219015,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 464,
+  "newEncodedBlobs": 385,
+  "reusedPreviousEncodedBlobs": 79,
+  "newCompressedBytes": 2672557,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 605
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 464
+    }
+  ],
+  "selectionSHA256": "01a2bd8e79e3ed5cb705236e4e2aeeaea2e7182ca6b9cfca10a636d57553af81",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [
+    {
+      "path": "/private/tmp/pr1188-T5760-cohort-usage-source-quality/quality.json",
+      "loss": "T5767 reused the quality controller and overwrote the initial subprocess-detail JSON, including initial PIDs. Original5760 full actualFA request/result/summary retains genuine syntax/readability3 PASS, and5767 full quality subprocess/current details retained. No reconstruction or separate originalPID claim."
+    }
+  ],
+  "pending": [
+    "Own final archive controller running result excluded; no recursive completeness claimed",
+    "Terminal a55 head181 checks62success80failure39skip. Source-native repair, ordinary Node source registration and optional accounting installed; remaining scope/driver/deadline fixes not installed at this cut. No finalhead green CI, native successful producer or future publication guarantee. Historical v0.352.1 amd64 containers and six Desktop platforms authenticated; current credentials/writer lease/multiarch/slim/browser publication remain Unknown or Pending."
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

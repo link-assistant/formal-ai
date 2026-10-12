@@ -1,0 +1,21 @@
+Q109
+  aliases
+    en (Feb "2. month")
+    es (feb feb. fe. "2" "2.º mes" "mes 2" "mes 2.º" "mes de las februas" "segundo mes" "mes segundo" "mes bisiesto" F)
+    ru ("февраля" "фев.")
+    zh ("二月")
+  descriptions
+    en "second month in the Julian and Gregorian calendars"
+    es "segundo mes del año en los calendarios juliano y gregoriano"
+    hi "जूलियन और ग्रेगोरियन कैलेंडर में दूसरा महीना"
+    ru "второй месяц года в юлианском и григорианском календарях"
+    zh "公历及儒略历中第二个月份"
+  id Q109
+  labels
+    en February
+    es febrero
+    hi "फ़रवरी"
+    ru "февраль"
+    zh "2月"
+  type item
+success 1

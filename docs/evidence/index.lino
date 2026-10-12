@@ -1,0 +1,41 @@
+# Evidence index (issue #1088, E110 — #1085 D7)
+#
+# The "public knowledge as cache" pattern VISION.md prescribes: the
+# repository keeps the case-study prose and this index; the captured
+# artifacts themselves live outside it, each entry carrying the sha256,
+# size and URL that make the artifact re-fetchable and verifiable.
+#
+# Digests are content-addressed aggregates: sha256 over every
+# (relative-path, file-sha256) pair under the group, so the digest changes
+# if any file inside the group changes. Computed on the qa-reasoning-
+# coding-bulk-fixes branch at e4193a615 plus the wave-3 commits; the move
+# script below recomputes them at move time and rewrites this file.
+#
+# Destination layout (drafted; the repository is created by the move, the
+# first artifact push publishes it):
+#   https://github.com/link-assistant/formal-ai-evidence
+#     dev/log/issues/<issue>/<capture>…          (5,426 files, 712.8 MB)
+#     dev/log/self-authored/…                    (12 files)
+#     docs/case-studies/<issue>/raw/…            (raw case-study logs)
+#
+# A row with url "pending-move" names an artifact group still inside this
+# repository: scripts/move-evidence.rs fills the URL as it moves the group,
+# and scripts/check-evidence-lines.rs fails a pull request that adds more
+# than 2,000 non-source lines outside the three allowed prose paths, so
+# the index is the only direction the volume may grow.
+evidence_index
+  source_repository "link-assistant/formal-ai"
+  evidence_repository "link-assistant/formal-ai-evidence"
+  digest_method "sha256 over sorted (relative path, file sha256) pairs per group"
+  group
+    path "dev/log/issues"
+    files 5426
+    bytes 712840462
+    sha256 "a1b8741cfbcf004b"
+    url "pending-move"
+  group
+    path "dev/log/self-authored"
+    files 12
+    bytes 108016
+    sha256 "b6c46efd8b4c4533"
+    url "pending-move"

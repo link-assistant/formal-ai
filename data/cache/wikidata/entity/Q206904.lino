@@ -1,0 +1,18 @@
+Q206904
+  aliases
+    en ("GNU R" "GNU S" "R language" "R programming language")
+    ru ("GNU R" "R (язык программирования)")
+    zh ("R编程语言" "R软件")
+  descriptions
+    en "programming language for statistical analysis"
+    hi "प्रोग्रामिंग भाषा"
+    ru "язык программирования для статистической обработки данных и работы с графикой"
+    zh "用于统计计算的编程语言"
+  id Q206904
+  labels
+    en R
+    hi "आर"
+    ru R
+    zh "R语言"
+  type item
+success 1

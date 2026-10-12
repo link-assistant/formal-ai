@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "铁路列车"
+        },
+        "es": {
+          "language": "es",
+          "value": "tren"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "沿著固定軌道移動以運送乘客或貨物的一種或多種自行式車輛"
+        },
+        "es": {
+          "language": "es",
+          "value": "medio de transporte"
         }
       },
       "aliases": {
@@ -92,6 +100,20 @@
           {
             "language": "zh",
             "value": "鐵路列車"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "ferrocarril"
+          },
+          {
+            "language": "es",
+            "value": "trenes"
+          },
+          {
+            "language": "es",
+            "value": "ferrocarriles"
           }
         ]
       }

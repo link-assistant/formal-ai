@@ -1,0 +1,23 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-lexicon-import-war-to-wood.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-b1d432f34baeb0c5
+    record "war"
+  gap seed-metadata-gap-a46c4d26580d8fd9
+    record "waterfall"
+  gap seed-metadata-gap-e444adac58cfb51c
+    record "wheel"
+  gap seed-metadata-gap-1ec3ac69c069c067
+    record "wind"
+  gap seed-metadata-gap-2aa76a6116476d1d
+    record "window"
+  gap seed-metadata-gap-1ec3ab69c069beb4
+    record "wine"
+  gap seed-metadata-gap-1f228b69c0ba1cd8
+    record "wire"
+  gap seed-metadata-gap-6f8769827a3524f5
+    record "woman"
+  gap seed-metadata-gap-ec87b469a4738c08
+    record "wood"

@@ -1,0 +1,205 @@
+TAP version 13
+# Subtest: complete Unicode declaration spans retain source and both coordinate systems
+ok 1 - complete Unicode declaration spans retain source and both coordinate systems
+  ---
+  duration_ms: 1.962125
+  ...
+# Subtest: bounded bodies establish Optional and scalar constraints without caller-supplied types
+ok 2 - bounded bodies establish Optional and scalar constraints without caller-supplied types
+  ---
+  duration_ms: 1.020584
+  ...
+# Subtest: an actual observed pair produces a guarded typed graph, without a wrapper or write
+ok 3 - an actual observed pair produces a guarded typed graph, without a wrapper or write
+  ---
+  duration_ms: 0.699834
+  ...
+# Subtest: nested Optional type parameters are instantiated from the observed operand
+ok 4 - nested Optional type parameters are instantiated from the observed operand
+  ---
+  duration_ms: 0.533959
+  ...
+# Subtest: stale identities and unobserved exports cannot produce a graph
+ok 5 - stale identities and unobserved exports cannot produce a graph
+  ---
+  duration_ms: 1.828417
+  ...
+# Subtest: unknown calls, field schemas, input writes and local mutation remain contract gaps
+ok 6 - unknown calls, field schemas, input writes and local mutation remain contract gaps
+  ---
+  duration_ms: 2.8175
+  ...
+# Subtest: real module initialization and transitive import effects remain separate obligations
+ok 7 - real module initialization and transitive import effects remain separate obligations
+  ---
+  duration_ms: 1.240042
+  ...
+# Subtest: ASI line terminators, incompatible branches and unsupported async are not certified
+ok 8 - ASI line terminators, incompatible branches and unsupported async are not certified
+  ---
+  duration_ms: 0.435916
+  ...
+# Subtest: duplicate bindings and malformed balanced source do not masquerade as provenance
+ok 9 - duplicate bindings and malformed balanced source do not masquerade as provenance
+  ---
+  duration_ms: 0.331375
+  ...
+# Subtest: actual original callees retain exact declarations and honest unsupported contract reasons
+ok 10 - actual original callees retain exact declarations and honest unsupported contract reasons
+  ---
+  duration_ms: 15.956791
+  ...
+# Subtest: production discovery records supported graphs but cannot certify an unbound requested goal
+ok 11 - production discovery records supported graphs but cannot certify an unbound requested goal
+  ---
+  duration_ms: 751.494208
+  ...
+# Subtest: balanced but invalid binding/export forms do not certify a module contract
+ok 12 - balanced but invalid binding/export forms do not certify a module contract
+  ---
+  duration_ms: 0.560792
+  ...
+# Subtest: deferred unknown callable effects cannot contaminate module initialization
+ok 13 - deferred unknown callable effects cannot contaminate module initialization
+  ---
+  duration_ms: 0.376541
+  ...
+# Subtest: actual initialization and import regions retain independent complete byte witnesses
+ok 14 - actual initialization and import regions retain independent complete byte witnesses
+  ---
+  duration_ms: 0.652833
+  ...
+# Subtest: structural return access witnesses retain dynamic indices without schema or purity certification
+ok 15 - structural return access witnesses retain dynamic indices without schema or purity certification
+  ---
+  duration_ms: 0.240167
+  ...
+# Subtest: unknown closures and structural writes cannot acquire read-only contracts
+ok 16 - unknown closures and structural writes cannot acquire read-only contracts
+  ---
+  duration_ms: 0.187583
+  ...
+# Subtest: destination, immutable inputs and acceptance are declaration-scoped
+ok 17 - destination, immutable inputs and acceptance are declaration-scoped
+  ---
+  duration_ms: 66.604125
+  ...
+# Subtest: adjacent declared module and alias signature bind the same reusable discovery
+ok 18 - adjacent declared module and alias signature bind the same reusable discovery
+  ---
+  duration_ms: 0.848959
+  ...
+# Subtest: ambiguous destinations and quoted call shapes are not guessed
+ok 19 - ambiguous destinations and quoted call shapes are not guessed
+  ---
+  duration_ms: 0.571
+  ...
+# Subtest: existing arithmetic module/test request remains on its original route
+ok 20 - existing arithmetic module/test request remains on its original route
+  ---
+  duration_ms: 70.911958
+  ...
+# Subtest: actual planner reads all operands, reports exact missing contracts, and changes no bytes
+ok 21 - actual planner reads all operands, reports exact missing contracts, and changes no bytes
+  ---
+  duration_ms: 1011.194333
+  ...
+# Subtest: an absent destination is observed without creating it
+ok 22 - an absent destination is observed without creating it
+  ---
+  duration_ms: 65.348833
+  ...
+# Subtest: missing input is a failed read, never an empty source or a writing fallback
+ok 23 - missing input is a failed read, never an empty source or a writing fallback
+  ---
+  duration_ms: 37.195916
+  ...
+# Subtest: permission errors on the destination retain typed failure rather than absence
+ok 24 - permission errors on the destination retain typed failure rather than absence
+  ---
+  duration_ms: 0.673709
+  ...
+# Subtest: missing read capability is an exact typed gap, not a declined route
+ok 25 - missing read capability is an exact typed gap, not a declined route
+  ---
+  duration_ms: 0.584125
+  ...
+# Subtest: old request evidence is not reused for a new discovery request
+ok 26 - old request evidence is not reused for a new discovery request
+  ---
+  duration_ms: 0.525375
+  ...
+# Subtest: explicit client error flags stay bound to the observed read
+ok 27 - explicit client error flags stay bound to the observed read
+  ---
+  duration_ms: 0.494
+  ...
+# Subtest: numbered source payload failure words remain data
+ok 28 - numbered source payload failure words remain data
+  ---
+  duration_ms: 60.062333
+  ...
+# Subtest: signature identifiers and path components cannot supply instruction verbs
+ok 29 - signature identifiers and path components cannot supply instruction verbs
+  ---
+  duration_ms: 0.617292
+  ...
+# Subtest: public request-local outcome preserves the actual typed gap and complete witness
+ok 30 - public request-local outcome preserves the actual typed gap and complete witness
+  ---
+  duration_ms: 1.119334
+  ...
+# Subtest: public request-local outcome retains failure metadata without prose classification
+ok 31 - public request-local outcome retains failure metadata without prose classification
+  ---
+  duration_ms: 0.452958
+  ...
+# Subtest: a planned read has no final disposition or stale discovery witness
+ok 32 - a planned read has no final disposition or stale discovery witness
+  ---
+  duration_ms: 0.468333
+  ...
+# Subtest: actual committed body reads its source formal slot despite anonymous task spelling
+ok 33 - actual committed body reads its source formal slot despite anonymous task spelling
+  ---
+  duration_ms: 1.518167
+  ...
+# Subtest: literal contents and declaration-only names do not read an input
+ok 34 - literal contents and declaration-only names do not read an input
+  ---
+  duration_ms: 0.203833
+  ...
+# Subtest: repeated body reads are distinct positional inputs, never declaration counts
+ok 35 - repeated body reads are distinct positional inputs, never declaration counts
+  ---
+  duration_ms: 0.225166
+  ...
+# Subtest: explicit signature binds AST parameters and recursive callable before actual execution
+ok 36 - explicit signature binds AST parameters and recursive callable before actual execution
+  ---
+  duration_ms: 95.439792
+  ...
+# Subtest: explicit incompatible arity, duplicates and unresolved parameters reject honestly
+ok 37 - explicit incompatible arity, duplicates and unresolved parameters reject honestly
+  ---
+  duration_ms: 0.310834
+  ...
+# Subtest: actual source requests retain declared identity and reject unsupported signatures
+ok 38 - actual source requests retain declared identity and reject unsupported signatures
+  ---
+  duration_ms: 59.580583
+  ...
+# Subtest: an assertion names the callable without turning its literal argument into a formal name
+ok 39 - an assertion names the callable without turning its literal argument into a formal name
+  ---
+  duration_ms: 0.286916
+  ...
+1..39
+# tests 39
+# suites 0
+# pass 39
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2076.592834

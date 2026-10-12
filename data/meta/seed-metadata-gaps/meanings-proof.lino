@@ -1,0 +1,17 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-proof.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-86e13b1e0de43ebd
+    record "determinism"
+  gap seed-metadata-gap-e38aa0166b26db4b
+    record "godel"
+  gap seed-metadata-gap-449b108075d171dc
+    record "metatheory"
+  gap seed-metadata-gap-0c984c5d2b5666c9
+    record "proof_assertion"
+  gap seed-metadata-gap-583b604a46cc90d6
+    record "proof_request_frame"
+  gap seed-metadata-gap-4bb4974a6dcde6fa
+    record "prove"

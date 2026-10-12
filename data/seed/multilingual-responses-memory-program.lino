@@ -3,6 +3,22 @@ multilingual_responses
     intent memory_query_unrecognized
     language en
     text "No natural-language, SQL, or GraphQL memory query was recognized."
+  response response_memory_query_unrecognized_ru
+    intent memory_query_unrecognized
+    language ru
+    text "Не распознан ни запрос к памяти на естественном языке, ни SQL, ни GraphQL."
+  response response_memory_query_unrecognized_hi
+    intent memory_query_unrecognized
+    language hi
+    text "प्राकृतिक भाषा, SQL या GraphQL में कोई memory query पहचानी नहीं गई।"
+  response response_memory_query_unrecognized_zh
+    intent memory_query_unrecognized
+    language zh
+    text "未识别出任何自然语言、SQL 或 GraphQL 记忆查询。"
+  response response_memory_query_unrecognized_es
+    intent memory_query_unrecognized
+    language es
+    text "No se reconoció ninguna consulta de memoria en lenguaje natural, SQL ni GraphQL."
   response response_memory_program_complete_en
     intent memory_program_complete
     language en

@@ -1,0 +1,36 @@
+{
+  "checks": [
+    {
+      "name": "native-format",
+      "status": 0
+    },
+    {
+      "name": "hardcoded-language",
+      "status": 0
+    },
+    {
+      "name": "worker-budget",
+      "status": 1
+    },
+    {
+      "name": "diff-whitespace",
+      "status": 0
+    },
+    {
+      "name": "unchanged-native-original",
+      "status": 0
+    },
+    {
+      "name": "both-comparators-unchanged",
+      "status": 0
+    }
+  ],
+  "closestJs": "12/12 via T2035",
+  "ownedWorkerBudgets": {
+    "recurrence": "203/259 unchanged ceiling",
+    "callable": "130/130 new module"
+  },
+  "workerBudgetUnownedFailure": "crate_plan132/98 pending coordinator generated projection",
+  "fileSizeGate": "Pass; retained observations available in coordinator session",
+  "nativeExecution": "CI only"
+}

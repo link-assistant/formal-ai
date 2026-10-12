@@ -1,0 +1,6 @@
+translation_clarify_interpretation	"Какое толкование вы имели в виду: {top} или {other}?"
+translation_clarify_reading	"Как читать «{text}»: как «{top}» или как «{other}»?"
+translation_code_gap_comment	"пробел перевода для `{subject}` с {source} на {target}"
+translation_gap_no_source	"Не удалось определить исходную фразу для перевода с {source} на {target}."
+translation_gap_surface	"Не удалось перевести «{surface}» с {source} на {target} с имеющимися данными формализации. Я записал это как пробел перевода для дальнейшей работы."
+translation_program_heading	"Перевод `{code}` с {source} на {target}:"

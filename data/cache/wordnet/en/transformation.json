@@ -1,0 +1,46 @@
+{
+  "lemma": "transformation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07374199-n",
+      "partOfSpeech": "n",
+      "definition": "a qualitative change",
+      "synonyms": [
+        "transmutation",
+        "shift"
+      ]
+    },
+    {
+      "id": "oewn-13807348-n",
+      "partOfSpeech": "n",
+      "definition": "(mathematics) a function that changes the position or direction of the axes of a coordinate system"
+    },
+    {
+      "id": "oewn-07275000-n",
+      "partOfSpeech": "n",
+      "definition": "a rule describing the conversion of one syntactic structure into another related syntactic structure"
+    },
+    {
+      "id": "oewn-00399838-n",
+      "partOfSpeech": "n",
+      "definition": "(genetics) modification of a cell or bacterium by the uptake and incorporation of exogenous DNA"
+    },
+    {
+      "id": "oewn-00399512-n",
+      "partOfSpeech": "n",
+      "definition": "the act of changing in form or shape or appearance",
+      "examples": [
+        "a photograph is a translation of a scene onto a two-dimensional surface"
+      ],
+      "synonyms": [
+        "translation"
+      ]
+    }
+  ]
+}

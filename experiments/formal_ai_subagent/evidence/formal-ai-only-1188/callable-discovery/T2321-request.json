@@ -1,0 +1,5 @@
+{
+  "id": "T2321",
+  "dir": "/private/tmp/formal-ai-only-1188/composition-fixtures",
+  "prompt": "Read existing f(write) from solver_formalization.mjs. Read translation_formalization.mjs."
+}

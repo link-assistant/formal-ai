@@ -1,0 +1,56 @@
+{
+  "lemma": "mar",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-15235666-n",
+      "partOfSpeech": "n",
+      "definition": "the month following February and preceding April",
+      "synonyms": [
+        "March"
+      ]
+    },
+    {
+      "id": "oewn-04699505-n",
+      "partOfSpeech": "n",
+      "definition": "a mark or flaw that spoils the appearance of something (especially on a person's body)",
+      "examples": [
+        "a facial blemish"
+      ],
+      "synonyms": [
+        "blemish",
+        "defect"
+      ]
+    },
+    {
+      "id": "oewn-00478872-v",
+      "partOfSpeech": "v",
+      "definition": "make imperfect",
+      "examples": [
+        "nothing marred her beauty"
+      ],
+      "synonyms": [
+        "impair",
+        "spoil",
+        "deflower",
+        "vitiate"
+      ]
+    },
+    {
+      "id": "oewn-00090460-v",
+      "partOfSpeech": "v",
+      "definition": "destroy or injure severely",
+      "examples": [
+        "mutilated bodies"
+      ],
+      "synonyms": [
+        "mutilate"
+      ]
+    }
+  ]
+}

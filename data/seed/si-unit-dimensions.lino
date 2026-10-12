@@ -1,0 +1,747 @@
+# SI dimension algebra for the measurement units (issue #700, E58).
+#
+# Each `si_unit` record states one unit's dimension as a product of the
+# seven SI base dimensions and its factor to the coherent SI unit of that
+# dimension, so any two units of the same dimension convert through SI
+# even when no pairwise `conversion` record exists in
+# data/seed/meanings-units.lino (issue #1176's engine converts stated
+# pairs; this table derives the rest).
+#
+# Base dimension symbols — L length, M mass, T time, I electric current,
+# K thermodynamic temperature, N amount of substance, J luminous
+# intensity. A `dimension` of `1` is dimensionless. Exponent digits follow
+# the symbol (`L2MT-3` is the watt's kg·m²/s³).
+#
+# `si_factor` is a terminating decimal (exact as written) or an exact
+# `num/den` fraction for repeating values (5/18 for km/h). `surface`
+# rows are recognition words (quoted literal strings, matched lowercase
+# against the input, so the closure audit reads them as matcher operands
+# rather than meaning references); the units
+# that also live in meanings-units.lino keep their full five-language
+# lexemes there — this table adds dimensions and factors, not vocabulary.
+#
+# Read by rust/src/si_units.rs through `crate::seed::seed_files()`.
+si_units
+  base_dimension
+    symbol L
+    quantity length
+    unit meter
+  base_dimension
+    symbol M
+    quantity mass
+    unit kilogram
+  base_dimension
+    symbol T
+    quantity time
+    unit second
+  base_dimension
+    symbol I
+    quantity electric_current
+    unit ampere
+  base_dimension
+    symbol K
+    quantity thermodynamic_temperature
+    unit kelvin
+  base_dimension
+    symbol N
+    quantity amount_of_substance
+    unit mole
+  base_dimension
+    symbol J
+    quantity luminous_intensity
+    unit candela
+  si_unit
+    unit meter
+    dimension L
+    si_factor 1
+    surface "m"
+    surface "meter"
+    surface "metre"
+    surface "meters"
+    surface "метр"
+    surface "метра"
+    surface "метров"
+    surface "метрах"
+    surface "метры"
+    surface "मीटर"
+    surface "米"
+  si_unit
+    unit kilometer
+    dimension L
+    si_factor 1000
+    surface "km"
+    surface "kilometer"
+    surface "kilometers"
+    surface "километр"
+    surface "километра"
+    surface "километров"
+    surface "километрах"
+    surface "километры"
+    surface "किलोमीटर"
+    surface "公里"
+  si_unit
+    unit centimeter
+    dimension L
+    si_factor 0.01
+    surface "cm"
+    surface "centimeter"
+    surface "сантиметр"
+    surface "сантиметра"
+    surface "सेंटीमीटर"
+    surface "厘米"
+  si_unit
+    unit millimeter
+    dimension L
+    si_factor 0.001
+    surface "mm"
+    surface "millimeter"
+    surface "миллиметр"
+    surface "миллиметра"
+    surface "मिलीमीटर"
+    surface "毫米"
+  si_unit
+    unit micrometer
+    dimension L
+    si_factor 0.000001
+    surface "micrometer"
+    surface "микрометр"
+    surface "माइक्रोमीटर"
+    surface "微米"
+  si_unit
+    unit nanometer
+    dimension L
+    si_factor 0.000000001
+    surface "nanometer"
+    surface "нанометр"
+    surface "नैनोमीटर"
+    surface "纳米"
+  si_unit
+    unit mile
+    dimension L
+    si_factor 1609.344
+    surface "mile"
+    surface "miles"
+    surface "миля"
+    surface "мили"
+    surface "миль"
+    surface "милях"
+    surface "मील"
+    surface "英里"
+  si_unit
+    unit yard
+    dimension L
+    si_factor 0.9144
+    surface "yard"
+    surface "yards"
+    surface "ярд"
+    surface "गज"
+    surface "码"
+  si_unit
+    unit foot
+    dimension L
+    si_factor 0.3048
+    surface "foot"
+    surface "feet"
+    surface "фут"
+    surface "фута"
+    surface "футов"
+    surface "फीट"
+    surface "फुट"
+    surface "英尺"
+  si_unit
+    unit inch
+    dimension L
+    si_factor 0.0254
+    surface "inch"
+    surface "inches"
+    surface "дюйм"
+    surface "дюйма"
+    surface "дюймов"
+    surface "इंच"
+    surface "英寸"
+  si_unit
+    unit nautical_mile
+    dimension L
+    si_factor 1852
+    surface "nautical mile"
+    surface "морская миля"
+    surface "海里"
+  si_unit
+    unit astronomical_unit
+    dimension L
+    si_factor 149597870700
+    surface "astronomical unit"
+    surface "au"
+    surface "астрономическая единица"
+    surface "天文单位"
+  si_unit
+    unit light_year
+    dimension L
+    si_factor 9460730472580800
+    surface "light year"
+    surface "световой год"
+    surface "световых лет"
+    surface "प्रकाश वर्ष"
+    surface "光年"
+  si_unit
+    unit kilogram
+    dimension M
+    si_factor 1
+    surface "kg"
+    surface "kilogram"
+    surface "kilogramme"
+    surface "килограмм"
+    surface "килограмма"
+    surface "килограммов"
+    surface "किलोग्राम"
+    surface "千克"
+  si_unit
+    unit gram
+    dimension M
+    si_factor 0.001
+    surface "g"
+    surface "gram"
+    surface "gramme"
+    surface "грамм"
+    surface "грамма"
+    surface "граммов"
+    surface "ग्राम"
+    surface "克"
+  si_unit
+    unit milligram
+    dimension M
+    si_factor 0.000001
+    surface "mg"
+    surface "milligram"
+    surface "миллиграмм"
+    surface "मिलीग्राम"
+    surface "毫克"
+  si_unit
+    unit tonne
+    dimension M
+    si_factor 1000
+    surface "tonne"
+    surface "metric ton"
+    surface "тонна"
+    surface "тонны"
+    surface "тонн"
+    surface "टन"
+    surface "吨"
+  si_unit
+    unit pound
+    dimension M
+    si_factor 0.45359237
+    surface "pound"
+    surface "pounds"
+    surface "lb"
+    surface "фунт"
+    surface "фунта"
+    surface "фунтов"
+    surface "पाउंड"
+    surface "磅"
+  si_unit
+    unit ounce
+    dimension M
+    si_factor 0.028349523125
+    surface "ounce"
+    surface "ounces"
+    surface "oz"
+    surface "унция"
+    surface "унции"
+    surface "унций"
+    surface "औंस"
+    surface "盎司"
+  si_unit
+    unit stone
+    dimension M
+    si_factor 6.35029318
+    surface "stone"
+    surface "стоун"
+  si_unit
+    unit us_ton
+    dimension M
+    si_factor 907.18474
+    surface "short ton"
+    surface "us ton"
+  si_unit
+    unit long_ton
+    dimension M
+    si_factor 1016.0469088
+    surface "long ton"
+  si_unit
+    unit second
+    dimension T
+    si_factor 1
+    surface "s"
+    surface "second"
+    surface "seconds"
+    surface "секунда"
+    surface "секунды"
+    surface "секунд"
+    surface "सेकंड"
+    surface "秒"
+  si_unit
+    unit millisecond
+    dimension T
+    si_factor 0.001
+    surface "ms"
+    surface "millisecond"
+    surface "миллисекунда"
+    surface "मिलीसेकंड"
+    surface "毫秒"
+  si_unit
+    unit minute
+    dimension T
+    si_factor 60
+    surface "min"
+    surface "minute"
+    surface "minutes"
+    surface "минута"
+    surface "минуты"
+    surface "минут"
+    surface "मिनट"
+    surface "分钟"
+  si_unit
+    unit hour
+    dimension T
+    si_factor 3600
+    surface "h"
+    surface "hour"
+    surface "hours"
+    surface "час"
+    surface "часа"
+    surface "часов"
+    surface "घंटा"
+    surface "घंटे"
+    surface "小时"
+  si_unit
+    unit day
+    dimension T
+    si_factor 86400
+    surface "day"
+    surface "days"
+    surface "день"
+    surface "дня"
+    surface "дней"
+    surface "दिन"
+    surface "天"
+  si_unit
+    unit week
+    dimension T
+    si_factor 604800
+    surface "week"
+    surface "weeks"
+    surface "неделя"
+    surface "недели"
+    surface "недель"
+    surface "सप्ताह"
+    surface "周"
+  si_unit
+    unit julian_year
+    dimension T
+    si_factor 31557600
+    surface "year"
+    surface "год"
+    surface "года"
+    surface "лет"
+    surface "साल"
+    surface "वर्ष"
+    surface "年"
+  si_unit
+    unit meter_per_second
+    dimension LT-1
+    si_factor 1
+    surface "m/s"
+    surface "meters per second"
+    surface "метр в секунду"
+    surface "मीटर प्रति सेकंड"
+    surface "米每秒"
+  si_unit
+    unit kilometer_per_hour
+    dimension LT-1
+    si_factor 5/18
+    surface "km/h"
+    surface "kilometers per hour"
+    surface "километр в час"
+    surface "किलोमीटर प्रति घंटा"
+    surface "公里每小时"
+  si_unit
+    unit mile_per_hour
+    dimension LT-1
+    si_factor 0.44704
+    surface "mph"
+    surface "miles per hour"
+    surface "миль в час"
+    surface "英里每小时"
+  si_unit
+    unit knot
+    dimension LT-1
+    si_factor 463/900
+    surface "knot"
+    surface "knots"
+    surface "узел"
+    surface "节"
+  si_unit
+    unit watt
+    dimension L2MT-3
+    si_factor 1
+    surface "w"
+    surface "watt"
+    surface "watts"
+    surface "ватт"
+    surface "ватта"
+    surface "वाट"
+    surface "瓦"
+  si_unit
+    unit kilowatt
+    dimension L2MT-3
+    si_factor 1000
+    surface "kw"
+    surface "kilowatt"
+    surface "киловатт"
+    surface "千瓦"
+  si_unit
+    unit horsepower_mechanical
+    dimension L2MT-3
+    si_factor 745.699872
+    surface "hp"
+    surface "horsepower"
+    surface "лошадиная сила"
+    surface "лошадиных сил"
+    surface "अश्वशक्ति"
+    surface "马力"
+  si_unit
+    unit horsepower_metric
+    dimension L2MT-3
+    si_factor 735.49875
+    surface "ps"
+    surface "metric horsepower"
+  si_unit
+    unit joule
+    dimension L2MT-2
+    si_factor 1
+    surface "j"
+    surface "joule"
+    surface "joules"
+    surface "джоуль"
+    surface "джоуля"
+    surface "जूल"
+    surface "焦耳"
+  si_unit
+    unit kilojoule
+    dimension L2MT-2
+    si_factor 1000
+    surface "kj"
+    surface "kilojoule"
+    surface "килоджоуль"
+    surface "千焦"
+  si_unit
+    unit calorie
+    dimension L2MT-2
+    si_factor 4.184
+    surface "cal"
+    surface "calorie"
+    surface "calories"
+    surface "калория"
+    surface "калории"
+    surface "калорий"
+    surface "कैलोरी"
+    surface "卡路里"
+  si_unit
+    unit kilocalorie
+    dimension L2MT-2
+    si_factor 4184
+    surface "kcal"
+    surface "kilocalorie"
+    surface "килокалория"
+    surface "千卡"
+  si_unit
+    unit watt_hour
+    dimension L2MT-2
+    si_factor 3600
+    surface "wh"
+    surface "watt hour"
+  si_unit
+    unit kilowatt_hour
+    dimension L2MT-2
+    si_factor 3600000
+    surface "kwh"
+    surface "kilowatt hour"
+    surface "киловатт час"
+    surface "千瓦时"
+  si_unit
+    unit btu
+    dimension L2MT-2
+    si_factor 1055.05585262
+    surface "btu"
+  si_unit
+    unit newton
+    dimension LMT-2
+    si_factor 1
+    surface "n"
+    surface "newton"
+    surface "ньютон"
+    surface "न्यूटन"
+    surface "牛顿"
+  si_unit
+    unit kilonewton
+    dimension LMT-2
+    si_factor 1000
+    surface "kn"
+    surface "kilonewton"
+  si_unit
+    unit dyne
+    dimension LMT-2
+    si_factor 0.00001
+    surface "dyne"
+    surface "дина"
+  si_unit
+    unit kilogram_force
+    dimension LMT-2
+    si_factor 9.80665
+    surface "kgf"
+    surface "kilogram force"
+    surface "килограмм сила"
+  si_unit
+    unit pound_force
+    dimension LMT-2
+    si_factor 4.4482216152605
+    surface "lbf"
+    surface "pound force"
+  si_unit
+    unit pascal
+    dimension L-1MT-2
+    si_factor 1
+    surface "pa"
+    surface "pascal"
+    surface "паскаль"
+    surface "पास्कल"
+    surface "帕斯卡"
+  si_unit
+    unit kilopascal
+    dimension L-1MT-2
+    si_factor 1000
+    surface "kpa"
+    surface "kilopascal"
+  si_unit
+    unit bar
+    dimension L-1MT-2
+    si_factor 100000
+    surface "bar"
+    surface "бар"
+    surface "巴"
+  si_unit
+    unit atmosphere
+    dimension L-1MT-2
+    si_factor 101325
+    surface "atm"
+    surface "atmosphere"
+    surface "атмосфер"
+    surface "वायुमंडल"
+    surface "大气压"
+  si_unit
+    unit psi
+    dimension L-1MT-2
+    si_factor 6894.757293168
+    surface "psi"
+  si_unit
+    unit torr
+    dimension L-1MT-2
+    si_factor 101325/760
+    surface "torr"
+    surface "mmhg"
+    surface "мм рт ст"
+  si_unit
+    unit square_meter
+    dimension "L2"
+    si_factor 1
+    surface "m2"
+    surface "square meter"
+    surface "квадратный метр"
+    surface "平方米"
+  si_unit
+    unit square_kilometer
+    dimension "L2"
+    si_factor 1000000
+    surface "km2"
+    surface "square kilometer"
+    surface "квадратный километр"
+    surface "平方公里"
+  si_unit
+    unit hectare
+    dimension "L2"
+    si_factor 10000
+    surface "ha"
+    surface "hectare"
+    surface "гектар"
+    surface "гектара"
+    surface "हेक्टेयर"
+    surface "公顷"
+  si_unit
+    unit acre
+    dimension "L2"
+    si_factor 4046.8564224
+    surface "acre"
+    surface "acres"
+    surface "акр"
+    surface "英亩"
+  si_unit
+    unit square_foot
+    dimension "L2"
+    si_factor 0.09290304
+    surface "ft2"
+    surface "square foot"
+    surface "квадратный фут"
+  si_unit
+    unit square_mile
+    dimension "L2"
+    si_factor 2589988.110336
+    surface "mi2"
+    surface "square mile"
+  si_unit
+    unit liter
+    dimension "L3"
+    si_factor 0.001
+    surface "l"
+    surface "liter"
+    surface "litre"
+    surface "liters"
+    surface "литр"
+    surface "литра"
+    surface "литров"
+    surface "लीटर"
+    surface "升"
+  si_unit
+    unit milliliter
+    dimension "L3"
+    si_factor 0.000001
+    surface "ml"
+    surface "milliliter"
+    surface "миллилитр"
+    surface "毫升"
+  si_unit
+    unit cubic_meter
+    dimension "L3"
+    si_factor 1
+    surface "m3"
+    surface "cubic meter"
+    surface "кубический метр"
+    surface "立方米"
+  si_unit
+    unit us_gallon
+    dimension "L3"
+    si_factor 0.003785411784
+    surface "gallon"
+    surface "gallons"
+    surface "галлон"
+    surface "галлона"
+    surface "गैलन"
+    surface "加仑"
+  si_unit
+    unit imperial_gallon
+    dimension "L3"
+    si_factor 0.00454609
+    surface "imperial gallon"
+  si_unit
+    unit us_quart
+    dimension "L3"
+    si_factor 0.000946352946
+    surface "quart"
+    surface "кварта"
+  si_unit
+    unit us_pint
+    dimension "L3"
+    si_factor 0.000473176473
+    surface "pint"
+    surface "пинта"
+  si_unit
+    unit us_cup
+    dimension "L3"
+    si_factor 0.0002365882365
+    surface "cup"
+    surface "cups"
+    surface "чашка"
+    surface "कप"
+    surface "杯"
+  si_unit
+    unit us_fluid_ounce
+    dimension "L3"
+    si_factor 0.0000295735295625
+    surface "fl oz"
+    surface "fluid ounce"
+  si_unit
+    unit hertz
+    dimension T-1
+    si_factor 1
+    surface "hz"
+    surface "hertz"
+    surface "герц"
+    surface "हर्ट्ज़"
+    surface "赫兹"
+  si_unit
+    unit kilohertz
+    dimension T-1
+    si_factor 1000
+    surface "khz"
+    surface "kilohertz"
+  si_unit
+    unit megahertz
+    dimension T-1
+    si_factor 1000000
+    surface "mhz"
+    surface "megahertz"
+    surface "мегагерц"
+  si_unit
+    unit bit
+    dimension 1
+    si_factor 1
+    surface "bit"
+    surface "бит"
+    surface "बिट"
+    surface "位"
+  si_unit
+    unit byte
+    dimension 1
+    si_factor 8
+    surface "byte"
+    surface "bytes"
+    surface "байт"
+    surface "байта"
+    surface "बाइट"
+    surface "字节"
+  si_unit
+    unit kibibyte
+    dimension 1
+    si_factor 8192
+    surface "kib"
+    surface "kibibyte"
+  si_unit
+    unit mebibyte
+    dimension 1
+    si_factor 8388608
+    surface "mib"
+    surface "mebibyte"
+  si_unit
+    unit gibibyte
+    dimension 1
+    si_factor 8589934592
+    surface "gib"
+    surface "gibibyte"
+  si_unit
+    unit radian
+    dimension 1
+    si_factor 1
+    surface "rad"
+    surface "radian"
+    surface "радиан"
+  si_unit
+    unit degree
+    dimension 1
+    si_factor 0.017453292519943295
+    surface "degree"
+    surface "degrees"
+    surface "градус"
+    surface "градуса"
+    surface "градусов"
+    surface "डिग्री"
+    surface "度"

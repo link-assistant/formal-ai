@@ -1,0 +1,192 @@
+{
+  "entities": {
+    "Q84": {
+      "type": "item",
+      "id": "Q84",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "London"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Лондон"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "लंदन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "倫敦"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "伦敦"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "London, UK"
+          },
+          {
+            "language": "en",
+            "value": "London, United Kingdom"
+          },
+          {
+            "language": "en",
+            "value": "London, England"
+          },
+          {
+            "language": "en",
+            "value": "London UK"
+          },
+          {
+            "language": "en",
+            "value": "London U.K."
+          },
+          {
+            "language": "en",
+            "value": "Londinium"
+          },
+          {
+            "language": "en",
+            "value": "Loñ"
+          },
+          {
+            "language": "en",
+            "value": "Lundenwic"
+          },
+          {
+            "language": "en",
+            "value": "Londinio"
+          },
+          {
+            "language": "en",
+            "value": "Londini"
+          },
+          {
+            "language": "en",
+            "value": "Londiniensium"
+          },
+          {
+            "language": "en",
+            "value": "Augusta"
+          },
+          {
+            "language": "en",
+            "value": "Trinovantum"
+          },
+          {
+            "language": "en",
+            "value": "Kaerlud"
+          },
+          {
+            "language": "en",
+            "value": "Karelundein"
+          },
+          {
+            "language": "en",
+            "value": "Lunden"
+          },
+          {
+            "language": "en",
+            "value": "Big Smoke"
+          },
+          {
+            "language": "en",
+            "value": "the Big Smoke"
+          },
+          {
+            "language": "en",
+            "value": "Lundenburh"
+          },
+          {
+            "language": "en",
+            "value": "Lundenburgh"
+          },
+          {
+            "language": "en",
+            "value": "Llyn Dain"
+          },
+          {
+            "language": "en",
+            "value": "Llan Dian"
+          },
+          {
+            "language": "en",
+            "value": "Londinion"
+          },
+          {
+            "language": "en",
+            "value": "Loniniensi"
+          },
+          {
+            "language": "en",
+            "value": "Lon."
+          },
+          {
+            "language": "en",
+            "value": "Loñ."
+          },
+          {
+            "language": "en",
+            "value": "Lond."
+          },
+          {
+            "language": "en",
+            "value": "LDN"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "लंदन,इंग्लॅण्ड"
+          },
+          {
+            "language": "hi",
+            "value": "लंदन,यूनाइटेड किंगडम"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "London"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Лондон"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "लंदन"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "伦敦"
+        }
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [],
+    "claim_ranks": "truthy"
+  }
+}

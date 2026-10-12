@@ -1,0 +1,5 @@
+>> bash {"command":"rustfmt --edition 2024 rust/src/seed/shell_intents.rs"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

@@ -1,0 +1,21 @@
+view
+  id M-8a03055bd0fa
+  lemma superlative
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an exaggerated expression (usually of praise)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the highest level or degree attainable; the highest stage of development"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the superlative form of an adjective or adverb"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "highest in quality"
+    provenance (wordnet)

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_triz.js"
+  ceiling 155
+  rationale "User-facing TRIZ/contradiction solver (issue #901), mirroring rust/src/triz_solver.rs. Every family, benchmark task and cue phrase is a record of data/seed/triz-principles.lino; the answer renders through the `triz_resolution_map` template of data/seed/multilingual-responses-triz.lino. JavaScript-first twin of native handler keys (triz_resolution), added under R997-R999 (2026-10-06); growth is the ported handler, not silent regrowth. Ceiling moved to 155 for issue #1175 R3 (follow-up round, 2026-10-08): the TRIZ answer records triz_resolution:refusal when no precedent overlaps."

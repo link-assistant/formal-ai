@@ -1,0 +1,24 @@
+language en
+lemma inspect
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "look over carefully"
+    examples ("Please inspect your father's will carefully")
+    id oewn-02169987-v
+    partOfSpeech v
+  entry
+    definition "come to see in an official or professional capacity"
+    examples ("The governor visited the prison" "The grant administrator visited the laboratory")
+    id oewn-01847990-v
+    partOfSpeech v
+    synonyms (visit)
+  entry
+    definition "examine carefully for accuracy with the intent of verification"
+    examples ("audit accounts and tax returns")
+    id oewn-00698828-v
+    partOfSpeech v
+    synonyms (audit scrutinize scrutinise)
+source "oewn:2024"

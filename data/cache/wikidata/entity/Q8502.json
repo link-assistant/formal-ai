@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "山"
+        },
+        "es": {
+          "language": "es",
+          "value": "montaña"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "特定的区域内，地形陡峭上升的地貌"
+        },
+        "es": {
+          "language": "es",
+          "value": "elevación natural del terreno que se destaca sobre el entorno"
         }
       },
       "aliases": {
@@ -68,6 +76,28 @@
           {
             "language": "zh",
             "value": "山峰"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "cerro"
+          },
+          {
+            "language": "es",
+            "value": "monte"
+          },
+          {
+            "language": "es",
+            "value": "cerros"
+          },
+          {
+            "language": "es",
+            "value": "montes"
+          },
+          {
+            "language": "es",
+            "value": "montañas"
           }
         ]
       }

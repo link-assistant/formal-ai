@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "Q155": {
+      "type": "item",
+      "id": "Q155",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Brazil"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Бразилия"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "ब्राज़ील"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "巴西"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "巴西"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Federative Republic of Brazil"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Estados Unidos del Brazil"
+          },
+          {
+            "language": "ru",
+            "value": "Федеративная Республика Бразилия"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Brazil"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Бразилия"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "ब्राज़ील"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "巴西"
+        }
+      },
+      "claims": {
+        "P36": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "50fef020e921e36b672faa24e4d243b5a12b081b",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 2844,
+                  "id": "Q2844"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "preferred"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P36"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

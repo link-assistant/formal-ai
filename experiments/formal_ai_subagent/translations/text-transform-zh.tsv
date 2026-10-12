@@ -1,0 +1,6 @@
+translation_clarify_interpretation	"你指的是哪种解释：{top} 还是 {other}？"
+translation_clarify_reading	"我应该把“{text}”理解为“{top}”还是“{other}”？"
+translation_code_gap_comment	"`{subject}` 从 {source} 到 {target} 的翻译缺口"
+translation_gap_no_source	"我无法确定要从 {source} 翻译到 {target} 的源短语。"
+translation_gap_surface	"我无法用现有的形式化数据将“{surface}”从 {source} 翻译到 {target}。我已将其记录为翻译缺口，以便后续处理。"
+translation_program_heading	"已将 `{code}` 从 {source} 翻译为 {target}："

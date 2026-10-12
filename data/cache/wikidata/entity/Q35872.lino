@@ -1,15 +1,18 @@
 Q35872
   aliases
     en (boats)
+    es ("barco menor" "embarcación" barco)
     hi ("नौका")
     zh ("小船")
   descriptions
     en "smaller watercraft"
+    es "medio de transporte acuático"
     ru "небольшое водное транспортное средство"
     zh "較小的船隻"
   id Q35872
   labels
     en boat
+    es bote
     hi "नाव"
     ru "лодка"
     zh "艇"

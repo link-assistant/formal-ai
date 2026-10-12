@@ -1,14 +1,17 @@
 Q196
   aliases
+    es (guinda)
     hi ("गिलास" "चेरी")
     ru ("вишня (фрукт)" "вишенка")
   descriptions
     en "fruit of the cherry tree"
+    es "fruto del cerezo"
     hi "एक खट्टा-मीठा गुठलीदार फल है"
     ru "плод растений подрода cerasus рода Prunus"
   id Q196
   labels
     en cherry
+    es cereza
     hi "आलूबालू"
     ru "вишня"
     zh "樱"

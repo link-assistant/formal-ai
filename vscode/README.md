@@ -7,6 +7,29 @@ The extension ships **two hosts from one manifest**, so it runs both on the desk
 - **Desktop / remote** (VS Code desktop, Remote-SSH, Codespaces, dev containers) — reports `shell: "VS Code"`. With the opt-in `formal-ai.server.enabled` setting it starts a loopback `formal-ai serve` process and routes chat through `POST /v1/chat/completions`, and can drive Docker-sandboxed code execution.
 - **Web** (`vscode.dev`, `github.dev`) — reports `shell: "VS Code Web"`. The browser sandbox cannot spawn a process, so it stays on the in-process WebAssembly symbolic engine while exposing the same chat, network, memory, and permission surfaces.
 
+## Installation
+
+The prepared extension id is `link-assistant.formal-ai-vscode`. Once its first
+publication is verified, install it from the Extensions view or run:
+
+```sh
+code --install-extension link-assistant.formal-ai-vscode
+```
+
+The [Marketplace listing](https://marketplace.visualstudio.com/items?itemName=link-assistant.formal-ai-vscode)
+and [Open VSX listing](https://open-vsx.org/extension/link-assistant/formal-ai-vscode)
+are publication targets; this draft does not claim that they are live. Until then,
+download a `.vsix` artifact and use **Extensions: Install from VSIX**.
+
+## Privacy
+
+The extension adds no analytics SDK or automatic telemetry upload. Conversations
+remain in browser memory unless you enable the local server, synchronization or
+a tool requiring a network request. Those features have explicit permission
+controls. Browser memory export is user initiated.
+
+![Existing browser extension chat](media/web-host-light.png)
+
 ## Features
 
 - Symbolic chat with markdown rendering and traceable reasoning.
@@ -31,7 +54,7 @@ The extension ships **two hosts from one manifest**, so it runs both on the desk
 | `formal-ai.server.enabled` | `false` | Start a local OpenAI-compatible server and route chat through it (desktop host only). |
 | `formal-ai.server.host` | `127.0.0.1` | Loopback host the server binds to. |
 | `formal-ai.server.port` | `18080` | Port the server binds to. |
-| `formal-ai.docker.image` | `konard/box-dind:2.1.1` | Image used to sandbox code-execution tool calls. |
+| `formal-ai.docker.image` | `konard/box-dind:2.10.2` | Image used to sandbox code-execution tool calls. |
 | `formal-ai.tools.allowByDefault` | `false` | Grant tool calls by default (off = default-deny). |
 | `formal-ai.agent.defaultOn` | `false` | Open the chat with agent mode on. |
 

@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "finiteCut": "2026-10-10 current f970 terminal181 checks and completed first seven CI repair commits through rootT3470",
+  "head": "f9708d9afa98aa118a83e68a15377becb6deef48",
+  "terminalChecks": {
+    "total": 181,
+    "success": 61,
+    "failure": 81,
+    "skipped": 39,
+    "running": 0
+  },
+  "completedRepairCommits": 7,
+  "originalMembers": 367,
+  "uniqueEncodedBlobs": 349,
+  "compressedBytes": 8842646,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 367
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 349
+    }
+  ],
+  "selectionSha256": "fd1aaf203a853e4974e109d042ec9f897db06c53739e5cce25218ebb4e743d8e",
+  "all81FullFailureAPIsAndLogsRetained": true,
+  "existingGzipBytesPreservedWithoutRecompression": true,
+  "allCompletedRootBeforeAfterAndFailuresRetained": true,
+  "T3467DefaultCheckFailureRetained": true,
+  "T3465AndT3469MissingMarkerSemanticEffectsQualified": true,
+  "knownLosses": [],
+  "ownRunningReceiptExcluded": true,
+  "sourceEffects": 17,
+  "autonomousCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "productionAcceptance": "Pending",
+  "actualCost": "Unknown"
+}

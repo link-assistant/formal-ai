@@ -1,0 +1,24 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/observe-history-reader-inventory.mjs"}
+   Output: {
+     "scope": "actual whole-case candidate execution; no committed record write",
+     "total": 1178,
+     "carried": 201,
+     "passing": 201,
+     "failures": [],
+     "unsupported": 977
+   }
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/observe-history-reader-inventory.mjs` command completed. Output:
+
+```json
+{
+  "carried": 201,
+  "failures": [],
+  "passing": 201,
+  "scope": "actual whole-case candidate execution; no committed record write",
+  "total": 1178,
+  "unsupported": 977
+}
+```

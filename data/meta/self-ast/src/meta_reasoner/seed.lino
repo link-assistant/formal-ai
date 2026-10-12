@@ -1,0 +1,43 @@
+self_ast_census
+  target src/meta_reasoner/seed.rs
+  language rust
+  fidelity signature
+  byte_len 21917
+  line_count 595
+  content_id source_module_0b1ef597f221b4a6
+  symbol_count 34
+  symbols
+    const SEED_PATH 15 15
+    struct Primitive 19 39
+    struct Degree 43 51
+    struct Combinator 55 62
+    struct Filter 66 76
+    struct Operation 80 87
+    struct Hypothesis 91 98
+    struct MetaSeed 102 136
+    function upsert 138 144
+    function fields 146 153
+    function field 155 157
+    function endings 163 176
+    function parse 183 193
+    function read_record 195 284
+    function build_doc_index 290 321
+    function response 327 343
+    function note 351 360
+    function lemmas 366 385
+    function is_grammatical 392 397
+    function cue_markers 403 413
+    function structural_limit 420 422
+    function frequency_of 428 430
+    function doc_hypotheses 437 473
+    function primitive 480 482
+    function is_measure 489 496
+    function degrees_of 503 510
+    function degree_gloss 518 527
+    function is_view 534 540
+    function is_impasse_intent 546 552
+    function names_gap 560 564
+    function sort_hypotheses 571 578
+    function seed_text 581 586
+    function meta_seed 592 595
+    static SEED 593 593

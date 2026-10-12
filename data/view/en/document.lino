@@ -1,0 +1,29 @@
+view
+  id M-5ca5afb0aae5
+  lemma document
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "writing that provides information (especially information of an official nature)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "anything serving as a representation of a person's thinking by means of symbolic marks"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a written account of ownership or obligation"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(computer science) a computer file that contains text (and possibly formatting instructions) using seven-bit ASCII characters"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "record in detail"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "support or supply with references"
+    provenance (wordnet)

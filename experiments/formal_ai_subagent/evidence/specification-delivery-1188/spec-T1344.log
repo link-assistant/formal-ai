@@ -1,0 +1,616 @@
+>> read {"filePath":"js/agentic/write_request.mjs","file_path":"js/agentic/write_request.mjs","path":"js/agentic/write_request.mjs"}
+   <file>
+   00001| // Recovering the parts of a write request from its prose
+   00002| // (rust/src/agentic_coding/write_request.rs).
+   00003| //
+   00004| // Byte offsets of the Rust module are JavaScript string indices here; every
+   00005| // offset is produced and consumed inside the same string, so slicing agrees.
+   00006| // Sentences come from shell_command_policy.mjs as `{text, span: {start, end}}`.
+   00007| 
+   00008| import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
+   00009| import { proseSentences, sentences } from './shell_command_policy.mjs';
+   00010| import { composePositionalInsert, introducedBlock, literalText, unquotedPathTokens } from './positional_edit.mjs';
+   00011| import { resolveCensusTarget } from './general_planner.mjs';
+   00012| import { containsCjk } from './crate/coding_catalog.mjs';
+   00013| import { quotedSegmentSpans, wrappedInQuotePair } from './crate/normal_markov.mjs';
+   00014| import { wholePayloadEnd } from './quote_nesting.mjs';
+   00015| import { meaningEvidencedIn, mentionsRole, roleWordForms, wordsForRole } from './write_lexicon.mjs';
+   00016| import { normalizePrompt } from './crate/engine.mjs';
+   00017| import {
+   00018|   charIn, isAlphanumeric, isAscii, isAsciiPunctuation, isWhitespace, minByKey, trim, trimEnd,
+   00019|   trimEndMatches, trimMatches, trimStart, trimStartMatches,
+   00020| } from './write_str.mjs';
+   00021| 
+   00022| /** A sentence's span as `{start, end}`, whichever shape the splitter returns. */
+   00023| export function spanOf(sentence) {
+   00024|   const span = sentence.span;
+   00025|   return Array.isArray(span) ? { start: span[0], end: span[1] } : span;
+   00026| }
+   00027| 
+   00028| const spanContains = (span, index) => index >= span.start && index < span.end;
+   00029| 
+   00030| /**
+   00031|  * Mirrors `fn tokens`: whitespace and ideographic punctuation separate tokens;
+   00032|  * each token is `{text, start, end}`.
+   00033|  * @param {string} request
+   00034|  */
+   00035| export function tokens(request) {
+   00036|   const out = [];
+   00037|   let start = null;
+   00038|   let index = 0;
+   00039|   for (const character of request) {
+   00040|     if (isWhitespace(character) || isIdeographicPunctuation(character)) {
+   00041|       if (start !== null) {
+   00042|         out.push({ text: request.slice(start, index), start, end: index, request });
+   00043|         start = null;
+   00044|       }
+   00045|     } else if (start === null) {
+   00046|       start = index;
+   00047|     }
+   00048|     index += character.length;
+   00049|   }
+   00050|   if (start !== null) out.push({ text: request.slice(start), start, end: request.length, request });
+   00051|   return out;
+   00052| }
+   00053| 
+   00054| /** Mirrors `const fn is_ideographic_punctuation`. */
+   00055| function isIdeographicPunctuation(character) {
+   00056|   const cp = character.codePointAt(0);
+   00057|   return (cp >= 0x3001 && cp <= 0x3003) || (cp >= 0x3008 && cp <= 0x3011) || (cp >= 0x3014 && cp <= 0x301f)
+   00058|     || cp === 0xff01 || cp === 0xff08 || cp === 0xff09 || cp === 0xff0c || cp === 0xff1a || cp === 0xff1b
+   00059|     || cp === 0xff1f;
+   00060| }
+   00061| 
+   00062| /** Mirrors `fn bare_surfaces`. @param {string} role @returns {Array<string>} */
+   00063| export function bareSurfaces(role) {
+   00064|   return roleWordForms(role).filter((form) => form.slot === 'bare').map((form) => form.text.toLowerCase());
+   00065| }
+   00066| 
+   00067| /** Mirrors `fn clean_path_token`. @param {string} word */
+   00068| export function cleanPathToken(word) {
+   00069|   return peelSentencePunctuation(word, (token) =>
+   00070|     trimEndMatches(trimMatches(token, charIn('`"\',:;')), charIn('!?')));
+   00071| }
+   00072| 
+   00073| /** Mirrors `fn looks_like_file_path`. @param {string} path */
+   00074| export function looksLikeFilePath(path) {
+   00075|   const fileName = path.split('/').pop();
+   00076|   // A component of dots alone (`.`, `..`) names a directory, never a file.
+   00077|   return !path.includes('://') && !isDottedNumber(path) && fileName.includes('.') && /[^.]/u.test(fileName);
+   00078| }
+   00079| 
+   00080| /** Mirrors `fn clean_cue_token`. @param {string} word */
+   00081| export function cleanCueToken(word) {
+   00082|   return trimMatches(word, charIn('`"\',:;.!?।॥')).toLowerCase();
+   00083| }
+   00084| 
+   00085| /** Mirrors `fn first_content_lead_end`. @returns {[number, number]|null} */
+   00086| export function firstContentLeadEnd(lowered) {
+   00087|   return firstPrefixLeadEnd(lowered, 'file_write_content_lead');
+   00088| }
+   00089| 
+   00090| /** Mirrors `fn content_lead_close`. @returns {number|null} */
+   00091| export function contentLeadClose(lowered, from) {
+   00092|   let best = null;
+   00093|   for (const form of roleWordForms('file_write_content_lead')) {
+   00094|     if (form.slot !== 'circumfix') continue;
+   00095|     const opener = trim(form.before).toLowerCase();
+   00096|     const closer = trim(form.after).toLowerCase();
+   00097|     if (!opener || !closer || !trimEnd(lowered.slice(0, from)).endsWith(opener)) continue;
+   00098|     const relative = lowered.slice(from).indexOf(closer);
+   00099|     if (relative < 0) continue;
+   00100|     if (best === null || from + relative < best) best = from + relative;
+   00101|   }
+   00102|   return best;
+   00103| }
+   00104| 
+   00105| /** Mirrors `fn first_prefix_lead_end`. @returns {[number, number]|null} */
+   00106| export function firstPrefixLeadEnd(lowered, role) {
+   00107|   const markers = roleWordForms(role)
+   00108|     .filter((form) => form.slot === 'prefix' || form.slot === 'circumfix')
+   00109|     .map((form) => [trim(form.before).toLowerCase(), trim(form.after).toLowerCase()])
+   00110|     .filter(([marker]) => marker !== '');
+   00111|   let best = null;
+   00112|   for (const [marker, closer] of markers) {
+   00113|     let from = 0;
+   00114|     for (;;) {
+   00115|       const start = lowered.indexOf(marker, from);
+   00116|       if (start < 0) break;
+   00117|       const end = start + marker.length;
+   00118|       const cjk = !marker.includes(' ') && !isAscii(marker);
+   00119|       const before = Array.from(lowered.slice(0, start)).pop();
+   00120|       const after = Array.from(lowered.slice(end, end + 2))[0];
+   00121|       const beforeOk = cjk || start === 0 || isWhitespace(before);
+   00122|       const afterOk = cjk || end === lowered.length || isWhitespace(after) || isAsciiPunctuation(after);
+   00123|       const closed = closer === '' || lowered.slice(end).includes(closer);
+   00124|       if (beforeOk && afterOk && closed) {
+   00125|         if (best === null || start < best[0] || (start === best[0] && end > best[1])) best = [start, end];
+   00126|         break;
+   00127|       }
+   00128|       from = end;
+   00129|     }
+   00130|   }
+   00131|   return best;
+   00132| }
+   00133| 
+   00134| /** `CueFamily` variants. */
+   00135| export const CueFamily = Object.freeze({ Target: 'target', Destination: 'destination', Action: 'action' });
+   00136| 
+   00137| /** Mirrors `fn cued_write_target`: `[index, path]` or null. */
+   00138| export function cuedWriteTarget(toks) {
+   00139|   const binding = preferredBinding(toks);
+   00140|   return binding ? [binding.index, binding.path] : null;
+   00141| }
+   00142| 
+   00143| /** Mirrors `fn ranked_bindings` (a stable sort by rank). */
+   00144| export function rankedBindings(toks) {
+   00145|   return writeBindings(toks)
+   00146|     .map((binding, order) => ({ binding, order }))
+   00147|     .sort((left, right) => bindingRank(left.binding) - bindingRank(right.binding) || left.order - right.order)
+   00148|     .map(({ binding }) => binding);
+   00149| }
+   00150| 
+   00151| /** Mirrors `fn preferred_binding`. */
+   00152| export function preferredBinding(toks) {
+   00153|   return rankedBindings(toks)[0] ?? null;
+   00154| }
+   00155| 
+   00156| function bindingRank(binding) {
+   00157|   if (binding.cue_precedes) return binding.family === CueFamily.Action ? 1 : 0;
+   00158|   return 2;
+   00159| }
+   00160| 
+   00161| /** Mirrors `fn cued_write_targets`: every `[index, path]` whose cue precedes it. */
+   00162| export function cuedWriteTargets(toks) {
+   00163|   return writeBindings(toks).filter((binding) => binding.cue_precedes).map((binding) => [binding.index, binding.path]);
+   00164| }
+   00165| 
+   00166| /** Mirrors `fn write_bindings`. */
+   00167| function writeBindings(toks) {
+   00168|   const families = [
+   00169|     [CueFamily.Destination, bareSurfaces('file_write_destination_cue'), true],
+   00170|     [CueFamily.Target, bareSurfaces('file_write_target_cue'), true],
+   00171|     [CueFamily.Action, bareSurfaces('file_write_action_cue'), false],
+   00172|   ];
+   00173|   const out = [];
+   00174|   const quoted = quotedSegmentSpans(toks[0]?.request ?? '');
+   00175|   toks.forEach((token, index) => {
+   00176|     const cleaned = cleanPathToken(token.text);
+   00177|     if (!looksLikeFilePath(cleaned) || !safeRelativePath(cleaned)) return;
+   00178|     if (index > 0) {
+   00179|       for (const [family, cues, fused] of families) {
+   00180|         const span = trailingCue(toks[index - 1], cues, fused);
+   00181|         if (span) {
+   00182|           out.push({ index, path: cleaned, cue_start: span[0], cue_end: span[1], family, cue_precedes: true });
+   00183|           return;
+   00184|         }
+   00185|       }
+   00186|     }
+   00187|     const next = toks[index + 1];
+   00188|     if (!next) return;
+   00189|     for (const [family, cues, fused] of families.slice(0, 2)) {
+   00190|       const span = leadingCue(next, cues, fused);
+   00191|       if (span) {
+   00192|         out.push({ index, path: cleaned, cue_start: span[0], cue_end: span[1], family, cue_precedes: false });
+   00193|         return;
+   00194|       }
+   00195|     }
+   00196|   });
+   00197|   return out.filter((binding) => !quoted.some((segment) =>
+   00198|     binding.cue_start < segment.end && binding.cue_end > segment.start));
+   00199| }
+   00200| 
+   00201| function trailingCue(token, cues, fused) {
+   00202|   const cleaned = cleanCueToken(token.text);
+   00203|   for (const cue of cues) {
+   00204|     if (cleaned === cue) return [token.start, token.end];
+   00205|     if (fused && containsCjk(cue) && cleaned.endsWith(cue)) return [Math.max(0, token.end - cue.length), token.end];
+   00206|   }
+   00207|   return null;
+   00208| }
+   00209| 
+   00210| function leadingCue(token, cues, fused) {
+   00211|   const cleaned = cleanCueToken(token.text);
+   00212|   for (const cue of cues) {
+   00213|     if (cleaned === cue) return [token.start, token.end];
+   00214|     if (fused && containsCjk(cue) && cleaned.startsWith(cue)) return [token.start, token.start + cue.length];
+   00215|   }
+   00216|   return null;
+   00217| }
+   00218| 
+   00219| /** Mirrors `fn quoted_as_value`. */
+   00220| function quotedAsValue(word) {
+   00221|   const bare = peelSentencePunctuation(word, (token) => trimEndMatches(token, charIn(',:;')));
+   00222|   return bare.length >= 2 && bare.startsWith('"') && bare.endsWith('"');
+   00223| }
+   00224| 
+   00225| /** Mirrors `fn stated_write_target`. @param {string} request @returns {string|null} */
+   00226| export function statedWriteTarget(request) {
+   00227|   return cuedWriteTarget(tokens(request))?.[1] ?? null;
+   00228| }
+   00229| 
+   00230| /** Mirrors `fn typed_write_target`. @param {string} request @param {string} extension */
+   00231| export function typedWriteTarget(request, extension) {
+   00232|   return cuedWriteTargets(tokens(request)).map(([, path]) => path).find((path) => pathExtension(path) === extension) ?? null;
+   00233| }
+   00234| 
+   00235| /** `Path::extension` of a relative path, or null: Rust built-in `Path::extension`. */
+   00236| export function pathExtension(path) {
+   00237|   const name = path.split('/').filter(Boolean).pop() ?? '';
+   00238|   if (name === '..') return null;
+   00239|   const dot = name.lastIndexOf('.');
+   00240|   if (dot <= 0) return null;
+   00241|   return name.slice(dot + 1);
+   00242| }
+   00243| 
+   00244| /** Mirrors `fn states_write_action`. */
+   00245| export function statesWriteAction(request) {
+   00246|   return firstActionCueEnd(tokens(request)) !== null;
+   00247| }
+   00248| 
+   00249| /** Mirrors `fn delivered_write_target`. @param {string} sentence */
+   00250| export function deliveredWriteTarget(sentence) {
+   00251|   const toks = tokens(sentence);
+   00252|   const action = firstActionCueStart(toks);
+   00253|   if (action === null) return null;
+   00254|   const found = cuedWriteTargets(toks).find(([index]) => toks[index].start > action && !quotedAsValue(toks[index].text));
+   00255|   return found ? found[1] : null;
+   00256| }
+   00257| 
+   00258| /** Mirrors `fn is_stated_write_target`. */
+   00259| export function isStatedWriteTarget(request, path) {
+   00260|   return sentences(request).some((sentence) =>
+   00261|     statesWriteAction(sentence.text) && statedWriteTarget(sentence.text) === path);
+   00262| }
+   00263| 
+   00264| /** Mirrors `fn pinned_first_line`. @param {string} sentence @returns {string|null} */
+   00265| export function pinnedFirstLine(sentence) {
+   00266|   const lowered = sentence.toLowerCase();
+   00267|   const lead = firstPrefixLeadEnd(lowered, 'file_leading_line_constraint_lead');
+   00268|   if (!lead) return null;
+   00269|   const raw = trim(trimStartMatches(trim(sentence.slice(lead[1])), charIn(':-—–')));
+   00270|   const line = trimMatches(delimitedFirstLine(raw) ?? unquotedMachineFirstLine(raw) ?? raw, charIn('`"\''));
+   00271|   return line ? line : null;
+   00272| }
+   00273| 
+   00274| function delimitedFirstLine(raw) {
+   00275|   const delimiter = Array.from(raw)[0];
+   00276|   if (delimiter !== '`' && delimiter !== '"' && delimiter !== "'") return null;
+   00277|   const afterOpen = raw.slice(1);
+   00278|   const close = afterOpen.indexOf(delimiter);
+   00279|   return close < 0 ? null : afterOpen.slice(0, close);
+   00280| }
+   00281| 
+   00282| function unquotedMachineFirstLine(raw) {
+   00283|   const lowered = raw.toLowerCase();
+   00284|   const candidates = bareSurfaces('skill_procedure_clause_separator').flatMap((separator) => {
+   00285|     const boundary = lowered.indexOf(` ${separator} `);
+   00286|     if (boundary < 0) return [];
+   00287|     const candidate = trim(raw.slice(0, boundary));
+   00288|     return !/\p{White_Space}/u.test(candidate) && /[=:]/.test(candidate) ? [candidate] : [];
+   00289|   });
+   00290|   return minByKey(candidates, (candidate) => candidate.length);
+   00291| }
+   00292| 
+   00293| /** Mirrors `fn pinned_first_line_of_request`. */
+   00294| export function pinnedFirstLineOfRequest(request) {
+   00295|   for (const sentence of sentences(request)) {
+   00296|     const line = pinnedFirstLine(sentence.text);
+   00297|     if (line !== null) return line;
+   00298|   }
+   00299|   return null;
+   00300| }
+   00301| 
+   00302| /** Mirrors `fn honouring_pinned_first_line`. @returns {string|null} */
+   00303| export function honouringPinnedFirstLine(request, content) {
+   00304|   const line = pinnedFirstLineOfRequest(request);
+   00305|   if (line === null || content.startsWith(line)) return null;
+   00306|   const body = withoutPinningSentences(content);
+   00307|   return body === '' ? `${line}\n` : `${line}\n\n${body}\n`;
+   00308| }
+   00309| 
+   00310| function withoutPinningSentences(content) {
+   00311|   return sentences(content)
+   00312|     .filter((sentence) => pinnedFirstLine(sentence.text) === null)
+   00313|     .map((sentence) => {
+   00314|       const span = spanOf(sentence);
+   00315|       return trim(content.slice(span.start, span.end));
+   00316|     })
+   00317|     .filter(Boolean)
+   00318|     .join(' ');
+   00319| }
+   00320| 
+   00321| function firstActionCue(toks) {
+   00322|   const actions = bareSurfaces('file_write_action_cue');
+   00323|   for (const token of toks) {
+   00324|     const span = leadingCue(token, actions, false);
+   00325|     if (span) return span;
+   00326|   }
+   00327|   return null;
+   00328| }
+   00329| 
+   00330| /** Mirrors `fn first_action_cue_end`. @returns {number|null} */
+   00331| export function firstActionCueEnd(toks) {
+   00332|   return firstActionCue(toks)?.[1] ?? null;
+   00333| }
+   00334| 
+   00335| /** Mirrors `fn action_cue_start_after`. @returns {number|null} */
+   00336| export function actionCueStartAfter(toks, from) {
+   00337|   const actions = bareSurfaces('file_write_action_cue');
+   00338|   for (const token of toks) {
+   00339|     if (token.start < from) continue;
+   00340|     const span = leadingCue(token, actions, false);
+   00341|     if (span) return span[0];
+   00342|   }
+   00343|   return null;
+   00344| }
+   00345| 
+   00346| /** Mirrors `fn first_action_cue_start`. @returns {number|null} */
+   00347| export function firstActionCueStart(toks) {
+   00348|   return firstActionCue(toks)?.[0] ?? null;
+   00349| }
+   00350| 
+   00351| /** Mirrors `fn clean_content`. @param {string} raw @returns {string|null} */
+   00352| export function cleanContent(raw) {
+   00353|   const led = stripClauseLead(raw);
+   00354|   if (new TextEncoder().encode(led).length >= 6 && led.startsWith('```') && led.endsWith('```')) {
+   00355|     return fencedBody(led.slice(3, led.length - 3)) || null;
+   00356|   }
+   00357|   // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),
+   00358|   // is the content; the sentence's closing mark after it is the sentence's:
+   00359|   // `containing 'hello'.` writes `hello`, not `'hello'.`.
+   00360|   const closed = trim(led.replace(/[.!?\u0964\u3002\uff01\uff1f]$/u, ''));
+   00361|   const [only, ...others] = quotedSegmentSpans(closed);
+   00362|   if (only && others.length === 0 && only.start === 0 && only.end === closed.length) {
+   00363|     return only.text.length > 0 ? only.text : null;
+   00364|   }
+   00365|   let result = led;
+   00366|   const bytes = new TextEncoder().encode(led);
+   00367|   if (bytes.length >= 2) {
+   00368|     const first = bytes[0];
+   00369|     const last = bytes[bytes.length - 1];
+   00370|     if (first === last && (first === 0x60 || first === 0x22 || first === 0x27)) result = trim(led.slice(1, -1));
+   00371|   }
+   00372|   return result ? result : null;
+   00373| }
+   00374| 
+   00375| /**
+   00376|  * Mirrors `fn fenced_body`: the bytes of a fenced block. The opening line's
+   00377|  * info string names the language and is not content, and the line break
+   00378|  * before the closing fence ends the last line (PR #1188 G101). A fence on one
+   00379|  * line is its trimmed text.
+   00380|  * @param {string} inner the text between the fences
+   00381|  */
+   00382| function fencedBody(inner) {
+   00383|   const newline = inner.indexOf('\n');
+   00384|   if (newline < 0 || /\s/u.test(trim(inner.slice(0, newline)))) return trim(inner);
+   00385|   return inner.slice(newline + 1);
+   00386| }
+   00387| 
+   00388| function stripClauseLead(raw) {
+   00389|   const qualifiers = bareSurfaces('file_write_content_qualifier');
+   00390|   let led = trim(raw);
+   00391|   for (;;) {
+   00392|     const separated = trim(trimStartMatches(led, charIn(':-—–')));
+   00393|     const shortened = stripLeadingQualifier(separated, qualifiers);
+   00394|     if (shortened.length === led.length) return led;
+   00395|     led = shortened;
+   00396|   }
+   00397| }
+   00398| 
+   00399| function stripLeadingQualifier(text, qualifiers) {
+   00400|   const lowered = text.toLowerCase();
+   00401|   const rests = qualifiers
+   00402|     .filter((qualifier) => lowered.startsWith(qualifier))
+   00403|     .map((qualifier) => trimStart(text.slice(qualifier.length)))
+   00404|     .filter((rest) => /^[:\-—–]/u.test(rest));
+   00405|   return minByKey(rests, (rest) => new TextEncoder().encode(rest).length) ?? text;
+   00406| }
+   00407| 
+   00408| /** Mirrors `fn safe_relative_path`. @param {string} path */
+   00409| export function safeRelativePath(path) {
+   00410|   return !path.startsWith('/')
+   00411|     && !path.startsWith('-')
+   00412|     && !path.split('/').some((part) => part === '..' || part === '')
+   00413|     && Array.from(path).every((character) => isAlphanumeric(character) || '/._-'.includes(character));
+   00414| }
+   00415| 
+   00416| /**
+   00417|  * Mirrors `fn compose_edit_request`: `[target, old, new]` or null.
+   00418|  * @param {string} request
+   00419|  */
+   00420| export function composeEditRequest(request) {
+   00421|   return composeEditClauses(request)?.edit ?? null;
+   00422| }
+   00423| 
+   00424| /** The seeded articles and other function words (`the`, `el`). */
+   00425| const FUNCTION_WORD_ROLE = 'request_function_word';
+   00426| const SCRIPT_WITHOUT_SPACES = /[\u3040-\u9fff]/u;
+   00427| const wordCharacter = (character) => character !== undefined && /[\p{L}\p{N}]/u.test(character)
+   00428|   && !SCRIPT_WITHOUT_SPACES.test(character);
+   00429| 
+   00430| /**
+   00431|  * Mirrors `fn without_all_occurrence_cues`: `request` with every seeded
+   00432|  * all-occurrences cue outside its quotes (`everywhere`, `all occurrences`,
+   00433|  * `везде`, `हर जगह`) blanked, offsets kept: a replace replaces every
+   00434|  * occurrence already, and the words belong to neither text (PR #1188 G84).
+   00435|  * @param {string} request
+   00436|  */
+   00437| export function withoutAllOccurrenceCues(request) {
+   00438|   const lowered = request.toLowerCase();
+   00439|   if (lowered.length !== request.length) return request;
+   00440|   const quoted = quotedSegmentSpans(request);
+   00441|   let out = request;
+   00442|   for (const surface of wordsForRole('file_edit_all_occurrences_cue')) {
+   00443|     const needle = surface.toLowerCase();
+   00444|     if (needle === '') continue;
+   00445|     for (let at = lowered.indexOf(needle); at >= 0; at = lowered.indexOf(needle, at + 1)) {
+   00446|       const end = at + needle.length;
+   00447|       if (wordCharacter(request[at - 1]) || wordCharacter(request[end])) continue;
+   00448|       if (quoted.some((segment) => at < segment.end && end > segment.start)) continue;
+   00449|       out = `${out.slice(0, at)}${' '.repeat(end - at)}${out.slice(end)}`;
+   00450|     }
+   00451|   }
+   00452|   return out;
+   00453| }
+   00454| 
+   00455| /**
+   00456|  * Mirrors `fn compose_edit_clauses`: `{edit, spans}` -- the `[target, old,
+   00457|  * new]` of `composeEditRequest` and, when the request words them as clauses,
+   00458|  * the spans its file clause and its action through the new text take (null
+   00459|  * for a positional insert or lines under the request) -- or null.
+   00460|  * @param {string} request
+   00461|  */
+   00462| export function composeEditClauses(raw) {
+   00463|   // `everywhere`, `all occurrences`: no part of the old or new text (G84).
+   00464|   const request = withoutAllOccurrenceCues(raw);
+   00465|   const positional = composePositionalInsert(request);
+   00466|   if (positional) return { edit: positional, spans: null };
+   00467|   const block = introducedBlock(request);
+   00468|   if (block !== null) {
+   00469|     // `Replace the line 'x' with these three lines in f:` followed by lines:
+   00470|     // a new clause that only describes lines (the seeded `line` meaning,
+   00471|     // unquoted) stands for the lines under the request (PR #1188 G22).
+   00472|     const head = composeEditRequest(block.head);
+   00473|     if (head !== null && describesLines(block.head, head[2])) return { edit: [head[0], head[1], block.text], spans: null };
+   00474|   }
+   00475|   const toks = tokens(request);
+   00476|   const actionCues = bareSurfaces('file_edit_action_cue');
+   00477|   const newLeads = bareSurfaces('file_edit_new_lead_cue');
+   00478|   const targetCues = bareSurfaces('file_edit_target_cue');
+   00479|   const isTargetCue = (index) => targetCues.includes(cleanCueToken(toks[index].text));
+   00480|   const isActionCue = (index) => actionCues.includes(cleanCueToken(toks[index].text));
+   00481|   let fileIndex = -1;
+   00482|   let target = null;
+   00483|   const unquoted = new Set(unquotedPathTokens(request).map((token) => token.start));
+   00484|   // A path the request leaves unquoted names the file before a literal that
+   00485|   // is exactly a path does: in "Replace 'a' with 'data/x.lino' in f.mjs" the
+   00486|   // quoted path is the new text, and the cue after it ("in") does not make it
+   00487|   // the target.
+   00488|   const segments = quotedSegmentSpans(request);
+   00489|   const isQuoted = (token) => segments.some((segment) => token.start >= segment.start && token.end <= segment.end);
+   00490|   const isPathCandidate = (token) => {
+   00491|     const cleaned = cleanPathToken(token.text);
+   00492|     return unquoted.has(token.start)
+   00493|       && (resolveCensusTarget(cleaned) !== null || (looksLikeFilePath(cleaned) && safeRelativePath(cleaned)));
+   00494|   };
+   00495|   for (const quotedPass of [false, true]) {
+   00496|     for (let index = 0; index < toks.length; index += 1) {
+   00497|       if (!unquoted.has(toks[index].start) || isQuoted(toks[index]) !== quotedPass) continue;
+   00498|       const cleaned = cleanPathToken(toks[index].text);
+   00499|       const resolved = resolveCensusTarget(cleaned);
+   00500|       if (resolved === null && (!looksLikeFilePath(cleaned) || !safeRelativePath(cleaned))) continue;
+   00501|       const prevIsCue = index > 0 && (isTargetCue(index - 1) || isActionCue(index - 1));
+   00502|       const nextIsCue = index + 1 < toks.length && (isTargetCue(index + 1) || isActionCue(index + 1));
+   00503|       // A cue between two paths introduces the later one: in "…`p.lino`` in
+   00504|       // req.md" the payload's last span is no target (PR #1188 G63).
+   00505|       const cueIntroducesNext = !prevIsCue && nextIsCue && index + 2 < toks.length && isPathCandidate(toks[index + 2]);
+   00506|       if ((prevIsCue || nextIsCue) && !cueIntroducesNext) {
+   00507|         fileIndex = index;
+   00508|         target = resolved === null ? cleaned : resolved.module_path;
+   00509|         break;
+   00510|       }
+   00511|     }
+   00512|     if (fileIndex >= 0) break;
+   00513|   }
+   00514|   if (fileIndex < 0) return null;
+   00515|   // The file clause runs back over target cues and the seeded function words
+   00516|   // between them (`in the file f.txt`, `en el archivo f.txt`) to its first
+   00517|   // cue; an article there is no part of the new text (PR #1188 G98). A cue
+   00518|   // word inside a quoted literal is payload ("… the named file.'").
+   00519|   const functionWords = bareSurfaces(FUNCTION_WORD_ROLE);
+   00520|   const joinsClause = (index) => !isQuoted(toks[index])
+   00521|     && (isTargetCue(index) || functionWords.includes(cleanCueToken(toks[index].text)));
+   00522|   let clauseStartIndex = fileIndex;
+   00523|   for (let index = fileIndex - 1; index >= 0 && joinsClause(index); index -= 1) {
+   00524|     if (isTargetCue(index)) clauseStartIndex = index;
+   00525|   }
+   00526|   const fileClauseStart = toks[clauseStartIndex].start;
+   00527|   // Cue words inside a quoted literal are payload (`replace 'covered by x'`).
+   00528|   // A cue word quoted whole is payload too: `replace 'with' with ','`.
+   00529|   const isCue = (token, cues) => unquoted.has(token.start) && !isQuoted(token) && cues.includes(cleanCueToken(token.text));
+   00530|   const actionTokens = toks.filter((token) => isCue(token, actionCues));
+   00531|   const action = actionTokens.find((token) => token.start > toks[fileIndex].end) ?? actionTokens[0];
+   00532|   if (!action) return null;
+   00533|   const actionEnd = action.end;
+   00534|   const newLead = toks.find((token) => token.start >= actionEnd && isCue(token, newLeads));
+   00535|   if (!newLead) return null;
+   00536|   // `Bump the version in package.json to 1.1.0`: a file clause right before
+   00537|   // the new lead ends the old text; anything else between them is no edit.
+   00538|   const fileBetween = fileClauseStart >= actionEnd && fileClauseStart < newLead.start;
+   00539|   if (fileBetween && request.slice(toks[fileIndex].end, newLead.start).trim() !== '') return null;
+   00540|   const oldSpan = request.slice(actionEnd, fileBetween ? fileClauseStart : newLead.start);
+   00541|   const containing = proseSentences(request).find((sentence) => spanContains(spanOf(sentence), newLead.end));
+   00542|   let sentenceEnd = request.length;
+   00543|   if (containing) {
+   00544|     const span = spanOf(containing);
+   00545|     const raw = request.slice(span.start, span.end);
+   00546|     sentenceEnd = span.start + (raw.length - trimStart(raw).length) + containing.text.length;
+   00547|   }
+   00548|   // A sentence boundary inside a quoted literal (`'… mod.rs`.'`) is payload:
+   00549|   // the new text runs to the end of the literal it falls in.
+   00550|   const literalAround = quotedSegmentSpans(request)
+   00551|     .find((segment) => segment.start < sentenceEnd && sentenceEnd < segment.end);
+   00552|   // When the literal holding that boundary ends early, because the backtick
+   00553|   // spans inside the payload paired among themselves, a payload quoted whole
+   00554|   // up to the file clause runs to it (PR #1188 G63).
+   00555|   if (literalAround) {
+   00556|     sentenceEnd = fileClauseStart > literalAround.end && wrappedInQuotePair(request.slice(newLead.end, fileClauseStart))
+   00557|       ? fileClauseStart : literalAround.end;
+   00558|   }
+   00559|   // A payload whose inner spans pair among themselves runs to the end of the
+   00560|   // instruction when it closes there (PR #1188 G107).
+   00561|   const newEnd = fileClauseStart > newLead.end
+   00562|     ? Math.min(fileClauseStart, sentenceEnd)
+   00563|     : wholePayloadEnd(request, newLead.end, sentenceEnd);
+   00564|   if (newEnd < newLead.end) return null;
+   00565|   const newSpan = request.slice(newLead.end, newEnd);
+   00566|   const oldText = literalText(oldSpan);
+   00567|   if (oldText === null) return null;
+   00568|   const newText = literalText(newSpan);
+   00569|   if (newText === null) return null;
+   00570|   // `Rename the file m.py to math_utils.py`: an unquoted new name that is a
+   00571|   // workspace path renames the file itself, which is no edit of its bytes
+   00572|   // (PR #1188 G24); the shell intents carry it.
+   00573|   // Quoted, the new path renames the file too when the old clause quotes
+   00574|   // nothing (`Rename the file 'a.txt' to 'b.txt'`, G37).
+   00575|   const renamedFile = (quotedSegmentSpans(newSpan).length === 0 || quotedSegmentSpans(oldSpan).length === 0)
+   00576|     && looksLikeFilePath(cleanPathToken(trim(newSpan)))
+   00577|     && mentionsRole('coding_identifier_rename_action', request.toLowerCase());
+   00578|   if (renamedFile) return null;
+   00579|   return { edit: [target, oldText, newText], spans: [[fileClauseStart, toks[fileIndex].end], [action.start, newEnd]] };
+   00580| }
+   00581| 
+   00582| /**
+   00583|  * Mirrors `fn describes_lines`: whether a clause `text` of `head` is no quoted
+   00584|  * literal but words naming lines (`these three lines`, `the following
+   00585|  * lines`, `эти строки`).
+   00586|  */
+   00587| function describesLines(head, text) {
+   00588|   return !quotedSegmentSpans(head).some((segment) => segment.text === text)
+   00589|     && meaningEvidencedIn('line', normalizePrompt(text).toLowerCase());
+   00590| }
+   00591| 
+   00592| /** Mirrors `fn payload_continues_past_its_first_line`. */
+   00593| export function payloadContinuesPastItsFirstLine(request, from, sentenceEnd) {
+   00594|   if (from > request.length) return false;
+   00595|   const tail = request.slice(from);
+   00596|   const breakAt = tail.indexOf('\n');
+   00597|   if (breakAt < 0) return false;
+   00598|   return from + breakAt < sentenceEnd && Array.from(tail.slice(breakAt)).some(isAlphanumeric);
+   00599| }
+   00600| 
+   
+   (End of file - total 600 lines)
+   </file>
+>> edit {"filePath":"js/agentic/write_request.mjs","file_path":"js/agentic/write_request.mjs","new":"  const fence = /^`{3,}/u.exec(led)?.[0];\n  if (fence && led.length >= fence.length * 2 && led.endsWith(fence)) {\n    return fencedBody(led.slice(fence.length, led.length - fence.length)) || null;\n  }","newString":"  const fence = /^`{3,}/u.exec(led)?.[0];\n  if (fence && led.length >= fence.length * 2 && led.endsWith(fence)) {\n    return fencedBody(led.slice(fence.length, led.length - fence.length)) || null;\n  }","new_str":"  const fence = /^`{3,}/u.exec(led)?.[0];\n  if (fence && led.length >= fence.length * 2 && led.endsWith(fence)) {\n    return fencedBody(led.slice(fence.length, led.length - fence.length)) || null;\n  }","new_string":"  const fence = /^`{3,}/u.exec(led)?.[0];\n  if (fence && led.length >= fence.length * 2 && led.endsWith(fence)) {\n    return fencedBody(led.slice(fence.length, led.length - fence.length)) || null;\n  }","old":"  if (new TextEncoder().encode(led).length >= 6 && led.startsWith('```') && led.endsWith('```')) {\n    return fencedBody(led.slice(3, led.length - 3)) || null;\n  }","oldString":"  if (new TextEncoder().encode(led).length >= 6 && led.startsWith('```') && led.endsWith('```')) {\n    return fencedBody(led.slice(3, led.length - 3)) || null;\n  }","old_str":"  if (new TextEncoder().encode(led).length >= 6 && led.startsWith('```') && led.endsWith('```')) {\n    return fencedBody(led.slice(3, led.length - 3)) || null;\n  }","old_string":"  if (new TextEncoder().encode(led).length >= 6 && led.startsWith('```') && led.endsWith('```')) {\n    return fencedBody(led.slice(3, led.length - 3)) || null;\n  }","path":"js/agentic/write_request.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/write_request.mjs"}
+   50f28d69bfa1b93c65fc48c028b63ff63ef112713e96a4187a923129629a536e  js/agentic/write_request.mjs
+   
+== answer ==
+Replaced ````  if (new TextEncoder().encode(led).length >= 6 && led.startsWith('```') && led.endsWith('```')) {
+    return fencedBody(led.slice(3, led.length - 3)) || null;
+  }```` with ``  const fence = /^`{3,}/u.exec(led)?.[0];
+  if (fence && led.length >= fence.length * 2 && led.endsWith(fence)) {
+    return fencedBody(led.slice(fence.length, led.length - fence.length)) || null;
+  }`` in `js/agentic/write_request.mjs` and observed the result.

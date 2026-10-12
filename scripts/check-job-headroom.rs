@@ -777,12 +777,15 @@ mod tests {
         let declared = declared_jobs(&workflow_directory());
         assert!(declared.len() > 40, "found only {} jobs", declared.len());
 
+        // PR #1188 split the gates into matrix lanes, so the measured names
+        // are `Lint and Format Check (lane 1)` and on; the literal prefix is
+        // the part every lane shares.
         let lint = declared
             .iter()
-            .find(|job| job.literal_prefix == "Lint and Format Check")
-            .expect("release.yml declares Lint and Format Check");
+            .find(|job| job.literal_prefix == "Lint and Format Check (lane")
+            .expect("release.yml declares Lint and Format Check (lane N)");
         assert_eq!(lint.workflow, "CI/CD Pipeline");
-        assert_eq!(lint.cap_minutes, Some(45.0));
+        assert_eq!(lint.cap_minutes, Some(30.0));
 
         // A job with no `name:` is known by its id, as the API reports it.
         assert!(

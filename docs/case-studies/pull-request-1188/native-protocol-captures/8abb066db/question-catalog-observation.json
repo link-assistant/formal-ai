@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "head": "8abb066dbe9895ba843ca690e0d9e9f21c12e571",
+  "source_preview": "96e579831186bb93c657e807056cd7e41ea4bdd4",
+  "job": 113928931961,
+  "raw_log_sha256": "4f5d363e4b232e5a3af17dfc90f9cbc46c31892c5889929105dd8eee5c30e49c",
+  "line": 1539,
+  "path": "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/question-catalog.json",
+  "sha256": "ebaa3e3d581b7c6acff15e53da219ee36b26bec8676f2e68b703a9d312448b03",
+  "raw_line_sha256": "15d011656d4ea2073e8a287f1a2638bf1461a4c3505f50262a506598f31cd4aa",
+  "legacy": "docs/case-studies/issue-527/agent-cli-session-question-catalog.json",
+  "legacy_sha256": "dc0bdfffc0415e9d8be09cf8887e503710431e50aa3f2a33fa8253d75523b4aa",
+  "fresh_final_head": false,
+  "representation": "Exact complete native operand from the official failing assertion, including decoded Rust Unicode escapes; every immutable original session field except the typed process receipt is preserved."
+}

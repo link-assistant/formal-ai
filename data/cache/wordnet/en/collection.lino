@@ -1,0 +1,28 @@
+language en
+lemma collection
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "several things grouped together or considered as a whole"
+    id oewn-07968050-n
+    partOfSpeech n
+    synonyms (aggregation accumulation assemblage)
+  entry
+    definition "a publication containing a variety of works"
+    id oewn-06603723-n
+    partOfSpeech n
+    synonyms (compendium)
+  entry
+    definition "request for a sum of money"
+    examples ("an appeal to raise money for starving children")
+    id oewn-06525755-n
+    partOfSpeech n
+    synonyms (solicitation appeal ingathering)
+  entry
+    definition "the act of gathering something together"
+    id oewn-01016008-n
+    partOfSpeech n
+    synonyms (collecting assembling aggregation)
+source "oewn:2024"

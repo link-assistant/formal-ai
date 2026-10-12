@@ -1,0 +1,37 @@
+view
+  id M-238fb2af7a78
+  lemma association
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a formal organization of people or groups of people"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the act of consorting with or joining with others"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the state of being connected together as in memory or imagination"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "the process of bringing ideas or events together in memory or imagination"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a social or business relationship"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a relation resulting from interaction or dependence"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(chemistry) any process of combination (especially in solution) that depends on relatively weak chemical bonding"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "(ecology) a group of organisms (plants and animals) that live together in a certain geographical region and constitute a community with a few dominant species"
+    provenance (wordnet)

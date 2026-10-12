@@ -1,0 +1,32 @@
+language en
+lemma group
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "any number of entities (members) considered as a unit"
+    id oewn-00031563-n
+    partOfSpeech n
+    synonyms (grouping)
+  entry
+    definition "(chemistry) two or more atoms bound together as a single unit and forming part of a molecule"
+    id oewn-14645624-n
+    partOfSpeech n
+    synonyms (radical "chemical group")
+  entry
+    definition "a set that is closed, associative, has an identity element and every element has an inverse"
+    id oewn-06026202-n
+    partOfSpeech n
+    synonyms ("mathematical group")
+  entry
+    definition "arrange into a group or groups"
+    examples ("Can you group these shapes together?")
+    id oewn-00658247-v
+    partOfSpeech v
+  entry
+    definition "form a group or group together"
+    id oewn-01092289-v
+    partOfSpeech v
+    synonyms (aggroup)
+source "oewn:2024"

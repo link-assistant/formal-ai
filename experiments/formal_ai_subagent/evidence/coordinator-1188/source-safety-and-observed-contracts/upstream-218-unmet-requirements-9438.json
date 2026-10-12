@@ -1,0 +1,440 @@
+{
+  "commit": "9438ba58b68cb9de8d36a99f4f5b7ec13dd668d2",
+  "requirements": [
+    {
+      "id": "I195-ACCEPTANCE-INDEPENDENT-ORACLES",
+      "area": "independent-acceptance",
+      "failed_cells": [
+        {
+          "testId": "i195-acceptance-independent-oracles-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: independentCorporaExecuted on planned:repository-directive:i195-acceptance-independent-oracles",
+            "observable assertion did not execute: multipleOraclesCompared on planned:repository-directive:i195-acceptance-independent-oracles",
+            "observable assertion did not execute: discrepanciesTracedAndResolved on planned:repository-directive:i195-acceptance-independent-oracles",
+            "observable assertion did not execute: realProjectsParsed on planned:repository-directive:i195-acceptance-independent-oracles"
+          ]
+        },
+        {
+          "testId": "i195-acceptance-independent-oracles-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: independentCorporaExecuted on planned:repository-directive:i195-acceptance-independent-oracles",
+            "observable assertion did not execute: multipleOraclesCompared on planned:repository-directive:i195-acceptance-independent-oracles",
+            "observable assertion did not execute: discrepanciesTracedAndResolved on planned:repository-directive:i195-acceptance-independent-oracles",
+            "observable assertion did not execute: realProjectsParsed on planned:repository-directive:i195-acceptance-independent-oracles"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-DEPENDENCY-PRODUCTION-PARSERS-REMOVED",
+      "area": "dependency-freshness",
+      "failed_cells": [
+        {
+          "testId": "i195-dependency-production-parsers-removed-tooling-behavior",
+          "runtime": "tooling",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: noExternalParserProductionDependency on planned:repository-directive:i195-dependency-production-parsers-removed",
+            "observable assertion did not execute: noVendoredGrammarBinariesShipped on planned:repository-directive:i195-dependency-production-parsers-removed",
+            "observable assertion did not execute: oraclesOnlyInTestScope on planned:repository-directive:i195-dependency-production-parsers-removed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-DOWNSTREAM-TYPESCRIPT-TRANSLATIONS",
+      "area": "downstream-consumers",
+      "failed_cells": [
+        {
+          "testId": "i195-downstream-typescript-translations-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: allRequiredProjectionPairsTranslate on planned:repository-directive:i195-downstream-typescript-translations",
+            "observable assertion did not execute: consumerRulesExecute on planned:repository-directive:i195-downstream-typescript-translations",
+            "observable assertion did not execute: semanticOutcomesPreserved on planned:repository-directive:i195-downstream-typescript-translations",
+            "observable assertion did not execute: cleanInstalledArtifactsUsed on planned:repository-directive:i195-downstream-typescript-translations"
+          ]
+        },
+        {
+          "testId": "i195-downstream-typescript-translations-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: allRequiredProjectionPairsTranslate on planned:repository-directive:i195-downstream-typescript-translations",
+            "observable assertion did not execute: consumerRulesExecute on planned:repository-directive:i195-downstream-typescript-translations",
+            "observable assertion did not execute: semanticOutcomesPreserved on planned:repository-directive:i195-downstream-typescript-translations",
+            "observable assertion did not execute: cleanInstalledArtifactsUsed on planned:repository-directive:i195-downstream-typescript-translations"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-GRAMMAR-DEPENDENCY-BOUNDARY",
+      "area": "native-grammar",
+      "failed_cells": [
+        {
+          "testId": "i195-grammar-dependency-boundary-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: parsesWithExternalEnginesAbsent on planned:repository-directive:i195-grammar-dependency-boundary",
+            "observable assertion did not execute: noSubprocessOrDownloadAtParseTime on planned:repository-directive:i195-grammar-dependency-boundary",
+            "observable assertion did not execute: nativeRuleChangeChangesParse on planned:repository-directive:i195-grammar-dependency-boundary",
+            "observable assertion did not execute: generatedAccelerationDerivedFromNativeGrammar on planned:repository-directive:i195-grammar-dependency-boundary"
+          ]
+        },
+        {
+          "testId": "i195-grammar-dependency-boundary-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: parsesWithExternalEnginesAbsent on planned:repository-directive:i195-grammar-dependency-boundary",
+            "observable assertion did not execute: noSubprocessOrDownloadAtParseTime on planned:repository-directive:i195-grammar-dependency-boundary",
+            "observable assertion did not execute: nativeRuleChangeChangesParse on planned:repository-directive:i195-grammar-dependency-boundary",
+            "observable assertion did not execute: generatedAccelerationDerivedFromNativeGrammar on planned:repository-directive:i195-grammar-dependency-boundary"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-GRAMMAR-LANGUAGE-CATALOG",
+      "area": "native-grammar",
+      "failed_cells": [
+        {
+          "testId": "i195-grammar-language-catalog-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: everyLanguageVersioned on planned:repository-directive:i195-grammar-language-catalog",
+            "observable assertion did not execute: everyApplicableGrammarSourceInventoried on planned:repository-directive:i195-grammar-language-catalog",
+            "observable assertion did not execute: sourcesPinnedWithLicenseAndProvenance on planned:repository-directive:i195-grammar-language-catalog",
+            "observable assertion did not execute: independentCorporaPinned on planned:repository-directive:i195-grammar-language-catalog",
+            "observable assertion did not execute: reconciledWithDispatchersAndConsumers on planned:repository-directive:i195-grammar-language-catalog"
+          ]
+        },
+        {
+          "testId": "i195-grammar-language-catalog-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: everyLanguageVersioned on planned:repository-directive:i195-grammar-language-catalog",
+            "observable assertion did not execute: everyApplicableGrammarSourceInventoried on planned:repository-directive:i195-grammar-language-catalog",
+            "observable assertion did not execute: sourcesPinnedWithLicenseAndProvenance on planned:repository-directive:i195-grammar-language-catalog",
+            "observable assertion did not execute: independentCorporaPinned on planned:repository-directive:i195-grammar-language-catalog",
+            "observable assertion did not execute: reconciledWithDispatchersAndConsumers on planned:repository-directive:i195-grammar-language-catalog"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-GRAMMAR-LOSSLESS-TREES",
+      "area": "native-grammar",
+      "failed_cells": [
+        {
+          "testId": "i195-grammar-lossless-trees-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: nativeTreesLossless on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: fieldsAndSpansExact on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: errorAndMissingNodesRecovered on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: abstractTreeProvenanceKept on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: treesReloadedWithoutSource on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: editedTreesGeneratedAndReparsed on planned:repository-directive:i195-grammar-lossless-trees"
+          ]
+        },
+        {
+          "testId": "i195-grammar-lossless-trees-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: nativeTreesLossless on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: fieldsAndSpansExact on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: errorAndMissingNodesRecovered on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: abstractTreeProvenanceKept on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: treesReloadedWithoutSource on planned:repository-directive:i195-grammar-lossless-trees",
+            "observable assertion did not execute: editedTreesGeneratedAndReparsed on planned:repository-directive:i195-grammar-lossless-trees"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-GRAMMAR-NATIVE-MERGED",
+      "area": "native-grammar",
+      "failed_cells": [
+        {
+          "testId": "i195-grammar-native-merged-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: everyLanguageHasNativeGrammar on planned:repository-directive:i195-grammar-native-merged",
+            "observable assertion did not execute: nativeGrammarMergedFromAllSources on planned:repository-directive:i195-grammar-native-merged",
+            "observable assertion did not execute: defaultParseExecutesNativeGrammar on planned:repository-directive:i195-grammar-native-merged",
+            "observable assertion did not execute: noForeignGrammarStoredAsString on planned:repository-directive:i195-grammar-native-merged"
+          ]
+        },
+        {
+          "testId": "i195-grammar-native-merged-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: everyLanguageHasNativeGrammar on planned:repository-directive:i195-grammar-native-merged",
+            "observable assertion did not execute: nativeGrammarMergedFromAllSources on planned:repository-directive:i195-grammar-native-merged",
+            "observable assertion did not execute: defaultParseExecutesNativeGrammar on planned:repository-directive:i195-grammar-native-merged",
+            "observable assertion did not execute: noForeignGrammarStoredAsString on planned:repository-directive:i195-grammar-native-merged"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-INTERCHANGE-CROSS-FORMAT-TOOLS",
+      "area": "grammar-interchange",
+      "failed_cells": [
+        {
+          "testId": "i195-interchange-cross-format-tools-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: crossFormatCyclesTested on planned:repository-directive:i195-interchange-cross-format-tools",
+            "observable assertion did not execute: targetToolsExecuted on planned:repository-directive:i195-interchange-cross-format-tools",
+            "observable assertion did not execute: acceptanceAndStructureCompared on planned:repository-directive:i195-interchange-cross-format-tools",
+            "observable assertion did not execute: diagnosticsCompared on planned:repository-directive:i195-interchange-cross-format-tools"
+          ]
+        },
+        {
+          "testId": "i195-interchange-cross-format-tools-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: crossFormatCyclesTested on planned:repository-directive:i195-interchange-cross-format-tools",
+            "observable assertion did not execute: targetToolsExecuted on planned:repository-directive:i195-interchange-cross-format-tools",
+            "observable assertion did not execute: acceptanceAndStructureCompared on planned:repository-directive:i195-interchange-cross-format-tools",
+            "observable assertion did not execute: diagnosticsCompared on planned:repository-directive:i195-interchange-cross-format-tools"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-INTERCHANGE-FORMAT-FEATURES",
+      "area": "grammar-interchange",
+      "failed_cells": [
+        {
+          "testId": "i195-interchange-format-features-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: everyFormatFeatureRepresented on planned:repository-directive:i195-interchange-format-features",
+            "observable assertion did not execute: includedGrammarsFollowed on planned:repository-directive:i195-interchange-format-features",
+            "observable assertion did not execute: lexerScannerAndActionsImported on planned:repository-directive:i195-interchange-format-features",
+            "observable assertion did not execute: provenancePreserved on planned:repository-directive:i195-interchange-format-features"
+          ]
+        },
+        {
+          "testId": "i195-interchange-format-features-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: everyFormatFeatureRepresented on planned:repository-directive:i195-interchange-format-features",
+            "observable assertion did not execute: includedGrammarsFollowed on planned:repository-directive:i195-interchange-format-features",
+            "observable assertion did not execute: lexerScannerAndActionsImported on planned:repository-directive:i195-interchange-format-features",
+            "observable assertion did not execute: provenancePreserved on planned:repository-directive:i195-interchange-format-features"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-MERGE-AUTOMATIC-PIPELINE",
+      "area": "automatic-merge",
+      "failed_cells": [
+        {
+          "testId": "i195-merge-automatic-pipeline-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: sourcesDiscoveredAndImported on planned:repository-directive:i195-merge-automatic-pipeline",
+            "observable assertion did not execute: correspondingConceptsRecognized on planned:repository-directive:i195-merge-automatic-pipeline",
+            "observable assertion did not execute: uniqueConceptsPreserved on planned:repository-directive:i195-merge-automatic-pipeline",
+            "observable assertion did not execute: decisionReportReproducible on planned:repository-directive:i195-merge-automatic-pipeline",
+            "observable assertion did not execute: noInteractionRequired on planned:repository-directive:i195-merge-automatic-pipeline"
+          ]
+        },
+        {
+          "testId": "i195-merge-automatic-pipeline-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: sourcesDiscoveredAndImported on planned:repository-directive:i195-merge-automatic-pipeline",
+            "observable assertion did not execute: correspondingConceptsRecognized on planned:repository-directive:i195-merge-automatic-pipeline",
+            "observable assertion did not execute: uniqueConceptsPreserved on planned:repository-directive:i195-merge-automatic-pipeline",
+            "observable assertion did not execute: decisionReportReproducible on planned:repository-directive:i195-merge-automatic-pipeline",
+            "observable assertion did not execute: noInteractionRequired on planned:repository-directive:i195-merge-automatic-pipeline"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-MERGE-SHIPPED-GRAMMARS-ARE-MERGED",
+      "area": "automatic-merge",
+      "failed_cells": [
+        {
+          "testId": "i195-merge-shipped-grammars-are-merged-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: shippedGrammarsAreMergeOutputs on planned:repository-directive:i195-merge-shipped-grammars-are-merged",
+            "observable assertion did not execute: testGrammarsAreMergeOutputs on planned:repository-directive:i195-merge-shipped-grammars-are-merged",
+            "observable assertion did not execute: uniqueSourceCoverageKept on planned:repository-directive:i195-merge-shipped-grammars-are-merged",
+            "observable assertion did not execute: oraclesIndependent on planned:repository-directive:i195-merge-shipped-grammars-are-merged"
+          ]
+        },
+        {
+          "testId": "i195-merge-shipped-grammars-are-merged-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: shippedGrammarsAreMergeOutputs on planned:repository-directive:i195-merge-shipped-grammars-are-merged",
+            "observable assertion did not execute: testGrammarsAreMergeOutputs on planned:repository-directive:i195-merge-shipped-grammars-are-merged",
+            "observable assertion did not execute: uniqueSourceCoverageKept on planned:repository-directive:i195-merge-shipped-grammars-are-merged",
+            "observable assertion did not execute: oraclesIndependent on planned:repository-directive:i195-merge-shipped-grammars-are-merged"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-SELF-TRANSLATION-CARRIED-ZERO",
+      "area": "javascript-first",
+      "failed_cells": [
+        {
+          "testId": "i195-self-translation-carried-zero-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: carriedItemsZero on planned:repository-directive:i195-self-translation-carried-zero",
+            "observable assertion did not execute: generatedRustReplacesHandWritten on planned:repository-directive:i195-self-translation-carried-zero",
+            "observable assertion did not execute: decoratorsMatchStyle on planned:repository-directive:i195-self-translation-carried-zero",
+            "observable assertion did not execute: roundTripsUseTranslatedItems on planned:repository-directive:i195-self-translation-carried-zero",
+            "observable assertion did not execute: fullProgramsTranslate on planned:repository-directive:i195-self-translation-carried-zero"
+          ]
+        },
+        {
+          "testId": "i195-self-translation-carried-zero-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: carriedItemsZero on planned:repository-directive:i195-self-translation-carried-zero",
+            "observable assertion did not execute: generatedRustReplacesHandWritten on planned:repository-directive:i195-self-translation-carried-zero",
+            "observable assertion did not execute: decoratorsMatchStyle on planned:repository-directive:i195-self-translation-carried-zero",
+            "observable assertion did not execute: roundTripsUseTranslatedItems on planned:repository-directive:i195-self-translation-carried-zero",
+            "observable assertion did not execute: fullProgramsTranslate on planned:repository-directive:i195-self-translation-carried-zero"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "I195-SEMANTICS-CONSTRUCT-INVENTORY",
+      "area": "full-semantics",
+      "failed_cells": [
+        {
+          "testId": "i195-semantics-construct-inventory-javascript-behavior",
+          "runtime": "javascript",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: everyConstructRepresented on planned:repository-directive:i195-semantics-construct-inventory",
+            "observable assertion did not execute: everyConstructTransformed on planned:repository-directive:i195-semantics-construct-inventory",
+            "observable assertion did not execute: projectsTransformed on planned:repository-directive:i195-semantics-construct-inventory",
+            "observable assertion did not execute: normalJavaScriptAccepted on planned:repository-directive:i195-semantics-construct-inventory"
+          ]
+        },
+        {
+          "testId": "i195-semantics-construct-inventory-rust-behavior",
+          "runtime": "rust",
+          "reasons": [
+            "implementation entry point is not supplied",
+            "outcome is missing",
+            "positiveEvidence is not true",
+            "execution record is missing",
+            "observable assertion did not execute: everyConstructRepresented on planned:repository-directive:i195-semantics-construct-inventory",
+            "observable assertion did not execute: everyConstructTransformed on planned:repository-directive:i195-semantics-construct-inventory",
+            "observable assertion did not execute: projectsTransformed on planned:repository-directive:i195-semantics-construct-inventory",
+            "observable assertion did not execute: normalJavaScriptAccepted on planned:repository-directive:i195-semantics-construct-inventory"
+          ]
+        }
+      ]
+    }
+  ]
+}

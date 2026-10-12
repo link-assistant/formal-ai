@@ -1,0 +1,12 @@
+language en
+lemma oct
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the month following September and preceding November"
+    id oewn-15237911-n
+    partOfSpeech n
+    synonyms (October)
+source "oewn:2024"

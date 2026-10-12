@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "Q23925413": {
+      "type": "item",
+      "id": "Q23925413",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "gallon (US)"
+        },
+        "es": {
+          "language": "es",
+          "value": "galone (EE. UU.)"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "американский галлон"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "US gallon, used in the US and some Latin American and Caribbean countries"
+        },
+        "es": {
+          "language": "es",
+          "value": "unidad de volumen de Estados Unidos"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "единица объема Соединенных Штатов Америки"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "US gallon"
+          },
+          {
+            "language": "en",
+            "value": "U.S. wet gallon"
+          },
+          {
+            "language": "en",
+            "value": "liquid gallon"
+          },
+          {
+            "language": "en",
+            "value": "gal"
+          },
+          {
+            "language": "en",
+            "value": "gallon"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

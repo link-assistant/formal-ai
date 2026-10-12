@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "橙"
+        },
+        "es": {
+          "language": "es",
+          "value": "naranja"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "水果"
+        },
+        "es": {
+          "language": "es",
+          "value": "fruta comestible"
         }
       },
       "aliases": {

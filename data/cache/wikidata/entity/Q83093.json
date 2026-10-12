@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蕈類"
+        },
+        "es": {
+          "language": "es",
+          "value": "seta"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "真菌"
+        },
+        "es": {
+          "language": "es",
+          "value": "cuerpo fructífero carnoso, complejo y agrandado, que crece sobre la superficie y pertenece a un hongo que generalmente consta de un tallo que sostiene un píleo"
         }
       },
       "aliases": {
@@ -88,6 +96,24 @@
           {
             "language": "zh",
             "value": "蕈类"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Trompeta de los muertos"
+          },
+          {
+            "language": "es",
+            "value": "setas"
+          },
+          {
+            "language": "es",
+            "value": "callampa"
+          },
+          {
+            "language": "es",
+            "value": "hongo"
           }
         ]
       }

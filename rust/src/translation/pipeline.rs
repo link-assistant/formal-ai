@@ -35,13 +35,14 @@ use crate::seed::{
     ROLE_COMPOSITIONAL_GENITIVE_HEAD, ROLE_COMPOSITIONAL_LEMMA, ROLE_COMPOSITIONAL_PHRASE,
 };
 
-/// `true` when `FORMAL_AI_TRANSLATION_DEBUG=1` is set in the environment.
+/// `true` when `FORMAL_AI_TRANSLATION_DEBUG` is enabled in the environment
+/// (`1`, `true`, `yes`, or `on`, case-insensitive — the shared parsing in
+/// `crate::cli_env`, which also rejects `0`, `false`, `no`, and `off`).
 ///
 /// Reading the env var on every call would be wasteful, but tests rely on
 /// per-process toggling, so we re-check each call here (cheap stdlib lookup).
 fn translation_debug_enabled() -> bool {
-    std::env::var("FORMAL_AI_TRANSLATION_DEBUG")
-        .is_ok_and(|value| !value.is_empty() && value != "0")
+    crate::cli_env::flag_enabled("FORMAL_AI_TRANSLATION_DEBUG")
 }
 
 /// Emit a structured debug line to stderr when
@@ -75,7 +76,39 @@ impl Translation {
             .or_else(|| self.candidates.first())
             .map(|c| c.surface.as_str())
     }
+
+    /// The target-language surface that survives the round trip best.
+    ///
+    /// Among several candidates, the one
+    /// [`super::round_trip::round_trip_choice`] picks: the candidate read back
+    /// as the source surface's meaning, then the one returning the source
+    /// surface itself (R1188-U19). The [`Translation::primary_surface`] is
+    /// tried first, so it stands wherever the round trip cannot tell the
+    /// candidates apart.
+    #[must_use]
+    pub fn round_trip_surface(&self) -> Option<&str> {
+        let primary = self.primary_surface()?;
+        let mut surfaces = vec![primary];
+        surfaces.extend(
+            self.candidates
+                .iter()
+                .map(|candidate| candidate.surface.as_str())
+                .filter(|surface| *surface != primary),
+        );
+        let chosen = super::round_trip::round_trip_choice(
+            &self.source_surface,
+            &self.source_lang,
+            &self.target_lang,
+            &surfaces,
+        );
+        Some(chosen.map_or(primary, |index| surfaces[index]))
+    }
 }
+
+// The word-by-word sentence translation arm (issue #1174) lives in
+// `super::free_sentence`; re-exported here so the
+// `crate::translation::pipeline::…` paths stay stable.
+pub use super::free_sentence::{SentenceTranslation, WordTranslation};
 
 /// Translation pipeline. Borrows a single HTTP client (typically a
 /// `CachedHttpClient`) for every Wiktionary and Wikidata call.
@@ -766,7 +799,7 @@ fn russian_genitive_noun(word: &str) -> Option<&'static str> {
     )
 }
 
-fn capitalize_ascii_first(surface: &str) -> String {
+pub(crate) fn capitalize_ascii_first(surface: &str) -> String {
     let mut chars = surface.chars();
     let Some(first) = chars.next() else {
         return String::new();

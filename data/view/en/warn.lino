@@ -1,0 +1,21 @@
+view
+  id M-fc2e53645c93
+  lemma warn
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech verb
+    gloss "notify of danger, potential harm, or risk"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "advise or counsel in terms of someone's behavior"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "ask to go away"
+    provenance (wordnet)
+  sense
+    part_of_speech verb
+    gloss "notify, usually in advance"
+    provenance (wordnet)

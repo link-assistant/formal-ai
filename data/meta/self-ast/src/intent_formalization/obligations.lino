@@ -1,0 +1,51 @@
+self_ast_census
+  target src/intent_formalization/obligations.rs
+  language rust
+  fidelity signature
+  byte_len 30386
+  line_count 726
+  content_id source_module_4f43f0fa29974507
+  symbol_count 42
+  symbols
+    const GRAPH_RECORD 46 46
+    const SPLIT_DEPTH_BOUND 49 49
+    enum ObligationKind 56 69
+    function slug 74 83
+    const ROLE_OUTPUT_OBLIGATION_VERB 90 90
+    const ROLE_CODE_STYLE_OBLIGATION 93 93
+    const ROLE_FILE_NAMING_OBLIGATION 97 97
+    const ROLE_CI_BADGE_OBLIGATION 100 100
+    const WHEN_UNBOUND_OUTPUT 105 105
+    const OUTPUT_INTRODUCTION_BREAKS 108 108
+    struct ObligationGraph 116 121
+    function nodes 126 128
+    function language 132 134
+    function obligation_kinds 138 144
+    function has_obligation 148 152
+    function obligations_of_kind 156 165
+    function unique_output_literal 173 186
+    function literal_for 190 198
+    function underivable 203 208
+    function gap_report 213 224
+    function unbound_output_report 236 253
+    function has_node_kind 255 259
+    function links_notation 264 290
+    function formalize_request 299 326
+    function coreference_pass 336 396
+    function request_carries_work_obligations 414 426
+    function request_demands 437 444
+    function gap_line 447 458
+    function bound_output_literals 477 524
+    function followed_by_print 530 545
+    const UNQUOTED_OUTPUT_ENDS 548 548
+    const UNQUOTED_OUTPUT_PEEL 555 555
+    function bare_word 558 561
+    function unquoted_output 567 575
+    function unquoted_utterance 592 609
+    function describes_a_value 622 632
+    const OBLIGATION_GAP_KIND 635 635
+    function obligation_gap_lines 644 649
+    function record_obligation_gaps 655 661
+    function classify_clause 668 692
+    function authoring_kind 696 718
+    function graph_id 724 726

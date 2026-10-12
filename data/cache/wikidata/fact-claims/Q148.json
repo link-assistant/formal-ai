@@ -1,0 +1,221 @@
+{
+  "entities": {
+    "Q148": {
+      "type": "item",
+      "id": "Q148",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "People's Republic of China"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Китай"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "चीन"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "中华人民共和国"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "中华人民共和国"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "Red China"
+          },
+          {
+            "language": "en",
+            "value": "PR China"
+          },
+          {
+            "language": "en",
+            "value": "Communist China"
+          },
+          {
+            "language": "en",
+            "value": "China PR"
+          },
+          {
+            "language": "en",
+            "value": "cn"
+          },
+          {
+            "language": "en",
+            "value": "The PRC"
+          },
+          {
+            "language": "en",
+            "value": "P.R.C."
+          },
+          {
+            "language": "en",
+            "value": "the People's Republic of China"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "КНР"
+          },
+          {
+            "language": "ru",
+            "value": "Поднебесная"
+          },
+          {
+            "language": "ru",
+            "value": "Материковый Китай"
+          },
+          {
+            "language": "ru",
+            "value": "Континентальный Китай"
+          },
+          {
+            "language": "ru",
+            "value": "Китайская Народная Республика"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "चीन जनवादी गणराज्य"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "中"
+          },
+          {
+            "language": "zh",
+            "value": "红色中国"
+          },
+          {
+            "language": "zh",
+            "value": "共产中国"
+          },
+          {
+            "language": "zh",
+            "value": "中国大陆"
+          },
+          {
+            "language": "zh",
+            "value": "大陆"
+          },
+          {
+            "language": "zh",
+            "value": "陆"
+          },
+          {
+            "language": "zh",
+            "value": "新中国"
+          },
+          {
+            "language": "zh",
+            "value": "北京當局"
+          },
+          {
+            "language": "zh",
+            "value": "中華人民共和國"
+          },
+          {
+            "language": "zh",
+            "value": "中华"
+          },
+          {
+            "language": "zh",
+            "value": "共產中國"
+          },
+          {
+            "language": "zh",
+            "value": "中國大陸"
+          },
+          {
+            "language": "zh",
+            "value": "中国"
+          },
+          {
+            "language": "zh",
+            "value": "中國"
+          }
+        ],
+        "zh-hans": [
+          {
+            "language": "zh-hans",
+            "value": "中国"
+          },
+          {
+            "language": "zh-hans",
+            "value": "中"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "China"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Китай"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "चीनी जनवादी गणराज्य"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "中华人民共和国"
+        }
+      },
+      "claims": {
+        "P36": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "952c42479db8a9aebff21f296c3ab4c1792c7b97",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 956,
+                  "id": "Q956"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "normal"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P36"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

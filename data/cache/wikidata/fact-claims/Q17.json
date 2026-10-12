@@ -1,0 +1,163 @@
+{
+  "entities": {
+    "Q17": {
+      "type": "item",
+      "id": "Q17",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "Japan"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "Япония"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "जापान"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "日本"
+        },
+        "zh-hans": {
+          "language": "zh-hans",
+          "value": "日本"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "State of Japan"
+          },
+          {
+            "language": "en",
+            "value": "Land of the Rising Sun"
+          },
+          {
+            "language": "en",
+            "value": "Nippon-koku"
+          },
+          {
+            "language": "en",
+            "value": "Nihon-koku"
+          },
+          {
+            "language": "en",
+            "value": "Iapan"
+          },
+          {
+            "language": "en",
+            "value": "Iapon"
+          },
+          {
+            "language": "en",
+            "value": "Land of Rising Sun"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "Страна восходящего солнца"
+          },
+          {
+            "language": "ru",
+            "value": "Ниппон"
+          }
+        ],
+        "hi": [
+          {
+            "language": "hi",
+            "value": "निप्पोन"
+          },
+          {
+            "language": "hi",
+            "value": "निहोन"
+          },
+          {
+            "language": "hi",
+            "value": "उगते सूरज की भूमि"
+          },
+          {
+            "language": "hi",
+            "value": "उदयवर्ष"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "扶桑"
+          },
+          {
+            "language": "zh",
+            "value": "扶桑國"
+          },
+          {
+            "language": "zh",
+            "value": "日"
+          }
+        ]
+      },
+      "sitelinks": {
+        "enwiki": {
+          "site": "enwiki",
+          "title": "Japan"
+        },
+        "ruwiki": {
+          "site": "ruwiki",
+          "title": "Япония"
+        },
+        "hiwiki": {
+          "site": "hiwiki",
+          "title": "जापान"
+        },
+        "zhwiki": {
+          "site": "zhwiki",
+          "title": "日本"
+        }
+      },
+      "claims": {
+        "P36": [
+          {
+            "mainsnak": {
+              "snaktype": "value",
+              "property": "P36",
+              "hash": "43881ed6ee36522acb9bb4893c1523709e3c4856",
+              "datavalue": {
+                "value": {
+                  "entity-type": "item",
+                  "numeric-id": 1490,
+                  "id": "Q1490"
+                },
+                "type": "wikibase-entityid"
+              },
+              "datatype": "wikibase-item"
+            },
+            "rank": "preferred"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1,
+  "grounding": {
+    "languages": [
+      "en",
+      "ru",
+      "hi",
+      "zh",
+      "zh-hans"
+    ],
+    "sites": [
+      "enwiki",
+      "ruwiki",
+      "hiwiki",
+      "zhwiki"
+    ],
+    "claims": [
+      "P36"
+    ],
+    "claim_ranks": "truthy"
+  }
+}

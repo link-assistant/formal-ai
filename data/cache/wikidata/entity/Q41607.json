@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "傘"
+        },
+        "es": {
+          "language": "es",
+          "value": "paraguas"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "मौसम से बचने का उपकरण"
+        },
+        "es": {
+          "language": "es",
+          "value": "objeto portátil para protegerse de la lluvia o el sol"
         }
       },
       "aliases": {
@@ -164,6 +172,12 @@
           {
             "language": "zh",
             "value": "雨伞"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "paragua"
           }
         ]
       }

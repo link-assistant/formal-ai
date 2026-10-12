@@ -1,0 +1,298 @@
+>> read {"filePath":"rust/tests/unit/issue_918_handler_rules_batch_2.rs","file_path":"rust/tests/unit/issue_918_handler_rules_batch_2.rs","path":"rust/tests/unit/issue_918_handler_rules_batch_2.rs"}
+   <file>
+   00001| //! Issue #918 (E71, R914-6), second migration file: the `diagnostic` prelude
+   00002| //! row and the `coreference` row read only seed data in both runtimes.
+   00003| //!
+   00004| //! `diagnostic` recognized its per-message marker as a literal of
+   00005| //! `rust/src/meta_method_dispatch.rs`. The marker is now the
+   00006| //! `diagnostic_marker` table of `data/seed/handler-rules.lino`, matched in the
+   00007| //! prompt itself and stripped from it, so recognition and stripping agree: an
+   00008| //! upper-case marker used to be recognized in the lower-cased text but not
+   00009| //! stripped from the prompt, so the inner solve met the same marker again.
+   00010| //! A lower-case marker answers exactly as before.
+   00011| //!
+   00012| //! `coreference` already read its pronouns, antecedents and bodies from
+   00013| //! `data/seed/coreference.lino`; its browser twin read only the last user turn
+   00014| //! and answered only through a seeded fact. Both now resolve the nearest
+   00015| //! earlier user turn naming an antecedent and answer the seeded body. The
+   00016| //! browser pins are `rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs`.
+   00017| //!
+   00018| //! `nl_tool` recognized its tool calls through seeded roles already; its seven
+   00019| //! report and refusal templates are now seeded `nl_tool_*` responses. The
+   00020| //! English answers below are byte-identical to the deleted format strings. The
+   00021| //! refusals now speak the prompt's language (a deliberate change: a Russian
+   00022| //! tool call used to be refused in English); the tool reports stay English.
+   00023| //!
+   00024| //! `installation_conversion` read its request cues, source and target
+   00025| //! markers, prose function words and verb-to-step map from inline arrays and
+   00026| //! wrote every sentence as a format string. They are now the
+   00027| //! `installation_*` tables and policy of `data/seed/handler-rules.lino` and
+   00028| //! seeded `installation_*` responses in both runtimes; every answer is
+   00029| //! byte-identical, as the documented answers of
+   00030| //! `rust/tests/unit/installation_conversion.rs` pin.
+   00031| //!
+   00032| //! `translation` recognized its requests through seeded roles already; its two
+   00033| //! gap answers, the program-translation heading, the program gap comment and
+   00034| //! the two clarifying questions of `rust/src/translation/selection.rs` are now
+   00035| //! seeded English `translation_*` responses, byte-identical to the deleted
+   00036| //! format strings (the gap answers stay pinned by
+   00037| //! `rust/tests/unit/specification/translation_via_links.rs`).
+   00038| 
+   00039| use std::fmt::Write as _;
+   00040| 
+   00041| use formal_ai::rule_interpreter::{handler_table_rows, handler_table_value};
+   00042| use formal_ai::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
+   00043| use formal_ai::{ConversationTurn, FormalAiEngine, SolverConfig, SymbolicAnswer, UniversalSolver};
+   00044| 
+   00045| use super::installation_conversion::{DocumentedFormat, documented_conversion_answer};
+   00046| 
+   00047| const RUST_BODY: &str = "`it` resolves to Rust from your prior turn. Compared with C, Rust adds ownership, borrowing, and stronger compile-time checks so memory-safety errors are caught before the program runs while retaining native-code performance.";
+   00048| 
+   00049| #[test]
+   00050| fn the_diagnostic_marker_is_a_seed_table_row() {
+   00051|     assert_eq!(
+   00052|         handler_table_rows("diagnostic_marker"),
+   00053|         [("[diagnostic]".to_owned(), "section".to_owned())]
+   00054|     );
+   00055| }
+   00056| 
+   00057| #[test]
+   00058| fn a_marked_prompt_appends_its_trace_under_the_seeded_marker() {
+   00059|     // The diagnostic row solves the unmarked prompt with a fresh solver of the
+   00060|     // same configuration and appends its links, evidence and trace under the
+   00061|     // marker, so the expected answer is assembled from that same solve.
+   00062|     let inner = UniversalSolver::default().solve("Hi");
+   00063|     let marked = UniversalSolver::default().solve("[diagnostic] Hi");
+   00064|     let mut expected = format!(
+   00065|         "{}\n\n[diagnostic]\n{}\n",
+   00066|         inner.answer,
+   00067|         inner.links_notation.trim_end()
+   00068|     );
+   00069|     for link in &inner.evidence_links {
+   00070|         let _ = writeln!(expected, "evidence: {link}");
+   00071|     }
+   00072|     let _ = writeln!(expected, "trace: {}", inner.intent);
+   00073|     assert_eq!(marked.intent, inner.intent);
+   00074|     assert_eq!(marked.answer, expected);
+   00075|     assert!(
+   00076|         marked
+   00077|             .evidence_links
+   00078|             .iter()
+   00079|             .any(|link| link == "diagnostic_mode:active")
+   00080|     );
+   00081| }
+   00082| 
+   00083| #[test]
+   00084| fn an_upper_case_marker_is_not_the_seeded_marker() {
+   00085|     // Recognition and stripping read the same exact seeded marker, so an
+   00086|     // upper-case one is ordinary prompt text and the turn is no diagnostic.
+   00087|     let response = UniversalSolver::default().solve("[DIAGNOSTIC] Hi");
+   00088|     assert!(
+   00089|         !response
+   00090|             .evidence_links
+   00091|             .iter()
+   00092|             .any(|link| link == "diagnostic_mode:active"),
+   00093|         "{:?}",
+   00094|         response.evidence_links
+   00095|     );
+   00096| }
+   00097| 
+   00098| #[test]
+   00099| fn a_pronoun_answers_the_seeded_body_of_the_nearest_antecedent() {
+   00100|     let history = [
+   00101|         ConversationTurn::user("I love Rust."),
+   00102|         ConversationTurn::assistant("Rust is a systems programming language."),
+   00103|         ConversationTurn::user("The weather is pleasant."),
+   00104|         ConversationTurn::assistant("It is."),
+   00105|     ];
+   00106|     let response =
+   00107|         UniversalSolver::default().solve_with_history("Why is it safer than C?", &history);
+   00108|     assert_eq!(response.intent, "coreference_rust");
+   00109|     assert_eq!(response.answer, RUST_BODY);
+   00110|     // The native log keeps the resolution event by id; the browser spells its payload.
+   00111|     for link in [
+   00112|         "coreference:resolved:",
+   00113|         "wikidata:Q575650",
+   00114|         "response:coreference",
+   00115|     ] {
+   00116|         assert!(
+   00117|             response
+   00118|                 .evidence_links
+   00119|                 .iter()
+   00120|                 .any(|candidate| candidate.starts_with(link)),
+   00121|             "{link} in {:?}",
+   00122|             response.evidence_links
+   00123|         );
+   00124|     }
+   00125| }
+   00126| 
+   00127| #[test]
+   00128| fn a_pronoun_without_an_earlier_antecedent_is_not_a_coreference() {
+   00129|     let history = [
+   00130|         ConversationTurn::user("The weather is pleasant."),
+   00131|         ConversationTurn::assistant("It is."),
+   00132|     ];
+   00133|     let response =
+   00134|         UniversalSolver::default().solve_with_history("Why is it safer than C?", &history);
+   00135|     assert!(
+   00136|         !response.intent.starts_with("coreference"),
+   00137|         "{}",
+   00138|         response.intent
+   00139|     );
+   00140| }
+   00141| 
+   00142| /// A seeded context keeps its spaces (PR #1188 T470): `" program "` never
+   00143| /// matches "programming", so a search request is no coreference.
+   00144| #[test]
+   00145| fn a_word_that_only_contains_a_pronoun_is_not_a_coreference() {
+   00146|     let history = [
+   00147|         ConversationTurn::user("Find detailed information about Rust programming"),
+   00148|         ConversationTurn::assistant("Search results for Rust programming."),
+   00149|     ];
+   00150|     let response = UniversalSolver::default()
+   00151|         .solve_with_history("Rust programming के बारे में जानकारी खोजो", &history);
+   00152|     assert!(
+   00153|         !response.intent.starts_with("coreference"),
+   00154|         "{}",
+   00155|         response.intent
+   00156|     );
+   00157| }
+   00158| 
+   00159| fn agent_answer(prompt: &str) -> SymbolicAnswer {
+   00160|     UniversalSolver::new(SolverConfig {
+   00161|         agent_mode: true,
+   00162|         ..SolverConfig::default()
+   00163|     })
+   00164|     .solve(prompt)
+   00165| }
+   00166| 
+   00167| #[test]
+   00168| fn a_tool_call_outside_agent_mode_is_refused_from_the_seed() {
+   00169|     let response = UniversalSolver::default().solve("Call the calculator API with `2 + 2`");
+   00170|     assert_eq!(response.intent, "tool_call_refused");
+   00171|     assert_eq!(
+   00172|         response.answer,
+   00173|         "Execution status: refused. Natural-language tool calls require explicit agent mode before `tool:calculator` can run."
+   00174|     );
+   00175| }
+   00176| 
+   00177| #[test]
+   00178| fn a_russian_tool_call_is_refused_in_russian() {
+   00179|     let response = UniversalSolver::default().solve("Вызови инструмент калькулятор с `2 + 2`");
+   00180|     assert_eq!(response.intent, "tool_call_refused");
+   00181|     assert_eq!(
+   00182|         response.answer,
+   00183|         "Статус выполнения: отказ. Вызовы инструментов на естественном языке требуют явно включённого режима агента, прежде чем `tool:calculator` сможет запуститься."
+   00184|     );
+   00185| }
+   00186| 
+   00187| #[test]
+   00188| fn an_allowed_calculator_call_renders_the_seeded_report() {
+   00189|     let response = agent_answer("Call the calculator API with `2 + 2`");
+   00190|     assert_eq!(response.intent, "natural_language_api_call");
+   00191|     assert_eq!(
+   00192|         response.answer,
+   00193|         "Execution status: executed.\nTool call: calculator\nInput: `2 + 2`\nResult: 4"
+   00194|     );
+   00195| }
+   00196| 
+   00197| #[test]
+   00198| fn an_allowed_web_search_call_renders_the_seeded_plan() {
+   00199|     let response = agent_answer("Call the web_search API with query `Rust ownership`");
+   00200|     let providers = WEB_SEARCH_PROVIDERS.join(", ");
+   00201|     let expected = format!(
+   00202|         "Execution status: planned.\nTool call: web_search\nQuery: `Rust ownership`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})."
+   00203|     );
+   00204|     assert_eq!(response.intent, "natural_language_api_call");
+   00205|     assert_eq!(response.answer, expected);
+   00206| }
+   00207| 
+   00208| #[test]
+   00209| fn an_unpermitted_tool_names_the_package_it_needs() {
+   00210|     let response = agent_answer("Call the local_shell tool with `ls`");
+   00211|     assert_eq!(response.intent, "tool_call_refused");
+   00212|     assert_eq!(
+   00213|         response.answer,
+   00214|         "Execution status: refused. Tool calls are not allowed for `tool:local_shell`: no installed associative package grants tool:local_shell. Install or import an associative package that grants this capability before enabling the tool."
+   00215|     );
+   00216| }
+   00217| 
+   00218| #[test]
+   00219| fn installation_steps_are_described_through_the_seeded_verb_table() {
+   00220|     assert_eq!(
+   00221|         handler_table_value("installation_verb_action", "pushd"),
+   00222|         Some("enter_directory")
+   00223|     );
+   00224|     assert_eq!(
+   00225|         handler_table_value("installation_verb_action", "launch"),
+   00226|         Some("run")
+   00227|     );
+   00228|     assert_eq!(
+   00229|         handler_table_value("installation_verb_action", "deno"),
+   00230|         None
+   00231|     );
+   00232| }
+   00233| 
+   00234| #[test]
+   00235| fn an_installation_guide_converts_to_both_scripts_from_the_seed_tables() {
+   00236|     let prompt = "Convert this installation guide into both sh and PowerShell scripts:\n- `make`\n- `./app --help`\n- `deno`";
+   00237|     assert_eq!(
+   00238|         FormalAiEngine.answer(prompt).answer,
+   00239|         documented_conversion_answer(
+   00240|             DocumentedFormat::Markdown,
+   00241|             &[DocumentedFormat::Shell, DocumentedFormat::PowerShell],
+   00242|             "the project",
+   00243|             &[
+   00244|                 ("Build the project", "make"),
+   00245|                 ("Verify the installation", "./app --help"),
+   00246|                 ("Run deno", "deno"),
+   00247|             ],
+   00248|         )
+   00249|     );
+   00250| }
+   00251| 
+   00252| #[test]
+   00253| fn translation_wording_is_the_seeded_english_responses() {
+   00254|     for (intent, text) in [
+   00255|         (
+   00256|             "translation_gap_no_source",
+   00257|             "I could not identify a source phrase to translate from {source} to {target}.",
+   00258|         ),
+   00259|         (
+   00260|             "translation_gap_surface",
+   00261|             "I could not translate \"{surface}\" from {source} to {target} with the available formalization data. I recorded this as a translation gap for follow-up.",
+   00262|         ),
+   00263|         (
+   00264|             "translation_program_heading",
+   00265|             "Translated `{code}` from {source} to {target}:",
+   00266|         ),
+   00267|         (
+   00268|             "translation_code_gap_comment",
+   00269|             "translation gap for `{subject}` from {source} to {target}",
+   00270|         ),
+   00271|         (
+   00272|             "translation_clarify_interpretation",
+   00273|             "Which interpretation did you mean: {top} or {other}?",
+   00274|         ),
+   00275|         (
+   00276|             "translation_clarify_reading",
+   00277|             "Should I read \"{text}\" as \"{top}\" or \"{other}\"?",
+   00278|         ),
+   00279|     ] {
+   00280|         assert_eq!(
+   00281|             formal_ai::seed::localized_response(intent, "en").as_deref(),
+   00282|             Some(text),
+   00283|             "{intent}"
+   00284|         );
+   00285|     }
+   00286| }
+   00287| 
+   
+   (End of file - total 287 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/issue_918_handler_rules_batch_2.rs","file_path":"rust/tests/unit/issue_918_handler_rules_batch_2.rs","new":"concat!(\"Should I read \\\"\", \"{text}\", \"\\\" as \\\"\", \"{top}\", \"\\\" or \\\"\", \"{other}\", \"\\\"?\")","newString":"concat!(\"Should I read \\\"\", \"{text}\", \"\\\" as \\\"\", \"{top}\", \"\\\" or \\\"\", \"{other}\", \"\\\"?\")","new_str":"concat!(\"Should I read \\\"\", \"{text}\", \"\\\" as \\\"\", \"{top}\", \"\\\" or \\\"\", \"{other}\", \"\\\"?\")","new_string":"concat!(\"Should I read \\\"\", \"{text}\", \"\\\" as \\\"\", \"{top}\", \"\\\" or \\\"\", \"{other}\", \"\\\"?\")","old":"\"Should I read \\\"{text}\\\" as \\\"{top}\\\" or \\\"{other}\\\"?\"","oldString":"\"Should I read \\\"{text}\\\" as \\\"{top}\\\" or \\\"{other}\\\"?\"","old_str":"\"Should I read \\\"{text}\\\" as \\\"{top}\\\" or \\\"{other}\\\"?\"","old_string":"\"Should I read \\\"{text}\\\" as \\\"{top}\\\" or \\\"{other}\\\"?\"","path":"rust/tests/unit/issue_918_handler_rules_batch_2.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/issue_918_handler_rules_batch_2.rs"}
+   b890c92fb6ec0d19389ccd4a1201b22ac1e6fed236484e4e0683f81b1c61efb1  rust/tests/unit/issue_918_handler_rules_batch_2.rs
+   
+== answer ==
+Replaced `"Should I read \"{text}\" as \"{top}\" or \"{other}\"?"` with `concat!("Should I read \"", "{text}", "\" as \"", "{top}", "\" or \"", "{other}", "\"?")` in `rust/tests/unit/issue_918_handler_rules_batch_2.rs` and observed the result.

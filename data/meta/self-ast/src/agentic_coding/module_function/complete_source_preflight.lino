@@ -1,0 +1,80 @@
+self_ast_census
+  target src/agentic_coding/module_function/complete_source_preflight.rs
+  language rust
+  fidelity full_ast
+  byte_len 7404
+  line_count 192
+  content_id source_module_749880d7ed43a085
+  symbol_count 3
+  symbols
+    function source_goal_scope 8 21
+    function derive_complete_source_request 24 126
+    function bind_complete_source_needs 129 192
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 6158
+    named_node_count 1278
+    distinct_node_kinds 59
+    node_kinds
+      arguments 96
+      array_expression 1
+      array_type 1
+      assignment_expression 1
+      attribute 2
+      attribute_item 2
+      binary_expression 48
+      block 27
+      boolean_literal 7
+      call_expression 96
+      char_literal 1
+      closure_expression 10
+      closure_parameters 10
+      continue_expression 2
+      crate 5
+      doc_comment 2
+      expression_statement 40
+      field_expression 97
+      field_identifier 97
+      for_expression 4
+      function_item 3
+      generic_type 4
+      identifier 249
+      if_expression 15
+      index_expression 28
+      inner_doc_comment_marker 1
+      integer_literal 9
+      let_condition 1
+      let_declaration 21
+      lifetime 1
+      line_comment 2
+      macro_invocation 5
+      mutable_specifier 5
+      outer_doc_comment_marker 1
+      parameter 7
+      parameters 3
+      parenthesized_expression 1
+      primitive_type 4
+      range_expression 2
+      reference_expression 6
+      reference_type 8
+      return_expression 12
+      scoped_identifier 22
+      scoped_use_list 1
+      source_file 1
+      string_content 114
+      string_literal 114
+      super 3
+      token_tree 30
+      try_expression 21
+      tuple_expression 1
+      tuple_pattern 1
+      tuple_struct_pattern 2
+      type_arguments 4
+      type_identifier 12
+      unary_expression 7
+      use_declaration 4
+      use_list 1
+      visibility_modifier 3

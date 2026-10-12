@@ -1,0 +1,26 @@
+language en
+lemma interface
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "(chemistry) a surface forming a common boundary between two things (two objects or liquids or chemical phases)"
+    id oewn-03583604-n
+    partOfSpeech n
+  entry
+    definition "(computer science) a program that controls a display for the user (usually on a computer monitor) and that allows the user to interact with the system"
+    id oewn-06587403-n
+    partOfSpeech n
+    synonyms ("user interface")
+  entry
+    definition "the overlap where two theories or phenomena affect each other or have links with each other"
+    examples ("the interface between chemistry and biology")
+    id oewn-05772776-n
+    partOfSpeech n
+  entry
+    definition "(computer science) computer circuit consisting of the hardware and associated circuitry that links one device with another (especially a computer and a hard disk drive or other peripherals)"
+    id oewn-03583825-n
+    partOfSpeech n
+    synonyms (port)
+source "oewn:2024"

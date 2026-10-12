@@ -1,0 +1,10 @@
+>> bash {"command":"node /private/tmp/pr1188-source-network-detach.mjs"}
+   Output: bounded source shard monitor started 73273
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/pr1188-source-network-detach.mjs` command completed. Output:
+
+```text
+bounded source shard monitor started 73273
+```

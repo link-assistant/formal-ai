@@ -84,6 +84,12 @@ merge_conflict_policy
       extracted_from "src/solver_handlers/modules.rs"
       extracted_from "src/solver_handlers/mod.rs"
       declares_directory "rust/src/solver_handlers"
+      inert "creative_writing_planning"
+      inert "formalization_task_render"
+      inert "formalization_task_targets"
+      inert "formalization_task_rml"
+      inert "formalization_task_prover"
+      note "The five inert files are parts of creative_writing.rs and formalization_task.rs pulled in with `include!`, not modules of their own."
     file
       path "rust/src/agentic_coding/modules.rs"
       extracted_from "src/agentic_coding/modules.rs"
@@ -155,7 +161,7 @@ merge_conflict_policy
   artifact seed_metadata_gaps
     cause derived_artifact
     merge union
-    path "data/meta/seed-metadata-gaps-*.lino"
+    path "data/meta/seed-metadata-gaps/*.lino"
     regenerate "rust-script scripts/audit-seed-metadata.rs --write"
     verify "rust-script scripts/audit-seed-metadata.rs"
     observed_conflicts 75
@@ -170,6 +176,7 @@ merge_conflict_policy
     cause append_only_document
     merge union
     path "REQUIREMENTS.md"
+    path "docs/requirements/assembled/*.md"
     shard_directory "docs/requirements"
     regenerate "rust-script scripts/assemble-requirements.rs --write"
     verify "rust-script scripts/assemble-requirements.rs"
@@ -201,8 +208,7 @@ merge_conflict_policy
     cause sequential_file_name
     path "js/worker/formal_ai_worker_*.js"
     extracted_from "src/web/worker/formal_ai_worker_*.js"
-    frozen_prefix_max 24
-    note "formal_ai_worker_00 through formal_ai_worker_24 predate this policy and keep their numbers; every module added after issue 991 is named after its subject."
+    note "Every module is named after its subject: the numbered modules issue 658 cut by line count were renamed after what each holds (R1188-U5, data/meta/rename-map.lino), and every module added after issue 991 is named after its subject, so two branches that add modules create two different names."
     observed_conflicts 11
   artifact worker_line_budget
     cause global_scalar_ratchet

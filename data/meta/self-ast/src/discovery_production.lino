@@ -1,0 +1,45 @@
+self_ast_census
+  target src/discovery_production.rs
+  language rust
+  fidelity signature
+  byte_len 22805
+  line_count 592
+  content_id source_module_29ccf881f6e92895
+  symbol_count 36
+  symbols
+    const POLICY 42 42
+    const GRAMMARS 45 45
+    const DEFAULT_CACHE_FILE 49 49
+    function fnv1a64 57 64
+    struct RediscoverableRecipe 74 82
+    function content_address 87 89
+    function is_valid_cache_entry 98 107
+    function field 110 120
+    const CACHE_KEY_LANGUAGE 124 124
+    const CACHE_KEY_TASK 125 125
+    const REQUIRED_MARK 127 127
+    function required_entry_fields 132 151
+    function bootstrap_cache_active 159 166
+    function miss_research_missing 176 198
+    function cache_file_header 202 218
+    function grammar_exists 222 241
+    function knows_language 249 254
+    function language_has_cache_row 256 261
+    struct ProcedureCache 270 273
+    function load_at 279 288
+    function load 294 296
+    function recipes 300 302
+    function lookup 306 311
+    function store 319 332
+    function delete_all 336 339
+    function parse 341 374
+    function cache_file_text 379 416
+    function write 418 426
+    function cached_write_program 443 454
+    enum CachedOrDiscovered 459 462
+    function recipe 467 471
+    function was_cached 475 477
+    function cached_or_research 494 540
+    function gap_field 546 556
+    function default_cache_path 561 578
+    function quote 581 589

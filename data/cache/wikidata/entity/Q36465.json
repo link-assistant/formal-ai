@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "穀粉"
+        },
+        "es": {
+          "language": "es",
+          "value": "harina"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "अनाज का पिसा हुआ रूप"
+        },
+        "es": {
+          "language": "es",
+          "value": "polvo fino que se obtiene del cereal molido y de otros alimentos ricos en almidón"
         }
       },
       "aliases": {

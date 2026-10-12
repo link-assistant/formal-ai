@@ -1,0 +1,67 @@
+{
+  "kind": "RelocatedBuildStageSourceControls",
+  "preimages": [
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_coverage.rs",
+      "sha256": "a2645cf6f357de46b142d9162dc68898b9614d214081574fd5b229604620363e"
+    },
+    {
+      "path": "rust/tests/unit/issue_896_component_boundaries.rs",
+      "sha256": "5e687b6667f7d53a91b404bf31f3a608d7773be3db5d5cf69df8002e29d5fe0e"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/attestation_and_coverage_audit.rs",
+      "sha256": "34989c4bf653e72728adbb5c3e8d3d971d1b784f41f111ad5d69677505568630"
+    }
+  ],
+  "originalObservations": [
+    {
+      "name": "new-failure-114030300748.log",
+      "bytes": 169402,
+      "sha256": "04cb1d3ebc3146ec29a1a35b6f98172b908880e73b44ef7b445450ba87e34589"
+    },
+    {
+      "name": "new-failure-114030300855.log",
+      "bytes": 155513,
+      "sha256": "6a29a0ffb9a733278e1d613ccc7513a97dbb5f2162c3bd978028f36a9a7fa1df"
+    },
+    {
+      "name": "new-failure-114042298416.log",
+      "bytes": 349219,
+      "sha256": "d8aa96e82a5aec9b351e32efbb2377928810c6b8ce7322b590ddb97a27b5f0e6"
+    }
+  ],
+  "preservedOriginalNonobsoleteAssertions": true,
+  "sourceCapsOnly": true,
+  "installed": [
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_coverage.rs",
+      "bytes": 9290,
+      "sha256": "c574f9043a4024986ff7bb5d76a50ee1b412427ccf831f3104e8e48e585ef621"
+    },
+    {
+      "path": "rust/tests/unit/issue_896_component_boundaries.rs",
+      "bytes": 15811,
+      "sha256": "7eb20bec2feca9800ea2648029bc028a60d64b46085c89308f5774aca689241f"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/attestation_and_coverage_audit.rs",
+      "bytes": 8012,
+      "sha256": "780009097b210100d6552d91f13bb957e24811b4fdf2c47ef11d8731cf274201"
+    },
+    {
+      "path": "rust/tests/web/relocated-build-stage-controls.test.mjs",
+      "bytes": 15328,
+      "sha256": "4480682d8416d93ce8035810c5e4265d9b17b6206172d0e7d87139d736891196"
+    },
+    {
+      "path": "changelog.d/1188-relocated-build-stage-controls.md",
+      "bytes": 360,
+      "sha256": "b4e53956e4ce391c337632dfbdda0de287958501de5ef9c9764d7b7ed7b35193"
+    }
+  ],
+  "autonomousCredit": 0,
+  "nativeCompilation": false,
+  "livePublication": false,
+  "U9": "Open"
+}

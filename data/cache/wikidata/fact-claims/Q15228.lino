@@ -1,0 +1,46 @@
+Q15228
+  aliases
+    en ("Lord of the Rings" TLotR LotR)
+    zh ("指环王" "指環王")
+  claims
+    P50
+      entry
+        mainsnak
+          datatype wikibase-item
+          datavalue
+            type wikibase-entityid
+            value
+              entity-type item
+              id Q892
+              numeric-id 892
+          hash 6d366c1bb38dfe6b6a52f6eb4fa88b885a51fa0f
+          property P50
+          snaktype value
+        rank normal
+  id Q15228
+  labels
+    en "The Lord of the Rings"
+    hi "द लॉर्ड ऑफ़ द रिंग्स"
+    ru "Властелин колец"
+    zh "魔戒"
+    zh-hans "魔戒"
+  sitelinks
+    enwiki
+      site enwiki
+      title "The Lord of the Rings"
+    hiwiki
+      site hiwiki
+      title "द लॉर्ड ऑफ़ द रिंग्स"
+    ruwiki
+      site ruwiki
+      title "Властелин колец"
+    zhwiki
+      site zhwiki
+      title "魔戒"
+  type item
+grounding
+  claim_ranks truthy
+  claims (P50)
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

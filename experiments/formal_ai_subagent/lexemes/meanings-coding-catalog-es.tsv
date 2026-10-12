@@ -1,0 +1,27 @@
+program_language	lenguaje de programación
+program_language_rust	rust
+program_language_python	python	py
+program_language_javascript	javascript	js	node
+program_language_typescript	typescript	ts
+program_language_go	go	golang
+program_language_c	c
+program_language_cpp	c++	cpp
+program_language_java	java
+program_language_csharp	c#	csharp
+program_language_ruby	ruby
+program_language_scala	scala
+program_language_kotlin	kotlin
+program_language_php	php
+program_language_laravel	laravel
+program_task	tarea de programación
+program_task_hello_world	hola mundo
+program_task_count_to_three	cuenta hasta tres	cuenta hasta 3	cuente hasta tres	contar hasta tres	contar hasta 3
+program_task_list_files	lista los archivos del directorio actual	lista los archivos en el directorio actual	lista los archivos del directorio	lista de archivos del directorio actual	listar archivos del directorio actual	listar los archivos	lista los archivos	lista de archivos	archivos del directorio actual	archivos en el directorio actual
+program_task_list_files_arg	lista los archivos del directorio indicado como argumento de ruta	lista los archivos del directorio pasado como argumento	lista los archivos de un directorio dado como argumento	lista los archivos con un argumento de ruta
+program_task_list_files_reverse_sort	lista los archivos en orden inverso	lista los archivos en orden descendente	lista los archivos ordenados al revés	listar archivos en orden inverso
+program_task_list_files_arg_reverse_sort	lista los archivos de un argumento de ruta en orden inverso	lista los archivos con un argumento de ruta en orden inverso	lista los archivos con un argumento de ruta en orden descendente
+program_task_fizzbuzz	fizzbuzz	fizz buzz
+program_task_factorial	factorial de 5	factorial de cinco	el factorial de 5	el factorial de cinco
+program_task_reverse_string	invierte una cadena	invertir una cadena	invierte la cadena hello	invierte hello	invierte la palabra hello	da la vuelta a una cadena
+program_task_sum_to_ten	suma de 1 a 10	suma del 1 al 10	suma los números del 1 al 10	suma de los números del 1 al 10	suma hasta diez	suma de uno a diez
+program_task_fibonacci	sucesión de fibonacci	secuencia de fibonacci	fibonacci recursivo	fibonacci de forma recursiva	función de fibonacci	números de fibonacci	número de fibonacci	el décimo número de fibonacci	décimo número de fibonacci	el n-ésimo número de fibonacci

@@ -1,0 +1,9 @@
+view
+  id M-e59ae62c8ffb
+  lemma recursive
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "of or relating to a recursion"
+    provenance (wordnet)

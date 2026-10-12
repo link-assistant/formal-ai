@@ -1,0 +1,37 @@
+{
+  "lemma": "symmetry",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-05071996-n",
+      "partOfSpeech": "n",
+      "definition": "(mathematics) an attribute of a shape or relation; exact reflection of form on opposite sides of a dividing line or plane",
+      "synonyms": [
+        "symmetricalness",
+        "correspondence",
+        "balance"
+      ]
+    },
+    {
+      "id": "oewn-13921008-n",
+      "partOfSpeech": "n",
+      "definition": "balance among the parts of something",
+      "synonyms": [
+        "proportion"
+      ]
+    },
+    {
+      "id": "oewn-04924616-n",
+      "partOfSpeech": "n",
+      "definition": "(physics) the property of being isotropic; having the same value when measured in different directions",
+      "synonyms": [
+        "isotropy"
+      ]
+    }
+  ]
+}

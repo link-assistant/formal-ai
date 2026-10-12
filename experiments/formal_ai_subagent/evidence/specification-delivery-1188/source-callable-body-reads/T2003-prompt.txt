@@ -1,0 +1,52 @@
+Create callable-body-reads.test.mjs with exactly this content:
+````````````javascript
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import test from 'node:test';
+import { createWorkerContext, evaluate, plain } from "file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/support/browser-runtime.mjs";
+import { bindCallableReadCoverage, readFormalParameterPositions } from './callable-body-reads.mjs';
+
+const worker = createWorkerContext();
+await evaluate(worker, 'loadSeed()');
+const record = plain(evaluate(worker, 'recurrenceSourceRecords().find(record => codingChildValue(record, "identifier") === "factorial")'));
+const expression = record.children.find(node => node.name === 'expression').children[0];
+const contract = { name: record.children.find(node => node.name === 'identifier').value, parameters: [record.children.find(node => node.name === 'parameter').value], expression };
+const literal = value => ({ name: 'literal', value, children: [] });
+const parameter = value => ({ name: 'parameter', value, children: [] });
+
+test('actual committed body reads its source formal slot despite anonymous task spelling', () => {
+  const bound = bindCallableReadCoverage(contract, { origin: 'provisional', name: 'discovered_function', parameters: ['input'] });
+  assert.equal(bound.name, contract.name);
+  assert.deepEqual(bound.parameters, contract.parameters);
+  assert.deepEqual(bound.readParameterPositions, [0]);
+  assert.deepEqual(bound.expression, expression);
+});
+
+test('literal contents and declaration-only names do not read an input', () => {
+  assert.deepEqual(readFormalParameterPositions(literal('n'), ['n']), []);
+  const bound = bindCallableReadCoverage({ name: 'constant', parameters: ['n'], expression: literal('1') }, { origin: 'provisional' });
+  assert.equal(bound.referencedParameters, 0);
+});
+
+test('repeated body reads are distinct positional inputs, never declaration counts', () => {
+  const body = { name: 'add', value: '', children: [parameter('right'), parameter('left'), parameter('right')] };
+  assert.deepEqual(readFormalParameterPositions(body, ['left', 'right']), [0, 1]);
+});
+
+test('explicit signature binds AST parameters and recursive callable before actual execution', () => {
+  const bound = bindCallableReadCoverage(contract, { origin: 'declared', name: 'chosen', parameters: ['x'] });
+  const rendered = evaluate(worker, 'renderRecurrenceExpression(' + JSON.stringify(bound.expression) + ', ' + JSON.stringify(bound.name) + ')');
+  const source = 'def ' + bound.name + '(' + bound.parameters.join(', ') + '):\n    return ' + rendered;
+  const script = 'import math\n' + source + '\nfor value in range(21):\n    assert chosen(value) == math.factorial(value)\n';
+  assert.equal(execFileSync('python3', ['-c', script], { encoding: 'utf8', timeout: 5000, env: { PATH: process.env.PATH } }), '');
+  assert.equal(contract.parameters[0], 'n');
+  assert.deepEqual(readFormalParameterPositions(expression, ['n']), [0]);
+});
+
+test('explicit incompatible arity, duplicates and unresolved parameters reject honestly', () => {
+  assert.equal(bindCallableReadCoverage(contract, { origin: 'declared', name: 'chosen', parameters: ['x', 'y'] }), null);
+  assert.equal(readFormalParameterPositions(parameter('missing'), ['n']), null);
+  assert.equal(readFormalParameterPositions(parameter('n'), ['n', 'n']), null);
+  assert.equal(bindCallableReadCoverage(contract, { origin: 'declared', name: 'discovered_function', parameters: ['input'] }).name, 'discovered_function');
+});
+````````````

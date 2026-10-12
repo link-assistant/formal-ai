@@ -455,3 +455,57 @@ fn the_native_and_browser_runtimes_resolve_the_same_senses() {
         );
     }
 }
+
+#[test]
+fn a_declared_missing_capture_fallback_retains_native_provenance_and_bounds() {
+    let expected: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(fixture_dir().join(PARITY_FILE)).expect("real parity fixture"),
+    )
+    .expect("native sense records");
+    let row = expected
+        .as_array()
+        .expect("sense array")
+        .iter()
+        .find(|row| row["language"] == "es" && row["surface"] == "isograma")
+        .expect("captured Spanish sense");
+    let surface = row["surface"].as_str().expect("captured surface");
+    let language = row["language"].as_str().expect("captured language");
+    let client = CachedSourceClient::new(fixture_dir(), CurlSourceTransport).with_online(false);
+    let mut cache = availability("declared-fallback");
+    let outcome = lookup_surface(
+        surface,
+        language,
+        &client,
+        &ServicePreferences::default(),
+        &LookupBounds::default(),
+        &mut cache,
+        u64::MAX / 2,
+    );
+    let sense = outcome
+        .items
+        .iter()
+        .find(|sense| {
+            sense.content_id() == row["contentId"].as_str().expect("native content identity")
+        })
+        .expect("genuine captured sense");
+    assert_eq!(
+        sense.source_url,
+        "https://es.wikipedia.org/api/rest_v1/page/summary/Isograma"
+    );
+    assert_eq!(
+        sense.sha256,
+        "7fbc0bf57dce4de15c72e6240f0956a2f7b447878bdb896af4ec99604b645169"
+    );
+    assert!(sense.cached);
+    let source = outcome
+        .outcomes
+        .iter()
+        .find(|source| source.source_id == "wikipedia")
+        .expect("source attempt outcome");
+    assert_eq!(source.status, "contributed");
+    assert_eq!(source.pages, 1);
+    assert!(source.detail.contains("no cached capture"));
+    assert!(
+        source.detail.contains("/summary/isograma") && source.detail.contains("/summary/Isograma")
+    );
+}

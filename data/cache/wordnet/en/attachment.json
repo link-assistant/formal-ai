@@ -1,0 +1,67 @@
+{
+  "lemma": "attachment",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07560531-n",
+      "partOfSpeech": "n",
+      "definition": "a feeling of affection for a person or an institution",
+      "synonyms": [
+        "fond regard"
+      ]
+    },
+    {
+      "id": "oewn-02758249-n",
+      "partOfSpeech": "n",
+      "definition": "a supplementary part or accessory"
+    },
+    {
+      "id": "oewn-06566972-n",
+      "partOfSpeech": "n",
+      "definition": "a writ authorizing the seizure of property that may be needed for the payment of a judgment in a judicial proceeding"
+    },
+    {
+      "id": "oewn-02758357-n",
+      "partOfSpeech": "n",
+      "definition": "a connection that fastens things together",
+      "synonyms": [
+        "bond"
+      ]
+    },
+    {
+      "id": "oewn-01215372-n",
+      "partOfSpeech": "n",
+      "definition": "faithful support for a cause or political party or religion",
+      "examples": [
+        "attachment to a formal agenda",
+        "adherence to a fat-free diet",
+        "the adhesion of Seville was decisive"
+      ],
+      "synonyms": [
+        "adherence",
+        "adhesion"
+      ]
+    },
+    {
+      "id": "oewn-00380230-n",
+      "partOfSpeech": "n",
+      "definition": "the act of attaching or affixing something",
+      "synonyms": [
+        "affixation"
+      ]
+    },
+    {
+      "id": "oewn-00148415-n",
+      "partOfSpeech": "n",
+      "definition": "the act of fastening things together",
+      "synonyms": [
+        "fastening"
+      ]
+    }
+  ]
+}

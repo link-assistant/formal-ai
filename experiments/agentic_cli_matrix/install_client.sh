@@ -131,9 +131,21 @@ case "$installer" in
     # VS Code's bundled CLI still calls the deprecated legacy url.parse API.
     # Suppress only that upstream diagnostic for this child process:
     # https://github.com/microsoft/vscode/issues/319867
-    NODE_OPTIONS=--disable-warning=DEP0169 \
-      "$dest/bin/code" --install-extension sst-dev.opencode --force \
-      --user-data-dir "$dest/user-data" --extensions-dir "$dest/extensions" \
+    # The marketplace is a network service like the tarball host above, and
+    # run 37491306420 lost this leg to a transient `Server returned 503`. The
+    # extension install gets the same bounded retry the curl downloads carry
+    # (three retries, growing delay); a persistent failure still fails the leg.
+    extension_installed=false
+    for attempt in 1 2 3 4; do
+      if NODE_OPTIONS=--disable-warning=DEP0169 \
+        "$dest/bin/code" --install-extension sst-dev.opencode --force \
+        --user-data-dir "$dest/user-data" --extensions-dir "$dest/extensions"; then
+        extension_installed=true
+        break
+      fi
+      [ "$attempt" -lt 4 ] && sleep $((attempt * 5))
+    done
+    [ "$extension_installed" = true ] \
       || matrix_fail "installing the sst-dev.opencode VS Code extension failed"
     ;;
   appimage)

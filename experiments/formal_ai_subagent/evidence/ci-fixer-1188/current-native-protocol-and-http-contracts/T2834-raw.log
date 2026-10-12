@@ -1,0 +1,225 @@
+>> read {"filePath":"rust/tests/integration/issue_712_intent_routing.rs","file_path":"rust/tests/integration/issue_712_intent_routing.rs","path":"rust/tests/integration/issue_712_intent_routing.rs"}
+   <file>
+   00001| //! Issue #712: reported natural phrasings route to tools over every supported API.
+   00002| 
+   00003| use crate::http_server::{
+   00004|     http_post_json, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
+   00005| };
+   00006| use std::sync::{Mutex, MutexGuard};
+   00007| 
+   00008| #[path = "../support/http_auxiliary_workspace.rs"]
+   00009| mod auxiliary_workspace;
+   00010| 
+   00011| const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
+   00012| static SERVER_TEST_LOCK: Mutex<()> = Mutex::new(());
+   00013| 
+   00014| #[test]
+   00015| fn chat_completions_get_contents_routes_to_web_fetch() {
+   00016|     let _guard = server_test_lock();
+   00017|     let response = chat(
+   00018|         "get contents https://example.com/data.json",
+   00019|         &["web_fetch", "web_search"],
+   00020|     );
+   00021|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00022|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00023|     assert_eq!(call["function"]["name"], "web_fetch");
+   00024|     let arguments = chat_arguments(call);
+   00025|     assert_eq!(arguments["url"], "https://example.com/data.json");
+   00026| }
+   00027| 
+   00028| #[test]
+   00029| fn responses_google_request_routes_to_web_search() {
+   00030|     let _guard = server_test_lock();
+   00031|     let port = reserve_loopback_port();
+   00032|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00033|     let response = http_post_json(
+   00034|         port,
+   00035|         "/api/openai/v1/responses",
+   00036|         TOKEN,
+   00037|         &serde_json::json!({
+   00038|             "model": "formal-ai",
+   00039|             "input": "google what is a monad",
+   00040|             "tools": [{
+   00041|                 "type": "function",
+   00042|                 "name": "web_search",
+   00043|                 "parameters": {"type": "object"}
+   00044|             }]
+   00045|         }),
+   00046|     );
+   00047|     let call = response["output"]
+   00048|         .as_array()
+   00049|         .expect("Responses output should be an array")
+   00050|         .iter()
+   00051|         .find(|item| item["type"] == "function_call")
+   00052|         .expect("Responses output should include a function_call item");
+   00053|     assert_eq!(call["name"], "web_search");
+   00054|     assert!(
+   00055|         call["arguments"]
+   00056|             .as_str()
+   00057|             .is_some_and(|arguments| arguments.to_ascii_lowercase().contains("monad")),
+   00058|         "search call should preserve the subject: {call}"
+   00059|     );
+   00060| }
+   00061| 
+   00062| #[test]
+   00063| fn gemini_update_request_routes_to_edit() {
+   00064|     let _guard = server_test_lock();
+   00065|     let port = reserve_loopback_port();
+   00066|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00067|     let response = http_post_json(
+   00068|         port,
+   00069|         "/api/gemini/v1beta/models/formal-ai:generateContent",
+   00070|         TOKEN,
+   00071|         &serde_json::json!({
+   00072|             "contents": [{
+   00073|                 "role": "user",
+   00074|                 "parts": [{"text": "update main.rs and change foo to bar"}]
+   00075|             }],
+   00076|             "tools": [{
+   00077|                 "functionDeclarations": [
+   00078|                     {"name": "replace", "parameters": {"type": "object"}}
+   00079|                 ]
+   00080|             }]
+   00081|         }),
+   00082|     );
+   00083|     let call = response["candidates"][0]["content"]["parts"]
+   00084|         .as_array()
+   00085|         .expect("Gemini parts should be an array")
+   00086|         .iter()
+   00087|         .find_map(|part| part.get("functionCall"))
+   00088|         .expect("Gemini content should include a functionCall part");
+   00089|     assert_eq!(call["name"], "replace");
+   00090|     assert_eq!(call["args"]["path"], "main.rs");
+   00091|     assert_eq!(call["args"]["oldString"], "foo");
+   00092|     assert_eq!(call["args"]["new_string"], "bar");
+   00093| }
+   00094| 
+   00095| #[test]
+   00096| fn declarative_new_file_routes_to_write_and_never_read() {
+   00097|     let _guard = server_test_lock();
+   00098|     let port = reserve_loopback_port();
+   00099|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00100|     let response = write_on_port(port, "new file: notes.txt, contents: hello", &["write_file", "read_file"]);
+   00101|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00102|     let calls = response["choices"][0]["message"]["tool_calls"]
+   00103|         .as_array()
+   00104|         .expect("tool_calls should be an array");
+   00105|     assert_eq!(calls.len(), 1);
+   00106|     assert_eq!(calls[0]["function"]["name"], "write_file");
+   00107|     assert!(
+   00108|         calls[0]["function"]["arguments"]
+   00109|             .as_str()
+   00110|             .is_some_and(|arguments| arguments.contains("notes.txt")),
+   00111|         "write call should preserve the target: {}",
+   00112|         calls[0]
+   00113|     );
+   00114| }
+   00115| 
+   00116| #[test]
+   00117| fn all_reported_capability_classes_route_in_one_matrix() {
+   00118|     let _guard = server_test_lock();
+   00119|     let port = reserve_loopback_port();
+   00120|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00121|     let cases = [
+   00122|         ("visit https://example.com and summarize it", "web_fetch"),
+   00123|         ("what does the web say about serde", "web_search"),
+   00124|         // Editing clients may require a grounding read before mutation; the
+   00125|         // dedicated Gemini test above verifies the direct edit call shape.
+   00126|         ("rewrite main.rs and change foo to bar", "read_file"),
+   00127|         ("new file: notes.txt, contents: hello", "write_file"),
+   00128|     ];
+   00129|     for (prompt, expected) in cases {
+   00130|         let response = chat_on_port(
+   00131|             port,
+   00132|             prompt,
+   00133|             &["web_fetch", "web_search", "edit", "write_file", "read_file"],
+   00134|         );
+   00135|         let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00136|         assert_eq!(call["function"]["name"], expected, "prompt: {prompt}");
+   00137|     }
+   00138| }
+   00139| 
+   00140| #[test]
+   00141| fn leading_edit_action_is_language_general() {
+   00142|     let _guard = server_test_lock();
+   00143|     let port = reserve_loopback_port();
+   00144|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00145|     let cases = [
+   00146|         ("English", "update main.rs and change foo to bar"),
+   00147|         ("Russian", "измени main.rs и замени foo на bar"),
+   00148|         ("Hindi", "बदलो main.rs और बदलो foo से bar"),
+   00149|         ("Chinese", "修改 main.rs 并 替换 foo 为 bar"),
+   00150|     ];
+   00151|     for (language, prompt) in cases {
+   00152|         let response = chat_on_port(port, prompt, &["edit"]);
+   00153|         let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00154|         assert_eq!(call["function"]["name"], "edit", "{language}: {prompt}");
+   00155|         let arguments = chat_arguments(call);
+   00156|         assert_eq!(arguments["path"], "main.rs", "{language}: {prompt}");
+   00157|         assert_eq!(arguments["oldString"], "foo", "{language}: {prompt}");
+   00158|         assert_eq!(arguments["new_string"], "bar", "{language}: {prompt}");
+   00159|     }
+   00160| }
+   00161| 
+   00162| fn chat(prompt: &str, tools: &[&str]) -> serde_json::Value {
+   00163|     let port = reserve_loopback_port();
+   00164|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00165|     chat_on_port(port, prompt, tools)
+   00166| }
+   00167| 
+   00168| fn chat_on_port(port: u16, prompt: &str, tools: &[&str]) -> serde_json::Value {
+   00169|     http_post_json(
+   00170|         port,
+   00171|         "/api/openai/v1/chat/completions",
+   00172|         TOKEN,
+   00173|         &serde_json::json!({
+   00174|             "model": "formal-ai",
+   00175|             "stream": false,
+   00176|             "messages": [{"role": "user", "content": prompt}],
+   00177|             "tools": tools.iter().map(|name| function_tool(name)).collect::<Vec<_>>()
+   00178|         }),
+   00179|     )
+   00180| }
+   00181| 
+   00182| fn chat_arguments(call: &serde_json::Value) -> serde_json::Value {
+   00183|     serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap()
+   00184| }
+   00185| 
+   00186| fn function_tool(name: &str) -> serde_json::Value {
+   00187|     serde_json::json!({
+   00188|         "type": "function",
+   00189|         "function": {
+   00190|             "name": name,
+   00191|             "description": format!("The {name} capability"),
+   00192|             "parameters": {"type": "object"}
+   00193|         }
+   00194|     })
+   00195| }
+   00196| 
+   00197| fn server_test_lock() -> MutexGuard<'static, ()> {
+   00198|     SERVER_TEST_LOCK
+   00199|         .lock()
+   00200|         .unwrap_or_else(std::sync::PoisonError::into_inner)
+   00201| }
+   00202| 
+   
+   (End of file - total 202 lines)
+   </file>
+>> edit {"filePath":"rust/tests/integration/issue_712_intent_routing.rs","file_path":"rust/tests/integration/issue_712_intent_routing.rs","new":"    for (prompt, expected) in cases {\n        let tools = [\"web_fetch\", \"web_search\", \"edit\", \"write_file\", \"read_file\"];\n        let response = if expected == \"write_file\" {\n            write_on_port(port, prompt, &tools)\n        } else {\n            chat_on_port(port, prompt, &tools)\n        };","newString":"    for (prompt, expected) in cases {\n        let tools = [\"web_fetch\", \"web_search\", \"edit\", \"write_file\", \"read_file\"];\n        let response = if expected == \"write_file\" {\n            write_on_port(port, prompt, &tools)\n        } else {\n            chat_on_port(port, prompt, &tools)\n        };","new_str":"    for (prompt, expected) in cases {\n        let tools = [\"web_fetch\", \"web_search\", \"edit\", \"write_file\", \"read_file\"];\n        let response = if expected == \"write_file\" {\n            write_on_port(port, prompt, &tools)\n        } else {\n            chat_on_port(port, prompt, &tools)\n        };","new_string":"    for (prompt, expected) in cases {\n        let tools = [\"web_fetch\", \"web_search\", \"edit\", \"write_file\", \"read_file\"];\n        let response = if expected == \"write_file\" {\n            write_on_port(port, prompt, &tools)\n        } else {\n            chat_on_port(port, prompt, &tools)\n        };","old":"    for (prompt, expected) in cases {\n        let response = chat_on_port(\n            port,\n            prompt,\n            &[\"web_fetch\", \"web_search\", \"edit\", \"write_file\", \"read_file\"],\n        );","oldString":"    for (prompt, expected) in cases {\n        let response = chat_on_port(\n            port,\n            prompt,\n            &[\"web_fetch\", \"web_search\", \"edit\", \"write_file\", \"read_file\"],\n        );","old_str":"    for (prompt, expected) in cases {\n        let response = chat_on_port(\n            port,\n            prompt,\n            &[\"web_fetch\", \"web_search\", \"edit\", \"write_file\", \"read_file\"],\n        );","old_string":"    for (prompt, expected) in cases {\n        let response = chat_on_port(\n            port,\n            prompt,\n            &[\"web_fetch\", \"web_search\", \"edit\", \"write_file\", \"read_file\"],\n        );","path":"rust/tests/integration/issue_712_intent_routing.rs"}
+>> bash {"command":"sha256sum -- rust/tests/integration/issue_712_intent_routing.rs"}
+   Output: 4e1be80073436c170648335ded1296f91063735a94d1c302fdc7b849b75b2a2a  rust/tests/integration/issue_712_intent_routing.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    for (prompt, expected) in cases {
+        let response = chat_on_port(
+            port,
+            prompt,
+            &["web_fetch", "web_search", "edit", "write_file", "read_file"],
+        );` with `    for (prompt, expected) in cases {
+        let tools = ["web_fetch", "web_search", "edit", "write_file", "read_file"];
+        let response = if expected == "write_file" {
+            write_on_port(port, prompt, &tools)
+        } else {
+            chat_on_port(port, prompt, &tools)
+        };` in `rust/tests/integration/issue_712_intent_routing.rs` and observed the result.

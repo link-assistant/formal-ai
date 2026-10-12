@@ -1,0 +1,489 @@
+>> read {"filePath":"rust/src/normal_markov.rs","file_path":"rust/src/normal_markov.rs","path":"rust/src/normal_markov.rs"}
+   <file>
+   00001| //! Bounded execution for normal (Markov) string-rewrite algorithms.
+   00002| //!
+   00003| //! A program is an ordered list of substitutions. On every step the first rule
+   00004| //! whose pattern occurs is selected, and its leftmost occurrence is replaced.
+   00005| //! Evaluation restarts at rule zero after each non-terminal substitution. This
+   00006| //! is the standard control model of a normal algorithm; terminal rules stop the
+   00007| //! run immediately. Empty patterns and replacements are ordinary data, so the
+   00008| //! same representation supports creation and deletion.
+   00009| //!
+   00010| //! Normal algorithms are computationally universal as an abstract model. This
+   00011| //! executor intentionally adds a caller-selected step bound: universality is a
+   00012| //! property of the representation, while a network-facing agent must not run an
+   00013| //! untrusted non-terminating rewrite forever.
+   00014| 
+   00015| /// One ordered substitution in a normal algorithm.
+   00016| #[derive(Debug, Clone, PartialEq, Eq)]
+   00017| pub struct RewriteRule {
+   00018|     /// The sequence to find. An empty pattern matches byte offset zero.
+   00019|     pub pattern: String,
+   00020|     /// The sequence that replaces the matched pattern. It may be empty.
+   00021|     pub replacement: String,
+   00022|     /// Whether applying this rule halts the program immediately.
+   00023|     pub terminal: bool,
+   00024| }
+   00025| 
+   00026| impl RewriteRule {
+   00027|     /// Construct a non-terminal substitution.
+   00028|     #[must_use]
+   00029|     pub fn new(pattern: impl Into<String>, replacement: impl Into<String>) -> Self {
+   00030|         Self {
+   00031|             pattern: pattern.into(),
+   00032|             replacement: replacement.into(),
+   00033|             terminal: false,
+   00034|         }
+   00035|     }
+   00036| 
+   00037|     /// Mark this substitution as terminal.
+   00038|     #[must_use]
+   00039|     pub const fn terminal(mut self) -> Self {
+   00040|         self.terminal = true;
+   00041|         self
+   00042|     }
+   00043| }
+   00044| 
+   00045| /// An ordered normal algorithm with a resource bound.
+   00046| #[derive(Debug, Clone, PartialEq, Eq)]
+   00047| pub struct RewriteProgram {
+   00048|     /// Rules in selection-priority order.
+   00049|     pub rules: Vec<RewriteRule>,
+   00050|     /// Maximum substitutions allowed in one execution.
+   00051|     pub max_steps: usize,
+   00052| }
+   00053| 
+   00054| impl RewriteProgram {
+   00055|     /// Construct a program. A zero bound is valid and immediately yields
+   00056|     /// [`RewriteHalt::StepLimit`].
+   00057|     #[must_use]
+   00058|     pub const fn new(rules: Vec<RewriteRule>, max_steps: usize) -> Self {
+   00059|         Self { rules, max_steps }
+   00060|     }
+   00061| 
+   00062|     /// Execute against `input` without mutating the caller's bytes.
+   00063|     #[must_use]
+   00064|     pub fn execute(&self, input: &str) -> RewriteOutcome {
+   00065|         let mut output = input.to_owned();
+   00066|         let mut trace = Vec::new();
+   00067| 
+   00068|         for _ in 0..self.max_steps {
+   00069|             let Some((rule_index, byte_offset)) = self
+   00070|                 .rules
+   00071|                 .iter()
+   00072|                 .enumerate()
+   00073|                 .find_map(|(index, rule)| output.find(&rule.pattern).map(|at| (index, at)))
+   00074|             else {
+   00075|                 return RewriteOutcome {
+   00076|                     output,
+   00077|                     trace,
+   00078|                     halt: RewriteHalt::NoApplicableRule,
+   00079|                 };
+   00080|             };
+   00081|             let rule = &self.rules[rule_index];
+   00082|             let end = byte_offset + rule.pattern.len();
+   00083|             output.replace_range(byte_offset..end, &rule.replacement);
+   00084|             trace.push(RewriteStep {
+   00085|                 rule_index,
+   00086|                 byte_offset,
+   00087|             });
+   00088|             if rule.terminal {
+   00089|                 return RewriteOutcome {
+   00090|                     output,
+   00091|                     trace,
+   00092|                     halt: RewriteHalt::TerminalRule(rule_index),
+   00093|                 };
+   00094|             }
+   00095|         }
+   00096| 
+   00097|         RewriteOutcome {
+   00098|             output,
+   00099|             trace,
+   00100|             halt: RewriteHalt::StepLimit,
+   00101|         }
+   00102|     }
+   00103| }
+   00104| 
+   00105| /// Why an execution stopped.
+   00106| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00107| pub enum RewriteHalt {
+   00108|     /// No rule matched the current sequence.
+   00109|     NoApplicableRule,
+   00110|     /// The indexed terminal rule was applied.
+   00111|     TerminalRule(usize),
+   00112|     /// The caller's substitution bound was exhausted.
+   00113|     StepLimit,
+   00114| }
+   00115| 
+   00116| /// One observable substitution in an execution trace.
+   00117| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00118| pub struct RewriteStep {
+   00119|     /// Selected rule index.
+   00120|     pub rule_index: usize,
+   00121|     /// Byte offset of the leftmost match.
+   00122|     pub byte_offset: usize,
+   00123| }
+   00124| 
+   00125| /// Immutable result and audit trace for one execution.
+   00126| #[derive(Debug, Clone, PartialEq, Eq)]
+   00127| pub struct RewriteOutcome {
+   00128|     /// Sequence after the final permitted substitution.
+   00129|     pub output: String,
+   00130|     /// Rule and match position for every applied substitution.
+   00131|     pub trace: Vec<RewriteStep>,
+   00132|     /// Termination reason.
+   00133|     pub halt: RewriteHalt,
+   00134| }
+   00135| 
+   00136| /// One literal slot, with the byte span of the delimiters that produced it.
+   00137| ///
+   00138| /// `start` is the offset of the opening delimiter and `end` is the offset just
+   00139| /// past the closing one, so `text[start..end]` is the slot *including* its
+   00140| /// quotes while [`Self::text`] is the content between them.
+   00141| #[derive(Debug, Clone, PartialEq, Eq)]
+   00142| pub struct QuotedSegment {
+   00143|     /// The content between the delimiters.
+   00144|     pub text: String,
+   00145|     /// Byte offset of the opening delimiter.
+   00146|     pub start: usize,
+   00147|     /// Byte offset just past the closing delimiter.
+   00148|     pub end: usize,
+   00149| }
+   00150| 
+   00151| /// Extract structurally delimited literal slots, including zero-length slots.
+   00152| ///
+   00153| /// The surrounding prose is deliberately irrelevant. Callers can vary natural
+   00154| /// language freely while the literal old/new values remain explicit. ASCII,
+   00155| /// typographic, guillemet, and CJK quote pairs plus Markdown backticks are
+   00156| /// accepted. A fenced triple-backtick block is treated as one slot.
+   00157| #[must_use]
+   00158| pub fn quoted_segments(text: &str) -> Vec<String> {
+   00159|     quoted_segment_spans(text)
+   00160|         .into_iter()
+   00161|         .map(|segment| segment.text)
+   00162|         .collect()
+   00163| }
+   00164| 
+   00165| /// [`quoted_segments`], keeping each slot's byte span.
+   00166| ///
+   00167| /// This is the single implementation behind every literal-slot reader. Callers
+   00168| /// that only need the contents use [`quoted_segments`]; callers that must know
+   00169| /// where a slot sat in the prose — to tell "replace X with Y in Z" from
+   00170| /// "in Z replace X with Y" — use this.
+   00171| #[must_use]
+   00172| pub fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
+   00173|     let mut result = Vec::new();
+   00174|     let mut cursor = 0;
+   00175|     while cursor < text.len() {
+   00176|         let Some((open_at, open, close)) = next_delimiter(text, cursor) else {
+   00177|             break;
+   00178|         };
+   00179|         let content_start = open_at + open.len();
+   00180|         let Some(content_end) = closing_delimiter(text, content_start, open, close) else {
+   00181|             break;
+   00182|         };
+   00183|         let segment_end = content_end + close.len();
+   00184|         result.push(QuotedSegment {
+   00185|             text: text[content_start..content_end].to_owned(),
+   00186|             start: open_at,
+   00187|             end: segment_end,
+   00188|         });
+   00189|         cursor = segment_end;
+   00190|     }
+   00191|     result
+   00192| }
+   00193| 
+   00194| /// Where a request's quotes stop pairing (PR #1188 G71).
+   00195| #[derive(Debug, Clone, PartialEq, Eq)]
+   00196| pub struct QuoteFault {
+   00197|     /// `escaped` for a backslash before a quote, `unpaired` for an opening
+   00198|     /// quote that no literal holds.
+   00199|     pub kind: &'static str,
+   00200|     /// Byte offset of the backslash or of the lone opening quote.
+   00201|     pub at: usize,
+   00202|     /// Up to 32 characters of the request from `at`, trailing space trimmed.
+   00203|     pub fragment: String,
+   00204| }
+   00205| 
+   00206| const ASCII_QUOTES: [char; 3] = ['\'', '"', '`'];
+   00207| const OPEN_ONLY: [char; 6] = ['«', '“', '‘', '「', '『', '《'];
+   00208| const CLOSE_FOLLOWERS: &str = ".,;:!?)]}";
+   00209| const FAULT_FRAGMENT_CHARS: usize = 32;
+   00210| 
+   00211| /// The first place a request's quotes stop pairing, or `None` when they pair.
+   00212| ///
+   00213| /// `escaped` is a backslash before a quote that opens a literal, or before
+   00214| /// one that closes it with a word straight after; `unpaired` is an opening
+   00215| /// quote no literal holds. An apostrophe (a quote after a letter or digit)
+   00216| /// never opens a literal.
+   00217| #[must_use]
+   00218| pub fn quote_fault(text: &str) -> Option<QuoteFault> {
+   00219|     let mut faults = Vec::new();
+   00220|     let mut gap_start = 0;
+   00221|     for segment in quoted_segment_spans(text) {
+   00222|         gap_faults(text, gap_start, segment.start, &mut faults);
+   00223|         gap_start = segment.end;
+   00224|         let opening = &text[segment.start..];
+   00225|         if opening.starts_with(PAIRS[0].0)
+   00226|             || !opening
+   00227|                 .chars()
+   00228|                 .next()
+   00229|                 .is_some_and(|open| ASCII_QUOTES.contains(&open))
+   00230|         {
+   00231|             continue;
+   00232|         }
+   00233|         if text[..segment.start].ends_with('\\') {
+   00234|             faults.push(("escaped", segment.start - 1));
+   00235|         }
+   00236|         let close_at = segment.end - 1;
+   00237|         if segment.end - segment.start > 2
+   00238|             && text[..close_at].ends_with('\\')
+   00239|             && text[segment.end..]
+   00240|                 .chars()
+   00241|                 .next()
+   00242|                 .is_some_and(|after| !after.is_whitespace() && !CLOSE_FOLLOWERS.contains(after))
+   00243|         {
+   00244|             faults.push(("escaped", close_at - 1));
+   00245|         }
+   00246|     }
+   00247|     gap_faults(text, gap_start, text.len(), &mut faults);
+   00248|     let (kind, at) = faults.into_iter().min_by_key(|&(_, at)| at)?;
+   00249|     let fragment = text[at..]
+   00250|         .chars()
+   00251|         .take(FAULT_FRAGMENT_CHARS)
+   00252|         .collect::<String>()
+   00253|         .trim_end()
+   00254|         .to_owned();
+   00255|     Some(QuoteFault { kind, at, fragment })
+   00256| }
+   00257| 
+   00258| /// The quote faults between two literals: an escaped quote, or an opening
+   00259| /// quote that is not an apostrophe.
+   00260| fn gap_faults(text: &str, from: usize, to: usize, faults: &mut Vec<(&'static str, usize)>) {
+   00261|     for (offset, character) in text[from..to].char_indices() {
+   00262|         let index = from + offset;
+   00263|         let ascii = ASCII_QUOTES.contains(&character);
+   00264|         if ascii && text[..index].ends_with('\\') {
+   00265|             faults.push(("escaped", index - 1));
+   00266|         } else if (ascii && !word_internal_mark(character, text[..index].chars().next_back()))
+   00267|             || OPEN_ONLY.contains(&character)
+   00268|         {
+   00269|             faults.push(("unpaired", index));
+   00270|         }
+   00271|     }
+   00272| }
+   00273| 
+   00274| /// Whether an unpaired ASCII quote belongs to the word before it.
+   00275| ///
+   00276| /// An apostrophe after a letter or digit (`it's`), an inch mark after a digit
+   00277| /// (`5"`); any other lone quote opens a quote that never closes (`say "hi" in`
+   00278| /// with an odd count of `"`, U17). Mirrors `wordInternalMark`.
+   00279| fn word_internal_mark(character: char, before: Option<char>) -> bool {
+   00280|     before.is_some_and(|before| match character {
+   00281|         '\'' => before.is_ascii_alphanumeric(),
+   00282|         '"' => before.is_ascii_digit(),
+   00283|         _ => false,
+   00284|     })
+   00285| }
+   00286| 
+   00287| /// Remove one pair of client-added framing quotes without consuming literal
+   00288| /// operands such as `'old' -> 'new'`.
+   00289| #[must_use]
+   00290| pub fn unwrap_transport_quotes(text: &str) -> &str {
+   00291|     let trimmed = text.trim();
+   00292|     for quote in ['"', '\''] {
+   00293|         if let Some(inner) = trimmed
+   00294|             .strip_prefix(quote)
+   00295|             .and_then(|value| value.strip_suffix(quote))
+   00296|             && !inner.contains(quote)
+   00297|         {
+   00298|             return inner;
+   00299|         }
+   00300|     }
+   00301|     trimmed
+   00302| }
+   00303| 
+   00304| /// The quote pairs a literal slot is delimited by, the fenced block first.
+   00305| const PAIRS: [(&str, &str); 10] = [
+   00306|     ("```", "```"),
+   00307|     ("'", "'"),
+   00308|     ("\"", "\""),
+   00309|     ("`", "`"),
+   00310|     ("«", "»"),
+   00311|     ("“", "”"),
+   00312|     ("‘", "’"),
+   00313|     ("「", "」"),
+   00314|     ("『", "』"),
+   00315|     ("《", "》"),
+   00316| ];
+   00317| 
+   00318| /// Whether `text`, trimmed, opens with a quote and closes with its pair.
+   00319| ///
+   00320| /// Such text is one literal however the quotes inside it pair (PR #1188 G63).
+   00321| #[must_use]
+   00322| pub fn wrapped_in_quote_pair(text: &str) -> bool {
+   00323|     let trimmed = text.trim();
+   00324|     PAIRS.iter().any(|(open, close)| {
+   00325|         trimmed.len() >= open.len() + close.len()
+   00326|             && trimmed.starts_with(open)
+   00327|             && trimmed.ends_with(close)
+   00328|     })
+   00329| }
+   00330| 
+   00331| /// Whether `text` holds `literal` inside one quote pair.
+   00332| ///
+   00333| /// The quotes inside `literal` may pair among themselves (PR #1188 G63).
+   00334| #[must_use]
+   00335| pub fn quotes_whole(text: &str, literal: &str) -> bool {
+   00336|     !literal.is_empty()
+   00337|         && PAIRS
+   00338|             .iter()
+   00339|             .any(|(open, close)| text.contains(&format!("{open}{literal}{close}")))
+   00340| }
+   00341| 
+   00342| fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {
+   00343|     PAIRS
+   00344|         .iter()
+   00345|         .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))
+   00346|         .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))
+   00347| }
+   00348| 
+   00349| fn next_complete_pair(
+   00350|     text: &str,
+   00351|     cursor: usize,
+   00352|     open: &'static str,
+   00353|     close: &'static str,
+   00354| ) -> Option<(usize, &'static str, &'static str)> {
+   00355|     let mut from = cursor;
+   00356|     while let Some(relative) = text[from..].find(open) {
+   00357|         let open_at = from + relative;
+   00358|         let previous_is_ascii_word = open == "'"
+   00359|             && text[..open_at]
+   00360|                 .chars()
+   00361|                 .next_back()
+   00362|                 .is_some_and(|character| character.is_ascii_alphanumeric());
+   00363|         let content_start = open_at + open.len();
+   00364|         if !previous_is_ascii_word && closing_delimiter(text, content_start, open, close).is_some()
+   00365|         {
+   00366|             return Some((open_at, open, close));
+   00367|         }
+   00368|         from = content_start;
+   00369|     }
+   00370|     None
+   00371| }
+   00372| 
+   00373| /// The first close that is not an apostrophe inside a word, or, for a single
+   00374| /// quote, the one that closes a payload quoting a single-quoted literal of its
+   00375| /// own (PR #1188 G61): a quote with a space before it and a word character
+   00376| /// after it opens a nested literal, and the payload closes after that literal
+   00377| /// does. When such nesting never closes, the first close stands.
+   00378| fn closing_delimiter(text: &str, cursor: usize, open: &str, close: &str) -> Option<usize> {
+   00379|     if close == "'"
+   00380|         && let Some(close_at) = nested_closing_delimiter(text, cursor)
+   00381|     {
+   00382|         return Some(close_at);
+   00383|     }
+   00384|     if open != close {
+   00385|         return stacked_closing_delimiter(text, cursor, open, close);
+   00386|     }
+   00387|     plain_closing_delimiter(text, cursor, close)
+   00388| }
+   00389| 
+   00390| /// The close of a pair whose marks differ (`«…»`, `“…”`, `「…」`), counted as
+   00391| /// a stack: an inner `«…»` is part of the payload (PR #1188 G86). `None` when
+   00392| /// the stack never empties, so the opening mark pairs with nothing.
+   00393| fn stacked_closing_delimiter(text: &str, cursor: usize, open: &str, close: &str) -> Option<usize> {
+   00394|     let mut depth = 0_usize;
+   00395|     let mut from = cursor;
+   00396|     loop {
+   00397|         let rest = &text[from..];
+   00398|         let close_at = from + rest.find(close)?;
+   00399|         match rest.find(open).map(|relative| from + relative) {
+   00400|             Some(open_at) if open_at < close_at => {
+   00401|                 depth += 1;
+   00402|                 from = open_at + open.len();
+   00403|             }
+   00404|             _ if depth == 0 => return Some(close_at),
+   00405|             _ => {
+   00406|                 depth -= 1;
+   00407|                 from = close_at + close.len();
+   00408|             }
+   00409|         }
+   00410|     }
+   00411| }
+   00412| 
+   00413| /// The close of a single-quoted payload that holds nested single-quoted
+   00414| /// literals, or `None` when the nesting never closes.
+   00415| fn nested_closing_delimiter(text: &str, cursor: usize) -> Option<usize> {
+   00416|     let mut depth = 0_usize;
+   00417|     let mut from = cursor;
+   00418|     while let Some(relative) = text[from..].find('\'') {
+   00419|         let close_at = from + relative;
+   00420|         from = close_at + 1;
+   00421|         let before = text[..close_at].chars().next_back();
+   00422|         let after_is_word = text[from..]
+   00423|             .chars()
+   00424|             .next()
+   00425|             .is_some_and(|character| character.is_ascii_alphanumeric());
+   00426|         if before.is_some_and(|character| character.is_ascii_alphanumeric()) && after_is_word {
+   00427|             continue;
+   00428|         }
+   00429|         if before.is_some_and(char::is_whitespace) && after_is_word {
+   00430|             depth += 1;
+   00431|         } else if depth == 0 {
+   00432|             return Some(close_at);
+   00433|         } else {
+   00434|             depth -= 1;
+   00435|         }
+   00436|     }
+   00437|     None
+   00438| }
+   00439| 
+   00440| fn plain_closing_delimiter(text: &str, cursor: usize, close: &str) -> Option<usize> {
+   00441|     let mut from = cursor;
+   00442|     while let Some(relative) = text[from..].find(close) {
+   00443|         let close_at = from + relative;
+   00444|         let after_close = close_at + close.len();
+   00445|         let is_ascii_apostrophe = close == "'"
+   00446|             && text[..close_at]
+   00447|                 .chars()
+   00448|                 .next_back()
+   00449|                 .is_some_and(|character| character.is_ascii_alphanumeric())
+   00450|             && text[after_close..]
+   00451|                 .chars()
+   00452|                 .next()
+   00453|                 .is_some_and(|character| character.is_ascii_alphanumeric());
+   00454|         if !is_ascii_apostrophe {
+   00455|             return Some(close_at);
+   00456|         }
+   00457|         from = after_close;
+   00458|     }
+   00459|     None
+   00460| }
+   00461| 
+   
+   (End of file - total 461 lines)
+   </file>
+>> edit {"filePath":"rust/src/normal_markov.rs","file_path":"rust/src/normal_markov.rs","new":"fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &str, &str)> {\n    let (at, open, close) = PAIRS\n        .iter()\n        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))\n        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))?;\n    if open == \"```\" {\n        let length = text[at..].bytes().take_while(|byte| *byte == b'`').count();\n        let fence = &text[at..at + length];\n        closing_delimiter(text, at + length, fence, fence)?;\n        return Some((at, fence, fence));\n    }\n    Some((at, open, close))\n}","newString":"fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &str, &str)> {\n    let (at, open, close) = PAIRS\n        .iter()\n        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))\n        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))?;\n    if open == \"```\" {\n        let length = text[at..].bytes().take_while(|byte| *byte == b'`').count();\n        let fence = &text[at..at + length];\n        closing_delimiter(text, at + length, fence, fence)?;\n        return Some((at, fence, fence));\n    }\n    Some((at, open, close))\n}","new_str":"fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &str, &str)> {\n    let (at, open, close) = PAIRS\n        .iter()\n        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))\n        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))?;\n    if open == \"```\" {\n        let length = text[at..].bytes().take_while(|byte| *byte == b'`').count();\n        let fence = &text[at..at + length];\n        closing_delimiter(text, at + length, fence, fence)?;\n        return Some((at, fence, fence));\n    }\n    Some((at, open, close))\n}","new_string":"fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &str, &str)> {\n    let (at, open, close) = PAIRS\n        .iter()\n        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))\n        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))?;\n    if open == \"```\" {\n        let length = text[at..].bytes().take_while(|byte| *byte == b'`').count();\n        let fence = &text[at..at + length];\n        closing_delimiter(text, at + length, fence, fence)?;\n        return Some((at, fence, fence));\n    }\n    Some((at, open, close))\n}","old":"fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {\n    PAIRS\n        .iter()\n        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))\n        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))\n}","oldString":"fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {\n    PAIRS\n        .iter()\n        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))\n        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))\n}","old_str":"fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {\n    PAIRS\n        .iter()\n        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))\n        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))\n}","old_string":"fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {\n    PAIRS\n        .iter()\n        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))\n        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))\n}","path":"rust/src/normal_markov.rs"}
+>> bash {"command":"sha256sum -- rust/src/normal_markov.rs"}
+   d07a1e8f65bdddac647231ee7247a5ca4f60d1a0f4f44f6f086b24bd62cb8c2d  rust/src/normal_markov.rs
+   
+== answer ==
+Replaced `fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {
+    PAIRS
+        .iter()
+        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))
+        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))
+}` with ````fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &str, &str)> {
+    let (at, open, close) = PAIRS
+        .iter()
+        .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))
+        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))?;
+    if open == "```" {
+        let length = text[at..].bytes().take_while(|byte| *byte == b'`').count();
+        let fence = &text[at..at + length];
+        closing_delimiter(text, at + length, fence, fence)?;
+        return Some((at, fence, fence));
+    }
+    Some((at, open, close))
+}```` in `rust/src/normal_markov.rs` and observed the result.

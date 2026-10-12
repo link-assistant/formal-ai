@@ -41,7 +41,7 @@ fn self_improvement_proposes_human_readable_seed_rule_from_verified_unknown_trac
     let run = learn_rules_from_unknown_traces(&[trace], gate);
 
     assert_eq!(run.proposals.len(), 1);
-    assert!(run.rejections.is_empty());
+    assert_eq!(run.rejections, [] as [formal_ai::LearningRejection; 0]);
 
     let proposal = &run.proposals[0];
     assert_eq!(proposal.rule_id, "reverse_sort_list_files");
@@ -118,7 +118,10 @@ fn benchmark_gate_blocks_adoption_when_ratchet_would_regress() {
         run.proposals[0].adoption,
         LearnedRuleAdoption::BlockedByBenchmark
     );
-    assert!(run.adoptable_rules().is_empty());
+    assert_eq!(
+        run.adoptable_rules(),
+        [] as [&formal_ai::LearnedRuleProposal; 0]
+    );
     assert!(run.links_notation().contains("blocked_by_benchmark"));
 }
 
@@ -140,7 +143,7 @@ fn accumulated_unknown_answers_without_candidates_are_rejected_not_adopted() {
     let gate = BenchmarkGateReport::issue_362_from_counts(4, 0);
     let run = learn_rules_from_unknown_traces(&[trace], gate);
 
-    assert!(run.proposals.is_empty());
+    assert_eq!(run.proposals, [] as [formal_ai::LearnedRuleProposal; 0]);
     assert_eq!(run.rejections.len(), 1);
     assert!(
         run.rejections[0]

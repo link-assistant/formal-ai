@@ -1,0 +1,17 @@
+language en
+lemma selector
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a person who chooses or selects out"
+    id oewn-10451389-n
+    partOfSpeech n
+    synonyms (picker chooser)
+  entry
+    definition "a switch that is used to select among alternatives"
+    id oewn-04176498-n
+    partOfSpeech n
+    synonyms ("selector switch")
+source "oewn:2024"

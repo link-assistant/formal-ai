@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "穴兔類"
+        },
+        "es": {
+          "language": "es",
+          "value": "conejo"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "兔科哺乳動物的通用名稱"
+        },
+        "es": {
+          "language": "es",
+          "value": "especie de mamífero lagomorfo de la familia Leporidae"
         }
       },
       "aliases": {
@@ -66,6 +74,12 @@
           {
             "language": "zh",
             "value": "兔子"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "conejito"
           }
         ]
       }

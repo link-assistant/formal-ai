@@ -48,7 +48,7 @@ function workerSource() {
     .readdirSync(workerDirPath, { withFileTypes: true })
     .filter(
       (entry) =>
-        entry.isFile() && /^formal_ai_worker_\d+\.js$/.test(entry.name),
+        entry.isFile() && /^formal_ai_worker_.+\.js$/.test(entry.name),
     )
     .map((entry) => path.join(workerDir, entry.name))
     .sort();

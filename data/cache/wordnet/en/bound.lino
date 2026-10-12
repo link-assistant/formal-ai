@@ -1,0 +1,157 @@
+language en
+lemma bound
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "confined by bonds"
+    examples ("bound and gagged hostages")
+    id oewn-00253820-a
+    partOfSpeech a
+  entry
+    definition "held with another element, substance or material in chemical or physical union"
+    id oewn-01062553-a
+    partOfSpeech a
+  entry
+    definition "secured with a cover or binding; often used as a combining form"
+    examples ("bound volumes" "leather-bound volumes")
+    id oewn-00257502-a
+    partOfSpeech a
+  entry
+    definition "a line determining the limits of an area"
+    id oewn-13926085-n
+    partOfSpeech n
+    synonyms (boundary edge)
+  entry
+    definition "the line or plane indicating the limit or extent of something"
+    id oewn-08529331-n
+    partOfSpeech n
+    synonyms (boundary bounds)
+  entry
+    definition "the greatest possible degree of something"
+    examples ("what he did was beyond the bounds of acceptable behavior" "to the limit of his ability")
+    id oewn-05131322-n
+    partOfSpeech n
+    synonyms (limit boundary)
+  entry
+    definition "a light, self-propelled movement upwards or forwards"
+    id oewn-00121022-n
+    partOfSpeech n
+    synonyms (leap leaping spring saltation bounce)
+  entry
+    definition "(usually followed by ‘to’) governed by fate"
+    examples ("bound to happen" "an old house destined to be demolished" "he is destined to be famous")
+    id oewn-00341524-s
+    partOfSpeech s
+    synonyms (destined)
+  entry
+    definition "covered or wrapped with a bandage"
+    examples ("the bandaged wound on the back of his head" "an injury bound in fresh gauze")
+    id oewn-01962316-s
+    partOfSpeech s
+    synonyms (bandaged)
+  entry
+    definition "headed or intending to head in a certain direction; often used as a combining form as in ‘college-bound students’"
+    examples ("children bound for school" "a flight destined for New York")
+    id oewn-01687482-s
+    partOfSpeech s
+    synonyms (destined)
+  entry
+    definition "bound by an oath"
+    examples ("a bound official")
+    id oewn-02380063-s
+    partOfSpeech s
+  entry
+    definition "bound by contract"
+    id oewn-01068495-s
+    partOfSpeech s
+    synonyms (apprenticed articled indentured)
+  entry
+    definition "confined in the bowels"
+    examples ("he is bound in the belly")
+    id oewn-00641418-s
+    partOfSpeech s
+  entry
+    definition "stick to firmly"
+    examples ("Will this wallpaper adhere to the wall?")
+    id oewn-01359453-v
+    partOfSpeech v
+    synonyms (adhere "hold fast" bond bind stick "stick to")
+  entry
+    definition "move forward by leaps and bounds"
+    examples ("The horse bounded across the meadow" "The child leapt across the puddle" "Can you jump over the fence?")
+    id oewn-01967949-v
+    partOfSpeech v
+    synonyms (jump leap spring)
+  entry
+    definition "create social or emotional ties"
+    examples ("The grandparents want to bond with the child")
+    id oewn-02543752-v
+    partOfSpeech v
+    synonyms (bind tie attach bond)
+  entry
+    definition "form the boundary of; be contiguous to"
+    id oewn-02716547-v
+    partOfSpeech v
+    synonyms (border)
+  entry
+    definition "make fast; tie or secure, with or as if with a rope"
+    examples ("The Chinese would bind the feet of their women")
+    id oewn-01305902-v
+    partOfSpeech v
+    synonyms (bind)
+  entry
+    definition "place limits on (extent or amount or access)"
+    examples ("restrict the use of this parking lot" "limit the time you can spend with your friends")
+    id oewn-00234091-v
+    partOfSpeech v
+    synonyms (restrict trammel limit confine throttle)
+  entry
+    definition "wrap around with something so as to cover or enclose"
+    id oewn-01306207-v
+    partOfSpeech v
+    synonyms (bind bandage)
+  entry
+    definition "spring back; spring away from an impact"
+    examples ("The rubber ball bounced" "These particles do not resile but they unite after they collide")
+    id oewn-01896097-v
+    partOfSpeech v
+    synonyms (bounce resile "take a hop" spring rebound recoil reverberate ricochet)
+  entry
+    definition "secure with or as if with ropes"
+    examples ("tie down the prisoners" "tie up the old newspapers and bring them to the recycling shed")
+    id oewn-01289516-v
+    partOfSpeech v
+    synonyms ("tie down" "tie up" bind truss)
+  entry
+    definition "bind by an obligation; cause to be indebted"
+    examples ("He's held by a contract" "I'll hold you by your promise")
+    id oewn-00886738-v
+    partOfSpeech v
+    synonyms (oblige bind hold obligate)
+  entry
+    definition "provide with a binding"
+    examples ("bind the books in leather")
+    id oewn-01338486-v
+    partOfSpeech v
+    synonyms (bind)
+  entry
+    definition "fasten or secure with a rope, string, or cord"
+    examples ("They tied their victim to the chair")
+    id oewn-01288043-v
+    partOfSpeech v
+    synonyms (tie bind)
+  entry
+    definition "form a chemical bond with"
+    examples ("The hydrogen binds the oxygen")
+    id oewn-00568368-v
+    partOfSpeech v
+    synonyms (bind)
+  entry
+    definition "cause to be constipated"
+    examples ("These foods tend to constipate you")
+    id oewn-00074311-v
+    partOfSpeech v
+    synonyms (constipate bind)
+source "oewn:2024"

@@ -1,0 +1,38 @@
+self_ast_census
+  target src/solver_handlers/prompt_text_question.rs
+  language rust
+  fidelity signature
+  byte_len 19721
+  line_count 540
+  content_id source_module_715482350aea9f15
+  symbol_count 29
+  symbols
+    const ROLE_PROMPT_TEXT_QUESTION_CUE 45 45
+    const ROLE_TIME_PREPOSITION 47 47
+    const ROLE_PLACE_PREPOSITION 49 49
+    const TEMPORAL_ROLES 51 51
+    const SLOTS 59 59
+    const OBJECT 67 67
+    const TIME 69 69
+    const PLACE 71 71
+    const MIN_PASSAGE_WORDS 73 73
+    const MIN_STEM 75 75
+    const QUOTE_PAIRS 77 77
+    const QUESTION_LEAD 87 87
+    struct Passage 92 96
+    function closing_quote 100 115
+    function longest_passage 118 150
+    function sentences 154 173
+    function tokens_match 176 190
+    function content_units 194 222
+    function covered 225 238
+    function try_prompt_text_question 242 332
+    struct Word 336 340
+    function words 343 357
+    function clock_shape 360 367
+    struct Statement 371 373
+    function fields 377 385
+    function tells 389 395
+    function render 398 412
+    function project_statement 417 489
+    function statement_answer 496 540

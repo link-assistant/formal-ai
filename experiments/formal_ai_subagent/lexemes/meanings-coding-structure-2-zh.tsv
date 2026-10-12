@@ -1,0 +1,36 @@
+reduce_mean	平均值	均值
+absolute_deviation	绝对偏差	绝对差
+prefix_negative	低于零	降到零以下
+interpose_each	每两个相邻元素之间
+balanced_delimiter_groups	平衡的分组	独立的分组
+group_max_nesting	最大嵌套	最深的嵌套层级
+prefix_enumeration	所有前缀	从最短到最长的前缀
+zero_based_range	从 0 开始	从零开始
+stringify_each	包含的字符串	作为字符串
+palindrome_extension	最短回文	回文后缀
+aligned_binary_xor	二进制异或	执行异或
+stable_longest	最长的	返回最长的
+explicit_value_mapping	图例	对应于
+explicit_ordering	有效选项为	给定顺序
+bounded_top	最大的元素	前 n 大
+bounded_bottom	最小的元素	前 n 小
+power_square_each	各个元素的平方	每个数平方
+keyed_sum_order	按总和	按行和
+frequency_rank	最常见	频率排名
+regex_minimum_word_length	个字符长	最小单词长度
+regex_lowercase_chunks	在小写字母处分割字符串
+regex_lowercase_underscore	用下划线连接的小写字母
+exclude_membership	删除字符	排除字符
+remove_boundary_occurrences	删除第一次和最后一次出现
+rotation_period	最少旋转次数	最小旋转周期
+duplicate_exists	有重复	包含重复
+composite_number	非素数	合数
+one_bit_difference	只在一个位上不同	一位差异
+grid_minimum_cost_path	最小成本路径	最低代价路径
+recurrence_conditional	如果
+recurrence_less_equal	小于或等于
+recurrence_equal	相等
+recurrence_add	加法	相加
+recurrence_multiply	乘法	相乘
+recurrence_subtract	减法	相减
+recurrence_subtract_one	递减	减一

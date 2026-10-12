@@ -1,0 +1,189 @@
+[
+  {
+    "word": "feet",
+    "phonetic": "/fiːt/",
+    "phonetics": [
+      {
+        "text": "/fiːt/",
+        "audio": "https://api.dictionaryapi.dev/media/pronunciations/en/feet-1-us.mp3",
+        "sourceUrl": "https://commons.wikimedia.org/w/index.php?curid=1227450",
+        "license": {
+          "name": "BY-SA 3.0",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0"
+        }
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A biological structure found in many animals that is used for locomotion and that is frequently a separate organ at the terminal part of the leg.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "A spider has eight feet."
+          },
+          {
+            "definition": "Specifically, a human foot, which is found below the ankle and is used for standing and walking.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "Southern Italy is shaped like a foot."
+          },
+          {
+            "definition": "(often used attributively) Travel by walking.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "There is a lot of foot traffic on this street."
+          },
+          {
+            "definition": "The base or bottom of anything.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "I'll meet you at the foot of the stairs."
+          },
+          {
+            "definition": "The part of a flat surface on which the feet customarily rest.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "We came and stood at the foot of the bed."
+          },
+          {
+            "definition": "The end of a rectangular table opposite the head.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The host should sit at the foot of the table."
+          },
+          {
+            "definition": "A short foot-like projection on the bottom of an object to support it.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The feet of the stove hold it a safe distance above the floor."
+          },
+          {
+            "definition": "A unit of measure equal to twelve inches or one third of a yard, equal to exactly 30.48 centimetres.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "The flag pole at the local high school is about 20 feet high."
+          },
+          {
+            "definition": "A unit of measure for organ pipes equal to the wavelength of two octaves above middle C, approximately 328 mm.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "(collective) Foot soldiers; infantry.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "King John went to battle with ten thousand foot and one thousand horse."
+          },
+          {
+            "definition": "(cigars) The end of a cigar which is lit, and usually cut before lighting.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The part of a sewing machine which presses downward on the fabric, and may also serve to move it forward.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The bottommost part of a typed or printed page.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The base of a piece of type, forming the sides of the groove.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The basic measure of rhythm in a poem.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The parsing of syllables into prosodic constituents, which are used to determine the placement of stress in languages along with the notions of constituent heads.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The bottom edge of a sail.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "To make the mainsail fuller in shape, the outhaul is eased to reduce the tension on the foot of the sail."
+          },
+          {
+            "definition": "The end of a billiard or pool table behind the foot point where the balls are racked.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "In a bryophyte, that portion of a sporophyte which remains embedded within and attached to the parent gametophyte plant.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The muscular part of a bivalve mollusc or a gastropod by which it moves or holds its position on a surface.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The globular lower domain of a protein.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The point of intersection of one line with another that is perpendicular to it.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Fundamental principle; basis; plan.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "Recognized condition; rank; footing.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/feet",
+      "https://en.wiktionary.org/wiki/foot"
+    ]
+  },
+  {
+    "word": "feet",
+    "phonetics": [],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "Fact; performance; feat.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/feet"
+    ]
+  }
+]

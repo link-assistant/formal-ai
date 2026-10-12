@@ -1,0 +1,65 @@
+TAP version 13
+# Subtest: a Write acknowledgement, including echoed content, remains pending observation
+ok 1 - a Write acknowledgement, including echoed content, remains pending observation
+  ---
+  duration_ms: 268.607417
+  ...
+# Subtest: a prior successful receipt cannot certify a later Write
+ok 2 - a prior successful receipt cannot certify a later Write
+  ---
+  duration_ms: 1.251709
+  ...
+# Subtest: explicit successful shell receipts certify exact Unicode and newline bytes
+ok 3 - explicit successful shell receipts certify exact Unicode and newline bytes
+  ---
+  duration_ms: 3.0925
+  ...
+# Subtest: bare Read and framed Agent Read preserve exact content compatibility
+ok 4 - bare Read and framed Agent Read preserve exact content compatibility
+  ---
+  duration_ms: 1.145542
+  ...
+# Subtest: different paths and auxiliary commands never certify this record
+ok 5 - different paths and auxiliary commands never certify this record
+  ---
+  duration_ms: 0.856167
+  ...
+# Subtest: wrong bytes, bare shell stdout, nonzero and structured stdout remain failures
+ok 6 - wrong bytes, bare shell stdout, nonzero and structured stdout remain failures
+  ---
+  duration_ms: 78.999833
+  ...
+# Subtest: a later failed receipt or failed Write cannot reuse earlier certification
+ok 7 - a later failed receipt or failed Write cannot reuse earlier certification
+  ---
+  duration_ms: 1.476542
+  ...
+# Subtest: missing observation capability retains the written record and a typed Gap
+ok 8 - missing observation capability retains the written record and a typed Gap
+  ---
+  duration_ms: 0.687917
+  ...
+# Subtest: Read-only observation support uses the exact bound target
+ok 9 - Read-only observation support uses the exact bound target
+  ---
+  duration_ms: 0.594833
+  ...
+# Subtest: unknown written bytes remain a Gap without repeating an observation forever
+ok 10 - unknown written bytes remain a Gap without repeating an observation forever
+  ---
+  duration_ms: 0.369167
+  ...
+# Subtest: unsafe filename bytes are quoted as one real shell operand
+ok 11 - unsafe filename bytes are quoted as one real shell operand
+  ---
+  duration_ms: 73.714584
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1055.922

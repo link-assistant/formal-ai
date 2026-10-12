@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "演員"
+        },
+        "es": {
+          "language": "es",
+          "value": "actor"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "从事表演艺术的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "persona que actúa en una producción fílmica, televisiva, teatral o radial"
         }
       },
       "aliases": {
@@ -122,6 +130,20 @@
           {
             "language": "zh",
             "value": "舞台演員"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "actriz"
+          },
+          {
+            "language": "es",
+            "value": "actrices"
+          },
+          {
+            "language": "es",
+            "value": "actores"
           }
         ]
       }

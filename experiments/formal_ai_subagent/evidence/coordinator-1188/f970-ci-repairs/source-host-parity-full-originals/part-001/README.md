@@ -1,0 +1,5 @@
+# Full source, host and parity originals
+
+This bounded part preserves complete raw and previously compressed source witnesses, full request/result/process failures, source preimages and inverse bytes. Logical aliases remain individually recorded, including all 4,721 members of the original unified selector across the three parts. Existing exact compressed objects are reused by hash and relative reference. Every decoded and encoded byte length and SHA-256 is checked.
+
+Each part independently stays below the 32 MiB input limit including its selector and controller. This is evidence retention, with zero autonomous authorship or amplification credit. Root T3492 three original section failures are retained as failures; later fixes are outside this cut. Current read-host source qualification and 221-case parity conservation do not establish whole requirement completion, native execution or green CI. Known losses are recorded in the index without reconstruction. Credentials, publication and external namespace guarantees remain Unknown/Pending.

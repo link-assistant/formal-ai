@@ -1,0 +1,158 @@
+{
+  "lemma": "picked",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00678369-v",
+      "partOfSpeech": "v",
+      "definition": "select carefully from a group",
+      "examples": [
+        "She finally picked her successor",
+        "He picked his way carefully"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-01384737-v",
+      "partOfSpeech": "v",
+      "definition": "look for and gather",
+      "examples": [
+        "pick mushrooms",
+        "pick flowers"
+      ],
+      "synonyms": [
+        "pick",
+        "pluck",
+        "cull"
+      ]
+    },
+    {
+      "id": "oewn-00844451-v",
+      "partOfSpeech": "v",
+      "definition": "harass with constant criticism",
+      "examples": [
+        "Don't always pick on your little brother"
+      ],
+      "synonyms": [
+        "blame",
+        "find fault",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-01650673-v",
+      "partOfSpeech": "v",
+      "definition": "provoke",
+      "examples": [
+        "pick a fight or a quarrel"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-00178216-v",
+      "partOfSpeech": "v",
+      "definition": "remove in small bits",
+      "examples": [
+        "pick meat from a bone"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-00177724-v",
+      "partOfSpeech": "v",
+      "definition": "remove unwanted substances from, such as feathers or pits",
+      "examples": [
+        "Clean the turkey"
+      ],
+      "synonyms": [
+        "clean",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-02326628-v",
+      "partOfSpeech": "v",
+      "definition": "pilfer or rob",
+      "examples": [
+        "pick pockets"
+      ],
+      "synonyms": [
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-02292054-v",
+      "partOfSpeech": "v",
+      "definition": "pay for something",
+      "examples": [
+        "pick up the tab",
+        "pick up the burden of high-interest mortgages",
+        "foot the bill"
+      ],
+      "synonyms": [
+        "foot",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-01455157-v",
+      "partOfSpeech": "v",
+      "definition": "pull lightly but sharply with a plucking motion",
+      "examples": [
+        "he plucked the strings of his mandolin"
+      ],
+      "synonyms": [
+        "pluck",
+        "plunk",
+        "pick"
+      ]
+    },
+    {
+      "id": "oewn-01445197-v",
+      "partOfSpeech": "v",
+      "definition": "attack with or as if with a pickaxe of ice or rocky ground, for example",
+      "examples": [
+        "Pick open the ice"
+      ],
+      "synonyms": [
+        "pick",
+        "break up"
+      ]
+    },
+    {
+      "id": "oewn-01246038-v",
+      "partOfSpeech": "v",
+      "definition": "hit lightly with a picking motion",
+      "synonyms": [
+        "peck",
+        "pick",
+        "beak"
+      ]
+    },
+    {
+      "id": "oewn-01176591-v",
+      "partOfSpeech": "v",
+      "definition": "eat intermittently; take small bites of",
+      "examples": [
+        "He pieced at the sandwich all morning",
+        "She never eats a full meal — she just nibbles"
+      ],
+      "synonyms": [
+        "nibble",
+        "pick",
+        "piece"
+      ]
+    }
+  ]
+}

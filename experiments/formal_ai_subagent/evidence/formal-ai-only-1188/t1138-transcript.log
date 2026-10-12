@@ -1,0 +1,1665 @@
+>> read {"filePath":"rust/src/event_log.rs","file_path":"rust/src/event_log.rs","path":"rust/src/event_log.rs"}
+   <file>
+   00001| //! Append-only event log for the universal solver.
+   00002| //!
+   00003| //! Every step the solver takes is recorded as a content-addressed event
+   00004| //! before the user-facing answer is built. The answer is then a projection
+   00005| //! of the log — see `VISION.md` and `GOALS.md` for the rationale.
+   00006| //!
+   00007| //! The log is intentionally small: it lives in-process, holds plain Rust
+   00008| //! records, and uses the same FNV-1a 64-bit hash that `engine::stable_id`
+   00009| //! uses so identifiers stay stable across surfaces.
+   00010| 
+   00011| use crate::engine::{ThinkingStep, stable_id};
+   00012| use crate::link_store::{LinkStore, LinkStoreError};
+   00013| use crate::memory::MemoryEvent;
+   00014| 
+   00015| /// A single event in the append-only log.
+   00016| #[derive(Debug, Clone, PartialEq, Eq)]
+   00017| pub struct Event {
+   00018|     pub id: String,
+   00019|     pub kind: &'static str,
+   00020|     pub payload: String,
+   00021| }
+   00022| 
+   00023| /// In-process append-only event log.
+   00024| #[derive(Debug, Default, Clone)]
+   00025| pub struct EventLog {
+   00026|     events: Vec<Event>,
+   00027| }
+   00028| 
+   00029| impl EventLog {
+   00030|     #[must_use]
+   00031|     pub const fn new() -> Self {
+   00032|         Self { events: Vec::new() }
+   00033|     }
+   00034| 
+   00035|     /// Append a new event with content-addressed id.
+   00036|     ///
+   00037|     /// The id is derived from the kind, the payload, and the current log
+   00038|     /// length so that repeated events produce stable, distinct ids.
+   00039|     pub fn append(&mut self, kind: &'static str, payload: impl Into<String>) -> String {
+   00040|         let payload = payload.into();
+   00041|         let seed = format!("{kind}:{}:{payload}", self.events.len());
+   00042|         let id = stable_id(kind, &seed);
+   00043|         self.events.push(Event {
+   00044|             id: id.clone(),
+   00045|             kind,
+   00046|             payload,
+   00047|         });
+   00048|         id
+   00049|     }
+   00050| 
+   00051|     /// Append a machine-addressable payload without hand-building a textual
+   00052|     /// key/value record at every call site.
+   00053|     pub fn append_fields(&mut self, kind: &'static str, fields: &[(&str, &str)]) -> String {
+   00054|         let payload = render_fields(fields);
+   00055|         self.append(kind, payload)
+   00056|     }
+   00057| 
+   00058|     #[must_use]
+   00059|     pub fn events(&self) -> &[Event] {
+   00060|         &self.events
+   00061|     }
+   00062| 
+   00063|     /// Returns the first event of the given kind, if any.
+   00064|     #[must_use]
+   00065|     pub fn first_of(&self, kind: &str) -> Option<&Event> {
+   00066|         self.events.iter().find(|event| event.kind == kind)
+   00067|     }
+   00068| 
+   00069|     /// Returns the most recent event of the given kind, if any.
+   00070|     #[must_use]
+   00071|     pub fn last_of(&self, kind: &str) -> Option<&Event> {
+   00072|         self.events.iter().rev().find(|event| event.kind == kind)
+   00073|     }
+   00074| 
+   00075|     /// Project the log to a list of `<kind>:<id>` links for the user-facing
+   00076|     /// evidence array. Each link points back to a distinct event.
+   00077|     #[must_use]
+   00078|     pub fn evidence_links(&self) -> Vec<String> {
+   00079|         self.events
+   00080|             .iter()
+   00081|             .map(|event| format!("{}:{}", event.kind, event.id))
+   00082|             .collect()
+   00083|     }
+   00084| 
+   00085|     /// Build a Links Notation `steps` block listing every event in order.
+   00086|     /// Used by trace serialization in [`crate::solver`].
+   00087|     #[must_use]
+   00088|     pub fn steps_block(&self) -> String {
+   00089|         use std::fmt::Write as _;
+   00090|         let mut buffer = String::from("steps:");
+   00091|         for (index, event) in self.events.iter().enumerate() {
+   00092|             let _ = write!(
+   00093|                 buffer,
+   00094|                 "\n  step_{index} {} {}",
+   00095|                 event.kind,
+   00096|                 sanitize_payload(&event.payload)
+   00097|             );
+   00098|         }
+   00099|         buffer
+   00100|     }
+   00101| 
+   00102|     /// Project raw solver events into user-readable, ordered thinking steps.
+   00103|     ///
+   00104|     /// This is the *curated* projection introduced for issue #488. Instead of a
+   00105|     /// noisy 1:1 dump of every internal event, it keeps only the meaningful
+   00106|     /// reasoning milestones, cleans each `detail` down to concrete content,
+   00107|     /// folds the calculator's reduction trace into one composite `compute` step
+   00108|     /// with detailed children, de-duplicates consecutive repeats, and labels the
+   00109|     /// universal-algorithm phases `high` so the minimum granularity surfaces only
+   00110|     /// the high-level direction.
+   00111|     ///
+   00112|     /// The raw, lossless trace stays available to maintainers through
+   00113|     /// [`EventLog::steps_block`] and [`EventLog::evidence_links`].
+   00114|     #[must_use]
+   00115|     pub fn thinking_steps(&self) -> Vec<ThinkingStep> {
+   00116|         self.thinking_steps_for_answer("")
+   00117|     }
+   00118| 
+   00119|     /// Like [`EventLog::thinking_steps`], but substitutes the actual composed
+   00120|     /// answer for the opaque `response:<route>` payload of the closing
+   00121|     /// `deformalize` step so the final reasoning step is concrete (issue #488).
+   00122|     #[must_use]
+   00123|     pub fn thinking_steps_for_answer(&self, final_answer: &str) -> Vec<ThinkingStep> {
+   00124|         let answer = collapse_thinking_whitespace(final_answer);
+   00125| 
+   00126|         // Phase 1 — curate raw events into a clean plan, folding the
+   00127|         // calculator's reduction trace into one composite parent + children.
+   00128|         let mut plan: Vec<PlannedThinkingStep> = Vec::new();
+   00129|         let mut calculation = CalculationCluster::default();
+   00130|         for event in &self.events {
+   00131|             if event.kind == "calculation" || event.kind.starts_with("calculation:") {
+   00132|                 calculation.absorb(event.kind, &event.payload);
+   00133|                 continue;
+   00134|             }
+   00135|             if calculation.has_data() {
+   00136|                 calculation.drain_into(&mut plan);
+   00137|             }
+   00138|             if let Some(step) = curate_thinking_event(event.kind, &event.payload, &answer) {
+   00139|                 plan.push(step);
+   00140|             }
+   00141|         }
+   00142|         if calculation.has_data() {
+   00143|             calculation.drain_into(&mut plan);
+   00144|         }
+   00145| 
+   00146|         // Phase 2 — de-duplicate consecutive repeats, assign order and parent
+   00147|         // ids (so composite steps render as recursively nested thinking).
+   00148|         let mut steps: Vec<ThinkingStep> = Vec::new();
+   00149|         let mut order: u32 = 0;
+   00150|         let mut previous_key: Option<String> = None;
+   00151|         let mut current_parent: Option<String> = None;
+   00152|         for planned in plan {
+   00153|             let key = format!("{}\u{1f}{}", planned.step, planned.detail);
+   00154|             let is_child = planned.role == StepRole::Child;
+   00155|             if !is_child && previous_key.as_deref() == Some(key.as_str()) {
+   00156|                 continue;
+   00157|             }
+   00158|             previous_key = Some(key);
+   00159|             let mut step = ThinkingStep::new(
+   00160|                 order,
+   00161|                 planned.step,
+   00162|                 planned.detail,
+   00163|                 planned.level,
+   00164|                 planned.source,
+   00165|             );
+   00166|             match planned.role {
+   00167|                 StepRole::Parent => current_parent = Some(step.id.clone()),
+   00168|                 StepRole::Child => {
+   00169|                     if let Some(parent) = current_parent.clone() {
+   00170|                         step = step.with_parent(parent);
+   00171|                     }
+   00172|                 }
+   00173|                 StepRole::Normal => current_parent = None,
+   00174|             }
+   00175|             steps.push(step);
+   00176|             order += 1;
+   00177|         }
+   00178| 
+   00179|         // Phase 3 — narrate the finished trace in the language of the answer
+   00180|         // (issue #889). A single step cannot know that language while the trace
+   00181|         // is still being built, because the language is itself one of the steps.
+   00182|         let language = crate::thinking::thinking_answer_language(&steps);
+   00183|         crate::thinking::localize_thinking_steps(&mut steps, &language);
+   00184|         steps
+   00185|     }
+   00186| 
+   00187|     /// Replay every in-process event into a durable link store projection.
+   00188|     ///
+   00189|     /// This is additive: the original event log remains in-process, while
+   00190|     /// the target store receives memory records that can be exported as
+   00191|     /// `.lino` or reduced to doublets by the active backend.
+   00192|     pub fn append_to_link_store<S: LinkStore>(
+   00193|         &self,
+   00194|         store: &mut S,
+   00195|     ) -> Result<usize, LinkStoreError> {
+   00196|         for event in &self.events {
+   00197|             store.append_memory_event(MemoryEvent {
+   00198|                 id: event.id.clone(),
+   00199|                 kind: Some(event.kind.to_owned()),
+   00200|                 content: Some(event.payload.clone()),
+   00201|                 evidence: vec![format!("{}:{}", event.kind, event.id)],
+   00202|                 ..MemoryEvent::default()
+   00203|             })?;
+   00204|         }
+   00205|         Ok(self.events.len())
+   00206|     }
+   00207| }
+   00208| 
+   00209| /// Render the canonical compact form used by structured event payloads.
+   00210| #[must_use]
+   00211| pub fn render_fields(fields: &[(&str, &str)]) -> String {
+   00212|     fields
+   00213|         .iter()
+   00214|         .map(|(name, value)| format!("{name}={value}"))
+   00215|         .collect::<Vec<_>>()
+   00216|         .join(" ")
+   00217| }
+   00218| 
+   00219| /// Role of a planned step in a recursively-composite (fractal) thinking tree.
+   00220| #[derive(Clone, Copy, PartialEq, Eq)]
+   00221| enum StepRole {
+   00222|     /// A leaf step at the top level.
+   00223|     Normal,
+   00224|     /// A composite step that owns the following [`StepRole::Child`] steps.
+   00225|     Parent,
+   00226|     /// A sub-step nested under the most recent [`StepRole::Parent`].
+   00227|     Child,
+   00228| }
+   00229| 
+   00230| /// A curated thinking step before ordering, de-duplication and id assignment.
+   00231| struct PlannedThinkingStep {
+   00232|     step: &'static str,
+   00233|     detail: String,
+   00234|     level: &'static str,
+   00235|     source: &'static str,
+   00236|     role: StepRole,
+   00237| }
+   00238| 
+   00239| impl PlannedThinkingStep {
+   00240|     fn normal(
+   00241|         step: &'static str,
+   00242|         detail: impl Into<String>,
+   00243|         level: &'static str,
+   00244|         source: &'static str,
+   00245|     ) -> Self {
+   00246|         Self {
+   00247|             step,
+   00248|             detail: detail.into(),
+   00249|             level,
+   00250|             source,
+   00251|             role: StepRole::Normal,
+   00252|         }
+   00253|     }
+   00254| 
+   00255|     fn parent(
+   00256|         step: &'static str,
+   00257|         detail: impl Into<String>,
+   00258|         level: &'static str,
+   00259|         source: &'static str,
+   00260|     ) -> Self {
+   00261|         Self {
+   00262|             role: StepRole::Parent,
+   00263|             ..Self::normal(step, detail, level, source)
+   00264|         }
+   00265|     }
+   00266| 
+   00267|     fn child(
+   00268|         step: &'static str,
+   00269|         detail: impl Into<String>,
+   00270|         level: &'static str,
+   00271|         source: &'static str,
+   00272|     ) -> Self {
+   00273|         Self {
+   00274|             role: StepRole::Child,
+   00275|             ..Self::normal(step, detail, level, source)
+   00276|         }
+   00277|     }
+   00278| }
+   00279| 
+   00280| /// Accumulates the calculator's `calculation:*` trace so it can be rendered as a
+   00281| /// single composite `compute` step (parent) with detailed children (issue #488,
+   00282| /// requirement R11 — recursively composite / fractal steps).
+   00283| #[derive(Default)]
+   00284| struct CalculationCluster {
+   00285|     request: Option<String>,
+   00286|     engine: Option<String>,
+   00287|     expression: Option<String>,
+   00288|     steps: Option<String>,
+   00289|     result: Option<String>,
+   00290| }
+   00291| 
+   00292| impl CalculationCluster {
+   00293|     fn absorb(&mut self, kind: &str, payload: &str) {
+   00294|         let value = payload.trim().to_owned();
+   00295|         match kind {
+   00296|             "calculation" => self.result = Some(value),
+   00297|             "calculation:request" => self.request = Some(value),
+   00298|             "calculation:engine" => self.engine = Some(value),
+   00299|             "calculation:lino" => self.expression = Some(value),
+   00300|             "calculation:steps" => self.steps = Some(value),
+   00301|             // `calculation:rate_basis` and any other detail kinds stay in the raw
+   00302|             // evidence trace but are not surfaced in the curated view.
+   00303|             _ => {}
+   00304|         }
+   00305|     }
+   00306| 
+   00307|     const fn has_data(&self) -> bool {
+   00308|         self.result.is_some()
+   00309|             || self.request.is_some()
+   00310|             || self.engine.is_some()
+   00311|             || self.expression.is_some()
+   00312|             || self.steps.is_some()
+   00313|     }
+   00314| 
+   00315|     fn drain_into(&mut self, plan: &mut Vec<PlannedThinkingStep>) {
+   00316|         let parent_detail = self
+   00317|             .result
+   00318|             .clone()
+   00319|             .or_else(|| self.request.clone())
+   00320|             .unwrap_or_default();
+   00321|         plan.push(PlannedThinkingStep::parent(
+   00322|             "compute",
+   00323|             parent_detail,
+   00324|             "high",
+   00325|             "calculation",
+   00326|         ));
+   00327|         if let Some(engine) = self.engine.take() {
+   00328|             plan.push(PlannedThinkingStep::child(
+   00329|                 "compute_engine",
+   00330|                 engine,
+   00331|                 "detailed",
+   00332|                 "calculation:engine",
+   00333|             ));
+   00334|         }
+   00335|         if let Some(expression) = self.expression.take() {
+   00336|             plan.push(PlannedThinkingStep::child(
+   00337|                 "compute_expression",
+   00338|                 expression,
+   00339|                 "detailed",
+   00340|                 "calculation:lino",
+   00341|             ));
+   00342|         }
+   00343|         if let Some(steps) = self.steps.take() {
+   00344|             plan.push(PlannedThinkingStep::child(
+   00345|                 "compute_steps",
+   00346|                 steps,
+   00347|                 "detailed",
+   00348|                 "calculation:steps",
+   00349|             ));
+   00350|         }
+   00351|         *self = Self::default();
+   00352|     }
+   00353| }
+   00354| 
+   00355| /// Collapse any run of whitespace (including newlines) into single spaces so a
+   00356| /// multi-line answer renders as one concrete `deformalize` detail.
+   00357| fn collapse_thinking_whitespace(value: &str) -> String {
+   00358|     value.split_whitespace().collect::<Vec<_>>().join(" ")
+   00359| }
+   00360| 
+   00361| /// Curate a single raw solver event into a clean, concrete thinking step, or
+   00362| /// `None` when the event is internal bookkeeping that should not surface to the
+   00363| /// user.
+   00364| ///
+   00365| /// This is an **allowlist**: only events that carry meaningful reasoning are
+   00366| /// kept, and each is reduced to concrete content (a search term, a route, a
+   00367| /// looked-up entity, the composed answer). Unknown kinds are dropped so the
+   00368| /// default view stays concrete — the lossless trace remains in the evidence
+   00369| /// links for maintainers.
+   00370| fn curate_thinking_event(
+   00371|     kind: &'static str,
+   00372|     payload: &str,
+   00373|     final_answer: &str,
+   00374| ) -> Option<PlannedThinkingStep> {
+   00375|     let detail = payload.trim();
+   00376|     let keep = |step: &'static str, detail: &str, level: &'static str| {
+   00377|         Some(PlannedThinkingStep::normal(
+   00378|             step,
+   00379|             detail.to_owned(),
+   00380|             level,
+   00381|             kind,
+   00382|         ))
+   00383|     };
+   00384|     match kind {
+   00385|         // ---- Universal-algorithm phases (high level / minimum granularity) ----
+   00386|         "impulse" => keep("impulse", detail, "high"),
+   00387|         "language" | "language_from" => keep("detect_language", detail, "high"),
+   00388|         "language_to" => keep("resolve_response_language", detail, "high"),
+   00389|         "intent_formalization:route" => keep("formalize", detail, "high"),
+   00390|         "intent" | "legacy_intent" => keep("dispatch_handler", detail, "high"),
+   00391|         "program_plan" | "program_parameters" => keep("program_plan", detail, "high"),
+   00392|         "response" => {
+   00393|             let value = if final_answer.is_empty() {
+   00394|                 detail
+   00395|             } else {
+   00396|                 final_answer
+   00397|             };
+   00398|             keep("deformalize", value, "high")
+   00399|         }
+   00400| 
+   00401|         // ---- Concrete detailed reasoning ----
+   00402|         "concept_lookup:request" | "procedural_how_to:request" => {
+   00403|             keep("scan_memory", detail, "detailed")
+   00404|         }
+   00405|         "concept_lookup:hit"
+   00406|         | "fact_query:relation"
+   00407|         | "fact_query:subject"
+   00408|         | "fact_lookup:hit"
+   00409|         // The timeline an answer was computed from is part of the lookup, so it
+   00410|         // shows up in the reasoning trace next to the fact it answered.
+   00411|         | "release_timeline:hit" => keep("lookup_fact", detail, "detailed"),
+   00412|         "web_search:request" | "http_fetch:request" | "url_navigate:request" => {
+   00413|             keep("http_chat", detail, "detailed")
+   00414|         }
+   00415|         "tool_call" | "tool_result" => keep("invoke_tool", detail, "detailed"),
+   00416|         "coreference" | "program_coreference" => keep("coreference_binding", "", "detailed"),
+   00417|         "modifier_detection" | "program_modifiers" => keep("modifier_detection", "", "detailed"),
+   00418|         "rule_construction" => keep("rule_construction", "", "detailed"),
+   00419|         // The validation payload is an internal acceptance reason
+   00420|         // (`accepted_without_extra_constraints`); surface a clean verification
+   00421|         // step without the meta-language token.
+   00422|         "validation" => keep("rule_verification", "", "detailed"),
+   00423|         _ if kind.starts_with("tool_") => keep("invoke_tool", detail, "detailed"),
+   00424|         _ if kind.starts_with("agent_mode") || kind == "action_log" => {
+   00425|             keep("agent_plan", detail, "detailed")
+   00426|         }
+   00427| 
+   00428|         // ---- Everything else: internal bookkeeping, dropped from the view ----
+   00429|         _ => None,
+   00430|     }
+   00431| }
+   00432| 
+   00433| /// Build the evidence links array for a symbolic answer.
+   00434| ///
+   00435| /// Translates each log event into a typed link, appending `response_link` at
+   00436| /// the end when it is not already present.
+   00437| #[must_use]
+   00438| pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -> Vec<String> {
+   00439|     let mut links: Vec<String> = Vec::new();
+   00440|     links.push(format!("prompt:{}", stable_id("prompt", prompt)));
+   00441|     for event in log.events() {
+   00442|         let evidence = match event.kind {
+   00443|             "trace:execution_failure" => format!("trace:execution_failure:{}", event.id),
+   00444|             "language" => format!("language:{}", event.payload),
+   00445|             "language_from" => format!("language_from:{}", event.payload),
+   00446|             "language_to" => format!("language_to:{}", event.payload),
+   00447|             "definition_merge:language" => format!("definition_merge:language:{}", event.payload),
+   00448|             "definition_merge:source_declared" => {
+   00449|                 format!("definition_merge:source_declared:{}", event.payload)
+   00450|             }
+   00451|             "meaning" => format!("meaning:{}", event.payload),
+   00452|             "translation_gap" => format!("translation_gap:{}", event.payload),
+   00453|             "wikidata" => format!("wikidata:{}", event.payload),
+   00454|             "formalization" => format!("formalization:{}", event.id),
+   00455|             "formalization:subject_q" => {
+   00456|                 format!("formalization:subject_q:{}", event.payload)
+   00457|             }
+   00458|             "formalization:predicate_p" => {
+   00459|                 format!("formalization:predicate_p:{}", event.payload)
+   00460|             }
+   00461|             "formalization:object_q" => {
+   00462|                 format!("formalization:object_q:{}", event.payload)
+   00463|             }
+   00464|             "formalization:item_q" => format!("formalization:item_q:{}", event.payload),
+   00465|             "formalization:property_p" => {
+   00466|                 format!("formalization:property_p:{}", event.payload)
+   00467|             }
+   00468|             "formalization:fallback" => {
+   00469|                 format!("formalization:fallback:{}", event.payload)
+   00470|             }
+   00471|             "formalization:raw" => format!("formalization:raw:{}", event.payload),
+   00472|             "formalization_unresolved" => {
+   00473|                 format!("formalization_unresolved:{}", event.payload)
+   00474|             }
+   00475|             // Issue #661 (R384): each accepted interpretation's posterior weight,
+   00476|             // surfaced verbatim (`formalization:<i> weight=<p> <summary>`) so a
+   00477|             // consumer can read every formalized statement as a weighted claim and
+   00478|             // verify the weights sum to 1 across candidates. Trace-only.
+   00479|             "statement_weight" => format!("statement_weight:{}", event.payload),
+   00480|             // Issue #661 (R384): a detected clash between a new formalized
+   00481|             // requirement and a retained one. The id keys back to the event whose
+   00482|             // payload names both statements, the shared subject, and their weights.
+   00483|             "requirement_contradiction" => {
+   00484|                 format!("requirement_contradiction:{}", event.id)
+   00485|             }
+   00486|             "intent_formalization" => format!("intent_formalization:{}", event.id),
+   00487|             "intent_formalization_cache" => {
+   00488|                 format!(
+   00489|                     "intent_formalization_cache:{}",
+   00490|                     event.payload.replace(' ', ":")
+   00491|                 )
+   00492|             }
+   00493|             "intent_formalization:kind" => {
+   00494|                 format!("intent_formalization:kind:{}", event.payload)
+   00495|             }
+   00496|             "intent_formalization:route" => {
+   00497|                 format!("intent_formalization:route:{}", event.payload)
+   00498|             }
+   00499|             "intent_formalization:relevant" => {
+   00500|                 format!("intent_formalization:relevant:{}", event.payload)
+   00501|             }
+   00502|             // Structured fact_query trace events (Issue #127): preserve the
+   00503|             // payload verbatim so memory consumers can render the parsed
+   00504|             // relation, subject, and cache decision (rather than a hash id).
+   00505|             "fact_query:request" => format!("fact_query:request:{}", event.id),
+   00506|             "fact_query:relation" => format!("fact_query:relation:{}", event.payload),
+   00507|             "fact_query:subject" => format!("fact_query:subject:{}", event.payload),
+   00508|             "fact_query:cache:hit" => format!("fact_query:cache:hit:{}", event.payload),
+   00509|             "fact_query:cache:miss" => String::from("fact_query:cache:miss"),
+   00510|             "fact_query:cache:bypass" => String::from("fact_query:cache:bypass"),
+   00511|             "fact_query:force_fresh" => String::from("fact_query:force_fresh"),
+   00512|             "fact_query:subject_qid" => format!("fact_query:subject_qid:{}", event.payload),
+   00513|             "fact_query:value_qid" => format!("fact_query:value_qid:{}", event.payload),
+   00514|             // Structured web_search trace events (Issue #133): record the
+   00515|             // request, the providers considered (DuckDuckGo first, plus
+   00516|             // CORS-readable knowledge bases), per-provider ranks, and the
+   00517|             // combined-ranking strategy so memory consumers can reconstruct
+   00518|             // the multi-engine reasoning offline.
+   00519|             "web_search:request" => format!("web_search:request:{}", event.payload),
+   00520|             "web_search:query_kind" => format!("web_search:query_kind:{}", event.payload),
+   00521|             "web_search:provider" => format!("web_search:provider:{}", event.payload),
+   00522|             "web_search:provider_planned" => {
+   00523|                 format!("web_search:provider_planned:{}", event.payload)
+   00524|             }
+   00525|             "web_search:language" => format!("web_search:language:{}", event.payload),
+   00526|             "web_search:combined" => format!("web_search:combined:{}", event.payload),
+   00527|             "web_search:fusion_planned" => {
+   00528|                 format!("web_search:fusion_planned:{}", event.payload)
+   00529|             }
+   00530|             "web_search:rank" => format!("web_search:rank:{}", event.payload),
+   00531|             "web_search:fused" => format!("web_search:fused:{}", event.payload),
+   00532|             "web_search:disabled" => format!("web_search:disabled:{}", event.payload),
+   00533|             "document_originality_check:request" => {
+   00534|                 format!("document_originality_check:request:{}", event.payload)
+   00535|             }
+   00536|             "document_originality_check:attachment" => {
+   00537|                 format!("document_originality_check:attachment:{}", event.payload)
+   00538|             }
+   00539|             "document_originality_check:text_sample" => {
+   00540|                 format!("document_originality_check:text_sample:{}", event.payload)
+   00541|             }
+   00542|             // Relative-meta-logic statement probability trace (issue #535):
+   00543|             // preserve the assumed-true prior, the trusted-source tier weights,
+   00544|             // and the ignored (unoriginal) tier verbatim so consumers can
+   00545|             // reconstruct how each statement's probability would move.
+   00546|             "relative_meta_logic:assumed_prior" => {
+   00547|                 format!("relative_meta_logic:assumed_prior:{}", event.payload)
+   00548|             }
+   00549|             "relative_meta_logic:trusted_source_tier" => {
+   00550|                 format!("relative_meta_logic:trusted_source_tier:{}", event.payload)
+   00551|             }
+   00552|             "relative_meta_logic:ignored_source_tier" => {
+   00553|                 format!("relative_meta_logic:ignored_source_tier:{}", event.payload)
+   00554|             }
+   00555|             // Per-statement web-search grounding plan (issue #535): each
+   00556|             // extracted statement, its grounding query, and its assessment.
+   00557|             "statement_verification:statement_count" => {
+   00558|                 format!("statement_verification:statement_count:{}", event.payload)
+   00559|             }
+   00560|             "statement_verification:statement" => {
+   00561|                 format!("statement_verification:statement:{}", event.payload)
+   00562|             }
+   00563|             "statement_verification:query" => {
+   00564|                 format!("statement_verification:query:{}", event.payload)
+   00565|             }
+   00566|             "statement_verification:assessment" => {
+   00567|                 format!("statement_verification:assessment:{}", event.payload)
+   00568|             }
+   00569|             "market_price_claim:claim_count" => {
+   00570|                 format!("market_price_claim:claim_count:{}", event.payload)
+   00571|             }
+   00572|             "market_price_claim:claim" => {
+   00573|                 format!("market_price_claim:claim:{}", event.payload)
+   00574|             }
+   00575|             "market_price_claim:asset" => {
+   00576|                 format!("market_price_claim:asset:{}", event.payload)
+   00577|             }
+   00578|             "market_price_claim:period" => {
+   00579|                 format!("market_price_claim:period:{}", event.payload)
+   00580|             }
+   00581|             "market_price_claim:claimed_price" => {
+   00582|                 format!("market_price_claim:claimed_price:{}", event.payload)
+   00583|             }
+   00584|             "market_price_claim:source" => {
+   00585|                 format!("market_price_claim:source:{}", event.payload)
+   00586|             }
+   00587|             "market_price_claim:range" => {
+   00588|                 format!("market_price_claim:range:{}", event.payload)
+   00589|             }
+   00590|             "market_price_claim:assessment" => {
+   00591|                 format!("market_price_claim:assessment:{}", event.payload)
+   00592|             }
+   00593|             "read_local_file:request" => format!("read_local_file:request:{}", event.payload),
+   00594|             "http_fetch:request" => format!("http_fetch:request:{}", event.payload),
+   00595|             "docs_method:request" => format!("docs_method:request:{}", event.id),
+   00596|             "docs_method:project" => format!("docs_method:project:{}", event.payload),
+   00597|             "docs_method:method" => format!("docs_method:method:{}", event.payload),
+   00598|             "docs_method:source_kind" => {
+   00599|                 format!("docs_method:source_kind:{}", event.payload)
+   00600|             }
+   00601|             "docs_method:source" | "source" | "release_timeline:source" => {
+   00602|                 format!("source:{}", event.payload)
+   00603|             }
+   00604|             // Release-timeline provenance (Issue #892): the snapshot an answer
+   00605|             // was computed from travels with it, so a reader can tell how
+   00606|             // current the list is and re-derive it from the same bytes.
+   00607|             "release_timeline:hit" => format!("release_timeline:{}", event.payload),
+   00608|             "release_timeline:snapshot" => {
+   00609|                 format!("release_timeline:snapshot:{}", event.payload)
+   00610|             }
+   00611|             "release_timeline:sha256" => format!("release_timeline:sha256:{}", event.payload),
+   00612|             "release_timeline:released" => {
+   00613|                 format!("release_timeline:released:{}", event.payload)
+   00614|             }
+   00615|             "release_timeline:announced" => {
+   00616|                 format!("release_timeline:announced:{}", event.payload)
+   00617|             }
+   00618|             "release_timeline:stale" => format!("release_timeline:stale:{}", event.payload),
+   00619|             "project:promoted" => format!("project:promoted:{}", event.payload),
+   00620|             "project_lookup:promotion" => {
+   00621|                 format!("project_lookup:promotion:{}", event.payload)
+   00622|             }
+   00623|             "project_lookup:repository:github" => {
+   00624|                 format!("project_lookup:repository:github:{}", event.payload)
+   00625|             }
+   00626|             "project_lookup:repository:gitlab" => {
+   00627|                 format!("project_lookup:repository:gitlab:{}", event.payload)
+   00628|             }
+   00629|             "project_lookup:repository:bitbucket" => {
+   00630|                 format!("project_lookup:repository:bitbucket:{}", event.payload)
+   00631|             }
+   00632|             "url_navigate:request" => format!("url_navigate:request:{}", event.payload),
+   00633|             "url_preview:iframe" => format!("url_preview:iframe:{}", event.payload),
+   00634|             "tool_call" => format!("tool_call:{}", event.payload),
+   00635|             "tool_parameter" => format!("tool_parameter:{}", event.payload.replace(' ', ":")),
+   00636|             "tool_result" => format!("tool_result:{}", event.payload.replace(' ', ":")),
+   00637|             "tool_permission" => {
+   00638|                 format!("tool_permission:{}", event.payload.replace(' ', ":"))
+   00639|             }
+   00640|             "text_operation" => format!("text_operation:{}", event.payload),
+   00641|             "text_rule" => format!("text_rule:{}", event.payload),
+   00642|             "text_rule_chain" => format!("text_rule_chain:{}", event.payload),
+   00643|             "text_result" => format!("text_result:{}", event.id),
+   00644|             "text_substitution_rules" => format!("text_substitution_rules:{}", event.id),
+   00645|             "text_substitution_trace" => format!("text_substitution_trace:{}", event.id),
+   00646|             "text_substitution_graph" => format!("text_substitution_graph:{}", event.id),
+   00647|             "procedural_how_to:request" => {
+   00648|                 format!("procedural_how_to:request:{}", event.payload)
+   00649|             }
+   00650|             "procedural_how_to:action" => {
+   00651|                 format!("procedural_how_to:action:{}", event.payload)
+   00652|             }
+   00653|             "procedural_how_to:object" => {
+   00654|                 format!("procedural_how_to:object:{}", event.payload)
+   00655|             }
+   00656|             "procedural_how_to:stage" => {
+   00657|                 format!("procedural_how_to:stage:{}", event.payload)
+   00658|             }
+   00659|             "procedural_how_to:wikihow_candidate" => {
+   00660|                 format!("procedural_how_to:wikihow_candidate:{}", event.payload)
+   00661|             }
+   00662|             "procedural_how_to:source_gate" => {
+   00663|                 format!("procedural_how_to:source_gate:{}", event.payload)
+   00664|             }
+   00665|             "spelling_correction" => {
+   00666|                 format!("spelling_correction:{}", event.payload.replace(' ', ""))
+   00667|             }
+   00668|             "concept_lookup:request" => format!("concept_lookup:request:{}", event.payload),
+   00669|             "concept_lookup:context" => format!("concept_lookup:context:{}", event.payload),
+   00670|             "concept_lookup:response-language" => {
+   00671|                 format!("concept_lookup:response-language:{}", event.payload)
+   00672|             }
+   00673|             "concept_lookup:hit" => format!("concept_lookup:hit:{}", event.payload),
+   00674|             "concept_lookup:miss" => format!("concept_lookup:miss:{}", event.payload),
+   00675|             "concept_lookup:context-match" => {
+   00676|                 format!("concept_lookup:context-match:{}", event.payload)
+   00677|             }
+   00678|             "concept_lookup:context-mismatch" => {
+   00679|                 format!("concept_lookup:context-mismatch:{}", event.payload)
+   00680|             }
+   00681|             "followup:subject" => format!("followup:subject:{}", event.payload),
+   00682|             // The seeded status slug the research follow-up classified, as the
+   00683|             // browser worker surfaces it (`research_result_followup:status:<slug>`).
+   00684|             "research_result_followup:status" => {
+   00685|                 format!("research_result_followup:status:{}", event.payload)
+   00686|             }
+   00687|             "mechanism_query:request" => {
+   00688|                 format!("mechanism_query:request:{}", event.payload)
+   00689|             }
+   00690|             "mechanism_query:stage" => format!("mechanism_query:stage:{}", event.payload),
+   00691|             "mechanism_query:source_gate" => {
+   00692|                 format!("mechanism_query:source_gate:{}", event.payload)
+   00693|             }
+   00694|             "search:local" => format!("search:local:{}", event.id),
+   00695|             "search:external" if event.payload == "skipped:offline" => {
+   00696|                 String::from("policy:offline")
+   00697|             }
+   00698|             "search:external" => format!("search:external:{}", event.id),
+   00699|             "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
+   00700|             "source_refresh" => format!("source_refresh:{}", event.payload),
+   00701|             "skill_compile:package" => format!("skill_compile:package:{}", event.payload),
+   00702|             "skill_compile:procedure" => format!("skill_compile:procedure:{}", event.payload),
+   00703|             "skill_compile:procedure_artifact" => {
+   00704|                 format!("skill_compile:procedure_artifact:{}", event.id)
+   00705|             }
+   00706|             "skill_compile:procedure_step" => format!(
+   00707|                 "skill_compile:procedure_step:{}",
+   00708|                 event.payload.replace(' ', ":")
+   00709|             ),
+   00710|             // Issue #674: the named gap is the evidence, so it travels in the link
+   00711|             // rather than being reduced to an opaque event id.
+   00712|             "skill_gap" => format!("skill_gap:{}", event.payload.replace(' ', "_")),
+   00713|             "program_gap" => format!("program_gap:{}", event.payload.replace(' ', "_")),
+   00714|             // Verifiable-task observations are themselves the evidence. Keep
+   00715|             // the check slug, executed value and gap/research detail readable;
+   00716|             // replacing them with the event digest makes it impossible for a
+   00717|             // consumer to tell which verification actually passed.
+   00718|             "verifiable_task:check"
+   00719|             | "verifiable_task:executed"
+   00720|             | "verifiable_task:gap"
+   00721|             | "verifiable_task:searched"
+   00722|             | "verifiable_task:uncorroborated"
+   00723|             | "verifiable_task:membership_source" => {
+   00724|                 format!("{}:{}", event.kind, event.payload)
+   00725|             }
+   00726|             "memory_program_compiled" => format!("memory_program_compiled:{}", event.id),
+   00727|             "memory_program_execution" => format!("memory_program_execution:{}", event.id),
+   00728|             "skill_learning_proposal" => {
+   00729|                 format!("skill_learning_proposal:{}", event.payload)
+   00730|             }
+   00731|             "skill_learning_proposal:artifact" => {
+   00732|                 format!("skill_learning_proposal:artifact:{}", event.id)
+   00733|             }
+   00734|             "compiled_skill:package" => format!("compiled_skill:package:{}", event.id),
+   00735|             "compiled_skill:replay" => format!("compiled_skill:replay:{}", event.payload),
+   00736|             "conflict:source_disagreement" => {
+   00737|                 format!("conflict:source_disagreement:{}", event.id)
+   00738|             }
+   00739|             "cache_hit" => format!("cache_hit:{}", event.payload),
+   00740|             "network_fetch" => format!("network_fetch:{}", event.id),
+   00741|             "calculation:engine" => format!("calculation:engine:{}", event.payload),
+   00742|             "calculation:lino" => format!("calculation:lino:{}", event.payload),
+   00743|             "method:learned:operations_verified" => {
+   00744|                 format!("method:learned:operations_verified:{}", event.payload)
+   00745|             }
+   00746|             "calendar:today" => format!("calendar:today:{}", event.payload),
+   00747|             "calendar:weekday" => format!("calendar:weekday:{}", event.payload),
+   00748|             "intent" => format!("intent:{}", event.payload),
+   00749|             "program_parameter:language" => {
+   00750|                 format!("program_parameter:language:{}", event.payload)
+   00751|             }
+   00752|             "program_parameter:task" => format!("program_parameter:task:{}", event.payload),
+   00753|             "program_parameters" => {
+   00754|                 format!(
+   00755|                     "program_parameters:{}",
+   00756|                     event.payload.replace([' ', ','], ":")
+   00757|                 )
+   00758|             }
+   00759|             "legacy_intent" => format!("legacy_intent:{}", event.payload),
+   00760|             "response" => event.payload.clone(),
+   00761|             "agent_mode:opted_in" => format!("agent_mode:opted_in:{}", event.id),
+   00762|             "agent_mode:active" => format!("agent_mode:active:{}", event.id),
+   00763|             "policy:chat_bounded_autonomy" => String::from("policy:chat_bounded_autonomy"),
+   00764|             "policy:add_only_history" => String::from("policy:add_only_history"),
+   00765|             "policy:destructive_action_requires_confirmation" => {
+   00766|                 String::from("policy:destructive_action_requires_confirmation")
+   00767|             }
+   00768|             "policy:agent_time_budget" => format!("policy:agent_time_budget:{}", event.id),
+   00769|             "policy:cache_flush_requires_confirmation" => {
+   00770|                 String::from("policy:cache_flush_requires_confirmation")
+   00771|             }
+   00772|             "policy:offline" => String::from("policy:offline"),
+   00773|             "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
+   00774|             "policy:agent_mode_required_for_tools" => {
+   00775|                 format!("policy:agent_mode_required_for_tools:{}", event.payload)
+   00776|             }
+   00777|             "policy:package_permission_required" => {
+   00778|                 format!("policy:package_permission_required:{}", event.payload)
+   00779|             }
+   00780|             "policy:temperature_selection" => {
+   00781|                 format!("policy:temperature_selection:{}", event.id)
+   00782|             }
+   00783|             "policy:guessed_under_ambiguity" => String::from("policy:guessed_under_ambiguity"),
+   00784|             "policy:clarify_under_ambiguity" => String::from("policy:clarify_under_ambiguity"),
+   00785|             "probability:evidence" => format!("probability:evidence:{}", event.id),
+   00786|             "probability:model" => format!("probability:model:{}", event.payload),
+   00787|             "probability:ranking" => format!("probability:ranking:{}", event.id),
+   00788|             "error" => format!("error:{}", event.id),
+   00789|             "filter:user" => format!("filter:user:{}", event.payload),
+   00790|             "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),
+   00791|             "execution_status" => format!("execution_status:{}", event.id),
+   00792|             "execution_environment" => format!("execution_environment:{}", event.id),
+   00793|             _ => format!("{}:{}", event.kind, event.id),
+   00794|         };
+   00795|         links.push(evidence);
+   00796|     }
+   00797|     if !links.iter().any(|link| link == response_link) {
+   00798|         links.push(response_link.to_owned());
+   00799|     }
+   00800|     links
+   00801| }
+   00802| 
+   00803| /// The evidence links of a recorded log: [`build_evidence_links`] with the
+   00804| ///
+   00805| /// The prompt is read from the log's `impulse` event and the response link from its
+   00806| /// last `response` event (`response:<intent>` when none was logged). `None`
+   00807| /// when the log holds no impulse.
+   00808| ///
+   00809| /// The browser worker and the JavaScript server project the native log they
+   00810| /// record through the twin, `eventLogEvidenceLinks` in
+   00811| /// `js/agentic/crate/event_log.mjs` (R1188-U29).
+   00812| #[must_use]
+   00813| pub fn event_log_evidence_links(log: &EventLog, intent: &str) -> Option<Vec<String>> {
+   00814|     let impulse = log.first_of("impulse")?;
+   00815|     let response_link = log.last_of("response").map_or_else(
+   00816|         || format!("response:{intent}"),
+   00817|         |event| event.payload.clone(),
+   00818|     );
+   00819|     Some(build_evidence_links(&impulse.payload, log, &response_link))
+   00820| }
+   00821| 
+   00822| fn sanitize_payload(value: &str) -> String {
+   00823|     value
+   00824|         .replace('\r', "\\r")
+   00825|         .replace('\n', "\\n")
+   00826|         .replace('\t', "\\t")
+   00827| }
+   00828| 
+   
+   (End of file - total 828 lines)
+   </file>
+== answer ==
+Contents of `rust/src/event_log.rs`:
+
+```text
+//! Append-only event log for the universal solver.
+//!
+//! Every step the solver takes is recorded as a content-addressed event
+//! before the user-facing answer is built. The answer is then a projection
+//! of the log — see `VISION.md` and `GOALS.md` for the rationale.
+//!
+//! The log is intentionally small: it lives in-process, holds plain Rust
+//! records, and uses the same FNV-1a 64-bit hash that `engine::stable_id`
+//! uses so identifiers stay stable across surfaces.
+
+use crate::engine::{ThinkingStep, stable_id};
+use crate::link_store::{LinkStore, LinkStoreError};
+use crate::memory::MemoryEvent;
+
+/// A single event in the append-only log.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Event {
+    pub id: String,
+    pub kind: &'static str,
+    pub payload: String,
+}
+
+/// In-process append-only event log.
+#[derive(Debug, Default, Clone)]
+pub struct EventLog {
+    events: Vec<Event>,
+}
+
+impl EventLog {
+    #[must_use]
+    pub const fn new() -> Self {
+        Self { events: Vec::new() }
+    }
+
+    /// Append a new event with content-addressed id.
+    ///
+    /// The id is derived from the kind, the payload, and the current log
+    /// length so that repeated events produce stable, distinct ids.
+    pub fn append(&mut self, kind: &'static str, payload: impl Into<String>) -> String {
+        let payload = payload.into();
+        let seed = format!("{kind}:{}:{payload}", self.events.len());
+        let id = stable_id(kind, &seed);
+        self.events.push(Event {
+            id: id.clone(),
+            kind,
+            payload,
+        });
+        id
+    }
+
+    /// Append a machine-addressable payload without hand-building a textual
+    /// key/value record at every call site.
+    pub fn append_fields(&mut self, kind: &'static str, fields: &[(&str, &str)]) -> String {
+        let payload = render_fields(fields);
+        self.append(kind, payload)
+    }
+
+    #[must_use]
+    pub fn events(&self) -> &[Event] {
+        &self.events
+    }
+
+    /// Returns the first event of the given kind, if any.
+    #[must_use]
+    pub fn first_of(&self, kind: &str) -> Option<&Event> {
+        self.events.iter().find(|event| event.kind == kind)
+    }
+
+    /// Returns the most recent event of the given kind, if any.
+    #[must_use]
+    pub fn last_of(&self, kind: &str) -> Option<&Event> {
+        self.events.iter().rev().find(|event| event.kind == kind)
+    }
+
+    /// Project the log to a list of `<kind>:<id>` links for the user-facing
+    /// evidence array. Each link points back to a distinct event.
+    #[must_use]
+    pub fn evidence_links(&self) -> Vec<String> {
+        self.events
+            .iter()
+            .map(|event| format!("{}:{}", event.kind, event.id))
+            .collect()
+    }
+
+    /// Build a Links Notation `steps` block listing every event in order.
+    /// Used by trace serialization in [`crate::solver`].
+    #[must_use]
+    pub fn steps_block(&self) -> String {
+        use std::fmt::Write as _;
+        let mut buffer = String::from("steps:");
+        for (index, event) in self.events.iter().enumerate() {
+            let _ = write!(
+                buffer,
+                "\n  step_{index} {} {}",
+                event.kind,
+                sanitize_payload(&event.payload)
+            );
+        }
+        buffer
+    }
+
+    /// Project raw solver events into user-readable, ordered thinking steps.
+    ///
+    /// This is the *curated* projection introduced for issue #488. Instead of a
+    /// noisy 1:1 dump of every internal event, it keeps only the meaningful
+    /// reasoning milestones, cleans each `detail` down to concrete content,
+    /// folds the calculator's reduction trace into one composite `compute` step
+    /// with detailed children, de-duplicates consecutive repeats, and labels the
+    /// universal-algorithm phases `high` so the minimum granularity surfaces only
+    /// the high-level direction.
+    ///
+    /// The raw, lossless trace stays available to maintainers through
+    /// [`EventLog::steps_block`] and [`EventLog::evidence_links`].
+    #[must_use]
+    pub fn thinking_steps(&self) -> Vec<ThinkingStep> {
+        self.thinking_steps_for_answer("")
+    }
+
+    /// Like [`EventLog::thinking_steps`], but substitutes the actual composed
+    /// answer for the opaque `response:<route>` payload of the closing
+    /// `deformalize` step so the final reasoning step is concrete (issue #488).
+    #[must_use]
+    pub fn thinking_steps_for_answer(&self, final_answer: &str) -> Vec<ThinkingStep> {
+        let answer = collapse_thinking_whitespace(final_answer);
+
+        // Phase 1 — curate raw events into a clean plan, folding the
+        // calculator's reduction trace into one composite parent + children.
+        let mut plan: Vec<PlannedThinkingStep> = Vec::new();
+        let mut calculation = CalculationCluster::default();
+        for event in &self.events {
+            if event.kind == "calculation" || event.kind.starts_with("calculation:") {
+                calculation.absorb(event.kind, &event.payload);
+                continue;
+            }
+            if calculation.has_data() {
+                calculation.drain_into(&mut plan);
+            }
+            if let Some(step) = curate_thinking_event(event.kind, &event.payload, &answer) {
+                plan.push(step);
+            }
+        }
+        if calculation.has_data() {
+            calculation.drain_into(&mut plan);
+        }
+
+        // Phase 2 — de-duplicate consecutive repeats, assign order and parent
+        // ids (so composite steps render as recursively nested thinking).
+        let mut steps: Vec<ThinkingStep> = Vec::new();
+        let mut order: u32 = 0;
+        let mut previous_key: Option<String> = None;
+        let mut current_parent: Option<String> = None;
+        for planned in plan {
+            let key = format!("{}\u{1f}{}", planned.step, planned.detail);
+            let is_child = planned.role == StepRole::Child;
+            if !is_child && previous_key.as_deref() == Some(key.as_str()) {
+                continue;
+            }
+            previous_key = Some(key);
+            let mut step = ThinkingStep::new(
+                order,
+                planned.step,
+                planned.detail,
+                planned.level,
+                planned.source,
+            );
+            match planned.role {
+                StepRole::Parent => current_parent = Some(step.id.clone()),
+                StepRole::Child => {
+                    if let Some(parent) = current_parent.clone() {
+                        step = step.with_parent(parent);
+                    }
+                }
+                StepRole::Normal => current_parent = None,
+            }
+            steps.push(step);
+            order += 1;
+        }
+
+        // Phase 3 — narrate the finished trace in the language of the answer
+        // (issue #889). A single step cannot know that language while the trace
+        // is still being built, because the language is itself one of the steps.
+        let language = crate::thinking::thinking_answer_language(&steps);
+        crate::thinking::localize_thinking_steps(&mut steps, &language);
+        steps
+    }
+
+    /// Replay every in-process event into a durable link store projection.
+    ///
+    /// This is additive: the original event log remains in-process, while
+    /// the target store receives memory records that can be exported as
+    /// `.lino` or reduced to doublets by the active backend.
+    pub fn append_to_link_store<S: LinkStore>(
+        &self,
+        store: &mut S,
+    ) -> Result<usize, LinkStoreError> {
+        for event in &self.events {
+            store.append_memory_event(MemoryEvent {
+                id: event.id.clone(),
+                kind: Some(event.kind.to_owned()),
+                content: Some(event.payload.clone()),
+                evidence: vec![format!("{}:{}", event.kind, event.id)],
+                ..MemoryEvent::default()
+            })?;
+        }
+        Ok(self.events.len())
+    }
+}
+
+/// Render the canonical compact form used by structured event payloads.
+#[must_use]
+pub fn render_fields(fields: &[(&str, &str)]) -> String {
+    fields
+        .iter()
+        .map(|(name, value)| format!("{name}={value}"))
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+/// Role of a planned step in a recursively-composite (fractal) thinking tree.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum StepRole {
+    /// A leaf step at the top level.
+    Normal,
+    /// A composite step that owns the following [`StepRole::Child`] steps.
+    Parent,
+    /// A sub-step nested under the most recent [`StepRole::Parent`].
+    Child,
+}
+
+/// A curated thinking step before ordering, de-duplication and id assignment.
+struct PlannedThinkingStep {
+    step: &'static str,
+    detail: String,
+    level: &'static str,
+    source: &'static str,
+    role: StepRole,
+}
+
+impl PlannedThinkingStep {
+    fn normal(
+        step: &'static str,
+        detail: impl Into<String>,
+        level: &'static str,
+        source: &'static str,
+    ) -> Self {
+        Self {
+            step,
+            detail: detail.into(),
+            level,
+            source,
+            role: StepRole::Normal,
+        }
+    }
+
+    fn parent(
+        step: &'static str,
+        detail: impl Into<String>,
+        level: &'static str,
+        source: &'static str,
+    ) -> Self {
+        Self {
+            role: StepRole::Parent,
+            ..Self::normal(step, detail, level, source)
+        }
+    }
+
+    fn child(
+        step: &'static str,
+        detail: impl Into<String>,
+        level: &'static str,
+        source: &'static str,
+    ) -> Self {
+        Self {
+            role: StepRole::Child,
+            ..Self::normal(step, detail, level, source)
+        }
+    }
+}
+
+/// Accumulates the calculator's `calculation:*` trace so it can be rendered as a
+/// single composite `compute` step (parent) with detailed children (issue #488,
+/// requirement R11 — recursively composite / fractal steps).
+#[derive(Default)]
+struct CalculationCluster {
+    request: Option<String>,
+    engine: Option<String>,
+    expression: Option<String>,
+    steps: Option<String>,
+    result: Option<String>,
+}
+
+impl CalculationCluster {
+    fn absorb(&mut self, kind: &str, payload: &str) {
+        let value = payload.trim().to_owned();
+        match kind {
+            "calculation" => self.result = Some(value),
+            "calculation:request" => self.request = Some(value),
+            "calculation:engine" => self.engine = Some(value),
+            "calculation:lino" => self.expression = Some(value),
+            "calculation:steps" => self.steps = Some(value),
+            // `calculation:rate_basis` and any other detail kinds stay in the raw
+            // evidence trace but are not surfaced in the curated view.
+            _ => {}
+        }
+    }
+
+    const fn has_data(&self) -> bool {
+        self.result.is_some()
+            || self.request.is_some()
+            || self.engine.is_some()
+            || self.expression.is_some()
+            || self.steps.is_some()
+    }
+
+    fn drain_into(&mut self, plan: &mut Vec<PlannedThinkingStep>) {
+        let parent_detail = self
+            .result
+            .clone()
+            .or_else(|| self.request.clone())
+            .unwrap_or_default();
+        plan.push(PlannedThinkingStep::parent(
+            "compute",
+            parent_detail,
+            "high",
+            "calculation",
+        ));
+        if let Some(engine) = self.engine.take() {
+            plan.push(PlannedThinkingStep::child(
+                "compute_engine",
+                engine,
+                "detailed",
+                "calculation:engine",
+            ));
+        }
+        if let Some(expression) = self.expression.take() {
+            plan.push(PlannedThinkingStep::child(
+                "compute_expression",
+                expression,
+                "detailed",
+                "calculation:lino",
+            ));
+        }
+        if let Some(steps) = self.steps.take() {
+            plan.push(PlannedThinkingStep::child(
+                "compute_steps",
+                steps,
+                "detailed",
+                "calculation:steps",
+            ));
+        }
+        *self = Self::default();
+    }
+}
+
+/// Collapse any run of whitespace (including newlines) into single spaces so a
+/// multi-line answer renders as one concrete `deformalize` detail.
+fn collapse_thinking_whitespace(value: &str) -> String {
+    value.split_whitespace().collect::<Vec<_>>().join(" ")
+}
+
+/// Curate a single raw solver event into a clean, concrete thinking step, or
+/// `None` when the event is internal bookkeeping that should not surface to the
+/// user.
+///
+/// This is an **allowlist**: only events that carry meaningful reasoning are
+/// kept, and each is reduced to concrete content (a search term, a route, a
+/// looked-up entity, the composed answer). Unknown kinds are dropped so the
+/// default view stays concrete — the lossless trace remains in the evidence
+/// links for maintainers.
+fn curate_thinking_event(
+    kind: &'static str,
+    payload: &str,
+    final_answer: &str,
+) -> Option<PlannedThinkingStep> {
+    let detail = payload.trim();
+    let keep = |step: &'static str, detail: &str, level: &'static str| {
+        Some(PlannedThinkingStep::normal(
+            step,
+            detail.to_owned(),
+            level,
+            kind,
+        ))
+    };
+    match kind {
+        // ---- Universal-algorithm phases (high level / minimum granularity) ----
+        "impulse" => keep("impulse", detail, "high"),
+        "language" | "language_from" => keep("detect_language", detail, "high"),
+        "language_to" => keep("resolve_response_language", detail, "high"),
+        "intent_formalization:route" => keep("formalize", detail, "high"),
+        "intent" | "legacy_intent" => keep("dispatch_handler", detail, "high"),
+        "program_plan" | "program_parameters" => keep("program_plan", detail, "high"),
+        "response" => {
+            let value = if final_answer.is_empty() {
+                detail
+            } else {
+                final_answer
+            };
+            keep("deformalize", value, "high")
+        }
+
+        // ---- Concrete detailed reasoning ----
+        "concept_lookup:request" | "procedural_how_to:request" => {
+            keep("scan_memory", detail, "detailed")
+        }
+        "concept_lookup:hit"
+        | "fact_query:relation"
+        | "fact_query:subject"
+        | "fact_lookup:hit"
+        // The timeline an answer was computed from is part of the lookup, so it
+        // shows up in the reasoning trace next to the fact it answered.
+        | "release_timeline:hit" => keep("lookup_fact", detail, "detailed"),
+        "web_search:request" | "http_fetch:request" | "url_navigate:request" => {
+            keep("http_chat", detail, "detailed")
+        }
+        "tool_call" | "tool_result" => keep("invoke_tool", detail, "detailed"),
+        "coreference" | "program_coreference" => keep("coreference_binding", "", "detailed"),
+        "modifier_detection" | "program_modifiers" => keep("modifier_detection", "", "detailed"),
+        "rule_construction" => keep("rule_construction", "", "detailed"),
+        // The validation payload is an internal acceptance reason
+        // (`accepted_without_extra_constraints`); surface a clean verification
+        // step without the meta-language token.
+        "validation" => keep("rule_verification", "", "detailed"),
+        _ if kind.starts_with("tool_") => keep("invoke_tool", detail, "detailed"),
+        _ if kind.starts_with("agent_mode") || kind == "action_log" => {
+            keep("agent_plan", detail, "detailed")
+        }
+
+        // ---- Everything else: internal bookkeeping, dropped from the view ----
+        _ => None,
+    }
+}
+
+/// Build the evidence links array for a symbolic answer.
+///
+/// Translates each log event into a typed link, appending `response_link` at
+/// the end when it is not already present.
+#[must_use]
+pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -> Vec<String> {
+    let mut links: Vec<String> = Vec::new();
+    links.push(format!("prompt:{}", stable_id("prompt", prompt)));
+    for event in log.events() {
+        let evidence = match event.kind {
+            "trace:execution_failure" => format!("trace:execution_failure:{}", event.id),
+            "language" => format!("language:{}", event.payload),
+            "language_from" => format!("language_from:{}", event.payload),
+            "language_to" => format!("language_to:{}", event.payload),
+            "definition_merge:language" => format!("definition_merge:language:{}", event.payload),
+            "definition_merge:source_declared" => {
+                format!("definition_merge:source_declared:{}", event.payload)
+            }
+            "meaning" => format!("meaning:{}", event.payload),
+            "translation_gap" => format!("translation_gap:{}", event.payload),
+            "wikidata" => format!("wikidata:{}", event.payload),
+            "formalization" => format!("formalization:{}", event.id),
+            "formalization:subject_q" => {
+                format!("formalization:subject_q:{}", event.payload)
+            }
+            "formalization:predicate_p" => {
+                format!("formalization:predicate_p:{}", event.payload)
+            }
+            "formalization:object_q" => {
+                format!("formalization:object_q:{}", event.payload)
+            }
+            "formalization:item_q" => format!("formalization:item_q:{}", event.payload),
+            "formalization:property_p" => {
+                format!("formalization:property_p:{}", event.payload)
+            }
+            "formalization:fallback" => {
+                format!("formalization:fallback:{}", event.payload)
+            }
+            "formalization:raw" => format!("formalization:raw:{}", event.payload),
+            "formalization_unresolved" => {
+                format!("formalization_unresolved:{}", event.payload)
+            }
+            // Issue #661 (R384): each accepted interpretation's posterior weight,
+            // surfaced verbatim (`formalization:<i> weight=<p> <summary>`) so a
+            // consumer can read every formalized statement as a weighted claim and
+            // verify the weights sum to 1 across candidates. Trace-only.
+            "statement_weight" => format!("statement_weight:{}", event.payload),
+            // Issue #661 (R384): a detected clash between a new formalized
+            // requirement and a retained one. The id keys back to the event whose
+            // payload names both statements, the shared subject, and their weights.
+            "requirement_contradiction" => {
+                format!("requirement_contradiction:{}", event.id)
+            }
+            "intent_formalization" => format!("intent_formalization:{}", event.id),
+            "intent_formalization_cache" => {
+                format!(
+                    "intent_formalization_cache:{}",
+                    event.payload.replace(' ', ":")
+                )
+            }
+            "intent_formalization:kind" => {
+                format!("intent_formalization:kind:{}", event.payload)
+            }
+            "intent_formalization:route" => {
+                format!("intent_formalization:route:{}", event.payload)
+            }
+            "intent_formalization:relevant" => {
+                format!("intent_formalization:relevant:{}", event.payload)
+            }
+            // Structured fact_query trace events (Issue #127): preserve the
+            // payload verbatim so memory consumers can render the parsed
+            // relation, subject, and cache decision (rather than a hash id).
+            "fact_query:request" => format!("fact_query:request:{}", event.id),
+            "fact_query:relation" => format!("fact_query:relation:{}", event.payload),
+            "fact_query:subject" => format!("fact_query:subject:{}", event.payload),
+            "fact_query:cache:hit" => format!("fact_query:cache:hit:{}", event.payload),
+            "fact_query:cache:miss" => String::from("fact_query:cache:miss"),
+            "fact_query:cache:bypass" => String::from("fact_query:cache:bypass"),
+            "fact_query:force_fresh" => String::from("fact_query:force_fresh"),
+            "fact_query:subject_qid" => format!("fact_query:subject_qid:{}", event.payload),
+            "fact_query:value_qid" => format!("fact_query:value_qid:{}", event.payload),
+            // Structured web_search trace events (Issue #133): record the
+            // request, the providers considered (DuckDuckGo first, plus
+            // CORS-readable knowledge bases), per-provider ranks, and the
+            // combined-ranking strategy so memory consumers can reconstruct
+            // the multi-engine reasoning offline.
+            "web_search:request" => format!("web_search:request:{}", event.payload),
+            "web_search:query_kind" => format!("web_search:query_kind:{}", event.payload),
+            "web_search:provider" => format!("web_search:provider:{}", event.payload),
+            "web_search:provider_planned" => {
+                format!("web_search:provider_planned:{}", event.payload)
+            }
+            "web_search:language" => format!("web_search:language:{}", event.payload),
+            "web_search:combined" => format!("web_search:combined:{}", event.payload),
+            "web_search:fusion_planned" => {
+                format!("web_search:fusion_planned:{}", event.payload)
+            }
+            "web_search:rank" => format!("web_search:rank:{}", event.payload),
+            "web_search:fused" => format!("web_search:fused:{}", event.payload),
+            "web_search:disabled" => format!("web_search:disabled:{}", event.payload),
+            "document_originality_check:request" => {
+                format!("document_originality_check:request:{}", event.payload)
+            }
+            "document_originality_check:attachment" => {
+                format!("document_originality_check:attachment:{}", event.payload)
+            }
+            "document_originality_check:text_sample" => {
+                format!("document_originality_check:text_sample:{}", event.payload)
+            }
+            // Relative-meta-logic statement probability trace (issue #535):
+            // preserve the assumed-true prior, the trusted-source tier weights,
+            // and the ignored (unoriginal) tier verbatim so consumers can
+            // reconstruct how each statement's probability would move.
+            "relative_meta_logic:assumed_prior" => {
+                format!("relative_meta_logic:assumed_prior:{}", event.payload)
+            }
+            "relative_meta_logic:trusted_source_tier" => {
+                format!("relative_meta_logic:trusted_source_tier:{}", event.payload)
+            }
+            "relative_meta_logic:ignored_source_tier" => {
+                format!("relative_meta_logic:ignored_source_tier:{}", event.payload)
+            }
+            // Per-statement web-search grounding plan (issue #535): each
+            // extracted statement, its grounding query, and its assessment.
+            "statement_verification:statement_count" => {
+                format!("statement_verification:statement_count:{}", event.payload)
+            }
+            "statement_verification:statement" => {
+                format!("statement_verification:statement:{}", event.payload)
+            }
+            "statement_verification:query" => {
+                format!("statement_verification:query:{}", event.payload)
+            }
+            "statement_verification:assessment" => {
+                format!("statement_verification:assessment:{}", event.payload)
+            }
+            "market_price_claim:claim_count" => {
+                format!("market_price_claim:claim_count:{}", event.payload)
+            }
+            "market_price_claim:claim" => {
+                format!("market_price_claim:claim:{}", event.payload)
+            }
+            "market_price_claim:asset" => {
+                format!("market_price_claim:asset:{}", event.payload)
+            }
+            "market_price_claim:period" => {
+                format!("market_price_claim:period:{}", event.payload)
+            }
+            "market_price_claim:claimed_price" => {
+                format!("market_price_claim:claimed_price:{}", event.payload)
+            }
+            "market_price_claim:source" => {
+                format!("market_price_claim:source:{}", event.payload)
+            }
+            "market_price_claim:range" => {
+                format!("market_price_claim:range:{}", event.payload)
+            }
+            "market_price_claim:assessment" => {
+                format!("market_price_claim:assessment:{}", event.payload)
+            }
+            "read_local_file:request" => format!("read_local_file:request:{}", event.payload),
+            "http_fetch:request" => format!("http_fetch:request:{}", event.payload),
+            "docs_method:request" => format!("docs_method:request:{}", event.id),
+            "docs_method:project" => format!("docs_method:project:{}", event.payload),
+            "docs_method:method" => format!("docs_method:method:{}", event.payload),
+            "docs_method:source_kind" => {
+                format!("docs_method:source_kind:{}", event.payload)
+            }
+            "docs_method:source" | "source" | "release_timeline:source" => {
+                format!("source:{}", event.payload)
+            }
+            // Release-timeline provenance (Issue #892): the snapshot an answer
+            // was computed from travels with it, so a reader can tell how
+            // current the list is and re-derive it from the same bytes.
+            "release_timeline:hit" => format!("release_timeline:{}", event.payload),
+            "release_timeline:snapshot" => {
+                format!("release_timeline:snapshot:{}", event.payload)
+            }
+            "release_timeline:sha256" => format!("release_timeline:sha256:{}", event.payload),
+            "release_timeline:released" => {
+                format!("release_timeline:released:{}", event.payload)
+            }
+            "release_timeline:announced" => {
+                format!("release_timeline:announced:{}", event.payload)
+            }
+            "release_timeline:stale" => format!("release_timeline:stale:{}", event.payload),
+            "project:promoted" => format!("project:promoted:{}", event.payload),
+            "project_lookup:promotion" => {
+                format!("project_lookup:promotion:{}", event.payload)
+            }
+            "project_lookup:repository:github" => {
+                format!("project_lookup:repository:github:{}", event.payload)
+            }
+            "project_lookup:repository:gitlab" => {
+                format!("project_lookup:repository:gitlab:{}", event.payload)
+            }
+            "project_lookup:repository:bitbucket" => {
+                format!("project_lookup:repository:bitbucket:{}", event.payload)
+            }
+            "url_navigate:request" => format!("url_navigate:request:{}", event.payload),
+            "url_preview:iframe" => format!("url_preview:iframe:{}", event.payload),
+            "tool_call" => format!("tool_call:{}", event.payload),
+            "tool_parameter" => format!("tool_parameter:{}", event.payload.replace(' ', ":")),
+            "tool_result" => format!("tool_result:{}", event.payload.replace(' ', ":")),
+            "tool_permission" => {
+                format!("tool_permission:{}", event.payload.replace(' ', ":"))
+            }
+            "text_operation" => format!("text_operation:{}", event.payload),
+            "text_rule" => format!("text_rule:{}", event.payload),
+            "text_rule_chain" => format!("text_rule_chain:{}", event.payload),
+            "text_result" => format!("text_result:{}", event.id),
+            "text_substitution_rules" => format!("text_substitution_rules:{}", event.id),
+            "text_substitution_trace" => format!("text_substitution_trace:{}", event.id),
+            "text_substitution_graph" => format!("text_substitution_graph:{}", event.id),
+            "procedural_how_to:request" => {
+                format!("procedural_how_to:request:{}", event.payload)
+            }
+            "procedural_how_to:action" => {
+                format!("procedural_how_to:action:{}", event.payload)
+            }
+            "procedural_how_to:object" => {
+                format!("procedural_how_to:object:{}", event.payload)
+            }
+            "procedural_how_to:stage" => {
+                format!("procedural_how_to:stage:{}", event.payload)
+            }
+            "procedural_how_to:wikihow_candidate" => {
+                format!("procedural_how_to:wikihow_candidate:{}", event.payload)
+            }
+            "procedural_how_to:source_gate" => {
+                format!("procedural_how_to:source_gate:{}", event.payload)
+            }
+            "spelling_correction" => {
+                format!("spelling_correction:{}", event.payload.replace(' ', ""))
+            }
+            "concept_lookup:request" => format!("concept_lookup:request:{}", event.payload),
+            "concept_lookup:context" => format!("concept_lookup:context:{}", event.payload),
+            "concept_lookup:response-language" => {
+                format!("concept_lookup:response-language:{}", event.payload)
+            }
+            "concept_lookup:hit" => format!("concept_lookup:hit:{}", event.payload),
+            "concept_lookup:miss" => format!("concept_lookup:miss:{}", event.payload),
+            "concept_lookup:context-match" => {
+                format!("concept_lookup:context-match:{}", event.payload)
+            }
+            "concept_lookup:context-mismatch" => {
+                format!("concept_lookup:context-mismatch:{}", event.payload)
+            }
+            "followup:subject" => format!("followup:subject:{}", event.payload),
+            // The seeded status slug the research follow-up classified, as the
+            // browser worker surfaces it (`research_result_followup:status:<slug>`).
+            "research_result_followup:status" => {
+                format!("research_result_followup:status:{}", event.payload)
+            }
+            "mechanism_query:request" => {
+                format!("mechanism_query:request:{}", event.payload)
+            }
+            "mechanism_query:stage" => format!("mechanism_query:stage:{}", event.payload),
+            "mechanism_query:source_gate" => {
+                format!("mechanism_query:source_gate:{}", event.payload)
+            }
+            "search:local" => format!("search:local:{}", event.id),
+            "search:external" if event.payload == "skipped:offline" => {
+                String::from("policy:offline")
+            }
+            "search:external" => format!("search:external:{}", event.id),
+            "source:http" => format!("source:http:{}", event.payload.replace(' ', ":")),
+            "source_refresh" => format!("source_refresh:{}", event.payload),
+            "skill_compile:package" => format!("skill_compile:package:{}", event.payload),
+            "skill_compile:procedure" => format!("skill_compile:procedure:{}", event.payload),
+            "skill_compile:procedure_artifact" => {
+                format!("skill_compile:procedure_artifact:{}", event.id)
+            }
+            "skill_compile:procedure_step" => format!(
+                "skill_compile:procedure_step:{}",
+                event.payload.replace(' ', ":")
+            ),
+            // Issue #674: the named gap is the evidence, so it travels in the link
+            // rather than being reduced to an opaque event id.
+            "skill_gap" => format!("skill_gap:{}", event.payload.replace(' ', "_")),
+            "program_gap" => format!("program_gap:{}", event.payload.replace(' ', "_")),
+            // Verifiable-task observations are themselves the evidence. Keep
+            // the check slug, executed value and gap/research detail readable;
+            // replacing them with the event digest makes it impossible for a
+            // consumer to tell which verification actually passed.
+            "verifiable_task:check"
+            | "verifiable_task:executed"
+            | "verifiable_task:gap"
+            | "verifiable_task:searched"
+            | "verifiable_task:uncorroborated"
+            | "verifiable_task:membership_source" => {
+                format!("{}:{}", event.kind, event.payload)
+            }
+            "memory_program_compiled" => format!("memory_program_compiled:{}", event.id),
+            "memory_program_execution" => format!("memory_program_execution:{}", event.id),
+            "skill_learning_proposal" => {
+                format!("skill_learning_proposal:{}", event.payload)
+            }
+            "skill_learning_proposal:artifact" => {
+                format!("skill_learning_proposal:artifact:{}", event.id)
+            }
+            "compiled_skill:package" => format!("compiled_skill:package:{}", event.id),
+            "compiled_skill:replay" => format!("compiled_skill:replay:{}", event.payload),
+            "conflict:source_disagreement" => {
+                format!("conflict:source_disagreement:{}", event.id)
+            }
+            "cache_hit" => format!("cache_hit:{}", event.payload),
+            "network_fetch" => format!("network_fetch:{}", event.id),
+            "calculation:engine" => format!("calculation:engine:{}", event.payload),
+            "calculation:lino" => format!("calculation:lino:{}", event.payload),
+            "method:learned:operations_verified" => {
+                format!("method:learned:operations_verified:{}", event.payload)
+            }
+            "calendar:today" => format!("calendar:today:{}", event.payload),
+            "calendar:weekday" => format!("calendar:weekday:{}", event.payload),
+            "intent" => format!("intent:{}", event.payload),
+            "program_parameter:language" => {
+                format!("program_parameter:language:{}", event.payload)
+            }
+            "program_parameter:task" => format!("program_parameter:task:{}", event.payload),
+            "program_parameters" => {
+                format!(
+                    "program_parameters:{}",
+                    event.payload.replace([' ', ','], ":")
+                )
+            }
+            "legacy_intent" => format!("legacy_intent:{}", event.payload),
+            "response" => event.payload.clone(),
+            "agent_mode:opted_in" => format!("agent_mode:opted_in:{}", event.id),
+            "agent_mode:active" => format!("agent_mode:active:{}", event.id),
+            "policy:chat_bounded_autonomy" => String::from("policy:chat_bounded_autonomy"),
+            "policy:add_only_history" => String::from("policy:add_only_history"),
+            "policy:destructive_action_requires_confirmation" => {
+                String::from("policy:destructive_action_requires_confirmation")
+            }
+            "policy:agent_time_budget" => format!("policy:agent_time_budget:{}", event.id),
+            "policy:cache_flush_requires_confirmation" => {
+                String::from("policy:cache_flush_requires_confirmation")
+            }
+            "policy:offline" => String::from("policy:offline"),
+            "policy:inappropriate_content" => String::from("policy:inappropriate_content"),
+            "policy:agent_mode_required_for_tools" => {
+                format!("policy:agent_mode_required_for_tools:{}", event.payload)
+            }
+            "policy:package_permission_required" => {
+                format!("policy:package_permission_required:{}", event.payload)
+            }
+            "policy:temperature_selection" => {
+                format!("policy:temperature_selection:{}", event.id)
+            }
+            "policy:guessed_under_ambiguity" => String::from("policy:guessed_under_ambiguity"),
+            "policy:clarify_under_ambiguity" => String::from("policy:clarify_under_ambiguity"),
+            "probability:evidence" => format!("probability:evidence:{}", event.id),
+            "probability:model" => format!("probability:model:{}", event.payload),
+            "probability:ranking" => format!("probability:ranking:{}", event.id),
+            "error" => format!("error:{}", event.id),
+            "filter:user" => format!("filter:user:{}", event.payload),
+            "diagnostic_mode" => format!("diagnostic_mode:{}", event.payload),
+            "execution_status" => format!("execution_status:{}", event.id),
+            "execution_environment" => format!("execution_environment:{}", event.id),
+            _ => format!("{}:{}", event.kind, event.id),
+        };
+        links.push(evidence);
+    }
+    if !links.iter().any(|link| link == response_link) {
+        links.push(response_link.to_owned());
+    }
+    links
+}
+
+/// The evidence links of a recorded log: [`build_evidence_links`] with the
+///
+/// The prompt is read from the log's `impulse` event and the response link from its
+/// last `response` event (`response:<intent>` when none was logged). `None`
+/// when the log holds no impulse.
+///
+/// The browser worker and the JavaScript server project the native log they
+/// record through the twin, `eventLogEvidenceLinks` in
+/// `js/agentic/crate/event_log.mjs` (R1188-U29).
+#[must_use]
+pub fn event_log_evidence_links(log: &EventLog, intent: &str) -> Option<Vec<String>> {
+    let impulse = log.first_of("impulse")?;
+    let response_link = log.last_of("response").map_or_else(
+        || format!("response:{intent}"),
+        |event| event.payload.clone(),
+    );
+    Some(build_evidence_links(&impulse.payload, log, &response_link))
+}
+
+fn sanitize_payload(value: &str) -> String {
+    value
+        .replace('\r', "\\r")
+        .replace('\n', "\\n")
+        .replace('\t', "\\t")
+}
+```

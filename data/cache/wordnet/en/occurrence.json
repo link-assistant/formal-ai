@@ -1,0 +1,30 @@
+{
+  "lemma": "occurrence",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-07298313-n",
+      "partOfSpeech": "n",
+      "definition": "an event that happens",
+      "synonyms": [
+        "happening",
+        "occurrent",
+        "natural event"
+      ]
+    },
+    {
+      "id": "oewn-13982355-n",
+      "partOfSpeech": "n",
+      "definition": "an instance of something occurring",
+      "examples": [
+        "a disease of frequent occurrence",
+        "the occurrence (or presence) of life on other planets"
+      ]
+    }
+  ]
+}

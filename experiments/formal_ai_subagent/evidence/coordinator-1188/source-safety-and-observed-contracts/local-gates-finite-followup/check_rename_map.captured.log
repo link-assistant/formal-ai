@@ -1,0 +1,4 @@
+$ node experiments/formal_ai_subagent/rename-by-rule.mjs --check
+::error::rust/tests/unit/docs_requirements/natural_formal_translation.rs:63 still references rust/tests/e2e/tests/issue-917.spec.js (now rust/tests/e2e/tests/formal-language-projections.spec.js)
+
+1 stale rename(s); run: node experiments/formal_ai_subagent/rename-by-rule.mjs

@@ -1,0 +1,33 @@
+Q892
+  aliases
+    en ("J.R.R Tolkien" "John Tolkien" "John R. R. Tolkien")
+    hi ("जॉन रोनल्ड राउल टोल्किन" "जे॰आर॰आर॰ टोल्किन")
+    ru ("Толкиен, Джон Роналд Руэл" "Джон Толкин" "Дж. Р. Р. Толкин" "Дж. Р. Р. Толкиен" "Толкин, Джон Рональд Руэл")
+    zh ("J·R·R·託爾金" "約翰·羅納德·瑞爾·託爾金" "托尔金" "托爾金" "J·R·R·托爾金" "J.R.R. 托尔金" "约翰·罗纳德·瑞尔·托尔金" "約翰·羅納德·瑞爾·托爾金" "約翰·托爾金" "J·R·R·托尔金")
+    zh-hans ("约翰·罗纳德·鲁埃尔·托尔金")
+  id Q892
+  labels
+    en "J. R. R. Tolkien"
+    hi "जे. आर. आर. टोल्किन"
+    ru "Джон Рональд Руэл Толкин"
+    zh "約翰·羅納德·魯埃爾·托爾金"
+    zh-hans "J·R·R·托尔金"
+  sitelinks
+    enwiki
+      site enwiki
+      title "J. R. R. Tolkien"
+    hiwiki
+      site hiwiki
+      title "जे॰आर॰आर॰ टोल्किन"
+    ruwiki
+      site ruwiki
+      title "Толкин, Джон Рональд Руэл"
+    zhwiki
+      site zhwiki
+      title "J·R·R·托爾金"
+  type item
+grounding
+  claim_ranks truthy
+  languages (en ru hi zh zh-hans)
+  sites (enwiki ruwiki hiwiki zhwiki)
+success 1

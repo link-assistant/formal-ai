@@ -1,0 +1,8 @@
+>> bash {"command":"test -e rust/tests/web/prompt-specialization.test.mjs"}
+>> bash {"command":"test ! -e rust/tests/web/pages-artifact-trust.test.mjs"}
+>> bash {"command":"mkdir -p -- rust/tests/web"}
+>> bash {"command":"cp rust/tests/web/prompt-specialization.test.mjs rust/tests/web/pages-artifact-trust.test.mjs"}
+>> bash {"command":"test -e rust/tests/web/pages-artifact-trust.test.mjs"}
+>> bash {"command":"test -e rust/tests/web/prompt-specialization.test.mjs"}
+== answer ==
+(no answer: the 6-step budget ran out after 6 tool calls, before the task finished; run again with a larger --steps)

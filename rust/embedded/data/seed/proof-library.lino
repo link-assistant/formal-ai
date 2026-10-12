@@ -1,0 +1,986 @@
+# The universal proof engine's library (issue #538, R379).
+#
+# Every sentence the proof engine shows a reader lives here, in en, ru, hi and
+# zh, instead of in rust/src/proof_engine. Three record kinds.
+#
+#   theorem   a classical result the engine discharges by direct lookup. The
+#             first theorem one of whose keyword substrings occurs in the
+#             normalized claim wins, so the order below is the lookup order.
+#             Each step names its kind (hypothesis, definition, axiom,
+#             inference, sub_proof, conclusion).
+#   plan      a partial proof plan for a claim the engine cannot discharge
+#             yet, with the inputs it still needs from the reader. A step text
+#             may carry the {prompt} slot.
+#   template  one presentation phrase (a heading, a label, an interpretation
+#             sentence with {statement} and {method} slots), or a list of
+#             item phrases.
+#
+# Read natively by rust/src/seed/proof_library.rs and in the browser by
+# js/worker/formal_ai_worker_number_constraints.js, so both runtimes render a
+# proof from the same records.
+proof_library
+  theorem pythagorean_theorem
+    method known_theorem
+    keyword "pythagor"
+    keyword "пифагор"
+    keyword "毕达哥拉斯"
+    keyword "勾股"
+    keyword "पाइथागोरस"
+    keyword "पाइथागोरियन"
+    statement
+      en "In any right triangle with legs a, b and hypotenuse c we have a² + b² = c²."
+      ru "В любом прямоугольном треугольнике с катетами a, b и гипотенузой c выполняется a² + b² = c²."
+      hi "किसी भी समकोण त्रिभुज जिसके लंब a, b और कर्ण c है, के लिए a² + b² = c² होता है।"
+      zh "在任意直角三角形中,若两直角边为 a、b,斜边为 c,则 a² + b² = c²。"
+    step hypothesis
+      en "Consider a right triangle with legs of length a and b and hypotenuse of length c. The right angle is opposite the hypotenuse."
+      ru "Рассмотрим прямоугольный треугольник с катетами длины a и b и гипотенузой c. Прямой угол лежит напротив гипотенузы."
+      hi "मान लीजिए कि एक समकोण त्रिभुज है जिसके लंब a, b और कर्ण c है। समकोण कर्ण के सामने है।"
+      zh "考虑一个直角三角形,两直角边长分别为 a 与 b,斜边长为 c,直角与斜边相对。"
+    step definition
+      en "Drop the altitude from the right angle onto the hypotenuse. It splits the hypotenuse into two segments of lengths p (adjacent to a) and q (adjacent to b), with p + q = c."
+      ru "Опустим высоту из прямого угла на гипотенузу. Она делит гипотенузу на отрезки длин p (примыкающий к a) и q (примыкающий к b), причём p + q = c."
+      hi "समकोण से कर्ण पर लम्ब डालिए। यह कर्ण को दो खंडों p (a के निकट) तथा q (b के निकट) में बाँट देता है, p + q = c।"
+      zh "从直角顶点向斜边作高,它把斜边分成长度为 p(靠近 a)与 q(靠近 b)的两段,且 p + q = c。"
+    step inference
+      en "The two smaller triangles created by the altitude are similar to the original (AA-similarity: each shares the right angle and one acute angle with the original). Hence a/c = p/a and b/c = q/b, i.e. a² = c·p and b² = c·q."
+      ru "Два малых треугольника, образованных высотой, подобны исходному (по двум углам: у каждого общий прямой угол и общий острый угол с исходным). Поэтому a/c = p/a и b/c = q/b, то есть a² = c·p и b² = c·q."
+      hi "उच्चता द्वारा बने दोनों छोटे त्रिभुज मूल त्रिभुज के समरूप होते हैं (AA समरूपता: हर एक में समकोण और एक न्यूनकोण मूल त्रिभुज से समान है)। अतः a/c = p/a तथा b/c = q/b, यानी a² = c·p और b² = c·q।"
+      zh "高线分出的两个小三角形与原三角形相似(AA 相似:各有原三角形的直角和一个锐角)。因此 a/c = p/a 与 b/c = q/b,即 a² = c·p,b² = c·q。"
+    step inference
+      en "Add the two equalities: a² + b² = c·p + c·q = c·(p + q) = c·c = c²."
+      ru "Сложим эти равенства: a² + b² = c·p + c·q = c·(p + q) = c·c = c²."
+      hi "दोनों समीकरणों को जोड़िए: a² + b² = c·p + c·q = c·(p + q) = c·c = c²।"
+      zh "把两个等式相加:a² + b² = c·p + c·q = c·(p + q) = c·c = c²。"
+    conclusion
+      en "Therefore a² + b² = c² for every right triangle. ∎"
+      ru "Следовательно, a² + b² = c² для любого прямоугольного треугольника. ∎"
+      hi "अतः प्रत्येक समकोण त्रिभुज के लिए a² + b² = c² सिद्ध होता है। ∎"
+      zh "故对一切直角三角形都有 a² + b² = c²。∎"
+  theorem euclid_infinitude_of_primes
+    method contradiction
+    keyword "infinitely many primes"
+    keyword "infinitely many prime numbers"
+    keyword "infinitude of primes"
+    keyword "prime numbers are infinite"
+    keyword "euclid"
+    keyword "бесконечно много прост"
+    keyword "простых бесконечно"
+    keyword "простых чисел бесконечно"
+    keyword "простые бесконечны"
+    keyword "бесконечны простые"
+    keyword "бесконечности прост"
+    keyword "евклид"
+    keyword "अनंत अभाज्य"
+    keyword "अनन्त अभाज्य"
+    keyword "अभाज्य संख्याएँ अनंत"
+    keyword "अभाज्य संख्याएं अनंत"
+    keyword "अभाज्य संख्याएँ अनन्त"
+    keyword "अभाज्य संख्याएं अनन्त"
+    keyword "无穷多素数"
+    keyword "无穷多个素数"
+    keyword "素数有无穷"
+    keyword "素数无穷"
+    keyword "無窮多素數"
+    keyword "素數有無窮"
+    keyword "素數無窮"
+    keyword "欧几里得"
+    statement
+      en "There are infinitely many prime numbers."
+      ru "Простых чисел бесконечно много."
+      hi "अभाज्य संख्याएँ अनंत हैं।"
+      zh "素数有无穷多个。"
+    step definition
+      en "Work in elementary number theory, formalizable in Peano arithmetic (PA): a prime is an integer greater than 1 whose only positive divisors are 1 and itself. The proof uses the PA theorem that every integer greater than 1 has a prime divisor; this is the formal context for the relative-meta-logic contradiction tactic."
+      ru "Работаем в элементарной теории чисел, формализуемой в арифметике Пеано (PA): простое число — это целое число больше 1, положительные делители которого только 1 и оно само. В доказательстве используется теорема PA: у каждого целого числа больше 1 есть простой делитель; это формальный контекст для тактики от противного в relative-meta-logic."
+      hi "हम प्राथमिक संख्या-सिद्धांत में काम करते हैं, जिसे Peano arithmetic (PA) में औपचारिक किया जा सकता है: अभाज्य वह पूर्णांक है जो 1 से बड़ा है और जिसके धनात्मक भाजक केवल 1 और वही संख्या हैं। प्रमाण PA के इस प्रमेय का उपयोग करता है कि 1 से बड़े हर पूर्णांक का कोई अभाज्य भाजक होता है; यही relative-meta-logic की contradiction युक्ति का औपचारिक संदर्भ है।"
+      zh "在可由 Peano arithmetic (PA) 形式化的初等数论中工作:素数是大于 1 的整数,其正因数只有 1 和自身。证明使用 PA 中的定理:每个大于 1 的整数都有素因数;这就是 relative-meta-logic 反证策略的形式上下文。"
+    step hypothesis
+      en "Assume for contradiction that only finitely many primes exist; call them p₁, p₂, …, pₙ."
+      ru "Предположим противное: простых чисел конечное число; обозначим их p₁, p₂, …, pₙ."
+      hi "विरोधाभास हेतु मान लीजिए कि अभाज्य संख्याएँ केवल सीमित संख्या में हैं: p₁, p₂, …, pₙ।"
+      zh "假设素数仅有有限多个,记为 p₁、p₂、…、pₙ。"
+    step inference
+      en "Form the number N = p₁·p₂·…·pₙ + 1. Then N is an integer greater than 1."
+      ru "Рассмотрим число N = p₁·p₂·…·pₙ + 1. Это целое число, большее единицы."
+      hi "संख्या N = p₁·p₂·…·pₙ + 1 लीजिए। N एक से बड़ा पूर्णांक है।"
+      zh "构造数 N = p₁·p₂·…·pₙ + 1。N 是大于 1 的整数。"
+    step inference
+      en "By the fundamental theorem of arithmetic, N has a prime divisor q. If q = pᵢ for some i, then pᵢ divides both p₁·p₂·…·pₙ and N, so pᵢ divides their difference, which is 1 — impossible."
+      ru "По основной теореме арифметики у N есть простой делитель q. Если q = pᵢ для некоторого i, то pᵢ делит и p₁·p₂·…·pₙ, и N, а значит делит их разность, равную 1 — противоречие."
+      hi "अंकगणित की मूल प्रमेय से N का कोई अभाज्य भाजक q है। यदि किसी i के लिए q = pᵢ हो, तो pᵢ संख्या p₁·p₂·…·pₙ और N दोनों को विभाजित करेगा, अर्थात उनका अंतर 1 भी विभाजित करेगा — असंभव।"
+      zh "由算术基本定理,N 有一个素因数 q。若 q = pᵢ,则 pᵢ 同时整除 p₁·p₂·…·pₙ 与 N,因而整除二者之差 1,矛盾。"
+    step inference
+      en "Hence q is a prime not in the list p₁, …, pₙ, contradicting the assumption that the list was complete."
+      ru "Значит, q — простое число, не входящее в список p₁, …, pₙ, что противоречит предположению о полноте списка."
+      hi "अतः q एक ऐसा अभाज्य है जो सूची p₁, …, pₙ में नहीं है, जो सूची के पूर्ण होने की परिकल्पना का खंडन करता है।"
+      zh "因此 q 是不在 p₁, …, pₙ 中的素数,与假设矛盾。"
+    conclusion
+      en "The assumption fails, so there are infinitely many primes. ∎"
+      ru "Предположение несостоятельно, следовательно простых чисел бесконечно много. ∎"
+      hi "अतः परिकल्पना असत्य है और अभाज्य संख्याएँ अनंत हैं। ∎"
+      zh "假设不成立,故素数有无穷多个。∎"
+  theorem sqrt_two_irrational
+    method contradiction
+    keyword "square root of two"
+    keyword "square root of 2"
+    keyword "sqrt(2)"
+    keyword "√2"
+    keyword "корень из двух"
+    keyword "корень из 2"
+    keyword "иррацион"
+    keyword "irrational"
+    keyword "दो का वर्गमूल"
+    keyword "मूल दो"
+    keyword "अपरिमेय"
+    keyword "根号二"
+    keyword "根号 2"
+    keyword "无理"
+    statement
+      en "√2 is irrational: there are no integers p, q with q ≠ 0 such that p/q = √2."
+      ru "√2 иррационально: не существует целых p, q (q ≠ 0), для которых p/q = √2."
+      hi "√2 अपरिमेय है: कोई पूर्णांक p, q (q ≠ 0) ऐसे नहीं हैं जिनके लिए p/q = √2 हो।"
+      zh "√2 是无理数:不存在整数 p、q(q ≠ 0)使得 p/q = √2。"
+    step hypothesis
+      en "Assume for contradiction that √2 = p/q with integers p, q ≠ 0 and gcd(p, q) = 1 (we can always cancel common factors)."
+      ru "Предположим противное: √2 = p/q при целых p, q ≠ 0 и НОД(p, q) = 1 (общие множители всегда можно сократить)."
+      hi "विरोधाभास हेतु मान लीजिए कि √2 = p/q, जहाँ p, q पूर्णांक हैं, q ≠ 0 तथा gcd(p, q) = 1 (सामान्य गुणनखंडों को रद्द किया जा सकता है)।"
+      zh "假设 √2 = p/q,其中 p、q 为整数,q ≠ 0 且 gcd(p, q) = 1(可消去公因数)。"
+    step inference
+      en "Square both sides: 2 = p²/q², so p² = 2·q². Hence p² is even, and therefore p is even (the square of an odd integer is odd). Write p = 2·k."
+      ru "Возведём в квадрат: 2 = p²/q², откуда p² = 2·q². Значит p² чётно, и потому p чётно (квадрат нечётного нечётен). Запишем p = 2·k."
+      hi "दोनों ओर का वर्ग लीजिए: 2 = p²/q², अतः p² = 2·q²। इसलिए p² सम है और परिणामतः p भी सम है (विषम पूर्णांक का वर्ग विषम होता है)। p = 2·k लिखिए।"
+      zh "两边平方:2 = p²/q²,即 p² = 2·q²。故 p² 为偶数,从而 p 为偶数(奇数的平方为奇数),写作 p = 2·k。"
+    step inference
+      en "Substitute: (2·k)² = 2·q², i.e. 4·k² = 2·q², i.e. q² = 2·k². So q² is even and q is even."
+      ru "Подставим: (2·k)² = 2·q², то есть 4·k² = 2·q², откуда q² = 2·k². Значит q² чётно, и q чётно."
+      hi "प्रतिस्थापन: (2·k)² = 2·q², यानी 4·k² = 2·q², अर्थात q² = 2·k²। अतः q² सम है और q भी सम है।"
+      zh "代入:(2·k)² = 2·q²,即 4·k² = 2·q²,故 q² = 2·k²。所以 q² 为偶数,q 也为偶数。"
+    step inference
+      en "Both p and q are even, contradicting gcd(p, q) = 1."
+      ru "Получили, что p и q оба чётны — противоречие с НОД(p, q) = 1."
+      hi "p और q दोनों सम हैं, जो gcd(p, q) = 1 का खंडन करता है।"
+      zh "p 与 q 均为偶数,与 gcd(p, q) = 1 矛盾。"
+    conclusion
+      en "The assumption fails, so √2 is irrational. ∎"
+      ru "Предположение несостоятельно, поэтому √2 иррационально. ∎"
+      hi "अतः परिकल्पना असत्य है और √2 अपरिमेय है। ∎"
+      zh "假设不成立,故 √2 是无理数。∎"
+  theorem fermat_little_theorem
+    method induction
+    keyword "fermat's little"
+    keyword "fermat little"
+    keyword "малая теорема ферма"
+    keyword "малой теоремы ферма"
+    keyword "फर्मा की लघु"
+    keyword "फर्मा लघु"
+    keyword "费马小定理"
+    keyword "費馬小定理"
+    statement
+      en "For every prime p and every integer a, aᵖ ≡ a (mod p). Equivalently, if gcd(a, p) = 1, then aᵖ⁻¹ ≡ 1 (mod p)."
+      ru "Для любого простого p и любого целого a выполнено aᵖ ≡ a (mod p). Эквивалентно, при НОД(a, p) = 1 имеем aᵖ⁻¹ ≡ 1 (mod p)."
+      hi "हर अभाज्य p तथा हर पूर्णांक a के लिए aᵖ ≡ a (mod p)। यदि gcd(a, p) = 1 हो, तो aᵖ⁻¹ ≡ 1 (mod p)।"
+      zh "对任意素数 p 与任意整数 a,有 aᵖ ≡ a (mod p)。等价地,若 gcd(a, p) = 1,则 aᵖ⁻¹ ≡ 1 (mod p)。"
+    step hypothesis
+      en "Fix a prime p. We prove aᵖ ≡ a (mod p) for every non-negative integer a by induction on a; the result for negative a follows by parity / sign."
+      ru "Зафиксируем простое p. Докажем aᵖ ≡ a (mod p) для каждого неотрицательного целого a индукцией по a; для отрицательных случай сводится знаком."
+      hi "एक अभाज्य p तय कीजिए। हम हर अऋणात्मक पूर्णांक a के लिए aᵖ ≡ a (mod p) को a पर आगमन द्वारा सिद्ध करते हैं; ऋणात्मक a का मामला चिह्न से अनुसरण करता है।"
+      zh "固定素数 p。对非负整数 a 用数学归纳法证 aᵖ ≡ a (mod p);负整数情形按符号化归。"
+    step inference
+      en "Base case a = 0: 0ᵖ = 0 ≡ 0 (mod p). The base case holds."
+      ru "База a = 0: 0ᵖ = 0 ≡ 0 (mod p). База выполнена."
+      hi "आधार स्थिति a = 0: 0ᵖ = 0 ≡ 0 (mod p)। आधार सिद्ध है।"
+      zh "归纳基础 a = 0:0ᵖ = 0 ≡ 0 (mod p),成立。"
+    step inference
+      en "Inductive step: assume aᵖ ≡ a (mod p). Use the binomial expansion (a + 1)ᵖ = Σ C(p, k)·aᵏ. For 1 ≤ k ≤ p − 1, the binomial coefficient C(p, k) is divisible by p (because p is prime and appears in the numerator but not in the denominator). Hence (a + 1)ᵖ ≡ aᵖ + 1 (mod p)."
+      ru "Шаг индукции: пусть aᵖ ≡ a (mod p). Воспользуемся биномом Ньютона (a + 1)ᵖ = Σ C(p, k)·aᵏ. При 1 ≤ k ≤ p − 1 биномиальный коэффициент C(p, k) делится на p (p — простое, входит в числитель, но не в знаменатель). Поэтому (a + 1)ᵖ ≡ aᵖ + 1 (mod p)."
+      hi "आगमन-चरण: मान लीजिए aᵖ ≡ a (mod p)। द्विपद विस्तार (a + 1)ᵖ = Σ C(p, k)·aᵏ का उपयोग करें। 1 ≤ k ≤ p − 1 के लिए C(p, k), p से विभाज्य है (p अभाज्य अंश में आता है पर हर में नहीं)। अतः (a + 1)ᵖ ≡ aᵖ + 1 (mod p)।"
+      zh "归纳步:设 aᵖ ≡ a (mod p)。由二项式展开 (a + 1)ᵖ = Σ C(p, k)·aᵏ,当 1 ≤ k ≤ p − 1 时 C(p, k) 被 p 整除(p 为素数,出现在分子而不在分母)。故 (a + 1)ᵖ ≡ aᵖ + 1 (mod p)。"
+    step inference
+      en "Combining with the inductive hypothesis: (a + 1)ᵖ ≡ aᵖ + 1 ≡ a + 1 (mod p). The inductive step is established."
+      ru "Совмещая с предположением: (a + 1)ᵖ ≡ aᵖ + 1 ≡ a + 1 (mod p). Шаг индукции доказан."
+      hi "आगमन-परिकल्पना के साथ संयोजन: (a + 1)ᵖ ≡ aᵖ + 1 ≡ a + 1 (mod p)। आगमन-चरण सिद्ध हुआ।"
+      zh "结合归纳假设:(a + 1)ᵖ ≡ aᵖ + 1 ≡ a + 1 (mod p)。归纳步完成。"
+    step inference
+      en "By induction, aᵖ ≡ a (mod p) for every non-negative integer a. When gcd(a, p) = 1 we may cancel one factor of a (it is invertible modulo p) to get aᵖ⁻¹ ≡ 1 (mod p)."
+      ru "По индукции aᵖ ≡ a (mod p) для всех a ≥ 0. Если НОД(a, p) = 1, можно сократить один множитель a (он обратим по модулю p), получив aᵖ⁻¹ ≡ 1 (mod p)."
+      hi "आगमन से, हर अऋणात्मक a के लिए aᵖ ≡ a (mod p)। gcd(a, p) = 1 पर a का एक गुणनखंड रद्द कर सकते हैं (वह mod p में व्युत्क्रमणीय है), जिससे aᵖ⁻¹ ≡ 1 (mod p) प्राप्त होता है।"
+      zh "由归纳,对所有非负整数 a 都有 aᵖ ≡ a (mod p)。当 gcd(a, p) = 1 时,a 在 mod p 下可逆,可消去得到 aᵖ⁻¹ ≡ 1 (mod p)。"
+    conclusion
+      en "Therefore aᵖ ≡ a (mod p) for every integer a and every prime p. ∎"
+      ru "Следовательно, aᵖ ≡ a (mod p) для всякого целого a и всякого простого p. ∎"
+      hi "अतः हर पूर्णांक a और हर अभाज्य p के लिए aᵖ ≡ a (mod p)। ∎"
+      zh "故对一切整数 a 与素数 p,皆有 aᵖ ≡ a (mod p)。∎"
+  theorem godel_first_incompleteness
+    method axiom_reduction
+    keyword "godel"
+    keyword "gödel"
+    keyword "godels"
+    keyword "gödels"
+    keyword "godel's"
+    keyword "gödel's"
+    keyword "incompleteness"
+    keyword "теорем гёдел"
+    keyword "теорема гёдел"
+    keyword "теоремы гёдел"
+    keyword "теоремы гедел"
+    keyword "теорема гедел"
+    keyword "теорем гедел"
+    keyword "गोडेल"
+    keyword "अपूर्णता"
+    keyword "哥德尔"
+    keyword "不完备"
+    keyword "不完备性"
+    statement
+      en "Any consistent, recursively axiomatised formal system F that interprets Peano arithmetic admits a true arithmetical sentence G_F that F neither proves nor refutes (Gödel's first incompleteness theorem)."
+      ru "Всякая непротиворечивая, рекурсивно аксиоматизированная формальная система F, интерпретирующая арифметику Пеано, имеет истинное арифметическое утверждение G_F, которое F не доказывает и не опровергает (первая теорема Гёделя о неполноте)."
+      hi "हर सुसंगत, पुनरावर्ती रूप से अभिगृहीत औपचारिक तंत्र F, जो Peano अंकगणित को निरूपित करता है, में एक सत्य अंकगणितीय कथन G_F मौजूद है जिसे F न तो सिद्ध करता है न खंडित (गोडेल का प्रथम अपूर्णता प्रमेय)।"
+      zh "任意一个一致、可递归公理化且可表达 Peano 算术的形式系统 F,存在一个真的算术语句 G_F,F 既不能证明也不能否证(哥德尔第一不完备性定理)。"
+    step axiom
+      en "Fix a formal system F that satisfies (i) consistency, (ii) a decidable axiom set, and (iii) enough arithmetic to define primitive recursive functions (e.g. F ⊇ Peano arithmetic)."
+      ru "Зафиксируем формальную систему F, удовлетворяющую: (i) непротиворечивость, (ii) разрешимое множество аксиом, (iii) достаточно арифметики для определения примитивно-рекурсивных функций (например, F ⊇ арифметика Пеано)."
+      hi "एक औपचारिक तंत्र F लीजिए जो (i) सुसंगत हो, (ii) निर्णायक अभिगृहीत-समुच्चय रखे, (iii) आदिम पुनरावर्ती फलन परिभाषित करने योग्य अंकगणित (उदा. F ⊇ Peano अंकगणित) रखे।"
+      zh "取一个形式系统 F:(i) 一致,(ii) 公理集可判定,(iii) 表达原始递归函数所需的算术(例如 F ⊇ Peano 算术)。"
+    step definition
+      en "Gödel-numbering: assign each formula φ a unique natural number ⌜φ⌝. Provability in F becomes a primitive-recursive predicate Prov_F(x, y) meaning ""x codes a proof in F of the formula coded by y""."
+      ru "Гёделева нумерация: каждой формуле φ ставится в соответствие уникальное натуральное число ⌜φ⌝. Доказуемость в F представляется примитивно-рекурсивным предикатом Prov_F(x, y), означающим: «x кодирует доказательство в F формулы, кодируемой y»."
+      hi "गोडेल-संख्यांकन: हर सूत्र φ को एक अद्वितीय प्राकृत संख्या ⌜φ⌝ दीजिए। F में साध्यता एक आदिम-पुनरावर्ती विधेय Prov_F(x, y) बन जाती है, जिसका अर्थ है ""x द्वारा कोडित प्रमाण F में y द्वारा कोडित सूत्र को सिद्ध करता है""।"
+      zh "哥德尔编号:为每个公式 φ 指派唯一自然数 ⌜φ⌝。F 中的可证性化为原始递归谓词 Prov_F(x, y),意为 ""x 编码一个 F 中的证明,证明的目标公式编号为 y""。"
+    step inference
+      en "Diagonal lemma: for the formula ψ(y) ≔ ¬∃x Prov_F(x, y) (""y is not provable in F"") there exists a sentence G_F with ⌜G_F⌝ = n such that F ⊢ G_F ↔ ψ(n). Intuitively G_F says ""I am not provable in F""."
+      ru "Диагональная лемма: для формулы ψ(y) ≔ ¬∃x Prov_F(x, y) («y недоказуемо в F») существует утверждение G_F с ⌜G_F⌝ = n, для которого F ⊢ G_F ↔ ψ(n). По существу G_F утверждает: «Я недоказуемо в F»."
+      hi "विकर्ण लेम्मा: सूत्र ψ(y) ≔ ¬∃x Prov_F(x, y) (""y, F में साध्य नहीं है"") के लिए एक कथन G_F है, ⌜G_F⌝ = n, ऐसा कि F ⊢ G_F ↔ ψ(n)। तात्पर्य: G_F कहता है ""मैं F में साध्य नहीं हूँ""।"
+      zh "对角引理:对公式 ψ(y) ≔ ¬∃x Prov_F(x, y)(""y 在 F 中不可证""),存在句子 G_F 使得 ⌜G_F⌝ = n 且 F ⊢ G_F ↔ ψ(n)。直观上 G_F 表示 ""我在 F 中不可证""。"
+    step inference
+      en "Suppose F ⊢ G_F. Then there exists a proof code m with Prov_F(m, n), so by the equivalence F ⊢ ¬G_F too, contradicting the consistency of F. Hence F ⊬ G_F."
+      ru "Предположим F ⊢ G_F. Тогда найдётся код доказательства m с Prov_F(m, n), и по эквивалентности F ⊢ ¬G_F, что противоречит непротиворечивости F. Значит F ⊬ G_F."
+      hi "मान लीजिए F ⊢ G_F। तब किसी प्रमाण कोड m के लिए Prov_F(m, n) होगा, और तुल्यता से F ⊢ ¬G_F भी होगा, जो F की सुसंगति का विरोध करता है। अतः F ⊬ G_F।"
+      zh "若 F ⊢ G_F,则存在证明编码 m 使 Prov_F(m, n) 成立,根据等价 F ⊢ ¬G_F,与 F 的一致性矛盾。故 F ⊬ G_F。"
+    step inference
+      en "Suppose F ⊢ ¬G_F. Then F ⊢ ∃x Prov_F(x, n), yet by the previous step no actual proof of G_F exists in F. A standard ω-consistency (or 1-consistency, in Rosser's strengthening) argument turns this into another contradiction; hence F ⊬ ¬G_F."
+      ru "Предположим F ⊢ ¬G_F. Тогда F ⊢ ∃x Prov_F(x, n), однако из предыдущего шага настоящего доказательства G_F в F нет. Стандартный аргумент ω-непротиворечивости (или 1-непротиворечивости в усилении Россера) превращает это во второе противоречие; следовательно F ⊬ ¬G_F."
+      hi "मान लीजिए F ⊢ ¬G_F। तब F ⊢ ∃x Prov_F(x, n) होगा, परन्तु पिछले चरण के अनुसार F में G_F का वास्तविक प्रमाण नहीं है। मानक ω-संगति (या रोसर-वर्धित 1-संगति) तर्क इसे एक दूसरे विरोधाभास में बदलता है; अतः F ⊬ ¬G_F।"
+      zh "若 F ⊢ ¬G_F,则 F ⊢ ∃x Prov_F(x, n),然而由上一步,在 F 中并不存在 G_F 的实际证明。标准 ω-一致性(或 Rosser 加强的 1-一致性)论证将其转为又一矛盾,故 F ⊬ ¬G_F。"
+    step inference
+      en "G_F is therefore independent of F. Since the metatheory sees that G_F holds (because every actual proof in F would be visible to the metatheory and none exists), G_F is a true arithmetical sentence that F cannot decide."
+      ru "Значит, G_F независимо от F. Метатеория видит, что G_F истинно (любое реальное доказательство в F было бы заметно метатеории, а его нет), поэтому G_F — истинное арифметическое утверждение, не разрешаемое в F."
+      hi "अतः G_F, F से स्वतंत्र है। मेटा-सिद्धांत में दिखता है कि G_F सत्य है (F का कोई भी वास्तविक प्रमाण मेटा-सिद्धांत में दिखाई देगा, परंतु ऐसा कोई नहीं है), इसलिए G_F एक सत्य अंकगणितीय कथन है जिसे F निर्णीत नहीं कर सकता।"
+      zh "故 G_F 独立于 F。元理论可见 G_F 为真(F 内任何真实证明均会显现于元理论中,但并不存在),所以 G_F 是 F 无法判定的真算术语句。"
+    conclusion
+      en "F is incomplete: a true sentence about natural numbers escapes its proof system. ∎"
+      ru "F неполна: истинное утверждение о натуральных числах ускользает от её системы доказательств. ∎"
+      hi "F अपूर्ण है: प्राकृतिक संख्याओं के बारे में एक सत्य कथन उसकी प्रमाण-व्यवस्था से बच निकलता है। ∎"
+      zh "故 F 不完备:存在关于自然数的真语句逸出其证明系统。∎"
+  theorem laplacian_determinism
+    method axiom_reduction
+    keyword "determinism"
+    keyword "deterministic"
+    keyword "детерминизм"
+    keyword "детерминирован"
+    keyword "决定论"
+    keyword "निर्धारणवाद"
+    statement
+      en "Within the Newtonian axiom set N = (Euclidean space, smooth time, Newton's second law F = m·ẍ, Lipschitz-bounded forces), the future trajectory of every closed mechanical system is uniquely determined by its present state (Laplacian determinism)."
+      ru "В аксиоматике Ньютона N = (евклидово пространство, гладкое время, второй закон Ньютона F = m·ẍ, силы с ограничением Липшица) будущая траектория каждой замкнутой механической системы однозначно определена её текущим состоянием (лапласовский детерминизм)."
+      hi "न्यूटनीय अभिगृहीत समुच्चय N = (यूक्लिडीय आकाश, सतत काल, न्यूटन का द्वितीय नियम F = m·ẍ, लिप्शिट्ज़-सीमित बल) के अंतर्गत हर बंद यांत्रिक तंत्र की भविष्य प्रक्षेपवक्र उसकी वर्तमान अवस्था से अद्वितीय रूप से निर्धारित होती है (Laplace का निर्धारणवाद)।"
+      zh "在牛顿公理集 N =(欧氏空间、光滑时间、牛顿第二定律 F = m·ẍ、Lipschitz 受限力场)下,任意闭合力学系统的未来轨道由其当前状态唯一决定(拉普拉斯式决定论)。"
+    step axiom
+      en "Take the axiom set N: configuration space ℝᵈ with the standard Euclidean structure, time ∈ ℝ, mass m > 0, and a force field F: ℝᵈ × ℝᵈ × ℝ → ℝᵈ that is Lipschitz-continuous in position and velocity."
+      ru "Возьмём аксиоматику N: конфигурационное пространство ℝᵈ с евклидовой структурой, время ∈ ℝ, масса m > 0 и силовое поле F: ℝᵈ × ℝᵈ × ℝ → ℝᵈ, липшицевое по координатам и скоростям."
+      hi "अभिगृहीत समुच्चय N: कॉन्फ़िगरेशन स्पेस ℝᵈ यूक्लिडीय संरचना के साथ, समय ∈ ℝ, द्रव्यमान m > 0, और बल क्षेत्र F: ℝᵈ × ℝᵈ × ℝ → ℝᵈ जो स्थिति और वेग में लिप्शिट्ज़-संतत है।"
+      zh "取公理集 N:位形空间 ℝᵈ 配欧氏结构、时间 ∈ ℝ、质量 m > 0,以及在位置与速度上Lipschitz 连续的力场 F: ℝᵈ × ℝᵈ × ℝ → ℝᵈ。"
+    step definition
+      en "A state of the system at time t₀ is the pair s₀ = (x(t₀), ẋ(t₀)). Newton's second law turns the dynamics into the first-order ODE (ẋ, v̇) = (v, F(x, v, t)/m)."
+      ru "Состояние системы в момент t₀ — это пара s₀ = (x(t₀), ẋ(t₀)). Второй закон Ньютона превращает динамику в систему ОДУ первого порядка (ẋ, v̇) = (v, F(x, v, t)/m)."
+      hi "समय t₀ पर तंत्र की अवस्था युग्म s₀ = (x(t₀), ẋ(t₀)) है। न्यूटन का द्वितीय नियम गतिकी को प्रथम-कोटि ODE (ẋ, v̇) = (v, F(x, v, t)/m) में बदलता है।"
+      zh "系统在 t₀ 时刻的状态为 s₀ = (x(t₀), ẋ(t₀))。牛顿第二定律将动力学化为一阶常微分方程组 (ẋ, v̇) = (v, F(x, v, t)/m)。"
+    step inference
+      en "Apply the Picard–Lindelöf theorem: a Lipschitz right-hand side on an open neighbourhood of (s₀, t₀) gives a unique maximal solution s(t) through that initial condition."
+      ru "Применим теорему Пикара–Линделёфа: липшицева правая часть в окрестности (s₀, t₀) даёт единственное максимальное решение s(t), проходящее через это начальное условие."
+      hi "Picard–Lindelöf प्रमेय लागू करें: (s₀, t₀) के एक खुले प्रांत में लिप्शिट्ज़ दायाँ पक्ष उस आरंभिक शर्त से होकर गुजरने वाला एक अद्वितीय अधिकतम हल s(t) देता है।"
+      zh "应用 Picard–Lindelöf 定理:在 (s₀, t₀) 的开邻域上 Lipschitz 的右端项确保过该初值存在唯一的极大解 s(t)。"
+    step inference
+      en "Hence two trajectories that agree at t₀ agree on the entire common domain of existence; equivalently, the time-t evolution Φ_t : (s₀, t₀) ↦ s(t₀ + t) is a well-defined function on the state space."
+      ru "Следовательно, две траектории, совпадающие в t₀, совпадают на всей общей области существования; иначе говоря, эволюция за время t Φ_t : (s₀, t₀) ↦ s(t₀ + t) — корректно определённая функция на пространстве состояний."
+      hi "अतः जो दो प्रक्षेपवक्र t₀ पर मेल खाते हैं, वे संपूर्ण सामान्य अस्तित्व-प्रांत पर मेल खाते हैं; तुल्य रूप से, समय-t विकास Φ_t : (s₀, t₀) ↦ s(t₀ + t) अवस्था-स्थान पर सुपरिभाषित फलन है।"
+      zh "故凡在 t₀ 时刻重合的两条轨道在共同存在域上完全一致;等价地,时间 t 演化 Φ_t : (s₀, t₀) ↦ s(t₀ + t) 在状态空间上是良定义的函数。"
+    step sub_proof
+      en "Note (Gödel-style limit): the proof above is reductive — it transfers determinism to existence and uniqueness of solutions of an ODE. The statement ""physical reality is deterministic"" is not formally decidable inside N; it becomes decidable only after fixing both the axioms of physics and the metalanguage. Inside a richer axiom set (e.g. one that interprets PA), Gödel's first incompleteness theorem forbids a complete internal certificate of determinism."
+      ru "Замечание (граница в духе Гёделя): доказательство сведено — детерминизм переведён в вопрос существования и единственности решений ОДУ. Утверждение «физическая реальность детерминирована» формально не разрешимо внутри N; оно становится разрешимым только после фиксации аксиом физики и металогики. В более богатой системе (например, интерпретирующей арифметику Пеано) первая теорема Гёделя запрещает полный внутренний сертификат детерминизма."
+      hi "टिप्पणी (गोडेल-शैली सीमा): उपरोक्त प्रमाण निरूपण-मूलक है — निर्धारणवाद को ODE के समाधान के अस्तित्व और अद्वितीयता पर स्थानांतरित किया गया है। ""भौतिक यथार्थ निर्धारित है"" कथन N के भीतर औपचारिक रूप से निर्णीत नहीं है; यह केवल भौतिकी के अभिगृहीत और मेटा-भाषा तय कर लेने पर निर्णीत होता है। अधिक समृद्ध तंत्र (जो PA का अर्थ करे) में गोडेल का प्रथम अपूर्णता प्रमेय निर्धारणवाद के पूर्ण आंतरिक प्रमाणपत्र को रोक देता है।"
+      zh "注(哥德尔式界限):以上证明是化归式的——把决定论化归为常微分方程解的存在唯一性。""物理现实是决定论的"" 这一断言在 N 内部并非形式可判定,只有在固定物理公理与元语言之后才能讨论。在更丰富的公理系统(可表达 PA)中,哥德尔第一不完备定理禁止给出关于决定论的完全内部证书。"
+    conclusion
+      en "Under the axiom set N, Laplacian determinism holds for every closed mechanical system; outside N (or inside any system interpreting PA), the statement is not formally complete in the sense of Gödel. ∎"
+      ru "В аксиоматике N лапласовский детерминизм выполнен для любой замкнутой механической системы; вне N (или в системе, интерпретирующей PA) утверждение формально неполно по Гёделю. ∎"
+      hi "अभिगृहीत समुच्चय N के अंतर्गत हर बंद यांत्रिक तंत्र के लिए Laplace का निर्धारणवाद सिद्ध है; N के बाहर (या PA का अर्थ करने वाले किसी तंत्र में) यह कथन गोडेल के अर्थ में औपचारिक रूप से पूर्ण नहीं है। ∎"
+      zh "在公理集 N 下,任意闭合力学系统的拉普拉斯式决定论成立;在 N 之外(或任一可表达 PA 的系统中),该断言按哥德尔意义并非形式完备。∎"
+  plan deep_reasoning
+    method axiom_reduction
+    step definition
+      en "Translate the claim into a closed sentence φ in the chosen axiom set (PA, ZFC or Newtonian mechanics). The translation matches the canonical relative-meta-logic encoding ⟦φ⟧ = ∀x. P(x) → Q(x), where P and Q are predicates over the chosen signature."
+      ru "Запишем утверждение как закрытое предложение φ в выбранной аксиоматике (PA, ZFC или ньютоновская механика). Перевод соответствует канонической формализации relative-meta-logic: ⟦φ⟧ = ∀x. P(x) → Q(x), где P и Q — предикаты, заданные в выбранной сигнатуре."
+      hi "कथन को चयनित अभिगृहीत समुच्चय (PA, ZFC या न्यूटनीय यांत्रिकी) में बंद वाक्य φ के रूप में लिखें। यह अनुवाद relative-meta-logic के विहित रूप ⟦φ⟧ = ∀x. P(x) → Q(x) से मेल खाता है, जहाँ P और Q चयनित सिग्नेचर में परिभाषित प्रिडिकेट हैं।"
+      zh "把陈述写成所选公理集(PA、ZFC 或牛顿力学)中的闭命题 φ。该翻译对应 relative-meta-logic 的规范形式 ⟦φ⟧ = ∀x. P(x) → Q(x),其中 P、Q 为所选签名中的谓词。"
+    step inference
+      en "Hand ⟦φ⟧ to the relative-meta-logic library: it runs the selected tactic (rewrite / induction / contradiction) and returns either a signed proof certificate or a counterexample. Every tactic step is appended to the append-only log as a `proof_step:*` event."
+      ru "Передадим ⟦φ⟧ в библиотеку relative-meta-logic: она запускает выбранную тактику (rewrite / induction / contradiction) и возвращает либо подписанный сертификат доказательства, либо контрпример. Каждый шаг тактики записывается как событие `proof_step:*` в append-only журнал."
+      hi "⟦φ⟧ को relative-meta-logic लाइब्रेरी में भेजें: यह चयनित युक्ति (rewrite / induction / contradiction) चलाती है और या तो हस्ताक्षरित प्रमाण-प्रमाणपत्र लौटाती है या एक प्रतिउदाहरण। प्रत्येक युक्ति-चरण `proof_step:*` घटना के रूप में append-only लॉग में दर्ज होता है।"
+      zh "把 ⟦φ⟧ 交给 relative-meta-logic 库:它运行所选策略(rewrite / induction / contradiction)并返回签名的证明证书或反例。每一步策略都作为 `proof_step:*` 事件追加进只追加日志。"
+  plan godel_determinism_mixed
+    method axiom_reduction
+    step hypothesis
+      en "To make this claim checkable, fix a concrete axiom set. For Laplacian determinism we adopt the Newtonian axiom set N and reduce determinism to existence and uniqueness of solutions of an ODE system."
+      ru "Чтобы это утверждение стало проверяемым, выберите конкретную аксиоматику. Для лапласовского детерминизма мы берём ньютоновскую аксиоматику N и сводим детерминизм к существованию и единственности решения системы ОДУ."
+      hi "इस कथन को जाँचने योग्य बनाने के लिए कोई विशिष्ट अभिगृहीत समुच्चय चुनिए। Laplace के निर्धारणवाद के लिए हम न्यूटनीय अभिगृहीत समुच्चय N लेते हैं और निर्धारणवाद को ODE के समाधान के अस्तित्व और अद्वितीयता तक घटाते हैं।"
+      zh "为使该断言可判定,请选择一组具体公理。对于拉普拉斯式决定论,我们取牛顿公理集 N,将决定论化归为常微分方程解的存在唯一性。"
+    missing_input
+      en "an explicit axiom set A (e.g. Newtonian mechanics, classical field theory, or ZFC + a deterministic theory of evolution) in which you want determinism checked"
+      ru "явно выбранный набор аксиом A (например, ньютоновская механика, классическая теория поля или ZFC + детерминированная теория эволюции), в котором вы хотите, чтобы детерминизм был проверен"
+      hi "अभिगृहीत समुच्चय A का स्पष्ट चयन (जैसे न्यूटनीय यांत्रिकी, शास्त्रीय क्षेत्र सिद्धांत, या ZFC + निर्धारणवादी विकास सिद्धांत), जिसमें आप निर्धारणवाद का परीक्षण करना चाहते हैं"
+      zh "显式选择的公理集 A(例如牛顿力学、经典场论或 ZFC + 决定性演化理论),您希望在其中检验决定论"
+    missing_input
+      en "a formal definition of ""determinism"" inside that axiom set (Laplacian, causal, epistemic, …)"
+      ru "формальное определение «детерминизма» в этой аксиоматике (лапласовский детерминизм, причинно-следственный, эпистемический и т.д.)"
+      hi "इस अभिगृहीत समुच्चय के अंतर्गत ""निर्धारणवाद"" की औपचारिक परिभाषा (Laplacian, कारणात्मक, ज्ञानमीमांसा आदि)"
+      zh "在该公理集下的""决定论""形式定义(拉普拉斯式、因果式、认识论式等)"
+    missing_input
+      en "an acceptance criterion — whether the result must be internally complete or may invoke a Gödel-style limitation"
+      ru "критерий принятия — должен ли результат быть полным во внутреннем смысле или разрешено сослаться на гёделев предел"
+      hi "स्वीकार्यता मानदंड — क्या परिणाम आंतरिक रूप से पूर्ण होना चाहिए या गोडेल सीमा का संदर्भ स्वीकार्य है"
+      zh "采纳标准——结果需要在内部完备,还是允许引用哥德尔意义上的极限"
+  plan godel_determinism
+    method axiom_reduction
+    step hypothesis
+      en "Reduce ""determinism"" to a checkable arithmetical / dynamical statement: pick an axiom set A and the precise reading of determinism inside A."
+      ru "Сведите «детерминизм» к проверяемому арифметическому / динамическому утверждению: выберите аксиоматику A и точное прочтение детерминизма внутри A."
+      hi """निर्धारणवाद"" को जाँचने योग्य अंकगणितीय / गतिकीय कथन तक घटाइए: एक अभिगृहीत समुच्चय A और उसमें निर्धारणवाद की सटीक व्याख्या चुनिए।"
+      zh "把""决定论""化归为可检验的算术 / 动力学断言:选择公理集 A 与其中决定论的精确读法。"
+    step inference
+      en "Apply Picard–Lindelöf inside Newtonian mechanics (or your chosen A) to obtain existence and uniqueness of trajectories from any initial state."
+      ru "Примените теорему Пикара–Линделёфа внутри ньютоновской механики (или выбранной вами A), чтобы получить существование и единственность траекторий из любого начального состояния."
+      hi "Picard–Lindelöf प्रमेय को न्यूटनीय यांत्रिकी (या आपकी चुनी हुई A) के भीतर लागू करें ताकि किसी भी आरंभिक स्थिति से प्रक्षेपवक्र का अस्तित्व और अद्वितीयता प्राप्त हो।"
+      zh "在牛顿力学(或您选定的 A)中应用 Picard–Lindelöf 定理,得到由任意初值出发的轨道的存在唯一性。"
+    step inference
+      en "Reference Gödel's first incompleteness theorem to mark the limit: inside any sufficiently rich A (PA-interpreting), there will be true statements that A cannot decide — so the proof of determinism is relative to A."
+      ru "Сослаться на первую теорему Гёделя о неполноте, чтобы зафиксировать предел: в любой достаточно богатой A (интерпретирующей арифметику Пеано) найдутся истинные утверждения, не разрешимые в A; значит, доказательство детерминизма относительно A."
+      hi "गोडेल के प्रथम अपूर्णता प्रमेय का संदर्भ देकर सीमा अंकित कीजिए: किसी भी पर्याप्त समृद्ध A (PA का अर्थ करने वाले) में ऐसे सत्य कथन होते हैं जिन्हें A निर्णीत नहीं कर सकता; अतः निर्धारणवाद का प्रमाण A के सापेक्ष है।"
+      zh "援引哥德尔第一不完备定理以标出界限:任何足以表达 PA 的 A 都存在 A 无法判定的真命题,因此关于决定论的证明是相对 A 的。"
+    step conclusion
+      en "Conclude with a relative result: under axiom set A, determinism either holds (e.g. classical mechanics with Lipschitz forces) or provably fails (e.g. textbook quantum mechanics under the Born rule)."
+      ru "Сформулируйте относительный итог: при аксиоматике A детерминизм либо выполняется (например, классическая механика с липшицевыми силами), либо доказуемо не выполняется (например, стандартная квантовая механика с правилом Борна)."
+      hi "एक सापेक्ष परिणाम पर समाप्त करें: अभिगृहीत समुच्चय A के अंतर्गत निर्धारणवाद या तो सिद्ध होगा (जैसे लिप्शिट्ज़ बलों के साथ शास्त्रीय यांत्रिकी) या प्रमाणपूर्वक असफल (जैसे Born नियम के साथ मानक क्वांटम यांत्रिकी)।"
+      zh "给出相对结论:在公理集 A 下,决定论要么成立(如带 Lipschitz 条件力的经典力学),要么可证不成立(如带 Born 规则的标准量子力学)。"
+    missing_input
+      en "an explicit axiom set A (e.g. Newtonian mechanics or ZFC) in which you want determinism checked"
+      ru "явно выбранный набор аксиом A (например, ньютоновская механика или ZFC), в котором вы хотите, чтобы детерминизм был проверен"
+      hi "अभिगृहीत समुच्चय A का स्पष्ट चयन (जैसे न्यूटनीय यांत्रिकी या ZFC), जिसमें आप निर्धारणवाद का परीक्षण करना चाहते हैं"
+      zh "显式选择的公理集 A(例如牛顿力学或 ZFC),您希望在其中检验决定论"
+    missing_input
+      en "a formal definition of ""determinism"" inside that axiom set (Laplacian, causal, epistemic, …)"
+      ru "формальное определение «детерминизма» в этой аксиоматике (лапласовский, причинно-следственный, эпистемический и т.д.)"
+      hi "इस अभिगृहीत समुच्चय के अंतर्गत ""निर्धारणवाद"" की औपचारिक परिभाषा (Laplacian, कारणात्मक, ज्ञानमीमांसा आदि)"
+      zh "在该公理集下的""决定论""形式定义(拉普拉斯式、因果式、认识论式等)"
+    missing_input
+      en "an acceptance criterion — whether the result must be internally complete or may invoke a Gödel-style limitation"
+      ru "критерий принятия — должен ли результат быть полным во внутреннем смысле или разрешено сослаться на гёделев предел"
+      hi "स्वीकार्यता मानदंड — परिणाम आंतरिक रूप से पूर्ण होना चाहिए या गोडेल सीमा का संदर्भ स्वीकार्य है"
+      zh "采纳标准——结果需要在内部完备,还是允许引用哥德尔意义上的极限"
+  plan generic
+    method axiom_reduction
+    step hypothesis
+      en "Universal proof pipeline: impulse(""{prompt}"") → formalize (Wikidata-backed) → context (math / logic / science) → proof plan → verification → deformalize → finalize."
+      ru "Универсальный конвейер доказательства: impulse(«{prompt}») → formalize (Викиданные) → context (math / logic / science) → план доказательства → проверка → deformalize → finalize."
+      hi "सार्वभौमिक प्रमाण पाइपलाइन: impulse(""{prompt}"") → formalize (Wikidata) → context (math / logic / science) → प्रमाण योजना → सत्यापन → deformalize → finalize।"
+      zh "通用证明流程:impulse(""{prompt}"") → formalize(Wikidata)→ context(math / logic / science)→ 证明计划 → 校验 → deformalize → finalize。"
+    step inference
+      en "Restate the claim as a closed sentence in the chosen axiom set (supported: PA, ZFC, Newtonian mechanics, special / general relativity, classical electrodynamics)."
+      ru "Сформулируйте утверждение как закрытое предложение в выбранной аксиоматике (поддерживаются варианты: PA, ZFC, ньютоновская механика, специальная и общая теория относительности, классическая электродинамика)."
+      hi "कथन को चयनित अभिगृहीत समुच्चय में एक बंद वाक्य के रूप में लिखें (समर्थित विकल्प: PA, ZFC, न्यूटनीय यांत्रिकी, विशेष व सामान्य सापेक्षता, शास्त्रीय विद्युत-गतिकी)।"
+      zh "把陈述写成所选公理集中的一个闭命题(支持:PA、ZFC、牛顿力学、狭义与广义相对论、经典电动力学)。"
+    step inference
+      en "Pick a proof technique: direct calculation, induction, contradiction, construction, case analysis, contrapositive, tautology, known theorem, or axiom-set reduction."
+      ru "Выберите технику доказательства из списка: прямое вычисление, индукция, от противного, конструктивно, разбор случаев, контрапозиция, тавтология, известная теорема, сведение к аксиоматике."
+      hi "प्रमाण-तकनीक चुनिए: प्रत्यक्ष गणना, आगमन, अंतर्विरोध, रचनात्मक, मामलों का विश्लेषण, विपरीतधर्मी, सर्वसत्यता, ज्ञात प्रमेय, अभिगृहीतों में निरूपण।"
+      zh "选择证明方法:直接计算、归纳、反证、构造、分情况讨论、逆否、重言、已知定理、公理化归约。"
+    step conclusion
+      en "Once the axiom set and the statement form are fixed, the engine discharges the proof or the disproof in the chosen system. Every branch returns `Proven`, `Disproven`, `PartialPlan`, or `Inconclusive` — never a refusal."
+      ru "После уточнения аксиоматики и формы утверждения движок завершит доказательство либо опровержение в выбранной системе. Все ветви возвращают `Proven`, `Disproven`, `PartialPlan` или `Inconclusive` — отказа не бывает."
+      hi "अभिगृहीत समुच्चय और कथन का रूप तय करने के बाद इंजन चयनित तंत्र में प्रमाण या खंडन पूर्ण करेगा। हर शाखा `Proven`, `Disproven`, `PartialPlan` या `Inconclusive` लौटाती है — किसी भी रूप में इनकार नहीं किया जाता।"
+      zh "在选定公理集与陈述形式后,引擎将在该系统中完成证明或反驳。所有分支返回 `Proven`、`Disproven`、`PartialPlan` 或 `Inconclusive`——绝不拒答。"
+    missing_input
+      en "a formal restatement of the claim (closed sentence)"
+      ru "формальная запись утверждения (закрытое предложение)"
+      hi "कथन का औपचारिक रूप (बंद वाक्य)"
+      zh "陈述的形式化表达(闭命题)"
+    missing_input
+      en "the axiom set you want the proof to live in (PA, ZFC, …)"
+      ru "аксиоматика, в которой следует доказывать (PA, ZFC, …)"
+      hi "वह अभिगृहीत समुच्चय जिसमें प्रमाण देना है (PA, ZFC, …)"
+      zh "用于证明的公理集(PA、ZFC、……)"
+    missing_input
+      en "a preferred proof technique, if you have one"
+      ru "предпочитаемая техника доказательства, если есть"
+      hi "कोई वांछित प्रमाण-तकनीक, यदि हो"
+      zh "如有,期望的证明技术"
+  template interpretation_label
+    en "How I interpreted the request"
+    ru "Как я понял запрос"
+    hi "मैंने प्रश्न को कैसे समझा"
+    zh "对问题的理解"
+  template interpretation_proven
+    en "treating the request as the formal claim ""{statement}"" and discharging it by {method} inside relative-meta-logic."
+    ru "трактуем запрос как формальное утверждение «{statement}» и доказываем методом «{method}» в relative-meta-logic."
+    hi "प्रश्न को औपचारिक कथन ""{statement}"" मानकर relative-meta-logic में ""{method}"" विधि से प्रमाणित कर रहे हैं।"
+    zh "把问题视为形式命题“{statement}”,在 relative-meta-logic 中用“{method}”方法证明。"
+  template interpretation_disproven
+    en "treating the request as a claim to be refuted; applying {method} and producing a counterexample."
+    ru "трактуем запрос как утверждение, которое нужно опровергнуть; используем {method} и приводим контрпример."
+    hi "प्रश्न को खंडन योग्य कथन मानकर {method} का उपयोग कर रहे हैं और प्रतिउदाहरण देते हैं।"
+    zh "把问题视为应予反驳的断言,用{method}并给出反例。"
+  template interpretation_partial_plan
+    en "the prompt is not yet a closed sentence in a fixed axiom set; selected method: {method}. The plan below translates what we have into a formal signature, names the missing inputs, and lists clarifying questions for the final execution."
+    ru "пока не хватает входных данных для окончательного выполнения; выбранный метод — {method}. Ниже план: переводим имеющиеся сведения в формальную сигнатуру, выявляем недостающее и предлагаем уточняющие вопросы."
+    hi "अंतिम निष्पादन के लिए कुछ इनपुट कम हैं; चयनित विधि: {method}. नीचे योजना है — उपलब्ध जानकारी को औपचारिक सिग्नेचर में अनुवादित करें, अनुपस्थित इनपुट चिन्हित करें, और स्पष्टीकरण के प्रश्न पूछें।"
+    zh "尚缺少最终执行所需的输入;选用方法:{method}。下方计划:把已有信息翻译为形式签名,标出缺失输入,并给出澄清问题。"
+  template interpretation_inconclusive
+    en "the prompt parses as a claim but did not reduce to any known invariant; the reason is given below."
+    ru "запрос синтаксически разбирается как утверждение, но не сводится ни к одному известному инварианту; причина приведена ниже."
+    hi "प्रश्न सिंटैक्टिक रूप से मान्य है पर किसी ज्ञात अपरिवर्ती तक नहीं घटाया जा सका; नीचे कारण दिया है।"
+    zh "请求在语法上可作为断言,但无法化归为已知不变量;下面给出原因。"
+  template follow_up_intro
+    en "To move to the final execution, please clarify:"
+    ru "Чтобы перейти к финальному исполнению, уточните, пожалуйста:"
+    hi "अंतिम निष्पादन के लिए कृपया स्पष्ट करें:"
+    zh "为进入最终执行,请回答:"
+  template follow_up_label
+    en "Clarifying questions:"
+    ru "Уточняющие вопросы:"
+    hi "स्पष्टीकरण के प्रश्न:"
+    zh "澄清问题:"
+  template disproven_follow_ups
+    item
+      en "do you want to weaken the claim into a checkable form (e.g. replace equality with an inequality, or restrict the domain)?"
+      ru "хотите ли вы ослабить утверждение до проверяемой формы (например, заменить равенство неравенством или ограничить область)?"
+      hi "क्या आप कथन को जाँचने योग्य रूप तक शिथिल करना चाहते हैं (जैसे समता को असमिका से बदलना या क्षेत्र सीमित करना)?"
+      zh "是否希望把命题弱化为可证形式(例如把等式改为不等式,或限制定义域)?"
+    item
+      en "if the exact claim is required, should we add an axiom under which the counterexample is excluded?"
+      ru "если требуется ровно это утверждение, нужно ли добавить аксиому, при которой контрпример исключается?"
+      hi "यदि वही कथन ज़रूरी है, क्या आप कोई अभिगृहीत जोड़ना चाहते हैं जिससे प्रतिउदाहरण बाहर रहे?"
+      zh "若需保留原命题,是否要新增一条公理以排除该反例?"
+  template inconclusive_follow_ups
+    item
+      en "which exact statement do you want checked (one sentence)?"
+      ru "какой именно факт нужно проверить (одно предложение)?"
+      hi "कौन-सा कथन परीक्षणीय है (एक वाक्य में)?"
+      zh "准确而言要检验哪一个命题(用一句话表达)?"
+    item
+      en "in which axiom system (PA, ZFC, Newtonian mechanics, …)?"
+      ru "в какой системе аксиом (PA, ZFC, ньютоновская механика, …)?"
+      hi "किस अभिगृहीत प्रणाली में (PA, ZFC, न्यूटनीय यांत्रिकी, …)?"
+      zh "在哪一个公理系统中(PA、ZFC、牛顿力学……)?"
+    item
+      en "do you have a preferred proof technique?"
+      ru "есть ли предпочитаемая техника доказательства?"
+      hi "क्या कोई वांछित प्रमाण-तकनीक है?"
+      zh "是否有偏好的证明技术?"
+  template proof_heading
+    en "Proof"
+    ru "Доказательство"
+    hi "प्रमाण"
+    zh "证明"
+  template statement_label
+    en "Statement"
+    ru "Утверждение"
+    hi "कथन"
+    zh "命题"
+  template method_intro
+    en "method"
+    ru "метод"
+    hi "विधि"
+    zh "方法"
+  template disproof_heading
+    en "Disproof"
+    ru "Опровержение"
+    hi "खंडन"
+    zh "反驳"
+  template counterexample_label
+    en "Counterexample"
+    ru "Контрпример"
+    hi "प्रतिउदाहरण"
+    zh "反例"
+  template plan_heading
+    en "Proof plan"
+    ru "План доказательства"
+    hi "प्रमाण योजना"
+    zh "证明计划"
+  template missing_label
+    en "Still needed from you"
+    ru "Нужно от вас"
+    hi "आपसे चाहिए"
+    zh "需要您提供"
+  template inconclusive_heading
+    en "Inconclusive result"
+    ru "Неокончательный результат"
+    hi "अनिर्णायक परिणाम"
+    zh "结论待定"
+  template method_direct_calculation
+    en "direct calculation"
+    ru "прямое вычисление"
+    hi "प्रत्यक्ष गणना"
+    zh "直接计算"
+  template method_contradiction
+    en "proof by contradiction"
+    ru "от противного"
+    hi "अंतर्विरोध द्वारा"
+    zh "反证法"
+  template method_induction
+    en "mathematical induction"
+    ru "по индукции"
+    hi "गणितीय आगमन"
+    zh "数学归纳法"
+  template method_construction
+    en "constructive proof"
+    ru "конструктивно"
+    hi "रचनात्मक प्रमाण"
+    zh "构造法"
+  template method_contrapositive
+    en "contrapositive"
+    ru "от противоположного"
+    hi "विपरीतधर्मी"
+    zh "逆否命题"
+  template method_cases
+    en "case analysis"
+    ru "разбор случаев"
+    hi "मामलों का विश्लेषण"
+    zh "分情况讨论"
+  template method_known_theorem
+    en "known theorem"
+    ru "известная теорема"
+    hi "ज्ञात प्रमेय"
+    zh "已知定理"
+  template method_axiom_reduction
+    en "axiom-set reduction"
+    ru "сведение к аксиоматике"
+    hi "अभिगृहीतों में निरूपण"
+    zh "公理化归约"
+  template method_tautology
+    en "tautology check"
+    ru "тавтология"
+    hi "सर्वसत्यता जाँच"
+    zh "重言式"
+  template method_decision_procedure
+    en "relative-meta-logic / SMT decision procedure"
+    ru "процедура разрешения relative-meta-logic / SMT"
+    hi "relative-meta-logic / SMT निर्णय प्रक्रिया"
+    zh "relative-meta-logic / SMT 判定过程"
+  template step_hypothesis
+    en "Hypothesis"
+    ru "Гипотеза"
+    hi "परिकल्पना"
+    zh "前提"
+  template step_definition
+    en "Definition"
+    ru "Определение"
+    hi "परिभाषा"
+    zh "定义"
+  template step_axiom
+    en "Axiom"
+    ru "Аксиома"
+    hi "अभिगृहीत"
+    zh "公理"
+  template step_inference
+    en "Inference"
+    ru "Вывод"
+    hi "निष्कर्षण"
+    zh "推理"
+  template step_sub_proof
+    en "Sub-proof"
+    ru "Вспомогательное доказательство"
+    hi "उप-प्रमाण"
+    zh "子证明"
+  template step_conclusion
+    en "Conclusion"
+    ru "Заключение"
+    hi "निष्कर्ष"
+    zh "结论"
+  template arithmetic_interpret
+    en "Interpret ""{statement}"" as an arithmetic claim over the rational numbers, where each side is a closed expression."
+    ru "Будем рассматривать «{statement}» как арифметическое утверждение над рациональными числами, в котором каждая сторона — замкнутое выражение."
+    hi """{statement}"" को परिमेय संख्याओं पर एक अंकगणितीय दावा मानें, जिसमें प्रत्येक पक्ष एक बंद व्यंजक है।"
+    zh "把“{statement}”视为有理数上的算术命题，其两边都是闭表达式。"
+  template arithmetic_evaluate_left
+    en "Evaluate the left-hand side: {lhs} = {lhs_value}."
+    ru "Вычислим левую часть: {lhs} = {lhs_value}."
+    hi "बायाँ पक्ष निकालें: {lhs} = {lhs_value}।"
+    zh "计算左边：{lhs} = {lhs_value}。"
+  template arithmetic_evaluate_right
+    en "Evaluate the right-hand side: {rhs} = {rhs_value}."
+    ru "Вычислим правую часть: {rhs} = {rhs_value}."
+    hi "दायाँ पक्ष निकालें: {rhs} = {rhs_value}।"
+    zh "计算右边：{rhs} = {rhs_value}。"
+  template arithmetic_compare
+    en "Compare the two values: {lhs_value} {symbol} {rhs_value}."
+    ru "Сравним два значения: {lhs_value} {symbol} {rhs_value}."
+    hi "दोनों मानों की तुलना करें: {lhs_value} {symbol} {rhs_value}।"
+    zh "比较两个值：{lhs_value} {symbol} {rhs_value}。"
+  template arithmetic_holds
+    en "Therefore {lhs} {relation} {rhs}, so the claim holds. ∎"
+    ru "Следовательно, {lhs} {relation} {rhs}, и утверждение верно. ∎"
+    hi "अतः {lhs} {symbol} {rhs} सत्य है, इसलिए दावा सिद्ध होता है। ∎"
+    zh "因此 {lhs} {relation} {rhs}，命题成立。∎"
+  template arithmetic_counterexample
+    en "Evaluated values: {lhs} = {lhs_value}, {rhs} = {rhs_value}. The relation {symbol} does not hold."
+    ru "Вычисленные значения: {lhs} = {lhs_value}, {rhs} = {rhs_value}. Отношение {symbol} не выполняется."
+    hi "गणना किए गए मान: {lhs} = {lhs_value}, {rhs} = {rhs_value}। संबंध {symbol} सत्य नहीं है।"
+    zh "计算所得的值：{lhs} = {lhs_value}，{rhs} = {rhs_value}。关系 {symbol} 不成立。"
+  template arithmetic_contradicted
+    en "The evaluated values contradict the asserted relation ""{relation}"", so the original claim is false."
+    ru "Вычисленные значения противоречат заявленному отношению «{relation}», поэтому исходное утверждение ложно."
+    hi "गणना किए गए मान दावा किए गए संबंध ""{relation}"" का खंडन करते हैं, इसलिए मूल दावा असत्य है।"
+    zh "计算所得的值与所断言的关系“{relation}”相矛盾，因此原命题为假。"
+  template arithmetic_failure_both
+    en "Could not evaluate either side as a closed arithmetic expression: left side reported ""{left}""; right side reported ""{right}"". The proof engine needs both sides to reduce to numeric values."
+    ru "Ни одну из сторон не удалось вычислить как замкнутое арифметическое выражение: для левой части получено «{left}», для правой — «{right}». Движку доказательств нужно, чтобы обе стороны сводились к числам."
+    hi "किसी भी पक्ष को बंद अंकगणितीय व्यंजक के रूप में नहीं निकाला जा सका: बाएँ पक्ष ने ""{left}"" बताया; दाएँ पक्ष ने ""{right}"" बताया। प्रमाण इंजन को दोनों पक्षों का संख्यात्मक मानों तक घटना आवश्यक है।"
+    zh "两边都无法作为闭算术表达式求值：左边报告“{left}”；右边报告“{right}”。证明引擎需要两边都化归为数值。"
+  template arithmetic_failure_left
+    en "Could not evaluate the left side as a closed arithmetic expression: ""{left}"". Restate it with numeric literals and the operators + - * / ( )."
+    ru "Левую часть не удалось вычислить как замкнутое арифметическое выражение: «{left}». Переформулируйте её с числовыми литералами и операторами + - * / ( )."
+    hi "बाएँ पक्ष को बंद अंकगणितीय व्यंजक के रूप में नहीं निकाला जा सका: ""{left}""। इसे संख्यात्मक मानों और संक्रियाओं + - * / ( ) के साथ फिर से लिखें।"
+    zh "左边无法作为闭算术表达式求值：“{left}”。请用数字字面量和运算符 + - * / ( ) 重新表述。"
+  template arithmetic_failure_right
+    en "Could not evaluate the right side as a closed arithmetic expression: ""{right}"". Restate it with numeric literals and the operators + - * / ( )."
+    ru "Правую часть не удалось вычислить как замкнутое арифметическое выражение: «{right}». Переформулируйте её с числовыми литералами и операторами + - * / ( )."
+    hi "दाएँ पक्ष को बंद अंकगणितीय व्यंजक के रूप में नहीं निकाला जा सका: ""{right}""। इसे संख्यात्मक मानों और संक्रियाओं + - * / ( ) के साथ फिर से लिखें।"
+    zh "右边无法作为闭算术表达式求值：“{right}”。请用数字字面量和运算符 + - * / ( ) 重新表述。"
+  template arithmetic_failure_none
+    en "The arithmetic evaluator returned no value. Please rewrite the claim using concrete numeric literals."
+    ru "Арифметический вычислитель не вернул значения. Перепишите утверждение с конкретными числовыми литералами."
+    hi "अंकगणितीय मूल्यांकक ने कोई मान नहीं लौटाया। कृपया दावे को ठोस संख्यात्मक मानों के साथ फिर से लिखें।"
+    zh "算术求值器没有返回任何值。请用具体的数字字面量重写该命题。"
+  template relation_eq
+    en "equals"
+    ru "равно"
+    hi "बराबर है"
+    zh "等于"
+  template relation_neq
+    en "is not equal to"
+    ru "не равно"
+    hi "बराबर नहीं है"
+    zh "不等于"
+  template relation_lt
+    en "is less than"
+    ru "меньше"
+    hi "से कम है"
+    zh "小于"
+  template relation_gt
+    en "is greater than"
+    ru "больше"
+    hi "से अधिक है"
+    zh "大于"
+  template relation_le
+    en "is at most"
+    ru "не больше"
+    hi "से अधिक नहीं है"
+    zh "小于或等于"
+  template relation_ge
+    en "is at least"
+    ru "не меньше"
+    hi "से कम नहीं है"
+    zh "大于或等于"
+  template boolean_falsified
+    en "{assignment} makes {formula} false."
+    ru "{assignment} делает {formula} ложной."
+    hi "{assignment} से {formula} असत्य हो जाता है।"
+    zh "{assignment} 使 {formula} 为假。"
+  template boolean_sat_delegate_tautology
+    en "Delegate the formula to the relative-meta-logic / SMT decision procedure. With {variable_count} variables an exhaustive truth table (2^{variable_count} rows) is infeasible, so the verified backend is a DPLL satisfiability search."
+    ru "Передадим формулу процедуре разрешения relative-meta-logic / SMT. При {variable_count} переменных полная таблица истинности (2^{variable_count} строк) неосуществима, поэтому проверенный механизм — поиск выполнимости DPLL."
+    hi "सूत्र को relative-meta-logic / SMT निर्णय प्रक्रिया को सौंपें। {variable_count} चरों के साथ पूर्ण सत्य-सारणी (2^{variable_count} पंक्तियाँ) संभव नहीं है, इसलिए सत्यापित आधार DPLL संतुष्टि-खोज है।"
+    zh "把公式交给 relative-meta-logic / SMT 判定过程。有 {variable_count} 个变量时，完整真值表（2^{variable_count} 行）不可行，因此经过验证的后端是 DPLL 可满足性搜索。"
+  template boolean_tseitin_negate
+    en "Negate the goal and Tseitin-encode ¬({formula}) into conjunctive normal form: {clause_count} clauses over the propositional variables plus gate auxiliaries."
+    ru "Отрицаем цель и кодируем ¬({formula}) по Цейтину в конъюнктивную нормальную форму: {clause_count} дизъюнктов над пропозициональными переменными и вспомогательными переменными вентилей."
+    hi "लक्ष्य का निषेध करें और ¬({formula}) को Tseitin कूटन से संयोजक प्रसामान्य रूप में बदलें: प्रस्तावात्मक चरों और सहायक गेट-चरों पर {clause_count} उपवाक्य।"
+    zh "对目标取反，并用 Tseitin 编码把 ¬({formula}) 化为合取范式：在命题变量与门辅助变量上共 {clause_count} 个子句。"
+  template boolean_dpll_unsat
+    en "DPLL with unit propagation, pure-literal elimination, and backtracking finds the negation unsatisfiable."
+    ru "DPLL с распространением единичных дизъюнктов, исключением чистых литералов и возвратами устанавливает, что отрицание невыполнимо."
+    hi "इकाई-प्रसार, शुद्ध-लिटरल निष्कासन और बैकट्रैकिंग वाला DPLL पाता है कि निषेध असंतुष्टनीय है।"
+    zh "带单元传播、纯文字消去与回溯的 DPLL 判定该否定不可满足。"
+  template boolean_sat_tautology
+    en "Because ¬({formula}) is unsatisfiable, every assignment satisfies {formula}, so it is a tautology. ∎"
+    ru "Поскольку ¬({formula}) невыполнима, любое означивание выполняет {formula}, значит, это тавтология. ∎"
+    hi "चूँकि ¬({formula}) असंतुष्टनीय है, हर मान-निर्धारण {formula} को संतुष्ट करता है, अतः यह सर्वसत्य है। ∎"
+    zh "由于 ¬({formula}) 不可满足，每一种赋值都满足 {formula}，所以它是重言式。∎"
+  template boolean_sat_delegate_countermodel
+    en "Delegate the formula to the relative-meta-logic / SMT decision procedure. With {variable_count} variables a truth table is infeasible, so the verified backend is a DPLL satisfiability search."
+    ru "Передадим формулу процедуре разрешения relative-meta-logic / SMT. При {variable_count} переменных таблица истинности неосуществима, поэтому проверенный механизм — поиск выполнимости DPLL."
+    hi "सूत्र को relative-meta-logic / SMT निर्णय प्रक्रिया को सौंपें। {variable_count} चरों के साथ सत्य-सारणी संभव नहीं है, इसलिए सत्यापित आधार DPLL संतुष्टि-खोज है।"
+    zh "把公式交给 relative-meta-logic / SMT 判定过程。有 {variable_count} 个变量时真值表不可行，因此经过验证的后端是 DPLL 可满足性搜索。"
+  template boolean_tseitin_search
+    en "Tseitin-encode ¬({formula}) into {clause_count} CNF clauses and search for an assignment that makes the formula false."
+    ru "Кодируем ¬({formula}) по Цейтину в {clause_count} дизъюнктов КНФ и ищем означивание, при котором формула ложна."
+    hi "¬({formula}) को Tseitin कूटन से {clause_count} CNF उपवाक्यों में बदलें और ऐसा मान-निर्धारण खोजें जिससे सूत्र असत्य हो।"
+    zh "用 Tseitin 编码把 ¬({formula}) 化为 {clause_count} 个 CNF 子句，并搜索使公式为假的赋值。"
+  template boolean_dpll_countermodel
+    en "DPLL returns the satisfying assignment {assignment}, a countermodel."
+    ru "DPLL возвращает выполняющее означивание {assignment} — контрмодель."
+    hi "DPLL संतुष्ट करने वाला मान-निर्धारण {assignment} लौटाता है, जो एक प्रतिमॉडल है।"
+    zh "DPLL 返回可满足赋值 {assignment}，即一个反模型。"
+  template boolean_not_tautology
+    en "Therefore {formula} is not a tautology. ∎"
+    ru "Следовательно, {formula} не является тавтологией. ∎"
+    hi "अतः {formula} सर्वसत्य नहीं है। ∎"
+    zh "因此 {formula} 不是重言式。∎"
+  template boolean_truth_table_delegate
+    en "Delegate the formula to the relative-meta-logic / SMT decision procedure. For the propositional fragment, the verified backend is an exhaustive truth-table audit over every assignment."
+    ru "Передадим формулу процедуре разрешения relative-meta-logic / SMT. Для пропозиционального фрагмента проверенный механизм — полный перебор таблицы истинности по всем означиваниям."
+    hi "सूत्र को relative-meta-logic / SMT निर्णय प्रक्रिया को सौंपें। प्रस्तावात्मक खंड के लिए सत्यापित आधार हर मान-निर्धारण पर पूर्ण सत्य-सारणी जाँच है।"
+    zh "把公式交给 relative-meta-logic / SMT 判定过程。对命题片段，经过验证的后端是遍历所有赋值的完整真值表检查。"
+  template boolean_normalized
+    en "Normalized formula: {formula}."
+    ru "Нормализованная формула: {formula}."
+    hi "प्रसामान्यीकृत सूत्र: {formula}।"
+    zh "规范化公式：{formula}。"
+  template boolean_truth_table
+    en "Truth table: {rows}."
+    ru "Таблица истинности: {rows}."
+    hi "सत्य-सारणी: {rows}।"
+    zh "真值表：{rows}。"
+  template boolean_tautology
+    en "Every assignment makes {formula} true, so the formula is a tautology. ∎"
+    ru "Любое означивание делает {formula} истинной, значит, формула — тавтология. ∎"
+    hi "हर मान-निर्धारण {formula} को सत्य बनाता है, अतः सूत्र सर्वसत्य है। ∎"
+    zh "每一种赋值都使 {formula} 为真，所以该公式是重言式。∎"
+  template boolean_enumerate_delegate
+    en "Delegate the formula to the relative-meta-logic / SMT decision procedure and enumerate the finite Boolean model space."
+    ru "Передадим формулу процедуре разрешения relative-meta-logic / SMT и переберём конечное пространство булевых моделей."
+    hi "सूत्र को relative-meta-logic / SMT निर्णय प्रक्रिया को सौंपें और सीमित बूलीय मॉडल-समष्टि की गणना करें।"
+    zh "把公式交给 relative-meta-logic / SMT 判定过程，并枚举有限的布尔模型空间。"
+  template boolean_countermodel
+    en "The assignment {assignment} is a countermodel."
+    ru "Означивание {assignment} — контрмодель."
+    hi "मान-निर्धारण {assignment} एक प्रतिमॉडल है।"
+    zh "赋值 {assignment} 是一个反模型。"
+  template linear_delegate
+    en "Delegate the normalized claim to the relative-meta-logic / SMT decision procedure for quantifier-free linear real arithmetic."
+    ru "Передадим нормализованное утверждение процедуре разрешения relative-meta-logic / SMT для бескванторной линейной арифметики действительных чисел."
+    hi "प्रसामान्यीकृत दावे को परिमाणक-रहित रैखिक वास्तविक अंकगणित की relative-meta-logic / SMT निर्णय प्रक्रिया को सौंपें।"
+    zh "把规范化后的命题交给无量词线性实数算术的 relative-meta-logic / SMT 判定过程。"
+  template linear_normal_form
+    en "Move every term to the left and simplify the affine normal form: {atom} becomes {affine} {symbol} 0."
+    ru "Перенесём все члены влево и упростим аффинную нормальную форму: {atom} превращается в {affine} {symbol} 0."
+    hi "सभी पदों को बाईं ओर ले जाकर एफ़ाइन प्रसामान्य रूप सरल करें: {atom} बन जाता है {affine} {symbol} 0।"
+    zh "把所有项移到左边并化简仿射范式：{atom} 变为 {affine} {symbol} 0。"
+  template linear_coefficients_cancel
+    en "All variable coefficients cancel, so the decision procedure checks a constant relation instead of looking up a named theorem."
+    ru "Все коэффициенты при переменных сокращаются, поэтому процедура разрешения проверяет отношение между константами, а не ищет именованную теорему."
+    hi "सभी चर-गुणांक कट जाते हैं, इसलिए निर्णय प्रक्रिया किसी नामित प्रमेय को खोजने के बजाय एक अचर संबंध जाँचती है।"
+    zh "所有变量系数都相互抵消，因此判定过程检验的是一个常数关系，而不是查找某个具名定理。"
+  template linear_identity_holds
+    en "Therefore {atom} holds in linear real arithmetic. ∎"
+    ru "Следовательно, {atom} выполняется в линейной арифметике действительных чисел. ∎"
+    hi "अतः {atom} रैखिक वास्तविक अंकगणित में सत्य है। ∎"
+    zh "因此 {atom} 在线性实数算术中成立。∎"
+  template linear_constant_fails
+    en "The affine normal form reduces to the constant {constant}, and that constant does not satisfy {symbol} 0."
+    ru "Аффинная нормальная форма сводится к константе {constant}, и эта константа не удовлетворяет {symbol} 0."
+    hi "एफ़ाइन प्रसामान्य रूप अचर {constant} तक घटता है, और वह अचर {symbol} 0 को संतुष्ट नहीं करता।"
+    zh "仿射范式化归为常数 {constant}，而该常数不满足 {symbol} 0。"
+  template linear_atom_false
+    en "Therefore {atom} is false. ∎"
+    ru "Следовательно, {atom} ложно. ∎"
+    hi "अतः {atom} असत्य है। ∎"
+    zh "因此 {atom} 为假。∎"
+  template linear_free_variables
+    en "The affine normal form still contains variables: {affine} {symbol} 0."
+    ru "Аффинная нормальная форма всё ещё содержит переменные: {affine} {symbol} 0."
+    hi "एफ़ाइन प्रसामान्य रूप में अब भी चर हैं: {affine} {symbol} 0।"
+    zh "仿射范式中仍含有变量：{affine} {symbol} 0。"
+  template linear_model_search
+    en "A model search over the free variables found {assignment}."
+    ru "Поиск модели по свободным переменным нашёл {assignment}."
+    hi "मुक्त चरों पर मॉडल-खोज से {assignment} मिला।"
+    zh "对自由变量的模型搜索找到了 {assignment}。"
+  template linear_not_universal
+    en "Under that assignment the claim is false, so {atom} is not universally valid."
+    ru "При этом означивании утверждение ложно, поэтому {atom} не является общезначимым."
+    hi "उस मान-निर्धारण पर दावा असत्य है, इसलिए {atom} सार्वत्रिक रूप से मान्य नहीं है।"
+    zh "在该赋值下命题为假，因此 {atom} 并非普遍有效。"
+  template linear_premises_goal
+    en "Premises: {premises}. Goal: {goal}."
+    ru "Посылки: {premises}. Цель: {goal}."
+    hi "आधार-वाक्य: {premises}। लक्ष्य: {goal}।"
+    zh "前提：{premises}。目标：{goal}。"
+  template linear_premises_interval
+    en "The premises reduce to the interval {interval}."
+    ru "Посылки сводятся к интервалу {interval}."
+    hi "आधार-वाक्य अंतराल {interval} तक घटते हैं।"
+    zh "前提化归为区间 {interval}。"
+  template linear_negated_goal
+    en "Adding the negation of the goal makes the interval system unsatisfiable; equivalently, every model of the premises satisfies {goal}."
+    ru "Добавление отрицания цели делает систему интервалов невыполнимой; иначе говоря, каждая модель посылок удовлетворяет {goal}."
+    hi "लक्ष्य का निषेध जोड़ने पर अंतराल-तंत्र असंतुष्टनीय हो जाता है; अर्थात आधार-वाक्यों का हर मॉडल {goal} को संतुष्ट करता है।"
+    zh "加入目标的否定后区间系统不可满足；等价地，前提的每个模型都满足 {goal}。"
+  template linear_entailment_valid
+    en "Therefore {statement} is valid in linear real arithmetic. ∎"
+    ru "Следовательно, {statement} общезначимо в линейной арифметике действительных чисел. ∎"
+    hi "अतः {statement} रैखिक वास्तविक अंकगणित में मान्य है। ∎"
+    zh "因此 {statement} 在线性实数算术中有效。∎"
+  template linear_premises
+    en "Premises: {premises}."
+    ru "Посылки: {premises}."
+    hi "आधार-वाक्य: {premises}।"
+    zh "前提：{premises}。"
+  template linear_premise_interval_empty
+    en "The premise interval is empty: {contradiction}."
+    ru "Интервал посылок пуст: {contradiction}."
+    hi "आधार-वाक्यों का अंतराल रिक्त है: {contradiction}।"
+    zh "前提区间为空：{contradiction}。"
+  template linear_vacuous
+    en "With no satisfying premise model, the implication {statement} is vacuously valid. ∎"
+    ru "Поскольку у посылок нет ни одной модели, импликация {statement} истинна тривиально. ∎"
+    hi "आधार-वाक्यों का कोई संतोषक मॉडल न होने से निहितार्थ {statement} रिक्त रूप से मान्य है। ∎"
+    zh "由于前提没有任何可满足的模型，蕴涵 {statement} 空真成立。∎"
+  template linear_premises_satisfiable
+    en "The premises are satisfiable and reduce to {interval}."
+    ru "Посылки выполнимы и сводятся к {interval}."
+    hi "आधार-वाक्य संतुष्टनीय हैं और {interval} तक घटते हैं।"
+    zh "前提可满足，并化归为 {interval}。"
+  template linear_premises_witness
+    en "The assignment {assignment} satisfies the premises and falsifies the goal."
+    ru "Означивание {assignment} выполняет посылки и опровергает цель."
+    hi "मान-निर्धारण {assignment} आधार-वाक्यों को संतुष्ट करता है और लक्ष्य को असत्य करता है।"
+    zh "赋值 {assignment} 满足前提并使目标为假。"
+  template linear_entailment_invalid
+    en "Therefore {statement} is not valid. ∎"
+    ru "Следовательно, {statement} не является общезначимым. ∎"
+    hi "अतः {statement} मान्य नहीं है। ∎"
+    zh "因此 {statement} 无效。∎"
+  template linear_constraints
+    en "Constraints: {constraints}."
+    ru "Ограничения: {constraints}."
+    hi "प्रतिबंध: {constraints}।"
+    zh "约束：{constraints}。"
+  template linear_constraints_reduce
+    en "The constraints reduce to {interval}."
+    ru "Ограничения сводятся к {interval}."
+    hi "प्रतिबंध {interval} तक घटते हैं।"
+    zh "约束化归为 {interval}。"
+  template linear_witness
+    en "Witness found: {assignment}."
+    ru "Найден пример: {assignment}."
+    hi "साक्षी मिला: {assignment}।"
+    zh "找到见证：{assignment}。"
+  template linear_satisfiable
+    en "Therefore the constraint system is satisfiable. ∎"
+    ru "Следовательно, система ограничений выполнима. ∎"
+    hi "अतः प्रतिबंध-तंत्र संतुष्टनीय है। ∎"
+    zh "因此该约束系统可满足。∎"
+  template linear_empty_model_set
+    en "The interval solver reports an empty model set: {contradiction}. Last interval state: {interval}."
+    ru "Интервальный решатель сообщает о пустом множестве моделей: {contradiction}. Последнее состояние интервала: {interval}."
+    hi "अंतराल-हलकर्ता रिक्त मॉडल-समुच्चय बताता है: {contradiction}। अंतिम अंतराल-स्थिति: {interval}।"
+    zh "区间求解器报告模型集为空：{contradiction}。最后的区间状态：{interval}。"
+  template linear_unsatisfiable
+    en "Therefore the constraint system is unsatisfiable. ∎"
+    ru "Следовательно, система ограничений невыполнима. ∎"
+    hi "अतः प्रतिबंध-तंत्र असंतुष्टनीय है। ∎"
+    zh "因此该约束系统不可满足。∎"
+  template linear_no_assignment
+    en "No assignment exists: {contradiction}."
+    ru "Подходящего означивания не существует: {contradiction}."
+    hi "कोई मान-निर्धारण संभव नहीं है: {contradiction}।"
+    zh "不存在满足条件的赋值：{contradiction}。"
+  template linear_constant_counterexample
+    en "The affine normal form is the constant {constant}, so {atom} is false."
+    ru "Аффинная нормальная форма равна константе {constant}, поэтому {atom} ложно."
+    hi "एफ़ाइन प्रसामान्य रूप अचर {constant} है, इसलिए {atom} असत्य है।"
+    zh "仿射范式是常数 {constant}，因此 {atom} 为假。"
+  template linear_assignment_falsifies
+    en "{assignment} makes {atom} false."
+    ru "{assignment} делает {atom} ложным."
+    hi "{assignment} से {atom} असत्य हो जाता है।"
+    zh "{assignment} 使 {atom} 为假。"
+  template linear_satisfies_every_constraint
+    en "{assignment} satisfies every listed constraint."
+    ru "{assignment} удовлетворяет всем перечисленным ограничениям."
+    hi "{assignment} सूचीबद्ध हर प्रतिबंध को संतुष्ट करता है।"
+    zh "{assignment} 满足所列的每一个约束。"
+  template linear_premises_counterexample
+    en "{assignment} satisfies the premises but makes {goal} false."
+    ru "{assignment} выполняет посылки, но делает {goal} ложным."
+    hi "{assignment} आधार-वाक्यों को संतुष्ट करता है पर {goal} को असत्य कर देता है।"
+    zh "{assignment} 满足前提，却使 {goal} 为假。"
+  template linear_premises_inconsistent
+    en "the premises are inconsistent"
+    ru "посылки несовместны"
+    hi "आधार-वाक्य असंगत हैं"
+    zh "前提不相容"
+  template linear_empty_intersection
+    en "the interval constraints have empty intersection"
+    ru "пересечение интервальных ограничений пусто"
+    hi "अंतराल-प्रतिबंधों का सर्वनिष्ठ रिक्त है"
+    zh "区间约束的交集为空"
+  template linear_conflicting_values
+    en "requires {first} and {second} at the same time"
+    ru "требует одновременно {first} и {second}"
+    hi "एक साथ {first} और {second} की माँग करता है"
+    zh "同时要求 {first} 与 {second}"
+  template linear_conflicting_bounds
+    en "requires x {lower_symbol} {lower} and x {upper_symbol} {upper}"
+    ru "требует x {lower_symbol} {lower} и x {upper_symbol} {upper}"
+    hi "x {lower_symbol} {lower} और x {upper_symbol} {upper} की माँग करता है"
+    zh "要求 x {lower_symbol} {lower} 且 x {upper_symbol} {upper}"
+  template linear_excluded_value
+    en "requires x = {value}, but the interval excludes that value"
+    ru "требует x = {value}, но интервал исключает это значение"
+    hi "x = {value} की माँग करता है, पर अंतराल उस मान को बाहर रखता है"
+    zh "要求 x = {value}，但区间排除了该值"
+  template linear_atom_contradiction
+    en "{atom} is false"
+    ru "{atom} ложно"
+    hi "{atom} असत्य है"
+    zh "{atom} 为假"
+  template number_constraint_integer_unique
+    en "If this is an integer-number riddle, the unique answer is {only}."
+    ru "Если это задача про целое число, единственный ответ: {only}."
+    hi "यदि यह पूर्णांक वाली पहेली है, तो एकमात्र उत्तर {only} है।"
+    zh "如果这是一道整数谜题，唯一的答案是 {only}。"
+  template number_constraint_integer_none
+    en "If this is an integer-number riddle, there is no solution."
+    ru "Если это задача про целое число, решения нет."
+    hi "यदि यह पूर्णांक वाली पहेली है, तो कोई हल नहीं है।"
+    zh "如果这是一道整数谜题，则无解。"
+  template number_constraint_integer_range
+    en "If this is an integer-number riddle, the answer is not unique: every integer from {start} through {end} fits."
+    ru "Если это задача про целые числа, ответ не единственный: подходит любое целое от {start} до {end}."
+    hi "यदि यह पूर्णांक वाली पहेली है, तो उत्तर अद्वितीय नहीं है: {start} से {end} तक का हर पूर्णांक उपयुक्त है।"
+    zh "如果这是一道整数谜题，答案不唯一：从 {start} 到 {end} 的每个整数都符合。"
+  template number_constraint_integer_multiple
+    en "If this is an integer-number riddle, the answer is not unique: {candidates} all fit."
+    ru "Если это задача про целые числа, ответ не единственный: подходят {candidates}."
+    hi "यदि यह पूर्णांक वाली पहेली है, तो उत्तर अद्वितीय नहीं है: {candidates} सभी उपयुक्त हैं।"
+    zh "如果这是一道整数谜题，答案不唯一：{candidates} 都符合。"
+  template number_constraint_real_multiple
+    en "If real numbers are allowed, the answer is not unique; for example, x = {example} also fits."
+    ru "Если разрешены вещественные числа, ответ не единственный: например, x = {example} тоже подходит."
+    hi "यदि वास्तविक संख्याएँ मान्य हैं, तो उत्तर अद्वितीय नहीं है; उदाहरण के लिए, x = {example} भी उपयुक्त है।"
+    zh "如果允许实数，答案不唯一；例如 x = {example} 也符合。"
+  template number_constraint_real_single
+    en "Over the real numbers there is also a single solution: x = {value}."
+    ru "На вещественных числах тоже есть единственное решение: x = {value}."
+    hi "वास्तविक संख्याओं पर भी एक ही हल है: x = {value}।"
+    zh "在实数范围内也只有唯一解：x = {value}。"
+  template number_constraint_real_inconsistent
+    en "Over the real numbers, these constraints are inconsistent."
+    ru "На вещественных числах эти ограничения несовместимы."
+    hi "वास्तविक संख्याओं पर ये प्रतिबंध असंगत हैं।"
+    zh "在实数范围内，这些约束互相矛盾。"
+  template number_constraint_answer
+    en "{integer_line}\n\nInteger formalization: x in Z, {formalization}. Solver form: `{statement}`.\n\n{real_line}\n\nFormal relative-meta-logic / SMT check:\n{formal_check}"
+    ru "{integer_line}\n\nФормализация над целыми: x in Z, {formalization}. Проверяемая форма для решателя: `{statement}`.\n\n{real_line}\n\nФормальная проверка relative-meta-logic / SMT:\n{formal_check}"
+    hi "{integer_line}\n\nपूर्णांकों पर औपचारिकीकरण: x in Z, {formalization}। हलकर्ता के लिए रूप: `{statement}`।\n\n{real_line}\n\nrelative-meta-logic / SMT से औपचारिक जाँच:\n{formal_check}"
+    zh "{integer_line}\n\n整数上的形式化：x in Z, {formalization}。求解器形式：`{statement}`。\n\n{real_line}\n\nrelative-meta-logic / SMT 形式检查：\n{formal_check}"

@@ -1,0 +1,23 @@
+Set the contents of js/worker/formal_ai_worker_seed_captures.js to exactly this content:
+````````````text
+// Content-addressed captures in the same registry as their providers.
+async function sourceWalkSeedCapture(url, raw = seedRawText(SEED_RAW, "sources-registry.lino")) {
+  const root = self.FormalAiSeed.parse(raw || "");
+  const sections = root.name === "source-captures" ? [root] : (root.children || []).filter(node => node.name === "source-captures");
+  const nodes = sections.flatMap(node =>
+    (node.children || []).filter(child => child.name === "capture"));
+  const matches = nodes.filter(node => sourceWalkChildValue(node, "url") === url);
+  if (!matches.length) return null;
+  if (matches.length !== 1) return { ok: false, url, error: "ambiguous_capture" };
+  const node = matches[0];
+  const text = sourceWalkChildValue(node, "body");
+  const fetchedAt = sourceWalkChildValue(node, "fetched-at");
+  const recorded = sourceWalkChildValue(node, "sha256");
+  const sha256 = await sourceWalkSha256Hex(text);
+  if (!/^\d+$/u.test(fetchedAt) || Number(fetchedAt) <= 0
+    || !/^[0-9a-f]{64}$/u.test(recorded) || sha256 !== recorded || node.value !== recorded) {
+    return { ok: false, url, error: "invalid_capture" };
+  }
+  return { ok: true, url, text, fetchedAt, sha256, cached: true };
+}
+````````````

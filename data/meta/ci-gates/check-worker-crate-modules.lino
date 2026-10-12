@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-worker-crate-modules
+  stage web
+  description "R1188-U18, R1188-U19, R1188-U21: the js/worker/formal_ai_worker_crate_*.js factories, the crate modules the chat routes call (text formalization, dependency summarization, page formalization, round-trip translation) and their imports, are byte-current against js/agentic/crate/ and the meaning seeds of data/meta/seed-registry.lino they are generated from."
+  run "node scripts/generate-worker-crate-modules.mjs --check"
+  justification "PR #1188 (R1188-U29, JavaScript first): the browser worker runs the JavaScript root's own crate modules instead of a second port, so a crate module edited without regenerating its worker copy would make the browser answer differ from the JavaScript root and from Rust."

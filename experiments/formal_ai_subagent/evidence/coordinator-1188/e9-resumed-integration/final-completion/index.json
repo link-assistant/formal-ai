@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "finiteCut": "Completed roots3459-3462; frozen grammar5838/5840; canonical5708/5709; prior archive preparation and metadata proofs. Excludes future development and own running controller receipts.",
+  "selection": {
+    "sha256": "6759f88fb8e2b523d527db2a95ed292a893ce70fa58bc7b4bdc4a0152507e324",
+    "source": "/private/tmp/pr1188-root-T3463/selection.json"
+  },
+  "members": 456,
+  "uniqueBlobs": 542,
+  "compressedBytes": 3353784,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 456
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 542
+    }
+  ],
+  "knownLosses": "Original historical losses remain explicit in earlier archives; no reconstruction.",
+  "originalCompressedInputsPreserved": true,
+  "controllerSourceIncluded": true,
+  "ownRunningReceiptExcluded": true,
+  "source215GuardsConserved": true,
+  "metadataEffectsConserved": true,
+  "repositoryEffects": true,
+  "suppliedAutonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown"
+}

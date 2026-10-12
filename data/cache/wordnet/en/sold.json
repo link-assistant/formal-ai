@@ -1,0 +1,113 @@
+{
+  "lemma": "sold",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02266995-a",
+      "partOfSpeech": "a",
+      "definition": "disposed of to a purchaser",
+      "examples": [
+        "this merchandise is sold"
+      ]
+    },
+    {
+      "id": "oewn-02247246-v",
+      "partOfSpeech": "v",
+      "definition": "exchange or deliver for money or its equivalent",
+      "examples": [
+        "He sold his house in January",
+        "She sells her body to survive and support her drug habit"
+      ],
+      "synonyms": [
+        "sell"
+      ]
+    },
+    {
+      "id": "oewn-02733758-v",
+      "partOfSpeech": "v",
+      "definition": "be sold at a certain price or in a certain way",
+      "examples": [
+        "These books sell like hot cakes"
+      ],
+      "synonyms": [
+        "sell"
+      ]
+    },
+    {
+      "id": "oewn-00769680-v",
+      "partOfSpeech": "v",
+      "definition": "persuade somebody to accept something",
+      "examples": [
+        "The French try to sell us their image as great lovers"
+      ],
+      "synonyms": [
+        "sell"
+      ]
+    },
+    {
+      "id": "oewn-02249738-v",
+      "partOfSpeech": "v",
+      "definition": "do business; offer for sale as for one's livelihood",
+      "examples": [
+        "She deals in gold",
+        "The brothers sell shoes"
+      ],
+      "synonyms": [
+        "deal",
+        "sell",
+        "trade"
+      ]
+    },
+    {
+      "id": "oewn-02240448-v",
+      "partOfSpeech": "v",
+      "definition": "give up for a price or reward",
+      "examples": [
+        "She sold her principles for a successful career"
+      ],
+      "synonyms": [
+        "sell"
+      ]
+    },
+    {
+      "id": "oewn-02754230-v",
+      "partOfSpeech": "v",
+      "definition": "be approved of or gain acceptance",
+      "examples": [
+        "The new idea sold well in certain circles"
+      ],
+      "synonyms": [
+        "sell"
+      ]
+    },
+    {
+      "id": "oewn-02754081-v",
+      "partOfSpeech": "v",
+      "definition": "be responsible for the sale of",
+      "examples": [
+        "All her publicity sold the products"
+      ],
+      "synonyms": [
+        "sell"
+      ]
+    },
+    {
+      "id": "oewn-02543073-v",
+      "partOfSpeech": "v",
+      "definition": "deliver to an enemy by treachery",
+      "examples": [
+        "Judas sold Jesus",
+        "The spy betrayed his country"
+      ],
+      "synonyms": [
+        "betray",
+        "sell"
+      ]
+    }
+  ]
+}

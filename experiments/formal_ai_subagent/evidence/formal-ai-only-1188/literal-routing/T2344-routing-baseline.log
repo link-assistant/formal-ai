@@ -1,0 +1,165 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 834.812791
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 50.374208
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 36.163709
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 72.351583
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 71.265792
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.218875
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 310.261083
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 147.645583
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 37.603625
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 0.996416
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 1.700333
+  ...
+# Subtest: an audit finding satisfies a report operand but cannot author source
+ok 12 - an audit finding satisfies a report operand but cannot author source
+  ---
+  duration_ms: 0.81925
+  ...
+# Subtest: source delivery requires an actual complete-payload syntax receipt
+ok 13 - source delivery requires an actual complete-payload syntax receipt
+  ---
+  duration_ms: 55.414833
+  ...
+# Subtest: source authoring operands reject audit text while ordinary reports retain findings
+ok 14 - source authoring operands reject audit text while ordinary reports retain findings
+  ---
+  duration_ms: 1650.283125
+  ...
+# Subtest: explicit successful stdout observations preserve compact JSON and whitespace
+ok 15 - explicit successful stdout observations preserve compact JSON and whitespace
+  ---
+  duration_ms: 0.534166
+  ...
+# Subtest: a member the request quotes twice is inserted once (T180)
+    # Subtest: the ladder node prompt repeats the member in its result clause
+    ok 1 - the ladder node prompt repeats the member in its result clause
+      ---
+      duration_ms: 384.844666
+      ...
+    1..1
+ok 16 - a member the request quotes twice is inserted once (T180)
+  ---
+  duration_ms: 559.354708
+  type: 'suite'
+  ...
+# Subtest: setting a file's contents writes the file (G68, issue \#745)
+    # Subtest: set the contents of note.txt to hello
+    ok 1 - set the contents of note.txt to hello
+      ---
+      duration_ms: 123.139709
+      ...
+    # Subtest: pon el contenido de note.txt en hello
+    ok 2 - pon el contenido de note.txt en hello
+      ---
+      duration_ms: 348.744
+      ...
+    1..2
+ok 17 - setting a file's contents writes the file (G68, issue \#745)
+  ---
+  duration_ms: 472.131709
+  type: 'suite'
+  ...
+# Subtest: a request that declares the file it writes creates it unread (T310)
+    # Subtest: a file noun before the path and the content after it write first, whatever the verb
+    ok 1 - a file noun before the path and the content after it write first, whatever the verb
+      ---
+      duration_ms: 689.671458
+      ...
+    # Subtest: a destination ahead of the file noun keeps the read-first guard
+    ok 2 - a destination ahead of the file noun keeps the read-first guard
+      ---
+      duration_ms: 22.92625
+      ...
+    1..2
+ok 18 - a request that declares the file it writes creates it unread (T310)
+  ---
+  duration_ms: 885.366292
+  type: 'suite'
+  ...
+# Subtest: an explicit grep runs as written; a search request is the workspace search (T311)
+    # Subtest: execute grep TODO note.txt is the command itself
+    ok 1 - execute grep TODO note.txt is the command itself
+      ---
+      duration_ms: 8.237959
+      ...
+    # Subtest: a local search request greps the workspace for the whole word
+    ok 2 - a local search request greps the workspace for the whole word
+      ---
+      duration_ms: 25.680667
+      ...
+    1..2
+ok 19 - an explicit grep runs as written; a search request is the workspace search (T311)
+  ---
+  duration_ms: 34.028
+  type: 'suite'
+  ...
+# Subtest: an article after a place preposition is no directory (T312)
+    # Subtest: qué hay en la carpeta actual lists the current directory
+    ok 1 - qué hay en la carpeta actual lists the current directory
+      ---
+      duration_ms: 305.260667
+      ...
+    # Subtest: a named directory is still listed
+    ok 2 - a named directory is still listed
+      ---
+      duration_ms: 69.5075
+      ...
+    1..2
+ok 20 - an article after a place preposition is no directory (T312)
+  ---
+  duration_ms: 374.957375
+  type: 'suite'
+  ...
+1..20
+# tests 24
+# suites 5
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1784.287667

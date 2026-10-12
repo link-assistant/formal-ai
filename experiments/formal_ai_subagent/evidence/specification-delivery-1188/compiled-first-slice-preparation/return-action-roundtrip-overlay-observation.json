@@ -1,0 +1,312 @@
+{
+  "sourceHead": "3cecc094f60df95d7fa9eea251955520972857fd",
+  "scope": "read-only selected in-memory seed overlay; production seed bytes unchanged",
+  "file": "data/seed/meanings-coding-tasks.lino",
+  "originalSha256": "181dc8aea30c89f8924ba6644c5d7a20fb03b1df8867745625d01b8f70e31b82",
+  "candidateSha256": "b5fdf2e3d8630fff54167c7d47b37fdb20581949431e607d6af53fc4c481c4f0",
+  "candidateField": "lexeme zh 返回 返回结果",
+  "decodedCandidateBytes": 18196,
+  "productionBytesUnchanged": true,
+  "measures": [
+    [
+      "sentences",
+      320
+    ],
+    [
+      "sentence-survival",
+      0.105
+    ],
+    [
+      "term-survival",
+      0.436
+    ],
+    [
+      "en-ru-sentence-survival",
+      0.093
+    ],
+    [
+      "en-ru-term-survival",
+      0.505
+    ],
+    [
+      "en-hi-sentence-survival",
+      0.093
+    ],
+    [
+      "en-hi-term-survival",
+      0.448
+    ],
+    [
+      "en-zh-sentence-survival",
+      0.093
+    ],
+    [
+      "en-zh-term-survival",
+      0.459
+    ],
+    [
+      "en-es-sentence-survival",
+      0.109
+    ],
+    [
+      "en-es-term-survival",
+      0.505
+    ],
+    [
+      "ru-en-sentence-survival",
+      0.125
+    ],
+    [
+      "ru-en-term-survival",
+      0.365
+    ],
+    [
+      "ru-hi-sentence-survival",
+      0.109
+    ],
+    [
+      "ru-hi-term-survival",
+      0.336
+    ],
+    [
+      "ru-zh-sentence-survival",
+      0.125
+    ],
+    [
+      "ru-zh-term-survival",
+      0.352
+    ],
+    [
+      "ru-es-sentence-survival",
+      0.125
+    ],
+    [
+      "ru-es-term-survival",
+      0.361
+    ],
+    [
+      "hi-en-sentence-survival",
+      0.093
+    ],
+    [
+      "hi-en-term-survival",
+      0.384
+    ],
+    [
+      "hi-ru-sentence-survival",
+      0.093
+    ],
+    [
+      "hi-ru-term-survival",
+      0.401
+    ],
+    [
+      "hi-zh-sentence-survival",
+      0.093
+    ],
+    [
+      "hi-zh-term-survival",
+      0.392
+    ],
+    [
+      "hi-es-sentence-survival",
+      0.093
+    ],
+    [
+      "hi-es-term-survival",
+      0.396
+    ],
+    [
+      "zh-en-sentence-survival",
+      0.109
+    ],
+    [
+      "zh-en-term-survival",
+      0.501
+    ],
+    [
+      "zh-ru-sentence-survival",
+      0.109
+    ],
+    [
+      "zh-ru-term-survival",
+      0.515
+    ],
+    [
+      "zh-hi-sentence-survival",
+      0.109
+    ],
+    [
+      "zh-hi-term-survival",
+      0.505
+    ],
+    [
+      "zh-es-sentence-survival",
+      0.109
+    ],
+    [
+      "zh-es-term-survival",
+      0.512
+    ],
+    [
+      "es-en-sentence-survival",
+      0.109
+    ],
+    [
+      "es-en-term-survival",
+      0.42
+    ],
+    [
+      "es-ru-sentence-survival",
+      0.109
+    ],
+    [
+      "es-ru-term-survival",
+      0.442
+    ],
+    [
+      "es-hi-sentence-survival",
+      0.093
+    ],
+    [
+      "es-hi-term-survival",
+      0.418
+    ],
+    [
+      "es-zh-sentence-survival",
+      0.109
+    ],
+    [
+      "es-zh-term-survival",
+      0.42
+    ]
+  ],
+  "lines": [
+    "en->ru: 6/64 sentences survive, 230/455 content terms survive (230/236 known)",
+    "en->hi: 6/64 sentences survive, 204/455 content terms survive (204/236 known)",
+    "en->zh: 6/64 sentences survive, 209/455 content terms survive (209/236 known)",
+    "en->es: 7/64 sentences survive, 230/455 content terms survive (230/236 known)",
+    "ru->en: 8/64 sentences survive, 180/493 content terms survive (180/187 known)",
+    "ru->hi: 7/64 sentences survive, 166/493 content terms survive (166/187 known)",
+    "ru->zh: 8/64 sentences survive, 174/493 content terms survive (174/187 known)",
+    "ru->es: 8/64 sentences survive, 178/493 content terms survive (178/187 known)",
+    "hi->en: 6/64 sentences survive, 200/520 content terms survive (200/211 known)",
+    "hi->ru: 6/64 sentences survive, 209/520 content terms survive (209/211 known)",
+    "hi->zh: 6/64 sentences survive, 204/520 content terms survive (204/211 known)",
+    "hi->es: 6/64 sentences survive, 206/520 content terms survive (206/211 known)",
+    "zh->en: 7/64 sentences survive, 349/696 content terms survive (349/383 known)",
+    "zh->ru: 7/64 sentences survive, 359/696 content terms survive (359/383 known)",
+    "zh->hi: 7/64 sentences survive, 352/696 content terms survive (352/383 known)",
+    "zh->es: 7/64 sentences survive, 357/696 content terms survive (357/383 known)",
+    "es->en: 7/64 sentences survive, 245/583 content terms survive (245/275 known)",
+    "es->ru: 7/64 sentences survive, 258/583 content terms survive (258/275 known)",
+    "es->hi: 6/64 sentences survive, 244/583 content terms survive (244/275 known)",
+    "es->zh: 7/64 sentences survive, 245/583 content terms survive (245/275 known)",
+    "all pairs: 135/1280 sentences survive, 4799/10988 content terms survive (4799/5168 known)"
+  ],
+  "compared": {
+    "falls": [],
+    "rises": [
+      {
+        "measure": "ru-en-term-survival",
+        "recorded": 0.363,
+        "value": 0.365
+      },
+      {
+        "measure": "zh-en-term-survival",
+        "recorded": 0.5,
+        "value": 0.501
+      }
+    ]
+  },
+  "probes": [
+    {
+      "source": "return",
+      "meaning": "coding_return",
+      "trip": {
+        "source": "return",
+        "forward": "返回结果",
+        "backward": "return",
+        "statements": [
+          {
+            "forward": "返回结果",
+            "backward": "return",
+            "surviving": 1,
+            "known": 1,
+            "survives": true
+          }
+        ],
+        "survivingTerms": 1,
+        "knownTerms": 1,
+        "survives": true
+      }
+    },
+    {
+      "source": "returning",
+      "meaning": "coding_return",
+      "trip": {
+        "source": "returning",
+        "forward": "返回结果",
+        "backward": "return",
+        "statements": [
+          {
+            "forward": "返回结果",
+            "backward": "return",
+            "surviving": 1,
+            "known": 1,
+            "survives": true
+          }
+        ],
+        "survivingTerms": 1,
+        "knownTerms": 1,
+        "survives": true
+      }
+    },
+    {
+      "source": "is equal to",
+      "meaning": "coding_assertion_equality",
+      "trip": {
+        "source": "is equal to",
+        "forward": "等于",
+        "backward": "is equal to",
+        "statements": [
+          {
+            "forward": "等于",
+            "backward": "is equal to",
+            "surviving": 1,
+            "known": 1,
+            "survives": true
+          }
+        ],
+        "survivingTerms": 1,
+        "knownTerms": 1,
+        "survives": true
+      }
+    },
+    {
+      "source": "equals",
+      "meaning": "coding_assertion_equality",
+      "trip": {
+        "source": "equals",
+        "forward": "等于",
+        "backward": "is equal to",
+        "statements": [
+          {
+            "forward": "等于",
+            "backward": "is equal to",
+            "surviving": 1,
+            "known": 1,
+            "survives": true
+          }
+        ],
+        "survivingTerms": 1,
+        "knownTerms": 1,
+        "survives": true
+      }
+    }
+  ],
+  "zhIdentity": {
+    "ambiguous": "coding_assertion_equality",
+    "unambiguous": "coding_return"
+  }
+}

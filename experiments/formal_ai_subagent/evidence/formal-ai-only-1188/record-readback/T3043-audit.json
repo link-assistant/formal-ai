@@ -1,0 +1,14 @@
+{
+  "tools": [],
+  "sourceUnchanged": [
+    {
+      "path": "js/agentic/evidence_record.mjs",
+      "unchanged": true
+    },
+    {
+      "path": "rust/src/agentic_coding/evidence_record.rs",
+      "unchanged": true
+    }
+  ],
+  "answer": "This edit names several files (`js/agentic/evidence_record.mjs`, `rust/src/agentic_coding/evidence_record.rs`), and one edit request changes one file, so nothing was changed. Ask for the edit once for each file."
+}

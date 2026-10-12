@@ -1,0 +1,8 @@
+export_substitution_rule	exportar regla de sustitución
+substitution	sustitución
+substitution_rule_export	exportación de reglas de sustitución
+target_javascript	destino javascript
+target_rust	destino rust
+target_webassembly	destino webassembly
+wasm	wasm
+webassembly	webassembly

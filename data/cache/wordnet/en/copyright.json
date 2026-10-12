@@ -1,0 +1,27 @@
+{
+  "lemma": "copyright",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-06484839-n",
+      "partOfSpeech": "n",
+      "definition": "a document granting exclusive right to publish and sell literary or musical or artistic work",
+      "synonyms": [
+        "right of first publication"
+      ]
+    },
+    {
+      "id": "oewn-02244315-v",
+      "partOfSpeech": "v",
+      "definition": "secure a copyright on a written work",
+      "examples": [
+        "did you copyright your manuscript?"
+      ]
+    }
+  ]
+}

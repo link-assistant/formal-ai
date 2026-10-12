@@ -83,10 +83,16 @@ fn try_javascript_code_execution(
     agent_mode: bool,
 ) -> Option<SymbolicAnswer> {
     let program = extract_javascript_program(prompt)?;
-    if let Some(denial) = require_tool_permission(log, agent_mode, "javascript_execution") {
+    let language = detect_language(prompt).slug();
+    if let Some(denial) = require_tool_permission(log, agent_mode, "javascript_execution", language)
+    {
         log.append("execution_status", "javascript:refused".to_owned());
         log.append("execution_environment", "agent-permission-gate".to_owned());
-        let body = format!("{denial}\n\nRequested source:\n```js\n{program}\n```");
+        let body = nl_tool_text(
+            "nl_tool_requested_source",
+            "en",
+            &[("denial", &denial), ("program", &program)],
+        );
         return Some(finalize_simple(
             prompt,
             log,
@@ -109,8 +115,11 @@ fn try_javascript_code_execution(
     let (status, result) = execute_javascript_subset(&program);
     log.append("execution_status", format!("javascript:{status}"));
     log.append("tool_result", result.clone());
-    let body =
-        format!("Execution status: {status}.\nTool call: javascript_execution\nOutput: {result}");
+    let body = nl_tool_text(
+        "nl_tool_javascript_report",
+        "en",
+        &[("status", status), ("result", &result)],
+    );
     Some(finalize_simple(
         prompt,
         log,
@@ -131,7 +140,8 @@ fn try_calculator_api_call(
         return None;
     }
     let expression = extract_argument(prompt, normalized)?;
-    if let Some(denial) = require_tool_permission(log, agent_mode, "calculator") {
+    let language = detect_language(prompt).slug();
+    if let Some(denial) = require_tool_permission(log, agent_mode, "calculator", language) {
         log.append("execution_status", "calculator:refused".to_owned());
         log.append("execution_environment", "agent-permission-gate".to_owned());
         return Some(finalize_simple(
@@ -150,9 +160,13 @@ fn try_calculator_api_call(
             log.append("tool_result", evaluation.formatted.clone());
             log.append("execution_status", "calculator:executed".to_owned());
             log.append("calculation:engine", evaluation.engine.slug());
-            let body = format!(
-                "Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}",
-                evaluation.formatted
+            let body = nl_tool_text(
+                "nl_tool_calculator_executed",
+                "en",
+                &[
+                    ("expression", &expression),
+                    ("result", &evaluation.formatted),
+                ],
             );
             Some(finalize_simple(
                 prompt,
@@ -166,8 +180,11 @@ fn try_calculator_api_call(
         Err(error) => {
             log.append("tool_result", format!("error={error}"));
             log.append("execution_status", "calculator:error".to_owned());
-            let body = format!(
-                "Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}"
+            let error = error.to_string();
+            let body = nl_tool_text(
+                "nl_tool_calculator_failed",
+                "en",
+                &[("expression", &expression), ("error", &error)],
             );
             Some(finalize_simple(
                 prompt,
@@ -191,7 +208,8 @@ fn try_web_search_api_call(
         return None;
     }
     let query = extract_argument(prompt, normalized)?;
-    if let Some(denial) = require_tool_permission(log, agent_mode, "web_search") {
+    let language = detect_language(prompt).slug();
+    if let Some(denial) = require_tool_permission(log, agent_mode, "web_search", language) {
         log.append("execution_status", "web_search:refused".to_owned());
         log.append("execution_environment", "agent-permission-gate".to_owned());
         return Some(finalize_simple(
@@ -218,8 +236,15 @@ fn try_web_search_api_call(
     log.append("tool_result", "search_plan_recorded".to_owned());
     log.append("execution_status", "web_search:planned".to_owned());
     let providers = WEB_SEARCH_PROVIDERS.join(", ");
-    let body = format!(
-        "Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K})."
+    let fusion_k = WEB_SEARCH_RRF_K.to_string();
+    let body = nl_tool_text(
+        "nl_tool_web_search_planned",
+        "en",
+        &[
+            ("query", &query),
+            ("providers", &providers),
+            ("k", &fusion_k),
+        ],
     );
     Some(finalize_simple(
         prompt,
@@ -240,7 +265,8 @@ fn try_local_shell_tool_call(
     if !is_explicit_local_shell_request(normalized) {
         return None;
     }
-    if let Some(denial) = require_tool_permission(log, agent_mode, "local_shell") {
+    let language = detect_language(prompt).slug();
+    if let Some(denial) = require_tool_permission(log, agent_mode, "local_shell", language) {
         log.append("execution_status", "local_shell:refused".to_owned());
         log.append("execution_environment", "agent-permission-gate".to_owned());
         return Some(finalize_simple(
@@ -257,26 +283,41 @@ fn try_local_shell_tool_call(
         "execution_environment",
         "not-implemented-in-core".to_owned(),
     );
+    let body = nl_tool_text("nl_tool_local_shell_unavailable", language, &[]);
     Some(finalize_simple(
         prompt,
         log,
         "tool_call_refused",
         "response:tool_call_refused",
-        "Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor.",
+        &body,
         1.0,
     ))
+}
+
+/// Render a seeded `nl_tool_*` response, filling each slot once.
+///
+/// The tool reports are structured English records, rendered with `en`; the
+/// refusals are localized into the prompt's language.
+fn nl_tool_text(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+    seed::fill_template_once(
+        &seed::localized_response(intent, language).unwrap_or_default(),
+        values,
+    )
 }
 
 fn require_tool_permission(
     log: &mut EventLog,
     agent_mode: bool,
     tool_name: &str,
+    language: &str,
 ) -> Option<String> {
     let capability = format!("tool:{tool_name}");
     if !agent_mode {
         log.append("policy:agent_mode_required_for_tools", capability.clone());
-        return Some(format!(
-            "Execution status: refused. Natural-language tool calls require explicit agent mode before `{capability}` can run."
+        return Some(nl_tool_text(
+            "nl_tool_agent_mode_required",
+            language,
+            &[("capability", &capability)],
         ));
     }
     match default_package_store().permission_for_tool(tool_name) {
@@ -293,8 +334,10 @@ fn require_tool_permission(
         }
         PackagePermissionDecision::Denied { capability, reason } => {
             log.append("policy:package_permission_required", capability.clone());
-            Some(format!(
-                "Execution status: refused. Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool."
+            Some(nl_tool_text(
+                "nl_tool_package_denied",
+                language,
+                &[("capability", &capability), ("reason", &reason)],
             ))
         }
     }

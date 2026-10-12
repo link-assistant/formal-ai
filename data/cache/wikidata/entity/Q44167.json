@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "发动机"
+        },
+        "es": {
+          "language": "es",
+          "value": "motor"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "將其他形式能量轉化為機械能的裝置"
+        },
+        "es": {
+          "language": "es",
+          "value": "dispositivo que convierte alguna forma de energía en energía mecánica"
         }
       },
       "aliases": {
@@ -106,6 +114,12 @@
           {
             "language": "zh",
             "value": "發動機"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "motriz"
           }
         ]
       }

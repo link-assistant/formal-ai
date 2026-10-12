@@ -1,0 +1,17 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/recover-compiled-first-slice-plan.mjs"}
+   Output: {"reviewedPlanByteEqual":true,"bytes":7723,"sha256":"c9a71d17388744ba2191d643c9484904a444a608f4c39f5cf40982592acf85fc","originalLiteralT2944":"OPEN","malformedBeforeBytes":5181,"productionSourceMutations":0}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/recover-compiled-first-slice-plan.mjs` command completed. Output:
+
+```json
+{
+  "bytes": 7723,
+  "malformedBeforeBytes": 5181,
+  "originalLiteralT2944": "OPEN",
+  "productionSourceMutations": 0,
+  "reviewedPlanByteEqual": true,
+  "sha256": "c9a71d17388744ba2191d643c9484904a444a608f4c39f5cf40982592acf85fc"
+}
+```

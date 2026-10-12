@@ -2,67 +2,72 @@ self_ast_census
   target src/agentic_coding/ci_workflow.rs
   language rust
   fidelity full_ast
-  byte_len 2067
-  line_count 52
-  content_id source_module_429767c492dda4ed
-  symbol_count 4
+  byte_len 4135
+  line_count 105
+  content_id source_module_8cecf5494357ba62
+  symbol_count 5
   symbols
     function workflow_path 15 17
-    function requested_in 20 25
-    function attach 29 36
-    function render 40 52
+    function requested_in 24 26
+    function attach 30 52
+    function render 60 65
+    function render_with 74 105
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 1307
-    named_node_count 269
-    distinct_node_kinds 46
+    total_link_count 2390
+    named_node_count 507
+    distinct_node_kinds 50
     node_kinds
-      arguments 14
-      array_expression 3
-      attribute 3
-      attribute_item 3
-      binary_expression 1
-      block 7
-      call_expression 14
-      closure_expression 1
-      closure_parameters 1
-      crate 4
-      doc_comment 12
-      expression_statement 7
-      field_expression 12
-      field_identifier 12
+      arguments 33
+      array_expression 4
+      assignment_expression 1
+      attribute 4
+      attribute_item 4
+      binary_expression 5
+      block 12
+      call_expression 33
+      char_literal 6
+      closure_expression 3
+      closure_parameters 3
+      crate 7
+      doc_comment 26
+      else_clause 1
+      expression_statement 16
+      field_expression 27
+      field_identifier 27
       field_initializer_list 1
-      for_expression 1
-      function_item 4
-      identifier 60
-      if_expression 2
+      for_expression 2
+      function_item 5
+      identifier 104
+      if_expression 3
       inner_doc_comment_marker 8
       let_condition 1
-      let_declaration 3
-      line_comment 12
+      let_declaration 4
+      line_comment 29
       mutable_specifier 2
-      outer_doc_comment_marker 4
-      parameter 3
-      parameters 4
+      outer_doc_comment_marker 18
+      parameter 5
+      parameters 5
       primitive_type 2
-      reference_expression 9
-      reference_type 3
+      reference_expression 16
+      reference_type 5
       return_expression 1
-      scoped_identifier 15
-      scoped_use_list 1
+      scoped_identifier 26
+      scoped_type_identifier 1
+      scoped_use_list 2
       shorthand_field_initializer 2
       source_file 1
-      string_content 5
-      string_literal 5
+      string_content 9
+      string_literal 9
       struct_expression 1
-      super 7
+      super 8
       token_tree 3
-      tuple_expression 2
+      tuple_expression 3
       tuple_struct_pattern 1
-      type_identifier 5
+      type_identifier 9
       use_declaration 2
-      use_list 1
-      visibility_modifier 4
+      use_list 2
+      visibility_modifier 5

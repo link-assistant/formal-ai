@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "恒星"
+        },
+        "es": {
+          "language": "es",
+          "value": "estrella"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "由一個發光的等離子體球體組成的天文物體，由它自身的引力連接在一起"
+        },
+        "es": {
+          "language": "es",
+          "value": "objeto astrónomico formado por un esferoide luminoso de plasma sujeto a su propia gravedad"
         }
       },
       "aliases": {
@@ -80,6 +88,32 @@
           {
             "language": "hi",
             "value": "आकाशीय तारा"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "estrella del cielo"
+          },
+          {
+            "language": "es",
+            "value": "estrella celeste"
+          },
+          {
+            "language": "es",
+            "value": "estelar"
+          },
+          {
+            "language": "es",
+            "value": "estrellas"
+          },
+          {
+            "language": "es",
+            "value": "estrella del firmamento"
+          },
+          {
+            "language": "es",
+            "value": "estrellas del cielo"
           }
         ]
       }

@@ -1,0 +1,99 @@
+>> read {"filePath":"rust/src/agentic_coding/tool_result/result_kind.rs","file_path":"rust/src/agentic_coding/tool_result/result_kind.rs","path":"rust/src/agentic_coding/tool_result/result_kind.rs"}
+   <file>
+   00001| //! Whether an empty tool result came from a listing or a search (PR #1188
+   00002| //! G75).
+   00003| //!
+   00004| //! A label with operands is a shell command, read by its own word through the
+   00005| //! seeded `result_command_words` of `data/seed/shell-intents.lino`, never by a
+   00006| //! word inside its operands (`sed … allowlist.txt` is no listing). A one-word
+   00007| //! label is a tool's name. Split out of `tool_result.rs` (the 1000-line Rust
+   00008| //! ceiling).
+   00009| 
+   00010| use std::sync::OnceLock;
+   00011| 
+   00012| use crate::seed::SHELL_INTENTS_LINO;
+   00013| use crate::seed::parser::parse_lino;
+   00014| 
+   00015| /// The seeded `(word, kind)` pairs of the shell commands whose result kind is
+   00016| /// known.
+   00017| fn command_words() -> &'static [(String, String)] {
+   00018|     static WORDS: OnceLock<Vec<(String, String)>> = OnceLock::new();
+   00019|     WORDS.get_or_init(|| {
+   00020|         let tree = parse_lino(SHELL_INTENTS_LINO);
+   00021|         tree.children
+   00022|             .first()
+   00023|             .and_then(|root| {
+   00024|                 root.children
+   00025|                     .iter()
+   00026|                     .find(|group| group.name == "result_command_words")
+   00027|             })
+   00028|             .map(|group| {
+   00029|                 group
+   00030|                     .children
+   00031|                     .iter()
+   00032|                     .filter(|node| node.name == "command")
+   00033|                     .map(|node| {
+   00034|                         (
+   00035|                             node.find_child_value("word").to_owned(),
+   00036|                             node.find_child_value("kind").to_owned(),
+   00037|                         )
+   00038|                     })
+   00039|                     .collect()
+   00040|             })
+   00041|             .unwrap_or_default()
+   00042|     })
+   00043| }
+   00044| 
+   00045| /// Whether the label has operands, so it is a shell command, not a tool name.
+   00046| fn is_command(lower: &str) -> bool {
+   00047|     lower.split_whitespace().nth(1).is_some()
+   00048| }
+   00049| 
+   00050| /// The seeded kind of a command's own word.
+   00051| fn command_kind(lower: &str) -> Option<&'static str> {
+   00052|     let word = lower.split_whitespace().next()?;
+   00053|     command_words()
+   00054|         .iter()
+   00055|         .find(|(candidate, _)| candidate == word)
+   00056|         .map(|(_, kind)| kind.as_str())
+   00057| }
+   00058| 
+   00059| /// Whether the result labelled `label` is a listing.
+   00060| pub(super) fn is_listing(label: &str) -> bool {
+   00061|     let lower = label.to_ascii_lowercase();
+   00062|     if let Some(kind) = command_kind(&lower) {
+   00063|         return kind == "listing";
+   00064|     }
+   00065|     if is_command(&lower) {
+   00066|         return false;
+   00067|     }
+   00068|     lower.contains("list") || lower.contains("glob")
+   00069| }
+   00070| 
+   00071| /// Whether the result labelled `label` is a search.
+   00072| pub(super) fn is_search(label: &str) -> bool {
+   00073|     let lower = label.to_ascii_lowercase();
+   00074|     if is_command(&lower) {
+   00075|         return command_kind(&lower) == Some("search");
+   00076|     }
+   00077|     ["grep", "find", "search"]
+   00078|         .iter()
+   00079|         .any(|kind| lower.contains(kind))
+   00080| }
+   00081| 
+   
+   (End of file - total 81 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/tool_result/result_kind.rs","file_path":"rust/src/agentic_coding/tool_result/result_kind.rs","new":"if let Some(kind) = command_kind(&lower) {\n        return kind == \"search\";\n    }\n    if is_command(&lower) {\n        return false;\n    }","newString":"if let Some(kind) = command_kind(&lower) {\n        return kind == \"search\";\n    }\n    if is_command(&lower) {\n        return false;\n    }","new_str":"if let Some(kind) = command_kind(&lower) {\n        return kind == \"search\";\n    }\n    if is_command(&lower) {\n        return false;\n    }","new_string":"if let Some(kind) = command_kind(&lower) {\n        return kind == \"search\";\n    }\n    if is_command(&lower) {\n        return false;\n    }","old":"if is_command(&lower) {\n        return command_kind(&lower) == Some(\"search\");\n    }","oldString":"if is_command(&lower) {\n        return command_kind(&lower) == Some(\"search\");\n    }","old_str":"if is_command(&lower) {\n        return command_kind(&lower) == Some(\"search\");\n    }","old_string":"if is_command(&lower) {\n        return command_kind(&lower) == Some(\"search\");\n    }","path":"rust/src/agentic_coding/tool_result/result_kind.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/tool_result/result_kind.rs"}
+   0e27acd9cbe9ee6d3a62fb392ec835788255da3d4a909baacc095865773dcd6e  rust/src/agentic_coding/tool_result/result_kind.rs
+   
+== answer ==
+Replaced `if is_command(&lower) {
+        return command_kind(&lower) == Some("search");
+    }` with `if let Some(kind) = command_kind(&lower) {
+        return kind == "search";
+    }
+    if is_command(&lower) {
+        return false;
+    }` in `rust/src/agentic_coding/tool_result/result_kind.rs` and observed the result.

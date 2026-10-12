@@ -1,0 +1,63 @@
+[
+  {
+    "word": "framework",
+    "phonetic": "/ˈfɹeɪm.wɜːk/",
+    "phonetics": [
+      {
+        "text": "/ˈfɹeɪm.wɜːk/",
+        "audio": ""
+      },
+      {
+        "text": "/ˈfɹeɪm.wɝk/",
+        "audio": ""
+      }
+    ],
+    "meanings": [
+      {
+        "partOfSpeech": "noun",
+        "definitions": [
+          {
+            "definition": "A support structure comprising joined parts or conglomerated particles and intervening open spaces of similar or larger size.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The arrangement of support beams that represent a building's general shape and size.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The larger branches of a tree that determine its shape.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "A basic conceptual structure.",
+            "synonyms": [],
+            "antonyms": [],
+            "example": "These ‘three principles of connexion’ compose the framework of principles in Hume's account of the association of ideas."
+          },
+          {
+            "definition": "A reusable piece of code (and, sometimes, other utilities) providing a standard environment within which an application can be implemented.",
+            "synonyms": [],
+            "antonyms": []
+          },
+          {
+            "definition": "The identification and categorisation of processes or steps that constitute a complex task or mindset in order to render explicit the tacit and implicit.",
+            "synonyms": [],
+            "antonyms": []
+          }
+        ],
+        "synonyms": [],
+        "antonyms": []
+      }
+    ],
+    "license": {
+      "name": "CC BY-SA 3.0",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0"
+    },
+    "sourceUrls": [
+      "https://en.wiktionary.org/wiki/framework"
+    ]
+  }
+]

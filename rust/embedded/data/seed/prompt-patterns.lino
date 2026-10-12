@@ -494,11 +494,6 @@ prompt_patterns
     language en
     kind phrase
     text "how is it going"
-  pattern pattern_wellbeing_phrase_how_s_it_going_en
-    intent wellbeing
-    language en
-    kind phrase
-    text "how s it going"
   pattern pattern_wellbeing_phrase_how_are_things_en
     intent wellbeing
     language en
@@ -1068,3 +1063,233 @@ prompt_patterns
     language zh
     kind suffix
     text " 是如何工作的"
+  pattern pattern_word_definition_frame_en_1
+    intent word_definition
+    language en
+    kind frame
+    text "what does the word {term} mean"
+  pattern pattern_word_definition_frame_en_2
+    intent word_definition
+    language en
+    kind frame
+    text "what does {term} mean"
+  pattern pattern_word_definition_frame_en_3
+    intent word_definition
+    language en
+    kind frame
+    text "what is the meaning of the word {term}"
+  pattern pattern_word_definition_frame_en_4
+    intent word_definition
+    language en
+    kind frame
+    text "what is the meaning of {term}"
+  pattern pattern_word_definition_frame_en_5
+    intent word_definition
+    language en
+    kind frame
+    text "what's the meaning of {term}"
+  pattern pattern_word_definition_frame_en_6
+    intent word_definition
+    language en
+    kind frame
+    text "meaning of the word {term}"
+  pattern pattern_word_definition_frame_en_7
+    intent word_definition
+    language en
+    kind frame
+    text "define the word {term}"
+  pattern pattern_word_definition_frame_en_8
+    intent word_definition
+    language en
+    kind frame
+    text "define {term}"
+  pattern pattern_word_definition_frame_en_9
+    intent word_definition
+    language en
+    kind frame
+    text "definition of {term}"
+  pattern pattern_word_definition_frame_ru_1
+    intent word_definition
+    language ru
+    kind frame
+    text "что означает слово {term}"
+  pattern pattern_word_definition_frame_ru_2
+    intent word_definition
+    language ru
+    kind frame
+    text "что означает {term}"
+  pattern pattern_word_definition_frame_ru_3
+    intent word_definition
+    language ru
+    kind frame
+    text "что значит слово {term}"
+  pattern pattern_word_definition_frame_ru_4
+    intent word_definition
+    language ru
+    kind frame
+    text "что значит {term}"
+  pattern pattern_word_definition_frame_ru_5
+    intent word_definition
+    language ru
+    kind frame
+    text "значение слова {term}"
+  pattern pattern_word_definition_frame_hi_1
+    intent word_definition
+    language hi
+    kind frame
+    text "{term} शब्द का क्या अर्थ है"
+  pattern pattern_word_definition_frame_hi_2
+    intent word_definition
+    language hi
+    kind frame
+    text "{term} का क्या अर्थ है"
+  pattern pattern_word_definition_frame_hi_3
+    intent word_definition
+    language hi
+    kind frame
+    text "{term} का अर्थ क्या है"
+  pattern pattern_word_definition_frame_hi_4
+    intent word_definition
+    language hi
+    kind frame
+    text "{term} का मतलब क्या है"
+  pattern pattern_word_definition_frame_zh_1
+    intent word_definition
+    language zh
+    kind frame
+    text "{term}是什么意思"
+  pattern pattern_word_definition_frame_zh_2
+    intent word_definition
+    language zh
+    kind frame
+    text "{term}的意思是什么"
+  pattern pattern_word_definition_frame_es_1
+    intent word_definition
+    language es
+    kind frame
+    text "qué significa la palabra {term}"
+  pattern pattern_word_definition_frame_es_2
+    intent word_definition
+    language es
+    kind frame
+    text "qué significa {term}"
+  pattern pattern_word_definition_frame_es_3
+    intent word_definition
+    language es
+    kind frame
+    text "que significa {term}"
+  pattern pattern_word_definition_frame_es_4
+    intent word_definition
+    language es
+    kind frame
+    text "definición de {term}"
+  pattern pattern_word_definition_source_kind
+    intent word_definition
+    language en
+    kind source_kind
+    text "dictionary"
+  pattern pattern_word_definition_section_ru_1
+    intent word_definition
+    language ru
+    kind definition_section
+    text "значение"
+  pattern pattern_word_definition_section_es_1
+    intent word_definition
+    language es
+    kind definition_section
+    text "adjetivo"
+  pattern pattern_word_definition_section_es_2
+    intent word_definition
+    language es
+    kind definition_section
+    text "sustantivo"
+  pattern pattern_word_definition_section_es_3
+    intent word_definition
+    language es
+    kind definition_section
+    text "verbo"
+  pattern pattern_word_definition_section_es_4
+    intent word_definition
+    language es
+    kind definition_section
+    text "adverbio"
+  pattern pattern_word_definition_section_hi_1
+    intent word_definition
+    language hi
+    kind definition_section
+    text "शब्दसागर"
+  pattern pattern_word_definition_example_marker_ru
+    intent word_definition
+    language ru
+    kind example_marker
+    text "◆"
+  pattern pattern_word_definition_annotation_es_1
+    intent word_definition
+    language es
+    kind annotation_prefix
+    text "uso:"
+  pattern pattern_word_definition_annotation_es_2
+    intent word_definition
+    language es
+    kind annotation_prefix
+    text "sinónimos:"
+  pattern pattern_word_definition_annotation_es_3
+    intent word_definition
+    language es
+    kind annotation_prefix
+    text "antónimos:"
+  pattern pattern_word_definition_annotation_es_4
+    intent word_definition
+    language es
+    kind annotation_prefix
+    text "ejemplo:"
+  pattern pattern_word_definition_annotation_es_5
+    intent word_definition
+    language es
+    kind annotation_prefix
+    text "ejemplos:"
+  pattern pattern_word_definition_annotation_es_6
+    intent word_definition
+    language es
+    kind annotation_prefix
+    text "relacionados:"
+  pattern pattern_word_definition_annotation_es_7
+    intent word_definition
+    language es
+    kind annotation_prefix
+    text "véase también:"
+  pattern pattern_word_definition_inflection_marker_es
+    intent word_definition
+    language es
+    kind inflection_marker
+    text "¦"
+  pattern source-qualified-definition-frame-1
+    intent source-qualified-definition
+    language en
+    kind frame
+    text "cite a definition of {term} from {source}"
+  pattern source-qualified-definition-frame-2
+    intent source-qualified-definition
+    language en
+    kind frame
+    text "according to {source}, define {term}"
+  pattern source-qualified-definition-frame-3
+    intent source-qualified-definition
+    language ru
+    kind frame
+    text "приведи определение {term} из {source}"
+  pattern source-qualified-definition-frame-4
+    intent source-qualified-definition
+    language es
+    kind frame
+    text "cita una definición de {term} de {source}"
+  pattern source-qualified-definition-frame-5
+    intent source-qualified-definition
+    language hi
+    kind frame
+    text "{source} से {term} की परिभाषा उद्धृत करें"
+  pattern source-qualified-definition-frame-6
+    intent source-qualified-definition
+    language zh
+    kind frame
+    text "引用{source}对{term}的定义"

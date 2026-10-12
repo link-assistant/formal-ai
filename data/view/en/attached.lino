@@ -1,0 +1,21 @@
+view
+  id M-de03b0e8bf06
+  lemma attached
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "used of buildings joined by common sidewalls"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "associated in an exclusive sexual relationship"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "being joined in close association"
+    provenance (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "fond and affectionate"
+    provenance (wordnet)

@@ -1,0 +1,127 @@
+Set the contents of data/seed/meanings-tool-access.lino to «meanings
+  tool_invocation_cue
+    defined-by action
+    role tool_invocation_cue
+    lexeme en call invoke run api tool
+    lexeme ru вызови вызвать запусти инструмент
+    lexeme hi कॉल चलाओ उपकरण
+    lexeme zh 调用 运行 工具
+    lexeme es llama invoca ejecuta herramienta
+  calculator_tool
+    defined-by entity
+    role calculator_tool_name
+    lexeme en calculator
+    lexeme ru калькулятор
+    lexeme hi कैलकुलेटर
+    lexeme zh 计算器
+    lexeme es calculadora
+  web_search_tool
+    defined-by entity
+    role web_search_tool_name
+    lexeme en web_search "web search" web-search
+    lexeme ru веб-поиск "поиск в интернете"
+    lexeme hi "वेब खोज" "इंटरनेट खोज"
+    lexeme zh 网络搜索 网页搜索
+    lexeme es "búsqueda web" "búsqueda en internet"
+  local_shell_tool
+    defined-by entity
+    role local_shell_request_cue
+    lexeme en local_shell "local shell tool" "local shell api" "call the shell tool" "invoke the shell tool"
+    lexeme ru "локальная оболочка" "вызови оболочку"
+    lexeme hi "लोकल शेल" "शेल टूल चलाओ"
+    lexeme zh 本地外壳 调用外壳工具
+    lexeme es "shell local" "terminal local" "llama a la herramienta de shell"
+  tool_argument_marker
+    defined-by relation
+    role tool_argument_marker
+    lexeme en "with query" query with for
+    lexeme ru "с запросом" для
+    lexeme hi "क्वेरी के साथ" "के लिए"
+    lexeme zh 查询 用于
+    lexeme es "con la consulta" consulta para
+  tool_result_failure
+    defined-by concept
+    role tool_result_failure_signal
+    lexeme en
+      words "error" "failed" "not found" 404 "non 2xx status code" "you cannot perform that action at this time"
+      words "too many requests" "rate limit" "temporarily unavailable"
+    lexeme ru "не удалось" "действие недоступно" "слишком много запросов"
+    lexeme hi "कार्रवाई नहीं कर सकते" "बहुत अधिक अनुरोध"
+    lexeme zh 无法执行此操作 请求过多
+    lexeme es error falló "no encontrado" "demasiadas solicitudes" "no disponible temporalmente" "no se pudo"
+  tool_result_detail_request
+    defined-by action
+    role tool_result_detail_request
+    lexeme en "full result" "more detail" "original result"
+    lexeme ru "полный результат" подробнее "исходный результат"
+    lexeme hi "पूरा परिणाम" "अधिक विवरण" "मूल परिणाम"
+    lexeme zh 完整结果 更多详情 原始结果
+    lexeme es "resultado completo" "más detalles" "resultado original"
+  tool_result_url_request
+    defined-by entity
+    role tool_result_url_request
+    lexeme en url link
+    lexeme ru ссылка
+    lexeme hi यूआरएल लिंक
+    lexeme zh 网址 链接
+  tool_result_line_request
+    defined-by entity
+    role tool_result_line_request
+    lexeme en line
+    lexeme ru строка строку
+    lexeme hi पंक्ति
+    lexeme zh 行
+    lexeme es línea
+  tool_result_first_reference
+    defined-by concept
+    role tool_result_first_reference
+    lexeme en first
+    lexeme ru первый первого первую
+    lexeme hi पहले पहली
+    lexeme zh 第一个 第一
+    lexeme es primero primera primer
+  tool_result_second_reference
+    defined-by concept
+    role tool_result_second_reference
+    lexeme en second
+    lexeme ru второй второго вторую
+    lexeme hi दूसरे दूसरी
+    lexeme zh 第二个 第二
+    lexeme es segundo segunda
+  filesystem-absence
+    defined-by observation
+    role filesystem-absent-result
+    precondition "a workspace read reports a missing file"
+    effect "an absent event stream may be created without replacing unreadable history"
+    unit "not applicable"
+    example "ENOENT"
+    lexeme en enoent "file not found" "no such file"
+    lexeme ru "файл не найден" "нет такого файла"
+    lexeme hi "फ़ाइल नहीं मिली" "ऐसी कोई फ़ाइल नहीं"
+    lexeme zh 文件不存在 找不到文件
+    lexeme es "archivo no encontrado" "no existe el archivo"
+  read-file-tool-schema
+    defined-by answer
+    role localized_response_template
+    precondition "the client advertises workspace file reads"
+    effect "the calling client receives the path parameter schema"
+    unit "not applicable"
+    example "read_file path"
+    lexeme en "workspace file read schema"
+    lexeme ru "схема чтения файла"
+    lexeme hi "फ़ाइल पढ़ने का प्रारूप"
+    lexeme zh "文件读取格式"
+    lexeme es "esquema de lectura de archivo"
+  general-plan-append-action
+    defined-by answer
+    role localized_response_template
+    precondition "a composed plan has a stable event identity"
+    effect "the action describes persistence that retains earlier events"
+    unit "not applicable"
+    example "append a plan event"
+    lexeme en "plan event append description"
+    lexeme ru "описание добавления плана"
+    lexeme hi "योजना घटना जोड़ने का वर्णन"
+    lexeme zh "计划事件追加说明"
+    lexeme es "descripción de anexar evento de plan"
+»

@@ -1,0 +1,1003 @@
+>> read {"filePath":"rust/tests/unit/capability-routing/issue_1175_claim_routing.rs","file_path":"rust/tests/unit/capability-routing/issue_1175_claim_routing.rs","path":"rust/tests/unit/capability-routing/issue_1175_claim_routing.rs"}
+   <file>
+   00001| //! Issue #1175 R3: claim routing through the capability table.
+   00002| //!
+   00003| //! The `claim` rows of `data/seed/capability-routing.lino` are consulted after
+   00004| //! formalization and before a handler runs: a handler with a row is offered
+   00005| //! the prompt only when one of its `admits_on` evidence kinds holds in the
+   00006| //! prompt's structure, so a surface word alone cannot claim it. Mirrored by
+   00007| //! `rust/tests/web/issue-1175-claim-routing.test.mjs`.
+   00008| 
+   00009| use formal_ai::capability_routing::{
+   00010|     CLAIM_EVIDENCE_KINDS, ClaimAdmission, ClaimRow, claim_admission, claim_admission_in_dialogue,
+   00011|     claim_admitted, claim_evidence_holds, claim_evidence_holds_in_dialogue, claim_rows,
+   00012|     claim_rows_from, without_answer_shape_directive,
+   00013| };
+   00014| use formal_ai::event_log::EventLog;
+   00015| 
+   00016| #[test]
+   00017| fn the_claim_rows_are_read_from_the_capability_table() {
+   00018|     let rows: Vec<(&str, &str, Vec<&str>)> = claim_rows()
+   00019|         .iter()
+   00020|         .map(|row| {
+   00021|             (
+   00022|                 row.handler.as_str(),
+   00023|                 row.browser_handler.as_str(),
+   00024|                 row.admits_on.iter().map(String::as_str).collect(),
+   00025|             )
+   00026|         })
+   00027|         .collect();
+   00028|     assert_eq!(
+   00029|         rows,
+   00030|         vec![
+   00031|             (
+   00032|                 "software_project",
+   00033|                 "trySoftwareProjectRequest",
+   00034|                 vec!["object_phrase_artifact", "approval_of_a_proposal"],
+   00035|             ),
+   00036|             (
+   00037|                 "terminal_command",
+   00038|                 "tryTerminalCommand",
+   00039|                 vec!["shell_command_shape", "semantic_shell_task"],
+   00040|             ),
+   00041|             ("repository_lineage", "", vec!["repository_subject"]),
+   00042|             ("page_query_text", "tryPageQueryText", vec!["supplied_page"]),
+   00043|             (
+   00044|                 "javascript_execution",
+   00045|                 "tryJavaScriptExecution",
+   00046|                 vec!["javascript_program"],
+   00047|             ),
+   00048|             (
+   00049|                 "incompatible_units",
+   00050|                 "tryIncompatibleUnits",
+   00051|                 vec!["incompatible_unit_pair"],
+   00052|             ),
+   00053|             ("http_fetch", "", vec!["fetch_url"]),
+   00054|             ("url_navigate", "", vec!["navigation_url"]),
+   00055|             ("calendar_create_event", "", vec!["calendar_date_signal"]),
+   00056|             ("code_debugging", "tryCodeDebugging", vec!["code_artifact"]),
+   00057|             (
+   00058|                 "code_explanation",
+   00059|                 "tryCodeExplanation",
+   00060|                 vec!["code_artifact"]
+   00061|             ),
+   00062|             ("code_review", "tryCodeReview", vec!["code_artifact"]),
+   00063|             (
+   00064|                 "summarization_text",
+   00065|                 "trySummarizationText",
+   00066|                 vec!["supplied_text"],
+   00067|             ),
+   00068|             (
+   00069|                 "requirement_listing",
+   00070|                 "requirement_listing",
+   00071|                 vec!["supplied_text"],
+   00072|             ),
+   00073|             ("text_rewrite", "tryTextRewrite", vec!["supplied_text"]),
+   00074|             ("statistics", "tryStatistics", vec!["stated_number"]),
+   00075|             ("word_problem", "tryWordProblem", vec!["stated_number"]),
+   00076|             (
+   00077|                 "arithmetic",
+   00078|                 "tryArithmetic",
+   00079|                 vec!["calculation_expression", "currency_rate_basis"],
+   00080|             ),
+   00081|             (
+   00082|                 "compound_interest",
+   00083|                 "tryCompoundInterest",
+   00084|                 vec!["investment_terms", "conversion_target_currency"],
+   00085|             ),
+   00086|             (
+   00087|                 "number_constraint_reasoning",
+   00088|                 "tryNumberConstraintReasoning",
+   00089|                 vec!["interval_bounds"],
+   00090|             ),
+   00091|             (
+   00092|                 "unit_conversion",
+   00093|                 "tryUnitConversion",
+   00094|                 vec!["measured_quantity"]
+   00095|             ),
+   00096|             (
+   00097|                 "calendar_reasoning",
+   00098|                 "tryCalendarReasoning",
+   00099|                 vec!["calendar_date_signal", "calendar_anchor"],
+   00100|             ),
+   00101|             (
+   00102|                 "test_generation",
+   00103|                 "tryTestGeneration",
+   00104|                 vec!["function_under_test"]
+   00105|             ),
+   00106|             (
+   00107|                 "code_refactoring",
+   00108|                 "tryCodeRefactoring",
+   00109|                 vec!["code_artifact"]
+   00110|             ),
+   00111|             (
+   00112|                 "format_conversion",
+   00113|                 "tryFormatConversion",
+   00114|                 vec!["structured_document"],
+   00115|             ),
+   00116|             (
+   00117|                 "brainstorm_composition",
+   00118|                 "tryBrainstormComposition",
+   00119|                 vec!["composition_topic"]
+   00120|             ),
+   00121|             (
+   00122|                 "creative_writing",
+   00123|                 "tryCreativeWritingRequest",
+   00124|                 vec!["composition_topic"]
+   00125|             ),
+   00126|             ("advice_request", "tryAdviceRequest", vec!["advice_topic"]),
+   00127|             (
+   00128|                 "planning_request",
+   00129|                 "tryPlanningRequest",
+   00130|                 vec!["cached_destination"]
+   00131|             ),
+   00132|             (
+   00133|                 "regex_synthesis",
+   00134|                 "tryRegexSynthesis",
+   00135|                 vec!["pattern_constraints"]
+   00136|             ),
+   00137|             ("sql_synthesis", "trySqlSynthesis", vec!["table_reference"]),
+   00138|             (
+   00139|                 "shell_command_compose",
+   00140|                 "tryShellCommandCompose",
+   00141|                 vec!["filesystem_object"]
+   00142|             ),
+   00143|             (
+   00144|                 "program_synthesis",
+   00145|                 "tryProgramSynthesis",
+   00146|                 vec!["function_spec"]
+   00147|             ),
+   00148|             ("write_script", "tryWriteScript", vec!["script_language"]),
+   00149|             (
+   00150|                 "document_generation_plan",
+   00151|                 "tryDocumentGenerationPlan",
+   00152|                 vec!["document_format"]
+   00153|             ),
+   00154|             (
+   00155|                 "installation_conversion",
+   00156|                 "tryInstallationConversion",
+   00157|                 vec!["install_steps"]
+   00158|             ),
+   00159|             (
+   00160|                 "execution_failure",
+   00161|                 "tryExecutionFailure",
+   00162|                 vec!["call_expression"]
+   00163|             ),
+   00164|             (
+   00165|                 "concept_lookup",
+   00166|                 "tryConceptLookup",
+   00167|                 vec!["concept_subject"]
+   00168|             ),
+   00169|             (
+   00170|                 "definition_merge",
+   00171|                 "tryDefinitionMerge",
+   00172|                 vec!["definition_merge_term"]
+   00173|             ),
+   00174|             ("who_is", "tryWhoIsQuestion", vec!["concept_subject"]),
+   00175|             (
+   00176|                 "how_it_works",
+   00177|                 "tryHowItWorks",
+   00178|                 vec!["mechanism_subject", "prior_reply"]
+   00179|             ),
+   00180|             (
+   00181|                 "procedural_how_to",
+   00182|                 "tryProceduralHowTo",
+   00183|                 vec!["procedure_task"]
+   00184|             ),
+   00185|             (
+   00186|                 "procedural_how_to_followup",
+   00187|                 "tryProceduralHowToFollowup",
+   00188|                 vec!["prior_procedure"]
+   00189|             ),
+   00190|             ("web_search", "tryWebSearch", vec!["search_focus"]),
+   00191|             ("conversation_topic", "", vec!["conversation_topic_subject"]),
+   00192|             (
+   00193|                 "learn_from_source",
+   00194|                 "tryLearnFromSource",
+   00195|                 vec!["learnable_source"]
+   00196|             ),
+   00197|             (
+   00198|                 "product_search",
+   00199|                 "tryProductSearch",
+   00200|                 vec!["marketplace_scope"]
+   00201|             ),
+   00202|             (
+   00203|                 "verifiable_task",
+   00204|                 "tryVerifiableTask",
+   00205|                 vec!["verifiable_spec"]
+   00206|             ),
+   00207|             (
+   00208|                 "legality_warning",
+   00209|                 "tryLegalityWarning",
+   00210|                 vec!["legality_assessment"]
+   00211|             ),
+   00212|             (
+   00213|                 "opinion_question",
+   00214|                 "tryOpinionQuestion",
+   00215|                 vec!["assistant_addressee"]
+   00216|             ),
+   00217|             (
+   00218|                 "physical_action_question",
+   00219|                 "tryPhysicalActionQuestion",
+   00220|                 vec!["assistant_addressee"]
+   00221|             ),
+   00222|             (
+   00223|                 "punctuation_only_prompt",
+   00224|                 "tryPunctuationOnlyPrompt",
+   00225|                 vec!["punctuation_only"]
+   00226|             ),
+   00227|             ("ill_formed", "tryIllFormed", vec!["unbalanced_brackets"]),
+   00228|             (
+   00229|                 "shell_refusal",
+   00230|                 "tryShellRefusal",
+   00231|                 vec!["shell_command_shape"]
+   00232|             ),
+   00233|             (
+   00234|                 "link_native_synthesis",
+   00235|                 "tryLinkNativeSynthesis",
+   00236|                 vec!["stated_number"]
+   00237|             ),
+   00238|             (
+   00239|                 "software_project_followup",
+   00240|                 "trySoftwareProjectFollowup",
+   00241|                 vec!["prior_software_project"]
+   00242|             ),
+   00243|             (
+   00244|                 "research_result_followup",
+   00245|                 "tryResearchResultFollowup",
+   00246|                 vec!["prior_research_request"]
+   00247|             ),
+   00248|             (
+   00249|                 "research_comparison_table",
+   00250|                 "tryResearchComparisonTable",
+   00251|                 vec!["prior_research_request"]
+   00252|             ),
+   00253|             (
+   00254|                 "coreference",
+   00255|                 "tryCoreferenceFactLookup",
+   00256|                 vec!["coreference_antecedent"]
+   00257|             ),
+   00258|             (
+   00259|                 "response_language_followup",
+   00260|                 "tryResponseLanguageFollowup",
+   00261|                 vec!["prior_user_request"]
+   00262|             ),
+   00263|             (
+   00264|                 "numeric_list",
+   00265|                 "tryNumericList",
+   00266|                 vec!["list_items", "prior_numeric_list"]
+   00267|             ),
+   00268|             (
+   00269|                 "text_manipulation",
+   00270|                 "tryTextManipulation",
+   00271|                 vec!["text_operation"]
+   00272|             ),
+   00273|             (
+   00274|                 "shell_command_transform",
+   00275|                 "tryShellCommandTransform",
+   00276|                 vec!["shell_command_operand", "prior_reply"]
+   00277|             ),
+   00278|             (
+   00279|                 "write_program_coreference",
+   00280|                 "tryWriteProgramCoreference",
+   00281|                 vec!["prior_program"]
+   00282|             ),
+   00283|             (
+   00284|                 "write_program_concrete",
+   00285|                 "tryWriteProgramConcrete",
+   00286|                 vec!["program_task"]
+   00287|             ),
+   00288|             (
+   00289|                 "program_blueprint_from_prompt",
+   00290|                 "tryProgramBlueprintFromPrompt",
+   00291|                 vec!["program_task"]
+   00292|             ),
+   00293|             (
+   00294|                 "software_project_request",
+   00295|                 "trySoftwareProjectRequest",
+   00296|                 vec!["object_phrase_artifact", "approval_of_a_proposal"]
+   00297|             ),
+   00298|             (
+   00299|                 "memory_program",
+   00300|                 "tryMemoryProgram",
+   00301|                 vec!["memory_program_reading"]
+   00302|             ),
+   00303|             (
+   00304|                 "memory_program_gap",
+   00305|                 "tryMemoryProgramGap",
+   00306|                 vec!["memory_program_reading"]
+   00307|             ),
+   00308|             (
+   00309|                 "conversation_control",
+   00310|                 "",
+   00311|                 vec!["backticked_term", "prior_reply"]
+   00312|             ),
+   00313|             (
+   00314|                 "agentic_continuation",
+   00315|                 "tryAgenticContinuation",
+   00316|                 vec!["prior_reply"]
+   00317|             ),
+   00318|             ("clarification", "tryClarification", vec!["prior_reply"]),
+   00319|             (
+   00320|                 "current_dialogue_fact_checking",
+   00321|                 "tryCurrentDialogueFactChecking",
+   00322|                 vec!["prior_user_request"]
+   00323|             ),
+   00324|             (
+   00325|                 "historical",
+   00326|                 "tryHistorical",
+   00327|                 vec!["dialogue_turn", "name_assignment"]
+   00328|             ),
+   00329|             (
+   00330|                 "conversation_memory",
+   00331|                 "",
+   00332|                 vec![
+   00333|                     "dialogue_turn",
+   00334|                     "name_assignment",
+   00335|                     "recall_query_term",
+   00336|                     "supplied_payload"
+   00337|                 ]
+   00338|             ),
+   00339|             ("summarization", "", vec!["summary_topic"]),
+   00340|             (
+   00341|                 "brainstorming",
+   00342|                 "tryBrainstormingRequest",
+   00343|                 vec!["brainstorm_category"]
+   00344|             ),
+   00345|             ("roleplay", "tryRoleplayRequest", vec!["persona_or_topic"]),
+   00346|             (
+   00347|                 "document_originality_check",
+   00348|                 "tryDocumentOriginalityCheck",
+   00349|                 vec!["document_operand"]
+   00350|             ),
+   00351|             ("translation", "tryTranslation", vec!["translation_text"]),
+   00352|             (
+   00353|                 "triz_resolution",
+   00354|                 "tryTrizResolution",
+   00355|                 vec!["triz_precedent"]
+   00356|             ),
+   00357|             ("algorithm", "tryAlgorithm", vec!["algorithm_operation"]),
+   00358|             (
+   00359|                 "source_refresh",
+   00360|                 "trySourceRefresh",
+   00361|                 vec!["source_reference"]
+   00362|             ),
+   00363|             ("proof_request", "tryProofRequest", vec!["stated_claim"]),
+   00364|             ("capabilities", "tryCapabilities", vec!["assistant_subject"]),
+   00365|             (
+   00366|                 "meta_explanation",
+   00367|                 "tryMetaExplanation",
+   00368|                 vec!["assistant_subject"]
+   00369|             ),
+   00370|             (
+   00371|                 "network_query",
+   00372|                 "tryNetworkSnapshot",
+   00373|                 vec!["assistant_subject"]
+   00374|             ),
+   00375|             (
+   00376|                 "exact_memory_query",
+   00377|                 "tryExactMemoryQuery",
+   00378|                 vec!["memory_query_statement"]
+   00379|             ),
+   00380|             ("fact_lookup", "", vec!["fact_subject"]),
+   00381|             (
+   00382|                 "docs_method_explanation",
+   00383|                 "tryDocsMethodExplanation",
+   00384|                 vec!["documented_method"]
+   00385|             ),
+   00386|             ("kupi_slona", "tryKupiSlona", vec!["idiom_utterance"]),
+   00387|             (
+   00388|                 "source_conflict",
+   00389|                 "trySourceConflict",
+   00390|                 vec!["attributed_alternatives"]
+   00391|             ),
+   00392|             (
+   00393|                 "github_repository_traffic",
+   00394|                 "tryGithubRepositoryTraffic",
+   00395|                 vec!["named_repository"]
+   00396|             ),
+   00397|             (
+   00398|                 "formalization_request",
+   00399|                 "tryFormalizationRequest",
+   00400|                 vec!["formalization_statement"]
+   00401|             ),
+   00402|         ]
+   00403|     );
+   00404|     let refusal_rows: Vec<(&str, Vec<&str>)> = claim_rows()
+   00405|         .iter()
+   00406|         .filter(|row| !row.refusal_events.is_empty())
+   00407|         .map(|row| {
+   00408|             (
+   00409|                 row.handler.as_str(),
+   00410|                 row.refusal_events.iter().map(String::as_str).collect(),
+   00411|             )
+   00412|         })
+   00413|         .collect();
+   00414|     assert_eq!(
+   00415|         refusal_rows,
+   00416|         vec![
+   00417|             ("test_generation", vec!["test_generation:refusal"]),
+   00418|             ("code_refactoring", vec!["code_refactoring:refusal"]),
+   00419|             ("format_conversion", vec!["format_conversion:refusal"]),
+   00420|             ("brainstorm_composition", vec!["brainstorming:refusal"]),
+   00421|             ("creative_writing", vec!["creative_writing:refusal"]),
+   00422|             ("advice_request", vec!["advice:refusal"]),
+   00423|             ("planning_request", vec!["planning:refusal"]),
+   00424|             ("regex_synthesis", vec!["regex_synthesis:refusal"]),
+   00425|             ("sql_synthesis", vec!["sql_synthesis:refusal"]),
+   00426|             (
+   00427|                 "shell_command_compose",
+   00428|                 vec!["shell_command_compose:refusal"]
+   00429|             ),
+   00430|             ("how_it_works", vec!["how_it_works:refusal"]),
+   00431|             ("product_search", vec!["product_search:refusal"]),
+   00432|             ("conversation_control", vec!["conversation_control:refusal"]),
+   00433|             ("agentic_continuation", vec!["agentic_continuation:refusal"]),
+   00434|             ("clarification", vec!["clarification:refusal"]),
+   00435|             (
+   00436|                 "current_dialogue_fact_checking",
+   00437|                 vec!["current_dialogue_fact_checking:refusal"]
+   00438|             ),
+   00439|             ("historical", vec!["conversation_recall:refusal"]),
+   00440|             ("conversation_memory", vec!["conversation_recall:refusal"]),
+   00441|             ("summarization", vec!["summarization:refusal"]),
+   00442|             ("brainstorming", vec!["brainstorming:refusal"]),
+   00443|             ("roleplay", vec!["roleplay:refusal"]),
+   00444|             (
+   00445|                 "document_originality_check",
+   00446|                 vec!["document_originality_check:refusal"]
+   00447|             ),
+   00448|             ("translation", vec!["translation:refusal"]),
+   00449|             ("triz_resolution", vec!["triz_resolution:refusal"]),
+   00450|             ("algorithm", vec!["algorithm:refusal"]),
+   00451|             ("source_refresh", vec!["source_refresh:refusal"]),
+   00452|             ("proof_request", vec!["proof_request:refusal"]),
+   00453|             ("source_conflict", vec!["source_conflict:refusal"]),
+   00454|             (
+   00455|                 "github_repository_traffic",
+   00456|                 vec!["github_repository_traffic:refusal"]
+   00457|             ),
+   00458|             (
+   00459|                 "formalization_request",
+   00460|                 vec!["formalization_request:refusal"]
+   00461|             ),
+   00462|         ]
+   00463|     );
+   00464| }
+   00465| 
+   00466| #[test]
+   00467| fn every_row_names_a_known_handler_and_known_evidence() {
+   00468|     let precedence = formal_ai::seed::handler_precedence();
+   00469|     for row in claim_rows() {
+   00470|         assert!(
+   00471|             row.handler == "terminal_command" || precedence.iter().any(|name| name == &row.handler),
+   00472|             "claim row names a handler the precedence table does not: {row:?}"
+   00473|         );
+   00474|         assert!(
+   00475|             !row.admits_on.is_empty(),
+   00476|             "a row admits on something: {row:?}"
+   00477|         );
+   00478|         for kind in &row.admits_on {
+   00479|             assert!(
+   00480|                 CLAIM_EVIDENCE_KINDS.contains(&kind.as_str()),
+   00481|                 "unknown evidence kind `{kind}` in {row:?}"
+   00482|             );
+   00483|             assert!(claim_evidence_holds(kind, "ls -la", "ls -la").is_some());
+   00484|         }
+   00485|         assert!(
+   00486|             !row.because.is_empty(),
+   00487|             "every row states its reason: {row:?}"
+   00488|         );
+   00489|     }
+   00490|     assert_eq!(claim_evidence_holds("surface_word", "ls", "ls"), None);
+   00491| }
+   00492| 
+   00493| #[test]
+   00494| fn a_surface_word_alone_is_not_admitted() {
+   00495|     for (handler, prompt) in [
+   00496|         (
+   00497|             "terminal_command",
+   00498|             "Make a 3-day itinerary for a first visit to Rome.",
+   00499|         ),
+   00500|         (
+   00501|             "terminal_command",
+   00502|             "Find the bug: def average(xs): return sum(xs) / len(xs)",
+   00503|         ),
+   00504|         (
+   00505|             "software_project",
+   00506|             "Write a regex for a US ZIP code with an optional 4-digit extension",
+   00507|         ),
+   00508|         ("repository_lineage", "Which issue introduced this feature?"),
+   00509|         (
+   00510|             "page_query_text",
+   00511|             "What command builds the jar on this page?",
+   00512|         ),
+   00513|         ("javascript_execution", "Run this JavaScript"),
+   00514|         ("incompatible_units", "What does a unit test check?"),
+   00515|         ("http_fetch", "Fetch me a summary of the news"),
+   00516|         ("url_navigate", "Navigate the menu to the settings screen"),
+   00517|         ("calendar_create_event", "Explain how a calendar works."),
+   00518|         ("code_debugging", "Find the bug in my plan for the trip"),
+   00519|         ("code_explanation", "Explain how a compiler works"),
+   00520|         ("code_review", "Review my essay about the ocean"),
+   00521|         ("summarization_text", "Summarize the rust language"),
+   00522|         ("text_rewrite", "Make this more formal"),
+   00523|         ("statistics", "What is the mean of my test scores?"),
+   00524|         ("statistics", "Is this number prime?"),
+   00525|         ("word_problem", "How many apples are left if I eat some?"),
+   00526|         ("arithmetic", "Explain how long division works"),
+   00527|         (
+   00528|             "compound_interest",
+   00529|             "How does compound interest work when you invest?",
+   00530|         ),
+   00531|         (
+   00532|             "number_constraint_reasoning",
+   00533|             "Guess the hidden number I am thinking of",
+   00534|         ),
+   00535|         ("unit_conversion", "Convert this recipe to metric units"),
+   00536|         ("calendar_reasoning", "Explain how a calendar works."),
+   00537|     ] {
+   00538|         assert!(
+   00539|             !claim_admitted(handler, prompt, &prompt.to_lowercase()),
+   00540|             "`{handler}` must not be offered `{prompt}`"
+   00541|         );
+   00542|     }
+   00543| }
+   00544| 
+   00545| #[test]
+   00546| fn the_structural_evidence_admits() {
+   00547|     for (handler, prompt) in [
+   00548|         ("terminal_command", "find . -name '*.log' -size +10M"),
+   00549|         ("software_project", "Build a web app for tracking habits"),
+   00550|         (
+   00551|             "repository_lineage",
+   00552|             "Which issue introduced scripts/check-self-development-release.rs?",
+   00553|         ),
+   00554|         (
+   00555|             "repository_lineage",
+   00556|             "Why does the self-development status fail?",
+   00557|         ),
+   00558|         ("repository_lineage", "What does `evaluate_calculation` do?"),
+   00559|         (
+   00560|             "page_query_text",
+   00561|             "What command builds the jar?\nRun kotlinc hello.kt -include-runtime -d hello.jar.",
+   00562|         ),
+   00563|         (
+   00564|             "javascript_execution",
+   00565|             "Run this JavaScript: console.log(1 + 2)",
+   00566|         ),
+   00567|         ("incompatible_units", "How many meters are in a kilobyte?"),
+   00568|         ("http_fetch", "Fetch https://example.com"),
+   00569|         ("url_navigate", "Navigate to github.com"),
+   00570|         (
+   00571|             "calendar_create_event",
+   00572|             "Schedule a meeting with Anna tomorrow at 3pm",
+   00573|         ),
+   00574|         (
+   00575|             "code_debugging",
+   00576|             "Find the bug: def average(xs): return sum(xs) / len(xs)",
+   00577|         ),
+   00578|         (
+   00579|             "code_explanation",
+   00580|             "Explain this code: print(sum(range(10)))",
+   00581|         ),
+   00582|         (
+   00583|             "code_review",
+   00584|             "Review this code: `const total = items.map((item) => item.price)`",
+   00585|         ),
+   00586|         (
+   00587|             "summarization_text",
+   00588|             "Summarize: The parser reads the file. It builds a tree. The tree is checked.",
+   00589|         ),
+   00590|         (
+   00591|             "text_rewrite",
+   00592|             "Make this formal: hey can you send me the file",
+   00593|         ),
+   00594|         ("statistics", "What is the mean of 3, 5 and 7?"),
+   00595|         ("statistics", "Is 97 a prime number?"),
+   00596|         (
+   00597|             "word_problem",
+   00598|             "Tom has 5 apples and gets 3 more. How many apples does he have?",
+   00599|         ),
+   00600|         ("arithmetic", "What is 2 + 2?"),
+   00601|         (
+   00602|             "arithmetic",
+   00603|             "what dollar exchange rate do you use for calculations?",
+   00604|         ),
+   00605|         (
+   00606|             "compound_interest",
+   00607|             "If I invest $1000 at 8% annual interest compounded monthly for 5 years, how much will I have?",
+   00608|         ),
+   00609|         (
+   00610|             "compound_interest",
+   00611|             "convert the final amount to EUR using current exchange rates from the web.",
+   00612|         ),
+   00613|         (
+   00614|             "number_constraint_reasoning",
+   00615|             "Я загадал число больше 1 но меньше 3. что это за число?",
+   00616|         ),
+   00617|         ("unit_conversion", "How many meters are in 3 km?"),
+   00618|         ("calendar_reasoning", "What day comes after Monday?"),
+   00619|         ("calendar_reasoning", "What day is today?"),
+   00620|         ("calendar_reasoning", "What day of the week was 2024-02-29?"),
+   00621|         (
+   00622|             "calendar_reasoning",
+   00623|             "What month is 2 months after January?",
+   00624|         ),
+   00625|     ] {
+   00626|         assert!(
+   00627|             claim_admitted(handler, prompt, &prompt.to_lowercase()),
+   00628|             "`{handler}` must be offered `{prompt}`"
+   00629|         );
+   00630|     }
+   00631| }
+   00632| 
+   00633| #[test]
+   00634| fn a_handler_without_a_row_is_admitted_and_a_fixture_row_routes_without_code() {
+   00635|     assert!(claim_admitted(
+   00636|         "a_handler_with_no_row",
+   00637|         "Купи слона",
+   00638|         "купи слона"
+   00639|     ));
+   00640|     let fixture = "capability_routing\n  claim\n    handler concept_lookup\n    admits_on shell_command_shape\n    because \"fixture\"\n";
+   00641|     assert_eq!(
+   00642|         claim_rows_from(fixture),
+   00643|         vec![ClaimRow {
+   00644|             handler: "concept_lookup".to_owned(),
+   00645|             browser_handler: String::new(),
+   00646|             admits_on: vec!["shell_command_shape".to_owned()],
+   00647|             refusal_events: Vec::new(),
+   00648|             because: "fixture".to_owned(),
+   00649|         }]
+   00650|     );
+   00651| }
+   00652| 
+   00653| // Issue #1175 R3, refusal group: without its operand a refusal-group handler
+   00654| // is admitted to refuse only (the dispatcher keeps its answer only when it
+   00655| // recorded the row's refusal event), and with it every answer is admitted.
+   00656| #[test]
+   00657| fn a_refusal_group_handler_without_its_operand_may_only_refuse() {
+   00658|     for (handler, prompt) in [
+   00659|         ("test_generation", "Write unit tests"),
+   00660|         ("code_refactoring", "Refactor my morning routine"),
+   00661|         ("format_conversion", "Convert this JSON to YAML"),
+   00662|     ] {
+   00663|         assert_eq!(
+   00664|             claim_admission(handler, prompt, &prompt.to_lowercase()),
+   00665|             ClaimAdmission::RefusalOnly,
+   00666|             "{handler}: {prompt}"
+   00667|         );
+   00668|         assert!(claim_admitted(handler, prompt, &prompt.to_lowercase()));
+   00669|     }
+   00670|     for (handler, prompt) in [
+   00671|         (
+   00672|             "test_generation",
+   00673|             "Write tests for `square(n)`: square(3) returns 9",
+   00674|         ),
+   00675|         (
+   00676|             "code_refactoring",
+   00677|             "Refactor this promise chain with async/await:\n```javascript\nfetch(url).then(r => r.json());\n```",
+   00678|         ),
+   00679|         (
+   00680|             "format_conversion",
+   00681|             "Convert this JSON to YAML:\n```json\n{\"a\": 1}\n```",
+   00682|         ),
+   00683|     ] {
+   00684|         assert_eq!(
+   00685|             claim_admission(handler, prompt, &prompt.to_lowercase()),
+   00686|             ClaimAdmission::Full,
+   00687|             "{handler}: {prompt}"
+   00688|         );
+   00689|     }
+   00690|     // A row without a refusal event still denies a prompt without evidence.
+   00691|     assert_eq!(
+   00692|         claim_admission(
+   00693|             "code_review",
+   00694|             "Review my essay about the ocean",
+   00695|             "review my essay about the ocean"
+   00696|         ),
+   00697|         ClaimAdmission::Denied
+   00698|     );
+   00699| }
+   00700| 
+   00701| #[test]
+   00702| fn the_named_refusal_of_a_refusal_group_request_is_still_the_answer() {
+   00703|     let response = formal_ai::FormalAiEngine.answer("Write unit tests");
+   00704|     assert_eq!(response.intent, "test_generation");
+   00705|     assert_eq!(
+   00706|         response.answer,
+   00707|         "Recognized a test-writing request, but no function under test could be identified \u{2014} name it, ideally in backticks like `is_palindrome(s)` \u{2014} so I will not guess test cases."
+   00708|     );
+   00709| }
+   00710| 
+   00711| // Issue #1175 R3 classes (b), (c) and (e): a follow-up admits on the earlier
+   00712| // turn it continues, read from the dialogue log; a composer on its
+   00713| // specification, admitted to its refusal lane without one; a lookup or policy
+   00714| // on the subject or shape its own reader extracts. Mirrored by the class tests
+   00715| // of `rust/tests/web/issue-1175-claim-routing.test.mjs`.
+   00716| fn dialogue(turns: &[(&str, &str)]) -> EventLog {
+   00717|     let mut log = EventLog::new();
+   00718|     for (role, content) in turns {
+   00719|         let kind = if *role == "user" {
+   00720|             "prior_turn:user"
+   00721|         } else {
+   00722|             "prior_turn:assistant"
+   00723|         };
+   00724|         log.append(kind, (*content).to_owned());
+   00725|     }
+   00726|     log
+   00727| }
+   00728| 
+   00729| #[test]
+   00730| fn class_b_dialogue_evidence_reads_the_earlier_turns_never_the_prompt_alone() {
+   00731|     let research = dialogue(&[
+   00732|         ("user", "Research the best laptops for programming"),
+   00733|         ("assistant", "Here is what I found."),
+   00734|     ]);
+   00735|     let how_to = dialogue(&[
+   00736|         ("user", "How to tie a tie?"),
+   00737|         ("assistant", "Procedural discovery for tie a tie."),
+   00738|     ]);
+   00739|     let empty = EventLog::new();
+   00740|     for (kind, prompt, log, holds) in [
+   00741|         (
+   00742|             "prior_research_request",
+   00743|             "What is the result?",
+   00744|             &research,
+   00745|             true,
+   00746|         ),
+   00747|         (
+   00748|             "prior_research_request",
+   00749|             "What is the result?",
+   00750|             &empty,
+   00751|             false,
+   00752|         ),
+   00753|         (
+   00754|             "prior_procedure",
+   00755|             "Can you give me specific instructions?",
+   00756|             &how_to,
+   00757|             true,
+   00758|         ),
+   00759|         (
+   00760|             "prior_procedure",
+   00761|             "Can you give me specific instructions?",
+   00762|             &empty,
+   00763|             false,
+   00764|         ),
+   00765|         ("prior_user_request", "Answer in Russian", &how_to, true),
+   00766|         ("prior_user_request", "Answer in Russian", &empty, false),
+   00767|         ("prior_reply", "How does it work?", &how_to, true),
+   00768|         ("prior_software_project", "Now test it", &empty, false),
+   00769|     ] {
+   00770|         assert_eq!(
+   00771|             claim_evidence_holds_in_dialogue(kind, prompt, &prompt.to_lowercase(), log),
+   00772|             Some(holds),
+   00773|             "{kind}: {prompt}"
+   00774|         );
+   00775|     }
+   00776|     assert_eq!(
+   00777|         claim_admission_in_dialogue(
+   00778|             "research_result_followup",
+   00779|             "What is the result?",
+   00780|             "what is the result?",
+   00781|             &research
+   00782|         ),
+   00783|         ClaimAdmission::Full
+   00784|     );
+   00785|     assert_eq!(
+   00786|         claim_admission(
+   00787|             "research_result_followup",
+   00788|             "What is the result?",
+   00789|             "what is the result?"
+   00790|         ),
+   00791|         ClaimAdmission::Denied
+   00792|     );
+   00793| }
+   00794| 
+   00795| #[test]
+   00796| fn class_c_a_composer_without_its_specification_may_only_refuse() {
+   00797|     for (handler, bare, specified) in [
+   00798|         (
+   00799|             "regex_synthesis",
+   00800|             "Write a regex",
+   00801|             "Write a regular expression that matches five digits",
+   00802|         ),
+   00803|         (
+   00804|             "sql_synthesis",
+   00805|             "Write a SQL query",
+   00806|             "Write a SQL query that selects every row of the users table",
+   00807|         ),
+   00808|         (
+   00809|             "planning_request",
+   00810|             "Plan a trip somewhere nice",
+   00811|             "Make a 3-day itinerary for a first visit to Rome.",
+   00812|         ),
+   00813|     ] {
+   00814|         assert_eq!(
+   00815|             claim_admission(handler, bare, &bare.to_lowercase()),
+   00816|             ClaimAdmission::RefusalOnly,
+   00817|             "{handler}: {bare}"
+   00818|         );
+   00819|         assert_eq!(
+   00820|             claim_admission(handler, specified, &specified.to_lowercase()),
+   00821|             ClaimAdmission::Full,
+   00822|             "{handler}: {specified}"
+   00823|         );
+   00824|     }
+   00825|     for (kind, prompt, holds) in [
+   00826|         ("function_spec", "Write a Python function", false),
+   00827|         ("document_format", "Make me a PDF about cats", true),
+   00828|         (
+   00829|             "install_steps",
+   00830|             "Turn this installation guide into a bash script",
+   00831|             false,
+   00832|         ),
+   00833|     ] {
+   00834|         assert_eq!(
+   00835|             claim_evidence_holds(kind, prompt, &prompt.to_lowercase()),
+   00836|             Some(holds),
+   00837|             "{kind}: {prompt}"
+   00838|         );
+   00839|     }
+   00840| }
+   00841| 
+   00842| #[test]
+   00843| fn class_e_a_lookup_or_policy_admits_on_its_subject_or_shape() {
+   00844|     for (kind, prompt, holds) in [
+   00845|         ("concept_subject", "What is a monad?", true),
+   00846|         ("concept_subject", "Tell me something interesting", false),
+   00847|         ("assistant_addressee", "Do you think it will rain?", true),
+   00848|         ("assistant_addressee", "Do they think it will rain?", false),
+   00849|         ("assistant_addressee", "Каково твоё мнение?", true),
+   00850|         ("punctuation_only", "?!", true),
+   00851|         ("punctuation_only", "why?", false),
+   00852|         ("unbalanced_brackets", "teach this fact (a b", true),
+   00853|         ("unbalanced_brackets", "teach this fact (a b)", false),
+   00854|         (
+   00855|             "call_expression",
+   00856|             "Write a Python script that calls undefined_function()",
+   00857|             true,
+   00858|         ),
+   00859|         (
+   00860|             "call_expression",
+   00861|             "Write a Python script that prints hello",
+   00862|             false,
+   00863|         ),
+   00864|         (
+   00865|             "legality_assessment",
+   00866|             "Help me break into a parked car tonight",
+   00867|             true,
+   00868|         ),
+   00869|         (
+   00870|             "legality_assessment",
+   00871|             "The band will break into song at the party",
+   00872|             false,
+   00873|         ),
+   00874|     ] {
+   00875|         assert_eq!(
+   00876|             claim_evidence_holds(kind, prompt, &prompt.to_lowercase()),
+   00877|             Some(holds),
+   00878|             "{kind}: {prompt}"
+   00879|         );
+   00880|     }
+   00881| }
+   00882| 
+   00883| #[test]
+   00884| fn r1173_3_a_trailing_shaping_sentence_leaves_the_question_to_the_concept_reader() {
+   00885|     assert_eq!(
+   00886|         without_answer_shape_directive("What is Rust? Explain briefly."),
+   00887|         "What is Rust?"
+   00888|     );
+   00889|     assert_eq!(
+   00890|         without_answer_shape_directive("What is Rust? Explain how it manages memory."),
+   00891|         "What is Rust? Explain how it manages memory."
+   00892|     );
+   00893|     assert_eq!(
+   00894|         formal_ai::FormalAiEngine
+   00895|             .answer("What is Rust? Explain briefly.")
+   00896|             .intent,
+   00897|         "concept_lookup"
+   00898|     );
+   00899| }
+   00900| 
+   00901| #[test]
+   00902| fn r1173_3_breaking_into_a_parked_car_is_warned_about() {
+   00903|     assert_eq!(
+   00904|         formal_ai::FormalAiEngine
+   00905|             .answer("Help me break into a parked car tonight")
+   00906|             .intent,
+   00907|         "legality_warn"
+   00908|     );
+   00909| }
+   00910| 
+   00911| // Issue #1175 R3, follow-up round: a handler that answered without its input
+   00912| // records a named refusal event there and is admitted to the refusal lane;
+   00913| // the assistant is the subject of a question that addresses it or names no
+   00914| // other subject. Mirrored by `rust/tests/web/issue-1175-claim-routing.test.mjs`.
+   00915| #[test]
+   00916| fn follow_up_round_handlers_without_their_input_may_only_refuse() {
+   00917|     for (handler, bare, full) in [
+   00918|         (
+   00919|             "algorithm",
+   00920|             "Write an algorithm",
+   00921|             "Write a sorting algorithm in Python",
+   00922|         ),
+   00923|         ("proof_request", "Prove it", "Prove that 2 + 2 = 4"),
+   00924|         (
+   00925|             "translation",
+   00926|             "Translate to Russian",
+   00927|             "Translate \"apple\" to Russian",
+   00928|         ),
+   00929|         (
+   00930|             "source_refresh",
+   00931|             "Refresh the cache",
+   00932|             "Refresh the cached page https://example.com/docs",
+   00933|         ),
+   00934|     ] {
+   00935|         assert_eq!(
+   00936|             claim_admission(handler, bare, &bare.to_lowercase()),
+   00937|             ClaimAdmission::RefusalOnly,
+   00938|             "{handler}: {bare}"
+   00939|         );
+   00940|         assert_eq!(
+   00941|             claim_admission(handler, full, &full.to_lowercase()),
+   00942|             ClaimAdmission::Full,
+   00943|             "{handler}: {full}"
+   00944|         );
+   00945|     }
+   00946|     let reply = dialogue(&[("user", "Delete the logs"), ("assistant", "Deleted.")]);
+   00947|     assert_eq!(
+   00948|         claim_admission_in_dialogue(
+   00949|             "clarification",
+   00950|             "I don't understand",
+   00951|             "i don't understand",
+   00952|             &reply
+   00953|         ),
+   00954|         ClaimAdmission::Full
+   00955|     );
+   00956|     assert_eq!(
+   00957|         claim_admission("clarification", "I don't understand", "i don't understand"),
+   00958|         ClaimAdmission::RefusalOnly
+   00959|     );
+   00960| }
+   00961| 
+   00962| #[test]
+   00963| fn follow_up_round_the_assistant_is_the_subject_unless_another_is_named() {
+   00964|     for (kind, prompt, holds) in [
+   00965|         ("assistant_subject", "What can you do?", true),
+   00966|         ("assistant_subject", "show me the network", true),
+   00967|         ("assistant_subject", "What is a monad?", false),
+   00968|         ("memory_query_statement", "select content from memory", true),
+   00969|     ] {
+   00970|         assert_eq!(
+   00971|             claim_evidence_holds(kind, prompt, &prompt.to_lowercase()),
+   00972|             Some(holds),
+   00973|             "{kind}: {prompt}"
+   00974|         );
+   00975|     }
+   00976| }
+   00977| 
+   00978| #[test]
+   00979| fn r1173_3_a_comma_after_the_advice_verb_still_reaches_the_advice_handler() {
+   00980|     assert_eq!(
+   00981|         formal_ai::FormalAiEngine
+   00982|             .answer("Посоветуй, как лучше спать")
+   00983|             .intent,
+   00984|         "advice"
+   00985|     );
+   00986| }
+   00987| 
+   
+   (End of file - total 987 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/capability-routing/issue_1175_claim_routing.rs","file_path":"rust/tests/unit/capability-routing/issue_1175_claim_routing.rs","new":"                \"historical\",\n                \"tryHistorical\",\n                vec![\"dialogue_turn\", \"name_assignment\", \"recall_query_term\"]","newString":"                \"historical\",\n                \"tryHistorical\",\n                vec![\"dialogue_turn\", \"name_assignment\", \"recall_query_term\"]","new_str":"                \"historical\",\n                \"tryHistorical\",\n                vec![\"dialogue_turn\", \"name_assignment\", \"recall_query_term\"]","new_string":"                \"historical\",\n                \"tryHistorical\",\n                vec![\"dialogue_turn\", \"name_assignment\", \"recall_query_term\"]","old":"                \"historical\",\n                \"tryHistorical\",\n                vec![\"dialogue_turn\", \"name_assignment\"]","oldString":"                \"historical\",\n                \"tryHistorical\",\n                vec![\"dialogue_turn\", \"name_assignment\"]","old_str":"                \"historical\",\n                \"tryHistorical\",\n                vec![\"dialogue_turn\", \"name_assignment\"]","old_string":"                \"historical\",\n                \"tryHistorical\",\n                vec![\"dialogue_turn\", \"name_assignment\"]","path":"rust/tests/unit/capability-routing/issue_1175_claim_routing.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/capability-routing/issue_1175_claim_routing.rs"}
+   Output: de9789f1997c7a6712269cf78d0e6d612b1a49b8c07a1ee53351431b377b003d  rust/tests/unit/capability-routing/issue_1175_claim_routing.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `                "historical",
+                "tryHistorical",
+                vec!["dialogue_turn", "name_assignment"]` with `                "historical",
+                "tryHistorical",
+                vec!["dialogue_turn", "name_assignment", "recall_query_term"]` in `rust/tests/unit/capability-routing/issue_1175_claim_routing.rs` and observed the result.

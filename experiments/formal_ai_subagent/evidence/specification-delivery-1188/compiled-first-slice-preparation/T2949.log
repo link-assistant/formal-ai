@@ -1,0 +1,218 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/diagnose-current-en-zh.mjs"}
+   Output: {
+     "counts": {
+       "remote4a": 207,
+       "reportActionRecovered": 209,
+       "working": 208
+     },
+     "differences": [
+       {
+         "text": "Goodbye! Feel free to return any time.",
+         "before": 4,
+         "after": 3,
+         "details": [
+           {
+             "terms": [
+               {
+                 "kind": "unknown",
+                 "id": "unknown:feel",
+                 "surface": "Feel"
+               },
+               {
+                 "kind": "unknown",
+                 "id": "unknown:free",
+                 "surface": "free"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "coding_return",
+                 "surface": "return"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "any",
+                 "surface": "any"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "time",
+                 "surface": "time"
+               }
+             ],
+             "forward": "Feel free 返回任意时间",
+             "backward": "Feel free is equal to any time",
+             "surviving": [
+               "any",
+               "time"
+             ],
+             "middle": [
+               {
+                 "kind": "name",
+                 "id": "name:feel",
+                 "surface": "Feel"
+               },
+               {
+                 "kind": "unknown",
+                 "id": "unknown:free",
+                 "surface": "free"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "coding_assertion_equality",
+                 "surface": "返回"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "any",
+                 "surface": "任意"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "time",
+                 "surface": "时间"
+               }
+             ],
+             "end": [
+               {
+                 "kind": "name",
+                 "id": "name:feel",
+                 "surface": "Feel"
+               },
+               {
+                 "kind": "unknown",
+                 "id": "unknown:free",
+                 "surface": "free"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "coding_assertion_equality",
+                 "surface": "is equal to"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "any",
+                 "surface": "any"
+               },
+               {
+                 "kind": "meaning",
+                 "id": "time",
+                 "surface": "time"
+               }
+             ]
+           }
+         ]
+       }
+     ]
+   }
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/diagnose-current-en-zh.mjs` command completed. Output:
+
+```json
+{
+  "counts": {
+    "remote4a": 207,
+    "reportActionRecovered": 209,
+    "working": 208
+  },
+  "differences": [
+    {
+      "after": 3,
+      "before": 4,
+      "details": [
+        {
+          "backward": "Feel free is equal to any time",
+          "end": [
+            {
+              "id": "name:feel",
+              "kind": "name",
+              "surface": "Feel"
+            },
+            {
+              "id": "unknown:free",
+              "kind": "unknown",
+              "surface": "free"
+            },
+            {
+              "id": "coding_assertion_equality",
+              "kind": "meaning",
+              "surface": "is equal to"
+            },
+            {
+              "id": "any",
+              "kind": "meaning",
+              "surface": "any"
+            },
+            {
+              "id": "time",
+              "kind": "meaning",
+              "surface": "time"
+            }
+          ],
+          "forward": "Feel free 返回任意时间",
+          "middle": [
+            {
+              "id": "name:feel",
+              "kind": "name",
+              "surface": "Feel"
+            },
+            {
+              "id": "unknown:free",
+              "kind": "unknown",
+              "surface": "free"
+            },
+            {
+              "id": "coding_assertion_equality",
+              "kind": "meaning",
+              "surface": "返回"
+            },
+            {
+              "id": "any",
+              "kind": "meaning",
+              "surface": "任意"
+            },
+            {
+              "id": "time",
+              "kind": "meaning",
+              "surface": "时间"
+            }
+          ],
+          "surviving": [
+            "any",
+            "time"
+          ],
+          "terms": [
+            {
+              "id": "unknown:feel",
+              "kind": "unknown",
+              "surface": "Feel"
+            },
+            {
+              "id": "unknown:free",
+              "kind": "unknown",
+              "surface": "free"
+            },
+            {
+              "id": "coding_return",
+              "kind": "meaning",
+              "surface": "return"
+            },
+            {
+              "id": "any",
+              "kind": "meaning",
+              "surface": "any"
+            },
+            {
+              "id": "time",
+              "kind": "meaning",
+              "surface": "time"
+            }
+          ]
+        }
+      ],
+      "text": "Goodbye! Feel free to return any time."
+    }
+  ]
+}
+```

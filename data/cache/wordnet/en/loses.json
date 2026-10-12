@@ -1,0 +1,131 @@
+{
+  "lemma": "loses",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02292634-v",
+      "partOfSpeech": "v",
+      "definition": "fail to keep or to maintain; cease to have, either physically or in an abstract sense",
+      "examples": [
+        "She lost her purse when she left it unattended on her seat"
+      ],
+      "synonyms": [
+        "lose"
+      ]
+    },
+    {
+      "id": "oewn-01102003-v",
+      "partOfSpeech": "v",
+      "definition": "fail to win",
+      "examples": [
+        "We lost the battle but we won the war"
+      ],
+      "synonyms": [
+        "lose"
+      ]
+    },
+    {
+      "id": "oewn-01799093-v",
+      "partOfSpeech": "v",
+      "definition": "suffer the loss of a person through death or removal",
+      "examples": [
+        "She lost her husband in the war",
+        "The couple that wanted to adopt the child lost her when the biological parents claimed her"
+      ],
+      "synonyms": [
+        "lose"
+      ]
+    },
+    {
+      "id": "oewn-02292463-v",
+      "partOfSpeech": "v",
+      "definition": "miss from one's possessions; lose sight of",
+      "examples": [
+        "I've lost my glasses again!"
+      ],
+      "synonyms": [
+        "lose"
+      ]
+    },
+    {
+      "id": "oewn-02201537-v",
+      "partOfSpeech": "v",
+      "definition": "allow to go out of sight or mind",
+      "examples": [
+        "The detective lost the man he was shadowing after he had to stop at a red light",
+        "lose the crowds by climbing a mountain",
+        "the lost tribe"
+      ],
+      "synonyms": [
+        "lose"
+      ]
+    },
+    {
+      "id": "oewn-02293733-v",
+      "partOfSpeech": "v",
+      "definition": "fail to make money in a business; make a loss or fail to profit",
+      "examples": [
+        "I lost thousands of dollars on that bad investment!",
+        "The company turned a loss after the first year"
+      ],
+      "synonyms": [
+        "lose",
+        "turn a loss"
+      ]
+    },
+    {
+      "id": "oewn-02293000-v",
+      "partOfSpeech": "v",
+      "definition": "fail to get or obtain",
+      "examples": [
+        "I lost the opportunity to spend a year abroad"
+      ],
+      "synonyms": [
+        "lose"
+      ]
+    },
+    {
+      "id": "oewn-02132318-v",
+      "partOfSpeech": "v",
+      "definition": "fail to perceive or to catch with the senses or the mind",
+      "examples": [
+        "I missed that remark",
+        "She missed his point",
+        "We lost part of what he said"
+      ],
+      "synonyms": [
+        "miss",
+        "lose"
+      ]
+    },
+    {
+      "id": "oewn-00497220-v",
+      "partOfSpeech": "v",
+      "definition": "withdraw, as from reality",
+      "examples": [
+        "he lost himself in his music"
+      ],
+      "synonyms": [
+        "lose"
+      ]
+    },
+    {
+      "id": "oewn-00205234-v",
+      "partOfSpeech": "v",
+      "definition": "be set at a disadvantage",
+      "examples": [
+        "This author really suffers in translation",
+        "The painting loses something in this light"
+      ],
+      "synonyms": [
+        "suffer",
+        "lose"
+      ]
+    }
+  ]
+}

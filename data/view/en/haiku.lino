@@ -1,0 +1,9 @@
+view
+  id M-6885bcdd2eec
+  lemma haiku
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "an epigrammatic Japanese verse form of three short lines"
+    provenance (wordnet)

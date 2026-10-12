@@ -1,0 +1,79 @@
+self_ast_census
+  target src/agentic_coding/module_function/source_composition_effects.rs
+  language rust
+  fidelity full_ast
+  byte_len 5173
+  line_count 144
+  content_id source_module_4bc440a135529493
+  symbol_count 5
+  symbols
+    function same 4 10
+    function group 11 19
+    function checked_composition_source 20 128
+    function source_null_absence 130 144
+    function proven 131 137
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 5522
+    named_node_count 1169
+    distinct_node_kinds 56
+    node_kinds
+      arguments 94
+      array_expression 1
+      array_type 1
+      attribute 1
+      attribute_item 1
+      binary_expression 41
+      block 21
+      boolean_literal 2
+      call_expression 94
+      closure_expression 5
+      closure_parameters 5
+      crate 1
+      doc_comment 1
+      else_clause 1
+      expression_statement 51
+      field_expression 40
+      field_identifier 40
+      for_expression 1
+      function_item 5
+      generic_function 1
+      generic_type 6
+      identifier 217
+      if_expression 13
+      index_expression 64
+      inner_doc_comment_marker 1
+      integer_literal 54
+      let_declaration 14
+      lifetime 6
+      lifetime_parameter 1
+      line_comment 1
+      macro_invocation 1
+      mutable_specifier 1
+      parameter 9
+      parameters 5
+      primitive_type 8
+      reference_expression 37
+      reference_type 13
+      return_expression 12
+      scoped_identifier 11
+      scoped_type_identifier 1
+      scoped_use_list 1
+      source_file 1
+      string_content 101
+      string_literal 101
+      super 2
+      token_tree 14
+      try_expression 34
+      tuple_pattern 1
+      type_arguments 7
+      type_identifier 17
+      type_parameters 1
+      unit_expression 1
+      unit_type 1
+      use_declaration 2
+      use_list 1
+      visibility_modifier 2

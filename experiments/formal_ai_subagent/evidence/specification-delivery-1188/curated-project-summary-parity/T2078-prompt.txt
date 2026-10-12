@@ -1,0 +1,1 @@
+Run `node scripts/measure-notation.mjs --check && node experiments/formal_ai_subagent/apply-notation-rules.mjs --check`

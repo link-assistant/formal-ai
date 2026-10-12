@@ -1,0 +1,58 @@
+{
+  "lemma": "reveal",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02147756-v",
+      "partOfSpeech": "v",
+      "definition": "make manifest",
+      "examples": [
+        "Summer brings out bright clothes",
+        "He brings out the best in her"
+      ],
+      "synonyms": [
+        "bring out",
+        "unveil"
+      ]
+    },
+    {
+      "id": "oewn-00935783-v",
+      "partOfSpeech": "v",
+      "definition": "make known to the public information that was previously known only to a few people or that was meant to be kept a secret",
+      "examples": [
+        "The auction house would not disclose the price at which the van Gogh had sold",
+        "The actress won't reveal how old she is",
+        "bring out the truth",
+        "he broke the news to her",
+        "unwrap the evidence in the murder case",
+        "The newspaper uncovered the President's illegal dealings"
+      ],
+      "synonyms": [
+        "unwrap",
+        "disclose",
+        "let on",
+        "bring out",
+        "discover",
+        "expose",
+        "divulge",
+        "break",
+        "give away",
+        "let out",
+        "uncover"
+      ]
+    },
+    {
+      "id": "oewn-02148706-v",
+      "partOfSpeech": "v",
+      "definition": "disclose directly or through prophets",
+      "examples": [
+        "God rarely reveals his plans for mankind"
+      ]
+    }
+  ]
+}

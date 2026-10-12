@@ -1,0 +1,21 @@
+{
+  "lemma": "limerick",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-08909884-n",
+      "partOfSpeech": "n",
+      "definition": "port city in southwestern Ireland"
+    },
+    {
+      "id": "oewn-06392226-n",
+      "partOfSpeech": "n",
+      "definition": "a humorous verse form of 5 anapestic lines with a rhyme scheme aabba"
+    }
+  ]
+}

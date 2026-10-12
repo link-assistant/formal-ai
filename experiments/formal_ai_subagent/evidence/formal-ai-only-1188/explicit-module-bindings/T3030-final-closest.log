@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: explicit complete module paths scope duplicate names without token splitting guesses
+ok 1 - explicit complete module paths scope duplicate names without token splitting guesses
+  ---
+  duration_ms: 397.723
+  ...
+# Subtest: ambiguous, missing, conflicting, traversal and token-embedded module operands refuse
+ok 2 - ambiguous, missing, conflicting, traversal and token-embedded module operands refuse
+  ---
+  duration_ms: 3617.266083
+  ...
+# Subtest: the exact original L17 file-qualified task resolves while its unqualified requirement refuses
+ok 3 - the exact original L17 file-qualified task resolves while its unqualified requirement refuses
+  ---
+  duration_ms: 438.473
+  ...
+# Subtest: literal owners require exact source identity, unique complete initializer and current bytes
+ok 4 - literal owners require exact source identity, unique complete initializer and current bytes
+  ---
+  duration_ms: 234.78225
+  ...
+# Subtest: missing source host refuses literal ownership without breaking pure named scope
+ok 5 - missing source host refuses literal ownership without breaking pure named scope
+  ---
+  duration_ms: 0.257833
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4963.209084
+TAP version 13
+# Subtest: every unchanged ladder leaf resolves to its actual source or embedded seed declaration
+ok 1 - every unchanged ladder leaf resolves to its actual source or embedded seed declaration # SKIP test name does not match pattern
+  ---
+  duration_ms: 433.037708
+  ...
+# Subtest: arbitrary canonical surface and role evidence bind declared owners without guessing
+ok 2 - arbitrary canonical surface and role evidence bind declared owners without guessing
+  ---
+  duration_ms: 2.177083
+  ...
+# Subtest: ambiguous seed owners remain unresolved and stronger actual surfaces win
+ok 3 - ambiguous seed owners remain unresolved and stronger actual surfaces win
+  ---
+  duration_ms: 0.435167
+  ...
+# Subtest: real census document reads reject changed source identities
+ok 4 - real census document reads reject changed source identities
+  ---
+  duration_ms: 3.142625
+  ...
+# Subtest: the unchanged L07 requirement binds the actual canonical conversation seed owner
+ok 5 - the unchanged L07 requirement binds the actual canonical conversation seed owner
+  ---
+  duration_ms: 648.817667
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 1257.931709
+planner functions without a Rust twin: 0 (ceiling 0)

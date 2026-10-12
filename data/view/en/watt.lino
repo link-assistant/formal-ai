@@ -1,0 +1,13 @@
+view
+  id M-bfb5d2137a73
+  lemma watt
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech noun
+    gloss "Scottish engineer and inventor whose improvements in the steam engine led to its wide use in industry (1736-1819)"
+    provenance (wordnet)
+  sense
+    part_of_speech noun
+    gloss "a unit of power equal to 1 joule per second; the power dissipated by a current of 1 ampere flowing across a resistance of 1 ohm"
+    provenance (wordnet)

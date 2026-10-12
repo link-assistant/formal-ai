@@ -3,7 +3,7 @@
 #
 # `#901 asks for contradictions to be links carrying a value on a 0-1 range,`
 # `and for the resolution shapes to be data rather than Rust branches. These`
-# `are those shapes. src/selection_heuristics.rs names no principle: it reads`
+# `are those shapes. src/selection_heuristics.rs names no principle — it reads`
 # `an identifier out of this file, which is what makes the catalogue`
 # `forgettable and rediscoverable -- delete it, rediscover it through the`
 # `sources registry's wikipedia source from the article each row names, replay`
@@ -290,3 +290,316 @@ triz_separation_between_part_and_whole
   axis "between_part_and_whole"
   name "Separation between the part and the whole"
   source "https://en.wikipedia.org/wiki/TRIZ"
+# ---------------------------------------------------------------------------
+# General paradox/contradiction resolution families (issue #901).
+#
+# The forty principles and four separations above are TRIZ's own catalogue.
+# #901 also asks for all other common ways to solve paradoxes and
+# contradictions — they usually dissolve in another dimension, by
+# alternating, or by choosing a point on the range between the poles. These
+# twelve families cover those shapes. `family_range_selection` is the
+# user-facing face of what src/selection_heuristics.rs already computes --
+# a contradiction is a link whose value in basis points (0-1) is counted
+# from the requirement's own clauses, with no default 50 %.
+triz_family_range_selection
+  record_type "triz_resolution_family"
+  method_id "family_range_selection"
+  name "Range selection"
+  applies_to "value trade-off between two wanted poles"
+  mechanism "Treat the contradiction as a link carrying a value from 0 to 1 (or -1 to 1) and choose the operating point that fits the stated requirements; the requirement's clauses vote, so 10 %, 50 % or 80 % is derived, never assumed."
+  example "Answer brevity vs completeness: the clauses that demand each set the basis-point value; there is no default midpoint."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_dimension_change
+  record_type "triz_resolution_family"
+  method_id "family_dimension_change"
+  name "Dimension change"
+  applies_to "poles that conflict in one dimension only"
+  mechanism "Move to a dimension the contradiction does not live in -- geometry, field, state, scale -- so both poles hold there."
+  example "A stick too short to reach becomes a lever, a mirror, or a magnet: the length pole stops binding."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_time_separation
+  record_type "triz_resolution_family"
+  method_id "family_time_separation"
+  name "Separation in time"
+  applies_to "opposite properties needed at different moments"
+  mechanism "Give each pole its own interval -- alternate, schedule, duty-cycle -- instead of satisfying both at once."
+  example "A probe must be rigid to insert and soft in the vessel: stiffen only during insertion (cold catheter, shape-memory wire)."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_space_separation
+  record_type "triz_resolution_family"
+  method_id "family_space_separation"
+  name "Separation in space"
+  applies_to "opposite properties needed at different places"
+  mechanism "Let each pole own a zone of the system; the contradiction only exists where both were forced into one place."
+  example "An umbrella must be big in rain and tiny in a crowd: telescope it -- big deployed, small carried."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_condition_separation
+  record_type "triz_resolution_family"
+  method_id "family_condition_separation"
+  name "Separation upon condition"
+  applies_to "opposite properties under different conditions"
+  mechanism "Make the system switch its own property when the condition flips, so each pole is satisfied exactly when it applies."
+  example "Sunglass lenses are transparent indoors and dark in sun: the light level itself selects the pole."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_supersystem
+  record_type "triz_resolution_family"
+  method_id "family_supersystem"
+  name "Escalate to the supersystem"
+  applies_to "elements that conflict only as peers"
+  mechanism "Merge the conflicting elements into a larger whole that carries both properties at different roles."
+  example "Two competing checkers lose, one checkerboard game wins: merge the rivals into one supersystem."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_subsystem_split
+  record_type "triz_resolution_family"
+  method_id "family_subsystem_split"
+  name "Descend to subsystems"
+  applies_to "one material or part forced to carry both poles"
+  mechanism "Split the element so different parts carry different poles; laminate, layer, distribute."
+  example "Bulletproof glass: hard layers stop the projectile, soft layers hold the shards -- transparency comes from the stack."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_phase_transition
+  record_type "triz_resolution_family"
+  method_id "family_phase_transition"
+  name "Phase and state transition"
+  applies_to "trade-offs bound to one material state"
+  mechanism "Change phase, state, or field regime so the conflicting property pair ceases to exist."
+  example "Water as a liquid leaks past a seal and as a solid seals itself: freeze it."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_accumulate_release
+  record_type "triz_resolution_family"
+  method_id "family_accumulate_release"
+  name "Accumulate then release"
+  applies_to "peak demand vs average supply"
+  mechanism "Buffer the scarce resource over time and spend the buffer at the peak, dissolving the peak-vs-average contradiction."
+  example "An ice-cream cart with no power: freeze a eutectic plate overnight, spend the cold through the day."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_inverse_problem
+  record_type "triz_resolution_family"
+  method_id "family_inverse_problem"
+  name "Invert the problem"
+  applies_to "harmful action or field to suppress"
+  mechanism "Solve the anti-problem: make the harmful effect useful, or let the enemy of the goal do the work."
+  example "Corrosion destroys hulls -- sacrificial anodes let corrosion protect the hull it would have eaten."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_bypass_redefinition
+  record_type "triz_resolution_family"
+  method_id "family_bypass_redefinition"
+  name "Bypass and redefine"
+  applies_to "constraint that is actually an assumption"
+  mechanism "Change the requirement frame: ask what the constraint serves, then satisfy the purpose without the constrained means."
+  example "'Cut faster without heating the blade' becomes 'remove material without cutting' -- waterjet, chemical, laser."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_family_partial_spectrum
+  record_type "triz_resolution_family"
+  method_id "family_partial_spectrum"
+  name "Partial-spectrum solution"
+  applies_to "binary either/or imposed on a continuum"
+  mechanism "Replace the binary choice with a graceful spectrum -- approximate, degrade softly, mix ratios -- and pick the point the requirements name."
+  example "Firefighting water damages what fire would not: a mist is not 'water or no water', it is a point on the droplet-size axis."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+# ---------------------------------------------------------------------------
+# Top-20 benchmark tasks (issue #901) — commonly discussed invention
+# challenges from the TRIZ teaching canon, each stating its contradiction
+# and the resolution families (and, where classical, the inventive
+# principles) that solve it. `contradiction` is free text "A vs B" --
+# criterion slugs are only used where
+# data/seed/meanings-selection-criteria.lino grounds them, per the header
+# of this file. These rows are the corpus the solver replays against.
+triz_task_pill_coating
+  record_type "triz_benchmark_task"
+  task_id "pill_coating"
+  domain "pharmaceutical manufacturing"
+  statement "Coat tiny pills evenly without wasting coating material or sticking them together."
+  contradiction "coverage vs waste"
+  methods "family_dimension_change family_phase_transition"
+  notes "Electrostatic tumbling coater: charge the droplets, the sphere presents every face."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_wheat_from_stones
+  record_type "triz_benchmark_task"
+  task_id "wheat_from_stones"
+  domain "agriculture"
+  statement "Separate wheat grains from stones of the same size and weight class."
+  contradiction "purity vs throughput"
+  methods "family_condition_separation family_dimension_change"
+  notes "Air stream or floatation: under the right condition the grains and stones behave differently."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_wet_grass_mowing
+  record_type "triz_benchmark_task"
+  task_id "wet_grass_mowing"
+  domain "consumer equipment"
+  statement "Mow wet grass without the clippings clogging the mower deck."
+  contradiction "cutting quality vs clogging"
+  methods "family_dimension_change family_time_separation"
+  notes "Deck geometry and airflow carry clippings out instead of letting them pack; or mow when dry."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_bulletproof_glass
+  record_type "triz_benchmark_task"
+  task_id "bulletproof_glass"
+  domain "materials"
+  statement "Make a window that stops bullets and still transmits light."
+  contradiction "strength vs transparency"
+  methods "family_subsystem_split family_partial_spectrum"
+  notes "Laminated glass and polymer stack: each layer carries one pole."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_turbine_blade_cooling
+  record_type "triz_benchmark_task"
+  task_id "turbine_blade_cooling"
+  domain "aerospace"
+  statement "Run turbine blades hotter than their melting point allows for efficiency."
+  contradiction "operating temperature vs blade life"
+  methods "family_subsystem_split family_accumulate_release"
+  notes "Internal channels and film cooling: the blade carries its own cold boundary."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_umbrella_crowd
+  record_type "triz_benchmark_task"
+  task_id "umbrella_crowd"
+  domain "consumer products"
+  statement "An umbrella big enough in rain yet small enough in a crowded bus."
+  contradiction "coverage vs packed size"
+  methods "family_space_separation family_dimension_change"
+  notes "Telescoping folds: deployed area and carried volume live in different dimensions."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_drinks_can
+  record_type "triz_benchmark_task"
+  task_id "drinks_can"
+  domain "packaging"
+  statement "Make a beverage can that holds pressure yet uses minimal aluminum."
+  contradiction "strength vs material use"
+  methods "family_dimension_change family_condition_separation"
+  notes "Corrugation and neck geometry: shape, not thickness, carries the load."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_pipeline_pig_tracking
+  record_type "triz_benchmark_task"
+  task_id "pipeline_pig_tracking"
+  domain "oil and gas"
+  statement "Know where the pipeline cleaning pig is without stopping the flow or instrumenting the whole line."
+  contradiction "visibility vs instrumentation cost"
+  methods "family_dimension_change family_supersystem"
+  notes "The pig carries its own emitter and is read at stations: measurement moves to the object."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_mars_dust
+  record_type "triz_benchmark_task"
+  task_id "mars_dust"
+  domain "spacecraft"
+  statement "Keep martian dust off solar panels with no water, no brushes to wear out, no extra mass."
+  contradiction "power output vs cleaning cost"
+  methods "family_time_separation family_dimension_change"
+  notes "Spirit/Opportunity used overnight wind and tilt: the environment cleans on a schedule."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_bulb_testing
+  record_type "triz_benchmark_task"
+  task_id "bulb_testing"
+  domain "manufacturing QA"
+  statement "Test every bulb for filament life without testing every bulb for its whole life."
+  contradiction "test coverage vs test cost"
+  methods "family_supersystem family_range_selection"
+  notes "Classic batch chain: bulbs in series, one failure localizes the batch -- sampling ratio becomes a chosen point."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_chimney_height
+  record_type "triz_benchmark_task"
+  task_id "chimney_height"
+  domain "civil engineering"
+  statement "Disperse plant exhaust without building an ever taller chimney."
+  contradiction "dispersion vs structure cost"
+  methods "family_phase_transition family_supersystem"
+  notes "Scrub and phase-change the exhaust before release; or merge emitters into one shared stack."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_blind_riveting
+  record_type "triz_benchmark_task"
+  task_id "blind_riveting"
+  domain "metalworking"
+  statement "Form a rivet head on the far side of a joint you cannot reach or see."
+  contradiction "joint strength vs access"
+  methods "family_inverse_problem family_dimension_change"
+  notes "Blind/pop rivets pull a mandrel to expand the barrel: the far side forms itself."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_ice_cream_cart
+  record_type "triz_benchmark_task"
+  task_id "ice_cream_cart"
+  domain "cold chain retail"
+  statement "Keep a street cart frozen through the day with no engine and no mains."
+  contradiction "hold time vs energy source"
+  methods "family_accumulate_release family_time_separation"
+  notes "Eutectic plates frozen overnight spend their cold by day; the buffer replaces the source."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_smartwatch_battery
+  record_type "triz_benchmark_task"
+  task_id "smartwatch_battery"
+  domain "consumer electronics"
+  statement "Give a smartwatch a day of battery without making it a brick."
+  contradiction "runtime vs thickness"
+  methods "family_time_separation family_partial_spectrum family_dimension_change"
+  notes "Duty cycling and graceful degradation: full function on demand, dimmed and slow when idle."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_thin_coating_measure
+  record_type "triz_benchmark_task"
+  task_id "thin_coating_measure"
+  domain "metrology"
+  statement "Measure a coating a few microns thick without touching or cutting it."
+  contradiction "measurement accuracy vs non-destructiveness"
+  methods "family_dimension_change family_condition_separation"
+  notes "Eddy current or optical interference: read the property in another field."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_firefighting_water
+  record_type "triz_benchmark_task"
+  task_id "firefighting_water"
+  domain "fire safety"
+  statement "Extinguish fires with water without water damage to what the fire spared."
+  contradiction "suppression vs collateral damage"
+  methods "family_partial_spectrum family_dimension_change"
+  notes "Water mist: droplet size is the axis between 'flood' and 'no water'."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_truck_braking
+  record_type "triz_benchmark_task"
+  task_id "truck_braking"
+  domain "automotive"
+  statement "Stop a loaded truck in the same distance as an empty one."
+  contradiction "stopping distance vs load"
+  methods "family_condition_separation family_partial_spectrum"
+  notes "Load-sensing brake proportioning: the system adapts its own property with the condition."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_bridge_corrosion
+  record_type "triz_benchmark_task"
+  task_id "bridge_corrosion"
+  domain "infrastructure"
+  statement "Protect a steel bridge from rust without repainting it every few years."
+  contradiction "protection interval vs maintenance cost"
+  methods "family_inverse_problem family_supersystem"
+  notes "Sacrificial anodes: let the corrosion you cannot stop protect what it would have eaten."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_vending_coins
+  record_type "triz_benchmark_task"
+  task_id "vending_coins"
+  domain "payment hardware"
+  statement "Accept genuine coins reliably without jams from slugs and bent coins."
+  contradiction "acceptance reliability vs jam resistance"
+  methods "family_condition_separation family_dimension_change"
+  notes "Read mass, diameter and conductivity in different fields; route rejects by a path that cannot jam the accept path."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+triz_task_bottle_cutting
+  record_type "triz_benchmark_task"
+  task_id "bottle_cutting"
+  domain "craft and workshop"
+  statement "Cut a glass bottle cleanly at home with no saw and no shattering."
+  contradiction "cut quality vs tool availability"
+  methods "family_phase_transition family_dimension_change"
+  notes "Score, then thermal shock: stress in a different field does the separating."
+  source "https://en.wikipedia.org/wiki/TRIZ"
+# ---------------------------------------------------------------------------
+# Cues for the user-facing solver (issue #901) — phrases that mark a prompt
+# as a contradiction/invention question. Stemmed fragments (противоречи-,
+# изобретател-, paradox, triz) match by substring.
+triz_cues
+  record_type "triz_intent_cues"
+  intent triz_resolution
+  phrase противоречи
+  phrase парадокс
+  phrase triz
+  phrase триз
+  phrase изобретател
+  phrase contradiction
+  phrase paradox
+  phrase trade-off
+  phrase tradeoff
+  phrase inventive problem
+  phrase engineering challenge

@@ -1,0 +1,6 @@
+>> bash {"command":"find \".\" -iname 'todo-lo-que' -print"}
+>> bash {"command":"find \".\" -iname '*todo*' -print"}
+   ./analysis/issue-488-todo.md
+   
+== answer ==
+todo-lo-que was not found after exact, substring, and nearby-name checks within .. No wider location was searched.

@@ -1,0 +1,104 @@
+[
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2377-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2377-request.json",
+    "bytes": 1460,
+    "sha256": "69398b8f4aff8df1596264cbb17db9fd829e7cf07e8cb4379d471c77b342d1b3"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2377-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2377-transcript.json",
+    "bytes": 882,
+    "sha256": "21590aea1543d80cde90fdddf780f069b2596224f1961144a2335ff7783f2680"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2377-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2377-transcript.log",
+    "bytes": 882,
+    "sha256": "21590aea1543d80cde90fdddf780f069b2596224f1961144a2335ff7783f2680"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2378-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2378-request.json",
+    "bytes": 1896,
+    "sha256": "f41aa0d8803013138ca9b7036a935e65a2dd6f392e27deeac0740210eaa123b0"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2378-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2378-transcript.json",
+    "bytes": 1440,
+    "sha256": "c7f410472d32113e203e1fe058785760780bfe0efe045711b81a85dcab250f96"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2378-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2378-transcript.log",
+    "bytes": 1440,
+    "sha256": "c7f410472d32113e203e1fe058785760780bfe0efe045711b81a85dcab250f96"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2379-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2379-request.json",
+    "bytes": 306,
+    "sha256": "5bef9167b817da0e8f7e944a406fccb0007ae399b497909c18d9e56dcfbe291c"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2379-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2379-transcript.json",
+    "bytes": 4108,
+    "sha256": "8f8f1775d47ec69b902786150a3a96942a02b61140926ac992ee27362b7ba04b"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2379-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2379-transcript.log",
+    "bytes": 4108,
+    "sha256": "8f8f1775d47ec69b902786150a3a96942a02b61140926ac992ee27362b7ba04b"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2380-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2380-request.json",
+    "bytes": 399,
+    "sha256": "1d1a05bae1ccfd13a20ecdac622a6bb118d0029bddc15391f6bbdf5294e06997"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2380-transcript.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2380-transcript.json",
+    "bytes": 163482,
+    "sha256": "582e53adb63b743ceefbf2e40ffb9f5dad82f36880a1975ab10a946793fa82d8"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2380-transcript.log",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2380-transcript.log",
+    "bytes": 163482,
+    "sha256": "582e53adb63b743ceefbf2e40ffb9f5dad82f36880a1975ab10a946793fa82d8"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2378-postimages.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2378-postimages.json",
+    "bytes": 501,
+    "sha256": "4c0ff2539686de9ee480a8bb85f9311a717267dcd562b9e9b7fd5e1b94d2c36f"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2379-postimages.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2379-postimages.json",
+    "bytes": 39,
+    "sha256": "2584202b0b02cfb19ce3dde38402f17c8d05c8a8808031f8a6df8c2c6c77510c"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/quoted-obligations-general-repair-proposal.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/quoted-obligations-general-repair-proposal.json",
+    "bytes": 2028,
+    "sha256": "f62bffc611a6c1b51adaada448528246bb0eff6252eb4417fa857fc9d67a07c0"
+  },
+  {
+    "source": "/private/tmp/pr1188-root-T1971-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T1971-original-request.json",
+    "bytes": 1050,
+    "sha256": "ff960e9c2e0ad417095004acf6b471ff530ee0b3ed2f16b4c40f71a188c727a8"
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2381-request.json",
+    "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-followups/T2381-request.json",
+    "bytes": 7091,
+    "sha256": "c8856f252d02121ff55f42859f2c395b59c676551b1cd90f96db2340b98659ea"
+  }
+]

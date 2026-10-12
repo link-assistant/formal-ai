@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "工程师"
+        },
+        "es": {
+          "language": "es",
+          "value": "ingeniero"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "специалист, осуществляющий инженерную деятельность"
+        },
+        "es": {
+          "language": "es",
+          "value": "persona dedicada a la ingeniería"
         }
       },
       "aliases": {
@@ -56,6 +64,12 @@
           {
             "language": "zh",
             "value": "工程師"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "ingeniera"
           }
         ]
       }

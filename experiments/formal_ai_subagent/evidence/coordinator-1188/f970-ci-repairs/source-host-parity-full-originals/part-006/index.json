@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "part": 6,
+  "totalParts": 6,
+  "originalUnionIndexSHA256": null,
+  "originalLogicalMembersAcrossThisFiniteSelection": 164,
+  "logicalMembersThisPart": 164,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 161,
+  "sourceAndControllerInputBytes": 17940565,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 153,
+  "newEncodedBlobs": 134,
+  "reusedPreviousEncodedBlobs": 19,
+  "newCompressedBytes": 7746379,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 166
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 153
+    }
+  ],
+  "selectionSHA256": "b0bcd99a8da0467a707013b1bcbc2391b9a6a8e4a74d1918fa18b72aa2f8d75f",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [],
+  "pending": [
+    "Own final archive controller running result excluded; no recursive completeness claimed",
+    "a55 separate genuine move-to-top two Browser152 failures remain Open; source-only native fixes require hosted recompilation; no release/publication acceptance"
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

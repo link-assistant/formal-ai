@@ -1,0 +1,38 @@
+language en
+lemma education
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "the United States federal department that administers all federal programs dealing with education (including federal aid to educational institutions and students); created 1979"
+    id oewn-08149619-n
+    partOfSpeech n
+    synonyms ("Department of Education" "Education Department")
+  entry
+    definition "the activities of educating or instructing; activities that impart knowledge or skill"
+    examples ("he received no formal education" "our instruction was carefully programmed" "good classroom teaching is seldom rewarded")
+    id oewn-00884975-n
+    partOfSpeech n
+    synonyms (instruction teaching pedagogy didactics "educational activity")
+  entry
+    definition "knowledge acquired by learning and instruction"
+    examples ("it was clear that he had a very broad education")
+    id oewn-05993172-n
+    partOfSpeech n
+  entry
+    definition "the gradual process of acquiring knowledge"
+    examples ("education is a preparation for life" "a girl's education was less important than a boy's")
+    id oewn-05761561-n
+    partOfSpeech n
+  entry
+    definition "the profession of teaching (especially at a school or college or university)"
+    id oewn-00612720-n
+    partOfSpeech n
+  entry
+    definition "the result of good upbringing (especially knowledge of correct social behavior)"
+    examples ("a woman of breeding and refinement")
+    id oewn-04929077-n
+    partOfSpeech n
+    synonyms (training breeding)
+source "oewn:2024"

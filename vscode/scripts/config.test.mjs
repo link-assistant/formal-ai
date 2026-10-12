@@ -8,6 +8,7 @@ const {
   statusFromConfig,
   withApiReady,
   withApiError,
+  withDebugSession,
   serverEnv,
   DEFAULT_HOST,
   DEFAULT_PORT,
@@ -120,4 +121,25 @@ test("serverEnv maps host/port to the formal-ai serve environment", () => {
   const env = serverEnv({ "server.host": "127.0.0.1", "server.port": 18080 });
   assert.equal(env.FORMAL_AI_HOST, "127.0.0.1");
   assert.equal(env.FORMAL_AI_PORT, "18080");
+});
+
+test("formal-ai.debugger.stepping asks for a debug session only with the server on (issue #667)", () => {
+  assert.equal(readConfig({}).debugSession, false);
+  const off = statusFromConfig({ "debugger.stepping": true });
+  assert.equal(off.debugSessionEnabled, false, "no server, no debug session");
+  assert.equal(off.debugToken, "");
+  const on = statusFromConfig({ "server.enabled": true, "debugger.stepping": true });
+  assert.equal(on.debugSessionEnabled, true);
+  assert.equal(statusFromConfig({ "server.enabled": true, "debugger.stepping": true }, { serverCapable: false }).debugSessionEnabled, false);
+});
+
+test("the debug token reaches the server by environment and the webview by status", () => {
+  const env = serverEnv({}, { debugToken: "abc123" });
+  assert.equal(env.FORMAL_AI_DEBUG_SESSION_TOKEN, "abc123");
+  assert.equal("FORMAL_AI_DEBUG_SESSION_TOKEN" in serverEnv({}), false);
+  const ready = withApiReady(statusFromConfig({ "server.enabled": true }), "http://127.0.0.1:18080");
+  assert.equal(withDebugSession(ready, "abc123").debugToken, "abc123");
+  assert.equal(withDebugSession(ready, "").debugToken, "");
+  const failed = withApiError(statusFromConfig({ "server.enabled": true }), new Error("port in use"));
+  assert.equal(withDebugSession(failed, "abc123").debugToken, "", "a server that never came up advertises no session");
 });

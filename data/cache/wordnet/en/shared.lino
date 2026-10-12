@@ -1,0 +1,17 @@
+language en
+lemma shared
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "have in common; held or experienced in common"
+    examples ("two shared valence electrons forming a bond between adjacent nuclei" "a shared interest in philately")
+    id oewn-02159631-a
+    partOfSpeech a
+  entry
+    definition "distributed in portions (often equal) on the basis of a plan or purpose"
+    id oewn-00543409-s
+    partOfSpeech s
+    synonyms (divided "divided up" "shared out")
+source "oewn:2024"

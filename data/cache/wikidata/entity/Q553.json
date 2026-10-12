@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "牙齿"
+        },
+        "es": {
+          "language": "es",
+          "value": "diente"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "костное образование в ротовой полости большинства позвоночных"
+        },
+        "es": {
+          "language": "es",
+          "value": "estructura ósea de múltiples vertebrados"
         }
       },
       "aliases": {
@@ -36,6 +44,12 @@
           {
             "language": "en",
             "value": "teeth"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "dientes"
           }
         ]
       }

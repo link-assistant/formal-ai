@@ -1,0 +1,12 @@
+{
+  "task": "T1954",
+  "prompt": "Execute this exact Bash command. It tightens the real driver observation check to preserve raw compact JSON bytes, then runs its six meaningful fixtures. Do not change any other source.\nnode --input-type=module -e 'import {readFileSync,writeFileSync} from \"node:fs\"; const p=\"rust/tests/web/dogfood-driver-grep.test.mjs\"; const before=readFileSync(p,\"utf8\"), next=before.replace(\"JSON.stringify({ error: \\\"authored value\\\" }, null, 2)\",\"JSON.stringify({ error: \\\"authored value\\\" })\"); if(next===before)throw Error(\"exact compact assertion anchor missing\");writeFileSync(p,next);' && node --test rust/tests/web/dogfood-driver-grep.test.mjs && echo ROOT_T1954_PASS",
+  "started": "2026-10-09T01:00:50.356Z",
+  "result": {
+    "transcript": [],
+    "answer": null,
+    "stop": "no-plan"
+  },
+  "ok": false,
+  "finished": "2026-10-09T01:00:51.526Z"
+}

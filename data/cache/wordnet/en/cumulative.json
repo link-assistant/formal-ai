@@ -1,0 +1,23 @@
+{
+  "lemma": "cumulative",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00048680-s",
+      "partOfSpeech": "s",
+      "definition": "increasing by successive addition",
+      "examples": [
+        "the benefits are cumulative",
+        "the eventual accumulative effect of these substances"
+      ],
+      "synonyms": [
+        "accumulative"
+      ]
+    }
+  ]
+}

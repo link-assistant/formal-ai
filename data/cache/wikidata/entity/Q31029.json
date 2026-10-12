@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "繩"
+        },
+        "es": {
+          "language": "es",
+          "value": "cuerda"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "hi": {
           "language": "hi",
           "value": "प्लाई, सूत या धागों का रैखिक संयोजन जो आपस में मुड़े हुए या गुथे हुए होते हैं"
+        },
+        "es": {
+          "language": "es",
+          "value": "objeto largo, flexible y resistente, de forma generalmente redonda, compuesto por un conjunto lineal de hilos, hebras o filamentos retorcidos o trenzados entre sí"
         }
       },
       "aliases": {
@@ -62,6 +70,16 @@
           {
             "language": "zh",
             "value": "奪魂索"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "soga"
+          },
+          {
+            "language": "es",
+            "value": "maroma"
           }
         ]
       }

@@ -1,0 +1,13 @@
+{
+  "id": "T3565",
+  "calls": 3,
+  "rawSourceInputBytes": 59976,
+  "answerBytes": 60160,
+  "exactOriginalFullSourceAnswer": true,
+  "allThreeSourceBodiesContained": true,
+  "lastDisposition": "unknown",
+  "drift": [],
+  "productionWrites": 0,
+  "nativeCommands": false,
+  "sourceBackedPlanProduced": false
+}

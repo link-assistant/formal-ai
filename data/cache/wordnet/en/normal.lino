@@ -1,0 +1,31 @@
+language en
+lemma normal
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "conforming with or constituting a norm or standard or level or type or social norm; not abnormal"
+    examples ("serve wine at normal room temperature" "normal diplomatic relations" "normal working hours" "normal word order" "normal curiosity" "the normal course of events")
+    id oewn-01598231-a
+    partOfSpeech a
+  entry
+    definition "in accordance with scientific laws"
+    id oewn-01604027-a
+    partOfSpeech a
+  entry
+    definition "being approximately average or within certain limits in e.g. intelligence and development"
+    examples ("a perfectly normal child" "of normal intelligence" "the most normal person I've ever met")
+    id oewn-01602901-a
+    partOfSpeech a
+  entry
+    definition "something regarded as a normative example"
+    examples ("the convention of not naming the main character" "violence is the rule not the exception" "his formula for impressing visitors")
+    id oewn-05675457-n
+    partOfSpeech n
+    synonyms (convention pattern rule formula)
+  entry
+    definition "forming a right angle"
+    id oewn-01724784-s
+    partOfSpeech s
+source "oewn:2024"

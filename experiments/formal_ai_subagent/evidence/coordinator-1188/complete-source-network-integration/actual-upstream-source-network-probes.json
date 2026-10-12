@@ -1,0 +1,38 @@
+[
+  {
+    "path": "rust/src/agentic_coding/final_result.rs",
+    "language": "rust",
+    "bytes": 6575,
+    "serializedBytes": 448399,
+    "serializedLines": 4677,
+    "exact": true,
+    "ms": 604.8726250000001
+  },
+  {
+    "path": "rust/src/agentic_coding/self_ast.rs",
+    "language": "rust",
+    "bytes": 15971,
+    "serializedBytes": 727817,
+    "serializedLines": 7408,
+    "exact": true,
+    "ms": 571.651208
+  },
+  {
+    "path": "js/agentic/final_payload.mjs",
+    "language": "JavaScript",
+    "bytes": 900,
+    "serializedBytes": 61863,
+    "serializedLines": 666,
+    "exact": true,
+    "ms": 268.6256250000001
+  },
+  {
+    "path": "js/agentic/crate/self_source_links.mjs",
+    "language": "JavaScript",
+    "bytes": 8599,
+    "serializedBytes": 579872,
+    "serializedLines": 5732,
+    "exact": true,
+    "ms": 933.4447910000001
+  }
+]

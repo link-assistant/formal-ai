@@ -43,11 +43,20 @@ pub struct Example {
     pub expected: String,
 }
 
+/// Whether a callable signature belongs to the request or its discovered source.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CallableBindingOrigin {
+    Provisional,
+    Declared { signature: String },
+    Observed,
+}
+
 /// The language-independent shape consumed by coding discovery.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CodingTaskSpec {
     pub language: String,
     pub artifact_shape: ArtifactShape,
+    pub callable_binding_origin: CallableBindingOrigin,
     pub name: String,
     pub parameters: Vec<Parameter>,
     pub return_annotation: Option<String>,
@@ -92,6 +101,7 @@ impl From<&crate::verifiable_task::VerifiableTask> for CodingTaskSpec {
         Self {
             language: String::from("python"),
             artifact_shape,
+            callable_binding_origin: CallableBindingOrigin::Observed,
             name,
             parameters: Vec::new(),
             return_annotation: None,
@@ -164,6 +174,10 @@ impl CodingTaskSpec {
     }
 }
 
+/// The name a function request carries until the source catalog names it:
+/// the prose names a concept, not a signature.
+pub const PROVISIONAL_FUNCTION_NAME: &str = "discovered_function";
+
 /// Recognize `HumanEval`, `MBPP`, and conversational Python task shapes.
 #[must_use]
 pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
@@ -179,6 +193,9 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         return Some(CodingTaskSpec {
             language: "python".to_owned(),
             artifact_shape: ArtifactShape::Function,
+            callable_binding_origin: CallableBindingOrigin::Declared {
+                signature: signature.to_owned(),
+            },
             name,
             parameters,
             return_annotation,
@@ -212,6 +229,7 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         return Some(CodingTaskSpec {
             language: "python".to_owned(),
             artifact_shape: ArtifactShape::Function,
+            callable_binding_origin: CallableBindingOrigin::Observed,
             name,
             parameters,
             return_annotation: None,
@@ -261,7 +279,7 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         // name is never rendered by a source-derived candidate.
         (
             ArtifactShape::Function,
-            "discovered_function".to_owned(),
+            PROVISIONAL_FUNCTION_NAME.to_owned(),
             Vec::new(),
             None,
         )
@@ -292,9 +310,16 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
             &language_priority,
         )
         .map_or(detected_prose_language, str::to_owned);
+    let callable_binding_origin =
+        signature.map_or(CallableBindingOrigin::Provisional, |signature| {
+            CallableBindingOrigin::Declared {
+                signature: signature.to_owned(),
+            }
+        });
     Some(CodingTaskSpec {
         language: target_language.slug.to_owned(),
         artifact_shape,
+        callable_binding_origin,
         name,
         parameters,
         return_annotation,
@@ -326,6 +351,15 @@ fn outside_markdown_fences(prompt: &str) -> String {
 /// Capture a program's requested stdout through the same multilingual slot
 /// records used by the software-project surface. Prefix and circumfix forms
 /// cover natural word order without putting any output literal in code.
+///
+/// A circumfix form ("打印 … 的") closes the span itself. A prefix form
+/// ("prints …") leaves it open, so the span is read the way the obligation
+/// graph binds an unquoted output (PR #1188 T18): a quoted payload right
+/// after the form is the output; otherwise the words up to the first seeded
+/// clause separator or sentence end, when they open with a capital and do
+/// not describe a computed value ("prints Hello, World! and run it" binds
+/// `Hello, World!`; "prints the sum of a and b" binds nothing). A circumfix
+/// span that describes a computed value is not stdout either.
 fn extract_expected_stdout(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
     let mut forms = crate::seed::lexicon()
@@ -347,18 +381,28 @@ fn extract_expected_stdout(prompt: &str) -> Option<String> {
         let Some(tail) = prompt.get(start..) else {
             continue;
         };
-        let end = if after.is_empty() {
-            tail.len()
-        } else if let Some(found) = tail.to_lowercase().find(after) {
-            found
-        } else {
+        if after.is_empty() {
+            let opening = tail.trim_start();
+            let quoted = crate::normal_markov::quoted_segment_spans(opening)
+                .into_iter()
+                .find(|segment| segment.start == 0)
+                .map(|segment| segment.text.trim().to_owned())
+                .filter(|text| !text.is_empty());
+            if let Some(value) = quoted.or_else(|| {
+                crate::intent_formalization::unquoted_utterance(opening.split_whitespace())
+            }) {
+                return Some(value);
+            }
+            continue;
+        }
+        let Some(end) = tail.to_lowercase().find(after) else {
             continue;
         };
         let value = tail[..end]
             .trim()
             .trim_end_matches(['.', '?', '。', '？'])
             .trim();
-        if !value.is_empty() {
+        if !value.is_empty() && !crate::intent_formalization::describes_a_value(value) {
             return Some(value.to_owned());
         }
     }

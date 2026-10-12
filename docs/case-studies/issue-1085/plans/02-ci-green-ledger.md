@@ -61,7 +61,7 @@ check re-runs it).
       workflow file in `paths`. Register in the gate registry
       (`data/meta/ci-gates/`), retiring nothing -- but note in
       `check-ci-gate-registry.lino` the defect it addresses (#1107).
-- [ ] 5. Record the shrink-only pull-request wall-clock ceiling (#1089 item 4)
+- [x] 5. Record the shrink-only pull-request wall-clock ceiling (#1089 item 4)
       in `data/meta/kernel-ratchet.lino` style: `data/meta/ci-wall-clock.lino`
       with the measured longest-path minutes; `check-ci-wall-clock.rs` reads
       the last run via the API only on `main` (advisory on branches).

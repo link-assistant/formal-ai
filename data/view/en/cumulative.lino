@@ -1,0 +1,9 @@
+view
+  id M-23ab9f8af5a6
+  lemma cumulative
+  language en
+  sources (wordnet)
+  sense
+    part_of_speech adjective
+    gloss "increasing by successive addition"
+    provenance (wordnet)

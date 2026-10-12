@@ -1,0 +1,61 @@
+{
+  "lemma": "citation",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-02386978-n",
+      "partOfSpeech": "n",
+      "definition": "thoroughbred that won the triple crown in 1948"
+    },
+    {
+      "id": "oewn-06718888-n",
+      "partOfSpeech": "n",
+      "definition": "an official award (as for bravery or service) usually given as formal public statement",
+      "synonyms": [
+        "commendation"
+      ]
+    },
+    {
+      "id": "oewn-07195230-n",
+      "partOfSpeech": "n",
+      "definition": "(law) the act of citing (as of spoken words or written passages or legal precedents etc.)"
+    },
+    {
+      "id": "oewn-06776392-n",
+      "partOfSpeech": "n",
+      "definition": "a short note recognizing a source of information or of a quoted passage",
+      "examples": [
+        "the student's essay failed to list several important citations",
+        "the acknowledgments are usually printed at the front of a book",
+        "the article includes mention of similar clinical cases"
+      ],
+      "synonyms": [
+        "cite",
+        "acknowledgment",
+        "credit",
+        "reference",
+        "mention",
+        "quotation"
+      ]
+    },
+    {
+      "id": "oewn-06625409-n",
+      "partOfSpeech": "n",
+      "definition": "a passage or expression that is quoted or cited",
+      "synonyms": [
+        "quotation",
+        "quote"
+      ]
+    },
+    {
+      "id": "oewn-06570268-n",
+      "partOfSpeech": "n",
+      "definition": "a summons that commands the appearance of a party at a proceeding"
+    }
+  ]
+}

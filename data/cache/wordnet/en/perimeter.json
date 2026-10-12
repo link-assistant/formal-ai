@@ -1,0 +1,33 @@
+{
+  "lemma": "perimeter",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13926393-n",
+      "partOfSpeech": "n",
+      "definition": "the boundary line or the area immediately inside the boundary",
+      "synonyms": [
+        "margin",
+        "border"
+      ]
+    },
+    {
+      "id": "oewn-13894091-n",
+      "partOfSpeech": "n",
+      "definition": "a line enclosing a plane areas"
+    },
+    {
+      "id": "oewn-05108523-n",
+      "partOfSpeech": "n",
+      "definition": "the size of something as given by the distance around it",
+      "synonyms": [
+        "circumference"
+      ]
+    }
+  ]
+}

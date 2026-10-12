@@ -1,0 +1,21 @@
+{
+  "lemma": "candela",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-13663013-n",
+      "partOfSpeech": "n",
+      "definition": "the basic unit of luminous intensity adopted under the Systeme International d'Unites; equal to 1/60 of the luminous intensity per square centimeter of a black body radiating at the temperature of 2,046 degrees Kelvin",
+      "synonyms": [
+        "candle",
+        "cd",
+        "standard candle"
+      ]
+    }
+  ]
+}

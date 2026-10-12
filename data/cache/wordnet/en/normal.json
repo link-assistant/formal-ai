@@ -1,0 +1,60 @@
+{
+  "lemma": "normal",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01598231-a",
+      "partOfSpeech": "a",
+      "definition": "conforming with or constituting a norm or standard or level or type or social norm; not abnormal",
+      "examples": [
+        "serve wine at normal room temperature",
+        "normal diplomatic relations",
+        "normal working hours",
+        "normal word order",
+        "normal curiosity",
+        "the normal course of events"
+      ]
+    },
+    {
+      "id": "oewn-01604027-a",
+      "partOfSpeech": "a",
+      "definition": "in accordance with scientific laws"
+    },
+    {
+      "id": "oewn-01602901-a",
+      "partOfSpeech": "a",
+      "definition": "being approximately average or within certain limits in e.g. intelligence and development",
+      "examples": [
+        "a perfectly normal child",
+        "of normal intelligence",
+        "the most normal person I've ever met"
+      ]
+    },
+    {
+      "id": "oewn-05675457-n",
+      "partOfSpeech": "n",
+      "definition": "something regarded as a normative example",
+      "examples": [
+        "the convention of not naming the main character",
+        "violence is the rule not the exception",
+        "his formula for impressing visitors"
+      ],
+      "synonyms": [
+        "convention",
+        "pattern",
+        "rule",
+        "formula"
+      ]
+    },
+    {
+      "id": "oewn-01724784-s",
+      "partOfSpeech": "s",
+      "definition": "forming a right angle"
+    }
+  ]
+}

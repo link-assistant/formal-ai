@@ -1,0 +1,64 @@
+{
+  "ok": true,
+  "part": 9,
+  "totalParts": 9,
+  "originalUnionIndexSHA256": null,
+  "originalLogicalMembersAcrossThisFiniteSelection": 2994,
+  "logicalMembersThisPart": 2994,
+  "currentControllerMembers": 2,
+  "selectedInputsThisPart": 1399,
+  "sourceAndControllerInputBytes": 14272182,
+  "inputLimitBytes": 33554432,
+  "uniqueEncodedBlobs": 1253,
+  "newEncodedBlobs": 1219,
+  "reusedPreviousEncodedBlobs": 34,
+  "newCompressedBytes": 3400739,
+  "memberShards": [
+    {
+      "path": "members-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-002.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-003.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-004.jsonl",
+      "count": 700
+    },
+    {
+      "path": "members-005.jsonl",
+      "count": 196
+    }
+  ],
+  "blobShards": [
+    {
+      "path": "blobs-001.jsonl",
+      "count": 700
+    },
+    {
+      "path": "blobs-002.jsonl",
+      "count": 553
+    }
+  ],
+  "selectionSHA256": "4c7ea38c8877b8f1d388abef039f35ec53310f178f5956f89a26e38acc2c6be4",
+  "allCurrentSourceGuardsExact": true,
+  "originalInputBytesPreserved": true,
+  "knownLosses": [
+    "/private/tmp/pr1188-T7237-g4-owned-routing/T7294-result-overwrite-disclosure.json"
+  ],
+  "pending": [
+    "Own running archive result excluded nonrecursively; fresh all4 deadline execution still pending at archive cut",
+    "Current driver54 controls, duration33 controls, scope95 stock controls and full maintained gates pass; all221/961 complete inventory objects unchanged. Scope physical stock no-loader controls pass, while pure-helper Insert applicability and low-level Write API expectation conflicts are preserved rather than reinterpreted. CLI transport status0 complete but original compact output oracles still fail; projected earlier huge output and stock20KB test-only route remain distinct. L21 three physical variants pass, joint9 conditional raw/normalizer profile pass. Full native compile/runtime, final-head hosted CI and real postmerge release publication remain Pending. Optional progressive/release source-only changes are not whole requirements delivery or future publication guarantees."
+  ],
+  "ownRunningReceiptExcluded": true,
+  "autonomyCredit": 0,
+  "amplificationCredit": 0,
+  "nativeExecution": false,
+  "actualCost": "Unknown",
+  "productionAcceptance": "Pending"
+}

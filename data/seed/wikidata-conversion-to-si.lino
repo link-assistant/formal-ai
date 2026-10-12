@@ -1,0 +1,108 @@
+# Wikidata P2370 (conversion to SI unit) for the units grounded in
+# data/seed/meanings-units.lino, captured 2026-10-07 from the wbgetentities
+# API (issue #1176 R1). Each row keeps the unit's seed slug, its Wikidata
+# item, the stated amount and the unit item it converts to, with that unit's
+# seed slug. Rows whose target is not itself a grounded unit, and identity
+# rows, are left out.
+#
+# This is a source capture, not hand-typed data: both runtimes read it at
+# answer time (rust/src/solver_handlers/unit_conversion.rs and
+# js/worker/formal_ai_worker_units.js), resolve each unit of a linear
+# conversion to its item here, derive the factor from the two stated
+# amounts, and cite the items and the property in the answer.
+# rust/tests/unit/issue_1176_quantities_dates.rs also checks the si_factor
+# column of data/seed/si-unit-dimensions.lino against it. Refresh with
+# `node scripts/refresh-wikidata-conversion-to-si.mjs --write`.
+wikidata_conversion_to_si
+  property P2370
+  fetched 2026-10-07
+  conversion
+    unit kilometer
+    item Q828224
+    amount 1000
+    target Q11573
+    target_unit meter
+  conversion
+    unit centimeter
+    item Q174728
+    amount 0.01
+    target Q11573
+    target_unit meter
+  conversion
+    unit millimeter
+    item Q174789
+    amount 0.001
+    target Q11573
+    target_unit meter
+  conversion
+    unit mile
+    item Q253276
+    amount 1609.344
+    target Q11573
+    target_unit meter
+  conversion
+    unit foot
+    item Q3710
+    amount 0.3048
+    target Q11573
+    target_unit meter
+  conversion
+    unit inch
+    item Q218593
+    amount 0.0254
+    target Q11573
+    target_unit meter
+  conversion
+    unit yard
+    item Q482798
+    amount 0.9144
+    target Q11573
+    target_unit meter
+  conversion
+    unit gram
+    item Q41803
+    amount 0.001
+    target Q11570
+    target_unit kilogram
+  conversion
+    unit pound
+    item Q100995
+    amount 0.45359237
+    target Q11570
+    target_unit kilogram
+  conversion
+    unit ounce
+    item Q48013
+    amount 0.028349523125
+    target Q11570
+    target_unit kilogram
+  conversion
+    unit ton
+    item Q191118
+    amount 1000
+    target Q11570
+    target_unit kilogram
+  conversion
+    unit minute
+    item Q7727
+    amount 60
+    target Q11574
+    target_unit second
+  conversion
+    unit hour
+    item Q25235
+    amount 3600
+    target Q11574
+    target_unit second
+  conversion
+    unit millisecond
+    item Q723733
+    amount 0.001
+    target Q11574
+    target_unit second
+  conversion
+    unit day
+    item Q573
+    amount 86400
+    target Q11574
+    target_unit second

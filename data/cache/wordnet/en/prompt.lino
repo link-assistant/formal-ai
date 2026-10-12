@@ -1,0 +1,51 @@
+language en
+lemma prompt
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a cue given to a performer (usually the beginning of the next line to be spoken)"
+    examples ("the audience could hear his prompting")
+    id oewn-07024919-n
+    partOfSpeech n
+    synonyms (prompting)
+  entry
+    definition "(computer science) a symbol that appears on the computer screen to indicate that the computer is ready to receive a command"
+    id oewn-06291257-n
+    partOfSpeech n
+    synonyms ("command prompt")
+  entry
+    definition "according to schedule or without delay; on time"
+    examples ("the train is prompt")
+    id oewn-01906742-s
+    partOfSpeech s
+  entry
+    definition "ready and willing or quick to act"
+    examples ("she is always prompt to help her friends")
+    id oewn-01938075-s
+    partOfSpeech s
+  entry
+    definition "performed with little or no delay"
+    examples ("an immediate reply to my letter" "a prompt reply" "was quick to respond" "a straightaway denial")
+    id oewn-00981945-s
+    partOfSpeech s
+    synonyms (immediate quick straightaway)
+  entry
+    definition "give an incentive for action"
+    examples ("This moved me to sacrifice my career")
+    id oewn-01653541-v
+    partOfSpeech v
+    synonyms (motivate actuate propel move incite)
+  entry
+    definition "serve as the inciting cause of"
+    examples ("She prompted me to call my relatives")
+    id oewn-00774006-v
+    partOfSpeech v
+    synonyms (inspire instigate)
+  entry
+    definition "assist (somebody acting or reciting) by suggesting the next words of something forgotten or imperfectly learned"
+    id oewn-00879379-v
+    partOfSpeech v
+    synonyms (remind cue)
+source "oewn:2024"

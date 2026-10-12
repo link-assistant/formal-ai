@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Browser Python experiment</title>
+<style>body{font:16px system-ui;max-width:900px;margin:2rem auto;padding:1rem}textarea{width:100%;min-height:240px}button{min-height:44px;margin:.5rem}pre{white-space:pre-wrap}</style>
+<h1>Browser Python experiment</h1><p>Explicit download: about 20 MB. Runs inside a disposable browser worker; never a host shell. Measurements are recorded only after execution.</p>
+<button id="load">Download Python</button><button id="run" disabled>Run assertions</button><button id="stop">Stop worker</button><button id="download">Save measurements</button>
+<p id="status" role="status">Not loaded</p><label for="code">Python candidate and assertions</label><textarea id="code">def add(a, b):
+    return a + b
+
+assert add(2, 3) == 5
+assert add(-1, 1) == 0
+assert add(0, 0) == 0
+print("three assertions passed")</textarea><pre id="log"></pre><script type="module" src="measure.js"></script></html>

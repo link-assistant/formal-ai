@@ -5,6 +5,7 @@ mod search;
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use crate::proof_engine::library::phrase;
 use crate::proof_engine::types::{ProofMethod, ProofOutcome};
 
 use self::proofs::{
@@ -16,25 +17,42 @@ use self::search::find_assignment;
 
 const EPSILON: f64 = 1e-9;
 
+/// The claim grammar's implication frame (`if <premises> then <goal>`), read
+/// by [`split_implication`] and written back into an entailment's statement.
+const IMPLICATION_LEAD: &str = "if ";
+const IMPLICATION_THEN: &str = " then ";
+
+/// The claim grammar's satisfiability suffix, read by
+/// [`attempt_constraint_satisfiability`] and written into its statement.
+const SATISFIABLE_SUFFIX: &str = " is satisfiable";
+
+/// The claim grammar's conjunction between constraints.
+const CONJUNCTION: &str = " and ";
+
+/// `constraints` as a satisfiability claim in the grammar this module reads.
+pub(super) fn satisfiability_claim(constraints: &[String]) -> String {
+    format!("{}{SATISFIABLE_SUFFIX}", constraints.join(CONJUNCTION))
+}
+
 pub(super) fn attempt_linear_claim(claim: &str, language: &str) -> Option<ProofOutcome> {
-    if let Some(outcome) = attempt_constraint_satisfiability(claim) {
+    if let Some(outcome) = attempt_constraint_satisfiability(claim, language) {
         return Some(outcome);
     }
     if let Some((premises, conclusion)) = split_implication(claim) {
         let premise_atoms = parse_constraint_list(premises)?;
         let conclusion_atom = parse_linear_atom(conclusion)?;
-        return decide_linear_entailment(&premise_atoms, &conclusion_atom);
+        return decide_linear_entailment(&premise_atoms, &conclusion_atom, language);
     }
     let atom = parse_linear_atom(claim)?;
     decide_universal_linear_atom(&atom, language)
 }
 
 fn split_implication(text: &str) -> Option<(&str, &str)> {
-    if let Some(rest) = text.strip_prefix("if ")
-        && let Some(index) = rest.find(" then ")
+    if let Some(rest) = text.strip_prefix(IMPLICATION_LEAD)
+        && let Some(index) = rest.find(IMPLICATION_THEN)
     {
         let premise = &rest[..index];
-        let conclusion = &rest[index + " then ".len()..];
+        let conclusion = &rest[index + IMPLICATION_THEN.len()..];
         return Some((premise.trim(), conclusion.trim()));
     }
     for token in [" implies ", " => ", " -> "] {
@@ -55,7 +73,7 @@ fn parse_constraint_list(text: &str) -> Option<Vec<LinearAtom>> {
         .trim_start_matches("the constraints ")
         .trim();
     let atoms = cleaned
-        .split(" and ")
+        .split(CONJUNCTION)
         .map(str::trim)
         .filter(|part| !part.is_empty())
         .map(parse_linear_atom)
@@ -63,7 +81,7 @@ fn parse_constraint_list(text: &str) -> Option<Vec<LinearAtom>> {
     (!atoms.is_empty()).then_some(atoms)
 }
 
-fn attempt_constraint_satisfiability(text: &str) -> Option<ProofOutcome> {
+fn attempt_constraint_satisfiability(text: &str, language: &str) -> Option<ProofOutcome> {
     let wants_unsat = text.contains("inconsistent") || text.contains("unsatisfiable");
     let wants_sat = text.contains("satisfiable") || text.contains("consistent");
     if !wants_sat && !wants_unsat {
@@ -72,7 +90,7 @@ fn attempt_constraint_satisfiability(text: &str) -> Option<ProofOutcome> {
     let mut constraints = text.trim();
     for suffix in [
         " are satisfiable",
-        " is satisfiable",
+        SATISFIABLE_SUFFIX,
         " satisfiable",
         " are consistent",
         " is consistent",
@@ -91,44 +109,39 @@ fn attempt_constraint_satisfiability(text: &str) -> Option<ProofOutcome> {
     }
     let atoms = parse_constraint_list(constraints)?;
     let system = build_interval_system(&atoms)?;
-    let statement = format!("{constraints} is satisfiable");
+    let statement = format!("{constraints}{SATISFIABLE_SUFFIX}");
     if system.is_satisfiable() {
         let witness = system.witness_assignment()?;
         if wants_unsat {
             return Some(ProofOutcome::Disproven {
-                counterexample: format!(
-                    "{} satisfies every listed constraint.",
-                    format_assignment(&witness)
+                counterexample: phrase(
+                    "linear_satisfies_every_constraint",
+                    language,
+                    &[("assignment", &format_assignment(&witness))],
                 ),
                 method: ProofMethod::DecisionProcedure,
                 partial_proof: Some(linear_satisfiability_proof(
-                    &statement, &atoms, &system, &witness, true,
+                    &statement, &atoms, &system, &witness, language,
                 )),
             });
         }
         return Some(ProofOutcome::Proven {
-            proof: linear_satisfiability_proof(&statement, &atoms, &system, &witness, true),
+            proof: linear_satisfiability_proof(&statement, &atoms, &system, &witness, language),
         });
     }
-    let contradiction = system
-        .interval
-        .contradiction
-        .clone()
-        .unwrap_or_else(|| String::from("the interval constraints have empty intersection"));
+    let contradiction = system.contradiction("linear_empty_intersection", language);
+    let proof = linear_unsat_proof(constraints, &atoms, &system, &contradiction, language);
     if wants_unsat {
-        Some(ProofOutcome::Proven {
-            proof: linear_unsat_proof(constraints, &atoms, &system, &contradiction),
-        })
+        Some(ProofOutcome::Proven { proof })
     } else {
         Some(ProofOutcome::Disproven {
-            counterexample: format!("No assignment exists: {contradiction}."),
+            counterexample: phrase(
+                "linear_no_assignment",
+                language,
+                &[("contradiction", &contradiction)],
+            ),
             method: ProofMethod::DecisionProcedure,
-            partial_proof: Some(linear_unsat_proof(
-                constraints,
-                &atoms,
-                &system,
-                &contradiction,
-            )),
+            partial_proof: Some(proof),
         })
     }
 }
@@ -479,11 +492,11 @@ const fn is_variable_start(ch: char) -> bool {
     ch.is_ascii_alphabetic() || ch == '_'
 }
 
-fn decide_universal_linear_atom(atom: &LinearAtom, _language: &str) -> Option<ProofOutcome> {
+fn decide_universal_linear_atom(atom: &LinearAtom, language: &str) -> Option<ProofOutcome> {
     let mentions_symbol = atom.original.chars().any(is_variable_start);
     if atom.expression.is_zero() && mentions_symbol {
         return Some(ProofOutcome::Proven {
-            proof: linear_identity_proof(atom),
+            proof: linear_identity_proof(atom, language),
         });
     }
     if atom.variables().is_empty() {
@@ -492,48 +505,55 @@ fn decide_universal_linear_atom(atom: &LinearAtom, _language: &str) -> Option<Pr
     if atom.expression.is_constant() {
         if compare_zero(atom.expression.constant, atom.comparison) {
             return Some(ProofOutcome::Proven {
-                proof: linear_identity_proof(atom),
+                proof: linear_identity_proof(atom, language),
             });
         }
         return Some(ProofOutcome::Disproven {
-            counterexample: format!(
-                "The affine normal form is the constant {}, so {} is false.",
-                format_number(atom.expression.constant),
-                atom.original
+            counterexample: phrase(
+                "linear_constant_counterexample",
+                language,
+                &[
+                    ("constant", &format_number(atom.expression.constant)),
+                    ("atom", &atom.original),
+                ],
             ),
             method: ProofMethod::DecisionProcedure,
-            partial_proof: Some(linear_identity_disproof(atom)),
+            partial_proof: Some(linear_identity_disproof(atom, language)),
         });
     }
     let counterexample = find_assignment(atom, false)?;
     Some(ProofOutcome::Disproven {
-        counterexample: format!(
-            "{} makes {} false.",
-            format_assignment(&counterexample),
-            atom.original
+        counterexample: phrase(
+            "linear_assignment_falsifies",
+            language,
+            &[
+                ("assignment", &format_assignment(&counterexample)),
+                ("atom", &atom.original),
+            ],
         ),
         method: ProofMethod::DecisionProcedure,
-        partial_proof: Some(linear_universal_counterexample_proof(atom, &counterexample)),
+        partial_proof: Some(linear_universal_counterexample_proof(
+            atom,
+            &counterexample,
+            language,
+        )),
     })
 }
 
 fn decide_linear_entailment(
     premise_atoms: &[LinearAtom],
     conclusion: &LinearAtom,
+    language: &str,
 ) -> Option<ProofOutcome> {
     let system = build_interval_system(premise_atoms)?;
     let statement = format!(
-        "if {} then {}",
-        premise_atoms
-            .iter()
-            .map(|atom| atom.original.as_str())
-            .collect::<Vec<_>>()
-            .join(" and "),
+        "{IMPLICATION_LEAD}{}{IMPLICATION_THEN}{}",
+        format_atoms(premise_atoms),
         conclusion.original
     );
     if !system.is_satisfiable() {
         return Some(ProofOutcome::Proven {
-            proof: linear_vacuous_entailment_proof(&statement, premise_atoms, &system),
+            proof: linear_vacuous_entailment_proof(&statement, premise_atoms, &system, language),
         });
     }
     let mut negated_atoms = premise_atoms.to_vec();
@@ -541,15 +561,24 @@ fn decide_linear_entailment(
     let counter_system = build_interval_system(&negated_atoms)?;
     if !counter_system.is_satisfiable() {
         return Some(ProofOutcome::Proven {
-            proof: linear_entailment_proof(&statement, premise_atoms, conclusion, &system),
+            proof: linear_entailment_proof(
+                &statement,
+                premise_atoms,
+                conclusion,
+                &system,
+                language,
+            ),
         });
     }
     let witness = counter_system.witness_assignment()?;
     Some(ProofOutcome::Disproven {
-        counterexample: format!(
-            "{} satisfies the premises but makes {} false.",
-            format_assignment(&witness),
-            conclusion.original
+        counterexample: phrase(
+            "linear_premises_counterexample",
+            language,
+            &[
+                ("assignment", &format_assignment(&witness)),
+                ("goal", &conclusion.original),
+            ],
         ),
         method: ProofMethod::DecisionProcedure,
         partial_proof: Some(linear_entailment_counterexample_proof(
@@ -558,6 +587,7 @@ fn decide_linear_entailment(
             conclusion,
             &system,
             &witness,
+            language,
         )),
     })
 }
@@ -574,7 +604,54 @@ struct Interval {
     upper: Option<Bound>,
     equality: Option<f64>,
     excluded: Vec<f64>,
-    contradiction: Option<String>,
+    contradiction: Option<Contradiction>,
+}
+
+/// Why an interval system has no model, worded only when a proof is written.
+#[derive(Debug, Clone)]
+enum Contradiction {
+    /// Two equalities pin the variable to different values.
+    ConflictingValues(f64, f64),
+    /// The lower bound passes the upper bound.
+    ConflictingBounds(Bound, Bound),
+    /// The equality value lies outside the interval.
+    ExcludedValue(f64),
+    /// A constant atom is false.
+    FalseAtom(String),
+}
+
+impl Contradiction {
+    /// The contradiction worded in `language`.
+    fn describe(&self, language: &str) -> String {
+        match self {
+            Self::ConflictingValues(first, second) => phrase(
+                "linear_conflicting_values",
+                language,
+                &[
+                    ("first", &format_number(*first)),
+                    ("second", &format_number(*second)),
+                ],
+            ),
+            Self::ConflictingBounds(lower, upper) => phrase(
+                "linear_conflicting_bounds",
+                language,
+                &[
+                    ("lower_symbol", if lower.strict { ">" } else { ">=" }),
+                    ("lower", &format_number(lower.value)),
+                    ("upper_symbol", if upper.strict { "<" } else { "<=" }),
+                    ("upper", &format_number(upper.value)),
+                ],
+            ),
+            Self::ExcludedValue(value) => phrase(
+                "linear_excluded_value",
+                language,
+                &[("value", &format_number(*value))],
+            ),
+            Self::FalseAtom(atom) => {
+                phrase("linear_atom_contradiction", language, &[("atom", atom)])
+            }
+        }
+    }
 }
 
 impl Interval {
@@ -615,11 +692,7 @@ impl Interval {
     fn apply_equality(&mut self, value: f64) {
         if let Some(existing) = self.equality {
             if !nearly_equal(existing, value) {
-                self.contradiction = Some(format!(
-                    "requires {} and {} at the same time",
-                    format_number(existing),
-                    format_number(value)
-                ));
+                self.contradiction = Some(Contradiction::ConflictingValues(existing, value));
             }
         } else {
             self.equality = Some(value);
@@ -652,22 +725,13 @@ impl Interval {
             && (lower.value > upper.value + EPSILON
                 || (nearly_equal(lower.value, upper.value) && (lower.strict || upper.strict)))
         {
-            self.contradiction = Some(format!(
-                "requires x {} {} and x {} {}",
-                if lower.strict { ">" } else { ">=" },
-                format_number(lower.value),
-                if upper.strict { "<" } else { "<=" },
-                format_number(upper.value)
-            ));
+            self.contradiction = Some(Contradiction::ConflictingBounds(lower, upper));
             return;
         }
         if let Some(value) = self.equality
             && !self.contains(value)
         {
-            self.contradiction = Some(format!(
-                "requires x = {}, but the interval excludes that value",
-                format_number(value)
-            ));
+            self.contradiction = Some(Contradiction::ExcludedValue(value));
         }
     }
 
@@ -713,6 +777,14 @@ struct IntervalSystem {
 impl IntervalSystem {
     const fn is_satisfiable(&self) -> bool {
         self.interval.contradiction.is_none()
+    }
+
+    /// Why the system has no model in `language`, or the `fallback` phrase.
+    fn contradiction(&self, fallback: &str, language: &str) -> String {
+        self.interval.contradiction.as_ref().map_or_else(
+            || phrase(fallback, language, &[]),
+            |contradiction| contradiction.describe(language),
+        )
     }
 
     fn witness_assignment(&self) -> Option<BTreeMap<String, f64>> {
@@ -793,7 +865,7 @@ fn build_interval_system(atoms: &[LinearAtom]) -> Option<IntervalSystem> {
         }
         if variables.is_empty() {
             if !atom.evaluate(&BTreeMap::new()) {
-                interval.contradiction = Some(format!("{} is false", atom.original));
+                interval.contradiction = Some(Contradiction::FalseAtom(atom.original.clone()));
             }
             continue;
         }
@@ -809,7 +881,7 @@ fn build_interval_system(atoms: &[LinearAtom]) -> Option<IntervalSystem> {
         let constant = atom.expression.constant;
         if nearly_zero(coefficient) {
             if !compare_zero(constant, atom.comparison) {
-                interval.contradiction = Some(format!("{} is false", atom.original));
+                interval.contradiction = Some(Contradiction::FalseAtom(atom.original.clone()));
             }
             continue;
         }
@@ -832,7 +904,7 @@ fn format_atoms(atoms: &[LinearAtom]) -> String {
         .iter()
         .map(|atom| atom.original.as_str())
         .collect::<Vec<_>>()
-        .join(" and ")
+        .join(CONJUNCTION)
 }
 
 fn format_assignment(assignment: &BTreeMap<String, f64>) -> String {

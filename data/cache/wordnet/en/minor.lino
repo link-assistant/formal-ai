@@ -1,0 +1,70 @@
+language en
+lemma minor
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "of lesser importance or stature or rank"
+    examples ("a minor poet" "had a minor part in the play" "a minor official" "many of these hardy adventurers were minor noblemen" "minor back roads")
+    id oewn-01476226-a
+    partOfSpeech a
+  entry
+    definition "lesser in scope or effect"
+    examples ("had minor differences" "a minor disturbance")
+    id oewn-01474638-a
+    partOfSpeech a
+  entry
+    definition "inferior in number or size or amount"
+    examples ("a minor share of the profits" "Ursa Minor")
+    id oewn-01474283-a
+    partOfSpeech a
+  entry
+    definition "(of a scale or mode) having half steps between the second and third degrees, and (usually) the fifth and sixth degrees, and the seventh and eighth degrees"
+    examples ("the minor keys" "in B flat minor")
+    id oewn-01475232-a
+    partOfSpeech a
+  entry
+    definition "not of legal age"
+    examples ("minor children")
+    id oewn-01474869-a
+    partOfSpeech a
+    synonyms (nonaged underage)
+  entry
+    definition "of lesser seriousness or danger"
+    examples ("suffered only minor injuries" "some minor flooding" "a minor tropical disturbance")
+    id oewn-01476969-a
+    partOfSpeech a
+  entry
+    definition "of your secondary field of academic concentration or specialization"
+    id oewn-01475652-a
+    partOfSpeech a
+  entry
+    definition "a young person of either sex"
+    examples ("she writes books for children" "they're just kids" "‘tiddler’ is a British term for youngster")
+    id oewn-09937051-n
+    partOfSpeech n
+    synonyms (child kid youngster shaver nipper "small fry" tiddler tike tyke fry nestling)
+  entry
+    definition "of the younger of two boys with the same family name"
+    examples ("Jones minor")
+    id oewn-02108520-s
+    partOfSpeech s
+  entry
+    definition "warranting only temporal punishment"
+    examples ("venial sin")
+    id oewn-01725636-s
+    partOfSpeech s
+    synonyms (venial)
+  entry
+    definition "relatively moderate, limited, or small"
+    examples ("a small business" "a newspaper with a modest circulation" "small-scale plans" "a pocket-size country")
+    id oewn-01418056-s
+    partOfSpeech s
+    synonyms (modest small small-scale pocket-size pocket-sized)
+  entry
+    definition "have as one's secondary field of study"
+    examples ("in college she minored in mathematics")
+    id oewn-00609193-v
+    partOfSpeech v
+source "oewn:2024"

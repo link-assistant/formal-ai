@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "羊"
+        },
+        "es": {
+          "language": "es",
+          "value": "oveja"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "парнокопытное млекопитающее из рода баранов семейства полорогих"
+        },
+        "es": {
+          "language": "es",
+          "value": "subespecie de mamíferos"
         }
       },
       "aliases": {
@@ -52,6 +60,20 @@
           {
             "language": "ru",
             "value": "овцы"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "oveja doméstica"
+          },
+          {
+            "language": "es",
+            "value": "Ovis orientalis aries"
+          },
+          {
+            "language": "es",
+            "value": "oveja domestica"
           }
         ]
       }

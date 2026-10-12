@@ -1,0 +1,276 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/issue_527_question_catalog.rs","file_path":"rust/tests/unit/agentic-coding/issue_527_question_catalog.rs","path":"rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"}
+   <file>
+   00001| //! The issue-#527 question-catalog loop — *"generate all possible questions and
+   00002| //! answer them"*, reachable through the agentic interface as the eleventh recipe.
+   00003| //!
+   00004| //! Issue #527 asks Formal AI to enumerate questions from smallest to largest out of a
+   00005| //! frequency-tiered vocabulary, classify each candidate grammatically and logically,
+   00006| //! and answer the meaningful ones with the best possible answer. The generator itself
+   00007| //! is exercised by `generated_question_ordering.rs`; these pins lock the *agentic* capability:
+   00008| //!
+   00009| //! 1. the catalog records the four-way classification smallest-first and answers the
+   00010| //!    grammatical-and-meaningful questions with the deterministic engine;
+   00011| //! 2. the answered questions form a recall table (a repeated question is answered from
+   00012| //!    the catalog, not re-derived) that never changes solver behaviour on its own;
+   00013| //! 3. the committed `data/meta/question-catalog.lino` is byte-for-byte what the recipe
+   00014| //!    renders and parses as Links Notation;
+   00015| //! 4. the recipe routes without colliding with the sibling recipes and the planner and
+   00016| //!    the in-repo Agent CLI driver walk it write → verify → final.
+   00017| 
+   00018| use formal_ai::agentic_coding::{
+   00019|     AgenticPlan, DRIVER_TOOLS, PlannedToolCall, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
+   00020|     is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,
+   00021| };
+   00022| use formal_ai::{ChatMessage, ToolCall};
+   00023| use lino_objects_codec::format::parse_indented;
+   00024| 
+   00025| fn expect_single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
+   00026|     match plan_chat_step(messages, tools) {
+   00027|         Some(AgenticPlan::ToolCalls(mut calls)) => {
+   00028|             assert_eq!(calls.len(), 1, "the planner emits one call per step");
+   00029|             calls.remove(0)
+   00030|         }
+   00031|         other => panic!("expected a single tool call, got {other:?}"),
+   00032|     }
+   00033| }
+   00034| 
+   00035| fn answer_tool_call(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str) {
+   00036|     let id = format!("call_{}", messages.len());
+   00037|     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00038|         id.clone(),
+   00039|         call.tool.clone(),
+   00040|         call.arguments.clone(),
+   00041|     )]));
+   00042|     messages.push(ChatMessage::tool_result(id, &call.tool, result));
+   00043| }
+   00044| 
+   00045| #[test]
+   00046| fn catalog_classifies_smallest_first_and_answers_meaningful_questions() {
+   00047|     let catalog = recipe::catalog();
+   00048| 
+   00049|     // Candidates are enumerated smallest-first (word count is non-decreasing).
+   00050|     assert!(
+   00051|         catalog
+   00052|             .candidates
+   00053|             .windows(2)
+   00054|             .all(|pair| pair[0].word_count <= pair[1].word_count),
+   00055|         "candidates must be recorded smallest-first: {:?}",
+   00056|         catalog.candidates,
+   00057|     );
+   00058|     assert_eq!(
+   00059|         catalog.candidates.first().map(|c| c.text.as_str()),
+   00060|         Some("what?"),
+   00061|         "the smallest candidate is the single most-frequent interrogative opener",
+   00062|     );
+   00063| 
+   00064|     // The catalog demonstrates the four-way distinction: a fragment (one-word opener),
+   00065|     // an ungrammatical candidate, and — among the answered — grammatical-and-meaningful.
+   00066|     assert!(
+   00067|         catalog
+   00068|             .candidates
+   00069|             .iter()
+   00070|             .any(|c| c.class == "fragment" && c.grammar == "fragment"),
+   00071|         "the catalog should record at least one fragment candidate",
+   00072|     );
+   00073|     assert!(
+   00074|         catalog
+   00075|             .candidates
+   00076|             .iter()
+   00077|             .any(|c| c.class == "ungrammatical"),
+   00078|         "the catalog should record at least one ungrammatical candidate",
+   00079|     );
+   00080| 
+   00081|     // Every answered entry is a grammatical, meaningful question with a real answer.
+   00082|     assert!(
+   00083|         !catalog.answered.is_empty(),
+   00084|         "the catalog should answer at least one meaningful question",
+   00085|     );
+   00086|     for answered in &catalog.answered {
+   00087|         assert!(answered.question.ends_with('?'));
+   00088|         assert!(
+   00089|             !answered.answer.trim().is_empty(),
+   00090|             "every meaningful question gets a best-possible answer: {answered:?}",
+   00091|         );
+   00092|         assert!(
+   00093|             (0.0..=1.0).contains(&answered.confidence),
+   00094|             "confidence stays a probability: {answered:?}",
+   00095|         );
+   00096|     }
+   00097| 
+   00098|     // The engine answers what it can and stays honest about what it cannot: the identity
+   00099|     // question resolves with full confidence, an unknown concept stays low-confidence.
+   00100|     let identity = catalog
+   00101|         .answer_for("what is you?")
+   00102|         .expect("the identity question should be answered");
+   00103|     assert_eq!(identity.intent, "identity");
+   00104|     assert!(identity.confidence > 0.99);
+   00105|     assert!(identity.answer.to_lowercase().contains("formal-ai"));
+   00106| }
+   00107| 
+   00108| #[test]
+   00109| fn answered_questions_form_a_recall_table() {
+   00110|     // The catalog is a *recall table*: a question it already answered is recognised and
+   00111|     // answered from the catalog (case/whitespace-insensitive), not re-derived. This is
+   00112|     // the issue-#527 auto-learning link — without touching the human-gated ledger.
+   00113|     let catalog = recipe::catalog();
+   00114|     let first = catalog
+   00115|         .answered
+   00116|         .first()
+   00117|         .expect("at least one answered question");
+   00118| 
+   00119|     let recalled = catalog
+   00120|         .answer_for(&format!("  {}  ", first.question.to_uppercase()))
+   00121|         .expect("a trivially rephrased question should be recalled");
+   00122|     assert_eq!(recalled, first);
+   00123| 
+   00124|     // A question the catalog never generated is not recalled (no hallucinated answers).
+   00125|     assert!(catalog.answer_for("what colour is the sky?").is_none());
+   00126| }
+   00127| 
+   00128| #[test]
+   00129| fn committed_catalog_document_is_generated_by_the_recipe() {
+   00130|     // The committed artifact is *generated* from the recipe — never hand written — so it
+   00131|     // can never drift, and it is byte-for-byte what the Agent CLI writes. It depends only
+   00132|     // on the seed lexicon and the deterministic engine, so it is safe to pin.
+   00133|     let committed = include_str!("../../../../data/meta/question-catalog.lino");
+   00134|     assert_eq!(
+   00135|         committed,
+   00136|         recipe::render_document(),
+   00137|         "the committed catalog is stale — regenerate it with `cargo run --example dump_question_catalog`",
+   00138|     );
+   00139|     parse_indented(committed).expect("the committed document should parse as Links Notation");
+   00140|     assert!(committed.contains("question_catalog"));
+   00141|     assert!(committed.contains("intent \"generate_all_possible_questions\""));
+   00142|     assert!(committed.contains("class \"fragment\""));
+   00143|     assert!(committed.contains("class \"ungrammatical\""));
+   00144|     assert!(committed.contains("answered"));
+   00145| }
+   00146| 
+   00147| #[test]
+   00148| fn recognises_the_catalog_task_without_colliding_with_the_sibling_recipes() {
+   00149|     assert!(is_question_catalog_task(QUESTION_CATALOG_TASK));
+   00150|     assert!(is_question_catalog_task(
+   00151|         "Please generate every possible question and answer each one."
+   00152|     ));
+   00153|     assert!(is_question_catalog_task(
+   00154|         "Build the question catalog and record it in Links Notation."
+   00155|     ));
+   00156|     assert!(is_question_catalog_task(
+   00157|         "Enumerate questions from smallest to largest and answer them."
+   00158|     ));
+   00159| 
+   00160|     // Unrelated and sibling requests do not route here.
+   00161|     assert!(!is_question_catalog_task("what files are in this folder?"));
+   00162|     assert!(!is_question_catalog_task("what is formal ai?"));
+   00163|     assert!(!is_question_catalog_task(
+   00164|         formal_ai::agentic_coding::REPAIR_STRATEGY_TASK
+   00165|     ));
+   00166|     assert!(!is_question_catalog_task(
+   00167|         formal_ai::agentic_coding::LEDGER_TASK
+   00168|     ));
+   00169|     assert!(!is_question_catalog_task(
+   00170|         formal_ai::agentic_coding::self_heal::SELF_HEAL_TASK
+   00171|     ));
+   00172| 
+   00173|     // The catalog task itself must not trip the sibling routers.
+   00174|     assert!(!formal_ai::agentic_coding::is_repair_strategy_task(
+   00175|         QUESTION_CATALOG_TASK
+   00176|     ));
+   00177|     assert!(!formal_ai::agentic_coding::is_ledger_task(
+   00178|         QUESTION_CATALOG_TASK
+   00179|     ));
+   00180|     assert!(!formal_ai::agentic_coding::is_self_heal_task(
+   00181|         QUESTION_CATALOG_TASK
+   00182|     ));
+   00183|     assert!(!formal_ai::agentic_coding::is_source_links_task(
+   00184|         QUESTION_CATALOG_TASK
+   00185|     ));
+   00186|     assert!(!formal_ai::agentic_coding::is_change_request_task(
+   00187|         QUESTION_CATALOG_TASK
+   00188|     ));
+   00189|     assert!(!formal_ai::agentic_coding::is_explain_task(
+   00190|         QUESTION_CATALOG_TASK
+   00191|     ));
+   00192| }
+   00193| 
+   00194| #[test]
+   00195| fn planner_walks_the_question_catalog_recipe() {
+   00196|     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
+   00197|     let mut messages = vec![ChatMessage::user(QUESTION_CATALOG_TASK)];
+   00198| 
+   00199|     // Step 1: write the generated catalog document (no web step — it is a pure function
+   00200|     // of the seed lexicon and the deterministic engine).
+   00201|     let call = expect_single_call(&messages, &tools);
+   00202|     assert_eq!(call.tool, "write_file");
+   00203|     assert!(call.arguments.contains(QUESTION_CATALOG_PATH));
+   00204|     let written: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+   00205|     assert_eq!(written["content"], recipe::render_document());
+   00206|     answer_tool_call(&mut messages, &call, "wrote question-catalog.lino");
+   00207| 
+   00208|     // Step 2: verify by reading the document back.
+   00209|     let call = expect_single_call(&messages, &tools);
+   00210|     assert_eq!(call.tool, "run_command");
+   00211|     assert!(call.arguments.contains(QUESTION_CATALOG_PATH));
+   00212|     answer_tool_call(&mut messages, &call, &recipe::render_document());
+   00213| 
+   00214|     // Step 3: the recipe is exhausted — the final answer carries the catalog.
+   00215|     match plan_chat_step(&messages, &tools) {
+   00216|         Some(AgenticPlan::Final(answer)) => {
+   00217|             assert!(answer.contains(QUESTION_CATALOG_PATH));
+   00218|             assert!(answer.contains("question catalog"));
+   00219|         }
+   00220|         other => panic!("expected a final answer, got {other:?}"),
+   00221|     }
+   00222| }
+   00223| 
+   00224| #[test]
+   00225| fn committed_agent_cli_session_matches_a_fresh_run() {
+   00226|     // The committed Agent CLI session (docs/case-studies/issue-527) is byte-for-byte what
+   00227|     // a fresh driven run produces from the recipe's *own* task wording — the issue-#527
+   00228|     // reproducibility pin, mirroring the issue-#538 sessions. It depends only on the seed
+   00229|     // lexicon and the deterministic engine, so it is safe to pin.
+   00230|     let committed = include_str!(
+   00231|         "../../../../docs/case-studies/issue-527/agent-cli-session-question-catalog.json"
+   00232|     );
+   00233|     let fresh = run_agentic_task(QUESTION_CATALOG_TASK).expect("workspace");
+   00234|     let rendered = format!(
+   00235|         "{}\n",
+   00236|         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
+   00237|     );
+   00238|     assert_eq!(
+   00239|         committed, rendered,
+   00240|         "the committed question-catalog Agent CLI session is stale — regenerate it with \
+   00241|          `formal-ai agent --task \"<QUESTION_CATALOG_TASK>\" --session-json \
+   00242|          docs/case-studies/issue-527/agent-cli-session-question-catalog.json`",
+   00243|     );
+   00244| }
+   00245| 
+   00246| #[test]
+   00247| fn driver_drives_the_question_catalog_recipe_to_a_write() {
+   00248|     // End-to-end through the in-repo Agent CLI driver: the loop finishes and writes
+   00249|     // exactly the generated catalog document.
+   00250|     assert!(DRIVER_TOOLS.contains(&"write_file"));
+   00251|     let outcome = run_agentic_task(QUESTION_CATALOG_TASK).expect("workspace");
+   00252|     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
+   00253|     let write = outcome
+   00254|         .steps
+   00255|         .iter()
+   00256|         .find(|step| step.tool == "write_file")
+   00257|         .expect("a write step");
+   00258|     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
+   00259|     assert_eq!(written["content"], recipe::render_document());
+   00260|     assert_eq!(written["path"], QUESTION_CATALOG_PATH);
+   00261|     assert!(outcome.final_answer.contains(QUESTION_CATALOG_PATH));
+   00262| }
+   00263| 
+   
+   (End of file - total 263 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/issue_527_question_catalog.rs","file_path":"rust/tests/unit/agentic-coding/issue_527_question_catalog.rs","new":"is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,\n    run_agentic_task_with_tools,","newString":"is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,\n    run_agentic_task_with_tools,","new_str":"is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,\n    run_agentic_task_with_tools,","new_string":"is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,\n    run_agentic_task_with_tools,","old":"is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,","oldString":"is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,","old_str":"is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,","old_string":"is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,","path":"rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"}
+   Output: 87a51ae74dd44c6892e51849223d2142e398e499906e8a3d82a7a240c17c48c5  rust/tests/unit/agentic-coding/issue_527_question_catalog.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,` with `is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,
+    run_agentic_task_with_tools,` in `rust/tests/unit/agentic-coding/issue_527_question_catalog.rs` and observed the result.

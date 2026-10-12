@@ -1,0 +1,10 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check-response-parity-debt
+  stage web
+  description "data/meta/response-language-parity-debt.lino equals what node scripts/generate-response-parity-debt.mjs derives from every data/seed/multilingual-responses*.lino, so a response intent's missing languages are always on the ledger whichever response file holds it."
+  run "node scripts/generate-response-parity-debt.mjs --check"
+  justification "PR #1188 found 343 response intents missing a language outside the one file the debt test read; measuring every response file keeps that debt visible so it can only go down."

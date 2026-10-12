@@ -1,0 +1,1 @@
+product_search_marketplace_needed	"Solo compongo una búsqueda de productos en una tienda en línea que la solicitud nombre, y esta no nombra ninguna, así que no adivinaré una tienda para {product}. Nombra una de las tiendas que conozco ({marketplaces}) y compondré el enlace de búsqueda exacto.\nCondiciones que pediste: {constraints}"

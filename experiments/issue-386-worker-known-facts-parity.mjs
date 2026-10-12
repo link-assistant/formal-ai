@@ -3,7 +3,7 @@
 // sandbox and drives the real self-awareness dispatcher (tryBehaviorRules), so
 // the whole precedence chain (self_introduction -> architecture -> self_facts ->
 // known_facts -> conversation_topic) is exercised exactly as in production.
-// Mirrors the pinned cases in tests/unit/specification/issue_146.rs.
+// Mirrors the pinned cases in tests/unit/specification/self_awareness_prompts.rs.
 //
 // Run with: node experiments/issue-386-worker-known-facts-parity.mjs
 

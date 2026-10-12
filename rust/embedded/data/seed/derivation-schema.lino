@@ -1,0 +1,93 @@
+# The white-box derivation record (issue #1184, E148).
+#
+# One record per returned answer, projected from the same append-only
+# EventLog the --thinking trace narrates, so the two surfaces cannot
+# disagree. Persisted under data/cache/derivations/<answer_id>.lino and
+# printed by `formal-ai explain <answer-id>`.
+#
+# This document declares the record's shape and stage vocabulary so the
+# structure is data, not Rust — the record heads and field names below are
+# the ones rust/src/derivation.rs writes and reads, and the stage kinds are
+# the EventLog kinds it projects.
+derivation_schema
+  record derivation
+    field answer_id "content-addressed: stable_id over the answer text, shaped answer_<16 hex digits>"
+    field search_query "one row per web_search:request event, in append order"
+    field fetch
+      field url "the fetched URL exactly as issued"
+      field sha256 "SHA-256 hex of the fetched bytes; empty only if the route recorded none"
+      field fetched_at "ISO-8601 timestamp of the fetch"
+    field formalized_fragment "one row per form formalized page fragment (E128, issue 1163)"
+    field decomposed_part "one row per part decomposed from a retrieved example (E129, issue 1164)"
+    field recomposition "the binding of parts to parameters (E129 against the E131 obligation graph)"
+    field rendering "the emitted target language (E132, issue 1167)"
+    field verification
+      field evidence_id "stable_id of the executed observation; full Evidence recoverable in the obligation ledger"
+      field command "the exact command line as issued"
+      field exit "the process exit status, or none when the route reported none"
+    field rule
+      field kind "the event kind naming the rule family a handler applied (issue 1174)"
+      field detail "the rule applied and what it changed, as the handler logged it"
+  stage
+    kind "web_search:request"
+    collects search_query
+  stage
+    kind "source:http"
+    collects fetch
+    note "two payload spellings are read: SourceCapture trace_payload (leading bare url, space-separated fields) and the coding synthesis runtime's semicolon-separated url= form"
+  stage
+    kind "formalize:fragment"
+    collects formalized_fragment
+  stage
+    kind "decompose:part"
+    collects decomposed_part
+  stage
+    kind "recompose:bind"
+    collects recomposition
+  stage
+    kind "render:emit"
+    collects rendering
+  stage
+    kind "verify:evidence"
+    collects verification
+    note "payload fields evidence_id, command, exit; appended by the verifiable-task route"
+  stage
+    kind "register_rewrite"
+    collects rule
+  stage
+    kind "grammar_correction"
+    collects rule
+  stage
+    kind "genre_styleguide"
+    collects rule
+  stage
+    kind "genre_composition"
+    collects rule
+  stage
+    kind "summarization_statement"
+    collects rule
+  stage
+    kind "summarization_bound"
+    collects rule
+  stage
+    kind "summarization_selected"
+    collects rule
+  stage
+    kind "translation_word"
+    collects rule
+  stage
+    kind "translation_function_word"
+    collects rule
+  stage
+    kind "translation_word_order"
+    collects rule
+  stage
+    kind "translation_unknown_word"
+    collects rule
+  stage
+    kind "translation_gap"
+    collects rule
+  convention
+    not_recorded "a stage the route never populated is reported as not recorded, never fabricated or inferred"
+    store data/cache/derivations/
+    parity "rust projects the record; js and ts roots translate the same projection so all three emit one record shape from one event log"

@@ -1,0 +1,13 @@
+self_ast_census
+  target src/rule_interpreter/shape.rs
+  language rust
+  fidelity signature
+  byte_len 2026
+  line_count 52
+  content_id source_module_1161593dc9b241ad
+  symbol_count 4
+  symbols
+    const QUOTE_PAIRS 11 11
+    function holds 22 42
+    const URL_PREFIXES 47 47
+    function is_url 50 52

@@ -1,0 +1,20 @@
+{
+  "task": "T4228",
+  "prompt": "Implement the approved first-function-only migration in rust/tests/unit/ci-cd/attestation_and_coverage_audit.rs: preserve all original three desktop/CLI/VSIX subject families and no-checksum/no-legacy assertions; require actual fourth release-evidence/formal-ai-*.json attestation, four exact parsed role/output bindings and independent missing/changed-subject/legacy refusals in scratch Node controls. Preserve complete original source and actual CI failure; no workflow changes, no publication credit. Implement entire audited change through Formal AI.",
+  "started": "2026-10-09T22:31:56.591Z",
+  "result": {
+    "transcript": [],
+    "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement the approved first-function-only migration in rust/tests/unit/ci-cd/attestation_and_coverage_audit.rs: preserve all original three desktop/CLI/VSIX subject families and no-checksum/no-legacy assertions; require actual fourth release-evidence/formal-ai-*.json attestation, four exact parsed role/output bindings and independent missing/changed-subject/legacy refusals in scratch Node controls. Preserve complete original source and actual CI failure; no workflow changes, no publication credit. Implement entire audited change through Formal AI.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": false,
+  "finished": "2026-10-09T22:31:57.797Z"
+}

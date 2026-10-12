@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_pattern_inference.js"
+  ceiling 637
+  rationale "Pattern inference over 1D sequences and 2D grids (issue #531, R403/R405). JavaScript-first twin of the native pattern_inference route that rust/src/solver_handlers/verifiable_task.rs enters first, and of the substrate it runs (rust/src/sequences/{store,compression,patterns_1d,grid_2d,inference}.rs, including reversal, cyclic translation and the grid analogy transform_onto), added under R997-R999 (2026-10-08). The browser answered every pattern prompt with the unverified verifiable-task projection; recognition reads the verifiable_expectation_pattern meanings and every report line is a data/seed/multilingual-responses-pattern.lino template."

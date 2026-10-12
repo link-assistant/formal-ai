@@ -1,0 +1,479 @@
+TAP version 13
+# Subtest: plural nouns ending in ls preserve the explicitly named source read
+ok 1 - plural nouns ending in ls preserve the explicitly named source read
+  ---
+  duration_ms: 860.504875
+  ...
+# Subtest: the standalone ls command still lists before reading its selected file
+ok 2 - the standalone ls command still lists before reading its selected file
+  ---
+  duration_ms: 248.3835
+  ...
+# Subtest: destination, immutable inputs and acceptance are declaration-scoped
+ok 3 - destination, immutable inputs and acceptance are declaration-scoped
+  ---
+  duration_ms: 66.276667
+  ...
+# Subtest: adjacent declared module and alias signature bind the same reusable discovery
+ok 4 - adjacent declared module and alias signature bind the same reusable discovery
+  ---
+  duration_ms: 0.774209
+  ...
+# Subtest: ambiguous destinations and quoted call shapes are not guessed
+ok 5 - ambiguous destinations and quoted call shapes are not guessed
+  ---
+  duration_ms: 0.435
+  ...
+# Subtest: existing arithmetic module/test request remains on its original route
+ok 6 - existing arithmetic module/test request remains on its original route
+  ---
+  duration_ms: 71.271459
+  ...
+# Subtest: actual planner reads all operands, reports exact missing contracts, and changes no bytes
+ok 7 - actual planner reads all operands, reports exact missing contracts, and changes no bytes
+  ---
+  duration_ms: 789.758125
+  ...
+# Subtest: an absent destination is observed without creating it
+ok 8 - an absent destination is observed without creating it
+  ---
+  duration_ms: 59.513375
+  ...
+# Subtest: missing input is a failed read, never an empty source or a writing fallback
+ok 9 - missing input is a failed read, never an empty source or a writing fallback
+  ---
+  duration_ms: 34.7225
+  ...
+# Subtest: permission errors on the destination retain typed failure rather than absence
+ok 10 - permission errors on the destination retain typed failure rather than absence
+  ---
+  duration_ms: 0.60725
+  ...
+# Subtest: missing read capability is an exact typed gap, not a declined route
+ok 11 - missing read capability is an exact typed gap, not a declined route
+  ---
+  duration_ms: 0.516833
+  ...
+# Subtest: old request evidence is not reused for a new discovery request
+ok 12 - old request evidence is not reused for a new discovery request
+  ---
+  duration_ms: 0.46975
+  ...
+# Subtest: explicit client error flags stay bound to the observed read
+ok 13 - explicit client error flags stay bound to the observed read
+  ---
+  duration_ms: 0.497959
+  ...
+# Subtest: numbered source payload failure words remain data
+ok 14 - numbered source payload failure words remain data
+  ---
+  duration_ms: 55.890833
+  ...
+# Subtest: signature identifiers and path components cannot supply instruction verbs
+ok 15 - signature identifiers and path components cannot supply instruction verbs
+  ---
+  duration_ms: 0.58675
+  ...
+# Subtest: public request-local outcome preserves the actual typed gap and complete witness
+ok 16 - public request-local outcome preserves the actual typed gap and complete witness
+  ---
+  duration_ms: 0.970042
+  ...
+# Subtest: public request-local outcome retains failure metadata without prose classification
+ok 17 - public request-local outcome retains failure metadata without prose classification
+  ---
+  duration_ms: 0.493625
+  ...
+# Subtest: a planned read has no final disposition or stale discovery witness
+ok 18 - a planned read has no final disposition or stale discovery witness
+  ---
+  duration_ms: 0.446125
+  ...
+# Subtest: complete provider Read retains every JSON source byte 169
+ok 19 - complete provider Read retains every JSON source byte 169
+  ---
+  duration_ms: 73.108334
+  ...
+# Subtest: bare same JSON stays available Unknown and cannot own transport role 169
+ok 20 - bare same JSON stays available Unknown and cannot own transport role 169
+  ---
+  duration_ms: 0.919542
+  ...
+# Subtest: complete provider Read retains every JSON source byte 127
+ok 21 - complete provider Read retains every JSON source byte 127
+  ---
+  duration_ms: 0.472041
+  ...
+# Subtest: bare same JSON stays available Unknown and cannot own transport role 127
+ok 22 - bare same JSON stays available Unknown and cannot own transport role 127
+  ---
+  duration_ms: 0.329792
+  ...
+# Subtest: actual ordinary full planner and filesystem provider preserve exact JSON bytes
+ok 23 - actual ordinary full planner and filesystem provider preserve exact JSON bytes
+  ---
+  duration_ms: 611.156417
+  ...
+# Subtest: explicit provider failure wins over successful Read metadata
+ok 24 - explicit provider failure wins over successful Read metadata
+  ---
+  duration_ms: 70.914458
+  ...
+# Subtest: partial source does not gain complete Finding metadata
+ok 25 - partial source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.436375
+  ...
+# Subtest: truncated source does not gain complete Finding metadata
+ok 26 - truncated source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.27025
+  ...
+# Subtest: timed out source does not gain complete Finding metadata
+not ok 27 - timed out source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.9945
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/source-read-consumers.test.mjs:55:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'failure'
+    - 'unknown'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'unknown'
+  actual: 'failure'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/source-read-consumers.test.mjs:57:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: aborted source does not gain complete Finding metadata
+not ok 28 - aborted source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.353625
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/source-read-consumers.test.mjs:55:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'failure'
+    - 'unknown'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'unknown'
+  actual: 'failure'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/source-read-consumers.test.mjs:57:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: signalled source does not gain complete Finding metadata
+not ok 29 - signalled source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.3255
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/source-read-consumers.test.mjs:55:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'failure'
+    - 'unknown'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'unknown'
+  actual: 'failure'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/source-read-consumers.test.mjs:57:9)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: wrong metadata path source does not gain complete Finding metadata
+ok 30 - wrong metadata path source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.183
+  ...
+# Subtest: wrong call cannot bind the original file
+ok 31 - wrong call cannot bind the original file
+  ---
+  duration_ms: 0.229291
+  ...
+# Subtest: wrong tool cannot bind the original file
+ok 32 - wrong tool cannot bind the original file
+  ---
+  duration_ms: 0.313584
+  ...
+# Subtest: new user window cannot bind the original file
+ok 33 - new user window cannot bind the original file
+  ---
+  duration_ms: 0.116
+  ...
+# Subtest: conflicting paths cannot bind the original file
+ok 34 - conflicting paths cannot bind the original file
+  ---
+  duration_ms: 0.21275
+  ...
+# Subtest: latest source observation supersedes older bytes and provider refusal
+ok 35 - latest source observation supersedes older bytes and provider refusal
+  ---
+  duration_ms: 0.714167
+  ...
+# Subtest: every multi-read source uses typed provider observations
+ok 36 - every multi-read source uses typed provider observations
+  ---
+  duration_ms: 0.493416
+  ...
+# Subtest: partial multi-read JSON input does not become an error before the remaining Read
+ok 37 - partial multi-read JSON input does not become an error before the remaining Read
+  ---
+  duration_ms: 0.270875
+  ...
+# Subtest: list then read preserves JSON source and real shell listing receipt
+not ok 38 - list then read preserves JSON source and real shell listing receipt
+  ---
+  duration_ms: 0.457166
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/source-read-consumers.test.mjs:87:1'
+  failureType: 'testCodeFailure'
+  error: 'trimStartMatchesStr is not defined'
+  code: 'ERR_TEST_FAILURE'
+  name: 'ReferenceError'
+  stack: |-
+    file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/file_read.mjs:424:20
+    Array.map (<anonymous>)
+    selectedPathsFromListing (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/file_read.mjs:424:6)
+    planListThenRead (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/file_read.mjs:155:17)
+    planFileReadStep (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/file_read.mjs:104:14)
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/source-read-consumers.test.mjs:92:13)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+  ...
+# Subtest: discovery hashes exact JSON source without treating its keys as a failed Read
+ok 39 - discovery hashes exact JSON source without treating its keys as a failed Read
+  ---
+  duration_ms: 2.009375
+  ...
+# Subtest: discovery bare input cannot certify a source contract
+ok 40 - discovery bare input cannot certify a source contract
+  ---
+  duration_ms: 0.318584
+  ...
+# Subtest: discovery partial input cannot certify a source contract
+ok 41 - discovery partial input cannot certify a source contract
+  ---
+  duration_ms: 0.352167
+  ...
+# Subtest: discovery wrong metadata path input cannot certify a source contract
+ok 42 - discovery wrong metadata path input cannot certify a source contract
+  ---
+  duration_ms: 0.888583
+  ...
+# Subtest: discovery genuine outer failure is Failure; authored ENOENT data is not absence
+ok 43 - discovery genuine outer failure is Failure; authored ENOENT data is not absence
+  ---
+  duration_ms: 1.034792
+  ...
+# Subtest: raw authored source does not provide its own metadata: goal "Create a file status.txt cont
+ok 44 - raw authored source does not provide its own metadata: goal "Create a file status.txt cont
+  ---
+  duration_ms: 557.960542
+  ...
+# Subtest: outer provider success retains exact source bytes: goal "Create a file status.txt cont
+ok 45 - outer provider success retains exact source bytes: goal "Create a file status.txt cont
+  ---
+  duration_ms: 6.5155
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"schema":"source-read-receipt/v1",
+ok 46 - raw authored source does not provide its own metadata: {"schema":"source-read-receipt/v1",
+  ---
+  duration_ms: 0.375958
+  ...
+# Subtest: outer provider success retains exact source bytes: {"schema":"source-read-receipt/v1",
+ok 47 - outer provider success retains exact source bytes: {"schema":"source-read-receipt/v1",
+  ---
+  duration_ms: 0.338292
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"success":false,"complete":false,"
+ok 48 - raw authored source does not provide its own metadata: {"success":false,"complete":false,"
+  ---
+  duration_ms: 0.402833
+  ...
+# Subtest: outer provider success retains exact source bytes: {"success":false,"complete":false,"
+ok 49 - outer provider success retains exact source bytes: {"success":false,"complete":false,"
+  ---
+  duration_ms: 0.675958
+  ...
+# Subtest: raw authored source does not provide its own metadata: {"success":true,"complete":true,"co
+ok 50 - raw authored source does not provide its own metadata: {"success":true,"complete":true,"co
+  ---
+  duration_ms: 1.350292
+  ...
+# Subtest: outer provider success retains exact source bytes: {"success":true,"complete":true,"co
+ok 51 - outer provider success retains exact source bytes: {"success":true,"complete":true,"co
+  ---
+  duration_ms: 0.813791
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"complete":false}
+ok 52 - provider refusal or partial observation cannot certify source {"complete":false}
+  ---
+  duration_ms: 0.291958
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"stream_complete":false}
+ok 53 - provider refusal or partial observation cannot certify source {"stream_complete":false}
+  ---
+  duration_ms: 0.208459
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"truncated":true}
+ok 54 - provider refusal or partial observation cannot certify source {"truncated":true}
+  ---
+  duration_ms: 0.089541
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"timed_out":true}
+ok 55 - provider refusal or partial observation cannot certify source {"timed_out":true}
+  ---
+  duration_ms: 0.09925
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"aborted":true}
+ok 56 - provider refusal or partial observation cannot certify source {"aborted":true}
+  ---
+  duration_ms: 0.168458
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"signal":"SIGTERM"}
+ok 57 - provider refusal or partial observation cannot certify source {"signal":"SIGTERM"}
+  ---
+  duration_ms: 0.09725
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"success":false}
+ok 58 - provider refusal or partial observation cannot certify source {"success":false}
+  ---
+  duration_ms: 0.17475
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"is_error":true}
+ok 59 - provider refusal or partial observation cannot certify source {"is_error":true}
+  ---
+  duration_ms: 0.085042
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"exit_code":1}
+ok 60 - provider refusal or partial observation cannot certify source {"exit_code":1}
+  ---
+  duration_ms: 0.1105
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"success":"true"}
+ok 61 - provider refusal or partial observation cannot certify source {"success":"true"}
+  ---
+  duration_ms: 0.131958
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"complete":"true"}
+ok 62 - provider refusal or partial observation cannot certify source {"complete":"true"}
+  ---
+  duration_ms: 0.101417
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"format":"numbered"}
+ok 63 - provider refusal or partial observation cannot certify source {"format":"numbered"}
+  ---
+  duration_ms: 0.099916
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"path":"elsewhere/.formal-ai/general-change-plan.lino"}
+ok 64 - provider refusal or partial observation cannot certify source {"path":"elsewhere/.formal-ai/general-change-plan.lino"}
+  ---
+  duration_ms: 0.027666
+  ...
+# Subtest: provider refusal or partial observation cannot certify source {"path":null}
+ok 65 - provider refusal or partial observation cannot certify source {"path":null}
+  ---
+  duration_ms: 0.025125
+  ...
+# Subtest: outer tool error remains failure even when metadata declares success
+ok 66 - outer tool error remains failure even when metadata declares success
+  ---
+  duration_ms: 0.352625
+  ...
+# Subtest: known complete numbered format is separate from process status
+ok 67 - known complete numbered format is separate from process status
+  ---
+  duration_ms: 0.127083
+  ...
+# Subtest: current call identity and exact nonconflicting path are required
+ok 68 - current call identity and exact nonconflicting path are required
+  ---
+  duration_ms: 188.491459
+  ...
+# Subtest: explicit successful process receipt retains authored failure vocabulary
+ok 69 - explicit successful process receipt retains authored failure vocabulary
+  ---
+  duration_ms: 0.163833
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"complete":false}
+ok 70 - partial shell receipts veto exact bytes and digest {"complete":false}
+  ---
+  duration_ms: 0.118583
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"stream_complete":false}
+ok 71 - partial shell receipts veto exact bytes and digest {"stream_complete":false}
+  ---
+  duration_ms: 0.146917
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"truncated":true}
+ok 72 - partial shell receipts veto exact bytes and digest {"truncated":true}
+  ---
+  duration_ms: 0.163625
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"timed_out":true}
+ok 73 - partial shell receipts veto exact bytes and digest {"timed_out":true}
+  ---
+  duration_ms: 0.102583
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"aborted":true}
+ok 74 - partial shell receipts veto exact bytes and digest {"aborted":true}
+  ---
+  duration_ms: 0.100542
+  ...
+# Subtest: partial shell receipts veto exact bytes and digest {"signal":"SIGTERM"}
+ok 75 - partial shell receipts veto exact bytes and digest {"signal":"SIGTERM"}
+  ---
+  duration_ms: 0.210792
+  ...
+# Subtest: full successful shell bytes still require exact output and real status
+ok 76 - full successful shell bytes still require exact output and real status
+  ---
+  duration_ms: 0.6215
+  ...
+# Subtest: original authored failure goal proceeds beyond actual bare source read
+ok 77 - original authored failure goal proceeds beyond actual bare source read
+  ---
+  duration_ms: 164.334334
+  ...
+# Subtest: a later declined Read observation cannot retain an older source certificate
+ok 78 - a later declined Read observation cannot retain an older source certificate
+  ---
+  duration_ms: 0.401958
+  ...
+1..78
+# tests 78
+# suites 0
+# pass 74
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1757.972667

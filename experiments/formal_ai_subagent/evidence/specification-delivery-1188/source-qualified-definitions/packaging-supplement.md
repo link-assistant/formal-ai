@@ -1,0 +1,3 @@
+T2450 copied the selected evidence via one actual Formal AI Bash call. T2451 preserves the exact verifiable_task preimage bytes in a SHA/base64 JSON envelope because its original trailing blank line trips git whitespace validation; decoded bytes equal the preimage. It also retains the completed T2450 raw request/result. Neither changes production source or native assertions.
+
+ThroughT2451:52invocations114observed tools;32Write+5formatterBash+1sharedrecord-generatorBash+2evidence-copy/encodingBash=40repository mutation calls. Exclude32history append calls. The first commit preflight failed before commit on historical evidence whitespace; no source changes made during that failure.

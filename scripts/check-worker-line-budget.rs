@@ -440,24 +440,25 @@ mod tests {
     #[test]
     fn collects_only_worker_js_and_sums_lines() {
         let repo = temp_dir("collect");
-        write_worker_js(&repo, "formal_ai_worker_00.js", 12);
-        write_worker_js(&repo, "formal_ai_worker_01.js", 8);
+        write_worker_js(&repo, "formal_ai_worker_seed_responses_and_language.js", 12);
+        write_worker_js(&repo, "formal_ai_worker_concept_queries_and_arithmetic.js", 8);
         // A non-JS sibling must be ignored.
         fs::write(repo.join(WORKER_DIR).join("README.md"), "notes\n").unwrap();
 
+        // Sorted by path: `concept_queries…` before `seed_responses…`.
         let files = collect_worker_files(&repo);
         assert_eq!(files.len(), 2);
-        assert_eq!(files[0].path, "js/worker/formal_ai_worker_00.js");
-        assert_eq!(files[0].lines, 12);
-        assert_eq!(files[1].lines, 8);
+        assert_eq!(files[0].path, "js/worker/formal_ai_worker_concept_queries_and_arithmetic.js");
+        assert_eq!(files[0].lines, 8);
+        assert_eq!(files[1].lines, 12);
         assert_eq!(total_lines(&files), 20);
     }
 
     #[test]
     fn a_module_within_its_own_ceiling_passes() {
         let repo = temp_dir("within");
-        write_worker_js(&repo, "formal_ai_worker_00.js", 12);
-        write_budget(&repo, "formal_ai_worker_00.js", 12);
+        write_worker_js(&repo, "formal_ai_worker_seed_responses_and_language.js", 12);
+        write_budget(&repo, "formal_ai_worker_seed_responses_and_language.js", 12);
         let files = collect_worker_files(&repo);
         assert!(budget_failures(&files, &collect_budgets(&repo)).is_empty());
     }
@@ -465,8 +466,8 @@ mod tests {
     #[test]
     fn a_module_that_grew_past_its_own_ceiling_fails() {
         let repo = temp_dir("regrown");
-        write_worker_js(&repo, "formal_ai_worker_00.js", 13);
-        write_budget(&repo, "formal_ai_worker_00.js", 12);
+        write_worker_js(&repo, "formal_ai_worker_seed_responses_and_language.js", 13);
+        write_budget(&repo, "formal_ai_worker_seed_responses_and_language.js", 12);
         let files = collect_worker_files(&repo);
         let failures = budget_failures(&files, &collect_budgets(&repo));
         assert!(
@@ -481,21 +482,21 @@ mod tests {
         // 00 shrinks by 5, 01 grows by 5, the total is unchanged and nobody
         // notices that the mirror grew where it was supposed to shrink.
         let repo = temp_dir("cross-funding");
-        write_worker_js(&repo, "formal_ai_worker_00.js", 7);
-        write_worker_js(&repo, "formal_ai_worker_01.js", 17);
-        write_budget(&repo, "formal_ai_worker_00.js", 12);
-        write_budget(&repo, "formal_ai_worker_01.js", 12);
+        write_worker_js(&repo, "formal_ai_worker_seed_responses_and_language.js", 7);
+        write_worker_js(&repo, "formal_ai_worker_concept_queries_and_arithmetic.js", 17);
+        write_budget(&repo, "formal_ai_worker_seed_responses_and_language.js", 12);
+        write_budget(&repo, "formal_ai_worker_concept_queries_and_arithmetic.js", 12);
         let files = collect_worker_files(&repo);
         assert_eq!(total_lines(&files), 24, "the total is unchanged");
         let failures = budget_failures(&files, &collect_budgets(&repo));
         assert_eq!(failures.len(), 1, "{failures:?}");
-        assert!(failures[0].contains("formal_ai_worker_01.js"), "{failures:?}");
+        assert!(failures[0].contains("formal_ai_worker_concept_queries_and_arithmetic.js"), "{failures:?}");
     }
 
     #[test]
     fn a_module_without_a_shard_fails() {
         let repo = temp_dir("unbudgeted");
-        write_worker_js(&repo, "formal_ai_worker_00.js", 3);
+        write_worker_js(&repo, "formal_ai_worker_seed_responses_and_language.js", 3);
         let failures = budget_failures(&collect_worker_files(&repo), &collect_budgets(&repo));
         assert!(
             failures.iter().any(|failure| failure.contains("has no budget shard")),
@@ -506,8 +507,8 @@ mod tests {
     #[test]
     fn a_shard_for_a_deleted_module_fails() {
         let repo = temp_dir("stale");
-        write_worker_js(&repo, "formal_ai_worker_00.js", 3);
-        write_budget(&repo, "formal_ai_worker_00.js", 3);
+        write_worker_js(&repo, "formal_ai_worker_seed_responses_and_language.js", 3);
+        write_budget(&repo, "formal_ai_worker_seed_responses_and_language.js", 3);
         write_budget(&repo, "formal_ai_worker_99.js", 3);
         let failures = budget_failures(&collect_worker_files(&repo), &collect_budgets(&repo));
         assert!(

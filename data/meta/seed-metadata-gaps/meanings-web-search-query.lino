@@ -1,0 +1,13 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-web-search-query.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-79a4c44e10dddf8c
+    record "explicit_web_search_command"
+  gap seed-metadata-gap-696c55dd83944d1c
+    record "query_leading_noise"
+  gap seed-metadata-gap-788f212068fc0428
+    record "query_trailing_noise"
+  gap seed-metadata-gap-dc973cfc65503268
+    record "topic_connective"

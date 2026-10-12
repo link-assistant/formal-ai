@@ -1,0 +1,23 @@
+
+Checking rust/src/ for hardcoded user-facing natural language (R379)...
+
+Detected prose literals: 701 | allowlisted: 700
+
+New hardcoded user-facing strings found in rust/src/ (not in the allowlist):
+
+::error file=rust/src/agentic_coding/mutating_action.rs::Hardcoded user-facing string: "for formal_ai_source in {sources}; do {setup}{check} || exit $?; done". Move it into data/seed/ (R379).
+  rust/src/agentic_coding/mutating_action.rs: "for formal_ai_source in {sources}; do {setup}{check} || exit $?; done"
+::error file=rust/src/agentic_coding/mutating_action.rs::Hardcoded user-facing string: "formal_ai_destination={destination}; {}". Move it into data/seed/ (R379).
+  rust/src/agentic_coding/mutating_action.rs: "formal_ai_destination={destination}; {}"
+
+Move each string into grounded meanings under data/seed/ and look it
+up (e.g. via seed::response_for), or — only if it is genuinely part of
+the existing debt — regenerate the allowlist with --write.
+
+Stale allowlist rows (no longer present in rust/src/ — prune them):
+
+  rust/src/agentic_coding/general_planner.rs: "write the composed plan to {PLAN_PATH}"
+
+These strings were migrated or changed. Regenerate the allowlist with:
+rust-script scripts/check-hardcoded-language.rs --write
+

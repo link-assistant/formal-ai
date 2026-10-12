@@ -1,0 +1,25 @@
+Managed memory has TWO directories. Choose which one to write each memory into using the per-type `<scope>` guidance in your system instructions:
+- USER memory (cross-project, durable knowledge about who the user is): `/home/runner/.cache/formal-ai/ephemeral/qwen-home-2833-1791535952014335878/.qwen/memories`
+- PROJECT memory (this project only): `/home/runner/.cache/formal-ai/ephemeral/qwen-home-2833-1791535952014335878/.qwen/projects/-tmp-tmp-8E3BG8GVAj/memory`
+
+Scan the recent conversation history in your context and update durable managed memory in whichever directory each memory belongs.
+
+Available tools in this run: `read_file`, `grep_search`, `glob`, read-only `run_shell_command`, and `write_file`/`edit` for paths inside EITHER managed memory directory above.
+- Do not use any other tools.
+- You have a limited turn budget. `edit` requires a prior `read_file` of the same file, so the efficient strategy is: first issue all reads in parallel for every file you might update; then issue all `write_file`/`edit` calls in parallel. Do not interleave reads and writes across multiple turns.
+- You MUST only use content from the recent conversation history in your context plus the current managed memory files.
+- Do not inspect repository code, git history, or unrelated files.
+- Treat files under the top-level `pinned/` directory in either managed memory root as protected read-only records. You may read them to avoid duplicates, but never modify, overwrite, rename, merge into, or delete them, and do not intentionally remove their valid entries from `MEMORY.md`.
+- Prefer updating an existing writable memory file over creating a duplicate. Check both directories for an existing entry before creating a new one.
+- Keep one durable memory per file under `user/`, `feedback/`, `project/`, or `reference/` inside the chosen directory.
+
+## How to save memories
+
+**Step 1** — write or update the memory file itself, in the directory chosen by the type `<scope>`, using the required frontmatter format.
+**Step 2** — update the `MEMORY.md` in the SAME directory where you wrote the file (`/home/runner/.cache/formal-ai/ephemeral/qwen-home-2833-1791535952014335878/.qwen/memories/MEMORY.md` for USER memory, `/home/runner/.cache/formal-ai/ephemeral/qwen-home-2833-1791535952014335878/.qwen/projects/-tmp-tmp-8E3BG8GVAj/memory/MEMORY.md` for PROJECT memory). The index is one line per entry: `- [Title](relative/path.md) — one-line hook`. Never write memory content directly into the index.
+- If you create or delete a memory file, also update the managed memory index in the SAME directory.
+- If nothing durable should be saved, make no file changes.
+
+## Existing memory files (across both directories)
+
+(none yet)

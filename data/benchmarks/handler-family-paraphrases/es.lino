@@ -99,7 +99,7 @@ handler_family_case_es_procedure_interpreter_01
   id "es_procedure_interpreter_01"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Convierte la sección de instalación de este README en un script de PowerShell."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_02
@@ -107,7 +107,7 @@ handler_family_case_es_procedure_interpreter_02
   id "es_procedure_interpreter_02"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Reescribe los pasos de instalación de este README como un objetivo de Makefile."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_03
@@ -115,7 +115,7 @@ handler_family_case_es_procedure_interpreter_03
   id "es_procedure_interpreter_03"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Toma la parte de primeros pasos de este README y dame una función de fish."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_04
@@ -123,7 +123,7 @@ handler_family_case_es_procedure_interpreter_04
   id "es_procedure_interpreter_04"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Quiero las instrucciones de instalación de este README en forma de una etapa de Dockerfile."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_05
@@ -131,7 +131,7 @@ handler_family_case_es_procedure_interpreter_05
   id "es_procedure_interpreter_05"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Convierte la sección de instalación de este README en una función de fish."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_06
@@ -139,7 +139,7 @@ handler_family_case_es_procedure_interpreter_06
   id "es_procedure_interpreter_06"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Reescribe los pasos de instalación de este README como una etapa de Dockerfile."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_07
@@ -147,7 +147,7 @@ handler_family_case_es_procedure_interpreter_07
   id "es_procedure_interpreter_07"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Toma la parte de primeros pasos de este README y dame una lista de tareas de Ansible."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_08
@@ -155,7 +155,7 @@ handler_family_case_es_procedure_interpreter_08
   id "es_procedure_interpreter_08"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Quiero las instrucciones de instalación de este README en forma de un script de PowerShell."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_09
@@ -163,7 +163,7 @@ handler_family_case_es_procedure_interpreter_09
   id "es_procedure_interpreter_09"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Convierte la sección de instalación de este README en una lista de tareas de Ansible."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_10
@@ -171,7 +171,7 @@ handler_family_case_es_procedure_interpreter_10
   id "es_procedure_interpreter_10"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Reescribe los pasos de instalación de este README como una función de fish."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_11
@@ -179,7 +179,7 @@ handler_family_case_es_procedure_interpreter_11
   id "es_procedure_interpreter_11"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Toma la parte de primeros pasos de este README y dame un script de PowerShell."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_procedure_interpreter_12
@@ -187,7 +187,7 @@ handler_family_case_es_procedure_interpreter_12
   id "es_procedure_interpreter_12"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Quiero las instrucciones de instalación de este README en forma de una lista de tareas de Ansible."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_01
@@ -195,7 +195,7 @@ handler_family_case_es_structural_operator_01
   id "es_structural_operator_01"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Pon estos números al revés y muestra el código en Go: 4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_02
@@ -203,7 +203,7 @@ handler_family_case_es_structural_operator_02
   id "es_structural_operator_02"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Ordénalos de menor a mayor y dame el código en Kotlin: 12 5 5 30 8"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_03
@@ -211,7 +211,7 @@ handler_family_case_es_structural_operator_03
   id "es_structural_operator_03"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Sepáralos entre pares e impares y muestra el código en Swift: 7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_04
@@ -219,7 +219,7 @@ handler_family_case_es_structural_operator_04
   id "es_structural_operator_04"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Deja solo los que se repiten y muestra el código en Elixir: 31 4 18 4 6"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_05
@@ -227,7 +227,7 @@ handler_family_case_es_structural_operator_05
   id "es_structural_operator_05"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Pon estos números al revés y muestra el código en Swift: 7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_06
@@ -235,7 +235,7 @@ handler_family_case_es_structural_operator_06
   id "es_structural_operator_06"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Ordénalos de menor a mayor y dame el código en Elixir: 31 4 18 4 6"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_07
@@ -243,7 +243,7 @@ handler_family_case_es_structural_operator_07
   id "es_structural_operator_07"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Sepáralos entre pares e impares y muestra el código en Ruby: 2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_08
@@ -251,7 +251,7 @@ handler_family_case_es_structural_operator_08
   id "es_structural_operator_08"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Deja solo los que se repiten y muestra el código en Go: 4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_09
@@ -259,7 +259,7 @@ handler_family_case_es_structural_operator_09
   id "es_structural_operator_09"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Pon estos números al revés y muestra el código en Ruby: 2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_10
@@ -267,7 +267,7 @@ handler_family_case_es_structural_operator_10
   id "es_structural_operator_10"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Ordénalos de menor a mayor y dame el código en Swift: 7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_11
@@ -275,7 +275,7 @@ handler_family_case_es_structural_operator_11
   id "es_structural_operator_11"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Sepáralos entre pares e impares y muestra el código en Go: 4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_structural_operator_12
@@ -283,7 +283,7 @@ handler_family_case_es_structural_operator_12
   id "es_structural_operator_12"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Deja solo los que se repiten y muestra el código en Ruby: 2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_01
@@ -291,7 +291,7 @@ handler_family_case_es_dialogue_state_query_01
   id "es_dialogue_state_query_01"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "De lo que te pregunté antes, ¿para qué no hubo fuente?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_02
@@ -299,7 +299,7 @@ handler_family_case_es_dialogue_state_query_02
   id "es_dialogue_state_query_02"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "¿Qué fue lo primero que te pregunté en esta conversación?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_03
@@ -307,7 +307,7 @@ handler_family_case_es_dialogue_state_query_03
   id "es_dialogue_state_query_03"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Recuérdame cuál de mis preguntas anteriores dejaste sin responder."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_04
@@ -315,7 +315,7 @@ handler_family_case_es_dialogue_state_query_04
   id "es_dialogue_state_query_04"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "De todo lo anterior, ¿en qué respuesta dijiste que no estabas seguro?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_05
@@ -323,7 +323,7 @@ handler_family_case_es_dialogue_state_query_05
   id "es_dialogue_state_query_05"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "¿Cuántos temas distintos llevamos hasta ahora?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_06
@@ -331,7 +331,7 @@ handler_family_case_es_dialogue_state_query_06
   id "es_dialogue_state_query_06"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "¿En qué idioma te escribí la primera vez?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_07
@@ -339,7 +339,7 @@ handler_family_case_es_dialogue_state_query_07
   id "es_dialogue_state_query_07"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Vuelve a lo que mencioné antes de lo último y dime qué era."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_08
@@ -347,7 +347,7 @@ handler_family_case_es_dialogue_state_query_08
   id "es_dialogue_state_query_08"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "¿Ya te pregunté esto o me estoy repitiendo?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_09
@@ -355,7 +355,7 @@ handler_family_case_es_dialogue_state_query_09
   id "es_dialogue_state_query_09"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "¿Cuál fue el último nombre de archivo que te di?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_10
@@ -363,7 +363,7 @@ handler_family_case_es_dialogue_state_query_10
   id "es_dialogue_state_query_10"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Enumérame mis preguntas en el orden en que las hice."
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_11
@@ -371,7 +371,7 @@ handler_family_case_es_dialogue_state_query_11
   id "es_dialogue_state_query_11"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "¿Con cuál de tus respuestas anteriores no estuve de acuerdo?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_dialogue_state_query_12
@@ -379,7 +379,7 @@ handler_family_case_es_dialogue_state_query_12
   id "es_dialogue_state_query_12"
   source "self_authored_multilingual_variation"
   language "es"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "¿Sobre qué estaba preguntando justo antes de cambiar de tema?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_es_rule_interpreter_01

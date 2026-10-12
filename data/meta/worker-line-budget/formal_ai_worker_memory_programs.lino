@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_memory_programs.js"
+  ceiling 674
+  rationale "Issue #708 browser mirror of `rust/src/memory_program.rs` and `rust/src/memory_program/execution.rs`. Natural-language surfaces, primitive permissions, and ordered programs come exclusively from memory-programs.lino."

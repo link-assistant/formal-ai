@@ -1,0 +1,78 @@
+{
+  "archive": "T3900-T3927.json.gz",
+  "compressedSha256": "05c7faffde27e382e889e2b8bd375f9a1f62e5ffdf65d21e8f7c49f695ebdbe0",
+  "decodedSha256": "43aeeaa95356d98e1dcfff3d797543d96482429cbd38d000f7b37aa55a815150",
+  "entries": 140,
+  "head": "ed1a13ab51c9464e5d2b002810143cce0811bd64",
+  "source": [
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability/tool_workspace.rs",
+      "sha256": "7dd92128fa067c9d5d35edfac4c4de4c89955bc5551eb90fd95811feb7c10511",
+      "bytes": 7257
+    },
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability.rs",
+      "sha256": "fc9e31937a63f75f094f6a73a64394e8d79647122bce97604249fd449db25b7c",
+      "bytes": 39418
+    },
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability/written_files.rs",
+      "sha256": "c56e3af5aabdbd9e06fd4835527f93720486f56a3c01a5a502c536b653b854ff",
+      "bytes": 36009
+    },
+    {
+      "path": "rust/tests/unit/protocol/issue_1138_agent_cli_ladder_recall.rs",
+      "sha256": "0be69630d9053162241d862a2b76e89c5bc6a9475cbd74e88bbbec1b569e5327",
+      "bytes": 23237
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/workflow_release_desktop.rs",
+      "sha256": "fd0ac8b26681f44833667d5217567547605eb6b8fcf719045eefccaf54b1ed23",
+      "bytes": 11478
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/desktop_release_resolve.rs",
+      "sha256": "e78948a81759da2ef8fe155ae9b505901246d5d787147120f85b749a7de4f3f1",
+      "bytes": 25431
+    },
+    {
+      "path": "rust/tests/web/ladder-document-delivery.test.mjs",
+      "sha256": "a283792c05f7c6987f4af79e5c477f7e24f65ecd5b6b16c376e65abaf8ec214e",
+      "bytes": 11335
+    },
+    {
+      "path": "rust/tests/web/native-ladder-fixture-receipts.test.mjs",
+      "sha256": "fba2f42adee0008f2024cbd58563f810e551e060863e8b0479b5d10b78be2488",
+      "bytes": 4340
+    },
+    {
+      "path": "changelog.d/20261010_013000_observed_ladder_fixture_tools.md",
+      "sha256": "0259768629da7e19cfc0a836a253da6b8f982a11ced20fdca0e5e577bd46361a",
+      "bytes": 751
+    }
+  ],
+  "counts": {
+    "tasks": 28,
+    "physicalCalls": 56,
+    "writeCalls": 15,
+    "bashCalls": 41,
+    "readCalls": 0
+  },
+  "claims": {
+    "autonomousSynthesis": false,
+    "nativeCompilation": false,
+    "nativeExecution": false,
+    "actualShellExecution": true,
+    "publication": false,
+    "specificationCountIncrease": false,
+    "actualCostMeasured": false,
+    "promptBytesOnlyProxy": true
+  },
+  "verification": {
+    "closestPassing": 37,
+    "skipped": 0,
+    "durationMs": 8504.217125,
+    "targetedRustfmt": true,
+    "ownedSizeViolations": 0
+  }
+}

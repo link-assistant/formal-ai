@@ -4,7 +4,10 @@ use super::*;
 fn empty_candidate_list_yields_empty_ranking_with_zero_margin() {
     let store = ProbabilityStore::new();
     let ranking = rank_probability_candidates(&[], &store, ProbabilityRankingConfig::default());
-    assert!(ranking.ranked.is_empty());
+    assert_eq!(
+        ranking.ranked,
+        [] as [formal_ai::RankedProbabilityCandidate; 0]
+    );
     assert!((ranking.margin - 0.0).abs() < 1e-6);
     assert!(ranking.probability_for("anything").is_none());
     assert_eq!(ranking.trace_summary(), "");

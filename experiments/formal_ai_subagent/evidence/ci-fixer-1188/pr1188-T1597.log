@@ -1,0 +1,1013 @@
+>> read {"filePath":"rust/src/agentic_coding/positional_edit.rs","file_path":"rust/src/agentic_coding/positional_edit.rs","path":"rust/src/agentic_coding/positional_edit.rs"}
+   <file>
+   00001| //! Additive edits and the words that place them (issues #1115, #1116, #1133).
+   00002| //!
+   00003| //! "Add a line X directly after the line Y in F" names no old→new pair, so the
+   00004| //! replacement composer in `general_planner` answered it with nothing and the
+   00005| //! request went to web search. The anchor line is the text an edit tool can
+   00006| //! match exactly, and the replacement is the anchor with the new line beside
+   00007| //! it -- so an insertion is an edit after all, and no insert primitive is
+   00008| //! needed. Which side of the position cue the anchor sits on is a fact of the
+   00009| //! cue's language (`languages.lino`, `adposition`), not of the sentence.
+   00010| 
+   00011| use super::code_artifact::source_from_read_result;
+   00012| use super::code_task::{render_seeded_change, render_seeded_outcome};
+   00013| use super::intent_router::edit_arguments;
+   00014| use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
+   00015| use super::workspace_change::{
+   00016|     read_arguments, result_for_command, result_for_edit, result_for_path,
+   00017| };
+   00018| use super::write_request::{
+   00019|     bare_surfaces, clean_content, clean_cue_token, clean_path_token, looks_like_file_path,
+   00020|     safe_relative_path, tokens,
+   00021| };
+   00022| use crate::normal_markov::quoted_segment_spans;
+   00023| use crate::protocol::ChatMessage;
+   00024| use crate::seed;
+   00025| use serde_json::json;
+   00026| 
+   00027| mod insert_lines;
+   00028| mod unquoted_anchor;
+   00029| 
+   00030| use insert_lines::{blank_beside, repeated_anchor_count, unique_from};
+   00031| 
+   00032| const COUNT_SLOT: &str = concat!("{", "count", "}");
+   00033| 
+   00034| /// The bytes a quoted or clause-led span of edit prose stands for.
+   00035| pub(super) fn literal_text(span: &str) -> Option<String> {
+   00036|     quoted_verbatim(span)
+   00037|         .or_else(|| insert_lines::listed_lines(span))
+   00038|         .or_else(|| described_literal(span))
+   00039|         .or_else(|| clean_content(span))
+   00040|         .map(|text| unescape_prose_newlines(&text))
+   00041| }
+   00042| 
+   00043| /// `the heading '# Title'`: one quoted literal led only by the words that say
+   00044| /// what it is stands for the literal.
+   00045| fn described_literal(span: &str) -> Option<String> {
+   00046|     let [segment]: [_; 1] = quoted_segment_spans(span).try_into().ok()?;
+   00047|     let described = span[segment.end..].trim().is_empty()
+   00048|         && span[..segment.start]
+   00049|             .chars()
+   00050|             .all(|character| character.is_alphabetic() || character.is_whitespace());
+   00051|     described.then_some(segment.text)
+   00052| }
+   00053| 
+   00054| /// An additive edit as `(target, anchor, replacement)`.
+   00055| ///
+   00056| /// "add a line X directly after the line Y in F", "insert X before Y in F"
+   00057| /// (issue #1115). The anchor line is the text replaced, and the replacement is
+   00058| /// the anchor with the new line beside it, so the edit tool's exact-match
+   00059| /// contract holds without a separate insert primitive. Only one insert in one
+   00060| /// clause, at an anchor named by itself, composes this way.
+   00061| pub(super) fn compose_positional_insert(request: &str) -> Option<(String, String, String)> {
+   00062|     let inserts = positional_inserts(request)?;
+   00063|     let [insert]: [PositionalInsert; 1] = inserts.try_into().ok()?;
+   00064|     if insert.context.is_some() {
+   00065|         return None;
+   00066|     }
+   00067|     let new = if insert.after {
+   00068|         [insert.anchor.as_str(), insert.inserted.as_str()].join("\n")
+   00069|     } else {
+   00070|         [insert.inserted.as_str(), insert.anchor.as_str()].join("\n")
+   00071|     };
+   00072|     Some((insert.target, insert.anchor, new))
+   00073| }
+   00074| 
+   00075| /// One insert a request asks for.
+   00076| ///
+   00077| /// The lines `inserted` go beside the line holding `anchor` (after it or
+   00078| /// before it), in `target`. With a `context`, the anchor is its first
+   00079| /// occurrence after the context (`the line 'y' that follows 'z'`).
+   00080| #[derive(Debug, Clone, PartialEq, Eq)]
+   00081| pub(super) struct PositionalInsert {
+   00082|     pub(super) target: String,
+   00083|     pub(super) anchor: String,
+   00084|     pub(super) inserted: String,
+   00085|     pub(super) after: bool,
+   00086|     pub(super) context: Option<String>,
+   00087|     /// Lines given under the request, neither fenced nor quoted: the
+   00088|     /// indentation they shared, kept when the file indents lines so, else
+   00089|     /// rebased on the anchor line's indentation once the file is read (PR
+   00090|     /// #1188 G16, G93). `None` for lines kept as written.
+   00091|     pub(super) rebase: Option<String>,
+   00092|     /// The anchor and context are unquoted word spans, resolved against the
+   00093|     /// file's lines once it is read (PR #1188 G51).
+   00094|     pub(super) spans: bool,
+   00095| }
+   00096| 
+   00097| /// Every insert the request asks for, in its order.
+   00098| ///
+   00099| /// `None` unless every clause is one. Clauses are the request cut before a
+   00100| /// repeated add action that a seeded joiner or a clause mark leads (`…, and
+   00101| /// insert …`); a clause that names no file takes the one file the request
+   00102| /// names.
+   00103| pub(super) fn positional_inserts(request: &str) -> Option<Vec<PositionalInsert>> {
+   00104|     // `… after the line 'x':` followed by lines: the first line is the request
+   00105|     // and the lines under it are the text inserted, whatever they quote.
+   00106|     let block = introduced_block(request);
+   00107|     let clauses = block
+   00108|         .as_ref()
+   00109|         .map_or_else(|| insert_clauses(request), |block| vec![block.head]);
+   00110|     let block_text = block.as_ref().map(|block| block.text.as_str());
+   00111|     let rebase = block
+   00112|         .as_ref()
+   00113|         .filter(|block| !block.verbatim)
+   00114|         .map(|block| block.indentation.to_owned());
+   00115|     let mut inserts = Vec::new();
+   00116|     for clause in clauses {
+   00117|         let (target, insert) = clause_insert(clause, block_text)?;
+   00118|         let rebase = rebase.clone();
+   00119|         inserts.push((target, PositionalInsert { rebase, ..insert }));
+   00120|     }
+   00121|     let mut named: Vec<&str> = Vec::new();
+   00122|     for candidate in named_paths(request) {
+   00123|         if !named.contains(&candidate) {
+   00124|             named.push(candidate);
+   00125|         }
+   00126|     }
+   00127|     inserts
+   00128|         .into_iter()
+   00129|         .map(|(target, insert)| match (target, named.as_slice()) {
+   00130|             (Some(target), _) => Some(PositionalInsert { target, ..insert }),
+   00131|             (None, [only]) => Some(PositionalInsert {
+   00132|                 target: (*only).to_owned(),
+   00133|                 ..insert
+   00134|             }),
+   00135|             (None, _) => None,
+   00136|         })
+   00137|         .collect()
+   00138| }
+   00139| 
+   00140| /// One clause's insert, with its target apart.
+   00141| ///
+   00142| /// The target is `None` when the clause names no file. The anchor is the
+   00143| /// literal the position cue governs; a seeded anchor context (`the line 'y'
+   00144| /// that follows 'z'`) names a literal the anchor comes after; every other
+   00145| /// literal is a line inserted, in order, and those lines may be separated only
+   00146| /// by seeded joiners and commas.
+   00147| fn clause_insert(
+   00148|     sentence: &str,
+   00149|     block_text: Option<&str>,
+   00150| ) -> Option<(Option<String>, PositionalInsert)> {
+   00151|     let lexicon = seed::lexicon();
+   00152|     let normalized = crate::engine::normalize_prompt(sentence);
+   00153|     // The position is the request's, not the payload's: a cue inside a quoted
+   00154|     // literal ("Insert the line «… before …» after …") is text being inserted.
+   00155|     let outside = crate::engine::normalize_prompt(
+   00156|         &quoted_segment_spans(sentence)
+   00157|             .iter()
+   00158|             .rev()
+   00159|             .fold(sentence.to_owned(), |text, segment| {
+   00160|                 [&text[..segment.start], " ", &text[segment.end..]].concat()
+   00161|             }),
+   00162|     );
+   00163|     let after = lexicon.mentions_role(seed::ROLE_FILE_EDIT_POSITION_AFTER, &outside);
+   00164|     let before = lexicon.mentions_role(seed::ROLE_FILE_EDIT_POSITION_BEFORE, &outside);
+   00165|     if after == before || !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, &normalized) {
+   00166|         return None;
+   00167|     }
+   00168|     let target = named_paths(sentence).first().map(|path| (*path).to_owned());
+   00169|     let literals: Vec<QuotedLiteral> = quoted_literals(sentence)
+   00170|         .into_iter()
+   00171|         .filter(|literal| target.as_deref() != Some(literal.text.as_str()))
+   00172|         .collect();
+   00173|     let contexts = cue_occurrences(sentence, ANCHOR_CONTEXT_CUE);
+   00174|     let role = if after {
+   00175|         seed::ROLE_FILE_EDIT_POSITION_AFTER
+   00176|     } else {
+   00177|         seed::ROLE_FILE_EDIT_POSITION_BEFORE
+   00178|     };
+   00179|     // A position word inside the context cue ("के बाद आने वाली") is the
+   00180|     // context's, not the anchor's.
+   00181|     let positions: Vec<CueOccurrence> = cue_occurrences(sentence, role)
+   00182|         .into_iter()
+   00183|         .filter(|&(start, _, _)| {
+   00184|             !contexts
+   00185|                 .iter()
+   00186|                 .any(|&(from, to, _)| start >= from && start < to)
+   00187|         })
+   00188|         .collect();
+   00189|     // One literal is the anchor: `the following lines` speaks of the block
+   00190|     // (PR #1188 G16). Without a block, the seeded blank line is the line
+   00191|     // inserted beside it (G31). With a block and a seeded anchor context, a
+   00192|     // second literal is the line the anchor follows (G51).
+   00193|     let blank =
+   00194|         block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);
+   00195|     if let Some(text) = block_text
+   00196|         && literals.is_empty()
+   00197|     {
+   00198|         return unquoted_anchor::unquoted_anchor_insert(
+   00199|             sentence, &positions, &contexts, target, text, after,
+   00200|         );
+   00201|     }
+   00202|     if let Some(text) = block_text.or_else(|| blank.then_some("")) {
+   00203|         let (anchor_at, context_at) = match (literals.len(), contexts.is_empty()) {
+   00204|             // A context cue then names no second line: `the following lines`
+   00205|             // speaks of the block (G16).
+   00206|             (1, _) => (0, None),
+   00207|             (2, false) if block_text.is_some() => {
+   00208|                 let anchor_at = governed_literal(&positions, &literals, &[0, 1])?;
+   00209|                 let context_at = governed_literal(&contexts, &literals, &[1 - anchor_at])?;
+   00210|                 (anchor_at, Some(context_at))
+   00211|             }
+   00212|             _ => return None,
+   00213|         };
+   00214|         let insert = PositionalInsert {
+   00215|             target: String::new(),
+   00216|             anchor: unescape_prose_newlines(&literals[anchor_at].text),
+   00217|             inserted: text.to_owned(),
+   00218|             after,
+   00219|             context: context_at.map(|index| unescape_prose_newlines(&literals[index].text)),
+   00220|             rebase: None,
+   00221|             spans: false,
+   00222|         };
+   00223|         return Some((target, insert));
+   00224|     }
+   00225|     if literals.len() < 2 {
+   00226|         return None;
+   00227|     }
+   00228|     let indices: Vec<usize> = (0..literals.len()).collect();
+   00229|     let anchor_at = governed_literal(&positions, &literals, &indices)?;
+   00230|     let context_at = if contexts.is_empty() {
+   00231|         None
+   00232|     } else {
+   00233|         let rest: Vec<usize> = indices
+   00234|             .into_iter()
+   00235|             .filter(|index| *index != anchor_at)
+   00236|             .collect();
+   00237|         Some(governed_literal(&contexts, &literals, &rest)?)
+   00238|     };
+   00239|     let inserted: Vec<&QuotedLiteral> = literals
+   00240|         .iter()
+   00241|         .enumerate()
+   00242|         .filter(|(index, _)| *index != anchor_at && Some(*index) != context_at)
+   00243|         .map(|(_, literal)| literal)
+   00244|         .collect();
+   00245|     if inserted.is_empty() || !joined_only(sentence, &inserted) {
+   00246|         return None;
+   00247|     }
+   00248|     // Lines given as separate literals are already lines: an escape inside
+   00249|     // one is content (PR #1188 G53).
+   00250|     let lines = inserted
+   00251|         .iter()
+   00252|         .map(|literal| {
+   00253|             if inserted.len() > 1 {
+   00254|                 literal.text.clone()
+   00255|             } else {
+   00256|                 unescape_prose_newlines(&literal.text)
+   00257|             }
+   00258|         })
+   00259|         .collect::<Vec<_>>()
+   00260|         .join("\n");
+   00261|     // `'x' followed by an empty line`: the seeded blank line goes on the side
+   00262|     // of the lines its words stand on, never dropped (PR #1188 G74).
+   00263|     let first_blank = cue_occurrences(sentence, BLANK_LINE)
+   00264|         .into_iter()
+   00265|         .map(|(start, _, _)| start)
+   00266|         .min();
+   00267|     let inserted = match first_blank {
+   00268|         None => lines,
+   00269|         Some(blank) if blank < inserted[0].start => ["\n", lines.as_str()].concat(),
+   00270|         Some(_) => [lines.as_str(), "\n"].concat(),
+   00271|     };
+   00272|     let insert = PositionalInsert {
+   00273|         target: String::new(),
+   00274|         anchor: unescape_prose_newlines(&literals[anchor_at].text),
+   00275|         inserted,
+   00276|         after,
+   00277|         context: context_at.map(|index| unescape_prose_newlines(&literals[index].text)),
+   00278|         rebase: None,
+   00279|         spans: false,
+   00280|     };
+   00281|     Some((target, insert))
+   00282| }
+   00283| 
+   00284| /// The seeded role of the words that name an empty line.
+   00285| const BLANK_LINE: &str = "file_edit_blank_line";
+   00286| 
+   00287| /// The workspace paths `sentence` names, in order.
+   00288| ///
+   00289| /// Those it leaves unquoted, or, when it leaves none, the quoted literals that
+   00290| /// are exactly one path. In `Insert the line 'foo' after the line
+   00291| /// 'js/ocr.bundle.js' in paths.txt.` the quoted path is the anchor and
+   00292| /// `paths.txt` the file (PR #1188 G21).
+   00293| fn named_paths(sentence: &str) -> Vec<&str> {
+   00294|     let segments = quoted_segment_spans(sentence);
+   00295|     let paths: Vec<(bool, &str)> = unquoted_path_tokens(sentence)
+   00296|         .iter()
+   00297|         .map(|token| {
+   00298|             let quoted = segments
+   00299|                 .iter()
+   00300|                 .any(|segment| token.start < segment.end && token.end > segment.start);
+   00301|             (quoted, clean_path_token(token.text))
+   00302|         })
+   00303|         .filter(|(_, path)| looks_like_file_path(path) && safe_relative_path(path))
+   00304|         .collect();
+   00305|     let bare = paths.iter().any(|(quoted, _)| !quoted);
+   00306|     paths
+   00307|         .into_iter()
+   00308|         .filter(|(quoted, _)| !bare || !quoted)
+   00309|         .map(|(_, path)| path)
+   00310|         .collect()
+   00311| }
+   00312| 
+   00313| /// `text` with `indentation` before each of its non-empty lines.
+   00314| ///
+   00315| /// Lines given with their shared indentation removed, set as siblings of a
+   00316| /// line indented by `indentation` (PR #1188 G16).
+   00317| pub(super) fn rebased_block(text: &str, indentation: &str) -> String {
+   00318|     text.split('\n')
+   00319|         .map(|line| {
+   00320|             if line.is_empty() {
+   00321|                 String::new()
+   00322|             } else {
+   00323|                 [indentation, line].concat()
+   00324|             }
+   00325|         })
+   00326|         .collect::<Vec<_>>()
+   00327|         .join("\n")
+   00328| }
+   00329| 
+   00330| /// The whitespace a line starts with.
+   00331| pub(super) fn leading_indentation(line: &str) -> &str {
+   00332|     &line[..line.len() - line.trim_start().len()]
+   00333| }
+   00334| 
+   00335| /// Whether `source` has a non-blank line indented by exactly `indentation`.
+   00336| ///
+   00337| /// Never for the empty indentation: lines given flush left say nothing about
+   00338| /// where they belong (PR #1188 G16, G93).
+   00339| pub(super) fn indents_lines_at(source: &str, indentation: &str) -> bool {
+   00340|     !indentation.is_empty()
+   00341|         && source
+   00342|             .split('\n')
+   00343|             .any(|line| !line.trim().is_empty() && leading_indentation(line) == indentation)
+   00344| }
+   00345| 
+   00346| /// The seeded role of the words that name the line an anchor follows.
+   00347| const ANCHOR_CONTEXT_CUE: &str = "file_edit_anchor_context_cue";
+   00348| /// The seeded role of the words that join listed lines or clauses.
+   00349| const JOINER_CUE: &str = "file_edit_joiner_cue";
+   00350| 
+   00351| /// The literal a seeded anchor context names, and the span naming it.
+   00352| ///
+   00353| /// `that follows 'z'`: `(start, end, text)`, the span from the cue through the
+   00354| /// literal (the literal through the cue, in a postpositional language).
+   00355| pub(super) fn anchor_context(sentence: &str) -> Option<(usize, usize, String)> {
+   00356|     let contexts = cue_occurrences(sentence, ANCHOR_CONTEXT_CUE);
+   00357|     if contexts.is_empty() {
+   00358|         return None;
+   00359|     }
+   00360|     let literals = quoted_literals(sentence);
+   00361|     let indices: Vec<usize> = (0..literals.len()).collect();
+   00362|     let literal = &literals[governed_literal(&contexts, &literals, &indices)?];
+   00363|     // The cue that governs the literal: the nearest on its language's side.
+   00364|     let (cue_start, cue_end, postpositional) = contexts
+   00365|         .iter()
+   00366|         .copied()
+   00367|         .filter_map(|cue @ (cue_start, cue_end, postpositional)| {
+   00368|             let distance = if postpositional {
+   00369|                 cue_start.checked_sub(literal.end)
+   00370|             } else {
+   00371|                 literal.start.checked_sub(cue_end)
+   00372|             };
+   00373|             distance.map(|distance| (distance, cue))
+   00374|         })
+   00375|         .min_by_key(|(distance, _)| *distance)?
+   00376|         .1;
+   00377|     let (start, end) = if postpositional {
+   00378|         (literal.start, cue_end)
+   00379|     } else {
+   00380|         (cue_start, literal.end)
+   00381|     };
+   00382|     Some((start, end, unescape_prose_newlines(&literal.text)))
+   00383| }
+   00384| 
+   00385| /// The request cut into insert clauses.
+   00386| ///
+   00387| /// A cut falls before every repeated add action that a seeded joiner or a
+   00388| /// clause mark leads -- after it, in a postpositional language, whose verb
+   00389| /// closes its clause.
+   00390| fn insert_clauses(request: &str) -> Vec<&str> {
+   00391|     let segments = quoted_segment_spans(request);
+   00392|     let toks = tokens(request);
+   00393|     let quoted = |token: &super::write_request::Token<'_>| {
+   00394|         segments
+   00395|             .iter()
+   00396|             .any(|segment| token.start < segment.end && token.end > segment.start)
+   00397|     };
+   00398|     let joiners = bare_surfaces(JOINER_CUE);
+   00399|     let joins = |token: Option<&super::write_request::Token<'_>>| {
+   00400|         token.is_some_and(|token| !quoted(token) && joiners.contains(&clean_cue_token(token.text)))
+   00401|     };
+   00402|     let closes =
+   00403|         |token: &super::write_request::Token<'_>| token.text.ends_with([',', ';', '\u{0964}']);
+   00404|     let mut actions: Vec<(String, bool)> = Vec::new();
+   00405|     for meaning in seed::lexicon().meanings_with_role(seed::ROLE_CODING_MEMBER_ADD_ACTION) {
+   00406|         for lexeme in &meaning.lexemes {
+   00407|             let postpositional = crate::language::uses_postpositions(&lexeme.language);
+   00408|             for word in &lexeme.words {
+   00409|                 actions.push((word.text.to_lowercase(), postpositional));
+   00410|             }
+   00411|         }
+   00412|     }
+   00413|     // Only a repeated action opens a clause: the first one (the last, where the
+   00414|     // verb closes its clause) belongs to the clause before it.
+   00415|     let verbs: Vec<(usize, bool)> = toks
+   00416|         .iter()
+   00417|         .enumerate()
+   00418|         .filter(|(_, token)| !quoted(token))
+   00419|         .filter_map(|(index, token)| {
+   00420|             let cleaned = clean_cue_token(token.text);
+   00421|             actions
+   00422|                 .iter()
+   00423|                 .rev()
+   00424|                 .find(|(surface, _)| *surface == cleaned)
+   00425|                 .map(|&(_, postpositional)| (index, postpositional))
+   00426|         })
+   00427|         .collect();
+   00428|     let mut cuts: Vec<(usize, usize)> = Vec::new();
+   00429|     for (at, &(index, postpositional)) in verbs.iter().enumerate() {
+   00430|         let token = &toks[index];
+   00431|         if !postpositional && at > 0 {
+   00432|             let previous = &toks[index - 1];
+   00433|             if joins(Some(previous)) {
+   00434|                 cuts.push((previous.start, previous.end));
+   00435|             } else if closes(previous) {
+   00436|                 cuts.push((token.start, token.start));
+   00437|             }
+   00438|         } else if postpositional && at + 1 < verbs.len() {
+   00439|             if joins(toks.get(index + 1)) {
+   00440|                 cuts.push((toks[index + 1].start, toks[index + 1].end));
+   00441|             } else if closes(token) {
+   00442|                 cuts.push((token.end, token.end));
+   00443|             }
+   00444|         }
+   00445|     }
+   00446|     let mut clauses = Vec::new();
+   00447|     let mut from = 0;
+   00448|     for (start, end) in cuts {
+   00449|         // Two verbs may claim one joiner; the second claim is already made.
+   00450|         if start < from {
+   00451|             continue;
+   00452|         }
+   00453|         clauses.push(&request[from..start]);
+   00454|         from = end;
+   00455|     }
+   00456|     clauses.push(&request[from..]);
+   00457|     clauses
+   00458|         .into_iter()
+   00459|         .map(str::trim)
+   00460|         .filter(|clause| !clause.is_empty())
+   00461|         .collect()
+   00462| }
+   00463| 
+   00464| /// The request's quoted literals other than `target`, one line each.
+   00465| ///
+   00466| /// Only when there are several and only seeded joiners and commas separate
+   00467| /// them (`Append the lines 'a', 'b' to f`, PR #1188 G54); an escape inside
+   00468| /// one is content (G53).
+   00469| pub(super) fn joined_literal_lines(request: &str, target: &str) -> Option<String> {
+   00470|     let literals = quoted_literals(request);
+   00471|     let lines: Vec<&QuotedLiteral> = literals
+   00472|         .iter()
+   00473|         .filter(|literal| literal.text != target)
+   00474|         .collect();
+   00475|     (lines.len() >= 2 && joined_only(request, &lines)).then(|| {
+   00476|         lines
+   00477|             .iter()
+   00478|             .map(|literal| literal.text.as_str())
+   00479|             .collect::<Vec<_>>()
+   00480|             .join("\n")
+   00481|     })
+   00482| }
+   00483| 
+   00484| /// Whether listed literals are joined only by joiners.
+   00485| ///
+   00486| /// Consecutive inserted literals may be separated by nothing but whitespace,
+   00487| /// commas and seeded joiners (`'a' and 'b'`).
+   00488| fn joined_only(sentence: &str, literals: &[&QuotedLiteral]) -> bool {
+   00489|     let joiners = bare_surfaces(JOINER_CUE);
+   00490|     literals.windows(2).all(|pair| {
+   00491|         sentence[pair[0].end..pair[1].start]
+   00492|             .split_whitespace()
+   00493|             .map(clean_cue_token)
+   00494|             .all(|word| word.is_empty() || joiners.contains(&word))
+   00495|     })
+   00496| }
+   00497| 
+   00498| /// A cue's byte span in a sentence and whether its language is postpositional.
+   00499| type CueOccurrence = (usize, usize, bool);
+   00500| 
+   00501| /// Every surface of `role` in `sentence` outside its quoted literals.
+   00502| ///
+   00503| /// Each comes with the side its own language's adposition governs, because
+   00504| /// the side a cue governs is a fact of *its* language and a mixed prompt
+   00505| /// (`config.yml में … "on:" के बाद`) cannot be trusted to detect as one
+   00506| /// (`languages.lino`, `adposition`).
+   00507| fn cue_occurrences(sentence: &str, role: &str) -> Vec<CueOccurrence> {
+   00508|     let lowered = sentence.to_lowercase();
+   00509|     // A cue word inside a quoted literal is payload ("Insert the line «… before
+   00510|     // …» after …"), never the position the request asks for.
+   00511|     let literals = quoted_literals(sentence);
+   00512|     let inside_literal = |start: usize| {
+   00513|         literals
+   00514|             .iter()
+   00515|             .any(|literal| start >= literal.start && start < literal.end)
+   00516|     };
+   00517|     let mut occurrences = Vec::new();
+   00518|     for meaning in seed::lexicon().meanings_with_role(role) {
+   00519|         for lexeme in &meaning.lexemes {
+   00520|             let postpositional = crate::language::uses_postpositions(&lexeme.language);
+   00521|             for word in &lexeme.words {
+   00522|                 let surface = word.text.to_lowercase();
+   00523|                 if surface.is_empty() {
+   00524|                     continue;
+   00525|                 }
+   00526|                 occurrences.extend(
+   00527|                     lowered
+   00528|                         .match_indices(surface.as_str())
+   00529|                         .filter(|(start, _)| !inside_literal(*start))
+   00530|                         .map(|(start, matched)| (start, start + matched.len(), postpositional)),
+   00531|                 );
+   00532|             }
+   00533|         }
+   00534|     }
+   00535|     occurrences
+   00536| }
+   00537| 
+   00538| /// Which of the `candidates` (literal indices) a cue governs.
+   00539| ///
+   00540| /// The nearest on the side its language's adposition faces -- a preposition
+   00541| /// the literal after it, a postposition the literal before it -- and a later
+   00542| /// one on a tie. A cue that occurs only on the far side of every candidate
+   00543| /// places none ("… renders "x" before it reads the list" is a time, not a
+   00544| /// position: issue #1069); with no cue at all, the last candidate (the
+   00545| /// prepositional default).
+   00546| fn governed_literal(
+   00547|     occurrences: &[CueOccurrence],
+   00548|     literals: &[QuotedLiteral],
+   00549|     candidates: &[usize],
+   00550| ) -> Option<usize> {
+   00551|     let gap = |literal: &QuotedLiteral| {
+   00552|         occurrences
+   00553|             .iter()
+   00554|             // `checked_sub` is the guard as well as the arithmetic: a cue on
+   00555|             // the wrong side of the literal yields `None` rather than a
+   00556|             // subtraction that underflows.
+   00557|             .filter_map(|&(cue_start, cue_end, postpositional)| {
+   00558|                 if postpositional {
+   00559|                     cue_start.checked_sub(literal.end)
+   00560|                 } else {
+   00561|                     literal.start.checked_sub(cue_end)
+   00562|                 }
+   00563|             })
+   00564|             .min()
+   00565|     };
+   00566|     let mut governed: Option<(usize, usize)> = None;
+   00567|     for &index in candidates {
+   00568|         if let Some(distance) = gap(&literals[index])
+   00569|             && governed.is_none_or(|(_, nearest)| distance <= nearest)
+   00570|         {
+   00571|             governed = Some((index, distance));
+   00572|         }
+   00573|     }
+   00574|     governed.map(|(index, _)| index).or_else(|| {
+   00575|         candidates
+   00576|             .last()
+   00577|             .copied()
+   00578|             .filter(|_| occurrences.is_empty())
+   00579|     })
+   00580| }
+   00581| 
+   00582| /// The lines under a request whose first line ends in a colon.
+   00583| pub(super) struct IntroducedBlock<'a> {
+   00584|     /// The first line: the request itself.
+   00585|     pub(super) head: &'a str,
+   00586|     /// The lines, less their shared indentation (or verbatim).
+   00587|     pub(super) text: String,
+   00588|     /// A fenced block or one quoted literal, kept as written.
+   00589|     pub(super) verbatim: bool,
+   00590|     /// The indentation the lines shared.
+   00591|     pub(super) indentation: &'a str,
+   00592| }
+   00593| 
+   00594| /// Where the instruction of `request` ends.
+   00595| ///
+   00596| /// At the end of its first line when that line ends in a colon and lines
+   00597| /// follow it, since those lines are the payload whatever they say (PR #1188
+   00598| /// G94, G95); else at the end of the request (mirrors `instructionEnd`).
+   00599| pub(super) fn instruction_end(request: &str) -> usize {
+   00600|     introduced_block(request).map_or(request.len(), |block| block.head.len())
+   00601| }
+   00602| 
+   00603| /// A request whose first line ends in a colon and is followed by lines: that
+   00604| /// first line, and the lines with their shared indentation removed (one quoted
+   00605| /// literal stands for itself; a fenced block keeps its own).
+   00606| pub(super) fn introduced_block(request: &str) -> Option<IntroducedBlock<'_>> {
+   00607|     let (head, rest) = request.split_once('\n')?;
+   00608|     let head = head.trim_end();
+   00609|     if !head.ends_with(':') {
+   00610|         return None;
+   00611|     }
+   00612|     let mut lines: Vec<&str> = rest.split('\n').map(str::trim_end).collect();
+   00613|     while lines.first().is_some_and(|line| line.is_empty()) {
+   00614|         lines.remove(0);
+   00615|     }
+   00616|     while lines.last().is_some_and(|line| line.is_empty()) {
+   00617|         lines.pop();
+   00618|     }
+   00619|     let indent_of = |line: &str| line.len() - line.trim_start().len();
+   00620|     // A fenced block (```` ``` ```` lines around it) is kept as written, less
+   00621|     // the fence's own indentation: its indentation is the text's.
+   00622|     let fenced = lines.len() >= 2
+   00623|         && lines[0].trim_start().starts_with(FENCE)
+   00624|         && lines[lines.len() - 1].trim() == FENCE;
+   00625|     let (body, shared) = if fenced {
+   00626|         (&lines[1..lines.len() - 1], indent_of(lines[0]))
+   00627|     } else {
+   00628|         let shared = lines
+   00629|             .iter()
+   00630|             .copied()
+   00631|             .filter(|line| !line.is_empty())
+   00632|             .map(indent_of)
+   00633|             .min()?;
+   00634|         (lines.as_slice(), shared)
+   00635|     };
+   00636|     let text = body
+   00637|         .iter()
+   00638|         .copied()
+   00639|         .map(|line| &line[shared.min(indent_of(line))..])
+   00640|         .collect::<Vec<_>>()
+   00641|         .join("\n");
+   00642|     let quoted = if fenced { None } else { quoted_verbatim(&text) };
+   00643|     let verbatim = fenced || quoted.is_some();
+   00644|     let indentation = if fenced {
+   00645|         ""
+   00646|     } else {
+   00647|         lines
+   00648|             .iter()
+   00649|             .find(|line| !line.is_empty())
+   00650|             .map_or("", |line| &line[..shared])
+   00651|     };
+   00652|     Some(IntroducedBlock {
+   00653|         head,
+   00654|         text: quoted.unwrap_or(text),
+   00655|         verbatim,
+   00656|         indentation,
+   00657|     })
+   00658| }
+   00659| 
+   00660| /// The line that opens and closes a fenced block.
+   00661| const FENCE: &str = "```";
+   00662| 
+   00663| /// One quoted span of a request and where it sits.
+   00664| struct QuotedLiteral {
+   00665|     start: usize,
+   00666|     end: usize,
+   00667|     text: String,
+   00668| }
+   00669| 
+   00670| /// The delimited literal slots of `request`, verbatim: a quoted line keeps its
+   00671| /// indentation. Every quote pair [`quoted_segment_spans`] reads counts —
+   00672| /// `'single'` quotes included — so `Insert 'x' after the line 'y'` places the
+   00673| /// line exactly as its double-quoted form does.
+   00674| fn quoted_literals(request: &str) -> Vec<QuotedLiteral> {
+   00675|     quoted_segment_spans(request)
+   00676|         .into_iter()
+   00677|         .map(|segment| QuotedLiteral {
+   00678|             start: segment.start,
+   00679|             end: segment.end,
+   00680|             text: segment.text,
+   00681|         })
+   00682|         .collect()
+   00683| }
+   00684| 
+   00685| /// A span that is one quoted literal, kept byte for byte: the author who
+   00686| /// quoted `"  schedule:"` quoted its indentation on purpose (issue #1116).
+   00687| fn quoted_verbatim(span: &str) -> Option<String> {
+   00688|     let trimmed = span.trim().trim_start_matches([':', '-', '—', '–']).trim();
+   00689|     // One quoted literal of any delimiter (single quotes included) is verbatim.
+   00690|     if let [segment] = quoted_segment_spans(trimmed).as_slice()
+   00691|         && segment.start == 0
+   00692|         && segment.end == trimmed.len()
+   00693|     {
+   00694|         return Some(segment.text.clone());
+   00695|     }
+   00696|     let mut chars = trimmed.chars();
+   00697|     let (first, last) = (chars.next()?, chars.next_back()?);
+   00698|     (first == last && matches!(first, '"' | '`') && trimmed.len() >= 2)
+   00699|         .then(|| trimmed[1..trimmed.len() - 1].to_owned())
+   00700|         .filter(|inner| !inner.contains(first))
+   00701| }
+   00702| 
+   00703| /// The request's tokens outside every quoted literal; a literal that is
+   00704| /// exactly one path still names the file (mirrors `unquotedPathTokens`).
+   00705| pub(super) fn unquoted_path_tokens(request: &str) -> Vec<super::write_request::Token<'_>> {
+   00706|     let segments = quoted_segment_spans(request);
+   00707|     tokens(request)
+   00708|         .into_iter()
+   00709|         .filter(|token| {
+   00710|             !segments.iter().any(|segment| {
+   00711|                 token.start >= segment.start
+   00712|                     && token.end <= segment.end
+   00713|                     && clean_path_token(token.text) != segment.text
+   00714|             })
+   00715|         })
+   00716|         .collect()
+   00717| }
+   00718| 
+   00719| /// The words a request says itself.
+   00720| ///
+   00721| /// The head of an edit request whose lines follow it (the lines are its
+   00722| /// payload); otherwise the whole request.
+   00723| pub(super) fn own_text(request: &str) -> &str {
+   00724|     match introduced_block(request) {
+   00725|         Some(block) if names_local_edit(block.head) => block.head,
+   00726|         _ => request,
+   00727|     }
+   00728| }
+   00729| 
+   00730| /// Whether `task` is an instruction to change a named local file: an edit or
+   00731| /// insert action beside a workspace path. Such a request is never a web
+   00732| /// question, whatever else the router makes of it (issues #1115, #1133).
+   00733| #[must_use]
+   00734| pub(super) fn names_local_edit(task: &str) -> bool {
+   00735|     let lexicon = seed::lexicon();
+   00736|     let normalized = crate::engine::normalize_prompt(task);
+   00737|     let edits = lexicon.mentions_role(seed::ROLE_FILE_EDIT_ACTION_CUE, &normalized)
+   00738|         || lexicon.mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, &normalized);
+   00739|     edits && local_edit_path(task).is_some()
+   00740| }
+   00741| 
+   00742| /// The first workspace path the request names.
+   00743| fn local_edit_path(task: &str) -> Option<String> {
+   00744|     tokens(task).iter().find_map(|token| {
+   00745|         let candidate = clean_path_token(token.text);
+   00746|         (looks_like_file_path(candidate) && safe_relative_path(candidate))
+   00747|             .then(|| candidate.to_owned())
+   00748|     })
+   00749| }
+   00750| 
+   00751| /// The file a request leading with the add verb names when it quotes no text.
+   00752| ///
+   00753| /// "add hello to config.txt" (PR #1188 G69): its words may be the text or
+   00754| /// describe it, so the request earns a question, never a write. In "Create a
+   00755| /// test for add in t.mjs" `add` is a name, not the action.
+   00756| pub(super) fn unquoted_addition_path(task: &str) -> Option<String> {
+   00757|     if !quoted_segment_spans(task).is_empty() {
+   00758|         return None;
+   00759|     }
+   00760|     let normalized = crate::engine::normalize_prompt(task);
+   00761|     let lead = normalized.split(' ').next().unwrap_or_default();
+   00762|     if !seed::lexicon().mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, lead) {
+   00763|         return None;
+   00764|     }
+   00765|     local_edit_path(task)
+   00766| }
+   00767| 
+   00768| /// A newline an author spelled as `\n` inside prose means a newline in the
+   00769| /// file (issue #1116); the edit tool would otherwise write the two characters.
+   00770| pub(super) fn unescape_prose_newlines(text: &str) -> String {
+   00771|     text.replace("\\n", "\n").replace("\\t", "\t")
+   00772| }
+   00773| 
+   00774| /// One insert as `(start, old, new)` over `source`.
+   00775| ///
+   00776| /// `old` is the whole lines from the anchor context (or the anchor) through
+   00777| /// the anchor, `new` those lines with the inserted text beside the anchor's
+   00778| /// line; `None` unless the context (with none, the anchor) occurs once and the
+   00779| /// anchor occurs after it.
+   00780| fn insert_edit(source: &str, given: &PositionalInsert) -> Option<(usize, String, String, String)> {
+   00781|     let resolved = if given.spans {
+   00782|         Some(unquoted_anchor::resolved_spans(source, given)?)
+   00783|     } else {
+   00784|         unquoted_anchor::written_escapes(source, given)
+   00785|     };
+   00786|     let insert = resolved.as_ref().unwrap_or(given);
+   00787|     let anchor = insert.anchor.as_str();
+   00788|     let lead = insert.context.as_deref().unwrap_or(anchor);
+   00789|     let mut leads: Vec<usize> = source.match_indices(lead).map(|(at, _)| at).collect();
+   00790|     // A lead found inside other lines too names the one line it is by itself.
+   00791|     if leads.len() > 1 {
+   00792|         leads = lone_line_occurrences(source, lead);
+   00793|     }
+   00794|     let [lead_at]: [usize; 1] = leads.try_into().ok()?;
+   00795|     if anchor.is_empty() {
+   00796|         return None;
+   00797|     }
+   00798|     // After a context, a line that is exactly the anchor outranks one that only
+   00799|     // contains it (`text set` is not `text setting`).
+   00800|     let at = if insert.context.is_some() {
+   00801|         let from = lead_at + lead.len();
+   00802|         let whole = |index: usize| {
+   00803|             (index == 0 || source.as_bytes()[index - 1] == b'\n')
+   00804|                 && (anchor.ends_with('\n')
+   00805|                     || source
+   00806|                         .as_bytes()
+   00807|                         .get(index + anchor.len())
+   00808|                         .is_none_or(|byte| *byte == b'\n'))
+   00809|         };
+   00810|         let found: Vec<usize> = source[from..]
+   00811|             .match_indices(anchor)
+   00812|             .map(|(index, _)| from + index)
+   00813|             .collect();
+   00814|         found
+   00815|             .iter()
+   00816|             .copied()
+   00817|             .find(|index| whole(*index))
+   00818|             .or_else(|| found.first().copied())?
+   00819|     } else {
+   00820|         lead_at
+   00821|     };
+   00822|     let line_start = |index: usize| source[..index].rfind('\n').map_or(0, |newline| newline + 1);
+   00823|     let start = line_start(lead_at);
+   00824|     let tail = at + anchor.len();
+   00825|     let end = if anchor.ends_with('\n') {
+   00826|         tail - 1
+   00827|     } else {
+   00828|         source[tail..]
+   00829|             .find('\n')
+   00830|             .map_or(source.len(), |newline| tail + newline)
+   00831|     };
+   00832|     let old = &source[start..end];
+   00833|     let anchor_line = line_start(at);
+   00834|     let inserted = inserted_text(source, anchor_line, insert);
+   00835|     let new = if insert.after {
+   00836|         [old, "\n", inserted.as_str()].concat()
+   00837|     } else {
+   00838|         [
+   00839|             &source[start..anchor_line],
+   00840|             inserted.as_str(),
+   00841|             "\n",
+   00842|             &source[anchor_line..end],
+   00843|         ]
+   00844|         .concat()
+   00845|     };
+   00846|     // The edit tool needs its old text once in the file: a line that also ends
+   00847|     // another line (`];`) is widened back over the lines before it (PR #1188 G73).
+   00848|     let from = unique_from(source, start, end)?;
+   00849|     Some((
+   00850|         from,
+   00851|         source[from..end].to_owned(),
+   00852|         [&source[from..start], new.as_str()].concat(),
+   00853|         inserted,
+   00854|     ))
+   00855| }
+   00856| 
+   00857| /// Where `text` occurs in `source` as a whole line but for its indentation.
+   00858| ///
+   00859| /// `the line 'b'` is the line `b`, not the `b` inside `table a`.
+   00860| fn lone_line_occurrences(source: &str, text: &str) -> Vec<usize> {
+   00861|     source
+   00862|         .match_indices(text)
+   00863|         .map(|(index, _)| index)
+   00864|         .filter(|&index| {
+   00865|             let line_start = source[..index].rfind('\n').map_or(0, |newline| newline + 1);
+   00866|             let tail = index + text.len();
+   00867|             let line_end = source[tail..]
+   00868|                 .find('\n')
+   00869|                 .map_or(source.len(), |newline| tail + newline);
+   00870|             source[line_start..index].trim().is_empty()
+   00871|                 && (text.ends_with('\n') || source[tail..line_end].trim().is_empty())
+   00872|         })
+   00873|         .collect()
+   00874| }
+   00875| 
+   00876| /// The lines an insert puts beside the anchor's line.
+   00877| ///
+   00878| /// An unfenced block keeps the indentation it was given when the file already
+   00879| /// indents lines so (G93, as appended lines do); otherwise it is rebased on
+   00880| /// the anchor line's indentation, so it lands as its siblings (PR #1188 G16).
+   00881| fn inserted_text(source: &str, anchor_line: usize, insert: &PositionalInsert) -> String {
+   00882|     let Some(given) = insert.rebase.as_deref() else {
+   00883|         return insert.inserted.clone();
+   00884|     };
+   00885|     if indents_lines_at(source, given) {
+   00886|         return rebased_block(&insert.inserted, given);
+   00887|     }
+   00888|     let line_end = source[anchor_line..]
+   00889|         .find('\n')
+   00890|         .map_or(source.len(), |newline| anchor_line + newline);
+   00891|     rebased_block(
+   00892|         &insert.inserted,
+   00893|         leading_indentation(&source[anchor_line..line_end]),
+   00894|     )
+   00895| }
+   00896| 
+   00897| /// The sentence stating an insert; an empty line is stated in its own words.
+   00898| pub(super) const fn insert_intent(after: bool, inserted: &str) -> &'static str {
+   00899|     if inserted.is_empty() {
+   00900|         BLANK_LINE
+   00901|     } else if after {
+   00902|         "file_edit_position_after"
+   00903|     } else {
+   00904|         "file_edit_position_before"
+   00905|     }
+   00906| }
+   00907| 
+   00908| /// Make a request's inserts one anchored edit at a time.
+   00909| ///
+   00910| /// Each file is read once; each insert is its own anchored edit over the file
+   00911| /// as the earlier inserts left it; then every file's digest is checked and
+   00912| /// every insert stated.
+   00913| pub(super) fn plan_insert_sequence_step(
+   00914|     task: &str,
+   00915|     current_turn: &[ChatMessage],
+   00916|     tool_names: &[&str],
+   00917|     inserts: &[PositionalInsert],
+   00918| ) -> Option<AgenticPlan> {
+   00919|     let edit_tool = tool_for(tool_names, Capability::Edit)?;
+   00920|     let mut expected: Vec<(&str, String)> = Vec::new();
+   00921|     let mut stated = Vec::new();
+   00922|     for insert in inserts {
+   00923|         let target = insert.target.as_str();
+   00924|         if !expected.iter().any(|(path, _)| *path == target) {
+   00925|             let Some(read) = result_for_path(current_turn, Capability::Read, target, None) else {
+   00926|                 let tool = tool_for(tool_names, Capability::Read)?;
+   00927|                 return Some(plan_one(tool, read_arguments(target)));
+   00928|             };
+   00929|             expected.push((target, source_from_read_result(&read)));
+   00930|         }
+   00931|         let index = expected.iter().position(|(path, _)| *path == target)?;
+   00932|         let source = expected[index].1.as_str();
+   00933|         let Some((start, lines, widened, inserted)) = insert_edit(source, insert) else {
+   00934|             // An anchor line found more than once names no one place: the
+   00935|             // answer says so instead of a failed verification (PR #1188 G72).
+   00936|             if let Some(occurrences) = repeated_anchor_count(source, insert) {
+   00937|                 let lead = insert.context.as_deref().unwrap_or(&insert.anchor);
+   00938|                 return render_seeded_change(
+   00939|                     "file_edit_anchor_repeated",
+   00940|                     task,
+   00941|                     target,
+   00942|                     &[
+   00943|                         ("{anchor}", lead.trim_end_matches('\n')),
+   00944|                         (COUNT_SLOT, &occurrences.to_string()),
+   00945|                     ],
+   00946|                 )
+   00947|                 .map(AgenticPlan::Final);
+   00948|             }
+   00949|             return Some(AgenticPlan::Final(render_seeded_outcome(
+   00950|                 "coding_workspace_verification_failed",
+   00951|                 task,
+   00952|                 target,
+   00953|             )?));
+   00954|         };
+   00955|         if result_for_edit(current_turn, target, &lines, &widened).is_none() {
+   00956|             return Some(plan_one(
+   00957|                 edit_tool,
+   00958|                 edit_arguments(target, &lines, &widened),
+   00959|             ));
+   00960|         }
+   00961|         let updated = [
+   00962|             &source[..start],
+   00963|             widened.as_str(),
+   00964|             &source[start + lines.len()..],
+   00965|         ]
+   00966|         .concat();
+   00967|         expected[index].1 = updated;
+   00968|         // An empty line beside the lines is stated in its own words (PR #1188
+   00969|         // G74).
+   00970|         let shown = blank_beside(&inserted);
+   00971|         stated.push(render_seeded_change(
+   00972|             insert_intent(insert.after, shown),
+   00973|             task,
+   00974|             target,
+   00975|             &[("{new}", shown), ("{anchor}", insert.anchor.as_str())],
+   00976|         ));
+   00977|         if shown.len() != inserted.len() {
+   00978|             stated.push(render_seeded_change(BLANK_LINE, task, target, &[]));
+   00979|         }
+   00980|     }
+   00981|     for (target, content) in &expected {
+   00982|         let command = ["sha256sum -- ", *target].concat();
+   00983|         let Some(observed) = result_for_command(current_turn, &command) else {
+   00984|             let tool = tool_for(tool_names, Capability::Run)?;
+   00985|             return Some(plan_one(tool, json!({"command": command}).to_string()));
+   00986|         };
+   00987|         let digest = crate::source_fetch::sha256_hex(content.as_bytes());
+   00988|         if observed.split_whitespace().next() != Some(digest.as_str()) {
+   00989|             return Some(AgenticPlan::Final(render_seeded_outcome(
+   00990|                 "coding_workspace_verification_failed",
+   00991|                 task,
+   00992|                 target,
+   00993|             )?));
+   00994|         }
+   00995|     }
+   00996|     let stated: Vec<String> = stated.into_iter().collect::<Option<_>>()?;
+   00997|     Some(AgenticPlan::Final(stated.join("\n")))
+   00998| }
+   00999| 
+   
+   (End of file - total 999 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/positional_edit.rs","file_path":"rust/src/agentic_coding/positional_edit.rs","new":"block_text.is_none()\n            && literals.len() == 1\n            && contexts.is_empty()\n            && lexicon.mentions_role(BLANK_LINE, &outside);","newString":"block_text.is_none()\n            && literals.len() == 1\n            && contexts.is_empty()\n            && lexicon.mentions_role(BLANK_LINE, &outside);","new_str":"block_text.is_none()\n            && literals.len() == 1\n            && contexts.is_empty()\n            && lexicon.mentions_role(BLANK_LINE, &outside);","new_string":"block_text.is_none()\n            && literals.len() == 1\n            && contexts.is_empty()\n            && lexicon.mentions_role(BLANK_LINE, &outside);","old":"block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);","oldString":"block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);","old_str":"block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);","old_string":"block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);","path":"rust/src/agentic_coding/positional_edit.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/positional_edit.rs"}
+   84fbb6ea53ec821e7d169ce00c1713a1a8dd36e88c464c2e2b678890842f44b3  rust/src/agentic_coding/positional_edit.rs
+   
+== answer ==
+Replaced `block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);` with `block_text.is_none()
+            && literals.len() == 1
+            && contexts.is_empty()
+            && lexicon.mentions_role(BLANK_LINE, &outside);` in `rust/src/agentic_coding/positional_edit.rs` and observed the result.

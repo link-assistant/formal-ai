@@ -1,0 +1,328 @@
+# Response templates for installation-instruction conversion (issue #918).
+#
+# The headings, the conversion algorithm and the step labels rendered for every
+# target surface (README, Bash, PowerShell) from one install-step list. Moved out
+# of data/seed/multilingual-responses-synthesis.lino by category so each response
+# file stays within 1500 lines. Placeholders in braces are filled by the handler.
+
+multilingual_responses
+  response response_installation_conversion_heading_en
+    intent installation_conversion_heading
+    language en
+    text "Converted installation instructions for {project}."
+  response response_installation_conversion_heading_ru
+    intent installation_conversion_heading
+    language ru
+    text "Преобразованные инструкции по установке для {project}."
+  response response_installation_conversion_heading_hi
+    intent installation_conversion_heading
+    language hi
+    text "{project} के लिए रूपांतरित installation निर्देश।"
+  response response_installation_conversion_heading_zh
+    intent installation_conversion_heading
+    language zh
+    text "已转换的 {project} 安装说明。"
+  response response_installation_conversion_heading_es
+    intent installation_conversion_heading
+    language es
+    text "Instrucciones de instalación convertidas para {project}."
+  response response_installation_formalized_meaning_heading_en
+    intent installation_formalized_meaning_heading
+    language en
+    text "Formalized meaning:"
+  response response_installation_formalized_meaning_heading_ru
+    intent installation_formalized_meaning_heading
+    language ru
+    text "Формализованный смысл:"
+  response response_installation_formalized_meaning_heading_hi
+    intent installation_formalized_meaning_heading
+    language hi
+    text "औपचारिक अर्थ:"
+  response response_installation_formalized_meaning_heading_zh
+    intent installation_formalized_meaning_heading
+    language zh
+    text "形式化含义："
+  response response_installation_formalized_meaning_heading_es
+    intent installation_formalized_meaning_heading
+    language es
+    text "Significado formalizado:"
+  response response_installation_conversion_algorithm_en
+    intent installation_conversion_algorithm
+    language en
+    text "Conversion algorithm:\n1. Detect the source surface and requested target surface(s).\n2. Extract command-like install/deploy steps in original order.\n3. Render every target from the same install-step IR.\n4. Preserve commands verbatim so the conversion can round-trip."
+  response response_installation_conversion_algorithm_ru
+    intent installation_conversion_algorithm
+    language ru
+    text "Алгоритм преобразования:\n1. Определить исходную поверхность и запрошенные целевые поверхности.\n2. Извлечь шаги установки/развёртывания, похожие на команды, в исходном порядке.\n3. Отрисовать каждую цель из одного и того же промежуточного представления шагов установки.\n4. Сохранять команды дословно, чтобы преобразование было обратимым."
+  response response_installation_conversion_algorithm_hi
+    intent installation_conversion_algorithm
+    language hi
+    text "रूपांतरण algorithm:\n1. स्रोत surface और अनुरोधित target surface(s) पहचानें।\n2. Command जैसे install/deploy steps को मूल क्रम में निकालें।\n3. हर target को उसी install-step IR से render करें।\n4. Commands को ज्यों का त्यों रखें ताकि रूपांतरण round-trip हो सके।"
+  response response_installation_conversion_algorithm_zh
+    intent installation_conversion_algorithm
+    language zh
+    text "转换算法：\n1. 识别源表面和请求的目标表面。\n2. 按原有顺序提取类似命令的安装/部署步骤。\n3. 从同一个安装步骤中间表示渲染每个目标。\n4. 逐字保留命令，使转换可以往返。"
+  response response_installation_conversion_algorithm_es
+    intent installation_conversion_algorithm
+    language es
+    text "Algoritmo de conversión:\n1. Detectar la superficie de origen y las superficies de destino solicitadas.\n2. Extraer los pasos de instalación o despliegue con forma de comando en su orden original.\n3. Generar cada destino a partir de la misma representación intermedia de pasos de instalación.\n4. Conservar los comandos literalmente para que la conversión pueda hacer el viaje de ida y vuelta."
+  response response_installation_markdown_heading_en
+    intent installation_markdown_heading
+    language en
+    text "README.md installation guide:\n\n## Installation"
+  response response_installation_markdown_heading_ru
+    intent installation_markdown_heading
+    language ru
+    text "Руководство по установке README.md:\n\n## Установка"
+  response response_installation_markdown_heading_hi
+    intent installation_markdown_heading
+    language hi
+    text "README.md installation guide:\n\n## Installation"
+  response response_installation_markdown_heading_zh
+    intent installation_markdown_heading
+    language zh
+    text "README.md 安装指南：\n\n## 安装"
+  response response_installation_markdown_heading_es
+    intent installation_markdown_heading
+    language es
+    text "Guía de instalación de README.md:\n\n## Instalación"
+  response response_installation_shell_heading_en
+    intent installation_shell_heading
+    language en
+    text "Bash script:"
+  response response_installation_shell_heading_ru
+    intent installation_shell_heading
+    language ru
+    text "Скрипт Bash:"
+  response response_installation_shell_heading_hi
+    intent installation_shell_heading
+    language hi
+    text "Bash script:"
+  response response_installation_shell_heading_zh
+    intent installation_shell_heading
+    language zh
+    text "Bash 脚本："
+  response response_installation_shell_heading_es
+    intent installation_shell_heading
+    language es
+    text "Script de Bash:"
+  response response_installation_powershell_heading_en
+    intent installation_powershell_heading
+    language en
+    text "PowerShell script:"
+  response response_installation_powershell_heading_ru
+    intent installation_powershell_heading
+    language ru
+    text "Скрипт PowerShell:"
+  response response_installation_powershell_heading_hi
+    intent installation_powershell_heading
+    language hi
+    text "PowerShell script:"
+  response response_installation_powershell_heading_zh
+    intent installation_powershell_heading
+    language zh
+    text "PowerShell 脚本："
+  response response_installation_powershell_heading_es
+    intent installation_powershell_heading
+    language es
+    text "Script de PowerShell:"
+  response response_installation_default_project_en
+    intent installation_default_project
+    language en
+    text "the project"
+  response response_installation_default_project_ru
+    intent installation_default_project
+    language ru
+    text "проекта"
+  response response_installation_default_project_hi
+    intent installation_default_project
+    language hi
+    text "प्रोजेक्ट"
+  response response_installation_default_project_zh
+    intent installation_default_project
+    language zh
+    text "该项目"
+  response response_installation_default_project_es
+    intent installation_default_project
+    language es
+    text "el proyecto"
+  response response_installation_step_clone_en
+    intent installation_step_clone
+    language en
+    text "Clone the repository"
+  response response_installation_step_clone_ru
+    intent installation_step_clone
+    language ru
+    text "Клонировать репозиторий"
+  response response_installation_step_clone_hi
+    intent installation_step_clone
+    language hi
+    text "Repository clone करें"
+  response response_installation_step_clone_zh
+    intent installation_step_clone
+    language zh
+    text "克隆仓库"
+  response response_installation_step_clone_es
+    intent installation_step_clone
+    language es
+    text "Clonar el repositorio"
+  response response_installation_step_enter_directory_en
+    intent installation_step_enter_directory
+    language en
+    text "Enter the project directory"
+  response response_installation_step_enter_directory_ru
+    intent installation_step_enter_directory
+    language ru
+    text "Перейти в каталог проекта"
+  response response_installation_step_enter_directory_hi
+    intent installation_step_enter_directory
+    language hi
+    text "Project directory में जाएँ"
+  response response_installation_step_enter_directory_zh
+    intent installation_step_enter_directory
+    language zh
+    text "进入项目目录"
+  response response_installation_step_enter_directory_es
+    intent installation_step_enter_directory
+    language es
+    text "Entrar en el directorio del proyecto"
+  response response_installation_step_install_en
+    intent installation_step_install
+    language en
+    text "Install dependencies"
+  response response_installation_step_install_ru
+    intent installation_step_install
+    language ru
+    text "Установить зависимости"
+  response response_installation_step_install_hi
+    intent installation_step_install
+    language hi
+    text "Dependencies install करें"
+  response response_installation_step_install_zh
+    intent installation_step_install
+    language zh
+    text "安装依赖"
+  response response_installation_step_install_es
+    intent installation_step_install
+    language es
+    text "Instalar las dependencias"
+  response response_installation_step_verify_en
+    intent installation_step_verify
+    language en
+    text "Run the verification command"
+  response response_installation_step_verify_ru
+    intent installation_step_verify
+    language ru
+    text "Выполнить команду проверки"
+  response response_installation_step_verify_hi
+    intent installation_step_verify
+    language hi
+    text "Verification command चलाएँ"
+  response response_installation_step_verify_zh
+    intent installation_step_verify
+    language zh
+    text "运行验证命令"
+  response response_installation_step_verify_es
+    intent installation_step_verify
+    language es
+    text "Ejecutar el comando de verificación"
+  response response_installation_step_build_en
+    intent installation_step_build
+    language en
+    text "Build the project"
+  response response_installation_step_build_ru
+    intent installation_step_build
+    language ru
+    text "Собрать проект"
+  response response_installation_step_build_hi
+    intent installation_step_build
+    language hi
+    text "Project build करें"
+  response response_installation_step_build_zh
+    intent installation_step_build
+    language zh
+    text "构建项目"
+  response response_installation_step_build_es
+    intent installation_step_build
+    language es
+    text "Compilar el proyecto"
+  response response_installation_step_start_en
+    intent installation_step_start
+    language en
+    text "Start the application"
+  response response_installation_step_start_ru
+    intent installation_step_start
+    language ru
+    text "Запустить приложение"
+  response response_installation_step_start_hi
+    intent installation_step_start
+    language hi
+    text "Application शुरू करें"
+  response response_installation_step_start_zh
+    intent installation_step_start
+    language zh
+    text "启动应用程序"
+  response response_installation_step_start_es
+    intent installation_step_start
+    language es
+    text "Iniciar la aplicación"
+  response response_installation_step_probe_en
+    intent installation_step_probe
+    language en
+    text "Verify the installation"
+  response response_installation_step_probe_ru
+    intent installation_step_probe
+    language ru
+    text "Проверить установку"
+  response response_installation_step_probe_hi
+    intent installation_step_probe
+    language hi
+    text "Installation की जाँच करें"
+  response response_installation_step_probe_zh
+    intent installation_step_probe
+    language zh
+    text "验证安装"
+  response response_installation_step_probe_es
+    intent installation_step_probe
+    language es
+    text "Verificar la instalación"
+  response response_installation_step_run_program_en
+    intent installation_step_run_program
+    language en
+    text "Run {program}"
+  response response_installation_step_run_program_ru
+    intent installation_step_run_program
+    language ru
+    text "Запустить {program}"
+  response response_installation_step_run_program_hi
+    intent installation_step_run_program
+    language hi
+    text "{program} चलाएँ"
+  response response_installation_step_run_program_zh
+    intent installation_step_run_program
+    language zh
+    text "运行 {program}"
+  response response_installation_step_run_program_es
+    intent installation_step_run_program
+    language es
+    text "Ejecutar {program}"
+  response response_installation_step_run_verb_en
+    intent installation_step_run_verb
+    language en
+    text "Run the {program} {verb} step"
+  response response_installation_step_run_verb_ru
+    intent installation_step_run_verb
+    language ru
+    text "Выполнить шаг {verb} для {program}"
+  response response_installation_step_run_verb_hi
+    intent installation_step_run_verb
+    language hi
+    text "{program} का {verb} चरण चलाएँ"
+  response response_installation_step_run_verb_zh
+    intent installation_step_run_verb
+    language zh
+    text "运行 {program} 的 {verb} 步骤"
+  response response_installation_step_run_verb_es
+    intent installation_step_run_verb
+    language es
+    text "Ejecutar el paso {verb} de {program}"

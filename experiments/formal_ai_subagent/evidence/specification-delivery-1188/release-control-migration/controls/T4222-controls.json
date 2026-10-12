@@ -1,0 +1,9 @@
+{
+  "tests": 18,
+  "passed": 6,
+  "failed": 0,
+  "skipped": 12,
+  "file": "rust/tests/web/prepared-release-factory.test.mjs",
+  "nativeCompilation": false,
+  "realPublication": false
+}

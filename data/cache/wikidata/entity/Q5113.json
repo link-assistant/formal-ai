@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鳥綱"
+        },
+        "es": {
+          "language": "es",
+          "value": "aves"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "一類體溫恆定、前肢演化為翅膀的卵生脊椎動物"
+        },
+        "es": {
+          "language": "es",
+          "value": "subclase de vertebrados"
         }
       },
       "aliases": {
@@ -122,6 +130,12 @@
           {
             "language": "zh",
             "value": "鳥類"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "pájaros"
           }
         ]
       }

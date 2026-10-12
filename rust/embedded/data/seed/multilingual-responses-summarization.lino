@@ -15,6 +15,10 @@ multilingual_responses
     intent summarization_evidence_summary
     language zh
     text "由 {total} 个来源中的 {asserted} 个断言{denied}"
+  response response_summarization_evidence_summary_es
+    intent summarization_evidence_summary
+    language es
+    text "afirmado por {asserted} de {total} fuentes{denied}"
   response response_summarization_evidence_denied_en
     intent summarization_evidence_denied
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent summarization_evidence_denied
     language zh
     text "，被 {denied} 个来源否认"
+  response response_summarization_evidence_denied_es
+    intent summarization_evidence_denied
+    language es
+    text ", negado por {denied}"
   response response_summarization_disputed_statement_en
     intent summarization_disputed_statement
     language en
@@ -47,3 +55,7 @@ multilingual_responses
     intent summarization_disputed_statement
     language zh
     text "{statement}（有争议：{evidence}）"
+  response response_summarization_disputed_statement_es
+    intent summarization_disputed_statement
+    language es
+    text "{statement} (en disputa: {evidence})"

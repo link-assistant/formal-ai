@@ -1,0 +1,76 @@
+{
+  "lemma": "atmosphere",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-14548451-n",
+      "partOfSpeech": "n",
+      "definition": "a particular environment or surrounding influence",
+      "examples": [
+        "there was an atmosphere of excitement"
+      ],
+      "synonyms": [
+        "ambiance",
+        "ambience"
+      ]
+    },
+    {
+      "id": "oewn-13733165-n",
+      "partOfSpeech": "n",
+      "definition": "a unit of pressure: the pressure that will support a column of mercury 760 mm high at sea level and 0 degrees centigrade",
+      "synonyms": [
+        "standard atmosphere",
+        "atm",
+        "standard pressure"
+      ]
+    },
+    {
+      "id": "oewn-08516085-n",
+      "partOfSpeech": "n",
+      "definition": "the mass of air surrounding the Earth",
+      "examples": [
+        "there was great heat as the comet entered the atmosphere",
+        "it was exposed to the air"
+      ],
+      "synonyms": [
+        "air"
+      ]
+    },
+    {
+      "id": "oewn-14543880-n",
+      "partOfSpeech": "n",
+      "definition": "the weather or climate at some place",
+      "examples": [
+        "the atmosphere was thick with fog"
+      ],
+      "synonyms": [
+        "atmospheric state"
+      ]
+    },
+    {
+      "id": "oewn-09233511-n",
+      "partOfSpeech": "n",
+      "definition": "the envelope of gases surrounding any celestial body"
+    },
+    {
+      "id": "oewn-04734472-n",
+      "partOfSpeech": "n",
+      "definition": "a distinctive but intangible quality surrounding a person or thing",
+      "examples": [
+        "an air of mystery",
+        "the house had a neglected air",
+        "an atmosphere of defeat pervaded the candidate's headquarters",
+        "the place had an aura of romance"
+      ],
+      "synonyms": [
+        "air",
+        "aura"
+      ]
+    }
+  ]
+}

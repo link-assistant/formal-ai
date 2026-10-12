@@ -1,0 +1,67 @@
+{
+  "lemma": "analyze",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-00646245-v",
+      "partOfSpeech": "v",
+      "definition": "consider in detail and subject to an analysis in order to discover essential features or meaning",
+      "examples": [
+        "analyze a sonnet by Shakespeare",
+        "analyze the evidence in a criminal trial",
+        "analyze your real motives"
+      ],
+      "synonyms": [
+        "analyse",
+        "study",
+        "examine",
+        "canvass"
+      ]
+    },
+    {
+      "id": "oewn-00645135-v",
+      "partOfSpeech": "v",
+      "definition": "make a mathematical, chemical, or grammatical analysis of; break down into components or essential features",
+      "examples": [
+        "analyze a specimen",
+        "analyze a sentence",
+        "analyze a chemical compound"
+      ],
+      "synonyms": [
+        "analyse",
+        "break down",
+        "dissect",
+        "take apart"
+      ]
+    },
+    {
+      "id": "oewn-00738221-v",
+      "partOfSpeech": "v",
+      "definition": "break down into components or essential features",
+      "examples": [
+        "analyze today's financial market"
+      ],
+      "synonyms": [
+        "analyse"
+      ]
+    },
+    {
+      "id": "oewn-00644859-v",
+      "partOfSpeech": "v",
+      "definition": "subject to psychoanalytic treatment",
+      "examples": [
+        "I was analyzed in Vienna by a famous psychiatrist"
+      ],
+      "synonyms": [
+        "analyse",
+        "psychoanalyze",
+        "psychoanalyse"
+      ]
+    }
+  ]
+}

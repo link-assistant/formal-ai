@@ -1,0 +1,164 @@
+{
+  "lemma": "process",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-01025762-n",
+      "partOfSpeech": "n",
+      "definition": "a particular course of action intended to achieve a result",
+      "examples": [
+        "the procedure of obtaining a driver's license",
+        "it was a process of trial and error"
+      ],
+      "synonyms": [
+        "procedure"
+      ]
+    },
+    {
+      "id": "oewn-05709328-n",
+      "partOfSpeech": "n",
+      "definition": "(psychology) the performance of some composite cognitive activity; an operation that affects mental contents",
+      "examples": [
+        "the process of thinking",
+        "the cognitive operation of remembering"
+      ],
+      "synonyms": [
+        "cognitive process",
+        "mental process",
+        "operation",
+        "cognitive operation"
+      ]
+    },
+    {
+      "id": "oewn-06568683-n",
+      "partOfSpeech": "n",
+      "definition": "a writ issued by authority of law; usually compels the defendant's attendance in a civil suit; failure to appear results in a default judgment against the defendant",
+      "synonyms": [
+        "summons"
+      ]
+    },
+    {
+      "id": "oewn-05709685-n",
+      "partOfSpeech": "n",
+      "definition": "a mental process that you are not directly aware of",
+      "examples": [
+        "the process of denial"
+      ],
+      "synonyms": [
+        "unconscious process"
+      ]
+    },
+    {
+      "id": "oewn-05477841-n",
+      "partOfSpeech": "n",
+      "definition": "a natural prolongation or projection from a part of an organism either animal or plant",
+      "examples": [
+        "a bony process"
+      ],
+      "synonyms": [
+        "outgrowth",
+        "appendage"
+      ]
+    },
+    {
+      "id": "oewn-00029976-n",
+      "partOfSpeech": "n",
+      "definition": "a sustained phenomenon or one marked by gradual changes through a series of states",
+      "examples": [
+        "events now in process",
+        "the process of calcification begins later for boys than for girls"
+      ],
+      "synonyms": [
+        "physical process"
+      ]
+    },
+    {
+      "id": "oewn-00516235-v",
+      "partOfSpeech": "v",
+      "definition": "subject to a process or treatment, with the aim of readying for some purpose, improving, or remedying a condition",
+      "examples": [
+        "process cheese",
+        "process hair",
+        "treat the water so it can be drunk",
+        "treat the lawn with chemicals",
+        "treat an oil spill"
+      ],
+      "synonyms": [
+        "treat"
+      ]
+    },
+    {
+      "id": "oewn-02000767-v",
+      "partOfSpeech": "v",
+      "definition": "march in a procession",
+      "examples": [
+        "They processed into the dining room"
+      ],
+      "synonyms": [
+        "march"
+      ]
+    },
+    {
+      "id": "oewn-02443400-v",
+      "partOfSpeech": "v",
+      "definition": "deal with in a routine way",
+      "examples": [
+        "process a loan",
+        "process the applicants"
+      ]
+    },
+    {
+      "id": "oewn-00640499-v",
+      "partOfSpeech": "v",
+      "definition": "perform mathematical and logical operations on (data) according to programmed instructions in order to obtain the required information",
+      "examples": [
+        "The results of the elections were still being processed when he gave his acceptance speech"
+      ]
+    },
+    {
+      "id": "oewn-02588127-v",
+      "partOfSpeech": "v",
+      "definition": "institute legal proceedings against; file a suit against",
+      "examples": [
+        "He was warned that the district attorney would process him",
+        "She actioned the company for discrimination"
+      ],
+      "synonyms": [
+        "action",
+        "sue",
+        "litigate"
+      ]
+    },
+    {
+      "id": "oewn-01672498-v",
+      "partOfSpeech": "v",
+      "definition": "shape, form, or improve a material",
+      "examples": [
+        "work stone into tools",
+        "process iron",
+        "work the metal"
+      ],
+      "synonyms": [
+        "work",
+        "work on"
+      ]
+    },
+    {
+      "id": "oewn-01441318-v",
+      "partOfSpeech": "v",
+      "definition": "deliver a warrant or summons to someone",
+      "examples": [
+        "He was processed by the sheriff"
+      ],
+      "synonyms": [
+        "serve",
+        "swear out"
+      ]
+    }
+  ]
+}

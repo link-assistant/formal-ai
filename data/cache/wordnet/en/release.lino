@@ -1,0 +1,127 @@
+language en
+lemma release
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "merchandise issued for sale or public showing (especially a record or film)"
+    examples ("a new release from the London Symphony Orchestra")
+    id oewn-04080320-n
+    partOfSpeech n
+  entry
+    definition "the act of liberating someone or something"
+    id oewn-00096322-n
+    partOfSpeech n
+    synonyms (liberation freeing)
+  entry
+    definition "a process that liberates or discharges something"
+    examples ("there was a sudden release of oxygen" "the release of iodine from the thyroid gland")
+    id oewn-13570875-n
+    partOfSpeech n
+  entry
+    definition "an announcement distributed to members of the press in order to supplement or replace an oral presentation"
+    id oewn-06760197-n
+    partOfSpeech n
+    synonyms (handout "press release")
+  entry
+    definition "the termination of someone's employment (leaving them free to depart)"
+    id oewn-00217041-n
+    partOfSpeech n
+    synonyms (dismissal dismission discharge firing liberation sack sacking)
+  entry
+    definition "euphemistic expressions for death"
+    examples ("thousands mourned his passing")
+    id oewn-07348249-n
+    partOfSpeech n
+    synonyms (passing loss departure exit expiration going)
+  entry
+    definition "a legal document evidencing the discharge of a debt or obligation"
+    id oewn-06564805-n
+    partOfSpeech n
+    synonyms (acquittance)
+  entry
+    definition "a device that when pressed will release part of a mechanism"
+    id oewn-04080537-n
+    partOfSpeech n
+    synonyms (button)
+  entry
+    definition "activity that frees or expresses creative energy or emotion"
+    examples ("she had no other outlet for her feelings" "he gave vent to his anger")
+    id oewn-01266940-n
+    partOfSpeech n
+    synonyms (outlet vent)
+  entry
+    definition "the act of allowing a fluid to escape"
+    id oewn-00330445-n
+    partOfSpeech n
+    synonyms (spill spillage)
+  entry
+    definition "a formal written statement of relinquishment"
+    id oewn-00214561-n
+    partOfSpeech n
+    synonyms (waiver discharge)
+  entry
+    definition "(music) the act or manner of terminating a musical phrase or tone"
+    id oewn-00211789-n
+    partOfSpeech n
+    synonyms ("tone ending")
+  entry
+    definition "release, as from one's grip"
+    examples ("Let go of the door handle, please!" "relinquish your grip on the rope — you won't fall")
+    id oewn-01477180-v
+    partOfSpeech v
+    synonyms ("let go of" "let go" relinquish)
+  entry
+    definition "grant freedom to; free from confinement"
+    id oewn-02426474-v
+    partOfSpeech v
+    synonyms (free liberate unloose unloosen loose)
+  entry
+    definition "let (something) fall or spill from a container"
+    examples ("turn the flour onto a plate")
+    id oewn-01439155-v
+    partOfSpeech v
+    synonyms (turn)
+  entry
+    definition "prepare and issue for public distribution or sale"
+    examples ("publish a magazine or newspaper")
+    id oewn-00969657-v
+    partOfSpeech v
+    synonyms (publish "bring out" "put out" issue)
+  entry
+    definition "eliminate (a substance)"
+    examples ("combustion products are exhausted in the engine" "the plant releases a gas")
+    id oewn-00104622-v
+    partOfSpeech v
+    synonyms (exhaust discharge expel eject)
+  entry
+    definition "generate and separate from cells or bodily fluids"
+    examples ("secrete digestive juices" "release a hormone into the blood stream")
+    id oewn-00069066-v
+    partOfSpeech v
+    synonyms (secrete)
+  entry
+    definition "make (information) available for publication"
+    examples ("release the list with the names of the prisoners")
+    id oewn-02499696-v
+    partOfSpeech v
+    synonyms (free)
+  entry
+    definition "part with a possession or right"
+    examples ("I am relinquishing my bedroom to the long-term house guest" "resign a claim to the throne")
+    id oewn-02321284-v
+    partOfSpeech v
+    synonyms (relinquish resign free "give up")
+  entry
+    definition "release (gas or energy) as a result of a chemical reaction or physical decomposition"
+    id oewn-01761838-v
+    partOfSpeech v
+    synonyms (free liberate)
+  entry
+    definition "make (assets) available"
+    examples ("release the holdings in the dictator's bank account")
+    id oewn-00270568-v
+    partOfSpeech v
+    synonyms (unblock unfreeze free)
+source "oewn:2024"

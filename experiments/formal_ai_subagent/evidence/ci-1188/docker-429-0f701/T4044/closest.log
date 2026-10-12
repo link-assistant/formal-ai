@@ -1,0 +1,110 @@
+TAP version 13
+# Subtest: bot checks dispatch inputs are declared and build without publication
+ok 1 - bot checks dispatch inputs are declared and build without publication
+  ---
+  duration_ms: 88.6265
+  ...
+# Subtest: checks dispatch refuses registry publication even on main
+ok 2 - checks dispatch refuses registry publication even on main
+  ---
+  duration_ms: 26.453292
+  ...
+# Subtest: direct publication remains explicit and requires main plus a published stable tag
+ok 3 - direct publication remains explicit and requires main plus a published stable tag
+  ---
+  duration_ms: 683.811
+  ...
+# Subtest: automatic and reusable publication retain their original stable resolver path
+ok 4 - automatic and reusable publication retain their original stable resolver path
+  ---
+  duration_ms: 489.558208
+  ...
+# Subtest: both actual native GNU targets and variants carry independent complete executable identities
+ok 5 - both actual native GNU targets and variants carry independent complete executable identities
+  ---
+  duration_ms: 2.566541
+  ...
+# Subtest: source run profile flags target and observation mismatches cannot pass
+ok 6 - source run profile flags target and observation mismatches cannot pass
+  ---
+  duration_ms: 6.372542
+  ...
+# Subtest: dry validation reports local identities without inventing registry manifests
+ok 7 - dry validation reports local identities without inventing registry manifests
+  ---
+  duration_ms: 0.209583
+  ...
+# Subtest: merge requires all four genuine architecture variant records with no omissions or duplicates
+ok 8 - merge requires all four genuine architecture variant records with no omissions or duplicates
+  ---
+  duration_ms: 0.622083
+  ...
+# Subtest: final immutable index must contain both exact source manifest descriptors once
+ok 9 - final immutable index must contain both exact source manifest descriptors once
+  ---
+  duration_ms: 0.737125
+  ...
+# Subtest: actual command path uses explicit slim entrypoint and full privileged DinD checks
+ok 10 - actual command path uses explicit slim entrypoint and full privileged DinD checks
+  ---
+  duration_ms: 0.46075
+  ...
+# Subtest: actual absent registry identity, wrong image architecture and failed execution refuse receipts
+ok 11 - actual absent registry identity, wrong image architecture and failed execution refuse receipts
+  ---
+  duration_ms: 0.3885
+  ...
+# Subtest: an older stable release can publish its immutable version without replacing moving tags
+ok 12 - an older stable release can publish its immutable version without replacing moving tags
+  ---
+  duration_ms: 0.088791
+  ...
+# Subtest: both exact native platform descriptors are asserted after genuine anonymous byte verification
+ok 13 - both exact native platform descriptors are asserted after genuine anonymous byte verification
+  ---
+  duration_ms: 9.53375
+  ...
+# Subtest: release creation calls trusted container delivery without a completion trigger
+ok 14 - release creation calls trusted container delivery without a completion trigger
+  ---
+  duration_ms: 0.885208
+  ...
+# Subtest: two same-run native targets feed every full and slim architecture without a static exclusion
+ok 15 - two same-run native targets feed every full and slim architecture without a static exclusion
+  ---
+  duration_ms: 0.207875
+  ...
+# Subtest: PR validation has no registry write while publication retains independent source authority
+ok 16 - PR validation has no registry write while publication retains independent source authority
+  ---
+  duration_ms: 0.236
+  ...
+# Subtest: full source compilation has an independent path and every job keeps the required deadline
+ok 17 - full source compilation has an independent path and every job keeps the required deadline
+  ---
+  duration_ms: 0.556584
+  ...
+# Subtest: the release pipeline waits for native publication only after actual successful release creation
+ok 18 - the release pipeline waits for native publication only after actual successful release creation
+  ---
+  duration_ms: 0.327167
+  ...
+# Subtest: 429-only retry preserves original command, finite attempts and existing deadline
+ok 19 - 429-only retry preserves original command, finite attempts and existing deadline
+  ---
+  duration_ms: 2567.548583
+  ...
+# Subtest: a failed build log pipe cannot turn a producer failure into retry or success
+ok 20 - a failed build log pipe cannot turn a producer failure into retry or success
+  ---
+  duration_ms: 457.069292
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3071.236709

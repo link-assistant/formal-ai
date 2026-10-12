@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "Q49008": {
+      "type": "item",
+      "id": "Q49008",
+      "labels": {
+        "en": {
+          "language": "en",
+          "value": "prime number"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "простое число"
+        },
+        "es": {
+          "language": "es",
+          "value": "número primo"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अभाज्य संख्या"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "質數"
+        }
+      },
+      "descriptions": {
+        "en": {
+          "language": "en",
+          "value": "positive integer with exactly two divisors, 1 and itself"
+        },
+        "es": {
+          "language": "es",
+          "value": "número natural mayor que 1 y que solo tiene dos divisores enteros"
+        },
+        "ru": {
+          "language": "ru",
+          "value": "натуральное число, имеющее ровно два различных натуральных делителя — единицу и самого себя"
+        },
+        "zh": {
+          "language": "zh",
+          "value": "只能被1和自身整除且大於1的自然數"
+        },
+        "hi": {
+          "language": "hi",
+          "value": "अभाज्य संख्या जो सिर्फ़ अपने आप में ही भाजित हो"
+        }
+      },
+      "aliases": {
+        "en": [
+          {
+            "language": "en",
+            "value": "prime"
+          },
+          {
+            "language": "en",
+            "value": "1-almost prime"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "numero primo"
+          },
+          {
+            "language": "es",
+            "value": "números primos"
+          },
+          {
+            "language": "es",
+            "value": "numeros primos"
+          },
+          {
+            "language": "es",
+            "value": "primo"
+          },
+          {
+            "language": "es",
+            "value": "primos"
+          }
+        ],
+        "zh": [
+          {
+            "language": "zh",
+            "value": "质数"
+          },
+          {
+            "language": "zh",
+            "value": "素數"
+          },
+          {
+            "language": "zh",
+            "value": "素数"
+          }
+        ],
+        "ru": [
+          {
+            "language": "ru",
+            "value": "первоначальные числа"
+          },
+          {
+            "language": "ru",
+            "value": "простые числа"
+          }
+        ]
+      }
+    }
+  },
+  "success": 1
+}

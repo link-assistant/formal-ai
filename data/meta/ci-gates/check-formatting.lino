@@ -3,7 +3,8 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_formatting
+ci_gate check-formatting
   stage rust
   description "rustfmt owns the layout of every Rust file, so no review spends time on it."
   run "cargo fmt --manifest-path rust/Cargo.toml --all -- --check"
+  justification "Unformatted code passes compilation but diverges from the canonical style and causes cosmetic noise in diffs; `cargo fmt --check` has been in CI since the initial commit (6f8d4a8a0) to enforce consistent code formatting."

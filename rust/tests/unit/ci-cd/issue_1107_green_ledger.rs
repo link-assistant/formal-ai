@@ -26,7 +26,10 @@ const LEDGERED: &[(&str, &[&str])] = &[
     (".github/workflows/macos-core-tests.yml", &["build-archive"]),
     (".github/workflows/agent-cli-e2e.yml", &["agent-cli-e2e"]),
     (".github/workflows/e2e-local.yml", &["e2e-local"]),
-    (".github/workflows/issue-1028-agent-ladder.yml", &["ladder"]),
+    // PR #1188 sharded the ladder: `plan` consults the ledger (lookup only)
+    // and the `compare` verdict records it, so the plan's success never marks
+    // a ladder green that its comparison has not passed.
+    (".github/workflows/issue-1028-agent-ladder.yml", &["plan"]),
     (".github/workflows/agentic-cli-matrix.yml", &["build"]),
 ];
 
@@ -87,7 +90,7 @@ fn steps(job: &[&str]) -> Vec<(String, Option<String>)> {
 fn the_action_saves_only_on_success_and_announces_a_skip() {
     let action = read(ACTION);
     assert!(
-        action.contains("uses: actions/cache@v4"),
+        action.contains("uses: actions/cache@v6"),
         "the marker rides on actions/cache, whose post step has post-if: success()"
     );
     assert!(
@@ -224,4 +227,38 @@ fn consumers_of_a_ledgered_producer_gate_on_its_output() {
             }
         }
     }
+}
+
+/// PR #1188 split the Agent CLI ladder into a plan, parallel legs and a
+/// comparison. The plan is where a skip saves the legs' minutes, but its
+/// success proves nothing about the ladder, so it only looks the marker up;
+/// the comparison -- the job whose success *is* the ladder's -- records it.
+/// A plan that recorded would mark a ladder green that never held its ratchet.
+#[test]
+fn a_sharded_check_is_recorded_green_by_its_verdict_job_only() {
+    let action = read(ACTION);
+    assert!(
+        action.contains("if: inputs.record == 'false'")
+            && action.contains("uses: actions/cache/restore@v6"),
+        "a lookup-only call must restore the marker without a post step that saves one"
+    );
+
+    let workflow = read(".github/workflows/issue-1028-agent-ladder.yml");
+    let plan = job_lines(&workflow, "plan").join("\n");
+    assert!(
+        plan.contains("record: 'false'"),
+        "the plan consults the ledger but must not record it"
+    );
+    let compare = job_lines(&workflow, "compare").join("\n");
+    assert!(
+        compare.contains("uses: ./.github/actions/green-ledger")
+            && compare.contains("enabled: 'false'")
+            && !compare.contains("record: 'false'"),
+        "the comparison never skips, and its own success records the inputs green"
+    );
+    assert!(
+        compare.contains("bash scripts/check-shard-results.sh")
+            && compare.contains("combine-shards.py"),
+        "the comparison judges every leg and joins them into one run before comparing"
+    );
 }

@@ -3,116 +3,149 @@ meanings
     defined-by action
     role file_edit_action_cue
     lexeme en
-      surface
-        text "change"
-      surface
-        text "replace"
-      surface
-        text "edit"
-      surface
-        text "modify"
-      surface
-        text "substitute"
-      surface
-        text "swap"
-      surface
-        text "correct"
-      surface
-        text "update"
-      surface
-        text "patch"
-      surface
-        text "rewrite"
-      surface
-        text "refactor"
-      surface
-        text "rename"
-    lexeme ru
-      surface
-        text замени
-      surface
-        text заменить
-      surface
-        text измени
-      surface
-        text изменить
-      surface
-        text поменяй
-      surface
-        text исправь
-      surface
-        text переименуй
-    lexeme hi
-      surface
-        text बदलो
-      surface
-        text बदलें
-      surface
-        text बदलिए
-      surface
-        text "नाम बदलो"
-    lexeme zh
-      surface
-        text 替换
-      surface
-        text 修改
-      surface
-        text 更改
-      surface
-        text 重命名
+      words "change" "replace" "edit" "modify" "substitute" "swap" "correct" "update" "patch" "rewrite" "refactor"
+      words "rename" "set" "bump"
+    lexeme ru замени заменить измени изменить поменяй исправь переименуй установи повысь
+    lexeme hi बदलो बदलें बदलिए "नाम बदलो" बढ़ाओ
+    lexeme zh 替换 修改 更改 重命名 提升
+    lexeme es
+      words cambia cambiar reemplaza reemplazar edita editar modifica modificar sustituye sustituir intercambia corrige
+      words corregir actualiza actualizar parchea reescribe refactoriza renombra renombrar establece incrementa
   file_edit_new_lead
     defined-by relation
     role file_edit_new_lead_cue
-    lexeme en
-      surface
-        text "to"
-      surface
-        text "with"
-      surface
-        text "into"
-      surface
-        text "by"
-    lexeme ru
-      surface
-        text на
-    lexeme hi
-      surface
-        text से
-    lexeme zh
-      surface
-        text 为
-      surface
-        text 成
+    lexeme en "to" "with" "into" "by"
+    lexeme ru на
+    lexeme hi से
+    lexeme zh 为 成
+    lexeme es por con a
   file_edit_target
     defined-by relation
     role file_edit_target_cue
+    lexeme en "in" "within" "inside" "of" "file"
+    lexeme ru в во файле внутри
+    lexeme hi में फ़ाइल
+    lexeme zh 在 文件 中
+    lexeme es en "dentro de" de archivo
+  file_edit_old_lead
+    defined-by relation
+    role file_edit_old_lead_cue
+    precondition "an edit request states the value a key holds now"
+    effect "the line assigning the key that value is the one changed"
+    unit "not applicable"
+    example "change MAXIMUM_RATIO from 8 to 16"
+    lexeme en "from"
+    lexeme ru с со
+    lexeme hi "की जगह"
+    lexeme zh 从
+    lexeme es "de"
+  file_edit_joiner
+    defined-by relation
+    role file_edit_joiner_cue
+    precondition "an insert request lists several quoted lines or several insert clauses"
+    effect "the listed lines go in together, in order, and each clause is its own insert"
+    unit "not applicable"
+    example "insert the two lines 'a' and 'b' after the line 'c'"
+    lexeme en "and"
+    lexeme ru и
+    lexeme hi और
+    lexeme zh 和
+    lexeme es "y"
+  file-edit-sequence
+    defined-by relation
+    role file-edit-sequence-cue
+    precondition "a request asks for several edits one after another, the cue opening a clause after a comma or a joiner"
+    effect "each step is planned as the request it would be alone, in order, over the file as the step before left it"
+    unit "not applicable"
+    example "insert the line 'b2' after the line 'b' in f.txt, then delete the line 'c' from f.txt"
+    lexeme en "then" "after that" "afterwards"
+    lexeme ru затем потом "после этого"
+    lexeme hi फिर "उसके बाद"
+    lexeme zh 然后 接着 随后
+    lexeme es luego "después de eso" "a continuación"
+  file_edit_anchor_context
+    defined-by relation
+    role file_edit_anchor_context_cue
+    precondition "an insert anchor occurs more than once and the request names the line it follows"
+    effect "the anchor is its first occurrence after the named line"
+    unit "not applicable"
+    example "after the line 'bundle true' that follows 'seed coding-guidance'"
+    lexeme en "that follows" "which follows" "following"
+    lexeme ru "которая следует за" "следующей за"
+    lexeme hi "के बाद आने वाली"
+    lexeme zh 之后的
+    lexeme es "que sigue a"
+  line_containment
+    defined-by relation
+    role line_containment_cue
+    precondition "a line edit names its quoted text as something a line contains"
+    effect "every line that contains the quoted text is meant; without this cue a quoted line is the whole line that equals it"
+    unit "not applicable"
+    example "delete the lines containing 'x' from f.md"
+    lexeme en "lines containing" "line containing" "that contain" "that contains" "which contain"
+    lexeme ru содержащую содержащие содержащих
+    lexeme hi वाली युक्त
+    lexeme zh 包含
+    lexeme es "que contiene" "que contienen" "que contengan"
+  file_contents_source
+    defined-by relation
+    role file_contents_source_cue
+    precondition "an additive edit names another file whose contents are the text it places"
+    effect "the named file is read and its lines are placed as written; its path is the source, not the file edited"
+    unit "not applicable"
+    example "append the contents of a.txt to the end of b.txt"
+    lexeme en "the contents of" "the content of" "contents of"
+    lexeme ru "содержимое файла" "содержимое из"
+    lexeme hi "की सामग्री"
+    lexeme zh "的内容"
+    lexeme es "el contenido de" "los contenidos de"
+  line_slice_head
+    defined-by relation
+    role line_slice_head_cue
+    precondition "a request names a count of lines right before a line noun"
+    effect "the lines counted from the start of the file: the first N lines"
+    unit "not applicable"
+    example "show the first 2 lines of n.txt"
+    lexeme en first
+    lexeme ru первые
+    lexeme hi पहली
+    lexeme zh 前
+    lexeme es primeras
+  line_slice_tail
+    defined-by relation
+    role line_slice_tail_cue
+    precondition "a request names a count of lines right before a line noun"
+    effect "the lines counted from the end of the file: the last N lines"
+    unit "not applicable"
+    example "show the last 2 lines of n.txt"
+    lexeme en last
+    lexeme ru последние
+    lexeme hi आख़िरी अंतिम
+    lexeme zh 最后 后
+    lexeme es últimas
+  file_section
+    defined-by concept
+    role file_section_noun
+    precondition "an additive edit places its text at one end of a Markdown section named by its quoted heading"
+    effect "the section runs from its heading to the line before the next heading of the same or a higher level"
+    unit "not applicable"
+    example "insert the line 'x' at the end of the section '## Usage' in README.md"
+    lexeme en "the section" "a section"
+    lexeme ru раздела раздел
+    lexeme hi खंड
+    lexeme zh 章节
+    lexeme es sección
+  file_edit_all_occurrences
+    defined-by relation
+    role file_edit_all_occurrences_cue
+    precondition "a replace request states that every occurrence of the old text is meant"
+    effect "the cue is no part of the old or new text; every occurrence is replaced, which a replace does by default (PR #1188 G84)"
+    unit "not applicable"
+    example "replace 'a' with 'b' everywhere"
     lexeme en
-      surface
-        text "in"
-      surface
-        text "within"
-      surface
-        text "inside"
-      surface
-        text "of"
-      surface
-        text "file"
-    lexeme ru
-      surface
-        text в
-      surface
-        text во
-      surface
-        text файле
-    lexeme hi
-      surface
-        text में
-      surface
-        text फ़ाइल
-    lexeme zh
-      surface
-        text 在
-      surface
-        text 文件
-      surface
-        text 中
+      words "everywhere" "all occurrences" "every occurrence" "all instances" "throughout the file" "in all occurrences"
+      words "in every occurrence" "in all instances" "in all places"
+    lexeme ru везде "все вхождения" "во всём файле" "во всех вхождениях"
+    lexeme hi "हर जगह" "सभी जगह"
+    lexeme zh 所有出现处 全部出现处
+    lexeme es "en todas partes" "todas las apariciones" "en todas las apariciones"

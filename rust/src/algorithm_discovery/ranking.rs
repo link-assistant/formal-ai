@@ -1,15 +1,16 @@
-//! Ordering the survivors of the subsumption filter (#1138 B12, plan 12 leaf 5).
+//! Ordering the survivors of the subsumption filter (#1138 B12, plan 12 leaf 5;
+//! R901-3 registry selection).
 //!
 //! `subsumes` above stays the *correctness* relation -- a longer validated
 //! candidate subsumes a shorter one backed by the same traces -- and this module
 //! only orders what survives it, through the same registry heuristic the draft
-//! portfolio uses. Before plan 12 the order was an ad-hoc `sort_by` only this
-//! module knew about, so two seams that both mean "prefer the cheaper candidate"
-//! could disagree without anything noticing.
+//! portfolio uses. When a contradiction is detected, `TrizRanker` is selected
+//! instead of `LeastActionRanker`, resolving the trade-off rather than using the
+//! arbitrary index tie-break. Before plan 12 the order was an ad-hoc `sort_by`
+//! only this module knew about, so two seams that both mean "prefer the cheaper
+//! candidate" could disagree without anything noticing.
 
-use crate::selection_heuristics::{
-    ActionCost, CandidateRanker, CandidateScore, HeuristicRole, LeastActionRanker,
-};
+use crate::selection_heuristics::{ActionCost, CandidateScore, rank_with_heuristic, situation_for};
 
 use super::AlgorithmCandidate;
 
@@ -42,12 +43,7 @@ pub(super) fn rank_survivors(candidates: Vec<AlgorithmCandidate>) -> Vec<Algorit
             },
         })
         .collect();
-    let parameters = crate::method_registry::MethodRegistry::shared()
-        .heuristics_for(HeuristicRole::Rank, "")
-        .first()
-        .map(|heuristic| heuristic.parameters.clone())
-        .unwrap_or_default();
-    let ranked = LeastActionRanker.rank(&scores, &parameters);
+    let ranked = rank_with_heuristic(&scores, situation_for(&scores));
 
     let mut ordered: Vec<Option<AlgorithmCandidate>> = candidates.into_iter().map(Some).collect();
     let mut out: Vec<AlgorithmCandidate> = Vec::with_capacity(ordered.len());

@@ -1,0 +1,5 @@
+{
+  "taskId": "T2043",
+  "directory": "/private/tmp/spec-recurrence-1188/literal-answer-1",
+  "prompt": "Set the contents of output.mjs to «{\"z\":\"failed: recorded attempt\",\"a\":\"fixture\"}\n»"
+}

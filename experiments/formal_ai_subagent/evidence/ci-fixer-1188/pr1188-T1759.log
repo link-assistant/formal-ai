@@ -1,0 +1,468 @@
+>> read {"filePath":"rust/src/agentic_coding/mutating_action.rs","file_path":"rust/src/agentic_coding/mutating_action.rs","path":"rust/src/agentic_coding/mutating_action.rs"}
+   <file>
+   00001| //! Verified mutating filesystem actions (issues #824 and #944).
+   00002| //!
+   00003| //! Issue #824 reported a request to *move* a directory being refused outright.
+   00004| //! The routing half of that was answered by the seed `mv` intent: the request
+   00005| //! now lowers to a concrete `mv SOURCE DESTINATION`. What issue #944 asks for is
+   00006| //! the other half — that the action be **verified** rather than merely issued.
+   00007| //!
+   00008| //! A read-only command answers by what it prints, so running it and reporting
+   00009| //! its output is the whole job. A mutating command answers by what the workspace
+   00010| //! *holds afterwards*, and a zero exit status is not that: `mv a b` exits zero
+   00011| //! whether or not `b` was something the user wanted overwritten, and exits
+   00012| //! non-zero for a missing parent directory that the request plainly implied
+   00013| //! should exist. So the action is planned as an ordered recipe —
+   00014| //!
+   00015| //! 1. the preconditions the intent declares (the source is there, the
+   00016| //!    destination is free),
+   00017| //! 2. the preparation the intent declares (`mkdir -p` on the destination's
+   00018| //!    parent, which is what makes a deep target path work at all),
+   00019| //! 3. the action itself,
+   00020| //! 4. the postconditions the intent declares (the destination is there, and for
+   00021| //!    a move, the source is not),
+   00022| //!
+   00023| //! — with each step observed before the next is planned. A step that exits
+   00024| //! non-zero ends the recipe and is reported as itself, so a blocked move says
+   00025| //! which check blocked it and that nothing changed, instead of claiming a
+   00026| //! completion the workspace would contradict.
+   00027| //!
+   00028| //! None of those predicates are written here. They are declared per intent in
+   00029| //! `data/seed/shell-intents.lino` as [`crate::seed::ShellIntentEffect`], so a
+   00030| //! maintainer teaches a new mutating verb its pre/post conditions by editing
+   00031| //! seed data — the same rule every other trigger vocabulary on this project
+   00032| //! follows, and the reason this module works for `cp` without naming `cp`.
+   00033| 
+   00034| use serde_json::json;
+   00035| 
+   00036| use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
+   00037| use super::progress::Progress;
+   00038| use super::tool_result;
+   00039| use crate::protocol::ChatMessage;
+   00040| use crate::seed::{self, ShellIntentVocabulary};
+   00041| 
+   00042| const PATH_PLACEHOLDER: &str = concat!("{", "path", "}");
+   00043| const SOURCE_PLACEHOLDER: &str = concat!("{", "source", "}");
+   00044| const DESTINATION_PLACEHOLDER: &str = concat!("{", "destination", "}");
+   00045| const DESTINATION_PARENT_PLACEHOLDER: &str = concat!("{", "destination_parent", "}");
+   00046| const ACTION_PLACEHOLDER: &str = concat!("{", "action", "}");
+   00047| const CHECK_PLACEHOLDER: &str = concat!("{", "check", "}");
+   00048| const CHECKS_PLACEHOLDER: &str = concat!("{", "checks", "}");
+   00049| const EXIT_CODE_PLACEHOLDER: &str = concat!("{", "exit_code", "}");
+   00050| 
+   00051| /// The directory component used when the destination names no directory at all.
+   00052| const CURRENT_DIRECTORY: &str = ".";
+   00053| 
+   00054| /// One mutating action expanded into the ordered steps that carry it out.
+   00055| pub(super) struct VerifiedAction {
+   00056|     /// Every step in order: preconditions, preparation, the action, postconditions.
+   00057|     steps: Vec<String>,
+   00058|     /// The index of the action itself within [`Self::steps`].
+   00059|     action: usize,
+   00060| }
+   00061| 
+   00062| impl VerifiedAction {
+   00063|     /// The steps in the order they are run.
+   00064|     pub(super) fn steps(&self) -> &[String] {
+   00065|         &self.steps
+   00066|     }
+   00067| 
+   00068|     /// The mutating command itself, the one step that is not a check.
+   00069|     pub(super) fn action(&self) -> &str {
+   00070|         self.steps[self.action].as_str()
+   00071|     }
+   00072| 
+   00073|     /// The checks that ran after the action, which is what the completion claim
+   00074|     /// rests on.
+   00075|     pub(super) fn postconditions(&self) -> &[String] {
+   00076|         &self.steps[self.action + 1..]
+   00077|     }
+   00078| }
+   00079| 
+   00080| /// Expand `command` into its verified recipe, or `None` when no seed intent
+   00081| /// declares an effect for it.
+   00082| ///
+   00083| /// The command was assembled by [`super::shell_command`] as the intent's own
+   00084| /// command followed by its operands, so it is taken apart the same way: the
+   00085| /// longest declared command that prefixes it wins. Declared options are consumed
+   00086| /// before positional paths are bound to scalar or collection effect templates.
+   00087| pub(super) fn expand(command: &str) -> Option<VerifiedAction> {
+   00088|     expand_with(command, &seed::shell_intent_vocabulary())
+   00089| }
+   00090| 
+   00091| fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {
+   00092|     let intent = vocab
+   00093|         .intents
+   00094|         .iter()
+   00095|         .filter(|intent| intent.effect.is_declared())
+   00096|         .filter(|intent| {
+   00097|             command
+   00098|                 .strip_prefix(intent.command.as_str())
+   00099|                 .is_some_and(|rest| rest.starts_with(' '))
+   00100|         })
+   00101|         .max_by_key(|intent| intent.command.len())?;
+   00102|     let effect = &intent.effect;
+   00103|     let (operands, flags) = effect_operands(&command[intent.command.len()..], effect)?;
+   00104|     if operands.is_empty() {
+   00105|         return None;
+   00106|     }
+   00107|     let before = if flags.iter().any(|flag| effect.reuse_options.contains(flag))
+   00108|         && !effect.before_reuse.is_empty()
+   00109|     {
+   00110|         &effect.before_reuse
+   00111|     } else {
+   00112|         &effect.before
+   00113|     };
+   00114|     let has_path = before
+   00115|         .iter()
+   00116|         .chain(&effect.prepare)
+   00117|         .chain(&effect.after)
+   00118|         .any(|template| template.contains(PATH_PLACEHOLDER));
+   00119|     let bind = |template: &str, bindings: &[(&str, String)]| {
+   00120|         bindings
+   00121|             .iter()
+   00122|             .fold(template.to_owned(), |text, (key, value)| {
+   00123|                 text.replace(key, value)
+   00124|             })
+   00125|     };
+   00126|     let mut groups: Vec<Vec<(&str, String)>> = Vec::new();
+   00127|     let mut collection = None;
+   00128|     if has_path {
+   00129|         groups.extend(
+   00130|             operands
+   00131|                 .iter()
+   00132|                 .map(|path| vec![(PATH_PLACEHOLDER, (*path).to_owned())]),
+   00133|         );
+   00134|     } else {
+   00135|         if operands.len() < 2 || (operands.len() > 2 && !effect.directory_targets) {
+   00136|             return None;
+   00137|         }
+   00138|         let destination = *operands.last()?;
+   00139|         let sources = &operands[..operands.len() - 1];
+   00140|         if !effect.directory_targets && sources.iter().any(|source| has_shell_expansion(source)) {
+   00141|             return None;
+   00142|         }
+   00143|         if effect.directory_targets
+   00144|             && (sources.len() > 1
+   00145|                 || sources.iter().any(|source| has_shell_expansion(source))
+   00146|                 || destination.trim_matches(['\'', '"']).ends_with('/'))
+   00147|         {
+   00148|             collection = Some((sources.join(" "), destination));
+   00149|             groups.push(vec![
+   00150|                 (SOURCE_PLACEHOLDER, String::from("\"$formal_ai_source\"")),
+   00151|                 (
+   00152|                     DESTINATION_PARENT_PLACEHOLDER,
+   00153|                     String::from("\"$formal_ai_parent\""),
+   00154|                 ),
+   00155|                 (
+   00156|                     DESTINATION_PLACEHOLDER,
+   00157|                     String::from("\"$formal_ai_destination\""),
+   00158|                 ),
+   00159|             ]);
+   00160|         } else {
+   00161|             groups.push(vec![
+   00162|                 (SOURCE_PLACEHOLDER, sources[0].to_owned()),
+   00163|                 (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),
+   00164|                 (DESTINATION_PLACEHOLDER, destination.to_owned()),
+   00165|             ]);
+   00166|         }
+   00167|     }
+   00168|     let fill = |template: &String| -> Vec<String> {
+   00169|         groups
+   00170|             .iter()
+   00171|             .map(|bindings| {
+   00172|                 let check = bind(template, bindings);
+   00173|                 if let Some((sources, destination)) = &collection {
+   00174|                     let setup = super::work_item_steps::fill(
+   00175|                         "filesystem-collection-setup",
+   00176|                         &[("{destination}", destination)],
+   00177|                     );
+   00178|                     super::work_item_steps::fill(
+   00179|                         "filesystem-collection-check",
+   00180|                         &[
+   00181|                             ("{sources}", sources),
+   00182|                             ("{setup}", &setup),
+   00183|                             ("{check}", &check),
+   00184|                         ],
+   00185|                     )
+   00186|                 } else {
+   00187|                     check
+   00188|                 }
+   00189|             })
+   00190|             .collect()
+   00191|     };
+   00192|     let mut steps: Vec<String> = before.iter().flat_map(fill).collect();
+   00193|     steps.extend(effect.prepare.iter().flat_map(fill));
+   00194|     let action = steps.len();
+   00195|     steps.push(command.to_owned());
+   00196|     steps.extend(effect.after.iter().flat_map(fill));
+   00197|     Some(VerifiedAction { steps, action })
+   00198| }
+   00199| 
+   00200| fn bind_template(template: &str, bindings: &[(&str, String)]) -> String {
+   00201|     bindings.iter().fold(template.to_owned(), |text, (key, value)| text.replace(key, value))
+   00202| }
+   00203| 
+   00204| /// Separate declared options from shell words while preserving operand quoting.
+   00205| fn effect_operands<'a>(
+   00206|     text: &'a str,
+   00207|     effect: &seed::ShellIntentEffect,
+   00208| ) -> Option<(Vec<&'a str>, Vec<String>)> {
+   00209|     let words = shell_words(text)?;
+   00210|     let mut operands = Vec::new();
+   00211|     let mut flags = Vec::new();
+   00212|     let mut options = true;
+   00213|     let mut index = 0;
+   00214|     while index < words.len() {
+   00215|         let raw = words[index];
+   00216|         let word = raw.trim_matches(['\'', '"']);
+   00217|         if options && word == "--" {
+   00218|             options = false;
+   00219|         } else if options && word.starts_with('-') && word != "-" {
+   00220|             if let Some(option) = effect.value_options.iter().find(|option| {
+   00221|                 word == option.as_str()
+   00222|                     || word.strip_prefix(option.as_str()).is_some_and(|suffix| {
+   00223|                         suffix.starts_with('=') || (!option.starts_with("--") && !suffix.is_empty())
+   00224|                     })
+   00225|             }) {
+   00226|                 if word == option.as_str() {
+   00227|                     index += 1;
+   00228|                     if index >= words.len() {
+   00229|                         return None;
+   00230|                     }
+   00231|                 }
+   00232|                 flags.push(option.clone());
+   00233|             } else if effect.flags.iter().any(|flag| flag == word) {
+   00234|                 flags.push(word.to_owned());
+   00235|             } else if !word.starts_with("--") {
+   00236|                 let bundled: Vec<String> = word[1..]
+   00237|                     .chars()
+   00238|                     .map(|letter| format!("-{letter}"))
+   00239|                     .collect();
+   00240|                 if !bundled.iter().all(|flag| effect.flags.contains(flag)) {
+   00241|                     return None;
+   00242|                 }
+   00243|                 flags.extend(bundled);
+   00244|             } else {
+   00245|                 return None;
+   00246|             }
+   00247|         } else {
+   00248|             operands.push(raw);
+   00249|         }
+   00250|         index += 1;
+   00251|     }
+   00252|     Some((operands, flags))
+   00253| }
+   00254| 
+   00255| fn shell_words(text: &str) -> Option<Vec<&str>> {
+   00256|     let mut words = Vec::new();
+   00257|     let mut start = None;
+   00258|     let mut quote = None;
+   00259|     let mut escaped = false;
+   00260|     for (index, character) in text.char_indices() {
+   00261|         if start.is_none() && character.is_whitespace() {
+   00262|             continue;
+   00263|         }
+   00264|         if start.is_none() {
+   00265|             start = Some(index);
+   00266|         }
+   00267|         if escaped {
+   00268|             escaped = false;
+   00269|             continue;
+   00270|         }
+   00271|         if character == '\\' && quote != Some('\'') {
+   00272|             escaped = true;
+   00273|             continue;
+   00274|         }
+   00275|         if let Some(delimiter) = quote {
+   00276|             if character == delimiter {
+   00277|                 quote = None;
+   00278|             }
+   00279|             continue;
+   00280|         }
+   00281|         if character == '"' || character == '\'' {
+   00282|             quote = Some(character);
+   00283|             continue;
+   00284|         }
+   00285|         if character.is_whitespace() {
+   00286|             words.push(&text[start.take()?..index]);
+   00287|         } else if ";|&<>()`".contains(character) {
+   00288|             return None;
+   00289|         }
+   00290|     }
+   00291|     if quote.is_some() || escaped {
+   00292|         return None;
+   00293|     }
+   00294|     if let Some(start) = start {
+   00295|         words.push(&text[start..]);
+   00296|     }
+   00297|     Some(words)
+   00298| }
+   00299| 
+   00300| fn has_shell_expansion(word: &str) -> bool {
+   00301|     let mut quote = None;
+   00302|     let mut escaped = false;
+   00303|     for character in word.chars() {
+   00304|         if escaped {
+   00305|             escaped = false;
+   00306|             continue;
+   00307|         }
+   00308|         if character == '\\' && quote != Some('\'') {
+   00309|             escaped = true;
+   00310|             continue;
+   00311|         }
+   00312|         if let Some(delimiter) = quote {
+   00313|             if character == delimiter {
+   00314|                 quote = None;
+   00315|             }
+   00316|             continue;
+   00317|         }
+   00318|         if character == '"' || character == '\'' {
+   00319|             quote = Some(character);
+   00320|         } else if "*?[$".contains(character) {
+   00321|             return true;
+   00322|         }
+   00323|     }
+   00324|     false
+   00325| }
+   00326| 
+   00327| /// The directory component of `path`, or `.` when it names no directory.
+   00328| ///
+   00329| /// Written as text rather than through [`std::path::Path`] on purpose: the
+   00330| /// operand is a shell word that may still be rooted at `~`, and `Path` would
+   00331| /// happily hand back a `~` that the shell then declines to expand once it is no
+   00332| /// longer the first character of the word.
+   00333| fn parent_of(path: &str) -> String {
+   00334|     if path.contains(['"', '\'', '\\']) {
+   00335|         return format!("\"$(dirname -- {path})\"");
+   00336|     }
+   00337|     match path.rsplit_once('/') {
+   00338|         Some(("", _)) => String::from("/"),
+   00339|         Some((parent, _)) => parent.to_owned(),
+   00340|         None => String::from(CURRENT_DIRECTORY),
+   00341|     }
+   00342| }
+   00343| 
+   00344| /// Plan the next step of the verified recipe for `command`.
+   00345| ///
+   00346| /// Returns `None` when the command declares no effect (every read-only intent),
+   00347| /// or when the client advertised no shell tool — in which case the caller's
+   00348| /// single-shot path still produces the honest "I can run this when you give me a
+   00349| /// shell" answer rather than this module inventing a second one.
+   00350| pub(super) fn plan_step(
+   00351|     command: &str,
+   00352|     messages: &[ChatMessage],
+   00353|     tool_names: &[&str],
+   00354|     prompt: &str,
+   00355| ) -> Option<AgenticPlan> {
+   00356|     let recipe = expand(command)?;
+   00357|     let tool = tool_for(tool_names, Capability::Run)?;
+   00358|     let progress = Progress::scan(messages);
+   00359|     let taken = progress.run_outputs.len();
+   00360| 
+   00361|     // The workspace gets the last word before anything else is planned: a step
+   00362|     // that exited non-zero ends the recipe where it stopped.
+   00363|     if let Some(index) = taken.checked_sub(1) {
+   00364|         let observed = &progress.run_outputs[index];
+   00365|         if tool_result::step_outcome(observed) == tool_result::StepOutcome::Failed {
+   00366|             return Some(AgenticPlan::Final(blocked_report(
+   00367|                 &recipe,
+   00368|                 recipe.steps().get(index).map_or(command, String::as_str),
+   00369|                 observed,
+   00370|                 prompt,
+   00371|                 index >= recipe.action,
+   00372|             )));
+   00373|         }
+   00374|     }
+   00375|     if let Some(step) = recipe.steps().get(taken) {
+   00376|         return Some(plan_one(tool, json!({ "command": step }).to_string()));
+   00377|     }
+   00378|     Some(AgenticPlan::Final(completed_report(&recipe, prompt)))
+   00379| }
+   00380| 
+   00381| /// The report for a recipe that stopped: which check stopped it, with what
+   00382| /// status, and the fact that the action did not run.
+   00383| ///
+   00384| /// A blocked move is not a failed move, and saying so is the point. Issue #824
+   00385| /// is the record of what over-refusal costs and issue #916 rung `R916-01` is the
+   00386| /// record of what a false completion claim costs; a recipe that names the check
+   00387| /// it stopped on avoids both.
+   00388| fn blocked_report(
+   00389|     recipe: &VerifiedAction,
+   00390|     check: &str,
+   00391|     observed: &str,
+   00392|     prompt: &str,
+   00393|     attempted: bool,
+   00394| ) -> String {
+   00395|     let language = tool_result::response_language(prompt);
+   00396|     let intent = if attempted {
+   00397|         "mutating-action-observed-failure"
+   00398|     } else {
+   00399|         "mutating_action_blocked"
+   00400|     };
+   00401|     let Some(mut answer) = seed::localized_response(intent, language) else {
+   00402|         return tool_result::render(check, observed, prompt);
+   00403|     };
+   00404|     answer = answer.replace(ACTION_PLACEHOLDER, recipe.action());
+   00405|     answer = answer.replace(CHECK_PLACEHOLDER, check);
+   00406|     answer = answer.replace(
+   00407|         EXIT_CODE_PLACEHOLDER,
+   00408|         &tool_result::reported_exit_code(observed)
+   00409|             .map_or_else(String::new, |code| code.to_string()),
+   00410|     );
+   00411|     answer
+   00412| }
+   00413| 
+   00414| /// The report for a recipe that finished: the action that ran, and the checks
+   00415| /// that were observed to hold afterwards.
+   00416| ///
+   00417| /// The claim rests on those checks and names them, because a claim the reader
+   00418| /// cannot re-run is the narration issue #916 rung `R916-01` was written against.
+   00419| fn completed_report(recipe: &VerifiedAction, prompt: &str) -> String {
+   00420|     let language = tool_result::response_language(prompt);
+   00421|     let checks = recipe
+   00422|         .postconditions()
+   00423|         .iter()
+   00424|         .map(|check| format!("`{check}`"))
+   00425|         .collect::<Vec<_>>()
+   00426|         .join(", ");
+   00427|     seed::localized_response("mutating_action_completed", language).map_or_else(
+   00428|         || recipe.action().to_owned(),
+   00429|         |answer| {
+   00430|             answer
+   00431|                 .replace(ACTION_PLACEHOLDER, recipe.action())
+   00432|                 .replace(CHECKS_PLACEHOLDER, &checks)
+   00433|         },
+   00434|     )
+   00435| }
+   00436| 
+   00437| /// The ordered steps `command` is carried out as.
+   00438| ///
+   00439| /// `None` when no seed intent declares an effect for it — every read-only
+   00440| /// intent, and every mutating one whose operands are not the source/destination
+   00441| /// pair the effect is written against.
+   00442| ///
+   00443| /// Read-only intents keep their single-shot path, which is why this is the same
+   00444| /// question the planner asks: a caller that wants to know whether a command is
+   00445| /// carried out as a recipe asks for the recipe.
+   00446| #[must_use]
+   00447| pub fn verified_recipe(command: &str) -> Option<Vec<String>> {
+   00448|     expand(command).map(|recipe| recipe.steps)
+   00449| }
+   00450| 
+   
+   (End of file - total 450 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/mutating_action.rs","file_path":"rust/src/agentic_coding/mutating_action.rs","new":"","newString":"","new_str":"","new_string":"","old":"    let bind = |template: &str, bindings: &[(&str, String)]| {\n        bindings\n            .iter()\n            .fold(template.to_owned(), |text, (key, value)| {\n                text.replace(key, value)\n            })\n    };\n","oldString":"    let bind = |template: &str, bindings: &[(&str, String)]| {\n        bindings\n            .iter()\n            .fold(template.to_owned(), |text, (key, value)| {\n                text.replace(key, value)\n            })\n    };\n","old_str":"    let bind = |template: &str, bindings: &[(&str, String)]| {\n        bindings\n            .iter()\n            .fold(template.to_owned(), |text, (key, value)| {\n                text.replace(key, value)\n            })\n    };\n","old_string":"    let bind = |template: &str, bindings: &[(&str, String)]| {\n        bindings\n            .iter()\n            .fold(template.to_owned(), |text, (key, value)| {\n                text.replace(key, value)\n            })\n    };\n","path":"rust/src/agentic_coding/mutating_action.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/mutating_action.rs"}
+   bf13b17975da4cb3131fc0757cc888021cd079ddb464a88a491d2016428850d4  rust/src/agentic_coding/mutating_action.rs
+   
+== answer ==
+Replaced `    let bind = |template: &str, bindings: &[(&str, String)]| {
+        bindings
+            .iter()
+            .fold(template.to_owned(), |text, (key, value)| {
+                text.replace(key, value)
+            })
+    };
+` with `` in `rust/src/agentic_coding/mutating_action.rs` and observed the result.

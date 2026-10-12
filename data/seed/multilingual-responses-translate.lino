@@ -3,115 +3,579 @@ multilingual_responses
     intent translate_needs_from_to
     language en
     text "translate needs --from and --to (or --list to see every direction)"
+  response response_translate_needs_from_to_ru
+    intent translate_needs_from_to
+    language ru
+    text "translate требует --from и --to (или --list, чтобы увидеть все направления)"
+  response response_translate_needs_from_to_hi
+    intent translate_needs_from_to
+    language hi
+    text "translate को --from और --to चाहिए (या हर दिशा देखने के लिए --list)"
+  response response_translate_needs_from_to_zh
+    intent translate_needs_from_to
+    language zh
+    text "translate 需要 --from 和 --to（或用 --list 查看所有方向）"
+  response response_translate_needs_from_to_es
+    intent translate_needs_from_to
+    language es
+    text "translate necesita --from y --to (o --list para ver todas las direcciones)"
   response response_translate_unknown_from_en
     intent translate_unknown_from
     language en
     text "unknown --from '{from}': expected one of rust, js, ts, or meta"
+  response response_translate_unknown_from_ru
+    intent translate_unknown_from
+    language ru
+    text "неизвестное --from '{from}': ожидается одно из rust, js, ts или meta"
+  response response_translate_unknown_from_hi
+    intent translate_unknown_from
+    language hi
+    text "अज्ञात --from '{from}': rust, js, ts या meta में से एक अपेक्षित है"
+  response response_translate_unknown_from_zh
+    intent translate_unknown_from
+    language zh
+    text "未知的 --from '{from}'：应为 rust、js、ts 或 meta 之一"
+  response response_translate_unknown_from_es
+    intent translate_unknown_from
+    language es
+    text "--from desconocido '{from}': se esperaba uno de rust, js, ts o meta"
   response response_translate_unknown_to_en
     intent translate_unknown_to
     language en
     text "unknown --to '{to}': expected one of rust, js, ts, or meta"
+  response response_translate_unknown_to_ru
+    intent translate_unknown_to
+    language ru
+    text "неизвестное --to '{to}': ожидается одно из rust, js, ts или meta"
+  response response_translate_unknown_to_hi
+    intent translate_unknown_to
+    language hi
+    text "अज्ञात --to '{to}': rust, js, ts या meta में से एक अपेक्षित है"
+  response response_translate_unknown_to_zh
+    intent translate_unknown_to
+    language zh
+    text "未知的 --to '{to}'：应为 rust、js、ts 或 meta 之一"
+  response response_translate_unknown_to_es
+    intent translate_unknown_to
+    language es
+    text "--to desconocido '{to}': se esperaba uno de rust, js, ts o meta"
   response response_translate_same_roots_en
     intent translate_same_roots
     language en
     text "{from} → {to} is not a direction: the roots are the same"
+  response response_translate_same_roots_ru
+    intent translate_same_roots
+    language ru
+    text "{from} → {to} не является направлением: корни совпадают"
+  response response_translate_same_roots_hi
+    intent translate_same_roots
+    language hi
+    text "{from} → {to} कोई दिशा नहीं है: दोनों roots एक ही हैं"
+  response response_translate_same_roots_zh
+    intent translate_same_roots
+    language zh
+    text "{from} → {to} 不是一个方向：两个根相同"
+  response response_translate_same_roots_es
+    intent translate_same_roots
+    language es
+    text "{from} → {to} no es una dirección: las raíces son las mismas"
   response response_translate_pending_en
     intent translate_pending
     language en
     text "translate {from} → {to} is pending: plan 16 {leaf} owes it"
+  response response_translate_pending_ru
+    intent translate_pending
+    language ru
+    text "translate {from} → {to} ожидает реализации: за него отвечает план 16 {leaf}"
+  response response_translate_pending_hi
+    intent translate_pending
+    language hi
+    text "translate {from} → {to} अभी बाकी है: plan 16 {leaf} पर यह बकाया है"
+  response response_translate_pending_zh
+    intent translate_pending
+    language zh
+    text "translate {from} → {to} 尚待完成：由计划 16 {leaf} 负责"
+  response response_translate_pending_es
+    intent translate_pending
+    language es
+    text "translate {from} → {to} está pendiente: lo debe el plan 16 {leaf}"
   response response_translate_pending_docs_en
     intent translate_pending_docs
     language en
     text "translate {from} → {to} is pending: plan 16 {leaf} owes it (docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md)"
+  response response_translate_pending_docs_ru
+    intent translate_pending_docs
+    language ru
+    text "translate {from} → {to} ожидает реализации: за него отвечает план 16 {leaf} (docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md)"
+  response response_translate_pending_docs_hi
+    intent translate_pending_docs
+    language hi
+    text "translate {from} → {to} अभी बाकी है: plan 16 {leaf} पर यह बकाया है (docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md)"
+  response response_translate_pending_docs_zh
+    intent translate_pending_docs
+    language zh
+    text "translate {from} → {to} 尚待完成：由计划 16 {leaf} 负责（docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md）"
+  response response_translate_pending_docs_es
+    intent translate_pending_docs
+    language es
+    text "translate {from} → {to} está pendiente: lo debe el plan 16 {leaf} (docs/case-studies/issue-1138/plans/16-js-ts-rust-cycle.md)"
   response response_translate_needs_input_en
     intent translate_needs_input
     language en
     text "translate {from} → {to} reads a source file: pass --input PATH"
+  response response_translate_needs_input_ru
+    intent translate_needs_input
+    language ru
+    text "translate {from} → {to} читает исходный файл: передайте --input PATH"
+  response response_translate_needs_input_hi
+    intent translate_needs_input
+    language hi
+    text "translate {from} → {to} एक source file पढ़ता है: --input PATH दें"
+  response response_translate_needs_input_zh
+    intent translate_needs_input
+    language zh
+    text "translate {from} → {to} 需要读取源文件：请传入 --input PATH"
+  response response_translate_needs_input_es
+    intent translate_needs_input
+    language es
+    text "translate {from} → {to} lee un archivo fuente: pasa --input PATH"
   response response_translate_leg_live_en
     intent translate_leg_live
     language en
     text "{from} → {to}  live"
+  response response_translate_leg_live_ru
+    intent translate_leg_live
+    language ru
+    text "{from} → {to}  работает"
+  response response_translate_leg_live_hi
+    intent translate_leg_live
+    language hi
+    text "{from} → {to}  live"
+  response response_translate_leg_live_zh
+    intent translate_leg_live
+    language zh
+    text "{from} → {to}  已上线"
+  response response_translate_leg_live_es
+    intent translate_leg_live
+    language es
+    text "{from} → {to}  activo"
   response response_translate_leg_pending_en
     intent translate_leg_pending
     language en
     text "{from} → {to}  pending (plan 16 {leaf})"
+  response response_translate_leg_pending_ru
+    intent translate_leg_pending
+    language ru
+    text "{from} → {to}  ожидает (план 16 {leaf})"
+  response response_translate_leg_pending_hi
+    intent translate_leg_pending
+    language hi
+    text "{from} → {to}  बाकी (plan 16 {leaf})"
+  response response_translate_leg_pending_zh
+    intent translate_leg_pending
+    language zh
+    text "{from} → {to}  待完成（计划 16 {leaf}）"
+  response response_translate_leg_pending_es
+    intent translate_leg_pending
+    language es
+    text "{from} → {to}  pendiente (plan 16 {leaf})"
   response response_translate_refused_en
     intent translate_refused
     language en
     text "translate {from} → {to} refused {constructs}: the projection seed does not carry them, so nothing was written"
+  response response_translate_refused_ru
+    intent translate_refused
+    language ru
+    text "translate {from} → {to} отклонил {constructs}: seed проекций их не содержит, поэтому ничего не записано"
+  response response_translate_refused_hi
+    intent translate_refused
+    language hi
+    text "translate {from} → {to} ने {constructs} को अस्वीकार किया: projection seed में ये नहीं हैं, इसलिए कुछ नहीं लिखा गया"
+  response response_translate_refused_zh
+    intent translate_refused
+    language zh
+    text "translate {from} → {to} 拒绝了 {constructs}：投影种子不包含它们，因此没有写入任何内容"
+  response response_translate_refused_es
+    intent translate_refused
+    language es
+    text "translate {from} → {to} rechazó {constructs}: la semilla de proyecciones no los incluye, así que no se escribió nada"
   response response_translate_wrote_file_en
     intent translate_wrote_file
     language en
     text "wrote {target} from {source} ({carried} tokens carried)"
+  response response_translate_wrote_file_ru
+    intent translate_wrote_file
+    language ru
+    text "записан {target} из {source} (перенесено токенов: {carried})"
+  response response_translate_wrote_file_hi
+    intent translate_wrote_file
+    language hi
+    text "{source} से {target} लिखा गया ({carried} tokens carried)"
+  response response_translate_wrote_file_zh
+    intent translate_wrote_file
+    language zh
+    text "已从 {source} 写入 {target}（承载 {carried} 个词法单元）"
+  response response_translate_wrote_file_es
+    intent translate_wrote_file
+    language es
+    text "se escribió {target} a partir de {source} ({carried} tokens trasladados)"
   response response_translate_wrote_en
     intent translate_wrote
     language en
     text "translated {files} files ({tokens} tokens carried); wrote the {to} tree"
+  response response_translate_wrote_ru
+    intent translate_wrote
+    language ru
+    text "переведено файлов: {files} (перенесено токенов: {tokens}); записано дерево {to}"
+  response response_translate_wrote_hi
+    intent translate_wrote
+    language hi
+    text "{files} files का अनुवाद किया ({tokens} tokens carried); {to} tree लिखा गया"
+  response response_translate_wrote_zh
+    intent translate_wrote
+    language zh
+    text "已翻译 {files} 个文件（承载 {tokens} 个词法单元）；已写入 {to} 树"
+  response response_translate_wrote_es
+    intent translate_wrote
+    language es
+    text "traducidos {files} archivos ({tokens} tokens trasladados); se escribió el árbol {to}"
   response response_translate_write_wrong_root_en
     intent translate_write_wrong_root
     language en
     text "{path}: --write maps js/ ↔ ts/ sibling roots; the input must live under the source root"
+  response response_translate_write_wrong_root_ru
+    intent translate_write_wrong_root
+    language ru
+    text "{path}: --write отображает соседние корни js/ ↔ ts/; входной файл должен находиться в исходном корне"
+  response response_translate_write_wrong_root_hi
+    intent translate_write_wrong_root
+    language hi
+    text "{path}: --write js/ ↔ ts/ sibling roots को map करता है; input को source root के भीतर होना चाहिए"
+  response response_translate_write_wrong_root_zh
+    intent translate_write_wrong_root
+    language zh
+    text "{path}：--write 对应 js/ ↔ ts/ 这对同级根；输入必须位于源根之下"
+  response response_translate_write_wrong_root_es
+    intent translate_write_wrong_root
+    language es
+    text "{path}: --write relaciona las raíces hermanas js/ ↔ ts/; la entrada debe estar dentro de la raíz de origen"
   response response_translate_write_unsupported_en
     intent translate_write_unsupported
     language en
     text "writing {from} → {to} is not a tree write this rung maps; only js ↔ ts"
+  response response_translate_write_unsupported_ru
+    intent translate_write_unsupported
+    language ru
+    text "запись {from} → {to} не является записью дерева, которую отображает эта ступень; только js ↔ ts"
+  response response_translate_write_unsupported_hi
+    intent translate_write_unsupported
+    language hi
+    text "{from} → {to} लिखना ऐसा tree write नहीं है जिसे यह rung map करता है; केवल js ↔ ts"
+  response response_translate_write_unsupported_zh
+    intent translate_write_unsupported
+    language zh
+    text "写入 {from} → {to} 不是此阶段支持的树写入；仅支持 js ↔ ts"
+  response response_translate_write_unsupported_es
+    intent translate_write_unsupported
+    language es
+    text "escribir {from} → {to} no es una escritura de árbol que este peldaño admita; solo js ↔ ts"
   response response_translate_write_refused_en
     intent translate_write_refused
     language en
     text "nothing was written; refused: {items}"
+  response response_translate_write_refused_ru
+    intent translate_write_refused
+    language ru
+    text "ничего не записано; отклонено: {items}"
+  response response_translate_write_refused_hi
+    intent translate_write_refused
+    language hi
+    text "कुछ नहीं लिखा गया; अस्वीकृत: {items}"
+  response response_translate_write_refused_zh
+    intent translate_write_refused
+    language zh
+    text "没有写入任何内容；已拒绝：{items}"
+  response response_translate_write_refused_es
+    intent translate_write_refused
+    language es
+    text "no se escribió nada; rechazado: {items}"
   response response_translate_source_missing_en
     intent translate_source_missing
     language en
     text "{path}: no source file to translate at that path"
+  response response_translate_source_missing_ru
+    intent translate_source_missing
+    language ru
+    text "{path}: по этому пути нет исходного файла для перевода"
+  response response_translate_source_missing_hi
+    intent translate_source_missing
+    language hi
+    text "{path}: इस path पर अनुवाद के लिए कोई source file नहीं है"
+  response response_translate_source_missing_zh
+    intent translate_source_missing
+    language zh
+    text "{path}：该路径下没有可翻译的源文件"
+  response response_translate_source_missing_es
+    intent translate_source_missing
+    language es
+    text "{path}: no hay ningún archivo fuente que traducir en esa ruta"
   response response_translate_source_invalid_en
     intent translate_source_invalid
     language en
     text "{path} cannot be normalized into the pivot: {reason}"
+  response response_translate_source_invalid_ru
+    intent translate_source_invalid
+    language ru
+    text "{path} не удаётся нормализовать в опорное представление: {reason}"
+  response response_translate_source_invalid_hi
+    intent translate_source_invalid
+    language hi
+    text "{path} को pivot में normalize नहीं किया जा सकता: {reason}"
+  response response_translate_source_invalid_zh
+    intent translate_source_invalid
+    language zh
+    text "无法将 {path} 规范化为中间表示：{reason}"
+  response response_translate_source_invalid_es
+    intent translate_source_invalid
+    language es
+    text "{path} no se puede normalizar en el pivote: {reason}"
   response response_translate_write_empty_en
     intent translate_write_empty
     language en
     text "the {root} root holds no source files this leg owns, so nothing was written"
+  response response_translate_write_empty_ru
+    intent translate_write_empty
+    language ru
+    text "корень {root} не содержит исходных файлов, которыми владеет этот этап, поэтому ничего не записано"
+  response response_translate_write_empty_hi
+    intent translate_write_empty
+    language hi
+    text "{root} root में ऐसी कोई source files नहीं हैं जो इस leg की हों, इसलिए कुछ नहीं लिखा गया"
+  response response_translate_write_empty_zh
+    intent translate_write_empty
+    language zh
+    text "{root} 根中没有属于此环节的源文件，因此没有写入任何内容"
+  response response_translate_write_empty_es
+    intent translate_write_empty
+    language es
+    text "la raíz {root} no contiene archivos fuente que pertenezcan a este tramo, así que no se escribió nada"
   response response_translate_write_refused_item_en
     intent translate_write_refused_item
     language en
+    text "{source}: {constructs}"
+  response response_translate_write_refused_item_ru
+    intent translate_write_refused_item
+    language ru
+    text "{source}: {constructs}"
+  response response_translate_write_refused_item_hi
+    intent translate_write_refused_item
+    language hi
+    text "{source}: {constructs}"
+  response response_translate_write_refused_item_zh
+    intent translate_write_refused_item
+    language zh
+    text "{source}：{constructs}"
+  response response_translate_write_refused_item_es
+    intent translate_write_refused_item
+    language es
     text "{source}: {constructs}"
   response response_translate_tool_schema_en
     intent translate_tool_schema
     language en
     text "Translate a source file (or, with no path, the whole tree) between the js and ts roots through the meta pivot; refusals are named, never guessed. Arguments: from js or ts, to js or ts, path string, write boolean."
+  response response_translate_tool_schema_ru
+    intent translate_tool_schema
+    language ru
+    text "Переводит исходный файл (или, без пути, всё дерево) между корнями js и ts через мета-опору; отказы называются явно и никогда не угадываются. Аргументы: from — js или ts, to — js или ts, path — строка, write — булево значение."
+  response response_translate_tool_schema_hi
+    intent translate_tool_schema
+    language hi
+    text "एक source file (या path न हो तो पूरा tree) का js और ts roots के बीच meta pivot के ज़रिए अनुवाद करता है; अस्वीकृतियाँ नाम लेकर बताई जाती हैं, कभी अनुमान नहीं। Arguments: from js या ts, to js या ts, path string, write boolean।"
+  response response_translate_tool_schema_zh
+    intent translate_tool_schema
+    language zh
+    text "通过元中间表示在 js 和 ts 根之间翻译一个源文件（若不给路径则翻译整棵树）；拒绝会被明确指出，绝不猜测。参数：from 为 js 或 ts，to 为 js 或 ts，path 为字符串，write 为布尔值。"
+  response response_translate_tool_schema_es
+    intent translate_tool_schema
+    language es
+    text "Traduce un archivo fuente (o, sin ruta, el árbol entero) entre las raíces js y ts a través del pivote meta; los rechazos se nombran y nunca se adivinan. Argumentos: from js o ts, to js o ts, path cadena, write booleano."
   response response_projection_refusal_uncovered_kind_en
     intent projection_refusal_uncovered_kind
     language en
     text "no {target} template and no refusal row"
+  response response_projection_refusal_uncovered_kind_ru
+    intent projection_refusal_uncovered_kind
+    language ru
+    text "нет ни шаблона {target}, ни строки отказа"
+  response response_projection_refusal_uncovered_kind_hi
+    intent projection_refusal_uncovered_kind
+    language hi
+    text "न कोई {target} template है, न कोई refusal row"
+  response response_projection_refusal_uncovered_kind_zh
+    intent projection_refusal_uncovered_kind
+    language zh
+    text "既没有 {target} 模板，也没有拒绝行"
+  response response_projection_refusal_uncovered_kind_es
+    intent projection_refusal_uncovered_kind
+    language es
+    text "no hay plantilla de {target} ni fila de rechazo"
   response response_projection_refusal_walk_depth_en
     intent projection_refusal_walk_depth
     language en
     text "projection walk exceeded depth {depth}"
+  response response_projection_refusal_walk_depth_ru
+    intent projection_refusal_walk_depth
+    language ru
+    text "обход проекции превысил глубину {depth}"
+  response response_projection_refusal_walk_depth_hi
+    intent projection_refusal_walk_depth
+    language hi
+    text "projection walk गहराई {depth} से आगे चला गया"
+  response response_projection_refusal_walk_depth_zh
+    intent projection_refusal_walk_depth
+    language zh
+    text "投影遍历超过了深度 {depth}"
+  response response_projection_refusal_walk_depth_es
+    intent projection_refusal_walk_depth
+    language es
+    text "el recorrido de proyección superó la profundidad {depth}"
   response response_projection_refusal_dangling_capture_en
     intent projection_refusal_dangling_capture
     language en
     text "capture bound a link the network does not hold: {link}"
+  response response_projection_refusal_dangling_capture_ru
+    intent projection_refusal_dangling_capture
+    language ru
+    text "захват привязал связь, которой нет в сети: {link}"
+  response response_projection_refusal_dangling_capture_hi
+    intent projection_refusal_dangling_capture
+    language hi
+    text "capture ने ऐसा link bind किया जो network में नहीं है: {link}"
+  response response_projection_refusal_dangling_capture_zh
+    intent projection_refusal_dangling_capture
+    language zh
+    text "捕获绑定了网络中不存在的链接：{link}"
+  response response_projection_refusal_dangling_capture_es
+    intent projection_refusal_dangling_capture
+    language es
+    text "la captura vinculó un enlace que la red no contiene: {link}"
   response response_projection_refusal_missing_template_en
     intent projection_refusal_missing_template
     language en
     text "rule {rule} matched without a {target} template"
+  response response_projection_refusal_missing_template_ru
+    intent projection_refusal_missing_template
+    language ru
+    text "правило {rule} совпало без шаблона {target}"
+  response response_projection_refusal_missing_template_hi
+    intent projection_refusal_missing_template
+    language hi
+    text "नियम {rule} बिना {target} template के मेल खा गया"
+  response response_projection_refusal_missing_template_zh
+    intent projection_refusal_missing_template
+    language zh
+    text "规则 {rule} 已匹配，但没有 {target} 模板"
+  response response_projection_refusal_missing_template_es
+    intent projection_refusal_missing_template
+    language es
+    text "la regla {rule} coincidió sin una plantilla de {target}"
   response response_projection_refusal_unruled_kind_en
     intent projection_refusal_unruled_kind
     language en
     text "no projection rule and no refusal row for {target}"
+  response response_projection_refusal_unruled_kind_ru
+    intent projection_refusal_unruled_kind
+    language ru
+    text "нет ни правила проекции, ни строки отказа для {target}"
+  response response_projection_refusal_unruled_kind_hi
+    intent projection_refusal_unruled_kind
+    language hi
+    text "{target} के लिए न कोई projection rule है, न कोई refusal row"
+  response response_projection_refusal_unruled_kind_zh
+    intent projection_refusal_unruled_kind
+    language zh
+    text "{target} 既没有投影规则，也没有拒绝行"
+  response response_projection_refusal_unruled_kind_es
+    intent projection_refusal_unruled_kind
+    language es
+    text "no hay regla de proyección ni fila de rechazo para {target}"
   response response_projection_refusal_no_target_form_en
     intent projection_refusal_no_target_form
     language en
     text "no {target} form for this construct; it is refused rather than guessed"
+  response response_projection_refusal_no_target_form_ru
+    intent projection_refusal_no_target_form
+    language ru
+    text "для этой конструкции нет формы {target}; она отклоняется, а не угадывается"
+  response response_projection_refusal_no_target_form_hi
+    intent projection_refusal_no_target_form
+    language hi
+    text "इस construct के लिए कोई {target} रूप नहीं है; इसे अनुमान लगाने के बजाय अस्वीकार किया गया है"
+  response response_projection_refusal_no_target_form_zh
+    intent projection_refusal_no_target_form
+    language zh
+    text "该结构没有 {target} 形式；它被拒绝，而不是被猜测"
+  response response_projection_refusal_no_target_form_es
+    intent projection_refusal_no_target_form
+    language es
+    text "no hay forma de {target} para esta construcción; se rechaza en lugar de adivinarse"
   response response_projection_refusal_unknown_placeholder_en
     intent projection_refusal_unknown_placeholder
     language en
     text "template references `{placeholder}`, which is not a placeholder form this walk expands"
+  response response_projection_refusal_unknown_placeholder_ru
+    intent projection_refusal_unknown_placeholder
+    language ru
+    text "шаблон ссылается на `{placeholder}`, а это не та форма заполнителя, которую раскрывает этот обход"
+  response response_projection_refusal_unknown_placeholder_hi
+    intent projection_refusal_unknown_placeholder
+    language hi
+    text "template `{placeholder}` का संदर्भ देता है, जो इस walk द्वारा expand किया जाने वाला placeholder रूप नहीं है"
+  response response_projection_refusal_unknown_placeholder_zh
+    intent projection_refusal_unknown_placeholder
+    language zh
+    text "模板引用了 `{placeholder}`，而这不是此遍历会展开的占位符形式"
+  response response_projection_refusal_unknown_placeholder_es
+    intent projection_refusal_unknown_placeholder
+    language es
+    text "la plantilla hace referencia a `{placeholder}`, que no es una forma de marcador que este recorrido expanda"
   response response_projection_refusal_variadic_mode_en
     intent projection_refusal_variadic_mode
     language en
     text "variadic mode `{mode}` is not one of text, source"
+  response response_projection_refusal_variadic_mode_ru
+    intent projection_refusal_variadic_mode
+    language ru
+    text "вариативный режим `{mode}` не входит в text, source"
+  response response_projection_refusal_variadic_mode_hi
+    intent projection_refusal_variadic_mode
+    language hi
+    text "variadic mode `{mode}` text, source में से कोई नहीं है"
+  response response_projection_refusal_variadic_mode_zh
+    intent projection_refusal_variadic_mode
+    language zh
+    text "可变参数模式 `{mode}` 不是 text、source 之一"
+  response response_projection_refusal_variadic_mode_es
+    intent projection_refusal_variadic_mode
+    language es
+    text "el modo variádico `{mode}` no es ninguno de text, source"
   response response_projection_refusal_placeholder_mode_en
     intent projection_refusal_placeholder_mode
     language en
     text "placeholder mode `{mode}` is not one of text, source, term"
+  response response_projection_refusal_placeholder_mode_ru
+    intent projection_refusal_placeholder_mode
+    language ru
+    text "режим заполнителя `{mode}` не входит в text, source, term"
+  response response_projection_refusal_placeholder_mode_hi
+    intent projection_refusal_placeholder_mode
+    language hi
+    text "placeholder mode `{mode}` text, source, term में से कोई नहीं है"
+  response response_projection_refusal_placeholder_mode_zh
+    intent projection_refusal_placeholder_mode
+    language zh
+    text "占位符模式 `{mode}` 不是 text、source、term 之一"
+  response response_projection_refusal_placeholder_mode_es
+    intent projection_refusal_placeholder_mode
+    language es
+    text "el modo de marcador `{mode}` no es ninguno de text, source, term"

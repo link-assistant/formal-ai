@@ -205,7 +205,7 @@ fn is_handler_source(path: &Path) -> bool {
 /// count.
 ///
 /// Public because the unit suite compiles this script as a module
-/// (`tests/unit/issue_918.rs`) and asks the same question the gate asks -- which
+/// (`tests/unit/minimal_core_and_seed_metadata.rs`) and asks the same question the gate asks -- which
 /// files are handler debt -- through this function, rather than walking the
 /// directory a second time with rules that could drift from the gate's.
 pub fn source_files(root: &Path) -> Result<BTreeMap<String, usize>, String> {
@@ -473,7 +473,10 @@ mod tests {
             ("rust/src/solver_handlers/domain.rs".to_owned(), 3),
             ("rust/src/solver_handlers/interpreter.rs".to_owned(), 2),
         ]);
-        assert!(audit(&sample_ledger(), &files).is_empty());
+        assert_eq!(
+            audit(&sample_ledger(), &files),
+            [] as [std::string::String; 0]
+        );
     }
 
     #[test]
@@ -545,7 +548,10 @@ mod tests {
             ("rust/src/solver_handlers/domain.rs".to_owned(), 3),
             ("rust/src/solver_handlers/interpreter.rs".to_owned(), 2),
         ]);
-        assert!(audit(&sample_ledger_with_component(), &files).is_empty());
+        assert_eq!(
+            audit(&sample_ledger_with_component(), &files),
+            [] as [std::string::String; 0]
+        );
     }
 
     #[test]

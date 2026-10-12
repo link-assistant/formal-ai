@@ -1,0 +1,256 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+not ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 700.244792
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:43:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-literal-GPQkQg/output.mjs'"
+  code: 'ENOENT'
+  stack: |-
+    readFileSync (node:fs:449:20)
+    observe (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:25:18)
+    async TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:44:3)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+not ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 27.205667
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'export const previous = true;\n'
+    - "import { test } from 'node:test';\n" +
+    -   'const inventory = [];\n' +
+    -   "const actions = ['Copy source.mjs to target.mjs', 'Delete notes.tmp', 'Move a.mjs to b.mjs'];\n" +
+    -   '// When `input` arrives then `output` follows; this is source documentation.\n' +
+    -   '// task: words here belong to the payload.\n' +
+    -   '// Append this instruction to the end of src/rules.mjs.\n' +
+    -   '// retain these literal words, in JavaScript.\n'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: |-
+    import { test } from 'node:test';
+    const inventory = [];
+    const actions = ['Copy source.mjs to target.mjs', 'Delete notes.tmp', 'Move a.mjs to b.mjs'];
+    // When `input` arrives then `output` follows; this is source documentation.
+    // task: words here belong to the payload.
+    // Append this instruction to the end of src/rules.mjs.
+    // retain these literal words, in JavaScript.
+    
+  actual: |-
+    export const previous = true;
+    
+  operator: 'strictEqual'
+  stack: |-
+    observe (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:25:12)
+    async TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:49:3)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 27.121958
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+not ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 18.71525
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:59:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, open '/var/folders/cl/831lqjgd58v5mb_m74cfdfcw0000gn/T/formal-ai-literal-MRGsYs/output.mjs'"
+  code: 'ENOENT'
+  stack: |-
+    readFileSync (node:fs:449:20)
+    observe (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:25:18)
+    async TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:63:5)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+not ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 18.498458
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:67:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'previous\n'
+    - 'Error: this is the diagnostic example.\n'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: |-
+    Error: this is the diagnostic example.
+    
+  actual: |-
+    previous
+    
+  operator: 'strictEqual'
+  stack: |-
+    observe (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:25:12)
+    async TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:69:20)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 0.935666
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+not ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 19.616834
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:90:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'previous\n'
+    - 'First paragraph.\n' +
+    -   '\n' +
+    -   'When tasks arrive, preserve Copy a.mjs to b.mjs as quoted data.\n'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: |-
+    First paragraph.
+    
+    When tasks arrive, preserve Copy a.mjs to b.mjs as quoted data.
+    
+  actual: |-
+    previous
+    
+  operator: 'strictEqual'
+  stack: |-
+    observe (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:25:12)
+    async TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:93:20)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+not ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 18.1025
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:98:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'previous\n'
+    - 'exactly what I asked for'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'exactly what I asked for'
+  actual: |-
+    previous
+    
+  operator: 'strictEqual'
+  stack: |-
+    observe (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:25:12)
+    async TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/authored-literal-planning.test.mjs:100:5)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 103.345083
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 1.131916
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 2.0695
+  ...
+# awk: syntax error at source line 1
+#  context is
+# \\t >>> \\ <<< /bin/sh==\\"general_change_plan\\" {if(record)exit; header=\\/bin/sh; next} \\/bin/sh==identity {record=1; print header} record {print}
+# awk: bailing out at source line 1
+# Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+ok 12 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+  ---
+  duration_ms: 695.984166
+  ...
+# Subtest: an absent log is created, while a permission failure never overwrites it
+ok 13 - an absent log is created, while a permission failure never overwrites it
+  ---
+  duration_ms: 10.792916
+  ...
+# Subtest: read-back that loses earlier events cannot authorize the requested write
+ok 14 - read-back that loses earlier events cannot authorize the requested write
+  ---
+  duration_ms: 2.406375
+  ...
+# Subtest: run-only clients execute a quoted append and preserve history on retries
+not ok 15 - run-only clients execute a quoted append and preserve history on retries
+  ---
+  duration_ms: 17.614625
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/general-plan-event-append.test.mjs:76:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Command failed: /bin/sh -c mkdir -p -- .formal-ai && (lock='.formal-ai/general-change-plan.lino.lock'; tries=0; until mkdir -- "$lock" 2>/dev/null; do tries=$((tries + 1)); [ "$tries" -lt 40 ] || exit 75; sleep 0.025; done; cleanup(){ rmdir -- "$lock"; }; trap cleanup EXIT; if [ -f '.formal-ai/general-change-plan.lino' ]; then grep -Fqx -- '  id "general_change_plan_1a0c9b4bc2a5b150"' '.formal-ai/general-change-plan.lino'; status=$?; [ "$status" -le 1 ] || exit "$status"; else status=1; fi; if [ "$status" -eq 1 ]; then printf "
+    %s" 'general_change_plan
+      id "general_change_plan_1a0c9b4bc2a5b150"
+      execution_mode "literal_file"
+      terminal_state "executed"
+      goal "Set the contents of result.txt to «quote '\'' and $HOME and `echo nope`»"
+      target "result.txt"
+      step 1
+        capability "Write"
+        action "append the composed plan to .formal-ai/general-change-plan.lino"
+        expected_evidence "written plan event impulse_0e14008bd1554091"
+      step 2
+        capability "Write"
+        action "write the requested content to result.txt"
+        expected_evidence "workspace file result.txt"
+      step 3
+        capability "Run"
+        action "run the request-derived verification command"
+        expected_evidence "quote '\'' and $HOME and `echo nope`"
+        command "cat result.txt"
+      verification_command "cat result.txt"
+    ' >> '.formal-ai/general-change-plan.lino' || exit $?; fi; awk -v identity='  id "general_change_plan_1a0c9b4bc2a5b150"' "\\$0==\\\"general_change_plan\\\" {if(record)exit; header=\\$0; next} \\$0==identity {record=1; print header} record {print}" '.formal-ai/general-change-plan.lino')
+    awk: syntax error at source line 1
+     context is
+    	 >>> \ <<< /bin/sh==\"general_change_plan\" {if(record)exit; header=\/bin/sh; next} \/bin/sh==identity {record=1; print header} record {print}
+    awk: bailing out at source line 1
+    
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    genericNodeError (node:internal/errors:984:15)
+    wrappedFn (node:internal/errors:538:14)
+    checkExecSyncError (node:child_process:891:11)
+    execFileSync (node:child_process:927:15)
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/general-plan-event-append.test.mjs:90:22)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: write-only clients cannot overwrite an unobserved event stream
+ok 16 - write-only clients cannot overwrite an unobserved event stream
+  ---
+  duration_ms: 1.583791
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 9
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1086.806292

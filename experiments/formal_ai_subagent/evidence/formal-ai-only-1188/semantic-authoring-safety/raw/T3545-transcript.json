@@ -1,0 +1,19 @@
+{
+  "transcript": [
+    {
+      "tool": "bash",
+      "arguments": "{\"command\":\"rustfmt --edition 2024 rust/src/agentic_coding/general_planner/content_shape.rs rust/src/agentic_coding/general_planner.rs rust/src/agentic_coding/planner.rs rust/src/agentic_coding/source_links.rs rust/tests/unit/agentic-coding/issue_558_source_links.rs\"}",
+      "result": "Output: \nExit Code: 0"
+    }
+  ],
+  "answer": "The command completed successfully without output.",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

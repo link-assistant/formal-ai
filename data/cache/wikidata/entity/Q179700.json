@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "塑像"
+        },
+        "es": {
+          "language": "es",
+          "value": "estatua"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "主要關注作為代表人物的雕塑"
+        },
+        "es": {
+          "language": "es",
+          "value": "figura escultórica en tres dimensiones que representa una persona o un animal"
         }
       },
       "aliases": {
@@ -62,6 +70,20 @@
           {
             "language": "zh",
             "value": "铸像"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "estatuario"
+          },
+          {
+            "language": "es",
+            "value": "estatuas"
+          },
+          {
+            "language": "es",
+            "value": "estatuaria"
           }
         ]
       }

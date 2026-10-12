@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_modules.js"
+  ceiling 115
+  rationale "The factory loader now supplies both meaning and response lexicons from the seed registry, so generated compilers read canonical gap names and responses. This adds three registry projection lines."

@@ -1,0 +1,1 @@
+Declare JSON import attributes as explicit Rust no-form with canonical grammar-key binding, preserve source bytes and punctuation identities, and validate Unicode source changes through fresh digest receipts.

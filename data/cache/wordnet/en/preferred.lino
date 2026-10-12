@@ -1,0 +1,42 @@
+language en
+lemma preferred
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "more desirable than another"
+    examples ("coffee is preferable to tea" "Danny's preferred name is ‘Dan’")
+    id oewn-00737286-s
+    partOfSpeech s
+    synonyms (preferable)
+  entry
+    definition "preferred above all others and treated with partiality"
+    examples ("the favored child")
+    id oewn-01465804-s
+    partOfSpeech s
+    synonyms (favored favorite favourite best-loved pet preferent favoured)
+  entry
+    definition "like better; value more highly"
+    examples ("Some people prefer camping to staying in hotels" "We prefer sleeping outside")
+    id oewn-01830440-v
+    partOfSpeech v
+    synonyms (prefer)
+  entry
+    definition "select as an alternative over another"
+    examples ("I always choose the fish over the meat courses in this restaurant" "She opted for the job on the East coast")
+    id oewn-00681308-v
+    partOfSpeech v
+    synonyms (choose prefer opt)
+  entry
+    definition "promote over another"
+    examples ("he favors his second daughter")
+    id oewn-02405179-v
+    partOfSpeech v
+    synonyms (prefer favor favour)
+  entry
+    definition "give preference to one creditor over another"
+    id oewn-02405393-v
+    partOfSpeech v
+    synonyms (prefer)
+source "oewn:2024"

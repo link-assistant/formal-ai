@@ -1,0 +1,24 @@
+language en
+lemma heading
+license
+  name "CC BY 4.0"
+  url "https://creativecommons.org/licenses/by/4.0/"
+senses
+  entry
+    definition "a line of text serving to indicate what the passage below it is about"
+    examples ("the heading seemed to have little to do with the text")
+    id oewn-06355341-n
+    partOfSpeech n
+    synonyms (header head)
+  entry
+    definition "the direction or path along which something moves or along which it lies"
+    id oewn-08698626-n
+    partOfSpeech n
+    synonyms (bearing aim)
+  entry
+    definition "a horizontal (or nearly horizontal) passageway in a mine"
+    examples ("they dug a drift parallel with the vein")
+    id oewn-03244102-n
+    partOfSpeech n
+    synonyms (drift gallery)
+source "oewn:2024"

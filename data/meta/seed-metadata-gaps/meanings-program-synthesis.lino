@@ -1,0 +1,23 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-program-synthesis.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-e2d759940a1a96a2
+    record "program_synthesis"
+  gap seed-metadata-gap-f65ffd8a394a07be
+    record "synthesis_action_implement"
+  gap seed-metadata-gap-5f37cf2211c090d7
+    record "synthesis_action_return"
+  gap seed-metadata-gap-fcda6f9d1e9983e4
+    record "synthesis_action_write"
+  gap seed-metadata-gap-4a945cc01eba885b
+    record "synthesis_domain_numbers"
+  gap seed-metadata-gap-0adf88586f48cffd
+    record "synthesis_domain_python"
+  gap seed-metadata-gap-0c9132d226fe1d8b
+    record "synthesis_domain_tuple"
+  gap seed-metadata-gap-4ba03aaf4a3981cd
+    record "synthesis_domain_vowels"
+  gap seed-metadata-gap-682d869f06f1cbdb
+    record "synthesis_subject_function"

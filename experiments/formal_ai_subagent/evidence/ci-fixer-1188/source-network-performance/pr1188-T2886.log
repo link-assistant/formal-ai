@@ -1,0 +1,57 @@
+>> read {"filePath":"rust/tests/web/source-network-workers.test.mjs","file_path":"rust/tests/web/source-network-workers.test.mjs","path":"rust/tests/web/source-network-workers.test.mjs"}
+   <file>
+   00001| substitution_rules
+   00002|   id learned_program_plan_rules
+   00003| 
+   
+   (End of file - total 3 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/source-network-workers.test.mjs","file_path":"rust/tests/web/source-network-workers.test.mjs","new":"import assert from 'node:assert/strict';\nimport test from 'node:test';\nimport { mkdtempSync, rmSync, writeFileSync } from 'node:fs';\nimport { tmpdir } from 'node:os';\nimport { join } from 'node:path';\nimport { pathToFileURL } from 'node:url';\nimport { mapSourceNetworks } from '../../../scripts/lib/source-network-workers.mjs';\n\nasync function withWorker(body, check) {\n  const directory = mkdtempSync(join(tmpdir(), 'source-network-pool-'));\n  try {\n    const path = join(directory, 'worker.mjs');\n    writeFileSync(path, \"import {parentPort} from 'node:worker_threads';\\n\" + body);\n    await check(pathToFileURL(path));\n  } finally { rmSync(directory, { recursive: true, force: true }); }\n}\n\ntest('bounded pool preserves complete input order across actual asynchronous workers', async () => {\n  await withWorker(`parentPort.on('message', ({index,path}) => {\n    parentPort.postMessage({event:'start',path});\n    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);\n  });`, async (url) => {\n    const paths = Array.from({ length: 12 }, (_, index) => 'source-' + index);\n    const started = [];\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));\n    assert.deepEqual(receipts.map((receipt) => receipt.path), paths);\n    assert.equal(started.length, paths.length);\n    assert.equal(new Set(started).size, paths.length);\n  });\n});\n\ntest('worker errors, early exits and mismatched receipt identity never produce complete reports', async () => {\n  for (const body of [\n    \"parentPort.on('message',()=>parentPort.postMessage({error:'actual parse failure'}));\",\n    \"parentPort.on('message',()=>process.exit(0));\",\n    \"parentPort.on('message',({index})=>parentPort.postMessage({index,receipt:{path:'wrong-source'}}));\",\n  ]) await withWorker(body, async (url) => {\n    await assert.rejects(mapSourceNetworks(['expected-source','second-source'], url, {}));\n  });\n});\n","newString":"import assert from 'node:assert/strict';\nimport test from 'node:test';\nimport { mkdtempSync, rmSync, writeFileSync } from 'node:fs';\nimport { tmpdir } from 'node:os';\nimport { join } from 'node:path';\nimport { pathToFileURL } from 'node:url';\nimport { mapSourceNetworks } from '../../../scripts/lib/source-network-workers.mjs';\n\nasync function withWorker(body, check) {\n  const directory = mkdtempSync(join(tmpdir(), 'source-network-pool-'));\n  try {\n    const path = join(directory, 'worker.mjs');\n    writeFileSync(path, \"import {parentPort} from 'node:worker_threads';\\n\" + body);\n    await check(pathToFileURL(path));\n  } finally { rmSync(directory, { recursive: true, force: true }); }\n}\n\ntest('bounded pool preserves complete input order across actual asynchronous workers', async () => {\n  await withWorker(`parentPort.on('message', ({index,path}) => {\n    parentPort.postMessage({event:'start',path});\n    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);\n  });`, async (url) => {\n    const paths = Array.from({ length: 12 }, (_, index) => 'source-' + index);\n    const started = [];\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));\n    assert.deepEqual(receipts.map((receipt) => receipt.path), paths);\n    assert.equal(started.length, paths.length);\n    assert.equal(new Set(started).size, paths.length);\n  });\n});\n\ntest('worker errors, early exits and mismatched receipt identity never produce complete reports', async () => {\n  for (const body of [\n    \"parentPort.on('message',()=>parentPort.postMessage({error:'actual parse failure'}));\",\n    \"parentPort.on('message',()=>process.exit(0));\",\n    \"parentPort.on('message',({index})=>parentPort.postMessage({index,receipt:{path:'wrong-source'}}));\",\n  ]) await withWorker(body, async (url) => {\n    await assert.rejects(mapSourceNetworks(['expected-source','second-source'], url, {}));\n  });\n});\n","new_str":"import assert from 'node:assert/strict';\nimport test from 'node:test';\nimport { mkdtempSync, rmSync, writeFileSync } from 'node:fs';\nimport { tmpdir } from 'node:os';\nimport { join } from 'node:path';\nimport { pathToFileURL } from 'node:url';\nimport { mapSourceNetworks } from '../../../scripts/lib/source-network-workers.mjs';\n\nasync function withWorker(body, check) {\n  const directory = mkdtempSync(join(tmpdir(), 'source-network-pool-'));\n  try {\n    const path = join(directory, 'worker.mjs');\n    writeFileSync(path, \"import {parentPort} from 'node:worker_threads';\\n\" + body);\n    await check(pathToFileURL(path));\n  } finally { rmSync(directory, { recursive: true, force: true }); }\n}\n\ntest('bounded pool preserves complete input order across actual asynchronous workers', async () => {\n  await withWorker(`parentPort.on('message', ({index,path}) => {\n    parentPort.postMessage({event:'start',path});\n    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);\n  });`, async (url) => {\n    const paths = Array.from({ length: 12 }, (_, index) => 'source-' + index);\n    const started = [];\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));\n    assert.deepEqual(receipts.map((receipt) => receipt.path), paths);\n    assert.equal(started.length, paths.length);\n    assert.equal(new Set(started).size, paths.length);\n  });\n});\n\ntest('worker errors, early exits and mismatched receipt identity never produce complete reports', async () => {\n  for (const body of [\n    \"parentPort.on('message',()=>parentPort.postMessage({error:'actual parse failure'}));\",\n    \"parentPort.on('message',()=>process.exit(0));\",\n    \"parentPort.on('message',({index})=>parentPort.postMessage({index,receipt:{path:'wrong-source'}}));\",\n  ]) await withWorker(body, async (url) => {\n    await assert.rejects(mapSourceNetworks(['expected-source','second-source'], url, {}));\n  });\n});\n","new_string":"import assert from 'node:assert/strict';\nimport test from 'node:test';\nimport { mkdtempSync, rmSync, writeFileSync } from 'node:fs';\nimport { tmpdir } from 'node:os';\nimport { join } from 'node:path';\nimport { pathToFileURL } from 'node:url';\nimport { mapSourceNetworks } from '../../../scripts/lib/source-network-workers.mjs';\n\nasync function withWorker(body, check) {\n  const directory = mkdtempSync(join(tmpdir(), 'source-network-pool-'));\n  try {\n    const path = join(directory, 'worker.mjs');\n    writeFileSync(path, \"import {parentPort} from 'node:worker_threads';\\n\" + body);\n    await check(pathToFileURL(path));\n  } finally { rmSync(directory, { recursive: true, force: true }); }\n}\n\ntest('bounded pool preserves complete input order across actual asynchronous workers', async () => {\n  await withWorker(`parentPort.on('message', ({index,path}) => {\n    parentPort.postMessage({event:'start',path});\n    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);\n  });`, async (url) => {\n    const paths = Array.from({ length: 12 }, (_, index) => 'source-' + index);\n    const started = [];\n    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));\n    assert.deepEqual(receipts.map((receipt) => receipt.path), paths);\n    assert.equal(started.length, paths.length);\n    assert.equal(new Set(started).size, paths.length);\n  });\n});\n\ntest('worker errors, early exits and mismatched receipt identity never produce complete reports', async () => {\n  for (const body of [\n    \"parentPort.on('message',()=>parentPort.postMessage({error:'actual parse failure'}));\",\n    \"parentPort.on('message',()=>process.exit(0));\",\n    \"parentPort.on('message',({index})=>parentPort.postMessage({index,receipt:{path:'wrong-source'}}));\",\n  ]) await withWorker(body, async (url) => {\n    await assert.rejects(mapSourceNetworks(['expected-source','second-source'], url, {}));\n  });\n});\n","old":"substitution_rules\n  id learned_program_plan_rules\n","oldString":"substitution_rules\n  id learned_program_plan_rules\n","old_str":"substitution_rules\n  id learned_program_plan_rules\n","old_string":"substitution_rules\n  id learned_program_plan_rules\n","path":"rust/tests/web/source-network-workers.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/source-network-workers.test.mjs"}
+   Output: ac2b754c83bff62965997462fa51fced7f7c02d6872d829bb14e06a79c112cdd  rust/tests/web/source-network-workers.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `substitution_rules
+  id learned_program_plan_rules
+` with ``import assert from 'node:assert/strict';
+import test from 'node:test';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { mapSourceNetworks } from '../../../scripts/lib/source-network-workers.mjs';
+
+async function withWorker(body, check) {
+  const directory = mkdtempSync(join(tmpdir(), 'source-network-pool-'));
+  try {
+    const path = join(directory, 'worker.mjs');
+    writeFileSync(path, "import {parentPort} from 'node:worker_threads';\n" + body);
+    await check(pathToFileURL(path));
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+}
+
+test('bounded pool preserves complete input order across actual asynchronous workers', async () => {
+  await withWorker(`parentPort.on('message', ({index,path}) => {
+    parentPort.postMessage({event:'start',path});
+    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);
+  });`, async (url) => {
+    const paths = Array.from({ length: 12 }, (_, index) => 'source-' + index);
+    const started = [];
+    const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));
+    assert.deepEqual(receipts.map((receipt) => receipt.path), paths);
+    assert.equal(started.length, paths.length);
+    assert.equal(new Set(started).size, paths.length);
+  });
+});
+
+test('worker errors, early exits and mismatched receipt identity never produce complete reports', async () => {
+  for (const body of [
+    "parentPort.on('message',()=>parentPort.postMessage({error:'actual parse failure'}));",
+    "parentPort.on('message',()=>process.exit(0));",
+    "parentPort.on('message',({index})=>parentPort.postMessage({index,receipt:{path:'wrong-source'}}));",
+  ]) await withWorker(body, async (url) => {
+    await assert.rejects(mapSourceNetworks(['expected-source','second-source'], url, {}));
+  });
+});
+`` in `rust/tests/web/source-network-workers.test.mjs` and observed the result.

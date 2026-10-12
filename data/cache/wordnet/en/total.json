@@ -1,0 +1,101 @@
+{
+  "lemma": "total",
+  "language": "en",
+  "source": "oewn:2024",
+  "license": {
+    "name": "CC BY 4.0",
+    "url": "https://creativecommons.org/licenses/by/4.0/"
+  },
+  "senses": [
+    {
+      "id": "oewn-04360881-n",
+      "partOfSpeech": "n",
+      "definition": "the whole amount",
+      "synonyms": [
+        "sum",
+        "totality",
+        "aggregate"
+      ]
+    },
+    {
+      "id": "oewn-05869651-n",
+      "partOfSpeech": "n",
+      "definition": "a quantity obtained by the addition of a group of numbers",
+      "synonyms": [
+        "sum",
+        "amount"
+      ]
+    },
+    {
+      "id": "oewn-00517305-s",
+      "partOfSpeech": "s",
+      "definition": "constituting the full quantity or extent; complete",
+      "examples": [
+        "an entire town devastated by an earthquake",
+        "gave full attention",
+        "a total failure"
+      ],
+      "synonyms": [
+        "entire",
+        "full"
+      ]
+    },
+    {
+      "id": "oewn-00524974-s",
+      "partOfSpeech": "s",
+      "definition": "complete in extent or degree and in every particular",
+      "examples": [
+        "a full game",
+        "a total eclipse",
+        "a total disaster"
+      ],
+      "synonyms": [
+        "full"
+      ]
+    },
+    {
+      "id": "oewn-02651091-v",
+      "partOfSpeech": "v",
+      "definition": "add up in number or quantity",
+      "examples": [
+        "The bills amounted to $2,000",
+        "The bill came to $2,000"
+      ],
+      "synonyms": [
+        "number",
+        "add up",
+        "come",
+        "amount"
+      ]
+    },
+    {
+      "id": "oewn-00951320-v",
+      "partOfSpeech": "v",
+      "definition": "determine the sum of",
+      "examples": [
+        "Add all the people in this town to those of the neighboring town"
+      ],
+      "synonyms": [
+        "tot",
+        "tot up",
+        "sum",
+        "sum up",
+        "summate",
+        "tote up",
+        "add",
+        "add together",
+        "tally",
+        "add up"
+      ]
+    },
+    {
+      "id": "oewn-00260268-v",
+      "partOfSpeech": "v",
+      "definition": "damage beyond the point of repair",
+      "examples": [
+        "My son totaled our new car",
+        "the rock star totals his guitar at every concert"
+      ]
+    }
+  ]
+}

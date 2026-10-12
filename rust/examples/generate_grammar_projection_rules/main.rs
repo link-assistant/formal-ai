@@ -305,6 +305,9 @@ const NO_FORM_KINDS: &[(&str, &[&str])] = &[
     // (anonymous-token capture) is upstream-shaped and joins the
     // update_expression queue.
     ("await_expression", &["javascript", "typescript"]),
+    // Append dispositions to preserve existing serialized seed identities.
+    ("object_assignment_pattern", &["rust"]),
+    ("import-attribute", &["rust"]),
 ];
 
 /// The four L8 legs: (from grammar, target grammar).
@@ -412,7 +415,7 @@ fn main() {
         }
     }
     for (kind, _) in NO_FORM_KINDS {
-        if !all_kinds.contains(*kind) {
+        if !all_kinds.contains(&kind.replace('-', "_")) {
             fantasy.push(*kind);
         }
     }
