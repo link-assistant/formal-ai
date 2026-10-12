@@ -156,6 +156,8 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+          sparse-checkout: /.github/
+          sparse-checkout-cone-mode: false
 
       - uses: actions/dependency-review-action@v5
         with:
