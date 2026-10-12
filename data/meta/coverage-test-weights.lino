@@ -64,7 +64,7 @@ coverage-test-weights
   test "coding_discovery::multilingual::composition_from_sources_holds_in_five_languages"
     seconds 441.777715
   test "coding_discovery::multilingual::five_language_paraphrases_share_specs_concepts_and_verified_compositions"
-    seconds 60.000000
+    seconds 405.454210081
   test "coding_discovery::routing::coding_task_is_not_claimed_by_concept_or_arithmetic_routes"
     seconds 113.296712
   test "coding_discovery::structural_composition::held_out_arithmetic_scan_and_geometry_schemas_execute"
@@ -275,3 +275,27 @@ coverage-test-weights
     source-batch 15
     source-receipt-sha256 d54426a6b0b7e29dff76ed7fa4be366554e769636ac3981fd5186f8895b82670
     execution-source-authentication Unknown
+  # Successful singleton process; run38251867858/attempt1/job114832679857/artifact11752831054.
+  # Receipt 2f8f213dfb66308f8b1846ae55812d0966f01988498eed6cc12fffcdc9aab594; execution-source authentication remains Unknown.
+  test "compatibility_research_evidence::a_source_already_read_is_not_read_again"
+    seconds 78.87220316199993
+  # Successful singleton process; run38251867858/attempt1/job114832679857/artifact11752831054.
+  # Receipt 7f6b8413f85123e563e53bcf8011228123054f098588a5a3842494278474aa68; execution-source authentication remains Unknown.
+  test "issue_1133_hive_mind_three_runs::extended::a_fetch_only_client_progresses_past_the_read_without_refetching"
+    seconds 74.48652463800018
+  # Successful singleton process; run38251867858/attempt1/job114832679857/artifact11752831054.
+  # Receipt 54205caf39c0dfe897898817a8ec418d0b48a22f2b20168e4924424e21600b0e; execution-source authentication remains Unknown.
+  test "repository_workspace::issue_1138_repository_workspace::diff_is_empty_for_an_untouched_clone"
+    seconds 44.89678652200004
+  # Successful singleton process; run38251867858/attempt1/job114832679857/artifact11752831054.
+  # Receipt f3da28dd01e18db9d85c79d2e3999beaf597e5edf97106d38a99ee8da2c7d8c3; execution-source authentication remains Unknown.
+  test "repository_workspace::issue_1138_repository_workspace::a_step_that_did_not_run_remains_planned"
+    seconds 44.448130010999975
+  # Successful singleton process; run38251867858/attempt1/job114832679857/artifact11752831054.
+  # Receipt 934ec4fa33871a1902d6617a57a84acbea174b0e50c39a4ec8f158335cd005fb; execution-source authentication remains Unknown.
+  test "issue_758_capability_routing::local_search_aliases_never_turn_into_web_search_calls"
+    seconds 18.750436910000165
+  # Successful singleton process; run38251867858/attempt1/job114832679857/artifact11752831054.
+  # Receipt e7b45a320129bf5e30ad8290185c067ff4d35336de369fb404e5ae073ceeb0ae; execution-source authentication remains Unknown.
+  test "issue_991_how_to_http::chat_completions_honours_a_service_opt_out"
+    seconds 12.142298100000014
