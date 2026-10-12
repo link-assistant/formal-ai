@@ -381,7 +381,9 @@ fn formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves() {
             "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/{capture}.json"
         ));
         assert_literal_capture_transition(
-            &repository_file(&format!("{base}/session.json")),
+            &repository_file(&format!(
+                "docs/case-studies/pull-request-1188/native-protocol-captures/history/{capture}-legacy-4a560.json"
+            )),
             &observed,
         );
         assert_eq!(
