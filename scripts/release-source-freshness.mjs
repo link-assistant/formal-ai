@@ -1,5 +1,6 @@
 // Keep guarded release source within the exact main CI run and its own recorded version child.
 import assert from 'node:assert/strict';
+import {WITNESS,validateVersionWitness} from './refresh-release-specification-witness.mjs';
 import {execFileSync} from 'node:child_process';
 import {readFileSync,writeFileSync,existsSync,realpathSync} from 'node:fs';
 import {join,resolve} from 'node:path';
@@ -56,7 +57,7 @@ export function checkReleaseFreshness({cwd,environment,event,phase,stateDirector
     assert.equal(remote,context.head,'main advanced before version commit');
     assert.equal(record.expectedTree,null);assert.equal(record.child,null);
     const changed=git(['diff','--cached','--name-only','-z']).split('\0').filter(Boolean);
-    const fixed=new Set(['rust/Cargo.toml','rust/Cargo.lock','CHANGELOG.md','data/meta/self-hosting-ledger.lino','docs/status.md','docs/benchmarks.md','README.md','docs/case-studies/issue-711/fragment-release-map.tsv']);
+    const fixed=new Set([WITNESS,'rust/Cargo.toml','rust/Cargo.lock','CHANGELOG.md','data/meta/self-hosting-ledger.lino','docs/status.md','docs/benchmarks.md','README.md','docs/case-studies/issue-711/fragment-release-map.tsv']);
     assert.ok(changed.includes('rust/Cargo.toml'),'version child must update actual Cargo manifest');
     for(const path of changed)assert.ok(fixed.has(path)||/^changelog\.d\/[^/]+\.md$/u.test(path)||/^docs\/changelog\/[^/]+\.md$/u.test(path),'undeclared version-child source change: '+path);
     const originalManifest=git(['show',context.head+':rust/Cargo.toml']);
@@ -66,6 +67,10 @@ export function checkReleaseFreshness({cwd,environment,event,phase,stateDirector
     assert.ok(beforeVersion&&afterVersion,'actual Cargo package version missing');
     assert.match(afterVersion[0],/^version\s*=\s*"(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)"/u);
     assert.equal(originalManifest.replace(version,'$1<VERSION>$2'),nextManifest.replace(version,'$1<VERSION>$2'),'Cargo manifest may change only the original version projection');
+    if(changed.includes(WITNESS)) {
+      const bytes=ref=>execFileSync('git',['show',ref+':'+WITNESS],{cwd,timeout:30000,maxBuffer:8*1024*1024});
+      validateVersionWitness(bytes(context.head),bytes(''),originalManifest,nextManifest);
+    }
     if(changed.includes('rust/Cargo.lock')) {
       const pattern=/(\[\[package\]\]\s*\nname\s*=\s*"formal-ai"\s*\nversion\s*=\s*")[^"]+(")/u;
       const originalLock=git(['show',context.head+':rust/Cargo.lock']),nextLock=git(['show',':rust/Cargo.lock']);
