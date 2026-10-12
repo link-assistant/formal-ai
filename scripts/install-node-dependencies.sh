@@ -24,6 +24,11 @@ set -euo pipefail
 
 directory="${1:?usage: install-node-dependencies.sh DIRECTORY}"
 verbose="${INSTALL_NODE_DEPENDENCIES_VERBOSE:-0}"
+mode="${INSTALL_NODE_DEPENDENCIES_MODE:-install}"
+case "$mode" in
+  install|ci) ;;
+  *) echo "Unsupported dependency installation mode: $mode" >&2; exit 2 ;;
+esac
 
 stderr_log="$(mktemp)"
 unexpected="$(mktemp)"
@@ -37,7 +42,7 @@ trace() {
 
 trace "installing in '$directory' (npm $(npm --version 2>/dev/null || echo unknown))"
 
-if ! npm --prefix "$directory" install --no-audit --no-fund 2>"$stderr_log"; then
+if ! npm --prefix "$directory" "$mode" --no-audit --no-fund 2>"$stderr_log"; then
   cat "$stderr_log" >&2
   exit 1
 fi

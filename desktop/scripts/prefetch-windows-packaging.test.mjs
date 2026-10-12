@@ -28,7 +28,7 @@ test("captured helper binds selected source and lock even when selected release 
   fs.writeFileSync(path.join(desktop,"package.json"),"{}\n");fs.writeFileSync(path.join(desktop,"package-lock.json"),"{}\n");
   const git=args=>execFileSync("git",args,{cwd:root,encoding:"utf8"}).trim();git(["init","-q"]);git(["add","desktop"]);git(["-c","user.name=Fixture","-c","user.email=fixture@example.invalid","commit","-qm","selected release"]);
   const source={source_commit:git(["rev-parse","HEAD"]),source_tree:git(["rev-parse","HEAD^{tree}"])};
-  const files=["prefetch-builder-toolsets.mjs","prefetch-windows-packaging.mjs"].map(name=>{const bytes=Buffer.from(name);fs.writeFileSync(path.join(protocol,name),bytes);return{name,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")};});
+  const files=["install-node-dependencies.sh","prefetch-builder-toolsets.mjs","prefetch-windows-packaging.mjs"].map(name=>{const bytes=Buffer.from(name);fs.writeFileSync(path.join(protocol,name),bytes);return{name,bytes:bytes.length,sha256:createHash("sha256").update(bytes).digest("hex")};});
   fs.writeFileSync(path.join(protocol,"packaging-protocol-selection.json"),JSON.stringify({commit:"trusted-workflow",files}));
   assert.equal(fs.existsSync(path.join(desktop,"scripts/prefetch-windows-packaging.mjs")),false);
   validateSelectedDesktop(desktop,source,protocol,"trusted-workflow");

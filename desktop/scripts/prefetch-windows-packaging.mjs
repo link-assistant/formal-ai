@@ -25,7 +25,7 @@ export function validateSelectedDesktop(selectedDesktop, source, protocolDirecto
   assert.equal(git(["rev-parse", "HEAD^{tree}"]), source.source_tree);
   const protocol = JSON.parse(fs.readFileSync(path.join(protocolDirectory, "packaging-protocol-selection.json"), "utf8"));
   assert.equal(protocol.commit, expectedProtocolCommit);
-  assert.deepEqual(protocol.files.map(file => file.name).sort(), ["prefetch-builder-toolsets.mjs", "prefetch-windows-packaging.mjs"]);
+  assert.deepEqual(protocol.files.map(file => file.name).sort(), ["install-node-dependencies.sh", "prefetch-builder-toolsets.mjs", "prefetch-windows-packaging.mjs"]);
   for (const file of protocol.files) {
     const bytes = fs.readFileSync(path.join(protocolDirectory, file.name));
     assert.equal(bytes.length, file.bytes);

@@ -437,7 +437,7 @@ jobs:
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
-          cp desktop/scripts/prefetch-windows-packaging.mjs desktop/scripts/prefetch-builder-toolsets.mjs "$protocol_dir/"
+          cp desktop/scripts/prefetch-windows-packaging.mjs desktop/scripts/prefetch-builder-toolsets.mjs scripts/install-node-dependencies.sh "$protocol_dir/"
           echo "FORMAL_AI_PACKAGING_PROTOCOL_COMMIT=$NATIVE_PROTOCOL_COMMIT" >> "$GITHUB_ENV"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
@@ -453,7 +453,7 @@ jobs:
           const record={version:1,commit:process.env.NATIVE_PROTOCOL_COMMIT,
             tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
           writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
-          const packagingFiles=['prefetch-builder-toolsets.mjs','prefetch-windows-packaging.mjs'].map(name=>{const bytes=readFileSync(join(directory,name));return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+          const packagingFiles=['install-node-dependencies.sh','prefetch-builder-toolsets.mjs','prefetch-windows-packaging.mjs'].map(name=>{const bytes=readFileSync(join(directory,name));return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
           writeFileSync(join(directory,'packaging-protocol-selection.json'),JSON.stringify({...record,files:packagingFiles})+'\n');
           NODE
       - uses: actions/checkout@v7
@@ -518,7 +518,8 @@ jobs:
         if: matrix.label == 'windows-arm64'
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/prefetch-windows-packaging.mjs" "$GITHUB_WORKSPACE/desktop" "$GITHUB_WORKSPACE/native-source/source-selection.json" --validate-only
       - name: Install desktop dependencies
-        run: scripts/install-node-dependencies.sh desktop
+        env: {INSTALL_NODE_DEPENDENCIES_MODE: "${{ matrix.label == 'windows-arm64' && 'ci' || 'install' }}"}
+        run: if [ "${{ matrix.label }}" = windows-arm64 ]; then bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/install-node-dependencies.sh" "$GITHUB_WORKSPACE/desktop"; else scripts/install-node-dependencies.sh desktop; fi
       - name: Prefetch electron-builder toolsets
         working-directory: desktop
         run: |
