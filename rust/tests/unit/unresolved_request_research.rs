@@ -436,8 +436,20 @@ fn the_plan_landed_with_its_data_example_documentation_and_release_note() {
             "the matrix keeps R873-{id}"
         );
     }
-    let changelog =
+    let mut changelog =
         std::fs::read_to_string(root.join("CHANGELOG.md")).expect("CHANGELOG.md is readable");
+    if let Ok(entries) = std::fs::read_dir(root.join("docs/changelog")) {
+        for path in entries.filter_map(Result::ok).map(|entry| entry.path()) {
+            if path
+                .file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name.starts_with("releases-from-") && name.ends_with(".md"))
+                && let Ok(archive) = std::fs::read_to_string(path)
+            {
+                changelog.push_str(&archive);
+            }
+        }
+    }
     assert!(
         changelog.contains("issue #873"),
         "the release note for issue #873 shipped"
