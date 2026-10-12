@@ -87,8 +87,6 @@ fn planner_walks_the_google_trends_catalog_recipe() {
     }
 }
 
-include!("../../fixtures/native-protocol-observation.rs");
-
 #[test]
 fn committed_agent_cli_session_matches_a_fresh_google_trends_run() {
     let committed = include_str!(
@@ -109,12 +107,35 @@ fn committed_agent_cli_session_matches_a_fresh_google_trends_run() {
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
     );
-    let observed = include_str!(
-        "../../../../docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/google-trends.json"
-    );
-    assert_protocol_transition(committed, observed);
+    assert_eq!(captured["task"].as_str(), Some(GOOGLE_TRENDS_CATALOG_TASK));
+    let steps = captured["steps"].as_array().expect("complete native steps");
+    assert_eq!(steps.len(), 2);
+    assert_eq!(steps[0]["tool"].as_str(), Some("write_file"));
     assert_eq!(
-        observed, rendered,
+        steps[0]["arguments"]["content"].as_str(),
+        Some(recipe::render_document().as_str())
+    );
+    assert_eq!(steps[1]["tool"].as_str(), Some("run_command"));
+    let expected_command = recipe::verification_command();
+    assert_eq!(
+        steps[1]["arguments"]["command"].as_str(),
+        Some(expected_command.as_str())
+    );
+    let receipt: serde_json::Value =
+        serde_json::from_str(steps[1]["result"].as_str().expect("typed command receipt"))
+            .expect("valid native command receipt JSON");
+    assert_eq!(
+        receipt["schema"].as_str(),
+        Some("command-execution-receipt/v1")
+    );
+    assert_eq!(receipt["command"].as_str(), Some(expected_command.as_str()));
+    assert_eq!(receipt["exit_code"].as_i64(), Some(0));
+    assert_eq!(receipt["complete"].as_bool(), Some(true));
+    assert_eq!(receipt["timed_out"].as_bool(), Some(false));
+    assert_eq!(receipt["truncated"].as_bool(), Some(false));
+    assert_eq!(receipt["stderr"].as_str(), Some(""));
+    assert_eq!(
+        committed, rendered,
         "the complete actual native session must replay byte-for-byte"
     );
 }

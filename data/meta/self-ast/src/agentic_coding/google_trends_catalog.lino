@@ -2,30 +2,30 @@ self_ast_census
   target src/agentic_coding/google_trends_catalog.rs
   language rust
   fidelity full_ast
-  byte_len 5975
-  line_count 152
-  content_id source_module_0269b7242306e817
+  byte_len 6073
+  line_count 155
+  content_id source_module_b875edcd75d13461
   symbol_count 11
   symbols
     const GOOGLE_TRENDS_CATALOG_PATH 14 14
-    const GOOGLE_TRENDS_CATALOG_TASK 17 22
-    const GOOGLE_TRENDS_KEYWORDS 22 22
-    function is_google_trends_catalog_task 31 40
-    function render_document 44 46
-    function final_answer 50 68
-    function verification_command 72 76
-    function render_catalog 78 135
-    function field 137 140
-    function escape_value 142 148
-    function round_confidence 150 152
+    const GOOGLE_TRENDS_CATALOG_TASK 17 21
+    const GOOGLE_TRENDS_KEYWORDS 21 21
+    function is_google_trends_catalog_task 30 39
+    function render_document 43 45
+    function final_answer 49 67
+    function verification_command 71 79
+    function render_catalog 81 138
+    function field 140 143
+    function escape_value 145 151
+    function round_confidence 153 155
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4428
-    named_node_count 907
-    distinct_node_kinds 52
+    total_link_count 4499
+    named_node_count 919
+    distinct_node_kinds 53
     node_kinds
       arguments 59
       array_expression 1
@@ -50,14 +50,14 @@ self_ast_census
       function_item 8
       generic_function 1
       generic_type 1
-      identifier 182
+      identifier 187
       if_expression 3
       inner_doc_comment_marker 6
       integer_literal 20
       let_condition 3
-      let_declaration 14
+      let_declaration 15
       line_comment 13
-      macro_invocation 9
+      macro_invocation 10
       mutable_specifier 21
       outer_doc_comment_marker 7
       parameter 9
@@ -69,9 +69,10 @@ self_ast_census
       scoped_identifier 4
       scoped_use_list 1
       source_file 1
-      string_content 63
-      string_literal 47
-      token_tree 15
+      string_content 64
+      string_literal 48
+      super 1
+      token_tree 17
       tuple_struct_pattern 3
       type_arguments 2
       type_identifier 9

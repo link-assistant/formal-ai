@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/shell_command_policy.rs
   language rust
   fidelity full_ast
-  byte_len 17745
-  line_count 465
-  content_id source_module_10a051adb85c9867
-  symbol_count 19
+  byte_len 16650
+  line_count 435
+  content_id source_module_eae445beb5eb3f83
+  symbol_count 17
   symbols
     struct Sentence 21 26
     function sentences 37 44
@@ -23,27 +23,25 @@ self_ast_census
     function is_prose_word 335 407
     const PROSE_WORDS 336 402
     function shell_quotes_paired 410 431
-    module negated_command_policy_tests 434 465
-    function leading_negation_keeps_coordinated_commands_inside_policy 438 449
-    function operands_quoted_data_and_conditional_orders_do_not_issue_negation 452 464
+    module negated_command_policy_tests 435 435
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 10419
-    named_node_count 2091
-    distinct_node_kinds 79
+    total_link_count 9964
+    named_node_count 2008
+    distinct_node_kinds 77
     node_kinds
       abstract_type 1
       arguments 153
-      array_expression 4
+      array_expression 2
       array_type 2
       assignment_expression 7
-      attribute 3
-      attribute_item 3
+      attribute 2
+      attribute_item 2
       binary_expression 47
-      block 55
+      block 51
       boolean_literal 6
       break_expression 2
       call_expression 153
@@ -53,23 +51,21 @@ self_ast_census
       const_item 1
       continue_expression 7
       crate 3
-      declaration_list 1
       doc_comment 85
       else_clause 4
-      escape_sequence 2
-      expression_statement 54
+      expression_statement 48
       field_declaration 2
       field_declaration_list 1
       field_expression 127
       field_identifier 132
       field_initializer 3
       field_initializer_list 2
-      for_expression 8
-      function_item 16
+      for_expression 6
+      function_item 14
       function_type 1
       generic_function 1
       generic_type 12
-      identifier 375
+      identifier 357
       if_expression 22
       index_expression 13
       inner_doc_comment_marker 12
@@ -80,12 +76,12 @@ self_ast_census
       lifetime 5
       lifetime_parameter 1
       line_comment 113
-      macro_invocation 7
+      macro_invocation 3
       mod_item 1
       mutable_specifier 6
       outer_doc_comment_marker 73
       parameter 24
-      parameters 17
+      parameters 15
       parenthesized_expression 3
       primitive_type 37
       range_expression 13
@@ -94,16 +90,16 @@ self_ast_census
       return_expression 5
       scoped_identifier 14
       scoped_type_identifier 1
-      scoped_use_list 2
+      scoped_use_list 1
       self 1
       shorthand_field_initializer 1
       source_file 1
-      string_content 79
-      string_literal 77
+      string_content 65
+      string_literal 65
       struct_expression 2
       struct_item 1
-      super 13
-      token_tree 14
+      super 12
+      token_tree 6
       tuple_expression 1
       tuple_pattern 8
       tuple_struct_pattern 3
@@ -111,6 +107,6 @@ self_ast_census
       type_identifier 21
       type_parameters 1
       unary_expression 19
-      use_declaration 2
-      use_list 2
+      use_declaration 1
+      use_list 1
       visibility_modifier 13

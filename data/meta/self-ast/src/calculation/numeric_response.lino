@@ -2,9 +2,9 @@ self_ast_census
   target src/calculation/numeric_response.rs
   language rust
   fidelity signature
-  byte_len 1348
+  byte_len 1341
   line_count 40
-  content_id source_module_cd135a8a847ee2c9
+  content_id source_module_0c4e7b6a605fcc47
   symbol_count 2
   symbols
     function numeric_calculation_response 2 40
