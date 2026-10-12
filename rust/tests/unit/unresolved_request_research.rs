@@ -443,7 +443,8 @@ fn the_plan_landed_with_its_data_example_documentation_and_release_note() {
             if path
                 .file_name()
                 .and_then(|name| name.to_str())
-                .is_some_and(|name| name.starts_with("releases-from-") && name.ends_with(".md"))
+                .is_some_and(|name| name.starts_with("releases-from-"))
+                && path.extension().is_some_and(|extension| extension == "md")
                 && let Ok(archive) = std::fs::read_to_string(path)
             {
                 changelog.push_str(&archive);
