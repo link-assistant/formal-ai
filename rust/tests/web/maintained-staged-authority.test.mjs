@@ -11,7 +11,7 @@ const YAML = createRequire(path.join(root, 'package.json'))('yaml');
 const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
 function layout() {
   const directory = fs.mkdtempSync(path.join(tmpdir(), 'maintained-stage-controls-'));
-  const files = ['scripts/maintained-staged-authority.mjs', 'scripts/staged-caller-authority.mjs', 'scripts/governed-github-command-provider.mjs', 'scripts/release-source-freshness.mjs', 'scripts/generate-staged-release.mjs', 'scripts/lib/ci-speed-workflows.mjs', '.github/workflows/release.yml', '.github/workflows/release-staged.yml', ...['stage-source-coverage.json', 'candidate-release-caller.yml', 'candidate-output-bindings.json', 'original-release-workflow.yml'].map(name => evidence + name)];
+  const files = ['scripts/maintained-staged-authority.mjs', 'scripts/staged-caller-authority.mjs', 'scripts/governed-github-command-provider.mjs', 'scripts/release-source-freshness.mjs', 'scripts/refresh-release-specification-witness.mjs', 'scripts/generate-staged-release.mjs', 'scripts/lib/ci-speed-workflows.mjs', '.github/workflows/release.yml', '.github/workflows/release-staged.yml', ...['stage-source-coverage.json', 'candidate-release-caller.yml', 'candidate-output-bindings.json', 'original-release-workflow.yml'].map(name => evidence + name)];
   for (const file of files) {
     fs.mkdirSync(path.dirname(path.join(directory, file)), {
       recursive: true
@@ -48,7 +48,7 @@ test('maintained source compiler conserves full release and rejects receipt and 
     await assert.rejects(() => module.observeMaintainedStagedContext({
       ...receipt
     }, {}));
-    for (const name of ['governed-github-command-provider.mjs', 'staged-caller-authority.mjs', 'release-source-freshness.mjs', 'generate-staged-release.mjs', 'lib/ci-speed-workflows.mjs', 'maintained-staged-authority.mjs']) {
+    for (const name of ['governed-github-command-provider.mjs', 'staged-caller-authority.mjs', 'release-source-freshness.mjs', 'refresh-release-specification-witness.mjs', 'generate-staged-release.mjs', 'lib/ci-speed-workflows.mjs', 'maintained-staged-authority.mjs']) {
       const file = path.join(directory, 'scripts', name),
         before = fs.readFileSync(file, 'utf8');
       fs.writeFileSync(file, before + '\n// changed source\n');

@@ -99,7 +99,7 @@ export async function main(environment=process.env) {
     const trusted=resolve(process.cwd(),'_protocol');
     assert.equal(execFileSync('git',['-C',trusted,'rev-parse','HEAD'],{encoding:'utf8',timeout:30000}).trim(),environment.GITHUB_SHA,'immutable protocol checkout differs');
     execFileSync('git',['-C',trusted,'diff','--exit-code','HEAD'],{encoding:'utf8',timeout:30000});
-    for(const file of ['scripts/maintained-staged-authority.mjs','scripts/staged-caller-authority.mjs','scripts/governed-github-command-provider.mjs','scripts/generate-staged-release.mjs','scripts/lib/ci-speed-workflows.mjs','scripts/release-source-freshness.mjs','package.json','bun.lock','.bun-version']) {
+    for(const file of ['scripts/maintained-staged-authority.mjs','scripts/staged-caller-authority.mjs','scripts/governed-github-command-provider.mjs','scripts/generate-staged-release.mjs','scripts/lib/ci-speed-workflows.mjs','scripts/release-source-freshness.mjs','scripts/refresh-release-specification-witness.mjs','package.json','bun.lock','.bun-version']) {
       const entry=execFileSync('git',['-C',trusted,'ls-tree','HEAD','--',file],{encoding:'utf8',timeout:5000}).trim();
       const [header,declaredPath]=entry.split('\t');assert.match(header,/^100644 blob [a-f0-9]{40}$/u);assert.equal(declaredPath,file);
       const immutable=execFileSync('git',['-C',trusted,'show','HEAD:'+file],{timeout:5000,maxBuffer:4194304});
