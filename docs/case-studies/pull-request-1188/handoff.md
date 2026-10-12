@@ -1,3 +1,11 @@
+## Release-first checkpoint — observed 50c5582d terminal CI
+
+The sole collector's 2026-10-12T18:01:08.092566+00:00 snapshot records 207 completed jobs for pushed head `50c5582d3beecd38a572a04c72469b44c62d1a17`: 170 succeeded, 23 were skipped and 14 failed. This is the failed old-head observation, not acceptance of the next repair batch.
+
+The coordinated follow-up contains four source-faithful fixture migrations, 48 conservative weight increases from authentic successfully completed singleton processes, and one newly named temporary exhaustive native corpus-roundtrip deferral. All 6,331 coverage identities, original sixteen shards, two processes/two threads and deadlines remain conserved. The deferred test's whole original body, corpus floor and byte-equality assertions remain intact; its [explicit restoration obligation](release-readiness-technical-debt.md#pr1196-native-corpus-roundtrip-deadline) remains unaccepted. No additional coverage-case skips or risk-order API are introduced. Source qualification does not establish fresh hosted CI or deadline closure.
+
+v0.353.0 is prepared, not published; the latest observed published release remains v0.352.1. Fresh exact-head hosted CI and production publication remain pending. The original 30 unfinished requirements, original 40 coding/self-coding acceptances at zero, existing debts and zero autonomy credit for supplied repair programs remain unchanged.
+
 ## Release-first checkpoint — UTC 2026-10-12T16:18:34.108Z
 
 Current pushed head is `c8a007688a12db18855452d4643b35489c33d01e` on draft PR #1196. Capture/history fixture repairs (62cc), strict validation/order repairs (12b), and caller phase/name uniqueness repairs (c8a) are pushed; historical capture bytes remain immutable and separate from the exact live SDK 1.0 sessions. Caller evidence admitted two live triplets and refused 58 stale completed-phase triplets; it grants no executing-lease or publication authority.
