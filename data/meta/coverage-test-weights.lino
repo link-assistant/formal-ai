@@ -24,11 +24,11 @@ coverage-test-weights
   test "agentic_coding::issue_498_google_trends_catalog::planner_walks_the_google_trends_catalog_recipe"
     seconds 90.552994
   test "agentic_coding::issue_498_google_trends_learning::committed_agent_cli_session_matches_a_fresh_google_trends_learning_run"
-    seconds 374.965265
+    seconds 406.600538874
   test "agentic_coding::issue_498_google_trends_learning::committed_google_trends_learning_report_is_generated_by_the_recipe"
     seconds 261.220006
   test "agentic_coding::issue_498_google_trends_learning::driver_drives_the_google_trends_learning_recipe_to_a_write"
-    seconds 359.643040
+    seconds 493.060313129
   test "agentic_coding::issue_498_google_trends_learning::planner_walks_the_google_trends_learning_recipe"
     seconds 488.262037
   test "agentic_coding::issue_498_google_trends_learning::the_learning_report_is_a_faithful_proposal_only_run"
@@ -96,7 +96,7 @@ coverage-test-weights
   test "issue_1133_hive_mind_three_runs::repository_workflows_include_runtime_setup_and_output_verification"
     seconds 644.473504
   test "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family"
-    seconds 96.155803
+    seconds 333.781210654
   test "issue_1138_family_behaviour::no_family_answer_is_the_unknown_opener"
     seconds 164.527412
   test "issue_1138_family_migration::held_out_family_paraphrases_route_to_the_family_interpreter"
@@ -122,7 +122,7 @@ coverage-test-weights
   test "issue_701_learning_adoption::committed_adoption_ledger_matches_a_fresh_run"
     seconds 151.455460
   test "issue_701_learning_adoption::every_failure_to_adopt_is_preserved_as_a_durable_record"
-    seconds 150.412840
+    seconds 163.764166136
   test "issue_701_learning_adoption::the_adoption_ledger_records_a_real_capability_delta_in_every_language"
     seconds 141.042004
   test "issue_701_learning_adoption::the_trends_corpus_unknown_rate_is_ratcheted_to_zero"
@@ -140,7 +140,7 @@ coverage-test-weights
   test "issue_705_anticipation::idle_dreaming_persists_the_ledger_and_later_live_usage_records_a_hit"
     seconds 112.006029
   test "issue_705_anticipation::prediction_hits_link_later_actual_requests_and_zero_percent_is_honest"
-    seconds 153.750986
+    seconds 164.472259065
   test "issue_705_anticipation::source_prelearning_is_consent_gated_and_uses_cache_provenance_and_ttl"
     seconds 137.411594
   test "issue_705_anticipation::the_same_history_produces_byte_identical_predictions_and_ledger"
@@ -164,7 +164,7 @@ coverage-test-weights
   test "pull_request_1188_quoted_payload_safety::every_generated_request_changes_exactly_what_it_asked_for_or_nothing"
     seconds 134.932024
   test "pull_request_1188_teach_f::g82_a_copy_then_its_edits_are_planned_sentence_by_sentence"
-    seconds 76.332003
+    seconds 123.006202408
   test "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap"
     seconds 72.367997
   test "seed::pull_request_1188_dialogue_utterance::every_greeting_farewell_and_thanks_surface_plans_no_tool_call"
@@ -188,7 +188,7 @@ coverage-test-weights
   test "solver::issue_1173_route3_recurrence::the_native_solver_answers_the_probes_with_the_source_recurrence"
     seconds 99.388190
   test "solver::issue_1175_routing_probes::the_native_solver_answers_every_probe_as_measured"
-    seconds 313.744259
+    seconds 446.353038179
   test "solver::issue_840_route_ladder::route_only_ladder_replay_holds_for_every_node"
     seconds 60.000000
   test "solver::issue_938_meta_algorithm_builder::all_coding_surfaces_execute_one_trace_shape"
@@ -299,3 +299,87 @@ coverage-test-weights
   # Receipt e7b45a320129bf5e30ad8290185c067ff4d35336de369fb404e5ae073ceeb0ae; execution-source authentication remains Unknown.
   test "issue_991_how_to_http::chat_completions_honours_a_service_opt_out"
     seconds 12.142298100000014
+  test "issue_701_dreaming_amendment_class::a_covered_task_is_never_reported_unresolved"
+    seconds 164.910729107
+  test "issue_1066_ladder_capability::an_open_web_query_stops_at_the_end_of_the_request"
+    seconds 27.566984973
+  test "issue_755_file_read_write::a_multi_turn_lifecycle_reads_back_the_current_content_each_time"
+    seconds 58.030999471
+  test "issue_712_intent_routing::all_reported_capability_classes_route_in_one_matrix"
+    seconds 31.903327452
+  test "issue_1066_ladder_capability::a_label_that_calls_the_work_atomic_does_not_replace_it_with_a_verdict"
+    seconds 13.079358940
+  test "issue_1066_ladder_capability::written_files::an_unquoted_pinned_line_stops_before_the_following_body_clause"
+    seconds 3.491912644
+  test "issue_386_cancel_sort::issue_386_cancel_sort_follow_up_must_not_be_unknown"
+    seconds 19.852497808
+  test "issue_1085_upstream_prompt_transfer::the_mbpp_prompt_shape_in_chinese_derives_the_same_function"
+    seconds 33.249538795
+  test "specification::synthesis::shared_cross_runtime_synthesis_fixture_matches_rust_solver"
+    seconds 87.193290830
+  test "specification::code_generation_blueprint::javascript_http_json_statistics_request_returns_blueprint_program"
+    seconds 47.191589598
+  test "caller_framing_context::caller_framing_alone_never_becomes_a_command"
+    seconds 83.678330877
+  test "issue_1021_behaviour_range::a_command_naming_noun_is_not_an_argument"
+    seconds 5.053106789
+  test "specification::capabilities::supported_feature_capability_questions_cover_every_supported_language"
+    seconds 27.081600090
+  test "issue_758_capability_routing::live_http_server_routes_reported_folder_variants_to_one_shell_contract"
+    seconds 36.613609847
+  test "specification::recipe_interpreter::executing_the_recipe_reproduces_the_pipeline_under_every_mode_combination"
+    seconds 39.218814001
+  test "issue_1066_ladder_capability::written_files::a_literal_payload_never_crosses_a_sentence_boundary"
+    seconds 29.472375453
+  test "installation_conversion::install_conversion_prompts_route_across_supported_languages"
+    seconds 12.191715937
+  test "issue_758_capability_routing::specialized_tools_precede_shell_and_shell_is_the_navigation_fallback"
+    seconds 11.300902954
+  test "specification::reasoning_paths_procedures::procedural_elaboration_followup_covers_many_topics"
+    seconds 15.148257239
+  test "specification::code_generation_coreference::bare_imperative_results_follow_ups_bind_active_program_in_all_languages"
+    seconds 10.518117636
+  test "specification::code_generation::single_turn::hello_world_inline_replacement_accepts_diverse_prompt_surfaces"
+    seconds 11.124506363
+  test "specification::translation_via_links::extended::code_translation_routes_through_the_code_meta_language_not_direct_pairs"
+    seconds 19.802220622
+  test "pull_request_1188_unnamed_language::a_program_the_request_asks_to_run_is_written_in_the_seeded_language"
+    seconds 5.939686615
+  test "caller_framing_context::an_explicitly_introduced_command_survives_sentence_scoping"
+    seconds 1.812930724
+  test "issue_680_intent_routing::responses_routes_web_search_intent_to_function_call"
+    seconds 3.656723617
+  test "issue_671_absolute_path_projection::agent_read_absolutises_when_only_the_tool_description_says_so"
+    seconds 7.736799082
+  test "web_engine_core::issue_1177_code_task_handlers::engine_answers_regex_synthesis_request"
+    seconds 4.727165802
+  test "ordinary_recall_never_parses_the_pinned_module"
+    seconds 1.605039913
+  test "literal_payload_inside_a_request_is_not_read_as_a_computer_use_plan"
+    seconds 0.290244390
+  test "anthropic_thinking_block_is_written_in_the_answer_language"
+    seconds 5.800980411
+  test "unix::launch_mode_controls_browser_opening"
+    seconds 0.262886495
+  test "unix::aliases_launch_vscode_with_isolated_opencode_provider"
+    seconds 0.491438288
+  test "substitution_query_lowers_identically_on_every_harness_vocabulary"
+    seconds 3.653265960
+  test "specification::code_generation_blueprint::budget_calculator_blueprint_covers_supported_prompt_languages"
+    seconds 49.097267214
+  test "coding_discovery::composition_search::recursive_reduction_is_discovered_and_lowered_from_typed_fragments"
+    seconds 8.461638071
+  test "repository_workspace::issue_1138_named_tests::named_tests_record_the_observed_pass_fail_split"
+    seconds 27.513559243
+  test "specification::equation_corpus::issue_891_equation_corpus_solves_every_type"
+    seconds 19.428225697
+  test "pull_request_1188_workspace_search::a_named_file_is_the_scope_and_a_request_to_change_the_uses_is_not_a_search"
+    seconds 25.207189401
+  test "issue_1085_upstream_prompt_transfer::the_upstream_humaneval_prompt_shape_is_answered_and_graded_by_the_upstream_test"
+    seconds 31.977564145
+  test "specification::telegram_surface::telegram_long_replies_are_chunked"
+    seconds 34.231359450
+  test "specification::code_generation_blueprint::python_comments_omitted_drops_docstring_and_hash_comments_end_to_end"
+    seconds 18.540289891
+# Successful singleton process measurements: run38276804819 attempt1, artifacts11761679916/11762469050/11763261974.
+# Only effective increases applied; unfinished and multi-case batch costs are not per-case measurements.
