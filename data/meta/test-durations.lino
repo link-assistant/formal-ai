@@ -219,7 +219,9 @@ test_durations
     seconds 10.9
   test "grounded_local_action::generated_local_routing_property_holds_for_twelve_prompts_per_language"
     seconds 10.4
-  test "agentic_coding::agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given"
+# Exact current module/runtime identity; source_run 37802763478 measurement stays 10.2 seconds.
+  # Historical measured key: agentic_coding::agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given
+  test "agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given"
     seconds 10.2
   test "repository_workspace::issue_1138_locate_targets::census_locates_a_declaration_the_prompt_never_names"
     seconds 10.2

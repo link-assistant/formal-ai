@@ -356,11 +356,12 @@ jobs:
         uses: taiki-e/setup-cross-toolchain-action@v1
         with:
           target: ${{ matrix.target }}
-      - name: Restore Intel native cargo registry
+      - name: Cache Intel native dependencies
         if: matrix.target == 'x86_64-apple-darwin'
-        uses: ./.github/actions/cache-cargo-registry
-        with:
-          restore-only: 'true'
+        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
+        with: {workspaces: "rust -> ../target", cache-on-failure: 'true',
+          cache-workspace-crates: 'false', cache-all-crates: 'false', cache-bin: 'false',
+          key: "intel-native-default-${{ matrix.target }}-${{ needs.native-source.outputs.toolchain }}"}
       - name: Cache Rust compiler outputs
         if: runner.os != 'Windows' && matrix.target != 'x86_64-apple-darwin'
         uses: mozilla-actions/sccache-action@v0.0.11

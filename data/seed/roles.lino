@@ -659,6 +659,8 @@ roles
     kind meaning
   memory_substitution_directive
     kind meaning
+  method
+    kind meaning
   module_export_marker
     kind meaning
   module_export_question

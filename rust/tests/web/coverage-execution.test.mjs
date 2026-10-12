@@ -206,3 +206,42 @@ test('aggregate coverage priority refuses finite individual weights that overflo
   assert.throws(() => executionBatches(entries, entries, new Map([['unit', 'fixture']]),
     () => Number.MAX_VALUE), /invalid aggregate coverage weight/);
 });
+
+// Rust libtest renders expected-panic metadata after the selected case identity.
+test('expected panic annotation preserves exact selected identities and completion totals', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'coverage-panic-contract-'));
+  const executable = join(directory, 'harness.mjs');
+  writeFileSync(executable, `#!/usr/bin/env node
+const names=process.argv.slice(process.argv.indexOf('--test-threads')+2);
+for(const name of names)console.log('test '+name+' - should panic ... ok');
+console.log('test result: ok. '+names.length+' passed; 0 failed; 0 ignored;');
+`);
+  chmodSync(executable, 0o755);
+  try {
+    const names=Array.from({length:64},(_,i)=>'module::case_'+i);
+    const result=await executeBatches([{target:'unit',seconds:1,names}],new Map([['unit',executable]]),{concurrency:1});
+    assert.equal(result.succeeded,true);assert.equal(result.completed,64);
+    assert.deepEqual(result.batches[0].names,names);assert.deepEqual(result.batches[0].problems,[]);
+  } finally { rmSync(directory,{recursive:true,force:true}); }
+});
+test('unknown suffix unselected annotation duplicate and omitted case cannot certify completion', async () => {
+  const directory=mkdtempSync(join(tmpdir(),'coverage-panic-refusal-'));
+  const executable=join(directory,'harness.mjs');
+  writeFileSync(executable, `#!/usr/bin/env node
+console.log(process.env.COVERAGE_COMPLETION_LINES);
+console.log('test result: ok. 1 passed; 0 failed; 0 ignored;');
+`);
+  chmodSync(executable,0o755);
+  try {
+    for(const output of [
+      'test module::case - unexpected ... ok',
+      'test foreign::case - should panic ... ok',
+      'test module::case - should panic - should panic ... ok',
+      'test module::case - should panic ... ok\ntest module::case ... ok',
+      ''
+    ]) {
+      const result=await executeBatches([{target:'unit',seconds:1,names:['module::case']}],new Map([['unit',executable]]),{concurrency:1,env:{...process.env,COVERAGE_COMPLETION_LINES:output}});
+      assert.equal(result.succeeded,false);assert.ok(result.batches[0].problems.length>0);
+    }
+  } finally {rmSync(directory,{recursive:true,force:true});}
+});

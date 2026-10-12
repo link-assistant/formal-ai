@@ -31,9 +31,14 @@ meanings
       words создай создать напиши записать запиши сохрани сделай добавь зафиксируй оставь помести храни подготовь выведи
       words создайте напишите запишите сохраните сделайте добавьте зафиксируйте оставьте поместите храните подготовьте
       words выведите
+      words "сгенерируй" "сгенерируйте"
     lexeme hi बनाओ बनाएँ लिखो सहेजो जोड़ो दर्ज छोड़ो रखो संग्रह तैयार निकालो
+      words "उत्पन्न करो" "मसौदा बनाओ"
+      words "उत्पन्न" "मसौदा"
     lexeme zh 创建 写 保存 生成 添加 追加 记录 留下 放置 存储 产出 输出 写入
+      words "制作"
     lexeme es crea crear escribe escribir guarda guardar genera generar añade agrega registra deja coloca almacena pon
+      words "haz" "saca" "imprime"
   file_write_content
     defined-by relation
     role file_write_content_lead
@@ -127,9 +132,13 @@ meanings
     lexeme ru
       words создай создать создайте напиши напишите запиши записать запишите сохрани сохраните сделай сделайте
       words "новый файл"
+      words "сгенерируй" "сгенерируйте"
     lexeme hi बनाओ बनाएँ लिखो सहेजो "नई फ़ाइल"
+      words "उत्पन्न" "मसौदा"
     lexeme zh 创建 写 写入 保存 生成 新建
+      words "制作"
     lexeme es crea crear escribe escribir guarda guardar genera generar "nuevo archivo"
+      words "haz"
   file_declared_noun
     # PR #1188 CIFIX2: the noun that, written right before a path with the
     # content stated after it (`add file note.txt containing hello`, `new

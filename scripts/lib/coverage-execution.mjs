@@ -53,7 +53,12 @@ function completionCollector(names) {
     line(line) {
       const completed = line.match(/^test (.+) \.\.\. (ok|FAILED|ignored(?:,.*)?)$/);
       if (completed) {
-        const name = completed[1];
+        const observedName = completed[1];
+        const annotation = ' - should panic';
+        const bareName = observedName.endsWith(annotation)
+          ? observedName.slice(0, -annotation.length) : observedName;
+        const name = !wanted.has(observedName) && wanted.has(bareName) && !/\s/u.test(bareName)
+          ? bareName : observedName;
         if (!wanted.has(name)) problems.push(`unexpected case: ${name}`);
         if (seen.has(name)) problems.push(`duplicate completion: ${name}`);
         seen.set(name, completed[2].startsWith('ignored') ? 'ignored' : completed[2]);

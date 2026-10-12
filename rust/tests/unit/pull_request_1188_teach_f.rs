@@ -61,12 +61,12 @@ fn execute(
     arguments: &serde_json::Value,
 ) -> String {
     match tool {
-        "read" => files
-            .get(&path_of(arguments))
-            .map(|source| {
+        "read" => files.get(&path_of(arguments)).map_or_else(
+            || format!("Error: File not found: {}", path_of(arguments)),
+            |source| {
                 formal_ai::agentic_coding::tool_result::complete_owned_source_read_frame(source)
-            })
-            .unwrap_or_else(|| format!("Error: File not found: {}", path_of(arguments))),
+            },
+        ),
         "write" => {
             let content = arguments["content"].as_str().unwrap_or_default().to_owned();
             files.insert(path_of(arguments), content);

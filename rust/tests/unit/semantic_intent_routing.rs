@@ -450,7 +450,6 @@ fn assert_unspecified_addition_refuses(prompt: &str, language: &str) {
 
 #[test]
 fn explicit_content_and_file_object_route_write_variations() {
-    const ACTION_SLOT: &str = "{action}";
     let matrices = [
         (
             &[
@@ -475,7 +474,7 @@ fn explicit_content_and_file_object_route_write_variations() {
                 "lay down",
                 "spell out",
             ][..],
-            "{action} file note.txt containing hello",
+            " file note.txt containing hello",
         ),
         (
             &[
@@ -500,7 +499,7 @@ fn explicit_content_and_file_object_route_write_variations() {
                 "изложи",
                 "оформи",
             ][..],
-            "{action} файл note.txt с текстом hello",
+            " файл note.txt с текстом hello",
         ),
         (
             &[
@@ -525,7 +524,7 @@ fn explicit_content_and_file_object_route_write_variations() {
                 "उतार दो",
                 "तैयार कर दो",
             ][..],
-            "{action} फ़ाइल note.txt सामग्री के साथ hello",
+            " फ़ाइल note.txt सामग्री के साथ hello",
         ),
         (
             &[
@@ -550,7 +549,7 @@ fn explicit_content_and_file_object_route_write_variations() {
                 "写下",
                 "整理出",
             ][..],
-            "{action} 文件 note.txt 内容为 hello",
+            " 文件 note.txt 内容为 hello",
         ),
         // language: es (Spanish) — issue #1138 B10, plan 10 leaf 11.
         (
@@ -576,7 +575,7 @@ fn explicit_content_and_file_object_route_write_variations() {
                 "deja escrito",
                 "prepara",
             ][..],
-            "{action} archivo note.txt con el texto hello",
+            " archivo note.txt con el texto hello",
         ),
     ];
     // These expectations state the request semantics independently of parser recognition.
@@ -588,13 +587,13 @@ fn explicit_content_and_file_object_route_write_variations() {
         &["添加"],
         &["añade", "agrega"],
     ];
-    for (locale, (actions, template)) in matrices.into_iter().enumerate() {
+    for (locale, (actions, suffix)) in matrices.into_iter().enumerate() {
         assert!(
             actions.len() >= VARIATION_FLOOR,
             "retain every locale variation floor"
         );
         for action in actions {
-            let prompt = template.replace(ACTION_SLOT, action);
+            let prompt = format!("{action}{suffix}");
             if appended[locale].contains(action) {
                 assert_additive_read_write(&prompt, ["en", "ru", "hi", "zh", "es"][locale]);
             } else if unspecified[locale].contains(action) {

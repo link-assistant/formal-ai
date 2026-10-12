@@ -30,6 +30,25 @@ pub(super) fn is_regex_template(content: &str, index: usize, keyword: &str, valu
         parents.pop();
     }
     let parent = parents.last().map_or("", |(_, name)| *name);
+    let canonical_compound_prefix = content
+        == include_str!("../../../../data/seed/source-authoring-grammar.lino")
+        && parents.len() == 2
+        && parents[0] == (0, "compound-task-grammar")
+        && parents[1] == (2, "form")
+        && indent == 4
+        && keyword == "pattern"
+        && super::strip_lino_comment(line)
+            .trim()
+            .strip_prefix("pattern ")
+            == Some(value.trim());
+    let parent = if canonical_compound_prefix {
+        "compound-task-grammar"
+    } else {
+        parent
+    };
+    if parent == "compound-task-grammar" && !canonical_compound_prefix {
+        return false;
+    }
     if parent == "workspace-discovery-grammar" && (parents.len() != 1 || parents[0].0 != 0) {
         return false;
     }
@@ -95,7 +114,7 @@ fn lino_pipe_value_is_technical_regex(keyword: &str, value: &str, parent: &str) 
     if keyword != "pattern"
         || !matches!(
             parent,
-            "form" | "composition" | "workspace-discovery-grammar"
+            "form" | "composition" | "workspace-discovery-grammar" | "compound-task-grammar"
         )
     {
         return false;
@@ -112,7 +131,10 @@ fn lino_pipe_value_is_technical_regex(keyword: &str, value: &str, parent: &str) 
     }
     let pattern = node.id.as_str();
     if !pattern.starts_with('^')
-        || (parent != "workspace-discovery-grammar" && !pattern.ends_with('$'))
+        || (!matches!(
+            parent,
+            "workspace-discovery-grammar" | "compound-task-grammar"
+        ) && !pattern.ends_with('$'))
     {
         return false;
     }
@@ -359,4 +381,49 @@ fn declared_regex_pairs_preserve_nontechnical_pipe_rejection() {
     }
     assert!(!is_regex_template(valid, 3, "aliases", "\"a|b\""));
     assert!(!is_regex_template(valid, 3, "prefix", "\"^(x|y)$\""));
+}
+
+#[test]
+fn canonical_compound_prefix_patterns_keep_pipe_lists_and_spoofs_refused() {
+    let grammar = include_str!("../../../../data/seed/source-authoring-grammar.lino");
+    let (index, line) = grammar
+        .lines()
+        .enumerate()
+        .find(|(_, line)| line.contains("(?<minimumWords>"))
+        .expect("actual compound receipt matcher");
+    let value = line.trim().strip_prefix("pattern ").unwrap();
+    assert!(is_regex_template(grammar, index, "pattern", value));
+    assert!(!is_regex_template(grammar, index, "aliases", value));
+    assert!(!is_regex_template(grammar, index, "pattern", "\"^a|b\""));
+    assert!(!is_regex_template(
+        &grammar.replace("compound-task-grammar", "ordinary-values"),
+        index,
+        "pattern",
+        value,
+    ));
+    assert!(!is_regex_template(
+        &format!(
+            "ordinary-values\n{}",
+            grammar
+                .lines()
+                .map(|line| format!("  {line}"))
+                .collect::<Vec<_>>()
+                .join("\n")
+        ),
+        index + 1,
+        "pattern",
+        value,
+    ));
+    assert!(!is_regex_template(grammar, index + 1, "pattern", value));
+    let direct_spoof = "compound-task-grammar\n  pattern \"^a|b\"\n";
+    assert!(!is_regex_template(direct_spoof, 1, "pattern", "\"^a|b\""));
+    let nested_spoof = "ordinary-values\n  compound-task-grammar\n    pattern \"^a|b\"\n";
+    assert!(!is_regex_template(nested_spoof, 2, "pattern", "\"^a|b\""));
+    let noncanonical_form = "compound-task-grammar\n  form 1\n    pattern \"^a|b\"\n";
+    assert!(!is_regex_template(
+        noncanonical_form,
+        2,
+        "pattern",
+        "\"^a|b\""
+    ));
 }

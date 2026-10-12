@@ -89,7 +89,7 @@ fn original_question_reports_actual_heldout_manifest_target_without_mutation() {
     let before = fixture.status();
     let outcome = fixture.run("Where do unit tests live in this repository?");
     assert!(outcome.open.is_empty(), "{:?}", outcome.open);
-    assert!(outcome.diff.is_empty() && outcome.edited.len() == 0);
+    assert!(outcome.diff.is_empty() && outcome.edited.is_empty());
     let report: serde_json::Value = serde_json::from_str(&outcome.report).unwrap();
     assert_eq!(report["schema"], "repository-query/v1");
     let sources = report["sources"].as_array().unwrap();
@@ -137,7 +137,7 @@ fn original_cargo_check_reports_real_exit_and_complete_output() {
         formal_ai::source_fetch::sha256_hex(output.as_bytes())
     );
     assert_ne!(output.len(), 0);
-    assert!(outcome.edited.is_empty() && outcome.diff.len() == 0);
+    assert!(outcome.edited.is_empty() && outcome.diff.is_empty());
     assert_eq!(
         Command::new("git")
             .args(["diff", "--name-only"])
@@ -162,7 +162,7 @@ fn failed_command_keeps_actual_diagnostics_and_cannot_satisfy_run_need() {
             |row| row.route.as_deref() == Some("verify") && row.status != NeedStatus::Satisfied
         )
     );
-    assert!(outcome.edited.is_empty() && outcome.diff.len() == 0);
+    assert!(outcome.edited.is_empty() && outcome.diff.is_empty());
 }
 #[test]
 fn compound_goals_do_not_silently_finish_one_clause() {
@@ -174,7 +174,7 @@ fn compound_goals_do_not_silently_finish_one_clause() {
     let before = fixture.status();
     let outcome = fixture.run("Run cargo check and write a new function.");
     assert_ne!(outcome.open.len(), 0);
-    assert!(outcome.report.is_empty() && outcome.edited.is_empty() && outcome.diff.len() == 0);
+    assert!(outcome.report.is_empty() && outcome.edited.is_empty() && outcome.diff.is_empty());
     assert_eq!(fixture.status(), before);
 }
 #[test]
@@ -191,7 +191,7 @@ fn wrong_source_head_refuses_before_observation_or_edit() {
             tests: None,
         },
     );
-    assert!(outcome.report.is_empty() && outcome.open.len() != 0);
+    assert!(outcome.report.is_empty() && !outcome.open.is_empty());
     assert_eq!(outcome.observations.len(), 0);
 }
 

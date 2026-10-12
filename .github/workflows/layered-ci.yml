@@ -163,7 +163,7 @@ jobs:
           retention-days: 7
 
   js:
-    name: js tier (node --check over js, suites ${{ matrix.shard }}/4)
+    name: js tier (node --check over js, suites ${{ matrix.shard }}/8)
     needs: [changes]
     # Only this tier's own predicate and no `always()`: another tier's
     # folder changing alone must let this tier stand on its last green run.
@@ -178,7 +178,9 @@ jobs:
     # every file exactly once -- and each owns a 360s budget (60% of the
     # cap) that fails with an `::error` instead of being cancelled. Run
     # 37706284975 (2026-10-08) had shard 2/2 terminated at that budget once
-    # the requirement audit added 54 suites, so the files now split four ways.
+    # the requirement audit added 54 suites, so the files then split four ways.
+    # Source c7ffbd8a later exhausted shards 2/4 and 4/4 at the unchanged
+    # 360s deadline; eight source-derived shards retain every file exactly once.
     timeout-minutes: 10
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}
@@ -186,7 +188,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -259,7 +261,7 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: 4
+          SHARDS: 8
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
         # PR #1188: the suite files are planned longest-first from

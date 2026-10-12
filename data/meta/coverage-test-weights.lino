@@ -229,3 +229,9 @@ coverage-test-weights
     seconds 233.551029
   test "web_engine_core::issue_1186_formalization_probe_set::every_rendered_target_deformalizes_with_its_structure_preserved"
     seconds 327.150805
+
+  # Censored named libtest warning, not completed duration or 64-case batch wall time.
+  # Source e2cb9b506c9f46121c1f9e3db58bc4eba910839c, run 38187254378, job 114623488008, warning 2026-10-12T01:29:37.1151110Z.
+  # Uncompleted at exit124; original schema conservatively retains only the observed 60-second bound.
+  test "agentic_coding::issue_1069_ladder_change_tasks::issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given"
+    seconds 60
