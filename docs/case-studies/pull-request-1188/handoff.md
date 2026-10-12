@@ -1,3 +1,11 @@
+## Post-merge release recovery — PR #1196
+
+PR #1188 merged at `1b4c92e01e74d6ded097005deae1e4bb4054a611`. Production run 38225547652 prepared the v0.353.0 tag/version child `f943c9ba8a02a6f3562f670f53c5f18f2fe1a648`, then failed before compilation because archive verification buffered the full source tar. Version preparation does not establish publication; the latest observed published release remains v0.352.1.
+
+[PR #1196](https://github.com/link-assistant/formal-ai/pull/1196) repairs archive streaming, bounded release-list pagination, version-time specification witness refresh, coverage timing weights, and the archived issue #873 release-note fixture. Root installs agent packets through maintained JavaScript Formal AI and pushes coherent batches. Local source controls have passed; fresh exact-head hosted CI, native deadline closure and eventual production publication remain pending. Follow the normal next-version release path after the fixes land; do not retag the failed v0.353.0 source.
+
+The temporary PR1196-only positive-authorship deferral is recorded in [release-readiness technical debt](release-readiness-technical-debt.md). Strict trailer validation, actual zero-authorship measurement and debt checks remain active; main retains its standing report. Supplied repair programs receive zero autonomy credit. The original thirty unfinished acceptances and original forty coding/self-coding acceptance zero remain unchanged.
+
 Release-first checkpoint 2026-10-12T03:17:12.197Z: Spanish coding ownership and the eight-call fixture are qualified privately; the package-permission assertion and full worker closure (one exact 38-line budget and its browser loader entry) are in the coordinated repair batch. Fresh hosted validation and native census for the next head remain pending; the original 30 requirements remain unfinished, with no autonomy credit from supplied repair programs. Intel PR cache warm time was 14m36s; cold main/tag behavior and publication remain unproved.
 
 ## Projection repair checkpoint — UTC 2026-10-12 02:11
