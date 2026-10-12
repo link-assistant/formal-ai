@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 
-const descendantName = 'Active reusable fixture / Fixture lease holder active';
+const descendantNames = new Set([
+  'Active reusable fixture / Fixture lease holder active',
+  'Active reusable fixture / Fixture artifact consumer active',
+  'Active reusable fixture / Fixture final active'
+]);
 
 // Admission enables a contender to queue. It is never executing-lease authority.
 export function validateCallerAdmission(run, jobs, group, context) {
@@ -22,7 +26,14 @@ export function validateCallerAdmission(run, jobs, group, context) {
   assert.equal(run.body.conclusion, null, 'terminal aggregate conclusion refused');
   assert.ok(Array.isArray(jobs.body.jobs));
   assert.equal(jobs.body.total_count, jobs.body.jobs.length, 'complete bounded job listing required');
-  const matches = jobs.body.jobs.filter(job => job.name === descendantName);
+  assert.equal(group.body.group_name, name);
+  assert.ok(Array.isArray(group.body.group_members));
+  assert.equal(group.body.total_count, group.body.group_members.length);
+  const active = group.body.group_members.filter(member => member.status === 'in_progress');
+  assert.equal(active.length, 1, 'one admitted private caller required');
+  const member = active[0];
+  assert.ok(descendantNames.has(member.job_name), 'source-declared admitted phase required');
+  const matches = jobs.body.jobs.filter(job => job.name === member.job_name);
   assert.equal(matches.length, 1, 'one source-declared admission descendant required');
   const child = matches[0];
   assert.ok(Number.isSafeInteger(child.id) && child.id > 0);
@@ -30,14 +41,10 @@ export function validateCallerAdmission(run, jobs, group, context) {
   assert.equal(String(child.run_attempt), context.attempt);
   assert.equal(child.head_sha, context.eventHead);
   assert.ok(['queued', 'in_progress'].includes(child.status));
+  if (child.name !== 'Active reusable fixture / Fixture lease holder active')
+    assert.equal(child.status, 'in_progress', 'later caller phase must be active');
   assert.equal(child.completed_at, null);
   assert.equal(child.url, 'https://api.github.com' + base + '/jobs/' + child.id);
-  assert.equal(group.body.group_name, name);
-  assert.ok(Array.isArray(group.body.group_members));
-  assert.equal(group.body.total_count, group.body.group_members.length);
-  const active = group.body.group_members.filter(member => member.status === 'in_progress');
-  assert.equal(active.length, 1, 'one admitted private caller required');
-  const member = active[0];
   assert.equal(member.job_id, child.id);
   assert.equal(member.job_name, child.name);
   assert.equal(String(member.run_id), context.run);
