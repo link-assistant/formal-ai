@@ -4,7 +4,7 @@ self_ast_census
   fidelity full_ast
   byte_len 38600
   line_count 989
-  content_id source_module_031dcac0c7aec953
+  content_id source_module_9839d47a6aa5aa93
   symbol_count 36
   symbols
     const MAX_ANCHOR_BYTES 39 39

@@ -4,7 +4,7 @@ self_ast_census
   fidelity full_ast
   byte_len 7423
   line_count 191
-  content_id source_module_7439295832257d07
+  content_id source_module_57054412a884175d
   symbol_count 2
   symbols
     function plan_direct_file_reads 22 160

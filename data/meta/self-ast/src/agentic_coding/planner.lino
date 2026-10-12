@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 47747
-  line_count 988
-  content_id source_module_4a0828567db2f4b1
+  byte_len 47978
+  line_count 992
+  content_id source_module_ed15179b81e8b7dc
   symbol_count 20
   symbols
     module continuation 5 5
@@ -21,32 +21,32 @@ self_ast_census
     function plan_chat_step_resolved 179 186
     function plan_chat_step_inner 188 231
     function plan_chat_step_routes 233 352
-    function plan_settled_routes 368 883
-    function plan_shell_command_arm 892 912
-    function plan_shell_step 915 950
-    function plan_one 952 957
-    function write_arguments 965 973
-    function fetch_arguments 982 988
+    function plan_settled_routes 368 887
+    function plan_shell_command_arm 896 916
+    function plan_shell_step 919 954
+    function plan_one 956 961
+    function write_arguments 969 977
+    function fetch_arguments 986 992
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20327
-    named_node_count 3952
+    total_link_count 20398
+    named_node_count 3966
     distinct_node_kinds 72
     node_kinds
-      arguments 294
+      arguments 296
       array_type 14
       assignment_expression 1
       attribute 6
       attribute_item 6
       binary_expression 13
-      block 100
+      block 101
       boolean_literal 4
-      call_expression 294
-      closure_expression 20
-      closure_parameters 20
+      call_expression 296
+      closure_expression 21
+      closure_parameters 21
       crate 8
       declaration_list 1
       doc_comment 61
@@ -57,12 +57,12 @@ self_ast_census
       expression_statement 147
       field_declaration 2
       field_declaration_list 1
-      field_expression 55
-      field_identifier 57
+      field_expression 56
+      field_identifier 58
       function_item 13
       function_modifiers 2
       generic_type 13
-      identifier 1220
+      identifier 1224
       if_expression 74
       impl_item 1
       index_expression 1
@@ -90,7 +90,7 @@ self_ast_census
       reference_expression 43
       reference_type 36
       return_expression 69
-      scoped_identifier 281
+      scoped_identifier 282
       scoped_use_list 9
       self 4
       self_parameter 2
