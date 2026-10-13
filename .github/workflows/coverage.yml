@@ -197,8 +197,9 @@ jobs:
           find "$target/debug" \( -path "$target/debug/build" -o -path "$target/debug/incremental" \
             -o -path "$target/debug/.fingerprint" \) -prune -o -type f -perm -u+x \
             ! -name '*.d' ! -name '*.rlib' ! -name '*.rmeta' -print > coverage-objects.txt
-          # Compress once with two workers; artifact upload stores the lossless frame.
-          tar -cf - coverage-tests.tsv -T coverage-objects.txt | zstd -T2 -6 -o coverage-objects.tar.zst
+          # Lossless long-distance matching retains every executable and report object.
+          # Bound worker jobs; decoders explicitly admit the 512 MiB history window.
+          tar -cf - coverage-tests.tsv -T coverage-objects.txt | zstd -T2 -6 --long=29 -B67108864 -o coverage-objects.tar.zst
           du -h coverage-objects.tar.zst
 
       - name: Upload the instrumented executables
@@ -270,7 +271,7 @@ jobs:
           path: coverage-objects
 
       - name: Unpack the instrumented executables
-        run: tar --zstd -xf coverage-objects/coverage-objects.tar.zst
+        run: tar -I "zstd --long=29" -xf coverage-objects/coverage-objects.tar.zst
 
       # Issue #1076. Both steps print nothing unless the job-level switch above
       # is on. Switched on, they record CPU steal, load, memory and disk once
@@ -500,7 +501,7 @@ jobs:
               exit 1
             }
           done
-          tar --zstd -xf coverage-objects/coverage-objects.tar.zst
+          tar -I "zstd --long=29" -xf coverage-objects/coverage-objects.tar.zst
           workspace=$(cargo metadata --manifest-path rust/Cargo.toml --format-version 1 --no-deps | jq -r .workspace_root)
           host=$(rustc -vV | sed -n 's/^host: //p')
           llvm_profdata="$(rustc --print sysroot)/lib/rustlib/$host/bin/llvm-profdata"
