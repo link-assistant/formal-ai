@@ -7,7 +7,8 @@ import {pathToFileURL} from 'node:url';
 export function deferReleaseRecoveryAuthoring(eventName, repository, event) {
   const expected = 'link-assistant/formal-ai';
   const branches = new Map([[1196, 'fix/postmerge-release-ci-1188'],
-    [1197, 'fix/release-manifest-byte-witness']]);
+    [1197, 'fix/release-manifest-byte-witness'],
+    [1200, 'fix/release-docker-export']]);
   const number = event?.number;
   const request = event?.pull_request;
   return eventName === 'pull_request' && repository === expected

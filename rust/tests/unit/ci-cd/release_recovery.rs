@@ -61,15 +61,43 @@ fn prepares_one_version_verifies_its_archive_and_can_resume_it() {
                 "{}/../scripts/release-image-factory.mjs",
                 env!("CARGO_MANIFEST_DIR")
             ))
-            .unwrap();
-            assert!(factory.contains("for(const suffix of [version,'latest'])"));
-            let tag = factory
-                .find("invoke(['tag',local,image+':'+suffix])")
-                .unwrap();
-            let push = factory.find("invoke(['push',image+':'+suffix])").unwrap();
+            .expect("prepared image factory source should be readable");
+            let (_, publisher_and_mirror) = factory
+                .split_once("export async function publishPreparedFullImage")
+                .expect("prepared full image publisher should be declared");
+            let (publisher, mirror) = publisher_and_mirror
+                .split_once("export async function mirrorPreparedFullImage")
+                .expect("prepared full image mirror should follow the publisher");
+            assert!(
+                publisher.contains("'--tag',image+':'+version,'--tag',image+':latest'"),
+                "the direct registry build must publish both version and latest tags"
+            );
+            let publish = publisher
+                .find("invoke(['buildx','build','--progress','plain','--push','--provenance=false'")
+                .expect("prepared image publication should directly push its Buildx result");
+            let pull = publisher
+                .find("invoke(['pull',image+':'+version])")
+                .expect("the published version should be pulled for actual observations");
+            let immutable = publisher
+                .find("immutableReference(image+':'+version,invoke)")
+                .expect("the pulled version should resolve to one immutable repository digest");
+            let observe = publisher
+                .find("await observePublished(reference,expected,invoke,fetcher)")
+                .expect("the immutable published image should pass runtime and anonymous checks");
+            assert!(
+                publish < pull && pull < immutable && immutable < observe,
+                "direct publication must precede version pull, immutable selection and published observations"
+            );
+            assert!(mirror.contains("for(const suffix of [version,'latest'])"));
+            let tag = mirror
+                .find("invoke(['tag',source.image,image+':'+suffix])")
+                .expect("the mirror should tag the immutable source for both suffixes");
+            let push = mirror
+                .find("invoke(['push',image+':'+suffix])")
+                .expect("the mirror should push each tagged suffix");
             assert!(
                 tag < push,
-                "both metadata suffixes must be tagged before pushing"
+                "both mirror metadata suffixes must be tagged before pushing"
             );
         }
         assert!(

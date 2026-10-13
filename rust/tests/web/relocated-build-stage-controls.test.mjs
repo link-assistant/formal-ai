@@ -97,11 +97,11 @@ function checkCoverage(workflow){
  for(const operand of ['cargo llvm-cov show-env --sh','cargo llvm-cov show-env --export-prefix','scripts/run-with-budget-warning.sh',
   'cargo test --manifest-path rust/Cargo.toml --all-features --no-run','--message-format=json-render-diagnostics > coverage-build.json'])assert.ok(compiled.run.includes(operand),operand);
  const archiver=step(producer,'Collect the instrumented executables');
- for(const operand of ['coverage-build.json','coverage-tests.tsv','coverage-objects.txt','-perm -u+x','tar -cf - coverage-tests.tsv -T coverage-objects.txt | zstd -T2 -6 -o coverage-objects.tar.zst'])assert.ok(archiver.run.includes(operand),operand);
+ for(const operand of ['coverage-build.json','coverage-tests.tsv','coverage-objects.txt','-perm -u+x','tar -cf - coverage-tests.tsv -T coverage-objects.txt | zstd -T2 -6 --long=29 -B67108864 -o coverage-objects.tar.zst'])assert.ok(archiver.run.includes(operand),operand);
  const archive=upload(producer,'coverage-objects');assert.equal(archive.with.path,'coverage-objects.tar.zst');assert.equal(archive.with['compression-level'],0);
  assert.ok(producer.steps.indexOf(compiled)<producer.steps.indexOf(archiver)&&producer.steps.indexOf(archiver)<producer.steps.indexOf(archive));
  assert.deepEqual(shard.needs,['coverage-build']);download(shard,'coverage-objects');
- assert.equal(step(shard,'Unpack the instrumented executables').run,'tar --zstd -xf coverage-objects/coverage-objects.tar.zst');
+ assert.equal(step(shard,'Unpack the instrumented executables').run,'tar -I "zstd --long=29" -xf coverage-objects/coverage-objects.tar.zst');
  step(shard,'Run the instrumented coverage shard');
  const profileUploads=shard.steps.filter(value=>String(value.uses).startsWith('actions/upload-artifact@')&&value.with?.name?.startsWith('coverage-profile-'));
  assert.equal(profileUploads.length,1);assert.equal(profileUploads[0].with['if-no-files-found'],'error');
@@ -110,7 +110,12 @@ function checkCoverage(workflow){
  download(reducer,'coverage-objects');
  const profiles=step(reducer,"Download every shard's profile");assert.equal(profiles.with.pattern,'coverage-profile-*');assert.equal(profiles.with['merge-multiple'],true);
  const report=step(reducer,'Report merged Rust coverage');
- for(const operand of ['[ -s "coverage-profiles/shard-$index-of-$total.profdata" ]','tar --zstd -xf coverage-objects/coverage-objects.tar.zst','merge -sparse','cargo llvm-cov report --manifest-path rust/Cargo.toml --lcov --output-path lcov.info'])assert.ok(report.run.includes(operand),operand);
+ for(const operand of [
+  '[ -s "coverage-profiles/shard-$index-of-$total.profdata" ]',
+  'tar -I "zstd --long=29" -xf coverage-objects/coverage-objects.tar.zst',
+  'merge -sparse',
+  'cargo llvm-cov report --manifest-path rust/Cargo.toml --lcov --output-path lcov.info'
+ ])assert.ok(report.run.includes(operand),operand);
  assert.equal(step(reducer,'Check Rust coverage ratchet').run,'rust-script scripts/check-coverage-ratchet.rs --only rust');
  upload(reducer,'rust-lcov');
  for(const name of ['coverage-build','coverage','browser-coverage']){

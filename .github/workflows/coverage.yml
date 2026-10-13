@@ -197,8 +197,9 @@ jobs:
           find "$target/debug" \( -path "$target/debug/build" -o -path "$target/debug/incremental" \
             -o -path "$target/debug/.fingerprint" \) -prune -o -type f -perm -u+x \
             ! -name '*.d' ! -name '*.rlib' ! -name '*.rmeta' -print > coverage-objects.txt
-          # Compress once with two workers; artifact upload stores the lossless frame.
-          tar -cf - coverage-tests.tsv -T coverage-objects.txt | zstd -T2 -6 -o coverage-objects.tar.zst
+          # Lossless long-distance matching retains every executable and report object.
+          # Bound worker jobs; decoders explicitly admit the 512 MiB history window.
+          tar -cf - coverage-tests.tsv -T coverage-objects.txt | zstd -T2 -6 --long=29 -B67108864 -o coverage-objects.tar.zst
           du -h coverage-objects.tar.zst
 
       - name: Upload the instrumented executables
@@ -213,18 +214,17 @@ jobs:
   coverage-shard:
     name: Coverage shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
-    # 1200s of budget under a 30-minute cap is 66.7%. The whole instrumented
-    # suite measured ~4560s of test time (run 37652295937); a tenth is ~460s,
-    # and the budget leaves room for the shard that draws the slowest tests
-    # (the longest single test reported 733s under four-way contention).
+    # Keep the 1200s execution budget and 30-minute job cap unchanged.
+    # Thirty-two partitions distribute the complete instrumented inventory;
+    # fresh CI must establish completion under the existing deadlines.
     timeout-minutes: 30
     needs: [coverage-build]
     strategy:
       fail-fast: false
       matrix:
-        # Sixteen legs; the shard count is the matrix size (strategy.job-total),
-        # so adding or removing a leg can never leave a test unmeasured.
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        # Thirty-two legs; shard count comes from strategy.job-total.
+        # Every selected test still belongs to exactly one partition.
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32]
     # Issue #1076. The diagnostics switch belongs to the job, not to separate
     # steps: composite actions read the environment the job exports. Off
     # unless a `workflow_dispatch` input or the `FORMAL_AI_CI_VERBOSE`
@@ -270,7 +270,7 @@ jobs:
           path: coverage-objects
 
       - name: Unpack the instrumented executables
-        run: tar --zstd -xf coverage-objects/coverage-objects.tar.zst
+        run: tar -I "zstd --long=29" -xf coverage-objects/coverage-objects.tar.zst
 
       # Issue #1076. Both steps print nothing unless the job-level switch above
       # is on. Switched on, they record CPU steal, load, memory and disk once
@@ -500,7 +500,7 @@ jobs:
               exit 1
             }
           done
-          tar --zstd -xf coverage-objects/coverage-objects.tar.zst
+          tar -I "zstd --long=29" -xf coverage-objects/coverage-objects.tar.zst
           workspace=$(cargo metadata --manifest-path rust/Cargo.toml --format-version 1 --no-deps | jq -r .workspace_root)
           host=$(rustc -vV | sed -n 's/^host: //p')
           llvm_profdata="$(rustc --print sysroot)/lib/rustlib/$host/bin/llvm-profdata"

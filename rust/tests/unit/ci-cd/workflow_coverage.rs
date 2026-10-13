@@ -177,13 +177,15 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
     }
     let shard = job_block(&workflow, "coverage-shard");
     assert!(shard.contains("name: coverage-objects"));
-    assert!(shard.contains("tar --zstd -xf coverage-objects/coverage-objects.tar.zst"));
+    assert!(
+        shard.contains("tar -I \"zstd --long=29\" -xf coverage-objects/coverage-objects.tar.zst")
+    );
     let reducer = job_block(&workflow, "coverage");
     for operation in [
         "check-shard-results.sh",
         "name: coverage-objects",
         "pattern: coverage-profile-*",
-        "tar --zstd -xf coverage-objects/coverage-objects.tar.zst",
+        "tar -I \"zstd --long=29\" -xf coverage-objects/coverage-objects.tar.zst",
         "merge -sparse",
         "cargo llvm-cov report",
         "check-coverage-ratchet.rs --only rust",
