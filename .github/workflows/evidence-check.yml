@@ -73,7 +73,7 @@ jobs:
       # release (docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md).
       # A relaxed result is reported as relaxed, never as satisfied, which is the
       # thing issue #1066 actually objected to.
-      - name: Report the named PR1196 authoring deferral
+      - name: Report the named release-recovery authoring deferral
         id: release-recovery-authoring
         run: node scripts/check-release-recovery-authoring-deferral.mjs
       - name: Formal AI authored part of this pull request

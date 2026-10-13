@@ -49,7 +49,7 @@ Restore only after independently bound, complete original east and west source b
 Under the user's explicit release-first authorization, only the positive authorship
 requirements for PR1196 are temporarily deferred. The exact scope is a pull_request
 event for link-assistant/formal-ai, with both head and base repositories matching,
-open PR1196, head branch fix/postmerge-release-ci-1188 and base main. Every other PR,
+open PR1196, head branch fix/postmerge-release-ci-1188 and base main. Except for the separately recorded PR1197 scope below, every other PR,
 branch, repository and event, including dispatch, main push and schedule, retains
 the original gates. The shared event predicate is not producer authentication.
 
@@ -73,7 +73,7 @@ This deferral is distinct from the existing age-based relaxation and from the
 prospective floor satisfied by genuine session-backed authored work.
 
 Remove the two workflow admission conditions, the shared helper and its deferral
-tests after this recovery PR closes, or earlier when a genuine necessary Formal
+tests after both recorded recovery PRs close, or earlier when a genuine necessary Formal
 AI-authored behavioral contribution with valid committed evidence satisfies the
 ordinary gates. The event predicate stops matching a closed PR automatically.
 Retain this historical debt record and original failures. Restoration runs the
@@ -111,3 +111,12 @@ Release-first temporary performance deferral: only `issue_1138_rust_projection::
 Authenticated 50c5582d native UNIT4 job 114927049677 reached status 124 at the unchanged 1080-second deadline (1081 seconds elapsed). The full raw log SHA-256 is `68686e10a359e7f905b4b8923e3fc51e30f581ecbb708490b0d66d4b9ef286b9`. Of 510 selected unit cases, 508 passed and one was ignored; this was the sole warned case without a terminal result. Its warning-to-cutoff interval plus the warning's 60-second threshold gives a censored lower bound of 878.012 seconds, not a completed duration or proof that the individual case intrinsically exceeds 1080 seconds. The 105 later-target names in the shard were not reached and are not accepted.
 
 Restore by removing only this named ignore after the unchanged complete owned corpus passes within both original 1080-second native-unit and 1200-second coverage limits. Retain the original 30-minute job ceiling, corpus floor, all corpus members and every byte-equality assertion. No subset corpus, weaker floor, aggregate-derived per-case timing, historical source proof, local source check or deferred result can substitute for the full original acceptance. Genuine coverage singleton weight updates preserve all 6,331 test identities and the sixteen-shard/two-process/two-thread policy; their next hosted deadline outcome remains pending.
+
+
+## PR1197-release-recovery-authoring
+
+The user's release-first temporary-debt authorization also applies to the manifest-byte repair PR. Only the exact open PR1197 on `fix/release-manifest-byte-witness`, with a `pull_request` event in `link-assistant/formal-ai`, matching event number and both head/base repositories and base `main`, defers the two positive-authorship requirements. Its status is `DeferredForReleaseRecovery_PR1197`, `qualifyingAuthorship=0`, `floorSatisfied=false`. Every other branch, PR, repository or event retains its original gates. Closing the PR ends the match automatically.
+
+The actual failures are [evidence job115137791877](https://github.com/link-assistant/formal-ai/actions/runs/38349304164/job/115137791877) (raw SHA256 `f426cf2d9203029a1cc13f5ff5304ae3177333ca4ffb6f2adb317086c0003019`) and [standing floor job115137792157](https://github.com/link-assistant/formal-ai/actions/runs/38349304237/job/115137792157) (raw SHA256 `4321645f4f652bd1cf0f41a560f67aa3dd385ff0671caf5096d2a1b90361b954`). They do not establish a behavioral defect in the manifest repair. Strict trailer/session validation, the real share measurement, debt ceilings and failure/cancellation status checks still run. Supplied source recipes receive zero autonomy/authorship credit; no session claims or attribution trailers are fabricated.
+
+The original contribution and merged-authored-PR obligations remain unaccepted. Remove the PR1197 entry after this recovery closes, or earlier when genuine necessary Formal AI-authored behavioral work with committed valid evidence satisfies the ordinary gates. Remove the shared helper/admission conditions only after both recovery scopes end. Main push, schedule and manual release remain strict; the standing main floor can remain red. No metric, denominator, floor, release-source, artifact, smoke, or production-completion requirement changes. This exception is policy debt, not authorship acceptance or release publication.
