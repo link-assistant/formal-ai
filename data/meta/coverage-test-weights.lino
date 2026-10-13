@@ -98,7 +98,9 @@ coverage-test-weights
   test "issue_1138_family_behaviour::every_retired_handler_prompt_still_answers_through_its_family"
     seconds 333.781210654
   test "issue_1138_family_behaviour::no_family_answer_is_the_unknown_opener"
-    seconds 164.527412
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:28:41.0899489Z completed-at 2026-10-13T15:31:06.0910736Z lower-bound-seconds 205.001124
+    seconds 205.001124
   test "issue_1138_family_migration::held_out_family_paraphrases_route_to_the_family_interpreter"
     seconds 333.881994
   test "issue_1138_family_migration::no_answer_is_byte_equal_to_a_seed_body_field"
@@ -138,7 +140,9 @@ coverage-test-weights
   test "issue_705_anticipation::every_unknown_or_failed_offline_probe_reaches_the_adoption_frontier"
     seconds 107.895001
   test "issue_705_anticipation::idle_dreaming_persists_the_ledger_and_later_live_usage_records_a_hit"
-    seconds 112.006029
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:30:46.7112967Z completed-at 2026-10-13T15:32:18.8837914Z lower-bound-seconds 152.172494
+    seconds 152.172494
   test "issue_705_anticipation::prediction_hits_link_later_actual_requests_and_zero_percent_is_honest"
     seconds 164.472259065
   test "issue_705_anticipation::source_prelearning_is_consent_gated_and_uses_cache_provenance_and_ttl"
@@ -166,7 +170,9 @@ coverage-test-weights
   test "pull_request_1188_teach_f::g82_a_copy_then_its_edits_are_planned_sentence_by_sentence"
     seconds 123.006202408
   test "seed::issue_699_handler_migration::unsupported_write_program_fails_with_a_named_skill_gap"
-    seconds 72.367997
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:32:28.8669031Z completed-at 2026-10-13T15:32:41.3404839Z lower-bound-seconds 72.473580
+    seconds 72.473580
   test "seed::pull_request_1188_dialogue_utterance::every_greeting_farewell_and_thanks_surface_plans_no_tool_call"
     seconds 245.360649
   test "semantic_intent_routing::directory_listing_routes_shell_variations_in_every_supported_language"
@@ -383,3 +389,39 @@ coverage-test-weights
     seconds 18.540289891
 # Successful singleton process measurements: run38276804819 attempt1, artifacts11761679916/11762469050/11763261974.
 # Only effective increases applied; unfinished and multi-case batch costs are not per-case measurements.
+  test "issue_701_dreaming_amendment_class::the_production_entry_point_and_the_replay_core_agree"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:34:22.1447482Z completed-at 2026-10-13T15:34:48.1267822Z lower-bound-seconds 85.982034
+    seconds 85.982034
+  test "agentic_coding::agentic_backend_actions::factual_question::election_search_then_fetch_then_answers_from_results"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:35:02.3834618Z completed-at 2026-10-13T15:36:45.8434868Z lower-bound-seconds 163.460025
+    seconds 163.460025
+  test "agentic_coding::file_creation_writes::diverse_write_phrasings_all_route_to_write"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:35:19.3184446Z completed-at 2026-10-13T15:38:27.8724354Z lower-bound-seconds 248.553990
+    seconds 248.553990
+  test "issue_656_promotion::promotion_bridges_adoptable_learning_proposals"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:37:26.3074976Z completed-at 2026-10-13T15:38:13.9903681Z lower-bound-seconds 107.682870
+    seconds 107.682870
+  test "agentic_coding::issue_1099_multiple_obligations::literal_obligation_transaction::keywords_inside_every_literal_obligation_remain_bytes"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:37:52.4584785Z completed-at 2026-10-13T15:39:58.4648818Z lower-bound-seconds 186.006403
+    seconds 186.006403
+  test "agentic_coding::issue_1154_progress_arguments::repeated_successful_read_is_reported_not_replanned"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:40:16.4904744Z completed-at 2026-10-13T15:40:31.4154375Z lower-bound-seconds 74.924963
+    seconds 74.924963
+  test "agentic_coding::issue_538_agentic::driver_runs_the_meaning_detail_loop_and_writes_the_seed_block"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:40:58.5114673Z completed-at 2026-10-13T15:42:05.8616842Z lower-bound-seconds 127.350216
+    seconds 127.350216
+  test "agentic_coding::issue_996_markdown::completed_answer_fences_the_plan_event"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610293
+    # raw-log-sha256 b0e8c1d9d2ae71f0ff3125de0c799384e7ffc4ea87a405367250c89ae48d585e warning-at 2026-10-13T15:42:09.0293630Z completed-at 2026-10-13T15:43:09.4679855Z lower-bound-seconds 120.438622
+    seconds 120.438622
+  test "fetched_page_answer_extraction::research_answer::does_not_dump_the_whole_fetched_page"
+    # observed PR-head 9d95920808c54cbb5d2f7f9f3392289284989eb6 test-merge 9fda50c32ffd8122a00e7769d9ce58950659d3c7 run 38416254362 job 115372610390
+    # raw-log-sha256 5a31ee8e83c4c1f4915079be704e5c32f2364c0c14261ea08c7174693d83c61a warning-at 2026-10-13T15:49:44.8574885Z completed-at 2026-10-13T15:49:56.9977390Z lower-bound-seconds 72.140250
+    seconds 72.140250

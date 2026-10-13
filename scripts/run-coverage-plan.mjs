@@ -51,6 +51,7 @@ const observed = await executeBatches(batches, executables, {
   onOutput: (chunk) => process.stdout.write(chunk),
   onStart: (batch) => {
     checkpoints.start(batch);
+    console.log('COVERAGE_BATCH_START '+JSON.stringify({index:batch.index,target:batch.target,names:batch.names}));
     console.log(`coverage batch ${batch.index}: ${batch.names.length} ${batch.target} case(s), priority ${batch.weight}s`);
   },
   onFinish: (batch) => {
