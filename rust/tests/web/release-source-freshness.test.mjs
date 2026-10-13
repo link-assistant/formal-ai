@@ -5,18 +5,22 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {checkReleaseFreshness,releaseContext} from '../../../scripts/release-source-freshness.mjs';
+import {createHash} from 'node:crypto';
+import {serialize} from 'node:v8';
+import {WITNESS} from '../../../scripts/refresh-release-specification-witness.mjs';
 import {resolvePackageRelease} from '../../../scripts/resolve-package-release.mjs';
 function fixture() {
  const directory=mkdtempSync(join(tmpdir(),'release-freshness-'));
  const remote=join(directory,'origin.git'),cwd=join(directory,'work'),state=join(directory,'state');mkdirSync(state);
- const run=(location,args)=>execFileSync('git',['-c','core.hooksPath=/dev/null',...args],{cwd:location,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
+ const runRaw=(location,args)=>execFileSync('git',['-c','core.hooksPath=/dev/null',...args],{cwd:location,encoding:'utf8',stdio:['ignore','pipe','pipe']});
+ const run=(location,args)=>runRaw(location,args).trim();
  run(directory,['init','--bare',remote]);run(directory,['clone',remote,cwd]);run(cwd,['checkout','-b','main']);run(cwd,['config','user.name','Fixture']);run(cwd,['config','user.email','fixture@example.invalid']);
  mkdirSync(join(cwd,'rust'));writeFileSync(join(cwd,'rust/Cargo.toml'),'[package]\nname = \"formal-ai\"\nversion = \"1.0.0\"\n');writeFileSync(join(cwd,'source.txt'),'original compiled source\n');run(cwd,['add','source.txt','rust/Cargo.toml']);run(cwd,['commit','-m','original']);run(cwd,['push','-u','origin','main']);
  const head=run(cwd,['rev-parse','HEAD']);
  const environment={GITHUB_ACTIONS:'true',GITHUB_REPOSITORY:'owner/repo',GITHUB_REF:'refs/heads/main',GITHUB_REF_NAME:'main',GITHUB_SHA:head,GITHUB_RUN_ID:'123',GITHUB_RUN_ATTEMPT:'2',GITHUB_WORKFLOW_REF:'owner/repo/.github/workflows/release.yml@refs/heads/main',GITHUB_EVENT_NAME:'push',GITHUB_JOB:'auto-release',RUNNER_TEMP:state};
  const event={ref:'refs/heads/main',after:head,repository:{full_name:'owner/repo'}};
  // Only transport remapping is injected: every source/tree/remote identity comes from actual Git.
- const gitRun=args=>args.join(' ')==='remote get-url origin'?'https://github.com/owner/repo.git':run(cwd,args);
+ const gitRun=args=>args.join(' ')==='remote get-url origin'?'https://github.com/owner/repo.git':runRaw(cwd,args);
  const check=phase=>checkReleaseFreshness({cwd,environment,event,phase,gitRun});
  const child=()=>{writeFileSync(join(cwd,'rust/Cargo.toml'),'[package]\nname = \"formal-ai\"\nversion = \"1.2.3\"\n');run(cwd,['add','rust/Cargo.toml']);check('before-commit');run(cwd,['commit','-m','chore: release v1.2.3']);return run(cwd,['rev-parse','HEAD']);};
  return {directory,cwd,remote,state,head,environment,event,run,gitRun,check,child,close:()=>rmSync(directory,{recursive:true,force:true})};
@@ -87,4 +91,32 @@ test('original Rust producer invokes guards before mutations and keeps rebase co
 
 test('staged executable source or Cargo dependency drift cannot be recorded as the own version child',()=>{
  for(const kind of ['source','manifest']){const f=fixture();try{f.check('before-sync');writeFileSync(join(f.cwd,'rust/Cargo.toml'),'[package]\nname = "formal-ai"\nversion = "1.2.3"\n'+(kind==='manifest'?'[dependencies]\nevil = "1"\n':''));f.run(f.cwd,['add','rust/Cargo.toml']);if(kind==='source'){writeFileSync(join(f.cwd,'source.txt'),'different executable source\n');f.run(f.cwd,['add','source.txt']);}assert.throws(()=>f.check('before-commit'),/undeclared|manifest/);}finally{f.close();}}
+});
+
+
+test('physical version-child validation preserves LF and CRLF Cargo bytes and exact witness scope',()=>{
+ for(const ending of ['\n','\r\n'])for(const mutation of [null,'whitespace','dependency','assertion','stale-witness']){
+  const f=fixture();try{
+   const originalCargo=readFileSync(join(f.cwd,'rust/Cargo.toml'),'utf8').replaceAll('\n',ending);
+   const digest=text=>createHash('sha256').update(text).digest('hex');
+   const before={inventory:{total:4,cases:Array.from({length:4},(_,id)=>({id,checks:[{same:true}],program:{fixtures:[{file:'repo:rust/Cargo.toml',sha256:digest(originalCargo)}]}})),unsupported:[{id:'unsupported',reason:'preserved'}]},sourceManifest:[{path:'source.txt',sha256:digest(readFileSync(join(f.cwd,'source.txt')))}]};
+   const witness=join(f.cwd,WITNESS);mkdirSync(join(witness,'..'),{recursive:true});
+   writeFileSync(join(f.cwd,'rust/Cargo.toml'),originalCargo);writeFileSync(witness,serialize(before));
+   f.run(f.cwd,['add','rust/Cargo.toml',WITNESS]);f.run(f.cwd,['commit','-m','record exact governed Cargo source']);f.run(f.cwd,['push','origin','HEAD:main']);
+   f.environment.GITHUB_SHA=f.run(f.cwd,['rev-parse','HEAD']);f.event.after=f.environment.GITHUB_SHA;
+   f.check('before-sync');
+   let nextCargo=originalCargo.replace('1.0.0','1.2.3');
+   if(mutation==='whitespace')nextCargo+=ending;
+   if(mutation==='dependency')nextCargo+='[dependencies]'+ending+'evil = "1"'+ending;
+   const after=structuredClone(before);for(const item of after.inventory.cases)item.program.fixtures[0].sha256=digest(nextCargo);
+   if(mutation==='assertion')after.inventory.cases[0].checks[0].same=false;
+   if(mutation==='stale-witness')after.inventory.cases[0].program.fixtures[0].sha256=digest(originalCargo);
+   writeFileSync(join(f.cwd,'rust/Cargo.toml'),nextCargo);writeFileSync(witness,serialize(after));f.run(f.cwd,['add','rust/Cargo.toml',WITNESS]);
+   if(mutation!==null){assert.throws(()=>f.check('before-commit'),/Cargo manifest|version refresh/);continue;}
+   const record=f.check('before-commit');assert.match(record.expectedTree,/^[a-f0-9]{40}$/u);
+   assert.equal(f.gitRun(['show',f.environment.GITHUB_SHA+':rust/Cargo.toml']),originalCargo);
+   assert.equal(f.gitRun(['show',':rust/Cargo.toml']),nextCargo);
+   f.run(f.cwd,['commit','-m','exact version-only child']);const child=f.run(f.cwd,['rev-parse','HEAD']);assert.equal(f.check('before-push').child,child);assert.equal(f.check('push-retry').child,child);assert.equal(f.run(f.cwd,['rev-parse','HEAD^']),f.environment.GITHUB_SHA);
+  }finally{f.close();}
+ }
 });
