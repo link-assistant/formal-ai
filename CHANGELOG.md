@@ -20,6 +20,22 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.353.2] - 2026-10-13
+
+Publish prepared Docker images directly to the registry instead of exporting a full local image before pushing. Stream plain BuildKit progress and bounded operation timings while retaining source, executable, digest, runtime and anonymous-access verification. Existing cache settings and execution budgets remain unchanged.
+
+The previously published v0.353.1 tag and crate remain unchanged; its Docker and GitHub release targets were blocked by a publication timeout. This patch selects a new release version, normally 0.353.2. Zero Formal AI authorship is credited for supplied orchestration.
+
+Scoped temporary authoring debt: only exact open PR1200 on fix/release-docker-export receives DeferredForReleaseRecovery_PR1200 with qualifyingAuthorship=0 and floorSatisfied=false. Strict evidence validation and ordinary main/schedule/dispatch/closed-context gates remain unchanged; restore the original positive authoring obligations under PR1200-release-recovery-authoring.
+
+Use lossless long-distance compression for the complete instrumented executable archive, with bounded worker jobs and matching decoder history limits. Keep every test harness, runtime executable, coverage report object, test selection, assertion, job deadline and coverage ratchet.
+
+CI transfer delays of 15–18 minutes exhausted the 30-minute shard job clock; one cancelled attempt had already passed all 395 selected tests in 699 seconds of its 1,200-second execution budget. Archive size and hosted timing improvements still require CI measurement. Supplied orchestration receives zero Formal AI authorship credit.
+
+Refresh instrumented scheduling priorities only from uniquely matched long-running warnings and successful completions. Keep these values as observed lower bounds, with per-row source/run/job/log provenance; preserve native timings and never divide pooled batch time among its cases. Print exact batch names when dispatch starts so deadline-interrupted work is identifiable even when no completion trace is emitted. Every test, assertion, execution deadline, job deadline and coverage floor remains intact. Hosted scheduling completion still requires fresh CI.
+
+Distribute the complete native instrumented inventory across 32 coverage shards after a fresh run again exhausted its unchanged 1,200-second execution budget while an integration batch remained incomplete. Keep the 30-minute job cap, all test assertions, coverage floors, archive members, browser shard count and observed scheduling weights. More runner jobs and archive downloads are the tradeoff; hosted completion and transfer costs require fresh CI. Supplied orchestration receives zero Formal AI authorship credit.
+
 ## [0.353.1] - 2026-10-13
 
 The layered JavaScript-to-Rust check now overlaps full retranslation with compilation of the committed projections. Both checks must succeed, freshly translated projections must remain byte-equal, and failures cancel the remaining process groups. The original module set, equivalence assertions, and 540-second execution budget are preserved.
