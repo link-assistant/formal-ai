@@ -19,7 +19,12 @@ export function releaseImageCacheSettings(environment=process.env) {
  const settings={};for(const line of lines){const match=/^(cache-from|cache-to): (.+)$/u.exec(line);assert.ok(match,'unknown or malformed BuildKit cache setting');assert.ok(!Object.hasOwn(settings,match[1]),'duplicate cache setting');settings[match[1]]=match[2];}
  assert.deepEqual(settings,required,'cache kind, mode and scope must preserve the source publish contract');return settings;
 }
-function completed(result,label) {if(result.error)throw result.error;assert.equal(result.signal,null,label+' interrupted');assert.equal(result.status,0,label+' failed: '+String(result.stderr??''));return result.stdout;}
+function completed(result,label,diagnostics=false) {
+ if(diagnostics&&(result.error||result.signal||result.status!==0)) {
+  const bounded=value=>{const bytes=Buffer.from(String(value??''));let text=bytes.subarray(0,4096).toString('utf8');while(Buffer.byteLength(text)>4096)text=text.slice(0,-1);return {text,bytes:bytes.length,truncated:bytes.length>4096};};
+  console.error(JSON.stringify({dockerPhase:'privileged-runtime',event:'failure-output',status:result.status??null,signal:result.signal??null,errorCode:result.error?.code??null,stdout:bounded(result.stdout),stderr:bounded(result.stderr)}));
+ }
+ if(result.error)throw result.error;assert.equal(result.signal,null,label+' interrupted');assert.equal(result.status,0,label+' failed: '+String(result.stderr??''));return result.stdout;}
 export function validatePreparedBinary({cwd,directory,version,environment=process.env,repositoryUrl=null}) {
  const record=JSON.parse(readFileSync(join(directory,'prepared-build.json'),'utf8'));
  assert.equal(record.schema,'prepared-release-build/v1');assert.equal(record.authority,'guarded-main-prepared-release');
@@ -39,15 +44,17 @@ export function validatePreparedBinary({cwd,directory,version,environment=proces
 export function dockerRunner(run,cwd,environment) {
  return args=>{
   const streamed=args[0]==='buildx'||args[0]==='push'||args[0]==='pull';
-  const phase=args[0]==='buildx'?'build-and-export':args[0];
+  const runtime=args[0]==='run'&&args.includes('verify-formal-ai-dind');
+  const timed=streamed||runtime;
+  const phase=runtime?'privileged-runtime':args[0]==='buildx'?'build-and-export':args[0];
   const started=Date.now();
-  if(streamed)console.error(JSON.stringify({dockerPhase:phase,event:'start',timeoutMs:1500000,progress:'streamed'}));
+  if(timed)console.error(JSON.stringify({dockerPhase:phase,event:'start',timeoutMs:1500000,progress:streamed?'streamed':'captured-receipt'}));
   let result;
   try {
    result=run('docker',args,{cwd,env:environment,encoding:'utf8',timeout:1500000,maxBuffer:16*1024*1024,...(streamed?{stdio:['ignore','inherit','inherit']}:{})});
-   return completed(result,'docker '+phase+(streamed?' (see streamed output)':''));
+   return completed(result,'docker '+phase+(streamed?' (see streamed output)':''),runtime);
   } finally {
-   if(streamed)console.error(JSON.stringify({dockerPhase:phase,event:'end',elapsedMs:Date.now()-started,status:result?.status??null,signal:result?.signal??null,errorCode:result?.error?.code??null}));
+   if(timed)console.error(JSON.stringify({dockerPhase:phase,event:'end',elapsedMs:Date.now()-started,status:result?.status??null,signal:result?.signal??null,errorCode:result?.error?.code??null}));
   }
  };
 }
