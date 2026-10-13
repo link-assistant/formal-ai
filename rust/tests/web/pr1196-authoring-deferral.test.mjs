@@ -167,22 +167,69 @@ for (const name of ['push', 'schedule', 'workflow_dispatch', 'pull_request_targe
 }
 
 function dockerRecoveryEvent() {
- const value=event();value.number=value.pull_request.number=1200;value.pull_request.head.ref='fix/release-docker-export';return value;
+ const value=event();
+ value.number=value.pull_request.number=1200;
+ value.pull_request.head.ref='fix/release-docker-export';
+ return value;
 }
 test('PR1200 exact open Docker recovery has zero-credit CLI status and named debt',()=>{
- assert.equal(evaluate(dockerRecoveryEvent()),true);const observed=invoke('pull_request',dockerRecoveryEvent());
- assert.equal(observed.result.status,0);assert.equal(observed.result.signal,null);
+ assert.equal(evaluate(dockerRecoveryEvent()),true);
+ const observed=invoke('pull_request',dockerRecoveryEvent());
+ assert.equal(observed.result.status,0);
+ assert.equal(observed.result.signal,null);
  assert.deepEqual(JSON.parse(observed.result.stdout),{defer:true,status:'DeferredForReleaseRecovery_PR1200',qualifyingAuthorship:0,floorSatisfied:false,restorationDebt:'PR1200-release-recovery-authoring'});
- assert.equal(observed.output,'defer=true\n');assert.match(observed.summary,/#pr1200-release-recovery-authoring/u);assert.match(observed.summary,/qualifyingAuthorship=0; floorSatisfied=false/u);
+ assert.equal(observed.output,'defer=true\n');
+ assert.match(observed.summary,/#pr1200-release-recovery-authoring/u);
+ assert.match(observed.summary,/qualifyingAuthorship=0; floorSatisfied=false/u);
 });
 for(const[label,change]of[
- ['string number',value=>{value.number=value.pull_request.number='1200';}],['unknown number',value=>{value.number=value.pull_request.number=1201;}],
- ['nested mismatch',value=>{value.pull_request.number=1197;}],['old number new branch',value=>{value.number=value.pull_request.number=1197;}],['new number old branch',value=>{value.pull_request.head.ref='fix/release-manifest-byte-witness';}],
- ['closed',value=>{value.pull_request.state='closed';}],['branch suffix',value=>{value.pull_request.head.ref+='-other';}],['missing branch',value=>{delete value.pull_request.head.ref;}],['wrong base',value=>{value.pull_request.base.ref='release';}],
- ['event repository',value=>{value.repository.full_name='fork/formal-ai';}],['head repository',value=>{value.pull_request.head.repo.full_name='fork/formal-ai';}],['base repository',value=>{value.pull_request.base.repo.full_name='fork/formal-ai';}],
- ['missing head repository',value=>{delete value.pull_request.head.repo;}],['missing base repository',value=>{delete value.pull_request.base.repo;}],['missing request',value=>{delete value.pull_request;}]
-])test('PR1200 scope refuses '+label,()=>{const value=dockerRecoveryEvent();change(value);assert.equal(evaluate(value),false);});
-for(const name of ['push','schedule','workflow_dispatch','pull_request_target','',undefined])test('PR1200 ordinary event remains strict '+String(name),()=>{assert.equal(deferReleaseRecoveryAuthoring(name,repository,dockerRecoveryEvent()),false);});
+ ['string number',value=>{value.number=value.pull_request.number='1200';
+ }],
+ ['unknown number',value=>{value.number=value.pull_request.number=1201;
+ }],
+
+ ['nested mismatch',value=>{value.pull_request.number=1197;
+ }],
+ ['old number new branch',value=>{value.number=value.pull_request.number=1197;
+ }],
+ ['new number old branch',value=>{value.pull_request.head.ref='fix/release-manifest-byte-witness';
+ }],
+
+ ['closed',value=>{value.pull_request.state='closed';
+ }],
+ ['branch suffix',value=>{value.pull_request.head.ref+='-other';
+ }],
+ ['missing branch',value=>{delete value.pull_request.head.ref;
+ }],
+ ['wrong base',value=>{value.pull_request.base.ref='release';
+ }],
+
+ ['event repository',value=>{value.repository.full_name='fork/formal-ai';
+ }],
+ ['head repository',value=>{value.pull_request.head.repo.full_name='fork/formal-ai';
+ }],
+ ['base repository',value=>{value.pull_request.base.repo.full_name='fork/formal-ai';
+ }],
+
+ ['missing head repository',value=>{delete value.pull_request.head.repo;
+ }],
+ ['missing base repository',value=>{delete value.pull_request.base.repo;
+ }],
+ ['missing request',value=>{delete value.pull_request;
+ }]
+])test('PR1200 scope refuses '+label,()=>{const value=dockerRecoveryEvent();
+ change(value);
+ assert.equal(evaluate(value),false);
+ });
+for(const name of ['push','schedule','workflow_dispatch','pull_request_target','',undefined])test('PR1200 ordinary event remains strict '+String(name),()=>{assert.equal(deferReleaseRecoveryAuthoring(name,repository,dockerRecoveryEvent()),false);
+ });
 test('PR1200 runner repository mismatch and closed CLI retain normal gates',()=>{
- assert.equal(deferReleaseRecoveryAuthoring('pull_request','fork/formal-ai',dockerRecoveryEvent()),false);const value=dockerRecoveryEvent();value.pull_request.state='closed';const observed=invoke('pull_request',value);assert.equal(observed.result.status,0);assert.deepEqual(JSON.parse(observed.result.stdout),{defer:false,status:'NotDeferred'});assert.equal(observed.output,'defer=false\n');assert.equal(observed.summary,null);
+ assert.equal(deferReleaseRecoveryAuthoring('pull_request','fork/formal-ai',dockerRecoveryEvent()),false);
+ const value=dockerRecoveryEvent();
+ value.pull_request.state='closed';
+ const observed=invoke('pull_request',value);
+ assert.equal(observed.result.status,0);
+ assert.deepEqual(JSON.parse(observed.result.stdout),{defer:false,status:'NotDeferred'});
+ assert.equal(observed.output,'defer=false\n');
+ assert.equal(observed.summary,null);
 });
