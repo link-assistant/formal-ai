@@ -125,16 +125,14 @@ test('actual Node Docker stand-in builds prebuilt once, preserves immutable full
  const docker=calls.filter(call=>call.command==='docker');
  const builds=docker.filter(call=>call.args[0]==='buildx'&&call.args[1]==='build');
  assert.equal(builds.length,1);
- for(const image of ['ghcr.io/fixture/formal-ai','fixture/mirror'])for(const suffix of ['1.2.3','latest'])assert.ok(docker.some(call=>call.args[0]==='push'&&call.args[1]===image+':'+suffix));
+ const args=builds[0].args;
+ assert.ok(args.includes('--push'));assert.ok(args.includes('--provenance=false'));assert.ok(args.includes('--progress')&&args.includes('plain'));assert.ok(!args.includes('--load'));
+ const tags=args.flatMap((value,index)=>value==='--tag'?[args[index+1]]:[]);assert.deepEqual(tags,['ghcr.io/fixture/formal-ai:1.2.3','ghcr.io/fixture/formal-ai:latest']);
+ assert.equal(docker.some(call=>call.args[0]==='tag'&&call.args[2]?.startsWith('ghcr.io/')||call.args[0]==='push'&&call.args[1]?.startsWith('ghcr.io/')),false);
+ const buildIndex=docker.indexOf(builds[0]);const pullIndex=docker.findIndex(call=>call.args[0]==='pull'&&call.args[1]==='ghcr.io/fixture/formal-ai:1.2.3');assert.ok(pullIndex>buildIndex);
  const publicationOrder=[];
- for(const image of ['ghcr.io/fixture/formal-ai','fixture/mirror'])for(const suffix of ['1.2.3','latest']) {
-  const tagged=docker.findIndex(call=>call.args[0]==='tag'&&call.args[2]===image+':'+suffix);
-  const pushed=docker.findIndex(call=>call.args[0]==='push'&&call.args[1]===image+':'+suffix);
-  assert.ok(tagged>=0&&pushed>tagged,'actual metadata suffix must be tagged before push: '+image+':'+suffix);
-  publicationOrder.push(pushed);
- }
- assert.ok(publicationOrder[0]<publicationOrder[1]&&publicationOrder[1]<publicationOrder[2]&&publicationOrder[2]<publicationOrder[3],
-  'actual full version/latest publication must precede mirror version/latest publication');
+ for(const suffix of ['1.2.3','latest']){const tagged=docker.findIndex(call=>call.args[0]==='tag'&&call.args[2]==='fixture/mirror:'+suffix);const pushed=docker.findIndex(call=>call.args[0]==='push'&&call.args[1]==='fixture/mirror:'+suffix);assert.ok(tagged>pullIndex&&pushed>tagged);publicationOrder.push(pushed);}
+ assert.ok(publicationOrder[0]<publicationOrder[1]);
  assert.ok(builds[0].args.includes('BINARY_SOURCE=prebuilt'));
  assert.ok(builds[0].args.includes('type=gha,scope=docker-image'));
  assert.ok(builds[0].args.includes('type=gha,mode=max,scope=docker-image'));

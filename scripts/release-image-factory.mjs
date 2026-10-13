@@ -36,7 +36,21 @@ export function validatePreparedBinary({cwd,directory,version,environment=proces
  assert.ok(readFileSync(join(cwd,'rust/target/release/formal-ai')).equals(readFileSync(verified.binary)),'Docker context binary differs from actual source-bound producer');
  return {record,source,identity,verified};
 }
-function dockerRunner(run,cwd,environment) {return args=>completed(run('docker',args,{cwd,env:environment,encoding:'utf8',timeout:1500000,maxBuffer:16*1024*1024}),'docker '+args[0]);}
+export function dockerRunner(run,cwd,environment) {
+ return args=>{
+  const streamed=args[0]==='buildx'||args[0]==='push'||args[0]==='pull';
+  const phase=args[0]==='buildx'?'build-and-export':args[0];
+  const started=Date.now();
+  if(streamed)console.error(JSON.stringify({dockerPhase:phase,event:'start',timeoutMs:1500000,progress:'streamed'}));
+  let result;
+  try {
+   result=run('docker',args,{cwd,env:environment,encoding:'utf8',timeout:1500000,maxBuffer:16*1024*1024,...(streamed?{stdio:['ignore','inherit','inherit']}:{})});
+   return completed(result,'docker '+phase+(streamed?' (see streamed output)':''));
+  } finally {
+   if(streamed)console.error(JSON.stringify({dockerPhase:phase,event:'end',elapsedMs:Date.now()-started,status:result?.status??null,signal:result?.signal??null,errorCode:result?.error?.code??null}));
+  }
+ };
+}
 async function anonymousManifest(reference,configDigest,fetcher) {
  const verify=manifest=>{assert.equal(manifest.schemaVersion,2);assert.equal(manifest.config?.digest,configDigest,'registry manifest is not the observed image config');};
  if(reference.startsWith('ghcr.io/'))return verifyAnonymousImageManifest(reference,fetcher,verify);
@@ -76,12 +90,11 @@ export async function publishPreparedFullImage({cwd,directory,version,image,envi
  assert.ok(typeof environment.ACTIONS_RUNTIME_TOKEN==='string'&&environment.ACTIONS_RUNTIME_TOKEN.length>0,'GHA cache runtime token missing');
  assert.ok(typeof environment.ACTIONS_RESULTS_URL==='string'&&/^https:\/\/[^\s,]+$/u.test(environment.ACTIONS_RESULTS_URL),'GHA cache endpoint missing or invalid');
  const cache=releaseImageCacheSettings(environment);
- const invoke=dockerRunner(run,cwd,environment),local='formal-ai:prepared-full-'+environment.GITHUB_RUN_ID;
- invoke(['buildx','build','--load','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',local,
+ const invoke=dockerRunner(run,cwd,environment);
+ invoke(['buildx','build','--progress','plain','--push','--provenance=false','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',image+':'+version,'--tag',image+':latest',
   '--label','org.opencontainers.image.revision='+record.selection.head,'--label','org.opencontainers.image.version='+version,
   '--label','io.link-assistant.formal-ai.executable.sha256='+record.executable.sha256,
   '--cache-from',cache['cache-from'],'--cache-to',cache['cache-to'],'.']);
- for(const suffix of [version,'latest']){invoke(['tag',local,image+':'+suffix]);invoke(['push',image+':'+suffix]);}
  invoke(['pull',image+':'+version]);const reference=immutableReference(image+':'+version,invoke);
  const expected={revision:record.selection.head,version,binarySha256:record.executable.sha256};
  const observation=await observePublished(reference,expected,invoke,fetcher);
