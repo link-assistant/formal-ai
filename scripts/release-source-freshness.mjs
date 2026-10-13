@@ -34,7 +34,8 @@ export function checkReleaseFreshness({cwd,environment,event,phase,stateDirector
   const context=releaseContext(environment,event);
   assert.ok(['before-sync','before-commit','before-push','push-retry'].includes(phase));
   assert.ok(stateDirectory && resolve(stateDirectory)!==resolve(cwd),'private runner state required');
-  const git = args => (gitRun ?? ((values)=>execFileSync('git',values,{cwd,encoding:'utf8',timeout:30000})))(args).trim();
+  const gitRaw = args => (gitRun ?? ((values)=>execFileSync('git',values,{cwd,encoding:'utf8',timeout:30000})))(args);
+  const git = args => gitRaw(args).trim();
   assert.equal(git(['remote','get-url','origin']).replace(/\.git$/u,''),'https://github.com/'+context.repository,'release repository differs');
   const refs=git(['ls-remote','origin','refs/heads/main']).split('\n').filter(Boolean).map(line=>line.split(/\s+/u));
   assert.equal(refs.length,1); assert.equal(refs[0][1],'refs/heads/main');
@@ -60,8 +61,8 @@ export function checkReleaseFreshness({cwd,environment,event,phase,stateDirector
     const fixed=new Set([WITNESS,'rust/Cargo.toml','rust/Cargo.lock','CHANGELOG.md','data/meta/self-hosting-ledger.lino','docs/status.md','docs/benchmarks.md','README.md','docs/case-studies/issue-711/fragment-release-map.tsv']);
     assert.ok(changed.includes('rust/Cargo.toml'),'version child must update actual Cargo manifest');
     for(const path of changed)assert.ok(fixed.has(path)||/^changelog\.d\/[^/]+\.md$/u.test(path)||/^docs\/changelog\/[^/]+\.md$/u.test(path),'undeclared version-child source change: '+path);
-    const originalManifest=git(['show',context.head+':rust/Cargo.toml']);
-    const nextManifest=git(['show',':rust/Cargo.toml']);
+    const originalManifest=gitRaw(['show',context.head+':rust/Cargo.toml']);
+    const nextManifest=gitRaw(['show',':rust/Cargo.toml']);
     const version=/^(version\s*=\s*")[^"]+(".*)$/mu;
     const beforeVersion=version.exec(originalManifest),afterVersion=version.exec(nextManifest);
     assert.ok(beforeVersion&&afterVersion,'actual Cargo package version missing');
@@ -73,7 +74,7 @@ export function checkReleaseFreshness({cwd,environment,event,phase,stateDirector
     }
     if(changed.includes('rust/Cargo.lock')) {
       const pattern=/(\[\[package\]\]\s*\nname\s*=\s*"formal-ai"\s*\nversion\s*=\s*")[^"]+(")/u;
-      const originalLock=git(['show',context.head+':rust/Cargo.lock']),nextLock=git(['show',':rust/Cargo.lock']);
+      const originalLock=gitRaw(['show',context.head+':rust/Cargo.lock']),nextLock=gitRaw(['show',':rust/Cargo.lock']);
       assert.ok(pattern.test(originalLock)&&pattern.test(nextLock));
       assert.equal(originalLock.replace(pattern,'$1<VERSION>$2'),nextLock.replace(pattern,'$1<VERSION>$2'),'Cargo lock dependencies may not change in version child');
     }

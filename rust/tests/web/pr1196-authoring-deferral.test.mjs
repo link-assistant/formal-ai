@@ -124,3 +124,44 @@ test('measurement and debt failures still fail before the optional prospective f
   assert.deepEqual(definition.on.push.branches, ['main']);
   assert.equal(definition.on.schedule[0].cron, '17 6 * * *');
 });
+
+
+function manifestRepairEvent() {
+  const value = event(); value.number = 1197; value.pull_request.number = 1197;
+  value.pull_request.head.ref = 'fix/release-manifest-byte-witness'; return value;
+}
+test('only the exact open PR1197 manifest repair receives its named zero-credit deferral', () => {
+  assert.equal(evaluate(manifestRepairEvent()), true);
+  const observed = invoke('pull_request', manifestRepairEvent());
+  assert.equal(observed.result.status, 0); assert.equal(observed.result.signal, null);
+  assert.deepEqual(JSON.parse(observed.result.stdout), {defer: true,
+    status: 'DeferredForReleaseRecovery_PR1197', qualifyingAuthorship: 0,
+    floorSatisfied: false, restorationDebt: 'PR1197-release-recovery-authoring'});
+  assert.equal(observed.output, 'defer=true\n');
+  assert.match(observed.summary, /qualifyingAuthorship=0; floorSatisfied=false/u);
+  assert.match(observed.summary, /#pr1197-release-recovery-authoring/u);
+});
+for (const [label, change] of [
+  ['wrong repository', value => {value.repository.full_name = 'fork/formal-ai';}],
+  ['unknown PR', value => {value.number = value.pull_request.number = 1198;}],
+  ['string PR', value => {value.number = value.pull_request.number = '1197';}],
+  ['mismatched nested PR', value => {value.pull_request.number = 1196;}],
+  ['old PR with new branch', value => {value.number = value.pull_request.number = 1196;}],
+  ['new PR with old branch', value => {value.pull_request.head.ref = 'fix/postmerge-release-ci-1188';}],
+  ['closed PR', value => {value.pull_request.state = 'closed';}],
+  ['branch suffix', value => {value.pull_request.head.ref += '-other';}],
+  ['missing branch', value => {delete value.pull_request.head.ref;}],
+  ['wrong base', value => {value.pull_request.base.ref = 'release';}],
+  ['foreign head', value => {value.pull_request.head.repo.full_name = 'fork/formal-ai';}],
+  ['foreign base', value => {value.pull_request.base.repo.full_name = 'fork/formal-ai';}],
+  ['missing head repository', value => {delete value.pull_request.head.repo;}],
+  ['missing base repository', value => {delete value.pull_request.base.repo;}],
+  ['missing request', value => {delete value.pull_request;}],
+]) test('PR1197 scope refuses ' + label, () => {
+  const value = manifestRepairEvent(); change(value); assert.equal(evaluate(value), false);
+});
+for (const name of ['push', 'schedule', 'workflow_dispatch', 'pull_request_target', '', undefined]) {
+  test('PR1197 cannot defer ordinary event ' + String(name), () => {
+    assert.equal(deferReleaseRecoveryAuthoring(name, repository, manifestRepairEvent()), false);
+  });
+}
