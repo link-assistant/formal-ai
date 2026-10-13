@@ -836,3 +836,7 @@ changelog.d/20261010_220000_auxiliary_and_digest_fixtures.md	0.353.0
 changelog.d/20261010_223000_import_attribute_disposition.md	0.353.0
 changelog.d/20261010_230000_multiple_obligation_workspace_fixture.md	0.353.0
 changelog.d/20261012_000200_command_receipts_and_ci_evidence.md	0.353.0
+changelog.d/20261012_093000_overlap_translation_and_compile_checks.md	0.353.1
+changelog.d/20261012_120000_pr1196_release_recovery_authoring_deferral.md	0.353.1
+changelog.d/20261012_120700_maintained_meta_language_dependency.md	0.353.1
+changelog.d/20261013_050000_release_manifest_byte_witness.md	0.353.1

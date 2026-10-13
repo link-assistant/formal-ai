@@ -1,1 +1,0 @@
-The layered JavaScript-to-Rust check now overlaps full retranslation with compilation of the committed projections. Both checks must succeed, freshly translated projections must remain byte-equal, and failures cancel the remaining process groups. The original module set, equivalence assertions, and 540-second execution budget are preserved.
