@@ -6,6 +6,7 @@ import {join} from 'node:path';
 import {performance} from 'node:perf_hooks';
 import YAML from 'yaml';
 import {compileContract} from './staged-caller-authority.mjs';
+import {packageReleaseCandidates} from './resolve-package-release.mjs';
 
 const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -127,8 +128,7 @@ export function resolvePublishedProducer(cwd, environment, readGithub, clock = (
   assert.ok(Date.parse(publicationStep.completed_at) <= Date.parse(publisher.completed_at));
   assert.ok(Number.isFinite(Date.parse(publisher.started_at)) && Number.isFinite(Date.parse(publisher.completed_at)));
   assert.ok(Date.parse(publisher.started_at) <= Date.parse(publisher.completed_at));
-  const releases = get(base + 'releases?per_page=30');
-  assert.ok(Array.isArray(releases) && releases.length <= 30);
+  const releases = packageReleaseCandidates(repository, get);
   for (const release of releases) {
     if (release.draft || release.prerelease || !/^v[0-9]+\.[0-9]+\.[0-9]+$/u.test(release.tag_name)) continue;
     const commit = get(base + 'commits/' + encodeURIComponent(release.tag_name));

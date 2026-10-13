@@ -1,10 +1,10 @@
 // Workflow-owned immutable release transfers. Native/compiler/source-authority commands run only in GitHub CI.
 // Exported descriptor and tar operations support controlled fixtures without launching a native executable.
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, lstatSync, copyFileSync, chmodSync, openSync, closeSync } from 'node:fs';
+import { createReadStream, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, lstatSync, copyFileSync, chmodSync, openSync, closeSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFileSync, spawnSync, spawn } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const run = (command, args, options = {}) => execFileSync(command, args, {
@@ -13,6 +13,50 @@ const run = (command, args, options = {}) => execFileSync(command, args, {
   maxBuffer: 256 * 1024 * 1024,
   ...options
 });
+// Hash complete binary output without retaining the archive in memory.
+export async function hashArchiveStream(stream) {
+  const hash = createHash('sha256');
+  let bytes = 0;
+  for await (const chunk of stream) {
+    assert.ok(chunk instanceof Uint8Array, 'archive chunks must be binary');
+    bytes += chunk.byteLength;
+    assert.ok(Number.isSafeInteger(bytes), 'archive length exceeds exact integer range');
+    hash.update(chunk);
+  }
+  assert.ok(bytes > 0, 'archive is empty');
+  return { sha256: hash.digest('hex'), bytes };
+}
+export function hashArchiveFile(path) {
+  return hashArchiveStream(createReadStream(path));
+}
+export async function hashGitArchive(cwd = process.cwd()) {
+  const child = spawn('git', ['archive', '--format=tar', 'HEAD'], {
+    cwd,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    timeout: 120000
+  });
+  let stderr = '';
+  child.stderr.on('data', chunk => {
+    stderr += chunk.toString('utf8').slice(0, Math.max(0, 65536 - stderr.length));
+  });
+  const completion = new Promise(resolveResult => {
+    child.once('error', error => resolveResult({ error }));
+    child.once('close', (status, signal) => resolveResult({ status, signal }));
+  });
+  let archive;
+  try {
+    archive = await hashArchiveStream(child.stdout);
+  } catch (error) {
+    child.kill('SIGTERM');
+    await completion;
+    throw error;
+  }
+  const result = await completion;
+  if (result.error) throw result.error;
+  assert.equal(result.signal, null, 'independent archive interrupted');
+  assert.equal(result.status, 0, stderr);
+  return archive;
+}
 const git = args => run('git', args).trim();
 const read = path => JSON.parse(readFileSync(path, 'utf8'));
 const output = record => {
@@ -59,6 +103,11 @@ export function verifyDescriptor(record, expected, bytes) {
   return record;
 }
 export function verifySourceDescriptor(record, expected, archive, independentArchive) {
+  return verifySourceDigests(record, expected,
+    { sha256: sha(archive), bytes: archive.length },
+    { sha256: sha(independentArchive), bytes: independentArchive.length });
+}
+function verifySourceDigests(record, expected, archive, independentArchive) {
   assert.equal(record.schema, 'release-stage-source/v1');
   assert.match(expected.producerJob, /^(?:auto|manual)_prepare-source$/);
   assert.equal(record.producerJob, expected.producerJob);
@@ -67,9 +116,10 @@ export function verifySourceDescriptor(record, expected, archive, independentArc
     assert.equal(record.identity[key], expected[key], 'source independent identity differs ' + key);
   }
   assert.match(expected.archiveSha256, /^[a-f0-9]{64}$/);
-  assert.equal(sha(archive), expected.archiveSha256);
+  assert.equal(archive.sha256, expected.archiveSha256);
   assert.equal(record.archiveSha256, expected.archiveSha256);
-  assert.equal(sha(independentArchive), expected.archiveSha256, 'independently checked-out source bytes differ');
+  assert.equal(independentArchive.sha256, expected.archiveSha256, 'independently checked-out source bytes differ');
+  assert.equal(independentArchive.bytes, archive.bytes, 'independent source archive length differs');
   assert.equal(sha(record.compiler), expected.compilerSha256);
   return record;
 }
@@ -272,7 +322,7 @@ async function execute(mode, kind) {
     } finally {
       closeSync(fd);
     }
-    const sourceBytes = readFileSync('.release-transfer/source/source.tar');
+    const sourceArchive = await hashArchiveFile('.release-transfer/source/source.tar');
     const record = {
       schema: 'release-stage-source/v1',
       producerJob: process.env.GITHUB_JOB,
@@ -283,7 +333,7 @@ async function execute(mode, kind) {
         compilerSha256: sha(compilerBytes)
       },
       selection: selected,
-      archiveSha256: sha(sourceBytes),
+      archiveSha256: sourceArchive.sha256,
       compiler: compilerBytes
     };
     writeFileSync('.release-transfer/source/descriptor.json', JSON.stringify(record, null, 2) + '\n');
@@ -303,14 +353,12 @@ async function execute(mode, kind) {
     const bytes = readFileSync('.release-transfer/source/descriptor.json');
     assert.equal(sha(bytes), process.env.EXPECT_SOURCE_DESCRIPTOR);
     const record = JSON.parse(bytes);
-    const archive = readFileSync('.release-transfer/source/source.tar');
-    verifySourceDescriptor(record, {
+    const archive = await hashArchiveFile('.release-transfer/source/source.tar');
+    verifySourceDigests(record, {
       ...identity(),
       producerJob: process.env.EXPECT_SOURCE_PRODUCER,
       archiveSha256: process.env.EXPECT_SOURCE_ARCHIVE
-    }, archive, run('git', ['archive', '--format=tar', 'HEAD'], {
-      encoding: null
-    }));
+    }, archive, await hashGitArchive());
     return;
   }
   if (mode === 'capture' && kind === 'binary') {

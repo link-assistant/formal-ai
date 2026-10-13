@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {bytesDigest,checkedCapture} from '../../../scripts/capture-native-agentic-protocol.mjs';
+import {bytesDigest,checkedCapture,captureVerificationStdout} from '../../../scripts/capture-native-agentic-protocol.mjs';
 const contract=JSON.parse(readFileSync('docs/case-studies/pull-request-1188/native-protocol-capture-provenance.json','utf8'));
 test('immutable legacy session bytes retain their recorded provenance',()=>{
  for(const record of contract.captures)assert.equal(bytesDigest(readFileSync(record.legacy)),record['legacy-sha256']);
@@ -19,7 +19,7 @@ test('versioned sessions preserve complete actual native comparison operands',()
   assert.deepEqual(observed.tools_advertised,[...original.tools_advertised,'read_file']);
   assert.equal(observed.steps.length,5);assert.equal(observed.turns,6);
   assert.deepEqual(observed.steps.map(step=>step.tool),['read_file','write_file','read_file','write_file','run_command']);
-  assert.equal(observed.steps.at(-1).result,original.steps.at(-1).result);
+  assert.equal(observed.steps.at(-1).result,captureVerificationStdout(original.steps.at(-1)));
   assert.equal(bytes.at(-1)===10,record.id!=='self-coding');
  }
 });
@@ -50,7 +50,7 @@ test('actual CI sessions retain complete process receipts and immutable failed p
   const actual=checkedCapture(bytes,legacy);
   assert.equal(actual.steps.length,5);assert.equal(actual.turns,6);
   const final=actual.steps.at(-1),receipt=JSON.parse(final.result);
-  assert.equal(receipt.stdout,legacy.steps.at(-1).result);
+  assert.equal(receipt.stdout,captureVerificationStdout(legacy.steps.at(-1)));
   for(const change of [{schema:'unknown'},{command:'cat foreign.txt'},{exit_code:1},{exit_code:null},
    {complete:false},{timed_out:true},{truncated:true},{stdout:'wrong bytes'},{stderr:null}]){
    const rejected=structuredClone(actual);rejected.steps.at(-1).result=JSON.stringify({...receipt,...change});

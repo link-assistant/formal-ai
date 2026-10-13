@@ -1,0 +1,126 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import YAML from 'yaml';
+import {deferReleaseRecoveryAuthoring} from '../../../scripts/check-release-recovery-authoring-deferral.mjs';
+
+const repository = 'link-assistant/formal-ai';
+function event() {
+  return {number: 1196, repository: {full_name: repository},
+    pull_request: {number: 1196, state: 'open',
+      head: {ref: 'fix/postmerge-release-ci-1188', repo: {full_name: repository}},
+      base: {ref: 'main', repo: {full_name: repository}}}};
+}
+const evaluate = value => deferReleaseRecoveryAuthoring('pull_request', repository, value);
+test('only the exact open recovery PR receives a zero-credit deferral', () => {
+  assert.equal(evaluate(event()), true);
+});
+for (const eventName of ['push', 'schedule', 'workflow_dispatch', 'pull_request_target', '', undefined]) {
+  test('ordinary event retains authoring gates: ' + String(eventName), () => {
+    assert.equal(deferReleaseRecoveryAuthoring(eventName, repository, event()), false);
+  });
+}
+for (const [label, change] of [
+  ['wrong event repository', value => {value.repository.full_name = 'foreign/formal-ai';}],
+  ['missing event repository', value => {delete value.repository;}],
+  ['wrong PR', value => {value.number = 1197;}],
+  ['string PR', value => {value.number = '1196';}],
+  ['wrong nested PR', value => {value.pull_request.number = 1197;}],
+  ['closed PR', value => {value.pull_request.state = 'closed';}],
+  ['different branch', value => {value.pull_request.head.ref = 'main';}],
+  ['different base', value => {value.pull_request.base.ref = 'release';}],
+  ['foreign head repository', value => {value.pull_request.head.repo.full_name = 'fork/formal-ai';}],
+  ['foreign base repository', value => {value.pull_request.base.repo.full_name = 'fork/formal-ai';}],
+  ['missing head repository', value => {delete value.pull_request.head.repo;}],
+  ['missing base repository', value => {delete value.pull_request.base.repo;}],
+  ['missing request', value => {delete value.pull_request;}],
+]) {
+  test('scope refuses ' + label, () => {
+    const value = event(); change(value); assert.equal(evaluate(value), false);
+  });
+}
+test('runner repository mismatch and absent payload cannot defer', () => {
+  assert.equal(deferReleaseRecoveryAuthoring('pull_request', 'fork/formal-ai', event()), false);
+  assert.equal(evaluate(null), false);
+  assert.equal(evaluate({}), false);
+});
+const helper = fileURLToPath(new URL('../../../scripts/check-release-recovery-authoring-deferral.mjs', import.meta.url));
+function invoke(eventName, payload, malformed = false) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pr1196-deferral-'));
+  try {
+    const eventPath = path.join(dir, 'event.json'), output = path.join(dir, 'output'), summary = path.join(dir, 'summary');
+    fs.writeFileSync(eventPath, malformed ? payload : JSON.stringify(payload));
+    const result = spawnSync(process.execPath, [helper], {encoding: 'utf8', timeout: 10000,
+      env: {...process.env, GITHUB_EVENT_NAME: eventName, GITHUB_REPOSITORY: repository,
+        GITHUB_EVENT_PATH: eventPath, GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: summary}});
+    return {result, output: fs.existsSync(output) ? fs.readFileSync(output, 'utf8') : null,
+      summary: fs.existsSync(summary) ? fs.readFileSync(summary, 'utf8') : null};
+  } finally {fs.rmSync(dir, {recursive: true, force: true});}
+}
+test('actual helper output says deferred rather than satisfied or age-relaxed', () => {
+  const observed = invoke('pull_request', event());
+  assert.equal(observed.result.status, 0); assert.equal(observed.result.signal, null);
+  assert.deepEqual(JSON.parse(observed.result.stdout), {defer: true,
+    status: 'DeferredForReleaseRecovery_PR1196', qualifyingAuthorship: 0,
+    floorSatisfied: false, restorationDebt: 'PR1196-release-recovery-authoring'});
+  assert.equal(observed.output, 'defer=true\n');
+  assert.match(observed.summary, /qualifyingAuthorship=0; floorSatisfied=false/u);
+  assert.match(observed.summary, /#pr1196-release-recovery-authoring/u);
+});
+test('dispatch retains normal gates even when payload is malformed', () => {
+  const observed = invoke('workflow_dispatch', '{', true);
+  assert.equal(observed.result.status, 0); assert.equal(observed.output, 'defer=false\n');
+  assert.deepEqual(JSON.parse(observed.result.stdout), {defer: false, status: 'NotDeferred'});
+  assert.equal(observed.summary, null);
+});
+test('malformed PR context fails before writing a deferral output', () => {
+  const observed = invoke('pull_request', '{', true);
+  assert.notEqual(observed.result.status, 0); assert.equal(observed.output, null);
+  assert.equal(observed.summary, null);
+});
+function workflow(name) {
+  return YAML.parse(fs.readFileSync(new URL('../../../.github/workflows/' + name, import.meta.url), 'utf8'));
+}
+const gate = '$' + "{{ steps.release-recovery-authoring.outputs.defer != 'true' }}";
+test('invalid trailers still fail before the optional positive-authoring step', () => {
+  const definition = workflow('evidence-check.yml'), steps = definition.jobs['evidence-check'].steps;
+  const strict = steps.find(step => step.name === 'Validate Formal-AI trailers on this pull request');
+  const positive = steps.find(step => step.name === 'Formal AI authored part of this pull request');
+  const deferral = steps.find(step => step.id === 'release-recovery-authoring');
+  assert.equal(strict.if, undefined); assert.equal(strict['continue-on-error'], undefined);
+  assert.match(strict.run, /set -euo pipefail/u);
+  assert.match(strict.run, /rust-script scripts\/self-hosting-metric.rs --since "\$merge_base" --until HEAD/u);
+  assert.ok(steps.indexOf(strict) < steps.indexOf(deferral));
+  assert.ok(steps.indexOf(deferral) < steps.indexOf(positive));
+  assert.equal(positive.if, gate);
+  assert.match(positive.run, /scripts\/check-formal-ai-contribution.rs/u);
+  assert.equal(deferral.if, undefined); assert.equal(deferral['continue-on-error'], undefined);
+  assert.equal(deferral.run, 'node scripts/check-release-recovery-authoring-deferral.mjs');
+  const status = definition.jobs['evidence-status'];
+  assert.equal(status.if, 'always()'); assert.deepEqual(status.needs, ['evidence-check']);
+  assert.equal(status.steps.at(-1).run, 'bash scripts/check-pipeline-status.sh');
+});
+test('measurement and debt failures still fail before the optional prospective floor', () => {
+  const definition = workflow('self-development-status.yml');
+  const steps = definition.jobs['self-development-status'].steps;
+  const measure = steps.find(step => step.name === 'Measure the share since the last tag (metric version 3)');
+  const debt = steps.find(step => step.name === 'Debt ratchet holds (ceilings move down, never up)');
+  const positive = steps.find(step => step.name === 'Self-development floor (issue #924, #1066, #1085)');
+  const deferral = steps.find(step => step.id === 'release-recovery-authoring');
+  for (const step of [measure, debt, deferral]) {
+    assert.equal(step.if, undefined); assert.equal(step['continue-on-error'], undefined);
+  }
+  assert.match(measure.run, /scripts\/self-hosting-metric.rs --since "\$since" --until HEAD/u);
+  assert.equal(debt.run, 'rust-script scripts/check-debt-ratchet.rs --base origin/main');
+  assert.ok(steps.indexOf(measure) < steps.indexOf(deferral));
+  assert.ok(steps.indexOf(debt) < steps.indexOf(deferral));
+  assert.ok(steps.indexOf(deferral) < steps.indexOf(positive));
+  assert.equal(positive.if, gate);
+  assert.equal(positive.run, 'rust-script scripts/check-self-development-release.rs');
+  assert.deepEqual(definition.on.push.branches, ['main']);
+  assert.equal(definition.on.schedule[0].cron, '17 6 * * *');
+});

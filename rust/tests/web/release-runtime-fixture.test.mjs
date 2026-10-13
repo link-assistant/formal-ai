@@ -96,7 +96,7 @@ function validateGraph(parent, child) {
   }
   for (const [id, job] of Object.entries(child.jobs)) assert.equal(job.concurrency, undefined, 'no duplicate child lease ' + id);
   for (const workflow of [parent, child]) {
-    for (const job of Object.values(workflow.jobs)) {
+    for (const [id, job] of Object.entries(workflow.jobs)) {
       assert.equal(job.environment, undefined);
       assert.equal(job.secrets, undefined);
       if (job.steps) {
@@ -104,7 +104,11 @@ function validateGraph(parent, child) {
         for (const step of job.steps) {
           if (step.uses === 'actions/checkout@v7') assert.deepEqual(step.with, {
             ref: '${{ github.sha }}',
-            'persist-credentials': false
+            'persist-credentials': false,
+            ...(workflow === child && id === 'fixture-final' ? {
+              'sparse-checkout': '/scripts/',
+              'sparse-checkout-cone-mode': false
+            } : {})
           });
           assert.ok(!step.run || /^node scripts\/release-runtime-fixture\.mjs (?:download|produce|consume|lease-start|wait-queue|observe-start|stage-contender|verify-start|finalize|contender|collect)$/.test(step.run));
           if (step.uses === 'actions/download-artifact@v8') for (const forbidden of ['github-token', 'repository', 'run-id', 'pattern', 'name']) assert.equal(step.with[forbidden], undefined);
@@ -197,7 +201,11 @@ test('credential routing, production group, nested lease and spoofed or ungated 
      (p,
      c) => c.on.workflow_call.outputs['fixture-marker'].value = 'guessed',
      (p,
-     c) => p.jobs['active-fixture'].uses = './.github/workflows/release-staged.yml']) {
+     c) => p.jobs['active-fixture'].uses = './.github/workflows/release-staged.yml',
+     (p, c) => c.jobs['fixture-final'].steps[0].with['sparse-checkout'] = '/',
+     (p, c) => delete c.jobs['fixture-final'].steps[0].with['sparse-checkout'],
+     (p, c) => c.jobs['fixture-final'].steps[0].with['sparse-checkout-cone-mode'] = true,
+     (p, c) => c.jobs['lease-holder'].steps[0].with['sparse-checkout'] = '/scripts/']) {
 
     const p = structuredClone(parent),
       c = structuredClone(child);

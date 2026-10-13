@@ -9,6 +9,21 @@ import {pathToFileURL} from 'node:url';
 import {buildIdentity,verifyReceipt} from './native-test-artifact.mjs';
 const CONTRACT='docs/case-studies/pull-request-1188/native-protocol-capture-provenance.json';
 export const bytesDigest=bytes=>createHash('sha256').update(bytes).digest('hex');
+export function captureVerificationStdout(verification){
+ let receipt;try{receipt=JSON.parse(verification.result);}catch{
+  assert.ok(!/"schema"\s*:\s*"command-execution-receipt\//u.test(verification.result));
+  return verification.result;
+ }
+ if(typeof receipt!=='object'||receipt===null||typeof receipt.schema!=='string'
+  ||!receipt.schema.startsWith('command-execution-receipt/'))return verification.result;
+ assert.equal(receipt.schema,'command-execution-receipt/v1');
+ assert.equal(receipt.command,verification.arguments.command);
+ assert.ok(!Object.hasOwn(receipt,'signal')||receipt.signal===null);
+ assert.equal(receipt.exit_code,0);assert.equal(receipt.complete,true);
+ assert.equal(receipt.timed_out,false);assert.equal(receipt.truncated,false);
+ assert.equal(typeof receipt.stderr,'string');assert.equal(typeof receipt.stdout,'string');
+ return receipt.stdout;
+}
 export function checkedCapture(bytes,legacy,{historicalRawComparison=false}={}){
  const session=JSON.parse(bytes.toString('utf8'));
  assert.equal(session.task,legacy.task);
@@ -24,15 +39,17 @@ export function checkedCapture(bytes,legacy,{historicalRawComparison=false}={}){
  assert.ok(target&&verification,'Original capture must name its target and observed verification');
  const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;
  assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');
+ const expectedStdout=captureVerificationStdout(verification);
  const observed=session.steps.filter(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command);
  assert.ok(observed.some(step=>{
-  if(historicalRawComparison)return step.result===verification.result;
+  if(historicalRawComparison)return step.result===expectedStdout;
   let receipt;try{receipt=JSON.parse(step.result);}catch{return false;}
   return receipt?.schema==='command-execution-receipt/v1'
    &&receipt.command===verification.arguments.command
+   &&(!Object.hasOwn(receipt,'signal')||receipt.signal===null)
    &&receipt.exit_code===0&&receipt.complete===true
    &&receipt.timed_out===false&&receipt.truncated===false
-   &&typeof receipt.stderr==='string'&&receipt.stdout===verification.result;
+   &&typeof receipt.stderr==='string'&&receipt.stdout===expectedStdout;
  }),'Actual native capture requires a complete successful command-bound observation of the original exact target bytes');
  return session;
 }

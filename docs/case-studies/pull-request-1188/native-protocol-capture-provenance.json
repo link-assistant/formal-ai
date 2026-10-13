@@ -17,7 +17,7 @@
     },
     {
       "id": "ci-diagnostic",
-      "legacy": "docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session.json",
+      "legacy": "docs/case-studies/pull-request-1188/native-protocol-captures/history/ci-diagnostic-legacy-4a560.json",
       "legacy-sha256": "56e2c12babc5a4c6b8422547851195311c57927c1cf694723404670926109735",
       "observed": "docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session-native-protocol-4a560.json",
       "observed-sha256": "8283462aafee014e6c0f9fb9089b9f3a1ce1fb890290c182ec11f127283db5ff",
@@ -28,7 +28,7 @@
     },
     {
       "id": "ci-template",
-      "legacy": "docs/case-studies/issue-1012/self-hosting-authorship/template-comparison/session.json",
+      "legacy": "docs/case-studies/pull-request-1188/native-protocol-captures/history/ci-template-legacy-4a560.json",
       "legacy-sha256": "601fded3193b7b2feb00ed5de64bbb04640847ac97392af70c4b79b1968a38c4",
       "status": "Missing actual current protocol capture: first assertion stopped native execution before this case"
     }

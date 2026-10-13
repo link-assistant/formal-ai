@@ -35,6 +35,9 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::{Command, exit};
 
+#[path = "version-specification-witness.rs"]
+mod specification_witness;
+
 #[path = "prepared-release.rs"]
 mod prepared_release;
 #[path = "rust-paths.rs"]
@@ -54,6 +57,7 @@ const FRAGMENT_RELEASE_MAP: &str = "docs/case-studies/issue-711/fragment-release
 /// Where the rebuild script rolls the releases CHANGELOG.md no longer keeps,
 /// so that no changelog file exceeds the 1500-line cap.
 const CHANGELOG_ARCHIVE_DIR: &str = "docs/changelog";
+const SPECIFICATION_WITNESS: &str = specification_witness::WITNESS;
 const STATUS_RENDER_SCRIPT: &str = "scripts/render-status.rs";
 const STATUS_SURFACES: &[&str] = &["docs/status.md", "docs/benchmarks.md", "README.md"];
 
@@ -824,6 +828,14 @@ fn main() {
         false
     };
 
+    let witness_updated = match specification_witness::refresh(&content) {
+        Ok(updated) => updated,
+        Err(error) => {
+            eprintln!("Error regenerating specification witness: {error}");
+            exit(1);
+        }
+    };
+
     // All ledger inputs are in place now: the version, the consumed
     // fragments, the changelog, and the self-hosting row.
     if let Err(e) = regenerate_status_surfaces() {
@@ -844,6 +856,9 @@ fn main() {
         &self_hosting_ledger_str,
     ];
     add_args.extend_from_slice(STATUS_SURFACES);
+    if witness_updated {
+        add_args.push(SPECIFICATION_WITNESS);
+    }
     if lock_updated {
         add_args.push(&cargo_lock_str);
     }

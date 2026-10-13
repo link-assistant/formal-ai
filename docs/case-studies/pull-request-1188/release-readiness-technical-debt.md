@@ -43,3 +43,71 @@ Restore only after independently bound, complete original east and west source b
 | Named debt | Current evidence | Restoration requirement |
 | --- | --- | --- |
 | PR1188-ladder-full-obligation-deadline | Only `issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given` is temporarily deferred. Authenticated coverage2 singleton batch6 did not complete before original 1200s job deadline; exact internal leaf/checkpoint remains Unknown. The full original 32 leaves, test body and assertions and 1200s deadline remain unchanged. Acceptance: ZERO; Deferred, not passed. Original failure: `/private/tmp/pr1188-3bd676a7-compressed-failures/objects/f846c12f882cf34f35e08a160efafe8a997275ca4185126257678158557a5404.gz`. This is separate from `issue_1069_delivery_keeps_each_artifacts_own_constraints`. | Remove only this ignore after unchanged 32-leaf full-obligation native acceptance passes within original 1200s coverage deadline. User-authorized release-first temporary deferral; no other test or requirement is waived. |
+
+## PR1196-release-recovery-authoring
+
+Under the user's explicit release-first authorization, only the positive authorship
+requirements for PR1196 are temporarily deferred. The exact scope is a pull_request
+event for link-assistant/formal-ai, with both head and base repositories matching,
+open PR1196, head branch fix/postmerge-release-ci-1188 and base main. Every other PR,
+branch, repository and event, including dispatch, main push and schedule, retains
+the original gates. The shared event predicate is not producer authentication.
+
+The result is DeferredForReleaseRecovery_PR1196, qualifyingAuthorship=0 and
+floorSatisfied=false. Supplied repair programs confer zero autonomy credit; no
+Formal-AI attribution trailers or session claims are fabricated. The ordinary
+strict trailer/session validation, actual share measurement, debt ratchet and
+failure/cancellation status gates still run. No main-branch standing floor,
+metric numerator/denominator, floor value, native/artifact smoke, production check
+or release completion requirement is weakened. The unchanged standing main/daily
+floor may remain red after this recovery merges.
+
+Original obligations remain scripts/check-formal-ai-contribution.rs --since
+the actual merge base --until HEAD, and scripts/check-self-development-release.rs.
+Authentic failed evidence job114753839453 in run38232112828 and floor
+job114753838021 in run38232112600 report
+0.00% (0/81 changed lines;0/1 commits) and no qualifying contribution. Their full
+raw failure hashes are143545ed437647b3b4b65f1260e0b4d2f5da995924e68c8af3adb9627eb18e9a
+and21e02c768e6d51ee7f20d7533c4320ad0e66246c045353c380178842537d547c.
+This deferral is distinct from the existing age-based relaxation and from the
+prospective floor satisfied by genuine session-backed authored work.
+
+Remove the two workflow admission conditions, the shared helper and its deferral
+tests after this recovery PR closes, or earlier when a genuine necessary Formal
+AI-authored behavioral contribution with valid committed evidence satisfies the
+ordinary gates. The event predicate stops matching a closed PR automatically.
+Retain this historical debt record and original failures. Restoration runs the
+original commands and strict attribution unchanged; no trailer-only contribution,
+backdated clock, ledger override, threshold reduction or broad continue-on-error
+may substitute for the original obligation. Source qualification of this policy
+change is not authorship, hosted CI success, native acceptance or publication.
+
+## PR1196-native-rust-grammar-generator
+
+The `meta-language` 1.0.0 dependency upgrade keeps a native Rust parser, but removes its `tree-sitter-rust` dependency. `scripts/generate-program-cst-grammars.rs` currently discovers grammar names only from Cargo package dependency declarations. The official published index therefore predicts 16 generated rows instead of the existing 17; five other native parser languages retain their tree-sitter oracle declarations as development dependencies. This is a maintenance generator limitation, with no CI gate or newly skipped test. Keep the current canonical 17 production grammar rows and original runtime assertions.
+
+Restore by deriving native grammar support from the actual resolved SDK package catalog and parser sources, combining it with the dependency-derived set, and verifying all 17 original rows through the generator and native runtime checks. Do not append an unverified Rust capability, drop a supported row, or count historical SDK parser evidence as fresh 1.0.0 validation.
+
+## PR1196-SDK1-native-JS-Rust-census-alignment
+
+Release-first temporary deferral: only `issue-1180-rust-ast-census.test.mjs`'s original `the vendored runtime and grammar are the recorded upstream artifacts` case is named-skipped. Its entire original body is retained, including the Cargo-lock grammar-version assertion that SDK 1.0 can no longer satisfy: the SDK now uses a distinct native Rust parser and no longer declares `tree-sitter-rust`. This is zero acceptance of the original shared-grammar obligation and zero fresh SDK 1.0 native/JavaScript parity credit.
+
+An active standalone control still checks all three unchanged vendored binary/runtime SHA-256 values and their exact upstream package, version, source and path records. Every original function/struct, planner, current-source histogram and history-delta case remains active with its original assertions. These source-addressed committed census comparisons do not, by themselves, authenticate fresh SDK 1.0 native parity.
+
+Restore the named original obligation only after a genuine source-bound shared-parser route or explicitly reviewed coengine migration validates the exact current native SDK and JavaScript frontend on full original census inputs, including error/Unicode behavior, with fresh native producer evidence and all original artifact-integrity controls retained. Do not restore by bypassing a missing Cargo-lock regex, assigning the old WASM the native SDK's identity, using historical census artifacts as fresh runtime proof, reducing the corpus, or changing deadlines. This deferral adds no production behavior, authorship, token-savings or publication credit.
+
+## PR1196-grammar-projection-corpus-deadline
+
+Release-first temporary performance deferral: only issue_1138_rust_projection::grammar_projection_corpus_ratchet is ignored. Its entire original test body, all four Rust/JavaScript/TypeScript projection assertions, complete corpus and original floors remain byte-for-byte intact. This is zero acceptance credit, not a passing corpus run or a parser-parity waiver. Every other native runtime, artifact, CLI, signing and publication gate remains active.
+
+Authenticated b57415fa coverage job 114832679862 (run 38251867858, attempt 1) reached status 124 at its original 1200-second deadline. Its checkpoint binds the sole unfinished batch 8 to this singleton, started at 13:57:21 UTC and still unfinished roughly 877 seconds later. The separate stale self-AST failure is repaired by authentic DATA import and is not waived. Native unit shard 8, job 114833615394, separately reached status 124 at its original 1080-second deadline: 501 successful and two ignored cases had terminal results among 504 selected unit cases; this ratchet was the only warned case without a terminal result, preventing later targets from starting. The retained full logs and exact checkpoint membership remain authoritative; neither observation is a completed individual timing or proof of which parser operation stalled.
+
+Restore only after the unchanged complete corpus and all four original projection assertions pass on the required native runtime within both original deadlines. Then remove only this named ignore. Do not increase the 1080/1200-second execution limits or 30-minute job ceiling, lower projection floors, remove corpus members, infer per-case cost from aggregate time or count the deferred case as passed. The lossless transport repair and source/model tests do not close this performance obligation.
+
+## PR1196-native-corpus-roundtrip-deadline
+
+Release-first temporary performance deferral: only `issue_1138_rust_projection::every_owned_rust_module_round_trips_through_the_network_serialization` is ignored. Its entire original function body, complete committed owned corpus, `census.len() >= 600` floor and byte-identical source → network → public Meta-to-Rust round-trip assertion remain unchanged. Six neighboring tests remain active; the separate, previously recorded `grammar_projection_corpus_ratchet` deferral is unchanged. This is zero acceptance credit, not a passing corpus run or a native/parser correctness waiver.
+
+Authenticated 50c5582d native UNIT4 job 114927049677 reached status 124 at the unchanged 1080-second deadline (1081 seconds elapsed). The full raw log SHA-256 is `68686e10a359e7f905b4b8923e3fc51e30f581ecbb708490b0d66d4b9ef286b9`. Of 510 selected unit cases, 508 passed and one was ignored; this was the sole warned case without a terminal result. Its warning-to-cutoff interval plus the warning's 60-second threshold gives a censored lower bound of 878.012 seconds, not a completed duration or proof that the individual case intrinsically exceeds 1080 seconds. The 105 later-target names in the shard were not reached and are not accepted.
+
+Restore by removing only this named ignore after the unchanged complete owned corpus passes within both original 1080-second native-unit and 1200-second coverage limits. Retain the original 30-minute job ceiling, corpus floor, all corpus members and every byte-equality assertion. No subset corpus, weaker floor, aggregate-derived per-case timing, historical source proof, local source check or deferred result can substitute for the full original acceptance. Genuine coverage singleton weight updates preserve all 6,331 test identities and the sixteen-shard/two-process/two-thread policy; their next hosted deadline outcome remains pending.

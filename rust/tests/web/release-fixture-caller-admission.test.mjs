@@ -159,3 +159,38 @@ test('queued aggregate requires authentic matching admitted group without execut
   assert.throws(()=>validateCallerAdmission(...x,context));
  }
 });
+
+test('admission follows the authenticated source-declared active callee phase', () => {
+ for (const phase of ['Fixture artifact consumer active', 'Fixture final active']) {
+  const values=syntheticSnapshots(),old=structuredClone(values[1].body.jobs[0]);
+  old.id=41;old.status='completed';old.completed_at='2026-10-11T00:00:00Z';
+  values[1].body.jobs.unshift(old);values[1].body.total_count=2;
+  values[1].body.jobs[1].name='Active reusable fixture / '+phase;
+  values[1].body.jobs[1].status='in_progress';
+  values[2].body.group_members[0].job_name=values[1].body.jobs[1].name;
+  const admission=validateCallerAdmission(...values,context);
+  assert.equal(admission.descendantJobId,42);assert.equal(admission.executingLeaseProof,false);
+  assert.equal(admission.productionAuthority,false);
+  const foreign=structuredClone(values);foreign[1].body.jobs[1].name='Inactive reusable fixture / '+phase;
+  foreign[2].body.group_members[0].job_name=foreign[1].body.jobs[1].name;
+  assert.throws(()=>validateCallerAdmission(...foreign,context));
+  for(const mutate of [x=>x[1].body.jobs[1].status='queued',x=>x[1].body.jobs[1].status='completed',
+   x=>x[1].body.jobs[1].run_attempt=1,x=>x[1].body.jobs[1].head_sha='b'.repeat(40),
+   x=>x[2].body.group_members[0].job_name='foreign phase']){
+   const changed=structuredClone(values);mutate(changed);
+   assert.throws(()=>validateCallerAdmission(...changed,context));
+  }
+ }
+});
+
+test('admission refuses duplicate selected phase names even with distinct job ids', () => {
+ for(const phase of ['Fixture lease holder active','Fixture artifact consumer active','Fixture final active']) {
+  const values=syntheticSnapshots();values[1].body.jobs[0].name='Active reusable fixture / '+phase;
+  values[1].body.jobs[0].status='in_progress';
+  values[2].body.group_members[0].job_name=values[1].body.jobs[0].name;
+  const duplicate=structuredClone(values[1].body.jobs[0]);duplicate.id=43;
+  duplicate.url='https://api.github.com'+base+'/jobs/43';
+  values[1].body.jobs.push(duplicate);values[1].body.total_count=2;
+  assert.throws(()=>validateCallerAdmission(...values,context));
+ }
+});

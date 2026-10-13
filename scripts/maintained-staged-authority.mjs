@@ -20,6 +20,7 @@ export function compileMaintainedStagedAuthority() {
     generator: 'scripts/generate-staged-release.mjs',
     generatorReader: 'scripts/lib/ci-speed-workflows.mjs',
     freshness: 'scripts/release-source-freshness.mjs',
+    freshnessWitness: 'scripts/refresh-release-specification-witness.mjs',
     validator: 'scripts/staged-caller-authority.mjs',
     provider: 'scripts/governed-github-command-provider.mjs',
     maintainedValidator: 'scripts/maintained-staged-authority.mjs'
@@ -109,7 +110,7 @@ export function compileDeployedStagedAuthority() {
     callerDraft:evidence+'candidate-release-caller.yml',staged:'.github/workflows/release-staged.yml',
     packet:evidence+'stage-source-coverage.json',bindings:evidence+'candidate-output-bindings.json',
     generator:'scripts/generate-staged-release.mjs',generatorReader:'scripts/lib/ci-speed-workflows.mjs',
-    freshness:'scripts/release-source-freshness.mjs',validator:'scripts/staged-caller-authority.mjs',
+    freshness:'scripts/release-source-freshness.mjs',freshnessWitness:'scripts/refresh-release-specification-witness.mjs',validator:'scripts/staged-caller-authority.mjs',
     provider:'scripts/governed-github-command-provider.mjs',maintainedValidator:'scripts/maintained-staged-authority.mjs'};
   const bytes=Object.fromEntries(Object.entries(paths).map(([key,file])=>[key,fs.readFileSync(path.join(root,file),'utf8')]));
   const packet=JSON.parse(bytes.packet);

@@ -22,6 +22,7 @@ const sourcePaths=[
  'scripts/lib/ci-speed-workflows.mjs',
  'scripts/staged-caller-authority.mjs',
  'scripts/release-source-freshness.mjs',
+ 'scripts/refresh-release-specification-witness.mjs',
  'scripts/governed-github-command-provider.mjs',
  'rust/tests/unit/ci-cd/pinned_tool_images.rs',
  ...['original-release-workflow.yml','candidate-release-caller.yml','stage-source-coverage.json','candidate-output-bindings.json'].map(name=>protocolEvidence+name)

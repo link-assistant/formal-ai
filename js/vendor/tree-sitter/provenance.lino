@@ -1,13 +1,9 @@
-# Vendored tree-sitter runtime and Rust grammar (issue #1180 R11).
-#
-# The JavaScript root's Rust node-kind histogram (js/agentic/crate/
-# rust_ast_census.mjs) parses with these files. They are verbatim upstream
-# artifacts, never edited: web-tree-sitter.mjs is the package's ESM build
-# (web-tree-sitter.js renamed to .mjs so it is not a translated source), and
-# tree-sitter-rust.wasm is the release asset of the same tree-sitter-rust
-# version Cargo.lock resolves for meta-language, so both runtimes parse with
-# one grammar. rust/tests/web/issue-1180-rust-ast-census.test.mjs checks each
-# sha256 below and the grammar version against Cargo.lock.
+# Vendored tree-sitter runtime and Rust oracle (issue #1180 R11).
+# These are verbatim upstream artifacts with recorded source/version/SHA-256.
+# SDK 1.0 uses a distinct native Rust parser and no longer resolves the
+# tree-sitter-rust crate. The vendored oracle is not that native parser.
+# The active JavaScript integrity control checks all three artifacts; fresh
+# SDK 1.0 native/JavaScript census alignment remains an explicit obligation.
 vendored_tree_sitter
   file web-tree-sitter.mjs
     package "web-tree-sitter"

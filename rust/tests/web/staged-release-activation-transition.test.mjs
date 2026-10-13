@@ -14,7 +14,7 @@ function fixture() {
  const directory=fs.mkdtempSync(path.join(tmpdir(),'staged-release-transition-'));
  const files=['scripts/checked-release-operation-view.mjs','scripts/generate-staged-release.mjs','scripts/maintained-staged-authority.mjs',
  'scripts/staged-caller-authority.mjs','scripts/governed-github-command-provider.mjs',
- 'scripts/release-source-freshness.mjs','scripts/lib/ci-speed-workflows.mjs',
+ 'scripts/release-source-freshness.mjs', 'scripts/refresh-release-specification-witness.mjs','scripts/lib/ci-speed-workflows.mjs',
  ...['stage-source-coverage.json','original-release-workflow.yml'].map(name=>evidence+name)];
  for(const file of files){const destination=path.join(directory,file);fs.mkdirSync(path.dirname(destination),{recursive:true});fs.copyFileSync(path.join(root,file),destination);}
  fs.mkdirSync(path.join(directory,'.github/workflows'),{recursive:true});

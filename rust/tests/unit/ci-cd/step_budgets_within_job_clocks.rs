@@ -881,13 +881,54 @@ fn unreviewed_install_scripts_are_reported_with_the_command_that_clears_them() {
 fn every_installed_node_project_records_its_install_scripts_by_name() {
     let mut projects: Vec<String> = Vec::new();
     for (_, workflow) in workflow_files() {
+        let mut bound_projects = Vec::new();
+        let mut captured_projects = Vec::new();
         for line in workflow.lines() {
-            if let Some(tail) = line.split("scripts/install-node-dependencies.sh ").nth(1) {
-                let directory = tail.trim().trim_end_matches('"');
-                if !directory.is_empty() && !projects.iter().any(|seen| seen == directory) {
-                    projects.push(directory.to_string());
+            let line = line.trim();
+            let body = line.strip_prefix("run: ").unwrap_or(line);
+            for command in body.split(';') {
+                let command = command.trim();
+                let command = command
+                    .strip_prefix("then ")
+                    .or_else(|| command.strip_prefix("else "))
+                    .unwrap_or(command);
+                let mut words = command.split_whitespace();
+                let executable = words.next().unwrap_or("");
+                let script = match executable {
+                    "bash" | "node" => words.next().unwrap_or(""),
+                    _ => executable,
+                }
+                .trim_matches('"');
+                let installer = script.ends_with("/install-node-dependencies.sh");
+                let binding =
+                    executable == "node" && script.ends_with("/prefetch-windows-packaging.mjs");
+                if !installer && !binding {
+                    continue;
+                }
+                let argument = words.next().expect("project argument");
+                assert_eq!(argument.starts_with('"'), argument.ends_with('"'));
+                let directory = argument.trim_matches('"');
+                let project = directory
+                    .strip_prefix("$GITHUB_WORKSPACE/")
+                    .unwrap_or(directory);
+                assert!(!project.is_empty() && !project.starts_with('$'));
+                if binding || executable == "bash" {
+                    assert!(directory.starts_with("$GITHUB_WORKSPACE/"));
+                }
+                if binding {
+                    bound_projects.push(project.to_string());
+                    continue;
+                }
+                if executable == "bash" {
+                    captured_projects.push(project.to_string());
+                }
+                if !projects.iter().any(|seen| seen == project) {
+                    projects.push(project.to_string());
                 }
             }
+        }
+        for project in captured_projects {
+            assert!(bound_projects.contains(&project));
         }
     }
     projects.sort();

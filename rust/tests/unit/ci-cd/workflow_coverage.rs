@@ -165,7 +165,8 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
         "--message-format=json-render-diagnostics",
         "coverage-tests.tsv",
         "coverage-objects.txt",
-        "tar -cf coverage-objects.tar",
+        "tar -cf - coverage-tests.tsv -T coverage-objects.txt | zstd -T2 -6",
+        "compression-level: 0",
         "name: coverage-objects",
         "if-no-files-found: error",
     ] {
@@ -176,13 +177,13 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
     }
     let shard = job_block(&workflow, "coverage-shard");
     assert!(shard.contains("name: coverage-objects"));
-    assert!(shard.contains("tar -xf coverage-objects/coverage-objects.tar"));
+    assert!(shard.contains("tar --zstd -xf coverage-objects/coverage-objects.tar.zst"));
     let reducer = job_block(&workflow, "coverage");
     for operation in [
         "check-shard-results.sh",
         "name: coverage-objects",
         "pattern: coverage-profile-*",
-        "tar -xf coverage-objects/coverage-objects.tar",
+        "tar --zstd -xf coverage-objects/coverage-objects.tar.zst",
         "merge -sparse",
         "cargo llvm-cov report",
         "check-coverage-ratchet.rs --only rust",
