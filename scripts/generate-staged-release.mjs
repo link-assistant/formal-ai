@@ -78,6 +78,8 @@ export function buildStagedReleaseProjection(source, packet) {
   const binding = [];
   for (const caller of packet.callers) {
     const mode = caller.caller.replace('-release', '');
+    const imageJobTimeout = YAML.parse(source).jobs[caller.caller]['timeout-minutes'];
+    assert.equal(imageJobTimeout, 90, 'image stage preserves the retained logical publication allowance');
     const id = stage => mode + '_' + stage;
     const prep = id('prepare-source');
     const producerByStep = new Map(caller.steps.filter(s => s.stepId).map(s => [s.stepId, s.stage]));
@@ -100,7 +102,7 @@ export function buildStagedReleaseProjection(source, packet) {
       if (stage === 'prepare-source') yaml += '    permissions:\n      contents: write\n      actions: read\n';else if (stage === 'create-release') yaml += '    permissions:\n      contents: write\n';else if (stage === 'publish-verify-images') yaml += '    permissions:\n      contents: read\n      packages: write\n';
       if (needs.length) yaml += '    needs: [' + needs.map(id).join(', ') + ']\n';
       if (stage === 'prepare-source') yaml += '    if: ' + expression("inputs.mode == '" + mode + "' && github.ref == 'refs/heads/main' && github.workflow_ref == format('{0}/.github/workflows/release.yml@refs/heads/main', github.repository) && " + (mode === 'auto' ? "github.event_name == 'push'" : "github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant'")) + '\n';else if (stage === 'create-release') yaml += '    if: ' + expression("always() && needs." + prep + ".result == 'success' && (needs." + prep + ".outputs.active != 'true' || (" + needs.filter(s => s !== 'prepare-source').map(s => 'needs.' + id(s) + ".result == 'success'").join(' && ') + '))') + '\n';else yaml += '    if: ' + expression('needs.' + prep + ".outputs.active == 'true'") + '\n';
-      yaml += '    runs-on: ubuntu-24.04\n    timeout-minutes: 30\n    env:\n';
+      yaml += '    runs-on: ubuntu-24.04\n    timeout-minutes: ' + (stage === 'publish-verify-images' ? imageJobTimeout : 30) + '\n    env:\n';
       if (stage === 'prepare-source') yaml += '      EXPECT_BINARY_PRODUCER: ' + id('compile-release') + '\n';else {
         for (const [name, value] of Object.entries({
           RELEASE_VERSION: 'version',

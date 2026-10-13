@@ -486,7 +486,7 @@ jobs:
     needs: [auto_prepare-source, auto_compile-release, auto_verify-package, auto_publish-crate, auto_registry-availability, auto_published-crate-smoke]
     if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 90
     env:
       RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.version }}
       EXPECT_SOURCE: ${{ needs.auto_prepare-source.outputs.source_sha }}
@@ -1192,7 +1192,7 @@ jobs:
     needs: [manual_prepare-source, manual_compile-release, manual_verify-package, manual_publish-crate, manual_registry-availability, manual_published-crate-smoke]
     if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 90
     env:
       RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version }}
       EXPECT_SOURCE: ${{ needs.manual_prepare-source.outputs.source_sha }}

@@ -43,3 +43,10 @@ ci-speed
     over-limit-job build-archive
       timeout-minutes 55
       reason "Switched off while non-Linux CI is off (issue #1111): a cold build of the macOS test archive. To meet 30: build the archive from a shared compiler cache on the Linux build job's schedule."
+  workflow ".github/workflows/release-staged.yml"
+    over-limit-job auto_publish-verify-images
+      timeout-minutes 90
+      reason "Issue #1201: restore retained source image allowance after run38445988819 job115507882265 reached at least1816s before parent cancellation during DockerHub mirroring (rawSHA2bbf7c5930c6b067e9109bf8ec6410ddd2e0d8de7cbc9604211b6e155fea71f9). Temporary debt: split full/slim/mirror publication into source-bound stages and remove this exception once each fits30 minutes; per-operation limits remain unchanged."
+    over-limit-job manual_publish-verify-images
+      timeout-minutes 90
+      reason "Issue #1201: restore retained source image allowance after run38445988819 job115507882265 reached at least1816s before parent cancellation during DockerHub mirroring (rawSHA2bbf7c5930c6b067e9109bf8ec6410ddd2e0d8de7cbc9604211b6e155fea71f9). Temporary debt: split full/slim/mirror publication into source-bound stages and remove this exception once each fits30 minutes; per-operation limits remain unchanged."
