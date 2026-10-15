@@ -86,3 +86,10 @@ test('existing strict metric and zero-credit historical measurement definitions 
  assert.ok(loop.includes('if pull_requests.is_empty()'));
  assert.ok(loop.includes('if projected < target'));
  });
+
+test('the complete reviewed policy parses with canonical Links Notation', async () => {
+  const {Parser} = await import('links-notation');
+  const config = source('data/meta/self-development-policy.lino');
+  const parsed = new Parser().parse(config.trim());
+  assert.ok(parsed.length > 0);
+});

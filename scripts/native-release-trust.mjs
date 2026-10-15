@@ -17,7 +17,7 @@ export function validatePublishedStableSource(cwd,{tag,release,defaultCommit,rel
 }
 export function authorizePublishedStableSource(cwd,{tag,repository}) {
  assert.match(tag,stableTag);assert.match(repository,/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
- const api=path=>JSON.parse(execFileSync('gh',['api','repos/'+repository+'/'+path],{encoding:'utf8',maxBuffer:1024*1024}));
+ const api=path=>JSON.parse(execFileSync('gh',['api','repos/'+repository+(path?'/'+path:'')],{encoding:'utf8',maxBuffer:1024*1024}));
  const release=api('releases/tags/'+encodeURIComponent(tag));
  const branch=api('').default_branch;assert.ok(typeof branch==='string'&&branch.length>0);
  const defaultCommit=api('commits/'+encodeURIComponent(branch)).sha;
