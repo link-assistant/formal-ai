@@ -75,10 +75,10 @@ export function createServer(ctx) {
     // `ForegroundActivity::begin`), the Telegram webhook included.
     const foreground = beginForegroundActivity();
     const disconnected = new AbortController();
-    const requestId=++ctx.requestSequence;
+    const requestIdentifier=++ctx.requestSequence;
     let terminal=false;
-    const finish=(reason,fields={})=>{if(terminal)return;terminal=true;ctx.logger?.log(reason==='request_failed'?'error':'debug','request.terminal',{component:'server',request_id:requestId,reason,...fields});};
-    ctx.logger?.log('debug','request.start',{component:'server',request_id:requestId,method:request.method,path:request.url});
+    const finish=(reason,fields={})=>{if(terminal)return;terminal=true;ctx.logger?.log(reason==='request_failed'?'error':'debug','request.terminal',{component:'server',request_id:requestIdentifier,reason,...fields});};
+    ctx.logger?.log('debug','request.start',{component:'server',request_id:requestIdentifier,method:request.method,path:request.url});
     socketResponse.once('finish',()=>finish('response_complete',{status:socketResponse.statusCode}));
     socketResponse.once('close',()=>{if(!socketResponse.writableFinished)finish('client_disconnected');});
     socketResponse.on('close', () => { if (!socketResponse.writableEnded) disconnected.abort(); });
@@ -88,11 +88,11 @@ export function createServer(ctx) {
       // Like the Rust reader, only a declared content-length carries a body.
       const declared = Number.parseInt(request.headers['content-length'] || '0', 10) || 0;
       const body = raw.subarray(0, Math.min(declared, raw.length)).toString('utf8');
-      ctx.logger?.log('debug','request.received',{component:'server',request_id:requestId,method:request.method,path:request.url,headers:Object.fromEntries(headers)},()=>diagnosticBody(body));
+      ctx.logger?.log('debug','request.received',{component:'server',request_id:requestIdentifier,method:request.method,path:request.url,headers:Object.fromEntries(headers)},()=>diagnosticBody(body));
       const response = await runInRequestScope(disconnected.signal, () => dispatch(ctx, { method: request.method, path: request.url, headers, body }));
       writeResponse(socketResponse, response);
     } catch (error) {
-      if(ctx.logger){ctx.logger.log('error','request.failure',{component:'server',request_id:requestId,error});finish('request_failed',{error});}
+      if(ctx.logger){ctx.logger.log('error','request.failure',{component:'server',request_id:requestIdentifier,error});finish('request_failed',{error});}
       else process.stderr.write(`request failed: ${error?.stack || error}\n`);
       if (!socketResponse.headersSent) socketResponse.destroy();
     } finally {

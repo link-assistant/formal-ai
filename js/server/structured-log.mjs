@@ -47,9 +47,10 @@ function value(n,depth=0){
  throw Error('invalid_node');
 }
 export function encodeTyped(value){return writeLink(['formal-ai-log-v1',node(value)]);}
-export const MAX_LOG_RECORD_BYTES=1024*1024;
+export const MAXIMUM_LOG_RECORD_BYTES=1024*1024;
+export {MAXIMUM_LOG_RECORD_BYTES as MAX_LOG_RECORD_BYTES};
 export function decodeTyped(line){
- if(typeof line!=='string'||Buffer.byteLength(line)>MAX_LOG_RECORD_BYTES)throw Error('record_size_limit');
+ if(typeof line!=='string'||Buffer.byteLength(line)>MAXIMUM_LOG_RECORD_BYTES)throw Error('record_size_limit');
  if(typeof line!=='string'||line.includes('\n')||line.includes('\r'))throw Error('one_line_required');
  const parsed=parseLinks(line);if(parsed.length!==1||parsed[0].length!==2||parsed[0][0]!=='formal-ai-log-v1')throw Error('invalid_record');
  const decoded=value(parsed[0][1]);if(encodeTyped(decoded)!==line)throw Error('noncanonical_record');return decoded;
@@ -150,7 +151,7 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
   algorithm:'sha256',bytes:Buffer.byteLength(canonical),digest:createHash('sha256').update(canonical).digest('hex')}
   ;
   if(level==='trace'){
-    if(Buffer.byteLength(canonical)<=MAX_LOG_RECORD_BYTES/2)record.payload.content=content;
+    if(Buffer.byteLength(canonical)<=MAXIMUM_LOG_RECORD_BYTES/2)record.payload.content=content;
     else record.payload.content_omitted='record_size_limit';
   }
   }
@@ -158,7 +159,7 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
     line=encodeTyped(record)+'\n';
    }catch{return {emitted:false,reason:'serialization_failed'};}
    const bytes=Buffer.from(line),delivered=[];
-   if(bytes.length>MAX_LOG_RECORD_BYTES)return {emitted:false,reason:'record_size_limit'};
+   if(bytes.length>MAXIMUM_LOG_RECORD_BYTES)return {emitted:false,reason:'record_size_limit'};
    for(const sink of sinks){if(!sink.enabled)continue;try{writeAll(sink.write,bytes);delivered.push(sink.name);}catch{sink.enabled=false;failures.push({sink:sink.name,reason:'write_failed'});}}
    return {emitted:delivered.length>0,delivered};
   },
@@ -170,12 +171,12 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
 // Reject unterminated input so a failed/partial append is never silently complete.
 export function convertLog(input,{from='lino',to='lino',env=process.env}={}){
  if(!['lino','jsonl'].includes(from)||!['lino','json','jsonl','pretty'].includes(to))throw Error('invalid_format');
- if(typeof input!=='string'||Buffer.byteLength(input)>16*MAX_LOG_RECORD_BYTES)throw Error('log_size_limit');
+ if(typeof input!=='string'||Buffer.byteLength(input)>16*MAXIMUM_LOG_RECORD_BYTES)throw Error('log_size_limit');
  if(input!==''&&!input.endsWith('\n'))throw Error('unterminated_log');
  const redact=makeRedactor(env),records=input===''?[]:input.slice(0,-1).split('\n').map(line=>redact(from==='lino'?decodeTyped(line):JSON.parse(line)));
  // Validate the same supported typed model for every export format.
  const encoded=records.map(encodeTyped);
- if(encoded.some(line=>Buffer.byteLength(line)>MAX_LOG_RECORD_BYTES))throw Error('record_size_limit');
+ if(encoded.some(line=>Buffer.byteLength(line)>MAXIMUM_LOG_RECORD_BYTES))throw Error('record_size_limit');
  if(to==='lino')return encoded.map(x=>x+'\n').join('');
  if(to==='jsonl')return records.map(x=>JSON.stringify(x)+'\n').join('');
  return JSON.stringify(records,null,to==='pretty'?2:0)+'\n';
@@ -183,12 +184,12 @@ export function convertLog(input,{from='lino',to='lino',env=process.env}={}){
 
 const truth=v=>['1','true','yes','on'].includes(String(v??'').trim().toLowerCase());
 export function createServeLogger(options={}){
- const env=options.env??process.env,silent=options.silent===true||truth(env.FORMAL_AI_SILENT);
- const configured=options.logLevel??env.FORMAL_AI_LOG_LEVEL??'debug';
+ const environment=options.env??process.env,silent=options.silent===true||truth(environment.FORMAL_AI_SILENT);
+ const configured=options.logLevel??environment.FORMAL_AI_LOG_LEVEL??'debug';
  if(!silent&&configured==='trace'&&options.trace!==true)throw Error('trace_requires_explicit_flag');
  const level=silent?'silent':options.trace===true?'trace':configured;
- const directory=options.logDirectory??env.FORMAL_AI_LOG_DIR??path.join(env.HOME||os.homedir(),'.formal-ai','logs');
- return createLogger({env,level,directory});
+ const directory=options.logDirectory??environment.FORMAL_AI_LOG_DIR??path.join(environment.HOME||os.homedir(),'.formal-ai','logs');
+ return createLogger({env:environment,level,directory});
 }
 export function diagnosticBody(body){try{return JSON.parse(body);}catch{return String(body??'');}}
 // Legacy serde-compatible bodies preserve Float markers/BigInt through redaction.
