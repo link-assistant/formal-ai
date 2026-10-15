@@ -2,31 +2,23 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1207-hive-mind-progressive-self-coding.md"
   issue "1207"
+  verdict "not-delivered"
   manual "not yet confirmed"
   requirement
     id "R1207-1"
-    verdict "not-delivered"
   requirement
     id "R1207-2"
-    verdict "not-delivered"
   requirement
     id "R1207-3"
-    verdict "not-delivered"
   requirement
     id "R1207-4"
-    verdict "not-delivered"
   requirement
     id "R1207-5"
-    verdict "not-delivered"
   requirement
     id "R1207-6"
-    verdict "not-delivered"
   requirement
     id "R1207-7"
-    verdict "not-delivered"
   requirement
     id "R1207-8"
-    verdict "not-delivered"
   requirement
     id "R1207-9"
-    verdict "not-delivered"

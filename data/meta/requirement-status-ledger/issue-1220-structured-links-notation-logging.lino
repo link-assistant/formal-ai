@@ -2,28 +2,21 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1220-structured-links-notation-logging.md"
   issue "1220"
+  verdict "not-delivered"
   manual "not yet confirmed"
   requirement
     id "R1220-1"
-    verdict "not-delivered"
   requirement
     id "R1220-2"
-    verdict "not-delivered"
   requirement
     id "R1220-3"
-    verdict "not-delivered"
   requirement
     id "R1220-4"
-    verdict "not-delivered"
   requirement
     id "R1220-5"
-    verdict "not-delivered"
   requirement
     id "R1220-6"
-    verdict "not-delivered"
   requirement
     id "R1220-7"
-    verdict "not-delivered"
   requirement
     id "R1220-8"
-    verdict "not-delivered"

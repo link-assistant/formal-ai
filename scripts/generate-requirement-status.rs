@@ -443,9 +443,13 @@ fn shared_field<'a>(row: &'a Requirement, name: &str) -> &'a str {
 /// `manual "not yet confirmed"`) is stated on the file as the default. A
 /// record states such a field only where it differs from the file's value
 /// (the empty text when the file states none), so a reader that applies the
-/// defaults reads the same values as before. `id` and `verdict` stay on every
-/// record.
+/// defaults reads the same values as before. Every `id` stays on its record.
+/// Four or more rows may share one uniform verdict, matching the notation measure.
 fn render_shard(rows: &[&Requirement]) -> String {
+    let verdict_default = rows
+        .first()
+        .filter(|first| rows.len() >= 4 && rows.iter().all(|row| row.verdict == first.verdict))
+        .map_or("", |row| row.verdict.as_str());
     let shared: Vec<String> = SHARED_FIELDS
         .iter()
         .map(|name| {
@@ -468,6 +472,9 @@ fn render_shard(rows: &[&Requirement]) -> String {
         output.push_str(&format!("  shard {}\n", quoted(&row.shard)));
         output.push_str(&format!("  issue {}\n", quoted(&row.issue)));
     }
+    if !verdict_default.is_empty() {
+        output.push_str(&format!("  verdict {}\n", quoted(verdict_default)));
+    }
     for (name, value) in SHARED_FIELDS.iter().zip(&shared) {
         if !value.is_empty() {
             output.push_str(&format!("  {name} {}\n", quoted(value)));
@@ -476,7 +483,9 @@ fn render_shard(rows: &[&Requirement]) -> String {
     for row in rows {
         output.push_str("  requirement\n");
         output.push_str(&format!("    id {}\n", quoted(&row.id)));
-        output.push_str(&format!("    verdict {}\n", quoted(&row.verdict)));
+        if verdict_default.is_empty() || row.verdict != verdict_default {
+            output.push_str(&format!("    verdict {}\n", quoted(&row.verdict)));
+        }
         for (name, value) in SHARED_FIELDS.iter().zip(&shared) {
             let own = shared_field(row, name);
             if own != value.as_str() {

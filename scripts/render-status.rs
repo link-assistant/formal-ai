@@ -135,6 +135,51 @@ fn benchmark_table(rows: &[BTreeMap<String, String>]) -> String {
     output
 }
 
+/// Expand the file verdict into every explicit requirement identity.
+fn requirement_verdicts(source: &str) -> Result<Vec<String>, String> {
+    let mut file_verdict = String::new();
+    let mut current: Option<(String, String)> = None;
+    let mut verdicts = Vec::new();
+    let mut identities = std::collections::BTreeSet::new();
+    let close = |record: Option<(String, String)>,
+                 verdicts: &mut Vec<String>,
+                 identities: &mut std::collections::BTreeSet<String>| {
+        if let Some((id, verdict)) = record {
+            if id.is_empty() || verdict.is_empty() {
+                return Err("requirement identity or verdict is missing".to_owned());
+            }
+            if !identities.insert(id) {
+                return Err("duplicate requirement identity".to_owned());
+            }
+            verdicts.push(verdict);
+        }
+        Ok(())
+    };
+    for line in source.lines() {
+        if line == "  requirement" {
+            close(current.take(), &mut verdicts, &mut identities)?;
+            current = Some((String::new(), file_verdict.clone()));
+        } else if let Some(value) = line.strip_prefix("  verdict ") {
+            if current.is_some() || !verdicts.is_empty() {
+                return Err("ledger defaults must precede records".to_owned());
+            }
+            file_verdict = unquote(value).to_owned();
+        } else if let Some((id, verdict)) = current.as_mut() {
+            if let Some(value) = line.strip_prefix("    id ") {
+                if !id.is_empty() {
+                    return Err("duplicate requirement identity field".to_owned());
+                }
+                *id = unquote(value).to_owned();
+            } else if let Some(value) = line.strip_prefix("    verdict ") {
+                *verdict = unquote(value).to_owned();
+            }
+        }
+    }
+    close(current, &mut verdicts, &mut identities)?;
+    Ok(verdicts)
+}
+
+
 fn requirement_counts(root: &Path) -> Result<BTreeMap<String, usize>, String> {
     let directory = root.join("data/meta/requirement-status-ledger");
     let mut counts = BTreeMap::new();
@@ -146,10 +191,8 @@ fn requirement_counts(root: &Path) -> Result<BTreeMap<String, usize>, String> {
             continue;
         }
         let source = fs::read_to_string(entry.path()).map_err(|error| error.to_string())?;
-        for line in source.lines() {
-            if let Some(value) = line.trim().strip_prefix("verdict ") {
-                *counts.entry(unquote(value).to_owned()).or_insert(0) += 1;
-            }
+        for verdict in requirement_verdicts(&source)? {
+            *counts.entry(verdict).or_insert(0) += 1;
         }
     }
     Ok(counts)
@@ -384,5 +427,34 @@ fn main() {
         eprintln!("stale status surfaces: {stale:?}");
         eprintln!("run rust-script scripts/render-status.rs --write");
         std::process::exit(1);
+    }
+}
+
+#[cfg(test)]
+mod shared_verdict_tests {
+    use super::requirement_verdicts;
+
+    #[test]
+    fn file_verdicts_expand_per_identity_and_explicit_overrides_stay_local() {
+        let source = "requirement_status_ledger_shard\n  verdict \"partial\"\n\
+                      \x20 requirement\n    id \"R1\"\n\
+                      \x20 requirement\n    id \"R2\"\n    verdict \"implemented\"\n\
+                      \x20 requirement\n    id \"R3\"\n\
+                      \x20 requirement\n    id \"R4\"\n";
+        assert_eq!(
+            requirement_verdicts(source).unwrap(),
+            ["partial", "implemented", "partial", "partial"]
+        );
+    }
+
+    #[test]
+    fn missing_and_duplicate_identities_never_disappear_from_counts() {
+        let missing = "requirement_status_ledger_shard\n  verdict \"partial\"\n\
+                       \x20 requirement\n";
+        assert!(requirement_verdicts(missing).is_err());
+        let duplicate = "requirement_status_ledger_shard\n  verdict \"partial\"\n\
+                         \x20 requirement\n    id \"R1\"\n\
+                         \x20 requirement\n    id \"R1\"\n";
+        assert!(requirement_verdicts(duplicate).is_err());
     }
 }
