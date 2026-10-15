@@ -252,6 +252,7 @@ jobs:
         with:
           name: native-release-source
           path: native-source/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
   native:
@@ -735,12 +736,27 @@ jobs:
             node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-evidence.mjs" signing ../native-source "$installed_app" "$dmg" "$RUNNER_TEMP/signing-observation.json"
           done
 
+      - name: Stage distinct macOS signing observation
+        if: matrix.ebflag == '--mac'
+        env:
+          NATIVE_SIGNING_LABEL: ${{ matrix.label }}
+        run: |
+          node --input-type=module - <<'NODE'
+          import assert from 'node:assert/strict';
+          import { copyFileSync, mkdirSync } from 'node:fs';
+          import { join } from 'node:path';
+          const label = process.env.NATIVE_SIGNING_LABEL;
+          assert.ok(['macos-arm64', 'macos-x64'].includes(label));
+          const directory = join(process.env.RUNNER_TEMP, 'formal-ai-signing-artifact', 'signing-' + label);
+          mkdirSync(directory, { recursive: true });
+          copyFileSync(join(process.env.RUNNER_TEMP, 'signing-observation.json'), join(directory, 'signing-observation.json'));
+          NODE
       - name: Upload actual macOS signing observation
         if: matrix.ebflag == '--mac'
         uses: actions/upload-artifact@v7
         with:
           name: signing-${{ matrix.label }}
-          path: ${{ runner.temp }}/signing-observation.json
+          path: ${{ runner.temp }}/formal-ai-signing-artifact/
           if-no-files-found: error
           retention-days: 7
 
@@ -1304,6 +1320,7 @@ jobs:
         with:
           pattern: signing-*
           path: native-signing
+          merge-multiple: true
       - name: Validate and prepare exact-byte durable release evidence
         id: evidence
         env:
