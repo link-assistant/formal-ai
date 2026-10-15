@@ -146,7 +146,8 @@ async function main(argv) {
   logger.log('debug','server.memory',{component:'memory',path:memoryPath(process.env)});
   startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });
   let running;
-  try { running=await startServer({...options,logger}); }catch{return 1;}
+  options.logger=logger;
+  try { running=await startServer(options); }catch{return 1;}
   const {url,ctx,server}=running;
   if(ctx.debugSession){
     if(ctx.debugSession.generated){
