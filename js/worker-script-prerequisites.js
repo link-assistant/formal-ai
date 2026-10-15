@@ -33,6 +33,16 @@ const formalAiWorkerScriptPrerequisites = Object.freeze([
         "sourceSha256": "9aae36050953abed3844db4c44636d7876d2acc4e387dc3005da33598fd0d4ea"
       }
     ]
+  },
+  {
+    "script": "js/worker/formal_ai_worker_solve.js",
+    "sourceSha256": "fa3c16bca3c69a6f84f5a018d2432422341040266ae3aea259762a43b469d641",
+    "requires": [
+      {
+        "script": "js/worker/formal_ai_worker_web_providers_and_wasm_calls.js",
+        "sourceSha256": "64b9fa10525bc9340bbce363d2a10c6744de7e390ae0fc4ac85e00e9b01dee19"
+      }
+    ]
   }
 ].map(record => Object.freeze({...record,requires:Object.freeze(record.requires.map(item => Object.freeze(item)))})));
 function createWorkerAssetLoader(nativeImport, withAssetVersion) {
