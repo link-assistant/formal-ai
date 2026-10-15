@@ -149,7 +149,7 @@ function workflows() {
   const stage=checked.physicalStages.jobs[caller.with.mode+'_publish-verify-images'];
   assert.equal(stage.concurrency,undefined);
   assert.deepEqual(stage.permissions,{contents:'read',packages:'write'});
-  assert.equal(stage['timeout-minutes'],30);
+  assert.equal(stage['timeout-minutes'],90);
   for(const operation of ['publish','mirror']) {
    const retained=original.steps.filter(step=>step.run?.startsWith('node scripts/release-image-factory.mjs '+operation+' '));
    assert.equal(retained.length,1);
