@@ -20,6 +20,10 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.353.3] - 2026-10-15
+
+Restore only the generated image publication stage to its retained logical source allowance of 90 minutes. The former blanket 30-minute stage cap cancelled Docker Hub mirroring after successful full and slim GHCR checks, leaving the immutable image transfer unsealed. Keep every publication operation, source/digest/runtime/anonymous check and per-operation limit; all other physical stages retain 30-minute caps. Hosted completion still requires a fresh production run. Supplied orchestration receives zero Formal AI authorship credit.
+
 ## [0.353.2] - 2026-10-13
 
 Publish prepared Docker images directly to the registry instead of exporting a full local image before pushing. Stream plain BuildKit progress and bounded operation timings while retaining source, executable, digest, runtime and anonymous-access verification. Existing cache settings and execution budgets remain unchanged.
