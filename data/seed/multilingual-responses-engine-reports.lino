@@ -466,3 +466,11 @@ multilingual_responses
     intent program_execution_rediscovered
     language es
     text "Estado de ejecución: no ejecutado; este programa se redescubrió en {page} y su contrato de salida se comprobó por descomposición, no ejecutándolo."
+  response response_runtime_derivation_record_missing_en
+    intent runtime_derivation_record_missing
+    language en
+    text "derivation_record_missing:{answer_id}; directory={directory}"
+  response response_derivation_record_ambiguous_en
+    intent derivation_record_ambiguous
+    language en
+    text "derivation_record_ambiguous: use {answer}@<record-digest>"

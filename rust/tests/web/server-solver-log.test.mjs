@@ -11,13 +11,28 @@
 // the CI server-parity job compares them against the branch binary.
 
 import assert from "node:assert/strict";
-import { before, test } from "node:test";
+import { after, before, test } from "node:test";
+import { createHash } from "node:crypto";
+import { mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { loadRuntimeDerivation } from "../../../js/server/runtime-cache.mjs";
+import { toLino } from "../../../js/agentic/crate/derivation.mjs";
 
 import { solveSymbolic } from "../../../js/server/solve.mjs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 
 let host;
+let cacheRoot;
+const previousCacheRoot = process.env.FORMAL_AI_CACHE_DIR;
+after(() => {
+  if (previousCacheRoot === undefined) delete process.env.FORMAL_AI_CACHE_DIR;
+  else process.env.FORMAL_AI_CACHE_DIR = previousCacheRoot;
+  if (cacheRoot) rmSync(cacheRoot, { recursive: true, force: true });
+});
 before(async () => {
+  cacheRoot = mkdtempSync(join(tmpdir(), "formal-ai-server-log-cache-"));
+  process.env.FORMAL_AI_CACHE_DIR = cacheRoot;
   host = new WorkerHost();
   await host.boot();
 });
@@ -68,6 +83,20 @@ const RUST_PINNED_AT = {
 const evidence = async (prompt) => (await solveSymbolic({ worker: host }, prompt, [])).evidence_links;
 const linkKind = (link) => link.replace(/^(.+):\1_[0-9a-f]{16}$/u, "$1");
 
+function storageLinks(links) {
+  const locator = links.at(-1);
+  assert.match(locator, /^derivation_record:answer_[0-9a-f]{16}@[0-9a-f]{64}$/u);
+  const [answerId, digest] = locator.slice("derivation_record:".length).split("@");
+  const recordPath = join(cacheRoot, "derivations", answerId, digest + ".lino");
+  assert.equal(links.at(-2), recordPath);
+  const bytes = readFileSync(recordPath);
+  assert.equal(createHash("sha256").update(bytes).digest("hex"), digest);
+  const record = loadRuntimeDerivation(answerId + "@" + digest);
+  assert.equal(record.answer_id, answerId);
+  assert.equal(toLino(record), bytes.toString("utf8"));
+  return { recordPath, locator, text: bytes.toString("utf8") };
+}
+
 test("the formalization, intent and frame records match the Rust server's ids", async () => {
   const links = await evidence(PROMPT);
   assert.deepEqual(links.slice(0, RUST_PINNED.length), RUST_PINNED);
@@ -76,6 +105,7 @@ test("the formalization, intent and frame records match the Rust server's ids", 
 
 test("the meta core, rule selection, handler and method events follow in Rust's order", async () => {
   const links = await evidence(PROMPT);
+  const stored = storageLinks(links);
   assert.deepEqual(links.slice(24).map(linkKind), [
     "need_ledger", "need_ledger:accounted_for", "need:status",
     "method_registry", "method_registry:count", "work_unit_reasoning", "work_unit_reasoning:steps",
@@ -85,13 +115,15 @@ test("the meta core, rule selection, handler and method events follow in Rust's 
     "need_ledger:executed_satisfied", "search:local", "selected_rule", "calculation:request",
     "calculation:engine:link-calculator", "calculation:lino:(2 + 2)", "calculation:steps", "calculation",
     "intent:calculation", "validation", "response:calculation", "trace:simplification", "trace", "method", "derivation:answer_41e931da82c378e5",
-    "data/cache/derivations/answer_41e931da82c378e5.lino",
+    stored.recordPath, stored.locator,
   ]);
 });
 
 test("a server answer ends with the method and the derivation links", async () => {
   const answer = await solveSymbolic({ worker: host }, PROMPT, []);
-  const tail = answer.evidence_links.slice(-3);
+  const stored = storageLinks(answer.evidence_links);
+  assert.ok(answer.links_notation.endsWith(stored.text));
+  const tail = answer.evidence_links.slice(-4);
   assert.match(tail[0], /^method:method_[0-9a-f]{16}$/u);
   assert.match(tail[1], /^derivation:answer_[0-9a-f]{16}$/u);
   assert.ok(answer.thinking_steps.some((step) => step.step === "formalize" && step.detail === "arithmetic"));

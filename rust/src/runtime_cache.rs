@@ -1,9 +1,9 @@
 //! Runtime-only cache paths and immutable derivations; explicit legacy APIs stay unchanged.
 use crate::derivation::Derivation;
 use std::io::{self, Write};
-use std::path::{Path, PathBuf};
 #[cfg(unix)]
 use std::os::unix::fs::{DirBuilderExt, OpenOptionsExt};
+use std::path::{Path, PathBuf};
 
 pub struct RuntimeCachePaths {
     pub runtime_root: PathBuf,
@@ -22,18 +22,34 @@ pub fn runtime_cache_paths() -> io::Result<RuntimeCachePaths> {
             return Err(invalid("runtime_cache_root_invalid"));
         }
         let path = PathBuf::from(explicit);
-        if path.is_absolute() { path } else { std::env::current_dir()?.join(path) }
-    } else if let Some(xdg) = std::env::var_os("XDG_CACHE_HOME").filter(|value| Path::new(value).is_absolute()) {
+        if path.is_absolute() {
+            path
+        } else {
+            std::env::current_dir()?.join(path)
+        }
+    } else if let Some(xdg) =
+        std::env::var_os("XDG_CACHE_HOME").filter(|value| Path::new(value).is_absolute())
+    {
         PathBuf::from(xdg).join("formal-ai")
-    } else if let Some(local) = std::env::var_os("LOCALAPPDATA").filter(|value| cfg!(windows) && Path::new(value).is_absolute()) {
+    } else if let Some(local) = std::env::var_os("LOCALAPPDATA")
+        .filter(|value| cfg!(windows) && Path::new(value).is_absolute())
+    {
         PathBuf::from(local).join("formal-ai/Cache")
     } else {
         let home = if cfg!(windows) {
             std::env::var_os("USERPROFILE").or_else(|| std::env::var_os("HOME"))
         } else {
             std::env::var_os("HOME")
-        }.filter(|value| Path::new(value).is_absolute()).ok_or_else(|| invalid("runtime_cache_home_unavailable"))?;
-        PathBuf::from(home).join(if cfg!(windows) { "AppData/Local/formal-ai/Cache" } else if cfg!(target_os = "macos") { "Library/Caches/formal-ai" } else { ".cache/formal-ai" })
+        }
+        .filter(|value| Path::new(value).is_absolute())
+        .ok_or_else(|| invalid("runtime_cache_home_unavailable"))?;
+        PathBuf::from(home).join(if cfg!(windows) {
+            "AppData/Local/formal-ai/Cache"
+        } else if cfg!(target_os = "macos") {
+            "Library/Caches/formal-ai"
+        } else {
+            ".cache/formal-ai"
+        })
     };
     let runtime_root = normalize_runtime_root(&runtime_root);
     Ok(RuntimeCachePaths {
@@ -48,7 +64,9 @@ fn normalize_runtime_root(path: &Path) -> PathBuf {
     for component in path.components() {
         match component {
             std::path::Component::CurDir => {}
-            std::path::Component::ParentDir => { normalized.pop(); }
+            std::path::Component::ParentDir => {
+                normalized.pop();
+            }
             value => normalized.push(value.as_os_str()),
         }
     }
@@ -60,9 +78,16 @@ fn locator_parts(locator: &str) -> io::Result<(&str, Option<&str>)> {
     let answer = parts.next().unwrap_or_default();
     let digest = parts.next();
     if answer.is_empty()
-        || !answer.chars().all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
+        || !answer
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
         || parts.next().is_some()
-        || digest.is_some_and(|value| value.len() != 64 || !value.bytes().all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c)))
+        || digest.is_some_and(|value| {
+            value.len() != 64
+                || !value
+                    .bytes()
+                    .all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c))
+        })
     {
         return Err(invalid("derivation_answer_id_unusable"));
     }
@@ -114,8 +139,8 @@ pub fn persist_derivation(record: &Derivation) -> io::Result<RuntimeDerivationLo
             Err(error) => return Err(error),
         }
     }
-    let (temporary, mut file) = owned_temporary
-        .ok_or_else(|| invalid("derivation_temporary_name_unavailable"))?;
+    let (temporary, mut file) =
+        owned_temporary.ok_or_else(|| invalid("derivation_temporary_name_unavailable"))?;
     let identity = file.metadata()?;
     let result = (|| {
         file.write_all(&bytes)?;
@@ -175,32 +200,57 @@ pub fn load_derivation(locator: &str) -> io::Result<Option<Derivation>> {
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(error),
     };
-    if !metadata.file_type().is_dir() { return Err(invalid("derivation_directory_unusable")); }
+    if !metadata.file_type().is_dir() {
+        return Err(invalid("derivation_directory_unusable"));
+    }
     let mut names = Vec::new();
     for entry in std::fs::read_dir(&directory)? {
-        let name = entry?.file_name().into_string().map_err(|_| invalid("derivation_record_custody_failed"))?;
-        let stem = name.strip_suffix(".lino").ok_or_else(|| invalid("derivation_record_custody_failed"))?;
-        if stem.len() != 64 || !stem.bytes().all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c)) {
+        let name = entry?
+            .file_name()
+            .into_string()
+            .map_err(|_| invalid("derivation_record_custody_failed"))?;
+        let stem = name
+            .strip_suffix(".lino")
+            .ok_or_else(|| invalid("derivation_record_custody_failed"))?;
+        if stem.len() != 64
+            || !stem
+                .bytes()
+                .all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c))
+        {
             return Err(invalid("derivation_record_custody_failed"));
         }
         names.push(name);
     }
     if selector.is_none() && names.len() > 1 {
-        return Err(invalid(&format!("derivation_record_ambiguous: use {answer}@<record-digest>")));
+        return Err(invalid(&crate::seed::report_text(
+            "derivation_record_ambiguous",
+            &[("answer", answer)],
+        )));
     }
     let name = match selector {
         Some(value) => format!("{value}.lino"),
-        None => match names.first() { Some(value) => value.clone(), None => return Ok(None) },
+        None => match names.first() {
+            Some(value) => value.clone(),
+            None => return Ok(None),
+        },
     };
-    if !names.contains(&name) { return Ok(None); }
+    if !names.contains(&name) {
+        return Ok(None);
+    }
     let path = directory.join(&name);
-    if !std::fs::symlink_metadata(&path)?.file_type().is_file() { return Err(invalid("derivation_record_custody_failed")); }
+    if !std::fs::symlink_metadata(&path)?.file_type().is_file() {
+        return Err(invalid("derivation_record_custody_failed"));
+    }
     let bytes = std::fs::read(path)?;
     if crate::source_fetch::sha256_hex(&bytes) != name.trim_end_matches(".lino") {
         return Err(invalid("derivation_record_custody_failed"));
     }
-    let text = std::str::from_utf8(&bytes).map_err(|_| invalid("derivation_record_custody_failed"))?;
-    let record = Derivation::from_lino(text).ok_or_else(|| invalid("derivation_record_custody_failed"))?;
-    if record.answer_id != answer || record.to_lino() != text { return Err(invalid("derivation_record_custody_failed")); }
+    let text =
+        std::str::from_utf8(&bytes).map_err(|_| invalid("derivation_record_custody_failed"))?;
+    let record =
+        Derivation::from_lino(text).ok_or_else(|| invalid("derivation_record_custody_failed"))?;
+    if record.answer_id != answer || record.to_lino() != text {
+        return Err(invalid("derivation_record_custody_failed"));
+    }
     Ok(Some(record))
 }

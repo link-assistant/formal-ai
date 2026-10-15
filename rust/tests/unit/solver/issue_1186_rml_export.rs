@@ -111,7 +111,8 @@ fn the_rml_step_is_a_derivation_fragment() {
             offline: true,
             ..SolverConfig::default()
         });
-        let formalized = solver.solve("Formalize in first-order logic: Every baker who sings smiles");
+        let formalized =
+            solver.solve("Formalize in first-order logic: Every baker who sings smiles");
         let locator = formalized
             .evidence_links
             .iter()

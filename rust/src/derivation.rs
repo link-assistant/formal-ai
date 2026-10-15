@@ -219,10 +219,16 @@ pub(crate) fn finalize_answer(answer: &mut crate::engine::SymbolicAnswer, log: &
     answer.links_notation.push_str(&record.to_lino());
     match crate::runtime_cache::persist_derivation(&record) {
         Ok(location) => {
-            answer.evidence_links.push(location.path.display().to_string());
-            answer.evidence_links.push(format!("derivation_record:{}", location.locator));
+            answer
+                .evidence_links
+                .push(location.path.display().to_string());
+            answer
+                .evidence_links
+                .push(format!("derivation_record:{}", location.locator));
         }
-        Err(error) => answer.evidence_links.push(format!("derivation:persistence_failed:{error}")),
+        Err(error) => answer
+            .evidence_links
+            .push(format!("derivation:persistence_failed:{error}")),
     }
 }
 

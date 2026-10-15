@@ -22,9 +22,14 @@ pub enum ExplainFormat {
 
 pub fn run_explain(answer_id: &str, format: ExplainFormat) -> Result<(), Box<dyn Error>> {
     let derivation = load_derivation(answer_id)?.ok_or_else(|| {
-        let directory = runtime_cache_paths()
-            .map_or_else(|error| error.to_string(), |paths| paths.derivation_directory.display().to_string());
-        format!("derivation_record_missing:{answer_id}; directory={directory}")
+        let directory = runtime_cache_paths().map_or_else(
+            |error| error.to_string(),
+            |paths| paths.derivation_directory.display().to_string(),
+        );
+        formal_ai::seed::report_text(
+            "runtime_derivation_record_missing",
+            &[("answer_id", answer_id), ("directory", &directory)],
+        )
     })?;
     let rendered = match format {
         ExplainFormat::Text => derivation.explain_text(),

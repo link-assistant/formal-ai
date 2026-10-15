@@ -369,3 +369,19 @@ meanings
     unit "not applicable"
     example "a curated repository source was selected"
     grounding "data/seed/multilingual-responses-parity.lino"
+  runtime_derivation_record_missing
+    defined-by answer
+    role localized_response_template
+    precondition "an explain request names an answer locator with no runtime derivation record"
+    effect "the miss names the requested locator and the runtime directory searched"
+    unit "not applicable"
+    example "derivation_record_missing:answer_0000000000000000; directory=/cache/formal-ai/derivations"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
+  derivation_record_ambiguous
+    defined-by answer
+    role localized_response_template
+    precondition "a bare answer id names more than one immutable derivation record"
+    effect "the failure requests the answer id and exact record digest selector"
+    unit "not applicable"
+    example "derivation_record_ambiguous: use answer_0000000000000000@<record-digest>"
+    grounding "data/seed/multilingual-responses-engine-reports.lino"
