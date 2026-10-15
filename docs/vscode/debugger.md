@@ -86,10 +86,22 @@ node js/server/main.mjs --debug-session          # JavaScript server
   refuses the flag together with `--ws` or `--webrtc`.
 - **Token handoff.** The session token comes from
   `FORMAL_AI_DEBUG_SESSION_TOKEN` when the launcher sets it. Otherwise the
-  server makes a random 48-hex-digit token. The server prints one stderr line:
-  `debug_session=<session id>`, plus `;token=<token>` only when it made the
-  token itself. A launcher that set the variable already knows the token, so
-  it is not echoed.
+  server makes a random 48-hex-digit token. The native CLI prints one stderr
+  line: `debug_session=<session id>`, plus `;token=<token>` only when it made
+  the token itself. A launcher that set the variable already knows the token,
+  so it is not echoed.
+- **JavaScript CLI generated token.** Structured diagnostic logs never contain
+  the credential. Without `FORMAL_AI_DEBUG_SESSION_TOKEN`, the JavaScript CLI
+  creates `~/.formal-ai/debug-session-<random>/credential.json` with mode 0600
+  inside a fresh mode-0700 directory. Its structured `server.debug_session`
+  record gives the nonsensitive `credential_file` locator. Read that local
+  file and pass its `token` to the endpoints below. Quiet levels may hide
+  the locator; the owner can inspect the `debug-session-*` directory instead.
+  Handled shutdown removes the issued credential file; after a crash, remove
+  that directory once its process has ended. Launchers that scraped the old
+  JavaScript stderr token must read the file or supply the environment token.
+  Native CLI behavior and the VS Code environment-token handoff below are
+  unchanged.
 - **VS Code.** The setting `formal-ai.debugger.stepping` needs
   `formal-ai.server.enabled` and the desktop (Node) host. With it on, the host
   makes a fresh token and starts `formal-ai serve --debug-session` with the

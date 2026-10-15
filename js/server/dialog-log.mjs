@@ -16,6 +16,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import fs from 'node:fs';
 import path from 'node:path';
+import { makeRedactor, redactedBody } from './structured-log.mjs';
 
 import { configuredDialogLogDirectory, turnsInExchange } from './conversations.mjs';
 import { summarizeProxyExchange } from './dialog-log-summary.mjs';
@@ -182,9 +183,15 @@ export function writeDialogExchange(directory, method, requestPath, headers, req
  * @param {boolean} authorized
  * @param {object} [env]
  */
-export function recordApiExchangeIfEnabled(request, response, authorized, env = process.env) {
+export function recordApiExchangeIfEnabled(request, response, authorized, env = process.env, logger = null) {
   try {
-    if (!authorized) return;
+    if (!authorized || logger?.level === 'silent') return;
+    if(logger){
+      const redact=makeRedactor(env);
+      const safe=redact({...request,headers:Object.fromEntries(request.headers??[]),body:redactedBody(String(request.body??''),env)});
+      request={...safe,headers:Object.entries(safe.headers)};
+      response=redact({...response,body:redactedBody(String(response.body??''),env)});
+    }
     const requestPath = String(request.path);
     if (requestPath.split('?')[0].includes('/conversations/')) return;
     const directory = configuredDialogLogDirectory(env);
@@ -199,8 +206,10 @@ export function recordApiExchangeIfEnabled(request, response, authorized, env = 
       response.contentType,
       String(response.body ?? ''),
     );
-    process.stderr.write(`${serverMessage('dialog_log_appended', { path: file })}\n`);
+    if(logger)logger.log('debug','dialog.legacy_appended',{component:'server',path:file});
+    else process.stderr.write(`${serverMessage('dialog_log_appended', { path: file })}\n`);
   } catch (error) {
-    process.stderr.write(`${serverMessage('dialog_log_failed', { error: error?.message || error })}\n`);
+    if(logger)logger.log('error','dialog.legacy_failed',{component:'server',error});
+    else process.stderr.write(`${serverMessage('dialog_log_failed', { error: error?.message || error })}\n`);
   }
 }

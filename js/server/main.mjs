@@ -16,6 +16,8 @@
 // (js/server/debug-session.mjs, docs/vscode/debugger.md).
 
 import { pathToFileURL } from 'node:url';
+import { createServeLogger } from './structured-log.mjs';
+import { createGeneratedDebugHandoff } from './debug-session-handoff.mjs';
 
 import { runExplain } from './derivation-store.mjs';
 import { DebugSession, debugSessionBanner, debugTokenFrom, isLoopbackHost } from './debug-session.mjs';
@@ -50,6 +52,10 @@ export function parseArgs(argv, env = process.env) {
     port: Number.parseInt(env.FORMAL_AI_PORT || '8080', 10),
     agentMode: flagEnabled(env.FORMAL_AI_AGENT_MODE),
     debugSession: false,
+    logLevel: env.FORMAL_AI_LOG_LEVEL || 'debug',
+    silent: flagEnabled(env.FORMAL_AI_SILENT),
+    logDirectory: env.FORMAL_AI_LOG_DIR || null,
+    trace: false,
     unsupported: null,
   };
   for (let index = 0; index < argv.length; index += 1) {
@@ -60,6 +66,11 @@ export function parseArgs(argv, env = process.env) {
     else if (name === '--port') options.port = Number.parseInt(value(), 10);
     else if (name === '--agent-mode') options.agentMode = true;
     else if (name === '--debug-session') options.debugSession = true;
+    else if (name === '--silent') options.silent = true;
+    else if (name === '--trace') options.trace = true;
+    else if (name === '--debug' || name === '--verbose') options.logLevel = 'debug';
+    else if (name === '--log-level') { options.logLevel = value(); if (!options.logLevel) options.unsupported = arg; }
+    else if (name === '--log-dir') { options.logDirectory = value(); if (!options.logDirectory) options.unsupported = arg; }
     else if (name === 'serve' && index === 0) continue;
     else options.unsupported = arg;
   }
@@ -70,27 +81,39 @@ export function parseArgs(argv, env = process.env) {
  * Start a server; resolves once it listens.
  * @returns {Promise<{server: import('node:http').Server, ctx: object, url: string}>}
  */
-export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, worker } = {}) {
+export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, worker, logger } = {}) {
   if (debugSession && !isLoopbackHost(host)) throw new Error(`debug_session_requires_loopback:${host}`);
-  const ctx = {
-    // The server can start processes, so the formalization task's prover
-    // seam runs `lean`/`coqc` when PATH has them (js/server/prover-host.mjs).
-    worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }) }),
-    memory: createMemory(env),
-    agentMode,
-    bearerToken: bearerTokenFromEnv(env),
-    debugSession: debugSession ? new DebugSession(debugTokenFrom(env)) : null,
-    env,
-  };
-  await ctx.worker.boot();
-  setLearnedImporter((statements) => ctx.worker.run('metaImportLearned(__learned)', { __learned: statements }));
-  const server = createServer(ctx);
-  await new Promise((resolve, reject) => {
-    server.once('error', reject);
-    server.listen(port, host, resolve);
-  });
-  const address = server.address();
-  return { server, ctx, url: `http://${host}:${address.port}` };
+  const diagnostics = logger ?? createServeLogger({env});
+  diagnostics.log('debug', 'server.start', {component:'server',host,port,agent_mode:agentMode,debug_session:debugSession});
+  try {
+    const session=debugSession ? new DebugSession(debugTokenFrom(env)) : null;
+    if(session){
+      diagnostics.addSecret?.(session.token);
+      env={...env,FORMAL_AI_DEBUG_SESSION_TOKEN:session.token};
+    }
+    const ctx = {
+      worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }) }),
+      memory: createMemory(env), agentMode, bearerToken: bearerTokenFromEnv(env),
+      debugSession: session,
+      env, logger:diagnostics, requestSequence:0,
+    };
+    await ctx.worker.boot();
+    setLearnedImporter((statements) => ctx.worker.run('metaImportLearned(__learned)', { __learned: statements }));
+    const server = createServer(ctx);
+    server.once('close', () => {
+      const cleanup=ctx.debugCredentialHandoff?.cleanup();
+      if(cleanup && !cleanup.cleaned)diagnostics.log('warn','server.debug_credential_cleanup',{component:'server',reason:cleanup.reason,credential_file:ctx.debugCredentialHandoff.file});
+      diagnostics.log('info','server.terminal',{component:'server',reason:ctx.shutdownReason??'server_closed',signal:ctx.shutdownSignal??null});
+      diagnostics.close();
+    });
+    await new Promise((resolve, reject) => { server.once('error', reject); server.listen(port, host, resolve); });
+    const address = server.address();
+    return { server, ctx, url: 'http://'+host+':'+address.port };
+  } catch(error) {
+    diagnostics.log('error','server.terminal',{component:'server',reason:'startup_failed',error});
+    diagnostics.close();
+    throw error;
+  }
 }
 
 async function main(argv) {
@@ -109,23 +132,37 @@ async function main(argv) {
     return code;
   }
   const options = parseArgs(argv);
-  if (options.unsupported) {
-    process.stderr.write(`unsupported argument: ${options.unsupported}\n`);
-    return 2;
+  let logger;
+  try { logger=createServeLogger({...options,env:process.env}); }
+  catch {
+    logger=createServeLogger({logLevel:'error',env:{...process.env,FORMAL_AI_LOG_LEVEL:'error'}});
+    logger.log('error','server.terminal',{component:'server',reason:'invalid_log_configuration'});
+    logger.close(); return 2;
   }
-  // `serve --debug-session` binds loopback only (issue #667, R383).
-  if (options.debugSession && !isLoopbackHost(options.host)) {
-    process.stderr.write(`debug_session_requires_loopback:${options.host}\n`);
-    return 2;
+  if(options.unsupported || (options.debugSession && !isLoopbackHost(options.host))){
+    logger.log('error','server.terminal',{component:'server',reason:options.unsupported?'unsupported_argument':'debug_session_requires_loopback',argument:options.unsupported});
+    logger.close();return 2;
   }
-  process.stderr.write(`${serverMessage('server_shared_memory', { path: memoryPath(process.env) })}\n`);
-  // `serve()` starts the default-on dreaming worker before accepting
-  // connections (rust/src/server/transport.rs); the embeddable `startServer`
-  // leaves it to the caller.
+  logger.log('debug','server.memory',{component:'memory',path:memoryPath(process.env)});
   startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });
-  const { url, ctx } = await startServer(options);
-  process.stderr.write(`${serverMessage('server_listening', { url })}\n`);
-  if (ctx.debugSession) process.stderr.write(`${debugSessionBanner(ctx.debugSession)}\n`);
+  let running;
+  try { running=await startServer({...options,logger}); }catch{return 1;}
+  const {url,ctx,server}=running;
+  if(ctx.debugSession){
+    if(ctx.debugSession.generated){
+      try{ctx.debugCredentialHandoff=createGeneratedDebugHandoff(ctx.debugSession,{env:ctx.env,url});}
+      catch{
+        ctx.shutdownReason='debug_credential_handoff_failed';
+        logger.log('error','server.debug_session_handoff_failed',{component:'server',reason:'credential_file_failed'});
+        await new Promise(resolve=>server.close(resolve));
+        return 1;
+      }
+      logger.log('info','server.debug_session',{component:'server',enabled:true,session_id:ctx.debugSession.id,generated:true,credential_source:'private_file',credential_file:ctx.debugCredentialHandoff.file});
+    }else logger.log('info','server.debug_session',{component:'server',enabled:true,session_id:ctx.debugSession.id,generated:false,credential_source:'environment'});
+  }
+  logger.log('info','server.listening',{component:'server',url});
+  const shutdown=signal=>{ctx.shutdownReason='signal';ctx.shutdownSignal=signal;server.close();};
+  process.once('SIGTERM',()=>shutdown('SIGTERM'));process.once('SIGINT',()=>shutdown('SIGINT'));
   return null;
 }
 
