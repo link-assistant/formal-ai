@@ -2,9 +2,9 @@ self_ast_census
   target src/derivation.rs
   language rust
   fidelity signature
-  byte_len 23819
-  line_count 575
-  content_id source_module_0b207c9555f69857
+  byte_len 23929
+  line_count 579
+  content_id source_module_04c66753c944b780
   symbol_count 33
   symbols
     const NOT_RECORDED 39 39
@@ -28,15 +28,15 @@ self_ast_census
     function parse_payload 149 168
     struct Derivation 174 184
     function answer_derivation_id 193 195
-    function finalize_answer 200 229
-    function record_for 237 279
-    function to_lino 286 326
-    function from_lino 331 381
-    function explain_text 387 456
-    function persist 461 469
-    function load 474 479
-    function store_path 487 497
-    function explain_answer 501 505
-    function miss_message 510 516
-    function parse_source_http 527 558
-    function parse_entries 562 575
+    function finalize_answer 200 233
+    function record_for 241 283
+    function to_lino 290 330
+    function from_lino 335 385
+    function explain_text 391 460
+    function persist 465 473
+    function load 478 483
+    function store_path 491 501
+    function explain_answer 505 509
+    function miss_message 514 520
+    function parse_source_http 531 562
+    function parse_entries 566 579
