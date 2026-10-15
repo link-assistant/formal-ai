@@ -443,19 +443,27 @@ fn every_stage_event_kind_lands_in_its_record_field() {
 }
 
 /// R1184-4: the `formal-ai explain <answer-id>` subcommand itself prints the
-/// durable record from the working directory's store, in both formats, and a
+/// durable record from its configured private runtime store, in both formats, and a
 /// miss is an error naming the id — the binary, not only the library call.
 #[test]
 fn the_explain_subcommand_prints_the_durable_record() {
     let root = isolated_directory("explain-cli");
     let mut derivation = Derivation::record_for(&online_answer_log(), "answer_00000000000000ab");
     derivation.rendering = Some(String::from("kotlin"));
-    derivation
-        .persist(&root)
-        .expect("the record persists under data/cache/derivations");
+    let location = temp_env::with_var("FORMAL_AI_CACHE_DIR", Some(root.as_os_str()), || {
+        let location = formal_ai::runtime_cache::persist_derivation(&derivation)
+            .expect("the record persists in the private runtime cache");
+        let loaded = formal_ai::runtime_cache::load_derivation(&location.locator)
+            .expect("runtime record custody")
+            .expect("the exact runtime record exists");
+        assert_eq!(loaded, derivation);
+        location
+    });
+    assert!(location.path.starts_with(root.join("derivations")));
     let run = |args: &[&str]| {
         std::process::Command::new(env!("CARGO_BIN_EXE_formal-ai"))
             .args(args)
+            .env("FORMAL_AI_CACHE_DIR", &root)
             .current_dir(&root)
             .output()
             .expect("the formal-ai binary runs")
