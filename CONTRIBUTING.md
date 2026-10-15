@@ -380,19 +380,19 @@ numerator, so it cannot inflate the measured share; use it to disown a
 mis-trailered commit, never to claim one. It must name a full sha that is
 inside the range being measured, and it may not name the commit carrying it.
 
-Every release cycle must contain at least one such merged contribution. It goes
-through the ordinary pull-request review, CI, and promotion policy without an
-AI-specific bypass. The next release's target carries forward from the previous
-row and rises with the measured trailing share, so it must not decrease on its
-own. It moves down only when a reviewed commit writes a
-`target_override_basis_points` onto the newest comparable row of
-`data/meta/self-hosting-ledger.lino`, which replaces the ratchet and carries
-forward until another commit changes or removes it. That is the only lever:
-there is no flag, environment variable, or workflow input that moves the target,
-so every change to the level is visible in a diff and named in the release
-notes. If the floor or target is missing, merge more
-reviewed Formal AI-authored work before retrying the release. The metric counts additions plus deletions from non-merge
-commits and ignores binary files. Reproduce it with
+The reviewed prospective policy in `data/meta/self-development-policy.lino`
+sets `presence_mode` to `report` while self-hosting matures. Missing authored
+work remains visible with its actual counts and `floorSatisfied=false`; it does
+not block iteration or grant supplied recipes authorship credit. A reviewed diff
+setting `presence_mode` to `enforce` raises the presence criterion again and
+retains the existing pull-request relaxation after more than 24 hours. Invalid
+claimed attribution, configuration, Git errors, and independent debt checks still
+fail in either mode. This policy is separate from the numerical share target:
+`target_override_basis_points` on the newest comparable self-hosting ledger row
+is the existing reviewed lever for lowering that target, without changing
+historical measurements. Actual release recording independently uses Report.
+Reproduce measured additions plus deletions from non-merge commits, excluding
+binary files, with
 `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
 
 Before checking the pull-request ratchet locally, fetch annotated release tags

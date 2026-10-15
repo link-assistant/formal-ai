@@ -1,28 +1,15 @@
 #!/usr/bin/env rust-script
-//! Each pull request carries Formal AI-authored work, and the requirement
-//! relaxes once the pull request has been open for more than a day.
+//! Validate actual Formal AI attribution and report the reviewed prospective requirement.
 //!
-//! The architect stated both halves in one breath
-//! (`docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md`):
+//! data/meta/self-development-policy.lino selects report or enforce. Report mode
+//! prints real measured counts and an unmet floor, permitting iteration without
+//! claiming authorship or floor satisfaction. Supplied recipe execution earns no
+//! autonomous authorship credit. Enforce retains the original contribution rule
+//! and its relaxation after the pull request has been open for more than 24 hours.
 //!
-//! > we should force each pull request to use Formal AI to code part of it (as
-//! > big as it can be, but as small as it actually can, if that will take more
-//! > than 1 actual time of coding). So if pull request exists for for more than
-//! > a day we can relax our requirements, and still be able to produce the
-//! > release.
-//!
-//! Both halves are the same instruction. Forcing the work without the relief
-//! valve is what obstructs progression to the vision, and the practical aim is
-//! stated in the same note: *"it is critical to be able to produce formal-ai
-//! releases for testing in Hive Mind on real GitHub issues."*
-//!
-//! This is **not** the thing issue #1066 forbids. That issue removed a budget
-//! that let an unreleasable cycle report success while a downstream-critical fix
-//! sat behind a green checkmark. Nothing here gates a release: the release path
-//! cuts on CI correctness alone (issue #1085 D3.5), and a relaxed result is
-//! reported as relaxed, never as satisfied. What relaxes is the per-pull-request
-//! authoring requirement, which is the requirement the architect attached the
-//! day to.
+//! Strict attribution validation and configuration, Git, and output errors fail
+//! in either mode. Actual release recording in version-and-commit.rs independently
+//! uses RatchetPolicy::Report; this command does not publish or authorize authorship.
 //!
 //! Usage:
 //!   rust-script scripts/check-formal-ai-contribution.rs --since <rev> --until <rev> \
@@ -31,7 +18,7 @@
 //!
 //! ```cargo
 //! [package]
-//! edition = "2021"
+//! edition = "2024"
 //! ```
 
 // `--test` compiles this without `main`, so everything only `main` reaches is
@@ -46,6 +33,12 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 #[cfg(not(test))]
 use std::process::exit;
+
+#[path = "self-development-policy.rs"]
+mod self_development_policy;
+#[cfg(not(test))]
+#[path = "self-hosting-metric.rs"]
+mod self_hosting_metric;
 
 /// The window the architect named. After this, the requirement relaxes.
 const RELAXATION_HOURS: i64 = 24;
@@ -122,23 +115,6 @@ fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
     String::from_utf8(output.stdout)
         .map(|value| value.trim().to_owned())
         .map_err(|error| format!("git output was not UTF-8: {error}"))
-}
-
-/// Count commits in `since..until` whose `Formal-AI-Model` trailer names
-/// formal-ai. A trailer naming a hosted model is not self-authored (R1085-4).
-#[cfg(not(test))]
-fn count_formal_ai_commits(repo: &Path, since: &str, until: &str) -> Result<usize, String> {
-    let log = git(repo, &["log", "--format=%B%x00", &format!("{since}..{until}")])?;
-    Ok(log
-        .split('\0')
-        .filter(|message| {
-            message.lines().any(|line| {
-                let line = line.trim();
-                line.strip_prefix(MODEL_TRAILER)
-                    .is_some_and(|value| value.trim().starts_with("formal-ai"))
-            })
-        })
-        .count())
 }
 
 /// Hours between two RFC3339 timestamps, without a date dependency: both are
@@ -248,14 +224,22 @@ fn main() {
         opened
     };
 
-    let commits = match count_formal_ai_commits(&repo, &since, &until) {
-        Ok(commits) => commits,
+    let policy = match self_development_policy::read(&repo) {
+        Ok(policy) => policy,
+        Err(error) => { eprintln!("check-formal-ai-contribution: {error}"); exit(1); }
+    };
+    let measurement = match self_hosting_metric::measure(&repo, &since, &until) {
+        Ok(measurement) => measurement,
         Err(error) => {
             eprintln!("check-formal-ai-contribution: {error}");
             exit(1);
         }
     };
 
+    let commits = match usize::try_from(measurement.self_authored_commits) {
+        Ok(commits) => commits,
+        Err(error) => { eprintln!("authored commit count overflow: {error}"); exit(1); }
+    };
     let age_hours = if opened.is_empty() {
         0
     } else {
@@ -281,6 +265,14 @@ fn main() {
 
     let verdict = decide(commits, age_hours);
     println!("Formal AI contribution for {since}..{until}");
+    if commits == 0 {
+        match policy.report_unmet("no validated Formal AI-authored commit in this range",
+            measurement.self_authored_commits, measurement.self_authored_lines, false, None) {
+            Ok(true) => return,
+            Ok(false) => {}
+            Err(error) => { eprintln!("check-formal-ai-contribution: {error}"); exit(1); }
+        }
+    }
     println!("  {}", verdict.describe());
     if verdict.is_failure() {
         exit(1);

@@ -1,23 +1,17 @@
 #!/usr/bin/env rust-script
-//! Non-mutating self-development preflight for automatic releases.
+//! Non-mutating self-development preflight under a reviewed prospective policy.
 //!
-//! A policy-ineligible cycle fails this command. Work in this repository is not
-//! deferred, however hard it is, so there is no budget: a release cycle that
-//! cannot be cut is a failure from the first push, and stays one until the work
-//! that unblocks it is done (issue #1066).
+//! data/meta/self-development-policy.lino selects report or enforce. Report mode
+//! prints real measured counts, the unmet floor and the independently evaluated
+//! numerical target, permitting iteration without claiming the floor is satisfied.
+//! Enforce retains the existing floor/target checks and the pull-request relaxation
+//! after more than 24 hours. Strict attribution validation and configuration, Git,
+//! and output errors fail in either mode.
 //!
-//! One relaxation applies, and only on a pull request. The architect stated both
-//! halves of one rule: force each pull request to carry Formal AI-authored work,
-//! *and* relax that after a day so a release can still be produced
-//! (`docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md`). A relaxed
-//! cycle prints as relaxed, never as satisfied, which is the distinction issue
-//! #1066 was actually about: the budget it removed let an unreleasable cycle
-//! report success. On a push to `main` there is no pull request to age and the
-//! floor stays a standing, unrelaxed report.
-//!
-//! This command never publishes; it only decides. `version-and-commit.rs` holds
-//! the same gate for the manual path, so neither route can be used to escape the
-//! other.
+//! should_release=true means this policy permits iteration; it does not mean
+//! floorSatisfied=true and grants no authorship authority. This command never
+//! publishes. version-and-commit.rs independently records releases under
+//! RatchetPolicy::Report rather than enforcing this preflight as a release gate.
 //!
 //! ```cargo
 //! [package]
@@ -32,6 +26,8 @@ use std::process::Command;
 
 #[path = "self-hosting-metric.rs"]
 mod self_hosting_metric;
+#[path = "self-development-policy.rs"]
+mod self_development_policy;
 
 fn git(args: &[&str]) -> Result<String, String> {
     let output = Command::new("git")
@@ -210,6 +206,9 @@ fn run() -> Result<(), String> {
         "--abbrev=0",
         "HEAD",
     ])?;
+    // Prospective policy never weakens strict validation of claimed attribution.
+    let policy = self_development_policy::read(&repo)?;
+    let measurement = self_hosting_metric::measure(&repo, &since, "HEAD")?;
     // On a pull request the cycle cannot yet contain a *merged* Formal AI pull
     // request: this branch is the pull request, and it merges after this check
     // runs, not before. Measured literally the floor was therefore unsatisfiable
@@ -270,6 +269,18 @@ fn run() -> Result<(), String> {
         // relaxed, never as satisfied, and only after the window has actually
         // elapsed.
         self_hosting_metric::SelfDevelopmentReleaseStatus::Blocked(reason) => {
+            let pull_requests = self_hosting_metric::merged_self_authored_pull_requests(
+                &repo, &since, "HEAD", self_hosting_metric::EvidencePolicy::Strict)?;
+            let mut rows = self_hosting_metric::read_release_rows(&ledger)?;
+            rows.retain(|row| row.tag != "prospective-auto-release");
+            let target = self_hosting_metric::target_from_rows(&rows);
+            let projected = self_hosting_metric::project_trailing_share(
+                &repo, &ledger, &since, "HEAD", 3, Some("prospective-auto-release"))?;
+            if policy.report_unmet(&reason, measurement.self_authored_commits,
+                measurement.self_authored_lines, !pull_requests.is_empty(), Some(projected >= target))? {
+                set_output("should_release", "true")?;
+                return Ok(());
+            }
             match relaxation_age_hours() {
                 Some(hours) if hours > RELAXATION_HOURS => {
                     println!(

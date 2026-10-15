@@ -1,0 +1,7 @@
+// Prospective release-first policy: lower aspirational self-hosting requirements
+// while the implementation matures. Measurements and invalid-claim failures stay truthful.
+// Tool execution of supplied recipes grants zero autonomous authorship credit.
+// ReportedUnmetAspiration is not a satisfied floor; enforcement can be restored by reviewed diff.
+self_development_policy
+  schema_version "1"
+  presence_mode "report"
