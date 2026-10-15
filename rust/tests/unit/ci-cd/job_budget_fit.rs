@@ -848,6 +848,34 @@ fn every_standalone_script_test_suite_is_run_by_something() {
         found
     };
 
+    // A registered --test owner also runs the inline tests of its #[path]
+    // modules. Derive those included suites just as the standalone runner does,
+    // so a library is not mistaken for an uncovered standalone program.
+    let included_by_a_gate: Vec<String> = {
+        let mut found = Vec::new();
+        for consumer in &run_by_a_gate {
+            let source = fs::read_to_string(root.join("scripts").join(consumer))
+                .expect("a gate's test owner should be readable");
+            for line in source.lines() {
+                if let Some(included) = line
+                    .split("#[path = \"")
+                    .nth(1)
+                    .and_then(|tail| tail.split('"').next())
+                    .filter(|name| name.ends_with(".rs"))
+                {
+                    found.push(
+                        included
+                            .rsplit("scripts/")
+                            .next()
+                            .unwrap_or(included)
+                            .to_owned(),
+                    );
+                }
+            }
+        }
+        found
+    };
+
     let mut uncovered: Vec<String> = Vec::new();
     for entry in fs::read_dir(root.join("scripts")).expect("the scripts directory") {
         let path = entry.expect("a readable directory entry").path();
@@ -863,7 +891,10 @@ fn every_standalone_script_test_suite_is_run_by_something() {
             .expect("a file inside scripts/")
             .to_string_lossy()
             .into_owned();
-        if compiled_into_the_test_crate.contains(&name) || run_by_a_gate.contains(&name) {
+        if compiled_into_the_test_crate.contains(&name)
+            || run_by_a_gate.contains(&name)
+            || included_by_a_gate.contains(&name)
+        {
             continue;
         }
         uncovered.push(format!("scripts/{name}"));
