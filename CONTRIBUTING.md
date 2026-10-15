@@ -381,10 +381,10 @@ mis-trailered commit, never to claim one. It must name a full sha that is
 inside the range being measured, and it may not name the commit carrying it.
 
 The reviewed prospective policy in `data/meta/self-development-policy.lino`
-sets `presence_mode` to `report` while self-hosting matures. Missing authored
+sets `presence-mode` to `report` while self-hosting matures. Missing authored
 work remains visible with its actual counts and `floorSatisfied=false`; it does
 not block iteration or grant supplied recipes authorship credit. A reviewed diff
-setting `presence_mode` to `enforce` raises the presence criterion again and
+setting `presence-mode` to `enforce` raises the presence criterion again and
 retains the existing pull-request relaxation after more than 24 hours. Invalid
 claimed attribution, configuration, Git errors, and independent debt checks still
 fail in either mode. This policy is separate from the numerical share target:

@@ -14,7 +14,7 @@ pub fn parse(text: &str) -> Result<PresencePolicy, String> {
     let mut version = false;
     let mut mode = None;
     for line in text.lines().map(str::trim).filter(|line| !line.is_empty() && !line.starts_with("//")) {
-        if line == "self_development_policy" {
+        if line == "self-development-policy" {
             if root { return Err("duplicate policy root".to_owned()); }
             root = true;
             continue;
@@ -22,19 +22,19 @@ pub fn parse(text: &str) -> Result<PresencePolicy, String> {
         if !root { return Err("policy root required".to_owned()); }
         let fields: Vec<_> = line.split_whitespace().collect();
         match fields.as_slice() {
-            ["schema_version", "\"1\""] if !version => version = true,
-            ["presence_mode", value] if mode.is_none() => {
+            ["schema-version", "\"1\""] if !version => version = true,
+            ["presence-mode", value] if mode.is_none() => {
                 mode = Some(match *value {
                     "\"report\"" => PresencePolicy::Report,
                     "\"enforce\"" => PresencePolicy::Enforce,
-                    _ => return Err("unknown presence_mode".to_owned()),
+                    _ => return Err("unknown presence-mode".to_owned()),
                 });
             }
             _ => return Err(format!("unknown or duplicate policy field: {line}")),
         }
     }
-    if !root || !version { return Err("policy root and schema_version 1 required".to_owned()); }
-    mode.ok_or_else(|| "presence_mode required".to_owned())
+    if !root || !version { return Err("policy root and schema-version 1 required".to_owned()); }
+    mode.ok_or_else(|| "presence-mode required".to_owned())
 }
 
 #[cfg_attr(test, allow(dead_code))]
@@ -74,12 +74,12 @@ mod tests {
     use super::*;
     #[test]
     fn checked_in_modes_are_explicit() {
-        assert_eq!(parse("self_development_policy\n schema_version \"1\"\n presence_mode \"report\""), Ok(PresencePolicy::Report));
-        assert_eq!(parse("self_development_policy\n schema_version \"1\"\n presence_mode \"enforce\""), Ok(PresencePolicy::Enforce));
+        assert_eq!(parse("self-development-policy\n schema-version \"1\"\n presence-mode \"report\""), Ok(PresencePolicy::Report));
+        assert_eq!(parse("self-development-policy\n schema-version \"1\"\n presence-mode \"enforce\""), Ok(PresencePolicy::Enforce));
     }
     #[test]
     fn missing_unknown_duplicate_and_malformed_policy_refuse() {
-        for input in ["", "self_development_policy", "schema_version \"1\"", "self_development_policy\n schema_version \"2\"\n presence_mode \"report\"", "self_development_policy\n schema_version \"1\"\n presence_mode \"skip\"", "self_development_policy\n schema_version \"1\"\n presence_mode \"report\"\n presence_mode \"enforce\"", "self_development_policy\n schema_version \"1\"\n presence_mode \"report\"\n branch \"special\""] {
+        for input in ["self_development_policy\n schema-version \"1\"\n presence-mode \"report\"", "self-development-policy\n schema_version \"1\"\n presence-mode \"report\"", "self-development-policy\n schema-version \"1\"\n presence_mode \"report\"", "", "self-development-policy", "schema-version \"1\"", "self-development-policy\n schema-version \"2\"\n presence-mode \"report\"", "self-development-policy\n schema-version \"1\"\n presence-mode \"skip\"", "self-development-policy\n schema-version \"1\"\n presence-mode \"report\"\n presence-mode \"enforce\"", "self-development-policy\n schema-version \"1\"\n presence-mode \"report\"\n branch \"special\""] {
             assert!(parse(input).is_err(), "must refuse {input:?}");
         }
     }

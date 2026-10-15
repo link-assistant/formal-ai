@@ -8,7 +8,7 @@ const source=p=>fs.readFileSync(new URL('../../../'+p,
 test('reviewed general policy is explicitly report and grants no recipe credit',
  ()=>{const config=source('data/meta/self-development-policy.lino');
  assert.match(config,
- /self_development_policy\s+schema_version "1"\s+presence_mode "report"/);
+ /self-development-policy\s+schema-version "1"\s+presence-mode "report"/);
  assert.match(config,
  /zero autonomous authorship credit/);
  assert.doesNotMatch(config,
@@ -16,13 +16,16 @@ test('reviewed general policy is explicitly report and grants no recipe credit',
  });
 test('shared parser fails closed for unknown, duplicate and incomplete policy',
  ()=>{const code=source('scripts/self-development-policy.rs');
- for(const text of ['unknown presence_mode',
+ for(const text of ['unknown presence-mode',
  'unknown or duplicate policy field',
- 'policy root and schema_version 1 required',
- 'presence_mode required',
+ 'policy root and schema-version 1 required',
+ 'presence-mode required',
  'could not read',
  'could not write self-development summary'])assert.ok(code.includes(text),
  text);
+ assert.ok(code.includes('if line == "self-development-policy"'));
+ assert.ok(code.includes('["schema-version", "\\\"1\\\""]'));
+ assert.ok(code.includes('["presence-mode", value]'));
  assert.ok(code.includes('mode.is_none()'));
  assert.ok(code.includes('if !version'));
  assert.ok(code.includes('if self == Self::Enforce { return Ok(false); }'));
