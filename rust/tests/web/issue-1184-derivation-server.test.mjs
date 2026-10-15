@@ -15,6 +15,7 @@ import { after, before, test } from 'node:test';
 
 import { RENDER_EMIT_KIND, answerDerivationId, explainText, fromLino } from '../../../js/agentic/crate/derivation.mjs';
 import { finalizeAnswer, runExplain } from '../../../js/server/derivation-store.mjs';
+import { persistRuntimeDerivation } from '../../../js/server/runtime-cache.mjs';
 import { solveSymbolic } from '../../../js/server/solve.mjs';
 import { REPO_ROOT, WorkerHost } from '../../../js/server/worker-host.mjs';
 
@@ -46,28 +47,29 @@ test('the explain request prints the persisted record in either format', async (
   const symbolic = await solveSymbolic({ worker: host, derivationRoot: root }, 'What is 2 + 2?', []);
   const id = answerDerivationId(symbolic.answer);
   const bytes = readFileSync(path.join(root, 'data/cache/derivations', `${id}.lino`), 'utf8');
-  const text = runExplain([id], { cwd: root });
+  const text = runExplain([id], { cwd: root, repositoryRoot: root });
   assert.deepEqual(text, { code: 0, stdout: explainText(fromLino(bytes)), stderr: '' });
   assert.ok(text.stdout.startsWith(`derivation ${id}\n`));
   assert.ok(text.stdout.includes('  stage search_queries\n    not recorded\n'));
-  assert.deepEqual(runExplain([id, '--format', 'links'], { cwd: root }), { code: 0, stdout: bytes, stderr: '' });
-  assert.deepEqual(runExplain(['--format=links', id], { cwd: root }).stdout, bytes);
+  assert.deepEqual(runExplain([id, '--format', 'links'], { cwd: root, repositoryRoot: root }), { code: 0, stdout: bytes, stderr: '' });
+  assert.deepEqual(runExplain(['--format=links', id], { cwd: root, repositoryRoot: root }).stdout, bytes);
 
-  const cli = spawnSync(process.execPath, [path.join(REPO_ROOT, 'js/server/main.mjs'), 'explain', id], { cwd: root, encoding: 'utf8' });
+  persistRuntimeDerivation(fromLino(bytes), { env: { FORMAL_AI_CACHE_DIR: root } });
+  const cli = spawnSync(process.execPath, [path.join(REPO_ROOT, 'js/server/main.mjs'), 'explain', id], { cwd: root, env: { ...process.env, FORMAL_AI_CACHE_DIR: root }, encoding: 'utf8' });
   assert.equal(cli.status, 0, cli.stderr);
   assert.equal(cli.stdout, text.stdout, 'node js/server/main.mjs explain is the same request');
 });
 
 test('an unknown or unusable id is the seed miss with exit 1', () => {
   const directory = `${root}/data/cache/derivations`;
-  assert.deepEqual(runExplain(['answer_ffffffffffffffff'], { cwd: root }), {
+  assert.deepEqual(runExplain(['answer_ffffffffffffffff'], { cwd: root, repositoryRoot: root }), {
     code: 1,
     stdout: '',
     stderr: `Error: "no derivation record for \`answer_ffffffffffffffff\` under ${directory} ${MISS_TAIL}"\n`,
   });
-  assert.equal(runExplain(['../secrets'], { cwd: root }).code, 1);
-  assert.equal(runExplain([], { cwd: root }).code, 2);
-  assert.equal(runExplain(['answer_ffffffffffffffff', '--format', 'yaml'], { cwd: root }).code, 2);
+  assert.equal(runExplain(['../secrets'], { cwd: root, repositoryRoot: root }).code, 1);
+  assert.equal(runExplain([], { cwd: root, repositoryRoot: root }).code, 2);
+  assert.equal(runExplain(['answer_ffffffffffffffff', '--format', 'yaml'], { cwd: root, repositoryRoot: root }).code, 2);
 });
 
 test('a refused write is reported, never silently dropped', () => {

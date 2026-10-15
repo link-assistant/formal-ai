@@ -14,7 +14,6 @@
 //! chain wires the handler). No test touches the network and no test
 //! invokes a theorem prover.
 
-use formal_ai::derivation::{Derivation, explain_answer};
 use formal_ai::event_log::EventLog;
 use formal_ai::web_engine_core::normalize_prompt;
 use formal_ai::{SolverConfig, UniversalSolver, handle_formalization_request};
@@ -313,42 +312,61 @@ fn hindi_object_verb_order_reads_as_a_two_place_relation() {
 
 #[test]
 fn formalization_derivation_is_persisted_for_explain() {
-    let solver = UniversalSolver::new(SolverConfig {
-        offline: true,
-        ..SolverConfig::default()
-    });
-    let answer = solver.solve("Formalize in first-order logic: Every nurse who listens helps");
-    let id = answer.derivation_id();
-    let root = std::env::current_dir().expect("working directory");
-    let record = Derivation::load(&root, &id).expect("the solver persisted the derivation");
-    let fragments = record.formalized_fragments.join("\n");
-    assert!(
-        fragments.contains(
-            "stage=parse quantifier=forall variable=x antecedents=Nurse|Listens consequent=Helps"
-        ),
-        "the parsed clause is a fragment: {fragments}"
-    );
-    for target in ["fol", "lean", "rocq", "lino"] {
+    let cache = std::env::temp_dir().join(format!(
+        "formal-ai-runtime-cache-formalization_derivation_is_persisted_for_explain-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("clock after epoch")
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&cache).expect("create private runtime cache");
+    temp_env::with_var("FORMAL_AI_CACHE_DIR", Some(cache.as_os_str()), || {
+        let solver = UniversalSolver::new(SolverConfig {
+            offline: true,
+            ..SolverConfig::default()
+        });
+        let answer = solver.solve("Formalize in first-order logic: Every nurse who listens helps");
+        let id = answer.derivation_id();
+        let locator = answer
+            .evidence_links
+            .iter()
+            .find_map(|link| link.strip_prefix("derivation_record:"))
+            .expect("the answer identifies its exact runtime record");
+        let record = formal_ai::runtime_cache::load_derivation(locator)
+            .expect("the runtime record has valid custody")
+            .expect("the solver persisted the derivation");
+        assert_eq!(record.answer_id, id);
+        let fragments = record.formalized_fragments.join("\n");
         assert!(
-            fragments.contains(&format!(
-                "stage=render target={target} template=clause_conditional"
-            )),
-            "every chosen template is recorded ({target}): {fragments}"
+            fragments.contains(
+                "stage=parse quantifier=forall variable=x antecedents=Nurse|Listens consequent=Helps"
+            ),
+            "the parsed clause is a fragment: {fragments}"
         );
-    }
-    assert!(
-        fragments.contains("text=∀x (Nurse(x) ∧ Listens(x) → Helps(x))"),
-        "the rendered target is recorded: {fragments}"
-    );
-    assert!(
-        fragments.contains("stage=prover") && fragments.contains("invoked=false"),
-        "the prover step states it did not run: {fragments}"
-    );
-    let explained = explain_answer(&root, &id).expect("explain reads the record");
-    assert!(
-        explained.contains("stage=render target=lean"),
-        "`formal-ai explain` prints the fragments: {explained}"
-    );
+        for target in ["fol", "lean", "rocq", "lino"] {
+            assert!(
+                fragments.contains(&format!(
+                    "stage=render target={target} template=clause_conditional"
+                )),
+                "every chosen template is recorded ({target}): {fragments}"
+            );
+        }
+        assert!(
+            fragments.contains("text=∀x (Nurse(x) ∧ Listens(x) → Helps(x))"),
+            "the rendered target is recorded: {fragments}"
+        );
+        assert!(
+            fragments.contains("stage=prover") && fragments.contains("invoked=false"),
+            "the prover step states it did not run: {fragments}"
+        );
+        let explained = record.explain_text();
+        assert!(
+            explained.contains("stage=render target=lean"),
+            "`formal-ai explain` prints the fragments: {explained}"
+        );
+    });
+    std::fs::remove_dir_all(&cache).expect("remove private runtime cache");
 }
 
 // ---------------------------------------------------------------------------

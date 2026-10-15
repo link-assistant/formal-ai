@@ -238,17 +238,36 @@ fn lino_values_survive_quoting_and_line_breaks() {
 
 #[test]
 fn solver_early_returns_expose_serialized_id_and_live_record() {
-    for prompt in ["hello", "", "1 + 1", "unrecognized qwerty xyz"] {
-        let answer = formal_ai::solve(prompt);
-        let id = answer.derivation_id();
-        let wire = serde_json::to_value(&answer).expect("serialize answer");
-        assert_eq!(wire["derivation_id"].as_str(), Some(id.as_str()));
-        assert!(answer.evidence_links.contains(&format!("derivation:{id}")));
-        let root = std::env::current_dir().expect("working directory");
-        let record = Derivation::load(&root, &id).expect("solver persisted derivation");
-        assert!(record.rendering.is_some());
-        assert!(answer.links_notation.contains(&record.to_lino()));
-    }
+    let cache = std::env::temp_dir().join(format!(
+        "formal-ai-runtime-cache-solver_early_returns_expose_serialized_id_and_live_record-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("clock after epoch")
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&cache).expect("create private runtime cache");
+    temp_env::with_var("FORMAL_AI_CACHE_DIR", Some(cache.as_os_str()), || {
+        for prompt in ["hello", "", "1 + 1", "unrecognized qwerty xyz"] {
+            let answer = formal_ai::solve(prompt);
+            let id = answer.derivation_id();
+            let wire = serde_json::to_value(&answer).expect("serialize answer");
+            assert_eq!(wire["derivation_id"].as_str(), Some(id.as_str()));
+            assert!(answer.evidence_links.contains(&format!("derivation:{id}")));
+            let locator = answer
+                .evidence_links
+                .iter()
+                .find_map(|link| link.strip_prefix("derivation_record:"))
+                .expect("the answer identifies its exact runtime record");
+            let record = formal_ai::runtime_cache::load_derivation(locator)
+                .expect("the runtime record has valid custody")
+                .expect("the solver persisted the derivation");
+            assert_eq!(record.answer_id, id);
+            assert!(record.rendering.is_some());
+            assert!(answer.links_notation.contains(&record.to_lino()));
+        }
+    });
+    std::fs::remove_dir_all(&cache).expect("remove private runtime cache");
 }
 
 #[test]

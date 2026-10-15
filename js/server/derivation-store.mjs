@@ -25,6 +25,7 @@ import {
 import { hasHost, installHost } from '../agentic/host.mjs';
 import { installNodeHost } from '../agentic/node-host.mjs';
 import { parseLino, readRepoFile } from './lino.mjs';
+import { runtimeCachePaths, persistRuntimeDerivation, loadRuntimeDerivation } from './runtime-cache.mjs';
 
 /** The `node:fs` io `persist` / `load` take (`std::fs` in the Rust twin). */
 export const nodeDerivationIo = {
@@ -46,15 +47,21 @@ const EXPLAIN_FORMATS = new Set(['text', 'links']);
  * @param {object} [io] the injected filesystem
  */
 export function finalizeAnswer(symbolic, events, root, io = nodeDerivationIo) {
+  return finalizeStoredAnswer(symbolic, events, record => {
+    const result = persist(record, root, io);
+    return { ...result, evidencePath: result.ok ? DERIVATIONS_DIR + "/" + record.answer_id + ".lino" : null };
+  });
+}
+
+function finalizeStoredAnswer(symbolic, events, store) {
   const answerId = answerDerivationId(symbolic.answer);
-  const log = [...events, { kind: RENDER_EMIT_KIND, payload: `answer_id=${answerId};format=text` }];
+  const log = [...events, { kind: RENDER_EMIT_KIND, payload: "answer_id=" + answerId + ";format=text" }];
   const record = recordFor(log, answerId);
-  const evidence = [...symbolic.evidence_links, `derivation:${answerId}`];
-  const persisted = persist(record, root, io);
-  evidence.push(persisted.ok
-    ? `${DERIVATIONS_DIR}/${answerId}.lino`
-    : `derivation:persistence_failed:${persisted.error}`);
-  return { ...symbolic, evidence_links: evidence, links_notation: `${symbolic.links_notation}\n${toLino(record)}` };
+  const evidence = [...symbolic.evidence_links, "derivation:" + answerId];
+  const persisted = store(record);
+  evidence.push(persisted.ok ? persisted.evidencePath ?? persisted.path : "derivation:persistence_failed:" + persisted.error);
+  if (persisted.ok && persisted.locator) evidence.push("derivation_record:" + persisted.locator);
+  return { ...symbolic, evidence_links: evidence, links_notation: symbolic.links_notation + "\n" + toLino(record) };
 }
 
 /**
@@ -71,7 +78,11 @@ export async function finalizeServerAnswer(ctx, symbolic, result) {
   const events = Array.isArray(observedEvents)
     ? observedEvents.map((event) => ({ kind: String(event.kind), payload: String(event.payload ?? '') }))
     : [];
-  return finalizeAnswer(symbolic, events, ctx.derivationRoot ?? process.cwd());
+  if (ctx.derivationRoot !== undefined) return finalizeAnswer(symbolic, events, ctx.derivationRoot);
+  return finalizeStoredAnswer(symbolic, events, record => {
+    try { return { ok: true, ...persistRuntimeDerivation(record, { env: ctx.env ?? process.env }) }; }
+    catch (error) { return { ok: false, error: error.message }; }
+  });
 }
 
 /** `cli_paths::resolve_root(None, ".")`: the canonical working directory. */
@@ -97,7 +108,7 @@ function debugString(text) {
  * @param {Array<string>} argv the arguments after `explain`
  * @param {{cwd?: string, io?: object}} [options]
  */
-export function runExplain(argv, { cwd = process.cwd(), io = nodeDerivationIo } = {}) {
+export function runExplain(argv, { cwd = process.cwd(), io = nodeDerivationIo, env = process.env, repositoryRoot = null } = {}) {
   let answerId = null;
   let format = 'text';
   for (let index = 0; index < argv.length; index += 1) {
@@ -111,8 +122,14 @@ export function runExplain(argv, { cwd = process.cwd(), io = nodeDerivationIo } 
     return { code: 2, stdout: '', stderr: `unsupported argument: ${answerId === null ? 'explain' : format}\n` };
   }
   if (!hasHost()) installHost({ readText: readRepoFile, parseLino });
-  const root = resolveRoot(cwd);
-  const derivation = load(root, answerId, io);
-  if (derivation === null) return { code: 1, stdout: '', stderr: `Error: ${debugString(missMessage(root, answerId))}\n` };
+  let derivation;
+  try {
+    const legacy = repositoryRoot === null ? null : resolveRoot(repositoryRoot);
+    derivation = legacy === null ? loadRuntimeDerivation(answerId, { env, cwd }) : load(legacy, answerId, io);
+    if (derivation === null) {
+      const missing = legacy === null ? "derivation_record_missing:" + answerId + "; directory=" + runtimeCachePaths({ env, cwd }).derivationDirectory : missMessage(legacy, answerId);
+      return { code: 1, stdout: "", stderr: "Error: " + debugString(missing) + "\n" };
+    }
+  } catch (error) { return { code: 1, stdout: "", stderr: "Error: " + debugString(error.message) + "\n" }; }
   return { code: 0, stdout: format === 'links' ? toLino(derivation) : explainText(derivation), stderr: '' };
 }

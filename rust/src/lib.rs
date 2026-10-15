@@ -167,6 +167,7 @@ pub mod research_learning;
 pub(crate) mod responses_stream;
 pub mod retrieval_method;
 pub mod retrieval_procedures;
+pub mod runtime_cache;
 pub mod route_method_alias;
 pub mod rule_interpreter;
 pub(crate) mod rule_synthesis;
