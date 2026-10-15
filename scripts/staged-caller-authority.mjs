@@ -137,7 +137,7 @@ export function compileContract({
       const stageJob = mode + '_' + operation.stage,
         stage = callee.jobs[stageJob];
       assert.ok(stage);
-      assert.ok(stage['timeout-minutes'] <= 30);
+      assert.equal(stage['timeout-minutes'], operation.stage === 'publish-verify-images' ? original['timeout-minutes'] : 30);
       assert.equal(stage.concurrency, undefined, 'callee must not reacquire caller writer lease');
       assert.equal(operation.stepId??null,original.steps[operation.ordinal].id??null,'source operation identifier differs');
       routes.push(Object.freeze({

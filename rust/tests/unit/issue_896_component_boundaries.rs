@@ -281,7 +281,60 @@ fn desktop_budget_bounds_the_published_component_cold_build() {
         .split("\n  build:\n")
         .next()
         .expect("native job boundary");
-    assert!(native.contains("    timeout-minutes: 30\n"));
+    assert!(native.contains("    timeout-minutes: ${{ matrix.capmin }}\n"));
+    let mut native_caps = std::collections::BTreeMap::new();
+    for entry in native.lines().filter(|line| line.contains("capmin:")) {
+        let target = entry
+            .split("target: ")
+            .nth(1)
+            .and_then(|tail| tail.split(',').next())
+            .expect("native matrix target");
+        let capmin: u32 = entry
+            .split("capmin:")
+            .nth(1)
+            .map(|tail| tail.trim_start().trim_end_matches([' ', '}']).trim())
+            .and_then(|value| value.parse().ok())
+            .expect("numeric native matrix cap");
+        assert!(
+            native_caps.insert(target, capmin).is_none(),
+            "duplicate native matrix target: {target}"
+        );
+    }
+    assert_eq!(
+        native_caps,
+        std::collections::BTreeMap::from([
+            ("x86_64-unknown-linux-gnu", 30),
+            ("aarch64-unknown-linux-gnu", 30),
+            ("x86_64-unknown-linux-musl", 30),
+            ("aarch64-unknown-linux-musl", 30),
+            ("x86_64-apple-darwin", 45),
+            ("aarch64-apple-darwin", 30),
+            ("x86_64-pc-windows-msvc", 30),
+            ("aarch64-pc-windows-msvc", 30),
+        ]),
+        "only the Intel default-feature cold build has a 45 minute native cap"
+    );
+    let build = native
+        .split("      - name: Build the pinned default-feature native executable\n")
+        .nth(1)
+        .expect("native producer command")
+        .split("      - name: Record exact native executable receipt\n")
+        .next()
+        .expect("native producer command boundary");
+    assert!(build.contains("prefix=()"));
+    assert!(build.contains("if [ \"${{ matrix.target }}\" = x86_64-apple-darwin ]; then"));
+    assert!(build.contains("TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 bash \"$FORMAL_AI_NATIVE_PROTOCOL_DIR/run-with-budget-warning.sh\" 2100"));
+    assert!(build.contains("\"${prefix[@]}\" cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target ${{ matrix.target }}"));
+    for feature_override in ["--no-default-features", "--features", "--all-features"] {
+        assert!(
+            !build.contains(feature_override),
+            "native producer must preserve default features: {feature_override}"
+        );
+    }
+    assert!(native.contains("ref: ${{ github.workflow_sha }}"));
+    assert!(native.contains("cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs scripts/run-with-budget-warning.sh \"$protocol_dir/\""));
+    assert!(native.contains("native-build-budget-protocol.json"));
+    assert!(native.contains("sha256:createHash('sha256').update(budgetBytes).digest('hex')"));
     assert!(native.contains("toolchain: ${{ needs.native-source.outputs.toolchain }}"));
     let compile = native.find("cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target").unwrap();
     let receipt = native

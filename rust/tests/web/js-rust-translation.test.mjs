@@ -8,6 +8,7 @@
 // no upstream checkout: it holds the committed translation to the current
 // JavaScript and runs the JavaScript side of every assertion.
 import { test } from 'node:test';
+import YAML from 'yaml';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -168,4 +169,39 @@ test('a parameter without a JSDoc @param type makes an inferred signature', () =
 test('Rust string literals read back to the text they denote', () => {
   assert.equal(rustStringValue('"\\u{1e}%H\\u{1f}"'), '\u001e%H\u001f');
   assert.equal(rustStringValue('"a\\n\\"b\\"\\\\"'), 'a\n"b"\\');
+});
+
+// The existing policy's 70% share leaves setup and process-group cleanup headroom.
+function translationDeadlineContract(workflowText, helperText) {
+ const job=YAML.parse(workflowText).jobs['js-rust'];
+ assert.equal(job['timeout-minutes'],15);
+ const steps=job.steps.filter(step=>step.name==='The committed js -> rust translation is what meta-language renders, and it compiles');
+ assert.equal(steps.length,1);const step=steps[0];
+ assert.equal(step.env.TEST_BUDGET_SECONDS,630);assert.equal(step.env.TEST_WARN_RATIO_PERCENT,75);
+ assert.ok(step.env.TEST_BUDGET_SECONDS*100<=job['timeout-minutes']*60*70);
+ assert.ok(step.run.includes('scripts/run-with-budget-warning.sh'));
+ assert.ok(step.run.includes('"$TEST_BUDGET_SECONDS" "js -> rust translation"'));
+ assert.ok(step.run.includes('node scripts/check-js-rust-translation.mjs'));
+ for(const command of ["translator, '--check', '--meta-language'", "translator, '--compile'"])assert.ok(helperText.includes(command));
+ for(const assertion of ['Translation module inventory changed during verification','Translation inputs or projections changed during verification'])assert.ok(helperText.includes(assertion));
+}
+test('the complete parallel translation check has630s within the unchanged15-minute job and70-percent policy',()=>{
+ translationDeadlineContract(read('.github/workflows/layered-ci.yml'),read('scripts/check-js-rust-translation.mjs'));
+ const policy=read('rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs');
+ assert.match(policy,/MAX_BUDGET_SHARE_PERCENT: u64 = 70/u);
+});
+for(const [name,mutate] of [
+ ['old540-second deadline',s=>s.replace('TEST_BUDGET_SECONDS: 630','TEST_BUDGET_SECONDS: 540')],
+ ['allowance beyond630seconds',s=>s.replace('TEST_BUDGET_SECONDS: 630','TEST_BUDGET_SECONDS: 631')],
+ ['job clock widened',s=>{const at=s.indexOf('\n  js-rust:\n'),tail=s.slice(at);return s.slice(0,at)+tail.replace('timeout-minutes: 15','timeout-minutes: 30');}],
+ ['process-group deadline removed',s=>{const at=s.indexOf('\n  js-rust:\n'),tail=s.slice(at);return s.slice(0,at)+tail.replace('scripts/run-with-budget-warning.sh','true');}]
+])test('translation deadline refuses '+name,()=>{
+ const workflow=read('.github/workflows/layered-ci.yml'),helper=read('scripts/check-js-rust-translation.mjs');
+ translationDeadlineContract(workflow,helper);assert.throws(()=>translationDeadlineContract(mutate(workflow),helper));
+});
+test('translation deadline never substitutes retranslation for complete compilation and final snapshots',()=>{
+ const workflow=read('.github/workflows/layered-ci.yml'),helper=read('scripts/check-js-rust-translation.mjs');
+ translationDeadlineContract(workflow,helper);
+ for(const operand of ["translator, '--check', '--meta-language'","translator, '--compile'",'Translation module inventory changed during verification','Translation inputs or projections changed during verification'])
+  assert.throws(()=>translationDeadlineContract(workflow,helper.replace(operand,'removed')));
 });

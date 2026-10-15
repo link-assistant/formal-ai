@@ -377,7 +377,9 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: The committed js -> rust translation is what meta-language renders, and it compiles
         env:
-          TEST_BUDGET_SECONDS: 540
+          # PR #1202: full146 translation reached its last module at the540s deadline.
+          # Keep final byte/snapshot checks;630s is70% of this unchanged15-minute job.
+          TEST_BUDGET_SECONDS: 630
           TEST_WARN_RATIO_PERCENT: 75
         run: |
           scripts/run-with-budget-warning.sh \

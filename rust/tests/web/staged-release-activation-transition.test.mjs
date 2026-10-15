@@ -59,7 +59,7 @@ test('Actions read is confined to operation-owning prepare leaves and caller cei
    assert.deepEqual(caller.jobs[id].concurrency,job.concurrency);
   }
   for(const [id,job] of Object.entries(staged.jobs)) {
-   assert.equal(job.concurrency,undefined);assert.ok(job['timeout-minutes']<=30);
+   assert.equal(job.concurrency,undefined);assert.equal(job['timeout-minutes'],id.endsWith('_publish-verify-images')?90:30);
    if(id.endsWith('prepare-source'))assert.deepEqual(job.permissions,{contents:'write',actions:'read'});
    else assert.equal(job.permissions?.actions,undefined);
   }

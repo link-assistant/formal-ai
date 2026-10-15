@@ -39,8 +39,9 @@ export function readCheckedReleaseOperationView() {
   assert.deepEqual(physicalCaller.jobs[id].permissions,{contents:'write',packages:'write',actions:'read'});
  }
  for(const [id,job] of Object.entries(physicalStages.jobs)){
-  assert.ok(job['timeout-minutes']<=30);assert.equal(job.concurrency,undefined);
   const stage=id.replace(/^(auto|manual)_/u,'');
+  const caller=id.startsWith('auto_')?'auto-release':'manual-release';
+  assert.equal(job['timeout-minutes'],stage==='publish-verify-images'?YAML.parse(retained).jobs[caller]['timeout-minutes']:30);assert.equal(job.concurrency,undefined);
   const required=stage==='prepare-source'?{contents:'write',actions:'read'}:
    stage==='publish-verify-images'?{contents:'read',packages:'write'}:stage==='create-release'?{contents:'write'}:undefined;
   assert.deepEqual(job.permissions,required,'full effective stage rights must remain visible');

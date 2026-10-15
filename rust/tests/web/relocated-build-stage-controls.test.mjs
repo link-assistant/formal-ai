@@ -23,7 +23,9 @@ function upload(job,name){const matches=job.steps.filter(value=>String(value.use
 function download(job,name){const matches=job.steps.filter(value=>String(value.uses).startsWith('actions/download-artifact@')&&value.with?.name===name);
  assert.equal(matches.length,1,'unique artifact download '+name);return matches[0];}
 function checkDesktop(workflow){
- const {native,build,cli}=workflow.jobs;for(const job of [native,build,cli])cap(job);
+ const {native,build,cli}=workflow.jobs;for(const job of [build,cli])cap(job);
+ assert.equal(native['timeout-minutes'],'${{ matrix.capmin }}');
+ for(const row of native.strategy.matrix.include)assert.equal(row.capmin,row.target==='x86_64-apple-darwin'?45:30);
  assert.deepEqual(native.strategy.matrix.include.map(row=>row.target).sort(),[...nativeTargets].sort());
  assert.deepEqual(build.strategy.matrix.include.map(row=>row.label).sort(),[...packageLabels].sort());
  assert.deepEqual(build.strategy.matrix.include.filter(row=>row.label==='macos-x64'||row.label.startsWith('windows-')).map(row=>row.label).sort(),['macos-x64','windows-arm64','windows-x64']);
@@ -32,7 +34,11 @@ function checkDesktop(workflow){
  assert.equal(toolchains.length,1);assert.equal(toolchains[0].with.toolchain,'${{ needs.native-source.outputs.toolchain }}');
  assert.equal(toolchains[0].with.targets,'${{ matrix.target }}');
  const compile=step(native,'Build the pinned default-feature native executable');
- assert.equal(compile.run.trim(),'cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target ${{ matrix.target }}');
+ assert.equal(compile.run.trim(),"prefix=()\nif [ \"${{ matrix.target }}\" = x86_64-apple-darwin ]; then\n  prefix=(env TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 bash \"$FORMAL_AI_NATIVE_PROTOCOL_DIR/run-with-budget-warning.sh\" 2100 \"Intel native default-feature build\")\nfi\n\"${prefix[@]}\" cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target ${{ matrix.target }}");
+ const capture=step(native,'Capture release protocol before selecting binary source').run;
+ assert.ok(capture.includes('cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs scripts/run-with-budget-warning.sh "$protocol_dir/"'));
+ assert.ok(capture.includes('native-build-budget-protocol.json'));
+ assert.ok(capture.includes("sha256:createHash('sha256').update(budgetBytes).digest('hex')"));
  assert.equal(native.steps.filter(value=>/\bcargo build /u.test(value.run??'')).length,1);
  order(native,['Import and verify exact source selection','Build the pinned default-feature native executable','Record exact native executable receipt','Verify executable bytes and actual startup']);
  assert.match(step(native,'Record exact native executable receipt').run,/native-release-artifact\.mjs" write native-bin native-source/u);
@@ -123,11 +129,17 @@ function checkCoverage(workflow){
   for(const output of name === 'browser-coverage' ? ['any-code-changed','workflow-changed'] : ['rs-changed','toml-changed']) assert.ok(workflow.jobs[name].if.includes(`needs.detect-changes.outputs.${output} == 'true'`));
  }
 }
-test('current native/package sources retain all relocated operations under declared thirty-minute caps',()=>checkDesktop(desktop));
+test('current native/package sources retain all operations with Intel-only45-minute debt, pinned35-minute build deadline and thirty-minute packaging caps',()=>checkDesktop(desktop));
 test('current coverage sources retain the complete instrumented suite and reduction obligations under bounded stage clocks',()=>checkCoverage(coverage));
 const desktopRefusals=[
  ['missing original heavy target',w=>{w.jobs.build.strategy.matrix.include=w.jobs.build.strategy.matrix.include.filter(row=>row.label!=='windows-arm64');}],
  ['unbounded native cap',w=>{w.jobs.native['timeout-minutes']=31;}],
+ ['Intel native cap beyond exact exception',w=>{w.jobs.native.strategy.matrix.include.find(row=>row.target==='x86_64-apple-darwin').capmin=46;}],
+ ['other native cap exceeds thirty minutes',w=>{w.jobs.native.strategy.matrix.include.find(row=>row.target==='aarch64-apple-darwin').capmin=31;}],
+ ['Intel deadline enforcement disabled',w=>{const s=step(w.jobs.native,'Build the pinned default-feature native executable');s.run=s.run.replace('prefix=(env TEST_BUDGET_ENFORCE=true','prefix=(env TEST_BUDGET_ENFORCE=false');}],
+ ['Intel process-group wrapper removed',w=>{const s=step(w.jobs.native,'Build the pinned default-feature native executable');s.run=s.run.split('\n').filter(line=>!line.includes('prefix=(env TEST_BUDGET_ENFORCE=true')).join('\n');}],
+ ['native cap omitted',w=>{delete w.jobs.native['timeout-minutes'];}],
+ ['pinned budget helper removed',w=>{const s=step(w.jobs.native,'Capture release protocol before selecting binary source');s.run=s.run.replace('scripts/run-with-budget-warning.sh "$protocol_dir/"','"$protocol_dir/"');}],
  ['unbounded package cap',w=>{w.jobs.build.strategy.matrix.include[0].capmin=31;}],
  ['wrong compiler source',w=>{w.jobs.native.steps.find(s=>String(s.uses).startsWith('dtolnay/rust-toolchain@')).with.toolchain='unproved';}],
  ['compile default features dropped',w=>{step(w.jobs.native,'Build the pinned default-feature native executable').run+=' --no-default-features';}],
@@ -139,7 +151,7 @@ const desktopRefusals=[
  ['duplicate package compilation',w=>{w.jobs.build.steps.push({name:'Unproved build',run:'cargo build --release'});}],
  ['missing CLI smoke',w=>{w.jobs.cli.steps=w.jobs.cli.steps.filter(s=>s.name!=='Smoke test CLI archive');}]
 ];
-for(const [name,mutate]of desktopRefusals)test('refuse changed relocated native/package source: '+name,()=>{const changed=structuredClone(desktop);mutate(changed);assert.throws(()=>checkDesktop(changed));});
+for(const [name,mutate]of desktopRefusals)test('refuse changed relocated native/package source: '+name,()=>{checkDesktop(desktop);const changed=structuredClone(desktop);mutate(changed);assert.throws(()=>checkDesktop(changed));});
 const coverageRefusals=[
  ['unbounded producer cap',w=>{w.jobs['coverage-build']['timeout-minutes']=40;}],
  ['budget precedes job failure clock',w=>{step(w.jobs['coverage-build'],'Build the instrumented test executables').env.TEST_BUDGET_SECONDS=1261;}],

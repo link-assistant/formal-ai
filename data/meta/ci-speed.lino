@@ -43,3 +43,14 @@ ci-speed
     over-limit-job build-archive
       timeout-minutes 55
       reason "Switched off while non-Linux CI is off (issue #1111): a cold build of the macOS test archive. To meet 30: build the archive from a shared compiler cache on the Linux build job's schedule."
+  workflow ".github/workflows/release-staged.yml"
+    over-limit-job "auto_publish-verify-images"
+      timeout-minutes 90
+      reason "Issue #1201: restore retained source image allowance after run38445988819 job115507882265 reached at least1816s before parent cancellation during DockerHub mirroring (rawSHA2bbf7c5930c6b067e9109bf8ec6410ddd2e0d8de7cbc9604211b6e155fea71f9). Temporary debt: split full/slim/mirror publication into source-bound stages and remove this exception once each fits30 minutes; per-operation limits remain unchanged."
+    over-limit-job "manual_publish-verify-images"
+      timeout-minutes 90
+      reason "Issue #1201: restore retained source image allowance after run38445988819 job115507882265 reached at least1816s before parent cancellation during DockerHub mirroring (rawSHA2bbf7c5930c6b067e9109bf8ec6410ddd2e0d8de7cbc9604211b6e155fea71f9). Temporary debt: split full/slim/mirror publication into source-bound stages and remove this exception once each fits30 minutes; per-operation limits remain unchanged."
+  workflow ".github/workflows/desktop-release.yml"
+    over-limit-job native
+      timeout-minutes 45
+      reason "PR #1202 Intel native cold-build restoration debt: run38694221188 job116289014825 exhausted its30-minute parent after1629s of cold default-feature compilation; cache restore missed and gtar failed because release/deps changed while orphan cargo/rustc remained alive (decodedLogSHA5228190b36a1b72ccd6c7c91d1f9f08c3d7c191f8c08bcfa66cb9fe0ffc5012c). Temporary45-minute Intel-only cap with enforced2100s process-group budget; restore30 after splitting or proving the unchanged cold build fits, with successful cache sealing and real receipt/runtime checks."

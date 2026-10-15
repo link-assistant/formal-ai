@@ -249,8 +249,9 @@ fn proxy_forwards_gemini_stream_generate_content_and_logs_function_call() {
 
 fn spawn_proxy_stack() -> (FormalAiServer, FormalAiProxy, std::path::PathBuf, u16) {
     let upstream_port = reserve_loopback_port();
-    let proxy_port = reserve_loopback_port();
     let server = spawn_formal_ai_server_agent_mode(upstream_port);
+    // The live upstream owns its port before the OS selects the proxy port.
+    let proxy_port = reserve_loopback_port();
     let log_path = proxy_log_path();
     let proxy = spawn_formal_ai_proxy(proxy_port, upstream_port, &log_path);
     (server, proxy, log_path, proxy_port)
@@ -276,7 +277,7 @@ fn spawn_formal_ai_proxy(
         .spawn()
         .expect("spawn formal-ai proxy");
     let mut proxy = FormalAiProxy { child };
-    wait_for_proxy_health(proxy_port, &mut proxy.child);
+    wait_for_proxy_health(proxy_port, log_path, &mut proxy.child);
     proxy
 }
 
@@ -291,7 +292,7 @@ fn spawn_formal_ai_proxy(
 /// flushed within 5 s — while the same test passed in the uninstrumented `Test` job.
 const PROXY_WAIT_TIMEOUT: Duration = Duration::from_secs(45);
 
-fn wait_for_proxy_health(port: u16, child: &mut Child) {
+fn wait_for_proxy_health(port: u16, log_path: &std::path::Path, child: &mut Child) {
     let deadline = Instant::now() + PROXY_WAIT_TIMEOUT;
     let mut last_error = String::from("proxy was not probed");
     while Instant::now() < deadline {
@@ -299,7 +300,15 @@ fn wait_for_proxy_health(port: u16, child: &mut Child) {
             panic!("formal-ai proxy exited before becoming healthy: {status}");
         }
         match http_request("GET", port, "/health", None, None) {
-            Ok(response) if response.status_code == 200 => return,
+            Ok(response) if response.status_code == 200 => {
+                if let Some(status) = child.try_wait().expect("check proxy after health response") {
+                    panic!("formal-ai proxy exited during health probe: {status}");
+                }
+                if find_proxy_log_entry(log_path, "/health").is_some() {
+                    return;
+                }
+                last_error = String::from("HTTP 200 had no health row in this proxy's own log");
+            }
             Ok(response) => {
                 last_error = format!(
                     "GET /health through proxy returned HTTP {} with body {}",
@@ -329,15 +338,8 @@ fn proxy_log_path() -> std::path::PathBuf {
 fn wait_for_proxy_log_entry(path: &std::path::Path, request_path: &str) -> serde_json::Value {
     let deadline = Instant::now() + PROXY_WAIT_TIMEOUT;
     while Instant::now() < deadline {
-        if let Ok(log) = fs::read_to_string(path) {
-            for line in log.lines() {
-                let Ok(entry) = serde_json::from_str::<serde_json::Value>(line) else {
-                    continue;
-                };
-                if entry["path"] == request_path {
-                    return entry;
-                }
-            }
+        if let Some(entry) = find_proxy_log_entry(path, request_path) {
+            return entry;
         }
         std::thread::sleep(Duration::from_millis(50));
     }
@@ -345,4 +347,26 @@ fn wait_for_proxy_log_entry(path: &std::path::Path, request_path: &str) -> serde
         "proxy log {} did not contain a row for {request_path}",
         path.display()
     );
+}
+
+fn find_proxy_log_entry(path: &std::path::Path, request_path: &str) -> Option<serde_json::Value> {
+    fs::read_to_string(path).ok()?.lines().find_map(|line| {
+        let entry = serde_json::from_str::<serde_json::Value>(line).ok()?;
+        (entry["path"] == request_path).then_some(entry)
+    })
+}
+
+#[test]
+fn proxy_readiness_requires_its_own_matching_health_log() {
+    let path = proxy_log_path();
+    assert!(find_proxy_log_entry(&path, "/health").is_none());
+    fs::write(&path, "not JSON").expect("write malformed proxy receipt");
+    assert!(find_proxy_log_entry(&path, "/health").is_none());
+    fs::write(&path, serde_json::json!({"path": "/unrelated"}).to_string())
+        .expect("write unrelated proxy receipt");
+    assert!(find_proxy_log_entry(&path, "/health").is_none());
+    fs::write(&path, serde_json::json!({"path": "/health"}).to_string())
+        .expect("write matching proxy receipt");
+    assert!(find_proxy_log_entry(&path, "/health").is_some());
+    fs::remove_file(path).expect("remove proxy readiness fixture");
 }

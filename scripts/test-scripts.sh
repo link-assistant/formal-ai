@@ -74,13 +74,13 @@ selected=()
 for script in scripts/*.rs; do
   grep -q 'cfg(test)' "$script" || continue
   name=${script#scripts/}
-  if printf '%s\n' "$already_compiled" | grep -qxF "$name"; then
+  if grep -qxF "$name" <<< "$already_compiled"; then
     continue
   fi
-  if printf '%s\n' "$already_gated" | grep -qxF "$name"; then
+  if grep -qxF "$name" <<< "$already_gated"; then
     continue
   fi
-  if printf '%s\n' "$already_included" | grep -qxF "$name"; then
+  if grep -qxF "$name" <<< "$already_included"; then
     continue
   fi
   selected+=("$script")

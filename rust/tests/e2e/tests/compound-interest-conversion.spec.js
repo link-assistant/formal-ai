@@ -29,7 +29,10 @@ async function resetApp(page, uiLanguage = 'auto') {
   }, preferences(uiLanguage));
   await page.goto('./');
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('.status')).toContainText('wasm worker');
+  await expect(page.locator('.status')).toContainText('wasm worker', {
+    timeout: WORKER_READY_TIMEOUT_MS,
+  });
+  await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
 }
 
 async function sendPrompt(page, text) {
@@ -49,14 +52,10 @@ async function sendPrompt(page, text) {
 }
 
 test.describe('Issue #336 — compound interest with EUR conversion', () => {
-  test.beforeEach(async ({ page }) => {
-    await resetApp(page);
-    await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-  });
-
   test('chat mode computes the formula, final USD amount, and EUR conversion', async ({
     page,
   }) => {
+    await resetApp(page);
     const message = await sendPrompt(page, FULL_PROMPT);
 
     await expect(message).toContainText('Compound interest calculation');
@@ -76,6 +75,7 @@ test.describe('Issue #336 — compound interest with EUR conversion', () => {
   test('agent mode converts the final amount from step 1 in step 2', async ({
     page,
   }) => {
+    await resetApp(page);
     await page.locator('[data-testid="mode-option-agent"]').click();
     const message = await sendPrompt(page, FULL_PROMPT);
 
@@ -108,6 +108,7 @@ test.describe('Issue #336 — compound interest with EUR conversion', () => {
         });
         await expect(languagePage.locator('.status'), language).toContainText(
           'wasm worker',
+          { timeout: WORKER_READY_TIMEOUT_MS },
         );
 
         await languagePage.locator('[data-testid="mode-option-agent"]').click();

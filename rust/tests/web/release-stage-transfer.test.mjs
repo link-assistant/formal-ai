@@ -258,7 +258,7 @@ function validateProjection(projection, canonicalBytes = readCheckedReleaseOpera
           "TEST_BUDGET_POLL_SECONDS=1 TEST_WARN_RATIO_PERCENT=70 RUSTC_WRAPPER='' " +
           'bash _protocol/scripts/run-with-budget-warning.sh 1250 "Publish prepared release image" ';
         rewritten = rewritten.replace('run: node _protocol/', 'run: ' + prefix + 'node _protocol/');
-        assert.equal(stage['timeout-minutes'], 30);
+        assert.equal(stage['timeout-minutes'], 90);
         assert.ok(1250 + 5 + 1 <= 21 * 60);
       }
       // Only the retained manual version operation receives explicit hosted GET authentication.
@@ -302,7 +302,7 @@ function validateProjection(projection, canonicalBytes = readCheckedReleaseOpera
     }
     for (const [id, job] of jobs) {
       assert.equal(job.concurrency, undefined);
-      assert.equal(job['timeout-minutes'], 30, 'actual dormant stage cap');
+      assert.equal(job['timeout-minutes'], id.endsWith('_publish-verify-images') ? 90 : 30, 'actual stage preserves the image publication allowance only');
       visit(id);
       if (id.endsWith('_prepare-source')) continue;
       for (const [name, output] of Object.entries({
@@ -437,5 +437,21 @@ test('recovery context is exact and confined to its source-owned release check',
     const step = foreign.jobs[mode + '_prepare-source'].steps.find(item => (item.name || item.uses) === operation.name);
     step.env = { RELEASE_RECOVERY_PROTOCOL_ROOT: '_protocol' };
     assert.throws(() => validateProjection(foreign));
+  }
+});
+
+test('source-derived image allowance refuses arbitrary image and unrelated stage caps', async () => {
+  const {compileContract}=await import('../../../scripts/staged-caller-authority.mjs');
+  const {createRequire}=await import('node:module');
+  const YAML=createRequire(import.meta.url)('yaml');
+  const view=readCheckedReleaseOperationView();
+  const prefix='experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
+  const repository=new URL('../../../',import.meta.url);
+  const packet=JSON.parse(readFileSync(new URL(prefix+'stage-source-coverage.json',repository),'utf8'));
+  const input={canonical:view.originalSource,callerDraft:readFileSync(new URL(prefix+'candidate-release-caller.yml',repository),'utf8'),packet,YAML};
+  assert.doesNotThrow(()=>compileContract({...input,staged:YAML.stringify(view.physicalStages)}));
+  for(const [id,cap]of [['auto_publish-verify-images',91],['manual_publish-verify-images',30],['auto_compile-release',31],['manual_create-release',90]]) {
+    const doc=structuredClone(view.physicalStages);doc.jobs[id]['timeout-minutes']=cap;
+    assert.throws(()=>compileContract({...input,staged:YAML.stringify(doc)}));
   }
 });

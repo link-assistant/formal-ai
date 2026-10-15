@@ -32,12 +32,43 @@ export function bundleNativeBinary({
   let version = null;
   if (required) {
     if (!expectedVersion) throw new Error("Required desktop native binary has no expected package version");
-    const result = spawnSync(destination, ["--version"], { encoding: "utf8", timeout: 10_000, maxBuffer: 1_048_576 });
+    const configuredDeadline = process.env.FORMAL_AI_JOB_DEADLINE_EPOCH;
+    let deadlineMilliseconds = null;
+    if (configuredDeadline !== undefined) {
+      if (!/^[0-9]+$/u.test(configuredDeadline)) throw new Error("Invalid desktop native startup job deadline");
+      deadlineMilliseconds = Number(configuredDeadline) * 1000;
+      if (!Number.isSafeInteger(deadlineMilliseconds)) throw new Error("Unsupported desktop native startup job deadline");
+    }
+    const startupBudget = () => {
+      if (deadlineMilliseconds === null) return 10_000;
+      const remaining = deadlineMilliseconds - Date.now();
+      if (!Number.isSafeInteger(remaining) || remaining <= 0 || remaining > 2147483647) {
+        throw new Error("Desktop native startup job deadline expired or unsupported");
+      }
+      // Match the existing selected-artifact --version smoke cap while staying
+      // inside the same immutable packaging deadline; standalone calls keep 10s.
+      return Math.min(30_000, remaining);
+    };
+    const timeoutMs = startupBudget();
+    const started = Date.now();
+    const result = spawnSync(destination, ["--version"], { encoding: "utf8", timeout: timeoutMs, maxBuffer: 1_048_576 });
+    const elapsedMs = Date.now() - started;
     version = String(result.stdout || "").trim();
     if (result.error || result.signal || result.status !== 0 || version !== "formal-ai " + expectedVersion) {
       throw new Error("Desktop native binary startup/version verification failed: " +
-        String(result.error?.message || result.stderr || version || result.signal || result.status));
+        JSON.stringify({
+          timeoutMs, elapsedMs, status: result.status ?? null, signal: result.signal ?? null,
+          error: result.error ? { code: result.error.code ?? null, message: String(result.error.message).slice(0, 4096) } : null,
+          stdout: String(result.stdout ?? "").slice(0, 4096),
+          stdoutCharacters: String(result.stdout ?? "").length,
+          stdoutTruncated: String(result.stdout ?? "").length > 4096,
+          stderr: String(result.stderr ?? "").slice(0, 4096),
+          stderrCharacters: String(result.stderr ?? "").length,
+          stderrTruncated: String(result.stderr ?? "").length > 4096,
+        }));
     }
+    if (digest(destination) !== sha256 || digest(source) !== sha256) throw new Error("Desktop native binary changed during startup");
+    startupBudget();
   }
   fs.rmSync(path.join(outputBin, "README.txt"), { force: true });
   return { source, destination, sha256, version };

@@ -233,3 +233,35 @@ test('PR1200 runner repository mismatch and closed CLI retain normal gates',()=>
  assert.equal(observed.output,'defer=false\n');
  assert.equal(observed.summary,null);
 });
+
+function nextRecoveryEvent() {
+ const value=event();value.number=value.pull_request.number=1202;
+ value.pull_request.head.ref='fix/staged-image-job-budget';return value;
+}
+test('exact next open image-budget recovery is a named zero-credit policy deferral',()=>{
+ assert.equal(evaluate(nextRecoveryEvent()),true);
+ const observed=invoke('pull_request',nextRecoveryEvent());
+ assert.equal(observed.result.status,0);
+ assert.deepEqual(JSON.parse(observed.result.stdout),{defer:true,
+  status:'DeferredForReleaseRecovery_PR1202',qualifyingAuthorship:0,
+  floorSatisfied:false,restorationDebt:'PR1202-release-recovery-authoring'});
+});
+for(const [label,change] of [
+ ['string PR',x=>{x.number=x.pull_request.number='1202';}],
+ ['unknown PR',x=>{x.number=x.pull_request.number=900002;}],
+ ['nested mismatch',x=>{x.pull_request.number=1196;}],
+ ['closed',x=>{x.pull_request.state='closed';}],
+ ['foreign event repository',x=>{x.repository.full_name='fork/formal-ai';}],
+ ['foreign head',x=>{x.pull_request.head.repo.full_name='fork/formal-ai';}],
+ ['foreign base',x=>{x.pull_request.base.repo.full_name='fork/formal-ai';}],
+ ['missing head repository',x=>{delete x.pull_request.head.repo;}],
+ ['branch suffix',x=>{x.pull_request.head.ref+='-other';}],
+ ['old recovery branch',x=>{x.pull_request.head.ref='fix/release-docker-export';}],
+ ['wrong base',x=>{x.pull_request.base.ref='release';}]
+])test('next image recovery refuses '+label,()=>{
+ const value=nextRecoveryEvent();change(value);assert.equal(evaluate(value),false);
+});
+for(const name of ['push','schedule','workflow_dispatch','pull_request_target'])
+ test('next image recovery does not defer '+name,()=>{
+  assert.equal(deferReleaseRecoveryAuthoring(name,repository,nextRecoveryEvent()),false);
+ });

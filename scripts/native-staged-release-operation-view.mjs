@@ -10,7 +10,11 @@ if(view.mode==='deployed')for(const mode of ['auto','manual']) {
  assert.equal(caller.concurrency.group,'formal-ai-repository-writes');assert.equal(caller.concurrency.queue,'max');
  assert.deepEqual(caller.permissions,{contents:'write',packages:'write',actions:'read'});
  const stages=['prepare-source','compile-release','verify-package','publish-crate','registry-availability','published-crate-smoke','publish-verify-images','create-release'];
- for(const stage of stages){const job=view.physicalStages.jobs[mode+'_'+stage];assert.equal(job['timeout-minutes'],30);assert.equal(job.concurrency,undefined);}
+ for(const stage of stages){
+  const job=view.physicalStages.jobs[mode+'_'+stage];
+  assert.equal(job['timeout-minutes'],stage==='publish-verify-images'?90:30);
+  assert.equal(job.concurrency,undefined);
+ }
  assert.deepEqual(view.physicalStages.jobs[mode+'_create-release'].needs,stages.slice(0,-1).map(stage=>mode+'_'+stage));
 }
 console.log(JSON.stringify(view));

@@ -143,12 +143,15 @@ export function validateMacPackageExecutable(receipt, {
 }
 
 /** Observe exact final-package bytes and an actual completed process; no compiler provenance is inferred. */
-export function observePackagedExecutable(binary, runCommand = spawnSync) {
+export function observePackagedExecutable(binary, runCommand = spawnSync, {
+  deadlineEpoch,
+  now = Date.now
+} = {}) {
   const before = readFileSync(binary);
   assert.ok(before.length > 0);
   const result = runCommand(binary, ['--version'], {
     encoding: 'utf8',
-    timeout: 30000,
+    timeout: deadlineEpoch === undefined ? 30000 : Math.min(30000, signingRemaining(deadlineEpoch, now)),
     maxBuffer: 1024 * 1024
   });
   if (result.error) throw result.error;
@@ -157,10 +160,12 @@ export function observePackagedExecutable(binary, runCommand = spawnSync) {
   assert.equal(typeof result.stdout, 'string');
   assert.equal(typeof result.stderr, 'string');
   assert.ok(readFileSync(binary).equals(before), 'packaged executable changed during startup');
+  const executableSha256 = sha256(before);
+  if (deadlineEpoch !== undefined) signingRemaining(deadlineEpoch, now);
   return {
     executable: {
       bytes: before.length,
-      sha256: sha256(before)
+      sha256: executableSha256
     },
     startup: {
       arguments: ['--version'],
@@ -232,7 +237,9 @@ export function observeMacSigning(application, packageFile, {
   label,
   parentBytes,
   runCommand = spawnSync,
-  processReceiptDirectory = null
+  processReceiptDirectory = null,
+  deadlineEpoch = configuredSigningDeadline(),
+  now = Date.now
 }) {
   assert.equal(process.platform, 'darwin');
   assert.ok(Object.hasOwn(MAC_PACKAGE_TARGETS, label));
@@ -247,15 +254,16 @@ export function observeMacSigning(application, packageFile, {
         source,
         sourceSha256,
         label
-      }, command, args);
+      }, command, args, deadlineEpoch === undefined ? { now } : { deadlineEpoch, now });
     }
     const result = runCommand(command, args, {
       encoding: 'utf8',
-      timeout: 30000
+      timeout: deadlineEpoch === undefined ? 30000 : Math.min(30000, signingRemaining(deadlineEpoch, now))
     });
     if (result.error) throw result.error;
     assert.equal(result.signal, null);
     assert.equal(result.status, 0, result.stderr);
+    if (deadlineEpoch !== undefined) signingRemaining(deadlineEpoch, now);
     return {
       status: result.status,
       stdout: result.stdout,
@@ -269,7 +277,7 @@ export function observeMacSigning(application, packageFile, {
   const assess = mode === 'signed' ? observed('assess', 'spctl', ['--assess', '--type', 'execute', '--verbose=4', application]) : null;
   const stapler = mode === 'signed' ? observed('stapler', 'xcrun', ['stapler', 'validate', application]) : null;
   const packageBytes = readFileSync(packageFile);
-  const observedExecutable = observePackagedExecutable(join(application, 'Contents/Resources/bin/formal-ai'), runCommand);
+  const observedExecutable = observePackagedExecutable(join(application, 'Contents/Resources/bin/formal-ai'), runCommand, { deadlineEpoch, now });
   const record = {
     version: 1,
     label,
@@ -304,6 +312,7 @@ export function observeMacSigning(application, packageFile, {
   record.package_executable_sha256 = sha256(encodeObservation(record.package_executable_receipt));
   assert.ok(readFileSync(packageFile).equals(packageBytes), 'DMG changed during signing/package observation');
   validateSigningEvidence(record, source, label, sourceSha256, parentBytes);
+  if (deadlineEpoch !== undefined) signingRemaining(deadlineEpoch, now);
   return record;
 }
 
@@ -518,7 +527,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
         sourceSha256: sha256(sourceBytes),
         label: process.env.NATIVE_SIGNING_LABEL
       }, command, args, {
-        deadlineEpoch: Number(process.env.FORMAL_AI_JOB_DEADLINE_EPOCH)
+        deadlineEpoch: configuredSigningDeadline()
       });
       writeFileSync(outputDirectory, JSON.stringify(record) + '\n');
       if (typeof record.stdout === 'string') process.stdout.write(record.stdout);
@@ -569,12 +578,32 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   }
 }
 
+// Only genuinely absent standalone deadlines retain the existing 30 second bound.
+function configuredSigningDeadline() {
+  const value = process.env.FORMAL_AI_JOB_DEADLINE_EPOCH;
+  if (value === undefined) return undefined;
+  assert.match(value, /^[0-9]+$/u, 'invalid existing job deadline');
+  return Number(value);
+}
+function signingRemaining(deadlineEpoch, now) {
+  assert.ok(Number.isSafeInteger(deadlineEpoch) && Number.isSafeInteger(deadlineEpoch * 1000), 'missing or unsupported existing job deadline');
+  const remaining = deadlineEpoch * 1000 - now();
+  assert.ok(Number.isSafeInteger(remaining) && remaining > 0 && remaining <= 2147483647, 'expired or unsupported job deadline');
+  return remaining;
+}
+
 /** Hash every physical bundle entry; unsupported entries refuse a complete observation. */
-export function signingBundleDigest(application) {
+export function signingBundleDigest(application, options = {}) {
+  const { runCommand = spawnSync, now = Date.now } = options;
+  const boundedByJob = Object.hasOwn(options, 'deadlineEpoch') || process.env.FORMAL_AI_JOB_DEADLINE_EPOCH !== undefined;
+  const deadlineEpoch = Object.hasOwn(options, 'deadlineEpoch') ? options.deadlineEpoch : configuredSigningDeadline();
   const code = ["import os,sys,json,base64,hashlib,ctypes,stat,errno", "root=os.fsencode(os.path.abspath(sys.argv[1]))", "libc=ctypes.CDLL(None,use_errno=True)", "listfn=libc.listxattr;listfn.argtypes=[ctypes.c_char_p,ctypes.c_void_p,ctypes.c_size_t,ctypes.c_int];listfn.restype=ctypes.c_ssize_t", "getfn=libc.getxattr;getfn.argtypes=[ctypes.c_char_p,ctypes.c_char_p,ctypes.c_void_p,ctypes.c_size_t,ctypes.c_uint32,ctypes.c_int];getfn.restype=ctypes.c_ssize_t", "assert sys.platform=='darwin','unverified extended-attribute platform'", "options=0x0001|0x0020", "def read(fn,args):", " for attempt in range(3):", "  length=fn(*args,None,0,*([options] if fn==listfn else [0,options]))", "  if length<0:raise OSError(ctypes.get_errno(),os.strerror(ctypes.get_errno()))", "  assert length<=16*1024*1024,'metadata value exceeds existing observation buffer'", "  buf=ctypes.create_string_buffer(max(1,length))", "  result=fn(*args,buf,length,*([options] if fn==listfn else [0,options]))", "  if result>=0:return buf.raw[:result]", "  error=ctypes.get_errno()", "  if error!=errno.ERANGE:raise OSError(error,os.strerror(error))", " raise OSError(errno.ERANGE,'extended attributes changed during bounded observation')", "encoded=lambda value:base64.b64encode(value).decode('ascii')", "paths=[root]", "assert stat.S_ISDIR(os.lstat(root).st_mode),'bundle root must be physical directory'", "def walk_error(error):raise error", "for directory,dirs,files in os.walk(root,followlinks=False,onerror=walk_error):", " paths.extend(os.path.join(directory,name) for name in dirs+files)", "records=[]", "for path in sorted(set(paths)):", " info=os.lstat(path);names=read(listfn,[path])", " assert not names or names.endswith(b'\\0'),'incomplete attribute names'", " names=names[:-1].split(b'\\0') if names else []", " assert len(names)==len(set(names)),'duplicate attribute names'", " attributes=[[encoded(name),encoded(read(getfn,[path,name]))] for name in sorted(names)]", " row={'path':encoded(os.path.relpath(path,root)),'mode':info.st_mode&0o7777,'attributes':attributes}", " if stat.S_ISLNK(info.st_mode):", "  destination=os.path.realpath(path)", "  assert destination==root or destination.startswith(root+b'/'),'bundle symlink escapes application'", "  row.update(kind='symlink',target=encoded(os.readlink(path)))", " elif stat.S_ISDIR(info.st_mode):row['kind']='directory'", " else:", "  assert stat.S_ISREG(info.st_mode),'unsupported bundle entry'", "  digest=hashlib.sha256();length=0", "  with open(path,'rb') as file:", "   for chunk in iter(lambda:file.read(1048576),b''):digest.update(chunk);length+=len(chunk)", "  row.update(kind='file',bytes=length,sha256=digest.hexdigest())", " records.append(row)", "print(json.dumps(records,separators=(',',':')))", ""].join("\n");
-  const result = spawnSync('python3', ['-c', code, application], {
+  // Full bundle bytes and metadata share the existing job deadline with signing.
+  // Recompute here: reading the package or an earlier observation consumed time.
+  const remaining = boundedByJob ? signingRemaining(deadlineEpoch, now) : 30000;
+  const result = runCommand('python3', ['-c', code, application], {
     encoding: 'utf8',
-    timeout: 30000,
+    timeout: remaining,
     maxBuffer: 16 * 1024 * 1024
   });
   if (result.error) throw result.error;
@@ -582,20 +611,22 @@ export function signingBundleDigest(application) {
   assert.equal(result.status, 0, result.stderr);
   assert.equal(typeof result.stdout, 'string');
   assert.ok(Array.isArray(JSON.parse(result.stdout)));
-  return sha256(Buffer.from(result.stdout));
+  const bundleSha256 = sha256(Buffer.from(result.stdout));
+  if (boundedByJob) signingRemaining(deadlineEpoch, now);
+  return bundleSha256;
 }
 export function signingProcessBinding(application, packageFile, {
   source,
   sourceSha256,
   label
-}) {
+}, observationOptions = {}) {
   assert.equal(typeof sourceSha256, 'string');
   digest(sourceSha256);
   assert.ok(Object.hasOwn(MAC_PACKAGE_TARGETS, label));
   const packageBytes = readFileSync(packageFile);
-  return {
+  const binding = {
     application: resolve(application),
-    bundle_sha256: signingBundleDigest(application),
+    bundle_sha256: signingBundleDigest(application, observationOptions),
     package: {
       path: resolve(packageFile),
       bytes: packageBytes.length,
@@ -606,6 +637,9 @@ export function signingProcessBinding(application, packageFile, {
     producer_run: source.producer_run,
     label
   };
+  if (Object.hasOwn(observationOptions, 'deadlineEpoch')) signingRemaining(observationOptions.deadlineEpoch, observationOptions.now ?? Date.now);
+  else if (process.env.FORMAL_AI_JOB_DEADLINE_EPOCH !== undefined) signingRemaining(configuredSigningDeadline(), observationOptions.now ?? Date.now);
+  return binding;
 }
 /** Capture the first workflow process within its already declared job deadline. */
 export function captureSigningProcess(application, packageFile, context, command, args, {
@@ -613,17 +647,14 @@ export function captureSigningProcess(application, packageFile, context, command
   runCommand = spawnSync,
   now = Date.now
 } = {}) {
-  assert.ok(Number.isSafeInteger(deadlineEpoch), 'missing existing job deadline');
-  const remaining = deadlineEpoch * 1000 - now();
-  assert.ok(remaining > 0 && remaining <= 2147483647, 'expired or unsupported job deadline');
-  const before = signingProcessBinding(application, packageFile, context);
-  const commandRemaining = deadlineEpoch * 1000 - now();
-  assert.ok(commandRemaining > 0 && commandRemaining <= 2147483647, 'job deadline expired during binding');
+  signingRemaining(deadlineEpoch, now);
+  const before = signingProcessBinding(application, packageFile, context, { deadlineEpoch, now });
+  const commandRemaining = signingRemaining(deadlineEpoch, now);
   const result = runCommand(command, args, {
     timeout: commandRemaining,
     maxBuffer: 16 * 1024 * 1024
   });
-  const after = signingProcessBinding(application, packageFile, context);
+  const after = signingProcessBinding(application, packageFile, context, { deadlineEpoch, now });
   const stdoutBytes = Buffer.isBuffer(result.stdout) ? result.stdout : null,
     stderrBytes = Buffer.isBuffer(result.stderr) ? result.stderr : null;
   let stdout = null,
@@ -666,11 +697,15 @@ export function captureSigningProcess(application, packageFile, context, command
   };
   return record;
 }
-export function validateSigningProcess(record, application, packageFile, context, command, args) {
+export function validateSigningProcess(record, application, packageFile, context, command, args, options = {}) {
+  const { now = Date.now } = options;
+  const observationOptions = Object.hasOwn(options, 'deadlineEpoch') ? options
+    : process.env.FORMAL_AI_JOB_DEADLINE_EPOCH === undefined ? { now }
+    : { deadlineEpoch: configuredSigningDeadline(), now };
   assert.equal(record.schema, 'formal-ai-signing-process/v1');
   assert.equal(record.command, command);
   assert.deepEqual(record.arguments, args);
-  const expected = signingProcessBinding(application, packageFile, context);
+  const expected = signingProcessBinding(application, packageFile, context, observationOptions);
   assert.deepEqual(record.before, expected);
   assert.deepEqual(record.after, expected);
   assert.equal(record.complete, true);

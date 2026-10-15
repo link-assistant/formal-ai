@@ -72,7 +72,12 @@ pub fn assert_release_delivery_budget(job_name: &str) {
     assert_eq!(caller["concurrency"]["queue"], "max");
     for stage in stages {
         let job = &view["physicalStages"]["jobs"][format!("{mode}_{stage}")];
-        assert_eq!(job["timeout-minutes"], 30);
+        let expected_minutes = if stage == "publish-verify-images" {
+            90
+        } else {
+            30
+        };
+        assert_eq!(job["timeout-minutes"], expected_minutes);
         assert!(job.get("concurrency").is_none());
     }
     let needs = &view["physicalStages"]["jobs"][format!("{mode}_create-release")]["needs"];
@@ -111,7 +116,7 @@ pub fn assert_image_delivery_budget(job_name: &str) {
         "manual"
     };
     let job = &view["physicalStages"]["jobs"][format!("{mode}_publish-verify-images")];
-    assert_eq!(job["timeout-minutes"], 30);
+    assert_eq!(job["timeout-minutes"], 90);
     let steps = job["steps"].as_array().expect("image operations");
     let publish = steps
         .iter()

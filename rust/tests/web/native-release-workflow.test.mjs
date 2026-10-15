@@ -2,6 +2,8 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import YAML from 'yaml';
+import {parseSpeedPolicy} from '../../../scripts/lib/ci-speed-policy.mjs';
 import {NATIVE_TARGETS} from '../../../scripts/native-release-artifact.mjs';
 const text=readFileSync(new URL('../../../.github/workflows/desktop-release.yml',import.meta.url),'utf8');
 function job(name){const at=text.indexOf('\n  '+name+':\n');assert.ok(at>=0,name);const tail=text.slice(at+1),end=tail.slice(1).search(/\n  [a-z][a-z-]*:\n/u);return (end<0?tail:tail.slice(0,end+1)).split('\n').filter(line=>!/^\s*#/u.test(line)).join('\n');}
@@ -12,7 +14,7 @@ test('one source job seals source and compiler before all eight distinct native 
  assert.match(source,/native-release-source\.mjs"? seal/u);assert.match(source,/compiler-commit: /u);
  const targets=[...native.matchAll(/target: ([a-z0-9_-]+), binext:/gu)].map(m=>m[1]);
  assert.deepEqual(targets.sort(),Object.keys(NATIVE_TARGETS).sort());assert.equal(new Set(targets).size,8);
- assert.match(native,/timeout-minutes: 30/u);assert.match(native,/toolchain: \$\{\{ needs\.native-source\.outputs\.toolchain \}\}/u);
+ assert.match(native,/timeout-minutes: \$\{\{ matrix\.capmin \}\}/u);assert.match(native,/toolchain: \$\{\{ needs\.native-source\.outputs\.toolchain \}\}/u);
  assert.match(native,/--release --bin formal-ai --locked --target/u);
  assert.match(native,/native-release-artifact\.mjs"? write/u);assert.match(native,/native-release-artifact\.mjs"? verify/u);
 });
@@ -64,4 +66,23 @@ test('long Windows checkout paths are enabled before any native, desktop or CLI 
   assert.match(step,/if: runner\.os == 'Windows'/u);
   assert.match(step,/run: git config --system core\.longpaths true/u);
  }
+});
+
+test('only Intel native carries explicit cold-build debt and a pinned process-group deadline',()=>{
+ const native=YAML.parse(text).jobs.native,rows=native.strategy.matrix.include;
+ assert.equal(rows.length,8);
+ assert.deepEqual(Object.fromEntries(rows.map(row=>[row.target,row.capmin])),Object.fromEntries(Object.keys(NATIVE_TARGETS).map(target=>[target,target==='x86_64-apple-darwin'?45:30])));
+ const capture=native.steps.find(step=>step.name==='Capture release protocol before selecting binary source').run;
+ assert.ok(capture.includes('cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs scripts/run-with-budget-warning.sh "$protocol_dir/"'));
+ assert.ok(capture.includes("const files=['build-selected-wasm.mjs'"));
+ assert.ok(capture.includes("native-build-budget-protocol.json"));
+ assert.ok(capture.includes("sha256:createHash('sha256').update(budgetBytes).digest('hex')"));
+ const build=native.steps.find(step=>step.name==='Build the pinned default-feature native executable').run;
+ assert.ok(build.includes('if [ "${{ matrix.target }}" = x86_64-apple-darwin ]; then'));
+ assert.ok(build.includes('prefix=()'));assert.ok(build.includes('"${prefix[@]}" cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target ${{ matrix.target }}'));
+ assert.ok(build.includes('TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 bash "$FORMAL_AI_NATIVE_PROTOCOL_DIR/run-with-budget-warning.sh" 2100'));
+ const policy=parseSpeedPolicy(readFileSync(new URL('../../../data/meta/ci-speed.lino',import.meta.url),'utf8'));
+ const exceptions=policy.exceptions.filter(entry=>entry.workflow==='.github/workflows/desktop-release.yml');
+ assert.equal(exceptions.length,1);assert.equal(exceptions[0].job,'native');assert.equal(exceptions[0].timeoutMinutes,45);
+ assert.ok(exceptions[0].reason.includes('decodedLogSHA5228190b36a1b72ccd6c7c91d1f9f08c3d7c191f8c08bcfa66cb9fe0ffc5012c'));assert.ok(exceptions[0].reason.includes('restore30'));assert.equal(policy.limitMinutes,30);
 });

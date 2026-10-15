@@ -85,7 +85,7 @@ test('native source bridge conserves ordinary inline identity and its historical
 test('actual relocated image deadline and anonymous verifier retain operation-bound caps',()=>{
  const result=run(['--source-view']);assert.equal(result.status,0,result.stderr);const view=JSON.parse(result.stdout);
  for(const mode of ['auto','manual']) {
-  const job=view.physicalStages.jobs[mode+'_publish-verify-images'];assert.equal(job['timeout-minutes'],30);
+  const job=view.physicalStages.jobs[mode+'_publish-verify-images'];assert.equal(job['timeout-minutes'],90);
   const publish=job.steps.find(step=>step.name==='Publish Docker image to GHCR');assert.equal(publish['timeout-minutes'],21);
   assert.ok(publish['timeout-minutes']*100<=job['timeout-minutes']*70);
   for(const operand of ['TEST_BUDGET_ENFORCE=true','TEST_BUDGET_GRACE_SECONDS=5','TEST_BUDGET_POLL_SECONDS=1','run-with-budget-warning.sh 1250'])assert.ok(publish.run.includes(operand));
