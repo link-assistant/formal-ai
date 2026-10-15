@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readdirSync, readFileSync} from 'node:fs';
 import {generated, sharedValue, sharedDefault, renderShard}
   from '../../../scripts/generate-requirement-status.mjs';
 import {parseRequirementLedger} from '../../../scripts/lib/requirement-ledger.mjs';
@@ -26,12 +27,25 @@ test('a minority default retains explicit empty overrides and owned rows', () =>
 
 test('all maintained generated records retain the complete producer objects', () => {
   const root = new URL('../../../', import.meta.url).pathname;
+  const expectedIds = new Set();
+  for (const name of readdirSync(root + 'docs/requirements').filter(name => name !== "README.md" && /\.md$/u.test(name))) {
+    const text = readFileSync(root + 'docs/requirements/' + name, 'utf8');
+    for (const line of text.split('\n')) {
+      if (!/^\s*(?:\| R|### R|- R)/u.test(line)) continue;
+      const id = line.match(/R[0-9][A-Za-z0-9_-]*/u)?.[0];
+      if (id) expectedIds.add(id);
+    }
+  }
+  const actualIds = [];
   let count = 0;
   for (const [path, text] of generated(root)) {
     if (path.endsWith('/requirement-status-ledger.lino')) continue;
     const rows = parseRequirementLedger(text).records;
     count += rows.length;
+    actualIds.push(...rows.map(row => row.id));
     assert.equal(new Set(rows.map(row => row.id)).size, rows.length);
   }
-  assert.equal(count, 1374);
+  assert.ok(expectedIds.size > 0);
+  assert.equal(count, expectedIds.size);
+  assert.deepEqual(actualIds.toSorted(), [...expectedIds].toSorted());
 });
