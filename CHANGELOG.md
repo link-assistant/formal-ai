@@ -20,6 +20,17 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.353.4] - 2026-10-15
+
+### Fixed
+
+- Use the canonical repository API endpoint and accept queued aggregate workflow status while retaining exact source and completed publisher checks.
+- Declare the worker WASM call provider before solver startup through generated prerequisites.
+
+### Changed
+
+- Keep unmet prospective self-development aspirations visible in report mode while enforcing strict attribution validation and measured zero credit.
+
 ## [0.353.3] - 2026-10-15
 
 Restore only the generated image publication stage to its retained logical source allowance of 90 minutes. The former blanket 30-minute stage cap cancelled Docker Hub mirroring after successful full and slim GHCR checks, leaving the immutable image transfer unsealed. Keep every publication operation, source/digest/runtime/anonymous check and per-operation limit; all other physical stages retain 30-minute caps. Hosted completion still requires a fresh production run. Supplied orchestration receives zero Formal AI authorship credit.

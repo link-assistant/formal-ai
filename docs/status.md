@@ -40,7 +40,7 @@ This document is a deterministic projection of committed ledgers.
 
 ## Latest self-hosting release
 
-- `tag`: `v0.353.3`
+- `tag`: `v0.353.4`
 - `percentage_basis_points`: `0`
 - `trailing_percentage_basis_points`: `0`
 - `target_percentage_basis_points`: `389`
@@ -50,7 +50,7 @@ This document is a deterministic projection of committed ledgers.
 | Input | Lines |
 | --- | ---: |
 | `data/benchmarks/external-results.lino` | 969 |
-| `data/meta/self-hosting-ledger.lino` | 1337 |
+| `data/meta/self-hosting-ledger.lino` | 1350 |
 | `data/meta/debt-ratchet.lino` | 64 |
 | `data/meta/core-boundary-ledger.lino` | 511 |
 | `data/meta/handler-migration-ledger.lino` | 502 |
