@@ -390,7 +390,12 @@ claimed attribution, configuration, Git errors, and independent debt checks stil
 fail in either mode. This policy is separate from the numerical share target:
 `target_override_basis_points` on the newest comparable self-hosting ledger row
 is the existing reviewed lever for lowering that target, without changing
-historical measurements. Actual release recording independently uses Report.
+historical measurements. The independent strict command
+`rust-script scripts/self-hosting-metric.rs --check-ratchet <base>` requires
+that the candidate projected trailing share must not decrease relative to
+`<base>` over the same latest-tag release range; a lower candidate returns an
+error. Presence reporting does not change that numerical comparison. Actual
+release recording independently uses Report and records regressions honestly.
 Reproduce measured additions plus deletions from non-merge commits, excluding
 binary files, with
 `rust-script scripts/self-hosting-metric.rs --since <previous-tag>`.
