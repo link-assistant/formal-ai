@@ -65,7 +65,7 @@ function fixture(t) {
   const gh = join(cwd, "bin/gh");
   writeFileSync(
     gh,
-    '#!/usr/bin/env node\nconst p=process.argv[3];const head=process.env.FIXTURE_HEAD;let result;if(p.endsWith("/releases/tags/v1.2.3"))result={tag_name:"v1.2.3",draft:false,prerelease:false,published_at:"2026-10-01T00:00:00Z"};else if(p.endsWith("/commits/main")||p.endsWith("/commits/v1.2.3"))result={sha:head};else if(p==="repos/fixture/repository/")result={default_branch:"main"};else throw Error("unexpected fixture API "+p);console.log(JSON.stringify(result));\n',
+    '#!/usr/bin/env node\nconst p=process.argv[3];const head=process.env.FIXTURE_HEAD;let result;if(p.endsWith("/releases/tags/v1.2.3"))result={tag_name:"v1.2.3",draft:false,prerelease:false,published_at:"2026-10-01T00:00:00Z"};else if(p.endsWith("/commits/main")||p.endsWith("/commits/v1.2.3"))result={sha:head};else if(p==="repos/fixture/repository")result={default_branch:"main"};else throw Error("unexpected fixture API "+p);console.log(JSON.stringify(result));\n',
   );
   chmodSync(gh, 0o755);
   const environment = {
