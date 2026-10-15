@@ -474,3 +474,35 @@ multilingual_responses
     intent derivation_record_ambiguous
     language en
     text "derivation_record_ambiguous: use {answer}@<record-digest>"
+  response response_runtime_derivation_record_missing_ru
+    intent runtime_derivation_record_missing
+    language ru
+    text "derivation_record_missing:{answer_id}; каталог={directory}"
+  response response_derivation_record_ambiguous_ru
+    intent derivation_record_ambiguous
+    language ru
+    text "derivation_record_ambiguous: используйте {answer}@<record-digest>"
+  response response_runtime_derivation_record_missing_hi
+    intent runtime_derivation_record_missing
+    language hi
+    text "derivation_record_missing:{answer_id}; निर्देशिका={directory}"
+  response response_derivation_record_ambiguous_hi
+    intent derivation_record_ambiguous
+    language hi
+    text "derivation_record_ambiguous: {answer}@<record-digest> का उपयोग करें"
+  response response_runtime_derivation_record_missing_zh
+    intent runtime_derivation_record_missing
+    language zh
+    text "derivation_record_missing:{answer_id}; 目录={directory}"
+  response response_derivation_record_ambiguous_zh
+    intent derivation_record_ambiguous
+    language zh
+    text "derivation_record_ambiguous: 请使用 {answer}@<record-digest>"
+  response response_runtime_derivation_record_missing_es
+    intent runtime_derivation_record_missing
+    language es
+    text "derivation_record_missing:{answer_id}; directorio={directory}"
+  response response_derivation_record_ambiguous_es
+    intent derivation_record_ambiguous
+    language es
+    text "derivation_record_ambiguous: utilice {answer}@<record-digest>"

@@ -480,3 +480,108 @@ fn the_explain_subcommand_prints_the_durable_record() {
     );
     let _ = std::fs::remove_dir_all(&root);
 }
+
+#[test]
+fn runtime_cache_reports_render_every_registered_locale_and_preserve_fallback() {
+    let answer = "answer_0123456789abcdef";
+    let values = [
+        ("answer_id", answer),
+        ("answer", answer),
+        ("directory", "/runtime/cache"),
+    ];
+    for (language, missing, ambiguous) in [
+        (
+            "en",
+            "derivation_record_missing:answer_0123456789abcdef; directory=/runtime/cache",
+            "derivation_record_ambiguous: use answer_0123456789abcdef@<record-digest>",
+        ),
+        (
+            "ru",
+            "derivation_record_missing:answer_0123456789abcdef; каталог=/runtime/cache",
+            "derivation_record_ambiguous: используйте answer_0123456789abcdef@<record-digest>",
+        ),
+        (
+            "hi",
+            "derivation_record_missing:answer_0123456789abcdef; निर्देशिका=/runtime/cache",
+            "derivation_record_ambiguous: answer_0123456789abcdef@<record-digest> का उपयोग करें",
+        ),
+        (
+            "zh",
+            "derivation_record_missing:answer_0123456789abcdef; 目录=/runtime/cache",
+            "derivation_record_ambiguous: 请使用 answer_0123456789abcdef@<record-digest>",
+        ),
+        (
+            "es",
+            "derivation_record_missing:answer_0123456789abcdef; directorio=/runtime/cache",
+            "derivation_record_ambiguous: utilice answer_0123456789abcdef@<record-digest>",
+        ),
+    ] {
+        assert_eq!(
+            formal_ai::seed::render_response("runtime_derivation_record_missing", language, &values)
+                .as_deref(),
+            Some(missing)
+        );
+        assert_eq!(
+            formal_ai::seed::render_response("derivation_record_ambiguous", language, &values)
+                .as_deref(),
+            Some(ambiguous)
+        );
+    }
+    assert_eq!(
+        formal_ai::seed::report_text("runtime_derivation_record_missing", &values),
+        "derivation_record_missing:answer_0123456789abcdef; directory=/runtime/cache"
+    );
+    assert_eq!(
+        formal_ai::seed::report_text("derivation_record_ambiguous", &values),
+        "derivation_record_ambiguous: use answer_0123456789abcdef@<record-digest>"
+    );
+    assert_eq!(
+        formal_ai::seed::report_text("missing_runtime_cache_report", &values),
+        "missing_runtime_cache_report"
+    );
+}
+
+#[test]
+fn actual_runtime_cache_ambiguity_and_explain_miss_use_the_seeded_reports() {
+    let root = isolated_directory("runtime-reports");
+    std::fs::create_dir_all(&root).expect("create private runtime cache");
+    temp_env::with_var("FORMAL_AI_CACHE_DIR", Some(root.as_os_str()), || {
+        let answer = "answer_0123456789abcdef";
+        let first = Derivation::record_for(&EventLog::new(), answer);
+        let mut second = first.clone();
+        second.search_queries.push("a distinct source trace".to_owned());
+        let first_location =
+            formal_ai::runtime_cache::persist_derivation(&first).expect("persist first trace");
+        let second_location =
+            formal_ai::runtime_cache::persist_derivation(&second).expect("persist second trace");
+        assert_ne!(first_location.locator, second_location.locator);
+        let error = formal_ai::runtime_cache::load_derivation(answer)
+            .expect_err("bare id must refuse distinct traces");
+        assert_eq!(
+            error.to_string(),
+            "derivation_record_ambiguous: use answer_0123456789abcdef@<record-digest>"
+        );
+        assert_eq!(
+            formal_ai::runtime_cache::load_derivation(&first_location.locator)
+                .expect("exact selector custody"),
+            Some(first)
+        );
+    });
+    let missing = std::process::Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+        .args(["explain", "answer_ffffffffffffffff"])
+        .env("FORMAL_AI_CACHE_DIR", &root)
+        .current_dir(&root)
+        .output()
+        .expect("run actual explain command");
+    assert!(!missing.status.success(), "missing record must fail");
+    assert!(missing.stdout.is_empty(), "error must not fabricate a record");
+    let expected = format!(
+        "derivation_record_missing:answer_ffffffffffffffff; directory={}",
+        root.join("derivations").display()
+    );
+    assert!(
+        String::from_utf8_lossy(&missing.stderr).contains(&expected),
+        "{missing:?}"
+    );
+    std::fs::remove_dir_all(root).expect("remove private runtime cache");
+}
