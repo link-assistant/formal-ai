@@ -16,7 +16,7 @@
 
 use std::time::Duration;
 
-use formal_ai::derivation::{answer_derivation_id, store_path};
+use formal_ai::derivation::answer_derivation_id;
 use formal_ai::server::{
     DebugSession, DebugToken, EXCERPT_LINES, StageView, TurnView, debug_session_banner,
     describe_turn, enable_debug_session, handle_debug_request, is_loopback_host, stage_diagram,
@@ -653,9 +653,11 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
     std::fs::create_dir_all(&dir).expect("temp dir");
     let memory = dir.join("memory.lino");
     let dialogs = dir.join("dialogs");
+    let cache = dir.join("cache");
     temp_env::with_vars(
         [
             ("FORMAL_AI_MEMORY_PATH", Some(memory.as_os_str())),
+            ("FORMAL_AI_CACHE_DIR", Some(cache.as_os_str())),
             ("FORMAL_AI_DIALOG_LOG_DIR", Some(dialogs.as_os_str())),
             ("FORMAL_AI_RECORD_CHAT", Some(std::ffi::OsStr::new("0"))),
             (
@@ -677,12 +679,27 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
                     &auth,
                 )
             };
-            // The record the turn's answer is persisted under, removed so the
-            // held turn can be seen not to write it.
-            let root = std::env::current_dir().expect("working directory");
-            let record = store_path(&root, &formal_ai::solve("What is 2 + 2?").derivation_id())
-                .expect("record path");
-            let _ = std::fs::remove_file(&record);
+            // Bind the actual runtime store and validate the warm solve's exact trace.
+            // Remove only this answer's private directory, so every trace remains
+            // absent while the served turn is held, regardless of its eventual digest.
+            let baseline = formal_ai::solve("What is 2 + 2?");
+            let answer_id = baseline.derivation_id();
+            let locator = baseline
+                .evidence_links
+                .iter()
+                .find_map(|link| link.strip_prefix("derivation_record:"))
+                .expect("the warm solve emits its exact runtime record locator");
+            let warm_record = formal_ai::runtime_cache::load_derivation(locator)
+                .expect("warm record custody")
+                .expect("warm record persisted");
+            assert_eq!(warm_record.answer_id, answer_id);
+            let record = formal_ai::runtime_cache::runtime_cache_paths()
+                .expect("private runtime paths")
+                .derivation_directory
+                .join(&answer_id);
+            assert!(record.starts_with(&cache), "runtime store stays private");
+            std::fs::remove_dir_all(&record).expect("remove the private warm answer records");
+            assert!(!record.exists(), "warm records removed before stepping");
             assert_eq!(debug("pause", &json!({ "token": TOKEN })).status_code, 200);
             let chat = json!({
                 "model": "formal-ai",
@@ -717,6 +734,7 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
                     ],
                     [&json!(0), &json!(1), &json!("impulse"), &json!("")]
                 );
+                assert!(!record.exists(), "stage 0 is held before persistence");
                 let first = json!({ "token": TOKEN, "turn": paused["turn"], "stage": 0 });
                 assert_eq!(debug("advance", &first).status_code, 200);
                 assert_eq!(debug("advance", &first).status_code, 409);
@@ -767,11 +785,27 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
                     .unwrap_or("");
                 assert!(content.contains('4'));
                 assert_eq!(
-                    store_path(&root, &answer_derivation_id(content)).as_ref(),
-                    Some(&record),
+                    answer_derivation_id(content),
+                    answer_id,
                     "the served answer is the one whose record was removed"
                 );
                 assert!(record.exists(), "the release persists the record");
+                let persisted_records = std::fs::read_dir(&record)
+                    .expect("released answer record directory")
+                    .collect::<Result<Vec<_>, _>>()
+                    .expect("runtime record entries");
+                assert!(!persisted_records.is_empty(), "release writes at least one record");
+                let expected_rendering = format!("answer_id={answer_id};format=text");
+                for entry in persisted_records {
+                    let name = entry.file_name().into_string().expect("record filename UTF-8");
+                    let digest = name.strip_suffix(".lino").expect("record extension");
+                    let locator = format!("{answer_id}@{digest}");
+                    let persisted = formal_ai::runtime_cache::load_derivation(&locator)
+                        .expect("released record passes exact digest and canonical custody")
+                        .expect("the released exact record exists");
+                    assert_eq!(persisted.answer_id, answer_id);
+                    assert_eq!(persisted.rendering.as_deref(), Some(expected_rendering.as_str()));
+                }
             });
             let state = debug("session", &json!({ "token": TOKEN }));
             let snapshot: Value = serde_json::from_str(&state.body).expect("snapshot");
