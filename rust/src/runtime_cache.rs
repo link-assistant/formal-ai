@@ -99,7 +99,7 @@ pub struct RuntimeDerivationLocation {
     pub locator: String,
 }
 
-static TEMP_SEQUENCE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+static TEMPORARY_SEQUENCE: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
 
 pub fn persist_derivation(record: &Derivation) -> io::Result<RuntimeDerivationLocation> {
     let (answer, selector) = locator_parts(&record.answer_id)?;
@@ -124,7 +124,7 @@ pub fn persist_derivation(record: &Derivation) -> io::Result<RuntimeDerivationLo
     let path = directory.join(format!("{digest}.lino"));
     let mut owned_temporary = None;
     for _ in 0..32 {
-        let sequence = TEMP_SEQUENCE.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        let sequence = TEMPORARY_SEQUENCE.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         let temporary = pending.join(format!("{answer}.{}.{sequence}.tmp", std::process::id()));
         let mut options = std::fs::OpenOptions::new();
         options.write(true).create_new(true);
