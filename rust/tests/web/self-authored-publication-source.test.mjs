@@ -114,3 +114,113 @@ test('authentic no-release conditional operation stays inactive without release 
   assert.equal(result.effectAuthority, 'Unknown');
   assert.ok(f.calls.every(endpoint => !endpoint.includes('/releases') && !endpoint.includes('/commits/')));
 });
+
+
+test('queued aggregate authenticates only the exact completed registered publisher', () => {
+  const currentFixture = fixture();
+  currentFixture.run.status = 'queued';
+  const result = resolvePublishedProducer(cwd, environment, currentFixture.read);
+  assert.deepEqual(result, {publish: true, tag: 'v1.2.3', producerRun: 41, producerAttempt: 2,
+    publisherJob: 73, sourceHead: head, effectAuthority: 'Unknown', pipelineGreen: 'Pending'});
+  assert.ok(currentFixture.calls.some(endpoint => endpoint.includes('/contents/')));
+  assert.ok(currentFixture.calls.includes(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1'));
+  assert.ok(currentFixture.calls.includes(base + 'commits/v1.2.3'));
+});
+
+test('queued aggregate preserves run, repository, attempt, workflow, inventory and source guards', () => {
+  for (const change of [
+    current => {current.run.id = 42;},
+    current => {current.run.head_repository.full_name = 'foreign/repository';},
+    current => {current.run.repository.full_name = 'foreign/repository';},
+    current => {current.run.head_branch = 'feature';},
+    current => {current.run.head_sha = 'invalid';},
+    current => {current.run.run_attempt = 3;},
+    current => {current.run.event = 'pull_request';},
+    current => {current.run.path = '.github/workflows/foreign.yml';},
+    current => {current.entries.get(base + 'actions/workflows/19').id = 20;},
+    current => {current.entries.get(base + 'actions/workflows/19').path = '.github/workflows/foreign.yml';},
+    current => {current.publisher.run_id = 42;},
+    current => {current.publisher.run_attempt = 1;},
+    current => {current.publisher.name = 'prefix ' + current.publisher.name;},
+    current => {const response = current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1'); response.total_count = 2; response.jobs.push({...current.publisher, id: 74});},
+    current => {current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1').total_count = 2;},
+    current => {current.entries.get(base + 'actions/runs/41/attempts/2/jobs?per_page=100&page=1').total_count = 1001;},
+    current => {const source = current.contract.sources[0]; current.entries.get(base + 'contents/' + source.path + '?ref=' + head).sha = 'c'.repeat(40);},
+    current => {
+      const source = current.contract.sources[0];
+      const observed = current.entries.get(base + 'contents/' + source.path + '?ref=' + head);
+      const bytes = Buffer.from('foreign source with an internally valid Git blob');
+      observed.content = bytes.toString('base64'); observed.size = bytes.length;
+      observed.sha = createHash('sha1').update(Buffer.concat([Buffer.from('blob ' + bytes.length), Buffer.from([0]), bytes])).digest('hex');
+      return /publisher source differs from compiled default-source contract/u;
+    },
+  ]) {
+    const currentFixture = fixture(); currentFixture.run.status = 'queued'; const expectedReason = change(currentFixture);
+    assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read), expectedReason);
+  }
+});
+
+test('queued aggregate cannot replace completed successful publisher and operation witnesses', () => {
+  for (const change of [
+    current => {current.publisher.status = 'queued'; current.publisher.conclusion = null;},
+    current => {current.publisher.status = 'in_progress'; current.publisher.conclusion = null;},
+    current => {current.publisher.conclusion = 'failure';},
+    current => {current.publisher.steps = [];},
+    current => {current.publisher.steps[0].conclusion = 'failure';},
+    current => {current.publisher.steps[0].status = 'in_progress';},
+    current => {current.publisher.steps[0].name = 'prefix ' + current.publisher.steps[0].name;},
+    current => {current.publisher.steps.push({...current.publisher.steps[0]});},
+    current => {current.publisher.steps[0].completed_at = '2026-10-11T00:03:00Z';},
+  ]) {
+    const currentFixture = fixture(); currentFixture.run.status = 'queued'; change(currentFixture);
+    assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read));
+    assert.ok(currentFixture.calls.every(endpoint => !endpoint.includes('/releases') && !endpoint.includes('/commits/')));
+  }
+});
+
+test('queued aggregate retains cancellation guards and unsupported status diagnostics are bounded', () => {
+  for (const conclusion of ['cancelled', 'skipped', 'neutral', 'timed_out', 'action_required']) {
+    const currentFixture = fixture(); currentFixture.run.status = 'queued'; currentFixture.run.conclusion = conclusion;
+    assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read));
+    assert.equal(currentFixture.calls.length, 1);
+  }
+  for (const status of ['waiting', 'pending', 'requested', 'secret-status\nprivate-value', null, {secret: 'private-value'}]) {
+    const currentFixture = fixture(); currentFixture.run.status = status;
+    const label = ['waiting', 'pending', 'requested'].includes(status) ? status : 'invalid';
+    assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read), error => {
+      assert.equal(error.code, 'ERR_ASSERTION');
+      assert.equal(error.message, 'unsupported_producer_aggregate_status:' + label);
+      assert.equal(error.message.includes('private-value'), false); return true;
+    });
+    assert.equal(currentFixture.calls.length, 1);
+  }
+});
+
+test('queued aggregate keeps absent, unrelated and skipped publications inactive without authority', () => {
+  for (const change of [
+    current => {current.entries.get(base + 'commits/v1.2.3').parents = [];},
+    current => {current.entries.get(base + 'releases?per_page=5&page=1')[0].draft = true;},
+    current => {current.entries.get(base + 'releases?per_page=5&page=1')[0].prerelease = true;},
+    current => {current.entries.set(base + 'releases?per_page=5&page=1', []);},
+  ]) {
+    const currentFixture = fixture(); currentFixture.run.status = 'queued'; change(currentFixture);
+    assert.deepEqual(resolvePublishedProducer(cwd, environment, currentFixture.read), {publish: false, tag: '', effectAuthority: 'Unknown'});
+  }
+  const currentFixture = fixture(); currentFixture.run.status = 'queued';
+  currentFixture.publisher.steps[0].conclusion = 'skipped';
+  assert.deepEqual(resolvePublishedProducer(cwd, environment, currentFixture.read), {
+    publish: false, tag: '', reason: 'registered-publication-skipped', effectAuthority: 'Unknown',
+  });
+  assert.ok(currentFixture.calls.every(endpoint => !endpoint.includes('/releases') && !endpoint.includes('/commits/')));
+});
+
+test('queued aggregate cannot substitute controller identity or bypass the observation deadline', () => {
+  for (const delta of [{PRODUCER_RUN_ID: '42'}, {PRODUCER_RUN_ATTEMPT: '3'}, {REFERENCE: 'refs/heads/feature'},
+    {CURRENT_WORKFLOW_REF: 'foreign/repository/.github/workflows/release.yml@refs/heads/main'}, {EVENT: 'pull_request'}]) {
+    const currentFixture = fixture(); currentFixture.run.status = 'queued';
+    assert.throws(() => resolvePublishedProducer(cwd, {...environment, ...delta}, currentFixture.read));
+    assert.equal(currentFixture.calls.length, 0);
+  }
+  const currentFixture = fixture(); currentFixture.run.status = 'queued'; let tick = 0;
+  assert.throws(() => resolvePublishedProducer(cwd, environment, currentFixture.read, () => tick++ * 90001));
+});

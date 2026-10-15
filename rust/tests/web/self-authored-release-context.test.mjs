@@ -19,7 +19,7 @@ function fixture(t) {
   const release = {id: 11, tag_name: 'v1.2.3', draft: false, prerelease: false, published_at: '2026-10-01T00:00:00Z'};
   const repository = {full_name: 'fixture/repository', default_branch: 'main'};
   const read = endpoint => {
-    if (endpoint === 'repos/fixture/repository/') return repository;
+    if (endpoint === 'repos/fixture/repository') return repository;
     if (endpoint.includes('/releases/tags/')) return release;
     if (endpoint.includes('/commits/')) return {sha: commit};
     throw Error('unexpected source request ' + endpoint);
@@ -45,7 +45,7 @@ test('unpublished, unstable, wrong repository, identifier or default source refu
   assert.throws(() => resolveSelfAuthoredRelease(f.cwd, {...f.environment, RELEASE_ACTION: 'created'}, f.read));
   assert.throws(() => resolveSelfAuthoredRelease(f.cwd, {...f.environment, EVENT: 'issues'}, f.read));
   for (const delta of [{full_name: 'foreign/repository'}, {default_branch: 'foreign'}]) {
-    const read = endpoint => endpoint.endsWith('/') ? {...f.repository, ...delta} : f.read(endpoint);
+    const read = endpoint => endpoint === 'repos/fixture/repository' ? {...f.repository, ...delta} : f.read(endpoint);
     assert.throws(() => resolveSelfAuthoredRelease(f.cwd, f.environment, read));
   }
 });

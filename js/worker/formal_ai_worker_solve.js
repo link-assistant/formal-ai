@@ -1,5 +1,5 @@
 // Solve dispatch, handler registry, seed loading and worker initialization.
-// Loaded by ../formal_ai_worker.js.
+// @worker-prerequisite js/worker/formal_ai_worker_web_providers_and_wasm_calls.js
 function isTargetlessProgramModification(normalized) { // "Reverse it.": Rust `looks_like_ambiguous_program_modification`
   const mentions = (role) => lexiconMentionsRole(role, normalized);
   return mentions(ROLE_PROGRAM_MODIFICATION) && mentions(ROLE_PROGRAM_MODIFICATION_REFERENCE) && !mentions(ROLE_PROGRAM_ARTIFACT);

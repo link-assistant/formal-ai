@@ -125,7 +125,7 @@ pub fn attributed_commits(
     Ok(attributed)
 }
 
-pub(super) fn merged_self_authored_pull_requests(
+pub fn merged_self_authored_pull_requests(
     repo: &Path,
     since: &str,
     until: &str,
