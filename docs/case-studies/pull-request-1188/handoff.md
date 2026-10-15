@@ -1,3 +1,158 @@
+## Dated recovery checkpoint — 2026-10-15 23:14:45 UTC
+
+This checkpoint records observations as of 2026-10-15 23:14:45 UTC. Hosted CI and
+production acceptance remain pending where stated; later live evidence and caches
+take precedence over these dated facts. Historical private preparation packets
+v1 through v4 and their actual Formal AI receipts are preserved. The live recovery
+cache is `/private/tmp/formal-ai-post-merge-resume-20261016/checkpoint.json`.
+
+PR https://github.com/link-assistant/formal-ai/pull/1225 now has exact head
+`efbe95fe0bb8ba32d5d6454f9cd197d0dc3c2863`, tree
+`b86904a9c901159321371ac050eab4c86dba44cd`, and base
+`a0aa19fd4c8ddf8985fb4f98c719884403cfbca8`. Exact-head CI had nine of fifteen workflows green, six active, and no observed
+failures at this checkpoint; no merge had occurred. The repaired Guarded staged
+authority hosted workflow succeeded in run 38821614561:
+https://github.com/link-assistant/formal-ai/actions/runs/38821614561. Focused issue
+https://github.com/link-assistant/formal-ai/issues/1226 remains the linked release
+repair scope. Earlier fbf8/e011 check failures are historical and superseded.
+Two superseded fbf8 runs and four superseded e011 runs were canceled through
+maintained JavaScript Formal AI; production runs were untouched.
+
+### Confirmed causes, repaired sources, and actual evidence
+
+The initial container fault was an Actions process-boundary error: independent
+source authorization writes commit IDs to GITHUB_ENV, whose values are available
+to the following step. The original same-step strict consumer read undefined
+authority. Five producer/promotion paths now authorize in a preceding publish-only
+step. Strict tag, commit, ancestry, unprivileged-source, and event checks remain.
+Seven boundary controls plus six byte-unchanged event controls passed, while the
+original workflow reproduces five undefined-authority failures. Evidence and
+preimages/inverses remain under
+`/private/tmp/formal-ai-container-authority-boundary-20261016`; actual execution
+receipts are under
+`/private/tmp/formal-ai-container-authority-boundary-inputs-20261016`.
+Initial PR publication proof is under
+`/private/tmp/formal-ai-container-authority-pr-20261016`.
+
+The live Pages failure in production Pipeline 38799356473 / job 116706159002 was
+confirmed public-CDN throttling: rate-limit HTML replaced the app and WASM fetch
+returned HTTP 429. Artifact 12012356508 has SHA-256
+`35d17fea8515479696b5a441335b020dc2e0a38499fd44ccf3244fa9daa42cd9`;
+private extracted evidence is under
+`/private/tmp/formal-ai-release-restart-ci/pages-debug-12012356508`.
+The default live check now uses one serial context, zero retries, successful
+landing/app/docs HTTP delivery, app mount, disabled diagnostic JS fallback,
+actual wasm-worker mode, and a correct arithmetic answer. Service workers are
+blocked for this smoke to avoid bulk offline precaching; dedicated native-worker
+initialization is still required. Original functional specs and the full Pages
+configuration remain unchanged and explicitly runnable. Named debt
+`PAGES-LIVE-CDN-RATE-BUDGET` in `docs/testing/pages-live-rate-budget.md` requires a
+measured safe cache/request budget before restoring the full public matrix as
+default within its original timeout. HTTP 429 and missing/unavailable/fallback
+runtime failures remain hard failures; the smaller smoke earns no full public
+matrix acceptance. Hosted live smoke acceptance remains pending.
+
+The seven-file Pages/readability follow-up had 22 passing source controls with no
+failures/skips, documented in
+`/private/tmp/formal-ai-pages-rate-budget-20261016/manifest.json` and its actual
+`run.transcript.json`. The initial readability claim used the unsupported family
+`javascript`; its erroneous receipt remains preserved. Correct-family `script`
+readability and the installed formatter preserve every assertion and semantic AST;
+evidence is under `/private/tmp/formal-ai-container-authority-readability-20261016`.
+The e011 publication's initial mutation receipt failed a stale final readback AFTER
+the successful branch update. Its subsequent read-only verification succeeded;
+`/private/tmp/formal-ai-release-recovery-batch-20261016/final-proof.json` and
+`final.transcript.json` are authoritative for that historical publication. Never
+rerun those already-executed mutations.
+
+The six-character change from `pages.config` to `pages.smoke.config` exposed a
+second strict consistency fault: deployed caller e011 differed from the retained
+canonical source and its checked projection. The guarded staged fixture correctly
+refused it. The maintained generator now refreshes exactly four retained/generated
+artifacts: original-release-workflow.yml, stage-source-coverage.json,
+candidate-release-caller.yml, and candidate-output-bindings.json under
+`experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/`.
+A new strict deployed-Pages projection regression reproduces the original failure
+before repair and passes afterward. All 52 operation rows, all 104 output-binding
+rows, generator/validator source bytes, deployed release.yml, and release-staged.yml
+runtime bytes remain unchanged by this latest regeneration. No authority assertion
+was bypassed or deleted.
+
+The source-bound regeneration packet is
+`/private/tmp/formal-ai-staged-pages-projection-20261016/manifest.json`, SHA-256
+`9209cb3463d24c03480592b6f28ccc1d845c371afb4efd778a5f4f6880019318`.
+Its actual maintained `--write --deployed` generation and `--check-deployed` check
+passed; the regression and generator both failed before repair with the exact
+strict projection message. After repair, 62 controls passed with zero failures or
+skips. Supplemental `readability-qualification.json` in the same directory records
+the actual maintained readability gate using family `script`, zero problems and
+no exemptions; SHA-256
+`241038551afc72543d79a07f920fd4588d261637f8f9e2cd0f3114e0a78567f0`.
+Actual execution receipts are `run.transcript.json` and `readability.transcript.json`.
+Official exact-e011 blob/byte qualification of 21 finite dependencies is under
+`/private/tmp/formal-ai-release-restart-ci/e011-projection-source`.
+
+Latest publication proof and actual execution receipt are
+`/private/tmp/formal-ai-staged-pages-projection-publish-20261016/proof.json` and
+`run.transcript.json`, confirming efbe95 head and b86904 tree. Their execution marker
+is true. Every supplied recipe carries autonomous authorship credit 0; execution
+is not autonomous source authorship or token-savings credit. Source controls do
+not establish browser/WASM runtime or production acceptance.
+
+### Production, broader acceptance, and safe continuation
+
+PR #1224 previously merged as `05edae984d73a362b24f73162654d44fb2943736`.
+Actual v0.353.4 remains source a0aa19, sole parent 05edae, tree
+`e22de07376092fed84cd4d0fb9c5a0546b8e5069`. Release ID 414331067 was published at
+22:24:40 UTC; annotated tag `07d20529ee5a0de0942967e5c6958c63a6ca487b` points to
+that source. Crate publication, registry byte audit, clean install, staged full/slim
+and Hub mirrors, browser publisher, and source publisher were successful at this
+checkpoint. All eight native producers succeeded. Eleven Desktop/CLI packaging jobs were
+scheduled: macOS CLI x64 was active and the others queued, with no observed
+failures. Desktop/CLI packaging completion, canonical container recovery, and
+successful new live Pages qualification remained pending. The existing published
+tag/crate/source identity must remain unchanged during fixed-workflow container
+recovery; patch fragments queue the normal next patch. No full production or all
+required platform/asset completion claim is made.
+
+All 27 umbrella acceptances for #1207/#1213/#1220 remain Pending in draft PR #1221.
+The original local feature preimage for this checkpoint is
+`c2f2fc18eba1f65604701db5852d6fa6f3b2d68b`. A later documentation-only commit
+on that draft branch is separate from this preimage and from the recovery PR's
+source head; this dated text does not predict its commit identity.
+Focused issue #1226 does not close those umbrellas. Root reviews exact-head CI
+and actual release evidence before integration. Current prepared controllers ONLY:
+`/private/tmp/formal-ai-release-recovery-merge-20261016-v2` and
+`/private/tmp/formal-ai-release-recovery-dispatch-20261016-v2`. Both are prepared,
+not executed. All earlier PR #1225 merge/dispatch variants are obsolete; old
+PR #1224 merge-v1 through merge-v4 controllers already executed and must not run
+again. Prepared files do not establish that integration or dispatch happened.
+
+Continue with two compact agents only, one CI observer and one Formal-AI-only
+writer. Preserve bounded preimages/inverses, original failures and receipts; avoid
+duplicate effects and excessive scratch use. No local Rust/native/WASM/container
+builds or execution, dependency installation, binary downloads, full checkouts,
+or large indexes. Source, Git, and PR effects use maintained JavaScript Formal AI;
+root owns remote integration. Local browser/WASM execution was not performed.
+
+The Codex restart incident still has no confirmed root cause. The initial
+sanitized report is at
+https://github.com/openai/codex/issues/23260#issuecomment-6200840165.
+The optional additional public resource-metrics upload was denied by automatic
+approval review. Do not execute it or publish additional exact resource metrics,
+private diagnostic/system logs, or unrelated project paths. No private metrics
+are included in this prepend.
+
+The original tracked handoff below remains the exact 195303-byte suffix, SHA-256
+`913a0fe0c0cbfc9587bca1204495dfe0711cf9e5e18f5b3368dad5bdcd889057`.
+This dated checkpoint does not imply later CI, merge, dispatch, or production
+completion. Consult current exact-head checks and live release evidence for
+subsequent outcomes. Its historical private preparation performed no tracked or
+remote write; any documentation publication is a separate root-owned action
+through maintained JavaScript Formal AI.
+
+---
+
 ## Session close and restart checkpoint — 2026-10-16
 
 The user requested that all subagents finish and this session stop with a resumable handoff. The sole CI watcher stopped after its final observation at **2026-10-15T19:19:32.592Z**. Hosted GitHub Actions continue independently; nobody is monitoring them after session close. These are dated observations, not current or completed acceptance. Read this section before the older checkpoints below, which remain unchanged.
