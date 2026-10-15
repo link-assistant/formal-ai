@@ -842,3 +842,4 @@ changelog.d/20261012_120700_maintained_meta_language_dependency.md	0.353.1
 changelog.d/20261013_050000_release_manifest_byte_witness.md	0.353.1
 changelog.d/20261013_093000_release_docker_export.md	0.353.2
 changelog.d/20261013_140100_coverage_archive_transfer.md	0.353.2
+changelog.d/20261014_033000_staged_image_job_budget.md	0.353.3
