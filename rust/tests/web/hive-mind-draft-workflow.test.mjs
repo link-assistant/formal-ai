@@ -46,13 +46,34 @@ test('bounded build and attempt jobs share one exact-main binary and retain fail
  assert.deepEqual(jobs.map(job=>job.id),['build','draft']);
  assert.deepEqual(capProblems([{path:'.github/workflows/hive-mind-draft.yml',jobs}],{limitMinutes:30,exceptions:[]}),[]);
  assert.equal((workflow.match(/cargo build/g)||[]).length,1);
- assert.match(workflow,/22m cargo build/);
- assert.match(workflow,/20m node .hive-mind\/scripts\/formal-ai-draft.mjs/);
+ assert.match(workflow,/run-with-deadline\.sh" 1320 cargo build/);
+ assert.match(workflow,/run-with-deadline\.sh" 1200 node .hive-mind\/scripts\/formal-ai-draft.mjs/);
  assert.match(workflow,/needs: build/);
  assert.match(workflow,/needs.build.outputs.should_run == 'true'/);
  assert.match(workflow,/hive-mind-main-binary-/);
  assert.match(workflow,/hive-mind-main-evidence-/);
  assert.match(workflow,/needs.build.outputs.evidence_url/);
  assert.match(workflow,/needs.build.result != 'success'/);
- assert.match(workflow,/kill-after=30s/);
+ assert.match(workflow,/FORMAL_AI_DEADLINE_GRACE_SECONDS=30/);
+});
+
+test('deadline invocations remain portable with exact setup and kill-grace budgets',()=>{
+ assert.doesNotMatch(workflow,/\btimeout --/);
+ assert.equal((workflow.match(/run-with-deadline\.sh" 180 npm/g)||[]).length,2);
+ assert.equal((workflow.match(/FORMAL_AI_DEADLINE_GRACE_SECONDS=15/g)||[]).length,2);
+ assert.equal((workflow.match(/FORMAL_AI_DEADLINE_GRACE_SECONDS=30/g)||[]).length,2);
+ assert.equal((workflow.match(/timeout-minutes: 30/g)||[]).length,2);
+ assert.match(workflow,/bash "\$GITHUB_WORKSPACE\/scripts\/run-with-deadline\.sh" 1320 cargo/);
+ assert.match(workflow,/bash "\$GITHUB_WORKSPACE\/scripts\/run-with-deadline\.sh" 1200 node/);
+});
+
+test('download warning suppression is narrow and concurrency distinguishes build from issue writer',()=>{
+ const header=workflow.slice(0,workflow.indexOf('\njobs:\n'));
+ assert.match(header,/\nconcurrency:\n/);
+ assert.match(header,/cancel-in-progress: false/);
+ const jobs=workflowJobs(workflow);
+ assert.match(jobs.find(job=>job.id==='build').body,/hive-mind-draft-build-.*github.ref/);
+ assert.match(jobs.find(job=>job.id==='build').body,/cancel-in-progress: true/);
+ assert.equal((workflow.match(/NODE_OPTIONS: --disable-warning=DEP0005/g)||[]).length,2);
+ assert.doesNotMatch(workflow,/--no-deprecation|--no-warnings|NODE_NO_WARNINGS/);
 });

@@ -27,7 +27,15 @@ function messages(body=envelope,{url=ISSUE,tool=MCP,is_error=false,missingCall=f
   {role:'tool',name:tool,tool_call_id:missingCall?'unmatched':'c0',content:body,is_error}];
 }
 function explicit(){const data=JSON.parse(envelope),record=JSON.parse(data.structuredContent.content);record.body+='\nThe program should print exactly: `Hello, World!`';data.structuredContent.content=JSON.stringify(record);return data;}
-async function expectWrite(data){const plan=await planChatStepResolved(messages(JSON.stringify(data)),tools);assert.equal(plan.kind,'tool_calls',JSON.stringify(plan));assert.equal(plan.calls[0].tool,'write',JSON.stringify(plan));const args=JSON.parse(plan.calls[0].arguments);assert.match(args.content,/fn main\(\)/u);assert.equal(args.path,'main.rs');return plan;}
+async function expectWrite(data){
+ const plan=await planChatStepResolved(messages(JSON.stringify(data)),tools);
+ assert.equal(plan.kind,'tool_calls',JSON.stringify(plan));
+ assert.equal(plan.calls[0].tool,'write',JSON.stringify(plan));
+ const args=JSON.parse(plan.calls[0].arguments);
+ assert.match(args.content,/fn main\(\)/u);
+ assert.equal(args.path,'main.rs');
+ return plan;
+}
 async function expectRefetch(body,options){const plan=await planChatStepResolved(messages(body,options),tools);assert.equal(plan.kind,'tool_calls',JSON.stringify(plan));assert.equal(plan.calls[0].tool,'bash');assert.equal(JSON.parse(plan.calls[0].arguments).command,issueViewCommand(ISSUE));}
 test('the exact original connector receipt is retained as successful source without a duplicate gh read',async()=>{
  const input=messages(),progress=Progress.scan(input);assert.deepEqual(progress.fetched_pages,[[ISSUE,envelope]]);

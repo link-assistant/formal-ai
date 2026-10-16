@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=abd403edc709e3ef17da09d39e9e0b108000f681e1eed274f656f2f69abe76a6 bytes=21864
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a8b2701713d4984d22fe6fd2d1fad9940ea7fb167c49583fdbc2f0b79def3c4d bytes=22524
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=1 carried=6
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -149,7 +153,7 @@ pub const PIPE_DRAIN_GRACE_MS: f64 = 250f64;
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()
-// formal-ai:blockers call of a sibling function | call of an imported function | field access | method call .join() | method call .slice() | method call .split() | null | object without a $ tag | regular expression
+// formal-ai:blockers Buffer.byteLength | call of a sibling function | call of an imported function | field access | let without a value | method call .join() | method call .slice() | method call .split() | null | object without a $ tag | regular expression | try statement | typeof operator
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal try statement

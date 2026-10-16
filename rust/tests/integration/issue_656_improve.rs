@@ -4,8 +4,7 @@
 //! without `--confirm` refuses; `--apply --confirm` materializes only the
 //! promoted seed edit into the workspace.
 
-#[path = "../support/structured_stderr.rs"]
-mod structured_stderr;
+use crate::structured_stderr;
 
 use std::process::Command;
 use std::sync::Mutex;

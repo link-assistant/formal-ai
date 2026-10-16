@@ -502,5 +502,5 @@ fn decode_with_policy(
 }
 
 #[cfg(test)]
-#[path = "../tests/unit/structured_log.rs"]
+#[path = "../tests/source/source_tests/structured_log/tests.rs"]
 mod tests;

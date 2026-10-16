@@ -2,9 +2,9 @@ self_ast_census
   target src/dialog_conversation.rs
   language rust
   fidelity signature
-  byte_len 12783
+  byte_len 12804
   line_count 351
-  content_id source_module_6a2f0ddfb8355ca9
+  content_id source_module_901c3c387eb5424a
   symbol_count 19
   symbols
     const CONVERSATION_LOG_SUFFIX 23 23

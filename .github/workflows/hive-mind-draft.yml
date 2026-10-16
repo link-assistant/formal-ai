@@ -12,8 +12,14 @@ on:
         type: string
 permissions:
   contents: read
+concurrency:
+  group: hive-mind-draft-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number }}
+  cancel-in-progress: false
 jobs:
   build:
+    concurrency:
+      group: hive-mind-draft-build-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number }}-${{ github.ref }}
+      cancel-in-progress: true
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
@@ -52,7 +58,7 @@ jobs:
           persist-credentials: false
       - name: Install shared automation dependencies
         working-directory: .hive-mind
-        run: timeout --signal=TERM --kill-after=15s 3m npm ci --omit=dev --ignore-scripts
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 180 npm ci --omit=dev --ignore-scripts
       - id: decide
         name: Decide before building source
         env:
@@ -86,7 +92,7 @@ jobs:
       - name: Build current main binary in CI
         if: steps.decide.outputs.should_run == 'true'
         working-directory: .formal-ai-source
-        run: timeout --signal=TERM --kill-after=30s 22m cargo build --manifest-path rust/Cargo.toml --target-dir target --release --locked --bin formal-ai 2>&1 | tee "$FORMAL_AI_DRAFT_LOG_DIR/build.log"
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 1320 cargo build --manifest-path rust/Cargo.toml --target-dir target --release --locked --bin formal-ai 2>&1 | tee "$FORMAL_AI_DRAFT_LOG_DIR/build.log"
         shell: bash
       - name: Record actual source version and binary digest
         if: steps.decide.outputs.should_run == 'true'
@@ -151,12 +157,16 @@ jobs:
       - name: Restore source and build evidence
         if: ${{ needs.build.outputs.evidence_url != '' }}
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-mind-main-evidence-${{ github.run_id }}
           path: ${{ runner.temp }}/formal-ai-draft-logs
       - name: Download the exact-main binary once
         if: needs.build.result == 'success'
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-mind-main-binary-${{ github.run_id }}
           path: ${{ runner.temp }}/formal-ai-binary
@@ -170,7 +180,7 @@ jobs:
         if: needs.build.result == 'success'
       - name: Install shared automation dependencies
         working-directory: .hive-mind
-        run: timeout --signal=TERM --kill-after=15s 3m npm ci --omit=dev --ignore-scripts
+        run: FORMAL_AI_DEADLINE_GRACE_SECONDS=15 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 180 npm ci --omit=dev --ignore-scripts
         if: needs.build.result == 'success'
       - name: Free disk for the Hive Mind image
         if: needs.build.result == 'success'
@@ -185,7 +195,7 @@ jobs:
           FORMAL_AI_DRAFT_BINARY: ${{ runner.temp }}/formal-ai-binary/formal-ai
         run: |-
           chmod +x "$FORMAL_AI_DRAFT_BINARY"
-          timeout --signal=TERM --kill-after=30s 20m node .hive-mind/scripts/formal-ai-draft.mjs
+          FORMAL_AI_DEADLINE_GRACE_SECONDS=30 bash "$GITHUB_WORKSPACE/scripts/run-with-deadline.sh" 1200 node .hive-mind/scripts/formal-ai-draft.mjs
       - id: exact-pr
         name: Verify this attempt's exact pull request
         if: ${{ !cancelled() && steps.attempt.outputs.head_branch != '' }}
@@ -220,6 +230,3 @@ jobs:
           DRAFT_ISSUE_NUMBER: ${{ needs.build.outputs.issue_number }}
           DRAFT_ARTIFACT_URL: ${{ steps.logs.outputs.artifact-url || needs.build.outputs.evidence_url }}
         run: node scripts/hive-mind-draft-result.mjs --failure
-concurrency:
-  group: hive-mind-draft-${{ github.repository }}-${{ github.event.issue.number || inputs.issue_number }}
-  cancel-in-progress: false

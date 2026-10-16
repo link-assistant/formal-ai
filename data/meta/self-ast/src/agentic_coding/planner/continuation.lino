@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner/continuation.rs
   language rust
   fidelity full_ast
-  byte_len 8882
+  byte_len 8900
   line_count 205
-  content_id source_module_c773e5045ae7b47a
+  content_id source_module_1b1cbe35cb4cdef2
   symbol_count 10
   symbols
     function is_continuation_cue 14 16
@@ -22,8 +22,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5198
-    named_node_count 1132
+    total_link_count 5217
+    named_node_count 1136
     distinct_node_kinds 57
     node_kinds
       arguments 92
@@ -38,7 +38,7 @@ self_ast_census
       closure_expression 18
       closure_parameters 18
       compound_assignment_expr 1
-      crate 10
+      crate 11
       doc_comment 63
       else_clause 1
       escape_sequence 6
@@ -68,10 +68,10 @@ self_ast_census
       reference_expression 5
       reference_type 13
       return_expression 3
-      scoped_identifier 23
+      scoped_identifier 24
       source_file 1
-      string_content 18
-      string_literal 19
+      string_content 19
+      string_literal 20
       super 5
       token_tree 5
       try_expression 4

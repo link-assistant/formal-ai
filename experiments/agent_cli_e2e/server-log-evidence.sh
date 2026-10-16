@@ -27,3 +27,15 @@ retain_server_log_evidence() {
     cp "$RAW_SERVER_LOG" "$EVIDENCE_DIR/formal-ai.log" || return 1
   fi
 }
+
+# Decode a finite raw snapshot before applying semantic assertions. Slicing raw
+# records first preserves the original client-turn boundary across multiline messages.
+project_server_log_file() {
+  node "$ROOT/experiments/agent_cli_e2e/server-log-evidence.mjs" "$1" "$2" "${3:-*}"
+}
+project_server_log_range() {
+  local first="$1" last="$2" label="$3"
+  local snapshot="$EVIDENCE_DIR/$label.raw.log"
+  sed -n "${first},${last}p" "$RAW_SERVER_LOG" > "$snapshot" || return 1
+  project_server_log_file "$snapshot" "$EVIDENCE_DIR/$label.semantic.log" '*'
+}

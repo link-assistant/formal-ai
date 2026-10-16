@@ -131,7 +131,11 @@ fn every_registered_language_states_planned_not_executed() {
             .unwrap_or_else(|| panic!("{slug} is registered but has no expected lead"));
 
         assert!(text.starts_with(lead), "{slug} lead: {text}");
-        for placeholder in ["{target}", "{plan_path}", "{plan}"] {
+        assert!(
+            !text.contains("{plan_path}"),
+            "{slug} must not imply an auxiliary journal: {text}"
+        );
+        for placeholder in ["{target}", "{plan}"] {
             assert!(
                 text.contains(placeholder),
                 "{slug} answer must name {placeholder}: {text}"
@@ -401,14 +405,20 @@ fn planned_not_executed_remains_only_when_the_work_item_cannot_be_read() {
     .expect("a client without Read or Run can still state its boundary") else {
         panic!("an unobserved auxiliary Write must not claim persisted history")
     };
-    // Without Read or Run, no auxiliary event has been observed or persisted.
-    let language = formal_ai::language::detect(&plan.goal).slug();
-    let expected = formal_ai::seed::localized_response("general_plan_unverified", language)
-        .expect("source-owned unverified plan response")
-        .replace("{target}", PLAN_PATH)
-        .replace("{command}", &format!("cat {PLAN_PATH}"));
-    assert_eq!(answer, expected);
-    assert!(!answer.contains("Planned, not executed"));
+    // No work-item source or journal observation exists for this write-only client.
+    let mut expected_plan = plan.clone();
+    expected_plan.goal.clone_from(&plan.target);
+    assert_eq!(answer, expected_plan.planned_not_executed_answer());
+    assert_eq!(
+        expected_plan.terminal_state,
+        PlanTerminalState::PlannedNotExecuted
+    );
+    assert!(answer.contains("Planned, not executed"));
+    assert!(answer.contains("The requested work remains unverified"));
+    assert!(answer.contains(&plan.target));
+    assert!(!answer.contains("You are an AI issue solver"));
+    assert!(!answer.contains("Created and verified"));
+    assert!(!answer.contains("Completed the general change request"));
     assert!(!answer.contains("Recorded and verified"));
     let outcome = run_agentic_task(HARNESS_PROMPT).expect("Agent CLI replay");
     assert!(outcome.steps.iter().all(|step| step.tool != "write_file"));
@@ -466,13 +476,26 @@ fn a_genuinely_fetched_non_artifact_work_item_preserves_verified_history_and_sta
         }
     }
     let answer = final_answer.expect("bounded replay settles");
-    assert_eq!(answer, plan.planned_not_executed_answer());
+    let mut expected_plan = plan.clone();
+    expected_plan.goal = "Investigate why the nightly job is slow.".to_owned();
+    assert_eq!(answer, expected_plan.planned_not_executed_answer());
+    assert_eq!(
+        expected_plan.terminal_state,
+        PlanTerminalState::PlannedNotExecuted
+    );
+    assert!(answer.contains(&expected_plan.goal));
+    assert!(answer.contains(&plan.target));
+    assert!(!answer.contains("Created and verified"));
+    assert!(!answer.contains("Completed the general change request"));
+    assert!(!answer.contains("only file this run wrote"));
     assert!(!answer.contains("Recorded and verified"));
     assert!(!answer.contains("You are an AI issue solver"));
-    assert_eq!(calls, ["read_file", "write_file", "read_file"]);
+    assert!(
+        calls.is_empty(),
+        "unsupported work must not issue auxiliary writes or reads"
+    );
     let history = workspace.read(PLAN_PATH).expect("physical history");
-    assert!(history.starts_with(&previous));
-    assert!(history.ends_with(&plan.links_notation()));
+    assert_eq!(history, previous);
     assert!(workspace.read("greeting.txt").is_err());
     assert_eq!(plan.verification_command.len(), 0);
 }

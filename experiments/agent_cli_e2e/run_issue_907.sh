@@ -17,6 +17,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
 BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8907}"
 GEMINI="${GEMINI:-gemini}"
@@ -25,6 +26,7 @@ if [ -n "$ARTIFACT_DIR" ] && [[ "$ARTIFACT_DIR" != /* ]]; then
   ARTIFACT_DIR="$ROOT/$ARTIFACT_DIR"
 fi
 SERVER_LOG="/tmp/formal-ai-issue-907-$PORT.log"
+server_log_evidence_setup "$SERVER_LOG" '*' || exit 1
 TASK_LOG="/tmp/gemini-issue-907-task-$PORT.log"
 QUESTION_LOG="/tmp/gemini-issue-907-question-$PORT.log"
 WORKDIR="$(mktemp -d)"
@@ -39,6 +41,9 @@ QUESTION="${QUESTION:-what is the date?}"
 
 cleanup() {
   kill "$SERVER_PID" 2>/dev/null || true
+  if [[ -n "${RAW_SERVER_LOG:-}" ]]; then
+    retain_server_log_evidence || true
+  fi
   rm -rf "$WORKDIR"
 }
 trap cleanup EXIT
@@ -86,6 +91,8 @@ RC=0
 timeout 180 "$GEMINI" -p "$TASK" --yolo < /dev/null > "$TASK_LOG" 2>&1
 tail -40 "$TASK_LOG"
 LEG1_END="$(wc -l < "$SERVER_LOG")"
+project_server_log_range 1 "$LEG1_END" leg1 >/dev/null || exit 1
+retain_server_log_evidence || exit 1
 
 if [ ! -f "$PROJECT_DIR/$EXPECT_FILE" ]; then
   echo "issue #907: $EXPECT_FILE was never written — the request was dropped" >&2
@@ -98,7 +105,7 @@ fi
 # The exact reported symptom: the date intent must never have fired for a turn
 # whose only request was the task.
 if grep -Fq '"command":"date"' "$TASK_LOG" || grep -Fq "'command': 'date'" "$TASK_LOG" \
-  || sed -n "1,${LEG1_END}p" "$SERVER_LOG" | grep -Fq 'run_shell_command", arguments: "{\"command\":\"date\"}'; then
+  || grep -Fq 'run_shell_command", arguments: "{\"command\":\"date\"}' "$EVIDENCE_DIR/leg1.semantic.log"; then
   echo "issue #907: the session_context framing still hijacked the turn" >&2
   RC=1
 fi
@@ -106,12 +113,13 @@ fi
 # Leg 2 — a real question. Suppressing the intent altogether is not the fix.
 timeout 180 "$GEMINI" -p "$QUESTION" --yolo < /dev/null > "$QUESTION_LOG" 2>&1
 tail -40 "$QUESTION_LOG"
+project_server_log_range "$((LEG1_END + 1))" '$' leg2 >/dev/null || exit 1
+retain_server_log_evidence || exit 1
 
 # The server executes the intent itself and answers with the command's output, so
 # the evidence that the intent still fires is the planner's trace for this leg —
 # the CLI transcript only carries the answer.
-if ! sed -n "$((LEG1_END + 1)),\$p" "$SERVER_LOG" \
-  | grep -Fq 'run_shell_command", arguments: "{\"command\":\"date\"}'; then
+if ! grep -Fq 'run_shell_command", arguments: "{\"command\":\"date\"}' "$EVIDENCE_DIR/leg2.semantic.log"; then
   echo "issue #907: asking for the date no longer routes to the shell intent" >&2
   RC=1
 fi

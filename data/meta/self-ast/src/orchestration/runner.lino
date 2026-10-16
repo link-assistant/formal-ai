@@ -2,10 +2,10 @@ self_ast_census
   target src/orchestration/runner.rs
   language rust
   fidelity signature
-  byte_len 29791
-  line_count 854
-  content_id source_module_4b1002b5c04c4e2e
-  symbol_count 43
+  byte_len 28528
+  line_count 828
+  content_id source_module_b72fac227571410b
+  symbol_count 42
   symbols
     const DEFAULT_BASE_URL 14 14
     const VERIFICATION_TASK_ENV 15 15
@@ -48,5 +48,4 @@ self_ast_census
     function run_verification 765 801
     struct EventChain 804 806
     function push 809 823
-    module typed_session_control_tests 827 854
-    function native_session_control_preserves_legacy_identity_and_requires_control_schema 830 853
+    module typed_session_control_tests 828 828

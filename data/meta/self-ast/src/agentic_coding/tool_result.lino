@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 30734
-  line_count 877
-  content_id source_module_6ca30f71a8cfdee9
+  byte_len 30758
+  line_count 878
+  content_id source_module_f9113db625651621
   symbol_count 47
   symbols
     module command_keys 14 14
@@ -26,44 +26,44 @@ self_ast_census
     function word_start 154 159
     function render 161 197
     function render_failure 200 204
-    function failure_report 208 231
-    function latest_turn_answer 233 252
-    function latest_turn_quiet_success 255 273
-    function has_latest_turn_result 275 286
-    function is_write_run_recipe 288 298
-    function follow_up_answer 300 331
-    function requested_index 333 345
-    function normalize 347 451
-    struct ShellEnvelope 454 458
-    function into_result 461 487
-    function parse_shell_envelope 490 548
-    function is_field 550 556
-    function envelope_section 560 580
-    function from_payload 582 628
-    function mcp_text_content 630 661
-    function structured_content_text 664 688
-    function strip_transport_envelope 694 726
-    function nonzero_status 728 736
-    function failed_status 738 751
-    function expected_stop_status 753 767
-    function nonempty_text 769 779
-    function pretty_json 781 783
-    function command_argument 786 804
-    function result_tool 806 816
-    function result_label 818 833
-    function extract_urls 835 851
-    function response_language 855 869
-    function fill 871 877
+    function failure_report 208 232
+    function latest_turn_answer 234 253
+    function latest_turn_quiet_success 256 274
+    function has_latest_turn_result 276 287
+    function is_write_run_recipe 289 299
+    function follow_up_answer 301 332
+    function requested_index 334 346
+    function normalize 348 452
+    struct ShellEnvelope 455 459
+    function into_result 462 488
+    function parse_shell_envelope 491 549
+    function is_field 551 557
+    function envelope_section 561 581
+    function from_payload 583 629
+    function mcp_text_content 631 662
+    function structured_content_text 665 689
+    function strip_transport_envelope 695 727
+    function nonzero_status 729 737
+    function failed_status 739 752
+    function expected_stop_status 754 768
+    function nonempty_text 770 780
+    function pretty_json 782 784
+    function command_argument 787 805
+    function result_tool 807 817
+    function result_label 819 834
+    function extract_urls 836 852
+    function response_language 856 870
+    function fill 872 878
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 24897
-    named_node_count 5006
+    total_link_count 24872
+    named_node_count 4998
     distinct_node_kinds 88
     node_kinds
-      arguments 470
+      arguments 469
       array_expression 15
       array_type 12
       assignment_expression 3
@@ -74,13 +74,13 @@ self_ast_census
       block 118
       boolean_literal 6
       break_expression 2
-      call_expression 470
+      call_expression 469
       char_literal 9
       closure_expression 87
       closure_parameters 87
       compound_assignment_expr 3
       const_item 2
-      crate 13
+      crate 12
       declaration_list 1
       doc_comment 31
       else_clause 14
@@ -99,7 +99,7 @@ self_ast_census
       function_item 37
       generic_function 11
       generic_type 24
-      identifier 1089
+      identifier 1086
       if_expression 41
       impl_item 1
       index_expression 16
@@ -108,7 +108,7 @@ self_ast_census
       let_condition 11
       let_declaration 101
       lifetime 2
-      line_comment 55
+      line_comment 56
       macro_invocation 10
       match_arm 29
       match_block 10
@@ -123,10 +123,10 @@ self_ast_census
       parenthesized_expression 8
       primitive_type 71
       range_expression 12
-      reference_expression 50
+      reference_expression 49
       reference_type 64
       return_expression 30
-      scoped_identifier 74
+      scoped_identifier 72
       scoped_type_identifier 1
       scoped_use_list 5
       self 9

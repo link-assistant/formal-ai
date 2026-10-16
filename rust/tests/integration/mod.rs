@@ -1,3 +1,6 @@
+#[path = "../support/structured_stderr.rs"]
+mod structured_stderr;
+
 #[path = "../support/http_auxiliary_workspace.rs"]
 mod auxiliary_workspace;
 

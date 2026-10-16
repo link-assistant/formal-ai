@@ -1,6 +1,5 @@
+use crate::structured_stderr;
 use std::io::{Read as _, Write as _};
-#[path = "../support/structured_stderr.rs"]
-mod structured_stderr;
 
 use std::net::TcpListener;
 use std::os::unix::fs::PermissionsExt;

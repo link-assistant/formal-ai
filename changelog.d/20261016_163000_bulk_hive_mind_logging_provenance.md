@@ -4,6 +4,7 @@ bump: minor
 
 ### Fixed
 
+- Refresh genuine native census data and preserve source-owned test registration, typed client evidence and portable issue-draft deadlines through the coordinated CI repair batch.
 - Preserve large and deeply nested typed dialog records, read existing conversations while silent, and keep machine control summaries independent of diagnostic filters.
 - Retain structured issue receipts and truthful Gap outcomes, share one capacity probe per setup batch, and bound issue drafting while preserving failure evidence.
 - Preserve original authored question-policy bytes and align typed-log consumers and agentic reporting expectations with their original semantic assertions.

@@ -347,5 +347,5 @@ fn extract_sse_message(body: &str) -> Option<Value> {
 }
 
 #[cfg(test)]
-#[path = "../tests/unit/dialog_conversation_migration.rs"]
+#[path = "../tests/source/source_tests/dialog_conversation/migration_tests.rs"]
 mod structured_log_migration_tests;

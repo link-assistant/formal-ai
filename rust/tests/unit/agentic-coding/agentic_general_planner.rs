@@ -84,7 +84,7 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
     assert_eq!(
         arguments["command"],
-        r"gh issue view 'https://github.com/link-assistant/formal-ai/issues/698' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/formal-ai/issues/698' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+        "gh issue view 'https://github.com/link-assistant/formal-ai/issues/698' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/formal-ai/issues/698' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
     );
 
     // A client with a shell but no fetch tool reads the work item through

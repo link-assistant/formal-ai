@@ -1,5 +1,4 @@
-#[path = "../support/structured_stderr.rs"]
-mod structured_stderr;
+use crate::structured_stderr;
 
 use std::fs;
 use std::process::Command;

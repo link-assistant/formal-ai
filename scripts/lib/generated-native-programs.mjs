@@ -638,7 +638,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "formal_ai::dialog_conversation::CONVERSATION_LOG_SUFFIX","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":".conversation.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
 "start":1079,"end":1142},"sourceWitnesses":[{"path":"rust/src/dialog_conversation.rs","sha256":
-"0dd8716a7310202b5886f1ed020ce361e92a90c6864caeb6b7e36322dec374b5"},{"path":"rust/src/lib.rs","sha256":
+"30b09a12cb21b8da4f9b4c70e9c7e2181f1c26281388416ce62db856b6f23aee"},{"path":"rust/src/lib.rs","sha256":
 "32283f14f4ec03bde8cc90b956bb296103268ff808bd619d77e7925661637e99"}],"maintainedMeta":
 "(constant CONVERSATION_LOG_SUFFIX (exported) (type string) (value (string .conversation.lino)))","maintainedJavaScript"
 :"export const CONVERSATION_LOG_SUFFIX = '.conversation.lino';","maintainedTranslationSha256":
