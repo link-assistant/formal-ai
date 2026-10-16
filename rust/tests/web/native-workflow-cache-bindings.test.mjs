@@ -89,8 +89,9 @@ test('both actual GHCR workflow settings preserve the original cache contract',(
 });
 for(const[index,text]of settings.entries())test('actual Node cacheenv '+index+' retains every full-image Docker CLI operand',async()=>{
  const f=fixture();try{const options=declaredGnuFactory(f);options.environment.BUILD_CACHE_SETTINGS=text;await publishPreparedFullImage(options);
- const builds=readFileSync(f.trace,'utf8').trim().split('\n').map(JSON.parse).filter(c=>c.command==='docker'&&c.args[0]==='buildx');assert.equal(builds.length,1);
- assert.deepEqual(builds[0].args,['buildx','build','--progress','plain','--push','--provenance=false','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag','ghcr.io/fixture/formal-ai:1.2.3','--tag','ghcr.io/fixture/formal-ai:latest','--label','org.opencontainers.image.revision='+f.git(['rev-parse','HEAD']),'--label','org.opencontainers.image.version=1.2.3','--label','io.link-assistant.formal-ai.executable.sha256='+sha(readFileSync(join(f.cwd,'rust/target/release/formal-ai'))),'--cache-from','type=gha,scope=docker-image','--cache-to','type=gha,mode=max,scope=docker-image','.']);
+ const builds=readFileSync(f.trace,'utf8').trim().split('\n').map(JSON.parse).filter(c=>c.command==='docker'&&c.args[0]==='buildx');assert.equal(builds.length,2);
+ assert.deepEqual(builds[0].args,['buildx','build','--progress','plain','--push','--provenance=false','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag','ghcr.io/fixture/formal-ai:1.2.3','--tag','ghcr.io/fixture/formal-ai:latest','--label','org.opencontainers.image.revision='+f.git(['rev-parse','HEAD']),'--label','org.opencontainers.image.version=1.2.3','--label','io.link-assistant.formal-ai.executable.sha256='+sha(readFileSync(join(f.cwd,'rust/target/release/formal-ai'))),'--cache-from','type=gha,scope=docker-image','.']);
+ assert.deepEqual(builds[1].args,[...builds[0].args.slice(0,-1).filter(value=>value!=='--push'),'--output','type=cacheonly','--cache-to','type=gha,mode=max,scope=docker-image','.']);
  }finally{f.close();}
 });
 for(const[label,text]of [

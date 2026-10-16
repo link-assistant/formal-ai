@@ -58,6 +58,19 @@ export function dockerRunner(run,cwd,environment) {
   }
  };
 }
+// Cache is acceleration only: export after verified publication under a separate hard deadline.
+function exportOptionalCache(run,cwd,environment,buildArguments,cache) {
+ const timeoutMs=90000,started=Date.now();let result,error;
+ console.error(JSON.stringify({dockerPhase:'cache-export',event:'start',timeoutMs,optional:true,progress:'streamed'}));
+ try {
+  result=run('docker',[...buildArguments.filter(value=>value!=='--push'),'--output','type=cacheonly','--cache-to',cache['cache-to'],'.'],
+   {cwd,env:environment,encoding:'utf8',timeout:timeoutMs,killSignal:'SIGKILL',stdio:['ignore','inherit','inherit']});
+ } catch(caught) {error=caught;}
+ const errorCode=result?.error?.code??error?.code;
+ console.error(JSON.stringify({dockerPhase:'cache-export',event:'end',elapsedMs:Date.now()-started,optional:true,
+  complete:!error&&!result?.error&&result?.signal===null&&result?.status===0,status:result?.status??null,signal:result?.signal??null,
+  errorCode:typeof errorCode==='string'&&/^[A-Z0-9_]{1,40}$/u.test(errorCode)?errorCode:error||result?.error?'UNKNOWN':null}));
+}
 async function anonymousManifest(reference,configDigest,fetcher) {
  const verify=manifest=>{assert.equal(manifest.schemaVersion,2);assert.equal(manifest.config?.digest,configDigest,'registry manifest is not the observed image config');};
  if(reference.startsWith('ghcr.io/'))return verifyAnonymousImageManifest(reference,fetcher,verify);
@@ -98,13 +111,16 @@ export async function publishPreparedFullImage({cwd,directory,version,image,envi
  assert.ok(typeof environment.ACTIONS_RESULTS_URL==='string'&&/^https:\/\/[^\s,]+$/u.test(environment.ACTIONS_RESULTS_URL),'GHA cache endpoint missing or invalid');
  const cache=releaseImageCacheSettings(environment);
  const invoke=dockerRunner(run,cwd,environment);
- invoke(['buildx','build','--progress','plain','--push','--provenance=false','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',image+':'+version,'--tag',image+':latest',
+ const buildArguments=['buildx','build','--progress','plain','--push','--provenance=false','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',image+':'+version,'--tag',image+':latest',
   '--label','org.opencontainers.image.revision='+record.selection.head,'--label','org.opencontainers.image.version='+version,
   '--label','io.link-assistant.formal-ai.executable.sha256='+record.executable.sha256,
-  '--cache-from',cache['cache-from'],'--cache-to',cache['cache-to'],'.']);
+  '--cache-from',cache['cache-from']];
+ invoke([...buildArguments,'.']);
  invoke(['pull',image+':'+version]);const reference=immutableReference(image+':'+version,invoke);
  const expected={revision:record.selection.head,version,binarySha256:record.executable.sha256};
  const observation=await observePublished(reference,expected,invoke,fetcher);
+ validatePreparedBinary({cwd,directory,version,environment,repositoryUrl});
+ exportOptionalCache(run,cwd,environment,buildArguments,cache);
  validatePreparedBinary({cwd,directory,version,environment,repositoryUrl});
  const result={schema:'prepared-release-image/v1',authority:record.authority,preparedBuildSha256:sha(readFileSync(join(directory,'prepared-build.json'))),sourceSelectionSha256:record.sourceSelectionSha256,expected,image:reference,...observation};
  writeFileSync(join(directory,'full-image.json'),JSON.stringify(result,null,2)+'\n');return result;
