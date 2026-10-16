@@ -4,6 +4,7 @@ bump: minor
 
 ### Fixed
 
+- Regenerate the TypeScript final-result worker through the maintained JavaScript-to-TypeScript translator and verify the complete translation tree.
 - Create independent client and case evidence directories, keep browser-worker factories current within reviewed budgets, and exercise localized interactive reporting consent.
 - Decode typed report traces, legacy and typed TUI dialogs, and coding-ladder refusal evidence while preserving their original assertions and registering the focused reader controls in CI.
 - Refresh genuine native census data and preserve source-owned test registration, typed client evidence and portable issue-draft deadlines through the coordinated CI repair batch.
