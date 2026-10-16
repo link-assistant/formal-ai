@@ -1,3 +1,42 @@
+# Release recovery checkpoint — 2026-10-16T00:20:28.752Z
+
+PR [#1225](https://github.com/link-assistant/formal-ai/pull/1225) is OPEN; do not merge before every exact-head workflow passes. Reviewed head `1002eca0bb5da2355e416ae5255c32377f3e1baf`, tree `b37f663b58c3aa317d81738916be9c830214da09`. Hosted evidence observed 2026-10-16T00:19:17.871021+00:00: 1/16 workflows succeeded; 0 failed, 15 pending/other. Historical efbe95 head passed all15, but Desktop transport fixes required this new sixteen-workflow cohort. Never substitute historical green checks.
+
+## Delivered release fixes
+
+- Container publication: five preceding authorization steps make GITHUB_ENV authority available to the consuming step; strict source/native/index validators remain active. Thirteen targeted controls passed.
+- Pages: one serial live native-engine smoke avoids public CDN rate-limit amplification while preserving real WASM execution, mount, docs and 2+2=4 checks. Full old suites remain preserved as named PAGES-LIVE-CDN-RATE-BUDGET debt; nine targeted controls passed.
+- Staged release projection: regenerated four retained artifacts and a strict regression preserve all52 operations/104 source-binding rows. Sixty-two controls/generator/readability checks passed.
+- Desktop line-limit regression: initial transport fix reached1517 lines and failed the actual1500 gate. A separate Formal AI patch removes24 safe external blank lines to1493; complete YAML AST, every executable scalar and all comments remain unchanged; original failure/zero-effect controller preflights preserved.
+- Desktop: include hidden advertisement files in the narrowly scoped native-source artifact; stage signing observations under internal platform directories and explicitly merge downloads. Four new regressions plus ten existing strict controls passed; missing-platform/altered-byte refusals remain. No DMG/ZIP or signing/provenance requirement was dropped.
+
+All source/Git/PR changes above ran through maintained JavaScript Formal AI; prescribed recipes earn zero autonomous authorship/token-savings credit. No local Rust/native/WASM/Desktop/container compilation or execution was used. Linked focused issue1226 covers release recovery only. All27 full acceptances across issues1207/1213/1220 remain Pending in draft PR1221; do not claim those requirements delivered.
+
+## Publication evidence and remaining gates
+
+v0.353.4 selects actual source a0aa19fd4c8ddf8985fb4f98c719884403cfbca8, treee22de07376092fed84cd4d0fb9c5a0546b8e5069, child of merged PR1224 at05edae984d73a362b24f73162654d44fb2943736. GitHub release414331067 and crates.io0.353.4 were published; crate byte audit/clean install passed. Browser/source-network publishers passed. Independently verified staged full AMD64 Docker Hub immutable/tag manifest matches CI receipt, but this is not canonical multiarch acceptance.
+
+Fresh v0.353.4 inventory at23:57 observed47 assets:40/57 required, one conditional Hub receipt and six extra blockmaps. Seventeen required native/provenance/signing/advertisement/worker records were missing. macOSARM packaging passed on a fresh host after the original hdiutil Device not configured error exhausted its existing three precise retries; original failure was preserved. Attempt2 finalizer still failed because the old workflow omitted hidden advertisement metadata. Rerunning that old workflow cannot adopt this fix.
+
+Latest release metadata observed 2026-10-16T00:20:28.752Z: [v0.353.4](https://github.com/link-assistant/formal-ai/releases/tag/v0.353.4), id414331067, 47 assets. Metadata count alone is not production acceptance. Full exact asset inventory, canonical full/slim AMD64+ARM64 manifests, strict receipts, clean runtime and live Pages acceptance remain required. Production completion has NOT been established by this checkpoint.
+
+Container recovery request: not accepted/executed in the qualified proof. Desktop recovery request: not accepted/executed in the qualified proof. Both prepared controllers require the qualified fixed-main merge and explicit unchanged v0.353.4 tag to remain latest; neither may downgrade a newer release. Desktop manual dispatch rebuilds SAME-RUN evidence rather than splicing older receipts. Normal patch fragments also queue the next normal release; independently qualify its actual version child and tag.
+
+## Safe resume and evidence
+
+- Live compact private checkpoint: /private/tmp/formal-ai-post-merge-resume-20261016/checkpoint.json; sole CI watcher ci_monitor_recovery2. Source-writing subagent finished. Do not spawn more agents merely to poll.
+- Source publication: /private/tmp/formal-ai-desktop-workflow-size-publish-20261016-v2/{proof.json,run.transcript.json}. Candidate regressions/qualified source: /private/tmp/formal-ai-desktop-evidence-layout-20261016/manifest.json.
+- Exact-head merge guard: /private/tmp/formal-ai-release-recovery-merge-20261016-v4/run-request.json. Container dispatch: /private/tmp/formal-ai-release-recovery-dispatch-20261016-v4/run-request.json. Desktop dispatch: /private/tmp/formal-ai-desktop-provenance-recovery-dispatch-20261016-v2/run-request.json. Inspect execution-lock/proof/receipt/live GitHub before any invocation; never blindly replay a mutator.
+- All prior merge/dispatch controller versions are obsolete; efbe v2 explicitly refuses known Desktop defects even if old checks are green. Original zero-effect preflight/schema failures and accepted mutations remain preserved. After a new handoff-only feature commit advances local HEAD, any unexecuted guard pinned to0a975 needs a new reviewed version bound to the new actual doc publication; never bypass its assertion.
+- Independent bounded publication observer: /private/tmp/formal-ai-publication-observer-a0aa19-20261016/README.txt. Invoke only after all actual assets and canonical promotions exist. Download no image layers or native binaries locally. Preserve source, original failures and inverse files. Use only Formal-AI-owned disposable cleanup if needed; do not delete shared caches/history or compile Rust locally.
+
+## Codex memory incident
+
+[Initial sanitized report](https://github.com/openai/codex/issues/23260#issuecomment-6200840165) was delivered. [Public-source-only follow-up](https://github.com/openai/codex/issues/23260#issuecomment-6204832966) identifies upstream PR51761 as a possible lead: 0.162.1 globals.rs clones enabled_tools in both installation paths; 0.163.0 removes those copies and narrows retained callback state. Source inspection and release ancestry confirm that difference. This does NOT establish the cause of this incident, reproduce it, or prove a memory fix. No affected-process heap profile was captured before restart.
+
+An optional additional public upload of private system measurements was rejected by automatic approval review and was not executed. Those measurements remain local. The separate accepted follow-up contains public upstream source facts only.
+
+---
 ## Dated recovery checkpoint — 2026-10-15 23:14:45 UTC
 
 This checkpoint records observations as of 2026-10-15 23:14:45 UTC. Hosted CI and
