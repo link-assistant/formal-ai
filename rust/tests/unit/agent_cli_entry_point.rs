@@ -115,7 +115,13 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     assert_eq!(answer, expected.planned_not_executed_answer());
     assert!(answer.contains("Planned, not executed"));
     assert!(answer.contains(ISSUE_URL));
-    assert!(answer.contains(body));
+    let goal_literal = answer
+        .lines()
+        .find_map(|line| line.strip_prefix("  goal "))
+        .expect("the canonical plan contains its original goal");
+    let decoded_goal: String =
+        serde_json::from_str(goal_literal).expect("the goal literal is a quoted string");
+    assert_eq!(decoded_goal, body);
     assert!(!answer.contains("Recorded and verified"));
     assert!(!answer.contains("Created and verified"));
     assert!(
