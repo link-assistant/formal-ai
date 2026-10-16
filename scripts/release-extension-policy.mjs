@@ -112,9 +112,10 @@ export function verifyAuthoritativeTransfer(expected,
   }).decode(evidence.checksumBytes).trim().split(/\r?\n/u);
   const checksums = new Map();
   for (const row of rows) {
-    const m = /^([a-f0-9]{64})  ([^/\\\r\n]+)$/u.exec(row);
+    const m = /^([a-f0-9]{64}) [ *]([^/\\\r\n]+)$/u.exec(row);
     assert.ok(m);
-    assert.ok(!checksums.has(m[2]));
+    if (m[2] === filename) assert.ok(!checksums.has(m[2]),
+      'duplicate extension checksum');
     checksums.set(m[2],
  m[1]);
   }

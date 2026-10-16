@@ -26,10 +26,11 @@ export function resolveSelfAuthoredRelease(cwd, environment, readGithub = github
   if (environment.EVENT === 'release') assert.equal(environment.RELEASE_ACTION, 'published');
   const decision = resolvePackageRelease(environment, productionReleaseObserver(environment, readGithub));
   if (!decision.publish) return {active: false};
-  const prefix = 'repos/' + environment.REPOSITORY + '/';
+  const repositoryEndpoint = 'repos/' + environment.REPOSITORY;
+  const prefix = repositoryEndpoint + '/';
   const release = readGithub(prefix + 'releases/tags/' + encodeURIComponent(decision.tag));
   assert.ok(Number.isSafeInteger(release.id) && release.id > 0, 'exact release identifier required');
-  const repository = readGithub(prefix);
+  const repository = readGithub(repositoryEndpoint);
   assert.equal(repository.full_name, environment.REPOSITORY);
   assert.equal(repository.default_branch, 'main', 'only the existing default main writer is supported');
   const defaultCommit = readGithub(prefix + 'commits/main').sha;

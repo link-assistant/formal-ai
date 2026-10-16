@@ -124,7 +124,9 @@ test('actual Node Docker stand-in builds prebuilt once, preserves immutable full
  const calls=readFileSync(f.trace,'utf8').trim().split('\n').map(JSON.parse);
  const docker=calls.filter(call=>call.command==='docker');
  const builds=docker.filter(call=>call.args[0]==='buildx'&&call.args[1]==='build');
- assert.equal(builds.length,1);
+ assert.equal(builds.length,2);
+ assert.ok(!builds[0].args.includes('--cache-to'));assert.ok(builds[1].args.includes('type=cacheonly'));assert.ok(!builds[1].args.includes('--push'));
+ assert.ok(docker.indexOf(builds[1])>docker.findIndex(call=>call.args.includes('verify-formal-ai-dind')));
  const args=builds[0].args;
  assert.ok(args.includes('--push'));assert.ok(args.includes('--provenance=false'));assert.ok(args.includes('--progress')&&args.includes('plain'));assert.ok(!args.includes('--load'));
  const tags=args.flatMap((value,index)=>value==='--tag'?[args[index+1]]:[]);assert.deepEqual(tags,['ghcr.io/fixture/formal-ai:1.2.3','ghcr.io/fixture/formal-ai:latest']);
@@ -135,17 +137,44 @@ test('actual Node Docker stand-in builds prebuilt once, preserves immutable full
  assert.ok(publicationOrder[0]<publicationOrder[1]);
  assert.ok(builds[0].args.includes('BINARY_SOURCE=prebuilt'));
  assert.ok(builds[0].args.includes('type=gha,scope=docker-image'));
- assert.ok(builds[0].args.includes('type=gha,mode=max,scope=docker-image'));
+ assert.ok(builds[1].args.includes('type=gha,mode=max,scope=docker-image'));
  assert.equal(calls.filter(call=>call.command==='cargo'&&call.args[0]==='build').length,1);
  assert.equal(docker.filter(call=>call.args.includes('verify-formal-ai-dind')).length,3);
  }finally{f.close();
  }
+});
+for(const failure of ['nonzero','timeout','throw'])test('optional cache '+failure+' cannot invalidate actual verified publication',async()=>{
+ const f=fixture(),saved=console.error,events=[];
+ try {
+  const options=declaredGnuFactory(f),original=options.run;let exported=false;
+  console.error=value=>events.push(JSON.parse(value));
+  options.run=(command,args,settings)=>{
+   if(command==='docker'&&args.includes('type=cacheonly')) {
+    exported=true;assert.equal(settings.timeout,90000);assert.equal(settings.killSignal,'SIGKILL');
+    assert.deepEqual(settings.stdio,['ignore','inherit','inherit']);assert.ok(!args.includes('--push'));
+    assert.equal(args.at(-1),'.');assert.ok(args.includes('BINARY_SOURCE=prebuilt'));assert.ok(args.includes('type=gha,mode=max,scope=docker-image'));
+    const calls=readFileSync(f.trace,'utf8').trim().split('\n').map(JSON.parse);
+    assert.ok(calls.some(call=>call.command==='docker'&&call.args.includes('verify-formal-ai-dind')));
+    assert.ok(options.requests.some(request=>request.url.startsWith('https://ghcr.io/')));
+    if(failure==='nonzero')return {status:23,signal:null};
+    if(failure==='timeout')return spawnSync(process.execPath,['-e','setInterval(()=>{},1000)'],{...settings,timeout:40,stdio:'pipe'});
+    throw Error('private fixture error content must not enter cache outcome');
+   }
+   return original(command,args,settings);
+  };
+  const receipt=await publishPreparedFullImage(options);assert.equal(exported,true);assert.equal(receipt.runtime.status,0);
+  assert.equal(existsSync(join(f.options.directory,'full-image.json')),true);
+  const cache=events.filter(event=>event.dockerPhase==='cache-export');assert.deepEqual(cache.map(event=>event.event),['start','end']);
+  assert.equal(cache[1].complete,false);if(failure==='timeout'){assert.equal(cache[1].errorCode,'ETIMEDOUT');assert.equal(cache[1].signal,'SIGKILL');}
+  assert.ok(!JSON.stringify(events).includes('private fixture error content'));assert.ok(JSON.stringify(cache).length<1024);
+ }finally{console.error=saved;f.close();}
 });
 for(const mode of ['docker-failed','wrong-version','wrong-binary','runtime-failed'])test('actual '+mode+' observation cannot certify an image publication',async()=>{
  const f=fixture();
  try{const options=declaredGnuFactory(f);
  f.update({mode});
  await assert.rejects(publishPreparedFullImage(options));
+ assert.equal(readFileSync(f.trace,'utf8').includes('type=cacheonly'),false);
  assert.equal(existsSync(join(f.options.directory,'full-image.json')),false);
  }finally{f.close();
  }
@@ -191,7 +220,7 @@ test('Docker Hub canonical digest spelling accepts configured docker.io alias wi
  const mirrored=await mirrorPreparedFullImage({...options,image:'docker.io/fixture/mirror'});
  assert.match(mirrored.destinationImage,/^fixture\/mirror@sha256:/u);
  const calls=readFileSync(f.trace,'utf8').trim().split('\n').map(JSON.parse);
- assert.equal(calls.filter(call=>call.command==='docker'&&call.args[0]==='buildx').length,1);
+ assert.equal(calls.filter(call=>call.command==='docker'&&call.args[0]==='buildx'&&call.args.includes('--push')).length,1);
  }finally{f.close();
  }
 });

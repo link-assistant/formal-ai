@@ -861,7 +861,11 @@ fn every_standalone_script_test_suite_is_run_by_something() {
                     .split("#[path = \"")
                     .nth(1)
                     .and_then(|tail| tail.split('"').next())
-                    .filter(|name| name.ends_with(".rs"))
+                    .filter(|name| {
+                        std::path::Path::new(name)
+                            .extension()
+                            .is_some_and(|extension| extension == "rs")
+                    })
                 {
                     found.push(
                         included

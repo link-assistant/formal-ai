@@ -215,7 +215,12 @@ fn every_docker_build_push_step_uses_the_gha_layer_cache() {
         "BINARY_SOURCE=prebuilt",
         "'cache-from':'type=gha,scope=docker-image'",
         "'cache-to':'type=gha,mode=max,scope=docker-image'",
-        "'--cache-from',cache['cache-from'],'--cache-to',cache['cache-to']",
+        // Issue #1232: export follows verified publication under its own deadline.
+        "'--cache-from',cache['cache-from']",
+        "'--output','type=cacheonly','--cache-to',cache['cache-to']",
+        "const timeoutMs=90000",
+        "killSignal:'SIGKILL'",
+        "exportOptionalCache(run,cwd,environment,buildArguments,cache)",
         "record.selection.head",
         "record.executable.sha256",
         "['tag',source.image,image+':'+suffix]",

@@ -20,6 +20,53 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.353.8] - 2026-10-16
+
+### Fixed
+
+- Consolidate shared Electron updater metadata checksums from the actual published bytes, rejecting conflicting ordinary artifacts and normalizing Windows binary-mode checksum records. Extension transfer now checks its own unique checksum independently while preserving exact signed package, source and producer identity checks.
+
+Move optional Docker build cache export after immutable pull-back, version, executable hash, privileged runtime, and anonymous registry verification. Give cache-only export a hard 90-second deadline so a slow cache service cannot consume the release verification budget. Required publication failures still refuse release receipts.
+
+## [0.353.7] - 2026-10-16
+
+### Fixed
+
+- Use GitHub API media negotiation for Actions artifact ZIP downloads while retaining octet-stream downloads for release assets. Extension publication now reports bounded, redacted GitHub HTTP errors instead of an unexplained status assertion.
+
+Pull request: https://github.com/link-assistant/formal-ai/pull/1228
+
+## [0.353.6] - 2026-10-16
+
+### Fixed
+
+- Complete shallow protocol checkout history before authorizing an older published release, retaining exact fetched tag and Git ancestry validation.
+
+## [0.353.5] - 2026-10-16
+
+### Fixed
+
+- Independently authorize stable container release sources in a preceding workflow step so imported sources receive the verified commits, preserving strict tag, source, and ancestry checks.
+
+### Fixed
+
+- Bound the default live Pages check to a serial native-engine smoke to avoid public CDN rate limits, retaining the full functional suite and recording restoration debt.
+
+### Fixed
+
+- Preserve hidden release advertisement protocol files and distinct macOS signing observations across single or multiple artifact downloads, retaining strict source and signing validation.
+
+## [0.353.4] - 2026-10-15
+
+### Fixed
+
+- Use the canonical repository API endpoint and accept queued aggregate workflow status while retaining exact source and completed publisher checks.
+- Declare the worker WASM call provider before solver startup through generated prerequisites.
+
+### Changed
+
+- Keep unmet prospective self-development aspirations visible in report mode while enforcing strict attribution validation and measured zero credit.
+
 ## [0.353.3] - 2026-10-15
 
 Restore only the generated image publication stage to its retained logical source allowance of 90 minutes. The former blanket 30-minute stage cap cancelled Docker Hub mirroring after successful full and slim GHCR checks, leaving the immutable image transfer unsealed. Keep every publication operation, source/digest/runtime/anonymous check and per-operation limit; all other physical stages retain 30-minute caps. Hosted completion still requires a fresh production run. Supplied orchestration receives zero Formal AI authorship credit.
