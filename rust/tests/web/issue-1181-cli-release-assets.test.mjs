@@ -151,7 +151,9 @@ test("R1181-3: finalize consolidates the CLI fragments and reports missing legs 
     // These source/run values are fixture data, not publication authentication.
     const protocol = path.join(realpathSync(dir), "protocol");
     mkdirSync(protocol);
-    copyFileSync(path.join(REPO_ROOT, "scripts/release-producer-output-receipt.mjs"), path.join(protocol, "release-producer-output-receipt.mjs"));
+    for (const name of ["release-producer-output-receipt.mjs", "release-checksums.mjs"]) {
+      copyFileSync(path.join(REPO_ROOT, "scripts", name), path.join(protocol, name));
+    }
     writeFileSync(path.join(protocol, "producer-output-workflow.yml"), WORKFLOW);
     writeFileSync(path.join(protocol, "protocol-selection.json"), JSON.stringify({
       commit: evidenceFixture.source.source_commit, tree: evidenceFixture.source.source_tree,
