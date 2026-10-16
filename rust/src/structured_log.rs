@@ -2,6 +2,7 @@
 //! The tagged, percent-encoded tree matches JavaScript formal-ai-log-v1.
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
+use std::fmt::Write as _;
 use std::fs::{self, OpenOptions};
 use std::io::{self, Write};
 use std::path::PathBuf;
@@ -28,6 +29,7 @@ fn rank(level: &str) -> u8 {
         _ => 4,
     }
 }
+#[must_use]
 pub fn enabled(level: &str) -> bool {
     !SILENT.load(Ordering::Relaxed)
         && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
@@ -54,12 +56,8 @@ fn secret_key(key: &str) -> bool {
         || key.ends_with("apikey")
 }
 /// Redact before formatting, hashing, or persistence, including nested errors.
+#[must_use]
 pub fn redact(value: &Value) -> Value {
-    let mut secrets: Vec<String> = std::env::vars()
-        .filter(|(key, value)| secret_key(key) && !value.is_empty())
-        .map(|(_, value)| value)
-        .collect();
-    secrets.sort_by_key(|value| std::cmp::Reverse(value.len()));
     fn walk(value: &Value, secrets: &[String]) -> Value {
         let scrub = |text: &str| {
             secrets.iter().fold(text.to_owned(), |text, secret| {
@@ -92,6 +90,11 @@ pub fn redact(value: &Value) -> Value {
             other => other.clone(),
         }
     }
+    let mut secrets: Vec<String> = std::env::vars()
+        .filter(|(key, value)| secret_key(key) && !value.is_empty())
+        .map(|(_, value)| value)
+        .collect();
+    secrets.sort_by_key(|value| std::cmp::Reverse(value.len()));
     walk(value, &secrets)
 }
 fn word(text: &str) -> String {
@@ -103,7 +106,7 @@ fn word(text: &str) -> String {
         if byte.is_ascii_alphanumeric() || b"._~*/<>=!&|+-".contains(&byte) {
             output.push(char::from(byte));
         } else {
-            output.push_str(&format!("%{byte:02X}"));
+            write!(&mut output, "%{byte:02X}").expect("writing to a String cannot fail");
         }
     }
     output
@@ -179,10 +182,10 @@ fn timestamp() -> String {
         .unwrap_or_default();
     let seconds = elapsed.as_secs();
     // Gregorian civil date from Unix days; arithmetic follows 400-year eras.
-    let z = i64::try_from(seconds / 86400).unwrap_or(0) + 719468;
-    let era = z / 146097;
-    let doe = z - era * 146097;
-    let yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+    let z = i64::try_from(seconds / 86_400).unwrap_or(0) + 719_468;
+    let era = z / 146_097;
+    let doe = z - era * 146_097;
+    let yoe = (doe - doe / 1_460 + doe / 36_524 - doe / 146_096) / 365;
     let mut year = yoe + era * 400;
     let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
     let mp = (5 * doy + 2) / 153;
@@ -216,13 +219,13 @@ pub fn event(
     }
     let message = redact(&json!(message()));
     let mut record = json!({"schema":"formal-ai-diagnostic-v1", "timestamp":timestamp(), "timestamp_precision":"nanoseconds", "pid":std::process::id(), "sequence":SEQUENCE.fetch_add(1, Ordering::Relaxed) + 1, "level":level, "component":component, "dialog_id":crate::dialog_log::current_dialog_id(), "message":message, "kind":"native_diagnostic", "metadata":redact(&fields())});
-    if let Some(message) = record["message"].as_str().filter(|text| text.len() > 4096) {
-        if level != "trace" || !crate::cli_env::flag_enabled("FORMAL_AI_LOG_PAYLOAD_CUSTODY") {
-            let digest = crate::source_fetch::hex_lower(&Sha256::digest(message.as_bytes()));
-            let bytes = message.len();
-            record["payload"] = json!({"sha256":digest,"bytes":bytes});
-            record["message"] = json!("large_native_diagnostic");
-        }
+    if let Some(message) = record["message"].as_str().filter(|text| text.len() > 4096)
+        && (level != "trace" || !crate::cli_env::flag_enabled("FORMAL_AI_LOG_PAYLOAD_CUSTODY"))
+    {
+        let digest = crate::source_fetch::hex_lower(&Sha256::digest(message.as_bytes()));
+        let bytes = message.len();
+        record["payload"] = json!({"sha256":digest,"bytes":bytes});
+        record["message"] = json!("large_native_diagnostic");
     }
     let line = match encode(&record) {
         Ok(line) => line,

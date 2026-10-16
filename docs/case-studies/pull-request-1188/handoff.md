@@ -1,3 +1,15 @@
+# PR #1221: preserve native diagnostic error propagation — 2026-10-16
+
+The prior CI repair batch is published at e99d62214103e9683e6e45c99ab9313ef5ef5569. Workflows/Actionlint, self-development/debt, self-hosting evidence, web boundary, links and VS Code extension passed on that head. A subsequent native binary build exposed E0277 at cli_statement_audit.rs:61: a fallible serialization expression was inside the migrated String-returning diagnostic closure. The fix evaluates that identical expression with its question-mark operator in the enclosing Result, then lazily formats the resulting string. Serialization errors retain their prior propagation even when logging is disabled. The maintained Rust tokenizer audited all 101 diagnostic invocations, ignoring comments, string/character literals and debug-format punctuation: this was the sole true control-flow token, and the corrected calls contain none.
+
+This batch also includes reviewed same-behavior native lint idioms: must-use results, nested helper placement, readable numeric separators, String formatting through fmt::Write and equivalent conditional structure. These are source-only reviewed changes; hosted Clippy remains required and no warnings were suppressed. Source-only logger/debt/planner/size guards and all 34 original inventory-identity controls passed. No Rust compilation or product execution ran locally.
+
+An authenticated recursive audit of the three umbrella subissue trees visited 22 unique issues and found none missing from the single PR scope. The linked regressions and external acceptance dependencies remain recorded there. The exact issue1212 repository motto was independently verified in Settings. All 27 full umbrella acceptance rows remain Pending; only actually observed source/metadata outcomes receive credit.
+
+All changes and normal-hook commits/pushes continue through maintained JavaScript Formal AI with zero supplied-controller autonomous-authorship credit. Keep the exact-head watcher and strict JSFA delivery agent. Genuine census must authenticate the actual producer checkout commit/tree/parents, run/job/attempt, collector source, artifact ID/digest and byte comparison; a PR synthetic checkout must never be replaced with the API head SHA. Earlier-head producer success is historical after this source changes. Main v0.353.8 release recovery remains unverified until a fresh merged-source pipeline produces and independently validates the configured outputs.
+
+---
+
 # PR #1221: coordinated fixes for the first bulk CI run — 2026-10-16
 
 The complete 121-file source batch is published as 80b8fb6629894a4617f9e18b0729c4374397d17c in the single PR https://github.com/link-assistant/formal-ai/pull/1221. The description and [scope](../pull-request-1221/scope.md) include all planned issues, subissues and external acceptance dependencies. Its first push succeeded; an immediate stale API head stopped the original controller before the metadata update. Separate authenticated reconciliation confirmed the pushed SHA and updated the existing PR description without another push. Preserve both receipts; never replay either locked operation.
