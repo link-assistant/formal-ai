@@ -135,20 +135,39 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
-    // Two steps: the run reads the work item through its hosted fetch and
-    // records it. Issue #904 removed the `cat .formal-ai/general-change-plan.lino`
-    // step, which verified nothing but the write the same run had just
-    // performed, and that step has not come back; the hosted-fetch read also
-    // replaced the `gh` plan the driver's default-deny sandbox refused.
+    // The driver advertises a shell, but its sandbox refuses gh. The hosted
+    // fallback owns the unchanged issue body; unsupported prose closes with a
+    // canonical gap instead of writing an auxiliary plan journal.
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["web_fetch", "read_file", "write_file", "read_file"]
+        ["run_command", "web_fetch"]
     );
-    assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
+    let fetched: serde_json::Value =
+        serde_json::from_str(&outcome.steps[1].arguments).expect("fetch arguments");
+    assert_eq!(
+        fetched["url"],
+        "https://github.com/link-assistant/formal-ai/issues/698"
+    );
+    let body = formal_ai::agentic_coding::corpus::web_fetch_result(
+        fetched["url"].as_str().expect("the fetched issue URL"),
+    )
+    .expect("the owned offline issue body");
+    assert_eq!(outcome.steps[1].result, body);
+    let mut expected =
+        compose_general_change_plan(ISSUE_698_WORK_ITEM).expect("the original work-item plan");
+    expected.goal = body.trim().to_owned();
+    assert_eq!(outcome.final_answer, expected.planned_not_executed_answer());
+    assert!(
+        outcome
+            .steps
+            .iter()
+            .all(|step| !step.arguments.contains(PLAN_PATH)),
+        "an unsupported work item must not write an auxiliary plan journal"
+    );
     assert!(outcome.final_answer.contains("Planned, not executed"));
     assert!(!outcome.final_answer.contains("project lookup"));
 }
