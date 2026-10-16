@@ -56,8 +56,16 @@ export function createReadonlyGithub(directory,
     },
  null,
  2));
-    assert.equal(result.status,
- 0);
+    let diagnostic = String(result.stderr ?? result.error?.message ?? '')
+      .replace(/\x1b\[[0-9;]*m/gu, '')
+      .replace(/(https?:\/\/[^\s?#]+)[?#][^\s]*/gu, '$1?[redacted]');
+    for (const key of ['GH_TOKEN', 'GITHUB_TOKEN']) {
+      const secret = process.env[key];
+      if (secret) diagnostic = diagnostic.replaceAll(secret, '[redacted]');
+    }
+    diagnostic = diagnostic.replace(/(?:gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)/gu, '[redacted]').slice(0, 2048);
+    assert.equal(result.status, 0,
+      'GitHub read-only verification failed: ' + diagnostic);
     assert.equal(result.signal,
  null);
     assert.equal(result.error,
@@ -68,11 +76,12 @@ export function createReadonlyGithub(directory,
     json: endpoint => JSON.parse(execute(['api',
  endpoint]).toString('utf8')),
 
-    bytes: endpoint => execute(['api',
- '-H',
- 'Accept: application/octet-stream',
- endpoint],
- 400 * 1024 * 1024),
+    bytes: endpoint => execute([
+      'api',
+      ...(/\/actions\/artifacts\/[1-9][0-9]*\/zip$/u.test(endpoint)
+        ? [] : ['-H', 'Accept: application/octet-stream']),
+      endpoint
+    ], 400 * 1024 * 1024),
 
     verify: request => {
       assert.match(request.name,
