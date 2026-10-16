@@ -63,7 +63,7 @@ function exportOptionalCache(run,cwd,environment,buildArguments,cache) {
  const timeoutMs=90000,started=Date.now();let result,error;
  console.error(JSON.stringify({dockerPhase:'cache-export',event:'start',timeoutMs,optional:true,progress:'streamed'}));
  try {
-  result=run('docker',[...buildArguments.filter(value=>value!=='--push'),'--output','type=cacheonly','--cache-to',cache['cache-to'],'.'],
+  result=run('docker',['buildx','build','--progress','plain','--provenance=false',...buildArguments,'--output','type=cacheonly','--cache-to',cache['cache-to'],'.'],
    {cwd,env:environment,encoding:'utf8',timeout:timeoutMs,killSignal:'SIGKILL',stdio:['ignore','inherit','inherit']});
  } catch(caught) {error=caught;}
  const errorCode=result?.error?.code??error?.code;
@@ -111,11 +111,11 @@ export async function publishPreparedFullImage({cwd,directory,version,image,envi
  assert.ok(typeof environment.ACTIONS_RESULTS_URL==='string'&&/^https:\/\/[^\s,]+$/u.test(environment.ACTIONS_RESULTS_URL),'GHA cache endpoint missing or invalid');
  const cache=releaseImageCacheSettings(environment);
  const invoke=dockerRunner(run,cwd,environment);
- const buildArguments=['buildx','build','--progress','plain','--push','--provenance=false','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',image+':'+version,'--tag',image+':latest',
+ const buildArguments=['--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',image+':'+version,'--tag',image+':latest',
   '--label','org.opencontainers.image.revision='+record.selection.head,'--label','org.opencontainers.image.version='+version,
   '--label','io.link-assistant.formal-ai.executable.sha256='+record.executable.sha256,
   '--cache-from',cache['cache-from']];
- invoke([...buildArguments,'.']);
+ invoke(['buildx','build','--progress','plain','--push','--provenance=false',...buildArguments,'.']);
  invoke(['pull',image+':'+version]);const reference=immutableReference(image+':'+version,invoke);
  const expected={revision:record.selection.head,version,binarySha256:record.executable.sha256};
  const observation=await observePublished(reference,expected,invoke,fetcher);
