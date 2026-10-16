@@ -20,6 +20,7 @@ on: # zizmor: ignore[dangerous-triggers]
       - 'vscode/**'
       - '.github/workflows/desktop-release.yml'
       - 'scripts/desktop-release-resolve.sh'
+      - 'scripts/release-checksums.mjs'
       - 'scripts/install-node-dependencies.sh'
       - 'scripts/native-release-*.mjs'
       - 'scripts/build-selected-wasm.mjs'
@@ -1243,7 +1244,7 @@ jobs:
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           cp scripts/release-advertisement.mjs scripts/release-protocol.mjs "$protocol_dir/"
-          cp scripts/release-producer-output-receipt.mjs "$protocol_dir/"
+          cp scripts/release-producer-output-receipt.mjs scripts/release-checksums.mjs "$protocol_dir/"
           cp .github/workflows/desktop-release.yml "$protocol_dir/producer-output-workflow.yml"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
@@ -1373,8 +1374,8 @@ jobs:
             echo "No checksum fragments were produced; nothing to finalize." >&2
             exit 1
           fi
-          # Deterministic order: concatenate fragments, sort by filename (field 2).
-          cat "${parts[@]}" | sort -k2 > SHA256SUMS.txt
+          # Reconcile shared updater metadata against actual published bytes.
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/release-checksums.mjs" "${parts[@]}" > SHA256SUMS.txt
           echo "=== SHA256SUMS.txt ==="
           cat SHA256SUMS.txt
           commit="$(gh release view "$TAG" --repo "$REPO" --json targetCommitish --jq .targetCommitish || echo unknown)"
