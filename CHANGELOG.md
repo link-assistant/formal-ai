@@ -20,6 +20,14 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.353.8] - 2026-10-16
+
+### Fixed
+
+- Consolidate shared Electron updater metadata checksums from the actual published bytes, rejecting conflicting ordinary artifacts and normalizing Windows binary-mode checksum records. Extension transfer now checks its own unique checksum independently while preserving exact signed package, source and producer identity checks.
+
+Move optional Docker build cache export after immutable pull-back, version, executable hash, privileged runtime, and anonymous registry verification. Give cache-only export a hard 90-second deadline so a slow cache service cannot consume the release verification budget. Required publication failures still refuse release receipts.
+
 ## [0.353.7] - 2026-10-16
 
 ### Fixed

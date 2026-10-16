@@ -849,3 +849,5 @@ changelog.d/20261016_065500_pages_live_rate_budget.md	0.353.5
 changelog.d/20261016_082000_native_trust_shallow_history.md	0.353.6
 changelog.d/20261016_104500_desktop_evidence_artifact_layout.md	0.353.5
 changelog.d/20261016_134200_extension_artifact_media.md	0.353.7
+changelog.d/20261016_153000_release_checksum_consolidation.md	0.353.8
+changelog.d/20261016_180000_release_cache_export_budget.md	0.353.8
