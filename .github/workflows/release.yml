@@ -1046,7 +1046,7 @@ jobs:
       - name: Run GitHub Pages e2e tests
         run: |
           cd rust/tests/e2e
-          PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.config.js
+          PAGES_URL="${{ needs.deploy-pages.outputs.page_url }}" npx playwright test --config=playwright.pages.smoke.config.js
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v7
