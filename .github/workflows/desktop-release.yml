@@ -735,7 +735,6 @@ jobs:
             fi
             node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-evidence.mjs" signing ../native-source "$installed_app" "$dmg" "$RUNNER_TEMP/signing-observation.json"
           done
-
       - name: Stage distinct macOS signing observation
         if: matrix.ebflag == '--mac'
         env:
@@ -759,7 +758,6 @@ jobs:
           path: ${{ runner.temp }}/formal-ai-signing-artifact/
           if-no-files-found: error
           retention-days: 7
-
       - name: Save completed Windows ARM packaging tool downloads
         if: ${{ !cancelled() && matrix.label == 'windows-arm64' && steps.windows_arm_tool_cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@v6
@@ -814,7 +812,6 @@ jobs:
             ls -la release || true
             exit 1
           fi
-
       - name: Collect artifacts and checksums
         id: collect
         working-directory: desktop
@@ -847,7 +844,6 @@ jobs:
             }
           ' > "release/SHA256SUMS-${{ matrix.label }}.partial"
           cat "release/SHA256SUMS-${{ matrix.label }}.partial"
-
       - name: Attest build provenance
         # Dry run: a pull request has nothing to attest and no release to
         # publish to. Everything above -- packaging, signing, smoke tests -- has
@@ -862,7 +858,6 @@ jobs:
           subject-path: |
             desktop/release/formal-ai-desktop-*
             desktop/release/latest*.yml
-
       - name: Upload assets to release
         if: github.event_name != 'pull_request'
         working-directory: desktop
@@ -882,7 +877,6 @@ jobs:
             [ -f "$f" ] && files+=("$f")
           done
           gh release upload "$TAG" "${files[@]}" --repo "$REPO" --clobber
-
       - name: Upload checksum fragment
         uses: actions/upload-artifact@v7
         with:
@@ -984,7 +978,6 @@ jobs:
         env:
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin native-source "${{ matrix.target }}"
-
       - name: Package the CLI archive
         run: |
           set -euo pipefail
@@ -1002,7 +995,6 @@ jobs:
             *) echo "::error::Unexpected archive format: ${{ matrix.archive }}"; exit 1 ;;
           esac
           ls -la "${staging}.${{ matrix.archive }}"
-
       # runner that can actually execute its own archive. A target that
       # compiles but cannot start (bad linker flags, a broken manifest, a
       # packaging mistake) fails here instead of in a user's shell.
@@ -1027,7 +1019,6 @@ jobs:
           node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify-extracted native-bin native-source "${{ matrix.target }}" "$binary"
           [ -s "${checkdir}/formal-ai-cli-${triple}/LICENSE" ] || { echo "::error::the archive did not contain LICENSE"; exit 1; }
           [ -s "${checkdir}/formal-ai-cli-${triple}/README.md" ] || { echo "::error::the archive did not contain README.md"; exit 1; }
-
       # Same `sha256sum`-format line (bare filename) as the desktop build job
       # so the consolidated SHA256SUMS.txt covers the CLI archives too and
       # scripts/install.sh can verify its download against it by name.
@@ -1039,7 +1030,6 @@ jobs:
           "${sum[@]}" "formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}" \
             > "SHA256SUMS-${{ matrix.label }}.partial"
           cat "SHA256SUMS-${{ matrix.label }}.partial"
-
       # Attest before publishing; see the same step in the desktop build job.
       - name: Attest build provenance
         if: github.event_name != 'pull_request'
@@ -1048,7 +1038,6 @@ jobs:
           # The exact archive this leg produced (.tar.gz or .zip), not a glob:
           # a glob that matches nothing on a leg makes attest fail the job.
           subject-path: formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}
-
       - name: Upload CLI archive to release
         if: github.event_name != 'pull_request'
         env:
@@ -1058,7 +1047,6 @@ jobs:
         run: |
           set -euo pipefail
           gh release upload "$TAG" "formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}" --repo "$REPO" --clobber
-
       - name: Upload checksum fragment
         uses: actions/upload-artifact@v7
         with:
@@ -1151,14 +1139,12 @@ jobs:
       # this package job exercises the exact production and build-tool graph.
       - name: Install extension dependencies
         run: scripts/install-node-dependencies.sh vscode
-
       # Issue #1014: the source-only lint suite intentionally needs no install.
       # Exercise the real esbuild + Playwright graph here, after its locked
       # dependencies exist and before the same helper creates the VSIX.
       - name: Test extension production bundle
         working-directory: vscode
         run: npm run test:package
-
       - name: Package the .vsix
         id: package
         working-directory: vscode
@@ -1178,7 +1164,6 @@ jobs:
           [ -n "$vsix" ] || { echo "::error::vsce package produced no .vsix" >&2; exit 1; }
           echo "vsix=$vsix" >> "$GITHUB_OUTPUT"
           echo "Packaged: $vsix"
-
       - name: Verify worker resources before extension attestation
         env:
           WASM_RECEIPT_SHA256: ${{ needs.native-source.outputs.wasm-receipt-sha256 }}
@@ -1198,14 +1183,12 @@ jobs:
             process.stdout.write(hash + "  " + n + "\n");
           ' > SHA256SUMS-vscode.partial
           cat SHA256SUMS-vscode.partial
-
       # Attest before publishing; see the same step in the desktop build job.
       - name: Attest build provenance
         if: github.event_name != 'pull_request'
         uses: actions/attest@v4
         with:
           subject-path: vscode/formal-ai-vscode-*.vsix
-
       - name: Upload .vsix to release
         if: github.event_name != 'pull_request'
         working-directory: vscode
@@ -1214,7 +1197,6 @@ jobs:
           REPO: ${{ github.repository }}
           TAG: ${{ needs.resolve.outputs.tag }}
         run: gh release upload "$TAG" "${{ steps.package.outputs.vsix }}" --repo "$REPO" --clobber
-
       - name: Upload checksum fragment
         uses: actions/upload-artifact@v7
         with:
@@ -1366,7 +1348,6 @@ jobs:
           pattern: checksums-*
           path: fragments
           merge-multiple: true
-
       - name: Build consolidated SHA256SUMS.txt and BUILD-PROVENANCE.txt
         id: manifest
         env:
@@ -1466,7 +1447,6 @@ jobs:
           # shipped", and callers rely on that.
           echo "incomplete=${missing[*]}" >> "$GITHUB_OUTPUT"
           node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/release-producer-output-receipt.mjs" "$GITHUB_OUTPUT" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/producer-output-workflow.yml" "$FORMAL_AI_NATIVE_PROTOCOL_DIR/protocol-selection.json" producer-output-receipt.json
-
       - name: Attest canonical producer outputs
         uses: actions/attest@v4
         with:
@@ -1478,14 +1458,12 @@ jobs:
           path: producer-output-receipt.json
           retention-days: 7
           if-no-files-found: error
-
       - name: Attest consolidated digest and provenance data
         uses: actions/attest@v4
         with:
           subject-path: |
             SHA256SUMS.txt
             BUILD-PROVENANCE.txt
-
       - name: Upload SHA256SUMS.txt and BUILD-PROVENANCE.txt to release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -1494,7 +1472,6 @@ jobs:
         run: |
           set -euo pipefail
           gh release upload "$TAG" SHA256SUMS.txt BUILD-PROVENANCE.txt release-evidence/formal-ai-*.json release-evidence/formal-ai-*.wasm --repo "$REPO" --clobber
-
       # Runs after the upload so the partial manifest is still published for
       # debugging, but the run ends red.
       - name: Fail if any target produced no artifacts
@@ -1502,7 +1479,6 @@ jobs:
         run: |
           echo "::error title=Incomplete desktop release::No artifacts from: ${{ steps.manifest.outputs.incomplete }}. SHA256SUMS.txt was published but covers only the targets that built."
           exit 1
-
       - name: Dispatch attested extension publication successor
         timeout-minutes: 1
         if: github.event_name != 'pull_request'
