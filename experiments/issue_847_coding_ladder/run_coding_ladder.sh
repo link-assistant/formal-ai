@@ -375,11 +375,19 @@ for task in tasks:
     for line in output.splitlines():
         if "server log:" in line:
             log_path = line.split("server log:", 1)[1].strip()
-            try:
-                with open(log_path, "r", errors="replace") as handle:
-                    haystack += handle.read()
-            except OSError:
-                pass
+            projection = subprocess.run(
+                ["node", "--input-type=module", "-e",
+                 "import {readFileSync} from 'node:fs';"
+                 "import {pathToFileURL} from 'node:url';"
+                 "const {projectServerLog}=await import(pathToFileURL(process.argv[2]));"
+                 "const raw=new TextDecoder('utf-8',{fatal:true}).decode(readFileSync(process.argv[3]));"
+                 "process.stdout.write(/^\\s*\\(?formal-ai-log-v1\\b/mu.test(raw)?projectServerLog(raw).semantic:raw);",
+                 "evidence-reader",
+                 os.path.join(root, "experiments/agent_cli_e2e/server-log-evidence.mjs"),
+                 log_path],
+                check=True, capture_output=True, text=True, timeout=15,
+            )
+            haystack += projection.stdout
     # Two distinct non-answers must both count as failure:
     #   * the unknown-prompt refusal ("I could not determine ...")
     #   * a misroute that answers a different question than the one asked

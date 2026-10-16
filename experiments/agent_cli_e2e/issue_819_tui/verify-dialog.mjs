@@ -1,5 +1,6 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { decodeDialogRecord } from '../../../js/server/dialog-codec.mjs';
 
 const [
   dialogDirectory,
@@ -19,9 +20,20 @@ const expectEmpty = emptyFlag === 'EMPTY';
 
 const records = [];
 for (const name of await readdir(dialogDirectory)) {
-  if (!name.endsWith('.jsonl')) continue;
-  const content = await readFile(join(dialogDirectory, name), 'utf8');
-  for (const line of content.split('\n').filter(Boolean)) records.push(JSON.parse(line));
+  const typed = name.endsWith('.lino');
+  if (!typed && !name.endsWith('.jsonl')) continue;
+  const bytes = await readFile(join(dialogDirectory, name));
+  const content = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+  if (typed && content && !content.endsWith('\n')) {
+    throw new Error(`${client}: incomplete dialog record in ${name}`);
+  }
+  for (const line of content.split('\n').filter(Boolean)) {
+    const record = typed ? decodeDialogRecord(line) : JSON.parse(line);
+    if (!record || typeof record !== 'object' || Array.isArray(record)) {
+      throw new Error(`${client}: invalid dialog record in ${name}`);
+    }
+    records.push(record);
+  }
 }
 records.sort((left, right) => left.timestamp_unix_ms - right.timestamp_unix_ms);
 

@@ -4,6 +4,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
 BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 BIN_DIR="$(cd "$(dirname "$BIN")" && pwd)"
 AGENT="${AGENT:-agent}"
@@ -11,6 +12,7 @@ PORT="${PORT:-8780}"
 REPORT_PROMPT="${REPORT_PROMPT:-Report issue}"
 ARTIFACT_DIR="${ARTIFACT_DIR:-}"
 WORKDIR="$(mktemp -d)"
+SEMANTIC_LOG="$WORKDIR/formal-ai.semantic.log"
 LOG="/tmp/formal-ai-serve-$PORT.log"
 AGENT_LOG="/tmp/agent-out-$PORT.log"
 CAPTURE="$WORKDIR/gh-invocation.txt"
@@ -61,14 +63,14 @@ run_turn "Both logs" --continue --no-fork
 echo "== agent stderr/out tail =="
 tail -40 "$AGENT_LOG"
 echo "== relevant server trace =="
-awk '/formal-ai server listening|\[trace\] (GET|POST)|agentic_outcome/' "$LOG" | tail -40
+posts="$(project_server_log_file "$LOG" "$SEMANTIC_LOG" /v1/chat/completions)"
+awk '/formal-ai server listening|\[trace\] (GET|POST)|agentic_outcome/' "$SEMANTIC_LOG" | tail -40
 
 test -f "$CAPTURE"
 grep -Fxq issue "$CAPTURE"
 grep -Fxq create "$CAPTURE"
 grep -Fxq link-assistant/formal-ai "$CAPTURE"
 grep -q 'issues/999' "$AGENT_LOG"
-posts="$(grep -c 'POST /v1/chat/completions' "$LOG")"
 test "$posts" -ge 3
 test -f "$MEMORY"
 grep -Fq 'kind "tool_call"' "$MEMORY"

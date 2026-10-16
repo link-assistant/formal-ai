@@ -84,7 +84,10 @@ MIN_POSTS="${MIN_POSTS:-4}"
 LOG="/tmp/formal-ai-serve-$PORT.log"
 source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
 server_log_evidence_setup "$LOG" || exit 1
-node --test "$ROOT/experiments/agent_cli_e2e/server-log-evidence.test.mjs" || exit 1
+node --test \
+  "$ROOT/experiments/agent_cli_e2e/server-log-evidence.test.mjs" \
+  "$ROOT/experiments/agent_cli_e2e/server-log-range.test.mjs" \
+  "$ROOT/experiments/agent_cli_e2e/evidence-reader-compat.test.mjs" || exit 1
 AGENT_LOG="/tmp/agent-out-$PORT.log"
 AGENT_SETUP_LOG="/tmp/agent-setup-$PORT.log"
 AGENT_FOLLOW_UP_LOG="/tmp/agent-follow-up-$PORT.log"
