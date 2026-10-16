@@ -29,3 +29,12 @@ test('workflow contracts retain source identity, shared policy, evidence and def
  assert.ok(workflow.indexOf('id: logs') < workflow.indexOf('node scripts/hive-mind-draft-result.mjs --failure'));
  assert.doesNotMatch(workflow,/github.event.issue.(body|title)|auto-merge|writer-lock/);
 });
+
+test('runner-only session path is initialized at step runtime',()=>{
+ const jobEnv=workflow.slice(workflow.indexOf('    env:'),workflow.indexOf('    steps:'));
+ assert.doesNotMatch(jobEnv,/runner\./);
+ const setup=workflow.indexOf('FORMAL_AI_DRAFT_LOG_DIR=$RUNNER_TEMP/formal-ai-draft-logs');
+ assert(setup>workflow.indexOf('    steps:')&&setup<workflow.indexOf('--decide'));
+ assert.match(workflow,/FORMAL_AI_DRAFT_LOG_DIR=\$RUNNER_TEMP\/formal-ai-draft-logs" >> "\$GITHUB_ENV"/);
+ assert.match(workflow,/path: \$\{\{ runner.temp \}\}\/formal-ai-draft-logs/);
+});

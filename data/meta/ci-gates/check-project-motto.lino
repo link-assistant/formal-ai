@@ -3,4 +3,4 @@ ci_gate check-project-motto
   stage web
   description "Issue #1212 exact motto on project docs, published product metadata and public pages; candidate selection rejects random or exhaustive search."
   run "node scripts/check-project-motto.mjs && node --test rust/tests/web/project-motto.test.mjs"
-  justification "The motto and evidence-driven design direction must remain visible in source; mutation controls reject missing slogans and search regressions without claiming live publication."
+  justification "Issue #1212: The motto and evidence-driven design direction must remain visible in source; mutation controls reject missing slogans and search regressions without claiming live publication."

@@ -218,7 +218,7 @@ pub fn event(
     let mut record = json!({"schema":"formal-ai-diagnostic-v1", "timestamp":timestamp(), "timestamp_precision":"nanoseconds", "pid":std::process::id(), "sequence":SEQUENCE.fetch_add(1, Ordering::Relaxed) + 1, "level":level, "component":component, "dialog_id":crate::dialog_log::current_dialog_id(), "message":message, "kind":"native_diagnostic", "metadata":redact(&fields())});
     if let Some(message) = record["message"].as_str().filter(|text| text.len() > 4096) {
         if level != "trace" || !crate::cli_env::flag_enabled("FORMAL_AI_LOG_PAYLOAD_CUSTODY") {
-            let digest = format!("{:x}", Sha256::digest(message.as_bytes()));
+            let digest = crate::source_fetch::hex_lower(&Sha256::digest(message.as_bytes()));
             let bytes = message.len();
             record["payload"] = json!({"sha256":digest,"bytes":bytes});
             record["message"] = json!("large_native_diagnostic");

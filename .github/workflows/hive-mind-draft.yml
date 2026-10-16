@@ -26,8 +26,10 @@ jobs:
       cancel-in-progress: false
     env:
       FORMAL_AI_DRAFT_ISSUE: ${{ inputs.issue_number }}
-      FORMAL_AI_DRAFT_LOG_DIR: ${{ runner.temp }}/formal-ai-draft-logs
     steps:
+      - name: Set session evidence directory on the allocated runner
+        shell: bash
+        run: echo "FORMAL_AI_DRAFT_LOG_DIR=$RUNNER_TEMP/formal-ai-draft-logs" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           persist-credentials: false

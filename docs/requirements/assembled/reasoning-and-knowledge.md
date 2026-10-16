@@ -1212,7 +1212,7 @@ Authority: [issue #1212](https://github.com/link-assistant/formal-ai/issues/1212
 | R1212-3 | Preserve the architect words verbatim with their original attribution. | Source implemented; exact quote hash and mutation controls; hosted acceptance Pending. |
 | R1212-4 | Apply the motto to every published product package description and the crate description. | Source implemented; released package acceptance Pending. |
 | R1212-5 | Show the exact motto on the app, docs, CLI, VS Code and download surfaces. | Source metadata implemented and tested; deployed acceptance Pending. |
-| R1212-6 | Set the GitHub repository description to the exact motto. | Recorded; remote Settings acceptance Pending. |
+| R1212-6 | Set the GitHub repository description to the exact motto. | Manually verified 2026-10-16 17:04 UTC: authenticated GitHub API set and independently read back the exact motto at https://github.com/link-assistant/formal-ai; no release or solver acceptance is implied. |
 | R1212-7 | Run a CI docs check that fails if the motto or required evidence-driven vision is removed. | Source gate and 20 mutation controls implemented; fresh hosted acceptance Pending. |
 | R1212-8 | Use just-enough trusted discovery, coding first and permissioned recursive self-improvement; retain failures as data. | Recorded and linked to R1207-3/-6/-7; actual cold discovery and self-coding acceptance Pending. |
 
