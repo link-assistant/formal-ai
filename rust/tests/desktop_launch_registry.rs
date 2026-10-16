@@ -309,7 +309,7 @@ mod unix {
             &home,
             &capture,
             &desktop,
-            &["with", "--global", "opencode-desktop", "--base-url", &base],
+            &["with", "--global", "--base-url", &base, "opencode-desktop"],
         );
         server.join().expect("bounded model server");
         assert!(
