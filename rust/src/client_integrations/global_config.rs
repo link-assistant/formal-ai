@@ -17,7 +17,7 @@ use crate::seed::{ClientIntegration, ConfigFormat};
 use super::command::ensure_trailing_newline;
 use super::global_verify::{probe_headless_start, verify_written_config};
 use super::{
-    EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER, RENDERED_PLACEHOLDER, RenderContext,
+    EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER, ModelLimits, RENDERED_PLACEHOLDER, RenderContext,
     WithFormalAiArgs, backup_path, codex_model_catalog, global_config_path, render_context,
     render_template, write_file,
 };
@@ -39,8 +39,10 @@ pub(super) fn managed_block_end(tool: &str) -> String {
 pub(super) fn write_global_config(
     integration: &ClientIntegration,
     args: &WithFormalAiArgs,
+    model_limits: &ModelLimits,
 ) -> Result<(), Box<dyn Error>> {
     let mut context = render_context(integration, args)?;
+    context.model_limits = model_limits.clone();
     let global_config = integration.global_config_for(&context.protocol);
     if !global_config.model_catalog_path.is_empty() {
         let catalog_path = global_config_path(&global_config.model_catalog_path)?;

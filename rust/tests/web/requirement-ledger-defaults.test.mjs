@@ -50,7 +50,7 @@ test('all maintained generated records retain the complete producer objects', ()
   assert.deepEqual(actualIds.toSorted(), [...expectedIds].toSorted());
 });
 
-test('uniform verdicts use the notation four-record threshold without losing identities', () => {
+test('strict-majority verdicts use the notation four-record threshold without losing identities', () => {
   for (const verdict of ['implemented', 'partial', 'not-delivered', 'superseded', 'withdrawn']) {
     const rows = Array.from({length: 4}, (_, index) => ({
       id: 'R' + index, shard: 'scope', issue: '1', verdict,
@@ -67,7 +67,13 @@ test('uniform verdicts use the notation four-record threshold without losing ide
       assert.equal((small.match(/^    verdict /gmu) ?? []).length, size);
     }
     const mixed = rows.map((row, index) => ({...row, verdict: index === 3 ? 'other' : verdict}));
-    assert.equal((renderShard(mixed).match(/^  verdict /gmu) ?? []).length, 0);
+    assert.equal((renderShard(mixed).match(/^  verdict /gmu) ?? []).length, 1);
+    assert.equal((renderShard(mixed).match(/^    verdict /gmu) ?? []).length, 1);
+    assert.ok(renderShard(mixed).includes('    verdict \"other\"'));
+    const tied = rows.map((row, index) => ({...row, verdict: index >= 2 ? 'other' : verdict}));
+    assert.equal((renderShard(tied).match(/^  verdict /gmu) ?? []).length, 0);
+    assert.equal((renderShard(tied).match(/^    verdict /gmu) ?? []).length, 4);
+    assert.deepEqual(parseRequirementLedger(renderShard(tied)).records, tied);
     assert.deepEqual(parseRequirementLedger(renderShard(mixed)).records, mixed);
     const override = text.replace('    id "R1"\n', '    id "R1"\n    verdict "override"\n');
     assert.deepEqual(parseRequirementLedger(override).records,

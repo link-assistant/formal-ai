@@ -235,7 +235,9 @@ fn session_candidates(
         && !candidates.contains(&recorded)
     {
         if candidates.is_empty() {
-            formal_ai::diagnostic!("debug";
+            // The guessed identity must remain visible at info/warn verbosity.
+            // Explicit error-only or silent logging is still the caller's opt-out.
+            formal_ai::diagnostic!("warn";
                 "{}",
                 formal_ai::seed::agent_info()
                     .remove("context_session_guessed_notice")

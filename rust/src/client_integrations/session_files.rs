@@ -159,7 +159,15 @@ pub(super) fn print_session_files(
                 resume_command: resume.unwrap_or_default(),
             };
             if let Ok(json) = serde_json::to_string(&evidence) {
-                crate::diagnostic!("debug"; "formal-ai: orchestration-session-json:{json}");
+                crate::dialog_log::structured_log::control(
+                    "orchestration_session",
+                    module_path!(),
+                    &format!(
+                        "{}{json}",
+                        crate::dialog_log::structured_log::ORCHESTRATION_SESSION_PREFIX
+                    ),
+                    &serde_json::json!({}),
+                );
             }
         }
     }

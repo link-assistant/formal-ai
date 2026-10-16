@@ -1,3 +1,6 @@
+#[path = "../support/structured_stderr.rs"]
+mod structured_stderr;
+
 use std::net::TcpStream;
 use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
@@ -254,6 +257,7 @@ fn issue_931_transport_trace_is_opt_in() {
         std::thread::sleep(Duration::from_millis(200));
         drop(server);
         let trace = std::fs::read_to_string(&log).unwrap_or_default();
+        let trace = structured_stderr::messages(trace.as_bytes());
         let _ = std::fs::remove_file(&log);
         if traced {
             assert!(

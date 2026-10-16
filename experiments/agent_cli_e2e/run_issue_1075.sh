@@ -58,6 +58,8 @@ if ! docker info >/dev/null 2>&1; then
 fi
 
 LOG="/tmp/formal-ai-serve-$PORT.log"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
+server_log_evidence_setup "$LOG" '*' || exit 1
 SIDECAR="$(mktemp -d)"
 STATE="$(mktemp -d)"
 NAME="formal-ai-issue-1075-$PORT"
@@ -66,6 +68,7 @@ WORKSPACES=""
 cleanup() {
   docker rm -f "$NAME" >/dev/null 2>&1
   # shellcheck disable=SC2086
+  retain_server_log_evidence
   rm -rf "$SIDECAR" "$STATE" $WORKSPACES
 }
 trap cleanup EXIT
@@ -80,8 +83,10 @@ docker run --rm --name "$NAME" --network host \
   -v "$BIN:/usr/local/bin/formal-ai:ro" \
   -v "$SIDECAR:/sidecar" \
   -v "$STATE:/state" \
+  -v "$EVIDENCE_DIR:/evidence" \
   -w /sidecar \
   -e FORMAL_AI_AGENT_MODE=1 -e FORMAL_AI_TRACE_REQUESTS=1 \
+  -e FORMAL_AI_DIALOG_LOG_DIR=/evidence/dialog-logs -e FORMAL_AI_LOG_DIR=/evidence/native-logs \
   -e FORMAL_AI_MEMORY_PATH=/state/memory.lino -e FORMAL_AI_DREAMING=0 \
   "$IMAGE" formal-ai serve --host 0.0.0.0 --port "$PORT" > "$LOG" 2>&1 &
 
@@ -203,7 +208,8 @@ fi
 
 # 4. No absolute path the server emitted was rooted in its own directory. Inside
 #    the container that directory is /sidecar, which is what a client is handed.
-if grep -Eo '"[^"]*/sidecar/[^"]*"' "$LOG" | sort -u > /tmp/issue-1075-sidecar-paths.txt \
+posts="$(project_server_log)" || { echo "invalid server evidence" >&2; exit 1; }
+if grep -Eo '"[^"]*/sidecar/[^"]*"' "$SEMANTIC_LOG" | sort -u > /tmp/issue-1075-sidecar-paths.txt \
    && [ -s /tmp/issue-1075-sidecar-paths.txt ]; then
   echo "FAIL: the server offered clients paths inside its own directory:"
   head -8 /tmp/issue-1075-sidecar-paths.txt
@@ -212,5 +218,5 @@ else
   echo "PASS: no emitted path was rooted in the server's directory"
 fi
 
-echo "== chat rounds: $(grep -c 'POST /' "$LOG" 2>/dev/null || echo 0) =="
+echo "== chat rounds: $posts =="
 exit "$status"

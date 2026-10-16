@@ -1,4 +1,7 @@
 use std::io::Write as _;
+#[path = "../support/structured_stderr.rs"]
+mod structured_stderr;
+
 use std::net::{TcpListener, TcpStream};
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
@@ -152,10 +155,8 @@ pub fn run_with_capture(
     run_with_capture_stdin(home, bin_dir, capture, args, None)
 }
 
-/// Same as [`run_with_capture`], with the wrapper's stdin pinned: `None` is an
-/// empty, non-terminal stdin and `Some(text)` is a piped prompt. Interactive
-/// mode now follows `isatty(stdin)`, so a test that left stdin inherited would
-/// behave differently under `cargo test` in a terminal than in CI.
+/// Like [`run_with_capture`], with fixed stdin: `None` is empty/nonterminal;
+/// `Some(text)` pipes a prompt, avoiding terminal-dependent `isatty(stdin)`.
 pub fn run_with_capture_stdin(
     home: &Path,
     bin_dir: &Path,
@@ -241,7 +242,7 @@ fn with_formal_ai_agent_ephemeral_injects_inline_config_and_model_flag() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     let captured = std::fs::read_to_string(&capture).expect("capture");
     assert!(
@@ -293,7 +294,7 @@ fn with_formal_ai_summarize_restores_agent_default() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     let captured = std::fs::read_to_string(&capture).expect("capture");
     assert!(
@@ -444,7 +445,7 @@ fn with_formal_ai_value_taking_interactive_flags_have_prompt_values() {
         assert!(
             output.status.success(),
             "{tool}: {}",
-            String::from_utf8_lossy(&output.stderr)
+            structured_stderr::messages(&output.stderr)
         );
         let captured = std::fs::read_to_string(&capture).expect("interactive capture");
         assert_eq!(
@@ -477,7 +478,7 @@ fn with_formal_ai_default_interactive_mode_launches_every_tool_in_a_pty() {
         let output = super::pty::interact_after_ready(command, b"TUI_READY", b"hi\n")
             .expect("interact with wrapper in PTY");
         let stdout = String::from_utf8_lossy(&output.stdout);
-        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stderr = structured_stderr::messages(&output.stderr);
 
         assert!(
             output.status.success(),
@@ -511,7 +512,7 @@ fn with_formal_ai_globally_alias_is_accepted() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     let _ = std::fs::remove_dir_all(home);
 }
@@ -550,7 +551,7 @@ fn with_formal_ai_all_seeded_tools_leave_persistent_configs_unchanged() {
         assert!(
             output.status.success(),
             "{tool} stderr: {}",
-            String::from_utf8_lossy(&output.stderr)
+            structured_stderr::messages(&output.stderr)
         );
         for candidate in candidates {
             assert_eq!(
@@ -634,12 +635,12 @@ fn with_formal_ai_auto_starts_agent_mode_server_and_tears_it_down() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     assert!(
-        String::from_utf8_lossy(&output.stderr).contains("temporary server in agent mode"),
+        structured_stderr::messages(&output.stderr).contains("temporary server in agent mode"),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     assert!(
         TcpStream::connect(("127.0.0.1", port)).is_err(),
@@ -677,9 +678,9 @@ fn with_formal_ai_no_start_server_runs_without_a_listener() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
-    assert!(!String::from_utf8_lossy(&output.stderr).contains("started a temporary server"));
+    assert!(!structured_stderr::messages(&output.stderr).contains("started a temporary server"));
     assert!(capture.exists(), "wrapped CLI was not invoked");
     assert!(TcpStream::connect(("127.0.0.1", port)).is_err());
     let _ = std::fs::remove_dir_all(&dir);
@@ -711,7 +712,7 @@ fn with_formal_ai_opencode_ephemeral_writes_temp_config_and_model_flag() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     let captured = std::fs::read_to_string(&capture).expect("capture");
     assert!(captured.contains("arg[0]=run"), "capture:\n{captured}");
@@ -767,7 +768,7 @@ fn with_formal_ai_gemini_ephemeral_sets_native_protocol_environment() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     let captured = std::fs::read_to_string(&capture).expect("capture");
     assert!(captured.contains("arg[0]=-m"), "capture:\n{captured}");
@@ -818,7 +819,7 @@ fn with_formal_ai_gemini_protocol_vertex_sets_vertex_base_url() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     let captured = std::fs::read_to_string(&capture).expect("capture");
     assert!(captured.contains("GOOGLE_GEMINI_BASE_URL="));
@@ -988,7 +989,7 @@ fn standalone_with_formal_ai_binary_uses_same_wrapper() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
     let captured = std::fs::read_to_string(&capture).expect("capture");
     assert!(captured.contains("GOOGLE_GEMINI_BASE_URL=http://127.0.0.1:18080/api/gemini"));

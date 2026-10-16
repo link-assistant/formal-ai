@@ -525,8 +525,12 @@ fn runtime_cache_reports_render_every_registered_locale_and_preserve_fallback() 
         ),
     ] {
         assert_eq!(
-            formal_ai::seed::render_response("runtime_derivation_record_missing", language, &values)
-                .as_deref(),
+            formal_ai::seed::render_response(
+                "runtime_derivation_record_missing",
+                language,
+                &values
+            )
+            .as_deref(),
             Some(missing)
         );
         assert_eq!(
@@ -557,7 +561,9 @@ fn actual_runtime_cache_ambiguity_and_explain_miss_use_the_seeded_reports() {
         let answer = "answer_0123456789abcdef";
         let first = Derivation::record_for(&EventLog::new(), answer);
         let mut second = first.clone();
-        second.search_queries.push("a distinct source trace".to_owned());
+        second
+            .search_queries
+            .push("a distinct source trace".to_owned());
         let first_location =
             formal_ai::runtime_cache::persist_derivation(&first).expect("persist first trace");
         let second_location =
@@ -582,7 +588,10 @@ fn actual_runtime_cache_ambiguity_and_explain_miss_use_the_seeded_reports() {
         .output()
         .expect("run actual explain command");
     assert!(!missing.status.success(), "missing record must fail");
-    assert!(missing.stdout.is_empty(), "error must not fabricate a record");
+    assert!(
+        missing.stdout.is_empty(),
+        "error must not fabricate a record"
+    );
     let expected = format!(
         "derivation_record_missing:answer_ffffffffffffffff; directory={}",
         root.join("derivations").display()

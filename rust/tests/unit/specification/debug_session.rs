@@ -794,17 +794,26 @@ fn a_served_chat_turn_answers_only_after_its_last_stage() {
                     .expect("released answer record directory")
                     .collect::<Result<Vec<_>, _>>()
                     .expect("runtime record entries");
-                assert!(!persisted_records.is_empty(), "release writes at least one record");
+                assert!(
+                    !persisted_records.is_empty(),
+                    "release writes at least one record"
+                );
                 let expected_rendering = format!("answer_id={answer_id};format=text");
                 for entry in persisted_records {
-                    let name = entry.file_name().into_string().expect("record filename UTF-8");
+                    let name = entry
+                        .file_name()
+                        .into_string()
+                        .expect("record filename UTF-8");
                     let digest = name.strip_suffix(".lino").expect("record extension");
                     let locator = format!("{answer_id}@{digest}");
                     let persisted = formal_ai::runtime_cache::load_derivation(&locator)
                         .expect("released record passes exact digest and canonical custody")
                         .expect("the released exact record exists");
                     assert_eq!(persisted.answer_id, answer_id);
-                    assert_eq!(persisted.rendering.as_deref(), Some(expected_rendering.as_str()));
+                    assert_eq!(
+                        persisted.rendering.as_deref(),
+                        Some(expected_rendering.as_str())
+                    );
                 }
             });
             let state = debug("session", &json!({ "token": TOKEN }));

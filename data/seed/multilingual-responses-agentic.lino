@@ -802,23 +802,23 @@ multilingual_responses
   response response_general_plan_repository_planned_en
     intent general_plan_repository_planned
     language en
-    text "Planned, not executed: {target}.\n\nNothing the request names was changed. The only file this run wrote is its own plan record ({plan_path}), and reading that record back would prove nothing about the requested work, so no verification was claimed. Plan event:\n\n{plan}"
+    text "Planned, not executed: {target}.\n\nThe requested work remains unverified. The plan below describes intended steps; writing or reading a plan record does not verify delivery. Plan:\n\n{plan}"
   response response_general_plan_repository_planned_ru
     intent general_plan_repository_planned
     language ru
-    text "Запланировано, но не выполнено: {target}.\n\nНичего из названного в запросе не изменено. Единственный файл, записанный этим запуском, — его собственная запись плана ({plan_path}); чтение этой записи ничего не доказывало бы о запрошенной работе, поэтому проверка не заявляется. Событие плана:\n\n{plan}"
+    text "Запланировано, но не выполнено: {target}.\n\nЗапрошенная работа остаётся непроверенной. План ниже описывает предполагаемые шаги; запись или чтение плана не подтверждает выполнение работы. План:\n\n{plan}"
   response response_general_plan_repository_planned_hi
     intent general_plan_repository_planned
     language hi
-    text "योजना बनी, निष्पादित नहीं: {target}।\n\nअनुरोध में नामित कुछ भी नहीं बदला गया। इस रन ने केवल अपनी योजना रिकॉर्ड ({plan_path}) लिखी, और उस रिकॉर्ड को वापस पढ़ना अनुरोधित कार्य के बारे में कुछ भी सिद्ध नहीं करता, इसलिए कोई सत्यापन का दावा नहीं किया गया। योजना घटना:\n\n{plan}"
+    text "योजना बनी, निष्पादित नहीं: {target}।\n\nअनुरोधित कार्य अभी सत्यापित नहीं हुआ है। नीचे की योजना प्रस्तावित चरण बताती है; योजना रिकॉर्ड लिखना या पढ़ना कार्य पूरा होने का सत्यापन नहीं है। योजना:\n\n{plan}"
   response response_general_plan_repository_planned_zh
     intent general_plan_repository_planned
     language zh
-    text "已规划，未执行：{target}。\n\n请求中指名的任何内容都未被更改。本次运行只写入了自己的计划记录（{plan_path}），回读该记录无法证明所请求的工作，因此未声称任何验证。计划事件：\n\n{plan}"
+    text "已规划，未执行：{target}。\n\n请求的工作尚未验证。下面的计划描述预期步骤；写入或读取计划记录并不能验证交付。计划：\n\n{plan}"
   response response_general_plan_repository_planned_es
     intent general_plan_repository_planned
     language es
-    text "Planificado, no ejecutado: {target}.\n\nNo se cambió nada de lo que nombra la solicitud. El único archivo que escribió esta ejecución es su propio registro de plan ({plan_path}), y volver a leer ese registro no probaría nada sobre el trabajo solicitado, así que no se afirmó ninguna verificación. Evento del plan:\n\n{plan}"
+    text "Planificado, no ejecutado: {target}.\n\nEl trabajo solicitado sigue sin verificarse. El plan siguiente describe pasos previstos; escribir o leer un registro del plan no verifica la entrega. Plan:\n\n{plan}"
   response response_general_plan_verification_mismatch_en
     intent general_plan_verification_mismatch
     language en

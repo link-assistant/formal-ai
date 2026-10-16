@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_github_logs.rs
   language rust
   fidelity signature
-  byte_len 3018
+  byte_len 3061
   line_count 94
-  content_id source_module_b1540c13d72ec940
+  content_id source_module_8d6b50cdcd1593ec
   symbol_count 4
   symbols
     enum GithubLogsAction 11 16

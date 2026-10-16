@@ -10,6 +10,13 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+/// Shared protocol envelope identifier used by both the writer and reader.
+const WIRE_ENVELOPE: &str = "formal-ai-log-v1";
+/// Shallow dialog-only framing tag; the payload remains the original typed tree.
+const DIALOG_TREE_TAG: &str = "dialog-tree";
+/// Original machine-session evidence prefix shared by producers and readers.
+pub const ORCHESTRATION_SESSION_PREFIX: &str = "formal-ai: orchestration-session-json:";
+
 static SILENT: AtomicBool = AtomicBool::new(false);
 static SERVE: AtomicBool = AtomicBool::new(false);
 static SEQUENCE: AtomicU64 = AtomicU64::new(0);
@@ -32,7 +39,7 @@ fn rank(level: &str) -> u8 {
 #[must_use]
 pub fn enabled(level: &str) -> bool {
     !SILENT.load(Ordering::Relaxed)
-        && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
+        && !crate::solver_config::flag_enabled("FORMAL_AI_SILENT")
         && rank(level)
             <= rank(&std::env::var("FORMAL_AI_LOG_LEVEL").unwrap_or_else(|_| "debug".into()))
 }
@@ -171,7 +178,25 @@ pub fn encode_dialog(value: &Value) -> io::Result<String> {
     Ok(line)
 }
 fn encode_with_numbers(value: &Value, preserve_numbers: bool) -> io::Result<String> {
-    let line = format!("(formal-ai-log-v1 {})", typed(value, preserve_numbers)?);
+    let tree = typed(value, preserve_numbers)?;
+    // The pinned dependency grammar permits at most 64 physical nesting levels.
+    // Dialogs retain deeper typed trees as a single encoded word, not JSON.
+    let mut depth = 1_usize;
+    let mut maximum_depth = depth;
+    for byte in tree.bytes() {
+        if byte == b'(' {
+            depth += 1;
+            maximum_depth = maximum_depth.max(depth);
+        }
+        if byte == b')' {
+            depth -= 1;
+        }
+    }
+    let line = if preserve_numbers && maximum_depth > 64 {
+        format!("({WIRE_ENVELOPE} ({DIALOG_TREE_TAG} {}))", word(&tree))
+    } else {
+        format!("({WIRE_ENVELOPE} {tree})")
+    };
     links_notation::parser::parse_document_with_diagnostics(&line)
         .map_err(|_| io::Error::other("invalid_log_notation"))?;
     Ok(line)
@@ -207,6 +232,29 @@ fn directory() -> Option<PathBuf> {
             std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".formal-ai/logs"))
         })
 }
+/// Render the legacy request trace from its declarative wire header.
+#[must_use]
+pub fn request_trace_message(method: &str, path: &str, body: &str) -> String {
+    static HEADER: OnceLock<String> = OnceLock::new();
+    let header = HEADER.get_or_init(|| {
+        let tree = crate::seed::parser::parse_lino(include_str!(
+            "../embedded/data/meta/structured-log-wire.lino"
+        ));
+        tree.children
+            .iter()
+            .find(|record| record.name == "structured-log-wire")
+            .expect("embedded structured log wire policy")
+            .find_child_value("request-trace-header")
+            .to_owned()
+    });
+    let bytes = body.len().to_string();
+    let header = crate::seed::fill_template_once(
+        header,
+        &[("method", method), ("path", path), ("body_bytes", &bytes)],
+    );
+    format!("{header}\n{body}")
+}
+
 /// Fields and message closures run only after level filtering.
 pub fn event(
     level: &str,
@@ -220,19 +268,28 @@ pub fn event(
     let message = redact(&json!(message()));
     let mut record = json!({"schema":"formal-ai-diagnostic-v1", "timestamp":timestamp(), "timestamp_precision":"nanoseconds", "pid":std::process::id(), "sequence":SEQUENCE.fetch_add(1, Ordering::Relaxed) + 1, "level":level, "component":component, "dialog_id":crate::dialog_log::current_dialog_id(), "message":message, "kind":"native_diagnostic", "metadata":redact(&fields())});
     if let Some(message) = record["message"].as_str().filter(|text| text.len() > 4096)
-        && (level != "trace" || !crate::cli_env::flag_enabled("FORMAL_AI_LOG_PAYLOAD_CUSTODY"))
+        && (level != "trace"
+            || !crate::solver_config::flag_enabled("FORMAL_AI_LOG_PAYLOAD_CUSTODY"))
     {
         let digest = crate::source_fetch::hex_lower(&Sha256::digest(message.as_bytes()));
         let bytes = message.len();
         record["payload"] = json!({"sha256":digest,"bytes":bytes});
         record["message"] = json!("large_native_diagnostic");
     }
-    let line = match encode(&record) {
-        Ok(line) => line,
-        Err(_) => {
-            sink_failure("encoding_failed");
-            return;
-        }
+    write_record(&record);
+}
+
+/// Emit machine evidence independently of diagnostic verbosity and payload elision.
+/// This preserves the existing orchestration control channel; it grants no authority.
+pub fn control(kind: &str, component: &str, message: &str, metadata: &Value) {
+    let record = json!({"schema":"formal-ai-control-v1", "timestamp":timestamp(), "timestamp_precision":"nanoseconds", "pid":std::process::id(), "sequence":SEQUENCE.fetch_add(1, Ordering::Relaxed) + 1, "level":"info", "component":component, "dialog_id":crate::dialog_log::current_dialog_id(), "message":message, "kind":kind, "metadata":metadata});
+    write_record(&record);
+}
+
+fn write_record(record: &Value) {
+    let Ok(line) = encode(&redact(record)) else {
+        sink_failure("encoding_failed");
+        return;
     };
     let _guard = WRITE_LOCK
         .get_or_init(|| Mutex::new(()))
@@ -291,7 +348,31 @@ pub fn decode(line: &str) -> io::Result<Value> {
 pub fn decode_dialog(line: &str) -> io::Result<Value> {
     decode_with_numbers(line, true)
 }
+/// Decode an already captured control line without relaxing diagnostic defaults.
+/// Numeric/depth refusals remain those of the narrow shared codec.
+pub fn decode_control(line: &str) -> io::Result<Value> {
+    let record = decode_with_policy(line, false, Some(line.len()))?;
+    if record["schema"] != "formal-ai-control-v1" {
+        return Err(io::Error::other("invalid_control_schema"));
+    }
+    Ok(record)
+}
 fn decode_with_numbers(line: &str, preserve_numbers: bool) -> io::Result<Value> {
+    decode_with_policy(
+        line,
+        preserve_numbers,
+        if preserve_numbers {
+            None
+        } else {
+            Some(1024 * 1024)
+        },
+    )
+}
+fn decode_with_policy(
+    line: &str,
+    preserve_numbers: bool,
+    maximum_record_bytes: Option<usize>,
+) -> io::Result<Value> {
     fn invalid() -> io::Error {
         io::Error::other("invalid_typed_log_record")
     }
@@ -393,15 +474,25 @@ fn decode_with_numbers(line: &str, preserve_numbers: bool) -> io::Result<Value> 
         expect(tokens, position, ")")?;
         Ok(value)
     }
-    if (!preserve_numbers && line.len() > 1024 * 1024) || line.contains(['\n', '\r']) {
+    if maximum_record_bytes.is_some_and(|limit| line.len() > limit) || line.contains(['\n', '\r']) {
         return Err(invalid());
     }
     links_notation::parser::parse_document_with_diagnostics(line).map_err(|_| invalid())?;
-    let spaced = line.replace('(', " ( ").replace(')', " ) ");
+    let prefix = format!("({WIRE_ENVELOPE} ({DIALOG_TREE_TAG} ");
+    let expanded = if preserve_numbers && line.starts_with(&prefix) {
+        let token = line
+            .strip_prefix(&prefix)
+            .and_then(|s| s.strip_suffix("))"))
+            .ok_or_else(invalid)?;
+        format!("({WIRE_ENVELOPE} {})", unword(token)?)
+    } else {
+        line.to_owned()
+    };
+    let spaced = expanded.replace('(', " ( ").replace(')', " ) ");
     let tokens: Vec<_> = spaced.split_whitespace().collect();
     let mut position = 0;
     expect(&tokens, &mut position, "(")?;
-    expect(&tokens, &mut position, "formal-ai-log-v1")?;
+    expect(&tokens, &mut position, WIRE_ENVELOPE)?;
     let value = item(&tokens, &mut position, 0, preserve_numbers)?;
     expect(&tokens, &mut position, ")")?;
     if position != tokens.len() || encode_with_numbers(&value, preserve_numbers)? != line {
@@ -411,31 +502,5 @@ fn decode_with_numbers(line: &str, preserve_numbers: bool) -> io::Result<Value> 
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn dialog_numeric_extension_preserves_native_semantics() {
-        let value = json!({"float":1.0, "negative_zero":-0.0, "integer":9_007_199_254_740_993_u64});
-        let line = encode_dialog(&value).expect("encode numeric extensions");
-        assert!(line.contains("(float 64 1.0)"));
-        assert!(line.contains("(integer 9007199254740993)"));
-        assert_eq!(decode_dialog(&line).expect("decode native numbers"), value);
-        assert!(decode(&line).is_err());
-    }
-    #[test]
-    fn typed_boundary_retains_nested_types_and_rejects_ambiguous_records() {
-        let value = json!({"text":"line\n%()\" é", "numeric_text":"1", "number":1, "empty":[], "null":null, "flag":false});
-        assert_eq!(
-            decode(&encode(&value).expect("encode")).expect("decode"),
-            value
-        );
-        for line in [
-            "(formal-ai-log-v1 (object (field x (number 1)) (field x (number 2))))",
-            "(formal-ai-log-v1 (number 01))",
-            "(formal-ai-log-v1 (string %4a))",
-            "(formal-ai-log-v1 (array)) trailing",
-        ] {
-            assert!(decode(line).is_err(), "must refuse {line}");
-        }
-    }
-}
+#[path = "../tests/unit/structured_log.rs"]
+mod tests;

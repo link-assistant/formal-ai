@@ -12,12 +12,15 @@ if [ -n "$ARTIFACT_DIR" ] && [[ "$ARTIFACT_DIR" != /* ]]; then
   ARTIFACT_DIR="$ROOT/$ARTIFACT_DIR"
 fi
 SERVER_LOG="/tmp/formal-ai-issue-758-$PORT.log"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
+server_log_evidence_setup "$SERVER_LOG" || exit 1
 AGENT_LOG="/tmp/agent-issue-758-$PORT.log"
 WORKDIR="$(mktemp -d)"
 MARKER="ISSUE_758_CAPABILITY_MARKER"
 
 cleanup() {
   kill "$SERVER_PID" 2>/dev/null || true
+  retain_server_log_evidence
   rm -rf "$WORKDIR"
 }
 trap cleanup EXIT
@@ -70,8 +73,9 @@ RC=$?
 
 tail -40 "$AGENT_LOG"
 grep -Fq 'src/fixture.rs' "$AGENT_LOG" || RC=1
-grep -Fq 'tool: "grep"' "$SERVER_LOG" || RC=1
-if grep -F 'planned ToolCalls' "$SERVER_LOG" | grep -Fq 'tool: "websearch"'; then
+project_server_log >/dev/null || exit 1
+grep -Fq 'tool: "grep"' "$SEMANTIC_LOG" || RC=1
+if grep -F 'planned ToolCalls' "$SEMANTIC_LOG" | grep -Fq 'tool: "websearch"'; then
   RC=1
 fi
 

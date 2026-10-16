@@ -11,6 +11,8 @@ BIN_DIR="$(cd "$(dirname "$BIN")" && pwd)"
 PORT="${PORT:-8776}"
 AGENT="${AGENT:-agent}"
 LOG="/tmp/formal-ai-serve-$PORT.log"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
+server_log_evidence_setup "$LOG" || exit 1
 AGENT_LOG="/tmp/agent-out-$PORT.log"
 WORKDIR="$(mktemp -d)"
 FAKE_BIN="$WORKDIR/fake-bin"
@@ -78,7 +80,7 @@ FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
   FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SRV=$!
-trap 'kill $SRV 2>/dev/null; rm -rf "$WORKDIR"' EXIT
+trap 'kill $SRV 2>/dev/null; retain_server_log_evidence; rm -rf "$WORKDIR"' EXIT
 
 if ! curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
      "http://127.0.0.1:$PORT/health" >/dev/null 2>&1; then
@@ -97,7 +99,7 @@ fail() {
 }
 
 # Count chat-completion rounds recorded in the server log so far.
-posts_so_far() { grep -c 'POST /v1/chat/completions' "$LOG" 2>/dev/null || true; }
+posts_so_far() { project_server_log --headers-only; }
 
 # Per-turn round breakdown, so a future boundary failure names the turn that lost
 # a round instead of only reporting a total (issue #828, requirement R6). Always
@@ -112,7 +114,7 @@ run_turn() {
   shift 2
   echo "== $label: $prompt ==" | tee -a "$AGENT_LOG"
   FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
-    FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
+    FORMAL_AI_DIALOG_LOG_DIR="$DIALOG_DIR" \
     LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
     PATH="$FAKE_BIN:$BIN_DIR:$PATH" timeout 180 "$AGENT" \
     --prompt "$prompt" \
@@ -122,7 +124,7 @@ run_turn() {
     --compaction-models "(same)" \
     "$@" >> "$AGENT_LOG" 2>&1 || fail "$label failed"
   local now_posts turn_posts
-  now_posts="$(posts_so_far)"
+  now_posts="$(posts_so_far)" || fail "invalid server evidence"
   turn_posts=$((now_posts - prev_posts))
   prev_posts="$now_posts"
   ROUND_BREAKDOWN+="  $label: $turn_posts round(s) (cumulative $now_posts)"$'\n'
@@ -141,7 +143,8 @@ if [ ! -f "$GH_LOG" ]; then
   # server's report handler because opencode compacted the session (harness
   # problem), versus the handler saw the prompt and declined to act (product
   # problem). Guessing between them is why this took two runs to diagnose.
-  if grep -q 'summarizing conversations' "$LOG"; then
+  project_server_log --headers-only >/dev/null || fail "invalid server evidence"
+  if grep -q 'summarizing conversations' "$SEMANTIC_LOG"; then
     echo "!! diagnosis: the session was auto-summarised mid-run; the report prompt" >&2
     echo "!! was replaced by opencode's own continuation before reaching the server." >&2
   fi
@@ -164,13 +167,13 @@ grep -q '999999' "$AGENT_LOG" \
 # rare further dip from the client's nondeterminism. The strong behavioural
 # assertions above (gh targeted formal-ai, election recalled, issue URL
 # surfaced, `searches >= 2`) are the real regression guardrails.
-posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
+posts="$(project_server_log)" || { echo "invalid server evidence" >&2; exit 1; }
 if [ "$posts" -lt 9 ]; then
   echo "== per-turn chat-round breakdown ==" >&2
   printf '%s' "$ROUND_BREAKDOWN" >&2
   fail "expected at least 9 chat rounds, got $posts"
 fi
-searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$LOG" || true)"
+searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$SEMANTIC_LOG" || true)"
 [ "$searches" -ge 2 ] || fail "initial and contextual research did not both reach websearch"
 
 echo "== issue #687 E2E OK: report executed, recall retained context, follow-up researched it ($posts rounds) =="

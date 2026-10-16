@@ -21,7 +21,8 @@
 
 import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, normalize, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import {parseRequirementLedger} from '../../scripts/lib/requirement-ledger.mjs';
 
 const repositoryRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const dataPath = join(repositoryRoot, 'experiments/formal_ai_subagent/requirement-coverage.lino');
@@ -101,26 +102,20 @@ function readRows() {
   return rows;
 }
 
-/** Reads the generated status ledger: id -> verdict and automated test. */
+/** Parse one shard through the maintained field/default contract, retaining every owned field. */
+export function parseCoverageLedger(text) {
+  const ledger = new Map();
+  for (const record of parseRequirementLedger(text).records) ledger.set(record.id, record);
+  return ledger;
+}
+
+/** Reads the generated status ledger: id -> complete resolved ledger record. */
 function readLedger() {
   const ledger = new Map();
   const directory = join(repositoryRoot, ledgerDirectory);
   for (const name of readdirSync(directory).filter((file) => file.endsWith('.lino')).sort()) {
-    // A test most of a file's records share is stated once on the file (two
-    // spaces in, before the first record); a record inherits it unless it
-    // states its own.
-    let record = null;
-    let fileTest = '';
-    for (const line of readFileSync(join(directory, name), 'utf8').split('\n')) {
-      const fileField = /^ {2}automated_test "(.*)"$/.exec(line);
-      if (fileField) fileTest = fileField[1];
-      const field = /^ {4}(\w+) "(.*)"$/.exec(line);
-      if (!field) continue;
-      if (field[1] === 'id') {
-        record = { verdict: '', automatedTest: fileTest };
-        ledger.set(field[2], record);
-      } else if (record && field[1] === 'verdict') record.verdict = field[2];
-      else if (record && field[1] === 'automated_test') record.automatedTest = field[2];
+    for (const [identifier, record] of parseCoverageLedger(readFileSync(join(directory, name), 'utf8'))) {
+      ledger.set(identifier, record);
     }
   }
   return ledger;
@@ -305,16 +300,18 @@ function render() {
   return `${lines.join('\n')}\n`;
 }
 
-const rendered = render();
-const outputPath = join(repositoryRoot, outputRelative);
-if (checkMode) {
-  const current = existsSync(outputPath) ? readFileSync(outputPath, 'utf8') : '';
-  if (current !== rendered) {
-    console.error(`requirement-coverage: ${outputRelative} is stale; run with --write`);
-    process.exit(1);
+if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
+  const rendered = render();
+  const outputPath = join(repositoryRoot, outputRelative);
+  if (checkMode) {
+    const current = existsSync(outputPath) ? readFileSync(outputPath, 'utf8') : '';
+    if (current !== rendered) {
+      console.error(`requirement-coverage: ${outputRelative} is stale; run with --write`);
+      process.exit(1);
+    }
+    console.log('requirement-coverage: up to date');
+  } else {
+    writeFileSync(outputPath, rendered);
+    console.log(`requirement-coverage: wrote ${outputRelative}`);
   }
-  console.log('requirement-coverage: up to date');
-} else {
-  writeFileSync(outputPath, rendered);
-  console.log(`requirement-coverage: wrote ${outputRelative}`);
 }

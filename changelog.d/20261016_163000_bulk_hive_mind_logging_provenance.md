@@ -4,6 +4,9 @@ bump: minor
 
 ### Fixed
 
+- Preserve large and deeply nested typed dialog records, read existing conversations while silent, and keep machine control summaries independent of diagnostic filters.
+- Retain structured issue receipts and truthful Gap outcomes, share one capacity probe per setup batch, and bound issue drafting while preserving failure evidence.
+- Preserve original authored question-policy bytes and align typed-log consumers and agentic reporting expectations with their original semantic assertions.
 - Supply a target-native official Node 22 runtime in the prepared Docker image so agent dependencies using Unicode-set regular expressions install successfully.
 - Preserve fetched issue ownership across ordinary client prompts and keep source-cache captures out of caller repositories.
 

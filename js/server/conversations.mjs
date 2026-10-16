@@ -39,11 +39,16 @@ function config(key) {
   return agentInfo().has(key) ? agentInfo().get(key) : key;
 }
 
-/** `dialog_log::configured_directory`. */
+/** Capture remains disabled in silent mode, including with an explicit directory. */
 export function configuredDialogLogDirectory(env = process.env) {
+  if (parseBoolEnv(env.FORMAL_AI_SILENT) === true) return null;
+  return retainedDialogLogDirectory(env);
+}
+
+/** Locate existing captures without enabling new diagnostic writes. */
+export function retainedDialogLogDirectory(env = process.env) {
   const explicit = env[DIALOG_LOG_DIRECTORY_ENV];
   if (explicit) return explicit;
-  if (parseBoolEnv(env.FORMAL_AI_SILENT) === true) return null;
   return path.join(path.dirname(sharedMemoryPath(env)), 'dialog-logs');
 }
 
@@ -282,7 +287,7 @@ function loadConversationContextFrom(directory, dialogId) {
 
 /** `load_conversation_context`. */
 export function loadConversationContext(dialogId, env = process.env) {
-  const directory = configuredDialogLogDirectory(env);
+  const directory = retainedDialogLogDirectory(env);
   if (!directory) {
     throw new ConversationError('not_found', config('context_dialog_log_unavailable').split('{variable}').join(DIALOG_LOG_DIRECTORY_ENV));
   }

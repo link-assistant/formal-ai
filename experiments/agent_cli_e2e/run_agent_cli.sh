@@ -82,6 +82,9 @@ fi
 MIN_POSTS="${MIN_POSTS:-4}"
 
 LOG="/tmp/formal-ai-serve-$PORT.log"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
+server_log_evidence_setup "$LOG" || exit 1
+node --test "$ROOT/experiments/agent_cli_e2e/server-log-evidence.test.mjs" || exit 1
 AGENT_LOG="/tmp/agent-out-$PORT.log"
 AGENT_SETUP_LOG="/tmp/agent-setup-$PORT.log"
 AGENT_FOLLOW_UP_LOG="/tmp/agent-follow-up-$PORT.log"
@@ -150,7 +153,7 @@ FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
   FORMAL_AI_MEMORY_PATH="$SERVER_STATE/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SRV=$!
-trap 'kill $SRV 2>/dev/null; rm -rf "$WORKDIR" "$SERVER_STATE"' EXIT
+trap 'kill $SRV 2>/dev/null; retain_server_log_evidence; rm -rf "$WORKDIR" "$SERVER_STATE"' EXIT
 
 # Wait for /health without a foreground sleep (curl retries handle the backoff).
 if ! curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
@@ -268,13 +271,13 @@ grep -q "$EXPECT_TEXT" "$WORKDIR/$EXPECT_FILE" \
 # The count is cumulative across retries, but since the successful attempt that
 # wrote EXPECT_FILE necessarily walked the full recipe, it alone contributes
 # ≥MIN_POSTS, so this stays a valid lower bound.
-posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
+posts="$(project_server_log)" || { echo "invalid server evidence" >&2; exit 1; }
 [ "$posts" -ge "$MIN_POSTS" ] \
   || fail "expected ≥$MIN_POSTS chat completions, got $posts (loop stalled?)"
 
 while IFS= read -r expected; do
   [ -z "$expected" ] && continue
-  grep -Fq "$expected" "$LOG" \
+  grep -Fq "$expected" "$SEMANTIC_LOG" \
     || fail "expected server trace to contain: $expected"
 done <<< "$EXPECT_SERVER_TEXTS"
 

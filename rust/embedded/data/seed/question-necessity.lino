@@ -84,39 +84,3 @@ question_necessity_ratchet
   metric "questions_per_100_tasks"
   direction "down"
   maximum "60"
-# Text recognition policy consumed by question_necessity.rs.
-question_necessity_text_predicate_1
-  record_type "question_necessity_text_predicate"
-  name "memory_event"
-  operation "prefix"
-  value "memory"
-question_necessity_text_predicate_2
-  record_type "question_necessity_text_predicate"
-  name "self_trace_event"
-  operation "prefix"
-  value "question_necessity:"
-question_necessity_text_predicate_3
-  record_type "question_necessity_text_predicate"
-  name "workspace_evidence"
-  operation "contains"
-  value "workspace"
-question_necessity_text_predicate_4
-  record_type "question_necessity_text_predicate"
-  name "workspace_evidence"
-  operation "contains"
-  value "derivation"
-question_necessity_text_predicate_5
-  record_type "question_necessity_text_predicate"
-  name "url"
-  operation "prefix"
-  value "http://"
-question_necessity_text_predicate_6
-  record_type "question_necessity_text_predicate"
-  name "url"
-  operation "prefix"
-  value "https://"
-question_necessity_text_predicate_7
-  record_type "question_necessity_text_predicate"
-  name "replayed_question"
-  operation "prefix"
-  value "your previous question was:"

@@ -548,8 +548,8 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1309,"end":137
 "formal_ai::conversation_context::DIALOG_LOG_DIRECTORY_ENV","canonicalPath":
 "formal_ai::conversation_context::DIALOG_LOG_DIRECTORY_ENV","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"FORMAL_AI_DIALOG_LOG_DIR","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
-"sourceSpan":{"start":453,"end":523},"sourceWitnesses":[{"path":"rust/src/conversation_context.rs","sha256":
-"c4a801de661e08b52ffee1bb818fd2bc9aa003b0e14f8df97f878a87c1d38d91"},{"path":"rust/src/lib.rs","sha256":
+"sourceSpan":{"start":456,"end":526},"sourceWitnesses":[{"path":"rust/src/conversation_context.rs","sha256":
+"f0975551a1104b2c472d9020218900473b6c3284cbd3811c5e5ba80a490c4f0a"},{"path":"rust/src/lib.rs","sha256":
 "32283f14f4ec03bde8cc90b956bb296103268ff808bd619d77e7925661637e99"}],"maintainedMeta":
 "(constant DIALOG_LOG_DIRECTORY_ENV (exported) (type string) (value (string FORMAL_AI_DIALOG_LOG_DIR)))",
 "maintainedJavaScript":"export const DIALOG_LOG_DIRECTORY_ENV = 'FORMAL_AI_DIALOG_LOG_DIR';",
@@ -636,13 +636,13 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "98ce413c2aa2210a551761d3bb906a8a79d1cb2b1d041ae816980b6c6574ae00"},{"path":
 "formal_ai::dialog_conversation::CONVERSATION_LOG_SUFFIX","canonicalPath":
 "formal_ai::dialog_conversation::CONVERSATION_LOG_SUFFIX","kind":"nativeConstant","nativeType":"&str","returnType":
-"string","value":".conversation.jsonl","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":
-{"start":1080,"end":1144},"sourceWitnesses":[{"path":"rust/src/dialog_conversation.rs","sha256":
-"38afb0516b5af9c7f3cb4548f0bcef8e48275f56a76d2b3a6a5a7800375f8092"},{"path":"rust/src/lib.rs","sha256":
+"string","value":".conversation.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
+"start":1079,"end":1142},"sourceWitnesses":[{"path":"rust/src/dialog_conversation.rs","sha256":
+"0dd8716a7310202b5886f1ed020ce361e92a90c6864caeb6b7e36322dec374b5"},{"path":"rust/src/lib.rs","sha256":
 "32283f14f4ec03bde8cc90b956bb296103268ff808bd619d77e7925661637e99"}],"maintainedMeta":
-"(constant CONVERSATION_LOG_SUFFIX (exported) (type string) (value (string .conversation.jsonl)))",
-"maintainedJavaScript":"export const CONVERSATION_LOG_SUFFIX = '.conversation.jsonl';","maintainedTranslationSha256":
-"22ebeedadc4bacda3e4e495a210dbcf8b3fbf1bd28c44419dd3e0ca5ac00be9d"},{"path":
+"(constant CONVERSATION_LOG_SUFFIX (exported) (type string) (value (string .conversation.lino)))","maintainedJavaScript"
+:"export const CONVERSATION_LOG_SUFFIX = '.conversation.lino';","maintainedTranslationSha256":
+"bcd2183c0ed39f6416f21ffe1437e0cbbf27a57578f53f6bd82dff48bd1ea912"},{"path":
 "formal_ai::document_formats::DOCUMENT_FORMAT_ENGINE","canonicalPath":
 "formal_ai::document_formats::DOCUMENT_FORMAT_ENGINE","kind":"nativeConstant","nativeType":"&str","returnType":"string",
 "value":"meta_language","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":822,
@@ -886,7 +886,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1491,"end":155
 ,"canonicalPath":"formal_ai::memory_sync::LEARNED_CHUNK_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"meta_learned_chunk","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
 "start":7336,"end":7394},"sourceWitnesses":[{"path":"rust/src/memory_sync.rs","sha256":
-"9ba99a84a01c29e5466b63d52b07d9398e9043d8fa6630e9f9e1429ddb795b91"},{"path":"rust/src/lib.rs","sha256":
+"dcf7bba2206d195d1098e3e9cbbb39b8653cda5b995c4c28fa310a15a03c30a3"},{"path":"rust/src/lib.rs","sha256":
 "32283f14f4ec03bde8cc90b956bb296103268ff808bd619d77e7925661637e99"}],"maintainedMeta":
 "(constant LEARNED_CHUNK_KIND (exported) (type string) (value (string meta_learned_chunk)))","maintainedJavaScript":
 "export const LEARNED_CHUNK_KIND = 'meta_learned_chunk';","maintainedTranslationSha256":

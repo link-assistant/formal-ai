@@ -12,14 +12,14 @@ use crate::dialog_conversation::{
 use crate::dialog_log::DialogExchangeLog;
 use crate::memory_sync::SyncStore;
 
-/// Environment variable containing the complete per-dialog JSONL logs.
+/// Environment variable containing the complete per-dialog exchange logs.
 pub const DIALOG_LOG_DIRECTORY_ENV: &str = "FORMAL_AI_DIALOG_LOG_DIR";
 const VARIABLE_PLACEHOLDER: &str = "{variable}";
 
 /// Resolve the server-log directory configured for this process.
 #[must_use]
 pub fn configured_dialog_log_directory() -> Option<PathBuf> {
-    crate::dialog_log::configured_directory()
+    Some(crate::dialog_log::retained_directory())
 }
 
 /// The most recently recorded dialog, from an explicit or configured directory.
@@ -112,19 +112,33 @@ pub fn load_conversation_context_from(directory: &Path, dialog_id: &str) -> io::
     }))
 }
 
-/// Read the raw proxy trace, treating a missing file as "no exchanges" so a
-/// conversation-only capture still exports.
+/// Read legacy exchanges before typed records, matching the JavaScript reader.
+/// Missing captures are allowed; malformed existing captures are errors.
 fn read_exchanges(directory: &Path, dialog_id: &str) -> io::Result<Vec<DialogExchangeLog>> {
-    let path = directory.join(format!("{dialog_id}.jsonl"));
-    let text = match fs::read_to_string(path) {
-        Ok(text) => text,
-        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(Vec::new()),
-        Err(error) => return Err(error),
-    };
-    text.lines()
-        .filter(|line| !line.trim().is_empty())
-        .map(|line| serde_json::from_str::<DialogExchangeLog>(line).map_err(io::Error::other))
-        .collect()
+    let mut exchanges = Vec::new();
+    for (extension, typed) in [("jsonl", false), ("lino", true)] {
+        let text = match fs::read_to_string(directory.join(format!("{dialog_id}.{extension}"))) {
+            Ok(text) => text,
+            Err(error) if error.kind() == io::ErrorKind::NotFound => continue,
+            Err(error) => return Err(error),
+        };
+        if typed && !text.is_empty() && !text.ends_with('\n') {
+            return Err(io::Error::other("unterminated_dialog_log"));
+        }
+        for line in text.split_terminator('\n') {
+            let exchange = if typed {
+                let value = crate::dialog_log::structured_log::decode_dialog(line)?;
+                serde_json::from_value(value).map_err(io::Error::other)?
+            } else {
+                if line.trim().is_empty() {
+                    continue;
+                }
+                serde_json::from_str(line).map_err(io::Error::other)?
+            };
+            exchanges.push(exchange);
+        }
+    }
+    Ok(exchanges)
 }
 
 /// Store a reported conversation in shared memory and stage any learning trace.

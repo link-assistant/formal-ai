@@ -57,7 +57,12 @@ pub fn run_statement_audit(args: &StatementAuditArgs) -> Result<(), Box<dyn Erro
             "temperature": args.temperature,
         }
     }))?;
-    formal_ai::diagnostic!("debug"; "{}", diagnostic);
+    formal_ai::dialog_log::structured_log::control(
+        "statement_audit",
+        module_path!(),
+        &diagnostic,
+        &json!({}),
+    );
     Ok(())
 }
 

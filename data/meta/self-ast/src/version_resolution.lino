@@ -2,9 +2,9 @@ self_ast_census
   target src/version_resolution.rs
   language rust
   fidelity signature
-  byte_len 21162
-  line_count 523
-  content_id source_module_ad5da2820b65b5c1
+  byte_len 21504
+  line_count 530
+  content_id source_module_7088ca997754f292
   symbol_count 28
   symbols
     const TOOLCHAINS 23 23
@@ -17,21 +17,21 @@ self_ast_census
     function from_baseline 82 91
     struct VersionSet 96 110
     function resolve 116 165
-    function for_generation 174 179
-    function baseline 183 196
-    function resolve_github 198 232
-    function pins 235 235
-    function pin 250 255
-    function record 259 274
-    function provenance_note 279 309
-    function resolve_java_lts 314 339
-    const URL 318 318
-    function json_string 342 348
-    function baseline 351 359
-    function descend 361 366
-    function fill_workflow_versions 377 428
-    struct WorkflowAction 434 439
-    function workflow_actions 441 467
-    function workflow_step_marker 470 479
-    function replace_action_ref 483 508
-    function replace_quoted_value 511 523
+    function for_generation 174 186
+    function baseline 190 203
+    function resolve_github 205 239
+    function pins 242 242
+    function pin 257 262
+    function record 266 281
+    function provenance_note 286 316
+    function resolve_java_lts 321 346
+    const URL 325 325
+    function json_string 349 355
+    function baseline 358 366
+    function descend 368 373
+    function fill_workflow_versions 384 435
+    struct WorkflowAction 441 446
+    function workflow_actions 448 474
+    function workflow_step_marker 477 486
+    function replace_action_ref 490 515
+    function replace_quoted_value 518 530

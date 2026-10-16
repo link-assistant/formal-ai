@@ -16,7 +16,7 @@ test('no-PR failure comment always links run and available full session artifact
  assert.match(failureComment({runUrl:'https://example/run'}),/https:\/\/example\/run/);
 });
 test('workflow contracts retain source identity, shared policy, evidence and default-token checks',()=>{
- assert.match(workflow,/types: \[opened\]/); assert.match(workflow,/issue_number:/);
+ assert.match(workflow,/types:\s*(?:\[opened\]|- opened)/); assert.match(workflow,/issue_number:/);
  assert.match(workflow,/cancel-in-progress: false/); assert.match(workflow,/group: hive-mind-draft-/);
  assert.match(workflow,/2083d6fd86ba0a7ee54e36110c8aebcfb5f2774d/);
  assert.ok(workflow.indexOf('--decide') < workflow.indexOf('cargo build'));
@@ -37,4 +37,22 @@ test('runner-only session path is initialized at step runtime',()=>{
  assert(setup>workflow.indexOf('    steps:')&&setup<workflow.indexOf('--decide'));
  assert.match(workflow,/FORMAL_AI_DRAFT_LOG_DIR=\$RUNNER_TEMP\/formal-ai-draft-logs" >> "\$GITHUB_ENV"/);
  assert.match(workflow,/path: \$\{\{ runner.temp \}\}\/formal-ai-draft-logs/);
+});
+
+import {workflowJobs} from '../../../scripts/lib/ci-speed-workflows.mjs';
+import {capProblems} from '../../../scripts/check-ci-speed.mjs';
+test('bounded build and attempt jobs share one exact-main binary and retain failure evidence',()=>{
+ const jobs=workflowJobs(workflow);
+ assert.deepEqual(jobs.map(job=>job.id),['build','draft']);
+ assert.deepEqual(capProblems([{path:'.github/workflows/hive-mind-draft.yml',jobs}],{limitMinutes:30,exceptions:[]}),[]);
+ assert.equal((workflow.match(/cargo build/g)||[]).length,1);
+ assert.match(workflow,/22m cargo build/);
+ assert.match(workflow,/20m node .hive-mind\/scripts\/formal-ai-draft.mjs/);
+ assert.match(workflow,/needs: build/);
+ assert.match(workflow,/needs.build.outputs.should_run == 'true'/);
+ assert.match(workflow,/hive-mind-main-binary-/);
+ assert.match(workflow,/hive-mind-main-evidence-/);
+ assert.match(workflow,/needs.build.outputs.evidence_url/);
+ assert.match(workflow,/needs.build.result != 'success'/);
+ assert.match(workflow,/kill-after=30s/);
 });

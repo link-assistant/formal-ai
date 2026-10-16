@@ -2,25 +2,27 @@ self_ast_census
   target src/dialog_conversation.rs
   language rust
   fidelity signature
-  byte_len 11453
-  line_count 315
-  content_id source_module_ff5fc6b865af9652
-  symbol_count 17
+  byte_len 12783
+  line_count 351
+  content_id source_module_6a2f0ddfb8355ca9
+  symbol_count 19
   symbols
     const CONVERSATION_LOG_SUFFIX 23 23
-    static WRITE_LOCK 25 25
-    struct DialogConversationLog 29 34
-    function conversation_log_path 38 40
-    function turns_in_exchange 44 52
-    function write_conversation_record 56 74
-    function load_conversation_records 80 94
-    function latest_conversation_id 105 123
-    function last_record_timestamp 127 134
-    function transcript_from_records 139 145
-    function append_with_overlap 149 156
-    function extract_request_messages 160 170
-    function extract_response_messages 174 179
-    function response_messages_from_value 181 209
-    struct StreamingToolCall 212 217
-    function into_value 220 229
-    function extract_sse_message 232 315
+    const LEGACY_CONVERSATION_LOG_SUFFIX 24 24
+    static WRITE_LOCK 26 26
+    struct DialogConversationLog 30 35
+    function conversation_log_path 39 41
+    function turns_in_exchange 45 53
+    function write_conversation_record 57 78
+    function load_conversation_records 84 111
+    function latest_conversation_id 122 144
+    function last_record_timestamp 148 166
+    function transcript_from_records 171 177
+    function append_with_overlap 181 188
+    function extract_request_messages 192 202
+    function extract_response_messages 206 211
+    function response_messages_from_value 213 241
+    struct StreamingToolCall 244 249
+    function into_value 252 261
+    function extract_sse_message 264 347
+    module structured_log_migration_tests 351 351

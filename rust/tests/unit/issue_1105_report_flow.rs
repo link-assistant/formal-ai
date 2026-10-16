@@ -201,8 +201,25 @@ mod export_target {
             .1;
         let arm = &block[..block.find("\n}").unwrap_or(block.len())];
         assert!(
-            arm.contains("eprintln!"),
-            "resolving `latest` to the newest file on disk is a guess and must say so:\n{arm}"
+            arm.contains("formal_ai::diagnostic!(\"warn\";"),
+            "the guessed identity must be disclosed through the typed warning boundary:\n{arm}"
+        );
+        assert!(arm.contains("context_session_guessed_notice"), "{arm}");
+        assert!(
+            arm.contains(".replace(RECORDED_PLACEHOLDER, &recorded)"),
+            "the disclosure must identify the actual selected conversation: {arm}"
+        );
+        assert!(
+            arm.contains(".replace(VARIABLE_PLACEHOLDER, SESSION_ENV)"),
+            "the disclosure must explain how the caller selects its session: {arm}"
+        );
+        let notice = arm.find("formal_ai::diagnostic!").expect("typed notice");
+        let selected = arm
+            .find("candidates.push(recorded)")
+            .expect("selected guess");
+        assert!(
+            notice < selected,
+            "announce the guess before selecting it: {arm}"
         );
     }
 

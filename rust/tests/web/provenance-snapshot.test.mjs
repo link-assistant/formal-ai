@@ -3,25 +3,220 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {spawnSync} from 'node:child_process';
-import {sourceSnapshot,languageExtensions,appendSourceSnapshot,merkleRoot,merkleProof,verifyMerkleProof} from '../../../js/provenance/snapshot.mjs';
-import {snapshotRepository} from '../../../js/provenance/snapshot-repository.mjs';
-import {decodeTyped} from '../../../js/server/structured-log.mjs';
-import {blake3Hex} from '../../../js/crypto/blake3.mjs';
-const extensions=languageExtensions(fs.readFileSync(new URL('../../../data/seed/page-formalization-rules.lino',import.meta.url),'utf8'));
-const file=(path,text)=>({path,content:Buffer.from(text)});
-const mixed=[file('src/lib.rs','pub fn a() {}'),file('index.js','export const a=1;'),file('Cargo.lock','lock'),file('README.md','read')];
-test('mixed snapshot stable under input order and isolates languages',()=>{const a=sourceSnapshot(mixed,extensions);assert.deepEqual(a,sourceSnapshot(mixed.toReversed(),extensions));const b=sourceSnapshot(mixed.map(x=>x.path==='index.js'?file(x.path,'export const a=2;'):x),extensions);for(const row of a.languages)assert.equal(row.root===b.languages.find(x=>x.language===row.language).root,row.language!=='javascript');assert.notEqual(a.total,b.total);});
-test('leaf binds exact path and binary bytes',()=>{const f={path:'a.rs',content:Buffer.from([0,255])};assert.equal(sourceSnapshot([f],extensions).languages[0].root,blake3Hex(Buffer.concat([Buffer.from('a.rs\0'),f.content])));assert.notEqual(sourceSnapshot([f],extensions).total,sourceSnapshot([{...f,path:'b.rs'}],extensions).total);});
-test('reject duplicate, unsafe, ambiguous paths and nonbytes',()=>{for(const p of ['../a','a/../b','/a','a//b','a\\b','a\0b'])assert.throws(()=>sourceSnapshot([file(p,'x')],extensions));assert.throws(()=>sourceSnapshot([mixed[0],mixed[0]],extensions));assert.throws(()=>sourceSnapshot([{path:'a',content:'text'}],extensions));});
-test('maintained session consumer emits source_snapshot',()=>{let observed;const result=appendSourceSnapshot({append:(...args)=>(observed=args,'receipt')},mixed,extensions);assert.equal(result,'receipt');assert.equal(observed[0],'source_snapshot');assert.deepEqual(observed[1],sourceSnapshot(mixed,extensions));});
-test('real repository CLI snapshots tracked working bytes and refuses symlinks',()=>{const root=fs.mkdtempSync(path.join(os.tmpdir(),'provenance-snapshot-'));try{const git=(...args)=>{const r=spawnSync('git',args,{cwd:root});assert.equal(r.status,0,r.stderr.toString());};git('init','-q');fs.writeFileSync(path.join(root,'a.rs'),'rust');fs.writeFileSync(path.join(root,'a.js'),'javascript');git('add','.');const a=snapshotRepository(root);fs.writeFileSync(path.join(root,'untracked.js'),'ignored');assert.deepEqual(a,snapshotRepository(root));const cli=spawnSync(process.execPath,[new URL('../../../js/provenance/cli.mjs',import.meta.url).pathname,'snapshot',root],{encoding:'utf8'});assert.equal(cli.status,0,cli.stderr);assert.deepEqual(decodeTyped(cli.stdout.trim()),a);fs.writeFileSync(path.join(root,'a.js'),'changed');assert.notEqual(snapshotRepository(root).total,a.total);fs.unlinkSync(path.join(root,'a.js'));fs.symlinkSync('a.rs',path.join(root,'a.js'));assert.throws(()=>snapshotRepository(root),/symlink/);}finally{fs.rmSync(root,{recursive:true,force:true});}});
-
-test('short proofs cover odd and even trees and reject forged/truncated paths',()=>{for(let n=1;n<12;n++){const leaves=Array.from({length:n},(_,i)=>blake3Hex(Buffer.from(String(i))));const root=merkleRoot(leaves);for(let i=0;i<n;i++){const proof=merkleProof(leaves,i);assert.equal(verifyMerkleProof(leaves[i],proof,root),true);assert.equal(verifyMerkleProof(blake3Hex(Buffer.from('forged')),proof,root),false);assert.equal(verifyMerkleProof(leaves[i],{...proof,siblings:[...proof.siblings,root]},root),false);if(proof.siblings.length)assert.equal(verifyMerkleProof(leaves[i],{...proof,siblings:proof.siblings.slice(1)},root),false);}}});
-test('empty snapshot and language table validation',()=>{assert.deepEqual(sourceSnapshot([],extensions),sourceSnapshot([],extensions));assert.throws(()=>languageExtensions(''),/table/);assert.throws(()=>sourceSnapshot(mixed,[['','rust']]),/inputs/);});
-
-import {provenancePrimitives} from '../../../js/provenance/session.mjs';
-import {encodeTyped} from '../../../js/server/structured-log.mjs';
-test('session automatically snapshots before commit and terminal, and snapshot failure cannot complete',()=>{const p=provenancePrimitives({encodeTyped,decodeTyped});let captures=0;const s=p.createSession({sessionId:'s',contextId:'c',initialMemory:new Uint8Array(),runtimeId:'r',sourceId:'v',snapshotSource:()=>{captures++;return {files:mixed,extensions};}});s.append('commit',{id:'fixture'});s.append('terminal',{reason:'test'});assert.equal(captures,2);assert.deepEqual(s.lines().map(x=>decodeTyped(x).kind),['genesis','source_snapshot','commit','source_snapshot','terminal']);assert.deepEqual(p.verifyChain(s.lines(),s.anchor()),s.anchor());const failure=p.createSession({sessionId:'f',contextId:'c',initialMemory:new Uint8Array(),runtimeId:'r',sourceId:'v',snapshotSource:()=>{throw Error('capture failed');}});assert.throws(()=>failure.append('terminal',{reason:'test'}),/capture failed/);assert.throws(()=>failure.anchor(),/incomplete/);assert.equal(failure.lines().length,1);});
-
-test('repository budgets refuse before payload allocation and iterator consumes one file at a time',()=>{const root=fs.mkdtempSync(path.join(os.tmpdir(),'snapshot-budgets-'));try{const git=(...args)=>assert.equal(spawnSync('git',args,{cwd:root}).status,0);git('init','-q');for(let i=0;i<24;i++)fs.writeFileSync(path.join(root,String(i).padStart(2,'0')+'.js'),Buffer.alloc(4096,i));git('add','.');let reads=0;const reader=(file,stat)=>{reads++;assert.equal(stat.size,4096);return fs.readFileSync(file);};for(const options of [{maxFiles:23},{maxFileBytes:4095},{maxTotalBytes:24*4096-1}]){assert.throws(()=>snapshotRepository(root,{...options,readFile:reader}),/budget/);assert.equal(reads,0);}const observed=snapshotRepository(root,{readFile:reader});assert.equal(reads,24);assert.equal(observed.inventory.file_count,24);assert.equal(observed.inventory.total_bytes,24*4096);assert.deepEqual(observed.inventory.exclusions,[]);assert.throws(()=>snapshotRepository(root,{readFile:()=>Buffer.alloc(0)}),/size_drift/);let prior;const iterable={*[Symbol.iterator](){for(let i=0;i<24;i++){if(prior)prior.fill(0);prior=Buffer.alloc(4096,i);yield {path:String(i)+'.js',content:prior};}}};const expected=Array.from({length:24},(_,i)=>({path:String(i)+'.js',content:Buffer.alloc(4096,i)}));assert.deepEqual(sourceSnapshot(iterable,extensions),sourceSnapshot(expected,extensions));}finally{fs.rmSync(root,{recursive:true,force:true});}});
+import { spawnSync } from 'node:child_process';
+import { sourceSnapshot, languageExtensions, appendSourceSnapshot, merkleRoot, merkleProof, verifyMerkleProof } from '../../../js/provenance/snapshot.mjs';
+import { snapshotRepository } from '../../../js/provenance/snapshot-repository.mjs';
+import { decodeTyped } from '../../../js/server/structured-log.mjs';
+import { blake3Hex } from '../../../js/crypto/blake3.mjs';
+const extensions = languageExtensions(fs.readFileSync(new URL('../../../data/seed/page-formalization-rules.lino', import.meta.url), 'utf8'));
+const file = (path, text) => ({
+  path,
+  content: Buffer.from(text)
+});
+const mixed = [file('src/lib.rs', 'pub fn a() {}'), file('index.js', 'export const a=1;'), file('Cargo.lock', 'lock'), file('README.md', 'read')];
+test('mixed snapshot stable under input order and isolates languages', () => {
+  const a = sourceSnapshot(mixed, extensions);
+  assert.deepEqual(a, sourceSnapshot(mixed.toReversed(), extensions));
+  const b = sourceSnapshot(mixed.map(x => x.path === 'index.js' ? file(x.path, 'export const a=2;') : x), extensions);
+  for (const row of a.languages) assert.equal(row.root === b.languages.find(x => x.language === row.language).root, row.language !== 'javascript');
+  assert.notEqual(a.total, b.total);
+});
+test('leaf binds exact path and binary bytes', () => {
+  const f = {
+    path: 'a.rs',
+    content: Buffer.from([0, 255])
+  };
+  assert.equal(sourceSnapshot([f], extensions).languages[0].root, blake3Hex(Buffer.concat([Buffer.from('a.rs\0'), f.content])));
+  assert.notEqual(sourceSnapshot([f], extensions).total, sourceSnapshot([{
+    ...f,
+    path: 'b.rs'
+  }], extensions).total);
+});
+test('reject duplicate, unsafe, ambiguous paths and nonbytes', () => {
+  for (const p of ['../a', 'a/../b', '/a', 'a//b', 'a\\b', 'a\0b']) assert.throws(() => sourceSnapshot([file(p, 'x')], extensions));
+  assert.throws(() => sourceSnapshot([mixed[0], mixed[0]], extensions));
+  assert.throws(() => sourceSnapshot([{
+    path: 'a',
+    content: 'text'
+  }], extensions));
+});
+test('maintained session consumer emits source_snapshot', () => {
+  let observed;
+  const result = appendSourceSnapshot({
+    append: (...args) => (observed = args, 'receipt')
+  }, mixed, extensions);
+  assert.equal(result, 'receipt');
+  assert.equal(observed[0], 'source_snapshot');
+  assert.deepEqual(observed[1], sourceSnapshot(mixed, extensions));
+});
+test('real repository CLI snapshots tracked working bytes and refuses symlinks', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'provenance-snapshot-'));
+  try {
+    const git = (...args) => {
+      const r = spawnSync('git', args, {
+        cwd: root
+      });
+      assert.equal(r.status, 0, r.stderr.toString());
+    };
+    git('init', '-q');
+    fs.writeFileSync(path.join(root, 'a.rs'), 'rust');
+    fs.writeFileSync(path.join(root, 'a.js'), 'javascript');
+    git('add', '.');
+    const a = snapshotRepository(root);
+    fs.writeFileSync(path.join(root, 'untracked.js'), 'ignored');
+    assert.deepEqual(a, snapshotRepository(root));
+    const cli = spawnSync(process.execPath, [new URL('../../../js/provenance/cli.mjs', import.meta.url).pathname, 'snapshot', root], {
+      encoding: 'utf8'
+    });
+    assert.equal(cli.status, 0, cli.stderr);
+    assert.deepEqual(decodeTyped(cli.stdout.trim()), a);
+    fs.writeFileSync(path.join(root, 'a.js'), 'changed');
+    assert.notEqual(snapshotRepository(root).total, a.total);
+    fs.unlinkSync(path.join(root, 'a.js'));
+    fs.symlinkSync('a.rs', path.join(root, 'a.js'));
+    assert.throws(() => snapshotRepository(root), /symlink/);
+  } finally {
+    fs.rmSync(root, {
+      recursive: true,
+      force: true
+    });
+  }
+});
+test('short proofs cover odd and even trees and reject forged/truncated paths', () => {
+  for (let n = 1; n < 12; n++) {
+    const leaves = Array.from({
+      length: n
+    }, (_, i) => blake3Hex(Buffer.from(String(i))));
+    const root = merkleRoot(leaves);
+    for (let i = 0; i < n; i++) {
+      const proof = merkleProof(leaves, i);
+      assert.equal(verifyMerkleProof(leaves[i], proof, root), true);
+      assert.equal(verifyMerkleProof(blake3Hex(Buffer.from('forged')), proof, root), false);
+      assert.equal(verifyMerkleProof(leaves[i], {
+        ...proof,
+        siblings: [...proof.siblings, root]
+      }, root), false);
+      if (proof.siblings.length) assert.equal(verifyMerkleProof(leaves[i], {
+        ...proof,
+        siblings: proof.siblings.slice(1)
+      }, root), false);
+    }
+  }
+});
+test('empty snapshot and language table validation', () => {
+  assert.deepEqual(sourceSnapshot([], extensions), sourceSnapshot([], extensions));
+  assert.throws(() => languageExtensions(''), /table/);
+  assert.throws(() => sourceSnapshot(mixed, [['', 'rust']]), /inputs/);
+});
+import { provenancePrimitives } from '../../../js/provenance/session.mjs';
+import { encodeTyped } from '../../../js/server/structured-log.mjs';
+test('session automatically snapshots before commit and terminal, and snapshot failure cannot complete', () => {
+  const p = provenancePrimitives({
+    encodeTyped,
+    decodeTyped
+  });
+  let captures = 0;
+  const s = p.createSession({
+    sessionId: 's',
+    contextId: 'c',
+    initialMemory: new Uint8Array(),
+    runtimeId: 'r',
+    sourceId: 'v',
+    snapshotSource: () => {
+      captures++;
+      return {
+        files: mixed,
+        extensions
+      };
+    }
+  });
+  s.append('commit', {
+    id: 'fixture'
+  });
+  s.append('terminal', {
+    reason: 'test'
+  });
+  assert.equal(captures, 2);
+  assert.deepEqual(s.lines().map(x => decodeTyped(x).kind), ['genesis', 'source_snapshot', 'commit', 'source_snapshot', 'terminal']);
+  assert.deepEqual(p.verifyChain(s.lines(), s.anchor()), s.anchor());
+  const failure = p.createSession({
+    sessionId: 'f',
+    contextId: 'c',
+    initialMemory: new Uint8Array(),
+    runtimeId: 'r',
+    sourceId: 'v',
+    snapshotSource: () => {
+      throw Error('capture failed');
+    }
+  });
+  assert.throws(() => failure.append('terminal', {
+    reason: 'test'
+  }), /capture failed/);
+  assert.throws(() => failure.anchor(), /incomplete/);
+  assert.equal(failure.lines().length, 1);
+});
+test('repository budgets refuse before payload allocation and iterator consumes one file at a time', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'snapshot-budgets-'));
+  try {
+    const git = (...args) => assert.equal(spawnSync('git', args, {
+      cwd: root
+    }).status, 0);
+    git('init', '-q');
+    for (let i = 0; i < 24; i++) fs.writeFileSync(path.join(root, String(i).padStart(2, '0') + '.js'), Buffer.alloc(4096, i));
+    git('add', '.');
+    let reads = 0;
+    const reader = (file, stat) => {
+      reads++;
+      assert.equal(stat.size, 4096);
+      return fs.readFileSync(file);
+    };
+    for (const options of [{
+      maxFiles: 23
+    }, {
+      maxFileBytes: 4095
+    }, {
+      maxTotalBytes: 24 * 4096 - 1
+    }]) {
+      assert.throws(() => snapshotRepository(root, {
+        ...options,
+        readFile: reader
+      }), /budget/);
+      assert.equal(reads, 0);
+    }
+    const observed = snapshotRepository(root, {
+      readFile: reader
+    });
+    assert.equal(reads, 24);
+    assert.equal(observed.inventory.file_count, 24);
+    assert.equal(observed.inventory.total_bytes, 24 * 4096);
+    assert.deepEqual(observed.inventory.exclusions, []);
+    assert.throws(() => snapshotRepository(root, {
+      readFile: () => Buffer.alloc(0)
+    }), /size_drift/);
+    let prior;
+    const iterable = {
+      *[Symbol.iterator]() {
+        for (let i = 0; i < 24; i++) {
+          if (prior) prior.fill(0);
+          prior = Buffer.alloc(4096, i);
+          yield {
+            path: String(i) + '.js',
+            content: prior
+          };
+        }
+      }
+    };
+    const expected = Array.from({
+      length: 24
+    }, (_, i) => ({
+      path: String(i) + '.js',
+      content: Buffer.alloc(4096, i)
+    }));
+    assert.deepEqual(sourceSnapshot(iterable, extensions), sourceSnapshot(expected, extensions));
+  } finally {
+    fs.rmSync(root, {
+      recursive: true,
+      force: true
+    });
+  }
+});

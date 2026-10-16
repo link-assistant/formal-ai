@@ -444,12 +444,20 @@ fn shared_field<'a>(row: &'a Requirement, name: &str) -> &'a str {
 /// record states such a field only where it differs from the file's value
 /// (the empty text when the file states none), so a reader that applies the
 /// defaults reads the same values as before. Every `id` stays on its record.
-/// Four or more rows may share one uniform verdict, matching the notation measure.
+/// Within this shard, four or more rows may share one strict-majority verdict;
+/// every minority verdict remains an explicit record override.
 fn render_shard(rows: &[&Requirement]) -> String {
-    let verdict_default = rows
-        .first()
-        .filter(|first| rows.len() >= 4 && rows.iter().all(|row| row.verdict == first.verdict))
-        .map_or("", |row| row.verdict.as_str());
+    let verdict_default_value = if rows.len() >= 4 {
+        shared_value(
+            &rows
+                .iter()
+                .map(|row| row.verdict.as_str())
+                .collect::<Vec<_>>(),
+        )
+    } else {
+        String::new()
+    };
+    let verdict_default = verdict_default_value.as_str();
     let shared: Vec<String> = SHARED_FIELDS
         .iter()
         .map(|name| {

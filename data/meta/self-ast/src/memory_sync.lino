@@ -2,9 +2,9 @@ self_ast_census
   target src/memory_sync.rs
   language rust
   fidelity signature
-  byte_len 18629
+  byte_len 18682
   line_count 459
-  content_id source_module_649af720e4a88049
+  content_id source_module_7f0945f1694f08be
   symbol_count 22
   symbols
     function events_since 37 45

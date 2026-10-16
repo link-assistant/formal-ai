@@ -2,9 +2,9 @@ self_ast_census
   target src/local_transport.rs
   language rust
   fidelity signature
-  byte_len 22591
+  byte_len 22698
   line_count 613
-  content_id source_module_a3b9a993dca00b22
+  content_id source_module_e369c1a1e5ee269b
   symbol_count 41
   symbols
     const DATA_CHANNEL_LABEL 33 33

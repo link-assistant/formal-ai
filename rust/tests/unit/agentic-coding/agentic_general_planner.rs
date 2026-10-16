@@ -78,12 +78,14 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     assert_eq!(calls.len(), 1);
     // A work item names an issue, and an issue URL names no artifact, so the
     // run reads the work item before deciding what it can execute (issue #904,
-    // follow-up). A protocol-hosted fetch tool runs the read server-side
-    // (issue #1133), so it comes first when the client has one; the structured
-    // `gh` read is the path for shell-only clients. The plan record is still
-    // written; it is no longer the first and only thing the run does.
-    assert_eq!(calls[0].tool, "web_fetch");
-    assert!(calls[0].arguments.contains("issues/698"), "{calls:?}");
+    // follow-up). The current #1206 policy prefers an advertised shell alias
+    // for the exact structured gh read, before hosted fetch/project lookup.
+    assert_eq!(calls[0].tool, "run_command");
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    assert_eq!(
+        arguments["command"],
+        r"gh issue view 'https://github.com/link-assistant/formal-ai/issues/698' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/formal-ai/issues/698' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+    );
 
     // A client with a shell but no fetch tool reads the work item through
     // `gh issue view` before anything is recorded (issue #1133).

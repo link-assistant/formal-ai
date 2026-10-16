@@ -10,6 +10,7 @@
 // code command-stream reports.
 
 import { createHash } from 'node:crypto';
+import { decodeTyped } from '../../logging/typed-codec.mjs';
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import { constants } from 'node:os';
@@ -239,9 +240,22 @@ function nativeSessionFrom(json) {
 /** Mirrors `fn parse_native_session` in rust/src/orchestration/runner.rs. */
 export function parseNativeSession(stderr, stdout, integration) {
   for (const line of stderr.split(/\r?\n/u)) {
-    const trimmed = line.trim();
-    if (!trimmed.startsWith(NATIVE_SESSION_PREFIX)) continue;
-    const evidence = nativeSessionFrom(trimmed.slice(NATIVE_SESSION_PREFIX.length));
+    let message = line.trim();
+    if (!message.startsWith(NATIVE_SESSION_PREFIX)) {
+      let control;
+      try {
+        // The already-captured machine stream preserves its legacy size contract.
+        // Diagnostic readers retain their independent default record budget.
+        control = decodeTyped(message, { maximumRecordBytes: Buffer.byteLength(message) });
+      } catch {
+        continue;
+      }
+      if (!isJsonObject(control) || control.schema !== 'formal-ai-control-v1'
+          || control.kind !== 'orchestration_session' || typeof control.message !== 'string') continue;
+      message = control.message;
+    }
+    if (!message.startsWith(NATIVE_SESSION_PREFIX)) continue;
+    const evidence = nativeSessionFrom(message.slice(NATIVE_SESSION_PREFIX.length));
     if (evidence !== null) return evidence;
   }
   if (!integration || integration.invocation.resume_command === '') return null;

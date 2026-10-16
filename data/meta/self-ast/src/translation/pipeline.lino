@@ -2,9 +2,9 @@ self_ast_census
   target src/translation/pipeline.rs
   language rust
   fidelity signature
-  byte_len 33234
+  byte_len 33252
   line_count 880
-  content_id source_module_607fcb5b11527b4f
+  content_id source_module_0cd6eb55f01d78c3
   symbol_count 26
   symbols
     function translation_debug_enabled 44 46

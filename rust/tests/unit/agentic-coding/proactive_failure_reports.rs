@@ -1,6 +1,9 @@
 //! Issue #864: Detected failures proactively ask to report on every agentic surface and language.
 //!
 //! Regression coverage for proactive issue-report invitations after detected failures.
+//! #1205/R1207-2 keeps those invitations on interactive solver answers; agentic
+//! tool turns retain diagnostics without asking an absent user. Historical test
+//! names remain stable for the source traceability checks.
 
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
@@ -69,8 +72,15 @@ fn detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses() {
 
     for (prompt, invitation) in cases {
         let answer = failed_tool_answer(prompt);
-        assert!(answer.contains(invitation), "prompt={prompt}: {answer}");
-        assert!(answer.contains(REPORT_COMMAND), "prompt={prompt}: {answer}");
+        assert!(
+            answer.contains("exit status 1"),
+            "prompt={prompt}: {answer}"
+        );
+        assert!(!answer.contains(invitation), "prompt={prompt}: {answer}");
+        assert!(
+            !answer.contains(REPORT_COMMAND),
+            "prompt={prompt}: {answer}"
+        );
     }
 }
 
@@ -79,10 +89,18 @@ fn plain_text_agent_cli_failures_use_the_same_proactive_invitation() {
     let answer = plain_text_failed_tool_answer("Run command");
     assert!(answer.contains("The command failed:"), "{answer}");
     assert!(
-        answer.contains("Would you like me to prepare an issue report"),
+        !answer.contains("Would you like me to prepare an issue report"),
         "{answer}"
     );
-    assert!(answer.contains(REPORT_COMMAND), "{answer}");
+    assert!(!answer.contains(REPORT_COMMAND), "{answer}");
+    assert!(
+        answer.contains("/bin/sh: 1: command: not found"),
+        "{answer}"
+    );
+    assert!(
+        !answer.to_ascii_lowercase().contains("exit code"),
+        "{answer}"
+    );
 }
 
 #[test]
@@ -168,7 +186,7 @@ fn expected_tool_refusals_do_not_claim_formal_ai_detected_a_failure() {
 
 #[test]
 fn explicit_unsuccessful_results_invite_reports_but_pending_results_do_not() {
-    for (result, should_invite) in [
+    for (result, should_fail) in [
         (r#"{"ok":false}"#, true),
         (r#"{"success":false}"#, true),
         (r#"{"ok":false,"status":"awaiting_approval"}"#, false),
@@ -181,8 +199,20 @@ fn explicit_unsuccessful_results_invite_reports_but_pending_results_do_not() {
             other => panic!("expected a final tool answer, got {other:?}"),
         };
         assert_eq!(
-            answer.contains(REPORT_COMMAND),
-            should_invite,
+            answer.starts_with("The command failed:"),
+            should_fail,
+            "result={result}: {answer}"
+        );
+        assert!(
+            !answer.contains(REPORT_COMMAND),
+            "result={result}: {answer}"
+        );
+        assert!(
+            !answer.contains("Would you like me to prepare an issue report"),
+            "result={result}: {answer}"
+        );
+        assert!(
+            !answer.to_ascii_lowercase().contains("exit code"),
             "result={result}: {answer}"
         );
     }

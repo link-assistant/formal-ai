@@ -302,7 +302,29 @@ function repositoryWorkItemObjective(plan, progress) {
     if (url !== plan.target) continue;
     let text = trim(raw);
     try {
-      const data = JSON.parse(text);
+      let data = JSON.parse(text);
+      // MCP's structured result is source data, not its display placeholder.
+      // The shared normalizer still vetoes an explicitly failed envelope.
+      if (data && Array.isArray(data.content) && data.content.every(part => part?.type === 'text' && typeof part.text === 'string')
+        && Object.hasOwn(data, 'structuredContent')) {
+        if (observedPayload(raw) === null) continue;
+        const structured = data.structuredContent;
+        let record = structured && typeof structured === 'object' && Object.hasOwn(structured, 'content') ? structured.content : structured;
+        if (typeof record === 'string') {
+          try { record = JSON.parse(record); } catch { continue; }
+        }
+        if (!record || typeof record !== 'object' || typeof record.body !== 'string') continue;
+        // Two explicit work items cannot silently select different tasks.
+        const conflicts = other => typeof other?.body === 'string' && (other.body !== record.body
+          || typeof other.title === 'string' && typeof record.title === 'string' && other.title !== record.title);
+        if ([data, structured].some(conflicts)) continue;
+        const conflicting = data.content.some(part => {
+          try { return conflicts(JSON.parse(part.text)); }
+          catch { return false; }
+        });
+        if (conflicting) continue;
+        data = record;
+      }
       if (!data || typeof data !== 'object' || typeof data.body !== 'string') continue;
       text = [typeof data.title === 'string' ? data.title : '', data.body].filter(Boolean).join('\n\n');
     } catch {

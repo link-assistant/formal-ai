@@ -4,6 +4,9 @@
 //! without `--confirm` refuses; `--apply --confirm` materializes only the
 //! promoted seed edit into the workspace.
 
+#[path = "../support/structured_stderr.rs"]
+mod structured_stderr;
+
 use std::process::Command;
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -129,7 +132,7 @@ fn improve_apply_without_confirm_refuses() {
         !output.status.success(),
         "apply without --confirm must fail"
     );
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stderr = structured_stderr::messages(&output.stderr);
     assert!(
         stderr.contains("--confirm"),
         "refusal should mention --confirm: {stderr}"
@@ -155,7 +158,7 @@ fn improve_apply_with_confirm_materializes_only_promoted_edit() {
         "--seed-root",
         dir.to_str().unwrap(),
     ]);
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stderr = structured_stderr::messages(&output.stderr);
     assert!(output.status.success(), "apply stderr: {stderr}");
 
     let seed = dir.join("data/seed/learned-program-rules.lino");

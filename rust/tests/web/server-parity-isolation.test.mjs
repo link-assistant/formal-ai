@@ -57,7 +57,22 @@ test('the original recorded-conversation corpus remains usable with quiet diagno
    const actual=await fetch(running.url+request.path,{method:request.method,headers,...(request.body===null?{}:{body:request.body}),signal:AbortSignal.timeout(20000)});
    assert.equal(actual.status,200,identifier);await actual.text();
   }
-  assert(fs.existsSync(path.join(home,'dialogs','server-parity-learning.conversation.jsonl')));
+  const conversationFile=path.join(home,'dialogs','server-parity-learning.conversation.lino');
+  assert(fs.existsSync(conversationFile));
+  assert.equal(fs.existsSync(path.join(home,'dialogs','server-parity-learning.conversation.jsonl')),false);
+  const {decodeDialogRecord}=await import(pathToFileURL(root+'/js/server/dialog-codec.mjs'));
+  const {toCompactJson}=await import(pathToFileURL(root+'/js/server/json.mjs'));
+  const {loadConversationContext}=await import(pathToFileURL(root+'/js/server/conversations.mjs'));
+  const lines=fs.readFileSync(conversationFile,'utf8');assert(lines.endsWith('\n'));
+  const records=lines.slice(0,-1).split('\n').map(decodeDialogRecord);assert(records.length>0);
+  const typed=loadConversationContext('server-parity-learning',env);
+  assert(typed.messages.length>0);assert.equal(typed.metadata.messages_source,'conversation-record');
+  const legacyDirectory=path.join(home,'legacy-dialogs');fs.mkdirSync(legacyDirectory);
+  fs.writeFileSync(path.join(legacyDirectory,'server-parity-learning.conversation.jsonl'),records.map(toCompactJson).join('\n')+'\n');
+  const legacy=loadConversationContext('server-parity-learning',{...env,FORMAL_AI_DIALOG_LOG_DIR:legacyDirectory});
+  assert.deepEqual(legacy.messages,typed.messages);
+  assert.equal(legacy.metadata.message_count,typed.metadata.message_count);
+  assert.equal(legacy.metadata.messages_source,'conversation-record');
  }finally{if(running)await new Promise(resolve=>running.server.close(resolve));fs.rmSync(home,{recursive:true,force:true});}
 });
 
@@ -78,6 +93,7 @@ test('the previous silent runner setup reproduces the recorded-conversation refu
    const actual=await fetch(running.url+request.path,{method:request.method,headers,...(request.body===null?{}:{body:request.body}),signal:AbortSignal.timeout(20000)});
    assert.equal(actual.status,identifier==='conversation_learn_recorded'?404:200,identifier);await actual.text();
   }
+  assert.equal(fs.existsSync(path.join(home,'dialogs','server-parity-learning.conversation.lino')),false);
   assert.equal(fs.existsSync(path.join(home,'dialogs','server-parity-learning.conversation.jsonl')),false);
  }finally{if(running)await new Promise(resolve=>running.server.close(resolve));fs.rmSync(home,{recursive:true,force:true});}
 });

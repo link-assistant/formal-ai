@@ -11,7 +11,11 @@ use crate::engine::stable_id;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
 
-const POLICY_SEED: &str = include_str!("../embedded/data/seed/question-necessity.lino");
+const POLICY_SEED: &str = concat!(
+    include_str!("../embedded/data/seed/question-necessity.lino"),
+    "\n",
+    include_str!("../embedded/data/seed/question-necessity-text-predicates.lino"),
+);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum QuestionClass {
@@ -365,7 +369,7 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
     let prior_turns = log
         .events()
         .iter()
-        .filter(|event| text_predicate_matches("memory_event", &event.kind))
+        .filter(|event| text_predicate_matches("memory_event", event.kind))
         .count();
     let memory_event = log.append(
         "question_necessity:memory",
@@ -380,8 +384,8 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
         .events()
         .iter()
         .filter(|event| {
-            !text_predicate_matches("self_trace_event", &event.kind)
-                && (text_predicate_matches("workspace_evidence", &event.kind)
+            !text_predicate_matches("self_trace_event", event.kind)
+                && (text_predicate_matches("workspace_evidence", event.kind)
                     || event.kind == "calculation")
         })
         .count();

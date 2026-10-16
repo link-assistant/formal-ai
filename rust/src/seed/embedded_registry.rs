@@ -404,6 +404,8 @@ pub const PROOF_PROGRAM_TEMPLATES_LINO: &str =
     include_str!("../../embedded/data/seed/proof-program-templates.lino");
 pub const QUESTION_NECESSITY_LINO: &str =
     include_str!("../../embedded/data/seed/question-necessity.lino");
+pub const QUESTION_NECESSITY_TEXT_PREDICATES_LINO: &str =
+    include_str!("../../embedded/data/seed/question-necessity-text-predicates.lino");
 pub const REGISTER_LEXICON_LINO: &str =
     include_str!("../../embedded/data/seed/register-lexicon.lino");
 pub const RELEASE_TIMELINES_LINO: &str =
@@ -773,6 +775,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/proof-library.lino", PROOF_LIBRARY_LINO),
         ("data/seed/proof-program-templates.lino", PROOF_PROGRAM_TEMPLATES_LINO),
         ("data/seed/question-necessity.lino", QUESTION_NECESSITY_LINO),
+        (
+            "data/seed/question-necessity-text-predicates.lino",
+            QUESTION_NECESSITY_TEXT_PREDICATES_LINO,
+        ),
         ("data/seed/register-lexicon.lino", REGISTER_LEXICON_LINO),
         ("data/seed/release-timelines.lino", RELEASE_TIMELINES_LINO),
         ("data/seed/repository-command-allowlist.lino", REPOSITORY_COMMAND_ALLOWLIST_LINO),

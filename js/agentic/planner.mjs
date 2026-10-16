@@ -236,8 +236,14 @@ function stopRepeatedFailure(plan, messages) {
   return resolvedFinalAnswer(toolResult.renderFailure(repeated.tool, failure.detail, prompt), FinalDisposition.Failure, 'repeated_tool_failure');
 }
 
-/** Preserve continuation refusal before mandatory prerequisite gaps. */
-function planRequestPreflight(task) {
+/** Resolve request ownership before incidental routes or prerequisite gaps. */
+function planRequestPreflight(task, messages, toolNames) {
+  // A declared issue objective and continuation/prerequisite guards share the
+  // request boundary: surrounding examples never become independent effects.
+  const workItem = composeGeneralChangePlan(task);
+  if (workItem?.mode === 'repository_work_item' && task.trimStart().startsWith(workItem.target)) {
+    return { claimed: true, plan: planGeneralChangeStep(messages, toolNames, workItem) };
+  }
   if (handlerMatches('conversation_control', task) || isContinuationCue(task)) {
     return { claimed: true, plan: null };
   }
@@ -254,13 +260,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
   const effective = continuedAgentTask(messages, received) ?? received;
   const task = objectiveText(effective);
   traceRoute('agentic_task', task);
-  // An objective field opening with its issue URL owns the task. Incidental
-  // filenames and examples in the surrounding harness must not become effects.
-  const workItem = composeGeneralChangePlan(task);
-  if (workItem?.mode === 'repository_work_item' && task.trimStart().startsWith(workItem.target)) {
-    return planGeneralChangeStep(messages, toolNames, workItem);
-  }
-  const preflight = planRequestPreflight(task);
+  const preflight = planRequestPreflight(task, messages, toolNames);
   if (preflight.claimed) return preflight.plan;
   if (
     // An edit request's block is its payload: a `when … then` inside it is text

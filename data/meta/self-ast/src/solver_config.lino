@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_config.rs
   language rust
   fidelity signature
-  byte_len 4091
-  line_count 97
-  content_id source_module_7e8e761a99ac510a
-  symbol_count 6
+  byte_len 5386
+  line_count 131
+  content_id source_module_33bb1fcf5d926c9d
+  symbol_count 9
   symbols
     enum ExecutionSurface 8 16
     function slug 20 29
@@ -13,3 +13,6 @@ self_ast_census
     enum BlueprintComposition 66 72
     function slug 77 82
     function from_value 88 96
+    function parse_bool_env 105 111
+    function flag_enabled 119 121
+    function flag_disabled 129 131

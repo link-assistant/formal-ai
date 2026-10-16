@@ -10,9 +10,12 @@ OUT="${OUT:-$ROOT/docs/case-studies/issue-715/opencode-run}"
 WORK="$(mktemp -d)"
 STATE="$(mktemp -d)"
 SERVER_LOG="$OUT/formal-ai.log"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
+server_log_evidence_setup "$SERVER_LOG" || exit 1
 
 cleanup() {
   kill "${server_pid:-}" 2>/dev/null || true
+  retain_server_log_evidence
   rm -rf "$WORK" "$STATE"
 }
 trap cleanup EXIT
@@ -89,6 +92,6 @@ rustc main.rs -o issue-715-main
 test "$(./issue-715-main)" = 'Hello 2'
 
 cp main.rs "$OUT/main.rs"
-posts="$(grep -c 'POST /v1/chat/completions' "$SERVER_LOG")"
+posts="$(project_server_log)" || { echo "invalid server evidence" >&2; exit 1; }
 test "$posts" -ge 8
 echo "issue #715 OpenCode replay passed: $posts chat rounds"

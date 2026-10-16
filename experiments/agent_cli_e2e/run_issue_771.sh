@@ -23,6 +23,8 @@ BIN_DIR="$(cd "$(dirname "$BIN")" && pwd)"
 PORT="${PORT:-8781}"
 AGENT="${AGENT:-agent}"
 LOG="/tmp/formal-ai-serve-$PORT.log"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
+server_log_evidence_setup "$LOG" || exit 1
 AGENT_LOG="/tmp/agent-out-$PORT.log"
 WORKDIR="$(mktemp -d)"
 FAKE_BIN="$WORKDIR/fake-bin"
@@ -109,7 +111,7 @@ FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
   FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$LOG" 2>&1 &
 SRV=$!
-trap 'kill $SRV 2>/dev/null; rm -rf "$WORKDIR"' EXIT
+trap 'kill $SRV 2>/dev/null; retain_server_log_evidence; rm -rf "$WORKDIR"' EXIT
 
 if ! curl -sS --retry 30 --retry-delay 1 --retry-connrefused --max-time 40 \
      "http://127.0.0.1:$PORT/health" >/dev/null 2>&1; then
@@ -135,7 +137,7 @@ run_turn() {
   shift 2
   echo "== $label: $prompt ==" | tee -a "$AGENT_LOG"
   FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
-    FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
+    FORMAL_AI_DIALOG_LOG_DIR="$DIALOG_DIR" \
     LINK_ASSISTANT_AGENT_DISABLE_AUTOUPDATE=1 \
     PATH="$FAKE_BIN:$BIN_DIR:$PATH" timeout 180 "$AGENT" \
     --prompt "$prompt" \
@@ -262,8 +264,8 @@ grep -q 'Source:' <<<"$body" \
   && echo "-- transcribed answer cites its source" \
   || echo "-- note: no source citation in this run (search returned no URL)"
 
-posts="$(grep -c 'POST /v1/chat/completions' "$LOG" || true)"
-searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$LOG" || true)"
+posts="$(project_server_log)" || { echo "invalid server evidence" >&2; exit 1; }
+searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$SEMANTIC_LOG" || true)"
 [ "$searches" -ge 1 ] || fail "the question never reached websearch"
 
 echo "== issue #771 E2E OK: report body is $size characters and its three contexts are linked ($posts rounds) =="

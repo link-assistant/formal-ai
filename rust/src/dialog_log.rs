@@ -60,24 +60,25 @@ pub fn verbose_enabled() -> bool {
     VERBOSE_ENABLED.load(Ordering::Relaxed) && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
 }
 
-/// Resolve the explicit or default per-dialog log directory.
+/// Resolve the capture directory only when new diagnostic capture is enabled.
 #[must_use]
 pub fn configured_directory() -> Option<PathBuf> {
-    if !verbose_enabled() {
-        return None;
-    }
+    verbose_enabled().then(retained_directory)
+}
+
+/// Locate retained logs independently of whether new capture is enabled.
+/// Silent report/export commands still need to read conversations recorded earlier.
+#[must_use]
+pub fn retained_directory() -> PathBuf {
     if let Some(directory) = std::env::var_os("FORMAL_AI_DIALOG_LOG_DIR")
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)
     {
-        return Some(directory);
-    }
-    if !verbose_enabled() {
-        return None;
+        return directory;
     }
     let memory_path = crate::shared_memory::shared_memory_path();
     let parent = memory_path.parent().unwrap_or_else(|| Path::new("."));
-    Some(parent.join("dialog-logs"))
+    parent.join("dialog-logs")
 }
 
 /// Remember the caller's declared session id for the duration of one request.
@@ -115,7 +116,12 @@ pub fn current_dialog_id() -> Option<String> {
 /// Dump inbound request details in verbose mode or when explicitly requested.
 pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
     if verbose_enabled() || crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
-        crate::diagnostic!("debug"; "[trace] {method} {path} ({} byte body)\n{body}", body.len());
+        structured_log::event(
+            "debug",
+            module_path!(),
+            || structured_log::request_trace_message(method, path, body),
+            || serde_json::json!({"http_method":method, "http_path":path, "body_bytes":body.len()}),
+        );
     }
 }
 
@@ -220,10 +226,10 @@ pub(crate) fn record_api_exchange_if_enabled(
         &response.body,
     ) {
         Ok(path) => {
-            crate::diagnostic!("debug"; "[dialog-log] appended exchange to {}", path.display())
+            crate::diagnostic!("debug"; "[dialog-log] appended exchange to {}", path.display());
         }
         Err(error) => {
-            crate::diagnostic!("error"; "[dialog-log] failed to record exchange: {error}")
+            crate::diagnostic!("error"; "[dialog-log] failed to record exchange: {error}");
         }
     }
 }

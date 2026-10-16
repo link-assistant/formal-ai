@@ -587,7 +587,7 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
     if trace {
         match &outcome {
             AgenticOutcome::Planned(plan) => {
-                crate::diagnostic!("debug"; "[trace] agentic_outcome: planned {plan:?}")
+                crate::diagnostic!("debug"; "[trace] agentic_outcome: planned {plan:?}");
             }
             AgenticOutcome::Fallthrough => {
                 crate::diagnostic!("debug"; "[trace] agentic_outcome: fallthrough (task unrecognised)");

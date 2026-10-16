@@ -2,9 +2,9 @@ self_ast_census
   target src/conversation_context.rs
   language rust
   fidelity signature
-  byte_len 7062
-  line_count 187
-  content_id source_module_b5183dcbcc3241c7
+  byte_len 7676
+  line_count 201
+  content_id source_module_7226213365e4b26a
   symbol_count 11
   symbols
     const DIALOG_LOG_DIRECTORY_ENV 16 16
@@ -13,8 +13,8 @@ self_ast_census
     function latest_recorded_dialog 31 36
     function load_conversation_context 39 48
     function load_conversation_context_from 51 113
-    function read_exchanges 117 128
-    function learn_from_conversation 134 153
-    function conversation_context_to_lino 157 169
-    function config 171 173
-    function assemble_transcript 175 187
+    function read_exchanges 117 142
+    function learn_from_conversation 148 167
+    function conversation_context_to_lino 171 183
+    function config 185 187
+    function assemble_transcript 189 201

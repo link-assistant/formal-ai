@@ -263,20 +263,11 @@ fn plan_chat_step_routes(
     // boundary serves the whole router rather than one recipe.
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
-    // A declared issue objective owns the task before incidental harness paths.
-    if let Some(plan) = compose_general_change_plan(&task)
-        && plan.mode == super::general_planner::GeneralPlanMode::RepositoryWorkItem
-        && task.trim_start().starts_with(&plan.target)
-    {
-        return Some(plan_general_change_step(
-            messages, tool_names, &plan, result,
-        ));
-    }
     // A bare continuation cue with nothing to resume is still the cue here,
     // and the `agentic_continuation` conversation handler answers it; the
     // words of the cue are never a request (issue #1095).
     if let steps::SourceOrOwnedGoalStep::Claimed(plan) =
-        steps::plan_request_preflight(&task, result)
+        steps::plan_request_preflight(&task, messages, tool_names, result)
     {
         return plan;
     }

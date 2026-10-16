@@ -2,9 +2,9 @@ self_ast_census
   target src/protocol.rs
   language rust
   fidelity signature
-  byte_len 38184
-  line_count 995
-  content_id source_module_84cf334cb0457550
+  byte_len 38359
+  line_count 997
+  content_id source_module_49422e44f675bb95
   symbol_count 49
   symbols
     module content 28 28
@@ -45,14 +45,14 @@ self_ast_census
     function create_chat_completion_with_solver_and_memory 453 485
     function command_reroute_plan 487 498
     enum AgenticOutcome 504 513
-    function agentic_outcome 519 597
-    function groundable_tool_names 605 620
-    function messages_text 624 630
-    function chat_completion_from_plan 636 707
-    function chat_completion_from_symbolic 709 743
-    function create_response 746 750
-    function create_response_with_solver 753 758
-    function create_response_with_solver_and_memory 761 795
-    function response_from_plan 801 934
-    function response_from_symbolic 936 977
-    function response_reasoning_item 979 995
+    function agentic_outcome 519 599
+    function groundable_tool_names 607 622
+    function messages_text 626 632
+    function chat_completion_from_plan 638 709
+    function chat_completion_from_symbolic 711 745
+    function create_response 748 752
+    function create_response_with_solver 755 760
+    function create_response_with_solver_and_memory 763 797
+    function response_from_plan 803 936
+    function response_from_symbolic 938 979
+    function response_reasoning_item 981 997

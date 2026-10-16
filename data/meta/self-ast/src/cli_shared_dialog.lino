@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_shared_dialog.rs
   language rust
   fidelity signature
-  byte_len 2905
+  byte_len 2927
   line_count 90
-  content_id source_module_72c757931825eb63
+  content_id source_module_14513b18a19459fe
   symbol_count 5
   symbols
     enum SharedDialogAction 9 11
