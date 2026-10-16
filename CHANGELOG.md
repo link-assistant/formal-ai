@@ -20,6 +20,12 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.353.6] - 2026-10-16
+
+### Fixed
+
+- Complete shallow protocol checkout history before authorizing an older published release, retaining exact fetched tag and Git ancestry validation.
+
 ## [0.353.5] - 2026-10-16
 
 ### Fixed
