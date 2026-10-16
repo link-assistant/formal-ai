@@ -20,6 +20,20 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.353.5] - 2026-10-16
+
+### Fixed
+
+- Independently authorize stable container release sources in a preceding workflow step so imported sources receive the verified commits, preserving strict tag, source, and ancestry checks.
+
+### Fixed
+
+- Bound the default live Pages check to a serial native-engine smoke to avoid public CDN rate limits, retaining the full functional suite and recording restoration debt.
+
+### Fixed
+
+- Preserve hidden release advertisement protocol files and distinct macOS signing observations across single or multiple artifact downloads, retaining strict source and signing validation.
+
 ## [0.353.4] - 2026-10-15
 
 ### Fixed
