@@ -118,6 +118,11 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
 
 async function main(argv) {
   // `formal-ai explain <answer-id> [--format text|links]` (rust/src/cli_explain.rs).
+  if (argv[0] === 'logs') {
+    const {runLogsCli}=await import('./logs-cli.mjs');
+    const result=runLogsCli(argv.slice(1));
+    process.stdout.write(result.stdout);process.stderr.write(result.stderr);return result.code;
+  }
   if (argv[0] === 'explain') {
     const { code, stdout, stderr } = runExplain(argv.slice(1));
     process.stdout.write(stdout);

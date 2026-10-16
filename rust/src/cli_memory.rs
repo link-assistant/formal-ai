@@ -114,7 +114,7 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 print!("{text}");
             } else {
                 std::fs::write(&path, text)?;
-                eprintln!("{summary} to {}", path.display());
+                formal_ai::diagnostic!("debug"; "{summary} to {}", path.display());
             }
         }
         MemoryAction::Import { path, into } => {
@@ -137,14 +137,14 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 .collect();
             let seed_count = store.import(&fresh_seed);
             store.save_to_file(&into)?;
-            eprintln!(
+            formal_ai::diagnostic!("debug";
                 "Imported {parsed_count} event(s) and cached {seed_count} seed file(s) into {}; total now {}.",
                 into.display(),
                 store.len()
             );
             let suggestions = suggest_memory_migrations(&parsed, &agent_info());
             for message in suggestions {
-                eprintln!("Migration: {message}");
+                formal_ai::diagnostic!("debug"; "Migration: {message}");
             }
         }
         MemoryAction::Show { path } => {
@@ -230,7 +230,7 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                 if let Some(backup_path) = backup.as_deref() {
                     write_full_memory_backup(backup_path, &store)?;
                 } else {
-                    eprintln!(
+                    formal_ai::diagnostic!("warn";
                         "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
                         path.display()
                     );
@@ -260,15 +260,15 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
                     ],
                 )
                 .unwrap_or_default();
-                eprintln!("{summary}");
+                formal_ai::diagnostic!("debug"; "{summary}");
             } else if !plan.actions.is_empty() {
-                eprintln!(
+                formal_ai::diagnostic!("debug";
                     "Plan only; rerun with `--apply --confirm` and preferably `--backup` to mutate {}.",
                     path.display()
                 );
             }
             if plan.requires_bigger_storage {
-                eprintln!(
+                formal_ai::diagnostic!("debug";
                     "Dreaming could not meet the requested free-space target from recomputable memory; migrate memory to larger storage or lower the target."
                 );
             }
@@ -283,14 +283,14 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
             if let Some(backup_path) = backup.as_deref() {
                 write_full_memory_backup(backup_path, &store)?;
             } else {
-                eprintln!(
+                formal_ai::diagnostic!("warn";
                     "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
                     path.display()
                 );
             }
             let removed = store.purge_deleted_conversations();
             store.save_to_file(&path)?;
-            eprintln!(
+            formal_ai::diagnostic!("debug";
                 "Permanently deleted {removed} event(s) from deleted conversation(s) in {}.",
                 path.display()
             );
@@ -305,14 +305,14 @@ pub fn run_memory(action: MemoryAction) -> Result<(), Box<dyn Error>> {
             if let Some(backup_path) = backup.as_deref() {
                 write_full_memory_backup(backup_path, &store)?;
             } else {
-                eprintln!(
+                formal_ai::diagnostic!("warn";
                     "Warning: no --backup path was provided; run `formal-ai memory export --from {} --path backup.lino` first if you need a copy.",
                     path.display()
                 );
             }
             let removed = store.reset();
             store.save_to_file(&path)?;
-            eprintln!(
+            formal_ai::diagnostic!("debug";
                 "Reset memory at {}; permanently deleted {removed} event(s).",
                 path.display()
             );
@@ -364,7 +364,7 @@ fn write_full_memory_backup(path: &Path, store: &MemoryStore) -> Result<(), Box<
         std::fs::create_dir_all(parent)?;
     }
     std::fs::write(path, text)?;
-    eprintln!(
+    formal_ai::diagnostic!("debug";
         "Wrote full-memory backup with {} event(s) to {}.",
         store.len(),
         path.display()

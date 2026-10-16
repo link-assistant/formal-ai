@@ -1,5 +1,6 @@
 // Private general provenance primitive. Supplied recipe: autonomous authorship credit 0.
 // Integrity and supplied-key signature validity are not autonomous authorship or engine replay.
+import {sourceSnapshot} from './snapshot.mjs';
 import {sign,
  verify} from 'node:crypto';
 import {blake3,
@@ -104,11 +105,13 @@ export function provenancePrimitives({encodeTyped,
  contextId,
  initialMemory,
  runtimeId,
- sourceId}){
+ sourceId,
+ snapshotSource}){
   identifier(sessionId);
  identifier(contextId);
  identifier(runtimeId);
  identifier(sourceId);
+ if(snapshotSource!==undefined&&typeof snapshotSource!=='function')throw Error('snapshot_source_required');
  const lines=[];
  let head=null,
  genesisHash=null,
@@ -116,6 +119,7 @@ export function provenancePrimitives({encodeTyped,
   function append(kind,
  payload){identifier(kind);
  if(ended||kind==='genesis'&&lines.length)throw Error('append_refused');
+ if(snapshotSource&&(kind==='commit'||kind==='terminal')){const observed=snapshotSource();append('source_snapshot',sourceSnapshot(observed.files,observed.extensions));}
  if(kind==='terminal'){keys(payload,
  ['reason']);
  identifier(payload.reason);

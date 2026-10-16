@@ -89,13 +89,10 @@ pub struct PlannedToolCall {
     pub arguments: String,
 }
 
-/// The tool capabilities the planner's recipe relies on.
+/// The capabilities used by planner recipes and the server permission gate.
 ///
-/// This is the single source of truth for "what kind of thing a tool does". Both
-/// the planner (to pick which advertised tool to call for each recipe step) and
-/// the server's permission gate (to decide whether an agentic client may drive a
-/// tool of this kind) classify tool names through [`tool_capability`] — so the
-/// two never drift and no per-tool-name special cases accumulate.
+/// Both classify tool names through [`tool_capability`], keeping capability
+/// classes consistent across clients without per-tool-name exceptions.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Capability {
     Search,
@@ -266,6 +263,15 @@ fn plan_chat_step_routes(
     // boundary serves the whole router rather than one recipe.
     let task = objective_text(&effective).to_owned();
     trace_route("agentic_task", &task);
+    // A declared issue objective owns the task before incidental harness paths.
+    if let Some(plan) = compose_general_change_plan(&task)
+        && plan.mode == super::general_planner::GeneralPlanMode::RepositoryWorkItem
+        && task.trim_start().starts_with(&plan.target)
+    {
+        return Some(plan_general_change_step(
+            messages, tool_names, &plan, result,
+        ));
+    }
     // A bare continuation cue with nothing to resume is still the cue here,
     // and the `agentic_continuation` conversation handler answers it; the
     // words of the cue are never a request (issue #1095).

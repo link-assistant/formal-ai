@@ -20,12 +20,12 @@ struct ParsedHttpRequest {
 
 pub fn serve(address: &str) -> std::io::Result<()> {
     crate::dreaming_runtime::start_core_dreaming();
-    eprintln!(
+    crate::diagnostic!("debug";
         "formal-ai shared memory: {}",
         crate::shared_memory::shared_memory_path().display()
     );
     let listener = TcpListener::bind(address)?;
-    eprintln!("formal-ai server listening on http://{address}");
+    crate::diagnostic!("debug"; "formal-ai server listening on http://{address}");
     // Issue #1085 (D1.2): with `FORMAL_AI_SEED_LINKS_MIRROR=1`, the seed
     // network is mirrored into the native store beside the memory file.
     // Writing tens of thousands of doublets through the transaction log takes
@@ -36,10 +36,10 @@ pub fn serve(address: &str) -> std::io::Result<()> {
     if crate::seed_links::native_mirror_enabled() {
         std::thread::spawn(|| match crate::seed_links::mirror_native_store() {
             Ok(Some((path, count))) => {
-                eprintln!("formal-ai seed links: {count} at {}", path.display());
+                crate::diagnostic!("debug"; "formal-ai seed links: {count} at {}", path.display());
             }
             Ok(None) => {}
-            Err(error) => eprintln!("formal-ai seed links: {error}"),
+            Err(error) => crate::diagnostic!("error"; "formal-ai seed links: {error}"),
         });
     }
 
@@ -60,14 +60,14 @@ pub fn serve(address: &str) -> std::io::Result<()> {
                     .name(String::from("formal-ai-connection"))
                     .spawn(move || {
                         if let Err(error) = handle_connection(&mut stream) {
-                            eprintln!("request failed: {error}");
+                            crate::diagnostic!("error"; "request failed: {error}");
                         }
                     })
                 {
-                    eprintln!("connection thread failed: {error}");
+                    crate::diagnostic!("error"; "connection thread failed: {error}");
                 }
             }
-            Err(error) => eprintln!("connection failed: {error}"),
+            Err(error) => crate::diagnostic!("error"; "connection failed: {error}"),
         }
     }
 

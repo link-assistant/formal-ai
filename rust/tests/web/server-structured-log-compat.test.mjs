@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {test} from 'node:test';
 import {startServer} from '../../../js/server/main.mjs';
+import {decodeDialogRecord} from '../../../js/server/dialog-codec.mjs';
 import {recordApiExchangeIfEnabled} from '../../../js/server/dialog-log.mjs';
 import {loadConversationContext,turnsInExchange} from '../../../js/server/conversations.mjs';
 import {parseJson,sortedKeys,toCompactJson} from '../../../js/server/json.mjs';
@@ -28,12 +29,12 @@ test('regression: legacy writer and reader retain float, negative zero and large
       headers:[['x-formal-ai-dialog-id','numeric-fidelity']],body:request},
     {statusCode:200,contentType:'application/json',body:response},true,env,logger);
   }finally{logger.close();}
-  const traceFile=path.join(home,'dialogs/numeric-fidelity.jsonl');
-  const record=JSON.parse(fs.readFileSync(traceFile,'utf8').trim());
+  const traceFile=path.join(home,'dialogs/numeric-fidelity.lino');
+  const record=decodeDialogRecord(fs.readFileSync(traceFile,'utf8').trim());
   assert.equal(toCompactJson(sortedKeys(turnsInExchange(record.request_body,record.response_body))),expected);
   assert.equal(toCompactJson(sortedKeys(loadConversationContext('numeric-fidelity',env).messages)),expected);
   const sinks=fs.readFileSync(traceFile,'utf8')+
-    fs.readFileSync(path.join(home,'dialogs/numeric-fidelity.conversation.jsonl'),'utf8')+
+    fs.readFileSync(path.join(home,'dialogs/numeric-fidelity.conversation.lino'),'utf8')+
     Buffer.concat(chunks).toString();
   for(const secret of ['field-private','env-private','response-private']){
     assert.equal(sinks.includes(secret),false);

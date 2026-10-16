@@ -30,7 +30,7 @@ test('CLI defaults emit typed debug tee and preserve the HTTP/stdout protocol',{
   assert(records.some(x=>x.kind==='request.terminal'&&x.metadata.reason==='response_complete'));
   assert(records.some(x=>x.kind==='server.terminal'&&x.metadata.reason==='signal'));
   assert.deepEqual(records.map(x=>x.sequence),records.map((_,i)=>i+1));
-  assert(records.every(x=>x.timestamp_precision==='milliseconds'&&/\.\d{3}Z$/u.test(x.timestamp)));
+  assert(records.every(x=>x.timestamp_precision==='milliseconds'&&/\.\d{9}Z$/u.test(x.timestamp)));
   const observed=records.find(x=>x.kind==='request.received'&&x.metadata.path==='/no-such-route');
   const canonical=encodeTyped(sanitized);
   assert.equal(observed.payload.digest,createHash('sha256').update(canonical).digest('hex'));
@@ -105,4 +105,18 @@ test('environment debug credentials keep the existing launcher path',{timeout:15
   assert.equal(Object.hasOwn(metadata,'credential_file'),false);
   assert.equal(fs.readdirSync(path.join(run.home,'.formal-ai')).some(x=>x.startsWith('debug-session-')),false);
   assert.equal((run.stderr+run.legacy()).includes(token),false);
+});
+
+
+test('actual no-flags server emits semantic refusal and conservative symbolic terminal reasons',{timeout:15000},async t=>{
+ const run=await startCli(t);await run.ready();
+ const refused=await fetch(run.url+'/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json','x-formal-ai-dialog-id':'refused-session'},body:JSON.stringify({messages:[{role:'user',content:'Run printf hello'}],tools:[{type:'function',function:{name:'bash'}}]}),signal:AbortSignal.timeout(3000)});
+ assert.equal(refused.status,200);await refused.text();
+ const symbolic=await fetch(run.url+'/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json','x-formal-ai-dialog-id':'symbolic-session'},body:JSON.stringify({messages:[{role:'user',content:'2 + 2'}]}),signal:AbortSignal.timeout(3000)});
+ assert.equal(symbolic.status,200);await symbolic.text();await run.stop();
+ const terminals=run.records().filter(x=>x.kind==='agent.terminal');
+ assert(terminals.some(x=>x.metadata.reason==='refusal'&&x.dialog_id==='refused-session'));
+ assert(terminals.some(x=>x.metadata.reason==='Unknown'&&x.dialog_id==='symbolic-session'&&x.metadata.task_delivery==='Unknown'));
+ assert.equal(run.stdout,'');
+ const persisted=fs.readFileSync(path.join(run.home,'.formal-ai/logs/serve-'+run.pid+'.lino'),'utf8');assert.equal(persisted,run.stderr);
 });

@@ -367,7 +367,7 @@ impl LinkCliLinkStore {
         // Issue #1109: before taking the lock, collect what dead processes left.
         let swept = orphans::sweep_dead_replacements(database);
         if swept > 0 && link_cli_debug_enabled() {
-            eprintln!("[link-cli] removed {swept} orphaned replacement file(s)");
+            crate::diagnostic!("debug"; "[link-cli] removed {swept} orphaned replacement file(s)");
         }
         let database_lock = link_cli::FileLock::acquire(
             link_cli::lock_file_path(database),

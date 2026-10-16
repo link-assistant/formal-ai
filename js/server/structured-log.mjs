@@ -4,13 +4,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import {createHash} from 'node:crypto';
-import {isFloat,parseJson,toCompactJson} from './json.mjs';
+import {isFloat,f32,f64,renderFloat,parseJson,toCompactJson} from './json.mjs';
 import {encodeWord,decodeWord,parseLinks,writeLink} from '../logging/lino-codec.mjs';
 const levels=Object.freeze({silent:-1,error:0,warn:1,info:2,debug:3,trace:4});
 const utf8Order=(a,b)=>Buffer.compare(Buffer.from(a),Buffer.from(b));
 function text(value){if(typeof value!=='string'||!value.isWellFormed())throw Error('unsupported_text');return value;}
-function node(value,depth=0){
+function node(value,depth=0,preserveJsonNumbers=false){
  if(depth>64)throw Error('depth_limit');
+ if(preserveJsonNumbers&&typeof value==='bigint')return ['integer',String(value)];
+ if(preserveJsonNumbers&&isFloat(value)){if(!Number.isFinite(value.value)||![32,64].includes(value.bits))throw Error('unsupported_float');return ['float',String(value.bits),renderFloat(value.value,value.bits)];}
  if(value===null)return ['null'];
  if(typeof value==='string')return ['string',encodeWord(text(value))];
  if(typeof value==='boolean')return ['boolean',String(value)];
@@ -21,39 +23,41 @@ function node(value,depth=0){
  if(Array.isArray(value)){
   const d=Object.getOwnPropertyDescriptors(value);
   if(Reflect.ownKeys(d).length!==value.length+1)throw Error('unsupported_array');
-  const items=[];for(let i=0;i<value.length;i++){if(!Object.hasOwn(d[i]??{},'value'))throw Error('unsupported_array');items.push(node(d[i].value,depth+1));}
+  const items=[];for(let i=0;i<value.length;i++){if(!Object.hasOwn(d[i]??{},'value'))throw Error('unsupported_array');items.push(node(d[i].value,depth+1,preserveJsonNumbers));}
   return ['array',...items];
  }
  if(value&&Object.getPrototypeOf(value)===Object.prototype){
   const d=Object.getOwnPropertyDescriptors(value),keys=Reflect.ownKeys(d);
   if(keys.some(k=>typeof k!=='string'||!Object.hasOwn(d[k],'value')))throw Error('unsupported_object');
-  return ['object',...keys.sort(utf8Order).map(k=>['field',encodeWord(text(k)),node(d[k].value,depth+1)])];
+  return ['object',...keys.sort(utf8Order).map(k=>['field',encodeWord(text(k)),node(d[k].value,depth+1,preserveJsonNumbers)])];
  }
  throw Error('unsupported_value');
 }
-function value(n,depth=0){
+function value(n,depth=0,preserveJsonNumbers=false){
  if(depth>64||!Array.isArray(n))throw Error('invalid_node');
  const [tag,...args]=n;
+ if(preserveJsonNumbers&&tag==='integer'&&args.length===1&&typeof args[0]==='string'&&/^-?(0|[1-9][0-9]*)$/u.test(args[0]))return BigInt(args[0]);
+ if(preserveJsonNumbers&&tag==='float'&&args.length===2&&['32','64'].includes(args[0])&&typeof args[1]==='string'&&Number.isFinite(Number(args[1])))return args[0]==='32'?f32(Number(args[1])):f64(Number(args[1]));
  if(tag==='null'&&args.length===0)return null;
  if(tag==='string'&&args.length===1&&typeof args[0]==='string')return decodeWord(args[0]);
  if(tag==='boolean'&&args.length===1&&['true','false'].includes(args[0]))return args[0]==='true';
  if(tag==='number'&&args.length===1&&typeof args[0]==='string'){const x=Number(args[0]);if(writeLink(node(x))!==writeLink(n))throw Error('noncanonical_number');return x;}
- if(tag==='array')return args.map(x=>value(x,depth+1));
+ if(tag==='array')return args.map(x=>value(x,depth+1,preserveJsonNumbers));
  if(tag==='object'){
   const out={};for(const f of args){if(!Array.isArray(f)||f.length!==3||f[0]!=='field'||typeof f[1]!=='string')throw Error('invalid_field');
-   const key=decodeWord(f[1]);if(Object.hasOwn(out,key))throw Error('duplicate_field');Object.defineProperty(out,key,{value:value(f[2],depth+1),enumerable:true,writable:true,configurable:true});}
+   const key=decodeWord(f[1]);if(Object.hasOwn(out,key))throw Error('duplicate_field');Object.defineProperty(out,key,{value:value(f[2],depth+1,preserveJsonNumbers),enumerable:true,writable:true,configurable:true});}
   return out;
  }
  throw Error('invalid_node');
 }
-export function encodeTyped(value){return writeLink(['formal-ai-log-v1',node(value)]);}
+export function encodeTyped(value,{preserveJsonNumbers=false}={}){return writeLink(['formal-ai-log-v1',node(value,0,preserveJsonNumbers)]);}
 export const MAXIMUM_LOG_RECORD_BYTES=1024*1024;
 export {MAXIMUM_LOG_RECORD_BYTES as MAX_LOG_RECORD_BYTES};
-export function decodeTyped(line){
+export function decodeTyped(line,{preserveJsonNumbers=false}={}){
  if(typeof line!=='string'||Buffer.byteLength(line)>MAXIMUM_LOG_RECORD_BYTES)throw Error('record_size_limit');
  if(typeof line!=='string'||line.includes('\n')||line.includes('\r'))throw Error('one_line_required');
  const parsed=parseLinks(line);if(parsed.length!==1||parsed[0].length!==2||parsed[0][0]!=='formal-ai-log-v1')throw Error('invalid_record');
- const decoded=value(parsed[0][1]);if(encodeTyped(decoded)!==line)throw Error('noncanonical_record');return decoded;
+ const decoded=value(parsed[0][1],0,preserveJsonNumbers);if(encodeTyped(decoded,{preserveJsonNumbers})!==line)throw Error('noncanonical_record');return decoded;
 }
 const normalizeKey=k=>k.toLowerCase().split('_').join('').split('-').join('');
 const secretKeys=new Set(['authorization','proxyauthorization','password','passwd','secret','clientsecret','token','accesstoken','refreshtoken','apikey','formalaiapikey','cookie','setcookie','privatekey','xapikey','xauthtoken','xgoogapikey','anthropicapikey','ghtoken','githubtoken']);
@@ -144,7 +148,7 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
    let line;
    try{
     const safeMetadata=redact(metadata);
-    const record=redact({schema:'formal-ai-diagnostic-v1',timestamp:clock(),timestamp_precision:'milliseconds',pid,sequence:++sequence,level:eventLevel,component:safeMetadata.component??'server',dialog_id:safeMetadata.dialog_id??null,message:kind,kind,metadata:safeMetadata});
+    const record=redact({schema:'formal-ai-diagnostic-v1',timestamp:clock().replace(/\.(\d{3})Z$/u,'.$1000000Z'),timestamp_precision:'milliseconds',pid,sequence:++sequence,level:eventLevel,component:safeMetadata.component??'server',dialog_id:safeMetadata.dialog_id??null,message:kind,kind,metadata:safeMetadata});
     if(payload!==undefined){
   const content=redact(typeof payload==='function'?payload():payload),canonical=encodeTyped(content);
   record.payload={

@@ -17,6 +17,7 @@
 // Write/Edit text receipts and actual Bash process observations keep their APIs.
 
 import {createHash} from 'node:crypto';
+import {activeDriveCapture,withDriveCapture} from '../../js/provenance/drive-capture.mjs';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { types as nodeTypes } from 'node:util';
 import { queryOwnedInferredCommandPolicy, registeredSourceReferenceReadPlan, consumeRegisteredSourceReference } from '../../js/server/node-source-session-host.mjs';
@@ -50,6 +51,8 @@ import { WorkerHost } from '../../js/server/worker-host.mjs';
 import { hasHost, host } from '../../js/agentic/host.mjs';
 import { installDefaultNodeSourceHost } from '../../js/server/default-node-source-bootstrap.mjs';
 
+const driveEvents=new AsyncLocalStorage();
+function emitDriveEvent(event){const current=driveEvents.getStore();if(!current?.active)return;try{current.onEvent(event);}catch{current.failures++;}}
 const verificationPolicies = new AsyncLocalStorage();
 function sameDeclaredToolList(expected, candidate) {
   if (!Array.isArray(candidate) || nodeTypes.isProxy(candidate) || Object.getPrototypeOf(candidate) !== Array.prototype) return false;
@@ -282,7 +285,17 @@ export function observedOperation(token, originalNeed, directory) {
   return record;
 }
 
-export async function drive(planChatStep, dir, prompt, {
+export async function drive(planChatStep,dir,prompt,options={}) {
+ if(options.onEvent!==undefined&&typeof options.onEvent!=='function')throw Error('drive_event_sink_required');
+ if(options.onEvent){const current={onEvent:options.onEvent,active:true,failures:0};return driveEvents.run(current,async()=>{try{const result=await drive(planChatStep,dir,prompt,{...options,onEvent:undefined});emitDriveEvent({kind:'terminal',result});return current.failures?{...result,eventSinkFailures:current.failures}:result;}catch(error){emitDriveEvent({kind:'exception',error});throw error;}finally{current.active=false;}});}
+
+ if(options.provenance&&!activeDriveCapture()){
+  const sourceId=createHash('sha256').update(readFileSync(fileURLToPath(import.meta.url))).digest('hex');
+  return withDriveCapture(options.provenance,dir,prompt,sourceId,()=>driveInternal(planChatStep,dir,prompt,options));
+ }
+ return driveInternal(planChatStep,dir,prompt,options);
+}
+async function driveInternal(planChatStep, dir, prompt, {
   tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null, allowedCommands = undefined,
   atomicRecordAppend = false,
 } = {}) {
@@ -497,7 +510,9 @@ export async function drive(planChatStep, dir, prompt, {
           toolsAdvertised: tools, sourceReferenceFailure: error.message };
       }
     }
+    activeDriveCapture()?.input(scoped,tools);
     let plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(projectHistory([]), tools) : null);
+    activeDriveCapture()?.plannerResponse(plan);
     if (sourceReferencePrerequisite !== null && step === 0) {
       const current = registeredSourceReferenceReadPlan(prompt, policyWorkspace, tools);
       if (current === null || current.originalRequest !== prompt || current.mutationAuthority !== false
@@ -518,6 +533,8 @@ export async function drive(planChatStep, dir, prompt, {
         }
       }
     } catch { /* Unknown provenance or policy retains the actual original check plan. */ }
+    emitDriveEvent({kind:'plan',plan});
+    activeDriveCapture()?.output(plan);
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
     if (plan.kind === 'final') {
       if (sourceReferencePrerequisite !== null) {
@@ -619,11 +636,18 @@ export async function drive(planChatStep, dir, prompt, {
     calls.forEach((call, index) => {
       const observationSources = qualifiesObservation(call, allowedCommands)
         ? observedSourceBytes() : null;
+      const capture=activeDriveCapture();
+      const writeArgs=argsOf(call);
+      const writePath=['write','edit'].includes(call.tool)?(writeArgs.filePath??writeArgs.file_path??writeArgs.path):null;
+      const observedPath=typeof writePath==='string'?within(dir,writePath):null;
+      const before=capture&&observedPath?capture.before(observedPath):null;
       const creation = ownedCreation(call);
       if (creation?.source_creation?.success === true) createdTargets.add(creation.source_creation.path);
       const receipt = creation ?? (sourceSession
         ? sourceSession.executeResult(call, messages, () => executeResult(dir, call))
         : executeResult(dir, call));
+      emitDriveEvent({kind:'tool',receipt});
+      if(before)capture.after(observedPath,relative(resolve(dir),observedPath).split(sep).join('/'),before);
       const operationObservation = observationSources === null ? null
         : issueObservation(prompt, dir, call, receipt, observationSources);
       const { content: result, ...metadata } = receipt;
@@ -646,9 +670,11 @@ export function unanswered(stop, steps, calls) {
 async function main(argv) {
   let dir = null;
   let steps = 12;
+  let provenanceDirectory=null;
   const rest = [];
   for (let index = 0; index < argv.length; index += 1) {
     if (argv[index] === '--dir') dir = argv[++index];
+    else if (argv[index] === '--provenance-dir') provenanceDirectory=argv[++index];
     else if (argv[index] === '--steps') steps = Number(argv[++index]);
     else rest.push(argv[index]);
   }
@@ -662,7 +688,7 @@ async function main(argv) {
     const symbolic = await solve(latestUserRequest(messages) ?? '', []);
     return planSymbolicCommandReroute(messages, tools, symbolic) ?? { kind: 'final', answer: symbolic.answer };
   };
-  const { transcript, answer, stop } = await drive(planChatStep, resolve(dir), rest.join(' '), { steps, fallthrough });
+  const { transcript, answer, stop } = await drive(planChatStep, resolve(dir), rest.join(' '), { steps, fallthrough, ...(provenanceDirectory?{provenance:{directory:provenanceDirectory}}:{}) });
   const out = [];
   for (const entry of transcript) {
     out.push(`>> ${entry.tool} ${entry.arguments}`);

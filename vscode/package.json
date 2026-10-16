@@ -3,7 +3,7 @@
   "displayName": "formal-ai",
   "version": "0.345.0",
   "private": true,
-  "description": "VS Code extension (desktop + web) embedding the formal-ai symbolic chat UI",
+  "description": "Don't know everything, know just enough to get to know anything",
   "publisher": "link-assistant",
   "license": "Unlicense",
   "repository": {

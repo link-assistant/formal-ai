@@ -193,14 +193,14 @@ pub fn run_suite_window(
             // One line per case on stderr, written before the case starts, so
             // a run cut off by its job cap names the case it was stuck in
             // (run 37578344303 hung for 80 minutes without saying where).
-            eprintln!("case {}/{total_cases} {}", index + 1, case.id);
+            crate::diagnostic!("debug"; "case {}/{total_cases} {}", index + 1, case.id);
             let started = std::time::Instant::now();
             let response = if case.repository.is_some() {
                 solve_repository_case(case, &workspace)
             } else {
                 solver.solve(&case.prompt)
             };
-            eprintln!(
+            crate::diagnostic!("debug";
                 "case {}/{total_cases} {} solved in {}ms",
                 index + 1,
                 case.id,

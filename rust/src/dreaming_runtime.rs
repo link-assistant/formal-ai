@@ -76,7 +76,7 @@ pub fn start_core_dreaming() {
                         if let Err(error) = run_core_dreaming_once(&path)
                             && crate::cli_env::flag_enabled("FORMAL_AI_DREAMING_DEBUG")
                         {
-                            eprintln!("[dreaming] background run failed: {error}");
+                            crate::diagnostic!("error"; "[dreaming] background run failed: {error}");
                         }
                         std::thread::sleep(Duration::from_secs(DEFAULT_INTERVAL_SECONDS));
                     }

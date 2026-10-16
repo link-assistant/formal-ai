@@ -1,3 +1,4 @@
+import {observedPlanTerminal} from '../../../js/logging/terminal-events.mjs';
 import { before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -206,7 +207,7 @@ try {
 });
 
 
-test('original Fetch-only dialogue records a physical plan and terminates within twelve turns', async context => {
+test('original Fetch-only dialogue retains a planned-not-executed gap without writing a plan', async context => {
   const root = workspace(context);
   const { planChatStep } = await import('../../../js/agentic/planner.mjs');
   const fixture = fs.readFileSync(new URL('../unit/issue_1133_hive_mind_three_runs.rs', import.meta.url), 'utf8');
@@ -233,7 +234,7 @@ test('original Fetch-only dialogue records a physical plan and terminates within
   for (let turn = 0; turn < 12; turn++) {
     const scoped = projectAppendContracts(messages, [appendDefinition('Write')]);
     const plan = await planChatStep(scoped, ['Write', 'WebFetch']);
-    if (plan?.kind === 'final') { answer = plan.answer; break; }
+    if (plan?.kind === 'final') { assert.equal(observedPlanTerminal(plan)?.reason,'planned_not_executed'); answer = plan.answer; break; }
     assert.equal(plan?.kind, 'tool_calls');
     const call = plan.calls[0];
     calls.push(call);
@@ -246,12 +247,11 @@ test('original Fetch-only dialogue records a physical plan and terminates within
     messages.push({ role: 'tool', name: call.tool, tool_call_id: id, ...result });
   }
   assert.equal(calls.filter(call => call.tool === 'WebFetch').length, 1);
-  assert.ok(calls.some(call => call.tool === 'Write'
-    && JSON.parse(call.arguments).path === '.formal-ai/general-change-plan.lino'));
+  assert.equal(calls.some(call => call.tool === 'Write'),false);
   assert.notEqual(answer, null);
   const actual = fs.readFileSync(join(root, argumentsFor().path), 'utf8');
-  assert.ok(actual.startsWith(prior));
-  assert.ok(actual.includes('terminal_state "planned_not_executed"'));
+  assert.equal(actual,prior);
+  assert.ok(answer.includes('planned_not_executed'));
 });
 
 test('ambiguous advertised names refuse before any append dry-plan', () => {

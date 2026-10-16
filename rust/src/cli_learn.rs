@@ -122,7 +122,7 @@ fn run_algorithm_learning(from: &Path, output: Option<&Path>) -> Result<(), Box<
         ],
     )
     .unwrap_or_default();
-    eprintln!("{summary}");
+    formal_ai::diagnostic!("debug"; "{summary}");
     Ok(())
 }
 
@@ -175,7 +175,7 @@ fn load_frontier(args: &LearnCycleArgs) -> Result<(String, Vec<FrontierItem>), B
 
 /// Summarise the run on stderr so the stdout document stays machine-readable.
 fn report(run: &LearningCycleRun, dry_run: bool) {
-    eprintln!(
+    formal_ai::diagnostic!("debug";
         "Learning cycle over '{}': {} frontier item(s), {} validated candidate(s) of {}, \
          {} held-out test(s), {} proposal(s), {} blocked class(es).",
         run.frontier,
@@ -187,18 +187,18 @@ fn report(run: &LearningCycleRun, dry_run: bool) {
         run.blocked.len()
     );
     if !dry_run {
-        eprintln!(
+        formal_ai::diagnostic!("debug";
             "Note: the cycle is proposal-only whether or not --dry-run is passed; adoption stays \
              behind the human-gated issue-#656 promotion protocol."
         );
     }
     for blocked in &run.blocked {
-        eprintln!(
+        formal_ai::diagnostic!("debug";
             "  blocked: {}/{} — {} (kept as a durable frontier record)",
             blocked.language, blocked.variation, blocked.reason
         );
     }
-    eprintln!(
+    formal_ai::diagnostic!("debug";
         "Proposal-only run; no seed file was written. Pipe `--proposals` into \
          `formal-ai improve --promote --proposals <file>` to replay the canonical gates."
     );

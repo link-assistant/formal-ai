@@ -6,7 +6,7 @@
 //! issue #838 shipped one sliced `response_body "b64:…"` block and called it a
 //! conversation. This module owns the other shape. It knows how to read turns
 //! out of every protocol Formal AI speaks (OpenAI chat, Responses, Gemini,
-//! streaming SSE) and stores them as `<dialog_id>.conversation.jsonl`, one
+//! streaming SSE) and stores them as `<dialog_id>.conversation.lino`, one
 //! record per exchange, so `--source server` and `--source both` carry
 //! user/assistant/tool turns instead of transport frames.
 
@@ -20,7 +20,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value, json};
 
 /// Suffix of the conversation-shaped log, beside the `<dialog_id>.jsonl` trace.
-pub const CONVERSATION_LOG_SUFFIX: &str = ".conversation.jsonl";
+pub const CONVERSATION_LOG_SUFFIX: &str = ".conversation.lino";
+const LEGACY_CONVERSATION_LOG_SUFFIX: &str = ".conversation.jsonl";
 
 static WRITE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 
@@ -67,7 +68,10 @@ pub fn write_conversation_record(
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
     let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
-    serde_json::to_writer(&mut file, record).map_err(io::Error::other)?;
+    let safe = crate::dialog_log::structured_log::redact(
+        &serde_json::to_value(record).map_err(io::Error::other)?,
+    );
+    file.write_all(crate::dialog_log::structured_log::encode_dialog(&safe)?.as_bytes())?;
     file.write_all(b"\n")?;
     file.flush()?;
     Ok(Some(path))
@@ -81,16 +85,29 @@ pub fn load_conversation_records(
     directory: &Path,
     dialog_id: &str,
 ) -> io::Result<Vec<DialogConversationLog>> {
-    let path = conversation_log_path(directory, dialog_id);
-    let text = match fs::read_to_string(path) {
-        Ok(text) => text,
-        Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(Vec::new()),
-        Err(error) => return Err(error),
-    };
-    text.lines()
-        .filter(|line| !line.trim().is_empty())
-        .map(|line| serde_json::from_str::<DialogConversationLog>(line).map_err(io::Error::other))
-        .collect()
+    let mut records = Vec::new();
+    for (suffix, legacy) in [
+        (LEGACY_CONVERSATION_LOG_SUFFIX, true),
+        (CONVERSATION_LOG_SUFFIX, false),
+    ] {
+        let path = directory.join(format!("{dialog_id}{suffix}"));
+        let text = match fs::read_to_string(path) {
+            Ok(text) => text,
+            Err(error) if error.kind() == io::ErrorKind::NotFound => continue,
+            Err(error) => return Err(error),
+        };
+        for line in text.lines().filter(|line| !line.trim().is_empty()) {
+            let record = if legacy {
+                serde_json::from_str(line).map_err(io::Error::other)?
+            } else {
+                serde_json::from_value(crate::dialog_log::structured_log::decode_dialog(line)?)
+                    .map_err(io::Error::other)?
+            };
+            records.push(record);
+        }
+    }
+    records.sort_by_key(|record: &DialogConversationLog| record.timestamp_unix_ms);
+    Ok(records)
 }
 
 /// The dialog whose conversation record was written most recently.
@@ -106,7 +123,11 @@ pub fn latest_conversation_id(directory: &Path) -> Option<String> {
     let mut newest: Option<(u128, String)> = None;
     for entry in fs::read_dir(directory).ok()?.flatten() {
         let name = entry.file_name();
-        let Some(dialog_id) = name.to_str()?.strip_suffix(CONVERSATION_LOG_SUFFIX) else {
+        let Some(dialog_id) = name
+            .to_str()?
+            .strip_suffix(CONVERSATION_LOG_SUFFIX)
+            .or_else(|| name.to_str()?.strip_suffix(LEGACY_CONVERSATION_LOG_SUFFIX))
+        else {
             continue;
         };
         let Some(timestamp) = last_record_timestamp(&entry.path()) else {
@@ -128,7 +149,18 @@ fn last_record_timestamp(path: &Path) -> Option<u128> {
     let text = fs::read_to_string(path).ok()?;
     text.lines()
         .filter(|line| !line.trim().is_empty())
-        .filter_map(|line| serde_json::from_str::<DialogConversationLog>(line).ok())
+        .filter_map(|line| {
+            if path
+                .extension()
+                .is_some_and(|extension| extension == "lino")
+            {
+                crate::dialog_log::structured_log::decode_dialog(line)
+                    .ok()
+                    .and_then(|value| serde_json::from_value::<DialogConversationLog>(value).ok())
+            } else {
+                serde_json::from_str::<DialogConversationLog>(line).ok()
+            }
+        })
         .map(|record| record.timestamp_unix_ms)
         .next_back()
 }
@@ -312,4 +344,87 @@ fn extract_sse_message(body: &str) -> Option<Value> {
         );
     }
     Some(Value::Object(message))
+}
+
+#[cfg(test)]
+mod structured_log_migration_tests {
+    use super::*;
+    #[test]
+    fn new_typed_conversations_preserve_legacy_evidence_and_numeric_types() {
+        static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+        let directory = std::env::temp_dir().join(format!(
+            "formal-ai-conversation-migration-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+        ));
+        fs::create_dir_all(&directory).expect("fixture directory");
+        let old = DialogConversationLog {
+            timestamp_unix_ms: 1,
+            dialog_id: "migration".into(),
+            request_id: "old".into(),
+            messages: vec![json!({"role":"user","content":"legacy provenance"})],
+        };
+        let new = DialogConversationLog {
+            timestamp_unix_ms: 2,
+            dialog_id: "migration".into(),
+            request_id: "new".into(),
+            messages: vec![
+                json!({"role":"assistant","content":"typed", "float":1.0,"large":9_007_199_254_740_993_u64}),
+            ],
+        };
+        let legacy_path = directory.join("migration.conversation.jsonl");
+        let original = format!("{}\n", serde_json::to_string(&old).expect("legacy fixture"));
+        fs::write(&legacy_path, &original).expect("retain legacy");
+        let path = write_conversation_record(&directory, &new)
+            .expect("typed writer")
+            .expect("turns");
+        assert_eq!(
+            path.extension().and_then(|extension| extension.to_str()),
+            Some("lino")
+        );
+        assert_eq!(
+            fs::read_to_string(legacy_path).expect("legacy unchanged"),
+            original
+        );
+        assert_eq!(
+            load_conversation_records(&directory, "migration").expect("both readers"),
+            vec![old, new]
+        );
+        assert_eq!(
+            latest_conversation_id(&directory).as_deref(),
+            Some("migration")
+        );
+        fs::remove_dir_all(directory).expect("fixture cleanup");
+    }
+    #[test]
+    fn accepted_large_and_deep_conversation_writes_are_readable() {
+        static NEXT: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+        let directory = std::env::temp_dir().join(format!(
+            "formal-ai-large-conversation-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+        ));
+        let mut deep = json!("leaf");
+        for _ in 0..65 {
+            deep = Value::Array(vec![deep]);
+        }
+        let record = DialogConversationLog {
+            timestamp_unix_ms: 3,
+            dialog_id: "large".into(),
+            request_id: "large-request".into(),
+            messages: vec![
+                json!({"role":"user", "content":"x".repeat(2 * 1024 * 1024), "nested":deep}),
+            ],
+        };
+        let path = write_conversation_record(&directory, &record)
+            .expect("large deep write")
+            .expect("turns");
+        assert!(fs::metadata(path).expect("persisted row").len() > 1024 * 1024);
+        assert_eq!(
+            load_conversation_records(&directory, "large").expect("read accepted row"),
+            vec![record]
+        );
+        assert_eq!(latest_conversation_id(&directory).as_deref(), Some("large"));
+        fs::remove_dir_all(directory).expect("fixture cleanup");
+    }
 }

@@ -394,7 +394,7 @@ impl PeerConnectionEventHandler for ServerPeerHandler {
 
     async fn on_connection_state_change(&self, state: RTCPeerConnectionState) {
         if self.trace {
-            eprintln!("[local-transport] webrtc peer state={state}");
+            crate::diagnostic!("debug"; "[local-transport] webrtc peer state={state}");
         }
         if matches!(
             state,
@@ -413,7 +413,7 @@ impl PeerConnectionEventHandler for ServerPeerHandler {
                 match event {
                     DataChannelEvent::OnOpen => {
                         if trace {
-                            eprintln!("[local-transport] webrtc data-channel open");
+                            crate::diagnostic!("debug"; "[local-transport] webrtc data-channel open");
                         }
                     }
                     DataChannelEvent::OnMessage(message) => {
@@ -550,11 +550,11 @@ where
 
 fn announce_server(transport: &str, address: &str) {
     crate::dreaming_runtime::start_core_dreaming();
-    eprintln!(
+    crate::diagnostic!("debug";
         "formal-ai shared memory: {}",
         crate::shared_memory::shared_memory_path().display()
     );
-    eprintln!("formal-ai server listening on {transport}://{address}");
+    crate::diagnostic!("debug"; "formal-ai server listening on {transport}://{address}");
 }
 
 fn websocket_endpoint(endpoint: &str) -> String {
@@ -602,12 +602,12 @@ fn transport_error(message: impl Into<String>) -> TransportError {
 
 fn trace_event(trace: bool, transport: &str, peer: Option<SocketAddr>, event: &str) {
     if trace {
-        eprintln!("[local-transport] {transport} peer={peer:?} event={event}");
+        crate::diagnostic!("debug"; "[local-transport] {transport} peer={peer:?} event={event}");
     }
 }
 
 fn trace_error(trace: bool, phase: &str, error: &dyn std::fmt::Display) {
     if trace {
-        eprintln!("[local-transport] {phase} failed: {error}");
+        crate::diagnostic!("error"; "[local-transport] {phase} failed: {error}");
     }
 }

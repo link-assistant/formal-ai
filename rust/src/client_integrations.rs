@@ -232,7 +232,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     let server = if args.start_server || !args.no_start_server {
         let server = maybe_start_server(&context.base_url, args.port)?;
         if server.is_some() {
-            eprintln!(
+            crate::diagnostic!("debug";
                 "formal-ai: started a temporary server in agent mode (tool and shell execution enabled)"
             );
         }

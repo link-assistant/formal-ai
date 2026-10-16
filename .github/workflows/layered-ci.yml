@@ -212,6 +212,9 @@ jobs:
             node --check "$file"
           done
           echo "all ${#files[@]} js files parse"
+      - name: Native diagnostics use the shared structured logger (R1220)
+        if: matrix.shard == 1
+        run: node scripts/check-native-logging.mjs
       - name: Native-only handler rows only fall (R998)
         if: matrix.shard == 1
         run: node scripts/check-js-parity.mjs --list

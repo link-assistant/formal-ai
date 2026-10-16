@@ -458,7 +458,7 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
     cancellation: Arc<AtomicBool>,
     transport: &mut T,
 ) -> Result<(), TelegramPollingRuntimeError> {
-    eprintln!(
+    crate::diagnostic!("error";
         "formal-ai telegram polling started: api_base={} timeout={}s limit={}",
         config.api_base, config.timeout_seconds, config.limit
     );
@@ -475,7 +475,7 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
         let body = match transport.get_updates(&updates_url) {
             Ok(body) => body,
             Err(error) => {
-                eprintln!("telegram-poll: getUpdates failed: {error}");
+                crate::diagnostic!("error"; "telegram-poll: getUpdates failed: {error}");
                 sleep_with_cancellation(Duration::from_secs(1), &cancellation);
                 continue;
             }
@@ -484,7 +484,7 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
         let batch = match parse_get_updates_response(&body) {
             Ok(batch) => batch,
             Err(error) => {
-                eprintln!("telegram-poll: invalid getUpdates response: {error}");
+                crate::diagnostic!("error"; "telegram-poll: invalid getUpdates response: {error}");
                 sleep_with_cancellation(Duration::from_secs(1), &cancellation);
                 continue;
             }
@@ -504,7 +504,7 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
         }
     }
 
-    eprintln!("formal-ai telegram polling stopped");
+    crate::diagnostic!("debug"; "formal-ai telegram polling stopped");
     Ok(())
 }
 
@@ -522,14 +522,14 @@ fn send_reply<T: TelegramTransport>(
     let body = reply.to_send_message_body();
     let send_response = match transport.send_message(&send_url, &body) {
         Ok(response) => {
-            eprintln!(
+            crate::diagnostic!("debug";
                 "telegram-poll: sent reply to chat_id={} (message_id={})",
                 reply.chat_id, reply.reply_parameters.message_id
             );
             response
         }
         Err(error) => {
-            eprintln!(
+            crate::diagnostic!("error";
                 "telegram-poll: sendMessage to chat_id={} failed: {error}",
                 reply.chat_id
             );
@@ -545,7 +545,7 @@ fn send_reply<T: TelegramTransport>(
         return;
     }
     let Some(sent_message_id) = extract_sent_message_id(&send_response) else {
-        eprintln!(
+        crate::diagnostic!("debug";
             "telegram-poll: no message_id in sendMessage response for chat_id={}; skipping {} thinking edit(s)",
             reply.chat_id,
             reply.progressive_edits.len()
@@ -560,7 +560,7 @@ fn send_reply<T: TelegramTransport>(
         let edit_body = edit.to_edit_message_body(reply.chat_id, sent_message_id);
         match transport.edit_message_text(&edit_url, &edit_body) {
             Ok(_) => {
-                eprintln!(
+                crate::diagnostic!("debug";
                     "telegram-poll: edit {n}/{total} for chat_id={chat} message_id={msg}",
                     n = index + 1,
                     total = reply.progressive_edits.len(),
@@ -569,7 +569,7 @@ fn send_reply<T: TelegramTransport>(
                 );
             }
             Err(error) => {
-                eprintln!(
+                crate::diagnostic!("error";
                     "telegram-poll: editMessageText {n}/{total} for chat_id={chat} message_id={msg} failed: {error}",
                     n = index + 1,
                     total = reply.progressive_edits.len(),
@@ -610,14 +610,14 @@ fn send_continuation_parts<T: TelegramTransport>(
             continuation_parts: Vec::new(),
         };
         match transport.send_message(&send_url, &continuation.to_send_message_body()) {
-            Ok(_) => eprintln!(
+            Ok(_) => crate::diagnostic!("debug";
                 "telegram-poll: continuation part {n}/{total} sent to chat_id={chat}",
                 n = index + 2,
                 total = total,
                 chat = reply.chat_id,
             ),
             Err(error) => {
-                eprintln!(
+                crate::diagnostic!("error";
                     "telegram-poll: continuation part {n}/{total} to chat_id={chat} failed: {error}",
                     n = index + 2,
                     total = total,

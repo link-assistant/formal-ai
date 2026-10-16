@@ -45,7 +45,7 @@ pub fn run_statement_audit(args: &StatementAuditArgs) -> Result<(), Box<dyn Erro
     } else {
         fs::write(&args.output, rendered)?;
     }
-    eprintln!(
+    formal_ai::diagnostic!("debug";
         "{}",
         serde_json::to_string(&json!({
             "statement_audit": {

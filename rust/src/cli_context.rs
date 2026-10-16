@@ -235,7 +235,7 @@ fn session_candidates(
         && !candidates.contains(&recorded)
     {
         if candidates.is_empty() {
-            eprintln!(
+            formal_ai::diagnostic!("debug";
                 "{}",
                 formal_ai::seed::agent_info()
                     .remove("context_session_guessed_notice")

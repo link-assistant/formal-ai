@@ -157,15 +157,24 @@ impl GeneralChangePlan {
 pub fn objective_text(request: &str) -> &str {
     let request =
         super::file_read::read_request_envelope(request).map_or(request, |(text, _, _)| text);
-    first_raw_prefix_lead_end(request, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
-        .filter(|(start, _)| line_anchored(request, *start))
-        .filter(|(start, _)| {
-            !crate::normal_markov::quoted_segment_spans(request)
-                .iter()
-                .any(|segment| *start >= segment.start && *start < segment.end)
-        })
-        .and_then(|(_, end)| request.get(end..))
-        .map_or(request, str::trim)
+    let quoted = crate::normal_markov::quoted_segment_spans(request);
+    let mut offset = 0;
+    for line in request.split('\n') {
+        if let Some((start, end)) =
+            first_raw_prefix_lead_end(line, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
+        {
+            let start = offset + start;
+            if line_anchored(request, start)
+                && !quoted
+                    .iter()
+                    .any(|segment| start >= segment.start && start < segment.end)
+            {
+                return request.get(offset + end..).map_or(request, str::trim);
+            }
+        }
+        offset += line.len() + 1;
+    }
+    request
 }
 /// Whether a marker at `start` opens its own line, so a delimiter quoted inside
 /// running prose ("write the words request: hello to notes.txt") does not

@@ -2,7 +2,7 @@
 name = "formal-ai"
 version = "0.353.8"
 edition = "2024"
-description = "Formal symbolic AI implementation with OpenAI-compatible APIs"
+description = "Don't know everything, know just enough to get to know anything"
 readme = "../README.md"
 license = "Unlicense"
 keywords = ["formal-ai", "symbolic-ai", "openai", "links"]

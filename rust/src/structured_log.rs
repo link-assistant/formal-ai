@@ -1,0 +1,438 @@
+//! Shared redacting native diagnostic sink. Protocol stdout is never a sink.
+//! The tagged, percent-encoded tree matches JavaScript formal-ai-log-v1.
+use serde_json::{Value, json};
+use sha2::{Digest, Sha256};
+use std::fs::{self, OpenOptions};
+use std::io::{self, Write};
+use std::path::PathBuf;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::{Mutex, OnceLock};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+static SILENT: AtomicBool = AtomicBool::new(false);
+static SERVE: AtomicBool = AtomicBool::new(false);
+static SEQUENCE: AtomicU64 = AtomicU64::new(0);
+static WRITE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+
+pub fn configure(silent: bool, serve: bool) {
+    SILENT.store(silent, Ordering::Relaxed);
+    SERVE.store(serve, Ordering::Relaxed);
+}
+fn rank(level: &str) -> u8 {
+    match level {
+        "error" => 1,
+        "warn" => 2,
+        "info" => 3,
+        "trace" => 5,
+        "silent" | "off" => 0,
+        _ => 4,
+    }
+}
+pub fn enabled(level: &str) -> bool {
+    !SILENT.load(Ordering::Relaxed)
+        && !crate::cli_env::flag_enabled("FORMAL_AI_SILENT")
+        && rank(level)
+            <= rank(&std::env::var("FORMAL_AI_LOG_LEVEL").unwrap_or_else(|_| "debug".into()))
+}
+fn secret_key(key: &str) -> bool {
+    let key: String = key
+        .chars()
+        .filter(|c| *c != '_' && *c != '-')
+        .flat_map(char::to_lowercase)
+        .collect();
+    matches!(
+        key.as_str(),
+        "authorization"
+            | "proxyauthorization"
+            | "password"
+            | "passwd"
+            | "cookie"
+            | "setcookie"
+            | "privatekey"
+    ) || key.ends_with("token")
+        || key.ends_with("secret")
+        || key.ends_with("apikey")
+}
+/// Redact before formatting, hashing, or persistence, including nested errors.
+pub fn redact(value: &Value) -> Value {
+    let mut secrets: Vec<String> = std::env::vars()
+        .filter(|(key, value)| secret_key(key) && !value.is_empty())
+        .map(|(_, value)| value)
+        .collect();
+    secrets.sort_by_key(|value| std::cmp::Reverse(value.len()));
+    fn walk(value: &Value, secrets: &[String]) -> Value {
+        let scrub = |text: &str| {
+            secrets.iter().fold(text.to_owned(), |text, secret| {
+                text.replace(secret, "[REDACTED]")
+            })
+        };
+        match value {
+            Value::String(text) => Value::String(scrub(text)),
+            Value::Array(items) => {
+                Value::Array(items.iter().map(|item| walk(item, secrets)).collect())
+            }
+            Value::Object(fields) => {
+                let mut output = serde_json::Map::new();
+                for (key, value) in fields {
+                    let key_safe = scrub(key);
+                    if output.contains_key(&key_safe) {
+                        return json!({"redaction_failure":"key_collision"});
+                    }
+                    output.insert(
+                        key_safe,
+                        if secret_key(key) {
+                            json!("[REDACTED]")
+                        } else {
+                            walk(value, secrets)
+                        },
+                    );
+                }
+                Value::Object(output)
+            }
+            other => other.clone(),
+        }
+    }
+    walk(value, &secrets)
+}
+fn word(text: &str) -> String {
+    if text.is_empty() {
+        return "%".into();
+    }
+    let mut output = String::new();
+    for byte in text.bytes() {
+        if byte.is_ascii_alphanumeric() || b"._~*/<>=!&|+-".contains(&byte) {
+            output.push(char::from(byte));
+        } else {
+            output.push_str(&format!("%{byte:02X}"));
+        }
+    }
+    output
+}
+fn typed(value: &Value, preserve_numbers: bool) -> io::Result<String> {
+    Ok(match value {
+        Value::Null => "(null)".into(),
+        Value::Bool(value) => format!("(boolean {value})"),
+        Value::String(value) => format!("(string {})", word(value)),
+        Value::Number(value) => {
+            let unsafe_integer = value
+                .as_i64()
+                .is_some_and(|n| n.unsigned_abs() > 9_007_199_254_740_991)
+                || value.as_u64().is_some_and(|n| n > 9_007_199_254_740_991);
+            if value.is_f64() {
+                if !preserve_numbers {
+                    return Err(io::Error::other("unsupported_diagnostic_float"));
+                }
+                format!("(float 64 {value})")
+            } else if unsafe_integer {
+                if !preserve_numbers {
+                    return Err(io::Error::other("unsupported_diagnostic_integer"));
+                }
+                format!("(integer {value})")
+            } else {
+                format!("(number {value})")
+            }
+        }
+        Value::Array(items) => format!(
+            "(array{})",
+            items
+                .iter()
+                .map(|v| typed(v, preserve_numbers).map(|v| format!(" {v}")))
+                .collect::<io::Result<String>>()?
+        ),
+        Value::Object(fields) => {
+            let mut fields: Vec<_> = fields.iter().collect();
+            fields.sort_by(|a, b| a.0.as_bytes().cmp(b.0.as_bytes()));
+            let fields = fields
+                .into_iter()
+                .map(|(key, value)| {
+                    typed(value, preserve_numbers)
+                        .map(|value| format!(" (field {} {value})", word(key)))
+                })
+                .collect::<io::Result<String>>()?;
+            format!("(object{fields})")
+        }
+    })
+}
+/// Validate every physical record with the actual dependency grammar.
+pub fn encode(value: &Value) -> io::Result<String> {
+    encode_with_numbers(value, false)
+}
+/// Lossless dialog records opt into integer/f64 typed extensions.
+pub fn encode_dialog(value: &Value) -> io::Result<String> {
+    let line = encode_with_numbers(value, true)?;
+    // Validate the same reader before callers append: accepted rows remain readable.
+    let decoded = decode_with_numbers(&line, true)?;
+    if &decoded != value {
+        return Err(io::Error::other("dialog_roundtrip_failed"));
+    }
+    Ok(line)
+}
+fn encode_with_numbers(value: &Value, preserve_numbers: bool) -> io::Result<String> {
+    let line = format!("(formal-ai-log-v1 {})", typed(value, preserve_numbers)?);
+    links_notation::parser::parse_document_with_diagnostics(&line)
+        .map_err(|_| io::Error::other("invalid_log_notation"))?;
+    Ok(line)
+}
+fn timestamp() -> String {
+    let elapsed = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default();
+    let seconds = elapsed.as_secs();
+    // Gregorian civil date from Unix days; arithmetic follows 400-year eras.
+    let z = i64::try_from(seconds / 86400).unwrap_or(0) + 719468;
+    let era = z / 146097;
+    let doe = z - era * 146097;
+    let yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+    let mut year = yoe + era * 400;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let day = doy - (153 * mp + 2) / 5 + 1;
+    let month = mp + if mp < 10 { 3 } else { -9 };
+    year += i64::from(month <= 2);
+    format!(
+        "{year:04}-{month:02}-{day:02}T{:02}:{:02}:{:02}.{:09}Z",
+        seconds / 3600 % 24,
+        seconds / 60 % 60,
+        seconds % 60,
+        elapsed.subsec_nanos()
+    )
+}
+fn directory() -> Option<PathBuf> {
+    std::env::var_os("FORMAL_AI_LOG_DIR")
+        .map(PathBuf::from)
+        .or_else(|| {
+            std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".formal-ai/logs"))
+        })
+}
+/// Fields and message closures run only after level filtering.
+pub fn event(
+    level: &str,
+    component: &str,
+    message: impl FnOnce() -> String,
+    fields: impl FnOnce() -> Value,
+) {
+    if !enabled(level) {
+        return;
+    }
+    let message = redact(&json!(message()));
+    let mut record = json!({"schema":"formal-ai-diagnostic-v1", "timestamp":timestamp(), "timestamp_precision":"nanoseconds", "pid":std::process::id(), "sequence":SEQUENCE.fetch_add(1, Ordering::Relaxed) + 1, "level":level, "component":component, "dialog_id":crate::dialog_log::current_dialog_id(), "message":message, "kind":"native_diagnostic", "metadata":redact(&fields())});
+    if let Some(message) = record["message"].as_str().filter(|text| text.len() > 4096) {
+        if level != "trace" || !crate::cli_env::flag_enabled("FORMAL_AI_LOG_PAYLOAD_CUSTODY") {
+            let digest = format!("{:x}", Sha256::digest(message.as_bytes()));
+            let bytes = message.len();
+            record["payload"] = json!({"sha256":digest,"bytes":bytes});
+            record["message"] = json!("large_native_diagnostic");
+        }
+    }
+    let line = match encode(&record) {
+        Ok(line) => line,
+        Err(_) => {
+            sink_failure("encoding_failed");
+            return;
+        }
+    };
+    let _guard = WRITE_LOCK
+        .get_or_init(|| Mutex::new(()))
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if writeln!(io::stderr().lock(), "{line}").is_err() {
+        sink_failure("stderr_write_failed");
+    }
+    if SERVE.load(Ordering::Relaxed) {
+        if let Some(directory) = directory() {
+            let write = || -> io::Result<()> {
+                fs::create_dir_all(&directory)?;
+                let mut options = OpenOptions::new();
+                options.create(true).append(true);
+                #[cfg(unix)]
+                {
+                    use std::os::unix::fs::OpenOptionsExt;
+                    options.mode(0o600);
+                }
+                let mut file =
+                    options.open(directory.join(format!("serve-{}.lino", std::process::id())))?;
+                writeln!(file, "{line}")?;
+                file.flush()
+            };
+            if write().is_err() {
+                sink_failure("file_write_failed");
+            }
+        } else {
+            sink_failure("log_directory_unavailable");
+        }
+    }
+}
+/// A bounded nonrecursive fallback: no caller text, paths, or IO errors enter it.
+fn sink_failure(reason: &str) {
+    let record = json!({"schema":"formal-ai-diagnostic-v1", "level":"error", "component":"structured_log", "message":"logging_failed_check_log_directory_permissions_and_space", "kind":"logging_failure", "timestamp":timestamp(), "timestamp_precision":"nanoseconds", "pid":std::process::id(), "sequence":SEQUENCE.fetch_add(1, Ordering::Relaxed) + 1, "dialog_id":null, "reason":reason});
+    if let Ok(line) = encode(&record) {
+        let _ = writeln!(io::stderr().lock(), "{line}");
+    }
+}
+/// Compatibility migration: formatting stays lazy and all paths share redaction.
+#[macro_export]
+macro_rules! diagnostic {
+    ($level:literal; $($argument:tt)*) => {
+        $crate::dialog_log::structured_log::event($level, module_path!(), || format!($($argument)*), || serde_json::json!({}))
+    };
+    ($($argument:tt)*) => {
+        $crate::dialog_log::structured_log::event("debug", module_path!(), || format!($($argument)*), || serde_json::json!({}))
+    };
+}
+
+/// Decode canonical shared diagnostic records, refusing alternate spellings.
+/// The dependency validates grammar before this typed interpretation runs.
+pub fn decode(line: &str) -> io::Result<Value> {
+    decode_with_numbers(line, false)
+}
+pub fn decode_dialog(line: &str) -> io::Result<Value> {
+    decode_with_numbers(line, true)
+}
+fn decode_with_numbers(line: &str, preserve_numbers: bool) -> io::Result<Value> {
+    fn invalid() -> io::Error {
+        io::Error::other("invalid_typed_log_record")
+    }
+    fn unword(token: &str) -> io::Result<String> {
+        if token == "%" {
+            return Ok(String::new());
+        }
+        let bytes = token.as_bytes();
+        let mut output = Vec::new();
+        let mut index = 0;
+        while index < bytes.len() {
+            if bytes[index] == b'%' {
+                let hex = token.get(index + 1..index + 3).ok_or_else(invalid)?;
+                output.push(u8::from_str_radix(hex, 16).map_err(|_| invalid())?);
+                index += 3;
+            } else {
+                output.push(bytes[index]);
+                index += 1;
+            }
+        }
+        String::from_utf8(output).map_err(|_| invalid())
+    }
+    fn expect(tokens: &[&str], position: &mut usize, expected: &str) -> io::Result<()> {
+        if tokens.get(*position) != Some(&expected) {
+            return Err(invalid());
+        }
+        *position += 1;
+        Ok(())
+    }
+    fn item(
+        tokens: &[&str],
+        position: &mut usize,
+        depth: usize,
+        preserve_numbers: bool,
+    ) -> io::Result<Value> {
+        if !preserve_numbers && depth > 64 {
+            return Err(invalid());
+        }
+        expect(tokens, position, "(")?;
+        let tag = *tokens.get(*position).ok_or_else(invalid)?;
+        *position += 1;
+        let value = match tag {
+            "null" => Value::Null,
+            "string" | "number" | "boolean" => {
+                let word = *tokens.get(*position).ok_or_else(invalid)?;
+                *position += 1;
+                match tag {
+                    "string" => Value::String(unword(word)?),
+                    "boolean" if word == "true" => Value::Bool(true),
+                    "boolean" if word == "false" => Value::Bool(false),
+                    "number" => serde_json::from_str::<Value>(word)
+                        .ok()
+                        .filter(Value::is_number)
+                        .ok_or_else(invalid)?,
+                    _ => return Err(invalid()),
+                }
+            }
+            "integer" if preserve_numbers => {
+                let word = *tokens.get(*position).ok_or_else(invalid)?;
+                *position += 1;
+                serde_json::from_str::<Value>(word)
+                    .ok()
+                    .filter(|value| value.is_i64() || value.is_u64())
+                    .ok_or_else(invalid)?
+            }
+            "float" if preserve_numbers => {
+                expect(tokens, position, "64")?;
+                let word = *tokens.get(*position).ok_or_else(invalid)?;
+                *position += 1;
+                let number: f64 = word.parse().map_err(|_| invalid())?;
+                serde_json::Number::from_f64(number)
+                    .map(Value::Number)
+                    .ok_or_else(invalid)?
+            }
+            "array" => {
+                let mut values = Vec::new();
+                while tokens.get(*position) != Some(&")") {
+                    values.push(item(tokens, position, depth + 1, preserve_numbers)?);
+                }
+                Value::Array(values)
+            }
+            "object" => {
+                let mut values = serde_json::Map::new();
+                while tokens.get(*position) != Some(&")") {
+                    expect(tokens, position, "(")?;
+                    expect(tokens, position, "field")?;
+                    let key = unword(tokens.get(*position).ok_or_else(invalid)?)?;
+                    *position += 1;
+                    let value = item(tokens, position, depth + 1, preserve_numbers)?;
+                    expect(tokens, position, ")")?;
+                    if values.insert(key, value).is_some() {
+                        return Err(invalid());
+                    }
+                }
+                Value::Object(values)
+            }
+            _ => return Err(invalid()),
+        };
+        expect(tokens, position, ")")?;
+        Ok(value)
+    }
+    if (!preserve_numbers && line.len() > 1024 * 1024) || line.contains(['\n', '\r']) {
+        return Err(invalid());
+    }
+    links_notation::parser::parse_document_with_diagnostics(line).map_err(|_| invalid())?;
+    let spaced = line.replace('(', " ( ").replace(')', " ) ");
+    let tokens: Vec<_> = spaced.split_whitespace().collect();
+    let mut position = 0;
+    expect(&tokens, &mut position, "(")?;
+    expect(&tokens, &mut position, "formal-ai-log-v1")?;
+    let value = item(&tokens, &mut position, 0, preserve_numbers)?;
+    expect(&tokens, &mut position, ")")?;
+    if position != tokens.len() || encode_with_numbers(&value, preserve_numbers)? != line {
+        return Err(invalid());
+    }
+    Ok(value)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn dialog_numeric_extension_preserves_native_semantics() {
+        let value = json!({"float":1.0, "negative_zero":-0.0, "integer":9_007_199_254_740_993_u64});
+        let line = encode_dialog(&value).expect("encode numeric extensions");
+        assert!(line.contains("(float 64 1.0)"));
+        assert!(line.contains("(integer 9007199254740993)"));
+        assert_eq!(decode_dialog(&line).expect("decode native numbers"), value);
+        assert!(decode(&line).is_err());
+    }
+    #[test]
+    fn typed_boundary_retains_nested_types_and_rejects_ambiguous_records() {
+        let value = json!({"text":"line\n%()\" é", "numeric_text":"1", "number":1, "empty":[], "null":null, "flag":false});
+        assert_eq!(
+            decode(&encode(&value).expect("encode")).expect("decode"),
+            value
+        );
+        for line in [
+            "(formal-ai-log-v1 (object (field x (number 1)) (field x (number 2))))",
+            "(formal-ai-log-v1 (number 01))",
+            "(formal-ai-log-v1 (string %4a))",
+            "(formal-ai-log-v1 (array)) trailing",
+        ] {
+            assert!(decode(line).is_err(), "must refuse {line}");
+        }
+    }
+}

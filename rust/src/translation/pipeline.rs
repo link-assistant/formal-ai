@@ -50,7 +50,7 @@ fn translation_debug_enabled() -> bool {
 /// when investigating issues like #221 (common-noun translation gaps).
 fn translation_debug(stage: &str, message: &str) {
     if translation_debug_enabled() {
-        eprintln!("[formal-ai translation] {stage}: {message}");
+        crate::diagnostic!("debug"; "[formal-ai translation] {stage}: {message}");
     }
 }
 

@@ -658,6 +658,10 @@ fn main() -> Result<(), Box<dyn Error>> {
     ));
     let verbose = args.verbose && !args.silent;
     formal_ai::dialog_log::configure_verbose(verbose);
+    formal_ai::dialog_log::structured_log::configure(
+        args.silent,
+        matches!(args.command.as_ref(), Some(Command::Serve(_))),
+    );
     let command = args.command.unwrap_or_else(|| Command::Chat {
         prompt: String::from("Hi"),
         format: OutputFormat::Text,
@@ -739,10 +743,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             })?;
             print!("{}", outcome.diff);
             if !outcome.report.is_empty() {
-                eprintln!("{}", outcome.report);
+                formal_ai::diagnostic!("debug"; "{}", outcome.report);
             }
             for open in outcome.open {
-                eprintln!("open: {open}");
+                formal_ai::diagnostic!("debug"; "open: {open}");
             }
         }
         Command::StatementAudit(args) => run_statement_audit(&args)?,
@@ -841,7 +845,7 @@ fn run_agent(
     if let Some(path) = session_json {
         let rendered = serde_json::to_string_pretty(&outcome.session_json())?;
         std::fs::write(path, format!("{rendered}\n"))?;
-        eprintln!("wrote agent session to {}", path.display());
+        formal_ai::diagnostic!("debug"; "wrote agent session to {}", path.display());
     }
     if outcome.hit_turn_cap {
         return Err(format!(

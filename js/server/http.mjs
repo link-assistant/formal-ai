@@ -2,6 +2,7 @@
 // `ApiHttpResponse` out, written with the same status lines and headers.
 
 import http from 'node:http';
+import {observedExceptionTerminal} from '../logging/terminal-events.mjs';
 import { diagnosticBody } from './structured-log.mjs';
 
 import { dispatch } from './dispatch.mjs';
@@ -92,7 +93,7 @@ export function createServer(ctx) {
       const response = await runInRequestScope(disconnected.signal, () => dispatch(ctx, { method: request.method, path: request.url, headers, body }));
       writeResponse(socketResponse, response);
     } catch (error) {
-      if(ctx.logger){ctx.logger.log('error','request.failure',{component:'server',request_id:requestIdentifier,error});finish('request_failed',{error});}
+      if(ctx.logger){ctx.logger.log('error','request.failure',{component:'server',request_id:requestIdentifier,error});ctx.logger.log('error','agent.terminal',{component:'server',...observedExceptionTerminal(error),scope:'server_request',task_delivery:'Unknown'});finish('request_failed',{error});}
       else process.stderr.write(`request failed: ${error?.stack || error}\n`);
       if (!socketResponse.headersSent) socketResponse.destroy();
     } finally {

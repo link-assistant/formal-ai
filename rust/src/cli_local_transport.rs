@@ -90,7 +90,7 @@ pub fn run_serve(args: &ServeArgs) -> Result<(), Box<dyn Error>> {
     } else {
         if args.debug_session {
             let session = formal_ai::server::enable_debug_session(&args.host)?;
-            eprintln!("{}", formal_ai::server::debug_session_banner(session));
+            formal_ai::diagnostic!("debug"; "{}", formal_ai::server::debug_session_banner(session));
         }
         formal_ai::serve(&address)?;
     }

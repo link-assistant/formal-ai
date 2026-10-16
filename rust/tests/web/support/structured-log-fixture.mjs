@@ -101,7 +101,7 @@ export async function startCli(t,{args=[],env={}}={}){
     legacy(){
       const directory=path.join(home,'dialog-logs');
       return fs.existsSync(directory)?fs.readdirSync(directory)
-        .filter(file=>file.endsWith('.jsonl'))
+        .filter(file=>file.endsWith('.jsonl')||file.endsWith('.lino'))
         .map(file=>fs.readFileSync(path.join(directory,file),'utf8')).join(''):'';
     },
     async ready(){

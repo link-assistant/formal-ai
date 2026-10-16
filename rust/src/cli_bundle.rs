@@ -26,7 +26,7 @@ pub fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
                 print!("{bundle}");
             } else {
                 std::fs::write(&path, bundle)?;
-                eprintln!(
+                formal_ai::diagnostic!("debug";
                     "Wrote bundle with {} seed file(s) and {} event(s) to {}",
                     seed_files().len(),
                     store.len(),
@@ -60,7 +60,7 @@ pub fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
                 .collect();
             store.import(&fresh_seed);
             store.save_to_file(&into)?;
-            eprintln!(
+            formal_ai::diagnostic!("debug";
                 "Imported {} event(s) and saw {} seed file(s); memory now has {} event(s) at {}.",
                 parsed.events.len(),
                 parsed_seed.len(),
@@ -68,7 +68,7 @@ pub fn run_bundle(action: BundleAction) -> Result<(), Box<dyn Error>> {
                 into.display(),
             );
             for message in suggest_memory_migrations(&parsed, &agent_info()) {
-                eprintln!("Migration: {message}");
+                formal_ai::diagnostic!("debug"; "Migration: {message}");
             }
         }
     }

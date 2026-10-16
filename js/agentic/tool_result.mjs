@@ -15,7 +15,6 @@ import { cached, childValue, childrenNamed, readText } from './host.mjs';
 import { parseRoot } from './crate/seed_parser.mjs';
 import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
 import { localizedResponse } from './crate/seed.mjs';
-import { appendInvitation } from './crate/failure_reporting.mjs';
 import { lexicon, mentionsRole } from './crate/seed_meanings.mjs';
 import {
   asI64, asStr, compactJson, isObject, isWhitespace, jsonGet, parseI64, parseJson, parseUsize, prettyJson,
@@ -264,7 +263,8 @@ function failureReport(label, error, exitCode, language) {
       ['{exit_code}', String(exitCode)],
       ['{error}', trim(error)],
     ]);
-  return appendInvitation(failure, language);
+  // This module serves agentic tool turns, where no human can answer.
+  return failure;
 }
 
 function lastIndexWhere(items, predicate, from = 0) {

@@ -10,6 +10,7 @@
 // (`learn_from_reported_conversation`, ported in ./self-improvement.mjs).
 
 import fs from 'node:fs';
+import { decodeDialogRecord } from './dialog-codec.mjs';
 import path from 'node:path';
 
 import { isFloat, parseJson as parseJsonValue, renderFloat, sortedKeys } from './json.mjs';
@@ -63,6 +64,15 @@ function readJsonLines(file) {
         throw new ConversationError('other', error.message);
       }
     });
+}
+
+function readDialogLines(directory, stem) {
+  const legacy=readJsonLines(path.join(directory,stem+'.jsonl'));
+  const file=path.join(directory,stem+'.lino');
+  let input;try{input=fs.readFileSync(file,'utf8');}catch(error){if(error.code==='ENOENT')return legacy;throw new ConversationError('other','dialog_read_failed');}
+  if(input!==''&&!input.endsWith('\n'))throw new ConversationError('other','unterminated_dialog_log');
+  const records=input===''?[]:input.slice(0,-1).split('\n').map(decodeDialogRecord);
+  return [...legacy,...records];
 }
 
 function requireType(record, field, check) {
@@ -238,8 +248,8 @@ function loadConversationContextFrom(directory, dialogId) {
   if (!dialogId || !/^[A-Za-z0-9_-]+$/.test(dialogId)) {
     throw new ConversationError('invalid', serverMessage('conversation_unsafe_id'));
   }
-  const exchanges = readJsonLines(path.join(directory, `${dialogId}.jsonl`)).map(exchangeRecord);
-  const records = readJsonLines(path.join(directory, `${dialogId}${CONVERSATION_LOG_SUFFIX}`)).map(conversationRecord);
+  const exchanges = readDialogLines(directory, dialogId).map(exchangeRecord);
+  const records = readDialogLines(directory, dialogId+'.conversation').map(conversationRecord);
   if (exchanges.length === 0 && records.length === 0) {
     throw new ConversationError('not_found', serverMessage('conversation_no_exchanges'));
   }

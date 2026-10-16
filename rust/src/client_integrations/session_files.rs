@@ -133,7 +133,7 @@ pub(super) fn print_session_files(
     if session_file.is_none() && server_log.is_none() {
         return;
     }
-    eprintln!("formal-ai: session files for debugging:");
+    crate::diagnostic!("debug"; "formal-ai: session files for debugging:");
     if let Some(path) = session_file {
         let native_session_id = native_session_id(integration, path);
         let resume = native_session_id.as_ref().and_then(|id| {
@@ -145,13 +145,13 @@ pub(super) fn print_session_files(
             })
         });
         if let Some(resume) = &resume {
-            eprintln!(
+            crate::diagnostic!("debug";
                 "  {}: {}   (resume: {resume})",
                 integration.id,
                 path.display()
             );
         } else {
-            eprintln!("  {}: {}", integration.id, path.display());
+            crate::diagnostic!("debug"; "  {}: {}", integration.id, path.display());
         }
         if orchestration && let Some(id) = native_session_id {
             let evidence = OrchestrationSessionEvidence {
@@ -159,12 +159,12 @@ pub(super) fn print_session_files(
                 resume_command: resume.unwrap_or_default(),
             };
             if let Ok(json) = serde_json::to_string(&evidence) {
-                eprintln!("formal-ai: orchestration-session-json:{json}");
+                crate::diagnostic!("debug"; "formal-ai: orchestration-session-json:{json}");
             }
         }
     }
     if let Some(path) = server_log {
-        eprintln!("  server log: {}", path.display());
+        crate::diagnostic!("debug"; "  server log: {}", path.display());
     }
 }
 

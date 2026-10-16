@@ -8,6 +8,7 @@ import { lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSyn
 import path from 'node:path';
 
 import { REPO_ROOT, parseLino, readRepoFile } from '../server/lino.mjs';
+import { runtimeCachePaths } from '../server/runtime-cache.mjs';
 import { symbolicFromWorker } from '../server/solve.mjs';
 import * as webTreeSitter from '../vendor/tree-sitter/web-tree-sitter.mjs';
 import { loadRustAstCensus } from './crate/rust_ast_census.mjs';
@@ -151,12 +152,12 @@ const tryOr = (action) => {
 /**
  * The source client `VersionSet::for_generation` builds, read from the
  * environment at each generation: `FORMAL_AI_SOURCE_CACHE_DIR` (default
- * `data`, relative to the working directory like the native client) and
+ * the user's runtime cache, outside the caller repository) and
  * online only when `FORMAL_AI_LIVE_FETCH` is set to a true spelling.
  */
 function nodeSourceFetch() {
   return cachedSourceFetch({
-    cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || 'data',
+    cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || runtimeCachePaths().runtimeRoot,
     online: flagEnabled(process.env.FORMAL_AI_LIVE_FETCH),
     io: {
       readText: (file) => tryOr(() => readFileSync(file, 'utf8')),

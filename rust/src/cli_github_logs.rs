@@ -79,14 +79,14 @@ pub fn run_github_logs(action: GithubLogsAction) -> Result<(), Box<dyn Error>> {
         GithubLogsAction::Collect(options) => {
             let config = options.into_config();
             let summary = collect_github_logs(&config)?;
-            eprintln!(
+            formal_ai::diagnostic!("debug";
                 "Captured {} file(s) into {}; manifest: {}",
                 summary.captured.len(),
                 summary.output_dir.display(),
                 summary.manifest_path.display()
             );
             for capture in summary.captured {
-                eprintln!("  {}", capture.file);
+                formal_ai::diagnostic!("debug"; "  {}", capture.file);
             }
         }
     }

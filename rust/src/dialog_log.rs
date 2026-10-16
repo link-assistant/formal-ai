@@ -7,6 +7,9 @@
 //! the default; `--silent` disables it and `FORMAL_AI_DIALOG_LOG_DIR` overrides
 //! its location.
 
+#[path = "structured_log.rs"]
+pub mod structured_log;
+
 use std::cell::RefCell;
 use std::collections::BTreeMap;
 use std::fs::{self, OpenOptions};
@@ -60,6 +63,9 @@ pub fn verbose_enabled() -> bool {
 /// Resolve the explicit or default per-dialog log directory.
 #[must_use]
 pub fn configured_directory() -> Option<PathBuf> {
+    if !verbose_enabled() {
+        return None;
+    }
     if let Some(directory) = std::env::var_os("FORMAL_AI_DIALOG_LOG_DIR")
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)
@@ -109,7 +115,7 @@ pub fn current_dialog_id() -> Option<String> {
 /// Dump inbound request details in verbose mode or when explicitly requested.
 pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
     if verbose_enabled() || crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
-        eprintln!("[trace] {method} {path} ({} byte body)\n{body}", body.len());
+        crate::diagnostic!("debug"; "[trace] {method} {path} ({} byte body)\n{body}", body.len());
     }
 }
 
@@ -153,12 +159,18 @@ pub(crate) fn record_native_response_if_enabled(
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
-        serde_json::to_writer(&mut file, &record).map_err(io::Error::other)?;
+        serde_json::to_writer(
+            &mut file,
+            &crate::dialog_log::structured_log::redact(
+                &serde_json::to_value(&record).map_err(io::Error::other)?,
+            ),
+        )
+        .map_err(io::Error::other)?;
         file.write_all(b"\n")?;
         file.flush()
     };
     if let Err(error) = write() {
-        eprintln!("[native-response-observation] failed to retain actual response: {error}");
+        crate::diagnostic!("error"; "[native-response-observation] failed to retain actual response: {error}");
     }
 }
 
@@ -207,8 +219,12 @@ pub(crate) fn record_api_exchange_if_enabled(
         response.content_type,
         &response.body,
     ) {
-        Ok(path) => eprintln!("[dialog-log] appended exchange to {}", path.display()),
-        Err(error) => eprintln!("[dialog-log] failed to record exchange: {error}"),
+        Ok(path) => {
+            crate::diagnostic!("debug"; "[dialog-log] appended exchange to {}", path.display())
+        }
+        Err(error) => {
+            crate::diagnostic!("error"; "[dialog-log] failed to record exchange: {error}")
+        }
     }
 }
 
@@ -264,13 +280,16 @@ pub fn write_dialog_exchange(
     };
 
     fs::create_dir_all(directory)?;
-    let path = directory.join(format!("{dialog_id}.jsonl"));
+    let path = directory.join(format!("{dialog_id}.lino"));
     let _guard = LOG_WRITE_LOCK
         .get_or_init(|| Mutex::new(()))
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
     let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
-    serde_json::to_writer(&mut file, &record).map_err(io::Error::other)?;
+    let safe = crate::dialog_log::structured_log::redact(
+        &serde_json::to_value(&record).map_err(io::Error::other)?,
+    );
+    file.write_all(crate::dialog_log::structured_log::encode_dialog(&safe)?.as_bytes())?;
     file.write_all(b"\n")?;
     file.flush()?;
     Ok(path)

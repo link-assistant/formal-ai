@@ -8,11 +8,11 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | Level | Meaning | Requirements |
 | ---: | --- | ---: |
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
-| 1 recorded | the row exists, nothing measures it yet | 28 |
-| 2 measured | a test pins it, but the row says it is not delivered | 2 |
+| 1 recorded | the row exists, nothing measures it yet | 35 |
+| 2 measured | a test pins it, but the row says it is not delivered | 3 |
 | 3 partial | delivered in part | 50 |
 | 4 implemented | delivered, with a test | 1313 |
-| | **all** | **1401** |
+| | **all** | **1409** |
 
 ## JavaScript first
 
@@ -20,18 +20,19 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 438 |
+| a JavaScript test | 439 |
 | a Rust test only | 920 |
-| no test | 43 |
+| no test | 50 |
 
 ## Next pass
 
-Level 1 (recorded): 28 requirement(s) to raise before any level above it is refined.
+Level 1 (recorded): 35 requirement(s) to raise before any level above it is refined.
 
 ### Level 1: recorded
 
 - `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`: R1021-14
 - `docs/requirements/issue-1207-hive-mind-progressive-self-coding.md`: R1207-1, R1207-2, R1207-3, R1207-4, R1207-5, R1207-6, R1207-7, R1207-8, R1207-9
+- `docs/requirements/issue-1212-project-motto.md`: R1212-2, R1212-3, R1212-4, R1212-5, R1212-6, R1212-7, R1212-8
 - `docs/requirements/issue-1213-cryptographic-provenance.md`: R1213-1, R1213-2, R1213-3, R1213-4, R1213-5, R1213-6, R1213-7, R1213-8, R1213-9, R1213-10
 - `docs/requirements/issue-1220-structured-links-notation-logging.md`: R1220-1, R1220-2, R1220-3, R1220-4, R1220-5, R1220-6, R1220-7, R1220-8
 
@@ -39,6 +40,7 @@ Level 1 (recorded): 28 requirement(s) to raise before any level above it is refi
 
 - `docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md`: R994
 - `docs/requirements/issue-1187-optional-github-credentials.md`: R1187-8
+- `docs/requirements/issue-1212-project-motto.md`: R1212-1
 
 ### Level 3: partial
 

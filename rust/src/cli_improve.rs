@@ -93,13 +93,13 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
 
     let promoted = run.promoted().len();
     let rejected = run.rejected().len();
-    eprintln!(
+    formal_ai::diagnostic!("debug";
         "Promotion replay: {} considered, {promoted} promoted, {rejected} rejected.",
         run.records.len()
     );
 
     if !args.apply {
-        eprintln!(
+        formal_ai::diagnostic!("debug";
             "Dry run only; no files were changed. Rerun with `--apply --confirm` and preferably \
              `--seed-root <workspace>` to materialize the {promoted} accepted seed edit(s)."
         );
@@ -108,7 +108,7 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
 
     let outcome = apply_promotions(&run, &args.seed_root)?;
     for edit in &outcome.applied {
-        eprintln!(
+        formal_ai::diagnostic!("debug";
             "Materialized {} ({} byte(s)) at {}.",
             edit.seed_file,
             edit.bytes_written,
@@ -121,10 +121,10 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
     // treats any name matching `session.?(id|key)` as account information — read
     // this evidence line as leaking a session token.
     for digest in &outcome.agent_session_digests {
-        eprintln!("Formal AI Agent session evidence: {digest}");
+        formal_ai::diagnostic!("debug"; "Formal AI Agent session evidence: {digest}");
     }
     if !outcome.rejected.is_empty() {
-        eprintln!(
+        formal_ai::diagnostic!("error";
             "Preserved {} rejected proposal(s) as failure record(s); their edits were NOT applied.",
             outcome.rejected.len()
         );
@@ -138,7 +138,7 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
         let events = run.memory_events();
         let appended = store.import(&events);
         store.save_to_file(memory_path)?;
-        eprintln!(
+        formal_ai::diagnostic!("debug";
             "Appended {appended} promotion event(s) to {}; total now {}.",
             memory_path.display(),
             store.len()
@@ -146,7 +146,7 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
     }
 
     let plan = outcome.branch_plan;
-    eprintln!(
+    formal_ai::diagnostic!("debug";
         "Created local review branch {}. Remaining PR plan (never pushed; required CI and human review remain outer gates):",
         plan.branch
     );
@@ -155,7 +155,7 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
         .iter()
         .filter(|command| !command.starts_with("git checkout -b "))
     {
-        eprintln!("    {command}");
+        formal_ai::diagnostic!("debug"; "    {command}");
     }
 
     // Issue #1138 B7, plan 07 leaf 13. Without the flag nothing below runs and
@@ -170,7 +170,7 @@ pub fn run_improve(args: &ImproveArgs) -> Result<(), Box<dyn Error>> {
             let mut store = load_memory_or_empty(memory_path)?;
             let appended = store.import(&draft.memory_events());
             store.save_to_file(memory_path)?;
-            eprintln!(
+            formal_ai::diagnostic!("debug";
                 "Appended {appended} promotion event(s) to {}; total now {}.",
                 memory_path.display(),
                 store.len()
@@ -213,7 +213,7 @@ fn load_promotion_run(
     if parsed.is_empty() {
         return Err("proposal document contains no open proposals".into());
     }
-    eprintln!(
+    formal_ai::diagnostic!("debug";
         "Replaying coding-modification, industry, and unit-specification gates from canonical commands..."
     );
     // Gate runners reach the crate via `--manifest-path rust/Cargo.toml`
@@ -252,7 +252,7 @@ fn write_full_memory_backup(
         std::fs::create_dir_all(parent)?;
     }
     std::fs::write(path, text)?;
-    eprintln!(
+    formal_ai::diagnostic!("debug";
         "Wrote full-memory backup with {} event(s) to {}.",
         store.len(),
         path.display()

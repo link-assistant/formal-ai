@@ -8,7 +8,7 @@
 // (js/server/agentic.mjs): refused without agent mode, planned by the
 // deterministic planner port (js/agentic/) with it, as natively.
 
-import { agenticOutcome, commandReroutePlan, responseFromPlan } from './agentic.mjs';
+import { logUnclassifiedTerminal, agenticOutcome, commandReroutePlan, responseFromPlan } from './agentic.mjs';
 import { RequestShapeError, chatPromptAndHistory } from './chat-request.mjs';
 import { messageInputTokens, responseTimestamp, unsupportedModelResponse } from './openai.mjs';
 import { jsonResponse, messageError } from './response.mjs';
@@ -75,13 +75,14 @@ export async function createResponse(ctx, request) {
   const { prompt: chatPrompt, history } = chatPromptAndHistory(chatRequest.messages);
   const memoryPrompt = chatPrompt.trim() ? chatPrompt : prompt;
   const remembered = await answerFromMemory(ctx, memoryPrompt, history, prompt);
-  if (remembered) return responseFromSymbolic(request, chatRequest, prompt, remembered);
+  if (remembered) {logUnclassifiedTerminal(ctx,'retained_answer');return responseFromSymbolic(request, chatRequest, prompt, remembered);}
   const outcome = await agenticOutcome(ctx, chatRequest, toolCallRefusalAnswer);
   if (outcome.kind === 'refused') return responseFromSymbolic(request, chatRequest, prompt, outcome.answer);
   if (outcome.kind === 'planned') return responseFromPlan(ctx, request, chatRequest, prompt, outcome.plan, responseTimestamp());
   const symbolic = await solveWithMemory(ctx, memoryPrompt, history);
   const reroute = await commandReroutePlan(ctx, chatRequest, symbolic);
   if (reroute) return responseFromPlan(ctx, request, chatRequest, prompt, reroute, responseTimestamp());
+  logUnclassifiedTerminal(ctx,'symbolic_answer');
   return responseFromSymbolic(request, chatRequest, prompt, symbolic);
 }
 

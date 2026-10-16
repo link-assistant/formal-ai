@@ -1,7 +1,7 @@
 {
   "name": "@link-assistant/formal-ai-engine",
   "version": "0.352.1",
-  "description": "Browser WASM worker and memory bindings for the Formal AI symbolic engine",
+  "description": "Don't know everything, know just enough to get to know anything",
   "type": "module",
   "license": "Unlicense",
   "repository": "github:link-assistant/formal-ai",

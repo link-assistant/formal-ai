@@ -1,5 +1,7 @@
 # Goals
 
+**Don't know everything, know just enough to get to know anything**
+
 This project should build a practical, inspectable symbolic assistant before it grows into a larger associative intelligence system.
 
 ## Architecture Goals

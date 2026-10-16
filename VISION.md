@@ -1,5 +1,7 @@
 # Vision
 
+**Don't know everything, know just enough to get to know anything**
+
 Formal AI should become a symbolic assistant whose live state is an associative operational space. The assistant should not be defined by hidden neural weights or by a large memoized answer table. It should be defined by an inspectable associative network of links: user messages, source data, inferred meanings, commands, test results, generated code, failures, permissions, and final answers.
 
 The associative network is the AI. The runtime should activate, extend, query, and simplify that network as work happens. What that thesis means in the present code — which parts are implemented today and which remain a direction — is stated in the Present boundary section of [`docs/philosophy.md`](docs/philosophy.md), and it is that boundary, not the thesis alone, that governs what published claims may say.
@@ -121,9 +123,9 @@ releases for testing in Hive Mind on real GitHub issues."*
 > instead of creating complete repositories for our formal-ai tests, we may use
 > separate branches with unique names
 
-**Know how to get to know anything when it is needed.**
+**Don't know everything, know just enough to get to know anything**
 
-Stated by the architect in the
+Historical wording was stated by the architect in the
 [2026-09-14 note](docs/architect-notes/2026-09-14-know-how-to-get-to-know-anything.md):
 
 > We need to have dynamic discovery algorithms, that use primarely trusted
@@ -236,6 +238,12 @@ The assistant should use a universal problem-solving loop:
 
 This loop can be implemented first as ordinary Rust logic, then increasingly represented as link substitutions, triggers, and reusable associative packages.
 
+## Just enough knowledge and recursive improvement
+
+Fetch and formalize only the trusted internet pages, documentation, code blocks or issues needed for the current task; stop retrieval once the evidence is enough to act. Do not preload knowledge just in case. Give coding tasks priority because coding enables recursive self-improvement. Self-coding through Hive Mind requires the user's permission; accepted, independently verified changes can improve the next attempt.
+
+Failures are data: preserve failed builds, tests, tool calls and wrong answers with their causes, then use the evidence to revise the next attempt within its budget. Rank candidates by likelihood and simplicity, prefer logical and provable solutions, and retain why each candidate was selected or rejected. These are design requirements, not a claim that arbitrary task solving is already delivered. The [2026-10-15 architect note](docs/architect-notes/2026-10-15-know-just-enough.md) records the instruction verbatim.
+
 ## Universal Problem-Solving Algorithm
 
 The reasoning loop above is the outer skeleton. The inner mechanics should be a single universal algorithm that does not assume prior knowledge of the task and works in the same shape for greetings, code generation, translation, source-checking, agent actions, or any future request:
@@ -246,9 +254,9 @@ The reasoning loop above is the outer skeleton. The inner mechanics should be a 
 4. **History lookup**: check whether the same or a similar requirement has been solved before; if so, reuse the prior solution and record a `cache_hit` link.
 5. **Decomposition**: when the requirement is composite (multiple clauses, "and", "with tests", "with benchmarks"), split it into sub-impulses and recursively formalize each one until every sub-requirement is small enough to be solved directly.
 6. **TDD-style test generation**: derive at least one executable check or assertion that any candidate solution must pass.
-7. **Draft experiments and selection**: build testable drafts by (a) reusing known parts, (b) reasoning from rules, and (c) random or evolutionary search where structure and compute budget allow; select only a test-passing draft and record why it won.
+7. **Draft experiments and selection**: build testable drafts by (a) reusing known parts, (b) reasoning from rules, and (c) ranking candidates by likelihood and simplicity, preferring logical and provable solutions ([least action, #491](https://github.com/link-assistant/formal-ai/issues/491)); test the most justified candidate first, select only a test-passing draft, and record why each candidate was chosen or rejected. Never enumerate all possible solutions.
 8. **Composition**: combine selected partial solutions back into a full solution that addresses the original requirement.
-9. **Verification and recursive recovery**: run the composed solution against the whole-task test. On failure, record `trace:execution_failure`, descend to smaller tasks, and retry upward after their tests pass. At an elementary task with no method, extend the general tool and retry that leaf. Bounds on depth and retries keep this executable loop finite.
+9. **Verification and recursive recovery**: run the composed solution against the whole-task test. On failure, treat failures as evidence: record `trace:execution_failure`, what was tried, and why it failed; use that data to choose the next justified candidate, descend to smaller tasks, and retry upward after their tests pass. At an elementary task with no method, extend the general tool and retry that leaf. Bounds on depth and retries keep this executable loop finite.
 10. **Simplification**: apply transformation rules that preserve meaning to shorten the answer and the reasoning trace. Pick the smallest sufficient form.
 11. **Documentation and presentation**: produce the user-facing reply, the Links Notation trace, and the visible evidence links. If the user asks for execution, run the code in the appropriate isolation level.
 
