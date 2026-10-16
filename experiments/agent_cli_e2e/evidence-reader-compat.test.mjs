@@ -102,3 +102,50 @@ test('typed invalid UTF8 fails before any sequence can be written',()=>temporary
  assert.notEqual(result.status,0);
  assert.ok(!fs.existsSync(dir+'/sequence.json'));
 }));
+
+const directoryCases = [
+  ['run_issue_781.sh', 'run_client', 'client_dir', ['agent', '8783']],
+  ['run_issue_819.sh', 'run_client', 'client_dir', ['agent', '8783']],
+  ['run_issue_819.sh', 'run_client_tui', 'client_dir', ['opencode', '8783', 'primary', 'lookup']],
+  ['run_issue_840.sh', 'run_agent_case', 'case_dir', ['definition', '8783', 'lookup', 'answer', '1', '3']],
+];
+for (const [name, functionName, parent, args] of directoryCases) {
+  test(`${name} ${functionName} creates independent client and dialog custody before redirection`, () => temporary(dir => {
+    const script = fs.readFileSync(root + '/experiments/agent_cli_e2e/' + name, 'utf8');
+    const start = script.indexOf(functionName + '() {');
+    const mkdir = script.indexOf('  mkdir -p ', start);
+    const end = script.indexOf('\n', mkdir);
+    assert.ok(start >= 0 && mkdir > start && end > mkdir);
+    const prefix = script.slice(start, end);
+    const header = typed('[trace] POST /v1/chat/completions (40 byte body)');
+    const replacement = 'mkdir -p "$' + parent + '" "$dialog_dir" || exit 1';
+    assert.ok(prefix.includes(replacement));
+    for (const broken of [false, true]) {
+      const trial = dir + (broken ? '/broken' : '/fixed');
+      fs.mkdirSync(trial);
+      const body = broken ? prefix.replace(replacement, 'mkdir -p "$dialog_dir"') : prefix;
+      const fixture = [
+        'set -euo pipefail',
+        'ROOT="$1"; WORKDIR="$2"; ARTIFACT_DIR="$WORKDIR/artifacts"; PORT=8783',
+        'HEADER="$3"; shift 3',
+        'source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"',
+        body,
+        '  test -d "$' + parent + '"',
+        '  test -d "$dialog_dir"',
+        '  test "$dialog_dir" != "$' + parent + '"',
+        '  test "$FORMAL_AI_DIALOG_LOG_DIR" = "$dialog_dir"',
+        '  : > "$client_log"',
+        '  printf "%s\\n" "$HEADER" > "$server_log"',
+        '  project_server_log --headers-only > "$WORKDIR/posts"',
+        '  test "$(cat "$WORKDIR/posts")" = 1',
+        '  retain_server_log_evidence',
+        '  cmp "$server_log" "$EVIDENCE_DIR/formal-ai.log"',
+        '}',
+        functionName + ' "$@"',
+      ].join('\n');
+      const result = command('bash', ['-c', fixture, 'directory-control', root, trial, header, ...args]);
+      if (broken) assert.notEqual(result.status, 0);
+      else assert.equal(result.status, 0, result.stderr);
+    }
+  }));
+}

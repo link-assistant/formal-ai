@@ -101,7 +101,7 @@ run_agent_case() {
   local server_log="$case_dir/formal-ai.log"
   server_log_evidence_setup "$server_log" '*' || exit 1
   local dialog_dir="$DIALOG_DIR"
-  mkdir -p "$dialog_dir"
+  mkdir -p "$case_dir" "$dialog_dir" || exit 1
 
   FORMAL_AI_AGENT_MODE=1 \
     FORMAL_AI_TRACE_REQUESTS=1 \

@@ -217,3 +217,70 @@ fn explicit_unsuccessful_results_invite_reports_but_pending_results_do_not() {
         );
     }
 }
+
+fn assert_locale_failure_reporting_boundary(
+    language: &'static str,
+    prompt: &str,
+    failure_header: &str,
+    invitation: &str,
+) {
+    // The unattended tool result must retain the observed failure and locale,
+    // while the interactive solver keeps the explicit opt-in reporting path.
+    let unattended = failed_tool_answer(prompt);
+    assert!(
+        unattended.starts_with(failure_header),
+        "{language}: {unattended}"
+    );
+    assert!(
+        unattended.contains("exit status 1"),
+        "{language}: {unattended}"
+    );
+    assert!(unattended.contains("code 1") || unattended.contains("código 1"));
+    assert!(!unattended.contains(invitation), "{language}: {unattended}");
+    assert!(
+        !unattended.contains(REPORT_COMMAND),
+        "{language}: {unattended}"
+    );
+    assert!(!unattended.contains('?'), "{language}: {unattended}");
+
+    let solver = UniversalSolver::new(SolverConfig {
+        forced_response_language: Some(language),
+        offline: true,
+        compute_budget: 0,
+        ..SolverConfig::default()
+    });
+    let interactive = solver.solve("Explain the issue-864 frobnicator ritual");
+    assert_eq!(interactive.intent, "unknown", "language={language}");
+    assert!(
+        interactive.answer.contains(invitation),
+        "{language}: {}",
+        interactive.answer
+    );
+    assert!(
+        interactive.answer.contains(REPORT_COMMAND),
+        "{language}: {}",
+        interactive.answer
+    );
+}
+
+#[test]
+fn english_failure_diagnostics_do_not_remove_interactive_reporting_consent() {
+    let language = "en";
+    assert_locale_failure_reporting_boundary(
+        language,
+        "Run false",
+        "The command failed:",
+        "I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+    );
+}
+
+#[test]
+fn spanish_failure_diagnostics_do_not_remove_interactive_reporting_consent() {
+    let language = "es";
+    assert_locale_failure_reporting_boundary(
+        language,
+        "Por favor, ejecuta false",
+        "El comando falló:",
+        "Detecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe del problema con el contexto de diagnóstico? Responde `Report issue`.",
+    );
+}

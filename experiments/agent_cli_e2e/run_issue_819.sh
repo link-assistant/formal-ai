@@ -155,7 +155,7 @@ run_client() {
   server_log_evidence_setup "$server_log" '*' || exit 1
   local dialog_dir="$DIALOG_DIR"
   local sequence="$client_dir/dialog-sequence.json"
-  mkdir -p "$dialog_dir"
+  mkdir -p "$client_dir" "$dialog_dir" || exit 1
   start_server "$client_port" "$server_log" "$dialog_dir"
   write_opencode_config "$client_port"
 
@@ -244,7 +244,7 @@ run_client_tui() {
   if [ -n "$ARTIFACT_DIR" ]; then
     observation_evidence="$ARTIFACT_DIR/$artifact_key/terminal/recording.svg"
   fi
-  mkdir -p "$dialog_dir"
+  mkdir -p "$client_dir" "$dialog_dir" || exit 1
   start_server "$tui_port" "$server_log" "$dialog_dir"
   write_opencode_config "$tui_port"
 

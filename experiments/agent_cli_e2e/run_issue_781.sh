@@ -123,7 +123,7 @@ run_client() {
   local server_log="$client_dir/formal-ai.log"
   server_log_evidence_setup "$server_log" '*' || exit 1
   local dialog_dir="$DIALOG_DIR"
-  mkdir -p "$dialog_dir"
+  mkdir -p "$client_dir" "$dialog_dir" || exit 1
 
   # Private, empty memory per client run so this server's memory-fed planning
   # stays independent of what other E2E scripts recorded into the shared
