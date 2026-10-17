@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/final_result.rs
   language rust
   fidelity full_ast
-  byte_len 12998
-  line_count 345
-  content_id source_module_740cd8d7c1c0dcb3
+  byte_len 12841
+  line_count 341
+  content_id source_module_7770986ca5496407
   symbol_count 29
   symbols
     enum FinalDisposition 6 12
@@ -25,62 +25,61 @@ self_ast_census
     struct ResearchDiscoveryEvidence 150 157
     function javascript_witness 162 186
     struct FinalResult 190 198
-    function evidence_fingerprint 201 210
-    function read_diagnostic 211 216
-    function terminal_evidence_diagnostic 219 245
-    struct ResolvedPlan 248 251
-    function observed_final_result 254 274
-    function new 277 287
-    function can_deliver 289 291
-    function can_deliver_as 293 308
-    function into_plan 310 313
-    function record 317 324
-    function record_with_role 326 345
+    function evidence_fingerprint 201 208
+    function read_diagnostic 209 214
+    function terminal_evidence_diagnostic 217 243
+    struct ResolvedPlan 246 249
+    function observed_final_result 252 272
+    function new 275 283
+    function can_deliver 285 287
+    function can_deliver_as 289 304
+    function into_plan 306 309
+    function record 313 320
+    function record_with_role 322 341
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9406
-    named_node_count 1832
-    distinct_node_kinds 73
+    total_link_count 9296
+    named_node_count 1807
+    distinct_node_kinds 72
     node_kinds
       abstract_type 1
-      arguments 53
+      arguments 50
       assignment_expression 7
       attribute 24
       attribute_item 24
       binary_expression 17
-      block 24
+      block 23
       boolean_literal 1
-      call_expression 53
-      closure_expression 10
-      closure_parameters 10
-      crate 2
+      call_expression 50
+      closure_expression 11
+      closure_parameters 11
+      crate 1
       declaration_list 4
       doc_comment 10
       else_clause 1
       enum_item 5
       enum_variant 16
       enum_variant_list 5
-      expression_statement 14
+      expression_statement 13
       field_declaration 55
       field_declaration_list 11
-      field_expression 67
-      field_identifier 134
+      field_expression 65
+      field_identifier 132
       field_initializer 12
       field_initializer_list 3
       field_pattern 2
       function_item 14
       generic_type 29
-      identifier 460
-      if_expression 5
+      identifier 455
+      if_expression 4
       impl_item 4
       index_expression 1
       inner_doc_comment_marker 1
       integer_literal 5
-      let_chain 1
-      let_condition 3
+      let_condition 2
       let_declaration 7
       line_comment 10
       macro_invocation 8
@@ -95,24 +94,24 @@ self_ast_census
       parameters 14
       parenthesized_expression 2
       primitive_type 17
-      reference_expression 8
+      reference_expression 7
       reference_type 9
-      scoped_identifier 35
+      scoped_identifier 33
       scoped_type_identifier 12
       self 28
       self_parameter 7
       shorthand_field_identifier 2
       shorthand_field_initializer 4
       source_file 1
-      string_content 53
-      string_literal 53
+      string_content 52
+      string_literal 52
       struct_expression 3
       struct_item 10
       struct_pattern 1
       super 82
       token_tree 79
       try_expression 1
-      tuple_struct_pattern 6
+      tuple_struct_pattern 5
       type_arguments 29
       type_identifier 127
       unary_expression 5

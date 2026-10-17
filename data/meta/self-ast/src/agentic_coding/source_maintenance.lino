@@ -1,0 +1,104 @@
+self_ast_census
+  target src/agentic_coding/source_maintenance.rs
+  language rust
+  fidelity full_ast
+  byte_len 8552
+  line_count 245
+  content_id source_module_e6e04ef98ba4af02
+  symbol_count 13
+  symbols
+    const GRAMMAR 15 15
+    struct SourceMaintenanceRequest 17 20
+    function scalar_values 22 26
+    function normalized 28 30
+    function unquoted_edge 32 47
+    function grammar_values 49 55
+    function constraint_observations 57 76
+    function owned_source_maintenance_request 79 114
+    function matching_arguments 116 126
+    function refusal 128 140
+    function finding 142 156
+    function plan_source_maintenance_step 159 241
+    module native_route_tests 245 245
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 7381
+    named_node_count 1481
+    distinct_node_kinds 73
+    node_kinds
+      arguments 137
+      array_type 5
+      attribute 2
+      attribute_item 2
+      binary_expression 14
+      block 31
+      boolean_literal 7
+      call_expression 137
+      captured_pattern 1
+      char_literal 4
+      closure_expression 20
+      closure_parameters 20
+      const_item 1
+      crate 4
+      doc_comment 3
+      else_clause 4
+      expression_statement 9
+      field_declaration 2
+      field_declaration_list 1
+      field_expression 116
+      field_identifier 118
+      field_initializer_list 1
+      function_item 10
+      generic_function 4
+      generic_type 13
+      identifier 385
+      if_expression 5
+      index_expression 4
+      inner_doc_comment_marker 1
+      integer_literal 2
+      let_condition 1
+      let_declaration 38
+      line_comment 3
+      macro_invocation 6
+      match_arm 8
+      match_block 2
+      match_expression 2
+      match_pattern 8
+      mod_item 1
+      mutable_specifier 3
+      or_pattern 2
+      outer_doc_comment_marker 2
+      parameter 23
+      parameters 10
+      parenthesized_expression 1
+      primitive_type 19
+      range_expression 4
+      reference_expression 19
+      reference_type 22
+      return_expression 5
+      scoped_identifier 44
+      scoped_use_list 6
+      self 1
+      shorthand_field_initializer 2
+      source_file 1
+      string_content 26
+      string_literal 26
+      struct_expression 1
+      struct_item 1
+      super 10
+      token_tree 14
+      try_expression 10
+      tuple_expression 3
+      tuple_pattern 7
+      tuple_struct_pattern 4
+      tuple_type 1
+      type_arguments 17
+      type_identifier 39
+      unary_expression 4
+      use_as_clause 1
+      use_declaration 12
+      use_list 6
+      visibility_modifier 3

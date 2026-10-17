@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/modules.rs
   language rust
   fidelity full_ast
-  byte_len 7226
-  line_count 202
-  content_id source_module_40eaebf9e8061f40
-  symbol_count 107
+  byte_len 7286
+  line_count 204
+  content_id source_module_9ce99f07dee8af99
+  symbol_count 109
   symbols
     module algorithm_learning 10 10
     module append_contract 11 11
@@ -91,42 +91,44 @@ self_ast_census
     module shell_command_policy 91 91
     module shell_file_fallback 92 92
     module source_links 93 93
-    module spelling 94 94
-    module stated_request 95 95
-    module statement_audit 96 96
-    module structured_document 97 97
-    module structured_edit 98 98
-    module system_diagram 99 99
-    module task_obligations 100 100
-    module task_structure 101 101
-    module test_assertion 102 102
-    module test_file_runner 103 103
-    module tool_result 104 104
-    module transcript_evidence 105 105
-    module web_research 106 106
-    module wording 107 107
-    module work_item_steps 108 108
-    module workspace_change 109 109
-    module workspace_computed_change 110 110
-    module workspace_discovery 111 111
-    module workspace_inspection 112 112
-    module workspace_line_operation 113 113
-    module workspace_search 114 114
-    module workspace_setting 115 115
-    module write_request 116 116
+    module source_maintenance 94 94
+    module source_maintenance_observation 95 95
+    module spelling 96 96
+    module stated_request 97 97
+    module statement_audit 98 98
+    module structured_document 99 99
+    module structured_edit 100 100
+    module system_diagram 101 101
+    module task_obligations 102 102
+    module task_structure 103 103
+    module test_assertion 104 104
+    module test_file_runner 105 105
+    module tool_result 106 106
+    module transcript_evidence 107 107
+    module web_research 108 108
+    module wording 109 109
+    module work_item_steps 110 110
+    module workspace_change 111 111
+    module workspace_computed_change 112 112
+    module workspace_discovery 113 113
+    module workspace_inspection 114 114
+    module workspace_line_operation 115 115
+    module workspace_search 116 116
+    module workspace_setting 117 117
+    module write_request 118 118
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4074
-    named_node_count 624
+    total_link_count 4102
+    named_node_count 628
     distinct_node_kinds 11
     node_kinds
       crate 10
-      identifier 283
+      identifier 285
       line_comment 8
-      mod_item 107
+      mod_item 109
       scoped_identifier 13
       scoped_use_list 33
       source_file 1

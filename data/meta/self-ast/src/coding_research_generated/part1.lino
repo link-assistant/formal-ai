@@ -2,10 +2,10 @@ self_ast_census
   target src/coding_research_generated/part1.rs
   language rust
   fidelity signature
-  byte_len 31080
-  line_count 796
-  content_id source_module_8caf53b3934075bb
-  symbol_count 24
+  byte_len 31126
+  line_count 809
+  content_id source_module_9d0a310b37b5e638
+  symbol_count 26
   symbols
     module ml_math 14 29
     function is_integer 21 23
@@ -16,18 +16,20 @@ self_ast_census
     function append 69 72
     enum ResearchRebindingCandidate 76 92
     enum ResearchRebindingResult 95 98
-    function research_query_whitespace 105 130
-    function research_query_letter 137 187
-    function research_query_identifier_start 194 198
-    function research_query_identifier_part 205 241
-    function research_query_lower 248 328
-    function research_query_without_signatures 335 347
-    function coding_research_query_kernel 354 380
-    function research_rebinding_index 387 404
-    function research_rebinding_unique 411 428
-    function research_rebinding_neighbour 435 452
-    function coding_research_rebinding_kernel 467 578
-    function canonical_unique_source_index 585 606
-    function research_acceptance_literal 621 646
-    function independent_acceptance_kernel 665 709
-    function coding_research_preflight_kernel 728 796
+    enum SourceLayoutResult 101 104
+    enum SourceMaintenanceDecision 107 113
+    function research_query_whitespace 120 145
+    function research_query_letter 152 202
+    function research_query_identifier_start 209 213
+    function research_query_identifier_part 220 256
+    function research_query_lower 263 343
+    function research_query_without_signatures 350 362
+    function coding_research_query_kernel 369 395
+    function research_rebinding_index 402 419
+    function research_rebinding_unique 426 443
+    function research_rebinding_neighbour 450 467
+    function coding_research_rebinding_kernel 482 591
+    function canonical_unique_source_index 598 619
+    function research_acceptance_literal 634 659
+    function independent_acceptance_kernel 678 722
+    function coding_research_preflight_kernel 741 809

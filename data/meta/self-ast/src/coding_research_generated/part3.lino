@@ -2,27 +2,28 @@ self_ast_census
   target src/coding_research_generated/part3.rs
   language rust
   fidelity signature
-  byte_len 32929
-  line_count 751
-  content_id source_module_43462b5fb2e45488
-  symbol_count 19
+  byte_len 32978
+  line_count 793
+  content_id source_module_525b6c3dcbfbb7ef
+  symbol_count 20
   symbols
-    function ml_research_query_without_signatures_loop5 26 78
-    function ml_research_query_without_signatures_loop4 93 198
-    enum MlCodingResearchQueryKernelJoin11 201 203
-    function ml_coding_research_query_kernel_loop12 218 258
-    function ml_coding_research_query_kernel_loop13 273 313
-    enum MlCodingResearchQueryKernelLoop10Result 316 318
-    function ml_coding_research_query_kernel_loop10 333 376
-    function ml_coding_research_query_kernel_loop9 391 483
-    enum MlResearchRebindingIndexLoop14Result 486 489
-    function ml_research_rebinding_index_loop14 504 530
-    enum MlResearchRebindingUniqueLoop15Result 533 536
-    enum MlResearchRebindingUniqueLoop16Result 539 542
-    function ml_research_rebinding_unique_loop16 553 581
-    function ml_research_rebinding_unique_loop15 596 641
-    enum MlResearchRebindingNeighbourLoop17Result 644 647
-    function ml_research_rebinding_neighbour_loop17 662 695
-    enum MlCodingResearchRebindingKernelLoop19Result 698 703
-    function ml_coding_research_rebinding_kernel_loop19 714 743
-    enum MlCodingResearchRebindingKernelLoop18Result 746 751
+    function ml_research_query_identifier_part_loop2 26 52
+    enum MlResearchQueryLowerLoop3Result 55 58
+    function ml_research_query_lower_loop3 73 100
+    function ml_research_query_without_signatures_loop6 111 136
+    function ml_research_query_without_signatures_loop7 147 172
+    function ml_research_query_without_signatures_loop8 187 214
+    enum MlResearchQueryWithoutSignaturesLoop5Result 217 219
+    function ml_research_query_without_signatures_loop5 234 286
+    function ml_research_query_without_signatures_loop4 301 407
+    enum MlCodingResearchQueryKernelJoin11 410 412
+    function ml_coding_research_query_kernel_loop12 427 467
+    function ml_coding_research_query_kernel_loop13 482 522
+    enum MlCodingResearchQueryKernelLoop10Result 525 527
+    function ml_coding_research_query_kernel_loop10 542 585
+    function ml_coding_research_query_kernel_loop9 600 695
+    enum MlResearchRebindingIndexLoop14Result 698 701
+    function ml_research_rebinding_index_loop14 716 742
+    enum MlResearchRebindingUniqueLoop15Result 745 748
+    enum MlResearchRebindingUniqueLoop16Result 751 754
+    function ml_research_rebinding_unique_loop16 765 793
