@@ -100,6 +100,7 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: write
+      actions: read
       id-token: write
     steps:
       - name: Start the absolute package job clock
@@ -279,22 +280,37 @@ jobs:
         run: >-
           gh release upload "$PACKAGE_RELEASE_TAG"
           "$RUNNER_TEMP/browser-publication-data/browser-publication.json" --clobber
+      - name: Publish original engine worker and protocol receipts as durable data
+        if: needs.resolve.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          version="${PACKAGE_RELEASE_TAG#v}"
+          cp "$RUNNER_TEMP/browser-publication-data/worker-receipt.json" "$RUNNER_TEMP/formal-ai-engine-worker-$version.json"
+          cp "$RUNNER_TEMP/browser-publication-data/protocol-selection.json" "$RUNNER_TEMP/formal-ai-engine-protocol-$version.json"
+          gh release upload "$PACKAGE_RELEASE_TAG" "$RUNNER_TEMP/formal-ai-engine-worker-$version.json" "$RUNNER_TEMP/formal-ai-engine-protocol-$version.json" --clobber
       - name: Cold install and verify the genuine browser worker
+        if: needs.resolve.outputs.publish == 'true'
         timeout-minutes: 8
         env:
           ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
-          WASM_RECEIPT_SHA256: ${{ steps.wasm.outputs.receipt-sha256 }}
           PUBLICATION_STATUS: ${{ steps.publication.outputs.status }}
-          PUBLICATION_REQUESTED: ${{ needs.resolve.outputs.publish }}
+          WASM_RECEIPT_SHA256: ${{ steps.wasm.outputs.receipt-sha256 }}
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
         run: |
           set -euo pipefail
-          if [ "$PUBLICATION_REQUESTED" = "false" ]; then
-            [ -z "$PUBLICATION_STATUS" ] || exit 1
-            PUBLICATION_STATUS=checks-only
-          fi
-          version="$(node -p 'JSON.parse(require("node:fs").readFileSync("packages/formal-ai-engine/package.json")).version')"
-          archives=(packages/formal-ai-engine/*.tgz)
-          [ "${#archives[@]}" = 1 ] || exit 1
-          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" cold node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-cold-install.mjs" \
-            "$GITHUB_WORKSPACE" "${archives[0]}" "$version" "$GITHUB_WORKSPACE/js/formal_ai_worker.receipt.json" \
-            "$WASM_RECEIPT_SHA256" "$PUBLICATION_STATUS"
+          node --input-type=module - <<'NODE'
+          import {writeFileSync} from 'node:fs';
+          import {join} from 'node:path';
+          import {execFileSync} from 'node:child_process';
+          const record={root:process.env.GITHUB_WORKSPACE,repository:process.env.GITHUB_REPOSITORY,tag:process.env.PACKAGE_RELEASE_TAG,
+            sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
+            sourceTree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),
+            producerRun:process.env.GITHUB_RUN_ID,producerAttempt:process.env.GITHUB_RUN_ATTEMPT,
+            outputDirectory:join(process.env.RUNNER_TEMP,'browser-public-consumer'),mode:'smoke'};
+          writeFileSync(join(process.env.RUNNER_TEMP,'browser-public-request.json'),JSON.stringify(record)+'\n',{flag:'wx'});
+          NODE
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" cold node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-public-download.mjs" "$RUNNER_TEMP/browser-public-request.json"

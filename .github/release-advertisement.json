@@ -35,6 +35,9 @@
       "path": "scripts/browser-engine-deadline.mjs"
     },
     {
+      "path": "scripts/browser-engine-public-download.mjs"
+    },
+    {
       "path": "scripts/build-container-image.sh"
     },
     {
@@ -51,6 +54,9 @@
     },
     {
       "path": "scripts/github-artifact-by-identifier.mjs"
+    },
+    {
+      "path": "scripts/github-public-release-download.mjs"
     },
     {
       "path": "scripts/lib/native-response-capture.mjs"

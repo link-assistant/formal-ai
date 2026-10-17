@@ -35,6 +35,8 @@ export const ADVERTISEMENT_ROOTS = Object.freeze(['.github/workflows/desktop-rel
    "scripts/publish-browser-engine.mjs",
    "scripts/browser-engine-deadline.mjs",
    "scripts/browser-engine-cold-install.mjs",
+   "scripts/browser-engine-public-download.mjs",
+   "scripts/github-public-release-download.mjs",
    "scripts/configure-dockerhub-publishing.sh",
    "scripts/release-image-factory.mjs",
    ".github/workflows/publish-vscode.yml",

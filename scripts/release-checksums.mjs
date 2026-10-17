@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createHash} from 'node:crypto';
-import {execFileSync} from 'node:child_process';
-import {pathToFileURL} from 'node:url';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
+import { join } from 'node:path';
 const sharedNames = new Set(['latest.yml', 'latest-mac.yml', 'latest-linux.yml']);
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 export function consolidateChecksums(fragments, resolveSharedMetadata) {
@@ -13,12 +14,15 @@ export function consolidateChecksums(fragments, resolveSharedMetadata) {
     assert.ok(Buffer.isBuffer(bytes) && bytes.length > 0);
     total += bytes.length;
     assert.ok(total <= 1024 * 1024, 'checksum fragments exceed budget');
-    const text = new TextDecoder('utf-8', {fatal: true}).decode(bytes).trim();
+    const text = new TextDecoder('utf-8', {
+      fatal: true
+    }).decode(bytes).trim();
     for (const line of text.split(/\r?\n/u)) {
       const match = /^([a-f0-9]{64}) [ *]([^/\\\r\n]+)$/u.exec(line);
       assert.ok(match, 'invalid checksum fragment row');
       const hashes = records.get(match[2]) || new Set();
-      hashes.add(match[1]); records.set(match[2], hashes);
+      hashes.add(match[1]);
+      records.set(match[2], hashes);
     }
   }
   return [...records.keys()].sort().map(name => {
@@ -34,7 +38,8 @@ export function consolidateChecksums(fragments, resolveSharedMetadata) {
   }).join('');
 }
 export function publishedMetadataResolver(environment, read) {
-  const repository = environment.REPO, tag = environment.TAG;
+  const repository = environment.REPO,
+    tag = environment.TAG;
   assert.match(repository, /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
   assert.match(tag, /^v[0-9]+\.[0-9]+\.[0-9]+$/u);
   let release;
@@ -43,7 +48,8 @@ export function publishedMetadataResolver(environment, read) {
     if (!release) {
       release = JSON.parse(read(['api', 'repos/' + repository + '/releases/tags/' + tag], 512 * 1024));
       assert.equal(release.tag_name, tag);
-      assert.equal(release.draft, false); assert.equal(release.prerelease, false);
+      assert.equal(release.draft, false);
+      assert.equal(release.prerelease, false);
       assert.ok(Array.isArray(release.assets) && release.assets.length < 100);
     }
     const matches = release.assets.filter(asset => asset.name === name);
@@ -53,14 +59,14 @@ export function publishedMetadataResolver(environment, read) {
     assert.equal(asset.state, 'uploaded');
     assert.ok(asset.size > 0 && asset.size <= 256 * 1024);
     assert.match(asset.digest, /^sha256:[a-f0-9]{64}$/u);
-    const bytes = read(['api', '-H', 'Accept: application/octet-stream',
-      'repos/' + repository + '/releases/assets/' + asset.id], 256 * 1024);
-    assert.ok(Buffer.isBuffer(bytes)); assert.equal(bytes.length, asset.size);
+    const bytes = read(['api', '-H', 'Accept: application/octet-stream', 'repos/' + repository + '/releases/assets/' + asset.id], 256 * 1024);
+    assert.ok(Buffer.isBuffer(bytes));
+    assert.equal(bytes.length, asset.size);
     assert.equal('sha256:' + digest(bytes), asset.digest, 'published updater digest mismatch');
     return digest(bytes);
   };
 }
-export function main(arguments_, environment = process.env) {
+export async function main(arguments_, environment = process.env) {
   const fragments = arguments_.map(file => {
     const stat = fs.lstatSync(file);
     assert.ok(stat.isFile() && !stat.isSymbolicLink());
@@ -68,10 +74,34 @@ export function main(arguments_, environment = process.env) {
     return fs.readFileSync(file);
   });
   const read = (args, maxBuffer) => execFileSync('gh', args, {
-    timeout: 30000, maxBuffer, stdio: ['ignore', 'pipe', 'pipe']
+    timeout: 30000,
+    maxBuffer,
+    stdio: ['ignore', 'pipe', 'pipe']
   });
+  // Desktop's attested consolidated manifest includes the independently
+  // downloaded public engine, rather than trusting a producer-local tarball.
+  assert.equal(environment.GITHUB_ACTIONS, 'true');
+  const {
+    verifyPublicBrowser
+  } = await import('./browser-engine-public-download.mjs');
+  const directory = join(environment.RUNNER_TEMP, 'desktop-public-engine-checksum');
+  await verifyPublicBrowser({
+    root: environment.GITHUB_WORKSPACE,
+    repository: environment.REPO,
+    tag: environment.TAG,
+    sourceCommit: environment.NATIVE_SOURCE_COMMIT,
+    sourceTree: environment.NATIVE_SOURCE_TREE,
+    protocolCommit: environment.RELEASE_PRODUCER_PROTOCOL_COMMIT,
+    protocolSha256: environment.BROWSER_ENGINE_PROTOCOL_SHA256,
+    outputDirectory: directory,
+    mode: 'checksum'
+  });
+  fragments.push(fs.readFileSync(join(directory, 'engine-checksum.partial')));
   return consolidateChecksums(fragments, publishedMetadataResolver(environment, read));
 }
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
-  process.stdout.write(main(process.argv.slice(2)));
+  main(process.argv.slice(2)).then(result => process.stdout.write(result)).catch(error => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 }
