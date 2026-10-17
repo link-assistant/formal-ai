@@ -23,6 +23,7 @@
 //            PowerShell where `pwsh` is installed (the Linux CI runners).
 
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
 import { chmodSync, copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -154,6 +155,53 @@ test("R1181-3: finalize consolidates the CLI fragments and reports missing legs 
     for (const name of ["release-producer-output-receipt.mjs", "release-checksums.mjs"]) {
       copyFileSync(path.join(REPO_ROOT, "scripts", name), path.join(protocol, name));
     }
+    // Explicit fixture boundary: no network, publication, WASM or native credit.
+    // The real public transport and producer-authentication controls live in
+    // browser-engine-public-download.test.mjs and github-public-release-download.test.mjs.
+    const enginePayloads = [
+      ["link-assistant-formal-ai-engine-9.9.9.tgz", "CONTROLLED NON-PRODUCT ENGINE ARCHIVE FIXTURE"],
+      ["formal-ai-engine-protocol-9.9.9.json", JSON.stringify({fixtureOnly: true, role: "protocol"})],
+      ["formal-ai-engine-worker-9.9.9.json", JSON.stringify({fixtureOnly: true, role: "worker"})],
+    ];
+    const engineAssets = enginePayloads.map(([name, bytes], index) => {
+      const file = "engine-fixture-" + index + ".txt";
+      writeFileSync(path.join(protocol, file), bytes);
+      return {name, file, size: Buffer.byteLength(bytes),
+        sha256: createHash("sha256").update(bytes).digest("hex")};
+    });
+    const engineRequest = {
+      root: realpathSync(dir), repository: "o/r", tag: "v9.9.9",
+      sourceCommit: evidenceFixture.source.source_commit,
+      sourceTree: evidenceFixture.source.source_tree,
+      protocolCommit: evidenceFixture.source.source_commit,
+      protocolSha256: engineAssets[1].sha256,
+      outputDirectory: path.join(realpathSync(dir), "desktop-public-engine-checksum"),
+      mode: "checksum",
+    };
+    writeFileSync(path.join(protocol, "engine-boundary-fixture.json"),
+      JSON.stringify({request: engineRequest, assets: engineAssets}));
+    writeFileSync(path.join(protocol, "browser-engine-public-download.mjs"), `
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {createHash} from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+const file = name => fileURLToPath(new URL(name, import.meta.url));
+export async function verifyPublicBrowser(request) {
+  const fixture = JSON.parse(fs.readFileSync(file('engine-boundary-fixture.json')));
+  assert.deepEqual(request, fixture.request, 'controlled engine boundary request differs');
+  const rows = fixture.assets.map(asset => {
+    const bytes = fs.readFileSync(file(asset.file));
+    assert.equal(bytes.length, asset.size);
+    const hash = createHash('sha256').update(bytes).digest('hex');
+    assert.equal(hash, asset.sha256, 'controlled engine boundary byte corruption');
+    return hash + '  ' + asset.name + '\\n';
+  }).join('');
+  fs.mkdirSync(request.outputDirectory);
+  fs.writeFileSync(new URL('engine-checksum.partial', new URL('file://' + request.outputDirectory + '/')), rows);
+  fs.writeFileSync(file('engine-observed-call.json'), JSON.stringify(request));
+  return {fixtureOnly: true, publicationAuthority: false};
+}
+`);
     writeFileSync(path.join(protocol, "producer-output-workflow.yml"), WORKFLOW);
     writeFileSync(path.join(protocol, "protocol-selection.json"), JSON.stringify({
       commit: evidenceFixture.source.source_commit, tree: evidenceFixture.source.source_tree,
@@ -164,6 +212,8 @@ test("R1181-3: finalize consolidates the CLI fragments and reports missing legs 
         NATIVE_SOURCE_COMMIT: evidenceFixture.source.source_commit, NATIVE_SOURCE_TREE: evidenceFixture.source.source_tree,
         NATIVE_SELECTION_SHA256: evidenceFixture.bindings.sourceSha256, NATIVE_COMPILER_RELEASE: evidenceFixture.source.compiler_release,
         NATIVE_COMPILER_COMMIT: evidenceFixture.source.compiler_commit, EVIDENCE_INCOMPLETE: "",
+        CI: "true", GITHUB_ACTIONS: "true", RUNNER_TEMP: realpathSync(dir), GITHUB_WORKSPACE: realpathSync(dir),
+        BROWSER_ENGINE_PROTOCOL_SHA256: engineRequest.protocolSha256,
         FORMAL_AI_NATIVE_PROTOCOL_DIR: protocol, GITHUB_REPOSITORY: "o/r", GITHUB_JOB: "finalize",
         GITHUB_RUN_ID: "1181", GITHUB_RUN_ATTEMPT: "1", GITHUB_SHA: evidenceFixture.source.source_commit,
         GITHUB_WORKFLOW_REF: "o/r/.github/workflows/desktop-release.yml@refs/tags/v9.9.9",
@@ -171,8 +221,18 @@ test("R1181-3: finalize consolidates the CLI fragments and reports missing legs 
         RELEASE_PRODUCER_OUTPUT_STEP: "manifest", RELEASE_PRODUCER_OUTPUT_KEYS: "incomplete" },
     });
     const evidenceLines = readFileSync(path.join(dir, "release-evidence", "SHA256SUMS-evidence.partial"), "utf8").trim().split("\n");
-    const expectedLines = [line.trim(), ...evidenceLines].sort((left, right) => left.split("  ")[1].localeCompare(right.split("  ")[1], "en"));
+    const engineLines = engineAssets.map(asset => asset.sha256 + "  " + asset.name);
+    const expectedLines = [line.trim(), ...evidenceLines, ...engineLines].sort((left, right) => left.split("  ")[1].localeCompare(right.split("  ")[1], "en"));
     assert.equal(readFileSync(path.join(dir, "SHA256SUMS.txt"), "utf8"), expectedLines.join("\n") + "\n");
+    assert.deepEqual(JSON.parse(readFileSync(path.join(protocol, "engine-observed-call.json"))), engineRequest);
+    const invokeBoundary = request => execFileSync(process.execPath, ["--input-type=module", "-e",
+      "const {verifyPublicBrowser}=await import(" + JSON.stringify(path.join(protocol, "browser-engine-public-download.mjs")) +
+      ");await verifyPublicBrowser(" + JSON.stringify(request) + ")"], {encoding: "utf8"});
+    assert.throws(() => invokeBoundary({...engineRequest, tag: "v9.9.8"}),
+      /controlled engine boundary request differs/, "fixture request mismatch must propagate");
+    writeFileSync(path.join(protocol, engineAssets[0].file), enginePayloads[0][1].replace(/^C/, "X"));
+    assert.throws(() => invokeBoundary(engineRequest),
+      /controlled engine boundary byte corruption/, "same-size fixture corruption must propagate");
     const provenance = readFileSync(path.join(dir, "BUILD-PROVENANCE.txt"), "utf8");
     assert.match(provenance, new RegExp(`${leg.os} \\(${leg.label}\\)`));
     assert.match(provenance, /INCOMPLETE : no artifacts from: .*cli-/);

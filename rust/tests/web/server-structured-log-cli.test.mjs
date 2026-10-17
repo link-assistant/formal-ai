@@ -109,14 +109,39 @@ test('environment debug credentials keep the existing launcher path',{timeout:15
 
 
 test('actual no-flags server emits semantic refusal and conservative symbolic terminal reasons',{timeout:15000},async t=>{
- const run=await startCli(t);await run.ready();
- const refused=await fetch(run.url+'/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json','x-formal-ai-dialog-id':'refused-session'},body:JSON.stringify({messages:[{role:'user',content:'Run printf hello'}],tools:[{type:'function',function:{name:'bash'}}]}),signal:AbortSignal.timeout(3000)});
- assert.equal(refused.status,200);await refused.text();
- const symbolic=await fetch(run.url+'/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json','x-formal-ai-dialog-id':'symbolic-session'},body:JSON.stringify({messages:[{role:'user',content:'2 + 2'}]}),signal:AbortSignal.timeout(3000)});
- assert.equal(symbolic.status,200);await symbolic.text();await run.stop();
+ const started=performance.now(),deadline=started+15000;
+ const run=await startCli(t);
+ let phase='ready';
+ // Both requests share the unchanged case/child clock, reserving bounded cleanup.
+ const requestSignal=()=>{
+  const remaining=Math.floor(deadline-performance.now()-2000);
+  assert(remaining>0,'CLI semantic request budget exhausted');
+  return AbortSignal.timeout(remaining);
+ };
+ try{
+ await run.ready();phase='request_refusal';
+ const refused=await fetch(run.url+'/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json','x-formal-ai-dialog-id':'refused-session'},body:JSON.stringify({messages:[{role:'user',content:'Run printf hello'}],tools:[{type:'function',function:{name:'bash'}}]}),signal:requestSignal()});
+ assert.equal(refused.status,200);phase='read_refusal';await refused.text();phase='request_symbolic';
+ const symbolic=await fetch(run.url+'/v1/chat/completions',{method:'POST',headers:{'content-type':'application/json','x-formal-ai-dialog-id':'symbolic-session'},body:JSON.stringify({messages:[{role:'user',content:'2 + 2'}]}),signal:requestSignal()});
+ assert.equal(symbolic.status,200);phase='read_symbolic';await symbolic.text();phase='stop';await run.stop();phase='assertions';
  const terminals=run.records().filter(x=>x.kind==='agent.terminal');
  assert(terminals.some(x=>x.metadata.reason==='refusal'&&x.dialog_id==='refused-session'));
  assert(terminals.some(x=>x.metadata.reason==='Unknown'&&x.dialog_id==='symbolic-session'&&x.metadata.task_delivery==='Unknown'));
  assert.equal(run.stdout,'');
  const persisted=fs.readFileSync(path.join(run.home,'.formal-ai/logs/serve-'+run.pid+'.lino'),'utf8');assert.equal(persisted,run.stderr);
+ }catch(error){
+  const scrub=text=>{
+   let result=text.replaceAll(run.directory,'[fixture]');
+   for(const [key,value] of Object.entries(run.env)){
+    if(value&&/(?:TOKEN|KEY|PASSWORD|SECRET)/iu.test(key))result=result.replaceAll(value,'[REDACTED]');
+   }
+   return result.slice(-4096);
+  };
+  t.diagnostic(JSON.stringify({kind:'actual_cli_semantic_failure',phase,
+   elapsedMilliseconds:Math.round(performance.now()-started),
+   remainingCaseMilliseconds:Math.max(0,Math.floor(deadline-performance.now())),
+   closed:run.closed,code:run.code,signal:run.signal,
+   stdoutTail:scrub(run.stdout),stderrTail:scrub(run.stderr)}));
+  throw error;
+ }
 });

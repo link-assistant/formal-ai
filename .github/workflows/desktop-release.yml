@@ -241,6 +241,8 @@ jobs:
         id: selected_wasm
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" build
         timeout-minutes: 5
+      - uses: ./.github/actions/release-web
+        with: {mode: build}
       - uses: actions/upload-artifact@v7
         with:
           name: native-release-wasm
@@ -486,6 +488,8 @@ jobs:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - uses: ./.github/actions/release-web
+        with: {mode: import}
       - name: Download the same-run target executable
         uses: actions/download-artifact@v8
         env:
@@ -608,20 +612,8 @@ jobs:
           CSC_FOR_PULL_REQUEST: "true"
           FORMAL_AI_MACOS_SIGN_DEBUG: "1"
           DEBUG: electron-builder,electron-osx-sign*
-          # Wall-clock ceiling for packaging including retries, derived from the
-          # job's own clock rather than guessed. `timeout-minutes` reports the
-          # kill it performs as **cancelled**, not failed, which is exactly the
-          # false negative this issue exists to remove, so a retry that cannot
-          # finish inside the cap must not be started.
-          #
-          # The number has to be derived because packaging does not start at a
-          # fixed point: in run 95255998673 it began 28 min into the job (26 of
-          # them in `cargo build --manifest-path rust/Cargo.toml`) and finished 43.7 min into a 50-minute cap,
-          # while run 30788311906 compiled for 33m21s before packaging at all.
-          # With this deadline the wrapper sees ~936s left in the first case --
-          # room for a retry after a healthy ~320s attempt, none after the 919s
-          # stalled one -- and ~495s in the second, where there is no room for a
-          # retry and it correctly declines to try.
+          # Bound packaging retries by the remaining time in this job.
+          # Never begin a retry that cannot finish before the existing deadline.
           FORMAL_AI_MACOS_PACKAGE_DEADLINE_EPOCH: ${{ env.FORMAL_AI_JOB_DEADLINE_EPOCH }}
         run: bash scripts/package-macos-with-retry.sh ${{ matrix.ebflag }} --publish never -c.mac.notarize=false -c.mac.identity=- -c.mac.sign=./scripts/adhoc-sign-mac.cjs
       - name: Normalize desktop artifact names
@@ -1123,6 +1115,8 @@ jobs:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - uses: ./.github/actions/release-web
+        with: {mode: import}
       - name: Download the same-run selected-source worker
         uses: actions/download-artifact@v8
         env:
@@ -1245,6 +1239,8 @@ jobs:
           cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           cp scripts/release-advertisement.mjs scripts/release-protocol.mjs "$protocol_dir/"
           cp scripts/release-producer-output-receipt.mjs scripts/release-checksums.mjs "$protocol_dir/"
+          cp scripts/browser-engine-public-download.mjs scripts/github-public-release-download.mjs "$protocol_dir/"
+          cp scripts/release-extension-github.mjs scripts/release-extension-policy.mjs "$protocol_dir/"
           cp .github/workflows/desktop-release.yml "$protocol_dir/producer-output-workflow.yml"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
@@ -1264,6 +1260,13 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
+      - name: Capture the independently pinned engine protocol for manifest coverage
+        id: engine-protocol
+        env:
+          RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: >-
+          node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE"
+          "$RUNNER_TEMP/desktop-engine-protocol" "$RELEASE_PROTOCOL_COMMIT" engine
       - name: Download exact source and protocol observations
         uses: actions/download-artifact@v8
         env:
@@ -1362,6 +1365,7 @@ jobs:
           NATIVE_COMPILER_RELEASE: ${{ needs.native-source.outputs.toolchain }}
           NATIVE_COMPILER_COMMIT: ${{ needs.native-source.outputs.compiler-commit }}
           EVIDENCE_INCOMPLETE: ${{ steps.evidence.outputs.incomplete }}
+          BROWSER_ENGINE_PROTOCOL_SHA256: ${{ steps.engine-protocol.outputs.protocol-sha256 }}
           RELEASE_PRODUCER_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
           RELEASE_PRODUCER_OUTPUT_STEP: manifest
           RELEASE_PRODUCER_OUTPUT_KEYS: incomplete

@@ -1,0 +1,199 @@
+name: Verify Public Release Downloads
+# Completion executes only authenticated published release bytes with a read-only token.
+# Trusted workflow_sha helpers reauthenticate the successful same-repository main producer.
+# Fork or triggering-head code is never checked out; uploads contain data observations only.
+on: # zizmor: ignore[dangerous-triggers]
+  workflow_run:
+    workflows: [Desktop Release]
+    types: [completed]
+    branches: [main]
+# Completion triggers receive read-only cache tokens; no manual cache-write context.
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: verify-public-downloads-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+jobs:
+  resolve:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      tag: ${{ steps.select.outputs.tag }}
+      release_id: ${{ steps.select.outputs.release_id }}
+      source_sha: ${{ steps.select.outputs.source_sha }}
+      source_tree: ${{ steps.select.outputs.source_tree }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with: {node-version: '24', package-manager-cache: false}
+      - name: Pin published tag, asset metadata and authenticated source
+        id: select
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRODUCER_RUN_ID: ${{ github.event.workflow_run.id || '' }}
+          PRODUCER_ATTEMPT: ${{ github.event.workflow_run.run_attempt || '' }}
+          RELEASE_VERIFY_MODE: resolve
+          RELEASE_DOWNLOAD_DIRECTORY: ${{ runner.temp }}/release-selection
+        run: node scripts/verify-public-release-downloads.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: public-release-selection
+          path: ${{ runner.temp }}/release-selection/selection.json
+          if-no-files-found: error
+          retention-days: 14
+  all-public-bytes:
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with: {node-version: '24', package-manager-cache: false}
+      - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: public-release-selection
+          path: ${{ runner.temp }}/release-selection
+      - name: Stream, hash and delete every public asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          RELEASE_ID: ${{ needs.resolve.outputs.release_id }}
+          RELEASE_SOURCE_SHA: ${{ needs.resolve.outputs.source_sha }}
+          RELEASE_SOURCE_TREE: ${{ needs.resolve.outputs.source_tree }}
+          PRODUCER_RUN_ID: ${{ github.event.workflow_run.id || '' }}
+          PRODUCER_ATTEMPT: ${{ github.event.workflow_run.run_attempt || '' }}
+          RELEASE_SELECTION: ${{ runner.temp }}/release-selection/selection.json
+          RELEASE_DOWNLOAD_DIRECTORY: ${{ runner.temp }}/public-release-bytes
+        run: node scripts/verify-public-release-downloads.mjs
+      - name: Retain only small data receipts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: public-release-byte-evidence
+          path: |
+            ${{ runner.temp }}/public-release-bytes/*.json
+            ${{ runner.temp }}/public-release-bytes/*.txt
+          if-no-files-found: error
+          retention-days: 14
+  macos-public-packages:
+    needs: resolve
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-14
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    env:
+      RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+      RELEASE_ID: ${{ needs.resolve.outputs.release_id }}
+      RELEASE_SOURCE_SHA: ${{ needs.resolve.outputs.source_sha }}
+      RELEASE_SOURCE_TREE: ${{ needs.resolve.outputs.source_tree }}
+      PRODUCER_RUN_ID: ${{ github.event.workflow_run.id || '' }}
+      PRODUCER_ATTEMPT: ${{ github.event.workflow_run.run_attempt || '' }}
+      MACOS_ARCH: ${{ matrix.architecture }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with: {node-version: '24', package-manager-cache: false}
+      - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: public-release-selection
+          path: ${{ runner.temp }}/release-selection
+      - name: Independently download both public Mac packages and bound receipts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERIFY_MODE: macos
+          RELEASE_SELECTION: ${{ runner.temp }}/release-selection/selection.json
+          RELEASE_DOWNLOAD_DIRECTORY: ${{ runner.temp }}/public-macos-packages
+        run: node scripts/verify-public-release-downloads.mjs
+      - name: Verify fresh signed packages and real Electron renderer
+        env:
+          RELEASE_DOWNLOAD_DIRECTORY: ${{ runner.temp }}/public-macos-packages
+        run: |
+          export RELEASE_VERSION="${RELEASE_TAG#v}"
+          scripts/verify-public-macos-release.sh
+      - name: Keep package observations and diagnostics without archives
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: public-macos-evidence-${{ matrix.architecture }}
+          path: |
+            ${{ runner.temp }}/public-macos-packages/macos-public-evidence-*/outcome.json
+            ${{ runner.temp }}/public-macos-packages/macos-public-evidence-*/dmg/electron.stdout.log
+            ${{ runner.temp }}/public-macos-packages/macos-public-evidence-*/dmg/electron.stderr.log
+            ${{ runner.temp }}/public-macos-packages/macos-public-evidence-*/zip/electron.stdout.log
+            ${{ runner.temp }}/public-macos-packages/macos-public-evidence-*/zip/electron.stderr.log
+          if-no-files-found: error
+          retention-days: 14
+  browser-public-package:
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check out the exact selected release source for its browser harness
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.resolve.outputs.source_sha }}
+          path: _source
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with: {node-version: '24', package-manager-cache: false}
+      - name: Install browser test harness without build hooks
+        run: npm ci --ignore-scripts --no-audit --no-fund --prefix _source/vscode
+      - name: Install test browser without compiling the product
+        run: node _source/vscode/node_modules/playwright/cli.js install chromium --with-deps
+      - name: Verify original engine bindings and fresh public package in a real Worker
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          RELEASE_SOURCE_SHA: ${{ needs.resolve.outputs.source_sha }}
+          RELEASE_SOURCE_TREE: ${{ needs.resolve.outputs.source_tree }}
+          REQUEST_FILE: ${{ runner.temp }}/browser-public-request.json
+          EVIDENCE_DIRECTORY: ${{ runner.temp }}/browser-public-evidence
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          fs.writeFileSync(process.env.REQUEST_FILE, JSON.stringify({
+            root: path.resolve('_source'), repository: process.env.GITHUB_REPOSITORY,
+            tag: process.env.RELEASE_TAG, sourceCommit: process.env.RELEASE_SOURCE_SHA,
+            sourceTree: process.env.RELEASE_SOURCE_TREE,
+            outputDirectory: process.env.EVIDENCE_DIRECTORY, mode: 'smoke'
+          }) + '\n', {flag: 'wx'});
+          NODE
+          node scripts/browser-engine-public-download.mjs "$REQUEST_FILE"
+      - name: Keep bounded browser evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: public-browser-evidence
+          path: |
+            ${{ runner.temp }}/browser-public-evidence/evidence.json
+            ${{ runner.temp }}/browser-public-evidence/engine-checksum.partial
+          if-no-files-found: error
+          retention-days: 14
