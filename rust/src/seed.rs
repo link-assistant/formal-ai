@@ -32,6 +32,7 @@ mod draft_strategies;
 mod embedded;
 mod entity_names;
 mod fact_derivation;
+pub use fact_derivation::derive_facts_from_texts;
 mod facts;
 mod grounding_overrides;
 mod handler_precedence;

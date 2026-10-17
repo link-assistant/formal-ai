@@ -36,8 +36,8 @@ import { exactLineKey, planDirectFileReads } from './file_read/exact.mjs';
 export { suppliedFileAnswer } from './file_read/supplied.mjs';
 
 const AUDIT_READ_LINE_LIMIT = 160;
-/** A cue phrase the Rust recipe spells inline, read from the messages file. */
-const cue = (key) => agenticMessage(`file_read_cue_${key}`);
+/** Shared cue text preserves the original containment and word-equality semantics. */
+const cue = (key) => agenticMessage(key);
 const AUDIT_READ_COLUMN_LIMIT = 320;
 const ROLE_FILE_READ_ACTION_CUE = 'file_read_action_cue';
 const ROLE_WORKSPACE_INSPECTION_ACTION = 'workspace_inspection_action';
@@ -214,37 +214,37 @@ function readPathsNamedBesideTheirCue(prompt) {
 
 /** Mirrors `fn asks_to_read_every_file`. */
 function asksToReadEveryFile(lower) {
-  return (lower.includes(cue('read_every_file')) || lower.includes(cue('read_all_files')))
-    && (lower.includes('summarize') || lower.includes('summary') || lower.includes('here'));
+  return (lower.includes(cue('file_read_cue_read_every_file')) || lower.includes(cue('file_read_cue_read_all_files')))
+    && (lower.includes(cue('file-read-cue-summarize')) || lower.includes(cue('file-read-cue-summary')) || lower.includes(cue('file-read-cue-here')));
 }
 
 /** Mirrors `fn asks_to_list_then_read`. */
 function asksToListThenRead(lower) {
-  const listsFiles = lower.includes(cue('list_the_files')) || lower.includes('list files')
-    || lower.includes(cue('ls_the_folder')) || splitWhitespace(lower).includes('ls');
-  const readsAfter = lower.includes('read') || lower.includes('contents') || lower.includes('content')
-    || lower.includes('show me');
+  const listsFiles = lower.includes(cue('file_read_cue_list_the_files')) || lower.includes(cue('file-read-cue-list-files'))
+    || lower.includes(cue('file_read_cue_ls_the_folder')) || splitWhitespace(lower).includes(cue('file-read-cue-list-command'));
+  const readsAfter = lower.includes(cue('file-read-cue-read')) || lower.includes(cue('file-read-cue-contents')) || lower.includes(cue('file-read-cue-content'))
+    || lower.includes(cue('file-read-cue-show-me'));
   return listsFiles && readsAfter;
 }
 
 /** Mirrors `fn asks_to_read_file_in_folder`. */
 function asksToReadFileInFolder(lower) {
-  return lower.includes(cue('read_the_file')) && (lower.includes(' folder') || lower.includes(' directory'));
+  return lower.includes(cue('file_read_cue_read_the_file')) && (lower.includes(cue('file-read-cue-folder-suffix')) || lower.includes(cue('file-read-cue-directory-suffix')));
 }
 
 /** Mirrors `fn selection_for_prompt`. */
 function selectionForPrompt(lower) {
-  return lower.includes('last') ? 'last' : 'first';
+  return lower.includes(cue('file-read-cue-last')) ? 'last' : 'first';
 }
 
 /** Mirrors `fn mode_for_prompt`. */
 function modeForPrompt(prompt) {
   const lower = prompt.toLowerCase();
-  if (lower.includes('first line')) return FileReadMode.FirstLine;
+  if (lower.includes(cue('file-read-cue-first-line'))) return FileReadMode.FirstLine;
   const key = extractValueKey(prompt) ?? exactLineKey(prompt);
   if (key !== null) return FileReadMode.extractValue(key);
   if (mentionsRole(ROLE_WORKSPACE_INSPECTION_ACTION, lower)) return FileReadMode.Audit;
-  if (lower.includes('summarize') || lower.includes('summary')) return FileReadMode.Summary;
+  if (lower.includes(cue('file-read-cue-summarize')) || lower.includes(cue('file-read-cue-summary'))) return FileReadMode.Summary;
   const slice = lineSlice(prompt);
   return slice === null ? FileReadMode.Full : FileReadMode.lineSlice(slice);
 }

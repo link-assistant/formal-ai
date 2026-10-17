@@ -227,3 +227,25 @@ pub fn inherit_numeric_evidence(
 #[cfg(test)]
 #[path = "../../tests/source/source_tests/formalization/typed_meaning-semantic_entailment_tests.rs"]
 mod semantic_entailment_tests;
+
+/// Count source-token custody for the supplied logical terms, consuming each amount once.
+#[must_use]
+pub fn count_source_terms(statement: &Statement, terms: &[&super::text_statements::Word]) -> usize {
+    let mut remaining = statement.dialogue.quantities.iter().collect::<Vec<_>>();
+    terms
+        .iter()
+        .map(|term| {
+            if term.kind != super::text_statements::WordKind::Number {
+                return 1;
+            }
+            if let Some(index) = remaining
+                .iter()
+                .position(|quantity| quantity.surface == term.surface)
+            {
+                remaining.remove(index).source_components.len().max(1)
+            } else {
+                1
+            }
+        })
+        .sum()
+}

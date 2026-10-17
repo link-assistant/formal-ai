@@ -557,23 +557,7 @@ mod tests;
 /// multiple original numeric words become one logical amount.
 #[must_use]
 pub fn source_term_count(statement: &Statement) -> usize {
-    let mut remaining = statement.dialogue.quantities.iter().collect::<Vec<_>>();
-    statement_terms(statement)
-        .iter()
-        .map(|term| {
-            if term.kind != WordKind::Number {
-                return 1;
-            }
-            if let Some(index) = remaining
-                .iter()
-                .position(|quantity| quantity.surface == term.surface)
-            {
-                remaining.remove(index).source_components.len().max(1)
-            } else {
-                1
-            }
-        })
-        .sum()
+    super::typed_meaning::count_source_terms(statement, &statement_terms(statement))
 }
 
 /// One locale-aware entry point shared by plain/Han clause tokenization.

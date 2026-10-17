@@ -1,4 +1,5 @@
 //! File-reading agentic recipe for local workspace prompts (issue #627).
+use super::wording::agentic_message;
 
 mod audit;
 mod ownership;
@@ -401,29 +402,40 @@ fn read_paths_named_beside_their_cue(prompt: &str) -> Vec<String> {
     owned_read_paths(prompt, seed::ROLE_FILE_READ_ACTION_CUE)
 }
 
+fn cue(key: &str) -> String {
+    agentic_message(key, &[])
+}
+
 fn asks_to_read_every_file(lower: &str) -> bool {
-    (lower.contains("read every file") || lower.contains("read all files"))
-        && (lower.contains("summarize") || lower.contains("summary") || lower.contains("here"))
+    (lower.contains(cue("file_read_cue_read_every_file").as_str())
+        || lower.contains(cue("file_read_cue_read_all_files").as_str()))
+        && (lower.contains(cue("file-read-cue-summarize").as_str())
+            || lower.contains(cue("file-read-cue-summary").as_str())
+            || lower.contains(cue("file-read-cue-here").as_str()))
 }
 
 fn asks_to_list_then_read(lower: &str) -> bool {
-    let lists_files = lower.contains("list the files")
-        || lower.contains("list files")
-        || lower.contains("ls the folder")
-        || lower.split_whitespace().any(|word| word == "ls");
-    let reads_after = lower.contains("read")
-        || lower.contains("contents")
-        || lower.contains("content")
-        || lower.contains("show me");
+    let lists_files = lower.contains(cue("file_read_cue_list_the_files").as_str())
+        || lower.contains(cue("file-read-cue-list-files").as_str())
+        || lower.contains(cue("file_read_cue_ls_the_folder").as_str())
+        || lower
+            .split_whitespace()
+            .any(|word| word == cue("file-read-cue-list-command").as_str());
+    let reads_after = lower.contains(cue("file-read-cue-read").as_str())
+        || lower.contains(cue("file-read-cue-contents").as_str())
+        || lower.contains(cue("file-read-cue-content").as_str())
+        || lower.contains(cue("file-read-cue-show-me").as_str());
     lists_files && reads_after
 }
 
 fn asks_to_read_file_in_folder(lower: &str) -> bool {
-    lower.contains("read the file") && (lower.contains(" folder") || lower.contains(" directory"))
+    lower.contains(cue("file_read_cue_read_the_file").as_str())
+        && (lower.contains(cue("file-read-cue-folder-suffix").as_str())
+            || lower.contains(cue("file-read-cue-directory-suffix").as_str()))
 }
 
 fn selection_for_prompt(lower: &str) -> FileSelection {
-    if lower.contains("last") {
+    if lower.contains(cue("file-read-cue-last").as_str()) {
         FileSelection::Last
     } else {
         FileSelection::First
@@ -435,7 +447,7 @@ fn mode_for_prompt(prompt: &str) -> FileReadMode {
     // every script that has case rather than only ASCII. Otherwise a capitalized
     // Russian imperative misses the same semantic role its lowercase form hits.
     let lower = prompt.to_lowercase();
-    if lower.contains("first line") {
+    if lower.contains(cue("file-read-cue-first-line").as_str()) {
         return FileReadMode::FirstLine;
     }
     if let Some(key) = extract_value_key(prompt) {
@@ -447,7 +459,9 @@ fn mode_for_prompt(prompt: &str) -> FileReadMode {
     if seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &lower) {
         return FileReadMode::Audit;
     }
-    if lower.contains("summarize") || lower.contains("summary") {
+    if lower.contains(cue("file-read-cue-summarize").as_str())
+        || lower.contains(cue("file-read-cue-summary").as_str())
+    {
         return FileReadMode::Summary;
     }
     super::workspace_line_operation::line_slice(prompt)

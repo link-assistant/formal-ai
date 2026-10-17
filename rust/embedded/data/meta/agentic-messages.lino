@@ -552,3 +552,29 @@ agentic_messages
     text "Existing source matches the rediscovered procedure and independent verification succeeded; no source write was needed."
   message coding-research-existing-failed
     text "Independent verification of the existing source failed.\n{detail}"
+  message file-read-cue-summarize
+    text "summarize"
+  message file-read-cue-summary
+    text "summary"
+  message file-read-cue-here
+    text "here"
+  message file-read-cue-list-files
+    text "list files"
+  message file-read-cue-list-command
+    text "ls"
+  message file-read-cue-read
+    text "read"
+  message file-read-cue-contents
+    text "contents"
+  message file-read-cue-content
+    text "content"
+  message file-read-cue-show-me
+    text "show me"
+  message file-read-cue-folder-suffix
+    text " folder"
+  message file-read-cue-directory-suffix
+    text " directory"
+  message file-read-cue-last
+    text "last"
+  message file-read-cue-first-line
+    text "first line"

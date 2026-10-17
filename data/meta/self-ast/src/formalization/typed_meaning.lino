@@ -2,10 +2,10 @@ self_ast_census
   target src/formalization/typed_meaning.rs
   language rust
   fidelity signature
-  byte_len 7445
-  line_count 229
-  content_id source_module_e75e928cb707f97d
-  symbol_count 8
+  byte_len 8195
+  line_count 251
+  content_id source_module_d551eb801184c8b4
+  symbol_count 9
   symbols
     function typed_meaning 6 71
     function statement_identity 75 93
@@ -15,3 +15,4 @@ self_ast_census
     function fields 138 145
     function inherit_numeric_evidence 191 225
     module semantic_entailment_tests 229 229
+    function count_source_terms 233 251

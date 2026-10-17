@@ -705,7 +705,7 @@ Shared shell quoting and failure-invitation composition now have one JavaScript 
 
 ### Measured debt and acceptance boundary
 
-The last qualified preintegration source snapshot contains 1,098 source files and 28,768 callables: 10,241 raw groups / 26,240 raw sites, 487 exact ES projection proofs and 56 factory proofs. Canonical identity reduces 1,699 independent candidates to 750; zero source/proof gaps were observed in that snapshot. These are dated, source-bound measurements, not current integrated acceptance. Recompute after every source change.
+The actual integrated JavaScript/TypeScript source scan contains 1131 files and 29211 callables: 10379 raw groups and 26684 raw sites. Canonical identity and 60 independently regenerated factory proofs leave 727 independent groups, with 0 source/proof gaps. Strict acceptance is false. The source inventory SHA-256 is `c1c825f62c7b6483cd8a2f4ab67116bb0a782c1f1b2d55c0263b759f67972bc9`; regenerate the scan after source changes. This result does not establish native Rust counts or full behavior parity.
 
 The older check-duplicate-functions.rs scans only Rust, ignores bodies over22 lines and same-file groups, and accepts a historical baseline. Its passing status does not satisfy this policy. The new strict commands default to nonzero exit for any independent candidate or coverage gap. Hosted scanner qualification runs meaningful controls and publishes explicit debt inventories; a successful inventory job does not establish zero duplication.
 
@@ -736,7 +736,7 @@ These additional owner requirements (2026-10-17) supplement every original issue
 
 The source feature inventory and scanner qualification explicitly report incomplete discovery, unmeasured behavior and nonzero duplication. All five rows stay Pending while those gaps remain. Rust compilation, native product/WASM/container execution and dependency installation are hosted-only for this task; local work uses bounded source/JavaScript controls and metadata-only lock resolution.
 
-A source-bound [coding-research parity audit](../../architecture/coding-research-parity-gap.md) records the missing native request-local route and exact upstream blockers for R1183-G3 and R1183-G4. Its [machine-readable gap ledger](../../../data/meta/coding-research-parity-gap.lino) is evidence only; neither a trace recipe nor a conformance rendering counts as research execution. These requirements remain Pending.
+A source-bound [coding-research parity audit](../../architecture/coding-research-parity-gap.md) records the production native source route, finite generated kernels, remaining observation gaps and exact upstream blockers for R1183-G3 and R1183-G4. Its [machine-readable gap ledger](../../../data/meta/coding-research-parity-gap.lino) is evidence only; neither a trace recipe nor a conformance rendering counts as research execution. These requirements remain Pending.
 
 ## Issue #1185 Error-Driven Repair Loop
 

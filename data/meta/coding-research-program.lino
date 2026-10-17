@@ -1,0 +1,11 @@
+# Source/provenance observation of the actual checked portable-core IR.
+(coding-research-program
+  (source-sha256 65fd5d20b6620b08324eec92a832adcaee86c383a6aaa56b443184fc150fb0e8)
+  (checked-ir-sha256 688bd0ee84736b26c705d70ee6dbb4358ffcd5556a19255cb5e233faa98ca425)
+  (upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b)
+  (runtime-count 1)
+  (source-unit (path "js/agentic/portable/coding_research_query.mjs") (sha256 6f8faa7ef98be795ea6376be8c7a0d8eb1bebacfb0c0926802fc44180d167457))
+  (source-unit (path "js/agentic/portable/coding_research_rebinding.mjs") (sha256 94c13cfbb61589369e36a08dbfbe6e0b6754a94ab97e54338de7b8137bbc533a))
+  (source-unit (path "js/agentic/portable/coding_research_acceptance.mjs") (sha256 3ab65463ed04967972aa24e28de1e0986e1393a046b5c907e3d038b789f8a26d))
+  (source-unit (path "js/agentic/portable/coding_research_state.mjs") (sha256 2b9a11fc9b742817a53c619f3fe8d27fe2bec6ed211eb6965d65600a6c1d550d))
+)

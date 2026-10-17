@@ -28,8 +28,7 @@ use std::sync::OnceLock;
 use unicode_general_category::{GeneralCategory, get_general_category};
 
 use super::segment::{Script, Segment, clauses, script_of, sentences};
-use crate::seed::parser::LinoNode;
-use crate::seed::{TEXT_FORMALIZATION_LINO, lexicon, parse_lino};
+use crate::seed::lexicon;
 
 /// The lexicon roles whose words carry no term.
 pub const FUNCTION_WORD_ROLES: [&str; 2] = ["translation_stop_word", "statement_function_word"];
@@ -195,55 +194,14 @@ fn is_number(surface: &str) -> bool {
         .all(|part| !part.is_empty() && part.chars().all(is_numeral_character))
 }
 
-pub(super) fn seed_record() -> Option<&'static LinoNode> {
-    static ROOT: OnceLock<LinoNode> = OnceLock::new();
-    let root = ROOT.get_or_init(|| parse_lino(TEXT_FORMALIZATION_LINO));
-    if root.name == "text-formalization" {
-        return Some(root);
-    }
-    root.children
-        .iter()
-        .find(|node| node.name == "text-formalization")
-}
-
 pub use super::{numeric_identity_prefix, structural_rule_values};
 
 /// The words of one kind the seed lists for language, lowercased.
 #[must_use]
 pub fn seed_words(language: &str, kind: &str) -> Vec<String> {
-    let Some(root) = seed_record() else {
-        return Vec::new();
-    };
-    let Some(record) = root
-        .children
-        .iter()
-        .find(|node| node.name == "language" && node.id == language)
-    else {
-        return Vec::new();
-    };
-    let local: Vec<_> = record
-        .children
-        .iter()
-        .filter(|node| node.name == kind)
-        .collect();
-    let values = if local.is_empty() {
-        root.children
-            .iter()
-            .find(|node| node.name == "defaults")
-            .map(|defaults| {
-                defaults
-                    .children
-                    .iter()
-                    .filter(|node| node.name == kind)
-                    .collect()
-            })
-            .unwrap_or_default()
-    } else {
-        local
-    };
-    values
+    super::grammar_vocabulary(language, kind)
         .into_iter()
-        .map(|node| node.id.trim_matches('"').to_lowercase())
+        .map(|value| value.to_lowercase())
         .collect()
 }
 

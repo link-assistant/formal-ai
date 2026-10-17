@@ -1,0 +1,35 @@
+self_ast_census
+  target src/coding_research_generated/part1.rs
+  language rust
+  fidelity signature
+  byte_len 31859
+  line_count 782
+  content_id source_module_cb10dd7ee9b8e2da
+  symbol_count 26
+  symbols
+    module ml_math 13 22
+    function is_integer 15 17
+    function is_safe_integer 19 21
+    module ml_array 25 48
+    function at 28 33
+    function number_index 36 42
+    function append 44 47
+    enum ResearchRebindingCandidate 51 67
+    enum ResearchRebindingResult 70 73
+    function research_query_whitespace 75 100
+    function research_query_letter 102 154
+    function research_query_identifier_start 156 160
+    function research_query_identifier_part 162 200
+    function research_query_lower 202 282
+    function research_query_without_signatures 284 300
+    function coding_research_query_kernel 302 328
+    function research_rebinding_index 330 349
+    function research_rebinding_unique 351 369
+    function research_rebinding_neighbour 371 390
+    function coding_research_rebinding_kernel 392 507
+    function canonical_unique_source_index 509 532
+    function research_acceptance_literal 534 559
+    function independent_acceptance_kernel 561 605
+    function coding_research_preflight_kernel 607 687
+    function coding_research_discovery_kernel 689 707
+    function coding_research_effect_kernel 709 782

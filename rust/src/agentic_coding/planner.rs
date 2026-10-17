@@ -401,7 +401,9 @@ pub(super) fn plan_settled_routes(
         super::workspace_change::plan_workspace_change_step(owned, messages, tool_names, result)
     })
     .or_else(|| {
-        super::module_function::plan_module_function_step(owned, messages, tool_names, result)
+        super::coding_research::plan_module_function_research_step(
+            owned, messages, tool_names, result,
+        )
     })
     // A bug report with a stated expectation is checked before anything is
     // rewritten (PR #1188 T93).
@@ -530,8 +532,13 @@ pub(super) fn plan_settled_routes(
                 && compose_general_change_plan(task).is_none()
                 && super::general_planner::compose_edit_request(task).is_none())
             .then(|| {
-                conversation_recall::plan_verified_recipe_step(messages, tool_names).unwrap_or_else(
-                    || {
+                conversation_recall::plan_verified_recipe_step(messages, tool_names)
+                    .or_else(|| {
+                        super::coding_research::plan_coding_research_step(
+                            task, messages, tool_names, result,
+                        )
+                    })
+                    .unwrap_or_else(|| {
                         record(
                             AgenticPlan::Final(
                                 super::general_planner::missing_implementation_contract(task),
@@ -540,8 +547,7 @@ pub(super) fn plan_settled_routes(
                             "semantic-authoring-missing-contract",
                             result,
                         )
-                    },
-                )
+                    })
             })
         })
     {

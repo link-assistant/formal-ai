@@ -288,7 +288,7 @@ pub(super) fn extension_language(path: &str) -> Option<String> {
 }
 
 /// The request without its quoted segments. Mirrors `outsideQuotes`.
-fn outside_quotes(request: &str) -> String {
+pub(super) fn outside_quotes(request: &str) -> String {
     let mut outside = String::new();
     let mut cursor = 0;
     for segment in crate::normal_markov::quoted_segment_spans(request) {
@@ -386,7 +386,10 @@ pub(super) fn signature(text: &str) -> Option<Signature> {
         let parameters: Vec<String> = if crate::meta_reasoner::text::js_trim(capture).is_empty() {
             Vec::new()
         } else {
-            capture.split(',').map(|part| part.trim().to_owned()).collect()
+            capture
+                .split(',')
+                .map(|part| part.trim().to_owned())
+                .collect()
         };
         if parameters.iter().all(|parameter| is_identifier(parameter)) {
             return Some(Signature {
@@ -491,6 +494,18 @@ fn returns_in(part: &str) -> bool {
 /// Mirrors `moduleFunctionRequest`.
 #[must_use]
 pub fn module_function_request(task: &str) -> Option<ModuleFunctionRequest> {
+    module_function_request_with_contract(task, true)
+}
+
+/// The research route has its own independent test specification and actual execution gate.
+pub(super) fn module_function_research_request(task: &str) -> Option<ModuleFunctionRequest> {
+    module_function_request_with_contract(task, false)
+}
+
+fn module_function_request_with_contract(
+    task: &str,
+    require_test_contract: bool,
+) -> Option<ModuleFunctionRequest> {
     let lexicon = seed::lexicon();
     let outside = outside_quotes(task);
     let normalized = crate::engine::normalize_prompt(&outside).to_lowercase();
@@ -521,7 +536,9 @@ pub fn module_function_request(task: &str) -> Option<ModuleFunctionRequest> {
     };
     let module = paths.first()?.clone();
     let language = extension_language(&module)?;
-    contract(&language)?;
+    if require_test_contract {
+        contract(&language)?;
+    }
     crate::coding::program_language_by_slug(&language)?;
     let others = &paths[1..];
     let wants_test = lexicon.mentions_role("coding_test_artifact_kind", &normalized);

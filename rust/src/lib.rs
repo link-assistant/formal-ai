@@ -614,3 +614,6 @@ pub use world_model_context::{
 pub use world_model_dialog::{
     ActionForecast, DialogueWorldModel, SyncEvent, SyncEventKind, WorldModelMode,
 };
+
+// One generated canonical research program; its internal cross-calls remain crate-qualified.
+pub mod coding_research_generated;

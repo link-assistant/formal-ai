@@ -351,8 +351,10 @@ jobs:
     # projections (rust/tests/fixtures/js-rust-translation/) and the ledger
     # byte for byte, refuses a module whose translated count fell, compiles
     # every projection with rustc and runs the calls of calls.lino in the
-    # translated Rust. Same gate as the ts tier: js green or carried first.
-    if: needs.changes.outputs.js-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')
+    # translated Rust. JavaScript must be green or carried first.
+    # R1183: generated research Rust or compiler inputs can change without a
+    # JavaScript path change, so this compiler boundary also runs for those edits.
+    if: ${{ !cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
@@ -378,6 +380,8 @@ jobs:
         run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Setup Rust (rustc compiles the translated Rust)
         uses: dtolnay/rust-toolchain@stable
+      - name: Verify canonical research program from pinned checked IR (R1183)
+        run: node scripts/generate-coding-research-program.mjs --check --meta-language .meta-language
       - name: The committed js -> rust translation is what meta-language renders, and it compiles
         env:
           # PR #1202: full146 translation reached its last module at the540s deadline.

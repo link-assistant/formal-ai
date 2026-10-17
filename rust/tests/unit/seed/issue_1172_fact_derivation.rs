@@ -243,3 +243,106 @@ fn the_engine_answers_from_the_derived_records() {
         assert_eq!(answer.answer, expected, "{prompt}");
     }
 }
+
+const RAW_CAPTURES: &str = include_str!("../../../../data/seed/fact-captures.lino");
+const RAW_REALIZATION: &str = include_str!("../../../../data/seed/fact-realization.lino");
+
+fn relation_property(slug: &str) -> String {
+    formal_ai::seed::lexicon()
+        .meaning(slug)
+        .map_or_else(String::new, |meaning| meaning.wikidata.clone())
+}
+
+#[test]
+fn explicit_raw_entry_preserves_every_cached_record_field_and_capture_order() {
+    let explicit =
+        formal_ai::seed::derive_facts_from_texts(RAW_CAPTURES, RAW_REALIZATION, relation_property);
+    assert_eq!(explicit.len(), 10);
+    assert_eq!(
+        explicit
+            .iter()
+            .map(|record| record.localized.len())
+            .sum::<usize>(),
+        40
+    );
+    // Debug derives cover every field, including localized variants and release timeline.
+    let cached = derived();
+    assert_eq!(format!("{explicit:?}"), format!("{cached:?}"));
+}
+
+#[test]
+fn explicit_raw_entry_has_no_stale_cache_or_unsupported_property_grant() {
+    use formal_ai::seed::derive_facts_from_texts;
+    assert!(derive_facts_from_texts("", RAW_REALIZATION, relation_property).is_empty());
+    assert!(derive_facts_from_texts(RAW_CAPTURES, "", relation_property).is_empty());
+    assert!(derive_facts_from_texts(RAW_CAPTURES, RAW_REALIZATION, |_| String::new()).is_empty());
+    let changed = RAW_CAPTURES.replace("P36", "P999999999");
+    let observed = derive_facts_from_texts(&changed, RAW_REALIZATION, relation_property);
+    assert_eq!(observed.len(), 1);
+    assert_eq!(observed[0].relation, "author_of_book");
+    let restored = derive_facts_from_texts(RAW_CAPTURES, RAW_REALIZATION, relation_property);
+    assert_eq!(restored.len(), 10);
+    let cached = derived();
+    assert_eq!(format!("{restored:?}"), format!("{cached:?}"));
+}
+
+#[test]
+fn explicit_resolver_runs_once_per_relation_and_last_binding_wins() {
+    let mut calls = Vec::new();
+    let records = formal_ai::seed::derive_facts_from_texts(RAW_CAPTURES, RAW_REALIZATION, |slug| {
+        calls.push(slug.to_owned());
+        "P36".to_owned()
+    });
+    assert_eq!(calls, ["capital", "author_of_book"]);
+    assert_eq!(records.len(), 9);
+    assert!(
+        records
+            .iter()
+            .all(|record| record.relation == "author_of_book")
+    );
+    assert_eq!(
+        records
+            .iter()
+            .map(|record| record.subject_qid.as_str())
+            .collect::<Vec<_>>(),
+        [
+            "Q17", "Q159", "Q142", "Q183", "Q148", "Q668", "Q30", "Q145", "Q155"
+        ]
+    );
+}
+
+const DUPLICATE_RELATION_TAIL: &str =
+    "\n  relation capital\n    intent heldout_relation\n    category heldout_category\n";
+
+#[test]
+fn duplicate_relation_rows_replace_values_without_reordering_distinct_slugs() {
+    use formal_ai::seed::derive_facts_from_texts;
+    let realization = format!("{RAW_REALIZATION}{DUPLICATE_RELATION_TAIL}");
+    let mut calls = Vec::new();
+    let records = derive_facts_from_texts(RAW_CAPTURES, &realization, |slug| {
+        calls.push(slug.to_owned());
+        relation_property(slug)
+    });
+    assert_eq!(calls, ["capital", "author_of_book"]);
+    assert_eq!(records.len(), 10);
+    for record in records.iter().take(9) {
+        assert_eq!(record.relation, "capital");
+        assert_eq!(record.intent, "heldout_relation");
+        assert_eq!(record.category, "heldout_category");
+        assert!(record.localized.is_empty());
+        assert!(record.summary.is_empty());
+    }
+    assert_eq!(records[9].relation, "author_of_book");
+    calls.clear();
+    let shared_property = derive_facts_from_texts(RAW_CAPTURES, &realization, |slug| {
+        calls.push(slug.to_owned());
+        "P36".to_owned()
+    });
+    assert_eq!(calls, ["capital", "author_of_book"]);
+    assert_eq!(shared_property.len(), 9);
+    assert!(
+        shared_property
+            .iter()
+            .all(|record| record.relation == "author_of_book")
+    );
+}

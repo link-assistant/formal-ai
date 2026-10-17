@@ -60,3 +60,26 @@ fn declarative_context_does_not_invent_question_or_location_evidence() {
     );
     assert!(fact_survives(&inherited));
 }
+
+#[test]
+fn logical_numeric_groups_keep_original_source_token_weights_once() {
+    let vectors: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../fixtures/formalization-native-parity.json"
+    ))
+    .unwrap();
+    for vector in vectors["counts"].as_array().unwrap() {
+        let statement = formalize_text(
+            vector["text"].as_str().unwrap(),
+            vector["language"].as_str().unwrap(),
+        )
+        .remove(0);
+        let terms = crate::formalization::text_statements::statement_terms(&statement);
+        let repeated = (0..vector["repeat"].as_u64().unwrap())
+            .flat_map(|_| terms.iter().copied())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            count_source_terms(&statement, &repeated),
+            vector["expected"].as_u64().unwrap() as usize
+        );
+    }
+}

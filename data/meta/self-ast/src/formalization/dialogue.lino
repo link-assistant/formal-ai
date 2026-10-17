@@ -2,9 +2,9 @@ self_ast_census
   target src/formalization/dialogue.rs
   language rust
   fidelity signature
-  byte_len 20286
-  line_count 583
-  content_id source_module_8be124e9f4834fbd
+  byte_len 19831
+  line_count 567
+  content_id source_module_669c8ca6ec810d45
   symbol_count 30
   symbols
     const QUESTIONS 10 10
@@ -35,5 +35,5 @@ self_ast_census
     struct Compatibility 496 501
     function answer_compatibility 505 550
     module tests 554 554
-    function source_term_count 559 577
-    function read_numeric_words 581 583
+    function source_term_count 559 561
+    function read_numeric_words 565 567

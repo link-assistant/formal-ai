@@ -1,0 +1,38 @@
+self_ast_census
+  target src/coding_research_generated/part2.rs
+  language rust
+  fidelity signature
+  byte_len 30631
+  line_count 771
+  content_id source_module_9d1430004374db4e
+  symbol_count 29
+  symbols
+    function coding_research_search_index 12 51
+    function coding_research_latest_read_index 53 72
+    function coding_research_run_index 74 108
+    function coding_research_source_ur_ls 110 131
+    function coding_research_next_url 133 152
+    function coding_research_bindings_kernel 154 185
+    function coding_research_capture_decision 187 197
+    function coding_research_page_eligible 199 201
+    function coding_research_source_index 203 222
+    function coding_research_pure_repair_kernel 224 279
+    function coding_research_search_decision 281 291
+    function coding_research_language_eligible 293 295
+    enum MlResearchQueryLetterLoop1Result 298 301
+    function ml_research_query_letter_loop1 303 329
+    enum MlResearchQueryIdentifierPartLoop2Result 332 335
+    function ml_research_query_identifier_part_loop2 337 363
+    enum MlResearchQueryLowerLoop3Result 366 369
+    function ml_research_query_lower_loop3 371 398
+    function ml_research_query_without_signatures_loop6 400 423
+    function ml_research_query_without_signatures_loop7 425 448
+    function ml_research_query_without_signatures_loop8 450 476
+    enum MlResearchQueryWithoutSignaturesLoop5Result 479 481
+    function ml_research_query_without_signatures_loop5 483 532
+    function ml_research_query_without_signatures_loop4 534 641
+    enum MlCodingResearchQueryKernelJoin11 644 646
+    function ml_coding_research_query_kernel_loop12 648 685
+    function ml_coding_research_query_kernel_loop13 687 724
+    enum MlCodingResearchQueryKernelLoop10Result 727 729
+    function ml_coding_research_query_kernel_loop10 731 771

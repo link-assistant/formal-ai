@@ -1,0 +1,257 @@
+{
+  "cases": [
+    {
+      "prompt": "read every file here",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "all",
+        "mode": {
+          "kind": "summary"
+        }
+      }
+    },
+    {
+      "prompt": "read all files and summarize",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "all",
+        "mode": {
+          "kind": "summary"
+        }
+      }
+    },
+    {
+      "prompt": "read every file and give a summary",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "all",
+        "mode": {
+          "kind": "summary"
+        }
+      }
+    },
+    {
+      "prompt": "list the files and read first line",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "first",
+        "mode": {
+          "kind": "first_line"
+        }
+      }
+    },
+    {
+      "prompt": "list files and show me last contents",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "last",
+        "mode": {
+          "kind": "full"
+        }
+      }
+    },
+    {
+      "prompt": "ls the folder and read last first line",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "last",
+        "mode": {
+          "kind": "first_line"
+        }
+      }
+    },
+    {
+      "prompt": "ls then read",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "first",
+        "mode": {
+          "kind": "full"
+        }
+      }
+    },
+    {
+      "prompt": "list files discontent",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "first",
+        "mode": {
+          "kind": "full"
+        }
+      }
+    },
+    {
+      "prompt": "list files and read lasting entries",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "last",
+        "mode": {
+          "kind": "full"
+        }
+      }
+    },
+    {
+      "prompt": "read the file in project folder",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": "project",
+        "selection": "first",
+        "mode": {
+          "kind": "full"
+        }
+      }
+    },
+    {
+      "prompt": "read the file in project directory",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": "project",
+        "selection": "first",
+        "mode": {
+          "kind": "full"
+        }
+      }
+    },
+    {
+      "prompt": "read the file folderish",
+      "expected": {
+        "kind": "list_then_read",
+        "directory": ".",
+        "selection": "first",
+        "mode": {
+          "kind": "full"
+        }
+      }
+    },
+    {
+      "prompt": "read alpha.txt first liner",
+      "expected": {
+        "kind": "direct",
+        "path": "alpha.txt",
+        "mode": {
+          "kind": "first_line"
+        },
+        "prefer_run": false
+      }
+    },
+    {
+      "prompt": "read alpha.txt nonsummary",
+      "expected": {
+        "kind": "direct",
+        "path": "alpha.txt",
+        "mode": {
+          "kind": "summary"
+        },
+        "prefer_run": false
+      }
+    },
+    {
+      "prompt": "read one.txt and two.txt",
+      "expected": {
+        "kind": "direct_many",
+        "paths": [
+          "one.txt",
+          "two.txt"
+        ],
+        "mode": {
+          "kind": "full"
+        }
+      }
+    },
+    {
+      "prompt": "read every file",
+      "expected": null
+    },
+    {
+      "prompt": "details without a local read request",
+      "expected": null
+    },
+    {
+      "prompt": "do not read alpha.txt",
+      "expected": null
+    }
+  ],
+  "cues": [
+    {
+      "key": "file_read_cue_read_every_file",
+      "text": "read every file"
+    },
+    {
+      "key": "file_read_cue_read_all_files",
+      "text": "read all files"
+    },
+    {
+      "key": "file_read_cue_list_the_files",
+      "text": "list the files"
+    },
+    {
+      "key": "file_read_cue_ls_the_folder",
+      "text": "ls the folder"
+    },
+    {
+      "key": "file_read_cue_read_the_file",
+      "text": "read the file"
+    },
+    {
+      "key": "file-read-cue-summarize",
+      "text": "summarize"
+    },
+    {
+      "key": "file-read-cue-summary",
+      "text": "summary"
+    },
+    {
+      "key": "file-read-cue-here",
+      "text": "here"
+    },
+    {
+      "key": "file-read-cue-list-files",
+      "text": "list files"
+    },
+    {
+      "key": "file-read-cue-list-command",
+      "text": "ls"
+    },
+    {
+      "key": "file-read-cue-read",
+      "text": "read"
+    },
+    {
+      "key": "file-read-cue-contents",
+      "text": "contents"
+    },
+    {
+      "key": "file-read-cue-content",
+      "text": "content"
+    },
+    {
+      "key": "file-read-cue-show-me",
+      "text": "show me"
+    },
+    {
+      "key": "file-read-cue-folder-suffix",
+      "text": " folder"
+    },
+    {
+      "key": "file-read-cue-directory-suffix",
+      "text": " directory"
+    },
+    {
+      "key": "file-read-cue-last",
+      "text": "last"
+    },
+    {
+      "key": "file-read-cue-first-line",
+      "text": "first line"
+    }
+  ]
+}
