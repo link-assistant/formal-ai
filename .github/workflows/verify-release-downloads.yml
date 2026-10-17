@@ -1,16 +1,13 @@
 name: Verify Public Release Downloads
-on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: Stable published tag; blank selects the latest published release
-        type: string
-        required: false
-        default: ''
+# Completion executes only authenticated published release bytes with a read-only token.
+# Trusted workflow_sha helpers reauthenticate the successful same-repository main producer.
+# Fork or triggering-head code is never checked out; uploads contain data observations only.
+on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows: [Desktop Release]
     types: [completed]
     branches: [main]
+# Completion triggers receive read-only cache tokens; no manual cache-write context.
 permissions:
   contents: read
   actions: read
@@ -19,7 +16,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   resolve:
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository)
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 3
     outputs:
@@ -33,12 +30,11 @@ jobs:
           ref: ${{ github.workflow_sha }}
           persist-credentials: false
       - uses: actions/setup-node@v7
-        with: {node-version: '24'}
+        with: {node-version: '24', package-manager-cache: false}
       - name: Pin published tag, asset metadata and authenticated source
         id: select
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ inputs.tag || '' }}
           PRODUCER_RUN_ID: ${{ github.event.workflow_run.id || '' }}
           PRODUCER_ATTEMPT: ${{ github.event.workflow_run.run_attempt || '' }}
           RELEASE_VERIFY_MODE: resolve
@@ -60,7 +56,7 @@ jobs:
           ref: ${{ github.workflow_sha }}
           persist-credentials: false
       - uses: actions/setup-node@v7
-        with: {node-version: '24'}
+        with: {node-version: '24', package-manager-cache: false}
       - uses: actions/download-artifact@v8
         with:
           name: public-release-selection
@@ -113,7 +109,7 @@ jobs:
           ref: ${{ github.workflow_sha }}
           persist-credentials: false
       - uses: actions/setup-node@v7
-        with: {node-version: '24'}
+        with: {node-version: '24', package-manager-cache: false}
       - uses: actions/download-artifact@v8
         with:
           name: public-release-selection
@@ -162,7 +158,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v7
-        with: {node-version: '24'}
+        with: {node-version: '24', package-manager-cache: false}
       - name: Install browser test harness without build hooks
         run: npm ci --ignore-scripts --no-audit --no-fund --prefix _source/vscode
       - name: Install test browser without compiling the product

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { test } from 'node:test';
+import {createRequire} from 'node:module';
+const YAML = createRequire(import.meta.url)('yaml');
 import { REPO_ROOT } from '../../../js/server/lino.mjs';
 import { releaseRoute, bindCompletedSource, validateInventory, checksumRows, assessCoverage, macosAssetNames, MAX_ASSET_BYTES, MAX_TOTAL_BYTES } from '../../../scripts/verify-public-release-downloads.mjs';
 import { validateDigestCoverage } from '../../../scripts/release-advertisement.mjs';
@@ -272,4 +274,78 @@ test('Mac job environment does not use the disallowed runner context', () => {
   assertJobEnvironment(source);
   assert.throws(() => assertJobEnvironment(source.replace('      MACOS_ARCH:', '      UNSAFE: $' + '{{ runner.temp }}\n      MACOS_ARCH:')));
   assert.ok(source.includes('PRODUCER_ATTEMPT: $' + '{{ github.event.workflow_run.run_attempt'));
+});
+
+function assertReadOnlyCompletionBoundary(text) {
+  const value = YAML.parse(text);
+  assert.match(text, /^on: # zizmor: ignore\[dangerous-triggers\]$/mu);
+  assert.equal((text.match(/zizmor: ignore/gu) ?? []).length, 1);
+  assert.deepEqual(Object.keys(value.on).sort(), ['workflow_run']);
+  assert.deepEqual(value.on.workflow_run, {
+    workflows: ['Desktop Release'], types: ['completed'], branches: ['main']
+  });
+  assert.deepEqual(value.permissions, {contents: 'read', actions: 'read'});
+  assert.equal(value['cache-mode'], undefined, 'no cache-mode may broaden trigger defaults');
+  assert.equal(value.jobs.resolve.if,
+    "github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository");
+  assert.doesNotMatch(text, /\$\{\{\s*secrets\./u);
+  for (const [name, job] of Object.entries(value.jobs)) {
+    assert.equal(job.permissions, undefined, 'no job may elevate token privileges');
+    assert.equal(job['cache-mode'], undefined, 'no job may override cache denial');
+    if (name !== 'resolve') assert.equal(job.needs, 'resolve');
+    for (const step of job.steps) {
+      assert.ok(!step.uses?.startsWith('actions/cache@'));
+      if (step.uses?.startsWith('actions/setup-node@')) {
+        assert.equal(step.with['package-manager-cache'], false, 'automatic npm cache is disabled');
+        assert.equal(step.with.cache, undefined);
+      }
+      if (step.uses?.startsWith('actions/checkout@')) {
+        assert.equal(step.with['persist-credentials'], false);
+        const expected = step.with.path === '_source'
+          ? '$' + '{{ needs.resolve.outputs.source_sha }}' : '$' + '{{ github.workflow_sha }}';
+        assert.equal(step.with.ref, expected, 'no triggering branch or head checkout');
+        assert.equal(step.with.repository, undefined);
+      }
+      if (step.uses?.startsWith('actions/download-artifact@')) {
+        assert.equal(step.with.name, 'public-release-selection');
+        assert.equal(step.with['run-id'], undefined, 'only this run supplies selection data');
+        assert.equal(step.with['github-token'], undefined);
+      }
+      if (step.uses?.startsWith('actions/upload-artifact@')) {
+        for (const file of step.with.path.trim().split('\n')) {
+          assert.ok(/\.(?:json|txt|log)$/u.test(file) ||
+            file === '$' + '{{ runner.temp }}/browser-public-evidence/engine-checksum.partial');
+        }
+      }
+    }
+  }
+  const select = value.jobs.resolve.steps.find(step => step.id === 'select');
+  assert.equal(select.env.PRODUCER_RUN_ID, '$' + "{{ github.event.workflow_run.id || '' }}");
+  assert.equal(select.env.PRODUCER_ATTEMPT, '$' + "{{ github.event.workflow_run.run_attempt || '' }}");
+  assert.equal(select.run, 'node scripts/verify-public-release-downloads.mjs');
+  assert.equal(select.env.RELEASE_TAG, undefined, 'producer receipt alone selects the tag');
+}
+
+test('the annotated completion trigger retains default-source read-only authenticated selection', () => {
+  const source = fs.readFileSync(new URL('../../../.github/workflows/verify-release-downloads.yml', import.meta.url), 'utf8');
+  assertReadOnlyCompletionBoundary(source);
+  const mutations = [
+    text => text.replace('  workflow_run:\n', '  workflow_dispatch: {}\n  workflow_run:\n'),
+    ...['write', 'write-only', 'read', 'none'].map(mode => text =>
+      text.replace('permissions:\n', 'cache-mode: ' + mode + '\npermissions:\n')),
+    text => text.replace('  resolve:\n', '  resolve:\n    cache-mode: write\n'),
+    text => text.replace('contents: read', 'contents: write'),
+    text => text.replace('branches: [main]', 'branches: [untrusted]'),
+    text => text.replace("conclusion == 'success'", "conclusion != 'cancelled'"),
+    text => text.replace('head_repository.full_name == github.repository', 'true'),
+    text => text.replace('ref: $' + '{{ github.workflow_sha }}',
+      'ref: $' + '{{ github.event.workflow_run.head_sha }}'),
+    text => text.replace('persist-credentials: false', 'persist-credentials: true'),
+    text => text.replace('package-manager-cache: false', 'package-manager-cache: true'),
+    text => text.replace('RELEASE_VERIFY_MODE: resolve', 'SECRET: $' + '{{ secrets.OTHER }}'),
+    text => text.replaceAll('name: public-release-selection\n          path:',
+      'name: untrusted-selection\n          path:'),
+    text => text.replace('browser-public-evidence/evidence.json', 'browser-public-evidence/*.tgz')
+  ];
+  for (const mutate of mutations) assert.throws(() => assertReadOnlyCompletionBoundary(mutate(source)));
 });
