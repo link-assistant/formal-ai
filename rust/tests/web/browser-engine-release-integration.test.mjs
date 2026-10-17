@@ -76,6 +76,18 @@ function checkStructure(value) {
   assert.deepEqual(originalEnvironment, original.publicationEnvironment);
   assert.match(publication.run, /status=skipped-unconfigured/u);
   assert.match(publication.run, /release-protocol\.mjs" verify/u);
+  const checks = steps[find('Cold install and verify the genuine browser worker in checks-only mode')];
+  assert.equal(checks.if, "needs.resolve.outputs.publish != 'true'");
+  assert.equal(checks['timeout-minutes'], 8);
+  assert.equal(checks.env.ENGINE_CLOCK_SHA256, '${{ steps.clock.outputs.sha256 }}');
+  assert.equal(checks.env.WASM_RECEIPT_SHA256, '${{ steps.wasm.outputs.receipt-sha256 }}');
+  assert.equal(checks.env.PUBLICATION_STATUS, '${{ steps.publication.outputs.status }}');
+  assert.equal(checks.env.PUBLICATION_REQUESTED, '${{ needs.resolve.outputs.publish }}');
+  assert.match(checks.run, /PUBLICATION_STATUS=checks-only/u);
+  assert.match(checks.run, /browser-engine-deadline\.mjs" cold node/u);
+  assert.match(checks.run, /browser-engine-cold-install\.mjs/u);
+  assert.match(checks.run, /"\u0024WASM_RECEIPT_SHA256" "\u0024PUBLICATION_STATUS"/u);
+  assert.doesNotMatch(checks.run, /browser-engine-public-download/u);
   const cold = steps[find('Cold install and verify the genuine browser worker')];
   assert.equal(cold['timeout-minutes'], 8);
   assert.equal(cold.env.PUBLICATION_STATUS, '${{ steps.publication.outputs.status }}');
@@ -125,7 +137,9 @@ test('missing source build, changed compiler, missing receipt, credential drift 
    value => value.jobs.package.steps.find(step => step.name === 'Verify the fresh WASM and packaged bytes with a private receipt').run = 'true',
    value => value.jobs.package.steps.find(step => step.id === 'publication').env.NPM_TRUSTED_PUBLISHING = 'true',
    value => value.jobs.package.steps.at(-1)['timeout-minutes'] = 9,
-   value => value.jobs.package.steps.at(-1).env.PUBLICATION_STATUS = 'published'];
+    value => value.jobs.package.steps.at(-1).env.PUBLICATION_STATUS = 'published',
+    value => value.jobs.package.steps.find(step => step.name === 'Cold install and verify the genuine browser worker in checks-only mode').if = "needs.resolve.outputs.publish == 'true'",
+    value => value.jobs.package.steps.find(step => step.name === 'Cold install and verify the genuine browser worker in checks-only mode').run = 'true'];
   for (const mutate of mutations) {
     const value = structuredClone(workflow);
     mutate(value);
