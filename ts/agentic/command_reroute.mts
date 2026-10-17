@@ -22,6 +22,7 @@ import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { planRecovery } from './prerequisite_recovery.mjs';
 import { Progress, writeMatches } from './progress.mjs';
+import { validateProgram } from './host.mjs';
 import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loop.mjs';
 import { feedbackNeedsChanges } from './restart_feedback.mjs';
 import {
@@ -79,6 +80,7 @@ export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) 
         exit_code: failure.exit_code,
         failed_command: step,
         artifact_path: failedPath,
+        validate_program: validateProgram,
       });
       const rung = Math.max(0, progress.repair_rung - 1);
       const outcome = repairStep(messages, toolNames, failed, rung, MAX_REPAIR_RUNGS);

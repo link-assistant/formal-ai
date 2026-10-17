@@ -54,7 +54,9 @@ pub fn try_feature_capability(
     runtime: CapabilityRuntime,
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt);
-    if !is_feature_capability_question(normalized, language.slug()) {
+    if crate::formalization::dialogue::blocks_self_description(prompt, language.slug())
+        || !is_feature_capability_question(normalized, language.slug())
+    {
         return None;
     }
 

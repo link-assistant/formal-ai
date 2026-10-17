@@ -49,10 +49,33 @@ pub fn extract_unquoted_translation_surface(prompt: &str) -> Option<String> {
     let trimmed = prompt.trim_end_matches(['.', '!', '?', '。']);
     let lower = trimmed.to_lowercase();
 
-    extract_circumfix_surface(trimmed, &lower)
+    extract_target_first_surface(trimmed)
+        .or_else(|| extract_circumfix_surface(trimmed, &lower))
         .or_else(|| extract_hindi_unquoted_surface(trimmed, &lower))
         .or_else(|| extract_chinese_unquoted_surface(trimmed, &lower))
         .or_else(|| extract_suffix_surface(trimmed, &lower))
+}
+
+// A colon separates the target obligation from an arbitrary source surface.
+// Exact seeded marker equality prevents instruction prose from becoming a target.
+fn extract_target_first_surface(prompt: &str) -> Option<String> {
+    let (header, surface) = prompt.split_once(':')?;
+    let header = header.trim().to_lowercase();
+    let recognized = markers().circumfix_frames.iter().any(|(prefix, _)| {
+        let Some(target) = header.strip_prefix(prefix) else {
+            return false;
+        };
+        seed::lexicon()
+            .meanings_with_role(seed::ROLE_TRANSLATION_TARGET_MARKER)
+            .any(|meaning| {
+                meaning
+                    .words()
+                    .any(|word| word.eq_ignore_ascii_case(target.trim()))
+            })
+    });
+    recognized
+        .then(|| clean_unquoted_surface(surface))
+        .flatten()
 }
 
 /// Whether a structurally extracted source-first prompt also carries a
@@ -277,4 +300,52 @@ fn bare_script_forms(role: &str, script: fn(&str) -> bool) -> Vec<&'static str> 
         .filter(|form| form.slot() == Slot::Bare && script(&form.text))
         .map(WordForm::before_slot)
         .collect()
+}
+
+#[cfg(test)]
+mod target_first_tests {
+    use super::extract_unquoted_translation_surface;
+
+    #[test]
+    fn target_first_source_is_not_the_command_language() {
+        assert_eq!(
+            extract_unquoted_translation_surface("Translate to English: Программист"),
+            Some("Программист".to_owned())
+        );
+        assert_eq!(
+            crate::solver_helpers::infer_source_from_prompt("Translate to English: Программист"),
+            "ru"
+        );
+    }
+
+    #[test]
+    fn target_first_frames_accept_unseen_surfaces_from_seeded_targets() {
+        assert_eq!(
+            extract_unquoted_translation_surface("Translate to Spanish: quantum orchard"),
+            Some("quantum orchard".to_owned())
+        );
+        assert_eq!(
+            extract_unquoted_translation_surface("Переведи на английский: новая профессия"),
+            Some("новая профессия".to_owned())
+        );
+    }
+
+    #[test]
+    fn target_first_requires_both_action_and_exact_target() {
+        for prompt in [
+            "Translate to unknown: яблоко",
+            "Explain to English: яблоко",
+            "Translate to English: ",
+        ] {
+            assert_eq!(
+                extract_unquoted_translation_surface(prompt),
+                None,
+                "{prompt}"
+            );
+        }
+        assert_eq!(
+            extract_unquoted_translation_surface("Translate apple to English: formal tone"),
+            Some("apple".to_owned())
+        );
+    }
 }

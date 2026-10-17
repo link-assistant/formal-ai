@@ -3,7 +3,7 @@ requirement_status_ledger
   source "REQUIREMENTS.md and docs/requirements/*.md"
   verdict_vocabulary "implemented | partial | not-delivered | superseded | withdrawn"
   manual_column "aspirational since 2026-09-30 (issue #1090): not yet confirmed rows carry no debt"
-  requirement_count 1409
+  requirement_count 1418
   implemented_count 1313
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.lino"
@@ -149,6 +149,8 @@ requirement_status_ledger
   shard "data/meta/requirement-status-ledger/issue-1177-code-tasks-formal-answers.lino"
   shard "data/meta/requirement-status-ledger/issue-1180-repository-history-formalization.lino"
   shard "data/meta/requirement-status-ledger/issue-1181-cli-binaries-and-env-switches.lino"
+  shard "data/meta/requirement-status-ledger/issue-1182-strict-source-duplication.lino"
+  shard "data/meta/requirement-status-ledger/issue-1183-general-discovery-runtime-parity.lino"
   shard "data/meta/requirement-status-ledger/issue-1184-white-box-derivation.lino"
   shard "data/meta/requirement-status-ledger/issue-1185-error-driven-repair-loop.lino"
   shard "data/meta/requirement-status-ledger/issue-1186-formalization-as-a-user-facing-task.lino"

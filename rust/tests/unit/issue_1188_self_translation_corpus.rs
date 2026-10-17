@@ -265,3 +265,31 @@ fn the_translated_rust_records_its_source_and_the_lints_it_needs() {
         ]
     );
 }
+
+#[path = "../../src/portable_string_contracts.rs"]
+mod portable_runtime_contracts;
+
+#[test]
+fn generated_production_string_contracts_run_the_shared_declarative_corpus() {
+    let corpus = include_str!("../fixtures/portable-string-contracts.lino");
+    let mut checked = 0;
+    for line in corpus.lines().filter(|line| line.starts_with("(contract ")) {
+        let link = parse_link(line);
+        let function = link.field("function").items()[1].word();
+        let args: Vec<String> = link.field("arguments").items()[1..]
+            .iter()
+            .map(|node| decode(node.items()[1].word()))
+            .collect();
+        let expected = decode(link.field("expected").items()[1].word());
+        let actual = match function {
+            "quoteShellWord" => portable_runtime_contracts::quote_shell_word(&args[0]),
+            "joinFailureInvitation" => {
+                portable_runtime_contracts::join_failure_invitation(&args[0], &args[1])
+            }
+            other => panic!("unregistered portable contract: {other}"),
+        };
+        assert_eq!(actual, expected, "contract {}", link.items()[1].word());
+        checked += 1;
+    }
+    assert_eq!(checked, 15, "every shared production contract executes");
+}

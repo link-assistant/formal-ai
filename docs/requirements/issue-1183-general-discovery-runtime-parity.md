@@ -1,0 +1,13 @@
+## Issue #1183: General discovery and complete runtime parity
+
+These additional owner requirements (2026-10-17) supplement every original issue acceptance recorded in docs/case-studies/general-discovery-quality-parity/README.md. They do not replace the original #1177 checks or the 27 Pending #1207/#1213/#1220 obligations. Partial source changes and finite fixtures cannot close broader requirements.
+
+| Requirement | Status | Acceptance / remaining work |
+|---|---|---|
+| R1183-G1 Discover strategies and knowledge | Pending | Actual coding/Q&A solves derive a need, search trusted sources, formalize fetched knowledge, compose in the meta language and independently verify useful results. No whole-answer seeds, task-name dispatch or page echo may establish general capability. |
+| R1183-G2 Minimal bootstrap and removable caches | Pending | Demonstrate fresh installed cold-network discovery, warm reuse and cache deletion/corruption with source/version/trust/licence evidence. Synthetic transports and request-local procedures remain separately labelled; success must not depend on a pre-cached complete answer. |
+| R1183-G3 Complete feature and behavior parity | Pending | Inventory every CLI/server/browser/agent capability, including absent/unsupported implementations, native clap commands and host effects. Exercise identical formal inputs, answer meaning, derivations, effects, failure and terminal state in JavaScript, TypeScript and Rust. Every unmeasured entry or denominator gap remains unmet. |
+| R1183-G4 Automated canonical translation | Pending | Prefer one canonical meta definition with automated reproducible JavaScript, TypeScript and Rust projections; exact byte checks and held-out behavioral controls must qualify actual production consumers. Carried fixture items and symbol correspondence do not count as delivered parity. |
+| R1183-G5 Single PR and qualified release | Pending | Keep all closely related issue/subissue requirements in this PR. Root integrates exact source packets and alone pushes coherent batches after lane completion; maintain Formal AI-only lanes with honest zero credit for supplied controllers. Merge only an exactly qualified head, then verify the produced release and public consumers. |
+
+The source feature inventory and scanner qualification explicitly report incomplete discovery, unmeasured behavior and nonzero duplication. All five rows stay Pending while those gaps remain. Rust compilation, native product/WASM/container execution and dependency installation are hosted-only for this task; local work uses bounded source/JavaScript controls and metadata-only lock resolution.

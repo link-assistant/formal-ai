@@ -14,12 +14,12 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
-  modules 146
-  translated_items 293
+  modules 147
+  translated_items 298
   workaround_items 33
   inferred_signatures 2
-  carried_items 2320
-  translated_modules 98
+  carried_items 2337
+  translated_modules 99
   fully_translated_modules 1
   refused_modules 48
 workaround array-push items 2
@@ -48,6 +48,7 @@ module js/agentic/crate/conversation_summary.mjs translated 0 workaround 0 infer
 module js/agentic/crate/dependency_summarization.mjs translated 3 workaround 0 inferred 0 carried 17
 module js/agentic/crate/derivation.mjs translated 13 workaround 1 inferred 0 carried 31
 module js/agentic/crate/dialog_log.mjs translated 0 workaround 0 inferred 0 carried 2
+module js/agentic/crate/dialogue_formalization.mjs translated 5 workaround 0 inferred 0 carried 14
 module js/agentic/crate/discovery_production.mjs translated 10 workaround 1 inferred 0 carried 37
 module js/agentic/crate/engine.mjs translated 1 workaround 1 inferred 0 carried 5
 module js/agentic/crate/engine_answer.mjs translated 0 workaround 0 inferred 0 carried 4
@@ -56,7 +57,7 @@ module js/agentic/crate/es_tokenizer.mjs translated 6 workaround 0 inferred 0 ca
 module js/agentic/crate/event_log.mjs translated 3 workaround 0 inferred 0 carried 10
 module js/agentic/crate/execution_evidence.mjs translated 0 workaround 0 inferred 0 carried 11
 module js/agentic/crate/fact_derivation.mjs translated 2 workaround 0 inferred 0 carried 20
-module js/agentic/crate/failure_reporting.mjs translated 0 workaround 0 inferred 0 carried 3
+module js/agentic/crate/failure_reporting.mjs translated 0 workaround 0 inferred 0 carried 4
 module js/agentic/crate/formalization_concept_links.mjs translated 0 workaround 0 inferred 0 carried 9
 module js/agentic/crate/formalization_needs.mjs translated 1 workaround 0 inferred 0 carried 9
 module js/agentic/crate/formalization_segment.mjs translated 1 workaround 0 inferred 0 carried 18
@@ -162,7 +163,7 @@ module js/agentic/crate/summarization_resource.mjs translated 1 workaround 0 inf
 module js/agentic/crate/summarization_vocabulary.mjs translated 3 workaround 0 inferred 0 carried 15
 module js/agentic/crate/task_decomposition.mjs translated 3 workaround 0 inferred 0 carried 35
 module js/agentic/crate/task_decomposition_tree.mjs translated 1 workaround 0 inferred 0 carried 15
-module js/agentic/crate/text_formalization.mjs translated 7 workaround 0 inferred 0 carried 56
+module js/agentic/crate/text_formalization.mjs translated 7 workaround 0 inferred 0 carried 58
 module js/agentic/crate/tool_scope.mjs translated 0 workaround 0 inferred 0 carried 22
 module js/agentic/crate/translation_formalization.mjs translated 4 workaround 0 inferred 0 carried 46
 module js/agentic/crate/translation_language_markers.mjs translated 2 workaround 0 inferred 0 carried 5
@@ -172,34 +173,34 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
-refusal "import of names its module does not translate" 314
+refusal "import of names its module does not translate" 315
 refusal "JSDoc type {…}" 215
-refusal "null" 186
-refusal "import from '…'" 159
-refusal "arrow function" 117
+refusal "null" 187
+refusal "import from '…'" 161
+refusal "arrow function" 118
 refusal "type: unknown name (a sibling item or an import)" 117
 refusal "function value …" 101
 refusal "new expression" 90
-refusal "object without a $ tag" 85
-refusal "regular expression" 61
+refusal "object without a $ tag" 86
+refusal "regular expression" 62
 refusal "method call .find()" 59
 refusal "method call .split()" 55
-refusal "method call .map()" 53
+refusal "method call .map()" 54
 refusal "method call .filter()" 51
-refusal "method call .some()" 45
+refusal "method call .some()" 48
 refusal "method call .slice()" 43
 refusal "Array.from" 42
 refusal "method call .push()" 34
 refusal "field access" 33
-refusal "method call .indexOf()" 28
+refusal "method call .indexOf()" 29
 refusal "nullish coalescing" 26
-refusal "optional chaining" 24
+refusal "optional chaining" 25
 refusal "method call .replace()" 23
 refusal "export …" 19
 refusal "syntax: malformed number" 19
 refusal "case test" 18
 refusal "try statement" 17
-refusal "undefined" 15
+refusal "undefined" 16
 refusal "method call .every()" 13
 refusal "typeof operator" 13
 refusal "syntax: @param needs a type and a name" 12
@@ -241,11 +242,13 @@ refusal "method call .get()" 2
 refusal "method call .match()" 2
 refusal "method call .subarray()" 2
 refusal "rest parameter" 2
+refusal "several declarators" 2
 refusal "shift <<" 2
 refusal "throw of a non-error value" 2
 refusal "BigInt" 1
 refusal "Math.fround" 1
 refusal "Math.log2" 1
+refusal "Number" 1
 refusal "Object.is" 1
 refusal "^= assignment" 1
 refusal "exponentiation" 1
@@ -258,6 +261,7 @@ refusal "method call .dirname()" 1
 refusal "method call .handlerRulesDocument()" 1
 refusal "method call .keys()" 1
 refusal "method call .linksNotation()" 1
+refusal "method call .normalize()" 1
 refusal "method call .padStart()" 1
 refusal "method call .pop()" 1
 refusal "method call .replaceAll()" 1
@@ -266,7 +270,6 @@ refusal "method call .values()" 1
 refusal "method in an object value" 1
 refusal "namespace member …" 1
 refusal "rest property" 1
-refusal "several declarators" 1
 refusal "shift >>" 1
 refusal "shift >>>" 1
 refusal "syntax: unsupported string escape \]" 1

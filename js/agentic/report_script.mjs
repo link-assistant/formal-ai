@@ -1,3 +1,4 @@
+import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // The shell script an agentic report hands to the harness (#839):
 // rust/src/agentic_coding/report_script.rs.
 
@@ -57,9 +58,7 @@ function preflight(program) {
 }
 
 /**
- * Mirrors `fn shell_quote` in rust/src/agentic_coding/report_script.rs.
+ * Mirrors `fn quote_shell_word` in rust/src/portable_string_contracts.rs.
  * @param {string} value
  */
-export function shellQuote(value) {
-  return `'${replaceAllLiteral(value, "'", "'\\''")}'`;
-}
+export {shellQuote};

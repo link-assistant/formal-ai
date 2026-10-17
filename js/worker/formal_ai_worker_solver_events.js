@@ -223,7 +223,8 @@ function solverRouteForPrompt(prompt) {
   if (typeof writeProgramParameters === "function" && writeProgramParameters(prompt)) return { slug: "write_program", responseLink: "response:write_program" };
   const intents = INTENT_ROUTING && Array.isArray(INTENT_ROUTING.intents) ? INTENT_ROUTING.intents : [];
   const route = intents.find((row) => Array.isArray(row.roleSurfaces) && row.roleSurfaces.some((role) => wordsForRole(role).includes(normalized)))
-    || intents.find((row) => solverRouteMatches(normalized, row));
+    || intents.find((row) => solverRouteMatches(normalized, row)
+      && !(row.slug === "identity" && isConcretePropertyQuestion(prompt)));
   return route ? { slug: route.slug, responseLink: route.responseLink } : null;
 }
 

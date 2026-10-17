@@ -35,6 +35,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_crate_content.js",
   "worker/formal_ai_worker_crate_conversation_summary.js",
   "worker/formal_ai_worker_crate_dependency_summarization.js",
+  "worker/formal_ai_worker_crate_dialogue_formalization.js",
   "worker/formal_ai_worker_crate_engine.js",
   "worker/formal_ai_worker_crate_engine_stable_identifier.js",
   "worker/formal_ai_worker_crate_event_log.js",

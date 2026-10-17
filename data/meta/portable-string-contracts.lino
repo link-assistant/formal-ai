@@ -1,0 +1,3 @@
+# portable-string-v1; JavaScript source is authoritative
+(function quote_shell_word (exported) (parameters (value string)) (returns string) (body (return (binary add (binary add (string %27) (method literal-replace (variable value) (string %27) (string %27%5C%27%27))) (string %27)))))
+(function join_failure_invitation (exported) (parameters (body string) (invitation string)) (returns string) (body (return (choose (binary equal (variable invitation) (string %)) (variable body) (choose (binary equal (variable body) (string %)) (variable invitation) (binary add (binary add (variable body) (string %0A%0A)) (variable invitation)))))))

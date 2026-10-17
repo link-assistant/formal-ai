@@ -138,6 +138,18 @@ function extractUnquotedTranslationSurface(text) {
   const trimmed = source.replace(/[.!?。]+$/u, "");
   const lower = trimmed.toLowerCase();
   const markers = translationMarkers();
+  const colon = trimmed.indexOf(":");
+  if (colon !== -1) {
+    const header = lower.slice(0, colon).trim();
+    const targetFirst = markers.circumfixFrames.some(([prefix]) => {
+      if (!header.startsWith(prefix)) return false;
+      const target = header.slice(prefix.length).trim();
+      return meaningsWithRole(ROLE_TRANSLATION_TARGET_MARKER).some((meaning) =>
+        meaning.words.some((word) => word.toLowerCase() === target),
+      );
+    });
+    if (targetFirst) return cleanUnquotedTranslationSurface(trimmed.slice(colon + 1));
+  }
 
   for (const [prefix, marker] of markers.circumfixFrames) {
     const extracted = extractBetweenPrefixAndMarker(

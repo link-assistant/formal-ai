@@ -16,6 +16,7 @@ import { cachedSourceFetch } from './crate/source_cache.mjs';
 import { CENSUS_DIR } from './crate/self_ast_census.mjs';
 import { stableId } from './crate/engine_stable_identifier.mjs';
 import { installHost } from './host.mjs';
+import { validateRepairProgram } from '../server/repair-program-syntax.mjs';
 import { createNodeSourceSessionHost } from '../server/node-source-session-host.mjs';
 import { sourceQualifiedSeedOwners } from '../../scripts/generate-seed-registry.mjs';
 
@@ -190,6 +191,7 @@ export async function installNodeHost(worker) {
     censusSourceClosureComplete,
     generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
+    validateProgram: validateRepairProgram,
   };
   const session = createNodeSourceSessionHost(baseHost.readText);
   installHost({ ...baseHost, sourceSession: session, sourceOperation: session.sourceOperation });

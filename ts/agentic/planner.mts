@@ -16,6 +16,7 @@ import * as ciWorkflow from './ci_workflow.mjs';
 import * as codeArtifact from './code_artifact.mjs';
 import * as codeTask from './code_task.mjs';
 import * as commandReroute from './command_reroute.mjs';
+import { planCodingResearchStep } from './coding_research.mjs';
 import * as comparison from './comparison.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { ownedSourceTreeRequest as metaSourceTreeRequest } from './crate/meta_translate.mjs';
@@ -136,7 +137,7 @@ async function planWorkspaceChangeArm(task, messages, toolNames) {
   // by sentence (PR #1188 G82).
   return (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStepResolved))
     ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
-    ?? (await moduleFunction.planModuleFunctionStep(task, messages, toolNames))
+    ?? (await planModuleFunctionResearchStep(task, messages, toolNames))
     // A bug report with a stated expectation is checked before anything is
     // rewritten (PR #1188 T93).
     ?? functionExpectation.planFunctionExpectationStep(task, messages, toolNames)
@@ -145,6 +146,13 @@ async function planWorkspaceChangeArm(task, messages, toolNames) {
     ?? testAssertion.planTestAssertionStep(task, messages, toolNames)
     // A test asked for with no expected result is a question (PR #1188 G25).
     ?? functionExpectation.planTestExpectationQuestion(task);
+}
+
+/** Research runs only after the ordinary source composer returns its exact missing-contract gap. */
+async function planModuleFunctionResearchStep(task, messages, toolNames) {
+  const existing = await moduleFunction.planModuleFunctionStep(task, messages, toolNames);
+  if (!['module-function-request-unconsumed', 'module-function-recipe-missing'].includes(existing?.result?.origin)) return existing;
+  return planCodingResearchStep(task, messages, toolNames) ?? existing;
 }
 
 /**
@@ -508,6 +516,8 @@ async function missingSemanticImplementation(task, messages, toolNames) {
     && composeGeneralChangePlan(task) === null && composeEditRequest(task) === null) {
     const verifiedRecipe = await conversationRecall.planVerifiedRecipeStep(messages, toolNames);
     if (verifiedRecipe !== null) return verifiedRecipe;
+    const research = planCodingResearchStep(task, messages, toolNames);
+    if (research !== null) return research;
     const discovery = { reason: 'MissingContract', goal: task, authored: false, verified: false,
       missingContracts: ['source-bound-implementation-plan', 'independent-goal-validation'] };
     const plan = resolvedFinalAnswer(agenticMessage('callable-discovery-outcome', {

@@ -14,6 +14,7 @@
 //! [`page_answer`] renders a report as the chat answer to `formalize <url>`:
 //! the page's counts, then each statement with its formal notation.
 
+use super::dialogue::source_term_count;
 use super::statement_rendering::deformalize_statement;
 use super::text_statements::{
     Polarity, Statement, clause_statement, formalize_sentences, has_no_unknown, known_ids,
@@ -83,7 +84,7 @@ pub fn formalize_page(text: &str, language: &str) -> PageReport {
         }
         for statement in &sentence.statements {
             report.statements += 1;
-            report.terms += statement_terms(statement).len();
+            report.terms += source_term_count(statement);
             report.unknown += statement.unknown.len();
             if known_ids(statement).is_empty() {
                 continue;
@@ -173,4 +174,93 @@ pub fn page_answer(report: &PageReport, url: &str, language: &str) -> String {
         lines.push(render("page_formalization_more", &[("count", &rest)]));
     }
     lines.join("\n")
+}
+
+#[cfg(test)]
+mod numeric_source_evidence_tests {
+    use super::*;
+    use crate::formalization::text_statements::clause_statement;
+    #[test]
+    fn canonical_numbers_and_independent_boundaries_round_trip() {
+        for (text, language) in [
+            ("695,000千米", "zh"),
+            ("3,827⋅1026", "ru"),
+            ("225—250", "ru"),
+            ("1：397", "zh"),
+            ("१४,९६,००,००० किलोमीटर", "hi"),
+        ] {
+            let statement = clause_statement(text, language, None, false);
+            assert!(fact_survives(&statement), "{text}");
+        }
+    }
+    #[test]
+    fn logical_grouping_retains_source_word_counts_unknowns_and_byte_spans() {
+        for (text, value, components) in [
+            ("987 654 blarg", "987654", 2),
+            ("987654 blarg", "987654", 1),
+            ("9,007,199,254,740,993 blarg", "9007199254740993", 1),
+        ] {
+            let statement = clause_statement(text, "en", None, false);
+            assert_eq!(statement_terms(&statement).len(), 2);
+            assert_eq!(source_term_count(&statement), components + 1);
+            assert_eq!(statement.unknown, ["blarg"]);
+            let quantity = &statement.dialogue.quantities[0];
+            assert_eq!(quantity.value, value);
+            assert_eq!(quantity.source_components.len(), components);
+            for component in &quantity.source_components {
+                assert_eq!(&text[component.start..component.end], component.surface);
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod locale_numeric_meaning_tests {
+    use crate::formalization::dialogue::dialogue_quantities;
+    #[test]
+    fn locale_decimal_grouping_and_unsupported_values_are_not_invented() {
+        for (surface, language, expected) in [
+            ("3,827", "ru", "3.827"),
+            ("450 000", "ru", "450000"),
+            ("9,007,199,254,740,993", "en", "9007199254740993"),
+            ("12,34,567.89", "hi", "1234567.89"),
+            ("12.345,67", "es", "12345.67"),
+            ("12,345.67", "zh", "12345.67"),
+        ] {
+            let values = dialogue_quantities(surface, language);
+            assert_eq!(values.len(), 1, "{surface}");
+            assert_eq!(values[0].value, expected, "{surface}");
+            assert!(values[0].uncertainty.is_none());
+        }
+        for (surface, language) in [("1,23", "en"), ("1,234,567", "hi"), ("3.827", "ru")] {
+            let values = dialogue_quantities(surface, language);
+            assert_eq!(values.len(), 1);
+            assert_eq!(values[0].value, surface);
+            assert_eq!(
+                values[0].uncertainty.as_deref(),
+                Some("unsupported-locale-number-format")
+            );
+        }
+    }
+}
+
+#[cfg(test)]
+mod translated_numeric_meaning_tests {
+    use crate::formalization::text_statements::{clause_statement, statement_terms};
+    use crate::translation::round_trip::render_term;
+    #[test]
+    fn target_locale_rendering_preserves_numeric_value() {
+        for (surface, source, target, expected) in [
+            ("3,827", "ru", "en", "3.827"),
+            ("1.25", "en", "ru", "1,25"),
+            ("12.345,67", "es", "en", "12345.67"),
+            ("9,007,199,254,740,993", "en", "ru", "9007199254740993"),
+        ] {
+            let statement = clause_statement(surface, source, None, false);
+            let terms = statement_terms(&statement);
+            assert_eq!(render_term(terms[0], source, target).target, expected);
+            let translated = clause_statement(expected, target, None, false);
+            assert_eq!(statement_terms(&translated)[0].id, terms[0].id);
+        }
+    }
 }

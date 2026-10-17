@@ -1,3 +1,7 @@
+function isConcretePropertyQuestion(prompt) {
+  return crateModule('crate/dialogue_formalization.mjs').blocksSelfDescription(prompt, detectLanguage(prompt));
+}
+
 // Known-fact inventory queries, runtime rule updates, feature capability
 // status, the architecture explanation and translation phrase normalization.
 // Loaded by ../formal_ai_worker.js.
@@ -429,6 +433,7 @@ function featureCapabilityContent(feature, language, availability) {
 }
 
 function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
+  if (isConcretePropertyQuestion(prompt)) return null;
   if (!isFeatureCapabilityQuestion(normalized, language)) return null;
   const feature = detectFeatureCapability(normalized, language);
   if (!feature) return null;
@@ -530,6 +535,7 @@ function tryArchitectureExplanation(prompt, normalized) {
 }
 
 function tryCapabilities(prompt, normalized, preferences, history) {
+  if (isConcretePropertyQuestion(prompt)) return null;
   const language = detectLanguage(prompt);
   const featureStatus = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
   if (featureStatus) return featureStatus;

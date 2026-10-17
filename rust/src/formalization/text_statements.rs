@@ -128,6 +128,8 @@ pub struct Statement {
     pub language: String,
     /// Asserted or denied.
     pub polarity: Polarity,
+    /// Typed question obligations and exact answer evidence.
+    pub dialogue: super::dialogue::Dialogue,
     /// The first term, or the subject carried over from the clause before.
     pub subject: Option<Word>,
     /// The other terms, in order.
@@ -710,7 +712,7 @@ pub fn read_words(text: &str, language: &str, opens_sentence: bool) -> Vec<Word>
         out.extend(read_han_run(&token.surface, language));
     }
     flush_run(&mut run, language, opens_sentence, &mut out);
-    out
+    super::dialogue::read_numeric_words(&out, text, language)
 }
 
 fn flush_run(run: &mut Vec<Token>, language: &str, opens_sentence: bool, out: &mut Vec<Word>) {
@@ -733,6 +735,7 @@ pub fn clause_statement(
     previous_subject: Option<&Word>,
     opens_sentence: bool,
 ) -> Statement {
+    let dialogue = super::dialogue::formalize_dialogue(text, language);
     let words = read_words(text, language, opens_sentence);
     let inherits = words
         .iter()
@@ -748,7 +751,13 @@ pub fn clause_statement(
         .filter(|term| term.kind == WordKind::Unknown)
         .map(|term| term.surface.clone())
         .collect();
-    let polarity = if words.iter().any(|word| word.kind == WordKind::Negation) {
+    let polarity = if dialogue
+        .answer
+        .as_ref()
+        .and_then(|answer| answer.polarity.as_deref())
+        == Some("denied")
+        || words.iter().any(|word| word.kind == WordKind::Negation)
+    {
         Polarity::Denied
     } else {
         Polarity::Asserted
@@ -764,6 +773,7 @@ pub fn clause_statement(
         text: text.to_owned(),
         language: language.to_owned(),
         polarity,
+        dialogue,
         subject,
         terms,
         unknown,
@@ -802,15 +812,26 @@ pub fn formalize_sentences(text: &str, language: &str) -> Vec<Sentence> {
     let mut out = Vec::new();
     let mut previous_subject: Option<Word> = None;
     for sentence in sentences(text) {
+        let sentence_dialogue = super::dialogue::formalize_dialogue(&sentence.text, language);
         let mut statements = Vec::new();
         for (index, clause) in statement_clauses(&sentence).iter().enumerate() {
-            let statement = clause_statement(
+            let mut statement = clause_statement(
                 &clause.text,
                 language,
                 previous_subject.as_ref(),
                 index == 0,
             );
-            if statement.subject.is_none() && statement.terms.is_empty() {
+            if index == 0 && sentence_dialogue.question.is_some() {
+                statement
+                    .dialogue
+                    .question
+                    .clone_from(&sentence_dialogue.question);
+            }
+            if statement.subject.is_none()
+                && statement.terms.is_empty()
+                && statement.dialogue.answer.is_none()
+                && statement.dialogue.question.is_none()
+            {
                 continue;
             }
             if let Some(subject) = &statement.subject {

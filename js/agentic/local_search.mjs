@@ -1,3 +1,4 @@
+import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // Meanings-driven, stateful local path discovery (issue #840):
 // rust/src/agentic_coding/local_search.rs.
 
@@ -527,6 +528,4 @@ function localized(intent, language) {
 }
 
 /** Mirrors `fn shell_quote`. */
-function shellQuote(value) {
-  return `'${replaceAllLiteral(value, "'", "'\\''")}'`;
-}
+

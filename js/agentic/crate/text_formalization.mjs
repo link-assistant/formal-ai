@@ -35,6 +35,7 @@
 // meaning was found for.
 
 import { cached, parseLino, readText } from '../host.mjs';
+import {formalizeDialogue, dialogueQuantities, mergeNumericWords} from './dialogue_formalization.mjs';
 import { byteSlice, clauses, scriptOf, sentences } from './formalization_segment.mjs';
 import { byteOrder } from './rust_str.mjs';
 import { lexicon, meaning, meaningsWithRole } from './seed_meanings.mjs';
@@ -413,7 +414,7 @@ export function readWords(text, language, opensSentence) {
     out.push(...readHanRun(token.surface, language));
   }
   flushRun();
-  return out;
+  return mergeNumericWords(out, dialogueQuantities(text, language), language);
 }
 
 /** A word as a term (the Rust twin clones the `Word`). */
@@ -429,6 +430,7 @@ const termOf = (word) => ({ kind: word.kind, id: word.id, surface: word.surface 
  * @param {boolean} opensSentence
  */
 export function clauseStatement(text, language, previousSubject, opensSentence) {
+  const dialogue = formalizeDialogue(text, language);
   const words = readWords(text, language, opensSentence);
   const opener = words.find((word) => word.kind !== WordKind.Function) ?? null;
   const inherits = opener !== null && (opener.kind === WordKind.Anaphor || opener.kind === WordKind.Continuation);
@@ -438,7 +440,8 @@ export function clauseStatement(text, language, previousSubject, opensSentence) 
   return {
     text,
     language,
-    polarity: words.some((word) => word.kind === WordKind.Negation) ? Polarity.Denied : Polarity.Asserted,
+    polarity: dialogue.answer?.polarity === 'denied' || words.some((word) => word.kind === WordKind.Negation) ? Polarity.Denied : Polarity.Asserted,
+    dialogue,
     subject,
     terms,
     unknown: content.filter((term) => term.kind === WordKind.Unknown).map((term) => term.surface),
@@ -477,10 +480,12 @@ export function formalizeSentences(text, language) {
   const out = [];
   let previousSubject = null;
   for (const sentence of sentences(text)) {
+    const sentenceDialogue = formalizeDialogue(sentence.text, language);
     const statements = [];
     statementClauses(sentence).forEach((clause, index) => {
       const statement = clauseStatement(clause.text, language, previousSubject, index === 0);
-      if (statement.subject === null && statement.terms.length === 0) return;
+      if (index === 0 && sentenceDialogue.question) statement.dialogue.question = sentenceDialogue.question;
+      if (statement.subject === null && statement.terms.length === 0 && !statement.dialogue.answer && !statement.dialogue.question) return;
       statements.push(statement);
       if (statement.subject !== null) previousSubject = statement.subject;
     });
@@ -593,6 +598,11 @@ export function returnSurface(slug, language) {
  * unknown word keeps it lowercased, since it is no name.
  */
 export function surfaceIn(term, language) {
+  if (term.kind === WordKind.Number) {
+    if(!term.id.startsWith('number:'))return term.surface;
+    const decimal=seedWords(language,'numeric-decimal')[0];
+    return decimal?term.id.slice('number:'.length).replace('.',decimal):term.surface;
+  }
   if (term.kind === WordKind.Unknown) return term.surface.toLowerCase();
   if (term.kind !== WordKind.Meaning) return term.surface;
   return returnSurface(term.id, language) ?? term.surface;
@@ -615,7 +625,10 @@ export function joinSurfaces(surfaces) {
     if (surface === '') continue;
     const previous = characters(out).pop();
     const tight = previous !== undefined && previous.codePointAt(0) > 0x7f && isHan(characters(surface)[0]);
-    out += out === '' || tight ? surface : ` ${surface}`;
+    // A space between two independent numerals would look like a grouped
+    // thousands separator on the next read. Preserve their list boundary.
+    const separateNumbers = /[0-9]$/u.test(out) && /^[+-]?[0-9]/u.test(surface);
+    out += out === '' || tight ? surface : separateNumbers ? `, ${surface}` : ` ${surface}`;
   }
   return out;
 }
@@ -634,4 +647,18 @@ export function deformalizeStatement(statement, language) {
   }
   for (const term of statement.terms) surfaces.push(surfaceIn(term, language));
   return joinSurfaces(surfaces);
+}
+
+/** Historical page term-share counts source words, not logical numeric groups.
+ * Quantity components retain exact UTF-8 source spans, so grouping an amount
+ * cannot improve or reduce this measure merely by changing segmentation. */
+export function sourceTermCount(statement) {
+  const remaining=[...(statement.dialogue?.quantities??[])];
+  return statementTerms(statement).reduce((count,term)=>{
+    if(term.kind!==WordKind.Number)return count+1;
+    const index=remaining.findIndex(quantity=>quantity.surface===term.surface);
+    if(index<0)return count+1;
+    const [quantity]=remaining.splice(index,1);
+    return count+Math.max(1,quantity.sourceComponents?.length??1);
+  },0);
 }

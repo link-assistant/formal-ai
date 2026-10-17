@@ -137,6 +137,7 @@ pub mod obligation_ledger;
 pub mod option_evidence;
 pub mod option_network;
 pub mod orchestration;
+pub(crate) mod portable_string_contracts;
 pub mod prerequisite;
 pub mod probability;
 pub mod procedure_text;

@@ -27,7 +27,7 @@
 // `pageAnswer` renders a report as the chat answer to "formalize <url>": the
 // page's counts, then each statement with its formal notation.
 
-const { Polarity, clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms } = crateRequire("crate/text_formalization.mjs");
+const { Polarity, sourceTermCount, clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms } = crateRequire("crate/text_formalization.mjs");
 
 /** Mirrors `ANSWER_STATEMENT_LIMIT` in rust/src/formalization/page.rs: the most statements a page answer lists. */
 const ANSWER_STATEMENT_LIMIT = 40;
@@ -56,7 +56,7 @@ function formalizePage(text, language) {
     if (covered) report.covered += 1;
     for (const statement of sentence.statements) {
       report.statements += 1;
-      report.terms += statementTerms(statement).length;
+      report.terms += sourceTermCount(statement);
       report.unknown += statement.unknown.length;
       if (knownIds(statement).length === 0) continue;
       report.factual += 1;

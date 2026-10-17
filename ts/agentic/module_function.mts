@@ -197,7 +197,7 @@ export function closedArithmeticDeclaration(request) {
  * names a language with a test contract), and — when the request names a test
  * (`coding_test_artifact_kind`) — the one other path, the test module.
  */
-export function moduleFunctionRequest(task) {
+export function moduleFunctionRequest(task, { requireTestContract = true } = {}) {
   const outside = outsideQuotes(task);
   const normalized = normalizePrompt(outside).toLowerCase();
   if (!mentionsRole('coding_request_object', normalized)
@@ -215,7 +215,7 @@ export function moduleFunctionRequest(task) {
     : pathsIn(outside.slice(stated.at));
   const module = paths[0];
   const language = module === undefined ? null : extensionLanguage(module);
-  if (language === null || contract(language) === null || !programLanguageBySlug(language)) return null;
+  if (language === null || (requireTestContract && contract(language) === null) || !programLanguageBySlug(language)) return null;
   const others = paths.slice(1);
   const wantsTest = mentionsRole('coding_test_artifact_kind', normalized);
   if (others.length > 1 || (wantsTest && others.length !== 1) || (!wantsTest && others.length)) return null;

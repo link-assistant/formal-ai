@@ -328,7 +328,7 @@ async function resolveWiktionaryLemma(surface, language) {
   }
 }
 
-async function liveWiktionaryTranslate(surface, source, target) {
+async function discoverWiktionaryTranslation(surface, source, target) {
   // Run the direct page fetch and the OpenSearch lemma resolution in
   // parallel. For inflected forms (e.g. `помидоры`) the direct fetch
   // 404s, and chaining the lemma lookup sequentially after it added a
@@ -338,34 +338,100 @@ async function liveWiktionaryTranslate(surface, source, target) {
     resolveWiktionaryLemma(surface, source),
   ]);
   let main = direct;
+  let page = surface;
   if (!main && lemma) {
     main = await fetchWiktionaryWikitext(lemma, source);
+    page = lemma;
   }
-  if (!main) return null;
+  if (!main) return {candidates: [], provenance: []};
+  const provenance = ["wiktionary:" + source + ":" + page + "#translations->" + target];
   let wikitext = main;
   if (/\{\{see translation subpage\|/i.test(main)) {
-    const subpage = await fetchWiktionaryWikitext(`${surface}/translations`, source);
-    if (subpage) wikitext = `${subpage}\n${main}`;
+    const subpage = await fetchWiktionaryWikitext(`${page}/translations`, source);
+    if (subpage) {
+      wikitext = `${subpage}\n${main}`;
+      provenance.push("wiktionary:" + source + ":" + page + "/translations#translations->" + target);
+    }
   }
-  return roundTripSurface(surface, source, target, extractWiktionaryCandidates(wikitext, target));
+  return {candidates: extractWiktionaryCandidates(wikitext, target), provenance};
+}
+
+async function liveWiktionaryTranslate(surface, source, target) {
+  const observed = await discoverWiktionaryTranslation(surface, source, target);
+  return roundTripSurface(surface, source, target, observed.candidates);
+}
+
+function targetTranslationSurfaceComplete(surface, target) {
+  const text = String(surface || "").trim();
+  if (!/\p{L}/u.test(text) || /response:|-->|\{\{|\[\[/u.test(text)) return false;
+  const cyrillic = /[\u0400-\u052f]/u.test(text);
+  const devanagari = /[\u0900-\u097f]/u.test(text);
+  const han = /[\u3400-\u9fff]/u.test(text);
+  if (["en", "es", "fr", "de", "it", "pt"].includes(target)) return !cyrillic && !devanagari && !han;
+  if (target === "ru") return cyrillic && !devanagari && !han;
+  if (target === "hi") return devanagari && !cyrillic && !han;
+  if (target === "zh") return han && !cyrillic && !devanagari;
+  return true;
+}
+
+async function completeLexicalSpanTranslation(surface, source, target) {
+  const parts = String(surface).match(/[^\s,-]+[\s,-]*/gu) || [];
+  if (parts.length < 2 || parts.length > 8 || parts.join("") !== surface) return null;
+  const translated = [];
+  const provenance = [];
+  for (let index = 0; index < parts.length;) {
+    let found = false;
+    for (let end = parts.length; end > index; end -= 1) {
+      const span = parts.slice(index, end).join("");
+      const core = span.replace(/[\s,-]+$/u, "");
+      let unit = translateCompositionalSurface(core, source, target);
+      let evidence = "seed:compositional";
+      if (!unit && !/[\s,-]/u.test(core)) {
+        const token = formalizeSurface(core, source);
+        unit = token && deformalizeMeaning(token, target, core, source);
+        evidence = token ? "seed:meaning:" + token : "wiktionary:" + source + ":" + core + "->" + target;
+        if (!unit) {
+          const observed = await discoverWiktionaryTranslation(core, source, target);
+          // A component with multiple senses needs contextual evidence, not a guess.
+          if (observed.candidates.length === 1) {
+            unit = observed.candidates[0];
+            evidence = observed.provenance.join(";");
+          }
+        }
+      }
+      if (!unit || !targetTranslationSurfaceComplete(unit, target)) continue;
+      translated.push(unit + span.slice(core.length));
+      provenance.push(evidence);
+      index = end;
+      found = true;
+      break;
+    }
+    if (!found) return null;
+  }
+  return {surface: translated.join(""), provenance};
 }
 
 async function translateSurface(surface, source, target) {
-  if (source === target) {
-    return { surface: String(surface || ""), gap: false };
-  }
+  if (source === target && surface) return {surface: String(surface), gap: false, provenance: ["identity"]};
   const token = formalizeSurface(surface, source);
-  if (token) {
-    const primary = deformalizeMeaning(token, target, surface, source);
-    if (primary) return { surface: primary, gap: false };
+  const primary = token && deformalizeMeaning(token, target, surface, source);
+  if (primary && targetTranslationSurfaceComplete(primary, target)) {
+    return {surface: primary, gap: false, provenance: ["seed:meaning:" + token]};
   }
   const compositional = translateCompositionalSurface(surface, source, target);
-  if (compositional) return { surface: compositional, gap: false };
-  if (surface) {
-    const live = await liveWiktionaryTranslate(surface, source, target);
-    if (live) return { surface: live, gap: false };
+  if (compositional && targetTranslationSurfaceComplete(compositional, target)) {
+    return {surface: compositional, gap: false, provenance: ["seed:compositional"]};
   }
-  return { surface: null, gap: true };
+  if (surface) {
+    const observed = await discoverWiktionaryTranslation(surface, source, target);
+    const live = roundTripSurface(surface, source, target, observed.candidates);
+    if (live && targetTranslationSurfaceComplete(live, target)) {
+      return {surface: live, gap: false, provenance: observed.provenance};
+    }
+    const composed = await completeLexicalSpanTranslation(surface, source, target);
+    if (composed) return {...composed, gap: false};
+  }
+  return {surface: null, gap: true, provenance: []};
 }
 
 function renderTranslationGap(surface, source, target) { // the seeded translation_gap_* answer (Rust render_translation_gap, #918)
@@ -420,6 +486,8 @@ async function tryTranslation(prompt, normalized) {
     `language_to:${target}`,
     `meaning:${meaningId}`,
   ];
+  evidence.push(...(translation.provenance || []).map((item) => "translation_source:" + item));
+  evidence.push(translation.gap ? "translation_obligation:knowledge_gap" : "translation_obligation:complete_target");
   if (translation.gap && surface) evidence.push(`translation_gap:${surface}`);
   if (!surface) evidence.push("translation:refusal:no source phrase"); // #1175 R3 refusal lane
   return {

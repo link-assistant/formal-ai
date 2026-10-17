@@ -902,9 +902,7 @@ fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
     }
 }
 
-fn shell_quote(value: &str) -> String {
-    format!("'{}'", value.replace('\'', "'\\''"))
-}
+use crate::portable_string_contracts::quote_shell_word as shell_quote;
 
 /// A seeded retrieval phrase may own the very token also used as a write cue.
 fn retrieval_owns_write_cue(task: &str) -> bool {

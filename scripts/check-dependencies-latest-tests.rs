@@ -173,6 +173,7 @@ fn ranges_and_minors() {
 #[test]
 fn comparison_rules() {
     let snapshot = Snapshot {
+        action_releases: BTreeMap::new(),
         refreshed_at: String::new(),
         entries: [
             (
@@ -214,7 +215,7 @@ fn comparison_rules() {
     let (findings, unverifiable) = compare(&dependencies, &snapshot);
     assert_eq!(findings.len(), 1, "{findings:?}");
     assert_eq!(findings[0].dependency.name, "egg");
-    assert_eq!(unverifiable, ["npm/absent"]);
+    assert_eq!(unverifiable, ["npm/absent: absent from snapshot"]);
 }
 
 #[test]
@@ -224,6 +225,7 @@ fn snapshot_round_trip() {
     fs::create_dir_all(&directory).expect("temp dir");
     let path = directory.join("snapshot.lino");
     let snapshot = Snapshot {
+        action_releases: BTreeMap::new(),
         refreshed_at: "2026-09-30T15:04:05Z".to_string(),
         entries: [
             (

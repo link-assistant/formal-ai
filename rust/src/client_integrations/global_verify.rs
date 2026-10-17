@@ -328,6 +328,4 @@ fn run_probe(
     Ok(output)
 }
 
-fn shell_quote(value: &str) -> String {
-    format!("'{}'", value.replace('\'', "'\\''"))
-}
+use crate::portable_string_contracts::quote_shell_word as shell_quote;

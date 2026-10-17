@@ -8,6 +8,7 @@
 #[path = "../../../scripts/check-dependencies-latest.rs"]
 mod check_dependencies_latest;
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -35,6 +36,7 @@ fn write(path: &Path, body: &str) {
 
 fn snapshot_with(entries: Vec<(Ecosystem, &str)>) -> Snapshot {
     Snapshot {
+        action_releases: BTreeMap::new(),
         refreshed_at: "2026-09-30T15:04:05Z".to_string(),
         entries: entries
             .into_iter()

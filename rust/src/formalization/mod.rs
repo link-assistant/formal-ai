@@ -7,6 +7,7 @@
 
 pub mod concept_links;
 pub mod concepts;
+pub mod dialogue;
 pub mod needs;
 pub mod page;
 pub mod procedures;

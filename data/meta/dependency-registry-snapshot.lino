@@ -106,7 +106,7 @@ registry_entry npm/command-stream
   latest "2.0.0"
   source_url "https://registry.npmjs.org/command-stream"
 registry_entry npm/dompurify
-  latest "3.4.16"
+  latest "3.4.17"
   source_url "https://registry.npmjs.org/dompurify"
 registry_entry npm/electron
   latest "44.7.0"
@@ -121,19 +121,19 @@ registry_entry npm/esbuild
   latest "0.28.2"
   source_url "https://registry.npmjs.org/esbuild"
 registry_entry npm/lino-i18n
-  latest "0.3.0"
+  latest "0.4.0"
   source_url "https://registry.npmjs.org/lino-i18n"
 registry_entry npm/marked
-  latest "18.1.0"
+  latest "18.1.1"
   source_url "https://registry.npmjs.org/marked"
 registry_entry npm/playwright
   latest "1.64.0"
   source_url "https://registry.npmjs.org/playwright"
 registry_entry npm/react
-  latest "19.3.0"
+  latest "19.3.1"
   source_url "https://registry.npmjs.org/react"
 registry_entry npm/react-dom
-  latest "19.3.0"
+  latest "19.3.1"
   source_url "https://registry.npmjs.org/react-dom"
 registry_entry npm/serve
   latest "14.2.6"
@@ -147,6 +147,8 @@ registry_entry npm/typescript
 registry_entry github_action/Swatinem/rust-cache
   latest "v2.9.2"
   source_url "https://api.github.com/repos/Swatinem/rust-cache/releases/latest"
+  release_commit "6323deb102c322ba6fcbdcafc7e3dddab59af2b6"
+  tag_source_url "https://api.github.com/repos/Swatinem/rust-cache/git/ref/tags/v2.9.2"
 registry_entry github_action/actions/attest
   latest "v4.2.2"
   source_url "https://api.github.com/repos/actions/attest/releases/latest"
@@ -243,3 +245,12 @@ registry_entry docker_image/ubuntu
 registry_entry rust_toolchain/rustc
   latest "1.99.0"
   source_url "https://static.rust-lang.org/dist/channel-rust-stable.toml"
+registry_entry npm/mermaid
+  latest "12.2.0"
+  source_url "https://registry.npmjs.org/mermaid"
+registry_entry npm/@babel/parser
+  latest "8.0.7"
+  source_url "https://registry.npmjs.org/%40babel%2Fparser"
+registry_entry npm/@babel/traverse
+  latest "8.0.7"
+  source_url "https://registry.npmjs.org/%40babel%2Ftraverse"

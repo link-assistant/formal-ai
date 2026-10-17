@@ -390,9 +390,7 @@ impl Default for CaptureOptions {
 }
 
 /// Exact single-quoted shell operand, corresponding to shellQuote.
-pub(super) fn shell_quote(value: &str) -> String {
-    format!("'{}'", value.replace('\'', "'\\''"))
-}
+pub(super) use crate::portable_string_contracts::quote_shell_word as shell_quote;
 
 /// Readable Node receipt producer corresponding to captureProgram.
 /// Valid UTF-8 strings correspond to the JavaScript Unicode-scalar input domain.

@@ -676,8 +676,8 @@ timeline, root causes and verification live in
 
 | Requirement | Status | Evidence / remaining work |
 |---|---|---|
-| R8 In-repo duplicate-function gate | Drafted library script | Corrected lexical scanner, SHA-256 grouping, explicit baseline initialization, fresh/stale checks; fixture tests drafted. No runtime verification. |
-| Initial exact baseline and current inventory | Pending CI measurement | Historical docs/duplicate-groups.md retained as historical evidence; no fabricated digest baseline. Run --json and --write-baseline on the integrated tree, review and commit baseline, then enable required gate. |
+| R8 In-repo duplicate-function gate | Pending strict acceptance | Historical lexical/baseline script is insufficient. The owner's 2026-10-17 strict AST policy is authoritative; see issue-1182-strict-source-duplication.md. Hosted scanner controls and complete zero-independent-clone acceptance remain required. |
+| Historical baseline proposal | Superseded by strict policy | Preserve historical inventories as evidence only. Do not initialize or accept a baseline: all independent candidates and coverage gaps must be resolved before strict acceptance. |
 | R9 Cross-organization scan and dependency owner selection | Drafted | Isolated org/repo checkout names; Cargo/npm dependency detection; local fixture path; stable marker; refuse issue creation when duplicate search fails. |
 | Weekly workflow | Drafted scan-only default | Resolves credential, installs toolchain/runner, scans and uploads record. Opening issues requires explicit workflow input; no issues opened during implementation. |
 | R10 Replace local duplicate logic with maintained dependencies | Partial / parent integration | Existing upstream plans and historical groups retained. This script supplies candidate inventory; it does not complete every consolidation or dependency adoption. |
@@ -686,6 +686,67 @@ timeline, root causes and verification live in
 | Delete local parser only after full conformance | Pending | Existing seed loaders keep local parser; no parser deletion or silent fallback. |
 
 Named-function scanning is lexical, not AST based. Rust/JavaScript closures, methods without keywords, regex literals and template interpolation need meta-language grammar integration. No Rust builds, tests, package commands or issue creation were run locally.
+
+## Issue #1182: Strict implementation duplication
+
+The target is zero independently maintained duplicate implementation logic in Rust, JavaScript and TypeScript. Tests may describe repeated cases declaratively. A structural clone candidate requires resolution; a baseline, body-length threshold, same-file exclusion, filename, generated header or historical inventory cannot authorize it.
+
+The existing check-duplicate-functions.rs is insufficient: it walks only .rs, defaults to rust/src, ignores functions longer than 22 lines and same-file groups, and allows baseline initialization. Its historical 156 groups are not current evidence. Do not use its passing status as strict-policy acceptance.
+
+The proposed JavaScript/TypeScript guard uses the maintained Babel parser and binding resolver, visits functions, methods, arrows and nested callables, normalizes local bindings while preserving literals, property names, external references, operators, effects, async and generator flags. Syntax failures refuse acceptance. Both generated and authored implementation files are scanned. It does not prove arbitrary semantic equivalence: algorithms rewritten into different syntax can still be duplicates and need review.
+
+The proposed Rust guard uses syn's actual Rust AST, including free functions, impl/trait methods and closures, with binding scopes and no body-size limit. Opaque item macros require source-bound expansion custody and cause failure. It is authored and text-formatted only: native compilation and all nine native controls remain pending hosted CI. No zero-Rust-clone count is claimed.
+
+### Current measured candidates
+
+The qualified JS/TS snapshot scans 1105 files and 60463 callables, finding 12323 structural candidate groups and 34439 sites; 0 parse/coverage gaps. These counts include generated twins and are not a count of independent violations. The full private evidence records every source SHA-256 and every candidate site. The snapshot must be recomputed after integration.
+
+Confirmed independently maintained POSIX-shell quoting occurs in rust/src/client_integrations/global_verify.rs and rust/src/agentic_coding/report_script.rs. JavaScript general_planner, git_commit, workspace_search and local_search implement equivalent quoting with replaceAll or split/join. Mirrored TypeScript adds physical copies. Canonical quoting extraction is coordinated with the meta-language generation owner; no manual production copies are introduced here.
+
+### Finite elimination and admission plan
+
+1. Admit both structural guards only after hosted Rust compilation/controls and explicit Babel tooling dependencies are installed from the repository lock. Current local parser and traverse versions are 7.29.7, currently transitive; direct dependency/lock admission remains pending. Run both guards together; neither is full-language acceptance alone.
+2. Put quoting in one typed Links IR definition, regenerate Rust/JS/TS adapters, and compare exact generated bytes. Retain empty strings, apostrophes, newlines and Unicode as behavior controls. Remove the independent implementations rather than add an exception.
+3. Inventory each remaining group by source-bound owner, not filename. Consolidate authored duplicates through shared functions/data. A generated twin is mechanically derived only when an identified canonical definition, generator hash and exact reproducible output prove that callable's provenance. A generated-file comment alone proves nothing. The proposed guards do not yet admit such derivation proofs, so these candidates continue to fail.
+4. Review large groups first, then wrappers and methods, and fix opaque macro expansion custody. Keep unclassified groups and parser gaps failing. Re-run the complete inventory after each extraction and resolve every candidate; never initialize a blanket baseline or raise a threshold.
+5. Hosted policy activation and complete repository debt elimination remain pending. This packet makes no claim of zero duplicates, full semantic clone detection or completed issue #1182.
+
+### Source ownership refinement
+
+Production inventory is the NUL-safe union of tracked and new nonignored files from git ls-files --cached --others --exclude-standard. Ignored build outputs are not source; tracked generated implementations remain scanned.
+
+The report retains every raw group and site. Exact translate-es regeneration, source/output/generator SHA identities and unique AST span/path correspondence establish that two rendered callables are the same canonical meta node. Only that proven pair shares one definition. Same-body source callables retain distinct identities, clones within generated outputs remain observable, and forged headers, drift, missing/orphan targets or ambiguous mappings refuse acceptance. No filename grants an exception. Source text and generators are re-read and every proof is recomputed for each scan.
+
+The authoritative source-scope scan supersedes the earlier all-disk snapshot: 1,098 source files, 28,768 callables, 10,241 raw groups / 26,240 raw sites and 1,699 independent candidate groups after 487 exact derivation proofs; no source or proof gaps. This remains nonzero debt. Proofs are recomputed capabilities, not serialized JSON authority. The generator hashes identify actual loaded translator/tokenizer source paths. Local controls use installed Babel 7.29.7; root admission targets Babel 8.0.7 and its hosted controls remain authoritative. No local dependency installation or replacement occurred.
+
+### Canonical worker factories
+
+Maintained importClosure(ENTRY_MODULES) and generatedFiles independently regenerate the reviewed budget-aware factories. Exact target bytes, unique callable spans, preserved complete callable token trees in source order and structural fingerprints prove each source-to-factory identity. The generated outer factory wrapper remains scanned and is not mapped away. Verified edges compose transitively with JS-to-TS proofs; repeated authored source callables remain different definitions. Forged headers, drift, extra callables and ambiguous mappings refuse admission.
+
+### Authoritative acceptance added on 2026-10-17
+
+The owner requires strict prohibition of duplicate implementation logic. These rows supplement the original issue; every row remains Pending until its complete stated acceptance is observed.
+
+| Requirement | Status | Acceptance / remaining work |
+|---|---|---|
+| R1182-D1 Complete implementation coverage | Pending | Rust, JavaScript and TypeScript AST coverage includes methods, closures, same-file and large bodies. Resolve opaque macros and every parse/coverage gap; hosted native qualification remains required. |
+| R1182-D2 One canonical definition | Pending | Eliminate independent duplicate logic. Source-to-meta-to-output identities require exact independent regeneration and unambiguous callable mapping; raw candidates remain available. Generated headers, names and function size grant no exemption. |
+| R1182-D3 Strict zero acceptance | Pending | Run both strict guards on the integrated source and require zero independent candidates and zero coverage gaps. Baselines, suppressions and historical debt cannot authorize a pass. Qualification/inventory success does not satisfy this row. |
+| R1182-D4 Declarative tests and reproducible projections | Pending | Tests may repeat declarative cases. Implementations use shared definitions/dependencies and reproducible JS/TS/Rust projections, with drift, forged-proof and duplicate-source negative controls. |
+
+## Issue #1183: General discovery and complete runtime parity
+
+These additional owner requirements (2026-10-17) supplement every original issue acceptance recorded in docs/case-studies/general-discovery-quality-parity/README.md. They do not replace the original #1177 checks or the 27 Pending #1207/#1213/#1220 obligations. Partial source changes and finite fixtures cannot close broader requirements.
+
+| Requirement | Status | Acceptance / remaining work |
+|---|---|---|
+| R1183-G1 Discover strategies and knowledge | Pending | Actual coding/Q&A solves derive a need, search trusted sources, formalize fetched knowledge, compose in the meta language and independently verify useful results. No whole-answer seeds, task-name dispatch or page echo may establish general capability. |
+| R1183-G2 Minimal bootstrap and removable caches | Pending | Demonstrate fresh installed cold-network discovery, warm reuse and cache deletion/corruption with source/version/trust/licence evidence. Synthetic transports and request-local procedures remain separately labelled; success must not depend on a pre-cached complete answer. |
+| R1183-G3 Complete feature and behavior parity | Pending | Inventory every CLI/server/browser/agent capability, including absent/unsupported implementations, native clap commands and host effects. Exercise identical formal inputs, answer meaning, derivations, effects, failure and terminal state in JavaScript, TypeScript and Rust. Every unmeasured entry or denominator gap remains unmet. |
+| R1183-G4 Automated canonical translation | Pending | Prefer one canonical meta definition with automated reproducible JavaScript, TypeScript and Rust projections; exact byte checks and held-out behavioral controls must qualify actual production consumers. Carried fixture items and symbol correspondence do not count as delivered parity. |
+| R1183-G5 Single PR and qualified release | Pending | Keep all closely related issue/subissue requirements in this PR. Root integrates exact source packets and alone pushes coherent batches after lane completion; maintain Formal AI-only lanes with honest zero credit for supplied controllers. Merge only an exactly qualified head, then verify the produced release and public consumers. |
+
+The source feature inventory and scanner qualification explicitly report incomplete discovery, unmeasured behavior and nonzero duplication. All five rows stay Pending while those gaps remain. Rust compilation, native product/WASM/container execution and dependency installation are hosted-only for this task; local work uses bounded source/JavaScript controls and metadata-only lock resolution.
 
 ## Issue #1185 Error-Driven Repair Loop
 

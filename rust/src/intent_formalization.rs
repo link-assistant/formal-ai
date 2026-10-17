@@ -358,7 +358,14 @@ fn route_for_prompt(raw: &str, normalized: &str) -> Option<MatchedRoute> {
         seed::intent_routing()
             .intents
             .iter()
-            .find(|route| matches_route(normalized, route))
+            .find(|route| {
+                matches_route(normalized, route)
+                    && !(route.slug == "identity"
+                        && crate::formalization::dialogue::blocks_self_description(
+                            raw,
+                            crate::language::detect(raw).slug(),
+                        ))
+            })
             .map(|route| MatchedRoute {
                 slug: route.slug.clone(),
                 response_link: route.response_link.clone(),

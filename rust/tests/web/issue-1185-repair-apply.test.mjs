@@ -2,9 +2,9 @@
 // back and rendered into the artifact's source, mirroring
 // `repair_edit_record_renders_back_into_the_source` and
 // `repair_loop_applies_the_recorded_fix_before_the_retry` in
-// rust/tests/unit/agentic-coding/issue_1185_repair_apply.rs. This root has no CST engine, so
-// the loop applies only with a validator supplied, and without one it goes on
-// to the retry exactly as the Rust build does with `meta-language` off.
+// rust/tests/unit/agentic-coding/issue_1185_repair_apply.rs. These Rust-source
+// cases require an explicit host validator; without one the JavaScript planner
+// stops before an unchanged retry. Node JS/TS grammar coverage is tested separately.
 
 import { before, test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -95,10 +95,10 @@ test('with a validator the recorded fix is rendered into the artifact before the
   assert.equal(repairStep(after, TOOLS, validated, 0, MAX_REPAIR_RUNGS).kind, 'retry');
 });
 
-test('without a CST engine the loop goes on to the retry and leaves the artifact untouched', () => {
+test('without a CST engine the loop stops before an unchanged retry and leaves the artifact untouched', () => {
   const unvalidated = failure(null);
   const messages = transcriptThroughTheRecord(unvalidated);
-  assert.equal(repairStep(messages, TOOLS, unvalidated, 0, MAX_REPAIR_RUNGS).kind, 'retry');
+  assert.deepEqual(repairStep(messages, TOOLS, unvalidated, 0, MAX_REPAIR_RUNGS), { kind: 'stop', reason: 'unvalidated' });
 });
 
 // Real LF separates Markdown fences; literal backslash bytes inside code remain payload.

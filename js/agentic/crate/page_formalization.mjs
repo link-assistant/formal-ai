@@ -21,7 +21,7 @@
 // page's counts, then each statement with its formal notation.
 
 import {
-  Polarity, clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms,
+  Polarity, sourceTermCount, clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms,
 } from './text_formalization.mjs';
 
 /** Mirrors `ANSWER_STATEMENT_LIMIT` in rust/src/formalization/page.rs: the most statements a page answer lists. */
@@ -51,7 +51,7 @@ export function formalizePage(text, language) {
     if (covered) report.covered += 1;
     for (const statement of sentence.statements) {
       report.statements += 1;
-      report.terms += statementTerms(statement).length;
+      report.terms += sourceTermCount(statement);
       report.unknown += statement.unknown.length;
       if (knownIds(statement).length === 0) continue;
       report.factual += 1;
