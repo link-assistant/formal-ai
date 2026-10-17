@@ -1,0 +1,54 @@
+name: Selected-source release renderer
+description: Build once and import source-bound generated renderer bytes
+inputs:
+  mode:
+    description: build or import
+    required: true
+  selection:
+    description: Authenticated native source selection
+    default: native-source/source-selection.json
+runs:
+  using: composite
+  steps:
+    - name: Validate release renderer mode
+      shell: bash
+      env:
+        WEB_MODE: ${{ inputs.mode }}
+      run: '[[ "$WEB_MODE" == build || "$WEB_MODE" == import ]]'
+    - uses: oven-sh/setup-bun@v2
+      if: inputs.mode == 'build'
+      with:
+        bun-version-file: .bun-version
+    - name: Build exact selected-source renderer
+      if: inputs.mode == 'build'
+      shell: bash
+      env:
+        WEB_SELECTION: ${{ inputs.selection }}
+      run: |
+        set -euo pipefail
+        test "$RUNNER_OS" = Linux
+        bun install --frozen-lockfile --ignore-scripts
+        node scripts/generate-seed-registry.mjs --write
+        bash scripts/sync-seed.sh
+        bun run build:web
+        node scripts/release-web.mjs seal "$WEB_SELECTION" "$RUNNER_TEMP/native-release-web"
+    - uses: actions/upload-artifact@v7
+      if: inputs.mode == 'build'
+      with:
+        name: native-release-web
+        path: ${{ runner.temp }}/native-release-web/
+        if-no-files-found: error
+        retention-days: 7
+    - uses: actions/download-artifact@v8
+      if: inputs.mode == 'import'
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
+      with:
+        name: native-release-web
+        path: ${{ runner.temp }}/native-release-web
+    - name: Authenticate and import selected-source renderer
+      if: inputs.mode == 'import'
+      shell: bash
+      env:
+        WEB_SELECTION: ${{ inputs.selection }}
+      run: node scripts/release-web.mjs import "$WEB_SELECTION" "$RUNNER_TEMP/native-release-web"

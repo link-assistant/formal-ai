@@ -241,6 +241,8 @@ jobs:
         id: selected_wasm
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" build
         timeout-minutes: 5
+      - uses: ./.github/actions/release-web
+        with: {mode: build}
       - uses: actions/upload-artifact@v7
         with:
           name: native-release-wasm
@@ -486,6 +488,8 @@ jobs:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - uses: ./.github/actions/release-web
+        with: {mode: import}
       - name: Download the same-run target executable
         uses: actions/download-artifact@v8
         env:
@@ -1111,6 +1115,8 @@ jobs:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - uses: ./.github/actions/release-web
+        with: {mode: import}
       - name: Download the same-run selected-source worker
         uses: actions/download-artifact@v8
         env:
