@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/coding_research.rs
   language rust
   fidelity full_ast
-  byte_len 28204
-  line_count 772
-  content_id source_module_83fb131ae5e02339
+  byte_len 28431
+  line_count 777
+  content_id source_module_1b492dfb5a2326dd
   symbol_count 23
   symbols
     module kernel 9 9
@@ -18,47 +18,47 @@ self_ast_census
     function candidate 113 129
     function coding_research_query 132 140
     function independent_acceptance 143 168
-    function derive_coding_procedure 171 216
-    function pure_research_program 217 238
-    function gap 239 270
-    function read_evidence 271 294
-    function research_observations 296 318
-    function capability 320 327
-    function outcome 328 341
-    function plan_coding_research_step 343 733
-    function plan_module_function_research_step 735 760
-    module numeric_boundary_tests 764 764
-    module terminal_evidence_tests 768 768
-    module tap_counter_tests 772 772
+    function derive_coding_procedure 171 220
+    function pure_research_program 221 242
+    function gap 243 274
+    function read_evidence 275 298
+    function research_observations 300 322
+    function capability 324 331
+    function outcome 332 345
+    function plan_coding_research_step 347 738
+    function plan_module_function_research_step 740 765
+    module numeric_boundary_tests 769 769
+    module terminal_evidence_tests 773 773
+    module tap_counter_tests 777 777
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21941
-    named_node_count 4564
+    total_link_count 22079
+    named_node_count 4593
     distinct_node_kinds 73
     node_kinds
       arguments 473
       array_expression 6
       array_type 4
-      assignment_expression 5
+      assignment_expression 6
       attribute 11
       attribute_item 11
       binary_expression 22
-      block 87
+      block 88
       boolean_literal 17
       call_expression 473
       char_literal 9
-      closure_expression 70
-      closure_parameters 70
+      closure_expression 69
+      closure_parameters 69
       continue_expression 4
       crate 17
       doc_comment 9
       else_clause 12
-      expression_statement 56
-      field_expression 385
-      field_identifier 418
+      expression_statement 58
+      field_expression 386
+      field_identifier 419
       field_initializer 33
       field_initializer_list 8
       field_pattern 2
@@ -67,9 +67,9 @@ self_ast_census
       function_item 19
       generic_function 2
       generic_type 25
-      identifier 1117
-      if_expression 33
-      index_expression 46
+      identifier 1122
+      if_expression 34
+      index_expression 50
       inner_doc_comment_marker 1
       integer_literal 6
       let_condition 6
@@ -95,20 +95,20 @@ self_ast_census
       shorthand_field_identifier 2
       shorthand_field_initializer 6
       source_file 1
-      string_content 121
-      string_literal 125
+      string_content 126
+      string_literal 130
       struct_expression 8
       struct_pattern 1
-      super 23
-      token_tree 38
-      try_expression 8
+      super 24
+      token_tree 39
+      try_expression 9
       tuple_expression 3
       tuple_pattern 10
       tuple_struct_pattern 15
       type_arguments 27
       type_identifier 79
-      unary_expression 18
+      unary_expression 19
       use_as_clause 2
       use_declaration 11
       use_list 7
-      visibility_modifier 6
+      visibility_modifier 7

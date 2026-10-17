@@ -2,9 +2,9 @@ self_ast_census
   target src/protocol.rs
   language rust
   fidelity signature
-  byte_len 38359
-  line_count 997
-  content_id source_module_49422e44f675bb95
+  byte_len 38543
+  line_count 1000
+  content_id source_module_54b7f2b40feb6197
   symbol_count 49
   symbols
     module content 28 28
@@ -18,41 +18,41 @@ self_ast_census
     struct StreamOptions 83 86
     function requests_tool_execution 90 114
     function requested_tool_names 116 149
-    struct ChatMessage 153 191
-    function is_false 194 196
-    function new 201 207
-    function user 211 213
-    function assistant 217 219
-    function assistant_tool_calls 223 229
-    function assistant_tool_calls_with_content 237 247
-    function tool_result 252 264
-    function tool_result_error 271 280
-    enum MessageContent 285 288
-    function default 291 293
-    function deserialize_null_content 306 311
-    struct MessageContentPart 314 319
-    struct ToolCall 323 328
-    function tool_call_kind 330 332
-    function function 338 351
-    struct FunctionCall 356 359
-    struct ChatCompletion 362 371
-    struct ChatChoice 374 378
-    struct TokenUsage 381 385
-    struct ResponsesRequest 388 406
-    function to_chat_completion_request 418 436
-    function create_chat_completion 440 442
-    function create_chat_completion_with_solver 445 450
-    function create_chat_completion_with_solver_and_memory 453 485
-    function command_reroute_plan 487 498
-    enum AgenticOutcome 504 513
-    function agentic_outcome 519 599
-    function groundable_tool_names 607 622
-    function messages_text 626 632
-    function chat_completion_from_plan 638 709
-    function chat_completion_from_symbolic 711 745
-    function create_response 748 752
-    function create_response_with_solver 755 760
-    function create_response_with_solver_and_memory 763 797
-    function response_from_plan 803 936
-    function response_from_symbolic 938 979
-    function response_reasoning_item 981 997
+    struct ChatMessage 153 194
+    function is_false 197 199
+    function new 204 210
+    function user 214 216
+    function assistant 220 222
+    function assistant_tool_calls 226 232
+    function assistant_tool_calls_with_content 240 250
+    function tool_result 255 267
+    function tool_result_error 274 283
+    enum MessageContent 288 291
+    function default 294 296
+    function deserialize_null_content 309 314
+    struct MessageContentPart 317 322
+    struct ToolCall 326 331
+    function tool_call_kind 333 335
+    function function 341 354
+    struct FunctionCall 359 362
+    struct ChatCompletion 365 374
+    struct ChatChoice 377 381
+    struct TokenUsage 384 388
+    struct ResponsesRequest 391 409
+    function to_chat_completion_request 421 439
+    function create_chat_completion 443 445
+    function create_chat_completion_with_solver 448 453
+    function create_chat_completion_with_solver_and_memory 456 488
+    function command_reroute_plan 490 501
+    enum AgenticOutcome 507 516
+    function agentic_outcome 522 602
+    function groundable_tool_names 610 625
+    function messages_text 629 635
+    function chat_completion_from_plan 641 712
+    function chat_completion_from_symbolic 714 748
+    function create_response 751 755
+    function create_response_with_solver 758 763
+    function create_response_with_solver_and_memory 766 800
+    function response_from_plan 806 939
+    function response_from_symbolic 941 982
+    function response_reasoning_item 984 1000

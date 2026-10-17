@@ -2,10 +2,10 @@ self_ast_census
   target src/coding_research_generated/part2.rs
   language rust
   fidelity signature
-  byte_len 28487
-  line_count 814
-  content_id source_module_30f94fd857182b94
-  symbol_count 23
+  byte_len 28469
+  line_count 810
+  content_id source_module_db491b0741808705
+  symbol_count 22
   symbols
     function coding_research_discovery_kernel 22 38
     function coding_research_effect_kernel 53 115
@@ -23,10 +23,9 @@ self_ast_census
     function coding_research_language_eligible 482 484
     function normalize_trailing_layout 499 536
     function source_maintenance_normalize_cue_kernel 547 575
-    function source_maintenance_language_kernel 582 606
-    function source_maintenance_ownership_kernel 621 680
-    function source_maintenance_stage_kernel 687 729
-    function source_maintenance_effect_kernel 736 761
-    enum MlResearchQueryLetterLoop1Result 764 767
-    function ml_research_query_letter_loop1 782 808
-    enum MlResearchQueryIdentifierPartLoop2Result 811 814
+    function source_maintenance_language_kernel 582 608
+    function source_maintenance_ownership_kernel 623 682
+    function source_maintenance_stage_kernel 689 731
+    function source_maintenance_effect_kernel 738 763
+    enum MlResearchQueryLetterLoop1Result 766 769
+    function ml_research_query_letter_loop1 784 810

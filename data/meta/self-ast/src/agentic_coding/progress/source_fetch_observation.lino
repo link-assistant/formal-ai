@@ -1,0 +1,88 @@
+self_ast_census
+  target src/agentic_coding/progress/source_fetch_observation.rs
+  language rust
+  fidelity full_ast
+  byte_len 7343
+  line_count 198
+  content_id source_module_4bccdc5e3e1aecb9
+  symbol_count 6
+  symbols
+    function report_record 6 13
+    function observed_count 16 18
+    function observed_text 20 24
+    function reported 26 32
+    function source_fetch_observation 34 194
+    module tests 198 198
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 6246
+    named_node_count 1278
+    distinct_node_kinds 64
+    node_kinds
+      arguments 128
+      array_expression 3
+      array_type 2
+      assignment_expression 6
+      attribute 2
+      attribute_item 2
+      binary_expression 12
+      block 19
+      boolean_literal 4
+      call_expression 128
+      char_literal 1
+      closure_expression 20
+      closure_parameters 20
+      crate 2
+      doc_comment 1
+      else_clause 3
+      expression_statement 15
+      field_expression 109
+      field_identifier 103
+      float_literal 2
+      function_item 5
+      generic_function 2
+      generic_type 6
+      identifier 300
+      if_expression 6
+      index_expression 15
+      inner_doc_comment_marker 1
+      integer_literal 9
+      let_chain 1
+      let_condition 2
+      let_declaration 31
+      lifetime 3
+      lifetime_parameter 1
+      line_comment 2
+      macro_invocation 7
+      mod_item 1
+      mutable_specifier 2
+      parameter 11
+      parameters 5
+      primitive_type 12
+      reference_expression 11
+      reference_type 10
+      return_expression 4
+      scoped_identifier 30
+      scoped_type_identifier 1
+      scoped_use_list 1
+      source_file 1
+      string_content 67
+      string_literal 67
+      super 6
+      token_tree 17
+      try_expression 1
+      tuple_expression 4
+      tuple_pattern 10
+      tuple_struct_pattern 4
+      tuple_type 1
+      type_arguments 8
+      type_identifier 18
+      type_parameters 1
+      unary_expression 6
+      use_as_clause 1
+      use_declaration 3
+      use_list 1
+      visibility_modifier 1
