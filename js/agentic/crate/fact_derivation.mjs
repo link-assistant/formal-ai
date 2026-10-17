@@ -329,15 +329,22 @@ export function derivedFacts() {
 }
 
 function buildDerivedFacts() {
-  const captures = factSeedRoot(readText(FACT_CAPTURES_FILE), "fact_captures");
-  const realization = factSeedRoot(readText(FACT_REALIZATION_FILE), "fact_realization");
+  return deriveFactsFromTexts(
+    readText(FACT_CAPTURES_FILE), readText(FACT_REALIZATION_FILE),
+    (slug) => meaning(slug)?.wikidata ?? "",
+  );
+}
+
+export function deriveFactsFromTexts(captureText, realizationText, propertyOf) {
+  const captures = factSeedRoot(captureText, "fact_captures");
+  const realization = factSeedRoot(realizationText, "fact_realization");
   if (captures === null || realization === null) return [];
   const rules = factRealizationRules(realization);
   const entities = factCapturedEntities(captures);
   const byQid = new Map(entities.map((entity) => [entity.qid, entity]));
   const relationOf = new Map();
   for (const slug of rules.relations.keys()) {
-    const property = meaning(slug)?.wikidata ?? "";
+    const property = propertyOf(slug);
     if (property) relationOf.set(property, slug);
   }
   const records = [];
@@ -378,3 +385,5 @@ function buildDerivedFacts() {
   }
   return records;
 }
+
+export { factSeedRoot, factChildren, factChildText, factList, factCapturedEntities, factRealizationRules, factSurface, factDefinite, factAcronym, factInflect, factForm, factRealize, factSourceUrl, factLabelSurfaces };

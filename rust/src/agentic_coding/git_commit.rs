@@ -107,9 +107,7 @@ pub(super) fn resolves_body(reference: &str) -> String {
     super::work_item_steps::fill("body_resolves", &[("{reference}", reference)])
 }
 
-pub(super) fn shell_quote(text: &str) -> String {
-    format!("'{}'", text.replace('\'', "'\\''"))
-}
+pub(super) use crate::portable_string_contracts::quote_shell_word as shell_quote;
 
 /// Commit only the recipe's declared source artifacts; compiler outputs and
 /// unrelated staged edits are not part of the requested change.

@@ -49,15 +49,7 @@ function matchSourceFormatting(target, source) {
   return withTerminal;
 }
 
-function normalizeComposableSurface(surface) {
-  return String(surface || "")
-    .trim()
-    .replace(/[?!.。？！．]+$/u, "")
-    .toLowerCase()
-    .split(/\s+/u)
-    .filter(Boolean)
-    .join(" ");
-}
+
 
 // Issue #386 compositional-translation roles — mirror ROLE_COMPOSITIONAL_LEMMA,
 // ROLE_COMPOSITIONAL_PHRASE and ROLE_COMPOSITIONAL_GENITIVE_HEAD in
@@ -68,59 +60,12 @@ function normalizeComposableSurface(surface) {
 // semantic roles and the ru→en language pair, never the surface words. The
 // query helpers (roleSurfaceTranslation, roleListsSurface,
 // roleActionSurfaceTranslation, wordIn) are defined alongside meaningLexicon.
-const ROLE_COMPOSITIONAL_LEMMA = "compositional_lemma";
-const ROLE_COMPOSITIONAL_PHRASE = "compositional_phrase";
-const ROLE_COMPOSITIONAL_GENITIVE_HEAD = "compositional_genitive_head";
 
-function capitalizeAsciiFirst(surface) {
-  const text = String(surface || "");
-  if (!text) return "";
-  return text[0].toUpperCase() + text.slice(1);
-}
 
-function translateRussianWordSequence(words) {
-  const translated = [];
-  for (let index = 0; index < words.length; index += 1) {
-    const word = words[index];
-    const next = words[index + 1];
-    if (
-      next &&
-      roleListsSurface(ROLE_COMPOSITIONAL_GENITIVE_HEAD, "ru", word) &&
-      roleActionSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "genitive", "ru", "en", next)
-    ) {
-      translated.push(
-        roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "ru", "en", word),
-        "of",
-        roleActionSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "genitive", "ru", "en", next),
-      );
-      index += 1;
-      continue;
-    }
-    const surface = roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "ru", "en", word);
-    if (!surface) return null;
-    translated.push(surface);
-  }
-  return capitalizeAsciiFirst(translated.join(" "));
-}
 
-function translateCompositionalSurface(surface, source, target) {
-  const normalized = normalizeComposableSurface(surface);
-  if (!normalized) return null;
 
-  const direct =
-    roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, source, target, normalized) ||
-    roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, source, target, normalized);
-  if (direct) return direct;
 
-  if (source !== "ru" || target !== "en") return null;
 
-  const phrase = roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, "ru", "en", normalized);
-  if (phrase) return phrase;
-
-  const words = normalized.split(/\s+/u).filter(Boolean);
-  if (words.length < 2 || words.length > 8) return null;
-  return translateRussianWordSequence(words);
-}
 
 const QUESTION_LANGUAGE_MARKERS = {
   ru: [
@@ -328,7 +273,7 @@ async function resolveWiktionaryLemma(surface, language) {
   }
 }
 
-async function liveWiktionaryTranslate(surface, source, target) {
+async function discoverWiktionaryTranslation(surface, source, target) {
   // Run the direct page fetch and the OpenSearch lemma resolution in
   // parallel. For inflected forms (e.g. `помидоры`) the direct fetch
   // 404s, and chaining the lemma lookup sequentially after it added a
@@ -338,34 +283,54 @@ async function liveWiktionaryTranslate(surface, source, target) {
     resolveWiktionaryLemma(surface, source),
   ]);
   let main = direct;
+  let page = surface;
   if (!main && lemma) {
     main = await fetchWiktionaryWikitext(lemma, source);
+    page = lemma;
   }
-  if (!main) return null;
+  if (!main) return {candidates: [], provenance: []};
+  const provenance = ["wiktionary:" + source + ":" + page + "#translations->" + target];
   let wikitext = main;
   if (/\{\{see translation subpage\|/i.test(main)) {
-    const subpage = await fetchWiktionaryWikitext(`${surface}/translations`, source);
-    if (subpage) wikitext = `${subpage}\n${main}`;
+    const subpage = await fetchWiktionaryWikitext(`${page}/translations`, source);
+    if (subpage) {
+      wikitext = `${subpage}\n${main}`;
+      provenance.push("wiktionary:" + source + ":" + page + "/translations#translations->" + target);
+    }
   }
-  return roundTripSurface(surface, source, target, extractWiktionaryCandidates(wikitext, target));
+  return {candidates: extractWiktionaryCandidates(wikitext, target), provenance};
 }
 
+async function liveWiktionaryTranslate(surface, source, target) {
+  const observed = await discoverWiktionaryTranslation(surface, source, target);
+  return roundTripSurface(surface, source, target, observed.candidates);
+}
+
+
+
+
+
 async function translateSurface(surface, source, target) {
-  if (source === target) {
-    return { surface: String(surface || ""), gap: false };
-  }
+  if (source === target && surface) return {surface: String(surface), gap: false, provenance: ["identity"]};
   const token = formalizeSurface(surface, source);
-  if (token) {
-    const primary = deformalizeMeaning(token, target, surface, source);
-    if (primary) return { surface: primary, gap: false };
+  const primary = token && deformalizeMeaning(token, target, surface, source);
+  if (primary && targetTranslationSurfaceComplete(primary, target)) {
+    return {surface: primary, gap: false, provenance: ["seed:meaning:" + token]};
   }
   const compositional = translateCompositionalSurface(surface, source, target);
-  if (compositional) return { surface: compositional, gap: false };
-  if (surface) {
-    const live = await liveWiktionaryTranslate(surface, source, target);
-    if (live) return { surface: live, gap: false };
+  if (compositional && targetTranslationSurfaceComplete(compositional, target)) {
+    return {surface: compositional, gap: false, provenance: ["seed:compositional"]};
   }
-  return { surface: null, gap: true };
+  if (surface) {
+    const observed = await discoverWiktionaryTranslation(surface, source, target);
+    const live = roundTripSurface(surface, source, target, observed.candidates);
+    if (live && targetTranslationSurfaceComplete(live, target)) {
+      return {surface: live, gap: false, provenance: observed.provenance};
+    }
+    const composed = await completeLexicalSpanTranslation(surface, source, target);
+    if (composed) return {...composed, gap: false};
+  }
+  return {surface: null, gap: true, provenance: []};
 }
 
 function renderTranslationGap(surface, source, target) { // the seeded translation_gap_* answer (Rust render_translation_gap, #918)
@@ -420,6 +385,8 @@ async function tryTranslation(prompt, normalized) {
     `language_to:${target}`,
     `meaning:${meaningId}`,
   ];
+  evidence.push(...(translation.provenance || []).map((item) => "translation_source:" + item));
+  evidence.push(translation.gap ? "translation_obligation:knowledge_gap" : "translation_obligation:complete_target");
   if (translation.gap && surface) evidence.push(`translation_gap:${surface}`);
   if (!surface) evidence.push("translation:refusal:no source phrase"); // #1175 R3 refusal lane
   return {

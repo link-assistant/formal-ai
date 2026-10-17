@@ -1,0 +1,114 @@
+self_ast_census
+  target src/agentic_coding/coding_research.rs
+  language rust
+  fidelity full_ast
+  byte_len 28204
+  line_count 772
+  content_id source_module_83fb131ae5e02339
+  symbol_count 23
+  symbols
+    module kernel 9 9
+    function verification_receipt_gap 15 69
+    function research_length_number 83 88
+    function research_number_index 90 97
+    function text 99 101
+    function strings 102 106
+    function number 107 109
+    function flag 110 112
+    function candidate 113 129
+    function coding_research_query 132 140
+    function independent_acceptance 143 168
+    function derive_coding_procedure 171 216
+    function pure_research_program 217 238
+    function gap 239 270
+    function read_evidence 271 294
+    function research_observations 296 318
+    function capability 320 327
+    function outcome 328 341
+    function plan_coding_research_step 343 733
+    function plan_module_function_research_step 735 760
+    module numeric_boundary_tests 764 764
+    module terminal_evidence_tests 768 768
+    module tap_counter_tests 772 772
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 21941
+    named_node_count 4564
+    distinct_node_kinds 73
+    node_kinds
+      arguments 473
+      array_expression 6
+      array_type 4
+      assignment_expression 5
+      attribute 11
+      attribute_item 11
+      binary_expression 22
+      block 87
+      boolean_literal 17
+      call_expression 473
+      char_literal 9
+      closure_expression 70
+      closure_parameters 70
+      continue_expression 4
+      crate 17
+      doc_comment 9
+      else_clause 12
+      expression_statement 56
+      field_expression 385
+      field_identifier 418
+      field_initializer 33
+      field_initializer_list 8
+      field_pattern 2
+      float_literal 10
+      for_expression 3
+      function_item 19
+      generic_function 2
+      generic_type 25
+      identifier 1117
+      if_expression 33
+      index_expression 46
+      inner_doc_comment_marker 1
+      integer_literal 6
+      let_condition 6
+      let_declaration 97
+      line_comment 9
+      macro_invocation 13
+      match_arm 18
+      match_block 6
+      match_expression 6
+      match_pattern 18
+      mod_item 4
+      mutable_specifier 11
+      outer_doc_comment_marker 8
+      parameter 36
+      parameters 19
+      primitive_type 23
+      reference_expression 101
+      reference_type 34
+      return_expression 17
+      scoped_identifier 150
+      scoped_type_identifier 6
+      scoped_use_list 7
+      shorthand_field_identifier 2
+      shorthand_field_initializer 6
+      source_file 1
+      string_content 121
+      string_literal 125
+      struct_expression 8
+      struct_pattern 1
+      super 23
+      token_tree 38
+      try_expression 8
+      tuple_expression 3
+      tuple_pattern 10
+      tuple_struct_pattern 15
+      type_arguments 27
+      type_identifier 79
+      unary_expression 18
+      use_as_clause 2
+      use_declaration 11
+      use_list 7
+      visibility_modifier 6

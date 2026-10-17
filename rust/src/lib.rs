@@ -137,6 +137,7 @@ pub mod obligation_ledger;
 pub mod option_evidence;
 pub mod option_network;
 pub mod orchestration;
+pub(crate) mod portable_string_contracts;
 pub mod prerequisite;
 pub mod probability;
 pub mod procedure_text;
@@ -613,3 +614,6 @@ pub use world_model_context::{
 pub use world_model_dialog::{
     ActionForecast, DialogueWorldModel, SyncEvent, SyncEventKind, WorldModelMode,
 };
+
+// One generated canonical research program; its internal cross-calls remain crate-qualified.
+pub mod coding_research_generated;

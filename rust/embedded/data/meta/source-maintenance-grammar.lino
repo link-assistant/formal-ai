@@ -1,0 +1,18 @@
+source-maintenance-grammar
+  action fix
+  action remove
+  action strip
+  action trim
+  property "trailing whitespace"
+  property "trailing horizontal whitespace"
+  property "trailing spaces"
+  preposition in
+  preposition from
+  scope "in this workspace"
+  scope "in the workspace"
+  constraint preserve
+    pattern "preserve (?:every|all|other|byte|bytes|and|behavior|behaviour|the)(?: (?:every|all|other|byte|bytes|and|behavior|behaviour|the))*"
+  constraint inspect
+    pattern "(?:inspect|read) (?:the )?(?:actual )?file(?: and (?:make|apply|perform) (?:the )?(?:correction|edit|change))?"
+  constraint execution
+    pattern "(?:a |the )?(?:plan|explanation)(?: or (?:plan|explanation))?(?: alone)? (?:does|do) not (?:complete|satisfy) (?:this |the )?(?:maintenance )?task"

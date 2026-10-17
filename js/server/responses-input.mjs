@@ -1,3 +1,4 @@
+import {chatMessage, isMap as isObject} from './protocol-values.mjs';
 // The Responses request model and its translation into the shared chat
 // transcript: rust/src/protocol.rs `ResponsesRequest`
 // (`to_chat_completion_request`), rust/src/protocol/responses_input.rs and
@@ -14,7 +15,7 @@ import {
 
 const FAILED_STATUSES = ['failed', 'error', 'errored', 'cancelled', 'canceled'];
 
-const isObject = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
+
 
 /** `ResponsesRequest` from a JSON body (throws `RequestShapeError`). */
 export function parseResponsesRequest(body) {
@@ -43,17 +44,7 @@ export function valueToPromptText(value) {
   return '';
 }
 
-function chatMessage(role, content, extra = {}) {
-  return {
-    role,
-    content,
-    tool_calls: [],
-    tool_call_id: null,
-    name: null,
-    is_error: false,
-    ...extra,
-  };
-}
+
 
 const stringField = (item, ...names) => {
   for (const name of names) {

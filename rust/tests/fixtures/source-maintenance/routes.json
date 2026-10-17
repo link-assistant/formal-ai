@@ -1,0 +1,1124 @@
+{
+  "schema": "source-maintenance-route-observations/v1",
+  "transport": "explicit synthetic provider observations; JS filesystem original-oracle acceptance recorded separately; native execution hosted pending",
+  "cases": [
+    {
+      "id": "cold-ivy.mjs:cold-read",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "read",
+            "arguments": {
+              "filePath": "cold-ivy.mjs"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:observed-edit",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "1",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "1",
+          "name": "read",
+          "content": "export const shade = \"amber\";  \r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "edit",
+            "arguments": {
+              "filePath": "cold-ivy.mjs",
+              "newString": "export const shade = \"amber\";\r\n",
+              "oldString": "export const shade = \"amber\";  \r\n"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:failed-edit",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "2",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "2",
+          "name": "read",
+          "content": "export const shade = \"amber\";  \r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "3",
+              "type": "function",
+              "function": {
+                "name": "edit",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\",\"oldString\":\"export const shade = \\\"amber\\\";  \\r\\n\",\"newString\":\"export const shade = \\\"amber\\\";\\r\\n\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "3",
+          "name": "edit",
+          "content": "Error: stale preimage",
+          "is_error": true
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceEditFailed",
+        "disposition": "failure",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:external-readback",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "4",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "4",
+          "name": "read",
+          "content": "export const shade = \"amber\";  \r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "5",
+              "type": "function",
+              "function": {
+                "name": "edit",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\",\"oldString\":\"export const shade = \\\"amber\\\";  \\r\\n\",\"newString\":\"export const shade = \\\"amber\\\";\\r\\n\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "5",
+          "name": "edit",
+          "content": "",
+          "is_error": false
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "read",
+            "arguments": {
+              "filePath": "cold-ivy.mjs"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:verified-terminal",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "6",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "6",
+          "name": "read",
+          "content": "export const shade = \"amber\";  \r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "7",
+              "type": "function",
+              "function": {
+                "name": "edit",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\",\"oldString\":\"export const shade = \\\"amber\\\";  \\r\\n\",\"newString\":\"export const shade = \\\"amber\\\";\\r\\n\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "7",
+          "name": "edit",
+          "content": "",
+          "is_error": false
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "8",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "8",
+          "name": "read",
+          "content": "export const shade = \"amber\";\r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "{\"sourceMaintenance\":{\"path\":\"cold-ivy.mjs\",\"property\":\"trailing-horizontal-whitespace\",\"sha256\":\"ed07e7fef8afdf2d8c9fc0b06c6b1baabc08cfd3badc278df3f21a5bf696b728\",\"verified\":true,\"written\":true}}",
+        "disposition": "finding",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:mismatched-readback",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "9",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "9",
+          "name": "read",
+          "content": "export const shade = \"amber\";  \r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "10",
+              "type": "function",
+              "function": {
+                "name": "edit",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\",\"oldString\":\"export const shade = \\\"amber\\\";  \\r\\n\",\"newString\":\"export const shade = \\\"amber\\\";\\r\\n\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "10",
+          "name": "edit",
+          "content": "",
+          "is_error": false
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "11",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "11",
+          "name": "read",
+          "content": "export const unrelated = 91;\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceReadbackMismatch",
+        "disposition": "failure",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:incomplete-read",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "12",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "12",
+          "name": "read",
+          "content": "export const shade = \"amber\";  \r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": false,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceCompleteReadRequired",
+        "disposition": "gap",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:clean-noop",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "13",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "13",
+          "name": "read",
+          "content": "export const shade = \"amber\";\r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "{\"sourceMaintenance\":{\"path\":\"cold-ivy.mjs\",\"property\":\"trailing-horizontal-whitespace\",\"sha256\":\"ed07e7fef8afdf2d8c9fc0b06c6b1baabc08cfd3badc278df3f21a5bf696b728\",\"verified\":true,\"written\":false}}",
+        "disposition": "finding",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:no-edit-authority",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "14",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-ivy.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "14",
+          "name": "read",
+          "content": "export const shade = \"amber\";  \r\n",
+          "source_read": {
+            "path": "cold-ivy.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceEditPermissionMissing",
+        "disposition": "gap",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-ivy.mjs:no-read-authority",
+      "prompt": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-ivy.mjs. Preserve every other byte and all behavior."
+        }
+      ],
+      "tools": [
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceReadPermissionMissing",
+        "disposition": "gap",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-quartz.ts:cold-read",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "read",
+            "arguments": {
+              "filePath": "cold-quartz.ts"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cold-quartz.ts:observed-edit",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "15",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "15",
+          "name": "read",
+          "content": "export const count: number = 19;\t\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "edit",
+            "arguments": {
+              "filePath": "cold-quartz.ts",
+              "newString": "export const count: number = 19;\n",
+              "oldString": "export const count: number = 19;\t\n"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cold-quartz.ts:failed-edit",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "16",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "16",
+          "name": "read",
+          "content": "export const count: number = 19;\t\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "17",
+              "type": "function",
+              "function": {
+                "name": "edit",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\",\"oldString\":\"export const count: number = 19;\\t\\n\",\"newString\":\"export const count: number = 19;\\n\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "17",
+          "name": "edit",
+          "content": "Error: stale preimage",
+          "is_error": true
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceEditFailed",
+        "disposition": "failure",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-quartz.ts:external-readback",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "18",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "18",
+          "name": "read",
+          "content": "export const count: number = 19;\t\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "19",
+              "type": "function",
+              "function": {
+                "name": "edit",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\",\"oldString\":\"export const count: number = 19;\\t\\n\",\"newString\":\"export const count: number = 19;\\n\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "19",
+          "name": "edit",
+          "content": "",
+          "is_error": false
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "read",
+            "arguments": {
+              "filePath": "cold-quartz.ts"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "cold-quartz.ts:verified-terminal",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "20",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "20",
+          "name": "read",
+          "content": "export const count: number = 19;\t\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "21",
+              "type": "function",
+              "function": {
+                "name": "edit",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\",\"oldString\":\"export const count: number = 19;\\t\\n\",\"newString\":\"export const count: number = 19;\\n\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "21",
+          "name": "edit",
+          "content": "",
+          "is_error": false
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "22",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "22",
+          "name": "read",
+          "content": "export const count: number = 19;\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "{\"sourceMaintenance\":{\"path\":\"cold-quartz.ts\",\"property\":\"trailing-horizontal-whitespace\",\"sha256\":\"bfc48ba36aedfe8b23aa189370979a05cb11687ea64bc6671d56a761b3224564\",\"verified\":true,\"written\":true}}",
+        "disposition": "finding",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-quartz.ts:mismatched-readback",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "23",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "23",
+          "name": "read",
+          "content": "export const count: number = 19;\t\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "24",
+              "type": "function",
+              "function": {
+                "name": "edit",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\",\"oldString\":\"export const count: number = 19;\\t\\n\",\"newString\":\"export const count: number = 19;\\n\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "24",
+          "name": "edit",
+          "content": "",
+          "is_error": false
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "25",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "25",
+          "name": "read",
+          "content": "export const unrelated = 91;\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceReadbackMismatch",
+        "disposition": "failure",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-quartz.ts:incomplete-read",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "26",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "26",
+          "name": "read",
+          "content": "export const count: number = 19;\t\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": false,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceCompleteReadRequired",
+        "disposition": "gap",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-quartz.ts:clean-noop",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "27",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "27",
+          "name": "read",
+          "content": "export const count: number = 19;\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read",
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "{\"sourceMaintenance\":{\"path\":\"cold-quartz.ts\",\"property\":\"trailing-horizontal-whitespace\",\"sha256\":\"bfc48ba36aedfe8b23aa189370979a05cb11687ea64bc6671d56a761b3224564\",\"verified\":true,\"written\":false}}",
+        "disposition": "finding",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-quartz.ts:no-edit-authority",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "28",
+              "type": "function",
+              "function": {
+                "name": "read",
+                "arguments": "{\"filePath\":\"cold-quartz.ts\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "28",
+          "name": "read",
+          "content": "export const count: number = 19;\t\n",
+          "source_read": {
+            "path": "cold-quartz.ts",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "tools": [
+        "read"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceEditPermissionMissing",
+        "disposition": "gap",
+        "origin": "source-maintenance-observed"
+      }
+    },
+    {
+      "id": "cold-quartz.ts:no-read-authority",
+      "prompt": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior.",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Fix trailing whitespace in cold-quartz.ts. Preserve every other byte and all behavior."
+        }
+      ],
+      "tools": [
+        "edit"
+      ],
+      "expected": {
+        "kind": "final",
+        "answer": "SourceMaintenanceReadPermissionMissing",
+        "disposition": "gap",
+        "origin": "source-maintenance-observed"
+      }
+    }
+  ]
+}

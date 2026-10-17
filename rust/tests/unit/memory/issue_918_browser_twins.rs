@@ -195,3 +195,72 @@ fn feature_capability_questions_answer_from_the_seeded_table() {
         assert_eq!(answer.answer, expected, "{prompt}");
     }
 }
+
+#[test]
+fn feature_capability_seed_values_preserve_localized_single_pass_rendering() {
+    use formal_ai::seed;
+    let (_, source) = seed::seed_files()
+        .into_iter()
+        .find(|(path, _)| *path == "data/seed/feature-capabilities.lino")
+        .unwrap();
+    let tree = seed::parse_lino(source);
+    let feature = tree
+        .children
+        .iter()
+        .flat_map(|node| &node.children)
+        .find(|node| node.name == "feature")
+        .unwrap();
+    let providers = formal_ai::web_search_core::WEB_SEARCH_PROVIDERS.join(", ");
+    let k = formal_ai::web_search_core::WEB_SEARCH_RRF_K.to_string();
+    for language in ["en", "ru", "hi", "zh", "es", "de", "unsupported-locale"] {
+        let field = |name: &str| {
+            let group = feature
+                .children
+                .iter()
+                .find(|node| node.name == name)
+                .unwrap();
+            let localized = group.find_child_value(language);
+            if localized.is_empty() {
+                group.find_child_value("en")
+            } else {
+                localized
+            }
+        };
+        let reason =
+            seed::localized_response("feature_capability_reason_diagnostic_mode_off", language)
+                .unwrap_or_default();
+        let values = [
+            ("label", field("label")),
+            ("example", field("example")),
+            ("reason", reason.as_str()),
+            ("providers", providers.as_str()),
+            ("k", k.as_str()),
+        ];
+        for intent in [
+            "feature_capability_available",
+            "feature_capability_unavailable",
+            "feature_capability_web_search_available",
+            "feature_capability_web_search_unavailable",
+        ] {
+            let mut previous = seed::localized_response(intent, language).unwrap_or_default();
+            for (name, value) in values {
+                previous = previous.replace(&format!("{{{name}}}"), value);
+            }
+            assert_eq!(
+                seed::render_localized_once(intent, language, &values),
+                previous
+            );
+        }
+    }
+}
+
+#[test]
+fn feature_template_replacement_values_are_not_executed_as_later_slots() {
+    assert_eq!(
+        formal_ai::seed::fill_template_once(
+            "{label}: {example}",
+            &[("label", "{example}"), ("example", "literal")]
+        ),
+        "{example}: literal"
+    );
+}

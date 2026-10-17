@@ -1,0 +1,17 @@
+# Public feature coverage inventory and limits
+
+The generated data/meta/runtime-feature-coverage.json inventories explicit authoritative entrypoints, not matching function names. Regenerate with node scripts/generate-runtime-feature-inventory.mjs --write; --check refuses source or output drift. Every input is SHA-256 bound. This is a declaration/evidence coverage inventory, not a passing full-parity gate.
+
+Sources are the shared server-routes manifest, actual JS ROUTE_HANDLERS binding, finite server-parity request corpus, Node server CLI dispatch, orchestration ACTIONS table, memory CLI actions, provenance CLI dispatch, browser self.onmessage/postMessage protocol, browser-handler-precedence, tools and agentic-tool-capabilities registries. The install landing page js/cli/cli.js is not a CLI implementation. Missing route bindings, undeclared handler routes, unknown corpus references and uncovered routes remain explicit rows or gaps.
+
+Canonical IDs are domain-qualified: http:route-id, cli:command:path, browser-message:kind, browser-response:kind, browser-handler:registry-id, tool:registry-id and tool-capability:registry-id. Each row has separate Rust, JavaScript, TypeScript and browser source/evidence status. A dispatch branch is source_bound; a seed row is registry_declared. Neither means executed, equivalent or complete. Runtime evidence is empty until actual qualified observations are admitted. A TypeScript projection is not an independently executed runtime.
+
+Native CLI completeness remains pending. The authority is actual Args::command() in rust/src/main.rs, including nested subcommands, imported Args, flattening, aliases, defaults, flags and visibility. Do not replace that graph with a list of symbols, regex-parsed enums or copied command names. This packet deliberately adds no example that includes the entire CLI and no second native binary build.
+
+A future small hosted probe should call Args::command() inside the existing CLI ownership boundary and serialize the clap command graph through a shared serializer before any command action is run. Its schema receipt must bind the real producer source identity, input source inventory, full graph and actual hosted execution. Such a production entrypoint change needs a separately reviewed tiny proposal; this packet does not modify main.rs. Until then nativeCli remains pending_actual_clap_schema and discovery.complete remains false.
+
+Browser coverage currently includes message kinds, the default solve input and ordered handler registry. UI action/effect semantics, dynamic branches, host tools, platform behavior, complete CLI option schemas and arbitrary natural-language capability inputs remain unmeasured. The finite server corpus is named as corpus_declared only; no historical pass is inherited. Existing unsupported or absent runtime capabilities must be established by explicit source/observed refusal, not guessed from missing symbols.
+
+The user target remains full feature parity. This source inventory exposes a bounded measurable slice and its missing denominator; it does not close the broader requirement.
+
+The JSON serializer writes each declarative feature object on one line and preserves all nested metadata and source hashes. This keeps the generated inventory within the maintained 1,500-line JSON limit without a size-policy exception. The generator still compares exact output bytes; semantic tampering or source drift fails --check.

@@ -70,7 +70,7 @@ export function lex(source, language) {
       push('string', start);
     } else if (char === "'") {
       // A Rust char literal or a lifetime: both refused by the frontend.
-      const literal = /^'(\\.|[^\\'])'/u.exec(source.slice(index));
+      const literal = /^'(\\u\{[0-9a-fA-F_]+\}|\\x[0-9a-fA-F]{2}|\\.|[^\\'])'/u.exec(source.slice(index));
       index += literal ? literal[0].length : 1;
       while (!literal && index < source.length && /[A-Za-z0-9_]/u.test(source[index])) index += 1;
       push('char', start);

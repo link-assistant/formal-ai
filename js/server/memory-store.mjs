@@ -1,3 +1,5 @@
+import {rustLines} from '../logging/text-lines.mjs';
+export {rustLines} from '../logging/text-lines.mjs';
 // The portable `demo_memory` event log and its file-backed sync store:
 // rust/src/memory.rs (`MemoryEvent`, `parse_links_notation`,
 // `export_links_notation_with_schema`, `write_locked_atomic`),
@@ -93,12 +95,7 @@ export function memoryEvent(fields = {}) {
   };
 }
 
-/** Rust `str::lines`. */
-export function rustLines(text) {
-  const lines = text.split('\n');
-  if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
-  return lines.map((line) => (line.endsWith('\r') ? line.slice(0, -1) : line));
-}
+
 
 function leadingSpaces(line) {
   let count = 0;

@@ -1209,7 +1209,7 @@ function matchesIntentRoute(normalized, rawPrompt, id) {
 }
 
 function isIdentityPrompt(normalized, rawPrompt) {
-  if (repositoryFromPrompt(rawPrompt)) return false;
+  if (isConcretePropertyQuestion(rawPrompt) || repositoryFromPrompt(rawPrompt)) return false;
   return matchesIntentRoute(normalized, rawPrompt, "intent_identity");
 }
 

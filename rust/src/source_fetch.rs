@@ -410,7 +410,7 @@ impl<T: SourceTransport> CachedSourceClient<T> {
     }
 }
 
-fn validate_url(url: &str) -> Result<(), FetchError> {
+pub(crate) fn validate_url(url: &str) -> Result<(), FetchError> {
     let authority = url
         .strip_prefix("https://")
         .or_else(|| url.strip_prefix("http://"));

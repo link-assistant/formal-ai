@@ -22,7 +22,7 @@ fn dockerfile_defines_only_supported_dind_telegram_runtime() {
             "FORMAL_AI_START_ISOLATION=docker",
             "FORMAL_AI_START_RUNNER=\"$ --isolated docker --auto-remove-docker-container --\"",
             "DIND_STORAGE_DRIVER=\"vfs\"",
-            "FROM node:22.23.3-bookworm-slim AS node-runtime",
+            "FROM node:26.12.0-bookworm-slim AS node-runtime",
             "COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node",
             "apt-get install -y --no-install-recommends libstdc++6 libatomic1",
             "new RegExp('', 'v')",

@@ -1,0 +1,37 @@
+{
+  "accepted": [
+    {
+      "source": "function sampled(seed) { return seed; }",
+      "language": "javascript",
+      "name": "chosen",
+      "parameters": [
+        "input"
+      ],
+      "expected": "export function chosen(input) { return input; }\n"
+    },
+    {
+      "source": "export function stranger(input) { return 'stranger input Ω'; }",
+      "language": "typescript",
+      "name": "cedar",
+      "parameters": [
+        "value"
+      ],
+      "expected": "export function cedar(value) { return 'stranger input Ω'; }\n"
+    },
+    {
+      "source": "function old() { return 'old/property.old old'; }",
+      "language": "javascript",
+      "name": "newSignal",
+      "parameters": [],
+      "expected": "export function newSignal() { return 'old/property.old old'; }\n"
+    }
+  ],
+  "rejected": [
+    "function sampled(seed) { return seed.sampled; }",
+    "function sampled(seed) { return { seed: 7 }; }",
+    "function sampled(seed) { return { seed }; }",
+    "function sampled(seed) { const local = seed; return local; }",
+    "function sampled(seed) { return (seed => seed)(seed); }",
+    "function sampled(seed) { return seed /* sampled */; }"
+  ]
+}

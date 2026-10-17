@@ -500,21 +500,55 @@ fn is_acronym(word: &str) -> bool {
 }
 
 fn build_derived_facts() -> Vec<FactRecord> {
+    let lexicon = super::lexicon();
+    derive_facts_from_texts(FACT_CAPTURES_LINO, FACT_REALIZATION_LINO, |slug| {
+        lexicon
+            .meaning(slug)
+            .map_or_else(String::new, |meaning| meaning.wikidata.clone())
+    })
+}
+
+/// Derive ordered fact records from explicit raw texts and relation bindings.
+/// A resolver runs once per relation; its last nonempty property binding wins.
+#[must_use]
+pub fn derive_facts_from_texts(
+    capture_text: &str,
+    realization_text: &str,
+    mut property_of: impl FnMut(&str) -> String,
+) -> Vec<FactRecord> {
     let (Some(captures), Some(realization)) = (
-        seed_root(FACT_CAPTURES_LINO, "fact_captures"),
-        seed_root(FACT_REALIZATION_LINO, "fact_realization"),
+        seed_root(capture_text, "fact_captures"),
+        seed_root(realization_text, "fact_realization"),
     ) else {
         return Vec::new();
     };
     let rules = realization_rules(&realization);
     let entities = captured_entities(&captures);
-    let lexicon = super::lexicon();
-    let relation_of = |property: &str| {
-        rules.relations.iter().find(|relation| {
-            lexicon
-                .meaning(&relation.slug)
-                .is_some_and(|meaning| meaning.wikidata == property)
+    // Match a keyed relation map: retain first insertion order and last row value.
+    let mut relations: Vec<&Relation> = Vec::new();
+    for relation in &rules.relations {
+        if let Some(index) = relations
+            .iter()
+            .position(|previous| previous.slug == relation.slug)
+        {
+            relations[index] = relation;
+        } else {
+            relations.push(relation);
+        }
+    }
+    let bindings: Vec<_> = relations
+        .into_iter()
+        .filter_map(|relation| {
+            let property = property_of(&relation.slug);
+            (!property.is_empty()).then_some((property, relation))
         })
+        .collect();
+    let relation_of = |property: &str| {
+        bindings
+            .iter()
+            .rev()
+            .find(|(candidate, _)| candidate == property)
+            .map(|(_, relation)| *relation)
     };
     entities
         .iter()

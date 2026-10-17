@@ -2,9 +2,9 @@ self_ast_census
   target src/translation/round_trip.rs
   language rust
   fidelity signature
-  byte_len 10419
-  line_count 289
-  content_id source_module_5d291d25957f4f44
+  byte_len 10663
+  line_count 294
+  content_id source_module_9d42f23acf16b50a
   symbol_count 14
   symbols
     struct RenderedTerm 27 34
@@ -15,9 +15,9 @@ self_ast_census
     function best_candidate 105 120
     function best_surface 126 130
     function round_trip_choice 141 151
-    function render_term 155 169
-    function render_statement 176 204
-    function translate_text 208 214
-    function same_statement_meaning 218 234
-    function round_trip_statement 238 263
-    function round_trip 270 289
+    function render_term 155 174
+    function render_statement 181 209
+    function translate_text 213 219
+    function same_statement_meaning 223 239
+    function round_trip_statement 243 268
+    function round_trip 275 294

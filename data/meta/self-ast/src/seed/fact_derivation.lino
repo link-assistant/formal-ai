@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/fact_derivation.rs
   language rust
   fidelity signature
-  byte_len 19512
-  line_count 536
-  content_id source_module_1ab0c2ba9faf1bff
-  symbol_count 35
+  byte_len 20669
+  line_count 570
+  content_id source_module_2d55b5c23d6f23af
+  symbol_count 36
   symbols
     const SUBJECT_SLOT 20 20
     const VALUE_SLOT 21 21
@@ -39,6 +39,7 @@ self_ast_census
     function label_surfaces 381 434
     function record 436 490
     function is_acronym 494 500
-    function build_derived_facts 502 528
-    function derived_facts 533 536
-    static RECORDS 534 534
+    function build_derived_facts 502 509
+    function derive_facts_from_texts 514 562
+    function derived_facts 567 570
+    static RECORDS 568 568

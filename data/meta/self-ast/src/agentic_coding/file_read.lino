@@ -2,73 +2,74 @@ self_ast_census
   target src/agentic_coding/file_read.rs
   language rust
   fidelity full_ast
-  byte_len 23196
-  line_count 726
-  content_id source_module_d5b821d3c64c5acb
-  symbol_count 43
+  byte_len 23968
+  line_count 740
+  content_id source_module_5bb6018402c899f4
+  symbol_count 44
   symbols
-    module audit 3 3
-    module ownership 4 4
-    module exact 9 9
-    module records 10 10
-    module source 11 11
-    module supplied 16 16
-    const AUDIT_READ_LINE_LIMIT 31 31
-    const AUDIT_READ_COLUMN_LIMIT 32 32
-    enum FileReadTask 35 50
-    function is_analysis 53 59
-    enum FileReadMode 63 72
-    enum FileSelection 75 79
-    struct FileReadTools 83 88
-    function plan_file_read_step 93 129
-    function failed_step_answer 139 142
-    function plan_direct_file_read 144 227
-    function plan_list_then_read 229 318
-    const SHELL_OPERATORS 321 321
-    function file_read_task_for 323 398
-    function read_paths_named_beside_their_cue 400 402
-    function asks_to_read_every_file 404 407
-    function asks_to_list_then_read 409 419
-    function asks_to_read_file_in_folder 421 423
-    function selection_for_prompt 425 431
-    function mode_for_prompt 433 455
-    function extract_value_key 457 468
-    function leading_cat_path 470 481
-    function clean_file_token 490 504
-    function looks_like_local_file_path 506 525
-    function is_file_path_char 527 529
-    function directory_for_list_read 531 562
-    function read_arguments 564 577
-    function grep_arguments 579 581
-    function file_analysis_pattern 585 597
-    function regex_escape 599 613
-    function read_command_for 615 641
-    function list_files_command 643 652
-    function cat_many_command 654 666
-    function shell_path 668 676
-    function shell_string 678 680
-    function selected_paths_from_listing 682 712
-    function tool_for 714 719
-    function plan_one 721 726
+    module audit 4 4
+    module ownership 5 5
+    module exact 10 10
+    module records 11 11
+    module source 12 12
+    module supplied 17 17
+    const AUDIT_READ_LINE_LIMIT 32 32
+    const AUDIT_READ_COLUMN_LIMIT 33 33
+    enum FileReadTask 36 51
+    function is_analysis 54 60
+    enum FileReadMode 64 73
+    enum FileSelection 76 80
+    struct FileReadTools 84 89
+    function plan_file_read_step 94 130
+    function failed_step_answer 140 143
+    function plan_direct_file_read 145 228
+    function plan_list_then_read 230 319
+    const SHELL_OPERATORS 322 322
+    function file_read_task_for 324 399
+    function read_paths_named_beside_their_cue 401 403
+    function cue 405 407
+    function asks_to_read_every_file 409 415
+    function asks_to_list_then_read 417 429
+    function asks_to_read_file_in_folder 431 435
+    function selection_for_prompt 437 443
+    function mode_for_prompt 445 469
+    function extract_value_key 471 482
+    function leading_cat_path 484 495
+    function clean_file_token 504 518
+    function looks_like_local_file_path 520 539
+    function is_file_path_char 541 543
+    function directory_for_list_read 545 576
+    function read_arguments 578 591
+    function grep_arguments 593 595
+    function file_analysis_pattern 599 611
+    function regex_escape 613 627
+    function read_command_for 629 655
+    function list_files_command 657 666
+    function cat_many_command 668 680
+    function shell_path 682 690
+    function shell_string 692 694
+    function selected_paths_from_listing 696 726
+    function tool_for 728 733
+    function plan_one 735 740
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17675
-    named_node_count 3477
+    total_link_count 18292
+    named_node_count 3638
     distinct_node_kinds 93
     node_kinds
-      arguments 265
-      array_expression 8
+      arguments 306
+      array_expression 9
       array_type 7
       assignment_expression 4
       attribute 4
       attribute_item 4
       binary_expression 47
-      block 95
+      block 96
       boolean_literal 4
-      call_expression 265
+      call_expression 306
       char_literal 45
       closure_expression 23
       closure_parameters 23
@@ -84,17 +85,17 @@ self_ast_census
       expression_statement 92
       field_declaration 12
       field_declaration_list 4
-      field_expression 169
-      field_identifier 206
+      field_expression 189
+      field_identifier 226
       field_initializer 21
       field_initializer_list 8
       field_pattern 15
       for_expression 2
-      function_item 30
+      function_item 31
       function_modifiers 1
       generic_function 3
       generic_type 20
-      identifier 851
+      identifier 877
       if_expression 43
       impl_item 1
       index_expression 21
@@ -116,17 +117,17 @@ self_ast_census
       or_pattern 4
       ordered_field_declaration_list 2
       outer_doc_comment_marker 24
-      parameter 55
-      parameters 30
+      parameter 56
+      parameters 31
       parenthesized_expression 8
-      primitive_type 50
+      primitive_type 51
       range_expression 1
       raw_string_literal 1
-      reference_expression 38
-      reference_type 52
+      reference_expression 39
+      reference_type 53
       remaining_field_pattern 5
       return_expression 37
-      scoped_identifier 90
+      scoped_identifier 92
       scoped_type_identifier 13
       scoped_use_list 5
       self 2
@@ -139,16 +140,16 @@ self_ast_census
       struct_expression 8
       struct_item 1
       struct_pattern 8
-      super 22
+      super 23
       token_tree 54
       try_expression 2
       tuple_expression 3
       tuple_pattern 2
       tuple_struct_pattern 23
       type_arguments 23
-      type_identifier 94
+      type_identifier 95
       type_parameters 2
       unary_expression 15
-      use_declaration 12
+      use_declaration 13
       use_list 5
       visibility_modifier 10

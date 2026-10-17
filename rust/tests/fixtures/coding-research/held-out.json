@@ -1,0 +1,35 @@
+[
+  {
+    "name": "novel-js-identity",
+    "language": "javascript",
+    "module": "frost.mjs",
+    "function": "frost",
+    "prompt": "Write a function frost(value) that preserves its input in frost.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs.",
+    "source": "function unlisted(seed) { return seed; }",
+    "expected": "export function frost(value) { return value; }\n",
+    "url": "https://reference.example/new-identity",
+    "acceptance": "import {frost} from './frost.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(frost('unseen-719'), 'unseen-719');\n"
+  },
+  {
+    "name": "novel-ts-literal",
+    "language": "typescript",
+    "module": "cedar.ts",
+    "function": "cedar",
+    "prompt": "Write a function cedar(value) that returns a reference label in cedar.ts, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs.",
+    "source": "export function stranger(input) { return 'sequoia-947'; }",
+    "expected": "export function cedar(value) { return 'sequoia-947'; }\n",
+    "url": "https://language.example/new-label",
+    "acceptance": "import {cedar} from './cedar.ts';\nimport assert from 'node:assert/strict';\nassert.equal(cedar('ignored-418'), 'sequoia-947');\n"
+  },
+  {
+    "name": "unseen-zero-arg-greeting",
+    "language": "javascript",
+    "module": "cairn.mjs",
+    "function": "cairnSignal",
+    "prompt": "Write a function cairnSignal() that returns a reference label in cairn.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs.",
+    "source": "function sampledWelcome() { return 'Hello, fjord-2047!'; }",
+    "expected": "export function cairnSignal() { return 'Hello, fjord-2047!'; }\n",
+    "url": "https://reference.example/unseen-zero-argument-return",
+    "acceptance": "import {cairnSignal} from './cairn.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(cairnSignal(), 'Hello, fjord-2047!');\n"
+  }
+]

@@ -1,0 +1,1338 @@
+{
+  "transport": "synthetic only",
+  "rows": [
+    {
+      "fixture": "novel-js-identity",
+      "scenario": "created",
+      "phase": "tool",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function frost(value) that preserves its input in frost.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "ENOENT: file not found",
+          "source_read": {
+            "path": "frost.mjs",
+            "success": false,
+            "complete": false,
+            "format": "raw",
+            "error_code": "ENOENT",
+            "error": "ENOENT",
+            "exit_code": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {frost} from './frost.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(frost('unseen-719'), 'unseen-719');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that preserves its input\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/new-identity"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/new-identity\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function unlisted(seed) { return seed; }</code></pre></body></html>"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "write_file",
+            "arguments": "{\"content\":\"export function frost(value) { return value; }\\n\",\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+          }
+        ],
+        "research": {
+          "url": "https://reference.example/new-identity",
+          "sha256": "d7e38081bd558241626d80fc44ba786e9a7fdb371bc154fb9a71ce3df0d28efd",
+          "query": "javascript function write function that preserves its input",
+          "declaration": {
+            "path": "frost.mjs",
+            "moduleContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+            "declarationContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+            "span": {
+              "byteStart": 0,
+              "byteEnd": 40,
+              "start": 0,
+              "end": 40
+            }
+          },
+          "contract": {
+            "inputs": [
+              {
+                "name": "seed",
+                "type": {
+                  "kind": "parameter",
+                  "name": "seed"
+                }
+              }
+            ],
+            "result": {
+              "kind": "parameter",
+              "name": "seed"
+            },
+            "callEffects": "none",
+            "preconditions": [],
+            "status": "supported",
+            "gap": null,
+            "structuralRequirements": [],
+            "conditionalIR": {
+              "status": "parsed",
+              "parameter": "seed",
+              "ir": [
+                {
+                  "op": "return",
+                  "value": {
+                    "op": "binding",
+                    "name": "seed"
+                  }
+                }
+              ],
+              "sourceEffects": "unknown",
+              "preconditions": [
+                "SourceOwnedPlainDataSchema",
+                "FiniteScalarCoercions",
+                "IntrinsicOwnership",
+                "FreshLocalMutationOnly"
+              ]
+            }
+          },
+          "bindings": [
+            {
+              "from": "unlisted",
+              "to": "frost"
+            },
+            {
+              "from": "seed",
+              "to": "value"
+            }
+          ],
+          "status": "proposal",
+          "verified": false,
+          "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68"
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "frost.mjs",
+          "observed": true,
+          "status": "reported-failure",
+          "complete": false,
+          "absent": true,
+          "sourceSha256": null,
+          "error": "ENOENT"
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+          "error": null
+        },
+        "successfulWriteSha256": null,
+        "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+        "receipt": null
+      }
+    },
+    {
+      "fixture": "novel-js-identity",
+      "scenario": "created",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function frost(value) that preserves its input in frost.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "ENOENT: file not found",
+          "source_read": {
+            "path": "frost.mjs",
+            "success": false,
+            "complete": false,
+            "format": "raw",
+            "error_code": "ENOENT",
+            "error": "ENOENT",
+            "exit_code": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {frost} from './frost.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(frost('unseen-719'), 'unseen-719');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that preserves its input\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/new-identity"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/new-identity\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function unlisted(seed) { return seed; }</code></pre></body></html>"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-4",
+              "type": "function",
+              "function": {
+                "name": "write_file",
+                "arguments": "{\"content\":\"export function frost(value) { return value; }\\n\",\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-4",
+          "name": "write_file",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-5",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"node --test acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-5",
+          "name": "bash",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Created and verified `frost.mjs` through the agentic CLI harness.\n\n```javascript\nexport function frost(value) { return value; }\n\n```\n\nCommands executed by the harness:\n- `node --test acceptance.test.mjs`\n\nActual tool output:\n\n```text\n{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}\n```",
+        "result": {
+          "text": "Created and verified `frost.mjs` through the agentic CLI harness.\n\n```javascript\nexport function frost(value) { return value; }\n\n```\n\nCommands executed by the harness:\n- `node --test acceptance.test.mjs`\n\nActual tool output:\n\n```text\n{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}\n```",
+          "disposition": "finding",
+          "origin": "coding-research-verified-created",
+          "payloadRole": "finding",
+          "artifact": null
+        },
+        "research": {
+          "url": "https://reference.example/new-identity",
+          "sha256": "d7e38081bd558241626d80fc44ba786e9a7fdb371bc154fb9a71ce3df0d28efd",
+          "query": "javascript function write function that preserves its input",
+          "declaration": {
+            "path": "frost.mjs",
+            "moduleContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+            "declarationContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+            "span": {
+              "byteStart": 0,
+              "byteEnd": 40,
+              "start": 0,
+              "end": 40
+            }
+          },
+          "contract": {
+            "inputs": [
+              {
+                "name": "seed",
+                "type": {
+                  "kind": "parameter",
+                  "name": "seed"
+                }
+              }
+            ],
+            "result": {
+              "kind": "parameter",
+              "name": "seed"
+            },
+            "callEffects": "none",
+            "preconditions": [],
+            "status": "supported",
+            "gap": null,
+            "structuralRequirements": [],
+            "conditionalIR": {
+              "status": "parsed",
+              "parameter": "seed",
+              "ir": [
+                {
+                  "op": "return",
+                  "value": {
+                    "op": "binding",
+                    "name": "seed"
+                  }
+                }
+              ],
+              "sourceEffects": "unknown",
+              "preconditions": [
+                "SourceOwnedPlainDataSchema",
+                "FiniteScalarCoercions",
+                "IntrinsicOwnership",
+                "FreshLocalMutationOnly"
+              ]
+            }
+          },
+          "bindings": [
+            {
+              "from": "unlisted",
+              "to": "frost"
+            },
+            {
+              "from": "seed",
+              "to": "value"
+            }
+          ],
+          "status": "verified",
+          "verified": true,
+          "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68"
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "frost.mjs",
+          "observed": true,
+          "status": "reported-failure",
+          "complete": false,
+          "absent": true,
+          "sourceSha256": null,
+          "error": "ENOENT"
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+          "error": null
+        },
+        "successfulWriteSha256": "a3de69c48fcb616567a02e15e2ba925cc1f635723a121da6918663f60d1442c1",
+        "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+        "receipt": "{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}"
+      }
+    },
+    {
+      "fixture": "novel-js-identity",
+      "scenario": "existing",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function frost(value) that preserves its input in frost.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "export function frost(value) { return value; }\n",
+          "source_read": {
+            "path": "frost.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {frost} from './frost.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(frost('unseen-719'), 'unseen-719');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that preserves its input\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/new-identity"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/new-identity\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function unlisted(seed) { return seed; }</code></pre></body></html>"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-4",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"node --test acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-4",
+          "name": "bash",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Existing source matches the rediscovered procedure and independent verification succeeded; no source write was needed.",
+        "result": {
+          "text": "Existing source matches the rediscovered procedure and independent verification succeeded; no source write was needed.",
+          "disposition": "finding",
+          "origin": "coding-research-verified-existing",
+          "payloadRole": "finding",
+          "artifact": null
+        },
+        "research": {
+          "url": "https://reference.example/new-identity",
+          "sha256": "d7e38081bd558241626d80fc44ba786e9a7fdb371bc154fb9a71ce3df0d28efd",
+          "query": "javascript function write function that preserves its input",
+          "declaration": {
+            "path": "frost.mjs",
+            "moduleContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+            "declarationContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+            "span": {
+              "byteStart": 0,
+              "byteEnd": 40,
+              "start": 0,
+              "end": 40
+            }
+          },
+          "contract": {
+            "inputs": [
+              {
+                "name": "seed",
+                "type": {
+                  "kind": "parameter",
+                  "name": "seed"
+                }
+              }
+            ],
+            "result": {
+              "kind": "parameter",
+              "name": "seed"
+            },
+            "callEffects": "none",
+            "preconditions": [],
+            "status": "supported",
+            "gap": null,
+            "structuralRequirements": [],
+            "conditionalIR": {
+              "status": "parsed",
+              "parameter": "seed",
+              "ir": [
+                {
+                  "op": "return",
+                  "value": {
+                    "op": "binding",
+                    "name": "seed"
+                  }
+                }
+              ],
+              "sourceEffects": "unknown",
+              "preconditions": [
+                "SourceOwnedPlainDataSchema",
+                "FiniteScalarCoercions",
+                "IntrinsicOwnership",
+                "FreshLocalMutationOnly"
+              ]
+            }
+          },
+          "bindings": [
+            {
+              "from": "unlisted",
+              "to": "frost"
+            },
+            {
+              "from": "seed",
+              "to": "value"
+            }
+          ],
+          "status": "verified",
+          "verified": true,
+          "sourceAuthored": false,
+          "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68"
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "frost.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "a3de69c48fcb616567a02e15e2ba925cc1f635723a121da6918663f60d1442c1",
+          "error": null
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+          "error": null
+        },
+        "successfulWriteSha256": null,
+        "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+        "receipt": "{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}"
+      }
+    },
+    {
+      "fixture": "novel-js-identity",
+      "scenario": "failed",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function frost(value) that preserves its input in frost.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "ENOENT: file not found",
+          "source_read": {
+            "path": "frost.mjs",
+            "success": false,
+            "complete": false,
+            "format": "raw",
+            "error_code": "ENOENT",
+            "error": "ENOENT",
+            "exit_code": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {frost} from './frost.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(frost('unseen-719'), 'unseen-719');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that preserves its input\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/new-identity"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/new-identity\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function unlisted(seed) { return seed; }</code></pre></body></html>"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-4",
+              "type": "function",
+              "function": {
+                "name": "write_file",
+                "arguments": "{\"content\":\"export function frost(value) { return value; }\\n\",\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-4",
+          "name": "write_file",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-5",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"node --test acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-5",
+          "name": "bash",
+          "content": "{\"exit_code\":1,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 0\\n# fail 1\\n# skipped 0\\n# cancelled 0\\n\"}"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Step `node --test acceptance.test.mjs` for `frost.mjs` failed with exit code 1. The harness ran the command as asked; the command itself reported:\n\n```text\n{\"exit_code\":1,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 0\\n# fail 1\\n# skipped 0\\n# cancelled 0\\n\"}\n```",
+        "result": {
+          "text": "Step `node --test acceptance.test.mjs` for `frost.mjs` failed with exit code 1. The harness ran the command as asked; the command itself reported:\n\n```text\n{\"exit_code\":1,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 0\\n# fail 1\\n# skipped 0\\n# cancelled 0\\n\"}\n```",
+          "disposition": "failure",
+          "origin": "coding-research-verification-failed",
+          "payloadRole": "finding",
+          "artifact": null
+        },
+        "research": {
+          "url": "https://reference.example/new-identity",
+          "sha256": "d7e38081bd558241626d80fc44ba786e9a7fdb371bc154fb9a71ce3df0d28efd",
+          "query": "javascript function write function that preserves its input",
+          "declaration": {
+            "path": "frost.mjs",
+            "moduleContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+            "declarationContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+            "span": {
+              "byteStart": 0,
+              "byteEnd": 40,
+              "start": 0,
+              "end": 40
+            }
+          },
+          "contract": {
+            "inputs": [
+              {
+                "name": "seed",
+                "type": {
+                  "kind": "parameter",
+                  "name": "seed"
+                }
+              }
+            ],
+            "result": {
+              "kind": "parameter",
+              "name": "seed"
+            },
+            "callEffects": "none",
+            "preconditions": [],
+            "status": "supported",
+            "gap": null,
+            "structuralRequirements": [],
+            "conditionalIR": {
+              "status": "parsed",
+              "parameter": "seed",
+              "ir": [
+                {
+                  "op": "return",
+                  "value": {
+                    "op": "binding",
+                    "name": "seed"
+                  }
+                }
+              ],
+              "sourceEffects": "unknown",
+              "preconditions": [
+                "SourceOwnedPlainDataSchema",
+                "FiniteScalarCoercions",
+                "IntrinsicOwnership",
+                "FreshLocalMutationOnly"
+              ]
+            }
+          },
+          "bindings": [
+            {
+              "from": "unlisted",
+              "to": "frost"
+            },
+            {
+              "from": "seed",
+              "to": "value"
+            }
+          ],
+          "status": "proposal",
+          "verified": false,
+          "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68"
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "frost.mjs",
+          "observed": true,
+          "status": "reported-failure",
+          "complete": false,
+          "absent": true,
+          "sourceSha256": null,
+          "error": "ENOENT"
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+          "error": null
+        },
+        "successfulWriteSha256": "a3de69c48fcb616567a02e15e2ba925cc1f635723a121da6918663f60d1442c1",
+        "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+        "receipt": "{\"exit_code\":1,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 0\\n# fail 1\\n# skipped 0\\n# cancelled 0\\n\"}"
+      }
+    },
+    {
+      "fixture": "novel-js-identity",
+      "scenario": "incomplete",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function frost(value) that preserves its input in frost.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "ENOENT: file not found",
+          "source_read": {
+            "path": "frost.mjs",
+            "success": false,
+            "complete": false,
+            "format": "raw",
+            "error_code": "ENOENT",
+            "error": "ENOENT",
+            "exit_code": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {frost} from './frost.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(frost('unseen-719'), 'unseen-719');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that preserves its input\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/new-identity"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/new-identity\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function unlisted(seed) { return seed; }</code></pre></body></html>"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-4",
+              "type": "function",
+              "function": {
+                "name": "write_file",
+                "arguments": "{\"content\":\"export function frost(value) { return value; }\\n\",\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-4",
+          "name": "write_file",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-5",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"node --test acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-5",
+          "name": "bash",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Coding research remains unresolved: VerificationReceiptIncomplete",
+        "result": {
+          "text": "Coding research remains unresolved: VerificationReceiptIncomplete",
+          "disposition": "gap",
+          "origin": "coding-research-gap",
+          "payloadRole": "finding",
+          "artifact": null,
+          "discovery": {
+            "reason": "VerificationReceiptIncomplete",
+            "authored": false,
+            "verified": false,
+            "url": "https://reference.example/new-identity",
+            "sha256": "d7e38081bd558241626d80fc44ba786e9a7fdb371bc154fb9a71ce3df0d28efd",
+            "query": "javascript function write function that preserves its input",
+            "declaration": {
+              "path": "frost.mjs",
+              "moduleContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+              "declarationContentId": "f396441a98f317d9e5c2bbef0e66cb978cb6b57cc2d4117e6be5f88b2d83edc6",
+              "span": {
+                "byteStart": 0,
+                "byteEnd": 40,
+                "start": 0,
+                "end": 40
+              }
+            },
+            "contract": {
+              "inputs": [
+                {
+                  "name": "seed",
+                  "type": {
+                    "kind": "parameter",
+                    "name": "seed"
+                  }
+                }
+              ],
+              "result": {
+                "kind": "parameter",
+                "name": "seed"
+              },
+              "callEffects": "none",
+              "preconditions": [],
+              "status": "supported",
+              "gap": null,
+              "structuralRequirements": [],
+              "conditionalIR": {
+                "status": "parsed",
+                "parameter": "seed",
+                "ir": [
+                  {
+                    "op": "return",
+                    "value": {
+                      "op": "binding",
+                      "name": "seed"
+                    }
+                  }
+                ],
+                "sourceEffects": "unknown",
+                "preconditions": [
+                  "SourceOwnedPlainDataSchema",
+                  "FiniteScalarCoercions",
+                  "IntrinsicOwnership",
+                  "FreshLocalMutationOnly"
+                ]
+              }
+            },
+            "bindings": [
+              {
+                "from": "unlisted",
+                "to": "frost"
+              },
+              {
+                "from": "seed",
+                "to": "value"
+              }
+            ],
+            "status": "proposal"
+          }
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "frost.mjs",
+          "observed": true,
+          "status": "reported-failure",
+          "complete": false,
+          "absent": true,
+          "sourceSha256": null,
+          "error": "ENOENT"
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+          "error": null
+        },
+        "successfulWriteSha256": "a3de69c48fcb616567a02e15e2ba925cc1f635723a121da6918663f60d1442c1",
+        "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+        "receipt": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+      }
+    },
+    {
+      "fixture": "novel-js-identity",
+      "scenario": "module-incomplete",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function frost(value) that preserves its input in frost.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"frost.mjs\",\"file_path\":\"frost.mjs\",\"path\":\"frost.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "incomplete source prefix",
+          "source_read": {
+            "path": "frost.mjs",
+            "success": true,
+            "complete": false,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {frost} from './frost.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(frost('unseen-719'), 'unseen-719');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Coding research remains unresolved: SourceReadIncomplete",
+        "result": {
+          "text": "Coding research remains unresolved: SourceReadIncomplete",
+          "disposition": "gap",
+          "origin": "coding-research-gap",
+          "payloadRole": "finding",
+          "artifact": null,
+          "discovery": {
+            "reason": "SourceReadIncomplete",
+            "authored": false,
+            "verified": false,
+            "path": "frost.mjs"
+          }
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "frost.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": false,
+          "absent": false,
+          "sourceSha256": "66d88d8dddf7b1a2e9f5bb2cae79dbffd7c6ee407b14252fb05f919206e19b4b",
+          "error": null
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+          "error": null
+        },
+        "successfulWriteSha256": null,
+        "acceptanceSha256": "53872a7427b27a8032b632d8cbe12db896f9f32e55e3d6a00d24349aba4ebf68",
+        "receipt": null
+      }
+    }
+  ]
+}

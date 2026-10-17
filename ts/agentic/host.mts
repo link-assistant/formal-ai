@@ -49,6 +49,18 @@ export function host() {
   return current;
 }
 
+/** Parse-only host capability; absent grammars and non-boolean promises grant no verdict. */
+export function validateProgram(language, source) {
+  const validate = current?.validateProgram;
+  if (typeof validate !== 'function') return null;
+  try {
+    const verdict = validate(language, source);
+    return verdict === true ? true : verdict === false ? false : null;
+  } catch {
+    return false;
+  }
+}
+
 /** Whether a host is installed. */
 export function hasHost() {
   return current !== null;

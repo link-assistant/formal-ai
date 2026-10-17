@@ -105,6 +105,4 @@ fn preflight(program: &str) -> String {
 }
 
 /// Quote `value` as a single shell word.
-pub(super) fn shell_quote(value: &str) -> String {
-    format!("'{}'", value.replace('\'', "'\\''"))
-}
+pub(super) use crate::portable_string_contracts::quote_shell_word as shell_quote;

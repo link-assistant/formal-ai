@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/capability_router.rs
   language rust
   fidelity full_ast
-  byte_len 40803
-  line_count 923
-  content_id source_module_24d1132a6a091166
-  symbol_count 32
+  byte_len 40782
+  line_count 921
+  content_id source_module_6abb879c335c8f56
+  symbol_count 31
   symbols
     function tool_for 24 59
     function shell_command_tool 67 78
@@ -37,16 +37,15 @@ self_ast_census
     const FRAGMENT_MARKS 855 855
     function routed_read_many_paths 858 864
     function shell_fallback 866 903
-    function shell_quote 905 907
-    function retrieval_owns_write_cue 910 923
+    function retrieval_owns_write_cue 908 921
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21373
-    named_node_count 4337
-    distinct_node_kinds 79
+    total_link_count 21303
+    named_node_count 4323
+    distinct_node_kinds 80
     node_kinds
       arguments 323
       array_expression 9
@@ -55,29 +54,29 @@ self_ast_census
       attribute 1
       attribute_item 1
       binary_expression 86
-      block 96
+      block 95
       boolean_literal 13
       call_expression 323
-      char_literal 28
+      char_literal 27
       closure_expression 44
       closure_parameters 44
       const_item 6
-      crate 20
+      crate 21
       doc_comment 157
       else_clause 13
       enum_item 1
       enum_variant 2
       enum_variant_list 1
-      escape_sequence 3
+      escape_sequence 2
       expression_statement 66
       field_expression 206
       field_identifier 206
       field_pattern 6
       for_expression 1
-      function_item 25
+      function_item 24
       generic_function 2
       generic_type 18
-      identifier 966
+      identifier 964
       if_expression 37
       index_expression 2
       inner_doc_comment_marker 1
@@ -88,7 +87,7 @@ self_ast_census
       lifetime 11
       lifetime_parameter 3
       line_comment 271
-      macro_invocation 23
+      macro_invocation 22
       match_arm 30
       match_block 6
       match_expression 6
@@ -96,34 +95,35 @@ self_ast_census
       mutable_specifier 3
       or_pattern 1
       outer_doc_comment_marker 156
-      parameter 45
-      parameters 25
+      parameter 44
+      parameters 24
       parenthesized_expression 6
-      primitive_type 57
+      primitive_type 56
       range_expression 1
       reference_expression 24
-      reference_type 57
+      reference_type 56
       remaining_field_pattern 5
       return_expression 26
-      scoped_identifier 204
+      scoped_identifier 206
       scoped_type_identifier 7
       scoped_use_list 3
       shorthand_field_identifier 6
       source_file 1
-      string_content 136
-      string_literal 133
+      string_content 133
+      string_literal 131
       struct_pattern 7
       super 50
-      token_tree 47
+      token_tree 45
       try_expression 11
       tuple_expression 15
       tuple_pattern 12
       tuple_struct_pattern 7
       tuple_type 1
       type_arguments 20
-      type_identifier 52
+      type_identifier 51
       type_parameters 3
       unary_expression 23
-      use_declaration 8
+      use_as_clause 1
+      use_declaration 9
       use_list 3
       visibility_modifier 9

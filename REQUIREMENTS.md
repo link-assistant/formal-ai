@@ -124,6 +124,8 @@ the areas are the whole register.
    - Issue #1177 Code Tasks Answered Formally
    - Issue #1180 Repository History as Formal Context
    - Issue #1182 Duplication gates and maintained-parser adoption
+   - Issue #1182: Strict implementation duplication
+   - Issue #1183: General discovery and complete runtime parity
    - Issue #1185 Error-Driven Repair Loop
    - Issue #1188 Compact Inputs and Useful Coding Work
 

@@ -1,3 +1,4 @@
+import {rustLines} from '../logging/text-lines.mjs';
 // HTTP handlers for the links-network view of the knowledge store
 // (rust/src/network_endpoint.rs `handle_network_request`,
 // `handle_links_query_request`, `parse_links_query_body`, and the
@@ -31,12 +32,7 @@ export function handleLinks() {
   return linksNotationResponse(200, knowledgeGraphLinksNotation());
 }
 
-/** Rust `str::lines`: split on `\n`, dropping one trailing `\r` per line and a final empty line. */
-function rustLines(text) {
-  const lines = text.split('\n');
-  if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
-  return lines.map((line) => (line.endsWith('\r') ? line.slice(0, -1) : line));
-}
+
 
 function trimQuotes(text) {
   let start = 0;

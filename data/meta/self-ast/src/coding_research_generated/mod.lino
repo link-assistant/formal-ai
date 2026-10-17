@@ -1,0 +1,15 @@
+self_ast_census
+  target src/coding_research_generated/mod.rs
+  language rust
+  fidelity signature
+  byte_len 783
+  line_count 24
+  content_id source_module_7eb3547e143ed892
+  symbol_count 6
+  symbols
+    module part1 13 13
+    module part2 15 15
+    module part3 17 17
+    module part4 19 19
+    module part5 21 21
+    module part6 23 23

@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=2a1d655bf15b17abc8623448164ff182692e46353e7428661de262a8719ea072 bytes=14333
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=96e6091cd8d69b0daeda6162b7b6f61de94b525d565a3ab89620a9e8ac4d6a63 bytes=14738
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -92,4 +92,12 @@ pub const FACT_REALIZATION_FILE: &str = "data/seed/fact-realization.lino";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal function value …
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .get() | method call .has() | method call .keys() | method call .map() | method call .push() | method call .set() | new Map | null | nullish coalescing | object without a $ tag | optional chaining
+// formal-ai:blockers arrow function | call of a sibling function | call of an imported function | field access | nullish coalescing | optional chaining
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal null
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | field access | method call .filter() | method call .get() | method call .has() | method call .keys() | method call .map() | method call .push() | method call .set() | new Map | null | object without a $ tag
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal export …
+// formal-ai:blockers export … | sibling value

@@ -1,0 +1,5 @@
+ci_gate check-runtime-feature-inventory
+  stage web
+  description "Source-bound public capability inventory regenerates exactly; native discovery gaps and unmeasured behavior remain explicit, never certified as full parity."
+  run "node scripts/generate-runtime-feature-inventory.mjs --check"
+  justification "Keep all discovered JS/TS/Rust capability obligations visible and reject silently dropped routes or stale source identities (issue #1182)."

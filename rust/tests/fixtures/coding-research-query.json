@@ -1,0 +1,107 @@
+[
+  {
+    "label": "empty query",
+    "clause": "",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function"
+  },
+  {
+    "label": "ASCII words and lower case",
+    "clause": "Compute DISTINCT histogram groups",
+    "name": "histogram",
+    "parameters": [
+      "groups"
+    ],
+    "expected": "javascript function compute distinct"
+  },
+  {
+    "label": "duplicate words",
+    "clause": "Stable stable STABLE sorted stable records",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function stable sorted records"
+  },
+  {
+    "label": "eight unique terms",
+    "clause": "alpha bravo charlie delta echo foxtrot golf hotel india juliet",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function alpha bravo charlie delta echo foxtrot golf hotel"
+  },
+  {
+    "label": "URL exclusion",
+    "clause": "rank https://example.invalid/secret-guide entries",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function rank entries"
+  },
+  {
+    "label": "path exclusion",
+    "clause": "rank ../private/secret.txt C:\\private\\hidden.js entries",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function rank entries"
+  },
+  {
+    "label": "signature exclusion",
+    "clause": "rank helper (secret, value) entries",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function rank entries"
+  },
+  {
+    "label": "signature and URL",
+    "clause": "helper (https://example.invalid/value) select entries",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function select entries"
+  },
+  {
+    "label": "parameter lower-case match",
+    "clause": "SORT ITEMS and Values",
+    "name": "sort",
+    "parameters": [
+      "items",
+      "values"
+    ],
+    "expected": "javascript function and"
+  },
+  {
+    "label": "existing exact operand case",
+    "clause": "SORT ITEMS",
+    "name": "SORT",
+    "parameters": [
+      "ITEMS"
+    ],
+    "expected": "javascript function sort items"
+  },
+  {
+    "label": "whitespace codepoints",
+    "clause": "rank\tstable entries descending\r\nvalues",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function rank stable entries descending values"
+  },
+  {
+    "label": "ASCII extraction amidst Unicode",
+    "clause": "😀 alpha 中文 beta naïve gamma",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function alpha beta gamma"
+  },
+  {
+    "label": "hyphens and short fragments",
+    "clause": "x ab stable-sort three---",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function stable-sort three---"
+  },
+  {
+    "label": "quoted text removed by adapter",
+    "clause": "rank \"private secret token\" entries",
+    "name": "solve",
+    "parameters": [],
+    "expected": "javascript function rank entries"
+  }
+]

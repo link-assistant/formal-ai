@@ -572,9 +572,7 @@ pub(super) fn mentions_bare_role(text: &str, role: &str) -> bool {
             before_ok && after_ok
         })
 }
-pub(super) fn shell_quote(value: &str) -> String {
-    format!("'{}'", value.replace('\'', "'\\''"))
-}
+pub(super) use crate::portable_string_contracts::quote_shell_word as shell_quote;
 fn command_plan_text(intent: &str, language: &str, target: &str) -> String {
     seed::localized_response(intent, language)
         .unwrap_or_else(|| intent.to_owned())

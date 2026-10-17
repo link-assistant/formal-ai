@@ -27,32 +27,88 @@ function sourceTokens(source) {
   return tokens;
 }
 
+const builtinDerives = new Set(['Clone', 'Copy', 'Debug', 'Default', 'Eq', 'PartialEq', 'Ord', 'PartialOrd', 'Hash']);
+
+function attributeEnd(tokens, start, derived) {
+  let cursor = start + 1;
+  const take = (text, type = 'punct') => {
+    const part = tokens[cursor++];
+    if (!part || part.type !== type || part.text !== text) throw Error('OpaqueRustAttribute');
+  };
+  const inner = tokens[cursor]?.text === '!';
+  if (inner) take('!');
+  take('['); take(inner ? 'allow' : 'derive', 'ident'); take('(');
+  const names = new Set();
+  while (tokens[cursor]?.text !== ')') {
+    const name = tokens[cursor++];
+    if (name?.type !== 'ident' || !/^[A-Za-z_][A-Za-z0-9_]*$/u.test(name.text)
+        || names.has(name.text) || (!inner && !builtinDerives.has(name.text))) throw Error('OpaqueRustAttribute');
+    names.add(name.text);
+    if (tokens[cursor]?.text !== ')') {
+      take(',');
+      if (tokens[cursor]?.text === ')') throw Error('OpaqueRustAttribute');
+    }
+  }
+  if (!names.size) throw Error('OpaqueRustAttribute');
+  take(')'); take(']');
+  if (!inner) {
+    for (const name of names) derived.add(name);
+    let target = cursor;
+    if (tokens[target]?.text === 'pub') {
+      target++;
+      if (tokens[target]?.text === '(') {
+        target++;
+        while (target < tokens.length && tokens[target].text !== ')') target++;
+        if (tokens[target++]?.text !== ')') throw Error('OpaqueRustAttribute');
+      }
+    }
+    if (!['enum', 'struct'].includes(tokens[target]?.text)
+        || tokens[target + 1]?.type !== 'ident') throw Error('OpaqueDeriveTarget');
+    const kind = tokens[target].text;
+    target += 2;
+    while (target < tokens.length && !['{', '(', ';'].includes(tokens[target].text)) {
+      if (['#', '=', 'fn'].includes(tokens[target].text)) throw Error('OpaqueDeriveTarget');
+      target++;
+    }
+    if (target === tokens.length || (kind === 'enum' && tokens[target].text !== '{')) throw Error('OpaqueDeriveTarget');
+  }
+  return cursor - 1;
+}
+
+function rejectDeriveShadowing(tokens, derived, attributes) {
+  const declarations = new Set(['struct', 'enum', 'trait', 'type', 'mod', 'fn', 'const', 'static', 'crate']);
+  for (let index = 0; index < tokens.length; index++) {
+    if (attributes.has(index)) continue;
+    const token = tokens[index];
+    if (token.text === 'use') {
+      let cursor = index + 1;
+      while (cursor < tokens.length && tokens[cursor].text !== ';') {
+        if (derived.has(tokens[cursor].text)) throw Error('ShadowedBuiltinDerive');
+        cursor++;
+      }
+    }
+    if (!derived.has(token.text)) continue;
+    const previous = tokens[index - 1]?.text, next = tokens[index + 1]?.text;
+    if (declarations.has(previous) || previous === 'as'
+        || (['<', ','].includes(previous) && [':', ',', '>', '='].includes(next))) {
+      throw Error('ShadowedBuiltinDerive');
+    }
+  }
+}
+
 /** Reject source-position/opaque macro semantics rather than inferring them from text. */
 export function validatePresentationScope(source) {
-  const tokens = sourceTokens(source);
+  const tokens = sourceTokens(source).filter(token => token.type !== 'comment');
+  const derived = new Set(), attributes = new Set();
   const forbidden = new Set(['macro_rules!', 'macro', 'line!', 'column!', 'include!', 'include_str!',
     'include_bytes!', 'no_implicit_prelude']);
   for (let index = 0; index < tokens.length; index++) {
     const token = tokens[index];
     if (token.type === 'ident' && forbidden.has(token.text)) throw Error('OpaquePresentationScope');
     if (token.type === 'punct' && token.text === '#') {
-      let cursor = index + 1;
-      const take = (text, type = 'punct') => {
-        const part = tokens[cursor++];
-        if (!part || part.type !== type || part.text !== text) throw Error('OpaqueRustAttribute');
-      };
-      take('!'); take('['); take('allow', 'ident'); take('(');
-      let count = 0;
-      while (tokens[cursor]?.text !== ')') {
-        const lint = tokens[cursor++];
-        if (lint?.type !== 'ident' || !/^[A-Za-z_][A-Za-z0-9_]*$/u.test(lint.text)) {
-          throw Error('OpaqueRustAttribute');
-        }
-        count++;
-        if (tokens[cursor]?.text !== ')') take(',');
-      }
-      if (!count) throw Error('OpaqueRustAttribute');
-      take(')'); take(']'); index = cursor - 1;
+      const end = attributeEnd(tokens, index, derived);
+      for (let cursor = index; cursor <= end; cursor++) attributes.add(cursor);
+      index = end;
     }
 
     if (token.type === 'ident' && token.text === 'use') {
@@ -65,6 +121,7 @@ export function validatePresentationScope(source) {
       }
     }
   }
+  rejectDeriveShadowing(tokens, derived, attributes);
 }
 
 /** Only nonempty horizontal token gaps change; literals/comments and punctuation adjacency stay exact. */

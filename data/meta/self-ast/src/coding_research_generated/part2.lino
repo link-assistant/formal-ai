@@ -1,0 +1,32 @@
+self_ast_census
+  target src/coding_research_generated/part2.rs
+  language rust
+  fidelity signature
+  byte_len 28487
+  line_count 814
+  content_id source_module_30f94fd857182b94
+  symbol_count 23
+  symbols
+    function coding_research_discovery_kernel 22 38
+    function coding_research_effect_kernel 53 115
+    function coding_research_search_index 130 169
+    function coding_research_latest_read_index 180 199
+    function coding_research_run_index 214 248
+    function coding_research_source_ur_ls 263 279
+    function coding_research_next_url 286 303
+    function coding_research_bindings_kernel 318 346
+    function coding_research_capture_decision 349 357
+    function coding_research_page_eligible 360 362
+    function coding_research_source_index 369 386
+    function coding_research_pure_repair_kernel 409 464
+    function coding_research_search_decision 467 475
+    function coding_research_language_eligible 482 484
+    function normalize_trailing_layout 499 536
+    function source_maintenance_normalize_cue_kernel 547 575
+    function source_maintenance_language_kernel 582 606
+    function source_maintenance_ownership_kernel 621 680
+    function source_maintenance_stage_kernel 687 729
+    function source_maintenance_effect_kernel 736 761
+    enum MlResearchQueryLetterLoop1Result 764 767
+    function ml_research_query_letter_loop1 782 808
+    enum MlResearchQueryIdentifierPartLoop2Result 811 814

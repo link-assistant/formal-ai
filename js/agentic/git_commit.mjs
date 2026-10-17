@@ -1,3 +1,4 @@
+import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // Committing and pushing what a task produced
 // (rust/src/agentic_coding/git_commit.rs, issue #1133).
 //
@@ -65,9 +66,7 @@ export function resolvesBody(reference) {
 }
 
 /** Mirrors `fn shell_quote`. */
-export function shellQuote(text) {
-  return `'${text.split("'").join("'\\''")}'`;
-}
+export {shellQuote};
 
 /** Mirrors `fn recipe_commit_command`. */
 export function recipeCommitCommand(recipe, target) {

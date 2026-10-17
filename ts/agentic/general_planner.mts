@@ -1,3 +1,4 @@
+import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 import { readRequestEnvelope } from './file_read/ownership.mjs';
 import { rawLowercaseSpan } from './write_request/lowercase_spans.mjs';
 import { generalChangePlanRecordHeader } from './append_contract.mjs';
@@ -368,9 +369,7 @@ export function mentionsBareRole(text, role) {
 }
 
 /** Mirrors `fn shell_quote`. @param {string} value */
-export function shellQuote(value) {
-  return `'${value.replaceAll("'", "'\\''")}'`;
-}
+export {shellQuote};
 
 function commandPlanText(intent, language, target) {
   return (localizedResponse(intent, language) ?? intent).split(TARGET_PLACEHOLDER).join(target);

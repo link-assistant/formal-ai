@@ -1,0 +1,87 @@
+{
+  "qualification": "JavaScript Number IEEE754 observations; actual native verification requires hosted test",
+  "lengths": [
+    {
+      "decimal": "0",
+      "bits": "0"
+    },
+    {
+      "decimal": "1",
+      "bits": "4607182418800017408"
+    },
+    {
+      "decimal": "4294967295",
+      "bits": "4751297606873776128"
+    },
+    {
+      "decimal": "4294967296",
+      "bits": "4751297606875873280"
+    },
+    {
+      "decimal": "9007199254740991",
+      "bits": "4845873199050653695"
+    },
+    {
+      "decimal": "9007199254740992",
+      "bits": "4845873199050653696"
+    },
+    {
+      "decimal": "9007199254740993",
+      "bits": "4845873199050653696"
+    },
+    {
+      "decimal": "18446744073709551615",
+      "bits": "4895412794951729152"
+    }
+  ],
+  "indices": [
+    {
+      "value": "0",
+      "expected": "0"
+    },
+    {
+      "value": "-0",
+      "expected": "0"
+    },
+    {
+      "value": "1",
+      "expected": "1"
+    },
+    {
+      "value": "1.5",
+      "expected": null
+    },
+    {
+      "value": "-1",
+      "expected": null
+    },
+    {
+      "value": "NaN",
+      "expected": null
+    },
+    {
+      "value": "inf",
+      "expected": null
+    },
+    {
+      "value": "-inf",
+      "expected": null
+    },
+    {
+      "value": "4294967295",
+      "expected": "4294967295"
+    },
+    {
+      "value": "4294967296",
+      "expected": "4294967296"
+    },
+    {
+      "value": "9007199254740991",
+      "expected": "9007199254740991"
+    },
+    {
+      "value": "18446744073709551616",
+      "expected": null
+    }
+  ]
+}

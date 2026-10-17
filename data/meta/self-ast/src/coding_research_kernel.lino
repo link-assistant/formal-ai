@@ -1,0 +1,12 @@
+self_ast_census
+  target src/coding_research_kernel.rs
+  language rust
+  fidelity signature
+  byte_len 1285
+  line_count 26
+  content_id source_module_16be319d7beb994f
+  symbol_count 3
+  symbols
+    function safe_tap_count 6 8
+    function tap_verification_decision 11 21
+    function tap_counter_syntax_valid 24 26

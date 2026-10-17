@@ -2,10 +2,10 @@ self_ast_census
   target src/client_integrations/global_verify.rs
   language rust
   fidelity signature
-  byte_len 11928
-  line_count 333
-  content_id source_module_07ac706e4c440713
-  symbol_count 27
+  byte_len 11907
+  line_count 331
+  content_id source_module_912cf37699821aa1
+  symbol_count 26
   symbols
     const PROBE_TIMEOUT 32 32
     const PROBE_PROMPT 35 35
@@ -33,4 +33,3 @@ self_ast_census
     function probe_headless_start 227 274
     function probe_skipped_message 276 280
     function run_probe 286 329
-    function shell_quote 331 333

@@ -9,6 +9,8 @@ fn certificate_belongs_only_to_selected_final_bytes() {
         origin: "fixture_observed".to_owned(),
         payload_role: FinalPayloadRole::AuditReport,
         artifact: None,
+        research: None,
+        discovery: None,
     };
     let selected = ResolvedPlan::new(
         AgenticPlan::Final(observed.text.clone()),
@@ -49,6 +51,8 @@ fn source_operand_requires_a_complete_matching_successful_receipt() {
                 origin: "source_syntax_observed".to_owned(),
                 payload_role: FinalPayloadRole::SourceModule,
                 artifact: Some(artifact),
+                research: None,
+                discovery: None,
             }),
         )
     };

@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_translation_composition.js"
+  ceiling 151
+  rationale "First publication: existing translation prompt parsing and complete lexical composition helpers extracted without copied definitions; both original worker ceilings remain unchanged."

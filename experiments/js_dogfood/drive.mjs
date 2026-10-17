@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import {ownedSourceMaintenanceRequest} from '../../js/agentic/source_maintenance.mjs';
+import {createScopedSourceEditHost} from './scoped-source-edit-host.mjs';
 // Drive the JavaScript Formal AI planner (`planChatStep`, the function the JS
 // server runs for /v1/chat/completions in agent mode) through a whole agentic
 // session in-process, executing every planned tool call against a real
@@ -287,7 +289,21 @@ export function observedOperation(token, originalNeed, directory) {
 
 export async function drive(planChatStep,dir,prompt,options={}) {
  if(options.onEvent!==undefined&&typeof options.onEvent!=='function')throw Error('drive_event_sink_required');
- if(options.onEvent){const current={onEvent:options.onEvent,active:true,failures:0};return driveEvents.run(current,async()=>{try{const result=await drive(planChatStep,dir,prompt,{...options,onEvent:undefined});emitDriveEvent({kind:'terminal',result});return current.failures?{...result,eventSinkFailures:current.failures}:result;}catch(error){emitDriveEvent({kind:'exception',error});throw error;}finally{current.active=false;}});}
+ if (options.onEvent) {
+  const current = {onEvent:options.onEvent,active:true,failures:0};
+  return driveEvents.run(current, async () => {
+   try {
+    const result = await drive(planChatStep,dir,prompt,{...options,onEvent:undefined});
+    emitDriveEvent({kind:'terminal',result});
+    return current.failures ? {...result,eventSinkFailures:current.failures} : result;
+   } catch (error) {
+    emitDriveEvent({kind:'exception',error});
+    throw error;
+   } finally {
+    current.active = false;
+   }
+  });
+ }
 
  if(options.provenance&&!activeDriveCapture()){
   const sourceId=createHash('sha256').update(readFileSync(fileURLToPath(import.meta.url))).digest('hex');
@@ -367,6 +383,8 @@ async function driveInternal(planChatStep, dir, prompt, {
     : collection !== null && collection.every(frame => frame !== null)
       && new Set(collection.map(frame => frame.target)).size === collection.length ? collection : [];
   const createContract = createContracts[0] ?? null;
+  const maintenanceContract = ownedSourceMaintenanceRequest(prompt);
+  const maintenanceSession = maintenanceContract === null ? null : createScopedSourceEditHost({workspace:dir,ownedPath:maintenanceContract.target,maximumBytes:131072});
   const createdTargets = new Set();
   // Bounded path checks detect known replacement/aliases; they do not prove namespace atomicity.
   function createdTargetIsCurrent(target) {
@@ -430,7 +448,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       && mentionsRole('evidence-report-artifact-kind', clause.text);
   });
   if (readOnlyOperation && reportDelivery && readReportFrame === null) readOnlyOperation = false;
-  let sourceEditOperation = false;
+  let sourceEditOperation = maintenanceContract !== null;
   const firstGoal = Array.isArray(declaredGoals) ? declaredGoals[0] : null;
   if (createIntent && createContract === null && firstGoal?.kind === 'source_edit'
       && firstGoal.sourceUnit === 'utf16'
@@ -643,7 +661,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       const before=capture&&observedPath?capture.before(observedPath):null;
       const creation = ownedCreation(call);
       if (creation?.source_creation?.success === true) createdTargets.add(creation.source_creation.path);
-      const receipt = creation ?? (sourceSession
+      const receipt = maintenanceSession !== null ? maintenanceSession.execute(call) : creation ?? (sourceSession
         ? sourceSession.executeResult(call, messages, () => executeResult(dir, call))
         : executeResult(dir, call));
       emitDriveEvent({kind:'tool',receipt});

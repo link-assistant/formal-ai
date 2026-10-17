@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_dialogue_formalization.js"
+  ceiling 198
+  rationale "First-publication exact source-owned dialogue/locale obligation factory; main has no prior module; every existing main ceiling unchanged."

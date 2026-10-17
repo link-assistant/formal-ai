@@ -2,8 +2,8 @@
 
 | Requirement | Status | Evidence / remaining work |
 |---|---|---|
-| R8 In-repo duplicate-function gate | Drafted library script | Corrected lexical scanner, SHA-256 grouping, explicit baseline initialization, fresh/stale checks; fixture tests drafted. No runtime verification. |
-| Initial exact baseline and current inventory | Pending CI measurement | Historical docs/duplicate-groups.md retained as historical evidence; no fabricated digest baseline. Run --json and --write-baseline on the integrated tree, review and commit baseline, then enable required gate. |
+| R8 In-repo duplicate-function gate | Pending strict acceptance | Historical lexical/baseline script is insufficient. The owner's 2026-10-17 strict AST policy is authoritative; see issue-1182-strict-source-duplication.md. Hosted scanner controls and complete zero-independent-clone acceptance remain required. |
+| Historical baseline proposal | Superseded by strict policy | Preserve historical inventories as evidence only. Do not initialize or accept a baseline: all independent candidates and coverage gaps must be resolved before strict acceptance. |
 | R9 Cross-organization scan and dependency owner selection | Drafted | Isolated org/repo checkout names; Cargo/npm dependency detection; local fixture path; stable marker; refuse issue creation when duplicate search fails. |
 | Weekly workflow | Drafted scan-only default | Resolves credential, installs toolchain/runner, scans and uploads record. Opening issues requires explicit workflow input; no issues opened during implementation. |
 | R10 Replace local duplicate logic with maintained dependencies | Partial / parent integration | Existing upstream plans and historical groups retained. This script supplies candidate inventory; it does not complete every consolidation or dependency adoption. |

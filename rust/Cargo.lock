@@ -1090,6 +1090,7 @@ dependencies = [
  "tungstenite",
  "unicode-general-category",
  "unicode-normalization",
+ "url",
  "walkdir",
  "web-capture",
  "web-search",

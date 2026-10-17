@@ -38,6 +38,8 @@ jobs:
       # because peter-evans/create-pull-request below commits and pushes the
       # `dependencies/latest` branch from this working tree.
       - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
 
       - uses: ./.github/actions/automation-token
         with:
@@ -97,10 +99,10 @@ jobs:
           while IFS= read -r lock; do
             directory="$(dirname "$lock")"
             case "$lock" in
-              */bun.lock)
+              bun.lock|*/bun.lock)
                 (cd "$directory" && bun install --lockfile-only)
                 ;;
-              */package-lock.json)
+              package-lock.json|*/package-lock.json)
                 (cd "$directory" && npm install --package-lock-only --ignore-scripts --no-audit --no-fund)
                 ;;
             esac

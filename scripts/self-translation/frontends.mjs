@@ -6,7 +6,7 @@
 // one IR (PR #196, js/src/translation/javascript.js and rust.js).
 
 import { constructMap, idBySpelling, refuse } from './constructs.mjs';
-import { camelFromSnake, canonicalRustName, snakeFromCamel } from './ir.mjs';
+import { pureJavascriptIdentifier as camelFromSnake, pureMetaSymbolFromRust as canonicalRustName, pureMetaSymbol as snakeFromCamel } from './ir.mjs';
 
 const UNSUPPORTED_BINARY = new Set(['==', '!=', '**', '??', '&', '|', '^', '<<', '>>', '>>>', 'instanceof', 'in', 'as']);
 const ASSIGNMENTS = new Set(['=', '+=', '-=', '*=', '/=', '%=', '++', '--', '&&=', '||=', '??=']);
@@ -111,7 +111,7 @@ export function parseJavaScriptItem(tokens, doc) {
     at.eat(';');
     if (!at.done()) refuse('unsupported', at.peek().text);
     if (!/^[A-Z][A-Z0-9_]+$/u.test(name.text)) refuse('statement');
-    return { kind: 'constant', name: name.text, exported, type: literalType(value), value };
+    return { kind: 'constant', name: snakeFromCamel(name.text), exported, type: literalType(value), value };
   }
   if (at.is('let') || at.is('var')) refuse('mutable');
   at.expect('function');
@@ -213,7 +213,7 @@ export function parseRustItem(tokens) {
     at.expect('=');
     const value = expression(at, 'Rust');
     at.expect(';');
-    return { kind: 'constant', name, exported, type, value };
+    return { kind: 'constant', name: canonicalRustName(name), exported, type, value };
   }
   if (at.is('async')) refuse('async');
   at.expect('fn');

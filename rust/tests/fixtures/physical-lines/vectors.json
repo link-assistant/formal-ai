@@ -1,0 +1,20 @@
+{
+  "schema": "physical-lines-vectors/v1",
+  "reference": "https://doc.rust-lang.org/std/primitive.str.html#method.lines",
+  "cases": [
+    {"id":"empty","source":"","expected":[]},
+    {"id":"one-empty-line","source":"\n","expected":[""]},
+    {"id":"two-empty-lines","source":"\n\n","expected":["",""]},
+    {"id":"terminal-lf","source":"a\n","expected":["a"]},
+    {"id":"bare-final-cr","source":"a\r","expected":["a\r"]},
+    {"id":"actual-crlf","source":"a\r\n","expected":["a"]},
+    {"id":"crlf-then-bare-cr","source":"a\r\nb\r","expected":["a","b\r"]},
+    {"id":"bare-cr-only","source":"\r","expected":["\r"]},
+    {"id":"empty-crlf-line","source":"\r\n","expected":[""]},
+    {"id":"lf-then-bare-cr","source":"\n\r","expected":["","\r"]},
+    {"id":"only-one-cr-before-lf","source":"a\r\r\n","expected":["a\r"]},
+    {"id":"interior-cr","source":"a\rb","expected":["a\rb"]},
+    {"id":"unicode-and-bare-cr","source":"🙂\r\nЖ\r","expected":["🙂","Ж\r"]},
+    {"id":"bom-retained","source":"﻿a\n","expected":["﻿a"]}
+  ]
+}

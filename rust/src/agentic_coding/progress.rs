@@ -57,6 +57,11 @@ pub struct Progress {
 }
 
 impl Progress {
+    /// Read-only observations for canonical research selectors; no new authority is granted.
+    pub(super) fn research_attempts(&self) -> &[ToolAttempt] {
+        &self.attempts
+    }
+
     pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut attempts = Vec::new();

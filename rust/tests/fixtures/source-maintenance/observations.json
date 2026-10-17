@@ -1,0 +1,156 @@
+{
+  "schema": "source-maintenance-observations/v1",
+  "purpose": "Shared JS/native observation controls; native execution must be hosted, source is never executed.",
+  "cases": [
+    {
+      "id": "crlf-and-eof",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "export const value = 3; \t\r\n\t",
+      "expected": {
+        "kind": "normalized",
+        "source": "export const value = 3;\r\n"
+      }
+    },
+    {
+      "id": "unicode-scalar-byte-spans",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "export const название = '🙂é'; \r\n",
+      "expected": {
+        "kind": "normalized",
+        "source": "export const название = '🙂é';\r\n"
+      }
+    },
+    {
+      "id": "typed-source",
+      "property": "trailing-horizontal-whitespace",
+      "language": "typescript",
+      "source": "export const value: number = 3;\t\n",
+      "expected": {
+        "kind": "normalized",
+        "source": "export const value: number = 3;\n"
+      }
+    },
+    {
+      "id": "string-bytes-retained",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "const text = 'a  ';  \n",
+      "expected": {
+        "kind": "normalized",
+        "source": "const text = 'a  ';\n"
+      }
+    },
+    {
+      "id": "comment-bytes-retained",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "// kept\nconst value = 1;  \n",
+      "expected": {
+        "kind": "normalized",
+        "source": "// kept\nconst value = 1;\n"
+      }
+    },
+    {
+      "id": "comment-trailing-run-protected",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "// kept  \nconst value = 1;\n",
+      "expected": {
+        "kind": "gap",
+        "reason": "SourceMaintenanceProtectedLexeme"
+      }
+    },
+    {
+      "id": "template-whole-opaque",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "const text = `a  \nb`;\n",
+      "expected": {
+        "kind": "gap",
+        "reason": "SourceMaintenanceProtectedLexeme"
+      }
+    },
+    {
+      "id": "template-interpolation-opaque",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "const text = `${(() => {\nreturn 1; \n})()}`;\n",
+      "expected": {
+        "kind": "gap",
+        "reason": "SourceMaintenanceProtectedLexeme"
+      }
+    },
+    {
+      "id": "regex-bytes-retained",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "const pattern = /a[ ]+/gu; \n",
+      "expected": {
+        "kind": "normalized",
+        "source": "const pattern = /a[ ]+/gu;\n"
+      }
+    },
+    {
+      "id": "shebang-bytes-retained",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "#!/usr/bin/env node\nconst value = 1; \n",
+      "expected": {
+        "kind": "normalized",
+        "source": "#!/usr/bin/env node\nconst value = 1;\n"
+      }
+    },
+    {
+      "id": "lone-cr-preserved",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "const value = 1; \r",
+      "expected": {
+        "kind": "normalized",
+        "source": "const value = 1; \r"
+      }
+    },
+    {
+      "id": "already-normalized",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "export const value = 1;\n",
+      "expected": {
+        "kind": "normalized",
+        "source": "export const value = 1;\n"
+      }
+    },
+    {
+      "id": "invalid-source-refused",
+      "property": "trailing-horizontal-whitespace",
+      "language": "javascript",
+      "source": "export const = ;  \n",
+      "expected": {
+        "kind": "gap",
+        "reason": "SourceMaintenanceInvalidSource"
+      }
+    },
+    {
+      "id": "unowned-property",
+      "property": "rewrite-semantics",
+      "language": "javascript",
+      "source": "const value = 1; \n",
+      "expected": {
+        "kind": "gap",
+        "reason": "SourceMaintenancePropertyUnsupported"
+      }
+    },
+    {
+      "id": "unsupported-language",
+      "property": "trailing-horizontal-whitespace",
+      "language": "python",
+      "source": "value = 1 \n",
+      "expected": {
+        "kind": "gap",
+        "reason": "SourceMaintenancePropertyUnsupported"
+      }
+    }
+  ]
+}

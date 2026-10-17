@@ -1,8 +1,8 @@
 {
-  "schema": "release-original-stage-coverage/v1", "workflowSha256": "948c281d78f889480b5c78d2fc2026a3cc76e779d22480c3b8ece7a7a1ca68e2",
+  "schema": "release-original-stage-coverage/v1", "workflowSha256": "efb8bc7552bb6d0bdf3b405a713c690e7bd65571668e669fba11e48c7d6f376f",
   "callers": [
     {
-      "caller": "auto-release", "bodySha256": "75b2a44214e9a495d66dfe634919a91b93b137cf85d1c4f9bf6c10babe428537", "originalSteps": 28,
+      "caller": "auto-release", "bodySha256": "30838e01005b84b922413f4acd42e58a00cfb6d73abf6115be2b45ba0d463c65", "originalSteps": 28,
       "steps": [
         {
           "ordinal": 0, "name": "actions/checkout@v7", "stage": "prepare-source", "sha256": "78bf11c402b6253fa5bf89c76c386e0ff199ed9747fd2c904efb90be01ef15a0",
@@ -110,8 +110,8 @@
         },
         {
           "ordinal": 17, "name": "Expose actual BuildKit cache runtime", "stage": "publish-verify-images",
-          "sha256": "184bb5a5609cb1cb055ec4f6ed145cc94a68d95f02276c37eb88d6627257ad76",
-          "raw": "      - name: Expose actual BuildKit cache runtime\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        uses: actions/github-script@v8\n        with:\n          script: |\n            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {\n              const value = process.env[key];\n              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);\n              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);\n              core.exportVariable(key, value);\n            }\n            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');\n",
+          "sha256": "8dca7e2218a30ab3052b2c57ef100b5653fede070141e1711f855d9796292f48",
+          "raw": "      - name: Expose actual BuildKit cache runtime\n        if: |\n          steps.check.outputs.should_release == 'true' && (\n            steps.prepared.outputs.crate_published == 'true' ||\n            steps.publish-crate.outputs.publish_result == 'success'\n          )\n        uses: actions/github-script@v9\n        with:\n          script: |\n            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {\n              const value = process.env[key];\n              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);\n              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);\n              core.exportVariable(key, value);\n            }\n            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');\n",
           "stepId": null,
           "referencedStepOutputs": [{"step":"check","output":"should_release"},{"step":"prepared","output":"crate_published"},{"step":"publish-crate","output":"publish_result"}]
         },
@@ -458,7 +458,7 @@
       ]
     },
     {
-      "caller": "manual-release", "bodySha256": "24564369f149af5961efe112c4a13ad37bc56f0c2df55265ebf957efc1d767d8", "originalSteps": 24,
+      "caller": "manual-release", "bodySha256": "94ff176918fa37ccddfe578417b8e49f490e7f56afba14f896de76483ce5ac55", "originalSteps": 24,
       "steps": [
         {
           "ordinal": 0, "name": "actions/checkout@v7", "stage": "prepare-source", "sha256": "78bf11c402b6253fa5bf89c76c386e0ff199ed9747fd2c904efb90be01ef15a0",
@@ -542,8 +542,8 @@
         },
         {
           "ordinal": 13, "name": "Expose actual BuildKit cache runtime", "stage": "publish-verify-images",
-          "sha256": "3a341adf166577f3aa65d9f88c132b47a982e6030f97f34c24e341e78a8ec609",
-          "raw": "      - name: Expose actual BuildKit cache runtime\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        uses: actions/github-script@v8\n        with:\n          script: |\n            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {\n              const value = process.env[key];\n              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);\n              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);\n              core.exportVariable(key, value);\n            }\n            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');\n",
+          "sha256": "d171f7ae31e3d3fc92cae246682dcb7544bfcf58575d2b897e26784116c0f5d6",
+          "raw": "      - name: Expose actual BuildKit cache runtime\n        if: |\n          (steps.version.outputs.version_committed == 'true' ||\n            steps.version.outputs.already_released == 'true') &&\n          steps.publish-crate.outputs.publish_result == 'success'\n        uses: actions/github-script@v9\n        with:\n          script: |\n            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {\n              const value = process.env[key];\n              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);\n              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);\n              core.exportVariable(key, value);\n            }\n            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');\n",
           "stepId": null,
           "referencedStepOutputs": [{"step":"version","output":"version_committed"},{"step":"version","output":"already_released"},{"step":"publish-crate","output":"publish_result"}]
         },

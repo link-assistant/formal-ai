@@ -1,0 +1,21 @@
+self_ast_census
+  target src/coding_research_generated/part6.rs
+  language rust
+  fidelity signature
+  byte_len 24022
+  line_count 607
+  content_id source_module_1db8ad2ae6e87fee
+  symbol_count 12
+  symbols
+    function ml_normalize_trailing_layout_loop37 26 127
+    function ml_source_maintenance_normalize_cue_kernel_loop41 134 160
+    function ml_source_maintenance_normalize_cue_kernel_loop42 167 193
+    function ml_source_maintenance_normalize_cue_kernel_loop43 204 236
+    function ml_source_maintenance_normalize_cue_kernel_loop44 243 298
+    function ml_source_maintenance_language_kernel_loop45 309 340
+    function ml_source_maintenance_ownership_kernel_loop46 355 395
+    function ml_source_maintenance_ownership_kernel_loop49 414 484
+    function ml_source_maintenance_ownership_kernel_loop48 495 524
+    function ml_source_maintenance_ownership_kernel_loop47 535 563
+    enum MlSourceMaintenanceOwnershipKernelLoop50Result 566 569
+    function ml_source_maintenance_ownership_kernel_loop50 580 607

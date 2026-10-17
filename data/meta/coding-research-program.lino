@@ -1,0 +1,13 @@
+# Source/provenance observation of the actual checked portable-core IR.
+(coding-research-program
+  (source-sha256 9a4627830625ebefce4ed986a638319eb7c0b8dc3ff3cdb7da62b153601559f6)
+  (checked-ir-sha256 83aa313eb101281e603f14b7c3ed8e33d04ca44696cb76dc2849d5e5e568764b)
+  (upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b)
+  (runtime-count 1)
+  (source-unit (path "js/agentic/portable/coding_research_query.mjs") (sha256 6f8faa7ef98be795ea6376be8c7a0d8eb1bebacfb0c0926802fc44180d167457))
+  (source-unit (path "js/agentic/portable/coding_research_rebinding.mjs") (sha256 94c13cfbb61589369e36a08dbfbe6e0b6754a94ab97e54338de7b8137bbc533a))
+  (source-unit (path "js/agentic/portable/coding_research_acceptance.mjs") (sha256 3ab65463ed04967972aa24e28de1e0986e1393a046b5c907e3d038b789f8a26d))
+  (source-unit (path "js/agentic/portable/coding_research_state.mjs") (sha256 2b9a11fc9b742817a53c619f3fe8d27fe2bec6ed211eb6965d65600a6c1d550d))
+  (source-unit (path "js/agentic/portable/source_layout.mjs") (sha256 3cb6f825b55d9dc788907359046507754e942353ad6d0f83f4e92c5e359502e0))
+  (source-unit (path "js/agentic/portable/source_maintenance_state.mjs") (sha256 52a5fb581e27b80d8b8f427e1865e4311f5d5f0eb0a5621aea62b9d962717a23))
+)

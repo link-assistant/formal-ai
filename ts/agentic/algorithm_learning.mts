@@ -1,3 +1,4 @@
+import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // Agent-CLI path for discovering reusable algorithms from supplied traces
 // (rust/src/agentic_coding/algorithm_learning.rs).
 //
@@ -198,9 +199,7 @@ function resultDocument(task, status, conformance) {
 }
 
 /** Source counterpart: shell_quote. Input is a JavaScript string. */
-export function shellQuote(value) {
-  return "'" + value.replaceAll("'", "'\\''") + "'";
-}
+export {shellQuote};
 
 /** Mirrors CaptureOptions and capture_program; malformed UTF-8 is refused. */
 export function captureProgram(command, { timeout = 60000, maxBuffer = 8388608 } = {}) {

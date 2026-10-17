@@ -1,3 +1,4 @@
+import {rustLines} from '../logging/text-lines.mjs';
 // MCP over JSON-RPC 2.0 (`POST /mcp`): rust/src/mcp.rs `handle_mcp_request`,
 // with the computer-use primitives it advertises and executes
 // (rust/src/computer_use/mod.rs `mcp_tool_definitions`, `input_schema`,
@@ -198,13 +199,7 @@ function stringArray(args, key) {
   return parsed;
 }
 
-/** `str::lines`: split on `\n`, drop a trailing `\r`, no final empty line. */
-function lines(text) {
-  if (!text) return [];
-  const parts = text.split('\n');
-  if (parts[parts.length - 1] === '') parts.pop();
-  return parts.map((line) => line.replace(/\r$/, ''));
-}
+
 
 function decodeUtf8(bytes) {
   try {
@@ -247,7 +242,7 @@ function httpOutput(method, url, status, body, cachePath) {
 }
 
 function csvColumn(content, column) {
-  const rows = lines(content);
+  const rows = (content ? rustLines(content) : []);
   if (!rows.length) throw 'csv_header_missing';
   const index = rows[0].split(',').indexOf(column);
   if (index < 0) throw `csv_column_missing:${column}`;
@@ -549,7 +544,7 @@ class ComputerUseSession {
     const output = arg(args, 'output');
     const content = this.readText(input, 'shell_input_failed');
     let generated;
-    if (operation === 'count_lines') generated = `${lines(content).length}\n`;
+    if (operation === 'count_lines') generated = `${(content ? rustLines(content) : []).length}\n`;
     else if (operation === 'filter_csv') generated = filterCsv(content, arg(args, 'column'), arg(args, 'equals'));
     else if (operation === 'unique_csv') generated = uniqueCsv(content, arg(args, 'column'));
     else throw `unsupported_allowlisted_operation:${operation}`;

@@ -1,0 +1,18 @@
+self_ast_census
+  target src/formalization/typed_meaning.rs
+  language rust
+  fidelity signature
+  byte_len 8167
+  line_count 249
+  content_id source_module_091d411a5f9b6282
+  symbol_count 9
+  symbols
+    function typed_meaning 6 71
+    function statement_identity 75 93
+    function preserve_typed_rendering 96 125
+    function typed_meaning_entails 129 187
+    function facts 131 137
+    function fields 138 145
+    function inherit_numeric_evidence 191 225
+    module semantic_entailment_tests 229 229
+    function count_source_terms 233 249

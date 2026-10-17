@@ -8,8 +8,8 @@ mod precedence;
 mod steps;
 use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
 use continuation::continued_agent_task;
-pub use continuation::trace_route;
 pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
+pub use continuation::{trace_route, trace_route_with};
 pub use precedence::checked_route_precedence;
 use steps::{stop_repeated_call, stop_repeated_failure};
 
@@ -390,6 +390,11 @@ pub(super) fn plan_settled_routes(
     // modules, write both, run the stated command.
     // A copy or move followed by edits of the file it makes is planned
     // sentence by sentence (PR #1188 G82).
+    if let Some(plan) =
+        super::source_maintenance::plan_source_maintenance_step(owned, messages, tool_names, result)
+    {
+        return Some(plan);
+    }
     if let Some(plan) = super::request_sequence::plan_request_sequence_step(
         owned,
         messages,
@@ -401,7 +406,9 @@ pub(super) fn plan_settled_routes(
         super::workspace_change::plan_workspace_change_step(owned, messages, tool_names, result)
     })
     .or_else(|| {
-        super::module_function::plan_module_function_step(owned, messages, tool_names, result)
+        super::coding_research::plan_module_function_research_step(
+            owned, messages, tool_names, result,
+        )
     })
     // A bug report with a stated expectation is checked before anything is
     // rewritten (PR #1188 T93).
@@ -530,8 +537,13 @@ pub(super) fn plan_settled_routes(
                 && compose_general_change_plan(task).is_none()
                 && super::general_planner::compose_edit_request(task).is_none())
             .then(|| {
-                conversation_recall::plan_verified_recipe_step(messages, tool_names).unwrap_or_else(
-                    || {
+                conversation_recall::plan_verified_recipe_step(messages, tool_names)
+                    .or_else(|| {
+                        super::coding_research::plan_coding_research_step(
+                            task, messages, tool_names, result,
+                        )
+                    })
+                    .unwrap_or_else(|| {
                         record(
                             AgenticPlan::Final(
                                 super::general_planner::missing_implementation_contract(task),
@@ -540,8 +552,7 @@ pub(super) fn plan_settled_routes(
                             "semantic-authoring-missing-contract",
                             result,
                         )
-                    },
-                )
+                    })
             })
         })
     {

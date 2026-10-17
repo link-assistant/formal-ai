@@ -1,0 +1,1198 @@
+{
+  "transport": "synthetic only",
+  "rows": [
+    {
+      "fixture": "unseen-zero-arg-greeting",
+      "scenario": "created",
+      "phase": "tool",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function cairnSignal() that returns a reference label in cairn.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "ENOENT: file not found",
+          "source_read": {
+            "path": "cairn.mjs",
+            "success": false,
+            "complete": false,
+            "format": "raw",
+            "error_code": "ENOENT",
+            "error": "ENOENT",
+            "exit_code": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {cairnSignal} from './cairn.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(cairnSignal(), 'Hello, fjord-2047!');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that returns reference label\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/unseen-zero-argument-return"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/unseen-zero-argument-return\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function sampledWelcome() { return 'Hello, fjord-2047!'; }</code></pre></body></html>"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "tool_calls",
+        "calls": [
+          {
+            "tool": "write_file",
+            "arguments": "{\"content\":\"export function cairnSignal() { return 'Hello, fjord-2047!'; }\\n\",\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+          }
+        ],
+        "research": {
+          "url": "https://reference.example/unseen-zero-argument-return",
+          "sha256": "92e42e894d249a40cc0fe55c6bf48ec742474806469489cbdec8090dd11fb409",
+          "query": "javascript function write function that returns reference label",
+          "declaration": {
+            "path": "cairn.mjs",
+            "moduleContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+            "declarationContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+            "span": {
+              "byteStart": 0,
+              "byteEnd": 58,
+              "start": 0,
+              "end": 58
+            }
+          },
+          "contract": {
+            "inputs": [],
+            "result": {
+              "kind": "text"
+            },
+            "callEffects": "none",
+            "preconditions": [],
+            "status": "supported",
+            "gap": null,
+            "structuralRequirements": [],
+            "conditionalIR": {
+              "status": "unknown",
+              "reason": "UnsupportedArity",
+              "sourceEffects": "unknown"
+            }
+          },
+          "bindings": [
+            {
+              "from": "sampledWelcome",
+              "to": "cairnSignal"
+            }
+          ],
+          "status": "proposal",
+          "verified": false,
+          "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533"
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "cairn.mjs",
+          "observed": true,
+          "status": "reported-failure",
+          "complete": false,
+          "absent": true,
+          "sourceSha256": null,
+          "error": "ENOENT"
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+          "error": null
+        },
+        "successfulWriteSha256": null,
+        "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+        "receipt": null
+      }
+    },
+    {
+      "fixture": "unseen-zero-arg-greeting",
+      "scenario": "created",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function cairnSignal() that returns a reference label in cairn.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "ENOENT: file not found",
+          "source_read": {
+            "path": "cairn.mjs",
+            "success": false,
+            "complete": false,
+            "format": "raw",
+            "error_code": "ENOENT",
+            "error": "ENOENT",
+            "exit_code": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {cairnSignal} from './cairn.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(cairnSignal(), 'Hello, fjord-2047!');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that returns reference label\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/unseen-zero-argument-return"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/unseen-zero-argument-return\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function sampledWelcome() { return 'Hello, fjord-2047!'; }</code></pre></body></html>"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-4",
+              "type": "function",
+              "function": {
+                "name": "write_file",
+                "arguments": "{\"content\":\"export function cairnSignal() { return 'Hello, fjord-2047!'; }\\n\",\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-4",
+          "name": "write_file",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-5",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"node --test acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-5",
+          "name": "bash",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Created and verified `cairn.mjs` through the agentic CLI harness.\n\n```javascript\nexport function cairnSignal() { return 'Hello, fjord-2047!'; }\n\n```\n\nCommands executed by the harness:\n- `node --test acceptance.test.mjs`\n\nActual tool output:\n\n```text\n{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}\n```",
+        "result": {
+          "text": "Created and verified `cairn.mjs` through the agentic CLI harness.\n\n```javascript\nexport function cairnSignal() { return 'Hello, fjord-2047!'; }\n\n```\n\nCommands executed by the harness:\n- `node --test acceptance.test.mjs`\n\nActual tool output:\n\n```text\n{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}\n```",
+          "disposition": "finding",
+          "origin": "coding-research-verified-created",
+          "payloadRole": "finding",
+          "artifact": null
+        },
+        "research": {
+          "url": "https://reference.example/unseen-zero-argument-return",
+          "sha256": "92e42e894d249a40cc0fe55c6bf48ec742474806469489cbdec8090dd11fb409",
+          "query": "javascript function write function that returns reference label",
+          "declaration": {
+            "path": "cairn.mjs",
+            "moduleContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+            "declarationContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+            "span": {
+              "byteStart": 0,
+              "byteEnd": 58,
+              "start": 0,
+              "end": 58
+            }
+          },
+          "contract": {
+            "inputs": [],
+            "result": {
+              "kind": "text"
+            },
+            "callEffects": "none",
+            "preconditions": [],
+            "status": "supported",
+            "gap": null,
+            "structuralRequirements": [],
+            "conditionalIR": {
+              "status": "unknown",
+              "reason": "UnsupportedArity",
+              "sourceEffects": "unknown"
+            }
+          },
+          "bindings": [
+            {
+              "from": "sampledWelcome",
+              "to": "cairnSignal"
+            }
+          ],
+          "status": "verified",
+          "verified": true,
+          "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533"
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "cairn.mjs",
+          "observed": true,
+          "status": "reported-failure",
+          "complete": false,
+          "absent": true,
+          "sourceSha256": null,
+          "error": "ENOENT"
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+          "error": null
+        },
+        "successfulWriteSha256": "415a710dc6fc4c293048bd172b0c324f1ee4d36d587074ae07c57fb9c759bbc6",
+        "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+        "receipt": "{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}"
+      }
+    },
+    {
+      "fixture": "unseen-zero-arg-greeting",
+      "scenario": "existing",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function cairnSignal() that returns a reference label in cairn.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "export function cairnSignal() { return 'Hello, fjord-2047!'; }\n",
+          "source_read": {
+            "path": "cairn.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {cairnSignal} from './cairn.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(cairnSignal(), 'Hello, fjord-2047!');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that returns reference label\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/unseen-zero-argument-return"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/unseen-zero-argument-return\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function sampledWelcome() { return 'Hello, fjord-2047!'; }</code></pre></body></html>"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-4",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"node --test acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-4",
+          "name": "bash",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Existing source matches the rediscovered procedure and independent verification succeeded; no source write was needed.",
+        "result": {
+          "text": "Existing source matches the rediscovered procedure and independent verification succeeded; no source write was needed.",
+          "disposition": "finding",
+          "origin": "coding-research-verified-existing",
+          "payloadRole": "finding",
+          "artifact": null
+        },
+        "research": {
+          "url": "https://reference.example/unseen-zero-argument-return",
+          "sha256": "92e42e894d249a40cc0fe55c6bf48ec742474806469489cbdec8090dd11fb409",
+          "query": "javascript function write function that returns reference label",
+          "declaration": {
+            "path": "cairn.mjs",
+            "moduleContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+            "declarationContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+            "span": {
+              "byteStart": 0,
+              "byteEnd": 58,
+              "start": 0,
+              "end": 58
+            }
+          },
+          "contract": {
+            "inputs": [],
+            "result": {
+              "kind": "text"
+            },
+            "callEffects": "none",
+            "preconditions": [],
+            "status": "supported",
+            "gap": null,
+            "structuralRequirements": [],
+            "conditionalIR": {
+              "status": "unknown",
+              "reason": "UnsupportedArity",
+              "sourceEffects": "unknown"
+            }
+          },
+          "bindings": [
+            {
+              "from": "sampledWelcome",
+              "to": "cairnSignal"
+            }
+          ],
+          "status": "verified",
+          "verified": true,
+          "sourceAuthored": false,
+          "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533"
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "cairn.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "415a710dc6fc4c293048bd172b0c324f1ee4d36d587074ae07c57fb9c759bbc6",
+          "error": null
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+          "error": null
+        },
+        "successfulWriteSha256": null,
+        "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+        "receipt": "{\"exit_code\":0,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 1\\n# fail 0\\n# skipped 0\\n# cancelled 0\\n\"}"
+      }
+    },
+    {
+      "fixture": "unseen-zero-arg-greeting",
+      "scenario": "failed",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function cairnSignal() that returns a reference label in cairn.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "ENOENT: file not found",
+          "source_read": {
+            "path": "cairn.mjs",
+            "success": false,
+            "complete": false,
+            "format": "raw",
+            "error_code": "ENOENT",
+            "error": "ENOENT",
+            "exit_code": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {cairnSignal} from './cairn.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(cairnSignal(), 'Hello, fjord-2047!');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that returns reference label\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/unseen-zero-argument-return"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/unseen-zero-argument-return\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function sampledWelcome() { return 'Hello, fjord-2047!'; }</code></pre></body></html>"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-4",
+              "type": "function",
+              "function": {
+                "name": "write_file",
+                "arguments": "{\"content\":\"export function cairnSignal() { return 'Hello, fjord-2047!'; }\\n\",\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-4",
+          "name": "write_file",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-5",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"node --test acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-5",
+          "name": "bash",
+          "content": "{\"exit_code\":1,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 0\\n# fail 1\\n# skipped 0\\n# cancelled 0\\n\"}"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Step `node --test acceptance.test.mjs` for `cairn.mjs` failed with exit code 1. The harness ran the command as asked; the command itself reported:\n\n```text\n{\"exit_code\":1,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 0\\n# fail 1\\n# skipped 0\\n# cancelled 0\\n\"}\n```",
+        "result": {
+          "text": "Step `node --test acceptance.test.mjs` for `cairn.mjs` failed with exit code 1. The harness ran the command as asked; the command itself reported:\n\n```text\n{\"exit_code\":1,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 0\\n# fail 1\\n# skipped 0\\n# cancelled 0\\n\"}\n```",
+          "disposition": "failure",
+          "origin": "coding-research-verification-failed",
+          "payloadRole": "finding",
+          "artifact": null
+        },
+        "research": {
+          "url": "https://reference.example/unseen-zero-argument-return",
+          "sha256": "92e42e894d249a40cc0fe55c6bf48ec742474806469489cbdec8090dd11fb409",
+          "query": "javascript function write function that returns reference label",
+          "declaration": {
+            "path": "cairn.mjs",
+            "moduleContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+            "declarationContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+            "span": {
+              "byteStart": 0,
+              "byteEnd": 58,
+              "start": 0,
+              "end": 58
+            }
+          },
+          "contract": {
+            "inputs": [],
+            "result": {
+              "kind": "text"
+            },
+            "callEffects": "none",
+            "preconditions": [],
+            "status": "supported",
+            "gap": null,
+            "structuralRequirements": [],
+            "conditionalIR": {
+              "status": "unknown",
+              "reason": "UnsupportedArity",
+              "sourceEffects": "unknown"
+            }
+          },
+          "bindings": [
+            {
+              "from": "sampledWelcome",
+              "to": "cairnSignal"
+            }
+          ],
+          "status": "proposal",
+          "verified": false,
+          "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533"
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "cairn.mjs",
+          "observed": true,
+          "status": "reported-failure",
+          "complete": false,
+          "absent": true,
+          "sourceSha256": null,
+          "error": "ENOENT"
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+          "error": null
+        },
+        "successfulWriteSha256": "415a710dc6fc4c293048bd172b0c324f1ee4d36d587074ae07c57fb9c759bbc6",
+        "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+        "receipt": "{\"exit_code\":1,\"complete\":true,\"output\":\"TAP version 13\\n# tests 1\\n# pass 0\\n# fail 1\\n# skipped 0\\n# cancelled 0\\n\"}"
+      }
+    },
+    {
+      "fixture": "unseen-zero-arg-greeting",
+      "scenario": "incomplete",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function cairnSignal() that returns a reference label in cairn.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "ENOENT: file not found",
+          "source_read": {
+            "path": "cairn.mjs",
+            "success": false,
+            "complete": false,
+            "format": "raw",
+            "error_code": "ENOENT",
+            "error": "ENOENT",
+            "exit_code": 1
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {cairnSignal} from './cairn.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(cairnSignal(), 'Hello, fjord-2047!');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-2",
+              "type": "function",
+              "function": {
+                "name": "web_search",
+                "arguments": "{\"query\":\"javascript function write function that returns reference label\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-2",
+          "name": "web_search",
+          "content": "https://reference.example/unseen-zero-argument-return"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-3",
+              "type": "function",
+              "function": {
+                "name": "web_fetch",
+                "arguments": "{\"format\":\"text\",\"url\":\"https://reference.example/unseen-zero-argument-return\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-3",
+          "name": "web_fetch",
+          "content": "<html><body><pre><code class=\"language-javascript\">function sampledWelcome() { return 'Hello, fjord-2047!'; }</code></pre></body></html>"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-4",
+              "type": "function",
+              "function": {
+                "name": "write_file",
+                "arguments": "{\"content\":\"export function cairnSignal() { return 'Hello, fjord-2047!'; }\\n\",\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-4",
+          "name": "write_file",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-5",
+              "type": "function",
+              "function": {
+                "name": "bash",
+                "arguments": "{\"command\":\"node --test acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-5",
+          "name": "bash",
+          "content": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Coding research remains unresolved: VerificationReceiptIncomplete",
+        "result": {
+          "text": "Coding research remains unresolved: VerificationReceiptIncomplete",
+          "disposition": "gap",
+          "origin": "coding-research-gap",
+          "payloadRole": "finding",
+          "artifact": null,
+          "discovery": {
+            "reason": "VerificationReceiptIncomplete",
+            "authored": false,
+            "verified": false,
+            "url": "https://reference.example/unseen-zero-argument-return",
+            "sha256": "92e42e894d249a40cc0fe55c6bf48ec742474806469489cbdec8090dd11fb409",
+            "query": "javascript function write function that returns reference label",
+            "declaration": {
+              "path": "cairn.mjs",
+              "moduleContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+              "declarationContentId": "c7635c5b69299b0ba5335397ce9eafd9407385c381bcbc5217a057825551fe86",
+              "span": {
+                "byteStart": 0,
+                "byteEnd": 58,
+                "start": 0,
+                "end": 58
+              }
+            },
+            "contract": {
+              "inputs": [],
+              "result": {
+                "kind": "text"
+              },
+              "callEffects": "none",
+              "preconditions": [],
+              "status": "supported",
+              "gap": null,
+              "structuralRequirements": [],
+              "conditionalIR": {
+                "status": "unknown",
+                "reason": "UnsupportedArity",
+                "sourceEffects": "unknown"
+              }
+            },
+            "bindings": [
+              {
+                "from": "sampledWelcome",
+                "to": "cairnSignal"
+              }
+            ],
+            "status": "proposal"
+          }
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "cairn.mjs",
+          "observed": true,
+          "status": "reported-failure",
+          "complete": false,
+          "absent": true,
+          "sourceSha256": null,
+          "error": "ENOENT"
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+          "error": null
+        },
+        "successfulWriteSha256": "415a710dc6fc4c293048bd172b0c324f1ee4d36d587074ae07c57fb9c759bbc6",
+        "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+        "receipt": "{\"exit_code\":0,\"complete\":true,\"output\":\"\"}"
+      }
+    },
+    {
+      "fixture": "unseen-zero-arg-greeting",
+      "scenario": "module-incomplete",
+      "phase": "terminal",
+      "tools": [
+        "read_file",
+        "write_file",
+        "bash",
+        "web_search",
+        "web_fetch"
+      ],
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a function cairnSignal() that returns a reference label in cairn.mjs, add a test in acceptance.test.mjs, and run node --test acceptance.test.mjs."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-0",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"cairn.mjs\",\"file_path\":\"cairn.mjs\",\"path\":\"cairn.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-0",
+          "name": "read_file",
+          "content": "incomplete source prefix",
+          "source_read": {
+            "path": "cairn.mjs",
+            "success": true,
+            "complete": false,
+            "format": "raw"
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "metadata-1",
+              "type": "function",
+              "function": {
+                "name": "read_file",
+                "arguments": "{\"filePath\":\"acceptance.test.mjs\",\"file_path\":\"acceptance.test.mjs\",\"path\":\"acceptance.test.mjs\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "tool_call_id": "metadata-1",
+          "name": "read_file",
+          "content": "import {cairnSignal} from './cairn.mjs';\nimport assert from 'node:assert/strict';\nassert.equal(cairnSignal(), 'Hello, fjord-2047!');\n",
+          "source_read": {
+            "path": "acceptance.test.mjs",
+            "success": true,
+            "complete": true,
+            "format": "raw"
+          }
+        }
+      ],
+      "transport": "synthetic HTTP and tool observations; no fetched source or verifier execution",
+      "expected": {
+        "kind": "final",
+        "answer": "Coding research remains unresolved: SourceReadIncomplete",
+        "result": {
+          "text": "Coding research remains unresolved: SourceReadIncomplete",
+          "disposition": "gap",
+          "origin": "coding-research-gap",
+          "payloadRole": "finding",
+          "artifact": null,
+          "discovery": {
+            "reason": "SourceReadIncomplete",
+            "authored": false,
+            "verified": false,
+            "path": "cairn.mjs"
+          }
+        }
+      },
+      "observations": {
+        "moduleRead": {
+          "path": "cairn.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": false,
+          "absent": false,
+          "sourceSha256": "66d88d8dddf7b1a2e9f5bb2cae79dbffd7c6ee407b14252fb05f919206e19b4b",
+          "error": null
+        },
+        "testRead": {
+          "path": "acceptance.test.mjs",
+          "observed": true,
+          "status": "reported-success",
+          "complete": true,
+          "absent": false,
+          "sourceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+          "error": null
+        },
+        "successfulWriteSha256": null,
+        "acceptanceSha256": "56bd3c96473fcfab61cfacc5bca928c325f8737b336c06af9ce2a5b97c8da533",
+        "receipt": null
+      }
+    }
+  ]
+}

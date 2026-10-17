@@ -2,24 +2,26 @@ self_ast_census
   target src/translation/prompt.rs
   language rust
   fidelity signature
-  byte_len 12051
-  line_count 280
-  content_id source_module_5668c478d4952d87
-  symbol_count 16
+  byte_len 13093
+  line_count 307
+  content_id source_module_d901387c7a54b71e
+  symbol_count 18
   symbols
-    function extract_unquoted_translation_surface 48 56
-    function is_source_first_translation_request 61 72
-    function extract_suffix_surface 77 86
-    function extract_circumfix_surface 92 99
-    function extract_between_prefix_and_marker 101 112
-    function extract_hindi_unquoted_surface 117 138
-    function extract_chinese_unquoted_surface 144 169
-    function first_marker 172 174
-    function clean_unquoted_surface 176 192
-    struct TranslationMarkers 198 218
-    function markers 221 237
-    static CACHE 222 222
-    function suffix_frames 239 246
-    function circumfix_frames 250 257
-    function script_forms 262 269
-    function bare_script_forms 273 280
+    function extract_unquoted_translation_surface 48 57
+    function extract_target_first_surface 61 79
+    function is_source_first_translation_request 84 95
+    function extract_suffix_surface 100 109
+    function extract_circumfix_surface 115 122
+    function extract_between_prefix_and_marker 124 135
+    function extract_hindi_unquoted_surface 140 161
+    function extract_chinese_unquoted_surface 167 192
+    function first_marker 195 197
+    function clean_unquoted_surface 199 215
+    struct TranslationMarkers 221 241
+    function markers 244 260
+    static CACHE 245 245
+    function suffix_frames 262 269
+    function circumfix_frames 273 280
+    function script_forms 285 292
+    function bare_script_forms 296 303
+    module target_first_tests 307 307

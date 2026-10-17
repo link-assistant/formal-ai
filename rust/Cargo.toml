@@ -82,6 +82,8 @@ unicode-general-category = "1.1"
 walkdir = "2"
 which = "8"
 unicode-normalization = "0.1"
+# URL Standard observer shared with JavaScript's URL API; already present in Cargo.lock.
+url = "2.5.8"
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 async-trait = "0.1"
