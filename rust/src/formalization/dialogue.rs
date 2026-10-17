@@ -1,5 +1,8 @@
 //! Seed-driven question obligations and exact typed answer evidence.
-use super::text_statements::{Statement, Word, WordKind, seed_words, statement_terms};
+use super::text_statements::{
+    Statement, Word, WordKind, numeric_identity_prefix, seed_words, statement_terms,
+    structural_rule_values,
+};
 use regex::Regex;
 use std::sync::OnceLock;
 use unicode_normalization::UnicodeNormalization;
@@ -261,9 +264,9 @@ pub fn dialogue_quantities(text: &str, language: &str) -> Vec<Quantity> {
                 }
             }
         }
-        let comparison = if ending(&constraint_prefix, language, "amount-min") {
+        let comparison = if ending(&constraint_prefix, language, "amount-minimum") {
             "at-least"
-        } else if ending(&constraint_prefix, language, "amount-max") {
+        } else if ending(&constraint_prefix, language, "amount-maximum") {
             "at-most"
         } else {
             "equal"
@@ -295,6 +298,16 @@ pub fn dialogue_quantities(text: &str, language: &str) -> Vec<Quantity> {
 /// Formalize dialogue obligations using linguistic vocabulary, never task answers.
 #[must_use]
 pub fn formalize_dialogue(text: &str, language: &str) -> Dialogue {
+    formalize_dialogue_in_context(text, language, false)
+}
+
+/// A relative continuation is declarative unless explicitly marked as a question.
+#[must_use]
+pub fn formalize_dialogue_in_context(
+    text: &str,
+    language: &str,
+    declarative_continuation: bool,
+) -> Dialogue {
     let normalized = normalize(text);
     let clean = normalized.trim_end_matches(['.', '!', '?']).trim();
     let found_topics = TOPICS
@@ -321,7 +334,7 @@ pub fn formalize_dialogue(text: &str, language: &str) -> Dialogue {
     let bare_topic = found_topics
         .iter()
         .any(|topic| listed(clean, language, &format!("topic-{topic}")));
-    let question = if marked || bare_topic {
+    let question = if !declarative_continuation && (marked || bare_topic) {
         let mut kind = interrogative.map_or("yes-no", |(kind, _)| *kind);
         if found_topics.iter().any(|topic| topic == "compensation")
             && (kind == "which" || bare_topic)
@@ -396,7 +409,9 @@ pub fn formalize_dialogue(text: &str, language: &str) -> Dialogue {
             let locations = text
                 .split(|ch: char| !ch.is_alphabetic())
                 .filter(|part| {
-                    part.chars().next().is_some_and(char::is_uppercase) && part.chars().count() > 1
+                    part.chars().next().is_some_and(char::is_uppercase)
+                        && part.chars().count() > 1
+                        && !seed_words(language, "location-prefix").contains(&normalize(part))
                 })
                 .map(str::to_owned)
                 .collect::<Vec<_>>();
@@ -434,8 +449,8 @@ pub fn merge_numeric_words(words: &[Word], quantities: &[Quantity], language: &s
         .map(|mut word| {
             if word.kind == WordKind::Number {
                 word.id = numeric_value(&word.surface, language).map_or_else(
-                    || format!("number-unresolved:{}", word.surface),
-                    |value| format!("number:{value}"),
+                    || format!("{}{}", numeric_identity_prefix(true), word.surface),
+                    |value| format!("{}{value}", numeric_identity_prefix(false)),
                 );
             }
             word
@@ -465,11 +480,7 @@ pub fn merge_numeric_words(words: &[Word], quantities: &[Quantity], language: &s
                 kind: WordKind::Number,
                 id: format!(
                     "{}{}",
-                    if quantity.uncertainty.is_some() {
-                        "number-unresolved:"
-                    } else {
-                        "number:"
-                    },
+                    numeric_identity_prefix(quantity.uncertainty.is_some()),
                     quantity.value
                 ),
             });
@@ -497,7 +508,10 @@ pub fn answer_compatibility(question: Option<&Question>, answer: Option<&Answer>
         reason: reason.to_owned(),
     };
     let (Some(question), Some(answer)) = (question, answer) else {
-        return outcome("unknown", "missing typed evidence");
+        return outcome(
+            "unknown",
+            &structural_rule_values("answer-compatibility", "missing-reason")[0],
+        );
     };
     if question.answer_type != answer.kind {
         return outcome("incompatible", "answer kind");

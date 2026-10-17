@@ -1,0 +1,11 @@
+self_ast_census
+  target src/portable_string_contracts.rs
+  language rust
+  fidelity signature
+  byte_len 670
+  line_count 17
+  content_id source_module_dcd37920bb3fe369
+  symbol_count 2
+  symbols
+    function quote_shell_word 4 6
+    function join_failure_invitation 9 17

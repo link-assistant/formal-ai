@@ -147,8 +147,8 @@ registry_entry npm/typescript
 registry_entry github_action/Swatinem/rust-cache
   latest "v2.9.2"
   source_url "https://api.github.com/repos/Swatinem/rust-cache/releases/latest"
-  release_commit "6323deb102c322ba6fcbdcafc7e3dddab59af2b6"
-  tag_source_url "https://api.github.com/repos/Swatinem/rust-cache/git/ref/tags/v2.9.2"
+  release-commit "6323deb102c322ba6fcbdcafc7e3dddab59af2b6"
+  tag-source-url "https://api.github.com/repos/Swatinem/rust-cache/git/ref/tags/v2.9.2"
 registry_entry github_action/actions/attest
   latest "v4.2.2"
   source_url "https://api.github.com/repos/actions/attest/releases/latest"

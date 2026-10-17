@@ -382,10 +382,12 @@ pub(super) fn signature(text: &str) -> Option<Signature> {
         if !is_identifier(name) {
             continue;
         }
-        let parameters: Vec<String> = text[open + 1..close]
-            .split(',')
-            .map(|part| part.trim().to_owned())
-            .collect();
+        let capture = &text[open + 1..close];
+        let parameters: Vec<String> = if crate::meta_reasoner::text::js_trim(capture).is_empty() {
+            Vec::new()
+        } else {
+            capture.split(',').map(|part| part.trim().to_owned()).collect()
+        };
         if parameters.iter().all(|parameter| is_identifier(parameter)) {
             return Some(Signature {
                 name: name.to_owned(),

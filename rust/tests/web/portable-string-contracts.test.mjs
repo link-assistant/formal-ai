@@ -68,3 +68,26 @@ test('all maintained shell adapters and both invitation wrappers delegate to the
   assert.ok(file('js/agentic/crate/failure_reporting.mjs').includes('joinFailureInvitation'));
   assert.ok(file('rust/src/failure_reporting.rs').includes('join_failure_invitation'));
 });
+
+test('canonical meta symbols and parameter references project generically to Rust identifiers', () => {
+  const renamed = '/** @param {string} inputValue @param {string} fallbackValue */ export function choosePresentValue(inputValue, fallbackValue){return inputValue === "" ? fallbackValue : inputValue;}';
+  const meta = stringProgramToMeta(renamed);
+  assert.ok(meta.includes('(function choose-present-value '));
+  assert.ok(meta.includes('(parameters (input-value string) (fallback-value string))'));
+  assert.ok(meta.includes('(variable input-value)'));
+  const rust = renderStringRust(meta);
+  assert.ok(rust.includes('pub fn choose_present_value(input_value: &str, fallback_value: &str)'));
+  assert.ok(rust.includes('input_value.is_empty()'));
+  assert.ok(rust.includes('fallback_value.to_owned()'));
+});
+test('noncanonical and colliding meta symbol spellings cannot alias emitted Rust names', () => {
+  const meta = stringProgramToMeta('/** @param {string} inputValue */ export function preserveValue(inputValue){return inputValue;}');
+  for (const changed of [
+    meta.replace('preserve-value', 'preserve_value'),
+    meta.replace('preserve-value', 'preserve--value'),
+    meta.replace('input-value string', 'input_value string'),
+    meta.replace('(input-value string)', '(input-value string) (input-value string)'),
+    meta.replace('(variable input-value)', '(variable input_value)'),
+    meta + meta.split('\n').filter(line => line.startsWith('(function')).join('\n') + '\n',
+  ]) assert.throws(() => renderStringRust(changed), /portable-string-v1/);
+});

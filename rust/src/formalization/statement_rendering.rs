@@ -9,7 +9,7 @@
 use super::segment::{Script, script_of};
 use super::text_statements::{
     NEGATION_ROLE, Polarity, Statement, Word, WordKind, fold_inflection, indexed_meaning,
-    kind_of_listed, phrase_key, role_words_in, seed_words,
+    kind_of_listed, numeric_identity_prefix, phrase_key, role_words_in, seed_words,
 };
 use crate::seed::lexicon;
 
@@ -81,7 +81,7 @@ pub fn surface_in(term: &Word, language: &str) -> String {
     match term.kind {
         WordKind::Number => term
             .id
-            .strip_prefix("number:")
+            .strip_prefix(numeric_identity_prefix(false).as_str())
             .and_then(|value| {
                 seed_words(language, "numeric-decimal")
                     .first()
@@ -155,5 +155,10 @@ pub fn deformalize_statement(statement: &Statement, language: &str) -> String {
     for term in &statement.terms {
         surfaces.push(surface_in(term, language));
     }
-    join_surfaces(&surfaces)
+    super::typed_meaning::preserve_typed_rendering(
+        statement,
+        language,
+        join_surfaces(&surfaces),
+        surfaces.first().map_or("", String::as_str),
+    )
 }

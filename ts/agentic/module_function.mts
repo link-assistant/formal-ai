@@ -93,7 +93,7 @@ function clauses(request) {
 /** `name(a, b)`: the first call-shaped signature whose parameters are identifiers. */
 export function signature(text) {
   for (const match of text.matchAll(/([A-Za-z_$][\w$]*)\s*\(([^()]*)\)/gu)) {
-    const parameters = match[2].split(',').map((part) => part.trim());
+    const parameters = match[2].trim() === '' ? [] : match[2].split(',').map((part) => part.trim());
     if (parameters.every((parameter) => /^[A-Za-z_$][\w$]*$/u.test(parameter))) {
       return { name: match[1], parameters, at: match.index };
     }

@@ -1,6 +1,8 @@
+import { tapVerificationDecision } from './portable/coding_research_kernel.mjs';
 // Bounded request-local research after ordinary module synthesis has missed.
 // Captured code is a proposal; only the existing execution route observes effects.
 import { Capability } from './capability.mjs';
+import { agenticMessage } from './messages.mjs';
 import { toolFor } from './capability_router.mjs';
 import { Progress } from './progress.mjs';
 import { realm, validateProgram } from './host.mjs';
@@ -15,13 +17,13 @@ import { FinalDisposition, resolvedFinalAnswer, planOne, jsonText, fetchArgument
 import { readArguments } from './workspace_change.mjs';
 import { commandArgument, incompleteReceipt, normalizedPayload, stepOutcome, StepOutcome } from './tool_result.mjs';
 
-const MAX_PAGES = 3;
-const MAX_PAGE_BYTES = 131072;
+const MAXIMUM_PAGES = 3;
+const MAXIMUM_PAGE_BYTES = 131072;
 const safeName = name => typeof name === 'string' && /^[A-Za-z_$][A-Za-z0-9_$]*$/u.test(name)
   && !isKeyword(name) && !['eval', 'arguments'].includes(name);
 const gap = (reason, evidence = {}) => {
   const discovery = { reason, authored: false, verified: false, ...evidence };
-  const plan = resolvedFinalAnswer('Coding research remains unresolved: ' + reason,
+  const plan = resolvedFinalAnswer(agenticMessage('coding-research-gap', { reason }),
     FinalDisposition.Gap, 'coding-research-gap');
   plan.result.discovery = discovery;
   return plan;
@@ -97,12 +99,13 @@ export function independentAcceptance(request, source) {
   }
   if (statement.length) statements.push(statement);
   const moduleURL = './' + request.module.split('/').at(-1);
-  const targetDir = request.module.split('/').slice(0, -1).join('/');
-  if (request.test.split('/').slice(0, -1).join('/') !== targetDir) return false;
+  const targetDirectory = request.module.split('/').slice(0, -1).join('/');
+  if (request.test.split('/').slice(0, -1).join('/') !== targetDirectory) return false;
   let callable = false, assertions = 0, assertionImport = false;
   const literal = tree => tree?.kind === 'numeric' || tree?.kind === 'string'
     || ['true', 'false', 'null'].includes(text(tree));
-  const commaList = values => values.length > 0 && values.every((value, at) =>
+  const argumentTokens = request.parameters.length === 0 ? 0 : request.parameters.length * 2 - 1;
+  const commaList = values => values.length === argumentTokens && values.every((value, at) =>
     at % 2 === 1 ? text(value) === ',' : literal(value));
   for (const entry of statements) {
     if (text(entry[0]) === 'import' && entry.length === 4 && text(entry[2]) === 'from') {
@@ -118,10 +121,10 @@ export function independentAcceptance(request, source) {
     if (entry.length !== 4 || text(entry[0]) !== 'assert' || text(entry[1]) !== '.'
       || !['equal', 'strictEqual', 'deepEqual', 'deepStrictEqual'].includes(text(entry[2]))
       || entry[3]?.$ !== 'group' || entry[3].delim !== 'paren') return false;
-    const args = entry[3].trees;
-    if (args.length !== 4 || text(args[0]) !== request.name || args[1]?.$ !== 'group'
-      || args[1].delim !== 'paren' || !commaList(args[1].trees)
-      || text(args[2]) !== ',' || !literal(args[3])) return false;
+    const callArguments = entry[3].trees;
+    if (callArguments.length !== 4 || text(callArguments[0]) !== request.name || callArguments[1]?.$ !== 'group'
+      || callArguments[1].delim !== 'paren' || !commaList(callArguments[1].trees)
+      || text(callArguments[2]) !== ',' || !literal(callArguments[3])) return false;
     assertions += 1;
   }
   return callable && assertionImport && assertions > 0;
@@ -143,20 +146,17 @@ function pureResearchProgram(request, source) {
 
 /** Known Node test verification needs actual nonempty TAP evidence, never bare exit zero. */
 export function verificationReceiptGap(output) {
-  if (incompleteReceipt(output) || stepOutcome(output) !== StepOutcome.Succeeded) return 'VerificationReceiptIncomplete';
+  const complete = !incompleteReceipt(output) && stepOutcome(output) === StepOutcome.Succeeded;
   const payload = normalizedPayload(output) ?? '';
   const counts = {};
+  let unique = true;
   for (const field of ['tests', 'pass', 'fail', 'skipped', 'cancelled']) {
     const matches = [...payload.matchAll(new RegExp('^# ' + field + ' ([0-9]+)\\r?$', 'gmu'))];
-    if (matches.length > 1) return 'VerificationReceiptIncomplete';
-    counts[field] = matches.length ? Number(matches[0][1]) : null;
-    if (counts[field] !== null && !Number.isSafeInteger(counts[field])) return 'VerificationReceiptIncomplete';
+    if (matches.length > 1) unique = false;
+    counts[field] = matches.length ? Number(matches[0][1]) : ['skipped', 'cancelled'].includes(field) ? 0 : -1;
   }
-  if (['tests', 'pass', 'fail'].some(field => counts[field] === null)) return 'VerificationReceiptIncomplete';
-  if (counts.tests === 0 || counts.pass === 0 || (counts.skipped ?? 0) >= counts.tests) return 'NoTestsExecuted';
-  if (counts.fail !== 0 || (counts.cancelled ?? 0) !== 0
-    || counts.pass + (counts.skipped ?? 0) > counts.tests) return 'VerificationReceiptIncomplete';
-  return null;
+  return tapVerificationDecision(complete && unique, counts.tests, counts.pass,
+    counts.fail, counts.skipped, counts.cancelled) || null;
 }
 
 /** A real coding miss supplies the typed need; searches and fetches stay advertised tools. */
@@ -186,20 +186,20 @@ export function planCodingResearchStep(task, messages, toolNames) {
   const search = [...progress.attempts].reverse().find(attempt => {
     if (attempt.capability !== Capability.Search || !attempt.succeeded || !attempt.arguments) return false;
     try {
-      const args = JSON.parse(attempt.arguments);
-      return args.query === query && Object.keys(args).length === 1;
+      const callArguments = JSON.parse(attempt.arguments);
+      return callArguments.query === query && Object.keys(callArguments).length === 1;
     } catch { return false; }
   });
   if (!search) return searchTool ? planOne(searchTool, jsonText({ query })) : gap('SearchToolMissing');
   const searchText = normalizedPayload(search.detail) ?? '';
-  if (new TextEncoder().encode(searchText).length > MAX_PAGE_BYTES) return gap('SearchResultTooLarge');
+  if (new TextEncoder().encode(searchText).length > MAXIMUM_PAGE_BYTES) return gap('SearchResultTooLarge');
   const urls = [...new Set(urlsIn(searchText))]
-    .filter(url => { try { return new URL(url).protocol === 'https:'; } catch { return false; } }).slice(0, MAX_PAGES);
+    .filter(url => { try { return new URL(url).protocol === 'https:'; } catch { return false; } }).slice(0, MAXIMUM_PAGES);
   const formalize = realm()?.formalizedPageFromCapture;
   if (typeof formalize !== 'function') return gap('PageFormalizerMissing');
   const proposals = [];
   for (const [url, text] of progress.fetched_pages) {
-    if (!urls.includes(url) || new TextEncoder().encode(text).length > MAX_PAGE_BYTES) continue;
+    if (!urls.includes(url) || new TextEncoder().encode(text).length > MAXIMUM_PAGE_BYTES) continue;
     const capture = { url, text, sha256: sha256Hex(text), fetchedAt: '', cached: false };
     const page = formalize(capture, query, urls.indexOf(url) + 1, 0, null);
     const proposal = deriveCodingProcedure(request, page);
@@ -233,8 +233,8 @@ export function planCodingResearchStep(task, messages, toolNames) {
     const receiptGap = succeeded ? verificationReceiptGap(observation.detail) : null;
     if (receiptGap) return gap(receiptGap, proposal.provenance);
     const plan = resolvedFinalAnswer(succeeded
-      ? 'Existing source matches the rediscovered procedure and independent verification succeeded; no source write was needed.'
-      : 'Independent verification of the existing source failed.\n' + observation.detail,
+      ? agenticMessage('coding-research-verified-existing')
+      : agenticMessage('coding-research-existing-failed', { detail: observation.detail }),
     succeeded ? FinalDisposition.Finding : FinalDisposition.Failure,
     succeeded ? 'coding-research-verified-existing' : 'coding-research-existing-verification-failed');
     plan.research = { ...proposal.provenance, status: succeeded ? 'verified' : 'proposal',
@@ -249,10 +249,10 @@ export function planCodingResearchStep(task, messages, toolNames) {
   if (!plan) return gap('ExecutionToolsMissing', proposal.provenance);
   for (const call of plan.calls ?? []) {
     if (call.tool !== toolFor(toolNames, Capability.Write)) continue;
-    let args;
-    try { args = JSON.parse(call.arguments); } catch { return gap('UnsupportedRepairSource'); }
-    if ((args.path ?? args.filePath ?? args.file_path) === request.module
-      && !pureResearchProgram(request, args.content)) return gap('UnsupportedRepairSource');
+    let callArguments;
+    try { callArguments = JSON.parse(call.arguments); } catch { return gap('UnsupportedRepairSource'); }
+    if ((callArguments.path ?? callArguments.filePath ?? callArguments.file_path) === request.module
+      && !pureResearchProgram(request, callArguments.content)) return gap('UnsupportedRepairSource');
   }
   const writtenAt = progress.latestSuccessfulWriteIndex(request.module);
   const observation = writtenAt === null ? null : progress.attempts.slice(writtenAt + 1).findLast(attempt =>

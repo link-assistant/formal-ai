@@ -1,7 +1,3 @@
-function isConcretePropertyQuestion(prompt) {
-  return crateModule('crate/dialogue_formalization.mjs').blocksSelfDescription(prompt, detectLanguage(prompt));
-}
-
 // Known-fact inventory queries, runtime rule updates, feature capability
 // status, the architecture explanation and translation phrase normalization.
 // Loaded by ../formal_ai_worker.js.
@@ -65,11 +61,6 @@ function findBehaviorRule(query) {
 const directRoleSurfacePresent = (role, lower) => roleWordForms(role).some((form) => form.text && lower.includes(form.text));
 
 // All teaching, catalog and history replay consumers use the same package.
-function runtimeRuleFromText(text) {
-  const result = crateModule("crate/skill_compiler.mjs").compileNaturalLanguageSkill(String(text || ""));
-  return result.status === "compiled" ? result : null;
-}
-
 function runtimeRuleForPrompt(prompt, history) {
   const turns = Array.isArray(history) ? history : [];
   for (let index = turns.length - 1; index >= 0; index -= 1) {

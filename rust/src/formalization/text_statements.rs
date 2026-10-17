@@ -195,7 +195,7 @@ fn is_number(surface: &str) -> bool {
         .all(|part| !part.is_empty() && part.chars().all(is_numeral_character))
 }
 
-fn seed_record() -> Option<&'static LinoNode> {
+pub(super) fn seed_record() -> Option<&'static LinoNode> {
     static ROOT: OnceLock<LinoNode> = OnceLock::new();
     let root = ROOT.get_or_init(|| parse_lino(TEXT_FORMALIZATION_LINO));
     if root.name == "text-formalization" {
@@ -206,25 +206,45 @@ fn seed_record() -> Option<&'static LinoNode> {
         .find(|node| node.name == "text-formalization")
 }
 
-/// The words of one kind the seed lists for `language`, lowercased.
+pub use super::{numeric_identity_prefix, structural_rule_values};
+
+/// The words of one kind the seed lists for language, lowercased.
 #[must_use]
 pub fn seed_words(language: &str, kind: &str) -> Vec<String> {
-    seed_record()
-        .and_then(|record| {
-            record
-                .children
-                .iter()
-                .find(|node| node.name == "language" && node.id == language)
-        })
-        .map(|record| {
-            record
-                .children
-                .iter()
-                .filter(|node| node.name == kind)
-                .map(|node| node.id.trim_matches('"').to_lowercase())
-                .collect()
-        })
-        .unwrap_or_default()
+    let Some(root) = seed_record() else {
+        return Vec::new();
+    };
+    let Some(record) = root
+        .children
+        .iter()
+        .find(|node| node.name == "language" && node.id == language)
+    else {
+        return Vec::new();
+    };
+    let local: Vec<_> = record
+        .children
+        .iter()
+        .filter(|node| node.name == kind)
+        .collect();
+    let values = if local.is_empty() {
+        root.children
+            .iter()
+            .find(|node| node.name == "defaults")
+            .map(|defaults| {
+                defaults
+                    .children
+                    .iter()
+                    .filter(|node| node.name == kind)
+                    .collect()
+            })
+            .unwrap_or_default()
+    } else {
+        local
+    };
+    values
+        .into_iter()
+        .map(|node| node.id.trim_matches('"').to_lowercase())
+        .collect()
 }
 
 /// The seeded inflection endings of `language`, longest first.
@@ -618,7 +638,7 @@ fn read_single(surface: &str, language: &str, initial: bool) -> Word {
         return word(
             surface.to_owned(),
             WordKind::Number,
-            format!("number:{surface}"),
+            format!("{}{surface}", numeric_identity_prefix(false)),
         );
     }
     if let Some(slug) = fold_inflection(&lower, language) {
@@ -735,12 +755,21 @@ pub fn clause_statement(
     previous_subject: Option<&Word>,
     opens_sentence: bool,
 ) -> Statement {
-    let dialogue = super::dialogue::formalize_dialogue(text, language);
     let words = read_words(text, language, opens_sentence);
+    let relative = !opens_sentence && previous_subject.is_some() && !text.contains(['?', '？']);
     let inherits = words
         .iter()
         .find(|word| word.kind != WordKind::Function)
-        .is_some_and(|opener| matches!(opener.kind, WordKind::Anaphor | WordKind::Continuation));
+        .is_some_and(|opener| matches!(opener.kind, WordKind::Anaphor | WordKind::Continuation))
+        || (relative
+            && super::dialogue::formalize_dialogue(text, language)
+                .question
+                .is_some_and(|question| question.kind != "yes-no"));
+    let dialogue = super::typed_meaning::inherit_numeric_evidence(
+        super::dialogue::formalize_dialogue_in_context(text, language, relative),
+        if inherits { previous_subject } else { None },
+        language,
+    );
     let content: Vec<Word> = words
         .iter()
         .filter(|word| word.kind.is_term())
@@ -942,21 +971,7 @@ pub fn known_ids(statement: &Statement) -> Vec<String> {
 /// Two statements with one identity say the same thing whatever their wording.
 #[must_use]
 pub fn statement_identity(statement: &Statement) -> String {
-    let subject = statement
-        .subject
-        .as_ref()
-        .map_or("", |subject| subject.id.as_str());
-    let others: BTreeSet<&str> = statement
-        .terms
-        .iter()
-        .map(|term| term.id.as_str())
-        .filter(|id| *id != subject)
-        .collect();
-    format!(
-        "{}|{subject}|{}",
-        statement.polarity.slug(),
-        others.into_iter().collect::<Vec<_>>().join(" ")
-    )
+    super::typed_meaning::statement_identity(statement)
 }
 
 /// Whether a statement has at least two terms, all of them known.

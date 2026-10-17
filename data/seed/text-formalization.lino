@@ -17,11 +17,22 @@
 # translation_stop_word, statement_function_word and statement_negation_cue
 # roles of the meaning lexicon.
 text-formalization
-  language en
+  defaults
     numeric-decimal "."
     numeric-group ","
     numeric-primary-width "3"
     numeric-secondary-width "3"
+  structural-rule target-surface
+    reject-fragment "response:"
+    reject-fragment "-->"
+    reject-fragment "{{"
+    reject-fragment "[["
+  structural-rule numeric-identity
+    resolved-prefix "number:"
+    unresolved-prefix "number-unresolved:"
+  structural-rule answer-compatibility
+    missing-reason "missing typed evidence"
+  language en
     question-where "where"
     question-how-many "how many"
     question-how-many "how much"
@@ -77,10 +88,10 @@ text-formalization
     currency-eur "€"
     currency-eur "eur"
     currency-eur "euros"
-    amount-min "from"
-    amount-min "at least"
-    amount-max "up to"
-    amount-max "at most"
+    amount-minimum "from"
+    amount-minimum "at least"
+    amount-maximum "up to"
+    amount-maximum "at most"
     unit-year "year"
     unit-year "years"
     unit-month "month"
@@ -115,8 +126,6 @@ text-formalization
   language ru
     numeric-decimal ","
     numeric-group " "
-    numeric-primary-width "3"
-    numeric-secondary-width "3"
     question-where "где"
     question-where "куда"
     question-where "откуда"
@@ -186,10 +195,10 @@ text-formalization
     currency-eur "€"
     currency-eur "eur"
     currency-eur "евро"
-    amount-min "от"
-    amount-min "не менее"
-    amount-max "до"
-    amount-max "не более"
+    amount-minimum "от"
+    amount-minimum "не менее"
+    amount-maximum "до"
+    amount-maximum "не более"
     unit-year "год"
     unit-year "года"
     unit-year "лет"
@@ -277,9 +286,6 @@ text-formalization
     inflection-ending "ь"
     inflection-ending "й"
   language hi
-    numeric-decimal "."
-    numeric-group ","
-    numeric-primary-width "3"
     numeric-secondary-width "2"
     anaphor "वह"
     anaphor "यह"
@@ -305,10 +311,6 @@ text-formalization
     inflection-ending "ा"
     inflection-ending "े"
   language zh
-    numeric-decimal "."
-    numeric-group ","
-    numeric-primary-width "3"
-    numeric-secondary-width "3"
     anaphor "它"
     anaphor "他"
     anaphor "她"
@@ -325,8 +327,6 @@ text-formalization
   language es
     numeric-decimal ","
     numeric-group "."
-    numeric-primary-width "3"
-    numeric-secondary-width "3"
     auxiliary "he"
     auxiliary "has"
     auxiliary "ha"

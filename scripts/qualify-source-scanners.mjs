@@ -11,18 +11,31 @@ const out=process.env.SCANNER_REPORT_DIRECTORY;
 if(!out)throw Error('SCANNER_REPORT_DIRECTORY is required');
 fs.mkdirSync(out,{recursive:true});
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
-const git=args=>execFileSync('git',args,{encoding:'utf8'}).trim();
-const head=git(['rev-parse','HEAD']),tree=git(['rev-parse','HEAD^{tree}']);
-const listed=execFileSync('git',['ls-files','-z'],{encoding:'utf8'}).split('\0').filter(Boolean);
-const sources=listed.filter(file=>/^(js\/|ts\/|rust\/src\/)/u.test(file)||[
+const record={schema:'source-scanner-hosted-qualification/v1',phase,head:null,tree:null,
+ run:process.env.GITHUB_RUN_ID,attempt:process.env.GITHUB_RUN_ATTEMPT,
+ strictZeroAcceptance:'Pending',inventoryIsAcceptance:false,sources:[],operations:[],
+ qualificationComplete:false,strictZeroAccepted:false};
+const save=()=>fs.writeFileSync(path.join(out,'qualification.json'),JSON.stringify(record,null,2)+'\n');
+save();
+process.on('uncaughtException',error=>{
+ record.qualificationComplete=false;record.strictZeroAccepted=false;
+ record.error={message:error.message,code:error.code??null};
+ save();console.error(JSON.stringify(record.error));process.exitCode=1;
+});
+const git=args=>execFileSync('git',args,{encoding:'utf8',timeout:30000,maxBuffer:16*1024*1024}).trim();
+record.head=git(['rev-parse','HEAD']);record.tree=git(['rev-parse','HEAD^{tree}']);save();
+const explicit=[
  'scripts/check-source-duplication.mjs','scripts/check-source-duplication.rs',
  'scripts/lib/source-duplication.mjs','rust/tests/web/source-duplication.test.mjs',
  'scripts/qualify-source-scanners.mjs','package.json','bun.lock',
  '.github/workflows/source-scanner-qualification.yml',
-].includes(file)).map(file=>({path:file,sha256:sha(fs.readFileSync(file))}));
-const record={schema:'source-scanner-hosted-qualification/v1',phase,head,tree,
- run:process.env.GITHUB_RUN_ID,attempt:process.env.GITHUB_RUN_ATTEMPT,
- strictZeroAcceptance:'Pending',inventoryIsAcceptance:false,sources,operations:[]};
+];
+const listed=execFileSync('git',['ls-files','-z','--','js','ts','rust/src',...explicit],
+ {encoding:'utf8',timeout:30000,maxBuffer:16*1024*1024}).split('\0').filter(Boolean);
+record.sources=listed.filter(file=>/^(js\/|ts\/|rust\/src\/)/u.test(file)||explicit.includes(file))
+ .map(file=>({path:file,sha256:sha(fs.readFileSync(file))}));
+if(!record.sources.length)throw Error('source custody is empty');
+save();
 let failed=false;
 function run(name,command,args,inventory=false){
  const result=spawnSync(command,args,{encoding:'utf8',timeout:300000,maxBuffer:128*1024*1024});

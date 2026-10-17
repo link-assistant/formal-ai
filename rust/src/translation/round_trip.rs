@@ -18,8 +18,8 @@ use crate::formalization::statement_rendering::{
     join_surfaces, negation_in, resolve_surface, return_surface, surface_in, surfaces_in,
 };
 use crate::formalization::text_statements::{
-    Polarity, Statement, Word, WordKind, clause_statement, formalize_text, known_ids, seed_words,
-    statement_terms,
+    Polarity, Statement, Word, WordKind, clause_statement, formalize_text, known_ids,
+    numeric_identity_prefix, seed_words, statement_terms,
 };
 
 /// One term of a rendering.
@@ -162,7 +162,7 @@ pub fn render_term(term: &Word, source: &str, target: &str) -> RenderedTerm {
                 term.surface.clone()
             },
             translated: term.kind != WordKind::Unknown
-                && !term.id.starts_with("number-unresolved:"),
+                && !term.id.starts_with(numeric_identity_prefix(true).as_str()),
         };
     }
     let surface = best_surface(term, source, target);

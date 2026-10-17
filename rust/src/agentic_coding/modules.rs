@@ -15,6 +15,7 @@ pub mod change_request;
 mod ci_workflow;
 mod code_artifact;
 pub mod code_rewrite_learning;
+pub mod coding_research;
 mod code_task;
 pub(crate) mod command_reroute;
 mod comparison;

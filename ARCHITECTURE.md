@@ -80,6 +80,7 @@ Each topic file keeps the original section numbers, so references such as
     - [10.1 Formalize → Meaning → Deformalize Pipeline](docs/architecture/translation.md#101-formalize--meaning--deformalize-pipeline)
     - [10.2 Resolution Order and Browser Fallback](docs/architecture/translation.md#102-resolution-order-and-browser-fallback)
 - [Runtime Capability Parity](docs/architecture/runtime-parity-inventory.md)
+- [Coding Research Parity Gap](docs/architecture/coding-research-parity-gap.md)
 - [Runtime Feature Coverage](docs/architecture/runtime-feature-coverage.md)
 - [Configuration, Event Log, Surfaces, Evidence, and Testing](docs/architecture/runtime-and-surfaces.md)
   - [11. Configuration](docs/architecture/runtime-and-surfaces.md#11-configuration)

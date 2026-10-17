@@ -133,3 +133,9 @@ mod work_item_planning;
 
 #[path = "final_result_contracts.rs"]
 mod final_result_contracts;
+
+#[path = "module_function_signature_vectors.rs"]
+mod module_function_signature_vectors;
+
+#[path = "coding_research_kernel.rs"]
+mod coding_research_kernel;

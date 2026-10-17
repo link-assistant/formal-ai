@@ -59,7 +59,7 @@ meanings
     unit "not applicable"
     example "## Acceptance criteria"
     lexeme en
-      words "requirements" "requirement" "acceptance criteria" "definition of done" "tasks" "to do" "todo"
+      words "requirements" "requirement" "acceptance" "acceptance criteria" "definition of done" "tasks" "to do" "todo"
       words "deliverables" "scope" "goals" "expected behavior" "expected behaviour" "proposal" "proposed solution"
       words "what to do" "checklist" "must have" "plan"
     lexeme ru

@@ -546,3 +546,9 @@ agentic_messages
     text "repository command timed out after {elapsed}s (deadline {deadline}s)"
   message callable-discovery-outcome
     text "Callable discovery {reason}:\n{discovery}"
+  message coding-research-gap
+    text "Coding research remains unresolved: {reason}"
+  message coding-research-verified-existing
+    text "Existing source matches the rediscovered procedure and independent verification succeeded; no source write was needed."
+  message coding-research-existing-failed
+    text "Independent verification of the existing source failed.\n{detail}"

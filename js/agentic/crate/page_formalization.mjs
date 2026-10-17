@@ -1,3 +1,5 @@
+import {typedMeaning} from './typed_meaning.mjs';
+import {formatLinoValueVerbatim} from './links_format.mjs';
 // Page formalization (R1188-U18): a whole page of text, every sentence of it,
 // becomes formal statements, and the statements are deformalized back to
 // text to see which facts survive. The Rust twin is
@@ -33,7 +35,7 @@ export function factSurvives(statement) {
   if (known.length === 0) return false;
   const reread = clauseStatement(deformalizeStatement(statement, statement.language), statement.language, null, false);
   const back = knownIds(reread);
-  return back.length === known.length && back.every((id, index) => id === known[index]);
+  return typedMeaning(statement.dialogue)===typedMeaning(reread.dialogue) && back.length === known.length && back.every((id, index) => id === known[index]);
 }
 
 /**
@@ -68,7 +70,9 @@ export function formalizePage(text, language) {
 export function statementNotation(statement) {
   const identifiers = statementTerms(statement).map((term) => term.id);
   const negation = statement.polarity === Polarity.Denied ? '¬ ' : '';
-  return `${negation}(${identifiers.join(' ')})`;
+  const legacy=`${negation}(${identifiers.join(' ')})`;
+  const typed=typedMeaning(statement.dialogue);
+  return typed===null?legacy:`(statement (terms ${legacy}) (typed_meaning ${formatLinoValueVerbatim(typed)}))`;
 }
 
 /**

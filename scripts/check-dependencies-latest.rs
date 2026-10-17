@@ -729,9 +729,9 @@ pub fn read_snapshot(path: &Path) -> Option<Snapshot> {
                 });
             match key {
                 "latest" => release.tag = value,
-                "release_commit" => release.commit = value,
+                "release-commit" | "release_commit" => release.commit = value,
                 "source_url" => release.source_url = value,
-                "tag_source_url" => release.tag_source_url = value,
+                "tag-source-url" | "tag_source_url" => release.tag_source_url = value,
                 _ => {}
             }
         }
@@ -775,7 +775,7 @@ pub fn write_snapshot(path: &Path, snapshot: &Snapshot) {
         {
             let _ = writeln!(
                 text,
-                "  release_commit \"{}\"\n  tag_source_url \"{}\"",
+                "  release-commit \"{}\"\n  tag-source-url \"{}\"",
                 release.commit, release.tag_source_url
             );
         }

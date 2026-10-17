@@ -277,7 +277,7 @@ pub fn whole_stars(score: f64) -> f64 {
 // |   return word.length;
 // | }
 
-// formal-ai:carried JavaScript function (a call to a function the module does not define: undefined_helper)
+// formal-ai:carried JavaScript function (a call to a function the module does not define: undefined-helper)
 // | /**
 // |  * @param {number} score
 // |  * @returns {number}

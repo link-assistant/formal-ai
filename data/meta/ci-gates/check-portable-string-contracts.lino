@@ -2,4 +2,4 @@ ci_gate check-portable-string-contracts
   stage web
   description "JS-first portable-string-v1 emits production Rust through shared Links IR and TypeScript through the existing ES meta renderer. Unsupported constructs fail by name; all outputs must match canonical source."
   run "node scripts/generate-portable-contracts.mjs --check"
-  justification "Hand-maintained shell quoting and failure invitation formatting diverge across runtimes; drift must fail before release."
+  justification "Hand-maintained shell quoting and failure invitation formatting diverge across runtimes; drift must fail before release (issue #1182)."

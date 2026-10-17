@@ -12,7 +12,7 @@
 // and calls `.to_string()` where a borrowed value is returned.
 
 import { constructMap } from './constructs.mjs';
-import { camelFromSnake } from './ir.mjs';
+import { pureJavascriptIdentifier as camelFromSnake, pureRustIdentifier } from './ir.mjs';
 
 const PRIMARY = 20;
 const UNARY = 14;
@@ -53,7 +53,7 @@ export function emitRust(item) {
       case 'boolean':
         return { text: String(expr.value), prec: PRIMARY, owned: false };
       case 'variable':
-        return { text: expr.name, prec: PRIMARY, owned: env.get(expr.name) ?? false };
+        return { text: pureRustIdentifier(expr.name), prec: PRIMARY, owned: env.get(expr.name) ?? false };
       case 'binary': {
         const row = map.operators.get(expr.op);
         if ((expr.op === 'equal' || expr.op === 'not-equal') && expr.left.type === 'number') lints.add('clippy::float_cmp');
@@ -83,7 +83,7 @@ export function emitRust(item) {
         return { text: `if ${cond.text} { ${then.text} } else { ${otherwise.text} }`, prec: CHOOSE, owned: then.owned };
       }
       case 'call':
-        return { text: `${expr.name}(${expr.args.map((arg) => borrowed(rustExpr(arg, env))).join(', ')})`, prec: PRIMARY, owned: expr.type === 'string' };
+        return { text: `${pureRustIdentifier(expr.name)}(${expr.args.map((arg) => borrowed(rustExpr(arg, env))).join(', ')})`, prec: PRIMARY, owned: expr.type === 'string' };
       case 'builtin':
         if (expr.name === 'sqrt') lints.add('clippy::imprecise_flops');
         return { text: `${map.builtins.get(expr.name).rust}(${expr.args.map((arg) => rustExpr(arg, env).text).join(', ')})`, prec: PRIMARY, owned: false };
@@ -109,10 +109,10 @@ export function emitRust(item) {
         env.set(statement.name, value.owned);
         if (statement.value.kind === 'choose' && value.text.length > SINGLE_LINE_IF) {
           const scope = new Map(env);
-          lines.push(`${pad}let ${statement.name} = if ${rustExpr(statement.value.cond, scope).text} {`);
+          lines.push(`${pad}let ${pureRustIdentifier(statement.name)} = if ${rustExpr(statement.value.cond, scope).text} {`);
           lines.push(`${pad}    ${rustExpr(statement.value.then, scope).text}`, `${pad}} else {`, `${pad}    ${rustExpr(statement.value.else, scope).text}`, `${pad}};`);
         } else {
-          lines.push(`${pad}let ${statement.name} = ${value.text};`);
+          lines.push(`${pad}let ${pureRustIdentifier(statement.name)} = ${value.text};`);
         }
       } else if (statement.kind === 'return') {
         lines.push(`${pad}${result(statement.value, env)}`);
@@ -142,14 +142,14 @@ export function emitRust(item) {
   const visibility = item.exported ? 'pub ' : '';
   if (item.kind === 'constant') {
     const type = map.types.get(item.type);
-    return { code: `${visibility}const ${item.name}: ${type.rust} = ${rustExpr(item.value, new Map()).text};`, lints };
+    return { code: `${visibility}const ${pureRustIdentifier(item.name)}: ${type.rust} = ${rustExpr(item.value, new Map()).text};`, lints };
   }
   lints.add('clippy::missing_const_for_fn');
-  const params = item.params.map((param) => `${param.name}: ${map.types.get(param.type).rust}`).join(', ');
+  const params = item.params.map((param) => `${pureRustIdentifier(param.name)}: ${map.types.get(param.type).rust}`).join(', ');
   const env = new Map(item.params.map((param) => [param.name, false]));
   const lines = [
     '#[must_use]',
-    `${visibility}fn ${item.name}(${params}) -> ${map.types.get(item.returns).rustOwned} {`,
+    `${visibility}fn ${pureRustIdentifier(item.name)}(${params}) -> ${map.types.get(item.returns).rustOwned} {`,
     ...body(item.body, env, 1),
     '}',
   ];
@@ -251,7 +251,7 @@ export function emitJavaScript(item, description = []) {
     return lines;
   };
   const exported = item.exported ? 'export ' : '';
-  if (item.kind === 'constant') return `${exported}const ${item.name} = ${js(item.value).text};`;
+  if (item.kind === 'constant') return `${exported}const ${camelFromSnake(item.name)} = ${js(item.value).text};`;
   const type = (id) => map.types.get(id).javascript;
   return [
     '/**',

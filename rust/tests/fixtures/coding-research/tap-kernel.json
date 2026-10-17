@@ -1,0 +1,134 @@
+[
+  {
+    "id": "pass",
+    "args": [
+      true,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    "expected": ""
+  },
+  {
+    "id": "missing",
+    "args": [
+      true,
+      -1,
+      1,
+      0,
+      0,
+      0
+    ],
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "zero",
+    "args": [
+      true,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "expected": "NoTestsExecuted"
+  },
+  {
+    "id": "skip",
+    "args": [
+      true,
+      2,
+      0,
+      0,
+      2,
+      0
+    ],
+    "expected": "NoTestsExecuted"
+  },
+  {
+    "id": "partial",
+    "args": [
+      true,
+      2,
+      1,
+      0,
+      0,
+      0
+    ],
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "accounted",
+    "args": [
+      true,
+      2,
+      1,
+      0,
+      1,
+      0
+    ],
+    "expected": ""
+  },
+  {
+    "id": "failed",
+    "args": [
+      true,
+      2,
+      1,
+      1,
+      0,
+      0
+    ],
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "cancelled",
+    "args": [
+      true,
+      2,
+      1,
+      0,
+      0,
+      1
+    ],
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "unsafe",
+    "args": [
+      true,
+      9007199254740992,
+      9007199254740992,
+      0,
+      0,
+      0
+    ],
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "fractional",
+    "args": [
+      true,
+      1.5,
+      1.5,
+      0,
+      0,
+      0
+    ],
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "incomplete",
+    "args": [
+      false,
+      1,
+      1,
+      0,
+      0,
+      0
+    ],
+    "expected": "VerificationReceiptIncomplete"
+  }
+]

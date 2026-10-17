@@ -4,7 +4,7 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { host, installHost } from '../../../js/agentic/host.mjs';
 import { planChatStepResolved } from '../../../js/agentic/planner.mjs';
-import { moduleFunctionRequest } from '../../../js/agentic/module_function.mjs';
+import { moduleFunctionRequest, signature } from '../../../js/agentic/module_function.mjs';
 import { codingResearchQuery, deriveCodingProcedure, independentAcceptance, planCodingResearchStep } from '../../../js/agentic/coding_research.mjs';
 import { readFileSync } from 'node:fs';
 const fixtures = JSON.parse(readFileSync(new URL('../fixtures/coding-research/held-out.json', import.meta.url)));
@@ -193,6 +193,11 @@ test('zero-test or incomplete Node receipts cannot verify either a new or an exi
     ['Output: TAP version 13\n# tests 0\n# pass 0\n# fail 0\n# skipped 0\nExit Code: 0', 'NoTestsExecuted'],
     ['Output: TAP version 13\n# tests 2\n# pass 0\n# fail 0\n# skipped 2\nExit Code: 0', 'NoTestsExecuted'],
     ['Output: TAP version 13\n# tests 1\n# pass 1\n# fail 1\n# skipped 0\nExit Code: 0', 'VerificationReceiptIncomplete'],
+    ["Output: TAP version 13\n# tests 2\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\nExit Code: 0", 'VerificationReceiptIncomplete'],
+    ["Output: TAP version 13\n# tests 1\n# pass 2\n# fail 0\n# skipped 0\n# cancelled 0\nExit Code: 0", 'VerificationReceiptIncomplete'],
+    ["Output: TAP version 13\n# tests 1\n# pass 1\n# pass 1\n# fail 0\n# skipped 0\nExit Code: 0", 'VerificationReceiptIncomplete'],
+    ["Output: TAP version 13\n# tests 9007199254740992\n# pass 1\n# fail 0\n# skipped 0\nExit Code: 0", 'VerificationReceiptIncomplete'],
+    ["Output: TAP version 13\n# tests 2\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 1\nExit Code: 0", 'VerificationReceiptIncomplete'],
   ];
   const existing = structuredClone(beforeWrite);
   const read = existing.find(message => message.source_read?.path === fixtures[0].module);
@@ -220,4 +225,26 @@ test('a later source write outside the bounded pure grammar never authorizes exe
   assert.equal(stopped.kind, 'final');
   assert.match(stopped.answer, /UnsupportedRepairSource/u);
   assert(!stopped.calls?.some(item => item.tool === 'bash'));
+});
+
+test('exact literal arity includes zero-parameter greetings and refuses missing or extra arguments', async () => {
+  await cold(fixtures[0]);
+  const zero = fixtures.find(fixture => fixture.name === 'unseen-zero-arg-greeting');
+  const zeroRequest = moduleFunctionRequest(zero.prompt);
+  assert.deepEqual(signature('cairnSignal( )').parameters, []);
+  assert.equal(signature('cairnSignal(,)'), null);
+  assert.deepEqual(zeroRequest.parameters, []);
+  assert.equal(independentAcceptance(zeroRequest, zero.acceptance), true);
+  assert.equal(independentAcceptance(zeroRequest,
+    zero.acceptance.replace('cairnSignal()', "cairnSignal('extra')")), false);
+  const oneRequest = moduleFunctionRequest(fixtures[0].prompt);
+  assert.equal(independentAcceptance(oneRequest,
+    fixtures[0].acceptance.replace("frost('unseen-719')", 'frost()')), false);
+  assert.equal(independentAcceptance(oneRequest,
+    fixtures[0].acceptance.replace("frost('unseen-719')", "frost('unseen-719', 'extra')")), false);
+  const two = { ...oneRequest, name:'paired', parameters:['left','right'], module:'paired.mjs' };
+  const acceptance = "import {paired} from './paired.mjs'; import assert from 'node:assert/strict'; assert.equal(paired('first', 'second'), 'first');";
+  assert.equal(independentAcceptance(two, acceptance), true);
+  assert.equal(independentAcceptance(two, acceptance.replace("'first', 'second'", "'first'")), false);
+  assert.equal(independentAcceptance(two, acceptance.replace("'first', 'second'", "'first', externalValue")), false);
 });

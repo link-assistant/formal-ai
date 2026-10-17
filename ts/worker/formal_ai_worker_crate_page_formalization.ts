@@ -3,8 +3,9 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/page_formalization.mjs"] = (crateRequire) => {
+const { typedMeaning } = crateRequire("crate/typed_meaning.mjs");
+const { formatLinoValueVerbatim } = crateRequire("crate/links_format.mjs");
 // Page formalization (R1188-U18): a whole page of text, every sentence of it,
 // becomes formal statements, and the statements are deformalized back to
 // text to see which facts survive. The Rust twin is
@@ -26,21 +27,17 @@
 //
 // `pageAnswer` renders a report as the chat answer to "formalize <url>": the
 // page's counts, then each statement with its formal notation.
-
 const { Polarity, sourceTermCount, clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms } = crateRequire("crate/text_formalization.mjs");
-
 /** Mirrors `ANSWER_STATEMENT_LIMIT` in rust/src/formalization/page.rs: the most statements a page answer lists. */
 const ANSWER_STATEMENT_LIMIT = 40;
-
 /** Mirrors `fn fact_survives` in rust/src/formalization/page.rs: the known terms of a statement come back from its deformalization. */
 function factSurvives(statement) {
   const known = knownIds(statement);
   if (known.length === 0) return false;
   const reread = clauseStatement(deformalizeStatement(statement, statement.language), statement.language, null, false);
   const back = knownIds(reread);
-  return back.length === known.length && back.every((id, index) => id === known[index]);
+  return typedMeaning(statement.dialogue)===typedMeaning(reread.dialogue) && back.length === known.length && back.every((id, index) => id === known[index]);
 }
-
 /**
  * Mirrors `fn formalize_page` in rust/src/formalization/page.rs: every sentence of `text` with its statements,
  * and the page's counts.
@@ -65,7 +62,6 @@ function formalizePage(text, language) {
   }
   return report;
 }
-
 /**
  * Mirrors `fn statement_notation` in rust/src/formalization/page.rs: a statement in formal notation, its term ids
  * (the subject first) in parentheses, after `¬` when the statement is denied.
@@ -73,9 +69,10 @@ function formalizePage(text, language) {
 function statementNotation(statement) {
   const identifiers = statementTerms(statement).map((term) => term.id);
   const negation = statement.polarity === Polarity.Denied ? '¬ ' : '';
-  return `${negation}(${identifiers.join(' ')})`;
+  const legacy=`${negation}(${identifiers.join(' ')})`;
+  const typed=typedMeaning(statement.dialogue);
+  return typed===null?legacy:`(statement (terms ${legacy}) (typed_meaning ${formatLinoValueVerbatim(typed)}))`;
 }
-
 /**
  * Mirrors `fn page_answer` in rust/src/formalization/page.rs: the answer to a request to formalize the page at
  * `url`. `render(intent, values)` is the seeded response of `intent` in the answer's language with `values`
@@ -106,7 +103,6 @@ function pageAnswer(report, url, render) {
   }
   return lines.join('\n');
 }
-
 return Object.freeze({
   ANSWER_STATEMENT_LIMIT,
   factSurvives,

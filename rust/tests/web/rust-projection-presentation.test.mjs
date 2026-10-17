@@ -76,3 +76,30 @@ test('procedural and foreign attributes never inherit token-only presentation ap
   assert(projected.edits.length > 0);
   assert(projected.rendered.startsWith('#![allow(unused, non_snake_case)]\n'));
 });
+
+
+test('builtin derives on generated data preserve exact presentation tokens', () => {
+  for (const declaration of ['pub enum Choice { Yes, No }', 'pub struct Point { x: i32 }']) {
+    const source = '#[derive(Clone, Debug, PartialEq, Eq)]\n' + declaration + '\n' + raw;
+    assert.doesNotThrow(() => validatePresentationScope(source));
+    const rendered = presentRustCode(source).rendered;
+    assert.deepEqual(lex(rendered, 'Rust').map(row => [row.type, row.text]),
+      lex(source, 'Rust').map(row => [row.type, row.text]));
+  }
+});
+
+test('derive support refuses custom attributes, malformed targets and shadowed builtin identities', () => {
+  for (const attribute of ['#[derive()]', '#[derive(Foreign)]', '#[derive(custom::Clone)]',
+    '#[derive(Clone, Clone)]', '#[derive(Clone,)]', '#[cfg(any())]', '#[derive(Clone) extra]',
+    '#![derive(Clone)]', '#[derive(Clone)] #[cfg(any())]']) {
+    assert.throws(() => validatePresentationScope(attribute + '\npub struct Value;'));
+  }
+  for (const declaration of ['fn target() {}', 'type Value = i32;', 'enum Value;', 'static Value: i32 = 0;']) {
+    assert.throws(() => validatePresentationScope('#[derive(Clone)]\n' + declaration));
+  }
+  for (const shadow of ['use custom::Clone;', 'use custom::Thing as Clone;',
+    'use custom::{Clone};', 'trait Clone {}', 'struct Clone;', 'type Clone = i32;',
+    'mod Clone {}', 'fn shadow<Clone>() {}', 'fn shadow<T, Clone>() {}']) {
+    assert.throws(() => validatePresentationScope(shadow + '\n#[derive(Clone)] struct Value;'), /ShadowedBuiltinDerive/);
+  }
+});

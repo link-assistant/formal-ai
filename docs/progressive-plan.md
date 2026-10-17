@@ -10,9 +10,9 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
 | 1 recorded | the row exists, nothing measures it yet | 34 |
 | 2 measured | a test pins it, but the row says it is not delivered | 3 |
-| 3 partial | delivered in part | 51 |
+| 3 partial | delivered in part | 60 |
 | 4 implemented | delivered, with a test | 1313 |
-| | **all** | **1409** |
+| | **all** | **1418** |
 
 ## JavaScript first
 
@@ -22,7 +22,7 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 | --- | ---: |
 | a JavaScript test | 439 |
 | a Rust test only | 920 |
-| no test | 50 |
+| no test | 59 |
 
 ## Next pass
 
@@ -56,6 +56,8 @@ Level 1 (recorded): 34 requirement(s) to raise before any level above it is refi
 - `docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md`: R1085-9, R1085-15
 - `docs/requirements/issue-1165-discovery-production-path.md`: R1165-1, R1165-2, R1165-4, R1165-8
 - `docs/requirements/issue-1173-no-canned-search-answer.md`: R1173-3
+- `docs/requirements/issue-1182-strict-source-duplication.md`: R1182-D1, R1182-D2, R1182-D3, R1182-D4
+- `docs/requirements/issue-1183-general-discovery-runtime-parity.md`: R1183-G1, R1183-G2, R1183-G3, R1183-G4, R1183-G5
 - `docs/requirements/issue-1186-formalization-as-a-user-facing-task.md`: R1186-4
 - `docs/requirements/issue-1188-coding-amplification.md`: R1188-U31, R1188-U32, R1188-U33, R1188-U34, R1188-U35
 - `docs/requirements/issue-1188-user-requirements.md`: R1188-U1, R1188-U2, R1188-U3, R1188-U4, R1188-U5, R1188-U6, R1188-U7, R1188-U8, R1188-U9, R1188-U13, R1188-U18, R1188-U19, R1188-U20, R1188-U21, R1188-U23, R1188-U27, R1188-U28, R1188-U29, R1188-U30

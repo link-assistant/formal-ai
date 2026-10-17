@@ -1,0 +1,14 @@
+self_ast_census
+  target src/translation/compositional.rs
+  language rust
+  fidelity signature
+  byte_len 4310
+  line_count 125
+  content_id source_module_791c608a7bf42b59
+  symbol_count 5
+  symbols
+    function target_surface_is_complete 4 26
+    function compose_spans 28 61
+    function translate_known_spans 63 96
+    function fill_missing_candidates 98 121
+    module tests 125 125

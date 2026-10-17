@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3c1e7275311071fbe2f4f20c7a17e78b428ab352658e4b71de408be6d654ef19 bytes=8874
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5926eedaf5c512de66e8e3c0eedd0fd50c309a089cc9ff23a10b686d7d8ba42f bytes=9039
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=2
+// formal-ai:workarounds import-pruning items=0 carried=3
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -98,6 +98,10 @@ pub mod ml_math {
 // formal-ai:refusal import of names its module does not translate
 // formal-ai:blockers import of names its module carries
 
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
 // meta-language:translated JavaScript export_statement items=1 sha256=97bf385d8aa8614fd3f7e0346cdd3f0a8e79365dca37ad469ea3165c43775273
 // | /** Mirrors `ELABORATION_SHARED_TERMS` in rust/src/summarization/dependency.rs: shared terms that make one statement elaborate another. */
 // | export const ELABORATION_SHARED_TERMS = 2;
@@ -124,8 +128,8 @@ pub const KEEP_DIVISOR: f64 = 3f64;
 // formal-ai:refusal new expression
 // formal-ai:blockers arrow callback of .every() | method call .every() | method call .has() | new Set
 
-// meta-language:carried JavaScript export_statement (type)
-// formal-ai:refusal type: unknown name (a sibling item or an import)
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal field access
 // formal-ai:blockers call of a sibling function | call of an imported function | field access
 
 // meta-language:carried JavaScript export_statement (unsupported)

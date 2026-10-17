@@ -47,7 +47,7 @@ describe('the shared text formalizer', () => {
     assert.deepEqual(identities('The Moon orbits Earth. It does not emit light, and it has 1.2 billion craters.', 'en'), [
       'asserted|moon|name:earth unknown:orbit',
       'denied|moon|file_whole_write_action unknown:light',
-      'asserted|moon|number:1.2 unknown:billion unknown:crater',
+      "asserted|moon|number:1.2 unknown:billion unknown:crater|[[\"schema\",\"dialogue-meaning/v1\"],[\"question\",null],[\"answer\",[[\"kind\",\"quantity\"],[\"polarity\",null],[\"locations\",[]]]],[\"quantities\",[[[\"value\",\"1.2\"],[\"comparison\",\"equal\"],[\"currency\",null],[\"unit\",null],[\"period\",null],[\"net\",false],[\"uncertainty\",null]]]]]",
     ]);
     assert.deepEqual(identities('Луна вращается вокруг Земли. Она не светится.', 'ru'), [
       'asserted|moon|name:земли unknown:вокруг unknown:враща',

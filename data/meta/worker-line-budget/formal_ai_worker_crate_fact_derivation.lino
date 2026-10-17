@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_fact_derivation.js"
+  ceiling 414
+  rationale "First publication: exact maintained factory of the canonical fact-derivation module. Replaces handwritten duplicate algorithms through lazy direct helper aliases and an explicit raw-input adapter; original worker ceiling unchanged."

@@ -66,3 +66,7 @@ The strict implementation requirements are recorded as Pending in [the strict du
 ## Explicit scope exclusions
 
 [#825](https://github.com/link-assistant/formal-ai/issues/825) has an empty body and asks in its title for autocomplete in owned input boxes; [#557](https://github.com/link-assistant/formal-ai/issues/557) asks for embedded input buttons; [#447](https://github.com/link-assistant/formal-ai/issues/447) concerns dialog UI. These unrelated presentation changes are not prerequisites for general discovery, answer correctness, implementation deduplication or runtime parity and are excluded from this PR's feature work. Existing UI behavior remains protected by applicable regressions. Other distribution, synchronization and telemetry features are not automatically added merely because they share the repository; include a concrete dependency only when needed for an acceptance above. Exclusion means retained backlog, never fulfilled or closed.
+
+### Complete linked-issue review
+
+The [subissue scope addendum](subissue-scope.md) and [source-bound public ledger](subissue-scope.lino) record97 additional reviewed issue bodies, including77 closed Formal AI descendants and20 external dependencies. Combined with the original92-body review,189 bodies are recorded. Closed issue metadata does not establish current acceptance; external Hive Mind work is explicitly recorded as a dependency and is not claimed as a source change delivered by this repository PR.

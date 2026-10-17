@@ -3,12 +3,11 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/dialogue_formalization.mjs"] = (crateRequire) => {
 // Typed dialogue obligations, discovered from the shared language vocabulary.
 // This analysis describes a question/answer; it never supplies personal facts.
-const { cached, parseLino, readText } = crateRequire("host.mjs");
-const PATH='data/seed/text-formalization.lino';
+const { cached } = crateRequire("host.mjs");
+const { grammarVocabulary, structuralRuleValues, numericIdentityPrefix } = crateRequire("crate/formalization_grammar.mjs");
 const questionKinds=[['where','location'],['how-many','quantity'],['why','text'],
   ['who','entity'],['when','time'],['which','text']];
 const topics=['location','experience','compensation','contract','education','availability'];
@@ -16,17 +15,11 @@ const currencies=['RUB','USD','EUR'];
 const units=['year','month','hour'];
 const normalize=text=>String(text).normalize('NFKC').toLowerCase().replace(/\s+/gu,' ').trim();
 const word=character=>character!==undefined&&/[\p{L}\p{N}_]/u.test(character);
-
 function vocabulary(language,kind) {
   return cached('dialogue-vocabulary-'+language+'-'+kind,()=>{
-    const parsed=parseLino(readText(PATH));
-    const root=parsed.name==='text-formalization'?parsed:
-      (parsed.children??[]).find(node=>node.name==='text-formalization');
-    const record=(root?.children??[]).find(node=>node.name==='language'&&node.value===language);
-    return (record?.children??[]).filter(node=>node.name===kind).map(node=>kind==='numeric-group'?node.value:normalize(node.value));
+    return grammarVocabulary(language,kind).map(value=>kind==='numeric-group'?value:normalize(value));
   });
 }
-
 function contains(text,surface) {
   let start=text.indexOf(surface);
   while(start>=0) {
@@ -38,10 +31,19 @@ function contains(text,surface) {
   return false;
 }
 const mentions=(text,language,kind)=>vocabulary(language,kind).some(value=>contains(text,value));
-const listed=(text,language,kind)=>vocabulary(language,kind).some(value=>text===value);
+/**
+ * Exact membership for normalized vocabulary surfaces.
+ * @param {string} text
+ * @param {string[]} values
+ * @returns {boolean}
+ */
+function listedSurface(text,values) {
+  for(const value of values)if(value===text)return true;
+  return false;
+}
+const listed=(text,language,kind)=>listedSurface(text,vocabulary(language,kind));
 const ending=(text,language,kind)=>vocabulary(language,kind).some(value=>
   text===value||text.endsWith(' '+value));
-
 function numericValue(surface,language) {
   const decimal=vocabulary(language,'numeric-decimal')[0];
   const grouping=vocabulary(language,'numeric-group')[0];
@@ -59,7 +61,6 @@ function numericValue(surface,language) {
     groups.slice(1,-1).some(group=>group.length!==secondary)))return null;
   return sign+groups.join('')+(split.length===2?'.'+split[1]:'');
 }
-
 function dialogueQuantities(text,language) {
   const expression=/[+-]?[0-9]+(?:[.,][0-9]+|[ \u00a0\u202f][0-9]{3})*/gu;
   const result=[];
@@ -85,8 +86,8 @@ function dialogueQuantities(text,language) {
     for(const code of currencies)for(const alias of vocabulary(language,'currency-'+code.toLowerCase())) {
       if(constraintPrefix.endsWith(alias))constraintPrefix=constraintPrefix.slice(0,-alias.length).trim();
     }
-    const comparison=ending(constraintPrefix,language,'amount-min')?'at-least':
-      ending(constraintPrefix,language,'amount-max')?'at-most':'equal';
+    const comparison=ending(constraintPrefix,language,'amount-minimum')?'at-least':
+      ending(constraintPrefix,language,'amount-maximum')?'at-most':'equal';
     const unit=units.find(value=>mentions(all,language,'unit-'+value))??null;
     const period=units.find(value=>mentions(all,language,'period-'+value))??null;
     const sourceComponents=Array.from(surface.matchAll(/[0-9]+(?:[.,][0-9]+)*/gu),component=>({
@@ -100,8 +101,7 @@ function dialogueQuantities(text,language) {
   }
   return result;
 }
-
-function formalizeDialogue(text,language) {
+function formalizeDialogue(text,language,declarativeContinuation=false) {
   const normalized=normalize(text),clean=normalized.replace(/[.!?]+$/u,'').trim();
   const foundTopics=topics.filter(topic=>mentions(normalized,language,'topic-'+topic));
   const quantities=dialogueQuantities(text,language);
@@ -114,7 +114,7 @@ function formalizeDialogue(text,language) {
     mentions(normalized,language,'question-particle');
   const bareTopic=foundTopics.some(topic=>listed(clean,language,'topic-'+topic));
   let question=null;
-  if(marked||bareTopic) {
+  if(!declarativeContinuation&&(marked||bareTopic)) {
     let kind=interrogative?.[0]??'yes-no';
     if(foundTopics.includes('compensation')&&(kind==='which'||bareTopic))kind='how-many';
     const answer_type=kind==='yes-no'?'boolean':
@@ -131,22 +131,21 @@ function formalizeDialogue(text,language) {
     if(polarity)answer={kind:'boolean',polarity,quantities:[],locations:[]};
     else if(quantities.length)answer={kind:'quantity',polarity:null,quantities,locations:[]};
     else if(vocabulary(language,'location-prefix').some(value=>normalized.startsWith(value+' '))) {
-      const locations=Array.from(text.matchAll(/\p{Uppercase}[\p{L}\p{M}]+/gu),match=>match[0]);
+      const locations=Array.from(text.matchAll(/\p{Uppercase}[\p{L}\p{M}]+/gu),match=>match[0])
+        .filter(value=>!vocabulary(language,'location-prefix').includes(normalize(value)));
       if(locations.length)answer={kind:'location',polarity:null,quantities:[],locations};
     }
   }
   return {question,answer,quantities};
 }
-
 /** A typed property question is not a request for generic assistant identity. */
 function blocksSelfDescription(text,language) {
   const question=formalizeDialogue(text,language).question;
   return question!==null&&question.topic!==null;
 }
-
 /** Compatibility is evidence only: unknown units/currencies never grant a match. */
 function answerCompatibility(question,answer) {
-  if(!question||!answer)return {status:'unknown',reason:'missing typed evidence'};
+  if(!question||!answer)return {status:'unknown',reason:structuralRuleValues('answer-compatibility','missing-reason')[0]};
   if(question.answer_type!==answer.kind)return {status:'incompatible',reason:'answer kind'};
   if(answer.kind==='quantity') {
     if(answer.quantities.length!==1)return {status:'unknown',reason:'multiple amounts'};
@@ -161,7 +160,6 @@ function answerCompatibility(question,answer) {
   }
   return {status:'compatible',reason:'typed evidence'};
 }
-
 /** Join only the numeric words covered by a validated numeric surface. */
 function mergeNumericWords(words,quantities,language) {
   // Numeric identity cannot depend on neighbouring prose or Han characters.
@@ -170,7 +168,7 @@ function mergeNumericWords(words,quantities,language) {
   words=words.map(word=>{
     if(word.kind!=='number')return word;
     const canonical=numericValue(word.surface,language);
-    return {...word,id:canonical===null?'number-unresolved:'+word.surface:'number:'+canonical};
+    return {...word,id:numericIdentityPrefix(canonical===null)+(canonical===null?word.surface:canonical)};
   });
   const output=[];
   let index=0;
@@ -181,18 +179,19 @@ function mergeNumericWords(words,quantities,language) {
     }
     if(index>=words.length)break;
     if(pieces.every((piece,offset)=>words[index+offset]?.surface===piece)) {
-      output.push({surface:quantity.surface,kind:'number',id:(quantity.uncertainty?'number-unresolved:':'number:')+quantity.value});
+      output.push({surface:quantity.surface,kind:'number',id:numericIdentityPrefix(Boolean(quantity.uncertainty))+quantity.value});
       index+=pieces.length;
     }
   }
   return output.concat(words.slice(index));
 }
-
 return Object.freeze({
   dialogueQuantities,
   formalizeDialogue,
   blocksSelfDescription,
   answerCompatibility,
   mergeNumericWords,
+  structuralRuleValues,
+  numericIdentityPrefix,
 });
 };

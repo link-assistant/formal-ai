@@ -4,10 +4,12 @@
 pub(super) fn target_surface_is_complete(surface: &str, target: &str) -> bool {
     let text = surface.trim();
     if !text.chars().any(char::is_alphabetic)
-        || text.contains("response:")
-        || text.contains("-->")
-        || text.contains("{{")
-        || text.contains("[[")
+        || crate::formalization::text_statements::structural_rule_values(
+            "target-surface",
+            "reject-fragment",
+        )
+        .iter()
+        .any(|fragment| text.contains(fragment.as_str()))
     {
         return false;
     }
@@ -119,31 +121,5 @@ pub(super) fn fill_missing_candidates<T: super::HttpClient + ?Sized>(
 }
 
 #[cfg(test)]
-mod tests {
-    use super::{compose_spans, target_surface_is_complete};
-    #[test]
-    fn every_span_requires_target_evidence() {
-        let lookup = |source: &str| match source {
-            "red" => Some(("красный".to_owned(), vec!["lexical:red".to_owned()])),
-            "orchard" => Some(("сад".to_owned(), vec!["lexical:orchard".to_owned()])),
-            _ => None,
-        };
-        assert_eq!(
-            compose_spans("red orchard", lookup).unwrap().0,
-            "красный сад"
-        );
-        assert!(compose_spans("red unknown", lookup).is_none());
-        assert_eq!(
-            compose_spans("red-orchard", lookup).unwrap().0,
-            "красный-сад"
-        );
-    }
-    #[test]
-    fn diagnostics_and_foreign_script_are_not_target_output() {
-        assert!(target_surface_is_complete("Web programmer", "en"));
-        assert!(!target_surface_is_complete("-- Английский-->", "en"));
-        assert!(!target_surface_is_complete("response:translate", "en"));
-        assert!(!target_surface_is_complete("programmer неизвестно", "en"));
-        assert!(!target_surface_is_complete("", "ru"));
-    }
-}
+#[path = "../../tests/source/source_tests/translation/compositional-tests.rs"]
+mod tests;

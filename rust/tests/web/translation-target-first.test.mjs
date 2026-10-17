@@ -13,6 +13,8 @@ const context = vm.createContext({
   extractHindiUnquotedTranslationSurface: () => null,
   extractChineseUnquotedTranslationSurface: () => null,
 });
+const composition = fs.readFileSync(new URL('../../../js/worker/formal_ai_worker_translation_composition.js', import.meta.url), 'utf8');
+vm.runInContext(composition, context);
 vm.runInContext(source.slice(start, end), context);
 const cases = [
   ['Translate to English: Программист', 'Программист'],

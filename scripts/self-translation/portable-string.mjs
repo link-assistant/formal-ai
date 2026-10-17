@@ -2,7 +2,7 @@
 // No source fragment is carried: unsupported constructs stop generation.
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { toLino, fromLino, snakeFromCamel, canonicalRustName } from './ir.mjs';
+import { toLino, fromLino, canonicalMetaSymbol, rustIdentifier } from './ir.mjs';
 const require = createRequire(import.meta.url);
 const {
   parse
@@ -38,7 +38,7 @@ export function stringProgram(source) {
       }).join('\n');
       if (!doc.includes('@param {string} ' + parameter.name)) fail('ExplicitStringParameterRequired');
       return {
-        name: snakeFromCamel(parameter.name),
+        name: canonicalMetaSymbol(parameter.name),
         type: 'string'
       };
     });
@@ -55,7 +55,7 @@ export function stringProgram(source) {
         value: scalarText(value.value)
       };
       if (value?.type === 'Identifier') {
-        const name = snakeFromCamel(value.name);
+        const name = canonicalMetaSymbol(value.name);
         if (!names.has(name)) fail('UnboundParameter');
         return {
           kind: 'variable',
@@ -86,7 +86,7 @@ export function stringProgram(source) {
     }
     programs.push({
       kind: 'function',
-      name: snakeFromCamel(node.id.name),
+      name: canonicalMetaSymbol(node.id.name),
       exported: true,
       params,
       returns: 'string',
@@ -105,8 +105,8 @@ export function validateStringProgram(programs) {
   for (const program of programs) {
     if (program.kind !== 'function' || !program.exported || program.returns !== 'string' || functions.has(program.name)) fail('StringFunctionRequired');
     try {
-      canonicalRustName(program.name);
-      program.params.forEach(parameter => canonicalRustName(parameter.name));
+      rustIdentifier(program.name);
+      program.params.forEach(parameter => rustIdentifier(parameter.name));
     } catch {
       return fail('PortableNameRequired');
     }
@@ -117,6 +117,7 @@ export function validateStringProgram(programs) {
     const names = new Set(program.params.map(parameter => {
       return parameter.name;
     }));
+    if (names.size !== program.params.length) fail('UniqueParametersRequired');
     function type(value) {
       if (value.kind === 'string') {
         scalarText(value.value);
@@ -168,7 +169,7 @@ const rustText = value => {
 };
 function rustExpression(value) {
   if (value.kind === 'string') return rustText(value.value) + '.to_owned()';
-  if (value.kind === 'variable') return value.name + '.to_owned()';
+  if (value.kind === 'variable') return rustIdentifier(value.name) + '.to_owned()';
   if (value.kind === 'binary' && value.op === 'add') {
     const parts = [];
     function append(node) {
@@ -182,7 +183,7 @@ function rustExpression(value) {
   }
   if (value.kind === 'binary' && value.op === 'equal') {
     if (value.right.kind === 'string' && value.right.value === '') {
-      if (value.left.kind === 'variable') return value.left.name + '.is_empty()';
+      if (value.left.kind === 'variable') return rustIdentifier(value.left.name) + '.is_empty()';
       return '(' + rustExpression(value.left) + ').is_empty()';
     }
     return rustExpression(value.left) + ' == ' + rustExpression(value.right);
@@ -200,7 +201,7 @@ function rustExpression(value) {
         '\0': '\\0'
       }[character];
     }) + "'";
-    const receiver = value.receiver.kind === 'variable' ? value.receiver.name : '(' + rustExpression(value.receiver) + ')';
+    const receiver = value.receiver.kind === 'variable' ? rustIdentifier(value.receiver.name) : '(' + rustExpression(value.receiver) + ')';
     return receiver + '.replace(' + needle + ', ' + rustText(value.args[1].value) + ')';
   }
   return fail('UnsupportedStringEmission');
@@ -220,8 +221,8 @@ function rustReturn(value, depth) {
 export function renderStringRust(meta) {
   const programs = assertCompleteStringIR(meta);
   return programs.map(program => {
-    return ['#[must_use]', 'pub fn ' + program.name + '(' + program.params.map(parameter => {
-      return parameter.name + ': &str';
+    return ['#[must_use]', 'pub fn ' + rustIdentifier(program.name) + '(' + program.params.map(parameter => {
+      return rustIdentifier(parameter.name) + ': &str';
     }).join(', ') + ') -> String {', ...rustReturn(program.body[0].value, 1), '}'].join('\n');
   }).join('\n\n') + '\n';
 }

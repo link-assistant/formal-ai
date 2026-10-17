@@ -1,14 +1,26 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=770b39b8f7f1c63d5f4b64eaec488b489acafd5502c40ed74a7e2f3d3629e68d bytes=30658
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c40c5d0d3542fadf8c86c7e6522a69e772bf0a840fcc3279610c20ebea2e2893 bytes=30721
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=4
+// formal-ai:workarounds import-pruning items=0 carried=6
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
 
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal export …
+// formal-ai:blockers export … | imported value
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -122,7 +134,7 @@ pub const HAN: &str = "han";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow function | call of an imported function | field access | method call .filter() | method call .find() | method call .map() | object without a $ tag | optional chaining
+// formal-ai:blockers arrow callback of .map() | arrow function | call of an imported function | method call .map() | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
@@ -178,7 +190,7 @@ pub const HAN: &str = "han";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers call of a sibling function | method call .get() | method call .has() | method call .test() | null | object without a $ tag | sibling value
+// formal-ai:blockers call of a sibling function | call of an imported function | method call .get() | method call .has() | method call .test() | null | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
@@ -202,7 +214,7 @@ pub const HAN: &str = "han";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .find() | method call .map() | method call .slice() | method call .some() | null | nullish coalescing | object without a $ tag | optional chaining | sibling value
+// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .find() | method call .map() | method call .slice() | method call .some() | method call .test() | null | nullish coalescing | object without a $ tag | optional chaining | regular expression | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
@@ -234,7 +246,7 @@ pub const HAN: &str = "han";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | field access | imported value | method call .filter() | method call .join() | method call .map() | method call .sort() | new Set | null
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | field access | imported value | method call .filter() | method call .join() | method call .map() | method call .sort() | new Set | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .every()
@@ -254,7 +266,7 @@ pub const HAN: &str = "han";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
-// formal-ai:blockers call of a sibling function | field access | method call .replace() | method call .slice() | nullish coalescing | sibling value
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | method call .replace() | method call .slice() | nullish coalescing | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
@@ -266,8 +278,8 @@ pub const HAN: &str = "han";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers call of a sibling function | field access | method call .push() | null | sibling value
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | method call .push() | null | nullish coalescing | sibling value
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal optional chaining
-// formal-ai:blockers arrow callback of .findIndex() | arrow callback of .reduce() | assignment of a field or element | call of a sibling function | destructuring | field access | method call .findIndex() | method call .reduce() | method call .splice() | nullish coalescing | object without a $ tag | optional chaining | sibling value
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function | call of an imported function
