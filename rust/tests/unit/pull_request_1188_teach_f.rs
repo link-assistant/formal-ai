@@ -797,9 +797,7 @@ fn g77_a_call_killed_at_the_timeout_is_stated_without_an_exit_code() {
     assert_eq!(run.commands, ["node --test slow.test.mjs"]);
     assert_eq!(
         run.answer.as_deref(),
-        Some(
-            "The command failed: Signal: SIGTERM\nTimeout: 60000 ms\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
-        )
+        Some("The command failed: Signal: SIGTERM\nTimeout: 60000 ms")
     );
 }
 

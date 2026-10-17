@@ -89,13 +89,10 @@ pub struct PlannedToolCall {
     pub arguments: String,
 }
 
-/// The tool capabilities the planner's recipe relies on.
+/// The capabilities used by planner recipes and the server permission gate.
 ///
-/// This is the single source of truth for "what kind of thing a tool does". Both
-/// the planner (to pick which advertised tool to call for each recipe step) and
-/// the server's permission gate (to decide whether an agentic client may drive a
-/// tool of this kind) classify tool names through [`tool_capability`] — so the
-/// two never drift and no per-tool-name special cases accumulate.
+/// Both classify tool names through [`tool_capability`], keeping capability
+/// classes consistent across clients without per-tool-name exceptions.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Capability {
     Search,
@@ -270,7 +267,7 @@ fn plan_chat_step_routes(
     // and the `agentic_continuation` conversation handler answers it; the
     // words of the cue are never a request (issue #1095).
     if let steps::SourceOrOwnedGoalStep::Claimed(plan) =
-        steps::plan_request_preflight(&task, result)
+        steps::plan_request_preflight(&task, messages, tool_names, result)
     {
         return plan;
     }

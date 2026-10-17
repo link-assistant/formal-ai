@@ -7,6 +7,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
 BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8784}"
 AGENT="${AGENT:-agent}"
@@ -38,6 +39,9 @@ CURRENT_SERVER_PID=""
 cleanup() {
   if [ -n "$CURRENT_SERVER_PID" ]; then
     kill "$CURRENT_SERVER_PID" 2>/dev/null || true
+  fi
+  if [[ -n "${RAW_SERVER_LOG:-}" ]]; then
+    retain_server_log_evidence || true
   fi
   rm -rf -- "$WORKDIR"
 }
@@ -130,7 +134,7 @@ preserve_raw_artifacts() {
     mkdir -p "$ARTIFACT_DIR/$client"
     cp "$client_dir/client.log" "$ARTIFACT_DIR/$client/client.log"
     cp "$client_dir/formal-ai.log" "$ARTIFACT_DIR/$client/formal-ai.log"
-    cp -R "$client_dir/dialogs" "$ARTIFACT_DIR/$client/dialogs"
+    cp -R "$DIALOG_DIR" "$ARTIFACT_DIR/$client/dialogs"
   fi
 }
 
@@ -148,9 +152,10 @@ run_client() {
   local client_dir="$WORKDIR/$client"
   local client_log="$client_dir/client.log"
   local server_log="$client_dir/formal-ai.log"
-  local dialog_dir="$client_dir/dialogs"
+  server_log_evidence_setup "$server_log" '*' || exit 1
+  local dialog_dir="$DIALOG_DIR"
   local sequence="$client_dir/dialog-sequence.json"
-  mkdir -p "$dialog_dir"
+  mkdir -p "$client_dir" "$dialog_dir" || exit 1
   start_server "$client_port" "$server_log" "$dialog_dir"
   write_opencode_config "$client_port"
 
@@ -168,7 +173,9 @@ run_client() {
             --no-summarize-session \
             --compaction-models "(same)"
         ) >> "$client_log" 2>&1 || true
-        if grep -q 'agentic_outcome: planned Final' "$server_log"; then
+        project_server_log --headers-only >/dev/null || exit 1
+        retain_server_log_evidence || exit 1
+        if grep -q 'agentic_outcome: planned Final' "$SEMANTIC_LOG"; then
           break
         fi
       done
@@ -226,7 +233,8 @@ run_client_tui() {
   local client_dir="$WORKDIR/$client-tui-$wording"
   local client_log="$client_dir/client.log"
   local server_log="$client_dir/formal-ai.log"
-  local dialog_dir="$client_dir/dialogs"
+  server_log_evidence_setup "$server_log" '*' || exit 1
+  local dialog_dir="$DIALOG_DIR"
   local sequence="$client_dir/dialog-sequence.json"
   local terminal_dir="$client_dir/terminal"
   local observation_evidence="$terminal_dir/recording.svg"
@@ -236,7 +244,7 @@ run_client_tui() {
   if [ -n "$ARTIFACT_DIR" ]; then
     observation_evidence="$ARTIFACT_DIR/$artifact_key/terminal/recording.svg"
   fi
-  mkdir -p "$dialog_dir"
+  mkdir -p "$client_dir" "$dialog_dir" || exit 1
   start_server "$tui_port" "$server_log" "$dialog_dir"
   write_opencode_config "$tui_port"
 

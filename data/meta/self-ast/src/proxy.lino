@@ -2,9 +2,9 @@ self_ast_census
   target src/proxy.rs
   language rust
   fidelity signature
-  byte_len 20805
+  byte_len 20858
   line_count 665
-  content_id source_module_f16ee0ab23c270aa
+  content_id source_module_bc229abe0b0404a4
   symbol_count 39
   symbols
     module summary 13 13

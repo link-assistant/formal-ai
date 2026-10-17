@@ -193,21 +193,29 @@ async function waitForHealth(base, child, label) {
   throw new Error(`${label} server did not become healthy`);
 }
 
-async function startServer(label, command, args, token) {
-  const home = mkdtempSync(path.join(os.tmpdir(), `formal-ai-parity-${label}-`));
-  const port = await freePort();
-  const env = { ...process.env };
+/** Quiet diagnostics preserve the corpus's explicitly enabled conversation records. */
+export function createParityEnvironment(home, token, parent = process.env) {
+  const env = { ...parent };
   delete env.FORMAL_AI_AGENT_MODE;
+  delete env.FORMAL_AI_SILENT;
   for (const name of ['FORMAL_AI_HTTP_BEARER_TOKEN', 'FORMAL_AI_API_TOKEN']) delete env[name];
   Object.assign(env, {
     HOME: home,
     FORMAL_AI_API_BEARER_TOKEN: token,
     FORMAL_AI_MEMORY_PATH: path.join(home, 'memory.lino'),
+    FORMAL_AI_CACHE_DIR: path.join(home, 'runtime-cache'),
     FORMAL_AI_DIALOG_LOG_DIR: path.join(home, 'dialogs'),
     FORMAL_AI_RECORD_CHAT: '0',
     FORMAL_AI_DREAMING: '0',
-    FORMAL_AI_SILENT: 'true',
+    FORMAL_AI_LOG_LEVEL: 'error',
   });
+  return env;
+}
+
+async function startServer(label, command, args, token) {
+  const home = mkdtempSync(path.join(os.tmpdir(), `formal-ai-parity-${label}-`));
+  const port = await freePort();
+  const env = createParityEnvironment(home, token);
   const child = spawn(command, [...args, '--port', String(port)], { cwd: REPO, env, stdio: ['ignore', 'ignore', 'pipe'] });
   let stderr = '';
   child.stderr.on('data', (chunk) => {
@@ -222,6 +230,7 @@ async function startServer(label, command, args, token) {
   }
   return {
     base,
+    runtimeCacheRoot: env.FORMAL_AI_CACHE_DIR,
     stop() {
       child.kill('SIGKILL');
       rmSync(home, { recursive: true, force: true });
@@ -245,11 +254,11 @@ function authHeader(request, token) {
 }
 
 /** Replace volatile values so equal behaviour compares equal. */
-export function normalize(value, key = '') {
-  if (Array.isArray(value)) return value.map((item) => normalize(item, key));
+export function normalize(value, key = '', runtimeCacheRoot = null) {
+  if (Array.isArray(value)) return value.map((item) => normalize(item, key, runtimeCacheRoot));
   if (value && typeof value === 'object') {
     const out = {};
-    for (const [name, item] of Object.entries(value)) out[name] = normalize(item, name);
+    for (const [name, item] of Object.entries(value)) out[name] = normalize(item, name, runtimeCacheRoot);
     // An error message carries the parser's own wording after its first colon.
     if (typeof out.message === 'string' && (Object.hasOwn(out, 'type') || Object.hasOwn(out, 'code'))) {
       const at = out.message.indexOf(':');
@@ -259,6 +268,16 @@ export function normalize(value, key = '') {
   }
   if (typeof value === 'number' && VOLATILE_NUMBERS.has(key)) return 0;
   if (typeof value === 'string') {
+    if (runtimeCacheRoot && key === 'evidence_links') {
+      const prefix = path.join(runtimeCacheRoot, 'derivations') + path.sep;
+      if (value.startsWith(prefix)) {
+        const relative = value.slice(prefix.length).split(path.sep).join('/');
+        // Compare exact answer and record identities, replacing only this owned root.
+        if (/^answer_[a-f0-9]{16}\/[a-f0-9]{64}\.lino$/u.test(relative)) {
+          return '<runtime-cache>/derivations/' + relative;
+        }
+      }
+    }
     if (key === 'version') return '<version>';
     if (VOLATILE_NUMBERS.has(key)) return '<volatile>';
     const id = STABLE_ID.exec(value);
@@ -320,7 +339,7 @@ function parseJson(text) {
 }
 
 /** Split an SSE body into `{event, data}` frames, data parsed when JSON. */
-export function sseFrames(body) {
+export function sseFrames(body, runtimeCacheRoot = null) {
   return body
     .split('\n\n')
     .filter((frame) => frame.trim())
@@ -333,7 +352,7 @@ export function sseFrames(body) {
       }
       const text = data.join('\n');
       const parsed = parseJson(text);
-      return { event, data: parsed.ok ? normalize(parsed.value) : text };
+      return { event, data: parsed.ok ? normalize(parsed.value, '', runtimeCacheRoot) : text };
     });
 }
 
@@ -350,7 +369,7 @@ function frameShapes(frames) {
 /**
  * Compare one exchange. Returns `{kind: 'same' | 'content' | 'protocol', detail}`.
  */
-export function compareResponses(rust, js, method = 'GET') {
+export function compareResponses(rust, js, method = 'GET', runtimeCacheRoots = {}) {
   if (rust.statusLine !== js.statusLine) return { kind: 'protocol', detail: `status ${rust.statusLine} != ${js.statusLine}` };
   for (const name of COMPARED_HEADERS) {
     if ((rust.headers[name] ?? null) !== (js.headers[name] ?? null)) {
@@ -365,8 +384,8 @@ export function compareResponses(rust, js, method = 'GET') {
   }
   const type = String(rust.headers['content-type'] || '');
   if (type.startsWith('text/event-stream')) {
-    const left = sseFrames(rust.body);
-    const right = sseFrames(js.body);
+    const left = sseFrames(rust.body, runtimeCacheRoots.rust);
+    const right = sseFrames(js.body, runtimeCacheRoots.js);
     const leftShapes = frameShapes(left);
     const rightShapes = frameShapes(right);
     if (leftShapes.length !== rightShapes.length) {
@@ -387,8 +406,8 @@ export function compareResponses(rust, js, method = 'GET') {
     const left = parseJson(rust.body);
     const right = parseJson(js.body);
     if (!left.ok || !right.ok) return { kind: 'protocol', detail: 'body is not JSON on one side' };
-    const a = normalize(left.value);
-    const b = normalize(right.value);
+    const a = normalize(left.value, '', runtimeCacheRoots.rust);
+    const b = normalize(right.value, '', runtimeCacheRoots.js);
     if (!sameSkeleton(skeleton(a), skeleton(b))) {
       return { kind: 'protocol', detail: `json shape ${JSON.stringify(skeleton(a))} != ${JSON.stringify(skeleton(b))}` };
     }
@@ -457,6 +476,7 @@ async function main(argv) {
     const pair = async (agentMode) => {
       const suffix = agentMode ? '-agent' : '';
       const extra = agentMode ? ['--agent-mode'] : [];
+      const runtimeCacheRoots = {};
       let rustBase = agentMode ? options.rustAgentUrl : options.rustUrl;
       let jsBase = agentMode ? options.jsAgentUrl : options.jsUrl;
       if (!rustBase) {
@@ -464,14 +484,16 @@ async function main(argv) {
         if (!binary) throw new Error('no Rust server binary; build it or pass --rust-binary / FORMAL_AI_RUST_BINARY');
         const rust = await startServer(`rust${suffix}`, binary, ['serve', ...extra], corpus.token);
         servers.push(rust);
+        runtimeCacheRoots.rust = rust.runtimeCacheRoot;
         rustBase = rust.base;
       }
       if (!jsBase) {
         const js = await startServer(`js${suffix}`, process.execPath, ['js/server/main.mjs', ...extra], corpus.token);
         servers.push(js);
+        runtimeCacheRoots.js = js.runtimeCacheRoot;
         jsBase = js.base;
       }
-      return { rustBase, jsBase };
+      return { rustBase, jsBase, runtimeCacheRoots };
     };
     const bases = {};
     if (selected.some((request) => !request.agentMode)) bases.plain = await pair(false);
@@ -483,10 +505,10 @@ async function main(argv) {
     for (const request of corpus.requests) {
       if (options.only && !options.only.has(request.id)) continue;
       const prepared = { ...request, authHeader: authHeader(request, corpus.token) };
-      const { rustBase, jsBase } = request.agentMode ? bases.agent : bases.plain;
+      const { rustBase, jsBase, runtimeCacheRoots } = request.agentMode ? bases.agent : bases.plain;
       const rust = await send(rustBase, prepared);
       const js = await send(jsBase, prepared);
-      const verdict = compareResponses(rust, js, request.method);
+      const verdict = compareResponses(rust, js, request.method, runtimeCacheRoots);
       if (verdict.kind === 'protocol') protocol.push([request.id, verdict.detail]);
       else if (verdict.kind === 'content') content.push([request.id, verdict.detail]);
       else same += 1;

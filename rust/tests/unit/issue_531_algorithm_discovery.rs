@@ -2,6 +2,9 @@
 //! of events must become reviewable, validated algorithm candidates rather than
 //! stopping at a "this sequence repeats" classification.
 
+#[path = "../support/structured_stderr.rs"]
+mod structured_stderr;
+
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
 use std::fs;
@@ -509,7 +512,7 @@ fn public_cli_mines_and_conformance_checks_a_portable_memory_file() {
         .output()
         .expect("run public learning CLI");
     assert!(learned.status.success(), "{learned:?}");
-    assert!(String::from_utf8_lossy(&learned.stderr).contains("held-out validated"));
+    assert!(structured_stderr::messages(&learned.stderr).contains("held-out validated"));
     let document = fs::read_to_string(&artifact).expect("read learned artifact");
     assert!(document.contains("algorithm_candidate"));
 

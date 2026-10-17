@@ -172,7 +172,14 @@ impl VersionSet {
     /// `provenance_note`.
     #[must_use]
     pub fn for_generation() -> Self {
-        let cache_dir = std::env::var(CACHE_ENV_VAR).unwrap_or_else(|_| String::from("data"));
+        let cache_dir = if let Some(explicit) = std::env::var_os(CACHE_ENV_VAR) {
+            std::path::PathBuf::from(explicit)
+        } else if let Ok(paths) = crate::runtime_cache::runtime_cache_paths() {
+            paths.runtime_root
+        } else {
+            // A missing user-cache root never redirects writes into the caller.
+            return Self::baseline().expect("the toolchains seed carries the baseline");
+        };
         let client = CachedSourceClient::new(cache_dir, CurlSourceTransport)
             .with_online(crate::cli_env::flag_enabled(LIVE_FETCH_ENV_VAR));
         Self::resolve(&client)

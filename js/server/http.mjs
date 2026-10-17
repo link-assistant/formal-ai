@@ -2,6 +2,8 @@
 // `ApiHttpResponse` out, written with the same status lines and headers.
 
 import http from 'node:http';
+import {observedExceptionTerminal} from '../logging/terminal-events.mjs';
+import { diagnosticBody } from './structured-log.mjs';
 
 import { dispatch } from './dispatch.mjs';
 import { runInRequestScope } from './debug-session.mjs';
@@ -74,6 +76,12 @@ export function createServer(ctx) {
     // `ForegroundActivity::begin`), the Telegram webhook included.
     const foreground = beginForegroundActivity();
     const disconnected = new AbortController();
+    const requestIdentifier=++ctx.requestSequence;
+    let terminal=false;
+    const finish=(reason,fields={})=>{if(terminal)return;terminal=true;ctx.logger?.log(reason==='request_failed'?'error':'debug','request.terminal',{component:'server',request_id:requestIdentifier,reason,...fields});};
+    ctx.logger?.log('debug','request.start',{component:'server',request_id:requestIdentifier,method:request.method,path:request.url});
+    socketResponse.once('finish',()=>finish('response_complete',{status:socketResponse.statusCode}));
+    socketResponse.once('close',()=>{if(!socketResponse.writableFinished)finish('client_disconnected');});
     socketResponse.on('close', () => { if (!socketResponse.writableEnded) disconnected.abort(); });
     try {
       const headers = requestHeaders(request);
@@ -81,10 +89,12 @@ export function createServer(ctx) {
       // Like the Rust reader, only a declared content-length carries a body.
       const declared = Number.parseInt(request.headers['content-length'] || '0', 10) || 0;
       const body = raw.subarray(0, Math.min(declared, raw.length)).toString('utf8');
+      ctx.logger?.log('debug','request.received',{component:'server',request_id:requestIdentifier,method:request.method,path:request.url,headers:Object.fromEntries(headers)},()=>diagnosticBody(body));
       const response = await runInRequestScope(disconnected.signal, () => dispatch(ctx, { method: request.method, path: request.url, headers, body }));
       writeResponse(socketResponse, response);
     } catch (error) {
-      process.stderr.write(`request failed: ${error?.stack || error}\n`);
+      if(ctx.logger){ctx.logger.log('error','request.failure',{component:'server',request_id:requestIdentifier,error});ctx.logger.log('error','agent.terminal',{component:'server',...observedExceptionTerminal(error),scope:'server_request',task_delivery:'Unknown'});finish('request_failed',{error});}
+      else process.stderr.write(`request failed: ${error?.stack || error}\n`);
       if (!socketResponse.headersSent) socketResponse.destroy();
     } finally {
       foreground.end();

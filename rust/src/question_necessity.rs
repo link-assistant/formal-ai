@@ -11,7 +11,11 @@ use crate::engine::stable_id;
 use crate::event_log::EventLog;
 use crate::seed::parser::{LinoNode, parse_lino};
 
-const POLICY_SEED: &str = include_str!("../embedded/data/seed/question-necessity.lino");
+const POLICY_SEED: &str = concat!(
+    include_str!("../embedded/data/seed/question-necessity.lino"),
+    "\n",
+    include_str!("../embedded/data/seed/question-necessity-text-predicates.lino"),
+);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum QuestionClass {
@@ -92,9 +96,17 @@ struct ClassificationRule {
 }
 
 #[derive(Debug)]
+struct TextPredicate {
+    name: String,
+    operation: String,
+    value: String,
+}
+
+#[derive(Debug)]
 struct Policy {
     summary: QuestionNecessityPolicySummary,
     rules: Vec<ClassificationRule>,
+    text_predicates: Vec<TextPredicate>,
 }
 
 #[derive(Debug)]
@@ -270,6 +282,18 @@ fn parse_policy(seed: &str) -> Policy {
             ratchet_maximum: numeric_field(ratchet, "maximum"),
         },
         rules,
+        text_predicates: root
+            .children
+            .iter()
+            .filter(|record| {
+                record.find_child_value("record_type") == "question_necessity_text_predicate"
+            })
+            .map(|record| TextPredicate {
+                name: record.find_child_value("name").to_owned(),
+                operation: record.find_child_value("operation").to_owned(),
+                value: record.find_child_value("value").to_owned(),
+            })
+            .collect(),
     }
 }
 
@@ -329,11 +353,23 @@ fn classify(question: &str, in_requirement_section: bool) -> QuestionClassificat
     }
 }
 
+fn text_predicate_matches(name: &str, text: &str) -> bool {
+    policy()
+        .text_predicates
+        .iter()
+        .filter(|rule| rule.name == name)
+        .any(|rule| match rule.operation.as_str() {
+            "prefix" => text.starts_with(rule.value.as_str()),
+            "contains" => text.contains(rule.value.as_str()),
+            _ => false,
+        })
+}
+
 fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace {
     let prior_turns = log
         .events()
         .iter()
-        .filter(|event| event.kind.starts_with("memory"))
+        .filter(|event| text_predicate_matches("memory_event", event.kind))
         .count();
     let memory_event = log.append(
         "question_necessity:memory",
@@ -348,9 +384,8 @@ fn record_search_trace(log: &mut EventLog, question_id: &str) -> NecessityTrace 
         .events()
         .iter()
         .filter(|event| {
-            !event.kind.starts_with("question_necessity:")
-                && (event.kind.contains("workspace")
-                    || event.kind.contains("derivation")
+            !text_predicate_matches("self_trace_event", event.kind)
+                && (text_predicate_matches("workspace_evidence", event.kind)
                     || event.kind == "calculation")
         })
         .count();
@@ -630,13 +665,13 @@ fn looks_like_url(text: &str) -> bool {
     let token = text
         .rsplit_once(char::is_whitespace)
         .map_or(text, |(_, token)| token);
-    token.starts_with("http://") || token.starts_with("https://")
+    text_predicate_matches("url", token)
 }
 
 fn is_replayed_question(text: &str) -> bool {
     let item = text.trim_start().strip_prefix("- ").unwrap_or(text);
     let normalized = item.to_lowercase();
-    if normalized.starts_with("your previous question was:") {
+    if text_predicate_matches("replayed_question", &normalized) {
         return true;
     }
     let Some((label, _)) = item.split_once(':') else {

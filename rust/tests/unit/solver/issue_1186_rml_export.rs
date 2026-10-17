@@ -10,7 +10,6 @@
 //! `rust/tests/web/issue-1186-rml-export.test.mjs`, which also runs the real
 //! exporter in CI (`RML_BIN`, `.github/workflows/layered-ci.yml`).
 
-use formal_ai::derivation::Derivation;
 use formal_ai::{
     AppliedPredicate, QuantifiedClause, RmlExport, SolverConfig, UniversalSolver, rml_source,
     run_rml_export_with,
@@ -95,21 +94,39 @@ fn the_rml_run_records_its_exit_status_and_paths() {
 
 #[test]
 fn the_rml_step_is_a_derivation_fragment() {
-    // The honesty sentence the step renders is pinned exactly by
-    // `rust/tests/web/issue-1186-rml-export.test.mjs`; here the persisted
-    // fragment `formal-ai explain` prints is read back.
-    let solver = UniversalSolver::new(SolverConfig {
-        offline: true,
-        ..SolverConfig::default()
+    let cache = std::env::temp_dir().join(format!(
+        "formal-ai-runtime-cache-the_rml_step_is_a_derivation_fragment-{}-{}",
+        std::process::id(),
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .expect("clock after epoch")
+            .as_nanos()
+    ));
+    std::fs::create_dir_all(&cache).expect("create private runtime cache");
+    temp_env::with_var("FORMAL_AI_CACHE_DIR", Some(cache.as_os_str()), || {
+        // The honesty sentence the step renders is pinned exactly by
+        // `rust/tests/web/issue-1186-rml-export.test.mjs`; here the persisted
+        // fragment `formal-ai explain` prints is read back.
+        let solver = UniversalSolver::new(SolverConfig {
+            offline: true,
+            ..SolverConfig::default()
+        });
+        let formalized =
+            solver.solve("Formalize in first-order logic: Every baker who sings smiles");
+        let locator = formalized
+            .evidence_links
+            .iter()
+            .find_map(|link| link.strip_prefix("derivation_record:"))
+            .expect("the answer identifies its exact runtime record");
+        let record = formal_ai::runtime_cache::load_derivation(locator)
+            .expect("the runtime record has valid custody")
+            .expect("a persisted derivation");
+        let fragments = record.formalized_fragments.join("\n");
+        assert!(
+            fragments.contains("stage=rml_export status=absent invoked=false")
+                || fragments.contains("stage=rml_export status=ran invoked=true"),
+            "the rml step is recorded for `formal-ai explain`: {fragments}"
+        );
     });
-    let formalized = solver.solve("Formalize in first-order logic: Every baker who sings smiles");
-    let root = std::env::current_dir().expect("working directory");
-    let record =
-        Derivation::load(&root, &formalized.derivation_id()).expect("a persisted derivation");
-    let fragments = record.formalized_fragments.join("\n");
-    assert!(
-        fragments.contains("stage=rml_export status=absent invoked=false")
-            || fragments.contains("stage=rml_export status=ran invoked=true"),
-        "the rml step is recorded for `formal-ai explain`: {fragments}"
-    );
+    std::fs::remove_dir_all(&cache).expect("remove private runtime cache");
 }

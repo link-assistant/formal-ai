@@ -1,3 +1,5 @@
+use crate::structured_stderr;
+
 use std::fs;
 use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -52,6 +54,8 @@ fn statement_audit_cli_scans_a_repository_and_replays_evidence() {
         .arg(&evidence)
         .arg("--output")
         .arg(&report)
+        .env("FORMAL_AI_SILENT", "true")
+        .env("FORMAL_AI_LOG_LEVEL", "error")
         .output()
         .expect("run statement audit command");
 
@@ -68,7 +72,8 @@ fn statement_audit_cli_scans_a_repository_and_replays_evidence() {
     assert!(links.contains("source_url"), "{links}");
     assert!(links.contains("audit_finding"), "{links}");
     let summary: serde_json::Value =
-        serde_json::from_slice(&output.stderr).expect("machine-readable summary");
+        serde_json::from_slice(structured_stderr::messages(&output.stderr).as_bytes())
+            .expect("machine-readable summary");
     assert_eq!(
         summary["statement_audit"]["output"],
         report.display().to_string()

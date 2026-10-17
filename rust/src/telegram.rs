@@ -785,7 +785,7 @@ pub fn parse_get_updates_response(body: &str) -> Result<ParsedUpdatesBatch, Tele
         if let Some(message) = parsed.into_message() {
             replies.push(reply_for_polling_message(&message));
         } else {
-            eprintln!(
+            crate::diagnostic!("debug";
                 "telegram-poll: ignoring update without a supported message field: {update_text}"
             );
         }

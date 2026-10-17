@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_memory.rs
   language rust
   fidelity signature
-  byte_len 14867
+  byte_len 15119
   line_count 373
-  content_id source_module_483f32cee0fcb659
+  content_id source_module_96ce7474d02db732
   symbol_count 8
   symbols
     struct UpgradeStatusArgs 15 25

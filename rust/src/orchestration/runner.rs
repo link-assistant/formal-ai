@@ -610,9 +610,17 @@ fn parse_native_session(
     stdout: &str,
     integration: Option<&crate::seed::ClientIntegration>,
 ) -> Option<NativeAgentSession> {
-    const PREFIX: &str = "formal-ai: orchestration-session-json:";
+    const PREFIX: &str = crate::dialog_log::structured_log::ORCHESTRATION_SESSION_PREFIX;
     if let Some(evidence) = stderr.lines().find_map(|line| {
-        let json = line.trim().strip_prefix(PREFIX)?;
+        let line = line.trim();
+        if let Some(json) = line.strip_prefix(PREFIX) {
+            return serde_json::from_str(json).ok();
+        }
+        let record = crate::dialog_log::structured_log::decode_control(line).ok()?;
+        if record["schema"] != "formal-ai-control-v1" || record["kind"] != "orchestration_session" {
+            return None;
+        }
+        let json = record.get("message")?.as_str()?.strip_prefix(PREFIX)?;
         serde_json::from_str(json).ok()
     }) {
         return Some(evidence);
@@ -814,3 +822,7 @@ impl EventChain {
         });
     }
 }
+
+#[cfg(test)]
+#[path = "../../tests/source/source_tests/orchestration/runner/typed_session_control_tests.rs"]
+mod typed_session_control_tests;

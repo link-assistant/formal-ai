@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/self_ast.rs
   language rust
   fidelity full_ast
-  byte_len 15971
-  line_count 363
-  content_id source_module_648fab5903aec4fa
+  byte_len 15984
+  line_count 362
+  content_id source_module_97ccf97dc8ab5442
   symbol_count 28
   symbols
     static AST_CENSUS_RUNS 32 32
@@ -14,34 +14,34 @@ self_ast_census
     const TARGET_MODULE_PATH 74 74
     const TARGET_MODULE_SOURCE 77 77
     const AST_PATH 80 80
-    const AST_TASK 85 93
-    const AST_KEYWORDS 93 93
-    function is_self_ast_task 102 113
-    struct AstNodeCount 118 123
-    struct AstCensus 128 139
-    function ast_census 149 162
-    function named_node_histogram 172 189
-    function ast_census 194 202
-    function render_ast_document 211 213
-    function render_census_document 220 240
-    function reconstruct_source 253 256
-    function reconstruct_source 261 263
-    function round_trips 272 274
-    function network_lino 286 288
-    function network_lino 293 295
-    function render_network_source 305 315
-    function render_network_source 321 328
-    function render_document 332 334
-    function target_census 340 342
-    function target_source 348 350
-    function final_answer 355 363
+    const AST_TASK 85 92
+    const AST_KEYWORDS 92 92
+    function is_self_ast_task 101 112
+    struct AstNodeCount 117 122
+    struct AstCensus 127 138
+    function ast_census 148 161
+    function named_node_histogram 171 188
+    function ast_census 193 201
+    function render_ast_document 210 212
+    function render_census_document 219 239
+    function reconstruct_source 252 255
+    function reconstruct_source 260 262
+    function round_trips 271 273
+    function network_lino 285 287
+    function network_lino 292 294
+    function render_network_source 304 314
+    function render_network_source 320 327
+    function render_document 331 333
+    function target_census 339 341
+    function target_source 347 349
+    function final_answer 354 362
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7432
-    named_node_count 1523
+    total_link_count 7448
+    named_node_count 1527
     distinct_node_kinds 70
     node_kinds
       arguments 61
@@ -58,7 +58,7 @@ self_ast_census
       compound_assignment_expr 1
       const_item 6
       continue_expression 1
-      crate 1
+      crate 2
       doc_comment 131
       escape_sequence 13
       expression_statement 10
@@ -90,15 +90,15 @@ self_ast_census
       primitive_type 32
       reference_expression 3
       reference_type 23
-      scoped_identifier 27
+      scoped_identifier 28
       scoped_type_identifier 1
       scoped_use_list 2
       shorthand_field_identifier 2
       shorthand_field_initializer 4
       source_file 1
       static_item 1
-      string_content 56
-      string_literal 47
+      string_content 57
+      string_literal 48
       struct_expression 3
       struct_item 2
       struct_pattern 1

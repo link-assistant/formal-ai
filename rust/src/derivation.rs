@@ -217,11 +217,15 @@ pub(crate) fn finalize_answer(answer: &mut crate::engine::SymbolicAnswer, log: &
         .push(format!("derivation:{answer_id}"));
     answer.links_notation.push('\n');
     answer.links_notation.push_str(&record.to_lino());
-    let persisted = std::env::current_dir().and_then(|root| record.persist(&root));
-    match persisted {
-        Ok(_) => answer
-            .evidence_links
-            .push(format!("{DERIVATIONS_DIR}/{answer_id}.lino")),
+    match crate::runtime_cache::persist_derivation(&record) {
+        Ok(location) => {
+            answer
+                .evidence_links
+                .push(location.path.display().to_string());
+            answer
+                .evidence_links
+                .push(format!("derivation_record:{}", location.locator));
+        }
         Err(error) => answer
             .evidence_links
             .push(format!("derivation:persistence_failed:{error}")),

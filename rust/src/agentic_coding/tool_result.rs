@@ -227,7 +227,8 @@ fn failure_report(label: &str, error: &str, exit_code: Option<i64>, language: &s
             )
         },
     );
-    crate::failure_reporting::append_invitation(&failure, language)
+    // Tool errors are agent input; no human can answer a chat invitation here.
+    failure
 }
 
 pub(super) fn latest_turn_answer(

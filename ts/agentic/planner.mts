@@ -214,10 +214,10 @@ function stopRepeatedCall(plan, messages) {
   for (const call of plan.calls) {
     const attempt = progress.repeatedCall(call);
     if (attempt) {
-      return finalAnswer(fill('stuck_step_report', [
+      return resolvedFinalAnswer(fill('stuck_step_report', [
         ['{step}', `${call.tool} ${call.arguments}`],
         ['{result}', attempt.detail.trim()],
-      ]));
+      ]), FinalDisposition.Gap, 'repeated_call_guard');
     }
   }
   return plan;
@@ -233,11 +233,17 @@ function stopRepeatedFailure(plan, messages) {
   const failure = progress.latestFailureOfTool(repeated.tool);
   if (!failure) return plan;
   const prompt = latestUserRequest(messages) ?? '';
-  return finalAnswer(toolResult.renderFailure(repeated.tool, failure.detail, prompt));
+  return resolvedFinalAnswer(toolResult.renderFailure(repeated.tool, failure.detail, prompt), FinalDisposition.Failure, 'repeated_tool_failure');
 }
 
-/** Preserve continuation refusal before mandatory prerequisite gaps. */
-function planRequestPreflight(task) {
+/** Resolve request ownership before incidental routes or prerequisite gaps. */
+function planRequestPreflight(task, messages, toolNames) {
+  // A declared issue objective and continuation/prerequisite guards share the
+  // request boundary: surrounding examples never become independent effects.
+  const workItem = composeGeneralChangePlan(task);
+  if (workItem?.mode === 'repository_work_item' && task.trimStart().startsWith(workItem.target)) {
+    return { claimed: true, plan: planGeneralChangeStep(messages, toolNames, workItem) };
+  }
   if (handlerMatches('conversation_control', task) || isContinuationCue(task)) {
     return { claimed: true, plan: null };
   }
@@ -254,7 +260,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
   const effective = continuedAgentTask(messages, received) ?? received;
   const task = objectiveText(effective);
   traceRoute('agentic_task', task);
-  const preflight = planRequestPreflight(task);
+  const preflight = planRequestPreflight(task, messages, toolNames);
   if (preflight.claimed) return preflight.plan;
   if (
     // An edit request's block is its payload: a `when … then` inside it is text

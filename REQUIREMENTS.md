@@ -89,6 +89,7 @@ the areas are the whole register.
    - Issue #1161 Client Registry Names the Agent Config Env
    - Issue #1181 Standalone CLI Binaries and Consistent Boolean Env Switches
    - Issue #1187 Optional GitHub Credentials in Every Workflow
+   - Issue #1207 Hive Mind Delivery and Progressive Self-Coding
 
 4. [Coding and agents](docs/requirements/assembled/coding-and-agents.md)
    - Issue #80 Software Project Request Requirements
@@ -178,3 +179,6 @@ the areas are the whole register.
    - Issue #1176 Quantities, Dates and Statistics Computed Exactly
    - Issue #1184 White-Box Derivation for Every Answer
    - Issue #1186 Formalization as a User-Facing Task
+   - Issue #1212 Project Motto and Evidence-Driven Discovery
+   - Issue #1213 Cryptographic Provenance Prototype
+   - Issue #1220 Structured Links Notation Logging

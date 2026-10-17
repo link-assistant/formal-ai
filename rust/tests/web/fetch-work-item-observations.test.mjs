@@ -1,7 +1,9 @@
 // Provider status, requested URL and source bytes are distinct observations.
+// Unsupported original issue tasks remain Gap/no-effect controls. The separate
+// literal control exercises auxiliary custody and has no autonomous coding credit.
 import assert from 'node:assert/strict';
 import {before,test} from 'node:test';
-import {existsSync,mkdirSync,mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
+import {existsSync,readdirSync,mkdirSync,mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {Progress} from '../../../js/agentic/progress.mjs';
@@ -10,7 +12,9 @@ import {detect} from '../../../js/agentic/crate/language.mjs';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
-import {composeGeneralChangePlan,planLinksNotation,plannedNotExecutedAnswer,PLAN_PATH} from '../../../js/agentic/general_planner.mjs';
+import {observedFinalResult} from '../../../js/agentic/final_result.mjs';
+import {planGeneralChangeStep} from '../../../js/agentic/general_execution.mjs';
+import {composeGeneralChangePlan,planLinksNotation,PLAN_PATH} from '../../../js/agentic/general_planner.mjs';
 import {executeResult} from '../../../experiments/js_dogfood/drive.mjs';
 before(async()=>{await installNodeHost(new WorkerHost());});
 const source=readFileSync(new URL('../unit/agentic-coding/work_item_planning.rs',import.meta.url),'utf8');
@@ -59,10 +63,10 @@ async function replay(body,failed,prior=''){
  const directory=mkdtempSync(join(tmpdir(),'formal-ai-fetched-work-item-')),messages=[{role:'user',content:request}],calls=[];
  try{
   if(prior){mkdirSync(join(directory,'.formal-ai'));writeFileSync(join(directory,PLAN_PATH),prior);}
-  let final=null;
+  let final=null,finalResult=null;
   for(let turn=0;turn<12;turn++){
    const step=await planChatStep(messages,['fetch_url','read','write']);assert.ok(step);
-   if(step.kind==='final'){final=step.answer;break;}
+   if(step.kind==='final'){final=step.answer;finalResult=observedFinalResult(step);break;}
    for(const call of step.calls){
     const args=JSON.parse(call.arguments),id='replay-'+messages.length;calls.push(call);
     messages.push({role:'assistant',content:'',tool_calls:[{id,type:'function',function:{name:call.tool,arguments:call.arguments}}]});
@@ -72,7 +76,7 @@ async function replay(body,failed,prior=''){
     messages.push({role:'tool',tool_call_id:id,name:call.tool,...receipt});
    }
   }
-  return {calls,final,history:existsSync(join(directory,PLAN_PATH))?readFileSync(join(directory,PLAN_PATH),'utf8'):null,
+  return {calls,final,finalResult,files:readdirSync(directory,{recursive:true}).sort(),history:existsSync(join(directory,PLAN_PATH))?readFileSync(join(directory,PLAN_PATH),'utf8'):null,
    sourceEffect:existsSync(join(directory,'greeting.txt'))||existsSync(join(directory,'unauthorized.txt'))};
  }finally{rmSync(directory,{recursive:true,force:true});}
 }
@@ -83,22 +87,38 @@ test('the unchanged original missing issue with failed provider performs no writ
  assert.equal(result.final.includes('Recorded and verified'),false);assert.equal(result.final.includes('Planned, not executed'),false);
  assert.equal(result.final.includes('You are an AI issue solver'),false);
 });
-test('the original no-artifact fetched source verifies only auxiliary history and stays exactly Planned',async()=>{
+test('the original unsupported fetched source is a Gap and preserves earlier auxiliary history without effects',async()=>{
  const plan=composeGeneralChangePlan(request),prior=planLinksNotation(composeGeneralChangePlan('Create file prior.txt containing earlier history'));
  const result=await replay('Investigate why the nightly job is slow.',false,prior);
- assert.deepEqual(result.calls.map(call=>call.tool),['fetch_url','read','write','read']);
- assert.equal(result.final,plannedNotExecutedAnswer(plan));assert.equal(result.sourceEffect,false);
- assert.ok(result.history.startsWith(prior));assert.ok(result.history.endsWith(planLinksNotation(plan)));
+ assert.deepEqual(result.calls.map(call=>call.tool),['fetch_url']);
+ assert.equal(result.finalResult.disposition,'gap');assert.equal(result.finalResult.origin,'work_item_execution_unavailable');
+ assert.equal(result.sourceEffect,false);assert.equal(result.history,prior);
+ assert.deepEqual(result.files,['.formal-ai',PLAN_PATH]);
+ assert.ok(result.final.includes('Investigate why the nightly job is slow.'));assert.ok(result.final.includes(url));
+ assert.doesNotMatch(result.final,/Created and verified|Recorded and verified|Completed the general change request|only file this run wrote/u);
  assert.equal(plan.verification_command,'');assert.equal(plan.steps.some(step=>step.command?.includes(PLAN_PATH)),false);
 });
-test('the unchanged client without Read or Run cannot claim a persisted auxiliary write',async()=>{
+test('the unchanged issue client without Read or Run cannot persist auxiliary history or claim delivery',async()=>{
  const result=await planChatStep([{role:'user',content:request}],['write_file']);
- assert.equal(result.kind,'final');
- const refusal=localizedResponse('general_plan_unverified',detect(request))
-  .split('{target}').join(PLAN_PATH).split('{command}').join('cat '+PLAN_PATH);
- assert.equal(result.answer,refusal);assert.deepEqual(result.calls??[],[]);
- assert.equal(result.answer.includes('Planned, not executed'),false);
- assert.equal(result.answer.includes('Recorded and verified'),false);
+ assert.equal(result.kind,'final');assert.deepEqual(result.calls??[],[]);
+ const observed=observedFinalResult(result);assert.equal(observed.disposition,'gap');assert.equal(observed.origin,'work_item_execution_unavailable');
+ assert.ok(result.answer.includes(url));assert.ok(result.answer.includes('Planned, not executed'));
+ assert.doesNotMatch(result.answer,/Created and verified|Recorded and verified|only file this run wrote/u);
+});
+test('a separately supported literal write without Read or Run still refuses auxiliary verification',()=>{
+ const literal='Set the contents of greeting.txt to «owned literal control»',plan=composeGeneralChangePlan(literal);
+ const directory=mkdtempSync(join(tmpdir(),'formal-ai-supported-auxiliary-'));
+ try{
+  mkdirSync(join(directory,'.formal-ai'));const prior='earlier auxiliary bytes\n';writeFileSync(join(directory,PLAN_PATH),prior);
+  const messages=[{role:'user',content:literal}];const step=planGeneralChangeStep(messages,['write'],plan);
+  assert.equal(step.kind,'tool_calls');assert.equal(step.calls.length,1);const call=step.calls[0],args=JSON.parse(call.arguments);
+  assert.equal(args.path,'greeting.txt');assert.equal(args.content,'owned literal control');
+  const receipt=executeResult(directory,call);observe(messages,call.tool,args,receipt.content,receipt);
+  const final=planGeneralChangeStep(messages,['write'],plan);
+  assert.equal(final.kind,'final');assert.equal(final.result.disposition,'gap');assert.equal(final.result.origin,'auxiliary_event_unavailable');
+  const refusal=localizedResponse('general_plan_unverified',detect(literal)).split('{target}').join(PLAN_PATH).split('{command}').join('cat '+PLAN_PATH);
+  assert.equal(final.answer,refusal);assert.equal(readFileSync(join(directory,'greeting.txt'),'utf8'),'owned literal control');assert.equal(readFileSync(join(directory,PLAN_PATH),'utf8'),prior);
+ }finally{rmSync(directory,{recursive:true,force:true});}
 });
 
 test('successful Fetch JSON error and status keys are document bytes, never provider status',()=>{
@@ -217,4 +237,19 @@ test('a bare HTTP404 Fetch failure answers with the original failure before rese
   assert.equal(answer.kind, 'final');
   assert.ok(answer.answer.startsWith('The command failed:'));
   assert.ok(answer.answer.includes('HTTP/1.1 404: Not Found'));
+});
+
+test('plan-only wording keeps every locale unverified without claiming a plan file exists',()=>{
+ for(const [language,lead,retired]of [
+  ['en','Planned, not executed','The only file this run wrote'],
+  ['ru','Запланировано, но не выполнено','Единственный файл, записанный этим запуском'],
+  ['hi','योजना बनी, निष्पादित नहीं','इस रन ने केवल अपनी योजना रिकॉर्ड'],
+  ['zh','已规划，未执行','本次运行只写入了自己的计划记录'],
+  ['es','Planificado, no ejecutado','El único archivo que escribió esta ejecución']
+ ]){
+  const wording=localizedResponse('general_plan_repository_planned',language);
+  assert.ok(wording.startsWith(lead),language);assert.ok(wording.includes('{target}')&&wording.includes('{plan}'),language);
+  assert.ok(!wording.includes(retired),language);assert.ok(!wording.includes('{plan_path}'),language);
+ }
+ assert.match(localizedResponse('general_plan_repository_planned','en'),/requested work remains unverified/u);
 });

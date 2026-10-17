@@ -8,6 +8,7 @@ on:
       - 'docs/case-studies/**'
       - 'scripts/generate-native-session-projections.mjs'
       - 'scripts/lib/native-session-projections.mjs'
+      - 'scripts/lib/native-process-diagnostics.mjs'
       - 'scripts/lib/native-response-identity.mjs'
       - '.github/workflows/regenerate-native-session-projections.yml'
   workflow_dispatch:
@@ -47,6 +48,7 @@ jobs:
       - name: Generate actual compiled driver projections
         run: node scripts/generate-native-session-projections.mjs "$RUNNER_TEMP/native-session-projections"
       - uses: actions/upload-artifact@v7
+        if: always()
         with:
           name: native-session-projections
           path: ${{ runner.temp }}/native-session-projections

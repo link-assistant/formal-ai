@@ -2,13 +2,13 @@ self_ast_census
   target src/cli_statement_audit.rs
   language rust
   fidelity signature
-  byte_len 3192
-  line_count 102
-  content_id source_module_ffdc2f3db2ceadb3
+  byte_len 3277
+  line_count 105
+  content_id source_module_5ecacfddb8fa5dee
   symbol_count 5
   symbols
     struct StatementAuditArgs 13 29
-    function run_statement_audit 31 64
-    function load_evidence 66 79
-    function parse_temperature 81 93
-    function render_error 95 102
+    function run_statement_audit 31 67
+    function load_evidence 69 82
+    function parse_temperature 84 96
+    function render_error 98 105

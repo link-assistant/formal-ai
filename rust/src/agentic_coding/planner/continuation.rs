@@ -200,6 +200,6 @@ pub(super) fn preserved_first_user_turn(summary: &str) -> Option<String> {
 /// a received task was routed.
 pub fn trace_route(route: &str, value: &str) {
     if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
-        eprintln!("[trace] {route}={value}");
+        crate::diagnostic!("debug"; "[trace] {route}={value}");
     }
 }

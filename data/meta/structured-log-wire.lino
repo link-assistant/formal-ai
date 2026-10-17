@@ -1,0 +1,3 @@
+# Legacy HTTP trace wire heading; values are interpolated once.
+structured-log-wire
+  request-trace-header "[trace] {method} {path} ({body_bytes} byte body)"

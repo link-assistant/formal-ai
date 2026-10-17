@@ -25,6 +25,8 @@ command -v "$AGENT" >/dev/null
   exit 2
 }
 
+node --test "$ROOT/experiments/agent_cli_e2e/issue-864-policy.test.mjs"
+
 mkdir -p "$OUT"
 git -C "$WORK" init -q
 git -C "$WORK" config user.email issue-864@example.invalid
@@ -38,6 +40,8 @@ printf '%s\n' "$TASK" >"$OUT/task.txt"
 
 FORMAL_AI_AGENT_MODE=1 \
 FORMAL_AI_TRACE_REQUESTS=1 \
+FORMAL_AI_DIALOG_LOG_DIR="$OUT/dialog-logs" \
+FORMAL_AI_LOG_DIR="$OUT/native-logs" \
 FORMAL_AI_MEMORY_PATH="$WORK/memory.lino" \
 FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" \
@@ -79,23 +83,7 @@ grep -E '^\{' "$OUT/agent-stream.raw.log" >"$OUT/agent-stream.jsonl"
 node "$ROOT/experiments/issue_750_tool_results/extract-final.mjs" \
   "$OUT/agent-stream.jsonl" "$OUT/final-answer.txt"
 
-grep -F 'The command failed:' "$OUT/final-answer.txt"
-grep -F 'Would you like me to prepare an issue report with the diagnostic context?' \
-  "$OUT/final-answer.txt"
-grep -F '`Report issue`' "$OUT/final-answer.txt"
-grep -F 'agentic_outcome: planned ToolCalls' "$OUT/formal-ai.log"
-grep -F 'arguments: "{\"command\":\"issue_864_command_that_does_not_exist\"}"' \
-  "$OUT/formal-ai.log"
-grep -F 'agentic_outcome: planned Final("The command failed:' "$OUT/formal-ai.log"
-if grep -q 'gh issue create' "$OUT/formal-ai.log" "$OUT/agent-stream.raw.log"; then
-  echo "the opt-in invitation filed an issue without user confirmation" >&2
-  exit 1
-fi
-
-posts="$(grep -c 'POST /api/openai/v1/chat/completions' "$OUT/formal-ai.log")"
-[[ "$posts" -ge 2 ]] || {
-  echo "expected a tool-call round trip, got $posts chat completion(s)" >&2
-  exit 1
-}
-
-echo "issue 864 Agent CLI E2E passed: failed command invited an opt-in report ($posts rounds)"
+# #1205/R1207-2: unattended agent errors retain diagnostics and never ask
+# for an interactive Report issue reply. Decode maintained canonical records
+# for semantic assertions; formal-ai.log remains the complete raw artifact.
+node "$ROOT/experiments/agent_cli_e2e/assert-issue-864.mjs" "$OUT"

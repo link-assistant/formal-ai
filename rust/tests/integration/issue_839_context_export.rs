@@ -420,3 +420,83 @@ fn latest_falls_back_to_the_session_the_server_recorded() {
 
     fs::remove_dir_all(directory).unwrap();
 }
+
+/// Reading a retained capture is independent of opting out of new diagnostics.
+#[test]
+fn silent_exports_read_existing_explicit_and_default_logs_without_new_writes() {
+    for explicit in [false, true] {
+        for cli_silent in [false, true] {
+            let directory = temporary_directory("silent-retained");
+            let logs = directory.join(if explicit {
+                "explicit-logs"
+            } else {
+                "dialog-logs"
+            });
+            let session = "ses_retained_silent";
+            record_server_exchange(
+                &logs,
+                session,
+                "Retained user turn",
+                "Retained assistant turn",
+            );
+            let read_bytes = || {
+                fs::read_dir(&logs)
+                    .expect("retained directory")
+                    .map(|entry| {
+                        let path = entry.expect("retained entry").path();
+                        let bytes = fs::read(&path).expect("retained bytes");
+                        (path, bytes)
+                    })
+                    .collect::<std::collections::BTreeMap<_, _>>()
+            };
+            let before = read_bytes();
+            let mut command = Command::new(env!("CARGO_BIN_EXE_formal-ai"));
+            command
+                .env_remove("FORMAL_AI_DIALOG_ID")
+                .env_remove("FORMAL_AI_DIALOG_LOG_DIR")
+                .env_remove("FORMAL_AI_SILENT")
+                .env("FORMAL_AI_MEMORY_PATH", directory.join("memory.lino"));
+            if explicit {
+                command.env("FORMAL_AI_DIALOG_LOG_DIR", &logs);
+            }
+            if cli_silent {
+                command.arg("--silent");
+            } else {
+                command.env("FORMAL_AI_SILENT", "true");
+            }
+            let output = command
+                .args([
+                    "context",
+                    "export",
+                    "--session",
+                    "latest",
+                    "--source",
+                    "server",
+                    "--format",
+                    "json",
+                ])
+                .output()
+                .expect("read retained capture while silent");
+            assert!(
+                output.status.success(),
+                "{}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            let document: Value =
+                serde_json::from_slice(&output.stdout).expect("exported context JSON");
+            let rendered = document.to_string();
+            for text in [session, "Retained user turn", "Retained assistant turn"] {
+                assert!(
+                    rendered.contains(text),
+                    "missing retained conversation {text}: {rendered}"
+                );
+            }
+            assert_eq!(
+                read_bytes(),
+                before,
+                "silent export must not append or create captures"
+            );
+            fs::remove_dir_all(directory).expect("remove retained fixture");
+        }
+    }
+}

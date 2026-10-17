@@ -1,0 +1,18 @@
+self_ast_census
+  target src/runtime_cache.rs
+  language rust
+  fidelity signature
+  byte_len 9575
+  line_count 256
+  content_id source_module_8d4c96b03a90dcd0
+  symbol_count 9
+  symbols
+    struct RuntimeCachePaths 8 13
+    function invalid 15 17
+    function runtime_cache_paths 19 60
+    function normalize_runtime_root 62 74
+    function locator_parts 76 95
+    struct RuntimeDerivationLocation 97 100
+    static TEMPORARY_SEQUENCE 102 102
+    function persist_derivation 104 193
+    function load_derivation 195 256

@@ -70,6 +70,9 @@ COPY rust/target/release/formal-ai /app/target/release/formal-ai
 # Resolves to whichever stage `BINARY_SOURCE` names.
 FROM ${BINARY_SOURCE}-binary AS selected-binary
 
+# Official multiarch Node binary: target architecture follows the image build.
+FROM node:22.23.3-bookworm-slim AS node-runtime
+
 FROM konard/box-dind:2.10.2
 
 LABEL org.opencontainers.image.source="https://github.com/link-assistant/formal-ai"
@@ -81,16 +84,21 @@ ENV HOME=/home/box \
     FORMAL_AI_START_RUNNER="$ --isolated docker --auto-remove-docker-container --" \
     DIND_STORAGE_DRIVER="vfs" \
     BUN_INSTALL=/home/box/.bun
-ENV PATH="${BUN_INSTALL}/bin:${PATH}"
+ENV PATH="${BUN_INSTALL}/bin:/usr/local/bin:${PATH}"
 
 # box-dind 2.10.2 ends its own build as `USER box` (2.1.1 ended as root), so
 # the system package install switches back to root explicitly; apt cannot
 # write /var/lib/apt/lists as box. The bun installs below run as box again.
 USER root
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends nodejs && \
-    rm -rf /var/lib/apt/lists/* && \
-    node --version
+    apt-get install -y --no-install-recommends libstdc++6 libatomic1 && \
+    rm -rf /var/lib/apt/lists/*
+
+# Ubuntu 24.04 supplies the shared libraries required by official Node 22.
+# Its distro Node 18 cannot parse the /v regex used by agent dependencies.
+COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
+RUN node --version && \
+    node --eval "if (process.versions.node.split('.')[0] !== '22') process.exit(1); new RegExp('', 'v')"
 
 USER box
 WORKDIR /home/box

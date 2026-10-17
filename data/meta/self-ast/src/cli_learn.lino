@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_learn.rs
   language rust
   fidelity signature
-  byte_len 7650
+  byte_len 7756
   line_count 205
-  content_id source_module_17067a61e3377553
+  content_id source_module_e36ea79638230846
   symbol_count 7
   symbols
     enum LearnAction 16 57

@@ -122,11 +122,46 @@ fn r864_04_the_offer_reuses_the_contextual_report_without_auto_filing() {
             "## Attach full memory (optional)",
         ],
     );
+    // Interactive chat offers a contextual link; opening or filing remains opt-in.
+    assert_contains_all(
+        BROWSER_REGRESSION,
+        &[
+            "await expect(report).toHaveText('Report issue')",
+            "const reportUrl = new URL(href)",
+            "reportUrl.searchParams.get('body')",
+            "expect(reportBody).toContain('inspect this workspace')",
+            "expect(reportBody).toContain('provider exited before returning an answer')",
+        ],
+    );
+    // #1205/R1207-2: unattended agent finals keep diagnostics without a question.
+    // Trace the actual entry to its semantic assertion and executable controls,
+    // rather than requiring an obsolete inline shell grep or a report command.
     assert_contains_all(
         "experiments/agent_cli_e2e/run_issue_864.sh",
         &[
-            "gh issue create",
-            "filed an issue without user confirmation",
+            "issue-864-policy.test.mjs",
+            "assert-issue-864.mjs",
+            "--disable-stdin",
+        ],
+    );
+    assert_contains_all(
+        "experiments/agent_cli_e2e/assert-issue-864.mjs",
+        &[
+            "assertAgentFailure(final)",
+            "assertAgentFailure(actual)",
+            r"gh\s+issue\s+create",
+            "issue auto-creation is forbidden",
+            "interactive report invitation in unattended agent final",
+        ],
+    );
+    assert_contains_all(
+        "experiments/agent_cli_e2e/issue-864-policy.test.mjs",
+        &[
+            "no auto-created issue",
+            "gh issue create --title accidental",
+            "agent final rejects ",
+            "interactive chat retains the exact original opt-in invitation and Report issue oracle",
+            "assert.equal(appendInvitation(",
         ],
     );
 }

@@ -21,19 +21,7 @@
 //!   environment values of boolean `#[arg]` fields (such as `--silent`)
 //!   through the same table.
 
-/// Parse one boolean environment value.
-///
-/// Recognises `1`/`0`/`true`/`false`/`yes`/`no`/`on`/`off`, case-insensitive,
-/// with surrounding whitespace tolerated. Anything else is `None` (the caller
-/// decides what an unrecognised value means — usually "keep the default").
-#[must_use]
-pub fn parse_bool_env(value: &str) -> Option<bool> {
-    match value.trim().to_ascii_lowercase().as_str() {
-        "1" | "true" | "yes" | "on" => Some(true),
-        "0" | "false" | "no" | "off" => Some(false),
-        _ => None,
-    }
-}
+pub use crate::solver_config::{flag_disabled, flag_enabled, parse_bool_env};
 
 /// Parse a boolean `#[arg(env = ..)]` value for clap.
 ///
@@ -48,24 +36,4 @@ pub fn bool_env_value_parser(value: &str) -> Result<bool, String> {
         // R379 hardcoded-language ledger.
         String::from("expected one of: 1, 0, true, false, yes, no, on, off (case-insensitive)")
     })
-}
-
-/// Whether the boolean switch `name` is explicitly enabled.
-///
-/// `false` when the variable is unset or holds an unrecognised value, which
-/// preserves the pre-#1181 behaviour of every opt-in switch: garbage never
-/// turns a debug flag on.
-#[must_use]
-pub fn flag_enabled(name: &str) -> bool {
-    std::env::var(name).as_deref().ok().and_then(parse_bool_env) == Some(true)
-}
-
-/// Whether the boolean switch `name` is explicitly disabled.
-///
-/// The mirror of [`flag_enabled`] for default-on features: `true` only when
-/// the variable is set to a false spelling. Unset or unrecognised values
-/// leave the feature on.
-#[must_use]
-pub fn flag_disabled(name: &str) -> bool {
-    std::env::var(name).as_deref().ok().and_then(parse_bool_env) == Some(false)
 }

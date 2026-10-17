@@ -16,6 +16,8 @@ fi
 WORKDIR="$(mktemp -d)"
 FAKE_BIN="$WORKDIR/fake-bin"
 SERVER_LOG="$WORKDIR/formal-ai.log"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
+server_log_evidence_setup "$SERVER_LOG" || exit 1
 AGENT_LOG="$WORKDIR/agent-cli.log"
 GH_CAPTURE="$WORKDIR/gh-invocation.txt"
 BODY_CAPTURE="$WORKDIR/issue-body.md"
@@ -25,6 +27,7 @@ cleanup() {
   if [[ -n "${SERVER_PID:-}" ]]; then
     kill "$SERVER_PID" 2>/dev/null || true
   fi
+  retain_server_log_evidence
   rm -rf "$WORKDIR"
 }
 trap cleanup EXIT
@@ -96,7 +99,7 @@ chmod +x "$FAKE_BIN/gh"
 # what earlier E2E scripts recorded into the shared ~/.formal-ai/memory.lino
 # (issue #828). FORMAL_AI_DREAMING=0 stops background compaction of that file.
 FORMAL_AI_AGENT_MODE=1 FORMAL_AI_TRACE_REQUESTS=1 \
-  FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
+  FORMAL_AI_DIALOG_LOG_DIR="$DIALOG_DIR" \
   FORMAL_AI_MEMORY_PATH="$WORKDIR/memory.lino" FORMAL_AI_DREAMING=0 \
   "$BIN" serve --host 127.0.0.1 --port "$PORT" > "$SERVER_LOG" 2>&1 &
 SERVER_PID=$!
@@ -118,7 +121,7 @@ run_turn() {
   shift 2
   echo "== $label: $prompt ==" | tee -a "$AGENT_LOG"
   FORMAL_AI_BASE_URL="http://127.0.0.1:$PORT/v1" \
-    FORMAL_AI_DIALOG_LOG_DIR="$WORKDIR/dialog-logs" \
+    FORMAL_AI_DIALOG_LOG_DIR="$DIALOG_DIR" \
     FORMAL_AI_GH_CAPTURE="$GH_CAPTURE" \
     FORMAL_AI_BODY_CAPTURE="$BODY_CAPTURE" \
     FORMAL_AI_GIST_DIR="$GIST_DIR" \
@@ -189,7 +192,7 @@ fi
 grep -Fq 'issues/999999' "$AGENT_LOG" \
   || fail "the Agent CLI did not return the created issue URL"
 
-posts="$(grep -c 'POST /v1/chat/completions' "$SERVER_LOG" || true)"
+posts="$(project_server_log)" || { echo "invalid server evidence" >&2; exit 1; }
 [[ "$posts" -ge 3 ]] || fail "expected at least three confirmation rounds, got $posts"
 
 echo "== issue #822 E2E OK: two confirmations preceded three linked contexts ($posts rounds) =="

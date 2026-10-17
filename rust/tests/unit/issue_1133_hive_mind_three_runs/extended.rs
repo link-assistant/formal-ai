@@ -78,13 +78,22 @@ fn a_fetch_only_client_progresses_past_the_read_without_refetching() {
         1,
         "{planned:?}"
     );
+    // #1209/#1211: a successful read does not authorize an auxiliary plan
+    // write or source effects when the client cannot execute verification.
+    // Preserve the original page, tool set and exactly-one-fetch assertion.
     assert!(
-        planned.iter().any(|call| {
-            call.tool == "Write" && path_of(call) == ".formal-ai/general-change-plan.lino"
-        }),
-        "{planned:?}"
+        planned.iter().all(|call| call.tool != "Write"),
+        "unverifiable fetch-only work must have no write effects: {planned:?}"
     );
-    assert!(answer.is_some(), "fetch-only planning must terminate");
+    let answer = answer.expect("fetch-only planning must terminate");
+    assert!(answer.contains("Planned, not executed"), "{answer}");
+    for completion in [
+        "Created and verified",
+        "Recorded and verified",
+        "Committed and pushed",
+    ] {
+        assert!(!answer.contains(completion), "{answer}");
+    }
 }
 
 #[test]

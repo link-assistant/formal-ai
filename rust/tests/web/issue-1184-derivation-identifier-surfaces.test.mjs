@@ -8,6 +8,9 @@
 
 import assert from 'node:assert/strict';
 import { before, test } from 'node:test';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 
 import { answerDerivationId } from '../../../js/agentic/crate/derivation.mjs';
 import { responseFromSymbolic } from '../../../js/server/responses.mjs';
@@ -30,7 +33,10 @@ test('the browser worker answer carries the derivation id of its content', async
 });
 
 test('the responses object carries derivation_id beside evidence_links', async () => {
-  const symbolic = await solveSymbolic({ worker: host }, '1 + 1', []);
+  const privateCache = mkdtempSync(path.join(tmpdir(), 'formal-ai-derivation-identifiers-'));
+  let symbolic;
+  try { symbolic = await solveSymbolic({ worker: host, env: { FORMAL_AI_CACHE_DIR: privateCache } }, '1 + 1', []); }
+  finally { rmSync(privateCache, { recursive: true, force: true }); }
   const chatRequest = { messages: [{ role: 'user', content: '1 + 1' }] };
   const response = responseFromSymbolic({}, chatRequest, '1 + 1', symbolic);
   const keys = Object.keys(response);

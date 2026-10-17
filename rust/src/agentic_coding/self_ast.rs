@@ -54,7 +54,7 @@ pub fn ast_census_runs() -> u64 {
 fn record_census_run(source_len: usize, elapsed: std::time::Duration) {
     AST_CENSUS_RUNS.fetch_add(1, Ordering::Relaxed);
     if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_SLOW_INIT") {
-        eprintln!(
+        crate::diagnostic!("debug";
             "[slow-init] ast_census: {source_len} bytes in {} ms (run #{})",
             elapsed.as_millis(),
             ast_census_runs()
@@ -82,8 +82,7 @@ pub const AST_PATH: &str = "self-ast.lino";
 /// A *differently worded* request for the self-AST recipe — the maintainer's
 /// generality check: the router recognises the intent from the words, not a
 /// hardcoded string.
-pub const AST_TASK: &str =
-    "Store the CST/AST of our Rust meta algorithm in our data so the system \
+pub const AST_TASK: &str = "Store the CST/AST of our Rust meta algorithm in our data so the system \
                             can reason about itself: parse the planner module and record its \
                             abstract-syntax node census in Links Notation.";
 

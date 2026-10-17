@@ -3,7 +3,7 @@
 
 import { Capability } from './capability.mjs';
 import { appendRecordStep } from './append_contract.mjs';
-import { isHostedResearchTool, shellCommandTool, toolFor } from './capability_router.mjs';
+import { shellCommandTool, toolFor } from './capability_router.mjs';
 import { attach, requestedIn } from './ci_workflow.mjs';
 import { executionRecipeFinalAnswer, planSymbolicCommandReroute } from './command_reroute.mjs';
 import { mentionsRoleRaw } from './write_lexicon.mjs';
@@ -79,20 +79,20 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
         && progress.runCountFor(plan.verification_command) === 0 && runTool) {
         return planOne(runTool, command(plan.verification_command));
       }
-      return finalAnswer(renderFailure(path ?? 'write', failure.detail, plan.goal));
+      return resolvedFinalAnswer(renderFailure(path ?? 'write', failure.detail, plan.goal), FinalDisposition.Failure, 'tool_failure');
     }
     if (failure.capability === Capability.Run) {
       const output = progress.latestRunOutputFor(plan.verification_command);
       const report = output === null || output === undefined
         ? null
         : failedVerification([output], plan.verification_command, plan.goal);
-      if (report !== null && report !== undefined) return finalAnswer(report);
+      if (report !== null && report !== undefined) return resolvedFinalAnswer(report, FinalDisposition.Failure, 'tool_failure');
     }
     const previous = progress.previousAttempt();
     const recoveringMissingWrite = failure.capability === Capability.Read
       && Boolean(previous) && previous.capability === Capability.Write && !previous.succeeded;
     if (!recoveringMissingWrite) {
-      return finalAnswer(renderFailure(capabilityLabel(failure.capability), failure.detail, plan.goal));
+      return resolvedFinalAnswer(renderFailure(capabilityLabel(failure.capability), failure.detail, plan.goal), FinalDisposition.Failure, 'tool_failure');
     }
   }
   const previous = progress.previousAttempt();
@@ -113,7 +113,11 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
       if (step) return step;
     }
     const report = workItemReadFailureReport(plan, progress);
-    if (report !== null) return finalAnswer(report);
+    if (report !== null) return resolvedFinalAnswer(report, FinalDisposition.Failure, 'tool_failure');
+    // A read or an unsupported implementation is not an executed change.
+    // Keep this gap explicit and avoid writing a plan into the caller's Git tree.
+    return resolvedFinalAnswer(plannedNotExecutedAnswer({ ...plan, goal: fetched ?? plan.target }),
+      FinalDisposition.Gap, 'work_item_execution_unavailable');
   }
   const event = planEventStep(plan, progress, toolNames, messages);
   if (event.kind === 'pending') return event.plan;
@@ -222,9 +226,6 @@ function workItemSolverAnswer(objective) {
 
 function planWorkItemRead(messages, toolNames, target, progress) {
   const fetch = toolFor(toolNames, Capability.Fetch);
-  if (fetch && isHostedResearchTool(fetch)) {
-    return progress.attemptedFetchOf(target) ? null : planOne(fetch, workItemFetchArguments(target));
-  }
   const run = shellCommandTool(toolNames);
   if (!progress.attemptedWorkItemReadOf(target) && run) return planOne(run, command(issueViewCommand(target)));
   if (!progress.attemptedFetchOf(target) && fetch) return planOne(fetch, workItemFetchArguments(target));
@@ -295,9 +296,45 @@ function workItemReadFailureReport(plan, progress) {
 }
 
 function repositoryWorkItemObjective(plan, progress) {
-  const found = progress.fetched_pages.find(([url]) => url === plan.target);
-  if (!found || trim(found[1]) === '') return null;
-  return found[1];
+  // Prefer the latest usable matching observation; never use an unrelated PR
+  // or a GitHub navigation page as a program specification.
+  for (const [url, raw] of [...progress.fetched_pages].reverse()) {
+    if (url !== plan.target) continue;
+    let text = trim(raw);
+    try {
+      let data = JSON.parse(text);
+      // MCP's structured result is source data, not its display placeholder.
+      // The shared normalizer still vetoes an explicitly failed envelope.
+      if (data && Array.isArray(data.content) && data.content.every(part => part?.type === 'text' && typeof part.text === 'string')
+        && Object.hasOwn(data, 'structuredContent')) {
+        if (observedPayload(raw) === null) continue;
+        const structured = data.structuredContent;
+        let record = structured && typeof structured === 'object' && Object.hasOwn(structured, 'content') ? structured.content : structured;
+        if (typeof record === 'string') {
+          try { record = JSON.parse(record); } catch { continue; }
+        }
+        if (!record || typeof record !== 'object' || typeof record.body !== 'string') continue;
+        // Two explicit work items cannot silently select different tasks.
+        const conflicts = other => typeof other?.body === 'string' && (other.body !== record.body
+          || typeof other.title === 'string' && typeof record.title === 'string' && other.title !== record.title);
+        if ([data, structured].some(conflicts)) continue;
+        const conflicting = data.content.some(part => {
+          try { return conflicts(JSON.parse(part.text)); }
+          catch { return false; }
+        });
+        if (conflicting) continue;
+        data = record;
+      }
+      if (!data || typeof data !== 'object' || typeof data.body !== 'string') continue;
+      text = [typeof data.title === 'string' ? data.title : '', data.body].filter(Boolean).join('\n\n');
+    } catch {
+      // gh's title/body text is already extracted; raw HTML is not.
+      if (/^\s*(?:<!doctype\s+html|<html\b)/iu.test(text)
+        || /<body\b|<nav\b|<script\b/iu.test(text)) continue;
+    }
+    if (trim(text) !== '') return text;
+  }
+  return null;
 }
 
 // Exact declared literal data is evidence, even when its words describe failures.
@@ -309,19 +346,19 @@ function literalVerificationMatches(plan, output) {
 }
 
 function finishGeneralChange(plan, progress, resolvedFromWorkItem) {
-  if (plan.mode === GeneralPlanMode.RepositoryWorkItem) return finalAnswer(plannedNotExecutedAnswer(plan));
+  if (plan.mode === GeneralPlanMode.RepositoryWorkItem) return resolvedFinalAnswer(plannedNotExecutedAnswer(plan), FinalDisposition.Gap, 'planned_not_executed');
   const latest = progress.latestRunOutputFor(plan.verification_command);
   const report = latest === null || latest === undefined || literalVerificationMatches(plan, latest)
     ? null
     : failedVerification([latest], plan.verification_command, plan.goal);
-  if (report !== null && report !== undefined) return finalAnswer(report);
-  if (progress.successfulRunCountFor(plan.verification_command) === 0) return finalAnswer(generalPlanUnverified(plan));
+  if (report !== null && report !== undefined) return resolvedFinalAnswer(report, FinalDisposition.Failure, 'tool_failure');
+  if (progress.successfulRunCountFor(plan.verification_command) === 0) return resolvedFinalAnswer(generalPlanUnverified(plan), FinalDisposition.Gap, 'planned_not_executed');
   if (plan.mode === GeneralPlanMode.LiteralFile) {
     const output = progress.latestSuccessfulRunOutputFor(plan.verification_command);
     const observed = output === null || output === undefined ? null : observedPayload(output);
     if (!literalVerificationMatches(plan, output)
       && (observed === null || observed === undefined || trim(observed) !== trim(plan.content))) {
-      return finalAnswer(generalPlanMismatch(plan, observed ?? ''));
+      return resolvedFinalAnswer(generalPlanMismatch(plan, observed ?? ''), FinalDisposition.Failure, 'verification_mismatch');
     }
   }
   if (resolvedFromWorkItem && plan.mode === GeneralPlanMode.LiteralFile) {

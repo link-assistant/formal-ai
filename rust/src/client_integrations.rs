@@ -148,6 +148,9 @@ pub struct WithFormalAiArgs {
     pub tool_args: Vec<String>,
 }
 
+// A configuration batch shares one lazy snapshot; the next invocation starts fresh.
+type ModelLimits = std::rc::Rc<std::cell::OnceCell<(String, String)>>;
+
 #[derive(Debug, Clone)]
 struct RenderContext {
     protocol: String,
@@ -169,7 +172,7 @@ struct RenderContext {
     /// template that names them, never earlier: a client that states no
     /// limits must not spend a request on the endpoint it is about to call,
     /// and the probe must follow the wrapper's own server-version check.
-    model_limits: std::cell::OnceCell<(String, String)>,
+    model_limits: ModelLimits,
 }
 
 impl RenderContext {
@@ -207,11 +210,12 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     let integrations = seed_client_integrations();
     if args.global || args.undo {
         let selected = select_integrations(args, &integrations)?;
+        let model_limits = ModelLimits::default();
         for integration in selected {
             if args.undo {
                 undo_global_config(integration, args)?;
             } else {
-                write_global_config(integration, args)?;
+                write_global_config(integration, args, &model_limits)?;
             }
         }
         return Ok(());
@@ -232,7 +236,7 @@ pub fn run_with_formal_ai(args: &WithFormalAiArgs) -> Result<(), Box<dyn Error>>
     let server = if args.start_server || !args.no_start_server {
         let server = maybe_start_server(&context.base_url, args.port)?;
         if server.is_some() {
-            eprintln!(
+            crate::diagnostic!("debug";
                 "formal-ai: started a temporary server in agent mode (tool and shell execution enabled)"
             );
         }
@@ -378,7 +382,7 @@ fn render_context(
         google_auth_type,
         model_catalog_path: String::new(),
         working_directory: std::env::current_dir()?.to_string_lossy().into_owned(),
-        model_limits: std::cell::OnceCell::new(),
+        model_limits: ModelLimits::default(),
     };
     // An already-qualified selector (`provider/model`) is passed through: the
     // seed template only supplies the provider a bare alias is missing.

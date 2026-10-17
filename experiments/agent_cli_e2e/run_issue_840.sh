@@ -6,6 +6,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
 BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8784}"
 AGENT="${AGENT:-agent}"
@@ -19,6 +20,9 @@ CURRENT_SERVER_PID=""
 cleanup() {
   if [ -n "$CURRENT_SERVER_PID" ]; then
     kill "$CURRENT_SERVER_PID" 2>/dev/null || true
+  fi
+  if [[ -n "${RAW_SERVER_LOG:-}" ]]; then
+    retain_server_log_evidence || true
   fi
   rm -rf -- "$WORKDIR"
 }
@@ -95,8 +99,9 @@ run_agent_case() {
   local case_dir="$WORKDIR/$case_name"
   local client_log="$case_dir/agent-cli.log"
   local server_log="$case_dir/formal-ai.log"
-  local dialog_dir="$case_dir/dialogs"
-  mkdir -p "$dialog_dir"
+  server_log_evidence_setup "$server_log" '*' || exit 1
+  local dialog_dir="$DIALOG_DIR"
+  mkdir -p "$case_dir" "$dialog_dir" || exit 1
 
   FORMAL_AI_AGENT_MODE=1 \
     FORMAL_AI_TRACE_REQUESTS=1 \
@@ -124,22 +129,24 @@ run_agent_case() {
         --compaction-models "(same)" \
         --read-only
     ) >> "$client_log" 2>&1 || true
-    if grep -q 'agentic_outcome: planned Final' "$server_log"; then
+    project_server_log --headers-only >/dev/null || exit 1
+    retain_server_log_evidence || exit 1
+    if grep -q 'agentic_outcome: planned Final' "$SEMANTIC_LOG"; then
       break
     fi
   done
 
   local searches
   local fetches
-  searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$server_log" | tr -d ' ')"
-  fetches="$(grep -c 'agentic_outcome: planned ToolCalls.*webfetch' "$server_log" | tr -d ' ')"
+  searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$SEMANTIC_LOG" | tr -d ' ')"
+  fetches="$(grep -c 'agentic_outcome: planned ToolCalls.*webfetch' "$SEMANTIC_LOG" | tr -d ' ')"
   [ "$searches" -ge "$expected_searches" ] \
     || fail "$case_name planned only $searches searches" "$client_log" "$server_log"
   [ "$fetches" -ge "$expected_fetches" ] \
     || fail "$case_name planned only $fetches fetches" "$client_log" "$server_log"
   grep -Fq "$expected" "$client_log" \
     || fail "$case_name final answer omitted $expected" "$client_log" "$server_log"
-  grep -q 'agentic_outcome: planned Final' "$server_log" \
+  grep -q 'agentic_outcome: planned Final' "$SEMANTIC_LOG" \
     || fail "$case_name never reached a final synthesis" "$client_log" "$server_log"
 
   if [ "$case_name" = "definition-followup" ]; then

@@ -460,9 +460,27 @@ describe('G77: a bash call killed at the timeout', () => {
   test('the answer states the kill and invents no exit code', async () => {
     const { commands, answer } = await drive('Run `node --test slow.test.mjs`.', {});
     assert.deepEqual(commands, ['node --test slow.test.mjs']);
-    assert.equal(answer, 'The command failed: Signal: SIGTERM\nTimeout: 60000 ms\n\n'
-      + 'I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.');
+    assert.equal(answer, 'The command failed: Signal: SIGTERM\nTimeout: 60000 ms');
+    assert.doesNotMatch(answer, /Exit Code|Report issue|Would you like/u);
   });
+});
+
+// Agentic diagnostics cannot ask a question; interactive reporting retains its invitation.
+test('G77: timeout diagnostics retain a nonempty harness error without inventing an exit code', async () => {
+  const { renderFailure } = await import('../../../js/agentic/tool_result.mjs');
+  const detail = 'Output: TAP version 13\nError: harness terminated the slow command\nSignal: SIGTERM\nTimeout: 60000 ms';
+  const answer = renderFailure('bash', detail, 'Run \u0060node --test slow.test.mjs\u0060.');
+  assert.match(answer, /harness terminated the slow command/u);
+  assert.match(answer, /Signal: SIGTERM/u);
+  assert.match(answer, /Timeout: 60000 ms/u);
+  assert.doesNotMatch(answer, /Exit Code|Report issue|Would you like/u);
+});
+
+test('G77: explicit interactive reporting still appends the diagnostic invitation', async () => {
+  const { appendInvitation } = await import('../../../js/agentic/crate/failure_reporting.mjs');
+  const diagnostic = 'The command failed: Signal: SIGTERM\nTimeout: 60000 ms';
+  assert.equal(appendInvitation(diagnostic, 'en'), diagnostic + '\n\n'
+    + 'I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply \u0060Report issue\u0060.');
 });
 
 describe('G81: a line moved so that it follows another', () => {

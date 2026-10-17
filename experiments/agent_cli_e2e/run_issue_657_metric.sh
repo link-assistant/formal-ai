@@ -17,6 +17,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
 BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 OPENCODE="${OPENCODE:-opencode}"
@@ -29,12 +30,16 @@ command -v "$AGENT" >/dev/null
 command -v "$OPENCODE" >/dev/null
 [[ -x "$BIN" ]] || { echo "build first: cargo build --release --bin formal-ai" >&2; exit 2; }
 mkdir -p "$OUT"
+server_log_evidence_setup "$OUT/formal-ai.log" '*' || exit 1
 
 agent_work="$(mktemp -d)"
 opencode_work="$(mktemp -d)"
 state="$(mktemp -d)"
 cleanup() {
   kill "${server_pid:-}" 2>/dev/null || true
+  if [[ -n "${RAW_SERVER_LOG:-}" ]]; then
+    retain_server_log_evidence || true
+  fi
   rm -rf "$agent_work" "$opencode_work" "$state"
 }
 trap cleanup EXIT
@@ -127,5 +132,6 @@ fi
 rm -f "$OUT/harness-parity.diff"
 cp "$agent_work/$REPORT" "$OUT/$REPORT"
 
-rounds="$(grep -c 'POST /' "$OUT/formal-ai.log" || true)"
+rounds="$(project_server_log --headers-only)" || exit 1
+retain_server_log_evidence || exit 1
 echo "issue #657 auto-learning Agent CLI E2E OK: both harnesses derived a byte-identical review-gated report over $rounds chat rounds"

@@ -7,6 +7,8 @@
 // module installs its host over the booted worker and projects its plans onto
 // the Chat Completions and Responses wire shapes exactly as Rust does.
 
+import {observedPlanTerminal} from '../logging/terminal-events.mjs';
+import {currentDialogId} from './dialog-log.mjs';
 import { plainText, requestsToolExecution } from './chat-request.mjs';
 import { estimateTokens, stableId } from './ids.mjs';
 import { resolveModelId } from './seed.mjs';
@@ -89,16 +91,18 @@ export async function agenticOutcome(ctx, request, refusal) {
     }
     return { kind: 'fallthrough' };
   }
-  if (!ctx.agentMode) return { kind: 'refused', answer: refusal() };
+  if (!ctx.agentMode) {ctx.logger?.log('warn','agent.terminal',{component:'agent',dialog_id:currentDialogId(),reason:'refusal',origin:'agent_mode_required'});return { kind: 'refused', answer: refusal() };}
   await ensureHost(ctx);
   const owned = requestedToolNames(request);
   const denial = agenticToolPermissionDenial(owned, toolCapability);
-  if (denial) return { kind: 'refused', answer: toolPermissionRefusalAnswer(denial) };
+  if (denial) {ctx.logger?.log('warn','agent.terminal',{component:'agent',dialog_id:currentDialogId(),reason:'refusal',origin:'package_permission_required'});return { kind: 'refused', answer: toolPermissionRefusalAnswer(denial) };}
   // R1154-1: a shell tool whose schema names its command property something
   // else than `command`/`cmd`/`script` is read through that declared key.
   const messages = projectDeclaredCommandKeys(request.messages, request.tools);
   const scoped = projectAppendContracts(messages, request.tools);
   const plan = await planChatStep(scoped, groundableToolNames(request, owned));
+  const terminal=observedPlanTerminal(plan);
+  ctx.logger?.log('debug','agent.plan',{component:'agent',dialog_id:currentDialogId(),...(terminal??{reason:plan?'awaiting_tool_result':'Unknown'}),plan_kind:plan?.kind??'none'});
   return plan === null ? { kind: 'fallthrough' } : { kind: 'planned', plan };
 }
 
@@ -107,6 +111,14 @@ export async function commandReroutePlan(ctx, request, symbolic) {
   if (!ctx.agentMode || !requestsToolExecution(request)) return null;
   await ensureHost(ctx);
   return planSymbolicCommandReroute(request.messages, requestedToolNames(request), symbolic);
+}
+
+function logPlanTerminal(ctx,plan){
+ const terminal=observedPlanTerminal(plan)??{reason:'planned_not_executed',origin:'client_execution_pending'};
+ ctx.logger?.log(terminal.reason==='success'?'info':'debug','agent.terminal',{component:'agent',dialog_id:currentDialogId(),...terminal,scope:'server_response',task_delivery:'Unknown'});
+}
+export function logUnclassifiedTerminal(ctx,origin){
+ ctx.logger?.log('debug','agent.terminal',{component:'agent',dialog_id:currentDialogId(),reason:'Unknown',origin,scope:'server_response',task_delivery:'Unknown'});
 }
 
 function messageTokens(messages) {
@@ -125,6 +137,7 @@ function messageTokens(messages) {
  * @param {number} created the response timestamp
  */
 export function chatCompletionFromPlan(ctx, request, prompt, plan, created) {
+  logPlanTerminal(ctx,plan);
   const promptTokens = messageTokens(request.messages);
   const workspace = clientWorkingDirectory(request.messages);
   let message;
@@ -208,6 +221,7 @@ function responseCallItem(request, prompt, workspace, call, index) {
  * @param {number} created the response timestamp
  */
 export function responseFromPlan(ctx, request, chatRequest, prompt, plan, created) {
+  logPlanTerminal(ctx,plan);
   const inputTokens = messageTokens(chatRequest.messages);
   const workspace = clientWorkingDirectory(chatRequest.messages);
   let output;

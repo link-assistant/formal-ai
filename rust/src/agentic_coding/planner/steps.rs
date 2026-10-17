@@ -118,11 +118,25 @@ pub(super) enum SourceOrOwnedGoalStep {
     Claimed(Option<AgenticPlan>),
 }
 
-/// Preserve continuation refusal before mandatory prerequisite gaps.
+/// Resolve request ownership before incidental routes or prerequisite gaps.
 pub(super) fn plan_request_preflight(
     task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
     result: &mut Option<FinalResult>,
 ) -> SourceOrOwnedGoalStep {
+    // Declared issue ownership and continuation/prerequisite guards share the
+    // request boundary; surrounding examples cannot become independent effects.
+    if let Some(plan) = crate::agentic_coding::general_planner::compose_general_change_plan(task)
+        && plan.mode == crate::agentic_coding::general_planner::GeneralPlanMode::RepositoryWorkItem
+        && task.trim_start().starts_with(&plan.target)
+    {
+        return SourceOrOwnedGoalStep::Claimed(Some(
+            crate::agentic_coding::general_execution::plan_general_change_step(
+                messages, tool_names, &plan, result,
+            ),
+        ));
+    }
     if crate::rule_interpreter::handler_matches("conversation_control", task)
         || super::is_continuation_cue(task)
     {

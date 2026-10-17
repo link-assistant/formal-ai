@@ -6,6 +6,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
 BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 PORT="${PORT:-8783}"
 AGENT="${AGENT:-agent}"
@@ -19,6 +20,9 @@ CURRENT_SERVER_PID=""
 cleanup() {
   if [ -n "$CURRENT_SERVER_PID" ]; then
     kill "$CURRENT_SERVER_PID" 2>/dev/null || true
+  fi
+  if [[ -n "${RAW_SERVER_LOG:-}" ]]; then
+    retain_server_log_evidence || true
   fi
   rm -rf -- "$WORKDIR"
 }
@@ -117,8 +121,9 @@ run_client() {
   local client_dir="$WORKDIR/$client"
   local client_log="$client_dir/client.log"
   local server_log="$client_dir/formal-ai.log"
-  local dialog_dir="$client_dir/dialogs"
-  mkdir -p "$dialog_dir"
+  server_log_evidence_setup "$server_log" '*' || exit 1
+  local dialog_dir="$DIALOG_DIR"
+  mkdir -p "$client_dir" "$dialog_dir" || exit 1
 
   # Private, empty memory per client run so this server's memory-fed planning
   # stays independent of what other E2E scripts recorded into the shared
@@ -154,7 +159,9 @@ run_client() {
             --compaction-models "(same)" \
             --read-only
         ) >> "$client_log" 2>&1 || true
-        if grep -q 'agentic_outcome: planned Final' "$server_log"; then
+        project_server_log --headers-only >/dev/null || exit 1
+        retain_server_log_evidence || exit 1
+        if grep -q 'agentic_outcome: planned Final' "$SEMANTIC_LOG"; then
           break
         fi
       done
@@ -187,12 +194,13 @@ run_client() {
       ;;
   esac
 
+  local posts
+  posts="$(project_server_log --headers-only)" || exit 1
+  retain_server_log_evidence || exit 1
   local searches
   local fetches
-  local posts
-  searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$server_log" | tr -d ' ')"
-  fetches="$(grep -c 'agentic_outcome: planned ToolCalls.*webfetch' "$server_log" | tr -d ' ')"
-  posts="$(grep -c '^\[trace\] POST ' "$server_log" | tr -d ' ')"
+  searches="$(grep -c 'agentic_outcome: planned ToolCalls.*websearch' "$SEMANTIC_LOG" | tr -d ' ')"
+  fetches="$(grep -c 'agentic_outcome: planned ToolCalls.*webfetch' "$SEMANTIC_LOG" | tr -d ' ')"
 
   if [ -n "$ARTIFACT_DIR" ]; then
     mkdir -p "$ARTIFACT_DIR/$client"
@@ -207,9 +215,9 @@ run_client() {
     || fail "$client planned only $fetches web fetches" "$client_log" "$server_log"
   [ "$posts" -ge 5 ] \
     || fail "$client returned only $posts model turns" "$client_log" "$server_log"
-  grep -q 'agentic_outcome: planned Final' "$server_log" \
+  grep -q 'agentic_outcome: planned Final' "$SEMANTIC_LOG" \
     || fail "$client never received the final synthesis" "$client_log" "$server_log"
-  grep -q 'Source:' "$server_log" \
+  grep -q 'Source:' "$SEMANTIC_LOG" \
     || fail "$client final synthesis did not cite sources" "$client_log" "$server_log"
 
   echo "== issue #781 $client E2E OK: $searches search, $fetches fetches, $posts model turns =="

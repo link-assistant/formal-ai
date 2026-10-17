@@ -8,11 +8,11 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | Level | Meaning | Requirements |
 | ---: | --- | ---: |
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
-| 1 recorded | the row exists, nothing measures it yet | 1 |
-| 2 measured | a test pins it, but the row says it is not delivered | 2 |
-| 3 partial | delivered in part | 50 |
+| 1 recorded | the row exists, nothing measures it yet | 34 |
+| 2 measured | a test pins it, but the row says it is not delivered | 3 |
+| 3 partial | delivered in part | 51 |
 | 4 implemented | delivered, with a test | 1313 |
-| | **all** | **1374** |
+| | **all** | **1409** |
 
 ## JavaScript first
 
@@ -20,22 +20,27 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 438 |
+| a JavaScript test | 439 |
 | a Rust test only | 920 |
-| no test | 16 |
+| no test | 50 |
 
 ## Next pass
 
-Level 1 (recorded): 1 requirement(s) to raise before any level above it is refined.
+Level 1 (recorded): 34 requirement(s) to raise before any level above it is refined.
 
 ### Level 1: recorded
 
 - `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`: R1021-14
+- `docs/requirements/issue-1207-hive-mind-progressive-self-coding.md`: R1207-1, R1207-2, R1207-3, R1207-4, R1207-5, R1207-6, R1207-7, R1207-8, R1207-9
+- `docs/requirements/issue-1212-project-motto.md`: R1212-2, R1212-3, R1212-4, R1212-5, R1212-7, R1212-8
+- `docs/requirements/issue-1213-cryptographic-provenance.md`: R1213-1, R1213-2, R1213-3, R1213-4, R1213-5, R1213-6, R1213-7, R1213-8, R1213-9, R1213-10
+- `docs/requirements/issue-1220-structured-links-notation-logging.md`: R1220-1, R1220-2, R1220-3, R1220-4, R1220-5, R1220-6, R1220-7, R1220-8
 
 ### Level 2: measured
 
 - `docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md`: R994
 - `docs/requirements/issue-1187-optional-github-credentials.md`: R1187-8
+- `docs/requirements/issue-1212-project-motto.md`: R1212-1
 
 ### Level 3: partial
 
@@ -54,3 +59,4 @@ Level 1 (recorded): 1 requirement(s) to raise before any level above it is refin
 - `docs/requirements/issue-1186-formalization-as-a-user-facing-task.md`: R1186-4
 - `docs/requirements/issue-1188-coding-amplification.md`: R1188-U31, R1188-U32, R1188-U33, R1188-U34, R1188-U35
 - `docs/requirements/issue-1188-user-requirements.md`: R1188-U1, R1188-U2, R1188-U3, R1188-U4, R1188-U5, R1188-U6, R1188-U7, R1188-U8, R1188-U9, R1188-U13, R1188-U18, R1188-U19, R1188-U20, R1188-U21, R1188-U23, R1188-U27, R1188-U28, R1188-U29, R1188-U30
+- `docs/requirements/issue-1212-project-motto.md`: R1212-6

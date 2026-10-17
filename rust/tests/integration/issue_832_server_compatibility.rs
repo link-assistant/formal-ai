@@ -1,4 +1,6 @@
+use crate::structured_stderr;
 use std::io::{Read as _, Write as _};
+
 use std::net::TcpListener;
 use std::os::unix::fs::PermissionsExt;
 use std::path::Path;
@@ -89,9 +91,9 @@ fn matching_existing_server_is_reused() {
     assert!(
         output.status.success(),
         "stderr: {}",
-        String::from_utf8_lossy(&output.stderr)
+        structured_stderr::messages(&output.stderr)
     );
-    assert!(!String::from_utf8_lossy(&output.stderr).contains("started a temporary server"));
+    assert!(!structured_stderr::messages(&output.stderr).contains("started a temporary server"));
     assert!(invoked, "wrapped CLI was not invoked");
 }
 
@@ -101,7 +103,7 @@ fn incompatible_existing_server_is_rejected() {
 
     assert!(!output.status.success(), "stale server was silently reused");
     assert!(!invoked, "wrapped CLI ran against a stale server");
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stderr = structured_stderr::messages(&output.stderr);
     assert!(stderr.contains("0.301.0"), "stderr: {stderr}");
     assert!(
         stderr.contains(env!("CARGO_PKG_VERSION")),
@@ -118,7 +120,7 @@ fn legacy_server_without_a_version_is_rejected() {
         "legacy server was silently reused"
     );
     assert!(!invoked, "wrapped CLI ran against a legacy server");
-    let stderr = String::from_utf8_lossy(&output.stderr);
+    let stderr = structured_stderr::messages(&output.stderr);
     assert!(
         stderr.contains("does not report its version"),
         "stderr: {stderr}"

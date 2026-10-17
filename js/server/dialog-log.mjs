@@ -3,9 +3,9 @@
 // `conversation_epoch`, `explicit_dialog_id`, `first_user_prompt`, and
 // rust/src/dialog_conversation.rs `write_conversation_record`).
 //
-// Every authorized exchange outside `/conversations/` appends one JSONL trace
-// record to `<dir>/<dialog_id>.jsonl` and, when it carried turns, one
-// conversation record to `<dir>/<dialog_id>.conversation.jsonl`. Logging is
+// Every authorized exchange outside `/conversations/` appends one typed Lino trace
+// record to `<dir>/<dialog_id>.lino` and, when it carried turns, one
+// conversation record to `<dir>/<dialog_id>.conversation.lino`. Logging is
 // best-effort: failures go to stderr and never change the response.
 //
 // `DialogScope` (the thread-local the Rust server sets around one request) is
@@ -16,6 +16,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import fs from 'node:fs';
 import path from 'node:path';
+import { encodeDialogRecord } from './dialog-codec.mjs';
+import { makeRedactor, redactedBody } from './structured-log.mjs';
 
 import { configuredDialogLogDirectory, turnsInExchange } from './conversations.mjs';
 import { summarizeProxyExchange } from './dialog-log-summary.mjs';
@@ -24,7 +26,7 @@ import { sortedKeys, toCompactJson } from './json.mjs';
 import { serverMessage } from './messages.mjs';
 
 export const DIALOG_ID_HEADER = 'x-formal-ai-dialog-id';
-const CONVERSATION_LOG_SUFFIX = '.conversation.jsonl';
+const CONVERSATION_LOG_SUFFIX = '.conversation.lino';
 const UNIT_SEPARATOR = '\u001f';
 
 let requestSequence = 1n;
@@ -138,7 +140,7 @@ function writeConversationRecord(directory, record) {
   if (record.messages.length === 0) return null;
   fs.mkdirSync(directory, { recursive: true });
   const file = path.join(directory, `${record.dialog_id}${CONVERSATION_LOG_SUFFIX}`);
-  fs.appendFileSync(file, `${toCompactJson(record)}\n`);
+  fs.appendFileSync(file, `${encodeDialogRecord(makeRedactor(process.env,{preserveJsonNumbers:true})(record))}\n`);
   return file;
 }
 
@@ -170,8 +172,8 @@ export function writeDialogExchange(directory, method, requestPath, headers, req
     })),
   };
   fs.mkdirSync(directory, { recursive: true });
-  const file = path.join(directory, `${id}.jsonl`);
-  fs.appendFileSync(file, `${toCompactJson(record)}\n`);
+  const file = path.join(directory, `${id}.lino`);
+  fs.appendFileSync(file, `${encodeDialogRecord(makeRedactor(process.env,{preserveJsonNumbers:true})(record))}\n`);
   return file;
 }
 
@@ -182,9 +184,15 @@ export function writeDialogExchange(directory, method, requestPath, headers, req
  * @param {boolean} authorized
  * @param {object} [env]
  */
-export function recordApiExchangeIfEnabled(request, response, authorized, env = process.env) {
+export function recordApiExchangeIfEnabled(request, response, authorized, env = process.env, logger = null) {
   try {
-    if (!authorized) return;
+    if (!authorized || logger?.level === 'silent') return;
+    {
+      const redact=makeRedactor(env,{preserveJsonNumbers:true});
+      const safe=redact({...request,headers:Object.fromEntries(request.headers??[]),body:redactedBody(String(request.body??''),env)});
+      request={...safe,headers:Object.entries(safe.headers)};
+      response=redact({...response,body:redactedBody(String(response.body??''),env)});
+    }
     const requestPath = String(request.path);
     if (requestPath.split('?')[0].includes('/conversations/')) return;
     const directory = configuredDialogLogDirectory(env);
@@ -199,8 +207,10 @@ export function recordApiExchangeIfEnabled(request, response, authorized, env = 
       response.contentType,
       String(response.body ?? ''),
     );
-    process.stderr.write(`${serverMessage('dialog_log_appended', { path: file })}\n`);
+    if(logger)logger.log('debug','dialog.appended',{component:'server',path:file});
+    else process.stderr.write(`${serverMessage('dialog_log_appended', { path: file })}\n`);
   } catch (error) {
-    process.stderr.write(`${serverMessage('dialog_log_failed', { error: error?.message || error })}\n`);
+    if(logger)logger.log('error','dialog.failed',{component:'server',error});
+    else process.stderr.write(`${serverMessage('dialog_log_failed', { error: error?.message || error })}\n`);
   }
 }

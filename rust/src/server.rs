@@ -136,7 +136,7 @@ fn record_exchange_best_effort(
         return;
     };
     if let Err(error) = store.record_chat_exchange_with_tools(&prompt, &answer, tools) {
-        eprintln!("[memory] failed to record live chat exchange: {error}");
+        crate::diagnostic!("error"; "[memory] failed to record live chat exchange: {error}");
     }
 }
 

@@ -4,6 +4,7 @@ import {readFileSync,writeFileSync,mkdirSync,existsSync,lstatSync} from 'node:fs
 import {execFileSync,spawnSync} from 'node:child_process';
 import {resolve,join,relative} from 'node:path';
 import {projectionRegistry,projectionInputs,verifyProjectionDirectory,digest,sessionSchema,validateProjectionSelector} from './lib/native-session-projections.mjs';
+import {failedNativeProcess,reportNativeProcessFailure} from './lib/native-process-diagnostics.mjs';
 const cwd=process.cwd(), output=resolve(process.argv[2]??'');
 const deadline=Date.now()+1200000;
 assert.equal(process.env.GITHUB_ACTIONS,'true','native session producer runs only in hosted CI');
@@ -35,6 +36,7 @@ function processReceipt(command,args,environment=process.env) {
 const build=processReceipt('cargo',['build','--manifest-path','rust/Cargo.toml','--locked','--release','--example','regenerate_agent_cli_sessions','--message-format=json']);
 writeFileSync(join(output,'build.stdout.bin'),build.result.stdout??Buffer.alloc(0));
 writeFileSync(join(output,'build.stderr.bin'),build.result.stderr??Buffer.alloc(0));
+if(failedNativeProcess(build.result)){writeFileSync(join(output,'build-failure-receipt.json'),JSON.stringify({stage:'build',authority:'not-granted',semanticPassCredit:false,...build.receipt},null,2)+'\n');reportNativeProcessFailure('build',build.result,{cargoJson:true});}
 assert.equal(build.receipt.error,null);assert.equal(build.receipt.signal,null);assert.equal(build.receipt.exitCode,0,'actual native producer compilation failed');
 const artifacts=build.result.stdout.toString('utf8').split(/\r?\n/u).filter(Boolean).map(line=>JSON.parse(line)).filter(row=>row.reason==='compiler-artifact' && row.target.name==='regenerate_agent_cli_sessions' && row.target.kind.includes('example') && row.executable);
 assert.equal(artifacts.length,1,'compiled native producer executable must be unique');
@@ -43,6 +45,7 @@ const executableSha256=digest(readFileSync(executable));
 const run=processReceipt(executable,[],{...process.env,FORMAL_AI_SESSION_PROJECTION_OUTPUT:generated});
 writeFileSync(join(output,'producer.stdout.bin'),run.result.stdout??Buffer.alloc(0));
 writeFileSync(join(output,'producer.stderr.bin'),run.result.stderr??Buffer.alloc(0));
+if(failedNativeProcess(run.result)){writeFileSync(join(output,'producer-failure-receipt.json'),JSON.stringify({stage:'producer',authority:'not-granted',semanticPassCredit:false,...run.receipt},null,2)+'\n');reportNativeProcessFailure('producer',run.result);}
 assert.equal(run.receipt.error,null);assert.equal(run.receipt.signal,null);assert.equal(run.receipt.exitCode,0,'actual compiled session producer failed');
 assert.deepEqual(nativeInputIdentity(cwd),nativeInputs,'native compilation inputs changed during generation');
 assert.deepEqual(trackedTestInputIdentity(cwd),witness,'physical source changed during generation');

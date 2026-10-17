@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_bundle.rs
   language rust
   fidelity signature
-  byte_len 2889
+  byte_len 2953
   line_count 76
-  content_id source_module_db9f81c94e8d7cfc
+  content_id source_module_4d4a3a87af1ad377
   symbol_count 1
   symbols
     function run_bundle 13 76

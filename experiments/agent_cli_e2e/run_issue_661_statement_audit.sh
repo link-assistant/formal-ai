@@ -5,6 +5,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
 BIN="${BIN:-$ROOT/rust/target/release/formal-ai}"
 AGENT="${AGENT:-agent}"
 PORT="${PORT:-8884}"
@@ -20,10 +21,14 @@ command -v "$AGENT" >/dev/null
   exit 2
 }
 mkdir -p "$OUT"
+server_log_evidence_setup "$OUT/formal-ai.log" '*' || exit 1
 
 work="$(mktemp -d)"
 cleanup() {
   kill "${server_pid:-}" 2>/dev/null || true
+  if [[ -n "${RAW_SERVER_LOG:-}" ]]; then
+    retain_server_log_evidence || true
+  fi
   rm -rf "$work"
 }
 trap cleanup EXIT
@@ -62,9 +67,11 @@ grep -q 'type "audit_finding"' "$work/$REPORT"
 grep -q 'disposition "issue_candidate"' "$work/$REPORT"
 grep -q 'relative_weight' "$work/$REPORT"
 grep -q 'associations' "$work/$REPORT"
-grep -Fq "$COMMAND" "$OUT/formal-ai.log"
+project_server_log --headers-only >/dev/null || exit 1
+grep -Fq "$COMMAND" "$SEMANTIC_LOG"
 
-rounds="$(grep -c 'POST /' "$OUT/formal-ai.log" || true)"
+rounds="$(project_server_log --headers-only)" || exit 1
+retain_server_log_evidence || exit 1
 [[ "$rounds" -ge 2 ]] || {
   echo "expected at least two Agent CLI turns, got $rounds" >&2
   exit 1

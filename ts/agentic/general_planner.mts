@@ -141,10 +141,22 @@ export function plannedNotExecutedAnswer(plan) {
  */
 export function objectiveText(request) {
   request = readRequestEnvelope(request)?.text ?? request;
-  const lead = firstRawPrefixLeadEnd(request, 'request_objective_lead');
-  if (!lead || !lineAnchored(request, lead[0])
-    || quotedSegmentSpans(request).some((segment) => lead[0] >= segment.start && lead[0] < segment.end)) return request;
-  return trim(request.slice(lead[1]));
+  // Caller instructions can mention an objective marker before the actual
+  // field. Search every line rather than allowing that prose mention to hide it.
+  const quoted = quotedSegmentSpans(request);
+  let offset = 0;
+  for (const line of request.split('\n')) {
+    const lead = firstRawPrefixLeadEnd(line, 'request_objective_lead');
+    if (lead !== null) {
+      const start = offset + lead[0];
+      if (lineAnchored(request, start)
+        && !quoted.some((segment) => start >= segment.start && start < segment.end)) {
+        return trim(request.slice(offset + lead[1]));
+      }
+    }
+    offset += line.length + 1;
+  }
+  return request;
 }
 
 /** Mirrors `fn literal_payload`: a closed literal immediately introduced by a seeded content lead. */

@@ -1,0 +1,46 @@
+self_ast_census
+  target src/structured_log.rs
+  language rust
+  fidelity signature
+  byte_len 19969
+  line_count 506
+  content_id source_module_2d413cc670e977d4
+  symbol_count 37
+  symbols
+    const WIRE_ENVELOPE 14 14
+    const DIALOG_TREE_TAG 16 16
+    const ORCHESTRATION_SESSION_PREFIX 18 18
+    static SILENT 20 20
+    static SERVE 21 21
+    static SEQUENCE 22 22
+    static WRITE_LOCK 23 23
+    function configure 25 28
+    function rank 29 38
+    function enabled 40 45
+    function secret_key 46 64
+    function redact 67 106
+    function walk 68 99
+    function word 107 120
+    function typed 121 165
+    function encode 167 169
+    function encode_dialog 171 179
+    function encode_with_numbers 180 203
+    function timestamp 204 227
+    function directory 228 234
+    function request_trace_message 237 256
+    static HEADER 238 238
+    function event 259 280
+    function control 284 287
+    function write_record 289 324
+    function sink_failure 326 331
+    macro diagnostic 334 341
+    function decode 345 347
+    function decode_dialog 348 350
+    function decode_control 353 359
+    function decode_with_numbers 360 370
+    function decode_with_policy 371 502
+    function invalid 376 378
+    function unword 379 397
+    function expect 398 404
+    function item 405 476
+    module tests 506 506

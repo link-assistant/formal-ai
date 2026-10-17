@@ -204,6 +204,17 @@ fn general_change_step(
     {
         return AgenticPlan::Final(report);
     }
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem {
+        let mut unresolved = plan.clone();
+        unresolved.goal =
+            repository_work_item_objective(plan, &progress).unwrap_or_else(|| plan.target.clone());
+        return record(
+            AgenticPlan::Final(unresolved.planned_not_executed_answer()),
+            FinalDisposition::Gap,
+            "work_item_execution_unavailable",
+            result,
+        );
+    }
     let event_unavailable = match plan_event_step(plan, &progress, tool_names, messages) {
         PlanEventOutcome::Pending(step) => return step,
         PlanEventOutcome::Observed => false,
@@ -445,11 +456,6 @@ fn plan_work_item_read(
     progress: &Progress,
 ) -> Option<AgenticPlan> {
     let fetch = tool_for(tool_names, Capability::Fetch);
-    if fetch.is_some_and(super::capability_router::is_hosted_research_tool) {
-        return fetch
-            .filter(|_| !progress.attempted_fetch_of(target))
-            .map(|tool| plan_one(tool, work_item_fetch_arguments(target)));
-    }
     if !progress.attempted_work_item_read_of(target)
         && let Some(run) = shell_command_tool(tool_names)
     {
@@ -593,12 +599,87 @@ fn work_item_read_failure_report(plan: &GeneralChangePlan, progress: &Progress) 
 
 /// The text of the issue this work item names, once the client has fetched it.
 fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
-    progress
-        .fetched_pages
-        .iter()
-        .find(|(url, _)| url == &plan.target)
-        .map(|(_, text)| text.clone())
-        .filter(|text| !text.trim().is_empty())
+    progress.fetched_pages.iter().rev().find_map(|(url, raw)| {
+        if url != &plan.target {
+            return None;
+        }
+        let text = if let Ok(mut data) = serde_json::from_str::<serde_json::Value>(raw.trim()) {
+            // Retain source data from a successful MCP structured result rather
+            // than treating its display placeholder as the fetched issue.
+            if data.get("structuredContent").is_some()
+                && data
+                    .get("content")
+                    .and_then(serde_json::Value::as_array)
+                    .is_some_and(|parts| {
+                        parts.iter().all(|part| {
+                            part.get("type").and_then(serde_json::Value::as_str) == Some("text")
+                                && part
+                                    .get("text")
+                                    .and_then(serde_json::Value::as_str)
+                                    .is_some()
+                        })
+                    })
+            {
+                tool_result::observed_payload(raw)?;
+                let structured = data.get("structuredContent")?;
+                let inner = structured.get("content").unwrap_or(structured);
+                let record = if let Some(text) = inner.as_str() {
+                    serde_json::from_str::<serde_json::Value>(text).ok()?
+                } else {
+                    inner.clone()
+                };
+                let body = record.get("body")?.as_str()?;
+                let title = record.get("title").and_then(serde_json::Value::as_str);
+                let conflicts = |other: &serde_json::Value| {
+                    other
+                        .get("body")
+                        .and_then(serde_json::Value::as_str)
+                        .is_some_and(|other_body| {
+                            other_body != body
+                                || other
+                                    .get("title")
+                                    .and_then(serde_json::Value::as_str)
+                                    .zip(title)
+                                    .is_some_and(|(candidate, expected)| candidate != expected)
+                        })
+                };
+                if [&data, structured].into_iter().any(conflicts) {
+                    return None;
+                }
+                for part in data.get("content")?.as_array()? {
+                    if let Ok(other) =
+                        serde_json::from_str::<serde_json::Value>(part.get("text")?.as_str()?)
+                        && conflicts(&other)
+                    {
+                        return None;
+                    }
+                }
+                data = record;
+            }
+            let body = data.get("body")?.as_str()?;
+            let title = data
+                .get("title")
+                .and_then(serde_json::Value::as_str)
+                .unwrap_or("");
+            [title, body]
+                .into_iter()
+                .filter(|part| !part.is_empty())
+                .collect::<Vec<_>>()
+                .join("\n\n")
+        } else {
+            let lower = raw.trim().to_ascii_lowercase();
+            if lower.starts_with("<!doctype html")
+                || lower.starts_with("<html")
+                || lower.contains("<body")
+                || lower.contains("<nav")
+                || lower.contains("<script")
+            {
+                return None;
+            }
+            raw.trim().to_owned()
+        };
+        (!text.trim().is_empty()).then_some(text)
+    })
 }
 
 // Exact declared data can describe failures without reporting an execution failure.

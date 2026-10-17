@@ -1,6 +1,9 @@
 //! Issue #864: Detected failures proactively ask to report on every agentic surface and language.
 //!
 //! Regression coverage for proactive issue-report invitations after detected failures.
+//! #1205/R1207-2 keeps those invitations on interactive solver answers; agentic
+//! tool turns retain diagnostics without asking an absent user. Historical test
+//! names remain stable for the source traceability checks.
 
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
@@ -69,8 +72,15 @@ fn detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses() {
 
     for (prompt, invitation) in cases {
         let answer = failed_tool_answer(prompt);
-        assert!(answer.contains(invitation), "prompt={prompt}: {answer}");
-        assert!(answer.contains(REPORT_COMMAND), "prompt={prompt}: {answer}");
+        assert!(
+            answer.contains("exit status 1"),
+            "prompt={prompt}: {answer}"
+        );
+        assert!(!answer.contains(invitation), "prompt={prompt}: {answer}");
+        assert!(
+            !answer.contains(REPORT_COMMAND),
+            "prompt={prompt}: {answer}"
+        );
     }
 }
 
@@ -79,10 +89,18 @@ fn plain_text_agent_cli_failures_use_the_same_proactive_invitation() {
     let answer = plain_text_failed_tool_answer("Run command");
     assert!(answer.contains("The command failed:"), "{answer}");
     assert!(
-        answer.contains("Would you like me to prepare an issue report"),
+        !answer.contains("Would you like me to prepare an issue report"),
         "{answer}"
     );
-    assert!(answer.contains(REPORT_COMMAND), "{answer}");
+    assert!(!answer.contains(REPORT_COMMAND), "{answer}");
+    assert!(
+        answer.contains("/bin/sh: 1: command: not found"),
+        "{answer}"
+    );
+    assert!(
+        !answer.to_ascii_lowercase().contains("exit code"),
+        "{answer}"
+    );
 }
 
 #[test]
@@ -168,7 +186,7 @@ fn expected_tool_refusals_do_not_claim_formal_ai_detected_a_failure() {
 
 #[test]
 fn explicit_unsuccessful_results_invite_reports_but_pending_results_do_not() {
-    for (result, should_invite) in [
+    for (result, should_fail) in [
         (r#"{"ok":false}"#, true),
         (r#"{"success":false}"#, true),
         (r#"{"ok":false,"status":"awaiting_approval"}"#, false),
@@ -181,9 +199,88 @@ fn explicit_unsuccessful_results_invite_reports_but_pending_results_do_not() {
             other => panic!("expected a final tool answer, got {other:?}"),
         };
         assert_eq!(
-            answer.contains(REPORT_COMMAND),
-            should_invite,
+            answer.starts_with("The command failed:"),
+            should_fail,
+            "result={result}: {answer}"
+        );
+        assert!(
+            !answer.contains(REPORT_COMMAND),
+            "result={result}: {answer}"
+        );
+        assert!(
+            !answer.contains("Would you like me to prepare an issue report"),
+            "result={result}: {answer}"
+        );
+        assert!(
+            !answer.to_ascii_lowercase().contains("exit code"),
             "result={result}: {answer}"
         );
     }
+}
+
+fn assert_locale_failure_reporting_boundary(
+    language: &'static str,
+    prompt: &str,
+    failure_header: &str,
+    invitation: &str,
+) {
+    // The unattended tool result must retain the observed failure and locale,
+    // while the interactive solver keeps the explicit opt-in reporting path.
+    let unattended = failed_tool_answer(prompt);
+    assert!(
+        unattended.starts_with(failure_header),
+        "{language}: {unattended}"
+    );
+    assert!(
+        unattended.contains("exit status 1"),
+        "{language}: {unattended}"
+    );
+    assert!(unattended.contains("code 1") || unattended.contains("código 1"));
+    assert!(!unattended.contains(invitation), "{language}: {unattended}");
+    assert!(
+        !unattended.contains(REPORT_COMMAND),
+        "{language}: {unattended}"
+    );
+    assert!(!unattended.contains('?'), "{language}: {unattended}");
+
+    let solver = UniversalSolver::new(SolverConfig {
+        forced_response_language: Some(language),
+        offline: true,
+        compute_budget: 0,
+        ..SolverConfig::default()
+    });
+    let interactive = solver.solve("Explain the issue-864 frobnicator ritual");
+    assert_eq!(interactive.intent, "unknown", "language={language}");
+    assert!(
+        interactive.answer.contains(invitation),
+        "{language}: {}",
+        interactive.answer
+    );
+    assert!(
+        interactive.answer.contains(REPORT_COMMAND),
+        "{language}: {}",
+        interactive.answer
+    );
+}
+
+#[test]
+fn english_failure_diagnostics_do_not_remove_interactive_reporting_consent() {
+    let language = "en";
+    assert_locale_failure_reporting_boundary(
+        language,
+        "Run false",
+        "The command failed:",
+        "I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+    );
+}
+
+#[test]
+fn spanish_failure_diagnostics_do_not_remove_interactive_reporting_consent() {
+    let language = "es";
+    assert_locale_failure_reporting_boundary(
+        language,
+        "Por favor, ejecuta false",
+        "El comando falló:",
+        "Detecté un fallo mientras trabajaba en esta solicitud. ¿Quieres que prepare un informe del problema con el contexto de diagnóstico? Responde `Report issue`.",
+    );
 }

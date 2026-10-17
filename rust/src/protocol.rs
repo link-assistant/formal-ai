@@ -528,31 +528,31 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
             && let Some(answer) = crate::agentic_coding::supplied_file_answer(&request.messages)
         {
             if trace {
-                eprintln!("[trace] agentic_outcome: answered from client-supplied file bytes");
+                crate::diagnostic!("debug"; "[trace] agentic_outcome: answered from client-supplied file bytes");
             }
             return AgenticOutcome::Planned(AgenticPlan::Final(answer));
         }
         if trace {
-            eprintln!("[trace] agentic_outcome: fallthrough (no tool execution requested)");
+            crate::diagnostic!("debug"; "[trace] agentic_outcome: fallthrough (no tool execution requested)");
         }
         return AgenticOutcome::Fallthrough;
     }
     if !agent_mode {
         if trace {
-            eprintln!("[trace] agentic_outcome: refused (agent_mode off)");
+            crate::diagnostic!("error"; "[trace] agentic_outcome: refused (agent_mode off)");
         }
         return AgenticOutcome::Refused(tool_call_refusal_answer());
     }
     let owned_names = request.requested_tool_names();
     if trace {
-        eprintln!(
+        crate::diagnostic!("debug";
             "[trace] agentic_outcome: {} advertised tools: {owned_names:?}",
             owned_names.len()
         );
     }
     if let Some(denial) = agentic_tool_permission_denial(&owned_names) {
         if trace {
-            eprintln!("[trace] agentic_outcome: refused by permission gate: {denial:?}");
+            crate::diagnostic!("error"; "[trace] agentic_outcome: refused by permission gate: {denial:?}");
         }
         return AgenticOutcome::Refused(tool_permission_refusal_answer(&denial));
     }
@@ -571,7 +571,7 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
             .iter()
             .filter(|name| !grounded.contains(name))
             .collect();
-        eprintln!("[trace] agentic_outcome: withheld ungroundable tools: {withheld:?}");
+        crate::diagnostic!("debug"; "[trace] agentic_outcome: withheld ungroundable tools: {withheld:?}");
     }
     let tool_names: Vec<&str> = grounded.iter().map(String::as_str).collect();
     // Issue #1154 R1: a shell tool whose schema names its command property
@@ -586,9 +586,11 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
     if trace {
         match &outcome {
-            AgenticOutcome::Planned(plan) => eprintln!("[trace] agentic_outcome: planned {plan:?}"),
+            AgenticOutcome::Planned(plan) => {
+                crate::diagnostic!("debug"; "[trace] agentic_outcome: planned {plan:?}");
+            }
             AgenticOutcome::Fallthrough => {
-                eprintln!("[trace] agentic_outcome: fallthrough (task unrecognised)");
+                crate::diagnostic!("debug"; "[trace] agentic_outcome: fallthrough (task unrecognised)");
             }
             AgenticOutcome::Refused(_) => {}
         }

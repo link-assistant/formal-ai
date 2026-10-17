@@ -42,22 +42,30 @@ pub(super) struct ResolvedPlan {
     pub(super) result: Option<FinalResult>,
 }
 
+/// Observe final metadata without granting delivery authority to public text.
+pub(super) fn observed_final_result(
+    plan: &AgenticPlan,
+    result: Option<FinalResult>,
+) -> Option<FinalResult> {
+    match plan {
+        AgenticPlan::ToolCalls(_) => None,
+        AgenticPlan::Final(text) => Some(
+            result
+                .filter(|result| result.text == *text)
+                .unwrap_or_else(|| FinalResult {
+                    text: text.clone(),
+                    disposition: FinalDisposition::Unknown,
+                    origin: String::new(),
+                    payload_role: FinalPayloadRole::Finding,
+                    artifact: None,
+                }),
+        ),
+    }
+}
+
 impl ResolvedPlan {
     pub(super) fn new(plan: AgenticPlan, result: Option<FinalResult>) -> Self {
-        let result = match &plan {
-            AgenticPlan::ToolCalls(_) => None,
-            AgenticPlan::Final(text) => Some(
-                result
-                    .filter(|result| result.text == *text)
-                    .unwrap_or_else(|| FinalResult {
-                        text: text.clone(),
-                        disposition: FinalDisposition::Unknown,
-                        origin: String::new(),
-                        payload_role: FinalPayloadRole::Finding,
-                        artifact: None,
-                    }),
-            ),
-        };
+        let result = observed_final_result(&plan, result);
         Self { plan, result }
     }
 

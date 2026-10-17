@@ -242,7 +242,7 @@ impl SyncStore {
                     Ok(()) => true,
                     Err(error) => {
                         if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
-                            eprintln!("[memory] could not initialize {}: {error}", path.display());
+                            crate::diagnostic!("error"; "[memory] could not initialize {}: {error}", path.display());
                         }
                         false
                     }
@@ -251,7 +251,7 @@ impl SyncStore {
             }
             Err(error) => {
                 if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
-                    eprintln!("[memory] could not read {}: {error}", path.display());
+                    crate::diagnostic!("error"; "[memory] could not read {}: {error}", path.display());
                 }
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, false)
             }
@@ -266,7 +266,7 @@ impl SyncStore {
             && let Err(error) = store.synchronize_link_cli_projection()
         {
             if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
-                eprintln!(
+                crate::diagnostic!("error";
                     "[memory] could not synchronize link-cli store for {}: {error}",
                     path.display()
                 );

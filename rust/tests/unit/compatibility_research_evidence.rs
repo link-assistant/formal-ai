@@ -425,7 +425,11 @@ fn a_failed_source_reports_its_diagnostic_without_retrying() {
 
     let answer = final_answer(&messages);
     assert!(answer.contains("HTTP 403 Forbidden"), "{answer}");
-    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("Report issue"), "{answer}");
+    assert!(
+        !answer.contains("Would you like me to prepare an issue report"),
+        "{answer}"
+    );
     assert!(!answer.contains("example.test/working"), "{answer}");
 }
 
@@ -454,7 +458,11 @@ fn a_plain_text_provider_denial_is_reported_without_retrying() {
 
     let answer = final_answer(&messages);
     assert!(answer.contains("can't perform that action"), "{answer}");
-    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("Report issue"), "{answer}");
+    assert!(
+        !answer.contains("Would you like me to prepare an issue report"),
+        "{answer}"
+    );
     assert!(!answer.contains("example.test/working"), "{answer}");
 }
 
@@ -479,7 +487,11 @@ fn research_reports_the_failure_when_every_fetch_attempt_fails() {
 
     let answer = final_answer(&messages);
     assert!(answer.contains("can't perform that action"), "{answer}");
-    assert!(answer.contains("Report issue"), "{answer}");
+    assert!(!answer.contains("Report issue"), "{answer}");
+    assert!(
+        !answer.contains("Would you like me to prepare an issue report"),
+        "{answer}"
+    );
     assert!(!answer.contains("returned no content"), "{answer}");
 }
 

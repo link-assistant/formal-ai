@@ -2,9 +2,9 @@ self_ast_census
   target src/cli_import.rs
   language rust
   fidelity signature
-  byte_len 4334
+  byte_len 4376
   line_count 117
-  content_id source_module_a03f4f2a6132bf13
+  content_id source_module_47ea3ae22669cfcd
   symbol_count 2
   symbols
     enum ImportAction 10 44

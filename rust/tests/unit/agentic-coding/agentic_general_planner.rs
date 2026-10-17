@@ -78,12 +78,14 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
     assert_eq!(calls.len(), 1);
     // A work item names an issue, and an issue URL names no artifact, so the
     // run reads the work item before deciding what it can execute (issue #904,
-    // follow-up). A protocol-hosted fetch tool runs the read server-side
-    // (issue #1133), so it comes first when the client has one; the structured
-    // `gh` read is the path for shell-only clients. The plan record is still
-    // written; it is no longer the first and only thing the run does.
-    assert_eq!(calls[0].tool, "web_fetch");
-    assert!(calls[0].arguments.contains("issues/698"), "{calls:?}");
+    // follow-up). The current #1206 policy prefers an advertised shell alias
+    // for the exact structured gh read, before hosted fetch/project lookup.
+    assert_eq!(calls[0].tool, "run_command");
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    assert_eq!(
+        arguments["command"],
+        "gh issue view 'https://github.com/link-assistant/formal-ai/issues/698' --json title --jq .title && echo && gh issue view 'https://github.com/link-assistant/formal-ai/issues/698' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+    );
 
     // A client with a shell but no fetch tool reads the work item through
     // `gh issue view` before anything is recorded (issue #1133).
@@ -133,20 +135,39 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
 
     let outcome = run_agentic_task(ISSUE_698_WORK_ITEM).expect("Agent CLI work-item replay");
     assert!(!outcome.hit_turn_cap);
-    // Two steps: the run reads the work item through its hosted fetch and
-    // records it. Issue #904 removed the `cat .formal-ai/general-change-plan.lino`
-    // step, which verified nothing but the write the same run had just
-    // performed, and that step has not come back; the hosted-fetch read also
-    // replaced the `gh` plan the driver's default-deny sandbox refused.
+    // The driver advertises a shell, but its sandbox refuses gh. The hosted
+    // fallback owns the unchanged issue body; unsupported prose closes with a
+    // canonical gap instead of writing an auxiliary plan journal.
     assert_eq!(
         outcome
             .steps
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["web_fetch", "read_file", "write_file", "read_file"]
+        ["run_command", "web_fetch"]
     );
-    assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
+    let fetched: serde_json::Value =
+        serde_json::from_str(&outcome.steps[1].arguments).expect("fetch arguments");
+    assert_eq!(
+        fetched["url"],
+        "https://github.com/link-assistant/formal-ai/issues/698"
+    );
+    let body = formal_ai::agentic_coding::corpus::web_fetch_result(
+        fetched["url"].as_str().expect("the fetched issue URL"),
+    )
+    .expect("the owned offline issue body");
+    assert_eq!(outcome.steps[1].result, body);
+    let mut expected =
+        compose_general_change_plan(ISSUE_698_WORK_ITEM).expect("the original work-item plan");
+    expected.goal = body.trim().to_owned();
+    assert_eq!(outcome.final_answer, expected.planned_not_executed_answer());
+    assert!(
+        outcome
+            .steps
+            .iter()
+            .all(|step| !step.arguments.contains(PLAN_PATH)),
+        "an unsupported work item must not write an auxiliary plan journal"
+    );
     assert!(outcome.final_answer.contains("Planned, not executed"));
     assert!(!outcome.final_answer.contains("project lookup"));
 }

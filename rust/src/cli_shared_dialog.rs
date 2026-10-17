@@ -71,7 +71,7 @@ pub fn run_shared_dialog(action: SharedDialogAction) -> Result<(), Box<dyn Error
                 print!("{text}");
             } else {
                 std::fs::write(&options.output, text)?;
-                eprintln!("Wrote demo_memory to {}.", options.output.display());
+                formal_ai::diagnostic!("debug"; "Wrote demo_memory to {}.", options.output.display());
             }
         }
     }

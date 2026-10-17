@@ -50,7 +50,11 @@ fn full_exchanges_from_one_dialog_append_to_one_file() {
     let rows = fs::read_to_string(&first).expect("dialog log file");
     assert_eq!(rows.lines().count(), 2);
     for row in rows.lines() {
-        let record: DialogExchangeLog = serde_json::from_str(row).expect("valid dialog JSONL row");
+        let record: DialogExchangeLog = serde_json::from_value(
+            formal_ai::dialog_log::structured_log::decode_dialog(row)
+                .expect("valid typed Links Notation row"),
+        )
+        .expect("lossless dialog exchange");
         assert_eq!(record.exchange.request_body.as_deref(), Some(request));
         assert_eq!(record.exchange.response_body.as_deref(), Some(response));
     }

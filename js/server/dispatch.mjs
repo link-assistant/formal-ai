@@ -109,7 +109,7 @@ export async function dispatch(ctx, request) {
   // (`DialogScope::begin` in `handle_api_request_with_auth`).
   return withDialogScope(request.headers, async () => {
     const response = await dispatchRoute(ctx, request);
-    recordApiExchangeIfEnabled(request, response, authorized, ctx.env || process.env);
+    recordApiExchangeIfEnabled(request, response, authorized, ctx.env || process.env, ctx.logger);
     return response;
   });
 }

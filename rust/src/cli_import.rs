@@ -72,7 +72,7 @@ pub fn run_import(action: ImportAction) -> Result<(), Box<dyn Error>> {
             );
 
             for rejection in &report.rejected {
-                eprintln!(
+                formal_ai::diagnostic!("debug";
                     "import_rejected {} {} — {}",
                     rejection.slug, rejection.qid, rejection.reason
                 );
@@ -103,7 +103,7 @@ pub fn run_import(action: ImportAction) -> Result<(), Box<dyn Error>> {
                 lexeme_import::write_shards(&out, &report.shards)?;
             }
 
-            eprintln!(
+            formal_ai::diagnostic!("debug";
                 "imported {} concept(s) / {} surface(s) into {} shard(s); coverage {}‰; rejected {}",
                 report.accepted.len(),
                 report.coverage.emitted_surfaces,

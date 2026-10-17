@@ -763,7 +763,7 @@ fn command_environment() -> [(&'static str, PathBuf); 1] {
 /// debugger to still identifies itself.
 fn trace_command(program_path: &Path, budget: Duration, elapsed: Duration, timed_out: bool) {
     if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_COMMANDS") {
-        eprintln!(
+        crate::diagnostic!("debug";
             "[agent-command] {} ran {} ms of a {} ms budget (timed_out={timed_out})",
             program_path.display(),
             elapsed.as_millis(),

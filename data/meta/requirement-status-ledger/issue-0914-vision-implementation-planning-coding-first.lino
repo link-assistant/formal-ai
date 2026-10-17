@@ -2,46 +2,37 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-0914-vision-implementation-planning-coding-first.md"
   issue "0914"
+  verdict "implemented"
   delivered "pre-2026-07 (undated); issue #914"
   automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
   manual "not yet confirmed"
   requirement
     id "R914-1"
-    verdict "implemented"
   requirement
     id "R914-10"
-    verdict "implemented"
     delivered "delivered 2026-08-14; PR #1003 (issue #920)"
     automated_test "rust/tests/unit/issue_920_question_necessity.rs"
   requirement
     id "R914-11"
-    verdict "implemented"
     delivered "delivered 2026-08-18; PR #1004 (issue #921)"
     automated_test "rust/tests/unit/hive_mind_full_circle.rs"
   requirement
     id "R914-12"
-    verdict "implemented"
     automated_test "rust/tests/web/issue-0914-vision-plan.test.mjs"
   requirement
     id "R914-13"
-    verdict "implemented"
     automated_test "rust/tests/web/issue-0914-vision-plan.test.mjs"
   requirement
     id "R914-14"
-    verdict "implemented"
     automated_test "rust/tests/web/issue-0914-vision-plan.test.mjs"
   requirement
     id "R914-15"
-    verdict "implemented"
   requirement
     id "R914-2"
-    verdict "implemented"
   requirement
     id "R914-3"
-    verdict "implemented"
   requirement
     id "R914-4"
-    verdict "implemented"
     automated_test "rust/tests/web/issue-0914-vision-plan.test.mjs"
   requirement
     id "R914-5"
@@ -54,15 +45,12 @@ requirement_status_ledger_shard
     automated_test "rust/tests/web/issue-0918-handler-rules-batch.test.mjs"
   requirement
     id "R914-7"
-    verdict "implemented"
     automated_test "rust/tests/web/issue-0914-vision-plan.test.mjs"
   requirement
     id "R914-8"
-    verdict "implemented"
     delivered "delivered 2026-09-15; PR #888 (issue #710)"
     automated_test "rust/tests/unit/researched_coding_procedures.rs"
   requirement
     id "R914-9"
-    verdict "implemented"
     delivered "delivered 2026-09-15; PR #888 (issue #710)"
     automated_test "rust/tests/unit/coding_ladder_rungs.rs"

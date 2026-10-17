@@ -86,7 +86,7 @@ pub fn run_proxy(config: &ProxyConfig) -> io::Result<()> {
         .open(&config.log_path)?;
     let logger = Arc::new(Mutex::new(log_file));
     let listener = TcpListener::bind(&config.listen)?;
-    eprintln!(
+    crate::diagnostic!("debug";
         "formal-ai proxy listening on http://{} -> http://{}, logging to {}",
         config.listen,
         upstream.display_target(),
@@ -103,11 +103,11 @@ pub fn run_proxy(config: &ProxyConfig) -> io::Result<()> {
                     if let Err(error) =
                         handle_proxy_connection(stream, &upstream, &logger, log_bodies)
                     {
-                        eprintln!("proxy request failed: {error}");
+                        crate::diagnostic!("error"; "proxy request failed: {error}");
                     }
                 });
             }
-            Err(error) => eprintln!("proxy connection failed: {error}"),
+            Err(error) => crate::diagnostic!("error"; "proxy connection failed: {error}"),
         }
     }
 

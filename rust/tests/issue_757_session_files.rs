@@ -1,4 +1,7 @@
 use std::os::unix::fs::PermissionsExt as _;
+#[path = "support/structured_stderr.rs"]
+mod structured_stderr;
+
 use std::os::unix::fs::symlink;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -92,7 +95,7 @@ fn prints_persistent_session_file_after_one_shot_and_interactive_runs() {
             .output()
             .expect("run wrapper with fake transcript");
         assert!(output.status.success());
-        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stderr = structured_stderr::messages(&output.stderr);
         assert!(
             stderr.contains("formal-ai: session files for debugging:"),
             "stderr:\n{stderr}"
@@ -166,7 +169,7 @@ fn reports_every_requested_tool_session_and_proxy_log() {
             .output()
             .expect("run wrapper with fake tool transcript");
         assert!(output.status.success(), "{tool} failed");
-        let stderr = String::from_utf8_lossy(&output.stderr);
+        let stderr = structured_stderr::messages(&output.stderr);
         assert!(stderr.contains(&format!("  {tool}: ")), "stderr:\n{stderr}");
         assert!(stderr.contains(expected_file), "stderr:\n{stderr}");
         assert!(stderr.contains(&format!("  server log: {}", canonical_proxy_log.display())));

@@ -296,3 +296,107 @@ fn export_collects_responses_gemini_and_direct_assistant_envelopes() {
 
     fs::remove_dir_all(directory).expect("remove fixture directory");
 }
+
+fn write_typed_exchanges(directory: &std::path::Path, exchanges: &[DialogExchangeLog]) {
+    fs::create_dir_all(directory).expect("create typed fixture directory");
+    let mut contents = String::new();
+    for record in exchanges {
+        let value = serde_json::to_value(record).expect("serialize typed exchange");
+        contents.push_str(
+            &formal_ai::dialog_log::structured_log::encode_dialog(&value)
+                .expect("encode typed exchange"),
+        );
+        contents.push('\n');
+    }
+    fs::write(directory.join(format!("{DIALOG_ID}.lino")), contents)
+        .expect("write typed dialog fixture");
+}
+
+#[test]
+fn typed_exchange_keeps_learning_trace_review_gated() {
+    let directory = temporary_directory();
+    let prompt = "List the files but sort the results in reverse order";
+    let trace = json!({
+        "prompt": prompt,
+        "events": [
+            {"kind": "selected_rule", "payload": "initial unknown reason no_seed_route next try_rule_synthesis"},
+            {"kind": "rule_synthesis_candidate", "payload": "rule_synthesis_candidate\n  id reverse_sort_list_files\n  source constructed_from_operation_vocabulary\n  base_task list_files\n  modifier reverse_sort\n  resolved_task list_files_reverse_sort"},
+            {"kind": "rule_verification", "payload": "rule_verification\n  candidate reverse_sort_list_files\n  fixture list_files_output_order\n  status passed"}
+        ]
+    });
+    let mut response = chat_response(&json!({"role": "assistant", "content": "Candidate"}));
+    response["learning_trace"] = trace;
+    write_typed_exchanges(
+        &directory,
+        &[exchange(
+            40,
+            "typed-learning",
+            &json!({"messages": [{"role": "user", "content": prompt}]}),
+            &response,
+        )],
+    );
+    assert!(!directory.join(format!("{DIALOG_ID}.jsonl")).exists());
+    let context = load_conversation_context_from(&directory, DIALOG_ID)
+        .expect("load typed exchange without legacy capture");
+    assert_eq!(context["metadata"]["exchange_count"], 1);
+    assert_eq!(context["server_logs"][0]["request_id"], "typed-learning");
+    assert_eq!(context["messages"][0]["content"], prompt);
+    let learned = formal_ai::learn_from_reported_conversation(&context)
+        .expect("typed response preserves learning trace");
+    assert_eq!(learned.trace.prompt, prompt);
+    assert_eq!(learned.learning.proposals.len(), 1);
+    assert!(learned.awaiting_human_review);
+    assert!(learned.promoted_ledger.is_none(), "capture is not approval");
+    fs::remove_dir_all(directory).expect("remove typed fixture");
+}
+
+#[test]
+fn mixed_exchange_formats_preserve_legacy_then_typed_order() {
+    let directory = temporary_directory();
+    let request = json!({"messages": [{"role": "user", "content": "Question"}]});
+    let response = chat_response(&json!({"role": "assistant", "content": "Answer"}));
+    write_exchanges(
+        &directory,
+        &[exchange(40, "legacy-first", &request, &response)],
+    );
+    write_typed_exchanges(
+        &directory,
+        &[exchange(41, "typed-second", &request, &response)],
+    );
+    let context =
+        load_conversation_context_from(&directory, DIALOG_ID).expect("merge both exchange formats");
+    assert_eq!(context["metadata"]["exchange_count"], 2);
+    assert_eq!(context["server_logs"][0]["request_id"], "legacy-first");
+    assert_eq!(context["server_logs"][1]["request_id"], "typed-second");
+    assert_eq!(context["metadata"]["first_timestamp_unix_ms"], 40);
+    assert_eq!(context["metadata"]["last_timestamp_unix_ms"], 41);
+    fs::remove_dir_all(directory).expect("remove mixed fixture");
+}
+
+#[test]
+fn malformed_typed_exchange_never_falls_back_to_valid_legacy_capture() {
+    let directory = temporary_directory();
+    let request = json!({"messages": [{"role": "user", "content": "Question"}]});
+    let response = chat_response(&json!({"role": "assistant", "content": "Answer"}));
+    let record = exchange(42, "complete-exchange", &request, &response);
+    write_exchanges(&directory, std::slice::from_ref(&record));
+    let complete = formal_ai::dialog_log::structured_log::encode_dialog(
+        &serde_json::to_value(record).expect("serialize complete record"),
+    )
+    .expect("encode complete record");
+    let invalid_shape =
+        formal_ai::dialog_log::structured_log::encode_dialog(&json!({"dialog_id": DIALOG_ID}))
+            .expect("encode incomplete exchange shape");
+    for invalid in [
+        String::from("(\n"),
+        complete.trim_end_matches('\n').to_owned(),
+        format!("{complete}\r\n"),
+        String::from("\n"),
+        invalid_shape + "\n",
+    ] {
+        fs::write(directory.join(format!("{DIALOG_ID}.lino")), invalid)
+            .expect("write invalid typed capture");
+        assert!(load_conversation_context_from(&directory, DIALOG_ID).is_err());
+    }
+    fs::remove_dir_all(directory).expect("remove malformed fixture");
+}

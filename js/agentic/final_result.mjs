@@ -1,6 +1,13 @@
 // Internal final-result provenance and public projection.
 import { FinalPayloadRole, payloadCanDeliver } from './final_payload.mjs';
 export { FinalPayloadRole };
+const observedResults = new WeakMap();
+// Diagnostics can observe origin without granting delivery authority to a projection.
+export function observedFinalResult(plan) {
+ if(plan?.result)return finalResult(plan);
+ const observed=observedResults.get(plan);
+ return observed?.text===plan?.answer?observed:finalResult(plan);
+}
 
 export const FinalDisposition = Object.freeze({
   Finding: 'finding', Artifact: 'artifact', Clarification: 'clarification',
@@ -27,5 +34,8 @@ export function canDeliverFinal(plan, requiredRole = FinalPayloadRole.Finding) {
 
 /** Mirrors `ResolvedPlan::into_plan` in rust/src/agentic_coding/final_result.rs; native also records the result sink. */
 export function projectPlan(plan) {
-  return plan?.kind === 'final' ? { kind: 'final', answer: plan.answer } : plan;
+  if (plan?.kind !== 'final') return plan;
+  const projected={kind:'final',answer:plan.answer};
+  observedResults.set(projected,finalResult(plan));
+  return projected;
 }

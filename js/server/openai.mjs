@@ -9,7 +9,7 @@ import {
   parseChatRequest,
   plainText,
 } from './chat-request.mjs';
-import { agenticOutcome, chatCompletionFromPlan, commandReroutePlan } from './agentic.mjs';
+import { logUnclassifiedTerminal, agenticOutcome, chatCompletionFromPlan, commandReroutePlan } from './agentic.mjs';
 import { sortedKeys, toCompactJson } from './json.mjs';
 import { jsonResponse, messageError, sseResponse } from './response.mjs';
 import { learningTraceFromSymbolicAnswer } from './self-improvement.mjs';
@@ -85,13 +85,14 @@ export function chatCompletionFromSymbolic(request, prompt, symbolic) {
 export async function createChatCompletion(ctx, request) {
   const { prompt, history } = chatPromptAndHistory(request.messages);
   const remembered = await answerFromMemory(ctx, prompt, history);
-  if (remembered) return chatCompletionFromSymbolic(request, prompt, remembered);
+  if (remembered) {logUnclassifiedTerminal(ctx,'retained_answer');return chatCompletionFromSymbolic(request, prompt, remembered);}
   const outcome = await agenticOutcome(ctx, request, toolCallRefusalAnswer);
   if (outcome.kind === 'refused') return chatCompletionFromSymbolic(request, prompt, outcome.answer);
   if (outcome.kind === 'planned') return chatCompletionFromPlan(ctx, request, prompt, outcome.plan, responseTimestamp());
   const symbolic = await solveWithMemory(ctx, prompt, history);
   const reroute = await commandReroutePlan(ctx, request, symbolic);
   if (reroute) return chatCompletionFromPlan(ctx, request, prompt, reroute, responseTimestamp());
+  logUnclassifiedTerminal(ctx,'symbolic_answer');
   return chatCompletionFromSymbolic(request, prompt, symbolic);
 }
 

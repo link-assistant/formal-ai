@@ -24,12 +24,17 @@ fn solve_issue_request_reads_the_work_item_before_project_lookup() {
         panic!("a software-authoring request naming an issue must produce a tool call");
     };
 
-    // A protocol-hosted fetch tool runs the work-item read server-side (issue
-    // #904 via #1133), so it comes first when the client has one; the
-    // structured `gh` read is the path for shell-only clients. What matters
-    // for #1069 is that the work item is read before anything looks the
-    // project up.
-    assert_eq!(calls[0].tool, "web_fetch");
+    // Read the issue through the preferred shell tool before project lookup.
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "run_command");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("structured shell arguments");
+    assert_eq!(
+        arguments["command"],
+        format!(
+            "gh issue view '{ISSUE_URL}' --json title --jq .title && echo && gh issue view '{ISSUE_URL}' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+        )
+    );
     assert!(
         calls[0].arguments.contains(ISSUE_URL),
         "{}",
@@ -55,74 +60,74 @@ fn solve_issue_request_reads_the_work_item_before_project_lookup() {
 fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     let task = format!("Solve {ISSUE_URL} in this checkout as one whole task.");
     let tools = ["web_fetch", "write_file", "run_shell_command"];
-    let mut workspace = observed_tool_workspace::ToolWorkspace::new(&task);
-    let mut messages = vec![ChatMessage::user(task)];
+    let workspace = observed_tool_workspace::ToolWorkspace::new(&task);
+    let mut messages = vec![ChatMessage::user(task.clone())];
+    let body = "Produce a legitimate release with no fabricated evidence.\n\
+         Adding a bypass flag to check-self-development-release.rs is not acceptable.";
 
     let Some(AgenticPlan::ToolCalls(fetches)) = plan_chat_step(&messages, &tools) else {
         panic!("the issue must be fetched before its body is planned");
     };
+    assert_eq!(fetches.len(), 1);
     let fetch = &fetches[0];
+    assert_eq!(fetch.tool, "run_shell_command");
+    let arguments: serde_json::Value = serde_json::from_str(&fetch.arguments).unwrap();
+    assert_eq!(
+        arguments["command"],
+        format!(
+            "gh issue view '{ISSUE_URL}' --json title --jq .title && echo && gh issue view '{ISSUE_URL}' --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+        )
+    );
     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
         "fetch-issue",
         &fetch.tool,
         fetch.arguments.clone(),
     )]));
-    messages.push(ChatMessage::tool_result(
-        "fetch-issue",
-        &fetch.tool,
-        "Produce a legitimate release with no fabricated evidence.\n\
-         Adding a bypass flag to check-self-development-release.rs is not acceptable.",
-    ));
-
-    let Some(AgenticPlan::ToolCalls(records)) = plan_chat_step(&messages, &tools) else {
-        panic!("the fetched work item must first record its plan");
+    // Prose alone cannot prove that a shell read succeeded. Retry through Fetch.
+    messages.push(ChatMessage::tool_result("fetch-issue", &fetch.tool, body));
+    let Some(AgenticPlan::ToolCalls(retries)) = plan_chat_step(&messages, &tools) else {
+        panic!("an unverified shell receipt must retry the issue read");
     };
-    let record = &records[0];
-    assert!(
-        record
-            .arguments
-            .contains(".formal-ai/general-change-plan.lino"),
-        "the first write must remain the auxiliary plan record: {}",
-        record.arguments,
-    );
-    let mut pending = records;
-    let mut final_answer = None;
-    for turn in 0..4 {
-        for (index, call) in pending.iter().enumerate() {
-            let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
-            let command = arguments["command"].as_str().expect("auxiliary command");
-            assert_eq!(call.tool, "run_shell_command");
-            assert!(
-                command.starts_with("mkdir -p -- .formal-ai && (lock=")
-                    || command == "cat .formal-ai/general-change-plan.lino"
-            );
-            assert!(command.contains(".formal-ai/general-change-plan.lino"));
-            let id = format!("actual-plan-{turn}-{index}");
-            messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-                &id,
-                &call.tool,
-                call.arguments.clone(),
-            )]));
-            messages.push(workspace.execute(&id, call));
-        }
-        match plan_chat_step(&messages, &tools) {
-            Some(AgenticPlan::ToolCalls(calls)) => pending = calls,
-            Some(AgenticPlan::Final(answer)) => {
-                final_answer = Some(answer);
-                break;
-            }
-            None => panic!("the actual auxiliary observation must retain a bounded outcome"),
-        }
-    }
-    assert!(
-        final_answer.is_some_and(|answer| answer.contains("Planned, not executed")),
-        "a content marker and filename in different statements must not form a literal write",
-    );
+    assert_eq!(retries.len(), 1);
+    assert_eq!(retries[0].tool, "web_fetch");
+    let retry: serde_json::Value = serde_json::from_str(&retries[0].arguments).unwrap();
+    assert_eq!(retry["url"], ISSUE_URL);
+
+    // The fallback's successful Fetch receipt owns the unchanged source prose.
+    let retry_fetch = &retries[0];
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "fetch-retry",
+        &retry_fetch.tool,
+        retry_fetch.arguments.clone(),
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "fetch-retry",
+        &retry_fetch.tool,
+        body,
+    ));
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("unsupported prose must settle without auxiliary writes or source effects");
+    };
+    let mut expected =
+        formal_ai::agentic_coding::general_planner::compose_general_change_plan(&task)
+            .expect("original work-item plan");
+    expected.goal = body.to_owned();
+    assert_eq!(answer, expected.planned_not_executed_answer());
+    assert!(answer.contains("Planned, not executed"));
+    assert!(answer.contains(ISSUE_URL));
+    let goal_literal = answer
+        .lines()
+        .find_map(|line| line.strip_prefix("  goal "))
+        .expect("the canonical plan contains its original goal");
+    let decoded_goal: String =
+        serde_json::from_str(goal_literal).expect("the goal literal is a quoted string");
+    assert_eq!(decoded_goal, body);
+    assert!(!answer.contains("Recorded and verified"));
+    assert!(!answer.contains("Created and verified"));
     assert!(
         workspace
             .read(".formal-ai/general-change-plan.lino")
-            .unwrap()
-            .contains(ISSUE_URL)
+            .is_err()
     );
     assert!(workspace.read("check-self-development-release.rs").is_err());
 }

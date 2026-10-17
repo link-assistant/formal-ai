@@ -1,5 +1,7 @@
 # formal-ai
 
+**Don't know everything, know just enough to get to know anything**
+
 [![CI/CD Pipeline](https://github.com/link-assistant/formal-ai/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/release.yml)
 [![Desktop Release](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml/badge.svg?branch=main)](https://github.com/link-assistant/formal-ai/actions/workflows/desktop-release.yml)
 [![Crates.io](https://img.shields.io/crates/v/formal-ai?label=crates.io&style=flat)](https://crates.io/crates/formal-ai)

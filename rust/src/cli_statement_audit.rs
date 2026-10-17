@@ -45,20 +45,23 @@ pub fn run_statement_audit(args: &StatementAuditArgs) -> Result<(), Box<dyn Erro
     } else {
         fs::write(&args.output, rendered)?;
     }
-    eprintln!(
-        "{}",
-        serde_json::to_string(&json!({
-            "statement_audit": {
-                "root": args.root,
-                "output": args.output,
-                "statements": audit.statements.len(),
-                "contradictions": audit.contradictions.len(),
-                "findings": audit.findings.len(),
-                "evidence_captures": evidence.len(),
-                "skipped_paths": audit.skipped_paths.len(),
-                "temperature": args.temperature,
-            }
-        }))?
+    let diagnostic = serde_json::to_string(&json!({
+        "statement_audit": {
+            "root": args.root,
+            "output": args.output,
+            "statements": audit.statements.len(),
+            "contradictions": audit.contradictions.len(),
+            "findings": audit.findings.len(),
+            "evidence_captures": evidence.len(),
+            "skipped_paths": audit.skipped_paths.len(),
+            "temperature": args.temperature,
+        }
+    }))?;
+    formal_ai::dialog_log::structured_log::control(
+        "statement_audit",
+        module_path!(),
+        &diagnostic,
+        &json!({}),
     );
     Ok(())
 }
