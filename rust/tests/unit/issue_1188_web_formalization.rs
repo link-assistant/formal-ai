@@ -52,16 +52,45 @@ fn tokens_keep_apostrophes_and_numbers_whole_and_set_han_runs_apart() {
 
 #[test]
 fn an_anaphor_and_a_clause_continuation_keep_the_subject_and_a_negation_cue_denies() {
+    let english = identities(
+        "The Moon orbits Earth. It does not emit light, and it has 1.2 billion craters.",
+        "en",
+    );
+    let (legacy_quantity, typed_quantity) = english[2]
+        .rsplit_once('|')
+        .expect("quantity identity retains typed dialogue evidence");
+    // Keep every legacy identity assertion, then check all typed evidence.
     assert_eq!(
-        identities(
-            "The Moon orbits Earth. It does not emit light, and it has 1.2 billion craters.",
-            "en"
-        ),
+        vec![english[0].as_str(), english[1].as_str(), legacy_quantity],
         vec![
             "asserted|moon|name:earth unknown:orbit",
             "denied|moon|file_whole_write_action unknown:light",
             "asserted|moon|number:1.2 unknown:billion unknown:crater",
         ]
+    );
+    assert_eq!(
+        serde_json::from_str::<serde_json::Value>(typed_quantity)
+            .expect("typed dialogue identity is valid JSON"),
+        serde_json::json!([
+            ["schema", "dialogue-meaning/v1"],
+            ["question", null],
+            [
+                "answer",
+                [["kind", "quantity"], ["polarity", null], ["locations", []]]
+            ],
+            [
+                "quantities",
+                [[
+                    ["value", "1.2"],
+                    ["comparison", "equal"],
+                    ["currency", null],
+                    ["unit", null],
+                    ["period", null],
+                    ["net", false],
+                    ["uncertainty", null]
+                ]]
+            ]
+        ]),
     );
     assert_eq!(
         identities("Луна вращается вокруг Земли. Она не светится.", "ru"),

@@ -142,11 +142,12 @@ function curlGet(url) {
   }
 }
 
-const tryOr = (action) => {
+const readCacheOrMissing = (action) => {
   try {
     return action();
-  } catch {
-    return null;
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
   }
 };
 
@@ -161,8 +162,8 @@ function nodeSourceFetch() {
     cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || runtimeCachePaths().runtimeRoot,
     online: flagEnabled(process.env.FORMAL_AI_LIVE_FETCH),
     io: {
-      readText: (file) => tryOr(() => readFileSync(file, 'utf8')),
-      readBytes: (file) => tryOr(() => new Uint8Array(readFileSync(file))),
+      readText: (file) => readCacheOrMissing(() => readFileSync(file, 'utf8')),
+      readBytes: (file) => readCacheOrMissing(() => new Uint8Array(readFileSync(file))),
       writeBytes: (file, bytes) => writeFileSync(file, bytes),
       createDirAll: (directory) => mkdirSync(directory, { recursive: true }),
       get: curlGet,

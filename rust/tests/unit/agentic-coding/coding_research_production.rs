@@ -121,36 +121,81 @@ fn drive(row: &Value, files: &mut BTreeMap<String, String>, receipt: &str) -> Ob
     panic!("production research route exceeded its finite test budget")
 }
 
+const HELD_OUT_PRODUCTION_CASES: [(usize, &str); 3] = [
+    (0, "novel-js-identity"),
+    (1, "novel-ts-literal"),
+    (2, "unseen-zero-arg-greeting"),
+];
+
+fn assert_cold_research_and_reuse(case: (usize, &str)) {
+    let fixtures = rows();
+    assert_eq!(
+        fixtures.len(),
+        HELD_OUT_PRODUCTION_CASES.len(),
+        "complete held-out schedule"
+    );
+    let mut indices = std::collections::BTreeSet::new();
+    for (position, (index, name)) in HELD_OUT_PRODUCTION_CASES.iter().enumerate() {
+        assert_eq!(*index, position, "ordered fixture index coverage");
+        assert!(indices.insert(*index), "unique fixture index coverage");
+        assert_eq!(
+            fixtures[*index]["name"].as_str(),
+            Some(*name),
+            "stable fixture name"
+        );
+    }
+    assert_eq!(
+        indices.len(),
+        fixtures.len(),
+        "every fixture scheduled once"
+    );
+    assert_eq!(
+        HELD_OUT_PRODUCTION_CASES[case.0], case,
+        "registered fixture identity"
+    );
+    let row = fixtures[case.0].clone();
+    let mut files = BTreeMap::from([(
+        "acceptance.test.mjs".to_owned(),
+        row["acceptance"].as_str().unwrap().to_owned(),
+    )]);
+    let receipt = json!({"exit_code":0,"complete":true,"output":TAP}).to_string();
+    let first = drive(&row, &mut files, &receipt);
+    assert!(first.calls.iter().any(|tool| tool == "web_search"));
+    assert!(first.calls.iter().any(|tool| tool == "web_fetch"));
+    assert_eq!(
+        first
+            .calls
+            .iter()
+            .filter(|tool| *tool == "write_file")
+            .count(),
+        1
+    );
+    assert!(first.calls.iter().any(|tool| tool == "bash"));
+    assert_eq!(
+        files.get(row["module"].as_str().unwrap()).unwrap(),
+        row["expected"].as_str().unwrap()
+    );
+    assert!(!first.final_answer.contains("VerificationReceiptIncomplete"));
+    let reuse = drive(&row, &mut files, &receipt);
+    assert!(!reuse.calls.iter().any(|tool| tool == "write_file"));
+    assert!(reuse.calls.iter().any(|tool| tool == "bash"));
+    assert!(!reuse.final_answer.contains("VerificationReceiptIncomplete"));
+}
+
 #[test]
 fn canonical_native_production_route_handles_cold_held_out_sources_and_reuses_without_writes() {
-    for row in rows() {
-        let mut files = BTreeMap::from([(
-            "acceptance.test.mjs".to_owned(),
-            row["acceptance"].as_str().unwrap().to_owned(),
-        )]);
-        let receipt = json!({"exit_code":0,"complete":true,"output":TAP}).to_string();
-        let first = drive(&row, &mut files, &receipt);
-        assert!(first.calls.iter().any(|tool| tool == "web_search"));
-        assert!(first.calls.iter().any(|tool| tool == "web_fetch"));
-        assert_eq!(
-            first
-                .calls
-                .iter()
-                .filter(|tool| *tool == "write_file")
-                .count(),
-            1
-        );
-        assert!(first.calls.iter().any(|tool| tool == "bash"));
-        assert_eq!(
-            files.get(row["module"].as_str().unwrap()).unwrap(),
-            row["expected"].as_str().unwrap()
-        );
-        assert!(!first.final_answer.contains("VerificationReceiptIncomplete"));
-        let reuse = drive(&row, &mut files, &receipt);
-        assert!(!reuse.calls.iter().any(|tool| tool == "write_file"));
-        assert!(reuse.calls.iter().any(|tool| tool == "bash"));
-        assert!(!reuse.final_answer.contains("VerificationReceiptIncomplete"));
-    }
+    assert_cold_research_and_reuse(HELD_OUT_PRODUCTION_CASES[0]);
+}
+
+#[test]
+fn canonical_native_production_route_handles_cold_held_out_typescript_and_reuses_without_writes() {
+    assert_cold_research_and_reuse(HELD_OUT_PRODUCTION_CASES[1]);
+}
+
+#[test]
+fn canonical_native_production_route_handles_cold_held_out_zero_argument_and_reuses_without_writes()
+{
+    assert_cold_research_and_reuse(HELD_OUT_PRODUCTION_CASES[2]);
 }
 
 #[test]

@@ -1,3 +1,4 @@
+import { nonNullObject as isObject } from '../logging/object-values.js';
 // Per-dialog HTTP exchange logs (rust/src/dialog_log.rs
 // `record_api_exchange_if_enabled`, `write_dialog_exchange`, `dialog_id`,
 // `conversation_epoch`, `explicit_dialog_id`, `first_user_prompt`, and
@@ -33,7 +34,7 @@ let requestSequence = 1n;
 let arrivals = 0n;
 const epochs = new Map();
 
-const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+
 
 /** `explicit_dialog_id`: the caller's session id, when it is a safe path component. */
 export function explicitDialogId(headers) {

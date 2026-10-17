@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {lex} from '../self-translation/lexer.mjs';
+import {rustStringValue} from '../translate-js-rust.mjs';
 
 const significant = source => lex(source, 'Rust').filter(token => token.type !== 'comment');
 function structure(source) {
@@ -412,20 +413,66 @@ function terminalBlock(tokens, pairs, open, close) {
   }
   if (start < close) statements.push([start,close]);
   const last = statements.at(-1);
+  if (last !== undefined) {
+    // Rust permits adjacent block statements without semicolons. A final
+    // standalone block executes whenever control reaches this sequence.
+    for (let cursor = last[0]; cursor < last[1]; cursor++) {
+      if (tokens[cursor].text === '{' && pairs.get(cursor) === last[1] - 1
+          && cursor > last[0] && tokens[cursor - 1].text === '}') {
+        return terminalBlock(tokens, pairs, cursor, last[1] - 1);
+      }
+      if (['(', '[', '{'].includes(tokens[cursor].text)) cursor = pairs.get(cursor);
+    }
+  }
   return last !== undefined && terminalExpression(tokens, pairs, last[0], last[1]);
 }
 function terminalOwnedRebindingClones(source) {
-  if (/\b(?:unsafe|extern|impl)\b/u.test(source)) return { source, changes: [] };
-  const { tokens, pairs } = structure(source), changes = [];
+  if (/\b(?:unsafe|extern|impl)\b/u.test(source)) return {source, changes: []};
+  const {tokens, pairs} = structure(source), changes = [];
   for (let open = 0; open < tokens.length; open++) {
     if (tokens[open].text !== '{') continue;
-    const close = pairs.get(open), body = tokens.slice(open + 1, close);
-    if (body.length !== 11 || body[0].text !== 'let' || body[1].type !== 'ident') continue;
-    const name = body[1].text;
-    if (body.map(token => token.text).join(' ') !== `let ${name} = * ${name} ; ${name} . clone ( )`) continue;
-    changes.push({ start: body[7].start, end: body[10].end, text: '', rule: 'terminal-owned-rebinding' });
+    const close = pairs.get(open), start = open + 1, name = tokens[start + 1]?.text;
+    if (tokens.slice(start, start + 6).map(token => token.text).join(' ')
+        !== 'let ' + name + ' = * ' + name + ' ;') continue;
+    function finalClone(first, last) {
+      if (tokens.slice(first, last).map(token => token.text).join(' ')
+          === name + ' . clone ( )') return first;
+      const components = [];
+      let cursor = first;
+      while (tokens[cursor]?.type === 'ident') {
+        components.push(tokens[cursor].text);
+        cursor++;
+        if (tokens[cursor]?.text !== '::') break;
+        cursor++;
+      }
+      const constructor = /^[A-Z]/u.test(components.at(-1) ?? '')
+        || components.slice(-2).join('::') === 'Box::new';
+      if (!constructor || tokens[cursor]?.text !== '(' || pairs.get(cursor) !== last - 1) return null;
+      return finalClone(cursor + 1, last - 1);
+    }
+    const found = finalClone(start + 6, close);
+    if (found !== null) changes.push({start: tokens[found + 1].start,
+      end: tokens[found + 4].end, text: '', rule: 'terminal-owned-rebinding'});
   }
-  return { source: edits(source, changes), changes };
+  return {source: edits(source, changes), changes};
+}
+function lowerStringSuffixBytes(source) {
+  const {tokens, pairs} = structure(source), changes = [];
+  for (let index = 1; index < tokens.length - 3; index++) {
+    if (tokens[index - 1].text !== '.' || tokens[index].text !== 'ends_with'
+        || tokens[index + 1].text !== '(' || pairs.get(index + 1) !== index + 3
+        || !tokens[index + 2].text.startsWith('"')) continue;
+    const literal = tokens[index + 2].text;
+    let decoded;
+    try { decoded = rustStringValue(literal); } catch { continue; }
+    const bytes = new TextEncoder().encode(decoded);
+    if (new TextDecoder('utf-8', {fatal: true}).decode(bytes) !== decoded) continue;
+    const simpleAscii = /^"[\x20-\x21\x23-\x5b\x5d-\x7e]*"$/u.test(literal);
+    const pattern = simpleAscii ? 'b' + literal : '&[' + [...bytes].join(', ') + ']';
+    changes.push({start: tokens[index - 1].start, end: tokens[index + 3].end,
+      text: '.as_bytes().ends_with(' + pattern + ')'});
+  }
+  return {source: edits(source, changes), changes};
 }
 function removeOneRedundantElse(source) {
   const {tokens, pairs} = structure(source);
@@ -507,6 +554,9 @@ export function lowerGeneratedRust(source, {ownedValueModel, pure} = {}) {
     if (token.type === 'ident' && token.text.endsWith('!')) assert(['vec!','format!','panic!'].includes(token.text), 'OpaqueGeneratedRustMacro');
   }
   const original = source, operations = [];
+  const suffixBytes = lowerStringSuffixBytes(source);
+  source = suffixBytes.source;
+  operations.push(...suffixBytes.changes.map(() => 'utf8-string-suffix'));
   const terminalMoves = terminalOwnedRebindingClones(source);
   source = terminalMoves.source;
   operations.push(...terminalMoves.changes.map(change => change.rule));

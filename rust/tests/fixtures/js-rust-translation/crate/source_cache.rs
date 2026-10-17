@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=d8ceac307c4bbd19c9f908d12cf19ada3f538336979c7a6e1caedf86a352aeed bytes=5072
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b43158a622cfefcec86bfb48aed4468974ab9632f70c166c88a0c7471eee2828 bytes=6454
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
@@ -9,6 +9,10 @@
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
 // formal-ai:blockers import of names its module carries
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=88d7c2f27a7ae1e51566e790bd48dd70d9745566600048271e7ae4691001c386
 // | const CACHE_FORMAT_VERSION = 'source-capture-v2';
@@ -35,9 +39,13 @@ pub static DEFAULT_TTL_SECONDS: std::sync::LazyLock<f64> = std::sync::LazyLock::
 // formal-ai:refusal rest parameter
 // formal-ai:blockers arrow function | method call .join()
 
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal try statement
+// formal-ai:blockers field access | global call String() | new Error | nullish coalescing | try statement
+
 // meta-language:carried JavaScript function_declaration (syntax)
 // formal-ai:refusal syntax: malformed number
-// formal-ai:blockers arrow function | assignment of a field or element | call of a sibling function | call of an imported function | destructuring | method call .readBytes() | method call .readText() | method call .replace() | method call .slice() | method call .split() | method call .test() | null | regular expression | undefined
+// formal-ai:blockers arrow function | assignment of a field or element | call of a sibling function | call of an imported function | destructuring | method call .replace() | method call .slice() | method call .test() | null | object without a $ tag | regular expression | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal new expression
@@ -49,4 +57,8 @@ pub static DEFAULT_TTL_SECONDS: std::sync::LazyLock<f64> = std::sync::LazyLock::
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal destructured parameter
-// formal-ai:blockers JSDoc type {…} | Number.parseInt | arrow function | call of a sibling function | call of an imported function | field access | global call String() | method call .get() | method call .now() | null | object without a $ tag | try statement
+// formal-ai:blockers JSDoc type {…} | Number.parseInt | arrow function | call of a sibling function | call of an imported function | field access | global call String() | let without a value | method call .get() | method call .now() | null | nullish coalescing | object without a $ tag | try statement
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal arrow function
+// formal-ai:blockers arrow function | call of a sibling function | field access | null | object without a $ tag

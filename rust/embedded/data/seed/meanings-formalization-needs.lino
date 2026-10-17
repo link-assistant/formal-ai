@@ -274,8 +274,8 @@ meanings
     grounding "js/worker/formal_ai_worker_translation_composition.js::targetTranslationSurfaceComplete; js/agentic/crate/formalization_grammar.mjs::structuralRuleValues"
   numeric-identity
     role action
-    defined-by number
-    defined-by identity
+    defined-by quantity
+    defined-by same
     precondition "A formalized numeral is assigned an identity or read back during translation."
     effect "Use the shared resolved prefix only for a verified numeric value; preserve the exact surface under the unresolved prefix when the numeric interpretation is uncertain."
     unit "typed numeral identity"

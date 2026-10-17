@@ -1,0 +1,1401 @@
+[
+  {
+    "id": "plain-body-unknown",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n"
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "reported-zero-and-false",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 0,
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "ProviderReported",
+        "value": "1730000000"
+      },
+      "cached": {
+        "status": "ProviderReported",
+        "value": false
+      },
+      "trust": {
+        "status": "ProviderReported",
+        "value": {
+          "score": 0,
+          "policy": "fixture-policy"
+        }
+      },
+      "licence": {
+        "status": "ProviderReported",
+        "value": {
+          "name": "fixture-declaration",
+          "url": "https://licence.invalid/terms"
+        }
+      }
+    }
+  },
+  {
+    "id": "mismatched-url",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "wrong",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 0,
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "mismatched-sha256",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "wrong",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 0,
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "mismatched-callId",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "wrong",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 0,
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "mismatched-schema",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "wrong",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 0,
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "unknown-sidecar-key",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 0,
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          },
+          "verified": true
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "missing-cached-is-not-false",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206"
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "malformed-field-types",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "0",
+          "cached": "false",
+          "trust": true,
+          "licence": {
+            "name": "x"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "wrong-tool-name",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "another_tool",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n"
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "Unknown",
+        "callId": null,
+        "tool": null
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "duplicate-call",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          },
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n"
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "Unknown",
+        "callId": null,
+        "tool": null
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "duplicate-receipt",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n"
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n"
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "Unknown",
+        "callId": null,
+        "tool": null
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "failed-receipt",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "is_error": true,
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 0,
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "Unknown",
+        "callId": null,
+        "tool": null
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "cross-turn-receipt",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n"
+      },
+      {
+        "role": "user",
+        "content": "New independent task."
+      }
+    ],
+    "start": 3,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "Unknown",
+        "callId": null,
+        "tool": null
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "literal-json-body-is-not-provider-metadata",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "{\"output\":\"not an envelope\",\"fetchedAt\":\"1730000000\",\"cached\":false,\"trust\":1,\"licence\":\"invented\"}"
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "{\"output\":\"not an envelope\",\"fetchedAt\":\"1730000000\",\"cached\":false,\"trust\":1,\"licence\":\"invented\"}",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "e5dbb49a409fb446c590055a75403e30226ae723b4d66a130a066b22ced1e62f",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "json-output-key-remains-source-bytes",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "{\"output\":\"```javascript\\nexport function selected(x) { return x; }\\n```\",\"exit_code\":0}"
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "{\"output\":\"```javascript\\nexport function selected(x) { return x; }\\n```\",\"exit_code\":0}",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "64307bcf74cb2c5bac67b7a7093809ed5b30d15b9af07cc853fb560a0afef337",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "Unknown"
+      },
+      "cached": {
+        "status": "Unknown"
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "Unknown"
+      }
+    }
+  },
+  {
+    "id": "unsafe-score-remains-unknown-with-other-reports-retained",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 9007199254740992,
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "ProviderReported",
+        "value": "1730000000"
+      },
+      "cached": {
+        "status": "ProviderReported",
+        "value": false
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "ProviderReported",
+        "value": {
+          "name": "fixture-declaration",
+          "url": "https://licence.invalid/terms"
+        }
+      }
+    }
+  },
+  {
+    "id": "policy-limit-counts-unicode-scalars",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": 0,
+            "policy": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "ProviderReported",
+        "value": "1730000000"
+      },
+      "cached": {
+        "status": "ProviderReported",
+        "value": false
+      },
+      "trust": {
+        "status": "ProviderReported",
+        "value": {
+          "score": 0,
+          "policy": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"
+        }
+      },
+      "licence": {
+        "status": "ProviderReported",
+        "value": {
+          "name": "fixture-declaration",
+          "url": "https://licence.invalid/terms"
+        }
+      }
+    }
+  },
+  {
+    "id": "wire-trust-integral-float",
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "ProviderReported",
+        "value": "1730000000"
+      },
+      "cached": {
+        "status": "ProviderReported",
+        "value": false
+      },
+      "trust": {
+        "status": "ProviderReported",
+        "value": {
+          "score": 1,
+          "policy": "fixture-policy"
+        }
+      },
+      "licence": {
+        "status": "ProviderReported",
+        "value": {
+          "name": "fixture-declaration",
+          "url": "https://licence.invalid/terms"
+        }
+      }
+    },
+    "messagesJson": "[{\"role\":\"user\",\"content\":\"Inspect source.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"fetch-one\",\"type\":\"function\",\"function\":{\"name\":\"web_fetch\",\"arguments\":\"{\\\"url\\\":\\\"https://source.invalid/reference\\\"}\"}}]},{\"role\":\"tool\",\"name\":\"web_fetch\",\"tool_call_id\":\"fetch-one\",\"content\":\"A held-out source body.\\n\",\"source_capture\":{\"schema\":\"formal-ai-source-capture-v1\",\"callId\":\"fetch-one\",\"url\":\"https://source.invalid/reference\",\"sha256\":\"670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206\",\"fetchedAt\":\"1730000000\",\"cached\":false,\"trust\":{\"score\":1.0,\"policy\":\"fixture-policy\"},\"licence\":{\"name\":\"fixture-declaration\",\"url\":\"https://licence.invalid/terms\"}}}]"
+  },
+  {
+    "id": "wire-trust-signed-zero",
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "ProviderReported",
+        "value": "1730000000"
+      },
+      "cached": {
+        "status": "ProviderReported",
+        "value": false
+      },
+      "trust": {
+        "status": "ProviderReported",
+        "value": {
+          "score": 0,
+          "policy": "fixture-policy"
+        }
+      },
+      "licence": {
+        "status": "ProviderReported",
+        "value": {
+          "name": "fixture-declaration",
+          "url": "https://licence.invalid/terms"
+        }
+      }
+    },
+    "messagesJson": "[{\"role\":\"user\",\"content\":\"Inspect source.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"fetch-one\",\"type\":\"function\",\"function\":{\"name\":\"web_fetch\",\"arguments\":\"{\\\"url\\\":\\\"https://source.invalid/reference\\\"}\"}}]},{\"role\":\"tool\",\"name\":\"web_fetch\",\"tool_call_id\":\"fetch-one\",\"content\":\"A held-out source body.\\n\",\"source_capture\":{\"schema\":\"formal-ai-source-capture-v1\",\"callId\":\"fetch-one\",\"url\":\"https://source.invalid/reference\",\"sha256\":\"670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206\",\"fetchedAt\":\"1730000000\",\"cached\":false,\"trust\":{\"score\":-0.0,\"policy\":\"fixture-policy\"},\"licence\":{\"name\":\"fixture-declaration\",\"url\":\"https://licence.invalid/terms\"}}}]"
+  },
+  {
+    "id": "wire-trust-fraction",
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "ProviderReported",
+        "value": "1730000000"
+      },
+      "cached": {
+        "status": "ProviderReported",
+        "value": false
+      },
+      "trust": {
+        "status": "ProviderReported",
+        "value": {
+          "score": 0.5,
+          "policy": "fixture-policy"
+        }
+      },
+      "licence": {
+        "status": "ProviderReported",
+        "value": {
+          "name": "fixture-declaration",
+          "url": "https://licence.invalid/terms"
+        }
+      }
+    },
+    "messagesJson": "[{\"role\":\"user\",\"content\":\"Inspect source.\"},{\"role\":\"assistant\",\"content\":\"\",\"tool_calls\":[{\"id\":\"fetch-one\",\"type\":\"function\",\"function\":{\"name\":\"web_fetch\",\"arguments\":\"{\\\"url\\\":\\\"https://source.invalid/reference\\\"}\"}}]},{\"role\":\"tool\",\"name\":\"web_fetch\",\"tool_call_id\":\"fetch-one\",\"content\":\"A held-out source body.\\n\",\"source_capture\":{\"schema\":\"formal-ai-source-capture-v1\",\"callId\":\"fetch-one\",\"url\":\"https://source.invalid/reference\",\"sha256\":\"670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206\",\"fetchedAt\":\"1730000000\",\"cached\":false,\"trust\":{\"score\":0.5,\"policy\":\"fixture-policy\"},\"licence\":{\"name\":\"fixture-declaration\",\"url\":\"https://licence.invalid/terms\"}}}]"
+  },
+  {
+    "id": "deep-malformed-trust-has-no-authority",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Inspect source."
+      },
+      {
+        "role": "assistant",
+        "content": "",
+        "tool_calls": [
+          {
+            "id": "fetch-one",
+            "type": "function",
+            "function": {
+              "name": "web_fetch",
+              "arguments": "{\"url\":\"https://source.invalid/reference\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "name": "web_fetch",
+        "tool_call_id": "fetch-one",
+        "content": "A held-out source body.\n",
+        "source_capture": {
+          "schema": "formal-ai-source-capture-v1",
+          "callId": "fetch-one",
+          "url": "https://source.invalid/reference",
+          "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+          "fetchedAt": "1730000000",
+          "cached": false,
+          "trust": {
+            "score": {
+              "nested": {
+                "malformed": true
+              }
+            },
+            "policy": "fixture-policy"
+          },
+          "licence": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    ],
+    "start": 0,
+    "url": "https://source.invalid/reference",
+    "text": "A held-out source body.\n",
+    "expected": {
+      "schema": "formal-ai-source-observation-v1",
+      "url": "https://source.invalid/reference",
+      "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+      "binding": {
+        "status": "TranscriptBound",
+        "callId": "fetch-one",
+        "tool": "web_fetch"
+      },
+      "authority": "Unknown",
+      "fetchedAt": {
+        "status": "ProviderReported",
+        "value": "1730000000"
+      },
+      "cached": {
+        "status": "ProviderReported",
+        "value": false
+      },
+      "trust": {
+        "status": "Unknown"
+      },
+      "licence": {
+        "status": "ProviderReported",
+        "value": {
+          "name": "fixture-declaration",
+          "url": "https://licence.invalid/terms"
+        }
+      }
+    }
+  }
+]

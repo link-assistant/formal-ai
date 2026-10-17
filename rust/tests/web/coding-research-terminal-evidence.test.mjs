@@ -11,7 +11,22 @@ await installNodeHost(new WorkerHost({WebAssembly:{instantiate(){throw Error('Lo
 test('actual production JS retains all captured held-out terminal, no-op, failed and incomplete witnesses',async()=>{
   for(const row of fixture.rows){
     const plan=await planChatStepResolved(row.messages,row.tools);
-    assert.deepEqual(JSON.parse(JSON.stringify(plan)),row.expected,row.fixture+':'+row.scenario+':'+row.phase);
+    const actual = JSON.parse(JSON.stringify(plan));
+    for (const provenance of [actual.research, actual.result?.discovery]) {
+      if (!provenance || !Object.hasOwn(provenance, 'sourceObservation')) continue;
+      const observed = provenance.sourceObservation;
+      const receipt = row.messages.find(message => message.role === 'tool'
+        && message.name === 'web_fetch' && message.content ===
+          row.messages.find(item => item.tool_call_id === observed.binding.callId)?.content);
+      assert(receipt);
+      assert.deepEqual(observed, { schema: 'formal-ai-source-observation-v1',
+        url: provenance.url, sha256: provenance.sha256,
+        binding: { status: 'TranscriptBound', callId: receipt.tool_call_id, tool: receipt.name },
+        authority: 'Unknown', fetchedAt: { status: 'Unknown' }, cached: { status: 'Unknown' },
+        trust: { status: 'Unknown' }, licence: { status: 'Unknown' } });
+      delete provenance.sourceObservation;
+    }
+    assert.deepEqual(actual,row.expected,row.fixture+':'+row.scenario+':'+row.phase);
     if(row.phase==='tool')assert(plan.research && !plan.research.verified);
     else if(row.scenario==='incomplete'||row.scenario==='module-incomplete'){
       assert.equal(plan.result.disposition,'gap');assert.equal(plan.result.discovery.verified,false);

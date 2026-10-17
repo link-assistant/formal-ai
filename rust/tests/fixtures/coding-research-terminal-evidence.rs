@@ -1,8 +1,46 @@
 //! Actual native production planner, driven by explicitly synthetic captured observations.
-use super::super::final_result::{FinalDisposition, ResolvedPlan};
+use super::super::final_result::{
+    FinalDisposition, ResearchDiscoveryContext, ResearchDiscoveryEvidence, ResearchProvenance,
+    ResolvedPlan,
+};
 use super::super::planner::{AgenticPlan, plan_chat_step_resolved};
 use crate::protocol::ChatMessage;
 use serde_json::{Value, json};
+
+impl ResearchProvenance {
+    pub(super) fn javascript_witness(&self) -> serde_json::Value {
+        serde_json::to_value(self).expect("ResearchWitnessSerializationInvariant")
+    }
+}
+
+impl ResearchDiscoveryEvidence {
+    /// This projects the existing JavaScript witness shape without changing native public plans.
+    pub(super) fn javascript_witness(&self) -> serde_json::Value {
+        let mut value = serde_json::json!({
+            "reason":self.reason, "authored":self.authored, "verified":self.verified,
+        });
+        let extra = match &self.context {
+            ResearchDiscoveryContext::None => serde_json::json!({}),
+            ResearchDiscoveryContext::Search { query, attempted } => {
+                serde_json::json!({"query":query, "attempted":attempted})
+            }
+            ResearchDiscoveryContext::Source(provenance) => provenance.javascript_witness(),
+        };
+        value
+            .as_object_mut()
+            .expect("ResearchDiscoveryObjectInvariant")
+            .extend(
+                extra
+                    .as_object()
+                    .expect("ResearchDiscoveryContextInvariant")
+                    .clone(),
+            );
+        if let Some(path) = &self.path {
+            value["path"] = serde_json::json!(path);
+        }
+        value
+    }
+}
 
 #[test]
 fn selected_native_terminal_metadata_retains_observed_js_witnesses_and_receipts() {
@@ -81,23 +119,26 @@ fn selected_native_terminal_metadata_retains_observed_js_witnesses_and_receipts(
             );
             assert!(!encoded.contains(receipt), "no raw tool receipt emitted");
         }
-        let observations = if let Some(research) = &result.research {
-            assert_eq!(
-                research.provenance.javascript_witness(),
-                row["expected"]["research"],
-                "{row}"
-            );
-            &research.observations
-        } else {
-            let discovery = result.discovery.as_ref().expect("honest discovery gap");
-            assert_eq!(
-                discovery.javascript_witness(),
-                row["expected"]["result"]["discovery"],
-                "{row}"
-            );
-            assert!(!discovery.authored && !discovery.verified);
-            &discovery.observations
-        };
+        let observations = result.research.as_ref().map_or_else(
+            || {
+                let discovery = result.discovery.as_ref().expect("honest discovery gap");
+                assert_eq!(
+                    without_source_observation(discovery.javascript_witness()),
+                    row["expected"]["result"]["discovery"],
+                    "{row}"
+                );
+                assert!(!discovery.authored && !discovery.verified);
+                &discovery.observations
+            },
+            |research| {
+                assert_eq!(
+                    without_source_observation(research.provenance.javascript_witness()),
+                    row["expected"]["research"],
+                    "{row}"
+                );
+                &research.observations
+            },
+        );
         assert_eq!(
             serde_json::to_value(&observations.module_read).unwrap(),
             row["observations"]["moduleRead"]
@@ -160,4 +201,98 @@ fn malformed_producer_metadata_is_not_defaulted_to_a_valid_research_witness() {
     assert!(
         ResearchProvenance::from_observed(&json!({"url":"observed", "verified":true})).is_none()
     );
+}
+
+// Compare every prior witness field unchanged after checking the additive observation.
+fn without_source_observation(mut value: Value) -> Value {
+    if let Some(observation) = value
+        .as_object_mut()
+        .and_then(|fields| fields.remove("sourceObservation"))
+    {
+        assert_eq!(observation["schema"], "formal-ai-source-observation-v1");
+        assert_eq!(observation["url"], value["url"]);
+        assert_eq!(observation["sha256"], value["sha256"]);
+        assert_eq!(observation["authority"], "Unknown");
+        assert_eq!(observation["binding"]["status"], "TranscriptBound");
+        assert_eq!(observation["binding"]["tool"], "web_fetch");
+        assert!(
+            observation["binding"]["callId"]
+                .as_str()
+                .is_some_and(|id| !id.is_empty())
+        );
+        for field in ["fetchedAt", "cached", "trust", "licence"] {
+            assert_eq!(observation[field], json!({"status":"Unknown"}));
+        }
+        assert_eq!(observation.as_object().unwrap().len(), 9);
+        assert_eq!(observation["binding"].as_object().unwrap().len(), 3);
+    }
+    value
+}
+
+#[test]
+fn terminal_research_retains_call_bound_provider_reports_without_granting_authority() {
+    let rows: Value =
+        serde_json::from_str(include_str!("coding-research/terminal-evidence-1.json")).unwrap();
+    let row = rows["rows"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|row| row["phase"] != "tool" && row["expected"]["research"]["verified"] == true)
+        .unwrap();
+    let mut messages: Vec<ChatMessage> = serde_json::from_value(row["messages"].clone()).unwrap();
+    let index = messages
+        .iter()
+        .position(|message| message.role == "tool" && message.name.as_deref() == Some("web_fetch"))
+        .unwrap();
+    let id = messages[index].tool_call_id.clone().unwrap();
+    let call = messages
+        .iter()
+        .flat_map(|message| &message.tool_calls)
+        .find(|call| call.id == id)
+        .unwrap();
+    let args: Value = serde_json::from_str(&call.function.arguments).unwrap();
+    messages[index].source_capture = Some(
+        json!({"schema":"formal-ai-source-capture-v1", "callId":id,
+        "url":args["url"], "sha256":crate::source_fetch::sha256_hex(messages[index].content.plain_text().as_bytes()),
+        "fetchedAt":"1730000000", "cached":false, "trust":{"score":0,"policy":"fixture-policy"},
+        "licence":{"name":"fixture-declaration","url":"https://licence.invalid/terms"}}),
+    );
+    let tools: Vec<&str> = row["tools"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|tool| tool.as_str().unwrap())
+        .collect();
+    let resolved = plan_chat_step_resolved(&messages, &tools).unwrap();
+    let mut witness = resolved
+        .result
+        .unwrap()
+        .research
+        .unwrap()
+        .provenance
+        .javascript_witness();
+    let observation = witness
+        .as_object_mut()
+        .unwrap()
+        .remove("sourceObservation")
+        .unwrap();
+    assert_eq!(observation["binding"]["callId"], id);
+    assert_eq!(observation["authority"], "Unknown");
+    assert_eq!(
+        observation["fetchedAt"],
+        json!({"status":"ProviderReported","value":"1730000000"})
+    );
+    assert_eq!(
+        observation["cached"],
+        json!({"status":"ProviderReported","value":false})
+    );
+    assert_eq!(
+        observation["trust"],
+        json!({"status":"ProviderReported","value":{"score":0,"policy":"fixture-policy"}})
+    );
+    assert_eq!(
+        observation["licence"],
+        json!({"status":"ProviderReported","value":{"name":"fixture-declaration","url":"https://licence.invalid/terms"}})
+    );
+    assert_eq!(witness, row["expected"]["research"]);
 }

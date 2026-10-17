@@ -6,7 +6,7 @@ use super::final_result::{
 };
 use super::wording::agentic_message as message;
 #[path = "../coding_research_kernel.rs"]
-mod kernel;
+pub(super) mod kernel;
 
 use super::tool_result::{StepOutcome, incomplete_receipt, normalized_payload, step_outcome};
 
@@ -204,6 +204,10 @@ pub fn derive_coding_procedure(request: &ModuleFunctionRequest, page: &Value) ->
         proposals.push(json!({"source":source,"provenance":{"url":page["url"],"sha256":page["sha256"],
             "query":page["query"],"declaration":declaration["identity"],"contract":declaration["contract"],
             "bindings":bindings,"status":"proposal","verified":false}}));
+        if !page["sourceObservation"].is_null() {
+            proposals.last_mut()?["provenance"]["sourceObservation"] =
+                page["sourceObservation"].clone();
+        }
     }
     let selected = generated::canonical_unique_source_index(vec![true; proposals.len()]);
     if selected >= 0.0 {
@@ -501,7 +505,7 @@ pub(super) fn plan_coding_research_step(
     let mut proposals = Vec::new();
     for (url, raw) in &progress.fetched_pages {
         let source_index = generated::coding_research_source_index(urls.clone(), url.clone());
-        let body = normalized_payload(raw).unwrap_or_else(|| raw.clone());
+        let body = raw;
         if !generated::coding_research_page_eligible(
             source_index,
             research_length_number(body.len()),
@@ -520,7 +524,8 @@ pub(super) fn plan_coding_research_step(
                 }
             })
             .collect();
-        let page = json!({"url":url,"sha256":crate::source_fetch::sha256_hex(body.as_bytes()),"query":query,"codeBlocks":code_blocks});
+        let page = json!({"url":url,"sha256":crate::source_fetch::sha256_hex(body.as_bytes()),"query":query,"codeBlocks":code_blocks,
+            "sourceObservation":progress.source_observation_for(url, raw)});
         if let Some(proposal) = derive_coding_procedure(&request, &page) {
             proposals.push(proposal);
         }
@@ -646,7 +651,7 @@ pub(super) fn plan_coding_research_step(
         &progress,
         Some(ResearchVerificationObservation {
             command: request.command.clone(),
-            receipt: observation.map(|attempt| attempt.detail.clone()),
+            receipt: observation.and_then(|attempt| attempt.raw_receipt.clone()),
             tool_succeeded: observation.map(|attempt| attempt.succeeded),
             outcome: last_outcome,
             receipt_gap: if receipt_gap.is_empty() {

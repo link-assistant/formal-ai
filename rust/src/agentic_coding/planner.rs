@@ -392,39 +392,39 @@ pub(super) fn plan_settled_routes(
     // sentence by sentence (PR #1188 G82).
     if let Some(plan) =
         super::source_maintenance::plan_source_maintenance_step(owned, messages, tool_names, result)
-    {
-        return Some(plan);
-    }
-    if let Some(plan) = super::request_sequence::plan_request_sequence_step(
-        owned,
-        messages,
-        tool_names,
-        plan_chat_step_resolved,
-        result,
-    )
-    .or_else(|| {
-        super::workspace_change::plan_workspace_change_step(owned, messages, tool_names, result)
-    })
-    .or_else(|| {
-        super::coding_research::plan_module_function_research_step(
-            owned, messages, tool_names, result,
-        )
-    })
-    // A bug report with a stated expectation is checked before anything is
-    // rewritten (PR #1188 T93).
-    .or_else(|| {
-        super::function_expectation::plan_function_expectation_step(
-            owned, messages, tool_names, result,
-        )
-    })
-    // An assertion of a stated call and value is added in the test
-    // file's own form, and the file is run (PR #1188 G13).
-    .or_else(|| {
-        super::test_assertion::plan_test_assertion_step(owned, messages, tool_names, result)
-    })
-    // A test asked for with no expected result is a question (PR #1188
-    // G25).
-    .or_else(|| super::function_expectation::test_expectation_question(owned, result))
+            .or_else(|| {
+                super::request_sequence::plan_request_sequence_step(
+                    owned,
+                    messages,
+                    tool_names,
+                    plan_chat_step_resolved,
+                    result,
+                )
+            })
+            .or_else(|| {
+                super::workspace_change::plan_workspace_change_step(
+                    owned, messages, tool_names, result,
+                )
+            })
+            .or_else(|| {
+                super::coding_research::plan_module_function_research_step(
+                    owned, messages, tool_names, result,
+                )
+            })
+            // A bug report with a stated expectation is checked before anything is
+            // rewritten (PR #1188 T93).
+            .or_else(|| {
+                super::function_expectation::plan_function_expectation_step(
+                    owned, messages, tool_names, result,
+                )
+            })
+            // An assertion of a stated call and value is added in the test
+            // file's own form, and the file is run (PR #1188 G13).
+            .or_else(|| {
+                super::test_assertion::plan_test_assertion_step(owned, messages, tool_names, result)
+            })
+            // A test asked for with no expected result is a question (PR #1188 G25).
+            .or_else(|| super::function_expectation::test_expectation_question(owned, result))
     {
         return Some(plan);
     }

@@ -67,11 +67,6 @@ impl ResearchProvenance {
         serde_json::from_value(value.clone()).ok()
     }
 
-    #[cfg(test)]
-    pub(super) fn javascript_witness(&self) -> serde_json::Value {
-        serde_json::to_value(self).expect("ResearchWitnessSerializationInvariant")
-    }
-
     /// The shared effect kernel already chose these flags; this only presents its verdict.
     pub(super) fn terminal(
         mut self,
@@ -154,36 +149,6 @@ pub(super) struct ResearchDiscoveryEvidence {
     pub(super) path: Option<String>,
     pub(super) context: ResearchDiscoveryContext,
     pub(super) observations: ResearchObservations,
-}
-
-impl ResearchDiscoveryEvidence {
-    /// This projects the existing JavaScript witness shape without changing native public plans.
-    #[cfg(test)]
-    pub(super) fn javascript_witness(&self) -> serde_json::Value {
-        let mut value = serde_json::json!({
-            "reason":self.reason, "authored":self.authored, "verified":self.verified,
-        });
-        let extra = match &self.context {
-            ResearchDiscoveryContext::None => serde_json::json!({}),
-            ResearchDiscoveryContext::Search { query, attempted } => {
-                serde_json::json!({"query":query, "attempted":attempted})
-            }
-            ResearchDiscoveryContext::Source(provenance) => provenance.javascript_witness(),
-        };
-        value
-            .as_object_mut()
-            .expect("ResearchDiscoveryObjectInvariant")
-            .extend(
-                extra
-                    .as_object()
-                    .expect("ResearchDiscoveryContextInvariant")
-                    .clone(),
-            );
-        if let Some(path) = &self.path {
-            value["path"] = serde_json::json!(path);
-        }
-        value
-    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

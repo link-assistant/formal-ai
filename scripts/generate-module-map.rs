@@ -66,6 +66,10 @@ const OVERRIDES: &[(&str, &str)] = &[
         "Discovers and drives external client CLIs found on the host",
     ),
     (
+        "coding_research_generated",
+        "Shared research and source-maintenance kernels emitted from checked portable-core IR",
+    ),
+    (
         "concepts",
         "Concept records and lookup used across formalization",
     ),

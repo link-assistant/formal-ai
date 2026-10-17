@@ -36,14 +36,18 @@ export function sourceMaintenanceLanguageKernel(characters) {
 export function sourceMaintenanceOwnershipKernel(candidate, payloads, language, prefix, suffix, grammarValid,
   actions, properties, prepositions, scopes, constraints) {
   if (!candidate || payloads !== 0 || !grammarValid || (language !== 'javascript' && language !== 'typescript')) return false;
-  let scoped = suffix === '';
-  for (let index = 0; index < scopes.length; index += 1) if (suffix === scopes[index]) scoped = true;
-  if (!scoped) return false;
+  let hasRecognizedSuffix = suffix === '';
+  for (let index = 0; index < scopes.length; index += 1) if (suffix === scopes[index]) hasRecognizedSuffix = true;
+  if (!hasRecognizedSuffix) return false;
   let operation = false;
   for (let action = 0; action < actions.length; action += 1) {
     for (let property = 0; property < properties.length; property += 1) {
       for (let preposition = 0; preposition < prepositions.length; preposition += 1) {
-        if (prefix === actions[action] + ' ' + properties[property] + ' ' + prepositions[preposition]) operation = true;
+        const actionWithSpacing = actions[action] + ' ';
+        const propertyDescription = actionWithSpacing + properties[property];
+        const relationSeparator = propertyDescription + ' ';
+        const requestedOperation = relationSeparator + prepositions[preposition];
+        if (prefix === requestedOperation) operation = true;
       }
     }
   }

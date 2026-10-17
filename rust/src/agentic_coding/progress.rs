@@ -9,6 +9,7 @@
 use super::capability_router::classify_tool;
 use super::planner::Capability;
 use crate::protocol::ChatMessage;
+mod source_fetch_observation;
 
 /// One observed client-owned tool execution in transcript order.
 #[derive(Debug)]
@@ -17,6 +18,8 @@ pub(super) struct ToolAttempt {
     source_read: Option<super::tool_result::SourceReadObservation>,
     pub(super) succeeded: bool,
     pub(super) detail: String,
+    /// Original run-tool bytes remain separate from normalized failure detail.
+    pub(super) raw_receipt: Option<String>,
     pub(super) arguments: Option<String>,
     /// The advertised tool name the result came back under, when known.
     pub(super) tool: Option<String>,
@@ -43,6 +46,7 @@ pub struct Progress {
     qualified_attempts: Vec<super::qualified_tool_observation::QualifiedToolAttempt>,
     pub(super) fetched_text: Option<String>,
     pub(super) fetched_pages: Vec<(String, String)>,
+    source_observations: Vec<serde_json::Value>,
     pub(super) attempted_fetches: Vec<String>,
     /// Work-item URLs already read through a shell read call.
     attempted_work_item_reads: Vec<String>,
@@ -60,6 +64,17 @@ impl Progress {
     /// Read-only observations for canonical research selectors; no new authority is granted.
     pub(super) fn research_attempts(&self) -> &[ToolAttempt] {
         &self.attempts
+    }
+
+    pub(super) fn source_observation_for(
+        &self,
+        url: &str,
+        text: &str,
+    ) -> Option<&serde_json::Value> {
+        self.fetched_pages
+            .iter()
+            .position(|(page_url, body)| page_url == url && body == text)
+            .and_then(|index| self.source_observations.get(index))
     }
 
     pub(super) fn scan(messages: &[ChatMessage]) -> Self {
@@ -136,6 +151,7 @@ impl Progress {
                 source_read,
                 succeeded: failure.is_none(),
                 detail: failure.clone().unwrap_or_else(|| raw.clone()),
+                raw_receipt: (capability == Capability::Run).then(|| raw.clone()),
                 arguments,
                 tool,
             });
@@ -203,7 +219,19 @@ impl Progress {
             }
             completed.push(capability);
         }
+        let source_observations = fetched_pages
+            .iter()
+            .map(|(url, text)| {
+                source_fetch_observation::source_fetch_observation(
+                    messages,
+                    current_turn,
+                    url,
+                    text,
+                )
+            })
+            .collect();
         Self {
+            source_observations,
             completed,
             attempts,
             qualified_attempts: super::qualified_tool_observation::scan(messages, current_turn),

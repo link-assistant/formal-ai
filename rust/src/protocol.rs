@@ -173,6 +173,9 @@ pub struct ChatMessage {
     /// Provider-owned Read metadata; content remains exact source bytes.
     #[serde(default, alias = "sourceRead", skip_serializing_if = "Option::is_none")]
     pub source_read: Option<Value>,
+    /// Optional tool-side capture report; content is never an implicit envelope.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub source_capture: Option<Value>,
     #[serde(default, skip_deserializing, skip_serializing_if = "Option::is_none")]
     pub append_contract: Option<Value>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

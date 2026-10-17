@@ -46,6 +46,7 @@ export function deriveCodingProcedure(request, page) {
     proposals.push({ source: rendered.source, provenance: { url: page.url, sha256: page.sha256, query: page.query,
       declaration: declaration.identity, contract: declaration.contract,
       bindings: rendered.bindingsFrom.map((from, index) => ({ from, to: rendered.bindingsTo[index] })),
+      ...(page.sourceObservation ? { sourceObservation: page.sourceObservation } : {}),
       status: 'proposal', verified: false } });
   }
   const selected = canonicalUniqueSourceIndex(proposals.map(() => true));
@@ -132,9 +133,9 @@ export function planCodingResearchStep(task, messages, toolNames) {
   if (searchDecision.startsWith('gap:')) return decidedGap(searchDecision, request);
   if (searchDecision === 'search') return planOne(searchTool, jsonText({ query }));
   const searchText = normalizedPayload(progress.attempts[searchIndex].detail) ?? '';
-  const formalize = realm()?.formalizedPageFromCapture;
+  const formalize = realm()?.formalizePage, indexPage = realm()?.pageIndexed;
   const captureDecision = research.codingResearchCaptureDecision(new TextEncoder().encode(searchText).length,
-    typeof formalize === 'function');
+    typeof formalize === 'function' && typeof indexPage === 'function');
   if (captureDecision.startsWith('gap:')) return decidedGap(captureDecision, request);
   const foundURLs = urlsIn(searchText);
   const secure = foundURLs.map(url => { try { return new URL(url).protocol === 'https:'; } catch { return false; } });
@@ -143,8 +144,10 @@ export function planCodingResearchStep(task, messages, toolNames) {
   for (const [url, text] of progress.fetched_pages) {
     const index = research.codingResearchSourceIndex(urls, url);
     if (!research.codingResearchPageEligible(index, new TextEncoder().encode(text).length)) continue;
-    const capture = { url, text, sha256: sha256Hex(text), fetchedAt: '', cached: false };
-    const proposal = deriveCodingProcedure(request, formalize(capture, query, index + 1, 0, null));
+    const sourceObservation = progress.sourceObservationFor(url, text);
+    const page = indexPage(formalize(text, null, url), { url, sha256: sha256Hex(text), query,
+      rank: index + 1, sourceObservation });
+    const proposal = deriveCodingProcedure(request, page);
     if (proposal) proposals.push(proposal);
   }
   const nextURL = research.codingResearchNextURL(urls, progress.attempted_fetches);

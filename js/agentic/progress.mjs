@@ -5,6 +5,7 @@
 // its methods are camelCase. A `ToolAttempt` is `{capability, succeeded,
 // detail, arguments, tool}` with `arguments` / `tool` null when unknown.
 
+import { sourceFetchObservation } from './source_fetch_observation.mjs';
 import { plainText, rustLines } from './content.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { wordsForRole } from './crate/seed_meanings.mjs';
@@ -45,6 +46,7 @@ export class Progress {
     this.attempts = [];
     this.fetched_text = null;
     this.fetched_pages = [];
+    this.source_observations = [];
     this.attempted_fetches = [];
     this.attempted_work_item_reads = [];
     this.failed_work_item_reads = [];
@@ -119,8 +121,16 @@ export class Progress {
       }
       progress.completed.push(capability);
     }
+    progress.source_observations = progress.fetched_pages.map(([url, text]) =>
+      sourceFetchObservation(messages, currentTurn, url, text));
     qualifiedProgressFrames.set(progress,qualifiedTranscriptFrames(messages,currentTurn));
     return progress;
+  }
+
+  /** Exact body pairs bind observation identity; metadata never changes source bytes. */
+  sourceObservationFor(url, text) {
+    const index = this.fetched_pages.findIndex(([pageUrl, body]) => pageUrl === url && body === text);
+    return index < 0 ? null : this.source_observations[index];
   }
 
   /** Mirrors `Progress::attempted_fetch_of`. */
