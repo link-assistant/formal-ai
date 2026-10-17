@@ -2,29 +2,26 @@ self_ast_census
   target src/coding_research_generated/part4.rs
   language rust
   fidelity signature
-  byte_len 22890
-  line_count 570
-  content_id source_module_3e87589f9f4985e4
-  symbol_count 21
+  byte_len 40640
+  line_count 812
+  content_id source_module_57f866228762f11b
+  symbol_count 18
   symbols
-    function ml_coding_research_preflight_kernel_loop25 12 40
-    function ml_coding_research_preflight_kernel_loop24 42 81
-    enum MlCodingResearchSearchIndexLoop26Result 84 87
-    function ml_coding_research_search_index_loop26 89 135
-    enum MlCodingResearchLatestReadIndexLoop27Result 138 141
-    function ml_coding_research_latest_read_index_loop27 143 168
-    enum MlCodingResearchRunIndexLoop28Result 171 174
-    function ml_coding_research_run_index_loop28 176 213
-    function ml_coding_research_source_ur_ls_loop30 215 254
-    function ml_coding_research_source_ur_ls_loop29 256 310
-    enum MlCodingResearchNextURLLoop31Result 313 316
-    function ml_coding_research_next_url_loop32 318 357
-    function ml_coding_research_next_url_loop31 359 397
-    enum MlCodingResearchBindingsKernelLoop33Result 400 403
-    enum MlCodingResearchBindingsKernelLoop34Result 406 409
-    function ml_coding_research_bindings_kernel_loop34 411 437
-    function ml_coding_research_bindings_kernel_loop33 439 500
-    enum MlCodingResearchSourceIndexLoop35Result 503 506
-    function ml_coding_research_source_index_loop35 508 534
-    enum MlCodingResearchPureRepairKernelLoop36Result 537 540
-    function ml_coding_research_pure_repair_kernel_loop36 542 570
+    function ml_coding_research_rebinding_kernel_loop18 26 139
+    enum MlCanonicalUniqueSourceIndexLoop20Result 142 145
+    function ml_canonical_unique_source_index_loop20 160 201
+    enum MlIndependentAcceptanceKernelLoop21Result 204 207
+    enum MlIndependentAcceptanceKernelJoin22 210 213
+    enum MlIndependentAcceptanceKernelLoop23Result 216 219
+    function ml_independent_acceptance_kernel_loop23 234 287
+    function ml_independent_acceptance_kernel_loop21 306 548
+    enum MlCodingResearchPreflightKernelLoop24Result 551 554
+    enum MlCodingResearchPreflightKernelLoop25Result 557 560
+    function ml_coding_research_preflight_kernel_loop25 571 599
+    function ml_coding_research_preflight_kernel_loop24 614 653
+    enum MlCodingResearchSearchIndexLoop26Result 656 659
+    function ml_coding_research_search_index_loop26 670 716
+    enum MlCodingResearchLatestReadIndexLoop27Result 719 722
+    function ml_coding_research_latest_read_index_loop27 733 758
+    enum MlCodingResearchRunIndexLoop28Result 761 764
+    function ml_coding_research_run_index_loop28 775 812

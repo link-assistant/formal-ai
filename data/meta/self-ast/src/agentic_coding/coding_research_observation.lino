@@ -2,51 +2,51 @@ self_ast_census
   target src/agentic_coding/coding_research_observation.rs
   language rust
   fidelity full_ast
-  byte_len 5042
-  line_count 130
-  content_id source_module_dc4caf7a2cb3b321
+  byte_len 4989
+  line_count 127
+  content_id source_module_d640776991a23ef3
   symbol_count 4
   symbols
     struct LexicalToken 5 10
     function lexical_tokens 11 54
     function observe_coding_research_acceptance_tokens 57 65
-    function observe_coding_research_rebinding_candidate 68 130
+    function observe_coding_research_rebinding_candidate 68 127
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4211
-    named_node_count 846
+    total_link_count 4165
+    named_node_count 841
     distinct_node_kinds 69
     node_kinds
-      arguments 45
+      arguments 46
       array_type 1
       assignment_expression 2
       attribute 2
       attribute_item 2
       binary_expression 13
       block 15
-      boolean_literal 5
+      boolean_literal 4
       break_expression 1
-      call_expression 45
-      closure_expression 2
-      closure_parameters 2
+      call_expression 46
+      closure_expression 3
+      closure_parameters 3
       crate 4
       doc_comment 3
       else_clause 1
       expression_statement 22
       field_declaration 4
       field_declaration_list 1
-      field_expression 52
-      field_identifier 71
+      field_expression 53
+      field_identifier 72
       field_initializer 15
       field_initializer_list 4
       field_pattern 2
       for_expression 2
       function_item 3
       generic_type 2
-      identifier 208
+      identifier 206
       if_expression 4
       index_expression 9
       inner_doc_comment_marker 1
@@ -55,10 +55,10 @@ self_ast_census
       lifetime 2
       line_comment 3
       macro_invocation 3
-      match_arm 11
-      match_block 3
-      match_expression 3
-      match_pattern 11
+      match_arm 9
+      match_block 2
+      match_expression 2
+      match_pattern 9
       mutable_specifier 9
       outer_doc_comment_marker 2
       parameter 6
@@ -82,7 +82,7 @@ self_ast_census
       struct_pattern 2
       super 1
       token_tree 35
-      tuple_struct_pattern 4
+      tuple_struct_pattern 2
       type_arguments 2
       type_identifier 13
       unary_expression 2

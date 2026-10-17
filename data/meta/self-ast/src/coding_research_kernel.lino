@@ -2,9 +2,9 @@ self_ast_census
   target src/coding_research_kernel.rs
   language rust
   fidelity signature
-  byte_len 1058
+  byte_len 1057
   line_count 21
-  content_id source_module_96e39ce2fd386b9b
+  content_id source_module_0503125bbceb4b8a
   symbol_count 2
   symbols
     function safe_tap_count 6 8

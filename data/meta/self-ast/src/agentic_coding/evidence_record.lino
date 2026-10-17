@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 42294
-  line_count 991
-  content_id source_module_62ded453ec2318b3
+  byte_len 42343
+  line_count 993
+  content_id source_module_9615275f939c42ae
   symbol_count 41
   symbols
     module artifact_header 6 6
@@ -45,16 +45,16 @@ self_ast_census
     function is_match_count 888 892
     function looks_like_result_path_heading 894 896
     function source_authority 901 908
-    function symbolic_answer 934 956
-    const GAP_INTENT_SUFFIX 959 959
-    function with_residual_request 970 991
+    function symbolic_answer 934 958
+    const GAP_INTENT_SUFFIX 961 961
+    function with_residual_request 972 993
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 23412
-    named_node_count 4940
+    total_link_count 23446
+    named_node_count 4946
     distinct_node_kinds 85
     node_kinds
       arguments 427
@@ -78,14 +78,14 @@ self_ast_census
       field_declaration 4
       field_declaration_list 1
       field_expression 353
-      field_identifier 361
-      field_initializer 4
+      field_identifier 363
+      field_initializer 6
       field_initializer_list 2
       for_expression 7
       function_item 32
       generic_function 5
       generic_type 21
-      identifier 1037
+      identifier 1039
       if_expression 33
       index_expression 9
       inner_doc_comment_marker 4

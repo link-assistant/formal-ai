@@ -2,9 +2,9 @@ self_ast_census
   target src/formalization/page.rs
   language rust
   fidelity signature
-  byte_len 7145
-  line_count 204
-  content_id source_module_438f309d6e92d870
+  byte_len 7360
+  line_count 210
+  content_id source_module_0f003e7acfeced88
   symbol_count 11
   symbols
     const ANSWER_STATEMENT_LIMIT 26 26
@@ -12,9 +12,9 @@ self_ast_census
     struct PageReport 43 58
     function fact_survives 62 71
     function formalize_page 75 107
-    function statement_notation 112 132
-    function page_answer 141 188
-    module numeric_source_evidence_tests 192 192
-    module locale_numeric_meaning_tests 196 196
-    module translated_numeric_meaning_tests 200 200
-    module typed_meaning_preservation_tests 204 204
+    function statement_notation 112 138
+    function page_answer 147 194
+    module numeric_source_evidence_tests 198 198
+    module locale_numeric_meaning_tests 202 202
+    module translated_numeric_meaning_tests 206 206
+    module typed_meaning_preservation_tests 210 210

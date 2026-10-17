@@ -2,106 +2,112 @@ self_ast_census
   target src/agentic_coding/coding_research.rs
   language rust
   fidelity full_ast
-  byte_len 21461
-  line_count 574
-  content_id source_module_7196cb882c74f63b
-  symbol_count 16
+  byte_len 27532
+  line_count 753
+  content_id source_module_ec0b0a1e9fdf8f14
+  symbol_count 22
   symbols
-    module kernel 4 4
-    function verification_receipt_gap 10 49
-    function text 62 64
-    function strings 65 69
-    function number 70 72
-    function flag 73 75
-    function candidate 76 92
-    function coding_research_query 95 103
-    function independent_acceptance 106 131
-    function derive_coding_procedure 134 177
-    function pure_research_program 178 199
-    function gap 200 213
-    function capability 214 221
-    function outcome 222 235
-    function plan_coding_research_step 237 548
-    function plan_module_function_research_step 550 574
+    module kernel 9 9
+    function verification_receipt_gap 15 54
+    function research_length_number 68 73
+    function research_number_index 75 82
+    function text 84 86
+    function strings 87 91
+    function number 92 94
+    function flag 95 97
+    function candidate 98 114
+    function coding_research_query 117 125
+    function independent_acceptance 128 153
+    function derive_coding_procedure 156 201
+    function pure_research_program 202 223
+    function gap 224 255
+    function read_evidence 256 279
+    function research_observations 281 303
+    function capability 305 312
+    function outcome 313 326
+    function plan_coding_research_step 328 718
+    function plan_module_function_research_step 720 745
+    module numeric_boundary_tests 749 749
+    module terminal_evidence_tests 753 753
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17775
-    named_node_count 3690
+    total_link_count 21520
+    named_node_count 4473
     distinct_node_kinds 73
     node_kinds
-      arguments 384
+      arguments 461
       array_expression 6
       array_type 4
-      assignment_expression 3
-      attribute 5
-      attribute_item 5
-      binary_expression 19
-      block 72
-      boolean_literal 15
-      call_expression 384
+      assignment_expression 5
+      attribute 9
+      attribute_item 9
+      binary_expression 20
+      block 85
+      boolean_literal 17
+      call_expression 461
       char_literal 5
-      closure_expression 51
-      closure_parameters 51
+      closure_expression 67
+      closure_parameters 67
       continue_expression 4
-      crate 15
-      doc_comment 7
-      else_clause 11
-      expression_statement 51
-      field_expression 306
-      field_identifier 318
-      field_initializer 12
-      field_initializer_list 2
+      crate 17
+      doc_comment 9
+      else_clause 12
+      expression_statement 56
+      field_expression 376
+      field_identifier 410
+      field_initializer 34
+      field_initializer_list 8
       field_pattern 2
       float_literal 10
       for_expression 3
-      function_item 15
+      function_item 19
       generic_function 2
-      generic_type 21
-      identifier 890
-      if_expression 29
-      index_expression 44
+      generic_type 25
+      identifier 1096
+      if_expression 33
+      index_expression 46
       inner_doc_comment_marker 1
       integer_literal 7
-      let_condition 5
-      let_declaration 88
-      line_comment 7
+      let_condition 6
+      let_declaration 95
+      line_comment 9
       macro_invocation 12
-      match_arm 12
-      match_block 4
-      match_expression 4
-      match_pattern 12
-      mod_item 1
-      mutable_specifier 10
-      outer_doc_comment_marker 6
-      parameter 26
-      parameters 15
-      primitive_type 28
-      reference_expression 80
-      reference_type 29
-      return_expression 16
-      scoped_identifier 121
-      scoped_type_identifier 4
-      scoped_use_list 6
+      match_arm 18
+      match_block 6
+      match_expression 6
+      match_pattern 18
+      mod_item 3
+      mutable_specifier 11
+      outer_doc_comment_marker 8
+      parameter 36
+      parameters 19
+      primitive_type 23
+      reference_expression 101
+      reference_type 34
+      return_expression 17
+      scoped_identifier 149
+      scoped_type_identifier 6
+      scoped_use_list 7
       shorthand_field_identifier 2
+      shorthand_field_initializer 5
       source_file 1
-      string_content 110
-      string_literal 114
-      struct_expression 2
+      string_content 119
+      string_literal 123
+      struct_expression 8
       struct_pattern 1
-      super 18
-      token_tree 34
-      try_expression 7
+      super 23
+      token_tree 36
+      try_expression 8
       tuple_expression 3
       tuple_pattern 10
-      tuple_struct_pattern 14
-      type_arguments 23
-      type_cast_expression 10
-      type_identifier 60
+      tuple_struct_pattern 15
+      type_arguments 27
+      type_identifier 79
       unary_expression 17
       use_as_clause 2
-      use_declaration 10
-      use_list 6
+      use_declaration 11
+      use_list 7
       visibility_modifier 6

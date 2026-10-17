@@ -2,35 +2,35 @@ self_ast_census
   target src/agentic_coding/wording.rs
   language rust
   fidelity full_ast
-  byte_len 706
-  line_count 21
-  content_id source_module_cc7e0a69c458512b
+  byte_len 725
+  line_count 23
+  content_id source_module_83df46787c399caf
   symbol_count 1
   symbols
-    function agentic_message 3 21
+    function agentic_message 3 23
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 729
-    named_node_count 141
+    total_link_count 724
+    named_node_count 137
     distinct_node_kinds 37
     node_kinds
-      arguments 11
+      arguments 10
       array_type 1
       assignment_expression 1
       binary_expression 3
       block 3
-      call_expression 11
+      call_expression 10
       closure_expression 4
       closure_parameters 4
       crate 1
       doc_comment 1
       escape_sequence 2
       expression_statement 2
-      field_expression 14
-      field_identifier 14
+      field_expression 13
+      field_identifier 13
       for_expression 1
       function_item 1
       identifier 27
