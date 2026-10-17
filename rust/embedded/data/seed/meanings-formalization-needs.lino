@@ -265,6 +265,7 @@ meanings
     example "La necesidad sigue sin resolverse sin conexión porque ninguna captura respondió."
     grounding "src/source_walk.rs::observe_failure"
   target-surface
+    role action
     defined-by output
     precondition "A composed translation is proposed as a complete surface in its target language."
     effect "Reject output containing a response label, a translation arrow or an unexpanded template delimiter using the shared structural fragments; do not certify incomplete composition."
@@ -272,6 +273,7 @@ meanings
     example "A surface containing an unexpanded double-bracket template remains incomplete."
     grounding "js/worker/formal_ai_worker_translation_composition.js::targetTranslationSurfaceComplete; js/agentic/crate/formalization_grammar.mjs::structuralRuleValues"
   numeric-identity
+    role action
     defined-by number
     defined-by identity
     precondition "A formalized numeral is assigned an identity or read back during translation."
@@ -280,6 +282,7 @@ meanings
     example "English 987,65 retains its original surface under the unresolved prefix rather than claiming the value 98765."
     grounding "js/agentic/crate/formalization_grammar.mjs::numericIdentityPrefix; rust/src/formalization/mod.rs::numeric_identity_prefix"
   answer-compatibility
+    role action
     defined-by answer
     precondition "A typed question and answer are compared, but at least one typed evidence record is absent."
     effect "Return unknown with the shared missing-evidence reason; absence of typed evidence establishes neither compatibility nor contradiction."
@@ -287,6 +290,7 @@ meanings
     example "A missing question or answer produces unknown with reason missing typed evidence."
     grounding "js/agentic/crate/dialogue_formalization.mjs::answerCompatibility; rust/src/formalization/dialogue.rs::answer_compatibility"
   typed-statement-notation
+    role action
     defined-by output
     precondition "A formalized statement has typed dialogue evidence alongside its legacy term identities."
     effect "Render both legacy terms and escaped typed meaning through the shared statement template, preserving negation and substituting each original slot once; retain legacy notation alone when no typed meaning exists."

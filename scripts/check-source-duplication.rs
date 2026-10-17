@@ -1,7 +1,7 @@
 #!/usr/bin/env rust-script
 //! Strict structural Rust clone candidates; execute only in hosted CI.
 //! No baseline, maximum body size, same-file exclusion or generated-file exemption.
-//! Opaque item macros and unreadable/unparseable inputs fail closed.
+//! Opaque macros in every AST context and unreadable/unparseable inputs fail closed.
 //! Usage: rust-script scripts/check-source-duplication.rs [--inventory] [ROOT...]
 //! Native controls: rust-script --test scripts/check-source-duplication.rs
 //! A structural candidate is not proof of semantic equivalence.
@@ -213,12 +213,13 @@ impl<'ast> Visit<'ast> for Scan {
         ));
         visit::visit_expr_closure(self, node);
     }
-    fn visit_item_macro(&mut self, node: &'ast syn::ItemMacro) {
+    fn visit_macro(&mut self, node: &'ast syn::Macro) {
+        // Any macro context can hide application-owned closures or function items.
         self.gaps.push(format!(
-            "opaque item macro at line {} requires source-bound expansion custody",
-            node.mac.bang_token.span.start().line
+            "opaque macro at line {} requires source-bound expansion custody",
+            node.bang_token.span.start().line
         ));
-        visit::visit_item_macro(self, node);
+        visit::visit_macro(self, node);
     }
 }
 fn scan(source: &str) -> Result<Scan, syn::Error> {
@@ -386,6 +387,24 @@ mod tests {
                 .gaps
                 .is_empty()
         );
+    }
+    #[test]
+    fn expression_statement_and_associated_macros_refuse_unseen_callable_coverage() {
+        for source in [
+            "fn host(){let value=erased!(|x:u32|x+1);}",
+            "fn host(){erased!(|| {fn hidden(){}});}",
+            "struct A;impl A{erased!();}",
+            "trait A{erased!();}",
+        ] {
+            let report = scan(source).expect("valid opaque macro fixture");
+            assert_eq!(report.gaps.len(), 1, "{source}");
+        }
+    }
+    #[test]
+    fn macro_looking_literals_and_comments_do_not_create_coverage_gaps() {
+        let report = scan("fn host(){let text=\"erased!(|x|x)\";/* erased!(||{}) */}")
+            .expect("ordinary string and comment");
+        assert!(report.gaps.is_empty());
     }
     #[test]
     fn invalid_rust_never_becomes_a_clean_inventory() {

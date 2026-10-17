@@ -1,3 +1,4 @@
+import {chatMessage, optionalValue, isMap} from './protocol-values.mjs';
 // Anthropic Messages -> OpenAI Chat Completions adapter (rust/src/anthropic.rs,
 // and rust/src/server.rs `handle_anthropic_messages_request`).
 //
@@ -26,9 +27,7 @@ import { renderThinkingSteps } from './thinking.mjs';
 
 const U32_MAX = 0xffffffff;
 
-function isMap(value) {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
+
 
 function kindOf(value) {
   if (value === null) return 'null';
@@ -51,10 +50,7 @@ function valueString(value) {
 }
 
 /** `Option<Value>`: `null` deserializes as `None`. */
-function optionalValue(object, field) {
-  const value = object[field];
-  return value === undefined || value === null ? null : value;
-}
+
 
 /** `Option<u32>`. */
 function optionalU32(object, field) {
@@ -116,9 +112,7 @@ function anthropicContentToText(value) {
   return '';
 }
 
-function chatMessage(role, content, extra = {}) {
-  return { role, content, tool_calls: [], tool_call_id: null, name: null, is_error: false, ...extra };
-}
+
 
 /** `append_anthropic_blocks`. */
 function appendAnthropicBlocks(role, blocks, out, toolNamesById) {

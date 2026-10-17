@@ -200,12 +200,10 @@ pub(super) struct FinalResult {
 /// Fingerprints preserve evidence identity without emitting its source or receipt bodies.
 fn evidence_fingerprint(value: &impl serde::Serialize) -> serde_json::Value {
     let observed = serde_json::to_value(value).expect("ResearchEvidenceSerializationInvariant");
-    let bytes = observed
-        .as_str()
-        .map(|text| text.as_bytes().to_vec())
-        .unwrap_or_else(|| {
-            serde_json::to_vec(&observed).expect("ResearchEvidenceSerializationInvariant")
-        });
+    let bytes = observed.as_str().map_or_else(
+        || serde_json::to_vec(&observed).expect("ResearchEvidenceSerializationInvariant"),
+        |text| text.as_bytes().to_vec(),
+    );
     serde_json::json!({"sha256":crate::source_fetch::sha256_hex(&bytes),"bytes":bytes.len()})
 }
 fn read_diagnostic(read: &ResearchReadObservation) -> serde_json::Value {
@@ -276,13 +274,11 @@ pub(super) fn observed_final_result(
 impl ResolvedPlan {
     pub(super) fn new(plan: AgenticPlan, result: Option<FinalResult>) -> Self {
         let result = observed_final_result(&plan, result);
-        if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS")
-            && let Some(diagnostic) = result
+        super::planner::trace_route_with("coding_research_terminal", || {
+            result
                 .as_ref()
                 .and_then(FinalResult::terminal_evidence_diagnostic)
-        {
-            super::planner::trace_route("coding_research_terminal", &diagnostic.to_string());
-        }
+        });
         Self { plan, result }
     }
 

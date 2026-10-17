@@ -1,3 +1,4 @@
+import {chatMessage, optionalValue, isMap} from './protocol-values.mjs';
 // Google Gemini / Vertex `generateContent` adapters over the shared solver
 // (rust/src/gemini.rs, and rust/src/server.rs
 // `handle_gemini_generate_content_request`, `normalize_protocol_model_id`,
@@ -78,9 +79,7 @@ export function isVendorHardcodedGeminiModel(model) {
 
 // ---- request parsing (serde shape of `GeminiGenerateContentRequest`) -------
 
-function isMap(value) {
-  return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
-}
+
 
 function expectMap(field, value, struct) {
   if (!isMap(value)) {
@@ -89,10 +88,7 @@ function expectMap(field, value, struct) {
 }
 
 /** A JSON value that `Option<Value>` deserializes: `null` is `None`. */
-function optionalValue(object, field) {
-  const value = object[field];
-  return value === undefined || value === null ? null : value;
-}
+
 
 function parsePart(value) {
   expectMap('parts', value, 'GeminiPart');
@@ -143,9 +139,7 @@ function geminiRoleToChatRole(role) {
   return 'user';
 }
 
-function chatMessage(role, content, extra = {}) {
-  return { role, content, tool_calls: [], tool_call_id: null, name: null, is_error: false, ...extra };
-}
+
 
 /** `ToolCall::function`. */
 function toolCall(id, name, args) {

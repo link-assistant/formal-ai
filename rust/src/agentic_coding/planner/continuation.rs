@@ -199,7 +199,14 @@ pub(super) fn preserved_first_user_turn(summary: &str) -> Option<String> {
 /// `crate::protocol`. Off by default; issue #956 asked for visibility into how
 /// a received task was routed.
 pub fn trace_route(route: &str, value: &str) {
-    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
+    trace_route_with(route, || Some(value));
+}
+
+/// Build optional route evidence only inside the existing opt-in trace boundary.
+pub fn trace_route_with<T: std::fmt::Display>(route: &str, produce: impl FnOnce() -> Option<T>) {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS")
+        && let Some(value) = produce()
+    {
         crate::diagnostic!("debug"; "[trace] {route}={value}");
     }
 }

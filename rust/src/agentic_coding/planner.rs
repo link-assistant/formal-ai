@@ -8,8 +8,8 @@ mod precedence;
 mod steps;
 use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
 use continuation::continued_agent_task;
-pub use continuation::trace_route;
 pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
+pub use continuation::{trace_route, trace_route_with};
 pub use precedence::checked_route_precedence;
 use steps::{stop_repeated_call, stop_repeated_failure};
 
@@ -390,6 +390,11 @@ pub(super) fn plan_settled_routes(
     // modules, write both, run the stated command.
     // A copy or move followed by edits of the file it makes is planned
     // sentence by sentence (PR #1188 G82).
+    if let Some(plan) =
+        super::source_maintenance::plan_source_maintenance_step(owned, messages, tool_names, result)
+    {
+        return Some(plan);
+    }
     if let Some(plan) = super::request_sequence::plan_request_sequence_step(
         owned,
         messages,

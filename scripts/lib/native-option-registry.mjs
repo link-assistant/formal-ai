@@ -25,6 +25,30 @@ function importedNames(tokens){
   if(alias>=0){if(alias!==tokens.length-2||!identifier(tokens.at(-1)))throw Error('unknown import alias');return [tokens.at(-1).text];}
   if(!identifier(tokens.at(-1)))throw Error('unknown imported binding');return [tokens.at(-1).text];
 }
+function parentImportName(tokens) {
+  syntax(tokens);
+  if(tokens[0]?.text!=='use'||tokens.at(-1)?.text!==';')throw Error('unknown parent Option import scope');
+  const path=tokens.slice(1,-1);let cursor=0;
+  if(path[0]?.text===':'&&path[1]?.text===':')cursor=2;
+  const first=path[cursor];
+  if(!identifier(first)&&!['crate','self','super'].includes(first?.text))throw Error('unknown parent Option import path');
+  if(cursor===2&&!identifier(first))throw Error('unknown absolute parent Option import path');
+  cursor++;let name=first.text;
+  while(path[cursor]?.text===':'&&path[cursor+1]?.text===':'){
+    cursor+=2;
+    if(!identifier(path[cursor]))throw Error('unknown parent Option import path');
+    name=path[cursor++].text;
+  }
+  if(!identifier({kind:'word',text:name})||protectedNames.has(name))throw Error('shadowed parent Option import');
+  if(path[cursor]?.text==='as'){
+    cursor++;
+    if(!identifier(path[cursor]))throw Error('unknown parent Option import alias');
+    name=path[cursor++].text;
+  }
+  if(cursor!==path.length)throw Error('unknown parent Option import path');
+  if(protectedNames.has(name))throw Error('shadowed parent Option import');
+  return name;
+}
 function items(source){return topLevelItems(lex(source,'Rust')).map(item=>({raw:source.slice(item.start,item.end),span:{start:item.start,end:item.end},tokens:tokenize(source.slice(item.start,item.end))}));}
 function asciiLiteral(tokens){
   if(tokens.length!==1||tokens[0].kind!=='string'||Array.from(tokens[0].text).some(character=>character.charCodeAt(0)>127))throw Error('unknown ASCII string literal');
@@ -184,10 +208,16 @@ export function optionTestImportContract(source,root,binding){
   for(const path of ['rust/Cargo.toml','rust/tests/unit/mod.rs','rust/tests/unit/specification/mod.rs']){
     const absolute=root+'/'+path;if(!existsSync(absolute))throw Error('Option caller parent source missing');
     const parent=readFileSync(absolute,'utf8');
+    const parentBindings=new Set();
     if(path!=='rust/Cargo.toml')for(const item of items(parent)){
       const tokens=item.tokens;
       if(tokens.some(token=>['macro','macro_rules','macro_rules!','no_implicit_prelude','macro_use','cfg'].includes(token.text)))throw Error('unknown parent Option prelude/macro scope');
-      if(tokens[0]?.text==='use'||tokens[0]?.text==='extern')throw Error('unknown parent Option import scope');
+      if(tokens.slice(0,tokens.findIndex(token=>token.text==='{')<0?tokens.length:tokens.findIndex(token=>token.text==='{')).some(token=>token.text==='use')){
+        const name=parentImportName(tokens);
+        if(parentBindings.has(name))throw Error('duplicate parent Option import binding');
+        parentBindings.add(name);
+      }
+      if(tokens[0]?.text==='extern')throw Error('unknown parent Option import scope');
     }
     witnesses.push({path,sha256:hash(parent)});
   }

@@ -91,6 +91,8 @@ mod shell_command;
 mod shell_command_policy;
 mod shell_file_fallback;
 pub mod source_links;
+mod source_maintenance;
+mod source_maintenance_observation;
 mod spelling;
 mod stated_request;
 pub mod statement_audit;

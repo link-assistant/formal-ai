@@ -16,6 +16,8 @@ export const RESEARCH_SOURCES = [
   'js/agentic/portable/coding_research_rebinding.mjs',
   'js/agentic/portable/coding_research_acceptance.mjs',
   'js/agentic/portable/coding_research_state.mjs',
+  'js/agentic/portable/source_layout.mjs',
+  'js/agentic/portable/source_maintenance_state.mjs',
 ];
 export const RESEARCH_META = 'data/meta/coding-research-program.lino';
 export const RESEARCH_NATIVE = 'rust/src/coding_research_generated';

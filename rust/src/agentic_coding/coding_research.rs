@@ -31,7 +31,22 @@ pub fn verification_receipt_gap(raw: &str) -> Option<String> {
             })
             .filter(|value| !value.is_empty() && value.bytes().all(|byte| byte.is_ascii_digit()))
             .collect();
-        if values.len() > 1 {
+        let label = format!("# {field}");
+        let recognized = payload
+            .split('\n')
+            .filter(|line| {
+                line.strip_prefix(label.as_str()).is_some_and(|suffix| {
+                    suffix.is_empty()
+                        || suffix.starts_with(' ')
+                        || suffix.starts_with('\t')
+                        || suffix.starts_with('\r')
+                })
+            })
+            .count();
+        if !kernel::tap_counter_syntax_valid(
+            research_length_number(recognized),
+            research_length_number(values.len()),
+        ) {
             unique = false;
         }
         if let Some(value) = values.first() {
@@ -522,7 +537,7 @@ pub(super) fn plan_coding_research_step(
             &request,
             research_observations(&request, &progress, None),
             ResearchDiscoveryContext::Search {
-                query: query.clone(),
+                query,
                 attempted: progress.attempted_fetches.len(),
             },
             result,
@@ -584,8 +599,8 @@ pub(super) fn plan_coding_research_step(
     let boundary = if crate::meta_reasoner::text::js_trim(module_source).is_empty() {
         progress
             .latest_successful_write_index(&request.module)
-            .map_or(
-                research_length_number(attempts.len()),
+            .map_or_else(
+                || research_length_number(attempts.len()),
                 research_length_number,
             )
     } else {
@@ -751,3 +766,7 @@ mod numeric_boundary_tests;
 #[cfg(test)]
 #[path = "../../tests/fixtures/coding-research-terminal-evidence.rs"]
 mod terminal_evidence_tests;
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/coding-research-tap-counters.rs"]
+mod tap_counter_tests;

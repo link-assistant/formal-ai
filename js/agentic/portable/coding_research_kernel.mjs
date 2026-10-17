@@ -26,3 +26,10 @@ export function tapVerificationDecision(complete, tests, passed, failed, skipped
   }
   return '';
 }
+
+/** Recognized protocol fields cannot disappear through lexical filtering.
+ * @param {number} recognizedCount @param {number} validCount @returns {boolean} */
+export function tapCounterSyntaxValid(recognizedCount, validCount) {
+  return safeTapCount(recognizedCount) && safeTapCount(validCount)
+    && recognizedCount <= 1 && recognizedCount === validCount;
+}

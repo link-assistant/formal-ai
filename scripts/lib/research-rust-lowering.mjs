@@ -83,6 +83,7 @@ export function eliminateLastOwnedClones(source) {
       if (/\b(?:String|Vec|format!|vec!)\b/u.test(spelling) || /\. (?:clone|to_string|to_owned) \(/u.test(spelling)
           || rhs[0]?.text === 'crate' || owned.has(rhs[0]?.text)) owned.add(t[name].text);
     }
+    const patternDeclarationSites = new Set();
     for (let index = fn.body + 1; index < fn.end; index++) {
       if (t[index].text !== 'match') continue;
       let open = index + 1;
@@ -99,7 +100,10 @@ export function eliminateLastOwnedClones(source) {
           if (t[item].type === 'ident' && ['(', ','].includes(t[item - 1]?.text)
               && [')', ','].includes(t[item + 1]?.text)) {
             owned.add(t[item].text);
-            declared.set(t[item].text, (declared.get(t[item].text) ?? 0) + 1);
+            if (!patternDeclarationSites.has(item)) {
+              declared.set(t[item].text, (declared.get(t[item].text) ?? 0) + 1);
+              patternDeclarationSites.add(item);
+            }
           }
         }
       }
@@ -359,6 +363,47 @@ function collapseOneElse(source) {
   }
   return null;
 }
+function terminalExpression(tokens, pairs, start, end) {
+  while (start < end && tokens[start].text === '(' && pairs.get(start) === end - 1) { start++; end--; }
+  if (start >= end) return false;
+  if (['return', 'continue', 'break'].includes(tokens[start].text)) return true;
+  if (tokens[start].text === '{' && pairs.get(start) === end - 1) return terminalBlock(tokens, pairs, start, end - 1);
+  if (!['if', 'match'].includes(tokens[start].text)) return false;
+  let open = start + 1;
+  while (open < end && tokens[open].text !== '{') {
+    if (['(', '['].includes(tokens[open].text)) open = pairs.get(open);
+    open++;
+  }
+  const close = pairs.get(open);
+  if (close === undefined) return false;
+  if (tokens[start].text === 'if') {
+    return tokens[close + 1]?.text === 'else' && terminalBlock(tokens, pairs, open, close)
+      && terminalExpression(tokens, pairs, close + 2, end);
+  }
+  if (close !== end - 1) return false;
+  let cursor = open + 1;
+  let arms = 0;
+  while (cursor < close) {
+    while (cursor < close && tokens[cursor].text !== '=>') {
+      if (['(', '[', '{'].includes(tokens[cursor].text)) cursor = pairs.get(cursor);
+      cursor++;
+    }
+    if (cursor >= close) return false;
+    const value = cursor + 1;
+    let finish = value;
+    if (tokens[value]?.text === '{') finish = pairs.get(value) + 1;
+    else {
+      while (finish < close && tokens[finish].text !== ',') {
+        if (['(', '[', '{'].includes(tokens[finish].text)) finish = pairs.get(finish);
+        finish++;
+      }
+    }
+    if (!terminalExpression(tokens, pairs, value, finish)) return false;
+    arms++;
+    cursor = finish + (tokens[finish]?.text === ',' ? 1 : 0);
+  }
+  return arms > 0;
+}
 function terminalBlock(tokens, pairs, open, close) {
   const statements = []; let start = open + 1;
   for (let cursor = start; cursor < close; cursor++) {
@@ -367,10 +412,20 @@ function terminalBlock(tokens, pairs, open, close) {
   }
   if (start < close) statements.push([start,close]);
   const last = statements.at(-1);
-  if (!last) return false;
-  if (['return','continue','break'].includes(tokens[last[0]]?.text)) return true;
-  if (tokens[last[0]]?.text === '{' && pairs.get(last[0]) === last[1] - 1) return terminalBlock(tokens,pairs,last[0],last[1]-1);
-  return false;
+  return last !== undefined && terminalExpression(tokens, pairs, last[0], last[1]);
+}
+function terminalOwnedRebindingClones(source) {
+  if (/\b(?:unsafe|extern|impl)\b/u.test(source)) return { source, changes: [] };
+  const { tokens, pairs } = structure(source), changes = [];
+  for (let open = 0; open < tokens.length; open++) {
+    if (tokens[open].text !== '{') continue;
+    const close = pairs.get(open), body = tokens.slice(open + 1, close);
+    if (body.length !== 11 || body[0].text !== 'let' || body[1].type !== 'ident') continue;
+    const name = body[1].text;
+    if (body.map(token => token.text).join(' ') !== `let ${name} = * ${name} ; ${name} . clone ( )`) continue;
+    changes.push({ start: body[7].start, end: body[10].end, text: '', rule: 'terminal-owned-rebinding' });
+  }
+  return { source: edits(source, changes), changes };
 }
 function removeOneRedundantElse(source) {
   const {tokens, pairs} = structure(source);
@@ -386,7 +441,7 @@ function removeOneRedundantElse(source) {
     if (!terminalBlock(tokens,pairs,open,close)) continue;
     const end = pairs.get(close + 2);
     return source.slice(0,tokens[index].start) + '{ ' + source.slice(tokens[index].start,tokens[close].end)
-      + ' ' + source.slice(tokens[close + 2].start,tokens[end].end) + ' }' + source.slice(tokens[end].end);
+      + '\n' + source.slice(tokens[close + 2].start,tokens[end].end) + ' }' + source.slice(tokens[end].end);
   }
   return null;
 }
@@ -441,7 +496,7 @@ function removeComparisonOwnership(source) {
 function simplifyArrayReadMatch(source) {
   const before = 'match index.and_then(|index| values.get(index)) {\n            Some(value) => value.clone(),\n            None => panic!("array index out of range"),\n        }';
   // This is the single pinned runtime ABI helper, not a canonical-task special case.
-  return source.replace(before,'index.and_then(|index| values.get(index)).map_or_else(|| panic!("array index out of range"), |value| value.clone())');
+  return source.replace(before,'index.and_then(|index| values.get(index)).map_or_else(|| panic!("array index out of range"), Clone::clone)');
 }
 
 /** A compiler-only lowering: no runtime state, executable ordering or source/IR edits. */
@@ -452,6 +507,9 @@ export function lowerGeneratedRust(source, {ownedValueModel, pure} = {}) {
     if (token.type === 'ident' && token.text.endsWith('!')) assert(['vec!','format!','panic!'].includes(token.text), 'OpaqueGeneratedRustMacro');
   }
   const original = source, operations = [];
+  const terminalMoves = terminalOwnedRebindingClones(source);
+  source = terminalMoves.source;
+  operations.push(...terminalMoves.changes.map(change => change.rule));
   let clones = eliminateLastOwnedClones(source);
   source = clones.source;
   for (let iteration = 0; iteration < 20; iteration++) {

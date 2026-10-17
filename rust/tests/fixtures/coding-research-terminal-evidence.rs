@@ -6,7 +6,20 @@ use serde_json::{Value, json};
 
 #[test]
 fn selected_native_terminal_metadata_retains_observed_js_witnesses_and_receipts() {
-    let fixture = json!({"rows": [include_str!("coding-research/terminal-evidence-1.json"), include_str!("coding-research/terminal-evidence-2.json"), include_str!("coding-research/terminal-evidence-3.json")].iter().flat_map(|source| serde_json::from_str::<Value>(source).unwrap()["rows"].as_array().unwrap().clone()).collect::<Vec<_>>()});
+    let rows = [
+        include_str!("coding-research/terminal-evidence-1.json"),
+        include_str!("coding-research/terminal-evidence-2.json"),
+        include_str!("coding-research/terminal-evidence-3.json"),
+    ]
+    .iter()
+    .flat_map(|source| {
+        serde_json::from_str::<Value>(source).unwrap()["rows"]
+            .as_array()
+            .unwrap()
+            .clone()
+    })
+    .collect::<Vec<_>>();
+    let fixture = json!({"rows": rows});
     for row in fixture["rows"].as_array().unwrap() {
         let messages: Vec<ChatMessage> = serde_json::from_value(row["messages"].clone()).unwrap();
         let tools: Vec<&str> = row["tools"]

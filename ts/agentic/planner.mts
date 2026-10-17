@@ -1,3 +1,4 @@
+import {planSourceMaintenanceStep} from './source_maintenance.mjs';
 import { planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest, pendingReadGap } from './planner/owned_goals.mjs';
 import { ownedSemanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
 // Deterministic agentic planner: the next tool call or final answer from a
@@ -135,7 +136,8 @@ export function checkedRoutePrecedence() {
 async function planWorkspaceChangeArm(task, messages, toolNames) {
   // A copy or move followed by edits of the file it makes is planned sentence
   // by sentence (PR #1188 G82).
-  return (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStepResolved))
+  return (await planSourceMaintenanceStep(task, messages, toolNames))
+    ?? (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStepResolved))
     ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
     ?? (await planModuleFunctionResearchStep(task, messages, toolNames))
     // A bug report with a stated expectation is checked before anything is

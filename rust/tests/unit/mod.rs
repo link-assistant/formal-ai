@@ -1,3 +1,6 @@
+// Production dependency used by source-included contract modules.
+use ::formal_ai::source_fetch;
+
 #[path = "../fixtures/first-workspace-call.rs"]
 mod first_workspace_call;
 

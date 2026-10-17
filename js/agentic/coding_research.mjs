@@ -1,5 +1,5 @@
 // Bounded coding research: shared canonical decisions, client-owned execution effects.
-import { tapVerificationDecision } from './portable/coding_research_kernel.mjs';
+import { tapVerificationDecision, tapCounterSyntaxValid } from './portable/coding_research_kernel.mjs';
 import { codingResearchQueryKernel } from './portable/coding_research_query.mjs';
 import { codingResearchRebindingKernel, canonicalUniqueSourceIndex } from './portable/coding_research_rebinding.mjs';
 import { independentAcceptanceKernel } from './portable/coding_research_acceptance.mjs';
@@ -70,11 +70,18 @@ function pureResearchProgram(request, source) {
 export function verificationReceiptGap(output) {
   const complete = !incompleteReceipt(output) && stepOutcome(output) === StepOutcome.Succeeded;
   const payload = normalizedPayload(output) ?? '';
+  const lines = payload.split("\n");
   const counts = {};
   let unique = true;
   for (const field of ['tests', 'pass', 'fail', 'skipped', 'cancelled']) {
-    const matches = [...payload.matchAll(new RegExp('^# ' + field + ' ([0-9]+)\\r?$', 'gmu'))];
-    if (matches.length > 1) unique = false;
+    const valid = new RegExp("^# " + field + " ([0-9]+)\\r?$", 'u');
+    const recognizedLine = new RegExp("^# " + field + "(?=[ \\t\\r]|$)", 'u');
+    const matches = lines.flatMap(line => {
+      const match = valid.exec(line);
+      return match?.[0] === line ? [match] : [];
+    });
+    const recognized = lines.filter(line => recognizedLine.test(line));
+    if (!tapCounterSyntaxValid(recognized.length, matches.length)) unique = false;
     counts[field] = matches.length ? Number(matches[0][1]) : ['skipped', 'cancelled'].includes(field) ? 0 : -1;
   }
   return tapVerificationDecision(complete && unique, counts.tests, counts.pass,
