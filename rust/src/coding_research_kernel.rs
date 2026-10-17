@@ -4,7 +4,7 @@
 
 #[must_use]
 pub fn safe_tap_count(value: f64) -> bool {
-    value >= 0.0 && value <= 9_007_199_254_740_991.0 && f64::floor(value) == value
+    (0.0..=9_007_199_254_740_991.0).contains(&value) && f64::floor(value) == value
 }
 
 #[must_use]
@@ -16,6 +16,6 @@ pub fn tap_verification_decision(complete: bool, tests: f64, passed: f64, failed
     } else if failed != 0.0 || cancelled != 0.0 || passed + skipped != tests {
         "VerificationReceiptIncomplete".to_string()
     } else {
-        "".to_string()
+        String::new()
     }
 }

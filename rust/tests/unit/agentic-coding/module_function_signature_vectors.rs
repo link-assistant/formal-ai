@@ -13,7 +13,12 @@ fn shared_module_function_signature_vectors() {
             assert!(request.is_none(), "{}", row["id"]);
         } else {
             let request = request.unwrap_or_else(|| panic!("{}", row["id"]));
-            assert_eq!(serde_json::json!(request.parameters), row["expected"], "{}", row["id"]);
+            assert_eq!(
+                serde_json::json!(request.parameters),
+                row["expected"],
+                "{}",
+                row["id"]
+            );
             assert_eq!(request.name, "carried");
             assert_eq!(request.module, "carried.mjs");
         }

@@ -804,7 +804,7 @@ jobs:
             steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {
@@ -1029,7 +1029,7 @@ jobs:
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {

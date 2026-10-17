@@ -30,6 +30,8 @@ text-formalization
   structural-rule numeric-identity
     resolved-prefix "number:"
     unresolved-prefix "number-unresolved:"
+  structural-rule typed-statement-notation
+    template "(statement (terms {legacy}) (typed_meaning {typed}))"
   structural-rule answer-compatibility
     missing-reason "missing typed evidence"
   language en

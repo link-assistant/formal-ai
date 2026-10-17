@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=08738daf4b291ad385b426ce6d0cbf4198ebdd0fb3e518f420b42ed9b782cbe0 bytes=5054
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b2f1c866572aa414682f12dd19ba1626dae0c4ff8595044409bd6057ddfb863d bytes=5197
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=3
+// formal-ai:workarounds import-pruning items=0 carried=4
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -33,7 +37,7 @@ pub const ANSWER_STATEMENT_LIMIT: f64 = 40f64;
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .map()
-// formal-ai:blockers arrow callback of .map() | call of an imported function | field access | imported value | method call .join() | method call .map() | null
+// formal-ai:blockers arrow callback of .map() | arrow callback of .replace() | call of an imported function | field access | imported value | method call .join() | method call .map() | method call .replace() | null | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}

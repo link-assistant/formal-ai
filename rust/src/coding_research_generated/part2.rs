@@ -2,12 +2,130 @@
 // source-sha256 65fd5d20b6620b08324eec92a832adcaee86c383a6aaa56b443184fc150fb0e8; checked-ir-sha256 688bd0ee84736b26c705d70ee6dbb4358ffcd5556a19255cb5e233faa98ca425
 // upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b
 // native-namespace crate::coding_research_generated; token-checked relocation
+// checked-owned-value-lowering-sha256 31d34930f57cd046ae2c5270ccae91c309e2ce61c9e3bbac22be0dc864ecd747
 #![allow(
     unused,
     unreachable_patterns,
     non_snake_case,
     non_camel_case_types,
     invalid_nan_comparisons
+)]
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+pub fn coding_research_discovery_kernel(
+    proposals: f64,
+    fetch_tool: bool,
+    next_url: String,
+) -> String {
+    if (proposals > (1f64)) {
+        String::from("gap:AmbiguousSourceProcedure")
+    } else if (proposals == (0f64)) {
+        if ((!(next_url).is_empty()) && fetch_tool) {
+            String::from("fetch")
+        } else {
+            String::from("gap:NoValidatedSourceProcedure")
+        }
+    } else {
+        String::from("effects")
+    }
+}
+
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::too_many_arguments,
+    reason = "Pinned checked IR function arity is the canonical source contract"
+)]
+#[allow(
+    clippy::fn_params_excessive_bools,
+    reason = "Pinned checked IR boolean parameters preserve the canonical typed ABI"
+)]
+pub fn coding_research_effect_kernel(
+    module_source: String,
+    proposed_source: String,
+    latest_write_present: bool,
+    latest_write_pure: bool,
+    planned_write_pure: bool,
+    reroute_exists: bool,
+    reroute_kind: String,
+    last_outcome: String,
+    receipt_gap: String,
+    run_tool: bool,
+) -> String {
+    if (module_source
+        .trim_matches(|c: char| (c.is_whitespace() && c != '\u{85}') || c == '\u{feff}'))
+    .is_empty()
+    {
+        if (latest_write_present && !latest_write_pure) {
+            String::from("gap:UnsupportedRepairSource")
+        } else if reroute_exists {
+            if planned_write_pure {
+                if (reroute_kind == "final") {
+                    if ((last_outcome == "missing") || (last_outcome == "unreported")) {
+                        String::from("gap:VerificationReceiptIncomplete")
+                    } else if (last_outcome == "succeeded") {
+                        if (receipt_gap).is_empty() {
+                            String::from("created:verified")
+                        } else {
+                            format!("{}{}", (String::from("gap:")), receipt_gap)
+                        }
+                    } else {
+                        String::from("created:failed")
+                    }
+                } else {
+                    String::from("reroute")
+                }
+            } else {
+                String::from("gap:UnsupportedRepairSource")
+            }
+        } else {
+            String::from("gap:ExecutionToolsMissing")
+        }
+    } else if module_source == proposed_source {
+        if (last_outcome == "missing") {
+            if run_tool {
+                String::from("run")
+            } else {
+                String::from("gap:ExecutionToolsMissing")
+            }
+        } else if (last_outcome == "unreported") {
+            String::from("gap:VerificationReceiptIncomplete")
+        } else if (last_outcome == "succeeded") {
+            if (receipt_gap).is_empty() {
+                String::from("existing:verified")
+            } else {
+                format!("{}{}", (String::from("gap:")), receipt_gap)
+            }
+        } else {
+            String::from("existing:failed")
+        }
+    } else {
+        String::from("gap:ExistingModuleRequiresComposition")
+    }
+}
+
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
 )]
 pub fn coding_research_search_index(
     capabilities: Vec<String>,
@@ -29,15 +147,15 @@ pub fn coding_research_search_index(
             {
                 let ml_s12 =
                     crate::coding_research_generated::ml_coding_research_search_index_loop26(
-                        capabilities.clone(),
-                        succeeded.clone(),
-                        arguments_valid.clone(),
-                        queries.clone(),
-                        argument_keys.clone(),
-                        query.clone(),
+                        capabilities,
+                        succeeded,
+                        arguments_valid,
+                        queries,
+                        argument_keys,
+                        query,
                         index,
                     );
-                match ml_s12.clone() {
+                match ml_s12 {
                     crate::coding_research_generated::MlCodingResearchSearchIndexLoop26Result::MlCodingResearchSearchIndexLoop26Done => {
                         (-1f64)
                     }
@@ -50,16 +168,25 @@ pub fn coding_research_search_index(
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn coding_research_latest_read_index(capabilities: Vec<String>) -> f64 {
     {
         let index = ((capabilities.len() as f64) - 1f64);
         {
             let ml_s13 =
                 crate::coding_research_generated::ml_coding_research_latest_read_index_loop27(
-                    capabilities.clone(),
+                    capabilities,
                     index,
                 );
-            match ml_s13.clone() {
+            match ml_s13 {
                 crate::coding_research_generated::MlCodingResearchLatestReadIndexLoop27Result::MlCodingResearchLatestReadIndexLoop27Done => {
                     (-1f64)
                 }
@@ -71,6 +198,19 @@ pub fn coding_research_latest_read_index(capabilities: Vec<String>) -> f64 {
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn coding_research_run_index(
     capabilities: Vec<String>,
     arguments_valid: Vec<bool>,
@@ -87,14 +227,14 @@ pub fn coding_research_run_index(
             let index = ((capabilities.len() as f64) - 1f64);
             {
                 let ml_s14 = crate::coding_research_generated::ml_coding_research_run_index_loop28(
-                    capabilities.clone(),
-                    arguments_valid.clone(),
-                    commands.clone(),
+                    capabilities,
+                    arguments_valid,
+                    commands,
                     boundary,
-                    command.clone(),
+                    command,
                     index,
                 );
-                match ml_s14.clone() {
+                match ml_s14 {
                     crate::coding_research_generated::MlCodingResearchRunIndexLoop28Result::MlCodingResearchRunIndexLoop28Done => {
                         (-1f64)
                     }
@@ -107,50 +247,74 @@ pub fn coding_research_run_index(
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn coding_research_source_ur_ls(urls: Vec<String>, secure: Vec<bool>) -> Vec<String> {
     {
         let accepted = Vec::<String>::new();
-        if ((urls.len() as f64) != (secure.len() as f64)) {
-            accepted.clone()
-        } else {
+        if (urls.len() as f64) == (secure.len() as f64) {
             {
                 let index = 0f64;
                 {
-                    let accepted_2 =
-                        crate::coding_research_generated::ml_coding_research_source_ur_ls_loop29(
-                            urls.clone(),
-                            secure.clone(),
-                            accepted.clone(),
-                            index,
-                        );
-                    accepted_2.clone()
+                    crate::coding_research_generated::ml_coding_research_source_ur_ls_loop29(
+                        urls, secure, accepted, index,
+                    )
                 }
             }
+        } else {
+            accepted
         }
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn coding_research_next_url(urls: Vec<String>, attempted: Vec<String>) -> String {
     {
         let index = 0f64;
         {
             let ml_s15 = crate::coding_research_generated::ml_coding_research_next_url_loop31(
-                urls.clone(),
-                attempted.clone(),
-                index,
+                urls, attempted, index,
             );
-            match ml_s15.clone() {
+            match ml_s15 {
                 crate::coding_research_generated::MlCodingResearchNextURLLoop31Result::MlCodingResearchNextURLLoop31Done => {
-                    String::from("")
+                    String::new()
                 }
                 crate::coding_research_generated::MlCodingResearchNextURLLoop31Result::MlCodingResearchNextURLLoop31Return(ml_result31) => {
-                    ml_result31.clone()
+                    ml_result31
                 }
             }
         }
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn coding_research_bindings_kernel(
     names: Vec<String>,
     characters: Vec<Vec<String>>,
@@ -166,12 +330,9 @@ pub fn coding_research_bindings_kernel(
             {
                 let ml_s16 =
                     crate::coding_research_generated::ml_coding_research_bindings_kernel_loop33(
-                        names.clone(),
-                        characters.clone(),
-                        keywords.clone(),
-                        index,
+                        names, characters, keywords, index,
                     );
-                match ml_s16.clone() {
+                match ml_s16 {
                     crate::coding_research_generated::MlCodingResearchBindingsKernelLoop33Result::MlCodingResearchBindingsKernelLoop33Done => {
                         true
                     }
@@ -184,32 +345,35 @@ pub fn coding_research_bindings_kernel(
     }
 }
 
+#[must_use]
 pub fn coding_research_capture_decision(bytes: f64, formalizer_available: bool) -> String {
-    if (bytes > (131072f64)) {
+    if (bytes > (131_072f64)) {
         String::from("gap:SearchResultTooLarge")
+    } else if formalizer_available {
+        String::from("formalize")
     } else {
-        if !formalizer_available {
-            String::from("gap:PageFormalizerMissing")
-        } else {
-            String::from("formalize")
-        }
+        String::from("gap:PageFormalizerMissing")
     }
 }
 
+#[must_use]
 pub fn coding_research_page_eligible(source_index: f64, bytes: f64) -> bool {
-    ((source_index >= (0f64)) && (bytes <= (131072f64)))
+    ((source_index >= (0f64)) && (bytes <= (131_072f64)))
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn coding_research_source_index(urls: Vec<String>, url: String) -> f64 {
     {
         let index = 0f64;
         {
             let ml_s17 = crate::coding_research_generated::ml_coding_research_source_index_loop35(
-                urls.clone(),
-                url.clone(),
-                index,
+                urls, url, index,
             );
-            match ml_s17.clone() {
+            match ml_s17 {
                 crate::coding_research_generated::MlCodingResearchSourceIndexLoop35Result::MlCodingResearchSourceIndexLoop35Done => {
                     (-1f64)
                 }
@@ -221,6 +385,27 @@ pub fn coding_research_source_index(urls: Vec<String>, url: String) -> f64 {
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::too_many_arguments,
+    reason = "Pinned checked IR function arity is the canonical source contract"
+)]
+#[allow(
+    clippy::fn_params_excessive_bools,
+    reason = "Pinned checked IR boolean parameters preserve the canonical typed ABI"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn coding_research_pure_repair_kernel(
     syntax_valid: bool,
     effects_none: bool,
@@ -261,11 +446,11 @@ pub fn coding_research_pure_repair_kernel(
             {
                 let ml_s18 =
                     crate::coding_research_generated::ml_coding_research_pure_repair_kernel_loop36(
-                        parameters.clone(),
-                        desired_parameters.clone(),
+                        parameters,
+                        desired_parameters,
                         index,
                     );
-                match ml_s18.clone() {
+                match ml_s18 {
                     crate::coding_research_generated::MlCodingResearchPureRepairKernelLoop36Result::MlCodingResearchPureRepairKernelLoop36Done => {
                         true
                     }
@@ -278,18 +463,22 @@ pub fn coding_research_pure_repair_kernel(
     }
 }
 
+#[must_use]
 pub fn coding_research_search_decision(found: bool, available: bool) -> String {
     if found {
         String::from("capture")
+    } else if available {
+        String::from("search")
     } else {
-        if available {
-            String::from("search")
-        } else {
-            String::from("gap:SearchToolMissing")
-        }
+        String::from("gap:SearchToolMissing")
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn coding_research_language_eligible(desired: String, observed: String) -> bool {
     (desired == observed)
 }
@@ -300,6 +489,19 @@ pub enum MlResearchQueryLetterLoop1Result {
     MlResearchQueryLetterLoop1Return(bool),
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn ml_research_query_letter_loop1(
     mut letters: Vec<String>,
     mut lower: String,
@@ -334,6 +536,19 @@ pub enum MlResearchQueryIdentifierPartLoop2Result {
     MlResearchQueryIdentifierPartLoop2Return(bool),
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn ml_research_query_identifier_part_loop2(
     mut character: String,
     mut digits: Vec<String>,
@@ -368,6 +583,19 @@ pub enum MlResearchQueryLowerLoop3Result {
     MlResearchQueryLowerLoop3Return(String),
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn ml_research_query_lower_loop3(
     mut character: String,
     mut upper: Vec<String>,
@@ -397,80 +625,116 @@ pub fn ml_research_query_lower_loop3(
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn ml_research_query_without_signatures_loop6(
     mut characters: Vec<String>,
     mut end: f64,
 ) -> f64 {
     loop {
-        return if ((end < (characters.len() as f64))
-            && crate::coding_research_generated::research_query_identifier_part(
-                crate::coding_research_generated::ml_array::at(
-                    &characters,
-                    crate::coding_research_generated::ml_array::number_index(end),
-                ),
-            )) {
+        return {
+            if ((end < (characters.len() as f64))
+                && crate::coding_research_generated::research_query_identifier_part(
+                    crate::coding_research_generated::ml_array::at(
+                        &characters,
+                        crate::coding_research_generated::ml_array::number_index(end),
+                    ),
+                ))
             {
-                let end_2 = (end + 1f64);
                 {
-                    end = end_2;
-                    continue;
+                    let end_2 = (end + 1f64);
+                    {
+                        end = end_2;
+                        continue;
+                    }
                 }
             }
-        } else {
-            end
+            { end }
         };
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn ml_research_query_without_signatures_loop7(
     mut characters: Vec<String>,
     mut end: f64,
 ) -> f64 {
     loop {
-        return if ((end < (characters.len() as f64))
-            && crate::coding_research_generated::research_query_whitespace(
-                crate::coding_research_generated::ml_array::at(
-                    &characters,
-                    crate::coding_research_generated::ml_array::number_index(end),
-                ),
-            )) {
+        return {
+            if ((end < (characters.len() as f64))
+                && crate::coding_research_generated::research_query_whitespace(
+                    crate::coding_research_generated::ml_array::at(
+                        &characters,
+                        crate::coding_research_generated::ml_array::number_index(end),
+                    ),
+                ))
             {
-                let end_2 = (end + 1f64);
                 {
-                    end = end_2;
-                    continue;
+                    let end_2 = (end + 1f64);
+                    {
+                        end = end_2;
+                        continue;
+                    }
                 }
             }
-        } else {
-            end
+            { end }
         };
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn ml_research_query_without_signatures_loop8(
     mut characters: Vec<String>,
     mut end: f64,
 ) -> f64 {
     loop {
-        return if (((end < (characters.len() as f64))
-            && ((crate::coding_research_generated::ml_array::at(
-                &characters,
-                crate::coding_research_generated::ml_array::number_index(end),
-            )) != "("))
-            && ((crate::coding_research_generated::ml_array::at(
-                &characters,
-                crate::coding_research_generated::ml_array::number_index(end),
-            )) != ")"))
-        {
+        return {
+            if (((end < (characters.len() as f64))
+                && ((crate::coding_research_generated::ml_array::at(
+                    &characters,
+                    crate::coding_research_generated::ml_array::number_index(end),
+                )) != "("))
+                && ((crate::coding_research_generated::ml_array::at(
+                    &characters,
+                    crate::coding_research_generated::ml_array::number_index(end),
+                )) != ")"))
             {
-                let end_2 = (end + 1f64);
                 {
-                    end = end_2;
-                    continue;
+                    let end_2 = (end + 1f64);
+                    {
+                        end = end_2;
+                        continue;
+                    }
                 }
             }
-        } else {
-            end
+            { end }
         };
     }
 }
@@ -478,294 +742,4 @@ pub fn ml_research_query_without_signatures_loop8(
 #[derive(Clone, Debug, PartialEq)]
 pub enum MlResearchQueryWithoutSignaturesLoop5Result {
     MlResearchQueryWithoutSignaturesLoop5Done(f64, bool),
-}
-
-pub fn ml_research_query_without_signatures_loop5(
-    mut characters: Vec<String>,
-    mut token_end: f64,
-    mut path: bool,
-) -> crate::coding_research_generated::MlResearchQueryWithoutSignaturesLoop5Result {
-    loop {
-        return if ((token_end < (characters.len() as f64))
-            && !(crate::coding_research_generated::research_query_whitespace(
-                crate::coding_research_generated::ml_array::at(
-                    &characters,
-                    crate::coding_research_generated::ml_array::number_index(token_end),
-                ),
-            ))) {
-            if ((((crate::coding_research_generated::ml_array::at(
-                &characters,
-                crate::coding_research_generated::ml_array::number_index(token_end),
-            )) == "/")
-                || ((crate::coding_research_generated::ml_array::at(
-                    &characters,
-                    crate::coding_research_generated::ml_array::number_index(token_end),
-                )) == "\\"))
-                || ((crate::coding_research_generated::ml_array::at(
-                    &characters,
-                    crate::coding_research_generated::ml_array::number_index(token_end),
-                )) == "."))
-            {
-                {
-                    let path_2 = true;
-                    {
-                        let token_end_2 = (token_end + 1f64);
-                        {
-                            (token_end, path) = (token_end_2, path_2);
-                            continue;
-                        }
-                    }
-                }
-            } else {
-                {
-                    let token_end_3 = (token_end + 1f64);
-                    {
-                        token_end = token_end_3;
-                        continue;
-                    }
-                }
-            }
-        } else {
-            crate::coding_research_generated::MlResearchQueryWithoutSignaturesLoop5Result::MlResearchQueryWithoutSignaturesLoop5Done(token_end, path)
-        };
-    }
-}
-
-pub fn ml_research_query_without_signatures_loop4(
-    mut characters: Vec<String>,
-    mut clean: Vec<String>,
-    mut index: f64,
-) -> Vec<String> {
-    loop {
-        return if (index < (characters.len() as f64)) {
-            {
-                let token_end = index;
-                {
-                    let path = false;
-                    {
-                        let ml_s19 = crate::coding_research_generated::ml_research_query_without_signatures_loop5(characters.clone(), token_end, path);
-                        match ml_s19.clone() {
-                            crate::coding_research_generated::MlResearchQueryWithoutSignaturesLoop5Result::MlResearchQueryWithoutSignaturesLoop5Done(token_end_2, path_2) => {
-                                {
-                                    let end = index;
-                                    if path_2 {
-                                        {
-                                            let clean_2 = crate::coding_research_generated::ml_array::append(clean.clone(), vec![String::from(" ")]);
-                                            {
-                                                let index_2 = (token_end_2 - 1f64);
-                                                {
-                                                    let index_3 = (index_2 + 1f64);
-                                                    {
-                                                        (clean, index) = (clean_2.clone(), index_3);
-                                                        continue;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else {
-                                        if crate::coding_research_generated::research_query_identifier_start(crate::coding_research_generated::ml_array::at(&characters, crate::coding_research_generated::ml_array::number_index(index))) {
-                                            {
-                                                let end_2 = crate::coding_research_generated::ml_research_query_without_signatures_loop6(characters.clone(), end);
-                                                {
-                                                    let end_3 = crate::coding_research_generated::ml_research_query_without_signatures_loop7(characters.clone(), end_2);
-                                                    if ((end_3 < ((characters.len() as f64))) && ((crate::coding_research_generated::ml_array::at(&characters, crate::coding_research_generated::ml_array::number_index(end_3))) == "(")) {
-                                                        {
-                                                            let end_4 = (end_3 + 1f64);
-                                                            {
-                                                                let end_5 = crate::coding_research_generated::ml_research_query_without_signatures_loop8(characters.clone(), end_4);
-                                                                if ((end_5 < ((characters.len() as f64))) && ((crate::coding_research_generated::ml_array::at(&characters, crate::coding_research_generated::ml_array::number_index(end_5))) == ")")) {
-                                                                    {
-                                                                        let index_4 = end_5;
-                                                                        {
-                                                                            let clean_3 = crate::coding_research_generated::ml_array::append(clean.clone(), vec![String::from(" ")]);
-                                                                            {
-                                                                                let index_5 = (index_4 + 1f64);
-                                                                                {
-                                                                                    (clean, index) = (clean_3.clone(), index_5);
-                                                                                    continue;
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                } else {
-                                                                    {
-                                                                        let clean_4 = crate::coding_research_generated::ml_array::append(clean.clone(), vec![crate::coding_research_generated::ml_array::at(&characters, crate::coding_research_generated::ml_array::number_index(index))]);
-                                                                        {
-                                                                            let index_6 = (index + 1f64);
-                                                                            {
-                                                                                (clean, index) = (clean_4.clone(), index_6);
-                                                                                continue;
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    } else {
-                                                        {
-                                                            let clean_5 = crate::coding_research_generated::ml_array::append(clean.clone(), vec![crate::coding_research_generated::ml_array::at(&characters, crate::coding_research_generated::ml_array::number_index(index))]);
-                                                            {
-                                                                let index_7 = (index + 1f64);
-                                                                {
-                                                                    (clean, index) = (clean_5.clone(), index_7);
-                                                                    continue;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            {
-                                                let clean_6 = crate::coding_research_generated::ml_array::append(clean.clone(), vec![crate::coding_research_generated::ml_array::at(&characters, crate::coding_research_generated::ml_array::number_index(index))]);
-                                                {
-                                                    let index_8 = (index + 1f64);
-                                                    {
-                                                        (clean, index) = (clean_6.clone(), index_8);
-                                                        continue;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            clean.clone()
-        };
-    }
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum MlCodingResearchQueryKernelJoin11 {
-    MlCodingResearchQueryKernelJoin11Next(Vec<String>, f64, String),
-}
-
-pub fn ml_coding_research_query_kernel_loop12(
-    mut parameters: Vec<String>,
-    mut word: String,
-    mut excluded: bool,
-    mut at: f64,
-) -> bool {
-    loop {
-        return if (at < (parameters.len() as f64)) {
-            if (word
-                == (crate::coding_research_generated::ml_array::at(
-                    &parameters,
-                    crate::coding_research_generated::ml_array::number_index(at),
-                )))
-            {
-                {
-                    let excluded_2 = true;
-                    {
-                        let at_2 = (at + 1f64);
-                        {
-                            (excluded, at) = (excluded_2, at_2);
-                            continue;
-                        }
-                    }
-                }
-            } else {
-                {
-                    let at_3 = (at + 1f64);
-                    {
-                        at = at_3;
-                        continue;
-                    }
-                }
-            }
-        } else {
-            excluded
-        };
-    }
-}
-
-pub fn ml_coding_research_query_kernel_loop13(
-    mut terms: Vec<String>,
-    mut word: String,
-    mut excluded: bool,
-    mut at: f64,
-) -> bool {
-    loop {
-        return if (at < (terms.len() as f64)) {
-            if (word
-                == (crate::coding_research_generated::ml_array::at(
-                    &terms,
-                    crate::coding_research_generated::ml_array::number_index(at),
-                )))
-            {
-                {
-                    let excluded_2 = true;
-                    {
-                        let at_2 = (at + 1f64);
-                        {
-                            (excluded, at) = (excluded_2, at_2);
-                            continue;
-                        }
-                    }
-                }
-            } else {
-                {
-                    let at_3 = (at + 1f64);
-                    {
-                        at = at_3;
-                        continue;
-                    }
-                }
-            }
-        } else {
-            excluded
-        };
-    }
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum MlCodingResearchQueryKernelLoop10Result {
-    MlCodingResearchQueryKernelLoop10Done(String, f64),
-}
-
-pub fn ml_coding_research_query_kernel_loop10(
-    mut clean: Vec<String>,
-    mut word: String,
-    mut end: f64,
-) -> crate::coding_research_generated::MlCodingResearchQueryKernelLoop10Result {
-    loop {
-        return if ((end < (clean.len() as f64))
-            && (crate::coding_research_generated::research_query_letter(
-                crate::coding_research_generated::ml_array::at(
-                    &clean,
-                    crate::coding_research_generated::ml_array::number_index(end),
-                ),
-            ) || ((crate::coding_research_generated::ml_array::at(
-                &clean,
-                crate::coding_research_generated::ml_array::number_index(end),
-            )) == "-")))
-        {
-            {
-                let word_2 = format!(
-                    "{}{}",
-                    word,
-                    (crate::coding_research_generated::research_query_lower(
-                        crate::coding_research_generated::ml_array::at(
-                            &clean,
-                            crate::coding_research_generated::ml_array::number_index(end)
-                        )
-                    ))
-                );
-                {
-                    let end_2 = (end + 1f64);
-                    {
-                        (word, end) = (word_2.clone(), end_2);
-                        continue;
-                    }
-                }
-            }
-        } else {
-            crate::coding_research_generated::MlCodingResearchQueryKernelLoop10Result::MlCodingResearchQueryKernelLoop10Done(word.clone(), end)
-        };
-    }
 }

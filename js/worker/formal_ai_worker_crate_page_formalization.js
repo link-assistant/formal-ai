@@ -4,6 +4,7 @@
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/page_formalization.mjs"] = (crateRequire) => {
+const { structuralRuleValues } = crateRequire("crate/formalization_grammar.mjs");
 const { typedMeaning } = crateRequire("crate/typed_meaning.mjs");
 const { formatLinoValueVerbatim } = crateRequire("crate/links_format.mjs");
 // Page formalization (R1188-U18): a whole page of text, every sentence of it,
@@ -71,7 +72,7 @@ function statementNotation(statement) {
   const negation = statement.polarity === Polarity.Denied ? '¬ ' : '';
   const legacy=`${negation}(${identifiers.join(' ')})`;
   const typed=typedMeaning(statement.dialogue);
-  return typed===null?legacy:`(statement (terms ${legacy}) (typed_meaning ${formatLinoValueVerbatim(typed)}))`;
+  return typed===null?legacy:structuralRuleValues('typed-statement-notation','template')[0].replace(/\{(?:legacy|typed)\}/gu,slot=>slot==='{legacy}'?legacy:formatLinoValueVerbatim(typed));
 }
 /**
  * Mirrors `fn page_answer` in rust/src/formalization/page.rs: the answer to a request to formalize the page at

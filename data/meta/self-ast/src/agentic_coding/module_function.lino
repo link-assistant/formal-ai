@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/module_function.rs
   language rust
   fidelity full_ast
-  byte_len 35675
-  line_count 961
-  content_id source_module_abfb6e4f5068c9d9
-  symbol_count 48
+  byte_len 36324
+  line_count 980
+  content_id source_module_124d17630fb87907
+  symbol_count 50
   symbols
     module callable_catalog 27 27
     module complete_source_preflight 28 28
@@ -37,75 +37,77 @@ self_ast_census
     function outside_quotes 291 304
     function clauses 308 334
     function is_identifier 337 345
-    function signature 349 398
-    function stated_command 403 460
-    function paths_in 463 475
-    function returns_in 478 482
-    function module_function_request 491 552
-    struct RelationOperation 556 560
-    function is_binary_idiom 563 568
-    function relation_operations 574 606
-    function relation_expression 611 634
-    function evaluated 637 641
-    function synthesized_source 648 704
-    function with_import 708 734
-    function specifier_from 738 758
-    function with_final_newline 761 767
-    function module_function_recipe 771 863
-    function read_source 867 877
-    function plan_module_function_step 882 958
-    module source_contract_diagnostics 960 960
+    function signature 349 403
+    function stated_command 408 465
+    function paths_in 468 480
+    function returns_in 483 487
+    function module_function_request 496 498
+    function module_function_research_request 501 503
+    function module_function_request_with_contract 505 571
+    struct RelationOperation 575 579
+    function is_binary_idiom 582 587
+    function relation_operations 593 625
+    function relation_expression 630 653
+    function evaluated 656 660
+    function synthesized_source 667 723
+    function with_import 727 753
+    function specifier_from 757 777
+    function with_final_newline 780 786
+    function module_function_recipe 790 882
+    function read_source 886 896
+    function plan_module_function_step 901 977
+    module source_contract_diagnostics 979 979
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 27507
-    named_node_count 5652
+    total_link_count 27908
+    named_node_count 5727
     distinct_node_kinds 84
     node_kinds
-      arguments 517
+      arguments 522
       array_expression 14
       array_type 11
       assignment_expression 4
       attribute 2
       attribute_item 2
       binary_expression 107
-      block 120
-      boolean_literal 20
+      block 125
+      boolean_literal 22
       break_expression 3
-      call_expression 517
+      call_expression 522
       char_literal 57
       closure_expression 78
       closure_parameters 78
       compound_assignment_expr 2
       const_item 5
       continue_expression 5
-      crate 23
-      doc_comment 84
-      else_clause 11
+      crate 24
+      doc_comment 85
+      else_clause 12
       escape_sequence 4
-      expression_statement 106
+      expression_statement 107
       field_declaration 14
       field_declaration_list 3
-      field_expression 457
-      field_identifier 503
+      field_expression 458
+      field_identifier 504
       field_initializer 32
       field_initializer_list 9
       float_literal 1
       for_expression 7
-      function_item 24
+      function_item 26
       generic_function 5
-      generic_type 46
-      identifier 1217
-      if_expression 42
+      generic_type 48
+      identifier 1235
+      if_expression 44
       index_expression 51
       inner_doc_comment_marker 25
       integer_literal 45
       let_chain 1
       let_condition 6
-      let_declaration 121
-      line_comment 96
+      let_declaration 122
+      line_comment 97
       macro_invocation 14
       match_arm 5
       match_block 2
@@ -113,17 +115,17 @@ self_ast_census
       match_pattern 5
       mod_item 16
       mutable_specifier 16
-      outer_doc_comment_marker 59
-      parameter 43
-      parameters 24
+      outer_doc_comment_marker 60
+      parameter 46
+      parameters 26
       parenthesized_expression 5
-      primitive_type 54
+      primitive_type 57
       range_expression 32
       raw_string_literal 1
-      reference_expression 88
-      reference_type 57
+      reference_expression 89
+      reference_type 59
       return_expression 35
-      scoped_identifier 151
+      scoped_identifier 155
       scoped_type_identifier 3
       scoped_use_list 13
       self 1
@@ -134,17 +136,17 @@ self_ast_census
       string_literal 72
       struct_expression 9
       struct_item 3
-      super 36
+      super 38
       token_tree 20
       try_expression 18
       tuple_expression 12
       tuple_pattern 12
       tuple_struct_pattern 22
       tuple_type 2
-      type_arguments 51
-      type_identifier 118
+      type_arguments 53
+      type_identifier 122
       unary_expression 30
       use_declaration 22
       use_list 13
-      visibility_modifier 34
+      visibility_modifier 36
       while_expression 1

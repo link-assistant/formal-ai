@@ -203,7 +203,7 @@ fn feature_capability_seed_values_preserve_localized_single_pass_rendering() {
         .into_iter()
         .find(|(path, _)| *path == "data/seed/feature-capabilities.lino")
         .unwrap();
-    let tree = seed::parser::parse_lino(source);
+    let tree = seed::parse_lino(source);
     let feature = tree
         .children
         .iter()

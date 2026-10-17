@@ -254,3 +254,24 @@ registry_entry npm/@babel/parser
 registry_entry npm/@babel/traverse
   latest "8.0.7"
   source_url "https://registry.npmjs.org/%40babel%2Ftraverse"
+
+# Missing publisher records independently observed 2026-10-17T15:43:27.342Z through JavaScript Formal AI.
+# The original snapshot timestamp and all existing registry answers remain unchanged.
+registry_entry github_action/actions/cache/save
+  latest "v6.1.0"
+  source_url "https://api.github.com/repos/actions/cache/releases/latest"
+  release-commit "55cc8345863c7cc4c66a329aec7e433d2d1c52a9"
+  tag-source-url "https://api.github.com/repos/actions/cache/git/ref/tags/v6.1.0"
+registry_entry github_action/actions/github-script
+  latest "v9.0.0"
+  source_url "https://api.github.com/repos/actions/github-script/releases/latest"
+  release-commit "3a2844b7e9c422d3c10d287c895573f7108da1b3"
+  tag-source-url "https://api.github.com/repos/actions/github-script/git/ref/tags/v9.0.0"
+registry_entry docker_image/node
+  latest "26.12.0"
+  source_url "https://hub.docker.com/v2/repositories/library/node/tags?page_size=100"
+
+# Existing locked URL parser publisher observed 2026-10-17T15:52:16.833Z; no package installation.
+registry_entry crates_io/url
+  latest "2.5.8"
+  source_url "https://crates.io/api/v1/crates/url"

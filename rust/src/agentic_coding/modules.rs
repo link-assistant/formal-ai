@@ -104,6 +104,7 @@ mod test_file_runner;
 pub mod tool_result;
 pub mod transcript_evidence;
 mod web_research;
+mod wording;
 mod work_item_steps;
 mod workspace_change;
 mod workspace_computed_change;

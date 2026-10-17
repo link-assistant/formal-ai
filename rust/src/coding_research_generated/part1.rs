@@ -2,6 +2,7 @@
 // source-sha256 65fd5d20b6620b08324eec92a832adcaee86c383a6aaa56b443184fc150fb0e8; checked-ir-sha256 688bd0ee84736b26c705d70ee6dbb4358ffcd5556a19255cb5e233faa98ca425
 // upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b
 // native-namespace crate::coding_research_generated; token-checked relocation
+// checked-owned-value-lowering-sha256 31d34930f57cd046ae2c5270ccae91c309e2ce61c9e3bbac22be0dc864ecd747
 #![allow(
     unused,
     unreachable_patterns,
@@ -12,12 +13,18 @@
 /// The Math functions that Rust's f64 methods do not share with JavaScript.
 pub mod ml_math {
 
+    #[must_use]
+    #[allow(
+        clippy::float_cmp,
+        reason = "JavaScript Number equality is exact, including NaN and signed zero"
+    )]
     pub fn is_integer(x: f64) -> bool {
         x.is_finite() && x.trunc() == x
     }
 
+    #[must_use]
     pub fn is_safe_integer(x: f64) -> bool {
-        is_integer(x) && x.abs() <= 9007199254740991.0
+        is_integer(x) && x.abs() <= 9_007_199_254_740_991.0
     }
 }
 
@@ -25,22 +32,40 @@ pub mod ml_math {
 pub mod ml_array {
     /// The element at an index; a read outside the array, undefined in
     /// JavaScript, aborts.
+    #[must_use]
     pub fn at<T: Clone>(values: &[T], index: Option<usize>) -> T {
-        match index.and_then(|index| values.get(index)) {
-            Some(value) => value.clone(),
-            None => panic!("array index out of range"),
-        }
+        index
+            .and_then(|index| values.get(index))
+            .map_or_else(|| panic!("array index out of range"), |value| value.clone())
     }
 
     /// The index a Number names: a non-negative integer, -0 included.
+    #[must_use]
+    #[allow(
+        clippy::float_cmp,
+        reason = "JavaScript Number equality is exact, including NaN and signed zero"
+    )]
+    #[allow(
+        clippy::cast_possible_truncation,
+        reason = "Guarded nonnegative integral Number index retains pinned runtime conversion"
+    )]
+    #[allow(
+        clippy::cast_sign_loss,
+        reason = "Guarded nonnegative integral Number index retains pinned runtime conversion"
+    )]
     pub fn number_index(index: f64) -> Option<usize> {
-        if index >= 0.0 && index.fract() == 0.0 && index < 9007199254740992.0 {
+        if index >= 0.0 && index.fract() == 0.0 && index < 9_007_199_254_740_992.0 {
             Some(index as usize)
         } else {
             None
         }
     }
 
+    #[must_use]
+    #[allow(
+        clippy::needless_pass_by_value,
+        reason = "Pinned checked IR public ABI owns immutable values"
+    )]
     pub fn append<T>(mut left: Vec<T>, right: Vec<T>) -> Vec<T> {
         left.extend(right);
         left
@@ -72,33 +97,43 @@ pub enum ResearchRebindingResult {
     Rendered(String, Vec<String>, Vec<String>),
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_query_whitespace(character: String) -> bool {
     (((((((((((((((((((((((((character == " ") || (character == "\t"))
         || (character == "\n"))
         || (character == "\r"))
         || (character == "\u{b}"))
         || (character == "\u{c}"))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == " "))
-        || (character == "　"))
-        || (character == "﻿"))
+        || (character == "\u{a0}"))
+        || (character == "\u{1680}"))
+        || (character == "\u{2000}"))
+        || (character == "\u{2001}"))
+        || (character == "\u{2002}"))
+        || (character == "\u{2003}"))
+        || (character == "\u{2004}"))
+        || (character == "\u{2005}"))
+        || (character == "\u{2006}"))
+        || (character == "\u{2007}"))
+        || (character == "\u{2008}"))
+        || (character == "\u{2009}"))
+        || (character == "\u{200a}"))
+        || (character == "\u{2028}"))
+        || (character == "\u{2029}"))
+        || (character == "\u{202f}"))
+        || (character == "\u{205f}"))
+        || (character == "\u{3000}"))
+        || (character == "\u{feff}"))
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_query_letter(character: String) -> bool {
     {
         let letters = vec![
@@ -130,16 +165,14 @@ pub fn research_query_letter(character: String) -> bool {
             String::from("z"),
         ];
         {
-            let lower = crate::coding_research_generated::research_query_lower(character.clone());
+            let lower = crate::coding_research_generated::research_query_lower(character);
             {
                 let index = 0f64;
                 {
                     let ml_s1 = crate::coding_research_generated::ml_research_query_letter_loop1(
-                        letters.clone(),
-                        lower.clone(),
-                        index,
+                        letters, lower, index,
                     );
-                    match ml_s1.clone() {
+                    match ml_s1 {
                         crate::coding_research_generated::MlResearchQueryLetterLoop1Result::MlResearchQueryLetterLoop1Done => {
                             false
                         }
@@ -153,12 +186,22 @@ pub fn research_query_letter(character: String) -> bool {
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_query_identifier_start(character: String) -> bool {
     ((crate::coding_research_generated::research_query_letter(character.clone())
         || (character == "_"))
         || (character == "$"))
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_query_identifier_part(character: String) -> bool {
     if crate::coding_research_generated::research_query_identifier_start(character.clone()) {
         true
@@ -181,11 +224,9 @@ pub fn research_query_identifier_part(character: String) -> bool {
                 {
                     let ml_s2 =
                         crate::coding_research_generated::ml_research_query_identifier_part_loop2(
-                            character.clone(),
-                            digits.clone(),
-                            index,
+                            character, digits, index,
                         );
-                    match ml_s2.clone() {
+                    match ml_s2 {
                         crate::coding_research_generated::MlResearchQueryIdentifierPartLoop2Result::MlResearchQueryIdentifierPartLoop2Done => {
                             false
                         }
@@ -199,6 +240,11 @@ pub fn research_query_identifier_part(character: String) -> bool {
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_query_lower(character: String) -> String {
     {
         let upper = vec![
@@ -263,16 +309,16 @@ pub fn research_query_lower(character: String) -> String {
                 {
                     let ml_s3 = crate::coding_research_generated::ml_research_query_lower_loop3(
                         character.clone(),
-                        upper.clone(),
-                        lower.clone(),
+                        upper,
+                        lower,
                         index,
                     );
-                    match ml_s3.clone() {
+                    match ml_s3 {
                         crate::coding_research_generated::MlResearchQueryLowerLoop3Result::MlResearchQueryLowerLoop3Done => {
-                            character.clone()
+                            character
                         }
                         crate::coding_research_generated::MlResearchQueryLowerLoop3Result::MlResearchQueryLowerLoop3Return(ml_result3) => {
-                            ml_result3.clone()
+                            ml_result3
                         }
                     }
                 }
@@ -281,24 +327,30 @@ pub fn research_query_lower(character: String) -> String {
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_query_without_signatures(characters: Vec<String>) -> Vec<String> {
     {
-        let clean = vec![String::from("")];
+        let clean = vec![String::new()];
         {
             let index = 0f64;
             {
-                let clean_2 =
-                    crate::coding_research_generated::ml_research_query_without_signatures_loop4(
-                        characters.clone(),
-                        clean.clone(),
-                        index,
-                    );
-                clean_2.clone()
+                crate::coding_research_generated::ml_research_query_without_signatures_loop4(
+                    characters, clean, index,
+                )
             }
         }
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn coding_research_query_kernel(
     language: String,
     characters: Vec<String>,
@@ -306,10 +358,9 @@ pub fn coding_research_query_kernel(
     parameters: Vec<String>,
 ) -> String {
     {
-        let clean =
-            crate::coding_research_generated::research_query_without_signatures(characters.clone());
+        let clean = crate::coding_research_generated::research_query_without_signatures(characters);
         {
-            let terms = vec![String::from("")];
+            let terms = vec![String::new()];
             {
                 let count = 0f64;
                 {
@@ -317,8 +368,9 @@ pub fn coding_research_query_kernel(
                     {
                         let index = 0f64;
                         {
-                            let query_2 = crate::coding_research_generated::ml_coding_research_query_kernel_loop9(name.clone(), parameters.clone(), clean.clone(), terms.clone(), count, query.clone(), index);
-                            query_2.clone()
+                            crate::coding_research_generated::ml_coding_research_query_kernel_loop9(
+                                name, parameters, clean, terms, count, query, index,
+                            )
                         }
                     }
                 }
@@ -327,16 +379,19 @@ pub fn coding_research_query_kernel(
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_rebinding_index(values: Vec<String>, expected: String) -> f64 {
     {
         let index = 0f64;
         {
             let ml_s4 = crate::coding_research_generated::ml_research_rebinding_index_loop14(
-                values.clone(),
-                expected.clone(),
-                index,
+                values, expected, index,
             );
-            match ml_s4.clone() {
+            match ml_s4 {
                 crate::coding_research_generated::MlResearchRebindingIndexLoop14Result::MlResearchRebindingIndexLoop14Done => {
                     (-1f64)
                 }
@@ -348,15 +403,19 @@ pub fn research_rebinding_index(values: Vec<String>, expected: String) -> f64 {
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_rebinding_unique(values: Vec<String>) -> bool {
     {
         let index = 0f64;
         {
             let ml_s5 = crate::coding_research_generated::ml_research_rebinding_unique_loop15(
-                values.clone(),
-                index,
+                values, index,
             );
-            match ml_s5.clone() {
+            match ml_s5 {
                 crate::coding_research_generated::MlResearchRebindingUniqueLoop15Result::MlResearchRebindingUniqueLoop15Done => {
                     true
                 }
@@ -368,34 +427,50 @@ pub fn research_rebinding_unique(values: Vec<String>) -> bool {
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn research_rebinding_neighbour(pieces: Vec<String>, at: f64, direction: f64) -> String {
     {
         let index = (at + direction);
         {
             let ml_s6 = crate::coding_research_generated::ml_research_rebinding_neighbour_loop17(
-                pieces.clone(),
-                direction,
-                index,
+                pieces, direction, index,
             );
-            match ml_s6.clone() {
+            match ml_s6 {
                 crate::coding_research_generated::MlResearchRebindingNeighbourLoop17Result::MlResearchRebindingNeighbourLoop17Done => {
-                    String::from("")
+                    String::new()
                 }
                 crate::coding_research_generated::MlResearchRebindingNeighbourLoop17Result::MlResearchRebindingNeighbourLoop17Return(ml_result17) => {
-                    ml_result17.clone()
+                    ml_result17
                 }
             }
         }
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn coding_research_rebinding_kernel(
     candidate: crate::coding_research_generated::ResearchRebindingCandidate,
     desired_language: String,
     desired_name: String,
     desired_parameters: Vec<String>,
 ) -> crate::coding_research_generated::ResearchRebindingResult {
-    match candidate.clone() {
+    match candidate {
         crate::coding_research_generated::ResearchRebindingCandidate::Candidate(
             language,
             syntax_valid,
@@ -423,14 +498,12 @@ pub fn coding_research_rebinding_kernel(
                 crate::coding_research_generated::ResearchRebindingResult::Rejected
             } else {
                 {
-                    let from = crate::coding_research_generated::ml_array::append(
-                        vec![name.clone()],
-                        parameters.clone(),
-                    );
+                    let from =
+                        crate::coding_research_generated::ml_array::append(vec![name], parameters);
                     {
                         let to = crate::coding_research_generated::ml_array::append(
-                            vec![desired_name.clone()],
-                            desired_parameters.clone(),
+                            vec![desired_name],
+                            desired_parameters,
                         );
                         if (!(crate::coding_research_generated::research_rebinding_unique(
                             from.clone(),
@@ -440,43 +513,39 @@ pub fn coding_research_rebinding_kernel(
                             crate::coding_research_generated::ResearchRebindingResult::Rejected
                         } else {
                             {
-                                let source = String::from("");
+                                let source = String::new();
                                 {
                                     let functions = 0f64;
                                     {
                                         let index = 0f64;
                                         {
-                                            let ml_s7 = crate::coding_research_generated::ml_coding_research_rebinding_kernel_loop18(pieces.clone(), piece_bindings.clone(), from.clone(), to.clone(), source.clone(), functions, index);
-                                            match ml_s7.clone() {
+                                            let ml_s7 = crate::coding_research_generated::ml_coding_research_rebinding_kernel_loop18(pieces, piece_bindings.clone(), from.clone(), to.clone(), source, functions, index);
+                                            match ml_s7 {
                                                 crate::coding_research_generated::MlCodingResearchRebindingKernelLoop18Result::MlCodingResearchRebindingKernelLoop18Done(source_2, functions_2) => {
-                                                    if (functions_2 != (1f64)) {
-                                                        crate::coding_research_generated::ResearchRebindingResult::Rejected
-                                                    } else {
+                                                    if functions_2 == (1f64) {
                                                         {
                                                             let index_2 = 0f64;
                                                             {
-                                                                let ml_s8 = crate::coding_research_generated::ml_coding_research_rebinding_kernel_loop19(piece_bindings.clone(), from.clone(), index_2);
-                                                                match ml_s8.clone() {
+                                                                let ml_s8 = crate::coding_research_generated::ml_coding_research_rebinding_kernel_loop19(piece_bindings, from.clone(), index_2);
+                                                                match ml_s8 {
                                                                     crate::coding_research_generated::MlCodingResearchRebindingKernelLoop19Result::MlCodingResearchRebindingKernelLoop19Done => {
                                                                         {
-                                                                            let source_4 = if !exported {
-                                                                                {
-                                                                                    let source_3 = format!("{}{}", (String::from("export ")), source_2);
-                                                                                    source_3.clone()
-                                                                                }
-                                                                            } else {
+                                                                            let source_4 = if exported {
                                                                                 source_2.clone()
+                                                                            } else {
+                                                                                {
+                                                                                    format!("{}{}", (String::from("export ")), source_2)
+                                                                                }
                                                                             };
                                                                             {
-                                                                                let source_6 = if !(source_4.ends_with("\n")) {
-                                                                                    {
-                                                                                        let source_5 = format!("{}{}", source_4, (String::from("\n")));
-                                                                                        source_5.clone()
-                                                                                    }
+                                                                                let source_6 = if (source_4.ends_with('\n')) {
+                                                                                    source_4
                                                                                 } else {
-                                                                                    source_4.clone()
+                                                                                    {
+                                                                                        format!("{}{}", source_4, (String::from("\n")))
+                                                                                    }
                                                                                 };
-                                                                                crate::coding_research_generated::ResearchRebindingResult::Rendered(source_6.clone(), from.clone(), to.clone())
+                                                                                crate::coding_research_generated::ResearchRebindingResult::Rendered(source_6, from, to)
                                                                             }
                                                                         }
                                                                     }
@@ -487,6 +556,8 @@ pub fn coding_research_rebinding_kernel(
                                                                 }
                                                             }
                                                         }
+                                                    } else {
+                                                        crate::coding_research_generated::ResearchRebindingResult::Rejected
                                                     }
                                                 }
                                                 crate::coding_research_generated::MlCodingResearchRebindingKernelLoop18Result::MlCodingResearchRebindingKernelLoop18Return(ml_result19_2) => {
@@ -506,6 +577,11 @@ pub fn coding_research_rebinding_kernel(
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
 pub fn canonical_unique_source_index(valid: Vec<bool>) -> f64 {
     {
         let selected = (-1f64);
@@ -514,11 +590,9 @@ pub fn canonical_unique_source_index(valid: Vec<bool>) -> f64 {
             {
                 let ml_s9 =
                     crate::coding_research_generated::ml_canonical_unique_source_index_loop20(
-                        valid.clone(),
-                        selected,
-                        index,
+                        valid, selected, index,
                     );
-                match ml_s9.clone() {
+                match ml_s9 {
                     crate::coding_research_generated::MlCanonicalUniqueSourceIndexLoop20Result::MlCanonicalUniqueSourceIndexLoop20Done(selected_2) => {
                         selected_2
                     }
@@ -531,6 +605,19 @@ pub fn canonical_unique_source_index(valid: Vec<bool>) -> f64 {
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn research_acceptance_literal(texts: Vec<String>, kinds: Vec<String>, index: f64) -> bool {
     if (((index < (0f64)) || (index >= (texts.len() as f64))) || (index >= (kinds.len() as f64))) {
         false
@@ -558,6 +645,23 @@ pub fn research_acceptance_literal(texts: Vec<String>, kinds: Vec<String>, index
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::too_many_arguments,
+    reason = "Pinned checked IR function arity is the canonical source contract"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn independent_acceptance_kernel(
     texts: Vec<String>,
     kinds: Vec<String>,
@@ -587,8 +691,8 @@ pub fn independent_acceptance_kernel(
                     {
                         let index = 0f64;
                         {
-                            let ml_s10 = crate::coding_research_generated::ml_independent_acceptance_kernel_loop21(texts.clone(), kinds.clone(), name.clone(), module_url.clone(), arity, callable, assertion_import, assertions, index);
-                            match ml_s10.clone() {
+                            let ml_s10 = crate::coding_research_generated::ml_independent_acceptance_kernel_loop21(texts, kinds, name, module_url, arity, callable, assertion_import, assertions, index);
+                            match ml_s10 {
                                 crate::coding_research_generated::MlIndependentAcceptanceKernelLoop21Result::MlIndependentAcceptanceKernelLoop21Done(callable_2, assertion_import_2, assertions_2) => {
                                     ((callable_2 && assertion_import_2) && (assertions_2 > (0f64)))
                                 }
@@ -604,6 +708,23 @@ pub fn independent_acceptance_kernel(
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::too_many_arguments,
+    reason = "Pinned checked IR function arity is the canonical source contract"
+)]
+#[allow(
+    clippy::fn_params_excessive_bools,
+    reason = "Pinned checked IR boolean parameters preserve the canonical typed ABI"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
 pub fn coding_research_preflight_kernel(
     language: String,
     grammar_available: bool,
@@ -624,159 +745,52 @@ pub fn coding_research_preflight_kernel(
 ) -> String {
     if ((language != "javascript") && (language != "typescript")) {
         String::from("gap:UnsupportedGrammar")
-    } else {
-        if !grammar_available {
-            String::from("gap:GrammarUnavailable")
-        } else {
-            if !binding_syntax_valid {
-                String::from("gap:UnsupportedBinding")
-            } else {
+    } else if grammar_available {
+        if binding_syntax_valid {
+            {
+                let index = 0f64;
                 {
-                    let index = 0f64;
-                    {
-                        let ml_s11 = crate::coding_research_generated::ml_coding_research_preflight_kernel_loop24(name.clone(), parameters.clone(), index);
-                        match ml_s11.clone() {
+                    let ml_s11 = crate::coding_research_generated::ml_coding_research_preflight_kernel_loop24(name, parameters, index);
+                    match ml_s11 {
                             crate::coding_research_generated::MlCodingResearchPreflightKernelLoop24Result::MlCodingResearchPreflightKernelLoop24Done => {
                                 if (!has_command || !has_test) {
                                     String::from("gap:IndependentVerificationRequired")
-                                } else {
-                                    if !module_seen {
-                                        if read_tool {
-                                            String::from("read:module")
-                                        } else {
-                                            String::from("gap:ReadToolMissing")
-                                        }
-                                    } else {
+                                } else if module_seen {
                                         if (!module_complete && !module_absent) {
                                             String::from("gap:SourceReadIncomplete:module")
-                                        } else {
-                                            if !test_seen {
-                                                if read_tool {
+                                        } else if test_seen {
+                                                if test_complete {
+                                                    if (test_error || !test_source_present) {
+                                                        String::from("gap:IndependentVerificationMissing")
+                                                    } else if acceptance_proved {
+                                                            String::from("discover")
+                                                        } else {
+                                                            String::from("gap:IndependentVerificationUnproved")
+                                                        }
+                                                } else {
+                                                    String::from("gap:SourceReadIncomplete:test")
+                                                }
+                                            } else if read_tool {
                                                     String::from("read:test")
                                                 } else {
                                                     String::from("gap:ReadToolMissing")
                                                 }
-                                            } else {
-                                                if !test_complete {
-                                                    String::from("gap:SourceReadIncomplete:test")
-                                                } else {
-                                                    if (test_error || !test_source_present) {
-                                                        String::from("gap:IndependentVerificationMissing")
-                                                    } else {
-                                                        if !acceptance_proved {
-                                                            String::from("gap:IndependentVerificationUnproved")
-                                                        } else {
-                                                            String::from("discover")
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                    } else if read_tool {
+                                            String::from("read:module")
+                                        } else {
+                                            String::from("gap:ReadToolMissing")
                                         }
-                                    }
-                                }
                             }
                             crate::coding_research_generated::MlCodingResearchPreflightKernelLoop24Result::MlCodingResearchPreflightKernelLoop24Return(ml_result24) => {
-                                ml_result24.clone()
+                                ml_result24
                             }
                         }
-                    }
                 }
-            }
-        }
-    }
-}
-
-pub fn coding_research_discovery_kernel(
-    proposals: f64,
-    fetch_tool: bool,
-    next_url: String,
-) -> String {
-    if (proposals > (1f64)) {
-        String::from("gap:AmbiguousSourceProcedure")
-    } else {
-        if (proposals == (0f64)) {
-            if ((next_url != "") && fetch_tool) {
-                String::from("fetch")
-            } else {
-                String::from("gap:NoValidatedSourceProcedure")
             }
         } else {
-            String::from("effects")
-        }
-    }
-}
-
-pub fn coding_research_effect_kernel(
-    module_source: String,
-    proposed_source: String,
-    latest_write_present: bool,
-    latest_write_pure: bool,
-    planned_write_pure: bool,
-    reroute_exists: bool,
-    reroute_kind: String,
-    last_outcome: String,
-    receipt_gap: String,
-    run_tool: bool,
-) -> String {
-    if ((module_source
-        .trim_matches(|c: char| (c.is_whitespace() && c != '\u{85}') || c == '\u{feff}')
-        .to_string())
-        != "")
-    {
-        if (module_source != proposed_source) {
-            String::from("gap:ExistingModuleRequiresComposition")
-        } else {
-            if (last_outcome == "missing") {
-                if run_tool {
-                    String::from("run")
-                } else {
-                    String::from("gap:ExecutionToolsMissing")
-                }
-            } else {
-                if (last_outcome == "unreported") {
-                    String::from("gap:VerificationReceiptIncomplete")
-                } else {
-                    if (last_outcome == "succeeded") {
-                        if (receipt_gap != "") {
-                            format!("{}{}", (String::from("gap:")), receipt_gap)
-                        } else {
-                            String::from("existing:verified")
-                        }
-                    } else {
-                        String::from("existing:failed")
-                    }
-                }
-            }
+            String::from("gap:UnsupportedBinding")
         }
     } else {
-        if (latest_write_present && !latest_write_pure) {
-            String::from("gap:UnsupportedRepairSource")
-        } else {
-            if !reroute_exists {
-                String::from("gap:ExecutionToolsMissing")
-            } else {
-                if !planned_write_pure {
-                    String::from("gap:UnsupportedRepairSource")
-                } else {
-                    if (reroute_kind == "final") {
-                        if ((last_outcome == "missing") || (last_outcome == "unreported")) {
-                            String::from("gap:VerificationReceiptIncomplete")
-                        } else {
-                            if (last_outcome == "succeeded") {
-                                if (receipt_gap != "") {
-                                    format!("{}{}", (String::from("gap:")), receipt_gap)
-                                } else {
-                                    String::from("created:verified")
-                                }
-                            } else {
-                                String::from("created:failed")
-                            }
-                        }
-                    } else {
-                        String::from("reroute")
-                    }
-                }
-            }
-        }
+        String::from("gap:GrammarUnavailable")
     }
 }

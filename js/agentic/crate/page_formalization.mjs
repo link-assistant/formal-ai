@@ -1,3 +1,4 @@
+import {structuralRuleValues} from './formalization_grammar.mjs';
 import {typedMeaning} from './typed_meaning.mjs';
 import {formatLinoValueVerbatim} from './links_format.mjs';
 // Page formalization (R1188-U18): a whole page of text, every sentence of it,
@@ -72,7 +73,7 @@ export function statementNotation(statement) {
   const negation = statement.polarity === Polarity.Denied ? '¬ ' : '';
   const legacy=`${negation}(${identifiers.join(' ')})`;
   const typed=typedMeaning(statement.dialogue);
-  return typed===null?legacy:`(statement (terms ${legacy}) (typed_meaning ${formatLinoValueVerbatim(typed)}))`;
+  return typed===null?legacy:structuralRuleValues('typed-statement-notation','template')[0].replace(/\{(?:legacy|typed)\}/gu,slot=>slot==='{legacy}'?legacy:formatLinoValueVerbatim(typed));
 }
 
 /**

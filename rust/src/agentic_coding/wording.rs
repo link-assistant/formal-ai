@@ -12,8 +12,10 @@ pub(super) fn agentic_message(key: &str, values: &[(&str, &str)]) -> String {
                 .iter()
                 .find(|node| node.name == "message" && node.id == key)
         })
-        .map(|node| node.find_child_value("text").replace("\\n", "\n"))
-        .unwrap_or_else(|| key.to_owned());
+        .map_or_else(
+            || key.to_owned(),
+            |node| node.find_child_value("text").replace("\\n", "\n"),
+        );
     for (name, value) in values {
         answer = answer.replace(&format!("{{{name}}}"), value);
     }

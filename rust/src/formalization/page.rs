@@ -123,9 +123,15 @@ pub fn statement_notation(statement: &Statement) -> String {
     typed_meaning(&statement.dialogue).map_or_else(
         || legacy.clone(),
         |typed| {
-            format!(
-                "(statement (terms {legacy}) (typed_meaning {}))",
-                crate::links_format::format_lino_value_verbatim(&typed)
+            crate::seed::fill_template_once(
+                &super::structural_rule_values("typed-statement-notation", "template")[0],
+                &[
+                    ("legacy", &legacy),
+                    (
+                        "typed",
+                        &crate::links_format::format_lino_value_verbatim(&typed),
+                    ),
+                ],
             )
         },
     )

@@ -75,13 +75,10 @@ pub fn observe_coding_research_rebinding_candidate(
     let declaration = &catalog["declarations"][0];
     let text = declaration["source"].as_str().unwrap_or_default();
     let mut tokens = Vec::new();
-    let mut lexical = match crate::es_tokenizer::tokenize(text) {
-        Ok(trees) => {
-            lexical_tokens(&trees, &mut tokens);
-            true
-        }
-        Err(_) => false,
-    };
+    let mut lexical = crate::es_tokenizer::tokenize(text).is_ok_and(|trees| {
+        lexical_tokens(&trees, &mut tokens);
+        true
+    });
     let mut pieces = Vec::new();
     let mut bindings = Vec::new();
     let mut cursor = 0;

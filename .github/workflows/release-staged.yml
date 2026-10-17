@@ -576,7 +576,7 @@ jobs:
             needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
             needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
           )
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {
@@ -1278,7 +1278,7 @@ jobs:
           (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
             needs.manual_prepare-source.outputs.version__already_released == 'true') &&
           needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {

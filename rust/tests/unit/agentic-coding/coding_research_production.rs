@@ -249,3 +249,38 @@ fn native_generated_query_consumes_the_same_declarative_query_vectors() {
         );
     }
 }
+
+#[test]
+fn native_production_research_observes_url_standard_eligibility() {
+    let vectors: Vec<Value> = serde_json::from_str(include_str!(
+        "../../fixtures/coding-research/url-standard.json"
+    ))
+    .expect("shared URL eligibility vectors");
+    for vector in vectors {
+        let mut row = rows()[0].clone();
+        row["url"] = vector["url"].clone();
+        let mut files = BTreeMap::from([(
+            "acceptance.test.mjs".to_owned(),
+            row["acceptance"].as_str().expect("acceptance").to_owned(),
+        )]);
+        let receipt = json!({"exit_code":0,"complete":true,"output":TAP}).to_string();
+        let observed = drive(&row, &mut files, &receipt);
+        let permitted = vector["fetch"].as_bool().expect("expected eligibility");
+        assert_eq!(
+            observed.calls.iter().any(|tool| tool == "web_fetch"),
+            permitted,
+            "{}",
+            vector["url"]
+        );
+        if !permitted {
+            assert!(
+                !observed
+                    .calls
+                    .iter()
+                    .any(|tool| tool == "write_file" || tool == "bash")
+            );
+            assert!(observed.final_answer.contains("NoValidatedSourceProcedure"));
+            assert!(!files.contains_key(row["module"].as_str().unwrap()));
+        }
+    }
+}

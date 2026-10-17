@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 299
   workaround_items 33
   inferred_signatures 2
-  carried_items 2358
+  carried_items 2359
   translated_modules 100
   fully_translated_modules 1
   refused_modules 49
@@ -101,7 +101,7 @@ module js/agentic/crate/orchestration_replay.mjs translated 15 workaround 0 infe
 module js/agentic/crate/orchestration_runner.mjs translated 6 workaround 1 inferred 0 carried 39
 module js/agentic/crate/orchestration_session_file.mjs translated 0 workaround 0 inferred 0 carried 5
 module js/agentic/crate/orchestration_workspace.mjs translated 1 workaround 0 inferred 0 carried 25
-module js/agentic/crate/page_formalization.mjs translated 1 workaround 0 inferred 0 carried 7
+module js/agentic/crate/page_formalization.mjs translated 1 workaround 0 inferred 0 carried 8
 module js/agentic/crate/probability.mjs translated 0 workaround 0 inferred 0 carried 7
 module js/agentic/crate/protocol_recording.mjs translated 0 workaround 0 inferred 0 carried 2
 module js/agentic/crate/protocol_responses.mjs translated 5 workaround 0 inferred 0 carried 23
@@ -175,7 +175,7 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
-refusal "import of names its module does not translate" 322
+refusal "import of names its module does not translate" 323
 refusal "JSDoc type {…}" 215
 refusal "null" 188
 refusal "import from '…'" 162

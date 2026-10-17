@@ -1,0 +1,56 @@
+self_ast_census
+  target src/agentic_coding/wording.rs
+  language rust
+  fidelity full_ast
+  byte_len 706
+  line_count 21
+  content_id source_module_cc7e0a69c458512b
+  symbol_count 1
+  symbols
+    function agentic_message 3 21
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 729
+    named_node_count 141
+    distinct_node_kinds 37
+    node_kinds
+      arguments 11
+      array_type 1
+      assignment_expression 1
+      binary_expression 3
+      block 3
+      call_expression 11
+      closure_expression 4
+      closure_parameters 4
+      crate 1
+      doc_comment 1
+      escape_sequence 2
+      expression_statement 2
+      field_expression 14
+      field_identifier 14
+      for_expression 1
+      function_item 1
+      identifier 27
+      inner_doc_comment_marker 1
+      let_declaration 2
+      line_comment 1
+      macro_invocation 2
+      mutable_specifier 1
+      parameter 2
+      parameters 1
+      primitive_type 3
+      reference_expression 1
+      reference_type 4
+      scoped_identifier 3
+      source_file 1
+      string_content 5
+      string_literal 6
+      super 1
+      token_tree 2
+      tuple_pattern 1
+      tuple_type 1
+      type_identifier 1
+      visibility_modifier 1

@@ -2,12 +2,571 @@
 // source-sha256 65fd5d20b6620b08324eec92a832adcaee86c383a6aaa56b443184fc150fb0e8; checked-ir-sha256 688bd0ee84736b26c705d70ee6dbb4358ffcd5556a19255cb5e233faa98ca425
 // upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b
 // native-namespace crate::coding_research_generated; token-checked relocation
+// checked-owned-value-lowering-sha256 31d34930f57cd046ae2c5270ccae91c309e2ce61c9e3bbac22be0dc864ecd747
 #![allow(
     unused,
     unreachable_patterns,
     non_snake_case,
     non_camel_case_types,
     invalid_nan_comparisons
+)]
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
+pub fn ml_coding_research_rebinding_kernel_loop18(
+    mut pieces: Vec<String>,
+    mut piece_bindings: Vec<String>,
+    mut from: Vec<String>,
+    mut to: Vec<String>,
+    mut source: String,
+    mut functions: f64,
+    mut index: f64,
+) -> crate::coding_research_generated::MlCodingResearchRebindingKernelLoop18Result {
+    loop {
+        return if (index < (pieces.len() as f64)) {
+            {
+                let piece = crate::coding_research_generated::ml_array::at(
+                    &pieces,
+                    crate::coding_research_generated::ml_array::number_index(index),
+                );
+                {
+                    let binding = crate::coding_research_generated::ml_array::at(
+                        &piece_bindings,
+                        crate::coding_research_generated::ml_array::number_index(index),
+                    );
+                    if ((!(binding).is_empty()) && (binding != piece)) {
+                        crate::coding_research_generated::MlCodingResearchRebindingKernelLoop18Result::MlCodingResearchRebindingKernelLoop18Return(Box::new(crate::coding_research_generated::ResearchRebindingResult::Rejected))
+                    } else {
+                        {
+                            let token = piece
+                                .trim_matches(|c: char| {
+                                    (c.is_whitespace() && c != '\u{85}') || c == '\u{feff}'
+                                })
+                                .to_string();
+                            if (token.starts_with("/*") || token.starts_with("//")) {
+                                crate::coding_research_generated::MlCodingResearchRebindingKernelLoop18Result::MlCodingResearchRebindingKernelLoop18Return(Box::new(crate::coding_research_generated::ResearchRebindingResult::Rejected))
+                            } else {
+                                {
+                                    let functions_3 = if (binding == "function") {
+                                        { (functions + 1f64) }
+                                    } else {
+                                        functions
+                                    };
+                                    if ((((((binding == "let") || (binding == "const"))
+                                        || (binding == "var"))
+                                        || (binding == "class"))
+                                        || (binding == "catch"))
+                                        || (token == "=>"))
+                                    {
+                                        crate::coding_research_generated::MlCodingResearchRebindingKernelLoop18Result::MlCodingResearchRebindingKernelLoop18Return(Box::new(crate::coding_research_generated::ResearchRebindingResult::Rejected))
+                                    } else {
+                                        {
+                                            let replacement = crate::coding_research_generated::research_rebinding_index(from.clone(), binding.clone());
+                                            if ((!(binding).is_empty()) && (replacement >= (0f64)))
+                                            {
+                                                {
+                                                    let previous = crate::coding_research_generated::research_rebinding_neighbour(pieces.clone(), index, (-1f64));
+                                                    {
+                                                        let next = crate::coding_research_generated::research_rebinding_neighbour(pieces.clone(), index, 1f64);
+                                                        if ((((previous == ".")
+                                                            || (previous == "?."))
+                                                            || (next == ":"))
+                                                            || (((previous == "{")
+                                                                || (previous == ","))
+                                                                && ((next == "}")
+                                                                    || (next == ","))))
+                                                        {
+                                                            crate::coding_research_generated::MlCodingResearchRebindingKernelLoop18Result::MlCodingResearchRebindingKernelLoop18Return(Box::new(crate::coding_research_generated::ResearchRebindingResult::Rejected))
+                                                        } else {
+                                                            {
+                                                                let source_2 = format!("{}{}", source, (crate::coding_research_generated::ml_array::at(&to, crate::coding_research_generated::ml_array::number_index(replacement))));
+                                                                {
+                                                                    let index_2 = (index + 1f64);
+                                                                    {
+                                                                        (
+                                                                            source, functions,
+                                                                            index,
+                                                                        ) = (
+                                                                            source_2.clone(),
+                                                                            functions_3,
+                                                                            index_2,
+                                                                        );
+                                                                        continue;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                {
+                                                    let source_3 = format!("{source}{piece}");
+                                                    {
+                                                        let index_3 = (index + 1f64);
+                                                        {
+                                                            (source, functions, index) = (
+                                                                source_3.clone(),
+                                                                functions_3,
+                                                                index_3,
+                                                            );
+                                                            continue;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            crate::coding_research_generated::MlCodingResearchRebindingKernelLoop18Result::MlCodingResearchRebindingKernelLoop18Done(source, functions)
+        };
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum MlCanonicalUniqueSourceIndexLoop20Result {
+    MlCanonicalUniqueSourceIndexLoop20Done(f64),
+    MlCanonicalUniqueSourceIndexLoop20Return(f64),
+}
+
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
+pub fn ml_canonical_unique_source_index_loop20(
+    mut valid: Vec<bool>,
+    mut selected: f64,
+    mut index: f64,
+) -> crate::coding_research_generated::MlCanonicalUniqueSourceIndexLoop20Result {
+    loop {
+        return if (index < (valid.len() as f64)) {
+            if crate::coding_research_generated::ml_array::at(
+                &valid,
+                crate::coding_research_generated::ml_array::number_index(index),
+            ) {
+                {
+                    if selected == (-1f64) {
+                        {
+                            let selected_2 = index;
+                            {
+                                let index_2 = (index + 1f64);
+                                {
+                                    (selected, index) = (selected_2, index_2);
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                    {
+                        crate::coding_research_generated::MlCanonicalUniqueSourceIndexLoop20Result::MlCanonicalUniqueSourceIndexLoop20Return(-2f64)
+                    }
+                }
+            } else {
+                {
+                    let index_3 = (index + 1f64);
+                    {
+                        index = index_3;
+                        continue;
+                    }
+                }
+            }
+        } else {
+            crate::coding_research_generated::MlCanonicalUniqueSourceIndexLoop20Result::MlCanonicalUniqueSourceIndexLoop20Done(selected)
+        };
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum MlIndependentAcceptanceKernelLoop21Result {
+    MlIndependentAcceptanceKernelLoop21Done(bool, bool, f64),
+    MlIndependentAcceptanceKernelLoop21Return(bool),
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum MlIndependentAcceptanceKernelJoin22 {
+    MlIndependentAcceptanceKernelJoin22Next(bool, bool, f64, f64),
+    MlIndependentAcceptanceKernelJoin22Return(bool),
+}
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum MlIndependentAcceptanceKernelLoop23Result {
+    MlIndependentAcceptanceKernelLoop23Done(f64),
+    MlIndependentAcceptanceKernelLoop23Return(bool),
+}
+
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
+pub fn ml_independent_acceptance_kernel_loop23(
+    mut texts: Vec<String>,
+    mut kinds: Vec<String>,
+    mut arity: f64,
+    mut index: f64,
+    mut argument: f64,
+) -> crate::coding_research_generated::MlIndependentAcceptanceKernelLoop23Result {
+    loop {
+        return if (argument < arity) {
+            if (crate::coding_research_generated::research_acceptance_literal(
+                texts.clone(),
+                kinds.clone(),
+                index,
+            )) {
+                {
+                    let index_2 = (index + 1f64);
+                    if ((argument + 1f64) < arity) {
+                        if ((index_2 >= (texts.len() as f64))
+                            || ((crate::coding_research_generated::ml_array::at(
+                                &texts,
+                                crate::coding_research_generated::ml_array::number_index(index_2),
+                            )) != ","))
+                        {
+                            crate::coding_research_generated::MlIndependentAcceptanceKernelLoop23Result::MlIndependentAcceptanceKernelLoop23Return(false)
+                        } else {
+                            {
+                                let index_3 = (index_2 + 1f64);
+                                {
+                                    let argument_2 = (argument + 1f64);
+                                    {
+                                        (index, argument) = (index_3, argument_2);
+                                        continue;
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        {
+                            let argument_3 = (argument + 1f64);
+                            {
+                                (index, argument) = (index_2, argument_3);
+                                continue;
+                            }
+                        }
+                    }
+                }
+            } else {
+                crate::coding_research_generated::MlIndependentAcceptanceKernelLoop23Result::MlIndependentAcceptanceKernelLoop23Return(false)
+            }
+        } else {
+            crate::coding_research_generated::MlIndependentAcceptanceKernelLoop23Result::MlIndependentAcceptanceKernelLoop23Done(index)
+        };
+    }
+}
+
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::too_many_arguments,
+    reason = "Pinned checked IR function arity is the canonical source contract"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
+pub fn ml_independent_acceptance_kernel_loop21(
+    mut texts: Vec<String>,
+    mut kinds: Vec<String>,
+    mut name: String,
+    mut module_url: String,
+    mut arity: f64,
+    mut callable: bool,
+    mut assertion_import: bool,
+    mut assertions: f64,
+    mut index: f64,
+) -> crate::coding_research_generated::MlIndependentAcceptanceKernelLoop21Result {
+    loop {
+        return if (index < (texts.len() as f64)) {
+            {
+                if ((crate::coding_research_generated::ml_array::at(
+                    &texts,
+                    crate::coding_research_generated::ml_array::number_index(index),
+                )) == ";")
+                {
+                    {
+                        let index_2 = (index + 1f64);
+                        {
+                            index = index_2;
+                            continue;
+                        }
+                    }
+                }
+                {
+                    {
+                        let ml_s24 = if ((crate::coding_research_generated::ml_array::at(
+                            &texts,
+                            crate::coding_research_generated::ml_array::number_index(index),
+                        )) == "import")
+                        {
+                            if (((((((index + 5f64) < (texts.len() as f64))
+                                && ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 1f64,
+                                    ),
+                                )) == "{"))
+                                && ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 2f64,
+                                    ),
+                                )) == name))
+                                && ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 3f64,
+                                    ),
+                                )) == "}"))
+                                && ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 4f64,
+                                    ),
+                                )) == "from"))
+                                && (((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 5f64,
+                                    ),
+                                )) == (format!(
+                                    "{}{}",
+                                    (format!("{}{}", (String::from("'")), module_url)),
+                                    (String::from("'"))
+                                ))) || ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 5f64,
+                                    ),
+                                )) == (format!(
+                                    "{}{}",
+                                    (format!("{}{}", (String::from("\"")), module_url)),
+                                    (String::from("\""))
+                                )))))
+                            {
+                                {
+                                    let callable_2 = true;
+                                    {
+                                        let index_3 = (index + 6f64);
+                                        crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Next(callable_2, assertion_import, assertions, index_3)
+                                    }
+                                }
+                            } else if (((((index + 3f64) < (texts.len() as f64))
+                                && ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 1f64,
+                                    ),
+                                )) == "assert"))
+                                && ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 2f64,
+                                    ),
+                                )) == "from"))
+                                && (((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 3f64,
+                                    ),
+                                )) == "'node:assert/strict'")
+                                    || ((crate::coding_research_generated::ml_array::at(
+                                        &texts,
+                                        crate::coding_research_generated::ml_array::number_index(
+                                            index + 3f64,
+                                        ),
+                                    )) == "\"node:assert/strict\"")))
+                            {
+                                {
+                                    let assertion_import_2 = true;
+                                    {
+                                        let index_4 = (index + 4f64);
+                                        crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Next(callable, assertion_import_2, assertions, index_4)
+                                    }
+                                }
+                            } else {
+                                crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(false)
+                            }
+                        } else if ((((((((index + 5f64) >= (texts.len() as f64))
+                            || ((crate::coding_research_generated::ml_array::at(
+                                &texts,
+                                crate::coding_research_generated::ml_array::number_index(index),
+                            )) != "assert"))
+                            || ((crate::coding_research_generated::ml_array::at(
+                                &texts,
+                                crate::coding_research_generated::ml_array::number_index(
+                                    index + 1f64,
+                                ),
+                            )) != "."))
+                            || !(((((crate::coding_research_generated::ml_array::at(
+                                &texts,
+                                crate::coding_research_generated::ml_array::number_index(
+                                    index + 2f64,
+                                ),
+                            )) == "equal")
+                                || ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 2f64,
+                                    ),
+                                )) == "strictEqual"))
+                                || ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 2f64,
+                                    ),
+                                )) == "deepEqual"))
+                                || ((crate::coding_research_generated::ml_array::at(
+                                    &texts,
+                                    crate::coding_research_generated::ml_array::number_index(
+                                        index + 2f64,
+                                    ),
+                                )) == "deepStrictEqual")))
+                            || ((crate::coding_research_generated::ml_array::at(
+                                &texts,
+                                crate::coding_research_generated::ml_array::number_index(
+                                    index + 3f64,
+                                ),
+                            )) != "("))
+                            || ((crate::coding_research_generated::ml_array::at(
+                                &texts,
+                                crate::coding_research_generated::ml_array::number_index(
+                                    index + 4f64,
+                                ),
+                            )) != name))
+                            || ((crate::coding_research_generated::ml_array::at(
+                                &texts,
+                                crate::coding_research_generated::ml_array::number_index(
+                                    index + 5f64,
+                                ),
+                            )) != "("))
+                        {
+                            crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(false)
+                        } else {
+                            {
+                                let index_5 = (index + 6f64);
+                                {
+                                    let argument = 0f64;
+                                    {
+                                        let ml_s25 = crate::coding_research_generated::ml_independent_acceptance_kernel_loop23(texts.clone(), kinds.clone(), arity, index_5, argument);
+                                        match ml_s25 {
+                                            crate::coding_research_generated::MlIndependentAcceptanceKernelLoop23Result::MlIndependentAcceptanceKernelLoop23Done(index_6) => {
+                                                if ((index_6 + 3f64) >= (texts.len() as f64)) {
+                                                    crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(false)
+                                                } else if (crate::coding_research_generated::ml_array::at(&texts, crate::coding_research_generated::ml_array::number_index(index_6))) == ")" {
+                                                        if (crate::coding_research_generated::ml_array::at(&texts, crate::coding_research_generated::ml_array::number_index(index_6 + 1f64))) == "," {
+                                                            if (crate::coding_research_generated::research_acceptance_literal(texts.clone(), kinds.clone(), (index_6 + 2f64))) {
+                                                                if (crate::coding_research_generated::ml_array::at(&texts, crate::coding_research_generated::ml_array::number_index(index_6 + 3f64))) == ")" {
+                                                                    {
+                                                                        let index_7 = (index_6 + 4f64);
+                                                                        {
+                                                                            let assertions_2 = (assertions + 1f64);
+                                                                            crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Next(callable, assertion_import, assertions_2, index_7)
+                                                                        }
+                                                                    }
+                                                                } else {
+                                                                    crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(false)
+                                                                }
+                                                            } else {
+                                                                crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(false)
+                                                            }
+                                                        } else {
+                                                            crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(false)
+                                                        }
+                                                    } else {
+                                                        crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(false)
+                                                    }
+                                            }
+                                            crate::coding_research_generated::MlIndependentAcceptanceKernelLoop23Result::MlIndependentAcceptanceKernelLoop23Return(ml_result23) => {
+                                                crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(ml_result23)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        };
+                        match ml_s24 {
+                        crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Next(callable_3, assertion_import_3, assertions_3, index_8) => {
+                            if ((index_8 < (texts.len() as f64)) && ((crate::coding_research_generated::ml_array::at(&texts, crate::coding_research_generated::ml_array::number_index(index_8))) != ";")) {
+                                crate::coding_research_generated::MlIndependentAcceptanceKernelLoop21Result::MlIndependentAcceptanceKernelLoop21Return(false)
+                            } else {
+                                {
+                                    (callable, assertion_import, assertions, index) = (callable_3, assertion_import_3, assertions_3, index_8);
+                                    continue;
+                                }
+                            }
+                        }
+                        crate::coding_research_generated::MlIndependentAcceptanceKernelJoin22::MlIndependentAcceptanceKernelJoin22Return(ml_result22) => {
+                            crate::coding_research_generated::MlIndependentAcceptanceKernelLoop21Result::MlIndependentAcceptanceKernelLoop21Return(ml_result22)
+                        }
+                    }
+                    }
+                }
+            }
+        } else {
+            crate::coding_research_generated::MlIndependentAcceptanceKernelLoop21Result::MlIndependentAcceptanceKernelLoop21Done(callable, assertion_import, assertions)
+        };
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum MlCodingResearchPreflightKernelLoop24Result {
+    MlCodingResearchPreflightKernelLoop24Done,
+    MlCodingResearchPreflightKernelLoop24Return(String),
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum MlCodingResearchPreflightKernelLoop25Result {
+    MlCodingResearchPreflightKernelLoop25Done,
+    MlCodingResearchPreflightKernelLoop25Return(String),
+}
+
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
 )]
 pub fn ml_coding_research_preflight_kernel_loop25(
     mut parameters: Vec<String>,
@@ -39,6 +598,19 @@ pub fn ml_coding_research_preflight_kernel_loop25(
     }
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
+#[allow(
+    clippy::cast_precision_loss,
+    reason = "JavaScript Number conversion deliberately rounds to IEEE binary64"
+)]
 pub fn ml_coding_research_preflight_kernel_loop24(
     mut name: String,
     mut parameters: Vec<String>,
@@ -57,7 +629,7 @@ pub fn ml_coding_research_preflight_kernel_loop24(
                     let other = 0f64;
                     {
                         let ml_s26 = crate::coding_research_generated::ml_coding_research_preflight_kernel_loop25(parameters.clone(), index, other);
-                        match ml_s26.clone() {
+                        match ml_s26 {
                             crate::coding_research_generated::MlCodingResearchPreflightKernelLoop25Result::MlCodingResearchPreflightKernelLoop25Done => {
                                 {
                                     let index_2 = (index + 1f64);
@@ -68,7 +640,7 @@ pub fn ml_coding_research_preflight_kernel_loop24(
                                 }
                             }
                             crate::coding_research_generated::MlCodingResearchPreflightKernelLoop25Result::MlCodingResearchPreflightKernelLoop25Return(ml_result25) => {
-                                crate::coding_research_generated::MlCodingResearchPreflightKernelLoop24Result::MlCodingResearchPreflightKernelLoop24Return(ml_result25.clone())
+                                crate::coding_research_generated::MlCodingResearchPreflightKernelLoop24Result::MlCodingResearchPreflightKernelLoop24Return(ml_result25)
                             }
                         }
                     }
@@ -86,6 +658,15 @@ pub enum MlCodingResearchSearchIndexLoop26Result {
     MlCodingResearchSearchIndexLoop26Return(f64),
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
 pub fn ml_coding_research_search_index_loop26(
     mut capabilities: Vec<String>,
     mut succeeded: Vec<bool>,
@@ -140,6 +721,15 @@ pub enum MlCodingResearchLatestReadIndexLoop27Result {
     MlCodingResearchLatestReadIndexLoop27Return(f64),
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
 pub fn ml_coding_research_latest_read_index_loop27(
     mut capabilities: Vec<String>,
     mut index: f64,
@@ -173,6 +763,15 @@ pub enum MlCodingResearchRunIndexLoop28Result {
     MlCodingResearchRunIndexLoop28Return(f64),
 }
 
+#[must_use]
+#[allow(
+    clippy::needless_pass_by_value,
+    reason = "Pinned checked IR public ABI owns immutable values"
+)]
+#[allow(
+    clippy::float_cmp,
+    reason = "JavaScript Number equality is exact, including NaN and signed zero"
+)]
 pub fn ml_coding_research_run_index_loop28(
     mut capabilities: Vec<String>,
     mut arguments_valid: Vec<bool>,
@@ -208,363 +807,6 @@ pub fn ml_coding_research_run_index_loop28(
             }
         } else {
             crate::coding_research_generated::MlCodingResearchRunIndexLoop28Result::MlCodingResearchRunIndexLoop28Done
-        };
-    }
-}
-
-pub fn ml_coding_research_source_ur_ls_loop30(
-    mut urls: Vec<String>,
-    mut accepted: Vec<String>,
-    mut index: f64,
-    mut present: bool,
-    mut previous: f64,
-) -> bool {
-    loop {
-        return if (previous < (accepted.len() as f64)) {
-            if ((crate::coding_research_generated::ml_array::at(
-                &accepted,
-                crate::coding_research_generated::ml_array::number_index(previous),
-            )) == (crate::coding_research_generated::ml_array::at(
-                &urls,
-                crate::coding_research_generated::ml_array::number_index(index),
-            ))) {
-                {
-                    let present_2 = true;
-                    {
-                        let previous_2 = (previous + 1f64);
-                        {
-                            (present, previous) = (present_2, previous_2);
-                            continue;
-                        }
-                    }
-                }
-            } else {
-                {
-                    let previous_3 = (previous + 1f64);
-                    {
-                        previous = previous_3;
-                        continue;
-                    }
-                }
-            }
-        } else {
-            present
-        };
-    }
-}
-
-pub fn ml_coding_research_source_ur_ls_loop29(
-    mut urls: Vec<String>,
-    mut secure: Vec<bool>,
-    mut accepted: Vec<String>,
-    mut index: f64,
-) -> Vec<String> {
-    loop {
-        return if ((index < (urls.len() as f64)) && ((accepted.len() as f64) < (3f64))) {
-            if !(crate::coding_research_generated::ml_array::at(
-                &secure,
-                crate::coding_research_generated::ml_array::number_index(index),
-            )) {
-                {
-                    let index_2 = (index + 1f64);
-                    {
-                        index = index_2;
-                        continue;
-                    }
-                }
-            } else {
-                {
-                    let present = false;
-                    {
-                        let previous = 0f64;
-                        {
-                            let present_2 = crate::coding_research_generated::ml_coding_research_source_ur_ls_loop30(urls.clone(), accepted.clone(), index, present, previous);
-                            if !present_2 {
-                                {
-                                    let accepted_2 = crate::coding_research_generated::ml_array::append(accepted.clone(), vec![crate::coding_research_generated::ml_array::at(&urls, crate::coding_research_generated::ml_array::number_index(index))]);
-                                    {
-                                        let index_3 = (index + 1f64);
-                                        {
-                                            (accepted, index) = (accepted_2.clone(), index_3);
-                                            continue;
-                                        }
-                                    }
-                                }
-                            } else {
-                                {
-                                    let index_4 = (index + 1f64);
-                                    {
-                                        index = index_4;
-                                        continue;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            accepted.clone()
-        };
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum MlCodingResearchNextURLLoop31Result {
-    MlCodingResearchNextURLLoop31Done,
-    MlCodingResearchNextURLLoop31Return(String),
-}
-
-pub fn ml_coding_research_next_url_loop32(
-    mut urls: Vec<String>,
-    mut attempted: Vec<String>,
-    mut index: f64,
-    mut present: bool,
-    mut previous: f64,
-) -> bool {
-    loop {
-        return if (previous < (attempted.len() as f64)) {
-            if ((crate::coding_research_generated::ml_array::at(
-                &attempted,
-                crate::coding_research_generated::ml_array::number_index(previous),
-            )) == (crate::coding_research_generated::ml_array::at(
-                &urls,
-                crate::coding_research_generated::ml_array::number_index(index),
-            ))) {
-                {
-                    let present_2 = true;
-                    {
-                        let previous_2 = (previous + 1f64);
-                        {
-                            (present, previous) = (present_2, previous_2);
-                            continue;
-                        }
-                    }
-                }
-            } else {
-                {
-                    let previous_3 = (previous + 1f64);
-                    {
-                        previous = previous_3;
-                        continue;
-                    }
-                }
-            }
-        } else {
-            present
-        };
-    }
-}
-
-pub fn ml_coding_research_next_url_loop31(
-    mut urls: Vec<String>,
-    mut attempted: Vec<String>,
-    mut index: f64,
-) -> crate::coding_research_generated::MlCodingResearchNextURLLoop31Result {
-    loop {
-        return if (index < (urls.len() as f64)) {
-            {
-                let present = false;
-                {
-                    let previous = 0f64;
-                    {
-                        let present_2 =
-                            crate::coding_research_generated::ml_coding_research_next_url_loop32(
-                                urls.clone(),
-                                attempted.clone(),
-                                index,
-                                present,
-                                previous,
-                            );
-                        if !present_2 {
-                            crate::coding_research_generated::MlCodingResearchNextURLLoop31Result::MlCodingResearchNextURLLoop31Return(crate::coding_research_generated::ml_array::at(&urls, crate::coding_research_generated::ml_array::number_index(index)))
-                        } else {
-                            {
-                                let index_2 = (index + 1f64);
-                                {
-                                    index = index_2;
-                                    continue;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            crate::coding_research_generated::MlCodingResearchNextURLLoop31Result::MlCodingResearchNextURLLoop31Done
-        };
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum MlCodingResearchBindingsKernelLoop33Result {
-    MlCodingResearchBindingsKernelLoop33Done,
-    MlCodingResearchBindingsKernelLoop33Return(bool),
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum MlCodingResearchBindingsKernelLoop34Result {
-    MlCodingResearchBindingsKernelLoop34Done,
-    MlCodingResearchBindingsKernelLoop34Return(bool),
-}
-
-pub fn ml_coding_research_bindings_kernel_loop34(
-    mut letters: Vec<String>,
-    mut at: f64,
-) -> crate::coding_research_generated::MlCodingResearchBindingsKernelLoop34Result {
-    loop {
-        return if (at < (letters.len() as f64)) {
-            if !(crate::coding_research_generated::research_query_identifier_part(
-                crate::coding_research_generated::ml_array::at(
-                    &letters,
-                    crate::coding_research_generated::ml_array::number_index(at),
-                ),
-            )) {
-                crate::coding_research_generated::MlCodingResearchBindingsKernelLoop34Result::MlCodingResearchBindingsKernelLoop34Return(false)
-            } else {
-                {
-                    let at_2 = (at + 1f64);
-                    {
-                        at = at_2;
-                        continue;
-                    }
-                }
-            }
-        } else {
-            crate::coding_research_generated::MlCodingResearchBindingsKernelLoop34Result::MlCodingResearchBindingsKernelLoop34Done
-        };
-    }
-}
-
-pub fn ml_coding_research_bindings_kernel_loop33(
-    mut names: Vec<String>,
-    mut characters: Vec<Vec<String>>,
-    mut keywords: Vec<bool>,
-    mut index: f64,
-) -> crate::coding_research_generated::MlCodingResearchBindingsKernelLoop33Result {
-    loop {
-        return if (index < (names.len() as f64)) {
-            {
-                let letters = crate::coding_research_generated::ml_array::at(
-                    &characters,
-                    crate::coding_research_generated::ml_array::number_index(index),
-                );
-                if ((((((letters.len() as f64) == (0f64))
-                    || crate::coding_research_generated::ml_array::at(
-                        &keywords,
-                        crate::coding_research_generated::ml_array::number_index(index),
-                    ))
-                    || ((crate::coding_research_generated::ml_array::at(
-                        &names,
-                        crate::coding_research_generated::ml_array::number_index(index),
-                    )) == "eval"))
-                    || ((crate::coding_research_generated::ml_array::at(
-                        &names,
-                        crate::coding_research_generated::ml_array::number_index(index),
-                    )) == "arguments"))
-                    || !(crate::coding_research_generated::research_query_identifier_start(
-                        crate::coding_research_generated::ml_array::at(
-                            &letters,
-                            crate::coding_research_generated::ml_array::number_index(0f64),
-                        ),
-                    )))
-                {
-                    crate::coding_research_generated::MlCodingResearchBindingsKernelLoop33Result::MlCodingResearchBindingsKernelLoop33Return(false)
-                } else {
-                    {
-                        let at = 1f64;
-                        {
-                            let ml_s27 = crate::coding_research_generated::ml_coding_research_bindings_kernel_loop34(letters.clone(), at);
-                            match ml_s27.clone() {
-                                crate::coding_research_generated::MlCodingResearchBindingsKernelLoop34Result::MlCodingResearchBindingsKernelLoop34Done => {
-                                    {
-                                        let index_2 = (index + 1f64);
-                                        {
-                                            index = index_2;
-                                            continue;
-                                        }
-                                    }
-                                }
-                                crate::coding_research_generated::MlCodingResearchBindingsKernelLoop34Result::MlCodingResearchBindingsKernelLoop34Return(ml_result34) => {
-                                    crate::coding_research_generated::MlCodingResearchBindingsKernelLoop33Result::MlCodingResearchBindingsKernelLoop33Return(ml_result34)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            crate::coding_research_generated::MlCodingResearchBindingsKernelLoop33Result::MlCodingResearchBindingsKernelLoop33Done
-        };
-    }
-}
-
-#[derive(Clone, Debug, PartialEq)]
-pub enum MlCodingResearchSourceIndexLoop35Result {
-    MlCodingResearchSourceIndexLoop35Done,
-    MlCodingResearchSourceIndexLoop35Return(f64),
-}
-
-pub fn ml_coding_research_source_index_loop35(
-    mut urls: Vec<String>,
-    mut url: String,
-    mut index: f64,
-) -> crate::coding_research_generated::MlCodingResearchSourceIndexLoop35Result {
-    loop {
-        return if (index < (urls.len() as f64)) {
-            if ((crate::coding_research_generated::ml_array::at(
-                &urls,
-                crate::coding_research_generated::ml_array::number_index(index),
-            )) == url)
-            {
-                crate::coding_research_generated::MlCodingResearchSourceIndexLoop35Result::MlCodingResearchSourceIndexLoop35Return(index)
-            } else {
-                {
-                    let index_2 = (index + 1f64);
-                    {
-                        index = index_2;
-                        continue;
-                    }
-                }
-            }
-        } else {
-            crate::coding_research_generated::MlCodingResearchSourceIndexLoop35Result::MlCodingResearchSourceIndexLoop35Done
-        };
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub enum MlCodingResearchPureRepairKernelLoop36Result {
-    MlCodingResearchPureRepairKernelLoop36Done,
-    MlCodingResearchPureRepairKernelLoop36Return(bool),
-}
-
-pub fn ml_coding_research_pure_repair_kernel_loop36(
-    mut parameters: Vec<String>,
-    mut desired_parameters: Vec<String>,
-    mut index: f64,
-) -> crate::coding_research_generated::MlCodingResearchPureRepairKernelLoop36Result {
-    loop {
-        return if (index < (parameters.len() as f64)) {
-            if ((crate::coding_research_generated::ml_array::at(
-                &parameters,
-                crate::coding_research_generated::ml_array::number_index(index),
-            )) != (crate::coding_research_generated::ml_array::at(
-                &desired_parameters,
-                crate::coding_research_generated::ml_array::number_index(index),
-            ))) {
-                crate::coding_research_generated::MlCodingResearchPureRepairKernelLoop36Result::MlCodingResearchPureRepairKernelLoop36Return(false)
-            } else {
-                {
-                    let index_2 = (index + 1f64);
-                    {
-                        index = index_2;
-                        continue;
-                    }
-                }
-            }
-        } else {
-            crate::coding_research_generated::MlCodingResearchPureRepairKernelLoop36Result::MlCodingResearchPureRepairKernelLoop36Done
         };
     }
 }

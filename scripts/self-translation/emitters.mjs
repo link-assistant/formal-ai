@@ -55,6 +55,15 @@ export function emitRust(item) {
       case 'variable':
         return { text: pureRustIdentifier(expr.name), prec: PRIMARY, owned: env.get(expr.name) ?? false };
       case 'binary': {
+        const lower = expr.left;
+        const upper = expr.right;
+        if (expr.op === 'and' && lower.kind === 'binary' && upper.kind === 'binary'
+            && lower.op === 'greater-equal' && upper.op === 'less-equal'
+            && lower.left.kind === 'variable' && upper.left.kind === 'variable'
+            && lower.left.name === upper.left.name
+            && lower.right.kind === 'number' && upper.right.kind === 'number') {
+          return { text: `(${rustNumber(lower.right.text)}..=${rustNumber(upper.right.text)}).contains(&${pureRustIdentifier(lower.left.name)})`, prec: PRIMARY, owned: false };
+        }
         const row = map.operators.get(expr.op);
         if ((expr.op === 'equal' || expr.op === 'not-equal') && expr.left.type === 'number') lints.add('clippy::float_cmp');
         if ((expr.op === 'add' || expr.op === 'subtract') && [expr.left, expr.right].some((side) => side.kind === 'binary' && side.op === 'multiply')) {
@@ -158,6 +167,7 @@ export function emitRust(item) {
 
 function owned(value) {
   if (value.owned) return value;
+  if (value.text === '""') return { text: 'String::new()', prec: PRIMARY, owned: true };
   return { text: value.prec < PRIMARY ? `(${value.text}).to_string()` : `${value.text}.to_string()`, prec: PRIMARY, owned: true };
 }
 

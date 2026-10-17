@@ -2,6 +2,7 @@
 // source-sha256 65fd5d20b6620b08324eec92a832adcaee86c383a6aaa56b443184fc150fb0e8; checked-ir-sha256 688bd0ee84736b26c705d70ee6dbb4358ffcd5556a19255cb5e233faa98ca425
 // upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b
 // native-namespace crate::coding_research_generated; token-checked relocation
+// checked-owned-value-lowering-sha256 31d34930f57cd046ae2c5270ccae91c309e2ce61c9e3bbac22be0dc864ecd747
 #![allow(
     unused,
     unreachable_patterns,
@@ -17,3 +18,5 @@ mod part3;
 pub use part3::*;
 mod part4;
 pub use part4::*;
+mod part5;
+pub use part5::*;

@@ -1,4 +1,9 @@
 //! Thin receipt syntax adapter for canonical generated research decisions.
+use super::final_result::{
+    ResearchDiscoveryContext, ResearchDiscoveryEvidence, ResearchFinalEvidence,
+    ResearchObservations, ResearchProvenance, ResearchReadObservation, ResearchReadStatus,
+    ResearchVerificationObservation,
+};
 use super::wording::agentic_message as message;
 #[path = "../coding_research_kernel.rs"]
 mod kernel;
@@ -58,6 +63,23 @@ use super::progress::{Progress, ToolAttempt};
 use crate::coding_research_generated as generated;
 use crate::protocol::ChatMessage;
 use serde_json::{Value, json};
+
+/// Decimal observations use Rust's correctly rounded parser, matching JavaScript Number.
+fn research_length_number(value: usize) -> f64 {
+    value
+        .to_string()
+        .parse()
+        .expect("ResearchLengthNumberInvariant")
+}
+/// Generated indices must remain finite integral platform indices; invalid values refuse.
+fn research_number_index(value: f64) -> Option<usize> {
+    if !value.is_finite() {
+        return None;
+    }
+    let text = value.to_string();
+    let unsigned_zero = if text == "-0" { "0" } else { &text };
+    unsigned_zero.parse().ok()
+}
 
 fn text(value: &Value) -> String {
     value.as_str().unwrap_or_default().to_owned()
@@ -124,7 +146,7 @@ pub fn independent_acceptance(request: &ModuleFunctionRequest, source: &str) -> 
         directory(&test),
         test,
         request.command.clone().unwrap_or_default(),
-        request.parameters.len() as f64,
+        research_length_number(request.parameters.len()),
         flag(&observed["complete"])
             && crate::coding::cst::validated_program_cst("javascript", source).is_some(),
     )
@@ -170,7 +192,9 @@ pub fn derive_coding_procedure(request: &ModuleFunctionRequest, page: &Value) ->
     }
     let selected = generated::canonical_unique_source_index(vec![true; proposals.len()]);
     if selected >= 0.0 {
-        proposals.get(selected as usize).cloned()
+        research_number_index(selected)
+            .and_then(|index| proposals.get(index))
+            .cloned()
     } else {
         None
     }
@@ -197,20 +221,87 @@ fn pure_research_program(request: &ModuleFunctionRequest, source: &str) -> bool 
         request.parameters.clone(),
     )
 }
-fn gap(decision: &str, result: &mut Option<FinalResult>) -> AgenticPlan {
-    let reason = decision
-        .strip_prefix("gap:")
-        .unwrap_or(decision)
-        .split(':')
-        .next()
-        .unwrap_or_default();
-    record(
+fn gap(
+    decision: &str,
+    request: &ModuleFunctionRequest,
+    observations: ResearchObservations,
+    context: ResearchDiscoveryContext,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
+    let mut parts = decision.strip_prefix("gap:").unwrap_or(decision).split(':');
+    let reason = parts.next().unwrap_or_default();
+    let path = parts.next().and_then(|target| match target {
+        "module" => Some(request.module.clone()),
+        "test" => request.test.clone(),
+        _ => None,
+    });
+    let plan = record(
         AgenticPlan::Final(message("coding-research-gap", &[("reason", reason)])),
         FinalDisposition::Gap,
         "coding-research-gap",
         result,
-    )
+    );
+    if let Some(result) = result {
+        result.discovery = Some(ResearchDiscoveryEvidence {
+            reason: reason.to_owned(),
+            authored: false,
+            verified: false,
+            path,
+            context,
+            observations,
+        });
+    }
+    plan
 }
+fn read_evidence(
+    path: Option<&str>,
+    observed: Option<&super::tool_result::SourceReadObservation>,
+) -> ResearchReadObservation {
+    ResearchReadObservation {
+        path: path.map(str::to_owned),
+        observed: observed.is_some(),
+        status: observed.map(|value| match value.status {
+            super::tool_result::SourceReadStatus::ReportedSuccess => {
+                ResearchReadStatus::ReportedSuccess
+            }
+            super::tool_result::SourceReadStatus::ReportedFailure => {
+                ResearchReadStatus::ReportedFailure
+            }
+            super::tool_result::SourceReadStatus::Unknown => ResearchReadStatus::Unknown,
+        }),
+        complete: observed.map(|value| value.complete),
+        absent: observed.map(|value| value.absent),
+        source_sha256: observed
+            .and_then(|value| value.source.as_deref())
+            .map(|source| crate::source_fetch::sha256_hex(source.as_bytes())),
+        error: observed.and_then(|value| value.error.clone()),
+    }
+}
+
+fn research_observations(
+    request: &ModuleFunctionRequest,
+    progress: &Progress,
+    verification: Option<ResearchVerificationObservation>,
+) -> ResearchObservations {
+    ResearchObservations {
+        module_read: read_evidence(
+            Some(&request.module),
+            progress.source_read_for(&request.module),
+        ),
+        test_read: read_evidence(
+            request.test.as_deref(),
+            request
+                .test
+                .as_deref()
+                .and_then(|path| progress.source_read_for(path)),
+        ),
+        successful_write_sha256: progress
+            .successful_write_content_for(&request.module)
+            .map(|source| crate::source_fetch::sha256_hex(source.as_bytes())),
+        verification,
+    }
+}
+
 fn capability(attempt: &ToolAttempt) -> String {
     attempt
         .capability
@@ -289,7 +380,13 @@ pub(super) fn plan_coding_research_step(
         read_tool.is_some(),
     );
     if preflight.starts_with("gap:") {
-        return Some(gap(&preflight, result));
+        return Some(gap(
+            &preflight,
+            &request,
+            research_observations(&request, &progress, None),
+            ResearchDiscoveryContext::None,
+            result,
+        ));
     }
     if let Some(target) = preflight.strip_prefix("read:") {
         let path = if target == "module" {
@@ -322,7 +419,7 @@ pub(super) fn plan_coding_research_step(
             value
                 .as_ref()
                 .and_then(Value::as_object)
-                .map_or(-1.0, |object| object.len() as f64)
+                .map_or(-1.0, |object| research_length_number(object.len()))
         })
         .collect();
     let queries: Vec<String> = arguments
@@ -354,29 +451,46 @@ pub(super) fn plan_coding_research_step(
     let search_decision =
         generated::coding_research_search_decision(search_index >= 0.0, search_tool.is_some());
     if search_decision.starts_with("gap:") {
-        return Some(gap(&search_decision, result));
+        return Some(gap(
+            &search_decision,
+            &request,
+            research_observations(&request, &progress, None),
+            ResearchDiscoveryContext::None,
+            result,
+        ));
     }
     if search_decision == "search" {
         return search_tool.map(|tool| plan_one(tool, json!({"query":query}).to_string()));
     }
-    let search = attempts.get(search_index as usize)?;
+    let search = attempts.get(research_number_index(search_index)?)?;
     let search_text = normalized_payload(&search.detail).unwrap_or_default();
-    let capture_decision =
-        generated::coding_research_capture_decision(search_text.len() as f64, true);
+    let capture_decision = generated::coding_research_capture_decision(
+        research_length_number(search_text.len()),
+        true,
+    );
     if capture_decision.starts_with("gap:") {
-        return Some(gap(&capture_decision, result));
+        return Some(gap(
+            &capture_decision,
+            &request,
+            research_observations(&request, &progress, None),
+            ResearchDiscoveryContext::None,
+            result,
+        ));
     }
     let found = super::web_research::urls_in(&search_text);
     let secure = found
         .iter()
-        .map(|url| crate::source_fetch::validate_url(url).is_ok() && url.starts_with("https://"))
+        .map(|url| url::Url::parse(url).is_ok_and(|parsed| parsed.scheme() == "https"))
         .collect();
     let urls = generated::coding_research_source_ur_ls(found, secure);
     let mut proposals = Vec::new();
     for (url, raw) in &progress.fetched_pages {
         let source_index = generated::coding_research_source_index(urls.clone(), url.clone());
         let body = normalized_payload(raw).unwrap_or_else(|| raw.clone());
-        if !generated::coding_research_page_eligible(source_index, body.len() as f64) {
+        if !generated::coding_research_page_eligible(
+            source_index,
+            research_length_number(body.len()),
+        ) {
             continue;
         }
         let (_, blocks) =
@@ -398,12 +512,21 @@ pub(super) fn plan_coding_research_step(
     }
     let next_url = generated::coding_research_next_url(urls, progress.attempted_fetches.clone());
     let discovery = generated::coding_research_discovery_kernel(
-        proposals.len() as f64,
+        research_length_number(proposals.len()),
         fetch_tool.is_some(),
         next_url.clone(),
     );
     if discovery.starts_with("gap:") {
-        return Some(gap(&discovery, result));
+        return Some(gap(
+            &discovery,
+            &request,
+            research_observations(&request, &progress, None),
+            ResearchDiscoveryContext::Search {
+                query: query.clone(),
+                attempted: progress.attempted_fetches.len(),
+            },
+            result,
+        ));
     }
     if discovery == "fetch" {
         return fetch_tool.map(|tool| plan_one(tool, fetch_arguments(&next_url)));
@@ -458,12 +581,15 @@ pub(super) fn plan_coding_research_step(
                         .is_some_and(|source| pure_research_program(&request, source))
             })
     });
-    let boundary = if !crate::meta_reasoner::text::js_trim(module_source).is_empty() {
-        generated::coding_research_latest_read_index(capabilities.clone())
-    } else {
+    let boundary = if crate::meta_reasoner::text::js_trim(module_source).is_empty() {
         progress
             .latest_successful_write_index(&request.module)
-            .map_or(attempts.len() as f64, |index| index as f64)
+            .map_or(
+                research_length_number(attempts.len()),
+                research_length_number,
+            )
+    } else {
+        generated::coding_research_latest_read_index(capabilities.clone())
     };
     let run_index = generated::coding_research_run_index(
         capabilities,
@@ -473,7 +599,7 @@ pub(super) fn plan_coding_research_step(
         request.command.clone()?,
     );
     let observation = if run_index >= 0.0 {
-        attempts.get(run_index as usize)
+        research_number_index(run_index).and_then(|index| attempts.get(index))
     } else {
         None
     };
@@ -496,12 +622,37 @@ pub(super) fn plan_coding_research_step(
         planned_write_pure,
         plan.is_some(),
         reroute_kind.to_owned(),
-        last_outcome,
-        receipt_gap,
+        last_outcome.clone(),
+        receipt_gap.clone(),
         run_tool.is_some(),
     );
+    let observations = research_observations(
+        &request,
+        &progress,
+        Some(ResearchVerificationObservation {
+            command: request.command.clone(),
+            receipt: observation.map(|attempt| attempt.detail.clone()),
+            tool_succeeded: observation.map(|attempt| attempt.succeeded),
+            outcome: last_outcome,
+            receipt_gap: if receipt_gap.is_empty() {
+                None
+            } else {
+                Some(receipt_gap)
+            },
+            decision: effect.clone(),
+        }),
+    );
     if effect.starts_with("gap:") {
-        return Some(gap(&effect, result));
+        return Some(gap(
+            &effect,
+            &request,
+            observations,
+            ResearchProvenance::from_observed(&proposal["provenance"]).map_or(
+                ResearchDiscoveryContext::None,
+                ResearchDiscoveryContext::Source,
+            ),
+            result,
+        ));
     }
     if effect == "run" {
         return run_tool.map(|tool| plan_one(tool, json!({"command":request.command}).to_string()));
@@ -535,7 +686,7 @@ pub(super) fn plan_coding_research_step(
         (false, true) => "coding-research-verified-created",
         (false, false) => "coding-research-verification-failed",
     };
-    Some(record(
+    let plan = record(
         AgenticPlan::Final(answer),
         if verified {
             FinalDisposition::Finding
@@ -544,7 +695,26 @@ pub(super) fn plan_coding_research_step(
         },
         origin,
         result,
-    ))
+    );
+    if let Some(result) = result {
+        result.research =
+            ResearchProvenance::from_observed(&proposal["provenance"]).map(|provenance| {
+                ResearchFinalEvidence {
+                    provenance: provenance.terminal(
+                        verified,
+                        existing,
+                        crate::source_fetch::sha256_hex(
+                            test_read
+                                .and_then(|read| read.source.as_deref())
+                                .unwrap_or_default()
+                                .as_bytes(),
+                        ),
+                    ),
+                    observations,
+                }
+            });
+    }
+    Some(plan)
 }
 /// Successful ordinary plans remain first; only exact source-composer gaps fall through.
 pub(super) fn plan_module_function_research_step(
@@ -565,10 +735,19 @@ pub(super) fn plan_module_function_research_step(
         return ordinary;
     }
     let mut research_result = None;
-    if let Some(plan) = plan_coding_research_step(task, messages, tools, &mut research_result) {
-        *result = research_result;
-        Some(plan)
-    } else {
-        ordinary
-    }
+    plan_coding_research_step(task, messages, tools, &mut research_result).map_or(
+        ordinary,
+        |plan| {
+            *result = research_result;
+            Some(plan)
+        },
+    )
 }
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/coding-research-numeric-boundaries.rs"]
+mod numeric_boundary_tests;
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/coding-research-terminal-evidence.rs"]
+mod terminal_evidence_tests;

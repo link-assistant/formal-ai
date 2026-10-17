@@ -20,6 +20,11 @@ fn generated_research_receipt_kernel_through_native_adapter() {
             "complete": args[0],
         });
         let reason = verification_receipt_gap(&receipt.to_string()).unwrap_or_default();
-        assert_eq!(reason, row["expected"].as_str().expect("reason"), "{}", row["id"]);
+        assert_eq!(
+            reason,
+            row["expected"].as_str().expect("reason"),
+            "{}",
+            row["id"]
+        );
     }
 }

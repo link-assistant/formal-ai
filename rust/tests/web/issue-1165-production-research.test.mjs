@@ -248,3 +248,40 @@ test('exact literal arity includes zero-parameter greetings and refuses missing 
   assert.equal(independentAcceptance(two, acceptance.replace("'first', 'second'", "'first'")), false);
   assert.equal(independentAcceptance(two, acceptance.replace("'first', 'second'", "'first', externalValue")), false);
 });
+
+
+test('actual research route preserves URL-standard eligibility before requesting a fetch', async () => {
+  const vectors = JSON.parse(readFileSync(new URL('../fixtures/coding-research/url-standard.json', import.meta.url)));
+  for (const vector of vectors) {
+    const fixture = { ...fixtures[0], url: vector.url };
+    const current = await cold(fixture);
+    let observed = null;
+    for (let rung = 0; rung < 8; rung++) {
+      const plan = await current.next();
+      if (plan.kind === 'final') {
+        assert.equal(vector.fetch, false, vector.url);
+        assert.equal(plan.result?.disposition, 'gap');
+        assert.match(plan.answer, /NoValidatedSourceProcedure/u);
+        observed = false;
+        break;
+      }
+      assert.equal(plan.calls.length, 1);
+      const item = plan.calls[0], args = JSON.parse(item.arguments);
+      if (item.tool === 'web_fetch') {
+        assert.equal(args.url, vector.url);
+        observed = true;
+        break;
+      }
+      if (item.tool === 'web_search') current.observe(plan, fixture.url);
+      else {
+        assert.equal(item.tool, 'read_file', 'URL classification cannot authorize a write or verification');
+        const target = args.path ?? args.filePath ?? args.file_path;
+        const absent = target === fixture.module;
+        current.observe(plan, absent ? 'ENOENT: file not found' : fixture.acceptance, absent
+          ? {path:target, success:false, complete:false, format:'raw', error_code:'ENOENT', error:'ENOENT', exit_code:1}
+          : {path:target, success:true, complete:true, format:'raw'});
+      }
+    }
+    assert.equal(observed, vector.fetch, vector.url);
+  }
+});

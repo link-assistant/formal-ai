@@ -952,6 +952,8 @@ fn symbolic_answer(residual: &str) -> Option<FinalResult> {
         origin: answer.intent,
         payload_role: FinalPayloadRole::Finding,
         artifact: None,
+        research: None,
+        discovery: None,
     })
 }
 

@@ -238,14 +238,12 @@ pub fn count_source_terms(statement: &Statement, terms: &[&super::text_statement
             if term.kind != super::text_statements::WordKind::Number {
                 return 1;
             }
-            if let Some(index) = remaining
+            remaining
                 .iter()
                 .position(|quantity| quantity.surface == term.surface)
-            {
-                remaining.remove(index).source_components.len().max(1)
-            } else {
-                1
-            }
+                .map_or(1, |index| {
+                    remaining.remove(index).source_components.len().max(1)
+                })
         })
         .sum()
 }

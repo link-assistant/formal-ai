@@ -53,11 +53,7 @@ fn declarative_context_does_not_invent_question_or_location_evidence() {
     };
     let inherited = clause_statement("It supplies energy.", "en", Some(&previous), true);
     assert_eq!(inherited.dialogue.quantities[0].value, "17");
-    assert!(
-        inherited.dialogue.quantities[0]
-            .source_components
-            .is_empty()
-    );
+    assert_eq!(inherited.dialogue.quantities[0].source_components.len(), 0);
     assert!(fact_survives(&inherited));
 }
 
@@ -79,7 +75,8 @@ fn logical_numeric_groups_keep_original_source_token_weights_once() {
             .collect::<Vec<_>>();
         assert_eq!(
             count_source_terms(&statement, &repeated),
-            vector["expected"].as_u64().unwrap() as usize
+            usize::try_from(vector["expected"].as_u64().unwrap())
+                .expect("fixture count fits platform")
         );
     }
 }

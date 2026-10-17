@@ -4,7 +4,9 @@ import vm from 'node:vm';
 import {test} from 'node:test';
 import {parse} from '@babel/parser';
 import {installTextHost} from '../../../scripts/lib/text-capability-measures.mjs';
-import {host,installHost} from '../../../js/agentic/host.mjs';
+import {host,installHost,parseLino} from '../../../js/agentic/host.mjs';
+import {grammarRoot} from '../../../js/agentic/crate/formalization_grammar.mjs';
+import {meaning,meaningFiles} from '../../../js/agentic/crate/seed_meanings.mjs';
 import {structuralRuleValues,numericIdentityPrefix,mergeNumericWords,answerCompatibility} from '../../../js/agentic/crate/dialogue_formalization.mjs';
 import {renderTerm} from '../../../js/agentic/crate/round_trip_translation.mjs';
 import {WordKind} from '../../../js/agentic/crate/text_formalization.mjs';
@@ -43,4 +45,21 @@ test('missing or ambiguous structural grammar refuses instead of certifying a su
    installHost({...current,readText:file=>file===seedPath?changed:current.readText(file)});assert.throws(()=>complete('normal surface','en'));
   }
  }finally{installHost(current);}
+});
+test('structural grammar identities have authored meanings in the runtime lexicon',()=>{
+ const meaningPath='data/seed/meanings-formalization-needs.lino';
+ assert(meaningFiles().includes(meaningPath));
+ const authored=parseLino(host().readText(meaningPath));
+ for(const rule of grammarRoot().children.filter(node=>node.name==='structural-rule')){
+  const resolved=meaning(rule.id);assert(resolved,rule.id);
+  const records=authored.children.filter(node=>node.name===rule.id);
+  assert.equal(records.length,1,rule.id);
+  for(const field of ['precondition','effect','unit','example','grounding']){
+   const values=records[0].children.filter(node=>node.name===field);
+   assert.equal(values.length,1,rule.id+' '+field);assert(values[0].value.trim());
+  }
+  for(const target of records[0].children.find(node=>node.name==='grounding').value.split('; ')){
+   const [file,symbol]=target.split('::');assert(symbol);assert(fs.readFileSync(file,'utf8').includes(symbol),target);
+  }
+ }
 });
