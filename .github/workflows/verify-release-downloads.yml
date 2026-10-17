@@ -58,6 +58,8 @@ jobs:
       - uses: actions/setup-node@v7
         with: {node-version: '24', package-manager-cache: false}
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: public-release-selection
           path: ${{ runner.temp }}/release-selection
@@ -111,6 +113,8 @@ jobs:
       - uses: actions/setup-node@v7
         with: {node-version: '24', package-manager-cache: false}
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: public-release-selection
           path: ${{ runner.temp }}/release-selection
