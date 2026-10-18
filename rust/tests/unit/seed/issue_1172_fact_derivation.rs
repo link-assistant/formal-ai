@@ -330,7 +330,7 @@ fn duplicate_relation_rows_replace_values_without_reordering_distinct_slugs() {
         assert_eq!(record.intent, "heldout_relation");
         assert_eq!(record.category, "heldout_category");
         assert!(record.localized.is_empty());
-        assert!(record.summary.is_empty());
+        assert_eq!(record.summary, "");
     }
     assert_eq!(records[9].relation, "author_of_book");
     calls.clear();

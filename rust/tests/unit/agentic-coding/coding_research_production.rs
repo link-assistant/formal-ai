@@ -26,8 +26,14 @@ fn request(row: &Value) -> ModuleFunctionRequest {
         ),
     )
     .expect("same declaration and path request grammar");
-    request.language = row["language"].as_str().expect("language").to_owned();
-    request.module = row["module"].as_str().expect("module").to_owned();
+    row["language"]
+        .as_str()
+        .expect("language")
+        .clone_into(&mut request.language);
+    row["module"]
+        .as_str()
+        .expect("module")
+        .clone_into(&mut request.module);
     request
 }
 fn page(row: &Value, source: &str) -> Value {
@@ -62,20 +68,19 @@ fn drive(row: &Value, files: &mut BTreeMap<String, String>, receipt: &str) -> Ob
             .unwrap_or_default();
         let mut metadata = None;
         let output = match call.tool.as_str() {
-            "read_file" => match files.get(path) {
-                Some(source) => {
+            "read_file" => {
+                if let Some(source) = files.get(path) {
                     metadata =
                         Some(json!({"path":path,"success":true,"complete":true,"format":"raw"}));
                     source.clone()
-                }
-                None => {
+                } else {
                     metadata = Some(
                         json!({"path":path,"success":false,"complete":false,"format":"raw",
                         "error":"ENOENT","error_code":"ENOENT","exit_code":1}),
                     );
                     "ENOENT: file not found".to_owned()
                 }
-            },
+            }
             "web_search" => {
                 assert!(
                     !args["query"]

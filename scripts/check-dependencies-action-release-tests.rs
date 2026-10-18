@@ -28,18 +28,15 @@ fn release() -> ActionRelease {
 fn snapshot() -> Snapshot {
     Snapshot {
         refreshed_at: "2026-10-17T00:00:00Z".to_string(),
-        entries: [(
+        entries: std::iter::once((
             (Ecosystem::GitHubAction, "owner/action/path".to_string()),
             (
                 "v2.3.4".to_string(),
                 action_release_url("owner/action/path"),
             ),
-        )]
-        .into_iter()
+        ))
         .collect(),
-        action_releases: [("owner/action/path".to_string(), release())]
-            .into_iter()
-            .collect(),
+        action_releases: std::iter::once(("owner/action/path".to_string(), release())).collect(),
     }
 }
 
@@ -49,7 +46,7 @@ fn immutable_current_stale_missing_and_unresolved_are_distinct() {
     let mut captured = snapshot();
     let (stale, unknown) = compare(&[item.clone()], &captured);
     assert_eq!(stale[0].latest, CURRENT);
-    assert!(unknown.is_empty());
+    assert_eq!(unknown, [] as [String; 0]);
     assert_eq!(comparison_exit_code(&stale, &unknown), 1);
     item.resolved = CURRENT.to_string();
     let (drift, unknown) = compare(&[item.clone()], &captured);
@@ -57,7 +54,7 @@ fn immutable_current_stale_missing_and_unresolved_are_distinct() {
     assert_eq!(comparison_exit_code(&drift, &unknown), 0);
     captured.action_releases.clear();
     let (drift, unknown) = compare(&[item.clone()], &captured);
-    assert!(drift.is_empty());
+    assert_eq!(drift, [] as [Finding; 0]);
     assert!(unknown[0].contains("commit unresolved"));
     assert_eq!(comparison_exit_code(&drift, &unknown), EXIT_UNVERIFIABLE);
     captured.entries.clear();
@@ -115,9 +112,9 @@ fn malformed_wrong_ref_unavailable_cycle_and_depth_never_verify() {
     assert_eq!(count, 2);
     count = 0;
     let depth = resolve_action_release("owner/action", "v2.3.4", |_| {
-        let previous = format!("{:040x}", count);
+        let previous = format!("{count:040x}");
         count += 1;
-        let next = format!("{:040x}", count);
+        let next = format!("{count:040x}");
         Ok(if count == 1 {
             format!(r#"{{"ref":"refs/tags/v2.3.4","object":{{"sha":"{next}","type":"tag"}}}}"#)
         } else {
@@ -144,7 +141,7 @@ fn snapshot_round_trip_retains_urls_commit_and_apply_keeps_immutable_pin() {
     let mut item = dependency();
     item.path = workflow.clone();
     let (findings, unknown) = compare(&[item], &loaded);
-    assert!(unknown.is_empty());
+    assert_eq!(unknown, [] as [String; 0]);
     apply_latest(&findings);
     assert_eq!(
         fs::read_to_string(&workflow).unwrap(),
@@ -156,7 +153,7 @@ fn snapshot_round_trip_retains_urls_commit_and_apply_keeps_immutable_pin() {
         .get_mut("owner/action/path")
         .unwrap()
         .source_url = "https://evil.invalid/latest".to_string();
-    assert!(!compare(&[dependency()], &untrusted).1.is_empty());
+    assert_ne!(compare(&[dependency()], &untrusted).1, [] as [String; 0]);
     fs::remove_dir_all(directory).unwrap();
 }
 
@@ -168,14 +165,14 @@ fn changed_tag_binding_or_wrong_annotated_object_never_verifies() {
         .get_mut("owner/action/path")
         .unwrap()
         .tag = "v1.0.0".to_string();
-    assert!(!compare(&[dependency()], &captured).1.is_empty());
+    assert_ne!(compare(&[dependency()], &captured).1, [] as [String; 0]);
     let mut captured = snapshot();
     captured
         .action_releases
         .get_mut("owner/action/path")
         .unwrap()
         .tag_source_url = "https://evil.invalid/tag".to_string();
-    assert!(!compare(&[dependency()], &captured).1.is_empty());
+    assert_ne!(compare(&[dependency()], &captured).1, [] as [String; 0]);
     let mut calls = 0;
     assert!(
         resolve_action_release("owner/action", "v2.3.4", |_| {
@@ -215,7 +212,7 @@ fn typed_json_rejects_trailing_garbage_nested_decoys_and_identity_duplicates() {
         format!(
             r#"{{"ref":"refs/tags/v2.3.4","object":{{"sha":"{OLD}","type":"commit"}},"object":{{"sha":"{CURRENT}","type":"commit"}}}}"#
         ),
-        format!(r#"{{"ref":"refs/tags/v2.3.4","object":{{"sha":42,"type":"commit"}}}}"#),
+        r#"{"ref":"refs/tags/v2.3.4","object":{"sha":42,"type":"commit"}}"#.to_string(),
     ];
     for body in invalid {
         assert!(

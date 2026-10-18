@@ -1,5 +1,6 @@
 //! Hosted native receipt integration; the shared arithmetic is generated from JavaScript.
 use formal_ai::agentic_coding::coding_research::verification_receipt_gap;
+use std::fmt::Write as _;
 
 #[test]
 fn generated_research_receipt_kernel_through_native_adapter() {
@@ -12,7 +13,7 @@ fn generated_research_receipt_kernel_through_native_adapter() {
         let fields = ["tests", "pass", "fail", "skipped", "cancelled"];
         let mut output = String::new();
         for (index, field) in fields.iter().enumerate() {
-            output.push_str(&format!("# {field} {}\n", args[index + 1]));
+            writeln!(output, "# {field} {}", args[index + 1]).unwrap();
         }
         let receipt = serde_json::json!({
             "output": output,
