@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {registeredRustTestFilters} from '../../../scripts/lib/ladder-test-projection.mjs';
+import {ladderTestLogFilename} from '../../../scripts/lib/ladder-test-log-name.mjs';
 
 function fixture(imported = 'use formal_ai::answer::value;') {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'ladder-projection-'));
@@ -55,11 +56,11 @@ test('the unchanged Cargo operation cannot pass on zero or absent tests', () => 
       fs.mkdirSync(path.join(workspace, 'rust'), {recursive: true});
       fs.mkdirSync(path.join(workspace, '.agent-ladder'));
       fs.writeFileSync(path.join(workspace, 'rust/Cargo.toml'), '');
-      const bash = 'workspace="$1"; node=fixture; record() { :; }; target_dir() { printf "%s" "$workspace/target"; };\n'
+      const bash = 'ROOT="$2"; workspace="$1"; node=fixture; record() { :; }; target_dir() { printf "%s" "$workspace/target"; };\n'
         + 'cargo() { [[ "$*" == "test --test unit --quiet -- --exact independent::retained" ]] || return 9; '
         + (passed ? 'printf "test result: ok. ' + passed + ' passed; 0 failed; 0 ignored;\\n"; ' : '')
         + 'return ' + status + '; };\n' + body + '\ncargo_test independent::retained';
-      const observed = spawnSync('bash', ['-c', bash, 'controlled-summary', workspace], {encoding: 'utf8', timeout: 5000});
+      const observed = spawnSync('bash', ['-c', bash, 'controlled-summary', workspace, path.resolve('.')], {encoding: 'utf8', timeout: 5000});
       assert.equal(observed.signal, null);
       assert.equal(observed.status, expected);
     }
@@ -102,5 +103,88 @@ test('conditional module path authority is not guessed from the default file', a
   try {
     fs.writeFileSync(path.join(root, 'rust/src/lib.rs'), '#[cfg_attr(feature = "other", path = "foreign.rs")] pub mod answer;');
     await assert.rejects(registeredRustTestFilters(root, 'rust/src/answer.rs'), /Missing conditional Rust module path projection/);
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
+
+test('namespaced exact Cargo selections have bounded portable log filenames', () => {
+  const filter = 'issue_1138_recovery_live::a_missing_held_out_compiler_is_discovered_installed_and_retried';
+  const observed = ladderTestLogFilename('integration', filter);
+  assert.match(observed, /^cargo-test-[0-9a-f]{64}\.log$/u);
+  assert.equal(observed, ladderTestLogFilename('integration', filter));
+  for (const [target, name] of [['unit', filter], ['integration', filter.replace('::', '__')], ['integration', filter + 'é']]) {
+    assert.notEqual(observed, ladderTestLogFilename(target, name));
+  }
+  assert.throws(() => ladderTestLogFilename('../foreign', filter));
+  assert.throws(() => ladderTestLogFilename('unit', 'line\nbreak'));
+});
+test('existing ignored network cases are retained as evidence and cannot supply zero-test witnesses', async () => {
+  const root = fixture();
+  try {
+    const file = path.join(root, 'rust/tests/unit/renamed.rs');
+    fs.appendFileSync(file, '\n#[test]\n#[ignore = "network"]\nfn unavailable_live_case() {}');
+    const observed = await registeredRustTestFilters(root, 'rust/src/answer.rs');
+    assert.deepEqual(observed.jobs, [{target: 'unit', filter: 'independent::retained'}]);
+    assert.deepEqual(observed.ignoredJobs, [{target: 'unit', filter: 'independent::unavailable_live_case', source: 'rust/tests/unit/renamed.rs'}]);
+    fs.writeFileSync(file, 'use formal_ai::answer::value;\n#[test]\n#[ignore]\nfn only_ignored() {}');
+    await assert.rejects(registeredRustTestFilters(root, 'rust/src/answer.rs'), /Missing registered test projection/);
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
+test('unregistered production sources refuse with the exact changed path', async () => {
+  const root = fixture();
+  try {
+    fs.writeFileSync(path.join(root, 'rust/src/not_registered.rs'), 'pub fn value() {}');
+    await assert.rejects(registeredRustTestFilters(root, 'rust/src/not_registered.rs'), /Missing registered changed Rust module: rust\/src\/not_registered\.rs/);
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
+
+test('literal include module registries retain source ownership and public reexport aliases', async () => {
+  const root = fixture('use formal_ai::public_value;');
+  try {
+    fs.writeFileSync(path.join(root, 'rust/src/lib.rs'), 'include!("declarations.rs");\npub use answer::value as public_value;');
+    fs.writeFileSync(path.join(root, 'rust/src/declarations.rs'), 'pub mod answer;');
+    const observed = await registeredRustTestFilters(root, 'rust/src/answer.rs');
+    assert.deepEqual(observed.sourceModule, ['answer']);
+    assert.deepEqual(observed.jobs, [{target: 'unit', filter: 'independent::retained'}]);
+    assert(observed.sourceGuards.some(item => item.path === 'rust/src/declarations.rs'));
+    assert(observed.ownershipRoutes.some(route => JSON.stringify(route) === '["public_value"]'));
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
+test('cyclic, computed, conditional and shadowed include registries refuse', async () => {
+  for (const [source, extra, expected] of [
+    ['include!("declarations.rs");', 'include!("lib.rs");', /Cyclic registered Rust include/],
+    ['include!(concat!("declarations", ".rs"));', 'pub mod answer;', /Missing literal Rust include/],
+    ['#[cfg(feature = "other")] include!("declarations.rs");', 'pub mod answer;', /Missing unambiguous unconditional include/],
+    ['macro_rules! include { ($x:expr) => {}; } include!("declarations.rs");', 'pub mod answer;', /Missing unambiguous unconditional include/],
+  ]) {
+    const root = fixture();
+    try {
+      fs.writeFileSync(path.join(root, 'rust/src/lib.rs'), source);
+      fs.writeFileSync(path.join(root, 'rust/src/declarations.rs'), extra);
+      await assert.rejects(registeredRustTestFilters(root, 'rust/src/answer.rs'), expected);
+    } finally { fs.rmSync(root, {recursive: true, force: true}); }
+  }
+});
+
+test('absolute crate imports preserve source ownership without guessing prefixes', async () => {
+  const root = fixture('use ::formal_ai::answer::value;');
+  try {
+    const observed = await registeredRustTestFilters(root, 'rust/src/answer.rs');
+    assert.deepEqual(observed.jobs, [{target: 'unit', filter: 'independent::retained'}]);
+  } finally { fs.rmSync(root, {recursive: true, force: true}); }
+});
+
+test('opaque generated test scopes supply no witness and do not erase independent source-observed cases', async () => {
+  const root = fixture();
+  try {
+    fs.appendFileSync(path.join(root, 'rust/tests/unit/mod.rs'), '\nmod generated;');
+    fs.writeFileSync(path.join(root, 'rust/tests/unit/generated.rs'),
+      'use formal_ai::answer::value; #[test] fn unobserved() {} include!(concat!(env!("OUT_DIR"), "/generated.rs"));');
+    const observed = await registeredRustTestFilters(root, 'rust/src/answer.rs');
+    assert.deepEqual(observed.jobs, [{target: 'unit', filter: 'independent::retained'}]);
+    assert.equal(observed.unresolvedTestScopes.length, 1);
+    assert.equal(observed.unresolvedTestScopes[0].source, 'rust/tests/unit/generated.rs');
+    assert(observed.sourceGuards.some(item => item.path === 'rust/tests/unit/generated.rs'));
+    fs.writeFileSync(path.join(root, 'rust/tests/unit/renamed.rs'), '// no source-owned case');
+    await assert.rejects(registeredRustTestFilters(root, 'rust/src/answer.rs'), /Missing registered test projection/);
   } finally { fs.rmSync(root, {recursive: true, force: true}); }
 });

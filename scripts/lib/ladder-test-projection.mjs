@@ -6,19 +6,37 @@ import { cargoTestTargets } from './native-test-module-graph.mjs';
 import * as runtime from '../../js/vendor/tree-sitter/web-tree-sitter.mjs';
 
 const identifier = value => value?.replace(/^r#/, '');
-function imports(node) {
+function testDisposition(attributes) {
+  const names = attributes.map(item => item.namedChildren[0]?.namedChildren[0]?.text);
+  return !names.includes('test') ? null : names.includes('ignore') ? 'ignored' : 'runnable';
+}
+function importBindings(node) {
   if (!node) throw new Error('Missing Rust import operand');
-  if (node.type === 'identifier' || node.type === 'crate' || node.type === 'self' || node.type === 'super') return [[identifier(node.text)]];
-  if (node.type === 'scoped_identifier') return imports(node.childForFieldName('path')).map(parts => [...parts, identifier(node.childForFieldName('name').text)]);
-  if (node.type === 'scoped_use_list') {
-    const prefix = imports(node.childForFieldName('path'));
-    return prefix.flatMap(parts => imports(node.childForFieldName('list')).map(rest => [...parts, ...rest]));
+  if (['identifier', 'crate', 'self', 'super'].includes(node.type)) {
+    const name = identifier(node.text); return [{route: [name], local: name}];
   }
-  if (node.type === 'use_list') return node.namedChildren.flatMap(imports);
-  if (node.type === 'use_as_clause') return imports(node.childForFieldName('path') ?? node.namedChildren[0]);
-  if (node.type === 'use_wildcard') return node.namedChildren.length ? imports(node.namedChildren[0]).map(parts => [...parts, '*']) : [['*']];
+  if (node.type === 'scoped_identifier') {
+    const name = identifier(node.childForFieldName('name').text);
+    const parent = node.childForFieldName('path');
+    return parent ? importBindings(parent).map(item => ({route: [...item.route, name], local: name}))
+      : [{route: [name], local: name}];
+  }
+  if (node.type === 'scoped_use_list') return importBindings(node.childForFieldName('path')).flatMap(prefix =>
+    importBindings(node.childForFieldName('list')).map(item => item.route.length === 1 && item.route[0] === 'self'
+      ? {route: prefix.route, local: item.local === 'self' ? prefix.local : item.local}
+      : {route: [...prefix.route, ...item.route], local: item.local}));
+  if (node.type === 'use_list') return node.namedChildren.flatMap(importBindings);
+  if (node.type === 'use_as_clause') {
+    const alias = node.childForFieldName('alias');
+    if (!alias) throw new Error('Missing Rust import alias');
+    return importBindings(node.childForFieldName('path')).map(item => ({...item, local: identifier(alias.text)}));
+  }
+  if (node.type === 'use_wildcard') return node.namedChildren.length
+    ? importBindings(node.namedChildren[0]).map(item => ({route: [...item.route, '*'], local: '*'}))
+    : [{route: ['*'], local: '*'}];
   throw new Error('Missing supported Rust import projection: ' + node.type);
 }
+const imports = node => importBindings(node).map(item => item.route);
 
 /** Source-derived candidate filters; actual harness execution remains mandatory. */
 export async function registeredRustTestFilters(root, changedPath) {
@@ -75,12 +93,30 @@ export async function registeredRustTestFilters(root, changedPath) {
     if (candidates.length !== 1) throw new Error('Missing or ambiguous registered Rust module: ' + name);
     regular(candidates[0]); return candidates[0];
   }
-  function entries(node, relative, prefix, visit) {
+  function entries(node, relative, prefix, visit, included = new Set()) {
     let attributes = [];
+    const shadowsInclude = node.namedChildren.some(child => child.type === 'macro_definition'
+      && child.childForFieldName('name')?.text === 'include');
     for (const child of node.namedChildren) {
       if (child.type === 'attribute_item') { attributes.push(child); continue; }
       if (child.type === 'line_comment' || child.type === 'block_comment') continue;
-      visit(child, attributes, relative, prefix);
+      const expression = child.type === 'expression_statement' && child.namedChildren.length === 1
+        ? child.namedChildren[0] : child;
+      if (expression.type === 'macro_invocation' && expression.childForFieldName('macro')?.text === 'include') {
+        if (shadowsInclude || attributes.some(item => ['cfg', 'cfg_attr'].includes(item.namedChildren[0]?.namedChildren[0]?.text)))
+          throw new Error('Missing unambiguous unconditional include projection: ' + relative);
+        const argumentsNode = expression.namedChildren.find(item => item.type === 'token_tree');
+        const operands = argumentsNode?.namedChildren.filter(item => !['line_comment', 'block_comment'].includes(item.type));
+        if (operands?.length !== 1 || operands[0].type !== 'string_literal')
+          throw new Error('Missing literal Rust include projection: ' + relative);
+        const name = JSON.parse(operands[0].text);
+        if (path.posix.isAbsolute(name) || name.includes('\\')) throw new Error('Invalid Rust include path');
+        const selected = path.posix.normalize(path.posix.join(path.posix.dirname(relative), name));
+        regular(selected);
+        if (included.has(selected) || selected === relative) throw new Error('Cyclic registered Rust include');
+        targetRoots.add(selected);
+        entries(tree(selected).node, selected, prefix, visit, new Set([...included, relative]));
+      } else visit(child, attributes, relative, prefix);
       attributes = [];
     }
   }
@@ -111,22 +147,42 @@ export async function registeredRustTestFilters(root, changedPath) {
     targetRoots = new Set([libraryRoot, ...targets.map(target => path.relative(root, target.path).split(path.sep).join('/'))]);
     regular(changedPath);
     let owned = null, ownedFile = null;
+    const reexports = [];
     function library(relative, prefix) {
       if (relative === changedPath) { owned = prefix; ownedFile = relative; return; }
-      entries(tree(relative).node, relative, prefix, (node, attributes) => {
+      entries(tree(relative).node, relative, prefix, (node, attributes, declarationFile) => {
+        if (node.type === 'use_declaration' && node.namedChildren.some(item => item.type === 'visibility_modifier' && item.text === 'pub')) {
+          for (const binding of importBindings(node.childForFieldName('argument'))) {
+            let route = [...binding.route], owner = [...prefix];
+            if (route[0] === 'crate') { owner = []; route.shift(); }
+            else if (route[0] === 'self') route.shift();
+            else while (route[0] === 'super') { if (!owner.length) throw new Error('Rust reexport escapes crate'); owner.pop(); route.shift(); }
+            if (binding.local !== '*') reexports.push({from: [...owner, ...route], to: [...prefix, binding.local]});
+          }
+        }
         if (node.type !== 'mod_item' || owned) return;
         const name = identifier(node.childForFieldName('name').text);
         const body = node.childForFieldName('body');
         if (body) return;
-        const child = moduleFile(relative, name, attributes);
+        const child = moduleFile(declarationFile, name, attributes);
         const folder = path.posix.basename(child) === 'mod.rs' ? path.posix.dirname(child) : child.slice(0, -3);
         if (child === changedPath || changedPath.startsWith(folder + '/')) library(child, [...prefix, name]);
       });
     }
     library(libraryRoot, []);
-    if (!owned) throw new Error('Missing registered changed Rust module');
-    const selected = new Set(), selectedByTarget = new Map(), visited = new Set(), active = new Set();
+    if (!owned) throw new Error('Missing registered changed Rust module: ' + changedPath + ' in ' + libraryRoot);
+    const ownershipRoutes = [owned], routeKeys = new Set([JSON.stringify(owned)]);
+    for (let changed = true; changed;) {
+      changed = false;
+      for (const edge of reexports) {
+        if (!ownershipRoutes.some(route => route.length <= edge.from.length && route.every((part, index) => edge.from[index] === part))) continue;
+        const key = JSON.stringify(edge.to);
+        if (!routeKeys.has(key)) { routeKeys.add(key); ownershipRoutes.push(edge.to); changed = true; }
+      }
+    }
+    const selected = new Set(), selectedByTarget = new Map(), visited = new Set(), active = new Set(), ignoredJobs = [];
     let currentTarget;
+    const unresolvedTestScopes = [];
     function unit(relative, prefix, inherited = false) {
       const key = currentTarget + '\0' + relative + '\0' + prefix.join('::');
       if (active.has(relative)) throw new Error('Cyclic registered test source');
@@ -134,17 +190,35 @@ export async function registeredRustTestFilters(root, changedPath) {
       try { scan(tree(relative).node, relative, prefix, inherited); } finally { active.delete(relative); }
     }
     function scan(body, relative, prefix, inherited) {
+      // A generated include cannot supply a source-observed witness. Refuse this
+      // complete scope as a candidate while retaining other registered scopes.
+      const opaqueIncludes = body.namedChildren.map(child => child.type === 'expression_statement'
+        && child.namedChildren.length === 1 ? child.namedChildren[0] : child).filter(child => {
+        if (child.type !== 'macro_invocation' || child.childForFieldName('macro')?.text !== 'include') return false;
+        const operands = child.namedChildren.find(item => item.type === 'token_tree')?.namedChildren
+          .filter(item => !['line_comment', 'block_comment'].includes(item.type));
+        return operands?.length !== 1 || operands[0].type !== 'string_literal';
+      });
+      if (opaqueIncludes.length) {
+        unresolvedTestScopes.push({target: currentTarget, source: relative, prefix,
+          reason: 'GeneratedOrComputedIncludeCannotSupplyObservedTestWitness',
+          expressions: opaqueIncludes.map(item => item.text)});
+        return;
+      }
       let direct = inherited;
       for (const node of body.namedChildren.filter(node => node.type === 'use_declaration')) {
         for (const route of imports(node.childForFieldName('argument'))) {
-          if (route[0] === crateName && owned.every((part, index) => route[index + 1] === part)) direct = true;
+          if (route[0] === crateName && ownershipRoutes.some(owner => owner.every((part, index) => route[index + 1] === part))) direct = true;
         }
       }
       entries(body, relative, prefix, (node, attributes) => {
-        if (node.type === 'function_item' && direct && attributes.some(attribute => attribute.namedChildren[0]?.namedChildren[0]?.text === 'test')) {
+        if (node.type === 'function_item' && direct && testDisposition(attributes)) {
           const name = [...prefix, identifier(node.childForFieldName('name').text)].join('::');
-          selectedByTarget.get(currentTarget).add(name);
-          if (currentTarget === 'unit') selected.add(name);
+          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: currentTarget, filter: name, source: relative});
+          else {
+            selectedByTarget.get(currentTarget).add(name);
+            if (currentTarget === 'unit') selected.add(name);
+          }
         }
         if (node.type === 'mod_item') {
           const name = identifier(node.childForFieldName('name').text), childPrefix = [...prefix, name];
@@ -165,8 +239,11 @@ export async function registeredRustTestFilters(root, changedPath) {
       if (libraryVisited.has(key)) throw new Error('Cyclic library test module');
       libraryVisited.add(key);
       entries(body, relative, prefix, (node, attributes) => {
-        if (node.type === 'function_item' && attributes.some(attribute => attribute.namedChildren[0]?.namedChildren[0]?.text === 'test'))
-          librarySelected.add([...prefix, identifier(node.childForFieldName('name').text)].join('::'));
+        if (node.type === 'function_item' && testDisposition(attributes)) {
+          const filter = [...prefix, identifier(node.childForFieldName('name').text)].join('::');
+          if (testDisposition(attributes) === 'ignored') ignoredJobs.push({target: 'lib', filter, source: relative});
+          else librarySelected.add(filter);
+        }
         if (node.type === 'mod_item') {
           const name = identifier(node.childForFieldName('name').text), childPrefix = [...prefix, name];
           const nested = node.childForFieldName('body');
@@ -191,7 +268,7 @@ export async function registeredRustTestFilters(root, changedPath) {
       return {path: relative, sha256: digest(observed.source)};
     });
     if (fs.readFileSync(regular('rust/Cargo.toml'), 'utf8') !== cargoBefore) throw new Error('Cargo source changed during projection');
-    return {changedPath, crateName, libraryRoot, sourceModule: owned, filters: [...selected].sort(), jobs, sourceGuards,
+    return {changedPath, crateName, libraryRoot, sourceModule: owned, ownershipRoutes, filters: [...selected].sort(), jobs, ignoredJobs, unresolvedTestScopes, sourceGuards,
       declaredTargets: targets.map(target => ({name: target.name, path: path.relative(root, target.path), cargoSHA: target.cargoSHA})),
       namespaceRace: 'Unknown',
       registeredSources: [...sources.keys()].sort(), runtimeSelection: 'Pending'};
