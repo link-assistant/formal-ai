@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8e3d2eddae606408986e22d30f41d4ecccd668a76619e66a7a76f18bce1b5380 bytes=4326
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=921a4d89548ab4d649b5fbe0781b49a99ef77f65b017e24f1005b08c77e8e196 bytes=4347
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -32,7 +32,7 @@ pub const CENSUS_DIR: &str = "source-content";
 pub const FULL_FIDELITY_PREFIX: &str = "src/agentic_coding/";
 
 // meta-language:translated JavaScript export_statement items=1 sha256=2db30e67d74a008b358b816588cfdb5e9f4bd9e45132a501b3f7a93eb0665995
-// | /** Mirrors `fn fidelity_for`: 'full_ast' | 'signature'. @param {string} modulePath @returns {string} */
+// | /** Mirrors `fn fidelity_for`: navigation records do not represent full source content. @param {string} modulePath @returns {string} */
 // | export function fidelityFor(modulePath) {
 // |   return 'navigation';
 // | }

@@ -281,6 +281,10 @@ roles
     kind predicate
   computer_use_resource_cue
     kind predicate
+  computing-command-noun
+    kind predicate
+  computing-instruction
+    kind predicate
   config_value_lead
     kind predicate
   containment_relation
@@ -372,6 +376,10 @@ roles
   exchange_rate_reference
     kind predicate
   execute_url_request
+    kind predicate
+  execution-verb-form
+    kind predicate
+  execution-verb-position
     kind predicate
   explanation_request_lead
     kind predicate

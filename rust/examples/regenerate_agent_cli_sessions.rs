@@ -16,9 +16,9 @@
 //! from real external agent runs and are deliberately not in this table.
 
 use formal_ai::agentic_coding::{
-    ASSOCIATIVE_LEARNING_TASK, AST_TASK, DIAGRAM_TASK, DREAMING_AUDIT_TASK,
-    GOOGLE_TRENDS_CATALOG_TASK, GOOGLE_TRENDS_LEARNING_TASK, MEANING_DETAIL_TASK,
-    POTATO_DETAIL_TASK, QUESTION_CATALOG_TASK, run_agentic_task_with_tools,
+    ASSOCIATIVE_LEARNING_TASK, DIAGRAM_TASK, DREAMING_AUDIT_TASK, GOOGLE_TRENDS_CATALOG_TASK,
+    GOOGLE_TRENDS_LEARNING_TASK, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK, QUESTION_CATALOG_TASK,
+    run_agentic_task_with_tools,
 };
 
 fn main() {
@@ -36,7 +36,9 @@ fn main() {
             "docs/case-studies/issue-538/agent-cli-session-diagram.json",
         ),
         (
-            AST_TASK,
+            // Retain the historical input verbatim. The current recipe must answer it
+            // with full recursive source content; canonical AST_TASK is tested separately.
+            "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation.",
             "docs/case-studies/issue-538/agent-cli-session-self-ast.json",
         ),
         (

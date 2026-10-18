@@ -466,7 +466,7 @@ export function App() {
   }, [userContext]);
 
   useEffect(() => {
-    if (!workerReady || typeof window === "undefined" || !window.FormalAiSeed) return;
+    if (typeof window === "undefined" || !window.FormalAiSeed) return;
     let cancelled = false;
     window.FormalAiSeed.loadAll().then((loaded) => {
       if (cancelled) return;
@@ -475,7 +475,7 @@ export function App() {
     return () => {
       cancelled = true;
     };
-  }, [workerReady]);
+  }, []);
 
   // Issue #27: on mount, hydrate the conversation list from the append-only
   // event log and restore the active thread's messages. Operates purely as a

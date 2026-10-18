@@ -136,7 +136,7 @@ pub(super) fn source_content(document: &Value) -> Result<&Value, String> {
     };
     let source_path = field_text(node, "path")?;
     if source_path.is_empty()
-        || source_path.chars().next() == Some('/')
+        || source_path.starts_with('/')
         || source_path.contains('\\')
         || source_path.contains(':')
         || source_path

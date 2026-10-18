@@ -29,8 +29,10 @@ export async function load(url, context, nextLoad) {
         || crypto.createHash('sha256').update(bytes).digest('hex') !== entry.sha256) {
       throw Error('ArchivedRuntimeTransportBytes');
     }
-    if(archive.reads[url+'\0repository-read-string']){
-      const delivered=fileSystem.readFileSync(fileURLToPath(url),'utf8');
+    const representation=['string','buffer'].find(kind=>
+      Object.hasOwn(archive.reads,url+'\0repository-read-'+kind));
+    if(representation!==undefined){
+      const delivered=fileSystem.readFileSync(fileURLToPath(url),representation==='string'?'utf8':undefined);
       bytes=Buffer.from(delivered);
       if(bytes.toString('base64')!==entry.bytes)throw Error('ArchivedRuntimeCompilerReadMismatch');
     }

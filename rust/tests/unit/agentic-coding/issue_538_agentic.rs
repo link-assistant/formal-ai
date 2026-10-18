@@ -536,9 +536,7 @@ fn recursive_source_content_is_generated_and_written_by_the_driver() {
         self_ast::target_source()
     );
     assert_eq!(
-        formal_ai::readable_source::source_owner(&document)
-            .unwrap()
-            .as_deref(),
+        formal_ai::readable_source::source_owner(&document).unwrap(),
         Some(self_ast::TARGET_MODULE_PATH)
     );
     let outcome = run_agentic_task(self_ast::AST_TASK).expect("workspace");
@@ -667,6 +665,33 @@ fn self_inspection_session_retains_actual_source_model_write_and_read() {
         .as_str()
         .expect("actual written content");
     let document = formal_ai::readable_source::read_source_links(text).unwrap();
+    assert_eq!(
+        formal_ai::readable_source::source_from_links(&document).unwrap(),
+        self_ast::target_source()
+    );
+    formal_ai::readable_source::verify_source_links(&document).unwrap();
+    assert!(fresh.steps.iter().any(|step| step.tool == "run_command"));
+    assert!(fresh.final_answer.contains(self_ast::AST_PATH));
+}
+
+#[test]
+fn historical_self_inspection_request_produces_current_recursive_source_content() {
+    let captured: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../docs/case-studies/issue-538/agent-cli-session-self-ast.json"
+    ))
+    .unwrap();
+    let fresh = run_agentic_task(captured["task"].as_str().unwrap()).expect("workspace");
+    assert!(!fresh.hit_turn_cap);
+    let writes: Vec<_> = fresh
+        .steps
+        .iter()
+        .filter(|step| step.tool == "write_file")
+        .collect();
+    assert_eq!(writes.len(), 1);
+    let arguments: serde_json::Value = serde_json::from_str(&writes[0].arguments).unwrap();
+    let document =
+        formal_ai::readable_source::read_source_links(arguments["content"].as_str().unwrap())
+            .unwrap();
     assert_eq!(
         formal_ai::readable_source::source_from_links(&document).unwrap(),
         self_ast::target_source()

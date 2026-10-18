@@ -280,6 +280,7 @@ pub fn source_snapshot(
     })
 }
 /// Hash a path, Git mode and original index object identity in index order.
+#[must_use]
 pub fn inventory_leaf(path: &str, mode: &str, object: &str, hashing: CpuHashMode) -> [u8; 32] {
     digest(format!("{path}\0{mode}\0{object}").as_bytes(), hashing)
 }

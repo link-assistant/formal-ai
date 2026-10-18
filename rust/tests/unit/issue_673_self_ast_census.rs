@@ -78,9 +78,7 @@ fn readable_source_documents_restore_owned_bytes_and_reparse() {
         let document = formal_ai::readable_source::read_source_links(&notation)
             .expect("read recursive source");
         assert_eq!(
-            formal_ai::readable_source::source_owner(&document)
-                .unwrap()
-                .as_deref(),
+            formal_ai::readable_source::source_owner(&document).unwrap(),
             Some(path)
         );
         assert_eq!(

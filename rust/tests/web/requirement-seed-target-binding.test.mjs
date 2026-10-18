@@ -13,12 +13,23 @@ const census = {modules:[{path:'src/a.rs',symbols:[{kind:'const',name:'ALPHA_LIN
 const source = 'meanings\n  arbitrary\n    role request_signal\n    lexeme en "azure dawn"\n';
 const expected = {module_path:'src/a.rs',symbol:'ALPHA_LINO',kind:'const'};
 
-test('every unchanged ladder leaf resolves to its actual source or embedded seed declaration',()=>{
+test('unchanged ladder scope is retained and migrated ownership is never redirected silently',()=>{
   const rows=read('experiments/issue_1028_agent_cli_ladder/leaves.tsv').trimEnd().split('\n').map(line=>line.split('\t'));
   assert.equal(rows.length,32);
   for(const [leaf,originalTask,path,,,requirement] of rows){
     // Native declarations retain the actual original file scope; seed surfaces retain their semantic requirement.
     const target=resolveRequirementTarget(path.startsWith('rust/') ? originalTask : requirement);
+    if (leaf === 'L09') {
+      // The original task permits only the Rust file; its data now belongs to a shared seed.
+      // Preserve this original requirement as a conflict, never a fulfilled ladder case.
+      assert.equal(target, null, originalTask);
+      const currentTarget = resolveRequirementTarget(requirement);
+      assert.deepEqual(currentTarget, {module_path:'src/seed/embedded_registry.rs',symbol:'TERMINAL_COMMANDS_LINO',kind:'const'});
+      const registry = read('rust/' + currentTarget.module_path);
+      const declaration = registry.slice(registry.indexOf('pub const ' + currentTarget.symbol)).split('\n').slice(0,3).join('\n');
+      assert.ok(declaration.includes('../../embedded/data/seed/terminal-commands.lino'));
+      continue;
+    }
     assert.ok(target,`${leaf}: ${requirement}`);
     if(path.startsWith('data/seed/')){
       assert.equal(target.module_path,'src/seed/embedded_registry.rs',leaf);
@@ -46,7 +57,7 @@ test('ambiguous seed owners remain unresolved and stronger actual surfaces win',
   assert.deepEqual(resolveSeedTarget(census,'Change signal surface from azure dawn',[['invalid.txt',source],sources[0]]),expected);
 });
 
-test('real census document reads reject changed source identities',()=>{
+test('current navigation identities change with source and ignore stale counter documents',()=>{
   const directory=mkdtempSync(path.join(tmpdir(),'formal-ai-census-identity-'));
   try{
     mkdirSync(path.join(directory,'rust/src'),{recursive:true});
@@ -56,9 +67,19 @@ test('real census document reads reject changed source identities',()=>{
     const document='self_ast_census\n  target src/arbitrary.rs\n  content_id '+contentId+'\n  byte_len '+Buffer.byteLength(source)+'\n  symbols\n    const ARBITRARY 1 1\n';
     writeFileSync(path.join(directory,'rust/src/arbitrary.rs'),source);
     writeFileSync(path.join(directory,'data/meta/self-ast/src/arbitrary.lino'),document);
-    assert.deepEqual(censusDocuments(directory),[{path:'data/meta/self-ast/src/arbitrary.lino',text:document,sourceIdentity:{path:'src/arbitrary.rs',content_id:contentId,byte_len:Buffer.byteLength(source)}}]);
-    writeFileSync(path.join(directory,'rust/src/arbitrary.rs'),source.replace('azure','cobalt'));
-    assert.deepEqual(censusDocuments(directory),[]);
+    const [initial] = censusDocuments(directory);
+    assert.deepEqual(initial, {path:'rust/src/arbitrary.rs',text:null,
+      module:{path:'src/arbitrary.rs',fidelity:'navigation',symbols:[{kind:'const',name:'ARBITRARY',start_line:1,end_line:1}]},
+      sourceIdentity:{path:'src/arbitrary.rs',content_id:contentId,byte_len:Buffer.byteLength(source)}});
+    const changed = source.replace('azure','cobalt');
+    writeFileSync(path.join(directory,'rust/src/arbitrary.rs'),changed);
+    const [updated] = censusDocuments(directory);
+    assert.equal(updated.path, initial.path);
+    assert.equal(updated.text, null);
+    assert.deepEqual(updated.module, initial.module);
+    assert.deepEqual(updated.sourceIdentity, {path:'src/arbitrary.rs',content_id:stableId('source_module',changed),byte_len:Buffer.byteLength(changed)});
+    assert.notEqual(updated.sourceIdentity.content_id, initial.sourceIdentity.content_id);
+    assert.equal(readFileSync(path.join(directory,'data/meta/self-ast/src/arbitrary.lino'),'utf8'), document);
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
 

@@ -15,6 +15,8 @@ import { fileURLToPath } from 'node:url';
 import { diffCensus, nodeHistoryIo } from '../../../js/agentic/crate/history_store.mjs';
 import { historyAstCensus } from '../../../js/agentic/crate/rust_ast_census.mjs';
 import { rustAstCensus } from '../../../js/agentic/node-host.mjs';
+import {moduleFromDocument} from '../../../js/agentic/crate/self_ast_census.mjs';
+import {readSourceLinks} from '../../../js/meta/readable-source.js';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const VENDOR = path.join(REPO, 'js/vendor/tree-sitter');
@@ -117,14 +119,15 @@ test('a function and a struct census as the native census does', async () => {
   assert.equal(census('fn broken( {\n').clean, false);
 });
 
-test('the planner histogram matches the committed native self-AST document', async () => {
-  const census = await rustAstCensus();
+test('historical planner histograms cannot supply current recursive source content', () => {
   const document = fs.readFileSync(path.join(REPO, 'data/meta/self-ast.lino'), 'utf8');
   const target = document.match(/^ {2}target (\S+)$/mu)[1];
-  const result = census(fs.readFileSync(path.join(REPO, 'rust', target), 'utf8'));
-  assert.deepEqual(result.node_kinds, committedKinds(document, 4));
-  assert.equal(result.named_node_count, Number(document.match(/^ {2}named_node_count (\d+)$/mu)[1]));
-  assert.equal(String(result.clean), document.match(/^ {2}clean (\S+)$/mu)[1]);
+  assert.equal(target, 'src/agentic_coding/planner.rs');
+  assert.ok(committedKinds(document, 4).length > 0, 'exercise the retained historical diagnostic');
+  assert.equal(moduleFromDocument(document), null);
+  assert.throws(() => readSourceLinks(document));
+  // Current full-content acceptance belongs to source-free restoration and
+  // independent grammar reparse, never refreshed historical histogram counts.
 });
 
 test('every full-AST census of a current source matches the native histogram', async () => {

@@ -367,24 +367,42 @@ fn every_distinct_pair_is_listed_exactly_once() {
 }
 
 #[test]
-fn rust_to_meta_is_the_live_signature_leg() {
+fn rust_to_meta_restores_complete_readable_source_with_independent_grammar() {
+    use formal_ai::readable_source::{
+        read_source_links, source_from_links, source_owner, verify_source_links,
+    };
     assert_eq!(
         meta_translate::pending_leg(SourceRoot::Rust, SourceRoot::Meta),
         None
     );
     let source = "fn answer() -> u32 {\n    41 + 1\n}\n";
     match meta_translate::translate(SourceRoot::Rust, SourceRoot::Meta, "probe.rs", source) {
-        TranslationOutcome::Rendered { target, .. } => {
-            assert!(target.contains("self_ast"));
-            assert!(target.contains("target probe.rs"));
-            assert!(target.contains("language rust"));
-            assert!(target.contains("engine meta_language"));
-            assert!(target.contains("named_node_count"));
+        TranslationOutcome::Rendered { target, carried } => {
+            let retained = read_source_links(&target).expect("readable recursive source document");
+            assert_eq!(
+                source_owner(&retained).expect("structural owner"),
+                Some("probe.rs")
+            );
+            assert_eq!(
+                source_from_links(&retained).expect("source-free restoration"),
+                source
+            );
+            verify_source_links(&retained).expect("fresh pinned Rust grammar");
+            assert_eq!(carried, 0, "content is never replaced by a signature count");
+            match meta_translate::translate(
+                SourceRoot::Meta,
+                SourceRoot::Rust,
+                "probe.lino",
+                &target,
+            ) {
+                TranslationOutcome::Rendered { target, .. } => assert_eq!(target, source),
+                other => panic!("the independently verified source must round-trip; got {other:?}"),
+            }
         }
         other @ (TranslationOutcome::Pending { .. }
         | TranslationOutcome::Refused { .. }
         | TranslationOutcome::Invalid { .. }) => {
-            panic!("rust → meta must render the self-AST document; got {other:?}")
+            panic!("rust → meta must render complete readable source; got {other:?}")
         }
     }
 }

@@ -96,7 +96,8 @@ meanings
     lexeme zh 西班牙语语言缺口回答
     lexeme es "respuesta de carencia de idioma en español"
   after-command
-    role "Represent the grammatical position of an execution verb after its command span"
+    role execution-verb-position
+    description "Represent the grammatical position of an execution verb after its command span"
     defined-by order
     defined-by execute
     precondition "the terminal verb declares a position after the requested command"
@@ -109,7 +110,8 @@ meanings
     lexeme zh 命令之后
     lexeme es "después del comando"
   ejecuta
-    role "Describe the Spanish informal singular imperative form of the canonical execution action"
+    role execution-verb-form
+    description "Describe the Spanish informal singular imperative form of the canonical execution action"
     defined-by execute
     precondition "a Spanish request uses the informal singular imperative execution verb"
     effect "bind the following explicit command without changing its argument bytes"
@@ -121,7 +123,8 @@ meanings
     lexeme zh 非正式单数执行命令
     lexeme es "forma imperativa informal ejecuta"
   ejecute
-    role "Describe the Spanish formal singular imperative form of the canonical execution action"
+    role execution-verb-form
+    description "Describe the Spanish formal singular imperative form of the canonical execution action"
     defined-by execute
     precondition "a Spanish request uses the formal singular imperative execution verb"
     effect "bind the following explicit command without changing its argument bytes"
@@ -133,7 +136,8 @@ meanings
     lexeme zh 正式单数执行命令
     lexeme es "forma imperativa formal ejecute"
   ejecutar
-    role "Describe the Spanish infinitive form of the canonical execution action"
+    role execution-verb-form
+    description "Describe the Spanish infinitive form of the canonical execution action"
     defined-by execute
     precondition "a Spanish command request uses the infinitive execution verb"
     effect "bind the following explicit command without changing its argument bytes"
@@ -144,8 +148,26 @@ meanings
     lexeme hi "निष्पादन क्रिया का मूल रूप"
     lexeme zh 执行动词不定式
     lexeme es "forma infinitiva ejecutar"
+  command
+    role computing-instruction
+    description "Identify a computing command as a code instruction"
+    defined-by code
+    gloss "(computer science) a line of code written as part of a computer program"
+    precondition "an instruction is represented as a line of code in a computer program"
+    effect "identify the command without granting permission to execute it"
+    unit "code instruction"
+    example "pwd"
+    source "data/cache/wordnet/en/command.json#oewn-06597067-n"
+    source "https://dle.rae.es/comando"
+    license "CC BY 4.0"
+    lexeme en "computer command"
+    lexeme ru "компьютерная команда"
+    lexeme hi "कंप्यूटर कमांड"
+    lexeme zh 计算机命令
+    lexeme es "comando de computadora"
   comando
-    role "Identify the Spanish singular computing-command noun"
+    role computing-command-noun
+    description "Identify the Spanish singular computing-command noun"
     defined-by command
     precondition "a Spanish computing request uses the noun for an instruction given to a computer"
     effect "identify the requested command object without treating surrounding prose as an executable"
@@ -158,7 +180,8 @@ meanings
     lexeme zh 计算机命令的西班牙语单数名词形式
     lexeme es comando
   comandos
-    role "Identify the Spanish plural form of the computing-command noun"
+    role computing-command-noun
+    description "Identify the Spanish plural form of the computing-command noun"
     defined-by comando
     precondition "the computing noun comando takes the regular Spanish plural suffix s"
     effect "identify multiple command objects without granting execution permission"

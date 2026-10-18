@@ -987,16 +987,16 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1257,"end":132
 "maintainedTranslationSha256":"7916d1e770c39497efd1669f005b3bdb4e4710b53add3ed83b90e100f76cd839"},{"path":
 "formal_ai::self_ast_census::CENSUS_DIR","canonicalPath":"formal_ai::self_ast_census::CENSUS_DIR","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"source-content","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":629,"end":675},"sourceWitnesses":[{"path":
-"rust/src/self_ast_census.rs","sha256":"55c8f978efca5a465539d3ed2bc12b1265288886ce958e8cf214363d0f7fbd8f"},{"path":
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":633,"end":679},"sourceWitnesses":[{"path":
+"rust/src/self_ast_census.rs","sha256":"5d574fb76742334784a6d79f171641905ab907a11cf62788034c8fee1deaef41"},{"path":
 "rust/src/lib.rs","sha256":"0bb50cc6558c3bcfc4736552bcf40869cc641792386c041f154a87cb7b443091"}],"maintainedMeta":
 "(constant CENSUS-DIR (exported) (type string) (value (string source-content)))","maintainedJavaScript":
 "export const CENSUS_DIR = 'source-content';","maintainedTranslationSha256":
 "34ce1f1029bd5e97413e40c9c4f8164a2d6862b9ab755c821971b3e59e0fef26"},{"path":
 "formal_ai::self_ast_census::FULL_FIDELITY_PREFIX","canonicalPath":"formal_ai::self_ast_census::FULL_FIDELITY_PREFIX",
 "kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"src/agentic_coding/","nativeSourceQualified":
-true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":944,"end":1005},"sourceWitnesses":[{"path":
-"rust/src/self_ast_census.rs","sha256":"55c8f978efca5a465539d3ed2bc12b1265288886ce958e8cf214363d0f7fbd8f"},{"path":
+true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":948,"end":1009},"sourceWitnesses":[{"path":
+"rust/src/self_ast_census.rs","sha256":"5d574fb76742334784a6d79f171641905ab907a11cf62788034c8fee1deaef41"},{"path":
 "rust/src/lib.rs","sha256":"0bb50cc6558c3bcfc4736552bcf40869cc641792386c041f154a87cb7b443091"}],"maintainedMeta":
 "(constant FULL-FIDELITY-PREFIX (exported) (type string) (value (string src/agentic_coding/)))","maintainedJavaScript":
 "export const FULL_FIDELITY_PREFIX = 'src/agentic_coding/';","maintainedTranslationSha256":

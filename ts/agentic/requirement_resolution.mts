@@ -8,6 +8,7 @@ import { hasHost, host, readText } from './host.mjs';
 import { composeEditClauses } from './write_request.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { stableId } from './crate/engine_stable_identifier.mjs';
+import { parseRoot } from './crate/seed_parser.mjs';
 import { meaningFiles, parseLexiconText, words as meaningWords } from './crate/seed_meanings.mjs';
 
 /** Mirrors `fn resolve_requirement_target`: `{module_path, symbol, kind}` or null. */
@@ -166,6 +167,7 @@ function resolveGeneratedSeedTarget(census, requirement) {
     if (candidates.length) return uniqueOwners(candidates);
   }
   if (census.modules.some(module => module.symbols.some(symbol => {
+    if (symbol.kind !== 'const' && symbol.kind !== 'static') return false;
     const parts = symbol.name.split('_').filter(Boolean).map(part => singular(part.toLowerCase()));
     return parts.length >= 2 && parts.every(part => words.includes(part))
       && !qualifiedObservedOwner(module, symbol);
@@ -178,8 +180,11 @@ function resolveGeneratedSeedTarget(census, requirement) {
     else if (parts.length === bestLength) best.push(owner);
   }
   if (best.length) return uniqueOwners(best);
-  return resolveSeedTargetWithOwners(requirement, meaningFiles().map(path => [path, readText(path)]),
-    (path, name) => owners.filter(owner => owner.seed_path === path && owner.symbol === name).map(declarationTarget));
+  const declared = (path, name) => owners.filter(owner => owner.seed_path === path && owner.symbol === name).map(declarationTarget);
+  const semantic = resolveSeedTargetWithOwners(requirement, meaningFiles().map(path => [path, readText(path)]), declared);
+  if (semantic !== null) return semantic;
+  const sources = [...new Set(owners.map(owner => owner.seed_path))].map(path => [path, readText(path)]);
+  return structuredSeedOwner(requirement, sources, declared);
 }
 
 function unique(candidates, tokens) {
@@ -224,4 +229,36 @@ function looksLikeDeclaredName(token) {
 
 function singular(word) {
   return new TextEncoder().encode(word).length > 3 && word.endsWith('s') && !word.endsWith('ss') ? word.slice(0, -1) : word;
+}
+
+/** Mirrors `fn resolve_structured_seed_target`: actual multiword groups need independent owner context. */
+export function structuredSeedOwner(requirement, sources, declaredOwners) {
+  let unquoted = requirement;
+  for (const segment of quotedSegmentSpans(requirement).reverse()) {
+    unquoted = unquoted.slice(0, segment.start) + ' ' + unquoted.slice(segment.end);
+  }
+  const words = tokensOf(unquoted).flatMap(token => token.split('_')).map(word => singular(word.toLowerCase()));
+  let bestLength = 0;
+  const best = new Map();
+  for (const [sourcePath, source] of sources) {
+    const stem = sourcePath.split('/').at(-1)?.replace(/\.lino$/u, '');
+    if (!sourcePath.endsWith('.lino') || !/^[A-Za-z0-9_-]+$/u.test(stem)) continue;
+    const context = stem.split(/[_-]/u).map(word => singular(word.toLowerCase()));
+    const name = stem.toUpperCase().replaceAll('-', '_') + '_LINO';
+    const owners = declaredOwners(sourcePath, name);
+    if (!owners.length) continue;
+    const visit = node => {
+      const parts = node.name.split(/[_-]/u).map(word => singular(word.toLowerCase()));
+      if (parts.length > 1 && parts.every(word => words.includes(word))
+        && context.some(word => words.includes(word) && !parts.includes(word))) {
+        if (parts.length > bestLength) { bestLength = parts.length; best.clear(); }
+        if (parts.length === bestLength) {
+          for (const owner of owners) best.set(owner.module_path + ':' + owner.symbol, owner);
+        }
+      }
+      for (const child of node.children || []) visit(child);
+    };
+    visit(parseRoot(source));
+  }
+  return best.size === 1 ? best.values().next().value : null;
 }

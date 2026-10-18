@@ -114,3 +114,25 @@ fn structural_owners_survive_reload_but_never_replace_content_verification() {
     forged[2][2][0] = serde_json::json!("forged-module");
     assert!(verify_source_links(&forged).is_err());
 }
+
+#[test]
+fn readable_model_reloads_production_planner_with_default_parser_budgets() {
+    let source = include_str!("../../src/agentic_coding/planner.rs");
+    let actual = source_to_links(source, "Rust").expect("actual production source grammar");
+    let notation = write_source_links(&actual).expect("default-budget source notation");
+    let retained = read_source_links(&notation).expect("default-budget source-free reload");
+    assert_eq!(retained, actual);
+    assert_eq!(source_from_links(&retained).expect("exact source"), source);
+    verify_source_links(&retained).expect("independent production grammar reparse");
+}
+
+#[test]
+fn rejected_notation_retains_bounded_parser_reason_without_source_payload() {
+    let error = read_source_links("(source-private-payload-marker").expect_err("unclosed link");
+    assert!(error.starts_with("RejectedSourceNotation: reason=syntax"));
+    assert!(error.contains("offset="));
+    assert!(error.contains("line="));
+    assert!(error.contains("column="));
+    assert!(error.contains("limit="));
+    assert!(!error.contains("source-private-payload-marker"));
+}

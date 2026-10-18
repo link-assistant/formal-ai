@@ -153,6 +153,8 @@ export function normalizeCommandWord(word) {
 
 /** Mirrors `fn is_prose_word`. */
 export function isProseWord(word) {
+  // Option bytes are command syntax, not punctuation around a prose word.
+  if (trimStart(word).startsWith('-')) return false;
   const normalized = trimMatches(word, (character) => !isAlphanumeric(character)).toLowerCase();
   return terminalCommandVocabulary().prose_words.includes(normalized);
 }

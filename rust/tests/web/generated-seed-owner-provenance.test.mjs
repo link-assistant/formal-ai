@@ -20,15 +20,26 @@ function fixture(names=['arbitrary-alpha']) {
   return root;
 }
 function withFixture(action,names) {const root=fixture(names);try{action(root);}finally{fs.rmSync(root,{recursive:true,force:true});}}
-function hostFixture(root,documents=[]) {
+function hostFixture(root,documents=censusDocuments(root)) {
+  // This port intentionally supplies partial observations. Generated ownership
+  // still requires the independently verified actual registry/source pair.
   installHost({readText:relative=>{try{return fs.readFileSync(path.join(root,relative),'utf8');}catch{return '';}},
-    parseLino, censusDocuments:()=>documents, generatedSeedOwnerDeclarations:()=>generatedSeedOwnerDeclarations(root)});
+    parseLino, censusDocuments:()=>documents, censusSourceClosureComplete:()=>false,
+    generatedSeedOwnerDeclarations:()=>generatedSeedOwnerDeclarations(root)});
+}
+function writeDeclaration(root,module,kind,name='ARBITRARY_ALPHA_LINO') {
+  const target=path.join(root,'rust',module);fs.mkdirSync(path.dirname(target),{recursive:true});
+  fs.writeFileSync(target,kind==='function' ? 'pub fn '+name+'() {}\n'
+    : 'pub '+kind+' '+name+': &str = "observed";\n');
 }
 test('complete generated source owns arbitrary seeds without a census document',()=>withFixture(root=>{
   const proof=sourceQualifiedSeedOwners(root);
   assert.equal(proof.declarations.length,1);assert.match(proof.sourceSha256,/^[0-9a-f]{64}$/u);
   assert.deepEqual(proof.declarations[0],{seed_path:'data/seed/arbitrary-alpha.lino',module_path:'src/seed/embedded_registry.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'});
-  assert.deepEqual(censusDocuments(root),[]);hostFixture(root);
+  const [navigation]=censusDocuments(root);
+  assert.equal(navigation.path,'rust/src/seed/embedded_registry.rs');
+  assert.equal(navigation.module.fidelity,'navigation');assert.equal(navigation.text,null);
+  assert.equal(navigation.sourceIdentity.path,navigation.module.path);hostFixture(root);
   assert.deepEqual(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing its signal'),{module_path:'src/seed/embedded_registry.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'});
   assert.deepEqual(resolveRequirementTarget('Change signal surface from azure dawn to cobalt sun'),{module_path:'src/seed/embedded_registry.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'});
   assert.equal(resolveRequirementTarget('Improve azure dawn.'),null);
@@ -47,42 +58,42 @@ test('generator name collisions and equal actual seed surfaces retain refusal',(
   withFixture(root=>{assert.throws(()=>sourceQualifiedSeedOwners(root),/ambiguous/u);assert.deepEqual(generatedSeedOwnerDeclarations(root),[]);},['arbitrary-alpha','arbitrary_alpha']);
   withFixture(root=>{hostFixture(root);assert.equal(resolveRequirementTarget('Change signal surface from azure dawn'),null);},['arbitrary-alpha','arbitrary-beta']);
 });
-test('existing census declaration ambiguity is not replaced by generated fallback',()=>withFixture(root=>{
-  const text=module=>'self_ast_census\n  target '+module+'\n  symbols\n    const ARBITRARY_ALPHA_LINO 1 1\n';
-  hostFixture(root,[{text:text('src/first.rs')},{text:text('src/second.rs')}]);
+test('actual observed declaration ambiguity is not replaced by generated fallback',()=>withFixture(root=>{
+  writeDeclaration(root,'src/first.rs','const');writeDeclaration(root,'src/second.rs','const');
+  hostFixture(root);
   assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
 }));
 
-test('incomplete observed declarations agree only with exact qualified module and kind',()=>withFixture(root=>{
-  const text=(module,kind)=>'self_ast_census\n  target '+module+'\n  symbols\n    '+kind+' ARBITRARY_ALPHA_LINO 1 1\n';
+test('incomplete actual observations agree only with qualified module kind and current source',()=>withFixture(root=>{
+  const file=path.join(root,'rust/src/seed/embedded_registry.rs'),original=fs.readFileSync(file,'utf8');
   const expected={module_path:'src/seed/embedded_registry.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'};
-  hostFixture(root,[{text:text('src/seed/embedded_registry.rs','const')}]);
+  hostFixture(root);
   assert.deepEqual(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),expected);
   assert.deepEqual(resolveRequirementTarget('Change arbitrary alpha lino signal surface from azure dawn'),expected);
-  for(const [module,kind] of [['src/foreign.rs','const'],['src/seed/embedded_registry.rs','static'],['src/seed/embedded_registry.rs','fn']]){
-    hostFixture(root,[{text:text(module,kind)}]);
+  for(const [module,kind] of [['src/foreign.rs','const'],['src/seed/embedded_registry.rs','static'],['src/seed/embedded_registry.rs','function']]){
+    writeDeclaration(root,module,kind);hostFixture(root);
     assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null,module+kind);
     assert.equal(resolveRequirementTarget('Change arbitrary alpha lino signal surface from azure dawn'),null,module+kind);
+    if(module==='src/foreign.rs')fs.unlinkSync(path.join(root,'rust',module));
+    else fs.writeFileSync(file,original);
   }
-  hostFixture(root,[{text:text('src/seed/embedded_registry.rs','const')},{text:text('src/foreign.rs','const')}]);
+  writeDeclaration(root,'src/foreign.rs','const');hostFixture(root);
   assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
-  hostFixture(root,[{text:text('src/seed/embedded_registry.rs','const')}]);
-  fs.appendFileSync(path.join(root,'rust/src/seed/embedded_registry.rs'),'// stale\n');
+  fs.unlinkSync(path.join(root,'rust/src/foreign.rs'));
+  hostFixture(root);fs.appendFileSync(file,'// stale\n');
   assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
 }));
 
-test('exact qualified declaration wins over weaker word matches while equal declaration conflicts refuse',()=>withFixture(root=>{
-  const text=(module,kind,name)=>'self_ast_census\n  target '+module+'\n  symbols\n    '+kind+' '+name+' 1 1\n';
-  const exact={text:text('src/seed/embedded_registry.rs','const','ARBITRARY_ALPHA_LINO')};
-  hostFixture(root,[exact,{text:text('src/foreign.rs','function','from_seed')}]);
+test('qualified actual declarations win over weaker words while actual owner conflicts refuse',()=>withFixture(root=>{
+  writeDeclaration(root,'src/foreign.rs','function','from_seed');hostFixture(root);
   assert.deepEqual(resolveRequirementTarget('Change ARBITRARY_ALPHA_LINO from seed surface azure dawn'),{module_path:'src/seed/embedded_registry.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'});
-  hostFixture(root,[exact,{text:text('src/foreign.rs','const','ARBITRARY_ALPHA_LINO')}]);
+  writeDeclaration(root,'src/foreign.rs','const');hostFixture(root);
   assert.equal(resolveRequirementTarget('Change ARBITRARY_ALPHA_LINO from seed surface azure dawn'),null);
   assert.deepEqual(resolveRequirementTarget('Change ARBITRARY_ALPHA_LINO in rust/src/foreign.rs'),{module_path:'src/foreign.rs',symbol:'ARBITRARY_ALPHA_LINO',kind:'const'});
 }));
 
-test('all same-module declaration kinds must agree with the generated owner',()=>withFixture(root=>{
-  const document='self_ast_census\n  target src/seed/embedded_registry.rs\n  symbols\n    const ARBITRARY_ALPHA_LINO 1 1\n    static ARBITRARY_ALPHA_LINO 2 2\n';
-  hostFixture(root,[{text:document}]);
+test('conflicting actual same-module declaration kinds cannot inherit generated authority',()=>withFixture(root=>{
+  fs.appendFileSync(path.join(root,'rust/src/seed/embedded_registry.rs'),'pub static ARBITRARY_ALPHA_LINO: &str = "conflict";\n');
+  hostFixture(root);
   assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
 }));

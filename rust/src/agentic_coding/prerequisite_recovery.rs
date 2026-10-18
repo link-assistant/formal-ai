@@ -132,7 +132,27 @@ pub(super) fn plan_shell_step(
                 raw,
             )
         {
-            return recovery;
+            return match recovery {
+                AgenticPlan::Final(reason) => {
+                    let failure = tool_result::render(
+                        command,
+                        raw,
+                        crate::protocol::latest_user_request(messages)
+                            .as_deref()
+                            .unwrap_or_default(),
+                    );
+                    record(
+                        AgenticPlan::Final(super::wording::agentic_message(
+                            "shell-recovery-final-failure",
+                            &[("failure", &failure), ("recovery", &reason)],
+                        )),
+                        FinalDisposition::Failure,
+                        "shell_result_observed",
+                        result,
+                    )
+                }
+                plan => plan,
+            };
         }
         let disposition = if tool_result::step_outcome(raw) == tool_result::StepOutcome::Failed {
             FinalDisposition::Failure

@@ -2,10 +2,10 @@
 //!
 //! Raw UTF-8 sources are embedded at build time. Ownership manifests identify
 //! those inputs; hashes and counters never represent their full content.
-//! SourceLinks records parser verdicts and navigation metadata only, including
+//! `SourceLinks` records parser verdicts and navigation metadata only, including
 //! when all owned modules have been inspected. Its rendered Links document
 //! cannot reconstruct a source file. Complete readable recursive models belong
-//! to crate::readable_source and the hosted generate_source_content producer,
+//! to `crate::readable_source` and the hosted `generate_source_content` producer,
 //! with reloaded-content reconstruction and fresh grammar acceptance.
 //!
 use std::fmt::Write as _;

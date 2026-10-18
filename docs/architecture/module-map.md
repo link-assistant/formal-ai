@@ -32,6 +32,8 @@ new module fails CI until this map documents it.
 | `lino_adapters` | Adapters that front our maintained dependencies (issue #1182). | §2 |
 | `needs` | Need records that gate solver retries. | §2 |
 | `provenance_native` | Native provenance primitives backed by official SIMD/rayon BLAKE3 and Ed25519. | §2 |
+| `provenance_snapshot` | Bounded source snapshots; canonical policy is compiled from the shared JavaScript kernel. | §2 |
+| `readable_source` | Lossless readable source content. Positions and link identifiers never persist. | §2 |
 | `requirement_contradiction` | Contradiction reporting over the shared evidence-weighted requirement store. | §2 |
 | `runtime_cache` | Runtime-only cache paths and immutable derivations; explicit legacy APIs stay unchanged. | §2 |
 | `self_healing` | The closed self-healing / auto-learning loop (issue #558). | §2 |

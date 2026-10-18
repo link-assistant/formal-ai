@@ -257,8 +257,10 @@ fn issue_1069_every_ladder_leaf_reaches_a_real_change() {
 /// The contract the verifier enforces has to be satisfiable from the committed
 /// tree: the marker must be absent before the run and the anchor present, or
 /// the leaf would pass or fail for reasons that have nothing to do with coding.
+/// Preserve the historical Rust-only L09 as an explicit ownership conflict;
+/// its retired anchor must not be recreated or its corpus silently rewritten.
 #[test]
-fn issue_1069_every_leaf_contract_is_grounded_in_the_committed_tree() {
+fn issue_1069_leaf_contracts_are_grounded_or_expose_the_original_scope_conflict() {
     for leaf in leaves() {
         let source = read(&leaf.path);
         assert!(
@@ -268,6 +270,18 @@ fn issue_1069_every_leaf_contract_is_grounded_in_the_committed_tree() {
             leaf.marker,
             leaf.path,
         );
+        if leaf.id == "L09" {
+            assert!(
+                !source.contains(&leaf.guard),
+                "the retired Rust list is absent"
+            );
+            assert_eq!(
+                formal_ai::agentic_coding::resolve_requirement_target(&leaf.task),
+                None,
+                "the original Rust-only request must not acquire data-file ownership"
+            );
+            continue;
+        }
         assert!(
             source.contains(&leaf.guard),
             "{}: anchor {:?} is missing from {}",

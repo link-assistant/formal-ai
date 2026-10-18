@@ -12,6 +12,7 @@ mod enabled {
     use std::fs;
     use std::path::PathBuf;
     use std::process::Command;
+    use std::time::Instant;
 
     fn git_identity(root: &std::path::Path, reference: &str) -> Result<String, Box<dyn Error>> {
         let output = Command::new("git")
@@ -26,6 +27,19 @@ mod enabled {
             return Err("SourceContentGitIdentityMalformed".into());
         }
         Ok(identity)
+    }
+
+    // Only owned relative source names and elapsed times enter the shared sink.
+    fn trace_phase(module_path: &str, phase: &str, started: Instant) {
+        formal_ai::dialog_log::structured_log::event(
+            "info",
+            "source_content_producer",
+            || "source-content-phase".to_owned(),
+            || {
+                json!({"source-module": module_path, "phase": phase,
+                "elapsed-ms": started.elapsed().as_millis()})
+            },
+        );
     }
 
     pub(super) fn run() -> Result<(), Box<dyn Error>> {
@@ -51,14 +65,20 @@ mod enabled {
             if index % shards != shard_index {
                 continue;
             }
+            let started = Instant::now();
+            trace_phase(relative, "parse-and-emit", started);
             let document = source_document(relative, source).map_err(std::io::Error::other)?;
+            trace_phase(relative, "reload", started);
             let retained = read_source_links(&document).map_err(std::io::Error::other)?;
+            trace_phase(relative, "restore", started);
             if source_owner(&retained).map_err(std::io::Error::other)? != Some(*relative)
                 || source_from_links(&retained).map_err(std::io::Error::other)? != *source
             {
                 return Err("SourceContentRestorationMismatch".into());
             }
+            trace_phase(relative, "reparse", started);
             verify_source_links(&retained).map_err(std::io::Error::other)?;
+            trace_phase(relative, "write", started);
             let member = format!(
                 "source-content/{}.lino",
                 relative
@@ -68,6 +88,7 @@ mod enabled {
             let target = output.join(&member);
             fs::create_dir_all(target.parent().ok_or("SourceContentParentRequired")?)?;
             fs::write(&target, document.as_bytes())?;
+            trace_phase(relative, "completed", started);
             rows.push(json!({"path":format!("rust/{relative}"),"member":member.strip_prefix("source-content/").ok_or("SourceContentArtifactRootRequired")?,
             "sourceBlake3":blake3::hash(source.as_bytes()).to_hex().to_string(),
             "modelBlake3":blake3::hash(document.as_bytes()).to_hex().to_string(),

@@ -181,6 +181,17 @@ fn denied_native_anthropic_grant_never_adopts_publisher_or_transcript_authority(
             .all(|block| block["type"] != "tool_use")
     );
     assert!(response.to_string().contains("command not found"));
+    let answer = response["content"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter_map(|block| block["text"].as_str())
+        .collect::<String>();
+    assert!(answer.starts_with("The command failed:"));
+    assert!(answer.contains("Exit code 127"));
+    assert!(answer.contains("FORMAL_AI_INSTALL_GRANT=workspace"));
+    assert!(!answer.to_ascii_lowercase().contains("would you like"));
+    assert!(!answer.to_ascii_lowercase().contains("report issue"));
 }
 
 #[test]

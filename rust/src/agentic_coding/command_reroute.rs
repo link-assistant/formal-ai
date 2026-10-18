@@ -424,8 +424,6 @@ impl RecipeProgress {
     }
 }
 
-/// Labels harnesses use to state the exit status of the process they ran.
-
 /// Values a labelled field carries when the harness means "there was none".
 const ABSENT_FIELD_VALUES: [&str; 8] = [
     "",

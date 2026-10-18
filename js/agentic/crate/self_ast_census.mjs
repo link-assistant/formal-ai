@@ -13,7 +13,7 @@ export const CENSUS_DIR = 'source-content';
 /** Mirrors `const FULL_FIDELITY_PREFIX`. */
 export const FULL_FIDELITY_PREFIX = 'src/agentic_coding/';
 
-/** Mirrors `fn fidelity_for`: 'full_ast' | 'signature'. @param {string} modulePath @returns {string} */
+/** Mirrors `fn fidelity_for`: navigation records do not represent full source content. @param {string} modulePath @returns {string} */
 export function fidelityFor(modulePath) {
   return 'navigation';
 }
@@ -25,9 +25,8 @@ export function documentPathFor(modulePath) {
 }
 
 /**
- * Parse one committed census document into `{path, fidelity, symbols:
- * [{kind, name, start_line, end_line}]}` (the inverse of
- * `ModuleCensus::links_notation`), or null.
+ * Read owned recursive source content into navigation `{path, fidelity, symbols:
+ * [{kind, name, start_line, end_line}]}` using the lexical scanner, or null.
  * Mirrors `fn module_from_document` in rust/src/self_ast_census.rs.
  * @param {string} text
  */
@@ -47,7 +46,7 @@ export function workspaceCensus(modules) {
   return { modules: [...modules].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0)) };
 }
 
-/** Mirrors `fn workspace`: the census of the host's committed documents. */
+/** Mirrors `fn workspace`: navigation from the host's current owned sources. */
 export function workspace() {
   return cached('self-ast-census', () => {
     const documents = hasHost() && typeof host().censusDocuments === 'function' ? host().censusDocuments() : [];

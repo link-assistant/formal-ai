@@ -2,7 +2,7 @@
 // R1188-U3: every owned production source survives full upstream network serialization.
 // Distribution packets contain full .lino.gz documents; receipts are identities, never substitutes for them.
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, realpathSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { upstreamDirectory, workflowPin } from './translate-js-rust.mjs';
@@ -30,7 +30,8 @@ export async function main(argumentsList) {
   const workingTreeChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
     { cwd: root, encoding: 'utf8' }).trim();
   const paths = ownedProductionSources(root);
-  const selected = partitionSourcePaths(paths, shardIndex, shardCount);
+  const selected = partitionSourcePaths(paths, shardIndex, shardCount,
+    (path) => statSync(join(root, path)).size);
   if (selected.length === 0) throw new Error('source shard contains no owned modules');
   const output = value('--output', '');
   if (output && !argumentsList.includes('--write')) throw new Error('--output requires --write');

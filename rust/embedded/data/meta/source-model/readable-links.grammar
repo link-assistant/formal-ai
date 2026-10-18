@@ -3,12 +3,8 @@ start document
 rule document = normal seq(repeat0(ref(layout)), repeat0(seq(ref(link), repeat0(ref(layout)))))
 rule link = normal seq(literal("("), repeat0(ref(layout)), repeat0(seq(ref(item), repeat0(ref(layout)))), literal(")"))
 rule item = silent choice(ref(link), ref(quoted), ref(word))
-rule asciiSpace = silent class(char(" "), range("\t", "\r"))
-rule unicodeSpace = silent class(char(" "), char(" "), range(" ", " "), char(" "), char(" "), char(" "), char(" "), char("　"), char("﻿"))
-rule space = silent choice(ref(asciiSpace), ref(unicodeSpace))
-rule wordBoundary = silent choice(ref(space), class(char("("), char(")"), char("\"")))
-rule word = token seq(not(choice(ref(wordBoundary), literal("#"))), any, repeat0(seq(not(ref(wordBoundary)), any)))
+rule word = token seq(notClass(char(" "), range("\t", "\r"), char(" "), char(" "), range(" ", " "), char(" "), char(" "), char(" "), char(" "), char("　"), char("﻿"), char("("), char(")"), char("\""), char("#")), repeat0(notClass(char(" "), range("\t", "\r"), char(" "), char(" "), range(" ", " "), char(" "), char(" "), char(" "), char(" "), char("　"), char("﻿"), char("("), char(")"), char("\""))))
 rule quoted = token seq(literal("\""), repeat0(choice(ref(escape), notClass(char("\""), char("\\"), range("\u0000", "\u001f")))), literal("\""))
 rule escape = silent seq(literal("\\"), choice(class(char("\""), char("\\"), char("/"), char("b"), char("f"), char("n"), char("r"), char("t")), seq(literal("u"), ref(hex), ref(hex), ref(hex), ref(hex))))
 rule hex = silent class(range("0", "9"), range("a", "f"), range("A", "F"))
-rule layout = token choice(repeat1(ref(space)), seq(literal("#"), repeat0(notClass(char("\n")))))
+rule layout = token choice(repeat1(class(char(" "), range("\t", "\r"), char(" "), char(" "), range(" ", " "), char(" "), char(" "), char(" "), char(" "), char("　"), char("﻿"))), seq(literal("#"), repeat0(notClass(char("\n")))))

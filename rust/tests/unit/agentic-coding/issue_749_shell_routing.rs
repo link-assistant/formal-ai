@@ -441,3 +441,20 @@ fn source_members_do_not_authorize_whole_file_shell_mutations() {
         }
     }
 }
+
+#[test]
+fn shell_options_do_not_become_seeded_natural_language_prose() {
+    for command in [
+        "bash -c 'ls -la'",
+        "ls -la",
+        "ls -in",
+        "ls --all",
+        "bash -c 'printf --all'",
+    ] {
+        assert_eq!(
+            shell_command(command).as_deref(),
+            Some(command),
+            "{command}"
+        );
+    }
+}

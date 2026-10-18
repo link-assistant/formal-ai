@@ -46,7 +46,7 @@ fn a_requirement_without_a_file_name_resolves_through_the_census() {
 }
 
 #[test]
-fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
+fn original_ladder_scope_is_preserved_when_actual_ownership_moves() {
     let rows = leaves();
     assert_eq!(rows.len(), 32);
     for row in &rows {
@@ -56,6 +56,17 @@ fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
         } else {
             requirement
         };
+        if leaf == "L09" {
+            // The historical request permits only a Rust file; vocabulary now belongs to data.
+            // Keep it as a conflict, never as a fulfilled original ladder task.
+            assert_eq!(resolve_requirement_target(scoped_request), None);
+            let current = resolve_requirement_target(requirement)
+                .expect("the unscoped semantic request identifies actual shared seed ownership");
+            assert_eq!(current.module_path, "src/seed/embedded_registry.rs");
+            assert_eq!(current.symbol, "TERMINAL_COMMANDS_LINO");
+            assert_eq!(current.kind, "const");
+            continue;
+        }
         // Preserve the original explicit file operand instead of guessing an ambiguous declaration.
         let target = resolve_requirement_target(scoped_request)
             .unwrap_or_else(|| panic!("{leaf}: {requirement:?} must resolve"));
@@ -94,7 +105,7 @@ fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
 
 #[cfg(feature = "meta-language")]
 #[test]
-fn each_committed_leaf_rule_applies_to_the_current_source() {
+fn committed_leaf_rules_apply_or_refuse_their_original_conflicting_scope() {
     let rows = leaves();
     for row in &rows {
         let leaf = &row[0];
@@ -108,6 +119,21 @@ fn each_committed_leaf_rule_applies_to_the_current_source() {
         );
         let source = fs::read_to_string(root().join(&document.path))
             .unwrap_or_else(|error| panic!("{leaf}: {}: {error}", document.path));
+        if leaf == "L09" {
+            let reason = match apply_link_edit(&source, &document.language, &document.rule) {
+                Err(error) => error.to_string(),
+                Ok(_) => panic!("the original Rust-only rule must not redirect to data"),
+            };
+            assert_eq!(
+                reason,
+                "link_edit:no_matching_link:insert_member:PROSE_WORDS"
+            );
+            assert_eq!(
+                fs::read_to_string(root().join(&document.path)).unwrap(),
+                source
+            );
+            continue;
+        }
         let (edited, report) = apply_link_edit(&source, &document.language, &document.rule)
             .unwrap_or_else(|error| panic!("{leaf}: {error}"));
         assert_ne!(edited, source, "{leaf}: the rule must change the source");

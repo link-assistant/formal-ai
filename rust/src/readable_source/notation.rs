@@ -48,7 +48,17 @@ pub(super) fn parse(notation: &str) -> Result<Vec<Value>, String> {
         .parse_tree(notation.as_bytes(), &options)
         .map_err(|error| error.to_string())?;
     if !outcome.ok {
-        return Err("RejectedSourceNotation".to_owned());
+        if let Some(rejection) = outcome.rejection {
+            return Err(format!(
+                "RejectedSourceNotation: reason={} offset={:?} line={:?} column={:?} limit={:?}",
+                rejection.reason,
+                rejection.offset,
+                rejection.line,
+                rejection.column,
+                rejection.limit
+            ));
+        }
+        return Err("RejectedSourceNotation: rejection detail unavailable".to_owned());
     }
     let tree = outcome
         .tree

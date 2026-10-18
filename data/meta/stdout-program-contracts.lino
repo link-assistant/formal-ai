@@ -11,7 +11,9 @@ stdout_program_contracts
     operation 'println!("{}", {value});'
     comment "//"
     unicode_escape "\\u{{{hex}}}"
-    ci_setup "      - name: Set up Rust\n        run: rustup toolchain install stable --profile minimal && rustup default stable\n"
+    ci_setup "      - name: Set up Rust\n        run: |\n          set -eu\n          export CARGO_HOME=\"${CARGO_HOME:-$HOME/.cargo}\"\n          export PATH=\"$CARGO_HOME/bin:$PATH\"\n          if ! command -v rustup >/dev/null 2>&1; then\n            rustup_bootstrap=$(mktemp)\n            trap 'rm -f \"$rustup_bootstrap\"' EXIT\n            curl --proto '=https' --tlsv1.2 --fail --silent --show-error --output \"$rustup_bootstrap\" https://sh.rustup.rs\n            sh \"$rustup_bootstrap\" --no-modify-path --profile minimal --default-toolchain none -y\n          fi\n          rustup toolchain install stable --profile minimal\n          rustup default stable\n          printf '%s\\n' \"$CARGO_HOME/bin\" >> \"$GITHUB_PATH\"\n"
+    ci_source "https://rust-lang.github.io/rustup/installation/index.html"
+    ci_source "https://rust-lang.github.io/rustup/installation/other.html"
   language kotlin
     source "https://kotlinlang.org/docs/command-line.html"
     entry 'fun main() {\n    {body}\n}\n'

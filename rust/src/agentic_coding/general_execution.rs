@@ -50,6 +50,18 @@ fn general_change_step(
         return guarded;
     }
     let progress = Progress::scan(messages);
+    if let Some(command) = super::prerequisite_recovery::observed_recovery_command(messages)
+        && let Some(output) = progress.latest_run_output_for(&command)
+        && let Some(recovery) = super::prerequisite_recovery::plan_recovery(
+            messages,
+            tool_names,
+            &command,
+            tool_result::reported_exit_code(output).and_then(|value| i32::try_from(value).ok()),
+            output,
+        )
+    {
+        return recovery;
+    }
     // Reading the work item is an attempt to find out whether anything *can* be
     // executed, not a step the request named. A read that comes back missing or
     // empty therefore answers that question — the capability is unavailable —
@@ -149,6 +161,19 @@ fn general_change_step(
             )
         {
             return AgenticPlan::Final(report);
+        }
+        if failure.capability == Capability::Run
+            && let Some(arguments) = failure.arguments.as_deref()
+            && let Ok(value) = serde_json::from_str(arguments)
+            && let Some(bound) = progress.latest_attempt_for(Capability::Run, &value)
+            && bound.binding == super::qualified_tool_observation::Binding::Exact
+            && let Some(command) = tool_result::command_argument(arguments)
+        {
+            return AgenticPlan::Final(tool_result::render_failure(
+                &command,
+                &failure.detail,
+                &plan.goal,
+            ));
         }
         // A client may require an attempted read before creating a missing
         // file. Whether that read found bytes or reported absence, retry the

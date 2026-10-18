@@ -10,6 +10,8 @@
 # without this file shows up as a divergence. `{name}` is a placeholder;
 # `\n` is a newline.
 agentic_messages
+  message shell-recovery-final-failure
+    text "{failure}\n\n{recovery}"
   message shell_tool_missing
     text "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
   message tool_permission_refused

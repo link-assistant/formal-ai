@@ -55,7 +55,7 @@ export function generatedSeedOwnerDeclarations(repository = REPO_ROOT) {
   catch { return []; }
 }
 
-/** Read committed census documents only when their actual source identity still agrees. */
+/** Require regular owned source paths without following symlinks. */
 function censusRegularPath(repository, relative, kind) {
   try {
     const parts = relative.split('/');
@@ -105,12 +105,12 @@ function observeCensusDocuments(repository) {
   return {documents, complete};
 }
 
-/** Validated documents retain their original payload; incompleteness grants no unique owner. */
+/** Observe current navigation and source identities; counter documents confer no ownership. */
 export function censusDocuments(repository = REPO_ROOT) {
   return observeCensusDocuments(repository).documents;
 }
 
-/** A failed or stale observed census source prevents unqualified uniqueness claims. */
+/** Incomplete source observations prevent unqualified uniqueness claims. */
 export function censusSourceClosureComplete(repository = REPO_ROOT) {
   try { return observeCensusDocuments(repository).complete; }
   catch { return false; }

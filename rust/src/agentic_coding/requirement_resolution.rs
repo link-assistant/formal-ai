@@ -166,10 +166,7 @@ fn resolve_scoped(census: &WorkspaceCensus, requirement: &str) -> Option<Require
         }
     }
     if best.is_empty() {
-        let sources: Vec<_> = crate::seed::seed_files()
-            .into_iter()
-            .filter(|(_, text)| crate::seed::MEANING_FILES.contains(text))
-            .collect();
+        let sources: Vec<_> = crate::seed::seed_files().into_iter().collect();
         return resolve_seed_target(census, requirement, &sources);
     }
     unique(&best, &tokens)
@@ -261,7 +258,13 @@ pub fn resolve_seed_target(
             }
         }
     }
-    if best.len() == 1 { best.pop() } else { None }
+    if best.is_empty() {
+        resolve_structured_seed_target(census, requirement, sources)
+    } else if best.len() == 1 {
+        best.pop()
+    } else {
+        None
+    }
 }
 
 fn unique(
@@ -335,4 +338,84 @@ fn singular(word: &str) -> String {
     } else {
         word.to_owned()
     }
+}
+
+/// Multiword structured fields bind only with independent actual seed-owner context.
+fn resolve_structured_seed_target(
+    census: &WorkspaceCensus,
+    requirement: &str,
+    sources: &[(&str, &str)],
+) -> Option<RequirementTarget> {
+    let mut unquoted = requirement.to_owned();
+    for segment in crate::normal_markov::quoted_segment_spans(requirement)
+        .into_iter()
+        .rev()
+    {
+        unquoted.replace_range(segment.start..segment.end, " ");
+    }
+    let words = tokens_of(&unquoted)
+        .into_iter()
+        .flat_map(|token| {
+            token
+                .split('_')
+                .map(|word| singular(&word.to_lowercase()))
+                .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>();
+    let mut best_length = 0;
+    let mut best = Vec::new();
+    for (source_path, source) in sources {
+        let Some(stem) = source_path
+            .rsplit('/')
+            .next()
+            .and_then(|name| name.strip_suffix(".lino"))
+        else {
+            continue;
+        };
+        if stem.is_empty()
+            || !stem.chars().all(|character| {
+                character.is_ascii_alphanumeric() || matches!(character, '_' | '-')
+            })
+        {
+            continue;
+        }
+        let context = stem
+            .split(['_', '-'])
+            .map(|word| singular(&word.to_lowercase()))
+            .collect::<Vec<_>>();
+        let name = format!("{}_LINO", stem.to_ascii_uppercase().replace('-', "_"));
+        let mut nodes = vec![crate::seed::parse_lino(source)];
+        while let Some(node) = nodes.pop() {
+            let parts = node
+                .name
+                .split(['_', '-'])
+                .map(|word| singular(&word.to_lowercase()))
+                .collect::<Vec<_>>();
+            if parts.len() > 1
+                && parts.iter().all(|word| words.contains(word))
+                && context
+                    .iter()
+                    .any(|word| words.contains(word) && !parts.contains(word))
+            {
+                if parts.len() > best_length {
+                    best_length = parts.len();
+                    best.clear();
+                }
+                if parts.len() == best_length {
+                    for module in census.modules_declaring(&name) {
+                        if let Some(symbol) = module.symbol(&name)
+                            && matches!(symbol.kind.as_str(), "const" | "static")
+                        {
+                            let candidate = target(module, symbol);
+                            if !best.contains(&candidate) {
+                                best.push(candidate);
+                            }
+                        }
+                    }
+                }
+            }
+            nodes.extend(node.children);
+        }
+    }
+    if best.len() == 1 { best.pop() } else { None }
 }

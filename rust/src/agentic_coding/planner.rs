@@ -856,9 +856,6 @@ pub(super) fn plan_settled_routes(
     {
         return Some(plan);
     }
-    if let Some(command) = super::prerequisite_recovery::observed_recovery_command(messages) {
-        return Some(plan_shell_step(messages, tool_names, &command, result));
-    }
     if let Some(answer) = tool_result::latest_turn_answer(messages, tool_names, task) {
         return Some(AgenticPlan::Final(answer));
     }
@@ -913,7 +910,8 @@ fn plan_shell_command_arm(
     if let Some(decline) = shell_command::destructive_edit_decline(task) {
         return Some(decline);
     }
-    let command = shell_command::shell_command_for_task(task)?;
+    let command = shell_command::shell_command_for_task(task)
+        .or_else(|| super::prerequisite_recovery::observed_recovery_command(messages))?;
     if let Some(plan) = shell_file_fallback::plan_step(task, messages, tool_names, &command) {
         return Some(plan);
     }

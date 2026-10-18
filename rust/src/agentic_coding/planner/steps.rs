@@ -128,8 +128,10 @@ pub(super) fn plan_request_preflight(
     // Declared issue ownership and continuation/prerequisite guards share the
     // request boundary; surrounding examples cannot become independent effects.
     if let Some(plan) = crate::agentic_coding::general_planner::compose_general_change_plan(task)
-        && plan.mode == crate::agentic_coding::general_planner::GeneralPlanMode::RepositoryWorkItem
-        && task.trim_start().starts_with(&plan.target)
+        && (plan.mode == crate::agentic_coding::general_planner::GeneralPlanMode::CommandOutput
+            || plan.mode
+                == crate::agentic_coding::general_planner::GeneralPlanMode::RepositoryWorkItem
+                && task.trim_start().starts_with(&plan.target))
     {
         return SourceOrOwnedGoalStep::Claimed(Some(
             crate::agentic_coding::general_execution::plan_general_change_step(

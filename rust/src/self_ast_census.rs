@@ -1,4 +1,5 @@
 //! Actual owned-source navigation and on-demand recursive CST content.
+//!
 //! Navigation records and legacy census diagnostics are not source models.
 //! Complete source models are reconstructed and independently reparsed, then
 //! retained as streaming CI artifacts rather than committed count manifests.
@@ -58,13 +59,13 @@ impl CensusFidelity {
 
 /// The fidelity tier a module path belongs to.
 #[must_use]
-pub fn fidelity_for(_module_path: &str) -> CensusFidelity {
+pub const fn fidelity_for(_module_path: &str) -> CensusFidelity {
     CensusFidelity::Navigation
 }
 
 /// The on-demand source-content document path for an owned module path.
 ///
-/// `src/agentic_coding/planner.rs` → `data/meta/self-ast/src/agentic_coding/planner.lino`.
+/// `src/agentic_coding/planner.rs` → `source-content/src/agentic_coding/planner.lino`.
 /// The mapping is injective and reversible ([`module_path_for_document`]), so the
 /// index never needs to store both directions.
 #[must_use]
@@ -100,13 +101,10 @@ pub struct SymbolSpan {
 
 /// The census of one owned module.
 ///
-/// The signature tier — path, size, content id, and declared symbols — is
-/// computed eagerly and is cheap (a lexical scan). The full abstract-syntax tier
-/// is *deferred*: parsing a module through the meta-language links network costs
-/// orders of magnitude more, and a planner resolving an edit target only needs
-/// symbols. [`ModuleCensus::ast`] computes it on first use and memoizes it, so
-/// rendering the committed documents pays for it while an interactive lookup
-/// does not.
+/// Navigation records provide path, source identity and declaration spans from
+/// a lexical scan. They are not source models. [`ModuleCensus::links_notation`]
+/// derives full recursive source content on demand; [`ModuleCensus::ast`] retains
+/// separate parser diagnostics without replacing that content.
 #[derive(Debug, Clone)]
 pub struct ModuleCensus {
     /// Repository-relative path of the censused module.

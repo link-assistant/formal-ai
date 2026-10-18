@@ -271,7 +271,8 @@ function planRequestPreflight(task, messages, toolNames) {
   // A declared issue objective and continuation/prerequisite guards share the
   // request boundary: surrounding examples never become independent effects.
   const workItem = composeGeneralChangePlan(task);
-  if (workItem?.mode === 'repository_work_item' && task.trimStart().startsWith(workItem.target)) {
+  if (workItem?.mode === 'command_output'
+    || workItem?.mode === 'repository_work_item' && task.trimStart().startsWith(workItem.target)) {
     return { claimed: true, plan: planGeneralChangeStep(messages, toolNames, workItem) };
   }
   if (handlerMatches('conversation_control', task) || isContinuationCue(task)) {
@@ -440,7 +441,7 @@ async function planLaterRoutes(task, messages, toolNames) {
     const decline = codeTask.renderSeededChange('file_text_unit', task, refused, []);
     if (decline !== null) return resolvedFinalAnswer(decline, FinalDisposition.Gap, 'destructive_edit_declined');
   }
-  const command = shellCommand.shellCommandForTask(task);
+  const command = shellCommand.shellCommandForTask(task) ?? observedRecoveryCommand(messages);
   if (command !== null) {
     const fallback = await shellFileFallback.planStep(task, messages, toolNames, command);
     if (fallback !== null) return fallback;
@@ -501,8 +502,6 @@ async function planOpenRoutes(task, messages, toolNames) {
       if (plan !== null) return plan;
     }
   }
-  const recoveryCommand = observedRecoveryCommand(messages);
-  if (recoveryCommand !== null) return planShellStep(messages, toolNames, recoveryCommand);
   const latest = await toolResult.latestTurnAnswer(messages, toolNames, task);
   if (latest !== null) return finalAnswer(latest);
   const note = await noteComposition.planNoteCompositionStep(task, messages);
@@ -527,6 +526,12 @@ export function planShellStep(messages, toolNames, command) {
   if (raw !== null) {
     if (toolResult.stepOutcome(raw) === toolResult.StepOutcome.Failed) {
       const recovery = planRecovery(messages, toolNames, command, toolResult.reportedExitCode(raw), raw);
+      if (recovery?.kind === 'final') {
+        return resolvedFinalAnswer(agenticMessage('shell-recovery-final-failure', {
+          failure: toolResult.render(command, raw, latestUserRequest(messages) ?? ''),
+          recovery: recovery.answer,
+        }), FinalDisposition.Failure, 'shell_result_observed');
+      }
       if (recovery !== null) return recovery;
     }
     return resolvedFinalAnswer(toolResult.render(command, raw, latestUserRequest(messages) ?? ''),
