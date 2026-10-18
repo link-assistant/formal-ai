@@ -58,6 +58,7 @@ export function main() {
     source, binarySha256, hiveCommit: inputs.hiveCommit,
     runtimeImage: inputs.taskRuntimeImage, runtimeImageId: imageIdentity.Id,
     runtimeImageDigests: imageIdentity.RepoDigests, actualTaskImageBinarySha256: observed,
+    transportAdapter: JSON.parse(fs.readFileSync(path.join(hive, '.formal-ai-transport-adapter.json'))),
     sameRunBinary: true, runtimeBootstrap: {package: 'default-jre-headless', scope: 'image-build', compilerPackagesAdded: []}, authorshipCredit: 0,
   }) + '\n');
   console.log('Actual task image binary verified against this Formal AI source build.');

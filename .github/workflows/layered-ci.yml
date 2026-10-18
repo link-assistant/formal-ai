@@ -115,13 +115,13 @@ jobs:
 
 
   source-networks:
-    name: Full source network serialization (${{ matrix.shard }}/8)
+    name: Full source network serialization (${{ matrix.shard }}/16)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-source-networks-${{ matrix.shard }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -152,7 +152,7 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "complete source network serialization" \
             node scripts/check-source-networks.mjs --write \
-              --meta-language .meta-language --shard-count 8 \
+              --meta-language .meta-language --shard-count 16 \
               --shard-index "$SOURCE_SHARD" --output "$SOURCE_NETWORK_OUTPUT"
       - name: Upload complete serialized source packets and receipts
         uses: actions/upload-artifact@v7

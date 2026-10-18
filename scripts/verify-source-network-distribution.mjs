@@ -17,10 +17,12 @@ const dirty = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/sr
 if (dirty) throw new Error('distribution must be checked against a committed source tree');
 const sourceHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
 const upstreamCommit = value('--upstream-commit', '') || workflowPin(readFileSync(join(root, '.github/workflows/layered-ci.yml'), 'utf8'));
-const reports = Array.from({ length: 8 }, (_, index) => JSON.parse(
+const shardCount = Number(value('--shard-count', '8'));
+if (!Number.isSafeInteger(shardCount) || shardCount < 1) throw new Error('invalid distribution shard count');
+const reports = Array.from({ length: shardCount }, (_, index) => JSON.parse(
   readFileSync(join(directory, 'shard-' + index, 'source-network-receipts.json'), 'utf8')));
 const result = verifySourceDistribution({
-  reports, sourcePaths: ownedProductionSources(root), sourceHead, upstreamCommit,
+  reports, sourcePaths: ownedProductionSources(root), sourceHead, upstreamCommit, shardCount,
   sourceBytes: (path) => readFileSync(join(root, path)),
   packetBytes: (index, path) => readFileSync(join(directory, 'shard-' + index, path)),
 });

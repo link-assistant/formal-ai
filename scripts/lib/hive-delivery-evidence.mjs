@@ -46,3 +46,17 @@ export function requireProgramMember(files, language) {
   assert(!file.startsWith('/') && !file.includes('\\') && !file.includes('\0'));
   return file;
 }
+
+
+/** Decode only actual act output events; control messages are not program stdout. */
+export function decodeActWorkflowLog(log) {
+  assert.equal(typeof log, 'string');
+  const output = [];
+  for (const line of log.split(/\r?\n/u)) {
+    let event;
+    try { event = JSON.parse(line); } catch { continue; }
+    if (event?.raw_output === true && event.dryrun === false
+      && typeof event.msg === 'string') output.push(event.msg);
+  }
+  return output.join('');
+}

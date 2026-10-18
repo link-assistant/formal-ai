@@ -108,6 +108,8 @@ jobs:
           (cd "$ACT_DIR" && sha256sum --check --ignore-missing checksums.txt)
           tar -xzf "$ACT_DIR/act_Linux_x86_64.tar.gz" -C "$ACT_DIR" act
           echo "$ACT_DIR" >> "$GITHUB_PATH"
+      - name: Prepare reviewed Hive workflow-log transport
+        run: node scripts/prepare-hive-original-delivery.mjs
       - name: Build and verify actual same-source task image
         run: node scripts/build-hive-original-delivery-image.mjs
       - name: Run actual Hive solve and original assertions
