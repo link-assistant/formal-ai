@@ -513,7 +513,7 @@ pub fn classify_failure(
     source_span: &str,
 ) -> Option<PrerequisiteNeed> {
     let program = command.split_whitespace().next().unwrap_or_default();
-    if program.is_empty() {
+    if program.is_empty() || exit_code == Some(0) {
         return None;
     }
 

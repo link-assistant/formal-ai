@@ -257,8 +257,8 @@ fn write_tree_writes_every_owned_file() {
 
 /// Issue #1180 R11: the agentic ES modules (`js/agentic/**/*.mjs`) are part
 /// of the native write set, mapped to `ts/agentic/**/*.mts` exactly as
-/// `scripts/translate-es.mjs` maps them; an `.mjs` outside that subtree is
-/// not the translator's.
+/// `scripts/translate-es.mjs` maps them. Admitted server modules also have twins;
+/// an `.mjs` outside every declared owned subtree remains excluded.
 #[test]
 fn the_agentic_module_subtree_writes_its_mts_twins() {
     use formal_ai::meta_translate::{SourceRoot, WriteTargetError, write_target};
@@ -285,15 +285,25 @@ fn the_agentic_module_subtree_writes_its_mts_twins() {
             SourceRoot::TypeScript,
             "js/server/main.mjs"
         ),
-        Err(WriteTargetError::WrongRoot {
-            path: "js/server/main.mjs".to_owned()
-        }),
+        Ok("ts/server/main.mts".to_owned()),
         "only the module subtrees carry an .mts twin"
+    );
+    assert_eq!(
+        write_target(
+            SourceRoot::JavaScript,
+            SourceRoot::TypeScript,
+            "js/unowned/main.mjs"
+        ),
+        Err(WriteTargetError::WrongRoot {
+            path: "js/unowned/main.mjs".to_owned()
+        }),
+        "an unowned module subtree stays excluded"
     );
     let root = temp_source_tree(&[
         ("js/one.js", "export const one = 1;\n"),
         ("js/agentic/crate/two.mjs", "export const two = 2;\n"),
         ("js/server/three.mjs", "export const three = 3;\n"),
+        ("js/unowned/four.mjs", "export const four = 4;\n"),
     ]);
     let report = translate_write::write_tree(SourceRoot::JavaScript, SourceRoot::TypeScript, &root);
     let WriteReport::Wrote { files, .. } = &report else {
@@ -304,9 +314,17 @@ fn the_agentic_module_subtree_writes_its_mts_twins() {
         .map(|file| file.target.as_str())
         .collect::<Vec<_>>();
     targets.sort_unstable();
-    assert_eq!(targets, ["ts/agentic/crate/two.mts", "ts/one.ts"]);
+    assert_eq!(
+        targets,
+        [
+            "ts/agentic/crate/two.mts",
+            "ts/one.ts",
+            "ts/server/three.mts"
+        ]
+    );
     assert!(root.join("ts/agentic/crate/two.mts").is_file());
-    assert!(!root.join("ts/server/three.mts").exists());
+    assert!(root.join("ts/server/three.mts").is_file());
+    assert!(!root.join("ts/unowned/four.mts").exists());
     let _ = std::fs::remove_dir_all(&root);
 }
 

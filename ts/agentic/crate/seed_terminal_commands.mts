@@ -15,7 +15,7 @@ export function terminalCommandVocabulary() {
   return cached('terminal-command-vocabulary', () => {
     const vocab = {
       terminal_phrases: [], run_verbs: [], postposed_run_verbs: [], cjk_run_verbs: [], passthrough_prefixes: [], command_nouns: [],
-      bare_shell_tokens: [], shell_tokens: [],
+      bare_shell_tokens: [], shell_tokens: [], prose_words: [],
     };
     const root = parseRoot(readText('data/seed/terminal-commands.lino')).children[0];
     if (!root) return vocab;
@@ -30,6 +30,7 @@ export function terminalCommandVocabulary() {
       }
       else if (group.name === 'cjk_run_verbs') vocab.cjk_run_verbs = collectValues(group, 'verb');
       else if (group.name === 'passthrough_prefixes') vocab.passthrough_prefixes = collectLanguageValues(group, 'prefix');
+      else if (group.name === 'prose-words') vocab.prose_words = collectLanguageValues(group, 'word');
       else if (group.name === 'command_nouns') vocab.command_nouns = collectLanguageValues(group, 'noun');
       else if (group.name === 'bare_shell_tokens') vocab.bare_shell_tokens = collectValues(group, 'token');
       else if (group.name === 'shell_tokens') vocab.shell_tokens = collectValues(group, 'token');

@@ -129,7 +129,7 @@ agentic_messages
   message command_reroute_committed_and_pushed
     text "\n\nCommitted and pushed to `{branch}` for {reference}:\n\n```text\n{output}\n```"
   message command_reroute_exit_code_labels
-    text "exit code:|exit status:|command exited with status|process exited with code"
+    text "exit code:|exit code |exit status:|command exited with status|process exited with code"
   message command_reroute_failure_markers
     text "command timed out|command terminated without an exit status|permission denied|no such file or directory"
   message code_artifact_updated

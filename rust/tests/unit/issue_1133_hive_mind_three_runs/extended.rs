@@ -523,64 +523,75 @@ fn a_commit_request_is_a_git_step_in_every_language() {
     }
 }
 
-/// The branch cue in each language names where the work item is pushed.
+/// Every original language case retains the same planner drive and push assertion.
+fn assert_named_branch_push(language: &str, request: String) {
+    let scala = page("Scala");
+    let mut messages = vec![ChatMessage::user(request)];
+    let (planned, _) = drive(
+        AGENT_TOOLS.as_slice(),
+        &mut messages,
+        |tool, arguments| {
+            if is_work_item_read(tool, arguments) {
+                scala.clone()
+            } else {
+                "Hello, World!\n".to_owned()
+            }
+        },
+        10,
+    );
+    let commit = planned
+        .iter()
+        .map(command_of)
+        .find(|command| command.starts_with("git add --") && command.contains("git commit --only"))
+        .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
+    assert!(
+        commit.contains(&format!("git push -q origin '{BRANCH}'")),
+        "{language}: {commit}"
+    );
+}
+
 #[test]
 fn the_named_branch_is_pushed_to_in_every_language() {
-    let prompts = [
-        (
-            "english",
-            format!(
-                "Resolve the GitHub issue at {ISSUE} in this repository.\nKeep the solution on branch {BRANCH}."
-            ),
+    assert_named_branch_push(
+        "english",
+        format!(
+            "Resolve the GitHub issue at {ISSUE} in this repository.\nKeep the solution on branch {BRANCH}."
         ),
-        (
-            "russian",
-            format!(
-                "Реши задачу GitHub {ISSUE} в этом репозитории.\nДержи решение в ветке {BRANCH}."
-            ),
+    );
+}
+
+#[test]
+fn the_named_branch_is_pushed_to_in_russian() {
+    assert_named_branch_push(
+        "russian",
+        format!("Реши задачу GitHub {ISSUE} в этом репозитории.\nДержи решение в ветке {BRANCH}."),
+    );
+}
+
+#[test]
+fn the_named_branch_is_pushed_to_in_hindi() {
+    assert_named_branch_push(
+        "hindi",
+        format!("इस रिपॉज़िटरी में GitHub इश्यू {ISSUE} को हल करें।\nसमाधान को शाखा {BRANCH} पर रखें।"),
+    );
+}
+
+#[test]
+fn the_named_branch_is_pushed_to_in_chinese() {
+    assert_named_branch_push(
+        "chinese",
+        format!("在此仓库中解决 GitHub 问题 {ISSUE}。\n将解决方案保留在分支 {BRANCH} 上。"),
+    );
+}
+
+#[test]
+fn the_named_branch_is_pushed_to_in_spanish() {
+    assert_named_branch_push(
+        "spanish",
+        format!(
+            "Resuelve el issue de GitHub {ISSUE} en este repositorio.\nMantén la solución en la rama {BRANCH}."
         ),
-        (
-            "hindi",
-            format!("इस रिपॉज़िटरी में GitHub इश्यू {ISSUE} को हल करें।\nसमाधान को शाखा {BRANCH} पर रखें।"),
-        ),
-        (
-            "chinese",
-            format!("在此仓库中解决 GitHub 问题 {ISSUE}。\n将解决方案保留在分支 {BRANCH} 上。"),
-        ),
-        (
-            "spanish",
-            format!(
-                "Resuelve el issue de GitHub {ISSUE} en este repositorio.\nMantén la solución en la rama {BRANCH}."
-            ),
-        ),
-    ];
-    let scala = page("Scala");
-    for (language, request) in prompts {
-        let mut messages = vec![ChatMessage::user(request)];
-        let (planned, _) = drive(
-            AGENT_TOOLS.as_slice(),
-            &mut messages,
-            |tool, arguments| {
-                if is_work_item_read(tool, arguments) {
-                    scala.clone()
-                } else {
-                    "Hello, World!\n".to_owned()
-                }
-            },
-            10,
-        );
-        let commit = planned
-            .iter()
-            .map(command_of)
-            .find(|command| {
-                command.starts_with("git add --") && command.contains("git commit --only")
-            })
-            .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
-        assert!(
-            commit.contains(&format!("git push -q origin '{BRANCH}'")),
-            "{language}: {commit}"
-        );
-    }
+    );
 }
 
 /// A workflow requirement in each language adds the workflow file.
@@ -691,3 +702,53 @@ fn positional_inserts_compose_in_every_language() {
 
 #[path = "../../fixtures/commit-cue-masking.rs"]
 mod commit_cue_masking;
+
+#[test]
+fn fetched_original_task_retains_the_explicit_workflow_path() {
+    let task: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/hive-workflow-original-task.json"
+    ))
+    .expect("original public task fixture");
+    let mut messages = vec![ChatMessage::user(format!(
+        "Resolve the GitHub issue at {} in this repository.",
+        task["url"].as_str().unwrap()
+    ))];
+    let body = format!(
+        "{}\n\n{}",
+        task["title"].as_str().unwrap(),
+        task["body"].as_str().unwrap()
+    );
+    let (planned, _) = drive(
+        CLAUDE_TOOLS.as_slice(),
+        &mut messages,
+        |tool, arguments| {
+            if is_work_item_read(tool, arguments) {
+                body.clone()
+            } else {
+                "Hello, World!\n".to_owned()
+            }
+        },
+        8,
+    );
+    let paths: Vec<String> = planned
+        .iter()
+        .map(path_of)
+        .filter(|path| !path.is_empty())
+        .collect();
+    for required in [
+        "main.rs",
+        "tests/verify-output.sh",
+        "ci/test-hello-world.yml",
+    ] {
+        assert!(
+            paths.iter().any(|path| path == required),
+            "{required}: {planned:?}"
+        );
+    }
+    assert!(
+        !paths
+            .iter()
+            .any(|path| path.starts_with(".github/workflows/")),
+        "{planned:?}"
+    );
+}

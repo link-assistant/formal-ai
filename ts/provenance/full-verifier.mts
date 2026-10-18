@@ -1,3 +1,4 @@
+import {observedProvenancePhase} from './phase-trace.mjs';
 // Compose actual Git execution custody, a clean tracked checkout, and caller-pinned fresh replay.
 // Private source/tool/environment archives stay outside the repository and are never uploaded here.
 import fileSystem from 'node:fs';
@@ -64,7 +65,7 @@ export function verifyFullRepositoryProof(options){
  const lines=regularEvidenceBytes(evidence,'chain.lino').toString('utf8').trimEnd().split('\n'),records=lines.map(decodeTyped);
  if(records.at(-1)?.kind!=='terminal'||records.at(-1).payload.reason!=='final')throw Error('FullProofSessionNotFinal');
  const seal=decodeTyped(regularEvidenceBytes(evidence,'seal.lino').toString('utf8').trimEnd());
- const repository=verifyRepositoryEvidence(working,{lines,expectedAnchor,trustedPublicKey,seal,base,head,minShare});
+ const repository=observedProvenancePhase('repository-custody',()=>verifyRepositoryEvidence(working,{lines,expectedAnchor,trustedPublicKey,seal,base,head,minShare}));
  if(!repository.meetsMinimum||!repository.allBlobsAttributed||repository.commits.length===0)throw Error('FullProofRepositoryCoverageIncomplete');
  const execution=[];
  for(const observed of repository.commits){
@@ -73,7 +74,7 @@ export function verifyFullRepositoryProof(options){
   execution.push(verifyExecutionBinding(working,evidence,records,matches[0]));
  }
  const replayOptions={...options,directory:evidence,workspace:working};
- const replay=sourceMode==='archived'?verifyArchivedFreshReplay(replayOptions):verifyPinnedFreshReplay(replayOptions);
+ const replay=observedProvenancePhase('full-replay-'+sourceMode,()=>sourceMode==='archived'?verifyArchivedFreshReplay(replayOptions):verifyPinnedFreshReplay(replayOptions));
  if(!replay.fullReplay.verified)throw Error('FullProofFreshReplayIncomplete');
  if(text(['rev-parse','--verify','HEAD'])!==head
   ||repositoryGit(working,['status','--porcelain=v1','-z','--untracked-files=all','--ignore-submodules=none']).length!==0)throw Error('FullProofCheckoutChanged');

@@ -412,6 +412,9 @@ fn every_pull_request_workflow_declares_the_checks_mode_or_a_reason_not_to() {
         "desktop-release.yml",
         // A dispatch runs the credentialed full-slice benchmark jobs.
         "external-benchmarks.yml",
+        // This benchmark authors issues/PRs and pushes task branches with credentials.
+        // Its pull-request runs remain explicit; checks-only bot dispatch must not author.
+        "hive-original-delivery.yml",
         // The workflow that opens the bot pull request and dispatches.
         "self-authored-pull-request.yml",
         // Temporary release debt: automatic/checks ladder evaluation is

@@ -1,3 +1,4 @@
+import {observedProvenancePhase} from './phase-trace.mjs';
 // Fresh real planner custody. Source observations are never a claim of replay/autonomy.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -101,11 +102,11 @@ export function captureFreshPlannerRun(options=null){
   ...(memoryFile!==undefined?{memoryFile,taskURL}:{}),
   provenance:{directory:path.join(owned,'evidence'),...(signing?{signing}:{})}};
  fs.writeFileSync(configFile,JSON.stringify(configuration),{flag:'wx',mode:0o600});
- const child=spawnSync(process.execPath,['--require',path.join(owned,'bootstrap.cjs'),
+ const child=observedProvenancePhase(options.replayInput?'runtime-recompute-process':'runtime-capture-process',()=>spawnSync(process.execPath,['--require',path.join(owned,'bootstrap.cjs'),
   '--experimental-loader',path.join(owned,'loader.mjs'),path.join(owned,'entry.cjs')],{
   cwd:repository,encoding:'utf8',timeout:300000,maxBuffer:2*1024*1024,
   env:{...process.env,NODE_OPTIONS:'',NODE_TEST_CONTEXT:undefined,
-   FORMAL_AI_RUNTIME_CONFIG:configFile,FORMAL_AI_RUNTIME_BOOTSTRAP:path.join(owned,'bootstrap.cjs')}});
+   FORMAL_AI_RUNTIME_CONFIG:configFile,FORMAL_AI_RUNTIME_BOOTSTRAP:path.join(owned,'bootstrap.cjs')}}));
  fs.writeFileSync(path.join(owned,'stdout.log'),child.stdout??'',{mode:0o600});
  fs.writeFileSync(path.join(owned,'stderr.log'),child.stderr??'',{mode:0o600});
  const processReceipt={status:child.status,signal:child.signal,error:child.error?.message??null};

@@ -3,6 +3,10 @@ extern crate alloc;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod provenance_native;
 #[cfg(not(target_arch = "wasm32"))]
+pub mod provenance_snapshot;
+#[cfg(not(target_arch = "wasm32"))]
+pub(crate) mod provenance_snapshot_generated;
+#[cfg(not(target_arch = "wasm32"))]
 pub mod structured_tracing;
 
 pub mod agent;
@@ -27,6 +31,8 @@ pub mod cloud_sync;
 pub(crate) mod code_editing;
 pub mod code_example_knowledge;
 pub(crate) mod coding;
+#[cfg(feature = "meta-language")]
+pub mod readable_source;
 pub use coding::composition;
 pub use coding::composition_search;
 pub use coding::concept_discovery;

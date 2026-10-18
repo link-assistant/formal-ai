@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=6db026038691195f7e840628fb50d930198b142737859f89250d394af45c04b6 bytes=8237
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=441cf6f8b75769b8395718e463fb8963a2ed00809fae5c99d8bfa4925bd15f2b bytes=8959
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -72,11 +72,11 @@ pub static FENCES: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(|
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression
-// formal-ai:blockers arrow function | method call .exec() | nullish coalescing | optional chaining | regular expression
+// formal-ai:blockers arrow function | call of a sibling function | method call .exec() | method call .slice() | method call .test() | nullish coalescing | object without a $ tag | optional chaining | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .split()
-// formal-ai:blockers arrow callback of .some() | call of a sibling function | field access | method call .push() | method call .some() | method call .split() | null | object without a $ tag | regular expression
+// formal-ai:refusal null
+// formal-ai:blockers arrow callback of .some() | arrow function | call of a sibling function | field access | method call .push() | method call .some() | method call .split() | null | object without a $ tag | regular expression
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal arrow function

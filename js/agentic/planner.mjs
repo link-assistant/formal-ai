@@ -64,7 +64,7 @@ import { FinalDisposition, finalAnswer, isToolCalls, jsonText, planOne, projectP
 import { continuedAgentTask, isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import * as positionalEdit from './positional_edit.mjs';
 import * as procedure from './procedure.mjs';
-import { planRecovery, recoveryOutput } from './prerequisite_recovery.mjs';
+import { planRecovery, recoveryOutput, observedRecoveryCommand } from './prerequisite_recovery.mjs';
 import { Progress } from './progress.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
@@ -501,6 +501,8 @@ async function planOpenRoutes(task, messages, toolNames) {
       if (plan !== null) return plan;
     }
   }
+  const recoveryCommand = observedRecoveryCommand(messages);
+  if (recoveryCommand !== null) return planShellStep(messages, toolNames, recoveryCommand);
   const latest = await toolResult.latestTurnAnswer(messages, toolNames, task);
   if (latest !== null) return finalAnswer(latest);
   const note = await noteComposition.planNoteCompositionStep(task, messages);

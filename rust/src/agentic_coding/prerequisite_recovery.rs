@@ -161,3 +161,87 @@ pub(super) fn plan_shell_step(
         "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
     ))
 }
+
+/// Bind a current-turn failed command or its exact authored recovery transaction.
+/// Observations choose a route; existing caller grants and recovery own all authority.
+pub(super) fn observed_recovery_command(messages: &[ChatMessage]) -> Option<String> {
+    use super::qualified_tool_observation::Binding;
+    let progress = Progress::scan(messages);
+    let attempts = progress.research_attempts();
+    let latest_index = attempts
+        .iter()
+        .rposition(|attempt| attempt.capability == Capability::Run)?;
+    let latest = &attempts[latest_index];
+    let latest_arguments = latest.arguments.as_deref()?;
+    let latest_command = tool_result::command_argument(latest_arguments)?;
+    for attempt in attempts[..=latest_index].iter().rev() {
+        if attempt.capability != Capability::Run {
+            continue;
+        }
+        let Some(arguments) = attempt.arguments.as_deref() else {
+            continue;
+        };
+        let Some(command) = tool_result::command_argument(arguments) else {
+            continue;
+        };
+        let Some(receipt) = progress.latest_run_output_for(&command) else {
+            continue;
+        };
+        if tool_result::step_outcome(receipt) != tool_result::StepOutcome::Failed {
+            continue;
+        }
+        let Ok(arguments_value) = serde_json::from_str(arguments) else {
+            continue;
+        };
+        let Some(bound) = progress.latest_attempt_for(Capability::Run, &arguments_value) else {
+            continue;
+        };
+        if bound.binding != Binding::Exact {
+            continue;
+        }
+        let Some(need) = crate::prerequisite::classify_failure(
+            &command,
+            tool_result::reported_exit_code(receipt).and_then(|value| i32::try_from(value).ok()),
+            receipt,
+            &command,
+        ) else {
+            continue;
+        };
+        if !matches!(
+            need.observed,
+            crate::prerequisite::probe::ProbeVerdict::Missing { .. }
+        ) {
+            continue;
+        }
+        let Some(recovery) = context(&command, &need.program) else {
+            continue;
+        };
+        if latest_command != command && latest_command != recovery {
+            continue;
+        }
+        let latest_value = serde_json::from_str(latest_arguments).ok()?;
+        if progress
+            .latest_attempt_for(Capability::Run, &latest_value)?
+            .binding
+            != Binding::Exact
+        {
+            return None;
+        }
+        for following in &attempts[latest_index + 1..] {
+            if following.capability != Capability::Write || !following.succeeded {
+                return None;
+            }
+            let written_arguments = following.arguments.as_deref()?;
+            if !write_matches(written_arguments, BOOTSTRAP_PATH, BOOTSTRAP) {
+                return None;
+            }
+            let written_value = serde_json::from_str(written_arguments).ok()?;
+            let written = progress.latest_attempt_for(Capability::Write, &written_value)?;
+            if written.binding != Binding::Exact || !written.succeeded {
+                return None;
+            }
+        }
+        return Some(command);
+    }
+    None
+}

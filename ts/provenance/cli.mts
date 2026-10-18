@@ -28,7 +28,9 @@ try{
    ||filename===workspace||filename.startsWith(workspace+path.sep))throw Error('FullProofIndependentRequestRequired');
   try{process.stdout.write(encodeTyped(verifyFullRepositoryProof(request))+'\n');}
   catch(error){process.stdout.write(encodeTyped({verification:'Unknown',trustedVerification:false,
-   fullReplay:{verified:false},verificationGaps:[String(error.message)]})+'\n');process.exitCode=2;}
+   fullReplay:{verified:false},verificationGaps:[String(error.message)],
+   ...(process.env.FORMAL_AI_PROVENANCE_TRACE==='1'&&Array.isArray(error.missingRuntimeInputs)?
+    {verificationDiagnostics:{missingRuntimeInputCount:error.missingRuntimeInputCount,missingRuntimeInputs:error.missingRuntimeInputs}}:{})})+'\n');process.exitCode=2;}
  }else if(argumentsList[0]==='verify-provenance'){
   process.stdout.write(encodeTyped({verification:'Unknown',trustedVerification:false,
    scope:'repository-proof-and-pinned-replay-unavailable',fullReplay:{verified:false},

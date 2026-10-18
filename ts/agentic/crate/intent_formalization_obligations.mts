@@ -91,7 +91,15 @@ export function coreferencePass(graph) {
   for (const node of graph.nodes) {
     const isOutput = kindOf(node.node_id) === ObligationKind.OutputLiteral;
     const literal = literalOf(node.node_id);
-    if (isOutput && literal !== null && seen.includes(literal)) continue;
+    if (isOutput && literal !== null && seen.includes(literal)) {
+      // The literal aliases its first anchor; independent authoring work survives.
+      const authoring = authoringKind(node.clause);
+      if (authoring !== null) {
+        kept.classifications.push([node.node_id, authoring]);
+        kept.nodes.push(node);
+      }
+      continue;
+    }
     if (isOutput && literal !== null) seen.push(literal);
     kept.classifications.push(...graph.classifications.filter(([id]) => id === node.node_id));
     kept.literals.push(...graph.literals.filter(([id]) => id === node.node_id));

@@ -1,0 +1,8 @@
+# Source/provenance observation of the actual checked portable-core IR.
+(provenance-snapshot-program
+  (source-sha256 769381f55c5fd8bea53be34759c289ea146392a8da9e927235afc850cf1617c2)
+  (checked-ir-sha256 28aed2ee385a7ad1fb07b705c408ec072698557684e8d66bbe671755e3fd7c82)
+  (upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b)
+  (runtime-count 1)
+  (source-unit (path "js/provenance/portable/snapshot.mjs") (sha256 769381f55c5fd8bea53be34759c289ea146392a8da9e927235afc850cf1617c2))
+)

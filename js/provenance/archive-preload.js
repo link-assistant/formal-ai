@@ -67,7 +67,13 @@ for (const extension of ['.js', '.cjs', '.json']) {
   Module._extensions[extension] = function(module, filename) {
     const entry = archive.modules[pathToFileURL(filename).href];
     if (entry) {
-      const content = bytesOf(entry).toString('utf8');
+      const url = pathToFileURL(filename).href;
+      const representation = ['string', 'buffer'].find(kind =>
+        Object.hasOwn(archive.reads, url + '\0repository-read-' + kind));
+      const delivered = representation === undefined ? bytesOf(entry)
+        : fileSystem.readFileSync(filename, representation === 'string' ? 'utf8' : undefined);
+      if (Buffer.from(delivered).toString('base64') !== entry.bytes) throw Error('ArchivedRuntimeCompilerReadMismatch');
+      const content = Buffer.from(delivered).toString('utf8');
       if (extension === '.json') {
         if (entry.format !== 'json') throw Error('ArchivedRuntimeModuleFormat');
         if(process.env.FORMAL_AI_RUNTIME_BOOTSTRAP){

@@ -365,8 +365,12 @@ pub fn coreference_pass(graph: ObligationGraph) -> ObligationGraph {
             && let Some(value) = &literal
             && seen_literals.contains(value)
         {
-            // A duplicate mention of an already-anchored literal: the
-            // coreference of this node is the node that carries the value.
+            // Alias only the literal. Independent authoring work in this
+            // clause must remain an obligation after co-reference.
+            if let Some(kind) = authoring_kind(&node.clause) {
+                kept_classifications.push((node.node_id.clone(), kind));
+                kept_nodes.push(node);
+            }
             continue;
         }
         if is_output && let Some(value) = &literal {

@@ -197,7 +197,7 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
     const output = plainText(message.content);
     if (message.is_error) {
       if (matchesRun) progress.repair_rung = Math.min(255, progress.repair_rung + 1);
-      progress.failure = { reported: output, exit_code: null, from_run: matchesRun };
+      progress.failure = { reported: output, exit_code: reportedExitCode(output), from_run: matchesRun };
       continue;
     }
     const failure = stepFailureFromResult(output, capability === Capability.Run);
@@ -224,19 +224,8 @@ function asciiLower(text) {
 
 /** Mirrors `fn reported_exit_code` (command_reroute.rs). */
 function reportedExitCode(output) {
-  const labels = agenticMessage('command_reroute_exit_code_labels').split('|');
-  for (const raw of rustLines(output)) {
-    const line = asciiLower(trim(raw));
-    const label = labels.find((candidate) => line.startsWith(candidate));
-    if (label === undefined) continue;
-    const token = line.slice(label.length).split(/[^0-9-]/).find((part) => part !== '');
-    if (token === undefined) continue;
-    if (/^[+-]?[0-9]+$/.test(token)) {
-      const value = Number(token);
-      if (value >= -2147483648 && value <= 2147483647) return value;
-    }
-  }
-  return null;
+  const code = toolReportedExitCode(output);
+  return Number.isInteger(code) && code >= -2147483648 && code <= 2147483647 ? code : null;
 }
 
 /** Mirrors `StepFailure::from_result`. */

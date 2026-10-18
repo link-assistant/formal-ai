@@ -1,3 +1,4 @@
+import {observedProvenancePhase} from './phase-trace.mjs';
 // Caller-pinned signature/runtime/source/task checks around actual fresh recomputation.
 import fileSystem from 'node:fs';
 import path from 'node:path';
@@ -15,7 +16,7 @@ export function verifyPinnedFreshReplay(options){
   ||typeof expectedRuntimeSha256!=='string'||!/^[0-9a-f]{64}$/u.test(expectedRuntimeSha256)
   ||typeof expectedSourceIdentity!=='string'||!/^[0-9a-f]{64}$/u.test(expectedSourceIdentity)
   ||typeof expectedTaskURL!=='string')throw Error('PinnedReplayIndependentTrustRequired');
- const report=verifyDriveEvidence(directory,workspace,expectedAnchor,{trustedPublicKey});
+ const report=observedProvenancePhase('pinned-evidence-integrity',()=>verifyDriveEvidence(directory,workspace,expectedAnchor,{trustedPublicKey}));
  const records=regularEvidenceBytes(directory,'chain.lino').toString('utf8').trimEnd().split('\n').map(decodeTyped);
  if(!report.logicalMemory||report.logicalMemory.taskURL!==expectedTaskURL)throw Error('PinnedReplayTaskMismatch');
  if(records[0].payload.sourceId!==expectedSourceIdentity)throw Error('PinnedReplaySourceIdentityMismatch');
@@ -52,8 +53,8 @@ export function verifyPinnedFreshReplay(options){
   const first=firstEvidenceRecord(records,'message_in'),input=JSON.parse(retainedEvidenceBytes(directory,first.payload.evidence).toString('utf8'));
   const replayInput=path.join(owned,'input.json');
   fileSystem.writeFileSync(replayInput,JSON.stringify({directory,workspace,expectedAnchor,trustedPublicKey,tools:input.tools}),{flag:'wx',mode:0o600});
-  const fresh=captureFreshPlannerRun({directory:path.join(owned,'run'),workspace,prompt:context.request.prompt,
-   steps:context.request.steps,atomicRecordAppend:context.driver?.atomicRecordAppend??false,...(context.requests?{requests:context.requests}:{}),memoryFile,taskURL:expectedTaskURL,replayInput});
+  const fresh=observedProvenancePhase('pinned-recompute',()=>captureFreshPlannerRun({directory:path.join(owned,'run'),workspace,prompt:context.request.prompt,
+   steps:context.request.steps,atomicRecordAppend:context.driver?.atomicRecordAppend??false,...(context.requests?{requests:context.requests}:{}),memoryFile,taskURL:expectedTaskURL,replayInput}));
   if(fresh.custody.runtimeExecutable.sha256!==expectedRuntimeSha256||fresh.result.stop!=='recomputed'
    ||fresh.result.recomputation.outputCount<1)throw Error('PinnedReplayRecomputationIncomplete');
   if(encodeTyped(context.bootstrapArtifacts)!==encodeTyped(fresh.custody.bootstrap))throw Error('PinnedReplayBootstrapChanged');

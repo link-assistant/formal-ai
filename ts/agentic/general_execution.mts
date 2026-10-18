@@ -212,7 +212,7 @@ function planEventStep(plan, progress, toolNames, messages) {
  */
 function planWorkItemExecution(objective, messages, toolNames) {
   const answer = workItemSolverAnswer(objective);
-  if (answer && answer.execution_recipe && requestedIn(objective)) attach(answer.execution_recipe);
+  if (answer && answer.execution_recipe && requestedIn(objective)) attach(answer.execution_recipe, objective);
   const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer) : null;
   if (step) return step;
   const executable = composeGeneralChangePlan(objective);

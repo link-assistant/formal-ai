@@ -20,6 +20,7 @@ import {retainedEvidenceBytes}from '../../../js/provenance/verify-drive.mjs';
 const git=(workspace,args)=>repositoryText(repositoryGit(workspace,args)).trimEnd();
 test('full CLI verifies a real fresh planner write and Git execution with independent pins, then refuses dirty, foreign and truncated proof',()=>{
  const directory=fileSystem.mkdtempSync(path.join(os.tmpdir(),'full-provenance-cli-'));
+ const savedTrace=process.env.FORMAL_AI_PROVENANCE_TRACE;process.env.FORMAL_AI_PROVENANCE_TRACE='1';
  try{
   const workspace=path.join(directory,'work');fileSystem.mkdirSync(workspace);
   git(workspace,['init']);git(workspace,['config','user.name','Fixture']);git(workspace,['config','user.email','fixture@example.invalid']);
@@ -51,7 +52,7 @@ test('full CLI verifies a real fresh planner write and Git execution with indepe
   const requestFile=path.join(directory,'independent-request.json');fileSystem.writeFileSync(requestFile,JSON.stringify(request),{mode:0o600});
   const cli=fileURLToPath(new URL('../../../js/provenance/cli.mjs',import.meta.url));
   const invoke=filename=>spawnSync(process.execPath,[cli,'verify-provenance','--request',filename],{
-   encoding:'utf8',timeout:180000,maxBuffer:2*1024*1024,env:{...process.env,NODE_TEST_CONTEXT:undefined,NODE_OPTIONS:''}});
+   encoding:'utf8',timeout:180000,maxBuffer:2*1024*1024,env:{...process.env,NODE_TEST_CONTEXT:undefined,NODE_OPTIONS:'',FORMAL_AI_PROVENANCE_TRACE:'1'}});
   const before=fileSystem.statSync(delivered,{bigint:true}),positive=invoke(requestFile);
   assert.equal(positive.status,0,positive.stdout+'\n'+positive.stderr);
   const report=decodeTyped(positive.stdout.trimEnd());assert.equal(report.verification,'Verified');
@@ -83,7 +84,9 @@ test('full CLI verifies a real fresh planner write and Git execution with indepe
   }finally{fileSystem.writeFileSync(chainFile,chain);}
   fileSystem.appendFileSync(delivered,'\n// actual foreign delta\n');git(workspace,['add','retained.mjs']);git(workspace,['commit','-m','foreign']);
   assert.throws(()=>verifyFullRepositoryProof({...request,head:git(workspace,['rev-parse','HEAD'])}),/FullProofRepositoryCoverageIncomplete/u);
- }finally{fileSystem.rmSync(directory,{recursive:true,force:true});}
+ }finally{fileSystem.rmSync(directory,{recursive:true,force:true});
+  if(savedTrace===undefined)delete process.env.FORMAL_AI_PROVENANCE_TRACE;else process.env.FORMAL_AI_PROVENANCE_TRACE=savedTrace;
+ }
 });
 
 test('runtime request sequences retain owned data and refuse malformed, inherited or accessor authority before execution',()=>{

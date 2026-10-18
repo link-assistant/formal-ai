@@ -77,6 +77,9 @@ jobs:
         with:
           node-version: 24
       - uses: actions/download-artifact@v8
+        env:
+          # Narrow existing policy for reviewed upstream unzip Buffer() diagnostic.
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-same-source-formal-ai-binary
           path: rust/target/release

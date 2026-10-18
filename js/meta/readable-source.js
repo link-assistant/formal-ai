@@ -99,8 +99,36 @@ export function sourceToLinks(source, language, {parse, rules}) {
   return result;
 }
 
+/** Structural ownership is readable metadata, never filesystem permission.
+ * @param {string} sourcePath @param {SourceLink} document @returns {SourceLink} */
+export function ownedSourceLinks(sourcePath, document) {
+  sourceFromLinks(document);
+  const wrapped = ['owned-source', ['path', quoted(sourcePath)], sourceContent(document)];
+  sourceContent(wrapped);
+  return wrapped;
+}
+
+/** @param {SourceLink} document @returns {string|null} */
+export function sourceOwner(document) {
+  if (document[0] !== 'owned-source') return null;
+  sourceContent(document);
+  return fieldText(document, 'path');
+}
+
+/** @param {SourceLink} document @returns {SourceLink} */
+function sourceContent(document) {
+  if (document[0] !== 'owned-source') return document;
+  const sourcePath = fieldText(document, 'path');
+  if (!sourcePath || sourcePath[0] === '/' || sourcePath.includes('\\') || sourcePath.includes(':')
+    || sourcePath.split('/').some(part => !part || part === '.' || part === '..')) throw Error('InvalidSourceOwner');
+  const contents = document.slice(1).filter(item => isLink(item) && item[0] === 'source');
+  if (document.length !== 3 || contents.length !== 1 || !isLink(contents[0])) throw Error('AmbiguousSourceOwnership');
+  return contents[0];
+}
+
 /** @param {SourceLink} document @returns {string} */
 export function sourceFromLinks(document) {
+  document = sourceContent(document);
   if (document[0] !== 'source') throw Error('SourceDocumentRequired');
   if (document.slice(1).some(item => !isLink(item))) throw Error('UnexpectedSourcePayload');
   const language = fieldText(document, 'language');
@@ -155,11 +183,12 @@ export function readSourceLinks(notation) {
  * @param {{parse: (source: string, language: string) => ParsedSource|undefined, rules: SyntaxRule[]}} options
  * @returns {boolean} */
 export function verifySourceLinks(document, options) {
-  const fresh = sourceToLinks(sourceFromLinks(document), fieldText(document, 'language'), options);
+  const content = sourceContent(document);
+  const fresh = sourceToLinks(sourceFromLinks(document), fieldText(content, 'language'), options);
   // Semantic annotations are validated by their own owner and are not CST authority.
   const concrete = node => node.map(item => isLink(item) ? concrete(item) : item)
     .filter(item => !isLink(item) || !['meaning', 'semantic-gap'].includes(String(item[0])));
-  if (JSON.stringify(concrete(fresh)) !== JSON.stringify(concrete(document))) throw Error('SourceStructureMismatch');
+  if (JSON.stringify(concrete(fresh)) !== JSON.stringify(concrete(content))) throw Error('SourceStructureMismatch');
   return true;
 }
 
@@ -181,6 +210,7 @@ export function replaceSourceText(document, change, options) {
   visit(copy);
   if (matches.length !== 1) throw Error('AmbiguousOrMissingSourceEdit');
   matches[0][1] = quoted(change.replacementText);
-  const updated = sourceToLinks(sourceFromLinks(copy), fieldText(copy, 'language'), options);
-  return {document: updated, inverse: {...change, expectedText: change.replacementText, replacementText: change.expectedText}};
+  const updated = sourceToLinks(sourceFromLinks(copy), fieldText(sourceContent(copy), 'language'), options);
+  const owner = sourceOwner(document);
+  return {document: owner === null ? updated : ownedSourceLinks(owner, updated), inverse: {...change, expectedText: change.replacementText, replacementText: change.expectedText}};
 }

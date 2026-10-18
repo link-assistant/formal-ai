@@ -83,3 +83,20 @@ test('default host source captures use the user cache independently of caller cw
   fs.rmSync(root,{recursive:true,force:true});
  }
 });
+
+
+test('fetched original public task retains the explicitly named CI workflow target',async()=>{
+ const fs=await import('node:fs');
+ const task=JSON.parse(fs.readFileSync(new URL('../fixtures/hive-workflow-original-task.json',import.meta.url),'utf8'));
+ const messages=[{role:'user',content:'Resolve the GitHub issue at '+task.url+' in this repository.'}];
+ const first=single(await planChatStep(messages,tools));
+ assert.match(JSON.parse(first.arguments).command,/^gh issue view/);
+ result(messages,first,task.title+'\n\n'+task.body+'\n__formal_ai_exit=0\n');
+ const paths=[];
+ for(let index=0;index<8;index++){
+  const call=single(await planChatStep(messages,tools));
+  if(call.tool!=='Write')break;
+  const args=JSON.parse(call.arguments);paths.push(args.path??args.file_path);result(messages,call,'written');
+ }
+ assert.deepEqual(paths,['main.rs','tests/verify-output.sh','ci/test-hello-world.yml']);
+});

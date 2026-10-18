@@ -190,3 +190,11 @@ overflow-checks = true
 # measured and immediate.
 lto = false
 strip = true
+
+# Safe no-follow/identity adapters reuse already-locked audited platform crates.
+[target.'cfg(unix)'.dependencies]
+rustix = { version = "1.1.5", features = ["fs"] }
+
+[target.'cfg(windows)'.dependencies]
+winapi-util = "0.1.11"
+windows-sys = { version = "0.61.2", features = ["Win32_Storage_FileSystem"] }

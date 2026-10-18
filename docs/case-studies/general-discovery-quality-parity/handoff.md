@@ -1,6 +1,6 @@
 # Single-PR discovery and quality delivery handoff
 
-This dated checkpoint (2026-10-18) belongs to [PR #1234](https://github.com/link-assistant/formal-ai/pull/1234), branch `feat/general-discovery-quality-parity`, based on `fd5bfaced85262a51b341fb2b25c79e507423ca3`. The PR is open and ready for review; merge still requires the original acceptance checks. This document records accepted working constraints and observed partial progress; it does not close the linked issues.
+This living checkpoint, updated on 2026-10-19, belongs to [PR #1234](https://github.com/link-assistant/formal-ai/pull/1234), branch `feat/general-discovery-quality-parity`, based on `fd5bfaced85262a51b341fb2b25c79e507423ca3`. The PR is open and ready for review; merge still requires the original acceptance checks. This document records accepted working constraints and observed partial progress; it does not close the linked issues.
 
 ## Scope and acceptance
 
@@ -10,7 +10,25 @@ The original 27 Pending obligations for #1207/#1213/#1220 remain authoritative. 
 
 Prefer reusable discovery strategies and formalized knowledge. Complete task answers moved into seeds or caches do not establish generalization. Demonstrate minimal-bootstrap cold discovery, warm reuse and cache deletion/corruption separately. Record unknown provenance, usage and cost as Unknown.
 
-## Observed progress at the CI recovery checkpoint
+## Current repair checkpoint (2026-10-19)
+
+The published PR head is 3a650860f274bf4eb3faf7ed9658ec13d3b426c9. The local continuation also includes committed readable source/comment models and Markdown requirement extraction. The current repair cohort passes all 33 maintained source checks, including actual pinned meta-language grammar/IR checks, genuine translation/projection checks, the unchanged language-diff gate and closure audit. Supplied integration controllers receive zero autonomous-authorship credit.
+
+The canonical execution graph now retains independent coding obligations when repeated output literals merge. The original fetched Hive issue and a held-out changed-output case retain their requested workflow, and the workflow consumer uses that same graph. Observed compiler exit status survives tool-result decoding and prerequisite recovery. Explicit caller grants, failed-command ownership and the refusal of stale, unbound, ordinary compile-error or successful receipts remain enforced. Original regressions pass in the bounded JavaScript-only profile; corresponding native controls await hosted execution.
+
+Shared source-snapshot policy is genuinely translated from one checked meta program into native and JavaScript/TypeScript adapters. The native readable-source core projects actual pinned grammar syntax into complete recursive UTF-8 Links content, including comments and whitespace; source-free reconstruction and fresh grammar acceptance are separate checks. Ownership wrappers preserve relative source paths as metadata and refuse unsafe/ambiguous owners. These finite controls do not establish complete runtime parity, autonomous authorship, general semantic refactoring or GPU execution. The remaining legacy workspace census consumers are being migrated; their old counters and hashes are diagnostic/navigation data only.
+
+The canonical Links codec preserves original serialized bytes while reducing scanning/allocation overhead. Full archived replay consumes authenticated CommonJS/JSON compiler reads rather than bypassing recorded input custody. All original full-provenance tests and the added real-process positive/negative controls pass locally within their original deadlines. Strict expected-read/module equality and environment equality remain unchanged. Optional phase diagnostics contain only phase names, elapsed time and bounded hash/size summaries. Native generation no longer writes unsolicited local-source observations into the checkout; detailed observations require explicit private output outside it.
+
+Other current repairs preserve original semantic assertions and budgets: the instrumented multi-language integration case is partitioned into independently scheduled cases sharing its original helper; Scala uses the official documented runner; test-only native provenance fixtures live outside production source; shared terminal prose vocabulary is grounded, including actual Spanish command noun meanings. Existing source, translation, lint and coverage limits are not raised. No native/product build, installation or execution was performed locally.
+
+The published head's hosted installer, desktop and agentic CLI cohorts pass, including real authorized Kotlin/Scala installation and exact output. Its Pipeline, Coverage, Layered and Hive failures motivated the integrated repairs above. Replacement-head hosted results remain required; passing local source checks or an earlier-head container result cannot qualify the new native source or a future production release.
+
+The readable CST/comment doctrine adds 22 explicit obligations to the existing scope. The original 36 obligations remain Pending: strict deduplication, complete behavior/effect/error parity, minimal-bootstrap real-network discovery, actual three-client Hive completion, autonomous task success and full native cryptographic provenance are not established by these finite checks. Deep comment formalization, four-language independent grammar quality, dependency-aware relative probability and formal contradiction repair also remain incomplete. Record and repair these limits; do not convert an inventory or supplied recipe into fulfillment.
+
+## Historical CI recovery observations
+
+The following table and dated artifact paragraphs describe earlier source checkpoints only. They retain original observations without requiring census/count refreshes after every source edit. A census, signature, digest or source witness is not a full CST representation.
 
 | Area | Observed evidence and limit |
 | --- | --- |
@@ -23,7 +41,7 @@ Prefer reusable discovery strategies and formalized knowledge. Complete task ans
 | Strict duplication | The current actual-root scan finds 713 independent JavaScript/TypeScript groups and 0 parser/provenance gaps. Hosted checkout a468 qualified 1320 native clone groups and 21 item-macro gaps over 842 Rust sources. These native counts are historical after current source changes and the widened all-context macro visitor; a fresh hosted inventory is required. Both strict acceptance results remain false. |
 | Hosted CI recovery | Source checkpoint `59e2f3bd5fc95e694754be8bd34b5a529c6a2bd1` passed the actual hosted full-AST collector, including Rust library compilation and genuine planner-document generation. All 846 Rust source blobs match. Its 17 generated documents pass the unchanged six controls. Fresh PR-head native tests, Clippy, strict inventories and product consumers remain required. |
 
-Full AST census files must be produced by the actual hosted collector. Earlier artifacts may supply only files whose actual producer checkout tree, source blob identity and current source bytes match. Never substitute a pull-request API head for a synthetic merge checkout, or infer full AST evidence from the JavaScript signature tier.
+Historical native census diagnostics must retain the identity of their actual hosted producer and matching input bytes. They are not source representations and must not be refreshed as a substitute for full readable recursive CST content. Never substitute a pull-request API head for a synthetic merge checkout, or infer grammar/source-content acceptance from a signature tier.
 
 The current successful collector run [39065070382](https://github.com/link-assistant/formal-ai/actions/runs/39065070382), job 117490889307, attempt 1, produced artifact 12113755556 (613533 bytes, SHA-256 `43afb930db78eb6b236c6bb3a379702f7adc1be007b51c947fb44fc01fd8aedc`). It checked out source commit `59e2f3bd5fc95e694754be8bd34b5a529c6a2bd1` directly, tree `63877020035043a615a37cdbb699ae90f1b00ef2`, on the sealed immutable auxiliary ref. All 846 Rust source blobs and genuine producer inputs match. 17 actual census documents were imported; all six original unchanged controls pass on both the admitted read-only artifact overlay and the actual imported checkout. No local Rust compiler or product archive was used. This establishes source census and library compilation for this checkpoint; native tests, Clippy, widened native scanner and runtime consumers remain Pending until the fresh PR cohort completes.
 
@@ -43,8 +61,8 @@ Do not pad output to improve an input/output ratio. For coding and self-coding, 
 
 ## Resume order and production continuity
 
-1. The integrated source checkpoint and its genuine 846-file hosted census are committed/imported as described above. Preserve bounded discovery, independent acceptance and every original oracle while delivering remaining obligations.
-2. Freeze and commit sources after genuine projection, source-witness and deterministic-document refresh. Root may push an immutable auxiliary generation ref solely to dispatch the existing hosted full-AST collector. Qualify its exact source tree/run/job/attempt/artifact and import genuine census documents before the single coherent PR branch push. This creates no second PR.
+1. Finish the coherent migration of active census-based workspace/recipe consumers to full owned readable CST content. Use the actual pinned grammar SDK, preserve comments and whitespace, reconstruct from reloaded content without consulting the source, and require fresh grammar acceptance. Stream whole-workspace content in hosted CI; bounded receipts provide evidence/navigation and never replace the content. Preserve original evidence as historical diagnostics rather than manufacturing or refreshing counters.
+2. Freeze and commit the coherent source/CI repair cohort after genuine projection and maintained source checks. Keep public requirements and historical receipts truthful. Root alone pushes the completed bulk batch to this same PR. Hosted generation artifacts must identify their exact producer tree, run, job, attempt and physical source bytes; no local Rust build or second PR is permitted.
 3. Run meaningful integrated JavaScript/source checks; commit and push the coherent batch. Obtain fresh hosted native behavior/scanner qualification and resolve all exact-head CI failures through Formal AI. Keep the ready PR open while delivering and checking original acceptance; do not substitute ready status for delivery.
 4. Require full exact-head qualification and delivered requirements before a normal authorized merge. Do not bypass checks. Monitor the ensuing default-branch release through its actual public consumers.
 

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {lex} from '../self-translation/lexer.mjs';
 import {rustStringValue} from '../translate-js-rust.mjs';
+import {wellFormedText} from '../../js/logging/text-lines.mjs';
 
 const significant = source => lex(source, 'Rust').filter(token => token.type !== 'comment');
 function structure(source) {
@@ -277,8 +278,8 @@ function simpleEdits(source) {
         && tokens[index + 4]?.text === ')') {
       const literal = tokens[index + 3].text;
       let value;
-      try { value = JSON.parse(literal); } catch { continue; }
-      if ([...value].length === 1) {
+      try { value = rustStringValue(literal); } catch { continue; }
+      if (wellFormedText(value) && [...value].length === 1) {
         const character = value === "'" ? "\\'" : literal.slice(1, -1).replace(/\\"/gu, '"');
         add(index + 3, index + 4, "'" + character + "'", 'single-character-pattern');
       }
@@ -466,7 +467,7 @@ function lowerStringSuffixBytes(source) {
     let decoded;
     try { decoded = rustStringValue(literal); } catch { continue; }
     const bytes = new TextEncoder().encode(decoded);
-    if (new TextDecoder('utf-8', {fatal: true}).decode(bytes) !== decoded) continue;
+    if (!wellFormedText(decoded)) continue;
     const simpleAscii = /^"[\x20-\x21\x23-\x5b\x5d-\x7e]*"$/u.test(literal);
     const pattern = simpleAscii ? 'b' + literal : '&[' + [...bytes].join(', ') + ']';
     changes.push({start: tokens[index - 1].start, end: tokens[index + 3].end,

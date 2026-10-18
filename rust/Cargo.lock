@@ -1200,6 +1200,7 @@ dependencies = [
  "pollster",
  "regex",
  "ring",
+ "rustix",
  "serde",
  "serde_json",
  "sha2",
@@ -1219,6 +1220,8 @@ dependencies = [
  "webrtc",
  "wgpu",
  "which",
+ "winapi-util",
+ "windows-sys 0.61.2",
 ]
 
 [[package]]

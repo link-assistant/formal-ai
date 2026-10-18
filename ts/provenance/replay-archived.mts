@@ -63,7 +63,17 @@ export function recomputeArchivedRun(options){
    consumed.add((isRead?'read:':'module:')+key);
   }
   const missing=[...Object.keys(archive.modules).map(key=>'module:'+key),...Object.keys(archive.reads).map(key=>'read:'+key)].filter(key=>!consumed.has(key));
-  if(missing.length)throw Object.assign(Error('ArchivedRuntimeExpectedInputNotConsumed'),{missing});
+  if(missing.length){
+   // Diagnostic identities contain no filenames, archived bytes or caller values.
+   const missingRuntimeInputs=missing.slice(0,64).map(key=>{
+    const read=key.startsWith('read:'),identity=key.slice(read?5:7);
+    const entry=read?archive.reads[identity]:archive.modules[identity];
+    const representation=read?identity.slice(identity.lastIndexOf('\0')+1):entry.format;
+    const format=['module','commonjs','json','repository-read-string','repository-read-buffer'].includes(representation)?representation:'unsupported';
+    return{kind:read?'read':'module',format,sha256:entry.sha256,size:entry.size};
+   });
+   throw Object.assign(Error('ArchivedRuntimeExpectedInputNotConsumed'),{missing,missingRuntimeInputs,missingRuntimeInputCount:missing.length});
+  }
   return {schema:'formal-ai-archived-recomputation-v1',recomputation:result.result.recomputation,processReceipt,
    consumedInputs:{modules:Object.keys(archive.modules).length,reads:Object.keys(archive.reads).length,actual:observation.sources.length},
    trustedTransportHooks:hooks,sourceIdentity:options.expectedSourceIdentity,runtimeSha256:options.expectedRuntimeSha256,

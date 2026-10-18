@@ -141,17 +141,10 @@ function normalizeCommandWord(word) {
   const head = /^[0-9A-Za-z_-]*/.exec(bare)[0];
   return toAsciiLowercase(head);
 }
-const PROSE_WORDS = new Set([
-  'command', 'commands', 'to', 'in', 'into', 'on', 'the', 'a', 'an', 'and', 'then', 'please', 'for', 'of', 'that',
-  'which', 'so', 'this', 'these', 'those', 'here', 'there', 'me', 'us', 'you', 'it', 'from', 'at', 'with', 'will',
-  'would', 'can', 'could', 'should', 'using', 'via', 'inside', 'within', 'output', 'result', 'results', 'contents',
-  'content', 'directory', 'folder', 'folders', 'file', 'files', 'currently', 'again', 'also', 'just', 'now',
-  'nothing', 'anything', 'everything', 'something', 'all', 'any', 'every', 'each', 'no',
-]);
 /** Mirrors `fn is_prose_word`. */
 function isProseWord(word) {
-  const normalized = toAsciiLowercase(trimMatches(word, (character) => !/^[0-9A-Za-z]$/.test(character)));
-  return PROSE_WORDS.has(normalized);
+  const normalized = trimMatches(word, (character) => !isAlphanumeric(character)).toLowerCase();
+  return terminalCommandVocabulary().prose_words.includes(normalized);
 }
 /** Mirrors `fn shell_quotes_paired`; the shell remains the syntax authority. */
 function shellQuotesPaired(command) {

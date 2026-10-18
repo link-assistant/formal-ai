@@ -18,15 +18,15 @@ translation_blockers
   blockers_per_item 2 246
   blockers_per_item 3 281
   blockers_per_item 4 216
-  blockers_per_item 5 203
+  blockers_per_item 5 202
   blockers_per_item 6 135
   blockers_per_item 7 108
   blockers_per_item 8 79
   blockers_per_item 9 84
-  blockers_per_item 10 57
+  blockers_per_item 10 58
   blockers_per_item 11 43
-  blockers_per_item 12 32
-  blockers_per_item 13 17
+  blockers_per_item 12 31
+  blockers_per_item 13 18
   blockers_per_item 14 27
   blockers_per_item 15 19
   blockers_per_item 16 18
@@ -46,16 +46,16 @@ translation_blockers
   blockers_per_item 35 1
   blockers_per_item 41 1
   blockers_per_item 43 1
-construct "call of a sibling function" items 884 only 35
+construct "call of a sibling function" items 886 only 35
 construct "field access" items 878 only 25
 construct "call of an imported function" items 637 only 18
 construct "null" items 574 only 5
-construct "object without a $ tag" items 514 only 26
-construct "arrow function" items 347 only 2
+construct "object without a $ tag" items 515 only 26
+construct "arrow function" items 348 only 2
 construct "import of names its module carries" items 323 only 323
 construct "method call .push()" items 273 only 4
 construct "method call .map()" items 267 only 0
-construct "method call .slice()" items 263 only 6
+construct "method call .slice()" items 264 only 6
 construct "JSDoc type {…}" items 252 only 5
 construct "arrow callback of .map()" items 251 only 0
 construct "method call .filter()" items 245 only 0
@@ -73,7 +73,7 @@ construct "arrow callback of .find()" items 145 only 0
 construct "method call .find()" items 140 only 0
 construct "assignment of a field or element" items 126 only 0
 construct "destructuring" items 118 only 0
-construct "method call .test()" items 115 only 0
+construct "method call .test()" items 116 only 0
 construct "global call String()" items 110 only 0
 construct "Array.from" items 105 only 0
 construct "new Set" items 91 only 34

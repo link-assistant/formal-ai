@@ -292,3 +292,27 @@ fn undischargeable_clauses_are_recorded_in_the_run() {
         );
     }
 }
+
+#[test]
+fn repeated_output_merging_retains_the_original_fetched_workflow_obligation() {
+    let task: serde_json::Value =
+        serde_json::from_str(include_str!("../fixtures/hive-workflow-original-task.json")).unwrap();
+    let original = format!(
+        "{}\n\n{}",
+        task["title"].as_str().unwrap(),
+        task["body"].as_str().unwrap()
+    );
+    let held_out = "First, print exactly: \"Delta\"\nThen, create a GitHub Actions workflow that verifies it prints exactly: \"Delta\"\n";
+    for (request, literal) in [(original.as_str(), "Hello, World!"), (held_out, "Delta")] {
+        let graph = formalize_request(request);
+        assert_eq!(graph.unique_output_literal().as_deref(), Some(literal));
+        assert_eq!(
+            graph
+                .obligations_of_kind(ObligationKind::OutputLiteral)
+                .len(),
+            1
+        );
+        assert!(graph.has_obligation(ObligationKind::CiWorkflow));
+        assert!(request_demands(request, ObligationKind::CiWorkflow));
+    }
+}

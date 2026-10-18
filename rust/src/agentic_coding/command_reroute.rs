@@ -383,9 +383,10 @@ impl RecipeProgress {
                 if matches_run {
                     progress.repair_rung = progress.repair_rung.saturating_add(1);
                 }
+                let exit_code = reported_exit_code(&output);
                 progress.failure = Some(StepFailure {
                     reported: output,
-                    exit_code: None,
+                    exit_code,
                     from_run: matches_run,
                 });
                 continue;
@@ -424,12 +425,6 @@ impl RecipeProgress {
 }
 
 /// Labels harnesses use to state the exit status of the process they ran.
-const EXIT_CODE_LABELS: [&str; 4] = [
-    "exit code:",
-    "exit status:",
-    "command exited with status",
-    "process exited with code",
-];
 
 /// Values a labelled field carries when the harness means "there was none".
 const ABSENT_FIELD_VALUES: [&str; 8] = [
@@ -448,15 +443,7 @@ const ABSENT_FIELD_VALUES: [&str; 8] = [
 /// Every harness in use reports it in a fixed `Exit Code: <n>` field, so this
 /// is a read rather than an inference.
 fn reported_exit_code(output: &str) -> Option<i32> {
-    output.lines().find_map(|line| {
-        let line = line.trim().to_ascii_lowercase();
-        EXIT_CODE_LABELS
-            .iter()
-            .find_map(|label| line.strip_prefix(label))?
-            .split(|character: char| !(character.is_ascii_digit() || character == '-'))
-            .find(|token| !token.is_empty())
-            .and_then(|token| token.parse::<i32>().ok())
-    })
+    super::tool_result::reported_exit_code(output).and_then(|value| i32::try_from(value).ok())
 }
 
 impl StepFailure {

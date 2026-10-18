@@ -129,7 +129,7 @@ meanings
     lexeme ru выполни запусти
     lexeme hi चलाएँ निष्पादित
     lexeme zh 执行 运行
-    lexeme es ejecuta ejecutar
+    lexeme es ejecuta ejecutar ejecute
   code_example_decomposition_request
     defined-by request
     role code_example_decomposition_cue

@@ -312,3 +312,7 @@ mod web_engine_core;
 
 #[path = "../fixtures/source-read-provenance.rs"]
 mod source_read_provenance;
+
+mod provenance_snapshot;
+
+mod readable_source_model;

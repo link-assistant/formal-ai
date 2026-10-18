@@ -35,6 +35,8 @@ pub struct TerminalCommandVocabulary {
     /// remainder carrying one reads as a noun phrase about a command
     /// (*"ls command"*) instead of a command line with an argument.
     pub command_nouns: Vec<String>,
+    /// Natural-language words that do not identify an executable.
+    pub prose_words: Vec<String>,
     /// Unambiguous command tokens accepted without a run/execute prefix.
     pub bare_shell_tokens: Vec<String>,
     /// Leading shell command tokens (e.g. `ls`, `git`).
@@ -70,6 +72,7 @@ pub fn terminal_command_vocabulary() -> TerminalCommandVocabulary {
             "passthrough_prefixes" => {
                 vocab.passthrough_prefixes = collect_language_values(group, "prefix");
             }
+            "prose-words" => vocab.prose_words = collect_language_values(group, "word"),
             "command_nouns" => vocab.command_nouns = collect_language_values(group, "noun"),
             "bare_shell_tokens" => vocab.bare_shell_tokens = collect_values(group, "token"),
             "shell_tokens" => vocab.shell_tokens = collect_values(group, "token"),

@@ -86,3 +86,17 @@ test('generic clone implementations field writes and moved captures remain outsi
  'pub fn closure(value: String) -> String { let work = move || value.clone(); crate::use_work(work); value.clone() }',
  ])assert.equal(eliminateLastOwnedClones(source).source,source);
 });
+
+
+test('single-character pattern lowering decodes Rust escapes without changing their content', () => {
+  for (const literal of ["\"\\u{0}\"","\"\\x41\"","\"\\u{1f680}\""]) {
+    const source = 'pub fn observed(value: String) -> bool { value.contains(' + literal + ') }';
+    const result = lowerGeneratedRust(source, options);
+    assert(result.operations.includes('single-character-pattern'), literal);
+    assert(result.source.includes("contains('" + literal.slice(1, -1) + "')"), literal);
+  }
+  for (const literal of ['""', '"ab"']) {
+    const result = lowerGeneratedRust('pub fn observed(value: String) -> bool { value.contains(' + literal + ') }', options);
+    assert(!result.operations.includes('single-character-pattern'), literal);
+  }
+});

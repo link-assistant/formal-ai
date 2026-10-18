@@ -119,3 +119,21 @@ describe('issue #1166 R1166-8 routing by the formalized request', () => {
     assert.equal(realm.detectTerminalCommand(sentence), null);
   });
 });
+
+
+test('repeated output merging retains the original fetched task workflow obligation',()=>{
+ const task=JSON.parse(readFileSync(new URL('../fixtures/hive-workflow-original-task.json',import.meta.url),'utf8'));
+ const request=task.title+'\n\n'+task.body,graph=formalizeRequest(request);
+ assert.equal(uniqueOutputLiteral(graph),'Hello, World!');
+ assert.equal(obligationsOfKind(graph,ObligationKind.OutputLiteral).length,1);
+ assert.ok(hasObligation(graph,ObligationKind.CiWorkflow));
+ assert.ok(requestDemands(request,ObligationKind.CiWorkflow));
+});
+
+test('co-reference preserves independent authoring when a later clause repeats a literal',()=>{
+ const request='First, print exactly: "Delta"\nThen, create a GitHub Actions workflow that verifies it prints exactly: "Delta"\n';
+ const graph=formalizeRequest(request);
+ assert.equal(uniqueOutputLiteral(graph),'Delta');
+ assert.equal(obligationsOfKind(graph,ObligationKind.OutputLiteral).length,1);
+ assert.ok(requestDemands(request,ObligationKind.CiWorkflow));
+});

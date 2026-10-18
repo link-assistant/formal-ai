@@ -24,6 +24,7 @@ mod cli_memory;
 mod cli_orchestration;
 mod cli_paths;
 mod cli_procedure;
+mod cli_provenance;
 mod cli_report;
 mod cli_repository_history;
 mod cli_shared_dialog;
@@ -133,6 +134,8 @@ enum Command {
     Dataset,
     /// Convert legacy JSONL or canonical diagnostic/dialog logs.
     Logs(cli_logs::LogsArgs),
+    /// Authenticate bounded tracked working-source bytes.
+    Provenance(cli_provenance::ProvenanceArgs),
     /// Translate a document between the source roots through the meta
     /// language (plan 16 L2): `--from`/`--to` one of rust|js|ts|meta,
     /// `--input` the source file for a live leg, `--list` every direction
@@ -693,6 +696,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
         Command::Logs(arguments) => cli_logs::run_logs(arguments),
+        Command::Provenance(arguments) => cli_provenance::run_provenance(arguments)?,
         Command::Translate {
             from,
             to,

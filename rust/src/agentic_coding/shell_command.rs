@@ -216,7 +216,9 @@ fn reads_as_prose(remainder: &str, vocab: &TerminalCommandVocabulary) -> bool {
     if vocab.shell_tokens.iter().any(|token| token == &command) {
         return false;
     }
-    is_prose_word(first) || words.filter(|word| is_prose_word(word)).count() >= 2
+    is_prose_word(first)
+        || (!remainder.contains(|character| SHELL_QUOTING_AND_METACHARACTERS.contains(&character))
+            && words.filter(|word| is_prose_word(word)).count() >= 2)
 }
 
 /// The command an explicit passthrough prefix introduces, if any.

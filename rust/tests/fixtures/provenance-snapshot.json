@@ -1,0 +1,259 @@
+{
+  "rows": [
+    {
+      "name": "empty",
+      "files": [],
+      "expected": {
+        "schema": "formal-ai-source-snapshot-v1",
+        "languages": [],
+        "total": "88a72541e95fbd5a8962e83b7ac438c75a8091be7fa6624373fe982a3a781fe3"
+      }
+    },
+    {
+      "name": "mixed",
+      "files": [
+        {
+          "path": "src/a.rs",
+          "content": "fn main() {}\n"
+        },
+        {
+          "path": "src/中.ts",
+          "content": "export const answer = 17;\n"
+        }
+      ],
+      "expected": {
+        "schema": "formal-ai-source-snapshot-v1",
+        "languages": [
+          {
+            "language": "javascript",
+            "file_count": 1,
+            "root": "9fcd72b7b994e63e6a723c5ccebcefcef0a8dcc2bbc46af9307d0ab8d7b84506"
+          },
+          {
+            "language": "rust",
+            "file_count": 1,
+            "root": "12f282b8916d9e937b2b8b8cdfac91a93a677b2e889bfccdbc1f2a43eb207241"
+          }
+        ],
+        "total": "7d5ffe720e330df73a010409187e9469ff56de667ac3873588b388d4b277607e"
+      }
+    },
+    {
+      "name": "rust-only-change",
+      "files": [
+        {
+          "path": "src/a.rs",
+          "content": "fn main() { println!(\"17\"); }\n"
+        },
+        {
+          "path": "src/中.ts",
+          "content": "export const answer = 17;\n"
+        }
+      ],
+      "expected": {
+        "schema": "formal-ai-source-snapshot-v1",
+        "languages": [
+          {
+            "language": "javascript",
+            "file_count": 1,
+            "root": "9fcd72b7b994e63e6a723c5ccebcefcef0a8dcc2bbc46af9307d0ab8d7b84506"
+          },
+          {
+            "language": "rust",
+            "file_count": 1,
+            "root": "45f2f8edff9f1b866e7952411f64f9e4000956ce689d0c2b2d5478518828124d"
+          }
+        ],
+        "total": "386b441266da1ead6b9f1a65c9d6556e2d25c4ff95cb0de82a4f70c78158c93a"
+      }
+    },
+    {
+      "name": "javascript-only-change",
+      "files": [
+        {
+          "path": "src/a.rs",
+          "content": "fn main() {}\n"
+        },
+        {
+          "path": "src/中.ts",
+          "content": "export const answer = 19;\n"
+        }
+      ],
+      "expected": {
+        "schema": "formal-ai-source-snapshot-v1",
+        "languages": [
+          {
+            "language": "javascript",
+            "file_count": 1,
+            "root": "4baca7b9e46203d968ebffdf19077ea4db290c160162cc247c0c9d298888e120"
+          },
+          {
+            "language": "rust",
+            "file_count": 1,
+            "root": "12f282b8916d9e937b2b8b8cdfac91a93a677b2e889bfccdbc1f2a43eb207241"
+          }
+        ],
+        "total": "29ec08eca67792e3726d7abba613f538f66788c9e63f61163e28d863afe3ef26"
+      }
+    },
+    {
+      "name": "unicode-order",
+      "files": [
+        {
+          "path": "é/a.py",
+          "content": "print(1)\n"
+        },
+        {
+          "path": "中/a.rb",
+          "content": "puts 2\n"
+        },
+        {
+          "path": "😀/a.go",
+          "content": "package main\n"
+        }
+      ],
+      "expected": {
+        "schema": "formal-ai-source-snapshot-v1",
+        "languages": [
+          {
+            "language": "go",
+            "file_count": 1,
+            "root": "00aef0da163d5e3089b70c4e68a5b448ba7bd38e0b8700f643c0e589e0e09d5f"
+          },
+          {
+            "language": "python",
+            "file_count": 1,
+            "root": "39074d50b065c37593d2f4c3d0d60cd3338df23ab61aacf67cbeb49487118791"
+          },
+          {
+            "language": "ruby",
+            "file_count": 1,
+            "root": "6f930562bc56720bbe754ad84f1476b62c0eb76f61b9cfa7ec6a5494348e6e3e"
+          }
+        ],
+        "total": "71e371c2df3fc317aafd89b9a4f3918ac69e4c5865c276a315aac52c3964c559"
+      }
+    }
+  ],
+  "proofs": [
+    {
+      "inputs": [
+        "leaf0"
+      ],
+      "leaves": [
+        "c9ed7b28ea3182dc282e888247dad76bba1a5b1674cc2cf8c9b84ee9ee206b20"
+      ],
+      "root": "c9ed7b28ea3182dc282e888247dad76bba1a5b1674cc2cf8c9b84ee9ee206b20",
+      "proofs": [
+        {
+          "index": 0,
+          "count": 1,
+          "siblings": []
+        }
+      ]
+    },
+    {
+      "inputs": [
+        "leaf0",
+        "leaf1",
+        "leaf2"
+      ],
+      "leaves": [
+        "c9ed7b28ea3182dc282e888247dad76bba1a5b1674cc2cf8c9b84ee9ee206b20",
+        "6f2053ef94dc94339f971c876e11cc40068b09f2950df6312c27649753efc45f",
+        "f6fab96267ec1095eb81886e5de39bb792a4785197d224136615b17aa7248fbe"
+      ],
+      "root": "61c3c64cff71f86e5557929b9d31baa87b7669e9e24d8d059faa3ce6fabe75af",
+      "proofs": [
+        {
+          "index": 0,
+          "count": 3,
+          "siblings": [
+            "6f2053ef94dc94339f971c876e11cc40068b09f2950df6312c27649753efc45f",
+            "1c02520e272d4babae586c21e383c312330a295b2e8ebaecff1c3d9d47d512c6"
+          ]
+        },
+        {
+          "index": 1,
+          "count": 3,
+          "siblings": [
+            "c9ed7b28ea3182dc282e888247dad76bba1a5b1674cc2cf8c9b84ee9ee206b20",
+            "1c02520e272d4babae586c21e383c312330a295b2e8ebaecff1c3d9d47d512c6"
+          ]
+        },
+        {
+          "index": 2,
+          "count": 3,
+          "siblings": [
+            "f6fab96267ec1095eb81886e5de39bb792a4785197d224136615b17aa7248fbe",
+            "cd2fd2ce6f7002b6e0d1951efc17a595cbfd5ba7c7cdb69816cbc4e7f08d1704"
+          ]
+        }
+      ]
+    },
+    {
+      "inputs": [
+        "leaf0",
+        "leaf1",
+        "leaf2",
+        "leaf3",
+        "leaf4"
+      ],
+      "leaves": [
+        "c9ed7b28ea3182dc282e888247dad76bba1a5b1674cc2cf8c9b84ee9ee206b20",
+        "6f2053ef94dc94339f971c876e11cc40068b09f2950df6312c27649753efc45f",
+        "f6fab96267ec1095eb81886e5de39bb792a4785197d224136615b17aa7248fbe",
+        "ae0399832d4120ac3136cdbeff482c2abfac17cc946508385f15a22857b098c4",
+        "8f143985a65a69a8e5f1654c81ed3c911db0d35980a0b358d7e7c568dd067894"
+      ],
+      "root": "38a8336ee8956856f350e756a2989488d811863987fc08fddc26e65fd406b8d1",
+      "proofs": [
+        {
+          "index": 0,
+          "count": 5,
+          "siblings": [
+            "6f2053ef94dc94339f971c876e11cc40068b09f2950df6312c27649753efc45f",
+            "a8ac315db1f29831749d5e7021492a2e25ffeff80cf2028a31317e9634d2608c",
+            "c13036e06c6a1fcb0b021e11d0ae98e283329508e27d72a9c3f560fd761664c0"
+          ]
+        },
+        {
+          "index": 1,
+          "count": 5,
+          "siblings": [
+            "c9ed7b28ea3182dc282e888247dad76bba1a5b1674cc2cf8c9b84ee9ee206b20",
+            "a8ac315db1f29831749d5e7021492a2e25ffeff80cf2028a31317e9634d2608c",
+            "c13036e06c6a1fcb0b021e11d0ae98e283329508e27d72a9c3f560fd761664c0"
+          ]
+        },
+        {
+          "index": 2,
+          "count": 5,
+          "siblings": [
+            "ae0399832d4120ac3136cdbeff482c2abfac17cc946508385f15a22857b098c4",
+            "cd2fd2ce6f7002b6e0d1951efc17a595cbfd5ba7c7cdb69816cbc4e7f08d1704",
+            "c13036e06c6a1fcb0b021e11d0ae98e283329508e27d72a9c3f560fd761664c0"
+          ]
+        },
+        {
+          "index": 3,
+          "count": 5,
+          "siblings": [
+            "f6fab96267ec1095eb81886e5de39bb792a4785197d224136615b17aa7248fbe",
+            "cd2fd2ce6f7002b6e0d1951efc17a595cbfd5ba7c7cdb69816cbc4e7f08d1704",
+            "c13036e06c6a1fcb0b021e11d0ae98e283329508e27d72a9c3f560fd761664c0"
+          ]
+        },
+        {
+          "index": 4,
+          "count": 5,
+          "siblings": [
+            "8f143985a65a69a8e5f1654c81ed3c911db0d35980a0b358d7e7c568dd067894",
+            "f19e7621c56c14ea490b26d2ffe805d82640eecfb62fb2943005df69e9d24054",
+            "fec7fbd06eb354734c32226cac4fae63f173d4f5a16da70884819b9ef4457377"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -177,7 +177,7 @@ module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inf
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
 refusal "import of names its module does not translate" 323
 refusal "JSDoc type {…}" 215
-refusal "null" 188
+refusal "null" 189
 refusal "import from '…'" 163
 refusal "arrow function" 122
 refusal "type: unknown name (a sibling item or an import)" 118
@@ -186,8 +186,8 @@ refusal "new expression" 90
 refusal "object without a $ tag" 86
 refusal "regular expression" 62
 refusal "method call .find()" 59
-refusal "method call .split()" 55
 refusal "method call .map()" 54
+refusal "method call .split()" 54
 refusal "method call .filter()" 51
 refusal "method call .some()" 47
 refusal "method call .slice()" 43
