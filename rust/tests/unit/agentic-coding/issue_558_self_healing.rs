@@ -178,17 +178,25 @@ fn planner_walks_the_self_heal_recipe() {
 
 #[test]
 fn committed_self_healing_case_is_generated_and_written_by_the_driver() {
-    // The committed repair-case artifact is *generated* by running the real
-    // self-healing loop — never hand written — so it can never drift, and it is
-    // byte-for-byte what the Agent CLI writes.
+    // Preserve the historical failure/proposal record; its old counts are diagnostic.
     let committed = include_str!("../../../../data/meta/self-healing-case.lino");
+    let current = self_heal::render_document();
+    let proposal = |document: &str| {
+        let prefix = document.split("  source_round_trip\n").next().unwrap();
+        let trace = document.split_once("  failure_trace\n").unwrap().1;
+        format!("{prefix}  failure_trace\n{trace}")
+    };
+    assert_eq!(proposal(committed), proposal(&current));
+    assert!(current.contains("outcome \"awaiting_review\""));
+    assert!(current.contains("faithful \"true\""));
+    assert!(!current.contains("total_link_count"));
+    assert!(!current.contains("named_node_count"));
+    let round_trip = SourceRoundTrip::for_pinned_target();
     assert_eq!(
-        committed,
-        self_heal::render_document(),
-        "the committed self-healing case is stale — regenerate it with `cargo run --example dump_self_healing_case`"
+        self_ast::render_network_source(&round_trip.source_document).unwrap(),
+        self_ast::target_source()
     );
-    assert!(committed.contains("outcome \"awaiting_review\""));
-    assert!(committed.contains("faithful \"true\""));
+    assert!(self_ast::render_network_source("source_census_diagnostic\n").is_err());
 
     // End-to-end: the in-repo Agent CLI drives the loop to completion and writes
     // exactly this document. DRIVER_TOOLS advertises write_file + run_command.

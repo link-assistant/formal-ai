@@ -41,12 +41,14 @@ use crate::self_improvement::{
 pub struct SourceRoundTrip {
     /// The repository-relative path of the module that was mapped and round-tripped.
     pub module_path: String,
-    /// Total links in the lossless network (a size signal for the mapped source).
+    /// Historical census diagnostic; never a source-content or restoration witness.
     pub total_link_count: usize,
-    /// Named abstract-syntax nodes recovered from the parse (the AST proper).
+    /// Historical parser diagnostic, excluded from the current repair artifact.
     pub named_node_count: usize,
     /// Whether `source → links → source` reproduced the input byte-for-byte.
     pub faithful: bool,
+    /// Current owned recursive content, restored without an external source copy.
+    pub source_document: String,
 }
 
 impl SourceRoundTrip {
@@ -54,15 +56,20 @@ impl SourceRoundTrip {
     /// source↔links round-trip through the sole CST/AST engine in this repo.
     #[must_use]
     pub fn for_module(module_path: impl Into<String>, source: &str) -> Self {
-        // A single parse yields both the census and the round-trip verdict:
-        // `AstCensus::text_preserved` *is* `reconstruct_text() == source`, i.e. the
-        // source → links → source round-trip, so there is no need to parse twice.
+        // Historical census fields remain diagnostic compatibility only.
+        // Source authority requires owned readable content, source-free restoration
+        // and an independent fresh grammar verification.
         let census = self_ast::ast_census(source);
+        let module_path = module_path.into();
+        let source_document = self_ast::source_document(&module_path, source).unwrap_or_default();
+        let faithful = self_ast::render_network_source(&source_document)
+            .is_ok_and(|restored| restored == source);
         Self {
-            module_path: module_path.into(),
+            module_path,
             total_link_count: census.total_link_count,
             named_node_count: census.named_node_count,
-            faithful: census.text_preserved,
+            faithful,
+            source_document,
         }
     }
 
@@ -224,18 +231,13 @@ impl RepairCase {
         nested(&mut out, "module_path", &self.source_round_trip.module_path);
         nested(
             &mut out,
-            "total_link_count",
-            &self.source_round_trip.total_link_count.to_string(),
-        );
-        nested(
-            &mut out,
-            "named_node_count",
-            &self.source_round_trip.named_node_count.to_string(),
-        );
-        nested(
-            &mut out,
             "faithful",
             &self.source_round_trip.faithful.to_string(),
+        );
+        push_indented(
+            &mut out,
+            "source_content",
+            &self.source_round_trip.source_document,
         );
         // Fold the composed sub-artifacts in as indented blocks so the whole case is
         // one reviewable document, then trim to a single logical record.

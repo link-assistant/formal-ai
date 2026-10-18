@@ -1,0 +1,16 @@
+name: Pinned readable source frontend
+description: Provision the immutable shared grammar frontend for actual source-free restoration tests
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v7
+      with:
+        repository: link-foundation/meta-language
+        ref: eb0574d5528babd3b4aadece81590d8e2230b99b
+        path: .meta-language
+        persist-credentials: false
+    - shell: bash
+      run: |
+        set -euo pipefail
+        npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+        printf 'FORMAL_AI_META_LANGUAGE=%s/.meta-language\n' "$GITHUB_WORKSPACE" >> "$GITHUB_ENV"

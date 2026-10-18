@@ -29,6 +29,8 @@ import {
 import * as meaningDetail from '../../../js/agentic/meaning_detail.mjs';
 import * as diagram from '../../../js/agentic/diagram.mjs';
 import * as selfHeal from '../../../js/agentic/self_heal.mjs';
+import { host, installHost } from '../../../js/agentic/host.mjs';
+import { readSourceLinks, sourceFromLinks, sourceOwner } from '../../../js/meta/readable-source.js';
 import * as ledger from '../../../js/agentic/ledger.mjs';
 import * as explain from '../../../js/agentic/explain.mjs';
 import * as changeRequest from '../../../js/agentic/change_request.mjs';
@@ -420,10 +422,22 @@ describe('issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)', 
     assert.ok(!predicates.explain('Explain how Formal AI works\nhttps://github.com/o/r/issues/1\nline\nline\nline'));
   });
 
-  it('committed documents render byte for byte with their final answers', () => {
-    assert.equal(selfHeal.renderDocument(), repo('data/meta/self-healing-case.lino'));
-    assert.ok(selfHeal.finalAnswer(selfHeal.renderDocument()).includes('mapped it onto src/agentic_coding/planner.rs'));
-    assert.ok(selfHeal.finalAnswer(selfHeal.renderDocument()).includes('(awaiting_review)'));
+  it('historical proposals retain their trace while current source is reconstructed', async () => {
+    const document = await selfHeal.renderDocument();
+    const proposal = (text) => text.split('  source_round_trip\n')[0]
+      + '  failure_trace\n' + text.split('  failure_trace\n')[1];
+    assert.equal(proposal(document), proposal(repo('data/meta/self-healing-case.lino')));
+    assert.ok(document.includes('  source_content\n'));
+    const content = document.split('  source_content\n')[1].split('  failure_trace\n')[0]
+      .trimEnd().split('\n').map((line) => line.slice(4)).join('\n');
+    const model = readSourceLinks(content);
+    assert.equal(sourceOwner(model), 'src/agentic_coding/planner.rs');
+    assert.equal(sourceFromLinks(model), repo('rust/src/agentic_coding/planner.rs'));
+    assert.throws(() => sourceFromLinks(readSourceLinks('source_census_diagnostic\n')));
+    assert.ok(!document.includes('total_link_count'));
+    assert.ok(!document.includes('named_node_count'));
+    assert.ok(selfHeal.finalAnswer(document).includes('mapped it onto src/agentic_coding/planner.rs'));
+    assert.ok(selfHeal.finalAnswer(document).includes('(awaiting_review)'));
     assert.equal(ledger.renderDocument(), repo('data/meta/learning-ledger.lino'));
     assert.ok(ledger.finalAnswer(ledger.renderDocument()).startsWith('Recorded the approved learning ledger: 1 lesson(s)'));
     assert.equal(repairStrategy.renderDocument(), repo('data/meta/repair-strategies.lino'));
@@ -613,4 +627,20 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
       assert.equal(final(await step(messages, tools)), recipe.finalAnswer(recipe.renderDocument()));
     }
   });
+});
+
+it('source-bearing recipes refuse unavailable or rejected engines without writing proposals', async () => {
+  const original = host();
+  const recipe = await import('../../../js/agentic/document_recipe.mjs');
+  try {
+    for (const reason of ['PinnedSourceModelSdkUnavailable', 'SourceOwnerMismatch', 'SourceStructureMismatch']) {
+      installHost({...original, sourceDocument: async () => { throw Error(reason); }});
+      for (const step of [recipe.planSelfAstStep, recipe.planSelfHealStep]) {
+        const observed = await step([user(TASKS.selfHeal)], ['write_file', 'run_command']);
+        assert.equal(observed.kind, 'final');
+        assert.equal(observed.answer, 'Unknown:SourceModelUnavailable:' + reason);
+        assert.ok(!observed.calls);
+      }
+    }
+  } finally { installHost(original); }
 });

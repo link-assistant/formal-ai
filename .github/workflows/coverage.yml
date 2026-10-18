@@ -614,6 +614,8 @@ jobs:
         timeout-minutes: 1
         run: bash scripts/sync-seed.sh
 
+      - name: Provision the actual pinned source-model frontend
+        uses: ./.github/actions/setup-source-model
       - name: Measure the complete assigned browser test inventory
         run: >-
           npm run coverage:web -- run ${{ matrix.shard }}

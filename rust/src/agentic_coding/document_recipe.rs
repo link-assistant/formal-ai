@@ -196,6 +196,11 @@ pub(super) fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) 
 /// ([`self_heal::render_document`]), so the loop *repairs itself*. Steps whose tool
 /// the CLI did not advertise are skipped.
 pub(super) fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    if !crate::self_healing::SourceRoundTrip::for_pinned_target().faithful {
+        return AgenticPlan::Final(
+            "Unknown:SourceModelUnavailable:SourceRoundTripUnverified".to_owned(),
+        );
+    }
     let document = self_heal::render_document();
     let final_answer = self_heal::final_answer(&document);
     plan_document_recipe(

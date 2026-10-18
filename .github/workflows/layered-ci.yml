@@ -261,6 +261,8 @@ jobs:
         run: bun install --frozen-lockfile --ignore-scripts
       - name: Provision the real agentic search adapter
         run: bash scripts/install-agentic-search-tools.sh
+      - name: Provision the actual pinned source-model frontend
+        uses: ./.github/actions/setup-source-model
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
