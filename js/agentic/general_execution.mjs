@@ -5,7 +5,7 @@ import { Capability } from './capability.mjs';
 import { appendRecordStep } from './append_contract.mjs';
 import { shellCommandTool, toolFor } from './capability_router.mjs';
 import { attach, requestedIn } from './ci_workflow.mjs';
-import { executionRecipeFinalAnswer, planSymbolicCommandReroute } from './command_reroute.mjs';
+import { executionRecipeFinalAnswer, planOwnedRecipeRecovery, planSymbolicCommandReroute } from './command_reroute.mjs';
 import { mentionsRoleRaw } from './write_lexicon.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { plainText } from './content.mjs';
@@ -55,6 +55,12 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
     if (recovery !== null) return recovery;
   }
   const latestFailure = progress.latestFailure();
+  if (plan.mode === GeneralPlanMode.RepositoryWorkItem && latestFailure?.capability === Capability.Run) {
+    const objective = repositoryWorkItemObjective(plan, progress);
+    const answer = objective === null ? null : workItemSolverAnswer(objective);
+    const owned = answer === null ? null : planOwnedRecipeRecovery(messages, toolNames, answer, objective);
+    if (owned !== null) return owned;
+  }
   const workItemUnreadable = plan.mode === GeneralPlanMode.RepositoryWorkItem
     && latestFailure !== null
     && (latestFailure.capability === Capability.Fetch || isWorkItemRead(latestFailure));
@@ -228,7 +234,7 @@ function planEventStep(plan, progress, toolNames, messages) {
 function planWorkItemExecution(objective, messages, toolNames) {
   const answer = workItemSolverAnswer(objective);
   if (answer && answer.execution_recipe && requestedIn(objective)) attach(answer.execution_recipe, objective);
-  const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer) : null;
+  const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer, objective) : null;
   if (step) return step;
   const executable = composeGeneralChangePlan(objective);
   if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return null;

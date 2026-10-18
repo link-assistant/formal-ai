@@ -62,6 +62,19 @@ fn general_change_step(
     {
         return recovery;
     }
+    if plan.mode == GeneralPlanMode::RepositoryWorkItem
+        && progress
+            .latest_failure()
+            .is_some_and(|failure| failure.capability == Capability::Run)
+        && let Some(objective) = repository_work_item_objective(plan, &progress)
+    {
+        let answer = crate::solver::UniversalSolver::default().solve(&objective);
+        if let Some(owned) = super::command_reroute::plan_owned_recipe_recovery(
+            messages, tool_names, &answer, &objective,
+        ) {
+            return owned;
+        }
+    }
     // Reading the work item is an attempt to find out whether anything *can* be
     // executed, not a step the request named. A read that comes back missing or
     // empty therefore answers that question — the capability is unavailable —
@@ -459,9 +472,9 @@ fn plan_work_item_execution(
     {
         super::ci_workflow::attach(recipe, objective);
     }
-    if let Some(step) =
-        super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
-    {
+    if let Some(step) = super::command_reroute::plan_symbolic_command_reroute_for_objective(
+        messages, tool_names, &answer, objective,
+    ) {
         return Some(step);
     }
     let executable = compose_general_change_plan(objective)

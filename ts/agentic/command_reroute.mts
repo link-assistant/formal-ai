@@ -12,7 +12,7 @@ import { Capability } from './capability.mjs';
 import { classifyTool, isWorkspaceCreationTool, toolFor } from './capability_router.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
 import { pushRef, recipeCommitCommand, shellQuote, targetOf } from './git_commit.mjs';
-import { attachExecutionRecipe, functionCallCommand } from './crate/coding_program_contract.mjs';
+import { attachExecutionRecipe, functionCallCommand, programRecoveryCommand } from './crate/coding_program_contract.mjs';
 import { normalizeCommandWord } from './shell_command_policy.mjs';
 import { pathExtension, tokens, typedWriteTarget } from './write_request.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
@@ -20,8 +20,8 @@ import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
-import { planRecovery } from './prerequisite_recovery.mjs';
-import { Progress, writeMatches } from './progress.mjs';
+import { planRecovery, planRecoveryWithIdentity } from './prerequisite_recovery.mjs';
+import { Progress, qualifiedToolAttempt, writeMatches } from './progress.mjs';
 import { validateProgram } from './host.mjs';
 import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loop.mjs';
 import { feedbackNeedsChanges } from './restart_feedback.mjs';
@@ -39,7 +39,16 @@ import { trim } from './write_str.mjs';
  * @param {Array<string>} toolNames
  * @param {object} symbolicAnswer
  */
-export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) {
+export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer, objective = latestUserRequest(messages) ?? '') {
+  return recipeStep(messages, toolNames, symbolicAnswer, objective, false);
+}
+
+/** Mirrors fn plan_owned_recipe_recovery: only the still-pending exact owned wrapper failure. */
+export function planOwnedRecipeRecovery(messages, toolNames, symbolicAnswer, objective) {
+  return recipeStep(messages, toolNames, symbolicAnswer, objective, true);
+}
+
+function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly) {
   const attached = attachExecutionRecipe(symbolicAnswer ?? {}, symbolicAnswer?.synthesized_program).execution_recipe;
   if (!attached) return null;
   const recipe = requestedRecipe(latestUserRequest(messages) ?? '', attached);
@@ -53,6 +62,7 @@ export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) 
   if (commit) expectedCommands.push(recipeCommitCommand(recipe, commit));
   if (commit) expectedCommands.push(...prCompletionCommands(recipe, commit));
   const progress = recipeProgressAfterLatestUser(messages, writeTool, recipe, expectedCommands);
+  if (recoveryOnly && !progress.failure?.from_run) return null;
   if (commit) {
     const followup = prCompletionCommands(recipe, commit);
     const observed = Progress.scan(messages);
@@ -74,7 +84,23 @@ export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) 
     const failedPath = nextFile()?.[0] ?? recipe.path;
     let repairNote = '';
     if (failure.from_run) {
-      const recovery = planRecovery(messages, toolNames, step, failure.exit_code, failure.reported);
+      const observation = Progress.scan(messages);
+      const bound = qualifiedToolAttempt(observation, Capability.Run, { command: step });
+      const files = [{ path: recipe.path, source: recipe.source }, ...recipe.supporting_files];
+      const owned = files.every((file) => {
+        const index = observation.latestWriteIndex(file.path);
+        const attempt = index === null ? null : observation.attempts[index];
+        if (!attempt?.succeeded || !writeMatches(attempt.arguments, file.path, file.source)) return false;
+        const frame = qualifiedToolAttempt(observation, Capability.Write, JSON.parse(attempt.arguments));
+        return frame?.binding === 'exact' && frame.succeeded;
+      });
+      const observed = failureMessage(failure.reported, true, false) ?? failure.reported;
+      const identity = bound?.binding === 'exact' && owned
+        ? programRecoveryCommand(objective, recipe, step, observed) : null;
+      if (recoveryOnly && identity === null) return null;
+      const recovery = identity === null
+        ? planRecovery(messages, toolNames, step, failure.exit_code, failure.reported)
+        : planRecoveryWithIdentity(messages, toolNames, step, failure.exit_code, failure.reported, identity);
       if (recovery) return recovery;
       const failed = failedStep(recipe.language, failure.reported, {
         exit_code: failure.exit_code,

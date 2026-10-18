@@ -64,7 +64,19 @@ pub(super) fn plan_recovery(
     exit_code: Option<i32>,
     output: &str,
 ) -> Option<AgenticPlan> {
-    let need = crate::prerequisite::classify_failure(command, exit_code, output, command)?;
+    plan_recovery_with_identity(messages, tools, command, exit_code, output, command)
+}
+
+pub(super) fn plan_recovery_with_identity(
+    messages: &[ChatMessage],
+    tools: &[&str],
+    command: &str,
+    exit_code: Option<i32>,
+    output: &str,
+    source_command: &str,
+) -> Option<AgenticPlan> {
+    let need =
+        crate::prerequisite::classify_failure(source_command, exit_code, output, source_command)?;
     if !matches!(
         need.observed,
         crate::prerequisite::probe::ProbeVerdict::Missing { .. }

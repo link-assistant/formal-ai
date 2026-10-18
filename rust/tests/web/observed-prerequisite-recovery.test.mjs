@@ -265,19 +265,19 @@ test('existing owned recipe continues to its independent verification after reco
     append(messages, plan.calls[0], 'written');
   }
   assert.equal(plan.calls[0].tool, 'Bash');
-  assert.equal(JSON.parse(plan.calls[0].arguments).command, command);
-  append(messages, plan.calls[0], failure, true);
+  assert.equal(JSON.parse(plan.calls[0].arguments).command, 'sh tests/verify-output.sh');
+  append(messages, plan.calls[0], failure + '\n__formal_ai_owned_process_failed_0__', true);
   const write = await planChatStep(messages, tools);
   assert.equal(write.calls[0].tool, 'Write');
   assert.equal(JSON.parse(write.calls[0].arguments).path, '.formal-ai/bootstrap/prerequisite-installer.py');
   append(messages, write.calls[0], 'written');
   const recovery = await planChatStep(messages, tools);
   assert.equal(recovery.calls[0].tool, 'Bash');
-  append(messages, recovery.calls[0], JSON.stringify({exit_code:0,stdout:'synthetic recovered compile',stderr:''}));
+  assert.ok(JSON.parse(recovery.calls[0].arguments).command.endsWith('\n# __formal_ai_prerequisite_retry\nsh tests/verify-output.sh'));
+  append(messages, recovery.calls[0], JSON.stringify({exit_code:0,stdout:'synthetic recovered compile and independent verification',stderr:''}));
   const verification = await planChatStep(messages, tools);
-  assert.equal(verification.kind, 'tool_calls');
-  assert.equal(verification.calls[0].tool, 'Bash');
-  assert.equal(JSON.parse(verification.calls[0].arguments).command, 'sh tests/verify-output.sh');
+  assert.equal(verification.kind, 'final');
+  assert.match(verification.answer, /synthetic recovered compile and independent verification/u);
 });
 
 const clientReceipts = JSON.parse(fs.readFileSync(new URL('../fixtures/prerequisite-client-receipts.json', import.meta.url), 'utf8'));
@@ -292,8 +292,10 @@ for (const entry of clientReceipts) test('Agent error wrapper retains actual pro
     if (plan.calls[0].tool !== 'Write') break;
     append(messages,plan.calls[0],'written');
   }
-  assert.equal(JSON.parse(plan.calls[0].arguments).command,entry.command);
-  append(messages,plan.calls[0],entry.receipt,true);
+  assert.equal(JSON.parse(plan.calls[0].arguments).command,'sh tests/verify-output.sh');
+  const ownedReceipt = entry.exit !== null && entry.exit !== 0
+    ? entry.receipt + '\n__formal_ai_owned_process_failed_0__' : entry.receipt;
+  append(messages,plan.calls[0],ownedReceipt,entry.exit !== 0);
   const next=await planChatStep(messages,tools);
   const installer=next.kind==='tool_calls' && next.calls[0].tool==='Write'
     && JSON.parse(next.calls[0].arguments).path==='.formal-ai/bootstrap/prerequisite-installer.py';
@@ -398,18 +400,18 @@ test('actual fetched work item keeps workflow and verification obligations after
     assert.equal(step.calls[0].tool,'Write');
     writes.push(JSON.parse(step.calls[0].arguments));append(messages,step.calls[0],'written');
   }
-  assert.equal(JSON.parse(step.calls[0].arguments).command,command);
+  assert.equal(JSON.parse(step.calls[0].arguments).command,'sh tests/verify-output.sh');
   assert.ok(writes.some(write=>write.path==='ci/test-hello-world.yml'&&write.content.includes('push:')&&write.content.includes('pull_request:')));
   assert.ok(writes.some(write=>write.path==='Main.kt'&&write.content.includes('//')));
   assert.ok(writes.some(write=>write.path==='tests/verify-output.sh'));
-  append(messages,step.calls[0],failure,true);
+  append(messages,step.calls[0],failure+'\n__formal_ai_owned_process_failed_0__',true);
   const bootstrap=planGeneralChangeStep(messages,tools,plan);append(messages,bootstrap.calls[0],'written');
-  const retry=planGeneralChangeStep(messages,tools,plan);assert.ok(JSON.parse(retry.calls[0].arguments).command.endsWith(command));
-  append(messages,retry.calls[0],JSON.stringify({exit_code:0,stdout:'',stderr:''}));
-  const continued=planGeneralChangeStep(messages,tools,plan);
-  assert.equal(continued.kind,'tool_calls');assert.equal(continued.calls[0].tool,'Bash');
-  assert.equal(JSON.parse(continued.calls[0].arguments).command,'sh tests/verify-output.sh');
-  append(messages,continued.calls[0],JSON.stringify({exit_code:0,stdout:'Hello, World!\n',stderr:''}));
+  const retry=planGeneralChangeStep(messages,tools,plan);assert.ok(JSON.parse(retry.calls[0].arguments).command.endsWith('\n# __formal_ai_prerequisite_retry\nsh tests/verify-output.sh'));
+  const verifier=writes.find(write=>write.path==='tests/verify-output.sh');
+  assert.ok(verifier.content.includes(command));
+  assert.ok(verifier.content.includes('java -jar Main.jar'));
+  assert.ok(verifier.content.includes('cmp expected actual'));
+  append(messages,retry.calls[0],JSON.stringify({exit_code:0,stdout:'Hello, World!\n',stderr:''}));
   const after=planGeneralChangeStep(messages,tools,plan);
   assert.equal(after.kind,'tool_calls');
   const remaining=JSON.parse(after.calls[0].arguments);

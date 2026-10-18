@@ -334,6 +334,16 @@ export class Progress {
       && attempt.arguments !== null && argumentTargets(attempt.arguments, path));
   }
 
+  /** Mirrors Progress::latest_write_index: latest declaration includes failed writes. */
+  latestWriteIndex(path) {
+    for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
+      const attempt = this.attempts[index];
+      if (attempt.capability === Capability.Write && attempt.arguments !== null
+        && argumentTargets(attempt.arguments, path)) return index;
+    }
+    return null;
+  }
+
   /** Mirrors `Progress::latest_successful_write_index`. */
   latestSuccessfulWriteIndex(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {

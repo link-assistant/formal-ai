@@ -43,7 +43,11 @@ export function recoveryOutput(messages,command) {
   return context===null?null:Progress.scan(messages).latestRunOutputFor(context.recovery);
 }
 export function planRecovery(messages,tools,command,exitCode,output) {
-  const need=classifyFailure(command,exitCode,output);
+  return planRecoveryWithIdentity(messages,tools,command,exitCode,output,command);
+}
+/** Mirrors fn plan_recovery_with_identity; identity is supplied only by the request-owned recipe adapter. */
+export function planRecoveryWithIdentity(messages,tools,command,exitCode,output,sourceCommand) {
+  const need=classifyFailure(sourceCommand,exitCode,output);
   if(!need||need.observed!=='missing')return null;
   const context=recoveryContext(command,need.program);
   if(context===null)return finalAnswer(fill('prerequisite_grant_required_report',[['{program}',need.program],['{command}',command],['{output}',output]]));

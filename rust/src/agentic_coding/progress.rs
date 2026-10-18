@@ -649,7 +649,18 @@ impl Progress {
         })
     }
 
-    /// The arrival index of the latest successful write of `path`, so a caller can tell which of two files was written last (issue #1185 R3: a fix already rendered into the artifact is not rendered twice).
+    /// The latest write declaration of this path, including failed observations.
+    pub(super) fn latest_write_index(&self, path: &str) -> Option<usize> {
+        self.attempts.iter().rposition(|attempt| {
+            attempt.capability == Capability::Write
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
+    /// The latest successful write index retained by the original progress contract.
     pub(super) fn latest_successful_write_index(&self, path: &str) -> Option<usize> {
         self.attempts.iter().rposition(|attempt| {
             attempt.capability == Capability::Write

@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 299
   workaround_items 33
   inferred_signatures 2
-  carried_items 2364
+  carried_items 2365
   translated_modules 100
   fully_translated_modules 1
   refused_modules 49
@@ -34,7 +34,7 @@ module js/agentic/crate/change_request.mjs translated 1 workaround 1 inferred 0 
 module js/agentic/crate/client_contract_learning.mjs translated 0 workaround 1 inferred 0 carried 13
 module js/agentic/crate/coding_catalog.mjs translated 4 workaround 2 inferred 0 carried 27
 module js/agentic/crate/coding_cjk.mjs translated 0 workaround 0 inferred 0 carried 1
-module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 31
+module js/agentic/crate/coding_program_contract.mjs translated 0 workaround 1 inferred 0 carried 32
 module js/agentic/crate/computer_use.mjs translated 2 workaround 0 inferred 0 carried 14
 module js/agentic/crate/computer_use_induction.mjs translated 4 workaround 0 inferred 0 carried 22
 module js/agentic/crate/computer_use_lexicon.mjs translated 5 workaround 0 inferred 0 carried 14
@@ -177,7 +177,7 @@ module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inf
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
 refusal "import of names its module does not translate" 323
 refusal "JSDoc type {…}" 215
-refusal "null" 188
+refusal "null" 187
 refusal "import from '…'" 165
 refusal "arrow function" 122
 refusal "type: unknown name (a sibling item or an import)" 118
@@ -186,16 +186,16 @@ refusal "new expression" 90
 refusal "object without a $ tag" 86
 refusal "regular expression" 62
 refusal "method call .find()" 59
+refusal "method call .split()" 55
 refusal "method call .map()" 54
-refusal "method call .split()" 54
 refusal "method call .filter()" 51
 refusal "method call .some()" 47
 refusal "method call .slice()" 43
 refusal "Array.from" 42
 refusal "field access" 34
 refusal "method call .push()" 34
+refusal "optional chaining" 30
 refusal "method call .indexOf()" 29
-refusal "optional chaining" 29
 refusal "nullish coalescing" 26
 refusal "method call .replace()" 23
 refusal "export …" 22

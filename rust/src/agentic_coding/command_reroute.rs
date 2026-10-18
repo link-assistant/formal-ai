@@ -29,6 +29,39 @@ pub fn plan_symbolic_command_reroute(
     tool_names: &[&str],
     symbolic_answer: &SymbolicAnswer,
 ) -> Option<AgenticPlan> {
+    plan_symbolic_command_reroute_for_objective(
+        messages,
+        tool_names,
+        symbolic_answer,
+        &crate::protocol::latest_user_request(messages).unwrap_or_default(),
+    )
+}
+
+pub(super) fn plan_symbolic_command_reroute_for_objective(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    symbolic_answer: &SymbolicAnswer,
+    objective: &str,
+) -> Option<AgenticPlan> {
+    recipe_step(messages, tool_names, symbolic_answer, objective, false)
+}
+
+pub(super) fn plan_owned_recipe_recovery(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    symbolic_answer: &SymbolicAnswer,
+    objective: &str,
+) -> Option<AgenticPlan> {
+    recipe_step(messages, tool_names, symbolic_answer, objective, true)
+}
+
+fn recipe_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    symbolic_answer: &SymbolicAnswer,
+    objective: &str,
+    recovery_only: bool,
+) -> Option<AgenticPlan> {
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
     let requested = requested_recipe(&request, symbolic_answer.execution_recipe.as_ref()?);
     let recipe = &requested;
@@ -60,6 +93,14 @@ pub fn plan_symbolic_command_reroute(
     }
     let progress =
         RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands);
+    if recovery_only
+        && progress
+            .failure
+            .as_ref()
+            .is_none_or(|failure| !failure.from_run)
+    {
+        return None;
+    }
     if let Some(target) = &commit {
         let followup = pr_completion_commands(recipe, target);
         let observed = super::progress::Progress::scan(messages);
@@ -95,13 +136,79 @@ pub fn plan_symbolic_command_reroute(
         let failed_path = next_file().map_or(recipe.path.as_str(), |(path, _)| path);
         let mut repair_note = String::new();
         if failure.from_run {
-            if let Some(plan) = super::prerequisite_recovery::plan_recovery(
-                messages,
-                tool_names,
-                step,
-                failure.exit_code,
-                &failure.reported,
-            ) {
+            let observation = super::progress::Progress::scan(messages);
+            let bound = observation.latest_attempt_for(Capability::Run, &json!({"command":step}));
+            let owned = std::iter::once((&recipe.path, &recipe.source))
+                .chain(
+                    recipe
+                        .supporting_files
+                        .iter()
+                        .map(|file| (&file.path, &file.source)),
+                )
+                .all(|(path, source)| {
+                    let Some(index) = observation.latest_write_index(path) else {
+                        return false;
+                    };
+                    let Some(attempt) = observation.research_attempts().get(index) else {
+                        return false;
+                    };
+                    let Some(arguments) = attempt.arguments.as_deref() else {
+                        return false;
+                    };
+                    if !attempt.succeeded
+                        || !super::progress::write_matches(arguments, path, source)
+                    {
+                        return false;
+                    }
+                    let Ok(value) = serde_json::from_str(arguments) else {
+                        return false;
+                    };
+                    observation
+                        .latest_attempt_for(Capability::Write, &value)
+                        .is_some_and(|frame| {
+                            frame.binding == super::qualified_tool_observation::Binding::Exact
+                                && frame.succeeded
+                        })
+                });
+            let observed = super::tool_result::failure_message(&failure.reported, true, false);
+            let reported = observed
+                .as_ref()
+                .map_or(failure.reported.as_str(), String::as_str);
+            let identity = if owned
+                && bound.is_some_and(|frame| {
+                    frame.binding == super::qualified_tool_observation::Binding::Exact
+                }) {
+                crate::coding::program_contract::program_recovery_command(
+                    objective, recipe, step, reported,
+                )
+            } else {
+                None
+            };
+            if recovery_only && identity.is_none() {
+                return None;
+            }
+            let recovery = identity.as_deref().map_or_else(
+                || {
+                    super::prerequisite_recovery::plan_recovery(
+                        messages,
+                        tool_names,
+                        step,
+                        failure.exit_code,
+                        &failure.reported,
+                    )
+                },
+                |original| {
+                    super::prerequisite_recovery::plan_recovery_with_identity(
+                        messages,
+                        tool_names,
+                        step,
+                        failure.exit_code,
+                        &failure.reported,
+                        original,
+                    )
+                },
+            );
+            if let Some(plan) = recovery {
                 return Some(plan);
             }
             let failed = super::repair_loop::FailedStep::new(&recipe.language, &failure.reported)
