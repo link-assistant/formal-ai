@@ -79,6 +79,7 @@ Each topic file keeps the original section numbers, so references such as
   - [10. Translation Between Languages](docs/architecture/translation.md#10-translation-between-languages)
     - [10.1 Formalize → Meaning → Deformalize Pipeline](docs/architecture/translation.md#101-formalize--meaning--deformalize-pipeline)
     - [10.2 Resolution Order and Browser Fallback](docs/architecture/translation.md#102-resolution-order-and-browser-fallback)
+- [Source Comment Meanings](docs/architecture/source-comment-meaning.md)
 - [Runtime Capability Parity](docs/architecture/runtime-parity-inventory.md)
 - [Coding Research Parity Gap](docs/architecture/coding-research-parity-gap.md)
 - [Runtime Feature Coverage](docs/architecture/runtime-feature-coverage.md)

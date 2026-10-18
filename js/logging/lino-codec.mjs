@@ -51,7 +51,7 @@ export function decodeWord(word) {
  * @param {string} text
  * @returns {Array<Array<unknown>>}
  */
-export function parseLinks(text) {
+export function parseLinks(text, {quotedText = "legacy"} = {}) {
   const links = [];
   let index = 0;
   const skip = () => {
@@ -80,6 +80,19 @@ export function parseLinks(text) {
         }
         items.push(read());
       }
+    }
+    if (char === '"' && quotedText === 'json') {
+      const start = index;
+      index += 1;
+      while (index < text.length) {
+        if (text[index] === String.fromCharCode(92)) { index += 2; continue; }
+        if (text[index] === '"') {
+          index += 1;
+          return {quoted: JSON.parse(text.slice(start, index))};
+        }
+        index += 1;
+      }
+      throw new Error('unclosed JSON quoted text');
     }
     if (char === '"') {
       const end = text.indexOf('"', index + 1);
@@ -128,6 +141,6 @@ export function field(link, head) {
  * @param {Array<unknown>} link
  * @returns {string}
  */
-export function writeLink(link) {
-  return `(${link.map((item) => (Array.isArray(item) ? writeLink(item) : typeof item === 'string' ? item : `"${item.quoted}"`)).join(' ')})`;
+export function writeLink(link, {quotedText = "legacy"} = {}) {
+  return `(${link.map((item) => (Array.isArray(item) ? writeLink(item, {quotedText}) : typeof item === 'string' ? item : quotedText === "json" ? JSON.stringify(item.quoted) : `"${item.quoted}"`)).join(' ')})`;
 }

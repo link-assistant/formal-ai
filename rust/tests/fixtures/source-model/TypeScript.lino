@@ -1,0 +1,55 @@
+(source
+  (language "TypeScript")
+  (module
+    (form "program")
+    (comment (form "comment") (text "/** Keep the value. */"))
+    (layout (form "whitespace") (text "\n"))
+    (syntax
+      (form "export_statement")
+      (syntax (form "export") (text "export"))
+      (layout (form "whitespace") (text " "))
+      (function
+        (form "function_declaration")
+        (role "declaration")
+        (syntax (form "function") (text "function"))
+        (layout (form "whitespace") (text " "))
+        (identifier (form "identifier") (role "name") (text "keep"))
+        (syntax
+          (form "formal_parameters")
+          (role "parameters")
+          (syntax (form "(") (text "("))
+          (syntax
+            (form "required_parameter")
+            (identifier (form "identifier") (role "pattern") (text "value"))
+            (syntax
+              (form "type_annotation")
+              (role "type")
+              (syntax (form ":") (text ":"))
+              (layout (form "whitespace") (text " "))
+              (syntax
+                (form "predefined_type")
+                (syntax (form "string") (text "string")))))
+          (syntax (form ")") (text ")")))
+        (syntax
+          (form "type_annotation")
+          (role "return_type")
+          (syntax (form ":") (text ":"))
+          (layout (form "whitespace") (text " "))
+          (syntax
+            (form "predefined_type")
+            (syntax (form "string") (text "string"))))
+        (layout (form "whitespace") (text " "))
+        (syntax
+          (form "statement_block")
+          (role "body")
+          (syntax (form "{") (text "{"))
+          (layout (form "whitespace") (text " "))
+          (syntax
+            (form "return_statement")
+            (syntax (form "return") (text "return"))
+            (layout (form "whitespace") (text " "))
+            (identifier (form "identifier") (text "value"))
+            (syntax (form ";") (text ";")))
+          (layout (form "whitespace") (text " "))
+          (syntax (form "}") (text "}")))))
+    (layout (form "whitespace") (text "\n"))))
