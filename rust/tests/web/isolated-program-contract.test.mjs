@@ -49,6 +49,16 @@ async function fixture(language, configuration = {}) {
     const workspace = path.join(directory, 'workspace'), binary = path.join(directory, 'bin');
     const temporary = path.join(directory, 'temporary');
     for (const entry of [workspace, binary, temporary]) fs.mkdirSync(entry);
+    // Only these real shell utilities may cross the fixture process boundary.
+    // In particular, a hosted compiler must never satisfy a missing-tool case.
+    for (const utility of ['sh', 'mktemp', 'dirname', 'mkdir', 'cp', 'cmp', 'cat', 'rm']) {
+      if (utility === 'mktemp' && configuration.denyTemporary) continue;
+      const target = ['/usr/bin', '/bin'].map((directory) => path.join(directory, utility))
+        .find((candidate) => fs.existsSync(candidate));
+      assert.ok(target, 'required shell fixture utility: ' + utility);
+      fs.symlinkSync(fs.realpathSync(target), path.join(binary, utility));
+    }
+
     const sourceName = configuration.sourceName ?? { kotlin: 'Main.kt', scala: 'Main.scala', rust: 'main.rs' }[language];
     const compiler = { kotlin: 'kotlinc', scala: 'scalac', rust: 'rustc' }[language];
     const artifact = { kotlin: 'Main.jar', scala: 'Main.class', rust: 'main' }[language];
@@ -70,13 +80,19 @@ async function fixture(language, configuration = {}) {
     executable(path.join(binary, 'python3'), fakeInstaller);
     if (configuration.denyTemporary) fs.writeFileSync(path.join(binary, 'mktemp'), '#!/bin/sh\nexit 41\n', { mode: 0o700 });
     fs.writeFileSync(path.join(workspace, artifact), 'pre-existing unowned artifact');
-    const environment = { PATH: binary + ':/usr/bin:/bin', TMPDIR: temporary,
+    const environment = { PATH: binary, TMPDIR: temporary,
       FORMAL_AI_TEST_SOURCE: sourceName, FORMAL_AI_TEST_ORIGINAL: original,
       FORMAL_AI_TEST_ARTIFACT: artifact, FORMAL_AI_TEST_ACTUAL: actual,
       FORMAL_AI_TEST_AUDIT: audit, FORMAL_AI_TEST_COMPILER: compiler,
       FORMAL_AI_TEST_COMPILER_FIXTURE: compilerFixture, FORMAL_AI_TEST_BINARY: binary,
       FORMAL_AI_TEST_COMPILER_EXIT: String(configuration.compilerExit ?? 0),
       FORMAL_AI_TEST_RUNTIME_EXIT: String(configuration.runtimeExit ?? 0) };
+    if (configuration.missing) {
+      const discovery = spawnSync('/bin/sh', ['-c', 'command -v "$FORMAL_AI_TEST_COMPILER"'], {
+        cwd: workspace, env: environment, encoding: 'utf8', timeout: 1000,
+      });
+      assert.notEqual(discovery.status, 0, 'cold fixture must not discover an ambient compiler');
+    }
     const messages = [{ role: 'user', content: prompt }], executions = [];
     let final;
     for (let index = 0; index < 12; index += 1) {
