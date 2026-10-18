@@ -1,5 +1,5 @@
 """Hosted-only direct controls for the actual installer, with finite fake transport/process observations."""
-import contextlib, hashlib, importlib.util, io, json, os, pathlib, tempfile, types, unittest, zipfile
+import subprocess, contextlib, hashlib, importlib.util, io, json, os, pathlib, tempfile, types, unittest, zipfile
 from unittest.mock import patch
 repository=pathlib.Path(__file__).resolve().parents[1]
 spec=importlib.util.spec_from_file_location('actual_installer',repository/'data/meta/prerequisite-installer.py')
@@ -146,5 +146,31 @@ class InstallerControls(unittest.TestCase):
             receipt=json.loads((prefix/'formal-ai-install-receipt.json').read_text())
             self.assertEqual(receipt['documentation'],final)
             self.assertEqual(receipt['document_sha256'],hashlib.sha256(responses[final]).hexdigest())
+
+class CompiledRuntimeControls(unittest.TestCase):
+    def test_scala_uses_only_compiled_class_inputs(self):
+        import ast
+        tree=ast.parse((repository/'scripts/check-prerequisite-recovery-hosted.py').read_text())
+        assignments=[node for node in ast.walk(tree) if isinstance(node,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='run_command' for t in node.targets)]
+        scala=next(node for node in assignments if isinstance(node.value,ast.List) and any(isinstance(x,ast.Constant) and x.value=='--main-class' for x in node.value.elts))
+        values={'prefix':'/verified/bin','workspace':pathlib.Path('/compiled-only')}
+        exec(compile(ast.Module(body=[scala],type_ignores=[]),'<compiled-runtime-command>','exec'),values)
+        self.assertEqual(values['run_command'],['/verified/bin/scala','run','--classpath','/compiled-only','--main-class','Independent'])
+        self.assertFalse(any(str(x).endswith('.scala') for x in values['run_command']))
+    def test_runtime_failure_retains_stderr_and_exit(self):
+        import ast
+        tree=ast.parse((repository/'scripts/check-prerequisite-recovery-hosted.py').read_text())
+        block=next(node.body for node in ast.walk(tree) if isinstance(node,ast.With))
+        start=next(i for i,node in enumerate(block) if isinstance(node,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='observed' for t in node.targets))
+        failure=subprocess.CompletedProcess(['scala'],23,b'',b'actual runner diagnostic\n')
+        output=io.BytesIO();stream=types.SimpleNamespace(buffer=output)
+        values={'subprocess':subprocess,'run_command':['scala'],'workspace':repository,'environment':{},'sys':types.SimpleNamespace(stderr=stream)}
+        with patch.object(subprocess,'run',return_value=failure) as called:
+            with self.assertRaises(subprocess.CalledProcessError) as error:
+                exec(compile(ast.Module(body=block[start:start+3],type_ignores=[]),'<runtime-diagnostic>','exec'),values)
+        self.assertEqual(error.exception.returncode,23)
+        self.assertEqual(output.getvalue(),b'actual runner diagnostic\n')
+        self.assertEqual(called.call_args.kwargs['timeout'],30)
+        self.assertFalse(called.call_args.kwargs['check'])
 
 if __name__=='__main__': unittest.main()

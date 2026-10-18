@@ -43,13 +43,14 @@ const DERIVED = [
   ['java', 'run', 'java Main', ORACLE],
   ['kotlin', 'check', 'kotlinc Main.kt -include-runtime -d Main.jar', KOTLINLANG],
   ['kotlin', 'run', 'java -jar Main.jar', KOTLINLANG],
+  ['scala', 'run', 'scala run Main.scala', 'https://docs.scala-lang.org/scala3/book/taste-hello-world.html'],
 ];
 
 const derived = (language) => worker(
   `documentedLanguageCommands(${JSON.stringify(language)}, WRITE_PROGRAM_LANGUAGES[${JSON.stringify(language)}].saveAs)`);
 
 test('R1165-6: each command_procedure row derives the catalog command from its captured page', () => {
-  for (const language of ['rust', 'typescript', 'java', 'kotlin']) {
+  for (const language of ['rust', 'typescript', 'java', 'kotlin', 'scala']) {
     assert.deepEqual(
       derived(language),
       DERIVED.filter((row) => row[0] === language).map(([, role, command, source]) => ({ role, command, source })),
@@ -117,7 +118,7 @@ test('R1165-6: no language row hard-codes a command a captured page states', () 
   const find = (node, name) => (node.name === name ? node : (node.children || []).map((child) => find(child, name)).find(Boolean));
   const record = find(parseLino(read('data/seed/program-cache-policy.lino')), 'command_procedure');
   assert.deepEqual(
-    record.children.filter((node) => node.name === 'command').map((node) => `${childValue(node, 'language')}:${childValue(node, 'role')}`),
+    record.children.filter((node) => node.name === 'command').map((node) => `${childValue(node, 'language')}:${childValue(node, 'role') || childValue(record, 'role')}`),
     DERIVED.map(([language, role]) => `${language}:${role}`),
   );
   const tables = [
@@ -131,4 +132,18 @@ test('R1165-6: no language row hard-codes a command a captured page states', () 
       assert.ok(!row.includes(`"${command}"`), `${language} row still states "${command}"`);
     }
   }
+});
+
+test('Scala documented run binds held-out source filenames without legacy positional main', () => {
+  const command = worker('documentedLanguageCommands("scala", "HeldOutUnit.scala")');
+  assert.deepEqual(command, [{ role: 'run', command: 'scala run HeldOutUnit.scala', source: 'https://docs.scala-lang.org/scala3/book/taste-hello-world.html' }]);
+  const row = programLanguages().find((language) => language.slug === 'scala');
+  assert.equal(row.execution.run_command, 'scala run Main.scala');
+});
+
+test('command role defaults are inherited while explicit roles retain authority', () => {
+  const policy = 'program_cache_policy\n  command_procedure\n    role run\n    command\n      language heldout\n      page "https://publisher.test"\n      command_verb execute\n    command\n      language heldout\n      role check\n      page "https://publisher.test"\n      command_verb verify\n    command\n      language heldout\n      role invalid\n      page "https://publisher.test"\n      command_verb invalid\n';
+  const rows = worker('commandProcedures(' + JSON.stringify({ 'seed/program-cache-policy.lino': policy }) + ')');
+  assert.deepEqual(rows.map((row) => row.role), ['run', 'check', 'invalid']);
+  assert.equal(rows.length, 3);
 });

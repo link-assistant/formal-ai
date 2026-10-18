@@ -12,8 +12,14 @@ const p = provenancePrimitives({
   decodeTyped
 });
 // One selector owns ordered record lookup for replay and evidence consumers.
+function evidenceKind(kind){
+  return record=>record.kind===kind;
+}
 export function firstEvidenceRecord(records,kind){
-  return records.find(record=>record.kind===kind);
+  return records.find(evidenceKind(kind));
+}
+export function evidenceRecords(records,kind){
+  return records.filter(evidenceKind(kind));
 }
 export function regularEvidenceBytes(directory, relative) {
   if (typeof relative !== 'string' || !relative || relative.includes('\\') || relative.split('/').some(x => !x || x === '.' || x === '..') || path.isAbsolute(relative)) throw Error('unsafe_evidence_path');

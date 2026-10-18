@@ -35,8 +35,12 @@ with tempfile.TemporaryDirectory(prefix='formal-ai-prerequisite-hosted-') as tem
         run_command=['java','-jar',str(workspace/'independent.jar')]
     else:
         compile_command=[prefix+'/'+program,'-d',str(workspace),str(source)]
-        run_command=[prefix+'/scala','-classpath',str(workspace),'Independent']
+        run_command=[prefix+'/scala','run','--classpath',str(workspace),'--main-class','Independent']
     subprocess.run(compile_command,cwd=workspace,env=environment,check=True,timeout=90)
-    observed=subprocess.run(run_command,cwd=workspace,env=environment,check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=30)
+    observed=subprocess.run(run_command,cwd=workspace,env=environment,check=False,stdout=subprocess.PIPE,stderr=subprocess.PIPE,timeout=30)
+    if observed.returncode:
+        sys.stderr.buffer.write(observed.stderr)
+        sys.stderr.buffer.flush()
+    observed.check_returncode()
     assert observed.stdout==b'Hello, World!\n' and observed.stderr==b'', 'original independent one-line oracle'
     print(json.dumps({'schema':'formal-ai-hosted-prerequisite-result-v1','runtime':language,'stdout':'Hello, World!\\n','actualInstall':True,'threeClientAcceptance':False}))

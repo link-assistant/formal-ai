@@ -23,7 +23,7 @@ function commandProcedures(raw) {
   const record = (root ? root.children : []).find((node) => node.name === "command_procedure");
   return (record ? record.children : []).filter((node) => node.name === "command").map((node) => ({
     language: childValue(node, "language"),
-    role: childValue(node, "role"),
+    role: childValue(node, "role") || childValue(record, "role"),
     page: childValue(node, "page"),
     commandVerb: childValue(node, "command_verb"),
   }));

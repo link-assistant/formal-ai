@@ -2,10 +2,10 @@ self_ast_census
   target src/cli_logs.rs
   language rust
   fidelity signature
-  byte_len 5597
-  line_count 158
-  content_id source_module_3829299324bd8520
-  symbol_count 11
+  byte_len 3315
+  line_count 96
+  content_id source_module_4d7f2dec714ea94a
+  symbol_count 8
   symbols
     const MAXIMUM_INPUT 7 7
     enum LogFormat 9 13
@@ -14,7 +14,4 @@ self_ast_census
     function convert 29 64
     function read_and_convert 65 84
     function run_logs 86 93
-    module tests 95 158
-    function maintained_javascript_goldens_match_canonical_native_conversion 98 121
-    function malformed_or_partial_streams_never_return_a_prefix 123 143
-    function empty_stream_and_large_integer_and_float_types_survive 145 157
+    module tests 96 96

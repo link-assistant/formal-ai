@@ -2,10 +2,10 @@ self_ast_census
   target src/prerequisite/publisher.rs
   language rust
   fidelity signature
-  byte_len 20413
-  line_count 551
-  content_id source_module_2a64d4f57539b563
-  symbol_count 25
+  byte_len 20045
+  line_count 541
+  content_id source_module_5c143459c3fdb22d
+  symbol_count 24
   symbols
     const SETUP_PUBLISHERS_LINO 23 23
     const RECORD_PUBLISHER 26 26
@@ -30,5 +30,4 @@ self_ast_census
     function detect_cycle 407 426
     function discover_setup_procedure 435 441
     function search_setup_procedure 444 537
-    module documentation_authority_tests 540 551
-    function all_declared_publisher_document_paths_retain_exact_authority 544 550
+    module documentation_authority_tests 541 541

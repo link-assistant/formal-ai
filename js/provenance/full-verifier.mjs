@@ -6,6 +6,7 @@ import {createHash}from 'node:crypto';
 import {repositoryGit,repositoryText}from './git-evidence.mjs';
 import {verifyRepositoryEvidence}from './repository-verifier.mjs';
 import {verifyPinnedFreshReplay}from './fresh-verifier.mjs';
+import {verifyArchivedFreshReplay}from './replay-archived.mjs';
 import {regularEvidenceBytes,retainedEvidenceBytes}from './verify-drive.mjs';
 import {decodeTyped}from '../logging/typed-codec.mjs';
 function verifyExecutionBinding(workspace,directory,records,commitRecord){
@@ -51,6 +52,8 @@ function verifyExecutionBinding(workspace,directory,records,commitRecord){
 export function verifyFullRepositoryProof(options){
  if(!options||typeof options!=='object'||Array.isArray(options))throw Error('FullProofRequestRequired');
  const {directory,workspace,expectedAnchor,trustedPublicKey,base,head,minShare=1}=options;
+ const sourceMode=options.sourceMode??'installed';
+ if(!['installed','archived'].includes(sourceMode))throw Error('FullProofSourceModeUnsupported');
  if(typeof directory!=='string'||typeof workspace!=='string'||typeof base!=='string'||typeof head!=='string'
   ||!(/^[a-f0-9]{40}$/u.test(base)&&/^[a-f0-9]{40}$/u.test(head)))throw Error('FullProofImmutableRangeRequired');
  const working=fileSystem.realpathSync(workspace),evidence=fileSystem.realpathSync(directory);
@@ -69,7 +72,8 @@ export function verifyFullRepositoryProof(options){
   if(matches.length!==1)throw Error('FullProofCommitObservationAmbiguous');
   execution.push(verifyExecutionBinding(working,evidence,records,matches[0]));
  }
- const replay=verifyPinnedFreshReplay({...options,directory:evidence,workspace:working});
+ const replayOptions={...options,directory:evidence,workspace:working};
+ const replay=sourceMode==='archived'?verifyArchivedFreshReplay(replayOptions):verifyPinnedFreshReplay(replayOptions);
  if(!replay.fullReplay.verified)throw Error('FullProofFreshReplayIncomplete');
  if(text(['rev-parse','--verify','HEAD'])!==head
   ||repositoryGit(working,['status','--porcelain=v1','-z','--untracked-files=all','--ignore-submodules=none']).length!==0)throw Error('FullProofCheckoutChanged');

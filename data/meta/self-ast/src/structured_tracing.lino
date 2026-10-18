@@ -2,9 +2,9 @@ self_ast_census
   target src/structured_tracing.rs
   language rust
   fidelity signature
-  byte_len 9548
-  line_count 272
-  content_id source_module_34ca7be59428707c
+  byte_len 9473
+  line_count 270
+  content_id source_module_97a0df4456a6ba93
   symbol_count 28
   symbols
     type Sink 13 13
@@ -27,11 +27,11 @@ self_ast_census
     function new_span 124 149
     function record 150 170
     function record_follows_from 171 175
-    function event 176 205
-    function enter 206 208
-    function exit 209 216
-    function clone_span 217 227
-    function try_close 228 260
-    function install 263 269
-    static INSTALLED 264 264
-    module tests 272 272
+    function event 176 203
+    function enter 204 206
+    function exit 207 214
+    function clone_span 215 225
+    function try_close 226 258
+    function install 261 267
+    static INSTALLED 262 262
+    module tests 270 270

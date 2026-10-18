@@ -111,8 +111,8 @@ test('R1165-6: the documented run contract binds the program name and records ea
   assert.deepEqual([java.programExecution.checkCommand, java.programExecution.runCommand], ['javac HelloWorldApp.java', 'java HelloWorldApp']);
   const scala = await host.solve('Write a hello world program in Scala', []);
   assert.deepEqual(documentationEvents(scala), [
-    { kind: 'command_source', payload: 'language=scala task=hello_world role=check source=catalog command=scalac hello.scala' },
-    { kind: 'command_source', payload: 'language=scala task=hello_world role=run source=catalog command=scala hello' },
+    { kind: 'command_source', payload: 'language=scala task=hello_world role=check source=catalog command=scalac Main.scala' },
+    { kind: 'command_source', payload: 'language=scala task=hello_world role=run source=https://docs.scala-lang.org/scala3/book/taste-hello-world.html command=scala run Main.scala' },
   ]);
   const php = await host.solve('Write a hello world program in PHP', []);
   assert.deepEqual(documentationEvents(php), [

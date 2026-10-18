@@ -2,12 +2,12 @@ self_ast_census
   target src/seed/terminal_commands.rs
   language rust
   fidelity signature
-  byte_len 4101
-  line_count 91
-  content_id source_module_717d62d1ddf82daa
+  byte_len 4785
+  line_count 106
+  content_id source_module_bda7d8db3d8557a7
   symbol_count 4
   symbols
-    struct TerminalCommandVocabulary 22 40
-    function terminal_command_vocabulary 44 65
-    function collect_values 68 75
-    function collect_language_values 79 91
+    struct TerminalCommandVocabulary 22 42
+    function terminal_command_vocabulary 46 80
+    function collect_values 83 90
+    function collect_language_values 94 106

@@ -58,6 +58,15 @@ test('full CLI verifies a real fresh planner write and Git execution with indepe
   assert.equal(report.trustedVerification,true);assert.equal(report.fullReplay.verified,true);
   assert.equal(report.repository.allBlobsAttributed,true);assert.equal(report.repository.share,1);
   assert.equal(report.execution.length,1);assert.equal(report.autonomousAuthorship,'not-established');
+  const archivedRequest=path.join(directory,'independent-archived-request.json');
+  fileSystem.writeFileSync(archivedRequest,JSON.stringify({...request,sourceMode:'archived'}),{mode:0o600});
+  const archived=invoke(archivedRequest);assert.equal(archived.status,0,archived.stdout+'\n'+archived.stderr);
+  const archivedReport=decodeTyped(archived.stdout.trimEnd());assert.equal(archivedReport.verification,'Verified');
+  assert.equal(archivedReport.trustedVerification,true);assert.equal(archivedReport.fullReplay.verified,true);
+  assert.equal(archivedReport.fullReplay.scope,'authenticated-retained-js-engine-logical-memory-and-recorded-tool-inputs');
+  assert(archivedReport.fullReplay.consumedInputs.modules>100);assert(archivedReport.fullReplay.consumedInputs.reads>100);
+  assert.equal(archivedReport.repository.share,1);assert.equal(archivedReport.execution.length,1);
+  assert.throws(()=>verifyFullRepositoryProof({...request,sourceMode:'untrusted-source'}),/FullProofSourceModeUnsupported/u);
   assert.equal(fileSystem.statSync(delivered,{bigint:true}).ctimeNs,before.ctimeNs);assert.equal(git(workspace,['rev-parse','HEAD']),head);
   assert.throws(()=>verifyFullRepositoryProof({...request,head:base}),/FullProofCheckoutIdentity/u);
   assert.throws(()=>verifyFullRepositoryProof({...request,expectedRuntimeSha256:'0'.repeat(64)}),/PinnedReplayRuntimeMismatch/u);

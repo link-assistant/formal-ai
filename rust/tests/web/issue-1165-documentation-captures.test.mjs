@@ -75,7 +75,7 @@ test('R1165-6: the documented check and run commands of every captured language'
   ]);
   assert.deepEqual(documented('typescript'), [['tsc hello.ts', 'tsc hello.ts'], ['node hello.js', null]]);
   assert.deepEqual(documented('go'), [['go run main.go', null]]);
-  assert.deepEqual(documented('scala'), [['scalac Main.scala', null], ['scala Main', null]]);
+  assert.deepEqual(documented('scala'), [['scalac Main.scala', null], ['scala run Main.scala', 'scala run hello.scala']]);
   assert.deepEqual(documented('python'), [['python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile main.py', null], ['python3 main.py', null]]);
   assert.deepEqual(documented('javascript'), [['node --check main.js', null], ['node main.js', null]]);
   assert.deepEqual(documented('c'), [['gcc main.c -o main', null], ['./main', null]]);
@@ -100,9 +100,9 @@ test('R1165-6: the documented run contract of every captured language', async ()
     { role: 'check', command: 'javac HelloWorldApp.java', source: oracle },
     { role: 'run', command: 'java HelloWorldApp', source: oracle },
   ] });
-  assert.deepEqual(JSON.parse(contract('scala')), { saveAs: 'hello.scala', commands: [
-    { role: 'check', command: 'scalac hello.scala', source: 'catalog' },
-    { role: 'run', command: 'scala hello', source: 'catalog' },
+  assert.deepEqual(JSON.parse(contract('scala')), { saveAs: 'Main.scala', commands: [
+    { role: 'check', command: 'scalac Main.scala', source: 'catalog' },
+    { role: 'run', command: 'scala run Main.scala', source: 'https://docs.scala-lang.org/scala3/book/taste-hello-world.html' },
   ] });
   assert.deepEqual(JSON.parse(contract('kotlin')), { saveAs: 'Main.kt', commands: [
     { role: 'check', command: 'kotlinc Main.kt -include-runtime -d Main.jar', source: kotlinlang },
