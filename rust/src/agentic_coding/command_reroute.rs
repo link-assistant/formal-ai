@@ -574,7 +574,15 @@ impl StepFailure {
         // -- "Created and verified", with the failure quoted underneath (issue
         // #1133). The seed's failure lexicon already judges such text for the
         // narration path; a verification command's text is judged the same way.
-        if super::tool_result::failure_message(&reported, false, from_run).is_some() {
+        // Nested JSON event fields are data, not the surrounding process's own prose.
+        let prose = reported
+            .lines()
+            .filter(|line| serde_json::from_str::<serde_json::Value>(line).is_err())
+            .collect::<Vec<_>>()
+            .join("\n");
+        if super::tool_result::failure_message(&reported, false, false).is_some()
+            || super::tool_result::failure_message(&prose, false, from_run).is_some()
+        {
             return Some(Self {
                 exit_code: super::tool_result::reported_exit_code(&reported)
                     .and_then(|code| i32::try_from(code).ok()),
@@ -582,7 +590,7 @@ impl StepFailure {
                 from_run,
             });
         }
-        reports_failure_in_prose(&reported).then_some(Self {
+        reports_failure_in_prose(&prose).then_some(Self {
             reported,
             exit_code: None,
             from_run,

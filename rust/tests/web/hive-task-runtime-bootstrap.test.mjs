@@ -18,7 +18,8 @@ function observe({warm = false, installExit = 0, probeExit = 0} = {}) {
     }
     const dockerfile = taskRuntimeDockerfile('registry.invalid/heldout:runtime');
     const command = dockerfile.split('\n').find(line => line.startsWith('RUN if ')).slice(4);
-    const result = spawnSync('/bin/sh', ['-c', command], {encoding: 'utf8', timeout: 5000,
+    // The fake cleanup records the authored glob; it must not inspect host apt state.
+    const result = spawnSync('/bin/sh', ['-f', '-c', command], {encoding: 'utf8', timeout: 5000,
       env: {...process.env, PATH: scratch, FAKE_BIN: scratch, CALLS: calls,
         JAVA_STUB: java, INSTALL_EXIT: String(installExit), PROBE_EXIT: String(probeExit)}});
     return {status: result.status, calls: fs.existsSync(calls) ? fs.readFileSync(calls, 'utf8').trimEnd().split('\n') : [], dockerfile};

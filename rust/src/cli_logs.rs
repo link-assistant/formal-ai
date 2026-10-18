@@ -83,8 +83,8 @@ fn read_and_convert(arguments: &LogsArgs) -> io::Result<String> {
     convert(&input, from, arguments.format)
 }
 /// Both runtimes refuse malformed/truncated conversion with an empty stdout and exit2.
-pub fn run_logs(arguments: LogsArgs) {
-    let result = read_and_convert(&arguments)
+pub fn run_logs(arguments: &LogsArgs) {
+    let result = read_and_convert(arguments)
         .and_then(|output| io::stdout().lock().write_all(output.as_bytes()));
     if result.is_err() {
         formal_ai::diagnostic!("error"; "log_conversion_refused");

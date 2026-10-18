@@ -695,7 +695,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             draft_count,
         )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
-        Command::Logs(arguments) => cli_logs::run_logs(arguments),
+        Command::Logs(arguments) => cli_logs::run_logs(&arguments),
         Command::Provenance(arguments) => cli_provenance::run_provenance(arguments)?,
         Command::Translate {
             from,

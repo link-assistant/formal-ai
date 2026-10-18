@@ -518,6 +518,7 @@ fn server_diagnostic_drain_is_bounded_and_keeps_the_last_bytes() {
     let observed = tail.lock().unwrap();
     assert_eq!(observed.len(), DIAGNOSTIC_TAIL_BYTES);
     assert!(observed.ends_with(b"final diagnostic"));
+    drop(observed);
 }
 
 #[test]
@@ -549,4 +550,5 @@ fn server_diagnostic_teardown_does_not_wait_for_an_inherited_open_stream() {
     let retained = tail.lock().unwrap();
     assert_eq!(retained.len(), DIAGNOSTIC_TAIL_BYTES);
     assert!(retained.ends_with(b"final-marker"));
+    drop(retained);
 }

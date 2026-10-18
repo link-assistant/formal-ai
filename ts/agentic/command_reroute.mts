@@ -32,6 +32,7 @@ import { fill } from './work_item_steps.mjs';
 import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { trim } from './write_str.mjs';
+import { parseJson } from './crate/rust_str.mjs';
 
 /**
  * Mirrors `fn plan_symbolic_command_reroute`.
@@ -258,12 +259,14 @@ function reportedExitCode(output) {
 function stepFailureFromResult(reported, fromRun) {
   const exitCode = reportedExitCode(reported);
   if (exitCode !== null) return exitCode !== 0 ? { reported, exit_code: exitCode, from_run: fromRun } : null;
-  if (failureMessage(reported, false, fromRun) !== null && failureMessage(reported, false, fromRun) !== undefined) {
+  // Nested JSON event fields are data, not the surrounding process's own prose.
+  const prose = rustLines(reported).filter(line => parseJson(line) === undefined).join('\n');
+  if (failureMessage(reported, false, false) !== null || failureMessage(prose, false, fromRun) !== null) {
     const code = toolReportedExitCode(reported);
     const fits = typeof code === 'number' && code >= -2147483648 && code <= 2147483647;
     return { exit_code: fits ? code : null, reported, from_run: fromRun };
   }
-  return reportsFailureInProse(reported) ? { reported, exit_code: null, from_run: fromRun } : null;
+  return reportsFailureInProse(prose) ? { reported, exit_code: null, from_run: fromRun } : null;
 }
 
 const ABSENT_FIELD_VALUES = ['', '-', 'none', '(none)', 'empty', '(empty)', 'no output', '(no output)'];

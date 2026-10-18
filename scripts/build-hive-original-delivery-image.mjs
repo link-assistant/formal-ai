@@ -5,12 +5,17 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+export function taskRuntimeJavaHomeCommand() {
+  return 'runtime_java="$(command -v java)" && runtime_home="$(dirname "$(dirname "$(readlink -f "$runtime_java")")")" && test -x "$runtime_home/bin/java" && ln -s "$runtime_home" "$JAVA_HOME" && "$JAVA_HOME/bin/java" -version';
+}
 export function taskRuntimeDockerfile(runtimeImage) {
   return [
     'FROM ' + runtimeImage,
     'USER root',
     'COPY --chmod=0755 formal-ai-build/ /usr/local/lib/formal-ai-build/',
     'RUN if ! command -v java >/dev/null 2>&1; then FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh --no-install-recommends default-jre-headless; fi && java -version && rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build',
+    'ENV JAVA_HOME=/usr/local/lib/formal-ai-jvm',
+    'RUN ' + taskRuntimeJavaHomeCommand(),
     'COPY formal-ai-pr-binary /usr/local/bin/formal-ai',
     'RUN chmod 0755 /usr/local/bin/formal-ai && formal-ai --version',
     'ENV FORMAL_AI_INSTALL_GRANT=workspace',
@@ -51,6 +56,8 @@ export function main() {
     'hive-e2e:candidate', '/usr/local/bin/formal-ai']).split(/\s/u)[0];
   assert.equal(observed, binarySha256, 'actual task image must run this source-qualified binary');
   run('docker', ['run', '--rm', '--entrypoint', 'java', 'hive-e2e:candidate', '-version']);
+  run('docker', ['run', '--rm', '--entrypoint', '/bin/sh', 'hive-e2e:candidate', '-c',
+    'test -x "$JAVA_HOME/bin/java" && test "$(readlink -f "$JAVA_HOME/bin/java")" = "$(readlink -f "$(command -v java)")"']);
   const destination = process.env.E2E_LOG_DIR;
   assert(destination);
   fs.mkdirSync(destination, {recursive: true});
@@ -59,7 +66,7 @@ export function main() {
     runtimeImage: inputs.taskRuntimeImage, runtimeImageId: imageIdentity.Id,
     runtimeImageDigests: imageIdentity.RepoDigests, actualTaskImageBinarySha256: observed,
     transportAdapter: JSON.parse(fs.readFileSync(path.join(hive, '.formal-ai-transport-adapter.json'))),
-    sameRunBinary: true, runtimeBootstrap: {package: 'default-jre-headless', scope: 'image-build', compilerPackagesAdded: []}, authorshipCredit: 0,
+    sameRunBinary: true, runtimeBootstrap: {package: 'default-jre-headless', scope: 'image-build', javaHome: '/usr/local/lib/formal-ai-jvm', compilerPackagesAdded: []}, authorshipCredit: 0,
   }) + '\n');
   console.log('Actual task image binary verified against this Formal AI source build.');
 }

@@ -7,13 +7,15 @@ use std::path::{Path, PathBuf};
 pub(super) fn registered_paths(root: &Path, directory: &Path) -> Result<BTreeSet<PathBuf>, String> {
     let Some(crate_root) = directory
         .ancestors()
-        .find(|base| base.join("src/lib.rs").is_file())
+        .find(|base| base.join("src/lib.rs").is_file() || base.join("src/main.rs").is_file())
     else {
         return Ok(BTreeSet::new());
     };
     let root = root.canonicalize().map_err(|error| error.to_string())?;
     let mut visited = BTreeSet::new();
-    walk_file(&root, &crate_root.join("src/lib.rs"), None, &mut visited)?;
+    for entry in ["src/lib.rs", "src/main.rs"] {
+        walk_file(&root, &crate_root.join(entry), None, &mut visited)?;
+    }
     Ok(visited)
 }
 
@@ -182,4 +184,42 @@ mod tests {
         );
         fs::remove_dir_all(root).unwrap();
     }
+}
+
+#[cfg(test)]
+#[test]
+fn binary_root_owns_external_test_children_without_a_library() {
+    let stamp = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_nanos();
+    let root = std::env::temp_dir().join(format!("binary-module-owner-{stamp}"));
+    fs::create_dir_all(root.join("src")).unwrap();
+    fs::create_dir_all(root.join("tests/unit")).unwrap();
+    fs::write(root.join("src/main.rs"), "mod cli;\nfn main() {}\n").unwrap();
+    fs::write(
+        root.join("src/cli.rs"),
+        "#[cfg(test)]\n#[path = \"../tests/unit/child.rs\"]\nmod child;\n",
+    )
+    .unwrap();
+    fs::write(root.join("tests/unit/child.rs"), "// real binary child\n").unwrap();
+    let child = root.join("tests/unit/child.rs").canonicalize().unwrap();
+    assert!(
+        registered_paths(&root, &root.join("tests/unit"))
+            .unwrap()
+            .contains(&child)
+    );
+    fs::write(root.join("src/lib.rs"), "// independent library\n").unwrap();
+    assert!(
+        registered_paths(&root, &root.join("tests/unit"))
+            .unwrap()
+            .contains(&child)
+    );
+    fs::write(root.join("src/main.rs"), "// mod cli;\nfn main() {}\n").unwrap();
+    assert!(
+        !registered_paths(&root, &root.join("tests/unit"))
+            .unwrap()
+            .contains(&child)
+    );
+    fs::remove_dir_all(root).unwrap();
 }

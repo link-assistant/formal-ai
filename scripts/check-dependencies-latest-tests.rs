@@ -482,3 +482,25 @@ fn drift_is_numeric_at_the_pinned_precision() {
     assert_eq!(docker_tag_at_precision("24.04", "26.04"), "26.04");
     assert_eq!(docker_tag_at_precision("2.10.2", "2.11.0"), "2.11.0");
 }
+
+#[test]
+fn uses_pins_decode_quoted_scalars_and_preserve_comment_boundaries() {
+    for text in [
+        "uses: owner/action@v3 # release note",
+        "uses: 'owner/action@v3' # note",
+        "uses: \"owner/action@v3\" # note",
+        "uses: owner/action@v3\t# note",
+    ] {
+        assert_eq!(
+            parse_uses_pins(text),
+            vec![("owner/action".to_owned(), "v3".to_owned(), 1)]
+        );
+    }
+    assert_eq!(
+        parse_uses_pins("uses: 'owner/action@tag#literal' # comment")[0].1,
+        "tag#literal"
+    );
+    assert!(parse_uses_pins("uses: 'owner/action@unterminated").is_empty());
+    assert!(parse_uses_pins("uses: ./local/action # note").is_empty());
+    assert!(parse_uses_pins("uses: docker://alpine:3 # note").is_empty());
+}

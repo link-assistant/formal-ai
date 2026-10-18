@@ -1123,12 +1123,8 @@ async function loadSeed() {
       ) {
         PERSONA_SEEDS = seed.personas;
       }
-      if (
-        seed &&
-        seed.coreferenceSeeds &&
-        Array.isArray(seed.coreferenceSeeds.pronouns) &&
-        seed.coreferenceSeeds.pronouns.length > 0
-      ) {
+      if (Array.isArray(seed?.coreferenceSeeds?.pronouns) &&
+          seed.coreferenceSeeds.pronouns.length > 0) {
         COREFERENCE_SEEDS = seed.coreferenceSeeds;
       }
       if (Array.isArray(seed && seed.tools) && seed.tools.length > 0) {
