@@ -41,11 +41,16 @@ terminal_commands
       verb run
       verb execute
     language hi
+      position after-command
       verb चलाओ
       verb चलाएं
       verb चलाएँ
       verb चलाइए
       verb निष्पादित
+    language es
+      verb ejecuta
+      verb ejecute
+      verb ejecutar
   cjk_run_verbs
     verb 运行
     verb 执行
@@ -80,6 +85,10 @@ terminal_commands
       prefix "运行 powershell"
       prefix 执行
       prefix 运行
+    language es
+      prefix ejecuta
+      prefix ejecute
+      prefix ejecutar
   command_nouns
     language en
       noun command

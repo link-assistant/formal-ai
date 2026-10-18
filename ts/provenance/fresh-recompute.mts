@@ -3,12 +3,17 @@
 import path from 'node:path';
 import fileSystem from 'node:fs';
 import {withEvidenceContext}from './capture-context.mjs';
-import {verifyDriveEvidence,regularEvidenceBytes,retainedEvidenceBytes}from './verify-drive.mjs';
-import {readBoundedRuntimeFile}from './fresh-runtime.mjs';
+import {verifyDriveEvidence,regularEvidenceBytes,retainedEvidenceBytes,firstEvidenceRecord}from './verify-drive.mjs';
+import {readBoundedRuntimeFile,normalizeRuntimeRequests}from './fresh-runtime.mjs';
 import {decodeTyped,encodeTyped}from '../logging/typed-codec.mjs';
 import {blake3Hex}from '../crypto/blake3.mjs';
 import {logicalMemoryStep}from './memory-evidence.mjs';
-import {projectDriverDispatch}from '../../experiments/js_dogfood/drive.mjs';
+import {projectDriverDispatch,projectDriverHistory}from '../../experiments/js_dogfood/drive.mjs';
+export function verifyCallerRequestObservation(recorded,index,request,sourceMaintenanceOwnership){
+ if(!request||!recorded||!Object.hasOwn(recorded,'sourceMaintenanceOwnership')
+  ||encodeTyped(recorded)!==encodeTyped({index,...request,sourceMaintenanceOwnership}))throw Error('FreshReplayCallerRequestMismatch');
+ return recorded;
+}
 export async function recomputeFreshRun(configuration,engine){
  const input=path.resolve(configuration.replayInput);
  const bundle=JSON.parse(readBoundedRuntimeFile(path.dirname(input),path.basename(input),2*1024*1024).toString('utf8'));
@@ -50,9 +55,24 @@ export async function recomputeFreshRun(configuration,engine){
   await engine.worker.run('0');
   const session=engine.host().sourceSession;
   if(!session||typeof session.run!=='function')throw Error('FreshReplaySourceSessionRequired');
-  await session.run({request:configuration.prompt,workspace:configuration.workspace,tools:bundle.tools},async()=>{
-   for(let index=0;index<records.length;index++){
-    const record=records[index];
+  const declared=normalizeRuntimeRequests(observed.request.prompt,observed.request.steps,observed.requests);
+  const markers=records.filter(record=>record.kind==='caller_request');
+  const groups=markers.length?markers.map((marker,index)=>{
+   const request=declared[index],recorded=JSON.parse(retained(marker.payload.evidence).toString('utf8'));
+   if(!request||marker.payload.index!==index)throw Error('FreshReplayCallerRequestMismatch');
+   verifyCallerRequestObservation(recorded,index,request,engine.ownedSourceMaintenanceRequest(request.prompt));
+   const start=records.indexOf(marker)+1,end=index+1<markers.length?records.indexOf(markers[index+1]):records.length;
+   return{request,records:records.slice(start,end)};
+  }):[{request:declared[0],records}];
+  if(markers.length&&markers.length!==declared.length||!markers.length&&declared.length!==1)throw Error('FreshReplayCallerRequestCount');
+  for(const group of groups){
+   const request=group.request,requestRecords=group.records;
+   const firstInput=firstEvidenceRecord(requestRecords,'message_in');
+   if(!firstInput)throw Error('FreshReplayCallerInputMissing');
+   const tools=JSON.parse(retained(firstInput.payload.evidence).toString('utf8')).tools;
+   await session.run({request:request.prompt,workspace:configuration.workspace,tools},async()=>{
+    for(let index=0;index<requestRecords.length;index++){
+    const record=requestRecords[index];
     if(record.kind==='engine_genesis'){
      const recorded=JSON.parse(retained(record.payload.evidence).toString('utf8'));
      for(const field of ['sources','inputs']){
@@ -86,8 +106,8 @@ export async function recomputeFreshRun(configuration,engine){
     }
     if(record.kind==='message_out'){
      if(cycle===null)throw Error('FreshReplayOutputOrder');
-     const dispatched=projectDriverDispatch(cycle.raw,{prompt:configuration.prompt,tools:cycle.input.tools,
-      scoped:cycle.input.messages,verificationHistory:cycle.input.messages,sourceSession:session});
+     const dispatched=projectDriverDispatch(cycle.raw,{prompt:request.prompt,tools:cycle.input.tools,
+      scoped:cycle.input.messages,verificationHistory:projectDriverHistory(cycle.input.messages,[]),sourceSession:session});
      const bytes=Buffer.from(JSON.stringify(dispatched));
      if(blake3Hex(bytes)!==record.payload.evidence.blake3)throw Error('FreshReplayDispatchedPlanMismatch');
      const transitionRecord=records.find(item=>item.hash===record.payload.memoryTransition);
@@ -96,7 +116,8 @@ export async function recomputeFreshRun(configuration,engine){
      comparisons.push({message:record.hash,output:'matched',state:'matched'});cycle=null;
     }
    }
-  });
+   });
+  };
   if(cycle!==null||pendingSolves.length||inputCount<1||inputCount!==outputCount||planningCount<1)throw Error('FreshReplayIncomplete');
   if(expectedGenesis===null||encodeTyped(observedGenesis)!==encodeTyped(expectedGenesis))throw Error('FreshReplayGenesisMismatch');
   const final=memory.snapshot();

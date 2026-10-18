@@ -24,6 +24,8 @@ pub struct TerminalCommandVocabulary {
     pub terminal_phrases: Vec<String>,
     /// Run/execute verbs for space-delimited scripts (word-token matched).
     pub run_verbs: Vec<String>,
+    /// Verbs whose declared grammar also allows execution after the command.
+    pub postposed_run_verbs: Vec<String>,
     /// Chinese run/execute verbs (substring-matched — CJK has no word breaks).
     pub cjk_run_verbs: Vec<String>,
     /// Explicit command-introducing prefixes whose complete remainder is passed
@@ -50,7 +52,20 @@ pub fn terminal_command_vocabulary() -> TerminalCommandVocabulary {
     for group in &root.children {
         match group.name.as_str() {
             "terminal_phrases" => vocab.terminal_phrases = collect_language_values(group, "phrase"),
-            "run_verbs" => vocab.run_verbs = collect_language_values(group, "verb"),
+            "run_verbs" => {
+                vocab.run_verbs = collect_language_values(group, "verb");
+                vocab.postposed_run_verbs = group
+                    .children
+                    .iter()
+                    .filter(|language| {
+                        language.name == "language"
+                            && language.children.iter().any(|attribute| {
+                                attribute.name == "position" && attribute.id == "after-command"
+                            })
+                    })
+                    .flat_map(|language| collect_values(language, "verb"))
+                    .collect();
+            }
             "cjk_run_verbs" => vocab.cjk_run_verbs = collect_values(group, "verb"),
             "passthrough_prefixes" => {
                 vocab.passthrough_prefixes = collect_language_values(group, "prefix");

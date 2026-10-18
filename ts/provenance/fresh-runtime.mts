@@ -25,7 +25,7 @@ export function collectRuntimeObservation(directory){
    const bytes=readBoundedRuntimeFile(directory,row.file,Math.min(4*1024*1024,32*1024*1024-total));
    total+=bytes.length;if(total>32*1024*1024||bytes.length!==row.size)throw Error('RuntimeSourceBudgetOrSize');
    if(crypto.createHash('sha256').update(bytes).digest('hex')!==row.sha256)throw Error('RuntimeSourceDigest');
-   sources.push({url:row.url,format:row.format,boundary:row.boundary,blake3:blake3Hex(bytes),size:bytes.length,
+   sources.push({journal:name,sequence:row.sequence,url:row.url,format:row.format,boundary:row.boundary,blake3:blake3Hex(bytes),size:bytes.length,
     bytes:bytes.toString('base64')});
   }
  }
@@ -54,9 +54,28 @@ export function observeRuntimeExecutable(){
    boundary:'opened-executable-file-bytes-before-and-after-child',trust:'ordinary-host-file-custody-not-os-attestation'};
  }finally{fs.closeSync(descriptor);}
 }
+// Constructor-owned caller input; recorded requests never confer new tool capabilities.
+export function normalizeRuntimeRequests(prompt,steps,requests){
+ if(typeof prompt!=='string'||!Number.isSafeInteger(steps)||steps<1||steps>100)throw Error('FreshRuntimeRequestInvalid');
+ if(requests===undefined)return[{prompt,steps}];
+ if(!Array.isArray(requests)||requests.length<1||requests.length>32)throw Error('FreshRuntimeRequestSequenceInvalid');
+ const sequence=requests.map(request=>{
+  if(!request||typeof request!=='object'||Array.isArray(request)
+   ||Object.keys(request).some(key=>!['prompt','steps'].includes(key)))throw Error('FreshRuntimeRequestSequenceInvalid');
+  const promptField=Object.getOwnPropertyDescriptor(request,'prompt'),stepsField=Object.getOwnPropertyDescriptor(request,'steps');
+  if(!promptField||!('value' in promptField)||typeof promptField.value!=='string'
+   ||!stepsField||!('value' in stepsField)||!Number.isSafeInteger(stepsField.value)
+   ||stepsField.value<1||stepsField.value>100)throw Error('FreshRuntimeRequestSequenceInvalid');
+  return{prompt:promptField.value,steps:stepsField.value};
+ });
+ if(sequence[0].prompt!==prompt||sequence[0].steps!==steps)throw Error('FreshRuntimeRequestSequenceBinding');
+ return sequence;
+}
 export function captureFreshPlannerRun(options=null){
  if(!options||typeof options!=='object')throw Error('FreshRuntimeRequestInvalid');
- const {directory,workspace,prompt,steps=12,signing,memoryFile,taskURL}=options;
+ const {directory,workspace,prompt,steps=12,signing,memoryFile,taskURL,requests,atomicRecordAppend=false}=options;
+ if(typeof atomicRecordAppend!=='boolean')throw Error('FreshRuntimeAppendContractInvalid');
+ const requestSequence=normalizeRuntimeRequests(prompt,steps,requests);
  if((memoryFile===undefined)!==(taskURL===undefined)
    ||(memoryFile!==undefined&&(typeof memoryFile!=='string'||typeof taskURL!=='string')))throw Error('FreshMemoryConfigurationRequired');
  if(typeof directory!=='string'||typeof workspace!=='string'||typeof prompt!=='string'
@@ -76,7 +95,8 @@ export function captureFreshPlannerRun(options=null){
  }
  const resultFile=path.join(owned,'result.json'),configFile=path.join(owned,'config.json');
  if(options.replayInput!==undefined&&typeof options.replayInput!=='string')throw Error('FreshRuntimeReplayInput');
- const configuration={repository,workspace:work,prompt,steps,transportDirectory,resultFile,runtimeExecutable:executable,bootstrapArtifacts:bootstrap,
+ const configuration={repository,workspace:work,prompt,steps,transportDirectory,resultFile,runtimeExecutable:executable,atomicRecordAppend,
+  ...(requests===undefined?{}:{requests:requestSequence}),bootstrapArtifacts:bootstrap,
   ...(options.replayInput===undefined?{}:{replayInput:options.replayInput}),
   ...(memoryFile!==undefined?{memoryFile,taskURL}:{}),
   provenance:{directory:path.join(owned,'evidence'),...(signing?{signing}:{})}};

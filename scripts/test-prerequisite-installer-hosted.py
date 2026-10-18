@@ -130,4 +130,21 @@ class InstallerControls(unittest.TestCase):
         request,responses,_=self.fixture();responses[request['publisher']['documentation']]=b'<a href="/one/2.10.0.html">Current release</a><a href="/two/2.10.0.html">Current release</a>'
         with self.assertRaisesRegex(ValueError,'current_documentation_ambiguous'): self.run_fixture(request,responses)
 
+
+    def test_receipt_document_digest_binds_final_observed_document(self):
+        for hopped in (False,True):
+            request,responses,_=self.fixture()
+            documentation=request['publisher']['documentation']
+            if hopped:
+                final='https://publisher.invalid/releases/5.2.0.html'
+                responses[final]=responses[documentation]
+                responses[documentation]=b'<a href="/releases/5.2.0.html">Current Version</a>'
+            else:
+                final=documentation
+            self.run_fixture(request,responses)
+            prefix=next(pathlib.Path('.formal-ai/toolchains').glob('heldout-compiler-*'))
+            receipt=json.loads((prefix/'formal-ai-install-receipt.json').read_text())
+            self.assertEqual(receipt['documentation'],final)
+            self.assertEqual(receipt['document_sha256'],hashlib.sha256(responses[final]).hexdigest())
+
 if __name__=='__main__': unittest.main()

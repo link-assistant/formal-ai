@@ -10,7 +10,7 @@ fn actual_tracing_events_reuse_spans_and_preserve_types_without_stdout() {
             observed
                 .lock()
                 .unwrap()
-                .push((level.to_owned(), target.to_owned(), message, fields))
+                .push((level.to_owned(), target.to_owned(), message, fields));
         }),
     };
     tracing::subscriber::with_default(subscriber, || {

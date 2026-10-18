@@ -14,6 +14,9 @@ const {openMemoryCustody}=await load('js/server/provenance-memory.mjs');
 const {setLearnedImporter}=await load('js/server/meta-learned.mjs');
 const {packageVersion}=await load('js/server/seed.mjs');
 const {host}=await load('js/agentic/host.mjs');
+const {ownedSourceMaintenanceRequest}=await load('js/agentic/source_maintenance.mjs');
+// Retain the actual canonical replay implementation before the first source inventory.
+const {recomputeFreshRun}=await load('js/provenance/fresh-recompute.mjs');
 // This explicit JS-engine profile cannot execute the Formal AI WASM product.
 const worker=new WorkerHost({WebAssembly:{
  compile(){throw Error('ProductWasmDisabledByRuntimeProfile');},
@@ -22,5 +25,5 @@ const worker=new WorkerHost({WebAssembly:{
 }},{provenance:true});
 await installNodeHost(worker);
 setLearnedImporter(statements=>worker.run('metaImportLearned(__learned)',{__learned:statements}));
-return{worker,planChatStep,drive,withDriveCapture,activeDriveCapture,collectRuntimeObservation,blake3Hex,openMemoryCustody,packageVersion,host};
+return{worker,planChatStep,drive,withDriveCapture,activeDriveCapture,collectRuntimeObservation,blake3Hex,openMemoryCustody,packageVersion,host,recomputeFreshRun,ownedSourceMaintenanceRequest};
 }

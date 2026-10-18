@@ -41,9 +41,9 @@ pub(super) fn target_of(request: &str) -> Option<CommitTarget> {
     let binding_refused = matches!(binding, RequestTargetBinding::Refused);
     let branch = named_branch(request);
     Some(CommitTarget {
+        binding_refused,
         branch,
         reference,
-        binding_refused,
     })
 }
 
@@ -78,14 +78,20 @@ pub(super) fn valid_branch_target(value: &str) -> bool {
         && !value
             .chars()
             .any(|ch| ch <= ' ' || ch == '\u{7f}' || "~^:?*[\\".contains(ch))
-        && value
-            .split('/')
-            .all(|part| !part.is_empty() && !part.starts_with('.') && !part.ends_with(".lock"))
+        && value.split('/').all(|part| {
+            !part.is_empty()
+                && !part.starts_with('.')
+                && std::path::Path::new(part).extension() != Some(std::ffi::OsStr::new("lock"))
+        })
 }
 
 pub(super) fn valid_workflow_target(value: &str) -> bool {
     let lower = value.to_lowercase();
-    (lower.ends_with(".yml") || lower.ends_with(".yaml"))
+    let file = std::path::Path::new(&lower);
+    (file.extension().is_some_and(|extension| {
+        extension == std::ffi::OsStr::new("yml") || extension == std::ffi::OsStr::new("yaml")
+    }) || file.file_name() == Some(std::ffi::OsStr::new(".yml"))
+        || file.file_name() == Some(std::ffi::OsStr::new(".yaml")))
         && !value.starts_with('/')
         && !value
             .chars()
@@ -400,108 +406,9 @@ fn porcelain_entry(line: &str) -> Option<(&str, &str)> {
 }
 
 #[cfg(test)]
-mod target_binding_controls {
-    use super::*;
+#[path = "../../tests/unit/agentic-coding/git_commit_target_binding.rs"]
+mod target_binding_controls;
 
-    #[test]
-    fn positive_owned_branch_bindings_preserve_the_five_original_languages() {
-        for request in [
-            "Keep the solution on branch feature/held-out.",
-            "Держи решение в ветке feature/held-out.",
-            "समाधान को शाखा feature/held-out पर रखें।",
-            "将解决方案保留在分支 feature/held-out 上。",
-            "Mantén la solución en la rama feature/held-out.",
-        ] {
-            assert_eq!(named_branch(request).as_deref(), Some("feature/held-out"));
-        }
-        assert_eq!(
-            named_branch(
-                "A branch so observers can inspect it.\nYour prepared branch: feature/held-out"
-            )
-            .as_deref(),
-            Some("feature/held-out")
-        );
-        assert_eq!(named_branch("Use branch so").as_deref(), Some("so"));
-    }
-
-    #[test]
-    fn quoted_ambiguous_negative_and_invalid_targets_never_become_a_push_target() {
-        assert!(matches!(
-            request_target_binding(
-                "Use branch one\nUse branch two",
-                "branch-binding-patterns",
-                valid_branch_target
-            ),
-            RequestTargetBinding::Refused
-        ));
-        assert!(matches!(
-            request_target_binding(
-                "Do not use branch one",
-                "branch-binding-patterns",
-                valid_branch_target
-            ),
-            RequestTargetBinding::Refused
-        ));
-        assert!(matches!(
-            request_target_binding(
-                "Use branch one\nDo not use branch one",
-                "branch-binding-patterns",
-                valid_branch_target
-            ),
-            RequestTargetBinding::Refused
-        ));
-        assert!(matches!(
-            request_target_binding(
-                "\"Use branch foreign\"",
-                "branch-binding-patterns",
-                valid_branch_target
-            ),
-            RequestTargetBinding::Absent
-        ));
-        for target in [
-            "bad..ref",
-            "bad.lock",
-            "a/.hidden",
-            "a//b",
-            "bad@{x",
-            "-option",
-            "bad ref",
-            "a\\b",
-            "a/",
-            "a.",
-        ] {
-            assert!(!valid_branch_target(target), "{target}");
-        }
-    }
-
-    #[test]
-    fn requested_yaml_destinations_are_bound_without_replacing_them_with_a_default() {
-        for target in [
-            "ci/test-hello-world.yml",
-            "checks/nested/held-out.yaml",
-            ".github/workflows/check.yml",
-        ] {
-            let request = format!("Save the workflow as {target}");
-            assert!(
-                matches!(request_target_binding(&request, "workflow-binding-patterns", valid_workflow_target), RequestTargetBinding::Bound(value) if value == target)
-            );
-        }
-        assert!(matches!(
-            request_target_binding(
-                "Do not save the workflow as ci/foreign.yml",
-                "workflow-binding-patterns",
-                valid_workflow_target
-            ),
-            RequestTargetBinding::Refused
-        ));
-        for target in [
-            "../escape.yml",
-            "/absolute.yml",
-            "ci//file.yaml",
-            "ci/./file.yaml",
-            "ci/a;touch.yml",
-        ] {
-            assert!(!valid_workflow_target(target), "{target}");
-        }
-    }
-}
+#[cfg(test)]
+#[path = "../../tests/unit/agentic-coding/git_commit_extension_identity.rs"]
+mod extension_identity_tests;

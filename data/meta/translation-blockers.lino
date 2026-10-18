@@ -19,13 +19,13 @@ translation_blockers
   blockers_per_item 3 281
   blockers_per_item 4 216
   blockers_per_item 5 203
-  blockers_per_item 6 136
+  blockers_per_item 6 135
   blockers_per_item 7 108
   blockers_per_item 8 79
   blockers_per_item 9 84
   blockers_per_item 10 57
   blockers_per_item 11 43
-  blockers_per_item 12 31
+  blockers_per_item 12 32
   blockers_per_item 13 17
   blockers_per_item 14 27
   blockers_per_item 15 19
@@ -58,14 +58,14 @@ construct "method call .map()" items 267 only 0
 construct "method call .slice()" items 263 only 6
 construct "JSDoc type {…}" items 252 only 5
 construct "arrow callback of .map()" items 251 only 0
-construct "method call .filter()" items 244 only 0
+construct "method call .filter()" items 245 only 0
 construct "regular expression" items 225 only 34
 construct "sibling value" items 207 only 16
-construct "arrow callback of .filter()" items 205 only 0
+construct "arrow callback of .filter()" items 206 only 0
 construct "nullish coalescing" items 191 only 0
 construct "method call .join()" items 171 only 0
-construct "method call .some()" items 165 only 0
-construct "arrow callback of .some()" items 157 only 0
+construct "method call .some()" items 166 only 0
+construct "arrow callback of .some()" items 158 only 0
 construct "undefined" items 157 only 0
 construct "import from outside the module directory" items 151 only 151
 construct "method call .split()" items 146 only 0
@@ -93,11 +93,11 @@ construct "try statement" items 57 only 0
 construct "arrow callback of .every()" items 55 only 0
 construct "object spread" items 45 only 0
 construct "global value Boolean" items 43 only 0
-construct "method call .flatMap()" items 42 only 0
+construct "method call .flatMap()" items 43 only 0
 construct "arrow callback of .reduce()" items 36 only 0
 construct "method call .reduce()" items 36 only 0
+construct "arrow callback of .flatMap()" items 35 only 0
 construct "Object.freeze" items 34 only 0
-construct "arrow callback of .flatMap()" items 34 only 0
 construct "let without a value" items 33 only 0
 construct "Array.isArray" items 32 only 0
 construct "method call .pop()" items 30 only 0
@@ -392,4 +392,4 @@ unlock 21 "method call .replace()" unlocked 21 cumulative 1157
 unlock 22 "method call .join()" unlocked 20 cumulative 1177
 unlock 23 "Array.from" unlocked 26 cumulative 1203
 unlock 24 "destructuring" unlocked 16 cumulative 1219
-unlock 25 "assignment of a field or element" unlocked 30 cumulative 1249
+unlock 25 "assignment of a field or element" unlocked 29 cumulative 1248

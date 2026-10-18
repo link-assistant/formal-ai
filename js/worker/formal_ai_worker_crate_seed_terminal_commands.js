@@ -3,32 +3,33 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/seed_terminal_commands.mjs"] = (crateRequire) => {
 // `crate::seed::terminal_command_vocabulary` (rust/src/seed/terminal_commands.rs),
 // read from data/seed/terminal-commands.lino.
-
 const { cached, readText } = crateRequire("host.mjs");
 const { parseRoot } = crateRequire("crate/seed_parser.mjs");
-
 const collectValues = (group, name) => (group.children || []).filter((child) => child.name === name).map((child) => child.value);
-
 const collectLanguageValues = (group, name) => (group.children || [])
   .filter((child) => child.name === 'language')
   .flatMap((language) => collectValues(language, name));
-
 /** Mirrors `fn terminal_command_vocabulary`. */
 function terminalCommandVocabulary() {
   return cached('terminal-command-vocabulary', () => {
     const vocab = {
-      terminal_phrases: [], run_verbs: [], cjk_run_verbs: [], passthrough_prefixes: [], command_nouns: [],
+      terminal_phrases: [], run_verbs: [], postposed_run_verbs: [], cjk_run_verbs: [], passthrough_prefixes: [], command_nouns: [],
       bare_shell_tokens: [], shell_tokens: [],
     };
     const root = parseRoot(readText('data/seed/terminal-commands.lino')).children[0];
     if (!root) return vocab;
     for (const group of root.children || []) {
       if (group.name === 'terminal_phrases') vocab.terminal_phrases = collectLanguageValues(group, 'phrase');
-      else if (group.name === 'run_verbs') vocab.run_verbs = collectLanguageValues(group, 'verb');
+      else if (group.name === 'run_verbs') {
+        vocab.run_verbs = collectLanguageValues(group, 'verb');
+        vocab.postposed_run_verbs = (group.children || [])
+          .filter(language => language.name === 'language' && (language.children || [])
+            .some(attribute => attribute.name === 'position' && attribute.value === 'after-command'))
+          .flatMap(language => collectValues(language, 'verb'));
+      }
       else if (group.name === 'cjk_run_verbs') vocab.cjk_run_verbs = collectValues(group, 'verb');
       else if (group.name === 'passthrough_prefixes') vocab.passthrough_prefixes = collectLanguageValues(group, 'prefix');
       else if (group.name === 'command_nouns') vocab.command_nouns = collectLanguageValues(group, 'noun');
@@ -38,7 +39,6 @@ function terminalCommandVocabulary() {
     return vocab;
   });
 }
-
 return Object.freeze({
   terminalCommandVocabulary,
 });

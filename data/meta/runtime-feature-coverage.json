@@ -4,7 +4,7 @@
     {"path":"rust/src/main.rs","sha256":"53da54d6197125a8ba9f0cc49dc24525e6f64498d21e2a020cab862704fc045e"},
     {"path":"js/server/main.mjs","sha256":"7ffe924fc404ce75d1d556570c8b67a4cca198679c014cfa3f7d7ea620c0bb93"},
     {"path":"js/agentic/orchestration_cli.mjs","sha256":"bddd5ce346266f61e14de5a4a7052a087588cd4b0f3d337bc1b0763caa106e84"},
-    {"path":"js/provenance/cli.mjs","sha256":"1316215bea1ed3c531f85f668536af0176b9e6e01d4a764b9e5c2088d3fa7ccb"},
+    {"path":"js/provenance/cli.mjs","sha256":"0afc375132626e56edcb82f6e88e4363c7154172e22762df072b23e44fc41c69"},
     {"path":"js/server/memory-upgrade.mjs","sha256":"ce7f8eb10e08ad7460a6ea8fa7485ae5f4c0470a5d47f4caf5e673157c29123c"},
     {"path":"data/meta/server-routes.lino","sha256":"172ee9dabe3500eecc6f56e01a74919fdd37bcd22b92628d5795c74dfa4ab678"},
     {"path":"js/server/dispatch.mjs","sha256":"faeb5be6a02b90c5f8d758df389e2f575da72f40c94abd70c5304d6302b10ef3"},

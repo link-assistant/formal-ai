@@ -24,7 +24,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { types as nodeTypes } from 'node:util';
 import { queryOwnedInferredCommandPolicy, registeredSourceReferenceReadPlan, consumeRegisteredSourceReference } from '../../js/server/node-source-session-host.mjs';
 import { sourceOwnedOptionalCommand } from '../../js/agentic/module_function.mjs';
-import { appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
+import { APPEND_MODE, appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
 import { exclusiveCreate } from './exclusive-create.mjs';
 import { ownsCompleteLiteralRequest, ownedAdditiveLiteralFrame, ownedDeclaredCreateFrame, goalLedger } from '../../js/agentic/planner/owned_goals.mjs';
@@ -314,6 +314,19 @@ export async function drive(planChatStep,dir,prompt,options={}) {
  return driveInternal(planChatStep,dir,prompt,options);
 }
 /** The actual driver plan projection; replay uses the same decision owner. */
+export function projectDriverHistory(messages,definitions){
+  return projectAppendContracts(messages, definitions).map(message => ({
+      ...message,
+      // Wire records are callback data; opaque provider tokens retain their identity.
+      ...(message.tool_calls ? { tool_calls: message.tool_calls.map(call => ({
+        ...call, function: { ...call.function },
+      })) } : {}),
+      ...(message.source_read ? { source_read: { ...message.source_read } } : {}),
+      ...(message.source_creation ? { source_creation: { ...message.source_creation } } : {}),
+      ...(message.append_receipt ? { append_receipt: { ...message.append_receipt } } : {}),
+    }));
+}
+
 export function projectDriverDispatch(plan,{prompt,tools,scoped,verificationHistory,sourceSession}){
     try {
       const optional = sourceOwnedOptionalCommand(plan, prompt, tools, scoped, verificationHistory);
@@ -522,17 +535,8 @@ async function driveInternal(planChatStep, dir, prompt, {
     // the symbolic command reroute may still turn that answer into tool calls
     // (js/server/agentic.mjs commandReroutePlan).
     const contracts = atomicRecordAppend && tools.includes('write') ? [appendDefinition('write')] : [];
-    const projectHistory = definitions => projectAppendContracts(messages, definitions).map(message => ({
-      ...message,
-      // Wire records are callback data; opaque provider tokens retain their identity.
-      ...(message.tool_calls ? { tool_calls: message.tool_calls.map(call => ({
-        ...call, function: { ...call.function },
-      })) } : {}),
-      ...(message.source_read ? { source_read: { ...message.source_read } } : {}),
-      ...(message.source_creation ? { source_creation: { ...message.source_creation } } : {}),
-      ...(message.append_receipt ? { append_receipt: { ...message.append_receipt } } : {}),
-    }));
-    const scoped = projectHistory(contracts);
+
+    const scoped = projectDriverHistory(messages,contracts);
     if (sourceReferencePrerequisite !== null && step > 0
         && planChatStep === maintainedPlanChatStep && fallthrough === null) {
       try {
@@ -545,7 +549,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       }
     }
     activeDriveCapture()?.input(scoped,tools);
-    let plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(projectHistory([]), tools) : null);
+    let plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(projectDriverHistory(messages,[]), tools) : null);
     activeDriveCapture()?.plannerResponse(plan);
     if (sourceReferencePrerequisite !== null && step === 0) {
       const current = registeredSourceReferenceReadPlan(prompt, policyWorkspace, tools);
@@ -558,7 +562,7 @@ async function driveInternal(planChatStep, dir, prompt, {
         return { transcript, answer: null, stop: 'unbound-source-reference-prerequisite', toolsAdvertised: tools };
       }
     }
-    plan=projectDriverDispatch(plan,{prompt,tools,scoped,verificationHistory:projectHistory(contracts),sourceSession});
+    plan=projectDriverDispatch(plan,{prompt,tools,scoped,verificationHistory:projectDriverHistory(messages,contracts),sourceSession});
     emitDriveEvent({kind:'plan',plan});
     activeDriveCapture()?.output(plan);
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
@@ -572,7 +576,7 @@ async function driveInternal(planChatStep, dir, prompt, {
         return { transcript, answer: current.answer, stop: 'final', toolsAdvertised: tools };
       }
       if (createContract !== null) {
-        const ownedFinal = await maintainedResolvedStep(messages, tools);
+        const ownedFinal = await maintainedResolvedStep(projectDriverHistory(messages,contracts), tools);
         if (ownedFinal?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-create-operation', toolsAdvertised: tools };
         return { transcript, answer: ownedFinal.answer, stop: 'final', toolsAdvertised: tools };
       }
@@ -622,11 +626,12 @@ async function driveInternal(planChatStep, dir, prompt, {
     const toolCalls = calls.map((call, index) => ({
       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
     }));
+    const authorizedAppendCalls=new Set();
     if (createContract !== null && !sameWorkspace()) {
       return { transcript, answer: null, stop: 'changed-create-workspace', toolsAdvertised: tools };
     }
     if (createContract !== null) {
-      const livePlan = await maintainedResolvedStep(messages, tools);
+      const livePlan = await maintainedResolvedStep(projectDriverHistory(messages,contracts), tools);
       if (livePlan === null || livePlan.kind !== 'tool_calls') {
         return { transcript, answer: livePlan?.kind === 'final' ? livePlan.answer : null,
           stop: livePlan?.kind === 'final' ? 'final' : 'unbound-create-operation', toolsAdvertised: tools };
@@ -634,6 +639,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       // Operation identity belongs to the maintained current source plan.
       // Raw request frames still bind exclusive target and authored bytes.
       const expectedCalls = livePlan.calls;
+      const matchesMaintainedCall=call=>expectedCalls.some(owned=>owned.tool===call.tool&&owned.arguments===call.arguments);
       const bound = calls.every(call => {
         const args = argsOf(call);
         const readPath = args?.filePath ?? args?.file_path ?? args?.path;
@@ -641,7 +647,11 @@ async function driveInternal(planChatStep, dir, prompt, {
         const verificationFrames = call.tool === 'bash' ? createContracts.filter(frame => composeGeneralChangePlan(frame.request)?.verification_command === args?.command) : [];
         if (creationRead && !createdTargetIsCurrent(readPath)) return false;
         if (verificationFrames.some(frame => !createdTargetIsCurrent(frame.target))) return false;
-        if (mixedGoals && expectedCalls.some(owned => owned.tool === call.tool && owned.arguments === call.arguments)) return true;
+        if(call.tool==='write'&&args?.append_mode!==undefined){
+          const authorized=atomicRecordAppend&&args.append_mode===APPEND_MODE&&matchesMaintainedCall(call);
+          if(authorized)authorizedAppendCalls.add(call);return authorized;
+        }
+        if (mixedGoals && matchesMaintainedCall(call)) return true;
         if (call.tool === 'write') {
           if (!mixedGoals) return true;
           const args = argsOf(call);
@@ -654,7 +664,7 @@ async function driveInternal(planChatStep, dir, prompt, {
             && Object.keys(args).every(key => ['filePath', 'file_path', 'path'].includes(key))
             && Object.values(args).length > 0 && Object.values(args).every(path => createContracts.some(frame => frame.target === path));
         }
-        return call.tool === 'bash' && expectedCalls.some(owned => owned.tool === call.tool && owned.arguments === call.arguments);
+        return call.tool === 'bash' && matchesMaintainedCall(call);
       });
       if (!bound) return { transcript, answer: null, stop: 'unbound-create-operation', toolsAdvertised: tools };
     }
@@ -668,7 +678,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       const observedPath=typeof writePath==='string'?within(dir,writePath):null;
       const before=capture&&observedPath?capture.before(observedPath):null;
       const toolBoundary=capture?.beforeTool(call)??null;
-      const creation = ownedCreation(call);
+      const creation = authorizedAppendCalls.has(call)?null:ownedCreation(call);
       if (creation?.source_creation?.success === true) createdTargets.add(creation.source_creation.path);
       const receipt = maintenanceSession !== null ? maintenanceSession.execute(call) : creation ?? (sourceSession
         ? sourceSession.executeResult(call, messages, () => executeResult(dir, call))

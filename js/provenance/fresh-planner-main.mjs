@@ -7,21 +7,30 @@ const executable=configuration.runtimeExecutable;
 if(!executable||executable.path!==fs.realpathSync(process.execPath)||executable.version!==process.version
  ||executable.platform!==process.platform||executable.architecture!==process.arch)throw Error('FreshRuntimeExecutableBinding');
 const {bootFreshPlanner}=await import(pathToFileURL(path.join(configuration.repository,'js/provenance/fresh-planner-engine.mjs')).href);
-const {worker,planChatStep,drive,withDriveCapture,activeDriveCapture,collectRuntimeObservation,blake3Hex,openMemoryCustody,packageVersion,host}=await bootFreshPlanner(configuration);
+const {worker,planChatStep,drive,withDriveCapture,activeDriveCapture,collectRuntimeObservation,blake3Hex,
+ openMemoryCustody,packageVersion,host,recomputeFreshRun,ownedSourceMaintenanceRequest}=await bootFreshPlanner(configuration);
 const memoryFactory=configuration.memoryFile?({sessionId:sessionIdentifier,workspace})=>openMemoryCustody({
  file:configuration.memoryFile,workspace,sessionId:sessionIdentifier,taskURL:configuration.taskURL}):undefined;
 const initial={...collectRuntimeObservation(configuration.transportDirectory),runtimeExecutable:executable};
 const sourceIdentity=blake3Hex(Buffer.from(JSON.stringify(initial.sources.map(source=>({url:source.url,blake3:source.blake3})))));
-const result=configuration.replayInput?await (await import(pathToFileURL(path.join(configuration.repository,
- 'js/provenance/fresh-recompute.mjs')).href)).recomputeFreshRun(configuration,{worker,planChatStep,openMemoryCustody,host,packageVersion}):await withDriveCapture({...configuration.provenance,...(memoryFactory?{memoryFactory}:{})},configuration.workspace,configuration.prompt,sourceIdentity,async()=>{
+const result=configuration.replayInput?await recomputeFreshRun(configuration,{worker,planChatStep,openMemoryCustody,host,packageVersion,ownedSourceMaintenanceRequest}):
+ await withDriveCapture({...configuration.provenance,...(memoryFactory?{memoryFactory}:{})},configuration.workspace,configuration.prompt,sourceIdentity,async()=>{
  await worker.run('0');
  activeDriveCapture().runtimeContext({schema:'formal-ai-fresh-runtime-context-v1',
   productVersion:packageVersion(),runtime:process.version,observedAt:new Date().toISOString(),
   workingDirectory:process.cwd(),environment:{...process.env},prerequisiteGrant:host().prerequisiteGrant?.()??null,
   bootstrapArtifacts:configuration.bootstrapArtifacts,engineProfile:'javascript-product-wasm-disabled',
-  request:{prompt:configuration.prompt,steps:configuration.steps}});
+  request:{prompt:configuration.prompt,steps:configuration.steps},
+  requests:configuration.requests??[{prompt:configuration.prompt,steps:configuration.steps}],
+  driver:{atomicRecordAppend:configuration.atomicRecordAppend??false}});
  activeDriveCapture().runtimeObservation(initial);
- const observed=await drive(planChatStep,configuration.workspace,configuration.prompt,{steps:configuration.steps});
+ const requests=configuration.requests??[{prompt:configuration.prompt,steps:configuration.steps}],results=[];
+ for(let index=0;index<requests.length;index++){
+  const request=requests[index];activeDriveCapture().callerRequest({index,...request,sourceMaintenanceOwnership:ownedSourceMaintenanceRequest(request.prompt)});
+  const observed=await drive(planChatStep,configuration.workspace,request.prompt,{steps:request.steps,atomicRecordAppend:configuration.atomicRecordAppend??false});results.push(observed);
+  if(observed.stop!=='final')break;
+ }
+ const observed=configuration.requests?{...results.at(-1),requestResults:results}:results[0];
  activeDriveCapture().runtimeObservation({...collectRuntimeObservation(configuration.transportDirectory),runtimeExecutable:executable});
  return observed;
 });

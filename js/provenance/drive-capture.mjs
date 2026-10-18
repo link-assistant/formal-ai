@@ -126,8 +126,13 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
       revision:transition.revision,memoryTransition:lastMemoryTransition};
   }
   let plannerThinking=null,plannerResponse=null,retainedGenesis=null;
-  const editHashes=[];
+  const editHashes=[];let callerRequestIndex=0;
   const capture = {
+    callerRequest(value){
+      if(!value||value.index!==callerRequestIndex||typeof value.prompt!=='string'
+        ||!Number.isSafeInteger(value.steps)||value.steps<1||value.steps>100)throw Error('provenance_caller_request_sequence');
+      callerRequestIndex++;append('caller_request',{index:value.index,evidence:retain(value)});
+    },
     active: true,
     engineGenesis(observe){
       if(retainedGenesis!==null)return;

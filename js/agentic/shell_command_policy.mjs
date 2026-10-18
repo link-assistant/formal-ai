@@ -5,6 +5,7 @@
 // indices into the prompt (so `prompt.slice(start, end)` is the sentence with
 // its terminator), the JavaScript twin of the Rust byte range.
 
+import { normalizePrompt } from './crate/engine.mjs';
 import { carriesPolicyLead } from './crate/seed_caller_context.mjs';
 import { negatedCommandPolicy } from './shell-command-negative-ownership.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
@@ -68,7 +69,7 @@ export function statesACommandPolicy(sentence) {
 function ordersANamedCommand(clause) {
   const vocab = terminalCommandVocabulary();
   const words = splitWhitespace(clause);
-  return words.some((word, index) => vocab.run_verbs.includes(normalizeCommandWord(word))
+  return words.some((word, index) => vocab.run_verbs.includes(normalizePrompt(word))
     && words[index + 1] !== undefined && vocab.shell_tokens.includes(normalizeCommandWord(words[index + 1])));
 }
 
@@ -103,12 +104,16 @@ export function namedShellCommandInSentence(prompt, vocab) {
   const hasPhrase = vocab.terminal_phrases.some((phrase) => lower.includes(phrase));
   const hasCjkVerb = vocab.cjk_run_verbs.some((verb) => lower.includes(verb));
   const words = splitWhitespace(prompt);
-  const isRunVerb = (word) => vocab.run_verbs.includes(normalizeCommandWord(word));
+  const isRunVerb = (word) => vocab.run_verbs.includes(normalizePrompt(word));
   const isShellToken = (word) => {
     const normalized = normalizeCommandWord(word);
     return normalized !== '' && vocab.shell_tokens.includes(normalized);
   };
   const hasVerb = words.some(isRunVerb) || hasCjkVerb;
+  const last = words.at(-1);
+  if (words.length > 1 && isShellToken(words[0]) && (vocab.postposed_run_verbs || []).includes(last)) {
+    return prompt.slice(0, prompt.lastIndexOf(last)).trimEnd();
+  }
   for (let index = 1; index < words.length; index += 1) {
     if (isShellToken(words[index]) && isRunVerb(words[index - 1])) return collectCommand(words.slice(index));
   }

@@ -3,6 +3,18 @@ seed-metadata-gaps
   source "data/seed/meanings-language-protocol.lino"
   audit-scope "problem-solving concept records under data/seed meanings roots"
   missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-c1c13a628a156bfb
+    record "after-command"
+    missing "role"
+  gap seed-metadata-gap-72dc90b029341f0c
+    record "ejecuta"
+    missing "role"
+  gap seed-metadata-gap-60e959560391831a
+    record "ejecutar"
+    missing "role"
+  gap seed-metadata-gap-72dc8cb029341840
+    record "ejecute"
+    missing "role"
   gap seed-metadata-gap-bbcb1245a710c33b
     record "es"
   gap seed-metadata-gap-8150fb895e7c69c8

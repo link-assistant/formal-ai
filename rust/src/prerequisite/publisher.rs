@@ -95,7 +95,7 @@ impl SetupPublisher {
     /// Whether first-party bytes come from the pinned host or exact declared documentation URL.
     #[must_use]
     pub fn authorizes_document_url(&self, url: &str) -> bool {
-        url::Url::parse(url).ok().is_some_and(|parsed| {
+        url::Url::parse(url).is_ok_and(|parsed| {
             parsed.scheme() == "https"
                 && parsed.username().is_empty()
                 && parsed.password().is_none()
@@ -537,15 +537,5 @@ pub fn search_setup_procedure<L: SourceLookup>(
 }
 
 #[cfg(test)]
-mod documentation_authority_tests {
-    use super::seed_publishers;
-
-    #[test]
-    fn all_declared_publisher_document_paths_retain_exact_authority() {
-        for publisher in seed_publishers() {
-            assert_eq!(publisher.documentation_url(), publisher.documentation);
-            assert!(publisher.authorizes_document_url(&publisher.documentation));
-            assert!(!publisher.authorizes_document_url("https://unrelated.invalid/"));
-        }
-    }
-}
+#[path = "../../tests/unit/prerequisite_publisher_documentation.rs"]
+mod documentation_authority_tests;

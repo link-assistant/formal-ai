@@ -45,9 +45,16 @@ fn issue_607_shell_planner_and_serve_opt_in_are_traceable() {
         .expect("the repository root sits one level above the crate");
 
     let planner = read(root.join("rust/src/agentic_coding/planner.rs"));
+    let recovery = read(root.join("rust/src/agentic_coding/prerequisite_recovery.rs"));
+    assert_contains_all(
+        "planner delegates its shell transaction to the canonical recovery helper",
+        &planner,
+        &["super::prerequisite_recovery::plan_shell_step(messages, tool_names, command, result)"],
+    );
+    let shell_source = format!("{planner}\n{recovery}");
     assert_contains_all(
         "rust/src/agentic_coding/planner.rs",
-        &planner,
+        &shell_source,
         &[
             "shell_command_for_task",
             "plan_shell_step",

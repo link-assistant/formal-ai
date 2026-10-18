@@ -27,7 +27,7 @@ class Links(HTMLParser):
 
 def publisher_document(documentation, fetch):
     """At most one authenticated same-origin current-release documentation hop."""
-    raw,_=fetch(documentation,2097152)
+    raw,document_digest=fetch(documentation,2097152)
     document=raw.decode('utf-8'); parser=Links(); parser.feed(document)
     origin=urllib.parse.urlsplit(documentation)
     candidates=[]
@@ -53,9 +53,9 @@ def publisher_document(documentation, fetch):
             require(len(candidates)==1,'current_documentation_ambiguous')
     if candidates:
         documentation=candidates[0]
-        raw,_=fetch(documentation,2097152)
+        raw,document_digest=fetch(documentation,2097152)
         document=raw.decode('utf-8'); parser=Links(); parser.feed(document)
-    return documentation,document,parser
+    return documentation,document,parser,document_digest
 
 def select_release_archive(assets,document,system=None,machine=None):
     """Use observed host identity; metadata names never grant processes or network."""
@@ -123,7 +123,7 @@ def execute(request):
         record('fetch',url=url,sha256=digest.hexdigest(),size=total)
         return b''.join(chunks),digest.hexdigest()
     documentation=publisher['documentation']; require(publisher.get('program') == program,'publisher_program_mismatch')
-    documentation,document,parser=publisher_document(documentation,fetch)
+    documentation,document,parser,document_digest=publisher_document(documentation,fetch)
     releases=[]
     for link in parser.links:
         value=urllib.parse.urlsplit(urllib.parse.urljoin(documentation,link)); parts=value.path.strip('/').split('/')

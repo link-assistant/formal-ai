@@ -82,7 +82,7 @@ impl Default for LinoSubscriber {
             spans: Mutex::new(HashMap::new()),
             maximum_level: None,
             sink: Arc::new(|level, target, message, fields| {
-                structured_log::event(level, target, || message, || fields)
+                structured_log::event(level, target, || message, || fields);
             }),
         }
     }
@@ -102,9 +102,9 @@ impl LinoSubscriber {
                 .copied()
         })
     }
-    fn emit(&self, level: &str, target: &str, message: String, fields: Value) {
+    fn emit(&self, level: &str, target: &str, message: &str, fields: &Value) {
         // The production sink redacts independently; custom test sinks observe the same data.
-        let safe = structured_log::redact(&fields);
+        let safe = structured_log::redact(fields);
         let safe_message = structured_log::redact(&json!(message));
         (self.sink)(
             level,
@@ -144,7 +144,7 @@ impl Subscriber for LinoSubscriber {
                     target: metadata.target(),
                 },
             );
-        self.emit(level(metadata),metadata.target(),"tracing_span_created".into(),json!({"kind":"tracing_span","span_id":identity,"parent_span_id":parent,"name":metadata.name(),"fields":fields.0}));
+        self.emit(level(metadata),metadata.target(),"tracing_span_created",&json!({"kind":"tracing_span","span_id":identity,"parent_span_id":parent,"name":metadata.name(),"fields":fields.0}));
         Id::from_u64(identity)
     }
     fn record(&self, span: &Id, values: &Record<'_>) {
@@ -163,14 +163,14 @@ impl Subscriber for LinoSubscriber {
             self.emit(
                 level,
                 target,
-                "tracing_span_updated".into(),
-                json!({"kind":"tracing_span_update","span_id":span.into_u64(),"fields":fields.0}),
+                "tracing_span_updated",
+                &json!({"kind":"tracing_span_update","span_id":span.into_u64(),"fields":fields.0}),
             );
         }
     }
     fn record_follows_from(&self, span: &Id, follows: &Id) {
         if structured_log::enabled("debug") {
-            self.emit("debug","tracing","tracing_span_follows".into(),json!({"kind":"tracing_span_follows","span_id":span.into_u64(),"follows_span_id":follows.into_u64()}));
+            self.emit("debug","tracing","tracing_span_follows",&json!({"kind":"tracing_span_follows","span_id":span.into_u64(),"follows_span_id":follows.into_u64()}));
         }
     }
     fn event(&self, event: &Event<'_>) {
@@ -179,16 +179,14 @@ impl Subscriber for LinoSubscriber {
         }
         let mut fields = Fields::default();
         event.record(&mut fields);
-        let message = fields
-            .0
-            .remove("message")
-            .map(|value| {
+        let message = fields.0.remove("message").map_or_else(
+            || event.metadata().name().into(),
+            |value| {
                 value
                     .as_str()
-                    .map(str::to_owned)
-                    .unwrap_or_else(|| value.to_string())
-            })
-            .unwrap_or_else(|| event.metadata().name().into());
+                    .map_or_else(|| value.to_string(), str::to_owned)
+            },
+        );
         let span = event.parent().map(Id::into_u64).or_else(|| {
             if event.is_contextual() {
                 self.active()
@@ -199,8 +197,8 @@ impl Subscriber for LinoSubscriber {
         self.emit(
             level(event.metadata()),
             event.metadata().target(),
-            message,
-            json!({"kind":"tracing_event","span_id":span,"fields":fields.0}),
+            &message,
+            &json!({"kind":"tracing_event","span_id":span,"fields":fields.0}),
         );
     }
     fn enter(&self, span: &Id) {
@@ -249,8 +247,8 @@ impl Subscriber for LinoSubscriber {
                 self.emit(
                     level,
                     target,
-                    "tracing_span_closed".into(),
-                    json!({"kind":"tracing_span_close","span_id":span.into_u64()}),
+                    "tracing_span_closed",
+                    &json!({"kind":"tracing_span_close","span_id":span.into_u64()}),
                 );
             }
             true

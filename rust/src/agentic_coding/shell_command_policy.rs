@@ -185,7 +185,7 @@ fn orders_a_named_command(clause: &str) -> bool {
         let is_verb = vocab
             .run_verbs
             .iter()
-            .any(|verb| verb == &normalize_command_word(word));
+            .any(|verb| verb == &crate::engine::normalize_prompt(word));
         is_verb
             && words.get(index + 1).is_some_and(|next| {
                 let token = normalize_command_word(next);
@@ -257,7 +257,7 @@ pub fn named_shell_command_in_sentence(
         .collect();
 
     let is_run_verb = |word: &str| {
-        let normalized = normalize_command_word(word);
+        let normalized = crate::engine::normalize_prompt(word);
         vocab.run_verbs.iter().any(|v| v == &normalized)
     };
     let is_shell_token = |word: &str| {
@@ -265,6 +265,18 @@ pub fn named_shell_command_in_sentence(
         !normalized.is_empty() && vocab.shell_tokens.iter().any(|t| t == &normalized)
     };
     let has_verb = words.iter().any(|w| is_run_verb(w)) || has_cjk_verb;
+    if let (Some(first), Some(last)) = (words.first(), words.last())
+        && words.len() > 1
+        && is_shell_token(first)
+        && vocab
+            .postposed_run_verbs
+            .iter()
+            .any(|verb| verb.as_str() == *last)
+    {
+        return prompt
+            .rfind(*last)
+            .map(|at| prompt[..at].trim_end().to_owned());
+    }
 
     // Shape 1: a shell token directly after a run verb — the command plus its arguments.
     for (index, word) in words.iter().enumerate() {

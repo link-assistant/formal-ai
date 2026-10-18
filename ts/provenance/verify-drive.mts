@@ -11,6 +11,10 @@ const p = provenancePrimitives({
   encodeTyped,
   decodeTyped
 });
+// One selector owns ordered record lookup for replay and evidence consumers.
+export function firstEvidenceRecord(records,kind){
+  return records.find(record=>record.kind===kind);
+}
 export function regularEvidenceBytes(directory, relative) {
   if (typeof relative !== 'string' || !relative || relative.includes('\\') || relative.split('/').some(x => !x || x === '.' || x === '..') || path.isAbsolute(relative)) throw Error('unsafe_evidence_path');
   let target = fs.realpathSync(directory);

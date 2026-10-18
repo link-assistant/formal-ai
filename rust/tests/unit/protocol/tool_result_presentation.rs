@@ -280,3 +280,22 @@ fn openai_chat_surface_returns_the_friendly_result_not_the_transport_envelope() 
     assert!(!answer.contains("untrusted_context"), "{answer}");
     assert!(!answer.contains(r#"{\"output\""#), "{answer}");
 }
+
+#[test]
+fn seeded_command_word_order_retains_exact_shell_arguments_in_five_languages() {
+    let fixtures: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/terminal-command-word-order.json"
+    ))
+    .unwrap();
+    for case in fixtures["cases"].as_array().unwrap() {
+        let prompt = case["prompt"].as_str().unwrap();
+        let expected = case["command"].as_str().unwrap();
+        let plan = plan_chat_step(&[ChatMessage::user(prompt)], &["exec_command"]);
+        let Some(AgenticPlan::ToolCalls(calls)) = plan else {
+            panic!("expected command for {prompt}");
+        };
+        assert_eq!(calls.len(), 1, "{prompt}");
+        let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+        assert_eq!(arguments["command"], expected, "{prompt}");
+    }
+}
