@@ -58,13 +58,50 @@ fn issue_607_shell_planner_and_serve_opt_in_are_traceable() {
         &[
             "shell_command_for_task",
             "plan_shell_step",
-            "bash",
-            "shell",
-            "run_command",
             "\"command\": command",
             "tool_result::render",
         ],
     );
+
+    // Tool names belong to the shared capability seed, reached by the shell helper.
+    assert_contains_all(
+        "canonical shell helper",
+        &recovery,
+        &["tool_for(tool_names, Capability::Run)"],
+    );
+    let router = read(root.join("rust/src/agentic_coding/capability_router.rs"));
+    assert_contains_all(
+        "canonical capability owner",
+        &router,
+        &["seed::agentic_tool_capabilities()", ".aliases"],
+    );
+    let loader = read(root.join("rust/src/seed/agentic_tool_capabilities.rs"));
+    assert_contains_all(
+        "canonical capability loader",
+        &loader,
+        &["parse_lino(AGENTIC_TOOL_CAPABILITIES_LINO)"],
+    );
+    let registry = read(root.join("rust/src/seed/embedded_registry.rs"));
+    assert_contains_all(
+        "canonical capability embedding",
+        &registry,
+        &["../../embedded/data/seed/agentic-tool-capabilities.lino"],
+    );
+    for tool in ["bash", "shell", "run_command"] {
+        use formal_ai::agentic_coding::{AgenticPlan, Capability, plan_chat_step, tool_capability};
+        assert_eq!(tool_capability(tool), Some(Capability::Run), "{tool}");
+        let messages = [formal_ai::ChatMessage::user("run ls to list files here")];
+        match plan_chat_step(&messages, &[tool]) {
+            Some(AgenticPlan::ToolCalls(calls)) => {
+                assert_eq!(calls.len(), 1);
+                assert_eq!(calls[0].tool, tool);
+                let arguments: serde_json::Value =
+                    serde_json::from_str(&calls[0].arguments).unwrap();
+                assert_eq!(arguments["command"], "ls");
+            }
+            other => panic!("the advertised {tool} owns the documented command: {other:?}"),
+        }
+    }
 
     let responses = read(root.join("data/seed/multilingual-responses.lino"));
     assert_contains_all(
