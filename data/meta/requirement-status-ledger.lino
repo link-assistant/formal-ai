@@ -3,8 +3,9 @@ requirement_status_ledger
   source "REQUIREMENTS.md and docs/requirements/*.md"
   verdict_vocabulary "implemented | partial | not-delivered | superseded | withdrawn"
   manual_column "aspirational since 2026-09-30 (issue #1090): not yet confirmed rows carry no debt"
-  requirement_count 1418
-  implemented_count 1313
+  requirement_count 1440
+  implemented_count 1309
+  shard "data/meta/requirement-status-ledger/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.lino"

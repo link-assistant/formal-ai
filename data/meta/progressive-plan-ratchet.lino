@@ -4,8 +4,8 @@
 # since `requirements`, so a pass never refines a high level while a lower one grows; the
 # requirements pinned only by a Rust test never grow (JavaScript first).
 progressive-plan-ratchet
-  requirements 1418
+  requirements 1440
   recorded-ceiling 34
   measured-ceiling 3
-  partial-ceiling 60
+  partial-ceiling 86
   rust-only-ceiling 920

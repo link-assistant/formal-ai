@@ -70,3 +70,7 @@ The strict implementation requirements are recorded as Pending in [the strict du
 ### Complete linked-issue review
 
 The [subissue scope addendum](subissue-scope.md) and [source-bound public ledger](subissue-scope.lino) record97 additional reviewed issue bodies, including77 closed Formal AI descendants and20 external dependencies. Combined with the original92-body review,189 bodies are recorded. Closed issue metadata does not establish current acceptance; external Hive Mind work is explicitly recorded as a dependency and is not claimed as a source change delivered by this repository PR.
+
+## Readable source-model continuation (2026-10-18)
+
+The owner requires full recursive readable UTF-8 CSTs, a common semantic meta-language, inspectable parse/emit/synchronization rules, formalized comment meanings and English naturalization. These belong to this same pull request under [the standing doctrine](../../requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md). Replace legacy count/signature census authority and conflicting current claims; retain historical evidence without calling it full representation. This strengthens the existing source/parity and self-coding obligations and does not close them by documentation.

@@ -116,7 +116,7 @@ ratchet that starts honestly at 0%.
 | R479 | Document attribution, preserve issue/PR/research and Formal AI replay evidence, and pin pipeline integration with a specification test. | Implemented by `CONTRIBUTING.md`, `docs/case-studies/issue-657/`, and `release_pipeline_and_ledger_remain_pinned_to_the_metric`. |
 | R549 | A change to how the share is measured must start a new comparison epoch instead of silently invalidating recorded history. | Implemented by `METRIC_VERSION` in `scripts/self-hosting-metric.rs`: every ledger row carries the version that produced it, `rows` filters to the current epoch, and `parse_release_row` treats a row without the field as epoch 1. Rows from different epochs are never averaged or compared. The ledger header documents what each epoch measures. Covered by `rows_from_an_older_measurement_epoch_are_never_compared`. |
 
-## Issue #673 Workspace Self-AST Census
+## Issue #673 Workspace Source Representation
 
 Issue [#673](https://github.com/link-assistant/formal-ai/issues/673) (E54) asks
 the self-representation to grow from the single pinned module of R381 to a
@@ -127,10 +127,12 @@ drift guard, and census-backed edit-target resolution in the general planner.
 
 | ID | Requirement | Status |
 | --- | --- | --- |
-| R480 | Census every owned `rust/src/` module, not one pinned file, and address each module through a workspace index. | `rust/src/self_ast_census.rs` compiles a `WorkspaceCensus` from the compile-time `OWNED_SOURCE_FILES` manifest and renders one `.lino` document per module. The deterministic aggregate remains available through `index_notation`/`dump_self_ast_census` but is not tracked, preventing every parallel source branch from editing the same generated file; covered by `every_owned_module_has_a_committed_census_with_its_fidelity_marker` and `committed_documents_exclude_the_redundant_workspace_aggregate`. |
-| R481 | Scale honestly with a documented fidelity marker per module: full AST for `rust/src/agentic_coding/`, signature-level census elsewhere. | Implemented: `CensusFidelity::{FullAst, Signature}` is chosen by `fidelity_for` and written as a `fidelity` line in every document; `the_workspace_census_is_addressable_without_a_multi_megabyte_seed` pins the size discipline. |
-| R482 | Regenerate deterministically and incrementally, and fail a drift check when a committed census diverges from its source. | `WorkspaceCensus::documents` is a pure, path-sorted function of the sources; `drift_report` reports `Missing`/`Stale`/`Orphan`. Covered by `census_regenerates_deterministically_and_incrementally`, `drift_check_fails_on_a_fixture_with_a_stale_census`, and the disk guard `committed_census_documents_match_what_the_sources_render`. |
+| R480 | Represent every owned source module in an addressable workspace model. The 2026-10-18 doctrine requires complete readable recursive CSTs across JavaScript, TypeScript and Rust. | Partial legacy inventory: the current self-AST census addresses Rust modules but does not preserve complete source content. Migrate its consumers to the source model; this row is not full CST acceptance. |
+| R481 | Preserve every module completely. The former full-AST/signature split is superseded by the 2026-10-18 source-model doctrine; fidelity labels cannot waive comments, whitespace, syntax or formalized documentation. | Required migration: signature and histogram documents do not satisfy the full recursive content contract. |
+| R482 | Regenerate deterministically from complete source content and fail on changed, missing or orphaned structural content. Validate source-free reconstruction and rule-based edits without manually maintained expected counters. | Partial legacy drift detection; the existing census comparison must be replaced by full CST/content checks and derived inventories. |
 | R483 | Resolve edit targets through the census index instead of hardcoded paths, for any module the method registry knows. | `resolve_census_target` in `rust/src/agentic_coding/general_planner.rs` routes `compose_edit_request` through `WorkspaceCensus::resolve`; covered by `the_planner_resolves_an_edit_target_outside_planner_rs_via_the_census` and `the_index_resolves_every_path_symbol_the_method_registry_knows`. |
+
+Current architectural authority: [readable recursive source and comment meta-language](../doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md). Historical census results remain scoped to their actual narrower behavior.
 
 ## Issue #698 Real External Benchmark Harness
 

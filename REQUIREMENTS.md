@@ -26,6 +26,7 @@ the areas are the whole register.
    - Issue #1073 Reasoning Standard: Unconditional Depth, Refutation First, Computed Trust
    - Issue #1085 The Links Network Is Not The System That Reasons (E108)
    - Issue #1188 User Requirements
+   - Standing Doctrine: Readable Recursive Source and Comment Meta-Language (2026-10-18)
    - Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
    - Standing Doctrine: JavaScript First, Full Parity, Then Translate (2026-10-06)
    - Standing Doctrine: The JavaScript Server Has Full Parity With the Rust Server (2026-10-07)
@@ -40,7 +41,7 @@ the areas are the whole register.
    - Issue #492 Release Badge Stability
    - Issue #656 Benchmark-Gated Promotion Protocol
    - Issue #657 Release Self-Hosting Metric
-   - Issue #673 Workspace Self-AST Census
+   - Issue #673 Workspace Source Representation
    - Issue #698 Real External Benchmark Harness
    - Issue #834 Legal & Compliance Self-Audit
    - Issue #835 Multi-Jurisdiction File Legal-Risk Assessment

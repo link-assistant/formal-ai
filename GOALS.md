@@ -113,8 +113,15 @@ recalled live; promotion remains explicitly benchmark- and human-gated.
 - Measure the share of each release authored by Formal AI itself, starting honestly at 0% and ratcheting upward; the current number lives only in `data/meta/self-hosting-ledger.lino`, rendered in `docs/status.md`, and every document cites it by reference rather than restating it.
 - Measure that share by the model that produced the change (`Formal-AI-Model` must be formal-ai and be named in the committed evidence) over behaviour-changing files only; documentation, logs and ledgers about Formal AI are not Formal AI authoring itself (issue #1085).
 - Define "Formal AI codes itself" as: Formal AI appends or supersedes links in `data/seed` and `data/meta` that change its own behaviour, or applies a link substitution to its own source, generates a held-out test, validates it through the interpreter and `cargo test`, and opens the pull request. Seed edits are the first rung; source edits follow through the same rule engine.
-- Keep a full meta-language representation of the source beside the source: a `.lino` per file under `rust/src/`, one to one on every merged pull request (issue #558). One-to-one file correspondence holds today; the committed census is a signature, not the source, and the lossless round-trip that would make reconstruction real exists in `rust/tests/unit/agentic-coding/issue_558_source_links.rs` but is `#[ignore]`d there as exhaustive, run on demand with `--ignored`. Rust is an emission target of that representation, not the system; its line count measures an output and is not a release condition.
+- Keep a complete readable recursive meta-language CST and semantic model for JavaScript, TypeScript, Rust and other registered source languages, one source document per owned source file. Preserve comments and whitespace as actual UTF-8 text, formalize comment meanings, naturalize English documentation, and synchronize code through inspectable parse/emit/transformation rules. Verify source-free reconstruction and meaningful edits in normal CI. The legacy signature census and count-only refreshes do not deliver this goal; follow [the source-model doctrine](docs/requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md).
 - Never present unobserved output as observed. Every surface states its execution limit from a probe, in every supported language.
+
+## Verified Code and Multilingual Documentation
+
+- Use our codebase and documentation comments as the primary corpus for general formalization, naturalization, formal-language translation and self-coding.
+- Keep code, comments and documentation connected by formal source-linked statements, and use relative meta logic with explicit evidence dependencies for local and trusted-public-knowledge fact checking.
+- Have Formal AI generate English, Russian, Hindi and Chinese documentation from shared meanings, selecting mutually close wording by measured round-trip meaning survival for complete documents and their parts.
+- Detect code/documentation and requirement contradictions in CI, evaluate delivery from actual evidence, and repair the violating code or documentation. Prefer the latest authoritative scoped requirement while retaining compatible prior requirements and supersession history.
 
 ## Documentation Goals
 
