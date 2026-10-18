@@ -1,0 +1,32 @@
+[
+  {
+    "input": "**Acceptance criteria**\n- Successful requests preserve\n  all comments.\n\n**Notes**\nHistorical note.",
+    "expected": [
+      "Successful requests preserve all comments."
+    ]
+  },
+  {
+    "input": "**Never delete user data**",
+    "expected": [
+      "**Never delete user data**"
+    ]
+  },
+  {
+    "input": "__Требования__\n- Ответ сохраняет\n  исходную пунктуацию.\n\n__Примечания__\nИсторическая справка.",
+    "expected": [
+      "Ответ сохраняет исходную пунктуацию."
+    ]
+  },
+  {
+    "input": "The document\nmust preserve layout.",
+    "expected": [
+      "The document must preserve layout."
+    ]
+  },
+  {
+    "input": "**Acceptance criteria**\n- The result preserves layout.\n\n```md\n**Requirements**\n- Fake code requirement.\n```\n> We must ignore this quote.\n\n**Notes**\nHistorical note.",
+    "expected": [
+      "The result preserves layout."
+    ]
+  }
+]
