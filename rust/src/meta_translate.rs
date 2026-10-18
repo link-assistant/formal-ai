@@ -130,10 +130,12 @@ pub fn translate(
         return TranslationOutcome::Pending { plan_leaf };
     }
     match (from, to) {
-        (SourceRoot::Rust, SourceRoot::Meta) => TranslationOutcome::Rendered {
-            target: crate::agentic_coding::self_ast::render_ast_document(display_path, source),
-            carried: 0,
-        },
+        (SourceRoot::Rust, SourceRoot::Meta) => {
+            match crate::agentic_coding::self_ast::source_document(display_path, source) {
+                Ok(target) => TranslationOutcome::Rendered { target, carried: 0 },
+                Err(reason) => TranslationOutcome::Invalid { reason },
+            }
+        }
         (SourceRoot::Meta, SourceRoot::Rust) => {
             match crate::agentic_coding::self_ast::render_network_source(source) {
                 Ok(target) => TranslationOutcome::Rendered { target, carried: 0 },

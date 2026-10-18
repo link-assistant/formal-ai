@@ -10,15 +10,7 @@
 //! render another grammar's source text (rust → js/ts, js/ts → rust) stay
 //! owed to L8 until grammar projection rules exist.
 
-use std::fs;
-use std::path::{Path, PathBuf};
-
-use formal_ai::meta_translate::{self, SourceRoot, TranslationOutcome};
-
-/// A small, ordinary Rust module the dialect probes round-trip — real
-/// syntax, not a special case.
-const PROBE: &str =
-    "fn dialect_probe(sealed: bool) -> u32 {\n    if sealed { 7 } else { 41 + 1 }\n}\n";
+use std::path::PathBuf;
 
 fn root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -27,23 +19,12 @@ fn root() -> PathBuf {
         .to_path_buf()
 }
 
-/// The owned corpus is the census set, derived: every committed census
-/// document names its source module one-to-one, so walking the census tree
-/// is walking `rust/src` exactly as the repository defines ownership.
-fn collect_owned(directory: &Path, out: &mut Vec<PathBuf>) {
-    let Ok(entries) = fs::read_dir(directory) else {
-        return;
-    };
-    for entry in entries.flatten() {
-        let path = entry.path();
-        if path.is_dir() {
-            collect_owned(&path, out);
-        } else if path.extension().and_then(|ext| ext.to_str()) == Some("lino") {
-            out.push(path);
-        }
-    }
-    out.sort();
-}
+use formal_ai::meta_translate::{self, SourceRoot, TranslationOutcome};
+
+/// A small, ordinary Rust module the dialect probes round-trip — real
+/// syntax, not a special case.
+const PROBE: &str =
+    "fn dialect_probe(sealed: bool) -> u32 {\n    if sealed { 7 } else { 41 + 1 }\n}\n";
 
 fn rendered(outcome: TranslationOutcome, context: &str) -> String {
     match outcome {
@@ -70,31 +51,11 @@ fn rendered(outcome: TranslationOutcome, context: &str) -> String {
 #[test]
 #[ignore = "PR1196-native-corpus-roundtrip-deadline: restore unchanged complete owned corpus within unit1080s and coverage1200s"]
 fn every_owned_rust_module_round_trips_through_the_network_serialization() {
-    let root = root();
-    let mut census = Vec::new();
-    collect_owned(
-        &root.join("data").join("meta").join("self-ast"),
-        &mut census,
-    );
-    assert!(
-        census.len() >= 600,
-        "the owned corpus is the census set and is never empty: {count} files",
-        count = census.len()
-    );
-    for census_path in &census {
-        let relative = census_path
-            .strip_prefix(root.join("data").join("meta").join("self-ast"))
-            .expect("the census document lives under the census tree")
-            .with_extension("rs");
-        let source_path = root.join("rust").join(&relative);
-        let display = relative.to_string_lossy().replace('\\', "/");
-        let source = fs::read_to_string(&source_path).unwrap_or_else(|error| {
-            panic!("rust/{display}: every census document names a source module: {error}")
-        });
-        let lino = formal_ai::agentic_coding::self_ast::network_lino(&source);
+    for &(display, source) in formal_ai::self_source_links::owned_source_files() {
+        let lino = formal_ai::agentic_coding::self_ast::network_lino(source);
         let back = rendered(
-            meta_translate::translate(SourceRoot::Meta, SourceRoot::Rust, &display, &lino),
-            &display,
+            meta_translate::translate(SourceRoot::Meta, SourceRoot::Rust, display, &lino),
+            display,
         );
         assert_eq!(
             back, source,
@@ -126,11 +87,21 @@ fn meta_to_rust_refuses_every_other_lino_dialect_by_name() {
         ),
         "the pivot probe",
     );
-    for (dialect, document) in [("census", &census), ("token-tree pivot", &pivot)] {
+    assert_eq!(
+        rendered(
+            meta_translate::translate(SourceRoot::Meta, SourceRoot::Rust, "probe.rs", &census),
+            "recursive CST"
+        ),
+        PROBE
+    );
+    for (dialect, document) in [
+        ("retired census", "self_ast_census\n  target src/probe.rs\n"),
+        ("token-tree pivot", pivot.as_str()),
+    ] {
         match meta_translate::translate(SourceRoot::Meta, SourceRoot::Rust, "probe", document) {
             TranslationOutcome::Invalid { reason } => {
                 assert!(
-                    reason.contains("network serialization"),
+                    reason.starts_with("ReadableRustSourceRequired:"),
                     "the {dialect} refusal must name the expected dialect: {reason}"
                 );
             }

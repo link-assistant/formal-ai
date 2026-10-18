@@ -1,27 +1,21 @@
-// The workspace self-AST census the planner resolves edit targets against
-// (rust/src/self_ast_census.rs: `WorkspaceCensus::{module, module_by_reference,
-// modules_declaring, resolve}`, `document_path_for`, `fidelity_for`,
-// `workspace`).
-//
-// native-only: rust/src/self_ast_census.rs `workspace()` censuses the source
-// files compiled into the binary (`OWNED_SOURCE_FILES`); a JavaScript host has
-// no such manifest. The census here is built from the committed census
-// documents (data/meta/self-ast/**.lino) the host lists through an optional
-// `censusDocuments()` hook returning `[{path, text}]`; without the hook the
-// workspace is empty and every reference resolves to nothing, which is the
-// "does not apply" answer of the Rust resolver (fails closed).
+// Workspace navigation resolves paths and declaration spans from actual owned
+// source observations. These records are not source CST representations.
+// moduleFromDocument accepts only owned recursive source content, never the
+// historical committed count documents. Missing host observations fail closed.
 
 import { cached, host, hasHost } from '../host.mjs';
-import { lines, splitWhitespace, trim } from '../write_str.mjs';
+import { trim } from '../write_str.mjs';
+import {readSourceLinks, sourceFromLinks, sourceOwner} from '../../meta/readable-source.js';
+import {scanSignatureSymbols} from '../../../scripts/lib/signature-census.mjs';
 
 /** Mirrors `const CENSUS_DIR`. */
-export const CENSUS_DIR = 'data/meta/self-ast';
+export const CENSUS_DIR = 'source-content';
 /** Mirrors `const FULL_FIDELITY_PREFIX`. */
 export const FULL_FIDELITY_PREFIX = 'src/agentic_coding/';
 
 /** Mirrors `fn fidelity_for`: 'full_ast' | 'signature'. @param {string} modulePath @returns {string} */
 export function fidelityFor(modulePath) {
-  return modulePath.startsWith(FULL_FIDELITY_PREFIX) ? 'full_ast' : 'signature';
+  return 'navigation';
 }
 
 /** Mirrors `fn document_path_for`. */
@@ -38,23 +32,14 @@ export function documentPathFor(modulePath) {
  * @param {string} text
  */
 export function moduleFromDocument(text) {
-  let path = null;
-  const symbols = [];
-  let inSymbols = false;
-  for (const line of lines(text)) {
-    if (line.startsWith('  target ')) path = trim(line.slice('  target '.length));
-    if (line === '  symbols') {
-      inSymbols = true;
-      continue;
-    }
-    if (inSymbols && line.startsWith('    ') && !line.startsWith('     ')) {
-      const [kind, name, start, end] = splitWhitespace(line);
-      if (kind && name) symbols.push({ kind, name, start_line: Number(start), end_line: Number(end) });
-      continue;
-    }
-    if (!line.startsWith('    ')) inSymbols = false;
-  }
-  return path === null ? null : { path, fidelity: fidelityFor(path), symbols };
+  try {
+    const document = readSourceLinks(text), path = sourceOwner(document);
+    if (path === null) return null;
+    const symbols = scanSignatureSymbols(sourceFromLinks(document)).map(symbol => ({
+      kind: symbol.kind, name: symbol.name, start_line: symbol.startLine, end_line: symbol.endLine,
+    }));
+    return {path, fidelity: fidelityFor(path), symbols};
+  } catch { return null; }
 }
 
 /** Mirrors `WorkspaceCensus::compile` over already-censused modules. */
@@ -66,7 +51,7 @@ export function workspaceCensus(modules) {
 export function workspace() {
   return cached('self-ast-census', () => {
     const documents = hasHost() && typeof host().censusDocuments === 'function' ? host().censusDocuments() : [];
-    return workspaceCensus(documents.map((document) => moduleFromDocument(document.text)).filter(Boolean));
+    return workspaceCensus(documents.map((document) => document.module ?? moduleFromDocument(document.text)).filter(Boolean));
   });
 }
 

@@ -478,7 +478,7 @@ jobs:
       - name: sccache counters after the first compiling step
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         run: sccache --show-stats
-      - name: Check self-AST census freshness
+      - name: Check source navigation and recursive content contracts
         if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
         env:
           # Issue #1081: 153s worst measured over 39 runs.
@@ -486,7 +486,7 @@ jobs:
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           scripts/run-with-budget-warning.sh \
-            "$TEST_BUDGET_SECONDS" "self-AST census" \
+            "$TEST_BUDGET_SECONDS" "source navigation and recursive content" \
             cargo test --manifest-path rust/Cargo.toml --test unit self_ast_census -- --nocapture
       - name: Download test executables
         if: ${{ !cancelled() && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}

@@ -1,4 +1,4 @@
-//! Issue #673: the self-AST census must cover the whole workspace, not one
+//! Issue #673: source navigation must cover the whole workspace, not one
 //! pinned module.
 //!
 //! Before this change `data/meta/self-ast.lino` described exactly one file
@@ -6,8 +6,8 @@
 //! introspect anything else. The tests below assert the three acceptance
 //! criteria of the issue:
 //!
-//! 1. `data/meta/self-ast/` holds a census for *every* `src/` module, each
-//!    carrying its fidelity marker, and the in-memory workspace index resolves any
+//! 1. Actual owned sources provide navigation for every module, while full
+//!    recursive CST content is generated separately; the index resolves any
 //!    `path:symbol` the method registry knows;
 //! 2. the census regenerates deterministically and incrementally, and the drift
 //!    check fails on a fixture whose census is stale;
@@ -16,17 +16,17 @@
 
 use std::collections::BTreeSet;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::method_registry::MethodRegistry;
 use formal_ai::protocol::ChatMessage;
 use formal_ai::self_ast_census::{
-    CENSUS_DIR, CensusDrift, CensusFidelity, FULL_FIDELITY_PREFIX, ModuleCensus, WorkspaceCensus,
-    document_path_for, drift_report, module_from_document, workspace,
+    CENSUS_DIR, CensusDrift, CensusFidelity, ModuleCensus, WorkspaceCensus, document_path_for,
+    drift_report, module_from_document, workspace,
 };
 
-/// The repository root, so the tests read the *committed* census rather than a
+/// The repository root, so dispatch-source observations do not depend on a
 /// path relative to the (unspecified) working directory.
 fn repository_root() -> &'static Path {
     Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -34,75 +34,69 @@ fn repository_root() -> &'static Path {
         .expect("the repository root sits one level above the crate")
 }
 
-/// Regeneration hint reused by every drift assertion.
-const REGENERATE: &str = "run `cargo run --example regenerate_self_ast_census`";
-
 #[test]
-fn every_owned_module_has_a_committed_census_with_its_fidelity_marker() {
+fn every_owned_module_has_navigation_without_claiming_source_content() {
     let census = workspace();
-    assert!(
-        census.module_count() > 100,
-        "the workspace census still looks single-module: {} modules",
-        census.module_count()
+    let expected: BTreeSet<_> = formal_ai::self_source_links::owned_source_files()
+        .iter()
+        .map(|(path, _)| (*path).to_owned())
+        .collect();
+    let observed: BTreeSet<_> = census
+        .modules
+        .iter()
+        .map(|module| module.path.clone())
+        .collect();
+    assert_eq!(
+        observed, expected,
+        "every owned source must remain addressable"
+    );
+    assert_eq!(
+        observed.len(),
+        census.module_count(),
+        "duplicate navigation rows"
     );
     for module in &census.modules {
-        let document = repository_root().join(module.document_path());
-        let contents = fs::read_to_string(&document).unwrap_or_else(|error| {
-            panic!("missing census for {}: {error} — {REGENERATE}", module.path)
-        });
-        let expected_fidelity = if module.path.starts_with(FULL_FIDELITY_PREFIX) {
-            CensusFidelity::FullAst
-        } else {
-            CensusFidelity::Signature
-        };
-        assert_eq!(
-            module.fidelity, expected_fidelity,
-            "wrong fidelity tier for {}",
-            module.path
-        );
+        assert_eq!(module.fidelity, CensusFidelity::Navigation);
         assert!(
-            contents.contains(&format!("  fidelity {}\n", expected_fidelity.slug())),
-            "census for {} carries no fidelity marker",
-            module.path
-        );
-        assert!(
-            contents.contains(&format!("  target {}\n", module.path)),
-            "census for {} does not name its target",
-            module.path
+            module.ast().is_none(),
+            "navigation is not a source representation"
         );
     }
-    assert!(
-        census.full_fidelity_count() > 0,
-        "no module was censused at full AST fidelity"
-    );
-    assert!(
-        census.full_fidelity_count() < census.module_count(),
-        "every module was censused at full fidelity — the tiering is not doing its job"
-    );
 }
 
 #[test]
-fn committed_census_documents_match_what_the_sources_render() {
-    // The drift guard from issue #559, applied to the census: what is committed
-    // must be byte-for-byte what the live sources render.
-    let root = repository_root();
-    let expected = workspace().documents();
-    let committed: Vec<(String, String)> = collect_committed(root)
-        .into_iter()
-        .map(|path| {
-            let contents = fs::read_to_string(root.join(&path)).expect("read committed census");
-            (path, contents)
-        })
-        .collect();
-    let drift = drift_report(&expected, &committed);
-    assert!(
-        drift.is_empty(),
-        "committed self-AST census has drifted ({REGENERATE}):\n{}",
-        drift
-            .iter()
-            .map(CensusDrift::describe)
-            .collect::<Vec<_>>()
-            .join("\n")
+fn readable_source_documents_restore_owned_bytes_and_reparse() {
+    for (path, source) in [
+        (
+            "src/alpha.rs",
+            "// retained comment\npub fn alpha() -> u8 { 1 }\n",
+        ),
+        ("src/nested/beta.rs", "pub struct Beta { value: u8 }\n"),
+    ] {
+        let module = ModuleCensus::of(path, source);
+        let notation = module.links_notation();
+        let document = formal_ai::readable_source::read_source_links(&notation)
+            .expect("read recursive source");
+        assert_eq!(
+            formal_ai::readable_source::source_owner(&document)
+                .unwrap()
+                .as_deref(),
+            Some(path)
+        );
+        assert_eq!(
+            formal_ai::readable_source::source_from_links(&document).unwrap(),
+            source
+        );
+        formal_ai::readable_source::verify_source_links(&document)
+            .expect("independent grammar reparse");
+        assert_eq!(
+            module_from_document(&notation).unwrap().symbols,
+            module.symbols
+        );
+    }
+    assert_eq!(
+        module_from_document("self_ast_census\n  target src/alpha.rs\n"),
+        None
     );
 }
 
@@ -217,29 +211,19 @@ fn directory_census_matches_the_same_explicit_source_set() {
 }
 
 #[test]
-fn committed_documents_exclude_the_redundant_workspace_aggregate() {
+fn navigation_index_is_not_a_counter_or_source_representation() {
     let census = WorkspaceCensus::compile(&[
         ("src/alpha.rs", "pub fn alpha() {}\n"),
         ("src/beta.rs", "pub fn beta() {}\n"),
     ]);
-
-    assert!(
-        census
-            .documents()
-            .iter()
-            .all(|(path, _)| path != "data/meta/self-ast/index.lino"),
-        "the whole-workspace aggregate changes for every source edit and creates cross-branch conflicts"
-    );
     let index = census.index_notation();
-    assert!(index.contains("  module_count 2\n"));
-    assert!(index.contains("    src/alpha.rs signature"));
-    assert!(index.contains("    src/beta.rs signature"));
-    assert!(
-        !repository_root()
-            .join("data/meta/self-ast/index.lino")
-            .is_file(),
-        "the on-demand aggregate must remain untracked; run {REGENERATE} to remove a legacy copy"
-    );
+    assert!(index.contains("representation navigation_only"));
+    for module in &census.modules {
+        assert!(index.contains(&module.path));
+        assert!(index.contains(&module.document_path()));
+    }
+    assert!(!index.contains("module_count"));
+    assert!(!index.contains("full_ast"));
 }
 
 #[test]
@@ -373,70 +357,17 @@ fn a_committed_census_document_reads_back_its_module_and_symbols() {
 }
 
 #[test]
-fn the_workspace_census_is_addressable_without_a_multi_megabyte_seed() {
-    // "Scale honestly": every module is addressable, but only the agentic-coding
-    // tier pays for a full AST, so the committed seed stays small enough to read.
-    let root = repository_root();
-    let documents = collect_committed(root);
-    let total: usize = documents
-        .iter()
-        .map(|path| {
-            usize::try_from(
-                fs::metadata(root.join(path))
-                    .expect("committed census document")
-                    .len(),
-            )
-            .expect("census document size fits in usize")
-        })
-        .sum();
-    assert!(
-        total < 2 * 1024 * 1024,
-        "the committed census grew to {total} bytes — the fidelity tiering is not holding"
+fn source_content_is_materialized_per_module_without_a_committed_counter_dependency() {
+    let first = WorkspaceCensus::compile(&[("src/alpha.rs", "pub fn alpha() {}\n")]);
+    let second =
+        WorkspaceCensus::compile(&[("src/alpha.rs", "pub fn alpha() { /* changed */ }\n")]);
+    assert_eq!(first.module_count(), second.module_count());
+    assert_ne!(
+        first.documents(),
+        second.documents(),
+        "changed source must change recursive content"
     );
-    for path in &documents {
-        let lines = fs::read_to_string(root.join(path)).unwrap().lines().count();
-        assert!(
-            lines <= 1500,
-            "{path} has {lines} lines, over the repository's `.lino` guard"
-        );
-    }
-    // The pinned single-module artifact (R381) is untouched by the workspace
-    // census; both live side by side.
-    assert!(
-        root.join("data/meta/self-ast.lino").is_file(),
-        "the pinned R381 self-AST artifact disappeared"
-    );
-}
-
-/// Every committed census document, repository-relative and sorted.
-fn collect_committed(root: &Path) -> Vec<String> {
-    let mut found = Vec::new();
-    walk(&root.join(CENSUS_DIR), &mut found);
-    let mut paths: BTreeSet<String> = BTreeSet::new();
-    for absolute in found {
-        paths.insert(
-            absolute
-                .strip_prefix(root)
-                .expect("census document lives in the repository")
-                .to_string_lossy()
-                .replace('\\', "/"),
-        );
-    }
-    paths.into_iter().collect()
-}
-
-fn walk(directory: &Path, out: &mut Vec<PathBuf>) {
-    let Ok(entries) = fs::read_dir(directory) else {
-        return;
-    };
-    for entry in entries.flatten() {
-        let path = entry.path();
-        if path.is_dir() {
-            walk(&path, out);
-        } else if path.extension().and_then(|extension| extension.to_str()) == Some("lino") {
-            out.push(path);
-        }
-    }
+    assert_eq!(CENSUS_DIR, "source-content");
 }
 
 /// The dispatch sources the method registry is derived from. `solver_dispatch`

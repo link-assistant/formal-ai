@@ -92,7 +92,11 @@ export async function planDiagramStep(messages, toolNames) {
 
 /** Mirrors `fn plan_self_ast_step`. */
 export async function planSelfAstStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(selfAst, selfAst.AST_PATH));
+  try {
+    return planDocumentRecipe(messages, toolNames, await catRecipe(selfAst, selfAst.AST_PATH));
+  } catch (error) {
+    return finalAnswer('Unknown:SourceModelUnavailable:' + String(error?.message ?? error));
+  }
 }
 
 /** Mirrors `fn plan_self_heal_step`. */

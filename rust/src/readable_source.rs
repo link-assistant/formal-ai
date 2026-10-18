@@ -127,7 +127,7 @@ pub fn source_owner(document: &Value) -> Result<Option<&str>, String> {
     field_text(node, "path").map(Some)
 }
 
-fn source_content(document: &Value) -> Result<&Value, String> {
+pub(super) fn source_content(document: &Value) -> Result<&Value, String> {
     let Some(node) = document
         .as_array()
         .filter(|node| node.first().and_then(Value::as_str) == Some("owned-source"))

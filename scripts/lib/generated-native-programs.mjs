@@ -986,17 +986,17 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1257,"end":132
 "maintainedJavaScript":"export const SEARCH_FUSION_TASK_FAMILY = 'captured_search_statement_fusion';",
 "maintainedTranslationSha256":"7916d1e770c39497efd1669f005b3bdb4e4710b53add3ed83b90e100f76cd839"},{"path":
 "formal_ai::self_ast_census::CENSUS_DIR","canonicalPath":"formal_ai::self_ast_census::CENSUS_DIR","kind":
-"nativeConstant","nativeType":"&str","returnType":"string","value":"data/meta/self-ast","nativeSourceQualified":true,
-"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":2048,"end":2098},"sourceWitnesses":[{"path":
-"rust/src/self_ast_census.rs","sha256":"aa376c1b4fd9efa57cffc2716574e377bfdc9e4ed7273bed70a2a3b4154016aa"},{"path":
+"nativeConstant","nativeType":"&str","returnType":"string","value":"source-content","nativeSourceQualified":true,
+"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":629,"end":675},"sourceWitnesses":[{"path":
+"rust/src/self_ast_census.rs","sha256":"55c8f978efca5a465539d3ed2bc12b1265288886ce958e8cf214363d0f7fbd8f"},{"path":
 "rust/src/lib.rs","sha256":"0bb50cc6558c3bcfc4736552bcf40869cc641792386c041f154a87cb7b443091"}],"maintainedMeta":
-"(constant CENSUS-DIR (exported) (type string) (value (string data/meta/self-ast)))","maintainedJavaScript":
-"export const CENSUS_DIR = 'data/meta/self-ast';","maintainedTranslationSha256":
-"5bacb60f3e9d6d6cab9b6499959ea693498f51cf0f8266be55e3fe9cfdcc6c7e"},{"path":
+"(constant CENSUS-DIR (exported) (type string) (value (string source-content)))","maintainedJavaScript":
+"export const CENSUS_DIR = 'source-content';","maintainedTranslationSha256":
+"34ce1f1029bd5e97413e40c9c4f8164a2d6862b9ab755c821971b3e59e0fef26"},{"path":
 "formal_ai::self_ast_census::FULL_FIDELITY_PREFIX","canonicalPath":"formal_ai::self_ast_census::FULL_FIDELITY_PREFIX",
 "kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"src/agentic_coding/","nativeSourceQualified":
-true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":2367,"end":2428},"sourceWitnesses":[{"path":
-"rust/src/self_ast_census.rs","sha256":"aa376c1b4fd9efa57cffc2716574e377bfdc9e4ed7273bed70a2a3b4154016aa"},{"path":
+true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":944,"end":1005},"sourceWitnesses":[{"path":
+"rust/src/self_ast_census.rs","sha256":"55c8f978efca5a465539d3ed2bc12b1265288886ce958e8cf214363d0f7fbd8f"},{"path":
 "rust/src/lib.rs","sha256":"0bb50cc6558c3bcfc4736552bcf40869cc641792386c041f154a87cb7b443091"}],"maintainedMeta":
 "(constant FULL-FIDELITY-PREFIX (exported) (type string) (value (string src/agentic_coding/)))","maintainedJavaScript":
 "export const FULL_FIDELITY_PREFIX = 'src/agentic_coding/';","maintainedTranslationSha256":

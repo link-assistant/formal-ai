@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 299
   workaround_items 33
   inferred_signatures 2
-  carried_items 2362
+  carried_items 2364
   translated_modules 100
   fully_translated_modules 1
   refused_modules 49
@@ -133,7 +133,7 @@ module js/agentic/crate/seed_reports.mjs translated 0 workaround 0 inferred 0 ca
 module js/agentic/crate/seed_shell_intents.mjs translated 1 workaround 0 inferred 0 carried 8
 module js/agentic/crate/seed_terminal_commands.mjs translated 0 workaround 0 inferred 0 carried 5
 module js/agentic/crate/selection_heuristics_triz.mjs translated 5 workaround 0 inferred 1 carried 21
-module js/agentic/crate/self_ast_census.mjs translated 3 workaround 0 inferred 0 carried 12
+module js/agentic/crate/self_ast_census.mjs translated 3 workaround 0 inferred 0 carried 14
 module js/agentic/crate/self_explanation.mjs translated 0 workaround 0 inferred 0 carried 8
 module js/agentic/crate/self_source_links.mjs translated 3 workaround 1 inferred 0 carried 16
 module js/agentic/crate/sequences.mjs translated 1 workaround 0 inferred 0 carried 8
@@ -177,8 +177,8 @@ module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inf
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
 refusal "import of names its module does not translate" 323
 refusal "JSDoc type {…}" 215
-refusal "null" 189
-refusal "import from '…'" 163
+refusal "null" 188
+refusal "import from '…'" 165
 refusal "arrow function" 122
 refusal "type: unknown name (a sibling item or an import)" 118
 refusal "function value …" 101
@@ -200,8 +200,8 @@ refusal "nullish coalescing" 26
 refusal "method call .replace()" 23
 refusal "export …" 22
 refusal "syntax: malformed number" 19
+refusal "try statement" 19
 refusal "case test" 18
-refusal "try statement" 18
 refusal "undefined" 16
 refusal "method call .every()" 13
 refusal "typeof operator" 13

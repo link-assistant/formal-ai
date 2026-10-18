@@ -59,8 +59,9 @@ run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt
 # planner fixtures from it. Running rustfmt after those projections can make a
 # successful regeneration leave its own outputs stale.
 run_step "formatting" cargo fmt --manifest-path rust/Cargo.toml
-run_step "self-AST census (data/meta/self-ast/)" \
-  cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_self_ast_census
+# Full recursive source content is verified by the mandatory sharded
+# regenerate-self-ast-census workflow and retained as source-content artifacts.
+# Count-only files are historical data, not regenerated source authority.
 # The reviewed proposal document is derived from the live learner: its candidate
 # id and seed edit are content-addressed over the recursive-core trace, so any
 # new pipeline stage makes it stale (issue #1073 added the thirteenth). The
@@ -74,7 +75,7 @@ run_step "reviewed method proposals (rust/examples/issue-922-method-learning/ope
 # planner -- including one a formatter makes -- leaves them stale. They were
 # missing from this list, and the only thing that noticed was a test failure
 # several minutes into the suite.
-run_step "planner fixtures (data/meta/self-ast.lino, data/meta/self-healing-case.lino, docs/case-studies/issue-538/agent-cli-session-self-ast.json)" \
+run_step "self-healing scenario (data/meta/self-healing-case.lino)" \
   cargo run --manifest-path rust/Cargo.toml --quiet --example regenerate_planner_fixtures
 # Last, because earlier steps rewrite data/ and docs/ files the mirror copies:
 # every producer runs before the mirror is refreshed. The committed

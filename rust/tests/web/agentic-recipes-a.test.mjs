@@ -17,7 +17,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { before, describe, it } from 'node:test';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
-import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { installNodeHost, censusDocuments, censusSourceClosureComplete } from '../../../js/agentic/node-host.mjs';
 import { parseChatMessage } from '../../../js/server/chat-request.mjs';
 import {
   FISHERMAN_DOC_ID, PRIMITIVE_KINDS, canonicalFishermanSynopsis, coversAllNine, formalizeTextToLinks, totalRecords,
@@ -494,21 +494,17 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
     assert.equal(ownedManifestContentId(), stableId('source_tree', ownedManifestNotation()));
   });
 
-  it('content ids equal the Rust-generated self-AST census for every undrifted module', () => {
-    // data/meta/self-ast/src/**.lino is written by the Rust example
-    // regenerate_self_ast_census from the same OWNED_SOURCE_FILES and pinned to
-    // the sources by issue_673_self_ast_census.rs. A census whose byte_len no
-    // longer matches has drifted with an unregenerated edit and is skipped.
-    let compared = 0;
-    for (const digest of ownedManifest()) {
-      const census = new URL(`data/meta/self-ast/${digest.path.slice(0, -3)}.lino`, ROOT);
-      if (!existsSync(census)) continue;
-      const text = readFileSync(census, 'utf8');
-      if (Number(/\n  byte_len (\d+)/.exec(text)[1]) !== digest.byte_len) continue;
-      assert.equal(digest.content_id, /\n  content_id (\S+)/.exec(text)[1], digest.path);
-      compared += 1;
+  it('every owned manifest row binds current regular source without committed census authority', () => {
+    const observed = censusDocuments();
+    assert.equal(censusSourceClosureComplete(), true);
+    assert.deepEqual(observed.map(row => row.sourceIdentity.path).sort(), ownedManifest().map(row => row.path).sort());
+    for (const row of observed) {
+      const source = repo('rust/' + row.sourceIdentity.path);
+      assert.equal(row.sourceIdentity.content_id, stableId('source_module', source));
+      assert.equal(row.sourceIdentity.byte_len, utf8(source));
+      assert.equal(row.module.fidelity, 'navigation');
+      assert.equal(row.text, null, 'navigation is not a source model');
     }
-    assert.ok(compared > 100, `compared ${compared} modules`);
   });
 
   it('the fast FNV-1a equals crate::engine::stable_id', () => {
@@ -583,10 +579,17 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
     // parse census is the no-`meta-language`-feature build's (see the header
     // of js/agentic/crate/self_source_links.mjs).
     const shape = (text) => text.replace(/ (file_count|total_bytes|manifest_content_id|path|byte_len|content_id|total_link_count|named_node_count|total_named_node_count|faithful_count|slice_faithful_count|coverage_permille|fully_faithful|slice_fully_faithful|faithful) .*/g, ' $1 X');
-    assert.equal(shape(document), shape(repo('docs/case-studies/issue-841/self-hosting-evidence/self-source-links.lino')));
+    const boundary = '\n  representation navigation-diagnostic\n  complete-recursive-content false\n';
+    assert.ok(document.endsWith(boundary));
+    const legacyDiagnostic = document.slice(0, -boundary.length) + '\n';
+    assert.equal(shape(legacyDiagnostic), shape(repo('docs/case-studies/issue-841/self-hosting-evidence/self-source-links.lino')));
     assert.ok(document.includes('    slice_fully_faithful false\n'));
     assert.ok(document.endsWith('\n') && !document.endsWith('\n\n'));
-    assert.ok(sourceLinks.finalAnswer(document).includes(`content-addressed all ${ownedFileCount()} owned source files under one manifest id, and verified a representative slice of 6 modules`));
+    const answer = sourceLinks.finalAnswer(document);
+    assert.ok(answer.includes(`content-addressed all ${ownedFileCount()} owned source files under one manifest id, and reported a representative slice of 6 modules`));
+    assert.ok(answer.includes("parser round-trip verified: false"));
+    assert.ok(answer.includes("does not contain the entire source as recursive CST content"));
+    assert.ok(!answer.startsWith("Translated the entire source"));
   });
 
   it('the explain and source-links recipes walk write -> verify -> final', async (t) => {
