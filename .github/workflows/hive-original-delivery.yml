@@ -10,6 +10,8 @@ on:
       - 'rust/Cargo.lock'
       - 'scripts/*hive*'
       - 'scripts/lib/hive-delivery-evidence.mjs'
+      - 'scripts/lib/hive-operational-evidence.mjs'
+      - 'rust/tests/web/hive-operational-evidence.test.mjs'
       - 'data/benchmarks/hive-original-delivery-inputs.json'
       - '.github/workflows/hive-original-delivery.yml'
   workflow_dispatch:
@@ -130,6 +132,9 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.gh.outputs.token }}
         run: node scripts/check-hive-original-delivery.mjs
+      - name: Transfer private operational evidence to the hosted artifact owner
+        if: ${{ !cancelled() }}
+        run: sudo --preserve-env=GITHUB_ACTIONS "$(command -v node)" scripts/lib/hive-operational-evidence.mjs --transfer-ownership "$E2E_LOG_DIR" "$(id -u)" "$(id -g)"
       - name: Retain actual task links, assertions, independent stdout and failure logs
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7

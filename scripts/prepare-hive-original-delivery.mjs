@@ -6,6 +6,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {prepareHiveOperationalEvidence} from './lib/hive-operational-evidence.mjs';
 
 const ENTRYPOINT_BLOB = '6bec72e1bc03104a05ff9588ca2964197e13247a';
 export function adaptHiveEntrypoint(source) {
@@ -29,6 +30,7 @@ export function main() {
   const entrypoint = path.join(hive, 'scripts/e2e-hello-world.mjs');
   const original = fs.readFileSync(entrypoint, 'utf8');
   const adapted = adaptHiveEntrypoint(original);
+  prepareHiveOperationalEvidence({hive, root});
   const helper = fs.readFileSync(path.join(root, 'scripts/lib/hive-delivery-evidence.mjs'));
   const digest = bytes => createHash('sha256').update(bytes).digest('hex');
   fs.writeFileSync(path.join(hive, 'scripts/formal-ai-hive-delivery-evidence.mjs'), helper, {flag: 'wx'});
