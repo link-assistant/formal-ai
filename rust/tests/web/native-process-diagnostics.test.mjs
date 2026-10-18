@@ -139,3 +139,120 @@ test('default stderr transport drains complete captured diagnostics through a re
   assert.ok(child.stderr.includes(Buffer.alloc(180000, 120)));
   assert.ok(child.stderr.includes(Buffer.from('ACTUAL_NODE_STDERR_END')));
 });
+test('backpressure retries without losing diagnostics or changing the original exit', () => {
+  const result = processResult({
+    status: 101,
+    stdout: Buffer.from('NATIVE_OUTPUT'),
+    stderr: Buffer.from('NATIVE_ERROR')
+  });
+  const parts = [];
+  let attempts = 0,
+    waits = 0;
+  assert.equal(reportNativeProcessFailure('build', result, {
+    write: bytes => {
+      if (attempts++ < 3) throw Object.assign(Error('busy'), {
+        code: 'EAGAIN'
+      });
+      parts.push(Buffer.from(bytes));
+    },
+    wait: () => {
+      waits++;
+    },
+    now: () => 0
+  }), true);
+  assert.equal(waits, 3);
+  assert.equal(result.status, 101);
+  assert(Buffer.concat(parts).includes(result.stdout));
+  assert(Buffer.concat(parts).includes(result.stderr));
+});
+test('rendered compiler errors and stderr precede large artifact rows', () => {
+  const artifact = JSON.stringify({
+    reason: 'compiler-artifact',
+    payload: 'a'.repeat(200000)
+  }) + '\n';
+  const stdout = Buffer.from(artifact + JSON.stringify({
+    reason: 'compiler-message',
+    message: {
+      rendered: 'ACTUAL_ERROR_E0308\n'
+    }
+  }) + '\n');
+  const observed = capture('build', processResult({
+    status: 101,
+    stdout,
+    stderr: Buffer.from('NATIVE_STDERR')
+  }), {
+    cargoJson: true
+  });
+  assert(observed.text.indexOf('ACTUAL_ERROR_E0308') < observed.text.indexOf(artifact));
+  assert(observed.text.indexOf('NATIVE_STDERR') < observed.text.indexOf(artifact));
+  assert(observed.bytes.includes(Buffer.from(artifact)));
+});
+test('exhausted or closed diagnostic transport preserves fatal native result and retained bytes', () => {
+  for (const code of ['EAGAIN', 'EPIPE']) {
+    const result = processResult({
+      status: 101,
+      stdout: Buffer.from('raw'),
+      stderr: Buffer.from('retained')
+    });
+    let tick = 0;
+    assert.equal(reportNativeProcessFailure('build', result, {
+      write: () => {
+        throw Object.assign(Error('closed'), {
+          code
+        });
+      },
+      wait: () => {
+        tick += 1000;
+      },
+      now: () => tick
+    }), true);
+    assert.equal(result.status, 101);
+    assert(failedNativeProcess(result));
+    assert.equal(result.stdout.toString(), 'raw');
+    assert.equal(result.stderr.toString(), 'retained');
+  }
+});
+test('partial writes resume at the exact byte offset after backpressure', () => {
+  let first = true;
+  const parts = [];
+  reportNativeProcessFailure('producer', processResult({
+    stdout: Buffer.from('unchanged')
+  }), {
+    write: bytes => {
+      if (first) {
+        first = false;
+        parts.push(Buffer.from(bytes.subarray(0, 5)));
+        throw Object.assign(Error('busy'), {
+          code: 'EAGAIN',
+          diagnosticBytesWritten: 5
+        });
+      }
+      parts.push(Buffer.from(bytes));
+    },
+    wait: () => {},
+    now: () => 0
+  });
+  const text = Buffer.concat(parts).toString();
+  assert(text.startsWith('::stop-commands::'));
+  assert.equal(text.match(/::stop-commands::/g).length, 1);
+  assert(text.includes('unchanged'));
+});
+test('rendered errors precede even large captured stderr before transport saturation', () => {
+  const rendered = 'PRIMARY_COMPILER_ERROR\n',
+    stderr = Buffer.alloc(400000, 115),
+    stdout = Buffer.from(JSON.stringify({
+      reason: 'compiler-message',
+      message: {
+        rendered
+      }
+    }) + '\n');
+  const seen = capture('build', processResult({
+    status: 101,
+    stdout,
+    stderr
+  }), {
+    cargoJson: true
+  });
+  assert(seen.text.indexOf(rendered) < seen.text.indexOf(stderr.toString()));
+  assert(seen.bytes.includes(stderr));
+});

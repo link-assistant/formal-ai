@@ -127,7 +127,8 @@ pub(super) fn plan_shell_step(
                 messages,
                 tool_names,
                 command,
-                tool_result::reported_exit_code(raw),
+                tool_result::reported_exit_code(raw)
+                    .and_then(|exit_code| i32::try_from(exit_code).ok()),
                 raw,
             )
         {
