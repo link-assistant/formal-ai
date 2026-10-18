@@ -41,20 +41,18 @@ export function qualifiedToolAttempt(progress,capability,argumentsValue) {
 
 /** Mirrors `struct Progress` in rust/src/agentic_coding/progress.rs. */
 export class Progress {
-  constructor() {
-    this.completed = [];
-    this.attempts = [];
-    this.fetched_text = null;
-    this.fetched_pages = [];
-    this.source_observations = [];
-    this.attempted_fetches = [];
-    this.attempted_work_item_reads = [];
-    this.failed_work_item_reads = [];
-    this.search_output = null;
-    this.run_outputs = [];
-    this.run_observations = [];
-    this.search_result = null;
-  }
+  completed = [];
+  attempts = [];
+  fetched_text = null;
+  fetched_pages = [];
+  source_observations = [];
+  attempted_fetches = [];
+  attempted_work_item_reads = [];
+  failed_work_item_reads = [];
+  search_output = null;
+  run_outputs = [];
+  run_observations = [];
+  search_result = null;
 
   /** Mirrors `Progress::scan`. */
   static scan(messages) {

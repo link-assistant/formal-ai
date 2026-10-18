@@ -439,18 +439,23 @@ export function mergeUnionById(base, incoming) {
 }
 
 /** `write_locked_atomic` (temp file + rename; the advisory lock file is created, not held). */
-export function writeAtomic(file, contents) {
+export function writeAtomic(file, contents, {privateMode=false}={}) {
   const parent = path.dirname(file);
   if (parent) fs.mkdirSync(parent, { recursive: true });
   const name = path.basename(file) || 'memory.lino';
   fs.closeSync(fs.openSync(path.join(parent, `${name}.lock`), 'a'));
   const temp = path.join(parent, `${name}.tmp.${process.pid}`);
+  let temporaryOwned=false;
   try {
-    fs.writeFileSync(temp, contents);
+    if(privateMode){
+      const descriptor=fs.openSync(temp,'wx',0o600);temporaryOwned=true;
+      try{fs.writeFileSync(descriptor,contents);}finally{fs.closeSync(descriptor);}
+    }
+    else fs.writeFileSync(temp, contents);
     fs.renameSync(temp, file);
   } catch (error) {
     try {
-      fs.unlinkSync(temp);
+      if(!privateMode||temporaryOwned)fs.unlinkSync(temp);
     } catch {
       // the temp file may never have been created
     }
@@ -480,10 +485,10 @@ export class SyncStore {
   }
 
   /** `SyncStore::open` / `open_at`. */
-  static open(env = process.env, file = sharedMemoryPath(env)) {
+  static open(env = process.env, file = sharedMemoryPath(env), suppliedBytes) {
     let text;
     try {
-      text = fs.readFileSync(file);
+      text = suppliedBytes===undefined?fs.readFileSync(file):suppliedBytes;
     } catch (error) {
       if (error.code === 'ENOENT') {
         let compatible = true;
@@ -580,10 +585,10 @@ export class SyncStore {
     return added;
   }
 
-  persist() {
+  persist(options) {
     if (!this.path) return;
     if (!this.compatible) throw new Error(serverMessage('memory_schema_write_refused'));
-    writeAtomic(this.path, this.toLinksNotation());
+    writeAtomic(this.path, this.toLinksNotation(),options);
   }
 }
 

@@ -930,35 +930,7 @@ fn plan_shell_step(
     command: &str,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
-    let progress = Progress::scan(messages);
-    if progress.done(Capability::Run) {
-        let raw = progress.run_outputs.last().map_or("", String::as_str);
-        let disposition = if tool_result::step_outcome(raw) == tool_result::StepOutcome::Failed {
-            FinalDisposition::Failure
-        } else {
-            FinalDisposition::Finding
-        };
-        return record(
-            AgenticPlan::Final(tool_result::render(
-                command,
-                raw,
-                crate::protocol::latest_user_request(messages)
-                    .as_deref()
-                    .unwrap_or_default(),
-            )),
-            disposition,
-            "shell_result_observed",
-            result,
-        );
-    }
-
-    if let Some(tool) = tool_for(tool_names, Capability::Run) {
-        return plan_one(tool, json!({ "command": command }).to_string());
-    }
-
-    AgenticPlan::Final(format!(
-        "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
-    ))
+    super::prerequisite_recovery::plan_shell_step(messages, tool_names, command, result)
 }
 
 pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {

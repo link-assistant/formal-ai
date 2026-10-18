@@ -22,6 +22,10 @@ pub struct ServeArgs {
     #[arg(long, default_value_t = false)]
     agent_mode: bool,
 
+    /// Exact caller-owned workspace prerequisite capability JSON. Default denial.
+    #[arg(long, env = "FORMAL_AI_PREREQUISITE_GRANT_JSON")]
+    prerequisite_grant: Option<String>,
+
     /// Serve the transport-neutral API envelope over WebSocket.
     #[arg(long, conflicts_with = "webrtc", default_value_t = false)]
     ws: bool,
@@ -82,6 +86,7 @@ enum ConnectFormat {
 }
 
 pub fn run_serve(args: &ServeArgs) -> Result<(), Box<dyn Error>> {
+    formal_ai::prerequisite::configure_workspace_grant(args.prerequisite_grant.as_deref())?;
     let address = format!("{}:{}", args.host, args.port);
     if args.ws {
         serve_websocket(&address, args.transport_trace).map_err(|error| transport_error(&error))?;

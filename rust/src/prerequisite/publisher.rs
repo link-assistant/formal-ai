@@ -87,13 +87,31 @@ pub struct SetupPublisher {
     pub source_id: String,
     /// The host the publisher actually serves from.
     pub host: String,
+    /// Exact first-party documentation URL declared by the publisher registry.
+    pub documentation: String,
 }
 
 impl SetupPublisher {
+    /// Whether first-party bytes come from the pinned host or exact declared documentation URL.
+    #[must_use]
+    pub fn authorizes_document_url(&self, url: &str) -> bool {
+        url::Url::parse(url).ok().is_some_and(|parsed| {
+            parsed.scheme() == "https"
+                && parsed.username().is_empty()
+                && parsed.password().is_none()
+                && parsed.port_or_known_default() == Some(443)
+                && (url == self.documentation || parsed.host_str() == Some(self.host.as_str()))
+        })
+    }
+
     /// The documented URL this publisher's procedure is read from.
     #[must_use]
     pub fn documentation_url(&self) -> String {
-        ["https://", self.host.as_str(), "/"].concat()
+        if self.authorizes_document_url(&self.documentation) {
+            self.documentation.clone()
+        } else {
+            String::new()
+        }
     }
 }
 
@@ -108,6 +126,7 @@ pub fn seed_publishers() -> Vec<SetupPublisher> {
             program: node.find_child_value("program").to_owned(),
             source_id: node.find_child_value("source_id").to_owned(),
             host: node.find_child_value("host").to_owned(),
+            documentation: node.find_child_value("documentation").to_owned(),
         })
         .collect()
 }
@@ -191,7 +210,7 @@ pub fn parse_setup_document(
     source_url: &str,
     document: &str,
 ) -> Option<SetupProcedure> {
-    if !url_has_host(source_url, &publisher.host) {
+    if !publisher.authorizes_document_url(source_url) {
         return None;
     }
     let root = parse_lino(document);
@@ -460,7 +479,7 @@ pub fn search_setup_procedure<L: SourceLookup>(
                     consulted.push(sense.source_id.clone());
                 }
                 match pinned.as_ref() {
-                    Some(publisher) if url_has_host(&sense.source_url, &publisher.host) => {
+                    Some(publisher) if publisher.authorizes_document_url(&sense.source_url) => {
                         if procedure.is_none() {
                             procedure = procedure_from_sense(need, publisher, &sense);
                             if procedure.is_none() {
@@ -492,7 +511,7 @@ pub fn search_setup_procedure<L: SourceLookup>(
                     consulted.push(outcome.source_id.clone());
                 }
                 match pinned.as_ref() {
-                    Some(publisher) if url_has_host(&outcome.detail, &publisher.host) => {}
+                    Some(publisher) if publisher.authorizes_document_url(&outcome.detail) => {}
                     Some(publisher) => refusals.push(PublisherRefusal {
                         host: outcome.detail.clone(),
                         program: need.program.clone(),
@@ -514,5 +533,19 @@ pub fn search_setup_procedure<L: SourceLookup>(
         consulted,
         refusals,
         cycle: Vec::new(),
+    }
+}
+
+#[cfg(test)]
+mod documentation_authority_tests {
+    use super::seed_publishers;
+
+    #[test]
+    fn all_declared_publisher_document_paths_retain_exact_authority() {
+        for publisher in seed_publishers() {
+            assert_eq!(publisher.documentation_url(), publisher.documentation);
+            assert!(publisher.authorizes_document_url(&publisher.documentation));
+            assert!(!publisher.authorizes_document_url("https://unrelated.invalid/"));
+        }
     }
 }

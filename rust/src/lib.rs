@@ -1,5 +1,10 @@
 extern crate alloc;
 
+#[cfg(not(target_arch = "wasm32"))]
+pub mod provenance_native;
+#[cfg(not(target_arch = "wasm32"))]
+pub mod structured_tracing;
+
 pub mod agent;
 pub mod agentic_coding;
 pub mod algorithm_discovery;

@@ -1,0 +1,76 @@
+{
+  "schema": "formal-ai-native-provenance-vectors-v1",
+  "testKeyOnly": true,
+  "hashes": [
+    {
+      "size": 0,
+      "digest": "af1349b9f5f9a1a6a0404dea36dcc9499bcb25c9adc112b7cc9a93cae41f3262"
+    },
+    {
+      "size": 1,
+      "digest": "2d3adedff11b61f14c886e35afa036736dcd87a74d27b5c1510225d0f592e213"
+    },
+    {
+      "size": 63,
+      "digest": "e9bc37a594daad83be9470df7f7b3798297c3d834ce80ba85d6e207627b7db7b"
+    },
+    {
+      "size": 64,
+      "digest": "4eed7141ea4a5cd4b788606bd23f46e212af9cacebacdc7d1f4c6dc7f2511b98"
+    },
+    {
+      "size": 65,
+      "digest": "de1e5fa0be70df6d2be8fffd0e99ceaa8eb6e8c93a63f2d8d1c30ecb6b263dee"
+    },
+    {
+      "size": 1023,
+      "digest": "10108970eeda3eb932baac1428c7a2163b0e924c9a9e25b35bba72b28f70bd11"
+    },
+    {
+      "size": 1024,
+      "digest": "42214739f095a406f3fc83deb889744ac00df831c10daa55189b5d121c855af7"
+    },
+    {
+      "size": 1025,
+      "digest": "d00278ae47eb27b34faecf67b4fe263f82d5412916c1ffd97c8cb7fb814b8444"
+    },
+    {
+      "size": 2048,
+      "digest": "e776b6028c7cd22a4d0ba182a8bf62205d2ef576467e838ed6f2529b85fba24a"
+    },
+    {
+      "size": 2049,
+      "digest": "5f4d72f40d7a5f82b15ca2b2e44b1de3c2ef86c426c95c1af0b6879522563030"
+    },
+    {
+      "size": 131071,
+      "digest": "de433db299ce5940eb72f08f509f90fa93e8b8c38e26c927310b4f8b98e2f33c"
+    },
+    {
+      "size": 131072,
+      "digest": "306baba93b1a393cbd35172837c98b0f59a41f64e1b2682ae102d8b2534b9e1c"
+    },
+    {
+      "size": 1048577,
+      "digest": "2f053cd7472cf0cd2f9adaf45c1180255b91b9a865404a63671a0ee5f792ed33"
+    }
+  ],
+  "privateKey": "MC4CAQAwBQYDK2VwBCIEIMqLLFZX5CRZ2Pqo5h7TbPLWqwGV4NskCKg66uMgAMaL",
+  "publicKey": "MCowBQYDK2VwAyEAf5hl+V3z/zH413NhsbG6knQvKDJuecEjnMX2ml+fK8U=",
+  "message": "Rm9ybWFsIEFJIG1haW50YWluZWQgbmF0aXZlL0phdmFTY3JpcHQgcGFyaXR5IGZpeHR1cmUA8J+Zgg==",
+  "signature": "SMjI9ahGP5qOp7WJxGDrEO5W0R5Kok+F3uSpBy2aTEQgSCsdkRypFNuzzzHbS75sgYdO1Yd6yrtYSmTsrTeNBQ==",
+  "canonicalValue": {
+    "array": [
+      null,
+      true,
+      42,
+      "кириллица🙂"
+    ],
+    "object": {
+      "z": "last",
+      "a": "first"
+    },
+    "text": "line\nnext"
+  },
+  "canonicalDigest": "4d3ac59ce679c11c7fa4fe4d88ec507eaab324e76903324a13cd52d9eeffeb46"
+}

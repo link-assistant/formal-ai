@@ -5,6 +5,7 @@ import { provenancePrimitives } from './session.mjs';
 import { blake3Hex } from '../crypto/blake3.mjs';
 import { encodeTyped, decodeTyped } from '../logging/typed-codec.mjs';
 import {verifyInstallationSeal} from './installation-key.mjs';
+import {inspectLogicalMemoryEvidence}from './memory-evidence.mjs';
 const p = provenancePrimitives({
   encodeTyped,
   decodeTyped
@@ -125,6 +126,7 @@ export function verifyDriveEvidence(directory, workspace, expectedAnchor, {trust
       latestEdits.set(record.payload.path, record.payload);
     }
   }
+  const logicalMemory=inspectLogicalMemoryEvidence(records,evidence=>retainedEvidenceBytes(directory,evidence));
   if (thinking.size !== outputs.size) throw Error('thinking_missing');
   for(const retained of logFiles.values())if(retained.references!==retained.lines.length)throw Error('structured_log_unbound');
   const signature=trustedPublicKey?verifyInstallationSeal(lines,anchor,decodeTyped(regularEvidenceBytes(directory,'seal.lino').toString('utf8').trimEnd()),trustedPublicKey):{signature:'not-verified',trust:'not-configured'};
@@ -149,6 +151,7 @@ export function verifyDriveEvidence(directory, workspace, expectedAnchor, {trust
     files,
     missingThinkingFields,
     structuredLogs:logIndex,
+    logicalMemory,
     plannerObservations:plannerRecords.size,
     installation:signature,
     scope: 'driver-dialogue-and-observed-write-edit-bytes',

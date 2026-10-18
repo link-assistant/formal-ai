@@ -584,3 +584,41 @@ impl PrerequisiteNeed {
         need
     }
 }
+
+static WORKSPACE_GRANT: std::sync::OnceLock<Option<serde_json::Value>> = std::sync::OnceLock::new();
+
+/// Configure one caller-owned grant before serving requests; fetched text never calls this entrypoint.
+pub fn configure_workspace_grant(text: Option<&str>) -> Result<(), String> {
+    let parsed = text
+        .map(|text| {
+            serde_json::from_str::<serde_json::Value>(text)
+                .map_err(|_| "invalid_prerequisite_grant".to_owned())
+        })
+        .transpose()?;
+    if parsed.as_ref().is_some_and(|grant| {
+        grant.get("schema").and_then(serde_json::Value::as_str)
+            != Some("formal-ai-workspace-prerequisites-v1")
+            || grant.get("scope").and_then(serde_json::Value::as_str) != Some("workspace")
+            || !grant
+                .get("programs")
+                .is_some_and(serde_json::Value::is_array)
+    }) {
+        return Err("invalid_prerequisite_grant".to_owned());
+    }
+    if let Some(existing) = WORKSPACE_GRANT.get() {
+        return if existing == &parsed {
+            Ok(())
+        } else {
+            Err("prerequisite_grant_already_configured".to_owned())
+        };
+    }
+    WORKSPACE_GRANT
+        .set(parsed)
+        .map_err(|_| "prerequisite_grant_already_configured".to_owned())
+}
+
+/// Read-only process configuration; default denial when no caller configured a grant.
+#[must_use]
+pub fn configured_workspace_grant() -> Option<serde_json::Value> {
+    WORKSPACE_GRANT.get().cloned().flatten()
+}

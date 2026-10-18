@@ -179,10 +179,25 @@ function nodeSourceFetch() {
  * @param {{boot: () => Promise<object>}} worker
  * @returns {Promise<object>} the worker realm
  */
-export async function installNodeHost(worker) {
+export async function installNodeHost(worker, options = {}) {
+  // Caller-owned capability only. Source documents and conversation text never grant installation.
+  const freezeGrant = value => {
+    if (value && typeof value === "object") {
+      for (const child of Object.values(value)) freezeGrant(child);
+      Object.freeze(value);
+    }
+    return value;
+  };
+  if(options===null||typeof options!=="object")throw Error("host_options_required");
+  const grantDescriptor=Object.getOwnPropertyDescriptor(options,"prerequisiteGrant");
+  if(grantDescriptor&&!Object.hasOwn(grantDescriptor,"value"))throw Error("host_grant_must_be_data");
+  const suppliedGrant=grantDescriptor?.value??null;
+  const prerequisiteGrant = suppliedGrant === null ? null
+    : freezeGrant(JSON.parse(JSON.stringify(suppliedGrant)));
   const context = await worker.boot();
   const baseHost = {
     readText: readRepoFile,
+    prerequisiteGrant: () => prerequisiteGrant,
     parseLino,
     realm: context,
     planningObserver:()=>{

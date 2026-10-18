@@ -7,7 +7,7 @@ const installed = new WeakMap();
 /** Install the planner host over `ctx.worker` once. @param {{worker: object}} ctx */
 export async function ensureNodeHost(ctx) {
   if (!installed.has(ctx.worker)) {
-    installed.set(ctx.worker, import('../agentic/node-host.mjs').then(({ installNodeHost }) => installNodeHost(ctx.worker)));
+    installed.set(ctx.worker, import('../agentic/node-host.mjs').then(({ installNodeHost }) => installNodeHost(ctx.worker, { prerequisiteGrant: ctx.prerequisiteGrant ?? null })));
   }
   await installed.get(ctx.worker);
 }

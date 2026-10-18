@@ -76,6 +76,11 @@ test('fresh real planner writes observed bytes and binds its actual loaded sourc
   const final=JSON.parse(retainedEvidenceBytes(proof.directory,runtime[1].payload.evidence));
   assert(final.sources.some(row=>row.url.endsWith('/js/agentic/planner.mjs')));
   assert(final.sources.some(row=>row.boundary==='actual-commonjs-compile-input'));
+  const entry=final.sources.find(row=>row.url.endsWith('/entry.cjs')&&row.boundary==='actual-commonjs-compile-input');
+  assert(entry);
+  assert.equal(Buffer.from(JSON.parse(retainedEvidenceBytes(proof.directory,entry.evidence)).bytes,'base64').toString('utf8'),
+   fs.readFileSync(path.join(root,'js/provenance/runtime-entry.js'),'utf8'));
+  assert(observed.custody.bootstrap.some(row=>row.file==='entry.cjs'));
   const retained=final.sources[0].evidence;
   const leaf=retained.chunks?.[0]??retained;
   const filename=path.join(proof.directory,leaf.file),bytes=fs.readFileSync(filename);

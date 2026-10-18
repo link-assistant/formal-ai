@@ -64,6 +64,7 @@ import { FinalDisposition, finalAnswer, isToolCalls, jsonText, planOne, projectP
 import { continuedAgentTask, isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import * as positionalEdit from './positional_edit.mjs';
 import * as procedure from './procedure.mjs';
+import { planRecovery, recoveryOutput } from './prerequisite_recovery.mjs';
 import { Progress } from './progress.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
@@ -520,9 +521,12 @@ async function planOpenRoutes(task, messages, toolNames) {
  */
 export function planShellStep(messages, toolNames, command) {
   const progress = Progress.scan(messages);
-  if (progress.done(Capability.Run)) {
-    const outputs = progress.run_outputs;
-    const raw = outputs.length ? outputs[outputs.length - 1] : '';
+  const raw = recoveryOutput(messages, command) ?? progress.latestRunOutputFor(command);
+  if (raw !== null) {
+    if (toolResult.stepOutcome(raw) === toolResult.StepOutcome.Failed) {
+      const recovery = planRecovery(messages, toolNames, command, toolResult.reportedExitCode(raw), raw);
+      if (recovery !== null) return recovery;
+    }
     return resolvedFinalAnswer(toolResult.render(command, raw, latestUserRequest(messages) ?? ''),
       toolResult.stepOutcome(raw) === toolResult.StepOutcome.Failed
         ? FinalDisposition.Failure : FinalDisposition.Finding, 'shell_result_observed');

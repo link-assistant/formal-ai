@@ -9,6 +9,7 @@ import { blake3Hex } from '../crypto/blake3.mjs';
 import { encodeTyped, decodeTyped } from '../logging/typed-codec.mjs';
 import {createLogger} from '../server/structured-log.mjs';
 import {openInstallationSigner} from './installation-key.mjs';
+import {logicalMemoryDelta}from './memory-evidence.mjs';
 const primitives = provenancePrimitives({
   encodeTyped,
   decodeTyped
@@ -43,7 +44,13 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
   const directory = fs.mkdtempSync(path.join(parent, 'session-'));
   fs.chmodSync(directory, 0o700);
   const sessionIdentifier = randomUUID();
-  const initial = wire({
+  if(options.memoryFactory!==undefined&&typeof options.memoryFactory!=='function')throw Error('logical_memory_factory_required');
+  const logicalMemory=options.memoryFactory?options.memoryFactory({sessionId:sessionIdentifier,workspace}):null;
+  try {
+  const initialSnapshot=logicalMemory?logicalMemory.snapshot():null;
+  const initial = initialSnapshot?Buffer.from(encodeTyped({schema:'formal-ai-logical-memory-manifest-v1',
+    memoryHash:initialSnapshot.memoryHash,size:initialSnapshot.bytes.length,revision:initialSnapshot.revision,
+    taskURL:initialSnapshot.taskURL})):wire({
     scope: 'driver-dialogue-only',
     prompt
   });
@@ -59,7 +66,7 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
     mode: 0o600,
     flag: 'wx'
   });
-  let memoryHash = digest(initial),
+  let memoryHash = initialSnapshot?.memoryHash??digest(initial),
     state = memoryHash,
     output = null,
     payloadIndex = 0;
@@ -103,6 +110,21 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
     return {file:name,blake3:digest(bytes),size:bytes.length};
   }
   function retain(value) {return retainBytes(wire(value));}
+  let lastMemoryTransition=null;
+  function advanceLogicalMemory(kind,bytes){
+    const beforeState=state;
+    const transition=logicalMemory.advance(kind,bytes);
+    const delta=logicalMemoryDelta(transition);
+    const deltaHash=digest(delta);
+    memoryHash=transition.memoryHash;
+    state=digest(Buffer.concat([Buffer.from(state,'hex'),Buffer.from(deltaHash,'hex')]));
+    lastMemoryTransition=append('logical_memory_transition',{
+      kind,revision:transition.revision,messageHash:transition.messageHash,
+      previousMemoryHash:transition.previousMemoryHash,memoryHash,deltaHash,
+      previousState:beforeState,state,evidence:retainBytes(transition.bytes),delta:retainBytes(delta)});
+    return {previousMemoryHash:transition.previousMemoryHash,memoryHash,deltaHash,state,
+      revision:transition.revision,memoryTransition:lastMemoryTransition};
+  }
   let plannerThinking=null,plannerResponse=null,retainedGenesis=null;
   const capture = {
     active: true,
@@ -137,6 +159,11 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
         messages,
         tools
       });
+      if(logicalMemory){
+        const transition=advanceLogicalMemory('message_in',wire({messages,tools}));
+        append('message_in',{scope:'canonical-persisted-memory',evidence,...transition});
+        return;
+      }
       const previousMemoryHash = memoryHash;
       memoryHash = evidence.blake3;
       const deltaHash = digest(wire({
@@ -159,8 +186,10 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
       });
     },
     output(plan) {
+      if(logicalMemory)advanceLogicalMemory('message_out',wire(plan));
       output = append('message_out', {
         scope: 'driver-dispatched-plan',
+        ...(logicalMemory?{memoryTransition:lastMemoryTransition}:{}),
         evidence: retain(plan),
         memoryHash,
         state
@@ -221,8 +250,18 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
       });
     },
  };
+  if(initialSnapshot)append('logical_memory_genesis',{
+    schema:'formal-ai-logical-memory-genesis-v1',taskURL:initialSnapshot.taskURL,
+    path:initialSnapshot.path,revision:initialSnapshot.revision,memoryHash:initialSnapshot.memoryHash,
+    evidence:retainBytes(initialSnapshot.bytes)});
   try {
     const result = await withEvidenceContext(capture, run);
+    if(logicalMemory){
+      const finalMemory=logicalMemory.snapshot();
+      append('logical_memory_terminal',{revision:finalMemory.revision,memoryHash:finalMemory.memoryHash,
+        evidence:retainBytes(finalMemory.bytes)});
+      logicalMemory.close();
+    }
     append('terminal', {
       reason: result.stop ?? 'unknown'
     });
@@ -235,6 +274,9 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
         scope: 'driver-dialogue-and-direct-write-edit-observations',
         authorship: 'not-established',
         replay: 'not-performed',
+        logicalMemory:initialSnapshot?{status:'bound',path:initialSnapshot.path,
+          taskURL:initialSnapshot.taskURL,initialMemoryHash:initialSnapshot.memoryHash,
+          finalMemoryHash:memoryHash,initialRevision:initialSnapshot.revision}:null,
         signing:signer?{status:'sealed',keyId:signer.keyId,trust:'not-inferred'}:{status:'unsigned'}
       }
     };
@@ -254,4 +296,5 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
     capture.active = false;
     logger.close();
   }
+  } finally {if(logicalMemory)logicalMemory.close();}
 }
