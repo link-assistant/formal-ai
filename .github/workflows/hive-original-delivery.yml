@@ -53,6 +53,8 @@ jobs:
     env:
       E2E_TOOL: ${{ matrix.tool }}
     steps:
+      - name: Initialize shared delivery evidence directory
+        run: echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -108,7 +110,6 @@ jobs:
       - name: Run actual Hive solve and original assertions
         working-directory: .hive-mind
         env:
-          E2E_LOG_DIR: ${{ runner.temp }}/hive-original-evidence
           GH_TOKEN: ${{ steps.gh.outputs.token }}
           AUTOMATION_LAYER: ${{ steps.gh.outputs.layer }}
           AUTOMATION_CAN_CREATE_REPOSITORIES: ${{ steps.gh.outputs.can-create-repositories }}
@@ -116,13 +117,12 @@ jobs:
           E2E_IMAGE: hive-e2e:candidate
           FORMAL_AI_INSTALL_GRANT: workspace
         run: node scripts/e2e-hello-world.mjs --tool "$E2E_TOOL" --model formal-ai --isolation branch --keep
-      - uses: coursier/setup-action@v3
+      - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3 # v3
         if: matrix.tool == 'agent'
         with:
           apps: scala-cli
       - name: Independently compile delivered source and require exactly one output line
         env:
-          E2E_LOG_DIR: ${{ runner.temp }}/hive-original-evidence
           GH_TOKEN: ${{ steps.gh.outputs.token }}
         run: node scripts/check-hive-original-delivery.mjs
       - name: Retain actual task links, assertions, independent stdout and failure logs

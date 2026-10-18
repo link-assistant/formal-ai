@@ -38,3 +38,35 @@ test('a real ready isolated PR and one safe original-language source are require
     assert.throws(() => requireProgramMember(files, 'Rust'));
   }
 });
+
+import {readFileSync} from 'node:fs';
+import YAML from 'yaml';
+const {parse} = YAML;
+test('all actual Hive evidence consumers receive one initialized shared directory', () => {
+  const root = new URL('../../../', import.meta.url);
+  const source = readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8');
+  const job = parse(source).jobs.delivery;
+  assert.equal(job.env.E2E_LOG_DIR, undefined, 'runner context must not appear at job env scope');
+  const initialize = job.steps.findIndex((step) => step.name === 'Initialize shared delivery evidence directory');
+  assert.ok(initialize >= 0);
+  assert.equal(job.steps[initialize].run, 'echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"');
+  let sourceConsumers = 0;
+  for (const [index, step] of job.steps.entries()) {
+    for (const match of (step.run || '').matchAll(/node (scripts\/[A-Za-z0-9.-]+\.mjs)/g)) {
+      let script;
+      try { script = readFileSync(new URL(match[1], root), 'utf8'); } catch (error) { if (error.code === 'ENOENT') continue; throw error; }
+      if (script.includes('process.env.E2E_LOG_DIR')) {
+        sourceConsumers += 1;
+        assert.ok(initialize < index, match[1] + ' must inherit initialized evidence path');
+        assert.equal(step.env?.E2E_LOG_DIR, undefined, 'a stale override must not split evidence');
+      }
+    }
+  }
+  assert.equal(sourceConsumers, 2, 'actual image producer and independent verifier both consume evidence');
+  const solve = job.steps.findIndex((step) => (step.run || '').includes('scripts/e2e-hello-world.mjs'));
+  assert.ok(initialize < solve);
+  assert.equal(job.steps[solve].env.E2E_KEEP, 'true');
+  const upload = job.steps.findIndex((step) => step.uses?.startsWith('actions/upload-artifact@'));
+  assert.ok(initialize < upload);
+  assert.equal(job.steps[upload].with.path, '${{ runner.temp }}/hive-original-evidence');
+});
