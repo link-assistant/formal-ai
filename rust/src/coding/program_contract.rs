@@ -313,7 +313,7 @@ fn output_verifier(
                     (
                         "redirect",
                         if index + 1 == commands.len() {
-                            " > actual"
+                            " > \"$verification_dir/actual\""
                         } else {
                             ""
                         },

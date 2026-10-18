@@ -222,7 +222,7 @@ describe('program contract, CI workflow and command reroute', () => {
     assert.deepEqual(recipe.commands, ['sh tests/verify-output.sh']);
     assert.ok(recipe.supporting_files[0].source.includes('kotlinc Main.kt -include-runtime -d Main.jar'));
     assert.ok(recipe.supporting_files[0].source.includes('java -jar Main.jar'));
-    assert.ok(recipe.supporting_files[0].source.includes('cmp expected actual'));
+    assert.ok(recipe.supporting_files[0].source.includes('cmp "$verification_dir/expected" "$verification_dir/actual"'));
     assert.match(recipe.source, /println\("Hello, World!"\)/u);
     attach(recipe);
     assert.equal(recipe.supporting_files[1].path, '.github/workflows/Main.yml');

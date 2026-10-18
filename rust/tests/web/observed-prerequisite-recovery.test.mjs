@@ -410,7 +410,7 @@ test('actual fetched work item keeps workflow and verification obligations after
   const verifier=writes.find(write=>write.path==='tests/verify-output.sh');
   assert.ok(verifier.content.includes(command));
   assert.ok(verifier.content.includes('java -jar Main.jar'));
-  assert.ok(verifier.content.includes('cmp expected actual'));
+  assert.ok(verifier.content.includes('cmp "$verification_dir/expected" "$verification_dir/actual"'));
   append(messages,retry.calls[0],JSON.stringify({exit_code:0,stdout:'Hello, World!\n',stderr:''}));
   const after=planGeneralChangeStep(messages,tools,plan);
   assert.equal(after.kind,'tool_calls');

@@ -196,7 +196,10 @@ for (const output of ["{source_path} {expected} {declared_source} {stages} 'quot
   });
 }
 
-for (const [language, sourceName] of [['rust', 'src/heldout.rs'], ['kotlin', 'nested/Probe.kt']]) {
+for (const [language, sourceName] of [['rust', 'src/heldout.rs'], ['kotlin', 'nested/Probe.kt'],
+  ["rust","expected/heldout.rs"],
+  ["rust","actual/heldout.rs"],
+  ["rust","declared-source/heldout.rs"]]) {
   test('owned source layout preserves nested declared paths: ' + sourceName, async () => {
     const result = await fixture(language, { sourceName });
     assert.equal(result.executions[0].status, 0);

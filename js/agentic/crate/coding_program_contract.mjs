@@ -215,7 +215,7 @@ function outputVerifier(expected, commands, sourcePath, declaredSource) {
   const fill = context.handlerRulesFillOnce;
   if (typeof fill !== 'function') return null;
   const stages = commands.map((command, index) => fill(findChildValue(contract, 'isolated-stage'), {
-    command, redirect: index === commands.length - 1 ? ' > actual' : '', index: String(index),
+    command, redirect: index === commands.length - 1 ? ' > "$verification_dir/actual"' : '', index: String(index),
   })).join('');
   return { path: findChildValue(contract, 'path'), source: fill(findChildValue(contract, 'isolated-template'), {
     source_path: quote(sourcePath), expected: quote(expected), declared_source: quote(declaredSource), stages,
