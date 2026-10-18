@@ -35,3 +35,29 @@ test('production receipt adapter delegates decisions and refuses empty/duplicate
     assert.equal(verificationReceiptGap(receipt(output)), 'VerificationReceiptIncomplete');
   }
 });
+
+test('signed inclusive range emission preserves chained guards and canonical score boundaries', async () => {
+  const { sourceCaptureTrustAccepted } = await import('../../../js/agentic/portable/coding_research_kernel.mjs');
+  const output = generateCodingResearch(source)[RUST];
+  assert.ok(output.includes('(-9_007_199_254_740_991.0..=9_007_199_254_740_991.0).contains(&score)'));
+  assert.ok(!output.includes('score >= -9_007_199_254_740_991.0 && score <= 9_007_199_254_740_991.0'));
+  for (const score of [NaN, Infinity, -Infinity, -9007199254740992, -9007199254740991,
+    -1, -0, 0, 1, 9007199254740991, 9007199254740992]) {
+    assert.equal(sourceCaptureTrustAccepted(true, 2, true, score, true, 1),
+      score >= -9007199254740991 && score <= 9007199254740991);
+    assert.equal(sourceCaptureTrustAccepted(false, 2, true, score, true, 1), false);
+    assert.equal(sourceCaptureTrustAccepted(true, 2, false, score, true, 1), false);
+  }
+  const declaration = '/** @param {boolean} observed @param {number} value @returns {boolean} */\n';
+  const bounded = declaration + 'export function observedBounded(observed, value) { return observed && value >= -12 && value <= 7; }';
+  const rendered = generateCodingResearch(bounded)[RUST];
+  assert.ok(rendered.includes('observed && (-12.0..=7.0).contains(&value)'));
+  const otherVariable = declaration + 'export function observedBounded(observed, value) { return value >= -12 && observed <= 7; }';
+  assert.throws(() => generateCodingResearch(otherVariable));
+  const guardedDeclaration = '/** @param {boolean} first @param {boolean} second @param {number} value @returns {boolean} */\n';
+  const guarded = guardedDeclaration + 'export function guardedRange(first, second, value) { return (first || second) && value >= -12 && value <= 7; }';
+  assert.ok(generateCodingResearch(guarded)[RUST].includes('(first || second) && (-12.0..=7.0).contains(&value)'));
+  const unequalDeclaration = '/** @param {number} value @param {number} other @returns {boolean} */\n';
+  const unequal = unequalDeclaration + 'export function unequalBounds(value, other) { return value >= -12 && other <= 7; }';
+  assert.ok(!generateCodingResearch(unequal)[RUST].includes('.contains('));
+});

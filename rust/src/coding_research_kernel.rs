@@ -57,7 +57,7 @@ pub fn source_capture_timestamp_text_accepted(observed: bool, decimal: bool, lea
 
 #[must_use]
 pub fn source_capture_trust_accepted(record: bool, fields: f64, score_observed: bool, score: f64, policy_observed: bool, policy_length: f64) -> bool {
-    record && fields == 2.0 && score_observed && score >= -9_007_199_254_740_991.0 && score <= 9_007_199_254_740_991.0 && source_capture_text_accepted(policy_observed, policy_length, 256.0)
+    record && fields == 2.0 && score_observed && (-9_007_199_254_740_991.0..=9_007_199_254_740_991.0).contains(&score) && source_capture_text_accepted(policy_observed, policy_length, 256.0)
 }
 
 #[must_use]

@@ -7,11 +7,10 @@ fn observed_source_metadata_matches_shared_vectors_without_promoting_authority()
     let rows: Vec<Value> =
         serde_json::from_str(include_str!("source-fetch-provenance.json")).unwrap();
     for row in rows {
-        let messages: Vec<ChatMessage> = if let Some(source) = row["messagesJson"].as_str() {
-            serde_json::from_str(source).unwrap()
-        } else {
-            serde_json::from_value(row["messages"].clone()).unwrap()
-        };
+        let messages: Vec<ChatMessage> = row["messagesJson"].as_str().map_or_else(
+            || serde_json::from_value(row["messages"].clone()).unwrap(),
+            |source| serde_json::from_str(source).unwrap(),
+        );
         let start = row["start"]
             .as_u64()
             .and_then(|value| usize::try_from(value).ok())

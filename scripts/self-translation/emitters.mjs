@@ -55,14 +55,27 @@ export function emitRust(item) {
       case 'variable':
         return { text: pureRustIdentifier(expr.name), prec: PRIMARY, owned: env.get(expr.name) ?? false };
       case 'binary': {
-        const lower = expr.left;
+        const prefix = expr.left.kind === 'binary' && expr.left.op === 'and' ? expr.left.left : null;
+        const lower = prefix ? expr.left.right : expr.left;
         const upper = expr.right;
+        const rangeBound = bound => {
+          if (bound.kind === 'number') return rustNumber(bound.text);
+          if (bound.kind === 'unary' && bound.op === 'negate' && bound.operand.kind === 'number') {
+            return '-' + rustNumber(bound.operand.text);
+          }
+          return null;
+        };
         if (expr.op === 'and' && lower.kind === 'binary' && upper.kind === 'binary'
             && lower.op === 'greater-equal' && upper.op === 'less-equal'
             && lower.left.kind === 'variable' && upper.left.kind === 'variable'
             && lower.left.name === upper.left.name
-            && lower.right.kind === 'number' && upper.right.kind === 'number') {
-          return { text: `(${rustNumber(lower.right.text)}..=${rustNumber(upper.right.text)}).contains(&${pureRustIdentifier(lower.left.name)})`, prec: PRIMARY, owned: false };
+            && rangeBound(lower.right) !== null && rangeBound(upper.right) !== null) {
+          const range = `(${rangeBound(lower.right)}..=${rangeBound(upper.right)}).contains(&${pureRustIdentifier(lower.left.name)})`;
+          const conjunction = map.operators.get('and').precedence;
+          const preceding = prefix ? rustExpr(prefix, env) : null;
+          const guard = preceding && preceding.prec < conjunction ? '(' + preceding.text + ')' : preceding?.text;
+          return { text: preceding ? guard + ' && ' + range : range,
+            prec: preceding ? conjunction : PRIMARY, owned: false };
         }
         const row = map.operators.get(expr.op);
         if ((expr.op === 'equal' || expr.op === 'not-equal') && expr.left.type === 'number') lints.add('clippy::float_cmp');
