@@ -233,8 +233,8 @@ pub(super) fn resolves_body(reference: &str) -> String {
 
 pub(super) use crate::portable_string_contracts::quote_shell_word as shell_quote;
 
-/// Commit only the recipe's declared source artifacts; compiler outputs and
-/// unrelated staged edits are not part of the requested change.
+/// Commit declared artifacts and a verified task-owned scaffold deletion.
+/// Compiler outputs and unrelated staged edits remain outside this commit.
 #[allow(
     clippy::literal_string_with_formatting_args,
     reason = "bind quoted operands in the shared commit template"
@@ -253,13 +253,21 @@ pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTar
         .map(shell_quote)
         .collect::<Vec<_>>()
         .join(" ");
-    super::work_item_steps::fill(
+    let command = super::work_item_steps::fill(
         "recipe_commit_command",
         &[
-            ("{files}", &files),
+            ("{files}", "\"$@\""),
             ("{subject}", &shell_quote(&recipe_subject(recipe))),
             ("{body}", &shell_quote(&resolves_body(&target.reference))),
             ("{branch}", &shell_quote(target.push_ref())),
+        ],
+    );
+    super::work_item_steps::fill(
+        "task-scaffold-commit-command",
+        &[
+            ("{files}", &files),
+            ("{reference}", &shell_quote(&target.reference)),
+            ("{commit}", &command),
         ],
     )
 }

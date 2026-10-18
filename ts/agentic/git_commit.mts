@@ -99,11 +99,16 @@ export {shellQuote};
 export function recipeCommitCommand(recipe, target) {
   if (target.bindingRefused) return fill('target_binding_refused_command', []);
   const files = [recipe.path, ...recipe.supporting_files.map((file) => file.path)].map(shellQuote).join(' ');
-  return fill('recipe_commit_command', [
-    ['{files}', files],
+  const command = fill('recipe_commit_command', [
+    ['{files}', '"$@"'],
     ['{subject}', shellQuote(recipeSubject(recipe))],
     ['{body}', shellQuote(resolvesBody(target.reference))],
     ['{branch}', shellQuote(pushRef(target))],
+  ]);
+  return fill('task-scaffold-commit-command', [
+    ['{files}', files],
+    ['{reference}', shellQuote(target.reference)],
+    ['{commit}', command],
   ]);
 }
 

@@ -101,3 +101,29 @@ fn requested_yaml_destinations_are_bound_without_replacing_them_with_a_default()
         assert!(!valid_workflow_target(target), "{target}");
     }
 }
+
+#[test]
+fn recipe_scaffold_cleanup_keeps_exact_target_and_declared_commit_scope() {
+    let recipe = ExecutionRecipe {
+        language: "text".to_owned(),
+        source: "held-out source".to_owned(),
+        path: "nested/owned.txt".to_owned(),
+        supporting_files: Vec::new(),
+        commands: Vec::new(),
+    };
+    let mut target = CommitTarget {
+        binding_refused: false,
+        branch: Some("feature/held-out".to_owned()),
+        reference: "https://github.com/example/repository/issues/73".to_owned(),
+    };
+    let command = recipe_commit_command(&recipe, &target);
+    assert!(command.contains("set -- 'nested/owned.txt'"));
+    assert!(command.contains("git commit --only"));
+    assert!(command.contains("git diff --cached --quiet -- .gitkeep"));
+    assert!(command.contains("https://github.com/example/repository/issues/73"));
+    assert!(command.contains("git symbolic-ref --quiet --short HEAD"));
+    target.binding_refused = true;
+    let refused = recipe_commit_command(&recipe, &target);
+    assert!(!refused.contains("rm --"));
+    assert!(!refused.contains("git commit"));
+}

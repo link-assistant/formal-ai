@@ -1,0 +1,4 @@
+{
+  "rejected-source-notation": "RejectedSourceNotation: reason={reason} offset={offset} line={line} column={column} limit={limit}",
+  "rejection-detail-unavailable": "RejectedSourceNotation: rejection detail unavailable"
+}

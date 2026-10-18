@@ -163,7 +163,7 @@ pub(super) fn plan_shell_step(
                         result,
                     )
                 }
-                plan => plan,
+                plan @ AgenticPlan::ToolCalls(_) => plan,
             };
         }
         let disposition = if tool_result::step_outcome(raw) == tool_result::StepOutcome::Failed {
@@ -189,8 +189,9 @@ pub(super) fn plan_shell_step(
         return plan_one(tool, json!({ "command": command }).to_string());
     }
 
-    AgenticPlan::Final(format!(
-        "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
+    AgenticPlan::Final(super::wording::agentic_message(
+        "shell_tool_missing",
+        &[("command", command)],
     ))
 }
 

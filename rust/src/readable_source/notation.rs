@@ -3,6 +3,19 @@ use meta_language::{FeatureParseOptions, LeafText, SyntaxTree};
 use serde_json::{Value, json};
 
 const GRAMMAR: &str = include_str!("../../embedded/data/meta/source-model/readable-links.grammar");
+const DIAGNOSTICS: &str = include_str!("../../embedded/data/meta/source-model/diagnostics.json");
+
+fn diagnostic(key: &str, values: &[(&str, String)]) -> String {
+    let messages: Value = serde_json::from_str(DIAGNOSTICS).expect("InvalidSourceDiagnosticData");
+    let mut text = messages[key]
+        .as_str()
+        .expect("MissingSourceDiagnostic")
+        .to_owned();
+    for (name, value) in values {
+        text = text.replace(&format!("{{{name}}}"), value);
+    }
+    text
+}
 
 fn decode(tree: &SyntaxTree, depth: usize) -> Result<Option<Value>, String> {
     if depth > 512 {
@@ -49,16 +62,18 @@ pub(super) fn parse(notation: &str) -> Result<Vec<Value>, String> {
         .map_err(|error| error.to_string())?;
     if !outcome.ok {
         if let Some(rejection) = outcome.rejection {
-            return Err(format!(
-                "RejectedSourceNotation: reason={} offset={:?} line={:?} column={:?} limit={:?}",
-                rejection.reason,
-                rejection.offset,
-                rejection.line,
-                rejection.column,
-                rejection.limit
+            return Err(diagnostic(
+                "rejected-source-notation",
+                &[
+                    ("reason", rejection.reason.to_string()),
+                    ("offset", format!("{:?}", rejection.offset)),
+                    ("line", format!("{:?}", rejection.line)),
+                    ("column", format!("{:?}", rejection.column)),
+                    ("limit", format!("{:?}", rejection.limit)),
+                ],
             ));
         }
-        return Err("RejectedSourceNotation: rejection detail unavailable".to_owned());
+        return Err(diagnostic("rejection-detail-unavailable", &[]));
     }
     let tree = outcome
         .tree

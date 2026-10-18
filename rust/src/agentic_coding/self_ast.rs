@@ -80,9 +80,11 @@ pub const AST_PATH: &str = "self-ast.lino";
 /// A *differently worded* request for the self-AST recipe — the maintainer's
 /// generality check: the router recognises the intent from the words, not a
 /// hardcoded string.
-pub const AST_TASK: &str = "Store the CST/AST of our Rust meta algorithm in our data so the system \
-                            can reason about itself: parse the planner module and record its \
-                            full recursive source CST in human-readable Links Notation.";
+pub fn ast_task() -> &'static str {
+    static TASK: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+    TASK.get_or_init(|| super::wording::agentic_message("self_ast_task", &[]))
+        .as_str()
+}
 
 /// Keywords that mark a user turn as the self-AST recipe. Kept distinct from the
 /// diagram keywords (`mermaid`/`diagram`) so the two self-inspection recipes never

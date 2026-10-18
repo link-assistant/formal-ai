@@ -191,7 +191,7 @@ pub use requirement_resolution::{RequirementTarget, resolve_in, resolve_requirem
 pub use routing_learning::{
     ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK, is_routing_learning_task,
 };
-pub use self_ast::{AST_PATH, AST_TASK, ast_census, is_self_ast_task, render_ast_document};
+pub use self_ast::{AST_PATH, ast_census, ast_task, is_self_ast_task, render_ast_document};
 pub use self_heal::{SELF_HEAL_PATH, SELF_HEAL_TASK, is_self_heal_task};
 pub(crate) use shell_command::semantic_shell_command_for_task;
 pub(crate) use shell_command::shell_command_for_task as repository_shell_command;

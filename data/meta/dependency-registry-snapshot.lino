@@ -191,6 +191,11 @@ registry_entry github_action/actions/upload-pages-artifact
 registry_entry github_action/codecov/codecov-action
   latest "v7.1.1"
   source_url "https://api.github.com/repos/codecov/codecov-action/releases/latest"
+registry_entry github_action/coursier/setup-action
+  latest "v3.0.4"
+  source_url "https://api.github.com/repos/coursier/setup-action/releases/latest"
+  release-commit "648df969f41ef15fda2baba8b37f9fa3d16390a3"
+  tag-source-url "https://api.github.com/repos/coursier/setup-action/git/ref/tags/v3.0.4"
 registry_entry github_action/docker/build-push-action
   latest "v7.4.0"
   source_url "https://api.github.com/repos/docker/build-push-action/releases/latest"

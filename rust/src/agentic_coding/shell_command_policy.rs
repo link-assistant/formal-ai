@@ -345,11 +345,11 @@ pub(super) fn normalize_command_word(word: &str) -> String {
 /// stop argument collection at the boundary between a command and the sentence around
 /// it (e.g. `git status` stops before `in the current directory`).
 pub fn is_prose_word(word: &str) -> bool {
+    static WORDS: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
     // Option bytes are command syntax, not punctuation around a prose word.
     if word.trim_start().starts_with('-') {
         return false;
     }
-    static WORDS: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
     let normalized = word
         .trim_matches(|character: char| !character.is_alphanumeric())
         .to_lowercase();

@@ -19,7 +19,7 @@ export const AST_PATH = 'self-ast.lino';
 
 // No committed histogram substitutes for current recursive source content.
 
-/** Mirrors `AST_TASK` in rust/src/agentic_coding/self_ast.rs. */
+/** Mirrors `fn ast_task` in rust/src/agentic_coding/self_ast.rs. */
 export function astTask() {
   return agenticMessage('self_ast_task');
 }

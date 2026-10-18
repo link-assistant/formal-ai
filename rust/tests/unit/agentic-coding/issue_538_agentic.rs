@@ -486,7 +486,7 @@ fn recognises_the_self_ast_task() {
     // The self-AST recipe is reached from a *differently worded* request, and the
     // router recognises the intent from the words (AST/CST + self-reference), not a
     // hardcoded string.
-    assert!(self_ast::is_self_ast_task(self_ast::AST_TASK));
+    assert!(self_ast::is_self_ast_task(self_ast::ast_task()));
     assert!(self_ast::is_self_ast_task(
         "record the abstract-syntax of our planner in our data"
     ));
@@ -501,8 +501,8 @@ fn recognises_the_self_ast_task() {
         "What is the capital of France?"
     ));
     // The task uses none of the other axes' distinctive wording.
-    assert!(!self_ast::AST_TASK.contains("tomato"));
-    assert!(!self_ast::AST_TASK.contains("mermaid"));
+    assert!(!self_ast::ast_task().contains("tomato"));
+    assert!(!self_ast::ast_task().contains("mermaid"));
 }
 
 #[test]
@@ -511,8 +511,12 @@ fn self_ast_task_wins_over_the_formalization_keyword() {
     // output format), which the broad formalization router also matches. The more
     // specific self-AST router must win, so the loop parses the planner rather than
     // formalizing the fisherman tale.
-    assert!(self_ast::AST_TASK.to_lowercase().contains("links notation"));
-    let outcome = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    assert!(
+        self_ast::ast_task()
+            .to_lowercase()
+            .contains("links notation")
+    );
+    let outcome = run_agentic_task(self_ast::ast_task()).expect("workspace");
     let write = outcome
         .steps
         .iter()
@@ -539,7 +543,7 @@ fn recursive_source_content_is_generated_and_written_by_the_driver() {
         formal_ai::readable_source::source_owner(&document).unwrap(),
         Some(self_ast::TARGET_MODULE_PATH)
     );
-    let outcome = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    let outcome = run_agentic_task(self_ast::ast_task()).expect("workspace");
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
     let write = outcome
         .steps
@@ -555,7 +559,7 @@ fn recursive_source_content_is_generated_and_written_by_the_driver() {
 #[test]
 fn planner_walks_the_self_ast_recipe() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(self_ast::AST_TASK)];
+    let mut messages = vec![ChatMessage::user(self_ast::ast_task())];
 
     // Step 1: no web step — the census is a pure function of the source, so the
     // planner goes straight to writing the generated document.
@@ -652,7 +656,7 @@ fn self_ast_target_is_a_real_module_of_the_meta_algorithm() {
 
 #[test]
 fn self_inspection_session_retains_actual_source_model_write_and_read() {
-    let fresh = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    let fresh = run_agentic_task(self_ast::ast_task()).expect("workspace");
     assert!(!fresh.hit_turn_cap);
     let writes: Vec<_> = fresh
         .steps
