@@ -103,7 +103,9 @@ export function qualifiedTranscriptFrames(messages,start) {
     if(frame.receiptPresent){frame.binding='contradicted';frame.succeeded=false;frame.duplicate=true;continue;}
     const raw=plainText(message.content);
     frame.receiptPresent=true;frame.detail=raw;
-    frame.binding=message.name===null || message.name===undefined?'unknown':
+    // OpenAI tool results identify the unique declaration by tool_call_id; name is optional.
+    // This binds transcript identity only: provider, approval and effects remain Unknown.
+    frame.binding=message.name===null || message.name===undefined?'exact':
       typeof message.name==='string' && message.name===frame.declaredTool?'exact':'contradicted';
     frame.succeeded=frame.binding==='exact'
       && failureMessage(raw,Boolean(message.is_error||message.isError),frame.capability!==Capability.Run)===null;

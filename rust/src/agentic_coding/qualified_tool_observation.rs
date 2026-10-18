@@ -187,7 +187,8 @@ pub(super) fn scan(messages: &[ChatMessage], start: usize) -> Vec<QualifiedToolA
         let raw = message.content.plain_text();
         frame.detail.clone_from(&raw);
         frame.binding = match message.name.as_deref() {
-            None => Binding::Unknown,
+            // OpenAI results may omit name: the unique declaration ID binds identity only.
+            None => Binding::Exact,
             Some(name) if name == frame.declared_tool => Binding::Exact,
             Some(_) => Binding::Contradicted,
         };

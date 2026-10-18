@@ -1059,6 +1059,8 @@ async function loadSeed() {
     }
     try {
       const seed = await self.FormalAiSeed.loadAll();
+      // Publish the same parsed metadata before engine initialization, without refetching it.
+      postMessage({ kind: "seed_loaded", seed });
       SEED_RAW = (seed && seed.raw) || {};
       seedSourceTexts = (seed && seed.sourceRaw) || {};
       installBrowserHandlerPrecedence(seed && seed.browserHandlerPrecedence);

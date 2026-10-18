@@ -44,3 +44,26 @@ fn unsafe_arguments_never_accept_an_exact_success_receipt() {
     ];
     assert!(scan(&messages, 0).is_empty());
 }
+
+#[test]
+fn optional_result_name_binds_unique_id_without_accepting_conflicts_or_duplicates() {
+    let declaration = ChatMessage::assistant_tool_calls(vec![ToolCall {
+        id: "optional-name".into(),
+        kind: "function".into(),
+        function: FunctionCall {
+            name: "bash".into(),
+            arguments: "{\"command\":\"true\"}".into(),
+        },
+    }]);
+    let mut result = ChatMessage::tool_result("optional-name", "bash", "Exit code 0\n");
+    result.name = None;
+    let mut messages = vec![declaration, result];
+    let frames = scan(&messages, 0);
+    assert!(frames[0].binding == Binding::Exact && frames[0].succeeded);
+    assert!(scan(&messages, 1).is_empty());
+    messages[1].name = Some("write".into());
+    assert!(scan(&messages, 0)[0].binding == Binding::Contradicted);
+    messages[1].name = None;
+    messages.push(messages[1].clone());
+    assert!(scan(&messages, 0)[0].binding == Binding::Contradicted);
+}

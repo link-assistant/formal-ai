@@ -138,12 +138,12 @@ test('wrong program grant cannot recover the observed compiler', async () => {
   });
   assert.equal(observedRecoveryCommand(conversation()), null);
 });
-test('unbound call IDs and absent result names cannot bind a recovery', async () => {
+test('unbound call IDs and conflicting result names cannot bind a recovery', async () => {
   await configure();
   for (const change of [message => {
     message.tool_call_id = 'unbound';
   }, message => {
-    delete message.name;
+    message.name = 'different-provider';
   }]) {
     const messages = conversation();
     change(messages.at(-1));

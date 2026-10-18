@@ -465,18 +465,6 @@ export function App() {
     userContextRef.current = userContext;
   }, [userContext]);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.FormalAiSeed) return;
-    let cancelled = false;
-    window.FormalAiSeed.loadAll().then((loaded) => {
-      if (cancelled) return;
-      setSeed(loaded);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   // Issue #27: on mount, hydrate the conversation list from the append-only
   // event log and restore the active thread's messages. Operates purely as a
   // projection — no events are mutated.
@@ -598,7 +586,7 @@ export function App() {
   );
 
   const { loadBrowserRuntime } = useFormalAiWorker({
-    workerRef, pendingResponses, setWorkerState, setWorkerReady, setEngineUnavailable,
+    workerRef, pendingResponses, setWorkerState, setWorkerReady, setEngineUnavailable, setSeed,
     diagnosticJsFallback, browserRuntimeState, setBrowserRuntimeState, uiLanguagePreference,
     responseLanguage, preferredLanguage, demoMode, diagnosticsMode, thinkingDetailLevel,
     minMessageAnimationMs, contextPanelWidth, sidebarMenuCollapsed, sidebarDesktopCollapsed,

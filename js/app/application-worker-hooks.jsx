@@ -25,7 +25,7 @@ export function browserRuntimeStatusKey(state) {
 
 // Boots the formal-ai worker and owns the opt-in browser runtime loader.
 export function useFormalAiWorker({
-  workerRef, pendingResponses, setWorkerState, setWorkerReady, setEngineUnavailable,
+  workerRef, pendingResponses, setWorkerState, setWorkerReady, setEngineUnavailable, setSeed,
   diagnosticJsFallback, browserRuntimeState, setBrowserRuntimeState, uiLanguagePreference,
   responseLanguage, preferredLanguage, demoMode, diagnosticsMode, thinkingDetailLevel,
   minMessageAnimationMs, contextPanelWidth, sidebarMenuCollapsed, sidebarDesktopCollapsed,
@@ -137,6 +137,11 @@ export function useFormalAiWorker({
     );
     workerRef.current = worker;
     worker.onmessage = ({ data }) => {
+      // The worker owns the single seed fetch; metadata is ready before WASM.
+      if (data.kind === "seed_loaded") {
+        setSeed(data.seed);
+        return;
+      }
       if (data.kind === "ready") {
         setWorkerState(data.mode);
         setWorkerReady(true);
