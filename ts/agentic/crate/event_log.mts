@@ -11,6 +11,8 @@ import { stableId } from './engine_stable_identifier.mjs';
 
 /** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
 export class EventLog {
+  events;
+
   constructor(events = []) {
     this.events = [];
     for (const event of events) this.append(event.kind, event.payload ?? '');

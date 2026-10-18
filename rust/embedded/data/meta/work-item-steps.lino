@@ -50,3 +50,11 @@ work_item_steps
   command-capture-setup 'formal_ai_capture_target={target}; formal_ai_capture_parent=${formal_ai_capture_target%/*}; if [ "$formal_ai_capture_parent" != "$formal_ai_capture_target" ]; then mkdir -p -- "$formal_ai_capture_parent" || exit $?; fi; ( '
   command-capture-end ' ) > "$formal_ai_capture_target"'
   command-capture-readback "cat {target}"
+
+  branch-binding-patterns '["^(?:Keep|Maintain) (?:the )?(?:solution|changes|work|result) (?:on|in) (?:the )?branch (.+)$","^(?:Work|Commit|Push) (?:on|to) (?:the )?branch (.+)$","^Use (?:the )?branch (.+)$","^Держи решение в ветке (.+)$","^समाधान को शाखा (.+) पर रखें[।.]?$","^将解决方案保留在分支 (.+) 上[。.]?$","^Mantén la solución en la rama (.+)$","^Your prepared branch: (.+)$"]'
+  workflow-binding-patterns '["^(?:Save|Write|Create|Place|Put) (?:the |a )?(?:GitHub Actions )?workflow (?:as|at|to|in) ([^ ]+)","^Use ([^ ]+) (?:as|for) (?:the )?(?:GitHub Actions )?workflow","^保存工作流(?:到|为) ([^ ]+)","^Сохрани (?:workflow|рабочий процесс) (?:в|как) ([^ ]+)","^Guarda (?:el )?workflow (?:en|como) ([^ ]+)"]'
+  target_binding_refused_command "printf '%s\n' 'Request target binding is invalid or ambiguous; no commit or push was attempted.' >&2; false"
+  branch-excluded-patterns '["^(?:Do not|Never) (?:use|push to|commit to|work on) (?:the )?branch (.+)$"]'
+  workflow-excluded-patterns '["^(?:Do not|Never) (?:save|write|create|place|put) (?:the |a )?(?:GitHub Actions )?workflow (?:as|at|to|in|under) ([^ ]+)"]'
+  branch-forbidden-substrings '["..","@{"]'
+  owned-clause-fence-prefixes '["~~~","```"]'

@@ -1,3 +1,6 @@
+import {host,hasHost} from './host.mjs';
+import {EventLog} from './crate/event_log.mjs';
+import {answerDerivationId,recordFor,toLino} from './crate/derivation.mjs';
 import {planSourceMaintenanceStep} from './source_maintenance.mjs';
 import { planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest, pendingReadGap } from './planner/owned_goals.mjs';
 import { ownedSemanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
@@ -201,7 +204,23 @@ export function toolCapability(name) {
  * @returns {Promise<object|null>} an `AgenticPlan` or null
  */
 export async function planChatStep(messages, toolNames) {
-  return projectPlan(await planChatStepResolved(messages, toolNames));
+  const observer=hasHost()?host().planningObserver?.():null;
+  if(!observer)return projectPlan(await planChatStepResolved(messages, toolNames));
+  const events=new EventLog();
+  events.append('impulse',latestUserRequest(messages)??'');
+  try{
+    const resolved=await planChatStepResolved(messages,toolNames),projected=projectPlan(resolved);
+    events.append('agentic:resolved',jsonText(resolved));
+    events.append('render:emit',jsonText(projected));
+    observer({schema:'formal-ai-planner-observation-v1',messages,tools:toolNames,resolved,projected,
+      eventLog:events.events,derivation:toLino(recordFor(events.events,answerDerivationId(jsonText(projected))))});
+    return projected;
+  }catch(error){
+    events.append('agentic:failed',String(error?.name??'ThrownValue'));
+    observer({schema:'formal-ai-planner-failure-v1',messages,tools:toolNames,eventLog:events.events,
+      error:{name:String(error?.name??'ThrownValue'),message:String(error?.message??error)}});
+    throw error;
+  }
 }
 
 /** Internal planner result; recursion retains disposition and origin. */
@@ -299,7 +318,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
   }
   const answer = programContractAnswer(task);
   if (answer !== null) {
-    if (answer.execution_recipe && ciWorkflow.requestedIn(task)) ciWorkflow.attach(answer.execution_recipe);
+    if (answer.execution_recipe && ciWorkflow.requestedIn(task)) ciWorkflow.attach(answer.execution_recipe, task);
     const rerouted = await commandReroute.planSymbolicCommandReroute(messages, toolNames, answer);
     if (rerouted !== null) return rerouted;
   }

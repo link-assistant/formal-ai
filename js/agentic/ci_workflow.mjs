@@ -1,3 +1,4 @@
+import {requestTargetBinding, validWorkflowTarget} from './git_commit.mjs';
 // The workflow a work item asks for beside the program
 // (rust/src/agentic_coding/ci_workflow.rs, issue #1133).
 //
@@ -42,11 +43,13 @@ function fileStem(path) {
 }
 
 /** Mirrors `fn attach`: add the workflow to `recipe` (mutated) once. */
-export function attach(recipe) {
+export function attach(recipe, objective = '') {
   const name = Array.from(fileStem(recipe.path) ?? 'run')
     .map((value) => (isAsciiAlphanumeric(value) || value === '-' || value === '_' ? value : '-'))
     .join('');
-  const path = fill('workflow_path_named', [['{name}', name]]);
+  const binding = requestTargetBinding(objective, 'workflow-binding-patterns', validWorkflowTarget);
+  if (binding.kind === 'refused') { recipe.commands.unshift(fill('target_binding_refused_command', [])); return; }
+  const path = binding.kind === 'bound' ? binding.value : fill('workflow_path_named', [['{name}', name]]);
   if (recipe.supporting_files.some((file) => file.path === path)) return;
   recipe.supporting_files.push({ path, source: render(recipe) });
 }

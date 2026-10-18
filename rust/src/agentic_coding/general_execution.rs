@@ -432,7 +432,7 @@ fn plan_work_item_execution(
     if let Some(recipe) = answer.execution_recipe.as_mut()
         && super::ci_workflow::requested_in(objective)
     {
-        super::ci_workflow::attach(recipe);
+        super::ci_workflow::attach(recipe, objective);
     }
     if let Some(step) =
         super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)

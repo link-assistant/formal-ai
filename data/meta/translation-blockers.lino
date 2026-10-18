@@ -21,10 +21,10 @@ translation_blockers
   blockers_per_item 5 203
   blockers_per_item 6 136
   blockers_per_item 7 108
-  blockers_per_item 8 80
-  blockers_per_item 9 83
-  blockers_per_item 10 58
-  blockers_per_item 11 42
+  blockers_per_item 8 79
+  blockers_per_item 9 84
+  blockers_per_item 10 57
+  blockers_per_item 11 43
   blockers_per_item 12 31
   blockers_per_item 13 17
   blockers_per_item 14 27
@@ -124,6 +124,7 @@ construct "arrow callback of .replace()" items 12 only 0
 construct "default or namespace import" items 12 only 12
 construct "global call Boolean()" items 11 only 0
 construct "arrow callback of .findIndex()" items 10 only 0
+construct "in operator" items 10 only 0
 construct "method call .findIndex()" items 10 only 0
 construct "method call .padStart()" items 10 only 0
 construct "new DispatchError" items 10 only 1
@@ -131,7 +132,6 @@ construct "arrow callback of .from()" items 9 only 0
 construct "instanceof operator" items 9 only 0
 construct "method call .emit()" items 9 only 0
 construct "method call .values()" items 9 only 0
-construct "in operator" items 8 only 0
 construct "method call .lastIndexOf()" items 8 only 0
 construct "method call .reverse()" items 8 only 0
 construct "method call .decode()" items 7 only 0

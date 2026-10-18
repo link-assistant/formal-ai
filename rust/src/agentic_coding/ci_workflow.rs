@@ -27,7 +27,7 @@ pub(super) fn requested_in(objective: &str) -> bool {
 
 /// Add the workflow to `recipe` as a supporting file, once.
 #[allow(clippy::literal_string_with_formatting_args)]
-pub(super) fn attach(recipe: &mut ExecutionRecipe) {
+pub(super) fn attach(recipe: &mut ExecutionRecipe, objective: &str) {
     let name: String = std::path::Path::new(&recipe.path)
         .file_stem()
         .and_then(|value| value.to_str())
@@ -41,7 +41,24 @@ pub(super) fn attach(recipe: &mut ExecutionRecipe) {
             }
         })
         .collect();
-    let path = super::work_item_steps::fill("workflow_path_named", &[("{name}", &name)]);
+    let binding = super::git_commit::request_target_binding(
+        objective,
+        "workflow-binding-patterns",
+        super::git_commit::valid_workflow_target,
+    );
+    let path = match binding {
+        super::git_commit::RequestTargetBinding::Bound(value) => value,
+        super::git_commit::RequestTargetBinding::Absent => {
+            super::work_item_steps::fill("workflow_path_named", &[("{name}", &name)])
+        }
+        super::git_commit::RequestTargetBinding::Refused => {
+            recipe.commands.insert(
+                0,
+                super::work_item_steps::fill("target_binding_refused_command", &[]),
+            );
+            return;
+        }
+    };
     if recipe.supporting_files.iter().any(|file| file.path == path) {
         return;
     }

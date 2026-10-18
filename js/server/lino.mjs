@@ -7,9 +7,10 @@
 
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import { createBrowserContext, loadBrowserScript, parserMemoObservation } from './worker-host.mjs';
 
-export const REPO_ROOT = path.resolve(import.meta.dirname, '../..');
+export const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 let loader = null;
 let parseInvocations = 0;

@@ -1,22 +1,20 @@
 // Exact private driver evidence. No autonomous authorship, native-memory or replay claim.
-import { AsyncLocalStorage } from 'node:async_hooks';
+import {activeDriveCapture,withEvidenceContext} from './capture-context.mjs';
+export {activeDriveCapture} from './capture-context.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { provenancePrimitives, rawBytes } from './session.mjs';
 import { blake3Hex } from '../crypto/blake3.mjs';
-import { encodeTyped, decodeTyped } from '../server/structured-log.mjs';
-const contexts = new AsyncLocalStorage();
+import { encodeTyped, decodeTyped } from '../logging/typed-codec.mjs';
+import {createLogger} from '../server/structured-log.mjs';
+import {openInstallationSigner} from './installation-key.mjs';
 const primitives = provenancePrimitives({
   encodeTyped,
   decodeTyped
 });
 const wire = value => Buffer.from(JSON.stringify(value), 'utf8');
 const digest = bytes => blake3Hex(bytes);
-export const activeDriveCapture = () => {
-  const current = contexts.getStore();
-  return current?.active ? current : null;
-};
 export async function withDriveCapture(options, workspace, prompt, sourceId, run) {
   let ancestor = path.resolve(options.directory);
   const suffix = [];
@@ -33,6 +31,12 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
     recursive: true,
     mode: 0o700
   });
+  if(options.signing!==undefined&&(!options.signing||typeof options.signing.directory!=='string'))throw Error('provenance_signing_directory_required');
+  if(options.signing){
+    const keys=path.resolve(options.signing.directory);
+    if(keys===working||keys.startsWith(working+path.sep))throw Error('provenance_key_must_be_outside_workspace');
+  }
+  const signer=options.signing?openInstallationSigner(options.signing.directory,{excludedDirectory:working}):null;
   const directory = fs.mkdtempSync(path.join(parent, 'session-'));
   fs.chmodSync(directory, 0o700);
   const sessionIdentifier = randomUUID();
@@ -56,28 +60,69 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
     state = memoryHash,
     output = null,
     payloadIndex = 0;
-  const append = (kind, payload) => {
+  const appendRaw = (kind, payload) => {
     const record = session.append(kind, payload);
     fs.appendFileSync(chain, record.line + '\n');
     return record.hash;
   };
-  function retain(value) {
-    const bytes = wire(value),
-      name = String(payloadIndex++).padStart(6, '0') + '.lino';
-    const encoded = encodeTyped(rawBytes(bytes));
-    fs.writeFileSync(path.join(directory, name), encoded + '\n', {
-      mode: 0o600,
-      flag: 'wx'
-    });
-    return {
-      file: name,
-      blake3: digest(bytes),
-      size: bytes.length
-    };
+  let logIndex=0;
+  const logger=createLogger({level:'debug',directory,env:options.environment??process.env,
+    recordObserver(line){
+      appendRaw('structured_log',{log:{file:'serve-'+process.pid+'.lino',index:logIndex++,
+        algorithm:'blake3',blake3:digest(Buffer.from(line,'utf8')),size:Buffer.byteLength(line)}});
+    }});
+  const diagnostic=(kind,metadata)=>{
+    const result=logger.log('debug','provenance.'+kind,{component:'provenance',session_id:sessionIdentifier,...metadata});
+    if(!result.delivered?.includes('file'))throw Error('provenance_log_sink_failed');
+  };
+  const append=(kind,payload)=>{
+    if(kind==='terminal')diagnostic(kind,{reason:payload.reason});
+    const recorded=appendRaw(kind,payload);
+    if(kind!=='terminal')diagnostic(kind,{event_hash:recorded});
+    return recorded;
+  };
+  const retainAnchor=()=>{
+    const anchor=session.anchor();
+    fs.writeFileSync(path.join(directory,'anchor.lino'),encodeTyped(anchor)+'\n',{mode:0o600,flag:'wx'});
+    if(signer)fs.writeFileSync(path.join(directory,'seal.lino'),encodeTyped(signer.seal(session.lines(),anchor))+'\n',{mode:0o600,flag:'wx'});
+    return anchor;
+  };
+  diagnostic('genesis',{runtime_id:process.version,source_id:sourceId});
+  function retainBytes(bytes) {
+    if(bytes.length>64*1024*1024)throw Error('retained_evidence_size_limit');
+    if(bytes.length>256*1024){
+      const chunks=[];
+      for(let offset=0;offset<bytes.length;offset+=256*1024)chunks.push(retainBytes(bytes.subarray(offset,offset+256*1024)));
+      return {format:'chunks-v1',chunks,blake3:digest(bytes),size:bytes.length};
+    }
+    const name=String(payloadIndex++).padStart(6,'0')+'.lino';
+    fs.writeFileSync(path.join(directory,name),encodeTyped(rawBytes(bytes))+'\n',{mode:0o600,flag:'wx'});
+    return {file:name,blake3:digest(bytes),size:bytes.length};
   }
+  function retain(value) {return retainBytes(wire(value));}
+  let plannerThinking=null,plannerResponse=null,retainedGenesis=null;
   const capture = {
     active: true,
+    engineGenesis(observe){
+      if(retainedGenesis!==null)return;
+      const observation=observe();
+      if(observation===null){retainedGenesis=append('engine_genesis',{status:'unavailable'});return;}
+      const {sources,inputs,...metadata}=observation;
+      const retainText=entry=>{
+        const {text,...identity}=entry;
+        return typeof text==='string'?{...identity,evidence:retain({text})}:identity;
+      };
+      retainedGenesis=append('engine_genesis',{status:'captured',
+        evidence:retain({...metadata,sources:sources.map(retainText),inputs:inputs.map(retainText)})});
+    },
+    planningObservation(observation){
+      plannerThinking=append('planner_thinking',{evidence:retain(observation),scope:'source-owned-planner-event-log'});
+    },
+    engineObservation(observation){
+      append('engine_solve',{evidence:retain(observation),scope:'actual-javascript-worker-solve'});
+    },
     input(messages, tools) {
+      plannerThinking=null;plannerResponse=null;
       const evidence = retain({
         messages,
         tools
@@ -99,7 +144,7 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
       });
     },
     plannerResponse(plan) {
-      append('planner_response', {
+      plannerResponse=append('planner_response', {
         evidence: retain(plan)
       });
     },
@@ -110,10 +155,11 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
         memoryHash,
         state
       });
-      const hasTrace = plan !== null && typeof plan === 'object' && (Object.hasOwn(plan, 'reasoning') || Object.hasOwn(plan, 'reasoning_content') || Object.hasOwn(plan, 'derivation'));
+      const hasTrace = plannerThinking!==null || plan !== null && typeof plan === 'object' && (Object.hasOwn(plan, 'reasoning') || Object.hasOwn(plan, 'reasoning_content') || Object.hasOwn(plan, 'derivation'));
       append('thinking', {
         messageOut: output,
         status: hasTrace ? 'captured-fields' : 'unavailable',
+        plannerThinking,plannerResponse,
         evidence: retain({
           reasoning: plan?.reasoning ?? null,
           reasoning_content: plan?.reasoning_content ?? null,
@@ -166,15 +212,11 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
     },
  };
   try {
-    const result = await contexts.run(capture, run);
+    const result = await withEvidenceContext(capture, run);
     append('terminal', {
       reason: result.stop ?? 'unknown'
     });
-    const anchor = session.anchor();
-    fs.writeFileSync(path.join(directory, 'anchor.lino'), encodeTyped(anchor) + '\n', {
-      mode: 0o600,
-      flag: 'wx'
-    });
+    const anchor = retainAnchor();
     return {
       ...result,
       provenance: {
@@ -182,7 +224,8 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
         anchor,
         scope: 'driver-dialogue-and-direct-write-edit-observations',
         authorship: 'not-established',
-        replay: 'not-performed'
+        replay: 'not-performed',
+        signing:signer?{status:'sealed',keyId:signer.keyId,trust:'not-inferred'}:{status:'unsigned'}
       }
     };
   } catch (error) {
@@ -194,13 +237,11 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
       append('terminal', {
         reason: 'exception'
       });
-      fs.writeFileSync(path.join(directory, 'anchor.lino'), encodeTyped(session.anchor()) + '\n', {
-        mode: 0o600,
-        flag: 'wx'
-      });
+      retainAnchor();
     } catch {/* A storage failure leaves incomplete evidence; never replace the original failure. */}
     throw error;
   } finally {
     capture.active = false;
+    logger.close();
   }
 }

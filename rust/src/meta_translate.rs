@@ -375,7 +375,10 @@ impl SourceRoot {
 /// (issue #1180 R11). The JavaScript translator names the same set
 /// `MODULE_ROOTS` in `scripts/translate-es.mjs`, so the native `--write`
 /// and the script render one file set.
-pub const MODULE_SUBTREES: &[&str] = &["agentic"];
+pub const MODULE_SUBTREES: &[&str] = &["agentic", "provenance", "crypto", "logging"];
+
+/// Individual shared server modules required by the provenance dependency closure.
+pub const MODULE_FILES: &[&str] = &["server/structured-log", "server/json"];
 
 /// The `(stem, extension)` a path under an ES root maps by: an owned file
 /// anywhere under the root, or an ES module inside a [`MODULE_SUBTREES`]
@@ -391,6 +394,7 @@ fn es_source_stem(root: SourceRoot, sub: &str) -> Option<(&str, bool)> {
         .iter()
         .any(|subtree| sub.starts_with(&format!("{subtree}/")))
         .then_some((stem, true))
+        .or_else(|| MODULE_FILES.contains(&stem).then_some((stem, true)))
 }
 
 /// Map one repo-relative source path to its write target under the sibling

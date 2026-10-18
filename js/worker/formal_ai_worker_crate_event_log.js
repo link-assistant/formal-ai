@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/event_log.mjs"] = (crateRequire) => {
 // Mirrors rust/src/event_log.rs: content-addressed IDs and typed evidence.
 // ID-based kinds use the {kind}:{id} fallback without an explicit row.
@@ -13,16 +12,14 @@
 // (js/server/evidence-links.mjs re-exports it) and the browser worker, which
 // runs it as a generated crate factory over the native log it records
 // (`solverEvents`), so a worker answer carries the native links too.
-
 const { stableId } = crateRequire("crate/engine_stable_identifier.mjs");
-
 /** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
 class EventLog {
+  events;
   constructor(events = []) {
     this.events = [];
     for (const event of events) this.append(event.kind, event.payload ?? '');
   }
-
   /** `EventLog::append`: the event id is `stable_id(kind, "{kind}:{index}:{payload}")`. */
   append(kind, payload) {
     const text = String(payload);
@@ -30,11 +27,9 @@ class EventLog {
     this.events.push({ id, kind: String(kind), payload: text });
     return id;
   }
-
   firstOf(kind) {
     return this.events.find((event) => event.kind === kind) || null;
   }
-
   lastOf(kind) {
     for (let index = this.events.length - 1; index >= 0; index -= 1) {
       if (this.events[index].kind === kind) return this.events[index];
@@ -42,7 +37,6 @@ class EventLog {
     return null;
   }
 }
-
 /** Kinds whose link is `{kind}:{payload}`, the payload kept verbatim. */
 const PAYLOAD_KINDS = new Set([
   'language', 'language_from', 'language_to',
@@ -90,16 +84,13 @@ const PAYLOAD_KINDS = new Set([
   'policy:agent_mode_required_for_tools', 'policy:package_permission_required',
   'probability:model', 'filter:user', 'diagnostic_mode',
 ]);
-
 /** Kinds whose link is `{kind}:{payload with every space as ':'}`. */
 const SPACE_AS_COLON_KINDS = new Set([
   'intent_formalization_cache', 'tool_parameter', 'tool_result', 'tool_permission',
   'source:http', 'skill_compile:procedure_step',
 ]);
-
 /** Kinds whose link is `{kind}:{payload with every space as '_'}` (issue #674). */
 const SPACE_AS_UNDERSCORE_KINDS = new Set(['skill_gap', 'program_gap']);
-
 /** Kinds whose link is the bare kind, the payload dropped. */
 const BARE_KINDS = new Set([
   'fact_query:cache:miss', 'fact_query:cache:bypass', 'fact_query:force_fresh',
@@ -108,12 +99,9 @@ const BARE_KINDS = new Set([
   'policy:offline', 'policy:inappropriate_content',
   'policy:guessed_under_ambiguity', 'policy:clarify_under_ambiguity',
 ]);
-
 /** Kinds whose link is `source:{payload}`. */
 const SOURCE_KINDS = new Set(['docs_method:source', 'source', 'release_timeline:source']);
-
 const OFFLINE_SKIP = 'skipped:offline';
-
 /** The typed evidence link for one event: one arm of `build_evidence_links`. */
 function evidenceLink(event) {
   const { kind, id } = event;
@@ -130,7 +118,6 @@ function evidenceLink(event) {
   if (kind === 'search:external' && payload === OFFLINE_SKIP) return 'policy:offline';
   return `${kind}:${id}`;
 }
-
 /**
  * Mirrors rust/src/event_log.rs `build_evidence_links`: prompt and provenance
  * links, typed transform metadata, then `responseLink` unless already present.
@@ -148,10 +135,8 @@ function buildEvidenceLinks(prompt, log, responseLink) {
   if (!links.includes(responseLink)) links.push(responseLink);
   return links;
 }
-
 const IMPULSE_KIND = 'impulse';
 const RESPONSE_KIND = 'response';
-
 /**
  * The native evidence links of a recorded solver log: `build_evidence_links`
  * over `events`, the prompt read from their `impulse` event and the response
@@ -170,7 +155,6 @@ function eventLogEvidenceLinks(events, intent) {
   const responseLink = response ? response.payload : `${RESPONSE_KIND}:${String(intent ?? 'unknown')}`;
   return buildEvidenceLinks(String(impulse.payload ?? ''), log, responseLink);
 }
-
 return Object.freeze({
   EventLog,
   evidenceLink,

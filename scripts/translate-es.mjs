@@ -288,15 +288,17 @@ function walk(repo, directory) {
 }
 
 /** The module roots whose `.mjs` sources gain a `.mts` twin. */
-const MODULE_ROOTS = ['js/agentic/'];
+const MODULE_ROOTS = ['js/agentic/', 'js/provenance/', 'js/crypto/', 'js/logging/'];
+const MODULE_FILES = ['js/server/structured-log.mjs', 'js/server/json.mjs'];
 
 /**
  * Whether a repository-relative path is a translated source.
  * @param {string} line
  * @returns {boolean}
  */
-function isTranslatedSource(line) {
-  return line.endsWith('.js') || (line.endsWith('.mjs') && MODULE_ROOTS.some((root) => line.startsWith(root)));
+export function isTranslatedSource(line) {
+  return line.endsWith('.js') || (line.endsWith('.mjs') &&
+    (MODULE_ROOTS.some((root) => line.startsWith(root)) || MODULE_FILES.includes(line)));
 }
 
 /**

@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a4acac80069ba3f34910772528f79f536bc794aa23e48a0cd64094d6ad9e6bab bytes=15893
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=19f7962cae1f5175d0577276e5b162fbf3077672919769a3f1016baad72c0bfb bytes=16070
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=4; string-methods items=1
 
@@ -226,11 +226,11 @@ pub fn parent_path(file: String) -> String {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
-// formal-ai:blockers call of a sibling function | field access | method call .createDirAll() | method call .writeText() | null | nullish coalescing | object without a $ tag | optional chaining | try statement | typeof operator
+// formal-ai:blockers call of a sibling function | field access | in operator | method call .createDirAll() | method call .writeText() | null | nullish coalescing | object without a $ tag | optional chaining | try statement | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
-// formal-ai:blockers call of a sibling function | field access | let without a value | method call .readText() | null | object without a $ tag | try statement | typeof operator
+// formal-ai:blockers call of a sibling function | field access | in operator | let without a value | method call .readText() | null | object without a $ tag | try statement | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag

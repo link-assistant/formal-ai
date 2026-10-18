@@ -36,7 +36,7 @@ const caches = new Map();
  * Install the host every planner module reads through.
  * @param {{readText: Function, parseLino: Function, realm: object,
  *   isDirectory?: Function, isFile?: Function, currentDirectory?: Function,
- *   listDirectory?: Function}} next
+ *   listDirectory?: Function, planningObserver?: Function}} next
  */
 export function installHost(next) {
   current = next;

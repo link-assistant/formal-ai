@@ -1,3 +1,5 @@
+import {activeDriveCapture} from '../provenance/capture-context.mjs';
+import {recordFor,toLino,answerDerivationId} from './crate/derivation.mjs';
 // The Node host for the agentic planner: repository files from disk, the
 // shared Links Notation parser, and a booted worker realm (js/agentic/host.mjs).
 // Used by the JavaScript server and by node:test suites; a browser host would
@@ -183,7 +185,25 @@ export async function installNodeHost(worker) {
     readText: readRepoFile,
     parseLino,
     realm: context,
-    solve: async (prompt, history) => symbolicFromWorker(await worker.solve(prompt, history), history),
+    planningObserver:()=>{
+      const capture=activeDriveCapture();
+      if(capture&&'engineGenesis' in capture&&typeof capture.engineGenesis==='function'){
+        capture.engineGenesis(()=>worker.provenanceGenesis?.()??null);
+      }
+      return capture&&'planningObservation' in capture&&typeof capture.planningObservation==='function'
+        ?capture.planningObservation:null;
+    },
+    solve:async(prompt,history)=>{
+      const result=await worker.solve(prompt,history),symbolic=symbolicFromWorker(result,history);
+      const capture=activeDriveCapture();
+      if(capture&&'engineObservation' in capture&&typeof capture.engineObservation==='function'){
+        const events=Array.isArray(symbolic.solver_events)?symbolic.solver_events:[];
+        capture.engineObservation({schema:'formal-ai-worker-observation-v1',prompt,history,result,symbolic,
+          observedInputs:worker.provenanceInputs?.()??null,
+          eventLog:events,derivation:toLino(recordFor(events,answerDerivationId(symbolic.answer)))});
+      }
+      return symbolic;
+    },
     isDirectory: (path) => Boolean(stat(path)?.isDirectory()),
     isFile: (path) => Boolean(stat(path)?.isFile()),
     currentDirectory: () => process.cwd(),

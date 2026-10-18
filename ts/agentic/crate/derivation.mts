@@ -281,10 +281,10 @@ function parentPath(file) {
 export function persist(derivation, repositoryRoot, io = {}) {
   const path = storePath(repositoryRoot, derivation.answer_id);
   if (path === null) return { ok: false, error: UNUSABLE_ANSWER_ID };
-  if (typeof io.writeText !== 'function') return { ok: false, error: 'derivation_store_has_no_writer' };
+  if (io===null||(typeof io!=='object'&&typeof io!=='function')||!('writeText' in io)||typeof io.writeText!=='function') return { ok: false, error: 'derivation_store_has_no_writer' };
   try {
     const parent = parentPath(path);
-    if (parent !== '' && typeof io.createDirAll === 'function') io.createDirAll(parent);
+    if (parent !== '' && 'createDirAll' in io && typeof io.createDirAll === 'function') io.createDirAll(parent);
     io.writeText(path, toLino(derivation));
     return { ok: true, path };
   } catch (error) {
@@ -299,7 +299,7 @@ export function persist(derivation, repositoryRoot, io = {}) {
  */
 export function load(repositoryRoot, answerId, io = {}) {
   const path = storePath(repositoryRoot, answerId);
-  if (path === null || typeof io.readText !== 'function') return null;
+  if (path===null||io===null||(typeof io!=='object'&&typeof io!=='function')||!('readText' in io)||typeof io.readText!=='function') return null;
   let text;
   try {
     text = io.readText(path);

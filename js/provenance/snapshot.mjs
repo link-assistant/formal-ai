@@ -1,3 +1,4 @@
+import {wellFormedText} from '../logging/text-lines.mjs';
 // Source snapshot integrity is distinct from engine authorship or replay.
 import {blake3Hex} from '../crypto/blake3.mjs';
 const bytes=x=>Buffer.from(x);
@@ -23,10 +24,10 @@ export function merkleRoot(leaves){
  return level[0];
 }
 export function sourceSnapshot(files,extensions){
- if(!files||typeof files[Symbol.iterator]!=='function'||!Array.isArray(extensions)||extensions.some(row=>!Array.isArray(row)||row.length!==2||row.some(x=>typeof x!=='string'||!x||!x.isWellFormed())))throw Error('snapshot_inputs_required');
+ if(!files||typeof files[Symbol.iterator]!=='function'||!Array.isArray(extensions)||extensions.some(row=>!Array.isArray(row)||row.length!==2||row.some(x=>typeof x!=='string'||!x||!wellFormedText(x))))throw Error('snapshot_inputs_required');
  const seen=new Set(),groups=new Map();
  for(const entry of files){const p=entry?.path;
- if(typeof p!=='string'||!p.isWellFormed()||!p||p.includes('\0')||p.includes('\\')||p.startsWith('/')||p.split('/').some(s=>!s||s==='.'||s==='..')||seen.has(p)||!(entry.content instanceof Uint8Array))throw Error('invalid_source_file');
+ if(typeof p!=='string'||!wellFormedText(p)||!p||p.includes('\0')||p.includes('\\')||p.startsWith('/')||p.split('/').some(s=>!s||s==='.'||s==='..')||seen.has(p)||!(entry.content instanceof Uint8Array))throw Error('invalid_source_file');
  seen.add(p);const language=sourceLanguage(p,extensions);
  const group=groups.get(language)??[];group.push({path:p,leaf:hash(Buffer.concat([bytes(p),Buffer.from([0]),bytes(entry.content)]))});groups.set(language,group);
  }

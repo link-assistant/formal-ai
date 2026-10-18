@@ -316,7 +316,7 @@ fn plan_chat_step_routes(
         if let Some(recipe) = answer.execution_recipe.as_mut()
             && super::ci_workflow::requested_in(&task)
         {
-            super::ci_workflow::attach(recipe);
+            super::ci_workflow::attach(recipe, &task);
         }
         if let Some(plan) =
             super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)

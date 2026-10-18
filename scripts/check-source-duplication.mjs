@@ -8,7 +8,7 @@ import {execFileSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {parse} from '@babel/parser';
 import traversal from '@babel/traverse';
-import {translateJsToTs,tokenize,tsTwinPath} from './translate-es.mjs';
+import {translateJsToTs,tokenize,tsTwinPath,isTranslatedSource} from './translate-es.mjs';
 import {ENTRY_MODULES,importClosure,workerFileOf,generatedFiles} from './generate-worker-crate-modules.mjs';
 import {structuralCallables,groupClones,assessDuplication,proveDerivedCallables,canonicalCloneGroups,proveFactoryCallables} from './lib/source-duplication.mjs';
 const traverse=traversal.default??traversal;
@@ -44,7 +44,7 @@ export function scanJavaScriptImplementations(root,roots=['js','ts'],{listSource
  const generator=generatorFiles.map(([file,url])=>({file,sha256:digest(readFileSync(url))}));
  const proofs=[],expectedTargets=new Set();
  for(const file of files){
-  if(!file.startsWith('js/')||!(file.endsWith('.js')||(file.startsWith('js/agentic/')&&file.endsWith('.mjs'))))continue;
+  if(!file.startsWith('js/')||!isTranslatedSource(file))continue;
   const target='ts/'+tsTwinPath(file.slice(3));expectedTargets.add(target);
   if(!texts.has(target)||!callables.has(file)||!callables.has(target)){const reason='missing or unparsed independently regenerated target';proofs.push({accepted:false,source:file,target,reason});gaps.push({file:target,reason});continue;}
   let proof;try{proof=proveDerivedCallables({sourcePath:file,targetPath:target,source:texts.get(file),target:texts.get(target),sourceCallables:callables.get(file),targetCallables:callables.get(target),translate:translateJsToTs,tokenize,generator});}
