@@ -80,6 +80,9 @@ fi
 # MIN_POSTS=3, so the same harness validates every recipe axis live rather than
 # only the web ones.
 MIN_POSTS="${MIN_POSTS:-4}"
+COMPLETION_EVIDENCE="${COMPLETION_EVIDENCE:-minimum-posts}"
+EFFECT_VERIFIER="${EFFECT_VERIFIER:-}"
+EXPECT_OUTPUT_LINE="${EXPECT_OUTPUT_LINE:-}"
 
 LOG="/tmp/formal-ai-serve-$PORT.log"
 source "$ROOT/experiments/agent_cli_e2e/server-log-evidence.sh"
@@ -87,7 +90,8 @@ server_log_evidence_setup "$LOG" || exit 1
 node --test \
   "$ROOT/experiments/agent_cli_e2e/server-log-evidence.test.mjs" \
   "$ROOT/experiments/agent_cli_e2e/server-log-range.test.mjs" \
-  "$ROOT/experiments/agent_cli_e2e/evidence-reader-compat.test.mjs" || exit 1
+  "$ROOT/experiments/agent_cli_e2e/evidence-reader-compat.test.mjs" \
+  "$ROOT/experiments/agent_cli_e2e/output-project-completion.test.mjs" || exit 1
 AGENT_LOG="/tmp/agent-out-$PORT.log"
 AGENT_SETUP_LOG="/tmp/agent-setup-$PORT.log"
 AGENT_FOLLOW_UP_LOG="/tmp/agent-follow-up-$PORT.log"
@@ -268,15 +272,23 @@ done <<< "$EXPECT_FILES"
 grep -q "$EXPECT_TEXT" "$WORKDIR/$EXPECT_FILE" \
   || fail "expected text \"$EXPECT_TEXT\" missing from $EXPECT_FILE"
 
-# One extra structural check: the server must have seen at least MIN_POSTS
-# /v1/chat/completions posts — a single post would mean the loop stopped after
-# the first turn without walking the recipe (search → fetch → write → verify).
-# The count is cumulative across retries, but since the successful attempt that
-# wrote EXPECT_FILE necessarily walked the full recipe, it alone contributes
-# ≥MIN_POSTS, so this stays a valid lower bound.
+# Decode actual exchanges for every recipe. Named legacy callers retain their
+# explicit minimum; the ordinary output-project caller proves bound effects,
+# returned verification, terminal completion and independent exact stdout instead.
 posts="$(project_server_log)" || { echo "invalid server evidence" >&2; exit 1; }
-[ "$posts" -ge "$MIN_POSTS" ] \
+case "$COMPLETION_EVIDENCE" in
+  output-project)
+    node "$ROOT/experiments/agent_cli_e2e/verify-output-project.mjs" \
+      "$DIALOG_DIR" "$WORKDIR" "$TASK" "$EXPECT_FILE" "$EXPECT_FILES" \
+      "$EFFECT_VERIFIER" "$EXPECT_OUTPUT_LINE" "$EVIDENCE_DIR/completion-effects.json" \
+      || fail "actual output-project completion evidence failed"
+    ;;
+  minimum-posts)
+    [ "$posts" -ge "$MIN_POSTS" ] \
   || fail "expected ≥$MIN_POSTS chat completions, got $posts (loop stalled?)"
+    ;;
+  *) fail "unsupported completion evidence contract: $COMPLETION_EVIDENCE" ;;
+esac
 
 while IFS= read -r expected; do
   [ -z "$expected" ] && continue

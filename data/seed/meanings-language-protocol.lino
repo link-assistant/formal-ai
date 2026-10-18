@@ -97,7 +97,6 @@ meanings
     lexeme es "respuesta de carencia de idioma en español"
   after-command
     role execution-verb-position
-    description "Represent the grammatical position of an execution verb after its command span"
     defined-by order
     defined-by execute
     precondition "the terminal verb declares a position after the requested command"
@@ -111,7 +110,6 @@ meanings
     lexeme es "después del comando"
   ejecuta
     role execution-verb-form
-    description "Describe the Spanish informal singular imperative form of the canonical execution action"
     defined-by execute
     precondition "a Spanish request uses the informal singular imperative execution verb"
     effect "bind the following explicit command without changing its argument bytes"
@@ -124,7 +122,6 @@ meanings
     lexeme es "forma imperativa informal ejecuta"
   ejecute
     role execution-verb-form
-    description "Describe the Spanish formal singular imperative form of the canonical execution action"
     defined-by execute
     precondition "a Spanish request uses the formal singular imperative execution verb"
     effect "bind the following explicit command without changing its argument bytes"
@@ -137,7 +134,6 @@ meanings
     lexeme es "forma imperativa formal ejecute"
   ejecutar
     role execution-verb-form
-    description "Describe the Spanish infinitive form of the canonical execution action"
     defined-by execute
     precondition "a Spanish command request uses the infinitive execution verb"
     effect "bind the following explicit command without changing its argument bytes"
@@ -150,9 +146,7 @@ meanings
     lexeme es "forma infinitiva ejecutar"
   command
     role computing-instruction
-    description "Identify a computing command as a code instruction"
     defined-by code
-    gloss "(computer science) a line of code written as part of a computer program"
     precondition "an instruction is represented as a line of code in a computer program"
     effect "identify the command without granting permission to execute it"
     unit "code instruction"
@@ -167,7 +161,6 @@ meanings
     lexeme es "comando de computadora"
   comando
     role computing-command-noun
-    description "Identify the Spanish singular computing-command noun"
     defined-by command
     precondition "a Spanish computing request uses the noun for an instruction given to a computer"
     effect "identify the requested command object without treating surrounding prose as an executable"
@@ -181,7 +174,6 @@ meanings
     lexeme es comando
   comandos
     role computing-command-noun
-    description "Identify the Spanish plural form of the computing-command noun"
     defined-by comando
     precondition "the computing noun comando takes the regular Spanish plural suffix s"
     effect "identify multiple command objects without granting execution permission"

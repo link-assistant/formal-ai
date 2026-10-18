@@ -133,7 +133,9 @@ jobs:
         env:
           PORT: 8920
           ATTEMPTS: 1
-          MIN_POSTS: 6
+          COMPLETION_EVIDENCE: output-project
+          EFFECT_VERIFIER: tests/verify-output.sh
+          EXPECT_OUTPUT_LINE: Saffron 61!
           TASK: >-
             Implement a program in Python. It must print exactly `Saffron 61!`.
             Include a comment explaining its behavior and build/run instructions
