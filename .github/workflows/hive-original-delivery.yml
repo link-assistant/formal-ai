@@ -52,7 +52,6 @@ jobs:
         tool: [claude, agent, codex]
     env:
       E2E_TOOL: ${{ matrix.tool }}
-      E2E_LOG_DIR: ${{ runner.temp }}/hive-original-evidence
     steps:
       - uses: actions/checkout@v7
         with:
@@ -109,6 +108,7 @@ jobs:
       - name: Run actual Hive solve and original assertions
         working-directory: .hive-mind
         env:
+          E2E_LOG_DIR: ${{ runner.temp }}/hive-original-evidence
           GH_TOKEN: ${{ steps.gh.outputs.token }}
           AUTOMATION_LAYER: ${{ steps.gh.outputs.layer }}
           AUTOMATION_CAN_CREATE_REPOSITORIES: ${{ steps.gh.outputs.can-create-repositories }}
@@ -122,6 +122,7 @@ jobs:
           apps: scala-cli
       - name: Independently compile delivered source and require exactly one output line
         env:
+          E2E_LOG_DIR: ${{ runner.temp }}/hive-original-evidence
           GH_TOKEN: ${{ steps.gh.outputs.token }}
         run: node scripts/check-hive-original-delivery.mjs
       - name: Retain actual task links, assertions, independent stdout and failure logs
