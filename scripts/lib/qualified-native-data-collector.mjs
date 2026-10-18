@@ -1,4 +1,5 @@
 import {blake3Hex} from '../../js/crypto/blake3.mjs';
+import {nativeCompilationInputRoots} from '../native-release-source.mjs';
 import assert from 'node:assert/strict';
 import {
   createHash}
@@ -34,19 +35,12 @@ import {
   bindOriginalSourceCase}
 from './native-test-module-graph.mjs';
 export const digest=b=>createHash('sha256').update(b).digest('hex');
-const nativeRoots=['data/meta/source-model',
+const cstHelperRoots=['data/meta/source-model',
 'scripts/aggregate-source-content.mjs',
 'scripts/mirror-package-data.mjs',
 'js/crypto/blake3.mjs',
-'js/agentic/crate/rust_str.mjs',
-'rust/src',
-'rust/embedded',
-'rust/Cargo.toml',
-'rust/Cargo.lock',
-'rust/build.rs',
-'data/seed/api-cache',
-'.cargo',
-'rust/.cargo'];
+'js/agentic/crate/rust_str.mjs'];
+const derivationRoots=[...cstHelperRoots,...nativeCompilationInputRoots];
 export const routes=Object.freeze({
   census:{
     workflow:'.github/workflows/regenerate-self-ast-census.yml',
@@ -374,7 +368,7 @@ commit){
           total+=size;
           assert.ok(total<=2*1024*1024*1024,
           'immutable source total budget exceeded');
-          const nativeRow=row.type==='blob'&&nativeRoots.some(root=>row.path===root||row.path.startsWith(root+'/'));
+          const nativeRow=row.type==='blob'&&nativeCompilationInputRoots.some(root=>row.path===root||row.path.startsWith(root+'/'));
           state={
             row,
             remaining:size,
@@ -692,5 +686,5 @@ export function nativeDerivationRows(rows,
 extraPaths) {
   assert.ok(extraPaths.every(path=>rows.some(row=>row.path===path)),
   'declared derivation source missing');
-  return rows.filter(row=>nativeRoots.some(root=>row.path===root||row.path.startsWith(root+'/'))||extraPaths.includes(row.path));
+  return rows.filter(row=>derivationRoots.some(root=>row.path===root||row.path.startsWith(root+'/'))||extraPaths.includes(row.path));
 }

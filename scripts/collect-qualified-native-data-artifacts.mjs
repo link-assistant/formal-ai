@@ -58,6 +58,7 @@ export async function collectQualifiedNativeData({
   'mirror-package-data.mjs',
   'collect-qualified-native-data-artifacts.mjs',
   'lib/qualified-native-data-collector.mjs',
+  'native-release-source.mjs',
   'qualified-data-artifact-profiles.mjs',
   'github-artifact-by-identifier.mjs',
   'lib/native-session-projections.mjs',

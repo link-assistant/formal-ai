@@ -47,6 +47,7 @@ on:
       - "scripts/mirror-package-data.mjs"
       - "scripts/mirror-package-data.mjs/**"
       - "rust/examples/generate_source_content.rs"
+      - "scripts/native-release-source.mjs"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:

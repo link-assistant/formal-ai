@@ -80,6 +80,7 @@ pub const AST_PATH: &str = "self-ast.lino";
 /// A *differently worded* request for the self-AST recipe — the maintainer's
 /// generality check: the router recognises the intent from the words, not a
 /// hardcoded string.
+#[must_use]
 pub fn ast_task() -> &'static str {
     static TASK: std::sync::OnceLock<String> = std::sync::OnceLock::new();
     TASK.get_or_init(|| super::wording::agentic_message("self_ast_task", &[]))
