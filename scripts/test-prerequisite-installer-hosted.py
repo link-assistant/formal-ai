@@ -99,4 +99,35 @@ class InstallerControls(unittest.TestCase):
             prefix=next(pathlib.Path('.formal-ai/toolchains').glob('heldout-compiler-*'));receipt=prefix/'formal-ai-install-receipt.json';receipt.unlink();os.link(outside,receipt)
             self.run_fixture(request,responses);self.assertEqual(outside.read_text(),'outside bytes')
 
+
+    def test_current_same_origin_documentation_hop_authenticates_release(self):
+        request,responses,_=self.fixture();doc=request['publisher']['documentation'];page='https://publisher.invalid/releases/2.0.html'
+        responses[page]=responses[doc];responses[doc]=b'<a href="/releases/2.0.html">Current Version</a>'
+        self.assertEqual(self.run_fixture(request,responses),1)
+    def test_ambiguous_current_documentation_is_refused(self):
+        request,responses,_=self.fixture();responses[request['publisher']['documentation']]=b'<a href="/one">Current Version</a><a href="/two">Latest Release</a>'
+        with self.assertRaisesRegex(ValueError,'current_documentation_ambiguous'): self.run_fixture(request,responses)
+    def test_cross_origin_current_link_cannot_authorize_a_document(self):
+        request,responses,_=self.fixture();responses[request['publisher']['documentation']]=b'<a href="https://foreign.invalid/current">Current Version</a>'
+        with self.assertRaisesRegex(ValueError,'publisher_release_link_ambiguous_or_missing'): self.run_fixture(request,responses)
+    def test_platform_archive_requires_unique_observed_host_identity(self):
+        assets=[{'name':'compiler-x86_64-pc-linux.zip'},{'name':'compiler-aarch64-pc-linux.zip'},{'name':'compiler-x86_64-pc-windows.zip'},{'name':'compiler.zip'}]
+        self.assertEqual(installer.select_release_archive(assets,'','Linux','x86_64'),assets[0])
+        self.assertEqual(installer.select_release_archive(assets,'compiler.zip','Linux','x86_64'),assets[3])
+        with self.assertRaisesRegex(ValueError,'ambiguous_or_missing'): installer.select_release_archive(assets+[dict(assets[0])],'','Linux','x86_64')
+        with self.assertRaisesRegex(ValueError,'ambiguous_or_missing'): installer.select_release_archive(assets,'compiler-x86_64-pc-windows.zip','Linux','x86_64')
+        with self.assertRaisesRegex(ValueError,'unsupported_host_platform'): installer.select_release_archive(assets,'','Plan9','x86_64')
+    def test_generic_unmentioned_archive_cannot_replace_platform_evidence(self):
+        with self.assertRaisesRegex(ValueError,'ambiguous_or_missing'): installer.select_release_archive([{'name':'compiler.zip'}],'','Linux','x86_64')
+
+
+    def test_current_series_uses_highest_strict_version_without_language_rules(self):
+        request,responses,_=self.fixture();doc=request['publisher']['documentation']
+        responses[doc]=b'<a href="/release/2.9.9.html">Current 2.9.x release</a><a href="/release/2.10.0.html">Current 2.10.x release</a><a href="/release/99.0.0-preview.html">Current preview release</a>'
+        responses['https://publisher.invalid/release/2.10.0.html']=b'<a href="https://github.com/vendor/compiler/releases/tag/v1">release</a> compiler.zip'
+        self.assertEqual(self.run_fixture(request,responses),1)
+    def test_same_highest_version_at_distinct_urls_refuses(self):
+        request,responses,_=self.fixture();responses[request['publisher']['documentation']]=b'<a href="/one/2.10.0.html">Current release</a><a href="/two/2.10.0.html">Current release</a>'
+        with self.assertRaisesRegex(ValueError,'current_documentation_ambiguous'): self.run_fixture(request,responses)
+
 if __name__=='__main__': unittest.main()

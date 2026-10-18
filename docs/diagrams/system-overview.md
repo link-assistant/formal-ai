@@ -13,7 +13,7 @@ A high-level view of where a request enters Formal AI and which layers it crosse
 ```mermaid
 flowchart LR
     subgraph entries["Entry points"]
-        cli["formal-ai CLI<br/>31 subcommands"]
+        cli["formal-ai CLI<br/>32 subcommands"]
         http["HTTP server, JavaScript and Rust<br/>30 routes"]
         browser["browser worker<br/>10 browser-only handlers"]
     end

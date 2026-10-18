@@ -1,0 +1,134 @@
+name: Original Hive Mind three-client delivery
+on:
+  pull_request:
+    branches-ignore: ['e2e/**']
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'rust/src/**'
+      - 'rust/embedded/**'
+      - 'rust/Cargo.toml'
+      - 'rust/Cargo.lock'
+      - 'scripts/*hive*'
+      - 'scripts/lib/hive-delivery-evidence.mjs'
+      - 'data/benchmarks/hive-original-delivery-inputs.json'
+      - '.github/workflows/hive-original-delivery.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: original-hive-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/formal-ai-binary
+        with:
+          cache-key-prefix: hive-formal-ai-ubuntu-24
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hive-same-source-formal-ai-binary
+          path: rust/target/release/formal-ai
+          retention-days: 1
+  delivery:
+    name: Actual Hive ${{ matrix.tool }} original delivery
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        tool: [claude, agent, codex]
+    env:
+      E2E_TOOL: ${{ matrix.tool }}
+      E2E_LOG_DIR: ${{ runner.temp }}/hive-original-evidence
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: link-assistant/hive-mind
+          ref: 8f22b87c515adece0427cb59e429531f35d7760a
+          path: .hive-mind
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /src/
+            /scripts/
+            /.github/actions/
+            /package.json
+            /package-lock.json
+            /Dockerfile.e2e
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-same-source-formal-ai-binary
+          path: rust/target/release
+      - name: Free hosted image space
+        working-directory: .hive-mind
+        run: node scripts/free-disk-space.mjs
+      - name: Install pinned Hive automation dependencies
+        working-directory: .hive-mind
+        run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Resolve task repository credentials
+        id: gh
+        uses: ./.hive-mind/.github/actions/resolve-github-token
+        with:
+          app-id: ${{ vars.AUTOMATION_APP_ID }}
+          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          token: ${{ secrets.AUTOMATION_TOKEN }}
+          default-token: ${{ github.token }}
+      - name: Install act when workflows require staging
+        if: steps.gh.outputs.layer == 'default'
+        env:
+          GH_TOKEN: ${{ steps.gh.outputs.token }}
+          ACT_DIR: ${{ runner.temp }}/act
+        run: |
+          mkdir -p "$ACT_DIR"
+          gh release download v0.2.89 --repo nektos/act --pattern act_Linux_x86_64.tar.gz --pattern checksums.txt --dir "$ACT_DIR"
+          (cd "$ACT_DIR" && sha256sum --check --ignore-missing checksums.txt)
+          tar -xzf "$ACT_DIR/act_Linux_x86_64.tar.gz" -C "$ACT_DIR" act
+          echo "$ACT_DIR" >> "$GITHUB_PATH"
+      - name: Build and verify actual same-source task image
+        run: node scripts/build-hive-original-delivery-image.mjs
+      - name: Run actual Hive solve and original assertions
+        working-directory: .hive-mind
+        env:
+          GH_TOKEN: ${{ steps.gh.outputs.token }}
+          AUTOMATION_LAYER: ${{ steps.gh.outputs.layer }}
+          AUTOMATION_CAN_CREATE_REPOSITORIES: ${{ steps.gh.outputs.can-create-repositories }}
+          E2E_KEEP: 'true'
+          E2E_IMAGE: hive-e2e:candidate
+          FORMAL_AI_INSTALL_GRANT: workspace
+        run: node scripts/e2e-hello-world.mjs --tool "$E2E_TOOL" --model formal-ai --isolation branch --keep
+      - uses: coursier/setup-action@v3
+        if: matrix.tool == 'agent'
+        with:
+          apps: scala-cli
+      - name: Independently compile delivered source and require exactly one output line
+        env:
+          GH_TOKEN: ${{ steps.gh.outputs.token }}
+        run: node scripts/check-hive-original-delivery.mjs
+      - name: Retain actual task links, assertions, independent stdout and failure logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: hive-original-${{ matrix.tool }}-evidence
+          path: ${{ runner.temp }}/hive-original-evidence
+          retention-days: 30
+          if-no-files-found: error

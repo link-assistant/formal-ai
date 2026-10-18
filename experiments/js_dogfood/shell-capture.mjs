@@ -43,17 +43,18 @@ function snapshot(file, destination, maximum) {
 }
 
 /** Bounded previews are transport metadata, never stdout byte certificates. */
-export function shellCapture(command, {cwd, timeoutMs = 60000, maxOutputBytes = DEFAULT_PREVIEW_BYTES} = {}) {
+export function shellCapture(command, {cwd, timeoutMs = 60000, maxOutputBytes = DEFAULT_PREVIEW_BYTES, environment, onProcessObservation} = {}) {
   if (typeof command !== 'string') throw new TypeError('shell command must be a string');
   if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0) throw new RangeError('shell timeout must be positive');
   if (!Number.isSafeInteger(maxOutputBytes) || maxOutputBytes < 2) throw new RangeError('shell preview limit must be at least two bytes');
+  if(onProcessObservation!==undefined&&typeof onProcessObservation!=='function')throw Error('shell_process_observer_required');
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-shell-capture-'));
   const stdoutLive = join(directory, 'stdout.live'), stderrLive = join(directory, 'stderr.live');
   let output = null, error = null, retain = false;
   try {
     output = openSync(stdoutLive, 'wx', 0o600); error = openSync(stderrLive, 'wx', 0o600);
     const result = spawnSync('/bin/sh', ['-c', command], {
-      cwd, stdio: ['ignore', output, error], timeout: timeoutMs,
+      cwd, ...(environment===undefined?{}:{env:environment}), stdio: ['ignore', output, error], timeout: timeoutMs,
       killSignal: 'SIGKILL', detached: process.platform !== 'win32',
     });
     if (result.error?.code === 'ETIMEDOUT' && result.pid && process.platform !== 'win32') {
@@ -64,6 +65,10 @@ export function shellCapture(command, {cwd, timeoutMs = 60000, maxOutputBytes = 
     const stdout = snapshot(stdoutLive, join(directory, 'stdout.raw'), maxOutputBytes);
     const stderr = snapshot(stderrLive, join(directory, 'stderr.raw'), maxOutputBytes);
     unlinkSync(stdoutLive); unlinkSync(stderrLive);
+    if(onProcessObservation!==undefined){
+      onProcessObservation({command,cwd:cwd??process.cwd(),pid:result.pid??null,status:result.status,signal:result.signal??null,
+        error:result.error?{name:result.error.name,code:result.error.code??null,message:result.error.message}:null,stdout,stderr});
+    }
     const truncated = stdout.bytes > maxOutputBytes || stderr.bytes > maxOutputBytes;
     const invalidUtf8 = (!stdout.exactUtf8 && stdout.text !== null) || (!stderr.exactUtf8 && stderr.text !== null);
     if (truncated || invalidUtf8 || result.error) {

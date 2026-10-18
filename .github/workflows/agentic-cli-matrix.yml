@@ -406,4 +406,10 @@ jobs:
       - name: Validate real installer grant, digest, scope and failure controls
         run: python3 scripts/test-prerequisite-installer-hosted.py
       - name: Exercise actual generic archive recovery in an isolated workspace
+        env:
+          FORMAL_AI_INSTALL_GRANT: workspace
         run: python3 scripts/check-prerequisite-recovery-hosted.py
+      - name: Exercise actual platform archive recovery with Scala one-line oracle
+        env:
+          FORMAL_AI_INSTALL_GRANT: workspace
+        run: python3 scripts/check-prerequisite-recovery-hosted.py scala

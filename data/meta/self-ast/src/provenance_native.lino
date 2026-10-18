@@ -1,0 +1,26 @@
+self_ast_census
+  target src/provenance_native.rs
+  language rust
+  fidelity signature
+  byte_len 7952
+  line_count 200
+  content_id source_module_05d5cfaa183dfb7c
+  symbol_count 17
+  symbols
+    enum CpuHashMode 10 17
+    const PARALLEL_THRESHOLD 18 18
+    const STREAM_BUFFER 19 19
+    const SPKI_PREFIX 20 22
+    function update 24 32
+    function digest 35 35
+    function digest_reader 41 41
+    function canonical_hash 61 61
+    function generate_private_key 77 81
+    function key_pair 82 86
+    function public_key 88 93
+    function sign_message 95 97
+    function verify_message 99 116
+    module tests 119 200
+    function javascript_vectors_match_all_cpu_paths_and_streaming 124 145
+    function real_javascript_ed25519_fixture_is_bidirectional_and_tamper_evident 147 177
+    function shared_codec_domain_and_unicode_parity 179 199

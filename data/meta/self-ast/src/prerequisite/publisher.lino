@@ -2,10 +2,10 @@ self_ast_census
   target src/prerequisite/publisher.rs
   language rust
   fidelity signature
-  byte_len 19089
-  line_count 518
-  content_id source_module_ebacd14d2cf55acd
-  symbol_count 22
+  byte_len 20413
+  line_count 551
+  content_id source_module_2a64d4f57539b563
+  symbol_count 25
   symbols
     const SETUP_PUBLISHERS_LINO 23 23
     const RECORD_PUBLISHER 26 26
@@ -14,18 +14,21 @@ self_ast_census
     const REFUSED_NO_TYPED_RECIPE 37 37
     struct SetupProcedure 41 58
     struct SetupStep 62 78
-    struct SetupPublisher 83 90
-    function documentation_url 95 97
-    function seed_publishers 102 113
-    function url_has_host 117 126
-    function safe_program_name 128 133
-    function arguments 135 151
-    function display_command 153 160
-    function procedure_from_sense 166 181
-    function parse_setup_document 188 263
-    function pinned_python_repository_procedure 270 359
-    struct PublisherRefusal 363 370
-    struct PublisherSearch 374 383
-    function detect_cycle 388 407
-    function discover_setup_procedure 416 422
-    function search_setup_procedure 425 518
+    struct SetupPublisher 83 92
+    function authorizes_document_url 97 105
+    function documentation_url 109 115
+    function seed_publishers 120 132
+    function url_has_host 136 145
+    function safe_program_name 147 152
+    function arguments 154 170
+    function display_command 172 179
+    function procedure_from_sense 185 200
+    function parse_setup_document 207 282
+    function pinned_python_repository_procedure 289 378
+    struct PublisherRefusal 382 389
+    struct PublisherSearch 393 402
+    function detect_cycle 407 426
+    function discover_setup_procedure 435 441
+    function search_setup_procedure 444 537
+    module documentation_authority_tests 540 551
+    function all_declared_publisher_document_paths_retain_exact_authority 544 550

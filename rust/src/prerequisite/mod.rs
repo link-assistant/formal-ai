@@ -622,3 +622,23 @@ pub fn configure_workspace_grant(text: Option<&str>) -> Result<(), String> {
 pub fn configured_workspace_grant() -> Option<serde_json::Value> {
     WORKSPACE_GRANT.get().cloned().flatten()
 }
+
+/// Resolve caller-owned startup values; explicit JSON takes precedence.
+pub fn resolve_workspace_grant(
+    text: Option<&str>,
+    legacy: Option<&str>,
+) -> Result<Option<String>, String> {
+    if let Some(text) = text {
+        return Ok(Some(text.to_owned()));
+    }
+    match legacy {
+        None | Some("") => Ok(None),
+        Some("workspace") => Ok(Some(
+            include_str!("../../embedded/data/meta/workspace-prerequisite-grant.json").to_owned(),
+        )),
+        Some(_) => Err("invalid_legacy_prerequisite_grant".to_owned()),
+    }
+}
+#[cfg(test)]
+#[path = "../../tests/unit/prerequisite_workspace_grant.rs"]
+mod legacy_workspace_grant_tests;

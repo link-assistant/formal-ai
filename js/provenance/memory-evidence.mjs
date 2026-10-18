@@ -6,6 +6,10 @@ export function logicalMemoryDelta(transition){
   revision:transition.revision,messageHash:transition.messageHash,
   previousMemoryHash:transition.previousMemoryHash,memoryHash:transition.memoryHash}));
 }
+export function logicalMemoryStep(previousState,transition){
+ const delta=logicalMemoryDelta(transition),deltaHash=blake3Hex(delta);
+ return {delta,deltaHash,state:blake3Hex(Buffer.concat([Buffer.from(previousState,'hex'),Buffer.from(deltaHash,'hex')]))};
+}
 export function inspectLogicalMemoryEvidence(records,readEvidence){
  const genesisRecords=records.filter(record=>record.kind==='logical_memory_genesis');
  if(genesisRecords.length===0){
@@ -19,6 +23,13 @@ export function inspectLogicalMemoryEvidence(records,readEvidence){
   ||manifest.memoryHash!==blake3Hex(initialBytes)||manifest.memoryHash!==genesis.payload.memoryHash
   ||manifest.size!==initialBytes.length||manifest.revision!==genesis.payload.revision
   ||manifest.taskURL!==genesis.payload.taskURL||!Number.isSafeInteger(manifest.revision)||manifest.revision<0)throw Error('logical_memory_initial_binding');
+ if(genesis.payload.revisionEvidence!==undefined&&genesis.payload.revisionEvidence!==null){
+  const bytes=readEvidence(genesis.payload.revisionEvidence),text=bytes.toString('utf8');
+  if(!text.endsWith('\n'))throw Error('logical_memory_revision_incomplete');
+  const observed=decodeTyped(text.slice(0,-1));
+  if(observed.schema!=='formal-ai-memory-revision-v1'||observed.revision!==manifest.revision
+   ||observed.memoryHash!==manifest.memoryHash)throw Error('logical_memory_revision_binding');
+ }else if(manifest.revision!==0)throw Error('logical_memory_initial_revision_unavailable');
  let memoryHash=manifest.memoryHash,state=memoryHash,revision=manifest.revision,pending=null,terminal=null;
  let started=false;const transitions=[];
  for(const record of records){
@@ -31,7 +42,7 @@ export function inspectLogicalMemoryEvidence(records,readEvidence){
    const bytes=readEvidence(transition.evidence),delta=readEvidence(transition.delta);
    if(blake3Hex(bytes)!==transition.memoryHash||!delta.equals(logicalMemoryDelta(transition))
     ||blake3Hex(delta)!==transition.deltaHash)throw Error('logical_memory_transition_bytes');
-   const nextState=blake3Hex(Buffer.concat([Buffer.from(state,'hex'),Buffer.from(transition.deltaHash,'hex')]));
+   const nextState=logicalMemoryStep(state,transition).state;
    if(transition.state!==nextState)throw Error('logical_memory_state');
    revision=transition.revision;memoryHash=transition.memoryHash;state=nextState;
    pending=record;transitions.push(record);continue;

@@ -233,7 +233,9 @@ export function execute(dir, call) {
           commandDirectory = eventDirectory;
         }
         try {
-          return shellCapture(args.command, {cwd:commandDirectory, timeoutMs:BASH_TIMEOUT_MS});
+          return shellCapture(args.command, {cwd:commandDirectory, timeoutMs:BASH_TIMEOUT_MS,
+            environment:activeDriveCapture()?.toolEnvironment(),
+            onProcessObservation:activeDriveCapture()?.processObservation});
         } finally {
           if (eventDirectory !== null) rmSync(eventDirectory, { recursive: true, force: true });
         }
@@ -311,6 +313,20 @@ export async function drive(planChatStep,dir,prompt,options={}) {
  }
  return driveInternal(planChatStep,dir,prompt,options);
 }
+/** The actual driver plan projection; replay uses the same decision owner. */
+export function projectDriverDispatch(plan,{prompt,tools,scoped,verificationHistory,sourceSession}){
+    try {
+      const optional = sourceOwnedOptionalCommand(plan, prompt, tools, scoped, verificationHistory);
+      if (optional !== null) {
+        if (queryOwnedInferredCommandPolicy(sourceSession, prompt, optional.command, tools) === false) {
+          const alternative = optional.withoutInferredCheck();
+          if (alternative !== null) plan = alternative;
+        }
+      }
+    } catch { /* Unknown provenance or policy retains the actual original check plan. */ }
+    return plan;
+}
+
 async function driveInternal(planChatStep, dir, prompt, {
   tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null, allowedCommands = undefined,
   atomicRecordAppend = false,
@@ -542,15 +558,7 @@ async function driveInternal(planChatStep, dir, prompt, {
         return { transcript, answer: null, stop: 'unbound-source-reference-prerequisite', toolsAdvertised: tools };
       }
     }
-    try {
-      const optional = sourceOwnedOptionalCommand(plan, prompt, tools, scoped, projectHistory(contracts));
-      if (optional !== null) {
-        if (queryOwnedInferredCommandPolicy(sourceSession, prompt, optional.command, tools) === false) {
-          const alternative = optional.withoutInferredCheck();
-          if (alternative !== null) plan = alternative;
-        }
-      }
-    } catch { /* Unknown provenance or policy retains the actual original check plan. */ }
+    plan=projectDriverDispatch(plan,{prompt,tools,scoped,verificationHistory:projectHistory(contracts),sourceSession});
     emitDriveEvent({kind:'plan',plan});
     activeDriveCapture()?.output(plan);
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
@@ -659,6 +667,7 @@ async function driveInternal(planChatStep, dir, prompt, {
       const writePath=['write','edit'].includes(call.tool)?(writeArgs.filePath??writeArgs.file_path??writeArgs.path):null;
       const observedPath=typeof writePath==='string'?within(dir,writePath):null;
       const before=capture&&observedPath?capture.before(observedPath):null;
+      const toolBoundary=capture?.beforeTool(call)??null;
       const creation = ownedCreation(call);
       if (creation?.source_creation?.success === true) createdTargets.add(creation.source_creation.path);
       const receipt = maintenanceSession !== null ? maintenanceSession.execute(call) : creation ?? (sourceSession
@@ -666,6 +675,7 @@ async function driveInternal(planChatStep, dir, prompt, {
         : executeResult(dir, call));
       emitDriveEvent({kind:'tool',receipt});
       if(before)capture.after(observedPath,relative(resolve(dir),observedPath).split(sep).join('/'),before);
+      capture?.afterTool(toolBoundary,call,receipt);
       const operationObservation = observationSources === null ? null
         : issueObservation(prompt, dir, call, receipt, observationSources);
       const { content: result, ...metadata } = receipt;

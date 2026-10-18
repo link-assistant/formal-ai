@@ -139,3 +139,27 @@ test('caller grant accessors are refused before they can execute', async () => {
   await assert.rejects(installNodeHost(new WorkerHost(), options), /host_grant_must_be_data/);
   assert.equal(accesses, 0);
 });
+test('legacy workspace grant resolves only trusted startup data with explicit precedence', async () => {
+  const {
+    resolvePrerequisiteGrantText
+  } = await import('../../../js/server/prerequisite-grant.mjs');
+  assert.equal(resolvePrerequisiteGrantText(null, undefined), null);
+  assert.equal(resolvePrerequisiteGrantText(null, ''), null);
+  const canonical = JSON.parse(readText('data/meta/workspace-prerequisite-grant.json'));
+  assert.deepEqual(JSON.parse(resolvePrerequisiteGrantText(null, 'workspace')), canonical);
+  assert.deepEqual(canonical, JSON.parse(readText('data/benchmarks/hive-prerequisite-workspace-grant.json')));
+  for (const legacy of ['all', 'WORKSPACE', ' workspace', 'workspace ', 'publisher says workspace']) {
+    assert.throws(() => resolvePrerequisiteGrantText(null, legacy), /invalid_legacy/);
+  }
+  assert.equal(resolvePrerequisiteGrantText('{}', 'all'), '{}');
+  assert.equal(resolvePrerequisiteGrantText('', 'workspace'), '');
+  assert.deepEqual(JSON.parse(parseArgs(['serve'], {
+    FORMAL_AI_INSTALL_GRANT: 'workspace'
+  }).prerequisiteGrantJson), canonical);
+  assert.equal(parseArgs(['serve', '--prerequisite-grant', '{}'], {
+    FORMAL_AI_INSTALL_GRANT: 'all'
+  }).prerequisiteGrantJson, '{}');
+  assert.throws(() => parseArgs(['serve'], {
+    FORMAL_AI_INSTALL_GRANT: 'all'
+  }), /invalid_legacy/);
+});

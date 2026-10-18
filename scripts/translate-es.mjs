@@ -288,7 +288,7 @@ function walk(repo, directory) {
 }
 
 /** The module roots whose `.mjs` sources gain a `.mts` twin. */
-const MODULE_ROOTS = ['js/agentic/', 'js/provenance/', 'js/crypto/', 'js/logging/'];
+const MODULE_ROOTS = ['js/agentic/', 'js/provenance/', 'js/crypto/', 'js/logging/', 'js/server/'];
 const MODULE_FILES = ['js/server/structured-log.mjs', 'js/server/json.mjs'];
 
 /**

@@ -375,7 +375,7 @@ impl SourceRoot {
 /// (issue #1180 R11). The JavaScript translator names the same set
 /// `MODULE_ROOTS` in `scripts/translate-es.mjs`, so the native `--write`
 /// and the script render one file set.
-pub const MODULE_SUBTREES: &[&str] = &["agentic", "provenance", "crypto", "logging"];
+pub const MODULE_SUBTREES: &[&str] = &["agentic", "provenance", "crypto", "logging", "server"];
 
 /// Individual shared server modules required by the provenance dependency closure.
 pub const MODULE_FILES: &[&str] = &["server/structured-log", "server/json"];

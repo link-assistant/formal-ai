@@ -9,7 +9,8 @@ import { blake3Hex } from '../crypto/blake3.mjs';
 import { encodeTyped, decodeTyped } from '../logging/typed-codec.mjs';
 import {createLogger} from '../server/structured-log.mjs';
 import {openInstallationSigner} from './installation-key.mjs';
-import {logicalMemoryDelta}from './memory-evidence.mjs';
+import {logicalMemoryStep}from './memory-evidence.mjs';
+import {createGitToolCapture}from './git-capture.mjs';
 const primitives = provenancePrimitives({
   encodeTyped,
   decodeTyped
@@ -114,10 +115,9 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
   function advanceLogicalMemory(kind,bytes){
     const beforeState=state;
     const transition=logicalMemory.advance(kind,bytes);
-    const delta=logicalMemoryDelta(transition);
-    const deltaHash=digest(delta);
+    const {delta,deltaHash,state:nextState}=logicalMemoryStep(state,transition);
     memoryHash=transition.memoryHash;
-    state=digest(Buffer.concat([Buffer.from(state,'hex'),Buffer.from(deltaHash,'hex')]));
+    state=nextState;
     lastMemoryTransition=append('logical_memory_transition',{
       kind,revision:transition.revision,messageHash:transition.messageHash,
       previousMemoryHash:transition.previousMemoryHash,memoryHash,deltaHash,
@@ -126,6 +126,7 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
       revision:transition.revision,memoryTransition:lastMemoryTransition};
   }
   let plannerThinking=null,plannerResponse=null,retainedGenesis=null;
+  const editHashes=[];
   const capture = {
     active: true,
     engineGenesis(observe){
@@ -142,6 +143,9 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
     },
     planningObservation(observation){
       plannerThinking=append('planner_thinking',{evidence:retain(observation),scope:'source-owned-planner-event-log'});
+    },
+    runtimeContext(observation){
+      append('runtime_context',{evidence:retain(observation),scope:'actual-fresh-process-inputs'});
     },
     runtimeObservation(observation){
       const sources=observation.sources.map(source=>{
@@ -241,19 +245,22 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
         gitBlobSha1: createHash('sha1').update(Buffer.from('blob ' + bytes.length + '\0')).update(bytes).digest('hex'),
         size: bytes.length
       };
-      append('edit', {
+      editHashes.push(append('edit', {
         path: relative,
         preimage: blob(before.bytes),
         postimage: blob(after),
         messageOut: before.messageOut,
         scope: 'observed-driver-write-or-edit'
-      });
+      }));
     },
  };
+  Object.assign(capture,createGitToolCapture({workspace,append,retainBytes,editHashes,
+    currentOutput:()=>output,latestRecord:()=>decodeTyped(session.lines().at(-1))}));
   if(initialSnapshot)append('logical_memory_genesis',{
     schema:'formal-ai-logical-memory-genesis-v1',taskURL:initialSnapshot.taskURL,
     path:initialSnapshot.path,revision:initialSnapshot.revision,memoryHash:initialSnapshot.memoryHash,
-    evidence:retainBytes(initialSnapshot.bytes)});
+    evidence:retainBytes(initialSnapshot.bytes),
+    revisionEvidence:initialSnapshot.revisionBytes===null?null:retainBytes(initialSnapshot.revisionBytes)});
   try {
     const result = await withEvidenceContext(capture, run);
     if(logicalMemory){

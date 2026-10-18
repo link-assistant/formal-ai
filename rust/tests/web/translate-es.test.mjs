@@ -112,10 +112,11 @@ test('shared provenance and logging modules have canonical ES ownership', () => 
     const twin=readFileSync(new URL('ts/'+tsTwinPath(file.slice(3)),root),'utf8');
     assert.equal(twin,translateJsToTs(source),file);
   }
-  for(const file of ['js/server/index.mjs','js/server/other.mjs','js/cryptography/no.mjs']){
+  for(const file of ['js/cryptography/no.mjs','js/vendor/unowned.mjs']){
     assert.equal(isTranslatedSource(file),false,file);
   }
+  for(const file of ['js/server/index.mjs','js/server/other.mjs','js/server/platform/host.mjs']) assert.equal(isTranslatedSource(file),true,file);
   const native=readFileSync(new URL('rust/src/meta_translate.rs',root),'utf8');
-  for(const directory of ['agentic','provenance','crypto','logging'])assert(native.includes('"'+directory+'"'));
+  for(const directory of ['agentic','provenance','crypto','logging','server'])assert(native.includes('"'+directory+'"'));
   for(const stem of ['server/structured-log','server/json'])assert(native.includes('"'+stem+'"'));
 });

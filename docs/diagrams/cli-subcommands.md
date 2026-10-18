@@ -11,6 +11,7 @@ flowchart LR
     cli(["formal-ai"])
     cli --> c_chat["chat"]
     cli --> c_dataset["dataset"]
+    cli --> c_logs["logs"]
     cli --> c_translate["translate"]
     cli --> c_coding["coding"]
     cli --> c_context["context"]
@@ -46,6 +47,7 @@ flowchart LR
 | --- | --- |
 | `formal-ai chat` |  |
 | `formal-ai dataset` |  |
+| `formal-ai logs` | Convert legacy JSONL or canonical diagnostic/dialog logs. |
 | `formal-ai translate` | Translate a document between the source roots through the meta language (plan 16 L2): `--from`/`--to` one of rust\|js\|ts\|meta, `--input` the source file for a live leg, `--list` every direction and the leaf that owes the ones still pending, `--write` to write the mapped sibling-root file (or, without `--input`, the whole tree). |
 | `formal-ai coding` | Forget or rediscover source-grounded coding fragments. |
 | `formal-ai context` | Export complete conversations or convert arbitrary JSON to Links Notation. |

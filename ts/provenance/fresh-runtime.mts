@@ -7,30 +7,8 @@ import {spawnSync} from 'node:child_process';
 import {blake3Hex} from '../crypto/blake3.mjs';
 import {resolveEvidenceDirectory}from './drive-capture.mjs';
 const repository=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-export function readBoundedRuntimeFile(directory,relative,maximum){
- const parts=relative.split('/');let filename=fs.realpathSync(directory);
- for(let index=0;index<parts.length;index++){
-  filename=path.join(filename,parts[index]);const state=fs.lstatSync(filename);
-  if(state.isSymbolicLink())throw Error('RuntimeArchiveSymlink');
-  if(index<parts.length-1&&!state.isDirectory())throw Error('RuntimeArchiveDirectory');
- }
- if(typeof fs.constants.O_NOFOLLOW!=='number')throw Error('RuntimeArchiveNoFollowUnavailable');
- const descriptor=fs.openSync(filename,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);
- try{
-  const before=fs.fstatSync(descriptor,{bigint:true});
-  if(!before.isFile()||before.size>BigInt(maximum)||before.size<0n)throw Error('RuntimeArchiveSizeOrType');
-  const length=Number(before.size),bytes=Buffer.alloc(length);let offset=0;
-  while(offset<length){
-   const count=fs.readSync(descriptor,bytes,offset,length-offset,null);
-   if(count===0)throw Error('RuntimeArchiveTruncated');offset+=count;
-  }
-  const after=fs.fstatSync(descriptor,{bigint:true}),current=fs.lstatSync(filename,{bigint:true});
-  if(current.isSymbolicLink()||current.dev!==before.dev||current.ino!==before.ino
-    ||after.size!==before.size||after.mtimeNs!==before.mtimeNs||after.ctimeNs!==before.ctimeNs
-    ||current.size!==before.size||current.mtimeNs!==before.mtimeNs||current.ctimeNs!==before.ctimeNs)throw Error('RuntimeArchiveChanged');
-  return bytes;
- }finally{fs.closeSync(descriptor);}
-}
+import {readBoundedFileBytes as readBoundedRuntimeFile}from './bounded-file.mjs';
+export {readBoundedFileBytes as readBoundedRuntimeFile}from './bounded-file.mjs';
 export function collectRuntimeObservation(directory){
  const sources=[],events=[];
  let journals=0;
@@ -57,7 +35,7 @@ export function collectRuntimeObservation(directory){
   fullReplay:{verified:false,reason:'PinnedFreshReplayNotYetPerformed'}};
 }
 // Hash the installed executable by streaming the opened regular file, without retaining it.
-function observeRuntimeExecutable(){
+export function observeRuntimeExecutable(){
  const filename=fs.realpathSync(process.execPath);
  if(typeof fs.constants.O_NOFOLLOW!=='number')throw Error('RuntimeExecutableNoFollowUnavailable');
  const descriptor=fs.openSync(filename,fs.constants.O_RDONLY|fs.constants.O_NOFOLLOW);
@@ -97,7 +75,9 @@ export function captureFreshPlannerRun(options=null){
   bootstrap.push({source:'js/provenance/'+source,file:target,blake3:blake3Hex(bytes),size:bytes.length});
  }
  const resultFile=path.join(owned,'result.json'),configFile=path.join(owned,'config.json');
- const configuration={repository,workspace:work,prompt,steps,transportDirectory,resultFile,runtimeExecutable:executable,
+ if(options.replayInput!==undefined&&typeof options.replayInput!=='string')throw Error('FreshRuntimeReplayInput');
+ const configuration={repository,workspace:work,prompt,steps,transportDirectory,resultFile,runtimeExecutable:executable,bootstrapArtifacts:bootstrap,
+  ...(options.replayInput===undefined?{}:{replayInput:options.replayInput}),
   ...(memoryFile!==undefined?{memoryFile,taskURL}:{}),
   provenance:{directory:path.join(owned,'evidence'),...(signing?{signing}:{})}};
  fs.writeFileSync(configFile,JSON.stringify(configuration),{flag:'wx',mode:0o600});

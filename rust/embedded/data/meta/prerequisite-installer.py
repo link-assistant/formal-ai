@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Client-owned bounded workspace installer. No publisher shell text is executed."""
-import hashlib, html, json, os, pathlib, re, shutil, stat, subprocess, sys, tempfile, urllib.parse, urllib.request, zipfile
+import hashlib, html, json, os, pathlib, platform, re, shutil, stat, subprocess, sys, tempfile, urllib.parse, urllib.request, zipfile
 from html.parser import HTMLParser
 
 def require(condition, reason):
@@ -12,10 +12,75 @@ def record(phase, **values):
 
 class Links(HTMLParser):
     def __init__(self):
-        super().__init__(); self.links=[]
+        super().__init__(); self.links=[]; self.labels=[]; self.anchor=None
     def handle_starttag(self, tag, attrs):
         if tag == 'a':
             self.links.extend(value for key,value in attrs if key == 'href' and value)
+            self.anchor=[dict(attrs).get('href'),[]]
+    def handle_data(self,data):
+        if self.anchor is not None: self.anchor[1].append(data)
+    def handle_endtag(self,tag):
+        if tag=='a' and self.anchor is not None:
+            if self.anchor[0]: self.labels.append((self.anchor[0],''.join(self.anchor[1])))
+            self.anchor=None
+
+
+def publisher_document(documentation, fetch):
+    """At most one authenticated same-origin current-release documentation hop."""
+    raw,_=fetch(documentation,2097152)
+    document=raw.decode('utf-8'); parser=Links(); parser.feed(document)
+    origin=urllib.parse.urlsplit(documentation)
+    candidates=[]
+    for link,label in parser.labels:
+        value=urllib.parse.urlsplit(urllib.parse.urljoin(documentation,link))
+        if re.fullmatch(r'(?:current version|latest release|current release)', ' '.join(label.lower().split())):
+            if (value.scheme,value.hostname,value.port)==(origin.scheme,origin.hostname,origin.port) and not value.username and not value.password and not value.query and value.path!=origin.path:
+                url=urllib.parse.urlunsplit(value._replace(fragment=''))
+                if url not in candidates: candidates.append(url)
+    require(len(candidates)<=1,'current_documentation_ambiguous')
+    if not candidates:
+        current=[]
+        for link,label in parser.labels:
+            if not re.match(r'current\b.*\brelease\b',' '.join(label.lower().split())): continue
+            value=urllib.parse.urlsplit(urllib.parse.urljoin(documentation,link))
+            if (value.scheme,value.hostname,value.port)!=(origin.scheme,origin.hostname,origin.port) or value.username or value.password or value.query: continue
+            version=re.search(r'(?:^|/)(?:v)?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:\.html?)?/?$',value.path)
+            if version:
+                current.append((tuple(int(part) for part in version.groups()),urllib.parse.urlunsplit(value._replace(fragment=''))))
+        if current:
+            highest=max(version for version,_ in current)
+            candidates=sorted({url for version,url in current if version==highest})
+            require(len(candidates)==1,'current_documentation_ambiguous')
+    if candidates:
+        documentation=candidates[0]
+        raw,_=fetch(documentation,2097152)
+        document=raw.decode('utf-8'); parser=Links(); parser.feed(document)
+    return documentation,document,parser
+
+def select_release_archive(assets,document,system=None,machine=None):
+    """Use observed host identity; metadata names never grant processes or network."""
+    system=(system or platform.system()).lower()
+    machine=(machine or platform.machine()).lower()
+    systems={'linux':('linux',),'darwin':('darwin','macos','osx','apple'),'windows':('windows','win32','win64')}
+    architectures={'x86_64':('x86_64','amd64','x64'),'amd64':('x86_64','amd64','x64'),'aarch64':('aarch64','arm64'),'arm64':('aarch64','arm64')}
+    require(system in systems and machine in architectures,'unsupported_host_platform')
+    def has(name,token):
+        return re.search(r'(?:^|[-_.])'+re.escape(token)+r'(?:[-_.]|$)',name) is not None
+    def compatible(asset,explicit):
+        name=asset['name'].lower()
+        observed_systems={key for key,tokens in systems.items() if any(has(name,token) for token in tokens)}
+        observed_arches={tokens for tokens in architectures.values() if any(has(name,token) for token in tokens)}
+        if observed_systems and observed_systems!={system}: return False
+        if observed_arches and observed_arches!={architectures[machine]}: return False
+        return explicit or (observed_systems=={system} and observed_arches=={architectures[machine]})
+    zipped=[asset for asset in assets if isinstance(asset.get('name'),str) and asset['name'].lower().endswith('.zip')]
+    explicit=[asset for asset in zipped if asset['name'] in html.unescape(document)]
+    if explicit:
+        candidates=[asset for asset in explicit if compatible(asset,True)]
+    else:
+        candidates=[asset for asset in zipped if compatible(asset,False)]
+    require(len(candidates)==1,'documented_archive_ambiguous_or_missing')
+    return candidates[0]
 
 def execute(request):
     grant=request['grant']; program=request['program']; publisher=request['publisher']
@@ -58,7 +123,7 @@ def execute(request):
         record('fetch',url=url,sha256=digest.hexdigest(),size=total)
         return b''.join(chunks),digest.hexdigest()
     documentation=publisher['documentation']; require(publisher.get('program') == program,'publisher_program_mismatch')
-    raw,document_digest=fetch(documentation,2097152); document=raw.decode('utf-8'); parser=Links(); parser.feed(document)
+    documentation,document,parser=publisher_document(documentation,fetch)
     releases=[]
     for link in parser.links:
         value=urllib.parse.urlsplit(urllib.parse.urljoin(documentation,link)); parts=value.path.strip('/').split('/')
@@ -71,10 +136,11 @@ def execute(request):
     require(len(releases)==1,'publisher_release_link_ambiguous_or_missing')
     repo,endpoint=releases[0]; api='https://api.github.com/repos/'+repo+'/releases/'+endpoint
     release_raw,_=fetch(api,2097152); release=json.loads(release_raw); require(release.get('draft') is False and release.get('prerelease') is False,'unstable_release')
-    candidates=[asset for asset in release.get('assets',[]) if isinstance(asset.get('name'),str) and asset['name'].endswith('.zip') and asset['name'] in html.unescape(document)]
-    require(len(candidates)==1,'documented_archive_ambiguous_or_missing'); asset=candidates[0]
+    asset=select_release_archive(release.get('assets',[]),document)
     digest=asset.get('digest',''); require(re.fullmatch(r'sha256:[a-f0-9]{64}',digest) is not None,'asset_digest_missing')
     download=asset['browser_download_url']; require(download.startswith('https://github.com/'+repo+'/releases/download/'),'asset_repository_mismatch')
+    tag=release.get('tag_name') or (urllib.parse.unquote(endpoint[5:]) if endpoint.startswith('tags/') else None)
+    require(isinstance(tag,str) and tag and download.startswith('https://github.com/'+repo+'/releases/download/'+urllib.parse.quote(tag,safe='')+'/'),'asset_release_tag_mismatch')
     require(isinstance(asset.get('size'),int) and 0<asset['size']<=maximum,'archive_too_large')
     require(shutil.disk_usage(root).free>maximum+expanded+16777216,'insufficient_disk')
     def probe(executable,arguments,dependency=False):

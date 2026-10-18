@@ -86,7 +86,12 @@ enum ConnectFormat {
 }
 
 pub fn run_serve(args: &ServeArgs) -> Result<(), Box<dyn Error>> {
-    formal_ai::prerequisite::configure_workspace_grant(args.prerequisite_grant.as_deref())?;
+    let legacy_grant = std::env::var("FORMAL_AI_INSTALL_GRANT").ok();
+    let grant = formal_ai::prerequisite::resolve_workspace_grant(
+        args.prerequisite_grant.as_deref(),
+        legacy_grant.as_deref(),
+    )?;
+    formal_ai::prerequisite::configure_workspace_grant(grant.as_deref())?;
     let address = format!("{}:{}", args.host, args.port);
     if args.ws {
         serve_websocket(&address, args.transport_trace).map_err(|error| transport_error(&error))?;

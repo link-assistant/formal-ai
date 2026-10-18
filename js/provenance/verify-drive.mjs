@@ -1,3 +1,4 @@
+import {readBoundedFileBytes}from './bounded-file.mjs';
 // Integrity of retained driver evidence, not PR attribution or computational replay.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -18,7 +19,7 @@ export function regularEvidenceBytes(directory, relative) {
     if (fs.lstatSync(target).isSymbolicLink()) throw Error('evidence_symlink');
   }
   if (!fs.statSync(target).isFile()) throw Error('evidence_not_file');
-  return fs.readFileSync(target);
+  return readBoundedFileBytes(directory,relative,64*1024*1024);
 }
 export function retainedEvidenceBytes(directory,evidence){
       if(evidence?.format==='chunks-v1'){

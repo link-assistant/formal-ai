@@ -127,7 +127,8 @@ export function openMemoryCustody({
       taskURL,
       revision,
       memoryHash: current.hash,
-      bytes: Buffer.from(current.bytes)
+      bytes: Buffer.from(current.bytes),
+      revisionBytes:revisionBytes===null?null:Buffer.from(revisionBytes)
     };
   }
   function advance(kind, messageBytes) {
