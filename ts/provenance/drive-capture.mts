@@ -15,18 +15,21 @@ const primitives = provenancePrimitives({
 });
 const wire = value => Buffer.from(JSON.stringify(value), 'utf8');
 const digest = bytes => blake3Hex(bytes);
+export function resolveEvidenceDirectory(directory,workspace,
+ reason='provenance_evidence_must_be_outside_workspace'){
+ let ancestor=path.resolve(directory);const suffix=[];
+ for(let depth=0;;depth++){
+  if(depth>256)throw Error('provenance_directory_unresolvable');
+  try{fs.lstatSync(ancestor);break;}catch(error){if(error.code!=='ENOENT')throw error;}
+  suffix.unshift(path.basename(ancestor));const parent=path.dirname(ancestor);
+  if(parent===ancestor)throw Error('provenance_directory_unresolvable');ancestor=parent;
+ }
+ const parent=path.join(fs.realpathSync(ancestor),...suffix),working=fs.realpathSync(workspace);
+ if(parent===working||parent.startsWith(working+path.sep))throw Error(reason);
+ return parent;
+}
 export async function withDriveCapture(options, workspace, prompt, sourceId, run) {
-  let ancestor = path.resolve(options.directory);
-  const suffix = [];
-  while (!fs.existsSync(ancestor)) {
-    suffix.unshift(path.basename(ancestor));
-    const parent = path.dirname(ancestor);
-    if (parent === ancestor) throw Error('provenance_directory_unresolvable');
-    ancestor = parent;
-  }
-  const parent = path.join(fs.realpathSync(ancestor), ...suffix),
-    working = fs.realpathSync(workspace);
-  if (parent === working || parent.startsWith(working + path.sep)) throw Error('provenance_evidence_must_be_outside_workspace');
+  const parent=resolveEvidenceDirectory(options.directory,workspace),working=fs.realpathSync(workspace);
   fs.mkdirSync(parent, {
     recursive: true,
     mode: 0o700
@@ -117,6 +120,13 @@ export async function withDriveCapture(options, workspace, prompt, sourceId, run
     },
     planningObservation(observation){
       plannerThinking=append('planner_thinking',{evidence:retain(observation),scope:'source-owned-planner-event-log'});
+    },
+    runtimeObservation(observation){
+      const sources=observation.sources.map(source=>{
+        const {bytes,...identity}=source;
+        return {...identity,evidence:retain({bytes})};
+      });
+      append('runtime_sources',{evidence:retain({...observation,sources}),scope:'reported-node-loader-and-compile-boundaries'});
     },
     engineObservation(observation){
       append('engine_solve',{evidence:retain(observation),scope:'actual-javascript-worker-solve'});

@@ -90,6 +90,19 @@ export function verifyDriveEvidence(directory, workspace, expectedAnchor, {trust
         if(typeof body.text!=='string')throw Error('engine_genesis_text');
       }
     }
+    if(record.kind==='runtime_sources'){
+      const observation=JSON.parse(retainedEvidenceBytes(directory,record.payload.evidence).toString('utf8'));
+      if(observation.schema!=='formal-ai-loaded-runtime-v1'||!Array.isArray(observation.sources))throw Error('runtime_sources_schema');
+      for(const source of observation.sources){
+        if(typeof source.url!=='string'||typeof source.format!=='string'
+          ||!Number.isSafeInteger(source.size)||source.size<0||source.size>4*1024*1024)throw Error('runtime_source_identity');
+        const body=JSON.parse(retainedEvidenceBytes(directory,source.evidence).toString('utf8'));
+        if(typeof body.bytes!=='string')throw Error('runtime_source_bytes');
+        const bytes=Buffer.from(body.bytes,'base64');
+        if(bytes.toString('base64')!==body.bytes||bytes.length!==source.size
+          ||blake3Hex(bytes)!==source.blake3)throw Error('runtime_source_hash');
+      }
+    }
     if(record.kind==='planner_thinking'){
       const observation=JSON.parse(retainedEvidenceBytes(directory,record.payload.evidence).toString('utf8'));
       if(!['formal-ai-planner-observation-v1','formal-ai-planner-failure-v1'].includes(observation.schema)
