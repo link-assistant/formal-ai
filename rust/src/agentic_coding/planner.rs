@@ -910,6 +910,11 @@ fn plan_shell_command_arm(
     if let Some(decline) = shell_command::destructive_edit_decline(task) {
         return Some(decline);
     }
+    if let Some(command) =
+        super::prerequisite_recovery::observed_denied_prerequisite_command(messages)
+    {
+        return Some(plan_shell_step(messages, tool_names, &command, result));
+    }
     let command = shell_command::shell_command_for_task(task)
         .or_else(|| super::prerequisite_recovery::observed_recovery_command(messages))?;
     if let Some(plan) = shell_file_fallback::plan_step(task, messages, tool_names, &command) {

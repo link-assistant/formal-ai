@@ -8,7 +8,7 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { readText } from '../../../js/agentic/host.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
-import { observedRecoveryCommand } from '../../../js/agentic/prerequisite_recovery.mjs';
+import { observedRecoveryCommand, observedDeniedPrerequisiteCommand } from '../../../js/agentic/prerequisite_recovery.mjs';
 const command = 'kotlinc Main.kt -include-runtime -d Main.jar';
 const failure = 'Exit code 127\n/bin/bash: line 1: kotlinc: command not found';
 const tools = ['Bash', 'Write', 'Read', 'Edit', 'WebFetch', 'WebSearch'];
@@ -479,3 +479,48 @@ test('explicit current user shell ownership precedes earlier failed compiler rec
   assert.equal(next.calls[0].tool, 'Bash');
   assert.equal(JSON.parse(next.calls[0].arguments).command, 'pwd');
 });
+for (const denied of [null, {
+  schema: 'formal-ai-workspace-prerequisites-v1',
+  scope: 'workspace',
+  programs: []
+}]) {
+  test('generic observed compiler failure reports caller grant guidance without effects ' + JSON.stringify(denied), async () => {
+    await configure(denied);
+    const messages = conversation();
+    assert.equal(observedDeniedPrerequisiteCommand(messages), command);
+    const plan = await planChatStep(messages, tools);
+    assert.equal(plan.kind, 'final');
+    assert.equal(plan.calls, undefined);
+    assert.ok(plan.answer.startsWith('The command failed:'));
+    assert.ok(plan.answer.includes(failure));
+    assert.ok(plan.answer.includes('FORMAL_AI_INSTALL_GRANT=workspace'));
+    assert.equal(messages.length, 3, 'no tool or install effect');
+  });
+}
+for (const mutation of ['stale result', 'later read', 'later run', 'explicit success', 'unknown publisher']) {
+  test('denied generic observation refuses ' + mutation, async () => {
+    await configure(null);
+    const messages = conversation();
+    if (mutation === 'stale result') messages.at(-1).tool_call_id = 'unbound-id';else if (mutation === 'later read') append(messages, {
+      tool: 'Read',
+      arguments: JSON.stringify({
+        path: 'README.md'
+      })
+    }, 'independent');else if (mutation === 'later run') append(messages, {
+      tool: 'Bash',
+      arguments: JSON.stringify({
+        command: 'printf independent'
+      })
+    }, 'independent');else if (mutation === 'explicit success') {
+      messages.at(-1).content = 'Exit code 0\nexample: command not found';
+      messages.at(-1).is_error = false;
+    } else {
+      const call = messages[1].tool_calls[0];
+      call.function.arguments = JSON.stringify({
+        command: 'unregistered-compiler main'
+      });
+      messages.at(-1).content = 'Exit code 127\nunregistered-compiler: command not found';
+    }
+    assert.equal(observedDeniedPrerequisiteCommand(messages), null);
+  });
+}

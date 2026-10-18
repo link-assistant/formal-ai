@@ -198,6 +198,17 @@ pub(super) fn plan_shell_step(
 /// Bind a current-turn failed command or its exact authored recovery transaction.
 /// Observations choose a route; existing caller grants and recovery own all authority.
 pub(super) fn observed_recovery_command(messages: &[ChatMessage]) -> Option<String> {
+    observed_prerequisite_command(messages, false)
+}
+
+/// Only an observed denial report; it never supplies an installation transaction.
+pub(super) fn observed_denied_prerequisite_command(messages: &[ChatMessage]) -> Option<String> {
+    let command = observed_prerequisite_command(messages, true)?;
+    let program = command.split_whitespace().next()?;
+    context(&command, program).is_none().then_some(command)
+}
+
+fn observed_prerequisite_command(messages: &[ChatMessage], allow_denied: bool) -> Option<String> {
     use super::qualified_tool_observation::Binding;
     let progress = Progress::scan(messages);
     let attempts = progress.research_attempts();
@@ -247,6 +258,16 @@ pub(super) fn observed_recovery_command(messages: &[ChatMessage]) -> Option<Stri
             continue;
         }
         let Some(recovery) = context(&command, &need.program) else {
+            // Report a current owned failure without authorizing an installation.
+            if allow_denied
+                && latest_command == command
+                && latest_index + 1 == attempts.len()
+                && crate::prerequisite::publisher::seed_publishers()
+                    .iter()
+                    .any(|publisher| publisher.program == need.program)
+            {
+                return Some(command);
+            }
             continue;
         };
         if latest_command != command && latest_command != recovery {

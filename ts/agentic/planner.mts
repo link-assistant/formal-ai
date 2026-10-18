@@ -64,7 +64,7 @@ import { FinalDisposition, finalAnswer, isToolCalls, jsonText, planOne, projectP
 import { continuedAgentTask, isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import * as positionalEdit from './positional_edit.mjs';
 import * as procedure from './procedure.mjs';
-import { planRecovery, recoveryOutput, observedRecoveryCommand } from './prerequisite_recovery.mjs';
+import { planRecovery, recoveryOutput, observedRecoveryCommand, observedDeniedPrerequisiteCommand } from './prerequisite_recovery.mjs';
 import { Progress } from './progress.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
@@ -441,6 +441,8 @@ async function planLaterRoutes(task, messages, toolNames) {
     const decline = codeTask.renderSeededChange('file_text_unit', task, refused, []);
     if (decline !== null) return resolvedFinalAnswer(decline, FinalDisposition.Gap, 'destructive_edit_declined');
   }
+  const deniedCommand = observedDeniedPrerequisiteCommand(messages);
+  if (deniedCommand !== null) return planShellStep(messages, toolNames, deniedCommand);
   const command = shellCommand.shellCommandForTask(task) ?? observedRecoveryCommand(messages);
   if (command !== null) {
     const fallback = await shellFileFallback.planStep(task, messages, toolNames, command);
