@@ -8,7 +8,7 @@ function contract(text){
  assert(text.includes('ENV PATH="${BUN_INSTALL}/bin:/usr/local/bin:${PATH}"'));
  assert.doesNotMatch(text,/FROM --platform=\S+ node:/);
  const copy=text.indexOf('COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node');
- const libraries=text.indexOf('apt-get install -y --no-install-recommends libstdc++6 libatomic1');
+ const libraries=text.indexOf('--no-install-recommends libstdc++6 libatomic1');
  const capability=text.indexOf("new RegExp('', 'v')");
  const install=text.indexOf('RUN bun install -g start-command @link-assistant/agent agent-commander');
  assert(libraries>text.indexOf('FROM konard/box-dind:2.10.2')&&copy>libraries&&capability>copy&&install>capability);

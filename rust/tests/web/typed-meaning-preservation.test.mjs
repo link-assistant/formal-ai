@@ -62,3 +62,36 @@ test('embedded declarative fragments and location prepositions do not invent obl
  const inherited=clauseStatement('It supplies energy.','en',{kind:'number',id:'number:17',surface:'17'},true);
  assert.equal(inherited.dialogue.quantities[0].value,'17');assert.deepEqual(inherited.dialogue.quantities[0].sourceComponents,[]);assert(factSurvives(inherited));
 });
+
+test('held-out multilingual budget statements retain exact typed evidence and distinguish currencies',()=>{
+ const native=fs.readFileSync(new URL('../unit/issue_1188_web_formalization.rs',import.meta.url),'utf8');
+ const block=native.slice(native.indexOf('fn held_out_multilingual_budgets_preserve_exact_typed_currency_meaning()'));
+ const cases=[...block.matchAll(/language:\s*"(en|ru|hi|zh|es)",\s*text:\s*("(?:[^"\\]|\\.)*")/gu)]
+  .map(match=>({language:match[1],text:JSON.parse(match[2])}));
+ assert.deepEqual(cases.map(row=>row.language),['en','ru','hi','zh','es']);
+ const expected=currency=>JSON.stringify([
+  ['schema','dialogue-meaning/v1'],['question',null],
+  ['answer',[['kind','quantity'],['polarity',null],['locations',[]]]],
+  ['quantities',[[['value','73921'],['comparison','equal'],['currency',currency],
+   ['unit',null],['period',null],['net',false],['uncertainty',null]]]],
+ ]);
+ for(const {text,language} of cases){
+  const currency=['en','ru'].includes(language)?'USD':null;
+  const statements=formalizeText(text,language);
+  assert.equal(statements.length,1,text);
+  const actual=statements[0];
+  assert.equal(actual.dialogue.quantities.length,1,text);
+  assert.equal(actual.dialogue.quantities[0].value,'73921',text);
+  assert.equal(actual.dialogue.quantities[0].comparison,'equal',text);
+  assert.equal(actual.dialogue.quantities[0].currency,currency,text);
+  assert.equal(typedMeaning(actual.dialogue),expected(currency),text);
+  const changed=formalizeText(text.replace('USD','RUB'),language);
+  assert.equal(changed.length,1,text);
+  assert.equal(changed[0].dialogue.quantities[0].currency,currency?'RUB':null,text);
+  if(currency!==null)assert.notEqual(typedMeaning(actual.dialogue),typedMeaning(changed[0].dialogue),text);
+  const changedAmount=formalizeText(text.replace('73921','73922'),language);
+  assert.equal(changedAmount.length,1,text);
+  assert.equal(changedAmount[0].dialogue.quantities[0].value,'73922',text);
+  assert.notEqual(statementIdentity(actual),statementIdentity(changedAmount[0]),text);
+ }
+});

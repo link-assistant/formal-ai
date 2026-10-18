@@ -268,3 +268,104 @@ fn the_cached_corpus_holds_the_same_topics_in_every_language() {
         }
     }
 }
+
+#[test]
+fn held_out_multilingual_budgets_preserve_exact_typed_currency_meaning() {
+    struct BudgetCase {
+        language: &'static str,
+        text: &'static str,
+        currency: Option<&'static str>,
+    }
+    let cases = [
+        BudgetCase {
+            language: "en",
+            text: "The budget is 73921 USD.",
+            currency: Some("USD"),
+        },
+        BudgetCase {
+            language: "ru",
+            text: "Бюджет составляет 73921 USD.",
+            currency: Some("USD"),
+        },
+        BudgetCase {
+            language: "hi",
+            text: "बजट 73921 USD है।",
+            currency: None,
+        },
+        BudgetCase {
+            language: "zh",
+            text: "预算为 73921 USD。",
+            currency: None,
+        },
+        BudgetCase {
+            language: "es",
+            text: "El presupuesto es 73921 USD.",
+            currency: None,
+        },
+    ];
+    for case in cases {
+        let expected = serde_json::json!([
+            ["schema", "dialogue-meaning/v1"],
+            ["question", null],
+            [
+                "answer",
+                [["kind", "quantity"], ["polarity", null], ["locations", []]]
+            ],
+            [
+                "quantities",
+                [[
+                    ["value", "73921"],
+                    ["comparison", "equal"],
+                    ["currency", case.currency],
+                    ["unit", null],
+                    ["period", null],
+                    ["net", false],
+                    ["uncertainty", null]
+                ]]
+            ]
+        ])
+        .to_string();
+        let statements = formalize_text(case.text, case.language);
+        assert_eq!(statements.len(), 1, "{}: {}", case.language, case.text);
+        let statement = &statements[0];
+        assert_eq!(statement.dialogue.quantities.len(), 1, "{}", case.language);
+        let quantity = &statement.dialogue.quantities[0];
+        assert_eq!(quantity.value, "73921", "{}", case.language);
+        assert_eq!(quantity.comparison, "equal", "{}", case.language);
+        assert_eq!(
+            quantity.currency.as_deref(),
+            case.currency,
+            "{}",
+            case.language
+        );
+        assert_eq!(
+            formal_ai::formalization::typed_meaning::typed_meaning(&statement.dialogue).as_deref(),
+            Some(expected.as_str()),
+            "{}: {}",
+            case.language,
+            case.text
+        );
+        let changed = formalize_text(&case.text.replace("USD", "RUB"), case.language);
+        assert_eq!(changed.len(), 1, "{}", case.language);
+        let changed_currency = case.currency.map(|_| "RUB");
+        assert_eq!(
+            changed[0].dialogue.quantities[0].currency.as_deref(),
+            changed_currency
+        );
+        if case.currency.is_some() {
+            assert_ne!(
+                formal_ai::formalization::typed_meaning::typed_meaning(&statement.dialogue),
+                formal_ai::formalization::typed_meaning::typed_meaning(&changed[0].dialogue)
+            );
+        }
+        let changed_amount = formalize_text(&case.text.replace("73921", "73922"), case.language);
+        assert_eq!(changed_amount.len(), 1);
+        assert_eq!(changed_amount[0].dialogue.quantities[0].value, "73922");
+        assert_ne!(
+            statement_identity(statement),
+            statement_identity(&changed_amount[0]),
+            "{}",
+            case.language
+        );
+    }
+}

@@ -90,9 +90,11 @@ ENV PATH="${BUN_INSTALL}/bin:/usr/local/bin:${PATH}"
 # the system package install switches back to root explicitly; apt cannot
 # write /var/lib/apt/lists as box. The bun installs below run as box again.
 USER root
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libstdc++6 libatomic1 && \
-    rm -rf /var/lib/apt/lists/*
+# Reuse the bounded mirror retry; every attempt retains apt's integrity checks.
+COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh /usr/local/lib/formal-ai-build/
+RUN FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
+      --no-install-recommends libstdc++6 libatomic1 && \
+    rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build
 
 # Ubuntu 24.04 supplies the shared libraries required by official Node 26.
 # Its distro Node 18 cannot parse the /v regex used by agent dependencies.
