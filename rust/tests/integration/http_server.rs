@@ -20,6 +20,8 @@ pub struct FormalAiServer {
     child: Child,
     scratch_dir: std::path::PathBuf,
     memory_path: std::path::PathBuf,
+    diagnostics: std::sync::Arc<ServerDiagnostics>,
+    drains: Vec<std::thread::JoinHandle<()>>,
 }
 
 impl FormalAiServer {
@@ -32,7 +34,94 @@ impl Drop for FormalAiServer {
     fn drop(&mut self) {
         let _ = self.child.kill();
         let _ = self.child.wait();
+        finish_completed_drains(&mut self.drains);
+        diagnostic_registry()
+            .lock()
+            .expect("diagnostic registry")
+            .remove(&self.diagnostics.port);
         let _ = std::fs::remove_dir_all(&self.scratch_dir);
+    }
+}
+
+const DIAGNOSTIC_TAIL_BYTES: usize = 16 * 1024;
+
+struct ServerDiagnostics {
+    port: u16,
+    directory: std::path::PathBuf,
+    stdout: std::sync::Mutex<Vec<u8>>,
+    stderr: std::sync::Mutex<Vec<u8>>,
+}
+
+type DiagnosticRegistry =
+    std::sync::Mutex<std::collections::HashMap<u16, std::sync::Weak<ServerDiagnostics>>>;
+
+fn diagnostic_registry() -> &'static DiagnosticRegistry {
+    static REGISTRY: std::sync::OnceLock<DiagnosticRegistry> = std::sync::OnceLock::new();
+    REGISTRY.get_or_init(|| std::sync::Mutex::new(std::collections::HashMap::new()))
+}
+
+/// A descendant may retain an inherited stream after the direct child exits.
+/// Never let that stream extend the original request or teardown deadline.
+fn finish_completed_drains(drains: &mut Vec<std::thread::JoinHandle<()>>) {
+    for drain in drains.drain(..) {
+        if drain.is_finished() {
+            let _ = drain.join();
+        }
+        // Dropping an unfinished handle detaches its reader. It still owns only
+        // bounded tails and exits when the last inherited stream handle closes.
+    }
+}
+
+fn drain_tail(mut input: impl Read, tail: &std::sync::Mutex<Vec<u8>>) {
+    let mut chunk = [0_u8; 4096];
+    loop {
+        match input.read(&mut chunk) {
+            Ok(0) => break,
+            Ok(count) => {
+                let mut retained = tail.lock().expect("diagnostic tail");
+                retained.extend_from_slice(&chunk[..count]);
+                let excess = retained.len().saturating_sub(DIAGNOSTIC_TAIL_BYTES);
+                drop(retained.drain(..excess));
+            }
+            Err(error) if error.kind() == ErrorKind::Interrupted => {}
+            Err(_) => break,
+        }
+    }
+}
+
+fn report_server_failure(port: u16, phase: &str, elapsed: Duration) {
+    let observed = diagnostic_registry()
+        .lock()
+        .expect("diagnostic registry")
+        .get(&port)
+        .and_then(std::sync::Weak::upgrade);
+    let Some(observed) = observed else {
+        return;
+    };
+    eprintln!(
+        "server harness failure: phase={phase}, elapsed_ms={}",
+        elapsed.as_millis()
+    );
+    for (name, capture) in [("stdout", &observed.stdout), ("stderr", &observed.stderr)] {
+        let tail = capture.lock().expect("diagnostic tail").clone();
+        let destination = observed.directory.join(format!("{name}.tail"));
+        if std::fs::write(&destination, &tail).is_err() {
+            eprintln!("server harness: unable to retain {name} tail");
+        }
+        // Child diagnostics only: never print command environment or HTTP headers.
+        let text = String::from_utf8_lossy(&tail);
+        let safe = text
+            .lines()
+            .filter(|line| {
+                let lower = line.to_ascii_lowercase();
+                !lower.contains("authorization") && !lower.contains("bearer")
+            })
+            .collect::<Vec<_>>()
+            .join("\n");
+        eprintln!(
+            "server {name} bounded tail ({} retained bytes):\n{safe}",
+            tail.len()
+        );
     }
 }
 
@@ -112,20 +201,40 @@ fn spawn_formal_ai_server_with_args(
     for (name, value) in env {
         command.env(name, value);
     }
-    let child = command
+    let mut child = command
         .args(["serve", "--host", "127.0.0.1", "--port", &port.to_string()])
         .args(extra_args)
         .env("FORMAL_AI_API_BEARER_TOKEN", "sk-local-agentic-tools")
         .env_remove("FORMAL_AI_HTTP_BEARER_TOKEN")
         .env_remove("FORMAL_AI_API_TOKEN")
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
         .spawn()
         .expect("spawn formal-ai server");
+    let diagnostics = std::sync::Arc::new(ServerDiagnostics {
+        port,
+        directory: scratch_dir.clone(),
+        stdout: std::sync::Mutex::new(Vec::new()),
+        stderr: std::sync::Mutex::new(Vec::new()),
+    });
+    diagnostic_registry()
+        .lock()
+        .expect("diagnostic registry")
+        .insert(port, std::sync::Arc::downgrade(&diagnostics));
+    let stdout = child.stdout.take().expect("captured server stdout");
+    let stderr = child.stderr.take().expect("captured server stderr");
+    let out = std::sync::Arc::clone(&diagnostics);
+    let err = std::sync::Arc::clone(&diagnostics);
+    let drains = vec![
+        std::thread::spawn(move || drain_tail(stdout, &out.stdout)),
+        std::thread::spawn(move || drain_tail(stderr, &err.stderr)),
+    ];
     let mut server = FormalAiServer {
         child,
         scratch_dir,
         memory_path,
+        diagnostics,
+        drains,
     };
     wait_for_health(port, &mut server.child);
     server
@@ -142,6 +251,11 @@ fn wait_for_health(port: u16, child: &mut Child) {
         .filter(|left| !left.is_zero())
     {
         if let Some(status) = child.try_wait().expect("check server process") {
+            report_server_failure(
+                port,
+                "process-exit-before-health",
+                HEALTH_TIMEOUT.saturating_sub(deadline.saturating_duration_since(Instant::now())),
+            );
             panic!("formal-ai server exited before becoming healthy: {status}");
         }
 
@@ -160,6 +274,7 @@ fn wait_for_health(port: u16, child: &mut Child) {
         std::thread::sleep(Duration::from_millis(50));
     }
 
+    report_server_failure(port, "health-deadline", HEALTH_TIMEOUT);
     panic!("formal-ai server did not become healthy on port {port}: {last_error}");
 }
 
@@ -241,38 +356,45 @@ pub fn http_request_with_timeout(
     body: Option<&str>,
     response_timeout: Duration,
 ) -> std::io::Result<HttpResponse> {
-    let address = format!("127.0.0.1:{port}");
-    let mut stream = TcpStream::connect_timeout(
-        &address.parse().expect("loopback address should parse"),
-        Duration::from_secs(2),
-    )?;
-    // The socket timeout bounds one read syscall, not the whole response, so it
-    // is only the polling slice; `read_response` owns the actual deadline.
-    stream.set_read_timeout(Some(POLL_SLICE))?;
-    stream.set_write_timeout(Some(Duration::from_secs(2)))?;
+    let started = Instant::now();
+    let result = (|| -> std::io::Result<HttpResponse> {
+        let address = format!("127.0.0.1:{port}");
+        let mut stream = TcpStream::connect_timeout(
+            &address.parse().expect("loopback address should parse"),
+            Duration::from_secs(2),
+        )?;
+        // The socket timeout bounds one read syscall, not the whole response, so it
+        // is only the polling slice; `read_response` owns the actual deadline.
+        stream.set_read_timeout(Some(POLL_SLICE))?;
+        stream.set_write_timeout(Some(Duration::from_secs(2)))?;
 
-    let body = body.unwrap_or_default();
-    write!(
-        stream,
-        "{method} {path} HTTP/1.1\r\n\
-         host: 127.0.0.1:{port}\r\n\
-         connection: close\r\n"
-    )?;
-    if let Some(token) = bearer_token {
-        write!(stream, "authorization: Bearer {token}\r\n")?;
-    }
-    if method == "POST" {
+        let body = body.unwrap_or_default();
         write!(
             stream,
-            "content-type: application/json\r\n\
-             content-length: {}\r\n",
-            body.len()
+            "{method} {path} HTTP/1.1\r\n\
+         host: 127.0.0.1:{port}\r\n\
+         connection: close\r\n"
         )?;
-    }
-    write!(stream, "\r\n{body}")?;
+        if let Some(token) = bearer_token {
+            write!(stream, "authorization: Bearer {token}\r\n")?;
+        }
+        if method == "POST" {
+            write!(
+                stream,
+                "content-type: application/json\r\n\
+             content-length: {}\r\n",
+                body.len()
+            )?;
+        }
+        write!(stream, "\r\n{body}")?;
 
-    let raw = read_response(&mut stream, response_timeout)?;
-    Ok(parse_http_response(&String::from_utf8_lossy(&raw)))
+        let raw = read_response(&mut stream, response_timeout)?;
+        Ok(parse_http_response(&String::from_utf8_lossy(&raw)))
+    })();
+    if path != "/health" && result.is_err() {
+        report_server_failure(port, "request-failure", started.elapsed());
+    }
+    result
 }
 
 /// Read until the server closes the connection or the deadline passes.
@@ -385,4 +507,46 @@ fn spawned_server_records_only_in_private_scratch_memory() {
         !scratch_dir.exists(),
         "server scratch directory should be removed"
     );
+}
+
+#[test]
+fn server_diagnostic_drain_is_bounded_and_keeps_the_last_bytes() {
+    let mut input = vec![b'x'; DIAGNOSTIC_TAIL_BYTES * 5];
+    input.extend_from_slice(b"final diagnostic");
+    let tail = std::sync::Mutex::new(Vec::new());
+    drain_tail(std::io::Cursor::new(input), &tail);
+    let observed = tail.lock().unwrap();
+    assert_eq!(observed.len(), DIAGNOSTIC_TAIL_BYTES);
+    assert!(observed.ends_with(b"final diagnostic"));
+}
+
+#[test]
+fn server_diagnostic_teardown_does_not_wait_for_an_inherited_open_stream() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let mut inherited_writer = TcpStream::connect(listener.local_addr().unwrap()).unwrap();
+    let (reader, _) = listener.accept().unwrap();
+    let tail = std::sync::Arc::new(std::sync::Mutex::new(Vec::new()));
+    let observed = std::sync::Arc::clone(&tail);
+    let (finished, completion) = std::sync::mpsc::channel();
+    let drain = std::thread::spawn(move || {
+        drain_tail(reader, &observed);
+        finished.send(()).unwrap();
+    });
+    inherited_writer
+        .write_all(&vec![b'x'; DIAGNOSTIC_TAIL_BYTES * 8])
+        .unwrap();
+    inherited_writer.write_all(b"final-marker").unwrap();
+    let mut drains = vec![drain];
+    assert!(!drains[0].is_finished(), "writer is still open");
+    finish_completed_drains(&mut drains);
+    assert!(
+        drains.is_empty(),
+        "teardown returns while the inherited writer is open"
+    );
+    assert!(completion.try_recv().is_err(), "reader still waits for EOF");
+    drop(inherited_writer);
+    completion.recv_timeout(Duration::from_secs(5)).unwrap();
+    let retained = tail.lock().unwrap();
+    assert_eq!(retained.len(), DIAGNOSTIC_TAIL_BYTES);
+    assert!(retained.ends_with(b"final-marker"));
 }
