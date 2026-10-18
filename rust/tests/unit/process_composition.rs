@@ -74,7 +74,7 @@ fn isolated_stdout_recipe_binds_catalog_stage_and_rejects_changed_source() {
         assert_eq!(recipe.commands, ["sh tests/verify-output.sh"]);
         assert!(recipe.supporting_files[0].source.contains(compiler));
         let resolve = |candidate: &formal_ai::engine::ExecutionRecipe, output: &str| {
-            formal_ai::coding::program_contract::program_recovery_command(
+            formal_ai::program_contract::program_recovery_command(
                 &prompt,
                 candidate,
                 &recipe.commands[0],
