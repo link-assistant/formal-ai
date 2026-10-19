@@ -64,6 +64,10 @@ jobs:
     name: Detect Changes
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Checkout retries must fit this unchanged job clock.
+    env:
+      GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+      GIT_HTTP_LOW_SPEED_TIME: '30'
     if: github.event_name != 'workflow_dispatch'
     outputs:
       rs-changed: ${{ steps.changes.outputs.rs-changed }}
@@ -76,6 +80,12 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+          # Keep complete commit history, without materializing unrelated blobs.
+          sparse-checkout: |
+            /scripts/detect-code-changes.rs
+            /scripts/install-rust-script.sh
+            /changelog.d/
+          sparse-checkout-cone-mode: false
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script

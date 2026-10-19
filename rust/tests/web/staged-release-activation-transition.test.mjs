@@ -54,6 +54,12 @@ test('Actions read is confined to operation-owning prepare leaves and caller cei
   const staged=YAML.parse(value.projection.outputs.get('.github/workflows/release-staged.yml'));
   assert.deepEqual(staged.permissions,{contents:'read'});assert.equal(staged.concurrency,undefined);
   for(const [id,job] of Object.entries(original.jobs)) {
+   if(id==='detect-changes'){
+    const expected=structuredClone(job);
+    expected.env={GIT_HTTP_LOW_SPEED_LIMIT:'1024',GIT_HTTP_LOW_SPEED_TIME:'30'};
+    Object.assign(expected.steps[0].with,{'sparse-checkout':'/scripts/detect-code-changes.rs\n/scripts/install-rust-script.sh\n/changelog.d/\n','sparse-checkout-cone-mode':false});
+    assert.deepEqual(caller.jobs[id],expected);continue;
+   }
    if(!['auto-release','manual-release'].includes(id)){assert.deepEqual(caller.jobs[id],job);continue;}
    assert.deepEqual(caller.jobs[id].permissions,{contents:'write',packages:'write',actions:'read'});
    assert.deepEqual(caller.jobs[id].concurrency,job.concurrency);
