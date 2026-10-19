@@ -200,3 +200,31 @@ test('all published release consumers preserve their shared ancestor pending que
     ]) assert.throws(() => consumerPublicationQueue(mutation, group));
   }
 });
+
+
+test('the real package resolver runs from its single source file without publication or GitHub access in checks', async () => {
+  const fs=await import('node:fs'), os=await import('node:os'), path=await import('node:path');
+  const {spawnSync}=await import('node:child_process');
+  const directory=fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-sparse-resolver-')));
+  try {
+    const scripts=path.join(directory,'scripts'), bin=path.join(directory,'bin');
+    fs.mkdirSync(scripts);fs.mkdirSync(bin);
+    const source=new URL('../../../scripts/resolve-package-release.mjs',import.meta.url);
+    const resolver=path.join(scripts,'resolve-package-release.mjs');
+    fs.copyFileSync(source,resolver);
+    const unexpected=path.join(directory,'unexpected-github-call');
+    fs.writeFileSync(path.join(bin,'gh'),'#!/bin/sh\necho called > "$UNEXPECTED_GH"\nexit 97\n',{mode:0o755});
+    for(const [event,publish] of [['pull_request','true'],['workflow_dispatch','false']]) {
+      const output=path.join(directory,event+'-output');
+      const result=spawnSync(process.execPath,[resolver],{cwd:directory,encoding:'utf8',
+        timeout:10000,maxBuffer:1048576,env:{PATH:bin+path.delimiter+process.env.PATH,
+          EVENT:event,REPOSITORY:'owner/repository',REFERENCE:'refs/heads/foreign',
+          PUBLISH:publish,INPUT_TAG:'v9.9.9',GITHUB_OUTPUT:output,UNEXPECTED_GH:unexpected}});
+      assert.ifError(result.error);assert.equal(result.signal,null);
+      assert.equal(result.status,0,result.stdout+result.stderr);
+      assert.equal(result.stdout,'tag=\npublish=false\nbuild=true\n');
+      assert.equal(fs.readFileSync(output,'utf8'),result.stdout);
+      assert.equal(fs.existsSync(unexpected),false,'checks cannot invoke publication metadata tools');
+    }
+  } finally {fs.rmSync(directory,{recursive:true,force:true});}
+});
