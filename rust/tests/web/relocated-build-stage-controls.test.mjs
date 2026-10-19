@@ -1,5 +1,6 @@
 // Structural source controls and refusals; caps are declarations, never cold runtime proof.
 import test from 'node:test';
+import {browserShardCount} from '../../../scripts/lib/browser-coverage-shards.mjs';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {resolve,join} from 'node:path';
@@ -70,7 +71,7 @@ function checkDesktop(workflow){
 function checkBrowserCoverage(workflow) {
  const producer=workflow.jobs['browser-coverage-shard'],collector=workflow.jobs['browser-coverage'];
  assert.equal(producer['timeout-minutes'],15);assert.equal(collector['timeout-minutes'],15);
- assert.equal(producer.strategy['fail-fast'],false);assert.deepEqual(producer.strategy.matrix.shard,[1,2,3,4,5,6]);
+ assert.equal(producer.strategy['fail-fast'],false);assert.deepEqual(producer.strategy.matrix.shard,Array.from({length:browserShardCount},(_,index)=>index+1));
  assert.deepEqual(producer.needs,['detect-changes']);assert.deepEqual(collector.needs,['detect-changes','browser-coverage-shard']);
  for(const job of [producer,collector]) {
   assert.ok(job.if.includes('!cancelled()'));assert.ok(job.if.includes("github.event_name == 'workflow_dispatch'"));
