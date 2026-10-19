@@ -20,6 +20,91 @@ exceeds the repository's 1500-line cap (newest first):
 
 <!-- changelog-insert-here -->
 
+## [0.355.0] - 2026-10-19
+
+### Added
+
+- Connect host-owned JavaScript and TypeScript syntax validation to retrieved-source agentic repairs, requiring an exact successful repair write before retry and reporting rejected rendering without unchanged retries.
+
+- Formalize typed questions, answers and exact grouped quantities; preserve applicant questions without routing them to assistant identity or capabilities.
+- Generate shared shell quoting and invitation composition through Links IR, with reproducible Rust and TypeScript projections.
+- Audit source duplication with verified generation identities, retaining unresolved independent clones and coverage gaps as unmet acceptance.
+- Resolve immutable action release commits from typed official metadata and refresh current unblocked web dependencies.
+
+### Added
+
+- Continue failed module synthesis through bounded source research, formalize captured pages, and rebind supported pure declaration identities into syntax-validated proposals whose independent verification still uses the existing execution and repair gates.
+
+### Added
+
+- Add readable recursive JavaScript, TypeScript and Rust source-content operations through the pinned shared meta-language grammar, with exact source reconstruction, structural edits, inverse checks and independently reparsed CI fixtures.
+- Add source-owned documentary comment propositions with compositional English naturalization and independently checked whole-and-part round trips. Unsupported meanings remain explicit capability needs; complete workspace migration, general semantic translation and multilingual documentation verification remain unfinished.
+
+### Fixed
+
+- Preserve soft-wrapped Markdown paragraphs and list items during requirement extraction, recognize standalone emphasized section headings, and keep emphasized obligations as requirements. Shared JavaScript/native controls retain the original corpus and quality floors.
+
+### Added
+
+- Add bounded native provenance source snapshots and inclusion proofs using the same canonical JavaScript policy compiled through checked meta-language IR into Rust and TypeScript. CPU/automatic backends use native BLAKE3; unavailable GPU requests fail explicitly. This is source-integrity evidence, with native hosted acceptance still required.
+
+### Fixed
+
+- Continue missing-command recovery before the generic tool-result fallback when the current request has an exact bound failure receipt and an explicit caller workspace grant. Preserve existing recipe ownership and refuse stale, unrelated or altered recovery transactions.
+
+### Added
+
+- Add native lossless readable recursive source models for JavaScript, TypeScript and Rust, using shared grammar rules, source-free reconstruction and independent reparse validation. Registered native controls require hosted CI acceptance.
+
+### Fixed
+
+- Preserve observed tool exit status for authorized prerequisite recovery and keep explicitly requested workflow paths in fetched coding tasks.
+- Reduce canonical Links codec allocation and scanning overhead without changing serialized bytes; add optional provenance verification phases without request, environment, path or source payloads.
+- Retain source ownership as readable metadata around complete recursive source content.
+
+### Fixed
+
+- Preserve independent coding obligations when repeated output literals merge, including requested CI workflows in fetched work items. Shared terminal vocabulary keeps prose continuations bound to the observed command.
+
+Use full readable recursive CST content as the primary JavaScript, TypeScript and Rust source-distribution artifact. Preserve comments, punctuation and whitespace, restore from persisted content alone, verify actual grammar acceptance and reject missing or substituted release members. Provision the small frozen grammar dependency closure only in hosted CI.
+
+Resolve GitHub-hosted toolchains through their declared publisher metadata, including the actual Scala 3 compiler required by the discovered source-run command. Preserve verified progress for an identical standing request and open a fresh evidence window for a changed request. Keep unfinished issue acceptance explicitly open instead of making false automatic-closing claims.
+
+Recognize the real Agent client's canonical absolute workspace paths in the independent output-project verifier while retaining confinement, original argument and byte identities, symlink refusals and exact independent program-output checks.
+
+Include operational scripts, package code and the Rust build recipe in complete readable CST bundles. Preserve CommonJS and CTS syntax, normalize the Rust-script Cargo manifest to its documented crate-comment form, and remove unused SDK checkout/installation from source packet production. Keep complete tracked-source and dirty-source verification under the same unchanged shard budgets.
+
+Use the complete readable CST grammar for ordinary JavaScript self-inspection without an optional SDK. Keep explicitly configured SDK verification and source ownership refusals, and qualify real chat-planner write/read effects and exact source reconstruction. Preserve the separate generic driver’s refusal of unowned generated-document creation.
+
+Resolve explicit source fields through their declared owner context before weak lexical surface guesses. Preserve ambiguous, quoted, wrong-context and undeclared-field refusals across JavaScript, TypeScript and Rust. Re-enable the original native unscoped owner regression while preserving the historical scoped conflict.
+Share canonical bundled source inputs and lexicon priority, retain observed declaration conflicts through generated fallback, and separate issue-disposition examples from status claims.
+
+Use optional read credentials only for HTTPS GitHub release metadata during workspace prerequisite discovery. Do not forward credentials through redirects or attach them to documentation and archive downloads. Give hosted live recovery the existing read-only runner token so it avoids the shared unauthenticated API limit.
+
+### Fixed
+Keep read credentials scoped to trusted compiler metadata discovery during independent Hive delivery verification, exclude them from delivered program execution, and preserve both bounded diagnostic streams on failure.
+
+### Fixed
+Preserve anchored publication trigger filters and automatically project every explicitly declared source path without changing unrelated workflow content or granting filters source authority.
+
+### Fixed
+Write canonical self-cst.lino artifacts across Rust, JavaScript and TypeScript, verify complete source content and fresh grammar independently, and recognize self-CST intent without relying on a census phrase. Preserve comments, whitespace, source ownership and original transport limits; keep historical census APIs diagnostic.
+
+The JavaScript dependency audit regressions now derive their expected inventory from every committed lockfile, so new source-runtime packages retain the same mandatory retry, advisory and fail-closed checks without manual totals. Self-CST ownership uses whole words to reject unrelated source requests, and the literal-predicate debt ceiling is lowered to the actual improved measurement.
+
+New explicit source reads after a final answer require fresh bound observations in JavaScript, TypeScript and Rust, while unfinished identical reads retain their existing observation. They cannot replay a previous turn's source contents; standing coding objectives still retain verified write and commit progress. The original native determinism oracle remains unchanged.
+The native self-inspection routing regression now requires canonical CST wording and independently verifies full source ownership, content and grammar instead of the superseded CST/AST prose label.
+
+The browser-engine and source-network release resolvers now check out only their standalone resolver module and bound stalled Git HTTP transfers. This avoids fetching unrelated repository blobs and lets checkout retries finish within the unchanged five-minute job limit. Standalone CLI controls retain nonpublishing behavior for pull-request and dispatch checks.
+
+Bound stalled change-detection checkout transfers and materialize only the classifier, installer and changelog inputs, while preserving complete Git history, native classification and existing CI deadlines.
+
+Declare the three CommonJS provenance launchers in the explicit unmeasured-source inventory. Existing custody tests execute their byte-identical private `.cjs` copies; canonical-path browser coverage is not claimed. Preserve all coverage thresholds and tests. Coverage debt remains to aggregate verified copy identities into canonical source coverage.
+
+Reuse the complete progress window before classifying a source-read intent. Ordinary coding steps avoid repeated read/write classification; fresh reads after final answers and standing coding progress retain their existing evidence rules. Preserve all original safety properties, native/coverage deadlines and test inventories.
+
+Keep compiler-cache storage outages from blocking native releases. Probe sccache with compiler metadata before building and select the real compiler when the cache is unavailable; Desktop reuses this shared setup without reinstalling its pinned cache. Preserve actual compiler exit codes, target/version pins, build verification and job deadlines. Bound diagnostics and redact signed cache URLs.
+
 ## [0.354.1] - 2026-10-17
 
 ### Fixed

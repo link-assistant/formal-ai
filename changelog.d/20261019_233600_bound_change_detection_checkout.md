@@ -1,1 +1,0 @@
-Bound stalled change-detection checkout transfers and materialize only the classifier, installer and changelog inputs, while preserving complete Git history, native classification and existing CI deadlines.

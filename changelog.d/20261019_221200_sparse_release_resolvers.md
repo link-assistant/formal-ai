@@ -1,1 +1,0 @@
-The browser-engine and source-network release resolvers now check out only their standalone resolver module and bound stalled Git HTTP transfers. This avoids fetching unrelated repository blobs and lets checkout retries finish within the unchanged five-minute job limit. Standalone CLI controls retain nonpublishing behavior for pull-request and dispatch checks.
