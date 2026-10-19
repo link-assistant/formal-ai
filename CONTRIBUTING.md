@@ -1150,16 +1150,7 @@ hardcoded prompt→answer tables.
     explicitly and still deliver a real, tested slice of *each* axis — never dress
     "did part of everything" as an honest scope cut.
 
-12. **Link the issue with a GitHub closing keyword; never "Addresses"
-    (issue #960).** A pull-request description must close its issue with one of
-    GitHub's [recognised keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
-    — write `Fixes #146` or, preferably, the full form
-    `Fixes https://github.com/link-assistant/formal-ai/issues/146`. Words like
-    *Addresses*, *Relates to*, *Part of* and *Refs* read to a human exactly like
-    a link and to GitHub like plain prose: the issue silently stays open after
-    the merge. `scripts/check-pull-request-link.rs` reads the description
-    (`PR_BODY`, or a file passed as its argument) and fails the build on a
-    missing closing keyword or a non-closing word used in its place.
+12. **Declare issue disposition explicitly (issue #960; later owner release-iteration requirement R1207-9).** Fully accepted work uses a GitHub [recognised closing keyword](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue), preferably `Fixes https://github.com/link-assistant/formal-ai/issues/146`. An issue whose original acceptance remains unfinished must stay open: use a separate whole line `Related (acceptance pending): https://github.com/link-assistant/formal-ai/issues/146` and state the remaining acceptance. This explicit pending disposition does not claim delivery or close the issue. Ambiguous substitutes such as *Addresses*, *Relates to*, *Part of* and *Refs* still fail `scripts/check-pull-request-link.rs`. Never add a false closing claim just to pass CI.
 
 13. **Case study per pull request.** Alongside the per-issue case study
     (rule 8), a case study that documents a *pull request* — its review
@@ -1291,10 +1282,7 @@ differently.
    (R1188-U2), and update documentation if needed
 3. Add a changelog fragment (see step 5 in Development Workflow)
 4. Ensure the PR description clearly describes the changes
-5. Link the issue the PR closes with a GitHub closing keyword — `Fixes #146` or
-   `Fixes https://github.com/link-assistant/formal-ai/issues/146`. **Never**
-   write `Addresses #146`, `Relates to #146`, or `Part of #146` in its place:
-   GitHub does not recognise those, so the issue stays open after the merge.
+5. Declare each issue's disposition: completed acceptance uses `Fixes #146` or its full GitHub issue URL. Unfinished original acceptance uses the explicit whole-line record `Related (acceptance pending): <issue reference>` and remains open (R1207-9). Ambiguous substitutes such as `Addresses #146`, `Relates to #146`, or `Part of #146` do not satisfy the check.
    Verify locally before opening the PR:
 
    ```bash

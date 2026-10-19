@@ -6,10 +6,13 @@ requirement_status_ledger_shard
   manual "not yet confirmed"
   requirement
     id "R1188-CST1"
+    automated_test "rust/tests/web/source-cst-frontends.test.mjs"
   requirement
     id "R1188-CST10"
+    automated_test "rust/tests/web/readable-source-ownership.test.mjs"
   requirement
     id "R1188-CST11"
+    automated_test "rust/tests/web/source-cst-frontends.test.mjs"
   requirement
     id "R1188-CST12"
   requirement
@@ -28,6 +31,8 @@ requirement_status_ledger_shard
     id "R1188-CST19"
   requirement
     id "R1188-CST2"
+    verdict "implemented"
+    automated_test "rust/tests/web/source-cst-packets.test.mjs"
   requirement
     id "R1188-CST20"
   requirement
@@ -36,12 +41,14 @@ requirement_status_ledger_shard
     id "R1188-CST22"
   requirement
     id "R1188-CST3"
+    automated_test "rust/tests/web/source-cst-packets.test.mjs"
   requirement
     id "R1188-CST4"
   requirement
     id "R1188-CST5"
   requirement
     id "R1188-CST6"
+    automated_test "rust/tests/web/source-cst-frontends.test.mjs"
   requirement
     id "R1188-CST7"
   requirement

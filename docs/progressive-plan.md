@@ -10,8 +10,8 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
 | 1 recorded | the row exists, nothing measures it yet | 34 |
 | 2 measured | a test pins it, but the row says it is not delivered | 3 |
-| 3 partial | delivered in part | 86 |
-| 4 implemented | delivered, with a test | 1309 |
+| 3 partial | delivered in part | 85 |
+| 4 implemented | delivered, with a test | 1310 |
 | | **all** | **1440** |
 
 ## JavaScript first
@@ -20,9 +20,9 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 439 |
+| a JavaScript test | 445 |
 | a Rust test only | 920 |
-| no test | 81 |
+| no test | 75 |
 
 ## Next pass
 
@@ -44,7 +44,7 @@ Level 1 (recorded): 34 requirement(s) to raise before any level above it is refi
 
 ### Level 3: partial
 
-- `docs/requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md`: R1188-CST1, R1188-CST2, R1188-CST3, R1188-CST4, R1188-CST5, R1188-CST6, R1188-CST7, R1188-CST8, R1188-CST9, R1188-CST10, R1188-CST11, R1188-CST12, R1188-CST13, R1188-CST14, R1188-CST15, R1188-CST16, R1188-CST17, R1188-CST18, R1188-CST19, R1188-CST20, R1188-CST21, R1188-CST22
+- `docs/requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md`: R1188-CST1, R1188-CST3, R1188-CST4, R1188-CST5, R1188-CST6, R1188-CST7, R1188-CST8, R1188-CST9, R1188-CST10, R1188-CST11, R1188-CST12, R1188-CST13, R1188-CST14, R1188-CST15, R1188-CST16, R1188-CST17, R1188-CST18, R1188-CST19, R1188-CST20, R1188-CST21, R1188-CST22
 - `docs/requirements/doctrine-standing-doctrine-recursive-meta-algorithm-2026-10-06.md`: R1012
 - `docs/requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md`: R992, R993
 - `docs/requirements/issue-0398-pr-review-standards-comment-4663407299.md`: R282

@@ -7,5 +7,5 @@ progressive-plan-ratchet
   requirements 1440
   recorded-ceiling 34
   measured-ceiling 3
-  partial-ceiling 86
+  partial-ceiling 85
   rust-only-ceiling 920
