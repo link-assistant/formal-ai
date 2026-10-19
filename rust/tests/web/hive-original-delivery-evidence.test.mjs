@@ -70,3 +70,150 @@ test('all actual Hive evidence consumers receive one initialized shared director
   assert.ok(initialize < upload);
   assert.equal(job.steps[upload].with.path, '${{ runner.temp }}/hive-original-evidence');
 });
+
+import {spawnSync} from 'node:child_process';
+import {mkdtempSync, mkdirSync, writeFileSync, rmSync} from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+
+const hiveHarnessCommand = 'node scripts/e2e-hello-world.mjs --tool "$E2E_TOOL" --model formal-ai --isolation branch --keep';
+const observedLogTokens = new Set();
+function actualHiveHarnessStep() {
+  const root = new URL('../../../', import.meta.url);
+  const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8'));
+  return workflow.jobs.delivery.steps.find(step => step.name === 'Run actual Hive solve and original assertions');
+}
+
+test('only the actual Hive child log stream is framed and the original command remains exact', () => {
+  const step = actualHiveHarnessStep();
+  const lines = step.run.trimEnd().split('\n');
+  assert.equal(lines.at(-1), hiveHarnessCommand);
+  assert.equal(lines.filter(line => line === hiveHarnessCommand).length, 1);
+  assert.match(step.run, /randomBytes\(32\)/);
+  assert.match(step.run, /trap .* EXIT/);
+  assert.equal(step.working_directory, undefined);
+  assert.equal(step['working-directory'], '.hive-mind');
+  assert.equal(step['continue-on-error'], undefined);
+  assert.equal(step.env.FORMAL_AI_INSTALL_GRANT, 'workspace');
+  const root = new URL('../../../', import.meta.url);
+  const workflow = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8'));
+  assert.equal(workflow.jobs.delivery.steps.filter(value => (value.run || '').includes('::stop-commands::')).length, 1);
+});
+
+for (const [status, newline] of [[0, true], [0, false], [7, false], [127, true]]) {
+  test('Hive log framing preserves child exit ' + status + ' and trailing-newline=' + newline, () => {
+    const temporary = mkdtempSync(path.join(os.tmpdir(), 'hive-log-framing-'));
+    try {
+      mkdirSync(path.join(temporary, 'scripts'));
+      const argumentsPath = path.join(temporary, 'arguments.json');
+      const payload = '##[add-matcher] /run/act/actions/setup-java/matchers/java.json\n' +
+        JSON.stringify({nested: '::error::not an outer runner error', output: '完整日志'}) +
+        (newline ? '\n' : '');
+      const stderr = '::warning::nested stderr payload\n';
+      writeFileSync(path.join(temporary, 'scripts/e2e-hello-world.mjs'),
+        'import fs from "node:fs";\n' +
+        'fs.writeFileSync(process.env.HIVE_FIXTURE_ARGUMENTS, JSON.stringify({arguments: process.argv.slice(2), tokenExported: process.env.hive_log_token !== undefined}));\n' +
+        'process.stdout.write(' + JSON.stringify(payload) + ');\n' +
+        'process.stderr.write(' + JSON.stringify(stderr) + ');\n' +
+        'process.exitCode = ' + status + ';\n');
+      const result = spawnSync('/bin/bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', actualHiveHarnessStep().run], {
+        cwd: temporary, encoding: 'utf8', timeout: 10000,
+        env: {...process.env, E2E_TOOL: 'fixture-client', HIVE_FIXTURE_ARGUMENTS: argumentsPath}
+      });
+      assert.equal(result.error, undefined);
+      assert.equal(result.status, status, result.stderr);
+      const marker = result.stdout.match(/^::stop-commands::([a-f0-9]{64})\n/);
+      assert.ok(marker, result.stdout);
+      const token = marker[1];
+      assert.equal(observedLogTokens.has(token), false, 'each invocation has fresh cryptographic framing');
+      observedLogTokens.add(token);
+      const resume = '\n::' + token + '::\n';
+      assert.equal(result.stdout, marker[0] + payload + resume, 'all original stdout bytes are preserved between frames');
+      assert.equal(result.stderr, stderr, 'all original stderr bytes are preserved');
+      assert.equal(result.stdout.split('::' + token + '::').length, 2, 'exactly one restoration, including failure');
+      assert.deepEqual(JSON.parse(readFileSync(argumentsPath, 'utf8')), {
+        arguments: ['--tool', 'fixture-client', '--model', 'formal-ai', '--isolation', 'branch', '--keep'],
+        tokenExported: false
+      });
+    } finally { rmSync(temporary, {recursive: true, force: true}); }
+  });
+}
+
+test('all fake harness invocations used distinct framing tokens', () => {
+  assert.equal(observedLogTokens.size, 4);
+});
+
+function isolatedRustResolutionStep() {
+  const root = new URL('../../../', import.meta.url);
+  const steps = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8')).jobs.delivery.steps;
+  return {steps, resolve: steps.find(step => step.name === 'Resolve Rust compiler for isolated output verification')};
+}
+
+test('only Codex installs Rust and resolves the actual compiler before the unchanged independent oracle', () => {
+  const {steps, resolve} = isolatedRustResolutionStep();
+  const setup = steps.findIndex(step => step.uses === 'dtolnay/rust-toolchain@stable');
+  const resolved = steps.indexOf(resolve);
+  const independent = steps.findIndex(step => step.name === 'Independently compile delivered source and require exactly one output line');
+  assert.ok(setup >= 0 && setup < resolved && resolved < independent);
+  assert.equal(steps[setup].if, "matrix.tool == 'codex'");
+  assert.equal(resolve.if, "matrix.tool == 'codex'");
+  assert.equal(steps[independent].run, 'node scripts/check-hive-original-delivery.mjs');
+  assert.match(resolve.run, /rustup which rustc/);
+  assert.match(resolve.run, /test -x "\$hive_rust_compiler"/);
+  assert.equal(resolve['continue-on-error'], undefined);
+});
+
+function fakeRustEnvironment({rustupStatus = 0, executable = true} = {}) {
+  const temporary = mkdtempSync(path.join(os.tmpdir(), 'hive-rust-path-'));
+  const shims = path.join(temporary, 'shims');
+  const toolchain = path.join(temporary, 'actual toolchain', 'bin');
+  const freshHome = path.join(temporary, 'fresh-oracle-home');
+  for (const directory of [shims, toolchain, freshHome]) mkdirSync(directory, {recursive: true});
+  const compiler = path.join(toolchain, 'rustc');
+  writeFileSync(compiler, '#!/bin/sh\nprintf "fixture actual compiler\\n"\n', {mode: executable ? 0o700 : 0o600});
+  writeFileSync(path.join(shims, 'rustc'), '#!/bin/sh\nprintf "fixture shim has no default toolchain\\n" >&2\nexit 93\n', {mode: 0o700});
+  writeFileSync(path.join(shims, 'rustup'), '#!/bin/sh\n' +
+    '[ "$1" = which ] && [ "$2" = rustc ] || exit 94\n' +
+    'printf "%s\\n" "$FIXTURE_COMPILER"\nexit ' + rustupStatus + '\n', {mode: 0o700});
+  const githubPath = path.join(temporary, 'github-path');
+  writeFileSync(githubPath, '');
+  const environment = {...process.env, PATH: shims + path.delimiter + process.env.PATH,
+    FIXTURE_COMPILER: compiler, GITHUB_PATH: githubPath};
+  const result = spawnSync('/bin/bash', ['--noprofile', '--norc', '-e', '-o', 'pipefail', '-c', isolatedRustResolutionStep().resolve.run], {
+    cwd: temporary, env: environment, encoding: 'utf8', timeout: 10000
+  });
+  return {temporary, shims, toolchain, freshHome, githubPath, environment, result,
+    cleanup: () => rmSync(temporary, {recursive: true, force: true})};
+}
+
+test('the oracle fresh HOME resolves the real fake compiler rather than a rustup shim', () => {
+  const context = fakeRustEnvironment();
+  try {
+    assert.equal(context.result.error, undefined);
+    assert.equal(context.result.status, 0, context.result.stderr);
+    assert.equal(readFileSync(context.githubPath, 'utf8'), context.toolchain + '\n');
+    const without = spawnSync('/bin/sh', ['-c', 'rustc'], {
+      encoding: 'utf8', timeout: 10000, env: {...context.environment, HOME: context.freshHome}
+    });
+    assert.equal(without.status, 93, 'the former fresh-HOME/shim boundary fails');
+    const isolated = spawnSync('/bin/sh', ['-c', 'rustc'], {
+      encoding: 'utf8', timeout: 10000,
+      env: {PATH: context.toolchain + path.delimiter + context.environment.PATH, HOME: context.freshHome}
+    });
+    assert.equal(isolated.error, undefined);
+    assert.equal(isolated.status, 0, isolated.stderr);
+    assert.equal(isolated.stdout, 'fixture actual compiler\n');
+  } finally { context.cleanup(); }
+});
+
+for (const options of [{rustupStatus: 17}, {executable: false}]) {
+  test('failed Rust resolution cannot publish a toolchain path: ' + JSON.stringify(options), () => {
+    const context = fakeRustEnvironment(options);
+    try {
+      assert.equal(context.result.error, undefined);
+      assert.notEqual(context.result.status, 0);
+      if (options.rustupStatus) assert.equal(context.result.status, options.rustupStatus);
+      assert.equal(readFileSync(context.githubPath, 'utf8'), '');
+    } finally { context.cleanup(); }
+  });
+}

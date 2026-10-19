@@ -123,11 +123,24 @@ jobs:
           E2E_KEEP: 'true'
           E2E_IMAGE: hive-e2e:candidate
           FORMAL_AI_INSTALL_GRANT: workspace
-        run: node scripts/e2e-hello-world.mjs --tool "$E2E_TOOL" --model formal-ai --isolation branch --keep
+        run: |
+          hive_log_token="$(node -e 'process.stdout.write(require("node:crypto").randomBytes(32).toString("hex"))')"
+          trap 'hive_log_status=$?; printf "\n::%s::\n" "$hive_log_token"; exit "$hive_log_status"' EXIT
+          printf '::stop-commands::%s\n' "$hive_log_token"
+          node scripts/e2e-hello-world.mjs --tool "$E2E_TOOL" --model formal-ai --isolation branch --keep
       - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3 # v3
         if: matrix.tool == 'agent'
         with:
           apps: scala-cli
+      - name: Install Rust for independent delivered-source verification
+        if: matrix.tool == 'codex'
+        uses: dtolnay/rust-toolchain@stable
+      - name: Resolve Rust compiler for isolated output verification
+        if: matrix.tool == 'codex'
+        run: |
+          hive_rust_compiler="$(rustup which rustc)"
+          test -x "$hive_rust_compiler"
+          printf '%s\n' "$(dirname "$hive_rust_compiler")" >> "$GITHUB_PATH"
       - name: Independently compile delivered source and require exactly one output line
         env:
           GH_TOKEN: ${{ steps.gh.outputs.token }}
