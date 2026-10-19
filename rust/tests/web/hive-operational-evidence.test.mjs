@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
-import { externalEvidenceDirectory, retainExternalEvidence, adaptHiveOperationalSource, transferOperationalEvidenceOwner } from '../../../scripts/lib/hive-operational-evidence.mjs';
+import { externalEvidenceDirectory, retainExternalEvidence, adaptHiveOperationalSource, transferOperationalEvidenceOwner, HIVE_OPERATIONAL_HELPER_PATH } from '../../../scripts/lib/hive-operational-evidence.mjs';
 function fixture() {
   const temporary = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'formal-ai-operational-evidence-'));
   const repository = path.join(temporary, 'task');
@@ -161,4 +162,65 @@ test('artifact owner transfer preserves private modes, contents, and exact subtr
   } finally {
     context.cleanup();
   }
+});
+
+// The pinned Hive Dockerfile.e2e copies package manifests and src, not scripts.
+// This models that exact filesystem boundary without running Docker or a product.
+function projectOperationalModuleLayout({helperPath, specifier, includeHelper = true}) {
+  const temporary = fs.mkdtempSync(path.join(fs.realpathSync(os.tmpdir()), 'hive-src-projection-'));
+  const hive = path.join(temporary, 'hive');
+  const image = path.join(temporary, 'image');
+  fs.mkdirSync(path.join(hive, 'src'), {recursive: true});
+  if (includeHelper) {
+    const destination = path.join(hive, helperPath);
+    fs.mkdirSync(path.dirname(destination), {recursive: true});
+    fs.writeFileSync(destination, fs.readFileSync(new URL('../../../scripts/lib/hive-operational-evidence.mjs', import.meta.url)));
+  }
+  const owners = ['formal-ai-attribution.lib.mjs', 'development-log.lib.mjs'];
+  for (const name of owners) fs.writeFileSync(path.join(hive, 'src', name),
+    'import {externalEvidenceDirectory, retainExternalEvidence} from ' + JSON.stringify(specifier) + ';\n' +
+    'export const available = typeof externalEvidenceDirectory === "function" && typeof retainExternalEvidence === "function";\n');
+  fs.mkdirSync(image);
+  fs.cpSync(path.join(hive, 'src'), path.join(image, 'src'), {recursive: true});
+  const moduleUrls = owners.map(name => pathToFileURL(path.join(image, 'src', name)).href);
+  const result = spawnSync(process.execPath, ['--input-type=module', '--eval',
+    'const owners = await Promise.all(' + JSON.stringify(moduleUrls) + '.map(value => import(value))); ' +
+    'if (!owners.every(owner => owner.available)) throw Error("missing operational exports"); console.log("both operational owners resolved");'
+  ], {encoding: 'utf8', timeout: 10000});
+  return {image, result, cleanup: () => fs.rmSync(temporary, {recursive: true, force: true})};
+}
+
+test('the canonical operational helper is available to both owners after the pinned src-only image projection', () => {
+  assert.equal(HIVE_OPERATIONAL_HELPER_PATH, 'src/formal-ai-hive-operational-evidence.mjs');
+  const context = projectOperationalModuleLayout({
+    helperPath: HIVE_OPERATIONAL_HELPER_PATH,
+    specifier: './' + path.posix.basename(HIVE_OPERATIONAL_HELPER_PATH)
+  });
+  try {
+    assert.equal(fs.existsSync(path.join(context.image, 'scripts')), false);
+    assert.equal(context.result.error, undefined);
+    assert.equal(context.result.status, 0, context.result.stderr);
+    assert.equal(context.result.stdout, 'both operational owners resolved\n');
+  } finally { context.cleanup(); }
+});
+
+for (const [label, options] of [
+  ['the former scripts-only placement', {
+    helperPath: 'scripts/formal-ai-hive-operational-evidence.mjs',
+    specifier: '../scripts/formal-ai-hive-operational-evidence.mjs'
+  }],
+  ['an omitted src helper', {
+    helperPath: HIVE_OPERATIONAL_HELPER_PATH,
+    specifier: './' + path.posix.basename(HIVE_OPERATIONAL_HELPER_PATH),
+    includeHelper: false
+  }]
+]) test('the src-only projection rejects ' + label + ' before model execution', () => {
+  const context = projectOperationalModuleLayout(options);
+  try {
+    assert.equal(context.result.error, undefined);
+    assert.notEqual(context.result.status, 0);
+    assert.match(context.result.stderr, /ERR_MODULE_NOT_FOUND/);
+    assert.match(context.result.stderr, /formal-ai-hive-operational-evidence\.mjs/);
+    assert.equal(context.result.stdout, '');
+  } finally { context.cleanup(); }
 });

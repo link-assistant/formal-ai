@@ -6,6 +6,7 @@ import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 export const HIVE_EVIDENCE_PIN = '8f22b87c515adece0427cb59e429531f35d7760a';
+export const HIVE_OPERATIONAL_HELPER_PATH = 'src/formal-ai-hive-operational-evidence.mjs';
 const HOSTED_SOURCE_IDENTITY = null;
 const SOURCE_BLOBS = {
   'src/formal-ai-attribution.lib.mjs': '333cbf96af3ca5b77cb2b357b948be8b022f41c8',
@@ -145,7 +146,7 @@ export function adaptHiveOperationalSource(name, source, {
   assert.equal(createHash('sha1').update('blob ' + bytes.length + '\0').update(bytes).digest('hex'), SOURCE_BLOBS[name], 'unreviewed Hive operational source');
   assert.ok(path.isAbsolute(storageRoot));
   const storage = JSON.stringify(storageRoot);
-  const imported = "import {externalEvidenceDirectory, retainExternalEvidence} from '../scripts/formal-ai-hive-operational-evidence.mjs';\n";
+  const imported = "import {externalEvidenceDirectory, retainExternalEvidence} from './" + path.posix.basename(HIVE_OPERATIONAL_HELPER_PATH) + "';\n";
   let result = source.replace(/^(#![^\n]*\n)?/, '$&' + imported);
   if (name === 'src/development-log.lib.mjs') {
     result = replaceOnce(result, 'const copyKnownSessionFiles = async ({ repositoryPath, sessionRelativeDirectory,', 'const copyKnownSessionFiles = async ({ repositoryPath, storageRoot = repositoryPath, sessionRelativeDirectory,');
@@ -216,7 +217,7 @@ export function prepareHiveOperationalEvidence({
       adapted
     };
   });
-  fs.writeFileSync(path.join(hive, 'scripts/formal-ai-hive-operational-evidence.mjs'), helper, {
+  fs.writeFileSync(path.join(hive, HIVE_OPERATIONAL_HELPER_PATH), helper, {
     flag: 'wx'
   });
   for (const {
@@ -226,6 +227,7 @@ export function prepareHiveOperationalEvidence({
   fs.writeFileSync(path.join(hive, '.formal-ai-operational-adapter.json'), JSON.stringify({
     schema: 'formal-ai-reviewed-hive-operational-adapter/v1',
     upstreamCommit: HIVE_EVIDENCE_PIN,
+    helperPath: HIVE_OPERATIONAL_HELPER_PATH,
     helperSha256: digest(helper),
     originalHelperSha256: digest(helperSource),
     formalAiSource: sourceIdentity,
