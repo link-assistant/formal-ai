@@ -117,3 +117,87 @@ fn a_cue_with_nothing_before_it_is_not_a_task() {
         );
     }
 }
+
+fn session_with_complete_source() -> Vec<ChatMessage> {
+    let mut messages = vec![ChatMessage::user(TASK)];
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &TOOLS) else {
+        panic!("the held-out edit must start with an observed read");
+    };
+    assert_eq!(calls.len(), 1);
+    let first = &calls[0];
+    assert_eq!(first.tool, "read");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "complete-source",
+        &first.tool,
+        first.arguments.clone(),
+    )]));
+    let mut result = ChatMessage::tool_result(
+        "complete-source",
+        &first.tool,
+        "fn update() { let state = \"pending\"; }\n",
+    );
+    result.source_read = Some(serde_json::json!({
+        "path": "src/queue.rs", "success": true, "complete": true, "format": "raw"
+    }));
+    messages.push(result);
+    messages
+}
+
+fn planned_calls(messages: &[ChatMessage]) -> Vec<formal_ai::agentic_coding::PlannedToolCall> {
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(messages, &TOOLS) else {
+        panic!("the source edit must retain a concrete tool plan");
+    };
+    calls
+}
+
+#[test]
+fn repeated_exact_objective_preserves_the_bound_source_and_next_edit() {
+    let messages = session_with_complete_source();
+    let original = planned_calls(&messages);
+    assert_eq!(original.len(), 1);
+    assert_eq!(original[0].tool, "write");
+    for suffix in [vec![TASK], vec![TASK, TASK], vec!["continue", TASK]] {
+        let mut continued = messages.clone();
+        continued.extend(suffix.into_iter().map(ChatMessage::user));
+        let next = planned_calls(&continued);
+        assert_eq!(next.len(), original.len());
+        assert_eq!(next[0].tool, original[0].tool);
+        assert_eq!(next[0].arguments, original[0].arguments);
+    }
+}
+
+#[test]
+fn changed_or_intervening_objectives_do_not_reuse_the_prior_source() {
+    for suffix in [
+        vec![TASK.to_owned() + " "],
+        vec![TASK.replace("waiting", "queued")],
+        vec!["An unrelated request.".to_owned(), TASK.to_owned()],
+    ] {
+        let mut messages = session_with_complete_source();
+        messages.extend(suffix.into_iter().map(ChatMessage::user));
+        assert_eq!(planned_calls(&messages)[0].tool, "read");
+    }
+}
+
+#[test]
+fn multipart_objectives_and_multipart_cues_always_need_a_fresh_read() {
+    for text in [TASK, "continue"] {
+        let mut messages = session_with_complete_source();
+        messages.push(
+            serde_json::from_value(serde_json::json!({
+                "role": "user", "content": [{"type": "text", "text": text},
+                    {"type": "image_url", "image_url": {"url": "fixture:held-out-image"}}]
+            }))
+            .expect("a valid protocol multipart request"),
+        );
+        assert_eq!(planned_calls(&messages)[0].tool, "read");
+    }
+}
+
+#[test]
+fn repeated_objective_does_not_authorize_an_unbound_read_receipt() {
+    let mut messages = session_with_complete_source();
+    messages[2].tool_call_id = Some("foreign-source".to_owned());
+    messages.push(ChatMessage::user(TASK));
+    assert_eq!(planned_calls(&messages)[0].tool, "read");
+}

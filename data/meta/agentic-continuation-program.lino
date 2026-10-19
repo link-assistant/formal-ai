@@ -1,0 +1,8 @@
+# Source/provenance observation of the actual checked portable-core IR.
+(agentic-continuation-program
+  (source-sha256 7125e85dd1e8e20904fc11698a31e37d42177ac9f8dc33588ce645c709f38424)
+  (checked-ir-sha256 1fbae2513a3837121cc65b6a34d748f13852fa09277f008009ee57221c2a5651)
+  (upstream-commit eb0574d5528babd3b4aadece81590d8e2230b99b)
+  (runtime-count 1)
+  (source-unit (path "js/agentic/portable/continuation_state.mjs") (sha256 7125e85dd1e8e20904fc11698a31e37d42177ac9f8dc33588ce645c709f38424))
+)

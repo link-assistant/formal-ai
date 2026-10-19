@@ -383,7 +383,9 @@ jobs:
       - name: Setup Rust (rustc compiles the translated Rust)
         uses: dtolnay/rust-toolchain@stable
       - name: Verify canonical research program from pinned checked IR (R1183)
-        run: node scripts/generate-coding-research-program.mjs --check --meta-language .meta-language
+        run: |
+          node scripts/generate-coding-research-program.mjs --check --meta-language .meta-language
+          node scripts/generate-agentic-continuation.mjs --check --meta-language .meta-language
       - name: Verify readable source content through actual shared grammars
         run: node scripts/check-source-model.mjs --meta-language .meta-language
       - name: Verify canonical source snapshot program from pinned checked IR (R1213-5)

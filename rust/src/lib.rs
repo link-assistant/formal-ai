@@ -627,4 +627,5 @@ pub use world_model_dialog::{
 };
 
 // One generated canonical research program; its internal cross-calls remain crate-qualified.
+pub(crate) mod agentic_continuation_generated;
 pub mod coding_research_generated;
