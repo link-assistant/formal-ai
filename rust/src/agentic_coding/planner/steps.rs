@@ -7,9 +7,21 @@ use crate::protocol::ChatMessage;
 
 /// Keep durable coding progress while explicit source reads require fresh evidence.
 fn repetition_progress(messages: &[ChatMessage]) -> Progress {
+    // Only later user requests can create a shorter source-read window.
+    if messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .is_none_or(|index| index == 0)
+    {
+        return Progress::scan(messages);
+    }
+    let current = super::super::file_read::file_read_evidence(messages);
+    if current.len() == messages.len() {
+        return Progress::scan(messages);
+    }
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
     let current = if super::super::file_read::file_read_task_for(&request).is_some() {
-        super::super::file_read::file_read_evidence(messages)
+        current
     } else {
         messages
     };

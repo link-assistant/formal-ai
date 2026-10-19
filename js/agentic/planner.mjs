@@ -239,8 +239,14 @@ export async function planChatStepResolved(messages, toolNames) {
 
 /** Standing coding progress remains durable; explicit source reads require fresh observations. */
 function repetitionProgress(messages) {
-  const request=latestUserRequest(messages)??'';
-  return Progress.scan(fileReadTaskFor(request)!==null?fileReadEvidence(messages):messages);
+  // Only later user requests can create a shorter source-read window.
+  if (messages.findLastIndex(message => message.role.toLowerCase() === 'user') <= 0) {
+    return Progress.scan(messages);
+  }
+  const current = fileReadEvidence(messages);
+  if (current.length === messages.length) return Progress.scan(messages);
+  const request = latestUserRequest(messages) ?? '';
+  return Progress.scan(fileReadTaskFor(request) !== null ? current : messages);
 }
 
 /** Mirrors `fn stop_repeated_call` in rust/src/agentic_coding/planner/steps.rs. */
