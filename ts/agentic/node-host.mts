@@ -187,18 +187,30 @@ export async function installNodeHost(worker, options = {}) {
 
   let sourceParser = null;
   const sourceDocument = async modulePath => {
-    if (typeof sourceModelDirectory !== 'string' || !sourceModelDirectory) throw Error('PinnedSourceModelSdkUnavailable');
+    if (sourceModelDirectory !== null && (typeof sourceModelDirectory !== 'string' || !sourceModelDirectory)) throw Error('PinnedSourceModelSdkUnavailable');
     const inventory = observeCensusDocuments(REPO_ROOT);
     const observed = inventory.documents.find(document => document.sourceIdentity.path === modulePath);
     if (!inventory.complete || !observed) throw Error('IncompleteOwnedSourceInventory');
-    sourceParser ??= sourceModelFrontend(path.resolve(sourceModelDirectory), workflowPin(readRepoFile('.github/workflows/layered-ci.yml')));
-    const parse = await sourceParser;
-    const source = readRepoFile('rust/' + modulePath);
-    if (stableId('source_module', source) !== observed.sourceIdentity.content_id) throw Error('SourceVersionChanged');
-    const rules = readSyntaxRules(readRepoFile('data/meta/source-model/syntax-rules.lino'));
-    const model = ownedSourceLinks(modulePath, sourceToLinks(source, 'Rust', {parse, rules}));
-    verifySourceLinks(model, {parse, rules});
-    return writeSourceLinks(model);
+    let runtime = null;
+    try {
+      let parse, rules;
+      if (sourceModelDirectory === null) {
+        const {sourceCstFrontends} = await import('../../scripts/lib/source-cst-frontends.mjs');
+        runtime = await sourceCstFrontends();
+        ({parse, rules} = runtime.forSource('rust/' + modulePath, 'Rust'));
+      } else {
+        sourceParser ??= sourceModelFrontend(path.resolve(sourceModelDirectory), workflowPin(readRepoFile('.github/workflows/layered-ci.yml')));
+        parse = await sourceParser;
+        rules = readSyntaxRules(readRepoFile('data/meta/source-model/syntax-rules.lino'));
+      }
+      const source = readRepoFile('rust/' + modulePath);
+      if (stableId('source_module', source) !== observed.sourceIdentity.content_id) throw Error('SourceVersionChanged');
+      const model = ownedSourceLinks(modulePath, sourceToLinks(source, 'Rust', {parse, rules}));
+      verifySourceLinks(model, {parse, rules});
+      return writeSourceLinks(model);
+    } finally {
+      runtime?.close();
+    }
   };
   const baseHost = {
     readText: readRepoFile,
