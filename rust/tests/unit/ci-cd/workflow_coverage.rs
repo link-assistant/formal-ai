@@ -7,6 +7,56 @@
 
 use super::workflow_fixtures::*;
 
+fn browser_shard_count_from_source(source: &str) -> Option<usize> {
+    let mut declarations = source
+        .lines()
+        .map(str::trim)
+        .filter(|line| line.starts_with("export const browserShardCount"));
+    let declaration = declarations.next()?;
+    if declarations.next().is_some() {
+        return None;
+    }
+    let literal = declaration
+        .strip_prefix("export const browserShardCount = ")?
+        .strip_suffix(';')?;
+    if literal.is_empty() || !literal.bytes().all(|byte| byte.is_ascii_digit()) {
+        return None;
+    }
+    literal.parse::<usize>().ok().filter(|count| *count > 0)
+}
+
+#[test]
+fn browser_shard_source_rejects_missing_empty_and_duplicate_declarations() {
+    let source = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../scripts/lib/browser-coverage-shards.mjs"
+    ));
+    let count = browser_shard_count_from_source(source)
+        .expect("one positive canonical browser shard count");
+    for invalid in [
+        "",
+        "export const browserShardCount = ;",
+        "export const browserShardCount = 0;",
+        "export const browserShardCount = -1;",
+        "export const browserShardCount = 1.5;",
+        "export const browserShardCount = '1';",
+    ] {
+        assert_eq!(
+            browser_shard_count_from_source(invalid),
+            None,
+            "{invalid:?}"
+        );
+    }
+    let duplicate = format!("{source}\nexport const browserShardCount = {count};\n");
+    assert_eq!(browser_shard_count_from_source(&duplicate), None);
+    let missing = source
+        .lines()
+        .filter(|line| !line.trim().starts_with("export const browserShardCount"))
+        .collect::<Vec<_>>()
+        .join("\n");
+    assert_eq!(browser_shard_count_from_source(&missing), None);
+}
+
 #[test]
 fn coverage_jobs_enforce_and_publish_the_ratchet() {
     // Issue #895: before this, CI produced an LCOV file, uploaded it, and never
@@ -61,14 +111,31 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
         "coverage must be published in both a human-readable and a machine-readable form"
     );
 
+    let shard_source = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../scripts/lib/browser-coverage-shards.mjs"
+    ));
+    let shard_count = browser_shard_count_from_source(shard_source)
+        .expect("one positive canonical browser shard count");
+    let expected_matrix = format!(
+        "shard: [{}]",
+        (1..=shard_count)
+            .map(|index| index.to_string())
+            .collect::<Vec<_>>()
+            .join(", ")
+    );
     let browser_shards = job_block(&workflow, "browser-coverage-shard");
     assert!(
-        browser_shards.contains("shard: [1, 2, 3, 4, 5, 6]")
+        browser_shards
+            .lines()
+            .map(str::trim)
+            .filter(|line| line.starts_with("shard:"))
+            .eq(std::iter::once(expected_matrix.as_str()))
             && browser_shards.contains("fail-fast: false")
             && browser_shards.contains("npm run coverage:web -- run")
             && browser_shards.contains("browser-coverage-shard-${{ matrix.shard }}")
             && browser_shards.contains("if-no-files-found: error"),
-        "all six browser slices must execute and retain complete individual receipts"
+        "all canonical browser slices must execute and retain complete individual receipts"
     );
 
     let browser = job_block(&workflow, "browser-coverage");
