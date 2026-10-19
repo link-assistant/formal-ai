@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 299
   workaround_items 33
   inferred_signatures 2
-  carried_items 2365
+  carried_items 2366
   translated_modules 100
   fully_translated_modules 1
   refused_modules 49
@@ -169,7 +169,7 @@ module js/agentic/crate/tool_scope.mjs translated 0 workaround 0 inferred 0 carr
 module js/agentic/crate/translation_formalization.mjs translated 4 workaround 0 inferred 0 carried 46
 module js/agentic/crate/translation_language_markers.mjs translated 2 workaround 0 inferred 0 carried 5
 module js/agentic/crate/typed_meaning.mjs translated 0 workaround 0 inferred 0 carried 6
-module js/agentic/crate/version_resolution.mjs translated 2 workaround 1 inferred 0 carried 23
+module js/agentic/crate/version_resolution.mjs translated 2 workaround 1 inferred 0 carried 24
 module js/agentic/crate/web_engine_core.mjs translated 0 workaround 0 inferred 0 carried 2
 module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 inferred 0 carried 11
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
@@ -199,7 +199,7 @@ refusal "method call .indexOf()" 29
 refusal "nullish coalescing" 26
 refusal "method call .replace()" 23
 refusal "export …" 22
-refusal "syntax: malformed number" 19
+refusal "syntax: malformed number" 20
 refusal "try statement" 19
 refusal "case test" 18
 refusal "undefined" 16

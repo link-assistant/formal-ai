@@ -30,7 +30,7 @@ const RELEASES = [
   ['python/cpython', 'v3.14.7', '0000000000000000000000000000000000000000'],
   ['JetBrains/kotlin', 'v2.4.20', '0000000000000000000000000000000000000000'],
   ['coursier/setup-action', 'v3.0.4', '648df969f41ef15fda2baba8b37f9fa3d16390a3'],
-  ['scala/scala', 'v2.13.18', '0000000000000000000000000000000000000000'],
+  ['scala/scala3', 'v3.10.0', '0000000000000000000000000000000000000000'],
 ];
 
 // The publishers' own answer shapes: api.github.com pretty-prints.
@@ -75,7 +75,7 @@ test('R1168-1/2/3: online, every pin is read from its publisher and captured in 
   assert.equal(versions.kotlin.tag, 'v2.4.20');
   assert.equal(versions.java_lts.tag, '25');
   assert.equal(versions.java_lts.origin, 'live');
-  assert.equal(versions.scala.tag, '2.13.18');
+  assert.equal(versions.scala.tag, '3.10.0');
   assert.deepEqual(provenanceNote(versions), []);
   assert.ok(requested.includes('https://api.github.com/repos/actions/checkout/releases/latest'));
   assert.ok(requested.includes('https://api.github.com/repos/actions/checkout/commits/v7.0.1'));
@@ -125,4 +125,18 @@ test('forGeneration reads the host source cache named by FORMAL_AI_SOURCE_CACHE_
     else process.env.FORMAL_AI_SOURCE_CACHE_DIR = previous;
     if (live !== undefined) process.env.FORMAL_AI_LIVE_FETCH = live;
   }
+});
+
+test('a cached Scala 2 publisher cannot replace the declared Scala 3 compiler', () => {
+  const observed = [];
+  const versions = resolveVersionSet(url => {
+    observed.push(url);
+    if (url.includes('/repos/scala/scala/')) return {text: JSON.stringify({tag_name:'v2.13.18',sha:'a'.repeat(40)}),cached:true};
+    return null;
+  });
+  assert.ok(observed.includes('https://api.github.com/repos/scala/scala3/releases/latest'));
+  assert.equal(observed.some(url => url.includes('/repos/scala/scala/')), false);
+  assert.equal(versions.scala.origin, 'baseline');
+  assert.equal(versions.scala.tag, '3.10.0');
+  assert.equal(versions.scala.source_url, 'https://api.github.com/repos/scala/scala3/releases/latest');
 });

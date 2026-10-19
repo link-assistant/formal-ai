@@ -65,9 +65,14 @@ for(const label of ['wrong call','wrong tool','new user window','conflicting pat
  const messages=history();
  if(label==='wrong call')messages[2].tool_call_id='other';
  if(label==='wrong tool')messages[2].name='bash';
- if(label==='new user window')messages.push({role:'user',content:'Read data.json.'});
+ if(label==='new user window')messages.push({role:'user',content:'Read data.json again using a fresh source observation.'});
  if(label==='conflicting paths')messages[1].tool_calls[0].function.arguments=JSON.stringify({path:'data.json',filePath:'other.json'});
  const plan=direct(messages);assert.equal(plan.kind,'tool_calls');assert.equal(plan.calls[0].tool,'read');
+});
+test('byte-identical standing request retains the complete current source observation',()=>{
+ const messages=history();messages.push({role:'user',content:'Read data.json.'});
+ const plan=direct(messages);assert.equal(plan.kind,'final');
+ assert.equal(finalResult(plan).disposition,FinalDisposition.Finding);assert.ok(plan.answer.includes(raw));
 });
 test('latest source observation supersedes older bytes and provider refusal',()=>{
  const messages=history('first',{source_read:metadata('data.json')});

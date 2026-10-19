@@ -224,7 +224,8 @@ test('absence binds to the current Read identity and current user window', () =>
   assert.equal(Progress.scan([...current, failure]).sourceReadFor(PLAN_PATH).absent, true);
   assert.equal(Progress.scan([...current, {...failure, tool_call_id: 'unassociated'}]).sourceReadFor(PLAN_PATH), null);
   assert.equal(Progress.scan([...current, {...failure, name: 'write'}]).sourceReadFor(PLAN_PATH), null);
-  assert.equal(Progress.scan([...current, failure, {role: 'user', content: request}]).sourceReadFor(PLAN_PATH), null);
+  assert.equal(Progress.scan([...current, failure, {role: 'user', content: request}]).sourceReadFor(PLAN_PATH).absent, true);
+  assert.equal(Progress.scan([...current, failure, {role: 'user', content: request + ' Read fresh source evidence.'}]).sourceReadFor(PLAN_PATH), null);
 });
 
 test('full planner keeps the original cold auxiliary read before a real obstructed command-output parent', async () => {

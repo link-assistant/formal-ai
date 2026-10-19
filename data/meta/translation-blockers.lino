@@ -11,7 +11,7 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2365
+  carried_items 2366
   scanned_clear 14
   blockers_per_item 0 14
   blockers_per_item 1 731
@@ -23,7 +23,7 @@ translation_blockers
   blockers_per_item 7 108
   blockers_per_item 8 79
   blockers_per_item 9 84
-  blockers_per_item 10 58
+  blockers_per_item 10 59
   blockers_per_item 11 42
   blockers_per_item 12 32
   blockers_per_item 13 18
@@ -46,26 +46,26 @@ translation_blockers
   blockers_per_item 35 1
   blockers_per_item 41 1
   blockers_per_item 43 1
-construct "call of a sibling function" items 887 only 35
-construct "field access" items 880 only 25
+construct "call of a sibling function" items 888 only 35
+construct "field access" items 881 only 25
 construct "call of an imported function" items 638 only 18
-construct "null" items 575 only 5
+construct "null" items 576 only 5
 construct "object without a $ tag" items 515 only 26
 construct "arrow function" items 349 only 2
 construct "import of names its module carries" items 323 only 323
 construct "method call .push()" items 272 only 4
 construct "method call .map()" items 270 only 0
-construct "method call .slice()" items 263 only 6
+construct "method call .slice()" items 264 only 6
 construct "arrow callback of .map()" items 254 only 0
 construct "JSDoc type {…}" items 252 only 5
 construct "method call .filter()" items 246 only 0
-construct "regular expression" items 225 only 34
+construct "regular expression" items 226 only 34
 construct "arrow callback of .filter()" items 207 only 0
 construct "sibling value" items 207 only 16
 construct "nullish coalescing" items 193 only 0
 construct "method call .join()" items 172 only 0
-construct "method call .some()" items 168 only 0
-construct "arrow callback of .some()" items 160 only 0
+construct "method call .some()" items 169 only 0
+construct "arrow callback of .some()" items 161 only 0
 construct "undefined" items 158 only 0
 construct "import from outside the module directory" items 153 only 153
 construct "method call .split()" items 148 only 0
@@ -80,12 +80,12 @@ construct "new Set" items 91 only 34
 construct "method call .has()" items 89 only 0
 construct "method call .sort()" items 88 only 0
 construct "imported value" items 85 only 2
-construct "optional chaining" items 81 only 0
+construct "optional chaining" items 82 only 0
 construct "method call .replace()" items 79 only 0
 construct "method call .get()" items 70 only 0
 construct "method call .indexOf()" items 67 only 0
+construct "typeof operator" items 67 only 2
 construct "method call .every()" items 66 only 0
-construct "typeof operator" items 66 only 2
 construct "arrow callback of .sort()" items 64 only 0
 construct "new Map" items 63 only 5
 construct "method call .set()" items 58 only 0
@@ -115,10 +115,10 @@ construct "bitwise operator" items 16 only 3
 construct "method call .codePointAt()" items 16 only 1
 construct "method call .concat()" items 15 only 0
 construct "JSON.parse" items 14 only 0
+construct "method call .exec()" items 14 only 0
 construct "method call .keys()" items 14 only 0
 construct "Object.keys" items 13 only 0
 construct "method call .add()" items 13 only 0
-construct "method call .exec()" items 13 only 0
 construct "method call .repeat()" items 13 only 1
 construct "arrow callback of .replace()" items 12 only 0
 construct "default or namespace import" items 12 only 12

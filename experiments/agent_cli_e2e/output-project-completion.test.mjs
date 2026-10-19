@@ -403,3 +403,61 @@ test('non-streaming empty choices and incomplete usage streams still refuse', ()
   assert.throws(() => completionResponse(JSON.stringify(events.at(-1))));
   assert.throws(() => completionResponse(usageBody(usageCompletion()).replace('data: [DONE]\n\n', '')));
 });
+
+
+// Reproduce the real Agent projection without executing a product or compiler.
+function projectWorkspaceWrites(context, target, includeEcho = false) {
+  for (const row of context.records) {
+    response(row, body => {
+      for (const call of body.choices[0].message.tool_calls ?? []) {
+        if (call.function.name !== 'write') continue;
+        const args = JSON.parse(call.function.arguments);
+        call.function.arguments = JSON.stringify({...args, filePath: target(context, args.filePath)});
+      }
+    });
+    if (includeEcho) request(row, body => {
+      for (const message of body.messages) for (const call of message.tool_calls ?? []) {
+        if (call.function.name !== 'write') continue;
+        const args = JSON.parse(call.function.arguments);
+        call.function.arguments = JSON.stringify({...args, filePath: target(context, args.filePath)});
+      }
+    });
+  }
+}
+for (const includeEcho of [false, true]) test('actual absolute workspace projection retains complete effects and acknowledgements ' + includeEcho, () => {
+  const context = fixture('Saffron 61!', 'nested/actual-client.py');
+  try {
+    projectWorkspaceWrites(context, (current, file) => path.join(current.workspace, file), includeEcho);
+    assert.equal(verifyOutputProject(context).exchanges, 5);
+    fs.appendFileSync(path.join(context.workspace, context.expectedFiles[0]), 'changed');
+    assert.throws(() => verifyOutputProject(context), /physical effect bytes differ/u);
+  } finally { context.cleanup(); }
+});
+for (const [name, target] of [
+  ['outside', (current, file) => path.join(path.dirname(current.workspace), 'foreign-task', file)],
+  ['sibling-prefix', (current, file) => current.workspace + '-foreign/' + file],
+  ['parent-alias', (current, file) => current.workspace + '/nested/../' + file],
+  ['dot-alias', (current, file) => current.workspace + '/./' + file],
+]) test('absolute effect projection refuses ' + name, () => {
+  const context = fixture();
+  try { projectWorkspaceWrites(context, target, true);assert.throws(() => verifyOutputProject(context)); }
+  finally { context.cleanup(); }
+});
+test('a workspace projection cannot disguise a foreign echoed write or symlink', () => {
+  const context = fixture();
+  try {
+    projectWorkspaceWrites(context, (current, file) => path.join(current.workspace, file));
+    request(context.records[1], body => {
+      const call = body.messages[1].tool_calls[0], args = JSON.parse(call.function.arguments);
+      call.function.arguments = JSON.stringify({...args, filePath:path.join(context.workspace,'wrong.py')});
+    });
+    assert.throws(() => verifyOutputProject(context), /returned tool arguments differ/u);
+  } finally { context.cleanup(); }
+  const symbolic = fixture();
+  try {
+    projectWorkspaceWrites(symbolic, (current, file) => path.join(current.workspace, file));
+    const file = path.join(symbolic.workspace,symbolic.expectedFiles[0]), actual = file + '.actual';
+    fs.renameSync(file,actual);fs.symlinkSync(actual,file);
+    assert.throws(() => verifyOutputProject(symbolic), /symlink/u);
+  } finally { symbolic.cleanup(); }
+});

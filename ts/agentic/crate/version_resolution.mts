@@ -88,6 +88,16 @@ function bareTag(resolved) {
   return resolved ? { ...resolved, tag: trimStartV(resolved.tag) } : null;
 }
 
+/** Resolve a declared GitHub source; cached data from a different publisher cannot supply it. */
+function resolveDeclaredGithub(fetch, id, captures) {
+  const declared = baseline(id);
+  const source = declared?.source_url;
+  const match = typeof source === 'string'
+    ? /^https:\/\/api\.github\.com\/repos\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)\/releases\/latest$/u.exec(source) : null;
+  if (!match || match.slice(1).some(part => part === '.' || part === '..')) return null;
+  return resolveGithub(fetch, match[1], match[2], captures);
+}
+
 /** Mirrors `VersionSet::resolve_github`. */
 function resolveGithub(fetch, publisher, repository, captures) {
   const releasesUrl = `https://api.github.com/repos/${publisher}/${repository}/releases/latest`;
@@ -135,15 +145,15 @@ function resolveJavaLts(fetch, captures) {
 export function resolveVersionSet(fetch) {
   const captures = [];
   const set = { captures };
-  set.checkout = resolveGithub(fetch, 'actions', 'checkout', captures) ?? baseline('actions_checkout');
-  set.setup_java = resolveGithub(fetch, 'actions', 'setup-java', captures) ?? baseline('actions_setup_java');
-  set.setup_kotlin = resolveGithub(fetch, 'fwilhe2', 'setup-kotlin', captures) ?? baseline('setup_kotlin_action');
-  set.setup_python = resolveGithub(fetch, 'actions', 'setup-python', captures) ?? baseline('actions_setup_python');
-  set.python_interpreter = bareTag(resolveGithub(fetch, 'python', 'cpython', captures)) ?? baseline('python_interpreter');
-  set.kotlin = resolveGithub(fetch, 'JetBrains', 'kotlin', captures) ?? baseline('kotlin_compiler');
+  set.checkout = resolveDeclaredGithub(fetch, 'actions_checkout', captures) ?? baseline('actions_checkout');
+  set.setup_java = resolveDeclaredGithub(fetch, 'actions_setup_java', captures) ?? baseline('actions_setup_java');
+  set.setup_kotlin = resolveDeclaredGithub(fetch, 'setup_kotlin_action', captures) ?? baseline('setup_kotlin_action');
+  set.setup_python = resolveDeclaredGithub(fetch, 'actions_setup_python', captures) ?? baseline('actions_setup_python');
+  set.python_interpreter = bareTag(resolveDeclaredGithub(fetch, 'python_interpreter', captures)) ?? baseline('python_interpreter');
+  set.kotlin = resolveDeclaredGithub(fetch, 'kotlin_compiler', captures) ?? baseline('kotlin_compiler');
   set.java_lts = resolveJavaLts(fetch, captures) ?? baseline('java_lts');
-  set.setup_coursier = resolveGithub(fetch, 'coursier', 'setup-action', captures) ?? baseline('setup_coursier_action');
-  set.scala = bareTag(resolveGithub(fetch, 'scala', 'scala', captures)) ?? baseline('scala_compiler');
+  set.setup_coursier = resolveDeclaredGithub(fetch, 'setup_coursier_action', captures) ?? baseline('setup_coursier_action');
+  set.scala = bareTag(resolveDeclaredGithub(fetch, 'scala_compiler', captures)) ?? baseline('scala_compiler');
   return set;
 }
 

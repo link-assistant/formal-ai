@@ -43,8 +43,8 @@ const FIXTURES = new Map([
   ['https://api.adoptium.net/v3/info/available_releases', '{"most_recent_lts":25}'],
   ['https://api.github.com/repos/coursier/setup-action/releases/latest', '{"tag_name":"v3.0.4"}'],
   ['https://api.github.com/repos/coursier/setup-action/commits/v3.0.4', '{"sha":"648df969f41ef15fda2baba8b37f9fa3d16390a3"}'],
-  ['https://api.github.com/repos/scala/scala/releases/latest', '{"tag_name":"v2.13.18"}'],
-  ['https://api.github.com/repos/scala/scala/commits/v2.13.18', '{"sha":"0000000000000000000000000000000000000000"}'],
+  ['https://api.github.com/repos/scala/scala3/releases/latest', '{"tag_name":"v3.10.0"}'],
+  ['https://api.github.com/repos/scala/scala3/commits/v3.10.0', '{"sha":"0000000000000000000000000000000000000000"}'],
 ]);
 
 /** Mirrors `const fn fixed_clock`. */
@@ -84,7 +84,7 @@ test('resolves_every_pin_from_live_fixtures', () => {
   assert.equal(versions.java_lts.origin, 'live');
   assert.equal(versions.setup_coursier.tag, 'v3.0.4');
   assert.equal(versions.setup_coursier.sha, '648df969f41ef15fda2baba8b37f9fa3d16390a3');
-  assert.equal(versions.scala.tag, '2.13.18');
+  assert.equal(versions.scala.tag, '3.10.0');
   assert.deepEqual(provenanceNote(versions), []);
 });
 
@@ -93,7 +93,7 @@ test('records_the_resolution_in_the_derivation', () => {
   const joined = recordVersionSet(versions).map((event) => `${event.kind} ${event.payload}`).join('\n');
   assert.equal(joined.includes('version_resolution pin=actions_checkout tag=v7.0.1'), true);
   assert.equal(joined.includes('java_lts tag=25 sha= origin=live'), true);
-  assert.equal(joined.includes('pin=scala_compiler tag=2.13.18 sha=0000000000000000000000000000000000000000 origin=live'), true);
+  assert.equal(joined.includes('pin=scala_compiler tag=3.10.0 sha=0000000000000000000000000000000000000000 origin=live'), true);
   assert.equal(
     joined.split('\n')[0],
     `source:http https://api.github.com/repos/actions/checkout/commits/v7.0.1 fetched_at=1800000000 sha256=${sha256Hex('{"sha":"3d3c42e5aac5ba805825da76410c181273ba90b1"}')} cached=false`,
@@ -122,7 +122,7 @@ test('empty_cache_falls_back_to_the_shipped_baseline', () => {
   assert.equal(versions.setup_kotlin.tag, 'v2.0');
   assert.equal(versions.kotlin.tag, 'v2.4.20');
   assert.equal(versions.java_lts.tag, '25');
-  assert.equal(versions.scala.tag, '2.13.18');
+  assert.equal(versions.scala.tag, '3.10.0');
   assert.deepEqual(versions, { ...baselineVersionSet(), captures: [] });
 });
 
@@ -130,7 +130,7 @@ test('fills_the_scala_ci_setup_placeholders', () => {
   const template = '      - uses: coursier/setup-action@{setup_coursier_ref} # {setup_coursier_tag}\n        with:\n          jvm: temurin:{java_lts}\n          apps: scala:{scala_version} scalac:{scala_version}\n';
   assert.equal(
     fillWorkflowVersions(template, baselineVersionSet()),
-    '      - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3  # v3.0.4\n        with:\n          jvm: temurin:25\n          apps: scala:2.13.18 scalac:2.13.18',
+    '      - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3  # v3.0.4\n        with:\n          jvm: temurin:25\n          apps: scala:3.10.0 scalac:3.10.0',
   );
 });
 
@@ -141,7 +141,7 @@ test('for_generation_walks_live_then_cache_then_baseline', () => {
   assert.deepEqual(live, resolveVersionSet(onlineFetch(new Map())));
   const replayed = forGeneration(offlineFetch(cache));
   assert.equal(replayed.checkout.origin, 'cache');
-  assert.equal(replayed.scala.tag, '2.13.18');
+  assert.equal(replayed.scala.tag, '3.10.0');
   assert.deepEqual(forGeneration(offlineFetch(new Map())), { ...baselineVersionSet(), captures: [] });
   assert.deepEqual(forGeneration(), baselineVersionSet());
 });

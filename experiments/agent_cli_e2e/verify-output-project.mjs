@@ -83,10 +83,20 @@ function relativeFile(value) {
   assert.ok(value.split('/').every(part => part && part !== '.' && part !== '..'), 'unsafe effect path');
   return value;
 }
-// Normalize only the existing equivalent write-path field spellings; preserve every other argument.
-function writeArguments(arguments_) {
+// The real client projects relative planned paths to absolute workspace paths.
+// Compare the same confined effect identity; never accept traversal or outside files.
+function writeEffectPath(value, workspace) {
+  if (typeof value === 'string' && path.isAbsolute(value)) {
+    const relative = path.relative(path.resolve(workspace), value);
+    assert.equal(path.resolve(workspace, relative), value, 'noncanonical absolute effect path');
+    return relativeFile(relative);
+  }
+  return relativeFile(value);
+}
+// Normalize only equivalent path spellings; preserve every other argument.
+function writeArguments(arguments_, workspace) {
   const fields = ['filePath', 'file_path', 'path'];
-  const paths = fields.filter(key => arguments_[key] !== undefined).map(key => arguments_[key]);
+  const paths = fields.filter(key => arguments_[key] !== undefined).map(key => writeEffectPath(arguments_[key], workspace));
   assert.ok(paths.length > 0 && paths.every(value => value === paths[0]), 'ambiguous emitted effect path');
   assert.equal(typeof arguments_.content, 'string');
   const remaining = Object.fromEntries(Object.entries(arguments_).filter(([key]) => !fields.includes(key)));
@@ -143,7 +153,7 @@ export function verifyOutputProject({
         assert.equal(call.function?.name, emitted.name, 'returned tool name differs');
         const echoedArguments = JSON.parse(call.function.arguments);
         const write = ['write', 'write_file'].includes(emitted.name.toLowerCase());
-        assert.deepEqual(write ? writeArguments(echoedArguments) : echoedArguments, write ? writeArguments(emitted.arguments) : emitted.arguments, 'returned tool arguments differ');
+        assert.deepEqual(write ? writeArguments(echoedArguments, workspace) : echoedArguments, write ? writeArguments(emitted.arguments, workspace) : emitted.arguments, 'returned tool arguments differ');
         acknowledged.add(call.id);
       }
       if (message.role !== 'tool') continue;
@@ -167,7 +177,7 @@ export function verifyOutputProject({
       assert.equal(calls.has(call.id), false, 'duplicate current tool call id');
       calls.set(call.id, call);
       if (['write', 'write_file'].includes(call.name.toLowerCase())) {
-        const file = writeArguments(call.arguments).path;
+        const file = writeArguments(call.arguments, workspace).path;
         if (expectedFiles.includes(file)) {
           assert.equal(writes.has(file), false, 'duplicate emitted effect');
           assert.equal(typeof call.arguments.content, 'string');
