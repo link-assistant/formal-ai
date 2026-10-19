@@ -24,7 +24,7 @@ parentPort.on('message', ({
       path,
       sourceBytes: sourceBytes.length
     });
-    const language = path.endsWith('.rs') ? 'Rust' : /\.(?:ts|mts|tsx)$/u.test(path) ? 'TypeScript' : 'JavaScript';
+    const language = path.endsWith('.rs') ? 'Rust' : /\.(?:ts|mts|cts|tsx)$/u.test(path) ? 'TypeScript' : 'JavaScript';
     const frontend = frontends.forSource(path, language);
     const {
       compressed,

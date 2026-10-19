@@ -3,7 +3,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { ownedProductionSources } from './check-source-networks.mjs';
+import { ownedProductionSources, SOURCE_ROOTS } from './check-source-networks.mjs';
 import { workflowPin } from './translate-js-rust.mjs';
 import { verifySourceDistribution } from './lib/source-network-packets.mjs';
 
@@ -12,7 +12,7 @@ const value = (name, fallback) => args.includes(name) ? args[args.indexOf(name) 
 const root = resolve(value('--source-root', '') || execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim());
 const directory = resolve(process.argv[2] ?? '');
 if (!process.argv[2]) throw new Error('an extracted source-network distribution directory is required');
-const dirty = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
+const dirty = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', ...SOURCE_ROOTS],
   { cwd: root, encoding: 'utf8' }).trim();
 if (dirty) throw new Error('distribution must be checked against a committed source tree');
 const sourceHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();

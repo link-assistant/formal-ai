@@ -133,7 +133,7 @@ test('production source producer imports without launching serialization and enu
   const { main, ownedProductionSources } = await import('../../../scripts/check-source-networks.mjs');
   assert.equal(typeof main, 'function');
   const paths = ownedProductionSources();
-  for (const root of ['rust/src/', 'js/', 'ts/']) assert.ok(paths.some((path) => path.startsWith(root)));
+  for (const root of ['rust/src/', 'js/', 'ts/', 'scripts/', 'packages/']) assert.ok(paths.some((path) => path.startsWith(root)));
   assert.equal(paths.length, new Set(paths).size);
   assert.ok(paths.every((path) => !path.startsWith('rust/tests/') && !path.startsWith('js/vendor/')
     && !path.startsWith('js/seed/') && !path.endsWith('.bundle.js')));

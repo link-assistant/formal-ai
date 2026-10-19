@@ -1,21 +1,22 @@
 #!/usr/bin/env node
-// R1188-U3: every owned production source survives full upstream network serialization.
-// Distribution packets contain full .lino.gz documents; receipts are identities, never substitutes for them.
+// R1188-U3: every owned operational source survives complete readable CST serialization.
+// Distribution packets contain full .cst.lino.gz documents; receipts are identities, never substitutes for them.
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, realpathSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { upstreamDirectory, workflowPin } from './translate-js-rust.mjs';
+import { workflowPin } from './translate-js-rust.mjs';
 import { partitionSourcePaths, sourceDigest } from './lib/source-network-packets.mjs';
 import { mapSourceNetworks } from './lib/source-network-workers.mjs';
 import {validateSourceCstReceipt} from './lib/source-cst-packets.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+export const SOURCE_ROOTS = Object.freeze(['rust/src', 'rust/build.rs', 'js', 'ts', 'scripts', 'packages']);
 
 /** Authored or generated production sources, excluding vendored distributions and test harnesses. */
 export function ownedProductionSources(root = ROOT) {
-  return execFileSync('git', ['ls-files', '-z', '--', 'rust/src', 'js', 'ts'], { cwd: root, encoding: 'utf8' })
-    .split('\0').filter((path) => /\.(?:rs|js|mjs|jsx|ts|mts|tsx)$/u.test(path)
+  return execFileSync('git', ['ls-files', '-z', '--', ...SOURCE_ROOTS], { cwd: root, encoding: 'utf8' })
+    .split('\0').filter((path) => /\.(?:rs|js|mjs|cjs|jsx|ts|mts|cts|tsx)$/u.test(path)
       && !/^js\/(?:vendor|seed)\//u.test(path) && !/\.bundle\.js$/u.test(path));
 }
 
@@ -24,11 +25,12 @@ export async function main(argumentsList) {
     ? argumentsList[argumentsList.indexOf(name) + 1] : fallback;
   const shardIndex = Number(value('--shard-index', '0')), shardCount = Number(value('--shard-count', '1'));
   const root = resolve(value('--source-root', ROOT));
-  const commit = value('--upstream-commit', '') || workflowPin(readFileSync(join(root, '.github/workflows/layered-ci.yml'), 'utf8'));
+  const protocolPin = workflowPin(readFileSync(join(ROOT, '.github/workflows/layered-ci.yml'), 'utf8'));
+  const commit = value('--upstream-commit', '') || protocolPin;
   if (!/^[a-f0-9]{40}$/u.test(commit ?? '')) throw new Error('one exact serializer commit is required');
-  const upstream = upstreamDirectory(argumentsList, commit);
+  if (commit !== protocolPin) throw new Error('SourceProtocolCompilerPinMismatch');
   const baseHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
-  const workingTreeChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
+  const workingTreeChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', ...SOURCE_ROOTS],
     { cwd: root, encoding: 'utf8' }).trim();
   const paths = ownedProductionSources(root);
   const selected = partitionSourcePaths(paths, shardIndex, shardCount,
@@ -37,7 +39,7 @@ export async function main(argumentsList) {
   const output = value('--output', '');
   if (output && !argumentsList.includes('--write')) throw new Error('--output requires --write');
   const receipts = await mapSourceNetworks(selected, new URL('./lib/source-network-worker.mjs', import.meta.url),
-    { root, upstream: resolve(upstream), shardIndex, output, cstRuntimeDirectory: process.env.FORMAL_AI_CST_RUNTIME },
+    { root, shardIndex, output, cstRuntimeDirectory: process.env.FORMAL_AI_CST_RUNTIME },
     (observation) => console.error(JSON.stringify(observation)));
   for (const receipt of receipts) {
     validateSourceCstReceipt(receipt, receipt.path);
@@ -47,7 +49,7 @@ export async function main(argumentsList) {
   }
   const observedHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
   if (observedHead !== baseHead) throw new Error('repository HEAD changed during serialization');
-  const finalChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
+  const finalChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', ...SOURCE_ROOTS],
     { cwd: root, encoding: 'utf8' }).trim();
   const sourceHead = workingTreeChanges || finalChanges ? null : baseHead;
   const report = { sourceHead, baseHead, inputState: sourceHead ? 'committed-head' : 'working-tree', upstreamCommit: commit, shardIndex, shardCount, totalOwnedSources: paths.length,

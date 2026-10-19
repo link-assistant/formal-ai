@@ -133,15 +133,6 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - name: Check out the shared pinned meta-language serializer
-        uses: actions/checkout@v7
-        with:
-          repository: link-foundation/meta-language
-          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
-          path: .meta-language
-          persist-credentials: false
-      - name: Install serializer runtime dependencies
-        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Verify the source CST runtime derives from the frozen dependency closure
         run: node scripts/generate-source-cst-runtime.mjs --check
       - name: Provision the complete locked source CST grammar runtime
@@ -156,7 +147,7 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "complete source network serialization" \
             node scripts/check-source-networks.mjs --write \
-              --meta-language .meta-language --shard-count 16 \
+              --shard-count 16 \
               --shard-index "$SOURCE_SHARD" --output "$SOURCE_NETWORK_OUTPUT"
       - name: Upload complete serialized source packets and receipts
         uses: actions/upload-artifact@v7

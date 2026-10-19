@@ -12,6 +12,9 @@ on: # zizmor: ignore[dangerous-triggers]
     paths:
       - ".github/workflows/publish-source-networks.yml"
       - "scripts/release-protocol.mjs"
+      - "scripts/**"
+      - "packages/**"
+      - "rust/build.rs"
       - "scripts/lib/rust-projection-presentation.mjs"
       - "scripts/self-translation/lexer.mjs"
       - "scripts/check-readable-code.mjs"
@@ -151,15 +154,6 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '24.x'
-      - name: Check out the shared pinned serializer
-        uses: actions/checkout@v7
-        with:
-          repository: link-foundation/meta-language
-          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
-          path: .meta-language
-          persist-credentials: false
-      - name: Install serializer runtime dependencies
-        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Provision the captured complete source CST grammar runtime
         run: node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/provision-source-cst-runtime.mjs" "$RUNNER_TEMP/source-cst-runtime"
       - name: Produce complete lossless packets from the selected source commit
@@ -176,7 +170,7 @@ jobs:
             "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR" "$RELEASE_PROTOCOL_COMMIT" "$RELEASE_PROTOCOL_SHA256"
           bash "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/run-with-budget-warning.sh" "$TEST_BUDGET_SECONDS" source-networks-release \
             node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/check-source-networks.mjs" \
-            --source-root "$GITHUB_WORKSPACE" --upstream-commit "$SERIALIZER_COMMIT" --meta-language .meta-language \
+            --source-root "$GITHUB_WORKSPACE" --upstream-commit "$SERIALIZER_COMMIT" \
             --shard-count 16 --shard-index "$SOURCE_SHARD" --write --output "$PACKET_DIRECTORY"
       - name: Bundle the complete shard with its receipts
         env:

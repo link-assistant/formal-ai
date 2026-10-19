@@ -7,7 +7,7 @@ export function babelSourceFrontend(parser, filename) {
     if (language === 'TypeScript') plugins.push('typescript');
     if (language === 'JavaScript' || filename.endsWith('.tsx')) plugins.push('jsx');
     const ast = parser.parse(source, {
-      sourceType: 'unambiguous',
+      sourceType: /\.(?:cjs|cts)$/u.test(filename) ? 'commonjs' : 'unambiguous',
       tokens: true,
       attachComment: false,
       createParenthesizedExpressions: true,
