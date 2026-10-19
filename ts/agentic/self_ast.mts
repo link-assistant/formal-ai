@@ -1,6 +1,6 @@
 // Self-inspection uses actual recursive Rust CST content supplied by the host.
-// No committed histogram substitutes for current source. The optional pinned
-// compiler must be available; otherwise the recipe reports unavailable custody.
+// No committed histogram substitutes for current source. The default frontend
+// derives actual content; an explicitly selected SDK must validate its pin.
 // Legacy astCensus remains an explicitly engine-disabled diagnostic adapter.
 
 import { host, hasHost } from './host.mjs';
@@ -15,7 +15,8 @@ const RUST_GRAMMAR_LABEL = 'rust';
 export const TARGET_MODULE_PATH = 'src/agentic_coding/planner.rs';
 
 /** Mirrors `AST_PATH` in rust/src/agentic_coding/self_ast.rs. */
-export const AST_PATH = 'self-ast.lino';
+// Historical export name; the primary artifact is a complete source CST.
+export const AST_PATH = 'self-cst.lino';
 
 // No committed histogram substitutes for current recursive source content.
 
@@ -35,6 +36,7 @@ const astKeywords = () => agenticMessage('self_ast_keywords').split('|');
 export function isSelfAstTask(prompt) {
   const lower = prompt.toLowerCase();
   const namesAst = astKeywords().some((keyword) => lower.includes(keyword))
+    || lower.split(/[^\p{L}\p{N}]+/u).includes('cst')
     || (lower.includes('ast') && lower.includes('meta algorithm'));
   const selfReference = lower.includes('our') || lower.includes('itself')
     || lower.includes('meta algorithm') || lower.includes('planner');

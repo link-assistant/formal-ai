@@ -177,13 +177,14 @@ jobs:
           EXPECT_TEXT: flowchart
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
-      - name: Run agent CLI E2E — self-inspection CST/AST census (no web step)
+      - name: Run agent CLI E2E — self-inspection complete source CST (no web step)
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         env:
           PORT: 8771
-          TASK: "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation."
-          EXPECT_FILE: self-ast.lino
-          EXPECT_TEXT: named_node_count
+          TASK: "Store the complete source CST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and preserve every literal, comment, punctuation mark and whitespace character in recursive human-readable Links Notation."
+          EXPECT_FILE: self-cst.lino
+          EXPECT_TEXT: owned-source
+          COMPLETION_EVIDENCE: source-cst
           MIN_POSTS: 3
         run: experiments/agent_cli_e2e/run_agent_cli.sh
       - name: "Run agent CLI E2E — learn-from-source directive (issue #499, no web step)"

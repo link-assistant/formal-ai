@@ -285,7 +285,7 @@ test('option-shaped verifier cannot change independent shell interpretation', ()
     context.cleanup();
   }
 });
-for (const [mode, posts, expected] of [['output-project', 1, 0], ['minimum-posts', 3, 1], ['minimum-posts', 4, 0], ['unknown', 4, 1]]) test('shared harness completion contract ' + mode + ' retains explicit recipe minimums ' + posts, () => {
+for (const [mode, posts, expected] of [['output-project', 1, 0], ['minimum-posts', 3, 1], ['minimum-posts', 4, 0], ['source-cst', 3, 1], ['source-cst', 4, 0], ['unknown', 4, 1]]) test('shared harness completion contract ' + mode + ' retains explicit recipe minimums ' + posts, () => {
   const source = fs.readFileSync(path.join(here, 'run_agent_cli.sh'), 'utf8');
   const start = source.indexOf('case "$COMPLETION_EVIDENCE" in');
   const end = source.indexOf('\nesac', start);
@@ -296,6 +296,10 @@ for (const [mode, posts, expected] of [['output-project', 1, 0], ['minimum-posts
     timeout: 10000
   });
   assert.equal(observed.status, expected, observed.stderr);
+  if (mode === 'source-cst' && observed.status === 0) {
+    assert.ok(observed.stdout.includes('verify-source-cst.mjs'));
+    assert.ok(observed.stdout.includes('declared-work/main.py'));
+  }
   if (mode === 'output-project') {
     assert.ok(observed.stdout.includes('verify-output-project.mjs'));
     assert.ok(observed.stdout.includes('declared-task'));

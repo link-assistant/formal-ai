@@ -9,11 +9,16 @@ import { rustSourceFrontend } from './source-cst-rust.mjs';
 import { readSyntaxRules } from '../../js/meta/readable-source.js';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const digest = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-export async function sourceCstFrontends(runtimeDirectory = process.env.FORMAL_AI_CST_RUNTIME || root) {
-  const require = createRequire(path.join(path.resolve(runtimeDirectory), 'package.json'));
-  const entry = require.resolve('@babel/parser'),
+export async function sourceCstFrontends(runtimeDirectory = process.env.FORMAL_AI_CST_RUNTIME || root, languages = ['JavaScript', 'TypeScript', 'Rust']) {
+  if (!Array.isArray(languages) || !languages.length || new Set(languages).size !== languages.length ||
+      languages.some(language => !['JavaScript', 'TypeScript', 'Rust'].includes(language))) throw Error('UnsupportedSourceCstSelection');
+  let entry, parser, metadata;
+  if (languages.some(language => language !== 'Rust')) {
+    const require = createRequire(path.join(path.resolve(runtimeDirectory), 'package.json'));
+    entry = require.resolve('@babel/parser');
     parser = await import(pathToFileURL(entry).href);
-  const metadata = require('@babel/parser/package.json');
+    metadata = require('@babel/parser/package.json');
+  }
   const wasmRuntime = path.join(root, 'js/vendor/tree-sitter/web-tree-sitter.mjs'),
     grammar = path.join(root, 'js/vendor/tree-sitter/tree-sitter-rust.wasm');
   const runtime = await import(pathToFileURL(wasmRuntime).href);
@@ -24,11 +29,11 @@ export async function sourceCstFrontends(runtimeDirectory = process.env.FORMAL_A
   const rulesFile = path.join(root, 'data/meta/source-model/syntax-rules.lino'),
     rules = readSyntaxRules(fs.readFileSync(rulesFile, 'utf8'));
   const providers = {
-    babel: {
+    babel: parser ? {
       provider: '@babel/parser',
       version: metadata.version,
       moduleSha256: digest(entry)
-    },
+    } : null,
     rust: {
       provider: 'web-tree-sitter/rust',
       runtimeSha256: digest(wasmRuntime),
@@ -37,7 +42,7 @@ export async function sourceCstFrontends(runtimeDirectory = process.env.FORMAL_A
   };
   return {
     forSource(filename, language) {
-      if (!['JavaScript', 'TypeScript', 'Rust'].includes(language)) throw Error('UnsupportedSourceCstLanguage');
+      if (!languages.includes(language)) throw Error('UnsupportedSourceCstLanguage');
       return {
         parse: language === 'Rust' ? rust : babelSourceFrontend(parser, filename),
         rules,

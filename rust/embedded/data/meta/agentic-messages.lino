@@ -369,7 +369,7 @@ agentic_messages
   message learning_report_task_self_hosting_learning
     text "Use Formal AI auto-learning to inspect the persisted issue 657 self-hosting attribution observations as an associative links network, rank the observations and attribution amendments, keep promotion human-review gated, and write self-hosting-learning-report.lino."
   message self_ast_task
-    text "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its full recursive source CST in human-readable Links Notation."
+    text "Store the complete source CST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and preserve every literal, comment, punctuation mark and whitespace character in recursive human-readable Links Notation."
   message dreaming_audit_task
     text "Audit issue 540 dreaming through Formal AI: inspect the grounded dreaming meta-algorithm, identify every implementation gap from amendment application through replay, pattern learning, storage consent, and idle runtime, then record the generalization that resolves each gap as Links Notation in dreaming-gap-analysis.lino."
   message google_trends_learning_task
@@ -401,7 +401,7 @@ agentic_messages
   message learning_report_subject_self_hosting_learning
     text "self-hosting attribution observations and amendments"
   message self_ast_final_answer
-    text "Stored the CST/AST of our Rust meta algorithm ({target}) in our data, parsed through the meta-language links network (the sole CST/AST engine here) and recorded as full recursive human-readable Links Notation retaining tokens, comments and layout; counters are diagnostics only.\n\nGenerated document ({path}):\n\n{document}"
+    text "Stored the complete source CST of our Rust meta algorithm ({target}) as recursive human-readable Links Notation preserving tokens, comments and whitespace. The document owns its content and reconstructs without the original source buffer; histograms remain separate diagnostics.\n\nGenerated document ({path}):\n\n{document}"
   message dreaming_audit_method
     text "derived at runtime by cross-referencing meta_step, meta_function, and meta_test records of the grounded recipe"
   message dreaming_audit_conclusion_grounded
@@ -419,7 +419,7 @@ agentic_messages
   message associative_persistence_unresolved_evidence
     text "unresolved evidence link: {reference}"
   message self_ast_keywords
-    text "cst/ast|cst / ast|abstract-syntax|reason about itself"
+    text "cst/ast|cst / ast|abstract-syntax|reason about itself|concrete syntax"
   message google_trends_learning_frontier_cues
     text "learning frontier|self-improvement loop"
   message question_catalog_keywords

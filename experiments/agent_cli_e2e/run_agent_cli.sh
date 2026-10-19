@@ -283,9 +283,16 @@ case "$COMPLETION_EVIDENCE" in
       "$EFFECT_VERIFIER" "$EXPECT_OUTPUT_LINE" "$EVIDENCE_DIR/completion-effects.json" \
       || fail "actual output-project completion evidence failed"
     ;;
-  minimum-posts)
-    [ "$posts" -ge "$MIN_POSTS" ] \
-  || fail "expected ≥$MIN_POSTS chat completions, got $posts (loop stalled?)"
+  source-cst|minimum-posts)
+    if [ "$posts" -ge "$MIN_POSTS" ]; then
+      if [ "$COMPLETION_EVIDENCE" = source-cst ]; then
+        node "$ROOT/experiments/agent_cli_e2e/verify-source-cst.mjs" \
+          "$WORKDIR/$EXPECT_FILE" "$EVIDENCE_DIR/source-cst-verification.json" \
+          || fail "independent complete source CST verification failed"
+      fi
+    else
+      fail "expected ≥$MIN_POSTS chat completions, got $posts (loop stalled?)"
+    fi
     ;;
   *) fail "unsupported completion evidence contract: $COMPLETION_EVIDENCE" ;;
 esac

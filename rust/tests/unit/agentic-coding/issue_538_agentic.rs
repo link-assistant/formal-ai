@@ -490,6 +490,16 @@ fn recognises_the_self_ast_task() {
     assert!(self_ast::is_self_ast_task(
         "record the abstract-syntax of our planner in our data"
     ));
+    assert!(self_ast::is_self_ast_task(
+        "Store our planner CST with every comment and space."
+    ));
+    assert!(self_ast::is_self_ast_task(
+        "Save the concrete syntax of our own Rust source."
+    ));
+    assert!(!self_ast::is_self_ast_task("What is a CST?"));
+    assert!(!self_ast::is_self_ast_task(
+        "Describe a podcast in our notes."
+    ));
     // It does not steal the other recipes' requests or unrelated turns.
     assert!(!self_ast::is_self_ast_task(
         "make the tomato meaning more detailed"

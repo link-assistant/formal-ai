@@ -1,23 +1,10 @@
-//! Fourth agentic recipe — driving Formal AI to *store the CST/AST of its own
-//! Rust meta algorithm in our data* (issue #538).
+//! Self-inspection records complete recursive source CST in human-readable Links Notation.
 //!
-//! Issue #538 asks, among its self-inspection axes, for the *"CST/AST of all our
-//! Rust logic (meta algorithm) in our data"* so the system can *"reason about
-//! itself"*. This module is the smallest real, tested slice of that axis: it
-//! parses a real module of our own reasoning meta algorithm
-//! ([the deterministic planner](super::planner)) through the **sole CST/AST engine
-//! in this repo** — the link-foundation
-//! [meta-language](https://github.com/link-foundation/meta-language) links network,
-//! the same `LinkNetwork::parse` path used by `crate::coding::cst` — and emits
-//! recursive source content as human-readable Links Notation. Histograms are diagnostics only.
-//!
-//! Nothing here is hardcoded to one answer: [`render_ast_document`] is a pure
-//! function of whatever Rust source it is handed (see [`ast_census`]), so the same
-//! recipe stores the CST/AST of *any* module. The recipe pins the planner as its
-//! canonical self-inspection target the same way [`super::diagram`] pins the
-//! planner's recipe table — the generality is proven by the unit tests parsing
-//! several different sources, and by independent source-free reconstruction and grammar reparse. Neural inference stays a NON-GOAL: the census is a deterministic
-//! function of the real tree-sitter parse.
+//! The planner source embedded at build time is the canonical self-inspection target
+//! (issue #538). The persisted source model owns all literals, comments, punctuation
+//! and whitespace and reconstructs without its original source buffer. Fresh grammar
+//! verification checks concrete structure independently. Legacy AST API names and
+//! histogram adapters remain compatibility diagnostics; they are not source artifacts.
 
 #[cfg(feature = "meta-language")]
 use std::collections::BTreeMap;
@@ -74,8 +61,8 @@ pub const TARGET_MODULE_PATH: &str = "src/agentic_coding/planner.rs";
 /// The planner source, embedded from disk at build time.
 const TARGET_MODULE_SOURCE: &str = include_str!("planner.rs");
 
-/// The workspace path the planner writes the generated CST/AST document to.
-pub const AST_PATH: &str = "self-ast.lino";
+/// Historical API name for the complete source CST artifact written by the planner.
+pub const AST_PATH: &str = "self-cst.lino";
 
 /// A *differently worded* request for the self-AST recipe — the maintainer's
 /// generality check: the router recognises the intent from the words, not a
@@ -90,11 +77,12 @@ pub fn ast_task() -> &'static str {
 /// Keywords that mark a user turn as the self-AST recipe. Kept distinct from the
 /// diagram keywords (`mermaid`/`diagram`) so the two self-inspection recipes never
 /// collide.
-const AST_KEYWORDS: [&str; 4] = [
+const AST_KEYWORDS: &[&str] = &[
     "cst/ast",
     "cst / ast",
     "abstract-syntax",
     "reason about itself",
+    "concrete syntax",
 ];
 
 /// Whether `prompt` asks to store the CST/AST of the meta algorithm (issue #538).
@@ -104,6 +92,9 @@ pub fn is_self_ast_task(prompt: &str) -> bool {
     // Require an AST/CST intent word plus a self-reference so ordinary "parse this"
     // requests do not route here.
     let names_ast = AST_KEYWORDS.iter().any(|keyword| lower.contains(keyword))
+        || lower
+            .split(|character: char| !character.is_alphanumeric())
+            .any(|word| word == "cst")
         || (lower.contains("ast") && lower.contains("meta algorithm"));
     let self_reference = lower.contains("our")
         || lower.contains("itself")
@@ -201,12 +192,10 @@ pub const fn ast_census(_source: &str) -> AstCensus {
     }
 }
 
-/// Render the CST/AST-in-data document (Links Notation) for a given target and
-/// source. Deterministic and ends with exactly one trailing newline.
-///
-/// The output is what the Agent CLI writes to [`AST_PATH`] and what
-/// `data/meta/self-ast.lino` is committed as, asserted byte-for-byte in the
-/// issue-#538 tests.
+/// Render complete recursive source CST for the given target and actual source.
+/// The legacy function name is retained for callers; the artifact at [`AST_PATH`]
+/// contains source content and is verified by reconstruction and fresh grammar.
+/// Historical census records remain separate diagnostics.
 #[must_use]
 pub fn render_ast_document(target_path: &str, source: &str) -> String {
     source_document(target_path, source)

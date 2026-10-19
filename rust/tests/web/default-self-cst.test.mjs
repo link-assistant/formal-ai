@@ -7,7 +7,7 @@ import {installNodeHost} from '../../../js/agentic/node-host.mjs';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {host} from '../../../js/agentic/host.mjs';
 import {sourceFromLinks,readSourceLinks,sourceOwner} from '../../../js/meta/readable-source.js';
-import {TARGET_MODULE_PATH,astTask,AST_PATH} from '../../../js/agentic/self_ast.mjs';
+import {TARGET_MODULE_PATH,astTask,AST_PATH,isSelfAstTask} from '../../../js/agentic/self_ast.mjs';
 import {planChatStep} from '../../../js/agentic/planner.mjs';
 import {drive,execute} from '../../../experiments/js_dogfood/drive.mjs';
 import {parseChatMessage} from '../../../js/server/chat-request.mjs';
@@ -40,6 +40,7 @@ test('default Node self inspection emits actual complete source through the actu
     }
     assert.equal(typeof answer,'string');
     assert.deepEqual(effects,['write_file','run_command']);
+    assert.equal(AST_PATH,'self-cst.lino');
     const document=fs.readFileSync(path.join(workspace,AST_PATH),'utf8');
     const model=readSourceLinks(document);
     assert.equal(sourceOwner(model),TARGET_MODULE_PATH);
@@ -58,4 +59,10 @@ test('explicit rejected SDK never silently uses the default CST engine', async()
   await assert.rejects(host().sourceDocument(TARGET_MODULE_PATH));
   await installNodeHost(new WorkerHost(),{sourceModelDirectory:42});
   await assert.rejects(host().sourceDocument(TARGET_MODULE_PATH),/PinnedSourceModelSdkUnavailable/);
+});
+
+test('complete source CST intent recognizes independent wording and rejects unrelated CST or podcast text',()=>{
+  for(const prompt of ['Store our planner CST with every comment and space.',
+    'Save the concrete syntax of our own Rust source.'])assert.equal(isSelfAstTask(prompt),true);
+  for(const prompt of ['Describe a podcast in our notes.','What is a CST?'])assert.equal(isSelfAstTask(prompt),false);
 });
