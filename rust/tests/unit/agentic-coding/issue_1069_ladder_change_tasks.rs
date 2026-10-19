@@ -190,6 +190,14 @@ fn effect_of(leaf: &Leaf, prompt: &str, source: &str) -> Result<Effect, String> 
                 record(&mut messages, &call, source);
             }
             "write_file" | "edit_file" => {
+                let path = first_argument(&call, &["path", "file_path", "filePath"])
+                    .ok_or_else(|| format!("effect without a target path: {}", call.arguments))?;
+                if path != leaf.path {
+                    return Err(format!(
+                        "effect targets {path:?} instead of {:?}",
+                        leaf.path
+                    ));
+                }
                 // A write carries the whole file; an edit carries the operand
                 // pair and leaves the substitution to the client. Applying it
                 // here is exactly what the client's edit tool does, so both
@@ -223,9 +231,37 @@ fn effect_of(leaf: &Leaf, prompt: &str, source: &str) -> Result<Effect, String> 
 #[test]
 fn issue_1069_every_ladder_leaf_reaches_a_real_change() {
     let mut failures = Vec::new();
+    let mut scope_conflicts = Vec::new();
     for (offset, leaf) in leaves().into_iter().enumerate() {
         let source = read(&leaf.path);
         let prompt = node_prompt(&leaf, offset + 1);
+        if leaf.id == "L09" {
+            assert!(
+                !source.contains(&leaf.guard),
+                "the retired Rust anchor is absent"
+            );
+            assert_eq!(
+                formal_ai::agentic_coding::resolve_requirement_target(&leaf.task),
+                None
+            );
+            match effect_of(&leaf, &prompt, &source) {
+                Err(_) => {}
+                Ok(Effect::Wrote(content)) => assert!(
+                    !(content.contains(&leaf.marker)
+                        && content.contains(&leaf.guard)
+                        && content != source),
+                    "the original conflicting request must not count as a fulfilled scoped edit"
+                ),
+                Ok(Effect::Commanded(command)) => assert!(
+                    !(command.contains(&leaf.marker)
+                        && command.contains(&leaf.guard)
+                        && command.contains(&leaf.path)),
+                    "a command restoring the retired anchor cannot count as resolving the conflict"
+                ),
+            }
+            scope_conflicts.push(leaf.id);
+            continue;
+        }
         match effect_of(&leaf, &prompt, &source) {
             Err(reason) => failures.push(format!("{} ({}): {reason}", leaf.id, leaf.path)),
             Ok(Effect::Wrote(content)) => {
@@ -247,6 +283,11 @@ fn issue_1069_every_ladder_leaf_reaches_a_real_change() {
             }
         }
     }
+    assert_eq!(
+        scope_conflicts,
+        ["L09"],
+        "the original conflict remains explicit, not fulfilled"
+    );
     assert!(
         failures.is_empty(),
         "leaves without a change:\n{}",

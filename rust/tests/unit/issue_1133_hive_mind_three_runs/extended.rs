@@ -1,5 +1,62 @@
 use super::*;
 
+// Reuse the production reader and canonical templates without exporting a planner helper.
+#[path = "../../../src/agentic_coding/work_item_steps.rs"]
+mod canonical_work_item_steps;
+
+fn expected_owned_recipe_commit(planned: &[PlannedToolCall]) -> String {
+    let paths = planned
+        .iter()
+        .filter(|call| call.tool == "write")
+        .filter(|call| {
+            let arguments: serde_json::Value =
+                serde_json::from_str(&call.arguments).expect("write arguments");
+            arguments["append_mode"] != "atomic_record_append"
+        })
+        .map(path_of)
+        .collect::<Vec<_>>();
+    assert_eq!(paths.first().map(String::as_str), Some("Main.scala"));
+    assert_eq!(
+        paths
+            .iter()
+            .collect::<std::collections::BTreeSet<_>>()
+            .len(),
+        paths.len(),
+        "one ordered write per recipe path"
+    );
+    let quote = |value: &str| {
+        assert!(
+            !value.contains('\''),
+            "these fixture operands contain no shell quote"
+        );
+        format!("'{value}'")
+    };
+    let files = paths
+        .iter()
+        .map(|value| quote(value))
+        .collect::<Vec<_>>()
+        .join(" ");
+    let subject = canonical_work_item_steps::fill("subject_added", &[("{path}", &paths[0])]);
+    let body = canonical_work_item_steps::fill("body_resolves", &[("{reference}", ISSUE)]);
+    let inner = canonical_work_item_steps::fill(
+        "recipe_commit_command",
+        &[
+            ("{files}", "\"$@\""),
+            ("{subject}", &quote(&subject)),
+            ("{body}", &quote(&body)),
+            ("{branch}", &quote(BRANCH)),
+        ],
+    );
+    canonical_work_item_steps::fill(
+        "task-scaffold-commit-command",
+        &[
+            ("{files}", &files),
+            ("{reference}", &quote(ISSUE)),
+            ("{commit}", &inner),
+        ],
+    )
+}
+
 #[test]
 fn the_claude_code_tool_set_reads_the_issue_with_gh_not_a_nested_model() {
     let messages = vec![ChatMessage::user(prompt())];
@@ -286,7 +343,12 @@ fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified
     );
     assert!(!answer.contains("Created and verified"), "{answer}");
     assert!(
-        answer.contains("scalac Main.scala") && answer.contains("not found"),
+        answer.contains(&command_of(
+            planned
+                .iter()
+                .find(|call| call.tool == "bash" && !is_work_item_read(&call.tool, &call.arguments))
+                .expect("the actual failed verifier call")
+        )) && answer.contains("/bin/sh: 1: scalac: not found"),
         "{answer}"
     );
 }
@@ -309,7 +371,7 @@ fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
     let commit = planned
         .iter()
         .map(command_of)
-        .find(|command| command.starts_with("git add --") && command.contains("git commit --only"))
+        .find(|command| command == &expected_owned_recipe_commit(&planned))
         .expect("the recipe ends with a commit step");
     assert!(
         commit.contains(&format!("git push -q origin '{BRANCH}'")),
@@ -331,11 +393,8 @@ fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
         .filter(|c| !c.is_empty())
         .collect();
     assert_eq!(
-        commands
-            .last()
-            .map(String::as_str)
-            .map(|c| c.starts_with("git add")),
-        Some(true),
+        commands.last(),
+        Some(&expected_owned_recipe_commit(&planned)),
         "{commands:?}"
     );
 }
@@ -360,10 +419,47 @@ fn a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands() 
         .iter()
         .find(|call| call.tool == "write" && path_of(call).starts_with(".github/workflows/"))
         .expect("the workflow is written beside the program");
+    let answer =
+        formal_ai::program_contract::answer(&scala, &mut formal_ai::event_log::EventLog::default())
+            .expect("the same fetched task has a canonical program contract");
+    let recipe = answer
+        .execution_recipe
+        .expect("the canonical executable recipe");
+    assert_eq!(recipe.path, "Main.scala");
+    let primary = planned
+        .iter()
+        .find(|call| call.tool == "write" && path_of(call) == recipe.path)
+        .expect("actual primary source write");
+    let primary_arguments: serde_json::Value = serde_json::from_str(&primary.arguments).unwrap();
+    assert_eq!(primary_arguments["content"], recipe.source);
+    let verifier = recipe
+        .supporting_files
+        .iter()
+        .find(|file| file.path == "tests/verify-output.sh")
+        .expect("the canonical recipe retains the compiler commands in its verifier");
+    let written_verifier = planned
+        .iter()
+        .find(|call| call.tool == "write" && path_of(call) == verifier.path)
+        .expect("the verifier is actually emitted");
+    let verifier_arguments: serde_json::Value =
+        serde_json::from_str(&written_verifier.arguments).unwrap();
+    assert_eq!(verifier_arguments["content"], verifier.source);
+    assert!(verifier.source.contains("scalac Main.scala"));
+    assert!(verifier.source.contains("scala Main"));
+    assert_eq!(recipe.commands, ["sh tests/verify-output.sh"]);
+    let workflow_arguments: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
+    assert_eq!(
+        workflow_arguments["content"],
+        formal_ai::agentic_coding::render_ci_workflow(
+            &recipe,
+            &formal_ai::version_resolution::VersionSet::for_generation()
+        )
+    );
     assert!(
-        workflow.arguments.contains("pull_request")
-            && workflow.arguments.contains("scalac Main.scala"),
-        "{workflow:?}"
+        workflow_arguments["content"]
+            .as_str()
+            .unwrap()
+            .contains("pull_request")
     );
 }
 
@@ -542,7 +638,7 @@ fn assert_named_branch_push(language: &str, request: String) {
     let commit = planned
         .iter()
         .map(command_of)
-        .find(|command| command.starts_with("git add --") && command.contains("git commit --only"))
+        .find(|command| command == &expected_owned_recipe_commit(&planned))
         .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
     assert!(
         commit.contains(&format!("git push -q origin '{BRANCH}'")),

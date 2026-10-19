@@ -211,22 +211,43 @@ fn native_owned_recipe_retains_agent_error_wrapper_exit_status() {
     for entry in cases.as_array().expect("receipt array") {
         let mut messages = serde_json::json!([{"role":"user","content":"Write a Scala program that prints \"Hello, World!\" to stdout."}]);
         let mut response = compiler_recovery_response(port, &messages);
+        let mut verifier = None;
         for _ in 0..8 {
             if compiler_recovery_call(&response)["name"] != "Write" {
                 break;
+            }
+            let call = compiler_recovery_call(&response);
+            let written_path = call["input"]["file_path"]
+                .as_str()
+                .or_else(|| call["input"]["path"].as_str());
+            if written_path == Some("tests/verify-output.sh") {
+                assert!(verifier.is_none(), "one owned verifier write");
+                verifier = Some(
+                    call["input"]["content"]
+                        .as_str()
+                        .expect("verifier bytes")
+                        .to_owned(),
+                );
             }
             append_compiler_receipt(&mut messages, &response, "written", false);
             response = compiler_recovery_response(port, &messages);
         }
         assert_eq!(
             compiler_recovery_call(&response)["input"]["command"],
-            entry["command"]
+            "sh tests/verify-output.sh"
         );
+        let verifier = verifier.expect("the actual recipe emits its owned verifier");
+        assert!(verifier.contains(entry["command"].as_str().expect("catalog compiler command")));
+        assert!(verifier.contains("__formal_ai_owned_process_failed_0__"));
+        let mut receipt = entry["receipt"].as_str().expect("receipt text").to_owned();
+        if entry["exit"].as_i64().is_some_and(|status| status != 0) {
+            receipt.push_str("\n__formal_ai_owned_process_failed_0__");
+        }
         append_compiler_receipt(
             &mut messages,
             &response,
-            entry["receipt"].as_str().expect("receipt text"),
-            true,
+            &receipt,
+            entry["exit"].as_i64() != Some(0),
         );
         let next = compiler_recovery_response(port, &messages);
         let installer = next["content"]

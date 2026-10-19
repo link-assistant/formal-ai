@@ -105,8 +105,47 @@ fn source_round_trip_is_lossless_for_a_real_module() {
 
 #[test]
 fn repair_case_renders_valid_links_notation() {
-    let lino = self_heal::case().links_notation();
-    parse_indented(&lino).expect("repair case should render valid Links Notation");
+    let case = self_heal::case();
+    let lino = case.links_notation();
+    let attachment_boundary = "\n  source_content\n";
+    let trace_boundary = "\n  failure_trace\n";
+    assert_eq!(
+        lino.matches(attachment_boundary).count(),
+        1,
+        "one current source attachment"
+    );
+    assert_eq!(
+        lino.matches(trace_boundary).count(),
+        1,
+        "one outer failure trace"
+    );
+    let (outer_prefix, attached) = lino
+        .split_once(attachment_boundary)
+        .expect("the repair case contains the full source attachment");
+    let (enveloped, outer_suffix) = attached
+        .split_once(trace_boundary)
+        .expect("the failure trace follows the source attachment");
+    let attachment = format!("{enveloped}\n")
+        .split_inclusive('\n')
+        .map(|line| {
+            if line == "\n" {
+                line
+            } else {
+                line.strip_prefix("    ")
+                    .expect("four-space attachment envelope")
+            }
+        })
+        .collect::<String>();
+    assert_eq!(attachment, case.source_round_trip.source_document);
+    assert_eq!(
+        self_ast::render_network_source(&attachment).expect("fresh recursive CST validation"),
+        self_ast::target_source()
+    );
+    // The outer metadata codec has a separate, shallow object grammar.
+    let outer = format!(
+        "{outer_prefix}\n  source_content verified_recursive_attachment\n  failure_trace\n{outer_suffix}"
+    );
+    parse_indented(&outer).expect("repair case should render valid Links Notation");
     assert!(lino.contains("repair_case"));
     assert!(lino.contains("outcome \"awaiting_review\""));
     assert!(lino.contains("human_gated \"true\""));

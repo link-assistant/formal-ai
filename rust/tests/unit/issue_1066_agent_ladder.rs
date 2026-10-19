@@ -248,6 +248,13 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
     assert_eq!(paths.len(), NODE_COUNT, "every node path is unique");
     assert_eq!(nodes[0].path, "R", "the root is emitted first");
 
+    let original_leaves = read("experiments/issue_1028_agent_cli_ladder/leaves.tsv");
+    let original_conflict = original_leaves
+        .lines()
+        .map(|line| line.split('\t').collect::<Vec<_>>())
+        .find(|row| row[0] == "L09")
+        .expect("the original L09 row is preserved");
+    let mut scope_conflicts = Vec::new();
     for node in &nodes {
         if node.depth == 5 {
             assert_eq!(
@@ -283,13 +290,29 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
                 node.criterion_marker,
                 node.criterion_path,
             );
-            assert!(
-                criterion_source.contains(&node.criterion_guard),
-                "{} anchor {:?} is absent from {}",
-                node.path,
-                node.criterion_guard,
-                node.criterion_path,
-            );
+            if node.criterion_path == original_conflict[2]
+                && node.criterion_marker == original_conflict[3]
+            {
+                assert!(node.text.contains(original_conflict[1]));
+                assert!(
+                    !criterion_source.contains(&node.criterion_guard),
+                    "the retired Rust anchor is absent"
+                );
+                assert_eq!(
+                    formal_ai::agentic_coding::resolve_requirement_target(original_conflict[1]),
+                    None,
+                    "the original Rust-only L09 scope remains an unfulfilled conflict"
+                );
+                scope_conflicts.push(node.path.clone());
+            } else {
+                assert!(
+                    criterion_source.contains(&node.criterion_guard),
+                    "{} anchor {:?} is absent from {}",
+                    node.path,
+                    node.criterion_guard,
+                    node.criterion_path,
+                );
+            }
         } else {
             // Exactly two children, named by the binary 1/2 convention, and both
             // of them are nodes the ladder will actually select.
@@ -338,6 +361,12 @@ fn the_ladder_generates_a_complete_binary_tree_of_sixty_three_nodes() {
             );
         }
     }
+
+    assert_eq!(
+        scope_conflicts.len(),
+        1,
+        "only the original L09 scope conflicts"
+    );
 
     let leaves = nodes
         .iter()
