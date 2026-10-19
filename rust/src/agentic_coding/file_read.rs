@@ -88,6 +88,11 @@ struct FileReadTools<'a> {
     progress: &'a Progress,
 }
 
+/// Explicit source-read requests bind observations and repetition guards to this turn.
+pub(super) fn file_read_evidence(messages: &[ChatMessage]) -> &[ChatMessage] {
+    &messages[records::file_read_window_start(messages).saturating_sub(1)..]
+}
+
 /// The issue-#627 file-reading recipe: direct filename requests use an advertised
 /// `read` tool, shell-shaped `cat` requests use the run tool, and multi-step
 /// "list then read" prompts walk `bash(ls)` → `read(file)` → final content.
@@ -100,7 +105,7 @@ pub(super) fn plan_file_read_step(
     let read_tool = tool_for(tool_names, Capability::Read);
     let run_tool = tool_for(tool_names, Capability::Run);
     let grep_tool = tool_for(tool_names, Capability::Grep);
-    let progress = Progress::scan(messages);
+    let progress = Progress::scan(file_read_evidence(messages));
     let tools = FileReadTools {
         read: read_tool,
         run: run_tool,

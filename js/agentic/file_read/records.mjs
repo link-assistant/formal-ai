@@ -2,18 +2,23 @@
 import { Capability } from '../capability.mjs';
 import { classifyTool } from '../capability_router.mjs';
 import { plainText } from '../content.mjs';
+import {evidenceWindowStart,isContinuationCue} from '../planner/continuation.mjs';
 import { commandArgument } from '../tool_result.mjs';
 import { jsonText } from '../plan.mjs';
 
+/** Repeated unfinished reads retain progress; an explicit request after a final answer reads afresh. */
+export function fileReadWindowStart(messages) {
+  const standing=evidenceWindowStart(messages);
+  const latest=messages.findLastIndex(message=>message.role.toLowerCase()==='user');
+  if(latest<0||isContinuationCue(plainText(messages[latest].content)))return standing;
+  const answered=messages.slice(standing,latest).some(message=>message.role.toLowerCase()==='assistant'
+    &&!(message.tool_calls?.length)&&plainText(message.content).trim()!=='');
+  return answered?latest+1:standing;
+}
+
 /** Mirrors `fn tool_result_records`: `{capability, arguments, content}` per current-turn result. */
 export function toolResultRecords(messages) {
-  let turnStart = 0;
-  for (let index = messages.length - 1; index >= 0; index -= 1) {
-    if (messages[index].role.toLowerCase() === 'user') {
-      turnStart = index + 1;
-      break;
-    }
-  }
+  const turnStart = fileReadWindowStart(messages);
   const records = [];
   for (let index = turnStart; index < messages.length; index += 1) {
     const message = messages[index];

@@ -5,6 +5,17 @@ use crate::agentic_coding::final_result::FinalResult;
 use crate::agentic_coding::{mutating_action, shell_command, shell_file_fallback};
 use crate::protocol::ChatMessage;
 
+/// Keep durable coding progress while explicit source reads require fresh evidence.
+fn repetition_progress(messages: &[ChatMessage]) -> Progress {
+    let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
+    let current = if super::super::file_read::file_read_task_for(&request).is_some() {
+        super::super::file_read::file_read_evidence(messages)
+    } else {
+        messages
+    };
+    Progress::scan(current)
+}
+
 /// A tool call this turn already completed is not a plan again (issue #1154).
 ///
 /// Independent of any argument parsing: whatever keys a client names its
@@ -18,7 +29,7 @@ pub(super) fn stop_repeated_call(plan: AgenticPlan, messages: &[ChatMessage]) ->
     let AgenticPlan::ToolCalls(calls) = &plan else {
         return plan;
     };
-    let progress = Progress::scan(messages);
+    let progress = repetition_progress(messages);
     let Some((repeated, attempt)) = calls
         .iter()
         .find_map(|call| progress.repeated_call(call).map(|attempt| (call, attempt)))
@@ -50,7 +61,7 @@ pub(super) fn stop_repeated_failure(plan: AgenticPlan, messages: &[ChatMessage])
     let AgenticPlan::ToolCalls(calls) = &plan else {
         return plan;
     };
-    let progress = Progress::scan(messages);
+    let progress = repetition_progress(messages);
     let Some(repeated) = calls
         .iter()
         .find(|call| progress.identical_failures_of(&call.tool) >= REPEATED_FAILURES_THAT_STOP)

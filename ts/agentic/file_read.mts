@@ -14,7 +14,7 @@ import { classifyTool } from './capability_router.mjs';
 import { Capability } from './capability.mjs';
 import { Progress } from './progress.mjs';
 import { sourceReadAnswer } from './file_read/source.mjs';
-import { toolResultRecords, readResultForPath, grepResultForPath, runRecordForCommand } from './file_read/records.mjs';
+import { fileReadWindowStart, toolResultRecords, readResultForPath, grepResultForPath, runRecordForCommand } from './file_read/records.mjs';
 export { toolResultRecords, readResultForPath, grepResultForPath, runRecordForCommand, samePath } from './file_read/records.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
 import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
@@ -82,6 +82,11 @@ export const directManyTask = (paths, mode) => withAnalysis({ kind: 'direct_many
 export const listThenReadTask = (directory, selection, mode) =>
   withAnalysis({ kind: 'list_then_read', directory, selection, mode });
 
+/** Current-turn source observations preserve the explicit request for diagnostics. */
+export function fileReadEvidence(messages) {
+  return messages.slice(Math.max(0,fileReadWindowStart(messages)-1));
+}
+
 /**
  * Mirrors `fn plan_file_read_step` in rust/src/agentic_coding/file_read.rs.
  * @param {object} task a `FileReadTask`
@@ -93,7 +98,7 @@ export function planFileReadStep(task, messages, toolNames) {
   const runTool = toolFor(toolNames, Capability.Run);
   const grepTool = toolFor(toolNames, Capability.Grep);
   const records = toolResultRecords(messages);
-  const progress = Progress.scan(messages);
+  const progress = Progress.scan(fileReadEvidence(messages));
   const request = latestUserRequest(messages) ?? '';
   switch (task.kind) {
     case 'direct':

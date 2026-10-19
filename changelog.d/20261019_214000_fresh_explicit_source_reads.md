@@ -1,0 +1,1 @@
+New explicit source reads after a final answer require fresh bound observations in JavaScript, TypeScript and Rust, while unfinished identical reads retain their existing observation. They cannot replay a previous turn's source contents; standing coding objectives still retain verified write and commit progress. The original native determinism oracle remains unchanged.

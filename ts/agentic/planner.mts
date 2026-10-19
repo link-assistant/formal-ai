@@ -41,7 +41,7 @@ import * as dreamingAudit from './dreaming_audit.mjs';
 import * as evidenceRecord from './evidence_record.mjs';
 import * as fileSummary from './file_summary.mjs';
 import * as explain from './explain.mjs';
-import { fileReadTaskFor, planFileReadStep, readPolicyBlocksPlan } from './file_read.mjs';
+import { fileReadEvidence, fileReadTaskFor, planFileReadStep, readPolicyBlocksPlan } from './file_read.mjs';
 import * as formalizationRecipe from './formalization_recipe.mjs';
 import * as functionExpectation from './function_expectation.mjs';
 import { planGeneralChangeStep } from './general_execution.mjs';
@@ -237,10 +237,16 @@ export async function planChatStepResolved(messages, toolNames) {
   return stopRepeatedFailure(stopRepeatedCall(plan, messages), messages);
 }
 
+/** Standing coding progress remains durable; explicit source reads require fresh observations. */
+function repetitionProgress(messages) {
+  const request=latestUserRequest(messages)??'';
+  return Progress.scan(fileReadTaskFor(request)!==null?fileReadEvidence(messages):messages);
+}
+
 /** Mirrors `fn stop_repeated_call` in rust/src/agentic_coding/planner/steps.rs. */
 function stopRepeatedCall(plan, messages) {
   if (!isToolCalls(plan)) return plan;
-  const progress = Progress.scan(messages);
+  const progress = repetitionProgress(messages);
   for (const call of plan.calls) {
     const attempt = progress.repeatedCall(call);
     if (attempt) {
@@ -257,7 +263,7 @@ function stopRepeatedCall(plan, messages) {
 function stopRepeatedFailure(plan, messages) {
   const REPEATED_FAILURES_THAT_STOP = 2;
   if (!isToolCalls(plan)) return plan;
-  const progress = Progress.scan(messages);
+  const progress = repetitionProgress(messages);
   const repeated = plan.calls.find((call) => progress.identicalFailuresOf(call.tool) >= REPEATED_FAILURES_THAT_STOP);
   if (!repeated) return plan;
   const failure = progress.latestFailureOfTool(repeated.tool);
