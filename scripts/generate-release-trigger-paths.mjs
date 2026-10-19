@@ -12,6 +12,20 @@ function literalPath(value) {
   assert.ok(!value.split('/').some(part => ['.', '..', '.git'].includes(part)));
   return value;
 }
+// Existing anchored filters remain text; they never substitute for explicit source ownership.
+function retainedPathFilter(value) {
+  if (typeof value === 'string' && value.endsWith('/**')) {
+    literalPath(value.slice(0, -3));
+    return value;
+  }
+  const parts = typeof value === 'string' ? value.split('*') : [];
+  if (parts.length === 2 && parts.every(Boolean) &&
+      !parts[0].endsWith('/') && !parts[1].includes('/')) {
+    literalPath(parts.join('retained-filter'));
+    return value;
+  }
+  return literalPath(value);
+}
 function frozenOperand(node) {
   assert.equal(node?.type, 'CallExpression');
   assert.equal(node.arguments.length, 1);
@@ -130,7 +144,7 @@ export function projectReleaseTriggerPaths(recipeSource, workflowSource, role) {
   assert.equal(sequence?.cstNode?.type, 'SEQ', 'Owned block path sequence required');
   assert.ok(sequence.items.length > 0);
   assert.ok(sequence.items.every(item => item.type !== 'ALIAS' && typeof item.value === 'string'));
-  const existing = sequence.items.map(item => literalPath(item.value));
+  const existing = sequence.items.map(item => retainedPathFilter(item.value));
   assert.equal(new Set(existing).size, existing.length);
   const missing = declared.filter(value => !existing.includes(value));
   if (!missing.length) return Object.freeze({text:workflowSource,added:Object.freeze([]),declared:Object.freeze(declared)});

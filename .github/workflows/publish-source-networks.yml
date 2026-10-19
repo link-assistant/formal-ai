@@ -44,6 +44,17 @@ on: # zizmor: ignore[dangerous-triggers]
       - "scripts/run-with-budget-warning.sh"
       - "scripts/check-sccache-write-health.sh"
       - ".github/workflows/layered-ci.yml"
+      - "scripts/lib/source-cst-babel.mjs"
+      - "scripts/lib/source-cst-rust.mjs"
+      - "scripts/lib/source-cst-frontends.mjs"
+      - "packages/source-cst-runtime/package.json"
+      - "packages/source-cst-runtime/package-lock.json"
+      - "js/vendor/tree-sitter/web-tree-sitter.mjs"
+      - "js/vendor/tree-sitter/web-tree-sitter.wasm"
+      - "js/vendor/tree-sitter/tree-sitter-rust.wasm"
+      - "js/vendor/tree-sitter/LICENSE-web-tree-sitter"
+      - "js/vendor/tree-sitter/LICENSE-tree-sitter-rust"
+      - "js/vendor/tree-sitter/provenance.lino"
   workflow_dispatch:
     inputs:
       mode:

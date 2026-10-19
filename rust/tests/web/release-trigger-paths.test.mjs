@@ -73,3 +73,26 @@ test('every declared role is immutable and closed before projection', () => {
    assert.deepEqual(projection.added,[]);
    assert.equal(projection.text,currentWorkflow);
  });
+
+test('anchored existing filters preserve their exact text without replacing explicit declarations', () => {
+  for (const filter of ['scripts/**','packages/source-cst-runtime/**','scripts/lib/source-cst-*.mjs']) {
+    const original=workflow.replace('first.mjs # original operand',filter+' # original operand');
+    const result=projectReleaseTriggerPaths(recipe,original,'role');
+    assert.deepEqual(result.added,['first.mjs','second.mjs']);
+    assert.equal(result.text.slice(0,result.offset)+result.text.slice(result.offset+result.insertion.length),original);
+    assert(result.text.includes(filter+' # original operand'));
+    assert.deepEqual(projectReleaseTriggerPaths(recipe,result.text,'role').added,[]);
+  }
+});
+test('retained filters reject traversal, metadata, negation, broad and dynamic patterns', () => {
+  for (const filter of ['../outside/**','.git/**','scripts/../outside/**','scripts/**/nested.mjs',
+    'scripts/**/**','**/*.mjs','*.mjs','scripts/*','scripts/?name.mjs','scripts/[ab].mjs',
+    '!scripts/first.mjs','scripts/${dynamic}/**','/outside/**','scripts/*/outside.mjs']) {
+    assert.throws(()=>projectReleaseTriggerPaths(recipe,
+      workflow.replace('first.mjs # original operand',filter+' # original operand'),'role'),filter);
+  }
+  for (const filter of ['scripts/**','scripts/lib/source-cst-*.mjs']) {
+    assert.throws(()=>projectReleaseTriggerPaths(recipe.replace('second.mjs',filter),workflow,'role'),
+      'filters never become frozen registry source authority');
+  }
+});
