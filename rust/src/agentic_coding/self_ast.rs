@@ -195,6 +195,7 @@ pub const fn ast_census(_source: &str) -> AstCensus {
 }
 
 /// Render complete recursive source CST for the given target and actual source.
+///
 /// The legacy function name is retained for callers; the artifact at [`AST_PATH`]
 /// contains source content and is verified by reconstruction and fresh grammar.
 /// Historical census records remain separate diagnostics.
