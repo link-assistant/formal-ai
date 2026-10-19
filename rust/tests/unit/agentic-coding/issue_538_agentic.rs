@@ -498,6 +498,12 @@ fn recognises_the_self_ast_task() {
     ));
     assert!(!self_ast::is_self_ast_task("What is a CST?"));
     assert!(!self_ast::is_self_ast_task(
+        "Describe source CST for a remote component."
+    ));
+    assert!(self_ast::is_self_ast_task(
+        "Store your CST with every comment."
+    ));
+    assert!(!self_ast::is_self_ast_task(
         "Describe a podcast in our notes."
     ));
     // It does not steal the other recipes' requests or unrelated turns.

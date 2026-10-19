@@ -91,15 +91,17 @@ pub fn is_self_ast_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
     // Require an AST/CST intent word plus a self-reference so ordinary "parse this"
     // requests do not route here.
+    let words: Vec<_> = lower
+        .split(|character: char| !character.is_alphanumeric())
+        .collect();
     let names_ast = AST_KEYWORDS.iter().any(|keyword| lower.contains(keyword))
-        || lower
-            .split(|character: char| !character.is_alphanumeric())
-            .any(|word| word == "cst")
+        || words.contains(&"cst")
         || (lower.contains("ast") && lower.contains("meta algorithm"));
-    let self_reference = lower.contains("our")
-        || lower.contains("itself")
+    let self_reference = words.contains(&"our")
+        || words.contains(&"your")
+        || words.contains(&"itself")
         || lower.contains("meta algorithm")
-        || lower.contains("planner");
+        || words.contains(&"planner");
     names_ast && self_reference
 }
 

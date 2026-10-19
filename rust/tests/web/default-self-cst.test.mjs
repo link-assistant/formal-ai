@@ -64,5 +64,10 @@ test('explicit rejected SDK never silently uses the default CST engine', async()
 test('complete source CST intent recognizes independent wording and rejects unrelated CST or podcast text',()=>{
   for(const prompt of ['Store our planner CST with every comment and space.',
     'Save the concrete syntax of our own Rust source.'])assert.equal(isSelfAstTask(prompt),true);
-  for(const prompt of ['Describe a podcast in our notes.','What is a CST?'])assert.equal(isSelfAstTask(prompt),false);
+  for(const prompt of ['Describe a podcast in our notes.','What is a CST?',
+    'Describe source CST for a remote component.'])assert.equal(isSelfAstTask(prompt),false);
+});
+
+test('your code is an explicit self-reference rather than a substring accident',()=>{
+  assert.equal(isSelfAstTask('Store your CST with every comment.'),true);
 });

@@ -1,5 +1,12 @@
 # Single-PR discovery and quality delivery handoff
 
+### Resumed CI batch: complete self-CST and audit inventory
+
+The canonical self-inspection artifact is now `self-cst.lino`. The CLI completion verifier independently reconstructs the complete owned planner source, then reparses it with the real Rust grammar; a named-node census cannot satisfy it. A small sanitized receipt authenticates the actual native CI model and its exact source content. Original transport evidence, process clocks and unrelated-source refusals remain mandatory. Whole-word self references reject `source` accidentally matching `our`.
+
+The release source-trigger projector retains anchored existing filters byte-for-byte while appending every required literal path. Native audit regressions derive their expected inventory from committed lockfiles: the source-runtime package adds a sixth audited lockfile, and every input still requires the same retries, advisory refusal and outage refusal. Independent source-only shell controls verify the exact audited paths. The literal-predicate ceiling is lowered after the ownership improvement. Fresh exact-head CI, normal merge and actual main release consumers remain required; broader issue acceptance remains Pending.
+
+
 This living checkpoint, updated on 2026-10-19, belongs to [PR #1234](https://github.com/link-assistant/formal-ai/pull/1234), branch `feat/general-discovery-quality-parity`, based on `fd5bfaced85262a51b341fb2b25c79e507423ca3`. The PR is open and ready for review; merge still requires the original acceptance checks. This document records accepted working constraints and observed partial progress; it does not close the linked issues.
 
 ## Resumed delivery — 2026-10-19

@@ -35,11 +35,12 @@ const astKeywords = () => agenticMessage('self_ast_keywords').split('|');
  */
 export function isSelfAstTask(prompt) {
   const lower = prompt.toLowerCase();
+  const words = lower.split(/[^\p{L}\p{N}]+/u);
   const namesAst = astKeywords().some((keyword) => lower.includes(keyword))
-    || lower.split(/[^\p{L}\p{N}]+/u).includes('cst')
+    || words.includes('cst')
     || (lower.includes('ast') && lower.includes('meta algorithm'));
-  const selfReference = lower.includes('our') || lower.includes('itself')
-    || lower.includes('meta algorithm') || lower.includes('planner');
+  const selfReference = words.includes('our') || words.includes('your') || words.includes('itself')
+    || lower.includes('meta algorithm') || words.includes('planner');
   return namesAst && selfReference;
 }
 
