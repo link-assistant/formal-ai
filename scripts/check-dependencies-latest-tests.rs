@@ -500,7 +500,16 @@ fn uses_pins_decode_quoted_scalars_and_preserve_comment_boundaries() {
         parse_uses_pins("uses: 'owner/action@tag#literal' # comment")[0].1,
         "tag#literal"
     );
-    assert!(parse_uses_pins("uses: 'owner/action@unterminated").is_empty());
-    assert!(parse_uses_pins("uses: ./local/action # note").is_empty());
-    assert!(parse_uses_pins("uses: docker://alpine:3 # note").is_empty());
+    assert_eq!(
+        parse_uses_pins("uses: 'owner/action@unterminated"),
+        [] as [(String, String, usize); 0]
+    );
+    assert_eq!(
+        parse_uses_pins("uses: ./local/action # note"),
+        [] as [(String, String, usize); 0]
+    );
+    assert_eq!(
+        parse_uses_pins("uses: docker://alpine:3 # note"),
+        [] as [(String, String, usize); 0]
+    );
 }

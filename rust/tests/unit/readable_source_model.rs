@@ -105,10 +105,7 @@ fn structural_owners_survive_reload_but_never_replace_content_verification() {
         assert!(owned_source_links(path, &content).is_err());
     }
     let mut ambiguous = owned.clone();
-    ambiguous
-        .as_array_mut()
-        .expect("owned link")
-        .push(content.clone());
+    ambiguous.as_array_mut().expect("owned link").push(content);
     assert!(source_from_links(&ambiguous).is_err());
     let mut forged = owned;
     forged[2][2][0] = serde_json::json!("forged-module");

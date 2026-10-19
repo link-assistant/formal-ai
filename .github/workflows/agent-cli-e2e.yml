@@ -476,6 +476,7 @@ jobs:
             /tmp/formal-ai-serve-*.log
             /tmp/agent-out-*.log
             /tmp/formal-ai-issue-*-evidence
+            /tmp/formal-ai-agent-evidence-*
           retention-days: 7
       - name: Upload TUI transcripts and replay artifacts
         if: ${{ matrix.part == 'scenarios' && (always()) && steps.ledger.outputs.already-green != 'true' }}

@@ -1,5 +1,10 @@
 use super::*;
 
+// Canonical template keys are literal placeholders, not Rust format captures.
+const FILES_PLACEHOLDER: &str = "{files}";
+const SUBJECT_PLACEHOLDER: &str = "{subject}";
+const BODY_PLACEHOLDER: &str = "{body}";
+
 // Reuse the production reader and canonical templates without exporting a planner helper.
 #[path = "../../../src/agentic_coding/work_item_steps.rs"]
 mod canonical_work_item_steps;
@@ -41,16 +46,16 @@ fn expected_owned_recipe_commit(planned: &[PlannedToolCall]) -> String {
     let inner = canonical_work_item_steps::fill(
         "recipe_commit_command",
         &[
-            ("{files}", "\"$@\""),
-            ("{subject}", &quote(&subject)),
-            ("{body}", &quote(&body)),
+            (FILES_PLACEHOLDER, "\"$@\""),
+            (SUBJECT_PLACEHOLDER, &quote(&subject)),
+            (BODY_PLACEHOLDER, &quote(&body)),
             ("{branch}", &quote(BRANCH)),
         ],
     );
     canonical_work_item_steps::fill(
         "task-scaffold-commit-command",
         &[
-            ("{files}", &files),
+            (FILES_PLACEHOLDER, &files),
             ("{reference}", &quote(ISSUE)),
             ("{commit}", &inner),
         ],

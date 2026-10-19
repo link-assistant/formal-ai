@@ -305,7 +305,7 @@ fn repeated_output_merging_retains_the_original_fetched_workflow_obligation() {
     let held_out = "First, print exactly: \"Delta\"\nThen, create a GitHub Actions workflow that verifies it prints exactly: \"Delta\"\n";
     for (request, literal) in [(original.as_str(), "Hello, World!"), (held_out, "Delta")] {
         let graph = formalize_request(request);
-        assert_eq!(graph.unique_output_literal().as_deref(), Some(literal));
+        assert_eq!(graph.unique_output_literal(), Some(literal));
         assert_eq!(
             graph
                 .obligations_of_kind(ObligationKind::OutputLiteral)

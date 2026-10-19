@@ -3,6 +3,9 @@
 use std::fs;
 use std::path::Path;
 
+// This is the literal response template, before its tool field is rendered.
+const TOOL_COMMAND_TEMPLATE: &str = "The `{tool}` command completed";
+
 #[test]
 fn issue_607_agent_cli_shell_docs_are_traceable() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -108,7 +111,7 @@ fn issue_607_shell_planner_and_serve_opt_in_are_traceable() {
     assert_contains_all(
         "data/seed/multilingual-responses.lino",
         &responses,
-        &["The `{tool}` command completed"],
+        &[TOOL_COMMAND_TEMPLATE],
     );
 
     let server = read(root.join("rust/src/server.rs"));
