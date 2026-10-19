@@ -10,6 +10,7 @@ const digest = value => createHash('sha256').update(value).digest('hex');
 const text = value => typeof value === 'string' ? value : Array.isArray(value) ? value.map(block => typeof block?.text === 'string' ? block.text : '').join('') : '';
 export function completionResponse(body) {
   let events;
+  const streaming = !body.trimStart().startsWith('{');
   if (body.trimStart().startsWith('{')) events = [JSON.parse(body)];else {
     assert.ok(body.endsWith('\n'), 'incomplete completion stream');
     const data = body.split(/\r?\n/u).filter(line => line.startsWith('data:')).map(line => line.slice(5).trim());
@@ -19,7 +20,26 @@ export function completionResponse(body) {
   const calls = new Map();
   let content = '',
     finish = null;
-  for (const event of events) {
+  for (const [position, event] of events.entries()) {
+    if (Array.isArray(event.choices) && event.choices.length === 0) {
+      // include_usage adds one metadata-only trailer after the actual finish choice.
+      assert.ok(streaming && finish !== null && position === events.length - 1, 'misplaced completion usage trailer');
+      assert.equal(event.object, 'chat.completion.chunk');
+      assert.ok(typeof event.id === 'string' && event.id.length > 0);
+      assert.ok(typeof event.model === 'string' && event.model.length > 0);
+      assert.ok(Number.isSafeInteger(event.created) && event.created >= 0);
+      for (const earlier of events.slice(0, position)) for (const field of ['id', 'object', 'model', 'created']) {
+        assert.equal(earlier[field], event[field], 'completion usage identity differs');
+      }
+      const usage = event.usage;
+      assert.ok(usage && typeof usage === 'object' && !Array.isArray(usage), 'completion usage missing');
+      for (const field of ['prompt_tokens', 'completion_tokens', 'total_tokens']) {
+        assert.ok(Number.isSafeInteger(usage[field]) && usage[field] >= 0, 'invalid completion usage');
+      }
+      assert.equal(usage.total_tokens, usage.prompt_tokens + usage.completion_tokens, 'completion usage total differs');
+      continue;
+    }
+    assert.equal(finish, null, 'completion payload after terminator');
     assert.ok(Array.isArray(event.choices) && event.choices.length === 1, 'one actual completion choice required');
     const choice = event.choices[0],
       message = choice.delta ?? choice.message;

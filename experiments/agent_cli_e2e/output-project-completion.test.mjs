@@ -337,3 +337,69 @@ test('conflicting write aliases cannot forge an equivalent client acknowledgemen
     context.cleanup();
   }
 });
+
+
+// Use the actual server encoder: a usage trailer is metadata, never an effect receipt.
+import { chatCompletionSse } from '../../js/server/openai.mjs';
+function usageCompletion(message = { role: 'assistant', content: 'Verified Juniper 29!' }, finish = 'stop') {
+  return {
+    id: 'chatcmpl-held-out-usage', object: 'chat.completion', created: 1792380000, model: 'formal-ai',
+    choices: [{ index: 0, message: { ...message, content: message.content ?? "" }, finish_reason: finish }],
+    usage: { prompt_tokens: 17, completion_tokens: 11, total_tokens: 28 }
+  };
+}
+const usageBody = completion => chatCompletionSse(completion, true).body;
+const streamEvents = body => body.split(/\r?\n/u).filter(line => line.startsWith('data: ') && !line.endsWith('[DONE]')).map(line => JSON.parse(line.slice(6)));
+const eventBody = events => events.map(event => 'data: ' + JSON.stringify(event) + '\n\n').join('') + 'data: [DONE]\n\n';
+test('actual server usage trailer preserves content and tool completion boundaries', () => {
+  assert.equal(completionResponse(usageBody(usageCompletion())).content, 'Verified Juniper 29!');
+  const call = { id: 'held-out-with-usage', type: 'function', function: { name: 'bash', arguments: '{"command":"true"}' } };
+  const observed = completionResponse(usageBody(usageCompletion({ role: 'assistant', content: null, tool_calls: [call] }, 'tool_calls')));
+  assert.deepEqual(observed.calls, [{ id: call.id, name: 'bash', arguments: { command: 'true' } }]);
+  assert.equal(observed.finish, 'tool_calls');
+});
+test('all actual file effects and independent stdout remain required with usage trailers', () => {
+  const context = fixture();
+  try {
+    for (const row of context.records) {
+      const choice = JSON.parse(row.response_body).choices[0];
+      row.response_body = usageBody(usageCompletion(choice.message, choice.finish_reason));
+    }
+    assert.equal(verifyOutputProject(context).exchanges, 5);
+    fs.appendFileSync(path.join(context.workspace, context.expectedFiles[0]), 'foreign');
+    assert.throws(() => verifyOutputProject(context), /physical effect bytes differ/);
+  } finally { context.cleanup(); }
+});
+for (const [name, change] of [
+  ['missing usage', events => { delete events.at(-1).usage; }],
+  ['null usage', events => { events.at(-1).usage = null; }],
+  ['array usage', events => { events.at(-1).usage = []; }],
+  ['negative tokens', events => { events.at(-1).usage.prompt_tokens = -1; }],
+  ['fractional tokens', events => { events.at(-1).usage.completion_tokens = 1.5; }],
+  ['string tokens', events => { events.at(-1).usage.total_tokens = '28'; }],
+  ['unsafe tokens', events => { events.at(-1).usage.total_tokens = Number.MAX_SAFE_INTEGER + 1; }],
+  ['inconsistent total', events => { events.at(-1).usage.total_tokens++; }],
+  ['foreign id', events => { events.at(-1).id = 'foreign'; }],
+  ['foreign model', events => { events.at(-1).model = 'foreign'; }],
+  ['foreign created', events => { events.at(-1).created++; }],
+  ['foreign object', events => { events.at(-1).object = 'chat.completion'; }],
+  ['missing identity', events => { delete events[0].id; }],
+  ['usage before finish', events => { const usage = events.pop(); events.splice(events.length - 1, 0, usage); }],
+  ['duplicate usage', events => { events.push(structuredClone(events.at(-1))); }],
+  ['payload after usage', events => { events.push(structuredClone(events[0])); }],
+  ['payload after finish', events => { events.splice(events.length - 1, 0, structuredClone(events[0])); }],
+  ['missing finish', events => { events.splice(events.length - 2, 1); }],
+  ['duplicate finish', events => { events.splice(events.length - 1, 0, structuredClone(events.at(-2))); }],
+  ['usage without choices', events => { delete events.at(-1).choices; }],
+  ['multiple choices', events => { events[0].choices.push(structuredClone(events[0].choices[0])); }],
+  ['usage only', events => { events.splice(0, events.length - 1); }]
+]) test('usage trailer cannot replace completion evidence: ' + name, () => {
+  const events = streamEvents(usageBody(usageCompletion()));
+  change(events);
+  assert.throws(() => completionResponse(eventBody(events)));
+});
+test('non-streaming empty choices and incomplete usage streams still refuse', () => {
+  const events = streamEvents(usageBody(usageCompletion()));
+  assert.throws(() => completionResponse(JSON.stringify(events.at(-1))));
+  assert.throws(() => completionResponse(usageBody(usageCompletion()).replace('data: [DONE]\n\n', '')));
+});
