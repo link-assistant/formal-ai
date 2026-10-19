@@ -157,6 +157,10 @@ test('missing grant cannot be supplied by a bound compiler failure or source pro
   assert.equal(result.executions[0].status, 127);
   assert(!result.records.some((row) => row.kind === 'installer'));
   assert.equal(result.final.kind, 'final');
+  const repeated = [...result.messages, {role:'user',content:result.prompt}];
+  const refusal = planSymbolicCommandReroute(repeated, tools, programContractAnswer(result.prompt));
+  assert.equal(refusal.kind, 'final');
+  assert.deepEqual(refusal, result.final, 'identical continuation cannot supply a caller grant');
 });
 for (const configuration of [{ compilerExit: 42 }, { runtimeExit: 17 }, { wrongOutput: true }, { denyTemporary: true }, { changedSource: true }]) {
   test('owned cleanup preserves failure: ' + JSON.stringify(configuration), async () => {
@@ -185,10 +189,14 @@ test('wrapper recovery refuses unbound, duplicate, stale and changed-source obse
   await installNodeHost(worker, { prerequisiteGrant: grant });
   const positive = planSymbolicCommandReroute(result.messages, tools, answer);
   assert.equal(JSON.parse(positive.calls[0].arguments).path, '.formal-ai/bootstrap/prerequisite-installer.py');
+  const identical = structuredClone(result.messages);
+  identical.push({role:'user',content:result.prompt});
+  assert.deepEqual(planSymbolicCommandReroute(identical, tools, answer), positive,
+    'an identical objective retains exactly the same bound installer plan');
   for (const mutate of [
     messages => { messages.at(-1).tool_call_id = 'unbound'; },
     messages => { messages.push(structuredClone(messages.at(-1))); },
-    messages => { messages.push({role:'user',content:result.prompt}); },
+    messages => { messages.push({role:'user',content:result.prompt + ' Also require a different output.'}); },
     messages => {
       const verifier = result.recipe.supporting_files[0];
       append(messages, {tool:'Write',arguments:JSON.stringify({path:verifier.path,content:verifier.source+'\n# changed'})}, 'written');
