@@ -408,8 +408,10 @@ jobs:
       - name: Exercise actual generic archive recovery in an isolated workspace
         env:
           FORMAL_AI_INSTALL_GRANT: workspace
+          GH_TOKEN: ${{ github.token }}
         run: python3 scripts/check-prerequisite-recovery-hosted.py
       - name: Exercise actual platform archive recovery with Scala one-line oracle
         env:
           FORMAL_AI_INSTALL_GRANT: workspace
+          GH_TOKEN: ${{ github.token }}
         run: python3 scripts/check-prerequisite-recovery-hosted.py scala

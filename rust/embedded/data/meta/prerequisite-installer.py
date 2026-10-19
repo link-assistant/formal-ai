@@ -82,6 +82,22 @@ def select_release_archive(assets,document,system=None,machine=None):
     require(len(candidates)==1,'documented_archive_ambiguous_or_missing')
     return candidates[0]
 
+def discovery_request(url, environment=None):
+    """Read credentials only for HTTPS GitHub release metadata; never forward them."""
+    value=urllib.parse.urlsplit(url)
+    request=urllib.request.Request(url,headers={'User-Agent':'formal-ai-prerequisite-discovery','Accept':'application/vnd.github+json' if value.hostname=='api.github.com' else '*/*'})
+    metadata=(value.scheme=='https' and value.hostname=='api.github.com' and value.port in (None,443)
+              and not value.username and not value.password and not value.query and not value.fragment
+              and re.fullmatch(r'/repos/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+/releases/(?:latest|tags/[^/]+)',value.path) is not None)
+    if metadata:
+        environment=os.environ if environment is None else environment
+        token=environment.get('GH_TOKEN') or environment.get('GITHUB_TOKEN')
+        if token:
+            require(isinstance(token,str) and '\r' not in token and '\n' not in token,'invalid_github_read_token')
+            request.add_unredirected_header('Authorization','Bearer '+token)
+    return request
+
+
 def execute(request):
     grant=request['grant']; program=request['program']; publisher=request['publisher']
     require(grant.get('schema') == 'formal-ai-workspace-prerequisites-v1' and grant.get('scope') == 'workspace', 'grant_required')
@@ -113,7 +129,7 @@ def execute(request):
     def fetch(url,limit,destination=None):
         require(url_allowed(url),'url_not_granted')
         digest=hashlib.sha256(); total=0; chunks=[]
-        with opener.open(urllib.request.Request(url,headers={'User-Agent':'formal-ai-prerequisite-discovery','Accept':'application/vnd.github+json' if 'api.github.com' == urllib.parse.urlsplit(url).hostname else '*/*'}),timeout=30) as response:
+        with opener.open(discovery_request(url),timeout=30) as response:
             while True:
                 chunk=response.read(65536)
                 if not chunk: break
