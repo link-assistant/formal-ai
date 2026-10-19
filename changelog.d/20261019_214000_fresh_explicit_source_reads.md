@@ -1,1 +1,2 @@
 New explicit source reads after a final answer require fresh bound observations in JavaScript, TypeScript and Rust, while unfinished identical reads retain their existing observation. They cannot replay a previous turn's source contents; standing coding objectives still retain verified write and commit progress. The original native determinism oracle remains unchanged.
+The native self-inspection routing regression now requires canonical CST wording and independently verifies full source ownership, content and grammar instead of the superseded CST/AST prose label.

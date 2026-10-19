@@ -540,7 +540,23 @@ fn self_ast_task_wins_over_the_formalization_keyword() {
         .expect("a write step");
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
     assert_eq!(written["path"], self_ast::AST_PATH);
-    assert!(outcome.final_answer.contains("CST/AST"));
+    assert!(outcome.final_answer.contains("complete source CST"));
+    let document = formal_ai::readable_source::read_source_links(
+        written["content"]
+            .as_str()
+            .expect("complete source CST content"),
+    )
+    .expect("readable recursive source model");
+    assert_eq!(
+        formal_ai::readable_source::source_owner(&document).unwrap(),
+        Some(self_ast::TARGET_MODULE_PATH)
+    );
+    assert_eq!(
+        formal_ai::readable_source::source_from_links(&document).unwrap(),
+        self_ast::target_source()
+    );
+    formal_ai::readable_source::verify_source_links(&document)
+        .expect("independent current grammar verification");
     assert!(!outcome.final_answer.contains("fisherman"));
 }
 
