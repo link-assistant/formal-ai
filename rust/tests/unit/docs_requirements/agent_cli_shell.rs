@@ -88,7 +88,8 @@ fn issue_607_shell_planner_and_serve_opt_in_are_traceable() {
         &["../../embedded/data/seed/agentic-tool-capabilities.lino"],
     );
     for tool in ["bash", "shell", "run_command"] {
-        use formal_ai::agentic_coding::{AgenticPlan, Capability, plan_chat_step, tool_capability};
+        use formal_ai::agentic_coding::planner::{Capability, tool_capability};
+        use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
         assert_eq!(tool_capability(tool), Some(Capability::Run), "{tool}");
         let messages = [formal_ai::ChatMessage::user("run ls to list files here")];
         match plan_chat_step(&messages, &[tool]) {
