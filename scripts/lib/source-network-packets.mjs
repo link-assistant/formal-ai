@@ -1,8 +1,8 @@
 // Lossless network packets for owned source: full serialized bytes and verified reconstruction.
-import { createHash } from 'node:crypto';
+import {sourceDigest, restoreSourceCstPacket, validateSourceCstReceipt} from './source-cst-packets.mjs';
 import { gzipSync, gunzipSync } from 'node:zlib';
 
-export const sourceDigest = (bytes) => createHash('sha256').update(bytes).digest('hex');
+export {sourceDigest} from './source-cst-packets.mjs';
 
 /** Disjoint source-byte-balanced shards; each queue starts with its largest inputs.
  * With no byte observer, unit weights preserve the existing stable path-only API.
@@ -95,7 +95,7 @@ export function verifySourcePacket(receipt, compressed, LinkNetwork) {
  * Producers already ran the full upstream decoder; this join checks their content-bound packets.
  */
 export function verifySourceDistribution({ reports, sourcePaths, sourceBytes, packetBytes,
-  sourceHead, upstreamCommit, shardCount = 8 }) {
+  sourceHead, upstreamCommit, shardCount = 8, requireReadableCst = false }) {
   if (!/^[a-f0-9]{40,64}$/u.test(sourceHead) || !/^[a-f0-9]{40}$/u.test(upstreamCommit)) {
     throw new Error('distribution requires full source and upstream commits');
   }
@@ -119,17 +119,20 @@ export function verifySourceDistribution({ reports, sourcePaths, sourceBytes, pa
     }
     const paths = partitionSourcePaths(sourcePaths, report.shardIndex, shardCount,
       (path) => sourceSizes.get(path));
+    if (requireReadableCst && report.readableCstFidelity !== 'readable-recursive-cst') {
+      throw new Error('complete readable CST distribution is required');
+    }
     if (report.sourceHead !== sourceHead || report.baseHead !== sourceHead
       || report.inputState !== 'committed-head' || report.upstreamCommit !== upstreamCommit
       || report.shardCount !== shardCount || report.totalOwnedSources !== sourcePaths.length
-      || report.checkedSources !== paths.length || report.fidelity !== 'lossless-network-serialization'
+      || report.checkedSources !== paths.length || report.fidelity !== (requireReadableCst ? 'readable-recursive-cst' : 'lossless-network-serialization')
       || !Array.isArray(report.sources) || report.sources.length !== paths.length) {
       throw new Error('source distribution report identity differs');
     }
     for (let index = 0; index < paths.length; index += 1) {
       const receipt = report.sources[index], path = paths[index];
-      if (receipt.path !== path || receipt.packet !== path + '.lino.gz'
-        || receipt.fidelity !== 'lossless-network-serialization') {
+      if (receipt.path !== path || receipt.packet !== path + (requireReadableCst ? '.cst.lino.gz' : '.lino.gz')
+        || receipt.fidelity !== (requireReadableCst ? 'readable-recursive-cst' : 'lossless-network-serialization')) {
         throw new Error('source distribution coverage differs');
       }
       const compressed = packetBytes(report.shardIndex, receipt.packet);
@@ -139,6 +142,13 @@ export function verifySourceDistribution({ reports, sourcePaths, sourceBytes, pa
       const serialized = gunzipSync(compressed);
       if (serialized.length !== receipt.serializedBytes || sourceDigest(serialized) !== receipt.serializedSha256) {
         throw new Error('distribution serialized packet identity differs: ' + path);
+      }
+      if (requireReadableCst) {
+        validateSourceCstReceipt(receipt, path);
+        const full = restoreSourceCstPacket(receipt, compressed, path);
+        if (!Buffer.from(full.source, 'utf8').equals(sourceBytes(path))) {
+          throw new Error('readable CST differs from selected source: ' + path);
+        }
       }
     }
   }

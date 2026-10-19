@@ -1,12 +1,12 @@
 #!/usr/bin/env node
-// Source-content operations through the actual pinned shared meta-language parser.
+// Readable source-content operations with explicit pinned or complete grammar providers.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 import {sourceToLinks, sourceFromLinks, readSourceLinks, writeSourceLinks,
-  verifySourceLinks, readSyntaxRules} from '../js/meta/readable-source.js';
+  verifySourceLinks, readSyntaxRules, ownedSourceLinks, sourceOwner} from '../js/meta/readable-source.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const LANGUAGES = new Map([['js', 'JavaScript'], ['javascript', 'JavaScript'],
@@ -42,31 +42,47 @@ export async function runSourceModel(args) {
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === '--check') { if (check) throw Error('DuplicateSourceModelOption'); check = true; continue; }
-    if (!['--from', '--input', '--output', '--meta-language', '--commit'].includes(arg)
+    if (!['--from', '--input', '--output', '--meta-language', '--commit', '--frontend'].includes(arg)
       || values.has(arg) || index + 1 >= args.length) throw Error('InvalidSourceModelOption:' + arg);
     values.set(arg, args[++index]);
   }
   const input = values.get('--input'), from = values.get('--from');
   const directory = values.get('--meta-language');
-  let commit = values.get('--commit');
-  if (!input || !from || !directory) throw Error('SourceModelRequiresFromInputAndPinnedMetaLanguage');
-  if (!commit) {
-    const {workflowPin} = await import('./translate-js-rust.mjs');
-    commit = workflowPin(fs.readFileSync(path.join(ROOT, '.github/workflows/layered-ci.yml'), 'utf8'));
-  }
-  const parse = await sourceModelFrontend(path.resolve(directory), commit);
-  const rules = readSyntaxRules(readSourceText(path.join(ROOT, 'data/meta/source-model/syntax-rules.lino')));
-  const options = {parse, rules};
+  const provider = values.get('--frontend') ?? 'pinned';
+  if (!['pinned', 'complete'].includes(provider)) throw Error('UnsupportedSourceModelFrontend');
+  if (!input || !from) throw Error('SourceModelRequiresFromInputAndPinnedMetaLanguage');
   const source = readSourceText(path.resolve(input));
-  let model;
-  if (from === 'meta') {
-    model = readSourceLinks(source);
-    verifySourceLinks(model, options);
-  } else {
-    const language = LANGUAGES.get(from.toLowerCase());
-    if (!language) throw Error('UnsupportedSourceModelLanguage:' + from);
-    model = sourceToLinks(source, language, options);
+  let model = from === 'meta' ? readSourceLinks(source) : null;
+  const language = model
+    ? (model[0] === 'owned-source' ? model[2] : model).find(node => Array.isArray(node) && node[0] === 'language')?.[1]?.quoted
+    : LANGUAGES.get(from.toLowerCase());
+  if (!language) throw Error('UnsupportedSourceModelLanguage:' + from);
+  let runtime;
+  try {
+    let options;
+    if (provider === 'complete') {
+      if (directory || values.has('--commit')) throw Error('AmbiguousSourceModelFrontend');
+      const {sourceCstFrontends} = await import('./lib/source-cst-frontends.mjs');
+      runtime = await sourceCstFrontends();
+      options = runtime.forSource(model ? sourceOwner(model) ?? input : input, language);
+    } else {
+      if (!directory) throw Error('SourceModelRequiresFromInputAndPinnedMetaLanguage');
+      let commit = values.get('--commit');
+      if (!commit) {
+        const {workflowPin} = await import('./translate-js-rust.mjs');
+        commit = workflowPin(fs.readFileSync(path.join(ROOT, '.github/workflows/layered-ci.yml'), 'utf8'));
+      }
+      const parse = await sourceModelFrontend(path.resolve(directory), commit);
+      const rules = readSyntaxRules(readSourceText(path.join(ROOT, 'data/meta/source-model/syntax-rules.lino')));
+      options = {parse, rules};
+    }
+    if (!model) {
+      model = sourceToLinks(source, language, options);
+      if (provider === 'complete') model = ownedSourceLinks(path.basename(input), model);
+    }
     verifySourceLinks(readSourceLinks(writeSourceLinks(model)), options);
+  } finally {
+    runtime?.close();
   }
   if (check) {
     if (values.has('--output')) throw Error('SourceModelCheckDoesNotWrite');

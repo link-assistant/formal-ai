@@ -142,6 +142,10 @@ jobs:
           persist-credentials: false
       - name: Install serializer runtime dependencies
         run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Verify the source CST runtime derives from the frozen dependency closure
+        run: node scripts/generate-source-cst-runtime.mjs --check
+      - name: Provision the complete locked source CST grammar runtime
+        run: node scripts/provision-source-cst-runtime.mjs "$RUNNER_TEMP/source-cst-runtime"
       - name: Serialize and reconstruct every source in this shard
         env:
           SOURCE_SHARD: ${{ matrix.shard }}
@@ -383,9 +387,9 @@ jobs:
       - name: Setup Rust (rustc compiles the translated Rust)
         uses: dtolnay/rust-toolchain@stable
       - name: Verify canonical research program from pinned checked IR (R1183)
-        run: |
-          node scripts/generate-coding-research-program.mjs --check --meta-language .meta-language
-          node scripts/generate-agentic-continuation.mjs --check --meta-language .meta-language
+        run: node scripts/generate-coding-research-program.mjs --check --meta-language .meta-language
+      - name: Verify canonical continuation state from pinned checked IR
+        run: node scripts/generate-agentic-continuation.mjs --check --meta-language .meta-language
       - name: Verify readable source content through actual shared grammars
         run: node scripts/check-source-model.mjs --meta-language .meta-language
       - name: Verify canonical source snapshot program from pinned checked IR (R1213-5)

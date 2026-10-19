@@ -23,6 +23,7 @@ const reports = Array.from({ length: shardCount }, (_, index) => JSON.parse(
   readFileSync(join(directory, 'shard-' + index, 'source-network-receipts.json'), 'utf8')));
 const result = verifySourceDistribution({
   reports, sourcePaths: ownedProductionSources(root), sourceHead, upstreamCommit, shardCount,
+  requireReadableCst: true,
   sourceBytes: (path) => readFileSync(join(root, path)),
   packetBytes: (index, path) => readFileSync(join(directory, 'shard-' + index, path)),
 });

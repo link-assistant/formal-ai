@@ -19,6 +19,18 @@ on: # zizmor: ignore[dangerous-triggers]
       - "scripts/check-source-networks.mjs"
       - "scripts/verify-source-network-distribution.mjs"
       - "scripts/lib/source-network-packets.mjs"
+      - "scripts/lib/source-cst-packets.mjs"
+      - "scripts/lib/source-cst-*.mjs"
+      - "package.json"
+      - "bun.lock"
+      - "scripts/provision-source-cst-runtime.mjs"
+      - "scripts/generate-source-cst-runtime.mjs"
+      - "packages/source-cst-runtime/**"
+      - "js/vendor/tree-sitter/**"
+      - "js/meta/readable-source.js"
+      - "js/logging/lino-codec.mjs"
+      - "data/meta/source-model/syntax-rules.lino"
+      - "rust/tests/web/source-cst-packets.test.mjs"
       - "rust/tests/web/source-network-packets.test.mjs"
       - "scripts/translate-js-rust.mjs"
       - "scripts/lib/source-network-workers.mjs"
@@ -148,6 +160,8 @@ jobs:
           persist-credentials: false
       - name: Install serializer runtime dependencies
         run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Provision the captured complete source CST grammar runtime
+        run: node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/provision-source-cst-runtime.mjs" "$RUNNER_TEMP/source-cst-runtime"
       - name: Produce complete lossless packets from the selected source commit
         env:
           SOURCE_SHARD: ${{ matrix.shard }}

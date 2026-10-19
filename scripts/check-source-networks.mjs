@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { upstreamDirectory, workflowPin } from './translate-js-rust.mjs';
 import { partitionSourcePaths, sourceDigest } from './lib/source-network-packets.mjs';
 import { mapSourceNetworks } from './lib/source-network-workers.mjs';
+import {validateSourceCstReceipt} from './lib/source-cst-packets.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -36,9 +37,10 @@ export async function main(argumentsList) {
   const output = value('--output', '');
   if (output && !argumentsList.includes('--write')) throw new Error('--output requires --write');
   const receipts = await mapSourceNetworks(selected, new URL('./lib/source-network-worker.mjs', import.meta.url),
-    { root, upstream: resolve(upstream), shardIndex, output },
+    { root, upstream: resolve(upstream), shardIndex, output, cstRuntimeDirectory: process.env.FORMAL_AI_CST_RUNTIME },
     (observation) => console.error(JSON.stringify(observation)));
   for (const receipt of receipts) {
+    validateSourceCstReceipt(receipt, receipt.path);
     if (sourceDigest(readFileSync(join(root, receipt.path))) !== receipt.sourceSha256) {
       throw new Error('source changed after serialization: ' + receipt.path);
     }
@@ -49,7 +51,8 @@ export async function main(argumentsList) {
     { cwd: root, encoding: 'utf8' }).trim();
   const sourceHead = workingTreeChanges || finalChanges ? null : baseHead;
   const report = { sourceHead, baseHead, inputState: sourceHead ? 'committed-head' : 'working-tree', upstreamCommit: commit, shardIndex, shardCount, totalOwnedSources: paths.length,
-    checkedSources: receipts.length, fidelity: 'lossless-network-serialization', sources: receipts };
+    checkedSources: receipts.length, fidelity: 'readable-recursive-cst',
+    readableCstFidelity: 'readable-recursive-cst', sources: receipts };
   if (output) {
     mkdirSync(resolve(output), { recursive: true });
     writeFileSync(join(resolve(output), 'source-network-receipts.json'), JSON.stringify(report, null, 2) + '\n');
