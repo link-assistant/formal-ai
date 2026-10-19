@@ -1,0 +1,2 @@
+Resolve explicit source fields through their declared owner context before weak lexical surface guesses. Preserve ambiguous, quoted, wrong-context and undeclared-field refusals across JavaScript, TypeScript and Rust. Re-enable the original native unscoped owner regression while preserving the historical scoped conflict.
+Share canonical bundled source inputs and lexicon priority, retain observed declaration conflicts through generated fallback, and separate issue-disposition examples from status claims.

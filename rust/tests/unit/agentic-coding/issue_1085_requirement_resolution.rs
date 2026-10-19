@@ -460,7 +460,6 @@ fn canonical_surface_requires_role_evidence_outside_its_own_span() {
 
 /// Retain the exact unresolved native positive independently of the original scoped refusals.
 #[test]
-#[ignore = "temporary native owner-resolution parity debt; see docs/case-studies/general-discovery-quality-parity/native-owner-resolution-debt.md"]
 fn native_unscoped_l09_resolves_actual_terminal_commands_owner() {
     let rows = leaves();
     assert_eq!(rows.len(), 32);
@@ -474,4 +473,99 @@ fn native_unscoped_l09_resolves_actual_terminal_commands_owner() {
     assert_eq!(current.module_path, "src/seed/embedded_registry.rs");
     assert_eq!(current.symbol, "TERMINAL_COMMANDS_LINO");
     assert_eq!(current.kind, "const");
+}
+
+#[test]
+fn explicit_seed_fields_constrain_weak_lexical_surfaces_without_guessing() {
+    use formal_ai::agentic_coding::requirement_resolution::{
+        RequirementTarget, resolve_seed_target, structured_seed_owner,
+    };
+    use formal_ai::self_ast_census::WorkspaceCensus;
+    let census = WorkspaceCensus::compile(&[
+        (
+            "src/config.rs",
+            "pub const COBALT_CONFIG_LINO: &str = \"\";",
+        ),
+        ("src/words.rs", "pub const AUXILIARY_LINO: &str = \"\";"),
+        (
+            "src/archive.rs",
+            "pub const COBALT_ARCHIVE_LINO: &str = \"\";",
+        ),
+    ]);
+    let wanted = Some(RequirementTarget {
+        module_path: "src/config.rs".to_owned(),
+        symbol: "COBALT_CONFIG_LINO".to_owned(),
+        kind: "const".to_owned(),
+    });
+    let settings = (
+        "data/seed/cobalt-config.lino",
+        "settings\n  data-policy\n    value preserve\n",
+    );
+    let weak = (
+        "data/seed/auxiliary.lino",
+        "meanings\n  connector\n    role request_function_word\n    lexeme en the\n",
+    );
+    for request in [
+        "Update cobalt data policy with the new word.",
+        "Обнови data-policy для cobalt и слово the.",
+        "cobalt का data-policy बदलें और the शब्द रखें।",
+        "更新 cobalt 的 data-policy，并保留单词 the。",
+        "Actualiza data-policy para cobalt y conserva la palabra the.",
+    ] {
+        assert_eq!(
+            resolve_seed_target(&census, request, &[settings, weak]),
+            wanted,
+            "{request}"
+        );
+    }
+    assert_eq!(
+        structured_seed_owner(&census, "Update cobalt data-policy.", &[settings, weak]),
+        wanted
+    );
+    let request = "Update cobalt data policy with the new word.";
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            request,
+            &[
+                settings,
+                weak,
+                (
+                    "data/seed/cobalt-unsupported.lino",
+                    "settings\n  data-policy-new-word\n"
+                ),
+            ]
+        ),
+        wanted,
+        "an undeclared longer field cannot erase a qualified owner"
+    );
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            request,
+            &[
+                settings,
+                weak,
+                ("data/seed/cobalt-archive.lino", "settings\n  data-policy\n"),
+            ]
+        ),
+        None,
+        "equal explicit owners cannot authorize lexical fallback"
+    );
+    for request in [
+        "Update scarlet data-policy.",
+        "Update cobalt with \"data-policy\".",
+    ] {
+        assert_eq!(
+            resolve_seed_target(&census, request, &[settings, weak]),
+            None,
+            "{request}"
+        );
+    }
+    let wrong_kind =
+        WorkspaceCensus::compile(&[("src/config.rs", "pub fn COBALT_CONFIG_LINO() {}")]);
+    assert_eq!(
+        resolve_seed_target(&wrong_kind, "Update cobalt data-policy.", &[settings, weak]),
+        None
+    );
 }

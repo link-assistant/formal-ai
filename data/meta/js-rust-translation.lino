@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 299
   workaround_items 33
   inferred_signatures 2
-  carried_items 2366
+  carried_items 2368
   translated_modules 100
   fully_translated_modules 1
   refused_modules 49
@@ -126,7 +126,7 @@ module js/agentic/crate/seed_caller_context.mjs translated 0 workaround 1 inferr
 module js/agentic/crate/seed_client_integrations.mjs translated 3 workaround 0 inferred 0 carried 10
 module js/agentic/crate/seed_concepts.mjs translated 1 workaround 0 inferred 0 carried 3
 module js/agentic/crate/seed_learning_sources.mjs translated 0 workaround 0 inferred 0 carried 4
-module js/agentic/crate/seed_meanings.mjs translated 2 workaround 1 inferred 0 carried 40
+module js/agentic/crate/seed_meanings.mjs translated 2 workaround 1 inferred 0 carried 42
 module js/agentic/crate/seed_operation_vocabulary.mjs translated 0 workaround 0 inferred 0 carried 8
 module js/agentic/crate/seed_parser.mjs translated 0 workaround 0 inferred 0 carried 3
 module js/agentic/crate/seed_reports.mjs translated 0 workaround 0 inferred 0 carried 5
@@ -179,7 +179,7 @@ refusal "import of names its module does not translate" 323
 refusal "JSDoc type {…}" 215
 refusal "null" 187
 refusal "import from '…'" 165
-refusal "arrow function" 122
+refusal "arrow function" 124
 refusal "type: unknown name (a sibling item or an import)" 118
 refusal "function value …" 101
 refusal "new expression" 90

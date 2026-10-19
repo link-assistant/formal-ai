@@ -1282,7 +1282,10 @@ differently.
    (R1188-U2), and update documentation if needed
 3. Add a changelog fragment (see step 5 in Development Workflow)
 4. Ensure the PR description clearly describes the changes
-5. Declare each issue's disposition: completed acceptance uses `Fixes #146` or its full GitHub issue URL. Unfinished original acceptance uses the explicit whole-line record `Related (acceptance pending): <issue reference>` and remains open (R1207-9). Ambiguous substitutes such as `Addresses #146`, `Relates to #146`, or `Part of #146` do not satisfy the check.
+5. Declare each issue's disposition. Completed acceptance uses `Fixes #146` or its full GitHub issue URL.
+   Unfinished original acceptance uses the explicit whole-line record `Related (acceptance pending): <issue reference>`.
+   Keep unfinished acceptance pending under R1207-9; close an issue only when its acceptance is complete.
+   Ambiguous substitutes such as `Addresses #146`, `Relates to #146`, or `Part of #146` do not satisfy the check.
    Verify locally before opening the PR:
 
    ```bash

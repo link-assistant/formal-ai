@@ -12,10 +12,22 @@ const SEED_REGISTRY = 'data/meta/seed-registry.lino';
 /** `MEANING_FILES`: every seed the registry gives the `meaning` lexicon, in the
  * Mirrors `const MEANING_FILES` in rust/src/seed/embedded_registry.rs.
  * registry's (name) order, as rust/src/seed/embedded_registry.rs lists them. */
+function registeredSeedPaths(cacheKey, accepts) {
+  return cached(cacheKey, () => [...new Set(childrenNamed(parseLino(readText(SEED_REGISTRY)), 'seed')
+    .filter(accepts).map(seed => seed.id))].sort().map(name => `data/seed/${name}.lino`));
+}
+
+/** Mirrors `const MEANING_FILES`: canonical meaning-source paths and priority. */
 export function meaningFiles() {
-  return cached('meaning-files', () => childrenNamed(parseLino(readText(SEED_REGISTRY)), 'seed')
-    .filter((seed) => childrenNamed(seed, 'lexicon').some((lexicon) => lexicon.id === 'meaning'))
-    .map((seed) => `data/seed/${seed.id}.lino`));
+  return registeredSeedPaths('meaning-files', seed =>
+    childrenNamed(seed, 'lexicon').some(lexicon => lexicon.id === 'meaning'));
+}
+
+/** Mirrors `fn seed_files`: the same bundled source paths and current raw contents. */
+export function seedFiles() {
+  const paths = registeredSeedPaths('bundled-seed-file-paths', seed =>
+    childrenNamed(seed, 'bundle').some(bundle => bundle.id === 'true'));
+  return paths.map(path => [path, readText(path)]);
 }
 
 const CANONICAL_TARGETS = new Map([

@@ -182,6 +182,15 @@ pub fn resolve_seed_target(
     requirement: &str,
     sources: &[(&str, &str)],
 ) -> Option<RequirementTarget> {
+    // Explicit field ownership constrains weaker lexical surface matches.
+    let mut structured = resolve_structured_seed_targets(census, requirement, sources);
+    if !structured.is_empty() {
+        return if structured.len() == 1 {
+            structured.pop()
+        } else {
+            None
+        };
+    }
     let tokens: Vec<_> = tokens_of(requirement)
         .into_iter()
         .map(|word| word.to_lowercase())
@@ -258,13 +267,7 @@ pub fn resolve_seed_target(
             }
         }
     }
-    if best.is_empty() {
-        resolve_structured_seed_target(census, requirement, sources)
-    } else if best.len() == 1 {
-        best.pop()
-    } else {
-        None
-    }
+    if best.len() == 1 { best.pop() } else { None }
 }
 
 fn unique(
@@ -340,12 +343,27 @@ fn singular(word: &str) -> String {
     }
 }
 
-/// Multiword structured fields bind only with independent actual seed-owner context.
-fn resolve_structured_seed_target(
+/// Resolve an explicit field to exactly one independently declared seed owner.
+#[must_use]
+pub fn structured_seed_owner(
     census: &WorkspaceCensus,
     requirement: &str,
     sources: &[(&str, &str)],
 ) -> Option<RequirementTarget> {
+    let mut candidates = resolve_structured_seed_targets(census, requirement, sources);
+    if candidates.len() == 1 {
+        candidates.pop()
+    } else {
+        None
+    }
+}
+
+/// Multiword structured fields bind only with independent actual seed-owner context.
+fn resolve_structured_seed_targets(
+    census: &WorkspaceCensus,
+    requirement: &str,
+    sources: &[(&str, &str)],
+) -> Vec<RequirementTarget> {
     let mut unquoted = requirement.to_owned();
     for segment in crate::normal_markov::quoted_segment_spans(requirement)
         .into_iter()
@@ -383,7 +401,19 @@ fn resolve_structured_seed_target(
             .split(['_', '-'])
             .map(|word| singular(&word.to_lowercase()))
             .collect::<Vec<_>>();
+        if !context.iter().any(|word| words.contains(word)) {
+            continue;
+        }
         let name = format!("{}_LINO", stem.to_ascii_uppercase().replace('-', "_"));
+        let owners = census
+            .modules_declaring(&name)
+            .into_iter()
+            .filter_map(|module| module.symbol(&name).map(|symbol| (module, symbol)))
+            .filter(|(_, symbol)| matches!(symbol.kind.as_str(), "const" | "static"))
+            .collect::<Vec<_>>();
+        if owners.is_empty() {
+            continue;
+        }
         let mut nodes = vec![crate::seed::parse_lino(source)];
         while let Some(node) = nodes.pop() {
             let parts = node
@@ -402,14 +432,10 @@ fn resolve_structured_seed_target(
                     best.clear();
                 }
                 if parts.len() == best_length {
-                    for module in census.modules_declaring(&name) {
-                        if let Some(symbol) = module.symbol(&name)
-                            && matches!(symbol.kind.as_str(), "const" | "static")
-                        {
-                            let candidate = target(module, symbol);
-                            if !best.contains(&candidate) {
-                                best.push(candidate);
-                            }
+                    for (module, symbol) in &owners {
+                        let candidate = target(module, symbol);
+                        if !best.contains(&candidate) {
+                            best.push(candidate);
                         }
                     }
                 }
@@ -417,5 +443,5 @@ fn resolve_structured_seed_target(
             nodes.extend(node.children);
         }
     }
-    if best.len() == 1 { best.pop() } else { None }
+    best
 }

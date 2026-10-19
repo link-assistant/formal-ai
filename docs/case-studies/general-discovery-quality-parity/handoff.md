@@ -2,6 +2,14 @@
 
 This living checkpoint, updated on 2026-10-19, belongs to [PR #1234](https://github.com/link-assistant/formal-ai/pull/1234), branch `feat/general-discovery-quality-parity`, based on `fd5bfaced85262a51b341fb2b25c79e507423ca3`. The PR is open and ready for review; merge still requires the original acceptance checks. This document records accepted working constraints and observed partial progress; it does not close the linked issues.
 
+## Resumed delivery — 2026-10-19
+
+The owner resumed full delivery after the wrap-up. Root continues alone, through actual JavaScript Formal AI, with bounded source-only local work and native/product builds confined to CI. The earlier wrap-up describes historical state; query the actual PR head and all paginated jobs before relying on any result. An unrelated user-owned untracked session export must remain untouched and unpublished.
+
+The native unscoped owner-resolution regression is re-enabled under its original assertions. A complete actual source inventory ruled out a missing declaration in the JavaScript observation; weak lexical surface ambiguity shadowed the explicit field. Declared unquoted field ownership now constrains lexical guesses, equal field owners remain unresolved, and undeclared longer fields cannot affect ranking. The supplied transformation rules and full before/after CST models are retained privately in /private/tmp/formal-ai-resumed-delivery-root-20261019, with zero autonomous-authorship credit. See [the qualification record](native-owner-resolution-debt.md). The original Rust-only L09 scope remains an explicit unfulfilled conflict. Fresh hosted native qualification and all actual release consumers remain required; broader semantic/comment/multilingual/provenance/self-coding acceptance is not inferred from this finite repair.
+
+The complete bundled source transport and meaning lexicon priority now match the actual native declaration CST and original source bytes. Observed foreign declarations remain refusal evidence through generated fallback. The genuine pinned shared translator regenerates its products; new higher-order helpers remain explicitly carried rather than executable translated Rust, so full automatic translation is not claimed. All current source gates and affected owner/self-inspection controls pass locally. The one observed current-head CI failure was generic issue-disposition prose accidentally read as an open-status claim for example #146; the guidance is separated without altering the citation gate. Native compilation, original client delivery and publication still require exact-head CI.
+
 ## Wrap-up checkpoint — 2026-10-19, 10:40 UTC
 
 The owner requested stopping feature work and preparing this handoff to resume later. This section takes precedence over the older chronological checkpoints below. All eight subagents have completed; root is the sole coordinator. Do not restart or spawn subagents unless the owner changes that instruction.

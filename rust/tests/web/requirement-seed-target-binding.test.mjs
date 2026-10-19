@@ -6,6 +6,7 @@ import { before, test } from 'node:test';
 import { WorkerHost, REPO_ROOT } from '../../../js/server/worker-host.mjs';
 import { installNodeHost, censusDocuments } from '../../../js/agentic/node-host.mjs';
 import { stableId } from '../../../js/agentic/crate/engine_stable_identifier.mjs';
+import { workspace as sourceWorkspace } from '../../../js/agentic/crate/self_ast_census.mjs';
 import { resolveRequirementTarget, resolveSeedTarget, resolveIn } from '../../../js/agentic/requirement_resolution.mjs';
 before(async () => { await installNodeHost(new WorkerHost()); });
 const read = file => readFileSync(REPO_ROOT+'/'+file,'utf8');
@@ -24,6 +25,7 @@ test('unchanged ladder scope is retained and migrated ownership is never redirec
       // Preserve this original requirement as a conflict, never a fulfilled ladder case.
       assert.equal(target, null, originalTask);
       const currentTarget = resolveRequirementTarget(requirement);
+      assert.deepEqual(resolveIn(sourceWorkspace(), requirement), currentTarget, 'complete source resolution must not depend on the generated fallback');
       assert.deepEqual(currentTarget, {module_path:'src/seed/embedded_registry.rs',symbol:'TERMINAL_COMMANDS_LINO',kind:'const'});
       const registry = read('rust/' + currentTarget.module_path);
       const declaration = registry.slice(registry.indexOf('pub const ' + currentTarget.symbol)).split('\n').slice(0,3).join('\n');
@@ -104,4 +106,34 @@ test('a seed surface cannot supply its own independent role evidence',()=>{
     assert.equal(resolveSeedTarget(census,negative,[['data/seed/alpha.lino',seed]]),null,negative);
     assert.deepEqual(resolveSeedTarget(census,positive,[['data/seed/alpha.lino',seed]]),expected,positive);
   }
+});
+
+test('explicit fields constrain weak lexical surfaces in five request languages',()=>{
+  const owned={modules:[
+    {path:'src/config.rs',symbols:[{kind:'const',name:'COBALT_CONFIG_LINO'}]},
+    {path:'src/words.rs',symbols:[{kind:'const',name:'AUXILIARY_LINO'}]},
+    {path:'src/archive.rs',symbols:[{kind:'const',name:'COBALT_ARCHIVE_LINO'}]}
+  ]};
+  const wanted={module_path:'src/config.rs',symbol:'COBALT_CONFIG_LINO',kind:'const'};
+  const settings=['data/seed/cobalt-config.lino','settings\n  data-policy\n    value preserve\n'];
+  const weak=['data/seed/auxiliary.lino','meanings\n  connector\n    role request_function_word\n    lexeme en the\n'];
+  const inputs=[settings,weak];
+  for(const request of [
+    'Update cobalt data policy with the new word.',
+    'Обнови data-policy для cobalt и слово the.',
+    'cobalt का data-policy बदलें और the शब्द रखें।',
+    '更新 cobalt 的 data-policy，并保留单词 the。',
+    'Actualiza data-policy para cobalt y conserva la palabra the.'
+  ])assert.deepEqual(resolveSeedTarget(owned,request,inputs),wanted,request);
+  const request='Update cobalt data policy with the new word.';
+  assert.deepEqual(resolveSeedTarget(owned,request,[...inputs,
+    ['data/seed/cobalt-unsupported.lino','settings\n  data-policy-new-word\n']]),wanted,
+    'an undeclared longer field cannot erase a qualified owner');
+  assert.equal(resolveSeedTarget(owned,request,[...inputs,
+    ['data/seed/cobalt-archive.lino','settings\n  data-policy\n']]),null,
+    'equal explicit owners stay ambiguous even when the lexical fallback is unique');
+  assert.equal(resolveSeedTarget(owned,'Update scarlet data-policy.',inputs),null);
+  assert.equal(resolveSeedTarget(owned,'Update cobalt with "data-policy".',inputs),null);
+  const wrongKind={modules:[{path:'src/config.rs',symbols:[{kind:'function',name:'COBALT_CONFIG_LINO'}]}]};
+  assert.equal(resolveSeedTarget(wrongKind,'Update cobalt data-policy.',inputs),null);
 });

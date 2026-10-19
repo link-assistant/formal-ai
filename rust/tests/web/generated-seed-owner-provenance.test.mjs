@@ -97,3 +97,18 @@ test('conflicting actual same-module declaration kinds cannot inherit generated 
   hostFixture(root);
   assert.equal(resolveRequirementTarget('Rename ARBITRARY_ALPHA_LINO after changing signal'),null);
 }));
+
+test('explicit generated fields retain observed foreign declaration conflicts',()=>withFixture(root=>{
+  fs.writeFileSync(path.join(root,'data/seed/cobalt-config.lino'),'settings\n  data-policy\n    value preserve\n');
+  hostFixture(root);
+  const request='Update cobalt data-policy.';
+  assert.deepEqual(resolveRequirementTarget(request),{module_path:'src/seed/embedded_registry.rs',symbol:'COBALT_CONFIG_LINO',kind:'const'});
+  for(const kind of ['const','function']){
+    writeDeclaration(root,'src/foreign.rs',kind,'COBALT_CONFIG_LINO');
+    hostFixture(root);
+    assert.equal(resolveRequirementTarget(request),null,'observed '+kind+' conflict cannot be hidden by generated ownership');
+    const partial=censusDocuments(root).filter(row=>row.sourceIdentity.path==='src/foreign.rs');
+    hostFixture(root,partial);
+    assert.equal(resolveRequirementTarget(request),null,'partial observed '+kind+' conflict remains authoritative refusal');
+  }
+},['cobalt-config']));
