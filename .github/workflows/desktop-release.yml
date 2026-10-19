@@ -363,9 +363,9 @@ jobs:
           version: v0.16.0
       - name: Enable Rust compiler cache
         if: runner.os != 'Windows' && matrix.target != 'x86_64-apple-darwin'
-        run: |
-          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
-          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
+        uses: ./.github/actions/setup-sccache
+        with:
+          install: 'false'
       - name: Build the pinned default-feature native executable
         run: |
           prefix=()

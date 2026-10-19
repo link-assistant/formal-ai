@@ -1,10 +1,16 @@
 name: Setup sccache
 description: Install sccache and export the environment used by later Rust steps.
 
+inputs:
+  install:
+    description: Install pinned sccache; false reuses the caller's pinned installation.
+    default: 'true'
+
 runs:
   using: composite
   steps:
     - name: Install sccache
+      if: inputs.install != 'false'
       uses: mozilla-actions/sccache-action@v0.0.11
       with:
         # v0.17.0 expands Rust response files before spawning rustc and can
@@ -15,9 +21,11 @@ runs:
       shell: bash
       env:
         SCCACHE_GHA_ENABLED: "true"
+        SCCACHE_IGNORE_SERVER_IO_ERROR: "1"
         RUSTC_WRAPPER: sccache
       run: |
         echo "SCCACHE_GHA_ENABLED=$SCCACHE_GHA_ENABLED" >> "$GITHUB_ENV"
+        echo "SCCACHE_IGNORE_SERVER_IO_ERROR=$SCCACHE_IGNORE_SERVER_IO_ERROR" >> "$GITHUB_ENV"
         echo "RUSTC_WRAPPER=$RUSTC_WRAPPER" >> "$GITHUB_ENV"
 
     # Issue #1081 (D9): this used to run *after* the server was started, which
@@ -70,9 +78,19 @@ runs:
     - name: Start the sccache server
       shell: bash
       run: |
-        sccache --start-server || true
-        # No `| head`: an early-closing reader makes sccache exit on
-        # `Broken pipe (os error 32)`, which fails the step. The same trap is
-        # documented in experiments/agentic_cli_matrix/lib.sh.
-        sccache --show-stats
+        set -euo pipefail
+        probe_log="$(mktemp)"
+        trap 'rm -f "$probe_log"' EXIT
+        sccache --start-server > "$probe_log" 2>&1 || true
+        # A successful compiler probe also accepts an already-running server.
+        if sccache rustc -vV >> "$probe_log" 2>&1; then
+          echo "sccache compiler probe succeeded"
+        else
+          echo "RUSTC_WRAPPER=" >> "$GITHUB_ENV"
+          echo "::warning title=sccache unavailable::Compiler-cache probe failed; subsequent Cargo steps use the real compiler without cache (issue #1031)."
+        fi
+        sccache --show-stats >> "$probe_log" 2>&1 || echo "::warning::sccache statistics unavailable (issue #1031)."
+        # Read only the completed file; no cache process writes into this pipe.
+        # Cache errors can contain signed URLs, so redact their complete values.
+        head -c 65536 "$probe_log" | sed -E 's#https?://[^[:space:]]+#<cache-url-redacted>#g'
 
