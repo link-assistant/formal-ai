@@ -450,7 +450,7 @@ fn a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands() 
         serde_json::from_str(&written_verifier.arguments).unwrap();
     assert_eq!(verifier_arguments["content"], verifier.source);
     assert!(verifier.source.contains("scalac Main.scala"));
-    assert!(verifier.source.contains("scala Main"));
+    assert!(verifier.source.contains("scala run Main.scala"));
     assert_eq!(recipe.commands, ["sh tests/verify-output.sh"]);
     let workflow_arguments: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
     assert_eq!(
