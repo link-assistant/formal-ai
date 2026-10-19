@@ -452,43 +452,14 @@ test('collector read transport refuses unknown Git mutation and GitHub write rou
   /read-only/u);
 }
 );
-test('source cohort overlap deduplicates equal bytes and refuses conflicting projections',
-()=>{
-  const entry={
-    name:'docs/case-studies/x/session.json',
-    directory:false,
-    bytes:Buffer.from('same')}
-  ;
-  const census={
-    kind:'census',
-    entries:[entry]}
-  ,
-  session={
-    kind:'sessions',
-    entries:[{
-      ...entry,
-      name:'generated/'+entry.name}
-    ]}
-  ;
-  assert.equal(guardedImportMembers([census,
-  session]).length,
-  1);
-  assert.throws(()=>guardedImportMembers([census,
-  {
-    ...session,
-    entries:[{
-      ...session.entries[0],
-      bytes:Buffer.from('foreign')}
-    ]}
-  ]),
-  /conflicting/u);
-  assert.deepEqual(guardedImportMembers([{
-    kind:'answers',
-    entries:[entry]}
-  ]),
-  []);
-}
-);
+test('source receipts never import counters while generated session projections retain exact overlap guards', () => {
+  const receipt = {kind:'census', entries:[{name:'source-content-receipt.json',directory:false,bytes:Buffer.from('evidence only')}]};
+  assert.deepEqual(guardedImportMembers([receipt]), []);
+  const generated = {name:'generated/docs/case-studies/x/session.json',directory:false,bytes:Buffer.from('same')};
+  const session = {kind:'sessions',entries:[generated]};
+  assert.equal(guardedImportMembers([receipt, session, session]).length, 1);
+  assert.throws(() => guardedImportMembers([receipt, session, {kind:'sessions',entries:[{...generated,bytes:Buffer.from('different')}]}]));
+});
 test('unsupported registration normalizes only independently declared source suffixes',
 ()=>{
   const sources=[{

@@ -25,7 +25,15 @@ export function literalSourceList(source, name) {
   }
   visit(ast);
   assert.equal(found.length, 1, 'unique source-owned list required');
-  const list = found[0];
+  let list = found[0];
+  if (list?.type === 'CallExpression') {
+    assert.equal(list.callee?.type, 'MemberExpression', 'unknown source expression refused');
+    assert.equal(list.callee.computed, false, 'unknown source expression refused');
+    assert.equal(list.callee.object?.name, 'Object', 'unknown source expression refused');
+    assert.equal(list.callee.property?.name, 'freeze', 'unknown source expression refused');
+    assert.equal(list.arguments.length, 1, 'unknown source expression refused');
+    list = list.arguments[0];
+  }
   assert.equal(list.type, 'ArrayExpression');
   assert(list.elements.length > 0 && list.elements.length <= 256);
   const values = list.elements.map(node => {
@@ -38,7 +46,15 @@ export function literalSourceList(source, name) {
   return values;
 }
 export function requiredCensusSelectors(sourceRoot = root) {
-  const native = literalSourceList(fs.readFileSync(path.join(sourceRoot, 'scripts/lib/qualified-native-data-collector.mjs'), 'utf8'), 'nativeRoots');
+  const collector = fs.readFileSync(path.join(sourceRoot, 'scripts/lib/qualified-native-data-collector.mjs'), 'utf8');
+  const bindings = parse(collector, {sourceType: 'module'}).program.body.filter(node => node.type === 'ImportDeclaration'
+    && node.source.value === '../native-release-source.mjs').flatMap(node => node.specifiers);
+  assert.equal(bindings.length, 1, 'unique compilation-input owner import required');
+  assert.equal(bindings[0].type, 'ImportSpecifier');
+  assert.equal(bindings[0].imported.name, 'nativeCompilationInputRoots');
+  assert.equal(bindings[0].local.name, 'nativeCompilationInputRoots');
+  const native = [...literalSourceList(collector, 'cstHelperRoots'),
+    ...literalSourceList(fs.readFileSync(path.join(sourceRoot, 'scripts/native-release-source.mjs'), 'utf8'), 'nativeCompilationInputRoots')];
   const implementation = literalSourceList(fs.readFileSync(path.join(sourceRoot, 'scripts/collect-qualified-native-data-artifacts.mjs'), 'utf8'), 'implementationPaths').map(p => 'scripts/' + p);
   const selected = native.flatMap(p => [p, p + '/**']);
   return [...new Set([...selected, ...implementation, 'scripts/generate-census-source-selectors.mjs', 'rust/tests/web/census-source-selectors.test.mjs'])].sort();

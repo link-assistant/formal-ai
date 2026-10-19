@@ -5,6 +5,7 @@
 // its methods are camelCase. A `ToolAttempt` is `{capability, succeeded,
 // detail, arguments, tool}` with `arguments` / `tool` null when unknown.
 
+import { sourceFetchObservation } from './source_fetch_observation.mjs';
 import { plainText, rustLines } from './content.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { wordsForRole } from './crate/seed_meanings.mjs';
@@ -40,19 +41,18 @@ export function qualifiedToolAttempt(progress,capability,argumentsValue) {
 
 /** Mirrors `struct Progress` in rust/src/agentic_coding/progress.rs. */
 export class Progress {
-  constructor() {
-    this.completed = [];
-    this.attempts = [];
-    this.fetched_text = null;
-    this.fetched_pages = [];
-    this.attempted_fetches = [];
-    this.attempted_work_item_reads = [];
-    this.failed_work_item_reads = [];
-    this.search_output = null;
-    this.run_outputs = [];
-    this.run_observations = [];
-    this.search_result = null;
-  }
+  completed = [];
+  attempts = [];
+  fetched_text = null;
+  fetched_pages = [];
+  source_observations = [];
+  attempted_fetches = [];
+  attempted_work_item_reads = [];
+  failed_work_item_reads = [];
+  search_output = null;
+  run_outputs = [];
+  run_observations = [];
+  search_result = null;
 
   /** Mirrors `Progress::scan`. */
   static scan(messages) {
@@ -119,8 +119,16 @@ export class Progress {
       }
       progress.completed.push(capability);
     }
+    progress.source_observations = progress.fetched_pages.map(([url, text]) =>
+      sourceFetchObservation(messages, currentTurn, url, text));
     qualifiedProgressFrames.set(progress,qualifiedTranscriptFrames(messages,currentTurn));
     return progress;
+  }
+
+  /** Exact body pairs bind observation identity; metadata never changes source bytes. */
+  sourceObservationFor(url, text) {
+    const index = this.fetched_pages.findIndex(([pageUrl, body]) => pageUrl === url && body === text);
+    return index < 0 ? null : this.source_observations[index];
   }
 
   /** Mirrors `Progress::attempted_fetch_of`. */
@@ -324,6 +332,16 @@ export class Progress {
   successfulWriteFor(path) {
     return this.attempts.some((attempt) => attempt.capability === Capability.Write && attempt.succeeded
       && attempt.arguments !== null && argumentTargets(attempt.arguments, path));
+  }
+
+  /** Mirrors Progress::latest_write_index: latest declaration includes failed writes. */
+  latestWriteIndex(path) {
+    for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
+      const attempt = this.attempts[index];
+      if (attempt.capability === Capability.Write && attempt.arguments !== null
+        && argumentTargets(attempt.arguments, path)) return index;
+    }
+    return null;
   }
 
   /** Mirrors `Progress::latest_successful_write_index`. */

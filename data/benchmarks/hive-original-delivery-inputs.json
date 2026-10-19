@@ -1,0 +1,13 @@
+{
+  "schema": "formal-ai-hive-original-delivery-inputs-v1",
+  "hiveRepository": "link-assistant/hive-mind",
+  "hiveCommit": "8f22b87c515adece0427cb59e429531f35d7760a",
+  "taskRuntimeImage": "konard/hive-mind-dind:latest",
+  "expectedStdout": "Hello, World!\n",
+  "clients": {
+    "claude": "Kotlin",
+    "agent": "Scala",
+    "codex": "Rust"
+  },
+  "authorshipCredit": 0
+}

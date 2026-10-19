@@ -29,6 +29,39 @@ pub fn plan_symbolic_command_reroute(
     tool_names: &[&str],
     symbolic_answer: &SymbolicAnswer,
 ) -> Option<AgenticPlan> {
+    plan_symbolic_command_reroute_for_objective(
+        messages,
+        tool_names,
+        symbolic_answer,
+        &crate::protocol::latest_user_request(messages).unwrap_or_default(),
+    )
+}
+
+pub(super) fn plan_symbolic_command_reroute_for_objective(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    symbolic_answer: &SymbolicAnswer,
+    objective: &str,
+) -> Option<AgenticPlan> {
+    recipe_step(messages, tool_names, symbolic_answer, objective, false)
+}
+
+pub(super) fn plan_owned_recipe_recovery(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    symbolic_answer: &SymbolicAnswer,
+    objective: &str,
+) -> Option<AgenticPlan> {
+    recipe_step(messages, tool_names, symbolic_answer, objective, true)
+}
+
+fn recipe_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    symbolic_answer: &SymbolicAnswer,
+    objective: &str,
+    recovery_only: bool,
+) -> Option<AgenticPlan> {
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
     let requested = requested_recipe(&request, symbolic_answer.execution_recipe.as_ref()?);
     let recipe = &requested;
@@ -60,6 +93,14 @@ pub fn plan_symbolic_command_reroute(
     }
     let progress =
         RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands);
+    if recovery_only
+        && progress
+            .failure
+            .as_ref()
+            .is_none_or(|failure| !failure.from_run)
+    {
+        return None;
+    }
     if let Some(target) = &commit {
         let followup = pr_completion_commands(recipe, target);
         let observed = super::progress::Progress::scan(messages);
@@ -95,13 +136,79 @@ pub fn plan_symbolic_command_reroute(
         let failed_path = next_file().map_or(recipe.path.as_str(), |(path, _)| path);
         let mut repair_note = String::new();
         if failure.from_run {
-            if let Some(plan) = super::prerequisite_recovery::plan_recovery(
-                messages,
-                tool_names,
-                step,
-                failure.exit_code,
-                &failure.reported,
-            ) {
+            let observation = super::progress::Progress::scan(messages);
+            let bound = observation.latest_attempt_for(Capability::Run, &json!({"command":step}));
+            let owned = std::iter::once((&recipe.path, &recipe.source))
+                .chain(
+                    recipe
+                        .supporting_files
+                        .iter()
+                        .map(|file| (&file.path, &file.source)),
+                )
+                .all(|(path, source)| {
+                    let Some(index) = observation.latest_write_index(path) else {
+                        return false;
+                    };
+                    let Some(attempt) = observation.research_attempts().get(index) else {
+                        return false;
+                    };
+                    let Some(arguments) = attempt.arguments.as_deref() else {
+                        return false;
+                    };
+                    if !attempt.succeeded
+                        || !super::progress::write_matches(arguments, path, source)
+                    {
+                        return false;
+                    }
+                    let Ok(value) = serde_json::from_str(arguments) else {
+                        return false;
+                    };
+                    observation
+                        .latest_attempt_for(Capability::Write, &value)
+                        .is_some_and(|frame| {
+                            frame.binding == super::qualified_tool_observation::Binding::Exact
+                                && frame.succeeded
+                        })
+                });
+            let observed = super::tool_result::failure_message(&failure.reported, true, false);
+            let reported = observed
+                .as_ref()
+                .map_or(failure.reported.as_str(), String::as_str);
+            let identity = if owned
+                && bound.is_some_and(|frame| {
+                    frame.binding == super::qualified_tool_observation::Binding::Exact
+                }) {
+                crate::coding::program_contract::program_recovery_command(
+                    objective, recipe, step, reported,
+                )
+            } else {
+                None
+            };
+            if recovery_only && identity.is_none() {
+                return None;
+            }
+            let recovery = identity.as_deref().map_or_else(
+                || {
+                    super::prerequisite_recovery::plan_recovery(
+                        messages,
+                        tool_names,
+                        step,
+                        failure.exit_code,
+                        &failure.reported,
+                    )
+                },
+                |original| {
+                    super::prerequisite_recovery::plan_recovery_with_identity(
+                        messages,
+                        tool_names,
+                        step,
+                        failure.exit_code,
+                        &failure.reported,
+                        original,
+                    )
+                },
+            );
+            if let Some(plan) = recovery {
                 return Some(plan);
             }
             let failed = super::repair_loop::FailedStep::new(&recipe.language, &failure.reported)
@@ -383,9 +490,10 @@ impl RecipeProgress {
                 if matches_run {
                     progress.repair_rung = progress.repair_rung.saturating_add(1);
                 }
+                let exit_code = reported_exit_code(&output);
                 progress.failure = Some(StepFailure {
                     reported: output,
-                    exit_code: None,
+                    exit_code,
                     from_run: matches_run,
                 });
                 continue;
@@ -423,14 +531,6 @@ impl RecipeProgress {
     }
 }
 
-/// Labels harnesses use to state the exit status of the process they ran.
-const EXIT_CODE_LABELS: [&str; 4] = [
-    "exit code:",
-    "exit status:",
-    "command exited with status",
-    "process exited with code",
-];
-
 /// Values a labelled field carries when the harness means "there was none".
 const ABSENT_FIELD_VALUES: [&str; 8] = [
     "",
@@ -448,15 +548,7 @@ const ABSENT_FIELD_VALUES: [&str; 8] = [
 /// Every harness in use reports it in a fixed `Exit Code: <n>` field, so this
 /// is a read rather than an inference.
 fn reported_exit_code(output: &str) -> Option<i32> {
-    output.lines().find_map(|line| {
-        let line = line.trim().to_ascii_lowercase();
-        EXIT_CODE_LABELS
-            .iter()
-            .find_map(|label| line.strip_prefix(label))?
-            .split(|character: char| !(character.is_ascii_digit() || character == '-'))
-            .find(|token| !token.is_empty())
-            .and_then(|token| token.parse::<i32>().ok())
-    })
+    super::tool_result::reported_exit_code(output).and_then(|value| i32::try_from(value).ok())
 }
 
 impl StepFailure {
@@ -482,7 +574,15 @@ impl StepFailure {
         // -- "Created and verified", with the failure quoted underneath (issue
         // #1133). The seed's failure lexicon already judges such text for the
         // narration path; a verification command's text is judged the same way.
-        if super::tool_result::failure_message(&reported, false, from_run).is_some() {
+        // Nested JSON event fields are data, not the surrounding process's own prose.
+        let prose = reported
+            .lines()
+            .filter(|line| serde_json::from_str::<serde_json::Value>(line).is_err())
+            .collect::<Vec<_>>()
+            .join("\n");
+        if super::tool_result::failure_message(&reported, false, false).is_some()
+            || super::tool_result::failure_message(&prose, false, from_run).is_some()
+        {
             return Some(Self {
                 exit_code: super::tool_result::reported_exit_code(&reported)
                     .and_then(|code| i32::try_from(code).ok()),
@@ -490,7 +590,7 @@ impl StepFailure {
                 from_run,
             });
         }
-        reports_failure_in_prose(&reported).then_some(Self {
+        reports_failure_in_prose(&prose).then_some(Self {
             reported,
             exit_code: None,
             from_run,

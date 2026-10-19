@@ -23,16 +23,48 @@ pub(in crate::agentic_coding) fn is_continuation_cue(text: &str) -> bool {
 /// state machine that continues it -- slicing the window at the cue is what
 /// restarted the write--verify chain from its read on every ping and kept
 /// every binary-tree ladder leaf from reaching a completion (issue #1138,
-/// 0/32). A user message that is not a cue still opens a fresh window:
-/// results from an earlier request must not answer a new one.
+/// 0/32). Contiguous exact nonempty plain-text repeats retain that objective.
+/// Different, empty or multipart requests open a fresh window; observations
+/// from an intervening different request never answer a repeated older one.
 pub(in crate::agentic_coding) fn evidence_window_start(messages: &[ChatMessage]) -> usize {
-    messages
+    let users: Vec<bool> = messages
         .iter()
-        .rposition(|message| {
-            message.role.eq_ignore_ascii_case("user")
-                && !is_continuation_cue(&message.content.plain_text())
+        .map(|message| message.role.eq_ignore_ascii_case("user"))
+        .collect();
+    // Multipart fields are not fully retained by MessageContentPart; they always open a fresh boundary.
+    let cues = messages
+        .iter()
+        .enumerate()
+        .map(|(index, message)| {
+            users[index]
+                && match &message.content {
+                    crate::protocol::MessageContent::Text(text) => is_continuation_cue(text),
+                    crate::protocol::MessageContent::Parts(_) => false,
+                }
         })
-        .map_or(0, |index| index + 1)
+        .collect();
+    let identities = messages
+        .iter()
+        .enumerate()
+        .map(|(index, message)| {
+            if !users[index] {
+                return String::new();
+            }
+            match &message.content {
+                crate::protocol::MessageContent::Text(text) if !text.is_empty() => {
+                    format!("text:{text}")
+                }
+                _ => format!("boundary:{index}"),
+            }
+        })
+        .collect();
+    let window = crate::agentic_continuation_generated::continuation_evidence_window_start(
+        users, cues, identities,
+    );
+    window
+        .to_string()
+        .parse::<usize>()
+        .map_or(messages.len(), |index| index.min(messages.len()))
 }
 
 /// The task a continuation cue continues.
@@ -199,7 +231,14 @@ pub(super) fn preserved_first_user_turn(summary: &str) -> Option<String> {
 /// `crate::protocol`. Off by default; issue #956 asked for visibility into how
 /// a received task was routed.
 pub fn trace_route(route: &str, value: &str) {
-    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") {
+    trace_route_with(route, || Some(value));
+}
+
+/// Build optional route evidence only inside the existing opt-in trace boundary.
+pub fn trace_route_with<T: std::fmt::Display>(route: &str, produce: impl FnOnce() -> Option<T>) {
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS")
+        && let Some(value) = produce()
+    {
         crate::diagnostic!("debug"; "[trace] {route}={value}");
     }
 }

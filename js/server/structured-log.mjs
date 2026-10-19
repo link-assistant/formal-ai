@@ -43,7 +43,7 @@ export function makeRedactor(env={}, {preserveJsonNumbers=false}={}){
   }
   return out;
   }
-  
+
    const d=Object.getOwnPropertyDescriptors(v);
    if(preserveJsonNumbers&&Object.getPrototypeOf(v)===Object.prototype){
     const keys=Reflect.ownKeys(d);
@@ -67,7 +67,7 @@ export function makeRedactor(env={}, {preserveJsonNumbers=false}={}){
   );
   }
   return out;
-  
+
   }finally{seen.delete(v);}
  };
  const redact=v=>walk(v);
@@ -81,8 +81,9 @@ export function makeRedactor(env={}, {preserveJsonNumbers=false}={}){
 function writeAll(write,bytes){let offset=0;while(offset<bytes.length){const count=write(bytes.subarray(offset));if(!Number.isSafeInteger(count)||count<=0||count>bytes.length-offset)throw Error('sink_progress');offset+=count;}}
 // Best-effort diagnostics: return typed fixed failure codes, never raw IO error text.
 // This logger makes no durability/provenance guarantee and is not a chain writer.
-export function createLogger({level='debug',directory,env=process.env,pid=process.pid,clock=()=>new Date().toISOString(),stderrWrite=b=>fs.writeSync(process.stderr.fd,b),openFile=file=>fs.openSync(file,'a',0o600),fileWrite=(fd,b)=>fs.writeSync(fd,b),closeFile=fd=>fs.closeSync(fd)}={}){
+export function createLogger({level='debug',directory,env=process.env,pid=process.pid,clock=()=>new Date().toISOString(),recordObserver,stderrWrite=b=>fs.writeSync(process.stderr.fd,b),openFile=file=>fs.openSync(file,'a',0o600),fileWrite=(fd,b)=>fs.writeSync(fd,b),closeFile=fd=>fs.closeSync(fd)}={}){
  if(!Object.hasOwn(levels,level))throw Error('invalid_log_level');
+ if(recordObserver!==undefined&&typeof recordObserver!=='function')throw Error('invalid_record_observer');
  const redact=makeRedactor(env),failures=[],sinks=[];let sequence=0,fd=null,file=null;
  if(level!=='silent'){
   sinks.push({name:'stderr',write:stderrWrite,enabled:true});
@@ -108,11 +109,12 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
     else record.payload.content_omitted='record_size_limit';
   }
   }
-  
+
     line=encodeTyped(record)+'\n';
    }catch{return {emitted:false,reason:'serialization_failed'};}
    const bytes=Buffer.from(line),delivered=[];
    if(bytes.length>MAXIMUM_LOG_RECORD_BYTES)return {emitted:false,reason:'record_size_limit'};
+   if(recordObserver){try{recordObserver(line.slice(0,-1));}catch{return {emitted:false,reason:'record_observer_failed'};}}
    for(const sink of sinks){if(!sink.enabled)continue;try{writeAll(sink.write,bytes);delivered.push(sink.name);}catch{sink.enabled=false;failures.push({sink:sink.name,reason:'write_failed'});}}
    return {emitted:delivered.length>0,delivered};
   },

@@ -1,24 +1,10 @@
-//! Fourth agentic recipe — driving Formal AI to *store the CST/AST of its own
-//! Rust meta algorithm in our data* (issue #538).
+//! Self-inspection records complete recursive source CST in human-readable Links Notation.
 //!
-//! Issue #538 asks, among its self-inspection axes, for the *"CST/AST of all our
-//! Rust logic (meta algorithm) in our data"* so the system can *"reason about
-//! itself"*. This module is the smallest real, tested slice of that axis: it
-//! parses a real module of our own reasoning meta algorithm
-//! ([the deterministic planner](super::planner)) through the **sole CST/AST engine
-//! in this repo** — the link-foundation
-//! [meta-language](https://github.com/link-foundation/meta-language) links network,
-//! the same `LinkNetwork::parse` path used by `crate::coding::cst` — and emits
-//! the resulting abstract-syntax node census as Links Notation.
-//!
-//! Nothing here is hardcoded to one answer: [`render_ast_document`] is a pure
-//! function of whatever Rust source it is handed (see [`ast_census`]), so the same
-//! recipe stores the CST/AST of *any* module. The recipe pins the planner as its
-//! canonical self-inspection target the same way [`super::diagram`] pins the
-//! planner's recipe table — the generality is proven by the unit tests parsing
-//! several different sources, and by a byte-for-byte parity test on the committed
-//! artifact. Neural inference stays a NON-GOAL: the census is a deterministic
-//! function of the real tree-sitter parse.
+//! The planner source embedded at build time is the canonical self-inspection target
+//! (issue #538). The persisted source model owns all literals, comments, punctuation
+//! and whitespace and reconstructs without its original source buffer. Fresh grammar
+//! verification checks concrete structure independently. Legacy AST API names and
+//! histogram adapters remain compatibility diagnostics; they are not source artifacts.
 
 #[cfg(feature = "meta-language")]
 use std::collections::BTreeMap;
@@ -69,31 +55,34 @@ const RUST_GRAMMAR_LABEL: &str = "rust";
 /// The self-inspection target: a real module of our own reasoning meta algorithm.
 ///
 /// Embedded at compile time so the recipe is self-contained (no filesystem read at
-/// run time — it works from the Agent CLI's sandbox workdir), and so the committed
-/// artifact tracks the real planner source, regenerated like any other seed data.
+/// run time — it works from the Agent CLI's sandbox workdir), while on-demand source content is always derived from those actual bytes.
 pub const TARGET_MODULE_PATH: &str = "src/agentic_coding/planner.rs";
 
 /// The planner source, embedded from disk at build time.
 const TARGET_MODULE_SOURCE: &str = include_str!("planner.rs");
 
-/// The workspace path the planner writes the generated CST/AST document to.
-pub const AST_PATH: &str = "self-ast.lino";
+/// Historical API name for the complete source CST artifact written by the planner.
+pub const AST_PATH: &str = "self-cst.lino";
 
 /// A *differently worded* request for the self-AST recipe — the maintainer's
 /// generality check: the router recognises the intent from the words, not a
 /// hardcoded string.
-pub const AST_TASK: &str = "Store the CST/AST of our Rust meta algorithm in our data so the system \
-                            can reason about itself: parse the planner module and record its \
-                            abstract-syntax node census in Links Notation.";
+#[must_use]
+pub fn ast_task() -> &'static str {
+    static TASK: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+    TASK.get_or_init(|| super::wording::agentic_message("self_ast_task", &[]))
+        .as_str()
+}
 
 /// Keywords that mark a user turn as the self-AST recipe. Kept distinct from the
 /// diagram keywords (`mermaid`/`diagram`) so the two self-inspection recipes never
 /// collide.
-const AST_KEYWORDS: [&str; 4] = [
+const AST_KEYWORDS: &[&str] = &[
     "cst/ast",
     "cst / ast",
     "abstract-syntax",
     "reason about itself",
+    "concrete syntax",
 ];
 
 /// Whether `prompt` asks to store the CST/AST of the meta algorithm (issue #538).
@@ -102,12 +91,17 @@ pub fn is_self_ast_task(prompt: &str) -> bool {
     let lower = prompt.to_lowercase();
     // Require an AST/CST intent word plus a self-reference so ordinary "parse this"
     // requests do not route here.
+    let words: Vec<_> = lower
+        .split(|character: char| !character.is_alphanumeric())
+        .collect();
     let names_ast = AST_KEYWORDS.iter().any(|keyword| lower.contains(keyword))
+        || words.contains(&"cst")
         || (lower.contains("ast") && lower.contains("meta algorithm"));
-    let self_reference = lower.contains("our")
-        || lower.contains("itself")
+    let self_reference = words.contains(&"our")
+        || words.contains(&"your")
+        || words.contains(&"itself")
         || lower.contains("meta algorithm")
-        || lower.contains("planner");
+        || words.contains(&"planner");
     names_ast && self_reference
 }
 
@@ -200,15 +194,15 @@ pub const fn ast_census(_source: &str) -> AstCensus {
     }
 }
 
-/// Render the CST/AST-in-data document (Links Notation) for a given target and
-/// source. Deterministic and ends with exactly one trailing newline.
+/// Render complete recursive source CST for the given target and actual source.
 ///
-/// The output is what the Agent CLI writes to [`AST_PATH`] and what
-/// `data/meta/self-ast.lino` is committed as, asserted byte-for-byte in the
-/// issue-#538 tests.
+/// The legacy function name is retained for callers; the artifact at [`AST_PATH`]
+/// contains source content and is verified by reconstruction and fresh grammar.
+/// Historical census records remain separate diagnostics.
 #[must_use]
 pub fn render_ast_document(target_path: &str, source: &str) -> String {
-    render_census_document(target_path, &ast_census(source))
+    source_document(target_path, source)
+        .unwrap_or_else(|reason| format!("SourceModelUnavailable:{reason}"))
 }
 
 /// The formatting half of [`render_ast_document`]: the CST/AST-in-data
@@ -218,7 +212,7 @@ pub fn render_ast_document(target_path: &str, source: &str) -> String {
 #[must_use]
 pub fn render_census_document(target_path: &str, census: &AstCensus) -> String {
     let mut out = String::new();
-    let _ = writeln!(out, "self_ast");
+    let _ = writeln!(out, "source_census_diagnostic");
     let _ = writeln!(out, "  target {target_path}");
     let _ = writeln!(out, "  language rust");
     // The sole CST/AST engine in this repo (see src/coding/cst.rs).
@@ -278,19 +272,22 @@ pub fn round_trips(source: &str) -> bool {
 /// `to_lino` is the dependency's documented lossless serialization
 /// (`from_lino(to_lino(n))` is isomorphic for any network, spans included), so
 /// this is the whole projection: nothing is dropped and nothing is invented.
-/// The committed census ([`render_ast_document`]) stays the `signature`
+/// Legacy node-census formatting is diagnostic only; recursive source content is
 /// artifact; this is the dialect the meta → rust leg reads back.
 #[must_use]
 #[cfg(feature = "meta-language")]
 pub fn network_lino(source: &str) -> String {
-    LinkNetwork::parse(source, RUST_GRAMMAR_LABEL, ParseConfiguration::default()).to_lino()
+    crate::readable_source::source_to_links(source, "Rust")
+        .and_then(|document| crate::readable_source::write_source_links(&document))
+        .unwrap_or_else(|reason| format!("SourceModelUnavailable:{reason}"))
 }
 
 /// Preserve the input when the optional parsing engine is disabled.
 #[must_use]
 #[cfg(not(feature = "meta-language"))]
 pub fn network_lino(source: &str) -> String {
-    source.to_owned()
+    let _ = source;
+    "SourceModelUnavailable:meta-language engine disabled".to_owned()
 }
 
 /// Render Rust source back out of a network-serialization lino document —
@@ -302,15 +299,17 @@ pub fn network_lino(source: &str) -> String {
 /// expected dialect, never a mis-parse into invented source.
 #[cfg(feature = "meta-language")]
 pub fn render_network_source(document: &str) -> Result<String, String> {
-    LinkNetwork::from_lino(document)
-        .map(|network| network.reconstruct_text())
-        .map_err(|error| {
-            format!(
-                "meta → rust renders only the network serialization dialect of lino (the \
-                 output side of LinkNetwork::to_lino); a census or token-tree pivot \
-                 document is not one: {error}"
-            )
-        })
+    let model = crate::readable_source::read_source_links(document)
+        .map_err(|reason| format!("ReadableRustSourceRequired:{reason}"))?;
+    let content = crate::readable_source::source_content(&model)?;
+    let fields = content
+        .as_array()
+        .ok_or_else(|| "SourceDocumentRequired".to_owned())?;
+    if crate::readable_source::field_text(fields, "language")? != "Rust" {
+        return Err("SourceLanguageMismatch:Rust".to_owned());
+    }
+    crate::readable_source::verify_source_links(&model)?;
+    crate::readable_source::source_from_links(&model)
 }
 
 /// The engine-disabled shape of [`render_network_source`]: without the
@@ -352,11 +351,27 @@ pub const fn target_source() -> &'static str {
 /// CST/AST document inline.
 #[must_use]
 pub fn final_answer(document: &str) -> String {
-    format!(
-        "Stored the CST/AST of our Rust meta algorithm ({TARGET_MODULE_PATH}) in our data, parsed \
-         through the meta-language links network (the sole CST/AST engine here) and recorded as an \
-         abstract-syntax node census — a real step toward the system reasoning about itself.\n\n\
-         Generated document ({AST_PATH}):\n\n{document}",
-        document = document.trim_end(),
+    super::wording::agentic_message(
+        "self_ast_final_answer",
+        &[
+            ("target", TARGET_MODULE_PATH),
+            ("path", AST_PATH),
+            ("document", document.trim_end()),
+        ],
     )
+}
+
+/// Generate actual recursive content; diagnostics and cached counts cannot satisfy this API.
+pub fn source_document(target_path: &str, source: &str) -> Result<String, String> {
+    #[cfg(feature = "meta-language")]
+    {
+        let document = crate::readable_source::source_to_links(source, "Rust")?;
+        let owned = crate::readable_source::owned_source_links(target_path, &document)?;
+        crate::readable_source::write_source_links(&owned)
+    }
+    #[cfg(not(feature = "meta-language"))]
+    {
+        let _ = (target_path, source);
+        Err("SourceModelEngineUnavailable".to_owned())
+    }
 }

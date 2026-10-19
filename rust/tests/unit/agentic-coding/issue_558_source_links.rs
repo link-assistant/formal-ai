@@ -178,7 +178,7 @@ fn render_document_is_valid_links_and_reports_the_whole_repo() {
     assert!(document.contains("self_source_links"));
     assert!(document.contains("engine meta_language"));
     assert!(document.contains("task translate_entire_source_to_links_and_back"));
-    // The cheap "entire source in our data" view accounts for every file.
+    // The legacy ownership header accounts for files without retaining source content.
     assert!(document.contains("entire_source"));
     assert!(document.contains(&format!("file_count {}", owned_file_count())));
     assert!(document.contains("manifest_content_id"));
@@ -186,6 +186,15 @@ fn render_document_is_valid_links_and_reports_the_whole_repo() {
     assert!(document.contains("round_trip_proof"));
     assert!(document.contains("slice_fully_faithful true"));
     assert!(document.contains("faithful true"));
+    assert!(document.contains("representation navigation-diagnostic"));
+    assert!(document.contains("complete-recursive-content false"));
+    let answer = source_links::final_answer(&document);
+    assert!(answer.contains("does not contain the entire source as recursive CST content"));
+    assert!(answer.contains(&format!(
+        "parser round-trip verified: {}",
+        source_links::slice().is_fully_faithful()
+    )));
+    assert!(!answer.starts_with("Translated the entire source"));
     // Exactly one trailing newline.
     assert!(document.ends_with('\n') && !document.ends_with("\n\n"));
 }

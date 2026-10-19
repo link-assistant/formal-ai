@@ -1,8 +1,9 @@
+import {wellFormedText} from './text-lines.mjs';
 // Shared pure typed Links Notation codec. Surfaces add transport and redaction separately.
 import {isFloat,f32,f64,renderFloat} from './json-numbers.mjs';
 import {encodeWord,decodeWord,parseLinks,writeLink} from './lino-codec.mjs';
 const utf8Order=(a,b)=>Buffer.compare(Buffer.from(a),Buffer.from(b));
-function text(value){if(typeof value!=='string'||!value.isWellFormed())throw Error('unsupported_text');return value;}
+function text(value){if(typeof value!=='string'||!wellFormedText(value))throw Error('unsupported_text');return value;}
 function node(value,depth=0,preserveJsonNumbers=false,dialogRecord=false){
  if(!dialogRecord&&depth>64)throw Error('depth_limit');
  if(preserveJsonNumbers&&typeof value==='bigint')return ['integer',String(value)];

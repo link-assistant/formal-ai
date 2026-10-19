@@ -21,3 +21,15 @@ test('unknown and duplicate source-list identities refuse instead of silently om
 test('duplicate original guards and malformed authority shape refuse', () => {
   for (const source of ['on:\n  pull_request:\n    paths: [same, same]\n', 'on:\n  pull_request:\n    paths: unknown\n']) assert.throws(() => checkedCensusSelectorRepair(source, ['new/**']));
 });
+
+test('frozen source-owned arrays are read without evaluating unknown calls or spreads', () => {
+  assert.deepEqual(literalSourceList('export const owned=Object.freeze(["one","nested/two"]);', 'owned'), ['one','nested/two']);
+  for (const source of [
+    'const owned=foreign.freeze(["one"]);',
+    'const owned=Object["freeze"](["one"]);',
+    'const owned=Object.freeze(["one"], sideEffect());',
+    'const owned=Object.freeze([...foreign]);',
+    'const owned=Object.freeze(["same","same"]);',
+    'const owned=Object.freeze(["../outside"]);',
+  ]) assert.throws(() => literalSourceList(source, 'owned'));
+});

@@ -71,7 +71,7 @@ COPY rust/target/release/formal-ai /app/target/release/formal-ai
 FROM ${BINARY_SOURCE}-binary AS selected-binary
 
 # Official multiarch Node binary: target architecture follows the image build.
-FROM node:22.23.3-bookworm-slim AS node-runtime
+FROM node:26.12.0-bookworm-slim AS node-runtime
 
 FROM konard/box-dind:2.10.2
 
@@ -90,15 +90,17 @@ ENV PATH="${BUN_INSTALL}/bin:/usr/local/bin:${PATH}"
 # the system package install switches back to root explicitly; apt cannot
 # write /var/lib/apt/lists as box. The bun installs below run as box again.
 USER root
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libstdc++6 libatomic1 && \
-    rm -rf /var/lib/apt/lists/*
+# Reuse the bounded mirror retry; every attempt retains apt's integrity checks.
+COPY --chmod=0755 scripts/apt-install-with-retry.sh scripts/run-with-deadline.sh /usr/local/lib/formal-ai-build/
+RUN FORMAL_AI_APT_PRIVILEGE= bash /usr/local/lib/formal-ai-build/apt-install-with-retry.sh \
+      --no-install-recommends libstdc++6 libatomic1 && \
+    rm -rf /var/lib/apt/lists/* /usr/local/lib/formal-ai-build
 
-# Ubuntu 24.04 supplies the shared libraries required by official Node 22.
+# Ubuntu 24.04 supplies the shared libraries required by official Node 26.
 # Its distro Node 18 cannot parse the /v regex used by agent dependencies.
 COPY --from=node-runtime /usr/local/bin/node /usr/local/bin/node
 RUN node --version && \
-    node --eval "if (process.versions.node.split('.')[0] !== '22') process.exit(1); new RegExp('', 'v')"
+    node --eval "if (process.versions.node.split('.')[0] !== '26') process.exit(1); new RegExp('', 'v')"
 
 USER box
 WORKDIR /home/box

@@ -2,108 +2,111 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 37946
-  line_count 917
-  content_id source_module_8375429ae4091ea5
-  symbol_count 57
+  byte_len 39122
+  line_count 950
+  content_id source_module_40e77d9ce47f22a1
+  symbol_count 60
   symbols
-    struct ToolAttempt 15 23
-    function is_work_item_read 27 34
-    struct Progress 38 57
-    function scan 60 215
-    function attempted_fetch_of 218 229
-    function attempted_work_item_read_of 232 236
-    function failed_work_item_read_of 239 248
-    function work_item_read_attempts 251 343
-    function latest_attempt_for 346 352
-    function has_run 355 357
-    function repeated_call 360 391
-    function same_attempt 395 401
-    function same_run_operand 405 419
-    function latest_failure_of_tool 422 427
-    function identical_failures_of 431 448
-    function done 451 453
-    function count 455 460
-    function latest_successful_output 463 469
-    function latest_successful_arguments 473 479
-    function latest_success_unstalled 482 493
-    function run_count_for 496 501
-    function successful_run_count_for 504 509
-    function latest_successful_run_output_for 512 517
-    function latest_run_output_for 520 525
-    function successful_read_output_for 528 538
-    function source_read_for 541 558
-    function source_read_before_latest_write_for 561 579
-    function attempted_write_for 581 589
-    function successful_write_for 591 600
-    function attempts_after_latest_write 603 606
-    function successful_write_content_for 609 617
-    function latest_successful_write_index 620 629
-    function last 632 634
-    function latest_failure 638 640
-    function previous_attempt 642 644
-    function failed_write_count_for 648 660
-    function search_result 662 664
-    function source_read_path 668 678
-    function argument_path 680 686
-    function argument_content 688 694
-    function write_matches 698 704
-    function argument_targets 706 712
-    function result_capability 715 723
-    function result_tool_call 725 734
-    function fetch_call_url 736 738
-    function argument_url 740 747
-    function run_attempt_matches 749 756
-    function is_issue_view_command 758 763
-    function is_work_item_read_command 767 771
-    function work_item_read_url 774 776
-    function issue_view_command_url 779 790
-    function rest_read_url 793 818
-    function exit_sentinel 821 826
-    function without_exit_sentinel 830 835
-    function work_item_read_failure_reason 838 867
-    function legacy_fetch_notice 871 885
-    function standalone_http_failure 888 917
+    module source_fetch_observation 12 12
+    struct ToolAttempt 16 26
+    function is_work_item_read 30 37
+    struct Progress 41 61
+    function research_attempts 65 67
+    function source_observation_for 69 78
+    function scan 80 248
+    function attempted_fetch_of 251 262
+    function attempted_work_item_read_of 265 269
+    function failed_work_item_read_of 272 281
+    function work_item_read_attempts 284 376
+    function latest_attempt_for 379 385
+    function has_run 388 390
+    function repeated_call 393 424
+    function same_attempt 428 434
+    function same_run_operand 438 452
+    function latest_failure_of_tool 455 460
+    function identical_failures_of 464 481
+    function done 484 486
+    function count 488 493
+    function latest_successful_output 496 502
+    function latest_successful_arguments 506 512
+    function latest_success_unstalled 515 526
+    function run_count_for 529 534
+    function successful_run_count_for 537 542
+    function latest_successful_run_output_for 545 550
+    function latest_run_output_for 553 558
+    function successful_read_output_for 561 571
+    function source_read_for 574 591
+    function source_read_before_latest_write_for 594 612
+    function attempted_write_for 614 622
+    function successful_write_for 624 633
+    function attempts_after_latest_write 636 639
+    function successful_write_content_for 642 650
+    function latest_successful_write_index 653 662
+    function last 665 667
+    function latest_failure 671 673
+    function previous_attempt 675 677
+    function failed_write_count_for 681 693
+    function search_result 695 697
+    function source_read_path 701 711
+    function argument_path 713 719
+    function argument_content 721 727
+    function write_matches 731 737
+    function argument_targets 739 745
+    function result_capability 748 756
+    function result_tool_call 758 767
+    function fetch_call_url 769 771
+    function argument_url 773 780
+    function run_attempt_matches 782 789
+    function is_issue_view_command 791 796
+    function is_work_item_read_command 800 804
+    function work_item_read_url 807 809
+    function issue_view_command_url 812 823
+    function rest_read_url 826 851
+    function exit_sentinel 854 859
+    function without_exit_sentinel 863 868
+    function work_item_read_failure_reason 871 900
+    function legacy_fetch_notice 904 918
+    function standalone_http_failure 921 950
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 26301
-    named_node_count 5452
-    distinct_node_kinds 77
+    total_link_count 27058
+    named_node_count 5603
+    distinct_node_kinds 78
     node_kinds
-      arguments 503
+      arguments 513
       array_expression 10
-      array_type 4
+      array_type 5
       assignment_expression 4
       attribute 1
       attribute_item 1
-      binary_expression 127
-      block 132
+      binary_expression 131
+      block 135
       boolean_literal 8
-      call_expression 503
+      call_expression 513
       char_literal 19
-      closure_expression 100
-      closure_parameters 100
+      closure_expression 104
+      closure_parameters 104
       continue_expression 3
       crate 7
       declaration_list 2
-      doc_comment 64
+      doc_comment 66
       else_clause 7
       escape_sequence 3
       expression_statement 67
-      field_declaration 18
+      field_declaration 20
       field_declaration_list 2
-      field_expression 549
-      field_identifier 570
-      field_initializer 3
+      field_expression 561
+      field_identifier 585
+      field_initializer 4
       field_initializer_list 2
       for_expression 2
-      function_item 55
+      function_item 57
       generic_function 3
-      generic_type 49
-      identifier 1024
+      generic_type 52
+      identifier 1054
       if_expression 34
       impl_item 2
       index_expression 8
@@ -111,42 +114,43 @@ self_ast_census
       integer_literal 9
       let_chain 5
       let_condition 13
-      let_declaration 73
-      line_comment 94
+      let_declaration 74
+      line_comment 96
       macro_invocation 13
       match_arm 8
       match_block 3
       match_expression 3
       match_pattern 8
+      mod_item 1
       mutable_specifier 17
-      outer_doc_comment_marker 57
-      parameter 62
-      parameters 55
-      parenthesized_expression 13
-      primitive_type 76
+      outer_doc_comment_marker 59
+      parameter 64
+      parameters 57
+      parenthesized_expression 14
+      primitive_type 78
       range_expression 7
-      reference_expression 39
-      reference_type 70
+      reference_expression 40
+      reference_type 74
       return_expression 17
-      scoped_identifier 120
-      scoped_type_identifier 15
-      self 76
-      self_parameter 32
-      shorthand_field_initializer 15
+      scoped_identifier 122
+      scoped_type_identifier 17
+      self 81
+      self_parameter 34
+      shorthand_field_initializer 16
       source_file 1
       string_content 60
       string_literal 64
       struct_expression 2
       struct_item 2
-      super 77
+      super 80
       token_tree 19
       try_expression 19
       tuple_expression 15
-      tuple_pattern 12
+      tuple_pattern 14
       tuple_struct_pattern 23
       tuple_type 3
-      type_arguments 52
-      type_identifier 125
+      type_arguments 55
+      type_identifier 132
       unary_expression 34
       use_declaration 3
-      visibility_modifier 48
+      visibility_modifier 51

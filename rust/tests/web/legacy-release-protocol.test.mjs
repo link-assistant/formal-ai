@@ -98,7 +98,7 @@ test('missing, disagreeing and malformed serializer pins refuse while repeated i
  assert.equal(protocolUpstreamCommit(entry(first)+entry(first)),first);
  for(const text of ['',entry(first)+entry(second),entry('abc')])assert.throws(()=>protocolUpstreamCommit(text),/one exact/);
 });
-test('actual pinned upstream serializes selected historical sources and joins all eight unchanged source shards',
+test('actual captured grammar protocol serializes selected historical sources and joins all eight unchanged source shards',
  {skip:!process.env.FORMAL_AI_LEGACY_PROTOCOL_UPSTREAM},t=>{
  const f=fixture(t),upstream=process.env.FORMAL_AI_LEGACY_PROTOCOL_UPSTREAM,distribution=join(f.base,'packets');
  for(let index=0;index<8;index++){put(f.source,'js/more-'+index+'.mjs','export const value = '+index+';\n');}

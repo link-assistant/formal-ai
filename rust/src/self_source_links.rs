@@ -1,39 +1,13 @@
-//! The whole-repository source ↔ links projection (issue #558).
+//! Owned source inputs and parser-round-trip diagnostics (issue #558).
 //!
-//! Issue #558 ("Auto learning") asks for a meta-algorithm advanced enough to
-//! *"recompile itself"*: it must be able to *"translate the entire source code of
-//! our system to links / meta language (that must be present in our data), and
-//! back to the source code"*. [`crate::agentic_coding::self_ast`] already proves
-//! the lossless source → links → source round-trip for a *single* pinned module
-//! (the planner); this module lifts that from one module to **every owned Rust
-//! source file in the repository**.
+//! Raw UTF-8 sources are embedded at build time. Ownership manifests identify
+//! those inputs; hashes and counters never represent their full content.
+//! `SourceLinks` records parser verdicts and navigation metadata only, including
+//! when all owned modules have been inspected. Its rendered Links document
+//! cannot reconstruct a source file. Complete readable recursive models belong
+//! to `crate::readable_source` and the hosted `generate_source_content` producer,
+//! with reloaded-content reconstruction and fresh grammar acceptance.
 //!
-//! The entire source is embedded at build time (see `build.rs`, which generates
-//! `OWNED_SOURCE_FILES`), so the projection needs no filesystem access — it works
-//! from an agent CLI's sandbox workdir, exactly like the other self-inspection
-//! recipes. Two views are offered, deliberately split by cost:
-//!
-//! * [`owned_manifest`] / [`owned_manifest_notation`] — a **cheap** content-addressed
-//!   manifest of *every* owned file (`path`, `byte_len`, `content_id`). This is the
-//!   "entire source present in our data as links" view: enumerating and content-
-//!   addressing all of it costs only a hash per file, so it is safe to build on
-//!   every request and in every test.
-//! * [`SourceLinks`] — the **full** projection that parses each file through the
-//!   sole CST/AST engine ([meta-language](https://github.com/link-foundation/meta-language))
-//!   and verifies the byte-for-byte
-//!   round-trip. [`SourceLinks::compile`] projects any file list;
-//!   [`SourceLinks::owned`] projects the *whole* repository. Parsing every file is
-//!   deliberately non-trivial (seconds per file in debug), so the whole-repository
-//!   projection is exercised by the example binary and an exhaustive (ignored by
-//!   default) test rather than on every `cargo test`.
-//!
-//! Nothing here writes anything back: the projection is an auditable, read-only
-//! artifact — the "recompile itself" guardrail (observable, testable, reversible,
-//! human-approved) is preserved because translating *to* links and *back* is proven
-//! lossless before any edit could ever be expressed against it. Neural inference
-//! stays a NON-GOAL: every number is a deterministic function of the embedded
-//! source and the real tree-sitter parse.
-
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
@@ -47,9 +21,8 @@ include!(concat!(env!("OUT_DIR"), "/owned_source_files.rs"));
 /// The `(repo_relative_path, source_text)` pairs for every owned Rust source file,
 /// embedded at build time and sorted by path.
 ///
-/// This is the concrete realisation of issue #558's *"the entire source code of our
-/// system … must be present in our data"*: the whole owned source tree ships in the
-/// binary, addressable as data with no filesystem access.
+/// These are raw source inputs available without filesystem access. Their ownership
+/// manifest is navigation metadata, not a persisted recursive source representation.
 #[must_use]
 pub const fn owned_source_files() -> &'static [(&'static str, &'static str)] {
     OWNED_SOURCE_FILES
@@ -57,9 +30,8 @@ pub const fn owned_source_files() -> &'static [(&'static str, &'static str)] {
 
 /// A cheap, content-addressed digest of one source file — no parse required.
 ///
-/// This is the unit of the whole-repository *manifest*: it proves the file is
-/// enumerated and content-addressed (so it is "present in our data as links") at
-/// the cost of a single hash, without paying for a full CST/AST parse.
+/// This manifest entry identifies a file without retaining its content or proving
+/// source-free reconstruction.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SourceModuleDigest {
     /// The repository-relative path of the source file.
@@ -82,13 +54,10 @@ impl SourceModuleDigest {
     }
 }
 
-/// The full source ↔ links projection of one module, verified through the sole
-/// CST/AST engine in this repo.
+/// Navigation metadata and a parser-round-trip verdict for one module.
 ///
-/// A projection is *faithful* exactly when `source → links → source` reproduces the
-/// input byte-for-byte, i.e. the links/meta representation lost nothing and an edit
-/// could in principle be expressed against the links and rendered back to
-/// compilable Rust — the "recompile itself" round-trip issue #558 asks for.
+/// Faithful records the internal parser's exact reconstruction verdict. This
+/// structure retains neither recursive source content nor a persisted edit model.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SourceModuleProjection {
     /// The repository-relative path of the projected module.
@@ -242,9 +211,8 @@ impl SourceLinks {
         )
     }
 
-    /// Render the whole-repository projection as Links Notation — the auditable
-    /// artifact of the source ↔ links translation. Ends trimmed of trailing
-    /// whitespace.
+    /// Render navigation and parser-verdict diagnostics, without source content.
+    /// Ends trimmed of trailing whitespace.
     #[must_use]
     pub fn links_notation(&self) -> String {
         let mut out = String::from("source_links\n");
@@ -313,9 +281,8 @@ pub fn owned_manifest_content_id() -> String {
 /// Render the cheap whole-repository *manifest* as Links Notation: every owned file
 /// enumerated and content-addressed. Ends trimmed of trailing whitespace.
 ///
-/// This is the "entire source present in our data as links" artifact — it accounts
-/// for every owned file at hash cost, so it is safe to embed in an agentic recipe's
-/// response. The *lossless* proof is [`SourceLinks`]; this is the *coverage* proof.
+/// This accounts for file ownership only. Neither this manifest nor the
+/// [`SourceLinks`] diagnostics retain reconstructable recursive source content.
 #[must_use]
 pub fn owned_manifest_notation() -> String {
     let manifest = owned_manifest();

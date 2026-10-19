@@ -1,0 +1,18 @@
+{
+  "schema": "formal-ai-logs-runtime-parity-v1",
+  "producer": "maintained JavaScript runLogsCli",
+  "cases": [
+    {
+      "input": "",
+      "lino": ""
+    },
+    {
+      "input": "{\"message\":\"ordinary\",\"count\":42,\"ready\":true}\n",
+      "lino": "(formal-ai-log-v1 (object (field count (number 42)) (field message (string ordinary)) (field ready (boolean true))))\n"
+    },
+    {
+      "input": "{\"integer\":18446744073709551615,\"float\":1.5,\"negative_zero\":-0.0,\"nested\":{\"password\":\"fixture-secret\",\"text\":\"line\\nnext🙂\"}}\n",
+      "lino": "(formal-ai-log-v1 (object (field float (float 64 1.5)) (field integer (integer 18446744073709551615)) (field negative_zero (float 64 -0.0)) (field nested (object (field password (string %5BREDACTED%5D)) (field text (string line%0Anext%F0%9F%99%82))))))\n"
+    }
+  ]
+}

@@ -1,5 +1,67 @@
 use super::*;
 
+// Canonical template keys are literal placeholders, not Rust format captures.
+const FILES_PLACEHOLDER: &str = "{files}";
+const SUBJECT_PLACEHOLDER: &str = "{subject}";
+const BODY_PLACEHOLDER: &str = "{body}";
+
+// Reuse the production reader and canonical templates without exporting a planner helper.
+#[path = "../../../src/agentic_coding/work_item_steps.rs"]
+mod canonical_work_item_steps;
+
+fn expected_owned_recipe_commit(planned: &[PlannedToolCall]) -> String {
+    let paths = planned
+        .iter()
+        .filter(|call| call.tool == "write")
+        .filter(|call| {
+            let arguments: serde_json::Value =
+                serde_json::from_str(&call.arguments).expect("write arguments");
+            arguments["append_mode"] != "atomic_record_append"
+        })
+        .map(path_of)
+        .collect::<Vec<_>>();
+    assert_eq!(paths.first().map(String::as_str), Some("Main.scala"));
+    assert_eq!(
+        paths
+            .iter()
+            .collect::<std::collections::BTreeSet<_>>()
+            .len(),
+        paths.len(),
+        "one ordered write per recipe path"
+    );
+    let quote = |value: &str| {
+        assert!(
+            !value.contains('\''),
+            "these fixture operands contain no shell quote"
+        );
+        format!("'{value}'")
+    };
+    let files = paths
+        .iter()
+        .map(|value| quote(value))
+        .collect::<Vec<_>>()
+        .join(" ");
+    let subject = canonical_work_item_steps::fill("subject_added", &[("{path}", &paths[0])]);
+    let body = canonical_work_item_steps::fill("body_resolves", &[("{reference}", ISSUE)]);
+    let inner = canonical_work_item_steps::fill(
+        "recipe_commit_command",
+        &[
+            (FILES_PLACEHOLDER, "\"$@\""),
+            (SUBJECT_PLACEHOLDER, &quote(&subject)),
+            (BODY_PLACEHOLDER, &quote(&body)),
+            ("{branch}", &quote(BRANCH)),
+        ],
+    );
+    canonical_work_item_steps::fill(
+        "task-scaffold-commit-command",
+        &[
+            (FILES_PLACEHOLDER, &files),
+            ("{reference}", &quote(ISSUE)),
+            ("{commit}", &inner),
+        ],
+    )
+}
+
 #[test]
 fn the_claude_code_tool_set_reads_the_issue_with_gh_not_a_nested_model() {
     let messages = vec![ChatMessage::user(prompt())];
@@ -286,7 +348,12 @@ fn a_failing_verification_command_is_reported_as_the_failed_step_not_as_verified
     );
     assert!(!answer.contains("Created and verified"), "{answer}");
     assert!(
-        answer.contains("scalac Main.scala") && answer.contains("not found"),
+        answer.contains(&command_of(
+            planned
+                .iter()
+                .find(|call| call.tool == "bash" && !is_work_item_read(&call.tool, &call.arguments))
+                .expect("the actual failed verifier call")
+        )) && answer.contains("/bin/sh: 1: scalac: not found"),
         "{answer}"
     );
 }
@@ -309,7 +376,7 @@ fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
     let commit = planned
         .iter()
         .map(command_of)
-        .find(|command| command.starts_with("git add --") && command.contains("git commit --only"))
+        .find(|command| command == &expected_owned_recipe_commit(&planned))
         .expect("the recipe ends with a commit step");
     assert!(
         commit.contains(&format!("git push -q origin '{BRANCH}'")),
@@ -331,11 +398,8 @@ fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
         .filter(|c| !c.is_empty())
         .collect();
     assert_eq!(
-        commands
-            .last()
-            .map(String::as_str)
-            .map(|c| c.starts_with("git add")),
-        Some(true),
+        commands.last(),
+        Some(&expected_owned_recipe_commit(&planned)),
         "{commands:?}"
     );
 }
@@ -360,10 +424,47 @@ fn a_work_item_that_asks_for_a_workflow_writes_one_with_the_verified_commands() 
         .iter()
         .find(|call| call.tool == "write" && path_of(call).starts_with(".github/workflows/"))
         .expect("the workflow is written beside the program");
+    let answer =
+        formal_ai::program_contract::answer(&scala, &mut formal_ai::event_log::EventLog::default())
+            .expect("the same fetched task has a canonical program contract");
+    let recipe = answer
+        .execution_recipe
+        .expect("the canonical executable recipe");
+    assert_eq!(recipe.path, "Main.scala");
+    let primary = planned
+        .iter()
+        .find(|call| call.tool == "write" && path_of(call) == recipe.path)
+        .expect("actual primary source write");
+    let primary_arguments: serde_json::Value = serde_json::from_str(&primary.arguments).unwrap();
+    assert_eq!(primary_arguments["content"], recipe.source);
+    let verifier = recipe
+        .supporting_files
+        .iter()
+        .find(|file| file.path == "tests/verify-output.sh")
+        .expect("the canonical recipe retains the compiler commands in its verifier");
+    let written_verifier = planned
+        .iter()
+        .find(|call| call.tool == "write" && path_of(call) == verifier.path)
+        .expect("the verifier is actually emitted");
+    let verifier_arguments: serde_json::Value =
+        serde_json::from_str(&written_verifier.arguments).unwrap();
+    assert_eq!(verifier_arguments["content"], verifier.source);
+    assert!(verifier.source.contains("scalac Main.scala"));
+    assert!(verifier.source.contains("scala run Main.scala"));
+    assert_eq!(recipe.commands, ["sh tests/verify-output.sh"]);
+    let workflow_arguments: serde_json::Value = serde_json::from_str(&workflow.arguments).unwrap();
+    assert_eq!(
+        workflow_arguments["content"],
+        formal_ai::agentic_coding::render_ci_workflow(
+            &recipe,
+            &formal_ai::version_resolution::VersionSet::for_generation()
+        )
+    );
     assert!(
-        workflow.arguments.contains("pull_request")
-            && workflow.arguments.contains("scalac Main.scala"),
-        "{workflow:?}"
+        workflow_arguments["content"]
+            .as_str()
+            .unwrap()
+            .contains("pull_request")
     );
 }
 
@@ -523,64 +624,75 @@ fn a_commit_request_is_a_git_step_in_every_language() {
     }
 }
 
-/// The branch cue in each language names where the work item is pushed.
+/// Every original language case retains the same planner drive and push assertion.
+fn assert_named_branch_push(language: &str, request: String) {
+    let scala = page("Scala");
+    let mut messages = vec![ChatMessage::user(request)];
+    let (planned, _) = drive(
+        AGENT_TOOLS.as_slice(),
+        &mut messages,
+        |tool, arguments| {
+            if is_work_item_read(tool, arguments) {
+                scala.clone()
+            } else {
+                "Hello, World!\n".to_owned()
+            }
+        },
+        10,
+    );
+    let commit = planned
+        .iter()
+        .map(command_of)
+        .find(|command| command == &expected_owned_recipe_commit(&planned))
+        .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
+    assert!(
+        commit.contains(&format!("git push -q origin '{BRANCH}'")),
+        "{language}: {commit}"
+    );
+}
+
 #[test]
 fn the_named_branch_is_pushed_to_in_every_language() {
-    let prompts = [
-        (
-            "english",
-            format!(
-                "Resolve the GitHub issue at {ISSUE} in this repository.\nKeep the solution on branch {BRANCH}."
-            ),
+    assert_named_branch_push(
+        "english",
+        format!(
+            "Resolve the GitHub issue at {ISSUE} in this repository.\nKeep the solution on branch {BRANCH}."
         ),
-        (
-            "russian",
-            format!(
-                "Реши задачу GitHub {ISSUE} в этом репозитории.\nДержи решение в ветке {BRANCH}."
-            ),
+    );
+}
+
+#[test]
+fn the_named_branch_is_pushed_to_in_russian() {
+    assert_named_branch_push(
+        "russian",
+        format!("Реши задачу GitHub {ISSUE} в этом репозитории.\nДержи решение в ветке {BRANCH}."),
+    );
+}
+
+#[test]
+fn the_named_branch_is_pushed_to_in_hindi() {
+    assert_named_branch_push(
+        "hindi",
+        format!("इस रिपॉज़िटरी में GitHub इश्यू {ISSUE} को हल करें।\nसमाधान को शाखा {BRANCH} पर रखें।"),
+    );
+}
+
+#[test]
+fn the_named_branch_is_pushed_to_in_chinese() {
+    assert_named_branch_push(
+        "chinese",
+        format!("在此仓库中解决 GitHub 问题 {ISSUE}。\n将解决方案保留在分支 {BRANCH} 上。"),
+    );
+}
+
+#[test]
+fn the_named_branch_is_pushed_to_in_spanish() {
+    assert_named_branch_push(
+        "spanish",
+        format!(
+            "Resuelve el issue de GitHub {ISSUE} en este repositorio.\nMantén la solución en la rama {BRANCH}."
         ),
-        (
-            "hindi",
-            format!("इस रिपॉज़िटरी में GitHub इश्यू {ISSUE} को हल करें।\nसमाधान को शाखा {BRANCH} पर रखें।"),
-        ),
-        (
-            "chinese",
-            format!("在此仓库中解决 GitHub 问题 {ISSUE}。\n将解决方案保留在分支 {BRANCH} 上。"),
-        ),
-        (
-            "spanish",
-            format!(
-                "Resuelve el issue de GitHub {ISSUE} en este repositorio.\nMantén la solución en la rama {BRANCH}."
-            ),
-        ),
-    ];
-    let scala = page("Scala");
-    for (language, request) in prompts {
-        let mut messages = vec![ChatMessage::user(request)];
-        let (planned, _) = drive(
-            AGENT_TOOLS.as_slice(),
-            &mut messages,
-            |tool, arguments| {
-                if is_work_item_read(tool, arguments) {
-                    scala.clone()
-                } else {
-                    "Hello, World!\n".to_owned()
-                }
-            },
-            10,
-        );
-        let commit = planned
-            .iter()
-            .map(command_of)
-            .find(|command| {
-                command.starts_with("git add --") && command.contains("git commit --only")
-            })
-            .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
-        assert!(
-            commit.contains(&format!("git push -q origin '{BRANCH}'")),
-            "{language}: {commit}"
-        );
-    }
+    );
 }
 
 /// A workflow requirement in each language adds the workflow file.
@@ -691,3 +803,53 @@ fn positional_inserts_compose_in_every_language() {
 
 #[path = "../../fixtures/commit-cue-masking.rs"]
 mod commit_cue_masking;
+
+#[test]
+fn fetched_original_task_retains_the_explicit_workflow_path() {
+    let task: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/hive-workflow-original-task.json"
+    ))
+    .expect("original public task fixture");
+    let mut messages = vec![ChatMessage::user(format!(
+        "Resolve the GitHub issue at {} in this repository.",
+        task["url"].as_str().unwrap()
+    ))];
+    let body = format!(
+        "{}\n\n{}",
+        task["title"].as_str().unwrap(),
+        task["body"].as_str().unwrap()
+    );
+    let (planned, _) = drive(
+        CLAUDE_TOOLS.as_slice(),
+        &mut messages,
+        |tool, arguments| {
+            if is_work_item_read(tool, arguments) {
+                body.clone()
+            } else {
+                "Hello, World!\n".to_owned()
+            }
+        },
+        8,
+    );
+    let paths: Vec<String> = planned
+        .iter()
+        .map(path_of)
+        .filter(|path| !path.is_empty())
+        .collect();
+    for required in [
+        "main.rs",
+        "tests/verify-output.sh",
+        "ci/test-hello-world.yml",
+    ] {
+        assert!(
+            paths.iter().any(|path| path == required),
+            "{required}: {planned:?}"
+        );
+    }
+    assert!(
+        !paths
+            .iter()
+            .any(|path| path.starts_with(".github/workflows/")),
+        "{planned:?}"
+    );
+}

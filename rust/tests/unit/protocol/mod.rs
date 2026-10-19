@@ -12,3 +12,5 @@ mod issue_671_planner_tool_alias;
 mod issue_819_narration;
 #[path = "tool_result_presentation.rs"]
 mod tool_result_presentation;
+
+mod physical_lines;

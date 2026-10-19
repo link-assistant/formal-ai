@@ -110,14 +110,16 @@ pub(super) fn plan_meaning_detail_step(
 
     // Step 1: search for the Wikidata lexeme data.
     if let Some(tool) = search_tool
-        && !progress.done(Capability::Search) {
-            return plan_one(tool, json!({ "query": concept.search_query }).to_string());
-        }
+        && !progress.done(Capability::Search)
+    {
+        return plan_one(tool, json!({ "query": concept.search_query }).to_string());
+    }
     // Step 2: fetch the lexeme forms (where the missing plural is recovered).
     if let Some(tool) = fetch_tool
-        && !progress.done(Capability::Fetch) {
-            return plan_one(tool, fetch_arguments(concept.source_url));
-        }
+        && !progress.done(Capability::Fetch)
+    {
+        return plan_one(tool, fetch_arguments(concept.source_url));
+    }
 
     // Re-derive the enriched block from the fetched lexeme facts (or the canonical
     // fallback when the fetch errored), exactly as the formalization recipe does.
@@ -125,16 +127,18 @@ pub(super) fn plan_meaning_detail_step(
 
     // Step 3: write the enriched meaning block.
     if let Some(tool) = write_tool
-        && !progress.done(Capability::Write) {
-            return plan_one(tool, write_arguments(concept.kb_path, &block));
-        }
+        && !progress.done(Capability::Write)
+    {
+        return plan_one(tool, write_arguments(concept.kb_path, &block));
+    }
     // Step 4: verify by reading the enriched block back (mirrors the formalization
     // recipe; `cat` is the allowlisted read the sandbox workspace supports).
     if let Some(tool) = run_tool
-        && !progress.done(Capability::Run) {
-            let arguments = json!({ "command": format!("cat {}", concept.kb_path) });
-            return plan_one(tool, arguments.to_string());
-        }
+        && !progress.done(Capability::Run)
+    {
+        let arguments = json!({ "command": format!("cat {}", concept.kb_path) });
+        return plan_one(tool, arguments.to_string());
+    }
 
     // Step 5: nothing left to do — answer with the enriched block inline.
     AgenticPlan::Final(meaning_detail::final_answer_for(concept, &block))
@@ -166,7 +170,13 @@ pub(super) fn plan_diagram_step(messages: &[ChatMessage], tool_names: &[&str]) -
 /// network ([`self_ast::render_document`]), so the loop *inspects itself*. Steps
 /// whose tool the CLI did not advertise are skipped.
 pub(super) fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
-    let document = self_ast::render_document();
+    let document =
+        match self_ast::source_document(self_ast::TARGET_MODULE_PATH, self_ast::target_source()) {
+            Ok(document) => document,
+            Err(reason) => {
+                return AgenticPlan::Final(format!("Unknown:SourceModelUnavailable:{reason}"));
+            }
+        };
     let final_answer = self_ast::final_answer(&document);
     plan_document_recipe(
         messages,
@@ -186,6 +196,11 @@ pub(super) fn plan_self_ast_step(messages: &[ChatMessage], tool_names: &[&str]) 
 /// ([`self_heal::render_document`]), so the loop *repairs itself*. Steps whose tool
 /// the CLI did not advertise are skipped.
 pub(super) fn plan_self_heal_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+    if !crate::self_healing::SourceRoundTrip::for_pinned_target().faithful {
+        return AgenticPlan::Final(
+            "Unknown:SourceModelUnavailable:SourceRoundTripUnverified".to_owned(),
+        );
+    }
     let document = self_heal::render_document();
     let final_answer = self_heal::final_answer(&document);
     plan_document_recipe(
@@ -267,7 +282,10 @@ pub(super) fn plan_explain_step(messages: &[ChatMessage], tool_names: &[&str]) -
 /// target ([`change_request::render_document`]), so the loop turns a user's request to
 /// *change Formal AI itself* into a reviewable PR. Steps whose tool the CLI did not
 /// advertise are skipped.
-pub(super) fn plan_change_request_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+pub(super) fn plan_change_request_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
     let document = change_request::render_document();
     let final_answer = change_request::final_answer(&document);
     plan_document_recipe(
@@ -288,7 +306,10 @@ pub(super) fn plan_change_request_step(messages: &[ChatMessage], tool_names: &[&
 /// self-contained canonical failure traces ([`repair_strategy::render_document`]), so
 /// the loop decides *which part* of itself to repair for every failure class. Steps
 /// whose tool the CLI did not advertise are skipped.
-pub(super) fn plan_repair_strategy_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+pub(super) fn plan_repair_strategy_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
     let document = repair_strategy::render_document();
     let final_answer = repair_strategy::final_answer(&document);
     plan_document_recipe(
@@ -331,7 +352,10 @@ pub(super) fn plan_rebuild_step(messages: &[ChatMessage], tool_names: &[&str]) -
 /// deterministic engine ([`question_catalog::render_document`]), so the loop *generates
 /// every possible question and answers it*. Steps whose tool the CLI did not advertise
 /// are skipped.
-pub(super) fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+pub(super) fn plan_question_catalog_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
     let document = question_catalog::render_document();
     let final_answer = question_catalog::final_answer(&document);
     plan_document_recipe(
@@ -346,7 +370,10 @@ pub(super) fn plan_question_catalog_step(messages: &[ChatMessage], tool_names: &
     )
 }
 
-pub(super) fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+pub(super) fn plan_dreaming_audit_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
     let document = dreaming_audit::render_document();
     let final_answer = dreaming_audit::final_answer(&document);
     plan_document_recipe(
@@ -367,7 +394,10 @@ pub(super) fn plan_dreaming_audit_step(messages: &[ChatMessage], tool_names: &[&
 /// routed through the human-gated self-improvement loop
 /// ([`google_trends_learning::render_document`]), so the loop maps its own coverage gap
 /// and hands it to human triage. Steps whose tool the CLI did not advertise are skipped.
-pub(super) fn plan_google_trends_learning_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+pub(super) fn plan_google_trends_learning_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
     let document = google_trends_learning::render_document();
     let final_answer = google_trends_learning::final_answer(&document);
     plan_document_recipe(
@@ -382,7 +412,10 @@ pub(super) fn plan_google_trends_learning_step(messages: &[ChatMessage], tool_na
     )
 }
 
-pub(super) fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_names: &[&str]) -> AgenticPlan {
+pub(super) fn plan_google_trends_catalog_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> AgenticPlan {
     let document = google_trends_catalog::render_document();
     let final_answer = google_trends_catalog::final_answer(&document);
     plan_document_recipe(
@@ -396,4 +429,3 @@ pub(super) fn plan_google_trends_catalog_step(messages: &[ChatMessage], tool_nam
         },
     )
 }
-

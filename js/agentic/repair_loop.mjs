@@ -19,6 +19,7 @@ import { localizedResponse } from './crate/seed.mjs';
 import { findChildValue, parseLinoRoot } from './write_lino.mjs';
 import { readText } from './host.mjs';
 import { renderRepairEdit } from './repair_apply.mjs';
+import { commandArgument, stepOutcome, StepOutcome } from './tool_result.mjs';
 import { trim, trimEnd, trimStart } from './write_str.mjs';
 
 /** Mirrors `const MAX_REPAIR_RUNGS`. */
@@ -254,9 +255,13 @@ export function attemptsFrom(messages, failure) {
   if (!primary) return [];
   const progress = Progress.scan(messages);
   const addressing = progress.fetched_pages.find(([, text]) => pageAddresses(text, primary));
-  const applied = Boolean(addressing)
-    && progress.successfulWriteFor(repairDocumentPath(failure.artifact_path, primary));
-  const resolved = failure.failed_command !== null && progress.successfulRunCountFor(failure.failed_command) > 0;
+  const application = addressing ? repairApplication(progress, failure, repairDocumentPath(failure.artifact_path, primary)) : null;
+  const applied = application?.kind === 'applied';
+  const resolved = applied && failure.failed_command !== null
+    && (progress.attemptsAfterLatestWrite(failure.artifact_path) ?? []).some(attempt =>
+      attempt.capability === Capability.Run && attempt.succeeded && attempt.arguments !== null
+      && commandArgument(attempt.arguments) === failure.failed_command
+      && stepOutcome(attempt.detail) === StepOutcome.Succeeded);
   return [{
     diagnostic: primary,
     search_query: searchQuery(failure.language, primary),
@@ -327,29 +332,41 @@ export function repairStep(messages, toolNames, failure, ladderRung, maxRungs) {
     return { kind: 'record_fix', plan: planOne(tool, writeArguments(documentPath, document)) };
   }
   const applied = applyFixPlan(progress, toolNames, failure, documentPath);
-  if (applied !== null) return { kind: 'apply_fix', plan: applied };
+  if (applied.kind !== 'applied') return applied;
   if (failure.failed_command === null) return stop('no_match');
   const tool = toolFor(toolNames, Capability.Run);
   if (!tool) return stop('no_tools');
   return { kind: 'retry', plan: planOne(tool, jsonText({ command: failure.failed_command })) };
 }
 
-/**
- * Mirrors `fn apply_fix_plan`. This root has no CST engine, so the rendering
- * is refused as `unvalidated` unless `failure.validate_program` supplies one.
- */
-function applyFixPlan(progress, toolNames, failure, documentPath) {
-  if (!failure.artifact_path) return null;
+/** Derive a candidate from the pre-record source; a record alone proves no application. */
+function repairApplication(progress, failure, documentPath) {
+  if (!failure.artifact_path) return stop('no_match');
   const recordAt = progress.latestSuccessfulWriteIndex(documentPath);
   const artifactAt = progress.latestSuccessfulWriteIndex(failure.artifact_path);
-  if (recordAt === null || artifactAt === null || artifactAt > recordAt) return null;
+  if (recordAt === null || artifactAt === null) return stop('no_match');
+  const earlier = new Progress();
+  earlier.attempts = progress.attempts.slice(0, recordAt);
+  const source = earlier.successfulWriteContentFor(failure.artifact_path);
   const document = progress.successfulWriteContentFor(documentPath);
-  const source = progress.successfulWriteContentFor(failure.artifact_path);
-  if (document === null || source === null) return null;
+  if (document === null || source === null) return stop('no_match');
   const rendered = renderRepairEdit(document, source, failure.validate_program ?? null);
-  if (rendered.gap || rendered.source === source) return null;
+  if (rendered.gap) return stop(rendered.gap);
+  if (rendered.source === source) return stop('unchanged_fix');
+  if (artifactAt > recordAt) {
+    return progress.successfulWriteContentFor(failure.artifact_path) === rendered.source
+      ? { kind: 'applied', source: rendered.source } : stop('repair_write_mismatch');
+  }
+  return { kind: 'pending', source: rendered.source };
+}
+
+/** Render before a write and require its successful exact-content observation before retry. */
+function applyFixPlan(progress, toolNames, failure, documentPath) {
+  const application = repairApplication(progress, failure, documentPath);
+  if (application.kind !== 'pending') return application;
   const tool = toolFor(toolNames, Capability.Write);
-  return tool ? planOne(tool, writeArguments(failure.artifact_path, rendered.source)) : null;
+  return tool ? { kind: 'apply_fix', plan: planOne(tool, writeArguments(failure.artifact_path, application.source)) }
+    : stop('no_tools');
 }
 
 /** Mirrors `fn plan_repair`: the plan, or null. */
@@ -381,10 +398,11 @@ export function stopNote(messages, failure, reason, ladderRung, maxRungs) {
   let note;
   if (reason === 'exhausted') {
     note = ladderNote(language, ladderRung, maxRungs);
-  } else if (reason === 'no_match') {
+  } else if (['no_match', 'unvalidated', 'syntax_invalid', 'unchanged_fix', 'repair_write_mismatch', 'no_retained_fix', 'no_location', 'line_out_of_range'].includes(reason)) {
     const primary = formalizeDiagnostic(failure.language, failure.reported)[0];
     if (!primary) return '';
     note = unresolvedNote(language, searchQuery(failure.language, primary));
+    if (reason !== 'no_match') note += `\n\nrepair_stop ${reason}`;
   } else {
     return '';
   }

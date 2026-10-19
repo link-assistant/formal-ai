@@ -31,12 +31,16 @@ new module fails CI until this map documents it.
 | `legality_warning` | Request-legality advisory (issue #836). | §2 |
 | `lino_adapters` | Adapters that front our maintained dependencies (issue #1182). | §2 |
 | `needs` | Need records that gate solver retries. | §2 |
+| `provenance_native` | Native provenance primitives backed by official SIMD/rayon BLAKE3 and Ed25519. | §2 |
+| `provenance_snapshot` | Bounded source snapshots; canonical policy is compiled from the shared JavaScript kernel. | §2 |
+| `readable_source` | Lossless readable source content. Positions and link identifiers never persist. | §2 |
 | `requirement_contradiction` | Contradiction reporting over the shared evidence-weighted requirement store. | §2 |
 | `runtime_cache` | Runtime-only cache paths and immutable derivations; explicit legacy APIs stay unchanged. | §2 |
 | `self_healing` | The closed self-healing / auto-learning loop (issue #558). | §2 |
 | `self_improvement` | White-box self-improvement over accumulated unknown traces. | §2 |
 | `si_units` | SI dimension algebra for unit conversion (issue #700, E58). | §2 |
 | `small_model_fallback` | Small-model formalization fallback, behind an experimental flag. | §2 |
+| `structured_tracing` | `tracing` events enter the same redacting typed-Lino sink as native diagnostics. | §2 |
 | `telemetry` | Consent-gated anonymous Sentry diagnostics (issue #861). | §2 |
 | `translation` | Translation pipeline. | §2 |
 | `triz_solver` | User-facing TRIZ/contradiction solver (issue #901). | §2 |
@@ -48,6 +52,7 @@ new module fails CI until this map documents it.
 | `behavior_delta` | The #701 criterion, generalized: a learned item must demonstrably change. | §3 |
 | `bounded_autonomy` | Issue #947 (E95): bounded autonomy -- a stuck-recovery limit, full trust as. | §3 |
 | `change_request` | User-requested self-change through the same human-gated repair loop (issue #558). | §3 |
+| `coding_research_generated` | Shared research and source-maintenance kernels emitted from checked portable-core IR. | §3 |
 | `coding_research_learning` | Research-backed learning for coding skill gaps (issue #919). | §3 |
 | `cue_lexicon` | Issue #559 (R341): natural-language recognition cues as first-class link data. | §3 |
 | `draft_portfolio` | Deterministic parallel candidate-solution portfolios (issue #704). | §3 |
@@ -78,7 +83,7 @@ new module fails CI until this map documents it.
 | `source_capability` | Execution of source-backed composition and measurement capabilities. | §3 |
 | `source_reconstruction` | Executing the `rediscover:` edge that `dreaming::retention` authorizes. | §3 |
 | `source_research` | Executed source research over the replayable capture boundary. | §3 |
-| `source_walk` | The one bounded recursive capture walk, need-kind-. | §3 |
+| `source_walk` | Shared bounded registry capture walk for concept, procedure and prerequisite needs. | §3 |
 | `tool_scope` | Which resource an advertised tool's effect actually lands on (issue #1075). | §3 |
 | `concept_sense_ledger` | Content-addressed, forgettable ledger of resolved senses (issue #1138,. | §4 |
 | `learning_adoption_ledger` | Proof that learned items change answers (issue #701, requirement 2). | §4 |

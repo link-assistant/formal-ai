@@ -1,0 +1,37 @@
+self_ast_census
+  target src/structured_tracing.rs
+  language rust
+  fidelity signature
+  byte_len 9473
+  line_count 270
+  content_id source_module_97a0df4456a6ba93
+  symbol_count 28
+  symbols
+    type Sink 13 13
+    static NEXT_SPAN 14 14
+    struct Fields 17 17
+    function record_debug 19 22
+    function record_str 23 25
+    function record_bool 26 28
+    function record_i64 29 38
+    function record_u64 39 48
+    function record_f64 49 54
+    function record_error 55 57
+    struct SpanState 59 63
+    struct LinoSubscriber 65 69
+    function level 70 78
+    function default 80 88
+    function active 91 104
+    function emit 105 115
+    function enabled 118 123
+    function new_span 124 149
+    function record 150 170
+    function record_follows_from 171 175
+    function event 176 203
+    function enter 204 206
+    function exit 207 214
+    function clone_span 215 225
+    function try_close 226 258
+    function install 261 267
+    static INSTALLED 262 262
+    module tests 270 270

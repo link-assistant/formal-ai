@@ -206,7 +206,7 @@ export function readPolicyBlocksPlan(prompt,plan) {
   if(scopes.length===0&&!unboundOperation)return false;
   for(const call of plan.calls??[]) {
     const capability=classifyTool(call.tool);
-    if(scopes.length>0&&[Capability.Run,Capability.Grep,Capability.ReadMany].includes(capability))return true;
+    if(scopes.length>0&&(capability===Capability.Run||capability===Capability.Grep||capability===Capability.ReadMany))return true;
     if(capability!==Capability.Read)continue;
     if(unboundOperation)return true;
     let argumentsValue;try{argumentsValue=JSON.parse(call.arguments);}catch{return true;}

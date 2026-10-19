@@ -1,16 +1,10 @@
-// Fourth agentic recipe - store the CST/AST of our own Rust meta algorithm in
-// our data (issue #538; rust/src/agentic_coding/self_ast.rs).
-//
-// The routing predicate is ported exactly. The census itself is a
-// tree-sitter parse of rust/src/agentic_coding/planner.rs through the
-// meta-language links network (`ast_census`), which has no JavaScript twin:
-// native-only: rust/src/agentic_coding/self_ast.rs `ast_census` (the
-// meta-language/tree-sitter engine). `renderDocument` therefore returns the
-// committed artifact data/meta/self-ast.lino, which the Rust test
-// `committed_self_ast_is_generated_and_written_by_the_driver` pins
-// byte-for-byte to `render_document()`, so the planner writes the same bytes.
+// Self-inspection uses actual recursive Rust CST content supplied by the host.
+// No committed histogram substitutes for current source. The default frontend
+// derives actual content; an explicitly selected SDK must validate its pin.
+// Legacy astCensus remains an explicitly engine-disabled diagnostic adapter.
 
-import { readText } from './host.mjs';
+import { host, hasHost } from './host.mjs';
+import { readSourceLinks, sourceFromLinks, sourceOwner } from '../meta/readable-source.js';
 import { agenticMessage } from './messages.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
 
@@ -21,12 +15,12 @@ const RUST_GRAMMAR_LABEL = 'rust';
 export const TARGET_MODULE_PATH = 'src/agentic_coding/planner.rs';
 
 /** Mirrors `AST_PATH` in rust/src/agentic_coding/self_ast.rs. */
-export const AST_PATH = 'self-ast.lino';
+// Historical export name; the primary artifact is a complete source CST.
+export const AST_PATH = 'self-cst.lino';
 
-/** The committed twin of `render_document()` (data/meta/self-ast.lino). */
-const COMMITTED_DOCUMENT = 'data/meta/self-ast.lino';
+// No committed histogram substitutes for current recursive source content.
 
-/** Mirrors `AST_TASK` in rust/src/agentic_coding/self_ast.rs. */
+/** Mirrors `fn ast_task` in rust/src/agentic_coding/self_ast.rs. */
 export function astTask() {
   return agenticMessage('self_ast_task');
 }
@@ -41,10 +35,12 @@ const astKeywords = () => agenticMessage('self_ast_keywords').split('|');
  */
 export function isSelfAstTask(prompt) {
   const lower = prompt.toLowerCase();
+  const words = lower.split(/[^\p{L}\p{N}]+/u);
   const namesAst = astKeywords().some((keyword) => lower.includes(keyword))
+    || words.includes('cst')
     || (lower.includes('ast') && lower.includes('meta algorithm'));
-  const selfReference = lower.includes('our') || lower.includes('itself')
-    || lower.includes('meta algorithm') || lower.includes('planner');
+  const selfReference = words.includes('our') || words.includes('your') || words.includes('itself')
+    || lower.includes('meta algorithm') || words.includes('planner');
   return namesAst && selfReference;
 }
 
@@ -64,7 +60,7 @@ export function astCensus() {
  * @param {ReturnType<typeof astCensus>} census
  */
 export function renderCensusDocument(targetPath, census) {
-  let out = 'self_ast\n';
+  let out = 'source_census_diagnostic\n';
   out += `  target ${targetPath}\n`;
   out += '  language rust\n';
   out += '  engine meta_language\n';
@@ -83,11 +79,16 @@ export function renderCensusDocument(targetPath, census) {
 
 /**
  * Mirrors `fn render_document` in rust/src/agentic_coding/self_ast.rs: the
- * CST/AST document of the pinned planner module (the committed artifact; see
- * the module comment).
+ * current recursive CST of the pinned planner module through the actual
+ * sourceDocument capability; a missing engine is explicitly refused.
  */
-export function renderDocument() {
-  return readText(COMMITTED_DOCUMENT);
+export async function renderDocument() {
+  if (!hasHost() || typeof host().sourceDocument !== 'function') throw Error('SourceModelEngineUnavailable');
+  const document = await host().sourceDocument(TARGET_MODULE_PATH);
+  const model = readSourceLinks(document);
+  if (sourceOwner(model) !== TARGET_MODULE_PATH) throw Error('SourceOwnerMismatch');
+  sourceFromLinks(model);
+  return document;
 }
 
 /**

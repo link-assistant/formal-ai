@@ -1,0 +1,138 @@
+[
+  {
+    "id": "valid",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0",
+    "expected": null
+  },
+  {
+    "id": "legacy-missing-optional",
+    "payload": "# tests 1\n# pass 1\n# fail 0",
+    "expected": null
+  },
+  {
+    "id": "crlf",
+    "payload": "# tests 1\r\n# pass 1\r\n# fail 0\r\n# skipped 0\r\n# cancelled 0",
+    "expected": null
+  },
+  {
+    "id": "nested-comment",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n    # pass Unknown",
+    "expected": null
+  },
+  {
+    "id": "unknown-field-0",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# password 7",
+    "expected": null
+  },
+  {
+    "id": "unknown-field-1",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# passed 7",
+    "expected": null
+  },
+  {
+    "id": "unknown-field-2",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# tests_total Unknown",
+    "expected": null
+  },
+  {
+    "id": "unknown-field-3",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# skipped_custom -1",
+    "expected": null
+  },
+  {
+    "id": "malformed-0",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# pass garbage",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-1",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# pass 1 extra",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-2",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# skipped -1",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-3",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# cancelled Unknown",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-4",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# skipped +1",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-5",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# skipped 1.0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-6",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# skipped 1e0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-7",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# skipped",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-8",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# skipped\t1",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-9",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# cancelled 0 ",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-only-optional",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped -1\n# cancelled 0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "malformed-cancelled",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled Unknown",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "duplicate-valid-optional",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# skipped 0\n# cancelled 0\n# skipped 0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "zero-tests",
+    "payload": "# tests 0\n# pass 0\n# fail 0",
+    "expected": "NoTestsExecuted"
+  },
+  {
+    "id": "physical-lf-u2028",
+    "payload": "# tests 1 # pass 1 # fail 0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "physical-lf-u2029",
+    "payload": "# tests 1 # pass 1 # fail 0",
+    "expected": "VerificationReceiptIncomplete"
+  },
+  {
+    "id": "double-cr-existing-frame-normalization",
+    "payload": "# tests 1\r\r\n# pass 1\n# fail 0",
+    "expected": null,
+    "boundary": "Existing receipt framing normalizes CR before TAP; this is not a fixed counter hole."
+  },
+  {
+    "id": "unknown-comment-u2028",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# note # skipped Unknown",
+    "expected": null
+  },
+  {
+    "id": "unknown-comment-u2029",
+    "payload": "# tests 1\n# pass 1\n# fail 0\n# note # cancelled Unknown",
+    "expected": null
+  }
+]

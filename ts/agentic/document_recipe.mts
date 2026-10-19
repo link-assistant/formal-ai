@@ -90,14 +90,23 @@ export async function planDiagramStep(messages, toolNames) {
   return planDocumentRecipe(messages, toolNames, await catRecipe(diagram, diagram.DIAGRAM_PATH));
 }
 
+/** Both source-bearing recipes share one explicit engine/refusal boundary. */
+async function planSourceDocumentRecipe(messages, toolNames, module, documentPath) {
+  try {
+    return planDocumentRecipe(messages, toolNames, await catRecipe(module, documentPath));
+  } catch (error) {
+    return finalAnswer('Unknown:SourceModelUnavailable:' + String(error?.message ?? error));
+  }
+}
+
 /** Mirrors `fn plan_self_ast_step`. */
 export async function planSelfAstStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(selfAst, selfAst.AST_PATH));
+  return planSourceDocumentRecipe(messages, toolNames, selfAst, selfAst.AST_PATH);
 }
 
 /** Mirrors `fn plan_self_heal_step`. */
 export async function planSelfHealStep(messages, toolNames) {
-  return planDocumentRecipe(messages, toolNames, await catRecipe(selfHeal, selfHeal.SELF_HEAL_PATH));
+  return planSourceDocumentRecipe(messages, toolNames, selfHeal, selfHeal.SELF_HEAL_PATH);
 }
 
 /** Mirrors `fn plan_source_links_step`. */

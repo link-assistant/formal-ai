@@ -9,17 +9,36 @@ pub(super) struct ToolResultRecord {
     pub(super) is_error: bool,
 }
 
+/// Retain unfinished identical reads; a fresh explicit request after an answer rereads.
+pub(super) fn file_read_window_start(messages: &[ChatMessage]) -> usize {
+    let standing = super::super::planner::evidence_window_start(messages);
+    let Some(latest) = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+    else {
+        return standing;
+    };
+    if super::super::planner::is_continuation_cue(&messages[latest].content.plain_text()) {
+        return standing;
+    }
+    let answered = messages[standing.min(latest)..latest]
+        .iter()
+        .any(|message| {
+            message.role.eq_ignore_ascii_case("assistant")
+                && message.tool_calls.is_empty()
+                && !message.content.plain_text().trim().is_empty()
+        });
+    if answered { latest + 1 } else { standing }
+}
+
 pub(super) fn tool_result_records(messages: &[ChatMessage]) -> Vec<ToolResultRecord> {
-    // Only results produced *within the current user turn* ground a read. A
+    // Only results produced within the current unfinished request ground a read. A
     // client loops tool calls without a new user message, so the current turn is
-    // everything after the last user message; a `cat 1.txt` result from an
+    // the standing evidence window. A repeated request after a final answer opens a new window; a `cat 1.txt` result from an
     // earlier turn must never be replayed as the answer to a later `read 1.txt`
     // (issue #755 — read/list determinism). Without this bound the recipe short
     // -circuits on a stale, unrelated result and skips the fresh read entirely.
-    let turn_start = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-        .map_or(0, |index| index + 1);
+    let turn_start = file_read_window_start(messages);
     let mut records = Vec::new();
     for (index, message) in messages.iter().enumerate().skip(turn_start) {
         if !message.role.eq_ignore_ascii_case("tool") {
@@ -46,10 +65,7 @@ pub(super) fn tool_result_records(messages: &[ChatMessage]) -> Vec<ToolResultRec
 fn tool_result_call(messages: &[ChatMessage], index: usize) -> Option<&ToolCall> {
     let message = &messages[index];
     let call_id = message.tool_call_id.as_ref()?;
-    let start = messages[..index]
-        .iter()
-        .rposition(|prior| prior.role.eq_ignore_ascii_case("user"))
-        .map_or(0, |at| at + 1);
+    let start = file_read_window_start(&messages[..index]);
     let call = messages[start..index]
         .iter()
         .rev()

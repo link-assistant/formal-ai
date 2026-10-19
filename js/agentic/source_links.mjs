@@ -3,7 +3,8 @@ import { normalizePrompt } from './crate/engine.mjs';
 import { containsCjk } from './crate/coding_catalog.mjs';
 import { sentences } from './shell_command_policy.mjs';
 import { mentionsRole, wordsForRole } from './write_lexicon.mjs';
-// The issue-#558 source-links recipe (rust/src/agentic_coding/source_links.rs).
+// The issue-#558 source-navigation diagnostic (rust/src/agentic_coding/source_links.rs).
+// Digests and parse counters are not complete recursive source content.
 //
 // The task predicate, the slice choice and the `entire_source` header (file
 // count, total bytes, manifest content id) are exact ports over the owned
@@ -105,6 +106,7 @@ export function renderDocument() {
     `    slice_fully_faithful ${slice.isFullyFaithful()}`,
   ];
   for (const line of rustLines(slice.linksNotation())) out.push(line === '' ? '' : `    ${line}`);
+  out.push(...rustLines(agenticMessage('source-links-diagnostic-boundary')));
   return `${trimEnd(`${out.join('\n')}\n`)}\n`;
 }
 
@@ -119,6 +121,6 @@ export function slice() {
  */
 export function finalAnswer(document) {
   return agenticMessage('source_links_final_answer', {
-    files: ownedFileCount(), slice: cachedSlice().moduleCount(), path: SOURCE_LINKS_PATH, document: trimEnd(document),
+    files: ownedFileCount(), slice: cachedSlice().moduleCount(), faithful: String(cachedSlice().isFullyFaithful()), path: SOURCE_LINKS_PATH, document: trimEnd(document),
   });
 }

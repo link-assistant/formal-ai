@@ -115,32 +115,33 @@ impl VersionSet {
     #[must_use]
     pub fn resolve<T: SourceTransport>(client: &CachedSourceClient<T>) -> Self {
         let mut captures = Vec::new();
-        let checkout = Self::resolve_github(client, "actions", "checkout", &mut captures)
+        let checkout = resolve_declared_github(client, "actions_checkout", &mut captures)
             .or_else(|| baseline("actions_checkout"));
-        let setup_java = Self::resolve_github(client, "actions", "setup-java", &mut captures)
+        let setup_java = resolve_declared_github(client, "actions_setup_java", &mut captures)
             .or_else(|| baseline("actions_setup_java"));
-        let setup_kotlin = Self::resolve_github(client, "fwilhe2", "setup-kotlin", &mut captures)
+        let setup_kotlin = resolve_declared_github(client, "setup_kotlin_action", &mut captures)
             .or_else(|| baseline("setup_kotlin_action"));
-        let setup_python = Self::resolve_github(client, "actions", "setup-python", &mut captures)
+        let setup_python = resolve_declared_github(client, "actions_setup_python", &mut captures)
             .or_else(|| baseline("actions_setup_python"));
         // The interpreter is resolved from CPython's own releases; the tag
         // carries the leading `v` GitHub requires and the workflow wants the
         // bare version.
-        let python_interpreter = Self::resolve_github(client, "python", "cpython", &mut captures)
-            .map(|mut resolved| {
-                resolved.tag = resolved.tag.trim_start_matches('v').to_owned();
-                resolved
-            })
-            .or_else(|| baseline("python_interpreter"));
-        let kotlin = Self::resolve_github(client, "JetBrains", "kotlin", &mut captures)
+        let python_interpreter =
+            resolve_declared_github(client, "python_interpreter", &mut captures)
+                .map(|mut resolved| {
+                    resolved.tag = resolved.tag.trim_start_matches('v').to_owned();
+                    resolved
+                })
+                .or_else(|| baseline("python_interpreter"));
+        let kotlin = resolve_declared_github(client, "kotlin_compiler", &mut captures)
             .or_else(|| baseline("kotlin_compiler"));
         let java_lts = resolve_java_lts(client, &mut captures).or_else(|| baseline("java_lts"));
         let setup_coursier =
-            Self::resolve_github(client, "coursier", "setup-action", &mut captures)
+            resolve_declared_github(client, "setup_coursier_action", &mut captures)
                 .or_else(|| baseline("setup_coursier_action"));
         // Like CPython, the Scala release tag carries a leading `v` and the
         // coursier `apps:` line wants the bare version.
-        let scala = Self::resolve_github(client, "scala", "scala", &mut captures)
+        let scala = resolve_declared_github(client, "scala_compiler", &mut captures)
             .map(|mut resolved| {
                 resolved.tag = resolved.tag.trim_start_matches('v').to_owned();
                 resolved
@@ -352,6 +353,29 @@ fn json_string(capture: &SourceCapture, key: &str) -> Option<String> {
         .get(key)?
         .as_str()
         .map(str::to_owned)
+}
+
+/// Resolve the publisher declared by this pin's metadata, preserving capture custody.
+fn resolve_declared_github<T: SourceTransport>(
+    client: &CachedSourceClient<T>,
+    id: &str,
+    captures: &mut Vec<SourceCapture>,
+) -> Option<ResolvedVersion> {
+    let source = baseline(id)?.source_url;
+    let authority = source
+        .strip_prefix("https://api.github.com/repos/")?
+        .strip_suffix("/releases/latest")?;
+    let (publisher, repository) = authority.split_once('/')?;
+    if ![publisher, repository].into_iter().all(|part| {
+        !part.is_empty()
+            && !matches!(part, "." | "..")
+            && part
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'_' | b'-' | b'.'))
+    }) {
+        return None;
+    }
+    VersionSet::resolve_github(client, publisher, repository, captures)
 }
 
 /// The shipped baseline for `id`, from the toolchains seed.

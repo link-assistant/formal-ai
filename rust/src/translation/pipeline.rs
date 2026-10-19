@@ -27,6 +27,9 @@
 //! [`Translation`], so the resulting links-notation trace shows
 //! exactly which API responses fed the answer.
 
+#[path = "compositional.rs"]
+mod compositional;
+
 use super::http::{HttpClient, HttpError};
 use super::meaning::MeaningId;
 use super::wikidata::Wikidata;
@@ -140,7 +143,7 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
         let page_title = normalize_page_title(surface);
         translation_debug("translate", &format!("page_title={page_title:?}"));
 
-        if source_lang == target_lang {
+        if source_lang == target_lang && !surface.trim().is_empty() {
             translation_debug("translate", "identity (source==target)");
             let mut candidates = vec![WiktionaryCandidate {
                 surface: surface.to_owned(),
@@ -168,6 +171,7 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
 
         if let Some((slug, target_surface)) =
             seed_compositional_translation(&page_title, source_lang, target_lang)
+            && compositional::target_surface_is_complete(target_surface, target_lang)
         {
             translation_debug("translate", "seed compositional hit");
             provenance.push(format!(
@@ -348,6 +352,18 @@ impl<'a, T: HttpClient + ?Sized> TranslationPipeline<'a, T> {
                 &mut provenance,
             );
         }
+
+        candidates.retain(|candidate| {
+            compositional::target_surface_is_complete(&candidate.surface, target_lang)
+        });
+        compositional::fill_missing_candidates(
+            self,
+            surface,
+            source_lang,
+            target_lang,
+            &mut candidates,
+            &mut provenance,
+        );
 
         translation_debug(
             "translate",

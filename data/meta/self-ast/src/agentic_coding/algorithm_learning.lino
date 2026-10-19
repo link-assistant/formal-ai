@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/algorithm_learning.rs
   language rust
   fidelity full_ast
-  byte_len 18660
-  line_count 504
-  content_id source_module_67810ed61620059f
-  symbol_count 21
+  byte_len 18639
+  line_count 502
+  content_id source_module_440ab83a05fb3c5d
+  symbol_count 20
   symbols
     const OBSERVATIONS_PATH 27 27
     const DISCOVERY_PATH 28 28
@@ -24,17 +24,16 @@ self_ast_census
     function result_document 336 374
     struct CaptureOptions 378 381
     function default 384 389
-    function shell_quote 393 395
-    function capture_program 399 451
-    function capture_command 454 462
-    function bare_current_operation 464 504
+    function capture_program 397 449
+    function capture_command 452 460
+    function bare_current_operation 462 502
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 13849
-    named_node_count 2853
+    total_link_count 13779
+    named_node_count 2839
     distinct_node_kinds 78
     node_kinds
       abstract_type 1
@@ -44,19 +43,18 @@ self_ast_census
       attribute 7
       attribute_item 7
       binary_expression 64
-      block 58
+      block 57
       boolean_literal 18
       call_expression 281
-      char_literal 1
       closure_expression 26
       closure_parameters 26
       const_item 3
       continue_expression 8
-      crate 4
+      crate 5
       declaration_list 1
       doc_comment 20
       else_clause 4
-      escape_sequence 2
+      escape_sequence 1
       expression_statement 68
       field_declaration 5
       field_declaration_list 2
@@ -65,10 +63,10 @@ self_ast_census
       field_initializer 3
       field_initializer_list 2
       for_expression 4
-      function_item 16
+      function_item 15
       generic_function 6
       generic_type 11
-      identifier 601
+      identifier 599
       if_expression 26
       impl_item 1
       index_expression 25
@@ -79,39 +77,40 @@ self_ast_census
       let_declaration 35
       lifetime 2
       line_comment 20
-      macro_invocation 10
+      macro_invocation 9
       match_arm 2
       match_block 1
       match_expression 1
       match_pattern 2
       mutable_specifier 13
       outer_doc_comment_marker 14
-      parameter 26
-      parameters 16
+      parameter 25
+      parameters 15
       parenthesized_expression 2
-      primitive_type 22
+      primitive_type 21
       range_expression 4
       reference_expression 54
-      reference_type 30
+      reference_type 29
       return_expression 20
-      scoped_identifier 62
+      scoped_identifier 64
       scoped_type_identifier 5
       scoped_use_list 4
       shorthand_field_initializer 2
       source_file 1
-      string_content 122
-      string_literal 129
+      string_content 119
+      string_literal 127
       struct_expression 2
       struct_item 2
       super 11
-      token_tree 28
+      token_tree 26
       try_expression 4
       tuple_expression 2
       tuple_pattern 4
       tuple_struct_pattern 10
       type_arguments 17
-      type_identifier 56
+      type_identifier 55
       unary_expression 16
-      use_declaration 11
+      use_as_clause 1
+      use_declaration 12
       use_list 4
       visibility_modifier 20

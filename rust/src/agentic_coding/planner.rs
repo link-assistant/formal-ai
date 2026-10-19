@@ -8,8 +8,8 @@ mod precedence;
 mod steps;
 use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
 use continuation::continued_agent_task;
-pub use continuation::trace_route;
 pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
+pub use continuation::{trace_route, trace_route_with};
 pub use precedence::checked_route_precedence;
 use steps::{stop_repeated_call, stop_repeated_failure};
 
@@ -316,7 +316,7 @@ fn plan_chat_step_routes(
         if let Some(recipe) = answer.execution_recipe.as_mut()
             && super::ci_workflow::requested_in(&task)
         {
-            super::ci_workflow::attach(recipe);
+            super::ci_workflow::attach(recipe, &task);
         }
         if let Some(plan) =
             super::command_reroute::plan_symbolic_command_reroute(messages, tool_names, &answer)
@@ -390,34 +390,41 @@ pub(super) fn plan_settled_routes(
     // modules, write both, run the stated command.
     // A copy or move followed by edits of the file it makes is planned
     // sentence by sentence (PR #1188 G82).
-    if let Some(plan) = super::request_sequence::plan_request_sequence_step(
-        owned,
-        messages,
-        tool_names,
-        plan_chat_step_resolved,
-        result,
-    )
-    .or_else(|| {
-        super::workspace_change::plan_workspace_change_step(owned, messages, tool_names, result)
-    })
-    .or_else(|| {
-        super::module_function::plan_module_function_step(owned, messages, tool_names, result)
-    })
-    // A bug report with a stated expectation is checked before anything is
-    // rewritten (PR #1188 T93).
-    .or_else(|| {
-        super::function_expectation::plan_function_expectation_step(
-            owned, messages, tool_names, result,
-        )
-    })
-    // An assertion of a stated call and value is added in the test
-    // file's own form, and the file is run (PR #1188 G13).
-    .or_else(|| {
-        super::test_assertion::plan_test_assertion_step(owned, messages, tool_names, result)
-    })
-    // A test asked for with no expected result is a question (PR #1188
-    // G25).
-    .or_else(|| super::function_expectation::test_expectation_question(owned, result))
+    if let Some(plan) =
+        super::source_maintenance::plan_source_maintenance_step(owned, messages, tool_names, result)
+            .or_else(|| {
+                super::request_sequence::plan_request_sequence_step(
+                    owned,
+                    messages,
+                    tool_names,
+                    plan_chat_step_resolved,
+                    result,
+                )
+            })
+            .or_else(|| {
+                super::workspace_change::plan_workspace_change_step(
+                    owned, messages, tool_names, result,
+                )
+            })
+            .or_else(|| {
+                super::coding_research::plan_module_function_research_step(
+                    owned, messages, tool_names, result,
+                )
+            })
+            // A bug report with a stated expectation is checked before anything is
+            // rewritten (PR #1188 T93).
+            .or_else(|| {
+                super::function_expectation::plan_function_expectation_step(
+                    owned, messages, tool_names, result,
+                )
+            })
+            // An assertion of a stated call and value is added in the test
+            // file's own form, and the file is run (PR #1188 G13).
+            .or_else(|| {
+                super::test_assertion::plan_test_assertion_step(owned, messages, tool_names, result)
+            })
+            // A test asked for with no expected result is a question (PR #1188 G25).
+            .or_else(|| super::function_expectation::test_expectation_question(owned, result))
     {
         return Some(plan);
     }
@@ -530,8 +537,13 @@ pub(super) fn plan_settled_routes(
                 && compose_general_change_plan(task).is_none()
                 && super::general_planner::compose_edit_request(task).is_none())
             .then(|| {
-                conversation_recall::plan_verified_recipe_step(messages, tool_names).unwrap_or_else(
-                    || {
+                conversation_recall::plan_verified_recipe_step(messages, tool_names)
+                    .or_else(|| {
+                        super::coding_research::plan_coding_research_step(
+                            task, messages, tool_names, result,
+                        )
+                    })
+                    .unwrap_or_else(|| {
                         record(
                             AgenticPlan::Final(
                                 super::general_planner::missing_implementation_contract(task),
@@ -540,8 +552,7 @@ pub(super) fn plan_settled_routes(
                             "semantic-authoring-missing-contract",
                             result,
                         )
-                    },
-                )
+                    })
             })
         })
     {
@@ -899,7 +910,13 @@ fn plan_shell_command_arm(
     if let Some(decline) = shell_command::destructive_edit_decline(task) {
         return Some(decline);
     }
-    let command = shell_command::shell_command_for_task(task)?;
+    if let Some(command) =
+        super::prerequisite_recovery::observed_denied_prerequisite_command(messages)
+    {
+        return Some(plan_shell_step(messages, tool_names, &command, result));
+    }
+    let command = shell_command::shell_command_for_task(task)
+        .or_else(|| super::prerequisite_recovery::observed_recovery_command(messages))?;
     if let Some(plan) = shell_file_fallback::plan_step(task, messages, tool_names, &command) {
         return Some(plan);
     }
@@ -919,35 +936,7 @@ fn plan_shell_step(
     command: &str,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
-    let progress = Progress::scan(messages);
-    if progress.done(Capability::Run) {
-        let raw = progress.run_outputs.last().map_or("", String::as_str);
-        let disposition = if tool_result::step_outcome(raw) == tool_result::StepOutcome::Failed {
-            FinalDisposition::Failure
-        } else {
-            FinalDisposition::Finding
-        };
-        return record(
-            AgenticPlan::Final(tool_result::render(
-                command,
-                raw,
-                crate::protocol::latest_user_request(messages)
-                    .as_deref()
-                    .unwrap_or_default(),
-            )),
-            disposition,
-            "shell_result_observed",
-            result,
-        );
-    }
-
-    if let Some(tool) = tool_for(tool_names, Capability::Run) {
-        return plan_one(tool, json!({ "command": command }).to_string());
-    }
-
-    AgenticPlan::Final(format!(
-        "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
-    ))
+    super::prerequisite_recovery::plan_shell_step(messages, tool_names, command, result)
 }
 
 pub(super) fn plan_one(tool: &str, arguments: String) -> AgenticPlan {

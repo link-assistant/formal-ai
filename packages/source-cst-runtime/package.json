@@ -1,0 +1,9 @@
+{
+  "name": "formal-ai-source-cst-runtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@babel/parser": "8.0.7"
+  }
+}

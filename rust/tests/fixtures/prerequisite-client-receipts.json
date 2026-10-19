@@ -1,0 +1,30 @@
+[
+  {
+    "language": "Scala",
+    "command": "scalac Main.scala",
+    "receipt": "Exit code 127\n/bin/sh: 1: scalac: not found\n",
+    "exit": 127,
+    "installer": true
+  },
+  {
+    "language": "Scala",
+    "command": "scalac Main.scala",
+    "receipt": "Exit code 2\nsynthetic compiler syntax error\n",
+    "exit": 2,
+    "installer": false
+  },
+  {
+    "language": "Scala",
+    "command": "scalac Main.scala",
+    "receipt": "/bin/sh: 1: scalac: not found\n",
+    "exit": null,
+    "installer": false
+  },
+  {
+    "language": "Scala",
+    "command": "scalac Main.scala",
+    "receipt": "Exit code 0\ncommand not found is quoted output\n",
+    "exit": 0,
+    "installer": false
+  }
+]

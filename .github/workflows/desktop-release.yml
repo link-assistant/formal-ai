@@ -352,7 +352,7 @@ jobs:
           target: ${{ matrix.target }}
       - name: Cache Intel native dependencies
         if: matrix.target == 'x86_64-apple-darwin'
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
+        uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
         with: {workspaces: "rust -> ../target", cache-on-failure: 'true',
           cache-workspace-crates: 'false', cache-all-crates: 'false', cache-bin: 'false',
           key: "intel-native-default-${{ matrix.target }}-${{ needs.native-source.outputs.toolchain }}"}
@@ -363,9 +363,9 @@ jobs:
           version: v0.16.0
       - name: Enable Rust compiler cache
         if: runner.os != 'Windows' && matrix.target != 'x86_64-apple-darwin'
-        run: |
-          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
-          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
+        uses: ./.github/actions/setup-sccache
+        with:
+          install: 'false'
       - name: Build the pinned default-feature native executable
         run: |
           prefix=()

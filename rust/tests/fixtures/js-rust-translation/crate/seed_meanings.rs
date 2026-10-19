@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0ce3b636505c3bb4fe7c2a836087de861e96cbe7eceeb54607b5224e3944f8fe bytes=12355
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e91cfa8a7322fe67ee4837ced797a9b31a33f7ba39da32a7d974610f27d057b7 bytes=12889
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds string-methods items=1
 
@@ -344,9 +344,17 @@ pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {
 // | const SEED_REGISTRY = 'data/meta/seed-registry.lino';
 pub const SEED_REGISTRY: &str = "data/meta/seed-registry.lino";
 
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .map() | arrow function | call of an imported function | field access | method call .filter() | method call .map() | method call .sort() | new Set
+
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow callback of .some() | arrow function | call of an imported function | field access | method call .filter() | method call .map() | method call .some()
+// formal-ai:blockers arrow callback of .some() | arrow function | call of a sibling function | call of an imported function | field access | method call .some()
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal arrow function
+// formal-ai:blockers arrow callback of .map() | arrow callback of .some() | arrow function | call of a sibling function | call of an imported function | field access | method call .map() | method call .some()
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression

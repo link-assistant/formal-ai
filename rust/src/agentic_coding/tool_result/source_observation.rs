@@ -63,7 +63,27 @@ pub(in crate::agentic_coding) fn observed_digest_matches(raw: &str, expected: &s
             == Some(expected)
 }
 
-/// The process exit status the harness reported for `raw`, when it reported one.
+/// Read the declared text framing shared with JavaScript, retaining an absent status.
+pub(super) fn labelled_process_exit_code(raw: &str) -> Option<i64> {
+    static LABELS: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
+    let labels = LABELS.get_or_init(|| {
+        super::super::wording::agentic_message("command_reroute_exit_code_labels", &[])
+            .split('|')
+            .map(str::to_owned)
+            .collect()
+    });
+    raw.lines().find_map(|line| {
+        let line = line.trim().to_ascii_lowercase();
+        labels
+            .iter()
+            .find_map(|label| line.strip_prefix(label.as_str()))?
+            .split(|character: char| !(character.is_ascii_digit() || character == '-'))
+            .find(|token| !token.is_empty())
+            .and_then(|token| token.parse::<i64>().ok())
+    })
+}
+
+/// The process exit status the harness reported for raw, when it reported one.
 pub(in crate::agentic_coding) fn reported_exit_code(raw: &str) -> Option<i64> {
     normalize(raw).exit_code
 }

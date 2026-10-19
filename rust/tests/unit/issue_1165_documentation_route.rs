@@ -65,7 +65,10 @@ fn documented_commands_of_every_captured_language() {
     assert_eq!(documented("go"), [row("go run main.go", None)]);
     assert_eq!(
         documented("scala"),
-        [row("scalac Main.scala", None), row("scala Main", None)]
+        [
+            row("scalac Main.scala", None),
+            row("scala run Main.scala", Some("scala run hello.scala"))
+        ]
     );
     assert_eq!(
         documented("python"),
@@ -159,10 +162,14 @@ fn the_documented_run_contract_of_every_bound_language() {
     assert_eq!(
         bound("scala"),
         (
-            String::from("hello.scala"),
+            String::from("Main.scala"),
             vec![
-                sourced("check", "scalac hello.scala", "catalog"),
-                sourced("run", "scala hello", "catalog"),
+                sourced("check", "scalac Main.scala", "catalog"),
+                sourced(
+                    "run",
+                    "scala run Main.scala",
+                    "https://docs.scala-lang.org/scala3/book/taste-hello-world.html"
+                ),
             ]
         )
     );

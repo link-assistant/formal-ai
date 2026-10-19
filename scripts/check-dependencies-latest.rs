@@ -50,6 +50,8 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! serde = { version = "=1.0.229", features = ["derive"] }
+//! serde_json = "=1.0.151"
 //! ```
 
 use std::collections::BTreeMap;
@@ -113,6 +115,7 @@ pub struct Finding {
 /// The registry answers one run needs: `(ecosystem, name) -> (latest, url)`.
 pub struct Snapshot {
     pub refreshed_at: String,
+    pub action_releases: BTreeMap<String, ActionRelease>,
     pub entries: BTreeMap<(Ecosystem, String), (String, String)>,
 }
 
@@ -209,7 +212,7 @@ fn main() {
             );
         }
         for name in &unverifiable {
-            println!("dependency currency: {name} absent from the snapshot; not checked");
+            println!("dependency currency: {name}; not checked");
         }
         println!(
             "dependency currency: {} finding(s), {} unverifiable from this snapshot",
@@ -218,7 +221,11 @@ fn main() {
         );
     }
 
-    let code = exit_code(&findings);
+    let code = comparison_exit_code(&findings, &unverifiable);
+    if code == EXIT_UNVERIFIABLE {
+        eprintln!("dependency currency: missing or unresolved publisher evidence; not clean");
+        std::process::exit(code);
+    }
     if code == 0 {
         println!("dependency currency: every finding carries a blocked annotation");
         return;
@@ -469,7 +476,7 @@ pub fn compare(dependencies: &[Dependency], snapshot: &Snapshot) -> (Vec<Finding
             .get(&(dependency.ecosystem, dependency.name.clone()))
         else {
             unverifiable.push(format!(
-                "{}/{}",
+                "{}/{}: absent from snapshot",
                 dependency.ecosystem.key(),
                 dependency.name
             ));
@@ -488,14 +495,23 @@ pub fn compare(dependencies: &[Dependency], snapshot: &Snapshot) -> (Vec<Finding
             continue;
         }
         if dependency.ecosystem == Ecosystem::GitHubAction {
-            // A commit SHA cannot be ordered against a release tag without
-            // another API call; it is reported as unverifiable, not current.
             if is_commit_sha(&dependency.resolved) {
-                unverifiable.push(format!(
-                    "{}/{}",
-                    dependency.ecosystem.key(),
-                    dependency.name
-                ));
+                match snapshot
+                    .action_releases
+                    .get(&dependency.name)
+                    .filter(|release| valid_action_release(&dependency.name, &latest, release))
+                {
+                    Some(release) if dependency.resolved.eq_ignore_ascii_case(&release.commit) => {}
+                    Some(release) => findings.push(Finding {
+                        dependency: dependency.clone(),
+                        latest: release.commit.clone(),
+                    }),
+                    None => unverifiable.push(format!(
+                        "{}/{}: latest release commit unresolved in snapshot",
+                        dependency.ecosystem.key(),
+                        dependency.name,
+                    )),
+                }
             } else if !selects_latest(&dependency.resolved, &latest) {
                 findings.push(Finding {
                     dependency: dependency.clone(),
@@ -547,7 +563,15 @@ pub fn apply_latest(findings: &[Finding]) {
                 Ecosystem::GitHubAction => rewrite_uses_line(
                     &rewritten,
                     dependency,
-                    &same_precision(&finding.latest, &dependency.resolved),
+                    &if is_commit_sha(&dependency.resolved) {
+                        assert!(
+                            is_commit_sha(&finding.latest),
+                            "immutable action update needs commit evidence"
+                        );
+                        finding.latest.clone()
+                    } else {
+                        same_precision(&finding.latest, &dependency.resolved)
+                    },
                 ),
                 Ecosystem::DockerImage => rewrite_from_line(
                     &rewritten,
@@ -669,13 +693,17 @@ pub fn render_lino(findings: &[Finding], unverifiable: &[String]) -> String {
 #[path = "check-dependencies-latest-parsers.rs"]
 mod parsers;
 pub use parsers::*;
+#[path = "check-dependencies-action-release.rs"]
+mod action_release;
+pub use action_release::*;
 
 /// Read the snapshot written by `--refresh-snapshot`.
 pub fn read_snapshot(path: &Path) -> Option<Snapshot> {
     let text = fs::read_to_string(path).ok()?;
     let mut refreshed_at = String::new();
-    let mut entries = BTreeMap::new();
+    let mut entries: BTreeMap<(Ecosystem, String), (String, String)> = BTreeMap::new();
     let mut current: Option<(Ecosystem, String)> = None;
+    let mut action_releases = BTreeMap::new();
     for line in text.lines() {
         let trimmed = line.trim_start();
         if let Some(rest) = trimmed.strip_prefix("refreshed_at ") {
@@ -687,6 +715,32 @@ pub fn read_snapshot(path: &Path) -> Option<Snapshot> {
             current = ecosystem_of(&id).map(|ecosystem| (ecosystem, bare_id(&id, ecosystem)));
             continue;
         }
+        if let Some((key, value)) = trimmed.split_once(' ')
+            && let Some((Ecosystem::GitHubAction, name)) = &current
+            && let Some(value) = quoted_value(value)
+        {
+            let release = action_releases
+                .entry(name.clone())
+                .or_insert_with(|| ActionRelease {
+                    tag: String::new(),
+                    commit: String::new(),
+                    source_url: String::new(),
+                    tag_source_url: String::new(),
+                });
+            match key {
+                "latest" => release.tag = value,
+                "release-commit" | "release_commit" => release.commit = value,
+                "source_url" => release.source_url = value,
+                "tag-source-url" | "tag_source_url" => release.tag_source_url = value,
+                _ => {}
+            }
+        }
+        if let Some(rest) = trimmed.strip_prefix("source_url ")
+            && let (Some(key), Some(url)) = (&current, quoted_value(rest))
+            && let Some(entry) = entries.get_mut(key)
+        {
+            entry.1 = url;
+        }
         if let Some(rest) = trimmed.strip_prefix("latest ")
             && let (Some(key), Some(latest)) = (&current, quoted_value(rest))
         {
@@ -695,6 +749,7 @@ pub fn read_snapshot(path: &Path) -> Option<Snapshot> {
     }
     Some(Snapshot {
         refreshed_at,
+        action_releases,
         entries,
     })
 }
@@ -714,6 +769,16 @@ pub fn write_snapshot(path: &Path, snapshot: &Snapshot) {
             ecosystem.key(),
             name
         );
+        if *ecosystem == Ecosystem::GitHubAction
+            && let Some(release) = snapshot.action_releases.get(name)
+            && valid_action_release(name, latest, release)
+        {
+            let _ = writeln!(
+                text,
+                "  release-commit \"{}\"\n  tag-source-url \"{}\"",
+                release.commit, release.tag_source_url
+            );
+        }
     }
     if let Some(directory) = path.parent() {
         let _ = fs::create_dir_all(directory);
@@ -744,6 +809,7 @@ fn live_snapshot(dependencies: &[Dependency]) -> Result<Snapshot, String> {
     let mut snapshot = Snapshot {
         refreshed_at: iso_now(),
         entries: BTreeMap::new(),
+        action_releases: BTreeMap::new(),
     };
     let mut wanted: Vec<(Ecosystem, String)> = dependencies
         .iter()
@@ -764,7 +830,12 @@ fn live_snapshot(dependencies: &[Dependency]) -> Result<Snapshot, String> {
             Ecosystem::GitHubAction => {
                 let repository = action_repository(&name);
                 (
-                    latest_github(&repository)?,
+                    {
+                        let tag = latest_github(&repository)?;
+                        let release = resolve_action_release(&name, &tag, fetch)?;
+                        snapshot.action_releases.insert(name.clone(), release);
+                        tag
+                    },
                     format!("https://api.github.com/repos/{repository}/releases/latest"),
                 )
             }
@@ -846,8 +917,7 @@ fn latest_github(repository: &str) -> Result<String, String> {
     let body = fetch(&format!(
         "https://api.github.com/repos/{repository}/releases/latest"
     ))?;
-    let latest = github_latest(&body)
-        .ok_or_else(|| format!("github answer for {repository} had no tag_name"))?;
+    let latest = github_release_tag(&body)?;
     if without_v(&latest).starts_with(|c: char| c.is_ascii_digit()) {
         return Ok(latest);
     }

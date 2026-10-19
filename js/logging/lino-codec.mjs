@@ -8,7 +8,7 @@
 // word, and the empty text is written `%`. Portable-subset style: plain
 // functions and tagged arrays, no classes.
 
-const BARE = /^[A-Za-z0-9._~*/<>=!&|+-]$/u;
+const ESCAPED_TEXT = /[^A-Za-z0-9._~*/<>=!&|+\-]/gu;
 
 /**
  * Percent-encode `text` as one bare Links Notation word.
@@ -17,12 +17,9 @@ const BARE = /^[A-Za-z0-9._~*/<>=!&|+-]$/u;
  */
 export function encodeWord(text) {
   if (text === '') return '%';
-  let out = '';
-  for (const byte of Buffer.from(text, 'utf8')) {
-    const char = String.fromCharCode(byte);
-    out += byte < 0x80 && BARE.test(char) ? char : `%${byte.toString(16).toUpperCase().padStart(2, '0')}`;
-  }
-  return out;
+  return text.replace(ESCAPED_TEXT, character =>
+    Array.from(Buffer.from(character, 'utf8'), byte =>
+      '%' + byte.toString(16).toUpperCase().padStart(2, '0')).join(''));
 }
 
 /**
@@ -32,16 +29,17 @@ export function encodeWord(text) {
  */
 export function decodeWord(word) {
   if (word === '%') return '';
-  const bytes = [];
+  const bytes = Buffer.allocUnsafe(word.length);
+  let length = 0;
   for (let index = 0; index < word.length; index += 1) {
     if (word[index] === '%') {
-      bytes.push(Number.parseInt(word.slice(index + 1, index + 3), 16));
+      bytes[length++] = Number.parseInt(word.slice(index + 1, index + 3), 16);
       index += 2;
     } else {
-      bytes.push(word.charCodeAt(index));
+      bytes[length++] = word.charCodeAt(index);
     }
   }
-  return Buffer.from(bytes).toString('utf8');
+  return bytes.subarray(0, length).toString('utf8');
 }
 
 /**
@@ -51,8 +49,9 @@ export function decodeWord(word) {
  * @param {string} text
  * @returns {Array<Array<unknown>>}
  */
-export function parseLinks(text) {
+export function parseLinks(text, {quotedText = "legacy"} = {}) {
   const links = [];
+  const wordBoundary = /[\s()"]/gu;
   let index = 0;
   const skip = () => {
     while (index < text.length) {
@@ -81,6 +80,19 @@ export function parseLinks(text) {
         items.push(read());
       }
     }
+    if (char === '"' && quotedText === 'json') {
+      const start = index;
+      index += 1;
+      while (index < text.length) {
+        if (text[index] === String.fromCharCode(92)) { index += 2; continue; }
+        if (text[index] === '"') {
+          index += 1;
+          return {quoted: JSON.parse(text.slice(start, index))};
+        }
+        index += 1;
+      }
+      throw new Error('unclosed JSON quoted text');
+    }
     if (char === '"') {
       const end = text.indexOf('"', index + 1);
       if (end < 0) throw new Error('unclosed quoted text');
@@ -89,7 +101,8 @@ export function parseLinks(text) {
       return { quoted };
     }
     const start = index;
-    while (index < text.length && !/[\s()"]/u.test(text[index])) index += 1;
+    wordBoundary.lastIndex = index;
+    index = wordBoundary.exec(text)?.index ?? text.length;
     if (start === index) throw new Error(`unexpected ${JSON.stringify(char)} at ${index}`);
     return text.slice(start, index);
   };
@@ -128,6 +141,6 @@ export function field(link, head) {
  * @param {Array<unknown>} link
  * @returns {string}
  */
-export function writeLink(link) {
-  return `(${link.map((item) => (Array.isArray(item) ? writeLink(item) : typeof item === 'string' ? item : `"${item.quoted}"`)).join(' ')})`;
+export function writeLink(link, {quotedText = "legacy"} = {}) {
+  return `(${link.map((item) => (Array.isArray(item) ? writeLink(item, {quotedText}) : typeof item === 'string' ? item : quotedText === "json" ? JSON.stringify(item.quoted) : `"${item.quoted}"`)).join(' ')})`;
 }

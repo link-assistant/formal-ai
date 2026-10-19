@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=fdd246724928a24952306ce724d7a558f78908fb3cc415dffbb19c387cbc3497 bytes=12439
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5ecd1a25a2a34cab18b08098dce147f61b5a779613a11ac85ca9cc0c59cd5c42 bytes=12722
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=5
 
@@ -78,7 +78,7 @@ pub const WHEN_UNBOUND_OUTPUT: &str = "unbound_output_literal";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow function | field access | method call .filter() | method call .find() | method call .push() | null | nullish coalescing | object without a $ tag | optional chaining | sibling value
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .find() | arrow function | call of a sibling function | field access | method call .filter() | method call .find() | method call .push() | null | nullish coalescing | object without a $ tag | optional chaining | sibling value
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .some()

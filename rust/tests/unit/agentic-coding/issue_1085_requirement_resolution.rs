@@ -46,7 +46,7 @@ fn a_requirement_without_a_file_name_resolves_through_the_census() {
 }
 
 #[test]
-fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
+fn original_ladder_scope_is_preserved_when_actual_ownership_moves() {
     let rows = leaves();
     assert_eq!(rows.len(), 32);
     for row in &rows {
@@ -56,6 +56,13 @@ fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
         } else {
             requirement
         };
+        if leaf == "L09" {
+            // The historical request permits only a Rust file; vocabulary now belongs to data.
+            // Keep it as a conflict, never as a fulfilled original ladder task.
+            assert_eq!(resolve_requirement_target(scoped_request), None);
+            // The unscoped native positive remains isolated below as explicit parity debt.
+            continue;
+        }
         // Preserve the original explicit file operand instead of guessing an ambiguous declaration.
         let target = resolve_requirement_target(scoped_request)
             .unwrap_or_else(|| panic!("{leaf}: {requirement:?} must resolve"));
@@ -94,7 +101,7 @@ fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
 
 #[cfg(feature = "meta-language")]
 #[test]
-fn each_committed_leaf_rule_applies_to_the_current_source() {
+fn committed_leaf_rules_apply_or_refuse_their_original_conflicting_scope() {
     let rows = leaves();
     for row in &rows {
         let leaf = &row[0];
@@ -108,6 +115,21 @@ fn each_committed_leaf_rule_applies_to_the_current_source() {
         );
         let source = fs::read_to_string(root().join(&document.path))
             .unwrap_or_else(|error| panic!("{leaf}: {}: {error}", document.path));
+        if leaf == "L09" {
+            let reason = match apply_link_edit(&source, &document.language, &document.rule) {
+                Err(error) => error.to_string(),
+                Ok(_) => panic!("the original Rust-only rule must not redirect to data"),
+            };
+            assert_eq!(
+                reason,
+                "link_edit:no_matching_link:insert_member:PROSE_WORDS"
+            );
+            assert_eq!(
+                fs::read_to_string(root().join(&document.path)).unwrap(),
+                source
+            );
+            continue;
+        }
         let (edited, report) = apply_link_edit(&source, &document.language, &document.rule)
             .unwrap_or_else(|error| panic!("{leaf}: {error}"));
         assert_ne!(edited, source, "{leaf}: the rule must change the source");
@@ -434,4 +456,116 @@ fn canonical_surface_requires_role_evidence_outside_its_own_span() {
             "{positive}"
         );
     }
+}
+
+/// Retain the exact unresolved native positive independently of the original scoped refusals.
+#[test]
+fn native_unscoped_l09_resolves_actual_terminal_commands_owner() {
+    let rows = leaves();
+    assert_eq!(rows.len(), 32);
+    let row = rows
+        .iter()
+        .find(|row| row[0] == "L09")
+        .expect("original L09");
+    let requirement = &row[5];
+    let current = resolve_requirement_target(requirement)
+        .expect("the unscoped semantic request identifies actual shared seed ownership");
+    assert_eq!(current.module_path, "src/seed/embedded_registry.rs");
+    assert_eq!(current.symbol, "TERMINAL_COMMANDS_LINO");
+    assert_eq!(current.kind, "const");
+}
+
+#[test]
+fn explicit_seed_fields_constrain_weak_lexical_surfaces_without_guessing() {
+    use formal_ai::agentic_coding::requirement_resolution::{
+        RequirementTarget, resolve_seed_target, structured_seed_owner,
+    };
+    use formal_ai::self_ast_census::WorkspaceCensus;
+    let census = WorkspaceCensus::compile(&[
+        (
+            "src/config.rs",
+            "pub const COBALT_CONFIG_LINO: &str = \"\";",
+        ),
+        ("src/words.rs", "pub const AUXILIARY_LINO: &str = \"\";"),
+        (
+            "src/archive.rs",
+            "pub const COBALT_ARCHIVE_LINO: &str = \"\";",
+        ),
+    ]);
+    let wanted = Some(RequirementTarget {
+        module_path: "src/config.rs".to_owned(),
+        symbol: "COBALT_CONFIG_LINO".to_owned(),
+        kind: "const".to_owned(),
+    });
+    let settings = (
+        "data/seed/cobalt-config.lino",
+        "settings\n  data-policy\n    value preserve\n",
+    );
+    let weak = (
+        "data/seed/auxiliary.lino",
+        "meanings\n  connector\n    role request_function_word\n    lexeme en the\n",
+    );
+    for request in [
+        "Update cobalt data policy with the new word.",
+        "Обнови data-policy для cobalt и слово the.",
+        "cobalt का data-policy बदलें और the शब्द रखें।",
+        "更新 cobalt 的 data-policy，并保留单词 the。",
+        "Actualiza data-policy para cobalt y conserva la palabra the.",
+    ] {
+        assert_eq!(
+            resolve_seed_target(&census, request, &[settings, weak]),
+            wanted,
+            "{request}"
+        );
+    }
+    assert_eq!(
+        structured_seed_owner(&census, "Update cobalt data-policy.", &[settings, weak]),
+        wanted
+    );
+    let request = "Update cobalt data policy with the new word.";
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            request,
+            &[
+                settings,
+                weak,
+                (
+                    "data/seed/cobalt-unsupported.lino",
+                    "settings\n  data-policy-new-word\n"
+                ),
+            ]
+        ),
+        wanted,
+        "an undeclared longer field cannot erase a qualified owner"
+    );
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            request,
+            &[
+                settings,
+                weak,
+                ("data/seed/cobalt-archive.lino", "settings\n  data-policy\n"),
+            ]
+        ),
+        None,
+        "equal explicit owners cannot authorize lexical fallback"
+    );
+    for request in [
+        "Update scarlet data-policy.",
+        "Update cobalt with \"data-policy\".",
+    ] {
+        assert_eq!(
+            resolve_seed_target(&census, request, &[settings, weak]),
+            None,
+            "{request}"
+        );
+    }
+    let wrong_kind =
+        WorkspaceCensus::compile(&[("src/config.rs", "pub fn COBALT_CONFIG_LINO() {}")]);
+    assert_eq!(
+        resolve_seed_target(&wrong_kind, "Update cobalt data-policy.", &[settings, weak]),
+        None
+    );
 }

@@ -28,8 +28,7 @@ use std::sync::OnceLock;
 use unicode_general_category::{GeneralCategory, get_general_category};
 
 use super::segment::{Script, Segment, clauses, script_of, sentences};
-use crate::seed::parser::LinoNode;
-use crate::seed::{TEXT_FORMALIZATION_LINO, lexicon, parse_lino};
+use crate::seed::lexicon;
 
 /// The lexicon roles whose words carry no term.
 pub const FUNCTION_WORD_ROLES: [&str; 2] = ["translation_stop_word", "statement_function_word"];
@@ -128,6 +127,8 @@ pub struct Statement {
     pub language: String,
     /// Asserted or denied.
     pub polarity: Polarity,
+    /// Typed question obligations and exact answer evidence.
+    pub dialogue: super::dialogue::Dialogue,
     /// The first term, or the subject carried over from the clause before.
     pub subject: Option<Word>,
     /// The other terms, in order.
@@ -193,36 +194,15 @@ fn is_number(surface: &str) -> bool {
         .all(|part| !part.is_empty() && part.chars().all(is_numeral_character))
 }
 
-fn seed_record() -> Option<&'static LinoNode> {
-    static ROOT: OnceLock<LinoNode> = OnceLock::new();
-    let root = ROOT.get_or_init(|| parse_lino(TEXT_FORMALIZATION_LINO));
-    if root.name == "text-formalization" {
-        return Some(root);
-    }
-    root.children
-        .iter()
-        .find(|node| node.name == "text-formalization")
-}
+pub use super::{numeric_identity_prefix, structural_rule_values};
 
-/// The words of one kind the seed lists for `language`, lowercased.
+/// The words of one kind the seed lists for language, lowercased.
 #[must_use]
 pub fn seed_words(language: &str, kind: &str) -> Vec<String> {
-    seed_record()
-        .and_then(|record| {
-            record
-                .children
-                .iter()
-                .find(|node| node.name == "language" && node.id == language)
-        })
-        .map(|record| {
-            record
-                .children
-                .iter()
-                .filter(|node| node.name == kind)
-                .map(|node| node.id.trim_matches('"').to_lowercase())
-                .collect()
-        })
-        .unwrap_or_default()
+    super::grammar_vocabulary(language, kind)
+        .into_iter()
+        .map(|value| value.to_lowercase())
+        .collect()
 }
 
 /// The seeded inflection endings of `language`, longest first.
@@ -616,7 +596,7 @@ fn read_single(surface: &str, language: &str, initial: bool) -> Word {
         return word(
             surface.to_owned(),
             WordKind::Number,
-            format!("number:{surface}"),
+            format!("{}{surface}", numeric_identity_prefix(false)),
         );
     }
     if let Some(slug) = fold_inflection(&lower, language) {
@@ -710,7 +690,7 @@ pub fn read_words(text: &str, language: &str, opens_sentence: bool) -> Vec<Word>
         out.extend(read_han_run(&token.surface, language));
     }
     flush_run(&mut run, language, opens_sentence, &mut out);
-    out
+    super::dialogue::read_numeric_words(&out, text, language)
 }
 
 fn flush_run(run: &mut Vec<Token>, language: &str, opens_sentence: bool, out: &mut Vec<Word>) {
@@ -734,10 +714,20 @@ pub fn clause_statement(
     opens_sentence: bool,
 ) -> Statement {
     let words = read_words(text, language, opens_sentence);
+    let relative = !opens_sentence && previous_subject.is_some() && !text.contains(['?', '？']);
     let inherits = words
         .iter()
         .find(|word| word.kind != WordKind::Function)
-        .is_some_and(|opener| matches!(opener.kind, WordKind::Anaphor | WordKind::Continuation));
+        .is_some_and(|opener| matches!(opener.kind, WordKind::Anaphor | WordKind::Continuation))
+        || (relative
+            && super::dialogue::formalize_dialogue(text, language)
+                .question
+                .is_some_and(|question| question.kind != "yes-no"));
+    let dialogue = super::typed_meaning::inherit_numeric_evidence(
+        super::dialogue::formalize_dialogue_in_context(text, language, relative),
+        if inherits { previous_subject } else { None },
+        language,
+    );
     let content: Vec<Word> = words
         .iter()
         .filter(|word| word.kind.is_term())
@@ -748,7 +738,13 @@ pub fn clause_statement(
         .filter(|term| term.kind == WordKind::Unknown)
         .map(|term| term.surface.clone())
         .collect();
-    let polarity = if words.iter().any(|word| word.kind == WordKind::Negation) {
+    let polarity = if dialogue
+        .answer
+        .as_ref()
+        .and_then(|answer| answer.polarity.as_deref())
+        == Some("denied")
+        || words.iter().any(|word| word.kind == WordKind::Negation)
+    {
         Polarity::Denied
     } else {
         Polarity::Asserted
@@ -764,6 +760,7 @@ pub fn clause_statement(
         text: text.to_owned(),
         language: language.to_owned(),
         polarity,
+        dialogue,
         subject,
         terms,
         unknown,
@@ -802,15 +799,26 @@ pub fn formalize_sentences(text: &str, language: &str) -> Vec<Sentence> {
     let mut out = Vec::new();
     let mut previous_subject: Option<Word> = None;
     for sentence in sentences(text) {
+        let sentence_dialogue = super::dialogue::formalize_dialogue(&sentence.text, language);
         let mut statements = Vec::new();
         for (index, clause) in statement_clauses(&sentence).iter().enumerate() {
-            let statement = clause_statement(
+            let mut statement = clause_statement(
                 &clause.text,
                 language,
                 previous_subject.as_ref(),
                 index == 0,
             );
-            if statement.subject.is_none() && statement.terms.is_empty() {
+            if index == 0 && sentence_dialogue.question.is_some() {
+                statement
+                    .dialogue
+                    .question
+                    .clone_from(&sentence_dialogue.question);
+            }
+            if statement.subject.is_none()
+                && statement.terms.is_empty()
+                && statement.dialogue.answer.is_none()
+                && statement.dialogue.question.is_none()
+            {
                 continue;
             }
             if let Some(subject) = &statement.subject {
@@ -921,21 +929,7 @@ pub fn known_ids(statement: &Statement) -> Vec<String> {
 /// Two statements with one identity say the same thing whatever their wording.
 #[must_use]
 pub fn statement_identity(statement: &Statement) -> String {
-    let subject = statement
-        .subject
-        .as_ref()
-        .map_or("", |subject| subject.id.as_str());
-    let others: BTreeSet<&str> = statement
-        .terms
-        .iter()
-        .map(|term| term.id.as_str())
-        .filter(|id| *id != subject)
-        .collect();
-    format!(
-        "{}|{subject}|{}",
-        statement.polarity.slug(),
-        others.into_iter().collect::<Vec<_>>().join(" ")
-    )
+    super::typed_meaning::statement_identity(statement)
 }
 
 /// Whether a statement has at least two terms, all of them known.

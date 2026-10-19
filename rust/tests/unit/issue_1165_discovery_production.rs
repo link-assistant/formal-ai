@@ -569,9 +569,12 @@ fn a_documented_program_binds_its_run_contract_and_records_each_command_source()
         ),
         (
             "Scala",
-            "hello.scala",
-            ["scalac hello.scala", "scala hello"],
-            ["catalog", "catalog"],
+            "Main.scala",
+            ["scalac Main.scala", "scala run Main.scala"],
+            [
+                "catalog",
+                "https://docs.scala-lang.org/scala3/book/taste-hello-world.html",
+            ],
         ),
     ];
     for (name, path, commands, sources) in cases {

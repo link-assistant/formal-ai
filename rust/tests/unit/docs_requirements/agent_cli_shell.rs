@@ -3,6 +3,9 @@
 use std::fs;
 use std::path::Path;
 
+// This is the literal response template, before its tool field is rendered.
+const TOOL_COMMAND_TEMPLATE: &str = "The `{tool}` command completed";
+
 #[test]
 fn issue_607_agent_cli_shell_docs_are_traceable() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -45,25 +48,70 @@ fn issue_607_shell_planner_and_serve_opt_in_are_traceable() {
         .expect("the repository root sits one level above the crate");
 
     let planner = read(root.join("rust/src/agentic_coding/planner.rs"));
+    let recovery = read(root.join("rust/src/agentic_coding/prerequisite_recovery.rs"));
+    assert_contains_all(
+        "planner delegates its shell transaction to the canonical recovery helper",
+        &planner,
+        &["super::prerequisite_recovery::plan_shell_step(messages, tool_names, command, result)"],
+    );
+    let shell_source = format!("{planner}\n{recovery}");
     assert_contains_all(
         "rust/src/agentic_coding/planner.rs",
-        &planner,
+        &shell_source,
         &[
             "shell_command_for_task",
             "plan_shell_step",
-            "bash",
-            "shell",
-            "run_command",
             "\"command\": command",
             "tool_result::render",
         ],
     );
 
+    // Tool names belong to the shared capability seed, reached by the shell helper.
+    assert_contains_all(
+        "canonical shell helper",
+        &recovery,
+        &["tool_for(tool_names, Capability::Run)"],
+    );
+    let router = read(root.join("rust/src/agentic_coding/capability_router.rs"));
+    assert_contains_all(
+        "canonical capability owner",
+        &router,
+        &["seed::agentic_tool_capabilities()", ".aliases"],
+    );
+    let loader = read(root.join("rust/src/seed/agentic_tool_capabilities.rs"));
+    assert_contains_all(
+        "canonical capability loader",
+        &loader,
+        &["parse_lino(AGENTIC_TOOL_CAPABILITIES_LINO)"],
+    );
+    let registry = read(root.join("rust/src/seed/embedded_registry.rs"));
+    assert_contains_all(
+        "canonical capability embedding",
+        &registry,
+        &["../../embedded/data/seed/agentic-tool-capabilities.lino"],
+    );
+    for tool in ["bash", "shell", "run_command"] {
+        use formal_ai::agentic_coding::planner::{Capability, tool_capability};
+        use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+        assert_eq!(tool_capability(tool), Some(Capability::Run), "{tool}");
+        let messages = [formal_ai::ChatMessage::user("run ls to list files here")];
+        match plan_chat_step(&messages, &[tool]) {
+            Some(AgenticPlan::ToolCalls(calls)) => {
+                assert_eq!(calls.len(), 1);
+                assert_eq!(calls[0].tool, tool);
+                let arguments: serde_json::Value =
+                    serde_json::from_str(&calls[0].arguments).unwrap();
+                assert_eq!(arguments["command"], "ls");
+            }
+            other => panic!("the advertised {tool} owns the documented command: {other:?}"),
+        }
+    }
+
     let responses = read(root.join("data/seed/multilingual-responses.lino"));
     assert_contains_all(
         "data/seed/multilingual-responses.lino",
         &responses,
-        &["The `{tool}` command completed"],
+        &[TOOL_COMMAND_TEMPLATE],
     );
 
     let server = read(root.join("rust/src/server.rs"));

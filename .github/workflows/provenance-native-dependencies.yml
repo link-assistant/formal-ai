@@ -1,0 +1,51 @@
+name: Resolve provenance native dependencies
+
+on:
+  pull_request:
+    branches-ignore: ['e2e/**']
+    paths:
+      - '.github/workflows/provenance-native-dependencies.yml'
+      - 'scripts/resolve-provenance-native-dependencies.mjs'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Run the source-qualified dependency producer'
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request receiving the qualified data'
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  resolve:
+    name: Resolve provenance native dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '26'
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Resolve lock data without compiling or publishing
+        env:
+          CARGO_NET_RETRY: '10'
+          CARGO_HTTP_MULTIPLEXING: 'false'
+        run: node scripts/resolve-provenance-native-dependencies.mjs "$RUNNER_TEMP/provenance-native-dependencies"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: provenance-native-dependencies
+          path: ${{ runner.temp }}/provenance-native-dependencies
+          retention-days: 7
+          if-no-files-found: error

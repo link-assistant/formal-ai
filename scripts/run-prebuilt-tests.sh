@@ -84,9 +84,9 @@ for target in "${targets[@]}"; do
       continue
     fi
     echo "shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} ${target} test(s)"
-    "dist/tests/$target" --exact "${names[@]}" || status=1
+    node scripts/lib/test-cache-isolation.mjs "dist/tests/$target" --exact "${names[@]}" || status=1
   else
-    "dist/tests/$target" "${selection[@]}" || status=1
+    node scripts/lib/test-cache-isolation.mjs "dist/tests/$target" "${selection[@]}" || status=1
   fi
 done
 exit "$status"

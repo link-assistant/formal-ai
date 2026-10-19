@@ -1,0 +1,20 @@
+self_ast_census
+  target src/coding_research_kernel.rs
+  language rust
+  fidelity signature
+  byte_len 2987
+  line_count 66
+  content_id source_module_3d4d1aeb9ea64fc0
+  symbol_count 11
+  symbols
+    function safe_tap_count 6 8
+    function tap_verification_decision 11 21
+    function tap_counter_syntax_valid 24 26
+    function source_capture_unique_accepted 29 31
+    function source_capture_declaration_accepted 34 36
+    function source_capture_receipt_identity_accepted 39 41
+    function source_capture_all_observed 44 46
+    function source_capture_text_accepted 49 51
+    function source_capture_timestamp_text_accepted 54 56
+    function source_capture_trust_accepted 59 61
+    function source_capture_licence_accepted 64 66

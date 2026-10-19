@@ -457,7 +457,15 @@ pub fn command_procedures() -> Vec<CommandProcedure> {
                 .filter(|row| row.name == "command")
                 .map(|row| CommandProcedure {
                     language: row.find_child_value("language").to_owned(),
-                    role: row.find_child_value("role").to_owned(),
+                    role: {
+                        let stated = row.find_child_value("role");
+                        if stated.is_empty() {
+                            record.find_child_value("role")
+                        } else {
+                            stated
+                        }
+                    }
+                    .to_owned(),
                     page: row.find_child_value("page").to_owned(),
                     command_verb: row.find_child_value("command_verb").to_owned(),
                 })

@@ -2,7 +2,11 @@
 // Native counterpart: source_fetch::CachedSourceClient. Body bytes never classify the provider failure.
 async function sourceWalkFetchCapture(url, { online = true } = {}) {
   const cached = sourceWalkCaptureCache.get(url);
-  if (cached) return { ...cached, cached: true };
+  if (cached) {
+    if (cached.url !== url || typeof cached.text !== "string" || cached.sha256 !== await sourceWalkSha256Hex(cached.text))
+      return { ok: false, url, error: "invalid_capture" };
+    return { ...cached, cached: true };
+  }
   const seeded = await sourceWalkSeedCapture(url);
   if (seeded) return seeded;
   if (!online) return { ok: false, url, failureKind: "offline_cache_miss", error: answerFor("source-capture-offline-cache-miss", "en").replace("{url}", () => String(url)) };
@@ -14,14 +18,10 @@ async function sourceWalkFetchCapture(url, { online = true } = {}) {
     }
     const text = await response.text();
     const capture = {
-      ok: true,
-      url,
-      text,
-      sha256: await sourceWalkSha256Hex(text),
-      fetchedAt: String(sourceWalkNowSeconds()),
-      cached: false,
+      ok: true, url, text, sha256: await sourceWalkSha256Hex(text),
+      fetchedAt: String(sourceWalkNowSeconds()), cached: false,
     };
-    sourceWalkCaptureCache.set(url, capture);
+    sourceWalkCaptureCache.set(url, Object.freeze({ ...capture }));
     return capture;
   } catch (error) {
     return { ok: false, url, error: error instanceof Error ? error.message : String(error) };

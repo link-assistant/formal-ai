@@ -448,8 +448,7 @@ fn assert_unspecified_addition_refuses(prompt: &str, language: &str) {
     );
 }
 
-#[test]
-fn explicit_content_and_file_object_route_write_variations() {
+fn assert_explicit_write_locale(locale: usize) {
     let matrices = [
         (
             &[
@@ -587,29 +586,63 @@ fn explicit_content_and_file_object_route_write_variations() {
         &["添加"],
         &["añade", "agrega"],
     ];
-    for (locale, (actions, suffix)) in matrices.into_iter().enumerate() {
-        assert!(
-            actions.len() >= VARIATION_FLOOR,
-            "retain every locale variation floor"
-        );
-        for action in actions {
-            let prompt = format!("{action}{suffix}");
-            if appended[locale].contains(action) {
-                assert_additive_read_write(&prompt, ["en", "ru", "hi", "zh", "es"][locale]);
-            } else if unspecified[locale].contains(action) {
-                let frame =
-                    formal_ai::agentic_coding::general_planner::owned_declared_create_frame(
-                        &prompt,
-                    )
+    let (actions, suffix) = matrices[locale];
+    assert!(
+        actions.len() >= VARIATION_FLOOR,
+        "retain every locale variation floor"
+    );
+    for action in actions {
+        eprintln!("write routing locale={locale} action={action:?}: start");
+        let started = std::time::Instant::now();
+        let prompt = format!("{action}{suffix}");
+        if appended[locale].contains(action) {
+            assert_additive_read_write(&prompt, ["en", "ru", "hi", "zh", "es"][locale]);
+        } else if unspecified[locale].contains(action) {
+            let frame =
+                formal_ai::agentic_coding::general_planner::owned_declared_create_frame(&prompt)
                     .expect("noun-before-destination declares creation");
-                assert_eq!(frame, ("note.txt".to_owned(), "hello".to_owned()));
-                assert_eq!(call(&prompt).0, "write_file", "{prompt}");
-            } else {
-                assert_eq!(call(&prompt).0, "write_file", "{prompt}");
-            }
+            assert_eq!(frame, ("note.txt".to_owned(), "hello".to_owned()));
+            assert_eq!(call(&prompt).0, "write_file", "{prompt}");
+        } else {
+            assert_eq!(call(&prompt).0, "write_file", "{prompt}");
         }
+        eprintln!(
+            "write routing locale={locale} action={action:?}: complete {:?}",
+            started.elapsed()
+        );
     }
 }
+
+// Each locale retains its original twenty variations and physical effect checks.
+macro_rules! write_route_locale {
+    ($name:ident, $locale:expr) => {
+        #[test]
+        fn $name() {
+            assert_explicit_write_locale($locale);
+        }
+    };
+}
+
+write_route_locale!(
+    explicit_content_and_file_object_route_write_variations_en,
+    0
+);
+write_route_locale!(
+    explicit_content_and_file_object_route_write_variations_ru,
+    1
+);
+write_route_locale!(
+    explicit_content_and_file_object_route_write_variations_hi,
+    2
+);
+write_route_locale!(
+    explicit_content_and_file_object_route_write_variations_zh,
+    3
+);
+write_route_locale!(
+    explicit_content_and_file_object_route_write_variations_es,
+    4
+);
 
 #[test]
 fn destination_before_noun_retains_unknown_insertion_position() {

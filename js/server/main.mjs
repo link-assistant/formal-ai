@@ -29,6 +29,7 @@ import { serverMessage } from './messages.mjs';
 import { setLearnedImporter } from './meta-learned.mjs';
 import { createProverHost } from './prover-host.mjs';
 import { WorkerHost } from './worker-host.mjs';
+import {configurePrerequisiteGrant, resolvePrerequisiteGrantText} from './prerequisite-grant.mjs';
 
 const TOKEN_ENV = ['FORMAL_AI_API_BEARER_TOKEN', 'FORMAL_AI_HTTP_BEARER_TOKEN', 'FORMAL_AI_API_TOKEN'];
 
@@ -56,6 +57,7 @@ export function parseArgs(argv, env = process.env) {
     silent: flagEnabled(env.FORMAL_AI_SILENT),
     logDirectory: env.FORMAL_AI_LOG_DIR || null,
     trace: false,
+    prerequisiteGrantJson: env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null,
     unsupported: null,
   };
   for (let index = 0; index < argv.length; index += 1) {
@@ -65,6 +67,7 @@ export function parseArgs(argv, env = process.env) {
     if (name === '--host') options.host = value();
     else if (name === '--port') options.port = Number.parseInt(value(), 10);
     else if (name === '--agent-mode') options.agentMode = true;
+    else if (name === '--prerequisite-grant') options.prerequisiteGrantJson = value();
     else if (name === '--debug-session') options.debugSession = true;
     else if (name === '--silent') options.silent = true;
     else if (name === '--trace') options.trace = true;
@@ -74,6 +77,7 @@ export function parseArgs(argv, env = process.env) {
     else if (name === 'serve' && index === 0) continue;
     else options.unsupported = arg;
   }
+  options.prerequisiteGrantJson = resolvePrerequisiteGrantText(options.prerequisiteGrantJson, env.FORMAL_AI_INSTALL_GRANT);
   return options;
 }
 
@@ -81,7 +85,7 @@ export function parseArgs(argv, env = process.env) {
  * Start a server; resolves once it listens.
  * @returns {Promise<{server: import('node:http').Server, ctx: object, url: string}>}
  */
-export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, worker, logger } = {}) {
+export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, worker, logger, prerequisiteGrantJson = env.FORMAL_AI_PREREQUISITE_GRANT_JSON ?? null } = {}) {
   if (debugSession && !isLoopbackHost(host)) throw new Error(`debug_session_requires_loopback:${host}`);
   const diagnostics = logger ?? createServeLogger({env});
   diagnostics.log('debug', 'server.start', {component:'server',host,port,agent_mode:agentMode,debug_session:debugSession});
@@ -91,7 +95,10 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
       diagnostics.addSecret?.(session.token);
       env={...env,FORMAL_AI_DEBUG_SESSION_TOKEN:session.token};
     }
+    const prerequisiteGrant = configurePrerequisiteGrant(resolvePrerequisiteGrantText(prerequisiteGrantJson, env.FORMAL_AI_INSTALL_GRANT));
+    if (prerequisiteGrant !== null && (prerequisiteGrant.schema !== "formal-ai-workspace-prerequisites-v1" || prerequisiteGrant.scope !== "workspace" || !Array.isArray(prerequisiteGrant.programs))) throw new Error("invalid_prerequisite_grant");
     const ctx = {
+      prerequisiteGrant,
       worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }) }),
       memory: createMemory(env), agentMode, bearerToken: bearerTokenFromEnv(env),
       debugSession: session,

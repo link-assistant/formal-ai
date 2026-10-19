@@ -1,3 +1,4 @@
+import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // Committing and pushing what a task produced
 // (rust/src/agentic_coding/git_commit.rs, issue #1133).
 //
@@ -11,7 +12,6 @@ import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { Progress } from './progress.mjs';
 import { render } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
-import { bareSurfaces, cleanCueToken, tokens } from './write_request.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { mentionsRole, wordsForRole } from './write_lexicon.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
@@ -27,27 +27,55 @@ export function pushRef(target) {
 export function targetOf(request) {
   const reference = repositoryWorkReference(request);
   if (reference === null) return null;
-  return { branch: namedBranch(request), reference };
+  const binding = requestTargetBinding(request, 'branch-binding-patterns', validBranchTarget);
+  return { branch: binding.kind === 'bound' ? binding.value : null, reference, bindingRefused: binding.kind === 'refused' };
 }
 
 /** Mirrors `fn named_branch`. @returns {string|null} */
 export function namedBranch(request) {
-  const cues = bareSurfaces('git_branch_cue');
-  const toks = tokens(request);
-  for (let index = 0; index + 1 < toks.length; index += 1) {
-    const word = cleanCueToken(toks[index].text);
-    const isCue = cues.some((cue) => cue === word || (!isAscii(cue) && word.endsWith(cue)));
-    if (!isCue) continue;
-    const candidate = trimMatches(toks[index + 1].text, charIn('`"\',.;:()'));
-    if (isBranchName(candidate)) return candidate;
-  }
-  return null;
+  const binding = requestTargetBinding(request, 'branch-binding-patterns', validBranchTarget);
+  return binding.kind === 'bound' ? binding.value : null;
 }
 
-function isBranchName(word) {
-  const chars = Array.from(word);
-  return word !== '' && !word.startsWith('-') && chars.some(isAsciiAlphanumeric)
-    && chars.every((character) => isAsciiAlphanumeric(character) || '-_/.'.includes(character));
+/** Validate the complete ref, following git-check-ref-format --branch rules. */
+export function validBranchTarget(value) {
+  return value !== '' && value !== '@' && !value.startsWith('-')
+    && !value.endsWith('.') && !JSON.parse(fill('branch-forbidden-substrings', [])).some(part => value.includes(part))
+    && !/[\x00-\x20\x7f~^:?*\[\\]/u.test(value)
+    && value.split('/').every(part => part !== '' && !part.startsWith('.') && !part.endsWith('.lock'));
+}
+export function validWorkflowTarget(value) {
+  return /\.ya?ml$/iu.test(value) && !value.startsWith('/')
+    && !/[\x00-\x20\x7f\\:;|&$<>\x60"']/u.test(value)
+    && value.split('/').every(part => part !== '' && part !== '.' && part !== '..');
+}
+/** Positive owned clauses bind arguments; quoted documents are not directives. */
+export function requestTargetBinding(request, key, validate) {
+  const patterns = JSON.parse(fill(key, []));
+  const excludedPatterns = JSON.parse(fill(key.replace('-binding-patterns', '-excluded-patterns'), []));
+  const values = new Set(), excluded = new Set();
+  let refused = false, fenced = false, offset = 0;
+  const quoted = quotedSegmentSpans(request);
+  for (const raw of request.split('\n')) {
+    const lineOffset = offset; offset += raw.length + 1;
+    let line = raw.trim();
+    if (JSON.parse(fill('owned-clause-fence-prefixes', [])).some(prefix => line.startsWith(prefix))) { fenced = !fenced; continue; }
+    if (fenced) continue;
+    line = line.replace(/^(?:[-*+] |\d+[.)] )/u, '').trim();
+    const ownedAt = lineOffset + raw.indexOf(line);
+    if (quoted.some(segment => segment.start <= ownedAt && ownedAt < segment.end)) continue;
+    for (const [isExcluded, pattern] of [...patterns.map(pattern => [false, pattern]), ...excludedPatterns.map(pattern => [true, pattern])]) {
+      const matched = new RegExp(pattern, 'iu').exec(line);
+      if (!matched) continue;
+      let value = matched[1].trim();
+      if (value.endsWith('.') || value.endsWith('。') || value.endsWith('।')) value = value.slice(0, -1);
+      if (value.endsWith(',')) value = value.slice(0, -1);
+      const literal = quotedSegmentSpans(value);
+      if (literal.length === 1 && literal[0].start === 0 && literal[0].end === value.length) value = literal[0].text;
+      if (!validate(value)) refused = true; else (isExcluded ? excluded : values).add(value);
+    }
+  }
+  return refused || values.size > 1 || (values.size === 0 && excluded.size > 0) || [...values].some(value => excluded.has(value)) ? {kind:'refused'} : values.size === 1 ? {kind:'bound',value:[...values][0]} : {kind:'absent'};
 }
 
 /** Mirrors `fn commit_command`. @param {string|null} body */
@@ -65,18 +93,22 @@ export function resolvesBody(reference) {
 }
 
 /** Mirrors `fn shell_quote`. */
-export function shellQuote(text) {
-  return `'${text.split("'").join("'\\''")}'`;
-}
+export {shellQuote};
 
 /** Mirrors `fn recipe_commit_command`. */
 export function recipeCommitCommand(recipe, target) {
+  if (target.bindingRefused) return fill('target_binding_refused_command', []);
   const files = [recipe.path, ...recipe.supporting_files.map((file) => file.path)].map(shellQuote).join(' ');
-  return fill('recipe_commit_command', [
-    ['{files}', files],
+  const command = fill('recipe_commit_command', [
+    ['{files}', '"$@"'],
     ['{subject}', shellQuote(recipeSubject(recipe))],
     ['{body}', shellQuote(resolvesBody(target.reference))],
     ['{branch}', shellQuote(pushRef(target))],
+  ]);
+  return fill('task-scaffold-commit-command', [
+    ['{files}', files],
+    ['{reference}', shellQuote(target.reference)],
+    ['{commit}', command],
   ]);
 }
 

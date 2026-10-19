@@ -17,7 +17,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { before, describe, it } from 'node:test';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
-import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { installNodeHost, censusDocuments, censusSourceClosureComplete } from '../../../js/agentic/node-host.mjs';
 import { parseChatMessage } from '../../../js/server/chat-request.mjs';
 import {
   FISHERMAN_DOC_ID, PRIMITIVE_KINDS, canonicalFishermanSynopsis, coversAllNine, formalizeTextToLinks, totalRecords,
@@ -29,6 +29,8 @@ import {
 import * as meaningDetail from '../../../js/agentic/meaning_detail.mjs';
 import * as diagram from '../../../js/agentic/diagram.mjs';
 import * as selfHeal from '../../../js/agentic/self_heal.mjs';
+import { host, installHost } from '../../../js/agentic/host.mjs';
+import { readSourceLinks, sourceFromLinks, sourceOwner } from '../../../js/meta/readable-source.js';
 import * as ledger from '../../../js/agentic/ledger.mjs';
 import * as explain from '../../../js/agentic/explain.mjs';
 import * as changeRequest from '../../../js/agentic/change_request.mjs';
@@ -420,10 +422,22 @@ describe('issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)', 
     assert.ok(!predicates.explain('Explain how Formal AI works\nhttps://github.com/o/r/issues/1\nline\nline\nline'));
   });
 
-  it('committed documents render byte for byte with their final answers', () => {
-    assert.equal(selfHeal.renderDocument(), repo('data/meta/self-healing-case.lino'));
-    assert.ok(selfHeal.finalAnswer(selfHeal.renderDocument()).includes('mapped it onto src/agentic_coding/planner.rs'));
-    assert.ok(selfHeal.finalAnswer(selfHeal.renderDocument()).includes('(awaiting_review)'));
+  it('historical proposals retain their trace while current source is reconstructed', async () => {
+    const document = await selfHeal.renderDocument();
+    const proposal = (text) => text.split('  source_round_trip\n')[0]
+      + '  failure_trace\n' + text.split('  failure_trace\n')[1];
+    assert.equal(proposal(document), proposal(repo('data/meta/self-healing-case.lino')));
+    assert.ok(document.includes('  source_content\n'));
+    const content = document.split('  source_content\n')[1].split('  failure_trace\n')[0]
+      .trimEnd().split('\n').map((line) => line.slice(4)).join('\n');
+    const model = readSourceLinks(content);
+    assert.equal(sourceOwner(model), 'src/agentic_coding/planner.rs');
+    assert.equal(sourceFromLinks(model), repo('rust/src/agentic_coding/planner.rs'));
+    assert.throws(() => sourceFromLinks(readSourceLinks('source_census_diagnostic\n')));
+    assert.ok(!document.includes('total_link_count'));
+    assert.ok(!document.includes('named_node_count'));
+    assert.ok(selfHeal.finalAnswer(document).includes('mapped it onto src/agentic_coding/planner.rs'));
+    assert.ok(selfHeal.finalAnswer(document).includes('(awaiting_review)'));
     assert.equal(ledger.renderDocument(), repo('data/meta/learning-ledger.lino'));
     assert.ok(ledger.finalAnswer(ledger.renderDocument()).startsWith('Recorded the approved learning ledger: 1 lesson(s)'));
     assert.equal(repairStrategy.renderDocument(), repo('data/meta/repair-strategies.lino'));
@@ -494,21 +508,17 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
     assert.equal(ownedManifestContentId(), stableId('source_tree', ownedManifestNotation()));
   });
 
-  it('content ids equal the Rust-generated self-AST census for every undrifted module', () => {
-    // data/meta/self-ast/src/**.lino is written by the Rust example
-    // regenerate_self_ast_census from the same OWNED_SOURCE_FILES and pinned to
-    // the sources by issue_673_self_ast_census.rs. A census whose byte_len no
-    // longer matches has drifted with an unregenerated edit and is skipped.
-    let compared = 0;
-    for (const digest of ownedManifest()) {
-      const census = new URL(`data/meta/self-ast/${digest.path.slice(0, -3)}.lino`, ROOT);
-      if (!existsSync(census)) continue;
-      const text = readFileSync(census, 'utf8');
-      if (Number(/\n  byte_len (\d+)/.exec(text)[1]) !== digest.byte_len) continue;
-      assert.equal(digest.content_id, /\n  content_id (\S+)/.exec(text)[1], digest.path);
-      compared += 1;
+  it('every owned manifest row binds current regular source without committed census authority', () => {
+    const observed = censusDocuments();
+    assert.equal(censusSourceClosureComplete(), true);
+    assert.deepEqual(observed.map(row => row.sourceIdentity.path).sort(), ownedManifest().map(row => row.path).sort());
+    for (const row of observed) {
+      const source = repo('rust/' + row.sourceIdentity.path);
+      assert.equal(row.sourceIdentity.content_id, stableId('source_module', source));
+      assert.equal(row.sourceIdentity.byte_len, utf8(source));
+      assert.equal(row.module.fidelity, 'navigation');
+      assert.equal(row.text, null, 'navigation is not a source model');
     }
-    assert.ok(compared > 100, `compared ${compared} modules`);
   });
 
   it('the fast FNV-1a equals crate::engine::stable_id', () => {
@@ -583,10 +593,17 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
     // parse census is the no-`meta-language`-feature build's (see the header
     // of js/agentic/crate/self_source_links.mjs).
     const shape = (text) => text.replace(/ (file_count|total_bytes|manifest_content_id|path|byte_len|content_id|total_link_count|named_node_count|total_named_node_count|faithful_count|slice_faithful_count|coverage_permille|fully_faithful|slice_fully_faithful|faithful) .*/g, ' $1 X');
-    assert.equal(shape(document), shape(repo('docs/case-studies/issue-841/self-hosting-evidence/self-source-links.lino')));
+    const boundary = '\n  representation navigation-diagnostic\n  complete-recursive-content false\n';
+    assert.ok(document.endsWith(boundary));
+    const legacyDiagnostic = document.slice(0, -boundary.length) + '\n';
+    assert.equal(shape(legacyDiagnostic), shape(repo('docs/case-studies/issue-841/self-hosting-evidence/self-source-links.lino')));
     assert.ok(document.includes('    slice_fully_faithful false\n'));
     assert.ok(document.endsWith('\n') && !document.endsWith('\n\n'));
-    assert.ok(sourceLinks.finalAnswer(document).includes(`content-addressed all ${ownedFileCount()} owned source files under one manifest id, and verified a representative slice of 6 modules`));
+    const answer = sourceLinks.finalAnswer(document);
+    assert.ok(answer.includes(`content-addressed all ${ownedFileCount()} owned source files under one manifest id, and reported a representative slice of 6 modules`));
+    assert.ok(answer.includes("parser round-trip verified: false"));
+    assert.ok(answer.includes("does not contain the entire source as recursive CST content"));
+    assert.ok(!answer.startsWith("Translated the entire source"));
   });
 
   it('the explain and source-links recipes walk write -> verify -> final', async (t) => {
@@ -610,4 +627,20 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
       assert.equal(final(await step(messages, tools)), recipe.finalAnswer(recipe.renderDocument()));
     }
   });
+});
+
+it('source-bearing recipes refuse unavailable or rejected engines without writing proposals', async () => {
+  const original = host();
+  const recipe = await import('../../../js/agentic/document_recipe.mjs');
+  try {
+    for (const reason of ['PinnedSourceModelSdkUnavailable', 'SourceOwnerMismatch', 'SourceStructureMismatch']) {
+      installHost({...original, sourceDocument: async () => { throw Error(reason); }});
+      for (const step of [recipe.planSelfAstStep, recipe.planSelfHealStep]) {
+        const observed = await step([user(TASKS.selfHeal)], ['write_file', 'run_command']);
+        assert.equal(observed.kind, 'final');
+        assert.equal(observed.answer, 'Unknown:SourceModelUnavailable:' + reason);
+        assert.ok(!observed.calls);
+      }
+    }
+  } finally { installHost(original); }
 });

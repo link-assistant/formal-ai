@@ -1,0 +1,33 @@
+self_ast_census
+  target src/coding_research_generated/part5.rs
+  language rust
+  fidelity signature
+  byte_len 28183
+  line_count 757
+  content_id source_module_03682ed96d563b0e
+  symbol_count 24
+  symbols
+    enum MlCodingResearchSearchIndexLoop26Result 14 17
+    function ml_coding_research_search_index_loop26 28 74
+    enum MlCodingResearchLatestReadIndexLoop27Result 77 80
+    function ml_coding_research_latest_read_index_loop27 91 116
+    enum MlCodingResearchRunIndexLoop28Result 119 122
+    function ml_coding_research_run_index_loop28 133 170
+    function ml_coding_research_source_ur_ls_loop30 185 228
+    function ml_coding_research_source_ur_ls_loop29 239 300
+    enum MlCodingResearchNextURLLoop31Result 303 306
+    function ml_coding_research_next_url_loop32 321 364
+    function ml_coding_research_next_url_loop31 375 416
+    enum MlCodingResearchBindingsKernelLoop33Result 419 422
+    enum MlCodingResearchBindingsKernelLoop34Result 425 428
+    function ml_coding_research_bindings_kernel_loop34 439 468
+    function ml_coding_research_bindings_kernel_loop33 483 544
+    enum MlCodingResearchSourceIndexLoop35Result 547 550
+    function ml_coding_research_source_index_loop35 565 591
+    enum MlCodingResearchPureRepairKernelLoop36Result 594 597
+    function ml_coding_research_pure_repair_kernel_loop36 612 643
+    enum MlNormalizeTrailingLayoutLoop37Result 646 651
+    enum MlNormalizeTrailingLayoutJoin39 654 659
+    function ml_normalize_trailing_layout_loop40 666 696
+    enum MlNormalizeTrailingLayoutLoop38Result 699 701
+    function ml_normalize_trailing_layout_loop38 716 757

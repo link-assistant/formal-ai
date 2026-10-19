@@ -14,6 +14,7 @@ use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::seed;
 use crate::seed::parser::{LinoNode, parse_lino};
+use crate::seed::render_localized_once as capability_response;
 use crate::solver_handlers::finalize_simple;
 use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
 
@@ -54,7 +55,9 @@ pub fn try_feature_capability(
     runtime: CapabilityRuntime,
 ) -> Option<SymbolicAnswer> {
     let language = detect_language(prompt);
-    if !is_feature_capability_question(normalized, language.slug()) {
+    if crate::formalization::dialogue::blocks_self_description(prompt, language.slug())
+        || !is_feature_capability_question(normalized, language.slug())
+    {
         return None;
     }
 
@@ -300,12 +303,4 @@ fn web_search_capability_body(language: &str, available: bool, providers: &str) 
     } else {
         capability_response("feature_capability_web_search_unavailable", language, &[])
     }
-}
-
-fn capability_response(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
-    let mut text = seed::localized_response(intent, language).unwrap_or_default();
-    for (name, value) in values {
-        text = text.replace(&format!("{{{name}}}"), value);
-    }
-    text
 }

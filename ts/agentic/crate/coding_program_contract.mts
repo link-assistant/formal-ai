@@ -4,7 +4,7 @@
 // `programContractAnswer` returns a `SymbolicAnswer`-shaped object carrying
 // an `execution_recipe`, or null.
 
-import { cached, readText } from '../host.mjs';
+import { cached, readText, realm } from '../host.mjs';
 import { pathExtension, typedWriteTarget } from '../write_request.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
 import { meaningEvidencedIn, mentionsRole } from '../write_lexicon.mjs';
@@ -190,9 +190,9 @@ export function programContractAnswer(prompt) {
   const source = replaceText(replaceText(replaceText(findChildValue(root, 'documented_source'), '{instructions}', instructions), '{comment}', comment), '{source}', entry);
   const response = replaceText(replaceText(replaceText(findChildValue(root, 'response'), '{language}', language), '{source_url}', sourceUrl), '{source}', source);
   if (!commands.length) return null;
-  const verifier = outputVerifier(output, commands[commands.length - 1]);
+  const verifier = outputVerifier(output, commands, path, source);
   if (!verifier) return null;
-  commands[commands.length - 1] = `sh ${verifier.path}`;
+  commands.splice(0, commands.length, `sh ${verifier.path}`);
   return {
     intent: 'write_program',
     answer: response,
@@ -206,14 +206,36 @@ export function programContractAnswer(prompt) {
 }
 
 /** Mirrors `fn output_verifier`. */
-function outputVerifier(expected, command) {
+function outputVerifier(expected, commands, sourcePath, declaredSource) {
   const contract = parseLinoRoot(readText('data/meta/process-verification.lino')).children[0];
-  if (!contract) return null;
-  const quoted = `'${replaceText(expected, "'", "'\\''")}'`;
-  return {
-    path: findChildValue(contract, 'path'),
-    source: replaceText(replaceText(findChildValue(contract, 'template'), '{command}', command), '{expected}', quoted),
-  };
+  if (!contract || sourcePath.startsWith('/') || sourcePath.split('/').some((part) => !part || part === '.' || part === '..')) return null;
+  const quote = (value) => "'" + replaceText(value, "'", "'\\''") + "'";
+  const context = realm();
+  if (!context || !('handlerRulesFillOnce' in context)) return null;
+  const fill = context.handlerRulesFillOnce;
+  if (typeof fill !== 'function') return null;
+  const stages = commands.map((command, index) => fill(findChildValue(contract, 'isolated-stage'), {
+    command, redirect: index === commands.length - 1 ? ' > "$verification_dir/actual"' : '', index: String(index),
+  })).join('');
+  return { path: findChildValue(contract, 'path'), source: fill(findChildValue(contract, 'isolated-template'), {
+    source_path: quote(sourcePath), expected: quote(expected), declared_source: quote(declaredSource), stages,
+  }) };
+}
+
+/** Mirrors fn program_recovery_command: source-bound stage identity, never an installation grant. */
+export function programRecoveryCommand(prompt, recipe, command, output) {
+  const canonical = programContractAnswer(prompt)?.execution_recipe;
+  if (!canonical || command !== canonical.commands[0] || recipe.path !== canonical.path
+    || recipe.source !== canonical.source || recipe.language !== canonical.language
+    || recipe.commands[0] !== command || !canonical.supporting_files.every((file) =>
+      recipe.supporting_files.some((observed) => observed.path === file.path && observed.source === file.source))) return null;
+  const catalog = programLanguageBySlug(canonical.language);
+  const commands = [catalog.execution.check_command, catalog.execution.run_command]
+    .filter((value) => value !== null && value !== undefined)
+    .map((value) => replaceText(value, catalog.save_as, canonical.path));
+  const contract = parseLinoRoot(readText('data/meta/process-verification.lino')).children[0];
+  const finalLine = output.trimEnd().split('\n').at(-1);
+  return commands.find((value, index) => finalLine === findChildValue(contract, 'isolated-failure').replace('{index}', String(index))) ?? null;
 }
 
 /** Rust `char::is_control`: general category Cc. */

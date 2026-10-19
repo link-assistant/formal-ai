@@ -60,3 +60,37 @@ test('semantic explanatory listing suffix and web search use their actual capabi
   const opaque="node -e '"+code+"'";
   assert.equal(explicitPassthroughCommand('Run '+opaque),opaque);
 });
+
+// The unchanged R916-01 failure receipt must retain its actual command owner.
+test('Spanish command references preserve the original failed receipt', async () => {
+  const request = 'Ejecuta el comando y dime qué pasó, por favor';
+  assert.equal(explicitPassthroughCommand(request), null);
+  const messages = [
+    { role: 'user', content: request },
+    { role: 'assistant', content: null, tool_calls: [{
+      id: 'original916', type: 'function',
+      function: { name: 'bash', arguments: JSON.stringify({ command: 'cat hello.txt' }) },
+    }] },
+    { role: 'tool', tool_call_id: 'original916', name: 'bash', content: [
+      'Command: cat hello.txt', 'Directory: (root)', 'Output: (empty)',
+      'Error: cat: hello.txt: No such file or directory', 'Exit Code: 1', 'Signal: 0',
+    ].join('\n') },
+  ];
+  for (const tools of [['bash'], ['bash', 'read_file']]) {
+    const result = await planChatStep(messages, tools);
+    assert.equal(result.kind, 'final', JSON.stringify(result));
+    assert.match(result.answer, /cat hello.txt/u);
+    assert.match(result.answer, /No such file or directory/u);
+    assert.match(result.answer, /1/u);
+  }
+});
+test('unknown executables and quoted Spanish command operands stay literal', () => {
+  for (const command of [
+    'frobnicator --version',
+    "printf '%s' 'el comando y dime qué pasó'",
+    'node -e "console.log(1)"',
+  ]) assert.equal(explicitPassthroughCommand('Ejecuta ' + command), command);
+});
+test('a named real command keeps its actual executable and operands', () => {
+  assert.equal(explicitPassthroughCommand('Ejecuta el comando git status'), 'git status');
+});

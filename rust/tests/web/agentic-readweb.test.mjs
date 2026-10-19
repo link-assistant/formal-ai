@@ -662,3 +662,20 @@ describe('translation source operand fidelity', () => {
     assert.equal(new TextDecoder().decode(new TextEncoder().encode(prompt).slice(...owned.source_span)), owned.request.path);
   });
 });
+
+it('identical explicit reads require fresh bound evidence while retaining the same planned call', async () => {
+  for (const request of ['read held-out.txt', 'read config/rotation.json']) {
+    const messages=[user(request)];
+    const first=single(await planChatStep(messages,['Read']));
+    answerCall(messages,first,'old source bytes');
+    const answered=await planChatStep(messages,['Read']);
+    assert.match(final(answered),/old source bytes/);
+    messages.push(assistant(answered.answer),user(request));
+    const next=single(await planChatStep(messages,['Read']));
+    assert.deepEqual(next,first,'a repeated explicit read must perform the same fresh call');
+    answerCall(messages,next,'new source bytes');
+    const answer=final(await planChatStep(messages,['Read']));
+    assert.match(answer,/new source bytes/);
+    assert.doesNotMatch(answer,/old source bytes/);
+  }
+});

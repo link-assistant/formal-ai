@@ -1,0 +1,143 @@
+{
+  "schema": "formal-ai-public-publisher-cache-observation/v1",
+  "implementationSource": {
+    "path": "js/agentic/node-host.mjs",
+    "sha256": "528693728197d4e3bf9615b0e14f08ec408ac256e9bee47f8ddd6b5bac651c40",
+    "completeCstRestoration": true,
+    "freshGrammarAcceptance": true
+  },
+  "transportSha256": "ade3a74cb0f485651ffbb6c779556c267b1a74d807769f7d72b88c63d91b3ade",
+  "publisher": "https://api.github.com/repos/scala/scala3/releases/latest",
+  "scope": "one declared toolchain publisher; other pins explicitly outside this measurement",
+  "phases": [
+    {
+      "mode": "cold-live",
+      "online": true,
+      "scala": {
+        "tag": "3.10.0",
+        "sha": "25c18aaa21b6be202945e024cd5180d9d62d650f",
+        "origin": "live",
+        "source_url": "https://api.github.com/repos/scala/scala3/releases/latest",
+        "fetched_at": "1792400259",
+        "response_sha256": "b6d5db754f941b8c4d55a36d910ed9e9f4a7aad347edf3c15945753a3271cbf3"
+      },
+      "outcomes": [
+        {
+          "url": "https://api.github.com/repos/scala/scala3/releases/latest",
+          "kind": "capture"
+        },
+        {
+          "url": "https://api.github.com/repos/scala/scala3/commits/3.10.0",
+          "kind": "capture"
+        }
+      ]
+    },
+    {
+      "mode": "warm-offline",
+      "online": false,
+      "scala": {
+        "tag": "3.10.0",
+        "sha": "25c18aaa21b6be202945e024cd5180d9d62d650f",
+        "origin": "cache",
+        "source_url": "https://api.github.com/repos/scala/scala3/releases/latest",
+        "fetched_at": "1792400259",
+        "response_sha256": "b6d5db754f941b8c4d55a36d910ed9e9f4a7aad347edf3c15945753a3271cbf3"
+      },
+      "outcomes": [
+        {
+          "url": "https://api.github.com/repos/scala/scala3/releases/latest",
+          "kind": "capture"
+        },
+        {
+          "url": "https://api.github.com/repos/scala/scala3/commits/3.10.0",
+          "kind": "capture"
+        }
+      ]
+    },
+    {
+      "mode": "corrupt-offline",
+      "result": "error",
+      "errorClass": "source_cache_content_hash_mismatch"
+    },
+    {
+      "mode": "deleted-cache-offline",
+      "online": false,
+      "scala": {
+        "tag": "3.10.0",
+        "sha": "",
+        "origin": "baseline",
+        "source_url": "https://api.github.com/repos/scala/scala3/releases/latest",
+        "fetched_at": "2026-10-19",
+        "response_sha256": ""
+      },
+      "outcomes": [
+        {
+          "url": "https://api.github.com/repos/scala/scala3/releases/latest",
+          "kind": "miss"
+        }
+      ]
+    },
+    {
+      "mode": "rediscovered-live",
+      "online": true,
+      "scala": {
+        "tag": "3.10.0",
+        "sha": "25c18aaa21b6be202945e024cd5180d9d62d650f",
+        "origin": "live",
+        "source_url": "https://api.github.com/repos/scala/scala3/releases/latest",
+        "fetched_at": "1792400260",
+        "response_sha256": "b6d5db754f941b8c4d55a36d910ed9e9f4a7aad347edf3c15945753a3271cbf3"
+      },
+      "outcomes": [
+        {
+          "url": "https://api.github.com/repos/scala/scala3/releases/latest",
+          "kind": "capture"
+        },
+        {
+          "url": "https://api.github.com/repos/scala/scala3/commits/3.10.0",
+          "kind": "capture"
+        }
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "mode": "cold-live",
+      "url": "https://api.github.com/repos/scala/scala3/releases/latest",
+      "bytes": 84207,
+      "elapsedMs": 635.535333,
+      "sha256": "95f9d2e40c8a2425847d90b726df484cfef349243096b3589ff4fe09958cb618"
+    },
+    {
+      "mode": "cold-live",
+      "url": "https://api.github.com/repos/scala/scala3/commits/3.10.0",
+      "bytes": 37247,
+      "elapsedMs": 588.376208,
+      "sha256": "b6d5db754f941b8c4d55a36d910ed9e9f4a7aad347edf3c15945753a3271cbf3"
+    },
+    {
+      "mode": "rediscovered-live",
+      "url": "https://api.github.com/repos/scala/scala3/releases/latest",
+      "bytes": 84207,
+      "elapsedMs": 293.0044170000001,
+      "sha256": "95f9d2e40c8a2425847d90b726df484cfef349243096b3589ff4fe09958cb618"
+    },
+    {
+      "mode": "rediscovered-live",
+      "url": "https://api.github.com/repos/scala/scala3/commits/3.10.0",
+      "bytes": 37247,
+      "elapsedMs": 298.7532920000001,
+      "sha256": "b6d5db754f941b8c4d55a36d910ed9e9f4a7aad347edf3c15945753a3271cbf3"
+    }
+  ],
+  "retainedPublicMetadataBytes": 121454,
+  "nativeExecution": false,
+  "downloadedProductExecution": false,
+  "dependencyInstallation": false,
+  "netCodeChanges": 0,
+  "autonomousAuthorshipCredit": 0,
+  "usage": "Unknown",
+  "cost": "Unknown",
+  "observedAt": "2026-10-19T08:57:40.295Z",
+  "qualification": "Single-publisher source-client observation; no general discovery, bounded global cache or autonomous coding acceptance."
+}

@@ -21,7 +21,7 @@ import { isAsciiAlphanumeric, isAsciiDigit, trim, trimEndMatches } from './write
 
 const RustItemKind = Object.freeze({ Function: 'function', Constant: 'constant', Test: 'test' });
 
-const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
+import { eqIgnoreAsciiCase } from './crate/rust_str.mjs';
 
 /**
  * Mirrors `fn plan_generated_source_step`.

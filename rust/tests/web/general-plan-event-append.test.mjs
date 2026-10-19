@@ -224,5 +224,50 @@ test('absence binds to the current Read identity and current user window', () =>
   assert.equal(Progress.scan([...current, failure]).sourceReadFor(PLAN_PATH).absent, true);
   assert.equal(Progress.scan([...current, {...failure, tool_call_id: 'unassociated'}]).sourceReadFor(PLAN_PATH), null);
   assert.equal(Progress.scan([...current, {...failure, name: 'write'}]).sourceReadFor(PLAN_PATH), null);
-  assert.equal(Progress.scan([...current, failure, {role: 'user', content: request}]).sourceReadFor(PLAN_PATH), null);
+  assert.equal(Progress.scan([...current, failure, {role: 'user', content: request}]).sourceReadFor(PLAN_PATH).absent, true);
+  assert.equal(Progress.scan([...current, failure, {role: 'user', content: request + ' Read fresh source evidence.'}]).sourceReadFor(PLAN_PATH), null);
+});
+
+test('full planner keeps the original cold auxiliary read before a real obstructed command-output parent', async () => {
+  const {planChatStep}=await import('../../../js/agentic/planner.mjs');
+  const {spawnSync}=await import('node:child_process');
+  const directory=mkdtempSync(join(tmpdir(),'formal-ai-cold-capture-'));
+  const prompt="Run 'printf learned-output' and write its exact stdout to reports/learned.txt";
+  const messages=[{role:'user',content:prompt}],tools=['read','write','run_command'];
+  let cold=false;
+  try {
+    writeFileSync(join(directory,'reports'),'existing file');
+    for(let turn=0;turn<8;turn++) {
+      const step=await planChatStep(messages,tools);
+      assert.equal(step.kind,'tool_calls');
+      const call=step.calls[0],args=JSON.parse(call.arguments),target=args.path??args.filePath;
+      let content='',metadata={},failed=false;
+      if(call.tool==='read') {
+        try { content=readFileSync(join(directory,target),'utf8');
+          metadata.source_read={path:target,success:true,complete:true,format:'raw'};
+        } catch(error) {
+          failed=true;content=String(error);
+          metadata.source_read={path:target,success:false,complete:false,format:'raw',error_code:error.code};
+        }
+      } else if(call.tool==='write') {
+        mkdirSync(join(directory,target,'..'),{recursive:true});writeFileSync(join(directory,target),args.content);
+        content='written';
+      } else {
+        assert.equal(call.tool,'run_command');
+        const observed=spawnSync('/bin/sh',['-c',args.command],{cwd:directory,encoding:'utf8',timeout:2000});
+        failed=observed.status!==0;content=JSON.stringify({exit_code:observed.status,stdout:observed.stdout,
+          stderr:observed.stderr,complete:observed.error===undefined,timed_out:observed.error?.code==='ETIMEDOUT'});
+      }
+      result(messages,call,content,{name:call.tool,is_error:failed,...metadata});
+      if(failed&&target===PLAN_PATH&&metadata.source_read?.error_code==='ENOENT') {
+        assert.equal(cold,false);cold=true;continue;
+      }
+      if(failed) {
+        assert.equal(cold,true);assert.throws(()=>readFileSync(join(directory,'reports/learned.txt')));
+        const final=await planChatStep(messages,tools);assert.equal(final.kind,'final');
+        assert.ok(!final.answer.includes('Completed the general change request'));return;
+      }
+    }
+    assert.fail('bounded real capture did not observe the parent failure');
+  } finally { rmSync(directory,{recursive:true,force:true}); }
 });

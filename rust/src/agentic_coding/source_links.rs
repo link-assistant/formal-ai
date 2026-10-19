@@ -1,38 +1,11 @@
-//! Sixth agentic recipe — driving Formal AI to *translate its entire source code
-//! to the links / meta language and back*, reachable through the agentic interface
-//! (issue #558).
+//! Source ownership and sampled parser-round-trip diagnostics (issue #558).
 //!
-//! Issue #558 ("Auto learning") asks for a meta-algorithm that can *"recompile
-//! itself"*, and specifically that *"the entire source code of our system"* be
-//! *"translate\[d\] … to links / meta language (that must be present in our data),
-//! and back to the source code."* [`super::self_ast`] proved that round-trip for a
-//! single pinned module; [`crate::self_source_links`] lifts it to the whole
-//! repository. This module makes the whole-repository view reachable *through the
-//! agentic interface*: an external agent CLI (`Codex`, `OpenCode`, `Gemini`,
-//! `Agent CLI`) — or the in-repo driver — asks Formal AI to project its own source,
-//! and the deterministic planner walks a write → verify → final recipe that emits
-//! the projection as Links Notation, exactly like the diagram, self-AST, and
-//! self-healing recipes emit their self-inspection documents.
+//! The legacy fields identify all owned files and report a real parser sample.
+//! They do not retain complete recursive source content. Full readable models
+//! are produced separately and must survive source-free reconstruction and a
+//! fresh grammar parse. This recipe states its diagnostic boundary explicitly;
+//! hashes, counters and an internal parser round trip cannot prove recompilation.
 //!
-//! The emitted document has two parts, split by cost so the recipe stays responsive
-//! for a live agent loop:
-//!
-//! * an `entire_source` header that content-addresses *every* owned file (file
-//!   count, total bytes, and one manifest id for the whole tree) — the cheap
-//!   "entire source present in our data as links" view; and
-//! * a `round_trip_proof` that parses a deterministic representative slice of real
-//!   modules through the sole CST/AST engine and verifies each one round-trips
-//!   byte-for-byte — the lossless "and back" proof.
-//!
-//! The *exhaustive* lossless proof over all owned files is the library invariant
-//! ([`crate::self_source_links::SourceLinks::owned`]), locked by an ignored-by-default
-//! test and printed by the `project_source_links` example — kept off the hot path
-//! because parsing every file is deliberately expensive. Nothing here writes source
-//! back: the projection is a read-only, auditable artifact, so the "recompile
-//! itself" guardrail (observable, testable, reversible, human-approved) holds.
-//! Neural inference stays a NON-GOAL — every number is a deterministic function of
-//! the embedded source and the real tree-sitter parse.
-
 use std::fmt::Write as _;
 use std::sync::OnceLock;
 
@@ -196,8 +169,7 @@ pub fn render_document() -> String {
     let _ = writeln!(out, "  engine meta_language");
     let _ = writeln!(out, "  language rust");
     let _ = writeln!(out, "  task translate_entire_source_to_links_and_back");
-    // The cheap "entire source present in our data as links" view: every owned file
-    // enumerated and content-addressed under a single manifest id.
+    // Legacy ownership header: every owned file is identified, without source content.
     let _ = writeln!(out, "  entire_source");
     let _ = writeln!(out, "    file_count {}", owned_file_count());
     let _ = writeln!(out, "    total_bytes {}", owned_total_bytes());
@@ -224,6 +196,10 @@ pub fn render_document() -> String {
             let _ = writeln!(out, "    {line}");
         }
     }
+    out.push_str(&super::wording::agentic_message(
+        "source-links-diagnostic-boundary",
+        &[],
+    ));
     format!("{}\n", out.trim_end())
 }
 
@@ -239,16 +215,14 @@ pub fn slice() -> SourceLinks {
 #[must_use]
 pub fn final_answer(document: &str) -> String {
     let slice = cached_slice();
-    format!(
-        "Translated the entire source code of our system to the links / meta language and back: \
-         content-addressed all {files} owned source files under one manifest id, and verified a \
-         representative slice of {slice} modules round-trips byte-for-byte through the meta-language \
-         links network (the sole CST/AST engine here). The exhaustive whole-repository round-trip is \
-         the library invariant (SourceLinks::owned) — a real step toward recompiling ourselves. \
-         Nothing was written back; the projection is a read-only, auditable artifact.\n\n\
-         Generated document ({SOURCE_LINKS_PATH}):\n\n{document}",
-        files = owned_file_count(),
-        slice = slice.module_count(),
-        document = document.trim_end(),
+    super::wording::agentic_message(
+        "source_links_final_answer",
+        &[
+            ("files", &owned_file_count().to_string()),
+            ("slice", &slice.module_count().to_string()),
+            ("faithful", &slice.is_fully_faithful().to_string()),
+            ("path", SOURCE_LINKS_PATH),
+            ("document", document.trim_end()),
+        ],
     )
 }

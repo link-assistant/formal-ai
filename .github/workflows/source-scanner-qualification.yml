@@ -1,0 +1,80 @@
+name: Source scanner qualification and debt inventory
+on:
+  pull_request:
+    branches-ignore: ['e2e/**']
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'checks: run pull-request checks on the dispatched branch'
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        description: 'Pull request the dispatched checks report for'
+        required: false
+        default: ''
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: source-scanner-qualification-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+jobs:
+  javascript:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install locked JavaScript scanner dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Qualify JavaScript controls and inventory debt
+        env:
+          SCANNER_REPORT_DIRECTORY: ${{ runner.temp }}/source-scanner-javascript
+        run: node scripts/qualify-source-scanners.mjs js
+      - name: Preserve source-bound JavaScript evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-scanner-js-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/source-scanner-javascript/
+          if-no-files-found: error
+          retention-days: 7
+  native:
+    needs: javascript
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install hosted native script runner
+        run: bash scripts/install-rust-script.sh
+      - name: Qualify native controls and inventory debt
+        env:
+          SCANNER_REPORT_DIRECTORY: ${{ runner.temp }}/source-scanner-native
+        run: node scripts/qualify-source-scanners.mjs native
+      - name: Preserve source-bound native evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-scanner-native-${{ github.event.pull_request.head.sha || github.sha }}
+          path: ${{ runner.temp }}/source-scanner-native/
+          if-no-files-found: error
+          retention-days: 7

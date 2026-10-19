@@ -32,11 +32,11 @@ notation-ratchet
     underscore-names 2067
     abbreviated-names 198
     duplicated-blocks 9
-    repeated-fields 80
-    characters 1897864
+    repeated-fields 78
+    characters 1926661
   scope data/seed
-    underscore-names 9420
+    underscore-names 9267
     abbreviated-names 245
     duplicated-blocks 27
     repeated-fields 183
-    characters 3266533
+    characters 3370106

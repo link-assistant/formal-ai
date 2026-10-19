@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "empty",
+      "prompt": "Add a function carried() to carried.mjs.",
+      "expected": []
+    },
+    {
+      "id": "spaces",
+      "prompt": "Add a function carried( \t ) to carried.mjs.",
+      "expected": []
+    },
+    {
+      "id": "bom",
+      "prompt": "Add a function carried(﻿) to carried.mjs.",
+      "expected": []
+    },
+    {
+      "id": "one",
+      "prompt": "Add a function carried(value) to carried.mjs.",
+      "expected": [
+        "value"
+      ]
+    },
+    {
+      "id": "two",
+      "prompt": "Add a function carried(left, right) to carried.mjs.",
+      "expected": [
+        "left",
+        "right"
+      ]
+    },
+    {
+      "id": "comma",
+      "prompt": "Add a function carried(,) to carried.mjs.",
+      "expected": null
+    },
+    {
+      "id": "trailing",
+      "prompt": "Add a function carried(left,) to carried.mjs.",
+      "expected": null
+    },
+    {
+      "id": "leading",
+      "prompt": "Add a function carried(,right) to carried.mjs.",
+      "expected": null
+    },
+    {
+      "id": "numeric",
+      "prompt": "Add a function carried(1) to carried.mjs.",
+      "expected": null
+    },
+    {
+      "id": "non-js-space",
+      "prompt": "Add a function carried() to carried.mjs.",
+      "expected": null
+    }
+  ]
+}

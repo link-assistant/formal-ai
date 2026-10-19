@@ -139,31 +139,70 @@ fn heading_level(line: &str) -> usize {
         .chars()
         .take_while(|character| *character == '#')
         .count();
-    let followed_by_space = line[hashes..].starts_with(char::is_whitespace);
-    if (1..=6).contains(&hashes) && followed_by_space {
-        hashes
-    } else {
-        0
+    if (1..=6).contains(&hashes) && line[hashes..].starts_with(char::is_whitespace) {
+        return hashes;
+    }
+    for marker in ["**", "__"] {
+        if let Some(title) = line
+            .strip_prefix(marker)
+            .and_then(|rest| rest.strip_suffix(marker))
+        {
+            let title = title.trim();
+            if !title.is_empty()
+                && !title.ends_with(['.', '!', '?', '。', '！', '？', '।'])
+                && !is_requirement(title)
+            {
+                return 2;
+            }
+        }
+    }
+    0
+}
+
+/// Finish one Markdown block; wrapped list items retain their whole obligation.
+fn flush_requirement_block(
+    units: &mut Vec<RequirementUnit>,
+    pending: &mut Option<(RequirementUnit, bool)>,
+) {
+    if let Some((unit, item)) = pending.take() {
+        if item {
+            if !unit.text.is_empty() {
+                units.push(unit);
+            }
+        } else {
+            units.extend(
+                sentences_of(&unit.text)
+                    .into_iter()
+                    .map(|text| RequirementUnit {
+                        text,
+                        structural: unit.structural,
+                    }),
+            );
+        }
     }
 }
 
-/// The candidate units of an issue body, in order.
+/// Candidate Markdown blocks in order, with soft wrapping and section ownership retained.
 #[must_use]
 pub fn requirement_units(text: &str) -> Vec<RequirementUnit> {
     let mut units = Vec::new();
     let mut in_fence = false;
     let mut section_level = 0;
+    let mut pending: Option<(RequirementUnit, bool)> = None;
     for raw in text.lines() {
         let line = raw.trim();
         if FENCES.iter().any(|fence| line.starts_with(fence)) {
+            flush_requirement_block(&mut units, &mut pending);
             in_fence = !in_fence;
             continue;
         }
         if in_fence || line.is_empty() || line.starts_with('>') || line.starts_with('|') {
+            flush_requirement_block(&mut units, &mut pending);
             continue;
         }
         let level = heading_level(line);
         if level > 0 {
+            flush_requirement_block(&mut units, &mut pending);
             if section_level > 0 && level <= section_level {
                 section_level = 0;
             }
@@ -173,21 +212,31 @@ pub fn requirement_units(text: &str) -> Vec<RequirementUnit> {
             continue;
         }
         if let Some((item, checkbox)) = list_item_of(raw) {
-            if !item.is_empty() {
-                units.push(RequirementUnit {
+            flush_requirement_block(&mut units, &mut pending);
+            pending = Some((
+                RequirementUnit {
                     text: item,
                     structural: checkbox || section_level > 0,
-                });
-            }
-            continue;
+                },
+                true,
+            ));
+        } else if let Some((unit, _)) = pending.as_mut() {
+            unit.text.push(' ');
+            unit.text.push_str(line);
+        } else {
+            pending = Some((
+                RequirementUnit {
+                    text: line.to_owned(),
+                    structural: section_level > 0,
+                },
+                false,
+            ));
         }
-        for sentence in sentences_of(line) {
-            units.push(RequirementUnit {
-                text: sentence,
-                structural: section_level > 0,
-            });
+        if raw.ends_with("  ") || raw.ends_with('\\') {
+            flush_requirement_block(&mut units, &mut pending);
         }
     }
+    flush_requirement_block(&mut units, &mut pending);
     units
 }
 

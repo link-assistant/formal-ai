@@ -2,6 +2,7 @@
 // rust/src/agentic_coding/planner/continuation.rs.
 
 import { plainText } from '../content.mjs';
+import { continuationEvidenceWindowStart } from '../portable/continuation_state.mjs';
 import { normalizePrompt } from '../crate/engine.mjs';
 import { mentionsRole } from '../write_lexicon.mjs';
 import { proseSentences } from '../shell_command_policy.mjs';
@@ -20,11 +21,13 @@ export function isContinuationCue(text) {
 
 /** Mirrors `fn evidence_window_start`. */
 export function evidenceWindowStart(messages) {
-  for (let index = messages.length - 1; index >= 0; index -= 1) {
-    const message = messages[index];
-    if (isRole(message, 'user') && !isContinuationCue(plainText(message.content))) return index + 1;
-  }
-  return 0;
+  const users = messages.map(message => isRole(message, 'user'));
+  // Native multipart input does not retain all image fields, so it never proves repeated-request identity.
+  const cues = messages.map((message, index) => users[index] && typeof message.content === 'string'
+    && isContinuationCue(message.content));
+  const identities = messages.map((message, index) => !users[index] ? '' : typeof message.content === 'string'
+    && message.content.length > 0 ? 'text:' + message.content : 'boundary:' + index);
+  return continuationEvidenceWindowStart(users, cues, identities);
 }
 
 /** Mirrors `fn continued_agent_task`. */

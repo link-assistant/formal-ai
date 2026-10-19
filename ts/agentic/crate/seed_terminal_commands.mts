@@ -14,16 +14,23 @@ const collectLanguageValues = (group, name) => (group.children || [])
 export function terminalCommandVocabulary() {
   return cached('terminal-command-vocabulary', () => {
     const vocab = {
-      terminal_phrases: [], run_verbs: [], cjk_run_verbs: [], passthrough_prefixes: [], command_nouns: [],
-      bare_shell_tokens: [], shell_tokens: [],
+      terminal_phrases: [], run_verbs: [], postposed_run_verbs: [], cjk_run_verbs: [], passthrough_prefixes: [], command_nouns: [],
+      bare_shell_tokens: [], shell_tokens: [], prose_words: [],
     };
     const root = parseRoot(readText('data/seed/terminal-commands.lino')).children[0];
     if (!root) return vocab;
     for (const group of root.children || []) {
       if (group.name === 'terminal_phrases') vocab.terminal_phrases = collectLanguageValues(group, 'phrase');
-      else if (group.name === 'run_verbs') vocab.run_verbs = collectLanguageValues(group, 'verb');
+      else if (group.name === 'run_verbs') {
+        vocab.run_verbs = collectLanguageValues(group, 'verb');
+        vocab.postposed_run_verbs = (group.children || [])
+          .filter(language => language.name === 'language' && (language.children || [])
+            .some(attribute => attribute.name === 'position' && attribute.value === 'after-command'))
+          .flatMap(language => collectValues(language, 'verb'));
+      }
       else if (group.name === 'cjk_run_verbs') vocab.cjk_run_verbs = collectValues(group, 'verb');
       else if (group.name === 'passthrough_prefixes') vocab.passthrough_prefixes = collectLanguageValues(group, 'prefix');
+      else if (group.name === 'prose-words') vocab.prose_words = collectLanguageValues(group, 'word');
       else if (group.name === 'command_nouns') vocab.command_nouns = collectLanguageValues(group, 'noun');
       else if (group.name === 'bare_shell_tokens') vocab.bare_shell_tokens = collectValues(group, 'token');
       else if (group.name === 'shell_tokens') vocab.shell_tokens = collectValues(group, 'token');

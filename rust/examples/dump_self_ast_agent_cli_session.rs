@@ -9,7 +9,7 @@
 use formal_ai::agentic_coding::{run_agentic_task, self_ast};
 
 fn main() {
-    let outcome = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    let outcome = run_agentic_task(self_ast::ast_task()).expect("workspace");
     println!(
         "{}",
         serde_json::to_string_pretty(&outcome.session_json()).unwrap()

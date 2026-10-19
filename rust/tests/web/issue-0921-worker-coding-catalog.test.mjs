@@ -164,7 +164,7 @@ test('R921-8: the Scala FizzBuzz answer is the catalog answer with an honest not
   assert.equal(result.programExecution.block, 'Execution status: not run - the browser sandbox cannot invoke a scala toolchain.\n\nCopy the snippet into a scala environment to verify.\n\nExpected output after verification:\n```text\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n```');
   assert.deepEqual(
     [result.programExecution.language, result.programExecution.checkCommand, result.programExecution.runCommand],
-    ['scala', 'scalac Main.scala', 'scala Main'],
+    ['scala', 'scalac Main.scala', 'scala run Main.scala'],
   );
 });
 

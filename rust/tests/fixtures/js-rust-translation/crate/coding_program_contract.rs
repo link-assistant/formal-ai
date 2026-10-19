@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1cb7fbb3ef3ab9e5ea27b1fc709c806526518735388f685720bec8f3adef1472 bytes=13898
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8ae4309a6bcb994b12e0b4b23884c56a48aeadc4bf31b82e6f66b774f38b254b bytes=15736
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=6; string-methods items=1
 
@@ -124,11 +124,15 @@ pub fn replace_text(text: String, from: String, to: String) -> String {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .filter() | method call .join() | method call .map() | null | nullish coalescing | object without a $ tag | undefined
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .join() | method call .map() | method call .splice() | null | nullish coalescing | object without a $ tag | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal null
-// formal-ai:blockers call of an imported function | field access | null | object without a $ tag
+// formal-ai:refusal method call .split()
+// formal-ai:blockers arrow callback of .map() | arrow callback of .some() | arrow function | call of an imported function | field access | global call String() | in operator | method call .join() | method call .map() | method call .some() | method call .split() | null | object without a $ tag | typeof operator
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal optional chaining
+// formal-ai:blockers arrow callback of .every() | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | global call String() | method call .at() | method call .every() | method call .filter() | method call .find() | method call .map() | method call .replace() | method call .some() | method call .split() | null | nullish coalescing | optional chaining | undefined
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression

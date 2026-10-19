@@ -2,10 +2,10 @@ self_ast_census
   target src/prerequisite/mod.rs
   language rust
   fidelity signature
-  byte_len 21323
-  line_count 586
-  content_id source_module_b5f13e7c9fef5b98
-  symbol_count 29
+  byte_len 23473
+  line_count 644
+  content_id source_module_393e72dd426fbb29
+  symbol_count 34
   symbols
     module install 11 11
     module ledger 12 12
@@ -36,3 +36,8 @@ self_ast_census
     const PERMISSION_DENIED_MARKER 554 554
     function need_status 560 571
     function to_need 576 585
+    static WORKSPACE_GRANT 588 588
+    function configure_workspace_grant 591 618
+    function configured_workspace_grant 622 624
+    function resolve_workspace_grant 627 641
+    module legacy_workspace_grant_tests 644 644

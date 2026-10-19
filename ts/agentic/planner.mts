@@ -1,3 +1,7 @@
+import {host,hasHost} from './host.mjs';
+import {EventLog} from './crate/event_log.mjs';
+import {answerDerivationId,recordFor,toLino} from './crate/derivation.mjs';
+import {planSourceMaintenanceStep} from './source_maintenance.mjs';
 import { planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest, pendingReadGap } from './planner/owned_goals.mjs';
 import { ownedSemanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
 // Deterministic agentic planner: the next tool call or final answer from a
@@ -16,6 +20,7 @@ import * as ciWorkflow from './ci_workflow.mjs';
 import * as codeArtifact from './code_artifact.mjs';
 import * as codeTask from './code_task.mjs';
 import * as commandReroute from './command_reroute.mjs';
+import { planCodingResearchStep } from './coding_research.mjs';
 import * as comparison from './comparison.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { ownedSourceTreeRequest as metaSourceTreeRequest } from './crate/meta_translate.mjs';
@@ -36,7 +41,7 @@ import * as dreamingAudit from './dreaming_audit.mjs';
 import * as evidenceRecord from './evidence_record.mjs';
 import * as fileSummary from './file_summary.mjs';
 import * as explain from './explain.mjs';
-import { fileReadTaskFor, planFileReadStep, readPolicyBlocksPlan } from './file_read.mjs';
+import { fileReadEvidence, fileReadTaskFor, planFileReadStep, readPolicyBlocksPlan } from './file_read.mjs';
 import * as formalizationRecipe from './formalization_recipe.mjs';
 import * as functionExpectation from './function_expectation.mjs';
 import { planGeneralChangeStep } from './general_execution.mjs';
@@ -59,6 +64,7 @@ import { FinalDisposition, finalAnswer, isToolCalls, jsonText, planOne, projectP
 import { continuedAgentTask, isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import * as positionalEdit from './positional_edit.mjs';
 import * as procedure from './procedure.mjs';
+import { planRecovery, recoveryOutput, observedRecoveryCommand, observedDeniedPrerequisiteCommand } from './prerequisite_recovery.mjs';
 import { Progress } from './progress.mjs';
 import * as questionCatalog from './question_catalog.mjs';
 import * as rebuildPlan from './rebuild_plan.mjs';
@@ -134,9 +140,10 @@ export function checkedRoutePrecedence() {
 async function planWorkspaceChangeArm(task, messages, toolNames) {
   // A copy or move followed by edits of the file it makes is planned sentence
   // by sentence (PR #1188 G82).
-  return (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStepResolved))
+  return (await planSourceMaintenanceStep(task, messages, toolNames))
+    ?? (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStepResolved))
     ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
-    ?? (await moduleFunction.planModuleFunctionStep(task, messages, toolNames))
+    ?? (await planModuleFunctionResearchStep(task, messages, toolNames))
     // A bug report with a stated expectation is checked before anything is
     // rewritten (PR #1188 T93).
     ?? functionExpectation.planFunctionExpectationStep(task, messages, toolNames)
@@ -145,6 +152,13 @@ async function planWorkspaceChangeArm(task, messages, toolNames) {
     ?? testAssertion.planTestAssertionStep(task, messages, toolNames)
     // A test asked for with no expected result is a question (PR #1188 G25).
     ?? functionExpectation.planTestExpectationQuestion(task);
+}
+
+/** Research runs only after the ordinary source composer returns its exact missing-contract gap. */
+async function planModuleFunctionResearchStep(task, messages, toolNames) {
+  const existing = await moduleFunction.planModuleFunctionStep(task, messages, toolNames);
+  if (!['module-function-request-unconsumed', 'module-function-recipe-missing'].includes(existing?.result?.origin)) return existing;
+  return planCodingResearchStep(task, messages, toolNames) ?? existing;
 }
 
 /**
@@ -191,7 +205,23 @@ export function toolCapability(name) {
  * @returns {Promise<object|null>} an `AgenticPlan` or null
  */
 export async function planChatStep(messages, toolNames) {
-  return projectPlan(await planChatStepResolved(messages, toolNames));
+  const observer=hasHost()?host().planningObserver?.():null;
+  if(!observer)return projectPlan(await planChatStepResolved(messages, toolNames));
+  const events=new EventLog();
+  events.append('impulse',latestUserRequest(messages)??'');
+  try{
+    const resolved=await planChatStepResolved(messages,toolNames),projected=projectPlan(resolved);
+    events.append('agentic:resolved',jsonText(resolved));
+    events.append('render:emit',jsonText(projected));
+    observer({schema:'formal-ai-planner-observation-v1',messages,tools:toolNames,resolved,projected,
+      eventLog:events.events,derivation:toLino(recordFor(events.events,answerDerivationId(jsonText(projected))))});
+    return projected;
+  }catch(error){
+    events.append('agentic:failed',String(error?.name??'ThrownValue'));
+    observer({schema:'formal-ai-planner-failure-v1',messages,tools:toolNames,eventLog:events.events,
+      error:{name:String(error?.name??'ThrownValue'),message:String(error?.message??error)}});
+    throw error;
+  }
 }
 
 /** Internal planner result; recursion retains disposition and origin. */
@@ -207,10 +237,22 @@ export async function planChatStepResolved(messages, toolNames) {
   return stopRepeatedFailure(stopRepeatedCall(plan, messages), messages);
 }
 
+/** Standing coding progress remains durable; explicit source reads require fresh observations. */
+function repetitionProgress(messages) {
+  // Only later user requests can create a shorter source-read window.
+  if (messages.findLastIndex(message => message.role.toLowerCase() === 'user') <= 0) {
+    return Progress.scan(messages);
+  }
+  const current = fileReadEvidence(messages);
+  if (current.length === messages.length) return Progress.scan(messages);
+  const request = latestUserRequest(messages) ?? '';
+  return Progress.scan(fileReadTaskFor(request) !== null ? current : messages);
+}
+
 /** Mirrors `fn stop_repeated_call` in rust/src/agentic_coding/planner/steps.rs. */
 function stopRepeatedCall(plan, messages) {
   if (!isToolCalls(plan)) return plan;
-  const progress = Progress.scan(messages);
+  const progress = repetitionProgress(messages);
   for (const call of plan.calls) {
     const attempt = progress.repeatedCall(call);
     if (attempt) {
@@ -227,7 +269,7 @@ function stopRepeatedCall(plan, messages) {
 function stopRepeatedFailure(plan, messages) {
   const REPEATED_FAILURES_THAT_STOP = 2;
   if (!isToolCalls(plan)) return plan;
-  const progress = Progress.scan(messages);
+  const progress = repetitionProgress(messages);
   const repeated = plan.calls.find((call) => progress.identicalFailuresOf(call.tool) >= REPEATED_FAILURES_THAT_STOP);
   if (!repeated) return plan;
   const failure = progress.latestFailureOfTool(repeated.tool);
@@ -241,7 +283,8 @@ function planRequestPreflight(task, messages, toolNames) {
   // A declared issue objective and continuation/prerequisite guards share the
   // request boundary: surrounding examples never become independent effects.
   const workItem = composeGeneralChangePlan(task);
-  if (workItem?.mode === 'repository_work_item' && task.trimStart().startsWith(workItem.target)) {
+  if (workItem?.mode === 'command_output'
+    || workItem?.mode === 'repository_work_item' && task.trimStart().startsWith(workItem.target)) {
     return { claimed: true, plan: planGeneralChangeStep(messages, toolNames, workItem) };
   }
   if (handlerMatches('conversation_control', task) || isContinuationCue(task)) {
@@ -289,7 +332,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
   }
   const answer = programContractAnswer(task);
   if (answer !== null) {
-    if (answer.execution_recipe && ciWorkflow.requestedIn(task)) ciWorkflow.attach(answer.execution_recipe);
+    if (answer.execution_recipe && ciWorkflow.requestedIn(task)) ciWorkflow.attach(answer.execution_recipe, task);
     const rerouted = await commandReroute.planSymbolicCommandReroute(messages, toolNames, answer);
     if (rerouted !== null) return rerouted;
   }
@@ -410,7 +453,9 @@ async function planLaterRoutes(task, messages, toolNames) {
     const decline = codeTask.renderSeededChange('file_text_unit', task, refused, []);
     if (decline !== null) return resolvedFinalAnswer(decline, FinalDisposition.Gap, 'destructive_edit_declined');
   }
-  const command = shellCommand.shellCommandForTask(task);
+  const deniedCommand = observedDeniedPrerequisiteCommand(messages);
+  if (deniedCommand !== null) return planShellStep(messages, toolNames, deniedCommand);
+  const command = shellCommand.shellCommandForTask(task) ?? observedRecoveryCommand(messages);
   if (command !== null) {
     const fallback = await shellFileFallback.planStep(task, messages, toolNames, command);
     if (fallback !== null) return fallback;
@@ -491,9 +536,18 @@ async function planOpenRoutes(task, messages, toolNames) {
  */
 export function planShellStep(messages, toolNames, command) {
   const progress = Progress.scan(messages);
-  if (progress.done(Capability.Run)) {
-    const outputs = progress.run_outputs;
-    const raw = outputs.length ? outputs[outputs.length - 1] : '';
+  const raw = recoveryOutput(messages, command) ?? progress.latestRunOutputFor(command);
+  if (raw !== null) {
+    if (toolResult.stepOutcome(raw) === toolResult.StepOutcome.Failed) {
+      const recovery = planRecovery(messages, toolNames, command, toolResult.reportedExitCode(raw), raw);
+      if (recovery?.kind === 'final') {
+        return resolvedFinalAnswer(agenticMessage('shell-recovery-final-failure', {
+          failure: toolResult.render(command, raw, latestUserRequest(messages) ?? ''),
+          recovery: recovery.answer,
+        }), FinalDisposition.Failure, 'shell_result_observed');
+      }
+      if (recovery !== null) return recovery;
+    }
     return resolvedFinalAnswer(toolResult.render(command, raw, latestUserRequest(messages) ?? ''),
       toolResult.stepOutcome(raw) === toolResult.StepOutcome.Failed
         ? FinalDisposition.Failure : FinalDisposition.Finding, 'shell_result_observed');
@@ -508,6 +562,8 @@ async function missingSemanticImplementation(task, messages, toolNames) {
     && composeGeneralChangePlan(task) === null && composeEditRequest(task) === null) {
     const verifiedRecipe = await conversationRecall.planVerifiedRecipeStep(messages, toolNames);
     if (verifiedRecipe !== null) return verifiedRecipe;
+    const research = planCodingResearchStep(task, messages, toolNames);
+    if (research !== null) return research;
     const discovery = { reason: 'MissingContract', goal: task, authored: false, verified: false,
       missingContracts: ['source-bound-implementation-plan', 'independent-goal-validation'] };
     const plan = resolvedFinalAnswer(agenticMessage('callable-discovery-outcome', {

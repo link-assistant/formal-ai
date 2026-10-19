@@ -115,3 +115,25 @@ test("the worker extractor is the crate extractor over the whole benchmark corpu
     );
   }
 });
+
+
+test("worker requirement route invokes the maintained factory, not a second extractor", async () => {
+  await ready;
+  const result = plain(evaluate(worker, `(() => {
+    const name = "crate/requirement_extraction.mjs";
+    const factory = self.FORMAL_AI_CRATE_FACTORIES[name];
+    const prior = crateInstances.get(name);
+    let observed = null;
+    try {
+      self.FORMAL_AI_CRATE_FACTORIES[name] = () => ({ extractRequirements(text) { observed = text; return ["owned extraction"]; } });
+      crateInstances.delete(name);
+      const output = extractRequirements("held-out original text");
+      return {output, observed};
+    } finally {
+      self.FORMAL_AI_CRATE_FACTORIES[name] = factory;
+      crateInstances.delete(name);
+      if (prior !== undefined) crateInstances.set(name, prior);
+    }
+  })()`));
+  assert.deepEqual(result, {output:["owned extraction"], observed:"held-out original text"});
+});

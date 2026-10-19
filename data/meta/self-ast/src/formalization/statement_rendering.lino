@@ -2,16 +2,16 @@ self_ast_census
   target src/formalization/statement_rendering.rs
   language rust
   fidelity signature
-  byte_len 4497
-  line_count 138
-  content_id source_module_709aaf1c7f9c4b8c
+  byte_len 5415
+  line_count 164
+  content_id source_module_ea39613fd4baabce
   symbol_count 8
   symbols
     function is_han 16 18
     function surfaces_in 22 40
     function resolve_surface 47 59
     function return_surface 66 73
-    function surface_in 80 88
-    function negation_in 92 94
-    function join_surfaces 101 117
-    function deformalize_statement 124 138
+    function surface_in 80 97
+    function negation_in 101 103
+    function join_surfaces 110 138
+    function deformalize_statement 145 164

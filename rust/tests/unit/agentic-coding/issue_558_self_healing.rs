@@ -105,8 +105,47 @@ fn source_round_trip_is_lossless_for_a_real_module() {
 
 #[test]
 fn repair_case_renders_valid_links_notation() {
-    let lino = self_heal::case().links_notation();
-    parse_indented(&lino).expect("repair case should render valid Links Notation");
+    let case = self_heal::case();
+    let lino = case.links_notation();
+    let attachment_boundary = "\n  source_content\n";
+    let trace_boundary = "\n  failure_trace\n";
+    assert_eq!(
+        lino.matches(attachment_boundary).count(),
+        1,
+        "one current source attachment"
+    );
+    assert_eq!(
+        lino.matches(trace_boundary).count(),
+        1,
+        "one outer failure trace"
+    );
+    let (outer_prefix, attached) = lino
+        .split_once(attachment_boundary)
+        .expect("the repair case contains the full source attachment");
+    let (enveloped, outer_suffix) = attached
+        .split_once(trace_boundary)
+        .expect("the failure trace follows the source attachment");
+    let attachment = format!("{enveloped}\n")
+        .split_inclusive('\n')
+        .map(|line| {
+            if line == "\n" {
+                line
+            } else {
+                line.strip_prefix("    ")
+                    .expect("four-space attachment envelope")
+            }
+        })
+        .collect::<String>();
+    assert_eq!(attachment, case.source_round_trip.source_document);
+    assert_eq!(
+        self_ast::render_network_source(&attachment).expect("fresh recursive CST validation"),
+        self_ast::target_source()
+    );
+    // The outer metadata codec has a separate, shallow object grammar.
+    let outer = format!(
+        "{outer_prefix}\n  source_content verified_recursive_attachment\n  failure_trace\n{outer_suffix}"
+    );
+    parse_indented(&outer).expect("repair case should render valid Links Notation");
     assert!(lino.contains("repair_case"));
     assert!(lino.contains("outcome \"awaiting_review\""));
     assert!(lino.contains("human_gated \"true\""));
@@ -178,17 +217,25 @@ fn planner_walks_the_self_heal_recipe() {
 
 #[test]
 fn committed_self_healing_case_is_generated_and_written_by_the_driver() {
-    // The committed repair-case artifact is *generated* by running the real
-    // self-healing loop — never hand written — so it can never drift, and it is
-    // byte-for-byte what the Agent CLI writes.
+    // Preserve the historical failure/proposal record; its old counts are diagnostic.
     let committed = include_str!("../../../../data/meta/self-healing-case.lino");
+    let current = self_heal::render_document();
+    let proposal = |document: &str| {
+        let prefix = document.split("  source_round_trip\n").next().unwrap();
+        let trace = document.split_once("  failure_trace\n").unwrap().1;
+        format!("{prefix}  failure_trace\n{trace}")
+    };
+    assert_eq!(proposal(committed), proposal(&current));
+    assert!(current.contains("outcome \"awaiting_review\""));
+    assert!(current.contains("faithful \"true\""));
+    assert!(!current.contains("total_link_count"));
+    assert!(!current.contains("named_node_count"));
+    let round_trip = SourceRoundTrip::for_pinned_target();
     assert_eq!(
-        committed,
-        self_heal::render_document(),
-        "the committed self-healing case is stale — regenerate it with `cargo run --example dump_self_healing_case`"
+        self_ast::render_network_source(&round_trip.source_document).unwrap(),
+        self_ast::target_source()
     );
-    assert!(committed.contains("outcome \"awaiting_review\""));
-    assert!(committed.contains("faithful \"true\""));
+    assert!(self_ast::render_network_source("source_census_diagnostic\n").is_err());
 
     // End-to-end: the in-repo Agent CLI drives the loop to completion and writes
     // exactly this document. DRIVER_TOOLS advertises write_file + run_command.

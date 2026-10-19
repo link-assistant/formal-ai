@@ -191,3 +191,50 @@ fn replaying_a_success_for_the_old_failed_call_cannot_forge_a_retry() {
         "latest failed retry must remain visible: {latest}"
     );
 }
+
+#[test]
+fn structured_probe_diagnostics_do_not_veto_a_bound_recipe_result() {
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/prerequisite-success-probe-stream.json"
+    ))
+    .unwrap();
+    let observed = fixture["content"].as_str().unwrap();
+    assert_eq!(
+        formal_ai::agentic_coding::tool_result::step_outcome(observed),
+        formal_ai::agentic_coding::tool_result::StepOutcome::Unreported
+    );
+    let mut messages = vec![ChatMessage::user("Write a hello world program in Python.")];
+    let write = call(&messages);
+    record(&mut messages, &write, "success");
+    let compile = call(&messages);
+    record(&mut messages, &compile, observed);
+    assert_ne!(
+        call(&messages),
+        compile,
+        "the observed action advances exactly one pending step"
+    );
+}
+
+#[test]
+fn structured_events_cannot_hide_an_outer_process_or_unstructured_failure() {
+    let stream = [
+        json!({"phase":"probe","exit_code":1,"output":"error: English Русский हिन्दी 中文 Español"})
+            .to_string(),
+        json!({"phase":"probe","exit_code":0,"output":"ready"}).to_string(),
+    ]
+    .join("\n");
+    for suffix in [
+        "Exit Code: 2",
+        "Error: permission denied",
+        "Failed: compiler stopped",
+        "{broken error: invalid argument",
+    ] {
+        let mut messages = vec![ChatMessage::user("Write a hello world program in Python.")];
+        let write = call(&messages);
+        record(&mut messages, &write, "success");
+        let compile = call(&messages);
+        record(&mut messages, &compile, &format!("{stream}\n{suffix}"));
+        let failure = failed_answer(&messages);
+        assert!(failure.contains(suffix), "{failure}");
+    }
+}

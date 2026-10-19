@@ -1,3 +1,5 @@
+import {blake3Hex} from '../../js/crypto/blake3.mjs';
+import {nativeCompilationInputRoots} from '../native-release-source.mjs';
 import assert from 'node:assert/strict';
 import {
   createHash}
@@ -16,7 +18,7 @@ from 'node:path';
 import {
   nativeCaptureProfile,
   nativeCaptureArchiveEnvelope,
-  nativeCensusProfile,
+  nativeSourceContentProfile,
   nativeSessionArchiveProfile,
   verifyDataArtifactProfile}
 from '../qualified-data-artifact-profiles.mjs';
@@ -33,18 +35,16 @@ import {
   bindOriginalSourceCase}
 from './native-test-module-graph.mjs';
 export const digest=b=>createHash('sha256').update(b).digest('hex');
-const nativeRoots=['rust/src',
-'rust/embedded',
-'rust/Cargo.toml',
-'rust/Cargo.lock',
-'rust/build.rs',
-'data/seed/api-cache',
-'.cargo',
-'rust/.cargo'];
+const cstHelperRoots=['data/meta/source-model',
+'scripts/aggregate-source-content.mjs',
+'scripts/mirror-package-data.mjs',
+'js/crypto/blake3.mjs',
+'js/agentic/crate/rust_str.mjs'];
+const derivationRoots=[...cstHelperRoots,...nativeCompilationInputRoots];
 export const routes=Object.freeze({
   census:{
     workflow:'.github/workflows/regenerate-self-ast-census.yml',
-    artifact:'self-ast-census'}
+    artifact:'source-content-receipt'}
   ,
   sessions:{
     workflow:'.github/workflows/regenerate-native-session-projections.yml',
@@ -368,7 +368,7 @@ commit){
           total+=size;
           assert.ok(total<=2*1024*1024*1024,
           'immutable source total budget exceeded');
-          const nativeRow=row.type==='blob'&&nativeRoots.some(root=>row.path===root||row.path.startsWith(root+'/'));
+          const nativeRow=row.type==='blob'&&nativeCompilationInputRoots.some(root=>row.path===root||row.path.startsWith(root+'/'));
           state={
             row,
             remaining:size,
@@ -444,7 +444,8 @@ export function qualifyNativeData({
   witness,
   run,
   producerJob,
-  checkoutLog}
+  checkoutLog,
+  modelArtifacts=[]}
 ){
   assert.ok(routes[kind],
   'unknown native data cohort');
@@ -467,36 +468,42 @@ export function qualifyNativeData({
   let profile,
   entries,
   identity;
-  const censusPaths=['data/meta/self-ast',
-  'data/meta/self-ast.lino',
-  'data/meta/self-healing-case.lino',
-  'docs/case-studies/issue-538/agent-cli-session-self-ast.json'];
   if(kind==='census'){
-    profile=nativeCensusProfile(rows.filter(r=>/^rust\/src\/.+\.rs$/u.test(r.path)).map(r=>r.path),
-    censusPaths);
-    entries=readQualifiedDataArtifactZip(archive,
-    profile);
-    const byName=new Map(entries.map(e=>[e.name,
-    e.bytes]));
-    for(const row of rows.filter(r=>/^rust\/src\/.+\.rs$/u.test(r.path))){
-      const b=source(row.path),
-      text=byName.get('data/meta/self-ast/'+row.path.slice(5).replace(/\.rs$/u,
-      '.lino')).toString('utf8');
-      const target=/^  target (.+)$/mu.exec(text)?.[1];
-      assert.equal('rust/'+target,
-      row.path);
-      assert.equal(Number(/^  byte_len (\d+)$/mu.exec(text)?.[1]),
-      b.length);
-      let h=0xcbf29ce484222325n;
-      for(const byte of b)h=((h^BigInt(byte))*0x100000001b3n)&0xffffffffffffffffn;
-      assert.equal(/^  content_id (.+)$/mu.exec(text)?.[1],
-      'source_module_'+h.toString(16).padStart(16,
-      '0'));
+    const expectedSources=rows.filter(row=>/^rust\/src\/.+\.rs$/u.test(row.path));
+    profile=nativeSourceContentProfile(expectedSources.map(row=>row.path),['source-content-receipt']);
+    entries=readQualifiedDataArtifactZip(archive,profile);
+    const receipt=JSON.parse(entries.find(entry=>entry.name==='source-content-receipt.json').bytes);
+    assert.equal(receipt.schema,'native-readable-source-content/v1');
+    assert.deepEqual(receipt.identity,{commit,tree,run:String(run.id),attempt:String(run.run_attempt)});
+    assert.equal(receipt.representation,'external-full-recursive-UTF8-Links-models');
+    assert.equal(receipt.receiptAuthority,'navigation-and-producer-evidence-only');
+    assert.ok(Number.isSafeInteger(receipt.shards)&&receipt.shards>0&&receipt.shards<=32);
+    assert.ok(Array.isArray(receipt.models));
+    assert.deepEqual(receipt.models.map(row=>row.path).sort(),expectedSources.map(row=>row.path).sort());
+    assert.equal(new Set(receipt.models.map(row=>row.path)).size,receipt.models.length);
+    for(const model of receipt.models){
+      const bytes=source(model.path);
+      assert.equal(model.sourceBlake3,blake3Hex(bytes));
+      assert.equal(model.member,model.path.slice('rust/'.length).replace(/\.rs$/u,'.lino'));
+      assert.match(model.modelBlake3,/^[0-9a-f]{64}$/u);
+      assert.equal(model.sourceFreeRestoration,true);
+      assert.equal(model.independentGrammarReparse,true);
     }
-    identity={
-      commit,
-      tree}
-    ;
+    const names=Array.from({length:receipt.shards},(_,index)=>'source-content-models-'+index);
+    assert.deepEqual([...new Set(receipt.models.map(row=>row.artifact))].sort(),[...names].sort());
+    assert.equal(modelArtifacts.length,names.length);
+    assert.deepEqual(modelArtifacts.map(artifact=>artifact.name).sort(),[...names].sort());
+    assert.equal(new Set(modelArtifacts.map(artifact=>artifact.id)).size,modelArtifacts.length);
+    for(const artifact of modelArtifacts){
+      assert.ok(Number.isSafeInteger(artifact.id)&&artifact.id>0);
+      assert.equal(artifact.expired,false);
+      assert.equal(artifact.workflow_run.id,run.id);
+      assert.ok(Number.isSafeInteger(artifact.size_in_bytes)&&artifact.size_in_bytes>0);
+      assert.match(artifact.digest,/^sha256:[0-9a-f]{64}$/u);
+    }
+    identity={commit,tree,representation:receipt.representation,
+      contentVerifiedAtProducer:true,contentVerifiedLocally:false,
+      modelArtifacts:modelArtifacts.map(({id,name,digest,size_in_bytes})=>({id,name,digest,size_in_bytes}))};
   }
   else if(kind==='sessions'){
     const producer=source('rust/examples/regenerate_agent_cli_sessions.rs');
@@ -608,7 +615,7 @@ export function guardedImportMembers(cohorts) {
   const seen=new Map();
   for(const cohort of cohorts){
     assert.ok(routes[cohort.kind]);
-    if(cohort.kind==='answers')continue;
+    if(cohort.kind==='answers'||cohort.kind==='census')continue;
     for(const entry of cohort.entries){
       assert.equal(entry.directory,
       false);
@@ -679,5 +686,5 @@ export function nativeDerivationRows(rows,
 extraPaths) {
   assert.ok(extraPaths.every(path=>rows.some(row=>row.path===path)),
   'declared derivation source missing');
-  return rows.filter(row=>nativeRoots.some(root=>row.path===root||row.path.startsWith(root+'/'))||extraPaths.includes(row.path));
+  return rows.filter(row=>derivationRoots.some(root=>row.path===root||row.path.startsWith(root+'/'))||extraPaths.includes(row.path));
 }

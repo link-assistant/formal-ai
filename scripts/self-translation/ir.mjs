@@ -68,6 +68,43 @@ export function canonicalRustName(name) {
   return name;
 }
 
+/** Canonical language-independent dashed symbol; constant style is explicit. */
+export function canonicalMetaSymbol(name, constant = false) {
+  const identifier = snakeFromCamel(name);
+  if (!constant && /^[A-Z]/u.test(identifier)) throw new Error('CanonicalDashedSymbolRequired');
+  return identifier.replaceAll('_', '-');
+}
+
+/** Project a canonical symbol without accepting underscore aliases. */
+export function rustIdentifier(symbol, constant = false) {
+  const pattern = constant ? /^[A-Z][A-Z0-9]*(-[A-Z][A-Z0-9]*)*$/u : /^[a-z][a-z0-9]*(-[a-z][a-z0-9]*)*$/u;
+  if (!pattern.test(symbol)) throw new Error('CanonicalDashedSymbolRequired');
+  try { return canonicalRustName(symbol.replaceAll('-', '_')); }
+  catch { throw new Error('PortableNameRequired'); }
+}
+
+/** The pure profile preserves the existing explicit uppercase constant style. */
+export function pureMetaSymbol(name) {
+  const constant = /^[A-Z][A-Z0-9_]*$/u.test(name);
+  return canonicalMetaSymbol(name, constant);
+}
+
+/** Source Rust identifiers have already passed the Rust frontend name check. */
+export function pureMetaSymbolFromRust(name) {
+  canonicalRustName(name);
+  return pureMetaSymbol(camelFromSnake(name));
+}
+
+/** Constant style is carried by uppercase meta symbols, never guessed from a value. */
+export function pureRustIdentifier(symbol) {
+  return rustIdentifier(symbol, /^[A-Z][A-Z0-9-]*$/u.test(symbol));
+}
+
+/** The JavaScript spelling of the same canonical pure-profile symbol. */
+export function pureJavascriptIdentifier(symbol) {
+  return camelFromSnake(pureRustIdentifier(symbol));
+}
+
 const terminates = (body) => {
   const last = body[body.length - 1];
   if (!last) return false;
@@ -172,6 +209,8 @@ export function signatures(items) {
  * @returns {object}
  */
 export function check(item, table) {
+  pureRustIdentifier(item.name);
+  for (const parameter of item.params ?? []) pureRustIdentifier(parameter.name);
   const map = constructMap();
   for (const type of item.kind === 'function' ? [...item.params.map((param) => param.type), item.returns] : [item.type]) {
     if (!map.types.has(type)) refuse('untyped', type);
@@ -185,6 +224,7 @@ export function check(item, table) {
   const scope = new Map(item.params.map((param) => [param.name, param.type]));
   const block = (body, names) => body.map((statement) => {
     if (statement.kind === 'let') {
+      pureRustIdentifier(statement.name);
       const value = expression(statement.value, names, table);
       names.set(statement.name, value.type);
       return { ...statement, value };
@@ -217,6 +257,7 @@ function expression(expr, names, table) {
     case 'boolean':
       return typed({}, 'boolean');
     case 'variable': {
+      pureRustIdentifier(expr.name);
       if (names.has(expr.name)) return typed({}, names.get(expr.name));
       const item = table.get(expr.name);
       if (item && item.kind === 'constant') return typed({}, item.type);
@@ -245,6 +286,7 @@ function expression(expr, names, table) {
       return typed({ cond, then, else: otherwise }, then.type);
     }
     case 'call': {
+      pureRustIdentifier(expr.name);
       const callee = table.get(expr.name);
       if (!callee || callee.kind !== 'function') return refuse('unknown-call', expr.name);
       const args = expr.args.map((arg) => expression(arg, names, table));

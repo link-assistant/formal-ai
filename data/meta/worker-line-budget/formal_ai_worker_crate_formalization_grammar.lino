@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_formalization_grammar.js"
+  ceiling 55
+  rationale "First-publication exact source-owned shared formalization factory; extracted production logic, with every existing module ceiling unchanged."

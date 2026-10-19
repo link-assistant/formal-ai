@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {censusDocuments, censusSourceClosureComplete} from '../../../js/agentic/node-host.mjs';
+import {moduleFromDocument} from '../../../js/agentic/crate/self_ast_census.mjs';
 import {signatureCensus, scanSignatureSymbols, stableSourceIdentifier}
   from '../../../scripts/lib/signature-census.mjs';
 
@@ -59,47 +62,42 @@ test('signature helper refuses full AST and invalid inputs without pretending to
   assert.throws(() => signatureCensus('src/any.rs\nforeign', ''), /module_path/);
 });
 
-test('every current owned Rust module matches its signature document or refuses full AST', () => {
+test('current owned sources supply navigation identities while signatures cannot supply source content', () => {
   const root = new URL('../../../', import.meta.url);
-  function filesBelow(directory, suffix) {
-    const files = [];
-    for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
+  function filesBelow(directory) {
+    return fs.readdirSync(directory, {withFileTypes: true}).flatMap(entry => {
       const child = new URL(entry.name + (entry.isDirectory() ? '/' : ''), directory);
-      if (entry.isDirectory()) files.push(...filesBelow(child, suffix));
-      else if (entry.isFile() && entry.name.endsWith(suffix)) files.push(child);
-    }
-    return files;
+      return entry.isDirectory() ? filesBelow(child) : entry.isFile() && entry.name.endsWith('.rs') ? [child] : [];
+    });
   }
-  const sources = filesBelow(new URL('rust/src/', root), '.rs');
-  const documents = filesBelow(new URL('data/meta/self-ast/src/', root), '.lino');
-  const targets = new Map();
-  for (const document of documents) {
-    const text = fs.readFileSync(document, 'utf8');
-    const modulePath = text.match(/^  target (.+)$/m)?.[1];
-    assert.ok(modulePath, 'document must identify its source: ' + document);
-    assert.equal(targets.has(modulePath), false, 'duplicate module document: ' + modulePath);
-    targets.set(modulePath, text);
-  }
-  assert.equal(targets.size, sources.length, 'current source/document map must be complete');
-  let signatures = 0;
-  let fullAbstractSyntax = 0;
+  const sources = filesBelow(new URL('rust/src/', root));
+  const documents = censusDocuments(fileURLToPath(root));
+  assert.equal(censusSourceClosureComplete(fileURLToPath(root)), true);
+  const current = new Map(documents.map(document => [document.path, document]));
+  assert.equal(current.size, documents.length, 'no duplicate owned source');
+  assert.deepEqual([...current.keys()].sort(), sources.map(source => source.pathname.slice(root.pathname.length)).sort());
+  let signatureChecks = 0;
+  let fullContentRefusals = 0;
   for (const source of sources) {
-    const modulePath = source.pathname.slice(new URL('rust/', root).pathname.length);
+    const relative = source.pathname.slice(root.pathname.length);
+    const modulePath = relative.slice('rust/'.length);
     const text = fs.readFileSync(source, 'utf8');
-    const document = targets.get(modulePath);
-    assert.notEqual(document, undefined, 'missing module census: ' + modulePath);
-    targets.delete(modulePath);
+    const document = current.get(relative);
+    assert.equal(document.text, null, modulePath);
+    assert.equal(document.module.path, modulePath);
+    assert.equal(document.module.fidelity, 'navigation');
+    assert.deepEqual(document.sourceIdentity, {path: modulePath,
+      content_id: stableSourceIdentifier(text), byte_len: Buffer.byteLength(text)}, modulePath);
     if (modulePath.startsWith('src/agentic_coding/')) {
-      assert.match(document, /^  fidelity full_ast$/m);
       assert.throws(() => signatureCensus(modulePath, text), /full_ast_tier_unsupported/);
-      fullAbstractSyntax += 1;
+      fullContentRefusals += 1;
     } else {
-      assert.equal(signatureCensus(modulePath, text), document, modulePath);
-      signatures += 1;
+      assert.equal(moduleFromDocument(signatureCensus(modulePath, text)), null, modulePath);
+      signatureChecks += 1;
     }
   }
-  assert.equal(targets.size, 0, 'no stale census without an owned source');
-  assert.ok(signatures > 0, 'signature documents must actually be checked');
-  assert.ok(fullAbstractSyntax > 0, 'full AST refusal must actually be checked');
-  // Exact native baseline fixtures above remain independent of these current documents.
+  assert.ok(signatureChecks > 0);
+  assert.ok(fullContentRefusals > 0);
+  // Full recursive content is checked by source-free restoration and fresh grammar parsing,
+  // independently of this navigation index and the original native baseline fixtures above.
 });

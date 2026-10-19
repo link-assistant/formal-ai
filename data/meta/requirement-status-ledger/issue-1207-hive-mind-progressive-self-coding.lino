@@ -16,8 +16,12 @@ requirement_status_ledger_shard
     id "R1207-5"
   requirement
     id "R1207-6"
+    verdict "partial"
+    automated_test "rust/tests/web/issue-1168-source-cache.test.mjs"
   requirement
     id "R1207-7"
+    verdict "partial"
+    automated_test "rust/tests/web/issue-1168-source-cache.test.mjs"
   requirement
     id "R1207-8"
   requirement

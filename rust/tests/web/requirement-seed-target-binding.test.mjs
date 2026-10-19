@@ -6,6 +6,7 @@ import { before, test } from 'node:test';
 import { WorkerHost, REPO_ROOT } from '../../../js/server/worker-host.mjs';
 import { installNodeHost, censusDocuments } from '../../../js/agentic/node-host.mjs';
 import { stableId } from '../../../js/agentic/crate/engine_stable_identifier.mjs';
+import { workspace as sourceWorkspace } from '../../../js/agentic/crate/self_ast_census.mjs';
 import { resolveRequirementTarget, resolveSeedTarget, resolveIn } from '../../../js/agentic/requirement_resolution.mjs';
 before(async () => { await installNodeHost(new WorkerHost()); });
 const read = file => readFileSync(REPO_ROOT+'/'+file,'utf8');
@@ -13,12 +14,24 @@ const census = {modules:[{path:'src/a.rs',symbols:[{kind:'const',name:'ALPHA_LIN
 const source = 'meanings\n  arbitrary\n    role request_signal\n    lexeme en "azure dawn"\n';
 const expected = {module_path:'src/a.rs',symbol:'ALPHA_LINO',kind:'const'};
 
-test('every unchanged ladder leaf resolves to its actual source or embedded seed declaration',()=>{
+test('unchanged ladder scope is retained and migrated ownership is never redirected silently',()=>{
   const rows=read('experiments/issue_1028_agent_cli_ladder/leaves.tsv').trimEnd().split('\n').map(line=>line.split('\t'));
   assert.equal(rows.length,32);
   for(const [leaf,originalTask,path,,,requirement] of rows){
     // Native declarations retain the actual original file scope; seed surfaces retain their semantic requirement.
     const target=resolveRequirementTarget(path.startsWith('rust/') ? originalTask : requirement);
+    if (leaf === 'L09') {
+      // The original task permits only the Rust file; its data now belongs to a shared seed.
+      // Preserve this original requirement as a conflict, never a fulfilled ladder case.
+      assert.equal(target, null, originalTask);
+      const currentTarget = resolveRequirementTarget(requirement);
+      assert.deepEqual(resolveIn(sourceWorkspace(), requirement), currentTarget, 'complete source resolution must not depend on the generated fallback');
+      assert.deepEqual(currentTarget, {module_path:'src/seed/embedded_registry.rs',symbol:'TERMINAL_COMMANDS_LINO',kind:'const'});
+      const registry = read('rust/' + currentTarget.module_path);
+      const declaration = registry.slice(registry.indexOf('pub const ' + currentTarget.symbol)).split('\n').slice(0,3).join('\n');
+      assert.ok(declaration.includes('../../embedded/data/seed/terminal-commands.lino'));
+      continue;
+    }
     assert.ok(target,`${leaf}: ${requirement}`);
     if(path.startsWith('data/seed/')){
       assert.equal(target.module_path,'src/seed/embedded_registry.rs',leaf);
@@ -46,7 +59,7 @@ test('ambiguous seed owners remain unresolved and stronger actual surfaces win',
   assert.deepEqual(resolveSeedTarget(census,'Change signal surface from azure dawn',[['invalid.txt',source],sources[0]]),expected);
 });
 
-test('real census document reads reject changed source identities',()=>{
+test('current navigation identities change with source and ignore stale counter documents',()=>{
   const directory=mkdtempSync(path.join(tmpdir(),'formal-ai-census-identity-'));
   try{
     mkdirSync(path.join(directory,'rust/src'),{recursive:true});
@@ -56,9 +69,19 @@ test('real census document reads reject changed source identities',()=>{
     const document='self_ast_census\n  target src/arbitrary.rs\n  content_id '+contentId+'\n  byte_len '+Buffer.byteLength(source)+'\n  symbols\n    const ARBITRARY 1 1\n';
     writeFileSync(path.join(directory,'rust/src/arbitrary.rs'),source);
     writeFileSync(path.join(directory,'data/meta/self-ast/src/arbitrary.lino'),document);
-    assert.deepEqual(censusDocuments(directory),[{path:'data/meta/self-ast/src/arbitrary.lino',text:document,sourceIdentity:{path:'src/arbitrary.rs',content_id:contentId,byte_len:Buffer.byteLength(source)}}]);
-    writeFileSync(path.join(directory,'rust/src/arbitrary.rs'),source.replace('azure','cobalt'));
-    assert.deepEqual(censusDocuments(directory),[]);
+    const [initial] = censusDocuments(directory);
+    assert.deepEqual(initial, {path:'rust/src/arbitrary.rs',text:null,
+      module:{path:'src/arbitrary.rs',fidelity:'navigation',symbols:[{kind:'const',name:'ARBITRARY',start_line:1,end_line:1}]},
+      sourceIdentity:{path:'src/arbitrary.rs',content_id:contentId,byte_len:Buffer.byteLength(source)}});
+    const changed = source.replace('azure','cobalt');
+    writeFileSync(path.join(directory,'rust/src/arbitrary.rs'),changed);
+    const [updated] = censusDocuments(directory);
+    assert.equal(updated.path, initial.path);
+    assert.equal(updated.text, null);
+    assert.deepEqual(updated.module, initial.module);
+    assert.deepEqual(updated.sourceIdentity, {path:'src/arbitrary.rs',content_id:stableId('source_module',changed),byte_len:Buffer.byteLength(changed)});
+    assert.notEqual(updated.sourceIdentity.content_id, initial.sourceIdentity.content_id);
+    assert.equal(readFileSync(path.join(directory,'data/meta/self-ast/src/arbitrary.lino'),'utf8'), document);
   }finally{rmSync(directory,{recursive:true,force:true});}
 });
 
@@ -83,4 +106,34 @@ test('a seed surface cannot supply its own independent role evidence',()=>{
     assert.equal(resolveSeedTarget(census,negative,[['data/seed/alpha.lino',seed]]),null,negative);
     assert.deepEqual(resolveSeedTarget(census,positive,[['data/seed/alpha.lino',seed]]),expected,positive);
   }
+});
+
+test('explicit fields constrain weak lexical surfaces in five request languages',()=>{
+  const owned={modules:[
+    {path:'src/config.rs',symbols:[{kind:'const',name:'COBALT_CONFIG_LINO'}]},
+    {path:'src/words.rs',symbols:[{kind:'const',name:'AUXILIARY_LINO'}]},
+    {path:'src/archive.rs',symbols:[{kind:'const',name:'COBALT_ARCHIVE_LINO'}]}
+  ]};
+  const wanted={module_path:'src/config.rs',symbol:'COBALT_CONFIG_LINO',kind:'const'};
+  const settings=['data/seed/cobalt-config.lino','settings\n  data-policy\n    value preserve\n'];
+  const weak=['data/seed/auxiliary.lino','meanings\n  connector\n    role request_function_word\n    lexeme en the\n'];
+  const inputs=[settings,weak];
+  for(const request of [
+    'Update cobalt data policy with the new word.',
+    'Обнови data-policy для cobalt и слово the.',
+    'cobalt का data-policy बदलें और the शब्द रखें।',
+    '更新 cobalt 的 data-policy，并保留单词 the。',
+    'Actualiza data-policy para cobalt y conserva la palabra the.'
+  ])assert.deepEqual(resolveSeedTarget(owned,request,inputs),wanted,request);
+  const request='Update cobalt data policy with the new word.';
+  assert.deepEqual(resolveSeedTarget(owned,request,[...inputs,
+    ['data/seed/cobalt-unsupported.lino','settings\n  data-policy-new-word\n']]),wanted,
+    'an undeclared longer field cannot erase a qualified owner');
+  assert.equal(resolveSeedTarget(owned,request,[...inputs,
+    ['data/seed/cobalt-archive.lino','settings\n  data-policy\n']]),null,
+    'equal explicit owners stay ambiguous even when the lexical fallback is unique');
+  assert.equal(resolveSeedTarget(owned,'Update scarlet data-policy.',inputs),null);
+  assert.equal(resolveSeedTarget(owned,'Update cobalt with "data-policy".',inputs),null);
+  const wrongKind={modules:[{path:'src/config.rs',symbols:[{kind:'function',name:'COBALT_CONFIG_LINO'}]}]};
+  assert.equal(resolveSeedTarget(wrongKind,'Update cobalt data-policy.',inputs),null);
 });

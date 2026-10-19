@@ -5,7 +5,7 @@
 // The meta language is the formal statement of text_formalization.mjs: a
 // sentence is formalized in its language, every meaning term is rendered with
 // a surface of the target language, and the rendering is formalized again in
-// the target language. Names and numbers pass through unchanged; unknown
+// the target language. Names pass through unchanged; numeric meaning uses target locale symbols; unknown
 // words stay in their source form and are reported, never silently lost.
 //
 // Where a meaning has several surfaces in the target language, each one is
@@ -19,7 +19,7 @@
 
 import {
   Polarity, WordKind, clauseStatement, formalizeText, joinSurfaces, knownIds, negationIn, resolveSurface,
-  returnSurface, seedWords, statementTerms, surfacesIn,
+  returnSurface, seedWords, numericIdentityPrefix, surfaceIn, statementTerms, surfacesIn,
 } from './text_formalization.mjs';
 
 /**
@@ -86,7 +86,7 @@ export function roundTripChoice(surface, source, target, candidates) {
 
 /** Mirrors `fn render_term` in rust/src/translation/round_trip.rs: one term in `target`, `{source, target, translated}`. */
 export function renderTerm(term, source, target) {
-  if (term.kind !== WordKind.Meaning) return { source: term.surface, target: term.surface, translated: term.kind !== WordKind.Unknown };
+  if (term.kind !== WordKind.Meaning) return { source: term.surface, target: term.kind === WordKind.Number ? surfaceIn(term,target) : term.surface, translated: term.kind !== WordKind.Unknown && !term.id.startsWith(numericIdentityPrefix(true)) };
   const surface = bestSurface(term, source, target);
   return surface === null
     ? { source: term.surface, target: term.surface, translated: false }

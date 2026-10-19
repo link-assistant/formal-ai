@@ -9,6 +9,7 @@
 use super::capability_router::classify_tool;
 use super::planner::Capability;
 use crate::protocol::ChatMessage;
+mod source_fetch_observation;
 
 /// One observed client-owned tool execution in transcript order.
 #[derive(Debug)]
@@ -17,6 +18,8 @@ pub(super) struct ToolAttempt {
     source_read: Option<super::tool_result::SourceReadObservation>,
     pub(super) succeeded: bool,
     pub(super) detail: String,
+    /// Original run-tool bytes remain separate from normalized failure detail.
+    pub(super) raw_receipt: Option<String>,
     pub(super) arguments: Option<String>,
     /// The advertised tool name the result came back under, when known.
     pub(super) tool: Option<String>,
@@ -43,6 +46,7 @@ pub struct Progress {
     qualified_attempts: Vec<super::qualified_tool_observation::QualifiedToolAttempt>,
     pub(super) fetched_text: Option<String>,
     pub(super) fetched_pages: Vec<(String, String)>,
+    source_observations: Vec<serde_json::Value>,
     pub(super) attempted_fetches: Vec<String>,
     /// Work-item URLs already read through a shell read call.
     attempted_work_item_reads: Vec<String>,
@@ -57,6 +61,22 @@ pub struct Progress {
 }
 
 impl Progress {
+    /// Read-only observations for canonical research selectors; no new authority is granted.
+    pub(super) fn research_attempts(&self) -> &[ToolAttempt] {
+        &self.attempts
+    }
+
+    pub(super) fn source_observation_for(
+        &self,
+        url: &str,
+        text: &str,
+    ) -> Option<&serde_json::Value> {
+        self.fetched_pages
+            .iter()
+            .position(|(page_url, body)| page_url == url && body == text)
+            .and_then(|index| self.source_observations.get(index))
+    }
+
     pub(super) fn scan(messages: &[ChatMessage]) -> Self {
         let mut completed = Vec::new();
         let mut attempts = Vec::new();
@@ -131,6 +151,7 @@ impl Progress {
                 source_read,
                 succeeded: failure.is_none(),
                 detail: failure.clone().unwrap_or_else(|| raw.clone()),
+                raw_receipt: (capability == Capability::Run).then(|| raw.clone()),
                 arguments,
                 tool,
             });
@@ -198,7 +219,19 @@ impl Progress {
             }
             completed.push(capability);
         }
+        let source_observations = fetched_pages
+            .iter()
+            .map(|(url, text)| {
+                source_fetch_observation::source_fetch_observation(
+                    messages,
+                    current_turn,
+                    url,
+                    text,
+                )
+            })
+            .collect();
         Self {
+            source_observations,
             completed,
             attempts,
             qualified_attempts: super::qualified_tool_observation::scan(messages, current_turn),
@@ -616,7 +649,18 @@ impl Progress {
         })
     }
 
-    /// The arrival index of the latest successful write of `path`, so a caller can tell which of two files was written last (issue #1185 R3: a fix already rendered into the artifact is not rendered twice).
+    /// The latest write declaration of this path, including failed observations.
+    pub(super) fn latest_write_index(&self, path: &str) -> Option<usize> {
+        self.attempts.iter().rposition(|attempt| {
+            attempt.capability == Capability::Write
+                && attempt
+                    .arguments
+                    .as_deref()
+                    .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
+    /// The latest successful write index retained by the original progress contract.
     pub(super) fn latest_successful_write_index(&self, path: &str) -> Option<usize> {
         self.attempts.iter().rposition(|attempt| {
             attempt.capability == Capability::Write

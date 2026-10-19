@@ -83,7 +83,7 @@ test('release distribution rejects missing, duplicate, stale, forged and corrupt
   const sources = new Map(sourcePaths.map((path, index) => [path, Buffer.from('export const value = ' + index + ';\n')]));
   const packets = new Map();
   const reports = Array.from({ length: 8 }, (_, shardIndex) => {
-    const paths = partitionSourcePaths(sourcePaths, shardIndex, 8);
+    const paths = partitionSourcePaths(sourcePaths, shardIndex, 8, (path) => sources.get(path).length);
     const receipts = paths.map((path) => {
       const source = sources.get(path), document = Buffer.from('(1: (def: ' + source.toString('base64') + '))\n');
       const packet = path + '.lino.gz', compressed = gzipSync(document);
@@ -100,6 +100,19 @@ test('release distribution rejects missing, duplicate, stale, forged and corrupt
   const options = { reports, sourcePaths, sourceHead, upstreamCommit,
     sourceBytes: (path) => sources.get(path), packetBytes: (index, path) => packets.get(index + '/' + path) };
   assert.equal(verifySourceDistribution(options).checkedSources, 16);
+  const outside = structuredClone(reports);
+  outside[0].sources[0].path = '../outside.mjs';
+  let outsideReads = 0;
+  assert.throws(() => verifySourceDistribution({ ...options, reports: outside, sourceBytes: (path) => {
+    if (!sources.has(path)) { outsideReads += 1; throw new Error('unowned source read'); }
+    return sources.get(path);
+  } }), /coverage differs/u);
+  assert.equal(outsideReads, 0);
+  const receiptByPath = new Map(reports.flatMap((report) => report.sources).map((receipt) => [receipt.path, receipt]));
+  const formerSchedule = reports.map((report) => ({ ...report,
+    sources: partitionSourcePaths(sourcePaths, report.shardIndex, 8).map((path) => receiptByPath.get(path)),
+  }));
+  assert.throws(() => verifySourceDistribution({ ...options, reports: formerSchedule }), /coverage differs/u);
   assert.throws(() => verifySourceDistribution({ ...options, reports: reports.slice(1) }), /missing a shard/u);
   assert.throws(() => verifySourceDistribution({ ...options, reports: [reports[0], ...reports.slice(0, 7)] }), /shard identity/u);
   for (const change of [
@@ -120,7 +133,7 @@ test('production source producer imports without launching serialization and enu
   const { main, ownedProductionSources } = await import('../../../scripts/check-source-networks.mjs');
   assert.equal(typeof main, 'function');
   const paths = ownedProductionSources();
-  for (const root of ['rust/src/', 'js/', 'ts/']) assert.ok(paths.some((path) => path.startsWith(root)));
+  for (const root of ['rust/src/', 'js/', 'ts/', 'scripts/', 'packages/']) assert.ok(paths.some((path) => path.startsWith(root)));
   assert.equal(paths.length, new Set(paths).size);
   assert.ok(paths.every((path) => !path.startsWith('rust/tests/') && !path.startsWith('js/vendor/')
     && !path.startsWith('js/seed/') && !path.endsWith('.bundle.js')));
@@ -144,4 +157,39 @@ test('compressed producer reconstructs its actual network once and preserves all
   assert.throws(() => createSourcePacket({ path: 'js/arbitrary.mjs', language: 'JavaScript', source }, {
     ...LinkNetwork, fromLino: () => ({ reconstructText: () => source.trimEnd() + '\n' }),
   }), /reconstructed source identity/u);
+});
+
+
+test('source-byte scheduling puts large inputs first and preserves exhaustive stable coverage', () => {
+  const sizes = new Map([['z', 100], ['α', 50], ['a', 50], ['b', 1], ['c', 0], ['😀', 0]]);
+  const paths = [...sizes.keys()];
+  const assign = (input) => Array.from({ length: 3 }, (_, index) =>
+    partitionSourcePaths(input, index, 3, (path) => sizes.get(path)));
+  const groups = assign(paths);
+  assert.deepEqual(groups, [['z'], ['a', 'b'], ['α', 'c', '😀']]);
+  assert.deepEqual(assign([...paths].reverse()), groups);
+  assert.deepEqual(groups.flat().sort(), [...paths].sort());
+  assert.equal(new Set(groups.flat()).size, paths.length);
+  for (const group of groups) {
+    const weights = group.map((path) => sizes.get(path));
+    assert.deepEqual(weights, [...weights].sort((left, right) => right - left));
+  }
+});
+
+test('equal and empty byte sizes retain deterministic path and shard tie ordering', () => {
+  for (const bytes of [0, 7]) {
+    const paths = ['d', 'a', 'c', 'b'];
+    assert.deepEqual(Array.from({ length: 2 }, (_, index) =>
+      partitionSourcePaths(paths, index, 2, () => bytes)), [['a', 'c'], ['b', 'd']]);
+  }
+});
+
+test('missing, fractional, negative, infinite and overflowing scheduling sizes fail closed', () => {
+  for (const bytes of [undefined, NaN, -1, 1.5, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+    assert.throws(() => partitionSourcePaths(['a'], 0, 1, () => bytes), /invalid source byte size/u);
+  }
+  assert.throws(() => partitionSourcePaths(['a', 'b'], 0, 1, () => Number.MAX_SAFE_INTEGER),
+    /exact integer range/u);
+  assert.throws(() => partitionSourcePaths(['a'], 0, 1, () => { throw new Error('size unavailable'); }),
+    /size unavailable/u);
 });

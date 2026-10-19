@@ -52,7 +52,9 @@ Stated by the architect, in his words
 There is no division of the source into a privileged part and the rest. All of
 `rust/src/` serves the meta algorithm.
 
-**Code is held in the meta language and emitted into languages.**
+**Code and documentation are held in a readable recursive meta language and emitted into languages.**
+
+The [2026-10-18 source-model doctrine](docs/requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md) requires complete CSTs for JavaScript, TypeScript and Rust, written as meaningful recursive Links Notation with actual UTF-8 source text. Comments and whitespace remain concrete content; comment meanings are formalized and can be naturalized into English documentation. Shared concepts and explicit parse, emit and transformation rules synchronize the roots. Numeric inventories, signature-only self-AST files, flat token dumps and retained prose alone do not deliver this model.
 
 > What I asked links network meta language representation of Rust code, that is
 > translatable by our own Formal AI system into any programming language, for
@@ -66,6 +68,12 @@ There is no division of the source into a privileged part and the rest. All of
 Rust is therefore one emission target of that representation, not the system. A
 count of Rust lines measures an output: a more general meta algorithm may emit
 *more* Rust. **No release condition may be a Rust line count.**
+
+**The codebase is the main playground for formalization, naturalization and verified translation.**
+
+Formal AI uses its own code, comments, documentation and requirements as local knowledge for its general reasoning path. Source-linked formal statements connect documentation to actual code contracts. Its relative meta logic evaluates conditional and dependent evidence, including trusted public knowledge, to identify contradictions and determine which requirements are delivered, contradicted, partial or unknown. The latest authoritative requirement supersedes an earlier conflicting requirement for the same scope; compatible older obligations remain. Verified implementation changes signal documentation updates, while violations of current requirements signal implementation repairs.
+
+Formal AI translates documentation and comments into English, Russian, Hindi and Chinese through shared formal meanings. It selects wording across all four languages for the greatest measured probability of surviving round-trip translation, both for individual parts and whole documents. CI verifies source/content reconstruction, code/doc consistency, meaning preservation and repaired requirement violations. Probability, representation fidelity and proven behavior remain separate claims. See [the source-model doctrine](docs/requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md).
 
 **Self-modification is an action the user approves.**
 
@@ -391,13 +399,7 @@ the parsed Rust tables, which remain only the projection's input. The link-cli
 store stays a write-behind projection for user memory, filled by
 `memory_sync.rs` after each `.lino` write. Behaviour still lives in compiled
 Rust handlers with `.lino` recipes that describe them; what changed is that the
-recipes' facts now flow through links. The representation layer is issue
-#558's delivery (PR #637): a committed `.lino` census covers every owned file
-under `rust/src/`, one to one on every merged pull request, and the lossless
-round-trip (`source → links → source`, byte for byte) exists in
-`rust/tests/unit/agentic-coding/issue_558_source_links.rs` -- it is exhaustive, so it is
-`#[ignore]`d there and runs on demand with `--ignored`, not on every CI run;
-until it runs by default the committed census is a signature, not the source.
+recipes' facts now flow through links. The legacy representation layer from issue #558 and issue #673 stores per-module census/signature documents. Those historical partial controls do not deliver a full source model. They must migrate to content-preserving recursive CSTs and semantic comment links under the [source-model guide](docs/source-representation.md); source-free reconstruction and meaningful rule-based edits must run in normal CI. Count-only artifact refreshes are not the implementation.
 The direction is unchanged: the meta-language
 representation is the system and Rust is one of the languages it is emitted
 into -- JavaScript or any other target is the same projection of the same

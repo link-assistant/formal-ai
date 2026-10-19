@@ -12,11 +12,12 @@ const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const git=(cwd,args)=>execFileSync('git',args,{cwd,encoding:'utf8',maxBuffer:32*1024*1024}).trim();
 const commit=value=>assert.match(value,/^[a-f0-9]{40}$/u);
 
+export const nativeCompilationInputRoots = Object.freeze(['rust/src','rust/embedded','rust/Cargo.toml','rust/Cargo.lock','rust/build.rs',
+ 'data/seed/api-cache','.cargo','rust/.cargo']);
+
 /** Hash only tracked native compilation inputs, and refuse an uncommitted input. */
 export function nativeInputIdentity(cwd) {
- const roots=['rust/src','rust/embedded','rust/Cargo.toml','rust/Cargo.lock','rust/build.rs',
-  'data/seed/api-cache','.cargo','rust/.cargo'];
- const listing=execFileSync('git',['ls-tree','-r','-z','HEAD','--',...roots],{cwd,encoding:'utf8'}).split('\0').filter(Boolean);
+ const listing=execFileSync('git',['ls-tree','-r','-z','HEAD','--',...nativeCompilationInputRoots],{cwd,encoding:'utf8'}).split('\0').filter(Boolean);
  const records=listing.map(line=>{const match=/^\d+ blob ([a-f0-9]{40})\t([\s\S]+)$/u.exec(line);assert.ok(match,'native input must be a tracked blob');return {object:match[1],name:match[2]};}).sort((a,b)=>a.name<b.name?-1:a.name>b.name?1:0);
  const names=records.map(r=>r.name);assert.ok(names.includes('rust/Cargo.toml')&&names.includes('rust/Cargo.lock'));
  for(const name of names)assert.doesNotMatch(name,/[\r\n]/u);

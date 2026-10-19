@@ -1,13 +1,13 @@
 // The issue-#558 self-healing recipe (rust/src/agentic_coding/self_heal.rs).
 //
 // The Rust document is `crate::self_healing::canonical_case().links_notation()`,
-// which parses a real module through the CST/AST engine; the committed
-// data/meta/self-healing-case.lino is asserted byte-for-byte equal to it
-// (rust/tests/unit/agentic-coding/issue_558_self_healing.rs), so the port reads that artifact.
+// The committed case preserves the historical proposal and failure trace only.
+// Current source authority comes from the host-owned recursive content engine.
 
 import { cached, childValue, childrenNamed, parseLino, readText } from './host.mjs';
 import { agenticMessage } from './messages.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
+import { renderDocument as sourceDocument } from './self_ast.mjs';
 
 /** The top-level `name` node (the shared parser returns a lone top node itself). */
 const topNode = (parsed, name) => (parsed?.name === name ? parsed : childrenNamed(parsed, name)[0]);
@@ -36,13 +36,21 @@ export function isSelfHealTask(prompt) {
 }
 
 /** Mirrors `fn render_document` in rust/src/agentic_coding/self_heal.rs. */
-export function renderDocument() {
-  return cached('self-heal-document', () => `${trimEnd(readText(COMMITTED_CASE))}\n`);
+export async function renderDocument() {
+  const original = trimEnd(readText(COMMITTED_CASE));
+  const start = original.indexOf('  source_round_trip\n');
+  const end = original.indexOf('  failure_trace\n', start);
+  if (start < 0 || end <= start) throw Error('RepairCaseSourceBoundaryRequired');
+  const document = await sourceDocument();
+  const content = document.trimEnd().split('\n').map((line) => '    ' + line).join('\n');
+  return original.slice(0, start)
+    + '  source_round_trip\n    module_path "src/agentic_coding/planner.rs"\n    faithful "true"\n'
+    + '  source_content\n' + content + '\n' + original.slice(end) + '\n';
 }
 
 /** Mirrors `fn final_answer` in rust/src/agentic_coding/self_heal.rs. */
 export function finalAnswer(document) {
-  const repairCase = topNode(parseLino(renderDocument()), 'repair_case');
+  const repairCase = topNode(parseLino(document), 'repair_case');
   const roundTrip = childrenNamed(repairCase, 'source_round_trip')[0];
   return agenticMessage('self_heal_final_answer', {
     module: childValue(roundTrip, 'module_path'),

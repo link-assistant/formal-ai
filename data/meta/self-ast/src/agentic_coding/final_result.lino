@@ -2,87 +2,112 @@ self_ast_census
   target src/agentic_coding/final_result.rs
   language rust
   fidelity full_ast
-  byte_len 3925
-  line_count 126
-  content_id source_module_f69f5b8b561e82df
-  symbol_count 12
+  byte_len 11524
+  line_count 306
+  content_id source_module_faa4d9a20865a380
+  symbol_count 27
   symbols
     enum FinalDisposition 6 12
     enum FinalPayloadRole 15 19
     struct SourceArtifact 22 29
-    struct FinalResult 32 38
-    struct ResolvedPlan 40 43
-    function observed_final_result 46 64
-    function new 67 70
-    function can_deliver 72 74
-    function can_deliver_as 76 91
-    function into_plan 93 96
-    function record 100 107
-    function record_with_role 109 126
+    struct ResearchBinding 34 37
+    enum ResearchStatus 41 44
+    struct ResearchProvenance 48 63
+    function from_observed 66 68
+    function terminal 71 88
+    enum ResearchReadStatus 94 98
+    struct ResearchReadObservation 103 111
+    struct ResearchVerificationObservation 114 121
+    struct ResearchObservations 124 129
+    struct ResearchFinalEvidence 132 135
+    enum ResearchDiscoveryContext 138 142
+    struct ResearchDiscoveryEvidence 145 152
+    struct FinalResult 155 163
+    function evidence_fingerprint 166 173
+    function read_diagnostic 174 179
+    function terminal_evidence_diagnostic 182 208
+    struct ResolvedPlan 211 214
+    function observed_final_result 217 237
+    function new 240 248
+    function can_deliver 250 252
+    function can_deliver_as 254 269
+    function into_plan 271 274
+    function record 278 285
+    function record_with_role 287 306
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2972
-    named_node_count 554
-    distinct_node_kinds 58
+    total_link_count 8403
+    named_node_count 1627
+    distinct_node_kinds 68
     node_kinds
-      arguments 17
-      assignment_expression 2
-      attribute 4
-      attribute_item 4
+      abstract_type 1
+      arguments 41
+      assignment_expression 6
+      attribute 22
+      attribute_item 22
       binary_expression 17
-      block 10
-      call_expression 17
-      closure_expression 4
-      closure_parameters 4
-      declaration_list 1
-      doc_comment 3
-      enum_item 2
-      enum_variant 8
-      enum_variant_list 2
-      expression_statement 4
-      field_declaration 13
-      field_declaration_list 3
-      field_expression 29
-      field_identifier 50
-      field_initializer 8
+      block 19
+      boolean_literal 1
+      call_expression 41
+      closure_expression 11
+      closure_parameters 11
+      crate 1
+      declaration_list 3
+      doc_comment 9
+      else_clause 1
+      enum_item 5
+      enum_variant 16
+      enum_variant_list 5
+      expression_statement 10
+      field_declaration 55
+      field_declaration_list 11
+      field_expression 55
+      field_identifier 122
+      field_initializer 12
       field_initializer_list 3
-      function_item 7
-      generic_type 8
-      identifier 124
-      if_expression 1
-      impl_item 1
+      function_item 12
+      generic_type 29
+      identifier 416
+      if_expression 3
+      impl_item 3
       inner_doc_comment_marker 1
-      integer_literal 1
+      integer_literal 5
       let_condition 1
-      let_declaration 1
-      line_comment 3
+      let_declaration 5
+      line_comment 9
+      macro_invocation 4
       match_arm 2
       match_block 1
       match_expression 1
       match_pattern 2
-      mutable_specifier 3
-      outer_doc_comment_marker 2
-      parameter 15
-      parameters 7
+      mutable_specifier 4
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 8
+      parameter 21
+      parameters 12
       parenthesized_expression 2
-      primitive_type 6
-      reference_expression 2
-      reference_type 6
-      scoped_identifier 13
-      self 7
-      self_parameter 3
+      primitive_type 17
+      reference_expression 5
+      reference_type 9
+      scoped_identifier 26
+      scoped_type_identifier 9
+      self 20
+      self_parameter 5
       shorthand_field_initializer 4
       source_file 1
+      string_content 43
+      string_literal 43
       struct_expression 3
-      struct_item 3
-      super 26
-      token_tree 4
+      struct_item 10
+      super 80
+      token_tree 70
+      try_expression 1
       tuple_struct_pattern 3
-      type_arguments 8
-      type_identifier 46
+      type_arguments 29
+      type_identifier 123
       unary_expression 5
       use_declaration 1
-      visibility_modifier 25
+      visibility_modifier 78

@@ -1,0 +1,80 @@
+{
+  "grammar": "text-formalization\n  defaults\n    heldout MiXeD\n    override inherited\n  language zz\n    override LoCaL\n    override SECOND\n  language qv\n",
+  "vocabulary": [
+    {
+      "language": "zz",
+      "kind": "heldout",
+      "values": [
+        "MiXeD"
+      ]
+    },
+    {
+      "language": "zz",
+      "kind": "override",
+      "values": [
+        "LoCaL",
+        "SECOND"
+      ]
+    },
+    {
+      "language": "qv",
+      "kind": "override",
+      "values": [
+        "inherited"
+      ]
+    },
+    {
+      "language": "qq",
+      "kind": "heldout",
+      "values": []
+    },
+    {
+      "language": "ZZ",
+      "kind": "heldout",
+      "values": []
+    },
+    {
+      "language": "zz",
+      "kind": "absent",
+      "values": []
+    }
+  ],
+  "counts": [
+    {
+      "text": "38 412",
+      "language": "en",
+      "repeat": 1,
+      "expected": 2
+    },
+    {
+      "text": "38 412",
+      "language": "en",
+      "repeat": 2,
+      "expected": 3
+    },
+    {
+      "text": "38 412 907",
+      "language": "en",
+      "repeat": 1,
+      "expected": 3
+    },
+    {
+      "text": "38 412",
+      "language": "ru",
+      "repeat": 1,
+      "expected": 2
+    },
+    {
+      "text": "9007199254740993",
+      "language": "en",
+      "repeat": 1,
+      "expected": 1
+    },
+    {
+      "text": "-38 412",
+      "language": "en",
+      "repeat": 1,
+      "expected": 2
+    }
+  ]
+}

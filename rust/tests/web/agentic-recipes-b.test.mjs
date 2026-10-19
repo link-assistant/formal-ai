@@ -13,6 +13,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { WorkerHost } from "../../../js/server/worker-host.mjs";
 import { installNodeHost } from "../../../js/agentic/node-host.mjs";
+import {host, installHost} from "../../../js/agentic/host.mjs";
+import {readSourceLinks, sourceFromLinks, ownedSourceLinks, writeSourceLinks} from "../../../js/meta/readable-source.js";
 import * as algorithmLearning from "../../../js/agentic/algorithm_learning.mjs";
 import * as procedure from "../../../js/agentic/procedure.mjs";
 import * as learningReport from "../../../js/agentic/learning_report.mjs";
@@ -663,44 +665,29 @@ test("the dreaming audit is derived from the recipe and matches the committed se
   assert.equal(dreamingAudit.finalAnswer(document), recorded.final_answer);
 });
 
-test("the self-AST recipe routes narrowly and answers like the committed session", () => {
+test("the self-inspection recipe requires recursive source content and refuses count-only fallback", async () => {
   assert.ok(selfAst.isSelfAstTask(selfAst.astTask()));
-  assert.ok(
-    selfAst.isSelfAstTask(
-      "record the abstract-syntax of our planner in our data",
-    ),
-  );
-  for (const prompt of [
-    "make the tomato meaning more detailed",
-    "generate the mermaid diagrams of our recipes",
-    "What is the capital of France?",
-  ]) {
+  assert.ok(selfAst.isSelfAstTask("record the abstract-syntax of our planner in our data"));
+  for (const prompt of ["make the tomato meaning more detailed", "generate the mermaid diagrams of our recipes", "What is the capital of France?"]) {
     assert.ok(!selfAst.isSelfAstTask(prompt), prompt);
   }
-  const recorded = session(
-    "docs/case-studies/issue-538/agent-cli-session-self-ast.json",
-  );
-  assert.equal(recorded.task, selfAst.astTask());
-  const document = selfAst.renderDocument();
-  assert.equal(document, read("data/meta/self-ast.lino"));
-  assert.equal(
-    selfAst.finalAnswer(recorded.steps[0].arguments.content),
-    recorded.final_answer,
-  );
-  assert.equal(
-    selfAst
-      .renderCensusDocument(selfAst.TARGET_MODULE_PATH, {
-        total_link_count: 1,
-        named_node_count: 1,
-        text_preserved: true,
-        clean: true,
-        node_kinds: [{ kind: "identifier", count: 1 }],
-      })
-      .split("\n")
-      .slice(-3)
-      .join("\n"),
-    "  node_kinds\n    identifier 1\n",
-  );
+  const installed = host();
+  try {
+    installHost({...installed, sourceDocument: undefined});
+    await assert.rejects(selfAst.renderDocument(), /SourceModelEngineUnavailable/u);
+    const content = readSourceLinks(read("rust/tests/fixtures/source-model/Rust.lino"));
+    const document = writeSourceLinks(ownedSourceLinks(selfAst.TARGET_MODULE_PATH, content));
+    installHost({...installed, sourceDocument: async path => {
+      assert.equal(path, selfAst.TARGET_MODULE_PATH); return document;
+    }});
+    assert.equal(await selfAst.renderDocument(), document);
+    assert.equal(sourceFromLinks(readSourceLinks(document)), sourceFromLinks(content));
+    assert.ok(selfAst.finalAnswer(document).includes(document.trimEnd()));
+    installHost({...installed, sourceDocument: async () => "self_ast\n  named_node_count 1\n"});
+    await assert.rejects(selfAst.renderDocument());
+    installHost({...installed, sourceDocument: async () => writeSourceLinks(ownedSourceLinks('src/foreign.rs', content))});
+    await assert.rejects(selfAst.renderDocument(), /SourceOwnerMismatch/u);
+  } finally { installHost(installed); }
 });
 
 test("the question catalog recipe routes narrowly and answers like the committed session", () => {

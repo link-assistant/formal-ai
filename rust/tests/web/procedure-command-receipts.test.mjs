@@ -67,7 +67,9 @@ for (const patch of [{ operation_success: false }, { exit_code: 0 }, { error: 'd
   });
 }
 test('old request and unrelated process calls cannot certify current procedure', () => {
-  const complete = replay(), messages = [...complete.messages, { role: 'user', content: prompt }];
+  const complete = replay();
+  assert.equal(planStep([...complete.messages, {role:'user', content:prompt}], ['write_file','run_command'], compiled).kind, 'final');
+  const messages = [...complete.messages, { role: 'user', content: prompt + ' Repeat this as a fresh procedure execution.' }];
   assert.equal(planStep(messages, ['write_file', 'run_command'], compiled).calls[0].tool, 'write_file');
   append(messages, complete.calls[0], '');
   append(messages, { tool: 'run_command', arguments: JSON.stringify({ command: 'cat foreign.lino' }) }, JSON.stringify({ stdout: artifactLinksNotation(compiled), exit_code: 0 }));

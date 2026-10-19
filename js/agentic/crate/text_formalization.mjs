@@ -1,3 +1,4 @@
+import {grammarVocabulary} from './formalization_grammar.mjs';
 // The shared text formalizer (R1188-U18, U19, U21): any text becomes formal
 // statements whose terms are meanings of the seed lexicon, and statements
 // become text again. Page formalization, round-trip translation and
@@ -35,6 +36,9 @@
 // meaning was found for.
 
 import { cached, parseLino, readText } from '../host.mjs';
+import {formalizeDialogue, dialogueQuantities, mergeNumericWords, numericIdentityPrefix, structuralRuleValues} from './dialogue_formalization.mjs';
+export {numericIdentityPrefix,structuralRuleValues};
+import {typedMeaning,preserveTypedRendering,countSourceTerms,inheritNumericEvidence} from './typed_meaning.mjs';
 import { byteSlice, clauses, scriptOf, sentences } from './formalization_segment.mjs';
 import { byteOrder } from './rust_str.mjs';
 import { lexicon, meaning, meaningsWithRole } from './seed_meanings.mjs';
@@ -100,12 +104,7 @@ export function isKnownKind(kind) {
 /** Mirrors `fn seed_words` in rust/src/formalization/text_statements.rs: the words of one kind the seed lists for `language`. */
 export function seedWords(language, kind) {
   return cached(`text-formalization-${language}-${kind}`, () => {
-    const root = parseLino(readText(TEXT_FORMALIZATION_PATH));
-    const container = root.name === 'text-formalization'
-      ? root
-      : (root.children || []).find((node) => node.name === 'text-formalization');
-    const record = (container?.children || []).find((node) => node.name === 'language' && node.value === language);
-    return (record?.children || []).filter((node) => node.name === kind).map((node) => node.value.toLowerCase());
+    return grammarVocabulary(language,kind).map(value=>value.toLowerCase());
   });
 }
 
@@ -327,7 +326,7 @@ function readSingle(surface, language, initial) {
   if (listed !== null) return { surface, kind: listed, id: lower };
   const index = meaningIndex(language);
   if (index.has(lower)) return { surface, kind: WordKind.Meaning, id: index.get(lower) };
-  if (NUMBER.test(surface)) return { surface, kind: WordKind.Number, id: `number:${surface}` };
+  if (NUMBER.test(surface)) return { surface, kind: WordKind.Number, id: numericIdentityPrefix(false)+surface };
   const folded = foldInflection(lower, language);
   if (folded !== null) return { surface, kind: WordKind.Meaning, id: folded };
   if (!initial && UPPERCASE.test(characters(surface)[0])) return { surface, kind: WordKind.Name, id: `name:${lower}` };
@@ -413,7 +412,7 @@ export function readWords(text, language, opensSentence) {
     out.push(...readHanRun(token.surface, language));
   }
   flushRun();
-  return out;
+  return mergeNumericWords(out, dialogueQuantities(text, language), language);
 }
 
 /** A word as a term (the Rust twin clones the `Word`). */
@@ -431,14 +430,17 @@ const termOf = (word) => ({ kind: word.kind, id: word.id, surface: word.surface 
 export function clauseStatement(text, language, previousSubject, opensSentence) {
   const words = readWords(text, language, opensSentence);
   const opener = words.find((word) => word.kind !== WordKind.Function) ?? null;
-  const inherits = opener !== null && (opener.kind === WordKind.Anaphor || opener.kind === WordKind.Continuation);
+  const declarative = !opensSentence && previousSubject!==null && !/[?？]/u.test(text);
+  const inherits = (opener !== null && (opener.kind === WordKind.Anaphor || opener.kind === WordKind.Continuation)) || (declarative && (formalizeDialogue(text,language).question?.kind??'yes-no')!=='yes-no');
   const content = words.filter((word) => isTermKind(word.kind)).map(termOf);
   const subject = inherits ? previousSubject : (content.length > 0 ? content[0] : null);
   const terms = inherits ? content : content.slice(1);
+  const dialogue = inheritNumericEvidence(formalizeDialogue(text, language, declarative), inherits?subject:null, language);
   return {
     text,
     language,
-    polarity: words.some((word) => word.kind === WordKind.Negation) ? Polarity.Denied : Polarity.Asserted,
+    polarity: dialogue.answer?.polarity === 'denied' || words.some((word) => word.kind === WordKind.Negation) ? Polarity.Denied : Polarity.Asserted,
+    dialogue,
     subject,
     terms,
     unknown: content.filter((term) => term.kind === WordKind.Unknown).map((term) => term.surface),
@@ -477,10 +479,12 @@ export function formalizeSentences(text, language) {
   const out = [];
   let previousSubject = null;
   for (const sentence of sentences(text)) {
+    const sentenceDialogue = formalizeDialogue(sentence.text, language);
     const statements = [];
     statementClauses(sentence).forEach((clause, index) => {
       const statement = clauseStatement(clause.text, language, previousSubject, index === 0);
-      if (statement.subject === null && statement.terms.length === 0) return;
+      if (index === 0 && sentenceDialogue.question) statement.dialogue.question = sentenceDialogue.question;
+      if (statement.subject === null && statement.terms.length === 0 && !statement.dialogue.answer && !statement.dialogue.question) return;
       statements.push(statement);
       if (statement.subject !== null) previousSubject = statement.subject;
     });
@@ -545,7 +549,8 @@ export function knownIds(statement) {
 export function statementIdentity(statement) {
   const subject = statement.subject === null ? '' : statement.subject.id;
   const others = [...new Set(statement.terms.map((term) => term.id))].filter((id) => id !== subject).sort(byteOrder);
-  return `${statement.polarity}|${subject}|${others.join(' ')}`;
+  const legacy=`${statement.polarity}|${subject}|${others.join(' ')}`;
+  return typedMeaning(statement.dialogue)===null?legacy:legacy+'|'+typedMeaning(statement.dialogue);
 }
 
 /** Mirrors `fn has_no_unknown` in rust/src/formalization/text_statements.rs: a statement of at least two terms, all of them known. */
@@ -593,6 +598,12 @@ export function returnSurface(slug, language) {
  * unknown word keeps it lowercased, since it is no name.
  */
 export function surfaceIn(term, language) {
+  if (term.kind === WordKind.Number) {
+    const prefix=numericIdentityPrefix(false);
+    if(!term.id.startsWith(prefix))return term.surface;
+    const decimal=seedWords(language,'numeric-decimal')[0];
+    return decimal?term.id.slice(prefix.length).replace('.',decimal):term.surface;
+  }
   if (term.kind === WordKind.Unknown) return term.surface.toLowerCase();
   if (term.kind !== WordKind.Meaning) return term.surface;
   return returnSurface(term.id, language) ?? term.surface;
@@ -615,7 +626,10 @@ export function joinSurfaces(surfaces) {
     if (surface === '') continue;
     const previous = characters(out).pop();
     const tight = previous !== undefined && previous.codePointAt(0) > 0x7f && isHan(characters(surface)[0]);
-    out += out === '' || tight ? surface : ` ${surface}`;
+    // A space between two independent numerals would look like a grouped
+    // thousands separator on the next read. Preserve their list boundary.
+    const separateNumbers = /[0-9]$/u.test(out) && /^[+-]?[0-9]/u.test(surface);
+    out += out === '' || tight ? surface : separateNumbers ? `, ${surface}` : ` ${surface}`;
   }
   return out;
 }
@@ -633,5 +647,12 @@ export function deformalizeStatement(statement, language) {
     if (cue !== null) surfaces.push(cue);
   }
   for (const term of statement.terms) surfaces.push(surfaceIn(term, language));
-  return joinSurfaces(surfaces);
+  return preserveTypedRendering(statement,language,joinSurfaces(surfaces),surfaces[0]??'',readWords,isTermKind);
+}
+
+/** Historical page term-share counts source words, not logical numeric groups.
+ * Quantity components retain exact UTF-8 source spans, so grouping an amount
+ * cannot improve or reduce this measure merely by changing segmentation. */
+export function sourceTermCount(statement) {
+  return countSourceTerms(statement,statementTerms(statement));
 }

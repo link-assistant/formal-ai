@@ -5,6 +5,7 @@
 // indices into the prompt (so `prompt.slice(start, end)` is the sentence with
 // its terminator), the JavaScript twin of the Rust byte range.
 
+import { normalizePrompt } from './crate/engine.mjs';
 import { carriesPolicyLead } from './crate/seed_caller_context.mjs';
 import { negatedCommandPolicy } from './shell-command-negative-ownership.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
@@ -68,7 +69,7 @@ export function statesACommandPolicy(sentence) {
 function ordersANamedCommand(clause) {
   const vocab = terminalCommandVocabulary();
   const words = splitWhitespace(clause);
-  return words.some((word, index) => vocab.run_verbs.includes(normalizeCommandWord(word))
+  return words.some((word, index) => vocab.run_verbs.includes(normalizePrompt(word))
     && words[index + 1] !== undefined && vocab.shell_tokens.includes(normalizeCommandWord(words[index + 1])));
 }
 
@@ -103,12 +104,16 @@ export function namedShellCommandInSentence(prompt, vocab) {
   const hasPhrase = vocab.terminal_phrases.some((phrase) => lower.includes(phrase));
   const hasCjkVerb = vocab.cjk_run_verbs.some((verb) => lower.includes(verb));
   const words = splitWhitespace(prompt);
-  const isRunVerb = (word) => vocab.run_verbs.includes(normalizeCommandWord(word));
+  const isRunVerb = (word) => vocab.run_verbs.includes(normalizePrompt(word));
   const isShellToken = (word) => {
     const normalized = normalizeCommandWord(word);
     return normalized !== '' && vocab.shell_tokens.includes(normalized);
   };
   const hasVerb = words.some(isRunVerb) || hasCjkVerb;
+  const last = words.at(-1);
+  if (words.length > 1 && isShellToken(words[0]) && (vocab.postposed_run_verbs || []).includes(last)) {
+    return prompt.slice(0, prompt.lastIndexOf(last)).trimEnd();
+  }
   for (let index = 1; index < words.length; index += 1) {
     if (isShellToken(words[index]) && isRunVerb(words[index - 1])) return collectCommand(words.slice(index));
   }
@@ -144,18 +149,14 @@ export function normalizeCommandWord(word) {
   return toAsciiLowercase(head);
 }
 
-const PROSE_WORDS = new Set([
-  'command', 'commands', 'to', 'in', 'into', 'on', 'the', 'a', 'an', 'and', 'then', 'please', 'for', 'of', 'that',
-  'which', 'so', 'this', 'these', 'those', 'here', 'there', 'me', 'us', 'you', 'it', 'from', 'at', 'with', 'will',
-  'would', 'can', 'could', 'should', 'using', 'via', 'inside', 'within', 'output', 'result', 'results', 'contents',
-  'content', 'directory', 'folder', 'folders', 'file', 'files', 'currently', 'again', 'also', 'just', 'now',
-  'nothing', 'anything', 'everything', 'something', 'all', 'any', 'every', 'each', 'no',
-]);
+
 
 /** Mirrors `fn is_prose_word`. */
 export function isProseWord(word) {
-  const normalized = toAsciiLowercase(trimMatches(word, (character) => !/^[0-9A-Za-z]$/.test(character)));
-  return PROSE_WORDS.has(normalized);
+  // Option bytes are command syntax, not punctuation around a prose word.
+  if (trimStart(word).startsWith('-')) return false;
+  const normalized = trimMatches(word, (character) => !isAlphanumeric(character)).toLowerCase();
+  return terminalCommandVocabulary().prose_words.includes(normalized);
 }
 
 /** Mirrors `fn shell_quotes_paired`; the shell remains the syntax authority. */

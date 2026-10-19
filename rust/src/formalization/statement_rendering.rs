@@ -9,7 +9,7 @@
 use super::segment::{Script, script_of};
 use super::text_statements::{
     NEGATION_ROLE, Polarity, Statement, Word, WordKind, fold_inflection, indexed_meaning,
-    kind_of_listed, phrase_key, role_words_in,
+    kind_of_listed, numeric_identity_prefix, phrase_key, role_words_in, seed_words,
 };
 use crate::seed::lexicon;
 
@@ -79,6 +79,15 @@ pub fn return_surface(slug: &str, language: &str) -> Option<String> {
 #[must_use]
 pub fn surface_in(term: &Word, language: &str) -> String {
     match term.kind {
+        WordKind::Number => term
+            .id
+            .strip_prefix(numeric_identity_prefix(false).as_str())
+            .and_then(|value| {
+                seed_words(language, "numeric-decimal")
+                    .first()
+                    .map(|decimal| value.replacen('.', decimal, 1))
+            })
+            .unwrap_or_else(|| term.surface.clone()),
         WordKind::Unknown => term.surface.to_lowercase(),
         WordKind::Meaning => {
             return_surface(&term.id, language).unwrap_or_else(|| term.surface.clone())
@@ -109,7 +118,19 @@ pub fn join_surfaces(surfaces: &[String]) -> String {
             .last()
             .is_some_and(|previous| !previous.is_ascii())
             && surface.chars().next().is_some_and(is_han);
-        let separator = if out.is_empty() || tight { "" } else { " " };
+        let separate_numbers = out.chars().last().is_some_and(|ch| ch.is_ascii_digit())
+            && surface
+                .trim_start_matches(['+', '-'])
+                .chars()
+                .next()
+                .is_some_and(|ch| ch.is_ascii_digit());
+        let separator = if out.is_empty() || tight {
+            ""
+        } else if separate_numbers {
+            ", "
+        } else {
+            " "
+        };
         out.push_str(separator);
         out.push_str(surface);
     }
@@ -134,5 +155,10 @@ pub fn deformalize_statement(statement: &Statement, language: &str) -> String {
     for term in &statement.terms {
         surfaces.push(surface_in(term, language));
     }
-    join_surfaces(&surfaces)
+    super::typed_meaning::preserve_typed_rendering(
+        statement,
+        language,
+        join_surfaces(&surfaces),
+        surfaces.first().map_or("", String::as_str),
+    )
 }

@@ -1,3 +1,6 @@
+import {structuralRuleValues} from './formalization_grammar.mjs';
+import {typedMeaning} from './typed_meaning.mjs';
+import {formatLinoValueVerbatim} from './links_format.mjs';
 // Page formalization (R1188-U18): a whole page of text, every sentence of it,
 // becomes formal statements, and the statements are deformalized back to
 // text to see which facts survive. The Rust twin is
@@ -21,7 +24,7 @@
 // page's counts, then each statement with its formal notation.
 
 import {
-  Polarity, clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms,
+  Polarity, sourceTermCount, clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms,
 } from './text_formalization.mjs';
 
 /** Mirrors `ANSWER_STATEMENT_LIMIT` in rust/src/formalization/page.rs: the most statements a page answer lists. */
@@ -33,7 +36,7 @@ export function factSurvives(statement) {
   if (known.length === 0) return false;
   const reread = clauseStatement(deformalizeStatement(statement, statement.language), statement.language, null, false);
   const back = knownIds(reread);
-  return back.length === known.length && back.every((id, index) => id === known[index]);
+  return typedMeaning(statement.dialogue)===typedMeaning(reread.dialogue) && back.length === known.length && back.every((id, index) => id === known[index]);
 }
 
 /**
@@ -51,7 +54,7 @@ export function formalizePage(text, language) {
     if (covered) report.covered += 1;
     for (const statement of sentence.statements) {
       report.statements += 1;
-      report.terms += statementTerms(statement).length;
+      report.terms += sourceTermCount(statement);
       report.unknown += statement.unknown.length;
       if (knownIds(statement).length === 0) continue;
       report.factual += 1;
@@ -68,7 +71,9 @@ export function formalizePage(text, language) {
 export function statementNotation(statement) {
   const identifiers = statementTerms(statement).map((term) => term.id);
   const negation = statement.polarity === Polarity.Denied ? '¬ ' : '';
-  return `${negation}(${identifiers.join(' ')})`;
+  const legacy=`${negation}(${identifiers.join(' ')})`;
+  const typed=typedMeaning(statement.dialogue);
+  return typed===null?legacy:structuralRuleValues('typed-statement-notation','template')[0].replace(/\{(?:legacy|typed)\}/gu,slot=>slot==='{legacy}'?legacy:formatLinoValueVerbatim(typed));
 }
 
 /**

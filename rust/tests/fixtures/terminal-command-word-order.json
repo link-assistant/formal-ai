@@ -1,0 +1,50 @@
+{
+  "schema": "terminal-command-word-order-v1",
+  "cases": [
+    {
+      "language": "en",
+      "prompt": "Run ls",
+      "command": "ls"
+    },
+    {
+      "language": "ru",
+      "prompt": "Выполни ls",
+      "command": "ls"
+    },
+    {
+      "language": "hi",
+      "prompt": "ls चलाएँ",
+      "command": "ls"
+    },
+    {
+      "language": "zh",
+      "prompt": "执行 ls",
+      "command": "ls"
+    },
+    {
+      "language": "es",
+      "prompt": "Ejecuta ls",
+      "command": "ls"
+    },
+    {
+      "language": "hi",
+      "prompt": "pwd चलाओ",
+      "command": "pwd"
+    },
+    {
+      "language": "hi",
+      "prompt": "git  status\tचलाइए",
+      "command": "git  status"
+    },
+    {
+      "language": "hi",
+      "prompt": "ls -la चलाएं",
+      "command": "ls -la"
+    },
+    {
+      "language": "hi",
+      "prompt": "ls चलाएँ।",
+      "command": "ls"
+    }
+  ]
+}

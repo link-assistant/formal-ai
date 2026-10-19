@@ -1,0 +1,468 @@
+# Source identities only: no raw issue bodies, authors, personal data or tool logs.
+issue_scope_audit
+  audit_date "2026-10-17"
+  source_head "fd5bfaced85262a51b341fb2b25c79e507423ca3"
+  bodies_read 92
+  open_issues_read 80
+  original_acceptance_authority "Full original issue bodies; current stronger owner requirements supplement them."
+  delivered_capability false
+issue 327
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/327"
+  scope "core"
+  body_sha256 "edfde1fdcd9664c609849d8b531e67790d0e9951a51821b663c5e20b10b4c897"
+issue 447
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/447"
+  scope "defer"
+  body_sha256 "c9b319d3f217214a827c23387e8768353b35dcef189d24f25b919a0a2596088c"
+issue 453
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/453"
+  scope "core"
+  body_sha256 "aad8001ebf0113fe672caa363bde4f27fe05e144517d829f4f90847ee290b72b"
+issue 483
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/483"
+  scope "core"
+  body_sha256 "0af91f47d447b34bff606867e6222dac15eb374dca0a354a2337817e0223caf7"
+issue 491
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/491"
+  scope "core"
+  body_sha256 "c17e5fad21f80bdae7261f9daa7f13d660e5385f98b53cdcf6112fb24936fe6a"
+issue 557
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/557"
+  scope "defer"
+  body_sha256 "82dc9a23600079005740a74eefb54fbb0a2e609c1296293efdb8885820c3f157"
+issue 651
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/651"
+  scope "core"
+  body_sha256 "98f8a39662e6d284f78c8dbdf9f2255bd5e2354b7b3a7cb109e31d4d9f5d0cd4"
+issue 665
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/665"
+  scope "supporting/preserve"
+  body_sha256 "2177d012eae466e0024401825be57874ecf75c00820fab3d7ff5a47ae8776031"
+issue 666
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/666"
+  scope "supporting/preserve"
+  body_sha256 "24682d29e43eece604257110a26e4097cf258f4f610fddaa7a901eefdffdbb24"
+issue 667
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/667"
+  scope "core"
+  body_sha256 "e340b1fa8d5439233cc736daf2549ccb552d90858db97bb08953927967a1baa4"
+issue 668
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/668"
+  scope "core"
+  body_sha256 "174ca8f367820e683804659cdace8e6b62d364dca6a384dab6056cd0e6d292bc"
+issue 669
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/669"
+  scope "supporting/preserve"
+  body_sha256 "4c69925b897624280ebbf3a1a0ba515cb4326f0fe199d40aa3e5824518b00e6d"
+issue 670
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/670"
+  scope "core"
+  body_sha256 "1126c01b5ab95457a165d377f6abf8b8c840d065a20387b12837b68c4ad67d49"
+issue 700
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/700"
+  scope "core"
+  body_sha256 "fbd0856de47c2964ce62597597ebf0948fd0b49c4ee19b50813e42b9dbdc6b22"
+issue 800
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/800"
+  scope "core"
+  body_sha256 "2c13db5557632f578a22e3d86748d0a5e8eeeb1f6ffe1f7d4dc3a5dade3bd1ce"
+issue 825
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/825"
+  scope "defer"
+  body_sha256 "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+issue 836
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/836"
+  scope "core"
+  body_sha256 "7f223a411e48f4c2c0bcd345e982b06ea709fd55fa1431313d10e60a777fa7f1"
+issue 861
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/861"
+  scope "supporting/preserve"
+  body_sha256 "f42bdcb3c11784925b77d5bbeade99c9a317e84a7763ed44f1fc7a2b405f06d1"
+issue 869
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/869"
+  scope "core"
+  body_sha256 "af1f4cf2f21588682d7fbd4c830b7ef82e403efb62821e28610e55c09f217a11"
+issue 872
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/872"
+  scope "core"
+  body_sha256 "8164c46179242ecb3bd994ffb150458dc91c21a7c968fc6b01d2bd05fd81b291"
+issue 901
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/901"
+  scope "core"
+  body_sha256 "9c2b3f751d0739348a8779ae1c86265bb36d1a4680c3869835c8876a42922215"
+issue 934
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/934"
+  scope "core"
+  body_sha256 "b2b62927ec42ed32578c3731f2afd9c6225b0bfafb6d03091edada55ee0b0e85"
+issue 940
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/940"
+  scope "core"
+  body_sha256 "ac1aa0f65855f02c4fe06610cc4618191cfd55bd33214c64238e97f5552301fd"
+issue 951
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/951"
+  scope "core"
+  body_sha256 "4cf88953f5b6e1a9bd0d4498b6bf60ed04077040c5fcb82aa3ddfdfd121ba7c6"
+issue 953
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/953"
+  scope "core"
+  body_sha256 "923a28b5665853afef13bff6df035b7b0f5c524034f40d46c8d5dd216df37781"
+issue 954
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/954"
+  scope "core"
+  body_sha256 "477b95a474e8f44a5f3f1a6495ab26059a1770190e3e7029384af92c6ba09961"
+issue 955
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/955"
+  scope "core"
+  body_sha256 "3e89f2633d0026781f0785aedd063fd49b094781a99ab47c7b8e41c73e2aac27"
+issue 1084
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1084"
+  scope "supporting/preserve"
+  body_sha256 "690f9a04d62a50cb7fb29f5bb58b111a464ceb867fe21cbe26302e7b8940c933"
+issue 1088
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1088"
+  scope "core"
+  body_sha256 "1067db441afdc156e08bbb51e264e43503ad81743b3044774fa1d4839d21083a"
+issue 1090
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1090"
+  scope "core"
+  body_sha256 "48fc5b704e7d1c5a57e1b5f3d58347b5166612d63c16d67b79be84e36a3c7e94"
+issue 1153
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1153"
+  scope "supporting/preserve"
+  body_sha256 "c23948eae3cd1f2ec21a6d4883b80b290bb85a3072cfeed2d75d0e5ce02414f0"
+issue 1154
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1154"
+  scope "core"
+  body_sha256 "348107787e0f25834b610aae84122056e0e271f83a92cf1d6fe7b83c49818c4b"
+issue 1155
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1155"
+  scope "core"
+  body_sha256 "f6d4bb959c3427dc8c13d17165d1effefe6c4e6dc52e57fe024d16b8bc6f90c7"
+issue 1156
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1156"
+  scope "core"
+  body_sha256 "448430fb421c530b3fb60ca9b34f014c60fbd99f4e9704cbabf92ac16b87a869"
+issue 1157
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1157"
+  scope "core"
+  body_sha256 "af958f701acda3f189e59adde6717ad2b4a43126540349d876192cc987be618f"
+issue 1158
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1158"
+  scope "core"
+  body_sha256 "8cb1c905928dc44d6e2e69559d42551f612d11c51302b73595318120fbcebaee"
+issue 1159
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1159"
+  scope "core"
+  body_sha256 "92361f6b60de5f54cd15e37e1300a23b05ae43c3319763cba1103696a2c65842"
+issue 1160
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1160"
+  scope "core"
+  body_sha256 "1a8f68287d6e456117bb3766bc814fed9a6444e3686dc8e97510dfba2a14ae87"
+issue 1161
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1161"
+  scope "core"
+  body_sha256 "9cfda1e7fe48e60fbc633c3faa62cd74d9cbdbe61a0a9f441f39babb8318fe02"
+issue 1162
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1162"
+  scope "core"
+  body_sha256 "c5b5d0a96a864ca2dd065e409489648f76f8485ada9e01b273fd58db7f965bb0"
+issue 1163
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1163"
+  scope "core"
+  body_sha256 "7e2e37f935f07801269ac8c1b130bc905d376c4e00f689a578d89e82e6e7ea5c"
+issue 1164
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1164"
+  scope "core"
+  body_sha256 "a44d90f354d04ccfd8b9425e69e7685ab1c810eb0c8a511908505d1b497f6d5a"
+issue 1165
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1165"
+  scope "core"
+  body_sha256 "a47b4651ed039a5909fb7de970e6e087e79ce7df4c6a16ee20e16622e45bfa0d"
+issue 1166
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1166"
+  scope "core"
+  body_sha256 "d2a46c263b9e9a5622e70e6c6b6ab88e6f5ab020a9a2672863d2ae10625455d7"
+issue 1167
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1167"
+  scope "core"
+  body_sha256 "68293ba61283b068f5983a95269200f9e47e87250adc681b78aedfdeff6b25f9"
+issue 1168
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1168"
+  scope "core"
+  body_sha256 "ad6311f0e1ab1f9c23df8ec1efc01196e23cbc3715abedbe7ed9bbdb40589f5b"
+issue 1169
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1169"
+  scope "core"
+  body_sha256 "192fd704db8c88238d0d80709a806d2de439dfba06085bf7e1d08901532d31ff"
+issue 1170
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1170"
+  scope "core"
+  body_sha256 "209f5761a8af92ab4dea2daf5b5f6962d4e74ec05ae126f24599f89a43fb6378"
+issue 1171
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1171"
+  scope "core"
+  body_sha256 "abfe998c718cc2d07f16556b47ce2ea94fc46a5d0eeda8dd810e04b32394f46d"
+issue 1172
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1172"
+  scope "core"
+  body_sha256 "035f60cbeb19cf6956e0526b0ae900b552e265144f201a6b6cc5619e3e6f0701"
+issue 1173
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1173"
+  scope "core"
+  body_sha256 "bb7a5c1116d85529d007f178561018244b857abbcba53853f5818300753e6b23"
+issue 1174
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1174"
+  scope "core"
+  body_sha256 "3140011ff0bd711e7347d98152d05fb4d24d985ea88f02e5854134ec61c92f1a"
+issue 1175
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1175"
+  scope "core"
+  body_sha256 "0863f85c788e2c81013a08bc28bcf891e9d0e4da49786bd8101252f1339b4719"
+issue 1176
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1176"
+  scope "core"
+  body_sha256 "6684b7cae87550bfdf8f671f8bd4e762ea4eb67fcd66de1d5649f188aea171f2"
+issue 1177
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1177"
+  scope "core"
+  body_sha256 "8c567f5b9e92a1d96a1da13d7119c744c85ef7f0aba6b87b24f0d393e9696ed7"
+issue 1178
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1178"
+  scope "core"
+  body_sha256 "a9e4d9e16751915927074e7cab9f869936370b3f42e243b3bb4a11ac03f2a3c6"
+issue 1179
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1179"
+  scope "core"
+  body_sha256 "9ea50b0594c4aefd3f07c35026a7746be8e518610fe43d492c4f40abda28775c"
+issue 1180
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1180"
+  scope "core"
+  body_sha256 "232d43b7869eac0127dbd831b815aef0f7bab0cd680f3d6691a0320d00f8a43f"
+issue 1181
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1181"
+  scope "core"
+  body_sha256 "be137de88df11ed101a877f69adb308205e9cde940ffa2bfe1f94ae8cef6576e"
+issue 1182
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1182"
+  scope "core"
+  body_sha256 "188719c7275b8e6c02b594357463f57e555ab1819f004ffba9780fc3108e09b6"
+issue 1183
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1183"
+  scope "core"
+  body_sha256 "77da27bbb26a2bd5972e1a9bf05fa8a7e8a038e751caf19588ee16dba275167f"
+issue 1184
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1184"
+  scope "core"
+  body_sha256 "4f026df0c3064ec8d9d5f1e58360582cc780aa28a3819b39fe27f33faeef029c"
+issue 1185
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1185"
+  scope "core"
+  body_sha256 "96af851b5bd812cca539f41dffd01835daf8e8625ee8b1728ab7f4429e1ab48b"
+issue 1186
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1186"
+  scope "core"
+  body_sha256 "ab48cb216e74e382da4a69ce0a0ee3f3571e3a842f04d70e7c6d30a21372bac0"
+issue 1187
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1187"
+  scope "core"
+  body_sha256 "6c180f18d80a9abf4c01b656b070e474e1670cff89cfd789d30420ec3227aa47"
+issue 1189
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1189"
+  scope "core"
+  body_sha256 "dc6cdb98d23dd3ab7830a730a1b2198deecf1045d0a43970a3d2da0a86b5e327"
+issue 1190
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1190"
+  scope "supporting/preserve"
+  body_sha256 "3c0f845900154bb6da3abed91f9a5b94aab350257311f5399be4ca237feed86d"
+issue 1191
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1191"
+  scope "core"
+  body_sha256 "9b72108ce9ddb780570220616647594deee3f62016cdcfab8d523d7bc0d2f273"
+issue 1192
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1192"
+  scope "core"
+  body_sha256 "c7e00d22fc1bfde2dc8ca88d49d08d1fbd618885d2662013174d030ae8182256"
+issue 1193
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1193"
+  scope "core"
+  body_sha256 "0e8fb58e4d422f3c7ba5ae8cdc79c1fae855723f1aa05c2ea89680f303acb41a"
+issue 1194
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1194"
+  scope "core"
+  body_sha256 "379a3c8343b03e76447b6dc8f28169d643d1f4e0e7ca56ccdef36a18dfb20202"
+issue 1201
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1201"
+  scope "supporting/preserve"
+  body_sha256 "2cadb34aee1cd27e0ffba0a4475dde3df8b3b1b0028aee5bc443e4c64d4903e6"
+issue 1203
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1203"
+  scope "supporting/preserve"
+  body_sha256 "7c3750d5c59646d7fbe7c272dbbcb153b943953aae3e7b8dc5f7bb7cbbe8d54a"
+issue 1204
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1204"
+  scope "supporting/preserve"
+  body_sha256 "b58d2bfd597764664dc9c64c0bf7c478dab8ebecdd7c921777d087b1c9b25bb9"
+issue 1205
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1205"
+  scope "core"
+  body_sha256 "ecb3f90b150d78446965adb1220609bfd70a89767d17511156c78578399bd86d"
+issue 1206
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1206"
+  scope "core"
+  body_sha256 "330fba0ae1e6822e0d2970875bb4f7fc7894d313c12e6752c52c0c47890da60e"
+issue 1207
+  state "CLOSED"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1207"
+  scope "core"
+  body_sha256 "8e86c8c1d28e9e2a49196c55a6a748297657d831be9f2ea3a824b44c4c5aab53"
+issue 1208
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1208"
+  scope "core"
+  body_sha256 "83e0279066b5a0b915f7ed37a24953fce054d11a077c5622a97e2424a4288244"
+issue 1209
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1209"
+  scope "core"
+  body_sha256 "e31fc8ffa4f0effdb1718119f81c0bdd5874c8043b879b21d2438be6f8c1a570"
+issue 1210
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1210"
+  scope "core"
+  body_sha256 "fb75b24c7766814bd06d67184a52c5e9ca1835a6340bfbb072c09ca7bd806e79"
+issue 1211
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1211"
+  scope "core"
+  body_sha256 "5f8e83a862ceb2b6c4693a0446688561c46a513fbb6e01e795ed8c33fdf8f7b6"
+issue 1212
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1212"
+  scope "core"
+  body_sha256 "44190c8881c796ea746f95b2532dc89997c591c85a627ce13c8a20c775bd7e4d"
+issue 1213
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1213"
+  scope "core"
+  body_sha256 "a3994eb58622e4f0eedf620e9d437b19eb516c92a5b5e69ab4d96023ef112464"
+issue 1214
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1214"
+  scope "core"
+  body_sha256 "30e1289c9179e5790f532ff638c199f25f5f0a0f25d838c79d3ce09e1aa0d6bb"
+issue 1215
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1215"
+  scope "core"
+  body_sha256 "71aab459194355fe18ab241018a398b56f8e933428edd77fcbe696500a738563"
+issue 1216
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1216"
+  scope "core"
+  body_sha256 "32894ac8f11a84b8bc152ca1ef6ae879dfdafdd02b38f1920fbe1f71cae50a02"
+issue 1217
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1217"
+  scope "core"
+  body_sha256 "c3c4eb950ca3bd0fda2a9b0f8b15f41b80442326fcff55a5d84bcf91f9b3fab1"
+issue 1218
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1218"
+  scope "core"
+  body_sha256 "655bad09505b2c40d6096ef3ab9c13dd35109687f4c7651d280d6114d09a94c7"
+issue 1219
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1219"
+  scope "core"
+  body_sha256 "94ec3c8e3a42b5d98a959d63cdc1cf24472ee85a5d60f74b0e42d45f7c91aadd"
+issue 1220
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1220"
+  scope "core"
+  body_sha256 "522147e8ec14aaeb0fb1f8e961712b2daf20fdefaf4cfe044c4b7e5d579282df"
+issue 1222
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1222"
+  scope "core"
+  body_sha256 "92eb329243372b2d36423f0de9ee51f44f7d18b6e01eee81166cecf2d8a04e92"
+issue 1223
+  state "OPEN"
+  source_url "https://github.com/link-assistant/formal-ai/issues/1223"
+  scope "core"
+  body_sha256 "3b7fe87c6ef46b84d824499559c0248fa10e801bb9ebe42ecbbd7b16a9eb94b4"

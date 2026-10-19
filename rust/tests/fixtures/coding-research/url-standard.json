@@ -1,0 +1,66 @@
+[
+  {
+    "url": "https://reference.example/source",
+    "fetch": true
+  },
+  {
+    "url": "http://reference.example/source",
+    "fetch": false
+  },
+  {
+    "url": "https://reference.example:65536/source",
+    "fetch": false
+  },
+  {
+    "url": "https://reference.example:notaport/source",
+    "fetch": false
+  },
+  {
+    "url": "https://[:::1]/source",
+    "fetch": false
+  },
+  {
+    "url": "https://256.1.1.1/source",
+    "fetch": false
+  },
+  {
+    "url": "https://:443/source",
+    "fetch": false
+  },
+  {
+    "url": "https://exa%mple.example/source",
+    "fetch": false
+  },
+  {
+    "url": "https://exa|mple.example/source",
+    "fetch": false
+  },
+  {
+    "url": "https://[2001:db8::1]/source",
+    "fetch": true
+  },
+  {
+    "url": "https://münich.example/source",
+    "fetch": true
+  },
+  {
+    "url": "https://%65xample.example/source",
+    "fetch": true
+  },
+  {
+    "url": "https:///reference.example/source",
+    "fetch": true
+  },
+  {
+    "url": "https://reference.example:443/source?x=1#part",
+    "fetch": true
+  },
+  {
+    "url": "https://name:password@reference.example/source",
+    "fetch": true
+  },
+  {
+    "url": "https://0x7f000001/source",
+    "fetch": true
+  }
+]

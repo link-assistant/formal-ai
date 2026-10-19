@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/report_script.rs
   language rust
   fidelity full_ast
-  byte_len 4523
-  line_count 110
-  content_id source_module_e96759fd1b331520
-  symbol_count 16
+  byte_len 4502
+  line_count 108
+  content_id source_module_99d1809984ede330
+  symbol_count 15
   symbols
     const COMMAND_PLACEHOLDER 16 16
     const MESSAGE_PLACEHOLDER 17 17
@@ -22,30 +22,28 @@ self_ast_census
     function export 77 80
     function render 83 94
     function preflight 98 105
-    function shell_quote 108 110
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2465
-    named_node_count 521
+    total_link_count 2395
+    named_node_count 507
     distinct_node_kinds 53
     node_kinds
       arguments 25
       assignment_expression 2
       binary_expression 1
-      block 10
+      block 9
       boolean_literal 4
       call_expression 25
-      char_literal 1
       closure_expression 2
       closure_parameters 2
       const_item 8
-      crate 1
+      crate 2
       declaration_list 1
       doc_comment 36
-      escape_sequence 15
+      escape_sequence 14
       expression_statement 11
       field_declaration 4
       field_declaration_list 1
@@ -53,35 +51,36 @@ self_ast_census
       field_identifier 35
       field_initializer 4
       field_initializer_list 1
-      function_item 7
+      function_item 6
       function_modifiers 1
       generic_type 2
-      identifier 66
+      identifier 64
       if_expression 3
       impl_item 1
       inner_doc_comment_marker 12
       let_declaration 2
       line_comment 36
-      macro_invocation 4
+      macro_invocation 3
       mutable_specifier 4
       outer_doc_comment_marker 24
-      parameter 6
-      parameters 7
-      primitive_type 15
+      parameter 5
+      parameters 6
+      primitive_type 14
       reference_expression 2
-      reference_type 13
-      scoped_identifier 6
+      reference_type 12
+      scoped_identifier 8
       self 13
       self_parameter 4
       source_file 1
-      string_content 22
-      string_literal 14
+      string_content 19
+      string_literal 12
       struct_expression 1
       struct_item 1
       super 7
-      token_tree 6
+      token_tree 4
       type_arguments 2
-      type_identifier 14
+      type_identifier 13
       unary_expression 1
-      use_declaration 1
+      use_as_clause 1
+      use_declaration 2
       visibility_modifier 7

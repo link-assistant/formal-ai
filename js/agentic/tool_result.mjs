@@ -74,7 +74,23 @@ export function failedVerification(runOutputs, verificationCommand, prompt) {
   return render(verificationCommand, output, prompt);
 }
 
-/** Mirrors `fn reported_exit_code`. */
+/** Parse declared harness labels, never manufacture a missing status. */
+function labelledProcessExitCode(raw) {
+  const labels = agenticMessage('command_reroute_exit_code_labels').split('|');
+  for (const rawLine of rustLines(raw)) {
+    const line = toAsciiLowercase(trim(rawLine));
+    const label = labels.find(candidate => line.startsWith(candidate));
+    if (label === undefined) continue;
+    const token = line.slice(label.length).split(/[^0-9-]/u).find(part => part !== '');
+    if (token !== undefined) {
+      const code = parseI64(token);
+      if (code !== null) return code;
+    }
+  }
+  return null;
+}
+
+/** Mirrors fn reported_exit_code. */
 export function reportedExitCode(raw) {
   return normalize(raw).exit_code;
 }
@@ -355,6 +371,8 @@ function normalize(raw) {
   if (value === undefined) {
     const envelope = parseShellEnvelope(trimmed);
     if (envelope) return envelopeResult(envelope);
+    const code = labelledProcessExitCode(trimmed);
+    if (code !== null) return envelopeResult({output: stripTransportEnvelope(trimmed), error: '', exit_code: code});
     return fromPayload(stripTransportEnvelope(trimmed), null);
   }
   if (!isObject(value)) return fromPayload(prettyJson(value), null);

@@ -14,11 +14,13 @@
 //! [`page_answer`] renders a report as the chat answer to `formalize <url>`:
 //! the page's counts, then each statement with its formal notation.
 
+use super::dialogue::source_term_count;
 use super::statement_rendering::deformalize_statement;
 use super::text_statements::{
     Polarity, Statement, clause_statement, formalize_sentences, has_no_unknown, known_ids,
     statement_terms,
 };
+use super::typed_meaning::typed_meaning;
 
 /// The most statements a page answer lists; the rest are counted.
 pub const ANSWER_STATEMENT_LIMIT: usize = 40;
@@ -64,7 +66,8 @@ pub fn fact_survives(statement: &Statement) -> bool {
     }
     let text = deformalize_statement(statement, &statement.language);
     let reread = clause_statement(&text, &statement.language, None, false);
-    known_ids(&reread) == known
+    typed_meaning(&reread.dialogue) == typed_meaning(&statement.dialogue)
+        && known_ids(&reread) == known
 }
 
 /// Every sentence of `text` with its statements, and the page's counts.
@@ -83,7 +86,7 @@ pub fn formalize_page(text: &str, language: &str) -> PageReport {
         }
         for statement in &sentence.statements {
             report.statements += 1;
-            report.terms += statement_terms(statement).len();
+            report.terms += source_term_count(statement);
             report.unknown += statement.unknown.len();
             if known_ids(statement).is_empty() {
                 continue;
@@ -116,7 +119,22 @@ pub fn statement_notation(statement: &Statement) -> String {
     } else {
         ""
     };
-    format!("{negation}({})", ids.join(" "))
+    let legacy = format!("{negation}({})", ids.join(" "));
+    typed_meaning(&statement.dialogue).map_or_else(
+        || legacy.clone(),
+        |typed| {
+            crate::seed::fill_template_once(
+                &super::structural_rule_values("typed-statement-notation", "template")[0],
+                &[
+                    ("legacy", &legacy),
+                    (
+                        "typed",
+                        &crate::links_format::format_lino_value_verbatim(&typed),
+                    ),
+                ],
+            )
+        },
+    )
 }
 
 /// The answer to a request to formalize the page at `url`, in `language`:
@@ -174,3 +192,19 @@ pub fn page_answer(report: &PageReport, url: &str, language: &str) -> String {
     }
     lines.join("\n")
 }
+
+#[cfg(test)]
+#[path = "../../tests/source/source_tests/formalization/page-numeric_source_evidence_tests.rs"]
+mod numeric_source_evidence_tests;
+
+#[cfg(test)]
+#[path = "../../tests/source/source_tests/formalization/page-locale_numeric_meaning_tests.rs"]
+mod locale_numeric_meaning_tests;
+
+#[cfg(test)]
+#[path = "../../tests/source/source_tests/formalization/page-translated_numeric_meaning_tests.rs"]
+mod translated_numeric_meaning_tests;
+
+#[cfg(test)]
+#[path = "../../tests/source/source_tests/formalization/page-typed_meaning_preservation_tests.rs"]
+mod typed_meaning_preservation_tests;

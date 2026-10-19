@@ -1,3 +1,4 @@
+import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // Workspace content search (PR #1188 T90, gap G12): "Find all usages of add",
 // "Where is add used in this project?", "Grep for add" ask for the places a
 // name or a literal appears inside the workspace's files. The seeded
@@ -228,10 +229,8 @@ function escapedRegex(literal) {
   return literal.replace(/[\\^$.*+?()[\]{}|/]/gu, (character) => `\\${character}`);
 }
 
-/** Mirrors `fn shell_quote` in rust/src/agentic_coding/git_commit.rs. */
-function shellQuote(text) {
-  return `'${text.split("'").join("'\\''")}'`;
-}
+/** Mirrors `fn quote_shell_word` in rust/src/portable_string_contracts.rs. */
+
 
 /** The grep tool arguments for a search. */
 function grepArguments(search) {

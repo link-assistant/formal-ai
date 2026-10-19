@@ -1,0 +1,3 @@
+(source-case (language "JavaScript") (source "// preserve Unicode 你好\nexport function keep(value) { return value; }\n") (document "JavaScript.lino"))
+(source-case (language "TypeScript") (source "/** Keep the value. */\nexport function keep(value: string): string { return value; }\n") (document "TypeScript.lino"))
+(source-case (language "Rust") (source "/// Keep the value.\npub fn keep(value: &str) -> &str { value }\n") (document "Rust.lino"))

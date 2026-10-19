@@ -1,3 +1,4 @@
+import { nonNullObject as isObject } from '../logging/object-values.js';
 // The issue-#538 meaning-detail recipe's data and derivation
 // (rust/src/agentic_coding/meaning_detail.rs): re-derive a concept's enriched
 // meaning block (part of speech + grammatical number per surface, grounded in
@@ -72,7 +73,7 @@ export function isMeaningDetailTask(prompt) {
   return detailKeywords().some((keyword) => lower.includes(keyword)) || conceptForTask(prompt) !== null;
 }
 
-const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+
 const str = (value) => (typeof value === 'string' ? value : null);
 /** serde_json `Map` iteration order (a `BTreeMap`: keys sorted). */
 const sortedKeys = (object) => Object.keys(object).sort(byteOrder);

@@ -2,18 +2,18 @@ self_ast_census
   target src/cli_local_transport.rs
   language rust
   fidelity signature
-  byte_len 4903
-  line_count 150
-  content_id source_module_d0ba14bb4d3ba834
+  byte_len 5383
+  line_count 160
+  content_id source_module_227c6b929d421cc1
   symbol_count 10
   symbols
-    struct ServeArgs 13 42
-    struct ConnectArgs 45 63
-    function agent_mode 66 68
-    enum ClientTransport 72 76
-    enum ConnectFormat 79 82
-    function run_serve 84 98
-    function run_connect 100 123
-    function assistant_content 125 131
-    function api_key_from_env 133 146
-    function transport_error 148 150
+    struct ServeArgs 13 46
+    struct ConnectArgs 49 67
+    function agent_mode 70 72
+    enum ClientTransport 76 80
+    enum ConnectFormat 83 86
+    function run_serve 88 108
+    function run_connect 110 133
+    function assistant_content 135 141
+    function api_key_from_env 143 156
+    function transport_error 158 160

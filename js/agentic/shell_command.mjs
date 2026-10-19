@@ -136,7 +136,8 @@ function readsAsProse(remainder, vocab) {
   if (first === undefined) return true;
   if (first.includes('://')) return true;
   if (vocab.shell_tokens.includes(normalizeCommandWord(first))) return false;
-  return isProseWord(first) || words.slice(1).filter(isProseWord).length >= 2;
+  return isProseWord(first) || (!SHELL_QUOTING_AND_METACHARACTERS.some(character => remainder.includes(character))
+    && words.slice(1).filter(isProseWord).length >= 2);
 }
 
 /** Mirrors `fn explicit_passthrough_command`. */

@@ -1,0 +1,1 @@
+Use optional read credentials only for HTTPS GitHub release metadata during workspace prerequisite discovery. Do not forward credentials through redirects or attach them to documentation and archive downloads. Give hosted live recovery the existing read-only runner token so it avoids the shared unauthenticated API limit.

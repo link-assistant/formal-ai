@@ -229,6 +229,19 @@ export function buildStagedReleaseProjection(source, packet) {
   }
   assert.equal(binding.length, 104);
   let callerSource = source;
+  // Change detection consumes Git history and these physical inputs, not release operations.
+  const detector = workflowJobs(source).find(job => job.id === 'detect-changes');
+  assert.ok(detector, 'source change detector required');
+  let detectorBody = detector.body;
+  for (const [marker, addition] of [
+    ['    timeout-minutes: 5\n', "    # Checkout retries must fit this unchanged job clock.\n    env:\n      GIT_HTTP_LOW_SPEED_LIMIT: '1024'\n      GIT_HTTP_LOW_SPEED_TIME: '30'\n"],
+    ['          fetch-depth: 0\n', '          # Keep complete commit history, without materializing unrelated blobs.\n          sparse-checkout: |\n            /scripts/detect-code-changes.rs\n            /scripts/install-rust-script.sh\n            /changelog.d/\n          sparse-checkout-cone-mode: false\n']
+  ]) {
+    assert.equal(detectorBody.split(marker).length, 2, 'unique original detector field required');
+    detectorBody = detectorBody.replace(marker, marker + addition);
+  }
+  assert.equal(callerSource.split(detector.body).length, 2);
+  callerSource = callerSource.replace(detector.body, detectorBody);
   for (const caller of packet.callers) {
     const original = workflowJobs(source).find(j => j.id === caller.caller);
     const prefix = original.body.slice(0, original.body.indexOf('    runs-on:'));

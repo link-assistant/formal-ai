@@ -1,0 +1,1199 @@
+{
+  "attribution": "Declarative policy expectations and synthetic provider transcripts; not live network or native execution",
+  "policyCases": [
+    {
+      "id": "unique--1",
+      "function": "sourceCaptureUniqueAccepted",
+      "arguments": [
+        -1
+      ],
+      "expected": false
+    },
+    {
+      "id": "unique-0",
+      "function": "sourceCaptureUniqueAccepted",
+      "arguments": [
+        0
+      ],
+      "expected": false
+    },
+    {
+      "id": "unique-1",
+      "function": "sourceCaptureUniqueAccepted",
+      "arguments": [
+        1
+      ],
+      "expected": true
+    },
+    {
+      "id": "unique-2",
+      "function": "sourceCaptureUniqueAccepted",
+      "arguments": [
+        2
+      ],
+      "expected": false
+    },
+    {
+      "id": "unique-1.5",
+      "function": "sourceCaptureUniqueAccepted",
+      "arguments": [
+        1.5
+      ],
+      "expected": false
+    },
+    {
+      "id": "declaration-valid",
+      "function": "sourceCaptureDeclarationAccepted",
+      "arguments": [
+        true,
+        true,
+        true,
+        1
+      ],
+      "expected": true
+    },
+    {
+      "id": "declaration-flag-0",
+      "function": "sourceCaptureDeclarationAccepted",
+      "arguments": [
+        false,
+        true,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "declaration-flag-1",
+      "function": "sourceCaptureDeclarationAccepted",
+      "arguments": [
+        true,
+        false,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "declaration-flag-2",
+      "function": "sourceCaptureDeclarationAccepted",
+      "arguments": [
+        true,
+        true,
+        false,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "declaration-duplicate",
+      "function": "sourceCaptureDeclarationAccepted",
+      "arguments": [
+        true,
+        true,
+        true,
+        2
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-valid",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-flag-0",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        false,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-flag-2",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-flag-3",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-flag-4",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-flag-5",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-count-0",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-count-2",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "envelope-valid",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "envelope-flag-0",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        false,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "envelope-flag-1",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "envelope-flag-2",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "envelope-flag-3",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "envelope-flag-4",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-min",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "timestamp-max",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "timestamp-long",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        false,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-zero",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        false,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-missing",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        false,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-syntax",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        false,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-u64-overflow",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "trust-score-0",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        0,
+        true,
+        1
+      ],
+      "expected": true
+    },
+    {
+      "id": "trust-score-0.5",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        0.5,
+        true,
+        1
+      ],
+      "expected": true
+    },
+    {
+      "id": "trust-score-9007199254740991",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        9007199254740991,
+        true,
+        1
+      ],
+      "expected": true
+    },
+    {
+      "id": "trust-score--9007199254740991",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        -9007199254740991,
+        true,
+        1
+      ],
+      "expected": true
+    },
+    {
+      "id": "trust-score-9007199254740992",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        9007199254740992,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "trust-score--9007199254740992",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        -9007199254740992,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "trust-fields",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        1,
+        true,
+        0,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "trust-no-number",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        false,
+        0,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "trust-no-policy",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        0,
+        false,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "trust-empty-policy",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        0,
+        true,
+        0
+      ],
+      "expected": false
+    },
+    {
+      "id": "trust-max-policy",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        0,
+        true,
+        256
+      ],
+      "expected": true
+    },
+    {
+      "id": "trust-over-policy",
+      "function": "sourceCaptureTrustAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        0,
+        true,
+        257
+      ],
+      "expected": false
+    },
+    {
+      "id": "licence-valid",
+      "function": "sourceCaptureLicenceAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        1,
+        true,
+        1
+      ],
+      "expected": true
+    },
+    {
+      "id": "licence-shape",
+      "function": "sourceCaptureLicenceAccepted",
+      "arguments": [
+        false,
+        2,
+        true,
+        1,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "licence-fields",
+      "function": "sourceCaptureLicenceAccepted",
+      "arguments": [
+        true,
+        1,
+        true,
+        1,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "licence-empty-name",
+      "function": "sourceCaptureLicenceAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        0,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "licence-max",
+      "function": "sourceCaptureLicenceAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        256,
+        true,
+        2048
+      ],
+      "expected": true
+    },
+    {
+      "id": "licence-name-over",
+      "function": "sourceCaptureLicenceAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        257,
+        true,
+        2048
+      ],
+      "expected": false
+    },
+    {
+      "id": "licence-url-over",
+      "function": "sourceCaptureLicenceAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        256,
+        true,
+        2049
+      ],
+      "expected": false
+    },
+    {
+      "id": "licence-no-url",
+      "function": "sourceCaptureLicenceAccepted",
+      "arguments": [
+        true,
+        2,
+        true,
+        1,
+        false,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-valid-receipt-identity",
+      "function": "sourceCaptureReceiptIdentityAccepted",
+      "arguments": [
+        1,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-valid-payload",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-flag-0-receipt-identity",
+      "function": "sourceCaptureReceiptIdentityAccepted",
+      "arguments": [
+        1,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-flag-0-payload",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-flag-2-receipt-identity",
+      "function": "sourceCaptureReceiptIdentityAccepted",
+      "arguments": [
+        1,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-flag-2-payload",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-flag-3-receipt-identity",
+      "function": "sourceCaptureReceiptIdentityAccepted",
+      "arguments": [
+        1,
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-flag-3-payload",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-flag-4-receipt-identity",
+      "function": "sourceCaptureReceiptIdentityAccepted",
+      "arguments": [
+        1,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-flag-4-payload",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        false,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-flag-5-receipt-identity",
+      "function": "sourceCaptureReceiptIdentityAccepted",
+      "arguments": [
+        1,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-flag-5-payload",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-count-0-receipt-identity",
+      "function": "sourceCaptureReceiptIdentityAccepted",
+      "arguments": [
+        0,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-count-0-payload",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "receipt-count-2-receipt-identity",
+      "function": "sourceCaptureReceiptIdentityAccepted",
+      "arguments": [
+        2,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "receipt-count-2-payload",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "envelope-valid-identity",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "envelope-flag-0-identity",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "envelope-flag-1-identity",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        false,
+        true,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "envelope-flag-2-identity",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        false,
+        true
+      ],
+      "expected": false
+    },
+    {
+      "id": "envelope-flag-3-identity",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        false
+      ],
+      "expected": false
+    },
+    {
+      "id": "envelope-flag-4-identity",
+      "function": "sourceCaptureAllObserved",
+      "arguments": [
+        true,
+        true,
+        true
+      ],
+      "expected": true
+    },
+    {
+      "id": "timestamp-min-text",
+      "function": "sourceCaptureTimestampTextAccepted",
+      "arguments": [
+        true,
+        true,
+        false,
+        1
+      ],
+      "expected": true
+    },
+    {
+      "id": "timestamp-max-text",
+      "function": "sourceCaptureTimestampTextAccepted",
+      "arguments": [
+        true,
+        true,
+        false,
+        20
+      ],
+      "expected": true
+    },
+    {
+      "id": "timestamp-long-text",
+      "function": "sourceCaptureTimestampTextAccepted",
+      "arguments": [
+        true,
+        true,
+        false,
+        21
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-zero-text",
+      "function": "sourceCaptureTimestampTextAccepted",
+      "arguments": [
+        true,
+        true,
+        true,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-missing-text",
+      "function": "sourceCaptureTimestampTextAccepted",
+      "arguments": [
+        false,
+        true,
+        false,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-syntax-text",
+      "function": "sourceCaptureTimestampTextAccepted",
+      "arguments": [
+        true,
+        false,
+        false,
+        1
+      ],
+      "expected": false
+    },
+    {
+      "id": "timestamp-u64-overflow-text",
+      "function": "sourceCaptureTimestampTextAccepted",
+      "arguments": [
+        true,
+        true,
+        false,
+        20
+      ],
+      "expected": true
+    }
+  ],
+  "observerCases": [
+    {
+      "id": "unseen-call-url-tool-and-policy",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Inspect source."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "heldout-call-42",
+              "type": "function",
+              "function": {
+                "name": "open_url",
+                "arguments": "{\"url\":\"https://heldout.invalid/article?case=42\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "open_url",
+          "tool_call_id": "heldout-call-42",
+          "content": "A held-out source body.\n",
+          "source_capture": {
+            "schema": "formal-ai-source-capture-v1",
+            "callId": "heldout-call-42",
+            "url": "https://heldout.invalid/article?case=42",
+            "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+            "fetchedAt": "18446744073709551615",
+            "cached": false,
+            "trust": {
+              "score": 0.25,
+              "policy": "held-out-東京-policy"
+            },
+            "licence": {
+              "name": "fixture-declaration",
+              "url": "https://licence.invalid/terms"
+            }
+          }
+        }
+      ],
+      "start": 0,
+      "url": "https://heldout.invalid/article?case=42",
+      "text": "A held-out source body.\n",
+      "expected": {
+        "schema": "formal-ai-source-observation-v1",
+        "url": "https://heldout.invalid/article?case=42",
+        "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+        "binding": {
+          "status": "TranscriptBound",
+          "callId": "heldout-call-42",
+          "tool": "open_url"
+        },
+        "authority": "Unknown",
+        "fetchedAt": {
+          "status": "ProviderReported",
+          "value": "18446744073709551615"
+        },
+        "cached": {
+          "status": "ProviderReported",
+          "value": false
+        },
+        "trust": {
+          "status": "ProviderReported",
+          "value": {
+            "score": 0.25,
+            "policy": "held-out-東京-policy"
+          }
+        },
+        "licence": {
+          "status": "ProviderReported",
+          "value": {
+            "name": "fixture-declaration",
+            "url": "https://licence.invalid/terms"
+          }
+        }
+      }
+    },
+    {
+      "id": "receipt-before-its-declaration",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Inspect source."
+        },
+        {
+          "role": "tool",
+          "name": "open_url",
+          "tool_call_id": "heldout-call-42",
+          "content": "A held-out source body.\n",
+          "source_capture": {
+            "schema": "formal-ai-source-capture-v1",
+            "callId": "heldout-call-42",
+            "url": "https://heldout.invalid/article?case=42",
+            "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+            "fetchedAt": "18446744073709551615",
+            "cached": false,
+            "trust": {
+              "score": 0.25,
+              "policy": "held-out-東京-policy"
+            },
+            "licence": {
+              "name": "fixture-declaration",
+              "url": "https://licence.invalid/terms"
+            }
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "heldout-call-42",
+              "type": "function",
+              "function": {
+                "name": "open_url",
+                "arguments": "{\"url\":\"https://heldout.invalid/article?case=42\"}"
+              }
+            }
+          ]
+        }
+      ],
+      "start": 0,
+      "url": "https://heldout.invalid/article?case=42",
+      "text": "A held-out source body.\n",
+      "expected": {
+        "schema": "formal-ai-source-observation-v1",
+        "url": "https://heldout.invalid/article?case=42",
+        "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+        "binding": {
+          "status": "Unknown",
+          "callId": null,
+          "tool": null
+        },
+        "authority": "Unknown",
+        "fetchedAt": {
+          "status": "Unknown"
+        },
+        "cached": {
+          "status": "Unknown"
+        },
+        "trust": {
+          "status": "Unknown"
+        },
+        "licence": {
+          "status": "Unknown"
+        }
+      }
+    },
+    {
+      "id": "different-recognized-fetch-name",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Inspect source."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "heldout-call-42",
+              "type": "function",
+              "function": {
+                "name": "open_url",
+                "arguments": "{\"url\":\"https://heldout.invalid/article?case=42\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "read_url",
+          "tool_call_id": "heldout-call-42",
+          "content": "A held-out source body.\n",
+          "source_capture": {
+            "schema": "formal-ai-source-capture-v1",
+            "callId": "heldout-call-42",
+            "url": "https://heldout.invalid/article?case=42",
+            "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+            "fetchedAt": "18446744073709551615",
+            "cached": false,
+            "trust": {
+              "score": 0.25,
+              "policy": "held-out-東京-policy"
+            },
+            "licence": {
+              "name": "fixture-declaration",
+              "url": "https://licence.invalid/terms"
+            }
+          }
+        }
+      ],
+      "start": 0,
+      "url": "https://heldout.invalid/article?case=42",
+      "text": "A held-out source body.\n",
+      "expected": {
+        "schema": "formal-ai-source-observation-v1",
+        "url": "https://heldout.invalid/article?case=42",
+        "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+        "binding": {
+          "status": "Unknown",
+          "callId": null,
+          "tool": null
+        },
+        "authority": "Unknown",
+        "fetchedAt": {
+          "status": "Unknown"
+        },
+        "cached": {
+          "status": "Unknown"
+        },
+        "trust": {
+          "status": "Unknown"
+        },
+        "licence": {
+          "status": "Unknown"
+        }
+      }
+    },
+    {
+      "id": "two-eligible-calls-same-url-body",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Inspect source."
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "heldout-call-42",
+              "type": "function",
+              "function": {
+                "name": "open_url",
+                "arguments": "{\"url\":\"https://heldout.invalid/article?case=42\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "open_url",
+          "tool_call_id": "heldout-call-42",
+          "content": "A held-out source body.\n",
+          "source_capture": {
+            "schema": "formal-ai-source-capture-v1",
+            "callId": "heldout-call-42",
+            "url": "https://heldout.invalid/article?case=42",
+            "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+            "fetchedAt": "18446744073709551615",
+            "cached": false,
+            "trust": {
+              "score": 0.25,
+              "policy": "held-out-東京-policy"
+            },
+            "licence": {
+              "name": "fixture-declaration",
+              "url": "https://licence.invalid/terms"
+            }
+          }
+        },
+        {
+          "role": "assistant",
+          "content": "",
+          "tool_calls": [
+            {
+              "id": "second-heldout-call",
+              "type": "function",
+              "function": {
+                "name": "open_url",
+                "arguments": "{\"url\":\"https://heldout.invalid/article?case=42\"}"
+              }
+            }
+          ]
+        },
+        {
+          "role": "tool",
+          "name": "open_url",
+          "tool_call_id": "second-heldout-call",
+          "content": "A held-out source body.\n",
+          "source_capture": {
+            "schema": "formal-ai-source-capture-v1",
+            "callId": "second-heldout-call",
+            "url": "https://heldout.invalid/article?case=42",
+            "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+            "fetchedAt": "18446744073709551615",
+            "cached": false,
+            "trust": {
+              "score": 0.25,
+              "policy": "held-out-東京-policy"
+            },
+            "licence": {
+              "name": "fixture-declaration",
+              "url": "https://licence.invalid/terms"
+            }
+          }
+        }
+      ],
+      "start": 0,
+      "url": "https://heldout.invalid/article?case=42",
+      "text": "A held-out source body.\n",
+      "expected": {
+        "schema": "formal-ai-source-observation-v1",
+        "url": "https://heldout.invalid/article?case=42",
+        "sha256": "670b96148f183bb92ee43032855f19e8b59ce49c242d13971db40f702f298206",
+        "binding": {
+          "status": "Unknown",
+          "callId": null,
+          "tool": null
+        },
+        "authority": "Unknown",
+        "fetchedAt": {
+          "status": "Unknown"
+        },
+        "cached": {
+          "status": "Unknown"
+        },
+        "trust": {
+          "status": "Unknown"
+        },
+        "licence": {
+          "status": "Unknown"
+        }
+      }
+    }
+  ]
+}

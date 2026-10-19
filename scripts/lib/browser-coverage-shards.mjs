@@ -6,7 +6,7 @@ import { durationLookup } from './ci-speed-shards.mjs';
 import { planShards, partitionProblems } from './ci-speed-shards.mjs';
 
 export const contentDigest = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
-export const browserShardCount = 6;
+export const browserShardCount = 16;
 
 export function browserInventory(root) {
   return fs.readdirSync(path.join(root, 'rust/tests/web'))
@@ -47,6 +47,7 @@ export function browserDurationModel(root) {
 
 export function browserPlan(inventory, count = browserShardCount, model = { seconds: new Map(), digest: null }) {
   if (!Array.isArray(inventory) || inventory.length === 0) throw new Error('browser test inventory is empty');
+  if (!Number.isSafeInteger(count) || count < 1 || count > inventory.length) throw new Error('invalid browser shard count');
   const names = inventory.map((item) => item.path);
   if (new Set(names).size !== names.length) throw new Error('duplicate browser test path');
   const { shards } = planShards(names, count, durationLookup(model.seconds, 1));

@@ -49,10 +49,33 @@ pub fn extract_unquoted_translation_surface(prompt: &str) -> Option<String> {
     let trimmed = prompt.trim_end_matches(['.', '!', '?', '。']);
     let lower = trimmed.to_lowercase();
 
-    extract_circumfix_surface(trimmed, &lower)
+    extract_target_first_surface(trimmed)
+        .or_else(|| extract_circumfix_surface(trimmed, &lower))
         .or_else(|| extract_hindi_unquoted_surface(trimmed, &lower))
         .or_else(|| extract_chinese_unquoted_surface(trimmed, &lower))
         .or_else(|| extract_suffix_surface(trimmed, &lower))
+}
+
+// A colon separates the target obligation from an arbitrary source surface.
+// Exact seeded marker equality prevents instruction prose from becoming a target.
+fn extract_target_first_surface(prompt: &str) -> Option<String> {
+    let (header, surface) = prompt.split_once(':')?;
+    let header = header.trim().to_lowercase();
+    let recognized = markers().circumfix_frames.iter().any(|(prefix, _)| {
+        let Some(target) = header.strip_prefix(prefix) else {
+            return false;
+        };
+        seed::lexicon()
+            .meanings_with_role(seed::ROLE_TRANSLATION_TARGET_MARKER)
+            .any(|meaning| {
+                meaning
+                    .words()
+                    .any(|word| word.eq_ignore_ascii_case(target.trim()))
+            })
+    });
+    recognized
+        .then(|| clean_unquoted_surface(surface))
+        .flatten()
 }
 
 /// Whether a structurally extracted source-first prompt also carries a
@@ -278,3 +301,7 @@ fn bare_script_forms(role: &str, script: fn(&str) -> bool) -> Vec<&'static str> 
         .map(WordForm::before_slot)
         .collect()
 }
+
+#[cfg(test)]
+#[path = "../../tests/source/source_tests/translation/prompt-target_first_tests.rs"]
+mod target_first_tests;

@@ -1,3 +1,4 @@
+import {wellFormedText} from '../logging/text-lines.mjs';
 // Private general provenance primitive. Supplied recipe: autonomous authorship credit 0.
 // Integrity and supplied-key signature validity are not autonomous authorship or engine replay.
 import {sourceSnapshot} from './snapshot.mjs';
@@ -8,7 +9,7 @@ import {blake3,
 const utf8=s=>Buffer.from(s,
  'utf8');
 const hex=s=>typeof s==='string'&&/^[0-9a-f]{64}$/.test(s);
-function identifier(s){if(typeof s!=='string'||!s.isWellFormed()||!s.length)throw Error('identifier_required');
+function identifier(s){if(typeof s!=='string'||!wellFormedText(s)||!s.length)throw Error('identifier_required');
  return s;
  }
 export function rawBytes(bytes){if(!(bytes instanceof Uint8Array))throw Error('bytes_required');

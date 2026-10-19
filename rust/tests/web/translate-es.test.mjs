@@ -6,7 +6,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { layoutOf, renderSource, translateJsToTs, tokenize, tsTwinPath } from '../../../scripts/translate-es.mjs';
+import { layoutOf, renderSource, translateJsToTs, tokenize, tsTwinPath, isTranslatedSource } from '../../../scripts/translate-es.mjs';
 
 /** The canonical rendering: the tree alone, no layout carried. */
 function canonical(source) {
@@ -99,4 +99,24 @@ test('the agentic ES modules mirror into ts/agentic as .mts twins', () => {
     const twin = readFileSync(new URL(`ts/${tsTwinPath(rel)}`, root), 'utf8');
     assert.equal(twin, translateJsToTs(source));
   }
+});
+
+// Issues #1213/#1220: shared provenance imports must have owned TS companions.
+test('shared provenance and logging modules have canonical ES ownership', () => {
+  const root=new URL('../../../',import.meta.url);
+  const files=["js/provenance/capture-context.mjs","js/provenance/cli.mjs","js/provenance/drive-capture.mjs","js/provenance/installation-key.mjs","js/provenance/replay-planner.mjs","js/provenance/session.mjs","js/provenance/snapshot-repository.mjs","js/provenance/snapshot.mjs","js/provenance/verify-drive.mjs","js/crypto/blake3.mjs","js/logging/json-numbers.mjs","js/logging/lino-codec.mjs","js/logging/object-values.js","js/logging/terminal-events.mjs","js/logging/text-lines.mjs","js/logging/typed-codec.mjs","js/server/structured-log.mjs","js/server/json.mjs"];
+  assert(files.length>=10);
+  for(const file of files){
+    assert.equal(isTranslatedSource(file),true,file);
+    const source=readFileSync(new URL(file,root),'utf8');
+    const twin=readFileSync(new URL('ts/'+tsTwinPath(file.slice(3)),root),'utf8');
+    assert.equal(twin,translateJsToTs(source),file);
+  }
+  for(const file of ['js/cryptography/no.mjs','js/vendor/unowned.mjs']){
+    assert.equal(isTranslatedSource(file),false,file);
+  }
+  for(const file of ['js/server/index.mjs','js/server/other.mjs','js/server/platform/host.mjs']) assert.equal(isTranslatedSource(file),true,file);
+  const native=readFileSync(new URL('rust/src/meta_translate.rs',root),'utf8');
+  for(const directory of ['agentic','provenance','crypto','logging','server'])assert(native.includes('"'+directory+'"'));
+  for(const stem of ['server/structured-log','server/json'])assert(native.includes('"'+stem+'"'));
 });

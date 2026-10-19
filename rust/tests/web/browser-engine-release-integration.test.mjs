@@ -31,7 +31,16 @@ function checkStructure(value) {
   } = value.jobs.package.permissions;
   assert.equal(actions, 'read');
   assert.deepEqual(originalPermissions, original.packagePermissions);
-  assert.deepEqual(value.jobs.resolve, original.resolve);
+  const boundedResolve = structuredClone(original.resolve);
+  boundedResolve.env = {
+    GIT_HTTP_LOW_SPEED_LIMIT: '1024',
+    GIT_HTTP_LOW_SPEED_TIME: '30'
+  };
+  Object.assign(boundedResolve.steps[0].with, {
+    'sparse-checkout': 'scripts/resolve-package-release.mjs',
+    'sparse-checkout-cone-mode': false
+  });
+  assert.deepEqual(value.jobs.resolve, boundedResolve);
   assert.deepEqual(value.concurrency, original.concurrency);
   assert.deepEqual(value.permissions, original.permissions);
   const steps = value.jobs.package.steps;
@@ -140,6 +149,28 @@ test('missing source build, changed compiler, missing receipt, credential drift 
     value => value.jobs.package.steps.at(-1).env.PUBLICATION_STATUS = 'published',
     value => value.jobs.package.steps.find(step => step.name === 'Cold install and verify the genuine browser worker in checks-only mode').if = "needs.resolve.outputs.publish == 'true'",
     value => value.jobs.package.steps.find(step => step.name === 'Cold install and verify the genuine browser worker in checks-only mode').run = 'true'];
+  for (const mutate of mutations) {
+    const value = structuredClone(workflow);
+    mutate(value);
+    assert.throws(() => checkStructure(value));
+  }
+});
+test('sparse resolver retains every original authority field and exact checkout stall bounds', () => {
+  const mutations = [
+    value => delete value.jobs.resolve.env,
+    value => value.jobs.resolve.env.GIT_HTTP_LOW_SPEED_LIMIT = '0',
+    value => value.jobs.resolve.env.GIT_HTTP_LOW_SPEED_TIME = '300',
+    value => delete value.jobs.resolve.steps[0].with['sparse-checkout'],
+    value => value.jobs.resolve.steps[0].with['sparse-checkout'] = '**',
+    value => value.jobs.resolve.steps[0].with['sparse-checkout-cone-mode'] = true,
+    value => value.jobs.resolve.steps[0].with['persist-credentials'] = true,
+    value => value.jobs.resolve.steps[0].with.ref = 'untrusted',
+    value => value.jobs.resolve['timeout-minutes'] = 10,
+    value => value.jobs.resolve.if = 'true',
+    value => value.jobs.resolve.outputs.publish = 'true',
+    value => value.jobs.resolve.steps.at(-1).env.GH_TOKEN = 'other',
+    value => value.jobs.resolve.steps.at(-1).run = 'true'
+  ];
   for (const mutate of mutations) {
     const value = structuredClone(workflow);
     mutate(value);

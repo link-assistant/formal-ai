@@ -185,7 +185,7 @@ fn orders_a_named_command(clause: &str) -> bool {
         let is_verb = vocab
             .run_verbs
             .iter()
-            .any(|verb| verb == &normalize_command_word(word));
+            .any(|verb| verb == &crate::engine::normalize_prompt(word));
         is_verb
             && words.get(index + 1).is_some_and(|next| {
                 let token = normalize_command_word(next);
@@ -257,7 +257,7 @@ pub fn named_shell_command_in_sentence(
         .collect();
 
     let is_run_verb = |word: &str| {
-        let normalized = normalize_command_word(word);
+        let normalized = crate::engine::normalize_prompt(word);
         vocab.run_verbs.iter().any(|v| v == &normalized)
     };
     let is_shell_token = |word: &str| {
@@ -265,6 +265,18 @@ pub fn named_shell_command_in_sentence(
         !normalized.is_empty() && vocab.shell_tokens.iter().any(|t| t == &normalized)
     };
     let has_verb = words.iter().any(|w| is_run_verb(w)) || has_cjk_verb;
+    if let (Some(first), Some(last)) = (words.first(), words.last())
+        && words.len() > 1
+        && is_shell_token(first)
+        && vocab
+            .postposed_run_verbs
+            .iter()
+            .any(|verb| verb.as_str() == *last)
+    {
+        return prompt
+            .rfind(*last)
+            .map(|at| prompt[..at].trim_end().to_owned());
+    }
 
     // Shape 1: a shell token directly after a run verb — the command plus its arguments.
     for (index, word) in words.iter().enumerate() {
@@ -333,77 +345,18 @@ pub(super) fn normalize_command_word(word: &str) -> String {
 /// stop argument collection at the boundary between a command and the sentence around
 /// it (e.g. `git status` stops before `in the current directory`).
 pub fn is_prose_word(word: &str) -> bool {
-    const PROSE_WORDS: &[&str] = &[
-        "command",
-        "commands",
-        "to",
-        "in",
-        "into",
-        "on",
-        "the",
-        "a",
-        "an",
-        "and",
-        "then",
-        "please",
-        "for",
-        "of",
-        "that",
-        "which",
-        "so",
-        "this",
-        "these",
-        "those",
-        "here",
-        "there",
-        "me",
-        "us",
-        "you",
-        "it",
-        "from",
-        "at",
-        "with",
-        "will",
-        "would",
-        "can",
-        "could",
-        "should",
-        "using",
-        "via",
-        "inside",
-        "within",
-        "output",
-        "result",
-        "results",
-        "contents",
-        "content",
-        "directory",
-        "folder",
-        "folders",
-        "file",
-        "files",
-        "currently",
-        "again",
-        "also",
-        "just",
-        "now",
-        // Quantifiers a described action opens with. "Execute nothing without
-        // asking" and "Run all tests in the background" are sentences about
-        // commands, not commands.
-        "nothing",
-        "anything",
-        "everything",
-        "something",
-        "all",
-        "any",
-        "every",
-        "each",
-        "no",
-    ];
+    static WORDS: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
+    // Option bytes are command syntax, not punctuation around a prose word.
+    if word.trim_start().starts_with('-') {
+        return false;
+    }
     let normalized = word
-        .trim_matches(|c: char| !c.is_ascii_alphanumeric())
-        .to_ascii_lowercase();
-    PROSE_WORDS.contains(&normalized.as_str())
+        .trim_matches(|character: char| !character.is_alphanumeric())
+        .to_lowercase();
+    WORDS
+        .get_or_init(|| crate::seed::terminal_command_vocabulary().prose_words)
+        .iter()
+        .any(|candidate| candidate == &normalized)
 }
 
 /// Pair outer shell quotes; actual shell execution remains the syntax authority.

@@ -1,0 +1,50 @@
+{
+  "schema": "formal-ai-workspace-prerequisites-v1",
+  "scope": "workspace",
+  "programs": [
+    "kotlinc",
+    "scalac",
+    "rustc"
+  ],
+  "bootstrap": {
+    "program": "python3",
+    "arguments": [
+      ".formal-ai/bootstrap/prerequisite-installer.py"
+    ]
+  },
+  "allowNetwork": true,
+  "networkHosts": [
+    "kotlinlang.org",
+    "www.scala-lang.org",
+    "scala-lang.org",
+    "rustup.rs",
+    "github.com",
+    "api.github.com",
+    "release-assets.githubusercontent.com",
+    "objects.githubusercontent.com"
+  ],
+  "processes": [
+    {
+      "program": "bash",
+      "arguments": [
+        "--version"
+      ]
+    },
+    {
+      "program": "java",
+      "arguments": [
+        "-version"
+      ]
+    }
+  ],
+  "probes": [
+    [
+      "--version"
+    ],
+    [
+      "-version"
+    ]
+  ],
+  "maxArchiveBytes": 134217728,
+  "maxExpandedBytes": 536870912
+}

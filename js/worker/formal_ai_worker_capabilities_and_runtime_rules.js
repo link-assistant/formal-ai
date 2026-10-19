@@ -61,11 +61,6 @@ function findBehaviorRule(query) {
 const directRoleSurfacePresent = (role, lower) => roleWordForms(role).some((form) => form.text && lower.includes(form.text));
 
 // All teaching, catalog and history replay consumers use the same package.
-function runtimeRuleFromText(text) {
-  const result = crateModule("crate/skill_compiler.mjs").compileNaturalLanguageSkill(String(text || ""));
-  return result.status === "compiled" ? result : null;
-}
-
 function runtimeRuleForPrompt(prompt, history) {
   const turns = Array.isArray(history) ? history : [];
   for (let index = turns.length - 1; index >= 0; index -= 1) {
@@ -429,6 +424,7 @@ function featureCapabilityContent(feature, language, availability) {
 }
 
 function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
+  if (isConcretePropertyQuestion(prompt)) return null;
   if (!isFeatureCapabilityQuestion(normalized, language)) return null;
   const feature = detectFeatureCapability(normalized, language);
   if (!feature) return null;
@@ -530,6 +526,7 @@ function tryArchitectureExplanation(prompt, normalized) {
 }
 
 function tryCapabilities(prompt, normalized, preferences, history) {
+  if (isConcretePropertyQuestion(prompt)) return null;
   const language = detectLanguage(prompt);
   const featureStatus = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
   if (featureStatus) return featureStatus;

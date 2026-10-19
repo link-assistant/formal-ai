@@ -93,7 +93,10 @@ cargo_test() {
   [[ "${LADDER_CARGO_TEST:-1}" != 0 ]] || { record "tests:$filter" skipped; return 0; }
   command -v cargo >/dev/null 2>&1 || { record "tests:$filter" unavailable; return 0; }
   [[ -f "$workspace/rust/Cargo.toml" ]] || { record "tests:$filter" unavailable; return 0; }
-  log="$workspace/.agent-ladder/cargo-test-$target-$filter.log"
+  local log_name
+  log_name=$(node "$ROOT/scripts/lib/ladder-test-log-name.mjs" "$target" "$filter") || { record "tests:$filter" invalid_test_log_identity; return 1; }
+  log="$workspace/.agent-ladder/$log_name"
+  record "test_log:$target:$filter" "$log_name"
   local started=$SECONDS
   if (cd "$workspace/rust" && CARGO_TARGET_DIR="$(target_dir)" \
       cargo test "${target_args[@]}" --quiet -- --exact "$filter" >"$log" 2>&1); then

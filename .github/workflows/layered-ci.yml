@@ -90,6 +90,10 @@ jobs:
     name: Detect tier changes
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Checkout retries must fit this unchanged job clock.
+    env:
+      GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+      GIT_HTTP_LOW_SPEED_TIME: '30'
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-tier-changes
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -102,6 +106,12 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+          # Keep complete commit history, without materializing unrelated blobs.
+          sparse-checkout: |
+            /scripts/detect-code-changes.rs
+            /scripts/install-rust-script.sh
+            /changelog.d/
+          sparse-checkout-cone-mode: false
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
       - name: Install rust-script
@@ -115,13 +125,13 @@ jobs:
 
 
   source-networks:
-    name: Full source network serialization (${{ matrix.shard }}/8)
+    name: Full source network serialization (${{ matrix.shard }}/16)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-source-networks-${{ matrix.shard }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -133,15 +143,10 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - name: Check out the shared pinned meta-language serializer
-        uses: actions/checkout@v7
-        with:
-          repository: link-foundation/meta-language
-          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
-          path: .meta-language
-          persist-credentials: false
-      - name: Install serializer runtime dependencies
-        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Verify the source CST runtime derives from the frozen dependency closure
+        run: node scripts/generate-source-cst-runtime.mjs --check
+      - name: Provision the complete locked source CST grammar runtime
+        run: node scripts/provision-source-cst-runtime.mjs "$RUNNER_TEMP/source-cst-runtime"
       - name: Serialize and reconstruct every source in this shard
         env:
           SOURCE_SHARD: ${{ matrix.shard }}
@@ -152,7 +157,7 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "complete source network serialization" \
             node scripts/check-source-networks.mjs --write \
-              --meta-language .meta-language --shard-count 8 \
+              --shard-count 16 \
               --shard-index "$SOURCE_SHARD" --output "$SOURCE_NETWORK_OUTPUT"
       - name: Upload complete serialized source packets and receipts
         uses: actions/upload-artifact@v7
@@ -261,6 +266,8 @@ jobs:
         run: bun install --frozen-lockfile --ignore-scripts
       - name: Provision the real agentic search adapter
         run: bash scripts/install-agentic-search-tools.sh
+      - name: Provision the actual pinned source-model frontend
+        uses: ./.github/actions/setup-source-model
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
@@ -351,8 +358,10 @@ jobs:
     # projections (rust/tests/fixtures/js-rust-translation/) and the ledger
     # byte for byte, refuses a module whose translated count fell, compiles
     # every projection with rustc and runs the calls of calls.lino in the
-    # translated Rust. Same gate as the ts tier: js green or carried first.
-    if: needs.changes.outputs.js-changed == 'true' && (needs.js.result == 'success' || needs.js.result == 'skipped')
+    # translated Rust. JavaScript must be green or carried first.
+    # R1183: generated research Rust or compiler inputs can change without a
+    # JavaScript path change, so this compiler boundary also runs for those edits.
+    if: ${{ !cancelled() && (needs.js.result == 'success' || needs.js.result == 'skipped') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     concurrency:
@@ -378,6 +387,14 @@ jobs:
         run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Setup Rust (rustc compiles the translated Rust)
         uses: dtolnay/rust-toolchain@stable
+      - name: Verify canonical research program from pinned checked IR (R1183)
+        run: node scripts/generate-coding-research-program.mjs --check --meta-language .meta-language
+      - name: Verify canonical continuation state from pinned checked IR
+        run: node scripts/generate-agentic-continuation.mjs --check --meta-language .meta-language
+      - name: Verify readable source content through actual shared grammars
+        run: node scripts/check-source-model.mjs --meta-language .meta-language
+      - name: Verify canonical source snapshot program from pinned checked IR (R1213-5)
+        run: node scripts/generate-provenance-snapshot.mjs --check --meta-language .meta-language
       - name: The committed js -> rust translation is what meta-language renders, and it compiles
         env:
           # PR #1202: full146 translation reached its last module at the540s deadline.

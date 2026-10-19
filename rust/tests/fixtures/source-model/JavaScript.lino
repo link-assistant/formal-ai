@@ -1,0 +1,37 @@
+(source
+  (language "JavaScript")
+  (module
+    (form "program")
+    (comment (form "comment") (text "// preserve Unicode 你好"))
+    (layout (form "whitespace") (text "\n"))
+    (syntax
+      (form "export_statement")
+      (syntax (form "export") (text "export"))
+      (layout (form "whitespace") (text " "))
+      (function
+        (form "function_declaration")
+        (role "declaration")
+        (syntax (form "function") (text "function"))
+        (layout (form "whitespace") (text " "))
+        (identifier (form "identifier") (role "name") (text "keep"))
+        (syntax
+          (form "formal_parameters")
+          (role "parameters")
+          (syntax (form "(") (text "("))
+          (identifier (form "identifier") (text "value"))
+          (syntax (form ")") (text ")")))
+        (layout (form "whitespace") (text " "))
+        (syntax
+          (form "statement_block")
+          (role "body")
+          (syntax (form "{") (text "{"))
+          (layout (form "whitespace") (text " "))
+          (syntax
+            (form "return_statement")
+            (syntax (form "return") (text "return"))
+            (layout (form "whitespace") (text " "))
+            (identifier (form "identifier") (text "value"))
+            (syntax (form ";") (text ";")))
+          (layout (form "whitespace") (text " "))
+          (syntax (form "}") (text "}")))))
+    (layout (form "whitespace") (text "\n"))))

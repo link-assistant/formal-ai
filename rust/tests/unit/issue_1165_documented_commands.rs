@@ -20,7 +20,7 @@ const KOTLINLANG: &str = "https://kotlinlang.org/docs/command-line.html";
 
 /// Every command the procedure rows derive, as
 /// `(language, save_as, role, command, page)`.
-const DERIVED: [(&str, &str, &str, &str, &str); 6] = [
+const DERIVED: [(&str, &str, &str, &str, &str); 7] = [
     ("rust", "main.rs", "run", "./main", RUST_BOOK),
     (
         "typescript",
@@ -39,6 +39,13 @@ const DERIVED: [(&str, &str, &str, &str, &str); 6] = [
         KOTLINLANG,
     ),
     ("kotlin", "Main.kt", "run", "java -jar Main.jar", KOTLINLANG),
+    (
+        "scala",
+        "Main.scala",
+        "run",
+        "scala run Main.scala",
+        "https://docs.scala-lang.org/scala3/book/taste-hello-world.html",
+    ),
 ];
 
 /// The catalog's language table, read as source text.
@@ -54,6 +61,7 @@ fn each_command_procedure_row_derives_the_catalog_command_from_its_page() {
         ("typescript", "hello.ts"),
         ("java", "Main.java"),
         ("kotlin", "Main.kt"),
+        ("scala", "Main.scala"),
     ] {
         let expected: Vec<SourcedCommand> = DERIVED
             .iter()

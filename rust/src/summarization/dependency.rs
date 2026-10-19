@@ -19,6 +19,7 @@ use crate::formalization::statement_rendering::join_surfaces;
 use crate::formalization::text_statements::{
     Statement, content_ids, formalize_sentences, is_word_character, statement_identity,
 };
+use crate::formalization::typed_meaning::typed_meaning_entails;
 
 /// Shared terms that make one statement elaborate another.
 pub const ELABORATION_SHARED_TERMS: usize = 2;
@@ -98,6 +99,11 @@ pub fn sentence_statements(text: &str, language: &str) -> Vec<Entry> {
 /// with the same polarity.
 #[must_use]
 pub fn restates(later: &Statement, earlier: &Statement) -> bool {
+    if later.language != earlier.language
+        || !typed_meaning_entails(&earlier.dialogue, &later.dialogue)
+    {
+        return false;
+    }
     if statement_identity(later) == statement_identity(earlier) {
         return true;
     }

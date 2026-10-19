@@ -351,6 +351,14 @@ fn normalize(raw: &str) -> NormalizedResult {
         if let Some(envelope) = parse_shell_envelope(trimmed) {
             return envelope.into_result();
         }
+        if let Some(code) = source_observation::labelled_process_exit_code(trimmed) {
+            return ShellEnvelope {
+                output: strip_transport_envelope(trimmed),
+                error: String::new(),
+                exit_code: Some(code),
+            }
+            .into_result();
+        }
         return from_payload(&strip_transport_envelope(trimmed), None);
     };
     let Some(object) = value.as_object() else {

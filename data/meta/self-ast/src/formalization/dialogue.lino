@@ -1,0 +1,39 @@
+self_ast_census
+  target src/formalization/dialogue.rs
+  language rust
+  fidelity signature
+  byte_len 19831
+  line_count 567
+  content_id source_module_669c8ca6ec810d45
+  symbol_count 30
+  symbols
+    const QUESTIONS 10 10
+    const TOPICS 18 18
+    const CURRENCIES 26 26
+    const UNITS 27 27
+    struct Question 31 46
+    struct NumericSourceComponent 50 57
+    struct Quantity 61 80
+    struct Answer 84 93
+    struct Dialogue 97 104
+    function normalize 106 113
+    function word 114 116
+    function contains 117 123
+    function mentions 124 128
+    function listed 129 133
+    function ending 134 138
+    function numeric_expression 139 145
+    static VALUE 140 140
+    function numeric_value 148 196
+    function numeric_components 198 209
+    static COMPONENT 199 199
+    function dialogue_quantities 213 296
+    function formalize_dialogue 300 302
+    function formalize_dialogue_in_context 306 433
+    function blocks_self_description 437 441
+    function merge_numeric_words 445 492
+    struct Compatibility 496 501
+    function answer_compatibility 505 550
+    module tests 554 554
+    function source_term_count 559 561
+    function read_numeric_words 565 567

@@ -1,3 +1,9 @@
+// Stateless conversion, compression, validation and notation use the canonical crate.
+// The server keeps its private mutable stores, raw-input adapter and filesystem ranker.
+import { balancedConvert, compress } from '../agentic/crate/sequences.mjs';
+import { candidateValidated, candidateLinksNotation } from '../agentic/crate/algorithm_discovery.mjs';
+export { candidateValidated, candidateLinksNotation };
+
 // Link-native discovery of reusable algorithms from execution traces, as the
 // idle dreaming pass runs it: rust/src/algorithm_discovery.rs
 // (`discover_algorithms`, `candidate_from_occurrences`, `validate_occurrence`,
@@ -21,7 +27,7 @@ import path from 'node:path';
 
 import { stableId } from './ids.mjs';
 import { REPO_ROOT, childValue, parseLino } from './lino.mjs';
-import { cmpNum, cmpStr, pushLinoNode, stringBytes, trim } from './dreaming-support.mjs';
+import { cmpNum, cmpStr, stringBytes, trim } from './dreaming-support.mjs';
 import fs from 'node:fs';
 
 const DEFAULT_MIN_STEPS = 2;
@@ -68,81 +74,6 @@ class SymbolTable {
   }
 }
 
-/** Mirrors rust/src/sequences/converter.rs `halve_sequence`. */
-function halveSequence(store, source) {
-  const destination = [];
-  const looped = source.length - (source.length % 2);
-  for (let index = 0; index < looped; index += 2) destination.push(store.getOrCreate(source[index], source[index + 1]));
-  if (source.length > looped) destination.push(source[source.length - 1]);
-  return destination;
-}
-
-/** Mirrors rust/src/sequences/converter.rs `balanced_convert`. */
-function balancedConvert(store, sequence) {
-  if (sequence.length === 0) return 0;
-  if (sequence.length === 1) return sequence[0];
-  if (sequence.length === 2) return store.getOrCreate(sequence[0], sequence[1]);
-  let current = halveSequence(store, sequence);
-  while (current.length > 2) current = halveSequence(store, current);
-  return store.getOrCreate(current[0], current[1]);
-}
-
-/** Mirrors rust/src/sequences/compression.rs `count_non_overlapping`. */
-function countNonOverlapping(sequence, [first, second]) {
-  let count = 0;
-  let index = 0;
-  while (index + 1 < sequence.length) {
-    if (sequence[index] === first && sequence[index + 1] === second) {
-      count += 1;
-      index += 2;
-    } else {
-      index += 1;
-    }
-  }
-  return count;
-}
-
-/** Mirrors rust/src/sequences/compression.rs `most_frequent_pair` (ties: smallest pair). */
-function mostFrequentPair(sequence) {
-  const seen = new Map();
-  for (let index = 0; index + 1 < sequence.length; index += 1) {
-    seen.set(`${sequence[index]},${sequence[index + 1]}`, [sequence[index], sequence[index + 1]]);
-  }
-  let best = null;
-  for (const pair of seen.values()) {
-    const count = countNonOverlapping(sequence, pair);
-    if (count < 2) continue;
-    if (best && (best.count > count || (best.count === count
-      && (best.pair[0] < pair[0] || (best.pair[0] === pair[0] && best.pair[1] < pair[1]))))) continue;
-    best = { pair, count };
-  }
-  return best;
-}
-
-/** Mirrors rust/src/sequences/compression.rs `replace_pair`. */
-function replacePair(sequence, [first, second], replacement) {
-  const output = [];
-  let index = 0;
-  while (index < sequence.length) {
-    if (index + 1 < sequence.length && sequence[index] === first && sequence[index + 1] === second) {
-      output.push(replacement);
-      index += 2;
-    } else {
-      output.push(sequence[index]);
-      index += 1;
-    }
-  }
-  return output;
-}
-
-/** Mirrors rust/src/sequences/compression.rs `compress` (only its store effects matter here). */
-function compress(store, sequence) {
-  let current = sequence.slice();
-  for (let best = mostFrequentPair(current); best; best = mostFrequentPair(current)) {
-    current = replacePair(current, best.pair, store.getOrCreate(best.pair[0], best.pair[1]));
-  }
-  return current;
-}
 
 // ---- rust/src/algorithm_discovery/adapters.rs -------------------------------
 
@@ -348,10 +279,6 @@ export function tracesFromMemoryEvents(events) {
 
 // ---- rust/src/algorithm_discovery.rs ----------------------------------------
 
-/** Mirrors `AlgorithmCandidate::validated`. */
-export function candidateValidated(candidate) {
-  return candidate.held_out.length > 0 && candidate.held_out.every((test) => test.passed);
-}
 
 /** Mirrors `push_identity` (lengths are UTF-8 byte counts). */
 function pushIdentity(name, value) {
@@ -608,7 +535,7 @@ export function discoverValidatedAlgorithms(traces) {
     flattened.push(...sequence);
   });
   balancedConvert(store, flattened);
-  compress(store, flattened);
+  compress(store, flattened).sequence;
 
   const occurrences = new Map();
   encoded.forEach((sequence, traceIndex) => {
@@ -637,41 +564,4 @@ export function discoverValidatedAlgorithms(traces) {
     maximal.push(candidate);
   }
   return rankSurvivors(maximal).filter(candidateValidated);
-}
-
-/** Mirrors `AlgorithmCandidate::status`. */
-function candidateStatus(candidate) {
-  return candidateValidated(candidate) ? 'held_out_validated' : 'held_out_validation_failed';
-}
-
-/** Mirrors `AlgorithmCandidate::links_notation`. */
-export function candidateLinksNotation(candidate) {
-  let out = '';
-  out = pushLinoNode(out, 0, 'algorithm_candidate', candidate.id);
-  out = pushLinoNode(out, 2, 'evidence_id', candidate.evidence_id);
-  out = pushLinoNode(out, 2, 'mode', 'proposal_only');
-  out = pushLinoNode(out, 2, 'human_gated', 'true');
-  out = pushLinoNode(out, 2, 'status', candidateStatus(candidate));
-  out = pushLinoNode(out, 2, 'associative_root', String(candidate.associative_root));
-  out = pushLinoNode(out, 2, 'steps', null);
-  candidate.steps.forEach((step, index) => {
-    out = pushLinoNode(out, 4, 'step', String(index));
-    out = pushLinoNode(out, 6, 'operation', step.operation);
-    for (const [name, pattern] of step.arguments) {
-      out = pushLinoNode(out, 6, 'argument', name);
-      out = pattern.constant !== undefined
-        ? pushLinoNode(out, 8, 'constant', pattern.constant)
-        : pushLinoNode(out, 8, 'parameter', pattern.parameter);
-    }
-  });
-  out = pushLinoNode(out, 2, 'support', null);
-  for (const traceId of candidate.support_trace_ids) out = pushLinoNode(out, 4, 'trace', traceId);
-  out = pushLinoNode(out, 2, 'held_out', null);
-  for (const test of candidate.held_out) {
-    out = pushLinoNode(out, 4, 'test', test.trace_id);
-    out = pushLinoNode(out, 6, 'start_step', String(test.start_step));
-    out = pushLinoNode(out, 6, 'passed', test.passed ? 'true' : 'false');
-    for (const failure of test.failures) out = pushLinoNode(out, 6, 'failure', failure);
-  }
-  return out;
 }

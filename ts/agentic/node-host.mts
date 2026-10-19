@@ -1,3 +1,5 @@
+import {activeDriveCapture} from '../provenance/capture-context.mjs';
+import {recordFor,toLino,answerDerivationId} from './crate/derivation.mjs';
 // The Node host for the agentic planner: repository files from disk, the
 // shared Links Notation parser, and a booted worker realm (js/agentic/host.mjs).
 // Used by the JavaScript server and by node:test suites; a browser host would
@@ -13,9 +15,13 @@ import { symbolicFromWorker } from '../server/solve.mjs';
 import * as webTreeSitter from '../vendor/tree-sitter/web-tree-sitter.mjs';
 import { loadRustAstCensus } from './crate/rust_ast_census.mjs';
 import { cachedSourceFetch } from './crate/source_cache.mjs';
-import { CENSUS_DIR } from './crate/self_ast_census.mjs';
+import {scanSignatureSymbols} from '../../scripts/lib/signature-census.mjs';
+import {sourceModelFrontend} from '../../scripts/source-model.mjs';
+import {workflowPin} from '../../scripts/translate-js-rust.mjs';
+import {readSyntaxRules, sourceToLinks, ownedSourceLinks, writeSourceLinks, verifySourceLinks} from '../meta/readable-source.js';
 import { stableId } from './crate/engine_stable_identifier.mjs';
 import { installHost } from './host.mjs';
+import { validateRepairProgram } from '../server/repair-program-syntax.mjs';
 import { createNodeSourceSessionHost } from '../server/node-source-session-host.mjs';
 import { sourceQualifiedSeedOwners } from '../../scripts/generate-seed-registry.mjs';
 
@@ -49,7 +55,7 @@ export function generatedSeedOwnerDeclarations(repository = REPO_ROOT) {
   catch { return []; }
 }
 
-/** Read committed census documents only when their actual source identity still agrees. */
+/** Require regular owned source paths without following symlinks. */
 function censusRegularPath(repository, relative, kind) {
   try {
     const parts = relative.split('/');
@@ -76,52 +82,35 @@ function observeCensusDocuments(repository) {
     let entries;
     try { entries = readdirSync(path.join(repository, relative), {withFileTypes: true}); }
     catch { return incomplete(); }
-    return entries.sort((a, b) => a.name.localeCompare(b.name)).flatMap(entry => {
+    return entries.sort((left, right) => Buffer.compare(Buffer.from(left.name), Buffer.from(right.name))).flatMap(entry => {
       const file = relative + '/' + entry.name;
       if (entry.isSymbolicLink()) return incomplete();
       if (entry.isDirectory()) return visit(file);
-      if (!entry.name.endsWith('.lino')) return [];
+      if (!entry.name.endsWith('.rs')) return [];
       if (!censusRegularPath(repository, file, 'file')) return incomplete();
-      let text, parsed;
+      let source, symbols;
       try {
-        text = readFileSync(path.join(repository, file), 'utf8');
-        parsed = parseLino(text);
+        const status = lstatSync(path.join(repository, file));
+        if (status.size > 4 * 1024 * 1024) return incomplete();
+        source = new TextDecoder('utf-8', {fatal: true, ignoreBOM: true}).decode(readFileSync(path.join(repository, file)));
+        symbols = scanSignatureSymbols(source).map(symbol => ({kind: symbol.kind, name: symbol.name,
+          start_line: symbol.startLine, end_line: symbol.endLine}));
       } catch { return incomplete(); }
-      if (parsed.name !== 'self_ast_census') return incomplete();
-      const fields = parsed.children;
-      const required = ['target', 'content_id', 'byte_len'];
-      if (required.some(name => {
-        const values = fields.filter(node => node.name === name);
-        return values.length !== 1 || values[0].children.length !== 0
-          || typeof values[0].value !== 'string';
-      })) return incomplete();
-      const field = name => fields.find(node => node.name === name).value;
-      const target = field('target');
-      if (!target.startsWith('src/') || !target.endsWith('.rs')
-        || !censusRegularPath(repository, 'rust/' + target, 'file')) return incomplete();
-      let source;
-      try { source = readFileSync(path.join(repository, 'rust', target), 'utf8'); }
-      catch { return incomplete(); }
-      const contentIdentifier = stableId('source_module', source);
-      const byteLength = Buffer.byteLength(source);
-      if (field('content_id') !== contentIdentifier || Number(field('byte_len')) !== byteLength) {
-        return incomplete();
-      }
-      return [{path: file, text, sourceIdentity: {
-        path: target, content_id: contentIdentifier, byte_len: byteLength,
-      }}];
+      const target = file.slice('rust/'.length);
+      return [{path: file, text: null, module: {path: target, fidelity: 'navigation', symbols},
+        sourceIdentity: {path: target, content_id: stableId('source_module', source), byte_len: Buffer.byteLength(source)}}];
     });
   };
-  const documents = visit(CENSUS_DIR);
+  const documents = visit('rust/src');
   return {documents, complete};
 }
 
-/** Validated documents retain their original payload; incompleteness grants no unique owner. */
+/** Observe current navigation and source identities; counter documents confer no ownership. */
 export function censusDocuments(repository = REPO_ROOT) {
   return observeCensusDocuments(repository).documents;
 }
 
-/** A failed or stale observed census source prevents unqualified uniqueness claims. */
+/** Incomplete source observations prevent unqualified uniqueness claims. */
 export function censusSourceClosureComplete(repository = REPO_ROOT) {
   try { return observeCensusDocuments(repository).complete; }
   catch { return false; }
@@ -141,11 +130,12 @@ function curlGet(url) {
   }
 }
 
-const tryOr = (action) => {
+const readCacheOrMissing = (action) => {
   try {
     return action();
-  } catch {
-    return null;
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
   }
 };
 
@@ -160,8 +150,8 @@ function nodeSourceFetch() {
     cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || runtimeCachePaths().runtimeRoot,
     online: flagEnabled(process.env.FORMAL_AI_LIVE_FETCH),
     io: {
-      readText: (file) => tryOr(() => readFileSync(file, 'utf8')),
-      readBytes: (file) => tryOr(() => new Uint8Array(readFileSync(file))),
+      readText: (file) => readCacheOrMissing(() => readFileSync(file, 'utf8')),
+      readBytes: (file) => readCacheOrMissing(() => new Uint8Array(readFileSync(file))),
       writeBytes: (file, bytes) => writeFileSync(file, bytes),
       createDirAll: (directory) => mkdirSync(directory, { recursive: true }),
       get: curlGet,
@@ -175,21 +165,87 @@ function nodeSourceFetch() {
  * @param {{boot: () => Promise<object>}} worker
  * @returns {Promise<object>} the worker realm
  */
-export async function installNodeHost(worker) {
+export async function installNodeHost(worker, options = {}) {
+  // Caller-owned capability only. Source documents and conversation text never grant installation.
+  const freezeGrant = value => {
+    if (value && typeof value === "object") {
+      for (const child of Object.values(value)) freezeGrant(child);
+      Object.freeze(value);
+    }
+    return value;
+  };
+  if(options===null||typeof options!=="object")throw Error("host_options_required");
+  const grantDescriptor=Object.getOwnPropertyDescriptor(options,"prerequisiteGrant");
+  if(grantDescriptor&&!Object.hasOwn(grantDescriptor,"value"))throw Error("host_grant_must_be_data");
+  const suppliedGrant=grantDescriptor?.value??null;
+  const prerequisiteGrant = suppliedGrant === null ? null
+    : freezeGrant(JSON.parse(JSON.stringify(suppliedGrant)));
+  const sourceDescriptor = Object.getOwnPropertyDescriptor(options, "sourceModelDirectory");
+  if (sourceDescriptor && !Object.hasOwn(sourceDescriptor, "value")) throw Error("host_source_model_directory_must_be_data");
+  const sourceModelDirectory = sourceDescriptor?.value ?? process.env.FORMAL_AI_META_LANGUAGE ?? null;
   const context = await worker.boot();
+
+  let sourceParser = null;
+  const sourceDocument = async modulePath => {
+    if (sourceModelDirectory !== null && (typeof sourceModelDirectory !== 'string' || !sourceModelDirectory)) throw Error('PinnedSourceModelSdkUnavailable');
+    const inventory = observeCensusDocuments(REPO_ROOT);
+    const observed = inventory.documents.find(document => document.sourceIdentity.path === modulePath);
+    if (!inventory.complete || !observed) throw Error('IncompleteOwnedSourceInventory');
+    let runtime = null;
+    try {
+      let parse, rules;
+      if (sourceModelDirectory === null) {
+        const {sourceCstFrontends} = await import('../../scripts/lib/source-cst-frontends.mjs');
+        runtime = await sourceCstFrontends();
+        ({parse, rules} = runtime.forSource('rust/' + modulePath, 'Rust'));
+      } else {
+        sourceParser ??= sourceModelFrontend(path.resolve(sourceModelDirectory), workflowPin(readRepoFile('.github/workflows/layered-ci.yml')));
+        parse = await sourceParser;
+        rules = readSyntaxRules(readRepoFile('data/meta/source-model/syntax-rules.lino'));
+      }
+      const source = readRepoFile('rust/' + modulePath);
+      if (stableId('source_module', source) !== observed.sourceIdentity.content_id) throw Error('SourceVersionChanged');
+      const model = ownedSourceLinks(modulePath, sourceToLinks(source, 'Rust', {parse, rules}));
+      verifySourceLinks(model, {parse, rules});
+      return writeSourceLinks(model);
+    } finally {
+      runtime?.close();
+    }
+  };
   const baseHost = {
     readText: readRepoFile,
+    prerequisiteGrant: () => prerequisiteGrant,
     parseLino,
     realm: context,
-    solve: async (prompt, history) => symbolicFromWorker(await worker.solve(prompt, history), history),
+    planningObserver:()=>{
+      const capture=activeDriveCapture();
+      if(capture&&'engineGenesis' in capture&&typeof capture.engineGenesis==='function'){
+        capture.engineGenesis(()=>worker.provenanceGenesis?.()??null);
+      }
+      return capture&&'planningObservation' in capture&&typeof capture.planningObservation==='function'
+        ?capture.planningObservation:null;
+    },
+    solve:async(prompt,history)=>{
+      const result=await worker.solve(prompt,history),symbolic=symbolicFromWorker(result,history);
+      const capture=activeDriveCapture();
+      if(capture&&'engineObservation' in capture&&typeof capture.engineObservation==='function'){
+        const events=Array.isArray(symbolic.solver_events)?symbolic.solver_events:[];
+        capture.engineObservation({schema:'formal-ai-worker-observation-v1',prompt,history,result,symbolic,
+          observedInputs:worker.provenanceInputs?.()??null,
+          eventLog:events,derivation:toLino(recordFor(events,answerDerivationId(symbolic.answer)))});
+      }
+      return symbolic;
+    },
     isDirectory: (path) => Boolean(stat(path)?.isDirectory()),
     isFile: (path) => Boolean(stat(path)?.isFile()),
     currentDirectory: () => process.cwd(),
     listDirectory: listRepoDirectory,
     censusDocuments,
     censusSourceClosureComplete,
+    sourceDocument,
     generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
+    validateProgram: validateRepairProgram,
   };
   const session = createNodeSourceSessionHost(baseHost.readText);
   installHost({ ...baseHost, sourceSession: session, sourceOperation: session.sourceOperation });

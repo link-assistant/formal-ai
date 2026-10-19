@@ -54,8 +54,11 @@ export async function collectQualifiedNativeData({
     'symlink scratch parent refused');
     ancestor=path.dirname(ancestor);
   }
-  const implementationPaths=['collect-qualified-native-data-artifacts.mjs',
+  const implementationPaths=['aggregate-source-content.mjs',
+  'mirror-package-data.mjs',
+  'collect-qualified-native-data-artifacts.mjs',
   'lib/qualified-native-data-collector.mjs',
+  'native-release-source.mjs',
   'qualified-data-artifact-profiles.mjs',
   'github-artifact-by-identifier.mjs',
   'lib/native-session-projections.mjs',
@@ -110,10 +113,8 @@ export async function collectQualifiedNativeData({
     const producer=sourceUploadProducer(sourceWorkflow,
     route.artifact);
     let jobName=producer.jobName;
-    const expectedPaths=kind==='census'?['data/meta/self-ast',
-    'data/meta/self-ast.lino',
-    'data/meta/self-healing-case.lino',
-    'docs/case-studies/issue-538/agent-cli-session-self-ast.json']:['${{ runner.temp }}/'+(kind==='sessions'?'native-session-projections':'native-response-observations')];
+    const expectedPaths=kind==='census'?['${{ runner.temp }}/source-content-receipt']:
+      ['${{ runner.temp }}/'+(kind==='sessions'?'native-session-projections':'native-response-observations')];
     assert.deepEqual(producer.paths,
     expectedPaths,
     'unknown upload source contract');
@@ -171,8 +172,9 @@ export async function collectQualifiedNativeData({
     route.producerWorkflow??route.workflow)),
     digest(Buffer.from(sourceWorkflow)),
     'producer workflow drift between selected head and compiled checkout');
-    const artifacts=completePage(json('actions/runs/'+run.id+'/artifacts?per_page=100'),
-    'artifacts').filter(a=>a.name===route.artifact);
+    const allArtifacts=completePage(json('actions/runs/'+run.id+'/artifacts?per_page=100'),'artifacts');
+    const artifacts=allArtifacts.filter(a=>a.name===route.artifact);
+    const modelArtifacts=kind==='census'?allArtifacts.filter(a=>/^source-content-models-[0-9]+$/u.test(a.name)):[];
     assert.equal(artifacts.length,
     1,
     'missing or ambiguous official producer artifact');
@@ -201,7 +203,8 @@ export async function collectQualifiedNativeData({
       witness,
       run,
       producerJob:producer.job,
-      checkoutLog:log.toString()}
+      checkoutLog:log.toString(),
+      modelArtifacts}
     );
     let sourceGuards=[];
     if(!auditOnly&&kind!=='answers'){
@@ -298,7 +301,7 @@ export async function collectQualifiedNativeData({
         flag:'wx',
         mode:0o600}
       );
-      if(!auditOnly&&item.kind!=='answers'&&(item.kind==='census'||entry.name.startsWith('generated/'))){
+      if(!auditOnly&&item.kind==='sessions'&&entry.name.startsWith('generated/')){
         const file=item.kind==='sessions'?entry.name.slice(10):entry.name;
         if(fs.existsSync(path.join(cwd,
         file)))assert.ok(fs.lstatSync(path.join(cwd,

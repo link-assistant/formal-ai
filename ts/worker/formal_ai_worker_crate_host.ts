@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["host.mjs"] = (crateRequire) => {
 // The host the JavaScript agentic planner runs against (R1015).
 //
@@ -35,47 +34,50 @@
 // The JavaScript server installs a host once its worker has booted
 // (js/server/agentic.mjs); node:test suites install the same one through
 // js/agentic/node-host.mjs.
-
 let current = null;
 const caches = new Map();
-
 /**
  * Install the host every planner module reads through.
  * @param {{readText: Function, parseLino: Function, realm: object,
  *   isDirectory?: Function, isFile?: Function, currentDirectory?: Function,
- *   listDirectory?: Function}} next
+ *   listDirectory?: Function, planningObserver?: Function}} next
  */
 function installHost(next) {
   current = next;
   caches.clear();
 }
-
 /** The installed host; throws when none is installed. */
 function host() {
   if (!current) throw new Error('agentic_host_not_installed');
   return current;
 }
-
+/** Parse-only host capability; absent grammars and non-boolean promises grant no verdict. */
+function validateProgram(language, source) {
+  const validate = current?.validateProgram;
+  if (typeof validate !== 'function') return null;
+  try {
+    const verdict = validate(language, source);
+    return verdict === true ? true : verdict === false ? false : null;
+  } catch {
+    return false;
+  }
+}
 /** Whether a host is installed. */
 function hasHost() {
   return current !== null;
 }
-
 /** A repository file as text. @param {string} relative */
 function readText(relative) {
   return host().readText(relative);
 }
-
 /** Parse Links Notation text. @param {string} text */
 function parseLino(text) {
   return host().parseLino(text);
 }
-
 /** The worker realm's global scope (lexicon, normalizer, language). */
 function realm() {
   return host().realm;
 }
-
 /**
  * Memoize `build()` under `key` for the lifetime of the installed host (the
  * twin of a Rust `OnceLock`).
@@ -88,7 +90,6 @@ function cached(key, build) {
   if (!caches.has(key)) caches.set(key, build());
   return caches.get(key);
 }
-
 /**
  * `crate::solve_with_history`: the host solver's `SymbolicAnswer`.
  * @param {string} prompt
@@ -98,22 +99,18 @@ function cached(key, build) {
 function solve(prompt, history = []) {
   return host().solve(prompt, history);
 }
-
 /** `Path::is_dir`. @param {string} path */
 function isDirectory(path) {
   return Boolean(current?.isDirectory?.(path));
 }
-
 /** `Path::is_file`. @param {string} path */
 function isFile(path) {
   return Boolean(current?.isFile?.(path));
 }
-
 /** `std::env::current_dir`, or null. */
 function currentDirectory() {
   return current?.currentDirectory?.() ?? null;
 }
-
 /**
  * The entries of the repository directory `relative` (`fs::read_dir`), or
  * `[]` when the host cannot list it.
@@ -123,20 +120,18 @@ function currentDirectory() {
 function listDirectory(relative) {
   return current?.listDirectory?.(relative) ?? [];
 }
-
 /** Children of `node` named `name`. */
 function childrenNamed(node, name) {
   return (node?.children || []).filter((child) => child.name === name);
 }
-
 /** The value of the first child of `node` named `name`, or ''. */
 function childValue(node, name) {
   return childrenNamed(node, name)[0]?.value ?? '';
 }
-
 return Object.freeze({
   installHost,
   host,
+  validateProgram,
   hasHost,
   readText,
   parseLino,

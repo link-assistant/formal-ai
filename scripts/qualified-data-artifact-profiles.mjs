@@ -129,3 +129,16 @@ export function nativeCaptureArchiveEnvelope(selectionBytes) {
  for(const id of selection.cases)assert.match(id,/^rust\/tests\/(unit|integration|source)\/[\w/.-]+\.rs::[A-Za-z_][A-Za-z_0-9]*$/u);
  return profile('native-capture-envelope',Array.from({length:4*selection.cases.length+2},(_,index)=>'probe/'+index),{selectionSha256:sha(selectionBytes),selected:selection.cases.length});
 }
+
+/** Current content collection downloads bounded evidence only. Full models remain separate artifacts.
+ * The historical nativeCensusProfile is a legacy archive reader, never current CST authority. */
+export function nativeSourceContentProfile(sourcePaths, uploadPaths) {
+  assert.ok(Array.isArray(sourcePaths) && sourcePaths.length > 0);
+  assert.equal(new Set(sourcePaths).size, sourcePaths.length);
+  for (const source of sourcePaths) { regularPath(source); assert.match(source, /^rust\/src\/.+\.rs$/u); }
+  assert.deepEqual(uploadPaths, ['source-content-receipt']);
+  return profile('native-readable-source-evidence', ['source-content-receipt.json'], {
+    sourcePathsSha256: sha(Buffer.from([...sourcePaths].sort().join('\n') + '\n')),
+    representation: 'external-full-recursive-UTF8-Links-models',
+  });
+}

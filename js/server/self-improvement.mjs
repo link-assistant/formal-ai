@@ -1,3 +1,4 @@
+import { nonNullObject as isObjectValue } from '../logging/object-values.js';
 // White-box self-improvement over unknown-path traces: the learner the
 // conversation `learn` route stages a reported dialog through, and the
 // structured `learning_trace` a chat completion carries when the solver
@@ -24,7 +25,7 @@ const LEARNABLE_KINDS = ['selected_rule', 'rule_synthesis_candidate', 'rule_veri
 const CANDIDATE_FIELDS = ['id', 'source', 'base_task', 'modifier', 'operation', 'operation_modifier', 'target', 'resolved_task'];
 const VERIFICATION_FIELDS = ['candidate', 'fixture', 'input', 'expected_order', 'lowering_check', 'render_check', 'status'];
 
-const isObjectValue = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
+
 
 /** Mirrors rust/src/self_improvement.rs `unquote`. */
 export function unquote(value) {

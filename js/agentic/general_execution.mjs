@@ -5,7 +5,7 @@ import { Capability } from './capability.mjs';
 import { appendRecordStep } from './append_contract.mjs';
 import { shellCommandTool, toolFor } from './capability_router.mjs';
 import { attach, requestedIn } from './ci_workflow.mjs';
-import { executionRecipeFinalAnswer, planSymbolicCommandReroute } from './command_reroute.mjs';
+import { executionRecipeFinalAnswer, planOwnedRecipeRecovery, planSymbolicCommandReroute } from './command_reroute.mjs';
 import { mentionsRoleRaw } from './write_lexicon.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { plainText } from './content.mjs';
@@ -15,9 +15,10 @@ import {
 } from './general_planner.mjs';
 import { FinalDisposition, finalAnswer, jsonText, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
-import { Progress, isWorkItemRead } from './progress.mjs';
-import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure } from './tool_result.mjs';
+import { Progress, isWorkItemRead, qualifiedToolAttempt } from './progress.mjs';
+import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure, commandArgument } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
+import { observedRecoveryCommand, planRecovery } from './prerequisite_recovery.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
 import { detect } from './crate/language.mjs';
@@ -47,7 +48,19 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   const guarded = guardedStep(plan, messages, toolNames);
   if (guarded !== null) return guarded;
   const progress = Progress.scan(messages);
+  const recoveryCommand = observedRecoveryCommand(messages);
+  if (recoveryCommand !== null) {
+    const output = progress.latestRunOutputFor(recoveryCommand);
+    const recovery = planRecovery(messages, toolNames, recoveryCommand, reportedExitCode(output), output);
+    if (recovery !== null) return recovery;
+  }
   const latestFailure = progress.latestFailure();
+  if (plan.mode === GeneralPlanMode.RepositoryWorkItem && latestFailure?.capability === Capability.Run) {
+    const objective = repositoryWorkItemObjective(plan, progress);
+    const answer = objective === null ? null : workItemSolverAnswer(objective);
+    const owned = answer === null ? null : planOwnedRecipeRecovery(messages, toolNames, answer, objective);
+    if (owned !== null) return owned;
+  }
   const workItemUnreadable = plan.mode === GeneralPlanMode.RepositoryWorkItem
     && latestFailure !== null
     && (latestFailure.capability === Capability.Fetch || isWorkItemRead(latestFailure));
@@ -87,6 +100,14 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
         ? null
         : failedVerification([output], plan.verification_command, plan.goal);
       if (report !== null && report !== undefined) return resolvedFinalAnswer(report, FinalDisposition.Failure, 'tool_failure');
+      if (failure.arguments !== null) {
+        const failedCommand = commandArgument(failure.arguments);
+        const bound = failedCommand === null ? null
+          : qualifiedToolAttempt(progress, Capability.Run, JSON.parse(failure.arguments));
+        if (bound?.binding === 'exact' && failedCommand !== null) {
+          return resolvedFinalAnswer(renderFailure(failedCommand, failure.detail, plan.goal), FinalDisposition.Failure, 'tool_failure');
+        }
+      }
     }
     const previous = progress.previousAttempt();
     const recoveringMissingWrite = failure.capability === Capability.Read
@@ -212,8 +233,8 @@ function planEventStep(plan, progress, toolNames, messages) {
  */
 function planWorkItemExecution(objective, messages, toolNames) {
   const answer = workItemSolverAnswer(objective);
-  if (answer && answer.execution_recipe && requestedIn(objective)) attach(answer.execution_recipe);
-  const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer) : null;
+  if (answer && answer.execution_recipe && requestedIn(objective)) attach(answer.execution_recipe, objective);
+  const step = answer ? planSymbolicCommandReroute(messages, toolNames, answer, objective) : null;
   if (step) return step;
   const executable = composeGeneralChangePlan(objective);
   if (!executable || executable.mode === GeneralPlanMode.RepositoryWorkItem) return null;

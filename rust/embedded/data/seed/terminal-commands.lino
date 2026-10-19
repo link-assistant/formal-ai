@@ -41,11 +41,16 @@ terminal_commands
       verb run
       verb execute
     language hi
+      position after-command
       verb चलाओ
       verb चलाएं
       verb चलाएँ
       verb चलाइए
       verb निष्पादित
+    language es
+      verb ejecuta
+      verb ejecute
+      verb ejecutar
   cjk_run_verbs
     verb 运行
     verb 执行
@@ -80,6 +85,10 @@ terminal_commands
       prefix "运行 powershell"
       prefix 执行
       prefix 运行
+    language es
+      prefix ejecuta
+      prefix ejecute
+      prefix ejecutar
   command_nouns
     language en
       noun command
@@ -96,6 +105,84 @@ terminal_commands
     language zh
       noun 命令
       noun 指令
+    language es
+      noun comando
+      noun comandos
+  prose-words
+    language en
+      word command
+      word commands
+      word to
+      word in
+      word into
+      word on
+      word the
+      word a
+      word an
+      word and
+      word then
+      word please
+      word for
+      word of
+      word that
+      word which
+      word so
+      word this
+      word these
+      word those
+      word here
+      word there
+      word me
+      word us
+      word you
+      word it
+      word from
+      word at
+      word with
+      word will
+      word would
+      word can
+      word could
+      word should
+      word using
+      word via
+      word inside
+      word within
+      word output
+      word result
+      word results
+      word contents
+      word content
+      word directory
+      word folder
+      word folders
+      word file
+      word files
+      word currently
+      word again
+      word also
+      word just
+      word now
+      word nothing
+      word anything
+      word everything
+      word something
+      word all
+      word any
+      word every
+      word each
+      word no
+    language es
+      word el
+      word la
+      word los
+      word las
+      word y
+      word dime
+      word qué
+      word pasó
+      word por
+      word favor
   bare_shell_tokens
     token git
     token bash

@@ -16,6 +16,8 @@ mod ci_workflow;
 mod code_artifact;
 pub mod code_rewrite_learning;
 mod code_task;
+pub mod coding_research;
+pub mod coding_research_observation;
 pub(crate) mod command_reroute;
 mod comparison;
 pub mod compound_task;
@@ -89,6 +91,8 @@ mod shell_command;
 mod shell_command_policy;
 mod shell_file_fallback;
 pub mod source_links;
+mod source_maintenance;
+mod source_maintenance_observation;
 mod spelling;
 mod stated_request;
 pub mod statement_audit;
@@ -102,6 +106,7 @@ mod test_file_runner;
 pub mod tool_result;
 pub mod transcript_evidence;
 mod web_research;
+mod wording;
 mod work_item_steps;
 mod workspace_change;
 mod workspace_computed_change;
@@ -186,7 +191,7 @@ pub use requirement_resolution::{RequirementTarget, resolve_in, resolve_requirem
 pub use routing_learning::{
     ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK, is_routing_learning_task,
 };
-pub use self_ast::{AST_PATH, AST_TASK, ast_census, is_self_ast_task, render_ast_document};
+pub use self_ast::{AST_PATH, ast_census, ast_task, is_self_ast_task, render_ast_document};
 pub use self_heal::{SELF_HEAL_PATH, SELF_HEAL_TASK, is_self_heal_task};
 pub(crate) use shell_command::semantic_shell_command_for_task;
 pub(crate) use shell_command::shell_command_for_task as repository_shell_command;

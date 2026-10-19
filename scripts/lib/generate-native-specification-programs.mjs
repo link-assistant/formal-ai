@@ -2,7 +2,7 @@ import {generateNativeBorrowedConstants} from './native-constant-registry.mjs';
 import {isDeepStrictEqual} from 'node:util';
 import {generateNativeOptions} from './native-option-registry.mjs';
 import {generateNativeRecords} from './native-record-registry.mjs';
-import {resolve} from 'node:path';
+import {resolve, dirname, basename, sep} from 'node:path';
 import {generateScalars,generateEnumPredicates} from './native-scalar-registry.mjs';
 import {
 
@@ -470,11 +470,21 @@ console.log('GENERATION_CHECK_PASS');
 
   else{
 
+// Detailed source observations are private caller-opted-in diagnostics.
+const observationFile=process.env.FORMAL_AI_GENERATION_OBSERVATION_FILE;
+let observationTarget=null;
+if(observationFile){
+ const target=resolve(fs.realpathSync(dirname(resolve(observationFile))),basename(observationFile));
+ const checkout=fs.realpathSync(root);
+ if(target===checkout||target.startsWith(checkout+sep))throw Error('GenerationObservationOutsideCheckoutRequired');
+ observationTarget=target;
+}
+
 fs.writeFileSync(output,
 
 code);
 
-fs.writeFileSync(directory+'/generation-observation.json',
+if(observationTarget)fs.writeFileSync(observationTarget,
 
 JSON.stringify({
 
@@ -505,7 +515,7 @@ reason:'No upstream issue was created or invented; diagnostics are recorded belo
 
 null,
 
-2));
+2),{flag:'wx',mode:0o600});
 
 console.log('REGISTRY_GENERATED');
 

@@ -1,19 +1,10 @@
-name: Regenerate self-AST census
-
-# Issue #1085. The per-module census under `data/meta/self-ast/` is a pure
-# function of the sources (`cargo run --manifest-path rust/Cargo.toml --example regenerate_self_ast_census`),
-# and `tests/unit/issue_673_self_ast_census.rs` fails on drift. A contributor
-# whose machine cannot build the crate has no way to regenerate it; this job
-# builds it here on every pull request that touches a source module and hands
-# the documents back as an artifact to commit. It writes nothing to the
-# repository. `workflow_dispatch` only resolves on the default branch, which
-# is why the pull-request trigger exists.
-
+# Full recursive readable models are source authority; receipts only navigate their artifacts.
+name: Verify full readable source content
 on:
   pull_request:
     # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
     # never triggers this repository's own pipeline.
-    branches-ignore: ['e2e/**']
+    branches-ignore: [ 'e2e/**' ]
     paths:
       - 'rust/src/**/*.rs'
       - 'rust/examples/regenerate_self_ast_census.rs'
@@ -45,6 +36,18 @@ on:
       - "scripts/lib/rust-specification-cases.mjs"
       - "scripts/lib/rust-specification-values.mjs"
       - "scripts/qualified-data-artifact-profiles.mjs"
+      - "data/meta/source-model"
+      - "data/meta/source-model/**"
+      - "js/agentic/crate/rust_str.mjs"
+      - "js/agentic/crate/rust_str.mjs/**"
+      - "js/crypto/blake3.mjs"
+      - "js/crypto/blake3.mjs/**"
+      - "scripts/aggregate-source-content.mjs"
+      - "scripts/aggregate-source-content.mjs/**"
+      - "scripts/mirror-package-data.mjs"
+      - "scripts/mirror-package-data.mjs/**"
+      - "rust/examples/generate_source_content.rs"
+      - "scripts/native-release-source.mjs"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
@@ -54,7 +57,7 @@ on:
         required: false
         default: checks
         type: choice
-        options: [checks]
+        options: [ checks ]
       pull-request:
         description: 'Pull request the dispatched checks report for'
         required: false
@@ -74,58 +77,93 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  content:
+    name: Build full source content (${{ matrix.shard }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - 0
+          - 1
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Verify canonical package data demands
+        run: node scripts/mirror-package-data.mjs --check
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: "true"
+      - name: Generate and independently verify recursive source models
+        env:
+          TEST_BUDGET_SECONDS: 1200
+          TEST_WARN_RATIO_PERCENT: 70
+        run: >
+          scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" "full source
+          content" \
+            cargo run --manifest-path rust/Cargo.toml --locked --release --example generate_source_content -- \
+            "$RUNNER_TEMP/source-content" "${{ matrix.shard }}" 8
+      - name: Upload complete readable source models
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-content-models-${{ matrix.shard }}
+          path: ${{ runner.temp }}/source-content/source-content
+          retention-days: 7
+          if-no-files-found: error
+          overwrite: true
+      - name: Upload bounded source-content receipt
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-content-part-${{ matrix.shard }}
+          path: ${{ runner.temp }}/source-content/receipt.json
+          retention-days: 7
+          if-no-files-found: error
+          overwrite: true
   regenerate:
-    name: Build the census and upload it
+    name: Verify source-content receipts
+    needs: content
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-      - uses: ./.github/actions/setup-sccache
-      - uses: ./.github/actions/cache-cargo-registry
+      - name: Setup Node
+        uses: actions/setup-node@v7
         with:
-          restore-only: 'true'
-      - name: Regenerate the census
+          node-version: "22"
+      - name: Download source-bound receipts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: source-content-part-*
+          path: ${{ runner.temp }}/source-content-parts
+          merge-multiple: false
         env:
-          TEST_BUDGET_SECONDS: 1200
-          TEST_WARN_RATIO_PERCENT: 70
-        run: |
-          scripts/run-with-budget-warning.sh \
-            "$TEST_BUDGET_SECONDS" "self-AST census regeneration" \
-            cargo run --manifest-path rust/Cargo.toml --locked --example regenerate_self_ast_census
-      # The three byte-pinned documents derived from the planner source move
-      # whenever `src/agentic_coding/planner.rs` does (`issue_538_agentic` and
-      # `issue_558_self_healing` fail on drift); they are regenerated with the
-      # same binary and handed back in the same artifact (issue #1085).
-      - name: Regenerate the planner-derived documents
-        run: |
-          set -euo pipefail
-          cargo run --manifest-path rust/Cargo.toml --locked --quiet --example dump_self_ast > data/meta/self-ast.lino
-          cargo run --manifest-path rust/Cargo.toml --locked --quiet --example dump_self_healing_case > data/meta/self-healing-case.lino
-          cargo run --manifest-path rust/Cargo.toml --locked --quiet --example dump_self_ast_agent_cli_session \
-            > docs/case-studies/issue-538/agent-cli-session-self-ast.json
-      - name: Show what changed
-        run: |
-          git status --short -- data/meta/self-ast data/meta/self-ast.lino data/meta/self-healing-case.lino docs/case-studies/issue-538 \
-            | tee "$RUNNER_TEMP/census-changes.txt"
-          {
-            echo "### Self-AST census changes"
-            echo
-            echo '```'
-            cat "$RUNNER_TEMP/census-changes.txt"
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-      - name: Upload the census
+          NODE_OPTIONS: --disable-warning=DEP0005
+      - name: Verify exact source ownership and complete shard coverage
+        run: node scripts/aggregate-source-content.mjs
+          "$RUNNER_TEMP/source-content-parts"
+          "$RUNNER_TEMP/source-content-receipt/source-content-receipt.json"
+      - name: Upload source-content evidence
         uses: actions/upload-artifact@v7
         with:
-          name: self-ast-census
-          path: |
-            data/meta/self-ast
-            data/meta/self-ast.lino
-            data/meta/self-healing-case.lino
-            docs/case-studies/issue-538/agent-cli-session-self-ast.json
+          name: source-content-receipt
+          path: ${{ runner.temp }}/source-content-receipt
           retention-days: 7
           if-no-files-found: error
+          overwrite: true

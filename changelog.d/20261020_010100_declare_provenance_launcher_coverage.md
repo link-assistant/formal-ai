@@ -1,0 +1,1 @@
+Declare the three CommonJS provenance launchers in the explicit unmeasured-source inventory. Existing custody tests execute their byte-identical private `.cjs` copies; canonical-path browser coverage is not claimed. Preserve all coverage thresholds and tests. Coverage debt remains to aggregate verified copy identities into canonical source coverage.

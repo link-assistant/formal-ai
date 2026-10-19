@@ -1,0 +1,31 @@
+{
+  "schema": "formal-ai-self-source-cst-observation/v1",
+  "observedSource": "a3dd43da1fa0a903b9368aa42cea6b38715f9987",
+  "sourceOwner": "src/agentic_coding/planner.rs",
+  "modelSha256": "108f662b59e8d8d7137ba8503cd8f926c45316d1f12bb171cdb33ba7a912270a",
+  "sourceSha256": "ee42c93f17b0d657863a4799f69d0863a71547931092a5b077fa94f34874948b",
+  "producer": {
+    "run": 39256568742,
+    "job": 118085624426,
+    "url": "https://github.com/link-assistant/formal-ai/actions/runs/39256568742/job/118085624426",
+    "artifact": 12191516875,
+    "artifactSha256": "951bad8cd61a7d966b551a78b125a08ded645d2c762c9dc782c48124e2940713",
+    "artifactMember": "formal-ai-agent-evidence-8771/run.N1pgWg/dialog-logs/dialog_61c2fdacd898265c.conversation.lino",
+    "observedFilename": "self-ast.lino"
+  },
+  "verification": {
+    "wholeSourceReconstructedWithoutOriginalBuffer": true,
+    "independentCurrentSourceCompared": true,
+    "freshIndependentRustGrammar": true,
+    "grammar": {
+      "provider": "web-tree-sitter/rust",
+      "runtimeSha256": "7c49e3c1d87e24e0bb4c2def909d17154dfde281f5f8280225450090bb4b8110",
+      "grammarSha256": "24c89bd9252255e4aebbcbd7d2d308bd92c86dd95a130fdc80efa49577b8d738",
+      "syntaxRulesSha256": "bf66d6fe8fce0683ba33f7eec848b0a43df1f6af32b83a6adb5b34cb49b550f2"
+    }
+  },
+  "localNativeExecution": false,
+  "publicationAuthority": false,
+  "autonomousAuthorshipCredit": 0,
+  "scope": "The authenticated original CI-native planner CST reconstructs completely and independently reparses. Its original replay failed only the obsolete counter canary. New self-cst.lino naming and content-oracle delivery require new-head CI. General semantic transformations, comment naturalization, multilingual round trips and complete requirement acceptance are not established."
+}

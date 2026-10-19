@@ -1,4 +1,4 @@
-import { spawn } from 'node:child_process';
+import { spawnWithIsolatedTestCache } from './test-cache-isolation.mjs';
 import { performance } from 'node:perf_hooks';
 import { StringDecoder } from 'node:string_decoder';
 
@@ -106,7 +106,7 @@ export async function executeBatches(batches, executables, options = {}) {
       const outcome = await new Promise((resolve) => {
         let pending = '';
         const decoder = new StringDecoder('utf8');
-        const child = spawn(executable, args, {
+        const child = spawnWithIsolatedTestCache(executable, args, {
           cwd: options.cwd, env: options.env ?? process.env, stdio: ['ignore', 'pipe', 'pipe'],
         });
         child.stdout.on('data', (chunk) => {

@@ -62,11 +62,12 @@ recipe 3 4 "generated diagrams (non-lexeme axis, no web step: write â†’ verify â
   EXPECT_TEXT=flowchart \
   MIN_POSTS=3
 
-recipe 4 4 "self-inspection CST/AST census (self-referential, no web step)" \
+recipe 4 4 "self-inspection complete source CST (self-referential, no web step)" \
   PORT=8771 \
-  TASK="Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation." \
-  EXPECT_FILE=self-ast.lino \
-  EXPECT_TEXT=named_node_count \
+  TASK="Store the complete source CST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and preserve every literal, comment, punctuation mark and whitespace character in recursive human-readable Links Notation." \
+  EXPECT_FILE=self-cst.lino \
+  EXPECT_TEXT=owned-source \
+  COMPLETION_EVIDENCE=source-cst \
   MIN_POSTS=3
 
 echo "==================== ALL FOUR RECIPE AXES PASSED LIVE ===================="

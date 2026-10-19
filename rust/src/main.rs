@@ -19,10 +19,12 @@ mod cli_import;
 mod cli_improve;
 mod cli_learn;
 mod cli_local_transport;
+mod cli_logs;
 mod cli_memory;
 mod cli_orchestration;
 mod cli_paths;
 mod cli_procedure;
+mod cli_provenance;
 mod cli_report;
 mod cli_repository_history;
 mod cli_shared_dialog;
@@ -130,6 +132,10 @@ enum Command {
         draft_count: Option<u8>,
     },
     Dataset,
+    /// Convert legacy JSONL or canonical diagnostic/dialog logs.
+    Logs(cli_logs::LogsArgs),
+    /// Authenticate bounded tracked working-source bytes.
+    Provenance(cli_provenance::ProvenanceArgs),
     /// Translate a document between the source roots through the meta
     /// language (plan 16 L2): `--from`/`--to` one of rust|js|ts|meta,
     /// `--input` the source file for a live leg, `--list` every direction
@@ -652,17 +658,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     lino_arguments::init();
     // `formal-ai with <tool> …` hands everything after the tool name to that
     // tool, including flags this command also defines globally.
-    let args = Args::parse_from(delimit_tool_args(
+    let arguments = Args::parse_from(delimit_tool_args(
         std::env::args_os().collect(),
         &Args::command(),
     ));
-    let verbose = args.verbose && !args.silent;
+    formal_ai::structured_tracing::install().map_err(std::io::Error::other)?;
+    let verbose = arguments.verbose && !arguments.silent;
     formal_ai::dialog_log::configure_verbose(verbose);
     formal_ai::dialog_log::structured_log::configure(
-        args.silent,
-        matches!(args.command.as_ref(), Some(Command::Serve(_))),
+        arguments.silent,
+        matches!(arguments.command.as_ref(), Some(Command::Serve(_))),
     );
-    let command = args.command.unwrap_or_else(|| Command::Chat {
+    let command = arguments.command.unwrap_or_else(|| Command::Chat {
         prompt: String::from("Hi"),
         format: OutputFormat::Text,
         definition_fusion: None,
@@ -688,6 +695,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             draft_count,
         )?,
         Command::Dataset => println!("{}", knowledge_links_notation()),
+        Command::Logs(arguments) => cli_logs::run_logs(&arguments),
+        Command::Provenance(arguments) => cli_provenance::run_provenance(arguments)?,
         Command::Translate {
             from,
             to,

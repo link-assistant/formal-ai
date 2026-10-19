@@ -13,13 +13,13 @@ use serde_json::json;
 
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::Progress;
-use super::write_request::{bare_surfaces, clean_cue_token, tokens};
 use crate::engine::ExecutionRecipe;
 use crate::protocol::ChatMessage;
 use crate::seed;
 
 /// Where a work item's result is to land.
 pub(super) struct CommitTarget {
+    binding_refused: bool,
     /// The branch the request named, when it named one; otherwise the branch
     /// that is checked out (`HEAD`).
     pub(super) branch: Option<String>,
@@ -37,8 +37,12 @@ impl CommitTarget {
 /// The commit target a request states, if it names a repository work item.
 pub(super) fn target_of(request: &str) -> Option<CommitTarget> {
     let reference = super::general_planner::repository_work_reference(request)?;
+    let binding = request_target_binding(request, "branch-binding-patterns", valid_branch_target);
+    let binding_refused = matches!(binding, RequestTargetBinding::Refused);
+    let branch = named_branch(request);
     Some(CommitTarget {
-        branch: named_branch(request),
+        binding_refused,
+        branch,
         reference,
     })
 }
@@ -46,35 +50,155 @@ pub(super) fn target_of(request: &str) -> Option<CommitTarget> {
 /// The branch named right after a branch cue: "on branch issue-1-abc",
 /// "в ветке issue-1-abc", "分支 issue-1-abc".
 pub(super) fn named_branch(request: &str) -> Option<String> {
-    let cues = bare_surfaces(seed::ROLE_GIT_BRANCH_CUE);
-    let toks = tokens(request);
-    toks.windows(2).find_map(|pair| {
-        let word = clean_cue_token(pair[0].text);
-        let is_cue = cues
-            .iter()
-            .any(|cue| *cue == word || (!cue.is_ascii() && word.ends_with(cue.as_str())));
-        if !is_cue {
-            return None;
-        }
-        let candidate = pair[1].text.trim_matches(|character: char| {
-            matches!(
-                character,
-                '`' | '"' | '\'' | ',' | '.' | ';' | ':' | '(' | ')'
-            )
-        });
-        is_branch_name(candidate).then(|| candidate.to_owned())
-    })
+    match request_target_binding(request, "branch-binding-patterns", valid_branch_target) {
+        RequestTargetBinding::Bound(value) => Some(value),
+        _ => None,
+    }
 }
 
-fn is_branch_name(word: &str) -> bool {
-    !word.is_empty()
-        && !word.starts_with('-')
-        && word
+pub(super) enum RequestTargetBinding {
+    Absent,
+    Bound(String),
+    Refused,
+}
+
+fn target_policy_values(key: &str) -> Vec<String> {
+    serde_json::from_str(&super::work_item_steps::fill(key, &[]))
+        .expect("valid typed target policy")
+}
+
+pub(super) fn valid_branch_target(value: &str) -> bool {
+    !value.is_empty()
+        && value != "@"
+        && !value.starts_with('-')
+        && !value.ends_with('.')
+        && !target_policy_values("branch-forbidden-substrings")
+            .iter()
+            .any(|part| value.contains(part.as_str()))
+        && !value
             .chars()
-            .any(|character| character.is_ascii_alphanumeric())
-        && word.chars().all(|character| {
-            character.is_ascii_alphanumeric() || matches!(character, '-' | '_' | '/' | '.')
+            .any(|ch| ch <= ' ' || ch == '\u{7f}' || "~^:?*[\\".contains(ch))
+        && value.split('/').all(|part| {
+            !part.is_empty()
+                && !part.starts_with('.')
+                && std::path::Path::new(part).extension() != Some(std::ffi::OsStr::new("lock"))
         })
+}
+
+pub(super) fn valid_workflow_target(value: &str) -> bool {
+    let lower = value.to_lowercase();
+    let file = std::path::Path::new(&lower);
+    (file.extension().is_some_and(|extension| {
+        extension == std::ffi::OsStr::new("yml") || extension == std::ffi::OsStr::new("yaml")
+    }) || file.file_name() == Some(std::ffi::OsStr::new(".yml"))
+        || file.file_name() == Some(std::ffi::OsStr::new(".yaml")))
+        && !value.starts_with('/')
+        && !value
+            .chars()
+            .any(|ch| ch <= ' ' || ch == '\u{7f}' || "\\:;|&$<>\x60\"'".contains(ch))
+        && value
+            .split('/')
+            .all(|part| !part.is_empty() && part != "." && part != "..")
+}
+
+pub(super) fn request_target_binding(
+    request: &str,
+    key: &str,
+    validate: fn(&str) -> bool,
+) -> RequestTargetBinding {
+    let encoded = super::work_item_steps::fill(key, &[]);
+    let patterns: Vec<String> =
+        serde_json::from_str(&encoded).expect("valid target binding policy");
+    let excluded_key = key.replace("-binding-patterns", "-excluded-patterns");
+    let excluded_encoded = super::work_item_steps::fill(&excluded_key, &[]);
+    let excluded_patterns: Vec<String> =
+        serde_json::from_str(&excluded_encoded).expect("valid excluded target policy");
+    let mut values = std::collections::BTreeSet::new();
+    let mut excluded = std::collections::BTreeSet::new();
+    let mut refused = false;
+    let mut fenced = false;
+    let mut offset = 0;
+    let quoted = crate::normal_markov::quoted_segment_spans(request);
+    for raw in request.split_inclusive('\n') {
+        let line_offset = offset;
+        offset += raw.len();
+        let mut line = raw.trim();
+        if target_policy_values("owned-clause-fence-prefixes")
+            .iter()
+            .any(|prefix| line.starts_with(prefix.as_str()))
+        {
+            fenced = !fenced;
+            continue;
+        }
+        if fenced {
+            continue;
+        }
+        if ["- ", "* ", "+ "]
+            .iter()
+            .any(|prefix| line.starts_with(prefix))
+        {
+            line = line[2..].trim();
+        } else if let Some((lead, tail)) = line.split_once(' ')
+            && lead
+                .trim_end_matches(['.', ')'])
+                .chars()
+                .all(|ch| ch.is_ascii_digit())
+            && lead.ends_with(['.', ')'])
+        {
+            line = tail.trim();
+        }
+        let owned_at = line_offset + raw.find(line).unwrap_or(0);
+        if quoted
+            .iter()
+            .any(|segment| segment.start <= owned_at && owned_at < segment.end)
+        {
+            continue;
+        }
+        for (is_excluded, pattern) in patterns
+            .iter()
+            .map(|value| (false, value))
+            .chain(excluded_patterns.iter().map(|value| (true, value)))
+        {
+            let regex = regex::RegexBuilder::new(pattern)
+                .case_insensitive(true)
+                .build()
+                .expect("valid target binding pattern");
+            let Some(matched) = regex.captures(line) else {
+                continue;
+            };
+            let mut value = matched[1].trim();
+            value = value.strip_suffix(['.', '。', '।']).unwrap_or(value);
+            value = value.strip_suffix(',').unwrap_or(value);
+            let literal = crate::normal_markov::quoted_segment_spans(value)
+                .into_iter()
+                .find(|segment| segment.start == 0 && segment.end == value.len())
+                .map(|segment| segment.text);
+            if let Some(text) = literal.as_deref() {
+                value = text;
+            }
+            if validate(value) {
+                if is_excluded {
+                    excluded.insert(value.to_owned());
+                } else {
+                    values.insert(value.to_owned());
+                }
+            } else {
+                refused = true;
+            }
+        }
+    }
+    if refused
+        || values.len() > 1
+        || (values.is_empty() && !excluded.is_empty())
+        || values.iter().any(|value| excluded.contains(value))
+    {
+        RequestTargetBinding::Refused
+    } else {
+        values
+            .into_iter()
+            .next()
+            .map_or(RequestTargetBinding::Absent, RequestTargetBinding::Bound)
+    }
 }
 
 /// The shell step that lands the tree: stage, commit, push, print the hash.
@@ -107,17 +231,18 @@ pub(super) fn resolves_body(reference: &str) -> String {
     super::work_item_steps::fill("body_resolves", &[("{reference}", reference)])
 }
 
-pub(super) fn shell_quote(text: &str) -> String {
-    format!("'{}'", text.replace('\'', "'\\''"))
-}
+pub(super) use crate::portable_string_contracts::quote_shell_word as shell_quote;
 
-/// Commit only the recipe's declared source artifacts; compiler outputs and
-/// unrelated staged edits are not part of the requested change.
+/// Commit declared artifacts and a verified task-owned scaffold deletion.
+/// Compiler outputs and unrelated staged edits remain outside this commit.
 #[allow(
     clippy::literal_string_with_formatting_args,
     reason = "bind quoted operands in the shared commit template"
 )]
 pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTarget) -> String {
+    if target.binding_refused {
+        return super::work_item_steps::fill("target_binding_refused_command", &[]);
+    }
     let files = std::iter::once(recipe.path.as_str())
         .chain(
             recipe
@@ -128,13 +253,21 @@ pub(super) fn recipe_commit_command(recipe: &ExecutionRecipe, target: &CommitTar
         .map(shell_quote)
         .collect::<Vec<_>>()
         .join(" ");
-    super::work_item_steps::fill(
+    let command = super::work_item_steps::fill(
         "recipe_commit_command",
         &[
-            ("{files}", &files),
+            ("{files}", "\"$@\""),
             ("{subject}", &shell_quote(&recipe_subject(recipe))),
             ("{body}", &shell_quote(&resolves_body(&target.reference))),
             ("{branch}", &shell_quote(target.push_ref())),
+        ],
+    );
+    super::work_item_steps::fill(
+        "task-scaffold-commit-command",
+        &[
+            ("{files}", &files),
+            ("{reference}", &shell_quote(&target.reference)),
+            ("{commit}", &command),
         ],
     )
 }
@@ -279,3 +412,11 @@ fn porcelain_entry(line: &str) -> Option<(&str, &str)> {
     let path = path.trim();
     (known && !path.is_empty() && !path.contains(char::is_whitespace)).then_some((status, path))
 }
+
+#[cfg(test)]
+#[path = "../../tests/unit/agentic-coding/git_commit_target_binding.rs"]
+mod target_binding_controls;
+
+#[cfg(test)]
+#[path = "../../tests/unit/agentic-coding/git_commit_extension_identity.rs"]
+mod extension_identity_tests;

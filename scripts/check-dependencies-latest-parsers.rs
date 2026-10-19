@@ -242,6 +242,49 @@ pub fn parse_bun_lock(text: &str) -> BTreeMap<String, String> {
     out
 }
 
+/// Decode one action scalar; quoted hashes are content, unquoted comment text is not.
+fn yaml_action_reference(text: &str) -> Option<String> {
+    let text = text.trim();
+    let mut quote = None;
+    let mut escaped = false;
+    let mut previous: Option<char> = None;
+    let mut end = text.len();
+    for (index, character) in text.char_indices() {
+        if escaped {
+            escaped = false;
+            continue;
+        }
+        if quote == Some('"') && character == '\\' {
+            escaped = true;
+            continue;
+        }
+        if quote == Some(character) {
+            quote = None;
+        } else if quote.is_none() && matches!(character, '\'' | '"') {
+            quote = Some(character);
+        } else if quote.is_none() && character == '#' && previous.is_some_and(char::is_whitespace) {
+            end = index;
+            break;
+        }
+        previous = Some(character);
+    }
+    if quote.is_some() {
+        return None;
+    }
+    let scalar = text[..end].trim();
+    let reference = if let Some(value) = scalar
+        .strip_prefix('\'')
+        .and_then(|value| value.strip_suffix('\''))
+    {
+        value.replace("''", "'")
+    } else if scalar.starts_with('"') {
+        serde_json::from_str::<String>(scalar).ok()?
+    } else {
+        scalar.to_owned()
+    };
+    (!reference.is_empty() && !reference.chars().any(char::is_whitespace)).then_some(reference)
+}
+
 /// `uses: owner/repo@ref` pins, local (`./…`) and docker refs excluded.
 pub fn parse_uses_pins(text: &str) -> Vec<(String, String, usize)> {
     let mut out = Vec::new();
@@ -251,11 +294,13 @@ pub fn parse_uses_pins(text: &str) -> Vec<(String, String, usize)> {
         let Some(rest) = step.strip_prefix("uses:") else {
             continue;
         };
-        let reference = rest.trim();
+        let Some(reference) = yaml_action_reference(rest) else {
+            continue;
+        };
         if reference.starts_with("./") || reference.starts_with("docker://") {
             continue;
         }
-        let Some((action, pin)) = split_once(reference, '@') else {
+        let Some((action, pin)) = split_once(&reference, '@') else {
             continue;
         };
         if action.split('/').count() < 2 || blocked_annotation(line).is_some() {

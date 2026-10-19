@@ -1,0 +1,17 @@
+self_ast_census
+  target src/cli_logs.rs
+  language rust
+  fidelity signature
+  byte_len 3315
+  line_count 96
+  content_id source_module_4d7f2dec714ea94a
+  symbol_count 8
+  symbols
+    const MAXIMUM_INPUT 7 7
+    enum LogFormat 9 13
+    enum InputFormat 15 18
+    struct LogsArgs 20 28
+    function convert 29 64
+    function read_and_convert 65 84
+    function run_logs 86 93
+    module tests 96 96

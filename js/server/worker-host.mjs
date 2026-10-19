@@ -14,13 +14,14 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
+import {fileURLToPath} from "node:url";
 import { createHash } from "node:crypto";
 import { workerScriptPrerequisites } from "./worker-script-prerequisites.mjs";
 
 import { serverMessage } from "./messages.mjs";
 import { applyProcedureCache } from "./procedure-cache.mjs";
 
-export const REPO_ROOT = path.resolve(import.meta.dirname, "../..");
+export const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const WORKER_DIR = path.join(REPO_ROOT, "js/worker");
 
 // Constructor-owned prerequisite: only a genuinely fresh context can be issued.
@@ -33,10 +34,11 @@ function parserBootstrapSource() {
   if(createHash("sha256").update(source).digest("hex")!==parserBootstrapIdentity) throw new Error("ParserBootstrapSourceIdentityMismatch");
   return {absolute,source};
 }
-function initializeParserBootstrap(context) {
+function initializeParserBootstrap(context,provenance=false) {
   const current=parserBootstrapSource();
   // The same captured loader evaluator must actually complete producer evaluation.
   applyWorkerScript(runWorkerScript,new WorkerScript(current.source,{filename:current.absolute}),[context]);
+  if(provenance)compiledWorkerSources.set(context,new Map([["js/parser-cache-primordials.js",current.source]]));
   parserBootstrapContexts.set(context,parserBootstrapIdentity);
   evaluatedWorkerScripts.set(context, new Map([["js/parser-cache-primordials.js", parserBootstrapIdentity]]));
 }
@@ -116,10 +118,10 @@ function createDocument() {
  * rejects by default so a module that reaches for the network in a unit test
  * fails loudly instead of hanging.
  */
-export function createBrowserContext(overrides = {}) {
+export function createBrowserContext(overrides = {},{provenance=false}={}) {
   const sandbox = {};
   const context = vm.createContext(sandbox);
-  initializeParserBootstrap(context);
+  initializeParserBootstrap(context,provenance);
   Object.assign(sandbox, {
     globalThis: sandbox,
     window: sandbox,
@@ -181,6 +183,10 @@ export function createBrowserContext(overrides = {}) {
  * file show up in the coverage report under its real repository path.
  */
 const evaluatedWorkerScripts = new WeakMap();
+const compiledWorkerSources = new WeakMap();
+const fetchedWorkerInputs = new WeakMap();
+const workerGenesis = new WeakMap();
+const workerCustodyEnabled = new WeakSet();
 const prerequisiteRecords = new Map(workerScriptPrerequisites.map(record => [record.script, record]));
 const WorkerScript = vm.Script;
 const runWorkerScript = vm.Script.prototype.runInContext;
@@ -313,6 +319,7 @@ export function loadBrowserScript(context, relativePath) {
   const counterEligible=isParser && counterEvaluatorIntact() && sourceHash===parserMemoSeedIdentity;
   const completion=applyWorkerScript(runWorkerScript, new WorkerScript(source, { filename: absolute }), [context]);
   if(counterEligible && counterEvaluatorIntact() && typeof completion==="function") parserMemoContexts.set(context,{query:completion});
+  compiledWorkerSources.get(context)?.set(script,source);
   evaluated.set(script, sourceHash);
   return context;
 }
@@ -371,8 +378,9 @@ export function loadWorkerMirror(overrides = {}) {
  * `reorderModules`, when given, maps the module list the entry loads to the
  * order to load it in, so a test can prove the modules load in any order.
  */
-export function createWorkerContext(overrides = {}, { reorderModules = null } = {}) {
+export function createWorkerContext(overrides = {}, { reorderModules = null, provenance=false } = {}) {
   preflightWorkerSources(workerMirrorFiles());
+  const fetched=provenance?[]:null;
   const context = createBrowserContext({
     location: { href: "http://localhost/worker/formal_ai_worker.js", search: "" },
     fetch: (url) => {
@@ -382,13 +390,22 @@ export function createWorkerContext(overrides = {}, { reorderModules = null } = 
         : path.join(REPO_ROOT, "js", relative);
       try {
         const text = readFileSync(onDisk, "utf8");
-        return Promise.resolve({ ok: true, status: 200, text: () => Promise.resolve(text) });
+        const observation=provenance?{path:path.relative(REPO_ROOT,onDisk).split(path.sep).join("/"),status:200,preparedTextSha256:createHash("sha256").update(text).digest("hex"),preparedTextBytes:Buffer.byteLength(text),deliveries:0}:null;
+        if(observation)fetched.push(observation);
+        return Promise.resolve({ok:true,status:200,text:()=>{
+          if(observation){observation.deliveries+=1;observation.text=text;}return Promise.resolve(text);
+        }});
       } catch {
-        return Promise.resolve({ ok: false, status: 404, text: () => Promise.resolve("") });
+        const observation=provenance?{path:path.relative(REPO_ROOT,onDisk).split(path.sep).join("/"),status:404,preparedTextSha256:createHash("sha256").update("").digest("hex"),preparedTextBytes:0,deliveries:0}:null;
+        if(observation)fetched.push(observation);
+        return Promise.resolve({ok:false,status:404,text:()=>{
+          if(observation){observation.deliveries+=1;observation.text="";}return Promise.resolve("");
+        }});
       }
     },
     ...overrides,
-  });
+  },{provenance});
+  if(provenance)fetchedWorkerInputs.set(context,fetched);
   context.importScripts = (...urls) => {
     for (const url of urls) {
       const relative = webRootPath(url);
@@ -427,7 +444,8 @@ export function evaluate(context, expression) {
  * does not solve.
  */
 export class WorkerHost {
-  constructor(overrides = {}) {
+  constructor(overrides = {},{provenance=false}={}) {
+    if(provenance===true)workerCustodyEnabled.add(this);
     this.overrides = overrides;
     this.context = null;
     this.ready = null;
@@ -439,10 +457,42 @@ export class WorkerHost {
   /** Boot the worker and load the seed once. */
   boot() {
     if (!this.ready) {
-      this.context = createWorkerContext(this.overrides);
-      this.ready = Promise.resolve(evaluate(this.context, "loadSeed()")).then(() => this.context);
+      const provenance=workerCustodyEnabled.has(this);
+      this.context = createWorkerContext(this.overrides,{provenance});
+      this.ready = Promise.resolve(evaluate(this.context, "loadSeed()")).then(() => {
+        if(!provenance)return this.context;
+        const storage=value=>Array.from({length:value.length},(_,index)=>{
+          const key=value.key(index);return [key,value.getItem(key)];
+        });
+        const sources=Array.from(compiledWorkerSources.get(this.context)??[],([file,text])=>({path:file,text}));
+        const inputs=this.provenanceInputs();
+        workerGenesis.set(this,{schema:'formal-ai-worker-genesis-v1',
+          scope:'constructor-owned-worker-state-before-first-request',
+          sourceEncoding:'actual-vm-script-utf8-decoded-text',sources,inputs,
+          memory:{localStorage:storage(this.context.localStorage),sessionStorage:storage(this.context.sessionStorage)},
+          overrides:Object.keys(this.overrides).sort(),
+          completeness:Object.keys(this.overrides).length===0?'default-worker-reconstructible':'custom-overrides-not-reconstructible'});
+        return this.context;
+      });
     }
     return this.ready;
+  }
+
+  /** Actual observed text deliveries, available only for constructor-opted-in contexts. */
+  provenanceInputs() {
+    if(!workerCustodyEnabled.has(this))return null;
+    return (fetchedWorkerInputs.get(this.context)??[]).map(input=>{
+      const {text,...metadata}=input;
+      const delivered=(input.deliveries??0)>0;
+      return {...metadata,textState:delivered?'delivered':'not-delivered',
+        ...(delivered?{text}:{})};
+    });
+  }
+
+  /** Actual constructor source/seed/storage custody; no claim to whole-process memory. */
+  provenanceGenesis() {
+    const genesis=workerGenesis.get(this);
+    return genesis?JSON.parse(JSON.stringify(genesis)):null;
   }
 
   /**

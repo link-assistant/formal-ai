@@ -1,0 +1,67 @@
+name: Native provenance interoperability and performance
+
+on:
+  pull_request:
+    branches-ignore: ['e2e/**']
+    paths:
+      - 'rust/src/provenance_native.rs'
+      - 'rust/src/structured_tracing.rs'
+      - 'rust/src/cli_logs.rs'
+      - 'rust/src/main.rs'
+      - 'rust/tests/unit/structured_tracing.rs'
+      - 'rust/tests/fixtures/logs-cli-runtime-parity.json'
+      - 'rust/tests/fixtures/provenance-native-vectors.json'
+      - 'rust/examples/provenance_benchmark.rs'
+      - 'rust/Cargo.toml'
+      - 'rust/Cargo.lock'
+      - '.github/workflows/provenance-native.yml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run native provenance qualification
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request receiving evidence
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  native:
+    name: Native provenance correctness and measured latency
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Verify maintained JavaScript vectors in the actual native backend
+        run: |
+          cargo test --locked --manifest-path rust/Cargo.toml --lib provenance_native::tests -- --nocapture
+          cargo test --locked --manifest-path rust/Cargo.toml --lib structured_tracing::tests -- --nocapture
+          cargo test --locked --manifest-path rust/Cargo.toml --bin formal-ai cli_logs::tests -- --nocapture
+      - name: Measure actual CPU backends without relaxing correctness
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/provenance-native-performance"
+          cargo run --locked --release --manifest-path rust/Cargo.toml --example provenance_benchmark > "$RUNNER_TEMP/provenance-native-performance/benchmark.json"
+          cat "$RUNNER_TEMP/provenance-native-performance/benchmark.json"
+          uname -a > "$RUNNER_TEMP/provenance-native-performance/system.txt"
+          lscpu >> "$RUNNER_TEMP/provenance-native-performance/system.txt"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: provenance-native-performance
+          path: ${{ runner.temp }}/provenance-native-performance
+          retention-days: 7
+          if-no-files-found: warn

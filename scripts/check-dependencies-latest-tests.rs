@@ -173,6 +173,7 @@ fn ranges_and_minors() {
 #[test]
 fn comparison_rules() {
     let snapshot = Snapshot {
+        action_releases: BTreeMap::new(),
         refreshed_at: String::new(),
         entries: [
             (
@@ -214,7 +215,7 @@ fn comparison_rules() {
     let (findings, unverifiable) = compare(&dependencies, &snapshot);
     assert_eq!(findings.len(), 1, "{findings:?}");
     assert_eq!(findings[0].dependency.name, "egg");
-    assert_eq!(unverifiable, ["npm/absent"]);
+    assert_eq!(unverifiable, ["npm/absent: absent from snapshot"]);
 }
 
 #[test]
@@ -224,6 +225,7 @@ fn snapshot_round_trip() {
     fs::create_dir_all(&directory).expect("temp dir");
     let path = directory.join("snapshot.lino");
     let snapshot = Snapshot {
+        action_releases: BTreeMap::new(),
         refreshed_at: "2026-09-30T15:04:05Z".to_string(),
         entries: [
             (
@@ -479,4 +481,35 @@ fn drift_is_numeric_at_the_pinned_precision() {
     assert_eq!(docker_tag_at_precision("1.98-slim", "1.99.0"), "1.99-slim");
     assert_eq!(docker_tag_at_precision("24.04", "26.04"), "26.04");
     assert_eq!(docker_tag_at_precision("2.10.2", "2.11.0"), "2.11.0");
+}
+
+#[test]
+fn uses_pins_decode_quoted_scalars_and_preserve_comment_boundaries() {
+    for text in [
+        "uses: owner/action@v3 # release note",
+        "uses: 'owner/action@v3' # note",
+        "uses: \"owner/action@v3\" # note",
+        "uses: owner/action@v3\t# note",
+    ] {
+        assert_eq!(
+            parse_uses_pins(text),
+            vec![("owner/action".to_owned(), "v3".to_owned(), 1)]
+        );
+    }
+    assert_eq!(
+        parse_uses_pins("uses: 'owner/action@tag#literal' # comment")[0].1,
+        "tag#literal"
+    );
+    assert_eq!(
+        parse_uses_pins("uses: 'owner/action@unterminated"),
+        [] as [(String, String, usize); 0]
+    );
+    assert_eq!(
+        parse_uses_pins("uses: ./local/action # note"),
+        [] as [(String, String, usize); 0]
+    );
+    assert_eq!(
+        parse_uses_pins("uses: docker://alpine:3 # note"),
+        [] as [(String, String, usize); 0]
+    );
 }

@@ -1,0 +1,24 @@
+[
+  {
+    "name": "unseen-esm-operator",
+    "language": "javascript",
+    "path": "scratch/saffron.mjs",
+    "source": "export const saffron = (prism) => prism + ;\n",
+    "diagnostic": "error: missing operand after prism addition\nscratch/saffron.mjs:1\n",
+    "message": "missing operand after prism addition",
+    "fix": "export const saffron = (prism) => prism + 37;",
+    "url": "https://reference.example/new-saffron-operator",
+    "command": "node scratch/saffron.mjs"
+  },
+  {
+    "name": "unseen-typescript-binding",
+    "language": "typescript",
+    "path": "scratch/cobalt.ts",
+    "source": "export const cobalt: number = ;\n",
+    "diagnostic": "scratch/cobalt.ts(1,31): error TS1109: Cobalt initializer expression expected\n",
+    "message": "TS1109 Cobalt initializer expression expected",
+    "fix": "export const cobalt: number = 83;",
+    "url": "https://language.example/novel-cobalt-initializer",
+    "command": "tsc --noEmit scratch/cobalt.ts"
+  }
+]

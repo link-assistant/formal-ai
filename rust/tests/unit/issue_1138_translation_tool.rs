@@ -257,8 +257,8 @@ fn write_tree_writes_every_owned_file() {
 
 /// Issue #1180 R11: the agentic ES modules (`js/agentic/**/*.mjs`) are part
 /// of the native write set, mapped to `ts/agentic/**/*.mts` exactly as
-/// `scripts/translate-es.mjs` maps them; an `.mjs` outside that subtree is
-/// not the translator's.
+/// `scripts/translate-es.mjs` maps them. Admitted server modules also have twins;
+/// an `.mjs` outside every declared owned subtree remains excluded.
 #[test]
 fn the_agentic_module_subtree_writes_its_mts_twins() {
     use formal_ai::meta_translate::{SourceRoot, WriteTargetError, write_target};
@@ -285,15 +285,25 @@ fn the_agentic_module_subtree_writes_its_mts_twins() {
             SourceRoot::TypeScript,
             "js/server/main.mjs"
         ),
-        Err(WriteTargetError::WrongRoot {
-            path: "js/server/main.mjs".to_owned()
-        }),
+        Ok("ts/server/main.mts".to_owned()),
         "only the module subtrees carry an .mts twin"
+    );
+    assert_eq!(
+        write_target(
+            SourceRoot::JavaScript,
+            SourceRoot::TypeScript,
+            "js/unowned/main.mjs"
+        ),
+        Err(WriteTargetError::WrongRoot {
+            path: "js/unowned/main.mjs".to_owned()
+        }),
+        "an unowned module subtree stays excluded"
     );
     let root = temp_source_tree(&[
         ("js/one.js", "export const one = 1;\n"),
         ("js/agentic/crate/two.mjs", "export const two = 2;\n"),
         ("js/server/three.mjs", "export const three = 3;\n"),
+        ("js/unowned/four.mjs", "export const four = 4;\n"),
     ]);
     let report = translate_write::write_tree(SourceRoot::JavaScript, SourceRoot::TypeScript, &root);
     let WriteReport::Wrote { files, .. } = &report else {
@@ -304,9 +314,17 @@ fn the_agentic_module_subtree_writes_its_mts_twins() {
         .map(|file| file.target.as_str())
         .collect::<Vec<_>>();
     targets.sort_unstable();
-    assert_eq!(targets, ["ts/agentic/crate/two.mts", "ts/one.ts"]);
+    assert_eq!(
+        targets,
+        [
+            "ts/agentic/crate/two.mts",
+            "ts/one.ts",
+            "ts/server/three.mts"
+        ]
+    );
     assert!(root.join("ts/agentic/crate/two.mts").is_file());
-    assert!(!root.join("ts/server/three.mts").exists());
+    assert!(root.join("ts/server/three.mts").is_file());
+    assert!(!root.join("ts/unowned/four.mts").exists());
     let _ = std::fs::remove_dir_all(&root);
 }
 
@@ -349,24 +367,42 @@ fn every_distinct_pair_is_listed_exactly_once() {
 }
 
 #[test]
-fn rust_to_meta_is_the_live_signature_leg() {
+fn rust_to_meta_restores_complete_readable_source_with_independent_grammar() {
+    use formal_ai::readable_source::{
+        read_source_links, source_from_links, source_owner, verify_source_links,
+    };
     assert_eq!(
         meta_translate::pending_leg(SourceRoot::Rust, SourceRoot::Meta),
         None
     );
     let source = "fn answer() -> u32 {\n    41 + 1\n}\n";
     match meta_translate::translate(SourceRoot::Rust, SourceRoot::Meta, "probe.rs", source) {
-        TranslationOutcome::Rendered { target, .. } => {
-            assert!(target.contains("self_ast"));
-            assert!(target.contains("target probe.rs"));
-            assert!(target.contains("language rust"));
-            assert!(target.contains("engine meta_language"));
-            assert!(target.contains("named_node_count"));
+        TranslationOutcome::Rendered { target, carried } => {
+            let retained = read_source_links(&target).expect("readable recursive source document");
+            assert_eq!(
+                source_owner(&retained).expect("structural owner"),
+                Some("probe.rs")
+            );
+            assert_eq!(
+                source_from_links(&retained).expect("source-free restoration"),
+                source
+            );
+            verify_source_links(&retained).expect("fresh pinned Rust grammar");
+            assert_eq!(carried, 0, "content is never replaced by a signature count");
+            match meta_translate::translate(
+                SourceRoot::Meta,
+                SourceRoot::Rust,
+                "probe.lino",
+                &target,
+            ) {
+                TranslationOutcome::Rendered { target, .. } => assert_eq!(target, source),
+                other => panic!("the independently verified source must round-trip; got {other:?}"),
+            }
         }
         other @ (TranslationOutcome::Pending { .. }
         | TranslationOutcome::Refused { .. }
         | TranslationOutcome::Invalid { .. }) => {
-            panic!("rust → meta must render the self-AST document; got {other:?}")
+            panic!("rust → meta must render complete readable source; got {other:?}")
         }
     }
 }

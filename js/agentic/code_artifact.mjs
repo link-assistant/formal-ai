@@ -18,7 +18,7 @@ import { commandArgument } from './tool_result.mjs';
 const MAX_REWRITE_STEPS = 100000;
 const RENDERED_TRACE_EDGE_STEPS = 32;
 
-const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
+import { eqIgnoreAsciiCase } from './crate/rust_str.mjs';
 
 /** Rust `Debug` of `RewriteHalt`. */
 function haltDebug(halt) {

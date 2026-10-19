@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/requirement_extraction.mjs"] = (crateRequire) => {
 // Requirement extraction (R1188-U20): the exact requirements an issue states.
 //
@@ -16,54 +15,49 @@
 // already holds restates it and is dropped. The vocabulary lives in
 // data/seed/meanings-requirement-extraction.lino; nothing here names a
 // language.
-
 const { cached, childrenNamed, parseLino, readText } = crateRequire("host.mjs");
 const { containsCjk, meaningsWithRole, roleWordForms, surfacePresent } = crateRequire("crate/seed_meanings.mjs");
 const { quoteFault, quotedSegmentSpans } = crateRequire("crate/normal_markov.mjs");
-
 /** The role whose words mark a unit as stating an obligation. */
 const OBLIGATION_ROLE = 'requirement_obligation_cue';
-
 /** The role whose words, opening a unit, mark it as an instruction. */
 const DIRECTIVE_ROLE = 'requirement_directive_verb';
-
 /** The role whose words, in a heading, mark the section below as requirements. */
 const SECTION_ROLE = 'requirement_section_heading';
-
 /** The role of words that carry no content of their own. */
 const FUNCTION_WORD_ROLE = 'statement_function_word';
-
 /** A content word has at least this many letters. */
 const CONTENT_WORD_LENGTH = 3;
-
 /** Words are compared by this many leading letters, so inflections meet. */
 const STEM_LENGTH = 6;
-
 /** Two units whose content words overlap this much say the same thing. */
 const RESTATEMENT_OVERLAP = 0.8;
-
 /** The Markdown fences that open and close a code block. */
 const FENCES = ['```', '~~~'];
-
 /** The lowercase words of `text`, punctuation removed, joined by single spaces. */
 function normalizeUnit(text) {
   return text.toLowerCase().replace(/[^\p{L}\p{M}\p{N}\s'-]+/gu, ' ').replace(/\s+/gu, ' ').trim();
 }
-
 /** The list item of `line`: its text and whether it is a task-list checkbox, or null. */
 function listItemOf(line) {
   const marker = /^\s*(?:[-*+•]|\d+[.)])\s+(\[[ xX]\]\s+)?/u.exec(line);
   return marker ? { text: line.slice(marker[0].length).trim(), checkbox: marker[1] !== undefined } : null;
 }
-
 /** The sentences of a prose line: Latin stops end one before a space, full-width and danda stops always. */
 function sentencesOf(line) {
   return line.split(/(?<=[.!?])\s+|(?<=[。！？।])\s*/u).map((sentence) => sentence.trim()).filter(Boolean);
 }
-
 /** The heading level of `line` (`#` = 1), or 0 when it is no heading. */
-const headingLevel = (line) => /^(#{1,6})\s/u.exec(line)?.[1].length ?? 0;
-
+const headingLevel = (line) => {
+  const atx = /^(#{1,6})\s/u.exec(line)?.[1].length ?? 0;
+  if (atx) return atx;
+  for (const marker of ['**', '__']) {
+    if (!line.startsWith(marker) || !line.endsWith(marker)) continue;
+    const title = line.slice(marker.length, -marker.length).trim();
+    if (title && !/[.!?。！？।]$/u.test(title) && !isRequirement(title)) return 2;
+  }
+  return 0;
+};
 /**
  * The candidate units of an issue body, in order. A unit is listed as
  * required by its structure when it is a task-list checkbox or sits under a
@@ -71,48 +65,55 @@ const headingLevel = (line) => /^(#{1,6})\s/u.exec(line)?.[1].length ?? 0;
  */
 function requirementUnits(text) {
   const units = [];
-  let inFence = false;
-  let sectionLevel = 0;
+  let inFence = false, sectionLevel = 0, pending = null;
+  const flush = () => {
+    if (pending === null) return;
+    const texts = pending.item ? [pending.text] : sentencesOf(pending.text);
+    for (const text of texts) if (text) units.push({text, structural: pending.structural});
+    pending = null;
+  };
   for (const raw of text.split(/\r?\n/u)) {
     const line = raw.trim();
     if (FENCES.some((fence) => line.startsWith(fence))) {
-      inFence = !inFence;
-      continue;
+      flush(); inFence = !inFence; continue;
     }
-    if (inFence || line === '' || line.startsWith('>') || line.startsWith('|')) continue;
+    if (inFence || line === '' || line.startsWith('>') || line.startsWith('|')) {
+      flush(); continue;
+    }
     const level = headingLevel(line);
     if (level > 0) {
+      flush();
       if (sectionLevel > 0 && level <= sectionLevel) sectionLevel = 0;
       if (sectionLevel === 0 && namesRequirementSection(line)) sectionLevel = level;
       continue;
     }
     const item = listItemOf(raw);
     if (item !== null) {
-      if (item.text !== '') units.push({ text: item.text, structural: item.checkbox || sectionLevel > 0 });
-      continue;
+      flush(); pending = {text: item.text, item: true, structural: item.checkbox || sectionLevel > 0};
+    } else if (pending !== null) {
+      pending.text += ' ' + line;
+    } else {
+      pending = {text: line, item: false, structural: sectionLevel > 0};
     }
-    for (const sentence of sentencesOf(line)) units.push({ text: sentence, structural: sectionLevel > 0 });
+    if (raw.endsWith('  ') || raw.endsWith('\\')) flush();
   }
+  flush();
   return units;
 }
-
 /** The normalized, distinct words of `role`, read once. */
 const wordsOfRole = (role) => cached(`requirement-words-${role}`, () =>
   [...new Set(roleWordForms(role).map((form) => normalizeUnit(form.text)).filter(Boolean))]);
-
 /** Whether `unit` carries an obligation cue anywhere in it. */
 function statesObligation(unit) {
   const normalized = normalizeUnit(unit);
   return wordsOfRole(OBLIGATION_ROLE).some((cue) => surfacePresent(normalized, cue));
 }
-
 /** Whether `unit` opens with a directive verb. */
 function opensWithDirective(unit) {
   const normalized = normalizeUnit(unit);
   return wordsOfRole(DIRECTIVE_ROLE).some((verb) =>
     (containsCjk(verb) ? normalized.startsWith(verb) : normalized === verb || normalized.startsWith(`${verb} `)));
 }
-
 /** Directive positions are grammar metadata; lexemes remain the existing role vocabulary. */
 function terminalDirectiveWords() {
   return cached('requirement-terminal-directives', () => {
@@ -129,7 +130,6 @@ function terminalDirectiveWords() {
       .flatMap((lexeme) => lexeme.words.map((word) => normalizeUnit(word.text))).filter(Boolean);
   });
 }
-
 /** Only unquoted terminal directives are new evidence; preserve the original unit verbatim. */
 function endsWithDirective(unit) {
   if (quoteFault(unit) !== null) return false;
@@ -141,18 +141,15 @@ function endsWithDirective(unit) {
   if (wordsOfRole('source_attribution_marker').some((word) => surfacePresent(normalized, word))) return false;
   return terminalDirectiveWords().some((verb) => normalized === verb || normalized.endsWith(` ${verb}`));
 }
-
 /** Whether the heading `line` names a section of requirements. */
 function namesRequirementSection(line) {
   const normalized = normalizeUnit(line);
   return wordsOfRole(SECTION_ROLE).some((word) => surfacePresent(normalized, word));
 }
-
 /** Whether the sentence or list item `unit` states a requirement by its words. */
 function isRequirement(unit) {
   return statesObligation(unit) || opensWithDirective(unit) || endsWithDirective(unit);
 }
-
 /** The content words of `unit` (CJK text counts each character). */
 function contentWords(unit) {
   const normalized = normalizeUnit(unit);
@@ -162,7 +159,6 @@ function contentWords(unit) {
     .filter((word) => Array.from(word).length >= CONTENT_WORD_LENGTH && !functionWords.has(word))
     .map((word) => Array.from(word).slice(0, STEM_LENGTH).join('')));
 }
-
 /** The share of the smaller word set that the other one also holds. */
 function overlap(left, right) {
   const smaller = Math.min(left.size, right.size);
@@ -171,7 +167,6 @@ function overlap(left, right) {
   for (const word of left) if (right.has(word)) shared += 1;
   return shared / smaller;
 }
-
 /** The requirements `text` states, each once, in order. */
 function extractRequirements(text) {
   const kept = [];
@@ -183,7 +178,6 @@ function extractRequirements(text) {
   }
   return kept.map((requirement) => requirement.text);
 }
-
 return Object.freeze({
   normalizeUnit,
   listItemOf,

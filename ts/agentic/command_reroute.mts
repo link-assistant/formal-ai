@@ -12,7 +12,7 @@ import { Capability } from './capability.mjs';
 import { classifyTool, isWorkspaceCreationTool, toolFor } from './capability_router.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
 import { pushRef, recipeCommitCommand, shellQuote, targetOf } from './git_commit.mjs';
-import { attachExecutionRecipe, functionCallCommand } from './crate/coding_program_contract.mjs';
+import { attachExecutionRecipe, functionCallCommand, programRecoveryCommand } from './crate/coding_program_contract.mjs';
 import { normalizeCommandWord } from './shell_command_policy.mjs';
 import { pathExtension, tokens, typedWriteTarget } from './write_request.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
@@ -20,8 +20,9 @@ import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
-import { planRecovery } from './prerequisite_recovery.mjs';
-import { Progress, writeMatches } from './progress.mjs';
+import { planRecovery, planRecoveryWithIdentity } from './prerequisite_recovery.mjs';
+import { Progress, qualifiedToolAttempt, writeMatches } from './progress.mjs';
+import { validateProgram } from './host.mjs';
 import { MAX_REPAIR_RUNGS, failedStep, repairStep, stopNote } from './repair_loop.mjs';
 import { feedbackNeedsChanges } from './restart_feedback.mjs';
 import {
@@ -31,6 +32,7 @@ import { fill } from './work_item_steps.mjs';
 import { detect } from './crate/language.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { trim } from './write_str.mjs';
+import { parseJson } from './crate/rust_str.mjs';
 
 /**
  * Mirrors `fn plan_symbolic_command_reroute`.
@@ -38,7 +40,16 @@ import { trim } from './write_str.mjs';
  * @param {Array<string>} toolNames
  * @param {object} symbolicAnswer
  */
-export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) {
+export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer, objective = latestUserRequest(messages) ?? '') {
+  return recipeStep(messages, toolNames, symbolicAnswer, objective, false);
+}
+
+/** Mirrors fn plan_owned_recipe_recovery: only the still-pending exact owned wrapper failure. */
+export function planOwnedRecipeRecovery(messages, toolNames, symbolicAnswer, objective) {
+  return recipeStep(messages, toolNames, symbolicAnswer, objective, true);
+}
+
+function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly) {
   const attached = attachExecutionRecipe(symbolicAnswer ?? {}, symbolicAnswer?.synthesized_program).execution_recipe;
   if (!attached) return null;
   const recipe = requestedRecipe(latestUserRequest(messages) ?? '', attached);
@@ -52,6 +63,7 @@ export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) 
   if (commit) expectedCommands.push(recipeCommitCommand(recipe, commit));
   if (commit) expectedCommands.push(...prCompletionCommands(recipe, commit));
   const progress = recipeProgressAfterLatestUser(messages, writeTool, recipe, expectedCommands);
+  if (recoveryOnly && !progress.failure?.from_run) return null;
   if (commit) {
     const followup = prCompletionCommands(recipe, commit);
     const observed = Progress.scan(messages);
@@ -73,12 +85,29 @@ export function planSymbolicCommandReroute(messages, toolNames, symbolicAnswer) 
     const failedPath = nextFile()?.[0] ?? recipe.path;
     let repairNote = '';
     if (failure.from_run) {
-      const recovery = planRecovery(messages, toolNames, step, failure.exit_code, failure.reported);
+      const observation = Progress.scan(messages);
+      const bound = qualifiedToolAttempt(observation, Capability.Run, { command: step });
+      const files = [{ path: recipe.path, source: recipe.source }, ...recipe.supporting_files];
+      const owned = files.every((file) => {
+        const index = observation.latestWriteIndex(file.path);
+        const attempt = index === null ? null : observation.attempts[index];
+        if (!attempt?.succeeded || !writeMatches(attempt.arguments, file.path, file.source)) return false;
+        const frame = qualifiedToolAttempt(observation, Capability.Write, JSON.parse(attempt.arguments));
+        return frame?.binding === 'exact' && frame.succeeded;
+      });
+      const observed = failureMessage(failure.reported, true, false) ?? failure.reported;
+      const identity = bound?.binding === 'exact' && owned
+        ? programRecoveryCommand(objective, recipe, step, observed) : null;
+      if (recoveryOnly && identity === null) return null;
+      const recovery = identity === null
+        ? planRecovery(messages, toolNames, step, failure.exit_code, failure.reported)
+        : planRecoveryWithIdentity(messages, toolNames, step, failure.exit_code, failure.reported, identity);
       if (recovery) return recovery;
       const failed = failedStep(recipe.language, failure.reported, {
         exit_code: failure.exit_code,
         failed_command: step,
         artifact_path: failedPath,
+        validate_program: validateProgram,
       });
       const rung = Math.max(0, progress.repair_rung - 1);
       const outcome = repairStep(messages, toolNames, failed, rung, MAX_REPAIR_RUNGS);
@@ -195,7 +224,7 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
     const output = plainText(message.content);
     if (message.is_error) {
       if (matchesRun) progress.repair_rung = Math.min(255, progress.repair_rung + 1);
-      progress.failure = { reported: output, exit_code: null, from_run: matchesRun };
+      progress.failure = { reported: output, exit_code: reportedExitCode(output), from_run: matchesRun };
       continue;
     }
     const failure = stepFailureFromResult(output, capability === Capability.Run);
@@ -222,31 +251,22 @@ function asciiLower(text) {
 
 /** Mirrors `fn reported_exit_code` (command_reroute.rs). */
 function reportedExitCode(output) {
-  const labels = agenticMessage('command_reroute_exit_code_labels').split('|');
-  for (const raw of rustLines(output)) {
-    const line = asciiLower(trim(raw));
-    const label = labels.find((candidate) => line.startsWith(candidate));
-    if (label === undefined) continue;
-    const token = line.slice(label.length).split(/[^0-9-]/).find((part) => part !== '');
-    if (token === undefined) continue;
-    if (/^[+-]?[0-9]+$/.test(token)) {
-      const value = Number(token);
-      if (value >= -2147483648 && value <= 2147483647) return value;
-    }
-  }
-  return null;
+  const code = toolReportedExitCode(output);
+  return Number.isInteger(code) && code >= -2147483648 && code <= 2147483647 ? code : null;
 }
 
 /** Mirrors `StepFailure::from_result`. */
 function stepFailureFromResult(reported, fromRun) {
   const exitCode = reportedExitCode(reported);
   if (exitCode !== null) return exitCode !== 0 ? { reported, exit_code: exitCode, from_run: fromRun } : null;
-  if (failureMessage(reported, false, fromRun) !== null && failureMessage(reported, false, fromRun) !== undefined) {
+  // Nested JSON event fields are data, not the surrounding process's own prose.
+  const prose = rustLines(reported).filter(line => parseJson(line) === undefined).join('\n');
+  if (failureMessage(reported, false, false) !== null || failureMessage(prose, false, fromRun) !== null) {
     const code = toolReportedExitCode(reported);
     const fits = typeof code === 'number' && code >= -2147483648 && code <= 2147483647;
     return { exit_code: fits ? code : null, reported, from_run: fromRun };
   }
-  return reportsFailureInProse(reported) ? { reported, exit_code: null, from_run: fromRun } : null;
+  return reportsFailureInProse(prose) ? { reported, exit_code: null, from_run: fromRun } : null;
 }
 
 const ABSENT_FIELD_VALUES = ['', '-', 'none', '(none)', 'empty', '(empty)', 'no output', '(no output)'];

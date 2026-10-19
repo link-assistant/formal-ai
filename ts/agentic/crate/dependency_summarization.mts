@@ -1,3 +1,4 @@
+import {typedMeaningEntails} from './typed_meaning.mjs';
 // Dependency summarization (R1188-U21): a summary chosen by what the
 // statements of a text depend on, with no language model. The Rust twin is
 // rust/src/summarization/dependency.rs.
@@ -66,6 +67,7 @@ function isSubset(inner, outer) {
  * formal identity or its terms all appear in `earlier`'s with the same polarity.
  */
 export function restates(later, earlier) {
+  if(later.language!==earlier.language||!typedMeaningEntails(earlier.dialogue,later.dialogue))return false;
   if (statementIdentity(later) === statementIdentity(earlier)) return true;
   const ids = contentIds(later);
   return ids.length > 0 && later.polarity === earlier.polarity && isSubset(ids, contentIds(earlier));

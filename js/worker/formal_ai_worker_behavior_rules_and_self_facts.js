@@ -138,6 +138,8 @@ function extractUnquotedTranslationSurface(text) {
   const trimmed = source.replace(/[.!?。]+$/u, "");
   const lower = trimmed.toLowerCase();
   const markers = translationMarkers();
+  const targetFirst = targetFirstTranslationSurface(trimmed, lower, markers);
+  if (targetFirst !== undefined) return targetFirst;
 
   for (const [prefix, marker] of markers.circumfixFrames) {
     const extracted = extractBetweenPrefixAndMarker(
@@ -161,21 +163,9 @@ function extractUnquotedTranslationSurface(text) {
 // The surface that sits between a circumfix frame's prefix and its trailing
 // marker (e.g. "translate " … " to "). Mirrors extract_between_prefix_and_marker
 // in src/translation/prompt.rs.
-function extractBetweenPrefixAndMarker(original, lower, prefix, marker) {
-  if (!lower.startsWith(prefix)) return null;
-  const afterPrefix = lower.slice(prefix.length);
-  const markerIndex = afterPrefix.indexOf(marker);
-  if (markerIndex === -1) return null;
-  return cleanUnquotedTranslationSurface(
-    original.slice(prefix.length, prefix.length + markerIndex),
-  );
-}
 
-function cleanUnquotedTranslationSurface(candidate) {
-  const cleaned = String(candidate || "").trim().replace(/[-–—:]\s*$/u, "").trim();
-  if (!cleaned || /["'«»`“”‘’]/u.test(cleaned)) return null;
-  return cleaned;
-}
+
+
 
 // Head-final Hindi: "<surface> <object-marker> <target> में अनुवाद". Gated on a
 // Devanagari translate stem (अनुवाद); the target markers and object markers are
@@ -739,4 +729,13 @@ function selfIntroductionContent(language, preferences) {
   if (language === "hi") return `मेरा नाम ${name} है। ${identity}`;
   if (language === "zh") return `我的名字是 ${name}。${identity}`;
   return `My name is ${name}. ${identity}`;
+}
+
+function isConcretePropertyQuestion(prompt) {
+  return crateModule('crate/dialogue_formalization.mjs').blocksSelfDescription(prompt, detectLanguage(prompt));
+}
+
+function runtimeRuleFromText(text) {
+  const result = crateModule("crate/skill_compiler.mjs").compileNaturalLanguageSkill(String(text || ""));
+  return result.status === "compiled" ? result : null;
 }

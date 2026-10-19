@@ -22,7 +22,7 @@ for(let index=0;index<6;index+=1){
   fs.writeFileSync(path.join(directory,relative),source);
   inventory.push({path:relative,sha256:contentDigest(source),bytes:Buffer.byteLength(source)});
 }
-const plan=browserPlan(inventory);
+const plan=browserPlan(inventory,6);
 const packets=plan.shards.map((selected,index)=>{
   const coveragePath=path.join(directory,`coverage-${index}.info`);
   const durationPath=path.join(directory,`durations-${index}.jsonl`);

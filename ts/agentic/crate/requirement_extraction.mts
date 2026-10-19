@@ -55,7 +55,16 @@ export function sentencesOf(line) {
 }
 
 /** The heading level of `line` (`#` = 1), or 0 when it is no heading. */
-const headingLevel = (line) => /^(#{1,6})\s/u.exec(line)?.[1].length ?? 0;
+const headingLevel = (line) => {
+  const atx = /^(#{1,6})\s/u.exec(line)?.[1].length ?? 0;
+  if (atx) return atx;
+  for (const marker of ['**', '__']) {
+    if (!line.startsWith(marker) || !line.endsWith(marker)) continue;
+    const title = line.slice(marker.length, -marker.length).trim();
+    if (title && !/[.!?。！？।]$/u.test(title) && !isRequirement(title)) return 2;
+  }
+  return 0;
+};
 
 /**
  * The candidate units of an issue body, in order. A unit is listed as
@@ -64,28 +73,39 @@ const headingLevel = (line) => /^(#{1,6})\s/u.exec(line)?.[1].length ?? 0;
  */
 export function requirementUnits(text) {
   const units = [];
-  let inFence = false;
-  let sectionLevel = 0;
+  let inFence = false, sectionLevel = 0, pending = null;
+  const flush = () => {
+    if (pending === null) return;
+    const texts = pending.item ? [pending.text] : sentencesOf(pending.text);
+    for (const text of texts) if (text) units.push({text, structural: pending.structural});
+    pending = null;
+  };
   for (const raw of text.split(/\r?\n/u)) {
     const line = raw.trim();
     if (FENCES.some((fence) => line.startsWith(fence))) {
-      inFence = !inFence;
-      continue;
+      flush(); inFence = !inFence; continue;
     }
-    if (inFence || line === '' || line.startsWith('>') || line.startsWith('|')) continue;
+    if (inFence || line === '' || line.startsWith('>') || line.startsWith('|')) {
+      flush(); continue;
+    }
     const level = headingLevel(line);
     if (level > 0) {
+      flush();
       if (sectionLevel > 0 && level <= sectionLevel) sectionLevel = 0;
       if (sectionLevel === 0 && namesRequirementSection(line)) sectionLevel = level;
       continue;
     }
     const item = listItemOf(raw);
     if (item !== null) {
-      if (item.text !== '') units.push({ text: item.text, structural: item.checkbox || sectionLevel > 0 });
-      continue;
+      flush(); pending = {text: item.text, item: true, structural: item.checkbox || sectionLevel > 0};
+    } else if (pending !== null) {
+      pending.text += ' ' + line;
+    } else {
+      pending = {text: line, item: false, structural: sectionLevel > 0};
     }
-    for (const sentence of sentencesOf(line)) units.push({ text: sentence, structural: sectionLevel > 0 });
+    if (raw.endsWith('  ') || raw.endsWith('\\')) flush();
   }
+  flush();
   return units;
 }
 

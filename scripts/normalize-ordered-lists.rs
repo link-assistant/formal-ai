@@ -30,11 +30,15 @@
 //! edition = "2024"
 //!
 //! [dependencies]
+//! syn = { version = "2", features = ["full"] }
 //! ```
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
+
+#[path = "lib/registered-module-paths.rs"]
+mod registered_module_paths;
 
 #[cfg(not(test))]
 const POLICY: &str = "data/meta/merge-conflict-policy.lino";
@@ -543,7 +547,15 @@ fn canonical_content(root: &Path, file: &ListFile, current: &str) -> Result<Stri
                 // without it, and the day the leaf lands the registry entry
                 // goes away and the mirror becomes exact again.
                 expected.retain(|name| !file.inert.contains(name));
-                let declared = declared_modules(&normalized);
+                let mut declared = declared_modules(&normalized);
+                let registrations =
+                    registered_module_paths::registered_paths(root, &root.join(directory))?;
+                for name in &expected {
+                    let target = root.join(directory).join(format!("{name}.rs"));
+                    if target.canonicalize().is_ok_and(|target| registrations.contains(&target)) {
+                        declared.push(name.clone());
+                    }
+                }
                 let missing: Vec<&String> =
                     expected.iter().filter(|name| !declared.contains(name)).collect();
                 if !missing.is_empty() {

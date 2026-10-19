@@ -1,0 +1,1 @@
+Reuse the complete progress window before classifying a source-read intent. Ordinary coding steps avoid repeated read/write classification; fresh reads after final answers and standing coding progress retain their existing evidence rules. Preserve all original safety properties, native/coverage deadlines and test inventories.

@@ -268,8 +268,8 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
             .replace("{source}", &source),
         1.0,
     );
-    let verifier = output_verifier(&output, commands.last()?)?;
-    *commands.last_mut()? = format!("sh {}", verifier.path);
+    let verifier = output_verifier(&output, &commands, &path, &source)?;
+    commands = vec![format!("sh {}", verifier.path)];
     answer.execution_recipe = Some(Box::new(ExecutionRecipe {
         language,
         source,
@@ -284,18 +284,104 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     clippy::literal_string_with_formatting_args,
     reason = "bind operands in the shared process-verification template"
 )]
-fn output_verifier(expected: &str, command: &str) -> Option<ExecutionRecipeFile> {
+fn output_verifier(
+    expected: &str,
+    commands: &[String],
+    source_path: &str,
+    declared_source: &str,
+) -> Option<ExecutionRecipeFile> {
     let root = parse_lino(include_str!(
         "../../embedded/data/meta/process-verification.lino"
     ));
     let contract = root.children.first()?;
-    let expected = format!("'{}'", expected.replace('\'', "'\\''"));
+    if source_path.starts_with('/')
+        || source_path
+            .split('/')
+            .any(|part| matches!(part, "" | "." | ".."))
+    {
+        return None;
+    }
+    let quote = |value: &str| format!("'{}'", value.replace('\'', "'\\''"));
+    let stages = commands
+        .iter()
+        .enumerate()
+        .map(|(index, command)| {
+            seed::fill_template_once(
+                contract.find_child_value("isolated-stage"),
+                &[
+                    ("command", command),
+                    (
+                        "redirect",
+                        if index + 1 == commands.len() {
+                            " > \"$verification_dir/actual\""
+                        } else {
+                            ""
+                        },
+                    ),
+                    ("index", &index.to_string()),
+                ],
+            )
+        })
+        .collect::<String>();
     Some(ExecutionRecipeFile {
         path: contract.find_child_value("path").to_owned(),
-        source: contract
-            .find_child_value("template")
-            .replace("{command}", command)
-            .replace("{expected}", &expected),
+        source: seed::fill_template_once(
+            contract.find_child_value("isolated-template"),
+            &[
+                ("source_path", &quote(source_path)),
+                ("expected", &quote(expected)),
+                ("declared_source", &quote(declared_source)),
+                ("stages", &stages),
+            ],
+        ),
+    })
+}
+
+/// Resolve only the failed catalog stage of the exact request-owned verifier.
+#[must_use]
+pub fn program_recovery_command(
+    prompt: &str,
+    recipe: &ExecutionRecipe,
+    command: &str,
+    output: &str,
+) -> Option<String> {
+    let canonical = answer(prompt, &mut EventLog::new())?.execution_recipe?;
+    if canonical.commands.first()?.as_str() != command
+        || recipe.commands.first()?.as_str() != command
+    {
+        return None;
+    }
+    if canonical.path != recipe.path
+        || canonical.source != recipe.source
+        || canonical.language != recipe.language
+    {
+        return None;
+    }
+    if !canonical
+        .supporting_files
+        .iter()
+        .all(|file| recipe.supporting_files.contains(file))
+    {
+        return None;
+    }
+    let catalog = super::program_language_by_slug(&canonical.language)?;
+    let commands = catalog
+        .execution
+        .check_command
+        .as_deref()
+        .into_iter()
+        .chain(std::iter::once(catalog.execution.run_command.as_ref()));
+    let root = parse_lino(include_str!(
+        "../../embedded/data/meta/process-verification.lino"
+    ));
+    let contract = root.children.first()?;
+    let final_line = output.trim_end().lines().next_back()?;
+    commands.enumerate().find_map(|(index, original)| {
+        (final_line
+            == contract
+                .find_child_value("isolated-failure")
+                .replace(concat!("{", "index}"), &index.to_string()))
+        .then(|| original.replace(catalog.save_as.as_ref(), &canonical.path))
     })
 }
 

@@ -12,10 +12,11 @@
 //
 // The module stays host-agnostic (no `node:fs`, no network): the host hands
 // in `io = {readText(path), readBytes(path), writeBytes(path, bytes),
-// createDirAll(path), get(url)}`, each answering null on a miss or failure.
+// createDirAll(path), get(url)}`, reads answer null only on absence; other read failures throw.
 // js/agentic/node-host.mjs builds the Node io (curl, as `CurlSourceTransport`).
 
 import { sha256Hex } from './source_fetch.mjs';
+import { rustLines } from '../../logging/text-lines.mjs';
 
 const CACHE_FORMAT_VERSION = 'source-capture-v2';
 const LEGACY_CACHE_FORMAT_VERSION = 'source-capture-v1';
@@ -40,22 +41,35 @@ function validUrl(url) {
 
 const join = (...parts) => parts.join('/');
 
-/** Mirrors `fn read_capture`: the cached capture, null on a miss or a damaged record. */
+function readCacheFile(io, method, file) {
+  try { return io[method](file); }
+  catch (error) { throw new Error(file + ': ' + String(error.message ?? error)); }
+}
+
+/** Native read_capture: only absent metadata is a miss; damaged authority fails closed. */
 function readCapture(io, url, root, metadataPath) {
-  const metadata = io.readText(metadataPath);
+  const metadata = readCacheFile(io, 'readText', metadataPath);
   if (metadata === null) return null;
-  const [version, ...rest] = metadata.split('\n');
-  if (version !== CACHE_FORMAT_VERSION && version !== LEGACY_CACHE_FORMAT_VERSION) return null;
-  const field = (line, name) => (line !== undefined && line.startsWith(`${name}=`) ? line.slice(name.length + 1) : null);
+  const [version, ...rest] = rustLines(metadata);
+  if (version !== CACHE_FORMAT_VERSION && version !== LEGACY_CACHE_FORMAT_VERSION)
+    throw new Error('source_cache_unsupported_metadata:' + metadataPath);
+  const field = (line, name) => {
+    if (line === undefined || !line.startsWith(name + '='))
+      throw new Error('source_cache_missing_field:' + name + ':' + metadataPath);
+    return line.slice(name.length + 1);
+  };
   const sourceUrl = field(rest[0], 'url');
   const fetchedAt = field(rest[1], 'fetched_at');
   const recorded = field(rest[2], 'sha256');
-  if (sourceUrl !== url || fetchedAt === null || recorded === null || !/^[0-9a-f]{64}$/.test(recorded)) return null;
+  if (sourceUrl !== url) throw new Error('source_cache_url_mismatch:' + metadataPath);
+  if (!/^[0-9a-f]{64}$/u.test(recorded))
+    throw new Error('source_cache_invalid_content_hash:' + metadataPath);
   const bodyPath = version === CACHE_FORMAT_VERSION
-    ? join(root, 'objects', `${recorded}.body`)
-    : metadataPath.replace(/\.meta$/, '.body');
-  const bytes = io.readBytes(bodyPath);
-  if (bytes === null || sha256Hex(bytes) !== recorded) return null;
+    ? join(root, 'objects', recorded + '.body') : metadataPath.replace(/\.meta$/u, '.body');
+  const bytes = readCacheFile(io, 'readBytes', bodyPath);
+  // A null IO result has no original errno; retain the exact missing body path.
+  if (bytes === null) throw new Error('source_cache_missing_body:' + bodyPath);
+  if (sha256Hex(bytes) !== recorded) throw new Error('source_cache_content_hash_mismatch:' + bodyPath);
   return capture(url, fetchedAt, recorded, true, bytes);
 }
 
@@ -73,32 +87,43 @@ function writeCapture(io, root, metadataPath, record) {
 
 /**
  * Mirrors `CachedSourceClient::new(cache_dir, transport).with_online(online)`
- * and its `fetch`: a fetch function `(url) => capture|null` for
+ * and its `fetch`: typed outcomes; the legacy adapter retains capture|null for
  * `resolveVersionSet`. A fresh cached capture (or any cached one offline) is
  * replayed with `cached: true`; offline, a miss is null; online, the
  * transport's bytes are captured, written back and returned `cached: false`.
  * @param {{cacheDir: string, online: boolean, io: object, now?: () => number, ttlSeconds?: number}} options
  */
-export function cachedSourceFetch({ cacheDir, online, io, now = () => Math.floor(Date.now() / 1000), ttlSeconds = DEFAULT_TTL_SECONDS }) {
+export function cachedSourceFetchResult({ cacheDir, online, io, now = () => Math.floor(Date.now() / 1000), ttlSeconds = DEFAULT_TTL_SECONDS }) {
   const root = join(cacheDir, 'source-cache');
   return (url) => {
-    if (!validUrl(url)) return null;
-    const metadataPath = join(root, `${cacheKey(url)}.meta`);
-    const cachedCapture = readCapture(io, url, root, metadataPath);
+    if (!validUrl(url)) return { kind: 'unavailable' };
+    const metadataPath = join(root, cacheKey(url) + '.meta');
+    let cachedCapture;
+    try { cachedCapture = readCapture(io, url, root, metadataPath); }
+    catch (error) { return { kind: 'error', error: String(error.message ?? error) }; }
     if (cachedCapture !== null) {
       const age = now() - (Number.parseInt(cachedCapture.fetched_at, 10) || 0);
-      if (!online || age <= ttlSeconds) return cachedCapture;
+      if (!online || age <= ttlSeconds) return { kind: 'capture', capture: cachedCapture };
     }
-    if (!online) return null;
-    const bytes = io.get(url);
-    if (bytes === null) return null;
+    if (!online) return { kind: 'miss' };
+    let bytes;
+    try { bytes = io.get(url); } catch { return { kind: 'unavailable' }; }
+    if (bytes === null) return { kind: 'unavailable' };
     const live = capture(url, String(now()), sha256Hex(bytes), false, bytes);
-    try {
-      writeCapture(io, root, metadataPath, live);
-    } catch {
-      // Rust returns the cache write failure as the fetch error.
-      return null;
-    }
-    return live;
+    try { writeCapture(io, root, metadataPath, live); }
+    catch (error) { return { kind: 'error', error: String(error.message ?? error) }; }
+    return { kind: 'capture', capture: live };
+  };
+}
+
+/**
+ * Mirrors `CachedSourceClient::fetch` through the `Result::ok` projection
+ * used by native version_resolution: unavailable and failed captures remain null.
+ */
+export function cachedSourceFetch(options) {
+  const observe = cachedSourceFetchResult(options);
+  return url => {
+    const result = observe(url);
+    return result.kind === 'capture' ? result.capture : null;
   };
 }

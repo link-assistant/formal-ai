@@ -8,6 +8,7 @@
 #[path = "../../../scripts/check-dependencies-latest.rs"]
 mod check_dependencies_latest;
 
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -35,6 +36,7 @@ fn write(path: &Path, body: &str) {
 
 fn snapshot_with(entries: Vec<(Ecosystem, &str)>) -> Snapshot {
     Snapshot {
+        action_releases: BTreeMap::new(),
         refreshed_at: "2026-09-30T15:04:05Z".to_string(),
         entries: entries
             .into_iter()
@@ -180,6 +182,13 @@ fn the_repository_tree_collects_every_ecosystem() {
     let repository = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
+    let manifest: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string(repository.join("package.json")).expect("read root package.json"),
+    )
+    .expect("parse root package.json independently of the dependency collector");
+    let declared_react = manifest["dependencies"]["react"]
+        .as_str()
+        .expect("root package.json declares a React dependency pin");
     let dependencies = collect(repository);
     let ecosystems: Vec<Ecosystem> = {
         let mut seen: Vec<Ecosystem> = dependencies.iter().map(|d| d.ecosystem).collect();
@@ -201,7 +210,7 @@ fn the_repository_tree_collects_every_ecosystem() {
     for (ecosystem, name, resolved) in [
         (Ecosystem::DockerImage, "konard/box-dind", "2.10.2"),
         (Ecosystem::GitHubAction, "zizmorcore/zizmor-action", "0.6.4"),
-        (Ecosystem::Npm, "react", "19.3.0"),
+        (Ecosystem::Npm, "react", declared_react),
     ] {
         assert!(
             dependencies

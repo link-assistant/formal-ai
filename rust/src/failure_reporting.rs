@@ -10,17 +10,5 @@ pub fn append_invitation(body: &str, language: &str) -> String {
     else {
         return body.to_owned();
     };
-    let invitation = invitation.trim();
-    if invitation.is_empty() {
-        return body.to_owned();
-    }
-    if body.is_empty() {
-        invitation.to_owned()
-    } else {
-        let mut answer = String::with_capacity(body.len() + invitation.len() + 2);
-        answer.push_str(body);
-        answer.push_str("\n\n");
-        answer.push_str(invitation);
-        answer
-    }
+    crate::portable_string_contracts::join_failure_invitation(body, invitation.trim())
 }

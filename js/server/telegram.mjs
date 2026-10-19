@@ -1,3 +1,4 @@
+import {rustLines} from '../logging/text-lines.mjs';
 // Telegram webhook (`POST /telegram/webhook`): rust/src/telegram.rs
 // `handle_telegram_webhook` (update parsing, the public-chat gate,
 // `compose_telegram_reply`, `telegram_html_from_markdown`, reply splitting and
@@ -238,19 +239,13 @@ function openPreCodeTag(language) {
   return language && /^[A-Za-z0-9_-]+$/.test(language) ? `<pre><code class="language-${language}">` : '<pre><code>';
 }
 
-/** `str::lines`. */
-function lines(text) {
-  if (!text) return [];
-  const parts = text.split('\n');
-  if (parts[parts.length - 1] === '') parts.pop();
-  return parts.map((line) => line.replace(/\r$/, ''));
-}
+
 
 /** `telegram_html_from_markdown`. */
 export function telegramHtmlFromMarkdown(markdown) {
   let rendered = '';
   let inCodeBlock = false;
-  for (const line of lines(markdown)) {
+  for (const line of (markdown ? rustLines(markdown) : [])) {
     const trimmed = line.trimStart();
     if (trimmed.startsWith('```')) {
       if (inCodeBlock) {

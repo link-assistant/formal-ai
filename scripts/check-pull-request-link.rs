@@ -1,5 +1,5 @@
 #!/usr/bin/env rust-script
-//! Enforce GitHub's closing-keyword syntax in pull-request descriptions.
+//! Require explicit issue disposition: complete work closes; pending acceptance stays open.
 //!
 //! Issue #960 (R234-4, <https://github.com/link-assistant/formal-ai/pull/234#issuecomment-4528554549>):
 //! "we should use proper `Fixes https://github.com/link-assistant/formal-ai/issues/146`
@@ -13,7 +13,12 @@
 //! recognised closing keyword, or when it uses an unrecognised word (Addresses,
 //! Relates to, Part of, See, Refs) where a closing keyword belongs.
 //!
-//! Recognised keywords are GitHub's own list:
+//! The owner's later release-iteration requirement (R1207-9) keeps unfinished
+//! acceptance open. Such work must use the explicit whole-line disposition
+//! `Related (acceptance pending): <issue reference>`; it is never a closing claim.
+//! Ambiguous non-closing verbs still fail, including alongside a pending record.
+//!
+//! Recognised closing keywords are GitHub's own list:
 //! <https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue>
 //!
 //! Usage:
@@ -107,9 +112,39 @@ fn links_with(line: &str, keyword: &str) -> bool {
     false
 }
 
+/// Explicit pending disposition, deliberately distinct from an accidental closing claim.
+fn pending_acceptance(line: &str) -> bool {
+    let line = line.trim().strip_prefix("- ").unwrap_or(line.trim());
+    let Some(reference) = line.strip_prefix("Related (acceptance pending): ") else {
+        return false;
+    };
+    let positive = |number: &str| {
+        number.starts_with(|c: char| matches!(c, '1'..='9'))
+            && number.chars().all(|c| c.is_ascii_digit())
+    };
+    if let Some(number) = reference.strip_prefix('#') {
+        return positive(number);
+    }
+    let Some(rest) = reference.strip_prefix("https://github.com/") else {
+        return false;
+    };
+    let parts: Vec<_> = rest.split('/').collect();
+    parts.len() == 4
+        && parts[..2].iter().all(|part| {
+            !part.is_empty()
+                && !matches!(*part, "." | "..")
+                && part
+                    .chars()
+                    .all(|c| c.is_ascii_alphanumeric() || "-_.".contains(c))
+        })
+        && parts[2] == "issues"
+        && positive(parts[3])
+}
+
 fn check_body(body: &str) -> Vec<Problem> {
     let mut problems = Vec::new();
     let mut closes = false;
+    let mut pending = false;
 
     let mut in_code_fence = false;
 
@@ -125,6 +160,7 @@ fn check_body(body: &str) -> Vec<Problem> {
             continue;
         }
 
+        pending |= pending_acceptance(line);
         for keyword in CLOSING_KEYWORDS {
             if links_with(line, keyword) {
                 closes = true;
@@ -140,7 +176,7 @@ fn check_body(body: &str) -> Vec<Problem> {
         }
     }
 
-    if !closes {
+    if !closes && !pending {
         problems.insert(0, Problem::MissingClosingKeyword);
     }
 
@@ -151,7 +187,7 @@ fn check_body(body: &str) -> Vec<Problem> {
 fn describe(problem: &Problem) -> String {
     match problem {
         Problem::MissingClosingKeyword => format!(
-            "The description links no issue with a GitHub closing keyword ({}).\n  \
+            "The description gives no explicit issue disposition: closing keyword ({}) or Related (acceptance pending): <issue reference>.\n  \
              Add a line such as: Fixes https://github.com/link-assistant/formal-ai/issues/146",
             CLOSING_KEYWORDS.join(", ")
         ),
@@ -179,16 +215,14 @@ fn main() {
 
     let problems = check_body(&body);
     if problems.is_empty() {
-        println!("Description closes its issue with a recognised GitHub keyword\n");
+        println!("Description explicitly closes completed work or retains pending acceptance\n");
         exit(0);
     }
 
     for problem in &problems {
         println!("  {}", describe(problem));
     }
-    println!(
-        "\nSee CONTRIBUTING.md -> Pull Request Process for the required linking syntax.\n"
-    );
+    println!("\nSee CONTRIBUTING.md -> Pull Request Process for the required linking syntax.\n");
     exit(1);
 }
 
@@ -214,7 +248,11 @@ mod tests {
     #[test]
     fn other_closing_keywords_pass() {
         for body in ["Closes #1", "resolves #1", "Fixed #1"] {
-            assert_eq!(check_body(body), Vec::new(), "{body} should close its issue");
+            assert_eq!(
+                check_body(body),
+                Vec::new(),
+                "{body} should close its issue"
+            );
         }
     }
 
@@ -290,6 +328,43 @@ mod tests {
         let body = "## Summary\n\n```\nFixes #960\n```\n";
 
         assert_eq!(check_body(body), vec![Problem::MissingClosingKeyword]);
+    }
+
+    #[test]
+    fn explicit_pending_acceptance_is_not_a_closing_claim() {
+        for body in [
+            "Related (acceptance pending): #146",
+            "- Related (acceptance pending): https://github.com/link-assistant/formal-ai/issues/146",
+        ] {
+            assert_eq!(check_body(body), Vec::new());
+            assert!(!CLOSING_KEYWORDS.iter().any(|word| links_with(body, word)));
+        }
+    }
+
+    #[test]
+    fn invalid_or_quoted_pending_records_cannot_satisfy_the_gate() {
+        for body in [
+            "Related #146",
+            "Related (acceptance pending): #0",
+            "Related (acceptance pending): #",
+            "Related (acceptance pending): #146junk",
+            "Related (acceptance pending): https://example.com/owner/repo/issues/146",
+            "Related (acceptance pending): https://github.com/o/r/pull/146",
+            "Related (acceptance pending): https://github.com/o/r/issues/146/extra",
+            "Related (acceptance pending): https://github.com/../r/issues/146",
+            "```\nRelated (acceptance pending): #146\n```",
+        ] {
+            assert_eq!(
+                check_body(body),
+                vec![Problem::MissingClosingKeyword],
+                "{body}"
+            );
+        }
+        assert!(
+            check_body("Related (acceptance pending): #146\nAddresses #2")
+                .iter()
+                .any(|problem| matches!(problem, Problem::NonClosingKeyword { .. }))
+        );
     }
 
     #[test]

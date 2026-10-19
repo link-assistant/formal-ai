@@ -156,7 +156,7 @@ const KOTLIN_COMMIT: &str = r#"{"sha":"0000000000000000000000000000000000000000"
 const ADOPTIUM: &str = r#"{"most_recent_lts":25}"#;
 const SETUP_COURSIER_RELEASE: &str = r#"{"tag_name":"v3.0.4"}"#;
 const SETUP_COURSIER_COMMIT: &str = r#"{"sha":"648df969f41ef15fda2baba8b37f9fa3d16390a3"}"#;
-const SCALA_RELEASE: &str = r#"{"tag_name":"v2.13.18"}"#;
+const SCALA_RELEASE: &str = r#"{"tag_name":"v3.10.0"}"#;
 const SCALA_COMMIT: &str = r#"{"sha":"0000000000000000000000000000000000000000"}"#;
 
 #[derive(Default)]
@@ -229,11 +229,11 @@ impl MockTransport {
                 SETUP_COURSIER_COMMIT,
             ),
             (
-                "https://api.github.com/repos/scala/scala/releases/latest",
+                "https://api.github.com/repos/scala/scala3/releases/latest",
                 SCALA_RELEASE,
             ),
             (
-                "https://api.github.com/repos/scala/scala/commits/v2.13.18",
+                "https://api.github.com/repos/scala/scala3/commits/v3.10.0",
                 SCALA_COMMIT,
             ),
         ] {
@@ -301,7 +301,7 @@ fn resolves_every_pin_from_live_fixtures() {
         "648df969f41ef15fda2baba8b37f9fa3d16390a3"
     );
     assert_eq!(versions.setup_coursier.origin, Origin::Live);
-    assert_eq!(versions.scala.tag, "2.13.18");
+    assert_eq!(versions.scala.tag, "3.10.0");
     assert_eq!(versions.scala.origin, Origin::Live);
     assert_eq!(versions.provenance_note(), [] as [std::string::String; 0]);
 }
@@ -391,7 +391,7 @@ fn the_toolchains_seed_carries_every_baseline() {
         versions.setup_coursier.sha,
         "648df969f41ef15fda2baba8b37f9fa3d16390a3"
     );
-    assert_eq!(versions.scala.tag, "2.13.18");
+    assert_eq!(versions.scala.tag, "3.10.0");
 }
 
 /// R1168-6: the Scala `ci_setup` row is placeholders only, so the coursier
@@ -403,7 +403,7 @@ fn fills_the_scala_ci_setup_placeholders() {
     let template = "      - uses: coursier/setup-action@{setup_coursier_ref} # {setup_coursier_tag}\n        with:\n          jvm: temurin:{java_lts}\n          apps: scala:{scala_version} scalac:{scala_version}\n";
     assert_eq!(
         fill_workflow_versions(template, &versions),
-        "      - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3  # v3.0.4\n        with:\n          jvm: temurin:25\n          apps: scala:2.13.18 scalac:2.13.18"
+        "      - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3  # v3.0.4\n        with:\n          jvm: temurin:25\n          apps: scala:3.10.0 scalac:3.10.0"
     );
 }
 

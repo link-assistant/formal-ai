@@ -2,7 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-0673-workspace-self-ast-census.md"
   issue "0673"
-  verdict "implemented"
+  verdict "partial"
   delivered "PR #807 (issue #673)"
   automated_test "rust/tests/unit/issue_673_self_ast_census.rs"
   manual "not yet confirmed"
@@ -14,3 +14,4 @@ requirement_status_ledger_shard
     id "R482"
   requirement
     id "R483"
+    verdict "implemented"

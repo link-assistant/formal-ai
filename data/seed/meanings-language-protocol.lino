@@ -95,3 +95,94 @@ meanings
     lexeme hi "स्पेनिश भाषा अंतराल उत्तर"
     lexeme zh 西班牙语语言缺口回答
     lexeme es "respuesta de carencia de idioma en español"
+  after-command
+    role execution-verb-position
+    defined-by order
+    defined-by execute
+    precondition "the terminal verb declares a position after the requested command"
+    effect "bind the exact preceding command span while retaining quoted arguments as data"
+    unit "command span"
+    example "pwd चलाओ"
+    lexeme en "after the command"
+    lexeme ru "после команды"
+    lexeme hi "कमांड के बाद"
+    lexeme zh 命令之后
+    lexeme es "después del comando"
+  ejecuta
+    role execution-verb-form
+    defined-by execute
+    precondition "a Spanish request uses the informal singular imperative execution verb"
+    effect "bind the following explicit command without changing its argument bytes"
+    unit "execution request"
+    example "ejecuta pwd"
+    lexeme en "execute in the informal singular imperative"
+    lexeme ru "выполни в неформальном обращении"
+    lexeme hi "अनौपचारिक एकवचन में निष्पादन का आदेश"
+    lexeme zh 非正式单数执行命令
+    lexeme es "forma imperativa informal ejecuta"
+  ejecute
+    role execution-verb-form
+    defined-by execute
+    precondition "a Spanish request uses the formal singular imperative execution verb"
+    effect "bind the following explicit command without changing its argument bytes"
+    unit "execution request"
+    example "ejecute pwd"
+    lexeme en "execute in the formal singular imperative"
+    lexeme ru "выполните при вежливом обращении"
+    lexeme hi "औपचारिक एकवचन में निष्पादन का आदेश"
+    lexeme zh 正式单数执行命令
+    lexeme es "forma imperativa formal ejecute"
+  ejecutar
+    role execution-verb-form
+    defined-by execute
+    precondition "a Spanish command request uses the infinitive execution verb"
+    effect "bind the following explicit command without changing its argument bytes"
+    unit "execution request"
+    example "ejecutar pwd"
+    lexeme en "execute in the infinitive"
+    lexeme ru "выполнить в неопределённой форме"
+    lexeme hi "निष्पादन क्रिया का मूल रूप"
+    lexeme zh 执行动词不定式
+    lexeme es "forma infinitiva ejecutar"
+  command
+    role computing-instruction
+    defined-by code
+    precondition "an instruction is represented as a line of code in a computer program"
+    effect "identify the command without granting permission to execute it"
+    unit "code instruction"
+    example "pwd"
+    source "data/cache/wordnet/en/command.json#oewn-06597067-n"
+    source "https://dle.rae.es/comando"
+    license "CC BY 4.0"
+    lexeme en "computer command"
+    lexeme ru "компьютерная команда"
+    lexeme hi "कंप्यूटर कमांड"
+    lexeme zh 计算机命令
+    lexeme es "comando de computadora"
+  comando
+    role computing-command-noun
+    defined-by command
+    precondition "a Spanish computing request uses the noun for an instruction given to a computer"
+    effect "identify the requested command object without treating surrounding prose as an executable"
+    unit "command"
+    example "ejecuta el comando pwd"
+    source "https://dle.rae.es/comando"
+    lexeme en "Spanish singular computing-command noun"
+    lexeme ru "испанское существительное для компьютерной команды в единственном числе"
+    lexeme hi "कंप्यूटर कमांड का स्पेनिश एकवचन संज्ञा रूप"
+    lexeme zh 计算机命令的西班牙语单数名词形式
+    lexeme es comando
+  comandos
+    role computing-command-noun
+    defined-by comando
+    precondition "the computing noun comando takes the regular Spanish plural suffix s"
+    effect "identify multiple command objects without granting execution permission"
+    unit "command"
+    example "ejecuta los comandos pwd y date"
+    source "https://dle.rae.es/comando"
+    source "https://www.rae.es/dpd/plural"
+    lexeme en "Spanish plural computing-command noun"
+    lexeme ru "испанское существительное для компьютерных команд во множественном числе"
+    lexeme hi "कंप्यूटर कमांड का स्पेनिश बहुवचन संज्ञा रूप"
+    lexeme zh 计算机命令的西班牙语复数名词形式
+    lexeme es comandos

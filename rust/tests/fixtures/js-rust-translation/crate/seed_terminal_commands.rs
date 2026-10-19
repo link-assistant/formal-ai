@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=888fc1bc8929bd8ee1319501dc6df265e8b25e0bbbc63e48074e3aee695e543a bytes=1804
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=dbe66b6262d2489ae304d48d7034d9bc2681dae424737e4519c1e9b1004a65c6 bytes=2281
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
@@ -24,4 +24,4 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow function | assignment of a field or element | call of a sibling function | call of an imported function | field access | object without a $ tag
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .flatMap() | arrow callback of .some() | arrow function | assignment of a field or element | call of a sibling function | call of an imported function | field access | method call .filter() | method call .flatMap() | method call .some() | object without a $ tag

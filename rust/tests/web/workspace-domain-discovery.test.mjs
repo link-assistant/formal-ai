@@ -208,16 +208,17 @@ test('latest declarations and duplicate IDs refuse stale exact receipts', () => 
   duplicate.push({role:'tool',name:'Run',tool_call_id:id,content:receipt});
   assert.equal(next(duplicate).observationKind,'failed');
 });
-test('absent legacy provider names remain unknown without changing legacy attempt shape', () => {
+test('optional result names bind unique call IDs without changing legacy attempt shape', () => {
   const messages=[{role:'user',content:originalNeed}];
   const call={tool:'bash',arguments:JSON.stringify({command:workspaceDiscoveryCommand(originalNeed)})};
   record(messages,call,JSON.stringify({stdout:'workspace-discovery-v1\nworkspace-discovery-end\n',exit_code:0}));
   delete messages.at(-1).name;
   const progress=Progress.scan(messages);
-  assert.equal(qualifiedToolAttempt(progress,Capability.Run,JSON.parse(call.arguments)).binding,'unknown');
+  assert.equal(qualifiedToolAttempt(progress,Capability.Run,JSON.parse(call.arguments)).binding,'exact');
+  assert.deepEqual(['provider','approval','effects'].map(key=>qualifiedToolAttempt(progress,Capability.Run,JSON.parse(call.arguments))[key]),['Unknown','Unknown','Unknown']);
   assert.equal(progress.attempts[0].succeeded,true);
   assert.deepEqual(Object.keys(progress.attempts[0]),['capability','source_read','succeeded','detail','arguments','tool']);
-  assert.equal(workspaceDiscoveryStep(residual,progress,tools,originalNeed).observationKind,'failed');
+  assert.equal(workspaceDiscoveryStep(residual,progress,tools,originalNeed).observationKind,'no_candidate');
 });
 test('plain frames, injected methods and mutation cannot replace scanner snapshots', () => {
   const call={tool:'bash',arguments:JSON.stringify({command:workspaceDiscoveryCommand(originalNeed)})};

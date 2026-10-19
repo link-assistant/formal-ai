@@ -486,9 +486,25 @@ fn recognises_the_self_ast_task() {
     // The self-AST recipe is reached from a *differently worded* request, and the
     // router recognises the intent from the words (AST/CST + self-reference), not a
     // hardcoded string.
-    assert!(self_ast::is_self_ast_task(self_ast::AST_TASK));
+    assert!(self_ast::is_self_ast_task(self_ast::ast_task()));
     assert!(self_ast::is_self_ast_task(
         "record the abstract-syntax of our planner in our data"
+    ));
+    assert!(self_ast::is_self_ast_task(
+        "Store our planner CST with every comment and space."
+    ));
+    assert!(self_ast::is_self_ast_task(
+        "Save the concrete syntax of our own Rust source."
+    ));
+    assert!(!self_ast::is_self_ast_task("What is a CST?"));
+    assert!(!self_ast::is_self_ast_task(
+        "Describe source CST for a remote component."
+    ));
+    assert!(self_ast::is_self_ast_task(
+        "Store your CST with every comment."
+    ));
+    assert!(!self_ast::is_self_ast_task(
+        "Describe a podcast in our notes."
     ));
     // It does not steal the other recipes' requests or unrelated turns.
     assert!(!self_ast::is_self_ast_task(
@@ -501,8 +517,8 @@ fn recognises_the_self_ast_task() {
         "What is the capital of France?"
     ));
     // The task uses none of the other axes' distinctive wording.
-    assert!(!self_ast::AST_TASK.contains("tomato"));
-    assert!(!self_ast::AST_TASK.contains("mermaid"));
+    assert!(!self_ast::ast_task().contains("tomato"));
+    assert!(!self_ast::ast_task().contains("mermaid"));
 }
 
 #[test]
@@ -511,8 +527,12 @@ fn self_ast_task_wins_over_the_formalization_keyword() {
     // output format), which the broad formalization router also matches. The more
     // specific self-AST router must win, so the loop parses the planner rather than
     // formalizing the fisherman tale.
-    assert!(self_ast::AST_TASK.to_lowercase().contains("links notation"));
-    let outcome = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    assert!(
+        self_ast::ast_task()
+            .to_lowercase()
+            .contains("links notation")
+    );
+    let outcome = run_agentic_task(self_ast::ast_task()).expect("workspace");
     let write = outcome
         .steps
         .iter()
@@ -520,31 +540,42 @@ fn self_ast_task_wins_over_the_formalization_keyword() {
         .expect("a write step");
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
     assert_eq!(written["path"], self_ast::AST_PATH);
-    assert!(outcome.final_answer.contains("CST/AST"));
+    assert!(outcome.final_answer.contains("complete source CST"));
+    let document = formal_ai::readable_source::read_source_links(
+        written["content"]
+            .as_str()
+            .expect("complete source CST content"),
+    )
+    .expect("readable recursive source model");
+    assert_eq!(
+        formal_ai::readable_source::source_owner(&document).unwrap(),
+        Some(self_ast::TARGET_MODULE_PATH)
+    );
+    assert_eq!(
+        formal_ai::readable_source::source_from_links(&document).unwrap(),
+        self_ast::target_source()
+    );
+    formal_ai::readable_source::verify_source_links(&document)
+        .expect("independent current grammar verification");
     assert!(!outcome.final_answer.contains("fisherman"));
 }
 
 #[test]
-fn committed_self_ast_is_generated_and_written_by_the_driver() {
-    // The committed CST/AST-in-data artifact is *generated* by parsing a real module
-    // of our own meta algorithm through the meta-language links network — never hand
-    // written — so it can never drift from the code, and it is byte-for-byte what the
-    // Agent CLI writes.
-    let committed = include_str!("../../../../data/meta/self-ast.lino");
+fn recursive_source_content_is_generated_and_written_by_the_driver() {
+    let expected = self_ast::render_document();
+    let document =
+        formal_ai::readable_source::read_source_links(&expected).expect("recursive source model");
+    formal_ai::readable_source::verify_source_links(&document)
+        .expect("independent grammar reparse");
     assert_eq!(
-        committed,
-        self_ast::render_document(),
-        "the committed self-AST census is stale — regenerate it from the planner source"
+        formal_ai::readable_source::source_from_links(&document).unwrap(),
+        self_ast::target_source()
     );
-    // It really is a real abstract-syntax census: named nodes and node kinds.
-    assert!(committed.contains("named_node_count "));
-    assert!(committed.contains("distinct_node_kinds "));
-    assert!(committed.contains("text_preserved true"));
-    assert!(committed.contains("clean true"));
-    assert!(committed.contains("function_item "));
-
-    // End-to-end: the in-repo Agent CLI writes exactly this document.
-    let outcome = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    assert_eq!(
+        formal_ai::readable_source::source_owner(&document).unwrap(),
+        Some(self_ast::TARGET_MODULE_PATH)
+    );
+    let outcome = run_agentic_task(self_ast::ast_task()).expect("workspace");
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
     let write = outcome
         .steps
@@ -552,7 +583,7 @@ fn committed_self_ast_is_generated_and_written_by_the_driver() {
         .find(|step| step.tool == "write_file")
         .expect("a write step");
     let written: serde_json::Value = serde_json::from_str(&write.arguments).unwrap();
-    assert_eq!(written["content"], self_ast::render_document());
+    assert_eq!(written["content"], expected);
     assert_eq!(written["path"], self_ast::AST_PATH);
     assert!(outcome.final_answer.contains(self_ast::AST_PATH));
 }
@@ -560,7 +591,7 @@ fn committed_self_ast_is_generated_and_written_by_the_driver() {
 #[test]
 fn planner_walks_the_self_ast_recipe() {
     let tools = ["web_search", "web_fetch", "write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(self_ast::AST_TASK)];
+    let mut messages = vec![ChatMessage::user(self_ast::ast_task())];
 
     // Step 1: no web step — the census is a pure function of the source, so the
     // planner goes straight to writing the generated document.
@@ -580,7 +611,7 @@ fn planner_walks_the_self_ast_recipe() {
     // Step 3: the recipe is exhausted — the final answer carries the census.
     match plan_chat_step(&messages, &tools) {
         Some(AgenticPlan::Final(answer)) => {
-            assert!(answer.contains("named_node_count "));
+            assert!(answer.contains("owned-source"));
             assert!(answer.contains(self_ast::AST_PATH));
         }
         other => panic!("expected a final answer, got {other:?}"),
@@ -621,17 +652,18 @@ fn self_ast_census_generalises_to_different_sources() {
 }
 
 #[test]
-fn self_ast_node_kinds_are_sorted_for_determinism() {
-    let census = self_ast::render_document();
-    // Extract the node-kind lines (four-space indented) and check they are sorted.
-    let kinds: Vec<&str> = census
-        .lines()
-        .filter_map(|line| line.strip_prefix("    "))
-        .map(|line| line.split_whitespace().next().unwrap_or(""))
-        .collect();
-    let mut sorted = kinds.clone();
-    sorted.sort_unstable();
-    assert_eq!(kinds, sorted, "node kinds must be emitted in sorted order");
+fn recursive_source_model_is_deterministic_and_source_free() {
+    let first = self_ast::render_document();
+    assert_eq!(first, self_ast::render_document());
+    let document = formal_ai::readable_source::read_source_links(&first).unwrap();
+    assert_eq!(
+        formal_ai::readable_source::write_source_links(&document).unwrap(),
+        first
+    );
+    assert_eq!(
+        formal_ai::readable_source::source_from_links(&document).unwrap(),
+        self_ast::target_source()
+    );
 }
 
 #[test]
@@ -655,29 +687,52 @@ fn self_ast_target_is_a_real_module_of_the_meta_algorithm() {
 }
 
 #[test]
-fn committed_self_ast_session_matches_a_fresh_run() {
-    // The fourth committed Agent CLI session (a different request, a self-inspection
-    // axis, the same recipe machinery). Regenerate with:
-    //   formal-ai agent --task "<AST_TASK>" \
-    //       --session-json docs/case-studies/issue-538/agent-cli-session-self-ast.json
-    let committed =
-        include_str!("../../../../docs/case-studies/issue-538/agent-cli-session-self-ast.json");
-    let recorded: serde_json::Value =
-        serde_json::from_str(committed).expect("immutable session JSON");
-    let tools = recorded["tools_advertised"]
-        .as_array()
-        .expect("archived advertised tool schema")
+fn self_inspection_session_retains_actual_source_model_write_and_read() {
+    let fresh = run_agentic_task(self_ast::ast_task()).expect("workspace");
+    assert!(!fresh.hit_turn_cap);
+    let writes: Vec<_> = fresh
+        .steps
         .iter()
-        .map(|tool| tool.as_str().expect("advertised tool name"))
-        .collect::<Vec<_>>();
-    let fresh = run_agentic_task_with_tools(self_ast::AST_TASK, &tools).expect("workspace");
-    let rendered = format!(
-        "{}\n",
-        serde_json::to_string_pretty(&fresh.session_json()).unwrap()
-    );
+        .filter(|step| step.tool == "write_file")
+        .collect();
+    assert_eq!(writes.len(), 1);
+    let arguments: serde_json::Value = serde_json::from_str(&writes[0].arguments).unwrap();
+    let text = arguments["content"]
+        .as_str()
+        .expect("actual written content");
+    let document = formal_ai::readable_source::read_source_links(text).unwrap();
     assert_eq!(
-        committed, rendered,
-        "the committed self-AST Agent CLI session is stale — regenerate it with \
-         `formal-ai agent --session-json …`"
+        formal_ai::readable_source::source_from_links(&document).unwrap(),
+        self_ast::target_source()
     );
+    formal_ai::readable_source::verify_source_links(&document).unwrap();
+    assert!(fresh.steps.iter().any(|step| step.tool == "run_command"));
+    assert!(fresh.final_answer.contains(self_ast::AST_PATH));
+}
+
+#[test]
+fn historical_self_inspection_request_produces_current_recursive_source_content() {
+    let captured: serde_json::Value = serde_json::from_str(include_str!(
+        "../../../../docs/case-studies/issue-538/agent-cli-session-self-ast.json"
+    ))
+    .unwrap();
+    let fresh = run_agentic_task(captured["task"].as_str().unwrap()).expect("workspace");
+    assert!(!fresh.hit_turn_cap);
+    let writes: Vec<_> = fresh
+        .steps
+        .iter()
+        .filter(|step| step.tool == "write_file")
+        .collect();
+    assert_eq!(writes.len(), 1);
+    let arguments: serde_json::Value = serde_json::from_str(&writes[0].arguments).unwrap();
+    let document =
+        formal_ai::readable_source::read_source_links(arguments["content"].as_str().unwrap())
+            .unwrap();
+    assert_eq!(
+        formal_ai::readable_source::source_from_links(&document).unwrap(),
+        self_ast::target_source()
+    );
+    formal_ai::readable_source::verify_source_links(&document).unwrap();
+    assert!(fresh.steps.iter().any(|step| step.tool == "run_command"));
+    assert!(fresh.final_answer.contains(self_ast::AST_PATH));
 }

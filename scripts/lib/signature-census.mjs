@@ -1,3 +1,4 @@
+import {wellFormedText} from '../../js/logging/text-lines.mjs';
 // Translation of rust/src/self_ast_census.rs signature tier and Rust stable_id.
 // Lexical behavior intentionally mirrors that implementation, including its limitations.
 // Full AST census is explicitly unsupported; this is not a Rust parser or native proof.
@@ -146,7 +147,7 @@ function itemEndLine(codeLines, start) {
 }
 
 export function scanSignatureSymbols(sourceText) {
-  if (typeof sourceText !== 'string' || !sourceText.isWellFormed()) {
+  if (!wellFormedText(sourceText)) {
     throw Error('well_formed_source_text_required');
   }
   const commentState = {inBlockComment: false};

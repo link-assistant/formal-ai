@@ -78,3 +78,10 @@ test('the issue benchmark keeps its floors', () => {
   assert.ok(score.recall >= floors.recall, `recall ${score.recall} < ${floors.recall}`);
   assert.ok(score.precision >= floors.precision, `precision ${score.precision} < ${floors.precision}`);
 });
+
+// One declarative corpus is consumed by both runtime roots.
+for (const [index, entry] of JSON.parse((await import('node:fs')).readFileSync(new URL('../fixtures/requirement-extraction-markdown.json', import.meta.url), 'utf8')).entries()) {
+  test('Markdown requirement block fixture ' + index, () => {
+    assert.deepEqual(extractRequirements(entry.input), entry.expected);
+  });
+}

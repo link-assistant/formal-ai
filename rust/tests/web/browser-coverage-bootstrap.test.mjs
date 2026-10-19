@@ -8,7 +8,7 @@ function checkBootstrap(source) {
   const producer = workflowJobs(source).find(job => job.id === 'browser-coverage-shard');
   assert.ok(producer);
   assert.equal(producer.timeout, '15');
-  assert.match(producer.body, /shard: \[1, 2, 3, 4, 5, 6\]/u);
+  assert.match(producer.body, /shard: \[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16\]/u);
   assert.match(producer.body, /uses: oven-sh\/setup-bun@v2[\s\S]*?bun-version-file: \.bun-version/u);
   const install = producer.body.indexOf('run: bun install --frozen-lockfile --ignore-scripts');
   const measure = producer.body.indexOf('npm run coverage:web -- run');
@@ -31,6 +31,6 @@ test('every browser shard installs the actual frozen dependencies before its com
   for (const modified of [
     mutateWorkflowJob(workflow, 'browser-coverage-shard', 'run: bun install --frozen-lockfile --ignore-scripts', 'run: true'),
     mutateWorkflowJob(workflow, 'browser-coverage-shard', 'bun-version-file: .bun-version', 'bun-version: latest'),
-    mutateWorkflowJob(workflow, 'browser-coverage-shard', 'shard: [1, 2, 3, 4, 5, 6]', 'shard: [1, 2, 3, 4, 5]'),
+    mutateWorkflowJob(workflow, 'browser-coverage-shard', 'shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]', 'shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]'),
   ]) assert.throws(() => checkBootstrap(modified));
 });

@@ -91,3 +91,21 @@ fn every_seeded_language_states_requirements() {
         ["पेज को जल्दी लोड होना चाहिए।"]
     );
 }
+
+#[test]
+fn shared_markdown_blocks_retain_complete_requirement_ownership() {
+    let cases: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/requirement-extraction-markdown.json"
+    ))
+    .expect("shared Markdown corpus");
+    for case in cases.as_array().expect("corpus array") {
+        let input = case["input"].as_str().expect("input text");
+        let expected: Vec<&str> = case["expected"]
+            .as_array()
+            .expect("expected units")
+            .iter()
+            .map(|value| value.as_str().expect("unit text"))
+            .collect();
+        assert_eq!(extract_requirements(input), expected);
+    }
+}

@@ -12,6 +12,9 @@ on: # zizmor: ignore[dangerous-triggers]
     paths:
       - ".github/workflows/publish-source-networks.yml"
       - "scripts/release-protocol.mjs"
+      - "scripts/**"
+      - "packages/**"
+      - "rust/build.rs"
       - "scripts/lib/rust-projection-presentation.mjs"
       - "scripts/self-translation/lexer.mjs"
       - "scripts/check-readable-code.mjs"
@@ -19,6 +22,18 @@ on: # zizmor: ignore[dangerous-triggers]
       - "scripts/check-source-networks.mjs"
       - "scripts/verify-source-network-distribution.mjs"
       - "scripts/lib/source-network-packets.mjs"
+      - "scripts/lib/source-cst-packets.mjs"
+      - "scripts/lib/source-cst-*.mjs"
+      - "package.json"
+      - "bun.lock"
+      - "scripts/provision-source-cst-runtime.mjs"
+      - "scripts/generate-source-cst-runtime.mjs"
+      - "packages/source-cst-runtime/**"
+      - "js/vendor/tree-sitter/**"
+      - "js/meta/readable-source.js"
+      - "js/logging/lino-codec.mjs"
+      - "data/meta/source-model/syntax-rules.lino"
+      - "rust/tests/web/source-cst-packets.test.mjs"
       - "rust/tests/web/source-network-packets.test.mjs"
       - "scripts/translate-js-rust.mjs"
       - "scripts/lib/source-network-workers.mjs"
@@ -29,6 +44,17 @@ on: # zizmor: ignore[dangerous-triggers]
       - "scripts/run-with-budget-warning.sh"
       - "scripts/check-sccache-write-health.sh"
       - ".github/workflows/layered-ci.yml"
+      - "scripts/lib/source-cst-babel.mjs"
+      - "scripts/lib/source-cst-rust.mjs"
+      - "scripts/lib/source-cst-frontends.mjs"
+      - "packages/source-cst-runtime/package.json"
+      - "packages/source-cst-runtime/package-lock.json"
+      - "js/vendor/tree-sitter/web-tree-sitter.mjs"
+      - "js/vendor/tree-sitter/web-tree-sitter.wasm"
+      - "js/vendor/tree-sitter/tree-sitter-rust.wasm"
+      - "js/vendor/tree-sitter/LICENSE-web-tree-sitter"
+      - "js/vendor/tree-sitter/LICENSE-tree-sitter-rust"
+      - "js/vendor/tree-sitter/provenance.lino"
   workflow_dispatch:
     inputs:
       mode:
@@ -58,6 +84,10 @@ jobs:
   resolve:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    # Bound stalled transfers so checkout retries fit the existing job clock.
+    env:
+      GIT_HTTP_LOW_SPEED_LIMIT: '1024'
+      GIT_HTTP_LOW_SPEED_TIME: '30'
     if: >-
       github.event_name != 'workflow_run' ||
       (github.event.workflow_run.head_branch == 'main' &&
@@ -72,6 +102,9 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+          # This resolver has only Node built-ins; avoid unrelated repository blobs.
+          sparse-checkout: scripts/resolve-package-release.mjs
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v7
         with:
           node-version: '24.x'
@@ -101,7 +134,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     steps:
       # The triggering commit is selected by GitHub; PR checks use its merge
       # preview. Publication selects the validated stable tag in the next step.
@@ -139,15 +172,8 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '24.x'
-      - name: Check out the shared pinned serializer
-        uses: actions/checkout@v7
-        with:
-          repository: link-foundation/meta-language
-          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
-          path: .meta-language
-          persist-credentials: false
-      - name: Install serializer runtime dependencies
-        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Provision the captured complete source CST grammar runtime
+        run: node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/provision-source-cst-runtime.mjs" "$RUNNER_TEMP/source-cst-runtime"
       - name: Produce complete lossless packets from the selected source commit
         env:
           SOURCE_SHARD: ${{ matrix.shard }}
@@ -162,8 +188,8 @@ jobs:
             "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR" "$RELEASE_PROTOCOL_COMMIT" "$RELEASE_PROTOCOL_SHA256"
           bash "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/run-with-budget-warning.sh" "$TEST_BUDGET_SECONDS" source-networks-release \
             node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/check-source-networks.mjs" \
-            --source-root "$GITHUB_WORKSPACE" --upstream-commit "$SERIALIZER_COMMIT" --meta-language .meta-language \
-            --shard-count 8 --shard-index "$SOURCE_SHARD" --write --output "$PACKET_DIRECTORY"
+            --source-root "$GITHUB_WORKSPACE" --upstream-commit "$SERIALIZER_COMMIT" \
+            --shard-count 16 --shard-index "$SOURCE_SHARD" --write --output "$PACKET_DIRECTORY"
       - name: Bundle the complete shard with its receipts
         env:
           SOURCE_SHARD: ${{ matrix.shard }}
@@ -231,14 +257,14 @@ jobs:
           SERIALIZER_COMMIT: ${{ steps.protocol.outputs.upstream-commit }}
         run: |
           set -euo pipefail
-          for shard in 0 1 2 3 4 5 6 7; do
+          for shard in 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15; do
             mkdir -p "$DISTRIBUTION_DIRECTORY/shard-$shard"
             tar -xzf "$ARCHIVE_DIRECTORY/formal-ai-source-networks-$shard.tar.gz" -C "$DISTRIBUTION_DIRECTORY/shard-$shard"
           done
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" verify \
             "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR" "$RELEASE_PROTOCOL_COMMIT" "$RELEASE_PROTOCOL_SHA256"
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/verify-source-network-distribution.mjs" "$DISTRIBUTION_DIRECTORY" \
-            --source-root "$GITHUB_WORKSPACE" --upstream-commit "$SERIALIZER_COMMIT"
+            --source-root "$GITHUB_WORKSPACE" --upstream-commit "$SERIALIZER_COMMIT" --shard-count 16
       - name: Attach all verified packets to the stable release
         env:
           GH_TOKEN: ${{ github.token }}

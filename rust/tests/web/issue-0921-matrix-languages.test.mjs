@@ -24,8 +24,8 @@ const MATRIX = [
     language: 'scala',
     source: 'https://docs.scala-lang.org/scala3/book/taste-hello-world.html',
     program: 'object hello {\n  def main(args: Array[String]) = {\n    println("Hello, world!")\n  }\n}',
-    check: 'scalac hello.scala',
-    run: 'scala hello',
+    check: 'scalac Main.scala',
+    run: 'scala run Main.scala',
   },
   {
     name: 'Kotlin',

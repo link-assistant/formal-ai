@@ -84,6 +84,18 @@ Concretely, every change must follow these rules:
    already stands on its own; do not batch a day of unrelated edits into one
    commit.
 
+### Work through the readable source model
+
+Follow [the source-model doctrine](docs/requirements/doctrine-readable-recursive-source-and-comment-meta-language-2026-10-18.md) and [source-model guide](docs/source-representation.md). Use complete recursive Links Notation CSTs with actual UTF-8 text and language-neutral semantic concepts. Preserve comments, whitespace and language-specific syntax. Formalize comment meanings and independently naturalize English documentation; retained text alone is not understanding. Describe parse, emit, synchronization and transformation rules in the meta language, with explicit ambiguity and refusal. Extend the shared meta language where required.
+
+Validate persisted source-free reconstruction, independent reparsing and semantic checks, meaningful held-out edits, exact inverses and cross-language behavior. Remove count-only self-AST fixture maintenance; source content and rules are authoritative. Old signature/histogram tests are historical partial controls and must migrate with their consumers. Prefer the useful invariants researched in meta-language PR #201 and Router PR #761; their numeric serializers and flat token stores are not substitutes for this contract. Keep Rust compilation in CI, source generation bounded, and changes through the authorized Formal AI development loop.
+
+### Verify code, requirements and multilingual documentation together
+
+Use our source and documentation as the core formalization/naturalization corpus. Bind formalized comment/document claims to actual code contracts and evidence, and evaluate them through dependency-aware relative meta logic. Preserve conditional assumptions and shared premises; dependent observations do not become independent support by being counted twice. The same model must support local code/docs and trusted public sources, with explicit unavailable, stale and conflicting evidence.
+
+Formal AI produces English, Russian, Hindi and Chinese documentation through shared meanings. Select wording jointly for measured round-trip meaning survival across every ordered pair, for parts and whole documents; preserve unknown terms, scope, quantifiers, polarity and the original evaluation denominator. CI checks code/doc consistency and formalized requirement delivery. A requirement conflict follows the latest authoritative instruction for that scope, with history retained; a new unrelated instruction does not erase an earlier obligation. Update documentation to match verified requirement-conforming code, and repair code that violates the current requirement. Regenerate and reverify every affected source/document projection after a contradiction-driven edit.
+
 ### Testing external agentic CLIs
 
 When validating `codex`, `opencode`, `gemini`, or the `agent` CLI against a
@@ -1138,16 +1150,7 @@ hardcoded prompt→answer tables.
     explicitly and still deliver a real, tested slice of *each* axis — never dress
     "did part of everything" as an honest scope cut.
 
-12. **Link the issue with a GitHub closing keyword; never "Addresses"
-    (issue #960).** A pull-request description must close its issue with one of
-    GitHub's [recognised keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue)
-    — write `Fixes #146` or, preferably, the full form
-    `Fixes https://github.com/link-assistant/formal-ai/issues/146`. Words like
-    *Addresses*, *Relates to*, *Part of* and *Refs* read to a human exactly like
-    a link and to GitHub like plain prose: the issue silently stays open after
-    the merge. `scripts/check-pull-request-link.rs` reads the description
-    (`PR_BODY`, or a file passed as its argument) and fails the build on a
-    missing closing keyword or a non-closing word used in its place.
+12. **Declare issue disposition explicitly (issue #960; later owner release-iteration requirement R1207-9).** Fully accepted work uses a GitHub [recognised closing keyword](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue), preferably `Fixes https://github.com/link-assistant/formal-ai/issues/146`. An issue whose original acceptance remains unfinished must stay open: use a separate whole line `Related (acceptance pending): https://github.com/link-assistant/formal-ai/issues/146` and state the remaining acceptance. This explicit pending disposition does not claim delivery or close the issue. Ambiguous substitutes such as *Addresses*, *Relates to*, *Part of* and *Refs* still fail `scripts/check-pull-request-link.rs`. Never add a false closing claim just to pass CI.
 
 13. **Case study per pull request.** Alongside the per-issue case study
     (rule 8), a case study that documents a *pull request* — its review
@@ -1279,10 +1282,10 @@ differently.
    (R1188-U2), and update documentation if needed
 3. Add a changelog fragment (see step 5 in Development Workflow)
 4. Ensure the PR description clearly describes the changes
-5. Link the issue the PR closes with a GitHub closing keyword — `Fixes #146` or
-   `Fixes https://github.com/link-assistant/formal-ai/issues/146`. **Never**
-   write `Addresses #146`, `Relates to #146`, or `Part of #146` in its place:
-   GitHub does not recognise those, so the issue stays open after the merge.
+5. Declare each issue's disposition. Completed acceptance uses `Fixes #146` or its full GitHub issue URL.
+   Unfinished original acceptance uses the explicit whole-line record `Related (acceptance pending): <issue reference>`.
+   Keep unfinished acceptance pending under R1207-9; close an issue only when its acceptance is complete.
+   Ambiguous substitutes such as `Addresses #146`, `Relates to #146`, or `Part of #146` do not satisfy the check.
    Verify locally before opening the PR:
 
    ```bash
@@ -1414,3 +1417,5 @@ Releases are managed through GitHub releases. To trigger a release:
 - Show empathy towards other community members
 
 Thank you for contributing!
+
+Prefer maintained generators, declarative transformations and bulk automation for source and documentation changes. Ask actual Formal AI to perform tasks it can solve. When it cannot, retain the failed ask and record the missing general capability with its independent expected outcome; improve that capability instead of silently substituting a hand-authored per-task answer. Supplied controllers and recipes remain automation with zero autonomous-authorship credit.

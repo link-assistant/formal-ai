@@ -1,3 +1,4 @@
+import {joinFailureInvitation} from '../portable/string_contracts.mjs';
 // `append_invitation` from rust/src/failure_reporting.rs.
 
 import { localizedResponse } from './seed.mjs';
@@ -10,5 +11,5 @@ export function appendInvitation(body, language) {
   if (invitation === null) return trimmedBody;
   const text = trim(invitation);
   if (!text) return trimmedBody;
-  return trimmedBody ? `${trimmedBody}\n\n${text}` : text;
+  return joinFailureInvitation(trimmedBody, text);
 }

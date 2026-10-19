@@ -1,0 +1,54 @@
+(source
+  (language "Rust")
+  (module
+    (form "source_file")
+    (comment
+      (form "line_comment")
+      (syntax (form "//") (text "//"))
+      (syntax
+        (form "outer_doc_comment_marker")
+        (role "outer")
+        (syntax (form "/") (text "/")))
+      (syntax (form "doc_comment") (role "doc") (text " Keep the value.\n")))
+    (function
+      (form "function_item")
+      (syntax
+        (form "visibility_modifier")
+        (syntax (form "pub") (text "pub")))
+      (layout (form "whitespace") (text " "))
+      (syntax (form "fn") (text "fn"))
+      (layout (form "whitespace") (text " "))
+      (identifier (form "identifier") (role "name") (text "keep"))
+      (syntax
+        (form "parameters")
+        (role "parameters")
+        (syntax (form "(") (text "("))
+        (syntax
+          (form "parameter")
+          (identifier (form "identifier") (role "pattern") (text "value"))
+          (syntax (form ":") (text ":"))
+          (layout (form "whitespace") (text " "))
+          (syntax
+            (form "reference_type")
+            (role "type")
+            (syntax (form "&") (text "&"))
+            (syntax (form "primitive_type") (role "type") (text "str"))))
+        (syntax (form ")") (text ")")))
+      (layout (form "whitespace") (text " "))
+      (syntax (form "->") (text "->"))
+      (layout (form "whitespace") (text " "))
+      (syntax
+        (form "reference_type")
+        (role "return_type")
+        (syntax (form "&") (text "&"))
+        (syntax (form "primitive_type") (role "type") (text "str")))
+      (layout (form "whitespace") (text " "))
+      (syntax
+        (form "block")
+        (role "body")
+        (syntax (form "{") (text "{"))
+        (layout (form "whitespace") (text " "))
+        (identifier (form "identifier") (text "value"))
+        (layout (form "whitespace") (text " "))
+        (syntax (form "}") (text "}"))))
+    (layout (form "whitespace") (text "\n"))))

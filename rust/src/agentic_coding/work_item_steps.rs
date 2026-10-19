@@ -13,8 +13,8 @@ const STEPS: &str = include_str!("../../embedded/data/meta/work-item-steps.lino"
 /// Panics when the ledger lacks the key: the ledger is compiled in, so a
 /// missing key is a defect of this repository, not of a request.
 pub(super) fn fill(key: &str, values: &[(&str, &str)]) -> String {
-    let mut text = template(key)
-        .unwrap_or_else(|| panic!("data/meta/work-item-steps.lino lacks `{key}`"));
+    let mut text =
+        template(key).unwrap_or_else(|| panic!("data/meta/work-item-steps.lino lacks `{key}`"));
     for (placeholder, value) in values {
         text = text.replace(placeholder, value);
     }

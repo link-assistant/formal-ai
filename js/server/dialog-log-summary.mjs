@@ -1,3 +1,4 @@
+import {rustLines as lines} from '../logging/text-lines.mjs';
 // The proxy-exchange summary a dialog-log record carries
 // (rust/src/proxy.rs `summarize_proxy_exchange`, `model_from_path`,
 // `collect_request_tool_names`; rust/src/proxy/summary.rs; and
@@ -229,12 +230,7 @@ function mergeSummary(target, source) {
   target.content += source.content;
 }
 
-/** Rust `str::lines`. */
-function lines(text) {
-  const out = text.split('\n');
-  if (out.length > 0 && out[out.length - 1] === '') out.pop();
-  return out.map((line) => (line.endsWith('\r') ? line.slice(0, -1) : line));
-}
+
 
 /** `parse_sse_events`: the `data:` payload of each blank-line-separated block. */
 function parseSseEvents(body) {

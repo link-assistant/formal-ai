@@ -28,6 +28,15 @@ on:
     paths:
       - 'rust/src/**'
       - 'data/seed/**'
+      - 'data/meta/prerequisite-installer.py'
+      - 'data/benchmarks/hive-prerequisite-workspace-grant.json'
+      - 'scripts/check-prerequisite-recovery-hosted.py'
+      - 'scripts/test-prerequisite-installer-hosted.py'
+      - 'js/agentic/prerequisite_recovery.mjs'
+      - 'js/agentic/node-host.mjs'
+      - 'js/server/prerequisite-grant.mjs'
+      - 'js/server/node-host-install.mjs'
+      - 'js/server/main.mjs'
       - 'rust/tests/**'
       - 'experiments/agentic_cli_matrix/**'
       - 'rust/Cargo.toml'
@@ -107,6 +116,8 @@ jobs:
           retention-days: 1
 
   matrix:
+    env:
+      FORMAL_AI_PREREQUISITE_GRANT_JSON: "{\"schema\":\"formal-ai-workspace-prerequisites-v1\",\"scope\":\"workspace\",\"programs\":[\"kotlinc\",\"scalac\",\"rustc\"],\"bootstrap\":{\"program\":\"python3\",\"arguments\":[\".formal-ai/bootstrap/prerequisite-installer.py\"]},\"allowNetwork\":true,\"networkHosts\":[\"kotlinlang.org\",\"www.scala-lang.org\",\"scala-lang.org\",\"rustup.rs\",\"github.com\",\"api.github.com\",\"release-assets.githubusercontent.com\",\"objects.githubusercontent.com\"],\"processes\":[{\"program\":\"bash\",\"arguments\":[\"--version\"]},{\"program\":\"java\",\"arguments\":[\"-version\"]}],\"probes\":[[\"--version\"],[\"-version\"]],\"maxArchiveBytes\":134217728,\"maxExpandedBytes\":536870912}"
     name: E2E (${{ matrix.client }})
     needs: [build]
     # Issue #1111: when the green ledger already passed these inputs, `build`
@@ -380,3 +391,27 @@ jobs:
             exit 1
           fi
           echo "all client legs green"
+
+
+  prerequisite-recovery:
+    name: Hosted workspace compiler discovery and original one-line oracle
+    needs: [build]
+    if: needs.build.outputs.already-green != 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Validate real installer grant, digest, scope and failure controls
+        run: python3 scripts/test-prerequisite-installer-hosted.py
+      - name: Exercise actual generic archive recovery in an isolated workspace
+        env:
+          FORMAL_AI_INSTALL_GRANT: workspace
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/check-prerequisite-recovery-hosted.py
+      - name: Exercise actual platform archive recovery with Scala one-line oracle
+        env:
+          FORMAL_AI_INSTALL_GRANT: workspace
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/check-prerequisite-recovery-hosted.py scala

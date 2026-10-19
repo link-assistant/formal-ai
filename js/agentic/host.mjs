@@ -36,7 +36,7 @@ const caches = new Map();
  * Install the host every planner module reads through.
  * @param {{readText: Function, parseLino: Function, realm: object,
  *   isDirectory?: Function, isFile?: Function, currentDirectory?: Function,
- *   listDirectory?: Function}} next
+ *   listDirectory?: Function, planningObserver?: Function}} next
  */
 export function installHost(next) {
   current = next;
@@ -47,6 +47,18 @@ export function installHost(next) {
 export function host() {
   if (!current) throw new Error('agentic_host_not_installed');
   return current;
+}
+
+/** Parse-only host capability; absent grammars and non-boolean promises grant no verdict. */
+export function validateProgram(language, source) {
+  const validate = current?.validateProgram;
+  if (typeof validate !== 'function') return null;
+  try {
+    const verdict = validate(language, source);
+    return verdict === true ? true : verdict === false ? false : null;
+  } catch {
+    return false;
+  }
 }
 
 /** Whether a host is installed. */

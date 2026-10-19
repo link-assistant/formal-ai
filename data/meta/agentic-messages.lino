@@ -10,6 +10,8 @@
 # without this file shows up as a divergence. `{name}` is a placeholder;
 # `\n` is a newline.
 agentic_messages
+  message shell-recovery-final-failure
+    text "{failure}\n\n{recovery}"
   message shell_tool_missing
     text "I can run `{command}` when the client advertises a shell tool such as `bash`, `shell`, or `run_command`."
   message tool_permission_refused
@@ -129,7 +131,7 @@ agentic_messages
   message command_reroute_committed_and_pushed
     text "\n\nCommitted and pushed to `{branch}` for {reference}:\n\n```text\n{output}\n```"
   message command_reroute_exit_code_labels
-    text "exit code:|exit status:|command exited with status|process exited with code"
+    text "exit code:|exit code |exit status:|command exited with status|process exited with code"
   message command_reroute_failure_markers
     text "command timed out|command terminated without an exit status|permission denied|no such file or directory"
   message code_artifact_updated
@@ -268,8 +270,10 @@ agentic_messages
     text "how formal ai works|how does formal ai work|how formal ai itself works|how the system itself works|explain how formal ai"
   message explain_final_answer
     text "Here is how Formal AI works, grounded in its own source, data, and tests: across {sections} topics with {citations} citations, every claim points at a real artifact — source files content-addressed through the owned manifest, the data artifacts they generate, and the tests that lock the behaviour — rather than prose docs. The answer is a deterministic function of the embedded source, so it cannot cite anything the repository does not ship.\n\nGenerated document ({path}):\n\n{document}"
+  message source-links-diagnostic-boundary
+    text "  representation navigation-diagnostic\n  complete-recursive-content false"
   message source_links_final_answer
-    text "Translated the entire source code of our system to the links / meta language and back: content-addressed all {files} owned source files under one manifest id, and verified a representative slice of {slice} modules round-trips byte-for-byte through the meta-language links network (the sole CST/AST engine here). The exhaustive whole-repository round-trip is the library invariant (SourceLinks::owned) — a real step toward recompiling ourselves. Nothing was written back; the projection is a read-only, auditable artifact.\n\nGenerated document ({path}):\n\n{document}"
+    text "Generated source-navigation diagnostics: content-addressed all {files} owned source files under one manifest id, and reported a representative slice of {slice} modules (parser round-trip verified: {faithful}). This diagnostic document does not contain the entire source as recursive CST content and does not establish recompilation. Full readable content is produced separately with source-free reconstruction and grammar verification.\n\nDiagnostic document ({path}):\n\n{document}"
   message change_request_keywords
     text "change formal ai|modify formal ai|add a capability to formal ai|add a new capability to the system|change the ai system|change formal ai itself"
   message change_request_final_answer
@@ -365,7 +369,7 @@ agentic_messages
   message learning_report_task_self_hosting_learning
     text "Use Formal AI auto-learning to inspect the persisted issue 657 self-hosting attribution observations as an associative links network, rank the observations and attribution amendments, keep promotion human-review gated, and write self-hosting-learning-report.lino."
   message self_ast_task
-    text "Store the CST/AST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and record its abstract-syntax node census in Links Notation."
+    text "Store the complete source CST of our Rust meta algorithm in our data so the system can reason about itself: parse the planner module and preserve every literal, comment, punctuation mark and whitespace character in recursive human-readable Links Notation."
   message dreaming_audit_task
     text "Audit issue 540 dreaming through Formal AI: inspect the grounded dreaming meta-algorithm, identify every implementation gap from amendment application through replay, pattern learning, storage consent, and idle runtime, then record the generalization that resolves each gap as Links Notation in dreaming-gap-analysis.lino."
   message google_trends_learning_task
@@ -397,7 +401,7 @@ agentic_messages
   message learning_report_subject_self_hosting_learning
     text "self-hosting attribution observations and amendments"
   message self_ast_final_answer
-    text "Stored the CST/AST of our Rust meta algorithm ({target}) in our data, parsed through the meta-language links network (the sole CST/AST engine here) and recorded as an abstract-syntax node census — a real step toward the system reasoning about itself.\n\nGenerated document ({path}):\n\n{document}"
+    text "Stored the complete source CST of our Rust meta algorithm ({target}) as recursive human-readable Links Notation preserving tokens, comments and whitespace. The document owns its content and reconstructs without the original source buffer; histograms remain separate diagnostics.\n\nGenerated document ({path}):\n\n{document}"
   message dreaming_audit_method
     text "derived at runtime by cross-referencing meta_step, meta_function, and meta_test records of the grounded recipe"
   message dreaming_audit_conclusion_grounded
@@ -415,7 +419,7 @@ agentic_messages
   message associative_persistence_unresolved_evidence
     text "unresolved evidence link: {reference}"
   message self_ast_keywords
-    text "cst/ast|cst / ast|abstract-syntax|reason about itself"
+    text "cst/ast|cst / ast|abstract-syntax|reason about itself|concrete syntax"
   message google_trends_learning_frontier_cues
     text "learning frontier|self-improvement loop"
   message question_catalog_keywords
@@ -546,3 +550,35 @@ agentic_messages
     text "repository command timed out after {elapsed}s (deadline {deadline}s)"
   message callable-discovery-outcome
     text "Callable discovery {reason}:\n{discovery}"
+  message coding-research-gap
+    text "Coding research remains unresolved: {reason}"
+  message coding-research-verified-existing
+    text "Existing source matches the rediscovered procedure and independent verification succeeded; no source write was needed."
+  message coding-research-existing-failed
+    text "Independent verification of the existing source failed.\n{detail}"
+  message file-read-cue-summarize
+    text "summarize"
+  message file-read-cue-summary
+    text "summary"
+  message file-read-cue-here
+    text "here"
+  message file-read-cue-list-files
+    text "list files"
+  message file-read-cue-list-command
+    text "ls"
+  message file-read-cue-read
+    text "read"
+  message file-read-cue-contents
+    text "contents"
+  message file-read-cue-content
+    text "content"
+  message file-read-cue-show-me
+    text "show me"
+  message file-read-cue-folder-suffix
+    text " folder"
+  message file-read-cue-directory-suffix
+    text " directory"
+  message file-read-cue-last
+    text "last"
+  message file-read-cue-first-line
+    text "first line"

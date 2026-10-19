@@ -31,13 +31,13 @@
 //! public language list is wanted upstream, file it in
 //! link-foundation/meta-language (general wording).
 
-```cargo
-[package]
-edition = "2024"
-
-[dependencies]
-serde_json = "1"
-```
+//! ```cargo
+//! [package]
+//! edition = "2024"
+//!
+//! [dependencies]
+//! serde_json = "1"
+//! ```
 
 use std::collections::BTreeSet;
 use std::process::Command;
