@@ -76,3 +76,14 @@ an omitted embedded package-data regeneration and new compiled Git-observation
 literals above the existing ratchet. Recovery uses `mirror-package-data.mjs`
 and shared observation rules in `data/meta/work-item-steps.lino`; it does not
 raise the reviewed ceiling or relax the source-content check.
+
+
+The first live original-Hive Claude run on `8249aa89960a8d54960a8c954a4232509dfe5850`
+([job 118749500606](https://github.com/link-assistant/formal-ai/actions/runs/39456423351/job/118749500606))
+proved successful publisher discovery, workspace installation and postcondition
+probing of Kotlin, followed by the exact `Hello, World!` output. Delivery then
+failed because the changed double-quoted recipe scalar retained `\"` bytes;
+Git received quote characters in the branch refspec. The correction uses a
+single-quoted meta scalar with actual shell double quotes and a real disposable
+Git commit/push regression for both named and current-branch targets. The original
+Hive task, setup discovery, and original output oracles remain unchanged.

@@ -229,3 +229,25 @@ test('refspec recovery preserves explicit branch and remote intent', () => {
   const other=repairStep([user],['bash'],{...failure,failed_command:'git push upstream missing'},0,3);
   assert.equal(other.kind,'retry');assert.equal(other.plan.kind,'final');assert.match(other.plan.answer,/originally requested remote/);
 });
+
+
+test('the actual generated recipe commit pushes plain named and current refs without escaped quote bytes', () => {
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-recipe-ref-'));
+  try {
+    const remote=path.join(directory,'remote.git'),work=path.join(directory,'work');fs.mkdirSync(work);
+    const git=(args,cwd=work)=>execFileSync('git',args,{cwd,encoding:'utf8'}).trim();
+    git(['init','--bare','-q',remote],directory);git(['init','-q','-b','task/quoted-ref']);
+    git(['config','user.name','Test']);git(['config','user.email','test@example.com']);
+    fs.writeFileSync(path.join(work,'README.md'),'seed\n');git(['add','README.md']);git(['commit','-qm','seed']);git(['remote','add','origin',remote]);
+    const file='generated source.txt';
+    for(const [index,branch]of [null,'task/quoted-ref'].entries()) {
+      const source='verified fixture '+index+'\n';fs.writeFileSync(path.join(work,file),source);
+      const recipe={path:file,source,language:'text',supporting_files:[],commands:[]};
+      const command=recipeCommitCommand(recipe,{branch,reference:'https://github.com/example/repo/issues/17',bindingRefused:false});
+      execFileSync('sh',['-c',command],{cwd:work,encoding:'utf8'});
+      assert.equal(git(['rev-parse','HEAD']),git(['rev-parse','refs/heads/task/quoted-ref'],remote));
+      assert.equal(git(['show','refs/heads/task/quoted-ref:'+file],remote),source.trim());
+    }
+    assert.deepEqual(git(['for-each-ref','--format=%(refname)'],remote).split('\n'),['refs/heads/task/quoted-ref']);
+  }finally{fs.rmSync(directory,{recursive:true,force:true});}
+});
