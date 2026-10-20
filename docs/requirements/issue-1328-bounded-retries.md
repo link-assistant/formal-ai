@@ -1,0 +1,51 @@
+# Bounded actions and observable failure
+
+Authority: [issue #1328](https://github.com/link-assistant/formal-ai/issues/1328) and the maintainer's requirement to bound repeated actions throughout the codebase.
+
+Every retry must have a finite attempt ceiling. External operations also need a finite per-attempt deadline or cancellation boundary. A failed deterministic precondition (invalid schema, missing local Git ref, permission denial) must be repaired locally or reported; repeating it unchanged is not progress. Count attempts from the transcript when the client owns execution, including unknown tools, missing receipts, changed error wording, namespace-qualified tools, and reused call IDs. Restarting the server must not reset this budget when the client resends the transcript. A client that discards its history cannot supply that evidence. Continuation cues preserve the standing objective; a genuinely new request opens its existing evidence window.
+
+The planner stops after three declarations of one canonical tool/argument pair in its current evidence window, regardless of result classification. This is a conservative total ceiling within that window: a complex task that intentionally needs the same call again must open a fresh explicit request after inspecting progress. The whole objective also has a finite ceiling of 128 tool declarations, including cycles of distinct calls. Distinct arguments get distinct per-action budgets; changing error wording or JSON key order does not. Earlier successful-repeat and identical-failure stops remain active and can stop sooner. All planner routes, including symbolic command reroutes, pass the protocol boundary guard.
+
+A narrative bug report must not authorize quoted reproduction commands or bind unrelated output/version text as a file target. Command-output capture requires an owned imperative and a locally bound output clause; displaying that captured file never proves delivery of unrelated issue requirements.
+
+Responses ingestion must preserve namespace-qualified tool identity. Outgoing semantic arguments must be projected onto the client's advertised schema (`query` to `input` for search), and an unbound required argument must produce a terminal planning failure, never an empty tool call. The boundary records the selected tool, bound arguments, state, and retry ceiling at debug level through the existing redacting sink. Unsupported schema references are refused, rather than presented as validated.
+
+Push targets use an explicitly bound valid branch or a current-branch observation in the client workspace. An unbound `origin` refspec failure selects local Git recovery before web research. Explicit branch bindings and other remotes are retained for inspection, never silently replaced by the current branch or `origin`. Detached HEAD fails without pushing. Failed or empty search results consume the search attempt and cannot reopen the same repair rung indefinitely.
+
+Exact prompt normalization is memoized without truncating or changing the request. Native caching has one process-wide memory ceiling, shared by connection threads; JavaScript caching belongs to its installed source host. Both bound retained entries and text. The address-only production CPU profile does not establish that normalization alone accounts for the reported 130 seconds; source replay and hosted native timing must distinguish measured improvements from that inference.
+
+Diagnostic persistence is best effort but its failure is observable: probe the configured sink at startup, report its real directory and IO cause once, disable a failed file sink instead of retrying every diagnostic, retain stderr, and expose the state through `/health`. Memory storage errors must retain their original IO category and cause instead of being mislabeled as incompatible schema.
+
+## Retry audit
+
+- Planner and all protocol wire routes: transcript-derived ceiling; no recognized error shape is required.
+- Repair search/fetch/apply ladder: existing rung/source ceilings remain; failed or empty search now stops, and refspec repair reads local branch state.
+- Native driver, recursive execution, orchestration, rewriting, prerequisite recovery, and completion authoring: existing finite turn/depth/step/attempt ceilings remain. Their original controls must continue to pass.
+- Telegram polling: three consecutive transport/parse failures stop with the original error; a valid batch resets that failure budget. Healthy daemon polling remains long lived and cancellable.
+- Background dreaming: three failed idle runs stop the worker with an explicit error; successful work resets the failure budget. Healthy service operation continues.
+- Provenance streaming: three consecutive interrupted reads stop with the original IO error; actual read progress resets the budget.
+- Structured diagnostics: one failing sink attempt disables that sink for the configured process; other sinks continue. Reconfigure/restart after repairing the directory.
+- Artifact, apt, Git fetch, macOS packaging, builder-toolset and marketplace publication retries already use finite attempts; their existing tests remain mandatory. Builder-toolset options reject non-finite or excessive counts and durations before IO: at most eight attempts, 60 seconds of configured backoff, and 15 minutes per transfer timer.
+- Pages deployment verification already has an outer deadline; each curl poll now also has connect, transfer and retry deadlines.
+- Parser/tokenizer/source walkers advance a finite cursor or ascend a finite path, and listener/event loops serve new operations. These are not retries of one failed action and must retain their progress/cancellation boundaries. Runner-capacity sampling intentionally observes new samples until its supervising CI process ends.
+
+Native compilation and product execution run only in CI. Local checks use maintained JavaScript sources and disposable data fixtures. Supplied integration controllers run through JavaScript Formal AI and receive no autonomous-authorship credit.
+
+
+## Cross-repository CI evidence
+
+Collect recent failed Actions jobs from Formal AI and Hive Mind with
+`scripts/collect-ci-failures.mjs`; retain bounded start/tail observations,
+source/run/job identities, redacted diagnostics, and deduplicated fingerprints.
+Unavailable, truncated, timed-out and cancelled observations remain explicit.
+A recovered warning cannot become a declared cause of terminal failure.
+See [the inspected failures and collection contract](../case-studies/issue-1328/ci-failure-collection.md).
+
+Dispatched evidence checks must use a validated nonreserved base-ref variable.
+Native projection dispatches require API-authenticated current same-repository
+PR head, base and merge witnesses, matching physical checkout and clean tracked
+inputs before and after execution. An environment selector alone grants no authority.
+Artifact finalization recovery has three real upload attempts under an enclosing
+step deadline. It retains original immutable names, bytes, scope and receipt IDs;
+it cannot invent a successful upload, overwrite artifacts, rerun workflows, or
+skip an original acceptance check.
