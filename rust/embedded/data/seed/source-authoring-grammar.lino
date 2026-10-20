@@ -90,6 +90,24 @@ source-request-preflight
     pattern "^If safe composition cannot be established, record the exact missing capability before any output write$"
     meaning "Unresolved source goals or Needs refuse candidate Write; unknown initializer effects remain inherited approved-operation effects, never pure."
 
+source-request-compact
+  source-joiner " and "
+  form declaration-goal
+    pattern "^(?:Add|Implement) exported (?<signature>[A-Za-z_$][\\w$]*\\([^()]*\\)) (?:in|to) (?<destination>[A-Za-z0-9_./-]+): (?<goal>return .+)$"
+    meaning "The declaration and return goal occupy separate observed spans in one sentence; their semantics remain source-qualified."
+  form source-discovery
+    pattern "^Discover and compose observed (?<sources>.+?) exports through imports(?: using aliases (?<aliases>.+))?$"
+    meaning "Discover the stated source modules before any candidate write and bind requested aliases only to source-qualified exports."
+  form reuse-imports
+    pattern "^preserve inputs and reuse semantics$"
+    meaning "The candidate must call observed imports and preserve the original input and imported source implementations."
+  form verification
+    pattern "^Run (?<command>node --test [A-Za-z0-9_./-]+)$"
+    meaning "The exact explicit Node operation is the sole accepted verification command."
+  form protect-inputs
+    pattern "^keep source modules and tests unchanged$"
+    meaning "The source and acceptance operands are immutable; the candidate transaction may write only the declared destination."
+
 source-callable-composition
   goal optional-source-text
     producer-result optional-record
@@ -104,6 +122,8 @@ source-callable-composition
       surface "compact "
     form english-source-preserving-optional-text
       pattern "^return the {style}{goal} of the {consumer-parameter} chosen by the {wrapper-parameter}, or null when no {consumer-parameter} is selected[.]?$"
+    form english-source-selected-optional-text
+      pattern "^return the {style}{goal} of the selected {consumer-parameter} or null[.]?$"
     template javascript-imported-optional-text
       text "import { {producer-export} as {producer-local} } from {producer-url};\nimport { {consumer-export} as {consumer-local} } from {consumer-url};\nexport function {name}({parameter}) {\n  const {value-local} = {producer-local}({parameter});\n  return {value-local} === null ? null : {consumer-local}({value-local});\n}\n"
 compound-task-grammar

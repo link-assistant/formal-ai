@@ -1,3 +1,4 @@
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { ownedReadPaths } from './file_read/ownership.mjs';
 export { ownedReadPaths, readPolicyBlocksPlan } from './file_read/ownership.mjs';
 // File-reading agentic recipe for local workspace prompts (issue #627):
@@ -396,7 +397,7 @@ function shellString(value) {
 function selectedPathsFromListing(directory, listing, selection) {
   const entries = rustLines(listing)
     .map(trim)
-    .filter((line) => line !== '')
+    .filter(canonicalUnaryNonempty)
     .map((line) => line.replace(/^(?:\.\/)+/u, ''));
   entries.sort(byteOrder);
   const unique = entries.filter((entry, index) => index === 0 || entries[index - 1] !== entry);

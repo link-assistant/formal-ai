@@ -4,7 +4,7 @@ use crate::agentic_coding::planner::{AgenticPlan, Capability};
 use crate::protocol::ChatMessage;
 use serde_json::{Value, json};
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Deserialize)]
 pub struct ObservedCallableRequest {
     pub name: String,
     pub parameters: Vec<String>,
@@ -46,6 +46,12 @@ fn instruction_clause(part: &str) -> String {
 /// Mirrors observedCallableRequest: destination belongs to the declaration clause.
 #[must_use]
 pub fn observed_callable_request(task: &str) -> Option<ObservedCallableRequest> {
+    if let Some(compact) = super::compact_source_request::compact_source_request(
+        task,
+        include_str!("../../../embedded/data/seed/source-authoring-grammar.lino"),
+    ) {
+        return serde_json::from_value(compact).ok();
+    }
     let outside = super::outside_quotes(task);
     let parts = super::clauses(&outside);
     let stated = super::signature(&outside)?;

@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=da24d751f89809de904278211849fb625151d4d4c55805a465f5a7c15b94b597 bytes=6099
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=7b95ac2b32e831c49abb517a22c6856e22443410959c3f6466ad104d989c59a3 bytes=6183
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -298,6 +298,10 @@ pub mod ml {
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
 // formal-ai:blockers default or namespace import
 
 // meta-language:carried JavaScript import_statement (unsupported)
@@ -370,4 +374,4 @@ pub fn trailer(name: String, value: String) -> String {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal new expression
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .has() | method call .join() | method call .map() | method call .some() | method call .sort() | method call .split() | new Set | sibling value | throw of a non-error value
+// formal-ai:blockers arrow callback of .map() | arrow callback of .some() | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .has() | method call .join() | method call .map() | method call .some() | method call .sort() | method call .split() | new Set | sibling value | throw of a non-error value

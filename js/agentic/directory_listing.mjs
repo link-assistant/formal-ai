@@ -1,6 +1,7 @@
 // Recognise a prose request to list the files in the current place: a port of
 // rust/src/agentic_coding/directory_listing.rs.
 
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
 import { isAlphanumeric, splitWhitespace, trimEndMatches, trimMatches } from './crate/rust_str.mjs';
 import { wordsForRole } from './crate/seed_meanings.mjs';
@@ -69,7 +70,7 @@ function isDirectoryOperand(token) {
 export function listedDirectory(task) {
   const excluded = new Set([...LISTED_SCOPE_ROLES, FUNCTION_WORD_ROLE].flatMap((role) => wordsForRole(role))
     .flatMap((surface) => splitWhitespace(surface.toLowerCase())));
-  const places = wordsForRole(PLACE_ROLE).map((surface) => surface.toLowerCase());
+  const places = wordsForRole(PLACE_ROLE).map(canonicalUnaryLower);
   const words = splitWhitespace(task).map((word) =>
     trimEndMatches(trimMatches(word, (character) => OPERAND_WRAPPERS.includes(character)), (character) => character === '.'));
   for (let index = 0; index + 1 < words.length; index += 1) {

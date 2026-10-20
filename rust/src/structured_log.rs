@@ -354,7 +354,7 @@ fn bounded_diagnostic_metadata(value: &Value) -> Value {
     let mut candidates = Vec::new();
     for (key, item) in fields {
         let projected = bounded_diagnostic_value(item);
-        let singleton = Value::Object([(key.clone(), projected.clone())].into_iter().collect());
+        let singleton = Value::Object(std::iter::once((key.clone(), projected.clone())).collect());
         let cost = if key.len() > DIAGNOSTIC_METADATA_BYTES {
             DIAGNOSTIC_METADATA_BYTES + 1
         } else {

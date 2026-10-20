@@ -8,6 +8,8 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 import {sourceToLinks, sourceFromLinks, readSourceLinks, writeSourceLinks,
   verifySourceLinks, readSyntaxRules, ownedSourceLinks, sourceOwner} from '../js/meta/readable-source.js';
 
+import {readSourceCstTransformRule,writeSourceCstTransformRule,applySourceCstTransform} from './lib/source-cst-transform.mjs';
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const LANGUAGES = new Map([['js', 'JavaScript'], ['javascript', 'JavaScript'],
   ['ts', 'TypeScript'], ['typescript', 'TypeScript'], ['rs', 'Rust'], ['rust', 'Rust']]);
@@ -42,7 +44,7 @@ export async function runSourceModel(args) {
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
     if (arg === '--check') { if (check) throw Error('DuplicateSourceModelOption'); check = true; continue; }
-    if (!['--from', '--input', '--output', '--meta-language', '--commit', '--frontend'].includes(arg)
+    if (!['--from', '--input', '--output', '--meta-language', '--commit', '--frontend', '--transform', '--inverse'].includes(arg)
       || values.has(arg) || index + 1 >= args.length) throw Error('InvalidSourceModelOption:' + arg);
     values.set(arg, args[++index]);
   }
@@ -57,7 +59,12 @@ export async function runSourceModel(args) {
     ? (model[0] === 'owned-source' ? model[2] : model).find(node => Array.isArray(node) && node[0] === 'language')?.[1]?.quoted
     : LANGUAGES.get(from.toLowerCase());
   if (!language) throw Error('UnsupportedSourceModelLanguage:' + from);
-  let runtime;
+  const transformation=values.get('--transform');
+  if(values.has('--inverse')&&!transformation)throw Error('SourceModelInverseRequiresTransform');
+  if(transformation&&(from!=='meta'||provider!=='complete'))throw Error('SourceModelTransformRequiresCompletePersistedModel');
+  if(transformation&&!check&&!values.has('--inverse'))throw Error('SourceModelTransformRequiresPersistedInverse');
+  let runtime, transformed;
+
   try {
     let options;
     if (provider === 'complete') {
@@ -81,16 +88,29 @@ export async function runSourceModel(args) {
       if (provider === 'complete') model = ownedSourceLinks(path.basename(input), model);
     }
     verifySourceLinks(readSourceLinks(writeSourceLinks(model)), options);
+    if(transformation){
+      const rule=readSourceCstTransformRule(readSourceText(path.resolve(transformation))).network;
+      transformed=applySourceCstTransform(model,rule,options);model=transformed.document;
+    }
   } finally {
     runtime?.close();
   }
   if (check) {
-    if (values.has('--output')) throw Error('SourceModelCheckDoesNotWrite');
+    if (values.has('--output')||values.has('--inverse')) throw Error('SourceModelCheckDoesNotWrite');
     return JSON.stringify({valid: true, recursiveContent: true, exactSource: true,
-      independentGrammarReparse: true, semanticEquivalenceClaim: false}) + '\n';
+      independentGrammarReparse: true, semanticEquivalenceClaim: false, ...(transformed?{transformation:transformed.verification}:{})}) + '\n';
   }
-  const output = from === 'meta' ? sourceFromLinks(model) : writeSourceLinks(model);
+  const output = from === 'meta'&&!transformation ? sourceFromLinks(model) : writeSourceLinks(model);
   const destination = values.get('--output');
+  if(transformed){
+    const inverse=path.resolve(values.get('--inverse'));
+    if(destination&&path.resolve(destination)===inverse)throw Error('AmbiguousSourceTransformOutputs');
+    for(const target of [inverse,...(destination?[path.resolve(destination)]:[])]){
+      try{fs.lstatSync(target);}catch(error){if(error.code==='ENOENT')continue;throw error;}
+      throw Error('FreshSourceTransformOutputRequired');
+    }
+    fs.writeFileSync(inverse,writeSourceCstTransformRule(transformed.inverse),{flag:'wx'});
+  }
   if (destination) { fs.writeFileSync(path.resolve(destination), output, {flag: 'wx'}); return ''; }
   return output;
 }

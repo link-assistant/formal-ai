@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=df0c6bf1e11ade7abe40e06ea80883ab125978812ba35e0edf31d58b096caba3 bytes=11524
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a71ff3524fc7f34c1f8a8d597f4388c344aabe3a5c56cf84b043086adeb57b9c bytes=11574
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=6
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:translated JavaScript import_statement items=1 sha256=ea67ac58c941251801bc82c22574a8e03c0fd9db18bf89015315cef5823b17a3
+// | import { lower as canonicalUnaryLower } from './rust_str.mjs';
+use crate::rust_str::lower as canonical_unary_lower;
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -134,7 +138,7 @@ pub const LITERAL_MASK_SLOTS: f64 = 6400f64;
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .replace()
-// formal-ai:blockers arrow callback of .replace() | arrow function | method call .replace() | regular expression
+// formal-ai:blockers arrow function | method call .replace() | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .split()

@@ -27,7 +27,7 @@ import { cached, readText, realm, solve } from './host.mjs';
 import { planOne, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
 import { renderSeededOutcome } from './code_task.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
-import { normalizeCommandWord } from './shell_command_policy.mjs';
+import { normalizeCommandWord, sentences as sourceRequestSentences } from './shell_command_policy.mjs';
 import { failureMessage } from './tool_result.mjs';
 import { readArguments, resultForPath } from './workspace_change.mjs';
 import { meaningEvidencedIn, mentionsRole, wordsForRole } from './write_lexicon.mjs';
@@ -240,8 +240,52 @@ function instructionClause(part) {
   return instruction;
 }
 
+/** Closed source-request syntax may combine clauses; operation invariants still require observed reads. */
+export function compactSourceRequest(task, seed = readText('data/seed/source-authoring-grammar.lino')) {
+  if (typeof task !== 'string' || quoteFault(task) !== null || quotedSegmentSpans(task).length !== 0) return null;
+  const root = parseLinoRoot(seed ?? '').children.find(node => node.name === 'source-request-compact');
+  if (!root) return null;
+  const kinds = ['declaration-goal', 'source-discovery', 'reuse-imports', 'verification', 'protect-inputs'];
+  const forms = root.children.filter(node => node.name === 'form');
+  if (forms.length !== kinds.length || !kinds.every(kind => forms.filter(form => form.id === kind).length === 1)) return null;
+  const clauses = [];
+  for (const sentence of sourceRequestSentences(task)) {
+    const matches = forms.flatMap(form => {
+      let match;
+      try { match = new RegExp(findChildValue(form, 'pattern'), 'iu').exec(sentence.text); } catch { return []; }
+      return match && match[0] === sentence.text ? [{ kind: form.id, captures: { ...match.groups } }] : [];
+    });
+    if (matches.length !== 1) return null;
+    const start = task.indexOf(sentence.text, sentence.span.start);
+    if (start < sentence.span.start || start + sentence.text.length > sentence.span.end) return null;
+    clauses.push({ ...matches[0], sentence: sentence.text, start, end: start + sentence.text.length });
+  }
+  if (!kinds.every(kind => clauses.filter(clause => clause.kind === kind).length === 1)) return null;
+  const captures = kind => clauses.find(clause => clause.kind === kind).captures;
+  const declaration = captures('declaration-goal'), stated = signature(declaration.signature);
+  if (!stated || stated.at !== 0 || !declaration.signature.endsWith(')') || !safeRelativePath(declaration.destination)
+    || extensionLanguage(declaration.destination) !== 'javascript') return null;
+  const sources = captures('source-discovery').sources.split(findChildValue(root, 'source-joiner'));
+  const command = captures('verification').command, acceptance = pathsIn(command);
+  if (sources.length < 2 || new Set(sources).size !== sources.length || sources.some(path => !safeRelativePath(path) || !looksLikeFilePath(path))
+    || sources.includes(declaration.destination) || acceptance.length !== 1 || command !== 'node --test ' + acceptance[0]
+    || sources.includes(acceptance[0]) || declaration.destination === acceptance[0]) return null;
+  const aliases = [];
+  const aliasText = captures('source-discovery').aliases;
+  if (aliasText !== undefined) for (const pair of aliasText.split(',')) {
+    const match = /^\s*([A-Za-z_$][\w$]*)\s+as\s+([A-Za-z_$][\w$]*)\s*$/u.exec(pair);
+    if (!match) return null;
+    aliases.push({ exported: match[1], local: match[2] });
+  }
+  if (new Set(aliases.map(value => value.exported)).size !== aliases.length || new Set(aliases.map(value => value.local)).size !== aliases.length) return null;
+  return { name: stated.name, parameters: stated.parameters, destination: declaration.destination,
+    inputs: sources, acceptance, command, aliases, goalClause: declaration.goal, sourceClauses: clauses };
+}
+
 /** Mirrors `fn observed_callable_request`: operands cannot supply action cues. */
 export function observedCallableRequest(task) {
+  const compact = compactSourceRequest(task);
+  if (compact !== null) return compact;
   const outside = outsideQuotes(task), parts = clauses(outside), stated = signature(outside);
   if (stated === null) return null;
   const at = parts.findIndex((part) => signature(part)?.name === stated.name);

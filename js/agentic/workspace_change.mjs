@@ -1,3 +1,7 @@
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
+import { callbackText as canonicalUnaryText } from './callback_values.mjs';
+import { callbackHasLength as canonicalUnaryPositiveLength } from './callback_values.mjs';
 import { declaredAdditionContract, hasAdditivePosition } from './planner/owned_goals.mjs';
 import { ownsAdditiveScope } from './workspace_change/additive_scope.mjs';
 // Grounded workspace rewrites and composite module changes
@@ -37,7 +41,7 @@ import { normalizePrompt } from './crate/engine.mjs';
 import { lines, matchIndices, splitWhitespace, trim, trimEndMatches } from './write_str.mjs';
 import { dropsMostOfFile, groundedLineOperation, namedTargetAndPayloads, withoutPathWords } from './workspace_line_operation.mjs';
 
-const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
+const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, canonicalUnaryLower) === right.replace(/[A-Z]/g, canonicalUnaryLower);
 const finalOrNull = (text, disposition = FinalDisposition.Unknown, origin = null) =>
   (text === null ? null : resolvedFinalAnswer(text, disposition, origin));
 
@@ -356,7 +360,7 @@ function loneLineOccurrences(source, text) {
  */
 function resolvedSpans(source, insert) {
   if (!insert.spans) return writtenEscapes(source, insert);
-  const lines = [...new Set(source.split('\n').map((line) => trim(line)).filter((line) => line !== ''))];
+  const lines = [...new Set(source.split('\n').map((line) => trim(line)).filter(canonicalUnaryNonempty))];
   const resolve = (span) => lines.filter((line) => span === line || span.endsWith(` ${line}`))
     .reduce((best, line) => (best === null || line.length > best.length ? line : best), null);
   const anchor = resolve(insert.anchor);
@@ -683,7 +687,7 @@ function groundedDeclarationRemoval(task) {
   const paths = [...new Set(unquotedPathTokens(task).map((token) => cleanPathToken(token.text))
     .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
   if (paths.length !== 1) return null;
-  const names = [...new Set(tokens(task).map((token) => token.text)
+  const names = [...new Set(tokens(task).map(canonicalUnaryText)
     .filter((text) => cleanPathToken(text) !== paths[0]).flatMap(identifierTokens))];
   if (names.length === 0) return null;
   return {
@@ -1202,7 +1206,7 @@ function linePayloadAndPath(task) {
   if (new Set(pathIndices.map(([, path]) => path)).size !== 1) return null;
   const [pathIndex, target] = pathIndices[0];
   const leads = wordsForRole('file_edit_line_lead').map((lead) => splitWhitespace(lead.toLowerCase()))
-    .filter((words) => words.length > 0).sort((left, right) => right.length - left.length);
+    .filter(canonicalUnaryPositiveLength).sort((left, right) => right.length - left.length);
   let leadEnd = -1;
   for (let index = 0; index < pathIndex && leadEnd < 0; index += 1) {
     const lead = leads.find((words) => words.every((word, offset) => index + offset < pathIndex

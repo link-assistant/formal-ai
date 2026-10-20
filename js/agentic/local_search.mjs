@@ -1,3 +1,5 @@
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // Meanings-driven, stateful local path discovery (issue #840):
 // rust/src/agentic_coding/local_search.rs.
@@ -273,7 +275,7 @@ function stripRole(text, role) {
   const literals = roleWordForms(role)
     .flatMap((form) => [beforeSlot(form), afterSlot(form)])
     .map(normalizePrompt)
-    .filter((literal) => literal !== '');
+    .filter(canonicalUnaryNonempty);
   literals.sort((left, right) => charCount(right) - charCount(left));
   let out = text;
   literals.forEach((literal, index) => {
@@ -477,7 +479,7 @@ function runResults(messages, task) {
 /** Mirrors `fn best_candidate`: highest similarity, ties to the byte-smallest path. */
 function bestCandidate(output, request) {
   let best = null;
-  for (const path of rustLines(output).map(trim).filter((line) => line !== '')) {
+  for (const path of rustLines(output).map(trim).filter(canonicalUnaryNonempty)) {
     const score = similarity(path, request.tokens);
     if (score <= 0) continue;
     if (best === null || score > best[0] || (score === best[0] && byteOrder(path, best[1]) <= 0)) {
@@ -489,8 +491,8 @@ function bestCandidate(output, request) {
 
 /** Mirrors `fn similarity`. */
 function similarity(path, requested) {
-  const actual = new Set(alnumTokens(basename(path)).map((token) => token.toLowerCase()));
-  const wanted = new Set(requested.map((token) => token.toLowerCase()));
+  const actual = new Set(alnumTokens(basename(path)).map(canonicalUnaryLower));
+  const wanted = new Set(requested.map(canonicalUnaryLower));
   let shared = 0;
   for (const token of wanted) if (actual.has(token)) shared += 1;
   const different = (wanted.size - shared) + (actual.size - shared);

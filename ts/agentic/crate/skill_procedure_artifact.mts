@@ -5,6 +5,7 @@
 // `ProcedureArtifactError`s; the planner only reads `.ok()`, so the reader
 // returns null for any of them.
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
 import { jsonText } from '../plan.mjs';
 import { impulseIdFor } from './intent_formalization.mjs';
 import { pushLinoNode } from './links_format.mjs';
@@ -82,7 +83,7 @@ function artifactUsize(node, name) {
 }
 
 /** Mirrors `fn child_values`. */
-const childValues = (node, name) => (node.children || []).filter((child) => child.name === name).map((child) => child.value);
+const childValues = (node, name) => (node.children || []).filter((child) => child.name === name).map(canonicalUnaryValue);
 
 /** Mirrors `fn span_matches`: `source.get(span) == Some(expected)` on UTF-8 byte offsets. */
 function spanMatches(source, span, expected) {

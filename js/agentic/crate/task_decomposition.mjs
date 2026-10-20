@@ -7,6 +7,7 @@
 // `concrete_target`. The full `decompose_task` tree and the learning gate stay
 // in Rust.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
 import { mentionsRole, mentionsRoleRaw, wordsForRole } from '../write_lexicon.mjs';
@@ -223,7 +224,7 @@ function splitOnMarkers(text, markers) {
   return pieces;
 }
 
-const asciiFold = (text) => text.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+const asciiFold = (text) => text.replace(/[A-Z]/g, canonicalUnaryLower);
 
 function splitPieceOnMarker(piece, marker) {
   if (containsCjk(marker)) return piece.split(marker).map(trim);

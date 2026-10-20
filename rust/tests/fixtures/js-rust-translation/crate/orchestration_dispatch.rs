@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=cbe784df81ebf8fb786543a275f8fa436f33a49de50cceed447a17527c1a91c9 bytes=12697
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=946280544e09d7ceb25423a8cb0850d5089435387420af6238ebaeed2900ead0 bytes=12773
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=9
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'

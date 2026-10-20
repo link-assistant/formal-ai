@@ -25,6 +25,8 @@
 //! language's IR lowering (`coding/ir_lowering`).
 
 pub mod callable_catalog;
+mod compact_source_request;
+pub use compact_source_request::compact_source_request;
 mod complete_source_preflight;
 mod expression_values;
 mod optional_command_port;

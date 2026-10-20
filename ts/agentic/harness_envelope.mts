@@ -1,6 +1,7 @@
 // Harness bookkeeping prompts that quote the task instead of posing it: the
 // JavaScript twin of rust/src/agentic_coding/harness_envelope.rs.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { agenticMessage } from './messages.mjs';
 import { rustLines } from './content.mjs';
 import { isWhitespace, rsplitOnce, splitOnce, stripPrefix, trim, trimStart } from './crate/rust_str.mjs';
@@ -21,7 +22,7 @@ export function summarizeRequest(received) {
 }
 
 function summaryOf(text) {
-  const firstLine = rustLines(text).map(trim).find((line) => line !== '') ?? '';
+  const firstLine = rustLines(text).map(trim).find(canonicalUnaryNonempty) ?? '';
   let end = firstLine.length;
   for (let index = 0; index < firstLine.length; index += 1) {
     if (firstLine[index] !== '.') continue;

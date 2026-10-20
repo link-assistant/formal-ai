@@ -9,6 +9,7 @@
 // and words_for_role priority. Parse MEANING_FILES in the order listed by
 // rust/src/seed/embedded_registry.rs: the worker realm sorts files and omits
 // learned-request-openers.lino. Parsed meaning and word shapes appear below.
+const { callbackText: canonicalUnaryText } = crateRequire("callback_values.mjs");
 const { cached, childrenNamed, parseLino, readText } = crateRequire("host.mjs");
 /** The one inventory of the seed files and the lexicons that read them. */
 const SEED_REGISTRY = 'data/meta/seed-registry.lino';
@@ -132,7 +133,7 @@ function surfacePresent(normalized, expected) {
 const hasRole = (meaning, role) => meaning.roles.includes(role);
 /** Mirrors `Meaning::words`. */
 function words(meaning) {
-  return meaning.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text));
+  return meaning.lexemes.flatMap((lexeme) => lexeme.words.map(canonicalUnaryText));
 }
 /** Mirrors `Meaning::word_forms`. */
 function wordForms(meaning) {

@@ -1,10 +1,18 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=a618022402f8306a371a9d4a9fed5826e2ea8cdd6cd3b35d28e325d4139147db bytes=13585
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3268b52c2a3527635692c264813197ec0be55d46cc271a7082b722de4c286d77 bytes=13751
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=5
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -59,7 +67,7 @@ pub const LOCAL_REPOSITORY: &str = "local-repository";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | method call .filter() | method call .map() | method call .split() | null
+// formal-ai:blockers call of a sibling function | imported value | method call .filter() | method call .map() | method call .split() | null
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
@@ -123,7 +131,7 @@ pub const LOCAL_REPOSITORY: &str = "local-repository";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal nullish coalescing
-// formal-ai:blockers arrow callback of .filter() | call of a sibling function | method call .filter() | method call .slice() | method call .split() | nullish coalescing | regular expression
+// formal-ai:blockers call of a sibling function | imported value | method call .filter() | method call .slice() | method call .split() | nullish coalescing | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag

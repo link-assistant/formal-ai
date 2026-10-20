@@ -4,6 +4,7 @@
 // rust/src/seed/embedded_registry.rs: the worker realm sorts files and omits
 // learned-request-openers.lino. Parsed meaning and word shapes appear below.
 
+import { callbackText as canonicalUnaryText } from '../callback_values.mjs';
 import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 
 /** The one inventory of the seed files and the lexicons that read them. */
@@ -144,7 +145,7 @@ export const hasRole = (meaning, role) => meaning.roles.includes(role);
 
 /** Mirrors `Meaning::words`. */
 export function words(meaning) {
-  return meaning.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text));
+  return meaning.lexemes.flatMap((lexeme) => lexeme.words.map(canonicalUnaryText));
 }
 
 /** Mirrors `Meaning::word_forms`. */

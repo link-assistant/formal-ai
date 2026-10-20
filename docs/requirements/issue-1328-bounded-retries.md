@@ -52,3 +52,15 @@ it cannot invent a successful upload, overwrite artifacts, rerun workflows, or
 skip an original acceptance check.
 
 Original Hive delivery keeps separate same-source image preparation, unchanged client solving, and independent compiler/output verification. Each job respects the existing 30-minute CI ceiling; the solver has a 21-minute step bound, retaining the existing 70% step-to-job headroom policy. Transfers bind archive and evidence bytes to the current source, binary and workflow run. Staged evidence grants no success or authorship credit; the original harness and final independent oracle remain mandatory.
+
+
+The Node log-file reader must reject oversized regular files from descriptor
+metadata before allocating or reading payload bytes. Every bounded read must make
+valid finite byte progress and detect concurrent growth or replacement. Preserve
+the public log CLI's stable-symlink behavior and the private provenance reader's
+no-symlink policy; one shared implementation enforces their declared options.
+A failed partial source write must preserve the original source and retain its
+failure evidence. Source transformation writes stage a bounded complete candidate,
+recheck the observed preimage and identity, and independently verify the physical
+result. This is an optimistic filesystem concurrency check, not an atomic CAS
+primitive against an uncooperative concurrent writer.

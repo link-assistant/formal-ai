@@ -2,7 +2,8 @@
 // (rust/src/formalization/concept_links.rs).
 
 import { emitNeeds, satisfy } from './formalization_needs.mjs';
-import { sentences } from './formalization_segment.mjs';
+import { clauses, sentences } from './formalization_segment.mjs';
+import { conceptFromSense, conceptSenseContentId, relationsIn } from './formalization_concepts.mjs';
 import { stableId } from './engine_stable_identifier.mjs';
 import { pushLinoNode } from './links_format.mjs';
 import { NeedState, needLinksNotation } from './needs.mjs';
@@ -90,30 +91,41 @@ export class ConceptGraph {
   }
 }
 
-/**
- * Mirrors `fn formalize_deeply` for a lookup that grounds nothing (the offline
- * agentic run over a host without captured sources): every need becomes
- * `Unsatisfiable`, no sense yields a concept, so no clause has two grounded
- * terms and `relations_in` finds no relation.
- * native-only: rust/src/formalization/concepts.rs `concept_from_sense` /
- * `relations_in` (reached only once a lookup returns senses).
- */
+/** Recursively ground retrieved senses with the native visited-need and depth rules. */
 export function formalizeDeeply(text, docId, lookup, bounds, maxConceptDepth) {
+  if (!Number.isSafeInteger(maxConceptDepth) || maxConceptDepth < 0) throw new RangeError('invalid_concept_depth');
   const graph = new ConceptGraph({ doc_id: docId, segments: sentences(text) });
   let pending = emitNeeds(docId, graph.segments, graph, 0);
+  const seen = new Set(pending.map(need => need.need_id));
   while (pending.length) {
     const satisfaction = satisfy(pending, lookup, bounds, maxConceptDepth);
     for (const need of satisfaction.needs) {
-      const index = graph.needs.findIndex((existing) => existing.need_id === need.need_id);
+      const index = graph.needs.findIndex(existing => existing.need_id === need.need_id);
       if (index >= 0) graph.needs[index] = need;
       else graph.needs.push(need);
     }
-    if (satisfaction.senses.length) throw new Error('formalize_deeply: concept_from_sense is native-only');
-    pending = [];
+    const next = [];
+    for (const sense of satisfaction.senses) {
+      const parent = graph.needs.find(need => need.state === NeedState.Satisfied
+        && eqIgnoreAsciiCase(need.subject, sense.surface));
+      if (!parent) continue;
+      const concept = conceptFromSense({ ...sense, depth: parent.depth });
+      if (concept && !graph.concepts.some(existing => existing.id === concept.id)) graph.concepts.push(concept);
+      if (parent.depth >= maxConceptDepth) continue;
+      const senseDoc = conceptSenseContentId(sense);
+      for (const need of emitNeeds(senseDoc, sentences(sense.gloss), graph, parent.depth + 1)) {
+        need.raised_by = parent.need_id;
+        if (!seen.has(need.need_id)) { seen.add(need.need_id); next.push(need); }
+      }
+    }
+    pending = next;
   }
+  graph.concepts.sort((left, right) => byteOrder(left.id, right.id));
   graph.needs.sort((left, right) => (left.depth - right.depth)
     || byteOrder(left.source_span, right.source_span)
     || byteOrder(left.need_id, right.need_id));
-  graph.relations = [];
+  const relations = new Map(graph.segments.flatMap(clauses).flatMap(clause => relationsIn(clause, graph))
+    .map(relation => [relation.id, relation]));
+  graph.relations = [...relations.values()].sort((left, right) => byteOrder(left.id, right.id));
   return graph;
 }

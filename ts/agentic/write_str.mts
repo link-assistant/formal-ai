@@ -105,10 +105,8 @@ export function firstChar(text) {
   return Array.from(text)[0];
 }
 
-/** `str::to_lowercase`. */
-export function lower(text) {
-  return text.toLowerCase();
-}
+/** Shared Unicode lowercase; preserves the original write-side API. */
+export { lower } from './crate/rust_str.mjs';
 
 /** `str::strip_prefix`: the rest, or null. */
 export function stripPrefix(text, prefix) {

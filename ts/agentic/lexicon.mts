@@ -2,6 +2,8 @@
 // (rust/src/agentic_coding/lexicon.rs). The lexicon itself is data:
 // data/agentic-coding/fisherman-lexicon.lino (`LEXICON_LINO`).
 
+import { callbackHasLength as canonicalUnaryPositiveLength } from './callback_values.mjs';
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { cached, readText } from './host.mjs';
 import { rustLines } from './content.mjs';
 import { isAlphanumeric, isWhitespace, splitWhitespace, trim } from './crate/rust_str.mjs';
@@ -140,8 +142,8 @@ export class Lexicon {
         id: record.head,
         doc_id: field(record, 'doc_id') ?? record.head,
         title: field(record, 'title') ?? record.head,
-        aliases: fields(record, 'alias').map(tokenize).filter((tokens) => tokens.length > 0),
-        signature: signature === null ? [] : splitWhitespace(signature).map((word) => word.toLowerCase()),
+        aliases: fields(record, 'alias').map(tokenize).filter(canonicalUnaryPositiveLength),
+        signature: signature === null ? [] : splitWhitespace(signature).map(canonicalUnaryLower),
         lexemes: [],
         concepts: [],
         procedures: [],

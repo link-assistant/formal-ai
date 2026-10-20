@@ -14,6 +14,7 @@
 // guards of `requested_write_program_parameters` (the worker's
 // `writeProgramParameters` reads the request as `write_program_parameters`).
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
 import { cached, childValue, childrenNamed, readText, realm } from '../host.mjs';
 import { parseLinoRoot } from '../write_lino.mjs';
 import { stableId } from './engine_stable_identifier.mjs';
@@ -60,7 +61,7 @@ export function cueSets() {
       const name = childValue(record, 'name');
       const match = childValue(record, 'match');
       if (!name || !['token', 'substring', 'prefix'].includes(match)) continue;
-      out[name] = { match, cues: childrenNamed(record, 'cue').map((cue) => cue.value) };
+      out[name] = { match, cues: childrenNamed(record, 'cue').map(canonicalUnaryValue) };
     }
     return out;
   });

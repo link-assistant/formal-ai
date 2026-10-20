@@ -11,6 +11,7 @@
 // file as the step before left it. The JavaScript twin of
 // rust/src/agentic_coding/request_sequence.rs.
 
+import { callbackText as canonicalUnaryText } from './callback_values.mjs';
 import { FinalDisposition, canDeliverFinal, resolvedFinalAnswer } from './plan.mjs';
 import { pathsIn } from './module_function.mjs';
 import { replaceList } from './replace_list.mjs';
@@ -34,7 +35,7 @@ const CLAUSE_MARKS = ',;.，；。';
  * @param {string} task
  */
 export function requestSequence(task) {
-  const parts = sentences(task).map((sentence) => sentence.text);
+  const parts = sentences(task).map(canonicalUnaryText);
   if (parts.length < 2 || semanticShellCommandForTask(parts[0]) === null) return null;
   const named = pathsIn(parts[0]);
   for (const part of parts.slice(1)) {

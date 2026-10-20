@@ -24,6 +24,7 @@
 // (importance.rs, context.rs, dedup.rs, recheck.rs, pipeline.rs, gathering.rs,
 // validation/) that nothing in the #563 call graph reaches.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached } from '../host.mjs';
 import { agenticMessage } from '../messages.mjs';
 import { identifierBudget, NamingConvention, toIdentifier } from './summarization_identifier.mjs';
@@ -53,7 +54,7 @@ export const StatementKind = Object.freeze({
  * @param {string} value
  */
 export function statementKindParse(value) {
-  switch (value.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '').replace(/[A-Z]/g, (letter) => letter.toLowerCase())) {
+  switch (value.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '').replace(/[A-Z]/g, canonicalUnaryLower)) {
     case 'identity': return StatementKind.Identity;
     case 'purpose': return StatementKind.Purpose;
     case 'language': return StatementKind.Language;

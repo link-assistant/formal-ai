@@ -2,6 +2,7 @@
 // (rust/src/formalization/needs.rs).
 
 import { unknownSurfaceSpans } from './concept_lookup.mjs';
+import { conceptSenseContentId } from './formalization_concepts.mjs';
 import { clauses } from './formalization_segment.mjs';
 import { detect } from './language.mjs';
 import { NeedKind, NeedState, raisedNeed } from './needs.mjs';
@@ -73,7 +74,7 @@ export function satisfy(needs, lookup, bounds, maxConceptDepth) {
     const outcome = lookup.lookup(need, bounds);
     if (outcome.kind === 'found' && outcome.senses.length) {
       need.state = NeedState.Satisfied;
-      need.satisfied_by = outcome.senses[0].content_id;
+      need.satisfied_by = conceptSenseContentId(outcome.senses[0]);
       out.contexts.push({ need_id: need.need_id, origin: NeedOrigin.UnresolvedSurface, evidence: [...outcome.senses] });
       out.senses.push(...outcome.senses);
       out.needs.push(need);

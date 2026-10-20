@@ -2,6 +2,7 @@
 // `LearningSources::match_directive` and `learning_sources` from
 // rust/src/seed.rs, over data/seed/learning-sources.lino.
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
 
@@ -19,7 +20,7 @@ export function learningSources() {
           id: child.value,
           capability: findChildValue(child, 'capability'),
           host: findChildValue(child, 'host'),
-          keywords: (child.children || []).filter((entry) => entry.name === 'keyword').map((entry) => entry.value),
+          keywords: (child.children || []).filter((entry) => entry.name === 'keyword').map(canonicalUnaryValue),
         });
       } else if (child.name === 'directive') {
         for (const entry of (child.children || []).filter((cue) => cue.name === 'cue')) registry.directive_cues.push(entry.value);

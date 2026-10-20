@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=fbb5325d2f3c6ff646adbbad708d2552bf95e65ce2301c3a5faac0849a7bc179 bytes=10210
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0e60a70193c2da3e0dd306f205712a16209b98c496e34c2815e8fa58ac9a7616 bytes=10305
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -124,7 +128,7 @@ pub static FIELD_KEYS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLo
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | assignment of a field or element | call of a sibling function | call of an imported function | destructuring | field access | method call .filter() | method call .get() | method call .has() | method call .push() | method call .slice() | method call .split() | null | nullish coalescing | object without a $ tag | sibling value
+// formal-ai:blockers JSDoc type {…} | assignment of a field or element | call of a sibling function | call of an imported function | destructuring | field access | imported value | method call .filter() | method call .get() | method call .has() | method call .push() | method call .slice() | method call .split() | null | nullish coalescing | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal for with const

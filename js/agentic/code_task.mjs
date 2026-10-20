@@ -1,3 +1,4 @@
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { rustIdentifierIsValid } from './code_task/identifier_domain.mjs';
 import { firstRoleMatch as sourceRoleMatch } from './crate/seed_meanings.mjs';
 import { sourceDescriptionContract, sourceWhitespaceSupported, sourceRegistrationContract } from './code_task/source_contract.mjs';
@@ -224,7 +225,7 @@ function slotIdentifier(normalized, role) {
 }
 
 function identifierTokens(text) {
-  return text.split(/[^A-Za-z0-9_]/u).filter((token) => token !== '');
+  return text.split(/[^A-Za-z0-9_]/u).filter(canonicalUnaryNonempty);
 }
 
 function validIdentifier(identifier) { return rustIdentifierIsValid(identifier); }

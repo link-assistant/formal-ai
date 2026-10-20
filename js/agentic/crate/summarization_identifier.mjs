@@ -2,6 +2,7 @@
 // the identifier rung, one step shorter than a topic label. A `NamingConvention`
 // is its string label; an `IdentifierBudget` is `{max_length, max_words}`.
 
+import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
 import { functionWords, isReservedWord, stripWords, tokenize } from './summarization_vocabulary.mjs';
 
 /** Mirrors `DEFAULT_IDENTIFIER_MAX_LENGTH` in rust/src/summarization/identifier.rs. */
@@ -114,7 +115,7 @@ export function toIdentifier(text, convention, budget) {
   let words = stripWords(tokens, functionWords());
   if (words.length === 0) words = tokens;
   if (isCode(convention)) {
-    words = words.map((word) => word.split("'").join('')).filter((word) => word !== '');
+    words = words.map((word) => word.split("'").join('')).filter(canonicalUnaryNonempty);
   }
   if (words.length === 0) return '';
   return assemble(words, convention, budget);

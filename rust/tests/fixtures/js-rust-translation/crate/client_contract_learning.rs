@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=ba1c15e21f418f18caca5a85712b8b3549fcdeb21eefb5bf52b3fe83e77cd122 bytes=9737
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=28fe83a89f9bf4f4adb4735e5fe105ff33acf111c304462d54d8609235a44703 bytes=9893
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1; string-methods items=1
 
@@ -10,6 +10,14 @@
 pub fn wa_str_replace_all(text: String, pattern: String, replacement: String) -> String {
     text.replace(pattern.as_str(), replacement.as_str()) }
 // formal-ai:workaround-prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -62,7 +70,7 @@ pub fn quote(value: String) -> String {
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal new expression
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | field access | method call .filter() | method call .keys() | method call .map() | method call .set() | new Map | new Set
+// formal-ai:blockers call of a sibling function | field access | imported value | method call .filter() | method call .keys() | method call .map() | method call .set() | new Map | new Set
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal new expression

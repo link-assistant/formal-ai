@@ -3,24 +3,20 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/normal_markov.mjs"] = (crateRequire) => {
 // Bounded normal (Markov) string-rewrite algorithms and literal-slot readers
 // (rust/src/normal_markov.rs). Spans are JavaScript string indices; the
 // execution trace reports UTF-8 byte offsets, as Rust does.
-
+const { callbackText: canonicalUnaryText } = crateRequire("callback_values.mjs");
 const { isAsciiAlphanumeric, trim, trimEnd, utf8Len } = crateRequire("write_str.mjs");
-
 /** Mirrors `RewriteRule::new` (plus `.terminal()` through `terminal`). */
 function rewriteRule(pattern, replacement, terminal = false) {
   return { pattern, replacement, terminal };
 }
-
 /** Mirrors `RewriteProgram::new`. */
 function rewriteProgram(rules, maxSteps) {
   return { rules, max_steps: maxSteps };
 }
-
 /**
  * Mirrors `RewriteProgram::execute`: `{output, trace: [{rule_index,
  * byte_offset}], halt: {kind: 'no_applicable_rule'|'terminal_rule'|'step_limit', index?}}`.
@@ -48,12 +44,10 @@ function executeRewrite(program, input) {
   }
   return { output, trace, halt: { kind: 'step_limit' } };
 }
-
 /** Mirrors `fn quoted_segments`. @param {string} text @returns {Array<string>} */
 function quotedSegments(text) {
-  return quotedSegmentSpans(text).map((segment) => segment.text);
+  return quotedSegmentSpans(text).map(canonicalUnaryText);
 }
-
 /**
  * Mirrors `fn quoted_segment_spans`: `{text, start, end}` with `start` at the
  * opening delimiter and `end` just past the closing one.
@@ -75,12 +69,10 @@ function quotedSegmentSpans(text) {
   }
   return result;
 }
-
 const ASCII_QUOTES = ["'", '"', '`'];
 const OPEN_ONLY = ['«', '“', '‘', '「', '『', '《'];
 const CLOSE_FOLLOWERS = '.,;:!?)]}';
 const FAULT_FRAGMENT_CHARS = 32;
-
 /**
  * Mirrors `fn quote_fault`: the first place a request's quotes stop pairing
  * (PR #1188 G71), as `{kind, at, fragment}`, or null when every quote pairs.
@@ -119,7 +111,6 @@ function quoteFault(text) {
   const [kind, at] = faults.reduce((first, fault) => (fault[1] < first[1] ? fault : first));
   return { kind, at, fragment: trimEnd(Array.from(text.slice(at)).slice(0, FAULT_FRAGMENT_CHARS).join('')) };
 }
-
 /**
  * Mirrors `fn word_internal_mark`: whether an unpaired ASCII quote belongs to
  * the word before it -- an apostrophe after a letter or digit (`it's`), an
@@ -132,7 +123,6 @@ function wordInternalMark(character, before) {
   if (before === undefined) return false;
   return character === "'" ? isAsciiAlphanumeric(before) : character === '"' && /[0-9]/u.test(before);
 }
-
 /** Mirrors `fn unwrap_transport_quotes`. @param {string} text */
 function unwrapTransportQuotes(text) {
   const trimmed = trim(text);
@@ -145,12 +135,10 @@ function unwrapTransportQuotes(text) {
   }
   return trimmed;
 }
-
 const PAIRS = [
   ['```', '```'], ["'", "'"], ['"', '"'], ['`', '`'], ['«', '»'],
   ['“', '”'], ['‘', '’'], ['「', '」'], ['『', '』'], ['《', '》'],
 ];
-
 /**
  * Mirrors `fn wrapped_in_quote_pair`: whether `text`, trimmed, opens with a
  * quote and closes with that quote's pair, so it is one literal however the
@@ -162,7 +150,6 @@ function wrappedInQuotePair(text) {
   return PAIRS.some(([open, close]) => trimmed.length >= open.length + close.length
     && trimmed.startsWith(open) && trimmed.endsWith(close));
 }
-
 /**
  * Mirrors `fn quotes_whole`: whether `text` holds `literal` inside one quote
  * pair, however the quotes inside `literal` pair (PR #1188 G63).
@@ -172,7 +159,6 @@ function wrappedInQuotePair(text) {
 function quotesWhole(text, literal) {
   return literal !== '' && PAIRS.some(([open, close]) => text.includes(`${open}${literal}${close}`));
 }
-
 function nextDelimiter(text, cursor) {
   let best = null;
   for (const [open, close] of PAIRS) {
@@ -187,12 +173,10 @@ function nextDelimiter(text, cursor) {
   }
   return best;
 }
-
 function previousChar(text, index) {
   const before = Array.from(text.slice(0, index));
   return before[before.length - 1];
 }
-
 function nextCompletePair(text, cursor, open, close) {
   let from = cursor;
   for (;;) {
@@ -204,7 +188,6 @@ function nextCompletePair(text, cursor, open, close) {
     from = contentStart;
   }
 }
-
 /**
  * Mirrors `fn closing_delimiter`: the first close that is not an apostrophe
  * inside a word, or, for a single quote, the one that closes a payload quoting
@@ -217,7 +200,6 @@ function closingDelimiter(text, cursor, open, close) {
   if (close === "'") return nestedClosingDelimiter(text, cursor) ?? plainClosingDelimiter(text, cursor, close);
   return open === close ? plainClosingDelimiter(text, cursor, close) : stackedClosingDelimiter(text, cursor, open, close);
 }
-
 /**
  * Mirrors `fn stacked_closing_delimiter`: the close of a pair whose marks
  * differ (`«…»`, `“…”`, `「…」`), counted as a stack -- an inner `«…»` is part
@@ -241,7 +223,6 @@ function stackedClosingDelimiter(text, cursor, open, close) {
     }
   }
 }
-
 function plainClosingDelimiter(text, cursor, close) {
   let from = cursor;
   for (;;) {
@@ -255,7 +236,6 @@ function plainClosingDelimiter(text, cursor, close) {
     from = afterClose;
   }
 }
-
 /** Mirrors `fn nested_closing_delimiter`. */
 function nestedClosingDelimiter(text, cursor) {
   let depth = 0;
@@ -272,7 +252,6 @@ function nestedClosingDelimiter(text, cursor) {
     else depth -= 1;
   }
 }
-
 return Object.freeze({
   rewriteRule,
   rewriteProgram,

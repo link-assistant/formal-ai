@@ -1,6 +1,7 @@
 // `crate::seed::caller_context_vocabulary` (rust/src/seed/caller_context.rs),
 // read from data/seed/caller-context.lino.
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
 import { cached, readText } from '../host.mjs';
 import { parseRoot } from './seed_parser.mjs';
 import { isAlphanumeric, trimMatches, trimStart } from './rust_str.mjs';
@@ -23,7 +24,7 @@ export function callerContextVocabulary() {
       if (group.name === 'injected_blocks') {
         vocab.injected_blocks = (group.children || []).filter((child) => child.name === 'block').map((block) => ({
           tag: block.value,
-          clients: (block.children || []).filter((child) => child.name === 'client').map((child) => child.value),
+          clients: (block.children || []).filter((child) => child.name === 'client').map(canonicalUnaryValue),
         }));
       } else if (group.name === 'fact_statement_copulas') {
         vocab.fact_statement_copulas = collectLanguageValues(group, 'copula');

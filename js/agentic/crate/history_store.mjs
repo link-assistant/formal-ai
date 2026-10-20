@@ -30,6 +30,8 @@
 // histogram is empty, exactly as the native importer built without the
 // `meta-language` feature records it.
 
+import { callbackTrim as canonicalUnaryTrim } from '../callback_values.mjs';
+import { callbackHasLength as canonicalUnaryPositiveLength } from '../callback_values.mjs';
 import { countTokens, tokenize } from './es_tokenizer.mjs';
 import { diffNamedItems, formalizeCommit, parseLogOutput } from './history_context.mjs';
 import { importCiRuns, importIssuesAndPullsWithWatermark } from './history_github.mjs';
@@ -98,8 +100,8 @@ export function mergeSubjectFor(io, repoRoot, sha) {
   if (out === null) return null;
   const lines = out
     .split('\n')
-    .map((line) => line.trim())
-    .filter((line) => line.length > 0);
+    .map(canonicalUnaryTrim)
+    .filter(canonicalUnaryPositiveLength);
   return lines.length > 0 ? lines[lines.length - 1] : null;
 }
 
@@ -273,7 +275,7 @@ export function repositorySlug(io, repoRoot) {
   const url = (gitOrNull(io, repoRoot, ['config', '--get', 'remote.origin.url']) ?? '').trim();
   if (url.length === 0) return LOCAL_REPOSITORY;
   const withoutGit = url.endsWith('.git') ? url.slice(0, -4) : url;
-  const segments = withoutGit.split(/[/:]/).filter((segment) => segment.length > 0);
+  const segments = withoutGit.split(/[/:]/).filter(canonicalUnaryPositiveLength);
   return segments.length >= 2
     ? `${segments[segments.length - 2]}-${segments[segments.length - 1]}`
     : LOCAL_REPOSITORY;

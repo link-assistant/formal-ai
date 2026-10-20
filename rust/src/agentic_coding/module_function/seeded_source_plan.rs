@@ -160,7 +160,14 @@ pub fn derive_seeded_source_plan<Host: SourceModuleIdentityHost>(
     ];
     let scope = source_goal_scope(request["text"].as_str().ok_or("MissingRequestBytes")?)
         .ok_or("UnprovedQuotationScope")?;
-    let sentences = crate::agentic_coding::shell_command_policy::sentences(&scope);
+    let sentences: Vec<&str> = if let Some(goal) = request["goalClause"].as_str() {
+        vec![goal]
+    } else {
+        crate::agentic_coding::shell_command_policy::sentences(&scope)
+            .into_iter()
+            .map(|sentence| sentence.text)
+            .collect()
+    };
     let mut matches = Vec::new();
     for form in goal.children.iter().filter(|node| node.name == "form") {
         let mut qualified_pattern = form.find_child_value("pattern").to_owned();
@@ -201,34 +208,80 @@ pub fn derive_seeded_source_plan<Host: SourceModuleIdentityHost>(
             .build()
             .map_err(|_| "InvalidReturnForm")?;
         for sentence in &sentences {
-            if expression.captures(sentence.text).is_some_and(|captures| {
+            if expression.captures(sentence).is_some_and(|captures| {
                 technical_captures.iter().all(|(name, expected)| {
                     captures
                         .name(name)
                         .is_some_and(|matched| expected.contains(&matched.as_str()))
                 })
             }) {
-                matches.push(json!({"form":form.id,"sentence":sentence.text}));
+                matches.push(json!({"form":form.id,"sentence":sentence}));
             }
         }
     }
     if matches.len() != 1 {
         return Err("UnprovedCompleteReturnForm");
     }
-    let mut locals = std::collections::BTreeSet::from([name.to_owned(), parameter.to_owned()]);
-    let mut fresh = |base: &str| {
-        let mut name = base.to_owned();
-        let mut index = 0;
-        while locals.contains(&name) {
-            index += 1;
-            name = format!("{base}{index}");
-        }
-        locals.insert(name.clone());
-        name
+    let imports = candidate["imports"]
+        .as_array()
+        .filter(|values| values.len() == 2)
+        .ok_or("UnsupportedImportBindings")?;
+    let aliases = match request.get("aliases") {
+        None => Vec::new(),
+        Some(value) => value
+            .as_array()
+            .cloned()
+            .ok_or("UnboundRequestedImportAlias")?,
     };
-    let producer_local = fresh("_sourceProjection");
-    let consumer_local = fresh("_sourceRendering");
-    let value_local = fresh("_sourceValue");
+    if !aliases.iter().all(|alias| {
+        alias["exported"].as_str().is_some_and(safe)
+            && alias["local"].as_str().is_some_and(safe)
+            && imports
+                .iter()
+                .any(|binding| binding["exported"] == alias["exported"])
+    }) {
+        return Err("UnboundRequestedImportAlias");
+    }
+    if aliases
+        .iter()
+        .map(|alias| alias["exported"].as_str())
+        .collect::<std::collections::BTreeSet<_>>()
+        .len()
+        != aliases.len()
+    {
+        return Err("DuplicateImportAlias");
+    }
+    let mut locals = std::collections::BTreeSet::from([name.to_owned(), parameter.to_owned()]);
+    let mut local_for = |binding: &Value, base: &str| -> Result<String, &'static str> {
+        if let Some(alias) = aliases
+            .iter()
+            .find(|alias| alias["exported"] == binding["exported"])
+        {
+            let local = alias["local"]
+                .as_str()
+                .ok_or("UnboundRequestedImportAlias")?;
+            if !locals.insert(local.to_owned()) {
+                return Err("RequestedImportAliasCollision");
+            }
+            return Ok(local.to_owned());
+        }
+        let mut local = base.to_owned();
+        let mut index = 0;
+        while locals.contains(&local) {
+            index += 1;
+            local = format!("{base}{index}");
+        }
+        locals.insert(local.clone());
+        Ok(local)
+    };
+    let producer_local = local_for(&imports[0], "_sourceProjection")?;
+    let consumer_local = local_for(&imports[1], "_sourceRendering")?;
+    let mut value_local = "_sourceValue".to_owned();
+    let mut index = 0;
+    while locals.contains(&value_local) {
+        index += 1;
+        value_local = format!("_sourceValue{index}");
+    }
     let templates: Vec<_> = goal
         .children
         .iter()
@@ -237,10 +290,6 @@ pub fn derive_seeded_source_plan<Host: SourceModuleIdentityHost>(
     if templates.len() != 1 || templates[0].find_child_value("text").is_empty() {
         return Err("AmbiguousSourceTemplate");
     }
-    let imports = candidate["imports"]
-        .as_array()
-        .filter(|values| values.len() == 2)
-        .ok_or("UnsupportedImportBindings")?;
     if !imports
         .iter()
         .all(|value| value["exported"].as_str().is_some_and(safe))

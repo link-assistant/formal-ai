@@ -1,5 +1,5 @@
 import { sourceContractDiagnostic } from "./source-contract-diagnostics.mjs";
-import { observedCallableRequest, signature } from "../module_function.mjs";
+import { observedCallableRequest, compactSourceRequest, signature } from "../module_function.mjs";
 import { sentences } from "../shell_command_policy.mjs";
 import { parseLinoRoot, findChildValue } from "../write_lino.mjs";
 import { sourceEvidence } from "./source_contract.mjs";
@@ -13,6 +13,25 @@ export function deriveCompleteSourceRequest(text, seed) {
   if (scope === null || request === null) return null;
   const root = parseLinoRoot(seed).children.find(node => node.name === 'source-request-preflight');
   if (!root) return null;
+  const compact = compactSourceRequest(text, seed);
+  if (compact !== null) {
+    const encoder = new TextEncoder();
+    const clauses = compact.sourceClauses.map(clause => ({ ...clause,
+      evidence: sourceEvidence(text, encoder.encode(text.slice(0, clause.start)).length,
+        encoder.encode(text.slice(0, clause.end)).length), status: 'requires-contract' }));
+    const declaration = compact.sourceClauses.find(clause => clause.kind === 'declaration-goal');
+    const start = declaration.end - compact.goalClause.length;
+    clauses.push({ kind: 'goal', sentence: compact.goalClause,
+      evidence: sourceEvidence(text, encoder.encode(text.slice(0, start)).length,
+        encoder.encode(text.slice(0, declaration.end)).length), status: 'requires-contract' });
+    return { request: compact, requestIdentity: sha256Hex(text), seedIdentity: sha256Hex(seed), clauses,
+      syntaxCoverage: 'complete-finite-seeded-forms', semanticAuthority: false, writeAuthority: false,
+      inferredOperationPrerequisites: [
+        { kind: 'read-prerequisites', authority: 'candidate-operation-invariant' },
+        { kind: 'repair-plan', authority: 'source-qualified-composition-witness' },
+        { kind: 'gap-before-write', authority: 'candidate-transaction-refuses-unbound-needs' }
+      ] };
+  }
   const forms = root.children.filter(node => node.name === 'form');
   if (forms.length !== kinds.length || !kinds.every(kind => forms.filter(form => form.id === kind).length === 1)) return null;
   const clauses = [];

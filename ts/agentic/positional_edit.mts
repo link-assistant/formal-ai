@@ -4,6 +4,9 @@
 // Literal and cue offsets are compared as gaps, so they are kept in UTF-8
 // bytes exactly as the Rust original measures them.
 
+import { callbackText as canonicalUnaryText } from './callback_values.mjs';
+import { callbackTrim as canonicalUnaryTrim } from './callback_values.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import {
   bareSurfaces, cleanContent, cleanCueToken, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens,
 } from './write_request.mjs';
@@ -37,7 +40,7 @@ function listedLines(span) {
   const literals = quotedLiterals(span);
   if (literals.length < 2 || !joinedOnly(span, literals) || span.slice(literals.at(-1).to).trim() !== '') return null;
   const lead = normalizePrompt(span.slice(0, literals[0].from)).toLowerCase();
-  return meaningEvidencedIn('line', lead) ? literals.map((literal) => literal.text).join('\n') : null;
+  return meaningEvidencedIn('line', lead) ? literals.map(canonicalUnaryText).join('\n') : null;
 }
 
 /**
@@ -270,7 +273,7 @@ function insertClauses(request) {
     from = end;
   }
   clauses.push(request.slice(from));
-  return clauses.map((clause) => clause.trim()).filter((clause) => clause !== '');
+  return clauses.map(canonicalUnaryTrim).filter(canonicalUnaryNonempty);
 }
 
 /**
@@ -286,7 +289,7 @@ function insertClauses(request) {
 export function joinedLiteralLines(request, target) {
   const literals = quotedLiterals(request).filter((literal) => literal.text !== target);
   if (literals.length < 2 || !joinedOnly(request, literals)) return null;
-  return literals.map((literal) => literal.text).join('\n');
+  return literals.map(canonicalUnaryText).join('\n');
 }
 
 function joinedOnly(sentence, literals) {
@@ -402,10 +405,10 @@ export function introducedBlock(request) {
   // the fence's own indentation: its indentation is the text's.
   const fenced = lines.length >= 2 && lines[0].trimStart().startsWith(FENCE) && lines[lines.length - 1].trim() === FENCE;
   const body = fenced ? lines.slice(1, -1) : lines;
-  const shared = fenced ? indentOf(lines[0]) : Math.min(...lines.filter((line) => line !== '').map(indentOf));
+  const shared = fenced ? indentOf(lines[0]) : Math.min(...lines.filter(canonicalUnaryNonempty).map(indentOf));
   const text = body.map((line) => line.slice(Math.min(shared, indentOf(line)))).join('\n');
   const quoted = fenced ? null : quotedVerbatim(text);
-  const indentation = fenced ? '' : leadingIndentation(lines.find((line) => line !== ''));
+  const indentation = fenced ? '' : leadingIndentation(lines.find(canonicalUnaryNonempty));
   return { head, text: quoted ?? text, verbatim: fenced || quoted !== null, indentation: indentation.slice(0, shared) };
 }
 

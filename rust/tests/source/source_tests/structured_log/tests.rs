@@ -133,7 +133,7 @@ fn diagnostic_metadata_preserves_small_values_and_bounds_wide_percent_encoded_fi
         json!({"tool":"inspect","state":"pending","repeat_limit":3,"__proto__":"own data"});
     assert_eq!(bounded_diagnostic_metadata(&ordinary), ordinary);
     let content = "😀é%()\n".repeat(20000);
-    let mut metadata = ordinary.clone();
+    let mut metadata = ordinary;
     metadata["arguments"] = json!(content);
     let bounded = bounded_diagnostic_metadata(&metadata);
     assert_eq!(bounded["tool"], "inspect");

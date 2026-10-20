@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["content.mjs"] = (crateRequire) => {
 // The chat-message readers the planner shares (rust/src/protocol/content.rs,
 // rust/src/protocol.rs `ChatMessage`).
@@ -11,24 +10,23 @@
 // Messages are the parsed shape of js/server/chat-request.mjs
 // `parseChatMessage`: `{role, content, tool_calls, tool_call_id, name,
 // is_error}`, where `content` is a string or an array of `{type, text}` parts.
-
+const { callbackText: canonicalUnaryText } = crateRequire("callback_values.mjs");
+const { callbackValue: canonicalUnaryValue } = crateRequire("callback_values.mjs");
+const { callbackTrim: canonicalUnaryTrim } = crateRequire("callback_values.mjs");
 const { cached, childrenNamed, isDirectory, parseLino, readText } = crateRequire("host.mjs");
-
 /** `MessageContent::plain_text`. */
 function plainText(content) {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return '';
-  return content.filter((part) => typeof part?.text === 'string').map((part) => part.text).join('\n');
+  return content.filter((part) => typeof part?.text === 'string').map(canonicalUnaryText).join('\n');
 }
-
 function injectedBlocks() {
   return cached('caller-context-blocks', () => {
     const root = parseLino(readText('data/seed/caller-context.lino'));
     const group = childrenNamed(root, 'injected_blocks')[0];
-    return childrenNamed(group, 'block').map((block) => block.value);
+    return childrenNamed(group, 'block').map(canonicalUnaryValue);
   });
 }
-
 function stripBlock(text, open, close) {
   let remaining = text;
   let request = '';
@@ -44,16 +42,13 @@ function stripBlock(text, open, close) {
   }
   return request + remaining;
 }
-
 /** `MessageContent::user_request_text`. */
 function userRequestText(content) {
   return injectedBlocks()
     .reduce((text, tag) => stripBlock(text, `<${tag}>`, `</${tag}>`), plainText(content))
     .trim();
 }
-
 const utf8Length = (text) => new TextEncoder().encode(text).length;
-
 /** `strip_system_echo`. */
 function stripSystemEcho(request, system) {
   const MIN_ECHO = 40;
@@ -67,7 +62,6 @@ function stripSystemEcho(request, system) {
   }
   return request;
 }
-
 /**
  * `str::lines`: split on `\n`, drop one trailing `\r` per line, and no final
  * empty line after a trailing newline.
@@ -81,7 +75,6 @@ function rustLines(text) {
   if (parts[parts.length - 1] === '') parts.pop();
   return parts.map((line) => (line.endsWith('\r') ? line.slice(0, -1) : line));
 }
-
 /** `system_prompt_text`. */
 function systemPromptText(messages) {
   return messages
@@ -89,7 +82,6 @@ function systemPromptText(messages) {
     .map((message) => plainText(message.content))
     .join('\n');
 }
-
 /** `latest_user_request`: the latest user turn, decorations stripped, or null. */
 function latestUserRequest(messages) {
   const system = systemPromptText(messages);
@@ -101,15 +93,12 @@ function latestUserRequest(messages) {
   }
   return null;
 }
-
 const isAbsolute = (path) => path.startsWith('/');
-
 function fileNameOf(path) {
   const trimmed = path.replace(/\/+$/, '');
   const last = trimmed.split('/').pop();
   return last && last !== '..' && last !== '.' ? last : null;
 }
-
 /** `observed_directory`. */
 function observedDirectory(messages) {
   const planned = [];
@@ -143,7 +132,6 @@ function observedDirectory(messages) {
   }
   return null;
 }
-
 function declaredDirectory(text) {
   const WORKSPACE_LIST = '**Workspace Directories:**';
   const tagged = text.split('<cwd>').slice(1).map((rest) => rest.split('</cwd>')[0]);
@@ -158,16 +146,14 @@ function declaredDirectory(text) {
       listed.push(line.trimStart().slice(2));
     }
   }
-  const declared = [...tagged, ...labelled, ...listed].map((path) => path.trim()).filter(isAbsolute);
+  const declared = [...tagged, ...labelled, ...listed].map(canonicalUnaryTrim).filter(isAbsolute);
   return declared.find((path) => isDirectory(path)) ?? declared[0] ?? null;
 }
-
 /** `client_working_directory`. */
 function clientWorkingDirectory(messages) {
   const text = messages.map((message) => plainText(message.content)).join('\n');
   return declaredDirectory(text) ?? observedDirectory(messages);
 }
-
 /** `chat_message_to_turn`. */
 function chatMessageToTurn(message) {
   const role = message.role.toLowerCase();
@@ -176,7 +162,6 @@ function chatMessageToTurn(message) {
   if (role === 'user' || role === 'assistant') return { role, content };
   return null;
 }
-
 return Object.freeze({
   plainText,
   userRequestText,

@@ -5,6 +5,7 @@
 // the pull-request URL must be canonical, and every committed effect must have
 // a native agent session plus committed evidence.
 
+import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -117,7 +118,7 @@ export function commitVerifiedEffect(workspace, sessionFile, session, pullReques
   git(workspace, ['add', '-A', '--', ...paths]);
   git(workspace, ['add', '-f', '--', evidence]);
   const staged = git(workspace, ['diff', '--cached', '--name-only', '-z', '--diff-filter=ACDMRTUXB']);
-  const actual = new Set(staged.stdout.toString('utf8').split('\0').filter((entry) => entry !== ''));
+  const actual = new Set(staged.stdout.toString('utf8').split('\0').filter(canonicalUnaryNonempty));
   const expected = new Set([...paths, evidence]);
   if (actual.size !== expected.size || [...actual].some((entry) => !expected.has(entry))) {
     throw attributionError('staged_paths_mismatch');

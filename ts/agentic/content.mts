@@ -5,20 +5,23 @@
 // `parseChatMessage`: `{role, content, tool_calls, tool_call_id, name,
 // is_error}`, where `content` is a string or an array of `{type, text}` parts.
 
+import { callbackText as canonicalUnaryText } from './callback_values.mjs';
+import { callbackValue as canonicalUnaryValue } from './callback_values.mjs';
+import { callbackTrim as canonicalUnaryTrim } from './callback_values.mjs';
 import { cached, childrenNamed, isDirectory, parseLino, readText } from './host.mjs';
 
 /** `MessageContent::plain_text`. */
 export function plainText(content) {
   if (typeof content === 'string') return content;
   if (!Array.isArray(content)) return '';
-  return content.filter((part) => typeof part?.text === 'string').map((part) => part.text).join('\n');
+  return content.filter((part) => typeof part?.text === 'string').map(canonicalUnaryText).join('\n');
 }
 
 function injectedBlocks() {
   return cached('caller-context-blocks', () => {
     const root = parseLino(readText('data/seed/caller-context.lino'));
     const group = childrenNamed(root, 'injected_blocks')[0];
-    return childrenNamed(group, 'block').map((block) => block.value);
+    return childrenNamed(group, 'block').map(canonicalUnaryValue);
   });
 }
 
@@ -151,7 +154,7 @@ function declaredDirectory(text) {
       listed.push(line.trimStart().slice(2));
     }
   }
-  const declared = [...tagged, ...labelled, ...listed].map((path) => path.trim()).filter(isAbsolute);
+  const declared = [...tagged, ...labelled, ...listed].map(canonicalUnaryTrim).filter(isAbsolute);
   return declared.find((path) => isDirectory(path)) ?? declared[0] ?? null;
 }
 

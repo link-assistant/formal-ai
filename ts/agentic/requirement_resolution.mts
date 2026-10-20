@@ -2,6 +2,8 @@
 // (rust/src/agentic_coding/requirement_resolution.rs). The census comes from
 // `crate/self_ast_census.mjs` `workspace()`.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { moduleSymbol, modulesDeclaring, workspace } from './crate/self_ast_census.mjs';
 import { isAlphanumeric, utf8Len } from './write_str.mjs';
 import { hasHost, host, readText } from './host.mjs';
@@ -88,7 +90,7 @@ function resolveScoped(census, requirement) {
   for (const module of census.modules) {
     for (const symbol of module.symbols) {
       if (symbol.kind !== 'const' && symbol.kind !== 'static') continue;
-      const parts = symbol.name.split('_').filter((part) => part !== '').map((part) => singular(part.toLowerCase()));
+      const parts = symbol.name.split('_').filter(canonicalUnaryNonempty).map((part) => singular(part.toLowerCase()));
       if (parts.length < 2 || !parts.every((part) => words.includes(part))) continue;
       if (parts.length > bestLength) {
         bestLength = parts.length;
@@ -114,7 +116,7 @@ function resolveSeedTargetWithOwners(requirement, sources, declaredOwners) {
   // An explicit unquoted field plus its declared owner context constrains lexical guesses.
   const structured = structuredSeedCandidates(requirement, sources, declaredOwners);
   if (structured.length) return structured.length === 1 ? structured[0] : null;
-  const tokens = tokensOf(requirement).map((token) => token.toLowerCase());
+  const tokens = tokensOf(requirement).map(canonicalUnaryLower);
   const roleWords = tokens.map(singular);
   let bestLength = 0;
   const best = new Map();
@@ -127,7 +129,7 @@ function resolveSeedTargetWithOwners(requirement, sources, declaredOwners) {
     for (const meaning of parseLexiconText(source)) {
       for (const surface of meaningWords(meaning)) {
         if (surface.includes('…')) continue;
-        const parts = tokensOf(surface).map((token) => token.toLowerCase());
+        const parts = tokensOf(surface).map(canonicalUnaryLower);
         // A role must have independent request evidence outside the matched surface.
         if (!parts.length || !tokens.some((_, at) =>
           parts.every((part, offset) => tokens[at + offset] === part) &&

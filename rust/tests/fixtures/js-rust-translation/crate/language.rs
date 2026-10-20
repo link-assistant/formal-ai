@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=51244623f503f1e8f217cd41d53b6f4f0705dbeb5feef8f6e647f0abf184e163 bytes=10600
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e0647daec35aa76536851c9daa3cfd8a12bcee1fff77fc425efe4837bea2cd19 bytes=10650
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds array-push items=1; string-methods items=1
 
@@ -52,6 +52,10 @@ pub fn wa_str_slice(text: String, start: f64, end: f64) -> String {
 pub fn wa_str_slice_from(text: String, start: f64) -> String {
     wa_str_slice(text, start, f64::INFINITY) }
 // formal-ai:workaround-prelude end
+
+// meta-language:translated JavaScript import_statement items=1 sha256=ea67ac58c941251801bc82c22574a8e03c0fd9db18bf89015315cef5823b17a3
+// | import { lower as canonicalUnaryLower } from './rust_str.mjs';
+use crate::rust_str::lower as canonical_unary_lower;
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -250,4 +254,4 @@ pub fn ml_parse_quoted_list_loop1(mut items: Vec<String>, mut rest: String, mut 
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers Array.from | arrow callback of .every() | arrow callback of .find() | arrow callback of .replace() | call of a sibling function | field access | method call .encode() | method call .every() | method call .find() | method call .replace() | method call .slice() | new TextEncoder | null | object without a $ tag | regular expression | undefined
+// formal-ai:blockers Array.from | arrow callback of .every() | arrow callback of .find() | call of a sibling function | field access | method call .encode() | method call .every() | method call .find() | method call .replace() | method call .slice() | new TextEncoder | null | object without a $ tag | regular expression | undefined

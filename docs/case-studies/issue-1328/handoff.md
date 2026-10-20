@@ -67,8 +67,10 @@ actual CI conclusions when known; local source success alone is not native succe
 
 Keep local disk use bounded. Do not read or publish unrelated local session
 exports. Do not run Cargo, rustc, Docker, Electron or downloaded native products
-locally. Installed rustfmt may format text without compiling it. No additional
-subagents are needed after the completed collection and source-selection work.
+locally. Installed rustfmt may format text without compiling it. Use up to three subagents under the latest owner instruction. Keep a dedicated
+JavaScript Formal AI change lane and continuous CI monitoring. Coordinate source
+ownership, freeze completed batches, regenerate projections once, and push the
+reviewed integrated batch. Do not create child agents beyond this limit.
 
 
 First automatic CI on `f2c8974a39437ae2bb7d2809a6f63552f5ffc736` caught
@@ -144,3 +146,93 @@ The final unsharded native suite exposed an upload step capped at four minutes w
 The first automatic checks on `48f4aabb` found unsupported job-level `runner.temp` expressions for the transferred Hive image directory. As with the existing evidence directory, the bundle directory is now exported from the initial step through `GITHUB_ENV`; job-level environment declarations retain only supported context. Matching source controls preserve isolated paths and the original phase graph.
 
 Cargo audit also received two newly published trust advisories: RUSTSEC-2026-0382 (rustls-webpki) and RUSTSEC-2026-0381 (webpki-roots). Official RustSec advisories and crates.io sparse metadata identify patched stable versions 0.103.16 and 1.0.10. Both tracked lockfiles are refreshed where affected, using registry checksums; dependency edges and features are unchanged and the declared parent requirements accept both patches. This is a registry-authenticated text-only update through JavaScript Formal AI, with zero autonomous-authorship credit. No local Cargo/native command is run, and no audit ignore is added; hosted Cargo audit and locked native builds must independently confirm the result.
+
+
+## Critical coding delivery continuation, 2026-10-21
+
+The owner requires actual delivery of the recent critical coding requirements,
+not only requirement drafts. The existing Pending doctrine and parity rows remain
+binding; no percentage over CI checks represents implementation completeness.
+
+The JavaScript source-composition planner now interprets compact complete-source
+requests and import aliases through general grammar/frame rules. The original
+request and two archived compact requests pass the unchanged independent oracle.
+A controlled original preimage fails an alias task with the same corrected
+harness setup. Native counterparts and refusal tests are supplied for hosted
+compilation. See the finite, lossless [composition evidence packet](../../../experiments/formal_ai_subagent/evidence/formal-ai-only-1188/compact-source-composition-1329/README.md).
+This is a small qualified task family; retries are not independent cohort members,
+and supplied repair controllers receive zero autonomous-authorship credit. Full
+model input, token use, development savings and cost remain Unknown.
+
+Complete source models now support a persisted declaration-qualified parameter
+transformation contract, including match, captures, preconditions, refusal, exact
+inverse and language facets. The shared rule preserves every unrelated concrete
+node and independently reparses the result. The natural-language planner observes
+the exact requested source and delegates to an installed authorized host. A real
+repository self-edit and a hand-authored TypeScript edit in another Git repository
+have full before/after CSTs, rules, inverses and physical-write receipts. The host
+refuses generated owners, wrong reads, stale preimages and unsupported scopes.
+Bounded candidate writes preserve the original on short/failed-write errors before
+an optimistic preimage check and atomic replacement. Compiler validity, comment
+meaning, arbitrary semantic equivalence and native planner parity are not inferred
+from this finite alpha-renaming result. Refer to the existing complete doctrine
+for the broader requirements still awaiting their acceptance evidence.
+
+JavaScript deep concept grounding no longer throws when a supplied lookup returns
+senses. It derives attributed concepts and structural meanings using the native
+seed rules, emits only relations between grounded terms, and carries visited-need,
+depth and source-span evidence through recursive glosses. Captured native sense
+identities and original agentic recipe controls pass. The default offline registry
+walker remains a separate delivery gap; this repair does not claim live discovery
+or complete runtime parity.
+
+Source duplication cleanup uses an AST-validated reusable transformation for six
+stateless unary forms, preserving receiver/getter behavior, Unicode trim policy,
+comments and binding semantics. The reviewed JavaScript batch replaces repeated
+callbacks with canonical bindings; two byte-identical Rust escaping helpers reuse
+the existing canonical implementation. Neither these extractions nor generated
+projection proofs certify zero independent duplicates throughout the repository.
+Fresh complete inventories and the strict zero acceptance remain required.
+
+The Node log CLI now uses descriptor metadata before reading its bounded input.
+The shared reader detects growth/replacement and refuses invalid read progress;
+public stable symlinks retain their prior policy while private provenance paths
+remain protected. Regression controls exercise the real CLI as well as injected
+IO failures. Diagnostic truncation limits and custody rules are not weakened.
+
+Hosted lint on f3d853b found stale static wall-clock metadata after the Hive DAG
+split and five source Clippy findings. The source fixes preserve the existing
+225-minute ceiling and original behavioral oracles. The discovered timeout path is
+120 minutes; it is not observed elapsed time or publication evidence. Hosted
+native validation, original three-client delivery and final release verification
+must bind the final published revision before claiming completion.
+
+
+The final integrated source checks pass, including readability, exact maintained
+JS/TS/worker projections, the unchanged translation ratchet, embedded data,
+requirements/status, release advertisement, CI speed and the original governed
+baseline. The combined focused JavaScript regression run passes 174 checks with
+no skips. A complete current JavaScript/TypeScript duplication inventory has zero
+projection gaps and 729 independent candidate groups; strict acceptance remains
+false. This is not a claim of repository-wide zero duplication or native parity.
+
+Hosted full-test shard 6 found the new connection retry tests inline under src/.
+The existing four test bodies and helper are moved without semantic edits into
+registered tests/unit/bounded_retry.rs. The production implementation and public
+API are unchanged. Native compilation and this placement check run only in CI.
+
+On published f3d853b, the new Hive phase split completed all three original
+client deliveries and all three independent verification jobs successfully in
+[run 39494552135](https://github.com/link-assistant/formal-ai/actions/runs/39494552135).
+That evidence belongs to that revision; the next published head still needs its
+own automatic checks. Client and job durations do not identify the old native
+CPU hotspot, and nominal provider cost fields do not establish actual spending.
+
+The release readiness audit found the existing changelog selects a patch release
+on a merge to main. Explicit workflow calls cover Docker publication and the
+release-event recursion fallback, with source-bound desktop assets, exhaustive
+macOS signed/ad-hoc branches and public download verification. Repository-level
+optional registry credentials and the npm trusted-publishing variable were absent
+when inspected; inherited organization/environment configuration was not audited.
+Do not claim npm, extension marketplace or Docker Hub publication from a green
+asset/GHCR pipeline. Require actual post-merge publishing and download receipts.

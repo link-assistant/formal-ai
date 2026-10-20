@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9f9a95c9e25fb2db4dd194f222ddc159ce59b990bdeec9f3bb69cf271668c832 bytes=7394
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=56f74670557cb4c5def9be3f69e4743433360a2915a48f2802bdc611467f3d52 bytes=7468
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=4
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -51,7 +55,7 @@ pub static structuredLabels: std::sync::LazyLock<Vec<String>> = std::sync::LazyL
 
 // meta-language:carried JavaScript function_declaration (syntax)
 // formal-ai:refusal syntax: unterminated string literal
-// formal-ai:blockers Array.from | arrow callback of .filter() | arrow callback of .map() | arrow callback of .sort() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .indexOf() | method call .map() | method call .replace() | method call .slice() | method call .sort() | method call .split() | null | regular expression
+// formal-ai:blockers Array.from | arrow callback of .filter() | arrow callback of .sort() | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .indexOf() | method call .map() | method call .replace() | method call .slice() | method call .sort() | method call .split() | null | regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function

@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/intent_formalization.mjs"] = (crateRequire) => {
 // `crate::intent_formalization` (rust/src/intent_formalization.rs): the
 // routing-facing intent record a prompt formalizes into, and the events
@@ -20,7 +19,7 @@
 // `coding::task_spec::recognise`), and the file-write / quoted-replacement
 // guards of `requested_write_program_parameters` (the worker's
 // `writeProgramParameters` reads the request as `write_program_parameters`).
-
+const { callbackValue: canonicalUnaryValue } = crateRequire("callback_values.mjs");
 const { cached, childValue, childrenNamed, readText, realm } = crateRequire("host.mjs");
 const { parseLinoRoot } = crateRequire("write_lino.mjs");
 const { stableId } = crateRequire("crate/engine_stable_identifier.mjs");
@@ -28,7 +27,6 @@ const { normalizePrompt } = crateRequire("crate/engine.mjs");
 const { formatLinoRecord, escapeReference } = crateRequire("crate/links_format.mjs");
 const { explicitLearnedMethodRelevants, methodForRoute, methodRegistry } = crateRequire("crate/method_registry.mjs");
 const { wordsForRoleInLanguages } = crateRequire("crate/seed_meanings.mjs");
-
 const ROLE_INTERROGATIVE_OPENER = 'interrogative_opener';
 const TRANSLATION_PREDICATE = 'wikidata:P5972';
 const COURTESY_ROUTES = new Set(['greeting', 'wellbeing', 'farewell', 'courtesy_response']);
@@ -39,12 +37,10 @@ const TASK_ROUTES = new Set([
 ]);
 const REQUIREMENT_TOKENS = ['must', 'should', 'require', 'requires'];
 const TASK_TOKENS = ['translate', 'write', 'calculate', 'search', 'find', 'prove', 'define'];
-
 /** Mirrors `fn impulse_id_for`. @param {string} prompt */
 function impulseIdFor(prompt) {
   return stableId('impulse', normalizePrompt(prompt));
 }
-
 /**
  * Mirrors `fn formalize_intent` for the fields the planner reads.
  * @param {string} prompt
@@ -54,7 +50,6 @@ function impulseIdFor(prompt) {
 function formalizeIntent(prompt, language) {
   return { impulse_id: impulseIdFor(prompt), source_text: prompt, language };
 }
-
 /**
  * Mirrors `fn load_cue_sets` in rust/src/cue_lexicon.rs: `{name: {match, cues}}`
  * from data/meta/cue-lexicon.lino, the sets a `cue_set` promotion reads.
@@ -67,22 +62,19 @@ function cueSets() {
       const name = childValue(record, 'name');
       const match = childValue(record, 'match');
       if (!name || !['token', 'substring', 'prefix'].includes(match)) continue;
-      out[name] = { match, cues: childrenNamed(record, 'cue').map((cue) => cue.value) };
+      out[name] = { match, cues: childrenNamed(record, 'cue').map(canonicalUnaryValue) };
     }
     return out;
   });
 }
-
 function pushUnique(values, value) {
   if (!values.includes(value)) values.push(value);
 }
-
 /** Mirrors `fn contains_token`: CJK aliases by substring, the rest by whole token. */
 function containsToken(normalized, expected) {
   if (/[぀-ヿ㐀-鿿가-힯]/u.test(expected)) return normalized.includes(expected);
   return normalized.split(/\s+/u).includes(expected);
 }
-
 /**
  * Mirrors `fn slot_known_link`.
  * @param {string} role
@@ -100,7 +92,6 @@ function slotKnownLink(role, kind, id) {
   if (kind === 'wikipedia_article' || kind === 'wiktionary_entry') return `formalization:fallback:${id}`;
   return `formalization:raw:${id}`;
 }
-
 /** Mirrors `fn append_candidate_knowns`. */
 function appendCandidateKnowns(candidate, knowns, relevants) {
   for (const slot of candidate.slots) {
@@ -112,7 +103,6 @@ function appendCandidateKnowns(candidate, knowns, relevants) {
   }
   for (const term of candidate.unresolved_terms) pushUnique(knowns, `formalization_unresolved:${term}`);
 }
-
 /** Mirrors `fn route_from_relevants`. */
 function routeFromRelevants(relevants) {
   const registry = methodRegistry();
@@ -122,13 +112,11 @@ function routeFromRelevants(relevants) {
   }
   return null;
 }
-
 /** Mirrors `fn starts_with_question_word`. */
 function startsWithQuestionWord(normalized) {
   return wordsForRoleInLanguages(ROLE_INTERROGATIVE_OPENER, ['en', 'ru'])
     .some((word) => normalized.startsWith(word) && normalized.slice(word.length).startsWith(' '));
 }
-
 /** Mirrors `fn infer_kind`. */
 function inferKind(prompt, normalized, route, candidate) {
   if (COURTESY_ROUTES.has(route)) return 'courtesy';
@@ -140,7 +128,6 @@ function inferKind(prompt, normalized, route, candidate) {
   if (candidate && candidate.slots.length) return 'statement';
   return 'unknown';
 }
-
 /** `requested_write_program_parameters` as the sorted `[name, value]` pairs of its `BTreeMap`. */
 function writeProgramParameters(prompt) {
   const requested = typeof realm().writeProgramParameters === 'function' ? realm().writeProgramParameters(prompt) : null;
@@ -150,7 +137,6 @@ function writeProgramParameters(prompt) {
   if (requested.task) pairs.push(['task', String(requested.task)]);
   return pairs;
 }
-
 /**
  * Mirrors `fn formalize_intent` in rust/src/intent_formalization.rs: the whole
  * `IntentFormalization` record for `prompt`, with the selected formalization
@@ -189,7 +175,6 @@ function formalizeIntentRecord(prompt, language, candidate) {
     response_link: matched && matched.responseLink ? String(matched.responseLink) : null,
   };
 }
-
 /** Mirrors `IntentFormalization::to_links_notation`. */
 function intentFormalizationLinksNotation(record) {
   const pairs = [
@@ -206,7 +191,6 @@ function intentFormalizationLinksNotation(record) {
   for (const relevant of record.relevants) pairs.push(['relevant', relevant]);
   return `${formatLinoRecord(`intent_formalization ${escapeReference(record.impulse_id)}`, pairs)}\n`;
 }
-
 /**
  * Mirrors `fn record_intent_formalization` for a cache miss, the only state a
  * protocol solve meets (`solve_with_history` opens a fresh cache per turn).
@@ -219,7 +203,6 @@ function recordIntentFormalization(log, record, cacheHit = false) {
   if (record.route !== null) log.push({ kind: 'intent_formalization:route', payload: record.route });
   for (const relevant of record.relevants) log.push({ kind: 'intent_formalization:relevant', payload: relevant });
 }
-
 return Object.freeze({
   impulseIdFor,
   formalizeIntent,

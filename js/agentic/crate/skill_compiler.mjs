@@ -1,6 +1,7 @@
 // `crate::skill_compiler::looks_like_skill_description`
 // (rust/src/skill_compiler.rs): whether a request teaches a skill.
 
+import { callbackTrim as canonicalUnaryTrim } from '../callback_values.mjs';
 import { afterSlot, beforeSlot, roleWordForms, slotOf } from './seed_meanings.mjs';
 
 import { normalizePrompt } from './engine.mjs';
@@ -61,7 +62,7 @@ function triggerResponse(description) {
   if (!looksLikeSkillDescription(description)) return null;
   const spans = description.split('`')
     .filter((value, index) => index % 2 === 1 && value.trim())
-    .map(value => value.trim());
+    .map(canonicalUnaryTrim);
   if (spans.length >= 2) return [spans[0], spans[1]];
   const lower = description.toLowerCase();
   for (const lead of roleWordForms('skill_teaching_trigger_lead')) {

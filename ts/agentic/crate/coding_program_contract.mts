@@ -4,6 +4,7 @@
 // `programContractAnswer` returns a `SymbolicAnswer`-shaped object carrying
 // an `execution_recipe`, or null.
 
+import { callbackText as canonicalUnaryText } from '../callback_values.mjs';
 import { cached, readText, realm } from '../host.mjs';
 import { pathExtension, typedWriteTarget } from '../write_request.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
@@ -137,7 +138,7 @@ function namedSourceLanguage(prompt) {
 
 /** Mirrors `fn quotes_every_output`: every output the request binds is quoted in it. */
 function quotesEveryOutput(prompt) {
-  const quoted = quotedSegmentSpans(prompt).map((segment) => segment.text);
+  const quoted = quotedSegmentSpans(prompt).map(canonicalUnaryText);
   return boundOutputLiterals(prompt).every((output) => quoted.includes(output));
 }
 

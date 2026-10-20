@@ -1,6 +1,8 @@
 // Derive a Links Notation document from an inspected workspace file
 // (rust/src/agentic_coding/structured_document.rs).
 
+import { callbackValue as canonicalUnaryValue } from './callback_values.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { sourceFromReadResult } from './code_artifact.mjs';
@@ -162,7 +164,7 @@ function bestSourceValues(tree, field) {
   const wanted = identifierTokens(field);
   const candidates = [];
   collectCandidates(tree, field, wanted, candidates);
-  const exact = unique(candidates.filter((candidate) => candidate.exact).map((candidate) => candidate.value)).sort(compareStr);
+  const exact = unique(candidates.filter((candidate) => candidate.exact).map(canonicalUnaryValue)).sort(compareStr);
   if (exact.length) return exact;
   let best = null;
   for (const candidate of candidates) {
@@ -196,7 +198,7 @@ function collectLeafValues(node, out) {
 }
 
 function identifierTokens(identifier) {
-  return new Set(identifier.split('_').filter((token) => token !== ''));
+  return new Set(identifier.split('_').filter(canonicalUnaryNonempty));
 }
 
 function readArguments(path) {

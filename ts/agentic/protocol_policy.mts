@@ -2,6 +2,7 @@
 // (rust/src/protocol_policy.rs, rust/src/protocol.rs
 // `ChatCompletionRequest::requested_tool_names`).
 
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { agenticMessage } from './messages.mjs';
 
 const isObject = (value) => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -173,7 +174,7 @@ export const COMPUTER_USE_PRIMITIVES = [
 
 /** Mirrors `ComputerUsePrimitive::from_tool_name`: the dotted primitive name or null. */
 export function computerPrimitiveFromToolName(name) {
-  const lower = name.trim().replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  const lower = name.trim().replace(/[A-Z]/g, canonicalUnaryLower);
   return COMPUTER_USE_PRIMITIVES.find((dotted) => {
     const underscored = dotted.replaceAll('.', '_');
     return lower === dotted || lower === underscored || lower.endsWith(`__${dotted}`)

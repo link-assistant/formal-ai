@@ -23,12 +23,15 @@ pub fn source_goal_scope(source: &str) -> Option<String> {
 #[must_use]
 pub fn derive_complete_source_request(text: &str, seed: &str) -> Option<Value> {
     let scope = source_goal_scope(text)?;
-    let request = super::discovery::observed_callable_request(text)?;
     let parsed = parse_lino(seed);
     let root = parsed
         .children
         .iter()
         .find(|node| node.name == "source-request-preflight")?;
+    if let Some(frame) = super::compact_source_request::compact_source_frame(text, seed) {
+        return Some(frame);
+    }
+    let request = super::discovery::observed_callable_request(text)?;
     let kinds = [
         "declaration",
         "goal",

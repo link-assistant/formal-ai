@@ -10,6 +10,7 @@
 // Rust twin: rust/src/agentic_coding/system_diagram.rs. Driver:
 // scripts/generate-system-diagrams.mjs (--write, --check).
 
+import { callbackValue as canonicalUnaryValue } from './callback_values.mjs';
 import { childValue, childrenNamed, parseLino } from './host.mjs';
 
 /** Mirrors `const CONFIG_PATH`. */
@@ -139,7 +140,7 @@ export function routeRows(text) {
   return childrenNamed(parseLino(text), 'route').map((node) => ({
     id: node.value,
     method: childValue(node, 'method'),
-    paths: childrenNamed(node, 'path').map((path) => path.value),
+    paths: childrenNamed(node, 'path').map(canonicalUnaryValue),
     auth: childValue(node, 'auth') || 'bearer',
     deprecated: childValue(node, 'deprecated') === 'true',
   }));
@@ -155,7 +156,7 @@ function readConfig(text) {
     parts: childrenNamed(root, 'part').map((node) => ({
       key: node.value,
       file: childValue(node, 'file'),
-      uses: childrenNamed(node, 'uses').map((use) => use.value),
+      uses: childrenNamed(node, 'uses').map(canonicalUnaryValue),
     })),
     nodes: childrenNamed(root, 'node').map((node) => ({
       id: node.value,

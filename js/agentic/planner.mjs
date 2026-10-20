@@ -80,6 +80,7 @@ import * as sourceLinks from './source_links.mjs';
 import * as statementAudit from './statement_audit.mjs';
 import * as structuredDocument from './structured_document.mjs';
 import * as structuredEdit from './structured_edit.mjs';
+import {planSourceCstTransformStep} from './source_cst_transform.mjs';
 import * as taskObligations from './task_obligations.mjs';
 import { planObligationsStep } from './planner/obligations.mjs';
 import * as taskStructure from './task_structure.mjs';
@@ -355,6 +356,8 @@ export async function planSettledRoutes(task, messages, toolNames) {
       ?? await mutatingAction.planStep(explicit, messages, toolNames, task)
       ?? planShellStep(messages, toolNames, explicit);
   }
+  const sourceTransform = planSourceCstTransformStep(task, messages, toolNames, planShellStep);
+  if (sourceTransform !== null) return sourceTransform;
   const verifiedSource = codeTask.planVerifiedGeneratedSourceStep(task, messages, toolNames);
   if (verifiedSource !== null) return verifiedSource;
   for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {

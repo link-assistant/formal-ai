@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e45918a1f4ff5cabb8f876e06f6b306da8fa285d7bf17778108b39f04e90ba25 bytes=7025
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=7ed3359f31ab39fa3ed97736f0afb3736b4040155731bbd792d5f6ebda511523 bytes=7051
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=3
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:translated JavaScript import_statement items=1 sha256=ea67ac58c941251801bc82c22574a8e03c0fd9db18bf89015315cef5823b17a3
+// | import { lower as canonicalUnaryLower } from './rust_str.mjs';
+use crate::rust_str::lower as canonical_unary_lower;
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -36,7 +40,7 @@
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .map()
-// formal-ai:blockers arrow callback of .map() | arrow function | call of an imported function | method call .map()
+// formal-ai:blockers arrow function | call of an imported function | method call .map()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag
@@ -84,7 +88,7 @@
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .split()
-// formal-ai:blockers arrow callback of .flatMap() | arrow callback of .map() | global value Boolean | method call .filter() | method call .flatMap() | method call .map() | method call .split() | regular expression
+// formal-ai:blockers arrow callback of .flatMap() | global value Boolean | method call .filter() | method call .flatMap() | method call .map() | method call .split() | regular expression
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal Object.prototype.hasOwnProperty.call
@@ -92,4 +96,4 @@
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .find()
-// formal-ai:blockers Array.isArray | arrow callback of .filter() | arrow callback of .find() | arrow callback of .map() | call of a sibling function | call of an imported function | method call .filter() | method call .find() | method call .map() | typeof operator | undefined
+// formal-ai:blockers Array.isArray | arrow callback of .filter() | arrow callback of .find() | call of a sibling function | call of an imported function | method call .filter() | method call .find() | method call .map() | typeof operator | undefined

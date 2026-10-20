@@ -1,3 +1,4 @@
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
 import {cached, parseLino, readText} from '../host.mjs';
 const PATH='data/seed/text-formalization.lino';
 export function grammarRoot() {
@@ -13,7 +14,7 @@ export function structuralRuleValues(rule,kind) {
   return cached('formalization-structural-'+rule+'-'+kind,()=>{
     const records=(grammarRoot()?.children??[]).filter(node=>node.name==='structural-rule'&&node.value===rule);
     if(records.length!==1)throw Error('unique_structural_grammar_rule');
-    const values=(records[0].children??[]).filter(node=>node.name===kind).map(node=>node.value);
+    const values=(records[0].children??[]).filter(node=>node.name===kind).map(canonicalUnaryValue);
     if(!values.length||values.some(value=>!value)||new Set(values).size!==values.length)throw Error('nonempty_unique_structural_grammar_facts');
     return Object.freeze(values);
   });
@@ -36,5 +37,5 @@ export function grammarVocabulary(language, kind) {
   const defaults = (root.children ?? []).find(node => node.name === 'defaults');
   const values = local.length ? local :
     (defaults?.children ?? []).filter(node => node.name === kind);
-  return values.map(node => node.value);
+  return values.map(canonicalUnaryValue);
 }

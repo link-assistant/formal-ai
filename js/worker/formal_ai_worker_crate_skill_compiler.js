@@ -3,30 +3,25 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/skill_compiler.mjs"] = (crateRequire) => {
 // `crate::skill_compiler::looks_like_skill_description`
 // (rust/src/skill_compiler.rs): whether a request teaches a skill.
-
+const { callbackTrim: canonicalUnaryTrim } = crateRequire("callback_values.mjs");
 const { afterSlot, beforeSlot, roleWordForms, slotOf } = crateRequire("crate/seed_meanings.mjs");
-
 const { normalizePrompt } = crateRequire("crate/engine.mjs");
 const { stableId } = crateRequire("crate/engine_stable_identifier.mjs");
 const { pushLinoNode } = crateRequire("crate/links_format.mjs");
 const { KNOWLEDGE_SCHEMA_VERSION } = crateRequire("crate/skill_procedure.mjs");
-
 /** Mirrors `fn direct_role_surface_present`. */
 function directRoleSurfacePresent(role, lower) {
   return roleWordForms(role).some((form) => form.text !== '' && lower.includes(form.text));
 }
-
 /** Mirrors `fn explicit_teaching_form`. */
 function explicitTeachingForm(lower) {
   return (directRoleSurfacePresent('skill_teaching_trigger_lead', lower)
     && directRoleSurfacePresent('skill_teaching_response_verb', lower))
     || directRoleSurfacePresent('behavior_rule_edit_directive', lower);
 }
-
 /**
  * Mirrors `fn looks_like_skill_description` in rust/src/skill_compiler.rs.
  * Offsets found in the lowercased text slice the original, as in Rust.
@@ -50,25 +45,22 @@ function looksLikeSkillDescription(description) {
       return beforeLink.includes('`') && afterLink.includes('`');
     });
 }
-
 // Trigger/response subset of CompiledSkillPackage. Structured descriptions
 // stay unsupported until their typed permissions and effects are implemented.
 const structuredLabels = ['Skill', 'Input', 'Precondition', 'Step', 'Effect',
   'Expected test', 'Target', 'Tool', 'Permission'];
-
 function structuredLine(line) {
   const text = line.trimStart();
   return structuredLabels.some(label =>
     text.slice(0, label.length).toLowerCase() === label.toLowerCase()
     && (text.length === label.length || /[\s:`]/u.test(text[label.length])));
 }
-
 // Mirrors extract_trigger_response and extract_unquoted_explicit_rule.
 function triggerResponse(description) {
   if (!looksLikeSkillDescription(description)) return null;
   const spans = description.split('`')
     .filter((value, index) => index % 2 === 1 && value.trim())
-    .map(value => value.trim());
+    .map(canonicalUnaryTrim);
   if (spans.length >= 2) return [spans[0], spans[1]];
   const lower = description.toLowerCase();
   for (const lead of roleWordForms('skill_teaching_trigger_lead')) {
@@ -90,7 +82,6 @@ function triggerResponse(description) {
   }
   return null;
 }
-
 // Mirrors native link_record, including each content-addressed E1 doublet.
 function linkRecord(id, type, subtype, source, fields) {
   const links = [];
@@ -107,7 +98,6 @@ function linkRecord(id, type, subtype, source, fields) {
   return { stable_id: id, schema_version: KNOWLEDGE_SCHEMA_VERSION,
     record_type: type, source_id: source, links };
 }
-
 /** Compile the supported deterministic subset; unsupported IR is explicit. */
 function compileNaturalLanguageSkill(description) {
   if (description.split(/\r?\n/u).some(structuredLine)) {
@@ -169,7 +159,6 @@ function compileNaturalLanguageSkill(description) {
     },
   };
 }
-
 return Object.freeze({
   looksLikeSkillDescription,
   compileNaturalLanguageSkill,

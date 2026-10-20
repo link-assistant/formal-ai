@@ -8,6 +8,7 @@
 // solver's answers carry no `execution_recipe`, so for them this route never
 // applies; `crate/coding_program_contract.mjs` builds answers that do.
 
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, isWorkspaceCreationTool, toolFor } from './capability_router.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
@@ -246,7 +247,7 @@ export function recipeProgressAfterLatestUser(messages, writeTool, recipe, expec
 }
 
 function asciiLower(text) {
-  return text.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  return text.replace(/[A-Z]/g, canonicalUnaryLower);
 }
 
 /** Mirrors `fn reported_exit_code` (command_reroute.rs). */

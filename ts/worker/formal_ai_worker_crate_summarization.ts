@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/summarization.mjs"] = (crateRequire) => {
 // `crate::summarization` (rust/src/summarization/mod.rs): the formalize ->
 // summarize -> deformalize pipeline, JavaScript root. Every transformation is
@@ -30,18 +29,15 @@
 // `crate::seed::projects_registry` exists), and the #844/#893 layers
 // (importance.rs, context.rs, dedup.rs, recheck.rs, pipeline.rs, gathering.rs,
 // validation/) that nothing in the #563 call graph reaches.
-
+const { lower: canonicalUnaryLower } = crateRequire("crate/rust_str.mjs");
 const { cached } = crateRequire("host.mjs");
 const { agenticMessage } = crateRequire("messages.mjs");
 const { identifierBudget, NamingConvention, toIdentifier } = crateRequire("crate/summarization_identifier.mjs");
 const { meaningsWithRole, words } = crateRequire("crate/seed_meanings.mjs");
-
 /** Mirrors `DEFAULT_MAX_STATEMENTS` in rust/src/summarization/mod.rs. */
 const DEFAULT_MAX_STATEMENTS = 30;
-
 /** Mirrors `ROLE_SUMMARY_CLASSIFICATION_CUE` in rust/src/seed/roles/tooling.rs. */
 const ROLE_SUMMARY_CLASSIFICATION_CUE = 'summary_classification_cue';
-
 /** Mirrors `enum StatementKind` in rust/src/summarization/mod.rs. */
 const StatementKind = Object.freeze({
   Identity: 'identity',
@@ -54,13 +50,12 @@ const StatementKind = Object.freeze({
   Example: 'example',
   Misc: 'misc',
 });
-
 /**
  * Mirrors `StatementKind::parse` in rust/src/summarization/mod.rs.
  * @param {string} value
  */
 function statementKindParse(value) {
-  switch (value.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '').replace(/[A-Z]/g, (letter) => letter.toLowerCase())) {
+  switch (value.replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '').replace(/[A-Z]/g, canonicalUnaryLower)) {
     case 'identity': return StatementKind.Identity;
     case 'purpose': return StatementKind.Purpose;
     case 'language': return StatementKind.Language;
@@ -72,7 +67,6 @@ function statementKindParse(value) {
     default: return StatementKind.Misc;
   }
 }
-
 /**
  * Mirrors `StatementKind::from_slug` in rust/src/summarization/mod.rs.
  * @param {string} slug
@@ -89,18 +83,15 @@ function statementKindFromSlug(slug) {
     default: return StatementKind.Misc;
   }
 }
-
 /** Mirrors `StatementKind::is_essential` in rust/src/summarization/mod.rs. @param {string} kind */
 function isEssential(kind) {
   return kind === StatementKind.Identity || kind === StatementKind.Purpose
     || kind === StatementKind.Language || kind === StatementKind.Stars;
 }
-
 /** Mirrors `StatementKind::is_boilerplate` in rust/src/summarization/mod.rs. @param {string} kind */
 function isBoilerplate(kind) {
   return kind === StatementKind.Install || kind === StatementKind.Example;
 }
-
 /**
  * Mirrors `Statement::new` in rust/src/summarization/mod.rs.
  * @param {string} text
@@ -111,7 +102,6 @@ function isBoilerplate(kind) {
 function statement(text, kind, weight) {
   return { text, kind, weight };
 }
-
 /**
  * Mirrors `Statement::from_seed` in rust/src/summarization/mod.rs: a seed
  * `{text, kind, weight}` project statement with its kind label parsed.
@@ -120,7 +110,6 @@ function statement(text, kind, weight) {
 function statementFromSeed(seed) {
   return statement(seed.text, statementKindParse(seed.kind), seed.weight);
 }
-
 /** Mirrors `enum SummarizationMode` in rust/src/summarization/mod.rs. */
 const SummarizationMode = Object.freeze({
   Identifier: 'identifier',
@@ -130,7 +119,6 @@ const SummarizationMode = Object.freeze({
   Full: 'full',
   Expand: 'expand',
 });
-
 /** Mirrors `SummarizationMode::target_percent` in rust/src/summarization/mod.rs. @param {string} mode */
 function targetPercent(mode) {
   switch (mode) {
@@ -141,7 +129,6 @@ function targetPercent(mode) {
     default: return 0;
   }
 }
-
 /** Mirrors `SummarizationMode::one_step_shorter` in rust/src/summarization/mod.rs. @param {string} mode */
 function oneStepShorter(mode) {
   switch (mode) {
@@ -151,12 +138,10 @@ function oneStepShorter(mode) {
     default: return SummarizationMode.Identifier;
   }
 }
-
 /** Mirrors `SummarizationMode::is_label_only` in rust/src/summarization/mod.rs. @param {string} mode */
 function isLabelOnly(mode) {
   return mode === SummarizationMode.Topic || mode === SummarizationMode.Identifier;
 }
-
 /**
  * Mirrors `fn label_for_mode` in rust/src/summarization/mod.rs: the label of a
  * label-only rung; `Identifier` shortens it to a `snake_case` name.
@@ -169,7 +154,6 @@ function labelForMode(mode, label) {
   }
   return label;
 }
-
 /**
  * Mirrors `SummarizationConfig::default` in rust/src/summarization/mod.rs.
  * @returns {{mode: string, max_statements: number|null, language: string,
@@ -185,27 +169,22 @@ function defaultConfig() {
     drop_boilerplate: true,
   };
 }
-
 /** Mirrors `SummarizationConfig::with_mode` in rust/src/summarization/mod.rs. */
 function withMode(config, mode) {
   return { ...config, mode };
 }
-
 /** Mirrors `SummarizationConfig::with_language` in rust/src/summarization/mod.rs. */
 function withLanguage(config, language) {
   return { ...config, language };
 }
-
 /** Mirrors `SummarizationConfig::keeping_boilerplate` in rust/src/summarization/mod.rs. */
 function keepingBoilerplate(config) {
   return { ...config, drop_boilerplate: false };
 }
-
 /** Mirrors `SummarizationConfig::with_max_statements` in rust/src/summarization/mod.rs. */
 function withMaxStatements(config, cap) {
   return { ...config, max_statements: cap };
 }
-
 /**
  * Mirrors `SummarizationConfig::effective_max_statements` in
  * rust/src/summarization/mod.rs.
@@ -225,11 +204,9 @@ function effectiveMaxStatements(config, inputCount) {
   if (config.max_statements === null || config.max_statements === undefined) return Math.max(ratioTarget, 1);
   return Math.max(Math.min(config.max_statements, ratioTarget), 1);
 }
-
 const ALPHANUMERIC = /^[\p{Alphabetic}\p{N}]$/u;
 const ALPHABETIC = /^\p{Alphabetic}$/u;
 const TERMINALS = new Set(['.', '!', '?', '。', '…', '।', '॥', '\n']);
-
 /** Mirrors `fn period_belongs_to_token` in rust/src/summarization/mod.rs. */
 function periodBelongsToToken(buffer, next) {
   const chars = Array.from(buffer);
@@ -254,7 +231,6 @@ function periodBelongsToToken(buffer, next) {
   for (const segment of segments.slice(1)) if (!isLetter(segment)) return false;
   return segments.length >= 2;
 }
-
 /**
  * Mirrors `fn weight_for_kind` in rust/src/summarization/mod.rs.
  * @param {string} kind
@@ -272,7 +248,6 @@ function weightForKind(kind) {
     default: return 30;
   }
 }
-
 /**
  * The `summary_classification_cue` meanings in declaration order, each with its
  * resolved kind and surface words (the `OnceLock`-style cache of the lexicon
@@ -282,7 +257,6 @@ function classificationCues() {
   return cached('summarization-classification-cues', () => meaningsWithRole(ROLE_SUMMARY_CLASSIFICATION_CUE)
     .map((meaning) => ({ kind: statementKindFromSlug(meaning.slug), words: words(meaning) })));
 }
-
 /**
  * Mirrors `fn classify_sentence` in rust/src/summarization/mod.rs: the kind of
  * the first `summary_classification_cue` meaning whose surface occurs in the
@@ -301,7 +275,6 @@ function classifySentence(sentence) {
   }
   return StatementKind.Misc;
 }
-
 /** Mirrors `fn push_sentence` in rust/src/summarization/mod.rs. */
 function pushSentence(buffer, out) {
   const sentence = buffer.replaceAll('\n', '').replace(/^\p{White_Space}+|\p{White_Space}+$/gu, '');
@@ -309,7 +282,6 @@ function pushSentence(buffer, out) {
   const kind = classifySentence(sentence);
   out.push(statement(sentence, kind, weightForKind(kind)));
 }
-
 /**
  * Mirrors `fn formalize` in rust/src/summarization/mod.rs: the text split into
  * classified, weighted sentence statements. A sentence ends at `.`, `!`, `?`,
@@ -334,7 +306,6 @@ function formalize(text) {
   pushSentence(buffer, out);
   return out;
 }
-
 /**
  * Mirrors `fn summarize` in rust/src/summarization/mod.rs: boilerplate dropped,
  * ordered by descending weight (stable), capped at the effective maximum, and
@@ -350,7 +321,6 @@ function summarize(statements, config) {
   filtered.sort((left, right) => right.weight - left.weight);
   const cap = effectiveMaxStatements(config, filtered.length);
   filtered.length = Math.min(filtered.length, cap);
-
   if (config.mode === SummarizationMode.Expand) {
     const expanded = [];
     for (const candidate of filtered) {
@@ -364,15 +334,12 @@ function summarize(statements, config) {
     }
     return expanded;
   }
-
   if (config.use_compound_words) {
     for (const candidate of filtered) candidate.text = applyCompoundWords(candidate.text, config.language);
   }
   return filtered;
 }
-
 const TERMINAL_PUNCTUATION = new Set(['.', '!', '?', '。', '…', '।', '॥', '」', '"']);
-
 /**
  * Mirrors `fn deformalize` in rust/src/summarization/mod.rs: the statements as
  * one block of prose, each re-punctuated and joined by single spaces.
@@ -388,9 +355,7 @@ function deformalize(statements) {
   }
   return rendered.join(' ');
 }
-
 const CLAMP_TRAILING = new Set(['.', ',', '!', '?', ';', ':', '…', '」', '"']);
-
 /** Mirrors `fn clamp_words` in rust/src/summarization/mod.rs. */
 function clampWords(text, maxWords) {
   const kept = text.split(/\p{White_Space}+/u).filter(Boolean).slice(0, maxWords).join(' ');
@@ -398,7 +363,6 @@ function clampWords(text, maxWords) {
   while (chars.length > 0 && CLAMP_TRAILING.has(chars[chars.length - 1])) chars.pop();
   return chars.join('');
 }
-
 /**
  * Mirrors `fn to_topic` in rust/src/summarization/mod.rs: a non-empty explicit
  * topic clamped to five words, otherwise the highest-weight statement
@@ -412,7 +376,6 @@ function toTopic(explicitTopic, statements) {
   const best = maxByWeight(statements);
   return best === null ? '' : clampWords(best.text, 5);
 }
-
 /**
  * `Iterator::max_by_key(|s| s.weight)`: the last statement of maximal weight,
  * or null for an empty slice.
@@ -424,7 +387,6 @@ function maxByWeight(statements) {
   for (const candidate of statements) if (best === null || candidate.weight >= best.weight) best = candidate;
   return best;
 }
-
 /**
  * The `[from, to]` substitution pairs of a data/meta/agentic-messages.lino
  * entry: `from=>to` records separated by `|`, in the order Rust lists them
@@ -435,7 +397,6 @@ function maxByWeight(statements) {
 function messagePairs(key) {
   return agenticMessage(key).split('|').map((pair) => pair.split('=>'));
 }
-
 /**
  * Mirrors `fn apply_compound_words` in rust/src/summarization/mod.rs: shorter
  * compound forms (Russian for `ru`, English otherwise).
@@ -448,7 +409,6 @@ function applyCompoundWords(text, language) {
   for (const [long, short] of pairs) out = out.split(long).join(short);
   return out;
 }
-
 /**
  * Mirrors `fn apply_semantic_primes` in rust/src/summarization/mod.rs: compound
  * or rare words replaced by NSM semantic primes.
@@ -461,7 +421,6 @@ function applySemanticPrimes(text, language) {
   for (const [compound, prime] of pairs) out = out.split(compound).join(prime);
   return out;
 }
-
 return Object.freeze({
   DEFAULT_MAX_STATEMENTS,
   ROLE_SUMMARY_CLASSIFICATION_CUE,

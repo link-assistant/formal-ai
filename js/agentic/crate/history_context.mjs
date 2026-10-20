@@ -10,6 +10,9 @@
 // importers are js/agentic/crate/history_github.mjs and the lineage route's
 // claim and answer are js/agentic/crate/history_lineage.mjs.
 
+import { callbackValue as canonicalUnaryValue } from '../callback_values.mjs';
+import { callbackTrim as canonicalUnaryTrim } from '../callback_values.mjs';
+import { callbackHasLength as canonicalUnaryPositiveLength } from '../callback_values.mjs';
 import { cached, readText } from '../host.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
 
@@ -22,7 +25,7 @@ const UNIT_SEPARATOR = '\u001f';
 function childValues(node, name) {
   return (node?.children || [])
     .filter((child) => child.name === name && child.value)
-    .map((child) => child.value);
+    .map(canonicalUnaryValue);
 }
 
 /**
@@ -162,7 +165,7 @@ export function parseLogOutput(text) {
       committerDate: fields[2].trim(),
       subject: fields[3].trim(),
       body: fields[4].trimEnd(),
-      changedPaths: fields[5].split('\n').map((line) => line.trim()).filter((line) => line.length > 0),
+      changedPaths: fields[5].split('\n').map(canonicalUnaryTrim).filter(canonicalUnaryPositiveLength),
     });
   }
   return commits.reverse();
@@ -263,12 +266,12 @@ function bareWord(token) {
 /** Mirrors `item_header`: the `keyword name` label a top-level line opens. */
 function itemHeader(line, keywords, spanKeywords, modifiers) {
   if (line.length === 0 || /^\s/u.test(line)) return null;
-  const tokens = line.split(/\s+/u).filter((token) => token.length > 0);
+  const tokens = line.split(/\s+/u).filter(canonicalUnaryPositiveLength);
   const isKeyword = (token) => keywords.includes(bareWord(token));
   for (let index = 0; index < tokens.length; index += 1) {
     const word = bareWord(tokens[index]);
     if (spanKeywords.includes(word)) {
-      const header = line.split(/[{;]/u)[0].split(/\s+/u).filter((token) => token.length > 0).join(' ');
+      const header = line.split(/[{;]/u)[0].split(/\s+/u).filter(canonicalUnaryPositiveLength).join(' ');
       const start = header.indexOf(word);
       return start === -1 ? null : header.slice(start);
     }

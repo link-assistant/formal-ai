@@ -1,4 +1,5 @@
 // Candidate discovery observes resources; it does not infer their domain semantics.
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { Capability } from './capability.mjs';
 import { qualifiedToolAttempt } from './progress.mjs';
 import { toolFor } from './capability_router.mjs';
@@ -142,7 +143,7 @@ export function workspaceDiscoveryStep(task, progress, tools, originalNeed = tas
   }
   const unique = [...new Set(lines)];
   const candidates = unique.filter(path => {
-    const terms = path.split(/[\/_.-]+/u).map(word => word.toLowerCase());
+    const terms = path.split(/[\/_.-]+/u).map(canonicalUnaryLower);
     return contract.words.every(word => terms.includes(word));
   });
   if (candidates.length === 0) return observation('no_candidate',contract,

@@ -3,18 +3,15 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/seed.mjs"] = (crateRequire) => {
 // The seed readers the planner calls (rust/src/seed.rs: `response_for`,
 // `response_variant_for`, `render_response`, `localized_response`,
 // `response_values_for`; rust/src/seed/planner_precedence.rs).
-
+const { callbackTrim: canonicalUnaryTrim } = crateRequire("callback_values.mjs");
 const { cached, childValue, childrenNamed, parseLino, readText } = crateRequire("host.mjs");
 const { languageFromSlug } = crateRequire("crate/language.mjs");
-
 /** The one inventory of the seed files and the lexicons that read them. */
 const SEED_REGISTRY = 'data/meta/seed-registry.lino';
-
 /** `RESPONSE_FILES`: every seed the registry (data/meta/seed-registry.lino) gives the
  * Mirrors `const RESPONSE_FILES` in rust/src/seed/embedded_registry.rs.
  * `response` lexicon, in its order, as rust/src/seed/embedded_registry.rs lists them. */
@@ -23,7 +20,6 @@ function responseFiles() {
     .filter((seed) => childrenNamed(seed, 'lexicon').some((lexicon) => lexicon.id === 'response'))
     .map((seed) => `data/seed/${seed.id}.lino`));
 }
-
 /** Mirrors `fn multilingual_responses`: `{id, intent, language, text, variants}` records. */
 function multilingualResponses() {
   return cached('multilingual-responses', () => {
@@ -46,16 +42,13 @@ function multilingualResponses() {
     return out;
   });
 }
-
 function record(intent, language) {
   return multilingualResponses().find((entry) => entry.intent === intent && entry.language === language) ?? null;
 }
-
 /** Mirrors `fn response_for`. */
 function responseFor(intent, language) {
   return record(intent, language)?.text ?? null;
 }
-
 /** Mirrors `fn response_variant_for` (FNV-1a over the trimmed prompt bytes). */
 function responseVariantFor(intent, language, prompt) {
   const found = record(intent, language);
@@ -67,14 +60,12 @@ function responseVariantFor(intent, language, prompt) {
   }
   return found.variants[Number(hash % BigInt(found.variants.length))];
 }
-
 /** Mirrors `fn render_response`. @param {Array<[string, string]>} values */
 function renderResponse(intent, language, values) {
   const text = responseFor(intent, language);
   if (text === null) return null;
   return values.reduce((rendered, [name, value]) => rendered.split(`{${name}}`).join(value), text);
 }
-
 /** Mirrors `fn localized_response`. */
 function localizedResponse(intent, language) {
   const text = responseFor(intent, language);
@@ -85,13 +76,11 @@ function localizedResponse(intent, language) {
   }
   return responseFor(intent, 'en');
 }
-
 /** Mirrors `fn response_values_for` (`split_pipe_list`). */
 function responseValuesFor(intent, language) {
   const text = responseFor(intent, language);
   return text === null ? null : splitPipeList(text);
 }
-
 /** Mirrors `fn split_pipe_list` in rust/src/seed/parser.rs. */
 function splitPipeList(raw) {
   const trimmed = raw.trim();
@@ -99,9 +88,8 @@ function splitPipeList(raw) {
   if (trimmed.startsWith('(') && trimmed.endsWith(')') && trimmed.length >= 2) {
     return splitReferenceTokens(trimmed.slice(1, -1));
   }
-  return trimmed.split('|').map((part) => part.trim()).filter(Boolean);
+  return trimmed.split('|').map(canonicalUnaryTrim).filter(Boolean);
 }
-
 /** Mirrors `fn split_reference_tokens` in rust/src/seed/parser.rs. */
 function splitReferenceTokens(body) {
   const chars = Array.from(body);
@@ -141,13 +129,11 @@ function splitReferenceTokens(body) {
   }
   return tokens;
 }
-
 /** Mirrors `fn planner_precedence` (rust/src/seed/planner_precedence.rs). */
 function plannerPrecedence() {
   return cached('planner-precedence', () =>
     parseLino(readText('data/seed/planner-precedence.lino')).children.map((child) => child.name));
 }
-
 return Object.freeze({
   responseFiles,
   multilingualResponses,

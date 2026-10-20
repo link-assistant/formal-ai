@@ -22,6 +22,7 @@
 // the grammars a host loads (the vendored tree-sitter-rust), and states
 // exactly which of meta-language's numbers it reproduces.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { agenticMessage } from '../messages.mjs';
 import { flattenLinoValue } from './links_format.mjs';
 import {
@@ -299,7 +300,7 @@ function fenceLanguage(trimmedLine) {
  * @param {string} path
  */
 export function detectRepositoryFileFormat(path) {
-  const lower = path.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  const lower = path.replace(/[A-Z]/g, canonicalUnaryLower);
   const fileName = pathFileName(lower) ?? '';
   switch (fileName) {
     case 'cargo.toml': case 'pyproject.toml': return 'toml';
@@ -356,7 +357,7 @@ function pathExtension(fileName) {
 
 /** Mirrors `fn normalize_language_label` in rust/src/summarization/file.rs. */
 function normalizeLanguageLabel(label) {
-  const lower = label.replace(TRIM_BOTH, '').replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+  const lower = label.replace(TRIM_BOTH, '').replace(/[A-Z]/g, canonicalUnaryLower);
   switch (lower) {
     case 'rs': return 'rust';
     case 'js': case 'mjs': case 'cjs': case 'jsx': return 'javascript';

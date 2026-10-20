@@ -1,6 +1,7 @@
 // Composing the document a request describes, instead of writing its
 // description (issue #1066): rust/src/agentic_coding/note_composition.rs.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { plainText, rustLines } from './content.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { eqIgnoreAsciiCase, splitWhitespace, trim, trimEndMatches, trimStartMatches } from './crate/rust_str.mjs';
@@ -61,7 +62,7 @@ function enumeratedParts(sentence) {
     .split(',')
     .flatMap((span) => splitOnSeparators(span, separators))
     .map(trimmedPart)
-    .filter((part) => part !== '');
+    .filter(canonicalUnaryNonempty);
   return parts.length >= 2 ? parts : null;
 }
 

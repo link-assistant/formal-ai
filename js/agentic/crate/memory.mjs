@@ -7,6 +7,7 @@
 // `agentic_coding::algorithm_learning` and `agentic_coding::learning_report`.
 // File access is the caller's: this module only parses and renders text.
 
+import { callbackHasLength as canonicalUnaryPositiveLength } from '../callback_values.mjs';
 import { rustLines } from '../content.mjs';
 import { trimEnd, trimStart } from './rust_str.mjs';
 
@@ -153,7 +154,7 @@ export function parseLinksNotation(text) {
     if (FIELD_BY_KEY.has(key)) current[FIELD_BY_KEY.get(key)] = value;
     else if (key === 'accessCount') current.access_count = parseCount(value) ?? 0;
     else if (key === 'writeCount') current.write_count = Math.max(parseCount(value) ?? 1, 1);
-    else if (key === 'evidence') current.evidence = value.split('|').filter((item) => item.length > 0);
+    else if (key === 'evidence') current.evidence = value.split('|').filter(canonicalUnaryPositiveLength);
     else current.unknown_fields.push([key, value]);
   }
   if (current) events.push(current);

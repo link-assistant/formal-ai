@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e91cfa8a7322fe67ee4837ced797a9b31a33f7ba39da32a7d974610f27d057b7 bytes=12889
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=315503f64ffb45c002c16da14ccc31fbbc72e9c9e07626ad9c6c2df617be441d bytes=12965
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds string-methods items=1
 
@@ -339,6 +339,10 @@ pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
 
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=2d9b8c1bb4b4437bcb320c603c2f802a000e40fa9092307c59f02af758705f8f
 // | /** The one inventory of the seed files and the lexicons that read them. */
 // | const SEED_REGISTRY = 'data/meta/seed-registry.lino';
@@ -472,7 +476,7 @@ pub fn ml_contains_cjk_loop2(mut ml_values1: Vec<String>, mut ml_index1: crate::
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .flatMap()
-// formal-ai:blockers arrow callback of .flatMap() | arrow callback of .map() | field access | method call .flatMap() | method call .map()
+// formal-ai:blockers arrow callback of .flatMap() | field access | imported value | method call .flatMap() | method call .map()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .flatMap()

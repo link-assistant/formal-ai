@@ -1,3 +1,4 @@
+import { callbackHasLength as canonicalUnaryPositiveLength } from '../callback_values.mjs';
 import { parseWriteContract } from '../general_planner.mjs';
 import { bareSurfaces, cleanCueToken, cleanPathToken, firstActionCueEnd, firstActionCueStart, firstContentLeadEnd, looksLikeFilePath, tokens } from '../write_request.mjs';
 import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
@@ -43,7 +44,7 @@ export function ownsAdditiveScope(request) {
     const paths = tokens(request).filter(token => looksLikeFilePath(cleanPathToken(token.text)));
     const words = tokens(request);
     const leads = bareSurfaces('file_edit_line_lead').map(surface => surface.toLowerCase().split(/\s+/u))
-      .filter(surface => surface.length > 0).sort((left, right) => right.length - left.length);
+      .filter(canonicalUnaryPositiveLength).sort((left, right) => right.length - left.length);
     let lead = null;
     for (let index = 0; index < words.length && lead === null; index++) {
       const matched = leads.find(surface => surface.every((word, offset) =>

@@ -6,6 +6,7 @@
 // async: webResearchQueryFor, unresolvedWebResearchQueryFor,
 // midResearchWebQueryFor, definitionFollowupTopic.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { Capability, registryId } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { chatMessageToTurn, latestUserRequest, userRequestText } from './content.mjs';
@@ -436,7 +437,7 @@ function extractAnswer(query, rawEvidence) {
 
 /** Mirrors `fn structurally_complete_prose`. */
 function structurallyCompleteProse(evidence) {
-  const blocks = evidence.split('\n\n').map(trim).filter((block) => block !== '');
+  const blocks = evidence.split('\n\n').map(trim).filter(canonicalUnaryNonempty);
   const prose = blocks.filter((block) => {
     const chars = Array.from(block);
     return chars.length && isSentenceTerminal(chars[chars.length - 1]);

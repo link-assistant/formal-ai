@@ -10,6 +10,8 @@
 // (translation_formalization.mjs), the modules the Rust file imports from
 // `crate::summarization` and `crate::translation`.
 
+import { callbackTrim as canonicalUnaryTrim } from '../callback_values.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
 import { clientContractObservation } from './client_contract_learning.mjs';
 import { detect, languageFromSlug } from './language.mjs';
 import { isJsonObject, jsonValueStream, firstJsonValue } from './orchestration_json_stream.mjs';
@@ -93,8 +95,8 @@ function contentText(value) {
     })
     .map((part) => asString(getKey(part, 'text')))
     .filter((text) => text !== undefined)
-    .map((text) => text.trim())
-    .filter((text) => text !== '');
+    .map(canonicalUnaryTrim)
+    .filter(canonicalUnaryNonempty);
   return parts.length > 0 ? parts.join('\n') : null;
 }
 

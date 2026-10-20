@@ -858,14 +858,8 @@ fn unquote(value: &str) -> String {
     out
 }
 
-fn quote(value: &str) -> String {
-    value
-        .replace('\\', "\\\\")
-        .replace('"', "\\\"")
-        .replace('\n', "\\n")
-        .replace('\r', "\\r")
-        .replace('\t', "\\t")
-}
+// Preserve this module's existing quote name through the canonical identical escaper.
+use crate::memory::escape_value as quote;
 
 fn push_field(out: &mut String, depth: usize, key: &str, value: &str) {
     for _ in 0..depth {

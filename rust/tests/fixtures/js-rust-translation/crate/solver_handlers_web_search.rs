@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=6c53c98c7ad63c0510aee65feedaab7eb38f6fcf5ebbe036a7318d8c7d5650cb bytes=24940
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=2e43e81142ef770eab2794ac3d4fbd668d4903f175ebcce3559e5205728e0cec bytes=25016
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=9
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -88,7 +92,7 @@
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .filter()
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | arrow function | call of an imported function | field access | method call .filter() | method call .map()
+// formal-ai:blockers arrow callback of .filter() | arrow function | call of an imported function | imported value | method call .filter() | method call .map()
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .map()

@@ -61,6 +61,13 @@ export function validateProgram(language, source) {
   }
 }
 
+/** Installed executable identities, supplied by the host rather than conversation metadata. */
+export function sourceCstTransformCommand() {
+ const command=current?.sourceCstTransformCommand?.();
+ const absolute=value=>typeof value==='string'&&/^(?:\/|[A-Za-z]:[\\/])/u.test(value)&&!value.includes('\0');
+ return Array.isArray(command)&&command.length===2&&command.every(absolute)?[...command]:null;
+}
+
 /** Whether a host is installed. */
 export function hasHost() {
   return current !== null;

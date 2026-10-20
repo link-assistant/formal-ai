@@ -3,20 +3,17 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/seed_caller_context.mjs"] = (crateRequire) => {
 // `crate::seed::caller_context_vocabulary` (rust/src/seed/caller_context.rs),
 // read from data/seed/caller-context.lino.
-
+const { callbackValue: canonicalUnaryValue } = crateRequire("callback_values.mjs");
 const { cached, readText } = crateRequire("host.mjs");
 const { parseRoot } = crateRequire("crate/seed_parser.mjs");
 const { isAlphanumeric, trimMatches, trimStart } = crateRequire("crate/rust_str.mjs");
-
 const collectLanguageValues = (group, name) => (group.children || [])
   .filter((child) => child.name === 'language')
   .flatMap((language) => (language.children || []).filter((child) => child.name === name)
     .map((child) => child.value.toLowerCase()));
-
 /** Mirrors `fn caller_context_vocabulary`. */
 function callerContextVocabulary() {
   return cached('caller-context-vocabulary', () => {
@@ -30,7 +27,7 @@ function callerContextVocabulary() {
       if (group.name === 'injected_blocks') {
         vocab.injected_blocks = (group.children || []).filter((child) => child.name === 'block').map((block) => ({
           tag: block.value,
-          clients: (block.children || []).filter((child) => child.name === 'client').map((child) => child.value),
+          clients: (block.children || []).filter((child) => child.name === 'client').map(canonicalUnaryValue),
         }));
       } else if (group.name === 'fact_statement_copulas') {
         vocab.fact_statement_copulas = collectLanguageValues(group, 'copula');
@@ -47,25 +44,21 @@ function callerContextVocabulary() {
     return vocab;
   });
 }
-
 /** Mirrors `const fn is_unspaced_script`. @param {string} character */
 function isUnspacedScript(character) {
   const cp = character.codePointAt(0);
   return (cp >= 0x3400 && cp <= 0x9fff) || (cp >= 0xf900 && cp <= 0xfaff);
 }
-
 function startsWithWordCharacter(text) {
   const first = Array.from(text)[0];
   return first !== undefined && (isAlphanumeric(first) || first === '_');
 }
-
 /** Mirrors `CallerContextVocabulary::copula_in`. */
 function copulaIn(token) {
   const trimmed = trimMatches(token, (character) => !isAlphanumeric(character) && !'—–-'.includes(character));
   return callerContextVocabulary().fact_statement_copulas.find((copula) => copula === trimmed
     || (Array.from(copula).some(isUnspacedScript) && trimmed.includes(copula))) ?? null;
 }
-
 /** Mirrors `CallerContextVocabulary::asks_a_question`. */
 function asksAQuestion(sentence) {
   const vocab = callerContextVocabulary();
@@ -74,7 +67,6 @@ function asksAQuestion(sentence) {
     return sentence.split(/[^\p{Alphabetic}\p{N}'’]/u).some((token) => token === word);
   });
 }
-
 /** Mirrors `CallerContextVocabulary::policy_lead_clause`. */
 function policyLeadClause(lowercased) {
   const text = trimStart(lowercased);
@@ -85,18 +77,15 @@ function policyLeadClause(lowercased) {
   }
   return null;
 }
-
 /** Mirrors `CallerContextVocabulary::opens_with_policy_lead`. */
 function opensWithPolicyLead(lowercased) {
   return policyLeadClause(lowercased) !== null;
 }
-
 /** Mirrors `CallerContextVocabulary::carries_policy_lead`. */
 function carriesPolicyLead(lowercased) {
   return opensWithPolicyLead(lowercased)
     || callerContextVocabulary().policy_leads.some((lead) => lowercased.includes(` ${lead} `));
 }
-
 return Object.freeze({
   callerContextVocabulary,
   copulaIn,

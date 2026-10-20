@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8ae4309a6bcb994b12e0b4b23884c56a48aeadc4bf31b82e6f66b774f38b254b bytes=15736
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b8fed4dc537e7f3e20e99beafbad8f47c69363d128abac5659caee879fa79d94 bytes=15806
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=6; string-methods items=1
 
@@ -16,6 +16,10 @@ pub fn wa_str_split(text: String, separator: String) -> Vec<String> {
 pub fn wa_strs_join(items: Vec<String>, separator: String) -> String {
     items.join(separator.as_str()) }
 // formal-ai:workaround-prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -116,7 +120,7 @@ pub fn replace_text(text: String, from: String, to: String) -> String {
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
-// formal-ai:blockers arrow callback of .every() | arrow callback of .map() | call of an imported function | field access | method call .every() | method call .map()
+// formal-ai:blockers arrow callback of .every() | call of an imported function | imported value | method call .every() | method call .map()
 
 // meta-language:carried JavaScript function_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)

@@ -13,6 +13,9 @@
 // line_adjacent_below, line_move_action, line_swap_action) in every registered
 // language.
 
+import { callbackText as canonicalUnaryText } from './callback_values.mjs';
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
 import { unescapeProseNewlines } from './positional_edit.mjs';
@@ -50,12 +53,12 @@ export function namedTargetAndPayloads(task) {
   const quotedOver = (token) => segments.some((segment) => token.start < segment.end && token.end > segment.start);
   const unquoted = [...new Set(tokens(task).filter((token) => !quotedOver(token))
     .map((token) => cleanPathToken(token.text)).filter(isPath))];
-  const quoted = [...new Set(segments.map((segment) => segment.text).filter(isPath))];
+  const quoted = [...new Set(segments.map(canonicalUnaryText).filter(isPath))];
   let target = null;
   if (unquoted.length === 1) [target] = unquoted;
   else if (unquoted.length === 0 && quoted.length === 1) [target] = quoted;
   if (target === null) return null;
-  return { target, payloads: segments.map((segment) => segment.text).filter((text) => text !== target && trim(text) !== '') };
+  return { target, payloads: segments.map(canonicalUnaryText).filter((text) => text !== target && trim(text) !== '') };
 }
 
 /**
@@ -96,7 +99,7 @@ function linePieces(task) {
   return pieces;
 }
 
-const roleWords = (role) => wordsForRole(role).map((word) => word.toLowerCase());
+const roleWords = (role) => wordsForRole(role).map(canonicalUnaryLower);
 
 /**
  * Mirrors `fn numbered_lines`: every line number or range the request names —
@@ -142,7 +145,7 @@ function ordinalValue(meaning) {
   for (const slug of meaning.defined_by) {
     const cardinal = seedMeaning(slug);
     if (!cardinal || !cardinal.roles.includes('cardinal_number_word')) continue;
-    const digits = cardinal.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text))
+    const digits = cardinal.lexemes.flatMap((lexeme) => lexeme.words.map(canonicalUnaryText))
       .find((text) => /^[0-9]{1,9}$/u.test(text));
     if (digits !== undefined) return Number(digits);
   }
@@ -157,14 +160,14 @@ function ordinalValue(meaning) {
  */
 function ordinalLines(task) {
   const outside = textOutsideQuotedSegments(task).toLowerCase();
-  const nouns = roleWords('numbered_line_noun').filter((noun) => noun !== '');
+  const nouns = roleWords('numbered_line_noun').filter(canonicalUnaryNonempty);
   const found = [];
   for (const [role, fromEnd] of [['line_ordinal', false], ['line_ordinal_last', true]]) {
     for (const meaning of meaningsWithRole(role)) {
       const value = ordinalValue(meaning);
       if (value === null) continue;
       const surfaces = meaning.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text.toLowerCase()));
-      for (const surface of surfaces.filter((text) => text !== '')) {
+      for (const surface of surfaces.filter(canonicalUnaryNonempty)) {
         for (let at = outside.indexOf(surface); at >= 0; at = outside.indexOf(surface, at + surface.length)) {
           if (joinsWord(Array.from(outside.slice(0, at)).pop())) continue;
           const rest = outside.slice(at + surface.length);

@@ -4,6 +4,7 @@
 // captures (fact_derivation.mjs, issue #1172 R9). Only the fields the match
 // reads are kept: `{subject_aliases, question_keywords}`.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached, readText } from '../host.mjs';
 import { normalizePrompt } from './engine.mjs';
 import { derivedFacts } from './fact_derivation.mjs';
@@ -22,8 +23,8 @@ function factRecords() {
       if (!entry.name.startsWith('fact_')) continue;
       if (!findChildValue(entry, 'summary') && !findChildValue(entry, 'release_timeline')) continue;
       out.push({
-        subject_aliases: splitPipeList(findChildValue(entry, 'subject_aliases')).map((alias) => alias.toLowerCase()),
-        question_keywords: splitPipeList(findChildValue(entry, 'question_keywords')).map((word) => word.toLowerCase()),
+        subject_aliases: splitPipeList(findChildValue(entry, 'subject_aliases')).map(canonicalUnaryLower),
+        question_keywords: splitPipeList(findChildValue(entry, 'question_keywords')).map(canonicalUnaryLower),
       });
     }
     for (const record of derivedFacts()) {

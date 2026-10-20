@@ -3,7 +3,6 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/skill_procedure_artifact.mjs"] = (crateRequire) => {
 // Durable, source-grounded procedure artifacts: a port of
 // rust/src/skill_procedure/artifact.rs (`artifact_links_notation`,
@@ -11,7 +10,7 @@
 // `extract_compiled_procedure_artifact`). Errors are
 // `ProcedureArtifactError`s; the planner only reads `.ok()`, so the reader
 // returns null for any of them.
-
+const { callbackValue: canonicalUnaryValue } = crateRequire("callback_values.mjs");
 const { jsonText } = crateRequire("plan.mjs");
 const { impulseIdFor } = crateRequire("crate/intent_formalization.mjs");
 const { pushLinoNode } = crateRequire("crate/links_format.mjs");
@@ -19,10 +18,8 @@ const { byteToUtf16 } = crateRequire("crate/rust_str.mjs");
 const { findChildValue, parseRoot } = crateRequire("crate/seed_parser.mjs");
 const { stableId } = crateRequire("crate/engine_stable_identifier.mjs");
 const { KNOWLEDGE_SCHEMA_VERSION, MINIMUM_STEPS, ROLE_SKILL_PROCEDURE_STEP_OBJECT, ROLE_SKILL_PROCEDURE_STEP_VERB, ROLE_TRANSLATION_LANGUAGE, canonicalProgram, meaningHasRole, requirementId, stepId } = crateRequire("crate/skill_procedure.mjs");
-
 /** A `ProcedureArtifactError`; `reason` is a slug, not the Rust prose. */
 class ProcedureArtifactError extends Error {}
-
 /**
  * Mirrors `CompiledProcedure::artifact_links_notation`: the complete
  * executable artifact with its source formalization and provenance.
@@ -64,30 +61,25 @@ function artifactLinksNotation(procedure) {
   }
   return out;
 }
-
 /** Mirrors `fn artifact_child` in rust/src/skill_procedure/artifact.rs. */
 function artifactChild(node, name) {
   const value = findChildValue(node, name);
   if (value === '') throw new ProcedureArtifactError(`missing_field:${name}:${node.name}`);
   return value;
 }
-
 /** Mirrors `fn optional_artifact_child`. */
 function optionalArtifactChild(node, name) {
   const value = findChildValue(node, name);
   return value === '' ? null : value;
 }
-
 /** Mirrors `fn artifact_usize`. */
 function artifactUsize(node, name) {
   const value = artifactChild(node, name);
   if (!/^\+?[0-9]+$/.test(value)) throw new ProcedureArtifactError(`invalid_field:${name}:${node.name}`);
   return Number(value.replace(/^\+/, ''));
 }
-
 /** Mirrors `fn child_values`. */
-const childValues = (node, name) => (node.children || []).filter((child) => child.name === name).map((child) => child.value);
-
+const childValues = (node, name) => (node.children || []).filter((child) => child.name === name).map(canonicalUnaryValue);
 /** Mirrors `fn span_matches`: `source.get(span) == Some(expected)` on UTF-8 byte offsets. */
 function spanMatches(source, span, expected) {
   if (span[0] > span[1]) return false;
@@ -95,7 +87,6 @@ function spanMatches(source, span, expected) {
   const end = byteToUtf16(source, span[1]);
   return start !== null && end !== null && source.slice(start, end) === expected;
 }
-
 /**
  * Whether two `[start, end]` source spans are the same span.
  * @param {number[]} left
@@ -103,7 +94,6 @@ function spanMatches(source, span, expected) {
  * @returns {boolean}
  */
 const sameSpan = (left, right) => left[0] === right[0] && left[1] === right[1];
-
 /** Mirrors `CompiledProcedure::validate_artifact`. */
 function validateArtifact(procedure) {
   if (procedure.requirements.length === 0 || procedure.steps.length < MINIMUM_STEPS) {
@@ -150,7 +140,6 @@ function validateArtifact(procedure) {
     if (step.id !== stepId(procedure.id, step)) throw new ProcedureArtifactError(`step_id_integrity_failure:${step.id}`);
   }
 }
-
 /** Mirrors `CompiledProcedure::from_artifact_links_notation` (throws `ProcedureArtifactError`). */
 function fromArtifactLinksNotation(text) {
   const root = (parseRoot(text).children || []).find((node) => node.name === 'compiled_procedure_artifact');
@@ -196,7 +185,6 @@ function fromArtifactLinksNotation(text) {
   validateArtifact(procedure);
   return procedure;
 }
-
 /**
  * Mirrors `fn extract_compiled_procedure_artifact(text).ok()`: the first
  * complete, integrity-checked artifact embedded in a response, or null.
@@ -215,12 +203,10 @@ function extractCompiledProcedureArtifact(text) {
     throw error;
   }
 }
-
 /** Rust built-in `#[derive(PartialEq)]` on `CompiledProcedure`. */
 function proceduresEqual(left, right) {
   return jsonText(left) === jsonText(right);
 }
-
 return Object.freeze({
   artifactLinksNotation,
   extractCompiledProcedureArtifact,

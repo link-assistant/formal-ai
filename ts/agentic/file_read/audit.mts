@@ -1,6 +1,8 @@
 // Answer rendering for completed file reads
 // (rust/src/agentic_coding/file_read/audit.rs).
 
+import { lower as canonicalUnaryLower } from '../crate/rust_str.mjs';
+import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
 import { rustLines } from '../content.mjs';
 import { detect } from '../crate/language.mjs';
 import { replaceAllLiteral, trim, trimEnd, trimStart } from '../crate/rust_str.mjs';
@@ -68,7 +70,7 @@ function boundedAuditAnswer(files, request) {
   const FINDINGS_TOTAL = 24;
   const FINDING_CHARS = 180;
   const PATH_CHARS = 160;
-  const markers = wordsForRole(ROLE_FILE_ANALYSIS_GAP_MARKER).map((surface) => surface.toLowerCase());
+  const markers = wordsForRole(ROLE_FILE_ANALYSIS_GAP_MARKER).map(canonicalUnaryLower);
   const language = detect(request);
   const response = (intent) => localizedResponse(intent, language) ?? '';
   const noFiles = agenticMessage('file_read_no_files_found');
@@ -80,7 +82,7 @@ function boundedAuditAnswer(files, request) {
     const grepResult = trimStart(content).startsWith('Found ');
     const findings = rustLines(content)
       .map(trim)
-      .filter((line) => line !== '')
+      .filter(canonicalUnaryNonempty)
       .filter((line) => !noMatches
         && (!grepResult || (!line.startsWith('Found ') && !line.endsWith(':')))
         && lineContainsGapMarker(line, markers))

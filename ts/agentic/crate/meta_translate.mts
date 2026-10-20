@@ -4,6 +4,7 @@
 // the planner only needs the structural gate and the request's roots/path.
 
 /** Mirrors `enum SourceRoot`: `{name, directory, owned_extension}` per root. */
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 export const SourceRoot = Object.freeze({
   Rust: Object.freeze({ name: 'rust', directory: 'rust', owned_extension: null }),
   JavaScript: Object.freeze({ name: 'js', directory: 'js', owned_extension: 'js' }),
@@ -16,7 +17,7 @@ export const SourceRoot = Object.freeze({
  * @param {string} name
  */
 export function parseSourceRoot(name) {
-  switch (name.trim().replace(/[A-Z]/g, (letter) => letter.toLowerCase())) {
+  switch (name.trim().replace(/[A-Z]/g, canonicalUnaryLower)) {
     case 'rust': case 'rs': return SourceRoot.Rust;
     case 'js': case 'javascript': return SourceRoot.JavaScript;
     case 'ts': case 'typescript': return SourceRoot.TypeScript;
@@ -30,7 +31,7 @@ export function escapesRoot(repoRelative) {
   return repoRelative.split('/').some((segment) => segment === '..');
 }
 
-const asciiLower = (text) => text.replace(/[A-Z]/g, (letter) => letter.toLowerCase());
+const asciiLower = (text) => text.replace(/[A-Z]/g, canonicalUnaryLower);
 const splitWhitespace = (text) => text.split(/\p{White_Space}+/u).filter(Boolean);
 
 /**

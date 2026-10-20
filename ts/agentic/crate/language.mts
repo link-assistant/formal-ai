@@ -6,6 +6,7 @@
 // The forced response language (issue #556) is a per-solve native slot the
 // planner never sets, so `detect` here never honours one.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached, readText } from '../host.mjs';
 import { rustLines } from '../content.mjs';
 
@@ -264,7 +265,7 @@ export function languageForConceptSlug(conceptSlug) {
     const right = Array.from(name);
     return new TextEncoder().encode(declared).length === new TextEncoder().encode(name).length
       && left.every((character, index) => right[index] !== undefined
-        && character.replace(/[A-Z]/g, (letter) => letter.toLowerCase()) === right[index]);
+        && character.replace(/[A-Z]/g, canonicalUnaryLower) === right[index]);
   });
   return rule ? rule.language : null;
 }

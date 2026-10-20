@@ -5,6 +5,7 @@
 // char-literal offsets agree byte for byte; request-side offsets are
 // JavaScript string indices (only their order is compared).
 
+import { callbackText as canonicalUnaryText } from './callback_values.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { latestResult, sourceFromReadResult } from './code_artifact.mjs';
@@ -165,7 +166,7 @@ export function insertQuotedMembersIntoNamedList(source, declaration, requiremen
   if (!requestsMemberInsertion(wordsJoined(requirement))) return null;
   const values = quotedSegmentSpans(requirement)
     .filter((segment) => !requirement.slice(segment.start).startsWith('`'))
-    .map((segment) => segment.text)
+    .map(canonicalUnaryText)
     .filter(isMemberLiteral);
   if (!values.length) return null;
   return insertMembers(source, { target: '', values, named: [declaration] });

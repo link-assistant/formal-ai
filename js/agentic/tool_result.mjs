@@ -1,6 +1,7 @@
 // Friendly, lossless presentation of client-owned tool results (issue #750):
 // a port of rust/src/agentic_coding/tool_result.rs.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
 import { fill as fillWorkItemStep } from './work_item_steps.mjs';
 import { plainText, rustLines } from './content.mjs';
 import { sourceFromAgentReadResult } from './code_artifact.mjs';
@@ -81,7 +82,7 @@ function labelledProcessExitCode(raw) {
     const line = toAsciiLowercase(trim(rawLine));
     const label = labels.find(candidate => line.startsWith(candidate));
     if (label === undefined) continue;
-    const token = line.slice(label.length).split(/[^0-9-]/u).find(part => part !== '');
+    const token = line.slice(label.length).split(/[^0-9-]/u).find(canonicalUnaryNonempty);
     if (token !== undefined) {
       const code = parseI64(token);
       if (code !== null) return code;
@@ -467,7 +468,7 @@ function parseShellEnvelope(text) {
   const errorAt = lastIndexWhere(head, (line) => isField(line, 'Error'), outputAt + 1);
   const output = envelopeSection(lines.slice(outputAt, errorAt < 0 ? end : errorAt), 'Output:');
   const stated = errorAt < 0 ? '' : envelopeSection(lines.slice(errorAt, end), 'Error:');
-  const error = exitCode === null ? [stated, ...killed].filter((part) => part !== '').join('\n') : stated;
+  const error = exitCode === null ? [stated, ...killed].filter(canonicalUnaryNonempty).join('\n') : stated;
   return { output, error, exit_code: exitCode };
 }
 

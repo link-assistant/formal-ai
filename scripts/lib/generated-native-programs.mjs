@@ -928,7 +928,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1491,"end":155
 "formal_ai::promotion::LEARNED_PROGRAM_RULES_SEED_FILE","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"data/seed/learned-program-rules.lino","nativeSourceQualified":true,"nativeBorrowedConstantQualified":
 true,"sourceSpan":{"start":2323,"end":2412},"sourceWitnesses":[{"path":"rust/src/promotion.rs","sha256":
-"9409722910d6be666afc48b9fe9db222e416e4227fab7366ac0a8296826baacb"},{"path":"rust/src/lib.rs","sha256":
+"3f0ac59e5d6baafdf0d7862e4a76623db415b640bd4a1c60a7c2923d7252e320"},{"path":"rust/src/lib.rs","sha256":
 "698ea00a9d9bfe1b0d0cbeb9f0033c39e24b47c3c043e9aac192e762cad60cfb"}],"maintainedMeta":
 "(constant LEARNED-PROGRAM-RULES-SEED-FILE (exported) (type string) (value (string data/seed/learned-program-rules.lino)))"
 ,"maintainedJavaScript":"export const LEARNED_PROGRAM_RULES_SEED_FILE = 'data/seed/learned-program-rules.lino';",
@@ -937,7 +937,7 @@ true,"sourceSpan":{"start":2323,"end":2412},"sourceWitnesses":[{"path":"rust/src
 "kind":"nativeConstant","nativeType":"&str","returnType":"string","value":"data/seed/learned-program-rules.lino",
 "nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":2323,"end":2412},
 "sourceWitnesses":[{"path":"rust/src/promotion.rs","sha256":
-"9409722910d6be666afc48b9fe9db222e416e4227fab7366ac0a8296826baacb"},{"path":"rust/src/lib.rs","sha256":
+"3f0ac59e5d6baafdf0d7862e4a76623db415b640bd4a1c60a7c2923d7252e320"},{"path":"rust/src/lib.rs","sha256":
 "698ea00a9d9bfe1b0d0cbeb9f0033c39e24b47c3c043e9aac192e762cad60cfb"}],"maintainedMeta":
 "(constant LEARNED-PROGRAM-RULES-SEED-FILE (exported) (type string) (value (string data/seed/learned-program-rules.lino)))"
 ,"maintainedJavaScript":"export const LEARNED_PROGRAM_RULES_SEED_FILE = 'data/seed/learned-program-rules.lino';",

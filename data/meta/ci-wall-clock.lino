@@ -15,10 +15,10 @@
 # Each semantic verdict remains25PASS/38FAIL; timing does not certify task success.
 # Their raw100-job/step observations are preserved in the coordinator evidence.
 ci_wall_clock pull_request_pipeline
-  measured_minutes 115
-  measured_date "2026-10-12"
+  measured_minutes 120
+  measured_date "2026-10-21"
   ceiling_minutes 225
-  workflow ".github/workflows/release.yml"
-  chain "base(->reusable:pin-base-commit.yml:5m)->macos-core-tests(->reusable:macos-core-tests.yml:85m)->build(20m)->pipeline-status(5m)"
-  note "The optional all-mode Agent CLI ladder retains schedule/manual execution and its historical cold-cycle observations above. Release-first deferral removes its pull-request reachability. The hosted check-ci-wall-clock on 8cbff5f8109a056dc916de3cdee9a5e9b4813103 discovers release.yml as the current 115-minute static maximum, below the unchanged 225-minute ceiling. This static timeout path does not certify observed timing, semantic success or production publication."
+  workflow ".github/workflows/hive-original-delivery.yml"
+  chain "build(30m)->image(30m)->delivery(30m)->verification(30m)"
+  note "The optional all-mode Agent CLI ladder retains schedule/manual execution and its historical cold-cycle observations above. The hosted check-ci-wall-clock on f3d853b13f6e24def23506755cb97b9721105c70 discovers the source-bound Hive build, image, delivery and verification chain as the current 120-minute static maximum, below the unchanged 225-minute ceiling. This static timeout path does not certify observed timing, semantic success or production publication."
   requirement "R1085-16"

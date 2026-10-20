@@ -2,6 +2,7 @@
 // the shared alias registry of data/seed/agentic-tool-capabilities.lino.
 // An entry is `{id, aliases, command_aliases, cues}`.
 
+import { lower as canonicalUnaryLower } from './rust_str.mjs';
 import { cached, readText } from '../host.mjs';
 import { splitPipeList } from './seed.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
@@ -15,7 +16,7 @@ export function agenticToolCapabilities() {
       const group = (node.children || []).find((child) => child.name === 'cues');
       const cues = (group ? group.children || [] : [])
         .flatMap((language) => splitPipeList(language.value))
-        .map((cue) => cue.toLowerCase());
+        .map(canonicalUnaryLower);
       return {
         id: node.value,
         aliases: splitPipeList(findChildValue(node, 'aliases')),

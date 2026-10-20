@@ -1,6 +1,8 @@
 // Resolve a user turn into the concrete shell command the agentic loop should
 // run: a port of rust/src/agentic_coding/shell_command.rs.
 
+import { callbackNonempty as canonicalUnaryNonempty } from './callback_values.mjs';
+import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import {
   commandSpan, governsCommandsRatherThanRequestingOne, isProseWord, namedShellCommandInSentence,
   normalizeCommandWord, sentenceSpans, shellQuotesPaired, statesACommandPolicy,
@@ -461,7 +463,7 @@ function outsideQuotedSegments(prompt) {
  * (PR #1188: `t.md से drop शब्द हटाओ।` ran `rm t.md`).
  */
 export function editsInsideAFile(prompt) {
-  const quoted = quotedSegmentSpans(prompt).map((segment) => trim(segment.text)).filter((text) => text !== '');
+  const quoted = quotedSegmentSpans(prompt).map((segment) => trim(segment.text)).filter(canonicalUnaryNonempty);
   if (quoted.some((text) => !looksLikeAPath(text))) return true;
   const outside = normalizePrompt(outsideQuotedSegments(withoutPathWords(prompt))).toLowerCase();
   const line = meaning('line');
@@ -543,8 +545,8 @@ const QUERY_CHARACTER = (character) => isAlphanumeric(character) || '_-.:'.inclu
 
 /** Mirrors `fn local_search_query`. */
 function localSearchQuery(prompt, cue, vocab) {
-  const cueWords = splitWhitespace(cue).map((word) => word.toLowerCase());
-  const scopeWords = vocab.local_search_scopes.flatMap((scope) => splitWhitespace(scope).map((word) => word.toLowerCase()));
+  const cueWords = splitWhitespace(cue).map(canonicalUnaryLower);
+  const scopeWords = vocab.local_search_scopes.flatMap((scope) => splitWhitespace(scope).map(canonicalUnaryLower));
   const query = splitWhitespace(prompt)
     .map((word) => trimMatches(word, (character) => !QUERY_CHARACTER(character)))
     .filter(Boolean)

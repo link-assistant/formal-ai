@@ -307,7 +307,27 @@ export function generatedFiles() {
   }
   const registry = readFileSync(path.join(REPO_ROOT, SEED_REGISTRY), 'utf8');
   files.set(`${WORKER_ROOT}/${REGISTRY_FILE}`, registryFileOf(meaningSeeds(registry), meaningSeeds(registry, 'response')));
+  const inventory = 'js/worker-modules.js';
+  const entries = readdirSync(path.join(REPO_ROOT, WORKER_ROOT), {withFileTypes: true})
+    .filter(entry => entry.isFile()).map(entry => entry.name);
+  files.set(inventory, workerModuleInventory(readFileSync(path.join(REPO_ROOT, inventory), 'utf8'), entries, files));
   return files;
+}
+
+/** Preserve the inventory's comments while deriving every current module from its owner. */
+export function workerModuleInventory(current, entries, generated) {
+  const marker = 'self.FORMAL_AI_WORKER_MODULES = Object.freeze([';
+  const at = current.indexOf(marker);
+  if (at < 0 || current.indexOf(marker, at + marker.length) >= 0 || !current.endsWith(']);\n')) {
+    throw new Error('Malformed worker module inventory');
+  }
+  const names = new Set(entries.filter(name => name.endsWith('.js') && name !== 'formal_ai_worker.js'
+    && (!name.startsWith(FILE_PREFIX) || name === LOADER_FILE || generated.has(`${WORKER_ROOT}/${name}`))));
+  for (const file of generated.keys()) {
+    if (file.startsWith(`${WORKER_ROOT}/`) && file.endsWith('.js')) names.add(path.posix.basename(file));
+  }
+  const rows = [...names].sort().map(name => `  ${JSON.stringify('worker/' + name)},`);
+  return current.slice(0, at) + marker + '\n' + rows.join('\n') + '\n]);\n';
 }
 
 /** The generated worker files on disk now (the hand-written loader excluded). */

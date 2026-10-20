@@ -172,10 +172,9 @@ fn project_schema_value(
             if let Some(path) = value
                 .as_str()
                 .filter(|_| demands_absolute_path(definition, name, property_schema))
+                && let Some(absolute) = absolute_path(path, workspace, creates_file)
             {
-                if let Some(absolute) = absolute_path(path, workspace, creates_file) {
-                    value = Value::String(absolute);
-                }
+                value = Value::String(absolute);
             }
             projected.insert(
                 name.clone(),

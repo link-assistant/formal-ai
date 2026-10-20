@@ -1,10 +1,18 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=2880382aa65f747371a397100b01f8a6246f8101bc1ef01b92ff2465ddda043e bytes=5348
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=fbbbb3320952b1afae8fdae00aeb21e785214d01cd64194487d8b5a2a5499fd7 bytes=5476
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:translated JavaScript import_statement items=1 sha256=ea67ac58c941251801bc82c22574a8e03c0fd9db18bf89015315cef5823b17a3
+// | import { lower as canonicalUnaryLower } from './rust_str.mjs';
+use crate::rust_str::lower as canonical_unary_lower;
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -20,11 +28,11 @@
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .flatMap()
-// formal-ai:blockers arrow callback of .flatMap() | arrow callback of .map() | arrow function | call of a sibling function | field access | method call .flatMap() | method call .map()
+// formal-ai:blockers arrow callback of .flatMap() | arrow function | call of a sibling function | imported value | method call .flatMap() | method call .map()
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .map()
-// formal-ai:blockers arrow callback of .map() | arrow function | method call .map()
+// formal-ai:blockers arrow function | method call .map()
 
 // meta-language:translated JavaScript lexical_declaration items=1 sha256=44f1c840798f1cf263e63276d83cf74e47f35234de148a5d8ac1c20251e389f9
 // | const ARGUMENTS = ['path', 'name_lead', 'one_path', 'two_paths', 'remainder', 'search_query'];

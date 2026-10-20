@@ -1,10 +1,18 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9eaa9695a0ee7c5f1cbddf81291310c470c474980e36f2615fb0ce93a2d4af34 bytes=22978
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9d2245ca646d673ca4c91e1e26b33fa86c965d1795b314878cd4463b39def11d bytes=23140
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=8
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -152,11 +160,11 @@ pub const ROUTING_FILE: &str = "data/seed/capability-routing.lino";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .flatMap() | arrow callback of .map() | call of an imported function | field access | method call .filter() | method call .flatMap() | method call .map()
+// formal-ai:blockers arrow callback of .filter() | arrow callback of .flatMap() | call of an imported function | field access | imported value | method call .filter() | method call .flatMap() | method call .map()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .map()
-// formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of an imported function | method call .filter() | method call .map() | method call .replace() | regular expression
+// formal-ai:blockers arrow callback of .map() | call of an imported function | imported value | method call .filter() | method call .map() | method call .replace() | regular expression
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .flatMap()

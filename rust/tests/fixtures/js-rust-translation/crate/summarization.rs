@@ -1,10 +1,14 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=981ace44aa9562e35df5dfb610784ce0279143d709f4203175861d1af2ab37c2 bytes=17890
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=7069819130d7c951c0a4dca8a2e7b116dcc97830a2d7f04d32702c553a1d6627 bytes=17940
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:translated JavaScript import_statement items=1 sha256=ea67ac58c941251801bc82c22574a8e03c0fd9db18bf89015315cef5823b17a3
+// | import { lower as canonicalUnaryLower } from './rust_str.mjs';
+use crate::rust_str::lower as canonical_unary_lower;
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -38,7 +42,7 @@ pub const ROLE_SUMMARY_CLASSIFICATION_CUE: &str = "summary_classification_cue";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .replace()
-// formal-ai:blockers arrow callback of .replace() | method call .replace() | regular expression | sibling value
+// formal-ai:blockers method call .replace() | regular expression | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal case test

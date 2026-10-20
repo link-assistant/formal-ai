@@ -243,6 +243,7 @@ export async function installNodeHost(worker, options = {}) {
     censusDocuments,
     censusSourceClosureComplete,
     sourceDocument,
+    sourceCstTransformCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/source-cst-transform-request.mjs')],
     generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
     validateProgram: validateRepairProgram,

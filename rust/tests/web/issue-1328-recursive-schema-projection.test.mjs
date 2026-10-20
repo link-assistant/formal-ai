@@ -46,7 +46,15 @@ test('declared nested objects and arrays of arrays use the same alias contract',
  const schema={type:'object',properties:{payload:{type:'object',properties:{groups:{type:'array',items:{type:'array',items:edit}}},required:['groups'],additionalProperties:false}},required:['payload'],additionalProperties:false};
  accepted(fixture(schema,{payload:{groups:[[{old:'a',new:'b'}],[{old:'c',new:'d'}]],unused:'alias'}}),{payload:{groups:[[{old_string:'a',new_string:'b'}],[{old_string:'c',new_string:'d'}]]}});
 });
-for(const [label,source] of [['wrong scalar',{paths:['a'],edits:'not an array'}],['null item',{paths:['a'],edits:[null]}],['explicit invalid alias target',{paths:['a'],edits:[{old_string:7,old:'alpha',new:'beta'}]}],['null explicit value',{paths:['a'],edits:[{old_string:null,old:'alpha',new:'beta'}]}],['missing edit text',{paths:['a'],edits:[{old:'alpha'}]}],['missing array',{paths:['a']}],['empty array',{paths:['a'],edits:[]}]] )test('invalid nested edit remains a boundary refusal: '+label,()=>{
+for(const [label,source] of [
+ ['wrong scalar',{paths:['a'],edits:'not an array'}],
+ ['null item',{paths:['a'],edits:[null]}],
+ ['explicit invalid alias target',{paths:['a'],edits:[{old_string:7,old:'alpha',new:'beta'}]}],
+ ['null explicit value',{paths:['a'],edits:[{old_string:null,old:'alpha',new:'beta'}]}],
+ ['missing edit text',{paths:['a'],edits:[{old:'alpha'}]}],
+ ['missing array',{paths:['a']}],
+ ['empty array',{paths:['a'],edits:[]}]
+] )test('invalid nested edit remains a boundary refusal: '+label,()=>{
  const result=fixture(multi,source);refused(result,multi);
  if(label==='explicit invalid alias target')assert.equal(result.projected.edits[0].old_string,7);
  if(label==='null explicit value')assert.equal(result.projected.edits[0].old_string,null);
