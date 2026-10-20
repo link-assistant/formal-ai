@@ -69,3 +69,10 @@ Keep local disk use bounded. Do not read or publish unrelated local session
 exports. Do not run Cargo, rustc, Docker, Electron or downloaded native products
 locally. Installed rustfmt may format text without compiling it. No additional
 subagents are needed after the completed collection and source-selection work.
+
+
+First automatic CI on `f2c8974a39437ae2bb7d2809a6f63552f5ffc736` caught
+an omitted embedded package-data regeneration and new compiled Git-observation
+literals above the existing ratchet. Recovery uses `mirror-package-data.mjs`
+and shared observation rules in `data/meta/work-item-steps.lino`; it does not
+raise the reviewed ceiling or relax the source-content check.

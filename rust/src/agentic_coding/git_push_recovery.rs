@@ -9,24 +9,30 @@ pub(super) fn recover(
     tools: &[&str],
     failure: &super::repair_loop::FailedStep,
 ) -> Option<AgenticPlan> {
-    if !failure.reported.contains("src refspec")
-        || !failure.reported.contains("does not match any")
-        || !failure
-            .failed_command
-            .as_deref()
-            .is_some_and(|command| command.contains("git push"))
+    let markers: Vec<String> = serde_json::from_str(&super::work_item_steps::fill(
+        "refspec-failure-markers",
+        &[],
+    ))
+    .expect("valid refspec observation markers");
+    let command = failure.failed_command.as_deref().unwrap_or_default();
+    let push_pattern = regex::Regex::new(&super::work_item_steps::fill(
+        "git-push-command-pattern",
+        &[],
+    ))
+    .expect("valid Git push observation pattern");
+    if !markers
+        .iter()
+        .all(|marker| failure.reported.contains(marker.as_str()))
+        || !push_pattern.is_match(command)
     {
         return None;
     }
-    let command = failure.failed_command.as_deref().unwrap_or_default();
-    if ![
-        "git push origin ",
-        "git push -q origin ",
-        "git push --quiet origin ",
-    ]
-    .iter()
-    .any(|prefix| command.contains(prefix))
-    {
+    let origin_pattern = regex::Regex::new(&super::work_item_steps::fill(
+        "origin-push-command-pattern",
+        &[],
+    ))
+    .expect("valid origin observation pattern");
+    if !origin_pattern.is_match(command) {
         return Some(AgenticPlan::Final("The push failed with an invalid local refspec. Inspect the current branch and the originally requested remote before retrying; no alternative remote is authorized.".to_owned()));
     }
     if messages.iter().any(|message| {
