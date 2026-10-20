@@ -142,7 +142,7 @@ pub fn response_arguments_for_tool(
     projected
 }
 
-pub(crate) fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
+pub fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
     let object = tool.as_object()?;
     object
         .get("parameters")

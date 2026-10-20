@@ -3,7 +3,7 @@ use crate::agentic_coding::planner::AgenticPlan;
 use crate::protocol::ChatMessage;
 use serde_json::{Value, json};
 
-pub(crate) fn invalid_arguments(value: &Value, schema: &Value, depth: usize) -> bool {
+pub fn invalid_arguments(value: &Value, schema: &Value, depth: usize) -> bool {
     if depth > 32 || schema == &Value::Bool(false) || schema.get("$ref").is_some() {
         return true;
     }
@@ -84,19 +84,17 @@ pub(crate) fn invalid_arguments(value: &Value, schema: &Value, depth: usize) -> 
     if let (Some(text), Some(pattern)) = (
         value.as_str(),
         schema.get("pattern").and_then(Value::as_str),
-    ) {
-        if pattern.chars().count() > 128
-            || text.chars().count() > 16384
-            || pattern.contains(['(', ')', '|', '{', '}', '\\'])
-            || pattern
-                .chars()
-                .filter(|ch| matches!(ch, '+' | '*' | '?'))
-                .count()
-                > 1
-            || regex::Regex::new(pattern).map_or(true, |pattern| !pattern.is_match(text))
-        {
-            return true;
-        }
+    ) && (pattern.chars().count() > 128
+        || text.chars().count() > 16384
+        || pattern.contains(['(', ')', '|', '{', '}', '\\'])
+        || pattern
+            .chars()
+            .filter(|ch| matches!(ch, '+' | '*' | '?'))
+            .count()
+            > 1
+        || regex::Regex::new(pattern).map_or(true, |pattern| !pattern.is_match(text)))
+    {
+        return true;
     }
     if let Some(number) = value.as_f64()
         && (schema
@@ -111,14 +109,15 @@ pub(crate) fn invalid_arguments(value: &Value, schema: &Value, depth: usize) -> 
         return true;
     }
     if let Some(items) = value.as_array() {
+        let length = items.len() as u64;
         if schema
             .get("minItems")
             .and_then(Value::as_u64)
-            .is_some_and(|n| items.len() < n as usize)
+            .is_some_and(|n| length < n)
             || schema
                 .get("maxItems")
                 .and_then(Value::as_u64)
-                .is_some_and(|n| items.len() > n as usize)
+                .is_some_and(|n| length > n)
         {
             return true;
         }
@@ -154,7 +153,7 @@ pub(crate) fn invalid_arguments(value: &Value, schema: &Value, depth: usize) -> 
     false
 }
 
-pub(crate) fn bind_plan(
+pub fn bind_plan(
     plan: AgenticPlan,
     tools: &[Value],
     messages: &[ChatMessage],
@@ -198,7 +197,7 @@ pub(crate) fn bind_plan(
                     || json!({"tool":call.tool,"arguments":call.arguments,"schema":schema}),
                 );
                 return AgenticPlan::Final(crate::seed::agentic_message(
-                    "tool_argument_binding_incomplete",
+                    "tool-argument-binding-incomplete",
                     &[("tool", &call.tool)],
                 ));
             }

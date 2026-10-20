@@ -5,6 +5,7 @@ use std::collections::BTreeMap;
 pub const MAXIMUM_IDENTICAL_ACTION_ATTEMPTS: usize = crate::bounded_retry::MAXIMUM_FAILED_ATTEMPTS;
 
 /// Stop even if errors are unrecognized, results are missing, or the server restarted.
+#[must_use]
 pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
     if messages
         .iter()
@@ -63,7 +64,7 @@ pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
     }
     if repeated.is_none() && total >= crate::bounded_retry::MAXIMUM_ACTIONS_PER_OBJECTIVE {
         return Some(crate::seed::agentic_message(
-            "action_budget_exhausted",
+            "action-budget-exhausted",
             &[
                 ("total", &total.to_string()),
                 (
@@ -79,12 +80,12 @@ pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
             && message.tool_call_id.as_deref() == Some(call.id.as_str())
     });
     let result = receipt.map_or_else(
-        || crate::seed::agentic_message("action_receipt_missing", &[]),
+        || crate::seed::agentic_message("action-receipt-missing", &[]),
         |message| message.content.plain_text(),
     );
     let detail: String = result.chars().take(2048).collect();
     Some(crate::seed::agentic_message(
-        "action_repetition_stopped",
+        "action-repetition-stopped",
         &[
             ("attempts", &attempts.to_string()),
             ("maximum", &MAXIMUM_IDENTICAL_ACTION_ATTEMPTS.to_string()),

@@ -13,10 +13,10 @@ export function gitPushRecovery(messages, tools, failure) {
   const command = failure.failed_command ?? '';
   if (!markers.every(marker => failure.reported.includes(marker))
     || !new RegExp(fill('git-push-command-pattern', []), 'u').test(command)) return null;
-  if (!new RegExp(fill('origin-push-command-pattern', []), 'u').test(command)) return finalAnswer(agenticMessage('git_refspec_other_remote'));
-  if (messages.some(message => message.role === 'user' && requestTargetBinding(typeof message.content === 'string' ? message.content : '', 'branch-binding-patterns', validBranchTarget).kind !== 'absent')) return finalAnswer(agenticMessage('git_refspec_explicit_branch'));
+  if (!new RegExp(fill('origin-push-command-pattern', []), 'u').test(command)) return finalAnswer(agenticMessage('git-refspec-other-remote'));
+  if (messages.some(message => message.role === 'user' && requestTargetBinding(typeof message.content === 'string' ? message.content : '', 'branch-binding-patterns', validBranchTarget).kind !== 'absent')) return finalAnswer(agenticMessage('git-refspec-explicit-branch'));
   const progress = Progress.scan(messages);
-  if (progress.hasRun(CURRENT_BRANCH_PUSH)) return finalAnswer(agenticMessage('git_refspec_recovery_attempted'));
+  if (progress.hasRun(CURRENT_BRANCH_PUSH)) return finalAnswer(agenticMessage('git-refspec-recovery-attempted'));
   const tool = toolFor(tools, Capability.Run);
-  return tool ? planOne(tool, jsonText({command: CURRENT_BRANCH_PUSH})) : finalAnswer(agenticMessage('git_refspec_shell_missing'));
+  return tool ? planOne(tool, jsonText({command: CURRENT_BRANCH_PUSH})) : finalAnswer(agenticMessage('git-refspec-shell-missing'));
 }

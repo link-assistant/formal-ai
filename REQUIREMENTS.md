@@ -185,3 +185,4 @@ the areas are the whole register.
    - Issue #1212 Project Motto and Evidence-Driven Discovery
    - Issue #1213 Cryptographic Provenance Prototype
    - Issue #1220 Structured Links Notation Logging
+   - Bounded actions and observable failure

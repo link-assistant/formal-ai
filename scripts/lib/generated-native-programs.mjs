@@ -886,7 +886,7 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1491,"end":155
 ,"canonicalPath":"formal_ai::memory_sync::LEARNED_CHUNK_KIND","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"meta_learned_chunk","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,"sourceSpan":{
 "start":7336,"end":7394},"sourceWitnesses":[{"path":"rust/src/memory_sync.rs","sha256":
-"90fc4a46a5135452fb814ffc2f26ede3f6b4ec6ee6a66d1a9b4bcf1e944f146d"},{"path":"rust/src/lib.rs","sha256":
+"733014536f00299ffb7d4945b90079acbf105fed12631ad521890a4d0d95be5d"},{"path":"rust/src/lib.rs","sha256":
 "698ea00a9d9bfe1b0d0cbeb9f0033c39e24b47c3c043e9aac192e762cad60cfb"}],"maintainedMeta":
 "(constant LEARNED-CHUNK-KIND (exported) (type string) (value (string meta_learned_chunk)))","maintainedJavaScript":
 "export const LEARNED_CHUNK_KIND = 'meta_learned_chunk';","maintainedTranslationSha256":

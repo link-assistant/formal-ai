@@ -582,53 +582,53 @@ agentic_messages
     text "last"
   message file-read-cue-first-line
     text "first line"
-  message tool_validation_schema_depth_limit
+  message tool-validation-schema-depth-limit
     text "{path}: schema depth limit"
-  message tool_validation_forbidden_value
+  message tool-validation-forbidden-value
     text "{path}: forbidden value"
-  message tool_validation_unresolved_schema_reference
+  message tool-validation-unresolved-schema-reference
     text "{path}: unresolved schema reference"
-  message tool_validation_allof_mismatch
+  message tool-validation-allof-mismatch
     text "{path}: allOf mismatch"
-  message tool_validation_anyof_mismatch
+  message tool-validation-anyof-mismatch
     text "{path}: anyOf mismatch"
-  message tool_validation_oneof_mismatch
+  message tool-validation-oneof-mismatch
     text "{path}: oneOf mismatch"
-  message tool_validation_forbidden_schema
+  message tool-validation-forbidden-schema
     text "{path}: forbidden schema"
-  message tool_validation_type_mismatch
+  message tool-validation-type-mismatch
     text "{path}: type mismatch"
-  message tool_validation_enum_mismatch
+  message tool-validation-enum-mismatch
     text "{path}: enum mismatch"
-  message tool_validation_const_mismatch
+  message tool-validation-const-mismatch
     text "{path}: const mismatch"
-  message tool_validation_string_length_mismatch
+  message tool-validation-string-length-mismatch
     text "{path}: string length mismatch"
-  message tool_validation_unsupported_schema_pattern
+  message tool-validation-unsupported-schema-pattern
     text "{path}: unsupported schema pattern"
-  message tool_validation_pattern_mismatch
+  message tool-validation-pattern-mismatch
     text "{path}: pattern mismatch"
-  message tool_validation_numeric_range_mismatch
+  message tool-validation-numeric-range-mismatch
     text "{path}: numeric range mismatch"
-  message tool_validation_array_length_mismatch
+  message tool-validation-array-length-mismatch
     text "{path}: array length mismatch"
-  message tool_validation_required_value_is_unbound
+  message tool-validation-required-value-is-unbound
     text "{path}: required value is unbound"
-  message action_budget_exhausted
+  message action-budget-exhausted
     text "Action budget exhausted after {total} tool declarations (limit {maximum}). The task is incomplete; inspect progress before starting a new request."
-  message action_receipt_missing
+  message action-receipt-missing
     text "No bound tool result was received."
-  message action_repetition_stopped
+  message action-repetition-stopped
     text "Repeated action stopped after {attempts} attempts (limit {maximum}): {tool} {arguments}. Last result: {result}. The task is incomplete; inspect the tool contract or change strategy."
-  message git_refspec_other_remote
+  message git-refspec-other-remote
     text "The push failed with an invalid local refspec. Inspect the current branch and the originally requested remote before retrying; no alternative remote is authorized."
-  message git_refspec_explicit_branch
+  message git-refspec-explicit-branch
     text "The refspec failed while an explicit branch binding exists. Inspect that local ref and preserve the requested destination; the current branch was not pushed automatically."
-  message git_refspec_recovery_attempted
+  message git-refspec-recovery-attempted
     text "The current-branch push recovery was attempted. Inspect its Git receipt; any remaining task requirements are incomplete."
-  message git_refspec_shell_missing
+  message git-refspec-shell-missing
     text "The push failed with an invalid local refspec. Read git branch --show-current in the client workspace before retrying; no shell tool is available."
-  message tool_argument_binding_incomplete
+  message tool-argument-binding-incomplete
     text "Planning stopped: required tool arguments could not be bound for {tool}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete."
-  message memory_storage_unavailable
+  message memory-storage-unavailable
     text "persisted-memory storage unavailable at {path}: {error}"

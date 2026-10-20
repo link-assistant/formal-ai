@@ -35,11 +35,11 @@ export function repeatedActionStop(messages) {
       if (attempts >= MAXIMUM_IDENTICAL_ACTION_ATTEMPTS) repeated = {call, attempts};
     }
   }
-  if (repeated === null && total >= MAXIMUM_ACTIONS_PER_OBJECTIVE) return agenticMessage('action_budget_exhausted', {total, maximum: MAXIMUM_ACTIONS_PER_OBJECTIVE});
+  if (repeated === null && total >= MAXIMUM_ACTIONS_PER_OBJECTIVE) return agenticMessage('action-budget-exhausted', {total, maximum: MAXIMUM_ACTIONS_PER_OBJECTIVE});
   if (repeated === null) return null;
   const {call, attempts} = repeated;
   const receipt = messages.findLast(message => message.role.toLowerCase() === 'tool'
     && message.tool_call_id === call.id);
-  const result = receipt ? plainText(receipt.content) : agenticMessage('action_receipt_missing');
-  return agenticMessage('action_repetition_stopped', {attempts, maximum: MAXIMUM_IDENTICAL_ACTION_ATTEMPTS, tool: call.function.name, arguments: call.function.arguments, result: result.slice(0, 2048)});
+  const result = receipt ? plainText(receipt.content) : agenticMessage('action-receipt-missing');
+  return agenticMessage('action-repetition-stopped', {attempts, maximum: MAXIMUM_IDENTICAL_ACTION_ATTEMPTS, tool: call.function.name, arguments: call.function.arguments, result: result.slice(0, 2048)});
 }

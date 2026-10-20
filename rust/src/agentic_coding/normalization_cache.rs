@@ -10,12 +10,15 @@ fn cache() -> std::sync::MutexGuard<'static, VecDeque<(String, String)>> {
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner)
 }
-pub(crate) fn normalized(prompt: &str, compute: impl FnOnce(&str) -> String) -> String {
-    if let Some(value) = cache()
-        .iter()
-        .find(|(key, _)| key == prompt)
-        .map(|(_, value)| value.clone())
-    {
+pub fn normalized(prompt: &str, compute: impl FnOnce(&str) -> String) -> String {
+    let cached_value = {
+        let entries = cache();
+        entries
+            .iter()
+            .find(|(key, _)| key == prompt)
+            .map(|(_, value)| value.clone())
+    };
+    if let Some(value) = cached_value {
         return value;
     }
     let value = compute(prompt);

@@ -34,7 +34,7 @@ pub(super) fn recover(
     .expect("valid origin observation pattern");
     if !origin_pattern.is_match(command) {
         return Some(AgenticPlan::Final(crate::seed::agentic_message(
-            "git_refspec_other_remote",
+            "git-refspec-other-remote",
             &[],
         )));
     }
@@ -50,20 +50,20 @@ pub(super) fn recover(
             )
     }) {
         return Some(AgenticPlan::Final(crate::seed::agentic_message(
-            "git_refspec_explicit_branch",
+            "git-refspec-explicit-branch",
             &[],
         )));
     }
     if Progress::scan(messages).has_run(CURRENT_BRANCH_PUSH) {
         return Some(AgenticPlan::Final(crate::seed::agentic_message(
-            "git_refspec_recovery_attempted",
+            "git-refspec-recovery-attempted",
             &[],
         )));
     }
     Some(tool_for(tools, Capability::Run).map_or_else(
         || {
             AgenticPlan::Final(crate::seed::agentic_message(
-                "git_refspec_shell_missing",
+                "git-refspec-shell-missing",
                 &[],
             ))
         },

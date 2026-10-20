@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 /// Shared agentic/protocol diagnostics are immutable seed data, parsed once per process.
-pub(crate) fn agentic_message(key: &str, values: &[(&str, &str)]) -> String {
+pub fn agentic_message(key: &str, values: &[(&str, &str)]) -> String {
     static MESSAGES: std::sync::OnceLock<BTreeMap<String, String>> = std::sync::OnceLock::new();
     let messages = MESSAGES.get_or_init(|| {
         let root = super::parser::parse_lino(include_str!(

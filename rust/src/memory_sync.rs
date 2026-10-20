@@ -436,7 +436,7 @@ impl SyncStore {
             return Err(std::io::Error::new(
                 *kind,
                 crate::seed::agentic_message(
-                    "memory_storage_unavailable",
+                    "memory-storage-unavailable",
                     &[("path", &path.display().to_string()), ("error", error)],
                 ),
             ));

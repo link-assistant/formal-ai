@@ -141,11 +141,11 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
     let reason = null;
     if (schema) {
       try { reason = invalidArguments(JSON.parse(args), schema); }
-      catch { reason = serverMessage('tool_arguments_invalid_json'); }
+      catch { reason = serverMessage('tool-arguments-invalid-json'); }
     }
     if (reason) {
       ctx.logger?.log('error', 'tool_argument_binding_failed', {component: 'planner', tool: call.tool, arguments: args, schema, reason});
-      return {kind: 'final', answer: agenticMessage('tool_argument_binding_incomplete', {tool: call.tool})};
+      return {kind: 'final', answer: agenticMessage('tool-argument-binding-incomplete', {tool: call.tool})};
     }
     ctx.logger?.log('debug', 'tool_call_bound', {component: 'planner', tool: call.tool, arguments: args, repeat_limit: 3, state: 'awaiting_client_receipt'});
     calls.push({...call, arguments: args});

@@ -33,11 +33,11 @@ pub fn health_status() -> Value {
         .unwrap_or_else(std::sync::PoisonError::into_inner)
         .clone()
 }
-fn set_file_health(value: Value) {
+fn set_file_health(value: &Value) {
     *FILE_HEALTH
         .get_or_init(|| Mutex::new(Value::Null))
         .lock()
-        .unwrap_or_else(std::sync::PoisonError::into_inner) = redact(&value);
+        .unwrap_or_else(std::sync::PoisonError::into_inner) = redact(value);
 }
 fn open_log_file(directory: &std::path::Path) -> io::Result<std::fs::File> {
     fs::create_dir_all(directory)?;
@@ -53,7 +53,7 @@ fn open_log_file(directory: &std::path::Path) -> io::Result<std::fs::File> {
 fn file_sink_failed(directory: Option<&std::path::Path>, error: &io::Error) {
     FILE_DISABLED.store(true, Ordering::Relaxed);
     set_file_health(
-        json!({"status":"unwritable","directory":directory,"error":error.to_string(),"error_kind":format!("{:?}", error.kind())}),
+        &json!({"status":"unwritable","directory":directory,"error":error.to_string(),"error_kind":format!("{:?}", error.kind())}),
     );
     if !FAILURE_REPORTED.swap(true, Ordering::Relaxed) {
         let record = redact(
@@ -74,14 +74,14 @@ pub fn configure(silent: bool, serve: bool) {
     if serve && !silent {
         if let Some(directory) = directory() {
             match open_log_file(&directory).and_then(|mut file| file.flush()) {
-                Ok(()) => set_file_health(json!({"status":"writable","directory":directory})),
+                Ok(()) => set_file_health(&json!({"status":"writable","directory":directory})),
                 Err(error) => file_sink_failed(Some(&directory), &error),
             }
         } else {
             file_sink_failed(None, &io::Error::other("log directory unavailable"));
         }
     } else {
-        set_file_health(json!({"status":"disabled"}));
+        set_file_health(&json!({"status":"disabled"}));
     }
 }
 fn rank(level: &str) -> u8 {

@@ -8,11 +8,11 @@ pub struct FailureBudget {
 }
 impl FailureBudget {
     /// True means exhausted: report the original error and stop, without another attempt.
-    pub fn failed(&mut self) -> bool {
+    pub const fn failed(&mut self) -> bool {
         self.failures = self.failures.saturating_add(1);
         self.failures >= MAXIMUM_FAILED_ATTEMPTS
     }
-    pub fn succeeded(&mut self) {
+    pub const fn succeeded(&mut self) {
         self.failures = 0;
     }
 }
