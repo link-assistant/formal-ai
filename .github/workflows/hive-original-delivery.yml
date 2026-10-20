@@ -51,11 +51,11 @@ jobs:
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 30
-    env:
-      HIVE_IMAGE_BUNDLE_DIR: ${{ runner.temp }}/hive-image-bundle
     steps:
       - name: Initialize shared delivery evidence directory
-        run: echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
+        run: |
+          echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
+          echo "HIVE_IMAGE_BUNDLE_DIR=$RUNNER_TEMP/hive-image-bundle" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
@@ -121,10 +121,11 @@ jobs:
           - codex
     env:
       E2E_TOOL: ${{ matrix.tool }}
-      HIVE_IMAGE_BUNDLE_DIR: ${{ runner.temp }}/hive-image-bundle
     steps:
       - name: Initialize shared delivery evidence directory
-        run: echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
+        run: |
+          echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
+          echo "HIVE_IMAGE_BUNDLE_DIR=$RUNNER_TEMP/hive-image-bundle" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}

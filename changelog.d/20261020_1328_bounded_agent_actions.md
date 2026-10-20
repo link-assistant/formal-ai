@@ -8,3 +8,4 @@
 - Collect and deduplicate bounded, redacted CI failures across Formal AI and Hive Mind, distinguishing recovered upload errors from no-change outcomes.
 - Repair dispatched evidence base refs, authenticate native projection source selection, and bound artifact upload recovery at the observed failing fixture step.
 - Keep large planner diagnostics readable under existing record limits, and preserve strict nested schema projection and request-grounded command descriptions.
+- Update patched TLS trust dependencies for RUSTSEC-2026-0382 and RUSTSEC-2026-0381 without suppressing the security audit.

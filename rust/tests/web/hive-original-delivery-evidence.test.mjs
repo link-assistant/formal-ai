@@ -58,7 +58,10 @@ test('genuine image, solve and independent verification phases use same-run hand
   for(const id of ['image','delivery','verification']) {
     const job=jobs[id];
     assert.equal(job.env?.E2E_LOG_DIR,undefined);
-    assert.equal(job.steps[0].run,'echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"');
+    assert.equal(job.env?.HIVE_IMAGE_BUNDLE_DIR,undefined,'runner context belongs in a step');
+    const initializers=['echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"'];
+    if(id!=='verification')initializers.push('echo "HIVE_IMAGE_BUNDLE_DIR=$RUNNER_TEMP/hive-image-bundle" >> "$GITHUB_ENV"');
+    assert.deepEqual(job.steps[0].run.split('\n').filter(Boolean),initializers);
     assert.ok(job.steps.some(step=>step.with?.name==='hive-same-source-formal-ai-binary'));
     for(const step of job.steps)assert.equal(step.env?.E2E_LOG_DIR,undefined);
   }
