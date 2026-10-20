@@ -22,9 +22,10 @@ export function handleHello() {
 }
 
 /** `GET /health`. */
-export function handleHealth() {
+export function handleHealth(ctx = {}) {
   return jsonResponse(200, sortedKeys({
     memory: memoryHealthStatus(),
+    logs: ctx.logger?.healthStatus?.() ?? {status: 'not_configured'},
     model: canonicalModelId(),
     status: 'ok',
     version: packageVersion(),

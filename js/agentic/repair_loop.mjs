@@ -8,6 +8,7 @@
 // 'exhausted'|'no_match'}`.
 
 import { Capability } from './capability.mjs';
+import { gitPushRecovery } from './git_push_recovery.mjs';
 import { toolFor } from './capability_router.mjs';
 import { latestUserRequest, rustLines } from './content.mjs';
 import { fetchArguments, jsonText, planOne, writeArguments } from './plan.mjs';
@@ -306,11 +307,14 @@ const stop = (reason) => ({ kind: 'stop', reason });
 
 /** Mirrors `fn repair_step`. */
 export function repairStep(messages, toolNames, failure, ladderRung, maxRungs) {
+  const gitRecovery = gitPushRecovery(messages, toolNames, failure);
+  if (gitRecovery !== null) return {kind: 'retry', plan: gitRecovery};
   if (ladderRung >= maxRungs) return stop('exhausted');
   const primary = formalizeDiagnostic(failure.language, failure.reported)[0];
   if (!primary) return stop('no_diagnostic');
   const progress = Progress.scan(messages);
   if (progress.search_output === null || progress.search_output === undefined) {
+    if (progress.done(Capability.Search)) return stop('no_match');
     const tool = toolFor(toolNames, Capability.Search);
     if (!tool) return stop('no_tools');
     return { kind: 'search', plan: planOne(tool, jsonText({ query: searchQuery(failure.language, primary) })) };

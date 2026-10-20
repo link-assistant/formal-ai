@@ -1,4 +1,5 @@
 //! Tests grouped by agentic coding module evidence.
+mod issue_1328_bounded_retries;
 
 #[path = "agentic_backend_actions.rs"]
 mod agentic_backend_actions;

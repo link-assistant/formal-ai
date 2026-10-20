@@ -469,6 +469,7 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
     crate::dreaming_runtime::start_core_dreaming();
 
     let mut offset = initial_offset;
+    let mut failures = crate::bounded_retry::FailureBudget::default();
 
     while !cancellation.load(Ordering::Relaxed) {
         let updates_url = config.get_updates_url(offset);
@@ -476,6 +477,9 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
             Ok(body) => body,
             Err(error) => {
                 crate::diagnostic!("error"; "telegram-poll: getUpdates failed: {error}");
+                if failures.failed() {
+                    return Err(error);
+                }
                 sleep_with_cancellation(Duration::from_secs(1), &cancellation);
                 continue;
             }
@@ -485,11 +489,15 @@ pub fn run_telegram_polling_with_transport<T: TelegramTransport>(
             Ok(batch) => batch,
             Err(error) => {
                 crate::diagnostic!("error"; "telegram-poll: invalid getUpdates response: {error}");
+                if failures.failed() {
+                    return Err(error.into());
+                }
                 sleep_with_cancellation(Duration::from_secs(1), &cancellation);
                 continue;
             }
         };
 
+        failures.succeeded();
         if let Some(next_offset) = batch.next_offset {
             offset = Some(next_offset);
         }

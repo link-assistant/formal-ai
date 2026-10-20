@@ -178,7 +178,9 @@ impl Progress {
             if capability == Capability::Search {
                 let payload = super::tool_result::normalized_payload(&raw);
                 search_result = Some(payload.clone().unwrap_or_default());
-                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
+                if let Some(text) =
+                    payload.filter(|text| failure.is_none() && !text.trim().is_empty())
+                {
                     search_output = Some(text);
                 }
             }

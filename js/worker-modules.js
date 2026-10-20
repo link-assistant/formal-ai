@@ -58,6 +58,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_crate_method_registry.js",
   "worker/formal_ai_worker_crate_modules.js",
   "worker/formal_ai_worker_crate_normal_markov.js",
+  "worker/formal_ai_worker_crate_normalization_cache.js",
   "worker/formal_ai_worker_crate_operation_owner.js",
   "worker/formal_ai_worker_crate_page_formalization.js",
   "worker/formal_ai_worker_crate_plan.js",

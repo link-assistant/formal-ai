@@ -23,6 +23,8 @@ import {activeDriveCapture,withDriveCapture} from '../../js/provenance/drive-cap
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { types as nodeTypes } from 'node:util';
 import { queryOwnedInferredCommandPolicy, registeredSourceReferenceReadPlan, consumeRegisteredSourceReference } from '../../js/server/node-source-session-host.mjs';
+import { moduleFunctionRequest } from '../../js/agentic/module_function.mjs';
+import { planCodingResearchStep } from '../../js/agentic/coding_research.mjs';
 import { sourceOwnedOptionalCommand } from '../../js/agentic/module_function.mjs';
 import { APPEND_MODE, appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
@@ -290,6 +292,7 @@ export function observedOperation(token, originalNeed, directory) {
 }
 
 export async function drive(planChatStep,dir,prompt,options={}) {
+ if(options.steps!==undefined&&(!Number.isSafeInteger(options.steps)||options.steps<0))throw new RangeError('steps must be a finite nonnegative safe integer');
  if(options.onEvent!==undefined&&typeof options.onEvent!=='function')throw Error('drive_event_sink_required');
  if (options.onEvent) {
   const current = {onEvent:options.onEvent,active:true,failures:0};
@@ -494,6 +497,24 @@ async function driveInternal(planChatStep, dir, prompt, {
           && Object.values(args).every(path => path === firstGoal.target);
       }) && !readPolicyBlocksPlan(prompt, current);
   }
+  // Reading declared source/acceptance inputs is a prerequisite, never write authority.
+  const researchRequest = moduleFunctionRequest(prompt, { requireTestContract: false });
+  const researchReadOwns = plan => plan?.kind === 'tool_calls' && plan.calls.length > 0
+    && researchRequest?.test && researchRequest.command && plan.calls.every(call => {
+      if (call.tool !== 'read' || !tools.includes(call.tool)) return false;
+      const args = argsOf(call);
+      const keys = args && typeof args === 'object' && !Array.isArray(args) ? Object.keys(args) : [];
+      return keys.length > 0 && keys.every(key => ['filePath', 'file_path', 'path'].includes(key))
+        && [researchRequest.module, researchRequest.test].includes(args[keys[0]])
+        && keys.every(key => args[key] === args[keys[0]]);
+    });
+  let researchReadPrerequisite = false;
+  if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation) {
+    const owned = planCodingResearchStep(prompt, messages, tools);
+    const current = await maintainedResolvedStep(messages, tools);
+    researchReadPrerequisite = researchReadOwns(owned) && current?.kind === 'tool_calls'
+      && JSON.stringify(owned.calls) === JSON.stringify(current.calls);
+  }
   let sourceReferencePrerequisite = null;
   if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation) {
     const owned = registeredSourceReferenceReadPlan(prompt, policyWorkspace, tools);
@@ -505,7 +526,7 @@ async function driveInternal(planChatStep, dir, prompt, {
         && !readPolicyBlocksPlan(prompt, owned.plan)) sourceReferencePrerequisite = owned;
   }
   if (createIntent && createContract === null && !readOnlyOperation && !sourceEditOperation
-      && sourceReferencePrerequisite === null) {
+      && sourceReferencePrerequisite === null && !researchReadPrerequisite) {
     const refusal = await maintainedPlanChatStep(messages, tools);
     if (refusal?.kind === 'final') {
       return { transcript, answer: refusal.answer, stop: 'final', toolsAdvertised: tools };
@@ -566,6 +587,15 @@ async function driveInternal(planChatStep, dir, prompt, {
     emitDriveEvent({kind:'plan',plan});
     activeDriveCapture()?.output(plan);
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
+    if (researchReadPrerequisite) {
+      const owned = planCodingResearchStep(prompt, scoped, tools);
+      const current = await maintainedResolvedStep(scoped, tools);
+      const matches = owned?.kind === plan.kind && current?.kind === plan.kind
+        && (plan.kind === 'final' ? plan.answer === owned.answer && plan.answer === current.answer
+          : researchReadOwns(owned) && JSON.stringify(plan.calls) === JSON.stringify(owned.calls)
+            && JSON.stringify(plan.calls) === JSON.stringify(current.calls));
+      if (!matches) return { transcript, answer: null, stop: 'unbound-research-prerequisite', toolsAdvertised: tools };
+    }
     if (plan.kind === 'final') {
       if (sourceReferencePrerequisite !== null) {
         return { transcript, answer: null, stop: 'source-reference-obligations-unresolved', toolsAdvertised: tools };

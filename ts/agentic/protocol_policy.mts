@@ -32,7 +32,7 @@ export function toolDefinitionName(value) {
 export const toolChoiceFunctionName = toolDefinitionName;
 
 /** `qualify_tool_name`. */
-function qualifyToolName(prefix, name) {
+export function qualifyToolName(prefix, name) {
   if (prefix === null) return name;
   const separator = prefix.endsWith('__') ? '' : '__';
   return name.startsWith(`${prefix}${separator}`) ? name : `${prefix}${separator}${name}`;

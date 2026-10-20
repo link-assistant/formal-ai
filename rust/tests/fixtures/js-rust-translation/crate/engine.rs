@@ -1,6 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=66685878cbccb44886d3142c9121ea273c81fff5c79685dfc6981ef482d97582 bytes=2764
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bdfda80a34f2548fb0a583254e2bc5148d85ce85aa7a36311cff03547b78354c bytes=2942
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds string-methods items=1
+// formal-ai:workarounds import-pruning items=0 carried=1; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -23,6 +23,10 @@ pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression
@@ -86,6 +90,10 @@ pub fn is_script_combining_mark(character: String) -> bool {
 }
 
 // meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal function value …
+// formal-ai:blockers call of an imported function | sibling value
+
+// meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
 // formal-ai:blockers Array.from | arrow callback of .from() | call of a sibling function | global call String() | global value Boolean | method call .filter() | method call .join() | method call .replaceAll() | method call .split() | method call .test() | regular expression | sibling value
 

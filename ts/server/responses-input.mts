@@ -1,3 +1,4 @@
+import { qualifyToolName } from '../agentic/protocol_policy.mjs';
 import {chatMessage, isMap as isObject} from './protocol-values.mjs';
 // The Responses request model and its translation into the shared chat
 // transcript: rust/src/protocol.rs `ResponsesRequest`
@@ -63,7 +64,7 @@ function appendItem(item, out, toolNamesById) {
   const itemType = typeof item?.type === 'string' ? item.type : 'message';
   if (itemType === 'function_call' || itemType === 'custom_tool_call') {
     const callId = stringField(item, 'call_id', 'id') ?? '';
-    const name = typeof item.name === 'string' ? item.name : '';
+    const name = qualifyToolName(typeof item.namespace === 'string' ? item.namespace : null, typeof item.name === 'string' ? item.name : '');
     const args = callArgumentsText(item.arguments !== undefined ? item.arguments : item.input);
     if (name) toolNamesById.set(callId, name);
     out.push(chatMessage('assistant', '', {
@@ -73,7 +74,7 @@ function appendItem(item, out, toolNamesById) {
   }
   if (itemType === 'function_call_output' || itemType === 'custom_tool_call_output') {
     const callId = typeof item.call_id === 'string' ? item.call_id : '';
-    const output = item.output === undefined ? '' : valueToPromptText(item.output);
+    const output = item.output === undefined ? '' : isObject(item.output) ? JSON.stringify(item.output) : valueToPromptText(item.output);
     const flag = item.is_error !== undefined ? item.is_error : item.isError;
     const isError = typeof flag === 'boolean'
       ? flag

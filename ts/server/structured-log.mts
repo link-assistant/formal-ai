@@ -85,12 +85,19 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
  if(!Object.hasOwn(levels,level))throw Error('invalid_log_level');
  if(recordObserver!==undefined&&typeof recordObserver!=='function')throw Error('invalid_record_observer');
  const redact=makeRedactor(env),failures=[],sinks=[];let sequence=0,fd=null,file=null;
+ let fileHealth={status:directory?'not_open':'disabled'};
+ let fileFailureReported=false;
+ const failedFile=error=>{
+  fileHealth=redact({status:'unwritable',directory,error:String(error.message??error),error_kind:String(error.code??error.name??'IOError')});
+  if(!fileFailureReported){fileFailureReported=true;try{writeAll(stderrWrite,Buffer.from(encodeTyped({schema:'formal-ai-diagnostic-v1',level:'error',component:'structured_log',kind:'logging_failure',message:'logging_failed_check_log_directory_permissions_and_space',metadata:fileHealth})+'\n'));}catch{/* The independent fallback never recurses. */}}
+ };
  if(level!=='silent'){
   sinks.push({name:'stderr',write:stderrWrite,enabled:true});
-  if(directory){try{fs.mkdirSync(directory,{recursive:true,mode:0o700});file=path.join(directory,'serve-'+pid+'.lino');fd=openFile(file);sinks.push({name:'file',write:b=>fileWrite(fd,b),enabled:true});}catch{failures.push({sink:'file',reason:'open_failed'});}}
+  if(directory){try{fs.mkdirSync(directory,{recursive:true,mode:0o700});file=path.join(directory,'serve-'+pid+'.lino');fd=openFile(file);sinks.push({name:'file',write:b=>fileWrite(fd,b),enabled:true});fileHealth={status:'writable',directory};}catch(error){failedFile(error);failures.push({sink:'file',reason:'open_failed'});}}
  }
  return {
   file,failures,level,
+  healthStatus(){return {...fileHealth};},
   addSecret(value){redact.addSecret(value);},
   log(eventLevel,kind,metadata={},payload){
    if(!Object.hasOwn(levels,eventLevel)||eventLevel==='silent')throw Error('invalid_event_level');
@@ -115,7 +122,7 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
    const bytes=Buffer.from(line),delivered=[];
    if(bytes.length>MAXIMUM_LOG_RECORD_BYTES)return {emitted:false,reason:'record_size_limit'};
    if(recordObserver){try{recordObserver(line.slice(0,-1));}catch{return {emitted:false,reason:'record_observer_failed'};}}
-   for(const sink of sinks){if(!sink.enabled)continue;try{writeAll(sink.write,bytes);delivered.push(sink.name);}catch{sink.enabled=false;failures.push({sink:sink.name,reason:'write_failed'});}}
+   for(const sink of sinks){if(!sink.enabled)continue;try{writeAll(sink.write,bytes);delivered.push(sink.name);}catch(error){sink.enabled=false;if(sink.name==='file')failedFile(error);failures.push({sink:sink.name,reason:'write_failed'});}}
    return {emitted:delivered.length>0,delivered};
   },
   close(){if(fd!==null){try{closeFile(fd);}catch{failures.push({sink:'file',reason:'close_failed'});}fd=null;}}

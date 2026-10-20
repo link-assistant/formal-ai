@@ -3,14 +3,11 @@
 // Do not edit by hand: edit that module and regenerate. The browser worker
 // cannot import ES modules, so the module is a factory that
 // formal_ai_worker_crate_modules.js runs on first use.
-
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/engine.mjs"] = (crateRequire) => {
 // The engine helpers the planner calls (rust/src/engine.rs).
-
 const { cached, readText } = crateRequire("host.mjs");
-
+const { memoizedNormalization } = crateRequire("crate/normalization_cache.mjs");
 const ALPHANUMERIC = /[\p{Alphabetic}\p{N}]/u;
-
 /** Mirrors `const fn is_script_combining_mark` in rust/src/engine.rs. @param {string} character */
 function isScriptCombiningMark(character) {
   const code = character.codePointAt(0);
@@ -23,9 +20,11 @@ function isScriptCombiningMark(character) {
     || (code >= 0x0a80 && code <= 0x0aff)
     || (code >= 0x0b00 && code <= 0x0b7f);
 }
-
 /** Mirrors `fn normalize_prompt` in rust/src/engine.rs. @param {string} prompt */
 function normalizePrompt(prompt) {
+  return memoizedNormalization(prompt, normalizePromptUncached);
+}
+function normalizePromptUncached(prompt) {
   const canonical = Array.from(String(prompt), (character) => character.toLowerCase())
     .join('')
     .replaceAll('c++', ' cpp ')
@@ -36,9 +35,7 @@ function normalizePrompt(prompt) {
   }
   return expandContractions(normalized.split(/\s+/u).filter(Boolean).join(' '));
 }
-
 const LANGUAGES_FILE = 'data/seed/languages.lino';
-
 /**
  * Mirrors `fn contractions` in rust/src/engine.rs: the seeded contracted
  * token pairs (`contraction` / `expansion` records of data/seed/languages.lino),
@@ -63,7 +60,6 @@ function contractions() {
     return pairs;
   });
 }
-
 /** Mirrors `fn expand_contractions`: every seeded contracted pair rewritten into its expansion. */
 function expandContractions(normalized) {
   const pairs = contractions();
@@ -78,7 +74,6 @@ function expandContractions(normalized) {
   }
   return out.join(' ');
 }
-
 return Object.freeze({
   normalizePrompt,
 });

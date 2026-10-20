@@ -499,6 +499,12 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
         .iter()
         .filter(|token| run_verbs.contains(&clean_cue_token(token.text)))
     {
+        let prefix = request.get(..run.start)?.trim();
+        if !prefix.is_empty()
+            && !bare_surfaces(seed::ROLE_POLITENESS_CUE).contains(&clean_cue_token(prefix))
+        {
+            continue;
+        }
         let tail = request.get(run.end..)?;
         let leading = tail.len() - tail.trim_start().len();
         let quoted = tail.get(leading..)?;
@@ -515,7 +521,11 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
             continue;
         }
         let suffix_offset = run.end + leading + quote.len_utf8() + close + quote.len_utf8();
-        let suffix = request.get(suffix_offset..)?;
+        let suffix = request
+            .get(suffix_offset..)?
+            .split("\n\n")
+            .next()
+            .unwrap_or_default();
         if !mentions_bare_role(suffix, seed::ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE) {
             continue;
         }

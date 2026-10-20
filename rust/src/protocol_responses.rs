@@ -119,7 +119,7 @@ pub fn response_arguments_for_tool(
                     .flatten()
             });
         if let Some(value) = value {
-            let mut value = constrain_to_schema(value, property_schema, name, user_prompt);
+            let mut value = value;
             if let Some(path) = value
                 .as_str()
                 .filter(|_| demands_absolute_path(definition, name, property_schema))
@@ -142,7 +142,7 @@ pub fn response_arguments_for_tool(
     projected
 }
 
-fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
+pub(crate) fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
     let object = tool.as_object()?;
     object
         .get("parameters")
@@ -165,7 +165,7 @@ fn semantic_alias(name: &str, source: &Map<String, Value>, user_prompt: &str) ->
             &["path", "filePath", "file_path", "absolute_path"]
         }
         "command" | "cmd" => &["command", "cmd"],
-        "query" | "pattern" => &["query", "pattern"],
+        "query" | "pattern" | "input" => &["query", "pattern", "input"],
         "paths" | "file_paths" | "files" => &["paths", "file_paths", "files"],
         "old" | "oldString" | "old_string" | "old_str" => {
             &["old", "oldString", "old_string", "old_str"]
@@ -290,119 +290,26 @@ fn call_writes_bytes(properties: &Map<String, Value>, source: &Map<String, Value
 /// default. Picking the first is picking an action — the order in a schema is
 /// not a preference — so the choice is left to fail loudly instead.
 fn missing_required_value(schema: &Value, name: &str, user_prompt: &str) -> Option<Value> {
-    if schema.get("default").is_none() && crate::tool_scope::is_identity_argument(name) {
+    if let Some(default) = schema.get("default").or_else(|| schema.get("const")) {
+        return Some(default.clone());
+    }
+    if crate::tool_scope::is_identity_argument(name) {
         return crate::tool_scope::grounded_identity_argument(name, user_prompt);
     }
-    if schema.get("default").is_none()
-        && schema
-            .get("enum")
-            .and_then(Value::as_array)
-            .is_some_and(|options| options.len() > 1)
-    {
-        return None;
+    if let Some(options) = schema.get("enum").and_then(Value::as_array) {
+        return (options.len() == 1).then(|| options[0].clone());
     }
-    Some(schema_default(schema, name, user_prompt))
-}
-
-fn schema_default(schema: &Value, name: &str, user_prompt: &str) -> Value {
-    if let Some(default) = schema.get("default") {
-        return default.clone();
+    if matches!(
+        name,
+        "prompt" | "instruction" | "message" | "commit_message" | "commitMessage"
+    ) {
+        return Some(Value::String(user_prompt.to_owned()));
     }
-    if let Some(first) = schema
-        .get("enum")
-        .and_then(Value::as_array)
-        .and_then(|e| e.first())
-    {
-        return first.clone();
+    if name == "is_background" {
+        return Some(Value::Bool(false));
     }
-    match schema.get("type").and_then(Value::as_str) {
-        Some("boolean") => Value::Bool(name == "login"),
-        Some("array") => Value::Array(Vec::new()),
-        Some("object") => Value::Object(Map::new()),
-        Some("integer" | "number") => Value::from(0),
-        Some("null") => Value::Null,
-        // A required free-text field describes the work, and the work is what
-        // the request said. `github.create_file` was called with
-        // `"message": ""` beside its empty repository; a commit message that
-        // says nothing is a fabrication too, and this one is already known.
-        _ if matches!(
-            name,
-            "prompt" | "instruction" | "message" | "commit_message" | "commitMessage"
-        ) =>
-        {
-            Value::String(user_prompt.to_owned())
-        }
-        _ => Value::String(String::new()),
+    if name == "login" {
+        return Some(Value::Bool(true));
     }
-}
-
-fn constrain_to_schema(value: Value, schema: &Value, name: &str, user_prompt: &str) -> Value {
-    if let Some(allowed) = schema.get("enum").and_then(Value::as_array)
-        && !allowed.contains(&value)
-    {
-        return allowed.first().cloned().unwrap_or(value);
-    }
-    match schema.get("type").and_then(Value::as_str) {
-        Some("object") => {
-            let Some(source) = value.as_object() else {
-                return schema_default(schema, name, user_prompt);
-            };
-            let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
-                return value;
-            };
-            let required = schema
-                .get("required")
-                .and_then(Value::as_array)
-                .map(Vec::as_slice)
-                .unwrap_or_default();
-            let mut projected = Map::new();
-            for (child_name, child_schema) in properties {
-                let child = source.get(child_name).cloned().or_else(|| {
-                    required
-                        .iter()
-                        .any(|entry| entry.as_str() == Some(child_name))
-                        .then(|| schema_default(child_schema, child_name, user_prompt))
-                });
-                if let Some(child) = child {
-                    projected.insert(
-                        child_name.clone(),
-                        constrain_to_schema(child, child_schema, child_name, user_prompt),
-                    );
-                }
-            }
-            Value::Object(projected)
-        }
-        Some("array") => {
-            let Some(values) = value.as_array() else {
-                return schema_default(schema, name, user_prompt);
-            };
-            let mut values = values.clone();
-            if let Some(item_schema) = schema.get("items") {
-                values = values
-                    .into_iter()
-                    .map(|item| constrain_to_schema(item, item_schema, name, user_prompt))
-                    .collect();
-                let minimum = schema
-                    .get("minItems")
-                    .and_then(Value::as_u64)
-                    .and_then(|minimum| usize::try_from(minimum).ok())
-                    // Client-provided schemas must not be able to force an
-                    // unbounded allocation while defaults are projected.
-                    .unwrap_or(0)
-                    .min(64);
-                while values.len() < minimum {
-                    values.push(schema_default(item_schema, name, user_prompt));
-                }
-            }
-            Value::Array(values)
-        }
-        Some("string") if !value.is_string() => schema_default(schema, name, user_prompt),
-        Some("boolean") if !value.is_boolean() => schema_default(schema, name, user_prompt),
-        Some("integer") if !value.is_i64() && !value.is_u64() => {
-            schema_default(schema, name, user_prompt)
-        }
-        Some("number") if !value.is_number() => schema_default(schema, name, user_prompt),
-        Some("null") if !value.is_null() => Value::Null,
-        _ => value,
-    }
+    None
 }

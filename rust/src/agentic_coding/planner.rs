@@ -188,6 +188,14 @@ fn plan_chat_step_inner(
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let received = crate::protocol::latest_user_request(messages)?;
+    if let Some(reason) = super::repetition_guard::repeated_action_stop(messages) {
+        return Some(record(
+            AgenticPlan::Final(reason),
+            FinalDisposition::Failure,
+            "repeated_action_budget",
+            result,
+        ));
+    }
     // A harness prompt that quotes the task to have it summarized is answered
     // with the summary, never by doing the task again (issue #1133).
     if let Some(summary) = harness_envelope::summarize_request(&received) {

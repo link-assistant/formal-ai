@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_normalization_cache.js"
+  ceiling 1000
+  rationale "New shared bounded text-cache module follows the repository implementation-file ceiling. The engine retains its original reviewed ceiling; source-owned formatting and comments remain intact."

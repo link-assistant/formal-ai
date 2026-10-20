@@ -648,6 +648,13 @@ fn chat_completion_from_plan(
     let prompt_tokens = message_input_tokens(&request.messages);
     let workspace = client_working_directory(&request.messages);
 
+    let plan = crate::protocol_call_validation::bind_plan(
+        plan,
+        &request.tools,
+        &request.messages,
+        prompt,
+        workspace.as_deref(),
+    );
     let (message, finish_reason, completion_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
             let narration = tool_action_narration(prompt, &calls);
@@ -815,6 +822,13 @@ fn response_from_plan(
     // the declaration is read from the chat projection rather than parsed twice.
     let workspace = client_working_directory(&request.to_chat_completion_request().messages);
 
+    let plan = crate::protocol_call_validation::bind_plan(
+        plan,
+        &request.tools,
+        &request.to_chat_completion_request().messages,
+        prompt,
+        workspace.as_deref(),
+    );
     let (output, output_tokens) = match plan {
         AgenticPlan::ToolCalls(calls) => {
             let narration = tool_action_narration(prompt, &calls);

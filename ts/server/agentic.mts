@@ -7,6 +7,8 @@
 // module installs its host over the booted worker and projects its plans onto
 // the Chat Completions and Responses wire shapes exactly as Rust does.
 
+import { invalidArguments } from '../agentic/crate/tool_call_validation.mjs';
+import { repeatedActionStop } from '../agentic/repetition_guard.mjs';
 import {observedPlanTerminal} from '../logging/terminal-events.mjs';
 import {currentDialogId} from './dialog-log.mjs';
 import { plainText, requestsToolExecution } from './chat-request.mjs';
@@ -121,6 +123,35 @@ export function logUnclassifiedTerminal(ctx,origin){
  ctx.logger?.log('debug','agent.terminal',{component:'agent',dialog_id:currentDialogId(),reason:'Unknown',origin,scope:'server_response',task_delivery:'Unknown'});
 }
 
+
+function bindPlan(ctx, request, plan, prompt, workspace) {
+  if (plan.kind !== 'tool_calls') {
+    ctx.logger?.log('debug', 'planning_terminal', {component:'planner', answer:String(plan.answer ?? '').slice(0,4096),state:'terminal',repeat_limit:3});
+    return plan;
+  }
+  const repeated = repeatedActionStop(request.messages);
+  if (repeated) return {kind: 'final', answer: repeated};
+  const calls = [];
+  for (const call of plan.calls) {
+    const args = responseArgumentsForTool(request.tools, call.tool, call.arguments, prompt, workspace);
+    const definition = findToolDefinition(request.tools, call.tool);
+    const holder = definition?.function ?? definition;
+    const schema = holder?.parameters ?? holder?.input_schema;
+    let reason = null;
+    if (schema) {
+      try { reason = invalidArguments(JSON.parse(args), schema); }
+      catch { reason = 'invalid JSON arguments'; }
+    }
+    if (reason) {
+      ctx.logger?.log('error', 'tool_argument_binding_failed', {component: 'planner', tool: call.tool, arguments: args, schema, reason});
+      return {kind: 'final', answer: `Planning stopped: required tool arguments could not be bound for ${call.tool}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete.`};
+    }
+    ctx.logger?.log('debug', 'tool_call_bound', {component: 'planner', tool: call.tool, arguments: args, repeat_limit: 3, state: 'awaiting_client_receipt'});
+    calls.push({...call, arguments: args});
+  }
+  return {...plan, calls};
+}
+
 function messageTokens(messages) {
   return messages.reduce((total, message) => {
     if (typeof message.content === 'string') return total + estimateTokens(message.content);
@@ -140,6 +171,7 @@ export function chatCompletionFromPlan(ctx, request, prompt, plan, created) {
   logPlanTerminal(ctx,plan);
   const promptTokens = messageTokens(request.messages);
   const workspace = clientWorkingDirectory(request.messages);
+  plan = bindPlan(ctx, request, plan, prompt, workspace);
   let message;
   let finishReason;
   let completionTokens;
@@ -224,6 +256,7 @@ export function responseFromPlan(ctx, request, chatRequest, prompt, plan, create
   logPlanTerminal(ctx,plan);
   const inputTokens = messageTokens(chatRequest.messages);
   const workspace = clientWorkingDirectory(chatRequest.messages);
+  plan = bindPlan(ctx, chatRequest, plan, prompt, workspace);
   let output;
   let outputTokens;
   if (plan.kind === 'tool_calls') {

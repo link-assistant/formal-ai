@@ -324,6 +324,8 @@ function parseCommandOutputRequest(request) {
   const targets = bareSurfaces('file_write_target_cue');
   const destinations = bareSurfaces('file_write_destination_cue');
   for (const run of toks.filter((token) => runVerbs.includes(cleanCueToken(token.text)))) {
+    const prefix = trim(request.slice(0, run.start));
+    if (prefix && !bareSurfaces('politeness_cue').includes(cleanCueToken(prefix))) continue;
     const tail = request.slice(run.end);
     const leading = tail.length - trimStart(tail).length;
     const quoted = tail.slice(leading);
@@ -335,7 +337,7 @@ function parseCommandOutputRequest(request) {
     if (close < 0) continue;
     const command = trim(body.slice(0, close));
     if (!command || /[\n\r\0]/.test(command)) continue;
-    const suffix = request.slice(run.end + leading + 1 + close + 1);
+    const suffix = request.slice(run.end + leading + 1 + close + 1).split('\n\n')[0];
     if (!mentionsBareRole(suffix, 'file_write_command_output_reference')) continue;
     const suffixTokens = tokens(suffix);
     if (!suffixTokens.some((token) => actions.includes(cleanCueToken(token.text)))) continue;

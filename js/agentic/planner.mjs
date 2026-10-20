@@ -1,4 +1,5 @@
 import {host,hasHost} from './host.mjs';
+import { repeatedActionStop } from './repetition_guard.mjs';
 import {EventLog} from './crate/event_log.mjs';
 import {answerDerivationId,recordFor,toLino} from './crate/derivation.mjs';
 import {planSourceMaintenanceStep} from './source_maintenance.mjs';
@@ -228,6 +229,8 @@ export async function planChatStep(messages, toolNames) {
 export async function planChatStepResolved(messages, toolNames) {
   const received = latestUserRequest(messages);
   if (received === null) return null;
+  const repeated = repeatedActionStop(messages);
+  if (repeated !== null) return resolvedFinalAnswer(repeated, FinalDisposition.Failure, 'repeated_action_budget');
   const summary = harnessEnvelope.summarizeRequest(received);
   if (summary !== null) return resolvedFinalAnswer(summary, FinalDisposition.Finding, 'harness_summary');
   const effective = continuedAgentTask(messages, received);

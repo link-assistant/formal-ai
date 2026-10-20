@@ -240,6 +240,7 @@ fn dispatch_api_request_with_auth(
                 "model": canonical_model_id(),
                 "version": env!("CARGO_PKG_VERSION"),
                 "memory": memory_health_status(),
+                "logs": crate::dialog_log::structured_log::health_status(),
             }),
         ),
         ("GET", "/v1/models" | "/api/openai/v1/models") => handle_openai_models_request(),

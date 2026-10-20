@@ -99,7 +99,7 @@ export class Progress {
       if (capability === Capability.Search) {
         const payload = normalizedPayload(raw);
         progress.search_result = payload ?? '';
-        if (payload !== null && trim(payload)) progress.search_output = payload;
+        if (failure === null && payload !== null && trim(payload)) progress.search_output = payload;
       }
       if (capability === Capability.Run) {
         const command = call ? commandArgument(call.function.arguments) : null;

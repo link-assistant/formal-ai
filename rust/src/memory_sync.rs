@@ -194,6 +194,7 @@ pub struct SyncStore {
     events: Vec<MemoryEvent>,
     schema_version: u32,
     compatible: bool,
+    storage_error: Option<(std::io::ErrorKind, String)>,
 }
 
 impl Default for SyncStore {
@@ -203,6 +204,7 @@ impl Default for SyncStore {
             events: Vec::new(),
             schema_version: TARGET_MEMORY_SCHEMA_VERSION,
             compatible: true,
+            storage_error: None,
         }
     }
 }
@@ -225,6 +227,7 @@ impl SyncStore {
     /// Open a store at an explicit path (used by tests).
     #[must_use]
     pub fn open_at(path: &Path) -> Self {
+        let mut storage_error = None;
         let (events, schema_version, compatible) = match std::fs::read_to_string(path) {
             Ok(text) => {
                 let status = crate::memory::upgrade::inspect_memory_text(&text, true);
@@ -241,18 +244,20 @@ impl SyncStore {
                 let compatible = match crate::shared_memory::ensure_shared_memory_file(path) {
                     Ok(()) => true,
                     Err(error) => {
-                        if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
+                        {
                             crate::diagnostic!("error"; "[memory] could not initialize {}: {error}", path.display());
                         }
+                        storage_error = Some((error.kind(), error.to_string()));
                         false
                     }
                 };
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, compatible)
             }
             Err(error) => {
-                if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
+                {
                     crate::diagnostic!("error"; "[memory] could not read {}: {error}", path.display());
                 }
+                storage_error = Some((error.kind(), error.to_string()));
                 (Vec::new(), TARGET_MEMORY_SCHEMA_VERSION, false)
             }
         };
@@ -261,17 +266,18 @@ impl SyncStore {
             events,
             schema_version,
             compatible,
+            storage_error,
         };
         if store.compatible
             && let Err(error) = store.synchronize_link_cli_projection()
         {
-            if crate::cli_env::flag_enabled("FORMAL_AI_MEMORY_DEBUG") {
+            {
                 crate::diagnostic!("error";
                     "[memory] could not synchronize link-cli store for {}: {error}",
                     path.display()
                 );
             }
-            store.compatible = false;
+            store.storage_error = Some((error.kind(), error.to_string()));
         }
         // R1012: meanings the meta reasoner learned in earlier sessions come
         // back from the log, so a paraphrase is answered without a lookup
@@ -426,6 +432,15 @@ impl SyncStore {
         let Some(path) = self.path.as_deref() else {
             return Ok(());
         };
+        if let Some((kind, error)) = &self.storage_error {
+            return Err(std::io::Error::new(
+                *kind,
+                format!(
+                    "persisted-memory storage unavailable at {}: {error}",
+                    path.display()
+                ),
+            ));
+        }
         if !self.compatible {
             return Err(std::io::Error::new(
                 std::io::ErrorKind::InvalidData,

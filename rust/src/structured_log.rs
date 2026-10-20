@@ -21,10 +21,68 @@ static SILENT: AtomicBool = AtomicBool::new(false);
 static SERVE: AtomicBool = AtomicBool::new(false);
 static SEQUENCE: AtomicU64 = AtomicU64::new(0);
 static WRITE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+static FILE_DISABLED: AtomicBool = AtomicBool::new(false);
+static STDERR_DISABLED: AtomicBool = AtomicBool::new(false);
+static FAILURE_REPORTED: AtomicBool = AtomicBool::new(false);
+static FILE_HEALTH: OnceLock<Mutex<Value>> = OnceLock::new();
+
+pub fn health_status() -> Value {
+    FILE_HEALTH
+        .get_or_init(|| Mutex::new(json!({"status":"not_configured"})))
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .clone()
+}
+fn set_file_health(value: Value) {
+    *FILE_HEALTH
+        .get_or_init(|| Mutex::new(Value::Null))
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner) = redact(&value);
+}
+fn open_log_file(directory: &std::path::Path) -> io::Result<std::fs::File> {
+    fs::create_dir_all(directory)?;
+    let mut options = OpenOptions::new();
+    options.create(true).append(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        options.mode(0o600);
+    }
+    options.open(directory.join(format!("serve-{}.lino", std::process::id())))
+}
+fn file_sink_failed(directory: Option<&std::path::Path>, error: &io::Error) {
+    FILE_DISABLED.store(true, Ordering::Relaxed);
+    set_file_health(
+        json!({"status":"unwritable","directory":directory,"error":error.to_string(),"error_kind":format!("{:?}", error.kind())}),
+    );
+    if !FAILURE_REPORTED.swap(true, Ordering::Relaxed) {
+        let record = redact(
+            &json!({"schema":"formal-ai-diagnostic-v1","level":"error","component":"structured_log","kind":"logging_failure","message":"logging_failed_check_log_directory_permissions_and_space","metadata":health_status()}),
+        );
+        if let Ok(line) = encode(&record) {
+            let _ = writeln!(io::stderr().lock(), "{line}");
+        }
+    }
+}
 
 pub fn configure(silent: bool, serve: bool) {
     SILENT.store(silent, Ordering::Relaxed);
     SERVE.store(serve, Ordering::Relaxed);
+    FILE_DISABLED.store(false, Ordering::Relaxed);
+    STDERR_DISABLED.store(false, Ordering::Relaxed);
+    FAILURE_REPORTED.store(false, Ordering::Relaxed);
+    if serve && !silent {
+        if let Some(directory) = directory() {
+            match open_log_file(&directory).and_then(|mut file| file.flush()) {
+                Ok(()) => set_file_health(json!({"status":"writable","directory":directory})),
+                Err(error) => file_sink_failed(Some(&directory), &error),
+            }
+        } else {
+            file_sink_failed(None, &io::Error::other("log directory unavailable"));
+        }
+    } else {
+        set_file_health(json!({"status":"disabled"}));
+    }
 }
 fn rank(level: &str) -> u8 {
     match level {
@@ -295,35 +353,31 @@ fn write_record(record: &Value) {
         .get_or_init(|| Mutex::new(()))
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
-    if writeln!(io::stderr().lock(), "{line}").is_err() {
+    if !STDERR_DISABLED.load(Ordering::Relaxed) && writeln!(io::stderr().lock(), "{line}").is_err()
+    {
+        STDERR_DISABLED.store(true, Ordering::Relaxed);
         sink_failure("stderr_write_failed");
     }
-    if SERVE.load(Ordering::Relaxed) {
+    if SERVE.load(Ordering::Relaxed) && !FILE_DISABLED.load(Ordering::Relaxed) {
         if let Some(directory) = directory() {
             let write = || -> io::Result<()> {
-                fs::create_dir_all(&directory)?;
-                let mut options = OpenOptions::new();
-                options.create(true).append(true);
-                #[cfg(unix)]
-                {
-                    use std::os::unix::fs::OpenOptionsExt;
-                    options.mode(0o600);
-                }
-                let mut file =
-                    options.open(directory.join(format!("serve-{}.lino", std::process::id())))?;
+                let mut file = open_log_file(&directory)?;
                 writeln!(file, "{line}")?;
                 file.flush()
             };
-            if write().is_err() {
-                sink_failure("file_write_failed");
+            if let Err(error) = write() {
+                file_sink_failed(Some(&directory), &error);
             }
         } else {
-            sink_failure("log_directory_unavailable");
+            file_sink_failed(None, &io::Error::other("log directory unavailable"));
         }
     }
 }
 /// A bounded nonrecursive fallback: no caller text, paths, or IO errors enter it.
 fn sink_failure(reason: &str) {
+    if FAILURE_REPORTED.swap(true, Ordering::Relaxed) {
+        return;
+    }
     let record = json!({"schema":"formal-ai-diagnostic-v1", "level":"error", "component":"structured_log", "message":"logging_failed_check_log_directory_permissions_and_space", "kind":"logging_failure", "timestamp":timestamp(), "timestamp_precision":"nanoseconds", "pid":std::process::id(), "sequence":SEQUENCE.fetch_add(1, Ordering::Relaxed) + 1, "dialog_id":null, "reason":reason});
     if let Ok(line) = encode(&record) {
         let _ = writeln!(io::stderr().lock(), "{line}");

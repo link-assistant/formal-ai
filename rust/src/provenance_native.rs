@@ -42,11 +42,18 @@ pub fn digest_reader(mut reader: impl Read, mode: CpuHashMode) -> io::Result<([u
     let mut hasher = blake3::Hasher::new();
     let mut buffer = vec![0; STREAM_BUFFER];
     let mut total = 0_u64;
+    let mut interruptions = crate::bounded_retry::FailureBudget::default();
     loop {
         let count = match reader.read(&mut buffer) {
-            Err(error) if error.kind() == io::ErrorKind::Interrupted => continue,
+            Err(error) if error.kind() == io::ErrorKind::Interrupted => {
+                if interruptions.failed() {
+                    return Err(error);
+                }
+                continue;
+            }
             other => other?,
         };
+        interruptions.succeeded();
         if count == 0 {
             break;
         }
