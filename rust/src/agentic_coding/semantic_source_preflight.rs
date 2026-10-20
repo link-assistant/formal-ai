@@ -56,7 +56,7 @@ fn finish(
     )
 }
 
-fn source_status(status: SourceReadStatus) -> &'static str {
+const fn source_status(status: SourceReadStatus) -> &'static str {
     match status {
         SourceReadStatus::ReportedSuccess => "reported-success",
         SourceReadStatus::ReportedFailure => "reported-failure",
@@ -79,6 +79,7 @@ pub(super) fn plan_semantic_source_preflight(
     let mut observations = Vec::new();
     let mut paths: Vec<String> = Vec::new();
     let path_pattern = Regex::new(r"^[A-Za-z0-9_./-]+$").expect("StaticRelativePathPattern");
+    let incomplete_markers = agentic_message("semantic_source_preflight_incomplete_markers", &[]);
     for candidate in &candidates {
         let text = candidate["text"].as_str()?;
         let arguments = json!({"path":".","pattern":format!(r"\b{}\b",regex::escape(text))});
@@ -91,8 +92,9 @@ pub(super) fn plan_semantic_source_preflight(
         let complete = observed.succeeded
             && observed.detail.len() <= 65_536
             && !incomplete_receipt(&observed.detail)
-            && !observed.detail.contains("Results truncated")
-            && !observed.detail.contains("preview truncated");
+            && !incomplete_markers
+                .split('|')
+                .any(|marker| observed.detail.contains(marker));
         observations.push(json!({"candidate":candidate,"arguments":arguments,"providerSucceeded":observed.succeeded,"complete":complete,"detail":observed.detail}));
         if !complete {
             return Some(finish(

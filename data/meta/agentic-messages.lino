@@ -673,3 +673,15 @@ agentic_messages
 
   message installed_source_operation_command
     text "{node} {script} --request {task} --expected {digest}"
+
+  message semantic_source_preflight_incomplete_markers
+    text "Results truncated|preview truncated"
+
+  message source_cache_cleanup_diagnostic
+    text "{primary}; source_cache_cleanup_failed:{cleanup}"
+
+  message source_transport_cleanup_diagnostic
+    text "{error}; cleanup_complete={cleaned}"
+
+  message source_transport_timeout_diagnostic
+    text "source_transport_timeout; cleanup_complete={cleaned}"

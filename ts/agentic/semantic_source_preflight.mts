@@ -28,11 +28,12 @@ export function planSemanticSourcePreflight(task,messages,tools){
     const discovery={reason,taskIdentity:sha256Hex(task),clauses:clausesWithSpans(task).map(([text,span])=>({text,span,status:'unbound'})),candidates,observations,inferredWork:'mechanical-source-discovery',coverage:'bounded-candidates-and-paths-not-exhaustive',implementation:'Unknown',validation:'Unknown',authored:false,verified:false};
     const plan=resolvedFinalAnswer(agenticMessage('semantic_source_preflight_gap_output',{discovery:jsonText(discovery)}),FinalDisposition.Gap,'semantic-source-preflight-gap');plan.result.discovery=discovery;return plan;
   };
+  const incompleteMarkers=agenticMessage('semantic_source_preflight_incomplete_markers').split('|');
   for(const candidate of candidates){
     const searchArguments={path:'.',pattern:'\\b'+candidate.text.replace(/[.*+?^${}()|[\]\\]/gu,'\\$&')+'\\b'};
     const observed=qualifiedToolAttempt(progress,Capability.Grep,searchArguments);
     if(!observed){const tool=toolFor(tools,Capability.Grep);return tool===null?finish('MissingGrepTool'):planOne(tool,jsonText(searchArguments));}
-    const complete=observed.succeeded&&new TextEncoder().encode(observed.detail).length<=65536&&!incompleteReceipt(observed.detail)&&!/(?:Results truncated|preview truncated)/u.test(observed.detail);
+    const complete=observed.succeeded&&new TextEncoder().encode(observed.detail).length<=65536&&!incompleteReceipt(observed.detail)&&!incompleteMarkers.some(marker=>observed.detail.includes(marker));
     observations.push({candidate,arguments:searchArguments,providerSucceeded:observed.succeeded,complete,detail:observed.detail});
     if(!complete)return finish('IncompleteSourceSearch');
     const root=clientWorkingDirectory(messages);

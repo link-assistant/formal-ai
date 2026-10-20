@@ -27,7 +27,9 @@ pub(super) struct ToolAttempt {
 
 impl ToolAttempt {
     /// Borrow the scanner-created typed source observation without granting new authority.
-    pub(super) fn source_observation(&self) -> Option<&super::tool_result::SourceReadObservation> {
+    pub(super) const fn source_observation(
+        &self,
+    ) -> Option<&super::tool_result::SourceReadObservation> {
         self.source_read.as_ref()
     }
 

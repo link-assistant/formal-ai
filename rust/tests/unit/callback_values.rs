@@ -37,7 +37,7 @@ fn positive_length_preserves_empty_and_nonempty_text_and_sequence_cases() {
     assert!(!callback_has_length(""));
     assert!(callback_has_length("😀"));
     assert!(!callback_has_length(&[] as &[u8]));
-    assert!(callback_has_length(&[0] as &[u8]));
+    assert!(callback_has_length(&[0_u8][..]));
 }
 #[test]
 fn text_and_value_getters_and_custom_trim_are_invoked_once_and_return_results_unchanged() {
@@ -93,7 +93,7 @@ fn actual_native_research_consumer_matches_the_fixed_javascript_token_vectors() 
 }
 #[test]
 fn actual_seed_value_adapter_preserves_the_native_links_value_view() {
-    let node = ::formal_ai::seed::parser::LinoNode {
+    let node = ::formal_ai::lino_adapters::links_notation::LinoNode {
         name: "relation".to_owned(),
         id: "exact value".to_owned(),
         children: vec![],

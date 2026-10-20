@@ -91,7 +91,7 @@ pub(super) fn read_bounded(path: &Path, maximum: usize) -> Result<Vec<u8>, Fetch
     let capacity = usize::try_from(before.len())
         .map_err(|_| cache_diagnostic("source_cache_read_budget_or_type", path))?;
     let mut bytes = Vec::with_capacity(capacity);
-    let mut chunk = [0_u8; 64 * 1024];
+    let mut chunk = vec![0_u8; 64 * 1024];
     // Each positive read advances by at least one byte; EOF gets one final observation.
     for _ in 0..=maximum {
         let remaining = maximum.saturating_sub(bytes.len());

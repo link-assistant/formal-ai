@@ -25,6 +25,9 @@ mod web_engine_core;
 #[path = "../../../rust/src/proof_program/core.rs"]
 mod proof_program_core;
 
+#[path = "../../../rust/src/callback_values/nonempty.rs"]
+mod callback_values;
+
 #[path = "../../../rust/src/seed/parser.rs"]
 #[allow(dead_code)]
 mod seed_parser;

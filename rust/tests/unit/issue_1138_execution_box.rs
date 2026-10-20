@@ -289,3 +289,55 @@ fn box_language_backend_is_selected_from_the_shared_contract() {
         Err(BoxError::InvalidConfiguration { .. })
     ));
 }
+
+#[cfg(unix)]
+#[test]
+fn invocation_deadline_includes_blocked_stdin() {
+    let backend = ExecutionBackend::StartRunner {
+        program: "python3".to_owned(),
+        arguments: vec![
+            "-c".to_owned(),
+            "import time; print('stdin-started', flush=True); time.sleep(30)".to_owned(),
+        ],
+        isolation: "host".to_owned(),
+    };
+    let boxed = ExecutionBox::open(&backend, &host_policy(Duration::from_millis(25))).unwrap();
+    let started = std::time::Instant::now();
+    let observation = boxed.run(&"x".repeat(8 * 1024 * 1024), &[]).unwrap();
+    assert!(started.elapsed() < Duration::from_secs(3));
+    assert!(observation.timed_out);
+    assert_eq!(observation.exit_code, None);
+    assert!(observation.partial_output.contains("stdin-started"));
+}
+
+#[cfg(unix)]
+#[test]
+fn invocation_deadline_includes_descendant_output_after_parent_exit() {
+    let boxed = ExecutionBox::open(
+        &ExecutionBackend::HostSandbox,
+        &host_policy(Duration::from_millis(25)),
+    )
+    .unwrap();
+    let started = std::time::Instant::now();
+    let observation = boxed.run("import subprocess,sys\nsubprocess.Popen([sys.executable,'-c','import time; time.sleep(30)'])\nprint('held-output',flush=True)\n", &[]).unwrap();
+    assert!(started.elapsed() < Duration::from_secs(3));
+    assert!(observation.timed_out);
+    assert_eq!(observation.exit_code, None);
+    assert!(observation.partial_output.contains("held-output"));
+}
+
+#[test]
+fn invocation_output_overflow_is_an_explicit_bounded_failure() {
+    let boxed = ExecutionBox::open(
+        &ExecutionBackend::HostSandbox,
+        &host_policy(Duration::from_secs(2)),
+    )
+    .unwrap();
+    let result = boxed.run("print('x' * (2 * 1024 * 1024), flush=True)\n", &[]);
+    let BoxError::Observed { detail } = result.unwrap_err() else {
+        panic!("observed overflow required");
+    };
+    let (reason, partial) = detail.split_once('\n').unwrap();
+    assert_eq!(reason, "execution_output_limit_exceeded");
+    assert_eq!(partial.len(), 1024 * 1024);
+}

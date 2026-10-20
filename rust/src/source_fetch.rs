@@ -550,8 +550,12 @@ fn write_capture(
     })();
     let cleanup = admission.finish();
     match (action, cleanup) {
-        (Err(primary), Err(cleanup)) => Err(FetchError::Cache(format!(
-            "{primary}; source_cache_cleanup_failed:{cleanup}"
+        (Err(primary), Err(cleanup)) => Err(FetchError::Cache(source_diagnostic(
+            "source_cache_cleanup_diagnostic",
+            &[
+                ("primary", &primary.to_string()),
+                ("cleanup", &cleanup.to_string()),
+            ],
         ))),
         (Err(primary), Ok(())) => Err(primary),
         (Ok(()), result) => result,
@@ -576,6 +580,14 @@ fn unique_temp_path(path: &Path) -> PathBuf {
         .and_then(|value| value.to_str())
         .unwrap_or("");
     path.with_extension(format!("{extension}.{}.{}.tmp", std::process::id(), id))
+}
+
+/// Render source-client diagnostics through the canonical one-pass seed formatter.
+///
+/// This also serves source-included contract controls through the production module.
+#[must_use]
+pub fn source_diagnostic(key: &str, values: &[(&str, &str)]) -> String {
+    crate::seed::agentic_message(key, values)
 }
 
 fn cache_error(path: &Path, error: &io::Error) -> FetchError {

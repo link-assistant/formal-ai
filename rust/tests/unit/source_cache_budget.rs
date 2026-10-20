@@ -180,7 +180,8 @@ fn fifo_metadata_cannot_block_open_indefinitely() {
     let directory = CacheDirectory::new();
     fs::create_dir_all(directory.root()).unwrap();
     let url = "https://budget.invalid/fifo";
-    rustix::fs::mkfifo(
+    rustix::fs::mkfifoat(
+        rustix::fs::CWD,
         directory.root().join(format!("{}.meta", key(url))),
         rustix::fs::Mode::RUSR | rustix::fs::Mode::WUSR,
     )

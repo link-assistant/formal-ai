@@ -6,12 +6,12 @@ use std::sync::mpsc;
 use std::time::{Duration, Instant};
 
 /// Every read must make progress; an oversized stream never becomes a full buffered result.
-pub(crate) fn read_limited(mut reader: impl Read, maximum: usize) -> io::Result<Vec<u8>> {
+pub(super) fn read_limited(mut reader: impl Read, maximum: usize) -> io::Result<Vec<u8>> {
     let capacity = maximum
         .checked_add(1)
         .ok_or_else(|| io::Error::other("source_transport_invalid_output_limit"))?;
     let mut bytes = Vec::with_capacity(capacity);
-    let mut chunk = [0_u8; 64 * 1024];
+    let mut chunk = vec![0_u8; 64 * 1024];
     for _ in 0..=maximum {
         let remaining = maximum.saturating_sub(bytes.len());
         let length = remaining.saturating_add(1).min(chunk.len());
@@ -98,9 +98,15 @@ pub(super) fn bounded_output(
             }
             Ok((_, Err(error))) => {
                 let cleaned = stop(&mut child);
-                return Err(FetchError::Transport(format!(
-                    "{error}; cleanup_complete={cleaned}"
-                )));
+                return Err(FetchError::Transport(
+                    crate::source_fetch::source_diagnostic(
+                        "source_transport_cleanup_diagnostic",
+                        &[
+                            ("error", &error.to_string()),
+                            ("cleaned", &cleaned.to_string()),
+                        ],
+                    ),
+                ));
             }
             Err(mpsc::RecvTimeoutError::Timeout) => {}
             Err(mpsc::RecvTimeoutError::Disconnected) => {
@@ -143,7 +149,10 @@ pub(super) fn bounded_output(
         }
     }
     let cleaned = stop(&mut child);
-    Err(FetchError::Transport(format!(
-        "source_transport_timeout; cleanup_complete={cleaned}"
-    )))
+    Err(FetchError::Transport(
+        crate::source_fetch::source_diagnostic(
+            "source_transport_timeout_diagnostic",
+            &[("cleaned", &cleaned.to_string())],
+        ),
+    ))
 }

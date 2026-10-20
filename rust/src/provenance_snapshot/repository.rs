@@ -49,7 +49,7 @@ struct Entry {
     identity: Identity,
 }
 #[cfg(unix)]
-pub(crate) fn open_observed(path: &Path) -> io::Result<File> {
+pub fn open_observed(path: &Path) -> io::Result<File> {
     rustix::fs::open(
         path,
         rustix::fs::OFlags::RDONLY
@@ -62,7 +62,7 @@ pub(crate) fn open_observed(path: &Path) -> io::Result<File> {
     .map_err(io::Error::from)
 }
 #[cfg(windows)]
-pub(crate) fn open_observed(path: &Path) -> io::Result<File> {
+pub fn open_observed(path: &Path) -> io::Result<File> {
     use std::os::windows::fs::OpenOptionsExt;
     use windows_sys::Win32::Storage::FileSystem::FILE_FLAG_OPEN_REPARSE_POINT;
     fs::OpenOptions::new()
@@ -71,7 +71,7 @@ pub(crate) fn open_observed(path: &Path) -> io::Result<File> {
         .open(path)
 }
 #[cfg(not(any(unix, windows)))]
-pub(crate) fn open_observed(_path: &Path) -> io::Result<File> {
+pub fn open_observed(_path: &Path) -> io::Result<File> {
     Err(failure("snapshot_platform_unsupported"))
 }
 #[cfg(unix)]
@@ -136,7 +136,7 @@ fn ancestors(root: &Path, relative: &str) -> io::Result<PathBuf> {
     Ok(path)
 }
 /// Compare descriptor and current no-follow path identities on every supported host.
-pub(crate) fn same_observed_file(file: &File, path: &Path) -> io::Result<bool> {
+pub fn same_observed_file(file: &File, path: &Path) -> io::Result<bool> {
     let metadata = file.metadata()?;
     if !regular(&metadata) {
         return Ok(false);

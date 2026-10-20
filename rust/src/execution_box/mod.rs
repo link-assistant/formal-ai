@@ -13,6 +13,10 @@
 pub mod container;
 mod conversation;
 mod invocation;
+#[cfg(not(target_arch = "wasm32"))]
+mod process;
+#[cfg(not(target_arch = "wasm32"))]
+use process::{kill_observed_group, observe_async};
 
 use conversation::ensure_conversation_container;
 pub use conversation::{
@@ -23,10 +27,11 @@ use invocation::{
 };
 
 use std::fmt::Write as _;
-use std::io::Write as _;
 use std::path::{Path, PathBuf};
+#[cfg(not(target_arch = "wasm32"))]
 use std::process::{Command, Stdio};
-use std::sync::{Arc, Mutex};
+#[cfg(not(target_arch = "wasm32"))]
+use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 /// The operator configuration that names which container backend may be
@@ -59,6 +64,7 @@ const CONVERSATION_IDLE: &str = "while :; do sleep 3600; done";
 pub const COMMAND_LOG: &str = "__formal_ai_commands.log";
 
 /// How often the deadline is checked while a run is in flight.
+#[cfg(not(target_arch = "wasm32"))]
 const POLL: Duration = Duration::from_millis(5);
 
 /// The start-up backstop the deadline is widened by.
@@ -67,6 +73,7 @@ const POLL: Duration = Duration::from_millis(5);
 /// start-up latency never decides whether a program that would have printed
 /// something is instead killed before it printed anything. The measured
 /// interpreter start-up replaces it when the machine is slower than this.
+#[cfg(not(target_arch = "wasm32"))]
 const STARTUP_FLOOR: Duration = Duration::from_millis(250);
 
 /// How long this machine takes to start the interpreter and do nothing,
@@ -78,21 +85,42 @@ const STARTUP_FLOOR: Duration = Duration::from_millis(250);
 /// command that would have succeeded is instead called a failure. That is the
 /// distinction `src/agent.rs`'s `PYTHON_TIME_BUDGET_FLOOR` already draws, and it
 /// is why the floor here is observed rather than declared.
+#[cfg(not(target_arch = "wasm32"))]
 fn interpreter_startup() -> Duration {
     static MEASURED: std::sync::OnceLock<Duration> = std::sync::OnceLock::new();
     *MEASURED.get_or_init(|| {
         let started = Instant::now();
-        let observed = Command::new(HOST_INTERPRETER)
+        let mut command = Command::new(HOST_INTERPRETER);
+        command
             .args(["-c", "pass"])
             .stdin(Stdio::null())
             .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status();
-        if observed.is_ok() {
-            started.elapsed()
-        } else {
-            STARTUP_FLOOR
+            .stderr(Stdio::null());
+        #[cfg(unix)]
+        {
+            use std::os::unix::process::CommandExt;
+            command.process_group(0);
         }
+        let Ok(mut child) = command.spawn() else {
+            return STARTUP_FLOOR;
+        };
+        loop {
+            match child.try_wait() {
+                Ok(Some(_)) => return started.elapsed(),
+                Ok(None) if started.elapsed() < Duration::from_secs(1) => std::thread::sleep(POLL),
+                _ => break,
+            }
+        }
+        kill_observed_group(child.id());
+        let _ = child.kill();
+        let cleanup = Instant::now();
+        while cleanup.elapsed() < Duration::from_millis(250) {
+            if child.try_wait().ok().flatten().is_some() {
+                break;
+            }
+            std::thread::sleep(POLL);
+        }
+        STARTUP_FLOOR
     })
 }
 
@@ -759,89 +787,83 @@ impl ExecutionBox {
         invocation: &ProcessInvocation,
         stdin: Option<&[u8]>,
     ) -> Result<BoxObservation, BoxError> {
-        let mut command = Command::new(&invocation.program);
-        command
-            .args(&invocation.arguments)
-            .current_dir(&self.workspace)
-            .stdin(if stdin.is_some() {
-                Stdio::piped()
-            } else {
-                Stdio::null()
+        #[cfg(target_arch = "wasm32")]
+        {
+            let _ = (invocation, stdin);
+            Err(BoxError::Observed {
+                detail: "execution_process_runtime_unavailable".to_owned(),
             })
-            .stdout(Stdio::piped())
-            .stderr(Stdio::piped());
-        if self.network == NetworkPolicy::Denied
-            && matches!(self.backend, ExecutionBackend::HostSandbox)
+        }
+        #[cfg(not(target_arch = "wasm32"))]
         {
-            // The host sandbox cannot remove the network namespace, so the
-            // refusal is recorded rather than claimed: a container backend
-            // lowers this to `--network none`.
-            command.env("FORMAL_AI_NETWORK", "denied");
-        }
-
-        let started = Instant::now();
-        let bound = self
-            .deadline
-            .saturating_add(interpreter_startup().max(STARTUP_FLOOR));
-        let mut child = command.spawn().map_err(|error| BoxError::Observed {
-            detail: error.to_string(),
-        })?;
-        if let Some(bytes) = stdin
-            && let Some(mut pipe) = child.stdin.take()
-            && let Err(error) = pipe.write_all(bytes)
-        {
-            let _ = child.kill();
-            let _ = child.wait();
-            return Err(BoxError::Observed {
-                detail: error.to_string(),
-            });
-        }
-
-        let observed = Arc::new(Mutex::new(String::new()));
-        let mut readers = Vec::new();
-        if let Some(stdout) = child.stdout.take() {
-            readers.push(stream(stdout, Arc::clone(&observed)));
-        }
-        if let Some(stderr) = child.stderr.take() {
-            readers.push(stream(stderr, Arc::clone(&observed)));
-        }
-
-        let mut exit_code = None;
-        let mut timed_out = false;
-        loop {
-            match child.try_wait() {
-                Ok(Some(status)) => {
-                    exit_code = status.code().map(i64::from);
-                    break;
-                }
-                Ok(None) => {}
-                Err(error) => {
-                    return Err(BoxError::Observed {
+            let mut command = Command::new(&invocation.program);
+            command
+                .args(&invocation.arguments)
+                .current_dir(&self.workspace)
+                .stdin(if stdin.is_some() {
+                    Stdio::piped()
+                } else {
+                    Stdio::null()
+                })
+                .stdout(Stdio::piped())
+                .stderr(Stdio::piped());
+            #[cfg(unix)]
+            {
+                use std::os::unix::process::CommandExt;
+                command.process_group(0);
+            }
+            if self.network == NetworkPolicy::Denied
+                && matches!(self.backend, ExecutionBackend::HostSandbox)
+            {
+                command.env("FORMAL_AI_NETWORK", "denied");
+            }
+            let started = Instant::now();
+            let bound = self
+                .deadline
+                .saturating_add(interpreter_startup().max(STARTUP_FLOOR));
+            let deadline = self.deadline;
+            let input = stdin.map(<[u8]>::to_vec);
+            let process = Arc::new(std::sync::atomic::AtomicU32::new(0));
+            let process_worker = Arc::clone(&process);
+            let (sender, receiver) = std::sync::mpsc::sync_channel(1);
+            let worker = std::thread::spawn(move || {
+                let runtime = tokio::runtime::Builder::new_current_thread()
+                    .enable_all()
+                    .build();
+                let result = match runtime {
+                    Ok(runtime) => {
+                        let result = runtime.block_on(observe_async(
+                            command,
+                            input,
+                            started,
+                            bound,
+                            deadline,
+                            &process_worker,
+                        ));
+                        runtime.shutdown_timeout(Duration::ZERO);
+                        result
+                    }
+                    Err(error) => Err(BoxError::Observed {
                         detail: error.to_string(),
-                    });
-                }
+                    }),
+                };
+                let _ = sender.send(result);
+            });
+            let remaining = bound
+                .saturating_sub(started.elapsed())
+                .saturating_add(Duration::from_millis(500));
+            let result = receiver.recv_timeout(remaining).unwrap_or_else(|_| {
+                kill_observed_group(process.load(std::sync::atomic::Ordering::Acquire));
+                Err(BoxError::Observed {
+                    detail: "execution_cleanup_incomplete".to_owned(),
+                })
+            });
+            // A worker never holds this API past its deadline through an unconditional join.
+            if worker.is_finished() {
+                let _ = worker.join();
             }
-            if started.elapsed() >= bound {
-                timed_out = true;
-                let _ = child.kill();
-                let _ = child.wait();
-                break;
-            }
-            std::thread::sleep(POLL);
+            result
         }
-        let elapsed = started.elapsed();
-        for reader in readers {
-            let _ = reader.join();
-        }
-
-        let partial_output = observed.lock().map(|text| text.clone()).unwrap_or_default();
-        Ok(BoxObservation {
-            exit_code: if timed_out { None } else { exit_code },
-            timed_out,
-            elapsed,
-            deadline: self.deadline,
-            partial_output,
-        })
     }
 
     /// #930's descending-N ladder: every N tried, every outcome recorded.
@@ -938,23 +960,4 @@ impl ExecutionBox {
             let _ = writeln!(log, "{}", script.replace('\n', "\\n"));
         }
     }
-}
-
-/// Stream one pipe into the shared observation buffer as it arrives, so output
-/// printed before a deadline is shown rather than lost with the process.
-fn stream<R: std::io::Read + Send + 'static>(
-    mut pipe: R,
-    into: Arc<Mutex<String>>,
-) -> std::thread::JoinHandle<()> {
-    std::thread::spawn(move || {
-        let mut buffer = [0_u8; 1024];
-        while let Ok(read) = pipe.read(&mut buffer) {
-            if read == 0 {
-                break;
-            }
-            if let Ok(mut text) = into.lock() {
-                text.push_str(&String::from_utf8_lossy(&buffer[..read]));
-            }
-        }
-    })
 }

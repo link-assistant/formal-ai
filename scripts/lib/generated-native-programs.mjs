@@ -695,32 +695,32 @@ true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":3577,"end":364
 "0eff15e745b06de01aec565111fa17747e9f30c9daa57ba0672c312eb756053e"},{"path":"formal_ai::execution_box::BACKEND_ENV",
 "canonicalPath":"formal_ai::execution_box::BACKEND_ENV","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"FORMAL_AI_EXECUTION_BACKEND","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
-"sourceSpan":{"start":1387,"end":1447},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"b8602db59a8956b376ad530c9464a833e63558e4edf764b00991d91d070e2b73"},{"path":"rust/src/lib.rs","sha256":
+"sourceSpan":{"start":1561,"end":1621},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
+"816c5476bfb72e77af7474731431d37442b73ab8d9f930701632f03233eac520"},{"path":"rust/src/lib.rs","sha256":
 "f082bbd6cb00675d9595c16cbe36b77f9220833075245951001ee0bf8f8a5870"}],"maintainedMeta":
 "(constant BACKEND-ENV (exported) (type string) (value (string FORMAL_AI_EXECUTION_BACKEND)))","maintainedJavaScript":
 "export const BACKEND_ENV = 'FORMAL_AI_EXECUTION_BACKEND';","maintainedTranslationSha256":
 "84d148ddfa203ea6746d39b5f2337e0436b09f3613fc5dc62614d313e01edfb8"},{"path":
 "formal_ai::execution_box::START_ISOLATION_ENV","canonicalPath":"formal_ai::execution_box::START_ISOLATION_ENV","kind":
 "nativeConstant","nativeType":"&str","returnType":"string","value":"FORMAL_AI_START_ISOLATION","nativeSourceQualified":
-true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1518,"end":1584},"sourceWitnesses":[{"path":
-"rust/src/execution_box/mod.rs","sha256":"b8602db59a8956b376ad530c9464a833e63558e4edf764b00991d91d070e2b73"},{"path":
+true,"nativeBorrowedConstantQualified":true,"sourceSpan":{"start":1692,"end":1758},"sourceWitnesses":[{"path":
+"rust/src/execution_box/mod.rs","sha256":"816c5476bfb72e77af7474731431d37442b73ab8d9f930701632f03233eac520"},{"path":
 "rust/src/lib.rs","sha256":"f082bbd6cb00675d9595c16cbe36b77f9220833075245951001ee0bf8f8a5870"}],"maintainedMeta":
 "(constant START-ISOLATION-ENV (exported) (type string) (value (string FORMAL_AI_START_ISOLATION)))",
 "maintainedJavaScript":"export const START_ISOLATION_ENV = 'FORMAL_AI_START_ISOLATION';","maintainedTranslationSha256":
 "70093a513aed2988c7ca84657a325f543c0ffb402624a18a855bd80f62d724b8"},{"path":"formal_ai::execution_box::START_RUNNER_ENV"
 ,"canonicalPath":"formal_ai::execution_box::START_RUNNER_ENV","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"FORMAL_AI_START_RUNNER","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
-"sourceSpan":{"start":1645,"end":1705},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"b8602db59a8956b376ad530c9464a833e63558e4edf764b00991d91d070e2b73"},{"path":"rust/src/lib.rs","sha256":
+"sourceSpan":{"start":1819,"end":1879},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
+"816c5476bfb72e77af7474731431d37442b73ab8d9f930701632f03233eac520"},{"path":"rust/src/lib.rs","sha256":
 "f082bbd6cb00675d9595c16cbe36b77f9220833075245951001ee0bf8f8a5870"}],"maintainedMeta":
 "(constant START-RUNNER-ENV (exported) (type string) (value (string FORMAL_AI_START_RUNNER)))","maintainedJavaScript":
 "export const START_RUNNER_ENV = 'FORMAL_AI_START_RUNNER';","maintainedTranslationSha256":
 "f3ed003c9451353d1beca1a7bc966403f4c8b77b23cf135327416e4e7b19cd8f"},{"path":"formal_ai::execution_box::COMMAND_LOG",
 "canonicalPath":"formal_ai::execution_box::COMMAND_LOG","kind":"nativeConstant","nativeType":"&str","returnType":
 "string","value":"__formal_ai_commands.log","nativeSourceQualified":true,"nativeBorrowedConstantQualified":true,
-"sourceSpan":{"start":2482,"end":2539},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
-"b8602db59a8956b376ad530c9464a833e63558e4edf764b00991d91d070e2b73"},{"path":"rust/src/lib.rs","sha256":
+"sourceSpan":{"start":2656,"end":2713},"sourceWitnesses":[{"path":"rust/src/execution_box/mod.rs","sha256":
+"816c5476bfb72e77af7474731431d37442b73ab8d9f930701632f03233eac520"},{"path":"rust/src/lib.rs","sha256":
 "f082bbd6cb00675d9595c16cbe36b77f9220833075245951001ee0bf8f8a5870"}],"maintainedMeta":
 "(constant COMMAND-LOG (exported) (type string) (value (string __formal_ai_commands.log)))","maintainedJavaScript":
 "export const COMMAND_LOG = '__formal_ai_commands.log';","maintainedTranslationSha256":

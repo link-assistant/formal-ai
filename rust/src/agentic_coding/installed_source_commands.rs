@@ -1,4 +1,5 @@
 //! Explicit caller-installed source operation capabilities, never task metadata.
+//!
 //! The caller trusts the installed resource home, including imported dependencies.
 //! Digests bind Node and the two entrypoints, not the transitive resource closure.
 use std::sync::OnceLock;
@@ -123,7 +124,7 @@ fn check_file(path: &std::path::Path, expected: &str, executable: bool) -> Optio
     let _ = executable;
     let mut digest = Sha256::new();
     let mut observed = 0_u64;
-    let mut buffer = [0_u8; 65_536];
+    let mut buffer = vec![0_u8; 65_536];
     for _ in 0..=256 * 1024 * 1024 {
         let count = file.read(&mut buffer).ok()?;
         if count == 0 {

@@ -123,3 +123,57 @@ test('recovered upload warnings cannot hide observed absent source delivery', ()
   assert.deepEqual(observedOutcome('"output": "Finished without changes"\n"bodyPreview": "Log URL: https://github.com/owner/repo/blob/hash/log"'), {sourceDelivery:'unknown', logPublication:'unknown'});
   assert.equal(observedOutcome('Error Resource not accessible by integration').logPublication, 'unknown');
 });
+
+test('gh timeout kills its owned process group and observes inherited stream closure', { skip: process.platform === 'win32' }, async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const { runGh } = await import('../../../scripts/collect-ci-failures.mjs');
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ci-gh-group-'));
+  const previous = process.env.PATH;
+  try {
+    fs.writeFileSync(path.join(directory, 'gh'), `#!${process.execPath}\nconst {spawn}=require('node:child_process');\nspawn(process.execPath,['-e','setTimeout(()=>{},10000)'],{stdio:['ignore','inherit','inherit']});\nprocess.stdout.write('START\\n');\nsetTimeout(()=>{},10000);\n`, { mode: 0o755 });
+    process.env.PATH = directory + path.delimiter + previous;
+    const started = Date.now();
+    const result = await runGh([], { timeoutMs: 1000, maxBytes: 128, maxDownloadBytes: 1024 });
+    assert.ok(Date.now() - started < 3500, 'timeout must include finite post-kill settlement');
+    assert.equal(result.ok, false);
+    assert.equal(result.timedOut, true);
+    assert.equal(result.processClosed, true);
+    assert.equal(result.streamComplete, true);
+    assert.equal(result.cleanupComplete, true);
+    assert.equal(result.tailComplete, false);
+    assert.match(result.text, /^START/u);
+  } finally { process.env.PATH = previous; fs.rmSync(directory, { recursive: true, force: true }); }
+});
+
+test('gh exit cannot cancel the deadline while an escaped descendant holds its pipes', { skip: process.platform === 'win32' }, async () => {
+  const fs = await import('node:fs');
+  const os = await import('node:os');
+  const path = await import('node:path');
+  const { runGh } = await import('../../../scripts/collect-ci-failures.mjs');
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'ci-gh-held-pipe-'));
+  const previous = process.env.PATH;
+  const descendant = path.join(directory, 'descendant.json');
+  try {
+    fs.writeFileSync(path.join(directory, 'gh'), `#!${process.execPath}\nconst fs=require('node:fs'),{spawn}=require('node:child_process');\nconst child=spawn(process.execPath,['-e','setTimeout(()=>{},10000)'],{detached:true,stdio:['ignore','inherit','inherit']});\nfs.writeFileSync(${JSON.stringify(descendant)},JSON.stringify({pid:child.pid}));\nprocess.stdout.write('START\\n',()=>process.exit(0));\n`, { mode: 0o755 });
+    process.env.PATH = directory + path.delimiter + previous;
+    const started = Date.now();
+    const result = await runGh([], { timeoutMs: 1000, maxBytes: 128, maxDownloadBytes: 1024 });
+    assert.ok(Date.now() - started < 3500, 'escaped pipe must not outlive the settlement bound');
+    assert.equal(result.ok, false);
+    assert.equal(result.timedOut, true);
+    assert.equal(result.exitCode, 0, 'direct child really exited before its inherited pipes closed');
+    assert.equal(result.streamComplete, false);
+    assert.equal(result.cleanupComplete, false, 'forced pipe destruction cannot assert cleanup');
+    assert.equal(result.tailComplete, false);
+    assert.match(result.text, /^START/u);
+  } finally {
+    if (fs.existsSync(descendant)) {
+      const { pid } = JSON.parse(fs.readFileSync(descendant, 'utf8'));
+      try { process.kill(pid, 'SIGKILL'); } catch (error) { if (error.code !== 'ESRCH') throw error; }
+    }
+    process.env.PATH = previous;
+    fs.rmSync(directory, { recursive: true, force: true });
+  }
+});

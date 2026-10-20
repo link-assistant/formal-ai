@@ -120,3 +120,35 @@ test('missing source contracts retain grounded multilingual Gap provenance', asy
   }
   assert.equal(renderSeededOutcome('unregistered_source_contract', requests[0], ''), null);
 });
+
+
+test('source search refuses both exact truncation markers before any candidate Read', async () => {
+  const sourceTask = 'Implement a reusable source-read repair. Preserve alpha_beta.';
+  const sourceTools = ['grep', 'read'];
+  const first = await planChatStepResolved([{role:'user',content:sourceTask}], sourceTools);
+  assert.equal(first.kind, 'tool_calls');
+  assert.equal(first.calls[0].tool, 'grep');
+  const call = first.calls[0];
+  for (const [marker, refused] of [
+    ['Results truncated', true], ['preview truncated', true],
+    ['prefixResults truncatedSuffix', true], ['prefixpreview truncatedSuffix', true],
+    ['results truncated', false], ['Preview truncated', false], ['Result truncated', false],
+  ]) {
+    const messages = [
+      {role:'user',content:sourceTask},
+      {role:'assistant',tool_calls:[{id:'source-search',type:'function',function:{name:call.tool,arguments:call.arguments}}]},
+      {role:'tool',name:call.tool,tool_call_id:'source-search',content:'Found 1 matches\njs/agentic/heldout.mjs:\n'+marker},
+    ];
+    const result = await planChatStepResolved(messages, sourceTools);
+    if (refused) {
+      assert.equal(result.kind, 'final', marker);
+      assert.match(result.answer, /IncompleteSourceSearch/u);
+      assert.equal(result.result.discovery.observations[0].complete, false);
+    } else {
+      assert.equal(result.kind, 'tool_calls', marker);
+      assert.equal(result.calls.length, 1);
+      assert.equal(result.calls[0].tool, 'read');
+      assert.equal(JSON.parse(result.calls[0].arguments).path, 'js/agentic/heldout.mjs');
+    }
+  }
+});

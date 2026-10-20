@@ -91,28 +91,71 @@ export function deduplicate(occurrences) {
 }
 export function runGh(args, { timeoutMs, maxBytes, maxDownloadBytes = maxBytes }) {
   return new Promise(resolve => {
-    const child = spawn('gh', args, { stdio: ['ignore', 'pipe', 'pipe'] });
+    const child = spawn('gh', args, {
+      detached: process.platform !== 'win32', stdio: ['ignore', 'pipe', 'pipe'],
+    });
     const firstLimit = Math.ceil(maxBytes / 2), tailLimit = Math.floor(maxBytes / 2);
     let first = Buffer.alloc(0), tail = Buffer.alloc(0), bytes = 0, stderr = '';
-    let downloadTruncated = false, timedOut = false;
-    const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL'); }, timeoutMs);
+    let downloadTruncated = false, timedOut = false, settled = false, terminating = false;
+    let forced = null, observedCode = null, observedSignal = null, exited = false;
+    const ended = { stdout: false, stderr: false };
+    // Close/exit and natural pipe EOF are observations; forced destruction is not EOF.
+    const finish = ({ closed = false, forcedSettlement = false, failure = null } = {}) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      clearTimeout(forced);
+      const truncated = bytes > maxBytes;
+      const streamComplete = ended.stdout && ended.stderr && !forcedSettlement;
+      const ok = closed && observedCode === 0 && !timedOut && !downloadTruncated && !failure && streamComplete;
+      const text = first.toString('utf8') + (truncated ? '\n[bounded middle omitted]\n' : '') + tail.toString('utf8');
+      resolve({ ok, text, error: redact(failure ?? stderr), truncated, downloadTruncated, timedOut,
+        bytesReceived: Math.min(bytes, maxDownloadBytes), tailComplete: ok && !downloadTruncated,
+        exitCode: observedCode, signal: observedSignal, processClosed: closed,
+        streamComplete, cleanupComplete: closed && exited && streamComplete });
+    };
+    const terminate = () => {
+      if (terminating || settled) return;
+      terminating = true;
+      clearTimeout(timer);
+      try {
+        if (process.platform !== 'win32' && child.pid) process.kill(-child.pid, 'SIGKILL');
+        else child.kill('SIGKILL');
+      } catch {
+        try { child.kill('SIGKILL'); } catch { /* The settlement remains bounded when signaling fails. */ }
+      }
+      forced = setTimeout(() => {
+        child.stdout.destroy();
+        child.stderr.destroy();
+        child.unref();
+        finish({ forcedSettlement: true, failure: stderr || 'process_settlement_timeout' });
+      }, 250);
+    };
+    // Keep this timer through child exit until its inherited streams actually close.
+    const timer = setTimeout(() => { timedOut = true; terminate(); }, timeoutMs);
     child.stdout.on('data', chunk => {
+      if (settled) return;
       const accepted = chunk.subarray(0, Math.max(0, maxDownloadBytes - bytes));
       const needed = Math.max(0, firstLimit - first.length);
       if (needed) first = Buffer.concat([first, accepted.subarray(0, needed)]);
       const afterFirst = accepted.subarray(Math.min(needed, accepted.length));
       tail = Buffer.concat([tail, afterFirst]).subarray(-tailLimit);
       bytes += chunk.length;
-      if (bytes > maxDownloadBytes) { downloadTruncated = true; child.kill('SIGKILL'); }
+      if (bytes > maxDownloadBytes) { downloadTruncated = true; terminate(); }
     });
-    child.stderr.on('data', chunk => { stderr = (stderr + chunk.toString()).slice(0, 2048); });
-    child.on('error', error => { clearTimeout(timer); resolve({ ok: false, text: '', error: redact(error.message), truncated: false, downloadTruncated, timedOut, tailComplete: false }); });
-    child.on('close', code => {
-      clearTimeout(timer);
-      const truncated = bytes > maxBytes;
-      const text = first.toString('utf8') + (truncated ? '\n[bounded middle omitted]\n' : '') + tail.toString('utf8');
-      resolve({ ok: code === 0, text, error: redact(stderr), truncated, downloadTruncated, timedOut,
-        bytesReceived: Math.min(bytes, maxDownloadBytes), tailComplete: code === 0 && !downloadTruncated });
+    child.stderr.on('data', chunk => { if (!settled) stderr = (stderr + chunk.toString()).slice(0, 2048); });
+    for (const channel of ['stdout', 'stderr']) {
+      child[channel].once('end', () => { ended[channel] = true; });
+      child[channel].on('error', error => { stderr = redact(error.message); terminate(); });
+    }
+    child.once('exit', (code, signal) => { exited = true; observedCode = code; observedSignal = signal; });
+    child.once('error', error => {
+      child.stdout.destroy(); child.stderr.destroy(); child.unref();
+      finish({ failure: error.message });
+    });
+    child.once('close', (code, signal) => {
+      observedCode = code; observedSignal = signal;
+      finish({ closed: true });
     });
   });
 }

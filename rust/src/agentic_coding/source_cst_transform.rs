@@ -1,4 +1,5 @@
 //! Qualified parameter edits delegate to the installed complete-CST rule engine.
+//!
 //! The engine reparses, verifies inverse/preimage and owns the physical write;
 //! this planner binds a current owner Read and never synthesizes source edits.
 use super::final_result::{FinalDisposition, FinalResult, record};

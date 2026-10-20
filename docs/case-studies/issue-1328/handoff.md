@@ -353,3 +353,55 @@ order remain unchanged. Only source-identity metadata for `rust/src/lib.rs` and
 registrations. The original witness test passes after the refresh. Source success
 cannot substitute for final-head hosted compilation, the original Hive delivery
 checks, or post-merge publication and public-download verification.
+
+
+## Follow-up to hosted checks on `4769993f`
+
+The lightweight no-std worker includes the maintained seed parser directly. Its
+first hosted compiler rejected the newly used strict-empty callback because that
+worker did not have the native callback module. The correction extracts the
+core-only operation into one canonical Rust source, re-exported by the native
+module and included directly by the worker. It does not copy the algorithm or
+pull JSON, native seed owners or the meta reasoner into the lightweight worker.
+The worker registration preserves unrelated source comments and whitespace.
+Desktop, CLI and extension artifact-download failures on that revision were
+consequences of the missing source-producer artifact; they did not reach signing.
+
+Hosted native test compilation also exposed a private type path, an incorrectly
+typed byte-slice literal and a nonexistent locked-rustix FIFO function. The tests
+now use the existing public type owner, an explicitly typed byte slice and the
+actual `mkfifoat` API. Assertions and production visibility are unchanged. Two
+plain-text incomplete-search markers move to the canonical message seed shared
+by JS and Rust. Both exact markers, embedded occurrences and case-sensitive
+near-misses retain public-planner regression controls; structured receipt checks
+remain in addition to those guards, and the predicate ceiling is unchanged.
+
+A further retry/deadline review reproduced blocked stdin and descendant-held
+output pipes defeating ExecutionBox deadlines. The repair covers input writes,
+output EOF, child status and bounded cleanup as one operation. Native asynchronous
+process I/O uses only features of already locked dependencies, enabled for native
+targets. Startup calibration itself has a finite probe; an unsuccessful probe
+uses the existing startup floor rather than claiming a measured result. Excess
+output produces an explicit observed failure with bounded partial output.
+Missing EOF or reap evidence produces an incomplete-cleanup failure. On Windows,
+an escaped descendant can retain an underlying Tokio blocking I/O worker even
+though the caller returns within its bound; that outcome remains a refusal,
+without a claim of complete process containment. Healthy execution and the
+original error/result controls remain requirements.
+
+The CI collector's process deadline likewise remains active until output closure.
+It owns a process group where supported and has a finite final pipe-cleanup
+window. Forced stream closure cannot certify a complete tail, successful command
+or complete cleanup. Real Node-child regressions cover inherited pipes, including
+an escaped descendant; fixture processes are explicitly cleaned up. These local
+controls execute no Rust products. Hosted compilation and final-head runtime,
+release publication and authenticated public-download checks remain necessary.
+
+
+The locked native feature additions change the Cargo manifest's source identity.
+Its governed fixture witnesses are refreshed only after a complete serialized
+inventory comparison proves that all original qualified cases, program fields,
+other fixture fields and oracle sources remain unchanged. The reviewed difference
+is limited to that manifest's identity; the lockfile and baseline reader are
+unchanged. This review does not certify the new native runtime behavior. The
+unchanged original governed controls and hosted native checks remain required.
