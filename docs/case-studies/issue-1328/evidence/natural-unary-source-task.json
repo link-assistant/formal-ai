@@ -1,0 +1,135 @@
+{
+  "schema": "formal-ai-natural-unary-source-task/v1",
+  "naturalRequest": "Consolidate stateless unary callbacks in js/agentic/coding_research_observation.mjs using canonical helpers. Preserve callback value behavior and comments.",
+  "taskBytes": 155,
+  "requestContainsImplementationOrCommand": false,
+  "acceptedIndependentTaskIdentities": 0,
+  "naturalTaskStarts": 5,
+  "outcomes": [
+    {
+      "id": "initial-baseline",
+      "stop": "no-plan",
+      "tools": 0,
+      "effects": 0
+    },
+    {
+      "id": "controlled-source-preimage-baseline",
+      "stop": "no-plan",
+      "tools": 0,
+      "effects": 0,
+      "commandPermissionMatchesPatchedAttempt": true
+    },
+    {
+      "id": "private-real-source-copy",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "read"
+      ],
+      "files": 1,
+      "callbacks": 1,
+      "independentOracleCasesPassed": 4,
+      "fullTaskAccepted": false
+    },
+    {
+      "id": "actual-repository",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "read"
+      ],
+      "files": 1,
+      "callbacks": 1,
+      "independentOracleCasesPassed": 4,
+      "fullTaskAccepted": false
+    },
+    {
+      "id": "final-private-original-preimage-replay",
+      "stop": "final",
+      "tools": [
+        "read",
+        "bash",
+        "read"
+      ],
+      "files": 1,
+      "callbacks": 1,
+      "independentOracleCasesPassed": 4,
+      "fullTaskAccepted": false
+    }
+  ],
+  "sourceEffect": {
+    "owner": "js/agentic/coding_research_observation.mjs",
+    "beforeSha256": "3645d9fd734a5b6b47dc6f4e5aed5258bd0c5fd2bff211c1ea3d2a1e6a1c18c8",
+    "afterSha256": "ea199b0846a316a11b7311f175ff6ee5f7ac9e0e768e8a7e9daa159585f1ef8b",
+    "operation": "existing stateless unary AST consolidation",
+    "beforeExpression": "tokens.map(token => token.text)",
+    "afterExpression": "tokens.map(canonicalUnaryText)",
+    "canonicalImport": "callbackText as canonicalUnaryText",
+    "sourceReadbackVerified": true,
+    "beforeBytes": 3085,
+    "afterBytes": 3160,
+    "netByteGrowth": 75
+  },
+  "fixedOracle": {
+    "path": "rust/tests/web/coding-research-observation-unary.test.mjs",
+    "sha256": "7b373cb2fee3033782e694e7af072d737b484dc23887b5fb15dacf29b2b27830",
+    "predeclaredCasesByteIdentical": true,
+    "predeclaredCaseVectorSha256": "f09f6fc3c1ec1c1401b13deca47d501e96fb24681ecb542520e0bff55643d3d7",
+    "cases": 4,
+    "sourceParses": true,
+    "ownerCommentPreserved": true,
+    "verificationDomain": "exact lexical token text outputs and matching token-kind lengths; no complete semantic-equivalence claim"
+  },
+  "narrowOperationBounds": "one finite whole-request callback-value grammar using a trusted installed AST operation; no general natural-language synthesis claim",
+  "separateHistoricalTask": {
+    "id": "T3567",
+    "status": "MissingContract",
+    "sourceEffects": 0,
+    "actualDiscoveryTools": {
+      "grep": 3,
+      "read": 8
+    },
+    "unchangedOracle": {
+      "tests": 25,
+      "pass": 3,
+      "fail": 22
+    },
+    "historicalDeclaredTasks": 20,
+    "otherHistoricalTasksUnattempted": 19,
+    "routeEnvironment": "private preflight overlay; no claim of another final installed-production attempt"
+  },
+  "suppliedAlgorithmsControllersAndRepairsAutonomousAuthorshipCredit": 0,
+  "modelUsage": "Unknown",
+  "totalObservedInput": "Unknown",
+  "cost": "Unknown",
+  "taskBytesAreTotalInput": false,
+  "atomicity": "complete staged write, fsync, optimistic source/helper revalidation and atomic replacement; no atomic compare-and-swap claim",
+  "nativeRouteParity": "not implemented for this new installed Node operation",
+  "verificationAfterFinalSeedAndReceiptTightening": "Final actual private preimage replay passed; fixed4-case oracle passed; repeatableconsumer5 +route20 +existingAST11 =36pass/0fail/0skip/0todo",
+  "taskOnlyNetGrowthRatio": {
+    "numeratorNetBytes": 75,
+    "denominatorTaskBytes": 155,
+    "fraction": "75/155",
+    "ratio": 0.4838709677419355,
+    "interpretation": "Raw task-only net growth for a useful refactor; not expansion/amplification acceptance and not a total model input ratio"
+  },
+  "tokenSavingsClaim": false,
+  "physicalEffectWorkspaces": 3,
+  "fullTaskAccepted": false,
+  "partialSourceEffectTaskIdentities": 1,
+  "remainingStatelessUnaryMemberCallbacks": [
+    {
+      "start": 1336,
+      "end": 1355,
+      "expression": "token => token.kind",
+      "property": "kind",
+      "callbackMethod": "map",
+      "captures": []
+    }
+  ],
+  "independentGoalCoverageVerified": false,
+  "goalCoverage": "incomplete; fixed behavior oracle does not prove all requested callbacks consolidated",
+  "accountingCorrection": "Prior successful-effect acceptance wording retracted; actual finding plus pending validation is retained."
+}

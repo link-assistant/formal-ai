@@ -36,7 +36,7 @@ pub const fn is_js_whitespace(character: char) -> bool {
 /// Mirrors `trim()` in `js/worker/formal_ai_worker_meta_reasoner.js`.
 #[must_use]
 pub fn js_trim(text: &str) -> &str {
-    text.trim_matches(is_js_whitespace)
+    crate::callback_values::callback_trim(text)
 }
 
 /// The length of a string in UTF-16 code units, JavaScript's `length`.

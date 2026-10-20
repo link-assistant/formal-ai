@@ -632,3 +632,44 @@ agentic_messages
     text "Planning stopped: required tool arguments could not be bound for {tool}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete."
   message memory-storage-unavailable
     text "persisted-memory storage unavailable at {path}: {error}"
+  message source_cst_read_arguments
+    text "Read arguments are not structured data."
+  message source_cst_read_owner
+    text "Read observation belongs to a different source owner."
+  message source_cst_read_failed
+    text "Read observation failed."
+  message source_cst_host_missing
+    text "The installed host does not provide the complete CST transformation command."
+  message source_cst_run_missing
+    text "The complete CST transformation requires an authorized command tool."
+  message source_cst_read_missing
+    text "The source preimage requires an authorized read tool."
+  message source_unary_gap_1
+    text "The installed host does not provide the stateless unary AST operation."
+  message source_unary_gap_2
+    text "The source preimage requires an authorized Read tool."
+  message source_unary_gap_3
+    text "A complete successful exact-owner source Read is required."
+  message source_unary_gap_4
+    text "The preimage has no complete exact Read observation."
+  message source_unary_gap_5
+    text "The source operation receipt has invalid arguments."
+  message source_unary_gap_6
+    text "The exact source operation did not complete successfully."
+  message source_unary_gap_7
+    text "The installed operation returned no complete structured receipt."
+  message source_unary_gap_8
+    text "The source operation receipt does not match the current request."
+  message source_unary_gap_9
+    text "The applied source requires an independent physical readback."
+  message source_unary_gap_10
+    text "Physical source readback disagrees with the installed operation receipt."
+  message source_unary_gap_11
+    text "The preimage has no current exact Read observation."
+  message source_unary_gap_12
+    text "The installed AST operation requires an authorized command tool."
+  message semantic_source_preflight_gap_output
+    text "Semantic source discovery MissingContract:\n{discovery}"
+
+  message installed_source_operation_command
+    text "{node} {script} --request {task} --expected {digest}"

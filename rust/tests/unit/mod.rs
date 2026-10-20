@@ -21,6 +21,7 @@ mod assistant_name;
 mod benchmark_release_capability;
 mod bounded_retry;
 mod bulk_lexeme_import;
+mod callback_values;
 mod caller_framing_context;
 mod candidate_solution_portfolios;
 mod ci_gates;
@@ -186,6 +187,7 @@ mod server_route_manifest;
 mod shared_dialog;
 mod shared_memory_isolation;
 mod software_project;
+mod source_cache_budget;
 #[path = "../fixtures/source-cache-seed-contract.rs"]
 mod source_cache_seed_contract;
 mod source_module_contracts;

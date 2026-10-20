@@ -60,11 +60,20 @@ function validateProgram(language, source) {
     return false;
   }
 }
+/** Validate a fixed installed two-argument command and return a defensive copy. */
+function installedCommand(command) {
+  const absolute = value => typeof value === 'string'
+    && /^(?:\/|[A-Za-z]:[\\/])/u.test(value) && !value.includes('\0');
+  return Array.isArray(command) && command.length === 2 && command.every(absolute)
+    ? [...command] : null;
+}
 /** Installed executable identities, supplied by the host rather than conversation metadata. */
 function sourceCstTransformCommand() {
- const command=current?.sourceCstTransformCommand?.();
- const absolute=value=>typeof value==='string'&&/^(?:\/|[A-Za-z]:[\\/])/u.test(value)&&!value.includes('\0');
- return Array.isArray(command)&&command.length===2&&command.every(absolute)?[...command]:null;
+  return installedCommand(current?.sourceCstTransformCommand?.());
+}
+/** Fixed installed source operation; conversation text never supplies an executable. */
+function sourceUnaryConsolidationCommand() {
+  return installedCommand(current?.sourceUnaryConsolidationCommand?.());
 }
 /** Whether a host is installed. */
 function hasHost() {
@@ -133,8 +142,9 @@ function childValue(node, name) {
   return childrenNamed(node, name)[0]?.value ?? '';
 }
 return Object.freeze({
-  installHost, host, validateProgram, sourceCstTransformCommand, hasHost,
-  readText, parseLino, realm, cached, solve, isDirectory, isFile,
-  currentDirectory, listDirectory, childrenNamed, childValue,
+  installHost, host, validateProgram, sourceCstTransformCommand,
+  sourceUnaryConsolidationCommand, hasHost, readText, parseLino, realm, cached,
+  solve, isDirectory, isFile, currentDirectory, listDirectory, childrenNamed,
+  childValue,
 });
 };

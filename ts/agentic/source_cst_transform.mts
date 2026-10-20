@@ -1,5 +1,7 @@
+import {quoteShellWord as quote} from './portable/string_contracts.mjs';
 // JavaScript host route for the declared complete-CST parameter rule.
 // Native planner parity is not implemented by this host-specific module.
+import { agenticMessage } from './messages.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
@@ -19,7 +21,6 @@ export function sourceCstTransformRequest(task) {
  if(owner.startsWith('/')||owner.split('/').some(part=>!part||part==='.'||part==='..'))return null;
  return {owner,declaration,binding,target};
 }
-const quote=value=>"'"+value.replaceAll("'","'\\''")+"'";
 /** Only a successful read of this exact requested owner supplies its preimage. */
 function observedRead(messages,owner){
  for(let index=messages.length-1;index>=0;index-=1){
@@ -27,12 +28,12 @@ function observedRead(messages,owner){
   let call=null;
   for(let prior=index-1;prior>=0;prior-=1){call=(messages[prior].tool_calls??[]).find(candidate=>candidate.id===message.tool_call_id)??null;if(call)break;}
   if(!call||classifyTool(call.function.name)!==Capability.Read)continue;
-  let argumentsValue;try{argumentsValue=JSON.parse(call.function.arguments);}catch{return {refusal:'Read arguments are not structured data.'};}
+  let argumentsValue;try{argumentsValue=JSON.parse(call.function.arguments);}catch{return {refusal:agenticMessage('source_cst_read_arguments')};}
   const paths=['path','filePath','file_path'].filter(name=>Object.hasOwn(argumentsValue,name)).map(name=>argumentsValue[name]);
   const absolute=(currentDirectory()??'').replace(/\/$/u,'')+'/'+owner;
-  if(!paths.length||paths.some(value=>value!==owner&&value!==absolute))return {refusal:'Read observation belongs to a different source owner.'};
+  if(!paths.length||paths.some(value=>value!==owner&&value!==absolute))return {refusal:agenticMessage('source_cst_read_owner')};
   const raw=plainText(message.content);
-  if(message.is_error===true||message.isError===true||stepOutcome(raw)===StepOutcome.Failed)return {refusal:'Read observation failed.'};
+  if(message.is_error===true||message.isError===true||stepOutcome(raw)===StepOutcome.Failed)return {refusal:agenticMessage('source_cst_read_failed')};
   return {source:sourceFromReadResult(raw)};
  }
  return null;
@@ -42,13 +43,13 @@ const refused=message=>resolvedFinalAnswer(message,FinalDisposition.Gap,'source-
 export function planSourceCstTransformStep(task,messages,toolNames,planShellStep){
  const request=sourceCstTransformRequest(task);if(request===null)return null;
  const installed=sourceCstTransformCommand();
- if(installed===null)return refused('The installed host does not provide the complete CST transformation command.');
- if(toolFor(toolNames,Capability.Run)===null)return refused('The complete CST transformation requires an authorized command tool.');
+ if(installed===null)return refused(agenticMessage('source_cst_host_missing'));
+ if(toolFor(toolNames,Capability.Run)===null)return refused(agenticMessage('source_cst_run_missing'));
  const current=messages.slice(evidenceWindowStart(messages));
  const read=observedRead(current,request.owner);
- if(read===null){const tool=toolFor(toolNames,Capability.Read);return tool?planOne(tool,jsonText({path:request.owner,filePath:request.owner,file_path:request.owner})):refused('The source preimage requires an authorized read tool.');}
+ if(read===null){const tool=toolFor(toolNames,Capability.Read);return tool?planOne(tool,jsonText({path:request.owner,filePath:request.owner,file_path:request.owner})):refused(agenticMessage('source_cst_read_missing'));}
  if(read.refusal)return refused(read.refusal);
  const expected=sha256Hex(read.source);
- const command=installed.map(quote).join(' ')+' --request '+quote(task)+' --expected '+expected;
+ const command=agenticMessage('installed_source_operation_command',{node:quote(installed[0]),script:quote(installed[1]),task:quote(task),digest:expected});
  return planShellStep(current,toolNames,command);
 }

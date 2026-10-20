@@ -528,3 +528,15 @@ At commit 94e6d62436ede4ab840433bbe75985115977210e, the default derivation-cache
 ### PR #1221 resumed bulk source checkpoint
 
 The resumed PR #1221 bulk source repairs declared issue ownership ahead of incidental prompt routes, fetches the actual issue through available shell tools, extracts JSON bodies and refuses navigation HTML. Source-cache captures now use the user runtime cache by default, agentic failures retain diagnostics without an interactive Report issue invitation, and the new human-issue workflow delegates to pinned Hive Mind logic while building current main in CI. Focused controls are in rust/tests/web/hive-work-item-consumer.test.mjs and rust/tests/web/hive-mind-draft-workflow.test.mjs. Real all-client commits/PRs, trusted cold discovery and a measured autonomous cohort remain Pending. Full acceptance statuses above remain unchanged. All issues and subissues share [one delivery scope](../../case-studies/pull-request-1221/scope.md).
+
+### PR #1329 qualified continuation
+
+The [current handoff](../../case-studies/issue-1328/handoff.md) records actual
+JavaScript source-maintenance attempts, their unchanged independent consumer
+oracle, readable CST/documentation transformations and bounded mutable-cache
+admission. These are partial R1207-3/R1207-7 implementations. The source edit
+consolidates a callback from a concise request; supplied algorithms receive zero
+autonomous-authorship credit. The fixed task is 155 bytes and the source grows
+75 bytes, so no amplification or development-cost reduction is claimed. A larger
+source task still fails its original acceptance. R1207-4's representative cohort,
+R1207-5's general decomposition and full runtime acceptance remain pending.

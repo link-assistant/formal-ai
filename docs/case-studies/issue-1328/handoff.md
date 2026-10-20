@@ -236,3 +236,120 @@ optional registry credentials and the npm trusted-publishing variable were absen
 when inspected; inherited organization/environment configuration was not audited.
 Do not claim npm, extension marketplace or Docker Hub publication from a green
 asset/GHCR pipeline. Require actual post-merge publishing and download receipts.
+
+
+## Qualified coding changes after the first integrated push
+
+The production source-model path preserves complete readable CST content and now
+also transforms a uniquely attached JSDoc parameter tag with its proven function
+parameter. The persisted transformation contains the original complete source,
+canonical installed grammar and an exact source-free inverse. It preserves the
+comment delimiters, type spelling, description, whitespace and unrelated comments.
+References in arbitrary prose remain source-linked needs. Unsupported or ambiguous
+bindings refuse the change. The original parameter transformation, independent
+reparse, generated-owner protection and guarded physical write remain active.
+Rust Markdown parameter meaning, arbitrary natural-language semantics and compiler
+validity are not certified by this operation. The documentation controls and both
+actual persisted inverse restorations pass; this is a qualified implementation of
+the readable recursive source/comment doctrine, not its full acceptance.
+
+A 155-byte natural-language request now makes the maintained JavaScript planner
+read an actual production file, invoke its installed stateless-unary AST operation,
+and read back the exact requested owner. The original route and a controlled
+preimage route produced no plan and no effects. The repaired route consolidated
+one real callback into its canonical helper. Four independently fixed lexical
+output cases pass before and after, with parsing and comment preservation controls.
+The consumer oracle is retained in CI. This is a narrow operation grammar, with
+zero autonomous-authorship credit for the supplied algorithm and route repairs.
+The source grows from 3085 to 3160 UTF-8 bytes: 75 net bytes for the 155-byte task.
+That is useful refactoring, not amplification acceptance or token savings. Full
+model input, model usage and cost remain Unknown. A separate larger historical
+source task still fails its original oracle after bounded discovery; these attempts
+must remain failures and cannot inflate a representative success cohort.
+
+The mutable source-cache policy is shared data, with a 64 MiB aggregate byte cap,
+512 URL metadata entries, 2048 regular files, 8 MiB response bodies and 16 KiB
+metadata records. Admission counts retained objects and interrupted-write remnants
+as well as peak staging space. The Node adapter uses bounded regular-file reads;
+writers use one fail-fast shared-lock attempt. Full caches refuse new captures
+without evicting historical evidence or touching unrelated directories. Empty,
+warm, corrupt, deleted and unavailable-source outcomes remain distinct. Legacy
+injected storage adapters retain caller-owned policies; their existence is not a
+proof of bounded storage. Native source and controls require hosted compilation;
+browser caches and a complete minimal-bootstrap discovery cohort remain separate
+requirements. The native transport must bound actual captured output independently
+of the installed curl version, not only inspect length after full buffering.
+
+Automatic CI on `33f11949` found an obsolete hardcoded 115-minute assertion and six
+new diagnostic phrases outside the existing seed mechanism. The test now derives
+the current declared workflow DAG and checks its recorded duration against the
+unchanged 225-minute ceiling. The six original diagnostics and the new unary-route
+diagnostics use the existing installed message seed; the zero-literal gate passes.
+The fixes preserve original behavior and ratchets. Final-head hosted checks and
+actual post-merge releases still determine merge and production readiness.
+
+The broader requirements remain binding: representative small-task success,
+compositional self-coding, complete JavaScript/TypeScript/Rust behavior parity,
+strict zero independent source duplication, complete source/comment meaning,
+four-language documentation synchronization, dependency-aware fact checking,
+formal requirement acceptance and contradiction repair. Qualified fixtures,
+source projections, a green individual job or a short task cannot establish these
+broader results.
+
+The [complete unary attempt summary](evidence/natural-unary-source-task.json)
+corrects an acceptance overclaim. The original request does not restrict coverage
+to the existing six helper shapes; an inline `.kind` projection remains. The fixed
+behavior oracle cannot establish consolidation coverage. Whole-task acceptance
+is zero, despite the one useful actual checkout effect. The engine's finding and
+pending independent validation remain accurate; these attempts cannot enter the
+small-task success numerator. The earlier failure evidence and correction are
+retained. Subsequent native source counterparts require independent hosted
+compilation and configured-capability acceptance.
+
+
+## Integrated repair batch before the next automatic CI
+
+The native planner now has real counterparts for source preflight, stateless unary
+consolidation and qualified CST parameter changes. The actual native server accepts
+an explicit `--source-command-host` installation descriptor. It validates canonical
+regular-file identities for Node and the two fixed maintained entrypoints; task
+text cannot grant an executable or resource root. Both runtimes render the same
+installed command seed. The optional native route delegates the transformation
+to the installed JavaScript bundle. This is not an independent Rust parser or
+proof that a standalone binary contains that bundle. The resource home and its
+transitive dependencies remain caller-trusted, beyond the pinned entrypoints.
+
+The added hosted acceptance runs the existing CI binary against tiny disposable
+source consumers, with an explicit installation descriptor, actual HTTP planning,
+physical writes and independent consumer oracles. Unary completion additionally
+requires its own fresh requested readback. The CST route's independent physical
+read is recorded separately from a planner-requested read. Local checks validate
+source, descriptor and command-admission controls only; native execution remains
+exclusive to CI. Fixture acceptance does not establish representative autonomous
+coding success or acceptance of the larger production consolidation task.
+
+The callback counterparts are used by real native consumers. Borrowed token text,
+seed values, ECMAScript whitespace, strict empty comparison and positive length
+have source-level regression controls, including preserved getter/method behavior.
+Their typed domains do not claim the full JavaScript object/value model. The
+native cache transport bounds actual captured bytes and has finite interruption,
+process termination and cleanup paths. Node cache controls also cover filesystem
+faults and strict metadata decoding. Full browser storage and bootstrap discovery
+acceptance remain separate requirements.
+
+The automatic checks on `33f11949ecea2659021619303692798956066b58` exposed
+stale quote-owner citations, missing native counterparts, ungrounded grammar forms,
+new abbreviated names, one Clippy suggestion and governed witness drift in addition
+to the earlier timing/seed diagnostics. Repairs use actual native owners, grounded
+operation meanings, binding-safe full names and the existing canonical quote
+policy. Abbreviation, literal, twin and closure ceilings are unchanged. Genuine
+translation, worker, embedded-data and specification generation follow the source
+changes; no expected program is substituted to suppress failures.
+
+The governed witness refresh was explicitly reviewed against all original
+qualified cases and program/fixture content. All 221 qualified cases and their
+order remain unchanged. Only source-identity metadata for `rust/src/lib.rs` and
+`rust/tests/unit/mod.rs` changes, corresponding to the reviewed module and test
+registrations. The original witness test passes after the refresh. Source success
+cannot substitute for final-head hosted compilation, the original Hive delivery
+checks, or post-merge publication and public-download verification.

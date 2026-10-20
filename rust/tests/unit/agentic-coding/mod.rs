@@ -143,3 +143,12 @@ mod coding_research_kernel;
 
 #[path = "coding_research_production.rs"]
 mod coding_research_production;
+
+#[path = "source_cst_transform.rs"]
+mod source_cst_transform;
+
+#[path = "semantic_source_preflight.rs"]
+mod semantic_source_preflight;
+
+#[path = "source_unary_consolidation.rs"]
+mod source_unary_consolidation;

@@ -15,7 +15,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use sha2::{Digest, Sha256};
 
+mod cache_budget;
 mod seed_captures;
+mod transport;
 
 use crate::event_log::EventLog;
 use crate::translation::cache::cache_key;
@@ -62,35 +64,35 @@ pub struct CurlSourceTransport;
 
 impl SourceTransport for CurlSourceTransport {
     fn get(&self, url: &str) -> Result<Vec<u8>, FetchError> {
-        let output = Command::new("curl")
-            .args([
-                "--fail",
-                "--silent",
-                "--show-error",
-                "--location",
-                // Stack Exchange always gzips its API responses; without this
-                // the transport would hand callers compressed bytes that no
-                // extractor can read (issue #991).
-                "--compressed",
-                "--max-time",
-                "30",
-                "--user-agent",
-                USER_AGENT,
-                // The status is written to *stderr* so it never mixes with the
-                // captured bytes, and it is what separates "no such page" from
-                // "this service is down".
-                "--write-out",
-                STATUS_TEMPLATE,
-                url,
-            ])
-            .output()
-            .map_err(|error| {
-                if error.kind() == io::ErrorKind::NotFound {
-                    FetchError::Transport(String::from("curl is required for live retrieval"))
-                } else {
-                    FetchError::Transport(error.to_string())
-                }
-            })?;
+        let maximum = cache_budget::policy()?.max_body_bytes.to_string();
+        let mut command = Command::new("curl");
+        command.args([
+            "--fail",
+            "--silent",
+            "--show-error",
+            "--location",
+            // Stack Exchange always gzips its API responses; without this
+            // the transport would hand callers compressed bytes that no
+            // extractor can read (issue #991).
+            "--compressed",
+            "--max-time",
+            "30",
+            "--max-filesize",
+            &maximum,
+            "--user-agent",
+            USER_AGENT,
+            // The status is written to *stderr* so it never mixes with the
+            // captured bytes, and it is what separates "no such page" from
+            // "this service is down".
+            "--write-out",
+            STATUS_TEMPLATE,
+            url,
+        ]);
+        let output = transport::bounded_output(
+            &mut command,
+            cache_budget::policy()?.max_body_bytes,
+            cache_budget::policy()?.max_metadata_bytes,
+        )?;
         let stderr = String::from_utf8_lossy(&output.stderr);
         if !output.status.success() {
             if let Some(status) = http_status(&stderr) {
@@ -106,6 +108,11 @@ impl SourceTransport for CurlSourceTransport {
                     stderr.trim(),
                 ]
                 .join(":"),
+            ));
+        }
+        if output.stdout.len() > cache_budget::policy()?.max_body_bytes {
+            return Err(FetchError::Transport(
+                "source_body_budget_exceeded".to_owned(),
             ));
         }
         Ok(output.stdout)
@@ -368,7 +375,9 @@ impl<T: SourceTransport> CachedSourceClient<T> {
             crate::source_reconstruction::ReconstructionOutcome::Recovered { record } => {
                 let (cache_root, _) = self.paths(url);
                 let path = content_path(&cache_root, &record.observed_output_sha256);
-                let Ok(bytes) = fs::read(&path) else {
+                let Ok(bytes) =
+                    cache_budget::read_bounded(&path, cache_budget::policy()?.max_body_bytes)
+                else {
                     return Err(miss);
                 };
                 // The object is only a recovery if it still hashes to the
@@ -431,11 +440,16 @@ fn read_capture(
     cache_root: &Path,
     metadata_path: &Path,
 ) -> Result<Option<SourceCapture>, FetchError> {
-    let metadata = match fs::read_to_string(metadata_path) {
-        Ok(metadata) => metadata,
+    match fs::symlink_metadata(metadata_path) {
+        Ok(_) => {}
         Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(None),
         Err(error) => return Err(cache_error(metadata_path, &error)),
-    };
+    }
+    let metadata = String::from_utf8(cache_budget::read_bounded(
+        metadata_path,
+        cache_budget::policy()?.max_metadata_bytes,
+    )?)
+    .map_err(|error| FetchError::Cache(error.to_string()))?;
     let mut lines = metadata.lines();
     let version = lines.next();
     if !matches!(
@@ -464,7 +478,7 @@ fn read_capture(
     } else {
         metadata_path.with_extension("body")
     };
-    let bytes = fs::read(&body_path).map_err(|error| cache_error(&body_path, &error))?;
+    let bytes = cache_budget::read_bounded(&body_path, cache_budget::policy()?.max_body_bytes)?;
     let actual_sha256 = sha256_hex(&bytes);
     if actual_sha256 != recorded_sha256 {
         return Err(cache_diagnostic(
@@ -502,11 +516,8 @@ fn write_capture(
     metadata_path: &Path,
 ) -> Result<(), FetchError> {
     let body_path = content_path(cache_root, &capture.sha256);
-    let object_root = body_path.parent().unwrap_or_else(|| Path::new("."));
-    fs::create_dir_all(object_root).map_err(|error| cache_error(object_root, &error))?;
     let body_tmp = unique_temp_path(&body_path);
     let metadata_tmp = unique_temp_path(metadata_path);
-    fs::write(&body_tmp, &capture.bytes).map_err(|error| cache_error(&body_tmp, &error))?;
     let metadata = [
         CACHE_FORMAT_VERSION,
         "\nurl=",
@@ -518,9 +529,33 @@ fn write_capture(
         "\n",
     ]
     .concat();
-    fs::write(&metadata_tmp, metadata).map_err(|error| cache_error(&metadata_tmp, &error))?;
-    fs::rename(&body_tmp, &body_path).map_err(|error| cache_error(&body_path, &error))?;
-    fs::rename(&metadata_tmp, metadata_path).map_err(|error| cache_error(metadata_path, &error))
+    let admission = cache_budget::admit(
+        cache_root,
+        metadata_path,
+        &body_path,
+        &capture.bytes,
+        metadata.len(),
+    )?;
+    let action = (|| {
+        let body_stage = if admission.reuse_body {
+            None
+        } else {
+            Some(cache_budget::CaptureStage::write(body_tmp, &capture.bytes)?)
+        };
+        let metadata_stage = cache_budget::CaptureStage::write(metadata_tmp, metadata.as_bytes())?;
+        if let Some(stage) = body_stage {
+            stage.publish(&body_path)?;
+        }
+        metadata_stage.publish(metadata_path)
+    })();
+    let cleanup = admission.finish();
+    match (action, cleanup) {
+        (Err(primary), Err(cleanup)) => Err(FetchError::Cache(format!(
+            "{primary}; source_cache_cleanup_failed:{cleanup}"
+        ))),
+        (Err(primary), Ok(())) => Err(primary),
+        (Ok(()), result) => result,
+    }
 }
 
 fn content_path(cache_root: &Path, sha256: &str) -> PathBuf {

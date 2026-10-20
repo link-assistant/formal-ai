@@ -456,3 +456,83 @@ export function validateCommentMeaning(model) {
   });
   return equal(actual.meaning, model.meaning) && equal(actual.needs, model.needs);
 }
+
+/** Canonical installed grammar; task metadata cannot substitute documentation syntax. */
+export function parameterDocumentationGrammar(){
+ const rows=grammar().filter(row=>row[0]==='parameter-documentation');
+ if(rows.length!==1)throw Error('UniqueParameterDocumentationGrammarRequired');
+ const row=rows[0],tags=words(row,'tags'),forbidden=words(row,'owner-overrides'),passive=words(row,'passive-tags');
+ if(!tags.length||!forbidden.length||!passive.length||value(row,'syntax')!=='jsdoc-simple-param')throw Error('UnsupportedParameterDocumentationGrammar');
+ return {network:structuredClone(row),tags,forbidden,passive};
+}
+function scanType(line,start){
+ if(line[start]!=='{')return start;
+ let depth=0,quote=null,escape=false;
+ for(let index=start;index<line.length;index+=1){
+  const character=line[index];
+  if(quote!==null){if(escape)escape=false;else if(character==='\\')escape=true;else if(character===quote)quote=null;continue;}
+  if(character==='`')throw Error('UnsupportedDocumentationTemplateType');
+  if(character==='"'||character==="'"){quote=character;continue;}
+  if(character==='{'){depth+=1;if(depth>32)throw Error('DocumentationTypeDepthRefused');}
+  if(character==='}'){depth-=1;if(depth===0)return index+1;}
+ }
+ throw Error('UnbalancedDocumentationType');
+}
+/** Syntax binds a tag to an already observed owner; descriptions remain documentary unknowns. */
+export function formalizeParameterDocumentation(input){
+ const grammar=parameterDocumentationGrammar();
+ if(!input.text.startsWith('/**')||!input.text.endsWith('*/'))throw Error('JSDocCommentRequired');
+ const base=formalizeComment(input),bindings=[],needs=[];
+ const parameterOccurrences=[...input.text.matchAll(/(?:^|[ \t])@([A-Za-z]+)\b/gu)].filter(match=>grammar.tags.includes(match[1]));
+ for(const match of input.text.matchAll(/(?:^|[ \t])@([A-Za-z]+)\b/gu))if(!grammar.tags.includes(match[1])&&!grammar.passive.includes(match[1]))needs.push({kind:'unsupported-documentation-tag-attachment',tag:match[1]});
+ const body=input.text.slice(3,-2),lines=body.match(/[^\r\n]*(?:\r\n|\n|\r|$)/gu).filter(Boolean);
+ let offset=3;
+ for(const rawLine of lines){
+  const line=rawLine.replace(/(?:\r\n|\n|\r)$/u,'');
+  const prefix=/^[ \t]*(?:\*[ \t]?)?/u.exec(line)[0];
+  const opening=/^@([A-Za-z]+)\b/u.exec(line.slice(prefix.length));
+  if(opening){
+   const tag=opening[1];
+   if(grammar.forbidden.includes(tag))needs.push({kind:'documentation-owner-override',tag});
+   if(grammar.tags.includes(tag)){
+    let cursor=prefix.length+opening[0].length,typeStart=null,typeEnd=null;
+    if(!/[ \t]/u.test(line[cursor]??''))throw Error('ParameterTagSpacingRequired');
+    while(/[ \t]/u.test(line[cursor]??''))cursor+=1;
+    if(line[cursor]==='{'){typeStart=cursor;cursor=scanType(line,cursor);typeEnd=cursor;if(!/[ \t]/u.test(line[cursor]??''))throw Error('ParameterTagSpacingRequired');while(/[ \t]/u.test(line[cursor]??''))cursor+=1;}
+    const name=/^[A-Za-z_$][A-Za-z0-9_$]*/u.exec(line.slice(cursor));
+    if(!name||(!/^[ \t]*$/u.test(line.slice(cursor+name[0].length))&&!/^[ \t]/u.test(line.slice(cursor+name[0].length))))needs.push({kind:'unsupported-parameter-tag-name',tag});
+    else bindings.push({tag,type:typeStart===null?null:line.slice(typeStart,typeEnd),binding:name[0],start:offset+cursor,end:offset+cursor+name[0].length,meaning:['parameter-reference',['owner',input.owner.kind,['name',quoted(input.owner.name)]],['binding',quoted(name[0])],['syntax',quoted(tag)]],descriptionMeaning:'not-certified'});
+   }
+  }
+  offset+=rawLine.length;
+ }
+ if(parameterOccurrences.length!==bindings.length)needs.push({kind:'unclassified-parameter-tag'});
+ const duplicated=bindings.filter((binding,index)=>bindings.findIndex(candidate=>candidate.binding===binding.binding)!==index);
+ for(const duplicate of duplicated)needs.push({kind:'duplicate-parameter-tag',binding:duplicate.binding});
+ return {schema:'source-comment-parameter-bindings/v1',base,grammar:grammar.network,bindings,needs};
+}
+export function validateParameterDocumentation(model){
+ const grammar=parameterDocumentationGrammar();
+ if(!validateCommentMeaning(model.base)||!equal(model.grammar,grammar.network))return false;
+ const attachment=field(model.base.attachment,'source'),owner=field(model.base.attachment,'owner')?.[1];
+ if(!owner)return false;
+ const actual=formalizeParameterDocumentation({text:model.base.verbatim,source:{path:value(attachment,'path'),language:value(attachment,'language')},owner:{kind:owner[0],name:value(owner,'name')},role:value(model.base.attachment,'role')});
+ return equal(actual,model);
+}
+/** Preserve all concrete segments except exactly proven name positions, then independently re-formalize. */
+export function naturalizeParameterDocumentation(model,binding,target){
+ if(!validateParameterDocumentation(model))throw Error('DocumentationMeaningPreimageMismatch');
+ if(model.needs.length)throw Error('DocumentationBindingNeeds');
+ if(!/^[A-Za-z_$][A-Za-z0-9_$]*$/u.test(target)||target===binding)throw Error('UnsupportedDocumentationTarget');
+ if(model.bindings.some(item=>(item.type?.match(/[A-Za-z_$][A-Za-z0-9_$]*/gu)??[]).includes(binding)))throw Error('DocumentationTypeReferenceNeeds');
+ const selected=model.bindings.filter(item=>item.binding===binding);
+ if(selected.length!==1||model.bindings.some(item=>item.binding===target))throw Error('AmbiguousDocumentationParameter');
+ const item=selected[0],text=model.base.verbatim.slice(0,item.start)+target+model.base.verbatim.slice(item.end);
+ const attachment=field(model.base.attachment,'source'),owner=field(model.base.attachment,'owner')[1];
+ const checked=formalizeParameterDocumentation({text,source:{path:value(attachment,'path'),language:value(attachment,'language')},owner:{kind:owner[0],name:value(owner,'name')},role:value(model.base.attachment,'role')});
+ const actual=checked.bindings.find(candidate=>candidate.binding===target);
+ if(checked.needs.length||!actual||text.slice(0,actual.start)!==model.base.verbatim.slice(0,item.start)||text.slice(actual.end)!==model.base.verbatim.slice(item.end))throw Error('DocumentationResidualMismatch');
+ const residual=model.base.verbatim.slice(0,item.start)+model.base.verbatim.slice(item.end);
+ const needs=(residual.match(/[A-Za-z_$][A-Za-z0-9_$]*/gu)??[]).includes(binding)?[{kind:'unresolved-prose-parameter-reference',binding}]:[];
+ return {text,model:checked,needs,claim:'parameter-binding-only'};
+}

@@ -3,7 +3,7 @@
 
 import { emitNeeds, satisfy } from './formalization_needs.mjs';
 import { clauses, sentences } from './formalization_segment.mjs';
-import { conceptFromSense, conceptSenseContentId, relationsIn } from './formalization_concepts.mjs';
+import { conceptFromSense, conceptSenseContentIdentifier, relationsIn } from './formalization_concepts.mjs';
 import { stableId } from './engine_stable_identifier.mjs';
 import { pushLinoNode } from './links_format.mjs';
 import { NeedState, needLinksNotation } from './needs.mjs';
@@ -112,8 +112,8 @@ export function formalizeDeeply(text, docId, lookup, bounds, maxConceptDepth) {
       const concept = conceptFromSense({ ...sense, depth: parent.depth });
       if (concept && !graph.concepts.some(existing => existing.id === concept.id)) graph.concepts.push(concept);
       if (parent.depth >= maxConceptDepth) continue;
-      const senseDoc = conceptSenseContentId(sense);
-      for (const need of emitNeeds(senseDoc, sentences(sense.gloss), graph, parent.depth + 1)) {
+      const senseDocument = conceptSenseContentIdentifier(sense);
+      for (const need of emitNeeds(senseDocument, sentences(sense.gloss), graph, parent.depth + 1)) {
         need.raised_by = parent.need_id;
         if (!seen.has(need.need_id)) { seen.add(need.need_id); next.push(need); }
       }

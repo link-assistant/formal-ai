@@ -326,7 +326,7 @@ export function workerModuleInventory(current, entries, generated) {
   for (const file of generated.keys()) {
     if (file.startsWith(`${WORKER_ROOT}/`) && file.endsWith('.js')) names.add(path.posix.basename(file));
   }
-  const rows = [...names].sort().map(name => `  ${JSON.stringify('worker/' + name)},`);
+  const rows = [...names].sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right))).map(name => `  ${JSON.stringify('worker/' + name)},`);
   return current.slice(0, at) + marker + '\n' + rows.join('\n') + '\n]);\n';
 }
 

@@ -33,3 +33,9 @@ test('the generated inventory exactly matches real regular modules and the worke
   const realm = await worker.boot();
   assert.equal(typeof realm.FORMAL_AI_CRATE_FACTORIES['callback_values.mjs'], 'function');
 });
+
+test('inventory sorting matches native UTF-8 byte order for non-BMP module names', () => {
+  const bmp = '\uE000.js', supplementary = '\u{10000}.js';
+  const result = workerModuleInventory(current, [supplementary, bmp], new Map());
+  assert.ok(result.indexOf(bmp) < result.indexOf(supplementary));
+});

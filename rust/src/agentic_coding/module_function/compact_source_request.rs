@@ -114,7 +114,11 @@ pub fn compact_source_request(text: &str, seed: &str) -> Option<Value> {
             .any(|path| !safe_relative_path(path) || !looks_like_file_path(path))
         || sources.contains(&destination)
         || acceptance.len() != 1
-        || command != format!("node --test {}", acceptance[0])
+        || command
+            != crate::agentic_coding::workspace_discovery::contract_text(
+                "accepted-node-test-command",
+                &[acceptance[0].as_str()],
+            )
         || sources.contains(&acceptance[0].as_str())
         || destination == acceptance[0]
     {

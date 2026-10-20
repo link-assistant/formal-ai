@@ -8,7 +8,8 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 import {sourceToLinks, sourceFromLinks, readSourceLinks, writeSourceLinks,
   verifySourceLinks, readSyntaxRules, ownedSourceLinks, sourceOwner} from '../js/meta/readable-source.js';
 
-import {readSourceCstTransformRule,writeSourceCstTransformRule,applySourceCstTransform} from './lib/source-cst-transform.mjs';
+import {readQualifiedSourceCstRule,writeQualifiedSourceCstRule,applyQualifiedSourceCstRule} from './lib/source-cst-documentation-transform.mjs';
+import {withSourceCstCommentContext} from './lib/source-cst-comment-host.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const LANGUAGES = new Map([['js', 'JavaScript'], ['javascript', 'JavaScript'],
@@ -89,8 +90,7 @@ export async function runSourceModel(args) {
     }
     verifySourceLinks(readSourceLinks(writeSourceLinks(model)), options);
     if(transformation){
-      const rule=readSourceCstTransformRule(readSourceText(path.resolve(transformation))).network;
-      transformed=applySourceCstTransform(model,rule,options);model=transformed.document;
+      transformed=withSourceCstCommentContext(()=>{const rule=readQualifiedSourceCstRule(readSourceText(path.resolve(transformation))).network;return applyQualifiedSourceCstRule(model,rule,options);});model=transformed.document;
     }
   } finally {
     runtime?.close();
@@ -109,7 +109,7 @@ export async function runSourceModel(args) {
       try{fs.lstatSync(target);}catch(error){if(error.code==='ENOENT')continue;throw error;}
       throw Error('FreshSourceTransformOutputRequired');
     }
-    fs.writeFileSync(inverse,writeSourceCstTransformRule(transformed.inverse),{flag:'wx'});
+    fs.writeFileSync(inverse,withSourceCstCommentContext(()=>writeQualifiedSourceCstRule(transformed.inverse)),{flag:'wx'});
   }
   if (destination) { fs.writeFileSync(path.resolve(destination), output, {flag: 'wx'}); return ''; }
   return output;

@@ -1,3 +1,5 @@
+import {planSourceUnaryConsolidationStep} from './source_unary_consolidation.mjs';
+import {planSemanticSourcePreflight} from './semantic_source_preflight.mjs';
 import {host,hasHost} from './host.mjs';
 import { repeatedActionStop } from './repetition_guard.mjs';
 import {EventLog} from './crate/event_log.mjs';
@@ -142,7 +144,8 @@ export function checkedRoutePrecedence() {
 async function planWorkspaceChangeArm(task, messages, toolNames) {
   // A copy or move followed by edits of the file it makes is planned sentence
   // by sentence (PR #1188 G82).
-  return (await planSourceMaintenanceStep(task, messages, toolNames))
+  return planSourceUnaryConsolidationStep(task, messages, toolNames)
+    ?? (await planSourceMaintenanceStep(task, messages, toolNames))
     ?? (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStepResolved))
     ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
     ?? (await planModuleFunctionResearchStep(task, messages, toolNames))
@@ -570,6 +573,8 @@ async function missingSemanticImplementation(task, messages, toolNames) {
     if (verifiedRecipe !== null) return verifiedRecipe;
     const research = planCodingResearchStep(task, messages, toolNames);
     if (research !== null) return research;
+    const sourcePreflight = planSemanticSourcePreflight(task, messages, toolNames);
+    if (sourcePreflight !== null) return sourcePreflight;
     const discovery = { reason: 'MissingContract', goal: task, authored: false, verified: false,
       missingContracts: ['source-bound-implementation-plan', 'independent-goal-validation'] };
     const plan = resolvedFinalAnswer(agenticMessage('callable-discovery-outcome', {

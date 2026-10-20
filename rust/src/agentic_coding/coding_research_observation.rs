@@ -8,6 +8,12 @@ struct LexicalToken {
     text: String,
     kind: &'static str,
 }
+impl<'a> crate::callback_values::CallbackTextReceiver for &'a LexicalToken {
+    type Output = &'a String;
+    fn text(self) -> Self::Output {
+        &self.text
+    }
+}
 fn lexical_tokens(trees: &[Tree<'_>], output: &mut Vec<LexicalToken>) {
     for tree in trees {
         let span = tree.span();
@@ -60,7 +66,7 @@ pub fn observe_coding_research_acceptance_tokens(source: &str) -> Value {
     };
     let mut tokens = Vec::new();
     lexical_tokens(&trees, &mut tokens);
-    json!({"texts":tokens.iter().map(|token| &token.text).collect::<Vec<_>>(),
+    json!({"texts":tokens.iter().map(crate::callback_values::callback_text).collect::<Vec<_>>(),
         "kinds":tokens.iter().map(|token| token.kind).collect::<Vec<_>>(), "complete":true})
 }
 /// Observe parser/catalog/spans without selecting, accepting or executing a procedure.

@@ -8,7 +8,8 @@ import {pathToFileURL} from 'node:url';
 import {sourceCstTransformRequest} from '../js/agentic/source_cst_transform.mjs';
 import {sourceCstFrontends} from './lib/source-cst-frontends.mjs';
 import {sourceToLinks,sourceFromLinks,ownedSourceLinks,sourceOwner,writeSourceLinks} from '../js/meta/readable-source.js';
-import {createSourceCstTransformRule,applySourceCstTransform,writeSourceCstTransformRule,readSourceCstTransformRule,verifySourceCstTransform} from './lib/source-cst-transform.mjs';
+import {sourceCstRuleForObservedParameter,applyQualifiedSourceCstRule,writeQualifiedSourceCstRule,readQualifiedSourceCstRule,verifyQualifiedSourceCstRule} from './lib/source-cst-documentation-transform.mjs';
+import {withSourceCstCommentContext} from './lib/source-cst-comment-host.mjs';
 const digest=value=>createHash('sha256').update(value).digest('hex');
 function observedOwner(root,owner){
  const physical=path.join(root,owner);
@@ -67,25 +68,26 @@ export async function executeSourceCstTransform({root=process.cwd(),request,expe
  if(digest(observed.source)!==expected)throw Error('SourcePreimageChanged');
  const language=definition.owner.endsWith('.rs')?'Rust':/\.(?:mts|ts)$/u.test(definition.owner)?'TypeScript':'JavaScript';
  const runtime=await sourceCstFrontends(undefined,[language]);
- try{
+ try{return withSourceCstCommentContext(()=>{
  const frontend=runtime.forSource(definition.owner,language);
  const before=ownedSourceLinks(definition.owner,sourceToLinks(observed.source,language,frontend));
  let rule;
- if(inverseDirectory===null)rule=createSourceCstTransformRule(before,definition);
+ if(inverseDirectory===null)rule=sourceCstRuleForObservedParameter(before,definition);
  else {
  const inverseFile=path.join(inverseDirectory,'inverse.lino');
  if(fs.statSync(inverseFile).size>64*1024*1024)throw Error('InverseEvidenceBoundsRefused');
- const parsed=readSourceCstTransformRule(fs.readFileSync(inverseFile,'utf8'));
+ const parsed=readQualifiedSourceCstRule(fs.readFileSync(inverseFile,'utf8'));
  const receipt=JSON.parse(fs.readFileSync(path.join(inverseDirectory,'receipt.json'),'utf8'));
  if(receipt.root!==root||receipt.request!==request||receipt.afterSha256!==expected||sourceOwner(parsed.preimage)!==definition.owner||parsed.definition.declaration!==definition.declaration||parsed.definition.binding!==definition.target||parsed.definition.target!==definition.binding)throw Error('InverseRequestMismatch');
  rule=parsed.network;
  }
- const result=applySourceCstTransform(before,rule,frontend),after=sourceFromLinks(result.document);
+ const result=applyQualifiedSourceCstRule(before,rule,frontend),after=sourceFromLinks(result.document);
  if(Buffer.byteLength(after)>1024*1024)throw Error('TransformedSourceBoundsRefused');
  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'formal-ai-cst-transform-'));
  save(directory,'intent.json',JSON.stringify({schema:'source-cst-host-intent/v1',root,request,owner:definition.owner,expected,device:observed.metadata.dev,inode:observed.metadata.ino,authorshipCredit:0})+'\n');
- save(directory,'before.lino',writeSourceLinks(before));save(directory,'rule.lino',writeSourceCstTransformRule(rule));
- save(directory,'after.lino',writeSourceLinks(result.document));save(directory,'inverse.lino',writeSourceCstTransformRule(result.inverse));
+ if(result.documentaryModel)save(directory,'documentation.json',JSON.stringify(result.documentaryModel,null,2)+'\n');
+ save(directory,'before.lino',writeSourceLinks(before));save(directory,'rule.lino',writeQualifiedSourceCstRule(rule));
+ save(directory,'after.lino',writeSourceLinks(result.document));save(directory,'inverse.lino',writeQualifiedSourceCstRule(result.inverse));
  try{replaceObserved(observed,observed.source,after,writeChunk);}
  catch(error){
   save(directory,'failure.json',JSON.stringify({schema:'source-cst-host-failure/v1',stage:'staged-write',message:error.message,sourceUnchanged:fs.existsSync(observed.physical)&&digest(fs.readFileSync(observed.physical))===expected,authorshipCredit:0})+'\n');
@@ -93,11 +95,11 @@ export async function executeSourceCstTransform({root=process.cwd(),request,expe
  }
  const physical=fs.readFileSync(observed.physical,'utf8');
  const reparsed=ownedSourceLinks(definition.owner,sourceToLinks(physical,language,frontend));
- verifySourceCstTransform(before,reparsed,rule,frontend);
- if(sourceFromLinks(applySourceCstTransform(reparsed,result.inverse,frontend).document)!==observed.source)throw Error('PhysicalInverseMismatch');
- const receipt={schema:'source-cst-host-receipt/v1',root,owner:definition.owner,request,beforeSha256:expected,afterSha256:digest(physical),evidenceDirectory:directory,physicalWriteVerified:true,verification:result.verification,authorshipCredit:0};
+ verifyQualifiedSourceCstRule(before,reparsed,rule,frontend);
+ if(sourceFromLinks(applyQualifiedSourceCstRule(reparsed,result.inverse,frontend).document)!==observed.source)throw Error('PhysicalInverseMismatch');
+ const receipt={schema:'source-cst-host-receipt/v1',transformKind:rule[0],root,owner:definition.owner,request,beforeSha256:expected,afterSha256:digest(physical),evidenceDirectory:directory,physicalWriteVerified:true,verification:result.verification,authorshipCredit:0};
  save(directory,'receipt.json',JSON.stringify(receipt,null,2)+'\n');return receipt;
- }finally{runtime.close();}
+ });}finally{runtime.close();}
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
  try{

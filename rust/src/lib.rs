@@ -49,6 +49,7 @@ pub use coding::task_spec as coding_task_spec;
 pub mod authoring_loop;
 pub mod behavior_delta;
 pub mod bounded_retry;
+pub mod callback_values;
 pub mod capability_routing;
 pub mod cli_env;
 pub mod cli_solve;

@@ -65,13 +65,14 @@ export function findCue(text, cue) {
   return null;
 }
 
-export function conceptId(lemma) {
-  let id = 'concept:', previousDash = false;
+/** Mirrors `concept_id` in rust/src/formalization/concepts.rs. */
+export function conceptIdentifier(lemma) {
+  let identifier = 'concept:', previousDash = false;
   for (const character of trim(lemma)) {
-    if (isAlphanumeric(character)) { id += character.toLowerCase(); previousDash = false; }
-    else if (!previousDash) { id += '-'; previousDash = true; }
+    if (isAlphanumeric(character)) { identifier += character.toLowerCase(); previousDash = false; }
+    else if (!previousDash) { identifier += '-'; previousDash = true; }
   }
-  return id.replace(/-+$/u, '');
+  return identifier.replace(/-+$/u, '');
 }
 
 function headTerm(text) {
@@ -123,7 +124,7 @@ export function conceptFromSense(sense) {
   if (!lemma || !gloss) return null;
   const [genus, differentiae] = readGloss(gloss);
   return {
-    id: conceptId(lemma), label: lemma, language: sense.language, gloss, genus, differentiae,
+    id: conceptIdentifier(lemma), label: lemma, language: sense.language, gloss, genus, differentiae,
     structures: structuresFor(normalizePrompt(gloss)).map(structure => structure.id),
     source_id: sense.source_id, source_url: sense.source_url, sha256: sense.sha256,
     license_name: sense.license_name, depth: sense.depth,
@@ -134,7 +135,7 @@ function groundedTerms(graph, text) {
   return [...graph.concepts, ...graph.entities].flatMap(term => {
     const found = findCue(text, term.label);
     return found ? [[found[0], term.id]] : [];
-  }).sort((left, right) => left[0] - right[0]).map(([, id]) => id);
+  }).sort((left, right) => left[0] - right[0]).map(([, identifier]) => identifier);
 }
 
 export function relationsIn(clause, graph) {
@@ -146,9 +147,9 @@ export function relationsIn(clause, graph) {
       const subject = groundedTerms(graph, clause.text.slice(0, found[0])).at(-1);
       const object = groundedTerms(graph, clause.text.slice(found[1]))[0];
       if (!subject || !object) continue;
-      const id = stableId('relation', [definition.slug, subject, object].join('\x1f'));
-      if (out.some(relation => relation.id === id)) continue;
-      out.push({ id, kind: definition.slug, subject, object, cue,
+      const identifier = stableId('relation', [definition.slug, subject, object].join('\x1f'));
+      if (out.some(relation => relation.id === identifier)) continue;
+      out.push({ id: identifier, kind: definition.slug, subject, object, cue,
         source_span: `${graph.doc_id}@${clause.start}:${clause.end}`, language });
     }
   }
@@ -156,6 +157,6 @@ export function relationsIn(clause, graph) {
 }
 
 /** Stable evidence identity over the same four fields as ConceptSense::content_id. */
-export function conceptSenseContentId(sense) {
+export function conceptSenseContentIdentifier(sense) {
   return stableId('sense', [sense.sha256, sense.lemma, sense.language, sense.gloss].join('\x1f'));
 }

@@ -5,7 +5,7 @@ import test, { before } from 'node:test';
 import { installHost } from '../../../js/agentic/host.mjs';
 import { parseLino, REPO_ROOT } from '../../../js/server/lino.mjs';
 import { ConceptGraph, formalizeDeeply } from '../../../js/agentic/crate/formalization_concept_links.mjs';
-import { conceptFromSense, conceptId, conceptSenseContentId, findCue, readGloss, relationsIn } from '../../../js/agentic/crate/formalization_concepts.mjs';
+import { conceptFromSense, conceptIdentifier, conceptSenseContentIdentifier, findCue, readGloss, relationsIn } from '../../../js/agentic/crate/formalization_concepts.mjs';
 import { structuresFor } from '../../../js/agentic/crate/formalization_structures.mjs';
 import { normalizePrompt } from '../../../js/agentic/crate/engine.mjs';
 import { sentences } from '../../../js/agentic/crate/formalization_segment.mjs';
@@ -19,14 +19,14 @@ test('retrieved captured senses preserve native attribution, genus and stable ev
   const captured = JSON.parse(readFileSync(path.join(REPO_ROOT, 'rust/tests/fixtures/issue-1138-b1/expected-senses.json'), 'utf8'))[0];
   const input = { ...captured, source_id: captured.sourceId, source_url: captured.sourceUrl,
     license_name: captured.licenseName };
-  assert.equal(conceptSenseContentId(input), captured.contentId);
+  assert.equal(conceptSenseContentIdentifier(input), captured.contentId);
   const concept = conceptFromSense(input);
   assert.equal(concept.genus, 'line');
   assert.equal(concept.gloss, captured.gloss);
   assert.equal(concept.source_url, captured.sourceUrl);
   assert.equal(concept.sha256, captured.sha256);
   assert.equal(concept.license_name, captured.licenseName);
-  assert.equal(conceptId('  Красный кот! '), 'concept:красный-кот');
+  assert.equal(conceptIdentifier('  Красный кот! '), 'concept:красный-кот');
   assert.equal(conceptFromSense(sense('', 'a category')), null);
   assert.equal(conceptFromSense(sense('valid', '   ')), null);
 });

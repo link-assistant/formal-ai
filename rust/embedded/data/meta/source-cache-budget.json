@@ -1,0 +1,8 @@
+{
+  "format": "source-cache-budget/v1",
+  "maxBytes": 67108864,
+  "maxFiles": 2048,
+  "maxEntries": 512,
+  "maxBodyBytes": 8388608,
+  "maxMetadataBytes": 16384
+}

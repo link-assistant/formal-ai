@@ -208,9 +208,9 @@ refusal "syntax: malformed number" 20
 refusal "try statement" 19
 refusal "case test" 18
 refusal "undefined" 16
+refusal "typeof operator" 14
 refusal "method call .every()" 13
 refusal "method call .flatMap()" 13
-refusal "typeof operator" 13
 refusal "for with const" 12
 refusal "syntax: @param needs a type and a name" 12
 refusal "method call .join()" 11
@@ -245,7 +245,6 @@ refusal "type: one value is used as a string and as an array; declare the types 
 refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 3
 refusal "bitwise &" 2
 refusal "instanceof operator" 2
-refusal "method call .createDirAll()" 2
 refusal "method call .entries()" 2
 refusal "method call .get()" 2
 refusal "method call .match()" 2
@@ -265,6 +264,7 @@ refusal "in operator" 1
 refusal "label …" 1
 refusal "method call .attempt()" 1
 refusal "method call .codingOracleKnowsLanguage()" 1
+refusal "method call .createDirAll()" 1
 refusal "method call .dirname()" 1
 refusal "method call .handlerRulesDocument()" 1
 refusal "method call .keys()" 1

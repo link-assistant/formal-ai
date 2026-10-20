@@ -619,7 +619,8 @@ fn relation_operations() -> Vec<RelationOperation> {
                 .children
                 .iter()
                 .filter(|child| child.name == "supports")
-                .map(|child| child.id.clone())
+                .map(crate::callback_values::callback_value)
+                .map(str::to_owned)
                 .collect(),
         })
         .filter(|operation| is_binary_idiom(&operation.idiom))

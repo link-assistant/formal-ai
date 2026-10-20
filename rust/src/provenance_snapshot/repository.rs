@@ -49,17 +49,20 @@ struct Entry {
     identity: Identity,
 }
 #[cfg(unix)]
-fn open_observed(path: &Path) -> io::Result<File> {
+pub(crate) fn open_observed(path: &Path) -> io::Result<File> {
     rustix::fs::open(
         path,
-        rustix::fs::OFlags::RDONLY | rustix::fs::OFlags::NOFOLLOW | rustix::fs::OFlags::CLOEXEC,
+        rustix::fs::OFlags::RDONLY
+            | rustix::fs::OFlags::NOFOLLOW
+            | rustix::fs::OFlags::CLOEXEC
+            | rustix::fs::OFlags::NONBLOCK,
         rustix::fs::Mode::empty(),
     )
     .map(File::from)
     .map_err(io::Error::from)
 }
 #[cfg(windows)]
-fn open_observed(path: &Path) -> io::Result<File> {
+pub(crate) fn open_observed(path: &Path) -> io::Result<File> {
     use std::os::windows::fs::OpenOptionsExt;
     use windows_sys::Win32::Storage::FileSystem::FILE_FLAG_OPEN_REPARSE_POINT;
     fs::OpenOptions::new()
@@ -68,7 +71,7 @@ fn open_observed(path: &Path) -> io::Result<File> {
         .open(path)
 }
 #[cfg(not(any(unix, windows)))]
-fn open_observed(_path: &Path) -> io::Result<File> {
+pub(crate) fn open_observed(_path: &Path) -> io::Result<File> {
     Err(failure("snapshot_platform_unsupported"))
 }
 #[cfg(unix)]
@@ -131,6 +134,19 @@ fn ancestors(root: &Path, relative: &str) -> io::Result<PathBuf> {
         }
     }
     Ok(path)
+}
+/// Compare descriptor and current no-follow path identities on every supported host.
+pub(crate) fn same_observed_file(file: &File, path: &Path) -> io::Result<bool> {
+    let metadata = file.metadata()?;
+    if !regular(&metadata) {
+        return Ok(false);
+    }
+    let current = open_observed(path)?;
+    let observed = current.metadata()?;
+    if !regular(&observed) {
+        return Ok(false);
+    }
+    Ok(file_identity(file, &metadata)? == file_identity(&current, &observed)?)
 }
 fn inspect(path: &Path) -> io::Result<Identity> {
     let file = open_observed(path)?;

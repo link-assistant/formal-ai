@@ -15,6 +15,7 @@ import { symbolicFromWorker } from '../server/solve.mjs';
 import * as webTreeSitter from '../vendor/tree-sitter/web-tree-sitter.mjs';
 import { loadRustAstCensus } from './crate/rust_ast_census.mjs';
 import { cachedSourceFetch } from './crate/source_cache.mjs';
+import {boundedSourceCacheIo, SOURCE_CACHE_POLICY} from '../provenance/source-cache-budget.mjs';
 import {scanSignatureSymbols} from '../../scripts/lib/signature-census.mjs';
 import {sourceModelFrontend} from '../../scripts/source-model.mjs';
 import {workflowPin} from '../../scripts/translate-js-rust.mjs';
@@ -123,21 +124,12 @@ const flagEnabled = (value) => ['1', 'true', 'yes', 'on'].includes(String(value 
 function curlGet(url) {
   try {
     return new Uint8Array(execFileSync('curl', ['--fail', '--silent', '--show-error', '--location', '--compressed',
-      '--max-time', '30', '--user-agent', 'formal-ai (https://github.com/link-assistant/formal-ai; source retrieval)', url],
-    { stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 * 1024 * 1024 }));
+      '--max-time', '30', '--max-filesize', String(SOURCE_CACHE_POLICY.maxBodyBytes), '--user-agent', 'formal-ai (https://github.com/link-assistant/formal-ai; source retrieval)', url],
+    { stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: SOURCE_CACHE_POLICY.maxBodyBytes }));
   } catch {
     return null;
   }
 }
-
-const readCacheOrMissing = (action) => {
-  try {
-    return action();
-  } catch (error) {
-    if (error.code === 'ENOENT') return null;
-    throw error;
-  }
-};
 
 /**
  * The source client `VersionSet::for_generation` builds, read from the
@@ -149,13 +141,7 @@ function nodeSourceFetch() {
   return cachedSourceFetch({
     cacheDir: process.env.FORMAL_AI_SOURCE_CACHE_DIR || runtimeCachePaths().runtimeRoot,
     online: flagEnabled(process.env.FORMAL_AI_LIVE_FETCH),
-    io: {
-      readText: (file) => readCacheOrMissing(() => readFileSync(file, 'utf8')),
-      readBytes: (file) => readCacheOrMissing(() => new Uint8Array(readFileSync(file))),
-      writeBytes: (file, bytes) => writeFileSync(file, bytes),
-      createDirAll: (directory) => mkdirSync(directory, { recursive: true }),
-      get: curlGet,
-    },
+    io: boundedSourceCacheIo(curlGet),
   });
 }
 
@@ -244,6 +230,7 @@ export async function installNodeHost(worker, options = {}) {
     censusSourceClosureComplete,
     sourceDocument,
     sourceCstTransformCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/source-cst-transform-request.mjs')],
+    sourceUnaryConsolidationCommand: () => [process.execPath, path.join(REPO_ROOT, 'scripts/consolidate-stateless-unary-request.mjs')],
     generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
     validateProgram: validateRepairProgram,

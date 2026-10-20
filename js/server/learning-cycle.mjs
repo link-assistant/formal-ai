@@ -4,7 +4,8 @@
 // `LearningCycleRun::links_notation`, `derive_candidate`, `frame_of`,
 // `classify_slot`, `recovers_query`, `build_proposals`, `meaning_block`)
 // and the slice of rust/src/promotion.rs it renders through
-// (`render_promotion_proposals`, `manifest_field`, `quote`) with the
+// (`render_promotion_proposals`, `manifest_field`) and the canonical quote
+// escaper `escape_value` in rust/src/memory.rs, with the
 // canonical gate identities of rust/src/promotion/gates.rs `required_gates`.
 //
 // A frontier item is a prompt the engine could not route, kept with the topic
@@ -220,7 +221,7 @@ export function googleTrendsLearningCycle() {
   return runLearningCycle(GOOGLE_TRENDS_FRONTIER, parseFrontierRecord(readRepoFile(GOOGLE_TRENDS_FRONTIER_RECORD_FILE)));
 }
 
-/** Mirrors `quote` in rust/src/promotion.rs. */
+/** Mirrors `escape_value` in rust/src/memory.rs, imported as `quote` by promotion. */
 function quote(value) {
   return value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n').replaceAll('\r', '\\r').replaceAll('\t', '\\t');
 }

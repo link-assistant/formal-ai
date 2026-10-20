@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b43158a622cfefcec86bfb48aed4468974ab9632f70c166c88a0c7471eee2828 bytes=6454
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9b11c23d26f397b059348d6a3e3a86761afe5cfb80fe14384c1324a01ccdc343 bytes=6551
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
@@ -52,8 +52,8 @@ pub static DEFAULT_TTL_SECONDS: std::sync::LazyLock<f64> = std::sync::LazyLock::
 // formal-ai:blockers method call .decode() | new TextDecoder | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .createDirAll()
-// formal-ai:blockers call of a sibling function | field access | method call .createDirAll() | method call .encode() | method call .writeBytes() | new TextEncoder
+// formal-ai:refusal typeof operator
+// formal-ai:blockers call of a sibling function | field access | method call .createDirAll() | method call .encode() | method call .writeBytes() | method call .writeCapture() | new TextEncoder | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal destructured parameter

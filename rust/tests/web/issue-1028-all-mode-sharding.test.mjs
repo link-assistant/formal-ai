@@ -171,8 +171,26 @@ test('measured ladder retirement caps each wave and records the new static DAG',
   const policy=readFileSync(join(root,'data/meta/ci-speed.lino'),'utf8');
   assert.doesNotMatch(policy,/workflow "\.github\/workflows\/issue-1028-agent-ladder\.yml"/);
   const record=readFileSync(join(root,'data/meta/ci-wall-clock.lino'),'utf8');
-  assert.match(record,/measured_minutes 115/);assert.match(record,/ceiling_minutes 225/);
-  assert.match(record,/workflow "\.github\/workflows\/release\.yml"/);
+  const measured=Number(record.match(/^  measured_minutes (\d+)$/m)?.[1]);
+  const ceiling=Number(record.match(/^  ceiling_minutes (\d+)$/m)?.[1]);
+  const selected=record.match(/^  workflow "([^"\n]+)"$/m)?.[1];
+  assert.equal(ceiling,225);
+  assert.ok(selected?.startsWith('.github/workflows/')&&!selected.includes('..'));
+  const currentJobs=new Map(workflowJobs(readFileSync(join(root,selected),'utf8')).map(job=>[job.id,job]));
+  const visiting=new Set(),distances=new Map();
+  function currentLongest(id){
+    assert.ok(currentJobs.has(id),'recorded DAG dependency exists: '+id);
+    assert.ok(!visiting.has(id),'recorded DAG is acyclic');
+    if(distances.has(id))return distances.get(id);
+    visiting.add(id);
+    const job=currentJobs.get(id);
+    assert.equal(job.uses,null,'selected DAG uses direct timeout-bearing jobs');
+    assert.ok(job.timeoutValues.length>0&&job.timeoutValues.every(value=>Number.isSafeInteger(value)&&value>0));
+    const total=Math.max(0,...job.needs.map(currentLongest))+Math.max(...job.timeoutValues);
+    visiting.delete(id);distances.set(id,total);return total;
+  }
+  assert.equal(measured,Math.max(...[...currentJobs.keys()].map(currentLongest)));
+  assert.ok(measured<=ceiling);
 });
 
 

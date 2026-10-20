@@ -160,14 +160,15 @@ pub fn derive_seeded_source_plan<Host: SourceModuleIdentityHost>(
     ];
     let scope = source_goal_scope(request["text"].as_str().ok_or("MissingRequestBytes")?)
         .ok_or("UnprovedQuotationScope")?;
-    let sentences: Vec<&str> = if let Some(goal) = request["goalClause"].as_str() {
-        vec![goal]
-    } else {
-        crate::agentic_coding::shell_command_policy::sentences(&scope)
-            .into_iter()
-            .map(|sentence| sentence.text)
-            .collect()
-    };
+    let sentences: Vec<&str> = request["goalClause"].as_str().map_or_else(
+        || {
+            crate::agentic_coding::shell_command_policy::sentences(&scope)
+                .into_iter()
+                .map(|sentence| sentence.text)
+                .collect()
+        },
+        |goal| vec![goal],
+    );
     let mut matches = Vec::new();
     for form in goal.children.iter().filter(|node| node.name == "form") {
         let mut qualified_pattern = form.find_child_value("pattern").to_owned();

@@ -19,9 +19,9 @@ translation_blockers
   blockers_per_item 3 290
   blockers_per_item 4 209
   blockers_per_item 5 203
-  blockers_per_item 6 139
+  blockers_per_item 6 138
   blockers_per_item 7 106
-  blockers_per_item 8 83
+  blockers_per_item 8 84
   blockers_per_item 9 85
   blockers_per_item 10 59
   blockers_per_item 11 42
@@ -87,7 +87,7 @@ construct "method call .get()" items 72 only 0
 construct "method call .indexOf()" items 71 only 0
 construct "arrow callback of .sort()" items 68 only 0
 construct "method call .every()" items 68 only 0
-construct "typeof operator" items 67 only 2
+construct "typeof operator" items 68 only 2
 construct "new Map" items 66 only 5
 construct "method call .set()" items 60 only 0
 construct "try statement" items 59 only 0
@@ -357,6 +357,7 @@ construct "method call .unshift()" items 1 only 0
 construct "method call .workerHandlerRegistryDefinition()" items 1 only 0
 construct "method call .write()" items 1 only 0
 construct "method call .writeBytes()" items 1 only 0
+construct "method call .writeCapture()" items 1 only 0
 construct "method call .writeProgramParameters()" items 1 only 0
 construct "new AssociativeMemory" items 1 only 0
 construct "new ConceptGraph" items 1 only 0

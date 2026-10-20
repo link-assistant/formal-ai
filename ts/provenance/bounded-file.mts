@@ -15,9 +15,13 @@ export function readBoundedFileBytes(directory,relative,maximum){
 export function readBoundedFilePath(filename,maximum,{allowSymlink=false,io=fs}={}){
  if(!Number.isSafeInteger(maximum)||maximum<0)throw Error('BoundedReadInvalidLimit');
  if(!allowSymlink&&typeof io.constants.O_NOFOLLOW!=='number')throw Error('RuntimeArchiveNoFollowUnavailable');
- const descriptor=io.openSync(filename,io.constants.O_RDONLY|(allowSymlink?0:io.constants.O_NOFOLLOW));
+ const observed=allowSymlink?io.statSync(filename,{bigint:true}):io.lstatSync(filename,{bigint:true});
+ if(!observed.isFile()||observed.size>BigInt(maximum)||observed.size<0n||(!allowSymlink&&observed.isSymbolicLink()))throw Error('RuntimeArchiveSizeOrType');
+ const nonblocking=typeof io.constants.O_NONBLOCK==='number'?io.constants.O_NONBLOCK:0;
+ const descriptor=io.openSync(filename,io.constants.O_RDONLY|nonblocking|(allowSymlink?0:io.constants.O_NOFOLLOW));
  try{
   const before=io.fstatSync(descriptor,{bigint:true});
+  if(before.dev!==observed.dev||before.ino!==observed.ino||before.size!==observed.size||before.mtimeNs!==observed.mtimeNs||before.ctimeNs!==observed.ctimeNs)throw Error('RuntimeArchiveChanged');
   if(!before.isFile()||before.size>BigInt(maximum)||before.size<0n)throw Error('RuntimeArchiveSizeOrType');
   const length=Number(before.size),bytes=Buffer.alloc(length);let offset=0;
   while(offset<length){
