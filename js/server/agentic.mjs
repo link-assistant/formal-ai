@@ -8,6 +8,7 @@
 // the Chat Completions and Responses wire shapes exactly as Rust does.
 
 import { invalidArguments } from '../agentic/crate/tool_call_validation.mjs';
+import { serverMessage } from './messages.mjs';
 import { repeatedActionStop } from '../agentic/repetition_guard.mjs';
 import {observedPlanTerminal} from '../logging/terminal-events.mjs';
 import {currentDialogId} from './dialog-log.mjs';
@@ -140,11 +141,11 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
     let reason = null;
     if (schema) {
       try { reason = invalidArguments(JSON.parse(args), schema); }
-      catch { reason = 'invalid JSON arguments'; }
+      catch { reason = serverMessage('tool_arguments_invalid_json'); }
     }
     if (reason) {
       ctx.logger?.log('error', 'tool_argument_binding_failed', {component: 'planner', tool: call.tool, arguments: args, schema, reason});
-      return {kind: 'final', answer: `Planning stopped: required tool arguments could not be bound for ${call.tool}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete.`};
+      return {kind: 'final', answer: agenticMessage('tool_argument_binding_incomplete', {tool: call.tool})};
     }
     ctx.logger?.log('debug', 'tool_call_bound', {component: 'planner', tool: call.tool, arguments: args, repeat_limit: 3, state: 'awaiting_client_receipt'});
     calls.push({...call, arguments: args});

@@ -13,7 +13,7 @@ dependency-direction
   surface-module "client_contract_learning"
   # Measured 2026-10-08, mostly `crate::cli_env::flag_enabled` read by solver
   # modules, plus the server's response types in the dialog log.
-  outward-references-ceiling 38
+  outward-references-ceiling 34
   # The adapters behind the host port of js/agentic/host.mjs: modules that may
   # import `node:` built-ins or the Node server because they are the Node side
   # of the port, each with its reason.

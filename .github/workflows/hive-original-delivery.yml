@@ -42,7 +42,8 @@ jobs:
     name: Actual Hive ${{ matrix.tool }} original delivery
     needs: build
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    # Include cold image preparation, the bounded solve, and the original independent oracle.
+    timeout-minutes: 60
     permissions:
       contents: write
       issues: write
@@ -115,6 +116,7 @@ jobs:
       - name: Build and verify actual same-source task image
         run: node scripts/build-hive-original-delivery-image.mjs
       - name: Run actual Hive solve and original assertions
+        timeout-minutes: 25
         working-directory: .hive-mind
         env:
           GH_TOKEN: ${{ steps.gh.outputs.token }}

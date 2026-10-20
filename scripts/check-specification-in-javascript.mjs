@@ -58,9 +58,28 @@ export function renderRecord({ total, carried, passing, failing }) {
   ].join('\n');
 }
 
+/** Preserve names when no gaps existed, and distinguish extraction loss from worker failures. */
+export function regressionMessages(recorded, state, unsupported = []) {
+  const messages = [`${recorded.passing - state.passing} prior passing specification case(s) are missing; ${state.carried} carried, ${state.failing.size} worker failures.`];
+  const lost = Math.max(0, recorded.carried - state.carried);
+  if (lost) {
+    messages.push(`${lost} specification case(s) are no longer extractable from current qualified source.`);
+    const groups = new Map();
+    for (const item of unsupported) {
+      if (!groups.has(item.reason)) groups.set(item.reason, []);
+      groups.get(item.reason).push(item.id);
+    }
+    for (const [reason, ids] of groups) messages.push(`Extraction refusal ${JSON.stringify(reason)} (${ids.length}): ${ids.slice(0, 2).join(', ')}`);
+  }
+  for (const [id, failure] of state.failing) {
+    if (!recorded.gaps.includes(id)) messages.push(`Worker regression ${id}: ${JSON.stringify(String(failure).slice(0, 400))}`);
+  }
+  return messages;
+}
+
 async function main(argv) {
   const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-  const { total, cases } = specificationCases(root);
+  const { total, cases, unsupported } = specificationCases(root);
   const failing = await failingCases(new WorkerHost(), cases);
   const state = { total, carried: cases.length, passing: cases.length - failing.size, failing };
   const recorded = parseRecord(readFileSync(join(root, RECORD), 'utf8'));
@@ -71,11 +90,9 @@ async function main(argv) {
     }
   }
   if (state.passing < recorded.passing) {
-    const regressed = recorded.gaps.length ? [...failing.keys()].filter((id) => !recorded.gaps.includes(id)) : [];
-    console.error(
-      `::error file=${RECORD}::${recorded.passing - state.passing} specification case(s) that passed in the worker ` +
-        `fail now: ${regressed.join(', ')}. Fix the worker; a passing case never regresses.`,
-    );
+    for (const message of regressionMessages(recorded, state, unsupported)) {
+      console.error(`::error file=${RECORD}::${message}`);
+    }
     return 1;
   }
   if (argv.includes('--write')) {

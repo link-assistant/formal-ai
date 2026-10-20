@@ -33,7 +33,10 @@ pub(super) fn recover(
     ))
     .expect("valid origin observation pattern");
     if !origin_pattern.is_match(command) {
-        return Some(AgenticPlan::Final("The push failed with an invalid local refspec. Inspect the current branch and the originally requested remote before retrying; no alternative remote is authorized.".to_owned()));
+        return Some(AgenticPlan::Final(crate::seed::agentic_message(
+            "git_refspec_other_remote",
+            &[],
+        )));
     }
     if messages.iter().any(|message| {
         message.role == "user"
@@ -46,12 +49,24 @@ pub(super) fn recover(
                 super::git_commit::RequestTargetBinding::Absent
             )
     }) {
-        return Some(AgenticPlan::Final("The refspec failed while an explicit branch binding exists. Inspect that local ref and preserve the requested destination; the current branch was not pushed automatically.".to_owned()));
+        return Some(AgenticPlan::Final(crate::seed::agentic_message(
+            "git_refspec_explicit_branch",
+            &[],
+        )));
     }
     if Progress::scan(messages).has_run(CURRENT_BRANCH_PUSH) {
-        return Some(AgenticPlan::Final("The current-branch push recovery was attempted. Inspect its Git receipt; any remaining task requirements are incomplete.".to_owned()));
+        return Some(AgenticPlan::Final(crate::seed::agentic_message(
+            "git_refspec_recovery_attempted",
+            &[],
+        )));
     }
     Some(tool_for(tools, Capability::Run).map_or_else(
-        || AgenticPlan::Final("The push failed with an invalid local refspec. Read git branch --show-current in the client workspace before retrying; no shell tool is available.".to_owned()),
-        |tool| plan_one(tool, json!({"command": CURRENT_BRANCH_PUSH}).to_string())))
+        || {
+            AgenticPlan::Final(crate::seed::agentic_message(
+                "git_refspec_shell_missing",
+                &[],
+            ))
+        },
+        |tool| plan_one(tool, json!({"command": CURRENT_BRANCH_PUSH}).to_string()),
+    ))
 }

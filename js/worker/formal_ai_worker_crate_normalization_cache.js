@@ -8,6 +8,7 @@
 // Exact-input normalization cache owned by the installed source host.
 const { cached } = crateRequire("host.mjs");
 
+/** Mirrors `fn normalized` in rust/src/agentic_coding/normalization_cache.rs. */
 function memoizedNormalization(prompt, compute) {
   prompt = String(prompt);
   const cache = cached('bounded-normalized-prompts', () => ({entries: new Map(), bytes: 0}));

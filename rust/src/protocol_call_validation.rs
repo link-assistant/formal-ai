@@ -35,7 +35,7 @@ pub(crate) fn invalid_arguments(value: &Value, schema: &Value, depth: usize) -> 
     {
         return true;
     }
-    let matches_type = |kind: &str| match kind {
+    let matches_type = |kind: &str| match kind.to_ascii_lowercase().as_str() {
         "null" => value.is_null(),
         "boolean" => value.is_boolean(),
         "object" => value.is_object(),
@@ -167,7 +167,7 @@ pub(crate) fn bind_plan(
                 "debug",
                 "planner",
                 || "planning_terminal".into(),
-                || json!({"answer":answer.chars().take(4096).collect::<String>(),"state":"terminal","repeat_limit":crate::bounded_retry::MAX_FAILED_ATTEMPTS}),
+                || json!({"answer":answer.chars().take(4096).collect::<String>(),"state":"terminal","repeat_limit":crate::bounded_retry::MAXIMUM_FAILED_ATTEMPTS}),
             );
         }
         return plan;
@@ -197,9 +197,9 @@ pub(crate) fn bind_plan(
                     || "tool_argument_binding_failed".into(),
                     || json!({"tool":call.tool,"arguments":call.arguments,"schema":schema}),
                 );
-                return AgenticPlan::Final(format!(
-                    "Planning stopped: required tool arguments could not be bound for {}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete.",
-                    call.tool
+                return AgenticPlan::Final(crate::seed::agentic_message(
+                    "tool_argument_binding_incomplete",
+                    &[("tool", &call.tool)],
                 ));
             }
         }
@@ -207,7 +207,7 @@ pub(crate) fn bind_plan(
             "debug",
             "planner",
             || "tool_call_bound".into(),
-            || json!({"tool":call.tool,"arguments":call.arguments,"repeat_limit":crate::agentic_coding::repetition_guard::MAX_IDENTICAL_ACTION_ATTEMPTS,"state":"awaiting_client_receipt"}),
+            || json!({"tool":call.tool,"arguments":call.arguments,"repeat_limit":crate::agentic_coding::repetition_guard::MAXIMUM_IDENTICAL_ACTION_ATTEMPTS,"state":"awaiting_client_receipt"}),
         );
     }
     AgenticPlan::ToolCalls(calls)

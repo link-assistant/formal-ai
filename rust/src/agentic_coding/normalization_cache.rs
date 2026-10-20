@@ -1,8 +1,8 @@
 //! Exact-input memoization with a strict process-wide memory/entry ceiling.
 use std::collections::VecDeque;
 use std::sync::{Mutex, OnceLock};
-const MAX_BYTES: usize = 4 * 1024 * 1024;
-const MAX_ENTRIES: usize = 32;
+const MAXIMUM_BYTES: usize = 4 * 1024 * 1024;
+const MAXIMUM_ENTRIES: usize = 32;
 static CACHE: OnceLock<Mutex<VecDeque<(String, String)>>> = OnceLock::new();
 fn cache() -> std::sync::MutexGuard<'static, VecDeque<(String, String)>> {
     CACHE
@@ -20,14 +20,14 @@ pub(crate) fn normalized(prompt: &str, compute: impl FnOnce(&str) -> String) -> 
     }
     let value = compute(prompt);
     let size = prompt.len().saturating_add(value.len());
-    if size <= MAX_BYTES / 4 {
+    if size <= MAXIMUM_BYTES / 4 {
         {
             let mut cache = cache();
             let mut bytes = cache
                 .iter()
                 .map(|(key, value)| key.len() + value.len())
                 .sum::<usize>();
-            while cache.len() >= MAX_ENTRIES || bytes + size > MAX_BYTES {
+            while cache.len() >= MAXIMUM_ENTRIES || bytes + size > MAXIMUM_BYTES {
                 if let Some((key, value)) = cache.pop_front() {
                     bytes -= key.len() + value.len();
                 } else {

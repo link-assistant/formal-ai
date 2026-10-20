@@ -500,9 +500,25 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
         .filter(|token| run_verbs.contains(&clean_cue_token(token.text)))
     {
         let prefix = request.get(..run.start)?.trim();
-        if !prefix.is_empty()
-            && !bare_surfaces(seed::ROLE_POLITENESS_CUE).contains(&clean_cue_token(prefix))
-        {
+        let politeness = bare_surfaces(seed::ROLE_POLITENESS_CUE);
+        let preface_words: Vec<String> = tokens(prefix)
+            .iter()
+            .map(|token| clean_cue_token(token.text))
+            .collect();
+        let first_action = preface_words.get(usize::from(
+            preface_words
+                .first()
+                .is_some_and(|word| politeness.contains(word)),
+        ));
+        // A preceding owned task sentence may introduce the command; quoted reports may not.
+        let owned_preface = first_action.is_some_and(|word| run_verbs.contains(word))
+            && !request.get(..run.start)?.contains("\n\n")
+            && crate::normal_markov::quoted_segment_spans(prefix).is_empty()
+            && prefix
+                .chars()
+                .next_back()
+                .is_some_and(|character| ".!?。！？।".contains(character));
+        if !prefix.is_empty() && !politeness.contains(&clean_cue_token(prefix)) && !owned_preface {
             continue;
         }
         let tail = request.get(run.end..)?;
@@ -530,6 +546,12 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
             continue;
         }
         let suffix_tokens = tokens(suffix);
+        if suffix_tokens
+            .iter()
+            .any(|token| run_verbs.contains(&clean_cue_token(token.text)))
+        {
+            continue;
+        }
         let has_write_action = suffix_tokens
             .iter()
             .any(|token| actions.contains(&clean_cue_token(token.text)));

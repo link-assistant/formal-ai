@@ -358,33 +358,14 @@ function oblDescribesCodeToAuthor(request, content) {
 
 // Mirrors `fn parse_command_output_request`: whether one is stated.
 function oblCommandOutputRequest(request) {
-  const toks = oblTokens(request);
-  const runVerbs = terminalCommandVocabulary().runVerbs;
-  const actions = oblBareSurfaces("file_write_action_cue");
-  const targets = oblBareSurfaces("file_write_target_cue");
-  const destinations = oblBareSurfaces("file_write_destination_cue");
-  for (const run of toks.filter((token) => runVerbs.has(oblCleanCueToken(token.text)))) {
-    const tail = request.slice(run.end);
-    const leading = tail.length - oblTrimStart(tail).length;
-    const quote = Array.from(tail.slice(leading))[0];
-    if (quote === undefined) return false;
-    if (quote !== "'" && quote !== "\"" && quote !== "`") continue;
-    const body = tail.slice(leading + 1);
-    const close = body.indexOf(quote);
-    if (close < 0) continue;
-    const command = oblTrim(body.slice(0, close));
-    if (!command || /[\n\r\0]/.test(command)) continue;
-    const suffix = request.slice(run.end + leading + 1 + close + 1);
-    if (!oblMentionsBareRole(suffix, "file_write_command_output_reference")) continue;
-    const suffixTokens = oblTokens(suffix);
-    if (!suffixTokens.some((token) => actions.includes(oblCleanCueToken(token.text)))) continue;
-    for (let index = 1; index < suffixTokens.length; index += 1) {
-      const cleaned = oblCleanPathToken(suffixTokens[index].text);
-      const cue = oblCleanCueToken(suffixTokens[index - 1].text);
-      if (oblLooksLikeFilePath(cleaned) && oblSafeRelativePath(cleaned) && (targets.includes(cue) || destinations.includes(cue))) return true;
-    }
-  }
-  return false;
+  return crateModule("crate/command_output_contract.mjs").parseCommandOutputContract(request, {
+    tokens: oblTokens, runVerbs: Array.from(terminalCommandVocabulary().runVerbs),
+    bareSurfaces: oblBareSurfaces, cleanCueToken: oblCleanCueToken,
+    trim: oblTrim, trimStart: oblTrimStart,
+    quotedSegmentSpans: crateModule("crate/normal_markov.mjs").quotedSegmentSpans,
+    mentionsBareRole: oblMentionsBareRole, cleanPathToken: oblCleanPathToken,
+    looksLikeFilePath: oblLooksLikeFilePath, safeRelativePath: oblSafeRelativePath,
+  }) !== null;
 }
 
 // Mirrors `fn repository_work_reference`: a GitHub issue or pull URL, or null.

@@ -1,3 +1,4 @@
+import { parseCommandOutputContract } from './crate/command_output_contract.mjs';
 import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 import { readRequestEnvelope } from './file_read/ownership.mjs';
 import { rawLowercaseSpan } from './write_request/lowercase_spans.mjs';
@@ -318,41 +319,10 @@ export function repositoryWorkReference(request) {
 }
 
 function parseCommandOutputRequest(request) {
-  const toks = tokens(request);
-  const runVerbs = terminalCommandVocabulary().run_verbs;
-  const actions = bareSurfaces('file_write_action_cue');
-  const targets = bareSurfaces('file_write_target_cue');
-  const destinations = bareSurfaces('file_write_destination_cue');
-  for (const run of toks.filter((token) => runVerbs.includes(cleanCueToken(token.text)))) {
-    const prefix = trim(request.slice(0, run.start));
-    if (prefix && !bareSurfaces('politeness_cue').includes(cleanCueToken(prefix))) continue;
-    const tail = request.slice(run.end);
-    const leading = tail.length - trimStart(tail).length;
-    const quoted = tail.slice(leading);
-    const quote = Array.from(quoted)[0];
-    if (quote === undefined) return null;
-    if (quote !== "'" && quote !== '"' && quote !== '`') continue;
-    const body = quoted.slice(1);
-    const close = body.indexOf(quote);
-    if (close < 0) continue;
-    const command = trim(body.slice(0, close));
-    if (!command || /[\n\r\0]/.test(command)) continue;
-    const suffix = request.slice(run.end + leading + 1 + close + 1).split('\n\n')[0];
-    if (!mentionsBareRole(suffix, 'file_write_command_output_reference')) continue;
-    const suffixTokens = tokens(suffix);
-    if (!suffixTokens.some((token) => actions.includes(cleanCueToken(token.text)))) continue;
-    let target = null;
-    for (let index = 1; index < suffixTokens.length; index += 1) {
-      const cleaned = cleanPathToken(suffixTokens[index].text);
-      const cue = cleanCueToken(suffixTokens[index - 1].text);
-      if (looksLikeFilePath(cleaned) && safeRelativePath(cleaned) && (targets.includes(cue) || destinations.includes(cue))) {
-        target = cleaned;
-        break;
-      }
-    }
-    if (target !== null) return [target, command];
-  }
-  return null;
+  return parseCommandOutputContract(request, {
+    tokens, bareSurfaces, cleanCueToken, trim, trimStart, quotedSegmentSpans, mentionsBareRole, cleanPathToken, looksLikeFilePath, safeRelativePath,
+    runVerbs: terminalCommandVocabulary().run_verbs,
+  });
 }
 
 /** Mirrors `fn mentions_bare_role`. */

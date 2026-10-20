@@ -582,3 +582,53 @@ agentic_messages
     text "last"
   message file-read-cue-first-line
     text "first line"
+  message tool_validation_schema_depth_limit
+    text "{path}: schema depth limit"
+  message tool_validation_forbidden_value
+    text "{path}: forbidden value"
+  message tool_validation_unresolved_schema_reference
+    text "{path}: unresolved schema reference"
+  message tool_validation_allof_mismatch
+    text "{path}: allOf mismatch"
+  message tool_validation_anyof_mismatch
+    text "{path}: anyOf mismatch"
+  message tool_validation_oneof_mismatch
+    text "{path}: oneOf mismatch"
+  message tool_validation_forbidden_schema
+    text "{path}: forbidden schema"
+  message tool_validation_type_mismatch
+    text "{path}: type mismatch"
+  message tool_validation_enum_mismatch
+    text "{path}: enum mismatch"
+  message tool_validation_const_mismatch
+    text "{path}: const mismatch"
+  message tool_validation_string_length_mismatch
+    text "{path}: string length mismatch"
+  message tool_validation_unsupported_schema_pattern
+    text "{path}: unsupported schema pattern"
+  message tool_validation_pattern_mismatch
+    text "{path}: pattern mismatch"
+  message tool_validation_numeric_range_mismatch
+    text "{path}: numeric range mismatch"
+  message tool_validation_array_length_mismatch
+    text "{path}: array length mismatch"
+  message tool_validation_required_value_is_unbound
+    text "{path}: required value is unbound"
+  message action_budget_exhausted
+    text "Action budget exhausted after {total} tool declarations (limit {maximum}). The task is incomplete; inspect progress before starting a new request."
+  message action_receipt_missing
+    text "No bound tool result was received."
+  message action_repetition_stopped
+    text "Repeated action stopped after {attempts} attempts (limit {maximum}): {tool} {arguments}. Last result: {result}. The task is incomplete; inspect the tool contract or change strategy."
+  message git_refspec_other_remote
+    text "The push failed with an invalid local refspec. Inspect the current branch and the originally requested remote before retrying; no alternative remote is authorized."
+  message git_refspec_explicit_branch
+    text "The refspec failed while an explicit branch binding exists. Inspect that local ref and preserve the requested destination; the current branch was not pushed automatically."
+  message git_refspec_recovery_attempted
+    text "The current-branch push recovery was attempted. Inspect its Git receipt; any remaining task requirements are incomplete."
+  message git_refspec_shell_missing
+    text "The push failed with an invalid local refspec. Read git branch --show-current in the client workspace before retrying; no shell tool is available."
+  message tool_argument_binding_incomplete
+    text "Planning stopped: required tool arguments could not be bound for {tool}. No call was sent; inspect tool_argument_binding_failed diagnostics. The task is incomplete."
+  message memory_storage_unavailable
+    text "persisted-memory storage unavailable at {path}: {error}"

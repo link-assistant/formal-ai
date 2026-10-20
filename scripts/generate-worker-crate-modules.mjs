@@ -37,6 +37,7 @@ import { tokenize, layoutOf, renderSource } from './translate-es.mjs';
 
 /** The modules the chat routes call; their import closure is generated. */
 export const ENTRY_MODULES = Object.freeze([
+  'crate/command_output_contract.mjs',
   'crate/conversation_summary.mjs',
   'crate/concise_dependency_restatement.mjs',
   'crate/dependency_summarization.mjs',

@@ -195,6 +195,9 @@ test('a bug report cannot turn its quoted reproduction and later output discussi
   for (const text of [
     "0.354.1 loops for hours\n\nA Hive Mind run, `solve example/issues/1`, did nothing.\n\nThe output failed. Write a fix; code references are at v0.354.1.",
     "A run `solve example/issues/1` failed. The output shows write failures at v0.354.1.",
+    "An execution failed. Run 'printf observed' and write its stdout to reports/observed.txt.",
+    "Execute the task.\n\nRun 'printf observed' and write its stdout to reports/observed.txt.",
+    "Run `printf previous` to reproduce. Run 'printf observed' and write its stdout to reports/observed.txt.",
     "Run `printf observed` to reproduce a failure.\n\nOther context: write its output to unrelated.txt.",
   ]) {
     const plan=composeGeneralChangePlan(text);
@@ -203,6 +206,12 @@ test('a bug report cannot turn its quoted reproduction and later output discussi
   }
   const legitimate=composeGeneralChangePlan("Please run 'printf observed' and write its stdout to reports/observed.txt");
   assert.equal(legitimate?.mode,'command_output');
+  for(const prefix of ['Execute the auto-learning task. ', 'Please execute the requested task. ']) {
+    const request=prefix+"Run 'printf observed' and write its exact stdout to reports/observed.txt";
+    const owned=composeGeneralChangePlan(request);
+    assert.equal(owned?.mode,'command_output');assert.equal(owned?.target,'reports/observed.txt');
+    assert.equal(owned.content,'');assert.equal(owned.goal,request);
+  }
 });
 
 test('distinct-call cycles and unbounded driving options are also finite', async () => {
@@ -250,4 +259,11 @@ test('the actual generated recipe commit pushes plain named and current refs wit
     }
     assert.deepEqual(git(['for-each-ref','--format=%(refname)'],remote).split('\n'),['refs/heads/task/quoted-ref']);
   }finally{fs.rmSync(directory,{recursive:true,force:true});}
+});
+
+test('provider-owned uppercase schema type names retain values and refuse actual type mismatches', () => {
+  const schema={type:'OBJECT',properties:{command:{type:'STRING'}},required:['command']};
+  assert.equal(invalidArguments({command:'mytool --flag'},schema),null);
+  assert.match(invalidArguments({command:7},schema),/type mismatch/);
+  assert.match(invalidArguments({},schema),/required value is unbound/);
 });

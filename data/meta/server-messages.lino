@@ -480,3 +480,5 @@ server_messages
     text "foreign provider receipt"
   message source-operation-not-provider-issued
     text "not provider-issued"
+  message tool_arguments_invalid_json
+    text "invalid JSON arguments"

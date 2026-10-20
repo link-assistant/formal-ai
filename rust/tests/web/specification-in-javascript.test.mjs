@@ -84,3 +84,18 @@ test("a check reports what was expected and what came", () => {
 test("the worker passes every carried case the record does not list as a gap", () => {
   execFileSync(process.execPath, ["scripts/check-specification-in-javascript.mjs", "--check"], { stdio: "pipe" });
 });
+
+
+test('regression diagnostics name worker failures even when the baseline had no gaps', async () => {
+  const {regressionMessages}=await import('../../../scripts/check-specification-in-javascript.mjs');
+  const result=regressionMessages({carried:2,passing:2,gaps:[]},{carried:2,passing:1,failing:new Map([['held-out::case','intent mismatch']])});
+  assert(result.some(message=>message.includes('held-out::case')&&message.includes('intent mismatch')));
+  assert(!result.some(message=>message.includes('no longer extractable')));
+});
+test('source qualification loss is reported separately from a failed worker assertion', async () => {
+  const {regressionMessages}=await import('../../../scripts/check-specification-in-javascript.mjs');
+  const result=regressionMessages({carried:2,passing:2,gaps:[]},{carried:1,passing:1,failing:new Map()},[{id:'held-out::source',reason:'unqualified generated native source'}]);
+  assert(result.some(message=>message.includes('1 specification case(s) are no longer extractable')));
+  assert(result.some(message=>message.includes('unqualified generated native source')&&message.includes('held-out::source')));
+  assert(!result.some(message=>message.startsWith('Worker regression')));
+});

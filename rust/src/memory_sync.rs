@@ -435,9 +435,9 @@ impl SyncStore {
         if let Some((kind, error)) = &self.storage_error {
             return Err(std::io::Error::new(
                 *kind,
-                format!(
-                    "persisted-memory storage unavailable at {}: {error}",
-                    path.display()
+                crate::seed::agentic_message(
+                    "memory_storage_unavailable",
+                    &[("path", &path.display().to_string()), ("error", error)],
                 ),
             ));
         }

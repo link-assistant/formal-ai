@@ -168,3 +168,31 @@ fn distinct_action_cycles_exhaust_the_objective_budget() {
             .contains("Action budget exhausted")
     );
 }
+
+#[test]
+fn owned_task_preface_retains_command_capture_without_owning_quoted_reports() {
+    use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
+    for prefix in [
+        "Execute the auto-learning task. ",
+        "Please execute the requested task. ",
+    ] {
+        let request = format!(
+            "{prefix}Run 'printf observed' and write its exact stdout to reports/observed.txt"
+        );
+        let plan = compose_general_change_plan(&request).expect("owned imperative command");
+        assert_eq!(plan.mode.slug(), "command_output");
+        assert_eq!(plan.target, "reports/observed.txt");
+        assert!(plan.content.is_empty());
+        assert_eq!(plan.goal, request);
+    }
+    for request in [
+        "An execution failed. Run 'printf observed' and write its stdout to reports/observed.txt.",
+        "Execute the task.\n\nRun 'printf observed' and write its stdout to reports/observed.txt.",
+        "Run `printf previous` to reproduce. Run 'printf observed' and write its stdout to reports/observed.txt.",
+    ] {
+        assert!(
+            compose_general_change_plan(request)
+                .is_none_or(|plan| plan.mode.slug() != "command_output")
+        );
+    }
+}
