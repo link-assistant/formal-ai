@@ -1,4 +1,15 @@
 // One structural capture parser; callers supply their existing lexical adapters.
+// Completed empty source lines end a paragraph; the current partial line does not.
+function commandParagraphEnd(text, trim) {
+  let start = 0;
+  for (;;) {
+    const end = text.indexOf('\n', start);
+    if (end < 0) return text.length;
+    if (trim(text.slice(start, end)) === '') return start;
+    start = end + 1;
+  }
+}
+
 /** Mirrors `fn parse_command_output_request` in rust/src/agentic_coding/general_planner.rs. */
 export function parseCommandOutputContract(request, lexical) {
   const {tokens, runVerbs, bareSurfaces, cleanCueToken, trim, trimStart, quotedSegmentSpans, mentionsBareRole, cleanPathToken, looksLikeFilePath, safeRelativePath} = lexical;
@@ -12,7 +23,8 @@ export function parseCommandOutputContract(request, lexical) {
     const prefaceWords = tokens(prefix).map(token => cleanCueToken(token.text));
     const firstAction = prefaceWords[politeness.includes(prefaceWords[0]) ? 1 : 0];
     // A preceding owned task sentence may introduce the command; quoted reports may not.
-    const ownedPreface = runVerbs.includes(firstAction) && !request.slice(0, run.start).includes('\n\n')
+    const rawPrefix = trimStart(request.slice(0, run.start));
+    const ownedPreface = runVerbs.includes(firstAction) && commandParagraphEnd(rawPrefix, trim) === rawPrefix.length
       && quotedSegmentSpans(prefix).length === 0
       && Array.from('.!?。！？।').some(mark => prefix.endsWith(mark));
     if (prefix && !politeness.includes(cleanCueToken(prefix)) && !ownedPreface) continue;
@@ -27,7 +39,8 @@ export function parseCommandOutputContract(request, lexical) {
     if (close < 0) continue;
     const command = trim(body.slice(0, close));
     if (!command || /[\n\r\0]/.test(command)) continue;
-    const suffix = request.slice(run.end + leading + 1 + close + 1).split('\n\n')[0];
+    const paragraphEnd = run.start + commandParagraphEnd(request.slice(run.start), trim);
+    const suffix = request.slice(run.end + leading + 1 + close + 1, paragraphEnd);
     if (!mentionsBareRole(suffix, 'file_write_command_output_reference')) continue;
     const suffixTokens = tokens(suffix);
     if (suffixTokens.some(token => runVerbs.includes(cleanCueToken(token.text)))) continue;

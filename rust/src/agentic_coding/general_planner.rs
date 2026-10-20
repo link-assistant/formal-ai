@@ -482,6 +482,18 @@ pub(super) fn repository_work_reference(request: &str) -> Option<String> {
         .then(|| url.to_owned())
     })
 }
+// Completed empty source lines end a paragraph; the current partial line does not.
+fn command_paragraph_end(text: &str) -> usize {
+    let mut start = 0;
+    for (end, _) in text.match_indices('\n') {
+        if text[start..end].trim().is_empty() {
+            return start;
+        }
+        start = end + 1;
+    }
+    text.len()
+}
+
 /// Recover a command-output file request from a structural, seed-backed frame.
 ///
 /// The command must immediately follow a seed-defined run verb and be enclosed
@@ -511,8 +523,9 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
                 .is_some_and(|word| politeness.contains(word)),
         ));
         // A preceding owned task sentence may introduce the command; quoted reports may not.
+        let raw_prefix = request.get(..run.start)?.trim_start();
         let owned_preface = first_action.is_some_and(|word| run_verbs.contains(word))
-            && !request.get(..run.start)?.contains("\n\n")
+            && command_paragraph_end(raw_prefix) == raw_prefix.len()
             && crate::normal_markov::quoted_segment_spans(prefix).is_empty()
             && prefix
                 .chars()
@@ -537,11 +550,8 @@ fn parse_command_output_request(request: &str) -> Option<(String, String)> {
             continue;
         }
         let suffix_offset = run.end + leading + quote.len_utf8() + close + quote.len_utf8();
-        let suffix = request
-            .get(suffix_offset..)?
-            .split("\n\n")
-            .next()
-            .unwrap_or_default();
+        let paragraph_end = run.start + command_paragraph_end(request.get(run.start..)?);
+        let suffix = request.get(suffix_offset..paragraph_end)?;
         if !mentions_bare_role(suffix, seed::ROLE_FILE_WRITE_COMMAND_OUTPUT_REFERENCE) {
             continue;
         }

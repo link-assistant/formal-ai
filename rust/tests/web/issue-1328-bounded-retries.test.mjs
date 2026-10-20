@@ -197,6 +197,10 @@ test('a bug report cannot turn its quoted reproduction and later output discussi
     "A run `solve example/issues/1` failed. The output shows write failures at v0.354.1.",
     "An execution failed. Run 'printf observed' and write its stdout to reports/observed.txt.",
     "Execute the task.\n\nRun 'printf observed' and write its stdout to reports/observed.txt.",
+    "Execute the task.\r\n\r\nRun 'printf observed' and write its stdout to reports/observed.txt.",
+    "Execute the task.\n \n  Run 'printf observed' and write its stdout to reports/observed.txt.",
+    "Run 'printf observed' to reproduce.\r\n\r\nOther context: write its output to unrelated.txt.",
+    "Run 'printf observed' to reproduce.\n \nOther context: write its output to unrelated.txt.",
     "Run `printf previous` to reproduce. Run 'printf observed' and write its stdout to reports/observed.txt.",
     "Run `printf observed` to reproduce a failure.\n\nOther context: write its output to unrelated.txt.",
   ]) {
@@ -206,7 +210,7 @@ test('a bug report cannot turn its quoted reproduction and later output discussi
   }
   const legitimate=composeGeneralChangePlan("Please run 'printf observed' and write its stdout to reports/observed.txt");
   assert.equal(legitimate?.mode,'command_output');
-  for(const prefix of ['Execute the auto-learning task. ', 'Please execute the requested task. ']) {
+  for(const prefix of ['Execute the auto-learning task. ', 'Please execute the requested task. ', 'Execute the requested task.\n  ']) {
     const request=prefix+"Run 'printf observed' and write its exact stdout to reports/observed.txt";
     const owned=composeGeneralChangePlan(request);
     assert.equal(owned?.mode,'command_output');assert.equal(owned?.target,'reports/observed.txt');

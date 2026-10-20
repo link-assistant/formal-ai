@@ -188,6 +188,10 @@ fn owned_task_preface_retains_command_capture_without_owning_quoted_reports() {
     for request in [
         "An execution failed. Run 'printf observed' and write its stdout to reports/observed.txt.",
         "Execute the task.\n\nRun 'printf observed' and write its stdout to reports/observed.txt.",
+        "Execute the task.\r\n\r\nRun 'printf observed' and write its stdout to reports/observed.txt.",
+        "Execute the task.\n \n  Run 'printf observed' and write its stdout to reports/observed.txt.",
+        "Run 'printf observed' to reproduce.\r\n\r\nOther context: write its output to unrelated.txt.",
+        "Run 'printf observed' to reproduce.\n \nOther context: write its output to unrelated.txt.",
         "Run `printf previous` to reproduce. Run 'printf observed' and write its stdout to reports/observed.txt.",
     ] {
         assert!(
