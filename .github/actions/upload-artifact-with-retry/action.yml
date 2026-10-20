@@ -1,0 +1,73 @@
+name: Upload artifact with bounded retries
+description: Upload small CI artifacts under three attempts and the caller step deadline without changing artifact identity or bytes
+inputs:
+  name:
+    required: true
+    description: Original immutable artifact name
+  path:
+    required: true
+    description: Original artifact input paths
+  include-hidden-files:
+    default: 'false'
+    description: Preserve the caller's hidden-file policy
+  if-no-files-found:
+    default: error
+    description: Preserve the caller's missing-file policy
+  retention-days:
+    default: '3'
+    description: Preserve the caller's artifact retention
+outputs:
+  artifact-id:
+    description: Actual successful upload ID only
+    value: ${{ (steps.first.outcome == 'success' && steps.first.outputs.artifact-id) || (steps.second.outcome == 'success' && steps.second.outputs.artifact-id) || (steps.third.outcome == 'success' && steps.third.outputs.artifact-id) }}
+  artifact-url:
+    description: Actual successful upload URL only
+    value: ${{ (steps.first.outcome == 'success' && steps.first.outputs.artifact-url) || (steps.second.outcome == 'success' && steps.second.outputs.artifact-url) || (steps.third.outcome == 'success' && steps.third.outputs.artifact-url) }}
+  artifact-digest:
+    description: Actual successful upload digest only
+    value: ${{ (steps.first.outcome == 'success' && steps.first.outputs.artifact-digest) || (steps.second.outcome == 'success' && steps.second.outputs.artifact-digest) || (steps.third.outcome == 'success' && steps.third.outputs.artifact-digest) }}
+runs:
+  using: composite
+  steps:
+    - id: first
+      uses: actions/upload-artifact@v7
+      continue-on-error: true
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        include-hidden-files: ${{ inputs.include-hidden-files }}
+        if-no-files-found: ${{ inputs.if-no-files-found }}
+        retention-days: ${{ inputs.retention-days }}
+    - name: Back off before the second upload
+      if: ${{ !cancelled() && steps.first.outcome == 'failure' }}
+      shell: bash
+      run: sleep 3
+    - id: second
+      if: ${{ !cancelled() && steps.first.outcome == 'failure' }}
+      uses: actions/upload-artifact@v7
+      continue-on-error: true
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        include-hidden-files: ${{ inputs.include-hidden-files }}
+        if-no-files-found: ${{ inputs.if-no-files-found }}
+        retention-days: ${{ inputs.retention-days }}
+    - name: Back off before the final upload
+      if: ${{ !cancelled() && steps.second.outcome == 'failure' }}
+      shell: bash
+      run: sleep 7
+    - id: third
+      if: ${{ !cancelled() && steps.second.outcome == 'failure' }}
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ inputs.path }}
+        include-hidden-files: ${{ inputs.include-hidden-files }}
+        if-no-files-found: ${{ inputs.if-no-files-found }}
+        retention-days: ${{ inputs.retention-days }}
+    - name: Refuse an upload without a successful artifact receipt
+      if: ${{ !cancelled() && steps.first.outcome != 'success' && steps.second.outcome != 'success' && steps.third.outcome != 'success' }}
+      shell: bash
+      run: |
+        echo '::error::Artifact upload exhausted three bounded attempts; no artifact receipt is available.'
+        exit 1

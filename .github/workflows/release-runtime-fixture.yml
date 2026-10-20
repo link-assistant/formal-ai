@@ -7,6 +7,8 @@ on:
       - reopened
     paths:
       - .github/workflows/release-runtime-fixture*.yml
+      - .github/actions/upload-artifact-with-retry/**
+      - rust/tests/web/issue-1328-artifact-retry.test.mjs
       - scripts/release-runtime-fixture.mjs
       - scripts/release-fixture-caller-admission.mjs
       - rust/tests/web/release-fixture-caller-admission.test.mjs
@@ -55,7 +57,8 @@ jobs:
         run: node scripts/release-runtime-fixture.mjs produce
       - name: Upload immutable controlled text tar
         id: upload
-        uses: actions/upload-artifact@v7
+        uses: ./.github/actions/upload-artifact-with-retry
+        timeout-minutes: 4
         with:
           name: release-fixture-text-${{ github.run_id }}-${{ github.run_attempt }}
           path: .release-fixture/producer/.release-transfer/binary/*

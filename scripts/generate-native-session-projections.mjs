@@ -8,7 +8,9 @@ import {failedNativeProcess,reportNativeProcessFailure} from './lib/native-proce
 const cwd=process.cwd(), output=resolve(process.argv[2]??'');
 const deadline=Date.now()+1200000;
 assert.equal(process.env.GITHUB_ACTIONS,'true','native session producer runs only in hosted CI');
-validateProjectionSelector(process.env);
+const sourceSelection=process.env.NATIVE_SESSION_REQUESTED_PULL_REQUEST && process.env.GH_TOKEN
+  ? (await import('./lib/native-session-source.mjs')).authenticateProjectionSource(process.env,cwd) : undefined;
+validateProjectionSelector(process.env,sourceSelection);
 for(const name of ['GITHUB_RUN_ID','GITHUB_RUN_ATTEMPT']) assert.match(process.env[name]??'',/^[1-9]\d*$/u,'hosted producer identity missing');
 assert.ok(process.env.GITHUB_JOB && process.env.GITHUB_REPOSITORY);
 assert.ok(process.argv[2] && !existsSync(output),'fresh explicit output directory required');
@@ -47,13 +49,16 @@ writeFileSync(join(output,'producer.stdout.bin'),run.result.stdout??Buffer.alloc
 writeFileSync(join(output,'producer.stderr.bin'),run.result.stderr??Buffer.alloc(0));
 if(failedNativeProcess(run.result)){writeFileSync(join(output,'producer-failure-receipt.json'),JSON.stringify({stage:'producer',authority:'not-granted',semanticPassCredit:false,...run.receipt},null,2)+'\n');reportNativeProcessFailure('producer',run.result);}
 assert.equal(run.receipt.error,null);assert.equal(run.receipt.signal,null);assert.equal(run.receipt.exitCode,0,'actual compiled session producer failed');
+if(sourceSelection) assert.deepEqual((await import('./lib/native-session-source.mjs')).authenticateProjectionSource(process.env,cwd),sourceSelection,'authenticated PR source changed during generation');
+assert.equal(git(['rev-parse','HEAD']),commit,'physical commit changed during generation');
+assert.equal(git(['rev-parse','HEAD^{tree}']),tree,'physical tree changed during generation');
 assert.deepEqual(nativeInputIdentity(cwd),nativeInputs,'native compilation inputs changed during generation');
 assert.deepEqual(trackedTestInputIdentity(cwd),witness,'physical source changed during generation');
 assert.equal(digest(readFileSync(executable)),executableSha256,'compiled executable changed during generation');
 assert.deepEqual(projectionInputs(cwd,paths),inputs,'pinned task/tools input changed during generation');
 const members=verifyProjectionDirectory(generated,inputs,schema);
 const receipt={schema:'native-session-projection-producer/v1',authority:'not-granted',semanticPassCredit:false,
-  identity:{commit,tree,nativeInputs,physicalInputs:witness,repository:process.env.GITHUB_REPOSITORY,run:process.env.GITHUB_RUN_ID,attempt:process.env.GITHUB_RUN_ATTEMPT,job:process.env.GITHUB_JOB,
+  identity:{commit,tree,sourceSelection:sourceSelection??null,nativeInputs,physicalInputs:witness,repository:process.env.GITHUB_REPOSITORY,run:process.env.GITHUB_RUN_ID,attempt:process.env.GITHUB_RUN_ATTEMPT,job:process.env.GITHUB_JOB,
     producer,producerSha256:digest(producerBytes),driverSourceSha256:digest(driverBytes),executable:relative(cwd,executable),executableSha256,
     compiler:execFileSync('rustc',['-vV'],{cwd,encoding:'utf8'}).trim(),profile:'release',features:'Cargo default',
     rustFlags:process.env.RUSTFLAGS??'',encodedRustFlags:process.env.CARGO_ENCODED_RUSTFLAGS??'',target:process.env.CARGO_BUILD_TARGET??'',

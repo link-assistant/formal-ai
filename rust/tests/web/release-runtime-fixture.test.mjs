@@ -70,7 +70,8 @@ function validateGraph(parent, child) {
   assert.deepEqual(admission.env, {GH_TOKEN: '${{ github.token }}'});
   assert.equal(parent.jobs.observer.steps.some(step => step.run === 'node scripts/release-runtime-fixture.mjs download'), false);
   const liveWitness = child.jobs['lease-holder'].steps.find(step => step.name === 'Expose live callee witness before observer finishes');
-  assert.equal(liveWitness.uses, 'actions/upload-artifact@v7');
+  assert.equal(liveWitness.uses, './.github/actions/upload-artifact-with-retry');
+  assert.equal(liveWitness['timeout-minutes'], 1);
   assert.equal(liveWitness.with.name, 'release-fixture-lease-start-${{ github.run_id }}-${{ github.run_attempt }}');
   assert.equal(liveWitness.with.path, '.release-fixture/lease-start.json');
   assert.equal(child.jobs['lease-holder'].if, 'inputs.active');

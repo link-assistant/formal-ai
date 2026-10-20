@@ -8,6 +8,7 @@ on:
       - 'docs/case-studies/**'
       - 'scripts/generate-native-session-projections.mjs'
       - 'scripts/lib/native-session-projections.mjs'
+      - 'scripts/lib/native-session-source.mjs'
       - 'scripts/lib/native-process-diagnostics.mjs'
       - 'scripts/lib/native-response-identity.mjs'
       - '.github/workflows/regenerate-native-session-projections.yml'
@@ -24,6 +25,8 @@ on:
         type: string
 permissions:
   contents: read
+  actions: read
+  pull-requests: read
 concurrency:
   group: native-session-projections-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -46,6 +49,8 @@ jobs:
         with:
           restore-only: 'true'
       - name: Generate actual compiled driver projections
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: node scripts/generate-native-session-projections.mjs "$RUNNER_TEMP/native-session-projections"
       - uses: actions/upload-artifact@v7
         if: always()

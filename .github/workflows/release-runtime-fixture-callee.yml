@@ -55,7 +55,8 @@ jobs:
       - name: Record actual private caller lease descendant start
         run: node scripts/release-runtime-fixture.mjs lease-start
       - name: Expose live callee witness before observer finishes
-        uses: actions/upload-artifact@v7
+        uses: ./.github/actions/upload-artifact-with-retry
+        timeout-minutes: 1
         with:
           name: release-fixture-lease-start-${{ github.run_id }}-${{ github.run_attempt }}
           path: .release-fixture/lease-start.json
