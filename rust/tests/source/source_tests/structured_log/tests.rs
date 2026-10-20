@@ -126,3 +126,94 @@ fn control_evidence_ignores_diagnostic_filters() {
         );
     }
 }
+
+#[test]
+fn diagnostic_metadata_preserves_small_values_and_bounds_wide_percent_encoded_fields() {
+    let ordinary =
+        json!({"tool":"inspect","state":"pending","repeat_limit":3,"__proto__":"own data"});
+    assert_eq!(bounded_diagnostic_metadata(&ordinary), ordinary);
+    let content = "😀é%()\n".repeat(20000);
+    let mut metadata = ordinary.clone();
+    metadata["arguments"] = json!(content);
+    let bounded = bounded_diagnostic_metadata(&metadata);
+    assert_eq!(bounded["tool"], "inspect");
+    assert_eq!(bounded["__proto__"], "own data");
+    assert_eq!(bounded["arguments"]["bytes"], content.len());
+    assert_eq!(
+        bounded["arguments"]["sha256"],
+        crate::source_fetch::hex_lower(&Sha256::digest(content.as_bytes()))
+    );
+    assert!(
+        bounded["arguments"]["preview"]
+            .as_str()
+            .expect("UTF-8 preview")
+            .len()
+            <= DIAGNOSTIC_PREVIEW_BYTES
+    );
+    let mut wide = serde_json::Map::new();
+    wide.insert("tool".into(), json!("inspect"));
+    for index in 0..1500 {
+        wide.insert(format!("{}{index}", "😀".repeat(50)), json!("é".repeat(80)));
+    }
+    let bounded = bounded_diagnostic_metadata(&Value::Object(wide));
+    assert_eq!(bounded["fields"]["tool"], "inspect");
+    assert!(bounded["omitted_fields"].as_u64().expect("omission count") > 0);
+    let line = encode(&bounded).expect("bounded encoding");
+    assert!(line.len() <= DIAGNOSTIC_METADATA_BYTES);
+    assert_eq!(decode(&line).expect("default decoder"), bounded);
+}
+
+#[test]
+fn actual_diagnostic_producer_bounds_metadata_after_redaction() {
+    const CHILD: &str = "FORMAL_AI_BOUNDED_METADATA_CHILD";
+    const SECRET: &str = "private-metadata-secret";
+    if crate::solver_config::flag_enabled(CHILD) {
+        configure(false, false);
+        event(
+            "debug",
+            "planner",
+            || "tool_call_bound".into(),
+            || json!({"tool":"inspect","state":"pending","repeat_limit":3,"password":SECRET,"arguments":format!("prefix {SECRET} 😀é ").repeat(20000)}),
+        );
+        return;
+    }
+    let qualified = concat!(
+        module_path!(),
+        "::actual_diagnostic_producer_bounds_metadata_after_redaction"
+    );
+    let (_, test_name) = qualified.split_once("::").expect("qualified native test");
+    let output =
+        std::process::Command::new(std::env::current_exe().expect("native test executable"))
+            .args(["--exact", test_name, "--nocapture"])
+            .env(CHILD, "1")
+            .env("GH_TOKEN", SECRET)
+            .env("FORMAL_AI_SILENT", "0")
+            .env("FORMAL_AI_LOG_LEVEL", "debug")
+            .output()
+            .expect("isolated actual diagnostic producer");
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let stderr = String::from_utf8(output.stderr).expect("UTF-8 diagnostic");
+    let records: Vec<_> = stderr
+        .lines()
+        .map(|line| {
+            assert!(line.len() < 1024 * 1024);
+            decode(line).expect("unchanged default diagnostic reader")
+        })
+        .collect();
+    assert_eq!(records.len(), 1);
+    let metadata = &records[0]["metadata"];
+    assert_eq!(metadata["tool"], "inspect");
+    assert_eq!(metadata["repeat_limit"], 3);
+    assert_eq!(metadata["password"], "[REDACTED]");
+    let safe = "prefix [REDACTED] 😀é ".repeat(20000);
+    assert_eq!(metadata["arguments"]["bytes"], safe.len());
+    assert_eq!(
+        metadata["arguments"]["sha256"],
+        crate::source_fetch::hex_lower(&Sha256::digest(safe.as_bytes()))
+    );
+    assert!(!stderr.contains(SECRET));
+}

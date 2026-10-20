@@ -126,18 +126,21 @@ pub fn dispatch_request(request: &TransportRequest) -> TransportResponse {
 pub fn serve_websocket(address: &str, trace: bool) -> Result<(), TransportError> {
     let listener = TcpListener::bind(address)?;
     announce_server("websocket", address);
-    for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                std::thread::spawn(move || {
+    crate::bounded_retry::dispatch_incoming(
+        listener.incoming(),
+        |stream| {
+            std::thread::Builder::new()
+                .spawn(move || {
                     if let Err(error) = handle_websocket_connection(stream, trace) {
                         trace_error(trace, "websocket", &error);
                     }
-                });
-            }
-            Err(error) => trace_error(trace, "websocket accept", &error),
-        }
-    }
+                })
+                .map(drop)
+        },
+        |error| trace_error(trace, "websocket accept", error),
+        |error| trace_error(trace, "websocket", error),
+    )?;
+
     Ok(())
 }
 
@@ -195,21 +198,24 @@ pub fn serve_webrtc(address: &str, trace: bool) -> Result<(), TransportError> {
     let listener = TcpListener::bind(address)?;
     announce_server("webrtc", address);
     let udp_address = loopback_udp_address(listener.local_addr()?);
-    for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                let udp_address = udp_address.clone();
-                std::thread::spawn(move || {
+    crate::bounded_retry::dispatch_incoming(
+        listener.incoming(),
+        |stream| {
+            let udp_address = udp_address.clone();
+            std::thread::Builder::new()
+                .spawn(move || {
                     if let Err(error) =
                         handle_webrtc_connection(stream, udp_address.as_str(), trace)
                     {
                         trace_error(trace, "webrtc", &error);
                     }
-                });
-            }
-            Err(error) => trace_error(trace, "webrtc signaling accept", &error),
-        }
-    }
+                })
+                .map(drop)
+        },
+        |error| trace_error(trace, "webrtc signaling accept", error),
+        |error| trace_error(trace, "webrtc", error),
+    )?;
+
     Ok(())
 }
 

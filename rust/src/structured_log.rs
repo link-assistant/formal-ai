@@ -313,6 +313,84 @@ pub fn request_trace_message(method: &str, path: &str, body: &str) -> String {
     format!("{header}\n{body}")
 }
 
+// Producer budgets mirror js/logging/diagnostic-metadata.mjs, not reader policy.
+const DIAGNOSTIC_FIELD_BYTES: usize = 4096;
+const DIAGNOSTIC_METADATA_BYTES: usize = 64 * 1024;
+const DIAGNOSTIC_PREVIEW_BYTES: usize = 256;
+
+fn diagnostic_metadata_summary(value: &Value, canonical: &str) -> Value {
+    let content = value.as_str().unwrap_or(canonical);
+    let mut end = content.len().min(DIAGNOSTIC_PREVIEW_BYTES);
+    while !content.is_char_boundary(end) {
+        end -= 1;
+    }
+    json!({"diagnostic_summary":"post-redaction/v1","encoding":if value.is_string(){"utf8"}else{"formal-ai-log-v1"},"bytes":content.len(),"sha256":crate::source_fetch::hex_lower(&Sha256::digest(content.as_bytes())),"preview":&content[..end],"preview_truncated":end<content.len()})
+}
+
+fn bounded_diagnostic_value(value: &Value) -> Value {
+    // Raw UTF-8 size proves oversized encoded cost without parsing huge CST strings.
+    if value
+        .as_str()
+        .is_some_and(|text| text.len() > DIAGNOSTIC_FIELD_BYTES)
+    {
+        return diagnostic_metadata_summary(value, "");
+    }
+    let Ok(canonical) = encode(value) else {
+        return value.clone();
+    };
+    if canonical.len() > DIAGNOSTIC_FIELD_BYTES {
+        diagnostic_metadata_summary(value, &canonical)
+    } else {
+        value.clone()
+    }
+}
+
+/// Bound already-redacted diagnostic fields using their actual percent-encoded cost.
+/// Dialogs, payload custody, control records and the shared codecs do not use this.
+fn bounded_diagnostic_metadata(value: &Value) -> Value {
+    let Some(fields) = value.as_object() else {
+        return bounded_diagnostic_value(value);
+    };
+    let mut candidates = Vec::new();
+    for (key, item) in fields {
+        let projected = bounded_diagnostic_value(item);
+        let singleton = Value::Object([(key.clone(), projected.clone())].into_iter().collect());
+        let cost = if key.len() > DIAGNOSTIC_METADATA_BYTES {
+            DIAGNOSTIC_METADATA_BYTES + 1
+        } else {
+            let Ok(encoded) = encode(&singleton) else {
+                return value.clone();
+            };
+            encoded.len()
+        };
+        candidates.push((cost, key.clone(), projected));
+    }
+    candidates.sort_by(|left, right| {
+        left.0
+            .cmp(&right.0)
+            .then_with(|| left.1.as_bytes().cmp(right.1.as_bytes()))
+    });
+    let mut remaining = DIAGNOSTIC_METADATA_BYTES - 2048;
+    let mut omitted = 0;
+    let mut fields = serde_json::Map::new();
+    for (cost, key, value) in candidates {
+        if cost > remaining {
+            omitted += 1;
+            continue;
+        }
+        fields.insert(key, value);
+        remaining -= cost;
+    }
+    if omitted == 0 {
+        Value::Object(fields)
+    } else {
+        let Ok(canonical) = encode(value) else {
+            return value.clone();
+        };
+        json!({"diagnostic_metadata":"bounded-post-redaction/v1","fields":fields,"omitted_fields":omitted,"omitted":diagnostic_metadata_summary(value, &canonical)})
+    }
+}
+
 /// Fields and message closures run only after level filtering.
 pub fn event(
     level: &str,
@@ -334,6 +412,9 @@ pub fn event(
         record["payload"] = json!({"sha256":digest,"bytes":bytes});
         record["message"] = json!("large_native_diagnostic");
     }
+    record["metadata"] = bounded_diagnostic_metadata(&record["metadata"]);
+    record["component"] = bounded_diagnostic_metadata(&record["component"]);
+    record["dialog_id"] = bounded_diagnostic_metadata(&record["dialog_id"]);
     write_record(&record);
 }
 

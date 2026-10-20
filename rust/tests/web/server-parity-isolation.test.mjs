@@ -27,6 +27,23 @@ test('only explicitly owned cache prefixes normalize, with the entire record ide
  assert.equal(compareResponses(response(value(roots.rust)),response(wrong),'GET',roots).kind,'content');
 });
 
+test('health compares sink state and normalizes only the exact owned top-level log directory',()=>{
+ const logRoots={rust:'/owned/rust/logs',js:'/owned/js/logs'};
+ const health=directory=>({status:'ok',logs:{directory,file_sink:'active',stderr:true}});
+ const left=response(health(logRoots.rust));
+ const compare=body=>compareResponses(left,response(body),'GET',{},logRoots);
+ assert.equal(compare(health(logRoots.js)).kind,'same');
+ assert.equal(compareResponses(left,response(health(logRoots.js))).kind,'content');
+ for(const directory of ['/foreign/logs',logRoots.js+'/extra',logRoots.js+'-other',logRoots.rust]){
+  assert.equal(compare(health(directory)).kind,'content');
+ }
+ for(const logs of [{...health(logRoots.js).logs,file_sink:'failed'},{...health(logRoots.js).logs,stderr:false},{...health(logRoots.js).logs,failures:1}]){
+  assert.notEqual(compare({status:'ok',logs}).kind,'same');
+ }
+ const payload={answer:logRoots.js,directory:logRoots.js,nested:{logs:{directory:logRoots.js}},list:[{logs:{directory:logRoots.js}}]};
+ assert.deepEqual(normalize(payload,'',null,logRoots.js),payload);
+});
+
 test('SSE applies the same exact-root rule and retains protocol and payload differences',()=>{
  const stream=v=>({...response(v,'text/event-stream'),body:'event: response.completed\ndata: '+JSON.stringify(v)+'\n\n'});
  assert.equal(compareResponses(stream(value(roots.rust)),stream(value(roots.js)),'GET',roots).kind,'same');
@@ -38,6 +55,7 @@ test('the runner isolates runtime state and enables its explicit conversation-lo
  const env=createParityEnvironment('/private/parity-home','fixture-token',{FORMAL_AI_SILENT:'true',FORMAL_AI_CACHE_DIR:'/foreign',FORMAL_AI_AGENT_MODE:'1',PATH:'kept'});
  assert.equal(env.FORMAL_AI_CACHE_DIR,path.join('/private/parity-home','runtime-cache'));
  assert.equal(env.FORMAL_AI_DIALOG_LOG_DIR,path.join('/private/parity-home','dialogs'));
+ assert.equal(env.FORMAL_AI_LOG_DIR,path.join('/private/parity-home','logs'));
  assert.equal(env.FORMAL_AI_LOG_LEVEL,'error');assert.equal(env.FORMAL_AI_SILENT,undefined);assert.equal(env.FORMAL_AI_AGENT_MODE,undefined);assert.equal(env.PATH,'kept');
 });
 

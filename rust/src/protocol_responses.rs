@@ -66,7 +66,7 @@ pub fn apply_patch_input(arguments: &str) -> Option<String> {
 /// Agentic clients use different names for the same values (`command`/`cmd`,
 /// `query`/`pattern`, and several path/edit variants). Planner code deliberately
 /// carries those semantic aliases; this boundary removes undeclared aliases and
-/// fills every required schema field before a call crosses the protocol.
+/// uses declared defaults or grounded values for missing required fields.
 ///
 /// `workspace` is the directory the client said it is running in, when it said
 /// so; a path the client requires to be absolute is resolved against it rather
@@ -95,22 +95,72 @@ pub fn response_arguments_for_tool(
     let Ok(source) = serde_json::from_str::<Value>(&arguments) else {
         return arguments;
     };
-    let Some(source) = source.as_object() else {
+    if !source.is_object() {
         return arguments;
-    };
+    }
+    let projected =
+        project_schema_value(source, schema, definition, user_prompt, workspace, 0).to_string();
+    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") && projected != arguments {
+        crate::diagnostic!("debug";
+            "[trace] tool_schema_projection: tool={tool_name} planned={arguments} emitted={projected}"
+        );
+    }
+    projected
+}
 
+/// Project only declared members, retaining invalid explicit values for validation.
+fn project_schema_value(
+    source: Value,
+    schema: &Value,
+    definition: &Value,
+    user_prompt: &str,
+    workspace: Option<&str>,
+    depth: usize,
+) -> Value {
+    if depth > 32 || schema.get("$ref").is_some() {
+        return source;
+    }
+    if let Value::Array(items) = source {
+        let Some(item_schema) = schema.get("items") else {
+            return Value::Array(items);
+        };
+        return Value::Array(
+            items
+                .into_iter()
+                .map(|item| {
+                    project_schema_value(
+                        item,
+                        item_schema,
+                        definition,
+                        user_prompt,
+                        workspace,
+                        depth + 1,
+                    )
+                })
+                .collect(),
+        );
+    }
+    let Value::Object(source) = source else {
+        return source;
+    };
+    let Some(properties) = schema.get("properties").and_then(Value::as_object) else {
+        return Value::Object(source);
+    };
+    if properties.is_empty() {
+        return Value::Object(source);
+    }
     let required = schema
         .get("required")
         .and_then(Value::as_array)
         .map(Vec::as_slice)
         .unwrap_or_default();
-    let creates_file = call_writes_bytes(properties, source);
+    let creates_file = call_writes_bytes(properties, &source);
     let mut projected = Map::new();
     for (name, property_schema) in properties {
         let value = source
             .get(name)
             .cloned()
-            .or_else(|| semantic_alias(name, source, user_prompt))
+            .or_else(|| semantic_alias(name, &source, user_prompt))
             .or_else(|| {
                 required
                     .iter()
@@ -118,28 +168,29 @@ pub fn response_arguments_for_tool(
                     .then(|| missing_required_value(property_schema, name, user_prompt))
                     .flatten()
             });
-        if let Some(value) = value {
-            let mut value = value;
+        if let Some(mut value) = value {
             if let Some(path) = value
                 .as_str()
                 .filter(|_| demands_absolute_path(definition, name, property_schema))
             {
-                // A write with no observed workspace keeps the request's own
-                // spelling so the client resolves it in its own directory.
                 if let Some(absolute) = absolute_path(path, workspace, creates_file) {
                     value = Value::String(absolute);
                 }
             }
-            projected.insert(name.clone(), value);
+            projected.insert(
+                name.clone(),
+                project_schema_value(
+                    value,
+                    property_schema,
+                    definition,
+                    user_prompt,
+                    workspace,
+                    depth + 1,
+                ),
+            );
         }
     }
-    let projected = Value::Object(projected).to_string();
-    if crate::cli_env::flag_enabled("FORMAL_AI_TRACE_REQUESTS") && projected != arguments {
-        crate::diagnostic!("debug";
-            "[trace] tool_schema_projection: tool={tool_name} planned={arguments} emitted={projected}"
-        );
-    }
-    projected
+    Value::Object(projected)
 }
 
 pub fn tool_parameters_schema(tool: &Value) -> Option<&Value> {
@@ -301,7 +352,7 @@ fn missing_required_value(schema: &Value, name: &str, user_prompt: &str) -> Opti
     }
     if matches!(
         name,
-        "prompt" | "instruction" | "message" | "commit_message" | "commitMessage"
+        "prompt" | "instruction" | "message" | "description" | "commit_message" | "commitMessage"
     ) {
         return Some(Value::String(user_prompt.to_owned()));
     }

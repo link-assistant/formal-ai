@@ -182,7 +182,7 @@ fn owned_task_preface_retains_command_capture_without_owning_quoted_reports() {
         let plan = compose_general_change_plan(&request).expect("owned imperative command");
         assert_eq!(plan.mode.slug(), "command_output");
         assert_eq!(plan.target, "reports/observed.txt");
-        assert!(plan.content.is_empty());
+        assert_eq!(plan.content, "");
         assert_eq!(plan.goal, request);
     }
     for request in [

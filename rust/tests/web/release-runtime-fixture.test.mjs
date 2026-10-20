@@ -22,6 +22,12 @@ function validateGraph(parent, child) {
     actions: 'read'
   });
   assert.deepEqual(child.permissions, parent.permissions);
+  for(const workflow of [parent,child])for(const job of Object.values(workflow.jobs)){
+    for(const step of job.steps??[])if(step['timeout-minutes']!==undefined){
+      assert.ok(Number.isFinite(job['timeout-minutes']));
+      assert.ok(step['timeout-minutes']*100<=job['timeout-minutes']*70,'step retains original job headroom');
+    }
+  }
   assert.equal(child.concurrency, undefined);
   assert.equal(parent.on.pull_request.types.includes('synchronize'), true);
   const privateGroup = 'formal-ai-release-fixture-${{ github.run_id }}-${{ github.run_attempt }}';

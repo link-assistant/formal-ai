@@ -379,7 +379,15 @@ fn a_verified_work_item_is_committed_and_pushed_to_the_named_branch() {
         .find(|command| command == &expected_owned_recipe_commit(&planned))
         .expect("the recipe ends with a commit step");
     assert!(
-        commit.contains(&format!("git push -q origin '{BRANCH}'")),
+        commit.contains(&format!("__formal_ai_push_ref='{BRANCH}'")),
+        "{commit}"
+    );
+    assert!(
+        commit.contains("git push -q origin \"$__formal_ai_push_ref\""),
+        "{commit}"
+    );
+    assert!(
+        commit.contains("git symbolic-ref --quiet --short HEAD"),
         "{commit}"
     );
     assert!(
@@ -479,7 +487,19 @@ fn a_request_to_commit_the_tree_is_a_git_step_not_a_web_search() {
         command.starts_with("git add -A && git commit -q -m 'feat: add Main.scala'"),
         "{command}"
     );
-    assert!(command.contains("git push -q origin HEAD"), "{command}");
+    assert!(
+        command.contains("__formal_ai_push_ref=HEAD &&"),
+        "{command}"
+    );
+    assert!(
+        command.contains("__formal_ai_push_ref=$(git branch --show-current)"),
+        "{command}"
+    );
+    assert!(
+        command.contains("if test -n \"$(git symbolic-ref --quiet --short HEAD)\"; then"),
+        "{command}"
+    );
+    assert!(command.contains("else exit 1; fi && test -n \"$__formal_ai_push_ref\" && git push -q origin \"$__formal_ai_push_ref\""), "{command}");
 }
 
 // ---- F4: the Rust run -----------------------------------------------------
@@ -646,8 +666,16 @@ fn assert_named_branch_push(language: &str, request: String) {
         .find(|command| command == &expected_owned_recipe_commit(&planned))
         .unwrap_or_else(|| panic!("{language}: no commit step in {planned:?}"));
     assert!(
-        commit.contains(&format!("git push -q origin '{BRANCH}'")),
-        "{language}: {commit}"
+        commit.contains(&format!("__formal_ai_push_ref='{BRANCH}'")),
+        "{language}: named branch binding: {commit}"
+    );
+    assert!(
+        commit.contains("git push -q origin \"$__formal_ai_push_ref\""),
+        "{language}: the bound branch must be the actual push operand: {commit}"
+    );
+    assert!(
+        commit.contains("git symbolic-ref --quiet --short HEAD"),
+        "{language}: detached HEAD must be refused: {commit}"
     );
 }
 

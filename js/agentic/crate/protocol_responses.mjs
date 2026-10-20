@@ -50,9 +50,22 @@ export function responseArgumentsForTool(tools, toolName, args, userPrompt, work
     return args;
   }
   if (!isObject(source)) return args;
-  const required = isObject(schema) && Array.isArray(schema.required) ? schema.required : [];
+  return jsonText(projectSchemaValue(source, schema, definition, userPrompt, workspace, 0));
+}
+
+/** Mirrors `fn project_schema_value` in rust/src/protocol_responses.rs; invalid values remain available to boundary validation. */
+function projectSchemaValue(source, schema, definition, userPrompt, workspace, depth) {
+  if (depth > 32 || !isObject(schema) || has(schema, '$ref')) return source;
+  if (Array.isArray(source)) {
+    if (!has(schema, 'items')) return source;
+    return source.map((item) => projectSchemaValue(item, schema.items, definition, userPrompt, workspace, depth + 1));
+  }
+  if (!isObject(source)) return source;
+  const properties = isObject(schema.properties) ? schema.properties : null;
+  if (!properties || !Object.keys(properties).length) return source;
+  const required = Array.isArray(schema.required) ? schema.required : [];
   const createsFile = callWritesBytes(properties, source);
-  const projected = {};
+  const projected = Object.create(null);
   for (const name of sortedKeys(properties)) {
     const propertySchema = properties[name];
     let value = has(source, name) ? source[name] : semanticAlias(name, source, userPrompt);
@@ -64,9 +77,9 @@ export function responseArgumentsForTool(tools, toolName, args, userPrompt, work
       const absolute = absolutePath(value, workspace, createsFile);
       if (absolute !== null) value = absolute;
     }
-    projected[name] = value;
+    projected[name] = projectSchemaValue(value, propertySchema, definition, userPrompt, workspace, depth + 1);
   }
-  return jsonText(projected);
+  return projected;
 }
 
 /** Mirrors `fn tool_parameters_schema`; `undefined` when absent. */
@@ -149,7 +162,7 @@ function callWritesBytes(properties, source) {
   return CONTENT_PROPERTIES.some((name) => has(properties, name) && has(source, name));
 }
 
-const FREE_TEXT = ['prompt', 'instruction', 'message', 'commit_message', 'commitMessage'];
+const FREE_TEXT = ['prompt', 'instruction', 'message', 'description', 'commit_message', 'commitMessage'];
 
 /** Explicit schema defaults/constants and grounded semantic fields only. */
 function missingRequiredValue(schema, name, userPrompt) {

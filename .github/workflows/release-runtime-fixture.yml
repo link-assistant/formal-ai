@@ -58,7 +58,7 @@ jobs:
       - name: Upload immutable controlled text tar
         id: upload
         uses: ./.github/actions/upload-artifact-with-retry
-        timeout-minutes: 4
+        timeout-minutes: 3
         with:
           name: release-fixture-text-${{ github.run_id }}-${{ github.run_attempt }}
           path: .release-fixture/producer/.release-transfer/binary/*

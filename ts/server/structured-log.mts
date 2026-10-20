@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import {createHash} from 'node:crypto';
+import {boundedDiagnosticMetadata} from '../logging/diagnostic-metadata.mjs';
 import {isFloat,parseJson,toCompactJson} from './json.mjs';
 import {encodeTyped,decodeTyped,MAXIMUM_LOG_RECORD_BYTES,validateTypedText as text} from '../logging/typed-codec.mjs';
 export {encodeTyped,decodeTyped,MAXIMUM_LOG_RECORD_BYTES,MAX_LOG_RECORD_BYTES} from '../logging/typed-codec.mjs';
@@ -106,6 +107,9 @@ export function createLogger({level='debug',directory,env=process.env,pid=proces
    try{
     const safeMetadata=redact(metadata);
     const record=redact({schema:'formal-ai-diagnostic-v1',timestamp:clock().replace(/\.(\d{3})Z$/u,'.$1000000Z'),timestamp_precision:'milliseconds',pid,sequence:++sequence,level:eventLevel,component:safeMetadata.component??'server',dialog_id:safeMetadata.dialog_id??null,message:kind,kind,metadata:safeMetadata});
+    record.metadata=boundedDiagnosticMetadata(record.metadata);
+    record.component=boundedDiagnosticMetadata(record.component);
+    record.dialog_id=boundedDiagnosticMetadata(record.dialog_id);
     if(payload!==undefined){
   const content=redact(typeof payload==='function'?payload():payload),canonical=encodeTyped(content);
   record.payload={

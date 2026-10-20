@@ -144,6 +144,10 @@ test('oversized trace content is explicit while digest/size remain post-redactio
   assert.equal(record.payload.digest,digest(canonical));
   assert.equal(record.payload.bytes,Buffer.byteLength(canonical));
   const count=chunks.length;
-  assert.equal(logger.log('debug','large-metadata',{payload}).reason,'record_size_limit');
-  assert.equal(chunks.length,count);
+  assert.equal(logger.log('debug','large-metadata',{payload}).emitted,true);
+  assert.equal(chunks.length,count+1);
+  const diagnostic=decodeTyped(chunks.at(-1).toString().trimEnd());
+  assert.equal(diagnostic.metadata.payload.bytes,Buffer.byteLength(payload));
+  assert.equal(diagnostic.metadata.payload.sha256,digest(payload));
+  assert.equal(diagnostic.metadata.payload.preview_truncated,true);
 });

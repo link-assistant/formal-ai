@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 299
   workaround_items 33
   inferred_signatures 2
-  carried_items 2374
+  carried_items 2375
   translated_modules 100
   fully_translated_modules 1
   refused_modules 52
@@ -106,7 +106,7 @@ module js/agentic/crate/orchestration_workspace.mjs translated 1 workaround 0 in
 module js/agentic/crate/page_formalization.mjs translated 1 workaround 0 inferred 0 carried 8
 module js/agentic/crate/probability.mjs translated 0 workaround 0 inferred 0 carried 7
 module js/agentic/crate/protocol_recording.mjs translated 0 workaround 0 inferred 0 carried 2
-module js/agentic/crate/protocol_responses.mjs translated 5 workaround 0 inferred 0 carried 20
+module js/agentic/crate/protocol_responses.mjs translated 5 workaround 0 inferred 0 carried 21
 module js/agentic/crate/protocol_responses_apply_patch.mjs translated 3 workaround 0 inferred 0 carried 3
 module js/agentic/crate/rebuild_plan.mjs translated 0 workaround 0 inferred 0 carried 12
 module js/agentic/crate/recursive_execution.mjs translated 1 workaround 0 inferred 0 carried 13
@@ -218,8 +218,8 @@ refusal "assignment" 9
 refusal "destructured parameter" 9
 refusal "method call .codePointAt()" 9
 refusal "object spread" 9
+refusal "Array.isArray" 6
 refusal "syntax: unterminated string literal" 6
-refusal "Array.isArray" 5
 refusal "array destructuring" 5
 refusal "method call .has()" 5
 refusal "method call .sort()" 5

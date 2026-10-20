@@ -42,33 +42,61 @@ test('a real ready isolated PR and one safe original-language source are require
 import {readFileSync} from 'node:fs';
 import YAML from 'yaml';
 const {parse} = YAML;
-test('all actual Hive evidence consumers receive one initialized shared directory', () => {
+test('genuine image, solve and independent verification phases use same-run handoffs within the existing cap', () => {
   const root = new URL('../../../', import.meta.url);
-  const source = readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8');
-  const job = parse(source).jobs.delivery;
-  assert.equal(job.env.E2E_LOG_DIR, undefined, 'runner context must not appear at job env scope');
-  const initialize = job.steps.findIndex((step) => step.name === 'Initialize shared delivery evidence directory');
-  assert.ok(initialize >= 0);
-  assert.equal(job.steps[initialize].run, 'echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"');
-  let sourceConsumers = 0;
-  for (const [index, step] of job.steps.entries()) {
-    for (const match of (step.run || '').matchAll(/node (scripts\/[A-Za-z0-9.-]+\.mjs)/g)) {
-      let script;
-      try { script = readFileSync(new URL(match[1], root), 'utf8'); } catch (error) { if (error.code === 'ENOENT') continue; throw error; }
-      if (script.includes('process.env.E2E_LOG_DIR')) {
-        sourceConsumers += 1;
-        assert.ok(initialize < index, match[1] + ' must inherit initialized evidence path');
-        assert.equal(step.env?.E2E_LOG_DIR, undefined, 'a stale override must not split evidence');
-      }
+  const {jobs} = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8'));
+  assert.equal(jobs.image.needs,'build');
+  assert.deepEqual(jobs.delivery.needs,['build','image']);
+  assert.deepEqual(jobs.verification.needs,['build','image','delivery']);
+  assert.equal(jobs.verification.if,"${{ !cancelled() && needs.image.result == 'success' }}",'failed original solves still reach the original verifier');
+  for(const job of Object.values(jobs)){
+    assert.ok(job['timeout-minutes']<=30);
+    for(const step of job.steps??[])if(step['timeout-minutes']!==undefined){
+      assert.ok(step['timeout-minutes']*100<=job['timeout-minutes']*70,'step retains original job headroom');
     }
   }
-  assert.equal(sourceConsumers, 2, 'actual image producer and independent verifier both consume evidence');
-  const solve = job.steps.findIndex((step) => (step.run || '').includes('scripts/e2e-hello-world.mjs'));
-  assert.ok(initialize < solve);
-  assert.equal(job.steps[solve].env.E2E_KEEP, 'true');
-  const upload = job.steps.findIndex((step) => step.uses?.startsWith('actions/upload-artifact@'));
-  assert.ok(initialize < upload);
-  assert.equal(job.steps[upload].with.path, '${{ runner.temp }}/hive-original-evidence');
+  for(const id of ['image','delivery','verification']) {
+    const job=jobs[id];
+    assert.equal(job.env?.E2E_LOG_DIR,undefined);
+    assert.equal(job.steps[0].run,'echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"');
+    assert.ok(job.steps.some(step=>step.with?.name==='hive-same-source-formal-ai-binary'));
+    for(const step of job.steps)assert.equal(step.env?.E2E_LOG_DIR,undefined);
+  }
+  const hasRun=(job,text)=>jobs[job].steps.some(step=>(step.run||'').includes(text));
+  assert.ok(hasRun('image','node scripts/build-hive-original-delivery-image.mjs'));
+  assert.ok(!hasRun('image','e2e-hello-world.mjs'));
+  const imageUpload=jobs.image.steps.find(step=>step.with?.name==='hive-same-source-task-image');
+  const imageDownload=jobs.delivery.steps.find(step=>step.with?.name==='hive-same-source-task-image');
+  assert.ok(imageUpload.uses.startsWith('actions/upload-artifact@'));
+  assert.ok(imageDownload.uses.startsWith('actions/download-artifact@'));
+  assert.equal(imageUpload.with.path,imageDownload.with.path);
+  assert.equal(imageUpload.with['compression-level'],0,'the streamed gzip archive is not recompressed');
+  assert.equal(jobs.image.permissions,undefined,'image construction has only workflow read permissions');
+  assert.ok(!JSON.stringify(jobs.image).includes('secrets.'));
+  assert.ok(!JSON.stringify(jobs.verification).includes('secrets.'));
+  assert.ok(hasRun('delivery','node scripts/build-hive-original-delivery-image.mjs load'));
+  assert.ok(hasRun('delivery','--seal-evidence'));
+  assert.ok(!hasRun('delivery','node scripts/check-hive-original-delivery.mjs'));
+  assert.ok(hasRun('verification','--verify-evidence'));
+  assert.ok(hasRun('verification','node scripts/check-hive-original-delivery.mjs'));
+  assert.ok(!hasRun('verification','e2e-hello-world.mjs'));
+  const stage=jobs.delivery.steps.find(step=>step.uses?.startsWith('actions/upload-artifact@'));
+  const staged=jobs.verification.steps.find(step=>step.with?.name==='hive-original-${{ matrix.tool }}-staged-evidence');
+  const final=jobs.verification.steps.find(step=>step.uses?.startsWith('actions/upload-artifact@'));
+  assert.equal(stage.with.name,staged.with.name);
+  assert.equal(stage.with.path,staged.with.path);
+  assert.equal(final.with.name,'hive-original-${{ matrix.tool }}-evidence');
+  for(const upload of [stage,final]) {
+    assert.equal(upload.if,'${{ !cancelled() }}');
+    assert.equal(upload.with['if-no-files-found'],'error');
+    assert.equal(upload.with['include-hidden-files'],false);
+  }
+  assert.deepEqual(jobs.delivery.strategy.matrix.tool,['claude','agent','codex']);
+  assert.deepEqual(jobs.verification.strategy.matrix.tool,jobs.delivery.strategy.matrix.tool);
+  const solve=jobs.delivery.steps.find(step=>step.name==='Run actual Hive solve and original assertions');
+  assert.equal(solve['timeout-minutes'],21);assert.equal(solve.env.E2E_KEEP,'true');
+  assert.ok(!jobs.delivery.steps.some(step=>step.uses==='dtolnay/rust-toolchain@stable'||step.uses?.startsWith('coursier/')),'compilers belong only to the independent verification host');
+  assert.ok(jobs.verification.steps.findIndex(step=>(step.run||'').includes('--verify-evidence')) < jobs.verification.steps.findIndex(step=>(step.run||'').includes('node scripts/check-hive-original-delivery.mjs')));
 });
 
 import {spawnSync} from 'node:child_process';
@@ -145,7 +173,7 @@ test('all fake harness invocations used distinct framing tokens', () => {
 
 function isolatedRustResolutionStep() {
   const root = new URL('../../../', import.meta.url);
-  const steps = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8')).jobs.delivery.steps;
+  const steps = parse(readFileSync(new URL('.github/workflows/hive-original-delivery.yml', root), 'utf8')).jobs.verification.steps;
   return {steps, resolve: steps.find(step => step.name === 'Resolve Rust compiler for isolated output verification')};
 }
 

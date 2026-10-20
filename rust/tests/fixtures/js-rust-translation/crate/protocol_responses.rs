@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=94353a55abd076d70ca00c20a7336047898e47dff3ac85e46b4c68dce4b2b84a bytes=7094
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c0d8751e60a81ae5c680643e924c2062e948186e8cef71b32a60c358afa6c0d5 bytes=7957
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -52,7 +52,11 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers Array.isArray | JSDoc type {…} | JSON.parse | Object.keys | arrow callback of .some() | assignment of a field or element | call of a sibling function | call of an imported function | field access | let without a value | method call .some() | null | object without a $ tag | try statement | typeof operator | undefined
+// formal-ai:blockers JSDoc type {…} | JSON.parse | Object.keys | call of a sibling function | call of an imported function | field access | let without a value | null | try statement | undefined
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal Array.isArray
+// formal-ai:blockers Object.create | Object.keys | arrow callback of .map() | arrow callback of .some() | assignment of a field or element | call of a sibling function | field access | method call .isArray() | method call .map() | method call .some() | null | typeof operator | undefined
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal undefined
@@ -202,18 +206,19 @@ pub static CONTENT_PROPERTIES: std::sync::LazyLock<Vec<String>> = std::sync::Laz
 // formal-ai:refusal arrow function
 // formal-ai:blockers CONTENT_PROPERTIES.some | arrow callback of .some() | call of a sibling function
 
-// meta-language:translated JavaScript lexical_declaration items=1 sha256=abf836d03d47e1dc3f522b2bca213dd7262d3760c70b2e8f7073d0409df16887
-// | const FREE_TEXT = ['prompt', 'instruction', 'message', 'commit_message', 'commitMessage'];
-// formal-ai:presentation:v1 rawSHA256=abf836d03d47e1dc3f522b2bca213dd7262d3760c70b2e8f7073d0409df16887 rawBytes=232 renderedSHA256=bea30cd78af924923dcda5d8110f10b146ebf5ccf517c3113ee0c2b59125675c
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=5c3468f8eeed10ba042a267c856f04155f175f1df69f93be1d393f44738ed2d5
+// | const FREE_TEXT = ['prompt', 'instruction', 'message', 'description', 'commit_message', 'commitMessage'];
+// formal-ai:presentation:v1 rawSHA256=5c3468f8eeed10ba042a267c856f04155f175f1df69f93be1d393f44738ed2d5 rawBytes=261 renderedSHA256=008c300a39664f8219366458f4f5a3abc738ae715abfdca93bb22b1099c0ba3b
 // formal-ai:presentation-raw cHViIHN0YXRpYyBGUkVFX1RFWFQ6IHN0ZDo6c3luYzo6TGF6eUxvY2s8VmVjPFN0cmluZz4+ID0gc3RkOjpzeW5jOjpMYXp5
 // formal-ai:presentation-raw TG9jazo6bmV3KHx8IHZlYyFbU3RyaW5nOjpmcm9tKCJwcm9tcHQiKSwgU3RyaW5nOjpmcm9tKCJpbnN0cnVjdGlvbiIpLCBT
-// formal-ai:presentation-raw dHJpbmc6OmZyb20oIm1lc3NhZ2UiKSwgU3RyaW5nOjpmcm9tKCJjb21taXRfbWVzc2FnZSIpLCBTdHJpbmc6OmZyb20oImNv
-// formal-ai:presentation-raw bW1pdE1lc3NhZ2UiKV0pOw==
+// formal-ai:presentation-raw dHJpbmc6OmZyb20oIm1lc3NhZ2UiKSwgU3RyaW5nOjpmcm9tKCJkZXNjcmlwdGlvbiIpLCBTdHJpbmc6OmZyb20oImNvbW1p
+// formal-ai:presentation-raw dF9tZXNzYWdlIiksIFN0cmluZzo6ZnJvbSgiY29tbWl0TWVzc2FnZSIpXSk7
 // formal-ai:presentation-raw end
 pub static FREE_TEXT: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::new(||
     vec![String::from("prompt"),
     String::from("instruction"),
     String::from("message"),
+    String::from("description"),
     String::from("commit_message"),
     String::from("commitMessage")]);
 

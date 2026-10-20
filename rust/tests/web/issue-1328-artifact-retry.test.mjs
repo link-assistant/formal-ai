@@ -24,8 +24,9 @@ test('artifact recovery preserves the pinned upload operation, original inputs a
   const producer = workflow.jobs['auto_compile-release'];
   assert.equal(producer.outputs.artifact_id, '${{ steps.upload.outputs.artifact-id }}');
   assert.equal(producer.steps.find(step => step.id === 'upload').uses, './.github/actions/upload-artifact-with-retry');
-  assert.equal(producer.steps.find(step => step.id === 'upload')['timeout-minutes'],4);
-  assert.ok(4 < producer['timeout-minutes']);
+  const uploadMinutes=producer.steps.find(step => step.id === 'upload')['timeout-minutes'];
+  assert.equal(uploadMinutes,3);
+  assert.ok(uploadMinutes*100<=producer['timeout-minutes']*70);
 });
 test('all public receipt outputs require a successful original action and have no fabricated ID fallback', () => {
   for (const [name, output] of Object.entries(action.outputs)) {

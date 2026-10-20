@@ -53,25 +53,21 @@ pub fn serve(address: &str) -> std::io::Result<()> {
     // A thread per connection rather than a pool: this server is a local,
     // single-user surface, connections are short, and the alternative is a
     // queue whose depth is one more thing to tune wrongly.
-    for stream in listener.incoming() {
-        match stream {
-            Ok(mut stream) => {
-                if let Err(error) = std::thread::Builder::new()
-                    .name(String::from("formal-ai-connection"))
-                    .spawn(move || {
-                        if let Err(error) = handle_connection(&mut stream) {
-                            crate::diagnostic!("error"; "request failed: {error}");
-                        }
-                    })
-                {
-                    crate::diagnostic!("error"; "connection thread failed: {error}");
-                }
-            }
-            Err(error) => crate::diagnostic!("error"; "connection failed: {error}"),
-        }
-    }
-
-    Ok(())
+    crate::bounded_retry::dispatch_incoming(
+        listener.incoming(),
+        |mut stream| {
+            std::thread::Builder::new()
+                .name(String::from("formal-ai-connection"))
+                .spawn(move || {
+                    if let Err(error) = handle_connection(&mut stream) {
+                        crate::diagnostic!("error"; "request failed: {error}");
+                    }
+                })
+                .map(drop)
+        },
+        |error| crate::diagnostic!("error"; "connection failed: {error}"),
+        |error| crate::diagnostic!("error"; "connection thread failed: {error}"),
+    )
 }
 
 fn handle_connection(stream: &mut TcpStream) -> std::io::Result<()> {
