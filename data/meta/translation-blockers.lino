@@ -11,10 +11,10 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2373
+  carried_items 2374
   scanned_clear 14
   blockers_per_item 0 14
-  blockers_per_item 1 733
+  blockers_per_item 1 734
   blockers_per_item 2 248
   blockers_per_item 3 281
   blockers_per_item 4 215
@@ -36,9 +36,8 @@ translation_blockers
   blockers_per_item 20 7
   blockers_per_item 21 6
   blockers_per_item 22 1
-  blockers_per_item 23 1
+  blockers_per_item 23 2
   blockers_per_item 24 3
-  blockers_per_item 25 1
   blockers_per_item 26 3
   blockers_per_item 27 2
   blockers_per_item 28 3
@@ -68,7 +67,7 @@ construct "method call .join()" items 172 only 0
 construct "method call .some()" items 171 only 0
 construct "arrow callback of .some()" items 163 only 0
 construct "undefined" items 157 only 0
-construct "import from outside the module directory" items 155 only 155
+construct "import from outside the module directory" items 156 only 156
 construct "method call .split()" items 148 only 0
 construct "arrow callback of .find()" items 146 only 0
 construct "method call .find()" items 141 only 0
@@ -81,7 +80,7 @@ construct "new Set" items 92 only 34
 construct "method call .has()" items 90 only 0
 construct "method call .sort()" items 89 only 0
 construct "imported value" items 85 only 2
-construct "optional chaining" items 83 only 0
+construct "optional chaining" items 82 only 0
 construct "method call .replace()" items 79 only 0
 construct "method call .get()" items 71 only 0
 construct "method call .indexOf()" items 69 only 0
@@ -103,8 +102,8 @@ construct "let without a value" items 33 only 0
 construct "Array.isArray" items 31 only 0
 construct "method call .pop()" items 30 only 0
 construct "method call .encode()" items 29 only 0
-construct "JSON.stringify" items 25 only 0
 construct "new TextEncoder" items 25 only 8
+construct "JSON.stringify" items 24 only 0
 construct "method call .forEach()" items 24 only 0
 construct "arrow callback of .forEach()" items 23 only 0
 construct "throw of a non-error value" items 23 only 0
@@ -372,27 +371,27 @@ construct "new SyntaxError" items 1 only 0
 construct "new SystemExplanation" items 1 only 0
 construct "new Uint8Array" items 1 only 0
 unlock 1 "import of names its module carries" unlocked 324 cumulative 324
-unlock 2 "import from outside the module directory" unlocked 155 cumulative 479
-unlock 3 "call of a sibling function" unlocked 35 cumulative 514
-unlock 4 "field access" unlocked 44 cumulative 558
-unlock 5 "call of an imported function" unlocked 42 cumulative 600
-unlock 6 "null" unlocked 61 cumulative 661
-unlock 7 "object without a $ tag" unlocked 57 cumulative 718
-unlock 8 "JSDoc type {…}" unlocked 48 cumulative 766
-unlock 9 "arrow function" unlocked 43 cumulative 809
-unlock 10 "sibling value" unlocked 35 cumulative 844
-unlock 11 "regular expression" unlocked 34 cumulative 878
-unlock 12 "new Set" unlocked 34 cumulative 912
-unlock 13 "method call .push()" unlocked 30 cumulative 942
-unlock 14 "method call .slice()" unlocked 34 cumulative 976
-unlock 15 "method call .test()" unlocked 33 cumulative 1009
-unlock 16 "Object.freeze" unlocked 30 cumulative 1039
-unlock 17 "nullish coalescing" unlocked 26 cumulative 1065
-unlock 18 "global call String()" unlocked 26 cumulative 1091
-unlock 19 "method call .indexOf()" unlocked 26 cumulative 1117
-unlock 20 "undefined" unlocked 24 cumulative 1141
-unlock 21 "method call .replace()" unlocked 21 cumulative 1162
-unlock 22 "method call .join()" unlocked 20 cumulative 1182
-unlock 23 "Array.from" unlocked 26 cumulative 1208
-unlock 24 "destructuring" unlocked 16 cumulative 1224
-unlock 25 "assignment of a field or element" unlocked 28 cumulative 1252
+unlock 2 "import from outside the module directory" unlocked 156 cumulative 480
+unlock 3 "call of a sibling function" unlocked 35 cumulative 515
+unlock 4 "field access" unlocked 44 cumulative 559
+unlock 5 "call of an imported function" unlocked 42 cumulative 601
+unlock 6 "null" unlocked 61 cumulative 662
+unlock 7 "object without a $ tag" unlocked 57 cumulative 719
+unlock 8 "JSDoc type {…}" unlocked 48 cumulative 767
+unlock 9 "arrow function" unlocked 43 cumulative 810
+unlock 10 "sibling value" unlocked 35 cumulative 845
+unlock 11 "regular expression" unlocked 34 cumulative 879
+unlock 12 "new Set" unlocked 34 cumulative 913
+unlock 13 "method call .push()" unlocked 30 cumulative 943
+unlock 14 "method call .slice()" unlocked 34 cumulative 977
+unlock 15 "method call .test()" unlocked 33 cumulative 1010
+unlock 16 "Object.freeze" unlocked 30 cumulative 1040
+unlock 17 "nullish coalescing" unlocked 26 cumulative 1066
+unlock 18 "global call String()" unlocked 26 cumulative 1092
+unlock 19 "method call .indexOf()" unlocked 26 cumulative 1118
+unlock 20 "undefined" unlocked 24 cumulative 1142
+unlock 21 "method call .replace()" unlocked 21 cumulative 1163
+unlock 22 "method call .join()" unlocked 20 cumulative 1183
+unlock 23 "Array.from" unlocked 26 cumulative 1209
+unlock 24 "destructuring" unlocked 16 cumulative 1225
+unlock 25 "assignment of a field or element" unlocked 28 cumulative 1253

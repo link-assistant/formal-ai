@@ -271,3 +271,27 @@ test('provider-owned uppercase schema type names retain values and refuse actual
   assert.match(invalidArguments({command:7},schema),/type mismatch/);
   assert.match(invalidArguments({},schema),/required value is unbound/);
 });
+
+test('canonical schema equality ignores object order, preserves reserved keys and retains array order', () => {
+  const left=JSON.parse('{"__proto__":{"payload":1},"nested":{"second":2,"first":1}}');
+  const right=JSON.parse('{"nested":{"first":1,"second":2},"__proto__":{"payload":1}}');
+  assert.equal(invalidArguments(left,{enum:[right]}),null);
+  assert.equal(invalidArguments(left,{const:right}),null);
+  assert.match(invalidArguments({nested:right.nested},{const:right}),/const mismatch/);
+  assert.match(invalidArguments([2,1],{const:[1,2]}),/const mismatch/);
+  const original=[user];
+  for(let index=0;index<3;index++)original.push({role:'assistant',content:'',tool_calls:[{id:String(index),function:{name:'opaque',arguments:JSON.stringify(index===1?right:left)}}]});
+  assert.match(repeatedActionStop(original),/after 3 attempts/);
+  const distinct=[user];
+  for(let index=0;index<3;index++)distinct.push({role:'assistant',content:'',tool_calls:[{id:String(index),function:{name:'opaque',arguments:'{"__proto__":{"payload":'+index+'}}'}}]});
+  assert.equal(repeatedActionStop(distinct),null);
+});
+
+test('object property schemas use declared keys rather than inherited prototype members', () => {
+  for(const key of ['__proto__','constructor','toString']) {
+    const value=JSON.parse('{"'+key+'":1}');
+    assert.match(invalidArguments(value,{type:'object',properties:{},additionalProperties:false}),/forbidden value/);
+    const properties=JSON.parse('{"'+key+'":{"type":"number"}}');
+    assert.equal(invalidArguments(value,{type:'object',properties,additionalProperties:false}),null);
+  }
+});

@@ -1,4 +1,5 @@
 import { agenticMessage } from '../messages.mjs';
+import { jsonText } from '../plan.mjs';
 // Validate the bound call, never fill missing values by guessing.
 export function invalidArguments(value, schema, path = '$', depth = 0) {
   if (depth > 32) return agenticMessage('tool_validation_schema_depth_limit', {path: path});
@@ -12,8 +13,8 @@ export function invalidArguments(value, schema, path = '$', depth = 0) {
   if (schema.not && matchesPart(schema.not)) return agenticMessage('tool_validation_forbidden_schema', {path: path});
   const kind = value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value;
   if (schema.type && ![schema.type].flat().some(type => typeof type === 'string' && (type.toLowerCase() === kind || type.toLowerCase() === 'integer' && Number.isInteger(value)))) return agenticMessage('tool_validation_type_mismatch', {path: path});
-  if (schema.enum && !schema.enum.some(item => JSON.stringify(item) === JSON.stringify(value))) return agenticMessage('tool_validation_enum_mismatch', {path: path});
-  if ('const' in schema && JSON.stringify(schema.const) !== JSON.stringify(value)) return agenticMessage('tool_validation_const_mismatch', {path: path});
+  if (schema.enum && !schema.enum.some(item => jsonText(item) === jsonText(value))) return agenticMessage('tool_validation_enum_mismatch', {path: path});
+  if ('const' in schema && jsonText(schema.const) !== jsonText(value)) return agenticMessage('tool_validation_const_mismatch', {path: path});
   if (typeof value === 'string' && ([...value].length < (schema.minLength ?? 0) || [...value].length > (schema.maxLength ?? Infinity))) return agenticMessage('tool_validation_string_length_mismatch', {path: path});
   if (typeof value === 'string' && schema.pattern) {
     if (schema.pattern.length > 128 || value.length > 16384 || /[()|{}\\]/u.test(schema.pattern) || (schema.pattern.match(/[+*?]/gu) ?? []).length > 1) return agenticMessage('tool_validation_unsupported_schema_pattern', {path: path});
@@ -33,7 +34,7 @@ export function invalidArguments(value, schema, path = '$', depth = 0) {
       if (!Object.hasOwn(value, key) || value[key] === '' || value[key] === null) return agenticMessage('tool_validation_required_value_is_unbound', {path: `${path}.${key}`});
     }
     for (const [key, item] of Object.entries(value)) {
-      const property = schema.properties?.[key] ?? schema.additionalProperties;
+      const property = schema.properties && Object.hasOwn(schema.properties, key) ? schema.properties[key] : schema.additionalProperties;
       const error = invalidArguments(item, property, `${path}.${key}`, depth + 1);
       if (error) return error;
     }
