@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
 import {installNodeHost} from '../../../js/agentic/node-host.mjs';
-import {reportedExitCode,stepOutcome,StepOutcome,normalizedPayload,render} from '../../../js/agentic/tool_result.mjs';
+import {observedPayload,reportedExitCode,stepOutcome,StepOutcome,normalizedPayload,render} from '../../../js/agentic/tool_result.mjs';
 const packet=JSON.parse(fs.readFileSync(new URL('../fixtures/issue-1364-agent-tool-use.json',import.meta.url)));
 const original=packet.fixture;
 before(async()=>{await installNodeHost(new WorkerHost());});
@@ -39,4 +39,22 @@ test('arbitrary source JSON and nonterminal or malformed parts grant no nested e
  for(const frame of [{state:original.part.state},{type:'note',part:original.part}, {...original,part:null},{...original,part:[]}, {...original,part:'untrusted'}])assert.equal(reportedExitCode(JSON.stringify(frame)),null);
  const pending=successful();pending.part.state.status='running';assert.equal(reportedExitCode(JSON.stringify(pending)),null);
  const stopped={...successful(),status:'pending'};assert.equal(reportedExitCode(JSON.stringify(stopped)),null);
+});
+
+test('terminal typed stdout keeps leading and trailing whitespace as exact authored bytes',()=>{
+  const bytes='  first\nsecond \n \t';
+  const frame=successful();frame.part.state.metadata.output=bytes;
+  assert.equal(observedPayload(JSON.stringify(frame)),bytes);
+  frame.part.state.output=bytes;delete frame.part.state.metadata.output;
+  assert.equal(observedPayload(JSON.stringify(frame)),bytes);
+});
+test('outer failure flags veto exact typed stdout and stdout JSON never becomes an inner provider',()=>{
+  for(const flags of [{status:'error'},{outcome:'failed'},{status_code:500},{isError:true},{signal:'SIGTERM'}]){
+    const frame={...successful(),...flags};frame.part.state.metadata.output='  preserved bytes  ';
+    assert.equal(observedPayload(JSON.stringify(frame)),null);
+  }
+  const bytes=JSON.stringify(original)+' \n';
+  const frame=successful();frame.part.state.metadata.output=bytes;
+  assert.equal(observedPayload(JSON.stringify(frame)),bytes);
+  assert.equal(reportedExitCode(JSON.stringify(frame)),0);
 });

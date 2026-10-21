@@ -293,3 +293,65 @@ fn completed_provider_parts_retain_outer_failure_signals() {
         assert_eq!(step_outcome(&changed.to_string()), StepOutcome::Failed);
     }
 }
+
+#[test]
+fn typed_git_status_stdout_preserves_leading_columns_before_restart_hygiene() {
+    let task = "Issue to solve: https://github.com/example/fixture/issues/1\nYour prepared Pull Request: https://github.com/example/fixture/pull/2\nUNCOMMITTED CHANGES DETECTED\n```\n M main\n```\nContinue.";
+    let status = "git status --porcelain --untracked-files=all";
+    let frame = serde_json::json!({"type":"tool_use","part":{"type":"tool","tool":"bash",
+        "state":{"status":"completed","metadata":{"exit":0,"output":" M main\n"}}}});
+    let mut messages = vec![
+        formal_ai::ChatMessage::user(task),
+        formal_ai::ChatMessage::assistant_tool_calls(vec![formal_ai::ToolCall::function(
+            "status",
+            "bash",
+            serde_json::json!({"command":status}).to_string(),
+        )]),
+        formal_ai::ChatMessage::tool_result("status", "bash", frame.to_string()),
+    ];
+    let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
+        formal_ai::agentic_coding::plan_chat_step(&messages, &["bash"])
+    else {
+        panic!("exact typed status must request owned hygiene instead of a scope refusal");
+    };
+    assert_eq!(calls.len(), 1);
+    let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
+    let command = arguments["command"].as_str().unwrap();
+    assert!(command.contains("python3"));
+    assert!(!command.contains("gh pr ready"));
+    let mut failed = frame;
+    failed["isError"] = true.into();
+    messages[2] = formal_ai::ChatMessage::tool_result("status", "bash", failed.to_string());
+    assert!(matches!(
+        formal_ai::agentic_coding::plan_chat_step(&messages, &["bash"]),
+        Some(formal_ai::agentic_coding::AgenticPlan::Final(_))
+    ));
+}
+
+#[test]
+fn original_three_program_recipes_probe_external_tools_before_compilation() {
+    for language in ["Rust", "Kotlin", "Scala"] {
+        let prompt = format!("Write a program in {language} that prints \"Hello, World!\".");
+        let answer = UniversalSolver::default().solve(&prompt);
+        let recipe = answer.execution_recipe.expect("original language recipe");
+        let verifier = recipe
+            .supporting_files
+            .iter()
+            .find(|file| file.path == "tests/verify-output.sh")
+            .expect("owned verifier");
+        let probe = verifier.source.find("command -v ").expect("tool preflight");
+        let workspace = verifier
+            .source
+            .find("verification_dir=$(mktemp")
+            .expect("isolated workspace");
+        assert!(
+            probe < workspace,
+            "all prerequisites precede compiler outputs: {language}"
+        );
+        assert!(
+            verifier
+                .source
+                .contains("__formal_ai_owned_process_failed_0__")
+        );
+    }
+}

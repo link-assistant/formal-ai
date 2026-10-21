@@ -2,6 +2,8 @@
 use crate::protocol::ChatMessage;
 use std::collections::BTreeMap;
 
+pub const MAXIMUM_IDENTICAL_FAILED_ACTIONS: usize = 2;
+
 pub const MAXIMUM_IDENTICAL_ACTION_ATTEMPTS: usize = crate::bounded_retry::MAXIMUM_FAILED_ATTEMPTS;
 
 /// Stop even if errors are unrecognized, results are missing, or the server restarted.
@@ -12,7 +14,7 @@ pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
         .filter(|message| message.role.eq_ignore_ascii_case("assistant"))
         .map(|message| message.tool_calls.len())
         .sum::<usize>()
-        < MAXIMUM_IDENTICAL_ACTION_ATTEMPTS
+        < MAXIMUM_IDENTICAL_FAILED_ACTIONS
     {
         return None;
     }
@@ -38,6 +40,67 @@ pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
     } else {
         last_user.map_or(0, |index| index + 1)
     };
+    // Consume matching receipts once, including clients that reuse IDs sequentially.
+    let mut pending = BTreeMap::new();
+    let mut failed_counts = BTreeMap::new();
+    let mut failed = None;
+    for message in messages.iter().skip(window) {
+        if message.role.eq_ignore_ascii_case("assistant") {
+            let mut identifiers = std::collections::BTreeSet::new();
+            for call in &message.tool_calls {
+                if call.id.is_empty() {
+                    continue;
+                }
+                let qualified = identifiers.insert(call.id.as_str()).then_some(call);
+                pending.insert(call.id.as_str(), qualified);
+            }
+        } else if message.role.eq_ignore_ascii_case("tool") {
+            let Some(call) = message
+                .tool_call_id
+                .as_deref()
+                .and_then(|identifier| pending.remove(identifier))
+                .flatten()
+            else {
+                continue;
+            };
+            if message
+                .name
+                .as_ref()
+                .is_some_and(|name| !name.eq_ignore_ascii_case(&call.function.name))
+            {
+                continue;
+            }
+            let result = message.content.plain_text();
+            if super::tool_result::failure_message(&result, message.is_error, false).is_none() {
+                continue;
+            }
+            let arguments = serde_json::from_str::<serde_json::Value>(&call.function.arguments)
+                .map_or_else(
+                    |_| call.function.arguments.clone(),
+                    |value| value.to_string(),
+                );
+            let count = failed_counts
+                .entry((call.function.name.to_lowercase(), arguments))
+                .or_insert(0usize);
+            *count += 1;
+            if *count >= MAXIMUM_IDENTICAL_FAILED_ACTIONS {
+                failed = Some((call, *count, result));
+            }
+        }
+    }
+    if let Some((call, attempts, result)) = failed {
+        let detail: String = result.chars().take(2048).collect();
+        return Some(crate::seed::agentic_message(
+            "action-repetition-stopped",
+            &[
+                ("attempts", &attempts.to_string()),
+                ("maximum", &MAXIMUM_IDENTICAL_FAILED_ACTIONS.to_string()),
+                ("tool", &call.function.name),
+                ("arguments", &call.function.arguments),
+                ("result", &detail),
+            ],
+        ));
+    }
     let mut counts = BTreeMap::new();
     let mut repeated = None;
     let mut total = 0usize;

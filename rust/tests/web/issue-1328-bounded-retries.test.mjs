@@ -51,7 +51,8 @@ test('Responses round trip retains the namespace and recognizes the real MCP bin
 
 test('same call ID, unknown error shape, missing receipts and JSON layout cannot reopen the action budget', async () => {
   for (const options of [{},{unknown:true},{missing:true},{unknown:true,missing:true}]) {
-    assert.equal(repeatedActionStop(replay(2,options)),null);
+    if (options.missing) assert.equal(repeatedActionStop(replay(2,options)),null);
+    else assert.match(repeatedActionStop(replay(2,options)),/after 2 attempts/);
     const messages = replay(3,options);
     assert.match(repeatedActionStop(messages),/after 3 attempts/);
     const planned = await planChatStep(messages,['bash',tool]);

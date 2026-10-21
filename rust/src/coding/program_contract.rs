@@ -302,6 +302,38 @@ fn output_verifier(
         return None;
     }
     let quote = |value: &str| format!("'{}'", value.replace('\'', "'\\''"));
+    // External prerequisites are probed before any stage can create outputs.
+    let probes = commands
+        .iter()
+        .enumerate()
+        .filter_map(|(index, command)| {
+            let program = command.split_whitespace().next()?;
+            let mut characters = program.chars();
+            if !characters
+                .next()
+                .is_some_and(|value| value.is_ascii_alphanumeric() || value == '_')
+                || !characters.all(|value| {
+                    value.is_ascii_alphanumeric() || matches!(value, '_' | '.' | '+' | '-')
+                })
+            {
+                return None;
+            }
+            Some(seed::fill_template_once(
+                contract.find_child_value("isolated-probe"),
+                &[
+                    ("program", &quote(program)),
+                    (
+                        "missing",
+                        &quote(&seed::fill_template_once(
+                            contract.find_child_value("isolated-missing"),
+                            &[("program", program)],
+                        )),
+                    ),
+                    ("index", &index.to_string()),
+                ],
+            ))
+        })
+        .collect::<String>();
     let stages = commands
         .iter()
         .enumerate()
@@ -331,6 +363,7 @@ fn output_verifier(
                 ("source_path", &quote(source_path)),
                 ("expected", &quote(expected)),
                 ("declared_source", &quote(declared_source)),
+                ("probes", &probes),
                 ("stages", &stages),
             ],
         ),

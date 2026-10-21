@@ -111,6 +111,11 @@ pub(in crate::agentic_coding) fn normalized_payload(raw: &str) -> Option<String>
 
 /// Return output after transport normalization when the transport itself succeeded.
 pub(in crate::agentic_coding) fn observed_payload(raw: &str) -> Option<String> {
+    if let Ok(value) = serde_json::from_str::<Value>(raw.trim())
+        && let Some(projection) = super::provider_result::project(&value)
+    {
+        return observed_payload(&projection.to_string());
+    }
     if let Some(envelope) = parse_shell_envelope(raw)
         && envelope.exit_code == Some(0)
     {

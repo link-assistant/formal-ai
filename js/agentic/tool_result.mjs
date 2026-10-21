@@ -118,6 +118,9 @@ export function normalizedPayload(raw) {
 
 /** Mirrors `fn observed_payload`. */
 export function observedPayload(raw) {
+  const value = parseJson(trim(raw));
+  const projection = isObject(value) ? providerResultProjection(value) : null;
+  if (projection !== null) return observedPayload(JSON.stringify(projection));
   const envelope = parseShellEnvelope(raw);
   if (envelope?.exit_code === 0) {
     // The explicit stdout-only receipt keeps authored whitespace and JSON bytes.

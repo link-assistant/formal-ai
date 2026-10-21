@@ -215,11 +215,20 @@ function outputVerifier(expected, commands, sourcePath, declaredSource) {
   if (!context || !('handlerRulesFillOnce' in context)) return null;
   const fill = context.handlerRulesFillOnce;
   if (typeof fill !== 'function') return null;
+  // Probe every external stage before any compiler can create an output.
+  // Relative executables are owned outputs produced by earlier stages.
+  const probes = commands.flatMap((command, index) => {
+    const program = command.split(/\s+/u)[0];
+    if (!/^[A-Za-z0-9_][A-Za-z0-9_.+-]*$/u.test(program)) return [];
+    return [fill(findChildValue(contract, 'isolated-probe'), {
+      program: quote(program), missing: quote(findChildValue(contract, 'isolated-missing').replace('{program}', program)), index: String(index),
+    })];
+  }).join('');
   const stages = commands.map((command, index) => fill(findChildValue(contract, 'isolated-stage'), {
     command, redirect: index === commands.length - 1 ? ' > "$verification_dir/actual"' : '', index: String(index),
   })).join('');
   return { path: findChildValue(contract, 'path'), source: fill(findChildValue(contract, 'isolated-template'), {
-    source_path: quote(sourcePath), expected: quote(expected), declared_source: quote(declaredSource), stages,
+    source_path: quote(sourcePath), expected: quote(expected), declared_source: quote(declaredSource), probes, stages,
   }) };
 }
 

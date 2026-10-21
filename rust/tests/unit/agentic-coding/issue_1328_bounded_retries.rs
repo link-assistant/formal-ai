@@ -332,3 +332,37 @@ fn fresh_representative_requests_complete_with_owned_issue_fetch() {
             .expect("publish bounded fresh request measurements");
     }
 }
+
+#[test]
+fn authoritative_reused_id_failures_stop_after_second_receipt() {
+    let mut messages = vec![ChatMessage::user("Fix the failing coding task.")];
+    for _ in 0..2 {
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "same-client-id",
+            "mcp__codex_apps__search_service___web_run",
+            "{}",
+        )]));
+        messages.push(ChatMessage::tool_result(
+            "same-client-id", "mcp__codex_apps__search_service___web_run",
+            r#"{"isError":true,"structuredContent":{"error":"InvalidActionArgumentsError","error_code":"INVALID_ARGUMENT","error_data":{"reason":"missing_required_argument","failure_stage":"argument_binding"}}}"#,
+        ));
+    }
+    assert!(
+        repeated_action_stop(&messages).is_some_and(|answer| answer.contains("after 2 attempts"))
+    );
+    messages.truncate(3);
+    messages.push(messages[2].clone());
+    assert!(repeated_action_stop(&messages).is_none());
+}
+
+#[test]
+fn missing_call_identifiers_do_not_certify_two_failures() {
+    let mut messages = vec![ChatMessage::user("Fix the failing coding task.")];
+    for _ in 0..2 {
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            "", "bash", "{}",
+        )]));
+        messages.push(ChatMessage::tool_result("", "bash", r#"{"exit_code":127}"#));
+    }
+    assert!(repeated_action_stop(&messages).is_none());
+}
