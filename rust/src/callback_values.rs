@@ -1,4 +1,4 @@
-//! Typed receiver adapters for the five ECMAScript callback operations.
+//! Typed receiver adapters for ECMAScript callback operations.
 //!
 //! Property/method receivers own dispatch, including getter effects and returned errors.
 //! String trimming uses the existing ECMAScript whitespace definition, never Rust's trim.
@@ -74,4 +74,16 @@ impl CallbackLengthReceiver for &str {
     fn positive_length(self) -> bool {
         self.as_bytes().positive_length()
     }
+}
+
+/// A typed view of one named property; the receiver owns absence, effects and errors.
+pub trait CallbackPropertyReceiver {
+    type Output;
+    fn property(self, name: &str) -> Self::Output;
+}
+/// Capture one property name and dispatch exactly once per receiver invocation.
+/// This typed interface does not claim the complete ECMAScript object model.
+#[must_use]
+pub fn callback_property<T: CallbackPropertyReceiver>(name: &str) -> impl Fn(T) -> T::Output + '_ {
+    move |value| value.property(name)
 }

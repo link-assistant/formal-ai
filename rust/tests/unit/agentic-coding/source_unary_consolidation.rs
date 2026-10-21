@@ -40,6 +40,13 @@ fn source_text_and_advertised_bash_never_install_an_engine() {
 #[cfg(not(target_arch = "wasm32"))]
 #[test]
 fn installed_unary_route_requires_preimage_receipt_and_exact_readback() {
+    use formal_ai::agentic_coding::installed_source_commands::configure_installed_source_commands;
+    struct Fixture(std::path::PathBuf);
+    impl Drop for Fixture {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
+    }
     const CHILD: &str = "FORMAL_AI_UNARY_CAPABILITY_TEST_CHILD";
     if std::env::var_os(CHILD).is_none() {
         let name = std::thread::current().name().expect("test name").to_owned();
@@ -55,13 +62,6 @@ fn installed_unary_route_requires_preimage_receipt_and_exact_readback() {
             String::from_utf8_lossy(&output.stderr)
         );
         return;
-    }
-    use formal_ai::agentic_coding::installed_source_commands::configure_installed_source_commands;
-    struct Fixture(std::path::PathBuf);
-    impl Drop for Fixture {
-        fn drop(&mut self) {
-            let _ = std::fs::remove_dir_all(&self.0);
-        }
     }
     let directory = Fixture(std::env::temp_dir().join(format!(
         "formal-ai-unary-native-control-{}",
@@ -127,7 +127,7 @@ fn installed_unary_route_requires_preimage_receipt_and_exact_readback() {
     messages.push(ChatMessage::tool_result(
         "operation",
         "bash",
-        &format!("Output: {receipt}\nExit Code: 0"),
+        format!("Output: {receipt}\nExit Code: 0"),
     ));
     let AgenticPlan::ToolCalls(calls) =
         plan_chat_step(&messages, &tools).expect("physical readback")
@@ -158,7 +158,7 @@ fn installed_unary_route_requires_preimage_receipt_and_exact_readback() {
     repeated.push(ChatMessage::tool_result(
         "operation-latest",
         "bash",
-        &format!("Output: {receipt}\nExit Code: 0"),
+        format!("Output: {receipt}\nExit Code: 0"),
     ));
     let AgenticPlan::ToolCalls(calls) =
         plan_chat_step(&repeated, &tools).expect("fresh latest read required")
@@ -185,7 +185,7 @@ fn installed_unary_route_requires_preimage_receipt_and_exact_readback() {
         invalid[4] = ChatMessage::tool_result(
             "operation",
             "bash",
-            &format!("Output: {payload}\nExit Code: 0"),
+            format!("Output: {payload}\nExit Code: 0"),
         );
         let AgenticPlan::Final(answer) =
             plan_chat_step(&invalid, &tools).expect("invalid receipt gap")

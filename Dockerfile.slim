@@ -101,7 +101,11 @@ RUN set -eu; \
     test "$(getent passwd box | cut -d: -f6)" = /home/box
 USER box
 WORKDIR /home/box
-RUN bun install -g start-command @link-assistant/agent agent-commander && \
+ENV PATH="/home/box/.formal-ai-runtime-tools/node_modules/.bin:${PATH}"
+RUN mkdir -p /home/box/.formal-ai-runtime-tools
+COPY --chown=box:box packages/container-runtime-tools/package.json /home/box/.formal-ai-runtime-tools/package.json
+COPY --chmod=0755 scripts/install-container-runtime-tools.sh scripts/verify-container-runtime-tools.mjs scripts/run-with-deadline.sh /usr/local/lib/formal-ai-runtime-tools/
+RUN /usr/local/lib/formal-ai-runtime-tools/install-container-runtime-tools.sh /home/box/.formal-ai-runtime-tools && \
     "$" --version && \
     agent --version && \
     start-agent --help >/dev/null

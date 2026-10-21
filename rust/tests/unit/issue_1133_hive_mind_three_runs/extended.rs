@@ -6,8 +6,7 @@ const SUBJECT_PLACEHOLDER: &str = "{subject}";
 const BODY_PLACEHOLDER: &str = "{body}";
 
 // Reuse the production reader and canonical templates without exporting a planner helper.
-#[path = "../../../src/agentic_coding/work_item_steps.rs"]
-mod canonical_work_item_steps;
+use crate::canonical_work_item_steps;
 
 fn expected_owned_recipe_commit(planned: &[PlannedToolCall]) -> String {
     let paths = planned

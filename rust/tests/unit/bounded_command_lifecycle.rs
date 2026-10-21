@@ -94,7 +94,7 @@ fn capture_overflow_is_an_error_with_bounded_partial_bytes() {
     assert!(!error.timed_out());
     assert!(error.cleanup_complete());
     assert_eq!(error.partial_stdout(), vec![65; 1024]);
-    assert!(error.partial_stderr().is_empty());
+    assert_eq!(error.partial_stderr(), b"");
 }
 
 #[test]

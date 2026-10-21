@@ -8,20 +8,25 @@ const TASK: &str = "Implement a reusable source-read repair. Preserve alpha_beta
 
 #[test]
 fn lexical_candidates_keep_exact_utf8_spans_without_prose_bindings() {
-    assert!(semantic_source_candidates("Repair source status and observations.").is_empty());
+    assert_eq!(
+        semantic_source_candidates("Repair source status and observations."),
+        Vec::<Value>::new()
+    );
     let source = "λ alpha_beta parseWidget alpha_beta";
     let candidates = semantic_source_candidates(source);
     assert_eq!(candidates.len(), 2);
     assert_eq!(candidates[0]["text"], "alpha_beta");
     for candidate in candidates {
         let span = candidate["span"].as_array().expect("span");
-        assert_eq!(
-            &source[span[0].as_u64().unwrap() as usize..span[1].as_u64().unwrap() as usize],
-            candidate["text"].as_str().unwrap()
-        );
+        let start = usize::try_from(span[0].as_u64().unwrap()).expect("span start fits usize");
+        let end = usize::try_from(span[1].as_u64().unwrap()).expect("span end fits usize");
+        assert_eq!(&source[start..end], candidate["text"].as_str().unwrap());
         assert_eq!(candidate["authority"], "lexical-candidate-only");
     }
-    assert!(semantic_source_candidates(&format!("{} alpha_beta", "x".repeat(16_385))).is_empty());
+    assert_eq!(
+        semantic_source_candidates(&format!("{} alpha_beta", "x".repeat(16_385))),
+        Vec::<Value>::new()
+    );
     let many = (0..20)
         .map(|index| format!("field_{index}"))
         .collect::<Vec<_>>()

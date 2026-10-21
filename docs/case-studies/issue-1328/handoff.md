@@ -537,3 +537,70 @@ Installed rustfmt checks text only. The maintained JavaScript boundary twin and
 original source controls validate the integrated source; hosted Clippy and native
 lifecycle execution remain necessary. No warning suppression, test assertion,
 retry ceiling, command deadline or cleanup allowance changes.
+
+
+## Qualified property-callback continuation
+
+The original 155-byte natural request is unchanged. Earlier attempts consolidated
+only the text callback and remain recorded as incomplete. A general named-property
+factory now derives its captured name from the actual member AST; there is no
+owner-path or `kind` answer branch. Exact helper AST, authenticated plans, optimistic
+source preimages, comments and unsupported/captured-projection refusals remain.
+The maintained JavaScript Formal AI driver performed Read, trusted Bash operation,
+and Read on the actual checkout, without a supplied target patch. Independent
+whole-owner coverage finds no remaining stateless unary callback, while the
+capturing callback remains unchanged. The original five consumer controls pass.
+
+[Completion evidence](evidence/unary-property/completion.json) links full readable
+recursive CST models for both source versions. These own actual UTF-8 source,
+comments and whitespace and reconstruct without the original source file. This
+structural fidelity does not certify comment meaning or general equivalence. New
+factory and emitted-consumer controls exercise arbitrary names, Unicode, reserved
+properties, getter receiver/one-read behavior, exact thrown errors, refusal and
+source drift. Existing text helpers, worker factory and line ceiling are unchanged.
+The unused Node-only helper worker projection is removed by the canonical import
+closure rather than adding an artificial worker root or budget. The real native
+typed receiver and token-kind consumer have hosted controls; native agentic route
+parity and execution remain pending CI. This is one qualified task identity, not
+a 60–80% cohort. Supplied repairs have zero autonomous-authorship credit; usage,
+total model input and cost remain Unknown.
+
+## Test-only Clippy continuation
+
+Lint lane 1 on `6e85ddbbdd4767cd890ea5b528d29535d1dbefdc`
+([job 118998286172](https://github.com/link-assistant/formal-ai/actions/runs/39529409842/job/118998286172))
+passed the earlier production fixes and exposed duplicate unit-source inclusion,
+empty-assert diagnostic forms, unchecked source-span conversions, local item
+placement and needless generic borrows. Unit descendants now import one root-owned
+production template reader. Existing data, assertions, deadlines and runtime order
+remain; source spans use checked conversion. The new property test's local types
+are likewise declared before statements. Installed rustfmt formats text only;
+hosted Clippy and runtime results remain necessary. The unit-root witness requires
+a strict full-inventory comparison before its maintained refresh.
+
+
+## Shared image dependency compatibility repair
+
+All four image validation cells on `6e85ddbbdd4767cd890ea5b528d29535d1dbefdc`
+failed during dependency installation, before runtime checks. The unpinned global
+install selected Azure/Bedrock versions whose exact OpenAI dependency had not
+been published. Both Dockerfiles now consume one private source-controlled
+compatibility manifest for start-command, the agent and agent-commander, plus
+compatible Azure/Bedrock pins. Other OpenAI consumers retain their own resolution.
+An owned per-user project puts the same tools on PATH. One finite install attempt
+preserves Bun's existing script-trust policy; metadata verification inspects the
+actually installed tool versions and exact affected SDK edges without executing
+dependency code. All three original runtime probes remain byte-identical.
+
+Five new controls and the three original Node capability controls pass with
+metadata/fake-package-manager fixtures; these are not actual installation claims.
+No Bun/npm install, dependency archive, image, Rust build or product execution ran
+locally. Both architectures and both image variants still require the next exact
+head's hosted installation and runtime validation. The manifest is a compatibility
+policy, not a full transitive lockfile or blanket reproducibility guarantee.
+
+The strict governed-witness review proves all original 221 qualified cases, their
+order, all program/fixture fields and original oracle source content unchanged.
+Only the exact reviewed unit-root module-registration identity is normalized for
+comparison before the maintained witness writer runs; the reader stays unchanged.
+Historical failed replays remain retained.

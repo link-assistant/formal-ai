@@ -17,7 +17,7 @@ const task = owner => `Consolidate stateless unary callbacks in ${owner} using c
 function fixture() {
   const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'unary-request-control-'))),
     owner = 'js/agentic/consumer.mjs';
-  for (const file of ['js/agentic/callback_values.mjs', 'js/agentic/crate/rust_str.mjs']) {
+  for (const file of ['js/agentic/callback_values.mjs', 'js/agentic/callback_property.mjs', 'js/agentic/crate/rust_str.mjs']) {
     fs.mkdirSync(path.dirname(path.join(root, file)), {
       recursive: true
     });

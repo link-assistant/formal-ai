@@ -12,7 +12,7 @@ const hash = value => createHash('sha256').update(value).digest('hex');
 const callbackMethods = new Set(['map', 'flatMap', 'filter', 'some', 'every', 'find', 'findIndex', 'replace', 'replaceAll']);
 const admittedPlans = new WeakSet();
 const freeze = value => {if (value && typeof value === 'object') {for (const child of Object.values(value)) freeze(child); Object.freeze(value);} return value;};
-const knownOperations = new Set(['lower', 'trim', 'text', 'value', 'nonempty', 'positiveLength']);
+const knownOperations = new Set(['lower', 'trim', 'text', 'value', 'nonempty', 'positiveLength', 'property']);
 const parseSource = source => parse(source, {sourceType: 'module', errorRecovery: false});
 
 /** Recognize only exact unary expressions: no captured variables, optional access, coercion or extra calls. */
@@ -27,6 +27,9 @@ export function unaryOperation(node) {
   }
   if (member(body, 'text')) return 'text';
   if (member(body, 'value')) return 'value';
+  if (body.type === 'MemberExpression' && !body.computed && !body.optional
+      && body.object.type === 'Identifier' && body.object.name === name
+      && body.property.type === 'Identifier') return 'property';
   if (body.type === 'BinaryExpression' && body.operator === '!==' && body.left.type === 'Identifier' && body.left.name === name
       && body.right.type === 'StringLiteral' && body.right.value === '') return 'nonempty';
   if (body.type === 'BinaryExpression' && body.operator === '>' && member(body.left, 'length')
@@ -49,8 +52,18 @@ function helperContract(root, contract, operation) {
     && node.declaration?.type === 'FunctionDeclaration' && node.declaration.id.name === contract.exportName);
   if (declarations.length !== 1) throw Error('UniqueExportedUnaryHelperRequired');
   const fn = declarations[0].declaration;
-  if (fn.async || fn.generator || fn.body.body.length !== 1 || fn.body.body[0].type !== 'ReturnStatement'
-      || unaryOperation({type: 'ArrowFunctionExpression', params: fn.params, body: fn.body.body[0].argument}) !== operation) throw Error('UnaryHelperBodyMismatch');
+  if (fn.async || fn.generator || fn.params.length !== 1 || fn.params[0].type !== 'Identifier'
+      || fn.body.body.length !== 1 || fn.body.body[0].type !== 'ReturnStatement') throw Error('UnaryHelperBodyMismatch');
+  const returned = fn.body.body[0].argument;
+  if (operation === 'property') {
+    const member = returned?.body;
+    if (returned?.type !== 'ArrowFunctionExpression' || returned.async || returned.generator
+        || returned.params.length !== 1 || returned.params[0].type !== 'Identifier'
+        || returned.params[0].name === fn.params[0].name
+        || member?.type !== 'MemberExpression' || !member.computed || member.optional
+        || member.object.type !== 'Identifier' || member.object.name !== returned.params[0].name
+        || member.property.type !== 'Identifier' || member.property.name !== fn.params[0].name) throw Error('UnaryHelperBodyMismatch');
+  } else if (unaryOperation({type: 'ArrowFunctionExpression', params: fn.params, body: returned}) !== operation) throw Error('UnaryHelperBodyMismatch');
   return {...contract, sha256: observed.sha256};
 }
 /** Emit a reviewable preimage-bound plan. General JavaScript reflection is outside this explicit callback-value contract. */
@@ -64,7 +77,12 @@ export function planUnaryConsolidation(root, files, contracts) {
     traverse(ast, {Identifier(p) {identifiers.add(p.node.name);}});
     traverse(ast, {ArrowFunctionExpression(p) {
       const operation = unaryOperation(p.node), helper = helpers[operation];
-      if (!helper) return;
+      if (!helper) {
+        if (p.node.params.length === 1 && ['MemberExpression', 'OptionalMemberExpression'].includes(p.node.body.type)) {
+          deferred.push({file: relative, start: p.node.start, reason: 'UnresolvedMemberProjectionContract'});
+        }
+        return;
+      }
       if ((ast.comments ?? []).some(comment => comment.start >= p.node.start && comment.end <= p.node.end)) {
         deferred.push({file: relative, start: p.node.start, operation, reason: 'CommentInsideCallbackRequiresOwnedTransfer'}); return;
       }
@@ -78,7 +96,7 @@ export function planUnaryConsolidation(root, files, contracts) {
       if (helper.module !== relative && identifiers.has(alias)) throw Error('UnaryImportBindingCollision:' + relative + ':' + alias);
       if (helper.module === relative && p.scope.getBinding(alias)?.scope !== p.scope.getProgramParent()) throw Error('ShadowedCanonicalUnaryHelper');
       if (helper.module !== relative) imports.set(alias, helper);
-      edits.push({start: p.node.start, end: p.node.end, before: observed.source.slice(p.node.start, p.node.end), replacement: alias,
+      edits.push({start: p.node.start, end: p.node.end, before: observed.source.slice(p.node.start, p.node.end), replacement: operation === 'property' ? alias + '(' + JSON.stringify(p.node.body.property.name) + ')' : alias,
         operation, callbackMethod: method, parameter: p.node.params[0].name, captures: [], valueEvaluations: 1,
         receiverPolicy: 'member-call-keeps-original-value-as-this', contract: 'callback-value-behavior-not-function-reflection'});
     }});

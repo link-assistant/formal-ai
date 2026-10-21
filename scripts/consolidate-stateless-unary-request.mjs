@@ -8,6 +8,7 @@ import { planUnaryConsolidation } from './consolidate-stateless-unary.mjs';
 import { sourceUnaryConsolidationRequest } from '../js/agentic/source_unary_consolidation.mjs';
 const hash = value => createHash('sha256').update(value).digest('hex');
 const contracts = Object.freeze({
+  property: { module: 'js/agentic/callback_property.mjs', exportName: 'callbackProperty' },
   lower: {
     module: 'js/agentic/crate/rust_str.mjs',
     exportName: 'lower'

@@ -14,6 +14,17 @@ impl<'a> crate::callback_values::CallbackTextReceiver for &'a LexicalToken {
         &self.text
     }
 }
+// The declared textual token-property view does not coerce numeric span fields.
+impl<'a> crate::callback_values::CallbackPropertyReceiver for &'a LexicalToken {
+    type Output = Option<&'a str>;
+    fn property(self, name: &str) -> Self::Output {
+        match name {
+            "kind" => Some(self.kind),
+            "text" => Some(self.text.as_str()),
+            _ => None,
+        }
+    }
+}
 fn lexical_tokens(trees: &[Tree<'_>], output: &mut Vec<LexicalToken>) {
     for tree in trees {
         let span = tree.span();
@@ -67,7 +78,7 @@ pub fn observe_coding_research_acceptance_tokens(source: &str) -> Value {
     let mut tokens = Vec::new();
     lexical_tokens(&trees, &mut tokens);
     json!({"texts":tokens.iter().map(crate::callback_values::callback_text).collect::<Vec<_>>(),
-        "kinds":tokens.iter().map(|token| token.kind).collect::<Vec<_>>(), "complete":true})
+        "kinds":tokens.iter().map(crate::callback_values::callback_property("kind")).collect::<Vec<_>>(), "complete":true})
 }
 /// Observe parser/catalog/spans without selecting, accepting or executing a procedure.
 #[must_use]

@@ -219,10 +219,9 @@ fn bounded_transport_reader_accepts_exact_limit_and_positive_short_reads() {
             .unwrap(),
         b"abcd"
     );
-    assert!(
-        source_transport::read_limited(std::io::Cursor::new(Vec::<u8>::new()), 0)
-            .unwrap()
-            .is_empty()
+    assert_eq!(
+        source_transport::read_limited(std::io::Cursor::new(Vec::<u8>::new()), 0).unwrap(),
+        Vec::<u8>::new()
     );
 }
 #[test]

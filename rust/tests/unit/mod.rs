@@ -1,6 +1,10 @@
 // Production dependency used by source-included contract modules.
 use ::formal_ai::source_fetch;
 
+// Shared production template reader, loaded once for all unit descendants.
+#[path = "../../src/agentic_coding/work_item_steps.rs"]
+mod canonical_work_item_steps;
+
 #[path = "../fixtures/first-workspace-call.rs"]
 mod first_workspace_call;
 

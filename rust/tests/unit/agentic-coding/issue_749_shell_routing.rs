@@ -5,8 +5,7 @@ use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
 
 // Render the exact expected generic commit from its maintained canonical data.
-#[path = "../../../src/agentic_coding/work_item_steps.rs"]
-mod canonical_work_item_steps;
+use crate::canonical_work_item_steps;
 const SUBJECT_PLACEHOLDER: &str = "{subject}";
 const BRANCH_PLACEHOLDER: &str = "{branch}";
 

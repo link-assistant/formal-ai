@@ -131,5 +131,12 @@
   ],
   "independentGoalCoverageVerified": false,
   "goalCoverage": "incomplete; fixed behavior oracle does not prove all requested callbacks consolidated",
-  "accountingCorrection": "Prior successful-effect acceptance wording retracted; actual finding plus pending validation is retained."
+  "accountingCorrection": "Prior successful-effect acceptance wording retracted; actual finding plus pending validation is retained.",
+  "historicalSnapshot": true,
+  "laterContinuation": {
+    "evidence": "unary-property/completion.json",
+    "independentTaskIdentitiesAcceptedAfterGeneralPropertyRepair": 1,
+    "historicalFailuresAndIncompleteEffectsPreserved": true,
+    "scope": "Same natural request, source-derived property factory; not a cohort or general semantic-equivalence claim."
+  }
 }

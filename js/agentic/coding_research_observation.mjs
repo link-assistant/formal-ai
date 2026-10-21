@@ -1,4 +1,5 @@
 // Lossless lexical/catalog observations; canonical kernels make research decisions.
+import { callbackProperty as canonicalUnaryProperty } from './callback_property.mjs';
 import { callbackText as canonicalUnaryText } from './callback_values.mjs';
 import { validateProgram } from './host.mjs';
 import { tokenizeWithSpans } from './crate/es_tokenizer.mjs';
@@ -19,7 +20,7 @@ export function observeCodingResearchAcceptanceTokens(source) {
   const tokens = [];
   try { lexicalTokens(tokenizeWithSpans(source), tokens); }
   catch { return { texts: [], kinds: [], complete: false }; }
-  return { texts: tokens.map(canonicalUnaryText), kinds: tokens.map(token => token.kind), complete: true };
+  return { texts: tokens.map(canonicalUnaryText), kinds: tokens.map(canonicalUnaryProperty("kind")), complete: true };
 }
 /** Observe existing grammar/catalog/token spans without selecting or accepting a procedure. */
 export function observeCodingResearchRebindingCandidate(source, language, modulePath) {

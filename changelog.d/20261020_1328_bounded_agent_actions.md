@@ -11,3 +11,5 @@
 - Update patched TLS trust dependencies for RUSTSEC-2026-0382 and RUSTSEC-2026-0381 without suppressing the security audit.
 - Supervise remaining native and JavaScript subprocesses through shared deadlines, bounded binary capture and finite cleanup; keep original statuses and byte evidence, including Formal AI's own grep, shell and exclusive-create adapters.
 - Recognize both maintained Babel dynamic-import AST representations in subprocess boundary checks, retaining alias detection and the strict finite startup policy.
+- Derive canonical named-property callback factories from source syntax, enabling a maintained JavaScript self-edit with preserved comments, unchanged consumer tests and complete readable before/after CST evidence.
+- Share Docker CLI compatibility pins and finite installation checks across full and slim images, avoiding unpublished transitive SDK versions while retaining the original runtime probes.

@@ -145,7 +145,7 @@ async function runCase(kind, directory, descriptor, base, token, template, evide
       readBoundedFileBytes(descriptor.resourceHome, from, maximumOutput), { flag: 'wx' });
   };
   copy(`rust/tests/fixtures/native-source-operations/${fixture}`, owner);
-  for (const helper of ['js/agentic/callback_values.mjs', 'js/agentic/crate/rust_str.mjs']) {
+  for (const helper of ['js/agentic/callback_values.mjs', 'js/agentic/callback_property.mjs', 'js/agentic/crate/rust_str.mjs']) {
     copy(helper, helper);
   }
   // Membership is fixture-local; no repository branch, index or source is modified.
