@@ -187,7 +187,10 @@ export async function publishedChangedPaths(reader, repository, before, after) {
   // Four active nodes bound concurrent API reads without multiplying the reader's shared limits.
   while (pending.length) {
     const children = await Promise.all(pending.splice(0, 4).map(args => visit(...args)));
-    for (const batch of children) pending.push(...batch);
+    for (const batch of children) {
+      assert.ok(visited + pending.length + batch.length <= 100000, 'bounded changed-path traversal');
+      pending.push(...batch);
+    }
   }
   return {
     kind: 'complete-immutable-tree-delta/v1',
