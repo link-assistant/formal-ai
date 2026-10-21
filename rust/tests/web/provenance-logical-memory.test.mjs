@@ -62,6 +62,8 @@ test('private atomic writes reject a stale temporary file and preserve default w
   assert.throws(()=>writeAtomic(filename,'replacement',{privateMode:true}),/EEXIST/);
   assert.equal(fileSystem.readFileSync(filename,'utf8'),'original');
   assert.equal(fileSystem.readFileSync(temporary,'utf8'),'foreign');
+  // Finish the owned foreign-stage case before the independent default-writer check.
+  fileSystem.unlinkSync(temporary);
   writeAtomic(filename,'legacy');assert.equal(fileSystem.readFileSync(filename,'utf8'),'legacy');
  }finally{fileSystem.rmSync(directory,{recursive:true,force:true});}
 });

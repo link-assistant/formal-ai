@@ -15,10 +15,10 @@
 # Each semantic verdict remains25PASS/38FAIL; timing does not certify task success.
 # Their raw100-job/step observations are preserved in the coordinator evidence.
 ci_wall_clock pull_request_pipeline
-  measured_minutes 120
+  measured_minutes 115
   measured_date "2026-10-21"
   ceiling_minutes 225
-  workflow ".github/workflows/hive-original-delivery.yml"
-  chain "build(30m)->image(30m)->delivery(30m)->verification(30m)"
-  note "The optional all-mode Agent CLI ladder retains schedule/manual execution and its historical cold-cycle observations above. The hosted check-ci-wall-clock on f3d853b13f6e24def23506755cb97b9721105c70 discovers the source-bound Hive build, image, delivery and verification chain as the current 120-minute static maximum, below the unchanged 225-minute ceiling. This static timeout path does not certify observed timing, semantic success or production publication."
+  workflow ".github/workflows/release.yml"
+  chain "base(->reusable:pin-base-commit.yml:5m)->macos-core-tests(->reusable:macos-core-tests.yml:85m)->build(20m)->pipeline-status(5m)"
+  note "Issue #1364 moves actual Hive client effects to post-green workflow_run admission, so that workflow no longer contributes to the pull-request DAG. The maintained static timeout calculation now selects release.yml at 115 minutes: a 5-minute base predecessor, the 85-minute reusable macOS archive/test path, build at 20 minutes and pipeline status at 5 minutes. The optional all-mode Agent CLI ladder retains its historical 120-minute complete-mode allowance and cold-cycle observations above. The 225-minute ceiling is unchanged. Static allowances do not certify observed timing, semantic success or publication."
   requirement "R1085-16"
