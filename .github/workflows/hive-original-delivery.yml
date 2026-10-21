@@ -101,6 +101,8 @@ jobs:
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
@@ -166,6 +168,8 @@ jobs:
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
@@ -288,6 +292,8 @@ jobs:
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
@@ -485,6 +491,8 @@ jobs:
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
@@ -499,6 +507,8 @@ jobs:
           path: rust/target/release
       - name: Download immutable pre-effect client claim
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-claim-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
@@ -603,15 +613,21 @@ jobs:
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-claim-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
           path: ${{ runner.temp }}/hive-attempt
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-result-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
             needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
@@ -660,6 +676,8 @@ jobs:
         working-directory: .hive-protocol
         run: bun install --frozen-lockfile --ignore-scripts
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission

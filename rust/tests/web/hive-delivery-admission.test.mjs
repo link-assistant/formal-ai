@@ -882,6 +882,10 @@ test('source-event relocation preserves exact readonly producer semantics withou
   const reusable = YAML.parse(read(called));
   assert.deepEqual(Object.keys(reusable.on), ['workflow_call']);
   assert.deepEqual(reusable.permissions, {contents:'read'});
+  assert.deepEqual(reusable.concurrency, {
+    group:'${{ github.workflow }}-${{ github.ref }}-hive-source-provenance',
+    'cancel-in-progress':"${{ github.ref != 'refs/heads/main' }}"
+  });
   assert.deepEqual(Object.keys(reusable.jobs), ['hive-source-provenance']);
   const expectedJob = {
   "name": "Hive source event provenance",

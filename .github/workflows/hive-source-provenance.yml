@@ -3,6 +3,9 @@ on:
   workflow_call:
 permissions:
   contents: read
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-hive-source-provenance
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   hive-source-provenance:
     name: Hive source event provenance

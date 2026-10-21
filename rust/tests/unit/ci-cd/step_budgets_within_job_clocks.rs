@@ -26,7 +26,7 @@ pub use super::workflow_fixtures::workflow_files;
 use std::time::Instant;
 
 use super::npm_deprecation_review::{run_classifier, sandbox};
-use super::workflow_fixtures::{job_block, unwrapped, workflow_job_names};
+use super::workflow_fixtures::{job_block, read_only_group, unwrapped, workflow_job_names};
 
 /// The share of a job's cap a single step budget may claim. The remainder pays
 /// for checkout, toolchain install, cache restore, artifact transfer and the
@@ -210,22 +210,21 @@ fn superseded_read_only_work_releases_its_runners() {
     ];
 
     let mut checked = 0_usize;
-    for (name, body) in workflow_files() {
+    let workflows = workflow_files();
+    for (name, body) in &workflows {
         let header = body.split("\njobs:\n").next().unwrap_or_default();
-        // A reusable workflow has no trigger of its own; it is cancelled with
-        // the caller's job, which carries the group.
+        // A reusable workflow has no independent trigger. Its caller or its own
+        // verified protected-main group must own cancellation.
         if header.contains("workflow_call:") {
             continue;
         }
         let workflow_level = header.lines().any(|line| line == "concurrency:");
-        for job_name in workflow_job_names(&body) {
+        for job_name in workflow_job_names(body) {
             if EXEMPT.contains(&(name.as_str(), job_name)) {
                 continue;
             }
-            let job = job_block(&body, job_name);
-            let job_level = job
-                .lines()
-                .any(|line| line.trim_end() == "    concurrency:");
+            let job = job_block(body, job_name);
+            let job_level = read_only_group(job, job_name, &workflows);
             checked += 1;
             assert!(
                 workflow_level || job_level,

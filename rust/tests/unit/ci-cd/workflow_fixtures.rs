@@ -230,3 +230,59 @@ fn collect_ci_files(
         ));
     }
 }
+
+/// Ordinary job groups retain their existing rule; delegated groups must protect main.
+pub fn read_only_group(job: &str, job_name: &str, workflows: &[(String, String)]) -> bool {
+    if job
+        .lines()
+        .any(|line| line.trim_end() == "    concurrency:")
+    {
+        return true;
+    }
+    let called = job
+        .lines()
+        .find_map(|line| line.trim().strip_prefix("uses: ./.github/workflows/"));
+    let Some((_, source)) =
+        called.and_then(|called| workflows.iter().find(|(name, _)| name.as_str() == called))
+    else {
+        return false;
+    };
+    let header = source.split("\njobs:\n").next().unwrap_or_default();
+    if !header.contains("workflow_call:") {
+        return false;
+    }
+    let Some(group) = header.split("\nconcurrency:\n").nth(1) else {
+        return false;
+    };
+    let fields: Vec<_> = group
+        .lines()
+        .take_while(|line| line.starts_with("  "))
+        .collect();
+    let expected_group =
+        format!("  group: ${{{{ github.workflow }}}}-${{{{ github.ref }}}}-{job_name}");
+    fields.contains(&expected_group.as_str())
+        && fields.contains(&"  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}")
+}
+
+#[test]
+fn delegated_read_only_group_requires_real_callee_and_protected_main_policy() {
+    let job = "  evidence:\n    uses: ./.github/workflows/evidence.yml\n";
+    let source = "name: Evidence\non:\n  workflow_call:\nconcurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}-evidence\n  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}\njobs:\n  inspect:\n    runs-on: ubuntu-latest\n";
+    let catalog = |text: &str| vec![("evidence.yml".to_owned(), text.to_owned())];
+    assert!(read_only_group(job, "evidence", &catalog(source)));
+    assert!(!read_only_group(job, "evidence", &[]));
+    for changed in [
+        source.replace("concurrency:", "unowned:"),
+        source.replace("workflow_call:", "push:"),
+        source.replace("-evidence", "-parent"),
+        source.replace("${{ github.ref != 'refs/heads/main' }}", "true"),
+        source.replace("${{ github.ref != 'refs/heads/main' }}", "false"),
+    ] {
+        assert!(!read_only_group(job, "evidence", &catalog(&changed)));
+    }
+    assert!(read_only_group(
+        "  ordinary:\n    concurrency:\n      group: existing\n",
+        "ordinary",
+        &[]
+    ));
+}
