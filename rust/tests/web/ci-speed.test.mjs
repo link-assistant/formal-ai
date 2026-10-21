@@ -9,7 +9,7 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -253,4 +253,29 @@ test('the repository meets its own CI speed rule', () => {
   for (const exception of policy.exceptions) {
     assert.ok(exception.reason.length > 40, `${exception.workflow} ${exception.job} explains itself`);
   }
+});
+
+
+test('observed provenance suites start early on separate exact-partition shards', () => {
+  const directory = join(ROOT, 'rust/tests/web');
+  const files = readdirSync(directory).filter(name => name.endsWith('.test.mjs'))
+    .map(name => 'rust/tests/web/' + name).sort();
+  const recorded = parseTestDurations(readFileSync(join(ROOT, 'data/meta/javascript-test-durations.lino'), 'utf8'));
+  const secondsOf = durationLookup(recorded);
+  const full = 'rust/tests/web/full-provenance-cli.test.mjs';
+  const memory = 'rust/tests/web/provenance-logical-memory-capture.test.mjs';
+  const fresh = 'rust/tests/web/fresh-planner-recomputation.test.mjs';
+  assert(recorded.has(full) && recorded.has(memory), 'expensive observed files cannot retain the unknown-file fallback');
+  assert(secondsOf(full) > secondsOf(fresh));
+  assert(secondsOf(memory) > secondsOf('unknown-unrecorded-suite'));
+  const {shards} = planShards(files, 8, secondsOf);
+  assert.deepEqual(partitionProblems(files, shards), {missing: [], repeated: [], extra: []});
+  assert(isLongestFirst(shards, secondsOf));
+  const fullShard = shards.findIndex(shard => shard.includes(full));
+  const memoryShard = shards.findIndex(shard => shard.includes(memory));
+  const freshShard = shards.findIndex(shard => shard.includes(fresh));
+  assert.notEqual(fullShard, memoryShard);
+  assert.notEqual(fullShard, freshShard);
+  assert.equal(shards[fullShard][0], full);
+  assert.deepEqual(planShards([...files].reverse(), 8, secondsOf).shards, shards);
 });

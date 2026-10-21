@@ -420,3 +420,13 @@ javascript-test-durations
   # Observed ec8 run 39590374409 job 119195697970; shared-shard serial test sums.
   test "rust/tests/web/issue-1165-production-research.test.mjs"
     seconds 218.033677668
+
+  # Observed ff7 job 119393021615; shared-shard top-level serial test sum.
+  # Full log SHA256 6f213a6e1531e1c21ee79d7d886b9832810a79a9a7b8ef8b069e7dd5aa877644; 3 source-qualified passing cases.
+  test "rust/tests/web/full-provenance-cli.test.mjs"
+    seconds 300.704466026
+
+  # Observed ff7 job 119393021615; shared-shard top-level serial test sum.
+  # Full log SHA256 6f213a6e1531e1c21ee79d7d886b9832810a79a9a7b8ef8b069e7dd5aa877644; 1 source-qualified passing cases.
+  test "rust/tests/web/provenance-logical-memory-capture.test.mjs"
+    seconds 46.811771825
