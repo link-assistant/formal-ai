@@ -143,7 +143,7 @@ export async function publishedChangedPaths(reader, repository, before, after) {
   const readTree = sha => {
     if (trees.has(sha)) return trees.get(sha);
     const pending = (async () => {
-      const response = await reader.read(prefix + 'trees/' + sha);
+      const response = typeof reader.readTree === 'function' ? await reader.readTree(sha) : await reader.read(prefix + 'trees/' + sha);
       assert.equal(response.sha, sha, 'immutable changed-path tree');
       assert.equal(response.truncated, false, 'complete tree required');
       assert.ok(Array.isArray(response.tree) && response.tree.length <= 100000, 'bounded tree entries');
@@ -156,7 +156,10 @@ export async function publishedChangedPaths(reader, repository, before, after) {
         objectId(entry.sha);
         assert.ok(Object.hasOwn(modeType, entry.mode), 'known Git mode');
         assert.equal(entry.type, modeType[entry.mode], 'Git mode and type agree');
-        if (entry.type === 'blob') assert.ok(Number.isSafeInteger(entry.size) && entry.size >= 0, 'bounded blob size metadata');
+        // Canonical Git trees bind mode, name and OID; typed trees need no extra blob-size lookup.
+        if (entry.type === 'blob' && (typeof reader.readTree !== 'function' || Object.hasOwn(entry, 'size'))) {
+          assert.ok(Number.isSafeInteger(entry.size) && entry.size >= 0, 'bounded blob size metadata');
+        }
         entries.set(entry.path, entry);
       }
       provenance.push({ sha, entries: entries.size, metadataSha256: hash(Buffer.from(JSON.stringify(response))) });
@@ -178,8 +181,10 @@ export async function publishedChangedPaths(reader, repository, before, after) {
     if (newEntry?.type === 'tree') assert.ok(!newAncestors.includes(newEntry.sha), 'acyclic new tree');
     const oldLineage = oldEntry?.type === 'tree' ? [...oldAncestors, oldEntry.sha] : oldAncestors;
     const newLineage = newEntry?.type === 'tree' ? [...newAncestors, newEntry.sha] : newAncestors;
-    const oldChildren = oldEntry?.type === 'tree' ? await readTree(oldEntry.sha) : new Map();
-    const newChildren = newEntry?.type === 'tree' ? await readTree(newEntry.sha) : new Map();
+    const childrenFor = entry => entry?.type === 'tree' ? readTree(entry.sha) : Promise.resolve(new Map());
+    const [oldChildren, newChildren] = typeof reader.readTree === 'function'
+      ? await Promise.all([childrenFor(oldEntry), childrenFor(newEntry)])
+      : [await childrenFor(oldEntry), await childrenFor(newEntry)];
     return [...new Set([...oldChildren.keys(), ...newChildren.keys()])].map(component =>
       [name ? name + '/' + component : component, oldChildren.get(component), newChildren.get(component), oldLineage, newLineage]);
   };
@@ -201,11 +206,36 @@ export async function publishedChangedPaths(reader, repository, before, after) {
     files: [...files].sort()
   };
 }
+/** Denial-only filter; a parent match never grants release authority. */
+export function lateSourceCandidate(source, commit, head) {
+  assert.match(source, /^[a-f0-9]{40}$/u);
+  assert.match(head, /^[a-f0-9]{40}$/u);
+  assert.equal(commit.sha, source);
+  assert.ok(Array.isArray(commit.parents));
+  for (const parent of commit.parents) assert.match(parent.sha, /^[a-f0-9]{40}$/u);
+  return head === source || (commit.parents.length === 1 && commit.parents[0].sha === head);
+}
+/** Cheap observed-state refusal only; the full applicable-workflow census still runs afterward. */
+export async function precheckPublishedCi(reader, repository, source, requiredPath = null) {
+  const runs = await reader.pages('repos/' + repository + '/actions/runs?head_sha=' + source, 'workflow_runs');
+  for (const run of runs) {
+    assert.equal(run.repository.full_name, repository);
+    assert.equal(run.head_repository.full_name, repository);
+    assert.equal(run.head_sha, source, 'precheck CI source');
+  }
+  assert.ok(Array.isArray(runs) && runs.length <= 2000, 'bounded complete CI inventory');
+  if (requiredPath !== null && runs.length === 0) return {admitted: false, reason: 'missing applicable CI ' + requiredPath};
+  const observed = [...new Set(runs.filter(run => run.path !== deliveryWorkflow
+    && run.path !== '.github/workflows/hive-original-delivery-finalize.yml').map(run => run.path))];
+  const expected = requiredPath === null ? observed : [requiredPath];
+  return expected.length ? ciAdmissionDecision({source, expected, runs, complete: true}) : {admitted: true, ci: []};
+}
 /** No open PR is inferred from a default-branch workflow SHA; published source has its own authenticated chain. */
 export async function observePublishedAdmission({
   reader,
   repository,
-  verifiedRunId
+  verifiedRunId,
+  lateCompletionHead = null
 }) {
   assert.ok(Number.isSafeInteger(verifiedRunId) && verifiedRunId > 0);
   const prefix = 'repos/' + repository;
@@ -243,6 +273,9 @@ export async function observePublishedAdmission({
     version = selection.tag.slice(1),
     sourceCommit = await reader.read(prefix + '/git/commits/' + source);
   assert.equal(sourceCommit.tree.sha, selection.sourceTree);
+  if (lateCompletionHead !== null && !lateSourceCandidate(source, sourceCommit, lateCompletionHead)) {
+    return {admitted: false, reason: 'late-ci-source-mismatch'};
+  }
   const tag = await reader.read(prefix + '/git/ref/tags/' + selection.tag);
   let object = tag.object;
   const visited = new Set();
@@ -282,6 +315,12 @@ export async function observePublishedAdmission({
   assert.equal(main.event, 'push');
   assert.equal(main.status, 'completed');
   assert.equal(main.conclusion, 'success');
+  const earlyChecked = await precheckPublishedCi(reader, repository, main.head_sha, main.path);
+  if (!earlyChecked.admitted) return earlyChecked;
+  if (source !== main.head_sha) {
+    const earlyPublished = await precheckPublishedCi(reader, repository, source);
+    if (!earlyPublished.admitted) return earlyPublished;
+  }
   const artifacts = await reader.pages(prefix + '/actions/runs/' + main.id + '/artifacts', 'artifacts');
   const events = artifacts.filter(value => value.name === 'hive-source-event-' + main.run_attempt);
   assert.equal(events.length, 1);

@@ -20,6 +20,7 @@ export const policyRoots = ['.github/workflows/hive-original-delivery.yml',
  'scripts/lib/hive-delivery-journal.mjs',
  'scripts/lib/hive-delivery-ledger.mjs',
  'scripts/lib/hive-delivery-release.mjs',
+ 'scripts/lib/hive-delivery-trees.mjs',
  'scripts/build-hive-original-delivery-image.mjs',
  'scripts/prepare-hive-original-delivery.mjs',
  'scripts/check-hive-original-delivery.mjs',
@@ -48,21 +49,28 @@ export async function sourceBytes(reader, repository, commit, name) {
   assert.equal(createHash('sha1').update('blob ' + bytes.length + '\0').update(bytes).digest('hex'), value.sha, 'source Git blob');
   return bytes;
 }
+/** Four immutable members per wave; output order remains the caller's source order. */
+export async function orderedSourceMembers(reader, repository, commit, names) {
+  assert.ok(Array.isArray(names) && names.length <= 128, 'bounded source member inventory');
+  const members = [];
+  for (let index = 0; index < names.length; index += 4) {
+    const wave = names.slice(index, index + 4);
+    members.push(...await Promise.all(wave.map(name => sourceBytes(reader, repository, commit, name))));
+  }
+  return members;
+}
 export async function readWorkflowPolicy(reader, repository, source) {
   const entries = await reader.read('repos/' + repository + '/contents/.github/workflows?ref=' + source);
   assert.ok(Array.isArray(entries) && entries.length <= 128);
   const {
     default: YAML
   } = await import('yaml');
-  const workflows = [];
-  for (const entry of entries) {
-    if (!/\.ya?ml$/u.test(entry.name)) continue;
-    workflows.push({
-      path: entry.path,
-      document: YAML.parse(text(await sourceBytes(reader, repository, source, entry.path)))
-    });
-  }
-  return workflows;
+  const selected = entries.filter(entry => /\.ya?ml$/u.test(entry.name));
+  const members = await orderedSourceMembers(reader, repository, source, selected.map(entry => entry.path));
+  return selected.map((entry, index) => ({
+    path: entry.path,
+    document: YAML.parse(text(members[index]))
+  }));
 }
 const identityCache = new WeakMap();
 /** Policy root hashes identify this admission/oracle contract; they do not relabel product source as executed. */
@@ -95,11 +103,11 @@ export async function policyIdentity(reader, repository, protocolCommit) {
       branch: entry.branch
     });
   }
-  const roots = [];
-  for (const name of policyRoots) roots.push({
+  const members = await orderedSourceMembers(reader, repository, protocolCommit, policyRoots);
+  const roots = policyRoots.map((name, index) => ({
     path: name,
-    sha256: hash(await sourceBytes(reader, repository, protocolCommit, name))
-  });
+    sha256: hash(members[index])
+  }));
   const identity = Object.freeze({
     inputHash,
     policyHash: hash(JSON.stringify({

@@ -9,6 +9,7 @@ import { policyIdentity, readWorkflowPolicy } from './lib/hive-delivery-source.m
 import { planClients } from './lib/hive-delivery-journal.mjs';
 import { observePublishedAdmission, latePublishedBindingDecision } from './lib/hive-delivery-release.mjs';
 import { boundedCommand } from '../js/server/bounded-command.mjs';
+import { createTreeReader } from './lib/hive-delivery-trees.mjs';
 import { authenticatePullRequest, applicableWorkflows, ciAdmission, deliveryWorkflow, admissionPolicy } from './lib/hive-delivery-admission.mjs';
 const maximumBytes = 4 * 1024 * 1024;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -18,32 +19,49 @@ export function githubReader({
   environment = process.env
 } = {}) {
   assert.match(repository ?? '', /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
-  let requests = 0,
+  let requests = 0, restRequests = 0, graphqlRequests = 0,
     byteCount = 0;
   const deadline = Date.now() + 150000;
+  const request = async (arguments_, kind) => {
+    assert.ok(++requests <= 512, 'bounded admission API requests');
+    const remaining = deadline - Date.now();
+    assert.ok(remaining > 0, 'admission deadline');
+    if (kind === 'graphql') graphqlRequests++; else restRequests++;
+    const result = await transport('gh', arguments_, {
+      env: environment,
+      timeout: Math.min(20000, remaining),
+      stdoutLimitBytes: maximumBytes,
+      stderrLimitBytes: 65536
+    });
+    if (result.status !== 0 || result.signal !== null || result.error || result.timed_out || result.cleanup_complete !== true) {
+      const stdout = Buffer.from(result.stdout), stderr = Buffer.from(result.stderr ?? '');
+      const http = /(?:^|\s)HTTP\s+([1-5][0-9]{2})(?:\s|$)/u.exec(stderr.toString());
+      const errorCode = result.error?.code;
+      assert.fail('GitHub read failed ' + JSON.stringify({
+        kind, request: requests, status: result.status, signal: result.signal,
+        timedOut: result.timed_out === true, cleanupComplete: result.cleanup_complete === true,
+        errorCode: typeof errorCode === 'string' && /^[A-Z0-9_]{1,64}$/u.test(errorCode) ? errorCode : null,
+        httpStatus: http ? Number(http[1]) : null,
+        stdoutBytes: stdout.length, stderrBytes: stderr.length,
+        stdoutSha256: hash(stdout), stderrSha256: hash(stderr)
+      }));
+    }
+    const body = Buffer.from(result.stdout);
+    assert.ok(body.length <= maximumBytes, 'admission response bytes');
+    byteCount += body.length;
+    assert.ok(byteCount <= 64 * 1024 * 1024, 'admission aggregate bytes');
+    return body;
+  };
   const bytes = async (endpoint, {
     accept = null
   } = {}) => {
     assert.ok(accept === null || accept === 'application/octet-stream');
     assert.ok(endpoint.startsWith('repos/' + repository + '/') && !endpoint.split('?')[0].split('/').some(value => value === '.' || value === '..'),
  'owned GitHub endpoint');
-    assert.ok(++requests <= 512, 'bounded admission API requests');
-    const remaining = deadline - Date.now();
-    assert.ok(remaining > 0, 'admission deadline');
-    const result = await transport('gh', ['api', '--hostname', 'github.com', ...(accept ? ['-H', 'Accept: ' + accept] : []), endpoint], {
-      env: environment,
-      timeout: Math.min(20000, remaining),
-      stdoutLimitBytes: maximumBytes,
-      stderrLimitBytes: 65536
-    });
-    assert.equal(result.status, 0, 'GitHub read failed');
-    assert.equal(result.signal, null);
-    assert.ok(!result.error && !result.timed_out && result.cleanup_complete === true, 'complete bounded GitHub read required');
-    const body = Buffer.from(result.stdout);
-    byteCount += body.length;
-    assert.ok(byteCount <= 64 * 1024 * 1024, 'admission aggregate bytes');
-    return body;
+    return request(['api', '--hostname', 'github.com', ...(accept ? ['-H', 'Accept: ' + accept] : []), endpoint], 'rest');
   };
+  const treeReader = createTreeReader(repository, async query => JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(
+    await request(['api', '--hostname', 'github.com', 'graphql', '-f', 'query=' + query], 'graphql'))));
   const read = async endpoint => JSON.parse(new TextDecoder('utf-8', {
     fatal: true
   }).decode(await bytes(endpoint)));
@@ -72,8 +90,9 @@ export function githubReader({
     read,
     bytes,
     pages,
+    readTree: treeReader.readTree,
     statistics: () => ({
-      requests,
+      requests, restRequests, graphqlRequests, graphqlPoints: treeReader.statistics().points,
       bytes: byteCount
     })
   };
@@ -277,7 +296,7 @@ export async function observeEligibleAdmission(options) {
       else assert.equal(verified.conclusion, null, 'latest nonterminal conclusion metadata');
       if (verified.status !== 'completed') return {admitted: false, reason: 'latest-public-download-producer-pending'};
       if (verified.conclusion !== 'success') return {admitted: false, reason: 'latest-public-download-producer-not-green'};
-      const published = await observePublishedAdmission({ repository, reader, verifiedRunId: verified.id });
+      const published = await observePublishedAdmission({ repository, reader, verifiedRunId: verified.id, lateCompletionHead: trigger.head_sha });
       result = published.admitted ? latePublishedBindingDecision(trigger, published) : published;
     }
   }
