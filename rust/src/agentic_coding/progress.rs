@@ -203,7 +203,9 @@ impl Progress {
                 // A work item read through the client's own `gh` is a fetched
                 // page like any other (issue #1133): the command names the
                 // URL, and its output is the issue's title and body.
-                if let Some(url) = command.as_deref().and_then(work_item_read_url) {
+                if let Some(command) = command.as_deref()
+                    && let Some(url) = work_item_read_url(command)
+                {
                     // The attempt is recorded whatever it returned: a read
                     // that came back empty has still been tried, and planning
                     // it again would loop (issue #1133).
@@ -215,15 +217,15 @@ impl Progress {
                     // (issue #1155): clients echo tool output with the status
                     // dropped, which once let an unauthenticated `gh`'s
                     // how-to-authenticate banner pass for an issue body.
-                    if let Some(reason) = command.as_deref().and_then(|command| {
+                    if let Some(reason) =
                         work_item_read_failure_reason(command, &raw, failure.as_deref())
-                    }) {
+                    {
                         failed_work_item_reads.push((url.clone(), reason));
                     } else if failure.is_none()
                         && let Some(text) = super::tool_result::normalized_payload(&raw)
                             .filter(|text| !text.trim().is_empty())
                     {
-                        fetched_pages.push((url, without_exit_sentinel(&text)));
+                        fetched_pages.push((url, without_exit_sentinel(&text, command)));
                     }
                 }
                 run_outputs.push(raw);

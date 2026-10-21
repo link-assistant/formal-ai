@@ -113,7 +113,7 @@ pub(super) fn resolve(path: &Path) -> io::Result<PathBuf> {
                 Ok(())
             })
             .map_err(io::Error::other)?;
-            crate::structured_log::event(
+            crate::dialog_log::structured_log::event(
                 "info",
                 "memory",
                 || "memory.live_migration".to_owned(),
@@ -135,7 +135,7 @@ pub(super) fn resolve(path: &Path) -> io::Result<PathBuf> {
     if crate::source_fetch::sha256_hex(&observed(path)?) != source_sha256 {
         return Err(io::Error::other("memory_live_preimage_changed"));
     }
-    crate::structured_log::event(
+    crate::dialog_log::structured_log::event(
         "warn",
         "memory",
         || "memory.live_replacement".to_owned(),
