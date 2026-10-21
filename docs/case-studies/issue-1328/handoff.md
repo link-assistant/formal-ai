@@ -865,3 +865,26 @@ the public Chat API with genuine assistant/tool frames; its original exit-code
 and missing-status assertions stay intact. Explicit empty-slice types preserve
 nonempty-call checks without ambiguous Rust inference. Static source checks and
 JavaScript API equivalence do not replace hosted native unit execution.
+
+### Owner-authorized manual release blocker repair
+
+The owner explicitly permits direct manual fixes to prioritize unlocking the
+next release. Preserve actual Formal AI authorship receipts without attributing
+manual changes to it. Keep one CI monitor and one source reviewer when useful;
+one bounded Node workload remains shared across the team, and Rust execution
+remains hosted only. Draft all actual failures in bulk and commit coherent
+repairs, then publish one ordinary push after the current complete CI census.
+
+On published head `f9d8e3d14ac4636d2405fce51232ea5fd0c2b8fd`, the Linux ARM64
+desktop job returned HTTP 500 after native rebuilds and Electron archive progress
+completed. The 7zip prefetch succeeded. The failed endpoint is absent from the
+full mixed log, so do not describe the checksum hypothesis as observed evidence.
+The pinned builder already has server-error retries. The repair isolates download
+recovery before packaging instead of multiplying those retries: the same nested
+Electron downloader retains checksum validation, individual requests share a
+three-attempt ceiling and deadline, and only a manifest matching the exact archive
+can become the builder's supported versioned checksum seed. Request diagnostics
+exclude credentials and query strings. Pure JavaScript controls use tiny fake
+payloads; a separate integration control exercises the installed nested downloader
+in hosted packaging. Neither replaces successful actual packaging, release or
+the three original released-client deliveries.

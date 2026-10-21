@@ -55,6 +55,18 @@ local execution does not establish hosted latency or release acceptance.
 The unchanged hosted tests remain required. Broader memory optimization stays
 recorded follow-up.
 
+The next hosted desktop failure was an HTTP 500 after Electron archive progress
+reached 100% in [Linux ARM64 packaging](https://github.com/link-assistant/formal-ai/actions/runs/39690169195/job/119542176236).
+The log does not identify the endpoint; a checksum request is a source-supported
+possibility, not an observed fact. The pinned builder already retries server
+errors. Isolated Electron prefetch therefore owns one shared three-attempt limit
+per URL and a job deadline, preserves upstream checksum verification, and seeds
+the exact upstream manifest only after independently matching the archive hash.
+The builder can then reuse its supported versioned checksum seed without another
+checksum network request during packaging. Sanitized request diagnostics retain
+status, phase and attempt without credentials, query strings or unknown paths.
+Hosted packaging and public-download acceptance remain required.
+
 The live concurrency qualification remains unproven. The strict final in run
 39617489419 on cbd30d768fe4fd8f77ed6e782960e91d9b8284e8 returned Unknown
 because the aggregate run was pending. Its source classification repair passed

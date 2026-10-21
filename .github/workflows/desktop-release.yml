@@ -537,6 +537,8 @@ jobs:
       - name: Prefetch electron-builder toolsets
         working-directory: desktop
         run: |
+          node --test scripts/prefetch-electron.test.mjs
+          node scripts/prefetch-electron.mjs
           if [ "${{ matrix.label }}" = windows-arm64 ]; then
             node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/prefetch-windows-packaging.mjs" "$GITHUB_WORKSPACE/desktop" "$GITHUB_WORKSPACE/native-source/source-selection.json"
           else
