@@ -620,6 +620,8 @@ agentic_messages
     text "No bound tool result was received."
   message action-repetition-stopped
     text "Repeated action stopped after {attempts} attempts (limit {maximum}): {tool} {arguments}. Last result: {result}. The task is incomplete; inspect the tool contract or change strategy."
+  message action-repetition-observation
+    text "Latest bound observation from {tool} {arguments}: {result}"
   message git-refspec-other-remote
     text "The push failed with an invalid local refspec. Inspect the current branch and the originally requested remote before retrying; no alternative remote is authorized."
   message git-refspec-explicit-branch

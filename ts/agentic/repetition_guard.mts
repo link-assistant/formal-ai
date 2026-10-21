@@ -18,6 +18,9 @@ function canonicalActionKey(tool, argumentsValue) {
 function actionKey(call) {
   return canonicalActionKey(call.function.name, call.function.arguments);
 }
+function observationDetail(value) {
+  return [...value.slice(0, 4096)].slice(0, 2048).join('');
+}
 /** No result-shape inference, capability recognition or process-local counter is required.
  * Optional proposed calls filter only the recognized two-failure stop; global caps remain unconditional. */
 export function repeatedActionStop(messages, candidates = null) {
@@ -36,6 +39,7 @@ export function repeatedActionStop(messages, candidates = null) {
   const pending = new Map();
   const failedCounts = new Map();
   let failed = null;
+  let latestReceipt = null;
   for (const message of messages.slice(window)) {
     const role = message.role.toLowerCase();
     if (role === 'assistant') {
@@ -52,6 +56,7 @@ export function repeatedActionStop(messages, candidates = null) {
       if (!call || (message.name != null && (typeof message.name !== 'string'
         || message.name.toLowerCase() !== call.function.name.toLowerCase()))) continue;
       const result = plainText(message.content);
+      latestReceipt = {call, result};
       if (failureMessage(result, message.is_error === true || message.isError === true, false) === null) continue;
       const key = actionKey(call);
       const attempts = (failedCounts.get(key) ?? 0) + 1;
@@ -60,11 +65,21 @@ export function repeatedActionStop(messages, candidates = null) {
           && (candidateKeys === null || candidateKeys.has(key))) failed = {call, attempts, result};
     }
   }
-  if (failed !== null) return agenticMessage('action-repetition-stopped', {
-    attempts: failed.attempts, maximum: MAXIMUM_IDENTICAL_FAILED_ACTIONS,
-    tool: failed.call.function.name, arguments: failed.call.function.arguments,
-    result: failed.result.slice(0, 2048),
-  });
+  if (failed !== null) {
+    let detail = observationDetail(failed.result);
+    // A later bound observation must survive the stop, including a verification's exit.
+    if (latestReceipt !== null && latestReceipt.call !== failed.call) {
+      detail += '\n' + agenticMessage('action-repetition-observation', {
+        tool: latestReceipt.call.function.name,
+        arguments: observationDetail(latestReceipt.call.function.arguments),
+        result: observationDetail(latestReceipt.result),
+      });
+    }
+    return agenticMessage('action-repetition-stopped', {
+      attempts: failed.attempts, maximum: MAXIMUM_IDENTICAL_FAILED_ACTIONS,
+      tool: failed.call.function.name, arguments: failed.call.function.arguments, result: detail,
+    });
+  }
   const counts = new Map();
   let repeated = null;
   let total = 0;

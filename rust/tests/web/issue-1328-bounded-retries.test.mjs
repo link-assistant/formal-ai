@@ -69,6 +69,28 @@ test('canonical key order counts as one action, distinct tools and operands keep
   assert.equal(repeatedActionStop(messages),null);
 });
 
+test('a stopped failure retains a later bound verification without accepting foreign receipts', async () => {
+  const messages = replay(2);
+  const call = {id:'verification', function:{name:'run_command', arguments:'{"command":"cat hello.txt"}'}};
+  const observed = 'Command: cat hello.txt\nError: missing file\nExit Code: 1\n';
+  const declaration = {role:'assistant', content:'', tool_calls:[call]};
+  const receipt = {role:'tool', name:'run_command', tool_call_id:call.id, content:observed};
+  const history = [...messages, declaration, receipt];
+  const report = repeatedActionStop(history);
+  assert.match(report, /after 2 attempts \(limit 2\)/u);
+  assert(report.includes('Latest bound observation from run_command'));
+  assert(report.includes(observed.trimEnd()));
+  const planned = await planChatStep(history, ['run_command', tool]);
+  assert.equal(planned.kind, 'final');
+  assert(planned.answer.includes('Exit Code: 1'));
+  for (const foreign of [
+    {...receipt, tool_call_id:'undeclared'},
+    {...receipt, name:'write_file'},
+  ]) assert(!repeatedActionStop([...messages, declaration, foreign]).includes('Latest bound observation'));
+  const duplicate = {...receipt, content:'UNBOUND_DUPLICATE_RESULT'};
+  assert(!repeatedActionStop([...history, duplicate]).includes('UNBOUND_DUPLICATE_RESULT'));
+});
+
 test('continuation preserves exhaustion; a new explicit source read opens its proper window', () => {
   const messages=replay(3);
   assert.match(repeatedActionStop([...messages,{role:'user',content:'continue'}]),/Repeated action stopped/);

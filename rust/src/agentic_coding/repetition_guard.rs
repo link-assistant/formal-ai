@@ -66,6 +66,7 @@ pub fn repeated_action_stop_for_candidates(
     let mut pending = BTreeMap::new();
     let mut failed_counts = BTreeMap::new();
     let mut failed = None;
+    let mut latest_receipt = None;
     for message in messages.iter().skip(window) {
         if message.role.eq_ignore_ascii_case("assistant") {
             let mut identifiers = std::collections::BTreeSet::new();
@@ -92,6 +93,7 @@ pub fn repeated_action_stop_for_candidates(
             {
                 continue;
             }
+            latest_receipt = Some((call, message));
             let result = message.content.plain_text();
             if super::tool_result::failure_message(&result, message.is_error, false).is_none() {
                 continue;
@@ -109,7 +111,37 @@ pub fn repeated_action_stop_for_candidates(
         }
     }
     if let Some((call, attempts, result)) = failed {
-        let detail: String = result.chars().take(2048).collect();
+        let mut detail: String = result.chars().take(2048).collect();
+        // A later bound observation must survive the stop, including a verification's exit.
+        if let Some((observed_call, receipt)) = latest_receipt
+            && !std::ptr::eq(observed_call, call)
+        {
+            detail.push('\n');
+            detail.push_str(&crate::seed::agentic_message(
+                "action-repetition-observation",
+                &[
+                    ("tool", &observed_call.function.name),
+                    (
+                        "arguments",
+                        &observed_call
+                            .function
+                            .arguments
+                            .chars()
+                            .take(2048)
+                            .collect::<String>(),
+                    ),
+                    (
+                        "result",
+                        &receipt
+                            .content
+                            .plain_text()
+                            .chars()
+                            .take(2048)
+                            .collect::<String>(),
+                    ),
+                ],
+            ));
+        }
         return Some(crate::seed::agentic_message(
             "action-repetition-stopped",
             &[
