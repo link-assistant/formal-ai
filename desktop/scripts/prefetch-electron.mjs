@@ -100,6 +100,7 @@ export async function prefetchElectron({
     const destination = path.join(cacheRoot, `SHASUMS256.txt-${config.version}`);
     const temporary = `${destination}.${process.pid}.tmp`;
     const handle = await fs.open(temporary, "wx");
+    let renamed = false;
     try {
       try {
         await handle.writeFile(downloader.checksum);
@@ -107,8 +108,9 @@ export async function prefetchElectron({
         await handle.close();
       }
       await fs.rename(temporary, destination);
+      renamed = true;
     } finally {
-      await fs.rm(temporary, {force: true});
+      if (!renamed) await fs.rm(temporary, {force: true});
     }
   }
   logger.log(`Verified locked Electron ${config.version} for ${config.platform}/${config.arch}`);

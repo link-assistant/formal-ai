@@ -168,6 +168,19 @@ test("exclusive seed staging never deletes a preexisting unowned file", async t 
   await assert.rejects(fs.stat(path.join(input.cacheRoot, "SHASUMS256.txt-44.7.0")), {code: "ENOENT"});
 });
 
+test("successful rename relinquishes the staging path before another writer reuses it", async t => {
+  const {input, manifest} = await seedFixture(t);
+  const rename = fs.rename;
+  t.mock.method(fs, "rename", async (source, destination) => {
+    await rename(source, destination);
+    await fs.writeFile(source, "later unowned sentinel");
+  });
+  await prefetchElectron(input);
+  const destination = path.join(input.cacheRoot, "SHASUMS256.txt-44.7.0");
+  assert.deepEqual(await fs.readFile(destination), manifest);
+  assert.equal(await fs.readFile(`${destination}.${process.pid}.tmp`, "utf8"), "later unowned sentinel");
+});
+
 const require = createRequire(import.meta.url);
 let installedBuilder;
 try { installedBuilder = require.resolve("app-builder-lib/package.json"); } catch { /* CI packaging installs it. */ }
