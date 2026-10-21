@@ -1,7 +1,7 @@
 # Seconds per JavaScript suite file under rust/tests/web/, the input of the
 # longest-first shard plan of the Layered CI js tier (PR #1188). Generated;
-# measured by running each file alone, so the order carries over to CI even
-# where the absolute seconds do not.
+# Original records were measured with each file alone. Later records explicitly
+# identify shared-shard observations; weights guide scheduling, not latency SLAs.
 javascript-test-durations
   issue 1188
   recorded 2026-10-08
@@ -13,8 +13,9 @@ javascript-test-durations
     seconds 51.6
   test "rust/tests/web/pull-request-1188-workspace-search.test.mjs"
     seconds 49.6
+  # Observed ec8 run 39590374409 job 119195697970; shared-shard serial test sums.
   test "rust/tests/web/r1175-routing-probes.test.mjs"
-    seconds 18.5
+    seconds 70.071970878
   test "rust/tests/web/pull-request-1188-dogfood.test.mjs"
     seconds 17.4
   test "rust/tests/web/pull-request-1188-teach-f.test.mjs"
@@ -411,3 +412,11 @@ javascript-test-durations
     runtime-source-closure Unknown
     execution-source-authentication Unknown
     definition-binding import-time-only
+
+  # Observed ec8 run 39590374409 job 119195697970; shared-shard serial test sums.
+  test "rust/tests/web/fresh-planner-recomputation.test.mjs"
+    seconds 230.393563251
+
+  # Observed ec8 run 39590374409 job 119195697970; shared-shard serial test sums.
+  test "rust/tests/web/issue-1165-production-research.test.mjs"
+    seconds 218.033677668
