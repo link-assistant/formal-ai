@@ -9,11 +9,19 @@ import {cleanupGeneratedIssues} from './close-finished-test-issues.mjs';
 import {custodyFromLog, originalWorkflow} from './lib/generated-task-custody.mjs';
 import {redact} from './collect-ci-failures.mjs';
 const repository = 'link-assistant/formal-ai';
-export async function finalizeGeneratedRun({runId, apply = false, client = createEvidenceClient({
+export async function finalizeGeneratedRun({runId, apply = false, expectedRunAttempt = null,
+  expectedProtocolHead = null, client = createEvidenceClient({
   bounds: {retries: 0, logBytes: 1048576, logDownloadBytes: 8388608}}),
   cleanup = cleanupGeneratedIssues} = {}) {
   if (!Number.isSafeInteger(runId) || runId < 1) throw new Error('Invalid owner run identifier');
+  if (expectedRunAttempt !== null && (!Number.isSafeInteger(expectedRunAttempt) || expectedRunAttempt < 1)
+    || expectedProtocolHead !== null && !/^[a-f0-9]{40}$/u.test(expectedProtocolHead)) throw new Error('Invalid expected owner identity');
   const run = await client.json(`repos/${repository}/actions/runs/${runId}`);
+  if (expectedRunAttempt !== null && run.run_attempt !== expectedRunAttempt
+    || expectedProtocolHead !== null && run.head_sha !== expectedProtocolHead) {
+    const error = new Error('Owner identity changed before cleanup');
+    error.code = 'OWNER_CHANGED_BEFORE_CLEANUP'; throw error;
+  }
   if (run.id !== runId || run.repository?.full_name !== repository
     || run.path?.split('@')[0] !== originalWorkflow || run.status !== 'completed'
     || !/^[a-f0-9]{40}$/u.test(run.head_sha ?? '')

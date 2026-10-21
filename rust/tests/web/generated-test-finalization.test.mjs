@@ -117,3 +117,12 @@ test('API protocol SHA is not a separately selected or claimed tested PR identit
   assert.equal(Object.hasOwn(result.cleanupReceipt, 'selectedTestedHead'), false);
   assert.equal(result.cleanupReceipt.complete, false);
 });
+
+test('authenticated owner attempt and protocol cannot race into a newer cleanup', async () => {
+  for (const expected of [{expectedRunAttempt: 2}, {expectedProtocolHead: 'd'.repeat(40)}]) {
+    const f = fixture();
+    await assert.rejects(finalizeGeneratedRun({runId: 40, apply: true, ...expected, ...f}),
+      error => error.code === 'OWNER_CHANGED_BEFORE_CLEANUP');
+    assert.equal(f.calls.length, 1); assert.equal(f.cleanupCalls.length, 0);
+  }
+});

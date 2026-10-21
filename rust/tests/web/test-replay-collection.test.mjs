@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {parseJson, toCompactJson, isFloat} from '../../../js/server/json.mjs';
 import {createEvidenceClient, collectReplayEvidence, collectReplayFixture, sanitizeEvidence, replayOriginalDelivery}
   from '../../../scripts/collect-test-replays.mjs';
 import {digest} from '../../../scripts/lib/generated-task-custody.mjs';
@@ -129,4 +130,48 @@ test('failed original attempts remain collected rather than disappearing behind 
   const result = collectReplayFixture(value);
   assert.equal(result.observedOutcome, 'failure'); assert.equal(result.originalOracle.passed, false);
   assert.match(result.originalOracle.errorFingerprint, /^[a-f0-9]{64}$/u);
+});
+
+test('provider metadata spelling variants and recursively encoded credentials cannot leak', () => {
+  const privateFields = {account_id: 'private-a', accountId: 'private-b', user_id: 'private-c',
+    userId: 'private-d', actorId: 'private-e', displayName: 'Private Display', full_name: 'Private Full',
+    API_key: 'private-f', access_token: 'private-g', Cookie: 'private-h', private_key: 'private-i'};
+  const value = sanitizeEvidence({response: JSON.stringify({nested: JSON.stringify(privateFields)}),
+    encodedAgain: JSON.stringify(JSON.stringify(privateFields)),
+    call_id: 'call-public-17', sourceHash: 'a'.repeat(64), repositoryUrl: 'https://github.com/a/b'});
+  assert.doesNotMatch(JSON.stringify(value), /private-[a-i]|Private Display|Private Full/u);
+  assert.equal(value.call_id, 'call-public-17'); assert.equal(value.sourceHash, 'a'.repeat(64));
+  assert.equal(value.repositoryUrl, 'https://github.com/a/b');
+});
+test('personal display records lose identity while task and source identifiers survive', () => {
+  const value = sanitizeEvidence({record: {userId: 'private-user', id: 'private-provider-id',
+    name: 'Private Person', call_id: 'call-19', source_sha256: 'b'.repeat(64)},
+    headers: {'Set-Cookie': 'private-cookie', Authorization: 'private-auth'}});
+  assert.doesNotMatch(JSON.stringify(value), /private-|Private Person/u);
+  assert.equal(value.record.call_id, 'call-19'); assert.equal(value.record.source_sha256, 'b'.repeat(64));
+});
+test('sanitization preserves the exact original delivery oracle and public repository identity', () => {
+  const original = syntheticOracleFixture();
+  const sanitized = sanitizeEvidence(original);
+  assert.deepEqual(sanitized, original);
+  assert.equal(sanitized.pullRequest.base.repo.full_name, 'a/b');
+  assert.equal(replayOriginalDelivery(sanitized).passed, true);
+  original.independentProgram.exitCode = 7;
+  assert.throws(() => replayOriginalDelivery(sanitizeEvidence(original)));
+});
+
+test('typed float and large integer values round-trip without losing numeric identity', () => {
+  const numeric = '{"large":9007199254740993,"fraction":1.25,"integerFloat":1.0,"negativeZero":-0.0}';
+  const expected = parseJson(numeric);
+  const observed = parseJson(numeric.slice(0, -1) + ',"access_token":"private-numeric-token"}');
+  const sanitized = sanitizeEvidence(observed);
+  assert.equal(typeof sanitized.large, 'bigint'); assert.equal(sanitized.large, 9007199254740993n);
+  assert.equal(isFloat(sanitized.fraction), true); assert.strictEqual(sanitized.fraction, observed.fraction);
+  assert.equal(isFloat(sanitized.integerFloat), true);
+  assert.strictEqual(sanitized.integerFloat, observed.integerFloat);
+  assert.equal(toCompactJson(sanitized), toCompactJson(expected));
+  const encoded = sanitizeEvidence(JSON.stringify(numeric.slice(0, -1)
+    + ',"accountId":"private-num-account","access_token":"private-num-token"}'));
+  assert.doesNotMatch(encoded, /private-num/u);
+  assert.equal(toCompactJson(parseJson(parseJson(encoded))), toCompactJson(expected));
 });

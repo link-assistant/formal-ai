@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Bounded source-qualified evidence, never raw session uploads or invented replay events.
 import {pathToFileURL} from 'node:url';
+import {isFloat, parseJson, toCompactJson} from '../js/server/json.mjs';
 import originalInputs from '../data/benchmarks/hive-original-delivery-inputs.json' with {type: 'json'};
 import {validateBounds, runGh, redact, diagnostics, deduplicate} from './collect-ci-failures.mjs';
 import {digest} from './lib/generated-task-custody.mjs';
@@ -41,18 +42,34 @@ export function createEvidenceClient({bounds: input = {}, aggregateBytes = 26843
       return JSON.parse(result.text);
     }, transferredBytes: () => bytes};
 }
-export function sanitizeEvidence(value) {
+const privateMetadataKeys = new Set(['user', 'actor', 'author', 'committer', 'account', 'person', 'profile',
+  'email', 'emailaddress', 'login', 'username', 'avatarurl', 'accountid', 'userid', 'actorid',
+  'authorid', 'committerid', 'personid', 'accountname', 'actorname', 'personname', 'displayname',
+  'token', 'authorization', 'password', 'secret', 'apikey', 'accesstoken', 'refreshtoken',
+  'idtoken', 'clientsecret', 'cookie', 'setcookie', 'privatekey', 'accesskey', 'sessiontoken', 'bearertoken']);
+const personalIdentifiers = new Set(['email', 'emailaddress', 'login', 'username',
+  'accountid', 'userid', 'actorid', 'personid', 'displayname', 'fullname']);
+export function sanitizeEvidence(value, context = '') {
+  if (isFloat(value)) return value;
   if (typeof value === 'string') {
-    if (/^\s*(?:\{|\[)/u.test(value)) {
-      try { return JSON.stringify(sanitizeEvidence(JSON.parse(value))); } catch { /* Preserve non-JSON observations below. */ }
+    if (/^\s*(?:\{|\[|")/u.test(value)) {
+      try { return toCompactJson(sanitizeEvidence(parseJson(value), context)); } catch { /* Non-JSON below. */ }
     }
     return redact(value).replace(/^(?:author|committer|username|authenticated user):.*$/gimu, '[account metadata removed]');
   }
-  if (Array.isArray(value)) return value.map(sanitizeEvidence);
-  if (value && typeof value === 'object' && Object.hasOwn(value, 'login')) return '[account metadata removed]';
-  if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value)
-    .filter(([key]) => !/^(?:user|actor|author|committer|account|email|login|username|avatar_url|token|authorization|password|secret)$/iu.test(key))
-    .map(([key, item]) => [key, sanitizeEvidence(item)]));
+  if (Array.isArray(value)) return value.map(item => sanitizeEvidence(item, context));
+  if (value && typeof value === 'object') {
+    const entries = Object.entries(value).map(([key, item]) =>
+      ({key, item, normalized: key.replace(/[_-]/gu, '').toLowerCase()}));
+    if (entries.some(row => row.normalized === 'login')) return '[account metadata removed]';
+    const repositoryContext = ['repo', 'repository'].includes(context);
+    const personal = entries.some(row => personalIdentifiers.has(row.normalized)
+      && !(repositoryContext && row.normalized === 'fullname'));
+    return Object.fromEntries(entries.filter(row => !privateMetadataKeys.has(row.normalized)
+      && (row.normalized !== 'fullname' || repositoryContext)
+      && !(personal && ['id', 'name'].includes(row.normalized)))
+      .map(row => [row.key, sanitizeEvidence(row.item, row.normalized)]));
+  }
   return value;
 }
 export function replayOriginalDelivery(fixture) {

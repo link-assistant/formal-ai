@@ -179,15 +179,36 @@ jobs:
           gh issue comment "$E2E_ISSUE" --repo "$E2E_REPOSITORY" --body "workload: started on ${E2E_BRANCH}"
 
       - name: Cleanup
-        if: ${{ !inputs.keep }}
+        if: ${{ always() && !inputs.keep }}
         env:
           GH_TOKEN: ${{ steps.creds.outputs.token }}
           BRANCH: ${{ steps.orphan.outputs.branch }}
           ISSUE: ${{ steps.track.outputs.issue }}
           TARGET_REPO: ${{ steps.orphan.outputs.repository }}
+          OWNED_RUN_ID: ${{ steps.orphan.outputs.run-id }}
+          PURPOSE: ${{ inputs.purpose }}
+          CREDENTIAL_LAYER: ${{ steps.creds.outputs.layer }}
         run: |
           set -euo pipefail
-          if [ -n "$TARGET_REPO" ] && [ "$TARGET_REPO" != "$GITHUB_REPOSITORY" ]; then
+          if [[ ! "$PURPOSE" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]] ||
+             [[ ! "$OWNED_RUN_ID" =~ ^[0-9]{14}-${GITHUB_RUN_ID}$ ]] ||
+             [[ "$BRANCH" != "e2e/${PURPOSE}/${OWNED_RUN_ID}/run" ]]; then
+            echo "::notice::partial isolation outputs: ownership unproved; resources retained"
+            exit 0
+          fi
+          expected_repository="${GITHUB_REPOSITORY_OWNER}/formal-ai-e2e-${OWNED_RUN_ID}"
+          if [[ "$TARGET_REPO" != "$GITHUB_REPOSITORY" && "$TARGET_REPO" != "$expected_repository" ]]; then
+            echo "::notice::isolation repository ownership unproved; resources retained"
+            exit 0
+          fi
+          if [ "$TARGET_REPO" != "$GITHUB_REPOSITORY" ]; then
+            expected_description="Isolated e2e run ${PURPOSE} from ${GITHUB_REPOSITORY} (${GITHUB_RUN_ID})"
+            if ! gh api "repos/${TARGET_REPO}" --jq '{full_name, private, description}' |
+              jq -e --arg name "$expected_repository" --arg description "$expected_description" \
+                '.full_name == $name and .private == true and .description == $description' >/dev/null; then
+              echo "::notice::private repository custody changed; repository retained"
+              exit 0
+            fi
             # The App-layer run owns its whole repository; deleting it
             # closes the issue, the pull request and the branches at once.
             gh repo delete "$TARGET_REPO" --yes
@@ -197,7 +218,28 @@ jobs:
           # "they close the issue and pull request and delete the branches
           # at the end"). With layer `default` these calls still work --
           # github.token may close what it opened on its own repository.
-          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --comment "isolated run finished; cleaning up" || true
+          if [[ "$ISSUE" =~ ^[1-9][0-9]*$ ]]; then
+            expected_title="e2e: ${PURPOSE} (${GITHUB_RUN_ID})"
+            expected_body="$(cat <<EOF
+          Isolated run of **${PURPOSE}**.
+
+          - orphan branch: \`${BRANCH}\`
+          - dispatched by: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          - credential layer: ${CREDENTIAL_LAYER}
+
+          The cleanup job closes this issue and deletes the branch at the end of the run.
+          EOF
+          )"
+            if gh api "repos/${GITHUB_REPOSITORY}/issues/${ISSUE}" --jq '{title,body,state,labels}' |
+              jq -e --arg title "$expected_title" --arg body "$expected_body" \
+                '.title == $title and .body == $body and .state == "open" and any(.labels[]; .name == "e2e-task")' >/dev/null; then
+              gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --comment "isolated run finished; cleaning up"
+            else
+              echo "::notice::tracking issue custody changed; issue retained"
+            fi
+          else
+            echo "::notice::tracking issue output missing; issue retained"
+          fi
           # Branch deletion goes over the API, which reads GH_TOKEN, rather
           # than a bare `git push --delete` (issue #1081).
           for ref in "${BRANCH}" "${BRANCH}-run"; do
