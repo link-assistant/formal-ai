@@ -1,7 +1,8 @@
 //! Source-bound work-item receipt payloads and owned trailing status.
 
 /// The exit status a read command printed about itself, when it printed one.
-fn exit_sentinel(raw: &str) -> Option<i32> {
+fn exit_sentinel(raw: &str, command: &str) -> Option<i32> {
+    command.contains("__formal_ai_exit=%s").then_some(())?;
     raw.lines()
         .rev()
         .find(|line| !line.trim().is_empty())?
@@ -16,8 +17,7 @@ fn exit_sentinel(raw: &str) -> Option<i32> {
 /// Only the owned trailing status is removed; literal examples remain bytes.
 pub(super) fn without_exit_sentinel(text: &str, command: &str) -> String {
     let mut lines = text.lines().collect::<Vec<_>>();
-    if command.contains("__formal_ai_exit=%s")
-        && exit_sentinel(text).is_some()
+    if exit_sentinel(text, command).is_some()
         && let Some(index) = lines.iter().rposition(|line| !line.trim().is_empty())
     {
         lines.remove(index);
@@ -35,10 +35,7 @@ pub(super) fn work_item_read_failure_reason(
         return Some(failure.to_owned());
     }
     let payload = super::super::tool_result::observed_payload(raw).unwrap_or_default();
-    let status = command
-        .contains("__formal_ai_exit=%s")
-        .then(|| exit_sentinel(&payload))
-        .flatten();
+    let status = exit_sentinel(&payload, command);
     if let Some(status) = status
         && status != 0
     {

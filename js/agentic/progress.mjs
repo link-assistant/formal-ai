@@ -581,7 +581,8 @@ function restReadUrl(command) {
 }
 
 /** Mirrors `fn exit_sentinel`. */
-function exitSentinel(raw) {
+function exitSentinel(raw, command) {
+  if (!command.includes('__formal_ai_exit=%s')) return null;
   const line = rustLines(raw).findLast(line => trim(line) !== '');
   if (line === undefined) return null;
   const match = /^__formal_ai_exit=([+-]?[0-9]+)$/u.exec(trim(line));
@@ -592,7 +593,7 @@ function exitSentinel(raw) {
 /** Mirrors `fn without_exit_sentinel`. */
 function withoutExitSentinel(text, command) {
   const lines = rustLines(text);
-  if (command.includes('__formal_ai_exit=%s') && exitSentinel(text) !== null) {
+  if (exitSentinel(text, command) !== null) {
     lines.splice(lines.findLastIndex(line => trim(line) !== ''), 1);
   }
   return lines.join('\n');
@@ -602,7 +603,7 @@ function withoutExitSentinel(text, command) {
 function workItemReadFailureReason(command, raw, echoedFailure) {
   if (echoedFailure !== null) return echoedFailure;
   const payload = observedPayload(raw) ?? '';
-  const status = command.includes('__formal_ai_exit=%s') ? exitSentinel(payload) : null;
+  const status = exitSentinel(payload, command);
   if (status !== null && status !== 0) return fill('read_failure_exit_status', [['{status}', String(status)]]);
   const text = withoutExitSentinel(payload, command);
   const curl = command.startsWith('curl ');
