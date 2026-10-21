@@ -478,3 +478,31 @@ and the already pinned local meta-language source, without fetching or compiling
 Rust. The final formatting repair preserves every script token and the existing
 readability limit. Current-source local checks cannot replace the next exact
 head's automatic native, Hive, packaging or release acceptance.
+
+
+The next automatic head, `69dcae569e03ce4b089c5f6ce694278148ba2112`,
+compiled the library but exposed three binary-root E0433 references in
+cli_benchmark, cli_context and cli_report. They now explicitly reuse
+`formal_ai::bounded_process`; no second supervisor module is introduced. A
+read-only module-tree audit found no further such reference in the binary,
+test or bench roots. Native compilation of this correction remains hosted.
+
+The continued retry audit also covers Formal AI's actual JavaScript driver.
+Grep, shell capture and exclusive creation use the shared finite supervisor;
+retained raw captures have explicit byte limits independently of their previews.
+No subprocess inherits writable capture-file descriptors. The common raw writer
+rejects invalid or zero byte progress immediately. Original complete-byte,
+Unicode, nonzero-status and physical-creation assertions remain mandatory, and
+the hosted structural scan includes the maintained driver directory. Caller-owned
+creation input retains its existing contract while sharing the operation deadline.
+This does not admit unowned source-discovery plans or grant implementation,
+mutation or completion authority to lexical candidates.
+
+The driver uses a visible Node stdio preload to preserve the prior regular-file
+behavior of abrupt Node diagnostic writes while its shared supervisor captures
+bounded pipes. Existing NODE_OPTIONS/security hooks remain visible. A strict
+accepted-node source provider constructed inside such a captured Node child
+continues to reject the extra NODE_OPTIONS; no guard exception or hidden preload
+is supplied. The normal direct accepted-provider supervisor retains its own
+constructor-owned environment. The original production-research controls are
+checked separately; no universal provider/environment compatibility is claimed.

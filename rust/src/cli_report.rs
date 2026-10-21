@@ -472,7 +472,7 @@ fn upload_gist(
     if visibility == GistVisibility::Public {
         command.arg("--public");
     }
-    let output = crate::bounded_process::command_output(
+    let output = formal_ai::bounded_process::command_output(
         {
             command.arg(path);
             command

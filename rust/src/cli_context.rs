@@ -429,7 +429,7 @@ fn run_extractor(args: &[&str], db: Option<&Path>) -> Result<Vec<u8>, Box<dyn Er
     if let Some(path) = db {
         command.arg("--db").arg(path);
     }
-    let result = crate::bounded_process::command_output(
+    let result = formal_ai::bounded_process::command_output(
         command,
         std::time::Duration::from_secs(120),
         64 * 1024 * 1024,

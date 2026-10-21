@@ -17,4 +17,9 @@ function scan(directory,language){
     for(const failure of result.violations){failures++;console.error(JSON.stringify({file:path.relative(root,filename),...failure}));}
   }
 }
-try{scan(path.join(root,'rust/src'),'Rust');scan(path.join(root,'js/server'),'JavaScript');scan(path.join(root,'js/agentic'),'JavaScript');console.log(JSON.stringify({files,violations:failures,unresolved,coverage:'direct-local-process-provenance and opaque-macro-token-call-shapes; no macro-expansion/interprocedural/emitted-program/async-spawn proof'}));process.exitCode=failures?1:0;}finally{auditor.close();}
+try{
+  scan(path.join(root,'rust/src'),'Rust');
+  scan(path.join(root,'js/server'),'JavaScript');
+  scan(path.join(root,'js/agentic'),'JavaScript');
+  scan(path.join(root,'experiments/js_dogfood'),'JavaScript');
+  console.log(JSON.stringify({files,violations:failures,unresolved,coverage:'direct-local-process-provenance and opaque-macro-token-call-shapes; no macro-expansion/interprocedural/emitted-program/async-spawn proof'}));process.exitCode=failures?1:0;}finally{auditor.close();}

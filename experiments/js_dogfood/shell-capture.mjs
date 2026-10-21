@@ -1,87 +1,100 @@
-// Preserve shell output as regular-file bytes before rendering bounded results.
-import {spawnSync} from 'node:child_process';
+// Preserve bounded, fully observed shell bytes before rendering previews.
+import {boundedCommandSync} from '../../js/server/bounded-command.mjs';
 import {createHash} from 'node:crypto';
-import {closeSync, mkdtempSync, openSync, readSync, rmSync, statSync, unlinkSync, writeSync} from 'node:fs';
+import {mkdtempSync, rmSync, openSync, closeSync, writeSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 
-const DEFAULT_PREVIEW_BYTES = 256 * 1024;
-const BLOCK_BYTES = 32 * 1024;
+// Prior regular-file stdio made Node writes synchronous even before abrupt process.exit.
+// Restore that producer behavior only inside explicitly marked capture children.
+if (process.env.FORMAL_AI_DOGFOOD_BLOCKING_STDIO === '1') {
+  for (const stream of [process.stdout, process.stderr]) stream._handle?.setBlocking?.(true);
+}
 
-/** Freeze the bytes observed at command completion; inherited live FDs cannot alter receipts. */
-function snapshot(file, destination, maximum) {
-  const bytes = statSync(file).size;
-  const input = openSync(file, 'r'), output = openSync(destination, 'wx', 0o600);
-  const digest = createHash('sha256'), buffer = Buffer.alloc(BLOCK_BYTES);
-  const chunks = [], head = Buffer.alloc(Math.ceil(maximum / 2));
-  let offset = 0, headBytes = 0, tail = Buffer.alloc(0);
+function captureEnvironment(environment) {
+  const inherited = process.env.NODE_OPTIONS ?? '';
+  const supplied = environment?.NODE_OPTIONS ?? '';
+  const previous = supplied === inherited ? inherited : [inherited, supplied].filter(Boolean).join(' ');
+  const preload = '--import=' + JSON.stringify(import.meta.url);
+  return {...(environment ?? process.env), FORMAL_AI_DOGFOOD_BLOCKING_STDIO: '1',
+    NODE_OPTIONS: previous.includes(preload) ? previous : [previous, preload].filter(Boolean).join(' ')};
+}
+
+const DEFAULT_PREVIEW_BYTES = 256 * 1024;
+const MAXIMUM_CAPTURE_BYTES = 64 * 1024 * 1024;
+
+/** One shared raw-capture writer; failed progress cannot spin or certify missing bytes. */
+export function writeCaptureBytes(file, bytes) {
+  const descriptor = openSync(file, 'wx', 0o600);
   try {
-    while (offset < bytes) {
-      const size = readSync(input, buffer, 0, Math.min(buffer.length, bytes - offset), offset);
-      if (!size) throw new Error('shell capture changed before its observed snapshot completed');
-      const chunk = buffer.subarray(0, size);
-      digest.update(chunk);
-      let written = 0;
-      while (written < size) written += writeSync(output, chunk, written, size - written);
-      if (bytes <= maximum) chunks.push(Buffer.from(chunk));
-      else {
-        const first = Math.min(size, head.length - headBytes);
-        if (first) { chunk.copy(head, headBytes, 0, first); headBytes += first; }
-        tail = Buffer.concat([tail, chunk]).subarray(-Math.floor(maximum / 2));
+    let offset = 0;
+    while (offset < bytes.length) {
+      const remaining = bytes.length - offset;
+      const count = writeSync(descriptor, bytes, offset, remaining);
+      if (!Number.isSafeInteger(count) || count <= 0 || count > remaining) {
+        throw new Error('InvalidCaptureWriteProgress');
       }
-      offset += size;
+      offset += count;
     }
-  } finally { closeSync(input); closeSync(output); }
-  const raw = bytes <= maximum ? Buffer.concat(chunks) : null;
-  const exactUtf8 = raw !== null && Buffer.from(raw.toString('utf8')).equals(raw);
+  } finally { closeSync(descriptor); }
+}
+
+/** Freeze the actual bounded bytes; previews never certify omitted command output. */
+function snapshot(raw, destination, maximum, complete) {
+  writeCaptureBytes(destination, raw);
+  const bytes = raw.length;
+  const text = bytes <= maximum ? raw.toString('utf8') : null;
+  const exactUtf8 = text !== null && Buffer.from(text).equals(raw);
   return {
-    path: destination, bytes, sha256: digest.digest('hex'), complete: true,
-    text: raw?.toString('utf8') ?? null, exactUtf8,
-    preview: raw ? raw.toString('utf8') : head.subarray(0, headBytes).toString('utf8')
-      + '\n[output preview truncated; complete observed bytes retained]\n' + tail.toString('utf8'),
+    path: destination, bytes, sha256: createHash('sha256').update(raw).digest('hex'), complete,
+    text, exactUtf8,
+    preview: text ?? raw.subarray(0, Math.ceil(maximum / 2)).toString('utf8')
+      + '\n[output preview truncated; complete observed bytes retained]\n'
+      + raw.subarray(-Math.floor(maximum / 2)).toString('utf8'),
   };
 }
 
 /** Bounded previews are transport metadata, never stdout byte certificates. */
-export function shellCapture(command, {cwd, timeoutMs = 60000, maxOutputBytes = DEFAULT_PREVIEW_BYTES, environment, onProcessObservation} = {}) {
+export function shellCapture(command, {cwd, timeoutMs = 60000, maxOutputBytes = DEFAULT_PREVIEW_BYTES,
+  environment, onProcessObservation} = {}) {
   if (typeof command !== 'string') throw new TypeError('shell command must be a string');
-  if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0) throw new RangeError('shell timeout must be positive');
-  if (!Number.isSafeInteger(maxOutputBytes) || maxOutputBytes < 2) throw new RangeError('shell preview limit must be at least two bytes');
-  if(onProcessObservation!==undefined&&typeof onProcessObservation!=='function')throw Error('shell_process_observer_required');
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0 || timeoutMs > 2147482647) throw new RangeError('shell timeout must be positive');
+  if (!Number.isSafeInteger(maxOutputBytes) || maxOutputBytes < 2) {
+    throw new RangeError('shell preview limit must be at least two bytes');
+  }
+  if (onProcessObservation !== undefined && typeof onProcessObservation !== 'function') {
+    throw Error('shell_process_observer_required');
+  }
   const directory = mkdtempSync(join(tmpdir(), 'formal-ai-shell-capture-'));
-  const stdoutLive = join(directory, 'stdout.live'), stderrLive = join(directory, 'stderr.live');
-  let output = null, error = null, retain = false;
+  let retain = false;
   try {
-    output = openSync(stdoutLive, 'wx', 0o600); error = openSync(stderrLive, 'wx', 0o600);
-    const result = spawnSync('/bin/sh', ['-c', command], {
-      cwd, ...(environment===undefined?{}:{env:environment}), stdio: ['ignore', output, error], timeout: timeoutMs,
-      killSignal: 'SIGKILL', detached: process.platform !== 'win32',
+    const result = boundedCommandSync('/bin/sh', ['-c', command], {
+      cwd, env: captureEnvironment(environment), timeout: timeoutMs,
+      stdoutLimitBytes: MAXIMUM_CAPTURE_BYTES, stderrLimitBytes: MAXIMUM_CAPTURE_BYTES,
     });
-    if (result.error?.code === 'ETIMEDOUT' && result.pid && process.platform !== 'win32') {
-      try { process.kill(-result.pid, 'SIGKILL'); }
-      catch (failure) { if (failure.code !== 'ESRCH') throw failure; }
-    }
-    closeSync(output); output = null; closeSync(error); error = null;
-    const stdout = snapshot(stdoutLive, join(directory, 'stdout.raw'), maxOutputBytes);
-    const stderr = snapshot(stderrLive, join(directory, 'stderr.raw'), maxOutputBytes);
-    unlinkSync(stdoutLive); unlinkSync(stderrLive);
-    if(onProcessObservation!==undefined){
-      onProcessObservation({command,cwd:cwd??process.cwd(),pid:result.pid??null,status:result.status,signal:result.signal??null,
-        error:result.error?{name:result.error.name,code:result.error.code??null,message:result.error.message}:null,stdout,stderr});
+    const complete = !result.error && result.cleanup_complete;
+    const stdout = snapshot(result.stdout, join(directory, 'stdout.raw'), maxOutputBytes, complete);
+    const stderr = snapshot(result.stderr, join(directory, 'stderr.raw'), maxOutputBytes, complete);
+    if (onProcessObservation !== undefined) {
+      onProcessObservation({command, cwd: cwd ?? process.cwd(), pid: result.pid ?? null,
+        status: result.status, signal: result.signal ?? null,
+        error: result.error ? {name: result.error.name, code: result.error.code ?? null,
+          message: result.error.message} : null, stdout, stderr});
     }
     const truncated = stdout.bytes > maxOutputBytes || stderr.bytes > maxOutputBytes;
     const invalidUtf8 = (!stdout.exactUtf8 && stdout.text !== null) || (!stderr.exactUtf8 && stderr.text !== null);
-    if (truncated || invalidUtf8 || result.error) {
+    if (truncated || invalidUtf8 || result.error || !result.cleanup_complete) {
       retain = true;
       const capture = ({text, exactUtf8, preview, ...receipt}) => ({...receipt, preview});
-      const timedOut = result.error?.code === 'ETIMEDOUT';
+      const timedOut = result.timed_out === true;
       return JSON.stringify({
         is_error: true,
         error: timedOut ? 'shell command timed out' : result.error?.message
-          ?? (truncated ? 'shell output preview is incomplete' : 'shell output is not exact UTF-8 text'),
+          ?? (!result.cleanup_complete ? 'shell command cleanup incomplete'
+            : truncated ? 'shell output preview is incomplete' : 'shell output is not exact UTF-8 text'),
         exit_code: typeof result.status === 'number' ? result.status : null,
         signal: result.signal ?? null, timeout_ms: timedOut ? timeoutMs : null,
-        command_output_complete: !result.error && !result.signal,
+        command_output_complete: complete && !result.signal,
         capture_scope: 'bytes observed when the shell process stopped',
         stdout_capture: capture(stdout), stderr_capture: capture(stderr),
       });
@@ -91,8 +104,6 @@ export function shellCapture(command, {cwd, timeoutMs = 60000, maxOutputBytes = 
     if (result.status === 0 && stderr.bytes === 0) return 'Output: '+stdout.text+'\nExit Code: 0';
     return 'Output: '+stdout.text+'\nError: '+stderr.text+'\nExit Code: '+result.status;
   } finally {
-    if (output !== null) closeSync(output);
-    if (error !== null) closeSync(error);
     if (!retain) rmSync(directory, {recursive: true, force: true});
   }
 }

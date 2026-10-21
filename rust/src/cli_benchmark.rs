@@ -362,7 +362,7 @@ fn check_ratchet(
             .to_str()
             .ok_or("the ledger path is not valid UTF-8")?;
         let object = format!("{base_ref}:{ledger_path}");
-        let output = crate::bounded_process::command_output(
+        let output = formal_ai::bounded_process::command_output(
             {
                 let mut bounded_child_command = Command::new("git");
                 bounded_child_command
