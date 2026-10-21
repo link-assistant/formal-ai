@@ -238,3 +238,58 @@ fn structured_events_cannot_hide_an_outer_process_or_unstructured_failure() {
         assert!(failure.contains(suffix), "{failure}");
     }
 }
+
+#[test]
+fn agent_result_preserves_the_captured_nested_exit_status() {
+    use formal_ai::agentic_coding::tool_result::{StepOutcome, render, step_outcome};
+    let packet: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1364-agent-tool-use.json"
+    ))
+    .expect("captured redacted provider fixture");
+    let frame = &packet["fixture"];
+    let raw = frame.to_string();
+    assert_eq!(step_outcome(&raw), StepOutcome::Failed);
+    let message = render(
+        "scalac Main.scala",
+        &raw,
+        "Explain the observed result in English.",
+    );
+    assert!(message.contains("127"));
+    assert!(!message.to_lowercase().contains("no exit code"));
+    for code in [1, 13, 42, 127, -1] {
+        let mut changed = frame.clone();
+        changed["part"]["state"]["error"] = "The compiler is unavailable.".into();
+        changed["part"]["state"]["metadata"]["exit"] = code.into();
+        let raw = changed.to_string();
+        assert_eq!(step_outcome(&raw), StepOutcome::Failed);
+        let message = render("exec", &raw, "Explain the observed result in English.");
+        assert!(message.contains(&code.to_string()));
+        assert!(!message.to_lowercase().contains("no exit code"));
+    }
+}
+
+#[test]
+fn completed_provider_parts_retain_outer_failure_signals() {
+    use formal_ai::agentic_coding::tool_result::{StepOutcome, step_outcome};
+    let state =
+        serde_json::json!({"status":"completed","metadata":{"exit":0,"output":"tool output"}});
+    let frame =
+        serde_json::json!({"type":"tool_use","part":{"type":"tool","tool":"exec","state":state}});
+    assert_eq!(step_outcome(&frame.to_string()), StepOutcome::Succeeded);
+    for extra in [
+        serde_json::json!({"status":"error"}),
+        serde_json::json!({"outcome":"failed"}),
+        serde_json::json!({"status_code":500}),
+        serde_json::json!({"success":false}),
+        serde_json::json!({"is_error":true}),
+        serde_json::json!({"timed_out":true}),
+        serde_json::json!({"signal":"SIGTERM"}),
+    ] {
+        let mut changed = frame.clone();
+        changed
+            .as_object_mut()
+            .expect("frame")
+            .extend(extra.as_object().expect("signals").clone());
+        assert_eq!(step_outcome(&changed.to_string()), StepOutcome::Failed);
+    }
+}

@@ -366,6 +366,44 @@ function result(payload, error, format, exitCode) {
 const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
 /** Mirrors `fn normalize`: `{payload, error, format, exit_code}`. */
+/** Project only terminal typed provider parts; arbitrary stdout JSON grants no status. */
+function providerResultProjection(value) {
+  const part = value.type === 'tool_use' && Object.hasOwn(value, 'part') ? value.part : value;
+  if (!isObject(part) || !['tool', 'tool_use'].includes(part.type)
+    || typeof (part.tool ?? part.name) !== 'string' || !isObject(part.state)
+    || !['completed', 'error'].includes(part.state.status)) return null;
+  const state = part.state, metadata = isObject(state.metadata) ? state.metadata : {};
+  if (['status', 'outcome'].some(key => expectedStopStatus(value[key]))) return null;
+  const projected = Object.create(null);
+  for (const key of ['exit_code', 'exitCode', 'status_code', 'status', 'outcome', 'ok', 'success',
+    'is_error', 'isError', 'timed_out', 'aborted', 'signal', 'error', 'stderr', 'failure',
+    'output', 'stdout', 'content', 'result']) {
+    if (Object.prototype.hasOwnProperty.call(state, key)) projected[key] = state[key];
+  }
+  const stated = typeof state.error === 'string' ? labelledProcessExitCode(state.error) : null;
+  const codes = [value.exit_code, value.exitCode, state.exit_code, state.exitCode, metadata.exit, stated]
+    .map(entry => asI64(entry) ?? (typeof entry === 'string' ? parseI64(entry) : null))
+    .filter(entry => entry !== null);
+  const code = codes.find(entry => entry !== 0) ?? codes[0];
+  if (code !== null && code !== undefined) projected.exit_code = code;
+  if (value.is_error === true || value.isError === true) projected.is_error = true;
+  if (['status', 'outcome'].some(key => failedStatus(value[key]))
+    || (Number.isInteger(value.status_code) && value.status_code >= 400)) projected.is_error = true;
+  if (value.success === false || value.ok === false) projected.success = false;
+  for (const key of ['error', 'stderr', 'failure']) {
+    if (nonemptyText(value[key]) !== null && nonemptyText(projected[key]) === null) projected[key] = value[key];
+  }
+  if (metadata.timedOut === true || value.timed_out === true) projected.timed_out = true;
+  if (metadata.aborted === true || value.aborted === true) projected.aborted = true;
+  const signal = [state.signal, metadata.signal, value.signal]
+    .find(entry => typeof entry === 'string' && entry.length > 0);
+  if (signal !== undefined) projected.signal = signal;
+  if (!['output', 'stdout', 'content', 'result'].some(key => Object.hasOwn(projected, key))
+    && Object.hasOwn(metadata, 'output')) projected.output = metadata.output;
+  // The fixed projection deliberately excludes type/part/state: normalization cannot recurse.
+  return projected;
+}
+
 function normalize(raw) {
   const trimmed = trim(raw);
   const value = parseJson(trimmed);
@@ -377,6 +415,8 @@ function normalize(raw) {
     return fromPayload(stripTransportEnvelope(trimmed), null);
   }
   if (!isObject(value)) return fromPayload(prettyJson(value), null);
+  const projection = providerResultProjection(value);
+  if (projection !== null) return normalize(JSON.stringify(projection));
   const object = value;
   const present = (keys) => keys.filter((key) => has(object, key)).map((key) => object[key]);
   const nonzeroExit = present(['exit_code', 'exitCode']).some(nonzeroStatus);
