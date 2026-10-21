@@ -10,14 +10,20 @@ import { evidenceWindowStart } from './planner/continuation.mjs';
 export const MAXIMUM_IDENTICAL_ACTION_ATTEMPTS = 3;
 export const MAXIMUM_IDENTICAL_FAILED_ACTIONS = 2;
 export const MAXIMUM_ACTIONS_PER_OBJECTIVE = 128;
-function actionKey(call) {
-  let argumentsText = call.function.arguments;
+function canonicalActionKey(tool, argumentsValue) {
+  let argumentsText = argumentsValue;
   try { argumentsText = jsonText(JSON.parse(argumentsText)); } catch { /* Preserve invalid input exactly. */ }
-  return JSON.stringify([call.function.name.toLowerCase(), argumentsText]);
+  return JSON.stringify([tool.toLowerCase(), argumentsText]);
 }
-/** No result-shape inference, capability recognition or process-local counter is required. */
-export function repeatedActionStop(messages) {
+function actionKey(call) {
+  return canonicalActionKey(call.function.name, call.function.arguments);
+}
+/** No result-shape inference, capability recognition or process-local counter is required.
+ * Optional proposed calls filter only the recognized two-failure stop; global caps remain unconditional. */
+export function repeatedActionStop(messages, candidates = null) {
   if (messages.reduce((sum, message) => sum + (message.role.toLowerCase() === 'assistant' ? (message.tool_calls?.length ?? 0) : 0), 0) < MAXIMUM_IDENTICAL_FAILED_ACTIONS) return null;
+  const candidateKeys = candidates === null ? null
+    : new Set(candidates.map(call => canonicalActionKey(call.tool, call.arguments)));
   const lastUser = messages.findLastIndex(message => message.role.toLowerCase() === 'user');
   const priorCalls = messages.slice(0, lastUser).some(message => message.role.toLowerCase() === 'assistant' && message.tool_calls?.length);
   let window = lastUser + 1;
@@ -50,7 +56,8 @@ export function repeatedActionStop(messages) {
       const key = actionKey(call);
       const attempts = (failedCounts.get(key) ?? 0) + 1;
       failedCounts.set(key, attempts);
-      if (attempts >= MAXIMUM_IDENTICAL_FAILED_ACTIONS) failed = {call, attempts, result};
+      if (attempts >= MAXIMUM_IDENTICAL_FAILED_ACTIONS
+          && (candidateKeys === null || candidateKeys.has(key))) failed = {call, attempts, result};
     }
   }
   if (failed !== null) return agenticMessage('action-repetition-stopped', {

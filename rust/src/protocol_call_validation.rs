@@ -171,9 +171,6 @@ pub fn bind_plan(
         }
         return plan;
     };
-    if let Some(reason) = crate::agentic_coding::repetition_guard::repeated_action_stop(messages) {
-        return AgenticPlan::Final(reason);
-    }
     for call in &mut calls {
         call.arguments = crate::protocol_responses::response_arguments_for_tool(
             tools,
@@ -208,6 +205,14 @@ pub fn bind_plan(
             || "tool_call_bound".into(),
             || json!({"tool":call.tool,"arguments":call.arguments,"repeat_limit":crate::agentic_coding::repetition_guard::MAXIMUM_IDENTICAL_ACTION_ATTEMPTS,"state":"awaiting_client_receipt"}),
         );
+    }
+    if let Some(reason) =
+        crate::agentic_coding::repetition_guard::repeated_action_stop_for_candidates(
+            messages,
+            Some(&calls),
+        )
+    {
+        return AgenticPlan::Final(reason);
     }
     AgenticPlan::ToolCalls(calls)
 }

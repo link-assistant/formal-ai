@@ -1,4 +1,5 @@
 //! Finite transcript-derived action budgets, independent of result/capability recognition.
+use super::planner::{AgenticPlan, PlannedToolCall};
 use crate::protocol::ChatMessage;
 use std::collections::BTreeMap;
 
@@ -9,6 +10,21 @@ pub const MAXIMUM_IDENTICAL_ACTION_ATTEMPTS: usize = crate::bounded_retry::MAXIM
 /// Stop even if errors are unrecognized, results are missing, or the server restarted.
 #[must_use]
 pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
+    repeated_action_stop_for_candidates(messages, None)
+}
+
+fn canonical_action_key(tool: &str, arguments: &str) -> (String, String) {
+    let arguments = serde_json::from_str::<serde_json::Value>(arguments)
+        .map_or_else(|_| arguments.to_owned(), |value| value.to_string());
+    (tool.to_lowercase(), arguments)
+}
+
+/// Proposed calls filter only the recognized two-failure budget, never global action caps.
+#[must_use]
+pub fn repeated_action_stop_for_candidates(
+    messages: &[ChatMessage],
+    candidates: Option<&[PlannedToolCall]>,
+) -> Option<String> {
     if messages
         .iter()
         .filter(|message| message.role.eq_ignore_ascii_case("assistant"))
@@ -18,6 +34,12 @@ pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
     {
         return None;
     }
+    let candidate_keys = candidates.map(|calls| {
+        calls
+            .iter()
+            .map(|call| canonical_action_key(&call.tool, &call.arguments))
+            .collect::<std::collections::BTreeSet<_>>()
+    });
     let last_user = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"));
@@ -74,16 +96,14 @@ pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
             if super::tool_result::failure_message(&result, message.is_error, false).is_none() {
                 continue;
             }
-            let arguments = serde_json::from_str::<serde_json::Value>(&call.function.arguments)
-                .map_or_else(
-                    |_| call.function.arguments.clone(),
-                    |value| value.to_string(),
-                );
-            let count = failed_counts
-                .entry((call.function.name.to_lowercase(), arguments))
-                .or_insert(0usize);
+            let key = canonical_action_key(&call.function.name, &call.function.arguments);
+            let count = failed_counts.entry(key.clone()).or_insert(0usize);
             *count += 1;
-            if *count >= MAXIMUM_IDENTICAL_FAILED_ACTIONS {
+            if *count >= MAXIMUM_IDENTICAL_FAILED_ACTIONS
+                && candidate_keys
+                    .as_ref()
+                    .is_none_or(|keys| keys.contains(&key))
+            {
                 failed = Some((call, *count, result));
             }
         }
@@ -111,14 +131,8 @@ pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
         for call in &message.tool_calls {
             total = total.saturating_add(1);
             // serde_json objects use sorted keys, independent of the wire's key order.
-            let arguments = serde_json::from_str::<serde_json::Value>(&call.function.arguments)
-                .map_or_else(
-                    |_| call.function.arguments.clone(),
-                    |value| value.to_string(),
-                );
-            let count = counts
-                .entry((call.function.name.to_lowercase(), arguments))
-                .or_insert(0usize);
+            let key = canonical_action_key(&call.function.name, &call.function.arguments);
+            let count = counts.entry(key).or_insert(0usize);
             *count += 1;
             if *count >= MAXIMUM_IDENTICAL_ACTION_ATTEMPTS {
                 repeated = Some((call, *count));
@@ -157,4 +171,29 @@ pub fn repeated_action_stop(messages: &[ChatMessage]) -> Option<String> {
             ("result", &detail),
         ],
     ))
+}
+
+/// Apply the failure budget after a route is chosen, including null and terminal routes.
+pub(super) fn guard_plan(
+    messages: &[ChatMessage],
+    plan: Option<AgenticPlan>,
+    result: &mut Option<super::final_result::FinalResult>,
+) -> Option<AgenticPlan> {
+    if crate::protocol::latest_user_request(messages).is_none() {
+        return plan;
+    }
+    let candidates = match &plan {
+        Some(AgenticPlan::ToolCalls(calls)) => Some(calls.as_slice()),
+        _ => None,
+    };
+    if let Some(reason) = repeated_action_stop_for_candidates(messages, candidates) {
+        Some(super::final_result::record(
+            AgenticPlan::Final(reason),
+            super::final_result::FinalDisposition::Failure,
+            "repeated_action_budget",
+            result,
+        ))
+    } else {
+        plan
+    }
 }

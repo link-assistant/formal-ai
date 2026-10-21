@@ -130,8 +130,6 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
     ctx.logger?.log('debug', 'planning_terminal', {component:'planner', answer:String(plan.answer ?? '').slice(0,4096),state:'terminal',repeat_limit:3});
     return plan;
   }
-  const repeated = repeatedActionStop(request.messages);
-  if (repeated) return {kind: 'final', answer: repeated};
   const calls = [];
   for (const call of plan.calls) {
     const args = responseArgumentsForTool(request.tools, call.tool, call.arguments, prompt, workspace);
@@ -150,6 +148,8 @@ function bindPlan(ctx, request, plan, prompt, workspace) {
     ctx.logger?.log('debug', 'tool_call_bound', {component: 'planner', tool: call.tool, arguments: args, repeat_limit: 3, state: 'awaiting_client_receipt'});
     calls.push({...call, arguments: args});
   }
+  const repeated = repeatedActionStop(request.messages, calls);
+  if (repeated) return {kind: 'final', answer: repeated};
   return {...plan, calls};
 }
 

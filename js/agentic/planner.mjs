@@ -231,9 +231,18 @@ export async function planChatStep(messages, toolNames) {
 
 /** Internal planner result; recursion retains disposition and origin. */
 export async function planChatStepResolved(messages, toolNames) {
+  const plan = await planChatStepInner(messages, toolNames);
+  if (latestUserRequest(messages) === null) return plan;
+  const repeated = repeatedActionStop(messages, isToolCalls(plan) ? plan.calls : null);
+  return repeated === null ? plan
+    : resolvedFinalAnswer(repeated, FinalDisposition.Failure, 'repeated_action_budget');
+}
+
+/** Mirrors `fn plan_chat_step_inner` in rust/src/agentic_coding/planner.rs. */
+async function planChatStepInner(messages, toolNames) {
   const received = latestUserRequest(messages);
   if (received === null) return null;
-  const repeated = repeatedActionStop(messages);
+  const repeated = repeatedActionStop(messages, []);
   if (repeated !== null) return resolvedFinalAnswer(repeated, FinalDisposition.Failure, 'repeated_action_budget');
   const summary = harnessEnvelope.summarizeRequest(received);
   if (summary !== null) return resolvedFinalAnswer(summary, FinalDisposition.Finding, 'harness_summary');

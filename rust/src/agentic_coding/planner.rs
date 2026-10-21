@@ -1,6 +1,7 @@
 //! Deterministic agentic planner for choosing the next tool or final answer from
 //! a conversation and its advertised capabilities, without hidden neural state.
 
+use super::repetition_guard::repeated_action_stop_for_candidates as action_stop;
 use serde_json::json;
 mod continuation;
 mod obligations;
@@ -178,7 +179,8 @@ pub(super) fn plan_chat_step_resolved(
     tool_names: &[&str],
 ) -> Option<ResolvedPlan> {
     let mut result = None;
-    let plan = plan_chat_step_inner(messages, tool_names, &mut result)?;
+    let plan = plan_chat_step_inner(messages, tool_names, &mut result);
+    let plan = super::repetition_guard::guard_plan(messages, plan, &mut result)?;
     Some(ResolvedPlan::new(plan, result))
 }
 
@@ -188,7 +190,7 @@ fn plan_chat_step_inner(
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let received = crate::protocol::latest_user_request(messages)?;
-    if let Some(reason) = super::repetition_guard::repeated_action_stop(messages) {
+    if let Some(reason) = action_stop(messages, Some(&[])) {
         return Some(record(
             AgenticPlan::Final(reason),
             FinalDisposition::Failure,

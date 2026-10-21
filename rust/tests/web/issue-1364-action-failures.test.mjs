@@ -89,3 +89,42 @@ test('nonboolean and false message flags do not manufacture authoritative failur
     assert.equal(repeatedActionStop(messages), null);
   }
 });
+
+
+import {chatCompletionFromPlan, responseFromPlan} from '../../../js/server/agentic.mjs';
+test('two failed operands do not suppress a distinct verification candidate', () => {
+  const messages = transcript([failure, failure]);
+  assert.equal(repeatedActionStop(messages, []), null);
+  assert.equal(repeatedActionStop(messages, [{tool:'bash', arguments:'{"command":"cat result.txt"}'}]), null);
+  assert.match(repeatedActionStop(messages, [{tool, arguments:' { } '}]), /after 2 attempts/);
+  assert.match(repeatedActionStop(messages), /after 2 attempts/);
+});
+test('candidate filtering never resets the independent global three-action or objective cap', () => {
+  for (const candidates of [[], [{tool:'different', arguments:'{}'}]]) {
+    assert.match(repeatedActionStop(transcript([null, null, null]), candidates), /after 3 attempts/);
+    const messages = [{role:'user', content:'Fix the failing coding task.'}];
+    for (let index=0;index<128;index+=1) messages.push({role:'assistant',tool_calls:[{
+      id:String(index),function:{name:'unknown_'+index,arguments:'{}'},
+    }]});
+    assert.match(repeatedActionStop(messages,candidates), /128/);
+  }
+});
+test('both wire surfaces guard actual schema-bound aliases after command projection', () => {
+  const messages = transcript([JSON.stringify({exit_code:1}), JSON.stringify({exit_code:1})]);
+  for (const message of messages) {
+    if (message.role==='assistant') message.tool_calls[0].function={name:'bash',arguments:'{"cmd":"same"}'};
+    if (message.role==='tool') message.name='bash';
+  }
+  const request={messages,tools:[{type:'function',function:{name:'bash',parameters:{
+    type:'object',properties:{cmd:{type:'string'}},required:['cmd'],additionalProperties:false,
+  }}}]};
+  const makePlan=command=>({kind:'tool_calls',calls:[{tool:'bash',arguments:JSON.stringify({command})}]});
+  const chat=chatCompletionFromPlan({},request,'Fix the failing coding task.',makePlan('same'),0);
+  const response=responseFromPlan({},request,request,'Fix the failing coding task.',makePlan('same'),0);
+  assert.deepEqual(chat.choices[0].message.tool_calls,[]);
+  assert.match(chat.choices[0].message.content,/after 2 attempts/);
+  assert.ok(!response.output.some(item=>item.type==='function_call'));
+  const distinct=chatCompletionFromPlan({},request,'Fix the failing coding task.',makePlan('cat result.txt'),0);
+  assert.equal(distinct.choices[0].message.tool_calls.length,1);
+  assert.deepEqual(JSON.parse(distinct.choices[0].message.tool_calls[0].function.arguments),{cmd:'cat result.txt'});
+});

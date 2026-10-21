@@ -366,3 +366,44 @@ fn missing_call_identifiers_do_not_certify_two_failures() {
     }
     assert!(repeated_action_stop(&messages).is_none());
 }
+
+#[test]
+fn failed_pair_is_specific_to_the_proposed_canonical_action() {
+    use formal_ai::agentic_coding::planner::PlannedToolCall;
+    use formal_ai::agentic_coding::repetition_guard::repeated_action_stop_for_candidates;
+    let mut messages = transcript("unknown", 2);
+    for message in &mut messages {
+        if message.role == "tool" {
+            message.content =
+                formal_ai::protocol::MessageContent::Text(r#"{"exit_code":1}"#.into());
+        }
+    }
+    let same = [PlannedToolCall {
+        tool: "UNKNOWN".into(),
+        arguments: r#"{"b":2,"a":1}"#.into(),
+    }];
+    let different = [PlannedToolCall {
+        tool: "bash".into(),
+        arguments: r#"{"command":"cat result.txt"}"#.into(),
+    }];
+    assert!(repeated_action_stop_for_candidates(&messages, Some(&same)).is_some());
+    assert!(repeated_action_stop_for_candidates(&messages, Some(&different)).is_none());
+    assert!(repeated_action_stop_for_candidates(&messages, Some(&[])).is_none());
+    assert!(repeated_action_stop(&messages).is_some());
+    let unknown = transcript("unknown", 3);
+    assert!(repeated_action_stop_for_candidates(&unknown, Some(&different)).is_some());
+}
+
+#[test]
+fn distinct_candidate_does_not_erase_the_global_objective_limit() {
+    use formal_ai::agentic_coding::repetition_guard::repeated_action_stop_for_candidates;
+    let mut messages = vec![ChatMessage::user("Fix the failing coding task.")];
+    for index in 0..128 {
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            index.to_string(),
+            format!("unknown_{index}"),
+            "{}",
+        )]));
+    }
+    assert!(repeated_action_stop_for_candidates(&messages, Some(&[])).is_some());
+}
