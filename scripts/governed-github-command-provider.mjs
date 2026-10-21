@@ -81,7 +81,7 @@ export function createGovernedGithubCommandProvider({
   const deadline = Date.now() + 30000;
   let count = 0;
   function read(route) {
-    const allowed = route === runPath || route === commitPath || route === jobsPath || workflowId !== null && route === base + '/actions/workflows/' + workflowId || trees.has(route) || blobs.has(route) || childId !== null && (route === groupPath || route === groupPath + '?ahead_of_job=' + childId);
+    const allowed = route === runPath || route === commitPath || route === jobsPath || workflowId !== null && route === base + '/actions/workflows/' + workflowId || trees.has(route) || blobs.has(route) || childId !== null && route === groupPath;
     assert.ok(allowed, 'unregistered governedGET route');
     assert.ok(++count <= profile.maximumRequests, 'bounded source/lease request inventory exceeded');
     const remaining = deadline - Date.now();
@@ -191,7 +191,6 @@ export function createGovernedGithubCommandProvider({
       blobs: [...blobs.keys()],
       sources: [...blobs].flatMap(([route,sources])=>sources.map(source=>({route,...source}))),
       jobs: jobsPath,
-      ancestor: childId === null ? null : groupPath + '?ahead_of_job=' + childId,
       group: childId === null ? null : groupPath
     });
   }

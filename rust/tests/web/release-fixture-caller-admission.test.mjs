@@ -94,15 +94,20 @@ import { observeActiveAncestor } from '../../../scripts/release-runtime-fixture.
 function syntheticPhysicalReceipts() {
   const physical = {id: 42, name: childName, run_id: 123, run_attempt: 2, head_sha: context.eventHead,
     status: 'in_progress', runner_name: 'synthetic-runner', runner_id: 7,
+    completed_at:null,started_at:'2026-10-11T00:00:00Z',
     url: 'https://api.github.com' + base + '/jobs/42'};
-  return [{status: 200, body: {jobs: [structuredClone(physical)]}},
-    {status: 200, body: physical},
-    {status: 200, body: {group_name: groupName, group_members: [{run_id: 123, status: 'in_progress'}]}}];
+  return [{status: 200, observedAt:'2026-10-11T00:00:01Z', body: {total_count:1,jobs: [structuredClone(physical)]}},
+    {status: 200, observedAt:'2026-10-11T00:00:02Z', body: physical},
+    {status: 200, observedAt:'2026-10-11T00:00:04Z', body: {group_name: groupName,total_count:1,
+      group_members: [{run_id:123,job_id:42,job_name:childName,status:'in_progress',job_url:physical.url,
+        run_url:'https://api.github.com'+base+'/runs/123'}]}}];
 }
 async function syntheticPhysicalAttempt(values, runnerName = 'synthetic-runner') {
   const calls = [];
   const receipt = await observeActiveAncestor({
-    get: async route => {calls.push(route); return values[calls.length - 1];},
+    get: async route => {calls.push(route);
+      if(route===base+'/runs/123')return {...syntheticSnapshots()[0],observedAt:'2026-10-11T00:00:03Z'};
+      return values[route.includes('/jobs?')?0:route.includes('/jobs/')?1:2];},
     context, name: groupName, label: 'Fixture lease holder active', snapshots: [], runnerName
   });
   return {calls, receipt};
@@ -112,7 +117,7 @@ test('synthetic physical execution guard binds exact current runner, source, run
   const result = await syntheticPhysicalAttempt(syntheticPhysicalReceipts());
   assert.equal(result.receipt.descendantJobId, 42);
   assert.deepEqual(result.calls, [base + '/runs/123/jobs?filter=latest&per_page=100',
-    base + '/jobs/42', base + '/concurrency_groups/' + groupName + '?ahead_of_job=42']);
+    base + '/jobs/42', base + '/runs/123', base + '/concurrency_groups/' + groupName]);
 });
 
 test('synthetic queued, foreign and missing physical execution cannot use admission as a witness', async () => {

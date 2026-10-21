@@ -266,3 +266,15 @@ test('failed active finalization preserves its diagnostic receipt before refusin
   assert.throws(()=>validateActiveFixtureLease({observation:'Unknown',reason:'actual missing queue observation'}));
   assert.equal(validateActiveFixtureLease({observation:'VerifiedPrivateFixtureLease'}),true);
 });
+
+
+test('failed collection persists incomplete observations before strict output and lease checks', () => {
+  const source=helper();const start=source.indexOf('async function collect() {');
+  const collect=source.slice(start);const write=collect.indexOf("write('collected.json', { ...context, active, inactive,");
+  const validate=collect.indexOf('validateFixtureOutputs(active, inactive, context.source);');
+  const lease=collect.indexOf('validateActiveFixtureLease({ observation: process.env.ACTIVE_LEASE });');
+  const success=collect.indexOf("actualOutputsObservation: 'VerifiedActiveAndInactive'");
+  assert(write>=0&&write<validate&&validate<lease&&lease<success);
+  assert(collect.slice(write,validate).includes("actualOutputsObservation: 'Incomplete'"));
+  assert.throws(()=>validateActiveFixtureLease({observation:'Unknown'}));
+});

@@ -6,6 +6,11 @@ const descendantNames = new Set([
   'Active reusable fixture / Fixture final active'
 ]);
 
+export function requireFixtureDescendantName(name) {
+  assert.ok(descendantNames.has(name), 'source-declared fixture descendant required');
+  return name;
+}
+
 // Admission enables a contender to queue. It is never executing-lease authority.
 export function validateCallerAdmission(run, jobs, group, context) {
   assert.match(context.repository, /^[\w.-]+\/[\w.-]+$/);
