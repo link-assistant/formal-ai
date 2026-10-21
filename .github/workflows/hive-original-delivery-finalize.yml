@@ -1,5 +1,8 @@
 name: Finalize original Hive generated tasks
-on:
+# Only the trusted default-branch cleanup program executes. Artifact data never
+# executes; exact authenticated owner/run/source custody and a durable pre-effect
+# claim are required again immediately before each generated issue write.
+on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows:
       - Original Hive Mind three-client delivery
@@ -10,7 +13,6 @@ on:
 permissions:
   contents: read
   actions: read
-  issues: write
 concurrency:
   group: hive-generated-cleanup-${{ github.event.workflow_run.id || github.run_id }}
   cancel-in-progress: false
@@ -101,3 +103,7 @@ jobs:
           path: ${{ runner.temp }}/outcome.json
           if-no-files-found: error
           retention-days: 90
+    permissions:
+      contents: read
+      actions: read
+      issues: write

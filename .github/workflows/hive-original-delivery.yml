@@ -1,5 +1,8 @@
 name: Original Hive Mind three-client delivery
-on:
+# Completion events execute only this trusted default-branch protocol. The read-only
+# admission authenticates same-repository source and all CI before credentialed
+# effects, which require a source-bound immutable claim.
+on: # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows:
       - "*"
@@ -80,10 +83,9 @@ jobs:
           HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
             format('{0}/hive-admission/selection.json', runner.temp) || '' }}
         run: >
-          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION"
+          "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >>
           "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.workflow_sha }}
@@ -102,7 +104,8 @@ jobs:
         with:
           name: hive-admission-selection
           path: ${{ runner.temp }}/hive-admission
-      - uses: ./.github/actions/formal-ai-binary
+      # The admitted product checkout supplies its matching build action; no persisted credentials.
+      - uses: ./.github/actions/formal-ai-binary # zizmor: ignore[self-repository]
         with:
           cache-key-prefix: hive-formal-ai-ubuntu-24
         if: ${{ needs.admission.outputs.published != 'true' }}
@@ -140,10 +143,9 @@ jobs:
           HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
             format('{0}/hive-admission/selection.json', runner.temp) || '' }}
         run: >
-          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION"
+          "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >>
           "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.admission.outputs.source }}
@@ -255,18 +257,17 @@ jobs:
           "$GITHUB_ENV"
 
           echo "HIVE_IMAGE_BUNDLE_DIR=$RUNNER_TEMP/hive-image-bundle" >> "$GITHUB_ENV"
-
-          echo "HIVE_EVIDENCE_PUBLISH_DIRECTORY=$RUNNER_TEMP/hive-original-evidence/publish" >> "$GITHUB_ENV"
       - name: Initialize owned admission paths after runner assignment
         env:
           HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
           HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
             format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+          HIVE_EVIDENCE_PUBLISH_DIRECTORY: ${{ runner.temp }}/hive-original-evidence/publish
         run: >
-          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION"
+          "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE"
+          "HIVE_EVIDENCE_PUBLISH_DIRECTORY=$HIVE_EVIDENCE_PUBLISH_DIRECTORY" >>
           "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.admission.outputs.source }}
@@ -461,12 +462,9 @@ jobs:
             format('{0}/hive-admission/selection.json', runner.temp) || '' }}
           HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
         run: >
-          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
-          "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_ATTEMPT_CLAIM=$HIVE_ATTEMPT_CLAIM" >> "$GITHUB_ENV"
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION"
+          "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE"
+          "HIVE_ATTEMPT_CLAIM=$HIVE_ATTEMPT_CLAIM" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.admission.outputs.source }}
@@ -591,14 +589,10 @@ jobs:
           HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
           HIVE_ATTEMPT_RESULT: ${{ runner.temp }}/hive-attempt-result/result.json
         run: >
-          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
-          "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_ATTEMPT_CLAIM=$HIVE_ATTEMPT_CLAIM" >> "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_ATTEMPT_RESULT=$HIVE_ATTEMPT_RESULT" >> "$GITHUB_ENV"
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION"
+          "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE"
+          "HIVE_ATTEMPT_CLAIM=$HIVE_ATTEMPT_CLAIM"
+          "HIVE_ATTEMPT_RESULT=$HIVE_ATTEMPT_RESULT" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -653,10 +647,9 @@ jobs:
           HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
             format('{0}/hive-admission/selection.json', runner.temp) || '' }}
         run: >
-          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION"
+          "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >>
           "$GITHUB_ENV"
-
-          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v7
         with:
           node-version: 24
