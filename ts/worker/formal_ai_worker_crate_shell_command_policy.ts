@@ -37,7 +37,7 @@ function splitSentences(prompt, endsSentence) {
     index += character.length;
     if (!endsSentence(character)) continue;
     if (character === '.') {
-      const next = Array.from(prompt.slice(index))[0];
+      const next = Array.from(prompt.slice(index, index + 2))[0];
       if (next !== undefined && isAlphanumeric(next)) continue;
     }
     const text = trim(prompt.slice(start, at));

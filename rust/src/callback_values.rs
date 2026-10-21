@@ -83,7 +83,6 @@ pub trait CallbackPropertyReceiver {
 }
 /// Capture one property name and dispatch exactly once per receiver invocation.
 /// This typed interface does not claim the complete ECMAScript object model.
-#[must_use]
 pub fn callback_property<T: CallbackPropertyReceiver>(name: &str) -> impl Fn(T) -> T::Output + '_ {
     move |value| value.property(name)
 }

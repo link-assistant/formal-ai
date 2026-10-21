@@ -300,7 +300,7 @@ function sentencesWithMood(lower) {
     index += character.length;
     if (!MOOD_ENDS.has(character)) continue;
     if (character === '.') {
-      const next = Array.from(lower.slice(index))[0];
+      const next = Array.from(lower.slice(index, index + 2))[0];
       if (next !== undefined && isAlphanumeric(next)) continue;
     }
     const text = trim(lower.slice(start, at));

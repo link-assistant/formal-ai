@@ -13,3 +13,5 @@
 - Recognize both maintained Babel dynamic-import AST representations in subprocess boundary checks, retaining alias detection and the strict finite startup policy.
 - Derive canonical named-property callback factories from source syntax, enabling a maintained JavaScript self-edit with preserved comments, unchanged consumer tests and complete readable before/after CST evidence.
 - Share Docker CLI compatibility pins and finite installation checks across full and slim images, avoiding unpublished transitive SDK versions while retaining the original runtime probes.
+- Cache immutable read-mode grammar compilation and bound exact Unicode lookaround, retaining independent fresh-request quality checks and hosted cold/repeated large-request timing.
+- Reuse matching installed Node headers for macOS host dependencies without overriding configured Electron targets, and repair the exact observed lint and publisher-snapshot findings.

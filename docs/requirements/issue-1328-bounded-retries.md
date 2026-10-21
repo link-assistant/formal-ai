@@ -14,6 +14,20 @@ Push targets use an explicitly bound valid branch or a current-branch observatio
 
 Exact prompt normalization is memoized without truncating or changing the request. Native caching has one process-wide memory ceiling, shared by connection threads; JavaScript caching belongs to its installed source host. Both bound retained entries and text. The address-only production CPU profile does not establish that normalization alone accounts for the reported 130 seconds; source replay and hosted native timing must distinguish measured improvements from that inference.
 
+Fresh-request cost must be measured separately from exhausted-history stopping.
+Retain cold and repeated observations at the actual maintained request entrypoint,
+with the original requested action and independent argument/quality checks. A
+normalization microbenchmark or an exhausted transcript that bypasses planning
+does not establish fresh-request latency. Preserve complete available input;
+identify missing wire/tool context explicitly. Public synthetic stress inputs
+remain separately labelled and cannot replace an unavailable original replay.
+Native execution stays hosted, with an outer supervised deadline that also stops
+a stalled synchronous planner. Report measured wall/CPU scope and unavailable
+measurements honestly; an observation deadline alone is not a performance pass.
+Immutable grammar compilation may be cached for its declared installation/host
+lifetime. Do not cache prompt-dependent ownership decisions or bypass quote,
+path, domain, full-match, ambiguity or host-reset checks.
+
 Diagnostic persistence is best effort but its failure is observable: probe the configured sink at startup, report its real directory and IO cause once, disable a failed file sink instead of retrying every diagnostic, retain stderr, and expose the state through `/health`. Memory storage errors must retain their original IO category and cause instead of being mislabeled as incompatible schema.
 
 ## Retry audit

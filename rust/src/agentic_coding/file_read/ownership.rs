@@ -512,92 +512,115 @@ pub(in crate::agentic_coding) fn read_policy_blocks_plan(prompt: &str, plan: &Ag
     false
 }
 
-fn mode_paths_for_clause(prompt: &str) -> Option<Vec<String>> {
-    let normalized = balanced_path_text(prompt);
-    let prompt = normalized.as_str();
-    let parsed = crate::seed::parser::parse_lino(include_str!(
-        "../../../embedded/data/seed/meanings-file-write.lino"
-    ));
-    let root = parsed.children.first()?;
-    let contract = root
-        .children
-        .iter()
-        .find(|node| node.name == "file-read-mode-contract")?;
-    let placeholders = regex::Regex::new(r"\{([a-z]+(?:-[a-z]+)*)\}").ok()?;
-    for form in contract.children.iter().filter(|node| node.name == "form") {
-        let Some(template) = form
-            .children
-            .iter()
-            .find(|node| node.name == "pattern")
-            .map(|node| node.id.as_str())
-        else {
-            continue;
-        };
-        let mut missing = false;
-        let pattern = placeholders
-            .replace_all(template, |captures: &regex::Captures<'_>| {
-                let name = &captures[1];
-                if ["source", "sources"].contains(&name) {
-                    return format!("(?P<{name}>.+?)");
-                }
-                let exact = seed::lexicon().words_for_role(name);
-                let legacy = seed::lexicon().words_for_role(&name.replace('-', "_"));
-                if !exact.is_empty() && !legacy.is_empty() && exact != legacy {
-                    missing = true;
-                    return String::new();
-                }
-                let surfaces = if exact.is_empty() { legacy } else { exact };
-                if surfaces.is_empty() {
-                    missing = true;
-                }
-                format!(
-                    "(?:{})",
-                    surfaces
-                        .iter()
-                        .map(|surface| regex::escape(surface))
-                        .collect::<Vec<_>>()
-                        .join("|")
-                )
-            })
-            .replace("(?<", "(?P<");
-        if missing {
-            continue;
-        }
-        let Ok(expression) = regex::RegexBuilder::new(&pattern)
-            .case_insensitive(true)
-            .build()
-        else {
-            continue;
-        };
-        let Some(captures) = expression.captures(prompt) else {
-            continue;
-        };
-        if captures.get(0)?.as_str().len() != prompt.len() {
-            continue;
-        }
-        if !form
-            .children
-            .iter()
-            .filter(|node| node.name == "capture-domain")
-            .all(|domain| {
-                let Some(value) = captures.name(&domain.id).map(|matched| matched.as_str()) else {
-                    return false;
-                };
-                let Some(domain_pattern) = domain
+struct ReadModeForm {
+    expression: regex::Regex,
+    domains: Vec<(String, regex::Regex)>,
+}
+
+// The compiled seed and lexicon are immutable; never retain request matches or answers.
+fn read_mode_forms() -> Option<&'static [ReadModeForm]> {
+    static FORMS: std::sync::OnceLock<Option<Vec<ReadModeForm>>> = std::sync::OnceLock::new();
+    FORMS
+        .get_or_init(|| {
+            let parsed = crate::seed::parser::parse_lino(include_str!(
+                "../../../embedded/data/seed/meanings-file-write.lino"
+            ));
+            let root = parsed.children.first()?;
+            let contract = root
+                .children
+                .iter()
+                .find(|node| node.name == "file-read-mode-contract")?;
+            let placeholders = regex::Regex::new(r"\{([a-z]+(?:-[a-z]+)*)\}").ok()?;
+            let mut forms = Vec::new();
+            for form in contract.children.iter().filter(|node| node.name == "form") {
+                let Some(template) = form
                     .children
                     .iter()
                     .find(|node| node.name == "pattern")
                     .map(|node| node.id.as_str())
                 else {
-                    return false;
+                    continue;
                 };
-                regex::Regex::new(domain_pattern).is_ok_and(|expression| {
-                    expression
-                        .find(value)
-                        .is_some_and(|matched| matched.as_str().len() == value.len())
-                })
+                let mut missing = false;
+                let pattern = placeholders
+                    .replace_all(template, |captures: &regex::Captures<'_>| {
+                        let name = &captures[1];
+                        if ["source", "sources"].contains(&name) {
+                            return format!("(?P<{name}>.+?)");
+                        }
+                        let exact = seed::lexicon().words_for_role(name);
+                        let legacy = seed::lexicon().words_for_role(&name.replace('-', "_"));
+                        if !exact.is_empty() && !legacy.is_empty() && exact != legacy {
+                            missing = true;
+                            return String::new();
+                        }
+                        let surfaces = if exact.is_empty() { legacy } else { exact };
+                        if surfaces.is_empty() {
+                            missing = true;
+                        }
+                        format!(
+                            "(?:{})",
+                            surfaces
+                                .iter()
+                                .map(|surface| regex::escape(surface))
+                                .collect::<Vec<_>>()
+                                .join("|")
+                        )
+                    })
+                    .replace("(?<", "(?P<");
+                if missing {
+                    continue;
+                }
+                let Ok(expression) = regex::RegexBuilder::new(&pattern)
+                    .case_insensitive(true)
+                    .build()
+                else {
+                    continue;
+                };
+                let domains = form
+                    .children
+                    .iter()
+                    .filter(|node| node.name == "capture-domain")
+                    .map(|domain| {
+                        let pattern = domain
+                            .children
+                            .iter()
+                            .find(|node| node.name == "pattern")?
+                            .id
+                            .as_str();
+                        Some((domain.id.clone(), regex::Regex::new(pattern).ok()?))
+                    })
+                    .collect::<Option<Vec<_>>>();
+                let Some(domains) = domains else {
+                    continue;
+                };
+                forms.push(ReadModeForm {
+                    expression,
+                    domains,
+                });
+            }
+            Some(forms)
+        })
+        .as_deref()
+}
+
+fn mode_paths_for_clause(prompt: &str) -> Option<Vec<String>> {
+    let normalized = balanced_path_text(prompt);
+    let prompt = normalized.as_str();
+    for form in read_mode_forms()? {
+        let Some(captures) = form.expression.captures(prompt) else {
+            continue;
+        };
+        if captures.get(0)?.as_str().len() != prompt.len() {
+            continue;
+        }
+        if !form.domains.iter().all(|(name, expression)| {
+            captures.name(name).is_some_and(|value| {
+                expression
+                    .find(value.as_str())
+                    .is_some_and(|matched| matched.as_str().len() == value.as_str().len())
             })
-        {
+        }) {
             continue;
         }
         let Some(source) = captures

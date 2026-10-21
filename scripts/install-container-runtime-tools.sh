@@ -6,7 +6,7 @@ runtime_home="${1:?runtime tools project directory is required}"
   echo "an absolute runtime tools project with package.json is required" >&2
   exit 2
 }
-script_dir="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+script_dir="$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 # One bounded attempt, no dependency-resolution retries or ignored failures.
 bash "$script_dir/run-with-deadline.sh" 600 \
   bun install --production --cwd "$runtime_home"

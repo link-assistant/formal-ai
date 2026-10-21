@@ -604,3 +604,59 @@ order, all program/fixture fields and original oracle source content unchanged.
 Only the exact reviewed unit-root module-registration identity is normalized for
 comparison before the maintained witness writer runs; the reader stays unchanged.
 Historical failed replays remain retained.
+
+
+## Fresh-request cost and latest hosted failures
+
+The existing five-second long-context control replays an already exhausted
+transcript; it does not measure a fresh large request. The complete available
+pre-first-assistant prefix is retained privately, but the original 277,529-byte
+wire envelope and tool definitions are unavailable. Never label a reconstructed
+or synthetic request as the original. [Sanitized measurements](evidence/fresh-request-latency.json)
+separate inputs, entrypoints, variants, cold/warm observations and failed deadlines.
+No original task text or CPU profile is published.
+
+A measured JavaScript profile identified repeated immutable read-mode grammar
+parsing/expansion/compilation. The source host now caches only compiled forms;
+native code uses its static OnceLock projection. Prompt decisions remain fresh,
+with original quote, path, domain, ambiguity, form-order and host-reset guards.
+A separate source audit found quadratic Unicode lookaround: materializing a
+whole string suffix merely to read its first scalar. Two-unit UTF-16 windows
+preserve astral and unpaired-surrogate behavior without allocating the suffix.
+
+A separately declared public 277,529-byte synthetic case timed out at 45 seconds
+before its first result on both the baseline and grammar-cache-only internal
+entrypoints. The combined repair completes three valid planner/outcome requests
+within that process boundary. The public JavaScript completion API then measures
+11.145, 9.368 and 9.322 seconds with independently checked owned issue fetch and
+required arguments. Its matching public API baseline was not measured. The
+45-second guard is a new observation boundary, not an earlier fresh-request SLA.
+CPU deltas include process workers; they are not single-thread CPU time.
+
+The new hosted native control uses the complete public request entrypoint,
+supervised child processes and separate synthetic 21,000/277,529-byte cases.
+Each case must finish all three cold/repeated calls within one 45-second bound.
+Its first call must fetch the requested issue, every call must bind valid arguments,
+and the completion cannot echo the entire user input. Native CPU is explicitly
+unavailable. Compilation and timing remain CI-only; do not claim a measured
+130-second native improvement or an exact original-wire replay.
+
+On `625355ee588db7122323077a0cbc5a414252cc2e`, all four full/slim image
+architecture validations and the main binary/test archive build passed. Lint
+lane 1 found a redundant must-use attribute, an empty-shell-assignment warning,
+and two missing publisher snapshots. Repairs remove only the redundant attribute,
+spell the empty variable explicitly and append the two authoritative package
+records without rewriting historical snapshot timestamps or weakening the gate.
+
+The macOS x64 desktop job failed before packaging/signing: node-gyp timed out
+downloading headers for the installed Node version. The macOS host dependency
+install opts into verified matching headers already supplied by setup-node.
+Explicit environment or effective npm configuration keeps its authority. The
+preferred node-gyp package-config option applies only to that npm invocation;
+later Electron rebuilds retain their own target/header selection. Unexpected
+diagnostics and unreviewed lifecycle scripts remain errors. This is a source
+repair, not proof of a successful hosted desktop package or public download.
+
+All supplied repair controllers retain zero autonomous-authorship credit.
+Use actual next-head CI, then normal merge and actual default-branch release
+receipts; earlier-head successes cannot substitute for those acceptances.

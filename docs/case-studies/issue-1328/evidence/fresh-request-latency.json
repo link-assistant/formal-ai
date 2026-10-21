@@ -1,0 +1,480 @@
+{
+  "issue": "https://github.com/link-assistant/formal-ai/issues/1328",
+  "authorshipCredit": 0,
+  "modelUsage": "Unknown",
+  "cost": "Unknown",
+  "nativeExecution": "Hosted CI required; not run locally",
+  "originalWireAvailable": false,
+  "originalWireReportedBytes": 277529,
+  "originalSystemAndToolSchemasAvailable": false,
+  "availableOriginalPrefix": {
+    "messageCount": 3,
+    "serializedMessageBytes": 19808,
+    "toolSchemas": "Six reconstructed maintained CLI schemas; original schemas unavailable",
+    "custody": "Complete available pre-first-assistant messages retained privately; no original task text or profile uploaded"
+  },
+  "publicSynthetic": {
+    "requestBytes": 277529,
+    "requestSha256": "e8a8a4927074fd0d7f1427124e918a7b79ab3d372fe3d082bfd24a51ca56866f",
+    "toolSchemaCount": 6,
+    "historyToolDeclarations": 0,
+    "qualityOracleDeclaredBeforeAttempt": true,
+    "construction": "Stable reference sentences followed by an unchanged explicit public issue fetch"
+  },
+  "measurementScope": {
+    "wall": "Monotonic time around the named entrypoint",
+    "cpu": "Process user/system deltas including workers and garbage collection; not single-thread CPU",
+    "roundedToDecimalPlaces": 3,
+    "cold": "First request in its source process; imports and source-host setup outside request timer",
+    "boundary": "45 seconds for a supervised process containing three calls; new observation boundary, not an earlier fresh-request SLA",
+    "publicApiBaseline": "Not measured; do not compare an internal baseline with a public API result"
+  },
+  "rootCauses": [
+    {
+      "path": "js/agentic/file_read/ownership.mjs",
+      "finding": "The immutable read-mode grammar was reparsed, expanded and compiled for every clause",
+      "repair": "Cache only static compiled forms for the installed source host; native OnceLock owns its static projection"
+    },
+    {
+      "paths": [
+        "js/agentic/file_read/ownership.mjs",
+        "js/agentic/shell_command_policy.mjs",
+        "js/agentic/shell_command.mjs"
+      ],
+      "finding": "Array.from materialized a whole remaining prefix or suffix just to obtain one Unicode scalar",
+      "repair": "Bound each scalar lookaround to at most two UTF-16 units, retaining exact behavior at all valid integer boundaries"
+    }
+  ],
+  "sourceIdentity": {
+    "baselineCommit": "625355ee588db7122323077a0cbc5a414252cc2e",
+    "fixedFiles": [
+      {
+        "path": "js/agentic/file_read/ownership.mjs",
+        "sha256": "2e390cda8f4418b990fcf69d5cbb6f93e275b2f8caa985f3cba14d687febd96d"
+      },
+      {
+        "path": "rust/src/agentic_coding/file_read/ownership.rs",
+        "sha256": "f6a61ecc7dc8a1a2893ec1892c4fdce7b7d9b7f3a569f0fea60214bef322f390"
+      },
+      {
+        "path": "rust/tests/web/read-mode-grammar-cache.test.mjs",
+        "sha256": "8fda6ece59f3bc935a4644cd1023ee426c2ce28aff6b04a21f372fb657354058"
+      },
+      {
+        "path": "js/agentic/shell_command_policy.mjs",
+        "sha256": "1d8cd3c1fd2f27660921c5c539454c60110e53686ebd617a97e6d3e4d96ca6ac"
+      },
+      {
+        "path": "js/agentic/shell_command.mjs",
+        "sha256": "002d0c221a873cb4a2a52fa4a488dfb27dd52c3211d4e5f2bc9381fe786a5d99"
+      },
+      {
+        "path": "rust/tests/unit/agentic-coding/issue_1328_bounded_retries.rs",
+        "sha256": "10475e12c2859e68a2ac8f498c2ee4e797d999b1935f3c53be25369924923845"
+      }
+    ]
+  },
+  "observations": [
+    {
+      "variant": "baseline",
+      "input": "available-original-prefix",
+      "entrypoint": "agenticOutcome",
+      "attempts": [
+        {
+          "attempt": 0,
+          "cold": true,
+          "wallMs": 4111.359,
+          "processCpuUserMs": 4919.935,
+          "processCpuSystemMs": 172.534,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 1,
+          "cold": false,
+          "wallMs": 2379.469,
+          "processCpuUserMs": 2530.286,
+          "processCpuSystemMs": 64.94,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 2,
+          "cold": false,
+          "wallMs": 2358.138,
+          "processCpuUserMs": 2508.107,
+          "processCpuSystemMs": 62.476,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        }
+      ]
+    },
+    {
+      "variant": "baseline",
+      "input": "available-original-prefix",
+      "entrypoint": "planChatStep",
+      "attempts": [
+        {
+          "attempt": 0,
+          "cold": true,
+          "wallMs": 2922.862,
+          "processCpuUserMs": 3508.903,
+          "processCpuSystemMs": 99.724,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 1,
+          "cold": false,
+          "wallMs": 2448.959,
+          "processCpuUserMs": 2602.682,
+          "processCpuSystemMs": 58.917,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 2,
+          "cold": false,
+          "wallMs": 2451.069,
+          "processCpuUserMs": 2606.795,
+          "processCpuSystemMs": 58.362,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        }
+      ]
+    },
+    {
+      "variant": "immutable-grammar-cache-only",
+      "input": "available-original-prefix",
+      "entrypoint": "agenticOutcome",
+      "attempts": [
+        {
+          "attempt": 0,
+          "cold": true,
+          "wallMs": 2348.977,
+          "processCpuUserMs": 2979.098,
+          "processCpuSystemMs": 84.98,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 1,
+          "cold": false,
+          "wallMs": 703.602,
+          "processCpuUserMs": 717.023,
+          "processCpuSystemMs": 13.874,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 2,
+          "cold": false,
+          "wallMs": 739.74,
+          "processCpuUserMs": 798.429,
+          "processCpuSystemMs": 19.868,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        }
+      ]
+    },
+    {
+      "variant": "immutable-grammar-cache-only",
+      "input": "available-original-prefix",
+      "entrypoint": "planChatStep",
+      "attempts": [
+        {
+          "attempt": 0,
+          "cold": true,
+          "wallMs": 1189.507,
+          "processCpuUserMs": 1639.728,
+          "processCpuSystemMs": 39.071,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 1,
+          "cold": false,
+          "wallMs": 682.446,
+          "processCpuUserMs": 697.302,
+          "processCpuSystemMs": 11.359,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 2,
+          "cold": false,
+          "wallMs": 673.17,
+          "processCpuUserMs": 737.169,
+          "processCpuSystemMs": 11.625,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        }
+      ]
+    },
+    {
+      "variant": "immutable-grammar-cache-only",
+      "input": "available-original-prefix",
+      "entrypoint": "createChatCompletion",
+      "attempts": [
+        {
+          "attempt": 0,
+          "cold": true,
+          "wallMs": 2264.451,
+          "processCpuUserMs": 2991.369,
+          "processCpuSystemMs": 81.215,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 1,
+          "cold": false,
+          "wallMs": 673.431,
+          "processCpuUserMs": 691.56,
+          "processCpuSystemMs": 1.62,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 2,
+          "cold": false,
+          "wallMs": 688.606,
+          "processCpuUserMs": 699.306,
+          "processCpuSystemMs": 3.08,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        }
+      ]
+    },
+    {
+      "variant": "grammar-cache-and-bounded-scalar-lookaround",
+      "input": "public-synthetic-277529",
+      "entrypoint": "agenticOutcome",
+      "attempts": [
+        {
+          "attempt": 0,
+          "cold": true,
+          "wallMs": 10745.454,
+          "processCpuUserMs": 11909.433,
+          "processCpuSystemMs": 252.879,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 1,
+          "cold": false,
+          "wallMs": 9148.648,
+          "processCpuUserMs": 9487.983,
+          "processCpuSystemMs": 168.738,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 2,
+          "cold": false,
+          "wallMs": 9201.689,
+          "processCpuUserMs": 9645.275,
+          "processCpuSystemMs": 185.199,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        }
+      ]
+    },
+    {
+      "variant": "grammar-cache-and-bounded-scalar-lookaround",
+      "input": "public-synthetic-277529",
+      "entrypoint": "planChatStep",
+      "attempts": [
+        {
+          "attempt": 0,
+          "cold": true,
+          "wallMs": 9854.669,
+          "processCpuUserMs": 10730.319,
+          "processCpuSystemMs": 214.514,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 1,
+          "cold": false,
+          "wallMs": 9294.139,
+          "processCpuUserMs": 9738.255,
+          "processCpuSystemMs": 195.453,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 2,
+          "cold": false,
+          "wallMs": 9219.968,
+          "processCpuUserMs": 9598.073,
+          "processCpuSystemMs": 178.926,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        }
+      ]
+    },
+    {
+      "variant": "grammar-cache-and-bounded-scalar-lookaround",
+      "input": "public-synthetic-277529",
+      "entrypoint": "createChatCompletion",
+      "attempts": [
+        {
+          "attempt": 0,
+          "cold": true,
+          "wallMs": 11144.911,
+          "processCpuUserMs": 12384.956,
+          "processCpuSystemMs": 321.153,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 1,
+          "cold": false,
+          "wallMs": 9368.152,
+          "processCpuUserMs": 9801.785,
+          "processCpuSystemMs": 227.299,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        },
+        {
+          "attempt": 2,
+          "cold": false,
+          "wallMs": 9322.488,
+          "processCpuUserMs": 9757.528,
+          "processCpuSystemMs": 224.595,
+          "quality": {
+            "validOwnedIssueFetch": true,
+            "invalidCalls": 0,
+            "echoesWholeRequest": false
+          }
+        }
+      ]
+    }
+  ],
+  "retainedTimeouts": [
+    {
+      "variant": "baseline",
+      "input": "public-synthetic-277529",
+      "entrypoint": "agenticOutcome",
+      "parentBoundaryMs": 45000,
+      "firstAttemptCompleted": false,
+      "quality": "Unknown",
+      "error": "ETIMEDOUT",
+      "cleanupComplete": true
+    },
+    {
+      "variant": "baseline",
+      "input": "public-synthetic-277529",
+      "entrypoint": "planChatStep",
+      "parentBoundaryMs": 45000,
+      "firstAttemptCompleted": false,
+      "quality": "Unknown",
+      "error": "ETIMEDOUT",
+      "cleanupComplete": true
+    },
+    {
+      "variant": "immutable-grammar-cache-only",
+      "input": "public-synthetic-277529",
+      "entrypoint": "agenticOutcome",
+      "parentBoundaryMs": 45000,
+      "firstAttemptCompleted": false,
+      "quality": "Unknown",
+      "error": "ETIMEDOUT",
+      "cleanupComplete": true
+    },
+    {
+      "variant": "immutable-grammar-cache-only",
+      "input": "public-synthetic-277529",
+      "entrypoint": "planChatStep",
+      "parentBoundaryMs": 45000,
+      "firstAttemptCompleted": false,
+      "quality": "Unknown",
+      "error": "ETIMEDOUT",
+      "cleanupComplete": true
+    }
+  ],
+  "hostedAcceptance": {
+    "entrypoint": "create_chat_completion_with_solver",
+    "fixtures": "Separately constructed public synthetic 21000 and 277529 byte requests, one advertised Bash schema; not the original wire or the six-schema JavaScript fixture",
+    "requestsPerCase": 3,
+    "supervisedDeadlineSecondsPerCase": 45,
+    "oracle": "First action fetches the requested public issue; every emitted call has valid required arguments; no complete user echo",
+    "cpu": "Unavailable, printed explicitly",
+    "status": "Pending CI"
+  },
+  "limits": [
+    "The original unsymbolized native production profile does not establish the 130-second root cause",
+    "The old five-second exhausted-history replay bypasses fresh planning and is a separate acceptance",
+    "Source review and JavaScript measurements do not prove native timing or hosted compilation",
+    "All failed observations remain retained; an observation deadline is not a successful result"
+  ]
+}
