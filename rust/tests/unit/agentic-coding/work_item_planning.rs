@@ -589,7 +589,7 @@ fn structured_owned_issue_stdout_preserves_the_complete_original_requirements() 
             ChatMessage::user(format!(
                 "Issue to solve: {url}\nImplement every numbered requirement."
             )),
-            ChatMessage::assistant_tool_calls(
+            ChatMessage::assistant_tool_calls_with_content(
                 String::new(),
                 vec![ToolCall::function(
                     "owned-issue-read".to_owned(),
@@ -640,7 +640,7 @@ fn issue_1364_resume_uses_exact_scalar_alias_probe_and_rejects_later_edits() {
     let arguments: serde_json::Value =
         serde_json::from_str(&calls[0].arguments).expect("probe operands");
     let command = arguments["command"].as_str().expect("owned probe command");
-    messages.push(ChatMessage::assistant_tool_calls(
+    messages.push(ChatMessage::assistant_tool_calls_with_content(
         String::new(),
         vec![formal_ai::protocol::ToolCall::function(
             "owned-probe".to_owned(),
@@ -661,7 +661,7 @@ fn issue_1364_resume_uses_exact_scalar_alias_probe_and_rejects_later_edits() {
     let arguments: serde_json::Value =
         serde_json::from_str(&calls[0].arguments).expect("verification operands");
     assert_eq!(arguments["command"], "node owned.js");
-    messages.push(ChatMessage::assistant_tool_calls(String::new(), vec![formal_ai::protocol::ToolCall::function(
+    messages.push(ChatMessage::assistant_tool_calls_with_content(String::new(), vec![formal_ai::protocol::ToolCall::function(
         "later-edit".to_owned(), "Edit".to_owned(), serde_json::json!({"path":"owned.js","old_string":"expected source\n","new_string":"other source\n"}).to_string(),
     )]));
     messages.push(ChatMessage::tool_result(
@@ -680,7 +680,7 @@ fn issue_1364_resume_binds_the_actual_raw_canonical_patch_and_preserves_plain_is
     let answer = issue_1364_resume_recipe_answer();
     let tools = ["exec_command", "apply_patch"];
     let mut messages = vec![ChatMessage::user("Issue to solve: https://github.com/fixture/project/issues/1\nYour prepared Pull Request: https://github.com/fixture/project/pull/2".to_owned())];
-    messages.push(ChatMessage::assistant_tool_calls(
+    messages.push(ChatMessage::assistant_tool_calls_with_content(
         String::new(),
         vec![formal_ai::protocol::ToolCall::function(
             "owned-source-create".to_owned(),

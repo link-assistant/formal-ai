@@ -257,7 +257,8 @@ fn fresh_representative_requests_complete_with_owned_issue_fetch() {
             let calls = observed["choices"][0]["message"]["tool_calls"]
                 .as_array()
                 .expect("a fresh request must propose a tool call");
-            assert_ne!(calls.as_slice(), []);
+            let empty_calls: &[serde_json::Value] = &[];
+            assert_ne!(calls.as_slice(), empty_calls);
             let mut owned_fetch = false;
             for (index, call) in calls.iter().enumerate() {
                 assert_eq!(call["function"]["name"], "bash");

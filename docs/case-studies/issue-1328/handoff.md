@@ -848,3 +848,11 @@ active mutation/inventory implementations and public JavaScript API. The origina
 debt ceiling remains unchanged. Include the maintained JavaScript debt checker
 with an explicit comparison base in local source qualification; native compilation
 and runtime acceptance remain CI-only.
+
+
+Native regression tests must call existing public protocol entry points and match
+current constructor signatures. The captured nested exit-status test now uses
+the public Chat API with genuine assistant/tool frames; its original exit-code
+and missing-status assertions stay intact. Explicit empty-slice types preserve
+nonempty-call checks without ambiguous Rust inference. Static source checks and
+JavaScript API equivalence do not replace hosted native unit execution.

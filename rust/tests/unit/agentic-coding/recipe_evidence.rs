@@ -241,7 +241,32 @@ fn structured_events_cannot_hide_an_outer_process_or_unstructured_failure() {
 
 #[test]
 fn agent_result_preserves_the_captured_nested_exit_status() {
-    use formal_ai::agentic_coding::tool_result::{StepOutcome, render, step_outcome};
+    use formal_ai::agentic_coding::tool_result::{StepOutcome, step_outcome};
+    let render = |label: &str, raw: &str, prompt: &str| {
+        let request: formal_ai::ChatCompletionRequest = serde_json::from_value(json!({
+            "model":"formal-ai",
+            "messages":[
+                {"role":"user","content":prompt},
+                {"role":"assistant","content":"","tool_calls":[{"id":"observed-render","type":"function",
+                    "function":{"name":"bash","arguments":json!({"command":label}).to_string()}}]},
+                {"role":"tool","name":"bash","tool_call_id":"observed-render","content":raw}
+            ],
+            "tools":[{"type":"function","function":{"name":"bash","parameters":{"type":"object",
+                "properties":{"command":{"type":"string"}},"required":["command"],"additionalProperties":false}}}]
+        })).expect("the observed provider result has a declared public protocol frame");
+        let solver = UniversalSolver::new(formal_ai::SolverConfig {
+            agent_mode: true,
+            ..Default::default()
+        });
+        formal_ai::create_chat_completion_with_solver(&request, &solver)
+            .choices
+            .into_iter()
+            .next()
+            .expect("the public protocol returns an observed-result answer")
+            .message
+            .content
+            .plain_text()
+    };
     let packet: serde_json::Value = serde_json::from_str(include_str!(
         "../../fixtures/issue-1364-agent-tool-use.json"
     ))
