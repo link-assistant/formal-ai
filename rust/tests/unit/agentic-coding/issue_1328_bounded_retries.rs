@@ -318,6 +318,7 @@ fn fresh_representative_requests_complete_with_owned_issue_fetch() {
             "{}",
             String::from_utf8_lossy(&output.stderr)
         );
-        eprint!("{}", String::from_utf8_lossy(&output.stderr));
+        std::io::Write::write_all(&mut std::io::stderr().lock(), &output.stderr)
+            .expect("publish bounded fresh request measurements");
     }
 }

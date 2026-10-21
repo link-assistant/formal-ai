@@ -669,3 +669,10 @@ those missing rows. All existing map content is byte-identical after removing
 the insertions. The generator and original native module-map oracle are unchanged;
 pre-existing prose differences remain explicit rather than being silently rewritten.
 The next exact head still requires the original hosted coverage check.
+
+
+The fresh native observation forwards its bounded child stderr through the
+standard IO writer directly. The ordinary successful libtest print-macro capture
+would otherwise discard those measurements in both hosted execution lanes.
+Child arguments, request bytes, quality assertions, 45-second case boundary and
+one-MiB stream caps are unchanged. Actual hosted observations remain required.
