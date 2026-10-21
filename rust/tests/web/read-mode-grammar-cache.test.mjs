@@ -79,3 +79,39 @@ test('sentence spans preserve astral letters, lone surrogates and punctuation', 
     }
   }
 });
+
+
+test('seed role expressions compile once per host while exact source boundaries remain unchanged', async () => {
+  const {ownedReadPaths} = await import('../../../js/agentic/file_read/ownership.mjs');
+  const original = host(), OriginalRegExp = globalThis.RegExp;
+  let compiled = 0;
+  try {
+    installHost({...original});
+    globalThis.RegExp = new Proxy(OriginalRegExp, {
+      construct(target, args, constructor) {
+        if (new Error().stack.includes('rolePatterns')) compiled++;
+        return Reflect.construct(target, args, constructor);
+      },
+    });
+    assert.deepEqual(ownedReadPaths('Read src/First.txt.', 'file_read_action_cue'), ['src/First.txt']);
+    const first = compiled;
+    assert(first > 0);
+    for (let attempt = 0; attempt < 10; attempt++) {
+      assert.deepEqual(ownedReadPaths('Read src/Second.txt.', 'file_read_action_cue'), ['src/Second.txt']);
+      assert.deepEqual(ownedReadPaths('Do not read src/Second.txt.', 'file_read_action_cue'), []);
+    }
+    const warm = compiled;
+    assert(warm >= first);
+    for (let attempt = 0; attempt < 10; attempt++) {
+      assert.deepEqual(ownedReadPaths('Read src/First.txt.', 'file_read_action_cue'), ['src/First.txt']);
+      assert.deepEqual(ownedReadPaths('Do not read src/Second.txt.', 'file_read_action_cue'), []);
+    }
+    assert.equal(compiled, warm);
+    installHost({...original});
+    assert.deepEqual(ownedReadPaths('Read src/First.txt.', 'file_read_action_cue'), ['src/First.txt']);
+    assert(compiled > warm);
+  } finally {
+    globalThis.RegExp = OriginalRegExp;
+    installHost(original);
+  }
+});

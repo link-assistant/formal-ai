@@ -50,6 +50,32 @@
     "fixedFiles": [
       {
         "path": "js/agentic/file_read/ownership.mjs",
+        "sha256": "e6b3f25b6e23a37dea6bce2fb185afbd707d8b2b42b6705fcb6a500efe3a9e61"
+      },
+      {
+        "path": "rust/src/agentic_coding/file_read/ownership.rs",
+        "sha256": "ea06d28407540bd2ed15fe7c2db0e918e3d6b9c1f6c634aaeae671fe17710ebc"
+      },
+      {
+        "path": "rust/tests/web/read-mode-grammar-cache.test.mjs",
+        "sha256": "839efeed7d606795144f7f6103602ce45d54991de7d234673991360cd52a0755"
+      },
+      {
+        "path": "js/agentic/shell_command_policy.mjs",
+        "sha256": "1d8cd3c1fd2f27660921c5c539454c60110e53686ebd617a97e6d3e4d96ca6ac"
+      },
+      {
+        "path": "js/agentic/shell_command.mjs",
+        "sha256": "002d0c221a873cb4a2a52fa4a488dfb27dd52c3211d4e5f2bc9381fe786a5d99"
+      },
+      {
+        "path": "rust/tests/unit/agentic-coding/issue_1328_bounded_retries.rs",
+        "sha256": "c43575338dc981b047da4c998cba49394e4a09d2ebaef65faa3193b7771c9f68"
+      }
+    ],
+    "previousCandidateFiles": [
+      {
+        "path": "js/agentic/file_read/ownership.mjs",
         "sha256": "2e390cda8f4418b990fcf69d5cbb6f93e275b2f8caa985f3cba14d687febd96d"
       },
       {
@@ -72,7 +98,8 @@
         "path": "rust/tests/unit/agentic-coding/issue_1328_bounded_retries.rs",
         "sha256": "b0b5f00096b68e644618591cc295245aae949833474faab3afc7120669e10d21"
       }
-    ]
+    ],
+    "measurementQualification": "The earlier JavaScript timing observations predate the role-pattern cache and bind to previousCandidateFiles. Native counterparts in that inventory were source candidates, not measured native successes."
   },
   "observations": [
     {
@@ -469,12 +496,97 @@
     "supervisedDeadlineSecondsPerCase": 45,
     "oracle": "First action fetches the requested public issue; every emitted call has valid required arguments; no complete user echo",
     "cpu": "Unavailable, printed explicitly",
-    "status": "Pending CI"
+    "status": "Failed on the recorded head; source repair awaits next exact-head hosted CI"
   },
   "limits": [
     "The original unsymbolized native production profile does not establish the 130-second root cause",
     "The old five-second exhausted-history replay bypasses fresh planning and is a separate acceptance",
     "Source review and JavaScript measurements do not prove native timing or hosted compilation",
-    "All failed observations remain retained; an observation deadline is not a successful result"
-  ]
+    "All failed observations remain retained; an observation deadline is not a successful result",
+    "Compiler-count experiment timings include instrumentation; the grammar-cache repair has no measured native speedup until new CI completes"
+  ],
+  "rolePatternCacheFollowup": {
+    "publishedHeadObserved": "49f6dc896129a6c247ac13b122da0d41d8808933",
+    "coverageFailure": {
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/39541366931/job/119040261264",
+      "caseBytes": 21000,
+      "deadlineSeconds": 45,
+      "elapsedSeconds": 45.013213819,
+      "cleanupComplete": true,
+      "completedRequestRows": 0
+    },
+    "fullTestFailure": {
+      "url": "https://github.com/link-assistant/formal-ai/actions/runs/39541366993/job/119039277051",
+      "caseBytes": 21000,
+      "deadlineSeconds": 45,
+      "completedRequestRows": 1,
+      "firstRequestWallMicroseconds": 33226737,
+      "cold": true,
+      "cpu": "Unavailable",
+      "scope": "create_chat_completion_with_solver",
+      "status": "Failed during later request before the second measurement row"
+    },
+    "sourceFinding": "Role matching recompiled immutable seeded surface regexes for each sentence. Both runtime counterparts now cache only those compiled expressions and constant CJK boundary flags, preserving order, quote boundaries and per-request spans.",
+    "javascriptExperiment": {
+      "entrypoint": "createChatCompletion",
+      "fixture": "Separately source-generated native-equivalent 21000-byte synthetic request with one Bash schema",
+      "quality": "All six observed plans fetch the owned issue first, contain valid required arguments and do not echo the complete user text",
+      "instrumentation": "RegExp constructor stack counting adds overhead; these are JavaScript observations, not native timing measurements",
+      "observations": [
+        {
+          "variant": "before",
+          "attempt": 0,
+          "roleCompilations": 466875,
+          "wallMs": 6398.272333,
+          "cpuUserMs": 7118.912,
+          "cpuSystemMs": 76.868
+        },
+        {
+          "variant": "before",
+          "attempt": 1,
+          "roleCompilations": 933750,
+          "wallMs": 5121.091458000001,
+          "cpuUserMs": 5224.635,
+          "cpuSystemMs": 28.117
+        },
+        {
+          "variant": "before",
+          "attempt": 2,
+          "roleCompilations": 1400625,
+          "wallMs": 4801.6170409999995,
+          "cpuUserMs": 4898.881,
+          "cpuSystemMs": 22.728
+        },
+        {
+          "variant": "after",
+          "attempt": 0,
+          "roleCompilations": 145,
+          "wallMs": 2018.5004170000002,
+          "cpuUserMs": 2701.494,
+          "cpuSystemMs": 62.892
+        },
+        {
+          "variant": "after",
+          "attempt": 1,
+          "roleCompilations": 145,
+          "wallMs": 562.1810410000003,
+          "cpuUserMs": 576.246,
+          "cpuSystemMs": 5.173
+        },
+        {
+          "variant": "after",
+          "attempt": 2,
+          "roleCompilations": 145,
+          "wallMs": 562.7880420000001,
+          "cpuUserMs": 572.502,
+          "cpuSystemMs": 4.67
+        }
+      ],
+      "compileCountsAreCumulativeWithinVariant": true,
+      "unknownAndEmptyRolesRetained": false
+    },
+    "nativeAcceptance": "Pending next exact-head hosted CI; original 45-second boundary, 21000/277529 byte cases and output oracles remain unchanged",
+    "diagnostics": "Case, fixture and completion stages are emitted; bounded partial stderr is published as text before a timeout failure",
+    "authorshipCredit": 0
+  }
 }

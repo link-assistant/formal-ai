@@ -19,25 +19,55 @@ struct OwnedSpan {
     span: SourceSpan,
     path_span: SourceSpan,
 }
+struct RolePattern {
+    expression: regex::Regex,
+    requires_boundary: bool,
+}
+// Keys and expressions come only from the immutable seed, never from request text.
+fn role_patterns(role: &str) -> std::sync::Arc<[RolePattern]> {
+    type Patterns = std::sync::Arc<[RolePattern]>;
+    static CACHE: std::sync::OnceLock<
+        std::sync::Mutex<std::collections::BTreeMap<String, Patterns>>,
+    > = std::sync::OnceLock::new();
+    let mut cache = CACHE
+        .get_or_init(|| std::sync::Mutex::new(std::collections::BTreeMap::new()))
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if let Some(patterns) = cache.get(role) {
+        return std::sync::Arc::clone(patterns);
+    }
+    let patterns: Patterns = seed::lexicon()
+        .words_for_role(role)
+        .into_iter()
+        .filter(|surface| !surface.is_empty() && !surface.contains('…'))
+        .filter_map(|surface| {
+            regex::RegexBuilder::new(&regex::escape(&surface))
+                .case_insensitive(true)
+                .build()
+                .ok()
+                .map(|expression| RolePattern {
+                    expression,
+                    requires_boundary: !crate::coding::catalog::contains_cjk(&surface),
+                })
+        })
+        .collect::<Vec<_>>()
+        .into();
+    // Unknown roles have no seeded surfaces and cannot grow the cache.
+    if !patterns.is_empty() {
+        cache.insert(role.to_owned(), std::sync::Arc::clone(&patterns));
+    }
+    patterns
+}
 fn role_spans(text: &str, roles: &[&str]) -> Vec<SourceSpan> {
     let quoted = crate::normal_markov::quoted_segment_spans(text);
     let mut result = Vec::new();
     for role in roles {
-        for surface in seed::lexicon().words_for_role(role) {
-            if surface.is_empty() || surface.contains('…') {
-                continue;
-            }
-            let Ok(expression) = regex::RegexBuilder::new(&regex::escape(&surface))
-                .case_insensitive(true)
-                .build()
-            else {
-                continue;
-            };
-            for matched in expression.find_iter(text) {
+        for pattern in role_patterns(role).iter() {
+            for matched in pattern.expression.find_iter(text) {
                 let start = matched.start();
                 let end = matched.end();
                 let boundary = |character: char| character.is_alphanumeric() || character == '_';
-                if !crate::coding::catalog::contains_cjk(&surface)
+                if pattern.requires_boundary
                     && (text[..start].chars().next_back().is_some_and(boundary)
                         || text[end..].chars().next().is_some_and(boundary))
                 {

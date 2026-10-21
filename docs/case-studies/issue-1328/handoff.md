@@ -685,3 +685,40 @@ and behavior remain byte-identical. Equivalent inequality assertions improve
 failure diagnostics without changing accepted values, requests, clocks or bounds.
 The test-root witness requires another strict full-inventory comparison before
 its maintained refresh; do not overwrite the baseline as an automatic repair.
+
+
+### Coverage follow-up on the published 49f6dc8 head
+
+Three independent coverage failures are retained and repaired as one batch. The
+native fresh-request child timed out at its unchanged 45-second boundary. The
+uninstrumented full-test archive completed the first synthetic 21 KB request in
+33.226737 seconds, then timed out during a later request; neither run reached the
+277,529-byte case. Seeded role matching recompiled immutable surface regexes for
+every sentence. Both source counterparts now cache only compiled role grammar,
+preserving source order, Unicode/quote boundaries and host reset behavior without
+retaining prompts, matches or answers. Constructor-count instrumentation on the
+separate JavaScript 21 KB fixture observes 466,875 compilations per old request,
+versus 145 total for all three repaired requests. Its timing overhead and runtime
+scope remain explicit in the latency evidence; this is not a measured native
+speedup. The hosted test keeps every original input, output oracle and deadline,
+and adds readable stage/partial-stderr diagnostics for future failures.
+
+The original native unary-edit authority oracle also failed: after an identical
+successful source operation, the global repetition guard blocked its required
+fresh Read. The repair invalidates prior typed source-read evidence only for a
+planned Read after a qualified successful completed Run. It does not authorize
+another Run or reset the three-action/objective counters. Failed, unknown and
+incomplete receipts retain their prior boundary. All 21 original JavaScript unary
+controls pass on both variants; the additional shared Progress primitive control
+fails before the repair, and all 23 controls pass afterward. The additional public
+planner control already passes the baseline, so it is not a local reproduction
+of the native public-route failure. The original native authority oracle remains
+unchanged and requires hosted revalidation.
+
+The Docker source test still required the obsolete global Bun installation. Its
+replacement checks the actual shared manifest, helper copy, installer invocation
+and owned PATH; every other original native assertion and all three runtime probes
+are unchanged. All four actual image validation cells, both macOS packaging jobs
+and all three original Hive clients passed on 49f6dc8. Those results do not confer
+a pass on the next published head. No native products were run locally, and no
+original deadline, oracle or ceiling was relaxed.

@@ -417,6 +417,31 @@ impl Progress {
                 && (attempt.arguments.as_deref() == Some(call.arguments.as_str())
                     || Self::same_run_operand(attempt, call))
         })?;
+        // A completed shell operation can change source even when its arguments repeat.
+        // This invalidates Read evidence only; the transcript action budgets remain intact.
+        let source_changed = super::planner::tool_capability(&call.tool) == Some(Capability::Read)
+            && self.attempts[index]
+                .source_read
+                .as_ref()
+                .is_some_and(|read| {
+                    read.status == super::tool_result::SourceReadStatus::ReportedSuccess
+                        && read.complete
+                })
+            && self.attempts[index + 1..].iter().any(|later| {
+                later.capability == Capability::Run
+                    && later.succeeded
+                    && later
+                        .arguments
+                        .as_deref()
+                        .and_then(super::tool_result::command_argument)
+                        .is_some()
+                    && !super::tool_result::incomplete_receipt(&later.detail)
+                    && super::tool_result::step_outcome(&later.detail)
+                        == super::tool_result::StepOutcome::Succeeded
+            });
+        if source_changed {
+            return None;
+        }
         let progressed = self.attempts[index + 1..]
             .iter()
             .enumerate()

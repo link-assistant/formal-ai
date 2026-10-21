@@ -451,3 +451,50 @@ test('latest exact command requires readback after that latest operation', () =>
     f.cleanup();
   }
 });
+
+
+// Public planner control: the isolated native consumer asserts this same custody boundary.
+test('full planner requests a new source Read after the latest repeated operation', async () => {
+  const f = fixture();
+  try {
+    const observation = receiptMessages(f);
+    const command = JSON.parse(observation.messages[3].tool_calls[0].function.arguments);
+    observation.add('operation-latest', 'bash', command, observation.messages[4].content);
+    const pending = await planChatStep(observation.messages, ['read', 'bash']);
+    assert.equal(pending.kind, 'tool_calls');
+    assert.equal(pending.calls[0].tool, 'read');
+    observation.read('latest-physical-readback');
+    // Three identical actual Reads retain the original finite transcript stop.
+    const stopped = await planChatStep(observation.messages, ['read', 'bash']);
+    assert.equal(stopped.kind, 'final');
+    assert.doesNotMatch(stopped.answer, /sourceReadbackVerified/u);
+  } finally { f.cleanup(); }
+});
+
+import { Progress } from '../../../js/agentic/progress.mjs';
+test('source Read freshness only follows an explicit completed Run receipt', () => {
+  const f = fixture();
+  try {
+    for (const [content, extra, refreshed] of [
+      ['Output: done\nExit Code: 0', {}, true],
+      ['Output: failed\nExit Code: 1', {}, false],
+      ['Output: unknown', {}, false],
+      ['Output: done\nExit Code: 0', {is_error:true}, false],
+      [JSON.stringify({output:'done',exit_code:0,complete:false}), {}, false],
+    ]) {
+      const observation = observedMessages(f.request, f.owner, f.before);
+      const readArguments = observation.messages[1].tool_calls[0].function.arguments;
+      const command = {command:'source-operation'};
+      // Establish the same command before the Read, so novelty cannot certify progress.
+      const first = {role:'assistant',tool_calls:[{id:'earlier-operation',type:'function',function:{name:'bash',arguments:JSON.stringify(command)}}]};
+      const result = {role:'tool',tool_call_id:'earlier-operation',name:'bash',content};
+      observation.messages.splice(1,0,first,result);
+      observation.add('later-operation','bash',command,content,extra);
+      const repeated = Progress.scan(observation.messages).repeatedCall({tool:'read',arguments:readArguments});
+      assert.equal(repeated === null, refreshed, content);
+    }
+    const observation = observedMessages(f.request, f.owner, f.before);
+    const readArguments = observation.messages[1].tool_calls[0].function.arguments;
+    assert.notEqual(Progress.scan(observation.messages).repeatedCall({tool:'read',arguments:readArguments}),null);
+  } finally { f.cleanup(); }
+});

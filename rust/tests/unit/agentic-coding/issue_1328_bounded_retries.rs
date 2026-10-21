@@ -211,6 +211,7 @@ fn fresh_representative_requests_complete_with_owned_issue_fetch() {
     if let Ok(length) = std::env::var(CHILD) {
         let target: usize = length.parse().expect("declared representative byte count");
         assert!([21_000, 277_529].contains(&target));
+        eprintln!("fresh_representative bytes={target} stage=case-start");
         let mut fixture = serde_json::json!({
             "model": "formal-ai",
             "messages": [
@@ -238,12 +239,16 @@ fn fresh_representative_requests_complete_with_owned_issue_fetch() {
         fixture["messages"][1]["content"] = context.into();
         let wire = serde_json::to_vec(&fixture).expect("serialize complete fixture");
         assert_eq!(wire.len(), target);
+        eprintln!("fresh_representative bytes={target} stage=fixture-ready");
         assert_eq!(fixture["messages"].as_array().map(Vec::len), Some(2));
         let solver = formal_ai::UniversalSolver::new(formal_ai::SolverConfig {
             agent_mode: true,
             ..Default::default()
         });
         for attempt in 0..3 {
+            eprintln!(
+                "fresh_representative bytes={target} attempt={attempt} stage=completion-start"
+            );
             let started = std::time::Instant::now();
             let request: formal_ai::ChatCompletionRequest =
                 serde_json::from_slice(&wire).expect("decode unchanged fresh request");
@@ -312,7 +317,12 @@ fn fresh_representative_requests_complete_with_owned_issue_fetch() {
             1_048_576,
             1_048_576,
         )
-        .expect("fresh representative request must finish within the new observation boundary");
+        .unwrap_or_else(|error| {
+            let published = std::io::Write::write_all(
+                &mut std::io::stderr().lock(), error.partial_stderr()
+            );
+            panic!("fresh representative request must finish within the new observation boundary: {error:?}; diagnostic_output={published:?}");
+        });
         assert!(
             output.status.success(),
             "{}",

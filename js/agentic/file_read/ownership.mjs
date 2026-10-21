@@ -16,16 +16,28 @@ const FUNCTION_ROLES = ['request_function_word', 'enumeration_cue'];
 const OBJECT_ROLE = 'file-read-object-noun';
 const READ_ROLE = 'file_read_action_cue';
 const escapePattern = value => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// Only immutable seeded roles own cache keys; prompts and matches are never retained.
+function rolePatterns(role) {
+  const patternsByRole = cached('owned-file-read-role-patterns', () => new Map());
+  if (patternsByRole.has(role)) return patternsByRole.get(role);
+  const patterns = wordsForRole(role)
+    .filter(surface => surface && !surface.includes('…'))
+    .map(surface => ({
+      expression: new RegExp(escapePattern(surface), 'giu'),
+      requiresBoundary: !containsCjk(surface),
+    }));
+  if (patterns.length) patternsByRole.set(role, patterns);
+  return patterns;
+}
 function roleSpans(text, roles) {
   const quoted = quotedSegmentSpans(text);
   const result = [];
-  for (const role of roles) for (const surface of wordsForRole(role)) {
-    if (!surface || surface.includes('…')) continue;
-    for (const match of text.matchAll(new RegExp(escapePattern(surface), 'giu'))) {
+  for (const role of roles) for (const {expression, requiresBoundary} of rolePatterns(role)) {
+    for (const match of text.matchAll(expression)) {
       const start = match.index, end = start + match[0].length;
       const before = Array.from(text.slice(Math.max(0, start - 2), start)).pop();
       const after = Array.from(text.slice(end, end + 2))[0];
-      if (!containsCjk(surface) && ((before && (isAlphanumeric(before) || before === '_'))
+      if (requiresBoundary && ((before && (isAlphanumeric(before) || before === '_'))
         || (after && (isAlphanumeric(after) || after === '_')))) continue;
       if (quoted.some(span => start >= span.start && end <= span.end)) continue;
       result.push({start, end});

@@ -14,7 +14,7 @@ import { Capability } from './capability.mjs';
 import { writeArguments } from './plan.mjs';
 import { fill } from './work_item_steps.mjs';
 import { classifyTool } from './capability_router.mjs';
-import { commandArgument, failureMessage, normalizedPayload, sourceReadObservation } from './tool_result.mjs';
+import { commandArgument, failureMessage, incompleteReceipt, normalizedPayload, sourceReadObservation, stepOutcome, StepOutcome } from './tool_result.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { applyPatchInput } from './crate/protocol_responses_apply_patch.mjs';
 import { argumentValuesEqual, qualifiedTranscriptFrames } from './qualified_tool_observation.mjs';
@@ -203,6 +203,16 @@ export class Progress {
     }
     if (index < 0) return null;
     const later = this.attempts.slice(index + 1);
+    // Shell completion invalidates prior source evidence, never the finite action budget.
+    const sourceChanged = classifyTool(call.tool) === Capability.Read
+      && this.attempts[index].source_read?.status === 'reported-success'
+      && this.attempts[index].source_read.complete === true
+      && later.some(attempt => attempt.capability === Capability.Run
+        && attempt.succeeded
+        && commandArgument(attempt.arguments) !== null
+        && !incompleteReceipt(attempt.detail)
+        && stepOutcome(attempt.detail) === StepOutcome.Succeeded);
+    if (sourceChanged) return null;
     const progressed = later.some((attempt, offset) =>
       !this.attempts.slice(0, index + offset + 1).some((earlier) => sameAttempt(earlier, attempt)));
     return progressed ? null : this.attempts[index];
