@@ -14,7 +14,7 @@ import { Capability } from './capability.mjs';
 import { writeArguments } from './plan.mjs';
 import { fill } from './work_item_steps.mjs';
 import { classifyTool } from './capability_router.mjs';
-import { commandArgument, failureMessage, incompleteReceipt, normalizedPayload, sourceReadObservation, stepOutcome, StepOutcome } from './tool_result.mjs';
+import { commandArgument, failureMessage, incompleteReceipt, normalizedPayload, observedPayload, sourceReadObservation, stepOutcome, StepOutcome } from './tool_result.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { applyPatchInput } from './crate/protocol_responses_apply_patch.mjs';
 import { argumentValuesEqual, qualifiedTranscriptFrames } from './qualified_tool_observation.mjs';
@@ -111,8 +111,8 @@ export class Progress {
           if (reason !== null) {
             progress.failed_work_item_reads.push([url, reason]);
           } else if (failure === null) {
-            const text = normalizedPayload(raw);
-            if (text !== null && trim(text)) progress.fetched_pages.push([url, withoutExitSentinel(text)]);
+            const text = observedPayload(raw);
+            if (text !== null && trim(text)) progress.fetched_pages.push([url, withoutExitSentinel(text, command)]);
           }
         }
         progress.run_outputs.push(raw);
@@ -582,30 +582,29 @@ function restReadUrl(command) {
 
 /** Mirrors `fn exit_sentinel`. */
 function exitSentinel(raw) {
-  let last = null;
-  for (const line of rustLines(raw)) {
-    const trimmed = trim(line);
-    if (!trimmed.startsWith('__formal_ai_exit=')) continue;
-    const digits = trimmed.slice('__formal_ai_exit='.length);
-    if (/^[+-]?[0-9]+$/.test(digits)) {
-      const value = Number(digits);
-      if (value >= -2147483648 && value <= 2147483647) last = value;
-    }
-  }
-  return last;
+  const line = rustLines(raw).findLast(line => trim(line) !== '');
+  if (line === undefined) return null;
+  const match = /^__formal_ai_exit=([+-]?[0-9]+)$/u.exec(trim(line));
+  const value = match === null ? NaN : Number(match[1]);
+  return Number.isInteger(value) && value >= -2147483648 && value <= 2147483647 ? value : null;
 }
 
 /** Mirrors `fn without_exit_sentinel`. */
-function withoutExitSentinel(text) {
-  return rustLines(text).filter((line) => !trim(line).startsWith('__formal_ai_exit=')).join('\n');
+function withoutExitSentinel(text, command) {
+  const lines = rustLines(text);
+  if (command.includes('__formal_ai_exit=%s') && exitSentinel(text) !== null) {
+    lines.splice(lines.findLastIndex(line => trim(line) !== ''), 1);
+  }
+  return lines.join('\n');
 }
 
 /** Mirrors `fn work_item_read_failure_reason`. */
 function workItemReadFailureReason(command, raw, echoedFailure) {
   if (echoedFailure !== null) return echoedFailure;
-  const status = exitSentinel(raw);
+  const payload = observedPayload(raw) ?? '';
+  const status = command.includes('__formal_ai_exit=%s') ? exitSentinel(payload) : null;
   if (status !== null && status !== 0) return fill('read_failure_exit_status', [['{status}', String(status)]]);
-  const text = withoutExitSentinel(raw);
+  const text = withoutExitSentinel(payload, command);
   const curl = command.startsWith('curl ');
   const shaped = curl ? Boolean(trim(text)) && !trim(text).startsWith('{') : text.includes('\n\n');
   if (shaped) return null;

@@ -549,3 +549,70 @@ fn work_item_transcript(body: &str) -> Vec<ChatMessage> {
     result.tool_call_id = Some(String::from(CALL_ID));
     vec![ChatMessage::user(HARNESS_PROMPT), assistant, result]
 }
+
+#[test]
+fn structured_owned_issue_stdout_preserves_the_complete_original_requirements() {
+    use formal_ai::ToolCall;
+    let issues: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1364-hello-world-issues.json"
+    ))
+    .expect("public original issue body fixtures");
+    let issue = &issues[0];
+    let url = issue["html_url"].as_str().expect("original issue URL");
+    let title = issue["title"].as_str().expect("original issue title");
+    let body = issue["body"]
+        .as_str()
+        .expect("complete original issue body");
+    let command = format!(
+        "gh issue view '{url}' --json title --jq .title && echo && gh issue view '{url}' --json body --jq .body; printf '\\n__formal_ai_exit=%s\\n' $?"
+    );
+    let stdout = format!("{title}\n\n{body}\n__formal_ai_exit=0\n");
+    let fixture: serde_json::Value = serde_json::from_str(include_str!(
+        "../../fixtures/issue-1364-agent-tool-use.json"
+    ))
+    .expect("captured Agent envelope fixture");
+    let mut typed = fixture["fixture"].clone();
+    typed["part"]["state"]["status"] = serde_json::json!("completed");
+    typed["part"]["state"]["input"] = serde_json::json!({"command":command});
+    typed["part"]["state"]
+        .as_object_mut()
+        .expect("typed state")
+        .remove("error");
+    typed["part"]["state"]["metadata"] = serde_json::json!({
+        "output": stdout, "exit": 0, "signal": null, "timedOut": false, "aborted": false
+    });
+    for result in [
+        serde_json::json!({"exit_code":0,"stdout":stdout,"stderr":"","complete":true}),
+        typed,
+    ] {
+        let messages = vec![
+            ChatMessage::user(format!(
+                "Issue to solve: {url}\nImplement every numbered requirement."
+            )),
+            ChatMessage::assistant_tool_calls(
+                String::new(),
+                vec![ToolCall::function(
+                    "owned-issue-read".to_owned(),
+                    "bash".to_owned(),
+                    serde_json::json!({"command":command}).to_string(),
+                )],
+            ),
+            ChatMessage::tool_result("owned-issue-read".to_owned(), "bash", result.to_string()),
+        ];
+        let plan = formal_ai::agentic_coding::plan_chat_step(&messages, &["bash", "write"])
+            .expect("the fully observed original requirements remain actionable");
+        let AgenticPlan::ToolCalls(calls) = plan else {
+            panic!("accepted complete issue must plan a source effect");
+        };
+        let call = calls.first().expect("owned source operation");
+        assert_eq!(call.tool, "write");
+        let arguments: serde_json::Value =
+            serde_json::from_str(&call.arguments).expect("source arguments");
+        assert!(
+            arguments["content"]
+                .as_str()
+                .expect("source bytes")
+                .contains("Hello, World!")
+        );
+    }
+}

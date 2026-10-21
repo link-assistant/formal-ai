@@ -10,6 +10,8 @@ use super::capability_router::classify_tool;
 use super::planner::Capability;
 use crate::protocol::ChatMessage;
 mod source_fetch_observation;
+mod work_item_read_receipt;
+use work_item_read_receipt::{without_exit_sentinel, work_item_read_failure_reason};
 
 /// One observed client-owned tool execution in transcript order.
 #[derive(Debug)]
@@ -893,55 +895,6 @@ fn rest_read_url(command: &str) -> Option<String> {
     // plan targets, so the REST reads were never matched to their work item.
     let kind = if kind == "pulls" { "pull" } else { "issues" };
     Some(format!("https://github.com/{owner}/{repo}/{kind}/{number}"))
-}
-
-/// The exit status a read command printed about itself, when it printed one.
-fn exit_sentinel(raw: &str) -> Option<i32> {
-    raw.lines()
-        .filter_map(|line| line.trim().strip_prefix("__formal_ai_exit="))
-        .filter_map(|digits| digits.parse().ok())
-        .next_back()
-}
-
-/// The output of a read without the sentinel lines it printed about itself —
-/// the issue text is the payload, not the plumbing.
-fn without_exit_sentinel(text: &str) -> String {
-    text.lines()
-        .filter(|line| !line.trim().starts_with("__formal_ai_exit="))
-        .collect::<Vec<_>>()
-        .join("\n")
-}
-
-/// Why a work-item read's output is not page evidence, when it is not.
-fn work_item_read_failure_reason(
-    command: &str,
-    raw: &str,
-    echoed_failure: Option<&str>,
-) -> Option<String> {
-    if let Some(failure) = echoed_failure {
-        return Some(failure.to_owned());
-    }
-    if let Some(status) = exit_sentinel(raw)
-        && status != 0
-    {
-        return Some(super::work_item_steps::fill(
-            "read_failure_exit_status",
-            &[(concat!("{", "status}"), status.to_string().as_str())],
-        ));
-    }
-    let text = without_exit_sentinel(raw);
-    let shaped = if command.starts_with("curl ") {
-        !text.trim().is_empty() && !text.trim_start().starts_with('{')
-    } else {
-        text.contains("\n\n")
-    };
-    (!shaped).then(|| {
-        if command.starts_with("curl ") {
-            "the REST answer was not issue text".to_owned()
-        } else {
-            "the output did not have the title-and-body shape of a work item".to_owned()
-        }
-    })
 }
 
 // Only a leading seeded provider notice supplies legacy status-less Fetch failure evidence.
