@@ -106,6 +106,10 @@ export function validateQueueSnapshot(snapshot, expected, {
   if (requireContender) assert.ok(members.some(member => String(member.run_id) === expected.run && member.status === 'pending' && member.job_name === 'Fixture private queued contender' && Number.isSafeInteger(member.job_id)), 'independent pending contender missing');
   return true;
 }
+export function validateActiveFixtureLease(lease) {
+  assert.equal(lease?.observation, 'VerifiedPrivateFixtureLease', 'actual active fixture lease proof required');
+  return true;
+}
 export function validateFixtureOutputs(active, inactive, source) {
   assert.equal(active.source, source);
   assert.equal(inactive.source, source);
@@ -361,6 +365,7 @@ async function finalize() {
     finalObservedAt: new Date().toISOString()
   };
   write('final-' + (active ? 'active' : 'inactive') + '.json', receipt);
+  if (active) validateActiveFixtureLease(lease);
   outputs({
     fixture_source: context.source,
     artifact_observation: receipt.artifact,
@@ -381,6 +386,7 @@ async function collect() {
     marker: process.env.INACTIVE_MARKER
   };
   validateFixtureOutputs(active, inactive, context.source);
+  validateActiveFixtureLease({ observation: process.env.ACTIVE_LEASE });
   assert.equal(process.env.CONTENDER_RESULT, 'success');
   const jobs = await api('/repos/' + context.repository + '/actions/runs/' + context.run + '/jobs?filter=latest&per_page=100');
   assert.equal(jobs.status, 200);

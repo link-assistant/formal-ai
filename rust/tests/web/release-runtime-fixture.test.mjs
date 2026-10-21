@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import YAML from 'yaml';
-import { validateQueueSnapshot, validateFixtureOutputs } from '../../../scripts/release-runtime-fixture.mjs';
+import { validateQueueSnapshot, validateFixtureOutputs, validateActiveFixtureLease } from '../../../scripts/release-runtime-fixture.mjs';
 const root = new URL('../../../', import.meta.url);
 const caller = () => YAML.parse(readFileSync(new URL('.github/workflows/release-runtime-fixture.yml', root), 'utf8'));
 const callee = () => YAML.parse(readFileSync(new URL('.github/workflows/release-runtime-fixture-callee.yml', root), 'utf8'));
@@ -236,4 +236,33 @@ test('ordinary check groups preserve private lease isolation and e2e filtering',
     const p = caller(); p.on.pull_request['branches-ignore'] = value;
     assert.throws(() => validateGraph(p, callee()));
   }
+});
+
+
+test('final active fixture acceptance requires the verified queue and ancestor result', () => {
+  assert.equal(validateActiveFixtureLease({observation:'VerifiedPrivateFixtureLease'}),true);
+  for(const value of [null,undefined,{}, {observation:'Unknown'},
+    {observation:'ObservedCallerAdmissionForContender'}, {observation:'NotExercisedInactive'}]) {
+    assert.throws(()=>validateActiveFixtureLease(value),/actual active fixture lease proof required/u);
+  }
+  const source=readFileSync(new URL('../../../scripts/release-runtime-fixture.mjs',import.meta.url),'utf8');
+  assert(source.includes('if (active) validateActiveFixtureLease(lease);'));
+  assert(source.includes('validateActiveFixtureLease({ observation: process.env.ACTIVE_LEASE });'));
+});
+
+
+test('failed active finalization preserves its diagnostic receipt before refusing success outputs', () => {
+  const source=readFileSync(new URL('../../../scripts/release-runtime-fixture.mjs',import.meta.url),'utf8');
+  const start=source.indexOf('async function finalize() {');
+  const end=source.indexOf('async function collect() {',start);
+  assert(start>=0&&end>start);
+  const final=source.slice(start,end);
+  const write=final.indexOf("write('final-' + (active ? 'active' : 'inactive') + '.json', receipt);");
+  const validate=final.indexOf('if (active) validateActiveFixtureLease(lease);');
+  const output=final.indexOf('outputs({');
+  assert(write>=0&&write<validate&&validate<output,'retain failure evidence, then validate, then emit outputs');
+  assert(final.includes('    lease,\n'));
+  assert(final.includes("observation: 'NotExercisedInactive'"));
+  assert.throws(()=>validateActiveFixtureLease({observation:'Unknown',reason:'actual missing queue observation'}));
+  assert.equal(validateActiveFixtureLease({observation:'VerifiedPrivateFixtureLease'}),true);
 });

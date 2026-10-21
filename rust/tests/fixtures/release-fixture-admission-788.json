@@ -1,0 +1,137 @@
+{
+  "context": {
+    "repository": "link-assistant/formal-ai",
+    "run": "39600856822",
+    "attempt": "1",
+    "eventHead": "78874ed4fbdbe3e3b468fb545649810c8ab223d8"
+  },
+  "snapshots": [
+    {
+      "route": "/repos/link-assistant/formal-ai/actions/runs/39600856822",
+      "status": 200,
+      "observedAt": "2026-10-21T12:54:40.795Z",
+      "body": {
+        "id": 39600856822,
+        "run_attempt": 1,
+        "head_sha": "78874ed4fbdbe3e3b468fb545649810c8ab223d8",
+        "path": ".github/workflows/release-runtime-fixture.yml",
+        "status": "queued",
+        "conclusion": null
+      }
+    },
+    {
+      "route": "/repos/link-assistant/formal-ai/actions/runs/39600856822/jobs?filter=latest&per_page=100",
+      "status": 200,
+      "observedAt": "2026-10-21T12:54:41.628Z",
+      "body": {
+        "total_count": 7,
+        "jobs": [
+          {
+            "id": 119224672438,
+            "name": "Produce controlled text tar",
+            "run_id": 39600856822,
+            "run_attempt": 1,
+            "head_sha": "78874ed4fbdbe3e3b468fb545649810c8ab223d8",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-21T12:40:07Z",
+            "completed_at": "2026-10-21T12:40:45Z",
+            "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/119224672438"
+          },
+          {
+            "id": 119226922030,
+            "name": "Stage contender after authenticated caller admission",
+            "run_id": 39600856822,
+            "run_attempt": 1,
+            "head_sha": "78874ed4fbdbe3e3b468fb545649810c8ab223d8",
+            "status": "in_progress",
+            "conclusion": null,
+            "started_at": "2026-10-21T12:54:08Z",
+            "completed_at": null,
+            "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/119226922030"
+          },
+          {
+            "id": 119226922230,
+            "name": "Active reusable fixture / Fixture lease holder active",
+            "run_id": 39600856822,
+            "run_attempt": 1,
+            "head_sha": "78874ed4fbdbe3e3b468fb545649810c8ab223d8",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-21T12:50:09Z",
+            "completed_at": "2026-10-21T12:53:48Z",
+            "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/119226922230"
+          },
+          {
+            "id": 119226922995,
+            "name": "Inactive reusable fixture / Fixture final inactive",
+            "run_id": 39600856822,
+            "run_attempt": 1,
+            "head_sha": "78874ed4fbdbe3e3b468fb545649810c8ab223d8",
+            "status": "completed",
+            "conclusion": "success",
+            "started_at": "2026-10-21T12:50:11Z",
+            "completed_at": "2026-10-21T12:50:17Z",
+            "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/119226922995"
+          },
+          {
+            "id": 119226924761,
+            "name": "Inactive reusable fixture / Fixture lease holder active",
+            "run_id": 39600856822,
+            "run_attempt": 1,
+            "head_sha": "78874ed4fbdbe3e3b468fb545649810c8ab223d8",
+            "status": "completed",
+            "conclusion": "skipped",
+            "started_at": "2026-10-21T12:40:46Z",
+            "completed_at": "2026-10-21T12:40:45Z",
+            "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/119226924761"
+          },
+          {
+            "id": 119226925386,
+            "name": "Inactive reusable fixture / Fixture artifact consumer active",
+            "run_id": 39600856822,
+            "run_attempt": 1,
+            "head_sha": "78874ed4fbdbe3e3b468fb545649810c8ab223d8",
+            "status": "completed",
+            "conclusion": "skipped",
+            "started_at": "2026-10-21T12:40:46Z",
+            "completed_at": "2026-10-21T12:40:45Z",
+            "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/119226925386"
+          },
+          {
+            "id": 119233027993,
+            "name": "Active reusable fixture / Fixture artifact consumer active",
+            "run_id": 39600856822,
+            "run_attempt": 1,
+            "head_sha": "78874ed4fbdbe3e3b468fb545649810c8ab223d8",
+            "status": "queued",
+            "conclusion": null,
+            "started_at": "2026-10-21T12:53:48Z",
+            "completed_at": null,
+            "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/119233027993"
+          }
+        ]
+      }
+    },
+    {
+      "route": "/repos/link-assistant/formal-ai/actions/concurrency_groups/formal-ai-release-fixture-39600856822-1",
+      "status": 200,
+      "observedAt": "2026-10-21T12:54:41.903Z",
+      "body": {
+        "group_name": "formal-ai-release-fixture-39600856822-1",
+        "total_count": 1,
+        "group_members": [
+          {
+            "job_id": 119233027993,
+            "job_name": "Active reusable fixture / Fixture artifact consumer active",
+            "run_id": 39600856822,
+            "job_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/119233027993",
+            "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/39600856822",
+            "status": "in_progress"
+          }
+        ]
+      }
+    }
+  ],
+  "sourceArtifact": 12347866452
+}

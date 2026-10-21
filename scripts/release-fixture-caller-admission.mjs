@@ -41,8 +41,7 @@ export function validateCallerAdmission(run, jobs, group, context) {
   assert.equal(String(child.run_attempt), context.attempt);
   assert.equal(child.head_sha, context.eventHead);
   assert.ok(['queued', 'in_progress'].includes(child.status));
-  if (child.name !== 'Active reusable fixture / Fixture lease holder active')
-    assert.equal(child.status, 'in_progress', 'later caller phase must be active');
+  // The private group proves admission; a queued runner is not execution, in any callee phase.
   assert.equal(child.completed_at, null);
   assert.equal(child.url, 'https://api.github.com' + base + '/jobs/' + child.id);
   assert.equal(member.job_id, child.id);

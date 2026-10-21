@@ -174,7 +174,7 @@ test('admission follows the authenticated source-declared active callee phase', 
   const foreign=structuredClone(values);foreign[1].body.jobs[1].name='Inactive reusable fixture / '+phase;
   foreign[2].body.group_members[0].job_name=foreign[1].body.jobs[1].name;
   assert.throws(()=>validateCallerAdmission(...foreign,context));
-  for(const mutate of [x=>x[1].body.jobs[1].status='queued',x=>x[1].body.jobs[1].status='completed',
+  for(const mutate of [x=>x[2].body.group_members[0].status='pending',x=>x[1].body.jobs[1].status='completed',
    x=>x[1].body.jobs[1].run_attempt=1,x=>x[1].body.jobs[1].head_sha='b'.repeat(40),
    x=>x[2].body.group_members[0].job_name='foreign phase']){
    const changed=structuredClone(values);mutate(changed);
@@ -193,4 +193,42 @@ test('admission refuses duplicate selected phase names even with distinct job id
   values[1].body.jobs.push(duplicate);values[1].body.total_count=2;
   assert.throws(()=>validateCallerAdmission(...values,context));
  }
+});
+
+
+test('captured source-bound admission accepts the actual queued consumer without execution authority', async () => {
+  const fixture=JSON.parse(readFileSync(new URL('../fixtures/release-fixture-admission-788.json',import.meta.url)));
+  assert.equal(fixture.snapshots[1].body.total_count,7);
+  assert.equal(fixture.snapshots[1].body.jobs.length,7);
+  const admission=validateCallerAdmission(...fixture.snapshots,fixture.context);
+  assert.equal(admission.descendantJobId,119233027993);
+  assert.equal(admission.descendantStatus,'queued');
+  assert.equal(admission.executingLeaseProof,false);
+  assert.equal(admission.productionAuthority,false);
+  const child=fixture.snapshots[1].body.jobs.find(job=>job.id===admission.descendantJobId);
+  const physical={...child,runner_id:7,runner_name:'synthetic-heldout-runner'};
+  assert.throws(()=>validateDiagnosticDescendant({status:200,body:physical},
+    {...fixture.context,id:physical.id,name:physical.name,runnerName:physical.runner_name}),/in_progress/u);
+  await assert.rejects(observeActiveAncestor({get:async()=>fixture.snapshots[1],context:fixture.context,
+    name:fixture.snapshots[2].body.group_name,label:'Fixture artifact consumer active',snapshots:[],
+    runnerName:physical.runner_name}),/executing descendant/u);
+});
+test('all three admitted queued phases retain strict group identity and reject physical execution promotion', async () => {
+  for(const phase of ['Fixture lease holder active','Fixture artifact consumer active','Fixture final active']) {
+    const values=syntheticSnapshots();const child=values[1].body.jobs[0];child.name='Active reusable fixture / '+phase;
+    values[2].body.group_members[0].job_name=child.name;
+    const admission=validateCallerAdmission(...values,context);
+    assert.equal(admission.descendantStatus,'queued');assert.equal(admission.executingLeaseProof,false);
+    assert.equal(admission.productionAuthority,false);
+    const physical={...child,runner_id:7,runner_name:'synthetic-heldout-runner'};
+    assert.throws(()=>validateDiagnosticDescendant({status:200,body:physical},
+      {...context,id:child.id,name:child.name,runnerName:physical.runner_name}),/in_progress/u);
+    await assert.rejects(observeActiveAncestor({get:async()=>values[1],context,name:groupName,label:phase,
+      snapshots:[],runnerName:physical.runner_name}),/executing descendant/u);
+    for(const mutate of [x=>x[2].body.group_members[0].status='pending',
+      x=>x[2].body.group_members[0].job_id=43,x=>x[1].body.jobs[0].run_attempt=1,
+      x=>x[1].body.jobs[0].head_sha='b'.repeat(40),x=>x[1].body.jobs[0].completed_at='2026-10-11T00:00:01Z']) {
+      const changed=structuredClone(values);mutate(changed);assert.throws(()=>validateCallerAdmission(...changed,context));
+    }
+  }
 });
