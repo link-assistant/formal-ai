@@ -231,6 +231,9 @@ pub fn feedback_needs_changes(output: &str) -> bool {
             })
 }
 
+const COMMAND_PLACEHOLDER: &str = "{command}";
+const OUTPUT_PLACEHOLDER: &str = "{output}";
+
 pub(super) fn plan_restart(
     task: &str,
     messages: &[ChatMessage],
@@ -249,7 +252,10 @@ pub(super) fn plan_restart(
         if let Some(output) = progress.latest_run_output_for(status_command) {
             return Some(AgenticPlan::Final(super::work_item_steps::fill(
                 "prepared_work_stopped_report",
-                &[("{command}", status_command), ("{output}", output)],
+                &[
+                    (COMMAND_PLACEHOLDER, status_command),
+                    (OUTPUT_PLACEHOLDER, output),
+                ],
             )));
         }
         return Some(plan_one(
@@ -283,7 +289,10 @@ pub(super) fn plan_restart(
         if let Some(output) = progress.latest_run_output_for(&command) {
             return Some(AgenticPlan::Final(super::work_item_steps::fill(
                 "prepared_work_stopped_report",
-                &[("{command}", &command), ("{output}", output)],
+                &[
+                    (COMMAND_PLACEHOLDER, &command),
+                    (OUTPUT_PLACEHOLDER, output),
+                ],
             )));
         }
         return Some(plan_one(run, json!({"command": command}).to_string()));

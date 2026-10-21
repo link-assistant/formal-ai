@@ -173,7 +173,7 @@ fn recipe_step(
         let mut repair_note = String::new();
         if failure.from_run {
             let observation = super::progress::Progress::scan(messages);
-            let bound = observation.qualified_command_attempt(&step);
+            let bound = observation.qualified_command_attempt(step);
             let owned = std::iter::once((&recipe.path, &recipe.source))
                 .chain(
                     recipe

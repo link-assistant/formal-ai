@@ -9,7 +9,8 @@ import { EventEmitter } from 'node:events';
 import { createServer } from 'node:http';
 import net from 'node:net';
 import { resolveLiveMemory } from '../../../js/server/live-memory.mjs';
-import { SyncStore, preflightMemoryUpgrade } from '../../../js/server/memory-store.mjs';
+import { memoryHealthStatus } from '../../../js/server/memory.mjs';
+import { SyncStore, preflightMemoryUpgrade, sharedMemoryPath } from '../../../js/server/memory-store.mjs';
 import { startServer, installShutdownHandlers } from '../../../js/server/main.mjs';
 import { boundedCommand } from '../../../js/server/bounded-command.mjs';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -131,6 +132,9 @@ test('live startup binds active memory and health to the selected store before a
   const observed = await health.json();
   assert.equal(observed.memory.compatible, true);
   assert.equal(observed.memory.schema_version, 2);
+  assert.equal(observed.memory.active_path, running.ctx.env.FORMAL_AI_MEMORY_PATH);
+  assert.equal(observed.memory.configured_path, f.file);
+  assert.notEqual(observed.memory.active_path, observed.memory.configured_path);
   assert.notEqual(running.ctx.env.FORMAL_AI_MEMORY_PATH, f.file);
   assert.equal(running.ctx.liveMemory.originalPath, f.file);
   assert(running.ctx.memory.recordExchange([{
@@ -259,4 +263,26 @@ test('startup migration completes positive short writes and refuses zero without
     fs.writeSync = original;
   }
   assert.deepEqual(fs.readFileSync(failed.file), released);
+});
+
+test('health reports missing configured paths without creating a memory file', t => {
+  const f = fixture(t);
+  const first = memoryHealthStatus(f.env);
+  assert.equal(first.active_path, f.file);
+  assert.equal(first.configured_path, f.file);
+  assert.equal(first.schema_version, null);
+  assert.equal(first.migration_state, 'missing');
+  assert.deepEqual(memoryHealthStatus(f.env), first);
+  assert.equal(fs.existsSync(f.file), false);
+});
+test('health reports the platform default path without creating its directory', t => {
+  const f = fixture(t);
+  const env = { ...f.env, APPDATA: f.home };
+  delete env.FORMAL_AI_MEMORY_PATH;
+  const expected = sharedMemoryPath(env);
+  const before = fs.readdirSync(f.home);
+  const observed = memoryHealthStatus(env);
+  assert.equal(observed.active_path, expected);
+  assert.equal(observed.configured_path, expected);
+  assert.deepEqual(fs.readdirSync(f.home), before);
 });

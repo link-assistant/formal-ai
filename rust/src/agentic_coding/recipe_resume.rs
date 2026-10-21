@@ -184,6 +184,7 @@ pub(super) fn recipe_ci_result(
     })
 }
 /// Repository obligations admitted by the source recipe route.
+#[derive(Clone, Copy)]
 pub(super) struct RecipeCompletion<'a> {
     pub recipe: &'a ExecutionRecipe,
     pub reference: &'a str,
@@ -198,7 +199,7 @@ enum Observation<'a> {
     Succeeded(&'a str),
 }
 fn observation<'a>(progress: &'a Progress, command: &str) -> Observation<'a> {
-    let Some(frame) = progress.qualified_command_attempt(&command) else {
+    let Some(frame) = progress.qualified_command_attempt(command) else {
         return Observation::Missing;
     };
     if frame.binding == Binding::Exact
@@ -308,13 +309,13 @@ pub(super) fn plan_recipe_ci_fallback(
             Observation::Succeeded(_) => {}
         }
     }
-    if evidence.is_draft {
-        if let Some(edit) = completion.followup.get(1) {
-            match observation(&progress, edit) {
-                Observation::Missing => return call(run, edit),
-                Observation::Failed => return gap("scope-refusal"),
-                Observation::Succeeded(_) => {}
-            }
+    if evidence.is_draft
+        && let Some(edit) = completion.followup.get(1)
+    {
+        match observation(&progress, edit) {
+            Observation::Missing => return call(run, edit),
+            Observation::Failed => return gap("scope-refusal"),
+            Observation::Succeeded(_) => {}
         }
     }
     let ready = recipe_ci_command(completion.reference, completion.workflow, true);
@@ -360,7 +361,7 @@ pub(super) fn recipe_delivery_reference(
     .expect("valid owned clause fence policy");
     let quoted = crate::normal_markov::quoted_segment_spans(request);
     let mut references = std::collections::BTreeSet::new();
-    let mut fenced = false;
+    let mut inside_code_fence = false;
     let mut offset = 0;
     for raw in request.split_inclusive('\n') {
         let start = offset;
@@ -370,11 +371,11 @@ pub(super) fn recipe_delivery_reference(
             .iter()
             .any(|prefix| line.starts_with(prefix.as_str()))
         {
-            fenced = !fenced;
+            inside_code_fence = !inside_code_fence;
             continue;
         }
         let owned_at = start + raw.find(line).unwrap_or(0);
-        if fenced
+        if inside_code_fence
             || quoted
                 .iter()
                 .any(|segment| segment.start <= owned_at && owned_at < segment.end)
@@ -433,6 +434,7 @@ pub(super) fn recipe_source_update_command(
     source: &str,
     before: &RecipeSourceResult,
 ) -> Option<String> {
+    static SOURCE: OnceLock<String> = OnceLock::new();
     let digest = before.sha256.as_deref()?;
     let identity = before.identity.as_ref()?;
     if before.absent
@@ -447,7 +449,6 @@ pub(super) fn recipe_source_update_command(
     {
         return None;
     }
-    static SOURCE: OnceLock<String> = OnceLock::new();
     let program = SOURCE.get_or_init(|| {
         let library = crate::seed::parser::parse_lino(include_str!(
             "../../embedded/data/meta/workspace-source-io.lino"

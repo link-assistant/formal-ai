@@ -39,9 +39,12 @@ export function memoryPath(env = process.env) {
 }
 
 /** `memory_health_status` (a `json!` value: keys sorted). */
-export function memoryHealthStatus(env = process.env) {
-  const status = preflightMemory(sharedMemoryPath(env));
+export function memoryHealthStatus(env = process.env, selection = null) {
+  const activePath = sharedMemoryPath(env);
+  const status = preflightMemory(activePath);
   return sortedKeys({
+    active_path: activePath,
+    configured_path: selection?.originalPath ?? activePath,
     schema_version: status.detected_schema_version,
     minimum_readable_schema_version: MINIMUM_READABLE_SCHEMA,
     maximum_readable_schema_version: MAXIMUM_READABLE_SCHEMA,

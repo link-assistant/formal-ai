@@ -68,6 +68,7 @@ pub(crate) fn prepare_live_memory(path: &Path) -> std::io::Result<PathBuf> {
     }
     let selected = live_memory_path(path)?;
     paths.insert(path.to_path_buf(), selected.clone());
+    drop(paths);
     Ok(selected)
 }
 
@@ -288,17 +289,18 @@ impl SyncStore {
     #[must_use]
     pub fn open() -> Self {
         configured_memory_path().map_or_else(Self::default, |path| {
-            prepare_live_memory(&path)
-                .map(|selected| {
+            match prepare_live_memory(&path) {
+                Ok(selected) => {
                     Self::open_read(&selected, live_memory_source(&selected, selected != path))
-                })
-                .unwrap_or_else(|error| Self {
+                }
+                Err(error) => Self {
                     path: Some(path),
                     events: Vec::new(),
                     schema_version: TARGET_MEMORY_SCHEMA_VERSION,
                     compatible: false,
                     storage_error: Some((error.kind(), error.to_string())),
-                })
+                },
+            }
         })
     }
 

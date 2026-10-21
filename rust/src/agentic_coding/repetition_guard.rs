@@ -186,14 +186,12 @@ pub(super) fn guard_plan(
         Some(AgenticPlan::ToolCalls(calls)) => Some(calls.as_slice()),
         _ => None,
     };
-    if let Some(reason) = repeated_action_stop_for_candidates(messages, candidates) {
+    repeated_action_stop_for_candidates(messages, candidates).map_or(plan, |reason| {
         Some(super::final_result::record(
             AgenticPlan::Final(reason),
             super::final_result::FinalDisposition::Failure,
             "repeated_action_budget",
             result,
         ))
-    } else {
-        plan
-    }
+    })
 }

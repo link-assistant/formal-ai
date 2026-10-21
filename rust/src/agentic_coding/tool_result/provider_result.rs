@@ -1,4 +1,4 @@
-//! Typed terminal client status; twin: js/agentic/tool_result.mjs.
+//! Typed terminal client status; twin: `js/agentic/tool_result.mjs`.
 use super::{Value, source_observation};
 /// Only a terminal typed provider part supplies nested status; source JSON does not.
 pub(super) fn project(value: &Value) -> Option<Value> {
