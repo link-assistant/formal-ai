@@ -107,3 +107,9 @@ Whitespace inside a comment was first refused as `SourceMaintenanceProtectedLexe
 that protection remains intact. Independent identity source creation now reads
 the declared module and acceptance test, then reports `SearchToolMissing`
 without creating a module or claiming completion.
+
+## Negative conclusions and earlier attempts
+
+Terminal negative runs and jobs include failures, cancellations, timeouts, action-required, stale and startup-failure results. Classification arrays keep their original meaning. A successful rerun may also retain an earlier failed attempt; this never changes its latest run conclusion. Earlier attempts are visited newest first, at most the existing pages bound, sharing the existing jobs-per-run budget across attempts. Attempt coverage explicitly reports unknown counts, unavailable job lists and exhausted bounds. Complete attempt inventory does not imply complete downloaded logs.
+
+Bounded lifecycle metadata distinguishes observed step execution, explicitly unstarted jobs and unknown start state. A job timestamp alone does not prove execution. Available negative-job logs are requested even for explicitly unstarted metadata; a missing log never establishes that no failure occurred. Existing unavailable, retained-middle, transfer-truncation and tail-completeness fields apply to every collected negative conclusion. Only redacted diagnostic candidates and bounded lifecycle fields are output, never raw log bodies.

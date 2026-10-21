@@ -54,7 +54,7 @@ export function diagnostics(log) {
     // Agent payloads, echoed scripts and configuration are context, not observed failures.
     if (/^[{\[]|^"|^if\b|^echo\b|^curl\b|^if-no-files-found:|\b0 failed\b|^failed distributed compilations\s+0$/iu.test(clean.trim())) continue;
     const category = categories.find(([, pattern]) => pattern.test(clean))?.[0];
-    if (!category && !/(?:##\[error\]|\b[a-z]*error\b|\b[a-z]*exception\b|\bERR_[A-Z0-9_]+\b|\bfatal\b|\bfailed\b|\bpanic\b)/iu.test(clean)) continue;
+    if (!category && !/(?:##\[error\]|\b[a-z]*error\b|\b[a-z]*exception\b|\bERR_[A-Z0-9_]+\b|\bfatal\b|\bfailed\b|\bpanic\b|\bcancel(?:led|ed)\b|\btimed out\b)/iu.test(clean)) continue;
     const diagnostic = normalize(clean).slice(0, 1000);
     if (!diagnostic) continue;
     const fingerprint = createHash('sha256').update(`${category ?? 'other'}\n${diagnostic}`).digest('hex').slice(0, 24);
@@ -159,10 +159,34 @@ export function runGh(args, { timeoutMs, maxBytes, maxDownloadBytes = maxBytes }
     });
   });
 }
+const negativeConclusions = new Set(['failure', 'cancelled', 'timed_out', 'action_required', 'stale', 'startup_failure']);
+/** Lifecycle evidence never treats a job timestamp alone as proof that work executed. */
+export function jobLifecycle(job, maximumSteps) {
+  const steps = Array.isArray(job.steps) ? job.steps : null;
+  const executionObserved = steps?.some(step => step.status === 'in_progress'
+    || (typeof step.started_at === 'string' && step.status === 'completed'
+      && (step.conclusion === 'success' || step.conclusion === 'neutral'
+        || negativeConclusions.has(step.conclusion)))) === true;
+  const explicitlyUnstarted = job.started_at === null && (job.runner_id === null || job.runner_id === 0)
+    && steps !== null && steps.every(step => step.started_at === null
+      && (step.conclusion === null || step.conclusion === 'skipped'));
+  const safeText = value => typeof value === 'string' ? redact(value).slice(0, 300) : null;
+  return {
+    execution: executionObserved ? 'execution-observed' : explicitlyUnstarted ? 'explicitly-unstarted' : 'unknown-start',
+    status: safeText(job.status), startedAt: safeText(job.started_at), completedAt: safeText(job.completed_at),
+    runnerId: Number.isSafeInteger(job.runner_id) ? job.runner_id : null,
+    stepsUnavailable: steps === null, stepsTruncated: (steps?.length ?? 0) > maximumSteps,
+    steps: (steps ?? []).slice(0, maximumSteps).map(step => ({
+      number: Number.isSafeInteger(step.number) ? step.number : null, name: safeText(step.name),
+      status: safeText(step.status), conclusion: safeText(step.conclusion),
+      startedAt: safeText(step.started_at), completedAt: safeText(step.completed_at),
+    })),
+  };
+}
 export async function collect({ conclusion = null, repositories = ['link-assistant/formal-ai', 'link-assistant/hive-mind'], bounds: input = {}, transport = runGh } = {}) {
   const bounds = validateBounds(input); // Validate every bound before any IO.
   if (!Array.isArray(repositories) || !repositories.length || repositories.length > 5 || repositories.some(repo => !/^[\w.-]+\/[\w.-]+$/u.test(repo))) throw new Error('1..5 owner/repository names required');
-  if (conclusion !== null && !['failure', 'cancelled', 'skipped'].includes(conclusion)) throw new Error('Invalid conclusion filter');
+  if (conclusion !== null && !['failure', 'cancelled', 'skipped', 'timed_out', 'action_required', 'stale', 'startup_failure'].includes(conclusion)) throw new Error('Invalid conclusion filter');
   const report = { conclusionFilter: conclusion, version: 1, collectedAt: new Date().toISOString(), bounds, repositories, failures: [], cancelled: [], skipped: [], other: [], unavailable: [], coverage: [], groups: [] };
   const occurrences = [];
   async function request(endpoint, log = false) {
@@ -189,27 +213,55 @@ export async function collect({ conclusion = null, repositories = ['link-assista
       for (const run of runs.slice(0, bounds.runs - seen)) {
         seen++;
         const metadata = { repository, runId: run.id, runUrl: run.html_url, headSha: run.head_sha, headBranch: redact(run.head_branch ?? ''), workflow: redact(run.name ?? ''), conclusion: run.conclusion, status: run.status };
-        if (run.conclusion !== 'failure') { report[run.conclusion === 'cancelled' ? 'cancelled' : run.conclusion === 'skipped' ? 'skipped' : 'other'].push(metadata); continue; }
-        const failure = { ...metadata, jobs: [], jobsTruncated: false };
-        report.failures.push(failure);
-        const jobsData = await json(`repos/${repository}/actions/runs/${run.id}/jobs?per_page=${bounds.jobs}&page=1`);
-        if (!jobsData) { failure.jobsUnavailable = true; continue; }
-        failure.jobsTruncated = (jobsData.total_count ?? 0) > bounds.jobs;
-        for (const job of (jobsData.jobs ?? []).slice(0, bounds.jobs)) {
-          const item = { ...metadata, jobId: job.id, jobUrl: job.html_url, jobName: redact(job.name ?? ''), jobConclusion: job.conclusion };
-          if (job.conclusion !== 'failure') { failure.jobs.push(item); continue; }
-          const result = await request(`repos/${repository}/actions/jobs/${job.id}/logs`, true);
-          item.logsUnavailable = !result.ok && !result.truncated;
-          item.logsTruncated = !!result.truncated;
-          item.logsDownloadTruncated = !!result.downloadTruncated;
-          item.logsTailComplete = result.tailComplete === true;
-          item.logBytesReceived = result.bytesReceived ?? null;
-          item.logsTimedOut = !!result.timedOut;
-          item.logAttempts = result.attempts;
-          item.diagnostics = diagnostics(result.text ?? '');
-          item.observedOutcome = observedOutcome(result.text ?? '');
-          failure.jobs.push(item);
-          occurrences.push(item);
+        const category = run.conclusion === 'failure' ? 'failures'
+          : run.conclusion === 'cancelled' ? 'cancelled' : run.conclusion === 'skipped' ? 'skipped' : 'other';
+        const entry = { ...metadata, jobs: [], jobsTruncated: false, attempts: [] };
+        report[category].push(entry);
+        const knownAttempts = Number.isSafeInteger(run.run_attempt) && run.run_attempt > 0;
+        const latestAttempt = knownAttempts ? run.run_attempt : 1;
+        if (!negativeConclusions.has(run.conclusion) && latestAttempt === 1) continue;
+        const coverage = { reportedAttempts: knownAttempts ? latestAttempt : null, considered: [], complete: knownAttempts, reasons: [] };
+        entry.attemptCoverage = coverage;
+        if (!knownAttempts) { coverage.complete = false; coverage.reasons.push('attempt-count-unavailable'); }
+        if (latestAttempt > bounds.pages) { coverage.complete = false; coverage.reasons.push('attempt-limit'); }
+        let remainingJobs = bounds.jobs;
+        for (let index = 0; index < Math.min(latestAttempt, bounds.pages); index++) {
+          if (remainingJobs === 0) { coverage.complete = false; coverage.reasons.push('job-limit'); break; }
+          const attempt = knownAttempts ? latestAttempt - index : null;
+          coverage.considered.push(attempt);
+          const endpoint = knownAttempts
+            ? 'repos/' + repository + '/actions/runs/' + run.id + '/attempts/' + attempt + '/jobs?per_page=' + remainingJobs + '&page=1'
+            : 'repos/' + repository + '/actions/runs/' + run.id + '/jobs?per_page=' + remainingJobs + '&page=1';
+          const jobsData = await json(endpoint);
+          const attemptRecord = { attempt, jobsUnavailable: jobsData === null, jobsTruncated: false, jobsObserved: 0 };
+          entry.attempts.push(attemptRecord);
+          if (!jobsData) { entry.jobsUnavailable = true; coverage.complete = false; coverage.reasons.push('jobs-unavailable'); continue; }
+          const jobs = Array.isArray(jobsData.jobs) ? jobsData.jobs.slice(0, remainingJobs) : [];
+          attemptRecord.jobsTruncated = !Array.isArray(jobsData.jobs)
+            || !Number.isSafeInteger(jobsData.total_count) || jobsData.total_count !== jobs.length;
+          entry.jobsTruncated ||= attemptRecord.jobsTruncated;
+          if (attemptRecord.jobsTruncated) { coverage.complete = false; coverage.reasons.push('job-list-incomplete'); }
+          remainingJobs -= jobs.length;
+          attemptRecord.jobsObserved = jobs.length;
+          for (const job of jobs) {
+            const item = { ...metadata, runAttempt: attempt, jobId: job.id, jobUrl: job.html_url,
+              jobName: redact(job.name ?? ''), jobConclusion: job.conclusion, lifecycle: jobLifecycle(job, bounds.jobs) };
+            entry.jobs.push(item);
+            if (!negativeConclusions.has(job.conclusion)) continue;
+            const result = await request('repos/' + repository + '/actions/jobs/' + job.id + '/logs', true);
+            item.logsUnavailable = !result.ok && !result.truncated;
+            item.logsTruncated = !!result.truncated;
+            item.logsDownloadTruncated = !!result.downloadTruncated;
+            item.logsTailComplete = result.tailComplete === true;
+            item.logBytesReceived = result.bytesReceived ?? null;
+            item.logsTimedOut = !!result.timedOut;
+            item.logAttempts = result.attempts;
+            item.logAvailability = item.logsUnavailable ? 'unavailable' : result.tailComplete === true ? 'complete' : 'partial-or-unconfirmed';
+            item.logError = result.error ? redact(result.error).slice(0, 1000) : null;
+            item.diagnostics = diagnostics(result.text ?? '');
+            item.observedOutcome = observedOutcome(result.text ?? '');
+            occurrences.push(item);
+          }
         }
       }
       if (runs.length < Math.min(100, bounds.runs)) break;
