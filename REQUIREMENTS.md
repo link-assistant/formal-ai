@@ -62,6 +62,7 @@ the areas are the whole register.
    - Issue #1138 Bottleneck Audit
    - Issue #1168 Generated Code Uses Versions Resolved at Generation Time
    - Issue #1169 Every Dependency at Its Latest Release
+   - Issue 1364: complete three-client release acceptance
 
 3. [Interfaces and integrations](docs/requirements/assembled/interfaces-and-integrations.md)
    - Issue #6 UI Follow-Up Requirements

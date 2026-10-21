@@ -191,8 +191,8 @@ refusal "new expression" 92
 refusal "object without a $ tag" 87
 refusal "regular expression" 63
 refusal "method call .find()" 59
-refusal "method call .split()" 55
 refusal "method call .map()" 54
+refusal "method call .split()" 54
 refusal "method call .filter()" 51
 refusal "method call .some()" 47
 refusal "method call .slice()" 45
@@ -204,7 +204,7 @@ refusal "optional chaining" 30
 refusal "nullish coalescing" 26
 refusal "method call .replace()" 24
 refusal "export …" 22
-refusal "syntax: malformed number" 20
+refusal "syntax: malformed number" 21
 refusal "try statement" 19
 refusal "case test" 18
 refusal "undefined" 16

@@ -27,12 +27,12 @@ translation_blockers
   blockers_per_item 11 42
   blockers_per_item 12 34
   blockers_per_item 13 21
-  blockers_per_item 14 28
+  blockers_per_item 14 27
   blockers_per_item 15 20
   blockers_per_item 16 17
   blockers_per_item 17 10
   blockers_per_item 18 7
-  blockers_per_item 19 6
+  blockers_per_item 19 7
   blockers_per_item 20 7
   blockers_per_item 21 6
   blockers_per_item 22 1
@@ -60,7 +60,7 @@ construct "method call .slice()" items 272 only 6
 construct "JSDoc type {…}" items 252 only 5
 construct "method call .filter()" items 250 only 0
 construct "arrow callback of .map()" items 235 only 0
-construct "regular expression" items 230 only 34
+construct "regular expression" items 231 only 34
 construct "sibling value" items 209 only 16
 construct "arrow callback of .filter()" items 198 only 0
 construct "nullish coalescing" items 195 only 0
@@ -74,7 +74,7 @@ construct "arrow callback of .find()" items 147 only 0
 construct "method call .find()" items 142 only 0
 construct "assignment of a field or element" items 125 only 0
 construct "destructuring" items 125 only 0
-construct "method call .test()" items 119 only 0
+construct "method call .test()" items 120 only 0
 construct "imported value" items 117 only 2
 construct "global call String()" items 113 only 0
 construct "Array.from" items 107 only 0
@@ -82,7 +82,7 @@ construct "new Set" items 94 only 34
 construct "method call .has()" items 93 only 0
 construct "method call .sort()" items 93 only 0
 construct "optional chaining" items 84 only 0
-construct "method call .replace()" items 80 only 0
+construct "method call .replace()" items 81 only 0
 construct "method call .get()" items 72 only 0
 construct "method call .indexOf()" items 71 only 0
 construct "arrow callback of .sort()" items 68 only 0
@@ -92,10 +92,10 @@ construct "new Map" items 66 only 5
 construct "method call .set()" items 60 only 0
 construct "try statement" items 59 only 0
 construct "arrow callback of .every()" items 57 only 0
-construct "method call .flatMap()" items 49 only 0
+construct "method call .flatMap()" items 50 only 0
 construct "object spread" items 46 only 0
 construct "global value Boolean" items 43 only 0
-construct "arrow callback of .flatMap()" items 40 only 0
+construct "arrow callback of .flatMap()" items 41 only 0
 construct "arrow callback of .reduce()" items 36 only 0
 construct "method call .reduce()" items 36 only 0
 construct "Object.freeze" items 34 only 0

@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b8fed4dc537e7f3e20e99beafbad8f47c69363d128abac5659caee879fa79d94 bytes=15806
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=6e1066cd12756f83ccaf6ebcda4e7321c292827f9745ab96e6f1c0ba6b2f841b bytes=16363
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=6; string-methods items=1
 
@@ -130,9 +130,9 @@ pub fn replace_text(text: String, from: String, to: String) -> String {
 // formal-ai:refusal null
 // formal-ai:blockers arrow callback of .filter() | arrow callback of .map() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .join() | method call .map() | method call .splice() | null | nullish coalescing | object without a $ tag | undefined
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .split()
-// formal-ai:blockers arrow callback of .map() | arrow callback of .some() | arrow function | call of an imported function | field access | global call String() | in operator | method call .join() | method call .map() | method call .some() | method call .split() | null | object without a $ tag | typeof operator
+// meta-language:carried JavaScript function_declaration (syntax)
+// formal-ai:refusal syntax: malformed number
+// formal-ai:blockers arrow callback of .flatMap() | arrow callback of .map() | arrow callback of .some() | arrow function | call of an imported function | field access | global call String() | in operator | method call .flatMap() | method call .join() | method call .map() | method call .replace() | method call .some() | method call .split() | method call .test() | null | object without a $ tag | regular expression | typeof operator
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal optional chaining
