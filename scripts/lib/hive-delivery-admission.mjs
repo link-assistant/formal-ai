@@ -127,6 +127,8 @@ export function authenticatePullRequest({
   };
 }
 /** Every applicable workflow and every other observed workflow must be green at the exact source. */
+class CiAdmissionDeferred extends Error {}
+
 export function ciAdmission({
   source,
   expected,
@@ -149,10 +151,17 @@ export function ciAdmission({
       previous = latest.get(key);
     if (!previous || run.id > previous.id || run.id === previous.id && run.run_attempt > previous.run_attempt) latest.set(key, run);
   }
-  for (const workflow of expected) assert.ok([...latest.values()].some(run => run.path === workflow), 'missing applicable CI ' + workflow);
+  for (const workflow of expected) {
+    if (![...latest.values()].some(run => run.path === workflow)) throw new CiAdmissionDeferred('missing applicable CI ' + workflow);
+  }
   for (const run of latest.values()) {
-    assert.equal(run.status, 'completed', 'other CI pending');
-    assert.equal(run.conclusion, 'success', 'other CI not green');
+    assert.ok(['completed', 'queued', 'in_progress', 'requested', 'waiting', 'pending'].includes(run.status), 'invalid CI status metadata');
+    if (run.status !== 'completed') {
+      assert.equal(run.conclusion, null, 'nonterminal CI conclusion metadata');
+      throw new CiAdmissionDeferred('other CI pending');
+    }
+    assert.ok(['success', 'failure', 'neutral', 'cancelled', 'skipped', 'timed_out', 'action_required', 'stale', 'startup_failure'].includes(run.conclusion), 'invalid CI conclusion metadata');
+    if (run.conclusion !== 'success') throw new CiAdmissionDeferred('other CI not green');
   }
   return [...latest.values()].map(run => ({
     id: run.id,
@@ -275,4 +284,13 @@ export function requireHistoricalTask({
   assert.equal(evidence.issueUrl, entry.issueUrl);
   assert.equal(evidence.pullRequestUrl, entry.pullRequestUrl);
   return entry;
+}
+
+/** Ordinary unfinished CI is a defer decision; malformed custody still throws. */
+export function ciAdmissionDecision(options) {
+  try { return {admitted: true, ci: ciAdmission(options)}; }
+  catch (error) {
+    if (!(error instanceof CiAdmissionDeferred)) throw error;
+    return {admitted: false, reason: error.message};
+  }
 }

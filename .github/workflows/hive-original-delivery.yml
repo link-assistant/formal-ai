@@ -22,6 +22,8 @@ permissions:
 concurrency:
   group: original-hive-${{ github.event.workflow_run.name == 'Verify Public
     Release Downloads' && format('release-{0}', github.event.workflow_run.id) ||
+    github.event.workflow_run.event == 'push' && github.event.workflow_run.head_branch == 'main' &&
+    github.event.workflow_run.conclusion == 'success' && format('release-ci-{0}', github.event.workflow_run.id) ||
     format('candidate-{0}', github.event.workflow_run.head_branch ||
     github.ref_name) }}
   cancel-in-progress: false

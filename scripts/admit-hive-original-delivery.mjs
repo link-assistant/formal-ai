@@ -7,7 +7,7 @@ import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { policyIdentity, readWorkflowPolicy } from './lib/hive-delivery-source.mjs';
 import { planClients } from './lib/hive-delivery-journal.mjs';
-import { observePublishedAdmission } from './lib/hive-delivery-release.mjs';
+import { observePublishedAdmission, latePublishedBindingDecision } from './lib/hive-delivery-release.mjs';
 import { boundedCommand } from '../js/server/bounded-command.mjs';
 import { authenticatePullRequest, applicableWorkflows, ciAdmission, deliveryWorkflow, admissionPolicy } from './lib/hive-delivery-admission.mjs';
 const maximumBytes = 4 * 1024 * 1024;
@@ -235,7 +235,17 @@ export async function recheckAdmission({
     };
   }
 }
-/** Only the exact completed public-download producer can select a published runtime. */
+/** A late event is only a read-only wakeup; it cannot select a different release source. */
+export function isLatePublishedCompletion(trigger, repository) {
+  return trigger?.repository?.full_name === repository && trigger?.head_repository?.full_name === repository
+    && trigger.status === 'completed' && trigger.conclusion === 'success'
+    && trigger.event === 'push' && trigger.head_branch === 'main'
+    && Number.isSafeInteger(trigger.id) && trigger.id > 0
+    && Number.isSafeInteger(trigger.run_attempt) && trigger.run_attempt > 0
+    && /^[a-f0-9]{40}$/u.test(trigger.head_sha ?? '')
+    && typeof trigger.path === 'string';
+}
+/** Only an authenticated public producer selects release bytes; late CI only rechecks eligibility. */
 export async function observeEligibleAdmission(options) {
   const {
     repository,
@@ -253,6 +263,23 @@ export async function observeEligibleAdmission(options) {
       reader,
       verifiedRunId: trigger.id
     });
+    else if (isLatePublishedCompletion(trigger, repository)) {
+      const latest = await reader.read('repos/' + repository + '/actions/workflows/verify-release-downloads.yml/runs?per_page=1');
+      assert.ok(Array.isArray(latest.workflow_runs) && latest.workflow_runs.length <= 1, 'bounded latest producer metadata');
+      if (latest.workflow_runs.length === 0) return {admitted: false, reason: 'no-public-download-producer'};
+      const verified = latest.workflow_runs[0];
+      assert.ok(Number.isSafeInteger(verified.id) && verified.id > 0, 'latest producer identity');
+      assert.equal(verified.repository.full_name, repository);
+      assert.equal(verified.head_repository.full_name, repository);
+      assert.equal(verified.path, '.github/workflows/verify-release-downloads.yml');
+      assert.ok(['completed', 'queued', 'in_progress', 'requested', 'waiting', 'pending'].includes(verified.status), 'latest producer status metadata');
+      if (verified.status === 'completed') assert.ok(['success', 'failure', 'neutral', 'cancelled', 'skipped', 'timed_out', 'action_required', 'stale', 'startup_failure'].includes(verified.conclusion), 'latest producer conclusion metadata');
+      else assert.equal(verified.conclusion, null, 'latest nonterminal conclusion metadata');
+      if (verified.status !== 'completed') return {admitted: false, reason: 'latest-public-download-producer-pending'};
+      if (verified.conclusion !== 'success') return {admitted: false, reason: 'latest-public-download-producer-not-green'};
+      const published = await observePublishedAdmission({ repository, reader, verifiedRunId: verified.id });
+      result = published.admitted ? latePublishedBindingDecision(trigger, published) : published;
+    }
   }
   return result;
 }

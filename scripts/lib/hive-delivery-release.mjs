@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { artifactJson } from './hive-delivery-journal.mjs';
 import { sourceBytes, readWorkflowPolicy } from './hive-delivery-source.mjs';
-import { applicableWorkflows, ciAdmission, admissionPolicy, deliveryWorkflow } from './hive-delivery-admission.mjs';
+import { applicableWorkflows, ciAdmissionDecision, admissionPolicy, deliveryWorkflow } from './hive-delivery-admission.mjs';
 import { validateVersionWitness } from '../refresh-release-specification-witness.mjs';
 import { verifyAnonymousImageManifest } from '../verify-anonymous-image-manifest.mjs';
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
@@ -311,12 +311,9 @@ export async function observePublishedAdmission({
     assert.equal(run.repository.full_name, repository);
     assert.equal(run.head_repository.full_name, repository);
   }
-  const ci = ciAdmission({
-    source: main.head_sha,
-    expected,
-    runs,
-    complete: true
-  });
+  const checkedDecision = ciAdmissionDecision({source: main.head_sha, expected, runs, complete: true});
+  if (!checkedDecision.admitted) return checkedDecision;
+  const ci = checkedDecision.ci;
   let delta = {
     kind: 'exact-ci-source',
     ciSource: source,
@@ -375,12 +372,11 @@ export async function observePublishedAdmission({
     assert.equal(run.head_repository.full_name, repository);
   }
   const publishedExpected = [...new Set(publishedRuns.filter(run => run.path !== deliveryWorkflow && run.path !== '.github/workflows/hive-original-delivery-finalize.yml').map(run => run.path))];
-  const publishedObservedCi = publishedExpected.length ? ciAdmission({
-    source,
-    expected: publishedExpected,
-    runs: publishedRuns,
-    complete: true
-  }) : [];
+  const publishedDecision = publishedExpected.length ? ciAdmissionDecision({
+    source, expected: publishedExpected, runs: publishedRuns, complete: true
+  }) : {admitted: true, ci: []};
+  if (!publishedDecision.admitted) return publishedDecision;
+  const publishedObservedCi = publishedDecision.ci;
   const selected = {
     repository,
     scope: 'release-' + selection.tag,
@@ -411,4 +407,38 @@ export async function observePublishedAdmission({
     },
     authorshipCredit: 0
   };
+}
+
+/** Validate authenticated identity separately from normal late-event source mismatch. */
+function requireLatePublishedIdentity(trigger, admission) {
+  assert.equal(admission.schema, admissionPolicy);
+  assert.equal(admission.admitted, true);
+  const selected = admission.selected;
+  assert.equal(selected.event, 'published-release');
+  assert.equal(trigger.repository.full_name, selected.repository);
+  assert.equal(trigger.head_repository.full_name, selected.repository);
+  assert.equal(trigger.status, 'completed');
+  assert.equal(trigger.conclusion, 'success');
+  assert.equal(trigger.event, 'push');
+  assert.equal(trigger.head_branch, 'main');
+  assert.equal(admission.delta.ciSource, selected.ciSource);
+  assert.equal(admission.delta.publishedSource, selected.source);
+  assert.equal(admission.delta.kind, selected.source === selected.ciSource
+    ? 'exact-ci-source' : 'guarded-direct-prepared-version');
+}
+function latePublishedDenial(trigger, admission) {
+  const selected = admission.selected;
+  if (trigger.head_sha !== selected.ciSource && trigger.head_sha !== selected.source)
+    return 'late-ci-source-does-not-match-published-release';
+  const records = [...admission.ci, ...admission.publishedObservedCi];
+  if (!records.some(record => record.id === trigger.id && record.attempt === trigger.run_attempt
+    && record.path === trigger.path && record.source === trigger.head_sha))
+    return 'late-completion-is-not-current-authenticated-ci';
+  return null;
+}
+/** A completed push may wake the exact published-source chain, never inherit unrelated old CI. */
+export function latePublishedBindingDecision(trigger, admission) {
+  requireLatePublishedIdentity(trigger, admission);
+  const reason = latePublishedDenial(trigger, admission);
+  return reason === null ? admission : {admitted: false, reason};
 }
