@@ -48,5 +48,5 @@ test('the observed failing lease-start upload retries inside its original caller
   assert.equal(callee.concurrency, undefined);
   assert.equal(lease.concurrency, undefined);
   assert.equal(lease.if, 'inputs.active');
-  assert(workflow.on.pull_request.paths.includes('.github/actions/upload-artifact-with-retry/**'));
+  assert.deepEqual(Object.keys(workflow.on), ['workflow_dispatch'], 'independent live fixture is manual-only');
 });
