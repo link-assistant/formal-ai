@@ -98,10 +98,10 @@ fn recipe_step(
     }
     let resume = commit
         .as_ref()
-        .is_some_and(|target| target.reference.contains("/pull/"));
+        .is_some_and(git_commit::is_pull_request_target);
     let workflow = commit
         .as_ref()
-        .filter(|target| target.reference.contains("/pull/"))
+        .filter(|target| git_commit::is_pull_request_target(target))
         .filter(|_| super::ci_workflow::requested_in(objective))
         .and_then(|_| recipe_workflow(recipe, objective));
     let commit_step = |target: &CommitTarget| git_commit::recipe_commit_command(recipe, target);
@@ -380,7 +380,7 @@ fn recipe_workflow(recipe: &ExecutionRecipe, objective: &str) -> Option<String> 
 }
 
 fn pr_completion_commands(recipe: &ExecutionRecipe, target: &CommitTarget) -> Vec<String> {
-    if !target.reference.contains("/pull/") {
+    if !git_commit::is_pull_request_target(target) {
         return Vec::new();
     }
     let target_url = super::git_commit::shell_quote(&target.reference);

@@ -698,17 +698,6 @@ impl Progress {
         })
     }
 
-    /// The latest write declaration of this path, including failed observations.
-    pub(super) fn latest_write_index(&self, path: &str) -> Option<usize> {
-        self.attempts.iter().rposition(|attempt| {
-            attempt.capability == Capability::Write
-                && attempt
-                    .arguments
-                    .as_deref()
-                    .is_some_and(|arguments| argument_targets(arguments, path))
-        })
-    }
-
     /// Unknown edit scope cannot certify an earlier source observation.
     pub(super) fn latest_source_mutation_index(&self, path: &str) -> Option<usize> {
         self.attempts.iter().rposition(|attempt| {

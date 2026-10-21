@@ -371,15 +371,6 @@ fn session_contract() -> Option<serde_json::Value> {
     )
 }
 
-/// Preserve the original non-inventory contract for existing callers.
-#[must_use]
-pub(super) fn prepared_recipe_hygiene(
-    source_paths: &[String],
-    changed: &[String],
-) -> Option<PreparedWorkHygiene> {
-    prepared_recipe_hygiene_with_inventory(source_paths, changed, None)
-}
-
 /// Only an independently command-qualified inventory may extend the current recipe scope.
 #[must_use]
 pub(super) fn prepared_recipe_hygiene_with_inventory(

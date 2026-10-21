@@ -24,6 +24,11 @@ export function pushRef(target) {
   return target.branch ?? 'HEAD';
 }
 
+/** Mirrors fn is_pull_request_target: classify the already validated destination. */
+export function isPullRequestTarget(target) {
+  return target.reference.includes('/pull/');
+}
+
 /** Mirrors `fn target_of`: a `CommitTarget` or null. */
 export function targetOf(request) {
   const reference = repositoryWorkReference(request);

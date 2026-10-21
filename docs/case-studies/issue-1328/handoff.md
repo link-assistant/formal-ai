@@ -836,3 +836,15 @@ receipts and sanitize public evidence; never stage personal session exports.
 Exact-head hosted native and image checks, normal merge, publication and public
 download verification, and the three actual released-image Hive runs remain
 required. Source-level replay success does not establish these outcomes.
+
+
+### Follow-up from actual hosted compilation
+
+The next hosted head exposed duplicated PR-target predicates and two obsolete
+private Rust helpers left behind by the source-mutation and inventory refactor.
+The repair shares the existing validated target classification across recipe
+consumers, removes only the unreferenced internal definitions, and preserves the
+active mutation/inventory implementations and public JavaScript API. The original
+debt ceiling remains unchanged. Include the maintained JavaScript debt checker
+with an explicit comparison base in local source qualification; native compilation
+and runtime acceptance remain CI-only.

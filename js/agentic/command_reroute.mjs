@@ -13,7 +13,7 @@ import { lower as canonicalUnaryLower } from './crate/rust_str.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, isWorkspaceCreationTool, toolFor } from './capability_router.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
-import { pushRef, recipeCommitCommand, shellQuote, targetOf } from './git_commit.mjs';
+import { pushRef, recipeCommitCommand, shellQuote, targetOf, isPullRequestTarget } from './git_commit.mjs';
 import { attachExecutionRecipe, functionCallCommand, programRecoveryCommand } from './crate/coding_program_contract.mjs';
 import { normalizeCommandWord } from './shell_command_policy.mjs';
 import { pathExtension, tokens, typedWriteTarget } from './write_request.mjs';
@@ -70,7 +70,7 @@ function recipeStep(messages, toolNames, symbolicAnswer, objective, recoveryOnly
     ...requirementsTarget,
     reference: delivery.kind === 'bound' ? delivery.reference : requirementsTarget.reference
   };
-  const resume = Boolean(commit?.reference.includes('/pull/'));
+  const resume = commit !== null && isPullRequestTarget(commit);
   const repositoryCi = resume && requestedCiWorkflow(objective);
   const workflow = repositoryCi ? recipeWorkflow(recipe, objective) : null;
   const expectedCommands = [...recipe.commands];
@@ -183,7 +183,7 @@ function recipeWorkflow(recipe, objective) {
   return /^name: ([^\r\n]+)$/mu.exec(workflow.source)?.[1] ?? null;
 }
 function prCompletionCommands(recipe, target) {
-  if (!target.reference.includes('/pull/')) return [];
+  if (!isPullRequestTarget(target)) return [];
   const targetUrl = shellQuote(target.reference);
   const commands = recipe.commands.map(command => `- \`${command}\``).join('\n');
   const body = fill('pr_body_template', [['{path}', recipe.path], ['{commands}', commands], ['{reference}', target.reference]]);
