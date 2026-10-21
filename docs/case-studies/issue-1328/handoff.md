@@ -660,3 +660,12 @@ repair, not proof of a successful hosted desktop package or public download.
 All supplied repair controllers retain zero autonomous-authorship credit.
 Use actual next-head CI, then normal merge and actual default-branch release
 receipts; earlier-head successes cannot substitute for those acceptances.
+
+
+Coverage shard 1 on `625355e` found two new public modules missing from the
+architecture module map. A JavaScript source projection reads the canonical Rust
+generator's actual override/section tables and module headers, and adds only
+those missing rows. All existing map content is byte-identical after removing
+the insertions. The generator and original native module-map oracle are unchanged;
+pre-existing prose differences remain explicit rather than being silently rewritten.
+The next exact head still requires the original hosted coverage check.

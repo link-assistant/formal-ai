@@ -17,7 +17,9 @@ new module fails CI until this map documents it.
 | `agent` | Agent loop that plans, calls tools and records evidence. | §2 |
 | `anthropic` | Anthropic API adapter for live engine calls. | §2 |
 | `arithmetic` | Exact and rounded arithmetic over Links Notation numbers. | §2 |
+| `bounded_process` | Shared finite child-command supervision for caller-owned host operations. | §2 |
 | `bounded_retry` | Shared finite ceiling for consecutive failed attempts at an external action. | §2 |
+| `callback_values` | Typed receiver adapters for ECMAScript callback operations. | §2 |
 | `cloud_sync` | Opt-in, vendor-neutral append-only memory synchronization (issue #669). | §2 |
 | `code_example_knowledge` | Code examples as formal knowledge (issue #1164, E129). | §2 |
 | `derivation` | White-box derivation record for every answer (issue #1184, E148). | §2 |
