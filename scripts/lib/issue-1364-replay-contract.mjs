@@ -45,6 +45,9 @@ export function adaptReplayEntrypoint(source, task, workspace) {
     'const attachmentFlag = replayArgv.indexOf("--attach-logs");',
     'if (attachmentFlag < 0 || attachmentFlag !== replayArgv.lastIndexOf("--attach-logs")) throw Error("pinned attachment flag changed");',
     'replayArgv.splice(attachmentFlag, 1);',
+    // Use Hive's supported bookkeeping option; ordinary Git hooks remain in force.
+    'if (replayArgv.some(value => value === "--attribution" || value.startsWith("--attribution="))) throw Error("pinned attribution policy changed");',
+    'replayArgv.push("--attribution", "none");',
     "const dockerArgv = buildDockerArgv({solveArgv:replayArgv, solveCommand:'/opt/hive-e2e/src/solve.mjs', image, hostLogDir,",
     "  forwardEnv:['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS'],",
     '  extraMounts:[' + JSON.stringify(workspace + ':' + target) + ']});',

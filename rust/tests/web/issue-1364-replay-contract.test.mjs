@@ -130,3 +130,25 @@ test('the real effect runner refuses a local context before any API, Docker or f
   const {runIssue1364Replay}=await import('../../../scripts/run-issue-1364-client-replay.mjs');
   await assert.rejects(runIssue1364Replay({},{}),/hosted-only/u);
 });
+
+
+test('task replay keeps optional Hive attribution bookkeeping outside the task commit without bypassing repository hooks', () => {
+  const original = "const dockerArgv = buildDockerArgv({ solveArgv: buildE2eSolveArgv({ issueUrl, tool, model, baseBranch, logDir: '/home/box/logs' }), solveCommand: '/opt/hive-e2e/src/solve.mjs', image, hostLogDir, forwardEnv: ['GH_TOKEN', ...modelKeys, 'FORMAL_AI_INSTALL_GRANT', 'GITHUB_ACTIONS'] });";
+  const adapted = adaptReplayEntrypoint(original, {pullRequestUrl: 'https://github.com/public/task/pull/2'}, '/tmp/owned');
+  const construct = new Function('buildE2eSolveArgv', 'buildDockerArgv', 'issueUrl', 'tool',
+    'model', 'image', 'hostLogDir', 'modelKeys', adapted + '\nreturn dockerArgv;');
+  const invoke = extra => construct(() => ['https://github.com/public/task/issues/1', '--attach-logs', '--keep', ...extra],
+    value => value, 'https://github.com/public/task/issues/1', 'codex', 'formal-ai', 'task-image', '/tmp/logs', []);
+  const result = invoke([]);
+  const position = result.solveArgv.indexOf('--attribution');
+  assert.notEqual(position, -1, 'explicit supported attribution policy required');
+  assert.equal(result.solveArgv[position + 1], 'none');
+  assert.equal(result.solveArgv.filter(value => value === '--attribution').length, 1);
+  assert.equal(result.solveArgv[0], 'https://github.com/public/task/pull/2');
+  assert(result.solveArgv.includes('--keep'));
+  assert(!result.solveArgv.includes('--attach-logs'));
+  assert(!result.solveArgv.some(value => /no-verify|no-hooks|hooksPath/u.test(value)));
+  for (const extra of [['--attribution', 'auto'], ['--attribution=auto']]) {
+    assert.throws(() => invoke(extra), /pinned attribution policy changed/u);
+  }
+});
