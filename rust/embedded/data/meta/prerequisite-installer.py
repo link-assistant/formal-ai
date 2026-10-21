@@ -100,6 +100,23 @@ def publisher_document(documentation, fetch, publisher_host=None, hosts=()):
         document=raw.decode('utf-8'); parser=Links(); parser.feed(document)
     return documentation,document,parser,document_digest
 
+def github_release_document(documentation, fetch, publisher_host):
+    """A catalog-owned canonical release API is also a complete discovery document."""
+    value=urllib.parse.urlsplit(documentation)
+    if value.hostname!='api.github.com': return None
+    match=re.fullmatch(r'/repos/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)/releases/(latest|tags/[^/]+)',value.path)
+    require(value.scheme=='https' and value.port in (None,443) and not value.username and not value.password and not value.query and not value.fragment and publisher_host=='api.github.com' and match is not None,'invalid_release_documentation')
+    repo,endpoint=match.groups()
+    raw,document_digest=fetch(documentation,2097152)
+    release=json.loads(raw)
+    require(isinstance(release,dict) and release.get('draft') is False and release.get('prerelease') is False,'unstable_release')
+    tag=release.get('tag_name')
+    require(isinstance(tag,str) and bool(tag),'release_document_tag_missing')
+    require(release.get('html_url')=='https://github.com/'+repo+'/releases/tag/'+urllib.parse.quote(tag,safe=''),'release_document_repository_mismatch')
+    if endpoint.startswith('tags/'):
+        require(urllib.parse.unquote(endpoint[5:])==tag,'release_document_tag_mismatch')
+    return repo,endpoint,release,document_digest
+
 def select_release_archive(assets,document,system=None,machine=None):
     """Use observed host identity; metadata names never grant processes or network."""
     system=(system or platform.system()).lower()
@@ -190,19 +207,24 @@ def execute(request):
         record('fetch',url=url,sha256=digest.hexdigest(),size=total)
         return b''.join(chunks),digest.hexdigest()
     documentation=publisher['documentation']; require(publisher.get('program') == program,'publisher_program_mismatch')
-    documentation,document,parser,document_digest=publisher_document(documentation,fetch,publisher.get('host'),hosts)
-    releases=[]
-    for link in parser.links:
-        value=urllib.parse.urlsplit(urllib.parse.urljoin(documentation,link)); parts=value.path.strip('/').split('/')
-        if value.scheme == 'https' and value.hostname == 'github.com' and len(parts)>=3 and parts[2]=='releases':
-            repo='/'.join(parts[:2]); require(re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repo) is not None,'invalid_release_repository')
-            if len(parts)>=5 and parts[3]=='tag': endpoint='tags/'+urllib.parse.quote(urllib.parse.unquote('/'.join(parts[4:])),safe='')
-            else: endpoint='latest'
-            candidate=(repo,endpoint)
-            if candidate not in releases: releases.append(candidate)
-    require(len(releases)==1,'publisher_release_link_ambiguous_or_missing')
-    repo,endpoint=releases[0]; api='https://api.github.com/repos/'+repo+'/releases/'+endpoint
-    release_raw,_=fetch(api,2097152); release=json.loads(release_raw); require(release.get('draft') is False and release.get('prerelease') is False,'unstable_release')
+    release_document=github_release_document(documentation,fetch,publisher.get('host'))
+    if release_document is not None:
+        repo,endpoint,release,document_digest=release_document
+        document=''
+    else:
+        documentation,document,parser,document_digest=publisher_document(documentation,fetch,publisher.get('host'),hosts)
+        releases=[]
+        for link in parser.links:
+            value=urllib.parse.urlsplit(urllib.parse.urljoin(documentation,link)); parts=value.path.strip('/').split('/')
+            if value.scheme == 'https' and value.hostname == 'github.com' and len(parts)>=3 and parts[2]=='releases':
+                repo='/'.join(parts[:2]); require(re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repo) is not None,'invalid_release_repository')
+                if len(parts)>=5 and parts[3]=='tag': endpoint='tags/'+urllib.parse.quote(urllib.parse.unquote('/'.join(parts[4:])),safe='')
+                else: endpoint='latest'
+                candidate=(repo,endpoint)
+                if candidate not in releases: releases.append(candidate)
+        require(len(releases)==1,'publisher_release_link_ambiguous_or_missing')
+        repo,endpoint=releases[0]; api='https://api.github.com/repos/'+repo+'/releases/'+endpoint
+        release_raw,_=fetch(api,2097152); release=json.loads(release_raw); require(release.get('draft') is False and release.get('prerelease') is False,'unstable_release')
     asset=select_release_archive(release.get('assets',[]),document)
     digest=asset.get('digest',''); require(re.fullmatch(r'sha256:[a-f0-9]{64}',digest) is not None,'asset_digest_missing')
     download=asset['browser_download_url']; require(download.startswith('https://github.com/'+repo+'/releases/download/'),'asset_repository_mismatch')

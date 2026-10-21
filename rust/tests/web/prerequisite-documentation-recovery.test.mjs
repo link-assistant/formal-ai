@@ -31,7 +31,8 @@ r,c,e=run({a:http(522),b:http(522)});assert e is not None and c==[a,b]
 r,c,e=run({a+'next.html':http(522)},document=body);assert e is None and c==[a,a+'next.html',b+'next.html'] and r[0]==b+'next.html'
 assert m.documentation_alias(a,'foreign.test',hosts) is None
 assert m.documentation_alias('http://www.publisher.test/download/','publisher.test',hosts) is None
-assert m.diagnostic_url('https://user:secret@publisher.test/x?token=secret#private')=='https://publisher.test/x'
+userinfo='synthetic-user'+':'+'synthetic-password'
+assert m.diagnostic_url('https://'+userinfo+'@publisher.test/x?token=synthetic#private')=='https://publisher.test/x'
 print('PURE_DOCUMENTATION_CONTROLS_PASSED')`],{encoding:'utf8',timeout:15000});
  assert.equal(result.status,0,result.stderr);assert.match(result.stdout,/PURE_DOCUMENTATION_CONTROLS_PASSED/);
 });
