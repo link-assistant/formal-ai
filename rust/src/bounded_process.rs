@@ -521,7 +521,7 @@ async fn observe(
                 && writer.is_none()
                 && readers.iter().all(tokio::task::JoinHandle::is_finished)
             {
-                for reader in readers.drain(..) {
+                for reader in std::mem::take(&mut readers) {
                     if let Err(error) = reader.await {
                         return Err(Some(io::Error::other(error)));
                     }
@@ -554,7 +554,7 @@ async fn observe(
         }
     }
     if completed.is_err() && readers.iter().all(tokio::task::JoinHandle::is_finished) {
-        for reader in readers.drain(..) {
+        for reader in std::mem::take(&mut readers) {
             if let Err(error) = reader.await {
                 reader_error = Some(io::Error::other(error));
             }
@@ -566,18 +566,19 @@ async fn observe(
         && readers.iter().all(tokio::task::JoinHandle::is_finished)
         && observed.lock().is_ok_and(|output| output.failure.is_none());
     let timed_out = completed.is_err() && !complete_at_deadline;
-    let mut error = match completed {
-        Ok(Ok(())) => None,
-        Ok(Err(error)) => error,
-        Err(_) if complete_at_deadline => None,
-        Err(_) => Some(io::Error::new(
-            io::ErrorKind::TimedOut,
-            "command_deadline_exceeded",
-        )),
+    let mut error = if reader_error.is_some() {
+        reader_error
+    } else {
+        match completed {
+            Ok(Ok(())) => None,
+            Ok(Err(error)) => error,
+            Err(_) if complete_at_deadline => None,
+            Err(_) => Some(io::Error::new(
+                io::ErrorKind::TimedOut,
+                "command_deadline_exceeded",
+            )),
+        }
     };
-    if reader_error.is_some() {
-        error = reader_error;
-    }
     if let Some(writer) = &writer {
         writer.abort();
     }

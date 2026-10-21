@@ -113,7 +113,7 @@ pub fn replay_promotion_gates(
                     .current_dir(workspace_root);
                 bounded_child_command
             },
-            std::time::Duration::from_secs(1260),
+            std::time::Duration::from_mins(21),
             128 * 1024 * 1024,
             64 * 1024 * 1024,
         )

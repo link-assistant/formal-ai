@@ -506,3 +506,34 @@ continues to reject the extra NODE_OPTIONS; no guard exception or hidden preload
 is supplied. The normal direct accepted-provider supervisor retains its own
 constructor-owned environment. The original production-research controls are
 checked separately; no universal provider/environment compatibility is claimed.
+
+
+## Babel import-shape compatibility repair
+
+Browser coverage shard 8 on `79248fdb760077d5d2f56e7ae9c5762799060ed9`
+([job 118981517770](https://github.com/link-assistant/formal-ai/actions/runs/39526042339/job/118981517770))
+found that the subprocess checker missed an awaited destructured dynamic import.
+The repository declares Babel 8, whose default dynamic-import node is an
+`ImportExpression`; the installed local Babel 7 produced its older
+`CallExpression` shape. The checker now recognizes both structural forms,
+retaining CommonJS and static-import handling and the strict startup policy.
+The unchanged three-call rejection fixture reproduces the missing classification
+with the modern parser option before repair. The original ten controls and an
+explicit two-shape regression pass afterward. No package pin, original assertion,
+source ceiling or CI limit changes. This is a supplied-controller repair through
+actual JavaScript Formal AI, with zero autonomous-authorship credit. The new
+published head still requires its own complete hosted CI and release evidence.
+
+
+The same revision's first lint lane
+([job 118982172431](https://github.com/link-assistant/formal-ai/actions/runs/39526042534/job/118982172431))
+reported seven Clippy findings and a two-line core-boundary overrun. Four
+21-minute durations now use the corresponding minute constructor. Both reader
+join loops take ownership while retaining an empty vector for subsequent
+completion checks. The reader error remains higher priority than a deadline
+error. Each affected theorem-export handler removes one blank separator; complete
+token and comment content is unchanged, and the original ledger stays untouched.
+Installed rustfmt checks text only. The maintained JavaScript boundary twin and
+original source controls validate the integrated source; hosted Clippy and native
+lifecycle execution remain necessary. No warning suppression, test assertion,
+retry ceiling, command deadline or cleanup allowance changes.

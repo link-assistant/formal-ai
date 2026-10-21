@@ -22,7 +22,6 @@
 // `data/seed/formal-targets.lino`. Mirrored by `formalRmlSource` in
 // `js/worker/formal_ai_worker_formalization_targets.js` (the browser has no
 // process to run, so its step is never run there).
-
 /// The `export_target rml` templates of `data/seed/formal-targets.lino`.
 #[derive(Debug, Default)]
 struct RmlTemplates {

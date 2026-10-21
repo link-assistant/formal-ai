@@ -77,3 +77,17 @@ test('hosted capture source projection remains mechanically current', async () =
   const output = await hostedCheck('scripts/generate-bounded-command-capture.mjs', ['--check']);
   assert.match(output, /bounded command capture projection verified/u);
 });
+
+ test('dynamic child-process imports retain provenance under both Babel AST representations',()=>{
+  for(const createImportExpressions of [false,true]){
+    const options={createImportExpressions};
+    const fixture="import {spawnSync as execute} from \"node:child_process\"; import * as processApi from \"child_process\"; execute(\"x\", []); processApi.execFileSync(\"x\", []); const {execSync: shell}=await import(\"node:child_process\"); shell(\"x\");";
+    assert.equal(auditor.javascript(fixture,'source.mjs',options).violations.length,3);
+    for(const declaration of ['const api=await import("node:child_process");', 'const {execFileSync: execute}=await import("child_process");']){
+      const call=declaration.includes('{')?'execute("x", []);':'api.execFileSync("x", []);';
+      assert.equal(auditor.javascript(declaration+call,'source.mjs',options).violations.length,1);
+    }
+    assert.equal(auditor.javascript('const {execSync: shell}=await import("unrelated"); shell("x");','source.mjs',options).violations.length,0);
+    assert.equal(auditor.javascript('const {spawnSync: run}=await import("node:child_process"); run("x", [], {stdio:"ignore",timeout:1000,killSignal:"SIGKILL"});','source.mjs',options).allowed.length,1);
+  }
+});

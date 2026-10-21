@@ -286,7 +286,7 @@ pub(super) fn run_to_completion(
     let initial_args = build_invocation_args(integration, caller, context, options, initial_resume);
     let mut output = crate::bounded_process::command_output(
         clone_command(command, &initial_args),
-        std::time::Duration::from_secs(1260),
+        std::time::Duration::from_mins(21),
         128 * 1024 * 1024,
         64 * 1024 * 1024,
     )
@@ -325,7 +325,7 @@ pub(super) fn run_to_completion(
         );
         output = crate::bounded_process::command_output(
             clone_command(command, &retry_args),
-            std::time::Duration::from_secs(1260),
+            std::time::Duration::from_mins(21),
             128 * 1024 * 1024,
             64 * 1024 * 1024,
         )

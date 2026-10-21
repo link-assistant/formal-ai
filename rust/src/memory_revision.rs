@@ -498,7 +498,7 @@ pub fn rustc_verdict(root: &Path, source: &str, baseline_passed: usize) -> Versi
                 .arg(root.join(source));
             bounded_child_command
         },
-        std::time::Duration::from_secs(1260),
+        std::time::Duration::from_mins(21),
         128 * 1024 * 1024,
         64 * 1024 * 1024,
     )

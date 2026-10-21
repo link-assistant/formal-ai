@@ -20,7 +20,6 @@
 // Mirrored by `formalProverUnit`/`formalProverChecks` in
 // `js/worker/formal_ai_worker_formalization_targets.js` and, for the process
 // itself, by `js/server/prover-host.mjs`.
-
 /// Which exporter renders a clause into a formal target.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ClauseExporter {

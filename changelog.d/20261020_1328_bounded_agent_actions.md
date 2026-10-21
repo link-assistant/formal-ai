@@ -10,3 +10,4 @@
 - Keep large planner diagnostics readable under existing record limits, and preserve strict nested schema projection and request-grounded command descriptions.
 - Update patched TLS trust dependencies for RUSTSEC-2026-0382 and RUSTSEC-2026-0381 without suppressing the security audit.
 - Supervise remaining native and JavaScript subprocesses through shared deadlines, bounded binary capture and finite cleanup; keep original statuses and byte evidence, including Formal AI's own grep, shell and exclusive-create adapters.
+- Recognize both maintained Babel dynamic-import AST representations in subprocess boundary checks, retaining alias detection and the strict finite startup policy.

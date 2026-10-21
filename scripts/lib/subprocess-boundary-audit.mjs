@@ -137,8 +137,8 @@ export async function subprocessBoundaryAuditor(root) {
       return {violations,unresolved,allowed,coverage:'local-process-provenance-only'};
     } finally {tree?.delete();}
   }
-  function javascript(source, filename='source.mjs') {
-    const ast=babel.parse(source,{sourceType:'unambiguous',plugins:filename.endsWith('.ts')?['typescript']:[],errorRecovery:false});
+  function javascript(source, filename='source.mjs', {createImportExpressions} = {}) {
+    const ast=babel.parse(source,{sourceType:'unambiguous',createImportExpressions,plugins:filename.endsWith('.ts')?['typescript']:[],errorRecovery:false});
     const direct=new Map(), namespaces=new Set(), nodes=[];
     function visit(node){if(!node || typeof node!=='object')return;if(typeof node.type==='string')nodes.push(node);for(const [key,value] of Object.entries(node))if(!['loc','start','end','extra'].includes(key)){if(Array.isArray(value))value.forEach(visit);else if(value && typeof value==='object')visit(value);}}
     visit(ast);
@@ -147,7 +147,11 @@ export async function subprocessBoundaryAuditor(root) {
       if(node.type==='ImportDeclaration' && childModule(node.source))for(const entry of node.specifiers){if(entry.type==='ImportNamespaceSpecifier'||entry.type==='ImportDefaultSpecifier')namespaces.add(entry.local.name);else if(synchronous.has(entry.imported.name))direct.set(entry.local.name,entry.imported.name);}
       if(node.type==='VariableDeclarator') {
         let value=node.init;if(value?.type==='AwaitExpression')value=value.argument;
-        if(value?.type==='CallExpression' && ((value.callee.type==='Identifier'&&value.callee.name==='require')||value.callee.type==='Import') && childModule(value.arguments[0])) {
+        const moduleSource = value?.type === 'ImportExpression' ? value.source
+          : value?.type === 'CallExpression' &&
+            ((value.callee.type === 'Identifier' && value.callee.name === 'require') ||
+             value.callee.type === 'Import') ? value.arguments[0] : null;
+        if(childModule(moduleSource)) {
           if(node.id.type==='Identifier')namespaces.add(node.id.name);
           else if(node.id.type==='ObjectPattern')for(const entry of node.id.properties)if(entry.type==='ObjectProperty' && synchronous.has(entry.key.name))direct.set(entry.value.name,entry.key.name);
         }
