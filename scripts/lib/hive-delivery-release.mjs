@@ -118,6 +118,86 @@ export async function boundedRegistryFetch(url, options) {
     void reader.cancel().catch(() => {});
   }
 }
+/** Diff immutable Merkle trees, skipping equal subtrees instead of a capped compare-file list.
+ * Nonrecursive reads avoid GitHub's recursive 100,000-entry/7 MiB truncation.
+ * https://docs.github.com/en/rest/git/trees#get-a-tree
+ * Every read still uses the existing reader's smaller byte/request/deadline limits.
+ */
+export async function publishedChangedPaths(reader, repository, before, after) {
+  assert.match(repository, /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/u);
+  const objectId = value => assert.match(value ?? '', /^[a-f0-9]{40}$/u);
+  objectId(before);
+  objectId(after);
+  const prefix = 'repos/' + repository + '/git/';
+  const root = async commit => {
+    const node = await reader.read(prefix + 'commits/' + commit);
+    assert.equal(node.sha, commit, 'immutable changed-path commit');
+    objectId(node.tree?.sha);
+    return { commit, tree: node.tree.sha };
+  };
+  const left = await root(before), right = await root(after);
+  const trees = new Map(), provenance = [], files = new Set();
+  const modeType = {
+    '040000': 'tree', '100644': 'blob', '100755': 'blob', '120000': 'blob', '160000': 'commit'
+  };
+  const readTree = sha => {
+    if (trees.has(sha)) return trees.get(sha);
+    const pending = (async () => {
+      const response = await reader.read(prefix + 'trees/' + sha);
+      assert.equal(response.sha, sha, 'immutable changed-path tree');
+      assert.equal(response.truncated, false, 'complete tree required');
+      assert.ok(Array.isArray(response.tree) && response.tree.length <= 100000, 'bounded tree entries');
+      const entries = new Map();
+      for (const entry of response.tree) {
+        assert.equal(typeof entry.path, 'string');
+        assert.ok(entry.path.length > 0 && entry.path.length <= 1024 && !/[\u0000-\u001f\u007f/]/u.test(entry.path), 'bounded tree component');
+        assert.ok(entry.path !== '.' && entry.path !== '..', 'canonical tree component');
+        assert.ok(!entries.has(entry.path), 'unique tree component');
+        objectId(entry.sha);
+        assert.ok(Object.hasOwn(modeType, entry.mode), 'known Git mode');
+        assert.equal(entry.type, modeType[entry.mode], 'Git mode and type agree');
+        if (entry.type === 'blob') assert.ok(Number.isSafeInteger(entry.size) && entry.size >= 0, 'bounded blob size metadata');
+        entries.set(entry.path, entry);
+      }
+      provenance.push({ sha, entries: entries.size, metadataSha256: hash(Buffer.from(JSON.stringify(response))) });
+      return entries;
+    })();
+    trees.set(sha, pending);
+    return pending;
+  };
+  let visited = 0;
+  const visit = async (name, oldEntry, newEntry, oldAncestors = [], newAncestors = []) => {
+    assert.ok(++visited <= 100000, 'bounded changed-path traversal');
+    assert.ok(name.length <= 1024, 'bounded complete Git path');
+    if (oldEntry && newEntry && oldEntry.sha === newEntry.sha && oldEntry.mode === newEntry.mode && oldEntry.type === newEntry.type) return [];
+    if (oldEntry && oldEntry.type !== 'tree' || newEntry && newEntry.type !== 'tree') {
+      files.add(name);
+      assert.ok(files.size <= 3000, 'bounded complete changed-path inventory');
+    }
+    if (oldEntry?.type === 'tree') assert.ok(!oldAncestors.includes(oldEntry.sha), 'acyclic old tree');
+    if (newEntry?.type === 'tree') assert.ok(!newAncestors.includes(newEntry.sha), 'acyclic new tree');
+    const oldLineage = oldEntry?.type === 'tree' ? [...oldAncestors, oldEntry.sha] : oldAncestors;
+    const newLineage = newEntry?.type === 'tree' ? [...newAncestors, newEntry.sha] : newAncestors;
+    const oldChildren = oldEntry?.type === 'tree' ? await readTree(oldEntry.sha) : new Map();
+    const newChildren = newEntry?.type === 'tree' ? await readTree(newEntry.sha) : new Map();
+    return [...new Set([...oldChildren.keys(), ...newChildren.keys()])].map(component =>
+      [name ? name + '/' + component : component, oldChildren.get(component), newChildren.get(component), oldLineage, newLineage]);
+  };
+  const pending = [['', { type: 'tree', mode: '040000', sha: left.tree }, { type: 'tree', mode: '040000', sha: right.tree }]];
+  // Four active nodes bound concurrent API reads without multiplying the reader's shared limits.
+  while (pending.length) {
+    const children = await Promise.all(pending.splice(0, 4).map(args => visit(...args)));
+    for (const batch of children) pending.push(...batch);
+  }
+  return {
+    kind: 'complete-immutable-tree-delta/v1',
+    method: 'bounded-nonrecursive-merkle-diff',
+    before: left,
+    after: right,
+    trees: provenance.sort((a, b) => a.sha < b.sha ? -1 : a.sha > b.sha ? 1 : 0),
+    files: [...files].sort()
+  };
+}
 /** No open PR is inferred from a default-branch workflow SHA; published source has its own authenticated chain. */
 export async function observePublishedAdmission({
   reader,
@@ -215,13 +295,13 @@ export async function observePublishedAdmission({
   assert.equal(event.after, main.head_sha);
   assert.match(event.before, /^[a-f0-9]{40}$/u);
   const comparison = await reader.read(prefix + '/compare/' + event.before + '...' + event.after);
-  assert.ok(comparison.files.length < 300, 'complete push changed paths');
   assert.equal(comparison.status, 'ahead');
+  const changedPaths = await publishedChangedPaths(reader, repository, event.before, event.after);
   const workflows = await readWorkflowPolicy(reader, repository, main.head_sha);
   const expected = applicableWorkflows(workflows, {
     event: 'push',
     baseBranch: 'main',
-    files: comparison.files.map(value => value.filename)
+    files: changedPaths.files
   });
   const runs = await reader.pages(prefix + '/actions/runs?head_sha=' + main.head_sha, 'workflow_runs');
   for (const run of runs) {
@@ -314,6 +394,7 @@ export async function observePublishedAdmission({
     expected,
     ci,
     publishedObservedCi,
+    changedPaths,
     delta,
     publicDownloadVerification: {
       run: verified.id,
