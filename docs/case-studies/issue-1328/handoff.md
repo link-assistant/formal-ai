@@ -676,3 +676,12 @@ standard IO writer directly. The ordinary successful libtest print-macro capture
 would otherwise discard those measurements in both hosted execution lanes.
 Child arguments, request bytes, quality assertions, 45-second case boundary and
 one-MiB stream caps are unchanged. Actual hosted observations remain required.
+
+
+Lint lane 1 on `49f6dc8` found a restricted production helper included under a
+private test-root module and two nonempty assertion diagnostics in the new fresh
+request control. Only the test-root module becomes public; production visibility
+and behavior remain byte-identical. Equivalent inequality assertions improve
+failure diagnostics without changing accepted values, requests, clocks or bounds.
+The test-root witness requires another strict full-inventory comparison before
+its maintained refresh; do not overwrite the baseline as an automatic repair.

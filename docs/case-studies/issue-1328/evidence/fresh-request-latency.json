@@ -70,7 +70,7 @@
       },
       {
         "path": "rust/tests/unit/agentic-coding/issue_1328_bounded_retries.rs",
-        "sha256": "f16420d8e9c900d8d8f65341cb82aa94d111752617e59c2641d1dbd37f7cb2c7"
+        "sha256": "b0b5f00096b68e644618591cc295245aae949833474faab3afc7120669e10d21"
       }
     ]
   },

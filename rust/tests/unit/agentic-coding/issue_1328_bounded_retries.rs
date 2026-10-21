@@ -252,7 +252,7 @@ fn fresh_representative_requests_complete_with_owned_issue_fetch() {
             let calls = observed["choices"][0]["message"]["tool_calls"]
                 .as_array()
                 .expect("a fresh request must propose a tool call");
-            assert!(!calls.is_empty());
+            assert_ne!(calls.as_slice(), []);
             let mut owned_fetch = false;
             for (index, call) in calls.iter().enumerate() {
                 assert_eq!(call["function"]["name"], "bash");
@@ -265,7 +265,7 @@ fn fresh_representative_requests_complete_with_owned_issue_fetch() {
                 let command = arguments["command"]
                     .as_str()
                     .expect("required string command");
-                assert!(!command.trim().is_empty());
+                assert_ne!(command.trim(), "");
                 owned_fetch |= index == 0
                     && [
                         format!("gh issue view {ISSUE}"),
