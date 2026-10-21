@@ -155,7 +155,7 @@ test('each release path publishes and verifies slim before creating its GitHub r
     assert.match(job, /uses: \.\/\.github\/actions\/publish-slim-image/);
   }
   assert.match(workflow, /docker-slim:[\s\S]+uses: \.\/\.github\/workflows\/docker-slim.yml/);
-  assert.match(workflow, /needs: \[detect-changes, changelog, docker-build, docker-slim,/);
+  requirePipelinePublicationDependencies(workflow);
   const action = readFileSync(new URL('../../../.github/actions/publish-slim-image/action.yml', import.meta.url), 'utf8');
   assert.match(action, /file: Dockerfile.slim/);
   assert.match(action, /build-args: BINARY_SOURCE=prebuilt/);
@@ -227,4 +227,25 @@ test('the real package resolver runs from its single source file without publica
       assert.equal(fs.existsSync(unexpected),false,'checks cannot invoke publication metadata tools');
     }
   } finally {fs.rmSync(directory,{recursive:true,force:true});}
+});
+
+function requirePipelinePublicationDependencies(source) {
+  const needs = YAML.parse(source).jobs['pipeline-status'].needs;
+  assert.ok(Array.isArray(needs), 'pipeline-status dependency list required');
+  for (const dependency of ['detect-changes', 'changelog', 'docker-build', 'docker-slim', 'hive-source-provenance']) {
+    assert.ok(needs.includes(dependency), 'pipeline-status missing ' + dependency);
+  }
+}
+
+test('pipeline publication dependencies are order independent and every required gate is mandatory', () => {
+  const workflow = YAML.parse(readCheckedReleaseOperationView().originalSource);
+  const needs = workflow.jobs['pipeline-status'].needs;
+  workflow.jobs['pipeline-status'].needs = [...needs].reverse();
+  requirePipelinePublicationDependencies(YAML.stringify(workflow));
+  for (const dependency of ['detect-changes', 'changelog', 'docker-build', 'docker-slim', 'hive-source-provenance']) {
+    const changed = structuredClone(workflow);
+    changed.jobs['pipeline-status'].needs = needs.filter(value => value !== dependency);
+    assert.throws(() => requirePipelinePublicationDependencies(YAML.stringify(changed)),
+      {message: 'pipeline-status missing ' + dependency});
+  }
 });
