@@ -76,6 +76,8 @@ mod qualified_tool_observation;
 pub mod question_catalog;
 mod quote_nesting;
 pub mod rebuild_plan;
+mod recipe_artifact_inventory;
+mod recipe_resume;
 pub mod repair_apply;
 pub mod repair_loop;
 pub mod repair_strategy;

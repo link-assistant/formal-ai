@@ -397,6 +397,17 @@ impl Progress {
         super::qualified_tool_observation::latest(&self.qualified_attempts, capability, arguments)
     }
 
+    /// Exact scalar aliases retain the actual full declaration frame.
+    pub(super) fn qualified_command_attempt(
+        &self,
+        command: &str,
+    ) -> Option<&super::qualified_tool_observation::QualifiedToolAttempt> {
+        super::qualified_tool_observation::qualified_command_attempt(
+            &self.qualified_attempts,
+            command,
+        )
+    }
+
     /// Whether this turn already ran `command` exactly as given.
     pub(super) fn has_run(&self, command: &str) -> bool {
         self.run_observations.iter().any(|(ran, _)| ran == command)
@@ -695,6 +706,35 @@ impl Progress {
                     .arguments
                     .as_deref()
                     .is_some_and(|arguments| argument_targets(arguments, path))
+        })
+    }
+
+    /// Unknown edit scope cannot certify an earlier source observation.
+    pub(super) fn latest_source_mutation_index(&self, path: &str) -> Option<usize> {
+        self.attempts.iter().rposition(|attempt| {
+            matches!(
+                attempt.capability,
+                Capability::Write | Capability::Edit | Capability::MultiEdit
+            ) && (attempt.capability == Capability::MultiEdit
+                || attempt
+                    .arguments
+                    .as_deref()
+                    .and_then(|arguments| {
+                        source_read_path(arguments).or_else(|| {
+                            super::qualified_tool_observation::canonical_creation_path(arguments)
+                                .map(str::to_owned)
+                        })
+                    })
+                    .is_none()
+                || attempt.arguments.as_deref().is_some_and(|arguments| {
+                    argument_targets(arguments, path)
+                        || super::qualified_tool_observation::canonical_creation_path(arguments)
+                            .is_some_and(|declared| {
+                                declared == path
+                                    || (!std::path::Path::new(path).is_absolute()
+                                        && std::path::Path::new(declared).ends_with(path))
+                            })
+                }))
         })
     }
 

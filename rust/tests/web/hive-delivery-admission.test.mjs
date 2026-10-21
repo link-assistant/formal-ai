@@ -867,3 +867,61 @@ test('published replay coordinates bind the original issue fixture without a sec
     assert.equal(createHash('sha256').update(matches[0].body).digest('hex'),entry.bodySha256);
   }
 });
+
+
+test('source-event relocation preserves exact readonly producer semantics without independent triggers', async () => {
+  const fs = await import('node:fs');
+  const read = name => fs.readFileSync(new URL('../../../' + name, import.meta.url), 'utf8');
+  const called = '.github/workflows/hive-source-provenance.yml';
+  const expectedCaller = {uses:'./' + called};
+  const retained = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
+  for (const name of ['.github/workflows/release.yml', retained + 'original-release-workflow.yml',
+      retained + 'candidate-release-caller.yml']) {
+    assert.deepEqual(YAML.parse(read(name)).jobs['hive-source-provenance'], expectedCaller);
+  }
+  const reusable = YAML.parse(read(called));
+  assert.deepEqual(Object.keys(reusable.on), ['workflow_call']);
+  assert.deepEqual(reusable.permissions, {contents:'read'});
+  assert.deepEqual(Object.keys(reusable.jobs), ['hive-source-provenance']);
+  const expectedJob = {
+  "name": "Hive source event provenance",
+  "runs-on": "ubuntu-24.04",
+  "timeout-minutes": 3,
+  "permissions": {
+    "contents": "read"
+  },
+  "steps": [
+    {
+      "uses": "actions/checkout@v7",
+      "with": {
+        "persist-credentials": false
+      }
+    },
+    {
+      "uses": "actions/setup-node@v7",
+      "with": {
+        "node-version": 24
+      }
+    },
+    {
+      "name": "Preserve minimal original source coordinates",
+      "env": {
+        "HIVE_SOURCE_EVENT_OUTPUT": "${{ runner.temp }}/hive-source-event/source-event.json"
+      },
+      "run": "node scripts/record-hive-source-event.mjs"
+    },
+    {
+      "uses": "actions/upload-artifact@v7",
+      "with": {
+        "name": "hive-source-event-${{ github.run_attempt }}",
+        "path": "${{ runner.temp }}/hive-source-event/source-event.json",
+        "retention-days": 90,
+        "if-no-files-found": "error"
+      }
+    }
+  ]
+};
+  assert.deepEqual(reusable.jobs['hive-source-provenance'], expectedJob);
+  assert.ok(policyRoots.includes(called), 'called producer source participates in policy identity');
+  assert.equal(read(retained + 'original-release-workflow.yml').trimEnd().split('\n').length, 1500);
+});

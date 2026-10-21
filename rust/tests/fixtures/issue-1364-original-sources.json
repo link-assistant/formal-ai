@@ -1,0 +1,43 @@
+{
+  "schema": "issue-1364-historical-source/v1",
+  "sources": [
+    {
+      "path": "Main.kt",
+      "gitBlob": "f9c88b1bb6f830d07a292b2795e493dcc3650ec4",
+      "bytes": 164,
+      "sha256": "9fa8b2fec4953ccbd71b883df064f924b1bbfed2ba2700dc515b26fe418dbf4d",
+      "custody": "Independently verified public historical Git blob; reconstructed exact bytes verified against pinned identity",
+      "instructionLines": [
+        "// kotlinc Main.kt -include-runtime -d Main.jar",
+        "// java -jar Main.jar"
+      ],
+      "instructionLineCount": 2
+    },
+    {
+      "path": "main.rs",
+      "gitBlob": "604147f259ebad900b2e351ee9d300f5be0bd85e",
+      "bytes": 136,
+      "sha256": "cd867bbaa3d034e241214c3a568e10b253504ea3e650e9af8fdd354a758b5121",
+      "custody": "Independently verified public historical Git blob; reconstructed exact bytes verified against pinned identity",
+      "instructionLines": [
+        "// rustc main.rs -o main",
+        "// ./main"
+      ],
+      "instructionLineCount": 2
+    },
+    {
+      "path": "Main.scala",
+      "gitBlob": "e8d83cc2765a837bec1f50a555ad0c417f3c6c4f",
+      "bytes": 176,
+      "sha256": "2cd1f645b1679b78a1636e62d53cb5cea38d12066534dc7fbc3e7da4717e3144",
+      "custody": "Authenticated GitHub contents bytes independently verified against pinned public historical Git blob",
+      "instructionLines": [
+        "// scalac Main.scala",
+        "// scala Main"
+      ],
+      "instructionLineCount": 2
+    }
+  ],
+  "artifactFixtures": "Separate synthetic generated-output and producer-format metadata fixtures; historical binaries/session bytes are not copied",
+  "sourceConstruction": "Existing canonical programContractAnswer for the unchanged issue body, with only authenticated historical instruction comment lines restored; exact independent Git blob/SHA/byte checks are mandatory before use."
+}

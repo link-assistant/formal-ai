@@ -29,6 +29,13 @@ fn hygiene_policy() -> &'static crate::seed::parser::LinoNode {
 /// this does not grant authority to remove arbitrary files or execute a compiler.
 #[must_use]
 pub fn prepared_work_hygiene(paths: &[String]) -> Option<PreparedWorkHygiene> {
+    work_hygiene_with_policy(paths, None)
+}
+
+fn work_hygiene_with_policy(
+    paths: &[String],
+    session_policy: Option<&serde_json::Value>,
+) -> Option<PreparedWorkHygiene> {
     let root = hygiene_policy().children.first()?;
     let values = |name: &str| {
         root.children
@@ -38,36 +45,7 @@ pub fn prepared_work_hygiene(paths: &[String]) -> Option<PreparedWorkHygiene> {
             .collect::<Vec<_>>()
     };
     let flags = values("output-flag");
-    let mut outputs = Vec::new();
-    let portable = |value: &str| {
-        !value.is_empty()
-            && !value.starts_with('/')
-            && !value.split('/').any(|part| part == "..")
-            && value
-                .bytes()
-                .all(|byte| byte.is_ascii_alphanumeric() || b"_./-".contains(&byte))
-    };
-    for language in crate::coding::program_languages() {
-        let source = language.save_as.as_ref();
-        let words = language
-            .execution
-            .check_command
-            .as_deref()
-            .unwrap_or_default()
-            .split_whitespace()
-            .collect::<Vec<_>>();
-        if !portable(source) || !words.contains(&source) {
-            continue;
-        }
-        for pair in words.windows(2) {
-            if flags.iter().any(|flag| flag == pair[0]) && portable(pair[1]) && pair[1] != source {
-                let entry = json!({"source": source, "output": pair[1]});
-                if !outputs.contains(&entry) {
-                    outputs.push(entry);
-                }
-            }
-        }
-    }
+    let outputs = hygiene_outputs(&flags);
     let evidence_root = root.find_child_value("evidence-root");
     let suffixes = values("empty-evidence-suffix");
     let ignored = paths
@@ -84,8 +62,20 @@ pub fn prepared_work_hygiene(paths: &[String]) -> Option<PreparedWorkHygiene> {
         .collect::<Vec<_>>();
     let plan = json!({"files":paths, "outputs":outputs, "ignored":ignored,
         "binary-prefixes":values("binary-prefix"), "evidence-root":evidence_root,
-        "empty-evidence-suffixes":suffixes});
-    let source = values("source-line").join("\n") + "\n";
+        "empty-evidence-suffixes":suffixes,"session-policy":session_policy,"session-contract":session_contract()?});
+    let source_io = crate::seed::parser::parse_lino(include_str!(
+        "../../embedded/data/meta/workspace-source-io.lino"
+    ));
+    let mut source_lines = source_io
+        .children
+        .first()?
+        .children
+        .iter()
+        .filter(|node| node.name == "source-line")
+        .map(|node| node.id.clone())
+        .collect::<Vec<_>>();
+    source_lines.extend(values("source-line"));
+    let source = source_lines.join("\n") + "\n";
     let quote = super::git_commit::shell_quote;
     let excluded = paths
         .iter()
@@ -186,8 +176,28 @@ pub fn changed_paths(task: &str) -> Option<Vec<String>> {
 /// unreadable feedback counts as asking, so readiness is never assumed.
 #[must_use]
 pub fn feedback_needs_changes(output: &str) -> bool {
-    let text =
-        super::tool_result::shell_step(output).map_or_else(|| output.to_owned(), |step| step.text);
+    let direct = serde_json::from_str::<serde_json::Value>(output).ok();
+    let direct_feedback = direct.as_ref().is_some_and(|value| {
+        value
+            .get("comments")
+            .is_some_and(serde_json::Value::is_array)
+            && value
+                .get("reviews")
+                .is_some_and(serde_json::Value::is_array)
+    });
+    let exit = super::tool_result::reported_exit_code(output);
+    if super::tool_result::harness_reported_failure(output)
+        || super::tool_result::incomplete_receipt(output)
+        || exit.is_some_and(|exit| exit != 0)
+        || (!direct_feedback && exit != Some(0))
+    {
+        return true;
+    }
+    let text = if direct_feedback {
+        output.to_owned()
+    } else {
+        super::tool_result::observed_payload(output).unwrap_or_else(|| output.to_owned())
+    };
     let Ok(value) = serde_json::from_str::<serde_json::Value>(&text) else {
         return true;
     };
@@ -265,29 +275,7 @@ pub(super) fn plan_restart(
         return None;
     }
     let hygiene = prepared_work_hygiene(&current)?;
-    let quote = super::git_commit::shell_quote;
-    let files = hygiene
-        .commit_files
-        .iter()
-        .map(|path| quote(&format!(":(literal){path}")))
-        .collect::<Vec<_>>()
-        .join(" ");
-    let subject = quote(&crate::seed::agentic_message(
-        "restart_feedback_commit_subject",
-        &[],
-    ));
-    let body = quote(&super::git_commit::resolves_body(reference));
-    let branch = quote("HEAD");
-    let commit = crate::seed::fill_template_once(
-        policy.find_child_value("commit-command"),
-        &[
-            ("guard", &hygiene.index_guard_command),
-            ("files", &files),
-            ("subject", &subject),
-            ("body", &body),
-            ("branch", &branch),
-        ],
-    );
+    let commit = prepared_work_commit_command(&hygiene, reference)?;
     for command in [hygiene.command, commit, hygiene.clean_command] {
         if progress.successful_run_count_for(&command) > 0 {
             continue;
@@ -302,4 +290,190 @@ pub(super) fn plan_restart(
     }
     // Repair of a working tree never certifies the issue, workflow, or output.
     None
+}
+
+fn hygiene_outputs(flags: &[String]) -> Vec<serde_json::Value> {
+    let mut outputs = Vec::new();
+    let portable = |value: &str| {
+        !value.is_empty()
+            && !value.starts_with('/')
+            && !value.split('/').any(|part| part == "..")
+            && value
+                .bytes()
+                .all(|byte| byte.is_ascii_alphanumeric() || b"_./-".contains(&byte))
+    };
+    for language in crate::coding::program_languages() {
+        let source = language.save_as.as_ref();
+        let words = language
+            .execution
+            .check_command
+            .as_deref()
+            .unwrap_or_default()
+            .split_whitespace()
+            .collect::<Vec<_>>();
+        if !portable(source) || !words.contains(&source) {
+            continue;
+        }
+        for pair in words.windows(2) {
+            if flags.iter().any(|flag| flag == pair[0]) && portable(pair[1]) && pair[1] != source {
+                let entry = json!({"source": source, "output": pair[1]});
+                if !outputs.contains(&entry) {
+                    outputs.push(entry);
+                }
+            }
+        }
+    }
+    outputs
+}
+
+/// Normal owned-only commit with staged-subset validation and physical branch push.
+#[must_use]
+pub(super) fn prepared_work_commit_command(
+    hygiene: &PreparedWorkHygiene,
+    reference: &str,
+) -> Option<String> {
+    let policy = hygiene_policy().children.first()?;
+    let quote = super::git_commit::shell_quote;
+    let files = hygiene
+        .commit_files
+        .iter()
+        .map(|path| quote(&format!(":(literal){path}")))
+        .collect::<Vec<_>>()
+        .join(" ");
+    let subject = quote(&crate::seed::agentic_message(
+        "restart_feedback_commit_subject",
+        &[],
+    ));
+    let body = quote(&super::git_commit::resolves_body(reference));
+    let branch = quote("HEAD");
+    Some(crate::seed::fill_template_once(
+        policy.find_child_value("commit-command"),
+        &[
+            ("guard", &hygiene.index_guard_command),
+            ("files", &files),
+            ("subject", &subject),
+            ("body", &body),
+            ("branch", &branch),
+        ],
+    ))
+}
+
+fn session_contract() -> Option<serde_json::Value> {
+    let installed = crate::seed::parser::parse_lino(include_str!(
+        "../../embedded/data/meta/prepared-artifact-inventory.lino"
+    ));
+    let root = installed.children.first()?;
+    Some(
+        json!({"rootPattern":root.find_child_value("evidence-pattern"),
+        "pattern":root.find_child_value("session-pattern"),
+        "maximumBytes":root.find_child_value("session-limit").parse::<usize>().ok()?,
+        "filename":"session-id.txt"}),
+    )
+}
+
+/// Preserve the original non-inventory contract for existing callers.
+#[must_use]
+pub(super) fn prepared_recipe_hygiene(
+    source_paths: &[String],
+    changed: &[String],
+) -> Option<PreparedWorkHygiene> {
+    prepared_recipe_hygiene_with_inventory(source_paths, changed, None)
+}
+
+/// Only an independently command-qualified inventory may extend the current recipe scope.
+#[must_use]
+pub(super) fn prepared_recipe_hygiene_with_inventory(
+    source_paths: &[String],
+    changed: &[String],
+    inventory: Option<&super::recipe_artifact_inventory::RecipeArtifactInventory>,
+) -> Option<PreparedWorkHygiene> {
+    let policy = hygiene_policy().children.first()?;
+    let flags = policy
+        .children
+        .iter()
+        .filter(|node| node.name == "output-flag")
+        .map(|node| node.id.clone())
+        .collect::<Vec<_>>();
+    let outputs = hygiene_outputs(&flags)
+        .into_iter()
+        .filter(|entry| {
+            entry
+                .get("source")
+                .and_then(serde_json::Value::as_str)
+                .is_some_and(|source| source_paths.iter().any(|path| path == source))
+        })
+        .collect::<Vec<_>>();
+    let output_owned = |path: &str| {
+        outputs
+            .iter()
+            .any(|entry| entry.get("output").and_then(serde_json::Value::as_str) == Some(path))
+    };
+    let mut combined = changed.to_vec();
+    let mut session_policy = None;
+    let mut evidence_members = Vec::new();
+    if let Some(inventory) = inventory {
+        let contract = session_contract()?;
+        let root_pattern = contract.get("rootPattern")?.as_str()?;
+        if inventory.source_paths.as_slice() != source_paths
+            || inventory.owned_paths.len() > 256
+            || regex::Regex::new(root_pattern)
+                .ok()?
+                .find(&inventory.evidence_root)?
+                .as_str()
+                != inventory.evidence_root
+        {
+            return None;
+        }
+        let expected = json!({"evidenceRoot":inventory.evidence_root,"filename":"session-id.txt",
+            "path":format!("{}session-id.txt",inventory.evidence_root),"pattern":contract.get("pattern")?,
+            "maximumBytes":contract.get("maximumBytes")?});
+        if inventory.session_policy != expected {
+            return None;
+        }
+        let installed = crate::seed::parser::parse_lino(include_str!(
+            "../../embedded/data/meta/prepared-artifact-inventory.lino"
+        ));
+        evidence_members = installed
+            .children
+            .first()?
+            .children
+            .iter()
+            .filter(|node| node.name == "stream")
+            .map(|node| format!("{}{}", inventory.evidence_root, node.id))
+            .collect();
+        evidence_members.push(format!("{}session-id.txt", inventory.evidence_root));
+        let mut observed = std::collections::BTreeSet::new();
+        for path in &inventory.owned_paths {
+            if !observed.insert(path) || (!output_owned(path) && !evidence_members.contains(path)) {
+                return None;
+            }
+            if !combined.contains(path) {
+                combined.push(path.clone());
+            }
+        }
+        session_policy = Some(expected);
+    }
+    let known = changed.iter().all(|path| {
+        source_paths.contains(path)
+            || output_owned(path)
+            || if inventory.is_some() {
+                evidence_members.contains(path)
+            } else {
+                path.starts_with(policy.find_child_value("evidence-root"))
+                    && policy
+                        .children
+                        .iter()
+                        .filter(|node| node.name == "empty-evidence-suffix")
+                        .any(|node| path.ends_with(node.id.as_str()))
+            }
+    });
+    known
+        .then(|| work_hygiene_with_policy(&combined, session_policy.as_ref()))
+        .flatten()
+}
+
+/// Decode a freshly command-bound status payload without trimming its path bytes.
+#[must_use]
+pub(super) fn prepared_work_paths(output: &str) -> Option<Vec<String>> {
+    porcelain_paths(&super::tool_result::observed_payload(output)?)
 }

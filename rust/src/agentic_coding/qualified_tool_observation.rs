@@ -122,9 +122,19 @@ pub(super) fn scan(messages: &[ChatMessage], start: usize) -> Vec<QualifiedToolA
                         frame.duplicate = true;
                     }
                 }
-                let Ok(arguments_value) = serde_json::from_str::<Value>(&call.function.arguments)
-                else {
-                    continue;
+                let arguments_value = match serde_json::from_str::<Value>(&call.function.arguments)
+                {
+                    Ok(value) => value,
+                    Err(_)
+                        if capability == Capability::Edit
+                            && super::capability_router::is_workspace_creation_tool(
+                                &call.function.name,
+                            )
+                            && canonical_creation_path(&call.function.arguments).is_some() =>
+                    {
+                        Value::String(call.function.arguments.clone())
+                    }
+                    Err(_) => continue,
                 };
                 if !argument_values_equal(&arguments_value, &arguments_value) {
                     continue;
@@ -212,3 +222,20 @@ pub(super) fn latest<'a>(
 #[cfg(test)]
 #[path = "../../tests/fixtures/qualified_tool_observation-argument_domain_tests.rs"]
 mod argument_domain_tests;
+
+mod command;
+
+/// Match an exact command alias while retaining every original declaration field.
+pub(super) fn qualified_command_attempt<'a>(
+    frames: &'a [QualifiedToolAttempt],
+    command: &str,
+) -> Option<&'a QualifiedToolAttempt> {
+    command::qualified_command_attempt(frames, command)
+}
+
+mod creation;
+
+/// Recover only an exact canonical Add File declaration's literal path.
+pub(super) fn canonical_creation_path(raw: &str) -> Option<&str> {
+    creation::canonical_creation_path(raw)
+}

@@ -63,7 +63,10 @@ fn recipe_step(
     recovery_only: bool,
 ) -> Option<AgenticPlan> {
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
-    let requested = requested_recipe(&request, symbolic_answer.execution_recipe.as_ref()?);
+    let mut requested = requested_recipe(&request, symbolic_answer.execution_recipe.as_ref()?);
+    if super::ci_workflow::requested_in(objective) {
+        super::ci_workflow::attach(&mut requested, objective);
+    }
     let recipe = &requested;
     let write_tool = tool_for(tool_names, Capability::Write).or_else(|| {
         tool_names
@@ -75,9 +78,32 @@ fn recipe_step(
     // A request that names the pull request or issue the work is for is asking
     // for the result to land there, so the recipe ends by committing and
     // pushing it (issue #1133).
-    let commit = crate::protocol::latest_user_request(messages)
+    let mut commit = crate::protocol::latest_user_request(messages)
         .as_deref()
         .and_then(git_commit::target_of);
+    let requirements_reference = commit.as_ref().map(|target| target.reference.clone());
+    match super::recipe_resume::recipe_delivery_reference(
+        &request,
+        requirements_reference.as_deref(),
+    ) {
+        super::recipe_resume::RecipeDeliveryReference::Absent => {}
+        super::recipe_resume::RecipeDeliveryReference::Bound(reference) => {
+            if let Some(target) = &mut commit {
+                target.reference = reference;
+            }
+        }
+        super::recipe_resume::RecipeDeliveryReference::Refused(reason) => {
+            return Some(AgenticPlan::Final(reason));
+        }
+    }
+    let resume = commit
+        .as_ref()
+        .is_some_and(|target| target.reference.contains("/pull/"));
+    let workflow = commit
+        .as_ref()
+        .filter(|target| target.reference.contains("/pull/"))
+        .filter(|_| super::ci_workflow::requested_in(objective))
+        .and_then(|_| recipe_workflow(recipe, objective));
     let commit_step = |target: &CommitTarget| git_commit::recipe_commit_command(recipe, target);
     // Only the recipe's own commands count as recipe steps. A shell result
     // from before the recipe -- the `gh issue view` that read the work item --
@@ -86,13 +112,23 @@ fn recipe_step(
         .commands
         .iter()
         .cloned()
-        .chain(commit.as_ref().map(commit_step))
+        .chain(
+            commit
+                .as_ref()
+                .filter(|_| workflow.is_none())
+                .map(commit_step),
+        )
         .collect();
-    if let Some(target) = &commit {
+    if let Some(target) = &commit
+        && workflow.is_none()
+    {
         expected_commands.extend(pr_completion_commands(recipe, target));
     }
     let progress =
-        RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands);
+        RecipeProgress::after_latest_user(messages, write_tool, recipe, &expected_commands, resume);
+    if progress.source_invalidated {
+        return Some(super::recipe_resume::recipe_source_refusal());
+    }
     if recovery_only
         && progress
             .failure
@@ -137,7 +173,7 @@ fn recipe_step(
         let mut repair_note = String::new();
         if failure.from_run {
             let observation = super::progress::Progress::scan(messages);
-            let bound = observation.latest_attempt_for(Capability::Run, &json!({"command":step}));
+            let bound = observation.qualified_command_attempt(&step);
             let owned = std::iter::once((&recipe.path, &recipe.source))
                 .chain(
                     recipe
@@ -145,31 +181,7 @@ fn recipe_step(
                         .iter()
                         .map(|file| (&file.path, &file.source)),
                 )
-                .all(|(path, source)| {
-                    let Some(index) = observation.latest_write_index(path) else {
-                        return false;
-                    };
-                    let Some(attempt) = observation.research_attempts().get(index) else {
-                        return false;
-                    };
-                    let Some(arguments) = attempt.arguments.as_deref() else {
-                        return false;
-                    };
-                    if !attempt.succeeded
-                        || !super::progress::write_matches(arguments, path, source)
-                    {
-                        return false;
-                    }
-                    let Ok(value) = serde_json::from_str(arguments) else {
-                        return false;
-                    };
-                    observation
-                        .latest_attempt_for(Capability::Write, &value)
-                        .is_some_and(|frame| {
-                            frame.binding == super::qualified_tool_observation::Binding::Exact
-                                && frame.succeeded
-                        })
-                });
+                .all(|(path, source)| recipe_file_matches(&observation, path, source));
             let observed = super::tool_result::failure_message(&failure.reported, true, false);
             let reported = observed
                 .as_ref()
@@ -186,6 +198,27 @@ fn recipe_step(
             };
             if recovery_only && identity.is_none() {
                 return None;
+            }
+            if identity.is_some()
+                && failure.exit_code == Some(127)
+                && let (Some(target), Some(workflow)) = (&commit, &workflow)
+            {
+                let followup = pr_completion_commands(recipe, target);
+                let start = progress.failure_index.map_or(0, |index| index + 1);
+                return Some(super::recipe_resume::plan_recipe_ci_fallback(
+                    &messages[start..],
+                    tool_names,
+                    super::recipe_resume::RecipeCompletion {
+                        recipe,
+                        reference: &target.reference,
+                        workflow,
+                        followup: &followup,
+                        local_verified: false,
+                        commit_reference: requirements_reference
+                            .as_deref()
+                            .unwrap_or(target.reference.as_str()),
+                    },
+                ));
             }
             let recovery = identity.as_deref().map_or_else(
                 || {
@@ -233,6 +266,28 @@ fn recipe_step(
         return Some(AgenticPlan::Final(report));
     }
     if let Some((path, source)) = next_file() {
+        if resume && !progress.source_checked.contains(path) {
+            return Some(one_call(
+                run_tool,
+                json!({
+                    "command": super::recipe_resume::recipe_source_command(path)
+                })
+                .to_string(),
+            ));
+        }
+        if resume
+            && let Some(before) = progress
+                .source_preimages
+                .get(path)
+                .filter(|before| !before.absent)
+        {
+            let Some(command) =
+                super::recipe_resume::recipe_source_update_command(path, source, before)
+            else {
+                return Some(super::recipe_resume::recipe_source_refusal());
+            };
+            return Some(one_call(run_tool, json!({"command":command}).to_string()));
+        }
         return Some(one_call(write_tool, write_arguments(path, source)));
     }
     if let Some(command) = expected_commands.get(progress.commands_done) {
@@ -242,9 +297,86 @@ fn recipe_step(
         ));
     }
 
+    if let (Some(target), Some(workflow)) = (&commit, &workflow) {
+        let followup = pr_completion_commands(recipe, target);
+        let start = progress.last_command_index.map_or(0, |index| index + 1);
+        return Some(super::recipe_resume::plan_recipe_ci_fallback(
+            &messages[start..],
+            tool_names,
+            super::recipe_resume::RecipeCompletion {
+                recipe,
+                reference: &target.reference,
+                workflow,
+                followup: &followup,
+                local_verified: true,
+                commit_reference: requirements_reference
+                    .as_deref()
+                    .unwrap_or(target.reference.as_str()),
+            },
+        ));
+    }
     Some(AgenticPlan::Final(
         recipe.final_answer(&progress.command_outputs, commit.as_ref()),
     ))
+}
+
+fn recipe_file_matches(observation: &super::progress::Progress, path: &str, source: &str) -> bool {
+    if let Some(index) = observation.latest_source_mutation_index(path)
+        && let Some(attempt) = observation.research_attempts().get(index)
+        && attempt.succeeded
+        && let Some(arguments) = attempt.arguments.as_deref()
+    {
+        let expected = match attempt.capability {
+            Capability::Write if super::progress::write_matches(arguments, path, source) => {
+                serde_json::from_str(arguments).ok()
+            }
+            Capability::Edit
+                if attempt
+                    .tool
+                    .as_deref()
+                    .is_some_and(is_workspace_creation_tool)
+                    && !source.is_empty()
+                    && source.ends_with('\n')
+                    && crate::protocol_responses::apply_patch_input(&write_arguments(
+                        path, source,
+                    ))
+                    .as_deref()
+                        == Some(arguments) =>
+            {
+                Some(serde_json::Value::String(arguments.to_owned()))
+            }
+            _ => None,
+        };
+        if let Some(expected) = expected
+            && observation
+                .latest_attempt_for(attempt.capability, &expected)
+                .is_some_and(|frame| {
+                    frame.binding == super::qualified_tool_observation::Binding::Exact
+                        && frame.succeeded
+                })
+        {
+            return true;
+        }
+    }
+    super::recipe_resume::recipe_source_matches(observation, path, source)
+}
+
+fn recipe_workflow(recipe: &ExecutionRecipe, objective: &str) -> Option<String> {
+    let mut expected = recipe.clone();
+    expected.supporting_files.clear();
+    super::ci_workflow::attach(&mut expected, objective);
+    let workflow = expected.supporting_files.first()?;
+    if !recipe
+        .supporting_files
+        .iter()
+        .any(|file| file.path == workflow.path && file.source == workflow.source)
+    {
+        return None;
+    }
+    workflow
+        .source
+        .lines()
+        .find_map(|line| line.strip_prefix("name: ").map(str::to_owned))
 }
 
 fn pr_completion_commands(recipe: &ExecutionRecipe, target: &CommitTarget) -> Vec<String> {
@@ -363,7 +495,7 @@ pub fn optional_check_stage(
         return false;
     };
     let progress =
-        RecipeProgress::after_latest_user(messages, write_tool, recipe, &recipe.commands);
+        RecipeProgress::after_latest_user(messages, write_tool, recipe, &recipe.commands, false);
     progress.files_written == 1 + recipe.supporting_files.len() && progress.commands_done == 0
 }
 
@@ -374,6 +506,11 @@ struct RecipeProgress {
     command_outputs: Vec<String>,
     failure: Option<StepFailure>,
     repair_rung: u8,
+    source_checked: std::collections::BTreeSet<String>,
+    source_preimages: std::collections::BTreeMap<String, super::recipe_resume::RecipeSourceResult>,
+    source_invalidated: bool,
+    failure_index: Option<usize>,
+    last_command_index: Option<usize>,
 }
 
 /// A step the harness reported as failed, kept with the evidence that makes the
@@ -426,6 +563,7 @@ impl RecipeProgress {
         write_tool: &str,
         recipe: &ExecutionRecipe,
         expected_commands: &[String],
+        resume: bool,
     ) -> Self {
         let start = super::planner::evidence_window_start(messages);
         let mut progress = Self::default();
@@ -464,12 +602,21 @@ impl RecipeProgress {
                 continue;
             }
             let capability = tool_capability(result_tool);
-            let matches_write = result_tool.eq_ignore_ascii_case(write_tool)
-                && files
-                    .get(progress.files_written)
-                    .is_some_and(|(path, source)| {
-                        super::progress::write_matches(&call.function.arguments, path, source)
-                    });
+            let matches_write = files
+                .get(progress.files_written)
+                .is_some_and(|(path, source)| {
+                    (result_tool.eq_ignore_ascii_case(write_tool)
+                        && super::progress::write_matches(&call.function.arguments, path, source))
+                        || (capability == Some(Capability::Edit)
+                            && is_workspace_creation_tool(result_tool)
+                            && !source.is_empty()
+                            && source.ends_with('\n')
+                            && crate::protocol_responses::apply_patch_input(&write_arguments(
+                                path, source,
+                            ))
+                            .as_deref()
+                                == Some(call.function.arguments.as_str()))
+                });
             let matches_run = capability == Some(Capability::Run)
                 && progress.files_written == files.len()
                 && run_command_of(&messages[start..index], Some(call_id)).is_some_and(|command| {
@@ -482,15 +629,89 @@ impl RecipeProgress {
                                     .is_some_and(|(_, retry)| retry == expected)
                         })
                 });
-            if !matches_write && !matches_run {
+            let probe_path = files.get(progress.files_written).filter(|(path, _)| {
+                resume
+                    && capability == Some(Capability::Run)
+                    && super::tool_result::command_argument(&call.function.arguments).is_some_and(
+                        |command| command == super::recipe_resume::recipe_source_command(path),
+                    )
+            });
+            let update_command = files
+                .get(progress.files_written)
+                .and_then(|(path, source)| {
+                    progress.source_preimages.get(*path).and_then(|before| {
+                        super::recipe_resume::recipe_source_update_command(path, source, before)
+                    })
+                });
+            let matches_update = resume
+                && capability == Some(Capability::Run)
+                && update_command.as_deref().is_some_and(|expected| {
+                    super::tool_result::command_argument(&call.function.arguments).as_deref()
+                        == Some(expected)
+                });
+            if !matches_write && !matches_run && probe_path.is_none() && !matches_update {
                 continue;
             }
             let output = message.content.plain_text();
+            if matches_update {
+                let (path, _) = files[progress.files_written];
+                let observation = super::progress::Progress::scan(&messages[start..=index]);
+                let frame =
+                    observation.qualified_command_attempt(update_command.as_deref().unwrap_or(""));
+                if frame.is_some_and(|frame| {
+                    frame.binding == super::qualified_tool_observation::Binding::Exact
+                        && frame.succeeded
+                }) && reported_exit_code(&output) == Some(0)
+                    && super::recipe_resume::recipe_source_update_result(&output, path)
+                {
+                    progress.source_checked.remove(path);
+                    progress.source_preimages.remove(path);
+                } else {
+                    progress.failure_index = Some(index);
+                    progress.failure = Some(StepFailure {
+                        reported: output,
+                        exit_code: None,
+                        from_run: false,
+                    });
+                }
+                continue;
+            }
+            if let Some((path, source)) = probe_path {
+                let observation = super::progress::Progress::scan(&messages[start..=index]);
+                let command = super::recipe_resume::recipe_source_command(path);
+                let frame = observation.qualified_command_attempt(&command);
+                let result = frame
+                    .filter(|frame| {
+                        frame.binding == super::qualified_tool_observation::Binding::Exact
+                            && frame.succeeded
+                            && reported_exit_code(&output) == Some(0)
+                    })
+                    .and_then(|_| super::recipe_resume::recipe_source_result(&output, path));
+                if let Some(result) = result {
+                    progress.failure = None;
+                    progress.source_checked.insert((*path).to_owned());
+                    progress
+                        .source_preimages
+                        .insert((*path).to_owned(), result.clone());
+                    if !result.absent && result.source.as_deref() == Some(*source) {
+                        progress.files_written += 1;
+                    }
+                } else {
+                    progress.failure_index = Some(index);
+                    progress.failure = Some(StepFailure {
+                        reported: output.clone(),
+                        exit_code: reported_exit_code(&output),
+                        from_run: false,
+                    });
+                }
+                continue;
+            }
             if message.is_error {
                 if matches_run {
                     progress.repair_rung = progress.repair_rung.saturating_add(1);
                 }
                 let exit_code = reported_exit_code(&output);
+                progress.failure_index = Some(index);
                 progress.failure = Some(StepFailure {
                     reported: output,
                     exit_code,
@@ -504,6 +725,7 @@ impl RecipeProgress {
                 if matches_run {
                     progress.repair_rung = progress.repair_rung.saturating_add(1);
                 }
+                progress.failure_index = Some(index);
                 progress.failure = Some(failure);
                 continue;
             }
@@ -518,6 +740,7 @@ impl RecipeProgress {
                 }
                 Some(Capability::Run) => {
                     progress.commands_done += 1;
+                    progress.last_command_index = Some(index);
                     // Quote what the command printed, not the harness envelope
                     // it arrived in (issues #905 and #908).
                     let text = super::tool_result::shell_step(&output)
@@ -525,6 +748,17 @@ impl RecipeProgress {
                     progress.command_outputs.push(text);
                 }
                 _ => {}
+            }
+        }
+        if resume {
+            let observation = super::progress::Progress::scan(messages);
+            for (index, (path, source)) in files.iter().take(progress.files_written).enumerate() {
+                if !recipe_file_matches(&observation, path, source) {
+                    progress.files_written = index;
+                    progress.source_checked.remove(*path);
+                    progress.source_invalidated = true;
+                    break;
+                }
             }
         }
         progress

@@ -17,10 +17,8 @@ import { classifyTool } from './capability_router.mjs';
 import { commandArgument, failureMessage, incompleteReceipt, normalizedPayload, observedPayload, sourceReadObservation, stepOutcome, StepOutcome } from './tool_result.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { applyPatchInput } from './crate/protocol_responses_apply_patch.mjs';
-import { argumentValuesEqual, qualifiedTranscriptFrames } from './qualified_tool_observation.mjs';
-import {
-  eqIgnoreAsciiCase, isObject, parseJson, splitWhitespace, trim, trimMatches,
-} from './crate/rust_str.mjs';
+import { argumentValuesEqual, qualifiedTranscriptFrames, canonicalCreationPath } from './qualified_tool_observation.mjs';
+import { eqIgnoreAsciiCase, isObject, parseJson, splitWhitespace, trim, trimMatches } from './crate/rust_str.mjs';
 
 /** Mirrors `ToolAttempt::is_work_item_read`. */
 export function isWorkItemRead(attempt) {
@@ -30,13 +28,22 @@ export function isWorkItemRead(attempt) {
 }
 
 // A scanner-created frame proves transcript binding only, never execution authority.
-const qualifiedProgressFrames=new WeakMap();
+const qualifiedProgressFrames = new WeakMap();
 /** Mirrors `latest_attempt_for` in rust/src/agentic_coding/progress.rs. */
-export function qualifiedToolAttempt(progress,capability,argumentsValue) {
-  const frames=qualifiedProgressFrames.get(progress);
-  if(!frames)return null;
-  return [...frames].reverse().find(frame=>frame.capability===capability
-    && argumentValuesEqual(frame.argumentsValue,argumentsValue))??null;
+export function qualifiedToolAttempt(progress, capability, argumentsValue) {
+  const frames = qualifiedProgressFrames.get(progress);
+  if (!frames) return null;
+  return [...frames].reverse().find(frame => frame.capability === capability && argumentValuesEqual(frame.argumentsValue, argumentsValue)) ?? null;
+}
+
+/** Mirrors fn qualified_command_attempt; exact scalar aliases, never guessed cwd operands. */
+export function qualifiedCommandAttempt(progress, command) {
+  const frames = qualifiedProgressFrames.get(progress) ?? [];
+  const aliases = ['command', 'cmd', 'script'];
+  const frame = [...frames].reverse().find(frame => frame.capability === Capability.Run && frame.argumentsValue !== null && typeof frame.argumentsValue === 'object'
+    && !Array.isArray(frame.argumentsValue) && aliases.some(key => Object.hasOwn(frame.argumentsValue, key) && frame.argumentsValue[key] === command));
+  if (!frame || Object.keys(frame.argumentsValue).length !== 1) return null;
+  return frame;
 }
 
 /** Mirrors `struct Progress` in rust/src/agentic_coding/progress.rs. */
@@ -66,23 +73,20 @@ export class Progress {
       const raw = plainText(message.content);
       const call = resultToolCall(messages, index, currentTurn);
       const path = call === null ? null : sourceReadPath(call.function.arguments);
-      const boundRead = capability === Capability.Read && call !== null && path !== null
-        && classifyTool(call.function.name) === Capability.Read
-        && (!message.name || eqIgnoreAsciiCase(message.name, call.function.name));
-      const observation = boundRead ? sourceReadObservation(raw, Boolean(message.is_error || message.isError),
-        message.source_read ?? message.sourceRead ?? null, path) : null;
-      const failure = observation !== null ? observation.error
-        : capability === Capability.Fetch && standaloneHttpFailure(raw) ? raw
-          : capability === Capability.Read || (capability === Capability.Fetch && (parseJson(raw) !== undefined || !legacyFetchNotice(raw)))
-          ? (message.is_error || message.isError ? raw : null)
-          : failureMessage(raw, Boolean(message.is_error || message.isError), capability !== Capability.Run);
+      const boundRead = capability === Capability.Read && call !== null && path !== null && classifyTool(call.function.name) === Capability.Read
+    && (!message.name || eqIgnoreAsciiCase(message.name, call.function.name));
+      const observation = boundRead ? sourceReadObservation(raw, Boolean(message.is_error || message.isError), message.source_read ?? message.sourceRead ?? null
+    , path) : null;
+      const failure = observation !== null ? observation.error : capability === Capability.Fetch && standaloneHttpFailure(raw) ? raw : capability === Capability.Read
+    || capability === Capability.Fetch && (parseJson(raw) !== undefined || !legacyFetchNotice(raw)) ? message.is_error || message.isError ? raw : null : failureMessage(raw
+    , Boolean(message.is_error || message.isError), capability !== Capability.Run);
       progress.attempts.push({
         capability,
         source_read: observation,
         succeeded: failure === null,
         detail: failure ?? raw,
         arguments: call ? call.function.arguments : null,
-        tool: message.name ?? (call ? call.function.name : null),
+        tool: message.name ?? (call ? call.function.name : null)
       });
       if (capability === Capability.Fetch) {
         const payload = raw;
@@ -119,9 +123,8 @@ export class Progress {
       }
       progress.completed.push(capability);
     }
-    progress.source_observations = progress.fetched_pages.map(([url, text]) =>
-      sourceFetchObservation(messages, currentTurn, url, text));
-    qualifiedProgressFrames.set(progress,qualifiedTranscriptFrames(messages,currentTurn));
+    progress.source_observations = progress.fetched_pages.map(([url, text]) => sourceFetchObservation(messages, currentTurn, url, text));
+    qualifiedProgressFrames.set(progress, qualifiedTranscriptFrames(messages, currentTurn));
     return progress;
   }
 
@@ -133,9 +136,8 @@ export class Progress {
 
   /** Mirrors `Progress::attempted_fetch_of`. */
   attemptedFetchOf(url) {
-    return this.attempted_fetches.includes(url)
-      || this.attempts.some((attempt) => attempt.capability === Capability.Fetch
-        && (attempt.arguments === null || argumentUrl(attempt.arguments) === null));
+    return this.attempted_fetches.includes(url) || this.attempts.some(attempt => attempt.capability === Capability.Fetch && (attempt.arguments === null
+    || argumentUrl(attempt.arguments) === null));
   }
 
   /** Mirrors `Progress::attempted_work_item_read_of`. */
@@ -166,13 +168,11 @@ export class Progress {
         if (read === null || read !== url) continue;
         const outcome = trim(rustLines(attempt.detail)[0] ?? '');
         const reason = nextReason < reasons.length ? reasons[nextReason++][1] : null;
-        lines.push(reason === null
-          ? fill('read_attempt_run_line', [['{command}', command], ['{outcome}', outcome]])
-          : fill('read_attempt_run_reason_line', [['{command}', command], ['{reason}', reason], ['{outcome}', outcome]]));
+        lines.push(reason === null ? fill('read_attempt_run_line', [['{command}', command], ['{outcome}', outcome]]) : fill('read_attempt_run_reason_line', [['{command}', command], ['{reason}', reason], ['{outcome}', outcome]]));
       } else if (attempt.capability === Capability.Fetch) {
-        const fetches = this.attempts.filter((candidate) => candidate.capability === Capability.Fetch).length;
+        const fetches = this.attempts.filter(candidate => candidate.capability === Capability.Fetch).length;
         const fetched = attempt.arguments === null ? null : argumentUrl(attempt.arguments);
-        const forThisUrl = fetched === url || (fetched === null && fetches === 1);
+        const forThisUrl = fetched === url || fetched === null && fetches === 1;
         if (forThisUrl) {
           const outcome = trim(rustLines(attempt.detail)[0] ?? '');
           lines.push(fill('read_attempt_fetch_line', [['{url}', url], ['{outcome}', outcome]]));
@@ -194,8 +194,7 @@ export class Progress {
     for (let at = this.attempts.length - 1; at >= 0; at -= 1) {
       const attempt = this.attempts[at];
       if (!attempt.succeeded) continue;
-      const sameTool = (attempt.tool !== null && eqIgnoreAsciiCase(attempt.tool, call.tool))
-        || (attempt.tool === null && classifyTool(call.tool) === attempt.capability);
+      const sameTool = attempt.tool !== null && eqIgnoreAsciiCase(attempt.tool, call.tool) || attempt.tool === null && classifyTool(call.tool) === attempt.capability;
       if (sameTool && (attempt.arguments === call.arguments || sameRunOperand(attempt, call))) {
         index = at;
         break;
@@ -204,17 +203,11 @@ export class Progress {
     if (index < 0) return null;
     const later = this.attempts.slice(index + 1);
     // Shell completion invalidates prior source evidence, never the finite action budget.
-    const sourceChanged = classifyTool(call.tool) === Capability.Read
-      && this.attempts[index].source_read?.status === 'reported-success'
-      && this.attempts[index].source_read.complete === true
-      && later.some(attempt => attempt.capability === Capability.Run
-        && attempt.succeeded
-        && commandArgument(attempt.arguments) !== null
-        && !incompleteReceipt(attempt.detail)
-        && stepOutcome(attempt.detail) === StepOutcome.Succeeded);
+    const sourceChanged = classifyTool(call.tool) === Capability.Read && this.attempts[index].source_read?.status === 'reported-success' && this.attempts[index].source_read.complete === true
+    && later.some(attempt => attempt.capability === Capability.Run && attempt.succeeded && commandArgument(attempt.arguments) !== null && !incompleteReceipt(attempt.detail)
+    && stepOutcome(attempt.detail) === StepOutcome.Succeeded);
     if (sourceChanged) return null;
-    const progressed = later.some((attempt, offset) =>
-      !this.attempts.slice(0, index + offset + 1).some((earlier) => sameAttempt(earlier, attempt)));
+    const progressed = later.some((attempt, offset) => !this.attempts.slice(0, index + offset + 1).some(earlier => sameAttempt(earlier, attempt)));
     return progressed ? null : this.attempts[index];
   }
 
@@ -231,8 +224,7 @@ export class Progress {
   identicalFailuresOf(tool) {
     const latest = this.latestFailureOfTool(tool);
     if (latest === null) return 0;
-    return this.attempts.filter((attempt) =>
-      !attempt.succeeded && attempt.tool === tool && attempt.detail === latest.detail).length;
+    return this.attempts.filter(attempt => !attempt.succeeded && attempt.tool === tool && attempt.detail === latest.detail).length;
   }
 
   /** Mirrors `Progress::done`. */
@@ -242,9 +234,8 @@ export class Progress {
 
   /** Mirrors `Progress::count`. */
   count(capability) {
-    return this.completed.filter((done) => done === capability).length;
+    return this.completed.filter(done => done === capability).length;
   }
-
   #latestSuccess(capability) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
       const attempt = this.attempts[index];
@@ -269,17 +260,17 @@ export class Progress {
   latestSuccessUnstalled(capability) {
     const index = this.#latestSuccess(capability);
     if (index < 0) return false;
-    return this.attempts.slice(index + 1).every((attempt) => attempt.succeeded);
+    return this.attempts.slice(index + 1).every(attempt => attempt.succeeded);
   }
 
   /** Mirrors `Progress::run_count_for`. */
   runCountFor(command) {
-    return this.attempts.filter((attempt) => runAttemptMatches(attempt, command)).length;
+    return this.attempts.filter(attempt => runAttemptMatches(attempt, command)).length;
   }
 
   /** Mirrors `Progress::successful_run_count_for`. */
   successfulRunCountFor(command) {
-    return this.attempts.filter((attempt) => attempt.succeeded && runAttemptMatches(attempt, command)).length;
+    return this.attempts.filter(attempt => attempt.succeeded && runAttemptMatches(attempt, command)).length;
   }
 
   /** Mirrors `Progress::latest_successful_run_output_for`. */
@@ -304,8 +295,7 @@ export class Progress {
   sourceReadFor(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
       const attempt = this.attempts[index];
-      if (attempt.capability === Capability.Read && attempt.arguments !== null
-        && sourceReadPath(attempt.arguments) === path) return attempt.source_read ?? null;
+      if (attempt.capability === Capability.Read && attempt.arguments !== null && sourceReadPath(attempt.arguments) === path) return attempt.source_read ?? null;
     }
     return null;
   }
@@ -314,16 +304,15 @@ export class Progress {
   successfulReadOutputFor(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
       const attempt = this.attempts[index];
-      if (attempt.capability === Capability.Read && attempt.succeeded
-        && attempt.arguments !== null && argumentTargets(attempt.arguments, path)) return attempt.detail;
+      if (attempt.capability === Capability.Read && attempt.succeeded && attempt.arguments !== null && argumentTargets(attempt.arguments, path)) return attempt.detail;
     }
     return null;
   }
 
   /** Mirrors `Progress::attempted_write_for`. */
   attemptedWriteFor(path) {
-    return this.attempts.some((attempt) => attempt.capability === Capability.Write
-      && attempt.arguments !== null && argumentTargets(attempt.arguments, path));
+    return this.attempts.some(attempt => attempt.capability === Capability.Write && attempt.arguments !== null && argumentTargets(attempt.arguments
+    , path));
   }
 
   /** Mirrors source_read_before_latest_write_for: retained preimage, not verification bytes. */
@@ -332,24 +321,34 @@ export class Progress {
     if (write === null) return null;
     for (let index = write - 1; index >= 0; index--) {
       const attempt = this.attempts[index];
-      if (attempt.capability === Capability.Read && attempt.arguments !== null
-        && sourceReadPath(attempt.arguments) === path) return attempt.source_read ?? null;
+      if (attempt.capability === Capability.Read && attempt.arguments !== null && sourceReadPath(attempt.arguments) === path) return attempt.source_read ?? null;
     }
     return null;
   }
 
   /** Mirrors Progress::successful_write_for. */
   successfulWriteFor(path) {
-    return this.attempts.some((attempt) => attempt.capability === Capability.Write && attempt.succeeded
-      && attempt.arguments !== null && argumentTargets(attempt.arguments, path));
+    return this.attempts.some(attempt => attempt.capability === Capability.Write && attempt.succeeded && attempt.arguments !== null && argumentTargets(attempt.arguments
+    , path));
   }
 
   /** Mirrors Progress::latest_write_index: latest declaration includes failed writes. */
   latestWriteIndex(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
       const attempt = this.attempts[index];
-      if (attempt.capability === Capability.Write && attempt.arguments !== null
-        && argumentTargets(attempt.arguments, path)) return index;
+      if (attempt.capability === Capability.Write && attempt.arguments !== null && argumentTargets(attempt.arguments, path)) return index;
+    }
+    return null;
+  }
+
+  /** Mirrors Progress::latest_source_mutation_index: unknown edit scope invalidates conservatively. */
+  latestSourceMutationIndex(path) {
+    for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
+      const attempt = this.attempts[index];
+      if (![Capability.Write, Capability.Edit, Capability.MultiEdit].includes(attempt.capability)) continue;
+      const declaredPath = attempt.arguments === null ? null : sourceReadPath(attempt.arguments) ?? canonicalCreationPath(attempt.arguments);
+      if (attempt.capability === Capability.MultiEdit || declaredPath === null || declaredPath === path || !path.startsWith('/') && pathEndsWith(declaredPath
+    , path)) return index;
     }
     return null;
   }
@@ -358,8 +357,7 @@ export class Progress {
   latestSuccessfulWriteIndex(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
       const attempt = this.attempts[index];
-      if (attempt.capability === Capability.Write && attempt.succeeded
-        && attempt.arguments !== null && argumentTargets(attempt.arguments, path)) return index;
+      if (attempt.capability === Capability.Write && attempt.succeeded && attempt.arguments !== null && argumentTargets(attempt.arguments, path)) return index;
     }
     return null;
   }
@@ -400,8 +398,8 @@ export class Progress {
 
   /** Mirrors `Progress::failed_write_count_for`. */
   failedWriteCountFor(path) {
-    return this.attempts.filter((attempt) => attempt.capability === Capability.Write && !attempt.succeeded
-      && attempt.arguments !== null && argumentTargets(attempt.arguments, path)).length;
+    return this.attempts.filter(attempt => attempt.capability === Capability.Write && !attempt.succeeded && attempt.arguments !== null && argumentTargets(attempt.arguments
+    , path)).length;
   }
 
   /** Mirrors `Progress::search_result`. */
@@ -412,9 +410,7 @@ export class Progress {
 
 /** Mirrors `Progress::same_attempt`. */
 function sameAttempt(earlier, later) {
-  const sameTool = earlier.tool !== null && later.tool !== null
-    ? eqIgnoreAsciiCase(earlier.tool, later.tool)
-    : earlier.capability === later.capability;
+  const sameTool = earlier.tool !== null && later.tool !== null ? eqIgnoreAsciiCase(earlier.tool, later.tool) : earlier.capability === later.capability;
   return sameTool && earlier.arguments === later.arguments;
 }
 
@@ -426,7 +422,6 @@ function sameRunOperand(attempt, call) {
   const attemptedUrl = attempt.arguments === null ? null : argumentUrl(attempt.arguments);
   return attemptedUrl !== null && argumentUrl(call.arguments) === attemptedUrl;
 }
-
 function firstStringField(argumentsText, keys) {
   const value = parseJson(argumentsText);
   if (!isObject(value)) return null;
@@ -439,10 +434,9 @@ function firstStringField(argumentsText, keys) {
 function sourceReadPath(argumentsText) {
   const value = parseJson(argumentsText);
   if (!isObject(value)) return null;
-  const fields = ['path', 'filePath', 'file_path'].filter((key) => Object.hasOwn(value, key)).map((key) => value[key]);
-  return fields.length > 0 && fields.every((field) => typeof field === 'string' && trim(field) !== '' && field === fields[0]) ? fields[0] : null;
+  const fields = ['path', 'filePath', 'file_path'].filter(key => Object.hasOwn(value, key)).map(key => value[key]);
+  return fields.length > 0 && fields.every(field => typeof field === 'string' && trim(field) !== '' && field === fields[0]) ? fields[0] : null;
 }
-
 function argumentPath(argumentsText) {
   return firstStringField(argumentsText, ['path', 'filePath', 'file_path']);
 }
@@ -463,7 +457,7 @@ export function writeMatches(argumentsText, path, content) {
 function pathComponents(path) {
   const out = [];
   if (path.startsWith('/')) out.push('/');
-  path.split('/').forEach((part) => {
+  path.split('/').forEach(part => {
     if (!part) return;
     if (part === '.' && !(out.length === 0 && !path.startsWith('/'))) return;
     out.push(part);
@@ -482,7 +476,7 @@ function pathEndsWith(path, child) {
 /** Mirrors `fn argument_targets`. */
 function argumentTargets(argumentsText, path) {
   const observed = argumentPath(argumentsText);
-  return observed !== null && (observed === path || (!path.startsWith('/') && pathEndsWith(observed, path)));
+  return observed !== null && (observed === path || !path.startsWith('/') && pathEndsWith(observed, path));
 }
 
 /** Mirrors `fn result_capability`. */
@@ -501,7 +495,7 @@ function resultToolCall(messages, index, start = evidenceWindowStart(messages)) 
   const id = messages[index].tool_call_id;
   if (id === null || id === undefined) return null;
   for (let at = index - 1; at >= start; at -= 1) {
-    const call = (messages[at].tool_calls || []).find((candidate) => candidate.id === id);
+    const call = (messages[at].tool_calls || []).find(candidate => candidate.id === id);
     if (call) return call;
   }
   return null;
@@ -515,8 +509,7 @@ function argumentUrl(argumentsText) {
 
 /** Mirrors `fn run_attempt_matches`. */
 function runAttemptMatches(attempt, command) {
-  return attempt.capability === Capability.Run && attempt.arguments !== null
-    && commandArgument(attempt.arguments) === command;
+  return attempt.capability === Capability.Run && attempt.arguments !== null && commandArgument(attempt.arguments) === command;
 }
 
 /** Mirrors `fn is_issue_view_command`. */
@@ -527,8 +520,7 @@ function isIssueViewCommand(command) {
 
 /** Mirrors `fn is_work_item_read_command`. */
 function isWorkItemReadCommand(command) {
-  return isIssueViewCommand(command)
-    || ((command.startsWith('gh api ') || command.startsWith('curl ')) && restReadUrl(command) !== null);
+  return isIssueViewCommand(command) || (command.startsWith('gh api ') || command.startsWith('curl ')) && restReadUrl(command) !== null;
 }
 
 /** Mirrors `fn work_item_read_url`. */
@@ -540,10 +532,9 @@ function workItemReadUrl(command) {
 function issueViewCommandUrl(command) {
   const words = splitWhitespace(command);
   if (words[0] !== 'gh') return null;
-  if ((words[1] !== 'issue' && words[1] !== 'pr') || words[2] !== 'view') return null;
+  if (words[1] !== 'issue' && words[1] !== 'pr' || words[2] !== 'view') return null;
   return words[3] === undefined ? null : repositoryWorkReference(words[3]);
 }
-
 const WORK_REFERENCE_TRIM = new Set(Array.from('<>()[]{},;."\'。，、；：（）「」«»।'));
 
 /**
@@ -553,14 +544,12 @@ const WORK_REFERENCE_TRIM = new Set(Array.from('<>()[]{},;."\'。，、；：（
  */
 export function repositoryWorkReference(request) {
   for (const token of splitWhitespace(request)) {
-    const url = trimMatches(token, (character) => WORK_REFERENCE_TRIM.has(character));
+    const url = trimMatches(token, character => WORK_REFERENCE_TRIM.has(character));
     let path = null;
-    if (url.startsWith('https://github.com/')) path = url.slice('https://github.com/'.length);
-    else if (url.startsWith('http://github.com/')) path = url.slice('http://github.com/'.length);
+    if (url.startsWith('https://github.com/')) path = url.slice('https://github.com/'.length);else if (url.startsWith('http://github.com/')) path = url.slice('http://github.com/'.length);
     if (path === null) continue;
     const segments = path.split('/');
-    if (segments.length === 4 && segments[0] && segments[1] && (segments[2] === 'issues' || segments[2] === 'pull')
-      && /^[0-9]*$/.test(segments[3])) return url;
+    if (segments.length === 4 && segments[0] && segments[1] && (segments[2] === 'issues' || segments[2] === 'pull') && /^[0-9]*$/.test(segments[3])) return url;
   }
   return null;
 }
@@ -615,7 +604,7 @@ function workItemReadFailureReason(command, raw, echoedFailure) {
 /** Mirrors fn legacy_fetch_notice: source prose is not provider failure merely for mentioning one. */
 function legacyFetchNotice(raw) {
   const normalized = normalizePrompt(raw);
-  return wordsForRole('tool_result_failure_signal').some((surface) => {
+  return wordsForRole('tool_result_failure_signal').some(surface => {
     const prefix = normalizePrompt(surface);
     if (!normalized.startsWith(prefix)) return false;
     const next = Array.from(normalized.slice(prefix.length))[0];
@@ -625,5 +614,6 @@ function legacyFetchNotice(raw) {
 
 /** A whole single-line protocol failure is transport status, not an article quotation. */
 function standaloneHttpFailure(raw) {
-  return /^HTTP\/[0-9]+(?:\.[0-9]+)?[ \t]+[45][0-9]{2}:?(?:[ \t]+[^\x00-\x08\x0a-\x1f\x7f\u0085\u2028\u2029\ufeff]*)?$/u.test(raw.replace(/^[ \t\r\n]+|[ \t\r\n]+$/gu, ''));
+  return /^HTTP\/[0-9]+(?:\.[0-9]+)?[ \t]+[45][0-9]{2}:?(?:[ \t]+[^\x00-\x08\x0a-\x1f\x7f\u0085\u2028\u2029\ufeff]*)?$/u.test(raw.replace(/^[ \t\r\n]+|[ \t\r\n]+$/gu
+    , ''));
 }

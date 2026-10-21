@@ -781,5 +781,58 @@ Local emulations and source checks do not establish hosted acceptance. Default
 branch workflow activation, target-repository credentials, exact-head native CI,
 all three actual released-image client runs and public release/download checks
 remain acceptance steps until their actual receipts are observed. No local Rust
-compilation or product download is authorized. Generated owners must be refreshed
-with their maintained tools after the final coding-planner repair is integrated.
+compilation or product download is authorized. All eight maintained generation steps were refreshed after the coding-planner
+repair was integrated; final source and hosted checks still determine acceptance.
+
+
+### Three-client recovery integration, 2026-10-21
+
+The maintained historical protocol suite now exercises the authentic Kotlin, Rust
+and Scala task bodies and prepared-branch source identities through the actual
+Messages, Responses and Chat adapters. Each first run completes its supporting
+changes; a second run on the same checkout succeeds without source writes, a new
+commit or a changed HEAD. The fixture controls GitHub and toolchain results, so
+this is source-level acceptance, separate from actual hosted services, native
+execution and released Hive images. Original task bodies remain unchanged; source
+fixtures derive from the existing program grammar and independently verify the
+authentic Git blob, SHA-256 and UTF-8 byte identity before use.
+
+Recovery binds actual command aliases and exact custom patch frames, revalidates
+source evidence after mutations, and handles the original continuation before
+optional PR feedback. Guarded full-source replacement requires the complete
+observed preimage, matching file identity and digest, and a new post-write probe.
+It preserves ordinary files, foreign task evidence and physical compiled outputs
+while removing only qualified owned artifacts from the Git index. The Scala
+header correction is an intentional authorized edit, not whitespace equivalence.
+Tool-call identities now include the normalized request-history length, retaining
+same-request determinism while distinguishing later fresh observations. Duplicate
+identifier and unknown-receipt refusals remain mandatory.
+
+The two-failure budget applies to the proposed qualified operation, including its
+actual schema-bound arguments. A distinct verification action can observe the
+state after two failed writes; a third identical failed operation is blocked.
+The independent three-attempt and 128-action limits remain unchanged. Replay
+metadata stores the original body hashes without duplicating request bodies in
+production knowledge data; live acceptance still fetches and verifies the exact
+public requirements. Neither ratchet ceilings nor original output oracles were
+raised or bypassed.
+
+The provenance-only job is shared through a read-only reusable workflow. Its
+caller remains bound to the original release event, and the called source is
+included in policy identity. Mechanical generation preserves all 52 original
+release operations and 104 output bindings, every original comment and whitespace
+outside the new job, and the staged workflow bytes. The retained original stays
+within its unchanged 1500-line limit. The PR static timeout maximum is 115 minutes
+through the release workflow, below the unchanged 225-minute ceiling; these are
+static allowances, not runtime observations.
+
+Use at most three active subagents for this PR, with one JavaScript Formal AI
+delivery lane and one CI failure monitor. Lease one bounded Node workload across
+the team, draft independent work in bulk, commit coherent fixes, and push once
+all known causes have committed repairs. Execute Rust only in CI. Supplied
+controllers receive zero autonomous source-authorship credit. Preserve failed
+receipts and sanitize public evidence; never stage personal session exports.
+
+Exact-head hosted native and image checks, normal merge, publication and public
+download verification, and the three actual released-image Hive runs remain
+required. Source-level replay success does not establish these outcomes.

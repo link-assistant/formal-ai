@@ -1,0 +1,29 @@
+name: Hive source event provenance
+on:
+  workflow_call:
+permissions:
+  contents: read
+jobs:
+  hive-source-provenance:
+    name: Hive source event provenance
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Preserve minimal original source coordinates
+        env:
+          HIVE_SOURCE_EVENT_OUTPUT: ${{ runner.temp }}/hive-source-event/source-event.json
+        run: node scripts/record-hive-source-event.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hive-source-event-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hive-source-event/source-event.json
+          retention-days: 90
+          if-no-files-found: error
