@@ -811,3 +811,29 @@ test('target permission preflight refuses wrong-scoped app and known insufficien
     layer: 'default'
   }]) assert.throws(() => requireTaskCredentialAccess(target, proof));
 });
+
+
+import fs from 'node:fs';
+import YAML from 'yaml';
+// GitHub's context availability table excludes runner from job env; step env permits it.
+// https://docs.github.com/en/actions/reference/workflows-and-actions/contexts#context-availability
+function jobEnvironmentContextProblems(workflow) {
+  const problems = [];
+  for (const [name, job] of Object.entries(workflow.jobs)) {
+    for (const [key, value] of Object.entries(job.env ?? {})) {
+      const expressions = String(value).match(/\$\{\{[\s\S]*?\}\}/gu) ?? [];
+      if (expressions.some(expression => /\b(?:runner|steps|job|env)\s*[.[]/u.test(expression))) {
+        problems.push(name + '.' + key);
+      }
+    }
+  }
+  return problems;
+}
+test('Hive workflow job environments use only contexts available before runner assignment', () => {
+  for (const name of ['hive-original-delivery', 'hive-original-delivery-finalize']) {
+    const file = new URL('../../../.github/workflows/' + name + '.yml', import.meta.url);
+    assert.deepEqual(jobEnvironmentContextProblems(YAML.parse(fs.readFileSync(file, 'utf8'))), [], name);
+  }
+  const invalid = {jobs: {example: {env: {FILE: "${{ format('{0}/claim.json', runner.temp) }}"}}}};
+  assert.deepEqual(jobEnvironmentContextProblems(invalid), ['example.FILE']);
+});

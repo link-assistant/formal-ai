@@ -74,6 +74,16 @@ jobs:
           ref: ${{ needs.admission.outputs.source }}
           persist-credentials: false
           clean: false
+      - name: Initialize owned admission paths after runner assignment
+        env:
+          HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+          HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+            format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+        run: >
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.workflow_sha }}
@@ -107,12 +117,9 @@ jobs:
           retention-days: 1
     needs: admission
     env:
-      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
       HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
       HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
       HIVE_ISSUE1364_MODE: "true"
-      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
-        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
   image:
     name: Prepare same-source original Hive image
     needs:
@@ -127,6 +134,16 @@ jobs:
           "$GITHUB_ENV"
 
           echo "HIVE_IMAGE_BUNDLE_DIR=$RUNNER_TEMP/hive-image-bundle" >> "$GITHUB_ENV"
+      - name: Initialize owned admission paths after runner assignment
+        env:
+          HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+          HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+            format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+        run: >
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.admission.outputs.source }}
@@ -202,12 +219,9 @@ jobs:
           if-no-files-found: error
           retention-days: 90
     env:
-      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
       HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
       HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
       HIVE_ISSUE1364_MODE: "true"
-      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
-        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
     outputs:
       image: ${{ steps.owner.outputs.image }}
   delivery:
@@ -229,12 +243,9 @@ jobs:
         tool: ${{ fromJSON(needs.admission.outputs.tools) }}
     env:
       E2E_TOOL: ${{ matrix.tool }}
-      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
       HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
       HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
       HIVE_ISSUE1364_MODE: "true"
-      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
-        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
       HIVE_CANONICAL_INPUT_FILE: ${{ github.workspace
         }}/.hive-protocol/data/benchmarks/issue-1364-client-replay-inputs.json
     steps:
@@ -246,6 +257,16 @@ jobs:
           echo "HIVE_IMAGE_BUNDLE_DIR=$RUNNER_TEMP/hive-image-bundle" >> "$GITHUB_ENV"
 
           echo "HIVE_EVIDENCE_PUBLISH_DIRECTORY=$RUNNER_TEMP/hive-original-evidence/publish" >> "$GITHUB_ENV"
+      - name: Initialize owned admission paths after runner assignment
+        env:
+          HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+          HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+            format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+        run: >
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.admission.outputs.source }}
@@ -427,16 +448,25 @@ jobs:
         tool: ${{ fromJSON(needs.admission.outputs.tools) }}
     env:
       E2E_TOOL: ${{ matrix.tool }}
-      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
       HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
       HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
       HIVE_ISSUE1364_MODE: "true"
-      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
-        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
-      HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
     steps:
       - name: Initialize shared delivery evidence directory
         run: echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
+      - name: Initialize owned admission paths after runner assignment
+        env:
+          HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+          HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+            format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+          HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
+        run: >
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_ATTEMPT_CLAIM=$HIVE_ATTEMPT_CLAIM" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
           ref: ${{ needs.admission.outputs.source }}
@@ -544,20 +574,31 @@ jobs:
         tool: ${{ fromJSON(needs.admission.outputs.tools) }}
     env:
       E2E_TOOL: ${{ matrix.tool }}
-      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
       HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
       HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
       HIVE_ISSUE1364_MODE: "true"
-      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
-        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
-      HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
-      HIVE_ATTEMPT_RESULT: ${{ runner.temp }}/hive-attempt-result/result.json
     steps:
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.workflow_sha }}
           path: .hive-protocol
           persist-credentials: false
+      - name: Initialize owned admission paths after runner assignment
+        env:
+          HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+          HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+            format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+          HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
+          HIVE_ATTEMPT_RESULT: ${{ runner.temp }}/hive-attempt-result/result.json
+        run: >
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_ATTEMPT_CLAIM=$HIVE_ATTEMPT_CLAIM" >> "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_ATTEMPT_RESULT=$HIVE_ATTEMPT_RESULT" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -597,18 +638,25 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
-      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
       HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
       HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
       HIVE_ISSUE1364_MODE: "true"
-      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
-        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
     steps:
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.workflow_sha }}
           path: .hive-protocol
           persist-credentials: false
+      - name: Initialize owned admission paths after runner assignment
+        env:
+          HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+          HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+            format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+        run: >
+          printf '%s\n' "HIVE_ADMISSION_SELECTION=$HIVE_ADMISSION_SELECTION" >>
+          "$GITHUB_ENV"
+
+          printf '%s\n' "HIVE_PUBLISHED_RUNTIME_FILE=$HIVE_PUBLISHED_RUNTIME_FILE" >> "$GITHUB_ENV"
       - uses: actions/setup-node@v7
         with:
           node-version: 24
