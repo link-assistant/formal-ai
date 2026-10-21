@@ -11,12 +11,12 @@
 # `unlock` rows are the greedy order: lifting the constructs down to a row
 # together leaves `cumulative` items with nothing refused by this scan.
 translation_blockers
-  carried_items 2442
+  carried_items 2443
   scanned_clear 14
   blockers_per_item 0 14
   blockers_per_item 1 782
   blockers_per_item 2 253
-  blockers_per_item 3 290
+  blockers_per_item 3 291
   blockers_per_item 4 209
   blockers_per_item 5 203
   blockers_per_item 6 138
@@ -47,10 +47,10 @@ translation_blockers
   blockers_per_item 35 1
   blockers_per_item 41 1
   blockers_per_item 43 1
-construct "call of a sibling function" items 901 only 35
+construct "call of a sibling function" items 902 only 35
 construct "field access" items 891 only 25
 construct "call of an imported function" items 658 only 17
-construct "null" items 582 only 5
+construct "null" items 583 only 5
 construct "object without a $ tag" items 520 only 26
 construct "arrow function" items 358 only 2
 construct "import of names its module carries" items 334 only 334
@@ -77,7 +77,7 @@ construct "destructuring" items 125 only 0
 construct "method call .test()" items 120 only 0
 construct "imported value" items 117 only 2
 construct "global call String()" items 113 only 0
-construct "Array.from" items 107 only 0
+construct "Array.from" items 108 only 0
 construct "new Set" items 94 only 34
 construct "method call .has()" items 93 only 0
 construct "method call .sort()" items 93 only 0
@@ -394,6 +394,6 @@ unlock 19 "method call .replace()" unlocked 28 cumulative 1170
 unlock 20 "method call .indexOf()" unlocked 27 cumulative 1197
 unlock 21 "undefined" unlocked 25 cumulative 1222
 unlock 22 "method call .join()" unlocked 21 cumulative 1243
-unlock 23 "Array.from" unlocked 26 cumulative 1269
-unlock 24 "destructuring" unlocked 18 cumulative 1287
-unlock 25 "assignment of a field or element" unlocked 29 cumulative 1316
+unlock 23 "Array.from" unlocked 27 cumulative 1270
+unlock 24 "destructuring" unlocked 18 cumulative 1288
+unlock 25 "assignment of a field or element" unlocked 29 cumulative 1317

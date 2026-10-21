@@ -42,13 +42,18 @@ broader features are not delivered merely because they are recorded here.
 Preserve working code and prior case history; this priority change calls for no
 broad rework or requirement-registry/count changes.
 
-JavaScript meta-reasoning memory use remains recorded follow-up. Running the
-unchanged `rust/tests/web/meta-reasoner.test.mjs` alone with Node 20.19.4 and
-`--max-old-space-size=768` exhausted that heap after three passing cases.
-The hosted shard emitted nine passing cases out of fifteen before its shared
-360-second budget expired. Its new scheduling weight is a measured partial
-lower bound. Neither observation establishes a complete-suite pass or a
-runtime guarantee; the unchanged hosted tests remain required.
+The observed JavaScript meta-reasoning allocation blocker is included in this
+delivery. Meaning search consumes typed candidates as they are produced,
+without retaining the entire final frontier. Candidate order, ranking, bounds
+and the public eager API remain unchanged. Before this fix, the unchanged
+`rust/tests/web/meta-reasoner.test.mjs` exhausted Node 20.19.4's 768 MiB heap
+after three passing cases; afterward it completed in 57 seconds with thirteen
+passes and its two existing fixture skips at the same heap limit. The earlier
+hosted shard emitted nine passing cases before its shared 360-second budget
+expired. Scheduling weights retain those measured partial lower bounds;
+local execution does not establish hosted latency or release acceptance.
+The unchanged hosted tests remain required. Broader memory optimization stays
+recorded follow-up.
 
 The live concurrency qualification remains unproven. The strict final in run
 39617489419 on cbd30d768fe4fd8f77ed6e782960e91d9b8284e8 returned Unknown

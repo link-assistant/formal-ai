@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b8b4aa8034abdd14fc949a25f2b46ae5e36f9e0019781791c7c2d788dd3c8c41 bytes=30270
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8178aa0004eeb1d6f20537570c2c37ef1a6e83922d2b3c12543aed90e0cd90e1 bytes=30437
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:carried JavaScript function_declaration (unsupported)
@@ -25,9 +25,13 @@
 // formal-ai:refusal syntax: @param needs a type and a name
 // formal-ai:blockers JSDoc type {…} | arrow callback of .reduce() | assignment of a field or element | call of a sibling function | field access | method call .concat() | method call .get() | method call .has() | method call .join() | method call .push() | method call .reduce() | method call .set() | new Map | object spread | object without a $ tag
 
-// meta-language:carried JavaScript function_declaration (syntax)
-// formal-ai:refusal syntax: @param needs a type and a name
+// meta-language:carried JavaScript generator_function_declaration (unsupported)
+// formal-ai:refusal generator function
 // formal-ai:blockers JSDoc type {…} | arrow function | assignment of a field or element | call of a sibling function | field access | method call .concat() | method call .get() | method call .push() | method call .set() | method call .slice() | new Map | null | object spread | object without a $ tag | undefined
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal null
+// formal-ai:blockers Array.from | call of a sibling function | null
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}

@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 313
   workaround_items 33
   inferred_signatures 2
-  carried_items 2442
+  carried_items 2443
   translated_modules 105
   fully_translated_modules 1
   refused_modules 49
@@ -179,11 +179,11 @@ module js/agentic/crate/web_engine_core.mjs translated 0 workaround 0 inferred 0
 module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 inferred 0 carried 11
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
-module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
+module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 26
 refusal "import of names its module does not translate" 334
 refusal "JSDoc type {…}" 215
 refusal "import from '…'" 206
-refusal "null" 187
+refusal "null" 188
 refusal "arrow function" 130
 refusal "type: unknown name (a sibling item or an import)" 117
 refusal "function value …" 102
@@ -212,9 +212,9 @@ refusal "typeof operator" 14
 refusal "method call .every()" 13
 refusal "method call .flatMap()" 13
 refusal "for with const" 12
-refusal "syntax: @param needs a type and a name" 12
 refusal "method call .join()" 11
 refusal "namespace property …" 11
+refusal "syntax: @param needs a type and a name" 11
 refusal "method call .reduce()" 10
 refusal "assignment" 9
 refusal "destructured parameter" 9
@@ -244,6 +244,7 @@ refusal "throw of a non-error value" 3
 refusal "type: one value is used as a string and as an array; declare the types of the function with JSDoc" 3
 refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 3
 refusal "bitwise &" 2
+refusal "generator function" 2
 refusal "instanceof operator" 2
 refusal "method call .entries()" 2
 refusal "method call .get()" 2
@@ -259,7 +260,6 @@ refusal "Number" 1
 refusal "Object.is" 1
 refusal "^= assignment" 1
 refusal "exponentiation" 1
-refusal "generator function" 1
 refusal "in operator" 1
 refusal "label …" 1
 refusal "method call .attempt()" 1
