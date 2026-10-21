@@ -29,7 +29,10 @@ function validateGraph(parent, child) {
     }
   }
   assert.equal(child.concurrency, undefined);
-  assert.equal(parent.on.pull_request.types.includes('synchronize'), true);
+  assert.deepEqual(parent.on, {workflow_dispatch: {inputs: {
+    mode: {description: 'Run the harmless read-only fixture checks', type: 'choice', options: ['checks'], default: 'checks'},
+    'pull-request': {description: 'Pull request whose harmless checks were dispatched', type: 'string', default: ''}
+  }}}, 'live concurrency experiment is manual-only; original manual inputs remain exact');
   const privateGroup = 'formal-ai-release-fixture-${{ github.run_id }}-${{ github.run_attempt }}';
   for (const id of ['active-fixture', 'inactive-fixture']) {
     const job = parent.jobs[id];
@@ -62,7 +65,7 @@ function validateGraph(parent, child) {
   assert.equal(parent.jobs['fixture-contender'].concurrency.group, privateGroup);
   assert.equal(parent.jobs['fixture-contender'].concurrency.queue, 'max');
   assert.equal(parent.jobs.observer.needs, 'auto_compile-release');
-  assert.deepEqual(parent.on.pull_request['branches-ignore'], ['e2e/**']);
+  assert.equal(parent.on.pull_request, undefined, 'no automatic pull-request experiment');
   const ordinaryGroups = new Set();
   for (const role of ['auto_compile-release', 'observer', 'collect']) {
     const expected = 'formal-ai-release-fixture-check-' + role + '-${{ github.workflow }}-${{ github.ref }}';
@@ -221,7 +224,7 @@ test('credential routing, production group, nested lease and spoofed or ungated 
   }
 });
 
-test('ordinary check groups preserve private lease isolation and e2e filtering', () => {
+test('ordinary check groups preserve private lease isolation and manual-only scheduling', () => {
   for (const role of ['auto_compile-release', 'observer', 'collect']) {
     for (const change of [
       p => delete p.jobs[role].concurrency,
@@ -232,8 +235,14 @@ test('ordinary check groups preserve private lease isolation and e2e filtering',
       const p = caller(); change(p); assert.throws(() => validateGraph(p, callee()));
     }
   }
+  for (const event of ['push', 'pull_request_target', 'workflow_run', 'workflow_call', 'schedule', 'repository_dispatch']) {
+    const p = caller(); p.on[event] = {}; assert.throws(() => validateGraph(p, callee()));
+  }
+  for (const change of [p => delete p.on.workflow_dispatch, p => p.on.workflow_dispatch.inputs.mode.default = 'release']) {
+    const p = caller(); change(p); assert.throws(() => validateGraph(p, callee()));
+  }
   for (const value of [undefined, [], ['other/**']]) {
-    const p = caller(); p.on.pull_request['branches-ignore'] = value;
+    const p = caller(); p.on.pull_request = {'branches-ignore': value};
     assert.throws(() => validateGraph(p, callee()));
   }
 });

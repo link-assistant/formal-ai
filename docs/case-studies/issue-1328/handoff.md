@@ -3,7 +3,11 @@
 Current work follows the [critical delivery scope](critical-delivery-scope.md):
 unblock usable published releases and the three original HelloWorld tasks first,
 while preserving all issue 1364 requirements and recording broader work as
-unverified follow-up. Existing evidence and mandatory CI remain authoritative.
+unverified follow-up. Existing evidence, mandatory production/critical delivery
+checks and all source proof oracles remain authoritative. The independent live
+concurrency fixture is now manual-only and explicitly unproven; see the
+[recorded deferral](critical-delivery-scope.md#recorded-follow-up). Its prior
+strict-final Unknown remains a failed attempt, not a skipped check or a pass.
 
 Continue in [the existing PR 1329](https://github.com/link-assistant/formal-ai/pull/1329).
 Its four original bot commits and public session logs must be retained by normal

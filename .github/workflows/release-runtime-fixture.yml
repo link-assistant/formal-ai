@@ -1,23 +1,5 @@
 name: Harmless reusable release runtime fixture
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-    paths:
-      - .github/workflows/release-runtime-fixture*.yml
-      - .github/actions/upload-artifact-with-retry/**
-      - rust/tests/web/issue-1328-artifact-retry.test.mjs
-      - scripts/release-runtime-fixture.mjs
-      - scripts/release-fixture-caller-admission.mjs
-      - rust/tests/web/release-fixture-caller-admission.test.mjs
-      - scripts/release-stage-transfer.mjs
-      - rust/tests/web/release-runtime-fixture.test.mjs
-      - scripts/github-artifact-by-identifier.mjs
-      - rust/tests/web/github-artifact-by-identifier.test.mjs
-    branches-ignore:
-      - e2e/**
   workflow_dispatch:
     inputs:
       mode:

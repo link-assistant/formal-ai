@@ -23,10 +23,13 @@ requirement definitions or the evidence needed to claim delivery.
   and resolve existing merge/release blockers. New coding effort goes to actual
   release or HelloWorld blockers rather than broader speculative improvements.
 
-Existing mandatory CI continues. Failed, cancelled, unknown, skipped and pending
-observations are not passes. Keep every prior attempt and its source identity;
-never substitute an older success for unverified current-source execution.
-This scope adds no acceptance gate and authorizes no skipped check.
+Mandatory production and critical delivery checks, and all source proof
+oracles, continue. Failed, cancelled, unknown, skipped and pending observations
+are not passes. Keep every prior attempt and its source identity; never
+substitute an older success for unverified current-source execution. The
+independent live concurrency fixture is deferred to manual dispatch only;
+that explicitly unproven experiment is not a production-release prerequisite.
+No branch protection or production acceptance gate changes are authorized.
 
 ## Recorded follow-up
 
@@ -38,3 +41,10 @@ and the [existing handoff and evidence](handoff.md) remain intact. Unverified
 broader features are not delivered merely because they are recorded here.
 Preserve working code and prior case history; this priority change calls for no
 broad rework or requirement-registry/count changes.
+
+The live concurrency qualification remains unproven. The strict final in run
+39617489419 on cbd30d768fe4fd8f77ed6e782960e91d9b8284e8 returned Unknown
+because the aggregate run was pending. Its source classification repair passed
+112 source controls, which is not live acceptance and does not make that failed
+attempt green. Manual fixture bodies, physical/source/queue/output guards and
+all retained diagnostic evidence remain intact; no manual dispatch is implied.
