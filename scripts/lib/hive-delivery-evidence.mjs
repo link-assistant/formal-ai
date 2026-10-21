@@ -2,10 +2,8 @@ import assert from 'node:assert/strict';
 export function requireExactProgramOutput(observation, expected) {
   assert.equal(observation.exitCode, 0, 'independent program failed');
   assert.equal(observation.signal, null, 'independent program was signalled');
-  assert.equal(Buffer.from(observation.stdoutBase64, 'base64').toString('base64'),
-    observation.stdoutBase64, 'noncanonical stdout encoding');
-  assert.deepEqual(Buffer.from(observation.stdoutBase64, 'base64'), Buffer.from(expected),
-    'original exactly-one-line stdout oracle');
+  assert.equal(Buffer.from(observation.stdoutBase64, 'base64').toString('base64'), observation.stdoutBase64, 'noncanonical stdout encoding');
+  assert.deepEqual(Buffer.from(observation.stdoutBase64, 'base64'), Buffer.from(expected), 'original exactly-one-line stdout oracle');
   assert.equal(observation.stderrBase64, '', 'unexpected program stderr');
 }
 export function requireHarnessDelivery(evidence, tool) {
@@ -24,20 +22,37 @@ export function requireHarnessDelivery(evidence, tool) {
   assert.equal(url.origin, 'https://github.com');
   const parsed = /^\/([^/]+\/[^/]+)\/pull\/([1-9]\d*)$/u.exec(url.pathname);
   assert(parsed, 'actual pull-request URL required');
-  return {repository: parsed[1], number: Number(parsed[2])};
+  return {
+    repository: parsed[1],
+    number: Number(parsed[2])
+  };
 }
-export function requireReadyPullRequest(value, repository, number) {
+function requireReadyCommon(value, repository, number) {
   assert.equal(value.number, number);
   assert.equal(value.base?.repo?.full_name, repository);
   assert.equal(value.state, 'open');
   assert.equal(value.draft, false, 'delivered PR must be ready');
   assert.match(value.head?.sha, /^[a-f0-9]{40}$/u);
   assert.match(value.head?.ref, /^issue-[1-9]\d*-[A-Za-z0-9-]+$/u);
-  assert.match(value.base?.ref, /^e2e\/hello-world\//u);
   return value.head.sha;
 }
+export function requireReadyPullRequest(value, repository, number) {
+  const head = requireReadyCommon(value, repository, number);
+  assert.match(value.base?.ref, /^e2e\/hello-world\//u);
+  return head;
+}
+export function requireHistoricalReadyPullRequest(value, repository, number, branch) {
+  const head = requireReadyCommon(value, repository, number);
+  assert.equal(value.base?.ref, 'main', 'canonical historical task base');
+  assert.equal(value.head.ref, branch, 'canonical historical task branch');
+  return head;
+}
 export function requireProgramMember(files, language) {
-  const extension = {Kotlin: '.kt', Scala: '.scala', Rust: '.rs'}[language];
+  const extension = {
+    Kotlin: '.kt',
+    Scala: '.scala',
+    Rust: '.rs'
+  }[language];
   assert(extension, 'unsupported original language');
   const programs = files.filter(file => file.filename.endsWith(extension));
   assert.equal(programs.length, 1, 'exactly one original-language program required');
@@ -47,16 +62,18 @@ export function requireProgramMember(files, language) {
   return file;
 }
 
-
 /** Decode only actual act output events; control messages are not program stdout. */
 export function decodeActWorkflowLog(log) {
   assert.equal(typeof log, 'string');
   const output = [];
   for (const line of log.split(/\r?\n/u)) {
     let event;
-    try { event = JSON.parse(line); } catch { continue; }
-    if (event?.raw_output === true && event.dryrun === false
-      && typeof event.msg === 'string') output.push(event.msg);
+    try {
+      event = JSON.parse(line);
+    } catch {
+      continue;
+    }
+    if (event?.raw_output === true && event.dryrun === false && typeof event.msg === 'string') output.push(event.msg);
   }
   return output.join('');
 }

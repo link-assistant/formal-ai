@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createEvidenceClient} from './collect-test-replays.mjs';
-import {effectOwnerArtifact, validateCleanupCursor, prepareCleanupClaim, applyCleanupClaim,
+import {effectOwnerArtifact, cleanupClaimName, validateCleanupCursor, prepareCleanupClaim, applyCleanupClaim,
   readScanCursor, makeScanProgress} from './lib/generated-task-cleanup-journal.mjs';
 const repository = 'link-assistant/formal-ai';
 export async function prepareOwnedHiveRuns({reader, producer, maxPages = 3, maxOwners = 3,
@@ -69,6 +69,19 @@ function outputDocument(directory, name, document) {
   fs.mkdirSync(directory, {recursive: true}); const file = path.join(directory, name);
   fs.writeFileSync(file, JSON.stringify(document, null, 2) + '\n', {flag: 'wx', mode: 0o600}); return file;
 }
+export function writeCleanupPreparation(result, directory) {
+  const owners = result.owners.map(owner => {
+    cleanupClaimName(owner.run, owner.attempt);
+    const target = path.join(directory, `${owner.run}-${owner.attempt}`);
+    return {...owner, claimPath: outputDocument(target, 'claim.json', owner.claim)};
+  });
+  return {...result, owners, progressPath: outputDocument(directory, 'progress.json', result.progress)};
+}
+export function writeCleanupOutcome(outcome, directory) {
+  cleanupClaimName(outcome.sourceRun, outcome.sourceAttempt);
+  const target = path.join(directory, `${outcome.sourceRun}-${outcome.sourceAttempt}`);
+  return {...outcome, outcomePath: outputDocument(target, 'outcome.json', outcome)};
+}
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [phase, ...args] = process.argv.slice(2);
   assert.ok(['prepare', 'apply'].includes(phase), 'Usage: finalize-owned-hive-delivery-runs.mjs prepare|apply');
@@ -78,8 +91,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   if (phase === 'apply') {
     assert.equal(args.length, 1); assert.match(args[0], /^[1-9]\d*$/u);
     const outcome = await applyOwnedHiveClaim({reader, producer, claimArtifactId: Number(args[0])});
-    const outcomePath = outputDocument(directory, `${outcome.sourceRun}-${outcome.sourceAttempt}-outcome.json`, outcome);
-    process.stdout.write(JSON.stringify({...outcome, outcomePath}, null, 2) + '\n');
+    process.stdout.write(JSON.stringify(writeCleanupOutcome(outcome, directory), null, 2) + '\n');
     if (outcome.state !== 'completed') process.exitCode = 1;
   } else {
     const options = new Map();
@@ -91,9 +103,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     const result = await prepareOwnedHiveRuns({reader, producer,
       cursor: position ? {page: position[0], offset: position[1]} : null,
       maxPages: Number(options.get('--pages') ?? 3), maxOwners: Number(options.get('--owners') ?? 3)});
-    result.owners = result.owners.map(owner => ({...owner,
-      claimPath: outputDocument(directory, `${owner.run}-${owner.attempt}-claim.json`, owner.claim)}));
-    result.progressPath = outputDocument(directory, 'progress.json', result.progress);
-    process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+    process.stdout.write(JSON.stringify(writeCleanupPreparation(result, directory), null, 2) + '\n');
   }
 }

@@ -748,3 +748,38 @@ all twenty original memory tests. Native live-volume and SIGTERM controls are
 registered for hosted CI only. Native and Docker PID1 shutdown have not been run
 locally, and filesystem calls or a blocked JavaScript event loop do not acquire a
 portable hard-preemption guarantee from the bounded shutdown policy.
+
+
+## Owned E2E lifecycle and exact issue 1364 replay continuation
+
+[Hive Mind issue 3630](https://github.com/link-assistant/hive-mind/issues/3630)
+is open and records the analogous lifecycle audit. It distinguishes the confirmed
+Formal AI issue buildup from an analogous Hive Mind risk that still needs audit.
+The original issue 1364 tasks, issue bodies and prepared branches remain binding;
+a green generic Hello World run does not satisfy their stronger acceptance.
+
+The integrated protocol admits real client effects only after a complete census
+of applicable source-bound CI results. Successful clients can be reused within a
+pull request while retaining the actual tested source. A source-free Git metadata
+ref consumes each task/policy/input key before effects; Actions artifact expiry
+does not reset it. Results can only advance the exact claim by a normal,
+non-forced child commit. Lost producer proof or uncertain write outcomes stop
+further effects. Retain these metadata refs. Public ledger content contains only
+declared binding metadata, never product source, raw conversations or credentials.
+
+The hosted replay uses the exact three public issue/PR pairs, keeps one task
+checkout across both passes, and independently requires the original delivered
+stdout, task CI, readiness, comments/build instructions and clean Git state.
+The second pass must make no source writes or commits. Sanitized complete dialog
+captures exercise the production protocol adapters and preserve explicit missing
+or truncated evidence. Raw captures stay outside published evidence directories;
+privacy export retains numeric types and compares the retry/write oracle before
+and after redaction. Supplied integration controllers receive zero autonomous
+source-authorship credit.
+
+Local emulations and source checks do not establish hosted acceptance. Default
+branch workflow activation, target-repository credentials, exact-head native CI,
+all three actual released-image client runs and public release/download checks
+remain acceptance steps until their actual receipts are observed. No local Rust
+compilation or product download is authorized. Generated owners must be refreshed
+with their maintained tools after the final coding-planner repair is integrated.

@@ -1,65 +1,155 @@
 name: Original Hive Mind three-client delivery
 on:
-  pull_request:
-    branches-ignore:
-      - e2e/**
+  workflow_run:
+    workflows:
+      - "*"
+      - "!Original Hive Mind three-client delivery"
+      - "!Finalize original Hive generated tasks"
     types:
-      - opened
-      - synchronize
-      - reopened
-    paths:
-      - rust/src/**
-      - rust/embedded/**
-      - rust/Cargo.toml
-      - rust/Cargo.lock
-      - scripts/*hive*
-      - scripts/lib/hive-delivery-evidence.mjs
-      - scripts/lib/hive-operational-evidence.mjs
-      - rust/tests/web/hive-operational-evidence.test.mjs
-      - data/benchmarks/hive-original-delivery-inputs.json
-      - .github/workflows/hive-original-delivery.yml
-      - scripts/lib/hive-delivery-bundle.mjs
-      - rust/tests/web/hive-original-delivery-evidence.test.mjs
-      - rust/tests/web/hive-delivery-bundle.test.mjs
-  workflow_dispatch: null
+      - completed
+  workflow_dispatch:
+    inputs:
+      pull-request:
+        description: Current same-repository pull request number
+        required: true
+        type: string
 permissions:
   contents: read
+  actions: read
 concurrency:
-  group: original-hive-${{ github.ref }}
-  cancel-in-progress: true
+  group: original-hive-${{ github.event.workflow_run.name == 'Verify Public
+    Release Downloads' && format('release-{0}', github.event.workflow_run.id) ||
+    format('candidate-{0}', github.event.workflow_run.head_branch ||
+    github.ref_name) }}
+  cancel-in-progress: false
 jobs:
+  admission:
+    name: Authenticate current source and every applicable CI result
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      admitted: ${{ steps.admit.outputs.admitted }}
+      source: ${{ steps.admit.outputs.source }}
+      scope: ${{ steps.admit.outputs.scope }}
+      tools: ${{ steps.admit.outputs.tools }}
+      execute: ${{ steps.admit.outputs.execute }}
+      published: ${{ steps.admit.outputs.published }}
+      input_hash: ${{ steps.admit.outputs.input_hash }}
+      policy_hash: ${{ steps.admit.outputs.policy_hash }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .hive-protocol
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .hive-protocol/.bun-version
+      - name: Install frozen trusted admission dependencies
+        working-directory: .hive-protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Read-only complete CI and durable client history admission
+        id: admit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HIVE_ADMISSION_OUTPUT: ${{ runner.temp }}/hive-admission/selection.json
+        run: node .hive-protocol/scripts/admit-hive-original-delivery.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hive-admission-selection
+          path: ${{ runner.temp }}/hive-admission/selection.json
+          if-no-files-found: error
+          retention-days: 90
   build:
-    if: github.event_name != 'pull_request' ||
-      github.event.pull_request.head.repo.full_name == github.repository
+    if: ${{ needs.admission.outputs.admitted == 'true' &&
+      needs.admission.outputs.execute == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ needs.admission.outputs.source }}
           persist-credentials: false
+          clean: false
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .hive-protocol
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .hive-protocol/.bun-version
+      - name: Install frozen trusted admission dependencies
+        working-directory: .hive-protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-admission-selection
+          path: ${{ runner.temp }}/hive-admission
       - uses: ./.github/actions/formal-ai-binary
         with:
           cache-key-prefix: hive-formal-ai-ubuntu-24
+        if: ${{ needs.admission.outputs.published != 'true' }}
+      - name: Extract exact shipped binary from immutable published runtime
+        if: ${{ needs.admission.outputs.published == 'true' }}
+        run: node .hive-protocol/scripts/build-hive-original-delivery-image.mjs
+          extract-published-binary
       - uses: actions/upload-artifact@v7
         with:
           name: hive-same-source-formal-ai-binary
           path: rust/target/release/formal-ai
           retention-days: 1
+    needs: admission
+    env:
+      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+      HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
+      HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
+      HIVE_ISSUE1364_MODE: "true"
+      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
   image:
     name: Prepare same-source original Hive image
-    needs: build
+    needs:
+      - admission
+      - build
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
       - name: Initialize shared delivery evidence directory
-        run: |
-          echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
+        run: >
+          echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >>
+          "$GITHUB_ENV"
+
           echo "HIVE_IMAGE_BUNDLE_DIR=$RUNNER_TEMP/hive-image-bundle" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ needs.admission.outputs.source }}
           persist-credentials: false
+          clean: false
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .hive-protocol
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .hive-protocol/.bun-version
+      - name: Install frozen trusted admission dependencies
+        working-directory: .hive-protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-admission-selection
+          path: ${{ runner.temp }}/hive-admission
       - uses: actions/checkout@v7
         with:
           repository: link-assistant/hive-mind
@@ -90,9 +180,9 @@ jobs:
         working-directory: .hive-mind
         run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Prepare reviewed Hive workflow-log transport
-        run: node scripts/prepare-hive-original-delivery.mjs
+        run: node .hive-protocol/scripts/prepare-hive-original-delivery.mjs
       - name: Build and verify actual same-source task image
-        run: node scripts/build-hive-original-delivery-image.mjs
+        run: node .hive-protocol/scripts/build-hive-original-delivery-image.mjs
       - uses: actions/upload-artifact@v7
         with:
           name: hive-same-source-task-image
@@ -100,9 +190,30 @@ jobs:
           retention-days: 1
           compression-level: 0
           if-no-files-found: error
+      - name: Record immutable owner coordinates before real effects
+        id: owner
+        env:
+          HIVE_ATTEMPT_DIRECTORY: ${{ runner.temp }}/hive-owner
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs owner
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hive-real-effect-owner
+          path: ${{ runner.temp }}/hive-owner/owner.json
+          if-no-files-found: error
+          retention-days: 90
+    env:
+      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+      HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
+      HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
+      HIVE_ISSUE1364_MODE: "true"
+      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+    outputs:
+      image: ${{ steps.owner.outputs.image }}
   delivery:
     name: Actual Hive ${{ matrix.tool }} original delivery
     needs:
+      - admission
       - build
       - image
     runs-on: ubuntu-24.04
@@ -115,21 +226,49 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tool:
-          - claude
-          - agent
-          - codex
+        tool: ${{ fromJSON(needs.admission.outputs.tools) }}
     env:
       E2E_TOOL: ${{ matrix.tool }}
+      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+      HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
+      HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
+      HIVE_ISSUE1364_MODE: "true"
+      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+      HIVE_CANONICAL_INPUT_FILE: ${{ github.workspace
+        }}/.hive-protocol/data/benchmarks/issue-1364-client-replay-inputs.json
     steps:
       - name: Initialize shared delivery evidence directory
-        run: |
-          echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
+        run: >
+          echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >>
+          "$GITHUB_ENV"
+
           echo "HIVE_IMAGE_BUNDLE_DIR=$RUNNER_TEMP/hive-image-bundle" >> "$GITHUB_ENV"
+
+          echo "HIVE_EVIDENCE_PUBLISH_DIRECTORY=$RUNNER_TEMP/hive-original-evidence/publish" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ needs.admission.outputs.source }}
           persist-credentials: false
+          clean: false
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .hive-protocol
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .hive-protocol/.bun-version
+      - name: Install frozen trusted admission dependencies
+        working-directory: .hive-protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-admission-selection
+          path: ${{ runner.temp }}/hive-admission
       - uses: actions/checkout@v7
         with:
           repository: link-assistant/hive-mind
@@ -160,7 +299,7 @@ jobs:
         working-directory: .hive-mind
         run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund
       - name: Prepare reviewed Hive workflow-log transport
-        run: node scripts/prepare-hive-original-delivery.mjs
+        run: node .hive-protocol/scripts/prepare-hive-original-delivery.mjs
       - uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
@@ -168,19 +307,58 @@ jobs:
           name: hive-same-source-task-image
           path: ${{ runner.temp }}/hive-image-bundle
       - name: Load and reverify same-run source-bound task image
-        run: node scripts/build-hive-original-delivery-image.mjs load
+        run: node .hive-protocol/scripts/build-hive-original-delivery-image.mjs load
       - name: Release transferred image archive after verified load
         run: rm -- "$HIVE_IMAGE_BUNDLE_DIR/candidate.tar.gz"
-      - name: Resolve task repository credentials
-        id: gh
-        uses: ./.hive-mind/.github/actions/resolve-github-token
+      - name: Derive exact canonical task credential scope without consuming an effect
+          attempt
+        id: target
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs target
+      - name: Observe configured credential availability without exposing secrets
+        id: credential_config
+        env:
+          APP_ID: ${{ vars.AUTOMATION_APP_ID || secrets.AUTOMATION_APP_ID }}
+          APP_KEY: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+        run: if [ -n "$APP_ID" ] && [ -n "$APP_KEY" ]; then echo "has_app=true" >>
+          "$GITHUB_OUTPUT"; else echo "has_app=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Mint token only for the authenticated canonical task repository
+        id: task_app
+        if: ${{ steps.credential_config.outputs.has_app == 'true' }}
+        continue-on-error: true
+        uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.AUTOMATION_APP_ID }}
-          app-private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
-          token: ${{ secrets.AUTOMATION_TOKEN }}
-          default-token: ${{ github.token }}
+          app-id: ${{ vars.AUTOMATION_APP_ID || secrets.AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.AUTOMATION_APP_PRIVATE_KEY }}
+          owner: ${{ steps.target.outputs.target_owner }}
+          repositories: ${{ steps.target.outputs.target_name }}
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+          permission-actions: write
+          permission-workflows: write
+      - name: Read-only exact-target push and available workflow-scope preflight
+        id: gh
+        env:
+          GH_TOKEN: ${{ steps.task_app.outputs.token || secrets.AUTOMATION_TOKEN }}
+          HIVE_CREDENTIAL_LAYER: ${{ steps.task_app.outcome == 'success' && 'app' || 'token' }}
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs credentials
+      - name: Claim one bounded client effect after fresh CI and source revalidation
+        id: claim
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HIVE_ATTEMPT_DIRECTORY: ${{ runner.temp }}/hive-attempt
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs claim
+      - name: Persist effect claim before any task effects
+        uses: actions/upload-artifact@v7
+        if: ${{ steps.claim.outputs.execute == 'true' }}
+        with:
+          name: ${{ steps.claim.outputs.claim_name }}
+          path: ${{ runner.temp }}/hive-attempt/claim.json
+          if-no-files-found: error
+          retention-days: 90
       - name: Install act when workflows require staging
-        if: steps.gh.outputs.layer == 'default'
+        if: ${{ steps.claim.outputs.execute == 'true' && (steps.gh.outputs.layer ==
+          'default') }}
         env:
           GH_TOKEN: ${{ steps.gh.outputs.token }}
           ACT_DIR: ${{ runner.temp }}/act
@@ -196,13 +374,13 @@ jobs:
           echo "$ACT_DIR" >> "$GITHUB_PATH"
       - name: Run actual Hive solve and original assertions
         timeout-minutes: 21
-        working-directory: .hive-mind
+        working-directory: .
         env:
           GH_TOKEN: ${{ steps.gh.outputs.token }}
           AUTOMATION_LAYER: ${{ steps.gh.outputs.layer }}
           AUTOMATION_CAN_CREATE_REPOSITORIES: ${{ steps.gh.outputs.can-create-repositories }}
           E2E_KEEP: "true"
-          E2E_IMAGE: hive-e2e:candidate
+          E2E_IMAGE: ${{ steps.claim.outputs.runtime_image }}
           FORMAL_AI_INSTALL_GRANT: workspace
         run: >
           hive_log_token="$(node -e
@@ -212,31 +390,32 @@ jobs:
 
           printf '::stop-commands::%s\n' "$hive_log_token"
 
-          node scripts/e2e-hello-world.mjs --tool "$E2E_TOOL" --model formal-ai --isolation branch --keep
-      - name: Transfer private operational evidence to the hosted artifact owner
-        if: ${{ !cancelled() }}
-        run: sudo --preserve-env=GITHUB_ACTIONS "$(command -v node)"
-          scripts/lib/hive-operational-evidence.mjs --transfer-ownership
-          "$E2E_LOG_DIR" "$(id -u)" "$(id -g)"
+          node .hive-protocol/scripts/run-issue-1364-client-replay.mjs --tool "$E2E_TOOL" --source "$HIVE_ADMISSION_SOURCE" --image "$E2E_IMAGE" --output "$E2E_LOG_DIR/issue-1364-delivery.json"
+        if: ${{ steps.claim.outputs.execute == 'true' }}
       - name: Seal staged source/run evidence without granting success credit
         if: ${{ !cancelled() }}
-        run: node scripts/lib/hive-delivery-bundle.mjs --seal-evidence
+        run: node .hive-protocol/scripts/lib/hive-delivery-bundle.mjs --seal-evidence
       - name: Stage actual original solve evidence for independent verification
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: hive-original-${{ matrix.tool }}-staged-evidence
-          path: ${{ runner.temp }}/hive-original-evidence
+          path: ${{ runner.temp }}/hive-original-evidence/publish
           retention-days: 30
           if-no-files-found: error
           include-hidden-files: false
+    concurrency:
+      group: hive-client-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}
+      cancel-in-progress: false
   verification:
     name: Independent original Hive ${{ matrix.tool }} verification
     needs:
+      - admission
       - build
       - image
       - delivery
-    if: ${{ !cancelled() && needs.image.result == 'success' }}
+    if: ${{ !cancelled() && needs.image.result == 'success' &&
+      needs.admission.outputs.execute == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
@@ -245,19 +424,42 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tool:
-          - claude
-          - agent
-          - codex
+        tool: ${{ fromJSON(needs.admission.outputs.tools) }}
     env:
       E2E_TOOL: ${{ matrix.tool }}
+      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+      HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
+      HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
+      HIVE_ISSUE1364_MODE: "true"
+      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+      HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
     steps:
       - name: Initialize shared delivery evidence directory
         run: echo "E2E_LOG_DIR=$RUNNER_TEMP/hive-original-evidence" >> "$GITHUB_ENV"
       - uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ needs.admission.outputs.source }}
           persist-credentials: false
+          clean: false
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .hive-protocol
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .hive-protocol/.bun-version
+      - name: Install frozen trusted admission dependencies
+        working-directory: .hive-protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-admission-selection
+          path: ${{ runner.temp }}/hive-admission
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -267,6 +469,12 @@ jobs:
         with:
           name: hive-same-source-formal-ai-binary
           path: rust/target/release
+      - name: Download immutable pre-effect client claim
+        uses: actions/download-artifact@v8
+        with:
+          name: hive-claim-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
+            needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hive-attempt
       - uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
@@ -274,7 +482,7 @@ jobs:
           name: hive-original-${{ matrix.tool }}-staged-evidence
           path: ${{ runner.temp }}/hive-original-evidence
       - name: Verify complete same-run staged source and evidence bytes
-        run: node scripts/lib/hive-delivery-bundle.mjs --verify-evidence
+        run: node .hive-protocol/scripts/lib/hive-delivery-bundle.mjs --verify-evidence
       - uses: coursier/setup-action@648df969f41ef15fda2baba8b37f9fa3d16390a3
         if: matrix.tool == 'agent'
         with:
@@ -291,7 +499,7 @@ jobs:
       - name: Independently compile delivered source and require exactly one output line
         env:
           GH_TOKEN: ${{ github.token }}
-        run: node scripts/check-hive-original-delivery.mjs
+        run: node .hive-protocol/scripts/check-hive-original-delivery.mjs
       - name: Retain actual task links, assertions, independent stdout and failure logs
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
@@ -301,3 +509,127 @@ jobs:
           retention-days: 30
           if-no-files-found: error
           include-hidden-files: false
+      - name: Retain typed bounded attempt result independently of other clients
+        if: ${{ !cancelled() }}
+        env:
+          HIVE_VERIFICATION_OUTCOME: ${{ job.status }}
+          HIVE_ATTEMPT_DIRECTORY: ${{ runner.temp }}/hive-attempt-result
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs result
+      - name: Upload durable typed result
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: hive-result-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
+            needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hive-attempt-result/result.json
+          if-no-files-found: error
+          retention-days: 90
+  ledger:
+    name: Persist durable Hive ${{ matrix.tool }} verification
+    needs:
+      - admission
+      - image
+      - delivery
+      - verification
+    if: ${{ !cancelled() && needs.image.result == 'success' &&
+      needs.admission.outputs.execute == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    strategy:
+      fail-fast: false
+      matrix:
+        tool: ${{ fromJSON(needs.admission.outputs.tools) }}
+    env:
+      E2E_TOOL: ${{ matrix.tool }}
+      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+      HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
+      HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
+      HIVE_ISSUE1364_MODE: "true"
+      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+      HIVE_ATTEMPT_CLAIM: ${{ runner.temp }}/hive-attempt/claim.json
+      HIVE_ATTEMPT_RESULT: ${{ runner.temp }}/hive-attempt-result/result.json
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .hive-protocol
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .hive-protocol/.bun-version
+      - name: Install frozen trusted admission dependencies
+        working-directory: .hive-protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-admission-selection
+          path: ${{ runner.temp }}/hive-admission
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-claim-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
+            needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hive-attempt
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-result-${{ needs.admission.outputs.scope }}-${{ matrix.tool }}-${{
+            needs.admission.outputs.policy_hash }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/hive-attempt-result
+      - name: Publish only a normal fast-forward child of the exact durable claim
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs publish-result
+  acceptance:
+    name: Require all three qualified actual or explicitly reused clients
+    needs:
+      - admission
+      - image
+      - delivery
+      - verification
+      - ledger
+    if: ${{ always() && needs.admission.outputs.admitted == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      HIVE_ADMISSION_SELECTION: ${{ runner.temp }}/hive-admission/selection.json
+      HIVE_ADMISSION_SOURCE: ${{ needs.admission.outputs.source }}
+      HIVE_INPUT_SHA256: ${{ needs.admission.outputs.input_hash }}
+      HIVE_ISSUE1364_MODE: "true"
+      HIVE_PUBLISHED_RUNTIME_FILE: ${{ needs.admission.outputs.published == 'true' &&
+        format('{0}/hive-admission/selection.json', runner.temp) || '' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          path: .hive-protocol
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .hive-protocol/.bun-version
+      - name: Install frozen trusted admission dependencies
+        working-directory: .hive-protocol
+        run: bun install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@v8
+        with:
+          name: hive-admission-selection
+          path: ${{ runner.temp }}/hive-admission
+      - name: Authenticate all three final independent delivery receipts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HIVE_ATTEMPT_DIRECTORY: ${{ runner.temp }}/hive-final-acceptance
+        run: node .hive-protocol/scripts/hive-delivery-attempt.mjs aggregate
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hive-three-client-acceptance
+          path: ${{ runner.temp }}/hive-final-acceptance/acceptance.json
+          if-no-files-found: error
+          retention-days: 90

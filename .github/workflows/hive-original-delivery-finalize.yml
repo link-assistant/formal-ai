@@ -1,0 +1,103 @@
+name: Finalize original Hive generated tasks
+on:
+  workflow_run:
+    workflows:
+      - Original Hive Mind three-client delivery
+    types:
+      - completed
+  schedule:
+    - cron: 7,22,37,52 * * * *
+permissions:
+  contents: read
+  actions: read
+  issues: write
+concurrency:
+  group: hive-generated-cleanup-${{ github.event.workflow_run.id || github.run_id }}
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_run'
+      && github.event.workflow_run.head_repository.full_name ==
+      github.repository) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      owners: ${{ steps.prepare.outputs.owners }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Bounded authenticated immutable effect-owner discovery
+        id: prepare
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          node scripts/finalize-owned-hive-delivery-runs.mjs prepare >
+          "$RUNNER_TEMP/preparation.json"
+
+          node --input-type=module -e 'import fs from "node:fs";const plan=JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP+"/preparation.json"));fs.writeFileSync(process.env.RUNNER_TEMP+"/progress.json",JSON.stringify(plan.progress)+"\n",{flag:"wx",mode:0o600});fs.appendFileSync(process.env.GITHUB_OUTPUT,"owners="+JSON.stringify(plan.owners)+"\nprogress_name="+plan.progressName+"\n");'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: hive-cleanup-preparation
+          path: ${{ runner.temp }}/preparation.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Retain bounded authenticated cleanup scan continuation
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.prepare.outputs.progress_name }}
+          path: ${{ runner.temp }}/progress.json
+          if-no-files-found: error
+          retention-days: 3
+  sweep:
+    needs: prepare
+    if: ${{ needs.prepare.outputs.owners != '[]' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        owner: ${{ fromJSON(needs.prepare.outputs.owners) }}
+    concurrency:
+      group: hive-cleanup-owner-${{ matrix.owner.run }}-${{ matrix.owner.attempt }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Materialize only authenticated public owner claim metadata
+        env:
+          CLEANUP_CLAIM: ${{ toJSON(matrix.owner.claim) }}
+        run: node --input-type=module -e 'import fs from
+          "node:fs";fs.writeFileSync(process.env.RUNNER_TEMP+"/claim.json",JSON.stringify(JSON.parse(process.env.CLEANUP_CLAIM))+"\n",{flag:"wx",mode:0o600});'
+      - name: Persist immutable cleanup claim before issue writes
+        id: claim
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.owner.claimName }}
+          path: ${{ runner.temp }}/claim.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Apply one fresh authenticated claimed owner without uncertain-write
+          retries
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLAIM_ARTIFACT_ID: ${{ steps.claim.outputs.artifact-id }}
+        run: node scripts/finalize-owned-hive-delivery-runs.mjs apply
+          "$CLAIM_ARTIFACT_ID" > "$RUNNER_TEMP/outcome.json"
+      - name: Retain terminal outcome without granting retries after uncertainty
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: hive-cleanup-outcome-${{ matrix.owner.run }}-${{ matrix.owner.attempt }}
+          path: ${{ runner.temp }}/outcome.json
+          if-no-files-found: error
+          retention-days: 90

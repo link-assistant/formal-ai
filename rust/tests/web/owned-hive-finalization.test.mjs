@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {prepareOwnedHiveRuns, applyOwnedHiveClaim} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import {prepareOwnedHiveRuns, applyOwnedHiveClaim, writeCleanupPreparation, writeCleanupOutcome} from '../../../scripts/finalize-owned-hive-delivery-runs.mjs';
 import {prepareCleanupClaim, readScanCursor, makeScanProgress, cleanupClaimName,
   effectOwnerArtifact} from '../../../scripts/lib/generated-task-cleanup-journal.mjs';
 const protocol = 'a'.repeat(40), cleanupProtocol = 'b'.repeat(40), selected = 'c'.repeat(40);
@@ -159,4 +162,20 @@ test('authenticated durable progress advances scheduled discovery beyond its pre
     {page: 8, offset: 17});
   progress.document.cleanupPolicyHash = '0'.repeat(64);
   await assert.rejects(readScanCursor({reader: f.reader, now: Date.parse('2026-10-21T13:00:00Z'), ...f.dependencies}));
+});
+
+test('published claim and outcome filenames match exact sole artifact members', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'cleanup-artifact-members-'));
+  try {
+    const claim = {schema: 'synthetic-local-file-only', sourceRun: 101, sourceAttempt: 1};
+    const prepared = writeCleanupPreparation({owners: [{run: 101, attempt: 1, claim}], progress: {continuation: null}}, directory);
+    assert.equal(path.basename(prepared.owners[0].claimPath), 'claim.json');
+    assert.deepEqual(JSON.parse(fs.readFileSync(prepared.owners[0].claimPath)), claim);
+    const outcome = {sourceRun: 101, sourceAttempt: 1, state: 'completed'};
+    const published = writeCleanupOutcome(outcome, directory);
+    assert.equal(path.basename(published.outcomePath), 'outcome.json');
+    assert.deepEqual(JSON.parse(fs.readFileSync(published.outcomePath)), outcome);
+    assert.throws(() => writeCleanupOutcome(outcome, directory));
+    assert.throws(() => writeCleanupPreparation({owners: [{run: '../other', attempt: 1, claim}], progress: {}}, directory));
+  } finally { fs.rmSync(directory, {recursive: true, force: true}); }
 });
