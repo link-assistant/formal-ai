@@ -54,7 +54,16 @@ export function adaptReplayEntrypoint(source, task, workspace) {
   ].join('\n');
   return source.replace(original, () => replacement);
 }
-export function taskSnapshot(directory, trackedPaths) {
+export function taskSnapshot(directory, trackedPaths, issueUrl = null) {
+  if (issueUrl !== null) {
+    const owner = /^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\/issues\/([1-9][0-9]*)$/u.exec(issueUrl);
+    assert(owner, 'canonical issue owner required for task evidence custody');
+    const evidence = 'dev/log/self-authored/issue-' + owner[1] + '/evidence/';
+    // Exact internal members of the pinned Hive producer, bound to this issue only.
+    const internal = ['agent-stream.jsonl', 'claude-stream.jsonl', 'codex-stream.jsonl', 'session-id.txt'];
+    assert(trackedPaths.every(relative => !internal.some(name => relative === evidence + name)),
+      'internal task evidence belongs outside the delivered commit');
+  }
   assert(trackedPaths.length > 0 && trackedPaths.length <= 256);
   let total = 0;
   const rows = trackedPaths.slice().sort().map(relative => {

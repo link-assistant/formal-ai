@@ -89,7 +89,7 @@ export async function runIssue1364Replay(options, environment=process.env) {
     const paths=(await git(['ls-files','-z'])).split('\0').filter(Boolean);
     const commitRecords=(await git(['reflog','show','--all','--format=%gs'])).split('\n')
       .filter(line=>/^commit(?:\s|:|\()/u.test(line)).length;
-    return {head,branch,status,commitRecords,files:taskSnapshot(workspace,paths)};
+    return {head,branch,status,commitRecords,files:taskSnapshot(workspace,paths,task.issueUrl)};
   }
   async function traceObservation(directory) {
     const location=path.join(directory,'formal-ai-dialog');assert(fs.lstatSync(location).isDirectory());

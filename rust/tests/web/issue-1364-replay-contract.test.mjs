@@ -152,3 +152,26 @@ test('task replay keeps optional Hive attribution bookkeeping outside the task c
     assert.throws(() => invoke(extra), /pinned attribution policy changed/u);
   }
 });
+
+
+test('tracked inventory refuses current-task internal client evidence while preserving other-task and ordinary source', () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-task-evidence-control-'));
+  const owner = 'dev/log/self-authored/issue-17/evidence/';
+  const other = 'dev/log/self-authored/issue-18/evidence/session-id.txt';
+  try {
+    fs.mkdirSync(path.join(directory, owner), {recursive: true});
+    fs.mkdirSync(path.dirname(path.join(directory, other)), {recursive: true});
+    fs.writeFileSync(path.join(directory, 'main.rs'), 'fn main() {}\n');
+    fs.writeFileSync(path.join(directory, other), 'preserve other-task evidence\n');
+    for (const name of ['agent-stream.jsonl', 'claude-stream.jsonl', 'codex-stream.jsonl', 'session-id.txt']) {
+      const relative = owner + name;
+      fs.writeFileSync(path.join(directory, relative), name === 'session-id.txt' ? 'formal-ai session synthetic\nformal-ai model formal-ai/0.0.0\n' : '');
+      assert.throws(() => taskSnapshot(directory, [relative], 'https://github.com/public/task/issues/17'),
+        /internal task evidence belongs outside the delivered commit/u);
+    }
+    assert.equal(taskSnapshot(directory, ['main.rs', other], 'https://github.com/public/task/issues/17').length, 2);
+    assert.throws(() => taskSnapshot(directory, ['main.rs'], 'https://github.com/public/task/pull/17'), /canonical issue owner/u);
+  } finally {
+    fs.rmSync(directory, {recursive: true, force: true});
+  }
+});
