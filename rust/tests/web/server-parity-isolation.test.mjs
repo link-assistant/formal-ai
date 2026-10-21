@@ -115,3 +115,48 @@ test('the previous silent runner setup reproduces the recorded-conversation refu
   assert.equal(fs.existsSync(path.join(home,'dialogs','server-parity-learning.conversation.jsonl')),false);
  }finally{if(running)await new Promise(resolve=>running.server.close(resolve));fs.rmSync(home,{recursive:true,force:true});}
 });
+
+
+test('health memory paths compare exact relative identities within each constructor-owned home',()=>{
+ const homes={rust:'/owned/rust/home',js:'/owned/js/home'};
+ const health=(home,leaf='memory.lino')=>({status:'ok',memory:{active_path:home+'/'+leaf,configured_path:home+'/memory.lino',
+  schema_valid:true,writable:true,migration_needed:false}});
+ const left=response(health(homes.rust));
+ assert.equal(compareResponses(left,response(health(homes.js)),'GET',{}, {},homes).kind,'same');
+ assert.equal(compareResponses(left,response(health(homes.js))).kind,'content');
+ const normalizeMemory=value=>normalize(value,'',null,null,'',homes.js);
+ assert.deepEqual(normalizeMemory(health(homes.js)).memory,{active_path:'<runtime-memory>/memory.lino',
+  configured_path:'<runtime-memory>/memory.lino',schema_valid:true,writable:true,migration_needed:false});
+ for(const leaf of ['memory.lino.sidecar','nested/memory.lino']){
+  assert.equal(compareResponses(response(health(homes.rust,leaf)),response(health(homes.js,leaf)),'GET',{}, {},homes).kind,'same');
+  assert.equal(compareResponses(left,response(health(homes.js,leaf)),'GET',{}, {},homes).kind,'content');
+ }
+ for(const wrong of ['memory.lino','/foreign/memory.lino',homes.js+'-other/memory.lino',
+  homes.rust+'/memory.lino',homes.js+'/../memory.lino',homes.js+'/./memory.lino',homes.js+'/different.lino']){
+  const changed=health(homes.js);changed.memory.active_path=wrong;
+  assert.equal(compareResponses(left,response(changed),'GET',{}, {},homes).kind,'content');
+ }
+ const payload={answer:homes.js+'/memory.lino',active_path:homes.js+'/memory.lino',
+  nested:{memory:health(homes.js).memory},list:[health(homes.js)]};
+ assert.deepEqual(normalizeMemory(payload),payload);
+ assert.deepEqual(normalize(health('relative'),'','','','', 'relative'),health('relative'));
+});
+
+test('memory normalization never erases sidecar configured-path or schema differences',()=>{
+ const homes={rust:'/owned/rust/home',js:'/owned/js/home'};
+ const health=home=>({memory:{active_path:home+'/memory.lino',configured_path:home+'/memory.lino',schema_valid:true}});
+ for(const mutate of [x=>x.memory.configured_path+='.sidecar',x=>x.memory.schema_valid=false,
+  x=>x.memory.active_path=null,x=>delete x.memory.configured_path,x=>x.memory.extra=true]){
+  const changed=health(homes.js);mutate(changed);
+  assert.notEqual(compareResponses(response(health(homes.rust)),response(changed),'GET',{}, {},homes).kind,'same');
+ }
+ assert.equal(compareResponses(response({memory:{active_path:null,configured_path:null}}),
+  response({memory:{active_path:null,configured_path:null}}),'GET',{}, {},homes).kind,'same');
+ const env=createParityEnvironment('/owned/home','fixture-token',{});
+ assert.equal(env.HOME,'/owned/home');assert.equal(env.FORMAL_AI_MEMORY_PATH,'/owned/home/memory.lino');
+ const runner=fs.readFileSync(new URL('../../../scripts/check-server-parity.mjs',import.meta.url),'utf8');
+ assert(runner.includes('runtimeMemoryRoot: env.HOME'));
+ assert(runner.includes('runtimeMemoryRoots.rust = rust.runtimeMemoryRoot;'));
+ assert(runner.includes('runtimeMemoryRoots.js = js.runtimeMemoryRoot;'));
+ assert(runner.includes('compareResponses(rust, js, request.method, runtimeCacheRoots, runtimeLogRoots, runtimeMemoryRoots)'));
+});

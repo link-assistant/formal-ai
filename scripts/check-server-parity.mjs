@@ -233,6 +233,7 @@ async function startServer(label, command, args, token) {
     base,
     runtimeCacheRoot: env.FORMAL_AI_CACHE_DIR,
     runtimeLogRoot: env.FORMAL_AI_LOG_DIR,
+    runtimeMemoryRoot: env.HOME,
     stop() {
       child.kill('SIGKILL');
       rmSync(home, { recursive: true, force: true });
@@ -256,12 +257,12 @@ function authHeader(request, token) {
 }
 
 /** Replace volatile values so equal behaviour compares equal. */
-export function normalize(value, key = '', runtimeCacheRoot = null, runtimeLogRoot = null, location = '') {
-  if (Array.isArray(value)) return value.map((item) => normalize(item, key, runtimeCacheRoot, runtimeLogRoot, location + '[]'));
+export function normalize(value, key = '', runtimeCacheRoot = null, runtimeLogRoot = null, location = '', runtimeMemoryRoot = null) {
+  if (Array.isArray(value)) return value.map((item) => normalize(item, key, runtimeCacheRoot, runtimeLogRoot, location + '[]', runtimeMemoryRoot));
   if (value && typeof value === 'object') {
     const out = {};
     for (const [name, item] of Object.entries(value)) {
-      out[name] = normalize(item, name, runtimeCacheRoot, runtimeLogRoot, location + '.' + name);
+      out[name] = normalize(item, name, runtimeCacheRoot, runtimeLogRoot, location + '.' + name, runtimeMemoryRoot);
     }
     // An error message carries the parser's own wording after its first colon.
     if (typeof out.message === 'string' && (Object.hasOwn(out, 'type') || Object.hasOwn(out, 'code'))) {
@@ -273,6 +274,17 @@ export function normalize(value, key = '', runtimeCacheRoot = null, runtimeLogRo
   if (typeof value === 'number' && VOLATILE_NUMBERS.has(key)) return 0;
   if (typeof value === 'string') {
     if (runtimeLogRoot && location === '.logs.directory' && value === runtimeLogRoot) return '<runtime-logs>';
+    if (runtimeMemoryRoot && path.isAbsolute(runtimeMemoryRoot) && path.isAbsolute(value) &&
+        ['.memory.active_path', '.memory.configured_path'].includes(location)) {
+      const prefix = runtimeMemoryRoot + path.sep;
+      if (value.startsWith(prefix)) {
+        const relative = value.slice(prefix.length);
+        // Replace only the constructor-owned home; retain exact file/sidecar identity.
+        if (relative && !relative.split(path.sep).some(part => part === '..' || part === '.')) {
+          return '<runtime-memory>/' + relative.split(path.sep).join('/');
+        }
+      }
+    }
     if (runtimeCacheRoot && key === 'evidence_links') {
       const prefix = path.join(runtimeCacheRoot, 'derivations') + path.sep;
       if (value.startsWith(prefix)) {
@@ -374,7 +386,7 @@ function frameShapes(frames) {
 /**
  * Compare one exchange. Returns `{kind: 'same' | 'content' | 'protocol', detail}`.
  */
-export function compareResponses(rust, js, method = 'GET', runtimeCacheRoots = {}, runtimeLogRoots = {}) {
+export function compareResponses(rust, js, method = 'GET', runtimeCacheRoots = {}, runtimeLogRoots = {}, runtimeMemoryRoots = {}) {
   if (rust.statusLine !== js.statusLine) return { kind: 'protocol', detail: `status ${rust.statusLine} != ${js.statusLine}` };
   for (const name of COMPARED_HEADERS) {
     if ((rust.headers[name] ?? null) !== (js.headers[name] ?? null)) {
@@ -411,8 +423,8 @@ export function compareResponses(rust, js, method = 'GET', runtimeCacheRoots = {
     const left = parseJson(rust.body);
     const right = parseJson(js.body);
     if (!left.ok || !right.ok) return { kind: 'protocol', detail: 'body is not JSON on one side' };
-    const a = normalize(left.value, '', runtimeCacheRoots.rust, runtimeLogRoots.rust);
-    const b = normalize(right.value, '', runtimeCacheRoots.js, runtimeLogRoots.js);
+    const a = normalize(left.value, '', runtimeCacheRoots.rust, runtimeLogRoots.rust, '', runtimeMemoryRoots.rust);
+    const b = normalize(right.value, '', runtimeCacheRoots.js, runtimeLogRoots.js, '', runtimeMemoryRoots.js);
     if (!sameSkeleton(skeleton(a), skeleton(b))) {
       return { kind: 'protocol', detail: `json shape ${JSON.stringify(skeleton(a))} != ${JSON.stringify(skeleton(b))}` };
     }
@@ -483,6 +495,7 @@ async function main(argv) {
       const extra = agentMode ? ['--agent-mode'] : [];
       const runtimeCacheRoots = {};
       const runtimeLogRoots = {};
+      const runtimeMemoryRoots = {};
       let rustBase = agentMode ? options.rustAgentUrl : options.rustUrl;
       let jsBase = agentMode ? options.jsAgentUrl : options.jsUrl;
       if (!rustBase) {
@@ -492,6 +505,7 @@ async function main(argv) {
         servers.push(rust);
         runtimeCacheRoots.rust = rust.runtimeCacheRoot;
         runtimeLogRoots.rust = rust.runtimeLogRoot;
+        runtimeMemoryRoots.rust = rust.runtimeMemoryRoot;
         rustBase = rust.base;
       }
       if (!jsBase) {
@@ -499,9 +513,10 @@ async function main(argv) {
         servers.push(js);
         runtimeCacheRoots.js = js.runtimeCacheRoot;
         runtimeLogRoots.js = js.runtimeLogRoot;
+        runtimeMemoryRoots.js = js.runtimeMemoryRoot;
         jsBase = js.base;
       }
-      return { rustBase, jsBase, runtimeCacheRoots, runtimeLogRoots };
+      return { rustBase, jsBase, runtimeCacheRoots, runtimeLogRoots, runtimeMemoryRoots };
     };
     const bases = {};
     if (selected.some((request) => !request.agentMode)) bases.plain = await pair(false);
@@ -513,10 +528,10 @@ async function main(argv) {
     for (const request of corpus.requests) {
       if (options.only && !options.only.has(request.id)) continue;
       const prepared = { ...request, authHeader: authHeader(request, corpus.token) };
-      const { rustBase, jsBase, runtimeCacheRoots, runtimeLogRoots } = request.agentMode ? bases.agent : bases.plain;
+      const { rustBase, jsBase, runtimeCacheRoots, runtimeLogRoots, runtimeMemoryRoots } = request.agentMode ? bases.agent : bases.plain;
       const rust = await send(rustBase, prepared);
       const js = await send(jsBase, prepared);
-      const verdict = compareResponses(rust, js, request.method, runtimeCacheRoots, runtimeLogRoots);
+      const verdict = compareResponses(rust, js, request.method, runtimeCacheRoots, runtimeLogRoots, runtimeMemoryRoots);
       if (verdict.kind === 'protocol') protocol.push([request.id, verdict.detail]);
       else if (verdict.kind === 'content') content.push([request.id, verdict.detail]);
       else same += 1;
