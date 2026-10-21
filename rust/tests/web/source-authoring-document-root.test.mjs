@@ -144,3 +144,49 @@ test('registration retains an unconsumed independent Need rather than certifying
     }
   });
 });
+
+
+// Actual localized source ownership, not locale-label-only coverage.
+const multilingualSourceRequests = [
+  {language:'en', request:'Create file rust/src/ratio.rs containing a public Rust function normalized_ratio that takes an f64 and returns it divided by 7.0',
+    registration:' and register the module in rust/src/lib.rs'},
+  {language:'ru', request:'Создай файл rust/src/ratio.rs с публичной функцией на Rust с именем normalized_ratio, которая принимает f64 и делит его на 7.0',
+    registration:' и зарегистрируй модуль в rust/src/lib.rs'},
+  {language:'hi', request:'rust/src/ratio.rs फ़ाइल बनाएँ जिसमें normalized_ratio नाम का एक सार्वजनिक Rust फ़ंक्शन हो जो f64 लेता है और उसे 7.0 से विभाजित करके लौटाता है',
+    registration:' और rust/src/lib.rs में मॉड्यूल पंजीकृत करें'},
+  {language:'zh', request:'创建文件 rust/src/ratio.rs，其中包含一个名为 normalized_ratio 的公共 Rust 函数，接受 f64 并返回它除以 7.0',
+    registration:'，并注册模块到 rust/src/lib.rs'},
+  {language:'es', request:'Crea archivo rust/src/ratio.rs que contiene una función pública Rust llamada normalized_ratio que toma un f64 y lo devuelve dividido por 7.0',
+    registration:' y registra el módulo en rust/src/lib.rs'},
+];
+const multilingualArtifact = {path:'rust/src/ratio.rs',
+  content:'pub fn normalized_ratio(value: f64) -> f64 {\n    value / 7.0\n}\n'};
+for (const {language, request, registration} of multilingualSourceRequests) {
+  test('localized source grammar retains exact operands and refuses unowned effects: ' + language, async () => {
+    const {sourceRegistrationContract} = await import('../../../js/agentic/code_task/source_contract/registration_contract.mjs');
+    const result = matchSourceDescription(request, multilingualArtifact);
+    assert.ok(result, request);
+    assert.equal(result.language, language);
+    assert.equal(result.wholeRequestConsumed, true);
+    assert.deepEqual(result.full, [0, request.length]);
+    assert.equal(result.output.content, multilingualArtifact.content);
+    assert.equal(result.compilation, 'pending');
+    assert.deepEqual(result.unknownEffects, ['module_initialization', 'tool_execution']);
+    for (const capture of result.captures) {
+      assert.equal(request.slice(...capture.span), capture.text);
+    }
+    assert.equal(matchSourceDescription(request.replace('7.0', '9.0'), multilingualArtifact), null);
+    assert.equal(matchSourceDescription(request, {...multilingualArtifact, path:'rust/src/foreign.rs'}), null);
+    assert.equal(matchSourceDescription(request + ' Delete unrelated.rs.', multilingualArtifact), null);
+    const sourceFor = clause => matchSourceDescription(clause, multilingualArtifact) === null ? null : multilingualArtifact;
+    const composed = sourceRegistrationContract(request + registration, sourceFor);
+    assert.ok(composed, request + registration);
+    assert.equal(composed.wholeRequestConsumed, true);
+    assert.equal(composed.registration.module, 'ratio');
+    assert.equal(composed.registration.target.text, 'rust/src/lib.rs');
+    assert.equal(composed.compilation, 'pending');
+    assert.equal(sourceRegistrationContract(request + registration.replace('rust/src/lib.rs', '../foreign.rs'), sourceFor), null);
+    const partial = sourceRegistrationContract(request + registration + ' Delete unrelated.rs.', sourceFor);
+    assert.ok(partial === null || partial.wholeRequestConsumed === false);
+  });
+}
