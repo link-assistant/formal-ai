@@ -1,5 +1,10 @@
 # Issue 1328 / PR 1329 handoff
 
+Current work follows the [critical delivery scope](critical-delivery-scope.md):
+unblock usable published releases and the three original HelloWorld tasks first,
+while preserving all issue 1364 requirements and recording broader work as
+unverified follow-up. Existing evidence and mandatory CI remain authoritative.
+
 Continue in [the existing PR 1329](https://github.com/link-assistant/formal-ai/pull/1329).
 Its four original bot commits and public session logs must be retained by normal
 history updates. The integration started from `98f7808d49583e1e7932d133355445d8fdfb91f9`
