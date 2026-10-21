@@ -91,6 +91,7 @@ mod issue_1138_source_walk_parity;
 mod issue_1138_three_source_roots;
 mod issue_1138_translation_tool;
 mod issue_1138_universal_loop_lookup;
+mod issue_1364_server_lifecycle;
 mod issue_498_google_trends;
 mod issue_499_learn_from_source;
 mod issue_531_algorithm_discovery;

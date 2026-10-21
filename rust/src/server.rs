@@ -31,6 +31,7 @@ mod conversation_reports;
 mod debug_session;
 mod debug_stage;
 mod debug_stage_sources;
+mod shutdown;
 mod transport;
 
 pub use debug_session::{
@@ -355,8 +356,11 @@ fn memory_health_status() -> Value {
             "migration_state": "missing",
         });
     };
+    let original_path = path;
+    let path = crate::memory_sync::active_memory_path(&original_path);
     let status = crate::memory::preflight_memory_upgrade(&path);
     json!({
+        "active_path":path,"configured_path":original_path,
         "schema_version": status.detected_schema_version,
         "minimum_readable_schema_version": status.minimum_readable_schema_version,
         "maximum_readable_schema_version": status.maximum_readable_schema_version,

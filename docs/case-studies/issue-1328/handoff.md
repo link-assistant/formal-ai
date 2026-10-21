@@ -722,3 +722,29 @@ are unchanged. All four actual image validation cells, both macOS packaging jobs
 and all three original Hive clients passed on 49f6dc8. Those results do not confer
 a pass on the next published head. No native products were run locally, and no
 original deadline, oracle or ceiling was relaxed.
+
+
+### Issue 1364 and Hive Mind E2E follow-up
+
+The complete eleven-obligation scope and actual three-client release acceptance
+are recorded in `docs/requirements/issue-1364-three-client-release.md`. Source
+fixes and local replays do not complete the hosted and released-image acceptance.
+The original nested Agent tool-use exit-127 frame is reproduced by a sanitized
+fixture and now retains the terminal provider status without trusting arbitrary
+source JSON as a process receipt.
+
+[Hive Mind issue 3630](https://github.com/link-assistant/hive-mind/issues/3630)
+was created and independently verified open on 2026-10-21. It requires equivalent
+owned E2E issue cleanup, final-CI admission, successful-PR evidence reuse, finite
+failed retries, one real merged/released-source execution, and faithful sanitized
+log replays. The observed 78 open generated issues belong to Formal AI; the Hive
+Mind report requires an audit and does not assert that same count there.
+
+Live memory startup now uses the existing lossless migration for validated older
+schemas. Unknown/incompatible bytes remain untouched beside an explicitly logged
+private current-schema sibling; IO/permission failures remain errors. Health reads
+the selected store without migrating it. Thirty JavaScript controls pass, including
+all twenty original memory tests. Native live-volume and SIGTERM controls are
+registered for hosted CI only. Native and Docker PID1 shutdown have not been run
+locally, and filesystem calls or a blocked JavaScript event loop do not acquire a
+portable hard-preemption guarantee from the bounded shutdown policy.

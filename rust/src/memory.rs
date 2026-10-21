@@ -364,30 +364,161 @@ impl MemoryStore {
 /// # Errors
 /// Returns an [`io::Error`] when the lock file, temp file, or rename fails.
 pub fn write_locked_atomic(path: &Path, contents: &str) -> io::Result<()> {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        write_locked_atomic_native(path, contents)
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        let _ = (path, contents);
+        Err(io::Error::new(
+            io::ErrorKind::Unsupported,
+            "memory_atomic_io_unavailable",
+        ))
+    }
+}
+#[cfg(not(target_arch = "wasm32"))]
+fn write_locked_atomic_native(path: &Path, contents: &str) -> io::Result<()> {
+    use crate::provenance_snapshot::{open_observed, same_observed_file};
     use fs2::FileExt as _;
-    if let Some(parent) = path.parent()
-        && !parent.as_os_str().is_empty()
+    use std::io::Write as _;
+    if let Some(parent) = path
+        .parent()
+        .filter(|parent| !parent.as_os_str().is_empty())
     {
         fs::create_dir_all(parent)?;
     }
-    let file_name = path
+    let name = path
         .file_name()
         .and_then(|name| name.to_str())
-        .unwrap_or("memory.lino");
-    let lock_path = path.with_file_name(format!("{file_name}.lock"));
-    let lock_file = fs::OpenOptions::new()
-        .create(true)
-        .truncate(false)
-        .write(true)
-        .open(&lock_path)?;
-    lock_file.lock_exclusive()?;
-    let temp_path = path.with_file_name(format!("{file_name}.tmp.{}", std::process::id()));
-    let result = fs::write(&temp_path, contents).and_then(|()| fs::rename(&temp_path, path));
-    if result.is_err() {
-        let _ = fs::remove_file(&temp_path);
+        .ok_or_else(|| io::Error::other("memory_atomic_filename_required"))?;
+    let lock_path = path.with_file_name(format!("{name}.lock"));
+    let mut options = fs::OpenOptions::new();
+    options.read(true).write(true).create(true).truncate(false);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        options.mode(0o600).custom_flags(
+            i32::try_from((rustix::fs::OFlags::NOFOLLOW | rustix::fs::OFlags::NONBLOCK).bits())
+                .map_err(io::Error::other)?,
+        );
     }
-    let _ = fs2::FileExt::unlock(&lock_file);
-    result
+    #[cfg(windows)]
+    {
+        use std::os::windows::fs::OpenOptionsExt as _;
+        options.custom_flags(windows_sys::Win32::Storage::FileSystem::FILE_FLAG_OPEN_REPARSE_POINT);
+    }
+    let lock = options.open(&lock_path)?;
+    if !lock.metadata()?.is_file() || !same_observed_file(&lock, &lock_path)? {
+        return Err(io::Error::other("memory_atomic_lock_identity"));
+    }
+    lock.try_lock_exclusive()?;
+    let staged_path = path.with_file_name(format!("{name}.tmp.{}", std::process::id()));
+    let mut staged: Option<fs::File> = None;
+    let mut committed = false;
+    let result = (|| {
+        let observed = match open_observed(path) {
+            Ok(file) => Some(file),
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {
+                if fs::symlink_metadata(path).is_ok() {
+                    return Err(io::Error::other("memory_atomic_target_identity"));
+                }
+                None
+            }
+            Err(error) => return Err(error),
+        };
+        let metadata = observed.as_ref().map(fs::File::metadata).transpose()?;
+        if metadata
+            .as_ref()
+            .is_some_and(|metadata| !metadata.is_file())
+        {
+            return Err(io::Error::other("memory_atomic_regular_file_required"));
+        }
+        let mut options = fs::OpenOptions::new();
+        options.write(true).create_new(true);
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::OpenOptionsExt as _;
+            options.mode(0o600);
+        }
+        staged = Some(options.open(&staged_path)?);
+        let file = staged
+            .as_mut()
+            .ok_or_else(|| io::Error::other("memory_atomic_stage_missing"))?;
+        if let Some(metadata) = &metadata {
+            file.set_permissions(metadata.permissions())?;
+        }
+        let bytes = contents.as_bytes();
+        let mut offset = 0;
+        for _ in 0..bytes.len() {
+            if offset == bytes.len() {
+                break;
+            }
+            let count = file.write(&bytes[offset..])?;
+            if count == 0 {
+                return Err(io::Error::new(
+                    io::ErrorKind::WriteZero,
+                    "memory_atomic_write_no_progress",
+                ));
+            }
+            offset += count;
+        }
+        if offset != bytes.len() {
+            return Err(io::Error::other("memory_atomic_write_incomplete"));
+        }
+        file.sync_all()?;
+        if !same_observed_file(file, &staged_path)? {
+            return Err(io::Error::other("memory_atomic_stage_changed"));
+        }
+        if let Some(original) = &observed {
+            let before = metadata
+                .as_ref()
+                .ok_or_else(|| io::Error::other("memory_atomic_metadata_missing"))?;
+            let after = original.metadata()?;
+            if !same_observed_file(original, path)?
+                || after.len() != before.len()
+                || after.modified()? != before.modified()?
+            {
+                return Err(io::Error::other("memory_atomic_target_changed"));
+            }
+        } else if fs::symlink_metadata(path).is_ok() {
+            return Err(io::Error::other("memory_atomic_target_changed"));
+        }
+        fs::rename(&staged_path, path)?;
+        committed = true;
+        Ok(())
+    })();
+    let cleanup = if result.is_err() {
+        staged.as_ref().map_or(Ok(()), |file| {
+            if same_observed_file(file, &staged_path)? {
+                fs::remove_file(&staged_path)
+            } else {
+                Err(io::Error::other("memory_atomic_cleanup_identity_changed"))
+            }
+        })
+    } else {
+        Ok(())
+    };
+    let unlock = fs2::FileExt::unlock(&lock);
+    match result {
+        Err(error) => {
+            let context = cleanup.err().or_else(|| unlock.err());
+            if let Some(context) = context {
+                Err(io::Error::new(
+                    error.kind(),
+                    format!("{error};cleanup_error={context}"),
+                ))
+            } else {
+                Err(error)
+            }
+        }
+        Ok(()) => cleanup.and(unlock).map_err(|error| {
+            io::Error::new(
+                error.kind(),
+                format!("memory_atomic_committed={committed};cleanup_error={error}"),
+            )
+        }),
+    }
 }
 
 /// Replace every occurrence of `old` with `new` inside `value`, rewriting it in

@@ -25,6 +25,7 @@ import { startCoreDreaming } from './dreaming-runtime.mjs';
 import { createServer } from './http.mjs';
 import { createMemory, memoryPath } from './memory.mjs';
 import { runMemoryCli } from './memory-upgrade.mjs';
+import {resolveLiveMemory} from './live-memory.mjs';
 import { serverMessage } from './messages.mjs';
 import { setLearnedImporter } from './meta-learned.mjs';
 import { createProverHost } from './prover-host.mjs';
@@ -90,6 +91,8 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
   const diagnostics = logger ?? createServeLogger({env});
   diagnostics.log('debug', 'server.start', {component:'server',host,port,agent_mode:agentMode,debug_session:debugSession});
   try {
+    const liveMemory=await resolveLiveMemory(env,diagnostics);
+    env={...env,FORMAL_AI_MEMORY_PATH:liveMemory.path};
     const session=debugSession ? new DebugSession(debugTokenFrom(env)) : null;
     if(session){
       diagnostics.addSecret?.(session.token);
@@ -99,6 +102,7 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
     if (prerequisiteGrant !== null && (prerequisiteGrant.schema !== "formal-ai-workspace-prerequisites-v1" || prerequisiteGrant.scope !== "workspace" || !Array.isArray(prerequisiteGrant.programs))) throw new Error("invalid_prerequisite_grant");
     const ctx = {
       prerequisiteGrant,
+      liveMemory,
       worker: worker || new WorkerHost({ formalAiProverHost: createProverHost({ path: env.PATH }) }),
       memory: createMemory(env), agentMode, bearerToken: bearerTokenFromEnv(env),
       debugSession: session,
@@ -174,9 +178,37 @@ async function main(argv) {
     }else logger.log('info','server.debug_session',{component:'server',enabled:true,session_id:ctx.debugSession.id,generated:false,credential_source:'environment'});
   }
   logger.log('info','server.listening',{component:'server',url});
-  const shutdown=signal=>{ctx.shutdownReason='signal';ctx.shutdownSignal=signal;server.close();};
-  process.once('SIGTERM',()=>shutdown('SIGTERM'));process.once('SIGINT',()=>shutdown('SIGINT'));
+  installShutdownHandlers(server,ctx);
   return null;
+}
+
+/** Bound active connections on termination; normal completion closes the grace timer. */
+export function installShutdownHandlers(server, ctx, {
+  graceMs = 5000,
+  signals = process
+} = {}) {
+  if (!Number.isSafeInteger(graceMs) || graceMs < 1 || graceMs > 5000) throw Error('server_shutdown_grace_invalid');
+  let timer = null,
+    started = false;
+  const shutdown = signal => {
+    if (started) return;
+    started = true;
+    ctx.shutdownReason = 'signal';
+    ctx.shutdownSignal = signal;
+    timer = setTimeout(() => server.closeAllConnections(), graceMs);
+    timer.unref();
+    server.close();
+  };
+  const terminate = () => shutdown('SIGTERM'),
+    interrupt = () => shutdown('SIGINT');
+  signals.once('SIGTERM', terminate);
+  signals.once('SIGINT', interrupt);
+  server.once('close', () => {
+    if (timer !== null) clearTimeout(timer);
+    signals.removeListener('SIGTERM', terminate);
+    signals.removeListener('SIGINT', interrupt);
+  });
+  return shutdown;
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {

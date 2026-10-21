@@ -19,6 +19,72 @@
 //! surface — these are internal `/v1/memory*` sync routes.
 
 use std::path::{Path, PathBuf};
+#[cfg(not(target_arch = "wasm32"))]
+mod live_path;
+/// Resolve the active live-server memory file without changing explicit raw-loader behavior.
+pub(crate) fn live_memory_path(path: &Path) -> std::io::Result<PathBuf> {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        live_path::resolve(path)
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        let _ = path;
+        Err(std::io::Error::new(
+            std::io::ErrorKind::Unsupported,
+            "memory_live_io_unavailable",
+        ))
+    }
+}
+static LIVE_MEMORY_PATHS: std::sync::OnceLock<
+    std::sync::Mutex<std::collections::BTreeMap<PathBuf, PathBuf>>,
+> = std::sync::OnceLock::new();
+/// Health observes already selected state and never performs migration or file creation.
+pub(crate) fn active_memory_path(path: &Path) -> PathBuf {
+    LIVE_MEMORY_PATHS
+        .get()
+        .and_then(|paths| {
+            paths
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .get(path)
+                .cloned()
+        })
+        .unwrap_or_else(|| path.to_path_buf())
+}
+/// Prepare one caller-owned configuration; a finite registry never evicts live selections.
+pub(crate) fn prepare_live_memory(path: &Path) -> std::io::Result<PathBuf> {
+    let mut paths = LIVE_MEMORY_PATHS
+        .get_or_init(|| std::sync::Mutex::new(std::collections::BTreeMap::new()))
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    if let Some(selected) = paths.get(path) {
+        return Ok(selected.clone());
+    }
+    if paths.len() >= 64 {
+        return Err(std::io::Error::other(
+            "memory_live_configurations_exhausted",
+        ));
+    }
+    let selected = live_memory_path(path)?;
+    paths.insert(path.to_path_buf(), selected.clone());
+    Ok(selected)
+}
+
+fn live_memory_source(path: &Path, private: bool) -> std::io::Result<String> {
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        live_path::read_selected(path, private)
+    }
+    #[cfg(target_arch = "wasm32")]
+    {
+        let _ = (path, private);
+        Err(std::io::Error::new(
+            std::io::ErrorKind::Unsupported,
+            "memory_live_io_unavailable",
+        ))
+    }
+}
 
 use crate::memory::{
     MemoryEvent, TARGET_MEMORY_SCHEMA_VERSION, export_links_notation_with_schema,
@@ -221,14 +287,39 @@ impl SyncStore {
     /// Open the configured store, loading any existing events from disk.
     #[must_use]
     pub fn open() -> Self {
-        configured_memory_path().map_or_else(Self::default, |path| Self::open_at(&path))
+        configured_memory_path().map_or_else(Self::default, |path| {
+            prepare_live_memory(&path)
+                .map(|selected| {
+                    Self::open_read(&selected, live_memory_source(&selected, selected != path))
+                })
+                .unwrap_or_else(|error| Self {
+                    path: Some(path),
+                    events: Vec::new(),
+                    schema_version: TARGET_MEMORY_SCHEMA_VERSION,
+                    compatible: false,
+                    storage_error: Some((error.kind(), error.to_string())),
+                })
+        })
+    }
+
+    /// Open the live-server store after lossless migration or preservation of incompatible bytes.
+    pub fn open_live_at(path: &Path) -> std::io::Result<Self> {
+        let selected = live_memory_path(path)?;
+        Ok(Self::open_read(
+            &selected,
+            live_memory_source(&selected, selected != path),
+        ))
     }
 
     /// Open a store at an explicit path (used by tests).
     #[must_use]
     pub fn open_at(path: &Path) -> Self {
+        Self::open_read(path, std::fs::read_to_string(path))
+    }
+
+    fn open_read(path: &Path, source: std::io::Result<String>) -> Self {
         let mut storage_error = None;
-        let (events, schema_version, compatible) = match std::fs::read_to_string(path) {
+        let (events, schema_version, compatible) = match source {
             Ok(text) => {
                 let status = crate::memory::upgrade::inspect_memory_text(&text, true);
                 let schema_version = status

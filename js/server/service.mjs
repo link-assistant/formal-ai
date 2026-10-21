@@ -24,7 +24,7 @@ export function handleHello() {
 /** `GET /health`. */
 export function handleHealth(ctx = {}) {
   return jsonResponse(200, sortedKeys({
-    memory: memoryHealthStatus(),
+    memory: memoryHealthStatus(ctx.env),
     logs: ctx.logger?.healthStatus?.() ?? {status: 'not_configured'},
     model: canonicalModelId(),
     status: 'ok',
