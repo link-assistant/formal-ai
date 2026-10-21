@@ -212,7 +212,8 @@ pub fn run_rml_export_with(
         .and_then(|()| std::fs::write(&source_path, source))
         .is_ok();
     let exit = if written {
-        std::process::Command::new(command)
+        let mut invocation = std::process::Command::new(command);
+        invocation
             .arg("export")
             .arg("lean")
             .arg(&source_path)
@@ -220,8 +221,8 @@ pub fn run_rml_export_with(
             .arg(&output_path)
             .stdin(std::process::Stdio::null())
             .stdout(std::process::Stdio::null())
-            .stderr(std::process::Stdio::null())
-            .status()
+            .stderr(std::process::Stdio::null());
+        crate::bounded_process::command_status(invocation, std::time::Duration::from_secs(30))
             .ok()
             .and_then(|status| status.code())
     } else {

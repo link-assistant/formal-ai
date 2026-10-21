@@ -1,3 +1,4 @@
+import { cached, readText, parseLino, childrenNamed } from './host.mjs';
 import {quoteShellWord as shellQuote} from './portable/string_contracts.mjs';
 // Agent-CLI path for discovering reusable algorithms from supplied traces
 // (rust/src/agentic_coding/algorithm_learning.rs).
@@ -201,6 +202,16 @@ function resultDocument(task, status, conformance) {
 /** Source counterpart: shell_quote. Input is a JavaScript string. */
 export {shellQuote};
 
+/** Generated readable source shared with native capture_program, cached per installed host. */
+function boundedCaptureSource() {
+  return cached('bounded-command-capture-source', () => {
+    const parsed = parseLino(readText('data/meta/bounded-command-capture-source.lino'));
+    const root = parsed.name === 'bounded-command-capture-source'
+      ? parsed : childrenNamed(parsed, 'bounded-command-capture-source')[0];
+    return childrenNamed(root, 'line').map(line => line.value ?? line.id).join('\n');
+  });
+}
+
 /** Mirrors CaptureOptions and capture_program; malformed UTF-8 is refused. */
 export function captureProgram(command, { timeout = 60000, maxBuffer = 8388608 } = {}) {
   if (typeof command !== 'string' || command.length === 0
@@ -211,13 +222,13 @@ export function captureProgram(command, { timeout = 60000, maxBuffer = 8388608 }
     throw Error('invalid_capture_policy');
   }
   const characters = Array.from(command);
-  const lines = ["  const { spawnSync } = require('node:child_process');", '  const command = ['];
+  const lines = [boundedCaptureSource(), '(async () => {', '  const command = ['];
   for (let index = 0; index < characters.length; index += 64) {
     lines.push('    ' + JSON.stringify(characters.slice(index, index + 64).join('')) + ',');
   }
   lines.push(...[
   "  ].join('');",
-  "  const result = spawnSync('/bin/sh', ['-c', command], {",
+  "  const result = await boundedCommand('/bin/sh', ['-c', command], {",
   "    timeout: TIMEOUT, maxBuffer: MAX_BUFFER,",
   "  });",
   "  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });",
@@ -230,15 +241,16 @@ export function captureProgram(command, { timeout = 60000, maxBuffer = 8388608 }
   "  const receipt = {",
   "    schema: 'command-execution-receipt/v1', stdout, stderr,",
   "    exit_code: result.status, signal: result.signal ?? null,",
-  "    complete: !result.error && decodingError === null",
+  "    complete: !result.error && result.cleanup_complete && decodingError === null",
   "      && result.status !== null && result.signal === null,",
   "    truncated: result.error?.code === 'ENOBUFS',",
-  "    timed_out: result.error?.code === 'ETIMEDOUT', aborted: false,",
+  "    timed_out: result.timed_out, aborted: false,",
   "    error: decodingError ?? result.error?.message ?? null,",
   "  };",
   "  process.stdout.write(JSON.stringify(receipt));",
-  "  process.exitCode = decodingError !== null ? 1",
-  "    : Number.isInteger(result.status) ? result.status : 1;"
+  "  process.exitCode = result.error || !result.cleanup_complete || decodingError !== null ? 1",
+  "    : Number.isInteger(result.status) ? result.status : 1;",
+  "})().catch(error => { process.stderr.write(String(error)); process.exitCode = 1; });"
 ]
     .map(line => line.replace('TIMEOUT', String(timeout)).replace('MAX_BUFFER', String(maxBuffer))));
   return lines.join('\n');

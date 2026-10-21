@@ -31,15 +31,15 @@ export function planSourceUnaryConsolidationStep(task, messages, tools) {
   const request = sourceUnaryConsolidationRequest(task);
   if (!request) return null;
   const commandPrefix = sourceUnaryConsolidationCommand();
-  if (!commandPrefix) return gap('source_unary_gap_1');
+  if (!commandPrefix) return gap('source-unary-gap-1');
   const progress = Progress.scan(messages),
     read = progress.sourceReadFor(request.owner),
     readTool = toolFor(tools, Capability.Read);
-  if (read === null) return readTool ? planOne(readTool, readArguments(request.owner)) : gap('source_unary_gap_2');
+  if (read === null) return readTool ? planOne(readTool, readArguments(request.owner)) : gap('source-unary-gap-2');
   if (read.status !== 'reported-success' ||
          read.complete !== true ||
          read.absent ||
-         typeof read.source !== 'string') return gap('source_unary_gap_3');
+         typeof read.source !== 'string') return gap('source-unary-gap-3');
   // The first exact current-request source observation fixes this transaction's command.
   const sourceAttempt = progress.attempts.find(attempt => {
     if (attempt.capability !== Capability.Read ||
@@ -56,8 +56,8 @@ export function planSourceUnaryConsolidationStep(task, messages, tools) {
   if (!sourceAttempt ||
          sourceAttempt.source_read.status !== 'reported-success' ||
          sourceAttempt.source_read.complete !== true ||
-         typeof sourceAttempt.source_read.source !== 'string') return gap('source_unary_gap_4');
-  const command = agenticMessage('installed_source_operation_command', {
+         typeof sourceAttempt.source_read.source !== 'string') return gap('source-unary-gap-4');
+  const command = agenticMessage('installed-source-operation-command', {
     node: quote(commandPrefix[0]),
     script: quote(commandPrefix[1]),
     task: quote(task),
@@ -76,21 +76,21 @@ export function planSourceUnaryConsolidationStep(task, messages, tools) {
     try {
       operationArguments = JSON.parse(latestRun.arguments);
     } catch {
-      return gap('source_unary_gap_5');
+      return gap('source-unary-gap-5');
     }
     const observed = qualifiedToolAttempt(progress, Capability.Run, operationArguments);
     if (!observed ||
          !observed.succeeded ||
          incompleteReceipt(observed.detail) ||
-         stepOutcome(observed.detail) !== StepOutcome.Succeeded) return gap('source_unary_gap_6');
+         stepOutcome(observed.detail) !== StepOutcome.Succeeded) return gap('source-unary-gap-6');
     let receipt;
     try {
       const payload = observedPayload(observed.detail);
       receipt = JSON.parse(payload);
       if (typeof payload !== 'string' ||
-         payload.trim() !== JSON.stringify(receipt)) return gap('source_unary_gap_7');
+         payload.trim() !== JSON.stringify(receipt)) return gap('source-unary-gap-7');
     } catch {
-      return gap('source_unary_gap_7');
+      return gap('source-unary-gap-7');
     }
     if (receipt === null ||
          Array.isArray(receipt) ||
@@ -105,7 +105,7 @@ export function planSourceUnaryConsolidationStep(task, messages, tools) {
          receipt.callbacks < 0 ||
          receipt.callbacks > 100000 ||
          ![0, 1].includes(receipt.files) ||
-         !/^([a-f0-9]{64})$/u.test(receipt.afterSha256 ?? '')) return gap('source_unary_gap_8');
+         !/^([a-f0-9]{64})$/u.test(receipt.afterSha256 ?? '')) return gap('source-unary-gap-8');
     const afterRun = progress.attempts.slice(progress.attempts.indexOf(latestRun) + 1).some(attempt => {
       if (attempt.capability !== Capability.Read ||
          attempt.source_read?.source !== read.source ||
@@ -120,8 +120,8 @@ export function planSourceUnaryConsolidationStep(task, messages, tools) {
         return false;
       }
     });
-    if (!afterRun) return readTool ? planOne(readTool, readArguments(request.owner)) : gap('source_unary_gap_9');
-    if (sha256Hex(read.source) !== receipt.afterSha256) return gap('source_unary_gap_10');
+    if (!afterRun) return readTool ? planOne(readTool, readArguments(request.owner)) : gap('source-unary-gap-9');
+    if (sha256Hex(read.source) !== receipt.afterSha256) return gap('source-unary-gap-10');
     return resolvedFinalAnswer(jsonText({
       sourceUnaryConsolidation: {
         owner: request.owner,
@@ -133,9 +133,9 @@ export function planSourceUnaryConsolidationStep(task, messages, tools) {
       }
     }), FinalDisposition.Finding, 'source-unary-consolidation-observed');
   }
-  if (!sourceAttempt) return gap('source_unary_gap_11');
+  if (!sourceAttempt) return gap('source-unary-gap-11');
   const tool = toolFor(tools, Capability.Run);
   return tool ? planOne(tool, jsonText({
     command
-  })) : gap('source_unary_gap_12');
+  })) : gap('source-unary-gap-12');
 }

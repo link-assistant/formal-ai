@@ -1,7 +1,9 @@
 //! Conversation-container invocations: create, exec, and the name scheme
 //! that makes a conversation reattachable across restarts (#937).
 
-use super::{BoxError, CONVERSATION_IDLE, Command, NetworkPolicy, ProcessInvocation};
+use std::process::Command;
+
+use super::{BoxError, CONVERSATION_IDLE, NetworkPolicy, ProcessInvocation};
 
 /// Stable Docker name for a conversation. The readable prefix aids operators;
 /// the digest prevents punctuation, length and collision problems.
@@ -66,6 +68,7 @@ pub(super) fn ensure_conversation_container(
     conversation_id: &str,
     image: &str,
     network: NetworkPolicy,
+    budget: &crate::bounded_process::TimeBudget,
 ) -> Result<(), BoxError> {
     if image.trim().is_empty() {
         return Err(BoxError::InvalidConfiguration {
@@ -73,22 +76,28 @@ pub(super) fn ensure_conversation_container(
         });
     }
     let name = conversation_container_name(conversation_id);
-    let inspected = Command::new("docker")
-        .args(["inspect", "--format", "{{.State.Running}}", &name])
-        .output()
-        .map_err(|error| BoxError::NoDaemon {
-            detail: error.to_string(),
-        })?;
+    let mut command = Command::new("docker");
+    command.args(["inspect", "--format", "{{.State.Running}}", &name]);
+    let inspected =
+        crate::bounded_process::command_output(command, budget.remaining(), 256 * 1024, 256 * 1024)
+            .map_err(|error| BoxError::NoDaemon {
+                detail: error.to_string(),
+            })?;
     if inspected.status.success() {
         if String::from_utf8_lossy(&inspected.stdout).trim() == "true" {
             return Ok(());
         }
-        let started = Command::new("docker")
-            .args(["start", &name])
-            .output()
-            .map_err(|error| BoxError::Observed {
-                detail: error.to_string(),
-            })?;
+        let mut command = Command::new("docker");
+        command.args(["start", &name]);
+        let started = crate::bounded_process::command_output(
+            command,
+            budget.remaining(),
+            256 * 1024,
+            256 * 1024,
+        )
+        .map_err(|error| BoxError::Observed {
+            detail: error.to_string(),
+        })?;
         if started.status.success() {
             return Ok(());
         }
@@ -98,12 +107,13 @@ pub(super) fn ensure_conversation_container(
     }
 
     let invocation = conversation_create_invocation(conversation_id, image, network);
-    let created = Command::new(&invocation.program)
-        .args(&invocation.arguments)
-        .output()
-        .map_err(|error| BoxError::Observed {
-            detail: error.to_string(),
-        })?;
+    let mut command = Command::new(&invocation.program);
+    command.args(&invocation.arguments);
+    let created =
+        crate::bounded_process::command_output(command, budget.remaining(), 256 * 1024, 256 * 1024)
+            .map_err(|error| BoxError::Observed {
+                detail: error.to_string(),
+            })?;
     if created.status.success() {
         Ok(())
     } else {

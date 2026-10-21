@@ -1,3 +1,4 @@
+import { boundedCommandSync } from '../../../js/server/bounded-command.mjs';
 // Issue #1180 R11 in the JavaScript root: the per-path symbol diff of the
 // repository-history importer (js/agentic/crate/history_store.mjs
 // `diffSymbols`) mirrors rust/src/history_context/commits.rs `diff_symbols`
@@ -84,7 +85,7 @@ test('an ES path carries the token_count delta before its named items', () => {
     ['app.js', 'export const a = 1;\n'],
     ['app.js', 'export const a = 1;\nexport const b = 2;\n'],
   ]);
-  const io = store.nodeHistoryIo({ fs, path, childProcess });
+  const io = store.nodeHistoryIo({ fs, path, runCommand: boundedCommandSync });
   const changes = store.diffSymbols(io, root, shas[1], 'app.js', rules);
   assert.deepEqual(changes[0], { path: 'app.js', source: 'es_meta_extract', item: 'token_count', delta: 6 });
   assert.deepEqual(
@@ -120,7 +121,7 @@ test('a Rust path carries the injected census histogram, sorted and without zero
       { kind: 'visibility_modifier', count: 2 },
     ],
   };
-  const io = { ...store.nodeHistoryIo({ fs, path, childProcess }), astCensus: (source) => census[source] ?? [] };
+  const io = { ...store.nodeHistoryIo({ fs, path, runCommand: boundedCommandSync }), astCensus: (source) => census[source] ?? [] };
   const changes = store.diffSymbols(io, root, shas[1], 'lib.rs', rules);
   const counted = changes.filter((change) => change.source === 'ast_census' && !change.item.includes('#'));
   assert.deepEqual(counted, [
@@ -132,7 +133,7 @@ test('a Rust path carries the injected census histogram, sorted and without zero
   assert.ok(changes.some((change) => change.item === 'lib.rs#fn second' && change.delta === 1));
 
   // nodeHistoryIo offers no census: the histogram is empty, the named items remain.
-  const plain = store.diffSymbols(store.nodeHistoryIo({ fs, path, childProcess }), root, shas[1], 'lib.rs', rules);
+  const plain = store.diffSymbols(store.nodeHistoryIo({ fs, path, runCommand: boundedCommandSync }), root, shas[1], 'lib.rs', rules);
   assert.ok(plain.every((change) => change.item.includes('#')));
   assert.ok(plain.some((change) => change.item === 'lib.rs#fn second'));
   fs.rmSync(root, { recursive: true, force: true });

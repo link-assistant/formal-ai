@@ -100,7 +100,7 @@ pub(super) fn bounded_output(
                 let cleaned = stop(&mut child);
                 return Err(FetchError::Transport(
                     crate::source_fetch::source_diagnostic(
-                        "source_transport_cleanup_diagnostic",
+                        "source-transport-cleanup-diagnostic",
                         &[
                             ("error", &error.to_string()),
                             ("cleaned", &cleaned.to_string()),
@@ -151,7 +151,7 @@ pub(super) fn bounded_output(
     let cleaned = stop(&mut child);
     Err(FetchError::Transport(
         crate::source_fetch::source_diagnostic(
-            "source_transport_timeout_diagnostic",
+            "source-transport-timeout-diagnostic",
             &[("cleaned", &cleaned.to_string())],
         ),
     ))

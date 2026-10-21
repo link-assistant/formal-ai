@@ -289,12 +289,17 @@ pub fn conversation_snapshot_image(conversation_id: &str) -> String {
 }
 
 fn docker(arguments: &[&str]) -> Result<String, BoxError> {
-    let output = std::process::Command::new("docker")
-        .args(arguments)
-        .output()
-        .map_err(|error| BoxError::NoDaemon {
-            detail: error.to_string(),
-        })?;
+    let mut command = std::process::Command::new("docker");
+    command.args(arguments);
+    let output = crate::bounded_process::command_output(
+        command,
+        Duration::from_mins(5),
+        1024 * 1024,
+        256 * 1024,
+    )
+    .map_err(|error| BoxError::NoDaemon {
+        detail: error.to_string(),
+    })?;
     if output.status.success() {
         Ok(String::from_utf8_lossy(&output.stdout).trim().to_owned())
     } else {

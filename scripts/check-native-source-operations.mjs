@@ -229,7 +229,7 @@ export async function checkNativeSourceOperations(binary, resourceHome, evidence
     'data/meta/agentic-messages.lino', maximumOutput).toString('utf8'));
   const container = childrenNamed(seed, 'agentic_messages')[0] ?? seed;
   const entry = childrenNamed(container, 'message').find(node =>
-    node.value === 'installed_source_operation_command');
+    node.value === 'installed-source-operation-command');
   assert.ok(entry, 'installed command protocol must be canonical');
   const template = childValue(entry, 'text');
   const home = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-native-source-'));

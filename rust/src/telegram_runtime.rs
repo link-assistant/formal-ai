@@ -368,8 +368,16 @@ impl CurlTelegramTransport {
         }
     }
 
-    fn run_curl(args: &[&str]) -> Result<String, TelegramPollingRuntimeError> {
-        let output = Command::new("curl").args(args).output().map_err(|error| {
+    fn run_curl(&self, args: &[&str]) -> Result<String, TelegramPollingRuntimeError> {
+        let mut command = Command::new("curl");
+        command.args(args);
+        let output = crate::bounded_process::command_output(
+            command,
+            Duration::from_secs(u64::from(self.http_timeout_seconds)),
+            8 * 1024 * 1024,
+            256 * 1024,
+        )
+        .map_err(|error| {
             if error.kind() == io::ErrorKind::NotFound {
                 TelegramPollingRuntimeError::Transport(String::from(
                     "curl is required for the Telegram polling client; install curl and retry",
@@ -402,7 +410,7 @@ impl TelegramTransport for CurlTelegramTransport {
             &timeout,
             url,
         ];
-        Self::run_curl(&args)
+        self.run_curl(&args)
     }
 
     fn send_message(
@@ -425,7 +433,7 @@ impl TelegramTransport for CurlTelegramTransport {
             body,
             url,
         ];
-        Self::run_curl(&args)
+        self.run_curl(&args)
     }
 
     fn edit_message_text(

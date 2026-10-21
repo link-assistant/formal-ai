@@ -123,13 +123,13 @@ pub(super) fn plan_source_unary_consolidation_step(
     let request = source_unary_consolidation_request(task)?;
     let owner = request["owner"].as_str()?;
     let Some(prefix) = installed_source_command("unary-consolidation") else {
-        return Some(gap("source_unary_gap_1", result));
+        return Some(gap("source-unary-gap-1", result));
     };
     let progress = Progress::scan(messages);
     let read_tool = tool_for(tools, Capability::Read);
     let Some(read) = progress.source_read_for(owner) else {
         return Some(read_tool.map_or_else(
-            || gap("source_unary_gap_2", result),
+            || gap("source-unary-gap-2", result),
             |tool| plan_one(tool, super::workspace_change::read_arguments(owner)),
         ));
     };
@@ -138,27 +138,27 @@ pub(super) fn plan_source_unary_consolidation_step(
         || read.absent
         || read.source.is_none()
     {
-        return Some(gap("source_unary_gap_3", result));
+        return Some(gap("source-unary-gap-3", result));
     }
     let attempts = progress.research_attempts();
     let Some(source_attempt) = attempts
         .iter()
         .find(|attempt| exact_owner_read(attempt, owner) && attempt.source_observation().is_some())
     else {
-        return Some(gap("source_unary_gap_4", result));
+        return Some(gap("source-unary-gap-4", result));
     };
     let Some(preimage) = source_attempt.source_observation() else {
-        return Some(gap("source_unary_gap_4", result));
+        return Some(gap("source-unary-gap-4", result));
     };
     if preimage.status != SourceReadStatus::ReportedSuccess || !preimage.complete {
-        return Some(gap("source_unary_gap_4", result));
+        return Some(gap("source-unary-gap-4", result));
     }
     let Some(source) = preimage.source.as_deref() else {
-        return Some(gap("source_unary_gap_4", result));
+        return Some(gap("source-unary-gap-4", result));
     };
     let before = sha256_hex(source.as_bytes());
     let command = agentic_message(
-        "installed_source_operation_command",
+        "installed-source-operation-command",
         &[
             ("node", &quote(&prefix[0])),
             ("script", &quote(&prefix[1])),
@@ -173,7 +173,7 @@ pub(super) fn plan_source_unary_consolidation_step(
         .find(|(_, attempt)| exact_command(attempt, &command))
     else {
         return Some(tool_for(tools, Capability::Run).map_or_else(
-            || gap("source_unary_gap_12", result),
+            || gap("source-unary-gap-12", result),
             |tool| plan_one(tool, json!({"command":command}).to_string()),
         ));
     };
@@ -182,22 +182,22 @@ pub(super) fn plan_source_unary_consolidation_step(
         .as_deref()
         .and_then(|arguments| serde_json::from_str::<Value>(arguments).ok())
     else {
-        return Some(gap("source_unary_gap_5", result));
+        return Some(gap("source-unary-gap-5", result));
     };
     let Some(observed) = progress.latest_attempt_for(Capability::Run, &arguments) else {
-        return Some(gap("source_unary_gap_6", result));
+        return Some(gap("source-unary-gap-6", result));
     };
     if !observed.succeeded
         || incomplete_receipt(&observed.detail)
         || step_outcome(&observed.detail) != StepOutcome::Succeeded
     {
-        return Some(gap("source_unary_gap_6", result));
+        return Some(gap("source-unary-gap-6", result));
     }
     let Some(payload) = observed_payload(&observed.detail) else {
-        return Some(gap("source_unary_gap_7", result));
+        return Some(gap("source-unary-gap-7", result));
     };
     let Some(receipt) = receipt(&payload, task, owner, &before) else {
-        return Some(gap("source_unary_gap_8", result));
+        return Some(gap("source-unary-gap-8", result));
     };
     let current_source = read.source.as_deref()?;
     let after_run = attempts[run_index + 1..].iter().any(|attempt| {
@@ -210,12 +210,12 @@ pub(super) fn plan_source_unary_consolidation_step(
     });
     if !after_run {
         return Some(read_tool.map_or_else(
-            || gap("source_unary_gap_9", result),
+            || gap("source-unary-gap-9", result),
             |tool| plan_one(tool, super::workspace_change::read_arguments(owner)),
         ));
     }
     if sha256_hex(current_source.as_bytes()) != receipt.after_sha256 {
-        return Some(gap("source_unary_gap_10", result));
+        return Some(gap("source-unary-gap-10", result));
     }
     Some(record(AgenticPlan::Final(json!({"sourceUnaryConsolidation":{"owner":owner,"callbacks":receipt.callbacks,"sourceReadbackVerified":true,
         "independentBehaviorValidation":"pending","completeSemanticEquivalence":false,"authorshipCredit":0}}).to_string()),FinalDisposition::Finding,"source-unary-consolidation-observed",result))

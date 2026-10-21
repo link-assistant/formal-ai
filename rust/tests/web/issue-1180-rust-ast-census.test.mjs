@@ -1,3 +1,4 @@
+import { boundedCommandSync } from '../../../js/server/bounded-command.mjs';
 // Issue #1180 R11: the JavaScript Rust census uses the recorded vendored
 // tree-sitter oracle. SDK 1.0 uses a distinct native Rust parser; the original
 // shared-grammar obligation is narrowly deferred, not reported as satisfied.
@@ -155,7 +156,7 @@ test('every full-AST census of a current source matches the native histogram', a
 });
 
 test('the history importer records the histogram delta through io.astCensus', async () => {
-  const io = nodeHistoryIo({ fs, path, childProcess, astCensus: historyAstCensus(await rustAstCensus()) });
+  const io = nodeHistoryIo({ fs, path, runCommand: boundedCommandSync, astCensus: historyAstCensus(await rustAstCensus()) });
   assert.deepEqual(diffCensus(io, 'src/lib.rs', 'fn f() {}\n', 'struct S {\n    field: i32,\n}\n'), [
     { path: 'src/lib.rs', source: 'ast_census', item: 'block', delta: -1 },
     { path: 'src/lib.rs', source: 'ast_census', item: 'field_declaration', delta: 1 },
@@ -169,5 +170,5 @@ test('the history importer records the histogram delta through io.astCensus', as
     { path: 'src/lib.rs', source: 'ast_census', item: 'type_identifier', delta: 1 },
   ]);
   // Without a census the importer records no histogram, as before.
-  assert.deepEqual(diffCensus(nodeHistoryIo({ fs, path, childProcess }), 'src/lib.rs', 'fn f() {}\n', ''), []);
+  assert.deepEqual(diffCensus(nodeHistoryIo({ fs, path, runCommand: boundedCommandSync }), 'src/lib.rs', 'fn f() {}\n', ''), []);
 });

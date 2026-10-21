@@ -47,7 +47,7 @@ fn finish(
     let payload = discovery.to_string();
     record(
         AgenticPlan::Final(agentic_message(
-            "semantic_source_preflight_gap_output",
+            "semantic-source-preflight-gap-output",
             &[("discovery", &payload)],
         )),
         FinalDisposition::Gap,
@@ -79,7 +79,7 @@ pub(super) fn plan_semantic_source_preflight(
     let mut observations = Vec::new();
     let mut paths: Vec<String> = Vec::new();
     let path_pattern = Regex::new(r"^[A-Za-z0-9_./-]+$").expect("StaticRelativePathPattern");
-    let incomplete_markers = agentic_message("semantic_source_preflight_incomplete_markers", &[]);
+    let incomplete_markers = agentic_message("semantic-source-preflight-incomplete-markers", &[]);
     for candidate in &candidates {
         let text = candidate["text"].as_str()?;
         let arguments = json!({"path":".","pattern":format!(r"\b{}\b",regex::escape(text))});

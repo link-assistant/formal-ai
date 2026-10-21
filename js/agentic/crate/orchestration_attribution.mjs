@@ -6,7 +6,7 @@
 // a native agent session plus committed evidence.
 
 import { callbackNonempty as canonicalUnaryNonempty } from '../callback_values.mjs';
-import { spawnSync } from 'node:child_process';
+import { boundedCommandSync } from '../../server/bounded-command.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -28,11 +28,15 @@ const byteOrder = (left, right) => Buffer.compare(Buffer.from(left), Buffer.from
  * @returns {{stdout: Buffer, stderr: Buffer}}
  */
 function git(workspace, args) {
-  const output = spawnSync('git', ['-C', workspace, ...args], {
+  const output = boundedCommandSync('git', ['-C', workspace, ...args], {
     env: { ...process.env, GIT_LITERAL_PATHSPECS: '1' },
-    maxBuffer: 256 * 1024 * 1024,
+    timeout: 600000,
+    stdoutLimitBytes: 64 * 1024 * 1024,
+    stderrLimitBytes: 16 * 1024 * 1024,
   });
-  if (output.error) throw attributionError(`git_process:${ioErrorFrom(output.error).message}`);
+  if (output.error || output.cleanup_complete !== true || output.timed_out !== false || output.signal !== null) {
+    throw attributionError(`git_process:${ioErrorFrom(output.error ?? new Error('GitProcessIncomplete')).message}`);
+  }
   if (output.status !== 0) {
     throw attributionError(`git_${args.join(' ')}:${output.stderr.toString('utf8').trim()}`);
   }

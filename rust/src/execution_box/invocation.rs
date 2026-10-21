@@ -1,6 +1,8 @@
 //! Shell-invocation and path helpers shared by the execution backends.
 
-use super::{BoxError, Command, Path, PathBuf, ProcessInvocation};
+use std::process::Command;
+
+use super::{BoxError, Path, PathBuf, ProcessInvocation};
 
 pub(super) fn prefixed_invocation(
     runner: &str,
@@ -51,15 +53,17 @@ pub(super) fn checked_workspace_path(root: &Path, relative: &Path) -> Result<Pat
     Ok(path)
 }
 
-pub(super) fn archive_workspace(workspace: &Path) -> Result<Vec<u8>, BoxError> {
-    let output = Command::new("tar")
-        .args(["-czf", "-", "-C"])
-        .arg(workspace)
-        .arg(".")
-        .output()
-        .map_err(|error| BoxError::Observed {
-            detail: error.to_string(),
-        })?;
+pub(super) fn archive_workspace(
+    workspace: &Path,
+    timeout: std::time::Duration,
+) -> Result<Vec<u8>, BoxError> {
+    let mut command = Command::new("tar");
+    command.args(["-czf", "-", "-C"]).arg(workspace).arg(".");
+    let output =
+        crate::bounded_process::command_output(command, timeout, 16 * 1024 * 1024, 256 * 1024)
+            .map_err(|error| BoxError::Observed {
+                detail: error.to_string(),
+            })?;
     if !output.status.success() {
         return Err(BoxError::Observed {
             detail: String::from_utf8_lossy(&output.stderr).into_owned(),

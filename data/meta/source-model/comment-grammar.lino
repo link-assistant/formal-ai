@@ -30,5 +30,5 @@
  (layout (language ru) (join " ") (order subject-predicate-object) (negative-auxiliary "") (negative "не"))
  (layout (language hi) (join " ") (order subject-object-predicate) (negative-auxiliary "") (negative "नहीं"))
  (layout (language zh) (join "") (order subject-predicate-object) (negative-auxiliary "") (negative "不"))
- (parameter-documentation (syntax jsdoc-simple-param) (tags param arg argument) (owner-overrides file fileoverview module class typedef callback name memberof namespace lends enum constructor ignore) (passive-tags returns return throws deprecated since author version see summary description) (primary-source "https://jsdoc.app/tags-param"))
+ (parameter-documentation (syntax jsdoc-simple-parameter) (tags param "arg" argument) (owner-overrides file fileoverview module class typedef callback name memberof namespace lends enum constructor ignore) (passive-tags returns return throws deprecated since author version see summary description) (primary-source "https://jsdoc.app/tags-param"))
 )

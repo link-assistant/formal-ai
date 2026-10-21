@@ -1352,3 +1352,24 @@ failure evidence. Source transformation writes stage a bounded complete candidat
 recheck the observed preimage and identity, and independently verify the physical
 result. This is an optimistic filesystem concurrency check, not an atomic CAS
 primitive against an uncooperative concurrent writer.
+
+External command acceptance must include startup, input completion, child status,
+output EOF and finite cleanup; a timer that stops at parent exit is insufficient.
+Captured stdout and stderr have finite byte limits, preserve binary content and
+never become complete success after overflow, timeout or incomplete cleanup.
+Preparation and post-processing subprocesses need their own explicit finite
+boundaries when they run outside the main execution observer. A multi-stage
+preparation uses one remaining budget rather than resetting a deadline per stage.
+Keep the original primary failure and bounded partial evidence when cleanup also
+fails.
+
+A foreground client may use operator-owned terminal signal cancellation only
+when stdin and stdout are actual terminals. Unattended and piped client calls
+must use the finite command supervisor. These policies must remain distinct from
+healthy long-lived services and cannot authorize an unchanged failed retry.
+
+The hosted web suite must reject known direct blocking process bypasses and
+stale canonical command-capture projections. Structural checking must state its
+local-provenance and macro/dynamic-flow limits; it is not proof of every external
+I/O path. Real process controls must cover blocked input, inherited pipes, binary
+capture, overflow, unchanged nonzero statuses, failed spawn and finite cleanup.

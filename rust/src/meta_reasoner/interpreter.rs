@@ -305,11 +305,15 @@ fn node_primitive(id: &str, input: &Value, runtime: Runtime) -> Option<Value> {
             Some(Value::Text(String::from_utf8_lossy(&bytes).into_owned()))
         }
         "run_command" => {
-            let output = std::process::Command::new("sh")
-                .arg("-c")
-                .arg(input.as_str()?)
-                .output()
-                .ok()?;
+            let mut command = std::process::Command::new("sh");
+            command.arg("-c").arg(input.as_str()?);
+            let output = crate::bounded_process::command_output(
+                command,
+                std::time::Duration::from_mins(5),
+                8 * 1024 * 1024,
+                1024 * 1024,
+            )
+            .ok()?;
             output
                 .status
                 .success()

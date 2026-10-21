@@ -1,4 +1,4 @@
-//! Core-only strict-empty comparison shared by native and no_std parsers.
+//! Core-only strict-empty comparison shared by native and `no_std` parsers.
 
 /// Strict comparison with the empty string, without string coercion.
 pub trait CallbackNonemptyReceiver {

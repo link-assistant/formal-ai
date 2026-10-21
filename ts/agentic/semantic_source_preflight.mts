@@ -26,9 +26,9 @@ export function planSemanticSourcePreflight(task,messages,tools){
   const progress=Progress.scan(messages),observations=[],paths=[];
   const finish=(reason)=>{
     const discovery={reason,taskIdentity:sha256Hex(task),clauses:clausesWithSpans(task).map(([text,span])=>({text,span,status:'unbound'})),candidates,observations,inferredWork:'mechanical-source-discovery',coverage:'bounded-candidates-and-paths-not-exhaustive',implementation:'Unknown',validation:'Unknown',authored:false,verified:false};
-    const plan=resolvedFinalAnswer(agenticMessage('semantic_source_preflight_gap_output',{discovery:jsonText(discovery)}),FinalDisposition.Gap,'semantic-source-preflight-gap');plan.result.discovery=discovery;return plan;
+    const plan=resolvedFinalAnswer(agenticMessage('semantic-source-preflight-gap-output',{discovery:jsonText(discovery)}),FinalDisposition.Gap,'semantic-source-preflight-gap');plan.result.discovery=discovery;return plan;
   };
-  const incompleteMarkers=agenticMessage('semantic_source_preflight_incomplete_markers').split('|');
+  const incompleteMarkers=agenticMessage('semantic-source-preflight-incomplete-markers').split('|');
   for(const candidate of candidates){
     const searchArguments={path:'.',pattern:'\\b'+candidate.text.replace(/[.*+?^${}()|[\]\\]/gu,'\\$&')+'\\b'};
     const observed=qualifiedToolAttempt(progress,Capability.Grep,searchArguments);

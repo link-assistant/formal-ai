@@ -59,10 +59,10 @@ pub(super) fn plan_source_cst_transform_step(
     let Some(installed) =
         super::installed_source_commands::installed_source_command("source-cst-transform")
     else {
-        return Some(refused("source_cst_host_missing", result));
+        return Some(refused("source-cst-host-missing", result));
     };
     if tool_for(tools, Capability::Run).is_none() {
-        return Some(refused("source_cst_run_missing", result));
+        return Some(refused("source-cst-run-missing", result));
     }
     let current = &messages[super::planner::evidence_window_start(messages)..];
     let progress = Progress::scan(current);
@@ -72,14 +72,14 @@ pub(super) fn plan_source_cst_transform_step(
         .rev()
         .find(|attempt| attempt.capability == Capability::Read)
     else {
-        return Some(tool_for(tools, Capability::Read).map_or_else(|| refused("source_cst_read_missing", result), |tool| plan_one(tool, serde_json::json!({"path":request.owner,"filePath":request.owner,"file_path":request.owner}).to_string())));
+        return Some(tool_for(tools, Capability::Read).map_or_else(|| refused("source-cst-read-missing", result), |tool| plan_one(tool, serde_json::json!({"path":request.owner,"filePath":request.owner,"file_path":request.owner}).to_string())));
     };
     let arguments = attempt
         .arguments
         .as_deref()
         .and_then(|raw| serde_json::from_str::<serde_json::Value>(raw).ok());
     let Some(arguments) = arguments.and_then(|value| value.as_object().cloned()) else {
-        return Some(refused("source_cst_read_arguments", result));
+        return Some(refused("source-cst-read-arguments", result));
     };
     let paths: Vec<_> = ["path", "filePath", "file_path"]
         .iter()
@@ -90,24 +90,24 @@ pub(super) fn plan_source_cst_transform_step(
             .iter()
             .any(|value| value.as_str() != Some(request.owner.as_str()))
     {
-        return Some(refused("source_cst_read_owner", result));
+        return Some(refused("source-cst-read-owner", result));
     }
     let Some(read) = attempt
         .source_observation()
         .filter(|read| attempt.succeeded && read.complete && read.error.is_none())
     else {
-        return Some(refused("source_cst_read_failed", result));
+        return Some(refused("source-cst-read-failed", result));
     };
     let Some(source) = read
         .source
         .as_deref()
         .filter(|source| source.len() <= 1024 * 1024)
     else {
-        return Some(refused("source_cst_read_failed", result));
+        return Some(refused("source-cst-read-failed", result));
     };
     let quote = crate::portable_string_contracts::quote_shell_word;
     let command = super::wording::agentic_message(
-        "installed_source_operation_command",
+        "installed-source-operation-command",
         &[
             ("node", &quote(&installed[0])),
             ("script", &quote(&installed[1])),

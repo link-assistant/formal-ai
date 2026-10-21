@@ -472,7 +472,16 @@ fn upload_gist(
     if visibility == GistVisibility::Public {
         command.arg("--public");
     }
-    let output = command.arg(path).output()?;
+    let output = crate::bounded_process::command_output(
+        {
+            command.arg(path);
+            command
+        },
+        std::time::Duration::from_secs(120),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))?;
     let url = String::from_utf8_lossy(&output.stdout)
         .lines()
         .rev()

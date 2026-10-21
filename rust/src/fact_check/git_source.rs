@@ -43,18 +43,27 @@ pub enum GitQuery {
 /// absence of history is the absence of evidence, never evidence itself.
 #[must_use]
 pub fn git_log_for_path(root: &Path, path: &str) -> Vec<GitHistoryEntry> {
-    let output = Command::new("git")
-        .arg("-C")
-        .arg(root)
-        .arg("log")
-        .arg("-n")
-        .arg(HISTORY_LIMIT.to_string())
-        .arg("--follow")
-        .arg("--format=%H%x1f%ad%x1f%s")
-        .arg("--date=short")
-        .arg("--")
-        .arg(path)
-        .output();
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command
+                .arg("-C")
+                .arg(root)
+                .arg("log")
+                .arg("-n")
+                .arg(HISTORY_LIMIT.to_string())
+                .arg("--follow")
+                .arg("--format=%H%x1f%ad%x1f%s")
+                .arg("--date=short")
+                .arg("--")
+                .arg(path);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure));
     let Ok(output) = output else {
         return Vec::new();
     };
@@ -93,15 +102,24 @@ pub fn last_revision_containing(root: &Path, path: &str, needle: &str) -> Option
 #[must_use]
 pub fn blame_commit_for_line(root: &Path, path: &str, line: usize) -> Option<String> {
     let range = format!("{line},{line}");
-    let output = Command::new("git")
-        .args(["-C"])
-        .arg(root)
-        .args(["blame", "--porcelain", "-L"])
-        .arg(&range)
-        .arg("--")
-        .arg(path)
-        .output()
-        .ok()?;
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command
+                .args(["-C"])
+                .arg(root)
+                .args(["blame", "--porcelain", "-L"])
+                .arg(&range)
+                .arg("--")
+                .arg(path);
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        64 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure))
+    .ok()?;
     if !output.status.success() {
         return None;
     }
@@ -173,13 +191,21 @@ pub fn git_history_evidence_for(query: &GitQuery, root: &Path) -> Vec<RelativeEv
 /// through `git show` with a bounded read (revisions over 2 MiB are treated
 /// as unreadable rather than streamed).
 fn revision_contains(root: &Path, revision: &str, path: &str, needle: &str) -> bool {
-    let Ok(output) = Command::new("git")
-        .arg("-C")
-        .arg(root)
-        .arg("show")
-        .arg(format!("{revision}:{path}"))
-        .output()
-    else {
+    let Ok(output) = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("git");
+            bounded_child_command
+                .arg("-C")
+                .arg(root)
+                .arg("show")
+                .arg(format!("{revision}:{path}"));
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(30),
+        2 * 1024 * 1024,
+        16 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure)) else {
         return false;
     };
     if !output.status.success() || output.stdout.len() > 2 * 1024 * 1024 {

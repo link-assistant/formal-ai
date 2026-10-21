@@ -1,3 +1,4 @@
+import { boundedCommandSync } from './bounded-command.mjs';
 // Where code actually runs, and the honest report of what happened:
 // rust/src/execution_box/mod.rs and rust/src/execution_box/invocation.rs.
 //
@@ -334,8 +335,9 @@ function interpreterStartup() {
  * returning the verdict slug. A fresh workspace holds no workspace-scoped
  * toolchains, so `workspace_path` is the ambient `PATH`.
  */
-function probeDocker(workspace) {
-  const observed = spawnSync('docker', ['info'], {
+function probeDocker(workspace, timeout) {
+  const observed = boundedCommandSync('docker', ['info'], {
+    timeout, stdoutLimitBytes: 256 * 1024, stderrLimitBytes: 256 * 1024,
     cwd: workspace,
     env: { ...process.env, PATH: process.env.PATH ?? '' },
     encoding: 'utf8',
@@ -349,8 +351,10 @@ function probeDocker(workspace) {
 }
 
 /** Mirrors rust/src/execution_box/invocation.rs `archive_workspace`. */
-function archiveWorkspace(workspace) {
-  const output = spawnSync('tar', ['-czf', '-', '-C', workspace, '.'], { maxBuffer: Infinity });
+function archiveWorkspace(workspace, timeout) {
+  const output = boundedCommandSync('tar', ['-czf', '-', '-C', workspace, '.'], {
+    timeout, stdoutLimitBytes: 16 * 1024 * 1024, stderrLimitBytes: 256 * 1024,
+  });
   if (output.error) throw observedError(ioErrorText(output.error));
   if (output.status !== 0) throw observedError(output.stderr.toString('utf8'));
   return output.stdout;
@@ -386,7 +390,7 @@ export class ExecutionBox {
       if (!rustTrim(process.env[BACKEND_ENV] ?? '')) {
         throw new BoxError('BackendNotConfigured', { backend: backendSlug(backend) });
       }
-      const verdict = probeDocker(workspace);
+      const verdict = probeDocker(workspace, Math.min(policy.deadlineMs, 10000));
       if (verdict !== 'present') throw new BoxError('NoDaemon', { detail: [backendSlug(backend), verdict].join(':') });
     }
     return new ExecutionBox(backend, policy.network, policy.deadlineMs, workspace);
@@ -436,7 +440,7 @@ export class ExecutionBox {
           Buffer.from(script, 'utf8'),
         );
       case 'box': {
-        const archive = archiveWorkspace(this.workspace);
+        const archive = archiveWorkspace(this.workspace, Math.min(this.deadlineMs, 10000));
         const invocation = disposableContainerInvocation(this.backend.image, this.network, HOST_INTERPRETER, [SCRIPT_FILE]);
         return this.observeInvocation(invocation, archive);
       }

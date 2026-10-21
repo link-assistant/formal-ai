@@ -490,39 +490,49 @@ fn run_ephemeral(
         .map(|root| session_file_snapshot(root, &invocation.session_file_suffix))
         .unwrap_or_default();
 
-    let (status_success, status_label, completion_passed) =
-        if let Some(authoring) = authoring.as_mut() {
-            let outcome = run_to_completion(
-                authoring,
-                CompletionInvocation {
-                    command: &command,
-                    integration,
-                    caller,
-                    context: &context,
-                    options,
-                    session_root: session_root.as_deref(),
-                    session_before: &session_before,
-                    initial_resume: orchestration_resume,
-                },
-            )?;
-            (
-                outcome.status_success,
-                outcome.status_label,
-                Some(outcome.completion_passed),
-            )
-        } else {
-            let final_args =
-                build_invocation_args(integration, caller, &context, options, orchestration_resume);
-            command.args(final_args);
-            let status = command.status()?;
-            (
-                status.success(),
-                status
-                    .code()
-                    .map_or_else(|| String::from("signal"), |code| code.to_string()),
-                None,
-            )
+    let (status_success, status_label, completion_passed) = if let Some(authoring) =
+        authoring.as_mut()
+    {
+        let outcome = run_to_completion(
+            authoring,
+            CompletionInvocation {
+                command: &command,
+                integration,
+                caller,
+                context: &context,
+                options,
+                session_root: session_root.as_deref(),
+                session_before: &session_before,
+                initial_resume: orchestration_resume,
+            },
+        )?;
+        (
+            outcome.status_success,
+            outcome.status_label,
+            Some(outcome.completion_passed),
+        )
+    } else {
+        let final_args =
+            build_invocation_args(integration, caller, &context, options, orchestration_resume);
+        command.args(final_args);
+        let status = {
+            if std::io::stdin().is_terminal() && std::io::stdout().is_terminal() {
+                // Foreground terminal sessions retain operator-owned OS signal cancellation.
+                // Unattended authoring and piped invocations always use the finite path.
+                command.status()?
+            } else {
+                crate::bounded_process::command_status(command, std::time::Duration::from_mins(21))
+                    .map_err(|error| std::io::Error::new(error.kind(), error))?
+            }
         };
+        (
+            status.success(),
+            status
+                .code()
+                .map_or_else(|| String::from("signal"), |code| code.to_string()),
+            None,
+        )
+    };
     let session_file = session_root.as_deref().and_then(|root| {
         newest_changed_session_file(root, &invocation.session_file_suffix, &session_before)
     });

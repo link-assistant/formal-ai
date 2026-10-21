@@ -19,6 +19,7 @@ mod architect_notes;
 mod architecture_docs;
 mod assistant_name;
 mod benchmark_release_capability;
+mod bounded_command_lifecycle;
 mod bounded_retry;
 mod bulk_lexeme_import;
 mod callback_values;

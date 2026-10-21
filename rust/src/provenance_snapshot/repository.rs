@@ -10,7 +10,7 @@ use std::fs::{self, File, Metadata};
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use std::time::{Duration, Instant, SystemTime};
+use std::time::{Duration, SystemTime};
 
 const INDEX_BYTES: u64 = 4 * 1024 * 1024;
 const GIT_TIMEOUT: Duration = Duration::from_secs(15);
@@ -157,43 +157,24 @@ fn inspect(path: &Path) -> io::Result<Identity> {
     file_identity(&file, &metadata)
 }
 fn git(root: &Path, arguments: &[&str]) -> io::Result<Vec<u8>> {
-    let mut child = Command::new("git")
+    let mut command = Command::new("git");
+    command
         .arg("-c")
         .arg("core.fsmonitor=false")
         .arg("-C")
         .arg(root)
         .args(arguments)
         .stdin(Stdio::null())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()?;
-    let stdout = child
-        .stdout
-        .take()
-        .ok_or_else(|| failure("snapshot_git_stdout_missing"))?;
-    let reader = std::thread::spawn(move || {
-        let mut output = Vec::new();
-        stdout
-            .take(INDEX_BYTES + 1)
-            .read_to_end(&mut output)
-            .map(|_| output)
-    });
-    let started = Instant::now();
-    let status = loop {
-        if let Some(status) = child.try_wait()? {
-            break status;
-        }
-        if started.elapsed() >= GIT_TIMEOUT {
-            let _ = child.kill();
-            let _ = child.wait();
-            let _ = reader.join();
-            return Err(failure("snapshot_git_timeout"));
-        }
-        std::thread::sleep(Duration::from_millis(5));
-    };
-    let output = reader
-        .join()
-        .map_err(|_| failure("snapshot_git_reader_failed"))??;
+        .stderr(Stdio::null());
+    let observed = crate::bounded_process::command_output(
+        command,
+        GIT_TIMEOUT,
+        usize::try_from(INDEX_BYTES).map_err(|_| failure("snapshot_index_too_large"))?,
+        0,
+    )
+    .map_err(|error| io::Error::new(error.kind(), error))?;
+    let status = observed.status;
+    let output = observed.stdout;
     if !status.success()
         || u64::try_from(output.len()).map_err(|_| failure("snapshot_index_too_large"))?
             > INDEX_BYTES

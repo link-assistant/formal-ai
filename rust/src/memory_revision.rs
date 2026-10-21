@@ -484,16 +484,25 @@ impl RevisionLedger {
 /// compile" and the ledger would roll back a version that was never broken.
 #[must_use]
 pub fn rustc_verdict(root: &Path, source: &str, baseline_passed: usize) -> VersionVerdict {
-    let output = Command::new("rustc")
-        .arg("--edition")
-        .arg(CRATE_EDITION)
-        .arg("--crate-type")
-        .arg("lib")
-        .arg("--emit=metadata")
-        .arg("-o")
-        .arg(root.join("version-check.rmeta"))
-        .arg(root.join(source))
-        .output();
+    let output = crate::bounded_process::command_output(
+        {
+            let mut bounded_child_command = Command::new("rustc");
+            bounded_child_command
+                .arg("--edition")
+                .arg(CRATE_EDITION)
+                .arg("--crate-type")
+                .arg("lib")
+                .arg("--emit=metadata")
+                .arg("-o")
+                .arg(root.join("version-check.rmeta"))
+                .arg(root.join(source));
+            bounded_child_command
+        },
+        std::time::Duration::from_secs(1260),
+        128 * 1024 * 1024,
+        64 * 1024 * 1024,
+    )
+    .map_err(|failure| std::io::Error::new(failure.kind(), failure));
     match output {
         Ok(output) => VersionVerdict {
             compiled: output.status.success(),

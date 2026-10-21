@@ -506,6 +506,8 @@ impl ExecutionBox {
             }
             _ => {}
         }
+        let preparation =
+            crate::bounded_process::TimeBudget::new(policy.deadline.min(Duration::from_secs(10)));
         if backend.needs_container_runtime() {
             let configured = std::env::var(BACKEND_ENV).unwrap_or_default();
             if configured.trim().is_empty() {
@@ -513,9 +515,10 @@ impl ExecutionBox {
                     backend: backend.slug(),
                 });
             }
-            let verdict = crate::prerequisite::probe::probe_command(
+            let verdict = crate::prerequisite::probe::probe_command_with_timeout(
                 &crate::prerequisite::probe::ToolchainProbe::new("docker", &["info"]),
                 workspace,
+                preparation.remaining(),
             );
             if !verdict.is_present() {
                 return Err(BoxError::NoDaemon {
@@ -527,7 +530,12 @@ impl ExecutionBox {
                 image,
             } = backend
             {
-                ensure_conversation_container(conversation_id, image, policy.network)?;
+                ensure_conversation_container(
+                    conversation_id,
+                    image,
+                    policy.network,
+                    &preparation,
+                )?;
             }
         }
         Ok(Self {
@@ -732,7 +740,8 @@ impl ExecutionBox {
         program: &str,
         argv: &[&str],
     ) -> Result<BoxObservation, BoxError> {
-        let archive = archive_workspace(&self.workspace)?;
+        let archive =
+            archive_workspace(&self.workspace, self.deadline.min(Duration::from_secs(10)))?;
         let invocation = disposable_container_invocation(image, self.network, program, argv);
         self.observe_invocation(&invocation, Some(&archive))
     }
@@ -744,7 +753,8 @@ impl ExecutionBox {
         argv: &[&str],
     ) -> Result<BoxObservation, BoxError> {
         let name = conversation_container_name(conversation_id);
-        let archive = archive_workspace(&self.workspace)?;
+        let archive =
+            archive_workspace(&self.workspace, self.deadline.min(Duration::from_secs(10)))?;
         let unpack = ProcessInvocation {
             program: String::from("docker"),
             arguments: vec![

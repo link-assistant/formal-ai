@@ -13,10 +13,9 @@
 
 use std::error::Error;
 use std::fs;
-use std::io::Read as _;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 use serde_json::Value;
 use toml_edit::DocumentMut;
@@ -305,26 +304,11 @@ fn run_probe(
         .stdin(Stdio::null())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped());
-    let mut child = command.spawn()?;
-    let deadline = Instant::now() + PROBE_TIMEOUT;
-    loop {
-        if child.try_wait()?.is_some() {
-            break;
-        }
-        if Instant::now() >= deadline {
-            let _ = child.kill();
-            let _ = child.wait();
-            break;
-        }
-        std::thread::sleep(Duration::from_millis(50));
-    }
-    let mut output = String::new();
-    if let Some(mut stdout) = child.stdout.take() {
-        let _ = stdout.read_to_string(&mut output);
-    }
-    if let Some(mut stderr) = child.stderr.take() {
-        let _ = stderr.read_to_string(&mut output);
-    }
+    let observed =
+        crate::bounded_process::command_output(command, PROBE_TIMEOUT, 1024 * 1024, 1024 * 1024)
+            .map_err(|error| std::io::Error::new(error.kind(), error))?;
+    let mut output = String::from_utf8(observed.stdout)?;
+    output.push_str(&String::from_utf8(observed.stderr)?);
     Ok(output)
 }
 

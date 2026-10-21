@@ -1,4 +1,4 @@
-//! Deadline-bound native invocation I/O; owned by ExecutionBox.
+//! Deadline-bound native invocation I/O; owned by `ExecutionBox`.
 use super::{BoxError, BoxObservation, POLL};
 use std::process::Command;
 use std::sync::{Arc, Mutex};

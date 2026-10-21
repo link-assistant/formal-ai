@@ -1,3 +1,4 @@
+import { boundedCommandSync } from '../../../js/server/bounded-command.mjs';
 // Issue #1180 R11 in the JavaScript root: the subprocess and storage half of
 // repository history (js/agentic/crate/history_store.mjs) runs git, appends
 // to the events store and advances the cursor as
@@ -48,7 +49,7 @@ before(async () => {
   history = await import('../../../js/agentic/crate/history_context.mjs');
   store = await import('../../../js/agentic/crate/history_store.mjs');
   rules = history.historyRules();
-  io = store.nodeHistoryIo({ fs, path, childProcess });
+  io = store.nodeHistoryIo({ fs, path, runCommand: boundedCommandSync });
 });
 
 test('the slug comes from the origin remote, and paths sit under it', () => {

@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3268b52c2a3527635692c264813197ec0be55d46cc271a7082b722de4c286d77 bytes=13751
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=322f3f27a636a82eeda4b86310fd6784c0ca3057d65af52fc3ec7c5f802ce8f2 bytes=14361
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=5
 
@@ -51,7 +51,7 @@ pub const LOCAL_REPOSITORY: &str = "local-repository";
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal destructured parameter
-// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .map() | arrow function | bitwise operator | field access | method call .dirname() | method call .execFileSync() | method call .existsSync() | method call .filter() | method call .isDirectory() | method call .join() | method call .map() | method call .mkdirSync() | method call .readFileSync() | method call .readdirSync() | method call .writeFileSync() | null | object spread | object without a $ tag | typeof operator
+// formal-ai:blockers JSDoc type {…} | arrow callback of .filter() | arrow callback of .map() | arrow function | field access | method call .dirname() | method call .existsSync() | method call .filter() | method call .isDirectory() | method call .join() | method call .map() | method call .mkdirSync() | method call .readFileSync() | method call .readdirSync() | method call .writeFileSync() | null | object spread | object without a $ tag | optional chaining | typeof operator | undefined
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal rest parameter

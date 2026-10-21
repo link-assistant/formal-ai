@@ -192,13 +192,14 @@ pub fn run_prover_with(
         .and_then(|()| std::fs::write(&source_path, unit))
         .is_ok();
     let exit = if written {
-        std::process::Command::new(command)
+        let mut invocation = std::process::Command::new(command);
+        invocation
             .arg(&source_path)
             .current_dir(directory)
             .stdin(std::process::Stdio::null())
             .stdout(std::process::Stdio::null())
-            .stderr(std::process::Stdio::null())
-            .status()
+            .stderr(std::process::Stdio::null());
+        crate::bounded_process::command_status(invocation, std::time::Duration::from_secs(30))
             .ok()
             .and_then(|status| status.code())
     } else {

@@ -28,12 +28,12 @@ function observedRead(messages,owner){
   let call=null;
   for(let prior=index-1;prior>=0;prior-=1){call=(messages[prior].tool_calls??[]).find(candidate=>candidate.id===message.tool_call_id)??null;if(call)break;}
   if(!call||classifyTool(call.function.name)!==Capability.Read)continue;
-  let argumentsValue;try{argumentsValue=JSON.parse(call.function.arguments);}catch{return {refusal:agenticMessage('source_cst_read_arguments')};}
+  let argumentsValue;try{argumentsValue=JSON.parse(call.function.arguments);}catch{return {refusal:agenticMessage('source-cst-read-arguments')};}
   const paths=['path','filePath','file_path'].filter(name=>Object.hasOwn(argumentsValue,name)).map(name=>argumentsValue[name]);
   const absolute=(currentDirectory()??'').replace(/\/$/u,'')+'/'+owner;
-  if(!paths.length||paths.some(value=>value!==owner&&value!==absolute))return {refusal:agenticMessage('source_cst_read_owner')};
+  if(!paths.length||paths.some(value=>value!==owner&&value!==absolute))return {refusal:agenticMessage('source-cst-read-owner')};
   const raw=plainText(message.content);
-  if(message.is_error===true||message.isError===true||stepOutcome(raw)===StepOutcome.Failed)return {refusal:agenticMessage('source_cst_read_failed')};
+  if(message.is_error===true||message.isError===true||stepOutcome(raw)===StepOutcome.Failed)return {refusal:agenticMessage('source-cst-read-failed')};
   return {source:sourceFromReadResult(raw)};
  }
  return null;
@@ -43,13 +43,13 @@ const refused=message=>resolvedFinalAnswer(message,FinalDisposition.Gap,'source-
 export function planSourceCstTransformStep(task,messages,toolNames,planShellStep){
  const request=sourceCstTransformRequest(task);if(request===null)return null;
  const installed=sourceCstTransformCommand();
- if(installed===null)return refused(agenticMessage('source_cst_host_missing'));
- if(toolFor(toolNames,Capability.Run)===null)return refused(agenticMessage('source_cst_run_missing'));
+ if(installed===null)return refused(agenticMessage('source-cst-host-missing'));
+ if(toolFor(toolNames,Capability.Run)===null)return refused(agenticMessage('source-cst-run-missing'));
  const current=messages.slice(evidenceWindowStart(messages));
  const read=observedRead(current,request.owner);
- if(read===null){const tool=toolFor(toolNames,Capability.Read);return tool?planOne(tool,jsonText({path:request.owner,filePath:request.owner,file_path:request.owner})):refused(agenticMessage('source_cst_read_missing'));}
+ if(read===null){const tool=toolFor(toolNames,Capability.Read);return tool?planOne(tool,jsonText({path:request.owner,filePath:request.owner,file_path:request.owner})):refused(agenticMessage('source-cst-read-missing'));}
  if(read.refusal)return refused(read.refusal);
  const expected=sha256Hex(read.source);
- const command=agenticMessage('installed_source_operation_command',{node:quote(installed[0]),script:quote(installed[1]),task:quote(task),digest:expected});
+ const command=agenticMessage('installed-source-operation-command',{node:quote(installed[0]),script:quote(installed[1]),task:quote(task),digest:expected});
  return planShellStep(current,toolNames,command);
 }

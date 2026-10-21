@@ -462,7 +462,7 @@ export function parameterDocumentationGrammar(){
  const rows=grammar().filter(row=>row[0]==='parameter-documentation');
  if(rows.length!==1)throw Error('UniqueParameterDocumentationGrammarRequired');
  const row=rows[0],tags=words(row,'tags'),forbidden=words(row,'owner-overrides'),passive=words(row,'passive-tags');
- if(!tags.length||!forbidden.length||!passive.length||value(row,'syntax')!=='jsdoc-simple-param')throw Error('UnsupportedParameterDocumentationGrammar');
+ if(!tags.length||!forbidden.length||!passive.length||value(row,'syntax')!=='jsdoc-simple-parameter')throw Error('UnsupportedParameterDocumentationGrammar');
  return {network:structuredClone(row),tags,forbidden,passive};
 }
 function scanType(line,start){

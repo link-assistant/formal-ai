@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { exclusiveCreate } from '../../experiments/js_dogfood/exclusive-create.mjs';
 import path from 'node:path';
-import { execFileSync } from 'node:child_process';
+import { boundedCommandSync } from './bounded-command.mjs';
 import { createHash } from 'node:crypto';
 import { shellQuote } from '../agentic/git_commit.mjs';
 import { registeredPhysicalReadObservation, issueTrackedSourceContext,
@@ -28,13 +28,20 @@ function git(root, context, ...argumentsValue) {
   if (trackedSourceContextObservation(context, command).commandPolicy === false) {
     throw Error('TrackedGitObservationDenied');
   }
-  const output = execFileSync('/usr/bin/git', argumentsList, {
+  const result = boundedCommandSync('/usr/bin/git', argumentsList, {
     encoding: 'utf8', timeout: 5000, maxBuffer: 1048576,
     env: { GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null',
       GIT_OPTIONAL_LOCKS: '0', LC_ALL: 'C' },
   });
+  if (result.error) throw result.error;
+  if (result.status !== 0 || result.signal !== null || result.cleanup_complete !== true) {
+    const failure = new Error('TrackedGitObservationFailed');
+    Object.assign(failure, { status: result.status, signal: result.signal,
+      stdout: result.stdout, stderr: result.stderr });
+    throw failure;
+  }
   trackedSourceContextObservation(context, command);
-  return output;
+  return result.stdout;
 }
 function baselineFile(file) {
   const fileIdentity = regular(file);

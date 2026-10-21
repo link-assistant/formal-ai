@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=7b95ac2b32e831c49abb517a22c6856e22443410959c3f6466ad104d989c59a3 bytes=6183
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=47c2e1c824be8a08b03152a09994e454acc6224a6a0ce0cd728378cfb6af4765 bytes=6421
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -342,7 +342,7 @@ pub static MAX_U64: std::sync::LazyLock<crate::ml::Big> = std::sync::LazyLock::n
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | call of an imported function | field access | method call .join() | object spread | object without a $ tag | throw of a non-error value
+// formal-ai:blockers JSDoc type {…} | call of an imported function | field access | method call .join() | new Error | null | nullish coalescing | object spread | object without a $ tag | throw of a non-error value
 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: malformed number

@@ -20,10 +20,10 @@ translation_blockers
   blockers_per_item 4 209
   blockers_per_item 5 203
   blockers_per_item 6 138
-  blockers_per_item 7 106
+  blockers_per_item 7 105
   blockers_per_item 8 84
   blockers_per_item 9 85
-  blockers_per_item 10 59
+  blockers_per_item 10 60
   blockers_per_item 11 42
   blockers_per_item 12 34
   blockers_per_item 13 21
@@ -50,7 +50,7 @@ translation_blockers
 construct "call of a sibling function" items 901 only 35
 construct "field access" items 891 only 25
 construct "call of an imported function" items 658 only 17
-construct "null" items 581 only 5
+construct "null" items 582 only 5
 construct "object without a $ tag" items 520 only 26
 construct "arrow function" items 358 only 2
 construct "import of names its module carries" items 334 only 334
@@ -63,12 +63,12 @@ construct "arrow callback of .map()" items 235 only 0
 construct "regular expression" items 230 only 34
 construct "sibling value" items 209 only 16
 construct "arrow callback of .filter()" items 198 only 0
+construct "nullish coalescing" items 195 only 0
 construct "import from outside the module directory" items 194 only 194
-construct "nullish coalescing" items 194 only 0
 construct "method call .join()" items 175 only 0
 construct "method call .some()" items 175 only 0
 construct "arrow callback of .some()" items 167 only 0
-construct "undefined" items 159 only 0
+construct "undefined" items 160 only 0
 construct "method call .split()" items 148 only 0
 construct "arrow callback of .find()" items 147 only 0
 construct "method call .find()" items 142 only 0
@@ -81,7 +81,7 @@ construct "Array.from" items 107 only 0
 construct "new Set" items 94 only 34
 construct "method call .has()" items 93 only 0
 construct "method call .sort()" items 93 only 0
-construct "optional chaining" items 83 only 0
+construct "optional chaining" items 84 only 0
 construct "method call .replace()" items 80 only 0
 construct "method call .get()" items 72 only 0
 construct "method call .indexOf()" items 71 only 0
@@ -112,8 +112,8 @@ construct "export …" items 22 only 1
 construct "async function" items 19 only 0
 construct "class" items 17 only 3
 construct "method call .entries()" items 17 only 0
-construct "bitwise operator" items 16 only 3
 construct "method call .codePointAt()" items 16 only 1
+construct "bitwise operator" items 15 only 3
 construct "method call .concat()" items 15 only 0
 construct "method call .keys()" items 15 only 0
 construct "JSON.parse" items 14 only 0
@@ -134,10 +134,10 @@ construct "instanceof operator" items 9 only 0
 construct "method call .emit()" items 9 only 0
 construct "method call .lastIndexOf()" items 8 only 0
 construct "method call .reverse()" items 8 only 0
+construct "new Error" items 8 only 0
 construct "method call .decode()" items 7 only 0
 construct "method call .delete()" items 7 only 0
 construct "new AgentRunError" items 7 only 0
-construct "new Error" items 7 only 0
 construct "Buffer.compare" items 6 only 0
 construct "Buffer.from" items 6 only 0
 construct "Object.prototype" items 6 only 0
@@ -289,7 +289,6 @@ construct "method call .cwd()" items 1 only 0
 construct "method call .destroy()" items 1 only 0
 construct "method call .eat()" items 1 only 0
 construct "method call .events()" items 1 only 0
-construct "method call .execFileSync()" items 1 only 0
 construct "method call .expand()" items 1 only 0
 construct "method call .exportLinksNotation()" items 1 only 0
 construct "method call .expressions()" items 1 only 0

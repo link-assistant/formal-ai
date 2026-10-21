@@ -48,6 +48,7 @@ pub use coding::recurrence as coding_recurrence;
 pub use coding::task_spec as coding_task_spec;
 pub mod authoring_loop;
 pub mod behavior_delta;
+pub mod bounded_process;
 pub mod bounded_retry;
 pub mod callback_values;
 pub mod capability_routing;

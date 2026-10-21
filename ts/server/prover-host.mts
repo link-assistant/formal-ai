@@ -11,7 +11,7 @@
 // name, and the binary runs once on it. The answer reports the exit status
 // and the unit's path; `null` means the binary is absent from PATH.
 
-import { spawnSync } from 'node:child_process';
+import { boundedCommandSync } from './bounded-command.mjs';
 import { mkdirSync, statSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -61,16 +61,23 @@ export function proverCommandIn(pathValue, binary) {
  * @param {string} unit
  * @param {string} directory
  * @param {string} extension
+ * @param {number} [timeoutMs] a positive deadline, capped at thirty seconds
  * @returns {{command: string, exit: number|null, sourcePath: string}}
  */
-export function runProverWith(command, unit, directory, extension) {
+export function runProverWith(command, unit, directory, extension, timeoutMs = 30000) {
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs <= 0 || timeoutMs > 30000) {
+    throw new RangeError('InvalidProverTimeout');
+  }
   const sourcePath = path.join(directory, `${proverFileStem(unit)}.${extension}`);
   let exit = null;
   try {
     mkdirSync(directory, { recursive: true });
     writeFileSync(sourcePath, unit);
-    const result = spawnSync(command, [sourcePath], { cwd: directory, stdio: 'ignore' });
-    exit = typeof result.status === 'number' ? result.status : null;
+    const result = boundedCommandSync(command, [sourcePath], {
+      cwd: directory, timeout: timeoutMs, stdoutLimitBytes: 0, stderrLimitBytes: 0,
+    });
+    exit = !result.error && result.cleanup_complete === true && typeof result.status === 'number'
+      ? result.status : null;
   } catch {
     exit = null;
   }
@@ -79,7 +86,7 @@ export function runProverWith(command, unit, directory, extension) {
 
 /**
  * The `formalAiProverHost` function the worker calls.
- * @param {{path?: string, tmpdir?: string}} [options] the PATH to search and
+ * @param {{path?: string, tmpdir?: string, timeoutMs?: number}} [options] the PATH to search and
  *   the temporary directory (default: this process's)
  * @returns {(binary: string, extension: string, unit: string) => object|null}
  */
@@ -88,6 +95,6 @@ export function createProverHost(options = {}) {
   const directory = path.join(options.tmpdir === undefined ? os.tmpdir() : options.tmpdir, PROVER_DIRECTORY);
   return (binary, extension, unit) => {
     const command = proverCommandIn(pathValue, binary);
-    return command === null ? null : runProverWith(command, unit, directory, extension);
+    return command === null ? null : runProverWith(command, unit, directory, extension, options.timeoutMs);
   };
 }

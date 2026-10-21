@@ -551,7 +551,7 @@ fn write_capture(
     let cleanup = admission.finish();
     match (action, cleanup) {
         (Err(primary), Err(cleanup)) => Err(FetchError::Cache(source_diagnostic(
-            "source_cache_cleanup_diagnostic",
+            "source-cache-cleanup-diagnostic",
             &[
                 ("primary", &primary.to_string()),
                 ("cleanup", &cleanup.to_string()),

@@ -405,3 +405,76 @@ other fixture fields and oracle sources remain unchanged. The reviewed differenc
 is limited to that manifest's identity; the lockfile and baseline reader are
 unchanged. This review does not certify the new native runtime behavior. The
 unchanged original governed controls and hosted native checks remain required.
+
+## Finite external-command boundary continuation
+
+A finite retry count does not bound a stalled individual process. The continuation
+therefore adds a shared binary-safe native command supervisor and a JavaScript
+async supervisor whose synchronous Worker adapter preserves synchronous host APIs.
+One command deadline includes startup, stdin writes, child status and output EOF;
+cleanup has its own short finite settlement. Capture overflow, broken readers,
+failed writes and incomplete cleanup are failures. The original primary error,
+its I/O category and bounded partial bytes remain inspectable. Successful parent
+exit alone cannot certify output held open by descendants. The explicit cleanup
+receipt concerns the owned child and its I/O, not every escaped process on every
+platform. Windows escaped descendants remain outside full tree containment.
+
+Production callers now use these shared boundaries for prerequisite probes and
+setup, prover/exporter invocations, Git/history/fact observations, authoring,
+benchmark helpers, diagnostic transports and container state. Existing long
+solve and transfer budgets are retained. Sequential SWE evaluation derives its
+finite outer budget from the unchanged per-case allowance with checked arithmetic.
+Foreground client launches retain operator-owned terminal signal cancellation
+only when both stdin and stdout are actual terminals; unattended launches use
+the finite supervised path. This is an explicit interactive policy, not a claim
+that a terminal session has a fixed elapsed-time limit.
+
+ExecutionBox preparation is supervised separately from its existing program
+observer. Docker open stages share one remaining preparation budget; workspace
+archives preserve binary bytes and have a finite capture limit. The original
+execution observer and its behavioral assertions remain intact. JavaScript
+history storage stays host agnostic and requires an explicitly supplied bounded
+runner; the Node adapter supplies the shared host. An unconfigured legacy runner
+is refused before Git execution. Original history assertions remain unchanged;
+their setup selects the bounded adapter. The pre-existing census alignment skip
+(PR1196-SDK1-native-JS-Rust-census-alignment) remains recorded debt, not a new pass.
+
+The standalone command-capture program is generated from the actual maintained
+async JavaScript supervisor. Babel source spans produce readable UTF-8 meta
+source rows, and both JavaScript and Rust consumers join those exact rows. The
+projection check rejects drift. This is a generated executable-source projection;
+it does not establish the broader recursive CST, comment semantics or complete
+language parity requirements. Strict UTF-8 decoding, original command chunking,
+receipt fields and nonzero exit statuses remain; incomplete cleanup cannot yield
+a successful wrapper exit.
+
+The hosted web suite runs the production subprocess-boundary scan and canonical
+capture projection check through the bounded supervisor. The structural scan
+recognizes local process imports, constructors, typed receivers and opaque macro
+call shapes. It does not prove arbitrary dynamic aliases, macro expansion,
+interprocedural flow or cancellation of every asynchronous operation. Native
+lifecycle controls exercise the real public supervisor in CI; no Rust compiler,
+product binary, container or installer is run locally. Supplied repair
+controllers receive zero autonomous-authorship credit, and usage/cost stays
+Unknown.
+
+Automatic CI on `f737adb6e5e05634d0bfe7416bac7f4ead4fa556` exposed notation debt
+in newly introduced message keys and comment-grammar atoms, plus two Clippy
+documentation-markup errors. The repairs preserve diagnostic text and external
+JSDoc tag spelling while updating the actual consumers; notation ceilings and
+original behavioral oracles are retained. Source success is not a substitute
+for the next exact revision's hosted native tests, full CI, merge or publication
+receipts. Broader retained Pending requirements remain binding.
+
+
+The integrated local replay passes bounded-command, ExecutionBox, standalone
+capture, history, attributed dispatch and notation controls. The original census
+alignment skip remains unchanged. The first governed replay was retained as a
+failure; complete comparison then proved all original case IDs, order, program
+content and oracle sources unchanged, with only the actual library and unit-root
+module-registration source hashes differing. Its explicit maintained witness
+refresh passes the original controls. The translation closure uses one worker
+and the already pinned local meta-language source, without fetching or compiling
+Rust. The final formatting repair preserves every script token and the existing
+readability limit. Current-source local checks cannot replace the next exact
+head's automatic native, Hive, packaging or release acceptance.

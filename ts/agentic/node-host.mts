@@ -5,7 +5,7 @@ import {recordFor,toLino,answerDerivationId} from './crate/derivation.mjs';
 // Used by the JavaScript server and by node:test suites; a browser host would
 // install the same shape from the worker's own globals.
 
-import { execFileSync } from 'node:child_process';
+import { boundedCommandSync } from '../server/bounded-command.mjs';
 import { lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
@@ -123,9 +123,12 @@ const flagEnabled = (value) => ['1', 'true', 'yes', 'on'].includes(String(value 
 /** `CurlSourceTransport::get`: the response bytes, null on any failure. */
 function curlGet(url) {
   try {
-    return new Uint8Array(execFileSync('curl', ['--fail', '--silent', '--show-error', '--location', '--compressed',
+    const observed = boundedCommandSync('curl', ['--fail', '--silent', '--show-error', '--location', '--compressed',
       '--max-time', '30', '--max-filesize', String(SOURCE_CACHE_POLICY.maxBodyBytes), '--user-agent', 'formal-ai (https://github.com/link-assistant/formal-ai; source retrieval)', url],
-    { stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: SOURCE_CACHE_POLICY.maxBodyBytes }));
+    { timeout: 30000, stdoutLimitBytes: SOURCE_CACHE_POLICY.maxBodyBytes, stderrLimitBytes: 0 });
+    if (observed.error || observed.status !== 0 || observed.signal !== null
+      || observed.cleanup_complete !== true) return null;
+    return new Uint8Array(observed.stdout);
   } catch {
     return null;
   }
