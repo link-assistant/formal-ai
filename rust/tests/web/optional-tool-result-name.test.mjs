@@ -117,7 +117,7 @@ test('actual Agent nameless empty writes and absolute filePath recover an owned 
   const retry = await planChatStep(messages, tools);
   assert.equal(retry.calls[0].tool, 'bash');
   const command = JSON.parse(retry.calls[0].arguments).command;
-  assert(command.includes('https://www.scala-lang.org'));
+  assert(command.includes('https://api.github.com/repos/scala/scala3/releases/latest'));
   assert(command.endsWith('\n# __formal_ai_prerequisite_retry\nsh tests/verify-output.sh'));
   await installNodeHost(worker, {
     prerequisiteGrant: null
